@@ -1,0 +1,70 @@
+import { Argon2id } from "oslo/password";
+import type { SelectRawUser } from "@/server/schema/auth";
+
+const db = useDrizzle();
+
+export const createUser = async (user: InsertUser) => {
+  const hashedPassword = await new Argon2id().hash(user.password);
+
+  const newUser = await db
+    .insert(authUserSchema)
+    .values({ ...user, password: hashedPassword })
+    .returning({ id: authUserSchema.id });
+
+  return newUser[0];
+};
+
+export const ifUserAlreadyExists = async (username: string, email: string) => {
+  const isUserExists = await db.query.authUserSchema.findFirst({
+    where: or(
+      eq(authUserSchema.username, username),
+      eq(authUserSchema.email, email),
+    ),
+  });
+
+  return !!isUserExists;
+};
+
+export const getUserByUsernameAndEmail = async ({
+  username,
+  password,
+}: Pick<SelectRawUser, "username" | "password">) => {
+  const user = await db.query.authUserSchema.findFirst({
+    where: or(
+      eq(authUserSchema.username, username),
+      eq(authUserSchema.email, username),
+    ),
+  });
+
+  if (!user) {
+    return null;
+  }
+
+  const isPasswordValid = await new Argon2id().verify(user.password, password);
+  if (!isPasswordValid) {
+    return null;
+  }
+
+  const { password: _, ...rest } = user;
+  return rest;
+};
+
+export const getUserById = async (id: string) => {
+  const user = await db.query.authUserSchema.findFirst({
+    where: eq(authUserSchema.id, id),
+  });
+
+  if (!user) {
+    return null;
+  }
+
+  const { password: _, ...rest } = user;
+  return rest;
+};
+
+export const updateUser = async (id: string, user: Partial<InsertUser>) => {
+  return await db
+    .update(authUserSchema)
+    .set(user)
+    .where(eq(authUserSchema.id, id));
+};
