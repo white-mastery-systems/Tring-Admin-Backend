@@ -1,0 +1,9 @@
+{
+  "vueIndentScriptAndStyle": true,
+  "tailwindFunctions": [
+    "tv"
+  ],
+  "plugins": [
+    "prettier-plugin-tailwindcss"
+  ]
+}
