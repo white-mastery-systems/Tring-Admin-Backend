@@ -5,7 +5,11 @@ const runtimeConfig = useRuntimeConfig();
 
 const queryClient = new pg.Pool({ connectionString: runtimeConfig.dbUrl });
 
-const schema = {};
+const schema = {
+  organizationSchema,
+  authUserSchema,
+  authSessionSchema,
+};
 
 const db = drizzle(queryClient, { schema });
 
