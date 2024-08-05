@@ -17,17 +17,43 @@ export const chatBotSchema = chatbotSchema.table("bot", {
     .notNull(),
 });
 
+export const documentSchema = chatbotSchema.table("document", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  name: varchar("name", { length: 64 }).notNull(),
+  status: varchar("status", {
+    enum: ["processing", "ready", "error"],
+  })
+    .default("processing")
+    .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+
+  botId: uuid("bot_id")
+    .references(() => chatBotSchema.id, { onDelete: "cascade" })
+    .notNull(),
+});
+
 // Relations
-export const chatBotRelations = relations(chatBotSchema, ({ one }) => ({
+export const chatBotRelations = relations(chatBotSchema, ({ one, many }) => ({
   organization: one(organizationSchema, {
     fields: [chatBotSchema.organizationId],
     references: [organizationSchema.id],
+  }),
+  documents: many(documentSchema),
+}));
+
+export const documentRelations = relations(documentSchema, ({ one }) => ({
+  bot: one(chatBotSchema, {
+    fields: [documentSchema.botId],
+    references: [chatBotSchema.id],
   }),
 }));
 
 // Types
 export type SelectChatBot = InferSelectModel<typeof chatBotSchema>;
 export type InsertChatBot = InferInsertModel<typeof chatBotSchema>;
+
+export type SelectDocument = InferSelectModel<typeof documentSchema>;
+export type InsertDocument = InferInsertModel<typeof documentSchema>;
 
 // Validations
 export const zodInsertChatBot = createInsertSchema(chatBotSchema, {
@@ -41,3 +67,5 @@ export const zodUpdateChatBot = zodInsertChatBot
     createdAt: true,
   })
   .required();
+
+export const zodInsertDocument = createInsertSchema(documentSchema);

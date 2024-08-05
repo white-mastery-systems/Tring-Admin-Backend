@@ -24,3 +24,5 @@ logs
 !.env.example
 
 drizzle
+
+assets/docs/*.pdf
