@@ -31,7 +31,7 @@ const drizzleZod = {
 
 const zod = {
   from: "zod",
-  imports: ["z"],
+  imports: ["z", { name: "infer", as: "ZodInfer", type: true }],
 };
 
 const veeValidateZod = {

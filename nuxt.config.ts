@@ -18,6 +18,7 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
+    experimental: { openAPI: true },
     imports: {
       dirs: ["server/schema/**", "server/utils/**"],
       presets: [...autoImports.nitro],
@@ -25,6 +26,7 @@ export default defineNuxtConfig({
   },
 
   imports: {
+    dirs: ["stores/**", "composables/**"],
     presets: [...autoImports.nuxt],
   },
 

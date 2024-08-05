@@ -9,6 +9,7 @@ const schema = {
   organizationSchema,
   authUserSchema,
   authSessionSchema,
+  chatBotSchema,
 };
 
 const db = drizzle(queryClient, { schema });
