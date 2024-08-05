@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     "@formkit/auto-animate",
     "@nuxt/icon",
     "nuxt-typed-router",
+    "shadcn-nuxt",
   ],
 
   nitro: {
@@ -28,6 +29,10 @@ export default defineNuxtConfig({
   imports: {
     dirs: ["stores/**", "composables/**"],
     presets: [...autoImports.nuxt],
+  },
+
+  shadcn: {
+    prefix: "Ui",
   },
 
   runtimeConfig: {
