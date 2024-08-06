@@ -1,0 +1,10 @@
+ @font-face {
+    font-family: 'Hey Wow Bold';
+    src: local('Hey Wow Bold'), url('../fonts/HeyWowBold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+.hey_wow_bold {
+  font-family: 'Hey Wow Bold', sans-serif;
+}
