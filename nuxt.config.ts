@@ -10,7 +10,6 @@ export default defineNuxtConfig({
   ],
 
   modules: [
-    "@pinia/nuxt",
     "@nuxtjs/tailwindcss",
     "@formkit/auto-animate",
     "@nuxt/icon",

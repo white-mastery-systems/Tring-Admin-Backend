@@ -1,5 +1,5 @@
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
-import { jsonb, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { boolean, jsonb, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 import { chatbotSchema } from ".";
 import { organizationSchema } from "./admin";
@@ -9,6 +9,7 @@ import { createInsertSchema } from "drizzle-zod";
 export const chatBotSchema = chatbotSchema.table("bot", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name", { length: 64 }).notNull(),
+  isEnabled: boolean("is_enabled"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   metadata: jsonb("metadata"),
 
