@@ -132,3 +132,27 @@
     @apply bg-background text-foreground;
   }
 }
+::-webkit-scrollbar {
+  display: none;
+}
+.ui-select-trigger {
+  border: none;
+}
+.ui-select-trigger:focus {
+  border: none;
+}
+.focus\:ring-offset-2:focus {
+  --tw-ring-offset-width: none;
+}
+.select_list_align {
+  font-weight: 500 !important;
+  color: rgba(138, 138, 138, 1) !important;
+}
+.content_align:focus {
+  font-weight: 700;
+  color: rgba(255, 188, 66, 1) !important;
+  background: rgba(255, 248, 235, 1) !important;
+}
+* {
+  font-family: "HeyWow";
+}

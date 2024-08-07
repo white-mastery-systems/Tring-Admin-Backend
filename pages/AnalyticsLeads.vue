@@ -3,53 +3,100 @@
     <div class="header-align">
       <div class="flex items-center gap-2">
         <span>
-          <img src="assets\icons\right_arrow.svg" width="20"></img>
+          <!-- <img src="assets\icons\right_arrow.svg" width="20"></img> -->
         </span>
-        <span class="font-bold text-[20px]">Document Management</span>
+        <span class="font-bold text-lg text-[20px]">Leads</span>
       </div>
-      <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary: <span
-          class="font-bold text-black">Recent</span></span>
+      <div class="flex items-center space-x-4" style="width: 350px;">
+        <span class="calender-align">
+          <img src="assets\icons\calendar_month.svg" width="20">
+        </span>
+        <span class="right-dropdown-align" style="color: rgba(138, 138, 138, 1)">Filter: <span
+            class="font-bold text-black text-[14px]">
+            <UiSelect v-model="selectedValue">
+              <UiSelectTrigger class="w-[110px] ui-select-trigger">
+                <UiSelectValue placeholder="Select a fruit" />
+              </UiSelectTrigger>
+              <UiSelectContent>
+                <UiSelectGroup>
+                  <!-- <UiSelectLabel>Today</UiSelectLabel> -->
+                  <UiSelectItem value="Today">
+                    Today
+                  </UiSelectItem>
+                  <UiSelectItem value="Weekly">
+                    Weekly
+                  </UiSelectItem>
+                  <UiSelectItem value="Monthly">
+                    Monthly
+                  </UiSelectItem>
+                  <UiSelectItem value="Quarterly">
+                    Quarterly
+                  </UiSelectItem>
+                  <UiSelectItem value="Halfyearly">
+                    Halfyearly
+                  </UiSelectItem>
+                  <UiSelectItem value="Yearly">
+                    Yearly
+                  </UiSelectItem>
+                </UiSelectGroup>
+              </UiSelectContent>
+            </UiSelect>
+          </span></span>
+        <span>
+          <img src="assets\icons\export_btn.svg" width="110">
+        </span>
+      </div>
     </div>
     <div class="document-align gap-4">
-      <span>
-        <img src="assets\icons\upload _document.svg" width="100" />
+      <div class="count-align gap-3">
+        <span class="font-bold">
+          Total Chats: <span style="color: rgba(66, 75, 209, 1)">495</span>
+        </span>
+        <span class="font-bold">
+          Total Leads: <span style="color: rgba(66, 75, 209, 1)">15</span>
+        </span>
+      </div>
+      <!-- <span>
+        <img src="assets\icons\pdf_upload_document.svg" width="100" />
       </span>
       <div class="flex items-center gap-2">
         <sapn class="upload-document-align font-bold"> Upload Document </sapn>
         <sapn class="only-content-align"> (Only Pdf) </sapn>
-      </div>
+      </div> -->
     </div>
     <div class="bot-main-align">
       <div class="list-header-align">
         <div class="header-content-align">
           <span class="font-semibold content-align">File Name</span>
-          <span class="font-semibold content-align">Uploaded Date</span>
-          <span class="font-semibold content-align">Status</span>
+          <span class="font-semibold content-align">Bot Name</span>
+          <span class="font-semibold content-align">Date Created</span>
           <span class="font-semibold content-align">Actions</span>
         </div>
       </div>
       <div class="content-scroll-align">
-        <div class="bot-list-align text-[13px]" v-for="(list, index) in dataList" :key="index">
+        <div class="bot-list-align" v-for="(list, index) in dataList" :key="index">
           <div class="list_align">
+            <span class="font-medium user_name_align">{{ list.userName }}</span>
             <span class="font-medium bot_name_align">{{ list.bot }}</span>
-            <span class="font-medium create_at-align"
-              :style="{ 'padding-inline-end': list.status ? '132px' : (list.Processing) ? '133px' : '133px' }">{{
-              list.createAt }}</span>
-            <div v-if="list.status" class="acive_class font-medium">
+            <span class="font-medium create_at-align">{{ list.createAt }}</span>
+            <!-- <div v-if="list.status" class="acive_class font-medium">
               <div class="rounded-full active-circle-align"></div>
-              <span>Success</span>
-            </div>
-            <div v-else-if="list.Processing" class="process_class font-medium">
+              <span>Active</span>
+            </div> -->
+            <span class="view_align">
+              <img src="assets\icons\Edit_view.svg" width="70">
+            </span>
+            <!-- <div v-else-if="list.Processing" class="process_class font-medium">
               <div class="rounded-full process-circle-align"></div>
               <span>Processing</span>
             </div>
             <div v-else class="deacive_class font-medium">
               <div class="rounded-full deactive-circle-align"></div>
-              <span>Failed</span>
-            </div>
-            <span>
+              <span>Inactive</span>
+            </div> -->
+            <!-- <span>
               <img src="assets\icons\more_horiz.svg" width="30">
-            </span>
+            </span> -->
           </div>
           <!-- <div>
             <img src="assets\icons\left_arrow.svg" width="30">
@@ -62,33 +109,39 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+const selectedValue = ref('Today')
 const dataList = ref([
   {
     _id: 1,
+    userName: 'Richard',
     bot: 'Yourstore Bot-1',
     createAt: '12.02.2024',
     status: true,
     Processing: false,
   }, {
-    _id: 1,
+    userName: 'Jhon',
+    _id: 2,
     bot: 'Yourstore Bot-2 testing bot sdfdsf saf sdf',
     createAt: '15.02.2024',
     status: false,
     Processing: true,
   }, {
-    _id: 1,
+    userName: 'Ravi',
+    _id: 3,
     bot: 'Yourstore Bot-2 testing bot sdfdsf saf sdf',
     createAt: '15.02.2024',
     status: false,
     Processing: false,
   }, {
-    _id: 1,
+    userName: 'Riyaz',
+    _id: 4,
     bot: 'Yourstore Bot-2 testing bot sdfdsf saf sdf',
     createAt: '15.02.2024',
     status: true,
     Processing: false,
   }, {
-    _id: 1,
+    userName: 'Raj',
+    _id: 5,
     bot: 'Yourstore Bot-2 testing bot sdfdsf saf sdf',
     createAt: '15.02.2024',
     status: false,
@@ -98,6 +151,9 @@ const dataList = ref([
 </script>
 
 <style scoped>
+.focus\:ring-offset-2:focus {
+  --tw-ring-offset-width: none;
+}
 .bot-manage-main-container {
   padding: 15px;
 }
@@ -107,6 +163,8 @@ const dataList = ref([
   align-items: center;
   justify-content: space-between;
   font-family: segoe UI Regular;
+  padding-bottom: 20px;
+  border-bottom: 0.5px solid rgba(181, 181, 181, 1);
 }
 
 .bot-main-align {
@@ -136,7 +194,7 @@ const dataList = ref([
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 96%;
+  width: 100%;
   /* background: rgba(255, 255, 255, 1); */
   /* padding: 30px 30px; */
   /* box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important; */
@@ -149,6 +207,8 @@ const dataList = ref([
   display: flex;
   align-items: center;
   justify-content: space-between;
+  display: flex;
+  align-items: center;
   background: rgba(255, 255, 255, 1);
   padding: 20px 0px;
   width: 100% !important;
@@ -164,7 +224,7 @@ const dataList = ref([
   align-items: center;
   color: rgba(26, 187, 0, 1);
   gap: 5px;
-  padding-inline-end: 88px;
+  padding-inline-end: 93px;
 }
 
 .deacive_class {
@@ -172,14 +232,15 @@ const dataList = ref([
   align-items: center;
   gap: 5px;
   color: rgba(255, 0, 0, 1);
-  padding-right: 104px;
+  padding-right: 77px;
 }
+
 .process_class {
   display: flex;
   align-items: center;
   color: rgba(238, 186, 1, 1);
   gap: 5px;
-  padding-inline-end: 70px;
+  padding-inline-end: 65px;
 }
 
 .process-circle-align {
@@ -189,6 +250,7 @@ const dataList = ref([
   width: 5px;
   height: 5px;
 }
+
 .active-circle-align {
   display: flex;
   align-items: center;
@@ -211,7 +273,7 @@ const dataList = ref([
   width: 100%;
 }
 
-.bot_name_align {
+.user_name_align {
   width: 200px;
   white-space: nowrap;
   overflow: hidden;
@@ -219,30 +281,74 @@ const dataList = ref([
   display: inline-block;
   padding-inline-start: 30px;
 }
+.bot_name_align {
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  padding-inline-start: 16px;
+}
 
-/* .create_at-align {
-  padding-inline-end: 130px;
-} */
+.create_at-align {
+  padding-inline-end: 128px;
+}
 
 .document-align {
   display: flex;
   align-items: center;
-  margin-top: 40px;
+  justify-content: end;
+  margin-top: 20px;
+  padding-inline-end: 10px;
 }
 
 .upload-document-align {
   color: rgba(66, 75, 209, 1);
   font-size: 15px;
   text-decoration: underline;
-  text-underline-offset: 2px
 }
 
 .only-content-align {
   color: rgba(138, 138, 138, 1);
   font-size: 11px;
 }
+
 .content-scroll-align {
-  height: calc(100vh - 350px);
+  height: calc(100vh - 285px);
   overflow-y: scroll;
+}
+.count-align {
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+  /* justify-content: end; */
+}
+.user_name_align {
+  padding-inline-start: 30px;
+}
+.bot_name_align {
+  /* padding-inline-end: 20px; */
+}
+.view_align {
+  padding-right: 24px;
+}
+.right-dropdown-align {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 1);
+  padding: 0px 10px;
+  width: 150px !important;
+  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 10px;
+}
+.calender-align {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 40px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 10px;
 }
 </style>

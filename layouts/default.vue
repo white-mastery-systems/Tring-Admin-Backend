@@ -11,10 +11,11 @@
 <style scoped>
 .default-main-container {
   display: flex;
+  height: 100vh;
 }
 .navigation-drawer {
   width: 20%;
-  height: 100vh;
+  /* height: 100vh; */
   background: rgba(255, 255, 255, 1);
   display: flex;
   flex-direction: column;
@@ -24,5 +25,6 @@
 .main-router-align {
   padding: 15px;
   width: 80%;
+  /* height: 100vh; */
 }
 </style>

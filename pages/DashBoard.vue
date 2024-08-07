@@ -1,9 +1,23 @@
 <template>
   <div class="dashboard-main-container">
     <div class="header-align">
-      <span class="font-bold text-lg">Dashboard</span>
-      <span class="right-dropdown-align" style="color: rgba(138, 138, 138, 1)">Summary: <span
-          class="font-bold text-black">Today</span></span>
+      <span class="font-bold text-[20px]">Dashboard</span>
+      <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary: <span
+          class="font-bold text-black">
+          <UiSelect v-model="selectedValue" class="outline-none">
+            <UiSelectTrigger class="w-[110px] ui-select-trigger outline-none">
+              <UiSelectValue />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup class="select_list_align">
+                <!-- <UiSelectLabel>Today</UiSelectLabel> -->
+                <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align" :value="list.content">
+                  {{ list.content }}
+                </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+        </span></span>
     </div>
     <div>
       <div class="dashboard-main-paage">
@@ -93,30 +107,64 @@
     </div>
   </div>
 </template>
+<script setup lang="ts">
+  const selectedValue = ref('Today')
+  const menuList = ref([
+    {
+      content: 'Today',
+      value: 'Today',
+    }, {
+      content: 'Weekly',
+      value: 'Weekly',
+    }, {
+      content: 'Monthly',
+      value: 'Monthly',
+    }, {
+      content: 'Quarterly',
+      value: 'Quarterly',
+    }, {
+      content: 'Halfyearly',
+      value: 'Halfyearly',
+    }, {
+      content: 'Yearly',
+      value: 'Yearly',
+    },
+  ])
+
+</script>
 <style scoped>
+.focus\:ring-offset-2:focus {
+  --tw-ring-offset-width: none;
+}
 .dashboard-main-container {
   padding: 15px;
   /* width: 100%; */
+  height: calc(100vh - 30px);
 }
+
 .header-align {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: segoe UI Regular;
 }
+
 .right-dropdown-align {
+  display: flex;
+  align-items: center;
   background: rgba(255, 255, 255, 1);
-  padding: 10px;
+  padding: 0px 10px;
   width: 200px !important;
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
   border-radius: 10px;
 }
+
 .dashboard-main-paage {
   margin-top: 30px;
   display: flex;
   align-items: center;
   gap: 30px;
 }
+
 .card-align {
   display: flex;
   align-items: center;
@@ -128,12 +176,23 @@
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
   border-radius: 10px;
 }
+
 .content-align {
   margin-bottom: 5px;
   color: rgba(138, 138, 138, 1);
 }
+
 .graph-align {
   display: flex;
   opacity: 0.3;
 }
+/* .select_list_align {
+  font-weight: 500;
+  color: rgba(138, 138, 138, 1);
+}
+.content_align:focus {
+  font-weight: 700;
+  color: rgba(255, 188, 66, 1);
+  background: rgba(255, 248, 235, 1);
+} */
 </style>

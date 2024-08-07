@@ -2,30 +2,29 @@
   <div class="bot-manage-main-container">
     <div class="header-align">
       <span class="font-bold text-lg"> Bot Management </span>
-      <span class="right-dropdown-align" style="color: rgba(138, 138, 138, 1)">Summary: <span
-          class="font-bold text-black">Today</span></span>
     </div>
     <div class="bot-main-align">
       <div class="list-header-align">
         <div class="header-content-align">
           <div class="flex items-cetner gap-4">
-            <span class="font-bold content-align">Yourstore Bot-4</span>
+            <span class="font-bold content-align text-[17px]">Yourstore Bot-4</span>
             <div class="acive_class">
               <div class="rounded-full active-circle-align"></div>
-              <span>Active</span>
+              <span class="text-[14px]">Active</span>
             </div>
           </div>
           <div class="flex items-center gap-4">
             <span class="text-black font-bold">Date Created: <span class="font-normal">12.09.2013</span></span>
             <span>
-              <Button class="button-align font-medium">Deactivate Bot</Button>
+              <Button class="button-align font-medium text-[14px]">Deactivate Bot</Button>
             </span>
           </div>
           <!-- <span class="font-semibold content-align">Date Created</span>
           <span class="font-semibold content-align">Status</span> -->
         </div>
       </div>
-      <div class="bot-list-align" v-for="(list, index) in dataList" :key="index">
+      <div class="bot-list-align text-[14px]" v-for="(list, index) in dataList" :key="index"
+        @mouseover="listHover(index); previousIndex = index" @mouseout="listHoverOut(index); previousIndex = index">
         <div class="list_align">
           <span class="font-medium bot_name_align">{{ list.bot }}</span>
           <!-- <span class="font-medium pr-14">{{ list.createAt }}</span> -->
@@ -38,8 +37,11 @@
             <span>Inactive</span>
           </div> -->
         </div>
-        <div>
+        <div v-if="!list.arrowChange">
           <img src="assets\icons\left_arrow.svg" width="30">
+        </div>
+        <div v-else>
+          <img src="assets\icons\yellow_left_arrow.svg" width="30">
         </div>
       </div>
     </div>
@@ -47,22 +49,59 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
+const selectedValue = ref('Today')
 
 const dataList = ref([
   {
     _id: 1,
     bot: 'UI Customization',
+    arrowChange: false,
   }, {
     _id: 2,
     bot: 'CRM Integration',
+    arrowChange: false,
   }, {
     _id: 3,
     bot: 'Bot Configuration',
+    arrowChange: false,
   }, {
     _id: 4,
     bot: 'Document Management',
+    arrowChange: false,
   },
 ]) 
+const previousIndex = ref(0)
+const menuList = ref([
+  {
+    content: 'Today',
+    value: 'Today',
+  }, {
+    content: 'Weekly',
+    value: 'Weekly',
+  }, {
+    content: 'Monthly',
+    value: 'Monthly',
+  }, {
+    content: 'Quarterly',
+    value: 'Quarterly',
+  }, {
+    content: 'Halfyearly',
+    value: 'Halfyearly',
+  }, {
+    content: 'Yearly',
+    value: 'Yearly',
+  },
+])
+
+
+const listHover = (index: any) => {
+  if (dataList.value[previousIndex.value].arrowChange) dataList.value[index].arrowChange = false
+  dataList.value[index].arrowChange = true
+}
+const listHoverOut = (index: any) => {
+  if (dataList.value[previousIndex.value].arrowChange) dataList.value[index].arrowChange = false
+  dataList.value[index].arrowChange = false
+}
 </script>
 
 <style scoped>
@@ -101,7 +140,7 @@ const dataList = ref([
   display: flex;
   align-items: center;
   background: rgba(255, 255, 255, 1);
-  padding: 30px 30px;
+  padding: 20px 30px;
   width: 100% !important;
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
   border-radius: 10px;
@@ -127,8 +166,8 @@ const dataList = ref([
   display: flex;
   align-items: center;
   background-color: rgba(26, 187, 0, 1);
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 .header-content-align {
   display: flex;
@@ -151,6 +190,19 @@ const dataList = ref([
   border-radius: 8px;
   padding: 10px 10px;
 }
+.bot-list-align:hover {
+  color: rgba(255, 188, 66, 1);
+  background: rgba(255, 248, 235, 1) !important;
+}
+/* .right-dropdown-align {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 1);
+  padding: 0px 10px;
+  width: 200px !important;
+  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 10px;
+} */
 /* .deactive-circle-align {
   display: flex;
   align-items: center;

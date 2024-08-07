@@ -5,14 +5,14 @@
         <span>
           <img src="assets\icons\right_arrow.svg" width="20"></img>
         </span>
-        <span class="font-bold text-[20px]">Document Management</span>
+        <span class="font-bold text-lg">Document Management</span>
       </div>
-      <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary: <span
+      <span class="right-dropdown-align" style="color: rgba(138, 138, 138, 1)">Summary: <span
           class="font-bold text-black">Recent</span></span>
     </div>
     <div class="document-align gap-4">
       <span>
-        <img src="assets\icons\upload _document.svg" width="100" />
+        <img src="assets\icons\pdf_upload_document.svg" width="100" />
       </span>
       <div class="flex items-center gap-2">
         <sapn class="upload-document-align font-bold"> Upload Document </sapn>
@@ -29,12 +29,12 @@
         </div>
       </div>
       <div class="content-scroll-align">
-        <div class="bot-list-align text-[13px]" v-for="(list, index) in dataList" :key="index">
+        <div class="bot-list-align text-[14px]" v-for="(list, index) in dataList" :key="index">
           <div class="list_align">
             <span class="font-medium bot_name_align">{{ list.bot }}</span>
             <span class="font-medium create_at-align"
-              :style="{ 'padding-inline-end': list.status ? '132px' : (list.Processing) ? '133px' : '133px' }">{{
-              list.createAt }}</span>
+              :style="{ 'padding-inline-end': list.status ? '137px' : (list.Processing) ? '137px' : '139px' }">{{
+                list.createAt }}</span>
             <div v-if="list.status" class="acive_class font-medium">
               <div class="rounded-full active-circle-align"></div>
               <span>Success</span>
@@ -149,14 +149,16 @@ const dataList = ref([
   display: flex;
   align-items: center;
   justify-content: space-between;
+  display: flex;
+  align-items: center;
   background: rgba(255, 255, 255, 1);
-  padding: 20px 0px;
+  padding: 30px 0px;
   width: 100% !important;
   /* height: calc(100vh - 260px); */
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
   border-radius: 10px;
-  margin: 20px 0 0 0;
-  font-size: 15px;
+  margin: 20px 0;
+  font-size: 14px;
 }
 
 .acive_class {
@@ -164,7 +166,7 @@ const dataList = ref([
   align-items: center;
   color: rgba(26, 187, 0, 1);
   gap: 5px;
-  padding-inline-end: 88px;
+  padding-inline-end: 92px;
 }
 
 .deacive_class {
@@ -172,14 +174,15 @@ const dataList = ref([
   align-items: center;
   gap: 5px;
   color: rgba(255, 0, 0, 1);
-  padding-right: 104px;
+  padding-right: 107px;
 }
+
 .process_class {
   display: flex;
   align-items: center;
   color: rgba(238, 186, 1, 1);
   gap: 5px;
-  padding-inline-end: 70px;
+  padding-inline-end: 74px;
 }
 
 .process-circle-align {
@@ -189,6 +192,7 @@ const dataList = ref([
   width: 5px;
   height: 5px;
 }
+
 .active-circle-align {
   display: flex;
   align-items: center;
@@ -220,9 +224,9 @@ const dataList = ref([
   padding-inline-start: 30px;
 }
 
-/* .create_at-align {
+.create_at-align {
   padding-inline-end: 130px;
-} */
+}
 
 .document-align {
   display: flex;
@@ -241,6 +245,7 @@ const dataList = ref([
   color: rgba(138, 138, 138, 1);
   font-size: 11px;
 }
+
 .content-scroll-align {
   height: calc(100vh - 350px);
   overflow-y: scroll;
