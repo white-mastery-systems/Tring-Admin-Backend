@@ -37,5 +37,6 @@ export default defineNuxtConfig({
   runtimeConfig: {
     dbUrl: "",
     redisUrl: "",
+    llmBaseUrl: "",
   },
 });
