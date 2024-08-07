@@ -74,7 +74,9 @@
         </div>
       </div>
       <div class="content-scroll-align">
-        <div class="bot-list-align" v-for="(list, index) in dataList" :key="index">
+        <div class="bot-list-align" v-for="(list, index) in dataList" :key="index" @click="async () => {
+          await navigateTo('analyticsleadsinfo')
+        }">
           <div class="list_align">
             <span class="font-medium user_name_align">{{ list.userName }}</span>
             <span class="font-medium bot_name_align">{{ list.bot }}</span>

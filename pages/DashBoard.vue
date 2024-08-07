@@ -184,7 +184,7 @@
 
 .graph-align {
   display: flex;
-  opacity: 0.3;
+  filter: blur(10px);
 }
 /* .select_list_align {
   font-weight: 500;

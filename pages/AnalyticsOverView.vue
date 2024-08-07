@@ -262,6 +262,6 @@ const menuList = ref([
 
 .graph-align {
   display: flex;
-  opacity: 0.3;
+  filter: blur(10px);
 }
 </style>

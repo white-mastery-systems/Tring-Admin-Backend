@@ -29,7 +29,9 @@
         </div>
       </div>
       <div class="content-scroll-align">
-        <div class="bot-list-align text-[13px]" v-for="(list, index) in dataList" :key="index">
+        <div class="bot-list-align text-[13px]" v-for="(list, index) in dataList" :key="index" @click="async () => {
+          await navigateTo('botpdfdocument')
+        }">
           <div class="list_align">
             <span class="font-medium bot_name_align">{{ list.bot }}</span>
             <span class="font-medium create_at-align"

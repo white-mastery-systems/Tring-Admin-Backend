@@ -24,7 +24,10 @@
         </div>
       </div>
       <div class="bot-list-align text-[14px]" v-for="(list, index) in dataList" :key="index"
-        @mouseover="listHover(index); previousIndex = index" @mouseout="listHoverOut(index); previousIndex = index">
+        @mouseover="listHover(index); previousIndex = index" @mouseout="listHoverOut(index); previousIndex = index"
+        @click="async () => {
+          if (list.bot === 'Document Management') await navigateTo('botdocumentmanagement')
+        }">
         <div class="list_align">
           <span class="font-medium bot_name_align">{{ list.bot }}</span>
           <!-- <span class="font-medium pr-14">{{ list.createAt }}</span> -->

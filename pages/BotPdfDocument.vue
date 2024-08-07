@@ -14,9 +14,14 @@
       <span>
         <img src="assets\icons\pdf_upload_document.svg" width="100" />
       </span>
-      <div class="flex items-center gap-2">
-        <sapn class="upload-document-align font-bold"> Upload Document </sapn>
-        <sapn class="only-content-align"> (Only Pdf) </sapn>
+      <div class="gap-2">
+        <div class="mb-2">
+          <sapn class="upload-document-align font-bold"> Upload Document </sapn>
+          <sapn class="only-content-align"> (Only Pdf) </sapn>
+        </div>
+        <div class="font-bold">
+          100%
+        </div>
       </div>
     </div>
     <div class="bot-main-align">

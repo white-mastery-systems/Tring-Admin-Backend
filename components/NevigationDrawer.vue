@@ -59,7 +59,7 @@
       </span>
       <span class="content-align">Bot Management</span>
     </div>
-    <div :class="[(route.path === '/customisation') ? 'activeClass' : 'default-align']">
+    <div :class="[(route.path === `/customisation`) ? 'activeClass' : 'default-align']">
       <span>
         <img v-if="(route.path === '/customisation')" src="assets\icons\payments_active.svg" width="22" height="22">
         <img v-else src="assets\icons\customisation_deactive.svg" width="22" height="22">

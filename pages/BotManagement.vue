@@ -33,7 +33,10 @@
       <div class="overflow_align">
         <div class="list_align">
           <div class="bot-list-align text-[13px]" v-for="(list, index) in dataList" :key="index"
-            @mouseover="listHover(index); previousIndex = index" @mouseout="listHoverOut(index); previousIndex = index">
+            @mouseover="listHover(index); previousIndex = index" @mouseout="listHoverOut(index); previousIndex = index"
+            @click="async () => {
+              await navigateTo('botmanagementdetails')
+            }">
             <span class="font-medium bot_name_align">{{ list.bot }}</span>
             <span class="font-medium createAt_align text-black"
               :style="{ 'padding-inline-end': list.status ? '110px' : '123px' }">{{ list.createAt
