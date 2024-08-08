@@ -16,8 +16,8 @@
       </span>
       <div class="gap-2">
         <div class="mb-2">
-          <sapn class="upload-document-align font-bold"> Upload Document </sapn>
-          <sapn class="only-content-align"> (Only Pdf) </sapn>
+          <span class="upload-document-align font-bold"> Upload Document </span>
+          <span class="only-content-align"> (Only Pdf) </span>
         </div>
         <div class="font-bold">
           100%
