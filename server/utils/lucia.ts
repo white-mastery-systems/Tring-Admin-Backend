@@ -11,7 +11,8 @@ const adapter = new DrizzlePostgreSQLAdapter(
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
     attributes: {
-      secure: !import.meta.dev,
+      // secure: !import.meta.dev,
+      secure: true,
     },
   },
   getUserAttributes: (attributes) => ({

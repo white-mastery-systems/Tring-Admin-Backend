@@ -9,6 +9,8 @@ export default defineNuxtConfig({
     { path: "~/components", pathPrefix: false, extensions: ["vue"] },
   ],
 
+  ssr: false,
+
   modules: [
     "@pinia/nuxt",
     "@nuxtjs/tailwindcss",
@@ -27,7 +29,7 @@ export default defineNuxtConfig({
   },
 
   imports: {
-    dirs: ["stores/**", "composables/**"],
+    dirs: ["stores/**", "composables/**", "utils/**"],
     presets: [...autoImports.nuxt],
   },
 
