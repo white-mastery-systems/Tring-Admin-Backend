@@ -75,7 +75,7 @@
             <!-- v-if="!list.arrowChange" -->
             <div class="pr-4">
               <!-- <img src="assets\icons\left_arrow.svg" width="30"> -->
-              <LeftArrowIcon class="hover:text-[##ffbc42]" />
+              <LeftArrowIcon  class="hover:text-[#ffbc42] arrow-aling" />
             </div>
             <!-- <div v-else>
               <img src="assets\icons\yellow_left_arrow.svg" width="30">
@@ -193,7 +193,7 @@
 
 <style scoped>
   .bot-manage-main-container {
-    padding: 15px;
+    padding: 0 25px;
   }
   .right-dropdown-align {
     display: flex;
@@ -222,6 +222,7 @@
     --tw-ring-offset-width: none;
   }
   .content-align {
+    font-size: 17px;
     /* width: 100px !important; */
     margin-bottom: 5px;
     color: rgba(138, 138, 138, 1);
@@ -309,6 +310,9 @@
   .bot-list-align:hover {
     color: rgba(255, 188, 66, 1);
     background: rgba(255, 248, 235, 1) !important;
+  }
+  .arrow-aling {
+    width: 30px;
   }
   /* .createAt_align {
   padding-inline-end: 114px;

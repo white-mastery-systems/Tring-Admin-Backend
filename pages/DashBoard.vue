@@ -137,7 +137,7 @@
   --tw-ring-offset-width: none;
 }
 .dashboard-main-container {
-  padding: 0px 15px;
+  padding: 0px 25px;
   /* width: 100%; */
   height: calc(100vh - 30px);
   /* overflow-y: scroll; */

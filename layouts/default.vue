@@ -43,7 +43,7 @@
   border-right: 2px solid rgba(138, 138, 138, 0.1);
 }
 .main-router-align {
-  padding: 15px;
+  padding: 0 0 15px 0;
   width: 86%;
   height: 100vh;
   overflow-y: scroll;
@@ -55,6 +55,7 @@
   display: flex;
   align-items: center;
   justify-content: end;
+  margin-bottom: 20px;
 }
 .bar-align {
   width: 1px;

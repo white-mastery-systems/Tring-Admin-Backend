@@ -14,7 +14,8 @@
             </div>
           </div>
           <div class="flex items-center gap-4">
-            <span class="text-black font-bold">Date Created: <span class="font-normal">12.09.2013</span></span>
+            <span class="text-black font-bold text-[17px]">Date Created: <span
+                class="font-medium text-[15px] text-black">12.09.2013</span></span>
             <span>
               <Button class="button-align font-medium text-[14px]">Deactivate Bot</Button>
             </span>
@@ -40,12 +41,15 @@
             <span>Inactive</span>
           </div> -->
         </div>
-        <div v-if="!list.arrowChange">
+        <div>
+          <LeftArrowIcon class="hover:text-[#ffbc42] arrow-aling" />
+        </div>
+        <!-- <div v-if="!list.arrowChange">
           <img src="assets\icons\left_arrow.svg" width="30">
-        </div>
-        <div v-else>
+        </div> -->
+        <!-- <div v-else>
           <img src="assets\icons\yellow_left_arrow.svg" width="30">
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -109,7 +113,7 @@ const listHoverOut = (index: any) => {
 
 <style scoped>
 .bot-manage-main-container {
-  padding: 15px;
+  padding: 8px 25px;
 }
 
 .header-align {
@@ -196,6 +200,9 @@ const listHoverOut = (index: any) => {
 .bot-list-align:hover {
   color: rgba(255, 188, 66, 1);
   background: rgba(255, 248, 235, 1) !important;
+}
+.arrow-aling {
+  width: 30px;
 }
 /* .right-dropdown-align {
   display: flex;

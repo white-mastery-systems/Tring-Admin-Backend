@@ -145,7 +145,8 @@ const planCardUnHover = (index: any) => {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 20px;
-  padding-top: 20px;
+  padding: 0 0px 20px 25px;
+  /* padding-top: 20px; */
   border-bottom: 0.5px solid rgba(181, 181, 181, 1);
 }
 .btn_align {

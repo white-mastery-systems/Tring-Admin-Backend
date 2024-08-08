@@ -1,11 +1,11 @@
 <template>
   <div class="bot-manage-main-container">
     <div class="header-align">
-      <div class="flex items-center gap-2">
-        <span>
+      <div class="flex items-center">
+        <!-- <span> -->
           <!-- <img src="assets\icons\right_arrow.svg" width="20"></img> -->
-        </span>
-        <span class="font-bold text-lg text-[20px]">OverView</span>
+        <!-- </span> -->
+        <span class="font-bold text-[20px] align-left">OverView</span>
       </div>
       <div class="flex items-center space-x-4" style="width: 350px;">
         <span class="calender-align">
@@ -195,7 +195,7 @@ const menuList = ref([
   --tw-ring-offset-width: none;
 }
 .bot-manage-main-container {
-  padding: 0px 15px;
+  padding: 0px 25px;
 }
 
 .header-align {

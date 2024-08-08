@@ -99,16 +99,16 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
   gap: 20px;
   /* border-right: 2px solid rgba(138, 138, 138, 0.1); */
   /* padding-right: 40px; */
 ;
 }
 .tring-log-top-align {
-  height: 20vh;
   display: flex;
-  align-items: center;
+  height: 20vh;
+  /* align-items: center; */
 }
 .default-align {
   display: flex;

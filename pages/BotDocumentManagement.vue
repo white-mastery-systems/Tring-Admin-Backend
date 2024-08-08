@@ -101,7 +101,7 @@ const dataList = ref([
 
 <style scoped>
 .bot-manage-main-container {
-  padding: 15px;
+  padding: 0 25px;
 }
 
 .header-align {

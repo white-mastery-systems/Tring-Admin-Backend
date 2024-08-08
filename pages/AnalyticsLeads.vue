@@ -1,11 +1,8 @@
 <template>
   <div class="bot-manage-main-container">
     <div class="header-align">
-      <div class="flex items-center gap-2">
-        <span>
-          <!-- <img src="assets\icons\right_arrow.svg" width="20"></img> -->
-        </span>
-        <span class="text-[20px] text-lg font-bold">Leads</span>
+      <div class="flex items-center">
+        <span class="text-[20px] font-bold">Leads</span>
       </div>
       <div class="flex items-center space-x-4" style="width: 350px">
         <span class="calender-align">
@@ -158,7 +155,7 @@
     --tw-ring-offset-width: none;
   }
   .bot-manage-main-container {
-    padding: 15px;
+    padding: 0 10px 0 25px;
   }
 
   .header-align {
