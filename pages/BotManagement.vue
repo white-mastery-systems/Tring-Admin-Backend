@@ -2,33 +2,59 @@
   <div class="bot-manage-main-container">
     <div class="header-align">
       <span class="text-[20px] font-bold">Bot Management</span>
-      <span
-        class="right-dropdown-align text-[15px]"
-        style="color: rgba(138, 138, 138, 1)"
-        >Summary:
-        <span class="font-bold text-black">
-          <!-- <template> -->
-          <UiSelect v-model="selectedValue" class="outline-none">
-            <UiSelectTrigger class="ui-select-trigger w-[110px] outline-none">
-              <UiSelectValue />
-            </UiSelectTrigger>
-            <UiSelectContent>
-              <UiSelectGroup class="select_list_align">
-                <!-- <UiSelectLabel>Today</UiSelectLabel> -->
-                <UiSelectItem
-                  v-for="(list, index) in menuList"
-                  :key="index"
-                  class="content_align"
-                  :value="list.content"
-                >
-                  {{ list.content }}
-                </UiSelectItem>
-              </UiSelectGroup>
-            </UiSelectContent>
-          </UiSelect>
-          <!-- </template> -->
-        </span></span
-      >
+      <div class="flex gap-4">
+        <UiDialog>
+          <UiDialogTrigger as-child>
+            <UiButton
+              class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95"
+            >
+              Add Bot
+            </UiButton>
+          </UiDialogTrigger>
+          <UiDialogContent>
+            <UiDialogHeader>
+              <UiDialogTitle>Add Bot</UiDialogTitle>
+              <UiDialogDescription>
+                Add a new bot for your organization.
+              </UiDialogDescription>
+            </UiDialogHeader>
+            <div class="individual-form-align">
+              <label for="frole" class="pb-2 font-medium">Name</label>
+              <input type="text" id="frole" v-model="newBotName" name="fname" />
+              <UiButton @click="addBot" class="ml-auto mt-2 w-1/2"
+                >Create</UiButton
+              >
+            </div>
+          </UiDialogContent>
+        </UiDialog>
+        <span
+          class="right-dropdown-align text-[15px]"
+          style="color: rgba(138, 138, 138, 1)"
+          >Summary:
+          <span class="font-bold text-black">
+            <!-- <template> -->
+            <UiSelect v-model="selectedValue" class="outline-none">
+              <UiSelectTrigger class="ui-select-trigger w-[110px] outline-none">
+                <UiSelectValue />
+              </UiSelectTrigger>
+              <UiSelectContent>
+                <UiSelectGroup class="select_list_align">
+                  <!-- <UiSelectLabel>Today</UiSelectLabel> -->
+                  <UiSelectItem
+                    v-for="(list, index) in menuList"
+                    :key="index"
+                    class="content_align"
+                    :value="list.content"
+                  >
+                    {{ list.content }}
+                  </UiSelectItem>
+                </UiSelectGroup>
+              </UiSelectContent>
+            </UiSelect>
+            <!-- </template> -->
+          </span></span
+        >
+      </div>
     </div>
     <div class="bot-main-align">
       <div class="list-header-align">
@@ -75,7 +101,7 @@
             <!-- v-if="!list.arrowChange" -->
             <div class="pr-4">
               <!-- <img src="assets\icons\left_arrow.svg" width="30"> -->
-              <LeftArrowIcon  class="hover:text-[#ffbc42] arrow-aling" />
+              <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
             </div>
             <!-- <div v-else>
               <img src="assets\icons\yellow_left_arrow.svg" width="30">
@@ -89,10 +115,8 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { index } from "drizzle-orm/mysql-core";
-  import { ref } from "vue";
-
   const selectedValue = ref("Today");
+  const newBotName = ref("");
   const dataList = ref([
     {
       _id: 1,
@@ -179,19 +203,40 @@
   ]);
   const previousIndex = ref(0);
 
-  const listHover = (index: any) => {
-    if (dataList.value[previousIndex.value].arrowChange)
-      dataList.value[index].arrowChange = false;
-    dataList.value[index].arrowChange = true;
-  };
-  const listHoverOut = (index: any) => {
-    if (dataList.value[previousIndex.value].arrowChange)
-      dataList.value[index].arrowChange = false;
-    dataList.value[index].arrowChange = false;
+  const addBot = async () => {
+    const bot = await $fetch("/api/bots", {
+      method: "POST",
+      body: { name: newBotName.value },
+      query: {
+        organization_id: "4e606bb3-3264-410f-9a2d-4910f17685e3",
+      },
+    });
+    return navigateTo({
+      name: "BotManagementDetails-id",
+      params: { id: bot.id },
+    });
   };
 </script>
 
 <style scoped>
+  .individual-form-align {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    height: 150px;
+  }
+
+  .individual-form-align input {
+    background-color: rgba(246, 246, 246, 1);
+    width: 100%;
+    height: 50px;
+    outline: none;
+    border-radius: 10px;
+    padding: 0 20px;
+    /* margin-top: 20px; */
+  }
   .bot-manage-main-container {
     padding: 0 25px;
   }
