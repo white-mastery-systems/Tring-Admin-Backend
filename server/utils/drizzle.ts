@@ -12,16 +12,18 @@ const schema = {
   authSessionSchema,
   chatBotSchema,
   documentSchema,
-  chatSchema,
   botUserSchema,
+  chatSchema,
+  messageSchema,
   leadSchema,
 
   // Relations
   organizationRelations,
   chatBotRelations,
   documentRelations,
-  chatsRelations,
   botUserRelations,
+  chatsRelations,
+  messageRelations,
   leadsRelations,
 };
 

@@ -2,6 +2,7 @@ import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   boolean,
   jsonb,
+  text,
   timestamp,
   unique,
   uuid,
@@ -16,7 +17,7 @@ import { createInsertSchema } from "drizzle-zod";
 export const chatBotSchema = chatbotSchema.table("bot", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name", { length: 64 }).notNull(),
-  isEnabled: boolean("is_enabled"),
+  documentId: uuid("document_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   metadata: jsonb("metadata"),
 
@@ -77,6 +78,23 @@ export const chatSchema = chatbotSchema.table("chats", {
     .notNull(),
 });
 
+export const messageSchema = chatbotSchema.table("messages", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  role: varchar("role", {
+    length: 16,
+    enum: ["user", "assistant", "comment"],
+  }).notNull(),
+  content: text("content").notNull(),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+
+  chatId: uuid("chat_id")
+    .references(() => chatSchema.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+});
+
 export const leadSchema = chatbotSchema.table("leads", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   crmLeadId: varchar("crm_lead_id", { length: 128 }).notNull(),
@@ -123,7 +141,7 @@ export const botUserRelations = relations(botUserSchema, ({ one, many }) => ({
   leads: many(leadSchema),
 }));
 
-export const chatsRelations = relations(chatSchema, ({ one }) => ({
+export const chatsRelations = relations(chatSchema, ({ one, many }) => ({
   botUser: one(botUserSchema, {
     fields: [chatSchema.botUserId],
     references: [botUserSchema.id],
@@ -133,6 +151,14 @@ export const chatsRelations = relations(chatSchema, ({ one }) => ({
     references: [chatBotSchema.id],
   }),
   lead: one(leadSchema),
+  messages: many(messageSchema),
+}));
+
+export const messageRelations = relations(messageSchema, ({ one }) => ({
+  chat: one(chatSchema, {
+    fields: [messageSchema.chatId],
+    references: [chatSchema.id],
+  }),
 }));
 
 export const leadsRelations = relations(leadSchema, ({ one }) => ({
@@ -155,7 +181,10 @@ export const leadsRelations = relations(leadSchema, ({ one }) => ({
 }));
 
 // Types
-export type SelectChatBot = InferSelectModel<typeof chatBotSchema>;
+export type SelectChatBot = Omit<
+  InferSelectModel<typeof chatBotSchema>,
+  "metadata"
+> & { metadata: Record<string, any> };
 export type InsertChatBot = InferInsertModel<typeof chatBotSchema>;
 
 export type SelectDocument = InferSelectModel<typeof documentSchema>;
@@ -166,6 +195,9 @@ export type InsertBotUser = InferInsertModel<typeof botUserSchema>;
 
 export type SelectChat = InferSelectModel<typeof chatSchema>;
 export type InsertChat = InferInsertModel<typeof chatSchema>;
+
+export type SelectMessage = InferSelectModel<typeof messageSchema>;
+export type InsertMessage = InferInsertModel<typeof messageSchema>;
 
 export type SelectLead = InferSelectModel<typeof leadSchema>;
 export type InsertLead = InferInsertModel<typeof leadSchema>;
@@ -194,5 +226,7 @@ export const zodInsertBotUser = createInsertSchema(botUserSchema, {
 });
 
 export const zodInsertChat = createInsertSchema(chatSchema);
+
+export const zodInsertMessage = createInsertSchema(messageSchema);
 
 export const zodInsertLead = createInsertSchema(leadSchema);
