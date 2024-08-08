@@ -20,19 +20,19 @@
       <div class="overall_billing_align">
         <div class="main_card_align" v-for="(list, index) in billingVariation" :key="index"
           @mouseover="planCard(index); previusIndex = index" @mouseout="planCardUnHover(index); previusIndex = index">
-          <div class="font-bold text-[30px]">
+          <div class="font-bold text-[24px] type-color">
             {{ list.types }}
           </div>
-          <div>
-            <span class="font-black text-[32px]">{{ list.amount }}</span>
-            <span class="content_color_align">{{ list.status }}</span>
+          <div class="bill-content-align">
+            <div class="font-black text-[24px] amount-align">{{ list.amount }}</div>
+            <div class="content_color_align">{{ list.status }}</div>
           </div>
           <!-- <div class="font-bold text-[30px]">
             {{ list.types }}
           </div> -->
-          <div class="benefit_content_align">
+          <!-- <div class="benefit_content_align">
             {{ list.benefitContent }}
-          </div>
+          </div> -->
           <div class="benefit_inside_list">
             <div class="gap-2 flex items-center" v-for="(advancedList, ListIndex) in list.benefitList" :key="ListIndex">
               <span class="flex items-center">
@@ -56,56 +56,106 @@ import { ref } from 'vue'
 const billingVariation = ref([
   {
     _id: 1,
-    amount: '$19',
-    status: '/Month',
-    types: 'Starter',
+    amount: '$0',
+    status: 'Per Month',
+    types: 'Free',
     benefitContent: 'Unleash the power of automation.',
     listBenefit: false,
     benefitList: [
       {
-        content: 'Multi-step Zaps'
+        content: 'Message Sessions-50'
       }, {
-        content: '3 Premium Apps'
+        content: 'Duration-Lifetime'
       }, {
-        content: '2 Users team'
+        content: 'Extra message cost-NA'
+      }, {
+        content: 'Extra message limit-NA'
+      }, {
+        content: 'Lead Gen-NA'
+      }, {
+        content: 'CRM Integration-NA'
+      }, {
+        content: 'Widget Customization-NA'
+      }, {
+        content: 'No Tring Branding-NA'
       },
     ]
   }, {
     _id: 2,
-    amount: '$54',
-    status: '/Month',
-    types: 'Profession',
-    benefitContent: 'Advanced tools to take your work to the next level.',
+    amount: '$29',
+    status: 'Per Month',
+    types: 'Intelligence',
+    // benefitContent: 'Advanced tools to take your work to the next level.',
     listBenefit: false,
     benefitList: [
       {
-        content: 'Multi-step Zaps'
+        content: 'Message Sessions-60'
       }, {
-        content: 'Unlimited Premium Apps'
+        content: 'Duration-Month'
       }, {
-        content: '50 Users Team'
+        content: 'Extra message cost-0.6$'
       }, {
-        content: 'Shared Workspace'
-      },
+        content: 'Extra message limit-200'
+      }, {
+        content: 'Lead Gen-NA'
+      }, {
+        content: 'CRM Integration-NA'
+      }, {
+        content: 'Widget Customization-Yes'
+      }, {
+        content: 'No Tring Branding-NA'
+      }, 
     ]
   }, {
     _id: 3,
-    amount: '$89',
-    status: '/Month',
-    types: 'Company',
-    benefitContent: 'Automation plus enterprise-grade features.',
+    amount: '$99',
+    status: 'Per Month',
+    types: 'Super Intelligence',
+    // benefitContent: 'Automation plus enterprise-grade features.',
     listBenefit: false,
     benefitList: [
       {
-        content: 'Multi-step Zaps'
+        content: 'Message Sessions-250'
       }, {
-        content: 'Unlimited Premium Apps'
+        content: 'Duration-Month'
       }, {
-        content: 'Unlimited Users Team'
+        content: 'Extra message cost-0.45$'
       }, {
-        content: 'Advanced Admin'
+        content: 'Extra message limit-1000'
       }, {
-        content: 'Custom Data Retention'
+        content: 'Lead Gen-Yes'
+      }, {
+        content: 'CRM Integration-Yes'
+      }, {
+        content: 'CRM Integration-Yes'
+      }, {
+        content: 'No Tring Branding-Paid'
+      },
+    ]
+  }, {
+    _id: 4,
+    amount: 'Talk to sales',
+    status: '',
+    types: 'Enterprise',
+    // benefitContent: 'Automation plus enterprise-grade features.',
+    listBenefit: false,
+    benefitList: [
+      {
+        content: 'Message Sessions-1000+'
+      }, {
+        content: 'Duration-Month'
+      }, {
+        content: 'Extra message cost-Talk to sales'
+      }, {
+        content: 'Extra message limit-Unlimited'
+      }, {
+        content: 'Lead Gen-Yes'
+      }, {
+        content: 'CRM Integration-Yes'
+      }, {
+        content: 'Widget Customization-Advance'
+      }, {
+        content: 'No Tring Branding-Yes'
       },
     ]
   },
@@ -134,7 +184,7 @@ const planCardUnHover = (index: any) => {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 20px;
-  padding: 0 0px 20px 25px;
+  padding: 0 35px 20px 25px;
   /* padding-top: 20px; */
   border-bottom: 0.5px solid rgba(181, 181, 181, 1);
 }
@@ -164,7 +214,7 @@ const planCardUnHover = (index: any) => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 32%;
+  width: 24%;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05);
   border-radius: 13px;
@@ -182,7 +232,7 @@ const planCardUnHover = (index: any) => {
   display: flex;
   align-items: top;
   justify-content: space-between;
-  margin-top: 50px;
+  margin-top: 30px;
   padding: 0 30px;
 }
 .benefit_inside_list {
@@ -190,7 +240,7 @@ const planCardUnHover = (index: any) => {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  min-height: 150px;
+  min-height: 310px;
 }
 .popular_plan_align {
   color: rgba(66, 75, 209, 1);
@@ -229,9 +279,19 @@ const planCardUnHover = (index: any) => {
   background: rgba(66, 75, 209, 1);
   color: white;
 }
+.type-color {
+  color: rgba(66, 75, 209, 1);
+  margin-bottom: 30px;
+}
+.main_card_align:hover .type-color {
+  color: rgba(255, 188, 66, 1);
+}
 .content_color_align {
   color: rgba(132, 129, 153, 1);
   font-size: 15px;
+  padding: 2px 0;
+  min-height: 26px;
+  /* height: 30px; */
 }
 .main_card_align:hover .content_color_align {
  color: white;
@@ -242,6 +302,9 @@ const planCardUnHover = (index: any) => {
 .main_card_align:hover .choose_btn_align {
   background: rgba(255, 188, 66, 1);
   color: rgba(255, 248, 235, 1);
+}
+.bill-content-align {
+  margin-bottom: 15px;
 }
 /* .yearly_btn_align {
   display: flex;

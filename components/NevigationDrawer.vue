@@ -13,33 +13,40 @@
       </span>
       <span class="content-align">Dashboard</span>
     </div>
-    <div
-      :class="[((route.path === '/analyticsoverview') || (route.path === '/analyticsLeads')) ? 'activeClass' : 'default-align']"
-      @click="async () => {
-      await navigateTo('analyticsoverview')
-    }">
-      <span>
-        <img v-if="((route.path === '/analyticsoverview') || (route.path === '/analyticsLeads'))"
-          src="assets\icons\analytics_active.svg" width="22" height="22">
-        <img v-else src="assets\icons\analytics_deactive.svg" width="22" height="22">
-      </span>
-      <span class="content-align">Analytics</span>
-    </div>
-    <div v-if="(route.path === '/analyticsoverview') || (route.path === '/analyticsLeads')"
-      class="analytics_sub_details_align">
-      <div
-        :class="[(route.path === '/analyticsoverview') ? 'active_analytics_sub_details_align' : 'deactive_analytics_sub_details_align']"
+    <div class="analytics-main-container">
+      <div class="rounded-t-lg"
+        :class="[((route.path === '/analyticsoverview') || (route.path === '/analyticsLeads')) ? 'analytic_activeClass' : 'default-align']"
         @click="async () => {
-          await navigateTo('analyticsoverview')
-        }">
-        Overview
+        await navigateTo('analyticsoverview')
+      }">
+        <div class="flex items-center gap-3">
+          <span>
+            <img v-if="((route.path === '/analyticsoverview') || (route.path === '/analyticsLeads'))"
+              src="assets\icons\analytics_active.svg" width="22" height="22">
+            <img v-else src="assets\icons\analytics_deactive.svg" width="22" height="22">
+          </span>
+          <span class="content-align">Analytics</span>
+        </div>
+        <!-- <span>
+          <img src="assets\icons\chevron_right.svg" alt=""></img>
+        </span> -->
       </div>
-      <div class="pt-4"
-        :class="[(route.path === '/analyticsLeads') ? 'active_analytics_sub_details_align' : 'deactive_analytics_sub_details_align']"
-        @click="async () => {
-          await navigateTo('analyticsLeads')
-        }">
-        Leads</div>
+      <div v-if="(route.path === '/analyticsoverview') || (route.path === '/analyticsLeads')"
+        class="rounded-b-lg analytics_sub_details_align">
+        <div
+          :class="[(route.path === '/analyticsoverview') ? 'active_analytics_sub_details_align' : 'deactive_analytics_sub_details_align']"
+          @click="async () => {
+            await navigateTo('analyticsoverview')
+          }">
+          Overview
+        </div>
+        <div class="pt-4"
+          :class="[(route.path === '/analyticsLeads') ? 'active_analytics_sub_details_align' : 'deactive_analytics_sub_details_align']"
+          @click="async () => {
+            await navigateTo('analyticsLeads')
+          }">
+          Leads</div>
+      </div>
     </div>
     <div :class="[(route.path === '/billing') ? 'activeClass' : 'default-align']" @click="async () => {
         await navigateTo('billing')
@@ -140,12 +147,24 @@ onMounted(async () => {
   font-weight: 600;
     /* background: rgba(0, 0, 0, 0.05); */
 }
+.analytic_activeClass {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  /* justify-content: space-between; */
+  background: rgba(66, 75, 209, 1);
+  color: rgba(255, 255, 255, 1);
+  width: 90%;
+  padding: 18px 18px;
+  /* border-radius: 10px; */
+  font-weight: 600;
+}
 .analytics_sub_details_align {
-  padding: 10px 53px;
+  padding: 15px 53px;
   width: 90%;
   min-height: 80px;
   background: rgba(240, 246, 255, 1);
-  border-radius: 10px;
+  /* border-radius: 10px; */
 }
 .deactive_analytics_sub_details_align {
   color: black;
@@ -158,5 +177,11 @@ onMounted(async () => {
   font-weight: 700;
   /* border-radius: 10px; */
   /* background: rgba(240, 246, 255, 1); */
+}
+.analytics-main-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
 }
 </style>

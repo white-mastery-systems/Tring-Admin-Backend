@@ -41,7 +41,7 @@
       <div class="overflow_align">
         <div class="list_align">
           <div
-            class="bot-list-align text-[13px]"
+            class="bot-list-align text-[15px]"
             v-for="(list, index) in dataList"
             :key="index"
             @mouseover="
@@ -222,7 +222,7 @@
     --tw-ring-offset-width: none;
   }
   .content-align {
-    font-size: 17px;
+    font-size: 16px;
     /* width: 100px !important; */
     margin-bottom: 5px;
     color: rgba(138, 138, 138, 1);

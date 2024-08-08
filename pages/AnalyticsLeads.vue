@@ -155,7 +155,7 @@
     --tw-ring-offset-width: none;
   }
   .bot-manage-main-container {
-    padding: 0 10px 0 25px;
+    padding: 0 25px 0 25px;
   }
 
   .header-align {

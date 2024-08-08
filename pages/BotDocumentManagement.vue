@@ -29,7 +29,7 @@
         </div>
       </div>
       <div class="content-scroll-align">
-        <div class="bot-list-align text-[13px]" v-for="(list, index) in dataList" :key="index" @click="async () => {
+        <div class="bot-list-align text-[15px]" v-for="(list, index) in dataList" :key="index" @click="async () => {
           await navigateTo('botpdfdocument')
         }">
           <div class="list_align">

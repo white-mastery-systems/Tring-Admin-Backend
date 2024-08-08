@@ -5,12 +5,12 @@
     </div>
     <div class="main-router-align">
       <div class="main-container-top-align">
-        <div class="flex items-center gap-4 px-6">
+        <div class="flex items-center gap-4 px-6 header-fixed-align">
           <span>
-            <img src="assets\icons\mail.svg" width="25"></img>
+            <img src="assets\icons\mail.svg" width="22"></img>
           </span>
           <span>
-            <img src="assets\icons\bell.svg" width="25"></img>
+            <img src="assets\icons\bell.svg" width="22"></img>
           </span>
           <span class="bar-align"></span>
           <span class="profile-align rounded-full"></span>
@@ -56,6 +56,8 @@
   align-items: center;
   justify-content: end;
   margin-bottom: 20px;
+  /* position: fixed; */
+  /* top: 100px; */
 }
 .bar-align {
   width: 1px;
