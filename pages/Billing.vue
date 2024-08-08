@@ -20,27 +20,16 @@
       <div class="overall_billing_align">
         <div class="main_card_align" v-for="(list, index) in billingVariation" :key="index"
           @mouseover="planCard(index); previusIndex = index" @mouseout="planCardUnHover(index); previusIndex = index">
-          <div v-if="list.types === 'Company'" class="popular_content_align" style="width: 100%;">
-            <div class="popular_plan_align">
-              <span :class="(mostPopularPlan) ? 'plan_select_btn' : 'plan_unselected_btn'">
-                <button class="text-[8px]">MOST POPULAR</button>
-              </span>
-            </div>
-          </div>
-          <div v-else class="popular_content_align" style="width: 100%;">
-            <div class="popular_plan_align">
-              <span style="height: 50px; padding: 3px 10px;">
-                <!-- <button class="text-[8px]">MOST POPULAR</button> -->
-              </span>
-            </div>
+          <div class="font-bold text-[30px]">
+            {{ list.types }}
           </div>
           <div>
             <span class="font-black text-[32px]">{{ list.amount }}</span>
             <span class="content_color_align">{{ list.status }}</span>
           </div>
-          <div class="font-bold text-[30px]">
+          <!-- <div class="font-bold text-[30px]">
             {{ list.types }}
-          </div>
+          </div> -->
           <div class="benefit_content_align">
             {{ list.benefitContent }}
           </div>
