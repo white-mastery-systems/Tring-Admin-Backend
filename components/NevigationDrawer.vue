@@ -34,7 +34,7 @@
         }">
         Overview
       </div>
-      <div class="pt-3"
+      <div class="pt-4"
         :class="[(route.path === '/analyticsLeads') ? 'active_analytics_sub_details_align' : 'deactive_analytics_sub_details_align']"
         @click="async () => {
           await navigateTo('analyticsLeads')
@@ -93,14 +93,16 @@ onMounted(async () => {
 </script>
 <style scoped>
 .navigation-drawer-main {
-  width: 100%;
+  width: 250px;
   height: 100vh;
   background: rgba(255, 255, 255, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 20px;
-  border-right: 0.5px solid rgba(138, 138, 138, 0.20);
+  /* border-right: 2px solid rgba(138, 138, 138, 0.1); */
+  /* padding-right: 40px; */
 ;
 }
 .tring-log-top-align {
@@ -139,7 +141,7 @@ onMounted(async () => {
     /* background: rgba(0, 0, 0, 0.05); */
 }
 .analytics_sub_details_align {
-  padding: 10px 30px;
+  padding: 10px 53px;
   width: 90%;
   min-height: 80px;
   background: rgba(240, 246, 255, 1);

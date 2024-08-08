@@ -27,6 +27,13 @@
               </span>
             </div>
           </div>
+          <div v-else class="popular_content_align" style="width: 100%;">
+            <div class="popular_plan_align">
+              <span style="height: 50px; padding: 3px 10px;">
+                <!-- <button class="text-[8px]">MOST POPULAR</button> -->
+              </span>
+            </div>
+          </div>
           <div>
             <span class="font-black text-[32px]">{{ list.amount }}</span>
             <span class="content_color_align">{{ list.status }}</span>
@@ -163,11 +170,11 @@ const planCardUnHover = (index: any) => {
   border-radius: 10px;
 }
 .main_card_align {
-  padding: 30px  40px  10px 40px;
+  padding: 30px  40px  30px 40px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 360px;
+  width: 32%;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05);
   border-radius: 13px;
@@ -186,6 +193,7 @@ const planCardUnHover = (index: any) => {
   align-items: top;
   justify-content: space-between;
   margin-top: 50px;
+  padding: 0 30px;
 }
 .benefit_inside_list {
   display: flex;

@@ -153,6 +153,9 @@
   color: rgba(255, 188, 66, 1) !important;
   background: rgba(255, 248, 235, 1) !important;
 }
+.grey_color {
+  color: rgba(116, 118, 129, 1);
+}
 * {
   font-family: "HeyWow";
 }

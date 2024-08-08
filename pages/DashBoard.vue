@@ -60,7 +60,7 @@
       </div>
       <div class="graph-align">
         <span>
-          <img src="assets\icons\Graph_left.svg" width="700">
+          <img src="assets\icons\Graph_left.svg" width="600">
         </span>
         <span>
           <img src="assets\icons\graph_right.svg" width="400">
@@ -137,15 +137,17 @@
   --tw-ring-offset-width: none;
 }
 .dashboard-main-container {
-  padding: 15px;
+  padding: 0px 15px;
   /* width: 100%; */
   height: calc(100vh - 30px);
+  /* overflow-y: scroll; */
 }
 
 .header-align {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-bottom: 20px;
 }
 
 .right-dropdown-align {
@@ -159,7 +161,7 @@
 }
 
 .dashboard-main-paage {
-  margin-top: 30px;
+  /* margin-top: 30px; */
   display: flex;
   align-items: center;
   gap: 30px;
@@ -169,7 +171,7 @@
   display: flex;
   align-items: center;
   padding: 10px 10px 10px 25px;
-  width: 250px;
+  width: 25%;
   height: 100px;
   gap: 15px;
   background: rgba(255, 255, 255, 1);
@@ -185,6 +187,7 @@
 .graph-align {
   display: flex;
   filter: blur(10px);
+  height: 59vh;
 }
 /* .select_list_align {
   font-weight: 500;

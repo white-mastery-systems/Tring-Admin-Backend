@@ -5,7 +5,7 @@
         <span>
           <!-- <img src="assets\icons\right_arrow.svg" width="20"></img> -->
         </span>
-        <span class="font-bold text-lg text-[16px]">OverView</span>
+        <span class="font-bold text-lg text-[20px]">OverView</span>
       </div>
       <div class="flex items-center space-x-4" style="width: 350px;">
         <span class="calender-align">
@@ -76,7 +76,7 @@
         </div>
         <div class="graph-align">
           <span>
-            <img src="assets\icons\Graph_left.svg" width="700">
+            <img src="assets\icons\Graph_left.svg" width="500">
           </span>
           <span>
             <img src="assets\icons\graph_right.svg" width="400">
@@ -195,7 +195,7 @@ const menuList = ref([
   --tw-ring-offset-width: none;
 }
 .bot-manage-main-container {
-  padding: 15px;
+  padding: 0px 15px;
 }
 
 .header-align {
@@ -237,7 +237,7 @@ const menuList = ref([
 }
 
 .dashboard-main-paage {
-  margin-top: 15px;
+  /* margin-top: 15px; */
   display: flex;
   align-items: center;
   gap: 30px;
@@ -247,7 +247,7 @@ const menuList = ref([
   display: flex;
   align-items: center;
   padding: 10px 10px 10px 25px;
-  width: 250px;
+  width: 25%;
   height: 100px;
   gap: 15px;
   background: rgba(255, 255, 255, 1);
@@ -263,5 +263,6 @@ const menuList = ref([
 .graph-align {
   display: flex;
   filter: blur(10px);
+  height: 59vh;
 }
 </style>
