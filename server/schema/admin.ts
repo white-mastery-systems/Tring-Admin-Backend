@@ -3,7 +3,7 @@ import { text, uuid, varchar } from "drizzle-orm/pg-core";
 
 import { adminSchema } from ".";
 import { authUserSchema } from "./auth";
-import { chatBotSchema } from "./bot";
+import { chatBotSchema, botUserSchema, leadSchema } from "./bot";
 import { createInsertSchema } from "drizzle-zod";
 
 // Tables
@@ -19,6 +19,8 @@ export const organizationRelations = relations(
   ({ many }) => ({
     users: many(authUserSchema),
     bots: many(chatBotSchema),
+    botUsers: many(botUserSchema),
+    leads: many(leadSchema),
   }),
 );
 

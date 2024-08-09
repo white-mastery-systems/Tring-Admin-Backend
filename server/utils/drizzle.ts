@@ -12,11 +12,19 @@ const schema = {
   authSessionSchema,
   chatBotSchema,
   documentSchema,
+  botUserSchema,
+  chatSchema,
+  messageSchema,
+  leadSchema,
 
   // Relations
   organizationRelations,
   chatBotRelations,
   documentRelations,
+  botUserRelations,
+  chatsRelations,
+  messageRelations,
+  leadsRelations,
 };
 
 const db = drizzle(queryClient, { schema });

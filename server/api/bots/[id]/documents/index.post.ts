@@ -1,5 +1,7 @@
 import { writeFile } from "node:fs/promises";
 
+const conf = useRuntimeConfig();
+
 export default defineEventHandler(async (event) => {
   await isOrganizationAdminHandler(event);
   const { id: botId } = await isValidRouteParamHandler(
@@ -31,8 +33,8 @@ export default defineEventHandler(async (event) => {
         data: body.error.format(),
       }),
     );
-  const file = formData.find(({ name }) => name === "file")?.data;
-  if (!file)
+  const fileData = formData.find(({ name }) => name === "files");
+  if (!fileData?.data)
     return sendError(
       event,
       createError({
@@ -43,9 +45,33 @@ export default defineEventHandler(async (event) => {
 
   // Create Document
   const document = await createDocument(body.data);
-  await writeFile(getDocumentPath(document.id), file);
+  await writeFile(getDocumentPath(document.id), fileData.data);
 
-  // TODO: Add document to Vectorstore
+  // Create Form Data
+  const form = new FormData();
+  const { data, filename, ...rest } = fileData;
+  const file = new File([data], filename!, rest);
+  
+  form.append("name", body.data.name);
+  form.append("files", file);
+  form.append(
+    "req",
+    JSON.stringify({
+      document_id: document.id,
+      model_req: {
+        provider: "openai",
+        model_name: "",
+        messages: [],
+      },
+      callback_url: `http://${getRequestHost(event)}/api/documents/${document.id}`,
+    }),
+  );
+
+  $fetch(`rag/document`, {
+    method: "POST",
+    baseURL: conf.llmBaseUrl,
+    body: form,
+  });
 
   return document;
 });
