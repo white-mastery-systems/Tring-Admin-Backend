@@ -20,6 +20,16 @@ export const listBots = async (organizationId: string) =>
     },
   });
 
+export const getBotDetailsNoCache = async (botId: string) => {
+  const bot = await db.query.chatBotSchema.findFirst({
+    where: eq(chatBotSchema.id, botId),
+    with: {
+      documents: true,
+    },
+  });
+  return bot;
+};
+
 export const getBotDetails = async (botId: string) => {
   const cachedBot = await cache.getItem<
     SelectChatBot & { documents: SelectDocument[] }
