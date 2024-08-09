@@ -32,3 +32,9 @@ export const updateBotDetails = async (botDetails: SelectChatBot) => {
   });
   return updatedBot;
 };
+
+export const disableBot = async (botId: string) => {
+  await $fetch(`/api/bots/${botId}/disable`, {
+    method: "DELETE",
+  });
+};
