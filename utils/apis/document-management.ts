@@ -40,7 +40,7 @@ export const createDocument = async (
   });
 };
 
-export const uploadDocument = async (botId: string, logo: File) => {
+export const uploadLogo = async (botId: string, logo: File) => {
   const form = new FormData();
 
   form.append("logo", logo);
