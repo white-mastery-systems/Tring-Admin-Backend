@@ -25,10 +25,7 @@
         </div>
       </div>
       <div class="bot-list-align text-[14px]" v-for="(list, index) in dataList" :key="index"
-        @mouseover="listHover(index); previousIndex = index" @mouseout="listHoverOut(index); previousIndex = index"
-        @click="async () => {
-          if (list.bot === 'Document Management') await navigateTo('botdocumentmanagement')
-        }">
+        @click="botManagementDetails(list, index)">
         <div class="list_align">
           <span class="font-medium bot_name_align">{{ list.bot }}</span>
           <!-- <span class="font-medium pr-14">{{ list.createAt }}</span> -->
@@ -62,19 +59,19 @@ const dataList = ref([
   {
     _id: 1,
     bot: 'UI Customization',
-    arrowChange: false,
+    routerName: 'uicustomization',
   }, {
     _id: 2,
     bot: 'CRM Integration',
-    arrowChange: false,
+    routerName: 'botcrm',
   }, {
     _id: 3,
     bot: 'Bot Configuration',
-    arrowChange: false,
+    routerName: 'botcrm'
   }, {
     _id: 4,
     bot: 'Document Management',
-    arrowChange: false,
+    routerName: 'botdocumentmanagement'
   },
 ]) 
 const previousIndex = ref(0)
@@ -101,13 +98,11 @@ const menuList = ref([
 ])
 
 
-const listHover = (index: any) => {
-  if (dataList.value[previousIndex.value].arrowChange) dataList.value[index].arrowChange = false
-  dataList.value[index].arrowChange = true
-}
-const listHoverOut = (index: any) => {
-  if (dataList.value[previousIndex.value].arrowChange) dataList.value[index].arrowChange = false
-  dataList.value[index].arrowChange = false
+const botManagementDetails = async (list: any, index: any) => {
+  // console.log(list.bot.trim().toLowerCase().replace(/\s+/g, ' ') , "list")
+  if (list.bot === dataList.value[index].bot) {
+    await navigateTo(list.routerName)
+  } 
 }
 </script>
 

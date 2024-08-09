@@ -7,21 +7,15 @@
       <div class="list-header-align">
         <div class="header-content-align">
           <div class="items-cetner flex gap-4">
-            <span class="content-align text-[17px] font-bold"
-              >Yourstore Bot-4</span
-            >
+            <span class="content-align text-[17px] font-bold">Yourstore Bot-4</span>
             <div class="acive_class">
               <div class="active-circle-align rounded-full"></div>
               <span class="text-[14px]">Active</span>
             </div>
           </div>
           <div class="flex items-center gap-4">
-            <span class="text-[17px] font-bold text-black"
-              >Date Created:
-              <span class="text-[15px] font-medium text-black"
-                >12.09.2013</span
-              ></span
-            >
+            <span class="text-[17px] font-bold text-black">Date Created:
+              <span class="text-[15px] font-medium text-black">12.09.2013</span></span>
             <span>
               <button class="button-align text-[14px] font-medium">
                 Deactivate Bot
@@ -32,22 +26,7 @@
           <span class="font-semibold content-align">Status</span> -->
         </div>
       </div>
-      <div
-        class="bot-list-align text-[14px]"
-        v-for="(list, index) in dataList"
-        :key="index"
-        @click="
-          async () => {
-            if (list.bot === 'Document Management')
-              await navigateTo('botdocumentmanagement')
-            console.log(list.routeName, route.params.id);
-            return navigateTo({
-              name: list.routeName,
-              params: { id: route.params.id },
-            });
-          }
-        "
-      >
+      <div class="bot-list-align text-[14px]" v-for="(list, index) in dataList" :key="index" @click="botManagementDetails(list, index)">
         <div class="list_align">
           <span class="bot_name_align font-medium">{{ list.bot }}</span>
           <!-- <span class="font-medium pr-14">{{ list.createAt }}</span> -->
@@ -83,25 +62,37 @@
       _id: 1,
       bot: "UI Customization",
       arrowChange: false,
+      routeName: 'UiCustomization-id',
     },
     {
       _id: 2,
       bot: "CRM Integration",
       arrowChange: false,
+      routeName: '',
     },
     {
       _id: 3,
       bot: "Bot Configuration",
       arrowChange: false,
       routeName: "CreateBot-id",
+
     },
     {
       _id: 4,
       bot: "Document Management",
       arrowChange: false,
+      routeName: 'BotDocumentManagement-id'
     },
   ]);
 
+
+
+const botManagementDetails = async (list: any) => {
+    return navigateTo({
+      name: list.routeName,
+      params: { id: route.params.id },
+    })
+}
 </script>
 
 <style scoped>

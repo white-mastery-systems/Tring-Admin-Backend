@@ -54,14 +54,14 @@
       </div>
       <div class="overflow_align">
         <div class="list_align">
-          <div class="bot-list-align text-[15px]" v-for="(list, index) in dataList" :key="index" @click="async () => {
+          <div class="bot-list-align text-[15px]" v-for="(list, index) in botList" :key="index" @click="async () => {
                 await navigateTo('botmanagementdetails');
               }
               ">
-            <span class="bot_name_align font-medium">{{ list.bot }}</span>
+            <span class="bot_name_align font-medium">{{ list.name }}</span>
             <span class="createAt_align font-medium text-black"
-              :style="{ 'padding-inline-end': list.status ? '110px' : '123px' }">{{ list.createAt }}</span>
-            <div v-if="!list.status" class="acive_class font-medium">
+              :style="{ 'padding-inline-end': !list.status ? '110px' : '123px' }">{{ list.createdAt }}</span>
+            <div v-if="list.status" class="acive_class font-medium">
               <div class="active-circle-align rounded-full"></div>
               <span>Active</span>
             </div>
@@ -88,64 +88,7 @@
 <script setup lang="ts">
 const selectedValue = ref("Today");
 const newBotName = ref("");
-const dataList = ref([
-  {
-    _id: 1,
-    bot: "Yourstore Bot-1",
-    createAt: "12.02.2024",
-    status: true,
-    arrowChange: false,
-  },
-  {
-    _id: 2,
-    bot: "Yourstore Bot-2 testing bot",
-    createAt: "15.02.2024",
-    status: false,
-    arrowChange: false,
-  },
-  {
-    _id: 3,
-    bot: "Yourstore Bot-2 testing bot",
-    createAt: "15.02.2024",
-    status: false,
-    arrowChange: false,
-  },
-  {
-    _id: 4,
-    bot: "Yourstore Bot-2 testing bot",
-    createAt: "15.02.2024",
-    status: false,
-    arrowChange: false,
-  },
-  {
-    _id: 5,
-    bot: "Yourstore Bot-2 testing bot",
-    createAt: "15.02.2024",
-    status: false,
-    arrowChange: false,
-  },
-  {
-    _id: 6,
-    bot: "Yourstore Bot-2 testing bot",
-    createAt: "15.02.2024",
-    status: false,
-    arrowChange: false,
-  },
-  {
-    _id: 7,
-    bot: "Yourstore Bot-2 testing bot",
-    createAt: "15.02.2024",
-    status: false,
-    arrowChange: false,
-  },
-  {
-    _id: 8,
-    bot: "Yourstore Bot-2 testing bot",
-    createAt: "15.02.2024",
-    status: false,
-    arrowChange: false,
-  },
-]);
+
 const menuList = ref([
   {
     content: "Today",
@@ -171,7 +114,7 @@ const menuList = ref([
     content: "Yearly",
     value: "Yearly",
   },
-]);
+])
 const previousIndex = ref(0);
 
 const addBot = async () => {
@@ -186,7 +129,8 @@ const addBot = async () => {
     name: "BotManagementDetails-id",
     params: { id: bot.id },
   });
-};
+}
+const botList = await listApiBots()
 </script>
 
 <style scoped>
