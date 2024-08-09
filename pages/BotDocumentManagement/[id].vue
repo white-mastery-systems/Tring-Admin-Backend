@@ -40,7 +40,6 @@
         <!-- @click="async () => {
         await navigateTo('botpdfdocument')
         }" -->
-        {{ getDocumentList }}
         <div class="bot-list-align text-[15px]" v-for="(list, index) in getDocumentList" :key="index">
           <!-- {{ list }} -->
           <div class="list_align">
