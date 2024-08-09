@@ -1,3 +1,8 @@
+<script setup lang="ts">
+  definePageMeta({
+    layout: "auth",
+  })
+</script>
 <template>
   <div class="sing-in-align">
     <div class="top-content-align font-bold">Let’s Get Started</div>
