@@ -32,8 +32,8 @@ export default defineEventHandler(async (event) => {
       }),
     );
 
-  const logoPath = getLogoPath(uuid());
-  await writeFile(logoPath, fileData.data);
+  const logoPathId = uuid();
+  await writeFile(getLogoPath(logoPathId), fileData.data);
 
   let bot = await getBotDetailsNoCache(botId);
   bot = await isValidReturnType(event, bot);
@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
       ...metadata,
       ui: {
         ...metadata.ui,
-        logo: logoPath,
+        logo: `https://${getRequestHost(event)}/logo/${logoPathId}.png`,
       },
     },
   });
