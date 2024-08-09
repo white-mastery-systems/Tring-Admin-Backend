@@ -12,7 +12,7 @@ export const listApiBots = async () => {
     return {
       id: bot.id,
       name: bot.name,
-      status: bot.documentId ? "Active" : "Inactive",
+      status: bot.documentId ? true : false,
       createdAt: formatDateStringToDate(bot.createdAt),
     };
   });
