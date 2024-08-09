@@ -1,10 +1,9 @@
 <template>
   <div class="default-main-container">
-    <div v-if="['singup'].includes(routeName)" class="navigation-drawer">
+    <div v-if="(['Sing'].includes(routeName))" class="navigation-drawer">
       <NevigationDrawer />
     </div>
-    <div class="main-router-align" :style="{ width: ['singup'].includes(routeName) ? '100%' : '86%' }">
-
+    <div class="main-router-align" :style="{ width: (['Sing'].includes(routeName)) ? '100%' : '86%' }">
       <slot />
     </div>
   </div>

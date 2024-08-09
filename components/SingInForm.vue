@@ -20,19 +20,6 @@
             </span>
           </div>
         </div>
-        <div class="individual-form-align">
-          <label for="lcmpassword" class="font-bold pb-2">Confirm Password</label>
-          <div class="input-container">
-            <input type="password" id="frole" name="fname" value="" placeholder="Enter your password">
-            <span class="eye-icon" id="togglePassword">
-              <OpenEye />
-              <!-- <CloseEyeIcon /> -->
-              <!-- You can use FontAwesome or another icon library here -->
-              <!-- <i class="fas fa-eye" id="showIcon"></i> -->
-              <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
-            </span>
-          </div>
-        </div>
         <div class="submit-btn-align">
           <input class="font-bold" type="submit" value="Sing up">
         </div>
@@ -121,28 +108,4 @@ input[type="password"] {
   display: inline-block;
 }
 
-.right-card-align {
-  position: relative;
-  width: 50%;
-  /* width: 600px; */
-  /* Set width to the width of the larger image */
-  /* height: 600px; */
-  /* Adjust height if needed */
-}
-
-.right-card-align img:nth-child(1) {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-
-.right-card-align img:nth-child(2) {
-  position: absolute;
-  top: 6px;
-  left: 10px;
-  bottom: 10px;
-  right: 10px;
-  z-index: 2;
-}
 </style>
