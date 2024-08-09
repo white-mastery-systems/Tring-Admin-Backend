@@ -4,8 +4,8 @@
       <div class="tring-log-top-align">
         <img src="assets\icons\tring_AI_logo.svg" width="80" height="80">
       </div>
-      <SingInForm />
-       <!-- <SingUpForm/> -->
+      <SignInForm />
+       <!-- <SignupForm/> -->
     </div>
     <div class="right-card-align">
       <img src="assets\icons\singupImages.svg" width="600"></img>

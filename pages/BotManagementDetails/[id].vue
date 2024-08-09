@@ -36,18 +36,10 @@
         class="bot-list-align text-[14px]"
         v-for="(list, index) in dataList"
         :key="index"
-        @mouseover="
-          listHover(index);
-          previousIndex = index;
-        "
-        @mouseout="
-          listHoverOut(index);
-          previousIndex = index;
-        "
         @click="
           async () => {
             if (list.bot === 'Document Management')
-              await navigateTo('botdocumentmanagement');
+              await navigateTo('botdocumentmanagement')
             console.log(list.routeName, route.params.id);
             return navigateTo({
               name: list.routeName,
@@ -109,44 +101,7 @@
       arrowChange: false,
     },
   ]);
-  const previousIndex = ref(0);
-  const menuList = ref([
-    {
-      content: "Today",
-      value: "Today",
-    },
-    {
-      content: "Weekly",
-      value: "Weekly",
-    },
-    {
-      content: "Monthly",
-      value: "Monthly",
-    },
-    {
-      content: "Quarterly",
-      value: "Quarterly",
-    },
-    {
-      content: "Halfyearly",
-      value: "Halfyearly",
-    },
-    {
-      content: "Yearly",
-      value: "Yearly",
-    },
-  ]);
 
-  const listHover = (index: any) => {
-    if (dataList.value[previousIndex.value].arrowChange)
-      dataList.value[index].arrowChange = false;
-    dataList.value[index].arrowChange = true;
-  };
-  const listHoverOut = (index: any) => {
-    if (dataList.value[previousIndex.value].arrowChange)
-      dataList.value[index].arrowChange = false;
-    dataList.value[index].arrowChange = false;
-  };
 </script>
 
 <style scoped>
