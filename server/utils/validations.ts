@@ -72,8 +72,12 @@ export const isValidRouteParamHandler = async <T extends ZodType>(
   return params.data;
 };
 
-export const isValidReturnType = async (event: H3Event, rv: unknown) => {
+export const isValidReturnType = async <T>(
+  event: H3Event,
+  rv: T,
+): Promise<NonNullable<T>> => {
   if (!rv)
+    // @ts-ignore
     return sendError(
       event,
       createError({

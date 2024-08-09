@@ -211,7 +211,6 @@ export const zodUpdateChatBot = zodInsertChatBot
   .omit({
     id: true,
     organizationId: true,
-    documentId: true,
     createdAt: true,
   })
   .partial();

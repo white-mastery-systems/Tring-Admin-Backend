@@ -18,3 +18,8 @@ export const deleteDocument = async (docId: string) =>
       .where(eq(documentSchema.id, docId))
       .returning()
   )[0];
+
+export const getDocumentById = async (docId: string) =>
+  await db.query.documentSchema.findFirst({
+    where: eq(documentSchema.id, docId),
+  });

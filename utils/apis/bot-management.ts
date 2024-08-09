@@ -1,4 +1,3 @@
-import type { InternalApi } from "nitropack";
 import type { SelectChatBot, SelectDocument } from "~/server/schema/bot";
 
 export const listApiBots = async () => {

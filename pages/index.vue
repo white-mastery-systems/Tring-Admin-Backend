@@ -5,7 +5,7 @@
   //   await navigateTo({ name: "DashBoard" });
   // }
 
-  const x = await getBotDetails("252d504e-9742-4394-84e5-c494f9272827");
+  const x = await listDocumentsByBotId("252d504e-9742-4394-84e5-c494f9272827");
 </script>
 
 <template>
