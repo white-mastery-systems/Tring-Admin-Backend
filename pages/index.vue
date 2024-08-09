@@ -18,6 +18,5 @@
 <template>
   <!-- <pre>{{ x }}</pre> -->
   <!-- @vue-ignore -->
-  <input type="file" @change="file = $event.target?.files" />
-  <button @click="upload">Upload</button>
+  <FileUpload accept="image/*" />
 </template>
