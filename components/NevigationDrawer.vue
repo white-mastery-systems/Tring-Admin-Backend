@@ -5,7 +5,7 @@
     </div>
     <!-- <div> -->
     <div :class="[(route.path === '/dashboard') ? 'activeClass' : 'default-align']" @click="async () => {
-      await navigateTo('dashboard')
+      await navigateTo({ name: 'DashBoard' })
     }">
       <span>
         <img v-if="(route.path === '/dashboard')" src="assets\icons\activeHome.svg" width="22" height="22">
@@ -17,7 +17,7 @@
       <div class="rounded-t-lg"
         :class="[((route.path === '/analyticsoverview') || (route.path === '/analyticsLeads')) ? 'analytic_activeClass' : 'default-align']"
         @click="async () => {
-        await navigateTo('analyticsoverview')
+         await navigateTo({ name: 'AnalyticsOverView' })
       }">
         <div class="flex items-center gap-3">
           <span>
@@ -36,20 +36,19 @@
         <div
           :class="[(route.path === '/analyticsoverview') ? 'active_analytics_sub_details_align' : 'deactive_analytics_sub_details_align']"
           @click="async () => {
-            await navigateTo('analyticsoverview')
-          }">
+            await navigateTo({name: 'AnalyticsLeads'})}">
           Overview
         </div>
         <div class="pt-4"
           :class="[(route.path === '/analyticsLeads') ? 'active_analytics_sub_details_align' : 'deactive_analytics_sub_details_align']"
           @click="async () => {
-            await navigateTo('analyticsLeads')
+            await navigateTo({name: 'AnalyticsLeads'})
           }">
           Leads</div>
       </div>
     </div>
     <div :class="[(route.path === '/billing') ? 'activeClass' : 'default-align']" @click="async () => {
-        await navigateTo('billing')
+        await navigateTo({name: 'Billing'})
     }">
       <span>
         <img v-if="(route.path === '/billing')" src="assets\icons\payments_active.svg" width="22" height="22">
@@ -58,7 +57,7 @@
       <span class="content-align">Billing</span>
     </div>
     <div :class="[(route.path === '/botmanagement') ? 'activeClass' : 'default-align']" @click="async () => {
-      await navigateTo('botmanagement')
+    await navigateTo({ name: 'BotManagement' })
     }">
       <span>
         <img v-if="(route.path === '/botmanagement')" src="assets\icons\bot_man_active.svg" width="22" height="22">
@@ -74,7 +73,7 @@
       <span class="content-align">Customisation</span>
     </div>
     <div :class="[(route.path === '/settings') ? 'activeClass' : 'default-align']" @click="async () => {
-     await navigateTo('/dashboard')
+      // await navigateTo(name: 'UiCustomization-id')
     }">
       <span>
         <img v-if="(route.path === '/settings')" src="assets\icons\payments_active.svg" width="22" height="22">
