@@ -7,15 +7,23 @@
       <div class="list-header-align">
         <div class="header-content-align">
           <div class="flex items-cetner gap-4">
-            <span class="font-bold content-align text-[17px]">Yourstore Bot-4</span>
-            <div class="acive_class">
+            <span class="font-bold content-align text-[17px]">{{ botDetails.name }}</span>
+            <!-- {{ botDetails }}
+            {{ botDetails.documentId }} -->
+            <div v-if="botDetails.documentId" class="acive_class">
               <div class="rounded-full active-circle-align"></div>
               <span class="text-[14px]">Active</span>
             </div>
+            <!-- v-else -->
+            <div v-else class="deacive_class pl-2 font-medium">
+              <div class="deactive-circle-align rounded-full"></div>
+              <span>Inactive</span>
+            </div>
           </div>
           <div class="flex items-center gap-4">
-            <span class="text-black font-bold text-[17px]">Date Created: <span
-                class="font-medium text-[15px] text-black">12.09.2013</span></span>
+            <span class="text-black font-bold text-[17px]">Date Created:
+              <span class="font-medium text-[15px] text-black">{{ dateFormate }}</span>
+            </span>
             <span>
               <Button class="button-align font-medium text-[14px]">Deactivate Bot</Button>
             </span>
@@ -54,24 +62,26 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 const selectedValue = ref('Today')
-
+const route = useRoute()
+const paramId: any = route
+const botDetails: any = await getBotDetails(paramId.params.id)
 const dataList = ref([
   {
     _id: 1,
     bot: 'UI Customization',
-    routerName: 'uicustomization',
+    routeName: 'UiCustomization-id',
   }, {
     _id: 2,
     bot: 'CRM Integration',
-    routerName: 'botcrm',
+    routeName: '',
   }, {
     _id: 3,
     bot: 'Bot Configuration',
-    routerName: 'botcrm'
+    routeName: "CreateBot-id",
   }, {
     _id: 4,
     bot: 'Document Management',
-    routerName: 'botdocumentmanagement'
+    routeName: 'BotDocumentManagement-id'
   },
 ]) 
 const previousIndex = ref(0)
@@ -97,12 +107,30 @@ const menuList = ref([
   },
 ])
 
+const dateFormate = computed(() => {
+  if (botDetails && botDetails.createdAt) {
+    return formatDateStringToDate(botDetails.createdAt)
+  }
+  return null
+})
+
+// onMounted(async () => {
+//   console.log(paramId.params.id, "paramId")
+//   try {
+//     botDetails.value = 
+//   } catch (error) {
+//     console.error("Error fetching bot details:", error);
+//   }
+// })
 
 const botManagementDetails = async (list: any, index: any) => {
   // console.log(list.bot.trim().toLowerCase().replace(/\s+/g, ' ') , "list")
-  if (list.bot === dataList.value[index].bot) {
-    await navigateTo(list.routerName)
-  } 
+  // if (list.bot === dataList.value[index].bot) {
+    await navigateTo({
+      name: list.routeName,
+      params: { id: paramId.params.id }
+    })
+  // } 
 }
 </script>
 
@@ -198,6 +226,20 @@ const botManagementDetails = async (list: any, index: any) => {
 }
 .arrow-aling {
   width: 30px;
+}
+.deacive_class {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgba(255, 0, 0, 1);
+  padding-inline-end: 201px;
+}
+.deactive-circle-align {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 0, 0, 1);
+  width: 6px;
+  height: 6px;
 }
 /* .right-dropdown-align {
   display: flex;

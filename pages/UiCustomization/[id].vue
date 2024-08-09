@@ -1,45 +1,50 @@
 <template>
   <div class="form-align">
-    <form>
+    <!-- {{ botDetails }} -->
+    <div>
       <div class="individual-form-align">
         <label for="frole" class="font-medium font-[10px]">LOGO</label>
-        <input type="password" id="frole" name="fname" value="">
+        <input v-model="botDetails.name" type="text" id="frole" name="fname">
       </div>
-      <div class="individual-form-align">
-        <label for="frole" class="font-medium font-[10px]">LOGO</label>
-        <div class="input-container">
-          <input type="password" id="frole" name="fname" value="" placeholder="Enter your password">
-          <span class="eye-icon" id="togglePassword">
-            <OpenEye />
-            <CloseEyeIcon />
-          </span>
-        </div>
-      </div>
-
-      <div class="color-picker-align gap-8 px-5">
+      <!-- <div class="color-picker-align gap-8 px-5">
         <div class="flex gap-3">
-          <label for="lname" class="font-medium">COLOR</label>
-          <input type="color" id="lname" name="lname" value="">
+          <label for="color" class="font-medium">COLOR</label>
+          <input v-model="pickColor" type="color" id="colorId" name="color">
         </div>
         <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" value="" class="sr-only peer">
+          <input v-model="defualtSelect" type="checkbox" class="sr-only peer">
           <div
             class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
           </div>
           <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">OPEN BY DEFAULT</span>
         </label>
-      </div>
+      </div> -->
       <div class="submit-btn-align">
-        <input class="font-bold" type="submit" value="Submit">
+        <button class="font-bold text-[14px]" type="submit" @click="uiUpdate">
+          Submit
+        </button>
       </div>
-    </form>
+    </div>
   </div>
 </template>
+<script setup lang="ts">
+const route = useRoute()
+const paramId: any = route
+const botDetails: any = await getBotDetails(paramId.params.id)
+const pickColor = ref(null)
+const defualtSelect = ref(true)
+
+const uiUpdate = () => {
+  // updateBotDetails()
+  console.log(botDetails.name, "botDetails.name")
+  console.log(pickColor.value, "pickColor.value")
+}
+</script>
 <style scoped>
 .form-align {
   display: flex;
   /* flex-direction: column; */
-  padding: 0 25px;
+  padding: 100px 25px;
 }
 
 form {
@@ -50,7 +55,7 @@ form {
 }
 
 .individual-form-align {
-  width: 50%;
+  width: 100%;
   padding: 0 20px;
   height: 120px;
 }
@@ -85,7 +90,7 @@ textarea {
 .submit-btn-align {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: end;
 }
 
 .submit-btn-align input {
@@ -127,5 +132,15 @@ input[type="password"] {
 
 .eye-icon i {
   display: inline-block;
+}
+.submit-btn-align button {
+  width: 40%;
+  height: 40px;
+  border-radius: 10px;
+  padding: 0 20px;
+  background: #424bd1;
+  color: #ffffff;
+  margin-top: 20px;
+  /* margin-right: 170px; */
 }
 </style>

@@ -26,18 +26,25 @@
           <span class="font-semibold content-align">Status</span> -->
         </div>
       </div>
-      <div class="bot-list-align text-[14px]" v-for="(list, index) in dataList" :key="index" @click="botManagementDetails(list, index)">
+      <div class="bot-list-align text-[15px]" v-for="(list, index) in botList" :key="index"
+        @click="botManagementDetails(list)">
         <div class="list_align">
-          <span class="bot_name_align font-medium">{{ list.bot }}</span>
-          <!-- <span class="font-medium pr-14">{{ list.createAt }}</span> -->
-          <!-- <div v-if="list.status" class="pr-3 acive_class font-medium">
-            <div class="rounded-full active-circle-align"></div>
+          <span class="bot_name_align font-medium">{{ list.name }}</span>
+          <span class="createAt_align font-medium text-black"
+            :style="{ 'padding-inline-end': !list.status ? '110px' : '123px' }">{{ list.createdAt }}</span>
+          <div v-if="list.status" class="acive_class font-medium">
+            <div class="active-circle-align rounded-full"></div>
             <span>Active</span>
           </div>
-          <div v-else class="pl-2 deacive_class font-medium">
-            <div class="rounded-full deactive-circle-align"></div>
+          <div v-else class="deacive_class pl-2 font-medium">
+            <div class="deactive-circle-align rounded-full"></div>
             <span>Inactive</span>
-          </div> -->
+          </div>
+          <!-- v-if="!list.arrowChange" -->
+          <div class="pr-4">
+            <!-- <img src="assets\icons\left_arrow.svg" width="30"> -->
+            <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
+          </div>
         </div>
         <div>
           <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
@@ -53,142 +60,148 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { ref } from "vue";
-  const selectedValue = ref("Today");
-  const route = useRoute("BotManagementDetails-id");
+import { ref } from "vue";
+const selectedValue = ref("Today");
+const route = useRoute("BotManagementDetails-id");
+const botList = await listApiBots()
+const dataList = ref([
+  {
+    _id: 1,
+    bot: "UI Customization",
+    arrowChange: false,
+    routeName: 'UiCustomization-id',
+  },
+  {
+    _id: 2,
+    bot: "CRM Integration",
+    arrowChange: false,
+    routeName: '',
+  },
+  {
+    _id: 3,
+    bot: "Bot Configuration",
+    arrowChange: false,
+    routeName: "CreateBot-id",
 
-  const dataList = ref([
-    {
-      _id: 1,
-      bot: "UI Customization",
-      arrowChange: false,
-      routeName: 'UiCustomization-id',
-    },
-    {
-      _id: 2,
-      bot: "CRM Integration",
-      arrowChange: false,
-      routeName: '',
-    },
-    {
-      _id: 3,
-      bot: "Bot Configuration",
-      arrowChange: false,
-      routeName: "CreateBot-id",
-
-    },
-    {
-      _id: 4,
-      bot: "Document Management",
-      arrowChange: false,
-      routeName: 'BotDocumentManagement-id'
-    },
-  ]);
+  },
+  {
+    _id: 4,
+    bot: "Document Management",
+    arrowChange: false,
+    routeName: 'BotDocumentManagement-id'
+  },
+]);
 
 
 
 const botManagementDetails = async (list: any) => {
-    return navigateTo({
-      name: list.routeName,
-      params: { id: route.params.id },
-    })
+  return navigateTo({
+    name: list.routeName,
+    params: { id: route.params.id },
+  })
 }
 </script>
 
 <style scoped>
-  .bot-manage-main-container {
-    padding: 8px 25px;
-  }
+.bot-manage-main-container {
+  padding: 8px 25px;
+}
 
-  .header-align {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: segoe UI Regular;
-  }
+.header-align {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: segoe UI Regular;
+}
 
-  .bot-main-align {
-    margin-top: 30px;
-  }
+.bot-main-align {
+  margin-top: 30px;
+}
 
-  .list_align {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 65%;
-    /* background: rgba(255, 255, 255, 1); */
-    /* padding: 30px 30px; */
-    /* box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important; */
-    border-radius: 10px;
-    /* gap: 100px; */
-    /* margin: 10px 0; */
-  }
+.list_align {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 65%;
+  /* background: rgba(255, 255, 255, 1); */
+  /* padding: 30px 30px; */
+  /* box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important; */
+  border-radius: 10px;
+  /* gap: 100px; */
+  /* margin: 10px 0; */
+}
 
-  .bot-list-align {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 1);
-    padding: 20px 30px;
-    width: 100% !important;
-    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-    border-radius: 10px;
-    margin: 20px;
-  }
+.bot-list-align {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 1);
+  padding: 20px 30px;
+  width: 100% !important;
+  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 10px;
+  margin: 20px;
+}
 
-  .acive_class {
-    display: flex;
-    align-items: center;
-    /* width: 50px; */
-    color: rgba(26, 187, 0, 1) !important;
-    gap: 5px;
-  }
+.acive_class {
+  display: flex;
+  align-items: center;
+  /* width: 50px; */
+  color: rgba(26, 187, 0, 1) !important;
+  gap: 5px;
+}
 
-  /* .deacive_class {
+/* .deacive_class {
   display: flex;
   align-items: center;
   gap: 5px;
   color: rgba(255, 0, 0, 1);
 } */
 
-  .active-circle-align {
-    display: flex;
-    align-items: center;
-    background-color: rgba(26, 187, 0, 1);
-    width: 6px;
-    height: 6px;
-  }
-  .header-content-align {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
-  .list-header-align {
-    padding: 10px 0px 10px 20px;
-    display: flex;
-    align-items: center;
-    /* justify-content: space-between; */
-    width: 100%;
-    /* gap: 100px; */
-    border-bottom: 0.5px solid rgba(181, 181, 181, 1);
-  }
-  .button-align {
-    background-color: red;
-    color: white;
-    border-radius: 8px;
-    padding: 10px 10px;
-  }
-  .bot-list-align:hover {
-    color: rgba(255, 188, 66, 1);
-    background: rgba(255, 248, 235, 1) !important;
-  }
-  .arrow-aling {
-    width: 30px;
-  }
-  /* .right-dropdown-align {
+.active-circle-align {
+  display: flex;
+  align-items: center;
+  background-color: rgba(26, 187, 0, 1);
+  width: 6px;
+  height: 6px;
+}
+
+.header-content-align {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.list-header-align {
+  padding: 10px 0px 10px 20px;
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; */
+  width: 100%;
+  /* gap: 100px; */
+  border-bottom: 0.5px solid rgba(181, 181, 181, 1);
+}
+
+.button-align {
+  background-color: red;
+  color: white;
+  border-radius: 8px;
+  padding: 10px 10px;
+}
+
+.bot-list-align:hover {
+  color: rgba(255, 188, 66, 1);
+  background: rgba(255, 248, 235, 1) !important;
+}
+
+.arrow-aling {
+  width: 30px;
+}
+
+/* .right-dropdown-align {
   display: flex;
   align-items: center;
   background: rgba(255, 255, 255, 1);
@@ -197,7 +210,7 @@ const botManagementDetails = async (list: any) => {
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
   border-radius: 10px;
 } */
-  /* .deactive-circle-align {
+/* .deactive-circle-align {
   display: flex;
   align-items: center;
   background-color: rgba(255, 0, 0, 1);
@@ -205,7 +218,7 @@ const botManagementDetails = async (list: any) => {
   height: 5px;
 } */
 
-  /* .bot_name_align {
+/* .bot_name_align {
   width: 11%;
   white-space: nowrap;
   overflow: hidden;

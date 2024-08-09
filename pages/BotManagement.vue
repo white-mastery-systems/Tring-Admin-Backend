@@ -54,10 +54,8 @@
       </div>
       <div class="overflow_align">
         <div class="list_align">
-          <div class="bot-list-align text-[15px]" v-for="(list, index) in botList" :key="index" @click="async () => {
-                await navigateTo('botmanagementdetails');
-              }
-              ">
+          <div class="bot-list-align text-[15px]" v-for="(list, index) in botList" :key="index"
+            @click="botManagementDetails(list)">
             <span class="bot_name_align font-medium">{{ list.name }}</span>
             <span class="createAt_align font-medium text-black"
               :style="{ 'padding-inline-end': !list.status ? '110px' : '123px' }">{{ list.createdAt }}</span>
@@ -116,7 +114,7 @@ const menuList = ref([
   },
 ])
 const previousIndex = ref(0);
-
+const botList = await listApiBots()
 const addBot = async () => {
   const bot = await $fetch("/api/bots", {
     method: "POST",
@@ -130,7 +128,15 @@ const addBot = async () => {
     params: { id: bot.id },
   });
 }
-const botList = await listApiBots()
+
+
+const botManagementDetails = async (list: any) => {
+  return navigateTo({
+    name: "BotManagementDetails-id",
+    params: { id: list.id },
+  })
+}
+
 </script>
 
 <style scoped>
