@@ -1,9 +1,10 @@
 <template>
   <div class="default-main-container">
-    <div v-if="(['Sing'].includes(routeName))" class="navigation-drawer">
+    <div class="navigation-drawer">
       <NevigationDrawer />
     </div>
-    <div class="main-router-align" :style="{ width: (['Sing'].includes(routeName)) ? '100%' : '86%' }">
+    <!-- :style="{ width: (['Sing'].includes(routeName)) ? '100%' : '86%' }" -->
+    <div class="main-router-align">
       <slot />
     </div>
   </div>
@@ -40,6 +41,7 @@ onMounted( async () => {
 .main-router-align {
   padding: 0 0 15px 0;
   height: 100vh;
+  width: 86%;
   overflow-y: scroll;
 }
 .main-container-top-align {
