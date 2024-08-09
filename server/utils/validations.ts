@@ -7,33 +7,15 @@ export const checkPayloadId = <T extends string>(key: T) =>
   }) as z.ZodObject<{ [K in T]: z.ZodString }>;
 
 export const isOrganizationAdminHandler = async (event: H3Event) => {
-  const query = await getValidatedQuery(
-    event,
-    checkPayloadId("organization_id").safeParse,
-  );
-  if (!query.success)
-    return sendError(
-      event,
-      createError({
-        statusCode: 400,
-        statusMessage: "Invalid query",
-        data: query.error.format(),
-      }),
-    );
-
   // Check if user is authorized to access bots of the organization
   const user = event.context.user;
-  if (
-    !user ||
-    (user.role !== AuthRoles.Admin &&
-      user.organizationId !== query.data.organization_id)
-  )
+  if (!user || user.role !== AuthRoles.Admin)
     return sendError(
       event,
       createError({ statusCode: 401, statusMessage: "Unauthorized" }),
     );
 
-  return query.data.organization_id;
+  return user.organizationId;
 };
 
 export const isValidQueryHandler = async <T extends ZodType>(
