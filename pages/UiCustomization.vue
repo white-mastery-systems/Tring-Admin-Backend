@@ -3,8 +3,19 @@
     <form>
       <div class="individual-form-align">
         <label for="frole" class="font-medium font-[10px]">LOGO</label>
-        <input type="text" id="frole" name="fname" value="">
+        <input type="password" id="frole" name="fname" value="">
       </div>
+      <div class="individual-form-align">
+        <label for="frole" class="font-medium font-[10px]">LOGO</label>
+        <div class="input-container">
+          <input type="password" id="frole" name="fname" value="" placeholder="Enter your password">
+          <span class="eye-icon" id="togglePassword">
+            <OpenEye />
+            <CloseEyeIcon />
+          </span>
+        </div>
+      </div>
+
       <div class="color-picker-align gap-8 px-5">
         <div class="flex gap-3">
           <label for="lname" class="font-medium">COLOR</label>
@@ -86,8 +97,35 @@ textarea {
   margin-top: 20px;
   margin-right: 170px;
 }
+
 .color-picker-align {
   display: flex;
   align-items: center;
+}
+
+.individual-form-align {
+  position: relative;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+input[type="password"] {
+  padding-right: 2.5rem;
+  width: 100%;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 0.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.eye-icon i {
+  display: inline-block;
 }
 </style>

@@ -7,10 +7,10 @@
         <!-- </span> -->
         <span class="font-bold text-[20px] align-left">OverView</span>
       </div>
-      <div class="flex items-center space-x-4" style="width: 350px;">
-        <span class="calender-align">
+      <div class="flex items-center justify-end" style="width: 350px;">
+        <!-- <span class="calender-align">
           <img src="assets\icons\calendar_month.svg" width="20">
-        </span>
+        </span> -->
         <span class="right-dropdown-align text-[]" style="color: rgba(138, 138, 138, 1)">Filter: <span
             class="font-bold text-black text-[14px]">
             <UiSelect v-model="selectedValue">

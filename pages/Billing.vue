@@ -18,8 +18,8 @@
         </div>
       </div>
       <div class="overall_billing_align">
-        <div class="main_card_align" v-for="(list, index) in billingVariation" :key="index"
-          @mouseover="planCard(index); previusIndex = index" @mouseout="planCardUnHover(index); previusIndex = index">
+        <!-- @mouseover="planCard(index); previusIndex = index" @mouseout="planCardUnHover(index); previusIndex = index" -->
+        <div class="main_card_align" v-for="(list, index) in billingVariation" :key="index">
           <div class="font-bold text-[24px] type-color">
             {{ list.types }}
           </div>
@@ -162,18 +162,6 @@ const billingVariation = ref([
 ])
 const previusIndex: any = ref(false)
 const mostPopularPlan = ref(false)
-
-
-const planCard = (index: any) => {
-  if (index === 2) mostPopularPlan.value = true
-  if(billingVariation.value[previusIndex.value].listBenefit) billingVariation.value[previusIndex.value].listBenefit = false
-  billingVariation.value[index].listBenefit = true 
-}
-const planCardUnHover = (index: any) => {
-  if (index === 2) mostPopularPlan.value = false
-  if (billingVariation.value[previusIndex.value].listBenefit) billingVariation.value[previusIndex.value].listBenefit = false
-  billingVariation.value[index].listBenefit = false
-}
 </script>
 <style scoped>
 .analytics_leads-main-container {

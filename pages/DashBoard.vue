@@ -2,22 +2,29 @@
   <div class="dashboard-main-container">
     <div class="header-align">
       <span class="font-bold text-[20px]">Dashboard</span>
-      <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary: <span
-          class="font-bold text-black">
-          <UiSelect v-model="selectedValue" class="outline-none">
-            <UiSelectTrigger class="w-[110px] ui-select-trigger outline-none">
-              <UiSelectValue />
-            </UiSelectTrigger>
-            <UiSelectContent>
-              <UiSelectGroup class="select_list_align">
-                <!-- <UiSelectLabel>Today</UiSelectLabel> -->
-                <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align" :value="list.content">
-                  {{ list.content }}
-                </UiSelectItem>
-              </UiSelectGroup>
-            </UiSelectContent>
-          </UiSelect>
-        </span></span>
+      <div class="flex items-center gap-3">
+        <!-- <span class="calender-align">
+          <img src="assets\icons\calendar_month.svg" width="20">
+        </span> -->
+        <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary: <span
+            class="font-bold text-black">
+            <UiSelect v-model="selectedValue" class="outline-none">
+              <UiSelectTrigger class="w-[110px] ui-select-trigger outline-none">
+                <UiSelectValue />
+              </UiSelectTrigger>
+              <UiSelectContent>
+                <UiSelectGroup class="select_list_align">
+                  <!-- <UiSelectLabel>Today</UiSelectLabel> -->
+                  <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
+                    :value="list.content">
+                    {{ list.content }}
+                  </UiSelectItem>
+                </UiSelectGroup>
+              </UiSelectContent>
+            </UiSelect>
+          </span>
+        </span>
+      </div>
     </div>
     <div>
       <div class="dashboard-main-paage">
@@ -188,6 +195,16 @@
   display: flex;
   filter: blur(10px);
   height: 59vh;
+}
+.calender-align {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 40px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 10px;
 }
 /* .select_list_align {
   font-weight: 500;

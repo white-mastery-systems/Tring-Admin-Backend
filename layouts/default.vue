@@ -1,29 +1,25 @@
 <template>
   <div class="default-main-container">
-    <div class="navigation-drawer">
+    <div v-if="['singup'].includes(routeName)" class="navigation-drawer">
       <NevigationDrawer />
     </div>
-    <div class="main-router-align">
-      <div class="main-container-top-align">
-        <div class="flex items-center gap-4 px-6 header-fixed-align">
-          <span>
-            <img src="assets\icons\mail.svg" width="22"></img>
-          </span>
-          <span>
-            <img src="assets\icons\bell.svg" width="22"></img>
-          </span>
-          <span class="bar-align"></span>
-          <span class="profile-align rounded-full"></span>
-          <div>
-            <div class="font-bold text-[16px]">Name</div>
-            <div class="grey_color font-regular text-[13px]">Admin</div>
-          </div>
-        </div>
-      </div>
+    <div class="main-router-align" :style="{ width: ['singup'].includes(routeName) ? '100%' : '86%' }">
+
       <slot />
     </div>
   </div>
 </template>
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
+const route = useRoute()
+const routeName = ref(route.name)
+
+onMounted( async () => {
+  console.log(routeName, "routeName")
+})
+
+</script>
 <style scoped>
 .default-main-container {
   display: flex;
@@ -44,7 +40,6 @@
 }
 .main-router-align {
   padding: 0 0 15px 0;
-  width: 86%;
   height: 100vh;
   overflow-y: scroll;
 }
