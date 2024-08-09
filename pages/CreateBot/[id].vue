@@ -1,85 +1,145 @@
 <template>
   <div class="form-align">
-    <form>
+    <!-- {{ formDetails }} -->
+    <div>
       <div class="individual-form-align">
         <label for="frole" class="font-bold">ROLE</label><br />
-        <input type="text" id="frole" name="fname" value="" /><br />
+        <input v-model="formDetails.ROLE" type="text" id="frole" name="fname" />
       </div>
       <div class="individual-form-align">
         <label for="lname" class="font-bold">NAME</label><br />
-        <input type="text" id="lname" name="lname" value="" /><br /><br />
+        <input v-model="formDetails.NAME" type="text" id="lname" name="lname" /><br />
       </div>
       <div class="individual-form-align">
         <label for="lcompany" class="font-bold">COMPANY</label><br />
-        <input type="text" id="lcompany" name="lcompany" value="" /><br /><br />
+        <input v-model="formDetails.COMPANY" type="text" id="lcompany" name="lcompany" /><br />
       </div>
       <div class="individual-form-align">
         <label for="lgoal" class="font-bold">GOAL</label><br />
-        <input type="text" id="lgoal" name="lgoal" value="" /><br /><br />
+        <input v-model="formDetails.GOAL" type="text" id="lgoal" name="lgoal" /><br />
       </div>
       <div class="text-area-align">
         <span class="text-area-label font-bold"> NOTES </span>
-        <textarea id="w3review" name="w3review" rows="4" cols="50"></textarea>
+        <textarea v-model="formDetails.NOTES" id="w3review" name="w3review" rows="4" cols="50"></textarea>
       </div>
       <div class="text-area-align">
         <span class="text-area-label font-bold"> DESCRIPTION </span>
-        <textarea id="w3review" name="w3review" rows="4" cols="50"></textarea>
+        <textarea v-model="formDetails.DESCRIPTION" id="w3review" name="w3review" rows="4" cols="50"></textarea>
       </div>
       <div class="submit-btn-align">
-        <input type="submit" value="Submit" />
+        <button class="font-bold text-[14px]" type="submit" @click="createBot()">
+          Submit
+        </button>
       </div>
-    </form>
+    </div>
   </div>
 </template>
+<script setup lang="ts">
+const formDetails: any = reactive({
+  ROLE: 'Testing role',
+  NAME: 'Testing name',
+  COMPANY: 'Testing company',
+  GOAL: 'Testing goal',
+  NOTES: 'Testing description',
+  DESCRIPTION: 'Testing notes',
+  })
+const route = useRoute()
+const paramId: any = route
+const botDetails: any = await getBotDetails(paramId.params.id)
+
+
+onMounted(() => {
+  if (botDetails.metadata.prompt.length) {
+    formDetails.value.ROLE = botDetails.metadata.prompt.ROLE
+    formDetails.value.NAME = botDetails.metadata.prompt.NAME
+    formDetails.value.COMPANY = botDetails.metadata.prompt.COMPANY
+    formDetails.value.GOAL = botDetails.metadata.prompt.GOAL
+    formDetails.value.NOTES = botDetails.metadata.prompt.NOTES
+    formDetails.value.DESCRIPTION = botDetails.metadata.prompt.DESCRIPTION
+  }
+})
+
+const createBot = () => {
+  const payload: any = {
+    id: botDetails.id,
+    metadata: {
+      // ...botDetails.metadata,
+      prompt: {
+        ...formDetails,
+      }
+    }
+  }
+  updateBotDetails(payload)
+}
+</script>
 <style scoped>
-  .form-align {
-    display: flex;
-    /* flex-direction: column; */
-    padding: 0 25px;
-  }
-  form {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .individual-form-align {
-    width: 50%;
-    padding: 0 20px;
-  }
-  .individual-form-align input {
-    background-color: rgba(246, 246, 246, 1);
-    width: 100%;
-    height: 50px;
-    outline: none;
-    border-radius: 10px;
-    padding: 0 20px;
-    margin-top: 10px;
-  }
-  textarea {
-    background-color: rgba(246, 246, 246, 1);
-    border-radius: 10px;
-    width: 100%;
-  }
-  .text-area-align {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    padding: 0 20px;
-  }
-  .text-area-label {
-    margin-bottom: 10px;
-  }
-  .submit-btn-align {
-    width: 100%;
-    display: flex;
-    justify-content: end;
-  }
-  .submit-btn-align input {
-    width: 130px;
-    height: 50px;
-    border-radius: 10px;
-    padding: 0 20px;
-    background-color: rgba(246, 246, 246, 1);
-    margin-top: 40px;
-  }
+.form-align {
+  display: flex;
+  /* flex-direction: column; */
+  padding: 0 25px;
+}
+
+form {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.individual-form-align {
+  width: 50%;
+  padding: 0 20px;
+}
+
+.individual-form-align input {
+  background-color: rgba(246, 246, 246, 1);
+  width: 100%;
+  height: 50px;
+  outline: none;
+  border-radius: 10px;
+  padding: 0 20px;
+  margin-top: 10px;
+}
+
+textarea {
+  background-color: rgba(246, 246, 246, 1);
+  border-radius: 10px;
+  width: 100%;
+}
+
+.text-area-align {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding: 0 20px;
+}
+
+.text-area-label {
+  margin-bottom: 10px;
+}
+
+.submit-btn-align {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
+.submit-btn-align input {
+  width: 130px;
+  height: 50px;
+  border-radius: 10px;
+  padding: 0 20px;
+  background-color: rgba(246, 246, 246, 1);
+  margin-top: 40px;
+}
+
+.submit-btn-align button {
+  width: 40%;
+  height: 40px;
+  border-radius: 10px;
+  padding: 0 20px;
+  background: #424bd1;
+  color: #ffffff;
+  margin-top: 20px;
+  /* margin-right: 170px; */
+}
 </style>

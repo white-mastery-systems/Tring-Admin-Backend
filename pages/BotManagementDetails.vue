@@ -24,8 +24,9 @@
             <span class="text-black font-bold text-[17px]">Date Created:
               <span class="font-medium text-[15px] text-black">{{ dateFormate }}</span>
             </span>
-            <span>
-              <Button class="button-align font-medium text-[14px]">Deactivate Bot</Button>
+            <span v-if="botDetails.documentId">
+              <Button class="button-align font-medium text-[14px]" @click="deactivateBot(paramId.params.id)">Deactivate
+                Bot</Button>
             </span>
           </div>
           <!-- <span class="font-semibold content-align">Date Created</span>
@@ -131,6 +132,10 @@ const botManagementDetails = async (list: any, index: any) => {
       params: { id: paramId.params.id }
     })
   // } 
+}
+const deactivateBot = async () => {
+  await disableBot(paramId.params.id)
+  await getBotDetails(paramId.params.id)
 }
 </script>
 

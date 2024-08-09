@@ -6,7 +6,7 @@
         <label for="frole" class="font-medium font-[10px]">LOGO</label>
         <input v-model="botDetails.name" type="text" id="frole" name="fname">
       </div>
-      <!-- <div class="color-picker-align gap-8 px-5">
+      <div class="color-picker-align gap-8 px-5">
         <div class="flex gap-3">
           <label for="color" class="font-medium">COLOR</label>
           <input v-model="pickColor" type="color" id="colorId" name="color">
@@ -18,7 +18,7 @@
           </div>
           <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">OPEN BY DEFAULT</span>
         </label>
-      </div> -->
+      </div>
       <div class="submit-btn-align">
         <button class="font-bold text-[14px]" type="submit" @click="uiUpdate">
           Submit
@@ -29,15 +29,38 @@
 </template>
 <script setup lang="ts">
 const route = useRoute()
+const router = useRouter()
 const paramId: any = route
 const botDetails: any = await getBotDetails(paramId.params.id)
-const pickColor = ref(null)
+const pickColor = ref()
 const defualtSelect = ref(true)
 
-const uiUpdate = () => {
-  // updateBotDetails()
-  console.log(botDetails.name, "botDetails.name")
-  console.log(pickColor.value, "pickColor.value")
+onMounted(() => {
+  if (botDetails.metadata.ui.length) {
+    pickColor.value = botDetails.metadata.ui.color
+    defualtSelect.value = botDetails.metadata.ui.defualtSelect
+  }
+})
+
+const uiUpdate = async () => {
+  console.log(botDetails, "botDetails")
+  const payload: any = {
+    // name: botDetails.name,
+    ...botDetails,
+    id: botDetails.id,
+    metadata: {
+      ...botDetails.metadata,
+      ui: {
+        color: pickColor.value,
+        defualtSelect: defualtSelect.value,
+      }
+    }
+  }
+  updateBotDetails(payload)
+  router.back()
+  // console.log(botDetails.name, "botDetails.name")
+  // console.log(pickColor.value, "pickColor.value")
+  // console.log(defualtSelect.value, "pickColor.value")
 }
 </script>
 <style scoped>
