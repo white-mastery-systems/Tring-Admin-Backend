@@ -13,8 +13,10 @@ export const listBots = async (organizationId: string) =>
     where: eq(chatBotSchema.organizationId, organizationId),
     orderBy: [desc(chatBotSchema.createdAt)],
     columns: {
-      metadata: false,
-      organizationId: false,
+      id: true,
+      name: true,
+      createdAt: true,
+      documentId: true,
     },
   });
 

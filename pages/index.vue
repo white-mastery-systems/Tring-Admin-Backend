@@ -9,5 +9,5 @@
 </script>
 
 <template>
-  <h1>Hello</h1>
+  <pre>{{ x }}</pre>
 </template>

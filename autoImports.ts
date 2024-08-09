@@ -44,7 +44,12 @@ const vueSonner = {
   imports: ["toast"],
 };
 
+const dateFns = {
+  from: "date-fns",
+  imports: ["formatDate"],
+};
+
 export default {
-  nitro: [drizzleOrm, drizzleZod, zod],
-  nuxt: [zod, veeValidateZod, vueSonner],
+  nitro: [drizzleOrm, drizzleZod, zod, dateFns],
+  nuxt: [zod, veeValidateZod, vueSonner, dateFns],
 };

@@ -46,7 +46,7 @@ const logout = async () => {
     method: "POST",
   });
   (await useUser()).clearUser();
-  return navigateTo("/auth/login");
+  return navigateTo("/");
 };
 
 const redirectToRoleHome = (role: AuthRoles) => {
