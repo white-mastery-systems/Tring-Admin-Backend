@@ -13,7 +13,7 @@
     <div class="document-align gap-4">
       <span>
         <!-- @click="uploadfile" -->
-        <FileUpload accept="image/*" v-model="selectedFile" />
+        <FileUpload accept="application/pdf" v-model="selectedFile" />
         <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
       </span>
       <div class="flex items-center gap-2">
