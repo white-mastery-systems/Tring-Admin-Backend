@@ -15,23 +15,12 @@
         </div>
         <div class="space-y-1 mt-3">
           <UiLabel class="ml-10 text-lg font-bold">Colours</UiLabel>
-          <div
-            class="color-picker-align mx-10 h-14 w-[400px] gap-8 rounded-lg bg-white px-5 shadow"
-          >
+          <div class="color-picker-align mx-10 h-14 w-[400px] gap-8 rounded-lg bg-white px-5 shadow">
             <div class="flex gap-52">
-              <label
-                for="color"
-                class="py-auto content-center text-base font-medium"
-                >Primary Colour</label
-              >
+              <label for="color" class="py-auto content-center text-base font-medium">Primary Colour</label>
               <div class="h-8 w-8 overflow-hidden rounded-full">
-                <input
-                  v-model="pickColor"
-                  type="color"
-                  id="colorId"
-                  name="color"
-                  class="h-20 w-20 -translate-x-1/3 -translate-y-1/3"
-                />
+                <input v-model="pickColor" type="color" id="colorId" name="color"
+                  class="h-20 w-20 -translate-x-1/3 -translate-y-1/3" />
               </div>
             </div>
           </div>
@@ -39,9 +28,7 @@
         <div class="space-y-2 py-4">
           <UiLabel class="ml-10 text-lg font-bold">Widget Sound</UiLabel>
           <UiSelect v-model="widgetSound">
-            <UiSelectTrigger
-              class="hover:focus:none hover:focus-visible:none mx-10 h-12 w-[400px] shadow"
-            >
+            <UiSelectTrigger class="hover:focus:none hover:focus-visible:none mx-10 h-12 w-[400px] shadow">
               <UiSelectValue />
             </UiSelectTrigger>
             <UiSelectContent>
@@ -55,9 +42,7 @@
         <div class="space-y-2">
           <UiLabel class="ml-10 text-lg font-bold">Widget Position</UiLabel>
           <UiSelect v-model="widgetPosition">
-            <UiSelectTrigger
-              class="hover:focus-visible:none hover:focus:none mx-10 h-12 w-[400px] shadow"
-            >
+            <UiSelectTrigger class="hover:focus-visible:none hover:focus:none mx-10 h-12 w-[400px] shadow">
               <UiSelectValue />
             </UiSelectTrigger>
             <UiSelectContent>
@@ -71,11 +56,7 @@
         <div class="space-y-4 py-4">
           <div class="mx-10 flex flex-row justify-between">
             <UiLabel class="text-base font-bold">Open By Default</UiLabel>
-            <UiSwitch
-              id="open-by-default"
-              v-model:checked="defaultSelect"
-              class="text-[#424bd1]"
-            />
+            <UiSwitch id="open-by-default" v-model:checked="defaultSelect" class="text-[#424bd1]" />
           </div>
           <div class="mx-10 flex flex-row justify-between">
             <UiLabel class="text-base font-bold">Online Status</UiLabel>
@@ -83,11 +64,7 @@
           </div>
         </div>
         <div class="submit-btn-align my-auto">
-          <button
-            class="my-auto text-base font-semibold"
-            type="submit"
-            @click="uiUpdate"
-          >
+          <button class="my-auto text-base font-semibold" type="submit" @click="uiUpdate">
             Submit
           </button>
         </div>
@@ -122,7 +99,6 @@
     console.log(botDetails, "botDetails");
     const payload: any = {
       // name: botDetails.name,
-      ...botDetails,
       id: botDetails.id,
       metadata: {
         ...botDetails.metadata,
