@@ -1,30 +1,31 @@
 <template>
   <div class="form-align">
     <!-- {{ formDetails }} -->
-    <div>
+    <div class="flex flex-wrap">
       <div class="individual-form-align">
         <label for="frole" class="font-bold">ROLE</label><br />
-        <input v-model="formDetails.ROLE" type="text" id="frole" name="fname" />
+        <input v-model="formDetails.ROLE" class="my-2" type="text" id="frole" name="fname" />
       </div>
       <div class="individual-form-align">
         <label for="lname" class="font-bold">NAME</label><br />
-        <input v-model="formDetails.NAME" type="text" id="lname" name="lname" /><br />
+        <input v-model="formDetails.NAME" class="my-2" type="text" id="lname" name="lname" /><br />
       </div>
       <div class="individual-form-align">
         <label for="lcompany" class="font-bold">COMPANY</label><br />
-        <input v-model="formDetails.COMPANY" type="text" id="lcompany" name="lcompany" /><br />
+        <input v-model="formDetails.COMPANY" class="my-2" type="text" id="lcompany" name="lcompany" /><br />
       </div>
       <div class="individual-form-align">
         <label for="lgoal" class="font-bold">GOAL</label><br />
-        <input v-model="formDetails.GOAL" type="text" id="lgoal" name="lgoal" /><br />
+        <input v-model="formDetails.GOAL" class="my-2" type="text" id="lgoal" name="lgoal" /><br />
       </div>
       <div class="text-area-align">
         <span class="text-area-label font-bold"> NOTES </span>
-        <textarea v-model="formDetails.NOTES" id="w3review" name="w3review" rows="4" cols="50"></textarea>
+        <textarea v-model="formDetails.NOTES" class="my-2" id="w3review" name="w3review" rows="4" cols="50"></textarea>
       </div>
       <div class="text-area-align">
         <span class="text-area-label font-bold"> DESCRIPTION </span>
-        <textarea v-model="formDetails.DESCRIPTION" id="w3review" name="w3review" rows="4" cols="50"></textarea>
+        <textarea v-model="formDetails.DESCRIPTION" class="my-2" id="w3review" name="w3review" rows="4"
+          cols="50"></textarea>
       </div>
       <div class="submit-btn-align">
         <button class="font-bold text-[14px]" type="submit" @click="createBot()">
@@ -88,6 +89,8 @@ form {
 .individual-form-align {
   width: 50%;
   padding: 0 20px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .individual-form-align input {
@@ -97,13 +100,14 @@ form {
   outline: none;
   border-radius: 10px;
   padding: 0 20px;
-  margin-top: 10px;
+  /* margin-top: 10px; */
 }
 
 textarea {
   background-color: rgba(246, 246, 246, 1);
   border-radius: 10px;
   width: 100%;
+  padding: 20px;
 }
 
 .text-area-align {
@@ -111,6 +115,7 @@ textarea {
   flex-direction: column;
   width: 50%;
   padding: 0 20px;
+  margin-top: 15px;
 }
 
 .text-area-label {
@@ -133,7 +138,7 @@ textarea {
 }
 
 .submit-btn-align button {
-  width: 40%;
+  width: 20%;
   height: 40px;
   border-radius: 10px;
   padding: 0 20px;
