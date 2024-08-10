@@ -90,9 +90,11 @@
       </div>
       <div class="graph-align mt-10 gap-6">
         <div
-          class="h-[380px] w-[750px] place-content-center rounded-md bg-white shadow"
+          class="relative h-[380px] w-[750px] place-content-center rounded-md bg-white shadow"
         >
-          <UiLabel class="pb-1 pl-4 text-lg font-bold">Chat Bot</UiLabel>
+          <UiLabel class="absolute top-6 pb-1 pl-6 text-lg font-bold"
+            >Chat Bot</UiLabel
+          >
           <UiLineChart
             :data="lineGraphData"
             index="month"
@@ -113,14 +115,14 @@
         </div>
 
         <div
-          class="h-[380px] w-[450px] place-content-center rounded-md bg-white shadow"
+          class="relative h-[380px] w-[450px] place-content-center rounded-md bg-white shadow"
         >
-          <UiLabel class="absolute top-52 pl-4 pt-4 text-lg font-bold"
+          <UiLabel class="absolute top-6 pl-6 text-lg font-bold"
             >Voice Bot</UiLabel
           >
           <VisBulletLegend
             :items="chartDataItems"
-            class="absolute right-24 top-60 flex flex-col pt-3"
+            class="absolute right-6 top-10 flex flex-col pt-3"
           />
           <UiDonutChart
             index="name"
