@@ -1,4 +1,10 @@
 <template>
+    <div class="mx-10 mt-14 mb-4">
+    <button @click="router.back()">
+          <img src="assets\icons\right_arrow.svg" width="20"></img>
+        </button>
+    <UiLabel class="ml-10 text-2xl font-bold">Bot Configuration</UiLabel>
+  </div>
   <div class="form-align">
     <!-- {{ formDetails }} -->
     <div class="flex flex-wrap">
@@ -36,6 +42,7 @@
   </div>
 </template>
 <script setup lang="ts">
+const router = useRouter()
 const formDetails: any = reactive({
   ROLE: '',
   NAME: '',
