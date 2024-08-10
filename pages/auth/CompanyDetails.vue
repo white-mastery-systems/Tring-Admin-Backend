@@ -5,14 +5,15 @@ definePageMeta({
 
 const loginData = reactive({
   name: '',
-  role: ','
+  role: '',
 });
 </script>
 <template>
   <div class="sign-in-align">
-    <div class="top-content-align font-bold">
+    <div class="top-content-align font-bold flex items-center gap-1">
+      <RightArrow />
       <span>
-        Personal Details
+        Company Details
       </span>
     </div>
     <div class="form-align">
@@ -20,7 +21,7 @@ const loginData = reactive({
       <div class="individual-form-align">
         <label for="fpassword" class="font-bold">Industry</label>
         <div class="input-container">
-          <input class="mt-2 mb-2" type="text" id="frole" name="fname" placeholder="Select your Role"
+          <input class="mt-2 mb-2" type="text" id="frole" name="fname" placeholder="Select your Industry"
             v-model="loginData.name" />
           <span class="eye-icon" id="togglePassword">
             <!-- <OpenEye /> -->
@@ -36,7 +37,7 @@ const loginData = reactive({
       <div class="individual-form-align">
         <label for="fpassword" class="font-bold">Monthly Website Traffic</label>
         <div class="input-container">
-          <input class="mt-2 mb-2" type="text" id="frole" name="fname" placeholder="Select your"
+          <input class="mt-2 mb-2" type="text" id="frole" name="fname" placeholder="Select your Average"
             v-model="loginData.name" />
           <span class="eye-icon" id="togglePassword">
             <!-- <OpenEye /> -->
@@ -52,7 +53,7 @@ const loginData = reactive({
       <div class="individual-form-align">
         <label for="fmail" class="mb-4 font-[10px] font-bold">No. of Employees</label>
         <div class="input-container">
-          <input class="mt-2 mb-2" type="text" id="otp" name="otp" placeholder="Select your Number"
+          <input class="mt-2 mb-2" type="text" id="otp" name="otp" placeholder="Enter the No.of Employees"
             v-model="loginData.role" />
         </div>
       </div>
@@ -86,7 +87,7 @@ const loginData = reactive({
 .top-content-align {
   color: #424bd1;
   width: 80%;
-  padding: 0 25px;
+  padding: 0 22px;
   /* padding-right: 172px; */
   padding-bottom: 20px;
 }
@@ -124,7 +125,7 @@ const loginData = reactive({
   padding: 0 20px;
   background: #424bd1;
   color: #ffffff;
-  margin-top: 20px;
+  margin-top: 30px;
   /* margin-right: 170px; */
 }
 
@@ -132,6 +133,7 @@ const loginData = reactive({
   position: relative;
   display: flex;
   align-items: center;
+  font-size: 14px;
 }
 
 input[type="password"] {

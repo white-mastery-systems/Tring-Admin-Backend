@@ -1,9 +1,9 @@
 <template>
-  <div class="mx-10 mt-14">
+  <div class="flex items-center mx-5 mt-2">
     <button @click="router.back()">
-      <img src="assets\icons\right_arrow.svg" width="20"></img>
-    </button>
-    <UiLabel class="ml-10 text-2xl font-bold">UI Customisation</UiLabel>
+          <img src="assets\icons\right_arrow.svg" width="20"></img>
+        </button>
+    <UiLabel class="ml-1 text-[20px] font-bold">UI Customisation</UiLabel>
   </div>
   <div class="flex flex-row">
     <div class="form-align pl-10">

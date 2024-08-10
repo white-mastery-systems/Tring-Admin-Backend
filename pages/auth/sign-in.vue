@@ -18,13 +18,13 @@
     <div class="form-align">
       <!-- <div> -->
       <div class="individual-form-align">
-        <label for="fmail" class="mb-4 font-[10px] font-bold">E-mail</label>
-        <input class="mt-2 mb-2" type="text" id="frole" name="fmail" v-model="loginData.username" />
+        <label for="username" class="mb-4 font-[10px] font-bold">E-mail</label>
+        <input class="mt-2 mb-2" type="text" id="username" name="username" v-model="loginData.username" />
       </div>
       <div class="individual-form-align">
         <label for="fpassword" class="font-bold">Password</label>
         <div class="input-container">
-          <input class="mt-2 mb-2" type="password" id="frole" name="fname" placeholder="Enter your password"
+          <input class="mt-2 mb-2" type="password" id="password" name="password" placeholder="Enter your password"
             v-model="loginData.password" />
           <span class="eye-icon" id="togglePassword">
             <!-- <OpenEye /> -->
@@ -94,7 +94,7 @@
     gap: 5px;
   } */
   .individual-form-align input {
-    background-color: rgba(246, 246, 246, 1);
+    background-color: rgba(246, 246, 246, 1) !important;
     width: 100%;
     height: 50px;
     outline: none;

@@ -38,10 +38,10 @@ const loginData = reactive({
         <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
       </div>
       <div class="individual-form-align">
-        <label for="fpassword" class="font-bold">Confirm Password</label>
+        <label for="confirmPassword" class="font-bold">Confirm Password</label>
         <div class="input-container">
-          <input class="mt-2 mb-2" type="password" id="frole" name="fname" placeholder="Enter your password"
-            v-model="loginData.confirmPassword" />
+          <input class="mt-2 mb-2" type="password" id="confirmPassword" name="confirmPassword"
+            placeholder="Enter your password" v-model="loginData.confirmPassword" />
           <span class="eye-icon" id="togglePassword">
             <!-- <OpenEye /> -->
             <CloseEyeIcon />

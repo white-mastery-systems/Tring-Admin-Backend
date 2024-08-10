@@ -5,12 +5,12 @@
         <button @click="router.back()">
           <img src="assets\icons\right_arrow.svg" width="20"></img>
         </button>
-        <span class="font-bold text-[20px]">Document Management</span>
+        <!-- <span class="font-bold text-[20px]">Document Management</span> -->
       </div>
       <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary: <span
           class="font-bold text-black">Recent</span></span>
     </div>
-    <div class="document-align gap-4">
+    <div class="document-align gap-0">
       <span>
         <!-- @click="uploadfile" -->
         <FileUpload accept="application/pdf" v-model="selectedFile" />
@@ -312,12 +312,15 @@ const singleDocumentDownload = async (list: any) => {
   padding: 0 20px;
   background: #424bd1;
   color: #ffffff;
-  margin-top: 20px;
+  /* margin-top: 20px; */
   /* margin-right: 170px; */
 }
 .menu-align {
   cursor: pointer;
   padding: 5px;
   font-weight: 500;
+}
+:deep(.line-clamp-3) {
+  display: none;
 }
 </style>

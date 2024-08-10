@@ -7,7 +7,7 @@
         <!-- </span> -->
         <span class="font-bold text-[20px] align-left">OverView</span>
       </div>
-      <div class="flex items-center justify-end" style="width: 350px;">
+      <div class="flex items-center justify-end gap-6" style="width: 350px;">
         <!-- <span class="calender-align">
           <img src="assets\icons\calendar_month.svg" width="20">
         </span> -->

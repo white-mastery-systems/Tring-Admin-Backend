@@ -17,14 +17,16 @@
           </span>
         </div>
       </div>
+      <div>
+      </div>
       <div class="overall_billing_align">
         <!-- @mouseover="planCard(index); previusIndex = index" @mouseout="planCardUnHover(index); previusIndex = index" -->
         <div class="main_card_align" v-for="(list, index) in billingVariation" :key="index">
-          <div class="font-bold text-[24px] type-color">
+          <div class="font-bold text-[23px] type-color">
             {{ list.types }}
           </div>
           <div class="bill-content-align">
-            <div class="font-black text-[24px] amount-align">{{ list.amount }}</div>
+            <div class="font-black text-[23px] amount-align">{{ list.amount }}</div>
             <div class="content_color_align">{{ list.status }}</div>
           </div>
           <!-- <div class="font-bold text-[30px]">
@@ -35,7 +37,7 @@
           </div> -->
           <div class="benefit_inside_list">
             <div class="gap-2 flex items-center" v-for="(advancedList, ListIndex) in list.benefitList" :key="ListIndex">
-              <span class="flex items-center">
+              <span class="flex items-start">
                 <img v-if="!list.listBenefit" src="assets\icons\check-circle.svg" width="15">
                 <img v-else src="assets\icons\checked-circle.svg" width="15">
               </span>
@@ -44,7 +46,7 @@
               </span>
             </div>
           </div>
-          <button class="choose_btn_align">Choose plan</button>
+          <button class="choose_btn_align" @click="choosePlan(list.plan)">Choose plan</button>
         </div>
       </div>
     </div>
@@ -56,7 +58,7 @@ import { ref } from 'vue'
 const billingVariation = ref([
   {
     _id: 1,
-    amount: '$0',
+    amount: 'Rs.0',
     status: 'Per Month',
     types: 'Free',
     benefitContent: 'Unleash the power of automation.',
@@ -79,10 +81,10 @@ const billingVariation = ref([
       }, {
         content: 'No Tring Branding-NA'
       },
-    ]
+    ],
   }, {
     _id: 2,
-    amount: '$29',
+    amount: 'Rs.1999',
     status: 'Per Month',
     types: 'Intelligence',
     // benefitContent: 'Advanced tools to take your work to the next level.',
@@ -93,7 +95,7 @@ const billingVariation = ref([
       }, {
         content: 'Duration-Month'
       }, {
-        content: 'Extra message cost-0.6$'
+        content: 'Extra message cost-Rs.10'
       }, {
         content: 'Extra message limit-200'
       }, {
@@ -105,10 +107,11 @@ const billingVariation = ref([
       }, {
         content: 'No Tring Branding-NA'
       }, 
-    ]
+    ],
+    plan: 'https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/chat_intelligence?cf_org_id=asda',
   }, {
     _id: 3,
-    amount: '$99',
+    amount: 'Rs.6999',
     status: 'Per Month',
     types: 'Super Intelligence',
     // benefitContent: 'Automation plus enterprise-grade features.',
@@ -119,7 +122,7 @@ const billingVariation = ref([
       }, {
         content: 'Duration-Month'
       }, {
-        content: 'Extra message cost-0.45$'
+        content: 'Extra message cost-8'
       }, {
         content: 'Extra message limit-1000'
       }, {
@@ -131,7 +134,8 @@ const billingVariation = ref([
       }, {
         content: 'No Tring Branding-Paid'
       },
-    ]
+    ],
+    plan: 'https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/chat_super_intelligence?cf_org_id=asda',
   }, {
     _id: 4,
     amount: 'Talk to sales',
@@ -162,6 +166,17 @@ const billingVariation = ref([
 ])
 const previusIndex: any = ref(false)
 const mostPopularPlan = ref(false)
+
+
+const choosePlan = async (plan: any) => {
+  navigateTo(`${plan}`, {
+    external: true,
+    open: {
+      target: "_blank",
+    },
+  });
+  // await navigateTo('https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/chat_plan_5')
+}
 </script>
 <style scoped>
 .analytics_leads-main-container {

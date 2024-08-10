@@ -39,7 +39,8 @@ onMounted( async () => {
   border-right: 2px solid rgba(138, 138, 138, 0.1);
 }
 .main-router-align {
-  padding: 0 0 15px 0;
+  padding: 30px 10px;
+  /* padding: 0 0 15px 0; */
   height: 100vh;
   width: 86%;
   overflow-y: scroll;

@@ -1,7 +1,7 @@
 <template>
   <div class="bot-manage-main-container">
     <div class="header-align">
-      <span class="text-lg font-bold"> Bot Management </span>
+      <span class="text-[20px] font-bold"> Bot Management </span>
     </div>
     <div class="bot-main-align">
       <div class="list-header-align">
@@ -155,7 +155,7 @@
 
 <style scoped>
   .bot-manage-main-container {
-    padding: 8px 25px;
+    padding: 7px 25px;
   }
 
   .header-align {

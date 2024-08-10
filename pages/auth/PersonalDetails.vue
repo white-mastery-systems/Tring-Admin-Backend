@@ -4,30 +4,43 @@ definePageMeta({
 });
 
 const loginData = reactive({
-  otp: '',
+  name: '',
+  role: '',
 });
 </script>
 <template>
-  <div class="sign-in-align">
+  <div class="sign-in-align flex items-center">
     <div class="top-content-align font-bold">
-      <span>
-        OTP Verification
-      </span>
+        Personal Details
     </div>
     <div class="form-align">
       <!-- <div> -->
       <div class="individual-form-align">
+        <label for="fmail" class="mb-4 font-[10px] font-bold">Name</label>
         <div class="input-container">
-          <input class="mt-2 mb-2" type="otp" id="otp" name="otp" placeholder="Enter your OTP"
-            v-model="loginData.otp" />
+          <input class="mt-2 mb-2" type="otp" id="otp" name="otp" placeholder="Enter your Name"
+            v-model="loginData.role" />
         </div>
       </div>
-      <div class="resend-otp">
-        <span>Resend OTP</span>
+      <div class="individual-form-align">
+        <label for="fpassword" class="font-bold">Role</label>
+        <div class="input-container role-input">
+          <input class="mt-2 mb-2" type="text" id="frole" name="fname" placeholder="Enter your Role"
+            v-model="loginData.name" />
+          <span class="eye-icon" id="togglePassword">
+            <!-- <OpenEye /> -->
+            <!-- <CloseEyeIcon /> -->
+            <BottomArrowIcon />
+            <!-- You can use FontAwesome or another icon library here -->
+            <!-- <i class="fas fa-eye" id="showIcon"></i> -->
+            <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
+          </span>
+        </div>
+        <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
       </div>
       <div class="submit-btn-align">
         <button class="font-bold" type="submit" @click="authHandlers.login(loginData)">
-          Continue
+          Proceed
         </button>
       </div>
       <!-- </div> -->
@@ -57,7 +70,7 @@ const loginData = reactive({
   width: 80%;
   padding: 0 25px;
   /* padding-right: 172px; */
-  padding-bottom: 5px;
+  padding-bottom: 20px;
 }
 
 .form-align {
@@ -109,6 +122,18 @@ input[type="password"] {
   /* Adjust based on the icon size */
   width: 100%;
 }
+.eye-icon {
+  position: absolute;
+  right: 0.5rem;
+  /* Adjust based on your design */
+  cursor: pointer;
+  font-size: 1rem;
+  /* Adjust size as needed */
+}
+
+.eye-icon i {
+  display: inline-block;
+}
 
 .bottom-content-align {
   color: #8A8A8A;
@@ -124,10 +149,20 @@ input[type="password"] {
   position: absolute;
   bottom: 30px;
 }
-.resend-otp {
-  text-decoration: underline;
-  color: #FFBC42;
-  font-size: 14px;
-  align-self: flex-end;
+.right-dropdown-align {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 1);
+  padding: 0px 10px;
+  width: 200px !important;
+  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 10px;
 }
+/* .role-input {
+   background: rgba(255, 255, 255, 1);
+  padding: 0px 10px;
+  width: 200px !important;
+  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 10px;
+} */
 </style>
