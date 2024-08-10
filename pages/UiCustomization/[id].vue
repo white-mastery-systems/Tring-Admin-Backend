@@ -1,8 +1,8 @@
 <template>
   <div class="mx-10 mt-14">
-    <UiButton class="pr-auto bg-white">
-      <Icon name="solar:alt-arrow-left-linear" />
-    </UiButton>
+    <button @click="router.back()">
+          <img src="assets\icons\right_arrow.svg" width="20"></img>
+        </button>
     <UiLabel class="ml-10 text-2xl font-bold">UI Customisation</UiLabel>
   </div>
   <div class="flex flex-row">
@@ -69,9 +69,9 @@
         </div>
       </div>
     </div>
-    <div class="pl-2 pr-10 pt-10">
+    <!-- <div class="pl-2 pr-10 pt-10">
       <UiLabel class="content-center items-center">Preview Widget</UiLabel>
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup lang="ts">
@@ -79,7 +79,7 @@
   const router = useRouter();
   const paramId: any = route;
   const botDetails: any = await getBotDetails(paramId.params.id);
-  const pickColor = ref(null);
+  const pickColor = ref<string | null>(null);
   const defaultSelect = ref(true);
   const onlineStatus = ref(false);
   const widgetSound = ref("");
@@ -88,7 +88,7 @@
 
   onMounted(() => {
     if (Object.entries(botDetails.metadata.ui).length) {
-      pickColor.value = botDetails.metadata.ui.color;
+      pickColor.value = hslToHex(botDetails.metadata.ui.color);
       defaultSelect.value = botDetails.metadata.ui.defaultSelect;
       onlineStatus.value = botDetails.metadata.ui.onlineStatus;
     }
@@ -102,7 +102,7 @@
       metadata: {
         ...botDetails.metadata,
         ui: {
-          color: pickColor.value,
+          color: hexToHSL(pickColor.value),
           defaultSelect: defaultSelect.value,
           onlineStatus: onlineStatus.value,
         },
