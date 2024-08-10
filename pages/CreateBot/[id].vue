@@ -50,6 +50,7 @@ const formDetails: any = reactive({
   GOAL: '',
   NOTES: '',
   DESCRIPTION: '',
+  INTENTS:"-other\n-details"
   })
 const route = useRoute()
 const paramId: any = route

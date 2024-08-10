@@ -8,6 +8,7 @@ export const listDocumentsByBotId = async (botId: string) => {
 
 export const deployDocument = async (botId: string, documentId: string) => {
   await $fetch(`/api/bots/${botId}/documents/${documentId}/deploy`);
+  toast.success("Document deployed successfully");
 };
 
 export const viewDocument = async (botId: string, documentId: string) => {
@@ -23,6 +24,7 @@ export const deleteDocument = async (botId: string, documentId: string) => {
   await $fetch(`/api/bots/${botId}/documents/${documentId}`, {
     method: "DELETE",
   });
+  toast.success("Document deleted successfully");
 };
 
 export const createDocument = async (
@@ -38,6 +40,8 @@ export const createDocument = async (
     method: "POST",
     body: form,
   });
+
+  toast.success("Document added successfully");
 };
 
 export const uploadLogo = async (botId: string, logo: File) => {

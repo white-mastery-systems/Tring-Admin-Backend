@@ -32,7 +32,7 @@
             <span v-if="botDetails.documentId" class="flex gap-4">
               <Button
                 class="button-align text-[14px] font-medium"
-                @click="deactivateBot(paramId.params.id)"
+                @click="deactivateBot"
                 >Deactivate Bot</Button
               >
               <UiButton
@@ -83,6 +83,7 @@
   import { ref } from "vue";
   const selectedValue = ref("Today");
   const route = useRoute();
+  const router = useRouter();
   const paramId: any = route;
   const botDetails: any = await getBotDetails(paramId.params.id);
   const dataList = ref([
@@ -105,33 +106,6 @@
       _id: 4,
       bot: "Document Management",
       routeName: "BotDocumentManagement-id",
-    },
-  ]);
-  const previousIndex = ref(0);
-  const menuList = ref([
-    {
-      content: "Today",
-      value: "Today",
-    },
-    {
-      content: "Weekly",
-      value: "Weekly",
-    },
-    {
-      content: "Monthly",
-      value: "Monthly",
-    },
-    {
-      content: "Quarterly",
-      value: "Quarterly",
-    },
-    {
-      content: "Halfyearly",
-      value: "Halfyearly",
-    },
-    {
-      content: "Yearly",
-      value: "Yearly",
     },
   ]);
 
@@ -175,7 +149,7 @@
   };
   const deactivateBot = async () => {
     await disableBot(paramId.params.id);
-    await getBotDetails(paramId.params.id);
+    router.back();
   };
 </script>
 

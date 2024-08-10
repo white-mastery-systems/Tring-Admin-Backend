@@ -96,39 +96,7 @@
 import { ref } from 'vue'
 const router = useRouter();
 
-const dataList = ref([
-  {
-    _id: 1,
-    bot: 'Yourstore Bot-1',
-    createAt: '12.02.2024',
-    status: true,
-    Processing: false,
-  }, {
-    _id: 1,
-    bot: 'Yourstore Bot-2 testing bot sdfdsf saf sdf',
-    createAt: '15.02.2024',
-    status: false,
-    Processing: true,
-  }, {
-    _id: 1,
-    bot: 'Yourstore Bot-2 testing bot sdfdsf saf sdf',
-    createAt: '15.02.2024',
-    status: false,
-    Processing: false,
-  }, {
-    _id: 1,
-    bot: 'Yourstore Bot-2 testing bot sdfdsf saf sdf',
-    createAt: '15.02.2024',
-    status: true,
-    Processing: false,
-  }, {
-    _id: 1,
-    bot: 'Yourstore Bot-2 testing bot sdfdsf saf sdf',
-    createAt: '15.02.2024',
-    status: false,
-    Processing: false,
-  },
-])
+
 const route = useRoute()
 const paramId: any = route
 const selectedFile = ref()
@@ -139,14 +107,15 @@ const getDocumentList: any = ref()
 onMounted(async() => {
   getDocumentList.value = await listDocumentsByBotId(paramId.params.id)
 })
-const fileUpload = () => {
+const fileUpload = async () => {
   selectedFile.value[0].name
   console.log(selectedFile.value[0], "selectedFile")
   const payload:any = {
     botId: paramId.params.id,
     document: { name: selectedFile.value[0].name, files: selectedFile.value[0] }
   }
-  createDocument(payload.botId, payload.document)
+  await createDocument(payload.botId, payload.document)
+  getDocumentList.value = await listDocumentsByBotId(paramId.params.id)
 }
 const handleAction = (list: any, action: any) => {
   if (myPopover.value) {
@@ -167,7 +136,7 @@ const handleAction = (list: any, action: any) => {
 };
 const singleDocumentDeploy = async (list: any) => {
      deployDocument(paramId.params.id, list.id)
-  getDocumentList.valua = await listDocumentsByBotId(paramId.params.id)
+  getDocumentList.value = await listDocumentsByBotId(paramId.params.id)
   // if (myPopover.value) {
   //   myPopover.value.close()
   // }
