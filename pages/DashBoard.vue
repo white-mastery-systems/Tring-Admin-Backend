@@ -89,15 +89,10 @@
         </div>
       </div>
       <div class="graph-align mt-10 gap-6">
-        <!-- <span>
-          <img src="assets\icons\Graph_left.svg" width="600" />
-        </span> -->
-        <!-- <span>
-           <img src="assets\icons\graph_right.svg" width="400">
-        </span> -->
         <div
-          class="h-[350px] w-[650px] place-content-center rounded-md bg-white shadow"
+          class="h-[380px] w-[750px] place-content-center rounded-md bg-white shadow"
         >
+          <UiLabel class="pb-1 pl-4 text-lg font-bold">Chat Bot</UiLabel>
           <UiLineChart
             :data="lineGraphData"
             index="month"
@@ -118,8 +113,15 @@
         </div>
 
         <div
-          class="h-[350px] w-[350px] place-content-center rounded-md bg-white shadow"
+          class="h-[380px] w-[450px] place-content-center rounded-md bg-white shadow"
         >
+          <UiLabel class="absolute top-52 pl-4 pt-4 text-lg font-bold"
+            >Voice Bot</UiLabel
+          >
+          <VisBulletLegend
+            :items="chartDataItems"
+            class="absolute right-24 top-60 flex flex-col pt-3"
+          />
           <UiDonutChart
             index="name"
             :category="'total'"
@@ -127,7 +129,6 @@
             :colors="['#ffbc42', '#424bd1']"
             :arc-width="50"
           >
-            <VisBulletLegend :items="chartDataItems" class="flex flex-row" />
           </UiDonutChart>
         </div>
       </div>
@@ -193,6 +194,33 @@
 
   const selectedValue = ref("Today");
 
+  const menuList = ref([
+    {
+      content: "Today",
+      value: "Today",
+    },
+    {
+      content: "Weekly",
+      value: "Weekly",
+    },
+    {
+      content: "Monthly",
+      value: "Monthly",
+    },
+    {
+      content: "Quarterly",
+      value: "Quarterly",
+    },
+    {
+      content: "Halfyearly",
+      value: "Halfyearly",
+    },
+    {
+      content: "Yearly",
+      value: "Yearly",
+    },
+  ]);
+
   const lineGraphData = [
     {
       month: "January",
@@ -255,32 +283,6 @@
       "Sessions Created": 270,
     },
   ];
-  const menuList = ref([
-    {
-      content: "Today",
-      value: "Today",
-    },
-    {
-      content: "Weekly",
-      value: "Weekly",
-    },
-    {
-      content: "Monthly",
-      value: "Monthly",
-    },
-    {
-      content: "Quarterly",
-      value: "Quarterly",
-    },
-    {
-      content: "Halfyearly",
-      value: "Halfyearly",
-    },
-    {
-      content: "Yearly",
-      value: "Yearly",
-    },
-  ]);
 
   const chartsData = [
     {
