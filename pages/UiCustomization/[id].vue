@@ -1,124 +1,149 @@
 <template>
-  <div class="form-align">
-    <!-- {{ botDetails }} -->
-    <div>
-      <div class="individual-form-align">
-        <label for="frole" class="font-[10px] font-medium">LOGO</label>
-        <FileUpload accept="image/*" v-model="logo"/>
-      </div>
-      <div class="color-picker-align gap-8 px-5">
-        <div class="flex gap-3">
-          <label for="color" class="font-medium">Primary Color</label>
-          <input v-model="pickColor" type="color" id="colorId" name="color" />
+  <div class="mx-10 mt-14">
+    <UiButton class="pr-auto bg-white"
+      ><Icon name="solar:alt-arrow-left-linear"
+    /></UiButton>
+    <UiLabel class="ml-10 text-2xl font-bold">UI Customisation</UiLabel>
+  </div>
+  <div class="flex flex-row">
+    <div class="form-align pl-10">
+      <!-- {{ botDetails }} -->
+      <div class="h-[600px] w-[480px] items-center rounded-md shadow-lg">
+        <div class="individual-form-align mt-5 flex flex-row">
+          <FileUpload accept="image/*" v-model="logo" class="pr-56" />
         </div>
-        <!-- <label class="inline-flex cursor-pointer items-center">
-          <input v-model="defaultSelect" type="checkbox" class="peer sr-only" />
-          <!-- <div
-            class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800 rtl:peer-checked:after:-translate-x-full"
-          ></div>
-          <span
-            class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-            >OPEN BY DEFAULT</span
-          > 
-        </label> -->
-      </div>
-      <div class="py-4">
-        <UiSelect v-model="widgetSound" >
-          <UiLabel class="font-[10px] pb-3 font-medium">Widget Sound</UiLabel>
-          <UiSelectTrigger class="w-72">
-            <UiSelectValue/>
-          </UiSelectTrigger>
-          <UiSelectContent>
-            <UiSelectGroup>
-              <UiSelectItem value="Yes"> Yes </UiSelectItem>
-              <UiSelectItem value="No"> No </UiSelectItem>
-            </UiSelectGroup>
-          </UiSelectContent>
-        </UiSelect>
-      </div>
-      <div class="py-4">
-        <UiSelect v-model="widgetPosition">
-          <UiLabel class="font-[10px] pb-3 font-medium">Widget Position</UiLabel>
-          <UiSelectTrigger class="w-72">
-            <UiSelectValue/>
-          </UiSelectTrigger>
-          <UiSelectContent>
-            <UiSelectGroup>
-              <UiSelectItem value="Left"> Left </UiSelectItem>
-              <UiSelectItem value="Right"> Right </UiSelectItem>
-            </UiSelectGroup>
-          </UiSelectContent>
-        </UiSelect>
-      </div>
-      <div class="py-3 space-y-4">
-          <div class="flex flex-row gap-4">
-            <UiLabel>Open By Default</UiLabel>
-            <UiSwitch id="open-by-default" v-model:checked="defaultSelect"</UiSwitch>
+        <div class="space-y-1">
+          <UiLabel class="ml-10 text-lg font-bold">Colours</UiLabel>
+          <div
+            class="color-picker-align mx-10 h-14 w-[400px] gap-8 rounded-lg bg-white px-5 shadow"
+          >
+            <div class="flex gap-52">
+              <label
+                for="color"
+                class="py-auto content-center text-base font-medium"
+                >Primary Colour</label
+              >
+              <div class="h-8 w-8 overflow-hidden rounded-full">
+                <input
+                  v-model="pickColor"
+                  type="color"
+                  id="colorId"
+                  name="color"
+                  class="h-20 w-20 -translate-x-1/3 -translate-y-1/3"
+                />
+              </div>
+            </div>
           </div>
-          <div class="flex flex-row gap-4">
-            <UiLabel>Online Status</UiLabel>
-            <UiSwitch id="online-status" v-model:checked="onlineStatus"</UiSwitch>
+        </div>
+        <div class="space-y-2 py-4">
+          <UiLabel class="ml-10 text-lg font-bold">Widget Sound</UiLabel>
+          <UiSelect v-model="widgetSound">
+            <UiSelectTrigger
+              class="hover:focus:none hover:focus-visible:none mx-10 h-12 w-[400px] shadow"
+            >
+              <UiSelectValue />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup>
+                <UiSelectItem value="Yes"> Yes </UiSelectItem>
+                <UiSelectItem value="No"> No </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+        </div>
+        <div class="space-y-2">
+          <UiLabel class="ml-10 text-lg font-bold">Widget Position</UiLabel>
+          <UiSelect v-model="widgetPosition">
+            <UiSelectTrigger
+              class="hover:focus-visible:none hover:focus:none mx-10 h-12 w-[400px] shadow"
+            >
+              <UiSelectValue />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup>
+                <UiSelectItem value="Left"> Left </UiSelectItem>
+                <UiSelectItem value="Right"> Right </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+        </div>
+        <div class="space-y-4 py-4">
+          <div class="mx-10 flex flex-row justify-between">
+            <UiLabel class="text-base font-bold">Open By Default</UiLabel>
+            <UiSwitch
+              id="open-by-default"
+              v-model:checked="defaultSelect"
+              class="text-[#424bd1]"
+            />
           </div>
-          
-        
+          <div class="mx-10 flex flex-row justify-between">
+            <UiLabel class="text-base font-bold">Online Status</UiLabel>
+            <UiSwitch id="online-status" v-model:checked="onlineStatus" />
+          </div>
+        </div>
+        <div class="submit-btn-align my-auto">
+          <button
+            class="my-auto text-base font-semibold"
+            type="submit"
+            @click="uiUpdate"
+          >
+            Submit
+          </button>
+        </div>
       </div>
-      <div class="submit-btn-align">
-        <button class="text-[14px] font-bold" type="submit" @click="uiUpdate">
-          Submit
-        </button>
-      </div>
+    </div>
+    <div class="pl-2 pr-10 pt-10">
+      <UiLabel class="content-center items-center">Preview Widget</UiLabel>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-
-
   const route = useRoute();
   const router = useRouter();
   const paramId: any = route;
   const botDetails: any = await getBotDetails(paramId.params.id);
   const pickColor = ref(null);
   const defaultSelect = ref(true);
-  const onlineStatus = ref(false)
+  const onlineStatus = ref(false);
   const widgetSound = ref("");
   const widgetPosition = ref("");
   const logo = ref<FileList | null>(null);
 
-onMounted(() => {
-  if (botDetails.metadata.ui.length) {
-    pickColor.value = botDetails.metadata.ui.color
-    defaultSelect.value = botDetails.metadata.ui.defualtSelect
-  }
-})
-
-const uiUpdate = async () => {
-  console.log(botDetails, "botDetails")
-  const payload: any = {
-    // name: botDetails.name,
-    ...botDetails,
-    id: botDetails.id,
-    metadata: {
-      ...botDetails.metadata,
-      ui: {
-        color: pickColor.value,
-        defaultSelect: defaultSelect.value,
-        onlineStatus: onlineStatus.value,
-      }
+  onMounted(() => {
+    if (botDetails.metadata.ui.length) {
+      pickColor.value = botDetails.metadata.ui.color;
+      defaultSelect.value = botDetails.metadata.ui.defualtSelect;
     }
-  }
-  await updateBotDetails(payload)
- 
-  logo.value && await uploadLogo(botDetails.id, logo.value![0])
-  // console.log(botDetails.name, "botDetails.name")
-  // console.log(pickColor.value, "pickColor.value")
-  // console.log(defualtSelect.value, "pickColor.value")
-}
+  });
+
+  const uiUpdate = async () => {
+    console.log(botDetails, "botDetails");
+    const payload: any = {
+      // name: botDetails.name,
+      ...botDetails,
+      id: botDetails.id,
+      metadata: {
+        ...botDetails.metadata,
+        ui: {
+          color: pickColor.value,
+          defaultSelect: defaultSelect.value,
+          onlineStatus: onlineStatus.value,
+        },
+      },
+    };
+    await updateBotDetails(payload);
+
+    logo.value && (await uploadLogo(botDetails.id, logo.value![0]));
+    // console.log(botDetails.name, "botDetails.name")
+    // console.log(pickColor.value, "pickColor.value")
+    // console.log(defualtSelect.value, "pickColor.value")
+  };
 </script>
 <style scoped>
   .form-align {
     display: flex;
     /* flex-direction: column; */
-    padding: 100px 25px;
+    padding-top: 50px;
   }
 
   form {
@@ -130,7 +155,7 @@ const uiUpdate = async () => {
 
   .individual-form-align {
     width: 100%;
-    padding: 0 20px;
+    padding-left: 40px;
     height: 120px;
   }
 
@@ -164,7 +189,7 @@ const uiUpdate = async () => {
   .submit-btn-align {
     width: 100%;
     display: flex;
-    justify-content: end;
+    justify-content: center;
   }
 
   .submit-btn-align input {
@@ -214,7 +239,7 @@ const uiUpdate = async () => {
     padding: 0 20px;
     background: #424bd1;
     color: #ffffff;
-    margin-top: 20px;
+    /* margin-top: 20px; */
     /* margin-right: 170px; */
   }
 </style>
