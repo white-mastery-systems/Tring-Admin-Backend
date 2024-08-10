@@ -97,8 +97,9 @@ export const messageSchema = chatbotSchema.table("messages", {
 
 export const leadSchema = chatbotSchema.table("leads", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  crmLeadId: varchar("crm_lead_id", { length: 128 }).notNull(),
+  crmLeadId: varchar("crm_lead_id", { length: 128 }),
   metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 
   botId: uuid("bot_id")
     .references(() => chatBotSchema.id)

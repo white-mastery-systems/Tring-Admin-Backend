@@ -119,7 +119,7 @@
   const previewUrl = computed(() => {
     let col = botDetails.metadata.ui.color as string;
     col = col
-      .split(" ")
+      ?.split(" ")
       .map((element) => {
         if (element.at(-1) === "%") return element.slice(0, -1);
         else return element;
