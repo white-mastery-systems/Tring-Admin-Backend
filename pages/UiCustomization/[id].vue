@@ -1,18 +1,19 @@
 <template>
   <div class="mx-10 mt-14">
     <button @click="router.back()">
-          <img src="assets\icons\right_arrow.svg" width="20"></img>
-        </button>
+      <img src="assets\icons\right_arrow.svg" width="20"></img>
+    </button>
     <UiLabel class="ml-10 text-2xl font-bold">UI Customisation</UiLabel>
   </div>
   <div class="flex flex-row">
     <div class="form-align pl-10">
       <!-- {{ botDetails }} -->
       <div class="h-[600px] w-[480px] items-center rounded-md shadow-lg">
-        <div class="individual-form-align mt-5 flex flex-row">
+        <div class="individual-form-align mt-1 flex flex-col">
+          <UiLabel class="pl-2 pb-1 text-lg font-bold">Logo</UiLabel>
           <FileUpload accept="image/*" v-model="logo" class="pr-56" />
         </div>
-        <div class="space-y-1">
+        <div class="space-y-1 mt-3">
           <UiLabel class="ml-10 text-lg font-bold">Colours</UiLabel>
           <div
             class="color-picker-align mx-10 h-14 w-[400px] gap-8 rounded-lg bg-white px-5 shadow"
