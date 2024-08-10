@@ -3,7 +3,7 @@
     <div class="navigation-drawer">
       <NevigationDrawer />
     </div>
-    <!-- :style="{ width: (['Sing'].includes(routeName)) ? '100%' : '86%' }" -->
+    <!-- :style="{ width: (['Sign'].includes(routeName)) ? '100%' : '86%' }" -->
     <div class="main-router-align">
       <slot />
     </div>

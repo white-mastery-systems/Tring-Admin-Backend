@@ -1,20 +1,24 @@
 <!-- layouts\auth.vue -->
 <template>
-  <div class="singup-page">
+  <div class="signup-page">
     <div class="left-card-align">
       <div class="tring-log-top-align">
         <img src="assets\icons\tring_AI_logo.svg" width="80" height="80">
+        <div class="flex items-center font-bold text-[15px] gap-2">
+          <RightArrow/>
+          <span>Back</span>
+        </div>
       </div>
       <slot />
     </div>
     <div class="right-card-align">
-      <img src="assets\icons\singupImages.svg" ></img>
+      <img src="assets\icons\signupImages.svg" ></img>
       <!-- <img src="assets\icons\rectangle_singup.svg" width="600"></img> -->
     </div>
   </div>
 </template>
 <style scoped>
-.singup-page {
+.signup-page {
   display: flex;
   padding: 25px;
   /* align-items: center; */

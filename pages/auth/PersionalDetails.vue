@@ -4,47 +4,35 @@ definePageMeta({
 });
 
 const loginData = reactive({
-  username: "",
-  password: "",
-  confirmPassword: "",
+  name: '',
+  role: ','
 });
 </script>
 <template>
   <div class="sign-in-align">
     <div class="top-content-align font-bold">
       <span>
-        Let’s Get Started
+        Personal Details
       </span>
     </div>
     <div class="form-align">
       <!-- <div> -->
       <div class="individual-form-align">
-        <label for="fmail" class="mb-4 font-[10px] font-bold">E-mail</label>
-        <input class="mt-2 mb-2" type="text" id="frole" name="fmail" v-model="loginData.username" />
-      </div>
-      <div class="individual-form-align">
-        <label for="fpassword" class="font-bold">Password</label>
+        <label for="fmail" class="mb-4 font-[10px] font-bold">Name</label>
         <div class="input-container">
-          <input class="mt-2 mb-2" type="password" id="frole" name="fname" placeholder="Enter your password"
-            v-model="loginData.password" />
-          <span class="eye-icon" id="togglePassword">
-            <!-- <OpenEye/> -->
-            <CloseEyeIcon />
-            <!-- You can use FontAwesome or another icon library here -->
-            <!-- <i class="fas fa-eye" id="showIcon"></i> -->
-            <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
-          </span>
+          <input class="mt-2 mb-2" type="otp" id="otp" name="otp" placeholder="Enter your OTP"
+            v-model="loginData.role" />
         </div>
-        <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
       </div>
       <div class="individual-form-align">
-        <label for="fpassword" class="font-bold">Confirm Password</label>
+        <label for="fpassword" class="font-bold">Role</label>
         <div class="input-container">
-          <input class="mt-2 mb-2" type="password" id="frole" name="fname" placeholder="Enter your password"
-            v-model="loginData.confirmPassword" />
+          <input class="mt-2 mb-2" type="text" id="frole" name="fname" placeholder="Enter your password"
+            v-model="loginData.name" />
           <span class="eye-icon" id="togglePassword">
             <!-- <OpenEye /> -->
-            <CloseEyeIcon />
+            <!-- <CloseEyeIcon /> -->
+            <BottomArrowIcon />
             <!-- You can use FontAwesome or another icon library here -->
             <!-- <i class="fas fa-eye" id="showIcon"></i> -->
             <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
@@ -54,15 +42,8 @@ const loginData = reactive({
       </div>
       <div class="submit-btn-align">
         <button class="font-bold" type="submit" @click="authHandlers.login(loginData)">
-          Sign up
+          Proceed
         </button>
-      </div>
-      <div class="content-align">
-        <span class="border-align"></span> <span>Or login with</span> <span class="border-align"></span>
-      </div>
-      <div class="flex items-center justify-center font-medium gap-1">
-        <span>Don’t have an account?</span>
-        <span class="align_border">Sign in</span>
       </div>
       <!-- </div> -->
     </div>
@@ -100,14 +81,6 @@ const loginData = reactive({
   gap: 10px;
   width: 80%;
   padding: 0 25px;
-}
-
-form {
-  width: 100%;
-  display: flex;
-  /* flex-wrap: wrap; */
-  flex-direction: column;
-  /* align-items: start; */
 }
 
 /* .individual-form-align {
@@ -150,7 +123,6 @@ input[type="password"] {
   /* Adjust based on the icon size */
   width: 100%;
 }
-
 .eye-icon {
   position: absolute;
   right: 0.5rem;
@@ -162,37 +134,6 @@ input[type="password"] {
 
 .eye-icon i {
   display: inline-block;
-}
-
-/* .forget-pws-align {
-  font-size: 13px;
-  margin-top: 10px;
-} */
-
-.align_border {
-  color: #424BD1;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  cursor: pointer;
-}
-
-.content-align {
-  color: #8A8A8A;
-  height: 80px;
-  font-size: 12px;
-  font-weight: 400;
-  gap: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* align-self: center; */
-}
-
-.border-align {
-  width: 30%;
-  height: 10px;
-  margin-top: 11px;
-  border-top: 1px solid #8A8A8A;
 }
 
 .bottom-content-align {

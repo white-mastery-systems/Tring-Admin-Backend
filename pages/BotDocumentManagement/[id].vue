@@ -44,7 +44,6 @@
           <!-- {{ list }} -->
           <div class="list_align">
             <span class="font-medium bot_name_align">{{ list.name }}</span>
-            <!-- Processing -->
             <span class="font-medium create_at-align"
               :style="{ 'padding-inline-end': (list.status === 'ready') ? '132px' : (list.status === 'processing') ? '133px' : '133px' }">{{
               list.createdAt }}</span>
@@ -52,7 +51,6 @@
               <div class="rounded-full active-circle-align"></div>
               <span>Success</span>
             </div>
-            <!-- Processing -->
             <div v-else-if="list.status === 'processing'" class="process_class font-medium">
               <div class="rounded-full process-circle-align"></div>
               <span>Processing</span>

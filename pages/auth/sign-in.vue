@@ -9,67 +9,78 @@
   });
 </script>
 <template>
-  <div class="sing-in-align">
-    <div class="top-content-align font-bold">Let’s Get Started</div>
+  <div class="sign-in-align">
+    <div class="top-content-align font-bold">
+      <span>
+        Let’s Get Started
+      </span>
+    </div>
     <div class="form-align">
-      <div>
-        <div class="individual-form-align">
-          <label for="fmail" class="pb-2 font-[10px] font-bold">E-mail</label>
-          <input
-            type="text"
-            id="frole"
-            name="fmail"
-            v-model="loginData.username"
-          />
-        </div>
-        <div class="individual-form-align">
-          <label for="fpassword" class="pb-2 font-bold">Password</label>
-          <div class="input-container">
-            <input
-              type="password"
-              id="frole"
-              name="fname"
-              placeholder="Enter your password"
-              v-model="loginData.password"
-            />
-            <span class="eye-icon" id="togglePassword">
-              <OpenEye />
-              <!-- <CloseEyeIcon /> -->
-              <!-- You can use FontAwesome or another icon library here -->
-              <!-- <i class="fas fa-eye" id="showIcon"></i> -->
-              <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
-            </span>
-          </div>
-        </div>
-        <div class="submit-btn-align">
-          <button
-            class="font-bold"
-            type="submit"
-            @click="authHandlers.login(loginData)"
-          >
-            Sing in
-          </button>
-        </div>
+      <!-- <div> -->
+      <div class="individual-form-align">
+        <label for="fmail" class="mb-4 font-[10px] font-bold">E-mail</label>
+        <input class="mt-2 mb-2" type="text" id="frole" name="fmail" v-model="loginData.username" />
       </div>
+      <div class="individual-form-align">
+        <label for="fpassword" class="font-bold">Password</label>
+        <div class="input-container">
+          <input class="mt-2 mb-2" type="password" id="frole" name="fname" placeholder="Enter your password"
+            v-model="loginData.password" />
+          <span class="eye-icon" id="togglePassword">
+            <!-- <OpenEye /> -->
+            <CloseEyeIcon />
+            <!-- You can use FontAwesome or another icon library here -->
+            <!-- <i class="fas fa-eye" id="showIcon"></i> -->
+            <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
+          </span>
+        </div>
+        <div class="forget-pws-align align_border">Forgot Password?</div>
+      </div>
+      <div class="submit-btn-align">
+        <button class="font-bold" type="submit" @click="authHandlers.login(loginData)">
+          Sign in
+        </button>
+      </div>
+      <div class="content-align">
+        <span class="border-align"></span> <span>Or login with</span> <span class="border-align"></span>
+      </div>
+      <div class="flex items-center justify-center font-medium gap-1">
+        <span>Don’t have an account?</span>
+        <span class="align_border">Sign up</span>
+      </div>
+      <!-- </div> -->
+    </div>
+    <div class="flex items-center gap-1 footer-align">
+      <span class="bottom-content-align">
+        By Signing up, I Agree to Tring AI
+      </span>
+      <span class="term-align">
+        Terms & Conditions
+      </span>
     </div>
   </div>
 </template>
 <style scoped>
-  .sing-in-align {
+  .sign-in-align {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100%;
+    width: 100%;
   }
   .top-content-align {
     color: #424bd1;
-    padding-right: 172px;
+    width: 80%;
+    padding: 0 25px;
+    /* padding-right: 172px; */
     padding-bottom: 20px;
   }
   .form-align {
     display: flex;
-    /* flex-direction: column; */
+    flex-direction: column;
+    gap: 10px;
+    width: 80%;
     padding: 0 25px;
   }
   form {
@@ -79,6 +90,9 @@
     flex-direction: column;
     /* align-items: start; */
   }
+  /* .individual-form-align {
+    gap: 5px;
+  } */
   .individual-form-align input {
     background-color: rgba(246, 246, 246, 1);
     width: 100%;
@@ -86,7 +100,6 @@
     outline: none;
     border-radius: 10px;
     padding: 0 20px;
-    /* margin-top: 20px; */
   }
   .submit-btn-align {
     width: 100%;
@@ -102,11 +115,7 @@
     background: #424bd1;
     color: #ffffff;
     margin-top: 20px;
-    margin-right: 170px;
-  }
-
-  .color-picker-align input {
-    width: 50%;
+    /* margin-right: 170px; */
   }
 
   .input-container {
@@ -132,5 +141,44 @@
 
   .eye-icon i {
     display: inline-block;
+  }
+  .forget-pws-align {
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  .align_border {
+    color: #424BD1;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+  }
+  .content-align {
+    color: #8A8A8A;
+    height: 80px;
+    font-size: 12px;
+    font-weight: 400;
+    gap: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* align-self: center; */
+  }
+  .border-align {
+    width: 30%;
+    height: 10px;
+    margin-top: 11px;
+    border-top: 1px solid #8A8A8A;
+  }
+  .bottom-content-align {
+    color: #8A8A8A;
+    font-size: 12px;
+  }
+  .term-align {
+    font-size: 12px;
+    text-decoration: underline;
+  }
+  .footer-align {
+    position: absolute;
+    bottom: 30px;
   }
 </style>

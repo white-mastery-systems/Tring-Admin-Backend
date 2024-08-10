@@ -85,7 +85,7 @@
   const logo = ref<FileList | null>(null);
 
 onMounted(() => {
-  if (botDetails.metadata.ui.length) {
+  if (Object.entries(botDetails.metadata.ui).length) {
     pickColor.value = botDetails.metadata.ui.color
     defaultSelect.value = botDetails.metadata.ui.defualtSelect
   }

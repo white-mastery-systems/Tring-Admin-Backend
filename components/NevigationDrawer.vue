@@ -4,24 +4,24 @@
       <img src="assets\icons\tring_AI_logo.svg" width="80" height="80">
     </div>
     <!-- <div> -->
-    <div :class="[(route.path === '/dashboard') ? 'activeClass' : 'default-align']" @click="async () => {
+    <div :class="[(route.path === '/DashBoard') ? 'activeClass' : 'default-align']" @click="async () => {
       await navigateTo({ name: 'DashBoard' })
     }">
       <span>
-        <img v-if="(route.path === '/dashboard')" src="assets\icons\activeHome.svg" width="22" height="22">
+        <img v-if="(route.path === '/DashBoard')" src="assets\icons\activeHome.svg" width="22" height="22">
         <img v-else src="assets\icons\deactiveHome.svg" width="22" height="22">
       </span>
       <span class="content-align">Dashboard</span>
     </div>
     <div class="analytics-main-container">
       <div class="rounded-t-lg"
-        :class="[((route.path === '/analyticsoverview') || (route.path === '/analyticsLeads')) ? 'analytic_activeClass' : 'default-align']"
+        :class="[((route.path === '/AnalyticsOverView') || (route.path === '/AnalyticsLeads')) ? 'analytic_activeClass' : 'default-align']"
         @click="async () => {
          await navigateTo({ name: 'AnalyticsOverView' })
       }">
         <div class="flex items-center gap-3">
           <span>
-            <img v-if="((route.path === '/analyticsoverview') || (route.path === '/analyticsLeads'))"
+            <img v-if="((route.path === '/AnalyticsOverView') || (route.path === '/AnalyticsLeads'))"
               src="assets\icons\analytics_active.svg" width="22" height="22">
             <img v-else src="assets\icons\analytics_deactive.svg" width="22" height="22">
           </span>
@@ -31,23 +31,24 @@
           <img src="assets\icons\chevron_right.svg" alt=""></img>
         </span> -->
       </div>
-      <div v-if="(route.path === '/analyticsoverview') || (route.path === '/analyticsLeads')"
+      <div v-if="(route.path === '/AnalyticsOverView') || (route.path === '/AnalyticsLeads')"
         class="rounded-b-lg analytics_sub_details_align">
         <div
-          :class="[(route.path === '/analyticsoverview') ? 'active_analytics_sub_details_align' : 'deactive_analytics_sub_details_align']"
+          :class="[(route.path === '/AnalyticsOverView') ? 'active_analytics_sub_details_align' : 'deactive_analytics_sub_details_align']"
           @click="async () => {
-            await navigateTo({name: 'AnalyticsLeads'})}">
+          await navigateTo({ name: 'AnalyticsOverView' })}">
           Overview
         </div>
         <div class="pt-4"
-          :class="[(route.path === '/analyticsLeads') ? 'active_analytics_sub_details_align' : 'deactive_analytics_sub_details_align']"
+          :class="[(route.path === '/AnalyticsLeads') ? 'active_analytics_sub_details_align' : 'deactive_analytics_sub_details_align']"
+
           @click="async () => {
             await navigateTo({name: 'AnalyticsLeads'})
           }">
           Leads</div>
       </div>
     </div>
-    <div :class="[(route.path === '/billing') ? 'activeClass' : 'default-align']" @click="async () => {
+    <div :class="[(route.path === '/Billing') ? 'activeClass' : 'default-align']" @click="async () => {
         await navigateTo({name: 'Billing'})
     }">
       <span>
@@ -129,6 +130,7 @@ onMounted(async () => {
   font-weight: 600;
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
   font-size: 10px;
+  cursor: pointer;
 }
 .content-align {
   font-size: 14px;
@@ -144,6 +146,7 @@ onMounted(async () => {
   padding: 18px 18px;
   border-radius: 10px;
   font-weight: 600;
+  cursor: pointer;
     /* background: rgba(0, 0, 0, 0.05); */
 }
 .analytic_activeClass {
@@ -157,6 +160,7 @@ onMounted(async () => {
   padding: 18px 18px;
   /* border-radius: 10px; */
   font-weight: 600;
+  cursor: pointer;
 }
 .analytics_sub_details_align {
   padding: 15px 53px;
@@ -167,6 +171,7 @@ onMounted(async () => {
 }
 .deactive_analytics_sub_details_align {
   color: black;
+  cursor: pointer;
 }
 .active_analytics_sub_details_align {
   /* padding: 10px 30px;
@@ -174,6 +179,7 @@ onMounted(async () => {
   min-height: 80px; */
   color: rgba(66, 75, 209, 1);
   font-weight: 700;
+  cursor: pointer;
   /* border-radius: 10px; */
   /* background: rgba(240, 246, 255, 1); */
 }

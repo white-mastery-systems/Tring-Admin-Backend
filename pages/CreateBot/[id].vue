@@ -36,12 +36,12 @@
 </template>
 <script setup lang="ts">
 const formDetails: any = reactive({
-  ROLE: 'Testing role',
-  NAME: 'Testing name',
-  COMPANY: 'Testing company',
-  GOAL: 'Testing goal',
-  NOTES: 'Testing description',
-  DESCRIPTION: 'Testing notes',
+  ROLE: '',
+  NAME: '',
+  COMPANY: '',
+  GOAL: '',
+  NOTES: '',
+  DESCRIPTION: '',
   })
 const route = useRoute()
 const paramId: any = route
@@ -49,13 +49,13 @@ const botDetails: any = await getBotDetails(paramId.params.id)
 
 
 onMounted(() => {
-  if (botDetails.metadata.prompt.length) {
-    formDetails.value.ROLE = botDetails.metadata.prompt.ROLE
-    formDetails.value.NAME = botDetails.metadata.prompt.NAME
-    formDetails.value.COMPANY = botDetails.metadata.prompt.COMPANY
-    formDetails.value.GOAL = botDetails.metadata.prompt.GOAL
-    formDetails.value.NOTES = botDetails.metadata.prompt.NOTES
-    formDetails.value.DESCRIPTION = botDetails.metadata.prompt.DESCRIPTION
+  if (Object.entries(botDetails.metadata.prompt).length) {
+    formDetails.ROLE = botDetails.metadata.prompt.ROLE
+    formDetails.NAME = botDetails.metadata.prompt.NAME
+    formDetails.COMPANY = botDetails.metadata.prompt.COMPANY
+    formDetails.GOAL = botDetails.metadata.prompt.GOAL
+    formDetails.NOTES = botDetails.metadata.prompt.NOTES
+    formDetails.DESCRIPTION = botDetails.metadata.prompt.DESCRIPTION
   }
 })
 
@@ -63,7 +63,7 @@ const createBot = () => {
   const payload: any = {
     id: botDetails.id,
     metadata: {
-      // ...botDetails.metadata,
+      ...botDetails.metadata,
       prompt: {
         ...formDetails,
       }
