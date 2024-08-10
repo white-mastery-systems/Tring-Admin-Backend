@@ -109,12 +109,13 @@
   const widgetPosition = ref("");
   const logo = ref<FileList | null>(null);
 
-onMounted(() => {
-  if (Object.entries(botDetails.metadata.ui).length) {
-    pickColor.value = botDetails.metadata.ui.color
-    defaultSelect.value = botDetails.metadata.ui.defualtSelect
-  }
-})
+  onMounted(() => {
+    if (Object.entries(botDetails.metadata.ui).length) {
+      pickColor.value = botDetails.metadata.ui.color;
+      defaultSelect.value = botDetails.metadata.ui.defaultSelect;
+      onlineStatus.value = botDetails.metadata.ui.onlineStatus;
+    }
+  });
 
   const uiUpdate = async () => {
     console.log(botDetails, "botDetails");
