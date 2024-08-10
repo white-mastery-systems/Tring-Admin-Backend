@@ -2,9 +2,9 @@
   <div class="bot-manage-main-container">
     <div class="header-align">
       <div class="flex items-center gap-2">
-        <span>
+        <button @click="router.back()">
           <img src="assets\icons\right_arrow.svg" width="20"></img>
-        </span>
+        </button>
         <span class="font-bold text-[20px]">Document Management</span>
       </div>
       <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary: <span
@@ -94,6 +94,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
+const router = useRouter();
 
 const dataList = ref([
   {
