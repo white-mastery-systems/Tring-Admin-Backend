@@ -13,6 +13,14 @@ export const organizationSchema = adminSchema.table("organization", {
   description: text("description"),
 });
 
+export const billingSchema = adminSchema.table("billing", {
+  org_id: uuid("org_id").notNull(),
+  customer_id: uuid("customer_id").notNull(),
+  plan_code: varchar("plan_code", { length: 64 }).notNull(),
+  subscription_metadata: text("subscription_metadata"),
+  customer_metadata: text("customer_metadata"),
+});
+
 // Relations
 export const organizationRelations = relations(
   organizationSchema,
