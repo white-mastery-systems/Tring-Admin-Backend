@@ -1,4 +1,4 @@
-import { text, uuid, varchar, timestamp } from "drizzle-orm/pg-core";
+import { text, uuid, varchar, timestamp, jsonb } from "drizzle-orm/pg-core";
 import {
   type InferSelectModel,
   type InferInsertModel,
@@ -13,16 +13,18 @@ import { adminSchema } from ".";
 // Table definitions
 export const authUserSchema = adminSchema.table("user", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  username: varchar("username", { length: 64 }).notNull(),
+  username: varchar("username", { length: 64 }),
   role: varchar("role", {
     length: 10,
     enum: ["admin", "user"],
   }).notNull(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
-  organizationId: uuid("organization_id")
-    .references(() => organizationSchema.id, { onDelete: "cascade" })
-    .notNull(),
+  metadata: jsonb("metadata"),
+  organizationId: uuid("organization_id").references(
+    () => organizationSchema.id,
+    { onDelete: "cascade" },
+  ),
 });
 
 export const authSessionSchema = adminSchema.table("session", {
@@ -77,9 +79,7 @@ export const zodUpdateUser = zodInsertUser.pick({
   username: true,
 });
 
-export const zodLogin = zodInsertUser.pick({ username: true, password: true });
-export const zodSignUpSchema = zodLogin.extend({
-  email: z.string().email(),
-  organizationName: z.string().min(1),
-  organizationDescription: z.string().optional(),
-});
+export const zodLogin = zodInsertUser
+  .pick({ email: true, password: true })
+  .required();
+export const zodSignUpSchema = zodLogin;

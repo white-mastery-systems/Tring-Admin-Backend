@@ -4,28 +4,38 @@
   });
 
   const loginData = reactive({
-    username: "",
+    email: "",
     password: "",
   });
 </script>
 <template>
   <div class="sign-in-align">
     <div class="top-content-align font-bold">
-      <span>
-        Let’s Get Started
-      </span>
+      <span> Let’s Get Started </span>
     </div>
     <div class="form-align">
       <!-- <div> -->
       <div class="individual-form-align">
-        <label for="username" class="mb-4 font-[10px] font-bold">E-mail</label>
-        <input class="mt-2 mb-2" type="text" id="username" name="username" v-model="loginData.username" />
+        <label for="username" class="mb-4 font-bold">E-mail</label>
+        <input
+          class="mb-2 mt-2"
+          type="text"
+          id="username"
+          name="username"
+          v-model="loginData.email"
+        />
       </div>
       <div class="individual-form-align">
         <label for="fpassword" class="font-bold">Password</label>
         <div class="input-container">
-          <input class="mt-2 mb-2" type="password" id="password" name="password" placeholder="Enter your password"
-            v-model="loginData.password" />
+          <input
+            class="mb-2 mt-2"
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            v-model="loginData.password"
+          />
           <span class="eye-icon" id="togglePassword">
             <!-- <OpenEye /> -->
             <CloseEyeIcon />
@@ -37,26 +47,29 @@
         <div class="forget-pws-align align_border">Forgot Password?</div>
       </div>
       <div class="submit-btn-align">
-        <button class="font-bold" type="submit" @click="authHandlers.login(loginData)">
+        <button
+          class="font-bold"
+          type="submit"
+          @click="authHandlers.login(loginData)"
+        >
           Sign in
         </button>
       </div>
       <div class="content-align">
-        <span class="border-align"></span> <span>Or login with</span> <span class="border-align"></span>
+        <span class="border-align"></span> <span>Or login with</span>
+        <span class="border-align"></span>
       </div>
-      <div class="flex items-center justify-center font-medium gap-1">
+      <div class="flex items-center justify-center gap-1 font-medium">
         <span>Don’t have an account?</span>
-        <span class="align_border">Sign up</span>
+        <NuxtLink to="/auth/sign-up" class="align_border">Sign up</NuxtLink>
       </div>
       <!-- </div> -->
     </div>
-    <div class="flex items-center gap-1 footer-align">
+    <div class="footer-align flex items-center gap-1">
       <span class="bottom-content-align">
         By Signing up, I Agree to Tring AI
       </span>
-      <span class="term-align">
-        Terms & Conditions
-      </span>
+      <span class="term-align"> Terms & Conditions </span>
     </div>
   </div>
 </template>
@@ -147,13 +160,13 @@
     margin-top: 10px;
   }
   .align_border {
-    color: #424BD1;
+    color: #424bd1;
     text-decoration: underline;
     text-underline-offset: 2px;
     cursor: pointer;
   }
   .content-align {
-    color: #8A8A8A;
+    color: #8a8a8a;
     height: 80px;
     font-size: 12px;
     font-weight: 400;
@@ -167,10 +180,10 @@
     width: 30%;
     height: 10px;
     margin-top: 11px;
-    border-top: 1px solid #8A8A8A;
+    border-top: 1px solid #8a8a8a;
   }
   .bottom-content-align {
-    color: #8A8A8A;
+    color: #8a8a8a;
     font-size: 12px;
   }
   .term-align {
