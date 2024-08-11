@@ -1,8 +1,8 @@
 <script setup lang="ts">
   const route = useRoute();
-  // if (route.name === "index") {
-  //   await navigateTo({ name: "DashBoard" });
-  // }
+  if (route.name === "index") {
+    await navigateTo({ name: "DashBoard" });
+  }
 
   const x = await listLeads();
 </script>

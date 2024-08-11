@@ -144,7 +144,7 @@ const singleDocumentDeploy = async (list: any) => {
 const singleDocumentDelete = async (list: any) => {
   console.log('inside')
     deleteDocument(paramId.params.id, list.id)
-  getDocumentList.valua = await listDocumentsByBotId(paramId.params.id)
+  getDocumentList.value = await listDocumentsByBotId(paramId.params.id)
   // if (myPopover.value) {
   //   myPopover.value.close()
   // }
