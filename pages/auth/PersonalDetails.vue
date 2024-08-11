@@ -7,11 +7,14 @@ const loginData = reactive({
   name: '',
   role: '',
 });
+const selectedValue = ref("Today");
+const menuList = ref()
+const placeholder = ref('Select your Role')
 </script>
 <template>
   <div class="sign-in-align flex items-center">
     <div class="top-content-align font-bold">
-        Personal Details
+      Personal Details
     </div>
     <div class="form-align">
       <!-- <div> -->
@@ -25,18 +28,26 @@ const loginData = reactive({
       <div class="individual-form-align">
         <label for="fpassword" class="font-bold">Role</label>
         <div class="input-container role-input">
-          <input class="mt-2 mb-2" type="text" id="frole" name="fname" placeholder="Enter your Role"
-            v-model="loginData.name" />
-          <span class="eye-icon" id="togglePassword">
-            <!-- <OpenEye /> -->
-            <!-- <CloseEyeIcon /> -->
+          <!-- <input class="mt-2 mb-2" type="text" id="frole" name="fname" placeholder="Enter your Role"
+            v-model="loginData.name" /> -->
+          <UiSelect v-model="loginData.role" class="outline-none select-menu-align">
+            <UiSelectTrigger class="ui-select-trigger w-[100%] outline-none">
+              <UiSelectValue class="font-regular text-[14px]" style="color:#8A8A8A" :placeholder="placeholder" />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup class="select_list_align">
+                <!-- <UiSelectLabel>Today</UiSelectLabel> -->
+                <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
+                  :value="list.content">
+                  {{ list.content }}
+                </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+          <!-- <span class="eye-icon" id="togglePassword">
             <BottomArrowIcon />
-            <!-- You can use FontAwesome or another icon library here -->
-            <!-- <i class="fas fa-eye" id="showIcon"></i> -->
-            <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
-          </span>
+          </span> -->
         </div>
-        <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
       </div>
       <div class="submit-btn-align">
         <button class="font-bold" type="submit" @click="authHandlers.login(loginData)">
@@ -56,6 +67,9 @@ const loginData = reactive({
   </div>
 </template>
 <style scoped>
+.focus\:ring-offset-2:focus {
+  --tw-ring-offset-width: none;
+}
 .sign-in-align {
   display: flex;
   flex-direction: column;
@@ -158,11 +172,18 @@ input[type="password"] {
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
   border-radius: 10px;
 }
-/* .role-input {
-   background: rgba(255, 255, 255, 1);
-  padding: 0px 10px;
-  width: 200px !important;
+.role-input {
+  background: rgba(255, 255, 255, 1);
+  padding: 0 10px;
+  margin: 10px 0;
+  height: 50px;
+  /* width: 200px !important; */
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
   border-radius: 10px;
-} */
+  font-size: 14px;
+}
+.select-menu-align {
+  width: 100%;
+  height: 60px;
+}
 </style>

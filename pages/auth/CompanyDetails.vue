@@ -4,9 +4,10 @@ definePageMeta({
 });
 
 const loginData = reactive({
-  name: '',
-  role: '',
+  industry: '',
+  average: '',
 });
+const menuList = ref()
 </script>
 <template>
   <div class="sign-in-align">
@@ -20,33 +21,52 @@ const loginData = reactive({
       <!-- <div> -->
       <div class="individual-form-align">
         <label for="fpassword" class="font-bold">Industry</label>
-        <div class="input-container">
-          <input class="mt-2 mb-2" type="text" id="frole" name="fname" placeholder="Select your Industry"
-            v-model="loginData.name" />
-          <span class="eye-icon" id="togglePassword">
-            <!-- <OpenEye /> -->
-            <!-- <CloseEyeIcon /> -->
-            <BottomArrowIcon />
-            <!-- You can use FontAwesome or another icon library here -->
-            <!-- <i class="fas fa-eye" id="showIcon"></i> -->
-            <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
-          </span>
+        <div class="input-container role-input">
+          <UiSelect v-model="loginData.industry" class="outline-none select-menu-align">
+            <UiSelectTrigger class="ui-select-trigger w-[100%] outline-none">
+              <!-- :placeholder="placeholder" -->
+              <UiSelectValue class="font-regular text-[14px]" style="color:#8A8A8A"
+                placeholder="Select your Industry" />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup class="select_list_align">
+                <!-- <UiSelectLabel>Today</UiSelectLabel> -->
+                <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
+                  :value="list.content">
+                  {{ list.content }}
+                </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+          <!-- You can use FontAwesome or another icon library here -->
+          <!-- <i class="fas fa-eye" id="showIcon"></i> -->
+          <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
+          <!-- </span> -->
         </div>
         <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
       </div>
       <div class="individual-form-align">
         <label for="fpassword" class="font-bold">Monthly Website Traffic</label>
-        <div class="input-container">
-          <input class="mt-2 mb-2" type="text" id="frole" name="fname" placeholder="Select your Average"
-            v-model="loginData.name" />
-          <span class="eye-icon" id="togglePassword">
-            <!-- <OpenEye /> -->
-            <!-- <CloseEyeIcon /> -->
-            <BottomArrowIcon />
-            <!-- You can use FontAwesome or another icon library here -->
-            <!-- <i class="fas fa-eye" id="showIcon"></i> -->
-            <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
-          </span>
+        <div class="input-container role-input">
+          <UiSelect v-model="loginData.average" class="outline-none select-menu-align">
+            <UiSelectTrigger class="ui-select-trigger w-[100%] outline-none">
+              <!-- :placeholder="placeholder" -->
+              <UiSelectValue class="font-regular text-[14px]" style="color:#8A8A8A"
+                placeholder="Select your Average  " />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup class="select_list_align">
+                <!-- <UiSelectLabel>Today</UiSelectLabel> -->
+                <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
+                  :value="list.content">
+                  {{ list.content }}
+                </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+          <!-- You can use FontAwesome or another icon library here -->
+          <!-- <i class="fas fa-eye" id="showIcon"></i> -->
+          <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
         </div>
         <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
       </div>
@@ -168,5 +188,19 @@ input[type="password"] {
 .footer-align {
   position: absolute;
   bottom: 30px;
+}
+.role-input {
+  background: rgba(255, 255, 255, 1);
+  padding: 0 10px;
+  margin: 10px 0;
+  height: 50px;
+  /* width: 200px !important; */
+  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 10px;
+  font-size: 14px;
+}
+.select-menu-align {
+  width: 100%;
+  height: 60px;
 }
 </style>
