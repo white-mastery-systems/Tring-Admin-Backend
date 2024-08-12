@@ -31,6 +31,10 @@ export const updateBotDetails = async (botDetails: SelectChatBot) => {
     body: botDetails,
   });
   toast.success("Bot updated successfully");
+  await navigateTo({
+    name: "BotManagementDetails-id",
+    params: { id: botDetails.id },
+  });
   return updatedBot;
 };
 
@@ -38,5 +42,14 @@ export const disableBot = async (botId: string) => {
   await $fetch(`/api/bots/${botId}/disable`, {
     method: "DELETE",
   });
-  toast.error("Bot disabled");
+  toast.success("Bot disabled");
+  return navigateTo({ name: "BotManagement" });
+};
+
+export const deleteBot = async (botId: string) => {
+  await $fetch(`/api/bots/${botId}`, {
+    method: "DELETE",
+  });
+  toast.success("Bot deleted successfully");
+  return navigateTo({ name: "BotManagement" });
 };

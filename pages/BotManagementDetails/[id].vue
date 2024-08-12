@@ -2,6 +2,9 @@
   <div class="bot-manage-main-container">
     <div class="header-align">
       <span class="text-[20px] font-bold"> Bot Management </span>
+      <UiButton variant="destructive" @click="deleteBot(route.params.id)">
+        <Icon name="lucide:trash-2" />
+      </UiButton>
     </div>
     <div class="bot-main-align">
       <div class="list-header-align">
@@ -88,8 +91,7 @@
   import { toast } from "vue-sonner";
   import { useClipboard } from "@vueuse/core";
   const selectedValue = ref("Today");
-  const route = useRoute();
-  const router = useRouter();
+  const route = useRoute("BotManagementDetails-id");
   const paramId: any = route;
   const botDetails: any = await getBotDetails(paramId.params.id);
   const dataList = ref([
@@ -155,7 +157,6 @@
   };
   const deactivateBot = async () => {
     await disableBot(paramId.params.id);
-    router.back();
   };
 
 

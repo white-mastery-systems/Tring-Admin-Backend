@@ -83,7 +83,7 @@
   const router = useRouter();
   const paramId: any = route;
   const botDetails: any = await getBotDetails(paramId.params.id);
-  const pickColor = ref<string | null>(null);
+  const pickColor = ref<string>("#000000");
   const defaultSelect = ref(true);
   const onlineStatus = ref(false);
   const widgetSound = ref("");
@@ -115,6 +115,8 @@
     await updateBotDetails(payload);
 
     logo.value && (await uploadLogo(botDetails.id, logo.value![0]));
+
+    return navigateTo({name:"BotManagementDetails-id", params:{id:paramId.params.id}})
     // console.log(botDetails.name, "botDetails.name")
     // console.log(pickColor.value, "pickColor.value")
     // console.log(defualtSelect.value, "pickColor.value")
