@@ -25,6 +25,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 
+RUN mkdir -p assets/docs
+RUN mkdir -p public/logo
+
 EXPOSE 3000
 
 CMD [ "node", ".output/server/index.mjs" ]
