@@ -113,6 +113,8 @@ import {
     middleware: "admin-only",
   });
 
+  const router = useRouter();
+
 
 </script>
 <style scoped>
