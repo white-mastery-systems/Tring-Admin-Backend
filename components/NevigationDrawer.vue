@@ -68,17 +68,6 @@
         </div>
       </div>
     </div>
-    <div :class="[route.path === '/Billing' ? 'activeClass' : 'default-align']" @click="
-        async () => {
-          await navigateTo({ name: 'Billing' });
-        }
-      ">
-      <span>
-        <img v-if="route.path === '/Billing'" src="assets\icons\payments_active.svg" width="22" height="22" />
-        <img v-else src="assets\icons\payments_deactive.svg" width="22" height="22" />
-      </span>
-      <span class="content-align">Billing</span>
-    </div>
     <div :class="[
         route.path === '/BotManagement' ? 'activeClass' : 'default-align',
       ]" @click="
@@ -100,6 +89,17 @@
         <img v-else src="assets\icons\customisation_deactive.svg" width="22" height="22" />
       </span>
       <span class="content-align">Customisation</span>
+    </div>
+    <div :class="[route.path === '/Billing' ? 'activeClass' : 'default-align']" @click="
+        async () => {
+          await navigateTo({ name: 'Billing' });
+        }
+      ">
+      <span>
+        <img v-if="route.path === '/Billing'" src="assets\icons\payments_active.svg" width="22" height="22" />
+        <img v-else src="assets\icons\payments_deactive.svg" width="22" height="22" />
+      </span>
+      <span class="content-align">Billing</span>
     </div>
     <div :class="[route.path === '/settings' ? 'activeClass' : 'default-align']" @click="
         async () => {
