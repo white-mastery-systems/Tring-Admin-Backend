@@ -6,7 +6,10 @@ export default defineEventHandler(async (event) => {
     checkPayloadId("id"),
   );
 
-  await db.update(documentSchema).set({ status: "error" }).where(
-    eq(documentSchema.id, documentId),
-  );
+  await db
+    .update(documentSchema)
+    .set({ status: "error" })
+    .where(eq(documentSchema.id, documentId));
+
+  return `Document with ${documentId} processing not succeeded`;
 });

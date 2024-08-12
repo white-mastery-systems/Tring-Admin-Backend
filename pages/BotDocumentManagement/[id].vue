@@ -66,14 +66,10 @@
                 </UiPopoverTrigger>
                 <UiPopoverContent align="end" class="w-40 ">
                   <div @click="handleAction(list, 'deploy')" class="menu-align">
-                    <PopoverClose aria-label="Close">
                       Deploy
-                    </PopoverClose>
                   </div>
                   <div @click="handleAction(list, 'download')" class="menu-align">
-                    <PopoverClose aria-label="Close">
                       Download
-                    </PopoverClose>
                   </div>
                   <div @click="handleAction(list, 'delete')" class="menu-align">
                     Delete
@@ -107,6 +103,7 @@ const selectedFile = ref()
 const myPopover:any = ref(null)
 // const botDetails: any = await getBotDetails(paramId.params.id)
 const getDocumentList: any = ref()
+const documentFetchInterval = ref<NodeJS.Timeout>()
 
 onMounted(async() => {
   getDocumentList.value = await listDocumentsByBotId(paramId.params.id)
@@ -120,6 +117,12 @@ const fileUpload = async () => {
   }
   await createDocument(payload.botId, payload.document)
   getDocumentList.value = await listDocumentsByBotId(paramId.params.id)
+  
+  documentFetchInterval.value = setInterval(async() => {
+    console.log('inside timeout')
+    getDocumentList.value = await listDocumentsByBotId(paramId.params.id)
+  }, 1000)
+
 }
 const handleAction = (list: any, action: any) => {
   if (myPopover.value) {
@@ -145,6 +148,11 @@ const singleDocumentDeploy = async (list: any) => {
   //   myPopover.value.close()
   // }
 }
+
+onUnmounted(() => {
+  documentFetchInterval.value && clearInterval(documentFetchInterval.value)
+})
+
 const singleDocumentDelete = async (list: any) => {
   console.log('inside')
   await deleteDocument(paramId.params.id, list.id)
