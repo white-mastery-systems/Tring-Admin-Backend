@@ -4,6 +4,6 @@ export default defineEventHandler(async (event) => {
     checkPayloadId("id"),
   );
 
-  const bot = await getBotDetails(botId);
+  const bot = await getBotDetailsNoCache(botId);
   return isValidReturnType(event, bot);
 });
