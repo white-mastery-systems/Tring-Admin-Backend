@@ -5,13 +5,14 @@
 
   const loginData = reactive({
     name: "",
-    industry: "RealEstate",
+    industry: "Real Estate",
     avgTraffic: "Less than 100",
     employeeCount: "Less than 10",
   });
   const onSubmit = async () => {
-    if (loginData.name.length) {
+    if (loginData.name.length < 1) {
       toast.error("Please enter valid details");
+      return;
     }
 
     await $fetch("/api/auth/onboarding/2", {
@@ -38,10 +39,10 @@
       <div class="individual-form-align">
         <label for="fpassword" class="font-bold">Industry</label>
         <div class="input-container">
-          <UiSelect>
+          <UiSelect v-model="loginData.industry">
             <UiSelectTrigger> {{ loginData.industry }} </UiSelectTrigger>
             <UiSelectContent>
-              <UiSelectItem value="RealEstate">Real Estate</UiSelectItem>
+              <UiSelectItem value="Real Estate">Real Estate</UiSelectItem>
               <UiSelectItem value="Finance">Finance</UiSelectItem>
               <UiSelectItem value="Healthcare">Healthcare</UiSelectItem>
               <UiSelectItem value="Technology">Technology</UiSelectItem>

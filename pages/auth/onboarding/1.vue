@@ -5,7 +5,7 @@
 
   const loginData = reactive({
     name: "",
-    role: "",
+    role: "CEO",
   });
 
   const onSubmit = async () => {
@@ -31,7 +31,7 @@
           <input
             class="mb-2 mt-2"
             type="otp"
-            id="otp"
+            id="fmail"
             name="otp"
             placeholder="Enter your Name"
             v-model="loginData.name"
@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="individual-form-align">
-        <label for="fpassword" class="font-bold">Role</label>
+        <label class="font-bold">Role</label>
         <UiSelect v-model="loginData.role">
           <UiSelectTrigger> {{ loginData.role }} </UiSelectTrigger>
           <UiSelectContent>
