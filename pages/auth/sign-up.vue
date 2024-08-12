@@ -1,28 +1,37 @@
 <script setup lang="ts">
-  definePageMeta({
-    layout: "auth",
-    middleware: "guest-only",
-  });
+definePageMeta({
+  layout: "auth",
+  middleware: "guest-only",
+});
 
-  const loginData = reactive({
-    username: "",
-    password: "",
-    confirmPassword: "",
-  });
+const loginData = reactive({
+  username: "",
+  password: "",
+  confirmPassword: "",
+});
+const passwordVisible = ref(false)
+const confirmPasswordVisible = ref(false)
 
-  const onSubmit = () => {
-    if (
-      loginData.username.length < 1 ||
-      loginData.password.length < 1 ||
-      loginData.password !== loginData.confirmPassword
-    ) {
-      toast.error("Please enter valid details");
-    }
-    authHandlers.signup({
-      email: loginData.username,
-      password: loginData.password,
-    });
-  };
+const togglePasswordVisibility = () => {
+  passwordVisible.value = !passwordVisible.value
+}
+const toggleConfirmPasswordVisibility = () => {
+  confirmPasswordVisible.value = !confirmPasswordVisible.value
+}
+
+const onSubmit = () => {
+  if (
+    loginData.username.length < 1 ||
+    loginData.password.length < 1 ||
+    loginData.password !== loginData.confirmPassword
+  ) {
+    toast.error("Please enter valid details");
+  }
+  authHandlers.signup({
+    email: loginData.username,
+    password: loginData.password,
+  });
+};
 </script>
 <template>
   <div class="sign-in-align">
@@ -33,28 +42,16 @@
       <!-- <div> -->
       <div class="individual-form-align">
         <label for="fmail" class="mb-4 font-[10px] font-bold">E-mail</label>
-        <input
-          class="mb-2 mt-2"
-          type="text"
-          id="fmail"
-          name="fmail"
-          v-model="loginData.username"
-        />
+        <input class="mb-2 mt-2" type="text" id="frole" name="fmail" v-model="loginData.username" />
       </div>
       <div class="individual-form-align">
         <label for="fpassword" class="font-bold">Password</label>
         <div class="input-container">
-          <input
-            class="mb-2 mt-2"
-            type="password"
-            id="frole"
-            name="fname"
-            placeholder="Enter your password"
-            v-model="loginData.password"
-          />
-          <span class="eye-icon" id="togglePassword">
-            <!-- <OpenEye/> -->
-            <CloseEyeIcon />
+          <input class="mb-2 mt-2" :type="passwordVisible ? 'text' : 'password'" id="frole" name="fname"
+            placeholder="Enter your password" v-model="loginData.password" />
+          <span class="eye-icon" id="togglePassword" @click="togglePasswordVisibility">
+            <OpenEye v-if="passwordVisible" />
+            <CloseEyeIcon v-else />
             <!-- You can use FontAwesome or another icon library here -->
             <!-- <i class="fas fa-eye" id="showIcon"></i> -->
             <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
@@ -65,17 +62,11 @@
       <div class="individual-form-align">
         <label for="confirmPassword" class="font-bold">Confirm Password</label>
         <div class="input-container">
-          <input
-            class="mb-2 mt-2"
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            placeholder="Enter your password"
-            v-model="loginData.confirmPassword"
-          />
-          <span class="eye-icon" id="togglePassword">
-            <!-- <OpenEye /> -->
-            <CloseEyeIcon />
+          <input class="mb-2 mt-2" :type="confirmPasswordVisible ? 'text' : 'password'" id="confirmPassword"
+            name="confirmPassword" placeholder="Enter your password" v-model="loginData.confirmPassword" />
+          <span class="eye-icon" id="togglePassword" @click="toggleConfirmPasswordVisibility">
+            <OpenEye v-if="confirmPasswordVisible" />
+            <CloseEyeIcon v-else />
             <!-- You can use FontAwesome or another icon library here -->
             <!-- <i class="fas fa-eye" id="showIcon"></i> -->
             <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
@@ -108,136 +99,136 @@
 </template>
 
 <style scoped>
-  .sign-in-align {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-  }
+.sign-in-align {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
 
-  .top-content-align {
-    color: #424bd1;
-    width: 80%;
-    padding: 0 25px;
-    /* padding-right: 172px; */
-    padding-bottom: 20px;
-  }
+.top-content-align {
+  color: #424bd1;
+  width: 80%;
+  padding: 0 25px;
+  /* padding-right: 172px; */
+  padding-bottom: 20px;
+}
 
-  .form-align {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 80%;
-    padding: 0 25px;
-  }
+.form-align {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 80%;
+  padding: 0 25px;
+}
 
-  form {
-    width: 100%;
-    display: flex;
-    /* flex-wrap: wrap; */
-    flex-direction: column;
-    /* align-items: start; */
-  }
+form {
+  width: 100%;
+  display: flex;
+  /* flex-wrap: wrap; */
+  flex-direction: column;
+  /* align-items: start; */
+}
 
-  /* .individual-form-align {
+/* .individual-form-align {
     gap: 5px;
   } */
-  .individual-form-align input {
-    background-color: rgba(246, 246, 246, 1);
-    width: 100%;
-    height: 50px;
-    outline: none;
-    border-radius: 10px;
-    padding: 0 20px;
-  }
+.individual-form-align input {
+  background-color: rgba(246, 246, 246, 1);
+  width: 100%;
+  height: 50px;
+  outline: none;
+  border-radius: 10px;
+  padding: 0 20px;
+}
 
-  .submit-btn-align {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
+.submit-btn-align {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 
-  .submit-btn-align button {
-    width: 100%;
-    height: 50px;
-    border-radius: 10px;
-    padding: 0 20px;
-    background: #424bd1;
-    color: #ffffff;
-    margin-top: 20px;
-    /* margin-right: 170px; */
-  }
+.submit-btn-align button {
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  padding: 0 20px;
+  background: #424bd1;
+  color: #ffffff;
+  margin-top: 20px;
+  /* margin-right: 170px; */
+}
 
-  .input-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 
-  input[type="password"] {
-    padding-right: 2.5rem;
-    /* Adjust based on the icon size */
-    width: 100%;
-  }
+input[type="password"] {
+  padding-right: 2.5rem;
+  /* Adjust based on the icon size */
+  width: 100%;
+}
 
-  .eye-icon {
-    position: absolute;
-    right: 0.5rem;
-    /* Adjust based on your design */
-    cursor: pointer;
-    font-size: 1rem;
-    /* Adjust size as needed */
-  }
+.eye-icon {
+  position: absolute;
+  right: 0.5rem;
+  /* Adjust based on your design */
+  cursor: pointer;
+  font-size: 1rem;
+  /* Adjust size as needed */
+}
 
-  .eye-icon i {
-    display: inline-block;
-  }
+.eye-icon i {
+  display: inline-block;
+}
 
-  /* .forget-pws-align {
+/* .forget-pws-align {
   font-size: 13px;
   margin-top: 10px;
 } */
 
-  .align_border {
-    color: #424bd1;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    cursor: pointer;
-  }
+.align_border {
+  color: #424bd1;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
 
-  .content-align {
-    color: #8a8a8a;
-    height: 80px;
-    font-size: 12px;
-    font-weight: 400;
-    gap: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* align-self: center; */
-  }
+.content-align {
+  color: #8a8a8a;
+  height: 80px;
+  font-size: 12px;
+  font-weight: 400;
+  gap: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* align-self: center; */
+}
 
-  .border-align {
-    width: 30%;
-    height: 10px;
-    margin-top: 11px;
-    border-top: 1px solid #8a8a8a;
-  }
+.border-align {
+  width: 30%;
+  height: 10px;
+  margin-top: 11px;
+  border-top: 1px solid #8a8a8a;
+}
 
-  .bottom-content-align {
-    color: #8a8a8a;
-    font-size: 12px;
-  }
+.bottom-content-align {
+  color: #8a8a8a;
+  font-size: 12px;
+}
 
-  .term-align {
-    font-size: 12px;
-    text-decoration: underline;
-  }
+.term-align {
+  font-size: 12px;
+  text-decoration: underline;
+}
 
-  .footer-align {
-    position: absolute;
-    bottom: 30px;
-  }
+.footer-align {
+  position: absolute;
+  bottom: 30px;
+}
 </style>
