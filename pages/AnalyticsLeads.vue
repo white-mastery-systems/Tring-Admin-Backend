@@ -38,7 +38,7 @@
           Total Chats: <span style="color: rgba(66, 75, 209, 1)">495</span>
         </span>
         <span class="font-bold">
-          Total Leads: <span style="color: rgba(66, 75, 209, 1)">{{ ListLeads.length }}</span>
+          Total Leads: <span style="color: rgba(66, 75, 209, 1)">{{ ListLeads?.length }}</span>
         </span>
       </div>
       <!-- <span>
@@ -67,7 +67,7 @@
           <div class="list_align">
             <span class="user_name_align font-medium">{{ list.botUser.name }}</span>
             <span class="bot_name_align font-medium">{{ list.bot.name }}</span>
-            <!-- <span class="create_at-align font-medium">{{ list.createdAt }}</span> -->
+            <span class="create_at-align font-medium">{{ formatDateStringToDate(list.createdAt) }}</span>
             <!-- <div v-if="list.status" class="acive_class font-medium">
               <div class="rounded-full active-circle-align"></div>
               <span>Active</span>
@@ -104,55 +104,22 @@ import { ref } from "vue";
 const selectedValue = ref("Today");
 const loading = ref(true);
 const error: any = ref(null);
+// const ListLeads = ref()
 const ListLeads = await listLeads()
 
 // const rep = await defineEventHandler()
-const dataList = ref([
-  {
-    _id: 1,
-    userName: "Richard",
-    bot: "Yourstore Bot-1",
-    createAt: "12.02.2024",
-    status: true,
-    Processing: false,
-  },
-  {
-    userName: "Jhon",
-    _id: 2,
-    bot: "Yourstore Bot-2 testing bot sdfdsf saf sdf",
-    createAt: "15.02.2024",
-    status: false,
-    Processing: true,
-  },
-  {
-    userName: "Ravi",
-    _id: 3,
-    bot: "Yourstore Bot-2 testing bot sdfdsf saf sdf",
-    createAt: "15.02.2024",
-    status: false,
-    Processing: false,
-  },
-  {
-    userName: "Riyaz",
-    _id: 4,
-    bot: "Yourstore Bot-2 testing bot sdfdsf saf sdf",
-    createAt: "15.02.2024",
-    status: true,
-    Processing: false,
-  },
-  {
-    userName: "Raj",
-    _id: 5,
-    bot: "Yourstore Bot-2 testing bot sdfdsf saf sdf",
-    createAt: "15.02.2024",
-    status: false,
-    Processing: false,
-  },
-])
+
+// onMounted(async() => {
+//   ListLeads.value = await listLeads()
+//   console.log(ListLeads.value, "ListLeads.value")
+// })
 
 
-const viewBot = (chatId: any) => {
-
+const viewBot = async (chatId: any) => {
+  await navigateTo({
+    name: 'AnalyticsLeadsInfo-id',
+    params: {id: chatId},
+  })
 }
 </script>
 

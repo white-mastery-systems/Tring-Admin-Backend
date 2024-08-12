@@ -18,9 +18,10 @@
     </div>
   </div>
   <!-- <template> -->
-  <div class="flex items-center justify-between">
+  <div class="flex justify-between">
     <!-- <div> -->
-    <UiTabs v-if="true" default-value="Client Info" class="w-[250px]">
+    <!-- <div>{{ getLeadTranscriptList[0].metadata }}</div> -->
+    <UiTabs default-value="Client Info" class="w-[250px]">
       <UiTabsList class="grid w-full grid-cols-2 group-tap-align" default-value="Client Info">
         <UiTabsTrigger value="Client Info" class="tab-align text-[15px]">
           Client Info
@@ -29,24 +30,29 @@
           Campaign info
         </UiTabsTrigger>
       </UiTabsList>
-      <UiTabsContent value="Client Info">
-        <div class="client_info_align gap-2">
-          <span class="font-medium">Os: <span class="font-bold">Linux</span></span>
-          <span class="font-medium">Browser: <span class="font-bold">Chrome</span></span>
-          <span class="font-medium">IP Address: <span class="font-bold">49.43.251.113</span></span>
-          <span class="font-medium">Continent Code: <span class="font-bold">AS</span></span>
-          <span class="font-medium">Continent Name: <span class="font-bold">Asia</span></span>
-          <span class="font-medium">Country Code: <span class="font-bold">IN</span></span>
-          <span class="font-medium">Country Name: <span class="font-bold">India</span></span>
-          <span class="font-medium">State Prov: <span class="font-bold">Maharashtra</span></span>
-          <span class="font-medium">City: <span class="font-bold">Navi Mumbai</span></span>
-        </div>
-      </UiTabsContent>
-      <UiTabsContent value="Campaign info">
-        content
-      </UiTabsContent>
+      <div v-for="(infoList, index) in getLeadTranscriptList" :key="index">
+        <UiTabsContent value="Client Info">
+          <div class="client_info_align gap-2">
+            <span class="font-medium">Os: <span class="font-bold">{{ infoList.metadata.os }}</span></span>
+            <span class="font-medium">Browser: <span class="font-bold">{{ infoList.metadata.browser }}</span></span>
+            <span class="font-medium">IP Address: <span class="font-bold">{{ infoList.metadata.ipAddress
+                }}</span></span>
+            <!-- <span class="font-medium">Continent Code: <span class="font-bold">{{ }}</span></span>
+            <span class="font-medium">Continent Name: <span class="font-bold">{{ }}</span></span>
+            <span class="font-medium">Country Code: <span class="font-bold">{{ }}</span></span> -->
+            <span class="font-medium">Country Name: <span class="font-bold">{{ infoList.metadata.country
+                }}</span></span>
+            <span class="font-medium">State Prov: <span class="font-bold">{{ infoList.metadata.state }}</span></span>
+            <span class="font-medium">City: <span class="font-bold">{{ infoList.metadata.city }}</span></span>
+          </div>
+        </UiTabsContent>
+        <UiTabsContent value="Campaign info">
+          {{ (Object.entries(infoList.metadata.params).length) ? infoList.metadata.params : '' }}
+        </UiTabsContent>
+      </div>
     </UiTabs>
     <!-- </div> -->
+    <!-- {{ getLeadTranscriptList[0].messages.map((item: any) ) }} -->
     <div class="chatinfo-align rounded-lg">
       <div class="flex items-center font-medium justify-between chat-header-align">
         <div class="flex items-center gap-2">
@@ -59,36 +65,45 @@
           <img src="assets/icons/chat_menu.svg" width="30" height="30" />
         </div>
       </div>
-      <div class="chat-container-align">
-        <div class="message-left-align">
+      <div class="chat-container-align" v-for="(messageList, messageIndex) in getLeadTranscriptList[0].messages"
+        :key="messageIndex">
+        <!-- {{ messageList }} -->
+        <div class="message-left-align" v-if="messageList.role === 'user'">
           <div class="text-[14px]" style="color: #8A8A8A">
             you
           </div>
           <div class="flex justify-center items-end current-user rounded-l-xl rounded-br-xl">
-            <div>Hi</div>
-            <div class="text-[12px] opacity-60">10:10 AM</div>
+            <div>{{ messageList.content }}</div>
+            <div class="text-[12px] opacity-60">{{ formatDate(new Date(messageList.createdAt),"hh:mm a") }}</div>
           </div>
         </div>
-        <div class="message-right-align">
+        <div class="message-right-align" v-if="messageList.role === 'assistant'">
           <div>
             <div class="flex items-center justify-center rounded-full ai-profile-align">
-              R
+              V
             </div>
           </div>
           <div class="flex flex-col gap-2 ai-reply-align rounded-r-xl rounded-bl-xl">
             <div>
-              I’m Reena, How may I assist you today?
+              <!-- {{ JSON.parse(messageList.content) }} -->
+              {{ JSON.parse(messageList.content).response }}
             </div>
             <div class="flex flex-col gap-4">
-              <div class="font-black">
-                Here are some questions you can ask...
-              </div>
-              <div class="flex align-center gap-2">
-                <Uibutton class="rounded-xl web-align-btn">Web Themes</Uibutton>
-                <Uibutton class="rounded-xl pricing-align-btn">Pricing</Uibutton>
+              <!-- <div class="font-black">
+                {{ JSON.parse(messageList.content).canned }}
+                {{ JSON.parse(messageList.content).intents }}
+              </div> -->
+              <div class="flex items-center gap-2">
+                <div class="flex items-center" v-for="(btn, btnIndex) in JSON.parse(messageList.content).canned"
+                  :key="btnIndex">
+                  <Uibutton class="rounded-xl pricing-align-btn">{{ btn.title }}
+                  </Uibutton>
+                </div>
+                <!-- <Uibutton class="rounded-xl pricing-align-btn">{{ JSON.parse(messageList.content).canned[0].title }}
+                </Uibutton> -->
               </div>
               <div class="self-end text-[12px] text-[#00000066]">
-                10:10 AM
+                {{ formatDate(new Date(messageList.createdAt), "hh:mm a") }}
               </div>
             </div>
           </div>
@@ -114,8 +129,21 @@ import {
   });
 
   const router = useRouter();
+  const route = useRoute();
+  const paramId: any = route
+  const getLeadTranscriptList: any = await getLeadTranscript(paramId.params.id)
 
+// const responseText = computed(() => {
+//   if (getLeadTranscriptList && getLeadTranscriptList[0].messages) {
+//     console.log('message', getLeadTranscriptList[0])
+//     // const jsonContent = getLeadTranscriptList[0].messages.map((item: any) => JSON.parse(item.messages))
+//     // return jsonContent
+//   }
+//   // return '';
+// });
+// onMounted(async () => {
 
+// })
 </script>
 <style scoped>
 .analytics_leads-main-container {
@@ -255,6 +283,7 @@ import {
 }
 .pricing-align-btn {
   color: #EC848B;
+  width: auto;
   /* color: white; */
   padding: 10px;
   border: 1px solid #EC848B;

@@ -17,7 +17,6 @@
           </span>
         </div>
       </div>
-      <div></div>
       <div class="overall_billing_align">
         <!-- @mouseover="planCard(index); previusIndex = index" @mouseout="planCardUnHover(index); previusIndex = index" -->
         <div

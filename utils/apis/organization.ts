@@ -7,6 +7,6 @@ export const listLeads = async (): Promise<
   return await $fetch("/api/org/leads");
 };
 
-export const getLeadTranscript = async (chatId: string) => {
+export const getLeadTranscript = async (chatId: any) => {
   return await $fetch(`/api/org/chat/${chatId}`);
 };

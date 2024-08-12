@@ -52,7 +52,7 @@ const togglePasswordVisibility = () => {
       </div>
       <div class="flex items-center justify-center gap-1 font-medium">
         <span>Don’t have an account?</span>
-        <NuxtLink to="/auth/sign-up" class="align_border">Sign up</NuxtLink>
+        <NuxtLink to="/auth/sign-up" class="align_border">Sign in</NuxtLink>
       </div>
       <!-- </div> -->
     </div>

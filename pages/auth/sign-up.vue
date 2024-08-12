@@ -85,7 +85,7 @@ const onSubmit = () => {
       </div>
       <div class="flex items-center justify-center gap-1 font-medium">
         <span>Don’t have an account?</span>
-        <NuxtLink to="/auth/sign-in" class="align_border">Sign in</NuxtLink>
+        <NuxtLink to="/auth/sign-in" class="align_border">Sign up</NuxtLink>
       </div>
       <!-- </div> -->
     </div>
