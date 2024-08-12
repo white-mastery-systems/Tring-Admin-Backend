@@ -30,10 +30,10 @@
               }}</span>
             </span>
             <span v-if="botDetails.documentId" class="flex gap-4">
-              <Button
+              <UiButton
                 class="button-align text-[14px] font-medium"
                 @click="deactivateBot"
-                >Deactivate Bot</Button
+                >Deactivate Bot</UiButton
               >
               <UiButton
                 as="a"
@@ -42,6 +42,7 @@
                 class="bg-[#474df9] text-[14px] font-medium text-white hover:bg-[#474df9] hover:brightness-90"
                 >Preview Bot</UiButton
               >
+              <UiButton class="bg-[#e1dede] text-black hover:bg-[#d4d2d2]" @click="copyScript">Copy Script</UiButton>
             </span>
           </div>
           <!-- <span class="font-semibold content-align">Date Created</span>
@@ -84,6 +85,8 @@
     middleware: "admin-only",
   });
   import { ref } from "vue";
+  import { toast } from "vue-sonner";
+  import { useClipboard } from "@vueuse/core";
   const selectedValue = ref("Today");
   const route = useRoute();
   const router = useRouter();
@@ -154,6 +157,15 @@
     await disableBot(paramId.params.id);
     router.back();
   };
+
+
+  const botScript = `<script src="https://tring-databot.pripod.com/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS"/>`;
+
+  const { copy } = useClipboard({ source: botScript});
+  const copyScript = async () => {
+    copy(botScript);
+    toast.success("Copied to clipboard");
+  }
 </script>
 
 <style scoped>
