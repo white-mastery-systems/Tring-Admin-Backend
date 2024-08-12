@@ -1,5 +1,5 @@
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
-import { text, uuid, varchar } from "drizzle-orm/pg-core";
+import { boolean, jsonb, text, uuid, varchar } from "drizzle-orm/pg-core";
 
 import { adminSchema } from ".";
 import { authUserSchema } from "./auth";
@@ -9,8 +9,10 @@ import { createInsertSchema } from "drizzle-zod";
 // Tables
 export const organizationSchema = adminSchema.table("organization", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  name: varchar("name", { length: 64 }).notNull(),
+  name: varchar("name", { length: 64 }).notNull().default(""),
   description: text("description"),
+  metadata: jsonb("metadata").default({}).notNull(),
+  isOnboarded: boolean("is_onboarded").default(false).notNull(),
 });
 
 export const billingSchema = adminSchema.table("billing", {

@@ -33,8 +33,10 @@ const signup = async (values: Record<string, any>) => {
     const data = await $fetch("/api/auth/signup", {
       method: "post",
       body: values,
+      redirect: "follow",
     });
-    return navigateTo("/");
+    // @ts-expect-error
+    return navigateTo(data);
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
     console.log(error);
@@ -46,15 +48,15 @@ const logout = async () => {
     method: "POST",
   });
   (await useUser()).clearUser();
-  return navigateTo({ name: "DashBoard" });
+  return navigateTo({ name: "auth-sign-in" });
 };
 
 const redirectToRoleHome = (role: AuthRoles) => {
   // update routes on needs
   if (role === AuthRoles.User) {
-    return navigateTo("/");
+    return navigateTo("/DashBoard");
   } else if (role === AuthRoles.Admin) {
-    return navigateTo("/");
+    return navigateTo("/DashBoard");
   }
 };
 

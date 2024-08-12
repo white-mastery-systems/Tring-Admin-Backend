@@ -104,7 +104,7 @@
             :show-tooltip="true"
             :margin="{ right: 20 }"
             :y-formatter="
-              (tick, i) => {
+              (tick: any) => {
                 return typeof tick === 'number'
                   ? `${new Intl.NumberFormat('us').format(tick).toString()}`
                   : '';
@@ -193,6 +193,10 @@
 </template>
 <script setup lang="ts">
   import { VisBulletLegend } from "@unovis/vue";
+
+  definePageMeta({
+    middleware: "user",
+  });
 
   const selectedValue = ref("Today");
 

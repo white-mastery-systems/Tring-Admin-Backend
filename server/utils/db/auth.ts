@@ -9,7 +9,7 @@ export const createUser = async (user: InsertUser) => {
   const newUser = await db
     .insert(authUserSchema)
     .values({ ...user, password: hashedPassword })
-    .returning({ id: authUserSchema.id });
+    .returning();
 
   return newUser[0];
 };
@@ -26,13 +26,13 @@ export const ifUserAlreadyExists = async (username: string, email: string) => {
 };
 
 export const getUserByUsernameAndEmail = async ({
-  username,
+  email,
   password,
-}: Pick<SelectRawUser, "username" | "password">) => {
+}: Pick<SelectRawUser, "email" | "password">) => {
   const user = await db.query.authUserSchema.findFirst({
     where: or(
-      eq(authUserSchema.username, username),
-      eq(authUserSchema.email, username),
+      eq(authUserSchema.username, email),
+      eq(authUserSchema.email, email),
     ),
   });
 
