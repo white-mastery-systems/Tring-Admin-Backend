@@ -65,45 +65,47 @@
           <img src="assets/icons/chat_menu.svg" width="30" height="30" />
         </div>
       </div>
-      <div class="chat-container-align" v-for="(messageList, messageIndex) in getLeadTranscriptList[0].messages"
-        :key="messageIndex">
-        <!-- {{ messageList }} -->
-        <div class="message-left-align" v-if="messageList.role === 'user'">
-          <div class="text-[14px]" style="color: #8A8A8A">
-            you
-          </div>
-          <div class="flex justify-center items-end current-user rounded-l-xl rounded-br-xl">
-            <div>{{ messageList.content }}</div>
-            <div class="text-[12px] opacity-60">{{ formatDate(new Date(messageList.createdAt),"hh:mm a") }}</div>
-          </div>
-        </div>
-        <div class="message-right-align" v-if="messageList.role === 'assistant'">
-          <div>
-            <div class="flex items-center justify-center rounded-full ai-profile-align">
-              V
+      <div class="all-message-align">
+        <div class="chat-container-align" v-for="(messageList, messageIndex) in getLeadTranscriptList[0].messages"
+          :key="messageIndex">
+          <!-- {{ messageList }} -->
+          <div class="message-left-align" v-if="messageList.role === 'user'">
+            <div class="text-[14px]" style="color: #8A8A8A">
+              you
+            </div>
+            <div class="flex justify-center items-end current-user rounded-l-xl rounded-br-xl">
+              <div>{{ messageList.content }}</div>
+              <div class="text-[12px] opacity-60">{{ formatDate(new Date(messageList.createdAt),"hh:mm a") }}</div>
             </div>
           </div>
-          <div class="flex flex-col gap-2 ai-reply-align rounded-r-xl rounded-bl-xl">
+          <div class="message-right-align" v-if="messageList.role === 'assistant'">
             <div>
-              <!-- {{ JSON.parse(messageList.content) }} -->
-              {{ JSON.parse(messageList.content).response }}
-            </div>
-            <div class="flex flex-col gap-4">
-              <!-- <div class="font-black">
-                {{ JSON.parse(messageList.content).canned }}
-                {{ JSON.parse(messageList.content).intents }}
-              </div> -->
-              <div class="flex items-center gap-2">
-                <div class="flex items-center" v-for="(btn, btnIndex) in JSON.parse(messageList.content).canned"
-                  :key="btnIndex">
-                  <Uibutton class="rounded-xl pricing-align-btn">{{ btn.title }}
-                  </Uibutton>
-                </div>
-                <!-- <Uibutton class="rounded-xl pricing-align-btn">{{ JSON.parse(messageList.content).canned[0].title }}
-                </Uibutton> -->
+              <div class="flex items-center justify-center rounded-full ai-profile-align">
+                V
               </div>
-              <div class="self-end text-[12px] text-[#00000066]">
-                {{ formatDate(new Date(messageList.createdAt), "hh:mm a") }}
+            </div>
+            <div class="flex flex-col gap-2 ai-reply-align rounded-r-xl rounded-bl-xl">
+              <div>
+                <!-- {{ JSON.parse(messageList.content) }} -->
+                {{ JSON.parse(messageList.content).response }}
+              </div>
+              <div class="flex flex-col gap-4">
+                <!-- <div class="font-black">
+                  {{ JSON.parse(messageList.content).canned }}
+                  {{ JSON.parse(messageList.content).intents }}
+                </div> -->
+                <div class="flex items-center gap-2">
+                  <div class="flex items-center" v-for="(btn, btnIndex) in JSON.parse(messageList.content).canned"
+                    :key="btnIndex">
+                    <Uibutton class="rounded-xl pricing-align-btn">{{ btn.title }}
+                    </Uibutton>
+                  </div>
+                  <!-- <Uibutton class="rounded-xl pricing-align-btn">{{ JSON.parse(messageList.content).canned[0].title }}
+                  </Uibutton> -->
+                </div>
+                <div class="self-end text-[12px] text-[#00000066]">
+                  {{ formatDate(new Date(messageList.createdAt), "hh:mm a") }}
+                </div>
               </div>
             </div>
           </div>
@@ -213,7 +215,7 @@ import {
   height: 75vh;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-  overflow-y: scroll;
+  overflow-y: hidden;
 }
 
 .chat-header-align {
@@ -287,6 +289,10 @@ import {
   /* color: white; */
   padding: 10px;
   border: 1px solid #EC848B;
+}
+.all-message-align {
+  height: 65vh;
+  overflow-y: scroll;
 }
 /* .custom-underline {
   position: relative;
