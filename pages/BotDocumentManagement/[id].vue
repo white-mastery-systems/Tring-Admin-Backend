@@ -93,6 +93,10 @@
   </div>
 </template>
 <script setup lang="ts">
+definePageMeta({
+    middleware: "admin-only",
+  });
+
 import { ref } from 'vue'
 const router = useRouter();
 

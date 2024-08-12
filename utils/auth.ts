@@ -54,9 +54,9 @@ const logout = async () => {
 const redirectToRoleHome = (role: AuthRoles) => {
   // update routes on needs
   if (role === AuthRoles.User) {
-    return navigateTo("/");
+    return navigateTo("/DashBoard");
   } else if (role === AuthRoles.Admin) {
-    return navigateTo("/");
+    return navigateTo("/DashBoard");
   }
 };
 

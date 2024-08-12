@@ -42,6 +42,9 @@
   </div>
 </template>
 <script setup lang="ts">
+definePageMeta({
+    middleware: "admin-only",
+  });
 const router = useRouter()
 const formDetails: any = reactive({
   ROLE: '',
