@@ -310,6 +310,7 @@ const viewBot = async (chatId: any) => {
 
 .view_align {
   padding-right: 24px;
+  cursor: pointer;
 }
 
 .right-dropdown-align {

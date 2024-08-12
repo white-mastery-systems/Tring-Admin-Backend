@@ -43,7 +43,7 @@ const togglePasswordVisibility = () => {
       </div>
       <div class="submit-btn-align">
         <button class="font-bold" type="submit" @click="authHandlers.login(loginData)">
-          Sign up
+          Sign in
         </button>
       </div>
       <div class="content-align">
@@ -52,7 +52,7 @@ const togglePasswordVisibility = () => {
       </div>
       <div class="flex items-center justify-center gap-1 font-medium">
         <span>Don’t have an account?</span>
-        <NuxtLink to="/auth/sign-up" class="align_border">Sign in</NuxtLink>
+        <NuxtLink to="/auth/sign-up" class="align_border">Sign Up</NuxtLink>
       </div>
       <!-- </div> -->
     </div>

@@ -30,10 +30,12 @@
       </div>
       <div class="content-align font-medium gap-3">
         <span>
-          Character status
+          subscribed List
         </span>
-        <span class="active-chip rounded-xl text-[12px]">
-          active
+      </div>
+      <div class="content-align font-medium gap-3">
+        <span>
+          Total List
         </span>
       </div>
     </div>
