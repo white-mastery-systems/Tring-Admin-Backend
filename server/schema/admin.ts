@@ -16,11 +16,11 @@ export const organizationSchema = adminSchema.table("organization", {
 });
 
 export const billingSchema = adminSchema.table("billing", {
-  org_id: uuid("org_id").notNull(),
-  customer_id: uuid("customer_id").notNull(),
-  plan_code: varchar("plan_code", { length: 64 }).notNull(),
-  subscription_metadata: text("subscription_metadata"),
-  customer_metadata: text("customer_metadata"),
+  org_id: uuid("org_id"),
+  customer_id: text("customer_id"),
+  plan_code: varchar("plan_code", { length: 64 }),
+  subscription_metadata:jsonb("subscription_metadata"),
+  customer_metadata: jsonb("customer_metadata"),
 });
 
 // Relations
