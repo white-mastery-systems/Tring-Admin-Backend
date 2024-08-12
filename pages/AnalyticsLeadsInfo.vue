@@ -3,9 +3,9 @@
     <div class="header-align">
       <div class="flex gap-2">
         <div class="flex items-center gap-2">
-          <span>
+          <button @click="router.back()">
             <img src="assets\icons\right_arrow.svg" width="20"></img>
-          </span>
+          </button>
           <span class="font-bold text-lg">Yourstore Bot-1</span>
         </div>
         <span class="font-bold text-lg text-[16px]"></span>
@@ -97,8 +97,6 @@
     </div>
   </div>
 
-  <!-- </template> -->
-  <!-- </template> -->
 </template>
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
