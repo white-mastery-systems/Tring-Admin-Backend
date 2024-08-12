@@ -103,10 +103,11 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { ref } from "vue";
+  definePageMeta({
+    middleware: "admin-only",
+  });
 
   const selectedValue = ref("Today");
-  
 
   const dataList = ref([
     {

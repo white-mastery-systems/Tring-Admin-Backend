@@ -19,7 +19,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
   name: varchar("name", { length: 64 }).notNull(),
   documentId: uuid("document_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  metadata: jsonb("metadata"),
+  metadata: jsonb("metadata").default({ ui: {}, crm: {}, prompt: {} }),
 
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })

@@ -194,6 +194,10 @@
 <script setup lang="ts">
   import { VisBulletLegend } from "@unovis/vue";
 
+  definePageMeta({
+    middleware: "user",
+  });
+
   const selectedValue = ref("Today");
 
   const menuList = ref([

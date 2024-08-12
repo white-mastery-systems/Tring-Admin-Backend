@@ -7,7 +7,7 @@
         <!-- </span> -->
         <span class="align-left text-[20px] font-bold">OverView</span>
       </div>
-      <div class="flex items-center justify-end gap-6" style="width: 350px;">
+      <div class="flex items-center justify-end gap-6" style="width: 350px">
         <!-- <span class="calender-align">
           <img src="assets\icons\calendar_month.svg" width="20">
         </span> -->
@@ -183,8 +183,11 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { ref } from "vue";
   import { VisBulletLegend } from "@unovis/vue";
+
+  definePageMeta({
+    middleware: "admin-only",
+  });
 
   const selectedValue = ref("Today");
 

@@ -89,6 +89,12 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/ui/tabs'
+
+  definePageMeta({
+    middleware: "admin-only",
+  });
+
+
 </script>
 <style scoped>
 

@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware(async (_to) => {
 
   const user = (await useUser()).user as Ref<User>;
 
-  if (!user.value) return navigateTo("/auth/login");
+  if (!user.value) return navigateTo("/auth/sign-in");
 
   if (user.value.role !== AuthRoles.Admin) {
     return authHandlers.redirectToRoleHome(user.value.role as AuthRoles);
