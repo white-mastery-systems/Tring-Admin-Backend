@@ -12,4 +12,6 @@ export default defineEventHandler(async (event) => {
       status: "ready",
     })
     .where(eq(documentSchema.id, documentId));
+
+  return `Document with ${documentId} processing succeeded`;
 });

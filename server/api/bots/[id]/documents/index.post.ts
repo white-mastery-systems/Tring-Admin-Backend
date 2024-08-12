@@ -51,7 +51,10 @@ export default defineEventHandler(async (event) => {
   const form = new FormData();
   const { data, filename, ...rest } = fileData;
   const file = new File([data], filename!, rest);
-  
+
+  const hostname = getRequestHost(event);
+  console.log("Document Hostname:", hostname);
+
   form.append("name", body.data.name);
   form.append("files", file);
   form.append(
@@ -63,11 +66,11 @@ export default defineEventHandler(async (event) => {
         model_name: "",
         messages: [],
       },
-      callback_url: `http://${getRequestHost(event)}/api/documents/${document.id}`,
+      callback_url: `https://tring-admin.pripod.com/api/documents/${document.id}`,
     }),
   );
 
-  $fetch(`rag/document`, {
+  $fetch(`/rag/document`, {
     method: "POST",
     baseURL: conf.llmBaseUrl,
     body: form,
