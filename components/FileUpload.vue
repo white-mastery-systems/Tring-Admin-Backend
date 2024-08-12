@@ -55,8 +55,8 @@
         type="file"
         class="hidden"
         :accept="accept"
-        multiple
         @change="file = $event.target.files"
+        v-bind="$attrs"
       />
     </label>
     <div class="flex flex-col items-center justify-center px-4 pb-6 pt-5">

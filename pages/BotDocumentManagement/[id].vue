@@ -118,6 +118,8 @@ const fileUpload = async () => {
   await createDocument(payload.botId, payload.document)
   getDocumentList.value = await listDocumentsByBotId(paramId.params.id)
   
+  selectedFile.value = null
+  
   documentFetchInterval.value = setInterval(async() => {
     console.log('inside timeout')
     getDocumentList.value = await listDocumentsByBotId(paramId.params.id)
