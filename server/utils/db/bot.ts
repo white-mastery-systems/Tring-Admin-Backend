@@ -32,20 +32,12 @@ export const getBotDetailsNoCache = async (botId: string) => {
 };
 
 export const getBotDetails = async (botId: string) => {
-  const cachedBot = await cache.getItem<
-    SelectChatBot & { documents: SelectDocument[] }
-  >(getCacheBotKey(botId));
-  if (cachedBot) return cachedBot;
-
   const bot = await db.query.chatBotSchema.findFirst({
     where: eq(chatBotSchema.id, botId),
     with: {
       documents: true,
     },
   });
-  if (!bot) return undefined;
-
-  await cache.setItem(getCacheBotKey(botId), bot);
   return bot;
 };
 
