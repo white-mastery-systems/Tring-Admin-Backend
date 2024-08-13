@@ -60,36 +60,41 @@
       </div>
       <div class="content-scroll-align">
         <!-- {{ rep }} || asda -->
-        <div class="bot-list-align" v-for="(list, index) in ListLeads" :key="index" @click="async () => {
-            await navigateTo('analyticsleadsinfo');
-          }
-          ">
-          <div class="list_align">
-            <span class="user_name_align font-medium">{{ list.botUser.name }}</span>
-            <span class="bot_name_align font-medium">{{ list.bot.name }}</span>
-            <span class="create_at-align font-medium">{{ formatDateStringToDate(list.createdAt) }}</span>
-            <!-- <div v-if="list.status" class="acive_class font-medium">
-              <div class="rounded-full active-circle-align"></div>
-              <span>Active</span>
-            </div> -->
-            <span class="view_align" @click="viewBot(list.chatId)">
-              <img src="assets\icons\Edit_view.svg" width="70" />
-            </span>
-            <!-- <div v-else-if="list.Processing" class="process_class font-medium">
-              <div class="rounded-full process-circle-align"></div>
-              <span>Processing</span>
+        <div v-if="!ListLeads.length">
+          <div class="bot-list-align" v-for="(list, index) in ListLeads" :key="index" @click="async () => {
+              await navigateTo('analyticsleadsinfo');
+            }
+            ">
+            <div class="list_align">
+              <span class="user_name_align font-medium">{{ list.botUser.name }}</span>
+              <span class="bot_name_align font-medium">{{ list.bot.name }}</span>
+              <span class="create_at-align font-medium">{{ formatDateStringToDate(list.createdAt) }}</span>
+              <!-- <div v-if="list.status" class="acive_class font-medium">
+                <div class="rounded-full active-circle-align"></div>
+                <span>Active</span>
+              </div> -->
+              <span class="view_align" @click="viewBot(list.chatId)">
+                <img src="assets\icons\Edit_view.svg" width="70" />
+              </span>
+              <!-- <div v-else-if="list.Processing" class="process_class font-medium">
+                <div class="rounded-full process-circle-align"></div>
+                <span>Processing</span>
+              </div>
+              <div v-else class="deacive_class font-medium">
+                <div class="rounded-full deactive-circle-align"></div>
+                <span>Inactive</span>
+              </div> -->
+              <!-- <span>
+                <img src="assets\icons\more_horiz.svg" width="30">
+              </span> -->
             </div>
-            <div v-else class="deacive_class font-medium">
-              <div class="rounded-full deactive-circle-align"></div>
-              <span>Inactive</span>
+            <!-- <div>
+              <img src="assets\icons\left_arrow.svg" width="30">
             </div> -->
-            <!-- <span>
-              <img src="assets\icons\more_horiz.svg" width="30">
-            </span> -->
           </div>
-          <!-- <div>
-            <img src="assets\icons\left_arrow.svg" width="30">
-          </div> -->
+        </div>
+        <div v-else class="flex items-center justify-center font-regular text-[#8A8A8A]">
+          No leads generated
         </div>
       </div>
     </div>
@@ -289,6 +294,9 @@ const viewBot = async (chatId: any) => {
 }
 
 .content-scroll-align {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   height: calc(100vh - 285px);
   overflow-y: scroll;
 }

@@ -95,8 +95,8 @@ const botDetails: any = await getBotDetails(paramId.params.id);
 const pickColor = ref<string | null>(null);
 const defaultSelect = ref(true);
 const onlineStatus = ref(false);
-const widgetSound = ref("");
-const widgetPosition = ref("");
+const widgetSound = ref("Yes");
+const widgetPosition = ref("Left");
 const logo = ref<FileList | null>(null);
 
 onMounted(() => {
@@ -137,7 +137,7 @@ const uiUpdate = async () => {
   flex-direction: column;
   padding: 20px;
   width: 40%;
-  height: 90vh;
+  height: calc(100vh - 120px);
   overflow-y: scroll;
 }
 

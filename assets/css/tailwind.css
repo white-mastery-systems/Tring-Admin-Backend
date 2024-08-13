@@ -177,7 +177,9 @@
 .grey_color {
   color: rgba(116, 118, 129, 1);
 }
-
+.focus\:ring-offset-2:focus {
+  --tw-ring-offset-width: none !important;
+}
 * {
   font-family: "HeyWow";
 }

@@ -6,9 +6,7 @@
       <div class="flex gap-4">
         <UiDialog>
           <UiDialogTrigger as-child>
-            <UiButton
-              class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95"
-            >
+            <UiButton class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95">
               Add Bot
             </UiButton>
           </UiDialogTrigger>
@@ -22,16 +20,11 @@
             <div class="individual-form-align">
               <label for="frole" class="pb-2 font-medium">Name</label>
               <input type="text" id="frole" v-model="newBotName" name="fname" />
-              <UiButton @click="addBot" class="ml-auto mt-2 w-1/2"
-                >Create</UiButton
-              >
+              <UiButton @click="addBot" class="ml-auto mt-2 w-1/2">Create</UiButton>
             </div>
           </UiDialogContent>
         </UiDialog>
-        <span
-          class="right-dropdown-align text-[15px]"
-          style="color: rgba(138, 138, 138, 1)"
-          >Summary:
+        <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary:
           <span class="font-bold text-black">
             <!-- <template> -->
             <UiSelect v-model="selectedValue" class="outline-none">
@@ -41,20 +34,15 @@
               <UiSelectContent>
                 <UiSelectGroup class="select_list_align">
                   <!-- <UiSelectLabel>Today</UiSelectLabel> -->
-                  <UiSelectItem
-                    v-for="(list, index) in menuList"
-                    :key="index"
-                    class="content_align"
-                    :value="list.content"
-                  >
+                  <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
+                    :value="list.content">
                     {{ list.content }}
                   </UiSelectItem>
                 </UiSelectGroup>
               </UiSelectContent>
             </UiSelect>
             <!-- </template> -->
-          </span></span
-        >
+          </span></span>
       </div>
     </div>
     <div class="bot-main-align">
@@ -66,21 +54,13 @@
         </div>
       </div>
       <div class="overflow_align">
-        <div class="list_align">
-          <div
-            class="bot-list-align text-[15px]"
-            v-for="(list, index) in botList"
-            :key="index"
-            @click="botManagementDetails(list)"
-          >
+        <div v-if="botList.length" class="list_align">
+          <div class="bot-list-align text-[15px]" v-for="(list, index) in botList" :key="index"
+            @click="botManagementDetails(list)">
             <span class="bot_name_align font-medium">{{ list.name }}</span>
-            <span
-              class="createAt_align font-medium text-black"
-              :style="{
+            <span class="createAt_align font-medium text-black" :style="{
                 'padding-inline-end': !list.status ? '110px' : '123px',
-              }"
-              >{{ list.createdAt }}</span
-            >
+              }">{{ list.createdAt }}</span>
             <div v-if="list.status" class="acive_class font-medium">
               <div class="active-circle-align rounded-full"></div>
               <span>Active</span>
@@ -100,6 +80,9 @@
           </div>
           <!-- <div>
           </div> -->
+        </div>
+        <div v-else class="flex items-center justify-center font-regular text-[#8A8A8A]">
+          No bots created
         </div>
       </div>
     </div>
@@ -253,6 +236,9 @@
   }
 
   .overflow_align {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     height: 70vh;
     overflow-y: scroll;
     width: 100%;

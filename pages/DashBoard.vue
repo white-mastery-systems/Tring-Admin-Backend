@@ -6,10 +6,7 @@
         <!-- <span class="calender-align">
           <img src="assets\icons\calendar_month.svg" width="20">
         </span> -->
-        <span
-          class="right-dropdown-align text-[15px]"
-          style="color: rgba(138, 138, 138, 1)"
-          >Summary:
+        <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary:
           <span class="font-bold text-black">
             <UiSelect v-model="selectedValue" class="outline-none">
               <UiSelectTrigger class="ui-select-trigger w-[110px] outline-none">
@@ -18,12 +15,8 @@
               <UiSelectContent>
                 <UiSelectGroup class="select_list_align">
                   <!-- <UiSelectLabel>Today</UiSelectLabel> -->
-                  <UiSelectItem
-                    v-for="(list, index) in menuList"
-                    :key="index"
-                    class="content_align"
-                    :value="list.content"
-                  >
+                  <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
+                    :value="list.content">
                     {{ list.content }}
                   </UiSelectItem>
                 </UiSelectGroup>
@@ -37,11 +30,7 @@
       <div class="dashboard-main-paage">
         <div class="card-align">
           <div>
-            <img
-              src="assets\icons\contact_count_icon.svg"
-              width="34"
-              height="34"
-            />
+            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
           </div>
           <div>
             <div class="content-align font-semibold">Chat bots</div>
@@ -50,11 +39,7 @@
         </div>
         <div class="card-align">
           <div>
-            <img
-              src="assets\icons\contact_count_icon.svg"
-              width="34"
-              height="34"
-            />
+            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
           </div>
           <div>
             <div class="content-align font-semibold">Call bots</div>
@@ -63,11 +48,7 @@
         </div>
         <div class="card-align">
           <div>
-            <img
-              src="assets\icons\contact_count_icon.svg"
-              width="34"
-              height="34"
-            />
+            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
           </div>
           <div>
             <div class="content-align font-semibold">Chat Leads</div>
@@ -76,11 +57,7 @@
         </div>
         <div class="card-align">
           <div>
-            <img
-              src="assets\icons\contact_count_icon.svg"
-              width="34"
-              height="34"
-            />
+            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
           </div>
           <div>
             <div class="content-align font-semibold">Call leads</div>
@@ -89,59 +66,31 @@
         </div>
       </div>
       <div class="graph-align mt-10 gap-6">
-        <div
-          class="relative h-[380px] w-[750px] place-content-center rounded-md bg-white shadow"
-        >
-          <UiLabel class="absolute top-6 pb-1 pl-6 text-lg font-bold"
-            >Chat Bot</UiLabel
-          >
-          <UiLineChart
-            :data="lineGraphData"
-            index="month"
-            :categories="['Leads Created', 'Sessions Created']"
-            :colors="['#424bd1', '#ffbc42']"
-            :show-grid-line="true"
-            :show-tooltip="true"
-            :margin="{ right: 20 }"
+        <div class="relative h-[380px] w-[750px] place-content-center rounded-md bg-white shadow">
+          <UiLabel class="absolute top-6 pb-1 pl-6 text-lg font-bold">Chat Bot</UiLabel>
+          <UiLineChart :data="lineGraphData" index="month" :categories="['Leads Created', 'Sessions Created']"
+            :colors="['#424bd1', '#ffbc42']" :show-grid-line="true" :show-tooltip="true" :margin="{ right: 20 }"
             :y-formatter="
               (tick: any) => {
                 return typeof tick === 'number'
                   ? `${new Intl.NumberFormat('us').format(tick).toString()}`
                   : '';
               }
-            "
-            class="h-[250px]"
-          />
+            " class="h-[250px]" />
         </div>
 
-        <div
-          class="relative h-[380px] w-[450px] place-content-center rounded-md bg-white shadow"
-        >
-          <UiLabel class="absolute top-6 pl-6 text-lg font-bold"
-            >Voice Bot</UiLabel
-          >
-          <VisBulletLegend
-            :items="chartDataItems"
-            class="absolute right-6 top-10 flex flex-col pt-3"
-          />
-          <UiDonutChart
-            index="name"
-            :category="'total'"
-            :data="chartsData"
-            :colors="['#ffbc42', '#424bd1']"
-            :arc-width="50"
-          >
+        <div class="relative h-[380px] w-[450px] place-content-center rounded-md bg-white shadow">
+          <UiLabel class="absolute top-6 pl-6 text-lg font-bold">Voice Bot</UiLabel>
+          <VisBulletLegend :items="chartDataItems" class="absolute right-6 top-10 flex flex-col pt-3" />
+          <UiDonutChart index="name" :category="'total'" :data="chartsData" :colors="['#ffbc42', '#424bd1']"
+            :arc-width="50">
           </UiDonutChart>
         </div>
       </div>
       <div class="dashboard-main-paage">
         <div class="card-align">
           <div>
-            <img
-              src="assets\icons\contact_count_icon.svg"
-              width="34"
-              height="34"
-            />
+            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
           </div>
           <div>
             <div class="content-align font-semibold">Chat Sessions</div>
@@ -150,11 +99,7 @@
         </div>
         <div class="card-align">
           <div>
-            <img
-              src="assets\icons\contact_count_icon.svg"
-              width="34"
-              height="34"
-            />
+            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
           </div>
           <div>
             <div class="content-align font-semibold">Total Calls</div>
@@ -163,11 +108,7 @@
         </div>
         <div class="card-align">
           <div>
-            <img
-              src="assets\icons\contact_count_icon.svg"
-              width="34"
-              height="34"
-            />
+            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
           </div>
           <div>
             <div class="content-align font-semibold">Call Duration</div>
@@ -176,11 +117,7 @@
         </div>
         <div class="card-align">
           <div>
-            <img
-              src="assets\icons\contact_count_icon.svg"
-              width="34"
-              height="34"
-            />
+            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
           </div>
           <div>
             <div class="content-align font-semibold">Unique Sessions</div>
