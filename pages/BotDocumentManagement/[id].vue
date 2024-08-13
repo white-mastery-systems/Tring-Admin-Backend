@@ -5,7 +5,7 @@
         <button @click="router.back()">
           <img src="assets\icons\right_arrow.svg" width="20"></img>
         </button>
-        <!-- <span class="font-bold text-[20px]">Document Management</span> -->
+        <span class="font-bold text-[20px]">Document Management</span>
       </div>
       <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary: <span
           class="font-bold text-black">Recent</span></span>
@@ -18,12 +18,12 @@
       </span>
       <div class="flex items-center gap-2">
         <div class="submit-btn-align">
-          <button class="font-bold text-[14px]" type="submit" @click="fileUpload">
+          <button v-if="selectedFile" class="font-bold text-[14px]" type="submit" @click="fileUpload">
             Upload Document
           </button>
         </div>
         <!-- <span class="upload-document-align font-bold"> Upload Document </span> -->
-        <span class="only-content-align"> (Only Pdf) </span>
+        <span v-if="!selectedFile" class="only-content-align"> (Only Pdf) </span>
       </div>
     </div>
     <div class="bot-main-align">
@@ -65,9 +65,6 @@
                   <img src="assets\icons\more_horiz.svg" width="30" />
                 </UiPopoverTrigger>
                 <UiPopoverContent align="end" class="w-40 ">
-                  <div @click="handleAction(list, 'deploy')" class="menu-align">
-                      Deploy
-                  </div>
                   <div @click="handleAction(list, 'download')" class="menu-align">
                       Download
                   </div>
@@ -132,9 +129,6 @@ const handleAction = (list: any, action: any) => {
   }
 
   switch (action) {
-    case 'deploy':
-      singleDocumentDeploy(list)
-      break;
     case 'download':
       singleDocumentDownload(list)
       break;
@@ -143,13 +137,6 @@ const handleAction = (list: any, action: any) => {
       break;
   }
 };
-const singleDocumentDeploy = async (list: any) => {
-     deployDocument(paramId.params.id, list.id)
-  getDocumentList.value = await listDocumentsByBotId(paramId.params.id)
-  // if (myPopover.value) {
-  //   myPopover.value.close()
-  // }
-}
 
 onUnmounted(() => {
   documentFetchInterval.value && clearInterval(documentFetchInterval.value)
@@ -334,7 +321,7 @@ const singleDocumentDownload = async (list: any) => {
   padding: 5px;
   font-weight: 500;
 }
-:deep(.line-clamp-3) {
+/* :deep(.line-clamp-3) {
   display: none;
-}
+} */
 </style>

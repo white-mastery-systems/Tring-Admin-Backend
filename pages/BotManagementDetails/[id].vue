@@ -32,6 +32,38 @@
                 dateFormate
               }}</span>
             </span>
+            <UiDialog v-if="!botDetails.documentId">
+              <UiDialogTrigger class="">
+                <UiButton class="bg-[#424bd1] hover:bg-[#424bd1]/90"
+                  >Deploy Bot</UiButton
+                >
+              </UiDialogTrigger>
+              <UiDialogContent align="end" class="sm:max-w-md">
+                <UiDialogHeader>
+                  <UiDialogTitle>Launch Bot</UiDialogTitle>
+                  <UiDialogDescription>
+                    Choose a document to deploy your bot
+                  </UiDialogDescription>
+                </UiDialogHeader>
+                <div
+                  class="deploy-bot-list-align text-[15px]"
+                  v-for="list in getDocumentList.filter(
+                    (item: any) => item.status === 'ready',
+                  )"
+                  :key="list.id"
+                >
+                  <div class="list_align" @click="singleDocumentDeploy(list)">
+                    <!-- <span
+                      class="bot_name_align font-medium"
+                      >{{ list.name }}</span
+                    > -->
+                    <button class="bot_name_align font-medium">
+                      {{ list.name }}
+                    </button>
+                  </div>
+                </div>
+              </UiDialogContent>
+            </UiDialog>
             <span v-if="botDetails.documentId" class="flex gap-4">
               <UiButton
                 class="button-align text-[14px] font-medium"
@@ -45,7 +77,11 @@
                 class="bg-[#474df9] text-[14px] font-medium text-white hover:bg-[#474df9] hover:brightness-90"
                 >Preview Bot</UiButton
               >
-              <UiButton class="bg-[#e1dede] text-black hover:bg-[#d4d2d2]" @click="copyScript">Copy Script</UiButton>
+              <UiButton
+                class="bg-[#e1dede] text-black hover:bg-[#d4d2d2]"
+                @click="copyScript"
+                >Copy Script</UiButton
+              >
             </span>
           </div>
           <!-- <span class="font-semibold content-align">Date Created</span>
@@ -93,7 +129,15 @@
   const selectedValue = ref("Today");
   const route = useRoute("BotManagementDetails-id");
   const paramId: any = route;
-  const botDetails: any = await getBotDetails(paramId.params.id);
+  const botDetails = ref(await getBotDetails(paramId.params.id));
+
+  const getDocumentList: any = ref();
+
+  onMounted(async () => {
+    getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
+    botDetails.value = await getBotDetails(paramId.params.id);
+  });
+
   const dataList = ref([
     {
       _id: 1,
@@ -118,14 +162,14 @@
   ]);
 
   const dateFormate = computed(() => {
-    if (botDetails && botDetails.createdAt) {
-      return formatDateStringToDate(botDetails.createdAt);
+    if (botDetails && botDetails.value.createdAt) {
+      return formatDateStringToDate(botDetails.value.createdAt);
     }
     return null;
   });
 
   const previewUrl = computed(() => {
-    let col = botDetails.metadata.ui.color as string;
+    let col = botDetails.value.metadata.ui.color as string;
     col = col
       ?.split(" ")
       .map((element) => {
@@ -159,14 +203,19 @@
     await disableBot(paramId.params.id);
   };
 
-
   const botScript = `<script src="https://tring-databot.pripod.com/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS"/>`;
 
-  const { copy } = useClipboard({ source: botScript});
+  const { copy } = useClipboard({ source: botScript });
   const copyScript = async () => {
     copy(botScript);
     toast.success("Copied to clipboard");
-  }
+  };
+
+  const singleDocumentDeploy = async (list: any) => {
+    console.log("Bot Id", paramId.params.id);
+    await deployDocument(paramId.params.id, list.id);
+    botDetails.value = await getBotDetails(paramId.params.id);
+  };
 </script>
 
 <style scoped>
@@ -189,7 +238,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 65%;
+    width: 100%;
     /* background: rgba(255, 255, 255, 1); */
     /* padding: 30px 30px; */
     /* box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important; */
@@ -210,6 +259,19 @@
     box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
     border-radius: 10px;
     margin: 20px;
+  }
+
+  .deploy-bot-list-align {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 1);
+    padding: 20px 30px;
+    width: 100% !important;
+    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 10px;
   }
 
   .acive_class {
