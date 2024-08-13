@@ -10,7 +10,7 @@
     <div class="basic-confic-align text-[18px] font-bold">
       Basic Configurations
     </div>
-    <div class="flex flex-wrap">
+    <div class="flex flex-wrap all-field-align">
       <div class="individual-form-align">
         <label for="lname" class="font-bold">NAME</label><br />
         <input v-model="formDetails.NAME" class="my-2" type="text" id="lname" name="lname" /><br />
@@ -24,29 +24,110 @@
         <input v-model="formDetails.ROLE" class="my-2" type="text" id="frole" name="fname" />
       </div> -->
       <div class="individual-form-align">
-        <label class="font-bold">Role</label>
-        <UiSelect v-model="formDetails.ROLE">
+        <div class="flex items-center justify-between gap-2">
+          <label class="font-bold">Role</label>
+          <UiTooltipProvider>
+            <UiTooltip>
+              <UiTooltipTrigger as-child>
+                <div>
+                  <InfoIcon></InfoIcon>
+                </div>
+              </UiTooltipTrigger>
+              <UiTooltipContent>
+                <p> This is the role which bot acts as </p>
+              </UiTooltipContent>
+            </UiTooltip>
+          </UiTooltipProvider>
+        </div>
+        <UiSelect v-model="formDetails.ROLE" @update:model-value="handleGoalChange()">
           <UiSelectTrigger class="mt-2 select-menu-align font-medium">
             <UiSelectValue placeholder="Select Role" />
           </UiSelectTrigger>
           <UiSelectContent>
             <UiSelectItem value="Customer Support">Customer Support</UiSelectItem>
             <UiSelectItem value="Sales Executive">Sales Executive</UiSelectItem>
+            <UiSelectItem value="Custom">Custom</UiSelectItem>
           </UiSelectContent>
         </UiSelect>
+        <div v-if="showCustomRoleInput">
+          <input v-model="customRole" @change="createCustomGoal" placeholder="Enter your Role" class="my-2 text-[14px]"
+            type="text" id="lgoal" name="lgoal" /><br />
+        </div>
         <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
       </div>
       <div class="individual-form-align">
-        <label for="lgoal" class="font-bold">GOAL</label><br />
-        <input v-model="formDetails.GOAL" class="my-2" type="text" id="lgoal" name="lgoal" /><br />
+        <div class="flex items-center justify-between">
+          <label for="lgoal" class="font-bold"> GOAL </label><br />
+          <div>
+            <UiTooltipProvider>
+              <UiTooltip>
+                <UiTooltipTrigger as-child>
+                  <div>
+                    <InfoIcon></InfoIcon>
+                  </div>
+                </UiTooltipTrigger>
+                <UiTooltipContent>
+                  <p> This will be the goal of the bot and this drives how the bot handles unexpected scenarios and
+                    flows</p>
+                </UiTooltipContent>
+              </UiTooltip>
+            </UiTooltipProvider>
+          </div>
+        </div>
+        <!-- <UiSelect v-model="formDetails.GOAL" @update:model-value="handleGoalChange()">
+          <UiSelectTrigger class="mt-2 select-menu-align font-medium">
+            <UiSelectValue placeholder="Select Goal" />
+          </UiSelectTrigger>
+          <UiSelectContent>
+            <UiSelectItem value="Customer Support">Customer Support</UiSelectItem>
+            <UiSelectItem value="Sales Executive">Sales Executive</UiSelectItem>
+            <UiSelectItem value="Custom">Custom</UiSelectItem>
+          </UiSelectContent>
+        </UiSelect> -->
+        <div>
+          <input v-model="customRole" placeholder="Assist The User..." class="my-2 text-[14px]" type="text" id="lgoal"
+            name="lgoal" /><br />
+        </div>
       </div>
       <div class="text-area-align">
-        <span class="text-area-label font-bold"> NOTES </span>
+        <div class="flex items-center justify-between">
+          <span class="text-area-label font-bold"> NOTES </span>
+          <div>
+            <UiTooltipProvider>
+              <UiTooltip>
+                <UiTooltipTrigger as-child>
+                  <div>
+                    <InfoIcon></InfoIcon>
+                  </div>
+                </UiTooltipTrigger>
+                <UiTooltipContent>
+                  <p>Additional instructions / commands that you can give to the bot</p>
+                </UiTooltipContent>
+              </UiTooltip>
+            </UiTooltipProvider>
+          </div>
+        </div>
         <textarea clas placeholder="Enter your Note" v-model="formDetails.NOTES" class="my-2 text-[14px]" id="w3review"
           name="w3review" rows="4" cols="50"></textarea>
       </div>
       <div class="text-area-align">
-        <span class="text-area-label font-bold"> DESCRIPTION </span>
+        <div class="flex items-center justify-between">
+          <span class="text-area-label font-bold"> DESCRIPTION </span>
+          <div>
+            <UiTooltipProvider>
+              <UiTooltip>
+                <UiTooltipTrigger as-child>
+                  <div>
+                    <InfoIcon></InfoIcon>
+                  </div>
+                </UiTooltipTrigger>
+                <UiTooltipContent>
+                  <p>Optional Description about the company or the product the bot will be handling</p>
+                </UiTooltipContent>
+              </UiTooltip>
+            </UiTooltipProvider>
+          </div>
+        </div>
         <textarea placeholder="Enter your Description" v-model="formDetails.DESCRIPTION" class="my-2 text-[14px]"
           id="w3review" name="w3review" rows="4" cols="50"></textarea>
       </div>
@@ -89,7 +170,7 @@
       </div>
     </div>
   </div>
-  <div class="basic-confic-align text-[18px] font-bold">
+  <div class="basic-confic-align text-[18px] font-bold" v-if="false">
     <span>
       Intent Management
     </span>
@@ -99,6 +180,8 @@
   </div>
 </template>
 <script setup lang="ts">
+import InfoIcon from '~/components/icons/InfoIcon.vue';
+
 definePageMeta({
   middleware: "admin-only",
 });
@@ -112,9 +195,11 @@ const formDetails: any = reactive({
   DESCRIPTION: '',
   INTENTS: "-other\n-details"
 })
+const customRole = ref()
 const route = useRoute()
 const paramId: any = route
 const botDetails: any = await getBotDetails(paramId.params.id)
+const showCustomRoleInput = ref(false)
 
 
 onMounted(() => {
@@ -128,6 +213,12 @@ onMounted(() => {
   }
 })
 
+const handleGoalChange = () => {
+  if (formDetails.ROLE === 'Custom') {
+    showCustomRoleInput.value = true
+  }
+}
+
 const createBot = () => {
   const payload: any = {
     id: botDetails.id,
@@ -138,7 +229,14 @@ const createBot = () => {
       }
     }
   }
-  updateBotDetails(payload)
+  if ((formDetails.ROLE?.length ?? 0) && (formDetails.NAME.length ?? 0) && (formDetails.COMPANY.length ?? 0) && (formDetails.GOAL.length ?? 0)) {
+    updateBotDetails(payload)
+  } else {
+    toast.error("Please fill out all required fields.")
+  }
+}
+const createCustomGoal = () => {
+  formDetails.ROLE = customRole.value
 }
 </script>
 <style scoped>
@@ -152,6 +250,7 @@ const createBot = () => {
   padding: 15px 29px;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+  height: calc(100vh - 115px);
 }
 
 form {
@@ -233,5 +332,9 @@ textarea {
 
 .select-menu-align {
   height: 50px;
+}
+.all-field-align {
+  height: 100vh;
+  overflow-y: scroll;
 }
 </style>

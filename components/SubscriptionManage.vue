@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col justify-center">
-    <div class="header-align">
+    <div class="header-align px-2">
       <div class="font-bold text-[16px]">
         Subscription
       </div>
@@ -30,12 +30,12 @@
       </div>
       <div class="content-align font-medium gap-3">
         <span>
-          subscribed List
+          subscribed quota
         </span>
       </div>
       <div class="content-align font-medium gap-3">
         <span>
-          Total List
+          Available quota
         </span>
       </div>
     </div>
@@ -44,7 +44,7 @@
 <style scoped>
 .header-align {
   height: 70px;
-  padding: 10px 0;
+  padding: 10px 25px;
   border-bottom: 1px solid rgb(128, 128, 128, 0.5);
 }
 

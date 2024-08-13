@@ -13,7 +13,6 @@ const togglePasswordVisibility = () => {
   passwordVisible.value = !passwordVisible.value
 }
 
-
 </script>
 <template>
   <div class="sign-in-align">

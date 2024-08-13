@@ -9,8 +9,8 @@ const loginData = reactive({
   name: "",
   industry: "Real Estate",
   customIndustry: '',
-  avgTraffic: "Less than 100",
-  employeeCount: "Less than 10",
+  avgTraffic: "Less than 100 visits",
+  employeeCount: "Less than 10 employees",
 });
 
 const handleRoleChange = (selectItem: any) => {

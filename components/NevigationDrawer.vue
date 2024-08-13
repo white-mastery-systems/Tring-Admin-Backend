@@ -23,7 +23,7 @@
             : 'default-align',
         ]" @click="
           async () => {
-            await navigateTo({ name: 'AnalyticsOverView' });
+            await navigateTo({ name: 'AnalyticsLeads' });
           }
         ">
         <div class="flex items-center gap-3">
@@ -44,7 +44,7 @@
           route.path === '/AnalyticsOverView' ||
           route.path === '/AnalyticsLeads'
         " class="analytics_sub_details_align rounded-b-lg">
-        <div :class="[
+        <!-- <div :class="[
             route.path === '/AnalyticsOverView'
               ? 'active_analytics_sub_details_align'
               : 'deactive_analytics_sub_details_align',
@@ -54,7 +54,7 @@
             }
           ">
           Overview
-        </div>
+        </div> -->
         <div class="pt-4" :class="[
             route.path === '/AnalyticsLeads'
               ? 'active_analytics_sub_details_align'
@@ -81,7 +81,7 @@
       </span>
       <span class="content-align">Bot Management</span>
     </div>
-    <div :class="[
+    <!-- <div :class="[
         route.path === `/customisation` ? 'activeClass' : 'default-align',
       ]">
       <span>
@@ -89,7 +89,7 @@
         <img v-else src="assets\icons\customisation_deactive.svg" width="22" height="22" />
       </span>
       <span class="content-align">Customisation</span>
-    </div>
+    </div> -->
     <div :class="[route.path === '/Billing' ? 'activeClass' : 'default-align']" @click="
         async () => {
           await navigateTo({ name: 'Billing' });
@@ -101,7 +101,7 @@
       </span>
       <span class="content-align">Billing</span>
     </div>
-    <div :class="[route.path === '/settings' ? 'activeClass' : 'default-align']" @click="
+    <!-- <div :class="[route.path === '/settings' ? 'activeClass' : 'default-align']" @click="
         async () => {
           // await navigateTo(name: 'UiCustomization-id')
         }
@@ -111,7 +111,7 @@
         <img v-else src="assets\icons\settings_deactive.svg" width="22" height="22" />
       </span>
       <span class="content-align">Settings</span>
-    </div>
+    </div> -->
     <UiButton @click="authHandlers.logout"
       class="mb-8 mt-auto w-3/4 bg-red-500 font-bold text-white hover:bg-red-500 hover:text-white hover:brightness-110"
       variant="outline">Logout</UiButton>
