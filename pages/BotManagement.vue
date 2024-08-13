@@ -24,7 +24,7 @@
             </div>
           </UiDialogContent>
         </UiDialog>
-        <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary:
+        <span v-if="false" class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary:
           <span class="font-bold text-black">
             <!-- <template> -->
             <UiSelect v-model="selectedValue" class="outline-none">

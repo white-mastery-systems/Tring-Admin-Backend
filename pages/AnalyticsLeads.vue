@@ -4,7 +4,7 @@
       <div class="flex items-center">
         <span class="text-[20px] font-bold">Leads</span>
       </div>
-      <div class="flex items-center space-x-4" style="width: 350px">
+      <div v-if="false" class="flex items-center space-x-4" style="width: 350px">
         <span class="calender-align">
           <img src="assets\icons\calendar_month.svg" width="20" />
         </span>

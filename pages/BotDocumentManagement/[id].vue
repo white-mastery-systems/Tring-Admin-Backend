@@ -7,8 +7,8 @@
         </button>
         <span class="font-bold text-[20px]">Document Management</span>
       </div>
-      <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary: <span
-          class="font-bold text-black">Recent</span></span>
+      <!-- <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary: <span
+          class="font-bold text-black">Recent</span></span> -->
     </div>
     <div class="document-align gap-0">
       <span>
