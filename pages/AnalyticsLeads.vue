@@ -60,7 +60,7 @@
       </div>
       <div class="content-scroll-align">
         <!-- {{ rep }} || asda -->
-        <div v-if="!ListLeads.length">
+        <div v-if="ListLeads.length">
           <div class="bot-list-align" v-for="(list, index) in ListLeads" :key="index" @click="async () => {
               await navigateTo('analyticsleadsinfo');
             }
@@ -267,11 +267,11 @@ const viewBot = async (chatId: any) => {
   overflow: hidden;
   text-overflow: ellipsis;
   display: inline-block;
-  padding-inline-start: 16px;
+  padding-inline-start: 15px;
 }
 
 .create_at-align {
-  padding-inline-end: 128px;
+  padding-inline-end: 127px;
 }
 
 .document-align {
