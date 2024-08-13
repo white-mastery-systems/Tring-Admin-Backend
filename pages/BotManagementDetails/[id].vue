@@ -1,7 +1,12 @@
 <template>
   <div class="bot-manage-main-container">
-    <div class="header-align">
-      <span class="text-[20px] font-bold"> Bot Management </span>
+    <div class="header-align ">
+      <div class="flex items-center gap-1 ">
+        <button @click="router.back()">
+            <img src="assets\icons\right_arrow.svg" width="20"></img>
+          </button>
+        <span class="text-[20px] font-bold"> Bot Management </span>
+      </div>
       <UiButton variant="destructive" @click="deleteBot(route.params.id)">
         <Icon name="lucide:trash-2" />
       </UiButton>
@@ -126,6 +131,7 @@
   import { ref } from "vue";
   import { toast } from "vue-sonner";
   import { useClipboard } from "@vueuse/core";
+  const router = useRouter();
   const selectedValue = ref("Today");
   const route = useRoute("BotManagementDetails-id");
   const paramId: any = route;

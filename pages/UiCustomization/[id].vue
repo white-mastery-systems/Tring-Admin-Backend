@@ -32,7 +32,7 @@
         <UiLabel class="text-lg font-medium">Widget Sound</UiLabel>
         <UiSelect v-model="widgetSound">
           <UiSelectTrigger class="hover:focus:none hover:focus-visible:none h-12 shadow-align">
-            <UiSelectValue />
+            <UiSelectValue placeholder="Select Widget Sound" />
           </UiSelectTrigger>
           <UiSelectContent>
             <UiSelectGroup>
@@ -46,7 +46,7 @@
         <UiLabel class="text-lg font-medium">Widget Position</UiLabel>
         <UiSelect v-model="widgetPosition">
           <UiSelectTrigger class="hover:focus-visible:none hover:focus:none h-12 shadow-align">
-            <UiSelectValue />
+            <UiSelectValue placeholder="Select Widget Position" />
           </UiSelectTrigger>
           <UiSelectContent>
             <UiSelectGroup>
@@ -103,7 +103,10 @@ onMounted(() => {
   if (Object.entries(botDetails.metadata.ui).length) {
     pickColor.value = hslToHex(botDetails.metadata.ui.color);
     defaultSelect.value = botDetails.metadata.ui.defaultSelect;
+    widgetSound.value = botDetails.metadata.ui.widgetSound;
+    widgetPosition.value = botDetails.metadata.ui.widgetPosition;
     onlineStatus.value = botDetails.metadata.ui.onlineStatus;
+    logo.value = botDetails.metadata.ui.logo;
   }
 });
 
@@ -115,9 +118,12 @@ const uiUpdate = async () => {
     metadata: {
       ...botDetails.metadata,
       ui: {
+        logo: logo.value,
         color: hexToHSL(pickColor.value),
         defaultSelect: defaultSelect.value,
         onlineStatus: onlineStatus.value,
+        widgetPosition: widgetPosition.value,
+        widgetSound: widgetSound.value,
       },
     },
   };
