@@ -40,5 +40,6 @@ export default defineNuxtConfig({
     dbUrl: "",
     redisUrl: "",
     llmBaseUrl: "",
+    botBaseUrl: "",
   },
 });

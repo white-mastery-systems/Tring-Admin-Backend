@@ -25,6 +25,7 @@ export const getBotDetailsNoCache = async (botId: string) => {
     where: eq(chatBotSchema.id, botId),
     with: {
       documents: true,
+      organization: true,
     },
   });
   return bot;
