@@ -1,24 +1,40 @@
 <template>
-    <div class="mx-10 mt-14 mb-4">
+  <div class="flex items-center mx-5 gap-2 mt-2 mb-4">
     <button @click="router.back()">
-          <img src="assets\icons\right_arrow.svg" width="20"></img>
-        </button>
-    <UiLabel class="ml-10 text-2xl font-bold">Bot Configuration</UiLabel>
+      <img src="assets\icons\right_arrow.svg" width="20"></img>
+    </button>
+    <UiLabel class="text-[20px] font-bold">Basic Configuration</UiLabel>
   </div>
-  <div class="form-align">
+  <div class="form-align rounded-lg">
     <!-- {{ formDetails }} -->
+    <div class="basic-confic-align text-[18px] font-bold">
+      Basic Configurations
+    </div>
     <div class="flex flex-wrap">
-      <div class="individual-form-align">
-        <label for="frole" class="font-bold">ROLE</label><br />
-        <input v-model="formDetails.ROLE" class="my-2" type="text" id="frole" name="fname" />
-      </div>
       <div class="individual-form-align">
         <label for="lname" class="font-bold">NAME</label><br />
         <input v-model="formDetails.NAME" class="my-2" type="text" id="lname" name="lname" /><br />
       </div>
       <div class="individual-form-align">
-        <label for="lcompany" class="font-bold">COMPANY</label><br />
+        <label for="lcompany" class="font-bold">Company Name</label><br />
         <input v-model="formDetails.COMPANY" class="my-2" type="text" id="lcompany" name="lcompany" /><br />
+      </div>
+      <!-- <div class="individual-form-align">
+        <label for="frole" class="font-bold">ROLE</label><br />
+        <input v-model="formDetails.ROLE" class="my-2" type="text" id="frole" name="fname" />
+      </div> -->
+      <div class="individual-form-align">
+        <label class="font-bold">Role</label>
+        <UiSelect v-model="formDetails.ROLE">
+          <UiSelectTrigger class="mt-2 select-menu-align font-medium">
+            <UiSelectValue placeholder="Select Role" />
+          </UiSelectTrigger>
+          <UiSelectContent>
+            <UiSelectItem value="Customer Support">Customer Support</UiSelectItem>
+            <UiSelectItem value="Sales Executive">Sales Executive</UiSelectItem>
+          </UiSelectContent>
+        </UiSelect>
+        <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
       </div>
       <div class="individual-form-align">
         <label for="lgoal" class="font-bold">GOAL</label><br />
@@ -26,12 +42,13 @@
       </div>
       <div class="text-area-align">
         <span class="text-area-label font-bold"> NOTES </span>
-        <textarea v-model="formDetails.NOTES" class="my-2" id="w3review" name="w3review" rows="4" cols="50"></textarea>
+        <textarea clas placeholder="Enter your Note" v-model="formDetails.NOTES" class="my-2 text-[14px]" id="w3review"
+          name="w3review" rows="4" cols="50"></textarea>
       </div>
       <div class="text-area-align">
         <span class="text-area-label font-bold"> DESCRIPTION </span>
-        <textarea v-model="formDetails.DESCRIPTION" class="my-2" id="w3review" name="w3review" rows="4"
-          cols="50"></textarea>
+        <textarea placeholder="Enter your Description" v-model="formDetails.DESCRIPTION" class="my-2 text-[14px]"
+          id="w3review" name="w3review" rows="4" cols="50"></textarea>
       </div>
       <div class="submit-btn-align">
         <button class="font-bold text-[14px]" type="submit" @click="createBot()">
@@ -40,11 +57,51 @@
       </div>
     </div>
   </div>
+  <div v-if="false" class="form-align rounded-lg">
+    <!-- {{ formDetails }} -->
+    <div class="basic-confic-align text-[18px] font-bold">
+      Chat Prompts
+    </div>
+    <div class="flex flex-wrap">
+      <div class="individual-form-align">
+        <label for="lname" class="font-bold">Welcome Text</label><br />
+        <input placeholder="Enter Welcome text" v-model="formDetails.NAME" class="my-2" type="text" id="lname"
+          name="lname" /><br />
+      </div>
+      <div class="individual-form-align">
+        <label for="lcompany" class="font-bold">Form Prompt</label><br />
+        <input placeholder="Enter Form Prompt" v-model="formDetails.COMPANY" class="my-2" type="text" id="lcompany"
+          name="lcompany" /><br />
+      </div>
+      <!-- <div class="individual-form-align">
+        <label for="frole" class="font-bold">ROLE</label><br />
+        <input v-model="formDetails.ROLE" class="my-2" type="text" id="frole" name="fname" />
+      </div> -->
+      <div class="individual-form-align">
+        <label for="lgoal" class="font-bold">Error Message</label><br />
+        <input v-model="formDetails.GOAL" placeholder="Enter Error text" class="my-2" type="text" id="lgoal"
+          name="lgoal" /><br />
+      </div>
+      <div class="submit-btn-align">
+        <button class="font-bold text-[14px]" type="submit" @click="createBot()">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="basic-confic-align text-[18px] font-bold">
+    <span>
+      Intent Management
+    </span>
+    <span>
+      Add Intent
+    </span>
+  </div>
 </template>
 <script setup lang="ts">
 definePageMeta({
-    middleware: "admin-only",
-  });
+  middleware: "admin-only",
+});
 const router = useRouter()
 const formDetails: any = reactive({
   ROLE: '',
@@ -53,8 +110,8 @@ const formDetails: any = reactive({
   GOAL: '',
   NOTES: '',
   DESCRIPTION: '',
-  INTENTS:"-other\n-details"
-  })
+  INTENTS: "-other\n-details"
+})
 const route = useRoute()
 const paramId: any = route
 const botDetails: any = await getBotDetails(paramId.params.id)
@@ -85,10 +142,16 @@ const createBot = () => {
 }
 </script>
 <style scoped>
+.focus\:ring-offset-2:focus {
+  --tw-ring-offset-width: none;
+}
+
 .form-align {
   display: flex;
-  /* flex-direction: column; */
-  padding: 0 25px;
+  flex-direction: column;
+  padding: 15px 29px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
 }
 
 form {
@@ -119,12 +182,14 @@ textarea {
   border-radius: 10px;
   width: 100%;
   padding: 20px;
+  height: 80px;
+  outline: none !important;
 }
 
 .text-area-align {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 100%;
   padding: 0 20px;
   margin-top: 15px;
 }
@@ -137,6 +202,7 @@ textarea {
   width: 100%;
   display: flex;
   justify-content: end;
+  padding: 0 21px;
 }
 
 .submit-btn-align input {
@@ -157,5 +223,15 @@ textarea {
   color: #ffffff;
   margin-top: 20px;
   /* margin-right: 170px; */
+}
+
+.basic-confic-align {
+  padding-left: 20px;
+  color: rgba(66, 75, 209, 1);
+  margin: 10px 0;
+}
+
+.select-menu-align {
+  height: 50px;
 }
 </style>
