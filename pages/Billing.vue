@@ -18,15 +18,11 @@
         </div>
       </div>
       <!-- <div>
-        <SubscriptionManage/>
+        <SubscriptionManage />
       </div> -->
       <div class="overall_billing_align">
         <!-- @mouseover="planCard(index); previusIndex = index" @mouseout="planCardUnHover(index); previusIndex = index" -->
-        <div
-          class="main_card_align"
-          v-for="(list, index) in billingVariation"
-          :key="index"
-        >
+        <div class="main_card_align" v-for="(list, index) in billingVariation" :key="index">
           <div class="type-color text-[23px] font-bold">
             {{ list.types }}
           </div>
@@ -43,17 +39,9 @@
             {{ list.benefitContent }}
           </div> -->
           <div class="benefit_inside_list">
-            <div
-              class="flex items-center gap-2"
-              v-for="(advancedList, ListIndex) in list.benefitList"
-              :key="ListIndex"
-            >
+            <div class="flex items-center gap-2" v-for="(advancedList, ListIndex) in list.benefitList" :key="ListIndex">
               <span class="flex items-start">
-                <img
-                  v-if="!list.listBenefit"
-                  src="assets\icons\check-circle.svg"
-                  width="15"
-                />
+                <img v-if="!list.listBenefit" src="assets\icons\check-circle.svg" width="15" />
                 <img v-else src="assets\icons\checked-circle.svg" width="15" />
               </span>
               <span class="content_color_align">
