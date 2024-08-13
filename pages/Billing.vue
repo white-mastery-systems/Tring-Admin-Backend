@@ -74,6 +74,9 @@
     middleware: "admin-only",
   });
 
+  const { user } = await useUser();
+  const [firstName, lastName] = user.value?.username?.split(" ") || [];
+
   const billingVariation = ref([
     {
       _id: 1,
@@ -108,6 +111,7 @@
           content: "No Tring Branding-NA",
         },
       ],
+      plan: "free_test",
     },
     {
       _id: 2,
@@ -142,7 +146,7 @@
           content: "No Tring Branding-NA",
         },
       ],
-      plan: "https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/chat_intelligence?cf_org_id=asda",
+      plan: `chat_intelligence`,
     },
     {
       _id: 3,
@@ -177,7 +181,7 @@
           content: "No Tring Branding-Paid",
         },
       ],
-      plan: "https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/chat_super_intelligence?cf_org_id=asda",
+      plan: "chat_super_intelligence",
     },
     {
       _id: 4,
@@ -218,7 +222,18 @@
   const mostPopularPlan = ref(false);
 
   const choosePlan = async (plan: any) => {
-    navigateTo(`${plan}`, {
+    const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName}`;
+
+    if (!plan) {
+      return navigateTo("https://tring-web.pripod.com/contact", {
+        external: true,
+        open: {
+          target: "_blank",
+        },
+      });
+    }
+
+    navigateTo(planTemplate, {
       external: true,
       open: {
         target: "_blank",

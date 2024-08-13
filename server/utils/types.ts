@@ -98,7 +98,7 @@ export type ZohoHostedPageApiResponse = {
         last_name: string;
         email: string;
         company_name: string;
-        cf_org_id: string;
+        cf_user_id: string;
         billing_address: {
           street: string;
           city: string;

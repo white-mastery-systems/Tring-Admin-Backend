@@ -16,6 +16,7 @@ const schema = {
   chatSchema,
   messageSchema,
   leadSchema,
+  billingSchema,
 
   // Relations
   organizationRelations,
@@ -25,6 +26,7 @@ const schema = {
   chatsRelations,
   messageRelations,
   leadsRelations,
+  billingRelations,
 };
 
 const db = drizzle(queryClient, { schema });

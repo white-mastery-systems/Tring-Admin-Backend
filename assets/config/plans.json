@@ -1,0 +1,14 @@
+{
+  "chat_intelligence": {
+    "name": "Intelligence",
+    "availableQuota": 60
+  },
+  "chat_super_intelligence": {
+    "name": "Super Intelligence",
+    "availableQuota": 250
+  },
+  "free_test": {
+    "name": "Free",
+    "availableQuota": 10
+  }
+}

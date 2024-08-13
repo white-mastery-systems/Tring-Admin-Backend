@@ -7,7 +7,7 @@ import {
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-import { organizationSchema } from "./admin";
+import { organizationSchema, billingSchema } from "./admin";
 import { adminSchema } from ".";
 
 // Table definitions
@@ -45,6 +45,7 @@ export const userRelations = relations(authUserSchema, ({ many, one }) => ({
     fields: [authUserSchema.organizationId],
     references: [organizationSchema.id],
   }),
+  billsPaid: many(billingSchema),
 }));
 
 export const sessionRelations = relations(authSessionSchema, ({ one }) => ({
