@@ -35,7 +35,7 @@
     <div class="document-align gap-4">
       <div class="count-align gap-3">
         <span class="font-bold">
-          Total Chats: <span style="color: rgba(66, 75, 209, 1)">495</span>
+          <!-- Total Chats: <span style="color: rgba(66, 75, 209, 1)">{{ ListLeads }}</span> -->
         </span>
         <span class="font-bold">
           Total Leads: <span style="color: rgba(66, 75, 209, 1)">{{ ListLeads?.length }}</span>
