@@ -124,6 +124,8 @@ const uiUpdate = async () => {
   await updateBotDetails(payload);
 
   logo.value && (await uploadLogo(botDetails.id, logo.value![0]));
+
+    return navigateTo({name:"BotManagementDetails-id", params:{id:paramId.params.id}})
   // console.log(botDetails.name, "botDetails.name")
   // console.log(pickColor.value, "pickColor.value")
   // console.log(defualtSelect.value, "pickColor.value")

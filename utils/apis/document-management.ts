@@ -9,6 +9,10 @@ export const listDocumentsByBotId = async (botId: string) => {
 export const deployDocument = async (botId: string, documentId: string) => {
   await $fetch(`/api/bots/${botId}/documents/${documentId}/deploy`);
   toast.success("Document deployed successfully");
+  await navigateTo({
+    name: "BotManagementDetails-id",
+    params: { id: botId },
+  });
 };
 
 export const viewDocument = async (botId: string, documentId: string) => {

@@ -2,6 +2,9 @@
   <div class="bot-manage-main-container">
     <div class="header-align">
       <span class="text-[20px] font-bold"> Bot Management </span>
+      <UiButton variant="destructive" @click="deleteBot(route.params.id)">
+        <Icon name="lucide:trash-2" />
+      </UiButton>
     </div>
     <div class="bot-main-align">
       <div class="list-header-align">
@@ -30,10 +33,10 @@
               }}</span>
             </span>
             <span v-if="botDetails.documentId" class="flex gap-4">
-              <Button
+              <UiButton
                 class="button-align text-[14px] font-medium"
                 @click="deactivateBot"
-                >Deactivate Bot</Button
+                >Deactivate Bot</UiButton
               >
               <UiButton
                 as="a"
@@ -42,6 +45,7 @@
                 class="bg-[#474df9] text-[14px] font-medium text-white hover:bg-[#474df9] hover:brightness-90"
                 >Preview Bot</UiButton
               >
+              <UiButton class="bg-[#e1dede] text-black hover:bg-[#d4d2d2]" @click="copyScript">Copy Script</UiButton>
             </span>
           </div>
           <!-- <span class="font-semibold content-align">Date Created</span>
@@ -84,9 +88,10 @@
     middleware: "admin-only",
   });
   import { ref } from "vue";
+  import { toast } from "vue-sonner";
+  import { useClipboard } from "@vueuse/core";
   const selectedValue = ref("Today");
-  const route = useRoute();
-  const router = useRouter();
+  const route = useRoute("BotManagementDetails-id");
   const paramId: any = route;
   const botDetails: any = await getBotDetails(paramId.params.id);
   const dataList = ref([
@@ -152,8 +157,16 @@
   };
   const deactivateBot = async () => {
     await disableBot(paramId.params.id);
-    router.back();
   };
+
+
+  const botScript = `<script src="https://tring-databot.pripod.com/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS"/>`;
+
+  const { copy } = useClipboard({ source: botScript});
+  const copyScript = async () => {
+    copy(botScript);
+    toast.success("Copied to clipboard");
+  }
 </script>
 
 <style scoped>
