@@ -42,4 +42,10 @@ export default defineNuxtConfig({
     llmBaseUrl: "",
     botBaseUrl: "",
   },
+
+  vite: {
+    optimizeDeps: {
+      exclude: ["vee-validate"],
+    },
+  },
 });

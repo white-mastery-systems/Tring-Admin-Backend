@@ -201,9 +201,7 @@
         else return element;
       })
       .join(" ");
-    return `https://tring-databot.pripod.com/?orgname=WMS&chatbotid=${paramId.params.id}&brandcolor=${
-      col
-    }`;
+    return `https://tring-databot.pripod.com/?orgname=WMS&chatbotid=${paramId.params.id}&brandcolor=${col}&mode=preview`;
   });
   // onMounted(async () => {
   //   console.log(paramId.params.id, "paramId")
