@@ -14,7 +14,7 @@
     <div class="right-card-align">
       <img src="assets\icons\signupImages.svg"></img>
       <div class="font-regular">
-        Welcome to <span class="font-medium text-[16px]">Tring Ai</span> your Ai-powered telesales partner
+        Welcome to <span class="font-medium text-[16px]">Tring AI</span> your AI-powered telesales partner
       </div>
     </div>
     <!-- <img src="assets\icons\rectangle_singup.svg" width="600"></img> -->
