@@ -85,8 +85,8 @@
           </UiSelectContent>
         </UiSelect> -->
         <div>
-          <input v-model="customRole" placeholder="Assist The User..." class="my-2 text-[14px]" type="text" id="lgoal"
-            name="lgoal" /><br />
+          <input v-model="formDetails.GOAL" placeholder="Assist The User..." class="my-2 text-[14px]" type="text"
+            id="lgoal" name="lgoal" /><br />
         </div>
       </div>
       <div class="text-area-align">
@@ -139,7 +139,6 @@
     </div>
   </div>
   <div v-if="false" class="form-align rounded-lg">
-    <!-- {{ formDetails }} -->
     <div class="basic-confic-align text-[18px] font-bold">
       Chat Prompts
     </div>
@@ -229,11 +228,18 @@ const createBot = () => {
       }
     }
   }
-  if ((formDetails.ROLE?.length ?? 0) && (formDetails.NAME.length ?? 0) && (formDetails.COMPANY.length ?? 0) && (formDetails.GOAL.length ?? 0)) {
+  if ((formDetails.ROLE?.length ?? 0) && (formDetails.NAME?.length ?? 0) && (formDetails.COMPANY?.length ?? 0) && (formDetails.GOAL?.length ?? 0)) {
     updateBotDetails(payload)
   } else {
     toast.error("Please fill out all required fields.")
   }
+  formDetails.ROLE = ''
+  formDetails.NAME = ''
+  formDetails.COMPANY = ''
+  formDetails.GOAL = ''
+  formDetails.NOTES = ''
+  formDetails.DESCRIPTION = ''
+  customRole.value = ''
 }
 const createCustomGoal = () => {
   formDetails.ROLE = customRole.value
