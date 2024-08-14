@@ -6,7 +6,7 @@
         <!-- <span class="calender-align">
           <img src="assets\icons\calendar_month.svg" width="20">
         </span> -->
-        <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary:
+        <!-- <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary:
           <span class="font-bold text-black">
             <UiSelect v-model="selectedValue" class="outline-none">
               <UiSelectTrigger class="ui-select-trigger w-[110px] outline-none">
@@ -14,7 +14,6 @@
               </UiSelectTrigger>
               <UiSelectContent>
                 <UiSelectGroup class="select_list_align">
-                  <!-- <UiSelectLabel>Today</UiSelectLabel> -->
                   <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
                     :value="list.content">
                     {{ list.content }}
@@ -23,7 +22,7 @@
               </UiSelectContent>
             </UiSelect>
           </span>
-        </span>
+        </span> -->
       </div>
     </div>
     <div>
@@ -33,7 +32,7 @@
             <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
           </div>
           <div>
-            <div class="content-align font-semibold">Chat bots</div>
+            <div class="content-align font-semibold">Chat Bots</div>
             <div class="text-lg font-bold">1</div>
           </div>
         </div>
@@ -42,7 +41,7 @@
             <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
           </div>
           <div>
-            <div class="content-align font-semibold">Call bots</div>
+            <div class="content-align font-semibold">Call Bots</div>
             <div class="text-lg font-bold">1</div>
           </div>
         </div>
@@ -60,7 +59,7 @@
             <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
           </div>
           <div>
-            <div class="content-align font-semibold">Call leads</div>
+            <div class="content-align font-semibold">Call Leads</div>
             <div class="text-lg font-bold">1</div>
           </div>
         </div>

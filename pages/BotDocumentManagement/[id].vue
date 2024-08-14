@@ -2,9 +2,9 @@
   <div class="bot-manage-main-container">
     <div class="header-align">
       <div class="flex items-center gap-2">
-        <button @click="router.back()">
-          <img src="assets\icons\right_arrow.svg" width="20"></img>
-        </button>
+        <UiButton variant="ghost" size="icon" @click="router.back()" >
+          <Icon name="ic:round-arrow-back-ios-new" class="w-5 h-5" />
+        </UiButton>
         <span class="font-bold text-[20px]">Document Management</span>
       </div>
       <!-- <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary: <span

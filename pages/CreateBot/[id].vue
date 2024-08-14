@@ -1,15 +1,15 @@
 <template>
   <div class="flex items-center mx-5 gap-2 mt-2 mb-4">
-    <button @click="router.back()">
-      <img src="assets\icons\right_arrow.svg" width="20"></img>
-    </button>
+     <UiButton variant="ghost" size="icon" @click="router.back()" >
+          <Icon name="ic:round-arrow-back-ios-new" class="w-5 h-5" />
+        </UiButton>
     <UiLabel class="text-[20px] font-bold">Basic Configuration</UiLabel>
   </div>
   <div class="form-align rounded-lg">
     <!-- {{ formDetails }} -->
-    <div class="basic-confic-align text-[18px] font-bold">
+    <!-- <div class="basic-confic-align text-[18px] font-bold">
       Basic Configurations
-    </div>
+    </div> -->
     <div class="flex flex-wrap all-field-align">
       <div class="individual-form-align">
         <label for="lname" class="font-bold">NAME</label><br />

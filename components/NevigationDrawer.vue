@@ -4,47 +4,77 @@
       <img src="assets\icons\tring_AI_logo.svg" width="80" height="80" />
     </div>
     <!-- <div> -->
-    <div :class="[route.path === '/DashBoard' ? 'activeClass' : 'default-align']" @click="
+    <div
+      :class="[route.path === '/DashBoard' ? 'activeClass' : 'default-align']"
+      @click="
         async () => {
           await navigateTo({ name: 'DashBoard' });
         }
-      ">
+      "
+    >
       <span>
-        <img v-if="route.path === '/DashBoard'" src="assets\icons\activeHome.svg" width="22" height="22" />
-        <img v-else src="assets\icons\deactiveHome.svg" width="22" height="22" />
+        <img
+          v-if="route.path === '/DashBoard'"
+          src="assets\icons\activeHome.svg"
+          width="22"
+          height="22"
+        />
+        <img
+          v-else
+          src="assets\icons\deactiveHome.svg"
+          width="22"
+          height="22"
+        />
       </span>
       <span class="content-align">Dashboard</span>
     </div>
-    <div class="analytics-main-container">
-      <div class="rounded-t-lg" :class="[
+    <!-- <div class="analytics-main-container">
+      <div
+        class="rounded-t-lg"
+        :class="[
           route.path === '/AnalyticsOverView' ||
           route.path === '/AnalyticsLeads'
             ? 'analytic_activeClass'
             : 'default-align',
-        ]" @click="
+        ]"
+        @click="
           async () => {
             await navigateTo({ name: 'AnalyticsLeads' });
           }
-        ">
+        "
+      >
         <div class="flex items-center gap-3">
           <span>
-            <img v-if="
+            <img
+              v-if="
                 route.path === '/AnalyticsOverView' ||
                 route.path === '/AnalyticsLeads'
-              " src="assets\icons\analytics_active.svg" width="22" height="22" />
-            <img v-else src="assets\icons\analytics_deactive.svg" width="22" height="22" />
+              "
+              src="assets\icons\analytics_active.svg"
+              width="22"
+              height="22"
+            />
+            <img
+              v-else
+              src="assets\icons\analytics_deactive.svg"
+              width="22"
+              height="22"
+            />
           </span>
           <span class="content-align">Analytics</span>
         </div>
         <!-- <span>
           <img src="assets\icons\chevron_right.svg" alt=""></img>
-        </span> -->
+        </span>
       </div>
-      <div v-if="
+      <!-- <div
+        v-if="
           route.path === '/AnalyticsOverView' ||
           route.path === '/AnalyticsLeads'
-        " class="analytics_sub_details_align rounded-b-lg">
-        <!-- <div :class="[
+        "
+        class="analytics_sub_details_align rounded-b-lg"
+      >
+        <div :class="[
             route.path === '/AnalyticsOverView'
               ? 'active_analytics_sub_details_align'
               : 'deactive_analytics_sub_details_align',
@@ -54,30 +84,77 @@
             }
           ">
           Overview
-        </div> -->
-        <div class="pt-4" :class="[
+        </div>
+        <div
+          class="pt-4"
+          :class="[
             route.path === '/AnalyticsLeads'
               ? 'active_analytics_sub_details_align'
               : 'deactive_analytics_sub_details_align',
-          ]" @click="
+          ]  "
+          @click="
             async () => {
               await navigateTo({ name: 'AnalyticsLeads' });
             }
-          ">
+          "
+        >
           Leads
         </div>
       </div>
+    </div> -->
+    <div
+      :class="[
+        route.path === '/AnalyticsLeads' ?
+         'activeClass' : 'default-align',
+      ]"
+      @click="
+        async () => {
+          await navigateTo({ name: 'AnalyticsLeads' });
+        }
+      "
+    >
+      <span>
+        <img
+          v-if="
+            route.path === '/AnalyticsOverView' ||
+            route.path === '/AnalyticsLeads'
+          "
+          src="assets\icons\analytics_active.svg"
+          width="22"
+          height="22"
+        />
+        <img
+          v-else
+          src="assets\icons\analytics_deactive.svg"
+          width="22"
+          height="22"
+        />
+      </span>
+      <span class="content-align">Leads</span>
     </div>
-    <div :class="[
+    <div
+      :class="[
         route.path === '/BotManagement' ? 'activeClass' : 'default-align',
-      ]" @click="
+      ]"
+      @click="
         async () => {
           await navigateTo({ name: 'BotManagement' });
         }
-      ">
+      "
+    >
       <span>
-        <img v-if="route.path === '/BotManagement'" src="assets\icons\bot_man_active.svg" width="22" height="22" />
-        <img v-else src="assets\icons\bot_man_deactive.svg" width="19" height="22" />
+        <img
+          v-if="route.path === '/BotManagement'"
+          src="assets\icons\bot_man_active.svg"
+          width="22"
+          height="22"
+        />
+        <img
+          v-else
+          src="assets\icons\bot_man_deactive.svg"
+          width="19"
+          height="22"
+        />
       </span>
       <span class="content-align">Bot Management</span>
     </div>
@@ -90,14 +167,27 @@
       </span>
       <span class="content-align">Customisation</span>
     </div> -->
-    <div :class="[route.path === '/Billing' ? 'activeClass' : 'default-align']" @click="
+    <div
+      :class="[route.path === '/Billing' ? 'activeClass' : 'default-align']"
+      @click="
         async () => {
           await navigateTo({ name: 'Billing' });
         }
-      ">
+      "
+    >
       <span>
-        <img v-if="route.path === '/Billing'" src="assets\icons\payments_active.svg" width="22" height="22" />
-        <img v-else src="assets\icons\payments_deactive.svg" width="22" height="22" />
+        <img
+          v-if="route.path === '/Billing'"
+          src="assets\icons\payments_active.svg"
+          width="22"
+          height="22"
+        />
+        <img
+          v-else
+          src="assets\icons\payments_deactive.svg"
+          width="22"
+          height="22"
+        />
       </span>
       <span class="content-align">Billing</span>
     </div>
@@ -112,9 +202,18 @@
       </span>
       <span class="content-align">Settings</span>
     </div> -->
-    <UiButton @click="authHandlers.logout"
+    <UiButton
+      @click="confirmModel"
       class="mb-8 mt-auto w-3/4 bg-red-500 font-bold text-white hover:bg-red-500 hover:text-white hover:brightness-110"
-      variant="outline">Logout</UiButton>
+      variant="outline"
+      >Logout</UiButton
+    >
+    <ConfirmationModal
+      v-model:open="modalOpen"
+      title="Confirm Logout"
+      description="Are you sure you want to log out ?"
+      @confirm="handleLogout"
+    />
     <!-- </div> -->
   </div>
 </template>
@@ -123,12 +222,23 @@
 
   const route = useRoute();
 
+  const modalOpen = ref(false);
+
   onMounted(async () => {
     console.log(route.path, "route");
     // if (route.path === '/') {
     //   // await navigateTo('/dashBoard')
     // }
   });
+
+  const confirmModel = () => {
+    modalOpen.value = true;
+  };
+
+  const handleLogout = () => {
+    authHandlers.logout();
+    modalOpen.value = false;
+  };
 </script>
 <style scoped>
   .navigation-drawer-main {

@@ -18,9 +18,9 @@
               </UiDialogDescription>
             </UiDialogHeader>
             <div class="individual-form-align">
-              <label for="frole" class="pb-2 font-medium">Name</label>
+              <label for="frole" class="pb-2 pl-0 font-medium">Bot Name</label>
               <input type="text" id="frole" v-model="newBotName" name="fname" />
-              <UiButton @click="addBot" class="ml-auto mt-2 w-1/2">Create</UiButton>
+              <UiButton @click="addBot" class="mt-2 w-1/2 bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">Create</UiButton>
             </div>
           </UiDialogContent>
         </UiDialog>
@@ -148,7 +148,6 @@
 
 <style scoped>
   .individual-form-align {
-    padding: 0 20px;
     display: flex;
     flex-direction: column;
     align-items: start;
