@@ -79,7 +79,10 @@
             :key="index"
             @click="
               async () => {
-                await navigateTo('analyticsleadsinfo');
+                await navigateTo({
+                  name: 'AnalyticsLeadsInfo-id',
+                  params: { id: list.chatId },
+                });
               }
             "
           >

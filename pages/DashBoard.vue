@@ -199,64 +199,74 @@
     },
   ]);
 
-  // interface MonthAbbreviations {
-  //   [key: string]: string;
-  // }
+  interface MonthAbbreviations {
+    [key: string]: string;
+  }
 
-  // const apiData = analyticsData.value.lead_count;
+  const apiData = computed(() => analyticsData.value?.lead_count);
 
-  // const months = [
-  //   "January",
-  //   "February",
-  //   "March",
-  //   "April",
-  //   "May",
-  //   "June",
-  //   "July",
-  //   "August",
-  //   "September",
-  //   "October",
-  //   "November",
-  //   "December",
-  // ];
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-  // // Define a mapping of month abbreviations to full names for comparison
-  // const monthAbbreviations: MonthAbbreviations = {
-  //   Jan: "January",
-  //   Feb: "February",
-  //   Mar: "March",
-  //   Apr: "April",
-  //   May: "May",
-  //   Jun: "June",
-  //   Jul: "July",
-  //   Aug: "August",
-  //   Sep: "September",
-  //   Oct: "October",
-  //   Nov: "November",
-  //   Dec: "December",
-  // };
+  // Define a mapping of month abbreviations to full names for comparison
+  const monthAbbreviations: MonthAbbreviations = {
+    Jan: "January",
+    Feb: "February",
+    Mar: "March",
+    Apr: "April",
+    May: "May",
+    Jun: "June",
+    Jul: "July",
+    Aug: "August",
+    Sep: "September",
+    Oct: "October",
+    Nov: "November",
+    Dec: "December",
+  };
 
   // Initialize an empty array for the final data
-  // const lineGraphData = months.map((month, index) => {
-  //   // Find the corresponding API data for the current month and year
-  //   const apiEntry = apiData.find((entry: any) => {
-  //     const [apiMonthAbbr, apiYear] = entry.month.split(" ");
-  //     const apiMonthFull =
-  //       monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
-  //     return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
-  //   });
+  // console.log(
+  const lineGraphData = computed(() =>
+    months.map((month, index) => {
+      // Find the corresponding API data for the current month and year
+      const apiEntry = apiData.value?.find((entry: any) => {
+        const [apiMonthAbbr, apiYear] = entry.month.split(" ");
+        console.log(apiMonthAbbr, apiYear, "API");
+        const apiMonthFull =
+          monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
+        return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
+      });
 
-  //   // Extract the year from the first entry of the API data, or use a default value
-  //   const year = apiData.length > 0 ? apiData[0].month.split(" ")[1] : "2024";
+      // Extract the year from the first entry of the API data, or use a default value
+      const year =
+        apiData.value?.length > 0
+          ? apiData.value[0].month.split(" ")[1]
+          : "2024";
 
-  //   return {
-  //     month: `${month} ${year}`,
-  //     "Leads Created": apiEntry ? parseInt(apiEntry.lead_count, 10) : 0,
-  //     "Sessions Created": 0, // Adjust this value if you have sessions data
-  //   };
-  // });
+      console.log(year, apiEntry);
 
-  const lineGraphData = [
+      return {
+        month: `${month} ${year}`,
+        "Leads Created": apiEntry ? parseInt(apiEntry.lead_count, 10) : 0,
+        "Sessions Created": 0, // Adjust this value if you have sessions data
+      };
+    }),
+  );
+  // );
+
+  const _lineGraphData = [
     {
       month: "January",
       "Leads Created": 150,

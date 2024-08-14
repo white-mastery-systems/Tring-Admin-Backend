@@ -12,5 +12,5 @@ export const getLeadTranscript = async (chatId: any) => {
 };
 
 export const getAnalyticsData = async () => {
-  return await $fetch(`api/org/analytics`);
+  return await $fetch(`/api/org/analytics`);
 };
