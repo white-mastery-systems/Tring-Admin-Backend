@@ -1,25 +1,30 @@
 <template>
   <div class="bot-manage-main-container">
-    <div class="header-align ">
-      <div class="flex items-center gap-1 ">
-        <button @click="router.back()">
-            <img src="assets\icons\right_arrow.svg" width="20"></img>
-          </button>
-        <span class="text-[20px] font-bold"> Bot Management </span>
+    <div class="header-align">
+      <div class="flex items-center gap-2">
+        <UiButton variant="ghost" size="icon" @click="router.back()">
+          <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
+        </UiButton>
+        <span class="text-[20px] font-bold">{{ botDetails.name }}</span>
       </div>
-      <UiButton variant="destructive" @click="deleteBot(route.params.id)">
+      <UiButton
+        variant="destructive"
+        @click="handleDelete"
+        class="bg-[#ff0000] hover:bg-[#ff0000]/90"
+      >
         <Icon name="lucide:trash-2" />
       </UiButton>
+      <ConfirmationModal
+        v-model:open="modelOpen"
+        title="Confirm Delete"
+        description="Are you sure you want to delete ?"
+        @confirm="handleDeleteBot"
+      />
     </div>
     <div class="bot-main-align">
       <div class="list-header-align">
         <div class="header-content-align">
           <div class="items-cetner flex gap-4">
-            <span class="content-align text-[17px] font-bold">{{
-              botDetails.name
-            }}</span>
-            <!-- {{ botDetails }}
-            {{ botDetails.documentId }} -->
             <div v-if="botDetails.documentId" class="acive_class">
               <div class="active-circle-align rounded-full"></div>
               <span class="text-[14px]">Active</span>
@@ -136,6 +141,7 @@
   const route = useRoute("BotManagementDetails-id");
   const paramId: any = route;
   const botDetails = ref(await getBotDetails(paramId.params.id));
+  const modelOpen = ref(false);
 
   const getDocumentList: any = ref();
 
@@ -150,11 +156,11 @@
       bot: "UI Customization",
       routeName: "UiCustomization-id",
     },
-    {
-      _id: 2,
-      bot: "CRM Integration",
-      routeName: "",
-    },
+    // {
+    //   _id: 2,
+    //   bot: "CRM Integration",
+    //   routeName: "",
+    // },
     {
       _id: 3,
       bot: "Bot Configuration",
@@ -221,6 +227,15 @@
     console.log("Bot Id", paramId.params.id);
     await deployDocument(paramId.params.id, list.id);
     botDetails.value = await getBotDetails(paramId.params.id);
+  };
+
+  const handleDelete = () => {
+    modelOpen.value = true;
+  };
+
+  const handleDeleteBot = () => {
+    modelOpen.value = false;
+    deleteBot(route.params.id);
   };
 </script>
 
@@ -335,7 +350,7 @@
     align-items: center;
     gap: 5px;
     color: rgba(255, 0, 0, 1);
-    padding-inline-end: 201px;
+    /* padding-inline-end: 201px; */
   }
   .deactive-circle-align {
     display: flex;
