@@ -41,7 +41,10 @@
     <div class="document-align gap-4">
       <div class="count-align gap-3">
         <span class="font-bold">
-          Total Chats: <span style="color: rgba(66, 75, 209, 1)">{{ analyticsData?.chats }}</span>
+          Total Chats:
+          <span style="color: rgba(66, 75, 209, 1)">{{
+            analyticsData?.chats
+          }}</span>
         </span>
         <span class="font-bold">
           Total Leads:
@@ -60,7 +63,7 @@
     </div>
     <div class="bot-main-align">
       <div class="list-header-align">
-        <div class="header-content-align">
+        <div class="header-content-align px-[13px]">
           <span class="content-align font-semibold">Lead Name</span>
           <span class="content-align font-semibold">Bot Name</span>
           <span class="content-align font-semibold">Date Created</span>
@@ -69,7 +72,7 @@
       </div>
       <div class="content-scroll-align">
         <!-- {{ rep }} || asda -->
-        <div style="height: 100%" v-if="ListLeads.length">
+        <div style="height: 100%" v-if="ListLeads.length" class="px-[15px]">
           <div
             class="bot-list-align"
             v-for="(list, index) in ListLeads"
@@ -339,7 +342,7 @@
   }
 
   .user_name_align {
-    padding-inline-start: 30px;
+    padding-inline-start: 22px;
   }
 
   .bot_name_align {

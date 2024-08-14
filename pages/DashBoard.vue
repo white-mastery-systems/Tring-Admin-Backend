@@ -81,7 +81,14 @@
         </div>
       </div>
       <div class="relative">
-        <div :class="[ (analyticsData?.bots === 0 || analyticsData?.leads === 0) ? 'blur-md' : '','graph-align my-8 gap-6']">
+        <div
+          :class="[
+            analyticsData?.bots === 0 || analyticsData?.leads === 0
+              ? 'blur-md'
+              : '',
+            'graph-align my-8 gap-6',
+          ]"
+        >
           <div
             class="chat-bot-align relative place-content-center rounded-md bg-white shadow"
           >
@@ -103,10 +110,10 @@
                     : '';
                 }
               "
-              class="h-[250px]"
+              class="h-[380px] w-full"
             />
           </div>
-          <div
+          <!-- <div
             class="voice-bot-align relative place-content-center rounded-md bg-white shadow"
           >
             <UiLabel class="absolute top-6 pl-6 text-lg font-bold"
@@ -124,13 +131,17 @@
               :arc-width="50"
             >
             </UiDonutChart>
-          </div>
+          </div> -->
         </div>
         <UiButton
           v-if="analyticsData?.bots === 0 || analyticsData?.leads === 0"
-          class="absolute right-1/2 top-1/2 z-10 -translate-y-1/2 translate-x-1/2 bg-[#474df9] text-white hover:bg-[#474df9] hover:brightness-90"
+          class="absolute right-1/2 top-1/2 z-10 h-16 w-56 -translate-y-1/2 translate-x-1/2 bg-[#474df9] text-lg text-white hover:bg-[#474df9] hover:brightness-90"
           @click="getStarted"
-          >Get Started</UiButton
+          >{{
+            analyticsData?.bots === 0 && analyticsData?.leads === 0
+              ? "Get Started"
+              : "Manage Bots"
+          }}</UiButton
         >
       </div>
     </div>
@@ -144,6 +155,8 @@
   });
 
   const selectedValue = ref("Today");
+
+  const getButtonName = ref("Get Started");
 
   const analyticsData = ref();
 
@@ -185,6 +198,63 @@
       value: "Yearly",
     },
   ]);
+
+  // interface MonthAbbreviations {
+  //   [key: string]: string;
+  // }
+
+  // const apiData = analyticsData.value.lead_count;
+
+  // const months = [
+  //   "January",
+  //   "February",
+  //   "March",
+  //   "April",
+  //   "May",
+  //   "June",
+  //   "July",
+  //   "August",
+  //   "September",
+  //   "October",
+  //   "November",
+  //   "December",
+  // ];
+
+  // // Define a mapping of month abbreviations to full names for comparison
+  // const monthAbbreviations: MonthAbbreviations = {
+  //   Jan: "January",
+  //   Feb: "February",
+  //   Mar: "March",
+  //   Apr: "April",
+  //   May: "May",
+  //   Jun: "June",
+  //   Jul: "July",
+  //   Aug: "August",
+  //   Sep: "September",
+  //   Oct: "October",
+  //   Nov: "November",
+  //   Dec: "December",
+  // };
+
+  // Initialize an empty array for the final data
+  // const lineGraphData = months.map((month, index) => {
+  //   // Find the corresponding API data for the current month and year
+  //   const apiEntry = apiData.find((entry: any) => {
+  //     const [apiMonthAbbr, apiYear] = entry.month.split(" ");
+  //     const apiMonthFull =
+  //       monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
+  //     return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
+  //   });
+
+  //   // Extract the year from the first entry of the API data, or use a default value
+  //   const year = apiData.length > 0 ? apiData[0].month.split(" ")[1] : "2024";
+
+  //   return {
+  //     month: `${month} ${year}`,
+  //     "Leads Created": apiEntry ? parseInt(apiEntry.lead_count, 10) : 0,
+  //     "Sessions Created": 0, // Adjust this value if you have sessions data
+  //   };
+  // });
 
   const lineGraphData = [
     {
@@ -332,7 +402,7 @@
     border-radius: 10px;
   }
   .chat-bot-align {
-    width: 60%;
+    width: 100%;
   }
   .voice-bot-align {
     width: 40%;

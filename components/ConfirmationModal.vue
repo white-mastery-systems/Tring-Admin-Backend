@@ -25,7 +25,7 @@
       </UiAlertDialogHeader>
       <UiAlertDialogFooter>
         <UiAlertDialogCancel >Cancel</UiAlertDialogCancel>
-        <UiAlertDialogAction @click="$emit('confirm')" class="bg-[#424bd1] text-white hover:bg-[#424bd1]/90"
+        <UiAlertDialogAction @click="$emit('confirm')" class="bg-[#ff0000] text-white hover:bg-[#ff0000]/90"
           >Confirm</UiAlertDialogAction
         >
       </UiAlertDialogFooter>

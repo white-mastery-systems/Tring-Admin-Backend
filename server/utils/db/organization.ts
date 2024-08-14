@@ -39,7 +39,23 @@ export const getAnalytics = async (organizationId: string) => {
     },
   });
 
+  const orgDataByMonth = await db.execute(sql`SELECT
+  TO_CHAR(created_at, 'Mon YYYY') AS MONTH,
+  COUNT(*) AS lead_count
+FROM
+  chatbot.bot
+WHERE
+  organization_id = ${organizationId}
+GROUP BY
+  organization_id,
+  TO_CHAR(created_at, 'Mon YYYY')
+ORDER BY
+  MONTH;
+`);
+
   if (!orgData) return undefined;
+
+  if (!orgDataByMonth) return undefined;
 
   return {
     bots: orgData.bots.length,
@@ -48,6 +64,7 @@ export const getAnalytics = async (organizationId: string) => {
     }, 0),
     users: orgData.botUsers.length,
     leads: orgData.leads.length,
+    lead_count: orgDataByMonth.rows,
   };
 };
 

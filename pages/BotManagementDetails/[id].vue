@@ -45,7 +45,7 @@
             <UiButton
               class="bg-[#424bd1] hover:bg-[#424bd1]/90"
               @click="handleActivateBot"
-              v-if="!botDetails.documentId"
+              v-if="!botDetails.documentId || botDetails.documents.length === 0"
             >
               Activate Bot</UiButton
             >
@@ -116,7 +116,10 @@
         @click="botManagementDetails(list, index)"
       >
         <div class="list_align">
-          <span class="bot_name_align font-medium">{{ list.bot }}</span>
+          <div class="flex flex-col space-y-2">
+            <span class="bot_name_align font-medium">{{ list.bot }}</span>
+            <span class="text-gray-500 text-xs">{{ list.helperText }}</span>
+          </div>
           <Icon
             v-if="
               list.bot === 'Document Management' &&
@@ -157,6 +160,7 @@
   const isSubmitting = ref(false);
   const getDocumentList: any = ref();
 
+  
   onMounted(async () => {
     getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
     botDetails.value = await getBotDetails(paramId.params.id);
@@ -166,6 +170,7 @@
     {
       _id: 1,
       bot: "UI Customization",
+      helperText: "Color ,Logo, Icon customization",
       routeName: "UiCustomization-id",
     },
     // {
@@ -176,11 +181,13 @@
     {
       _id: 3,
       bot: "Bot Configuration",
+      helperText: "Name, Description, Notes",
       routeName: "CreateBot-id",
     },
     {
       _id: 4,
       bot: "Document Management",
+      helperText: "Knowledge base, Document management",
       routeName: "BotDocumentManagement-id",
     },
   ]);

@@ -19,9 +19,6 @@
             <div class="individual-form-align">
               <label for="frole" class="pb-2 pl-0 font-medium">Bot Name</label>
               <input type="text" id="frole" v-model="newBotName" name="fname" />
-              <p class="ml-2 mt-1 text-sm text-gray-500">
-                This is your unique bot name.
-              </p>
               <UiButton
                 @click="addBot"
                 class="mt-2 w-1/2 bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
@@ -250,8 +247,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
     height: calc(100vh - 200px);
+    cursor: pointer;
+
     /* width: 100%; */
     /* background: rgba(255, 255, 255, 1); */
     /* padding: 30px 30px; */

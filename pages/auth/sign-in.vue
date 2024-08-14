@@ -23,7 +23,7 @@ const togglePasswordVisibility = () => {
       <!-- <div> -->
       <div class="individual-form-align">
         <label for="username" class="mb-4 font-bold">E-mail</label>
-        <input class="mb-2 mt-2" type="text" id="username" name="username" v-model="loginData.email" />
+        <input class="mb-2 mt-2" type="text" id="username" name="username" v-model="loginData.email" placeholder="Enter your email" />
       </div>
       <div class="individual-form-align">
         <label for="fpassword" class="font-bold">Password</label>

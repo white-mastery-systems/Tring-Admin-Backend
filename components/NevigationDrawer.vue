@@ -104,8 +104,7 @@
     </div> -->
     <div
       :class="[
-        route.path === '/AnalyticsLeads' ?
-         'activeClass' : 'default-align',
+        route.path === '/AnalyticsLeads' ? 'activeClass' : 'default-align',
       ]"
       @click="
         async () => {
@@ -204,9 +203,11 @@
     </div> -->
     <UiButton
       @click="confirmModel"
-      class="mb-8 mt-auto w-3/4 bg-red-500 font-bold text-white hover:bg-red-500 hover:text-white hover:brightness-110"
-      variant="outline"
-      >Logout</UiButton
+      class="mb-8 mt-auto w-3/4 justify-around bg-[#ffffff] pr-12 font-bold text-[#ff0000] hover:bg-gray-300/30 hover:text-[#ff0000] hover:brightness-110 items-start"
+      variant="ghost"
+    >
+      <Icon name="ic:round-logout" class="h-6 w-6" />
+      <p class="text-base">Logout</p></UiButton
     >
     <ConfirmationModal
       v-model:open="modalOpen"

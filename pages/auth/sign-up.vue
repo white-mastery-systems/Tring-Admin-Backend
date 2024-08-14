@@ -42,7 +42,7 @@ const onSubmit = () => {
       <!-- <div> -->
       <div class="individual-form-align">
         <label for="fmail" class="mb-4 font-[10px] font-bold">E-mail</label>
-        <input class="mb-2 mt-2" type="text" id="frole" name="fmail" v-model="loginData.username" />
+        <input class="mb-2 mt-2" type="text" id="frole" name="fmail" v-model="loginData.username" placeholder="Enter your email"/>
       </div>
       <div class="individual-form-align">
         <label for="fpassword" class="font-bold">Password</label>
