@@ -226,6 +226,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
+    height: calc(100vh - 200px);
     /* width: 100%; */
     /* background: rgba(255, 255, 255, 1); */
     /* padding: 30px 30px; */
@@ -242,6 +243,7 @@
     height: 70vh;
     overflow-y: scroll;
     width: 100%;
+    padding: 5px;
   }
 
   .bot-list-align {
