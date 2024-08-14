@@ -80,18 +80,26 @@
       <div class="flex gap-4">
         <UiFormField v-slot="{ componentField }" name="NAME">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel>Name</UiFormLabel>
+            <UiFormLabel>Bot Name *</UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" type="text" />
+              <UiInput
+                v-bind="componentField"
+                type="text"
+                placeholder="Eg. Zia, Siri, Alexa"
+              />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
         <UiFormField v-slot="{ componentField }" name="COMPANY">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel>Company Name</UiFormLabel>
+            <UiFormLabel>Company Name *</UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" type="text" />
+              <UiInput
+                v-bind="componentField"
+                type="text"
+                placeholder="Eg. Google, Amazon"
+              />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
@@ -100,7 +108,7 @@
       <div class="flex gap-4">
         <UiFormField v-slot="{ componentField }" name="ROLE">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel>Role</UiFormLabel>
+            <UiFormLabel>Bot's Role *</UiFormLabel>
             <UiFormControl>
               <UiSelect v-bind="componentField">
                 <UiSelectTrigger>
@@ -126,14 +134,24 @@
               </UiFormField>
             </UiFormControl>
             <UiFormMessage />
+            <UiFormDescription>
+              This will determine the role of the bot and items-center behavior.
+            </UiFormDescription>
           </UiFormItem>
         </UiFormField>
         <UiFormField v-slot="{ componentField }" name="GOAL">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel>Goal</UiFormLabel>
+            <UiFormLabel>Goal *</UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" type="text" />
+              <UiInput
+                v-bind="componentField"
+                type="text"
+                placeholder="Eg. To assist the users with the product details"
+              />
             </UiFormControl>
+            <UiFormDescription>
+              The bot will be driving the conversation towards this goal.
+            </UiFormDescription>
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
@@ -144,19 +162,30 @@
           <UiFormControl>
             <UiTextarea v-bind="componentField" type="text" />
           </UiFormControl>
+          <UiFormDescription>
+            Here you can have additional instructions for your bot.
+          </UiFormDescription>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
       <UiFormField v-slot="{ componentField }" name="DESCRIPTION">
         <UiFormItem v-auto-animate="animationProps">
-          <UiFormLabel>Description</UiFormLabel>
+          <UiFormLabel>Company Description</UiFormLabel>
           <UiFormControl>
             <UiTextarea v-bind="componentField" type="text" />
           </UiFormControl>
+          <UiFormDescription>
+            Here you can give the bot additional details about your company.
+          </UiFormDescription>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <UiButton type="submit" class="">Submit</UiButton>
+      <UiButton
+        type="submit"
+        class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
+        size="lg"
+        >Submit</UiButton
+      >
     </UiForm>
   </div>
 </template>
