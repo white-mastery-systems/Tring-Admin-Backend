@@ -1,6 +1,7 @@
 export const listDocumentsByBotId = async (botId: string) => {
   const documentsList = await $fetch(`/api/bots/${botId}/documents`);
-  return documentsList.map((document) => ({
+
+  return documentsList?.documents.map((document) => ({
     ...document,
     createdAt: formatDate(new Date(document.createdAt), "dd.MM.yyyy"),
   }));

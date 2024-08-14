@@ -47,9 +47,14 @@ export const disableBot = async (botId: string) => {
 };
 
 export const deleteBot = async (botId: string) => {
+  try {
   await $fetch(`/api/bots/${botId}`, {
     method: "DELETE",
   });
   toast.success("Bot deleted successfully");
   return navigateTo({ name: "BotManagement" });
+} catch (error) {
+  console.log(error);
+  toast.error("Cannot delete: bot has generated leads");
+}
 };
