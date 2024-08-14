@@ -1,77 +1,72 @@
+<script setup lang="ts">
+  const orgBilling = await $fetch("/api/org/usage");
+</script>
 <template>
   <div class="flex flex-col justify-center">
     <div class="header-align px-2">
-      <div class="font-bold text-[16px]">
-        Subscription
-      </div>
+      <div class="text-[16px] font-bold">Subscription</div>
       <div class="text-[12px]">
         Manage your subscription and billing information
       </div>
     </div>
     <div class="details-card rounded-lg">
-      <div class="content-align font-bold">
-        Subscription Details
-      </div>
+      <div class="content-align font-bold">Subscription Details</div>
       <div class="content-align gap-3">
-        <span class="font-medium">
-          Current Plan
-        </span>
-        <span class="creator-chip font-medium rounded-xl text-[12px]">
-          creator
+        <span class="font-medium"> Current Plan </span>
+        <span class="creator-chip rounded-xl text-[12px] font-medium">
+          {{ orgBilling?.plan_code }}
         </span>
       </div>
-      <div class="content-align font-medium gap-3">
-        <span>
-          Subscription status
-        </span>
-        <span class="active-chip rounded-xl text-[12px]">
-          active
+      <div class="content-align gap-3 font-medium">
+        <span> Subscription status </span>
+        <span class="active-chip rounded-xl text-[12px]"> active </span>
+      </div>
+      <div class="content-align gap-3 font-medium">
+        <span> subscribed quota </span>
+        <span class="rounded-xl text-[12px]">
+          {{ orgBilling?.max_quota }}
         </span>
       </div>
-      <div class="content-align font-medium gap-3">
-        <span>
-          subscribed quota
-        </span>
-      </div>
-      <div class="content-align font-medium gap-3">
-        <span>
-          Available quota
+      <div class="content-align gap-3 font-medium">
+        <span> Available quota </span>
+        <span class="rounded-xl text-[12px]">
+          {{ orgBilling?.available_quota }}
         </span>
       </div>
     </div>
   </div>
 </template>
 <style scoped>
-.header-align {
-  height: 70px;
-  padding: 10px 25px;
-  border-bottom: 1px solid rgb(128, 128, 128, 0.5);
-}
+  .header-align {
+    height: 70px;
+    padding: 10px 25px;
+    border-bottom: 1px solid rgb(128, 128, 128, 0.5);
+  }
 
-.details-card {
-  margin-top: 30px;
-  border: 1px solid rgb(128, 128, 128, 0.5);
-}
+  .details-card {
+    margin-top: 30px;
+    border: 1px solid rgb(128, 128, 128, 0.5);
+  }
 
-.content-align {
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid rgb(128, 128, 128, 0.5);
-  padding: 10px;
-}
+  .content-align {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgb(128, 128, 128, 0.5);
+    padding: 10px;
+  }
 
-.content-align:last-child {
-  border-bottom: none;
-}
-.creator-chip {
-  padding: 5px 8px;
-  color: rgba(0, 0, 0, 0.5);
-  background-color: #D9DBE6;
-}
+  .content-align:last-child {
+    border-bottom: none;
+  }
+  .creator-chip {
+    padding: 5px 8px;
+    color: rgba(0, 0, 0, 0.5);
+    background-color: #d9dbe6;
+  }
 
-.active-chip {
-  padding: 5px 8px;
-  color: rgb(0, 128, 38);
-  background: rgb(60, 179, 113, 0.3);
-}
+  .active-chip {
+    padding: 5px 8px;
+    color: rgb(0, 128, 38);
+    background: rgb(60, 179, 113, 0.3);
+  }
 </style>

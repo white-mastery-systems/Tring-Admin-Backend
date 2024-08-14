@@ -1,30 +1,31 @@
 <template>
   <div>
     <div class="billing-main-container h-full">
-      <div class="header-align">
+      <!-- <div class="header-align">
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-2">
             <span class="text-[20px] font-bold">Billing</span>
           </div>
           <span class="text-[16px] text-lg font-bold"></span>
         </div>
-        <!-- <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-4">
           <span :class="true ? 'select_btn' : 'btn_align'">
             <button>Monthly</button>
           </span>
           <span class="btn_align">
             <button class="font-medium text-black">Yearly</button>
           </span>
-        </div> -->
-      </div>
-      <!-- <div>
-        <SubscriptionManage/>
+        </div>
       </div> -->
-      <div class="grid h-[95vh] place-content-center">
+      <div>
+        <SubscriptionManage />
+      </div>
+      <!-- <div class="grid h-[95vh] place-content-center">
         <div
           class="xs:grid-cols-2 grid max-h-[90vh] gap-4 md:grid-cols-2 lg:grid-cols-4"
         >
-          <!-- @mouseover="planCard(index); previusIndex = index" @mouseout="planCardUnHover(index); previusIndex = index" -->
+          @mouseover="planCard(index); previusIndex = index"
+          @mouseout="planCardUnHover(index); previusIndex = index"
           <div
             class="main_card_align w-full"
             v-for="(list, index) in billingVariation"
@@ -39,12 +40,12 @@
               </div>
               <div class="content_color_align">{{ list.status }}</div>
             </div>
-            <!-- <div class="font-bold text-[30px]">
+            <div class="font-bold text-[30px]">
             {{ list.types }}
-          </div> -->
-            <!-- <div class="benefit_content_align">
+          </div>
+            <div class="benefit_content_align">
             {{ list.benefitContent }}
-          </div> -->
+          </div>
             <div class="benefit_inside_list">
               <div
                 class="flex items-center gap-2"
@@ -73,7 +74,7 @@
             </button>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

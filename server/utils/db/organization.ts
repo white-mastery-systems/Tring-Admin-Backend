@@ -50,3 +50,16 @@ export const getAnalytics = async (organizationId: string) => {
     leads: orgData.leads.length,
   };
 };
+
+export const getOrgUsage = async (organizationId: string) => {
+  const org = await getOrganizationById(organizationId);
+
+  if (!org) return undefined;
+
+  return {
+    used_quota: org.usedQuota,
+    max_quota: org.maxQuota,
+    plan_code: org.planCode,
+    available_quota: org.maxQuota - org.usedQuota,
+  };
+};
