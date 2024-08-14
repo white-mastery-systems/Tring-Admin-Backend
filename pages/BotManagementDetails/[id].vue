@@ -43,9 +43,10 @@
               }}</span>
             </span>
             <UiButton
-              class="bg-[#424bd1] hover:bg-[#424bd1]/90"
+              class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50"
               @click="handleActivateBot"
-              v-if="!botDetails.documentId || botDetails.documents.length === 0"
+              :disabled="isSubmitting"
+              v-if="!botDetails.documentId"
             >
               Activate Bot</UiButton
             >
@@ -118,7 +119,7 @@
         <div class="list_align">
           <div class="flex flex-col space-y-2">
             <span class="bot_name_align font-medium">{{ list.bot }}</span>
-            <span class="text-gray-500 text-xs">{{ list.helperText }}</span>
+            <span class="text-xs text-gray-500">{{ list.helperText }}</span>
           </div>
           <Icon
             v-if="
@@ -160,7 +161,6 @@
   const isSubmitting = ref(false);
   const getDocumentList: any = ref();
 
-  
   onMounted(async () => {
     getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
     botDetails.value = await getBotDetails(paramId.params.id);
@@ -261,18 +261,20 @@
   };
 
   const handleActivateBot = async () => {
+    isSubmitting.value = true;
     if (botDetails.value.documents.length === 0) {
       toast.success("Please add document to activate bot");
-      return navigateTo({
+      await navigateTo({
         name: "BotDocumentManagement-id",
         params: { id: paramId.params.id },
       });
     }
 
     if (botDetails.value.documents.length === 1) {
-      return singleDocumentDeploy(botDetails.value.documents[0]);
+      await singleDocumentDeploy(botDetails.value.documents[0]);
     }
 
+    isSubmitting.value = false;
     isDocumentListOpen.value = true;
   };
 </script>

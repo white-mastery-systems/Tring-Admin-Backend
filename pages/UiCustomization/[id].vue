@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="mx-5 mb-5 mt-2 flex items-center gap-2">
-      <UiButton variant="ghost" size="icon" @click="router.back()" >
-          <Icon name="ic:round-arrow-back-ios-new" class="w-5 h-5" />
-        </UiButton>
+      <UiButton variant="ghost" size="icon" @click="router.back()">
+        <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
+      </UiButton>
       <UiLabel class="ml-1 text-[20px] font-bold">UI Customisation</UiLabel>
     </div>
     <!-- <div class="flex flex-row"> -->
@@ -13,7 +13,7 @@
       <div class="individual-form-align mt-1 flex flex-col items-start">
         <UiLabel class="pb-3 text-lg font-medium">Logo</UiLabel>
         <div>
-          <FileUpload accept="image/*" v-model="logo" />
+          <ImageUpload accept="image/*" v-model="logo" />
         </div>
       </div>
       <div class="mt-6 space-y-1">
