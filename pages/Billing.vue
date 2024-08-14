@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="billing-main-container">
+    <div class="billing-main-container h-full">
       <div class="header-align">
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-2">
@@ -8,50 +8,70 @@
           </div>
           <span class="text-[16px] text-lg font-bold"></span>
         </div>
-        <div class="flex items-center space-x-4">
+        <!-- <div class="flex items-center space-x-4">
           <span :class="true ? 'select_btn' : 'btn_align'">
             <button>Monthly</button>
           </span>
           <span class="btn_align">
             <button class="font-medium text-black">Yearly</button>
           </span>
-        </div>
+        </div> -->
       </div>
       <!-- <div>
         <SubscriptionManage/>
       </div> -->
-      <div class="overall_billing_align">
-        <!-- @mouseover="planCard(index); previusIndex = index" @mouseout="planCardUnHover(index); previusIndex = index" -->
-        <div class="main_card_align" v-for="(list, index) in billingVariation" :key="index">
-          <div class="type-color text-[23px] font-bold">
-            {{ list.types }}
-          </div>
-          <div class="bill-content-align">
-            <div class="amount-align text-[23px] font-black">
-              {{ list.amount }}
+      <div class="grid h-[95vh] place-content-center">
+        <div
+          class="xs:grid-cols-2 grid max-h-[90vh] gap-4 md:grid-cols-2 lg:grid-cols-4"
+        >
+          <!-- @mouseover="planCard(index); previusIndex = index" @mouseout="planCardUnHover(index); previusIndex = index" -->
+          <div
+            class="main_card_align w-full"
+            v-for="(list, index) in billingVariation"
+            :key="index"
+          >
+            <div class="type-color text-[23px] font-bold">
+              {{ list.types }}
             </div>
-            <div class="content_color_align">{{ list.status }}</div>
-          </div>
-          <!-- <div class="font-bold text-[30px]">
+            <div class="bill-content-align">
+              <div class="amount-align text-[23px] font-black">
+                {{ list.amount }}
+              </div>
+              <div class="content_color_align">{{ list.status }}</div>
+            </div>
+            <!-- <div class="font-bold text-[30px]">
             {{ list.types }}
           </div> -->
-          <!-- <div class="benefit_content_align">
+            <!-- <div class="benefit_content_align">
             {{ list.benefitContent }}
           </div> -->
-          <div class="benefit_inside_list">
-            <div class="flex items-center gap-2" v-for="(advancedList, ListIndex) in list.benefitList" :key="ListIndex">
-              <span class="flex items-start">
-                <img v-if="!list.listBenefit" src="assets\icons\check-circle.svg" width="15" />
-                <img v-else src="assets\icons\checked-circle.svg" width="15" />
-              </span>
-              <span class="content_color_align">
-                {{ advancedList.content }}
-              </span>
+            <div class="benefit_inside_list">
+              <div
+                class="flex items-center gap-2"
+                v-for="(advancedList, ListIndex) in list.benefitList"
+                :key="ListIndex"
+              >
+                <span class="flex items-start">
+                  <img
+                    v-if="!list.listBenefit"
+                    src="assets\icons\check-circle.svg"
+                    width="15"
+                  />
+                  <img
+                    v-else
+                    src="assets\icons\checked-circle.svg"
+                    width="15"
+                  />
+                </span>
+                <span class="content_color_align">
+                  {{ advancedList.content }}
+                </span>
+              </div>
             </div>
+            <button class="choose_btn_align" @click="choosePlan(list.plan)">
+              Choose plan
+            </button>
           </div>
-          <button class="choose_btn_align" @click="choosePlan(list.plan)">
-            Choose plan
-          </button>
         </div>
       </div>
     </div>
@@ -269,7 +289,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 24%;
     background: rgba(255, 255, 255, 1);
     box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05);
     border-radius: 13px;

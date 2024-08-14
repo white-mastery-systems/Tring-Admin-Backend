@@ -61,23 +61,22 @@
                     Choose a document to deploy your bot
                   </UiDialogDescription>
                 </UiDialogHeader>
-                <div
-                  class="deploy-bot-list-align text-[15px]"
+                <UiButton
+                  class="deploy-bot-list-align text-[15px] text-black"
                   v-for="list in getDocumentList.filter(
                     (item: any) => item.status === 'ready',
                   )"
                   :key="list.id"
+                  @click="
+                    async () => {
+                      isSubmitting = true;
+                      isDocumentListOpen = false;
+                      await singleDocumentDeploy(list);
+                    }
+                  "
                 >
-                  <div class="list_align" @click="singleDocumentDeploy(list)">
-                    <!-- <span
-                      class="bot_name_align font-medium"
-                      >{{ list.name }}</span
-                    > -->
-                    <button class="bot_name_align font-medium">
-                      {{ list.name }}
-                    </button>
-                  </div>
-                </div>
+                  {{ list.name }}
+                </UiButton>
               </UiDialogContent>
             </UiDialog>
             <span v-if="botDetails.documentId" class="flex gap-4">
@@ -86,6 +85,12 @@
                 @click="deactivateBot"
                 >Deactivate Bot</UiButton
               >
+              <ConfirmationModal
+                v-model:open="modalOpen"
+                title="Confirm Deactivation"
+                description="Are you sure you want to deactivate bot ?"
+                @confirm="deactivateBotDialog"
+              />
               <UiButton
                 as="a"
                 :href="previewUrl"
@@ -105,7 +110,7 @@
         </div>
       </div>
       <div
-        class="bot-list-align text-[14px]"
+        class="bot-list-align text-[14px] cursor-pointer"
         v-for="(list, index) in dataList"
         :key="index"
         @click="botManagementDetails(list, index)"
@@ -119,7 +124,7 @@
             "
             class="h-6 w-6 text-red-500"
             name="ph:warning"
-          />
+          />   
         </div>
         <div>
           <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
@@ -142,29 +147,14 @@
   import { toast } from "vue-sonner";
   import { useClipboard } from "@vueuse/core";
   const router = useRouter();
-  const selectedValue = ref("Today");
+  // const selectedValue = ref("Today");
   const route = useRoute("BotManagementDetails-id");
   const paramId: any = route;
   const botDetails = ref(await getBotDetails(paramId.params.id));
   const modelOpen = ref(false);
-
+  const modalOpen = ref(false);
   const isDocumentListOpen = ref(false);
-  const handleActivateBot = async () => {
-    if (botDetails.value.documents.length === 0) {
-      toast.success("Please add document to activate bot");
-      return navigateTo({
-        name: "BotDocumentManagement-id",
-        params: { id: paramId.params.id },
-      });
-    }
-
-    if (botDetails.value.documents.length === 1) {
-      return singleDocumentDeploy(botDetails.value.documents[0]);
-    }
-
-    isDocumentListOpen.value = true;
-  };
-
+  const isSubmitting = ref(false);
   const getDocumentList: any = ref();
 
   onMounted(async () => {
@@ -234,7 +224,12 @@
     // }
   };
   const deactivateBot = async () => {
+    modalOpen.value = true;
+  };
+
+  const deactivateBotDialog = async () => {
     await disableBot(paramId.params.id);
+    modalOpen.value = false;
   };
 
   const botScript = `<script src="https://tring-databot.pripod.com/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS"/>`;
@@ -259,6 +254,11 @@
     modelOpen.value = false;
     deleteBot(route.params.id);
   };
+
+  const handleActivateBot = async () => {
+    isDocumentListOpen.value = true;
+   
+  }
 </script>
 
 <style scoped>

@@ -41,12 +41,12 @@
     <div class="document-align gap-4">
       <div class="count-align gap-3">
         <span class="font-bold">
-          <!-- Total Chats: <span style="color: rgba(66, 75, 209, 1)">{{ ListLeads }}</span> -->
+          Total Chats: <span style="color: rgba(66, 75, 209, 1)">{{ analyticsData?.chats }}</span>
         </span>
         <span class="font-bold">
           Total Leads:
           <span style="color: rgba(66, 75, 209, 1)">{{
-            ListLeads?.length
+            analyticsData?.leads
           }}</span>
         </span>
       </div>
@@ -135,6 +135,12 @@
   const error: any = ref(null);
   // const ListLeads = ref()
   const ListLeads = await listLeads();
+
+  const analyticsData = ref();
+
+  onMounted(async () => {
+    analyticsData.value = await getAnalyticsData();
+  });
 
   // const rep = await defineEventHandler()
 

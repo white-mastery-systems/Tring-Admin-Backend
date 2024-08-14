@@ -29,100 +29,109 @@
       <div class="dashboard-main-paage">
         <div class="card-align">
           <div>
-            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
+            <img
+              src="assets\icons\contact_count_icon.svg"
+              width="34"
+              height="34"
+            />
           </div>
           <div>
             <div class="content-align font-semibold">Chat Bots</div>
-            <div class="text-lg font-bold">1</div>
+            <div class="text-lg font-bold">{{ analyticsData?.bots }}</div>
           </div>
         </div>
         <div class="card-align">
           <div>
-            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
-          </div>
-          <div>
-            <div class="content-align font-semibold">Call Bots</div>
-            <div class="text-lg font-bold">1</div>
-          </div>
-        </div>
-        <div class="card-align">
-          <div>
-            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
-          </div>
-          <div>
-            <div class="content-align font-semibold">Chat Leads</div>
-            <div class="text-lg font-bold">1</div>
-          </div>
-        </div>
-        <div class="card-align">
-          <div>
-            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
-          </div>
-          <div>
-            <div class="content-align font-semibold">Call Leads</div>
-            <div class="text-lg font-bold">1</div>
-          </div>
-        </div>
-      </div>
-      <div class="graph-align my-8 gap-6">
-        <div class="relative place-content-center rounded-md bg-white shadow chat-bot-align">
-          <UiLabel class="absolute top-6 pb-1 pl-6 text-lg font-bold">Chat Bot</UiLabel>
-          <UiLineChart :data="lineGraphData" index="month" :categories="['Leads Created', 'Sessions Created']"
-            :colors="['#424bd1', '#ffbc42']" :show-grid-line="true" :show-tooltip="true" :margin="{ right: 20 }"
-            :y-formatter="
-              (tick: any) => {
-                return typeof tick === 'number'
-                  ? `${new Intl.NumberFormat('us').format(tick).toString()}`
-                  : '';
-              }
-            " class="h-[250px]" />
-        </div>
-
-        <div class="relative place-content-center rounded-md bg-white shadow voice-bot-align">
-          <UiLabel class="absolute top-6 pl-6 text-lg font-bold">Voice Bot</UiLabel>
-          <VisBulletLegend :items="chartDataItems" class="absolute right-6 top-10 flex flex-col pt-3" />
-          <UiDonutChart index="name" :category="'total'" :data="chartsData" :colors="['#ffbc42', '#424bd1']"
-            :arc-width="50">
-          </UiDonutChart>
-        </div>
-      </div>
-      <div class="dashboard-main-paage">
-        <div class="card-align">
-          <div>
-            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
+            <img
+              src="assets\icons\contact_count_icon.svg"
+              width="34"
+              height="34"
+            />
           </div>
           <div>
             <div class="content-align font-semibold">Chat Sessions</div>
-            <div class="text-lg font-bold">612</div>
+            <div class="text-lg font-bold">{{ analyticsData?.chats }}</div>
           </div>
         </div>
         <div class="card-align">
           <div>
-            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
+            <img
+              src="assets\icons\contact_count_icon.svg"
+              width="34"
+              height="34"
+            />
           </div>
           <div>
-            <div class="content-align font-semibold">Total Calls</div>
-            <div class="text-lg font-bold">4,689</div>
-          </div>
-        </div>
-        <div class="card-align">
-          <div>
-            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
-          </div>
-          <div>
-            <div class="content-align font-semibold">Call Duration</div>
-            <div class="text-lg font-bold">742 mins</div>
+            <div class="content-align font-semibold">Chat Leads</div>
+            <div class="text-lg font-bold">{{ analyticsData?.leads }}</div>
           </div>
         </div>
         <div class="card-align">
           <div>
-            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
+            <img
+              src="assets\icons\contact_count_icon.svg"
+              width="34"
+              height="34"
+            />
           </div>
           <div>
             <div class="content-align font-semibold">Unique Sessions</div>
-            <div class="text-lg font-bold">413</div>
+            <div class="text-lg font-bold">{{ analyticsData?.users }}</div>
           </div>
         </div>
+      </div>
+      <div class="relative">
+        <div :class="[ (analyticsData?.bots === 0 || analyticsData?.leads === 0) ? 'blur-md' : '','graph-align my-8 gap-6']">
+          <div
+            class="chat-bot-align relative place-content-center rounded-md bg-white shadow"
+          >
+            <UiLabel class="absolute top-6 pb-1 pl-6 text-lg font-bold"
+              >Chat Bot</UiLabel
+            >
+            <UiLineChart
+              :data="lineGraphData"
+              index="month"
+              :categories="['Leads Created', 'Sessions Created']"
+              :colors="['#424bd1', '#ffbc42']"
+              :show-grid-line="true"
+              :show-tooltip="true"
+              :margin="{ right: 20 }"
+              :y-formatter="
+                (tick: any) => {
+                  return typeof tick === 'number'
+                    ? `${new Intl.NumberFormat('us').format(tick).toString()}`
+                    : '';
+                }
+              "
+              class="h-[250px]"
+            />
+          </div>
+          <div
+            class="voice-bot-align relative place-content-center rounded-md bg-white shadow"
+          >
+            <UiLabel class="absolute top-6 pl-6 text-lg font-bold"
+              >Voice Bot</UiLabel
+            >
+            <VisBulletLegend
+              :items="chartDataItems"
+              class="absolute right-6 top-10 flex flex-col pt-3"
+            />
+            <UiDonutChart
+              index="name"
+              :category="'total'"
+              :data="chartsData"
+              :colors="['#ffbc42', '#424bd1']"
+              :arc-width="50"
+            >
+            </UiDonutChart>
+          </div>
+        </div>
+        <UiButton
+          v-if="analyticsData?.bots === 0 || analyticsData?.leads === 0"
+          class="absolute right-1/2 top-1/2 z-10 -translate-y-1/2 translate-x-1/2 bg-[#474df9] text-white hover:bg-[#474df9] hover:brightness-90"
+          @click="getStarted"
+          >Get Started</UiButton
+        >
       </div>
     </div>
   </div>
@@ -135,6 +144,20 @@
   });
 
   const selectedValue = ref("Today");
+
+  const analyticsData = ref();
+
+  onMounted(async () => {
+    analyticsData.value = await getAnalyticsData();
+  });
+
+  const getStarted = () => {
+    if (analyticsData.value.bots === 0) {
+      navigateTo("/BotManagement");
+    } else if (analyticsData.value.leads === 0) {
+      navigateTo("/AnalyticsLeads");
+    }
+  };
 
   const menuList = ref([
     {
@@ -296,7 +319,6 @@
 
   .graph-align {
     display: flex;
-    /* filter: blur(10px); */
     height: 59vh;
   }
   .calender-align {
@@ -313,7 +335,7 @@
     width: 60%;
   }
   .voice-bot-align {
-   width: 40%;
+    width: 40%;
   }
   /* .select_list_align {
   font-weight: 500;

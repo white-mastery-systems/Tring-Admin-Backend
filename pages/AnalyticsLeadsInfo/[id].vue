@@ -3,9 +3,9 @@
     <div class="header-align">
       <div class="flex gap-2">
         <div class="flex items-center gap-2">
-          <button @click="router.back()">
-            <img src="assets\icons\right_arrow.svg" width="20"></img>
-          </button>
+          <UiButton variant="ghost" size="icon" @click="router.back()">
+          <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
+        </UiButton>
           <span class="font-bold text-lg">{{ leadData?.botUser?.name  }}</span>
         </div>
         <span class="font-bold text-lg text-[16px]"></span>

@@ -10,3 +10,7 @@ export const listLeads = async (): Promise<
 export const getLeadTranscript = async (chatId: any) => {
   return await $fetch(`/api/org/chat/${chatId}`);
 };
+
+export const getAnalyticsData = async () => {
+  return await $fetch(`api/org/analytics`);
+};
