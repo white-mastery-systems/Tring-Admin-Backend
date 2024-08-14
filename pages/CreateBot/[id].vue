@@ -1,346 +1,162 @@
+<script setup lang="ts">
+  const formSchema = toTypedSchema(
+    z
+      .object({
+        NAME: z.string().min(2, "Name must be at least 2 characters."),
+        COMPANY_NAME: z
+          .string()
+          .min(2, "Company name must be at least 2 characters."),
+
+        ROLE: z.string().min(2, "Role must be provided."),
+        GOAL: z.string().min(2, "Goal must be provided."),
+        NOTES: z.string().optional().default(""),
+        DESCRIPTION: z.string().optional().default(""),
+        otherRole: z.string().optional().default(""),
+      })
+      .refine(
+        (data) => {
+          if (data.ROLE.toLowerCase() === "other") {
+            return data.otherRole.length >= 1;
+          }
+          return true;
+        },
+        {
+          message: "Other role must be provided",
+          path: ["otherRole"],
+        },
+      )
+      .transform((data) => {
+        if (data.ROLE.toLowerCase() === "other") {
+          return { ...data, role: data.otherRole };
+        }
+        return data;
+      }),
+  );
+
+  const animationProps = {
+    duration: 500,
+  };
+  const router = useRouter();
+  const route = useRoute("CreateBot-id");
+
+  const roles = ["Sales Executive", "Customer Support Representative", "Other"];
+
+  const botDetails: any = await getBotDetails(route.params.id);
+  const defaultFormValues = botDetails.metadata.prompt;
+
+  const handleSubmit = async (values: any) => {
+    const payload: any = {
+      id: botDetails.id,
+      metadata: {
+        ...botDetails.metadata,
+        prompt: {
+          ...values,
+        },
+      },
+    };
+    await updateBotDetails(payload);
+    return navigateTo({
+      name: "BotManagementDetails-id",
+      params: { id: botDetails.id },
+    });
+  };
+</script>
 <template>
-  <div class="flex items-center mx-5 gap-2 mt-2 mb-4">
-     <UiButton variant="ghost" size="icon" @click="router.back()" >
-          <Icon name="ic:round-arrow-back-ios-new" class="w-5 h-5" />
-        </UiButton>
-    <UiLabel class="text-[20px] font-bold">Basic Configuration</UiLabel>
+  <div class="mx-5 mb-4 mt-2 flex items-center gap-2">
+    <UiButton variant="ghost" size="icon" @click="router.back()">
+      <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
+    </UiButton>
+    <UiLabel class="text-[20px] font-bold">Bot Configuration</UiLabel>
   </div>
-  <div class="form-align rounded-lg">
-    <!-- {{ formDetails }} -->
-    <!-- <div class="basic-confic-align text-[18px] font-bold">
-      Basic Configurations
-    </div> -->
-    <div class="flex flex-wrap all-field-align">
-      <div class="individual-form-align">
-        <label for="lname" class="font-bold">NAME</label><br />
-        <input v-model="formDetails.NAME" class="my-2" type="text" id="lname" name="lname" /><br />
+  <div class="mx-5">
+    <UiForm
+      :validation-schema="formSchema"
+      :keep-values="true"
+      :validate-on-mount="false"
+      :initial-values="defaultFormValues"
+      class="space-y-2"
+      @submit="handleSubmit"
+    >
+      <div class="flex gap-4">
+        <UiFormField v-slot="{ componentField }" name="NAME">
+          <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormLabel>Name</UiFormLabel>
+            <UiFormControl>
+              <UiInput v-bind="componentField" type="text" />
+            </UiFormControl>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
+        <UiFormField v-slot="{ componentField }" name="COMPANY_NAME">
+          <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormLabel>Company Name</UiFormLabel>
+            <UiFormControl>
+              <UiInput v-bind="componentField" type="text" />
+            </UiFormControl>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
       </div>
-      <div class="individual-form-align">
-        <label for="lcompany" class="font-bold">Company Name</label><br />
-        <input v-model="formDetails.COMPANY" class="my-2" type="text" id="lcompany" name="lcompany" /><br />
+      <div class="flex gap-4">
+        <UiFormField v-slot="{ componentField }" name="ROLE">
+          <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormLabel>Role</UiFormLabel>
+            <UiFormControl>
+              <UiSelect v-bind="componentField">
+                <UiSelectTrigger>
+                  <UiSelectValue placeholder="Select Role" />
+                </UiSelectTrigger>
+                <UiSelectContent>
+                  <UiSelectItem v-for="(role, index) in roles" :value="role">{{
+                    role
+                  }}</UiSelectItem>
+                </UiSelectContent>
+              </UiSelect>
+              <UiFormField
+                v-if="componentField.modelValue === 'Other'"
+                v-slot="{ componentField }"
+                name="otherRole"
+              >
+                <UiFormItem v-auto-animate="animationProps" class="w-full">
+                  <UiFormControl>
+                    <UiInput v-bind="componentField" type="text" />
+                  </UiFormControl>
+                  <UiFormMessage />
+                </UiFormItem>
+              </UiFormField>
+            </UiFormControl>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
+        <UiFormField v-slot="{ componentField }" name="GOAL">
+          <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormLabel>Goal</UiFormLabel>
+            <UiFormControl>
+              <UiInput v-bind="componentField" type="text" />
+            </UiFormControl>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
       </div>
-      <!-- <div class="individual-form-align">
-        <label for="frole" class="font-bold">ROLE</label><br />
-        <input v-model="formDetails.ROLE" class="my-2" type="text" id="frole" name="fname" />
-      </div> -->
-      <div class="individual-form-align">
-        <div class="flex items-center justify-between gap-2">
-          <label class="font-bold">Role</label>
-          <UiTooltipProvider>
-            <UiTooltip>
-              <UiTooltipTrigger as-child>
-                <div>
-                  <InfoIcon></InfoIcon>
-                </div>
-              </UiTooltipTrigger>
-              <UiTooltipContent>
-                <p> This is the role which bot acts as </p>
-              </UiTooltipContent>
-            </UiTooltip>
-          </UiTooltipProvider>
-        </div>
-        <UiSelect v-model="formDetails.ROLE" @update:model-value="handleGoalChange()">
-          <UiSelectTrigger class="mt-2 select-menu-align font-medium">
-            <UiSelectValue placeholder="Select Role" />
-          </UiSelectTrigger>
-          <UiSelectContent>
-            <UiSelectItem value="Customer Support">Customer Support</UiSelectItem>
-            <UiSelectItem value="Sales Executive">Sales Executive</UiSelectItem>
-            <UiSelectItem value="Custom">Custom</UiSelectItem>
-          </UiSelectContent>
-        </UiSelect>
-        <div v-if="showCustomRoleInput">
-          <input v-model="customRole" @change="createCustomGoal" placeholder="Enter your Role" class="my-2 text-[14px]"
-            type="text" id="lgoal" name="lgoal" /><br />
-        </div>
-        <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
-      </div>
-      <div class="individual-form-align">
-        <div class="flex items-center justify-between">
-          <label for="lgoal" class="font-bold"> GOAL </label><br />
-          <div>
-            <UiTooltipProvider>
-              <UiTooltip>
-                <UiTooltipTrigger as-child>
-                  <div>
-                    <InfoIcon></InfoIcon>
-                  </div>
-                </UiTooltipTrigger>
-                <UiTooltipContent>
-                  <p> This will be the goal of the bot and this drives how the bot handles unexpected scenarios and
-                    flows</p>
-                </UiTooltipContent>
-              </UiTooltip>
-            </UiTooltipProvider>
-          </div>
-        </div>
-        <!-- <UiSelect v-model="formDetails.GOAL" @update:model-value="handleGoalChange()">
-          <UiSelectTrigger class="mt-2 select-menu-align font-medium">
-            <UiSelectValue placeholder="Select Goal" />
-          </UiSelectTrigger>
-          <UiSelectContent>
-            <UiSelectItem value="Customer Support">Customer Support</UiSelectItem>
-            <UiSelectItem value="Sales Executive">Sales Executive</UiSelectItem>
-            <UiSelectItem value="Custom">Custom</UiSelectItem>
-          </UiSelectContent>
-        </UiSelect> -->
-        <div>
-          <input v-model="formDetails.GOAL" placeholder="Assist The User..." class="my-2 text-[14px]" type="text"
-            id="lgoal" name="lgoal" /><br />
-        </div>
-      </div>
-      <div class="text-area-align">
-        <div class="flex items-center justify-between">
-          <span class="text-area-label font-bold"> NOTES </span>
-          <div>
-            <UiTooltipProvider>
-              <UiTooltip>
-                <UiTooltipTrigger as-child>
-                  <div>
-                    <InfoIcon></InfoIcon>
-                  </div>
-                </UiTooltipTrigger>
-                <UiTooltipContent>
-                  <p>Additional instructions / commands that you can give to the bot</p>
-                </UiTooltipContent>
-              </UiTooltip>
-            </UiTooltipProvider>
-          </div>
-        </div>
-        <textarea clas placeholder="Enter your Note" v-model="formDetails.NOTES" class="my-2 text-[14px]" id="w3review"
-          name="w3review" rows="4" cols="50"></textarea>
-      </div>
-      <div class="text-area-align">
-        <div class="flex items-center justify-between">
-          <span class="text-area-label font-bold"> DESCRIPTION </span>
-          <div>
-            <UiTooltipProvider>
-              <UiTooltip>
-                <UiTooltipTrigger as-child>
-                  <div>
-                    <InfoIcon></InfoIcon>
-                  </div>
-                </UiTooltipTrigger>
-                <UiTooltipContent>
-                  <p>Optional Description about the company or the product the bot will be handling</p>
-                </UiTooltipContent>
-              </UiTooltip>
-            </UiTooltipProvider>
-          </div>
-        </div>
-        <textarea placeholder="Enter your Description" v-model="formDetails.DESCRIPTION" class="my-2 text-[14px]"
-          id="w3review" name="w3review" rows="4" cols="50"></textarea>
-      </div>
-      <div class="submit-btn-align">
-        <button class="font-bold text-[14px]" type="submit" @click="createBot()">
-          Submit
-        </button>
-      </div>
-    </div>
-  </div>
-  <div v-if="false" class="form-align rounded-lg">
-    <div class="basic-confic-align text-[18px] font-bold">
-      Chat Prompts
-    </div>
-    <div class="flex flex-wrap">
-      <div class="individual-form-align">
-        <label for="lname" class="font-bold">Welcome Text</label><br />
-        <input placeholder="Enter Welcome text" v-model="formDetails.NAME" class="my-2" type="text" id="lname"
-          name="lname" /><br />
-      </div>
-      <div class="individual-form-align">
-        <label for="lcompany" class="font-bold">Form Prompt</label><br />
-        <input placeholder="Enter Form Prompt" v-model="formDetails.COMPANY" class="my-2" type="text" id="lcompany"
-          name="lcompany" /><br />
-      </div>
-      <!-- <div class="individual-form-align">
-        <label for="frole" class="font-bold">ROLE</label><br />
-        <input v-model="formDetails.ROLE" class="my-2" type="text" id="frole" name="fname" />
-      </div> -->
-      <div class="individual-form-align">
-        <label for="lgoal" class="font-bold">Error Message</label><br />
-        <input v-model="formDetails.GOAL" placeholder="Enter Error text" class="my-2" type="text" id="lgoal"
-          name="lgoal" /><br />
-      </div>
-      <div class="submit-btn-align">
-        <button class="font-bold text-[14px]" type="submit" @click="createBot()">
-          Submit
-        </button>
-      </div>
-    </div>
-  </div>
-  <div class="basic-confic-align text-[18px] font-bold" v-if="false">
-    <span>
-      Intent Management
-    </span>
-    <span>
-      Add Intent
-    </span>
+      <UiFormField v-slot="{ componentField }" name="notes">
+        <UiFormItem v-auto-animate="animationProps">
+          <UiFormLabel>Notes</UiFormLabel>
+          <UiFormControl>
+            <UiTextarea v-bind="componentField" type="text" />
+          </UiFormControl>
+          <UiFormMessage />
+        </UiFormItem>
+      </UiFormField>
+      <UiFormField v-slot="{ componentField }" name="DESCRIPTION">
+        <UiFormItem v-auto-animate="animationProps">
+          <UiFormLabel>Description</UiFormLabel>
+          <UiFormControl>
+            <UiTextarea v-bind="componentField" type="text" />
+          </UiFormControl>
+          <UiFormMessage />
+        </UiFormItem>
+      </UiFormField>
+      <UiButton type="submit" class="">Submit</UiButton>
+    </UiForm>
   </div>
 </template>
-<script setup lang="ts">
-import InfoIcon from '~/components/icons/InfoIcon.vue';
-
-definePageMeta({
-  middleware: "admin-only",
-});
-const router = useRouter()
-const formDetails: any = reactive({
-  ROLE: '',
-  NAME: '',
-  COMPANY: '',
-  GOAL: '',
-  NOTES: '',
-  DESCRIPTION: '',
-  INTENTS: "-other\n-details"
-})
-const customRole = ref()
-const route = useRoute()
-const paramId: any = route
-const botDetails: any = await getBotDetails(paramId.params.id)
-const showCustomRoleInput = ref(false)
-
-
-onMounted(() => {
-  if (Object.entries(botDetails.metadata.prompt).length) {
-    formDetails.ROLE = botDetails.metadata.prompt.ROLE
-    formDetails.NAME = botDetails.metadata.prompt.NAME
-    formDetails.COMPANY = botDetails.metadata.prompt.COMPANY
-    formDetails.GOAL = botDetails.metadata.prompt.GOAL
-    formDetails.NOTES = botDetails.metadata.prompt.NOTES
-    formDetails.DESCRIPTION = botDetails.metadata.prompt.DESCRIPTION
-  }
-})
-
-const handleGoalChange = () => {
-  if (formDetails.ROLE === 'Custom') {
-    showCustomRoleInput.value = true
-  }
-}
-
-const createBot = () => {
-  const payload: any = {
-    id: botDetails.id,
-    metadata: {
-      ...botDetails.metadata,
-      prompt: {
-        ...formDetails,
-      }
-    }
-  }
-  if ((formDetails.ROLE?.length ?? 0) && (formDetails.NAME?.length ?? 0) && (formDetails.COMPANY?.length ?? 0) && (formDetails.GOAL?.length ?? 0)) {
-    updateBotDetails(payload)
-  } else {
-    toast.error("Please fill out all required fields.")
-  }
-  formDetails.ROLE = ''
-  formDetails.NAME = ''
-  formDetails.COMPANY = ''
-  formDetails.GOAL = ''
-  formDetails.NOTES = ''
-  formDetails.DESCRIPTION = ''
-  customRole.value = ''
-}
-const createCustomGoal = () => {
-  formDetails.ROLE = customRole.value
-}
-</script>
-<style scoped>
-.focus\:ring-offset-2:focus {
-  --tw-ring-offset-width: none;
-}
-
-.form-align {
-  display: flex;
-  flex-direction: column;
-  padding: 15px 29px;
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-  height: calc(100vh - 115px);
-}
-
-form {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.individual-form-align {
-  width: 50%;
-  padding: 0 20px;
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-.individual-form-align input {
-  background-color: rgba(246, 246, 246, 1);
-  width: 100%;
-  height: 50px;
-  outline: none;
-  border-radius: 10px;
-  padding: 0 20px;
-  /* margin-top: 10px; */
-}
-
-textarea {
-  background-color: rgba(246, 246, 246, 1);
-  border-radius: 10px;
-  width: 100%;
-  padding: 20px;
-  height: 80px;
-  outline: none !important;
-}
-
-.text-area-align {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 0 20px;
-  margin-top: 15px;
-}
-
-.text-area-label {
-  margin-bottom: 10px;
-}
-
-.submit-btn-align {
-  width: 100%;
-  display: flex;
-  justify-content: end;
-  padding: 0 21px;
-}
-
-.submit-btn-align input {
-  width: 130px;
-  height: 50px;
-  border-radius: 10px;
-  padding: 0 20px;
-  background-color: rgba(246, 246, 246, 1);
-  margin-top: 40px;
-}
-
-.submit-btn-align button {
-  width: 20%;
-  height: 40px;
-  border-radius: 10px;
-  padding: 0 20px;
-  background: #424bd1;
-  color: #ffffff;
-  margin-top: 20px;
-  /* margin-right: 170px; */
-}
-
-.basic-confic-align {
-  padding-left: 20px;
-  color: rgba(66, 75, 209, 1);
-  margin: 10px 0;
-}
-
-.select-menu-align {
-  height: 50px;
-}
-.all-field-align {
-  height: 100vh;
-  overflow-y: scroll;
-}
-</style>
