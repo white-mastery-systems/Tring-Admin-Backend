@@ -110,7 +110,7 @@
         </div>
       </div>
       <div
-        class="bot-list-align text-[14px] cursor-pointer"
+        class="bot-list-align cursor-pointer text-[14px]"
         v-for="(list, index) in dataList"
         :key="index"
         @click="botManagementDetails(list, index)"
@@ -124,7 +124,7 @@
             "
             class="h-6 w-6 text-red-500"
             name="ph:warning"
-          />   
+          />
         </div>
         <div>
           <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
@@ -254,9 +254,20 @@
   };
 
   const handleActivateBot = async () => {
+    if (botDetails.value.documents.length === 0) {
+      toast.success("Please add document to activate bot");
+      return navigateTo({
+        name: "BotDocumentManagement-id",
+        params: { id: paramId.params.id },
+      });
+    }
+
+    if (botDetails.value.documents.length === 1) {
+      return singleDocumentDeploy(botDetails.value.documents[0]);
+    }
+
     isDocumentListOpen.value = true;
-   
-  }
+  };
 </script>
 
 <style scoped>
