@@ -3,7 +3,7 @@
     z
       .object({
         NAME: z.string().min(2, "Name must be at least 2 characters."),
-        COMPANY_NAME: z
+        COMPANY: z
           .string()
           .min(2, "Company name must be at least 2 characters."),
 
@@ -87,7 +87,7 @@
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="COMPANY_NAME">
+        <UiFormField v-slot="{ componentField }" name="COMPANY">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
             <UiFormLabel>Company Name</UiFormLabel>
             <UiFormControl>
