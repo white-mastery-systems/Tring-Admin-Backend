@@ -52,7 +52,7 @@
     <div class="bot-main-align">
       <div class="list-header-align">
         <div class="header-content-align">
-          <span class="content-align font-semibold">File Name</span>
+          <span class="content-align font-semibold">Lead Name</span>
           <span class="content-align font-semibold">Bot Name</span>
           <span class="content-align font-semibold">Date Created</span>
           <span class="content-align font-semibold">Actions</span>
@@ -267,11 +267,11 @@ const viewBot = async (chatId: any) => {
   overflow: hidden;
   text-overflow: ellipsis;
   display: inline-block;
-  padding-inline-start: 15px;
+  padding-inline-start: 21px;
 }
 
 .create_at-align {
-  padding-inline-end: 127px;
+  padding-inline-end: 122px;
 }
 
 .document-align {
@@ -299,6 +299,7 @@ const viewBot = async (chatId: any) => {
   justify-content: center;
   height: calc(100vh - 285px);
   overflow-y: scroll;
+  padding: 5px;
 }
 
 .count-align {

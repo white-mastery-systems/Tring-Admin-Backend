@@ -65,8 +65,8 @@
           </div>
         </div>
       </div>
-      <div class="graph-align mt-10 gap-6">
-        <div class="relative h-[380px] w-[750px] place-content-center rounded-md bg-white shadow">
+      <div class="graph-align my-8 gap-6">
+        <div class="relative place-content-center rounded-md bg-white shadow chat-bot-align">
           <UiLabel class="absolute top-6 pb-1 pl-6 text-lg font-bold">Chat Bot</UiLabel>
           <UiLineChart :data="lineGraphData" index="month" :categories="['Leads Created', 'Sessions Created']"
             :colors="['#424bd1', '#ffbc42']" :show-grid-line="true" :show-tooltip="true" :margin="{ right: 20 }"
@@ -79,7 +79,7 @@
             " class="h-[250px]" />
         </div>
 
-        <div class="relative h-[380px] w-[450px] place-content-center rounded-md bg-white shadow">
+        <div class="relative place-content-center rounded-md bg-white shadow voice-bot-align">
           <UiLabel class="absolute top-6 pl-6 text-lg font-bold">Voice Bot</UiLabel>
           <VisBulletLegend :items="chartDataItems" class="absolute right-6 top-10 flex flex-col pt-3" />
           <UiDonutChart index="name" :category="'total'" :data="chartsData" :colors="['#ffbc42', '#424bd1']"
@@ -309,6 +309,12 @@
     background: rgba(255, 255, 255, 1);
     box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
     border-radius: 10px;
+  }
+  .chat-bot-align {
+    width: 60%;
+  }
+  .voice-bot-align {
+   width: 40%;
   }
   /* .select_list_align {
   font-weight: 500;

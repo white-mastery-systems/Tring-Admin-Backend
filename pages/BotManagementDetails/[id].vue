@@ -264,7 +264,7 @@
     width: 100% !important;
     box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
     border-radius: 10px;
-    margin: 20px;
+    margin: 20px 0;
   }
 
   .deploy-bot-list-align {
