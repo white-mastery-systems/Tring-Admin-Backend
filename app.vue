@@ -2,5 +2,5 @@
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
-  <UiToaster rich-colors position="top-center" :duration="750" />
+  <UiToaster rich-colors position="top-center" :duration="3000" />
 </template>

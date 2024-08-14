@@ -27,12 +27,12 @@
       </UiTabsList>
         <UiTabsContent value="Client Info">
           <div class="client_info_align gap-2">
-            <span v-for="[key, value] in details[0]" class="font-medium">{{ key }}: <span class="font-bold">{{ value }}</span></span>
+            <span v-for="[key, value] in details[0]" class="font-medium uppercase">{{ key }}: <span class="font-bold ml-2">{{ value }}</span></span>
           </div>
         </UiTabsContent>
         <UiTabsContent value="Campaign info">
           <div class="client_info_align gap-2">
-            <span v-for="[key, value] in details[1]" class="font-medium">{{ key }}: <span class="font-bold">{{ value }}</span></span>
+            <span v-for="[key, value] in details[1]" class="font-medium uppercase">{{ key }}: <span class="font-bold ml-2">{{ value }}</span></span>
           </div>
         </UiTabsContent>
     </UiTabs>

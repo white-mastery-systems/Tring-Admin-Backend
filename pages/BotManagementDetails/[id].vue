@@ -42,12 +42,18 @@
                 dateFormate
               }}</span>
             </span>
-            <UiDialog v-if="!botDetails.documentId">
-              <UiDialogTrigger class="">
-                <UiButton class="bg-[#424bd1] hover:bg-[#424bd1]/90"
-                  >Deploy Bot</UiButton
-                >
-              </UiDialogTrigger>
+            <UiButton
+              class="bg-[#424bd1] hover:bg-[#424bd1]/90"
+              @click="handleActivateBot"
+              v-if="!botDetails.documentId"
+            >
+              Activate Bot</UiButton
+            >
+            <UiDialog
+              v-if="!botDetails.documentId"
+              v-model:open="isDocumentListOpen"
+            >
+              <UiDialogTrigger class=""> </UiDialogTrigger>
               <UiDialogContent align="end" class="sm:max-w-md">
                 <UiDialogHeader>
                   <UiDialogTitle>Launch Bot</UiDialogTitle>
@@ -106,15 +112,14 @@
       >
         <div class="list_align">
           <span class="bot_name_align font-medium">{{ list.bot }}</span>
-          <!-- <span class="font-medium pr-14">{{ list.createAt }}</span> -->
-          <!-- <div v-if="list.status" class="pr-3 acive_class font-medium">
-            <div class="rounded-full active-circle-align"></div>
-            <span>Active</span>
-          </div>
-          <div v-else class="pl-2 deacive_class font-medium">
-            <div class="rounded-full deactive-circle-align"></div>
-            <span>Inactive</span>
-          </div> -->
+          <Icon
+            v-if="
+              list.bot === 'Document Management' &&
+              botDetails.documents.length === 0
+            "
+            class="h-6 w-6 text-red-500"
+            name="ph:warning"
+          />
         </div>
         <div>
           <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
@@ -142,6 +147,23 @@
   const paramId: any = route;
   const botDetails = ref(await getBotDetails(paramId.params.id));
   const modelOpen = ref(false);
+
+  const isDocumentListOpen = ref(false);
+  const handleActivateBot = async () => {
+    if (botDetails.value.documents.length === 0) {
+      toast.success("Please add document to activate bot");
+      return navigateTo({
+        name: "BotDocumentManagement-id",
+        params: { id: paramId.params.id },
+      });
+    }
+
+    if (botDetails.value.documents.length === 1) {
+      return singleDocumentDeploy(botDetails.value.documents[0]);
+    }
+
+    isDocumentListOpen.value = true;
+  };
 
   const getDocumentList: any = ref();
 
@@ -258,8 +280,8 @@
   .list_align {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     width: 100%;
+    gap: 1rem;
     /* background: rgba(255, 255, 255, 1); */
     /* padding: 30px 30px; */
     /* box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important; */
