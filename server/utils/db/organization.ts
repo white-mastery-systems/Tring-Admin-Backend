@@ -1,5 +1,6 @@
+const db = useDrizzle();
+
 export const createOrganization = async (organization: InsertOrganization) => {
-  const db = useDrizzle();
   const newOrganization = await db
     .insert(organizationSchema)
     .values(organization)
@@ -8,7 +9,6 @@ export const createOrganization = async (organization: InsertOrganization) => {
 };
 
 export const getOrganizationById = async (id: string) => {
-  const db = useDrizzle();
   const organization = await db.query.organizationSchema.findFirst({
     where: eq(organizationSchema.id, id),
   });
@@ -19,9 +19,34 @@ export const updateOrganization = async (
   id: string,
   organization: Partial<InsertOrganization>,
 ) => {
-  const db = useDrizzle();
   return await db
     .update(organizationSchema)
     .set(organization)
     .where(eq(organizationSchema.id, id));
+};
+
+export const getAnalytics = async (organizationId: string) => {
+  const orgData = await db.query.organizationSchema.findFirst({
+    where: eq(organizationSchema.id, organizationId),
+    with: {
+      botUsers: true,
+      bots: {
+        with: {
+          chats: true,
+        },
+      },
+      leads: true,
+    },
+  });
+
+  if (!orgData) return undefined;
+
+  return {
+    bots: orgData.bots.length,
+    chats: orgData.bots.reduce((acc, bot) => {
+      return acc + bot.chats.length;
+    }, 0),
+    users: orgData.botUsers.length,
+    leads: orgData.leads.length,
+  };
 };
