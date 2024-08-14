@@ -72,9 +72,7 @@
     <div class="flex flex-col items-center justify-center px-4 pb-6 pt-5">
       <p
         class="mb-2 line-clamp-3 w-fit text-center text-sm text-gray-500 dark:text-gray-400"
-      >
-        {{ file && file.length > 0 ? fileNames : "Upload File" }}
-      </p>
+      ></p>
     </div>
   </div>
 </template>

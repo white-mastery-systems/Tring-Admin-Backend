@@ -28,9 +28,6 @@
           </button>
         </div>
         <!-- <span class="upload-document-align font-bold"> Upload Document </span> -->
-        <span v-if="!selectedFile" class="only-content-align">
-          (Only Pdf)
-        </span>
       </div>
     </div>
     <div class="bot-main-align">
