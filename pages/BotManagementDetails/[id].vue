@@ -237,7 +237,11 @@
     modalOpen.value = false;
   };
 
-  const botScript = `<script src="https://tring-databot.pripod.com/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS"/>`;
+  const botScript =
+    "<" +
+    `script src="https://tring-databot.pripod.com/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS">` +
+    "</" +
+    "script>";
 
   const { copy } = useClipboard({ source: botScript });
   const copyScript = async () => {
