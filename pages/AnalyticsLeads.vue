@@ -64,10 +64,12 @@
     <div class="bot-main-align">
       <div class="list-header-align">
         <div class="header-content-align px-[13px]">
-          <span class="content-align font-semibold">Lead Name</span>
-          <span class="content-align font-semibold">Bot Name</span>
-          <span class="content-align font-semibold">Date Created</span>
-          <span class="content-align font-semibold">Actions</span>
+          <span class="content-align font-extrabold text-black">Lead Name</span>
+          <span class="content-align font-extrabold text-black">Bot Name</span>
+          <span class="content-align font-extrabold text-black"
+            >Date Created</span
+          >
+          <span class="content-align font-extrabold text-black">Actions</span>
         </div>
       </div>
       <div class="content-scroll-align cursor-pointer">
@@ -87,7 +89,7 @@
             "
           >
             <div class="list_align">
-              <span class="user_name_align font-medium">{{
+              <span class="user_name_align font-bold">{{
                 list.botUser.name
               }}</span>
               <span class="bot_name_align font-medium">{{
@@ -192,7 +194,7 @@
   .content-align {
     /* width: 100px !important; */
     margin-bottom: 5px;
-    color: rgba(138, 138, 138, 1);
+    /* color: rgba(138, 138, 138, 1); */
   }
 
   .list-header-align {
