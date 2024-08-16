@@ -35,7 +35,7 @@
         </div>
       </div>
       <!-- {{ getDocumentList }} -->
-      <div class="content-scroll-align">
+      <div class="content-scroll-align px-3">
         <!-- @click="async () => {
         await navigateTo('botpdfdocument')
         }" -->
@@ -116,9 +116,15 @@
   const getDocumentList = ref();
   const documentFetchInterval = ref<NodeJS.Timeout>();
 
+  const deleteDocumentModelOpen = ref(false);
+
   onMounted(async () => {
     getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
   });
+
+  const handleDeleteDocument = () => {
+    deleteDocumentModelOpen.value = true;
+  }
   const fileUpload = async () => {
     selectedFile.value[0].name;
     console.log(selectedFile.value[0], "selectedFile");
