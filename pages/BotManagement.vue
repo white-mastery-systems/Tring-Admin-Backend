@@ -58,60 +58,13 @@
       </div>
     </div>
     <div class="bot-main-align">
-      <div class="list-header-align">
-        <div class="header-content-align">
-          <span class="content-align font-semibold">Bot Name</span>
-          <span class="content-align font-semibold">Date Created</span>
-          <span class="content-align font-semibold">Status</span>
-        </div>
-      </div>
-      <div class="overflow_align mt-3">
-        <div v-if="botList.length" class="list_align">
-          <div
-            class="bot-list-align text-[15px]"
-            v-for="(list, index) in botList"
-            :key="index"
-            @click="botManagementDetails(list)"
-          >
-            <span class="bot_name_align font-medium">{{ list.name }}</span>
-            <span
-              class="createAt_align font-medium text-black"
-              :style="{
-                'padding-inline-end': !list.status ? '110px' : '123px',
-              }"
-              >{{ list.createdAt }}</span
-            >
-            <div v-if="list.status" class="acive_class font-medium">
-              <div class="active-circle-align rounded-full"></div>
-              <span>Active</span>
-            </div>
-            <div v-else class="deacive_class pl-2 font-medium">
-              <div class="deactive-circle-align rounded-full"></div>
-              <span>Inactive</span>
-            </div>
-            <!-- v-if="!list.arrowChange" -->
-            <div class="pr-4">
-              <!-- <img src="assets\icons\left_arrow.svg" width="30"> -->
-              <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
-            </div>
-            <!-- <div v-else>
-              <img src="assets\icons\yellow_left_arrow.svg" width="30">
-            </div> -->
-          </div>
-          <!-- <div>
-          </div> -->
-        </div>
-        <div
-          v-else
-          class="font-regular flex items-center justify-center text-[#8A8A8A]"
-        >
-          No bots created
-        </div>
-      </div>
+      <DataTable :columns="columns" :data="botList" :page-size="10" />
     </div>
   </div>
 </template>
 <script setup lang="ts">
+  import { createColumnHelper } from "@tanstack/vue-table";
+
   definePageMeta({
     middleware: "admin-only",
   });
@@ -167,6 +120,27 @@
       params: { id: list.id },
     });
   };
+
+  const statusComponent = (status: boolean) =>
+    status
+      ? h("span", { class: "text-green-500" }, "Active")
+      : h("span", { class: "text-red-500" }, "Inactive");
+
+  const columnHelper = createColumnHelper<(typeof botList)[0]>();
+  const columns = [
+    columnHelper.accessor("name", {
+      header: "Bot Name",
+    }),
+    columnHelper.accessor("createdAt", {
+      header: "Date Created",
+    }),
+    columnHelper.accessor("status", {
+      header: "Status",
+      cell: ({ row }) => {
+        return statusComponent(row.original.status);
+      },
+    }),
+  ];
 </script>
 
 <style scoped>

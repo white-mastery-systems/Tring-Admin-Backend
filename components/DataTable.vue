@@ -1,0 +1,149 @@
+<script setup lang="ts" generic="T extends object">
+  import type { ColumnDef, SortingState } from "@tanstack/vue-table";
+  import {
+    FlexRender,
+    useVueTable,
+    getCoreRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+  } from "@tanstack/vue-table";
+
+  const props = defineProps<{
+    data: T[];
+    columns: ColumnDef<T, any>[];
+    footer?: boolean;
+    pageSize?: number;
+  }>();
+
+  const sorting = ref<SortingState>([]);
+  const pageSize = computed(() => props.pageSize || 10);
+
+  const table = useVueTable<T>({
+    get data() {
+      return props.data; // Using a getter for reactivity
+    },
+    columns: props.columns,
+    getCoreRowModel: getCoreRowModel<T>(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel<T>(),
+    onSortingChange: (updaterOrValue) => valueUpdater(updaterOrValue, sorting),
+    state: {
+      get sorting() {
+        return sorting.value;
+      },
+    },
+    initialState: {
+      pagination: {
+        pageSize: pageSize.value,
+      },
+    },
+  });
+</script>
+
+<template>
+  <div class="space-y-4">
+    <div class="rounded-lg border">
+      <UiTable class="text-left text-gray-500">
+        <UiTableHeader class="bg-gray-50 text-xs uppercase">
+          <UiTableRow
+            v-for="headerGroup in table.getHeaderGroups()"
+            :key="headerGroup.id"
+          >
+            <UiTableHead
+              v-for="header in headerGroup.headers"
+              :key="header.id"
+              class="text-nowrap px-6 py-5 text-lg font-bold text-gray-700"
+              scope="col"
+              @click="header.column.getToggleSortingHandler()?.($event)"
+            >
+              <FlexRender
+                v-if="!header.isPlaceholder"
+                :render="header.column.columnDef.header"
+                :props="header.getContext()"
+              />
+            </UiTableHead>
+          </UiTableRow>
+        </UiTableHeader>
+        <UiTableBody>
+          <template v-if="table.getRowModel().rows?.length">
+            <UiTableRow
+              v-for="row in table.getRowModel().rows"
+              :key="row.id"
+              class="border-b p-2 even:bg-white"
+              :data-state="row.getIsSelected() && 'selected'"
+            >
+              <UiTableCell
+                v-for="cell in row.getVisibleCells()"
+                :key="cell.id"
+                class="px-6 py-4 text-lg font-semibold"
+              >
+                <FlexRender
+                  :render="cell.column.columnDef.cell"
+                  :props="cell.getContext()"
+                />
+              </UiTableCell>
+            </UiTableRow>
+          </template>
+          <UiTableRow v-else>
+            <UiTableCell col-span="{columns.length}" class="h-24 text-center">
+              No results.
+            </UiTableCell>
+          </UiTableRow>
+        </UiTableBody>
+        <UiTableFooter v-if="footer">
+          <UiTableRow
+            v-for="footerGroup in table.getFooterGroups()"
+            :key="footerGroup.id"
+          >
+            <UiTableHead
+              v-for="footer_h in footerGroup.headers"
+              :key="footer_h.id"
+              class="px-6 font-bold lg:text-lg"
+              :colspan="footer_h.colSpan"
+            >
+              <FlexRender
+                :render="footer_h.column.columnDef.footer"
+                :props="footer_h.getContext()"
+              />
+            </UiTableHead>
+          </UiTableRow>
+        </UiTableFooter>
+      </UiTable>
+    </div>
+    <div
+      v-if="table.getFilteredRowModel().rows.length > pageSize"
+      class="flex flex-col items-center justify-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0"
+    >
+      <p>
+        Page {{ table.getState().pagination.pageIndex + 1 }} of
+        {{ table.getPageCount() }} -
+        {{ table.getFilteredRowModel().rows.length }} results
+      </p>
+      <div class="flex space-x-4">
+        <UiButton size="icon" @click="table.setPageIndex(0)">
+          <Icon name="lucide:chevrons-left" class="h-6 w-6" />
+        </UiButton>
+        <UiButton
+          size="icon"
+          :disabled="!table.getCanPreviousPage()"
+          @click="table.previousPage()"
+        >
+          <Icon name="lucide:chevron-left" class="h-6 w-6" />
+        </UiButton>
+        <UiButton
+          size="icon"
+          :disabled="!table.getCanNextPage()"
+          @click="table.nextPage()"
+        >
+          <Icon name="lucide:chevron-right" class="h-6 w-6" />
+        </UiButton>
+        <UiButton
+          size="icon"
+          @click="table.setPageIndex(table.getPageCount() - 1)"
+        >
+          <Icon name="lucide:chevrons-right" class="h-6 w-6" />
+        </UiButton>
+      </div>
+    </div>
+  </div>
+</template>
