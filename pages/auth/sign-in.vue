@@ -58,11 +58,11 @@ const togglePasswordVisibility = () => {
             </UiFormItem>
           </UiFormField>
 
-          <div class="forget-pws-align align_border">
+          <!-- <div class="forget-pws-align align_border">
             <NuxtLink to="/auth/ForgotPassword" class="align_border">
               Forgot Password?
             </NuxtLink>
-          </div>
+          </div> -->
         </div>
         <!-- <div class="submit-btn-align">
           <button class="font-bold" type="submit" @click="authHandlers.login(loginData)">
