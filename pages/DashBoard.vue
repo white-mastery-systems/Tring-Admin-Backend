@@ -172,38 +172,9 @@
     }
   };
 
-  const menuList = ref([
-    {
-      content: "Today",
-      value: "Today",
-    },
-    {
-      content: "Weekly",
-      value: "Weekly",
-    },
-    {
-      content: "Monthly",
-      value: "Monthly",
-    },
-    {
-      content: "Quarterly",
-      value: "Quarterly",
-    },
-    {
-      content: "Halfyearly",
-      value: "Halfyearly",
-    },
-    {
-      content: "Yearly",
-      value: "Yearly",
-    },
-  ]);
-
   interface MonthAbbreviations {
     [key: string]: string;
   }
-
-  const apiData = computed(() => analyticsData.value?.lead_count);
 
   const months = [
     "January",
@@ -238,10 +209,11 @@
 
   // Initialize an empty array for the final data
   // console.log(
-  const lineGraphData = computed(() =>
-    months.map((month, index) => {
+  const leadsData = computed(() => analyticsData.value?.graph.leads);
+  const leadGraphData = computed(() =>
+    months.map((month) => {
       // Find the corresponding API data for the current month and year
-      const apiEntry = apiData.value?.find((entry: any) => {
+      const apiEntry = leadsData.value?.find((entry: any) => {
         const [apiMonthAbbr, apiYear] = entry.month.split(" ");
         console.log(apiMonthAbbr, apiYear, "API");
         const apiMonthFull =
@@ -251,99 +223,56 @@
 
       // Extract the year from the first entry of the API data, or use a default value
       const year =
-        apiData.value?.length > 0
-          ? apiData.value[0].month.split(" ")[1]
+        leadsData.value?.length > 0
+          ? leadsData.value[0].month.split(" ")[1]
           : "2024";
 
       console.log(year, apiEntry);
 
       return {
         month: `${month} ${year}`,
-        "Leads Created": apiEntry ? parseInt(apiEntry.lead_count, 10) : 0,
-        "Sessions Created": 0, // Adjust this value if you have sessions data
+        "Leads Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
+      };
+    }),
+  );
+
+  const sessionsData = computed(() => analyticsData.value?.graph.sessions);
+  const sessionGraphData = computed(() =>
+    months.map((month) => {
+      // Find the corresponding API data for the current month and year
+      const apiEntry = sessionsData.value?.find((entry: any) => {
+        const [apiMonthAbbr, apiYear] = entry.month.split(" ");
+        console.log(apiMonthAbbr, apiYear, "API");
+        const apiMonthFull =
+          monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
+        return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
+      });
+
+      // Extract the year from the first entry of the API data, or use a default value
+      const year =
+        leadsData.value?.length > 0
+          ? leadsData.value[0].month.split(" ")[1]
+          : "2024";
+
+      console.log(year, apiEntry);
+
+      return {
+        month: `${month} ${year}`,
+        "Sessions Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
+      };
+    }),
+  );
+  const lineGraphData = computed(() =>
+    sessionGraphData.value.map((s) => {
+      const lead = leadGraphData.value.find((l) => l.month === s.month);
+      return {
+        month: s.month,
+        "Leads Created": lead ? lead["Leads Created"] : 0,
+        "Sessions Created": s["Sessions Created"],
       };
     }),
   );
   // );
-
-  const _lineGraphData = [
-    {
-      month: "January",
-      "Leads Created": 150,
-      "Sessions Created": 250,
-    },
-    {
-      month: "February",
-      "Leads Created": 180,
-      "Sessions Created": 280,
-    },
-    {
-      month: "March",
-      "Leads Created": 210,
-      "Sessions Created": 320,
-    },
-    {
-      month: "April",
-      "Leads Created": 190,
-      "Sessions Created": 300,
-    },
-    {
-      month: "May",
-      "Leads Created": 220,
-      "Sessions Created": 340,
-    },
-    {
-      month: "June",
-      "Leads Created": 250,
-      "Sessions Created": 380,
-    },
-    {
-      month: "July",
-      "Leads Created": 280,
-      "Sessions Created": 420,
-    },
-    {
-      month: "August",
-      "Leads Created": 260,
-      "Sessions Created": 400,
-    },
-    {
-      month: "September",
-      "Leads Created": 240,
-      "Sessions Created": 360,
-    },
-    {
-      month: "October",
-      "Leads Created": 230,
-      "Sessions Created": 350,
-    },
-    {
-      month: "November",
-      "Leads Created": 200,
-      "Sessions Created": 310,
-    },
-    {
-      month: "December",
-      "Leads Created": 170,
-      "Sessions Created": 270,
-    },
-  ];
-
-  const chartsData = [
-    {
-      name: "Total Leads",
-      total: 24,
-    },
-    {
-      name: "Total Calls",
-      total: 76,
-    },
-  ];
-
-  const chartDataItems = [
-    { name: "Total Leads", color: "#ffbc42" },
-    { name: "Total Calls", color: "#424bd1" },
-  ];
 </script>
 <style scoped>
   .focus\:ring-offset-2:focus {

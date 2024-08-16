@@ -38,6 +38,7 @@ export const getAnalytics = async (organizationId: string) => {
       leads: true,
     },
   });
+  if (!orgData) return undefined;
 
   const orgDataByMonth = await db.execute(sql`SELECT
   TO_CHAR(created_at, 'Mon YYYY') AS MONTH,
@@ -53,9 +54,18 @@ ORDER BY
   MONTH;
 `);
 
-  if (!orgData) return undefined;
+  const leadsGraph =
+    await db.execute(sql`select to_char(l.created_at, 'Mon YYYY') as month, count(*) as count  from admin.organization as o
+      join chatbot.leads as l on l.organization_id = o.id
+      where o.id = ${organizationId}
+      GROUP BY to_char(l.created_at, 'Mon YYYY')`);
 
-  if (!orgDataByMonth) return undefined;
+  const sessionsGraph =
+    await db.execute(sql`select to_char(c.created_at, 'Mon YYYY') as month, count(*) as count  from admin.organization as o
+      join chatbot.bot as b on b.organization_id = o.id
+      join chatbot.chats as c on c.bot_id = b.id
+      where o.id = ${organizationId}
+      GROUP BY to_char(c.created_at, 'Mon YYYY')`);
 
   return {
     bots: orgData.bots.length,
@@ -64,7 +74,10 @@ ORDER BY
     }, 0),
     users: orgData.botUsers.length,
     leads: orgData.leads.length,
-    lead_count: orgDataByMonth.rows,
+    graph: {
+      leads: leadsGraph.rows,
+      sessions: sessionsGraph.rows,
+    },
   };
 };
 
