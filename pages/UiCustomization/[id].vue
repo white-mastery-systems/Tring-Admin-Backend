@@ -95,6 +95,14 @@
         </div>
         <span class="text-xs text-gray-500">Open chat window by default</span>
         <div class="flex flex-row justify-between">
+          <UiLabel class="text-base font-medium">Generate Leads</UiLabel>
+          <UiSwitch
+            id="generate-lead"
+            v-model:checked="generateLead"
+            :style="{ background: generateLead ? '#424BD1' : '#8A8A8A' }"
+          />
+        </div>
+        <div class="flex flex-row justify-between">
           <UiLabel class="text-base font-medium">Online Status</UiLabel>
           <UiSwitch
             id="online-status"
@@ -138,6 +146,7 @@
   const onlineStatus = ref(true);
   const widgetSound = ref("Yes");
   const widgetPosition = ref("Left");
+  const generateLead = ref(true);
   const logo = ref<FileList | null>(null);
 
   onMounted(() => {
@@ -148,6 +157,7 @@
       widgetPosition.value = botDetails.metadata.ui.widgetPosition;
       onlineStatus.value = botDetails.metadata.ui.onlineStatus;
       logo.value = botDetails.metadata.ui.logo;
+      generateLead.value = botDetails.metadata.prompt.INTENTS !== "-other";
     }
   });
 
@@ -165,6 +175,10 @@
           onlineStatus: onlineStatus.value,
           widgetPosition: widgetPosition.value,
           widgetSound: widgetSound.value,
+        },
+        prompt: {
+          ...botDetails.metadata.prompt,
+          INTENTS: generateLead.value ? "-details\n-other" : "-other",
         },
       },
     };

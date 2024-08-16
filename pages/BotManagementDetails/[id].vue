@@ -279,7 +279,7 @@
 
     if (activeDocuments.length === 1) {
       try {
-        await singleDocumentDeploy(botDetails.value.documents[0]);
+        await singleDocumentDeploy(activeDocuments[0]);
       } catch (err) {
         isSubmitting.value = false;
         toast.error("Failed to active the bot, try again");

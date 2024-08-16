@@ -83,11 +83,8 @@
           <UiFormItem v-auto-animate="animationProps" class="w-full">
             <UiFormLabel class="font-bold">E-mail</UiFormLabel>
             <UiFormControl>
-              <UiInput
-                v-bind="componentField"
-                placeholder="Enter your email"
-                type="Email"
-              />
+              <UiInput v-bind="componentField" placeholder="Enter Your Email" class="form-input-align font-medium"
+                type="Email" />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
@@ -101,16 +98,9 @@
           <UiFormItem v-auto-animate="animationProps" class="w-full">
             <UiFormLabel class="font-bold">Password</UiFormLabel>
             <UiFormControl>
-              <UiInput
-                placeholder="Enter your password"
-                v-bind="componentField"
-                :type="passwordVisible ? 'text' : 'password'"
-              />
-              <div
-                @click="togglePasswordVisibility"
-                type="button"
-                class="eye-icon-align absolute"
-              >
+              <UiInput v-bind="componentField" placeholder="Enter Your Password"
+                :type="passwordVisible ? 'text' : 'password'" class="form-input-align font-medium" />
+              <div @click="togglePasswordVisibility" type="button" class="absolute eye-icon-align">
                 <OpenEye v-if="passwordVisible" />
                 <CloseEyeIcon v-else />
               </div>
@@ -126,16 +116,10 @@
           <UiFormItem v-auto-animate="animationProps" class="w-full">
             <UiFormLabel class="font-bold">Confirm Password</UiFormLabel>
             <UiFormControl>
-              <UiInput
-                placeholder="Confirm your password"
-                v-bind="componentField"
+              <UiInput v-bind="componentField" placeholder="Enter Your Confirm Password"
                 :type="confirmPasswordVisible ? 'text' : 'password'"
-              />
-              <div
-                @click="toggleConfirmPasswordVisibility"
-                type="button"
-                class="eye-icon-align absolute"
-              >
+                class="form-input-align outline-none font-medium" />
+              <div @click="toggleConfirmPasswordVisibility" type="button" class="absolute eye-icon-align">
                 <OpenEye v-if="confirmPasswordVisible" />
                 <CloseEyeIcon v-else />
               </div>
@@ -214,6 +198,7 @@
   /* .individual-form-align {
     gap: 5px;
   } */
+<<<<<<< HEAD
   .individual-form-align input {
     background-color: rgba(246, 246, 246, 1);
     width: 100%;
@@ -224,17 +209,40 @@
   }
 
   /* .submit-btn-align {
+=======
+.individual-form-align input {
+  background-color: rgba(246, 246, 246, 1);
+  width: 100%;
+  height: 50px;
+  outline: none;
+  border-radius: 10px;
+  padding: 0 20px;
+}
+.form-input-align {
+  height: 50px;
+}
+/* .submit-btn-align {
+>>>>>>> 5318049fe90f106b616f436a51c5177af429318e
   width: 100%;
   display: flex;
   justify-content: center;
 } */
 
+<<<<<<< HEAD
   .submit-btn-align {
     background: #424bd1 !important;
     color: #ffffff;
     /* margin-top: 30px; */
     /* margin-right: 170px; */
   }
+=======
+.submit-btn-align {
+  background: #424bd1 !important;
+  color: #ffffff;
+  margin-top: 20px !important;
+  /* margin-right: 170px; */
+}
+>>>>>>> 5318049fe90f106b616f436a51c5177af429318e
 
   .input-container {
     position: relative;
