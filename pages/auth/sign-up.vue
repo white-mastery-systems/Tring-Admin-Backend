@@ -116,7 +116,7 @@
           <UiFormItem v-auto-animate="animationProps" class="w-full">
             <UiFormLabel class="font-bold">Confirm Password</UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" placeholder="Enter Your Confirm Password"
+              <UiInput v-bind="componentField" placeholder="Confirm Your Password"
                 :type="confirmPasswordVisible ? 'text' : 'password'"
                 class="form-input-align outline-none font-medium" />
               <div @click="toggleConfirmPasswordVisibility" type="button" class="absolute eye-icon-align">
@@ -198,18 +198,6 @@
   /* .individual-form-align {
     gap: 5px;
   } */
-<<<<<<< HEAD
-  .individual-form-align input {
-    background-color: rgba(246, 246, 246, 1);
-    width: 100%;
-    height: 50px;
-    outline: none;
-    border-radius: 10px;
-    padding: 0 20px;
-  }
-
-  /* .submit-btn-align {
-=======
 .individual-form-align input {
   background-color: rgba(246, 246, 246, 1);
   width: 100%;
@@ -220,29 +208,21 @@
 }
 .form-input-align {
   height: 50px;
+  border-radius: 10px;
+  background-color: #f6f6f6;
 }
 /* .submit-btn-align {
->>>>>>> 5318049fe90f106b616f436a51c5177af429318e
   width: 100%;
   display: flex;
   justify-content: center;
 } */
 
-<<<<<<< HEAD
-  .submit-btn-align {
-    background: #424bd1 !important;
-    color: #ffffff;
-    /* margin-top: 30px; */
-    /* margin-right: 170px; */
-  }
-=======
 .submit-btn-align {
   background: #424bd1 !important;
   color: #ffffff;
   margin-top: 20px !important;
   /* margin-right: 170px; */
 }
->>>>>>> 5318049fe90f106b616f436a51c5177af429318e
 
   .input-container {
     position: relative;

@@ -55,21 +55,9 @@
             <UiFormItem v-auto-animate="animationProps" class="w-full">
               <UiFormLabel class="font-bold">Password</UiFormLabel>
               <UiFormControl>
-<<<<<<< HEAD
-                <UiInput
-                  v-bind="componentField"
-                  :type="passwordVisible ? 'text' : 'password'"
-                />
-                <div
-                  @click="togglePasswordVisibility"
-                  type="button"
-                  class="eye-icon-align absolute"
-                >
-=======
                 <UiInput v-bind="componentField" class="font-medium" placeholder="Enter Your Password"
                   :type="passwordVisible ? 'text' : 'password'" />
                 <div @click="togglePasswordVisibility" type="button" class="absolute eye-icon-align">
->>>>>>> 5318049fe90f106b616f436a51c5177af429318e
                   <OpenEye v-if="passwordVisible" />
                   <CloseEyeIcon v-else />
                 </div>
@@ -239,16 +227,6 @@
     text-decoration: underline;
   }
 
-<<<<<<< HEAD
-  .footer-align {
-    position: absolute;
-    bottom: 30px;
-  }
-  .eye-icon-align {
-    top: 35px;
-    right: 10px;
-  }
-=======
 .footer-align {
   position: absolute;
   bottom: 30px;
@@ -257,5 +235,4 @@
   top: 38px;
   right: 10px;
 }
->>>>>>> 5318049fe90f106b616f436a51c5177af429318e
 </style>
