@@ -84,7 +84,7 @@
         <div :class="'graph-align my-8 gap-6'">
           <div
             v-if="analyticsData?.bots > 0"
-            class="chat-bot-align relative place-content-center rounded-md bg-white shadow"
+            class="chat-bot-align relative place-content-center rounded-md bg-white py-[40px]"
           >
             <UiLineChart
               :data="lineGraphData"
@@ -317,6 +317,7 @@
   .graph-align {
     display: flex;
     height: 59vh;
+    box-shadow: 0 2px 24px #0000000d !important;
   }
   .calender-align {
     display: flex;

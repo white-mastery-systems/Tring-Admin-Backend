@@ -64,7 +64,7 @@
                 </UiDialogHeader>
                 <UiButton
                   class="deploy-bot-list-align text-[15px] text-black"
-                  v-for="list in getDocumentList.filter(
+                  v-for="list in getDocumentList.documents.filter(
                     (item: any) => item.status === 'ready',
                   )"
                   :key="list.id"
@@ -244,7 +244,11 @@
     modalOpen.value = false;
   };
 
-  const botScript = `<script src="https://tring-databot.pripod.com/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS"/>`;
+  const botScript =
+    "<" +
+    `script src="https://tring-databot.pripod.com/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS">` +
+    "</" +
+    "script>";
 
   const { copy } = useClipboard({ source: botScript });
   const copyScript = async () => {
