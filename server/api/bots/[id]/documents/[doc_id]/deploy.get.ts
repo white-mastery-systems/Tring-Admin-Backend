@@ -20,8 +20,9 @@ export default defineEventHandler(async (event) => {
   document = await isValidReturnType(event, document);
 
   let INITIAL_MESSAGE = null;
+  let max_retries = 5;
 
-  while (true) {
+  while (max_retries > 0) {
     try {
       const _initialMessage = await $fetch<any>(
         `/api/bot/${botId}/init-message`,
@@ -36,10 +37,14 @@ export default defineEventHandler(async (event) => {
       INITIAL_MESSAGE = _initialMessage as {};
       break;
     } catch (e) {
+      max_retries -= 1;
       console.log(e);
       continue;
     }
   }
+
+  if (max_retries === 0)
+    return sendError(event, createError({ statusCode: 500 }));
 
   return await updateBotDetails(botId, {
     documentId: document.id,
