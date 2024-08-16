@@ -43,16 +43,16 @@ const onSubmit = async () => {
     <div class="form-align">
       <!-- <div> -->
       <div class="individual-form-align">
-        <label for="fpassword" class="font-bold">Company Name</label>
+        <label for="fpassword" class="font-bold">Company Name *</label>
         <div class="input-container">
-          <UiInput v-model="loginData.name" />
+          <UiInput v-model="loginData.name" class="font-medium" placeholder="Enter Your Company Name" />
         </div>
       </div>
       <div class="individual-form-align">
-        <label for="fpassword" class="font-bold">Industry</label>
+        <label for="fpassword" class="font-bold">Industry *</label>
         <div class="input-container">
           <UiSelect v-model="loginData.industry" @update:model-value="handleRoleChange(loginData.industry)">
-            <UiSelectTrigger class="select-input-align"> {{ loginData.industry }} </UiSelectTrigger>
+            <UiSelectTrigger class="select-input-align font-medium"> {{ loginData.industry }} </UiSelectTrigger>
             <UiSelectContent>
               <UiSelectItem value="Real Estate">Real Estate</UiSelectItem>
               <UiSelectItem value="Finance">Finance</UiSelectItem>
@@ -67,15 +67,15 @@ const onSubmit = async () => {
       <div v-if="showCustomRoleInput" class="individual-form-align">
         <!-- <label for="fmail" class="mb-4 font-bold">Enter your Role</label> -->
         <div class="input-container">
-          <input @change="handleChange()" class="mb-2 mt-2" type="otp" id="fmail" name="otp"
+          <input @change="handleChange()" class="mb-2 mt-2 font-medium" type="otp" id="fmail" name="otp"
             placeholder="Enter your Industry" v-model="loginData.customIndustry" />
         </div>
       </div>
       <div class="individual-form-align">
-        <label for="fpassword" class="font-bold">Monthly Website Traffic</label>
+        <label for="fpassword" class="font-bold">Monthly Website Traffic *</label>
         <div class="input-container">
           <UiSelect v-model="loginData.avgTraffic">
-            <UiSelectTrigger class="select-input-align"> {{ loginData.avgTraffic }} </UiSelectTrigger>
+            <UiSelectTrigger class="select-input-align font-medium"> {{ loginData.avgTraffic }} </UiSelectTrigger>
             <UiSelectContent>
               <UiSelectItem value="Less than 100 visits">Less than 100 visits</UiSelectItem>
               <UiSelectItem value="100-500 visits">100-500 visits</UiSelectItem>
@@ -89,10 +89,10 @@ const onSubmit = async () => {
         <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
       </div>
       <div class="individual-form-align">
-        <label for="fmail" class="mb-4 font-bold">No. of Employees</label>
+        <label for="fmail" class="mb-4 font-bold">No. of Employees *</label>
         <div class="input-container">
           <UiSelect v-model="loginData.employeeCount">
-            <UiSelectTrigger class="select-input-align"> {{ loginData.employeeCount }} </UiSelectTrigger>
+            <UiSelectTrigger class="select-input-align font-medium"> {{ loginData.employeeCount }} </UiSelectTrigger>
             <UiSelectContent>
               <UiSelectItem value="Less than 10 employees">Less than 10 employees</UiSelectItem>
               <UiSelectItem value="10-50 employees">10-50 employees</UiSelectItem>
