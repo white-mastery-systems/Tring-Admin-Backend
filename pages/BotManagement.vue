@@ -65,7 +65,7 @@
           <span class="content-align font-semibold">Status</span>
         </div>
       </div>
-      <div class="overflow_align">
+      <div class="overflow_align mt-3">
         <div v-if="botList.length" class="list_align">
           <div
             class="bot-list-align text-[15px]"

@@ -70,7 +70,7 @@
           <span class="content-align font-semibold">Actions</span>
         </div>
       </div>
-      <div class="content-scroll-align">
+      <div class="content-scroll-align cursor-pointer">
         <!-- {{ rep }} || asda -->
         <div style="height: 100%" v-if="ListLeads.length" class="px-[15px]">
           <div

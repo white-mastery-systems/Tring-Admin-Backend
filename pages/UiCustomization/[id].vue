@@ -4,16 +4,19 @@
       <UiButton variant="ghost" size="icon" @click="router.back()">
         <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
       </UiButton>
-      <UiLabel class="ml-1 text-[20px] font-bold">UI Customisation</UiLabel>
+      <UiLabel class="ml-1 text-[20px] font-bold">UI Customization</UiLabel>
     </div>
     <!-- <div class="flex flex-row"> -->
     <div class="form-align shadow-align ml-11">
       <!-- {{ botDetails }} -->
       <!-- <div class="card-align items-center rounded-md shadow-lg pa-2"> -->
       <div class="individual-form-align mt-1 flex flex-col items-start">
-        <UiLabel class="pb-3 text-lg font-medium">Logo</UiLabel>
-        <div>
-          <ImageUpload accept="image/*" v-model="logo" />
+        <UiLabel class="pb-2 text-lg font-medium">Logo</UiLabel>
+        <div class="space-y-4">
+          <div>
+            <ImageUpload accept="image/*" v-model="logo" />
+          </div>
+          <span class="text-xs text-gray-500">Logo for chat bubble and avatar</span>
         </div>
       </div>
       <div class="mt-6 space-y-1">
@@ -38,38 +41,47 @@
             </div>
           </div>
         </div>
+        <span class="text-xs text-gray-500">Select color for chat window</span>
       </div>
-      <div class="space-y-2 py-6">
-        <UiLabel class="text-lg font-medium">Widget Sound</UiLabel>
-        <UiSelect v-model="widgetSound">
-          <UiSelectTrigger
-            class="hover:focus:none hover:focus-visible:none shadow-align h-12"
+      <div class="flex flex-row justify-between py-2">
+        <div class="flex flex-col space-y-2">
+          <UiLabel class="text-lg font-medium">Widget Sound</UiLabel>
+          <UiSelect v-model="widgetSound">
+            <UiSelectTrigger
+              class="hover:focus:none hover:focus-visible:none shadow-align h-12 w-52"
+            >
+              <UiSelectValue placeholder="Select Widget Sound" />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup>
+                <UiSelectItem value="Yes"> Yes </UiSelectItem>
+                <UiSelectItem value="No"> No </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+          <span class="text-xs text-gray-500"
+            >Notification sound for chat window</span
           >
-            <UiSelectValue placeholder="Select Widget Sound" />
-          </UiSelectTrigger>
-          <UiSelectContent>
-            <UiSelectGroup>
-              <UiSelectItem value="Yes"> Yes </UiSelectItem>
-              <UiSelectItem value="No"> No </UiSelectItem>
-            </UiSelectGroup>
-          </UiSelectContent>
-        </UiSelect>
-      </div>
-      <div class="space-y-2">
-        <UiLabel class="text-lg font-medium">Widget Position</UiLabel>
-        <UiSelect v-model="widgetPosition">
-          <UiSelectTrigger
-            class="hover:focus-visible:none hover:focus:none shadow-align h-12"
+        </div>
+        <div class="flex flex-col space-y-2">
+          <UiLabel class="text-lg font-medium">Widget Position</UiLabel>
+          <UiSelect v-model="widgetPosition">
+            <UiSelectTrigger
+              class="hover:focus-visible:none hover:focus:none shadow-align h-12 w-52"
+            >
+              <UiSelectValue placeholder="Select Widget Position" />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup>
+                <UiSelectItem value="Left"> Left </UiSelectItem>
+                <UiSelectItem value="Right"> Right </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+          <span class="text-xs text-gray-500"
+            >Position for chat bubble</span
           >
-            <UiSelectValue placeholder="Select Widget Position" />
-          </UiSelectTrigger>
-          <UiSelectContent>
-            <UiSelectGroup>
-              <UiSelectItem value="Left"> Left </UiSelectItem>
-              <UiSelectItem value="Right"> Right </UiSelectItem>
-            </UiSelectGroup>
-          </UiSelectContent>
-        </UiSelect>
+        </div>
       </div>
       <div class="space-y-4 py-5">
         <div class="flex flex-row justify-between">
@@ -81,6 +93,7 @@
             :style="{ background: defaultSelect ? '#424BD1' : '#8A8A8A' }"
           />
         </div>
+        <span class="text-xs text-gray-500">Open chat window by default</span>
         <div class="flex flex-row justify-between">
           <UiLabel class="text-base font-medium">Generate Leads</UiLabel>
           <UiSwitch
@@ -97,6 +110,9 @@
             :style="{ background: onlineStatus ? '#424BD1' : '#8A8A8A' }"
           />
         </div>
+        <span class="text-xs text-gray-500"
+          >Live tag status of chat window</span
+        >
       </div>
       <div class="submit-btn-align my-auto">
         <button
@@ -125,7 +141,7 @@
   const router = useRouter();
   const paramId: any = route;
   const botDetails: any = await getBotDetails(paramId.params.id);
-  const pickColor = ref<string | null>("#EC848B");
+  const pickColor = ref<string | null>("#424bd1");
   const defaultSelect = ref(true);
   const onlineStatus = ref(true);
   const widgetSound = ref("Yes");

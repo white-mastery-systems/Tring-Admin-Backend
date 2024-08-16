@@ -82,10 +82,9 @@
       </div>
       <div class="relative">
         <div
+          v-if="analyticsData?.bots === 0"
           :class="[
-            analyticsData?.bots === 0 || analyticsData?.leads === 0
-              ? 'blur-md'
-              : '',
+            analyticsData?.bots === 0 ? 'pointer-events-none blur-md' : '',
             'graph-align my-8 gap-6',
           ]"
         >
@@ -133,15 +132,12 @@
             </UiDonutChart>
           </div> -->
         </div>
+        <!-- <UiLabel class="absolute right-1/3 top-1/3 z-10  -translate-x-3/4 -translate-y-1/3 text-lg">Getting Started by Creating Bots</UiLabel> -->
         <UiButton
-          v-if="analyticsData?.bots === 0 || analyticsData?.leads === 0"
+          v-if="analyticsData?.bots === 0"
           class="absolute right-1/2 top-1/2 z-10 h-16 w-56 -translate-y-1/2 translate-x-1/2 bg-[#474df9] text-lg text-white hover:bg-[#474df9] hover:brightness-90"
           @click="getStarted"
-          >{{
-            analyticsData?.bots === 0 && analyticsData?.leads === 0
-              ? "Get Started"
-              : "Manage Bots"
-          }}</UiButton
+          >Get Started</UiButton
         >
       </div>
     </div>
@@ -162,13 +158,13 @@
 
   onMounted(async () => {
     analyticsData.value = await getAnalyticsData();
+
+    // analyticsData.value.bots = 0;
   });
 
   const getStarted = () => {
     if (analyticsData.value.bots === 0) {
       navigateTo("/BotManagement");
-    } else if (analyticsData.value.leads === 0) {
-      navigateTo("/AnalyticsLeads");
     }
   };
 
