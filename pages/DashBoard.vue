@@ -81,14 +81,9 @@
         </div>
       </div>
       <div class="relative">
-        <div
-          v-if="analyticsData?.bots === 0"
-          :class="[
-            analyticsData?.bots === 0 ? 'pointer-events-none blur-md' : '',
-            'graph-align my-8 gap-6',
-          ]"
-        >
+        <div :class="'graph-align my-8 gap-6'">
           <div
+            v-if="analyticsData?.bots > 0"
             class="chat-bot-align relative place-content-center rounded-md bg-white shadow"
           >
             <UiLabel class="absolute top-6 pb-1 pl-6 text-lg font-bold"
