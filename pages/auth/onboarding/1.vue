@@ -38,14 +38,14 @@ const onSubmit = async () => {
     <div class="form-align">
       <!-- <div> -->
       <div class="individual-form-align">
-        <label for="fmail" class="mb-4 font-bold">Full Name</label>
+        <label for="fmail" class="mb-4 font-bold">Full Name *</label>
         <div class="input-container">
           <input class="mb-2 mt-2" type="otp" id="fmail" name="otp" placeholder="Enter your Name"
             v-model="loginData.name" />
         </div>
       </div>
       <div class="individual-form-align gap-3">
-        <label class="font-bold">Role</label>
+        <label class="font-bold">Role *</label>
         <UiSelect v-model="loginData.role" @update:model-value="handleRoleChange(loginData.role)">
           <UiSelectTrigger class="role-align font-medium mt-3 px-2">
             <UiSelectValue placeholder="Select Role" />
@@ -81,7 +81,7 @@ const onSubmit = async () => {
       <span class="bottom-content-align">
         By Signing up, I Agree to Tring AI
       </span>
-      <span class="term-align"> Terms & Conditions </span>
+      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="term-align"> Terms & Conditions </a>
     </div>
   </div>
 </template>

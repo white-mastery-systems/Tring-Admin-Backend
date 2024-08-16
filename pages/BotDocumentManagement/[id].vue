@@ -40,12 +40,12 @@
         </div>
       </div>
       <!-- {{ getDocumentList }} -->
-      <div class="content-scroll-align">
+      <div class="content-scroll-align px-3">
         <!-- @click="async () => {
         await navigateTo('botpdfdocument')
         }" -->
         <div
-          class="bot-list-align relative overflow-hidden text-[15px]"
+          class="bot-list-align relative overflow-hidden text-[15px] shadow-xl"
           v-for="(list, index) in getDocumentList?.documents"
           :key="index"
           :class="{
@@ -96,11 +96,18 @@
                   </div>
                   <div
                     v-if="list.id !== getDocumentList?.documentId"
-                    @click="handleAction(list, 'delete')"
+                    @click="handleDeleteDocument"
                     class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500"
                   >
                     Delete
                   </div>
+                  <ConfirmationModal
+                    v-if="list.id !== getDocumentList?.documentId"
+                    v-model:open="deleteDocumentModelOpen"
+                    title="Confirm Delete"
+                    description="Are you sure you want to delete ?"
+                    @confirm="handleAction(list, 'delete')"
+                  />
                 </UiPopoverContent>
               </UiPopover>
               <!-- <img src="assets\icons\more_horiz.svg" width="30"> -->
@@ -130,9 +137,15 @@
   const getDocumentList = ref();
   const documentFetchInterval = ref<NodeJS.Timeout>();
 
+  const deleteDocumentModelOpen = ref(false);
+
   onMounted(async () => {
     getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
   });
+
+  const handleDeleteDocument = () => {
+    deleteDocumentModelOpen.value = true;
+  }
   const fileUpload = async () => {
     selectedFile.value[0].name;
     console.log(selectedFile.value[0], "selectedFile");
