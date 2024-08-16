@@ -29,9 +29,9 @@
           </div>
           <div class="content_color_align">{{ list.status }}</div>
         </div>
-        <div class="font-bold text-[23px]">
+        <!-- <div class="font-bold text-[23px]">
           {{ list.types }}
-        </div>
+        </div> -->
         <div class="benefit_content_align">
           {{ list.benefitContent }}
         </div>
