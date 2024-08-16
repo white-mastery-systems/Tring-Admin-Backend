@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="mt-6 space-y-1">
-        <UiLabel class="mb-10 text-lg font-medium">Colours</UiLabel>
+        <UiLabel class="mb-10 text-lg font-medium">Colour</UiLabel>
         <div
           class="color-picker-align shadow-align h-14 gap-8 rounded-lg bg-white px-5"
         >

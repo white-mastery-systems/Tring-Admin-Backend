@@ -86,9 +86,6 @@
             v-if="analyticsData?.bots > 0"
             class="chat-bot-align relative place-content-center rounded-md bg-white shadow"
           >
-            <UiLabel class="absolute top-6 pb-1 pl-6 text-lg font-bold"
-              >Chat Bot</UiLabel
-            >
             <UiLineChart
               :data="lineGraphData"
               index="month"

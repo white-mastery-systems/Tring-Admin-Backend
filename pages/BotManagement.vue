@@ -60,9 +60,11 @@
     <div class="bot-main-align">
       <div class="list-header-align">
         <div class="header-content-align">
-          <span class="content-align font-semibold">Bot Name</span>
-          <span class="content-align font-semibold">Date Created</span>
-          <span class="content-align font-semibold">Status</span>
+          <span class="content-align font-extrabold text-black">Bot Name</span>
+          <span class="content-align font-extrabold text-black"
+            >Date Created</span
+          >
+          <span class="content-align font-extrabold text-black">Status</span>
         </div>
       </div>
       <div class="overflow_align mt-3">
@@ -73,7 +75,9 @@
             :key="index"
             @click="botManagementDetails(list)"
           >
-            <span class="bot_name_align font-medium">{{ list.name }}</span>
+            <span class="bot_name_align font-bold ">{{
+              list.name
+            }}</span>
             <span
               class="createAt_align font-medium text-black"
               :style="{
@@ -231,7 +235,7 @@
     font-size: 16px;
     /* width: 100px !important; */
     margin-bottom: 5px;
-    color: rgba(138, 138, 138, 1);
+    /* color: rgba(138, 138, 138, 1); */
   }
 
   .list-header-align {

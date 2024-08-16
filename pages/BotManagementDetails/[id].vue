@@ -2,7 +2,7 @@
   <div class="bot-manage-main-container">
     <div class="header-align">
       <div class="flex items-center gap-2">
-        <UiButton variant="ghost" size="icon" @click="router.back()">
+        <UiButton variant="ghost" size="icon" @click="handleGoBack">
           <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
         </UiButton>
         <span class="text-[20px] font-bold">{{ botDetails.name }}</span>
@@ -121,17 +121,16 @@
             <div class="flex flex-row gap-3">
               <span class="bot_name_align font-medium">{{ list.bot }}</span>
               <Icon
-              v-if="
-                list.bot === 'Document Management' &&
-                botDetails.documents.length === 0
-              "
-              class="h-6 w-6 text-red-500"
-              name="ph:warning"
-                        />
+                v-if="
+                  list.bot === 'Document Management' &&
+                  botDetails.documents.length === 0
+                "
+                class="h-6 w-6 text-red-500"
+                name="ph:warning"
+              />
             </div>
             <span class="text-xs text-gray-500">{{ list.helperText }}</span>
           </div>
-  
         </div>
         <div>
           <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
@@ -168,7 +167,11 @@
     getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
     botDetails.value = await getBotDetails(paramId.params.id);
   });
-
+  const handleGoBack = () => {
+    return navigateTo({
+      name: "BotManagement",
+    });
+  };
   const dataList = ref([
     {
       _id: 1,
