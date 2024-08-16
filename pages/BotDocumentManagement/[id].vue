@@ -18,19 +18,14 @@
       </span>
       <div class="flex items-center gap-2">
         <div class="submit-btn-align">
-          <button
-            v-if="selectedFile"
-            class="text-[14px] font-bold"
-            type="submit"
-            @click="fileUpload"
-          >
+          <button v-if="selectedFile" class="text-[14px] font-bold" type="submit" @click="fileUpload">
             Upload Document
           </button>
         </div>
         <!-- <span class="upload-document-align font-bold"> Upload Document </span> -->
       </div>
     </div>
-    <div class="bot-main-align">
+    <div class="bot-main-align rounded-lg">
       <div class="list-header-align">
         <div class="header-content-align">
           <span class="content-align font-semibold">File Name</span>
@@ -44,71 +39,62 @@
         <!-- @click="async () => {
         await navigateTo('botpdfdocument')
         }" -->
-        <div
-          class="bot-list-align relative overflow-hidden text-[15px]"
-          v-for="(list, index) in getDocumentList?.documents"
-          :key="index"
-          :class="{
-            'active-row': list.id === getDocumentList?.documentId,
-          }"
-        >
-          <!-- {{ list }} -->
-          <div class="list_align">
-            <span class="bot_name_align font-medium">{{ list.name }}</span>
-            <span
-              class="create_at-align font-medium"
-              :style="{
-                'padding-inline-end':
-                  list.status === 'ready'
-                    ? '132px'
-                    : list.status === 'processing'
-                      ? '133px'
-                      : '133px',
-              }"
-              >{{ list.createdAt }}</span
-            >
-            <div v-if="list.status === 'ready'" class="acive_class font-medium">
-              <div class="active-circle-align rounded-full"></div>
-              <span>Success</span>
+
+
+        <div v-if="getDocumentList?.documents.length" class="overflow_align">
+          <div class="bot-list-align relative overflow-hidden text-[15px]"
+            v-for="(list, index) in getDocumentList?.documents" :key="index" :class="{
+              'active-row': list.id === getDocumentList?.documentId,
+            }">
+            <!-- {{ list }} -->
+            <div class="list_align">
+              <span class="bot_name_align font-medium">{{ list.name }}</span>
+              <span class="create_at-align font-medium" :style="{
+                  'padding-inline-end':
+                    list.status === 'ready'
+                      ? '132px'
+                      : list.status === 'processing'
+                        ? '133px'
+                        : '133px',
+                }">{{ list.createdAt }}</span>
+              <div v-if="list.status === 'ready'" class="acive_class font-medium">
+                <div class="active-circle-align rounded-full"></div>
+                <span>Success</span>
+              </div>
+              <div v-else-if="list.status === 'processing'" class="process_class font-medium">
+                <div class="process-circle-align rounded-full"></div>
+                <span>Processing</span>
+              </div>
+              <div v-else class="deacive_class font-medium">
+                <div class="deactive-circle-align rounded-full"></div>
+                <span>Failed</span>
+              </div>
+              <span>
+                <UiPopover ref="myPopover">
+                  <UiPopoverTrigger>
+                    <img src="assets\icons\more_horiz.svg" width="30" />
+                  </UiPopoverTrigger>
+                  <UiPopoverContent align="end" class="w-40">
+                    <div @click="handleAction(list, 'download')"
+                      class="menu-align rounded-sm text-center hover:bg-gray-300/20">
+                      Download
+                    </div>
+                    <div v-if="list.id !== getDocumentList?.documentId" @click="handleAction(list, 'delete')"
+                      class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500">
+                      Delete
+                    </div>
+                  </UiPopoverContent>
+                </UiPopover>
+                <!-- <img src="assets\icons\more_horiz.svg" width="30"> -->
+              </span>
             </div>
-            <div
-              v-else-if="list.status === 'processing'"
-              class="process_class font-medium"
-            >
-              <div class="process-circle-align rounded-full"></div>
-              <span>Processing</span>
-            </div>
-            <div v-else class="deacive_class font-medium">
-              <div class="deactive-circle-align rounded-full"></div>
-              <span>Failed</span>
-            </div>
-            <span>
-              <UiPopover ref="myPopover">
-                <UiPopoverTrigger>
-                  <img src="assets\icons\more_horiz.svg" width="30" />
-                </UiPopoverTrigger>
-                <UiPopoverContent align="end" class="w-40">
-                  <div
-                    @click="handleAction(list, 'download')"
-                    class="menu-align rounded-sm text-center hover:bg-gray-300/20"
-                  >
-                    Download
-                  </div>
-                  <div
-                    v-if="list.id !== getDocumentList?.documentId"
-                    @click="handleAction(list, 'delete')"
-                    class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500"
-                  >
-                    Delete
-                  </div>
-                </UiPopoverContent>
-              </UiPopover>
-              <!-- <img src="assets\icons\more_horiz.svg" width="30"> -->
-            </span>
+            <!-- <div>
+              <img src="assets\icons\left_arrow.svg" width="30">
+            </div> -->
           </div>
-          <!-- <div>
-            <img src="assets\icons\left_arrow.svg" width="30">
-          </div> -->
+        </div>
+        <div v-else class="font-regular flex items-center justify-center text-[#8A8A8A] h-[100%]">
+          No document available
         </div>
       </div>
     </div>
@@ -190,7 +176,9 @@
 
 <style scoped>
   .bot-manage-main-container {
-    padding: 0 25px;
+    padding: 0 25px 70px 25px;
+    height: 100%;
+    overflow: hidden;
   }
 
   .header-align {
@@ -205,6 +193,8 @@
     margin-top: 30px;
     background: rgba(255, 255, 255, 1);
     box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+    height: 70%;
+    /* height: calc(100vh - 130px); */
     /* overflow-y: scroll; */
   }
 
@@ -215,7 +205,7 @@
   }
 
   .list-header-align {
-    padding: 10px 30px;
+    padding: 10px 62px;
     display: flex;
     /* justify-content: space-between; */
     width: 100%;
@@ -333,8 +323,19 @@
     font-size: 11px;
   }
   .content-scroll-align {
-    height: calc(100vh - 350px);
+    height: 90%;
+    /* height: calc(100vh - 350px); */
     overflow-y: scroll;
+    padding: 0 15px;
+  }
+  .overflow_align {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* height: 90%; */
+    overflow-y: scroll;
+    width: 100%;
+    padding: 5px 15px 40px 15px;
   }
   .submit-btn-align button {
     width: 200px;

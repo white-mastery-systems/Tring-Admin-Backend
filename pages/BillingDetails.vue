@@ -47,7 +47,7 @@
           </div>
         </div>
         <button class="choose_btn_align" @click="choosePlan(list.plan)">
-          {{ (orgBilling?.plan_code === list.plan_code) ? list.currentPlan : list.choosePlan }}
+          {{ (orgBilling?.plan_code === list.plan) ? 'current plan' : (orgBilling?.plan_code) ? list.choosePlan : 'choose plan' }}
           <!-- {{ list.choosePlan }} -->
         </button>
       </div>
@@ -96,7 +96,7 @@ const billingVariation = ref([
       },
     ],
     plan: "free_test",
-    choosePlan: 'down grade',
+    choosePlan: 'downgrader',
     currentPlan: 'current plan',
     plan_code: 'FREE'
   },

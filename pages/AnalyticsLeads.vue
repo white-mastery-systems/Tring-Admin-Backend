@@ -61,7 +61,7 @@
         <span class="only-content-align"> (Only Pdf) </span>
       </div> -->
     </div>
-    <div class="bot-main-align">
+    <div class="bot-main-align rounded-lg">
       <div class="list-header-align">
         <div class="header-content-align px-[13px]">
           <span class="content-align font-semibold">Lead Name</span>

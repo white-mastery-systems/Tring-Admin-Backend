@@ -57,7 +57,7 @@
         >
       </div>
     </div>
-    <div class="bot-main-align">
+    <div class="bot-main-align rounded-lg">
       <div class="list-header-align">
         <div class="header-content-align">
           <span class="content-align font-semibold">Bot Name</span>
@@ -190,6 +190,8 @@
 
   .bot-manage-main-container {
     padding: 0 25px;
+    height: 100%;
+    overflow: hidden;
   }
 
   .right-dropdown-align {
@@ -214,7 +216,7 @@
     margin-top: 30px;
     background: rgba(255, 255, 255, 1);
     box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05);
-    height: calc(100vh - 130px);
+    height: calc(100vh - 150px);
     /* overflow-y: scroll; */
   }
 
@@ -235,7 +237,7 @@
   }
 
   .list-header-align {
-    padding: 10px 30px;
+    padding: 10px 48px;
     display: flex;
     /* justify-content: space-between; */
     width: 100%;
@@ -247,8 +249,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: calc(100vh - 200px);
+    height: 100%;
+    /* height: calc(100% - 200px); */
     cursor: pointer;
+    padding: 0 15px 15px 15px;
 
     /* width: 100%; */
     /* background: rgba(255, 255, 255, 1); */
@@ -263,10 +267,10 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    height: 70vh;
+    height: 90%;
     overflow-y: scroll;
     width: 100%;
-    padding: 5px;
+    padding: 5px 5px 20px 5px;
   }
 
   .bot-list-align {
