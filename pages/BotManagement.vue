@@ -18,10 +18,10 @@
             </UiDialogHeader>
             <div class="individual-form-align">
               <label for="frole" class="pb-2 pl-0 font-medium">Bot Name</label>
-              <input type="text" id="frole" v-model="newBotName" name="fname" />
+              <input type="text" id="frole" v-model="newBotName" name="fname" placeholder="Enter Bot Name" />
               <UiButton
                 @click="addBot"
-                class="mt-2 w-1/2 bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
+                class="mt-4 w-1/2 bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
                 >Create</UiButton
               >
             </div>
