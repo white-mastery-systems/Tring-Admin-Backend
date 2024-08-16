@@ -80,7 +80,7 @@
       <div class="flex gap-4">
         <UiFormField v-slot="{ componentField }" name="NAME">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel>Bot Name *</UiFormLabel>
+            <UiFormLabel>Bot Name <UiLabel class="text-red-500 text-lg">*</UiLabel></UiFormLabel>
             <UiFormControl>
               <UiInput
                 v-bind="componentField"
@@ -93,7 +93,7 @@
         </UiFormField>
         <UiFormField v-slot="{ componentField }" name="COMPANY">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel>Company Name *</UiFormLabel>
+            <UiFormLabel>Company Name <UiLabel class="text-red-500 text-lg">*</UiLabel></UiFormLabel>
             <UiFormControl>
               <UiInput
                 v-bind="componentField"
@@ -108,7 +108,7 @@
       <div class="flex gap-4">
         <UiFormField v-slot="{ componentField }" name="ROLE">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel>Bot's Role *</UiFormLabel>
+            <UiFormLabel>Bot's Role <UiLabel class="text-red-500 text-lg">*</UiLabel></UiFormLabel>
             <UiFormControl>
               <UiSelect v-bind="componentField">
                 <UiSelectTrigger>
@@ -134,14 +134,12 @@
               </UiFormField>
             </UiFormControl>
             <UiFormMessage />
-            <UiFormDescription>
-              This will determine the role of the bot and behavior.
-            </UiFormDescription>
+            <span class="text-xs text-gray-500">This will determine the role of the bot and behavior.</span>
           </UiFormItem>
         </UiFormField>
         <UiFormField v-slot="{ componentField }" name="GOAL">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel>Goal *</UiFormLabel>
+            <UiFormLabel>Goal <UiLabel class="text-red-500 text-lg">*</UiLabel></UiFormLabel>
             <UiFormControl>
               <UiInput
                 v-bind="componentField"
@@ -149,9 +147,7 @@
                 placeholder="Eg. To assist the users with the product details"
               />
             </UiFormControl>
-            <UiFormDescription>
-              The bot will be driving the conversation towards this goal.
-            </UiFormDescription>
+            <span class="text-xs text-gray-500">The bot will be driving the conversation towards this goal.</span>
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
@@ -162,9 +158,7 @@
           <UiFormControl>
             <UiTextarea v-bind="componentField" type="text" />
           </UiFormControl>
-          <UiFormDescription>
-            Here you can have additional instructions for your bot.
-          </UiFormDescription>
+          <span class="text-xs text-gray-500">Here you can have additional instructions for your bot.</span>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
@@ -174,9 +168,7 @@
           <UiFormControl>
             <UiTextarea v-bind="componentField" type="text" />
           </UiFormControl>
-          <UiFormDescription>
-            Here you can give the bot additional details about your company.
-          </UiFormDescription>
+          <span class="text-xs text-gray-500"> Here you can give the bot additional details about your company.</span>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
