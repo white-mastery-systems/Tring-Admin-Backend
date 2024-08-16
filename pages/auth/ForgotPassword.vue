@@ -11,7 +11,6 @@ const loginData = reactive({
 const formSchema = toTypedSchema(
   z.object({
     email: z.string().email("Invalid email address."),
-    password: z.string().min(6, "Password must be at least 6 characters long."),
   }));
 const passwordVisible = ref(false)
 const animationProps = {
@@ -29,64 +28,42 @@ const togglePasswordVisibility = () => {
     </div>
     <div class="form-align">
       <!-- <div> -->
-      <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" class="space-y-2"
-        @submit="authHandlers.login">
+      <!-- @submit="authHandlers.login" -->
+      <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" class="space-y-2">
         <div class="individual-form-align">
           <UiFormField v-slot="{ componentField }" name="email">
             <UiFormItem v-auto-animate="animationProps" class="w-full">
               <UiFormLabel class="font-bold">E-mail</UiFormLabel>
               <UiFormControl>
-                <UiInput v-bind="componentField" class="font-medium" placeholder="Enter Your Email" type="Email" />
+                <UiInput v-bind="componentField" type="Email" />
               </UiFormControl>
               <UiFormMessage />
             </UiFormItem>
           </UiFormField>
-        </div>
-        <div class="individual-form-align">
-          <UiFormField v-slot="{ componentField }" name="password">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiFormLabel class="font-bold">Password</UiFormLabel>
-              <UiFormControl>
-                <UiInput v-bind="componentField" class="font-medium" placeholder="Enter Your Password"
-                  :type="passwordVisible ? 'text' : 'password'" />
-                <div @click="togglePasswordVisibility" type="button" class="absolute eye-icon-align">
-                  <OpenEye v-if="passwordVisible" />
-                  <CloseEyeIcon v-else />
-                </div>
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
-
-          <div class="forget-pws-align align_border">
-            <NuxtLink to="/auth/ForgotPassword" class="align_border">
-              Forgot Password?
-            </NuxtLink>
-          </div>
         </div>
         <!-- <div class="submit-btn-align">
           <button class="font-bold" type="submit" @click="authHandlers.login(loginData)">
             Sign in
           </button>
         </div> -->
-        <UiButton type="submit" class="submit-btn-align">Sign in</UiButton>
+        <UiButton type="submit" class="submit-btn-align">Reset Password</UiButton>
       </UiForm>
-      <div class="content-align">
+      <!-- <div class="content-align">
         <span class="border-align"></span> <span>Or login with</span>
         <span class="border-align"></span>
       </div>
       <div class="flex items-center justify-center gap-1 font-medium">
         <span>Don’t have an account?</span>
-        <NuxtLink to="/auth/sign-up" class="align_border">Sign Up</NuxtLink>
-      </div>
+        <NuxtLink to="/auth/sign-up" class="align_border">Sign in</NuxtLink>
+      </div> -->
       <!-- </div> -->
     </div>
-    <div class="footer-align flex items-center gap-1">
+    <!-- <div class="footer-align flex items-center gap-1">
       <span class="bottom-content-align">
         By Signing up, I Agree to Tring AI
       </span>
-      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="term-align"> Terms & Conditions </a>
-    </div>
+      <span class="term-align"> Terms & Conditions </span>
+    </div> -->
   </div>
 </template>
 <style scoped>
@@ -217,8 +194,9 @@ input[type="password"] {
   position: absolute;
   bottom: 30px;
 }
+
 .eye-icon-align {
-  top: 38px;
+  top: 35px;
   right: 10px;
 }
 </style>

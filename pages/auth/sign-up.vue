@@ -69,7 +69,8 @@ const onSubmit = (values:any) => {
           <UiFormItem v-auto-animate="animationProps" class="w-full">
             <UiFormLabel class="font-bold">E-mail</UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" type="Email" />
+              <UiInput v-bind="componentField" placeholder="Enter Your Email" class="form-input-align font-medium"
+                type="Email" />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
@@ -83,7 +84,8 @@ const onSubmit = (values:any) => {
           <UiFormItem v-auto-animate="animationProps" class="w-full">
             <UiFormLabel class="font-bold">Password</UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" :type="passwordVisible ? 'text' : 'password'" />
+              <UiInput v-bind="componentField" placeholder="Enter Your Password"
+                :type="passwordVisible ? 'text' : 'password'" class="form-input-align font-medium" />
               <div @click="togglePasswordVisibility" type="button" class="absolute eye-icon-align">
                 <OpenEye v-if="passwordVisible" />
                 <CloseEyeIcon v-else />
@@ -100,7 +102,9 @@ const onSubmit = (values:any) => {
           <UiFormItem v-auto-animate="animationProps" class="w-full">
             <UiFormLabel class="font-bold">Confirm Password</UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" :type="confirmPasswordVisible ? 'text' : 'password'" />
+              <UiInput v-bind="componentField" placeholder="Enter Your Confirm Password"
+                :type="confirmPasswordVisible ? 'text' : 'password'"
+                class="form-input-align outline-none font-medium" />
               <div @click="toggleConfirmPasswordVisibility" type="button" class="absolute eye-icon-align">
                 <OpenEye v-if="confirmPasswordVisible" />
                 <CloseEyeIcon v-else />
@@ -115,7 +119,7 @@ const onSubmit = (values:any) => {
             Sign up
           </button>
         </div> -->
-          <UiButton type="submit" class="submit-btn-align">Sign up</UiButton>
+        <UiButton type="submit" class="submit-btn-align">Sign up</UiButton>
       </UiForm>
       <div class="content-align">
         <span class="border-align"></span> <span>Or login with</span>
@@ -182,7 +186,9 @@ form {
   border-radius: 10px;
   padding: 0 20px;
 }
-
+.form-input-align {
+  height: 50px;
+}
 /* .submit-btn-align {
   width: 100%;
   display: flex;
@@ -192,7 +198,7 @@ form {
 .submit-btn-align {
   background: #424bd1 !important;
   color: #ffffff;
-  /* margin-top: 30px; */
+  margin-top: 20px !important;
   /* margin-right: 170px; */
 }
 
