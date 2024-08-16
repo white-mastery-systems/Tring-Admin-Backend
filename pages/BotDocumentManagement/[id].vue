@@ -10,10 +10,11 @@
       <!-- <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary: <span
           class="font-bold text-black">Recent</span></span> -->
     </div>
-    <div class="document-align gap-0">
-      <span>
+    <div class="document-align">
+      <span class="flex flex-row">
         <!-- @click="uploadfile" -->
         <FileUpload accept="application/pdf" v-model="selectedFile" />
+        <p v-if="!selectedFile" class="text-xs w-20 place-content-center pb-4">(Only Pdf)</p>
         <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
       </span>
       <div class="flex items-center gap-2">

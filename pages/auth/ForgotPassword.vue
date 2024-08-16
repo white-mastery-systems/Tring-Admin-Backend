@@ -35,7 +35,7 @@ const togglePasswordVisibility = () => {
             <UiFormItem v-auto-animate="animationProps" class="w-full">
               <UiFormLabel class="font-bold">E-mail</UiFormLabel>
               <UiFormControl>
-                <UiInput v-bind="componentField" type="Email" />
+                <UiInput v-bind="componentField" type="Email" placeholder="Enter Your Email" class="font-medium" />
               </UiFormControl>
               <UiFormMessage />
             </UiFormItem>
