@@ -85,7 +85,7 @@ const togglePasswordVisibility = () => {
       <span class="bottom-content-align">
         By Signing up, I Agree to Tring AI
       </span>
-      <span class="term-align"> Terms & Conditions </span>
+      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="term-align"> Terms & Conditions </a>
     </div>
   </div>
 </template>

@@ -118,17 +118,20 @@
       >
         <div class="list_align">
           <div class="flex flex-col space-y-2">
-            <span class="bot_name_align font-medium">{{ list.bot }}</span>
+            <div class="flex flex-row gap-3">
+              <span class="bot_name_align font-medium">{{ list.bot }}</span>
+              <Icon
+              v-if="
+                list.bot === 'Document Management' &&
+                botDetails.documents.length === 0
+              "
+              class="h-6 w-6 text-red-500"
+              name="ph:warning"
+                        />
+            </div>
             <span class="text-xs text-gray-500">{{ list.helperText }}</span>
           </div>
-          <Icon
-            v-if="
-              list.bot === 'Document Management' &&
-              botDetails.documents.length === 0
-            "
-            class="h-6 w-6 text-red-500"
-            name="ph:warning"
-          />
+  
         </div>
         <div>
           <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
@@ -170,7 +173,7 @@
     {
       _id: 1,
       bot: "UI Customization",
-      helperText: "Color ,Logo, Icon customization",
+      helperText: "Color ,Logo, Icon, etc...",
       routeName: "UiCustomization-id",
     },
     // {
@@ -181,13 +184,13 @@
     {
       _id: 3,
       bot: "Bot Configuration",
-      helperText: "Name, Description, Notes",
+      helperText: "Name, Description, Notes, etc...",
       routeName: "CreateBot-id",
     },
     {
       _id: 4,
       bot: "Document Management",
-      helperText: "Knowledge base, Document management",
+      helperText: "Knowledge base, Training data, etc...",
       routeName: "BotDocumentManagement-id",
     },
   ]);
