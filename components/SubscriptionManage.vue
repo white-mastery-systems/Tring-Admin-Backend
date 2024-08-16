@@ -4,32 +4,33 @@
 <template>
   <div class="flex flex-col justify-center">
     <div class="header-align px-2">
-      <div class="text-[16px] font-bold">Subscription</div>
+      <div class="text-[20px] font-bold">Billing</div>
       <div class="text-[12px]">
         Manage your subscription and billing information
       </div>
     </div>
     <div class="details-card rounded-lg">
-      <div class="content-align font-bold">Subscription Details</div>
-      <div class="content-align gap-3">
+      <div class="flex items-center justify-center text-[18px] content-align font-bold rounded-t-xl">Subscription
+        Details</div>
+      <div class="flex items-center content-align gap-3">
         <span class="font-medium"> Current Plan </span>
-        <span class="creator-chip rounded-xl text-[12px] font-medium">
+        <span class="creator-chip rounded-[11px] text-[12px] font-medium lowercase">
           {{ orgBilling?.plan_code }}
         </span>
       </div>
-      <div class="content-align gap-3 font-medium">
+      <div class="flex items-center content-align gap-3 font-medium">
         <span> Subscription status </span>
-        <span class="active-chip rounded-xl text-[12px]"> active </span>
+        <span class="active-chip rounded-[11px] text-[12px]"> active </span>
       </div>
-      <div class="content-align gap-3 font-medium">
+      <div class="flex items-center justify-between content-align gap-3 font-medium">
         <span> subscribed quota </span>
-        <span class="rounded-xl text-[12px]">
+        <span class="rounded-xl text-[15px]">
           {{ orgBilling?.max_quota }}
         </span>
       </div>
-      <div class="content-align gap-3 font-medium">
+      <div class="flex items-center justify-between content-align gap-3 font-medium rounded-b-lg">
         <span> Available quota </span>
-        <span class="rounded-xl text-[12px]">
+        <span class="rounded-xl text-[15px]">
           {{ orgBilling?.available_quota }}
         </span>
       </div>
@@ -39,34 +40,36 @@
 <style scoped>
   .header-align {
     height: 70px;
-    padding: 10px 25px;
-    border-bottom: 1px solid rgb(128, 128, 128, 0.5);
+    padding: 4px 25px;
+    border-bottom: 1px solid rgb(128, 128, 128, 0.21);
   }
 
   .details-card {
     margin-top: 30px;
-    border: 1px solid rgb(128, 128, 128, 0.5);
+    /* border: 1px solid rgb(128, 128, 128, 0.5); */
+    width: 60%;
+    align-self: center;
   }
 
   .content-align {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid rgb(128, 128, 128, 0.5);
-    padding: 10px;
+    /* border-bottom: 1px solid rgb(128, 128, 128, 0.5); */
+    background-color: white;
+    box-shadow: 0px 2px 24px 0px #0000000D;
+    padding: 20px 30px;
   }
 
   .content-align:last-child {
     border-bottom: none;
   }
   .creator-chip {
-    padding: 5px 8px;
+    padding: 3px 10px;
     color: rgba(0, 0, 0, 0.5);
     background-color: #d9dbe6;
   }
 
   .active-chip {
-    padding: 5px 8px;
-    color: rgb(0, 128, 38);
+    padding: 3px 10px;
+    color: rgb(0, 128, 38,0.73);
     background: rgb(60, 179, 113, 0.3);
   }
 </style>

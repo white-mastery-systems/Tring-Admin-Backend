@@ -8,11 +8,19 @@ const loginData = reactive({
   email: "",
   password: "",
 });
+const formSchema = toTypedSchema(
+  z.object({
+    email: z.string().email("Invalid email address."),
+    password: z.string().min(6, "Password must be at least 6 characters long."),
+  }));
 const passwordVisible = ref(false)
+const animationProps = {
+  duration: 500,
+}
+
 const togglePasswordVisibility = () => {
   passwordVisible.value = !passwordVisible.value
 }
-
 </script>
 <template>
   <div class="sign-in-align">
@@ -21,30 +29,42 @@ const togglePasswordVisibility = () => {
     </div>
     <div class="form-align">
       <!-- <div> -->
-      <div class="individual-form-align">
-        <label for="username" class="mb-4 font-bold">E-mail</label>
-        <input class="mb-2 mt-2" type="text" id="username" name="username" v-model="loginData.email" placeholder="Enter your email" />
-      </div>
-      <div class="individual-form-align">
-        <label for="fpassword" class="font-bold">Password</label>
-        <div class="input-container">
-          <input class="mb-2 mt-2" :type="passwordVisible ? 'text' : 'password'" id="password" name="password"
-            placeholder="Enter your password" v-model="loginData.password" />
-          <span class="eye-icon" id="togglePassword" @click="togglePasswordVisibility">
-            <OpenEye v-if="passwordVisible" />
-            <CloseEyeIcon v-else />
-            <!-- You can use FontAwesome or another icon library here -->
-            <!-- <i class="fas fa-eye" id="showIcon"></i> -->
-            <!-- <i class="fas fa-eye-slash" id="hideIcon" style="display: none;"></i> -->
-          </span>
+      <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" class="space-y-2"
+        @submit="authHandlers.login">
+        <div class="individual-form-align">
+          <UiFormField v-slot="{ componentField }" name="email">
+            <UiFormItem v-auto-animate="animationProps" class="w-full">
+              <UiFormLabel class="font-bold">E-mail</UiFormLabel>
+              <UiFormControl>
+                <UiInput v-bind="componentField" type="Email" />
+              </UiFormControl>
+              <UiFormMessage />
+            </UiFormItem>
+          </UiFormField>
         </div>
-        <div class="forget-pws-align align_border">Forgot Password?</div>
-      </div>
-      <div class="submit-btn-align">
-        <button class="font-bold" type="submit" @click="authHandlers.login(loginData)">
-          Sign in
-        </button>
-      </div>
+        <div class="individual-form-align">
+          <UiFormField v-slot="{ componentField }" name="password">
+            <UiFormItem v-auto-animate="animationProps" class="w-full">
+              <UiFormLabel class="font-bold">Password</UiFormLabel>
+              <UiFormControl>
+                <UiInput v-bind="componentField" :type="passwordVisible ? 'text' : 'password'" />
+                <div @click="togglePasswordVisibility" type="button" class="absolute eye-icon-align">
+                  <OpenEye v-if="passwordVisible" />
+                  <CloseEyeIcon v-else />
+                </div>
+              </UiFormControl>
+              <UiFormMessage />
+            </UiFormItem>
+          </UiFormField>
+          <div class="forget-pws-align align_border">Forgot Password?</div>
+        </div>
+        <!-- <div class="submit-btn-align">
+          <button class="font-bold" type="submit" @click="authHandlers.login(loginData)">
+            Sign in
+          </button>
+        </div> -->
+        <UiButton type="submit" class="submit-btn-align">Sign in</UiButton>
+      </UiForm>
       <div class="content-align">
         <span class="border-align"></span> <span>Or login with</span>
         <span class="border-align"></span>
@@ -92,6 +112,7 @@ const togglePasswordVisibility = () => {
 form {
   width: 100%;
   display: flex;
+  gap: 15px;
   /* flex-wrap: wrap; */
   flex-direction: column;
   /* align-items: start; */
@@ -115,14 +136,8 @@ form {
   justify-content: center;
 }
 
-.submit-btn-align button {
-  width: 100%;
-  height: 50px;
-  border-radius: 10px;
-  padding: 0 20px;
+.submit-btn-align {
   background: #424bd1;
-  color: #ffffff;
-  margin-top: 20px;
   /* margin-right: 170px; */
 }
 
@@ -195,5 +210,9 @@ input[type="password"] {
 .footer-align {
   position: absolute;
   bottom: 30px;
+}
+.eye-icon-align {
+  top: 35px;
+  right: 10px;
 }
 </style>
