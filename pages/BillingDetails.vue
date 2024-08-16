@@ -47,7 +47,7 @@
           </div>
         </div>
         <button class="choose_btn_align" @click="choosePlan(list.plan)">
-          {{ (orgBilling?.plan_code === list.plan) ? 'current plan' : (orgBilling?.plan_code) ? list.choosePlan : 'choose plan' }}
+          {{ (orgBilling?.plan_code === list.plan) ? 'current plan' : list.choosePlan }}
           <!-- {{ list.choosePlan }} -->
         </button>
       </div>
@@ -95,9 +95,9 @@ const billingVariation = ref([
         content: "No Tring Branding-NA",
       },
     ],
-    plan: "free_test",
+    plan: "FREE",
     choosePlan: 'downgrader',
-    currentPlan: 'current plan',
+    currentPlan: 'Current plan',
     plan_code: 'FREE'
   },
   {
@@ -135,7 +135,7 @@ const billingVariation = ref([
     ],
     plan: `chat_intelligence`,
     choosePlan: 'upgrade',
-    currentPlan: 'current plan',
+    currentPlan: 'Current plan',
   },
   {
     _id: 3,
@@ -172,7 +172,7 @@ const billingVariation = ref([
     ],
     plan: "chat_super_intelligence",
     choosePlan: 'upgrade',
-    currentPlan: 'current plan',
+    currentPlan: 'Current plan',
   },
   {
     _id: 4,
@@ -207,7 +207,7 @@ const billingVariation = ref([
         content: "No Tring Branding-Yes",
       },
     ],
-    choosePlan: 'contact us',
+    choosePlan: 'Contact us',
   },
 ]);
 const orgBilling = await $fetch("/api/org/usage");
