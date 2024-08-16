@@ -262,15 +262,19 @@
 
   const handleActivateBot = async () => {
     isSubmitting.value = true;
-    if (botDetails.value.documents.length === 0) {
+    const activeDocuments = botDetails.value.documents.filter(
+      (d) => d.status === "ready",
+    );
+
+    if (activeDocuments.length === 0) {
       toast.success("Please add document to activate bot");
-      await navigateTo({
+      return navigateTo({
         name: "BotDocumentManagement-id",
         params: { id: paramId.params.id },
       });
     }
 
-    if (botDetails.value.documents.length === 1) {
+    if (activeDocuments.length === 1) {
       await singleDocumentDeploy(botDetails.value.documents[0]);
     }
 
