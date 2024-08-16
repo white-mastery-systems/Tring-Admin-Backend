@@ -6,6 +6,9 @@ export const getChatDetails = async (chatId: string) => {
     with: {
       botUser: true,
       bot: true,
+      lead: {
+        columns: { id: true },
+      },
       messages: {
         orderBy: asc(messageSchema.createdAt),
       },

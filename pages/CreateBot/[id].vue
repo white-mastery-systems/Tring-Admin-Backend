@@ -135,7 +135,7 @@
             </UiFormControl>
             <UiFormMessage />
             <UiFormDescription>
-              This will determine the role of the bot and items-center behavior.
+              This will determine the role of the bot and behavior.
             </UiFormDescription>
           </UiFormItem>
         </UiFormField>

@@ -20,3 +20,11 @@ export const listLeads = async (organizationId: string) => {
 
   return leads;
 };
+
+export const deleteLead = async (leadId: string) => {
+  console.log(leadId, "leadId");
+  return await db
+    .delete(leadSchema)
+    .where(eq(leadSchema.id, leadId))
+    .returning();
+};
