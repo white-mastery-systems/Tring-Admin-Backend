@@ -32,9 +32,9 @@
           </div>
           <div class="content_color_align">{{ list.status }}</div>
         </div>
-        <div class="text-[30px] font-bold">
+        <!-- <div class="font-bold text-[23px]">
           {{ list.types }}
-        </div>
+        </div> -->
         <div class="benefit_content_align">
           {{ list.benefitContent }}
         </div>
@@ -58,11 +58,7 @@
           </div>
         </div>
         <button class="choose_btn_align" @click="choosePlan(list.plan)">
-          {{
-            orgBilling?.plan_code === list.plan_code
-              ? list.currentPlan
-              : list.choosePlan
-          }}
+          {{ (orgBilling?.plan_code === list.plan) ? 'current plan' : list.choosePlan }}
           <!-- {{ list.choosePlan }} -->
         </button>
       </div>
@@ -74,161 +70,159 @@
     middleware: "admin-only",
   });
 
-  const { user } = await useUser();
-  const [firstName, lastName] = user.value?.username?.split(" ") || [];
-  const billingVariation = ref([
-    {
-      _id: 1,
-      amount: "Rs.0",
-      status: "Per Month",
-      types: "Free",
-      benefitContent: "Unleash the power of automation.",
-      listBenefit: false,
-      benefitList: [
-        {
-          content: "Message Sessions-50",
-        },
-        {
-          content: "Duration-Lifetime",
-        },
-        {
-          content: "Extra message cost-NA",
-        },
-        {
-          content: "Extra message limit-NA",
-        },
-        {
-          content: "Lead Gen-NA",
-        },
-        {
-          content: "CRM Integration-NA",
-        },
-        {
-          content: "Widget Customization-NA",
-        },
-        {
-          content: "No Tring Branding-NA",
-        },
-      ],
-      plan: "free_test",
-      choosePlan: "down grade",
-      currentPlan: "current plan",
-      plan_code: "FREE",
-    },
-    {
-      _id: 2,
-      amount: "Rs.1999",
-      status: "Per Month",
-      types: "Intelligence",
-      // benefitContent: 'Advanced tools to take your work to the next level.',
-      listBenefit: false,
-      benefitList: [
-        {
-          content: "Message Sessions-60",
-        },
-        {
-          content: "Duration-Month",
-        },
-        {
-          content: "Extra message cost-Rs.10",
-        },
-        {
-          content: "Extra message limit-200",
-        },
-        {
-          content: "Lead Gen-NA",
-        },
-        {
-          content: "CRM Integration-NA",
-        },
-        {
-          content: "Widget Customization-Yes",
-        },
-        {
-          content: "No Tring Branding-NA",
-        },
-      ],
-      plan: `chat_intelligence`,
-      choosePlan: "upgrade",
-      currentPlan: "current plan",
-    },
-    {
-      _id: 3,
-      amount: "Rs.6999",
-      status: "Per Month",
-      types: "Super Intelligence",
-      // benefitContent: 'Automation plus enterprise-grade features.',
-      listBenefit: false,
-      benefitList: [
-        {
-          content: "Message Sessions-250",
-        },
-        {
-          content: "Duration-Month",
-        },
-        {
-          content: "Extra message cost-8",
-        },
-        {
-          content: "Extra message limit-1000",
-        },
-        {
-          content: "Lead Gen-Yes",
-        },
-        {
-          content: "CRM Integration-Yes",
-        },
-        {
-          content: "CRM Integration-Yes",
-        },
-        {
-          content: "No Tring Branding-Paid",
-        },
-      ],
-      plan: "chat_super_intelligence",
-      choosePlan: "upgrade",
-      currentPlan: "current plan",
-    },
-    {
-      _id: 4,
-      amount: "Talk to sales",
-      status: "",
-      types: "Enterprise",
-      // benefitContent: 'Automation plus enterprise-grade features.',
-      listBenefit: false,
-      benefitList: [
-        {
-          content: "Message Sessions-1000+",
-        },
-        {
-          content: "Duration-Month",
-        },
-        {
-          content: "Extra message cost-Talk to sales",
-        },
-        {
-          content: "Extra message limit-Unlimited",
-        },
-        {
-          content: "Lead Gen-Yes",
-        },
-        {
-          content: "CRM Integration-Yes",
-        },
-        {
-          content: "Widget Customization-Advance",
-        },
-        {
-          content: "No Tring Branding-Yes",
-        },
-      ],
-      choosePlan: "contact us",
-    },
-  ]);
-  const orgBilling = await $fetch("/api/org/usage");
+const { user } = await useUser();
+const [firstName, lastName] = user.value?.username?.split(" ") || [];
+const billingVariation = ref([
+  {
+    _id: 1,
+    amount: "Rs.0",
+    status: "Per Month",
+    types: "Free",
+    benefitContent: "Unleash the power of automation.",
+    listBenefit: false,
+    benefitList: [
+      {
+        content: "Message Sessions-50",
+      },
+      {
+        content: "Duration-Lifetime",
+      },
+      {
+        content: "Extra message cost-NA",
+      },
+      {
+        content: "Extra message limit-NA",
+      },
+      {
+        content: "Lead Gen-NA",
+      },
+      {
+        content: "CRM Integration-NA",
+      },
+      {
+        content: "Widget Customization-NA",
+      },
+      {
+        content: "No Tring Branding-NA",
+      },
+    ],
+    plan: "FREE",
+    choosePlan: 'downgrader',
+    currentPlan: 'Current plan',
+    plan_code: 'FREE'
+  },
+  {
+    _id: 2,
+    amount: "Rs.1999",
+    status: "Per Month",
+    types: "Intelligence",
+    // benefitContent: 'Advanced tools to take your work to the next level.',
+    listBenefit: false,
+    benefitList: [
+      {
+        content: "Message Sessions-60",
+      },
+      {
+        content: "Duration-Month",
+      },
+      {
+        content: "Extra message cost-Rs.10",
+      },
+      {
+        content: "Extra message limit-200",
+      },
+      {
+        content: "Lead Gen-NA",
+      },
+      {
+        content: "CRM Integration-NA",
+      },
+      {
+        content: "Widget Customization-Yes",
+      },
+      {
+        content: "No Tring Branding-NA",
+      },
+    ],
+    plan: `chat_intelligence`,
+    choosePlan: 'upgrade',
+    currentPlan: 'Current plan',
+  },
+  {
+    _id: 3,
+    amount: "Rs.6999",
+    status: "Per Month",
+    types: "Super Intelligence",
+    // benefitContent: 'Automation plus enterprise-grade features.',
+    listBenefit: false,
+    benefitList: [
+      {
+        content: "Message Sessions-250",
+      },
+      {
+        content: "Duration-Month",
+      },
+      {
+        content: "Extra message cost-8",
+      },
+      {
+        content: "Extra message limit-1000",
+      },
+      {
+        content: "Lead Gen-Yes",
+      },
+      {
+        content: "CRM Integration-Yes",
+      },
+      {
+        content: "CRM Integration-Yes",
+      },
+      {
+        content: "No Tring Branding-Paid",
+      },
+    ],
+    plan: "chat_super_intelligence",
+    choosePlan: 'upgrade',
+    currentPlan: 'Current plan',
+  },
+  {
+    _id: 4,
+    amount: "Talk to sales",
+    status: "",
+    types: "Enterprise",
+    // benefitContent: 'Automation plus enterprise-grade features.',
+    listBenefit: false,
+    benefitList: [
+      {
+        content: "Message Sessions-1000+",
+      },
+      {
+        content: "Duration-Month",
+      },
+      {
+        content: "Extra message cost-Talk to sales",
+      },
+      {
+        content: "Extra message limit-Unlimited",
+      },
+      {
+        content: "Lead Gen-Yes",
+      },
+      {
+        content: "CRM Integration-Yes",
+      },
+      {
+        content: "Widget Customization-Advance",
+      },
+      {
+        content: "No Tring Branding-Yes",
+      },
+    ],
+    choosePlan: 'Contact us',
+  },
+]);
+const orgBilling = await $fetch("/api/org/usage");
 
-  const choosePlan = async (plan: any) => {
-    const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName}`;
 
     if (!plan) {
       return navigateTo("https://tring-web.pripod.com/contact", {
