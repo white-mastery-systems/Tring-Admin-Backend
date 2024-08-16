@@ -16,7 +16,7 @@ const orgBilling = await $fetch("/api/org/usage");
           Subscription Details
         </span>
         <UiButton class="font-medium bg-[#FFBC42] hover:bg-[#FFBC42] hover:brighten-50 text-[#FFFFFF]">
-          <NuxtLink to="/BillingDetails" class="align_border">Manage Subscription</NuxtLink>
+          <NuxtLink to="/billing/view-all" class="align_border">Change Plan</NuxtLink>
         </UiButton>
       </div>
       <div class="flex items-center justify-between list-content-align gap-3">
@@ -50,9 +50,11 @@ const orgBilling = await $fetch("/api/org/usage");
   padding: 4px 25px;
   border-bottom: 1px solid rgb(128, 128, 128, 0.21);
 }
+
 .billing-table-header-align {
   border-bottom: 1px solid rgb(128, 128, 128, 0.21);
 }
+
 .details-card {
   margin-top: 30px;
   /* border: 1px solid rgb(128, 128, 128, 0.5); */
@@ -66,9 +68,11 @@ const orgBilling = await $fetch("/api/org/usage");
   /* border-bottom: 1px solid rgb(128, 128, 128, 0.5); */
   padding: 20px 30px;
 }
+
 .list-content-align {
   padding: 20px 40px;
 }
+
 .content-align:last-child {
   border-bottom: none;
 }

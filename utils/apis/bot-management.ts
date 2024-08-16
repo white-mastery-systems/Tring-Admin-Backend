@@ -32,7 +32,7 @@ export const updateBotDetails = async (botDetails: SelectChatBot) => {
   });
   toast.success("Bot updated successfully");
   await navigateTo({
-    name: "BotManagementDetails-id",
+    name: "bots-id",
     params: { id: botDetails.id },
   });
   return updatedBot;
