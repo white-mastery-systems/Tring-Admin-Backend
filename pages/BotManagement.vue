@@ -18,10 +18,16 @@
             </UiDialogHeader>
             <div class="individual-form-align">
               <label for="frole" class="pb-2 pl-0 font-medium">Bot Name</label>
-              <input type="text" id="frole" v-model="newBotName" name="fname" />
+              <input
+                type="text"
+                id="frole"
+                v-model="newBotName"
+                name="fname"
+                placeholder="Enter Bot Name"
+              />
               <UiButton
                 @click="addBot"
-                class="mt-2 w-1/2 bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
+                class="mt-4 w-1/2 bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
                 >Create</UiButton
               >
             </div>
@@ -164,6 +170,8 @@
 
   .bot-manage-main-container {
     padding: 0 25px;
+    height: 100%;
+    overflow: hidden;
   }
 
   .right-dropdown-align {
@@ -188,7 +196,7 @@
     margin-top: 30px;
     background: rgba(255, 255, 255, 1);
     box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05);
-    height: calc(100vh - 130px);
+    height: calc(100vh - 150px);
     /* overflow-y: scroll; */
   }
 
@@ -205,11 +213,11 @@
     font-size: 16px;
     /* width: 100px !important; */
     margin-bottom: 5px;
-    color: rgba(138, 138, 138, 1);
+    /* color: rgba(138, 138, 138, 1); */
   }
 
   .list-header-align {
-    padding: 10px 30px;
+    padding: 10px 48px;
     display: flex;
     /* justify-content: space-between; */
     width: 100%;
@@ -221,8 +229,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: calc(100vh - 200px);
+    height: 100%;
+    overflow-y: scroll;
+    /* height: calc(100% - 200px); */
     cursor: pointer;
+    padding: 0 15px 15px 15px;
 
     /* width: 100%; */
     /* background: rgba(255, 255, 255, 1); */
@@ -237,10 +248,10 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    height: 70vh;
+    height: 90%;
     overflow-y: scroll;
     width: 100%;
-    padding: 5px;
+    padding: 5px 5px 20px 5px;
   }
 
   .bot-list-align {

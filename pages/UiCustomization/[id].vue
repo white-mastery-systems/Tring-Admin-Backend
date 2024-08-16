@@ -13,14 +13,15 @@
       <div class="individual-form-align mt-1 flex flex-col items-start">
         <UiLabel class="pb-2 text-lg font-medium">Logo</UiLabel>
         <div class="space-y-4">
-          <div>
+          <div class="flex flex-row items-center">
             <ImageUpload accept="image/*" v-model="logo" />
+            <span v-if="!logo" class="text-xs text-gray-500">Upload only .JPG, .PNG, .JPEG, .AI etc...</span>
           </div>
           <span class="text-xs text-gray-500">Logo for chat bubble and avatar</span>
         </div>
       </div>
       <div class="mt-6 space-y-1">
-        <UiLabel class="mb-10 text-lg font-medium">Colours</UiLabel>
+        <UiLabel class="mb-10 text-lg font-medium">Colour</UiLabel>
         <div
           class="color-picker-align shadow-align h-14 gap-8 rounded-lg bg-white px-5"
         >
@@ -43,7 +44,7 @@
         </div>
         <span class="text-xs text-gray-500">Select color for chat window</span>
       </div>
-      <div class="flex flex-row justify-between py-2">
+      <div class="flex flex-row justify-between py-2 gap-3">
         <div class="flex flex-col space-y-2">
           <UiLabel class="text-lg font-medium">Widget Sound</UiLabel>
           <UiSelect v-model="widgetSound">
@@ -102,6 +103,7 @@
             :style="{ background: generateLead ? '#424BD1' : '#8A8A8A' }"
           />
         </div>
+        <span class="text-xs text-gray-500">Enable or disable for lead generation</span>
         <div class="flex flex-row justify-between">
           <UiLabel class="text-base font-medium">Online Status</UiLabel>
           <UiSwitch

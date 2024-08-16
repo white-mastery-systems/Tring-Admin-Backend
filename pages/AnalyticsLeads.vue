@@ -4,16 +4,11 @@
       <div class="flex items-center">
         <span class="text-[20px] font-bold">Leads</span>
       </div>
-      <div
-        v-if="false"
-        class="flex items-center space-x-4"
-        style="width: 350px"
-      >
+      <div v-if="false" class="flex items-center space-x-4" style="width: 350px">
         <span class="calender-align">
           <img src="assets\icons\calendar_month.svg" width="20" />
         </span>
-        <span class="right-dropdown-align" style="color: rgba(138, 138, 138, 1)"
-          >Filter:
+        <span class="right-dropdown-align" style="color: rgba(138, 138, 138, 1)">Filter:
           <span class="text-[14px] font-bold text-black">
             <UiSelect v-model="selectedValue">
               <UiSelectTrigger class="ui-select-trigger w-[110px]">
@@ -31,8 +26,7 @@
                 </UiSelectGroup>
               </UiSelectContent>
             </UiSelect>
-          </span></span
-        >
+          </span></span>
         <span>
           <img src="assets\icons\export_btn.svg" width="110" />
         </span>
@@ -44,13 +38,13 @@
           Total Chats:
           <span style="color: rgba(66, 75, 209, 1)">{{
             analyticsData?.chats
-          }}</span>
+            }}</span>
         </span>
         <span class="font-bold">
           Total Leads:
           <span style="color: rgba(66, 75, 209, 1)">{{
             analyticsData?.leads
-          }}</span>
+            }}</span>
         </span>
       </div>
       <!-- <span>
@@ -61,41 +55,38 @@
         <span class="only-content-align"> (Only Pdf) </span>
       </div> -->
     </div>
-    <div class="bot-main-align">
+    <div class="bot-main-align rounded-lg">
       <div class="list-header-align">
         <div class="header-content-align px-[13px]">
-          <span class="content-align font-semibold">Lead Name</span>
-          <span class="content-align font-semibold">Bot Name</span>
-          <span class="content-align font-semibold">Date Created</span>
-          <span class="content-align font-semibold">Actions</span>
+          <span class="content-align font-extrabold text-black">Lead Name</span>
+          <span class="content-align font-extrabold text-black">Bot Name</span>
+          <span class="content-align font-extrabold text-black"
+            >Date Created</span
+          >
+          <span class="content-align font-extrabold text-black">Actions</span>
         </div>
       </div>
       <div class="content-scroll-align cursor-pointer">
         <!-- {{ rep }} || asda -->
-        <div style="height: 100%" v-if="ListLeads.length" class="px-[15px]">
-          <div
-            class="bot-list-align"
-            v-for="(list, index) in ListLeads"
-            :key="index"
-            @click="
+        <div style="height: 100%" v-if="ListLeads.length" class="px-[15px] overflow-y-auto pb-3">
+          <div class="bot-list-align" v-for="(list, index) in ListLeads" :key="index" @click="
               async () => {
                 await navigateTo({
                   name: 'AnalyticsLeadsInfo-id',
                   params: { id: list.chatId },
                 });
               }
-            "
-          >
+            ">
             <div class="list_align">
-              <span class="user_name_align font-medium">{{
+              <span class="user_name_align font-bold">{{
                 list.botUser.name
-              }}</span>
+                }}</span>
               <span class="bot_name_align font-medium">{{
                 list.bot.name
-              }}</span>
+                }}</span>
               <span class="create_at-align font-medium">{{
                 formatDateStringToDate(list.createdAt)
-              }}</span>
+                }}</span>
               <!-- <div v-if="list.status" class="acive_class font-medium">
                 <div class="rounded-full active-circle-align"></div>
                 <span>Active</span>
@@ -120,10 +111,7 @@
             </div> -->
           </div>
         </div>
-        <div
-          v-else
-          class="font-regular flex items-center justify-center text-[#8A8A8A]"
-        >
+        <div v-else class="font-regular flex items-center justify-center text-[#8A8A8A]">
           No leads generated
         </div>
       </div>
@@ -192,7 +180,7 @@
   .content-align {
     /* width: 100px !important; */
     margin-bottom: 5px;
-    color: rgba(138, 138, 138, 1);
+    /* color: rgba(138, 138, 138, 1); */
   }
 
   .list-header-align {
