@@ -116,21 +116,22 @@
         :key="index"
         @click="botManagementDetails(list, index)"
       >
-        <div class="list_align">
+        <div class="list_align justify-between pr-4">
           <div class="flex flex-col space-y-2">
             <div class="flex flex-row gap-3">
               <span class="bot_name_align font-medium">{{ list.bot }}</span>
-              <Icon
+              
+            </div>
+            <span class="text-xs text-gray-500">{{ list.helperText }}</span>
+          </div>
+          <Icon
                 v-if="
                   list.bot === 'Document Management' &&
                   botDetails.documents.length === 0
                 "
                 class="h-6 w-6 text-red-500"
-                name="ph:warning"
+                name="nonicons:error-16"
               />
-            </div>
-            <span class="text-xs text-gray-500">{{ list.helperText }}</span>
-          </div>
         </div>
         <div>
           <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
