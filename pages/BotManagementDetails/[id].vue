@@ -64,7 +64,7 @@
                 </UiDialogHeader>
                 <UiButton
                   class="deploy-bot-list-align text-[15px] text-black"
-                  v-for="list in getDocumentList.filter(
+                  v-for="list in getDocumentList.documents.filter(
                     (item: any) => item.status === 'ready',
                   )"
                   :key="list.id"
@@ -121,17 +121,16 @@
             <div class="flex flex-row gap-3">
               <span class="bot_name_align font-medium">{{ list.bot }}</span>
               <Icon
-              v-if="
-                list.bot === 'Document Management' &&
-                botDetails.documents.length === 0
-              "
-              class="h-6 w-6 text-red-500"
-              name="ph:warning"
-                        />
+                v-if="
+                  list.bot === 'Document Management' &&
+                  botDetails.documents.length === 0
+                "
+                class="h-6 w-6 text-red-500"
+                name="ph:warning"
+              />
             </div>
             <span class="text-xs text-gray-500">{{ list.helperText }}</span>
           </div>
-  
         </div>
         <div>
           <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
