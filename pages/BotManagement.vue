@@ -250,6 +250,7 @@
     flex-direction: column;
     align-items: center;
     height: 100%;
+    overflow-y: scroll;
     /* height: calc(100% - 200px); */
     cursor: pointer;
     padding: 0 15px 15px 15px;
