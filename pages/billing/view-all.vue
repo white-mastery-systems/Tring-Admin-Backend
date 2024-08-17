@@ -1,83 +1,79 @@
 <template>
-  <div>
-    <div class="billing-main-container h-full">
-      <!-- <div class="header-align">
-        <div class="flex items-center gap-2">
-          <div class="flex items-center gap-2">
-            <span class="text-[20px] font-bold">Billing</span>
-          </div>
-          <span class="text-[16px] text-lg font-bold"></span>
-        </div>
-        <div class="flex items-center space-x-4">
-          <span :class="true ? 'select_btn' : 'btn_align'">
-            <button>Monthly</button>
-          </span>
-          <span class="btn_align">
-            <button class="font-medium text-black">Yearly</button>
-          </span>
-        </div>
-      </div> -->
-      <div>
-        <SubscriptionManage />
+  <div class="main-containter grid h-[100vh] place-content-center">
+    <div class="header-align mb-2">
+      <div class="flex items-center gap-2">
+        <UiButton variant="ghost" size="icon" @click="router.back()">
+          <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
+        </UiButton>
+        <span class="text-[20px] font-bold">Billing </span>
+        <span class="text-[16px] text-lg font-bold"></span>
       </div>
-      <div class="flex justify-center items-center w-[100%] mt-5">
-        <UiDialog v-if="false">
-          <UiDialogTrigger as-child>
-          </UiDialogTrigger>
-          <UiDialogContent>
-            <div class="grid h-[95vh] place-content-center">
-              <div class="xs:grid-cols-2 grid max-h-[90vh] gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <!-- @mouseover="planCard(index); previusIndex = index"
+      <div class="flex items-center space-x-4">
+        <!-- <span :class="true ? 'select_btn' : 'btn_align'">
+          <button>Monthly</button>
+        </span> -->
+      </div>
+    </div>
+    <div class="xs:grid-cols-2 billing-details-card-align my-4 grid max-h-[90vh] gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->
-                <div class="main_card_align w-full" v-for="(list, index) in billingVariation" :key="index">
-                  <div class="type-color text-[23px] font-bold">
-                    {{ list.types }}
-                  </div>
-                  <div class="bill-content-align">
-                    <div class="amount-align text-[23px] font-black">
-                      {{ list.amount }}
-                    </div>
-                    <div class="content_color_align">{{ list.status }}</div>
-                  </div>
-                  <div class="font-bold text-[30px]">
-                    {{ list.types }}
-                  </div>
-                  <div class="benefit_content_align">
-                    {{ list.benefitContent }}
-                  </div>
-                  <div class="benefit_inside_list">
-                    <div class="flex items-center gap-2" v-for="(advancedList, ListIndex) in list.benefitList"
-                      :key="ListIndex">
-                      <span class="flex items-start">
-                        <img v-if="!list.listBenefit" src="assets\icons\check-circle.svg" width="15" />
-                        <img v-else src="assets\icons\checked-circle.svg" width="15" />
-                      </span>
-                      <span class="content_color_align">
-                        {{ advancedList.content }}
-                      </span>
-                    </div>
-                  </div>
-                  <button class="choose_btn_align" @click="choosePlan(list.plan)">
-                    {{ list.choosePlan }}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </UiDialogContent>
-        </UiDialog>
+      <div
+        :class="['main_card_align relative border-2 hover:border-yellow-500', orgBilling?.plan_code === list.plan_code ? 'border-2 border-yellow-500' : '', ' w-full']"
+        v-for="(list, index) in billingVariation" :key="index">
+        <div v-if="orgBilling?.plan_code === list.plan_code"
+          class="absolute top-2 right-2 bg-yellow-400 text-white px-3 py-1 rounded-md">
+          Current Plan
+        </div>
+        <div class="type-color text-[23px] font-bold">
+          {{ list.types }}
+        </div>
+        <div class="bill-content-align">
+          <div class="amount-align text-[23px] font-black">
+            {{ list.amount }}
+          </div>
+          <div class="content_color_align">{{ list.status }}</div>
+        </div>
+        <div class="text-[30px] font-bold">
+          {{ list.types }}
+        </div>
+        <div class="benefit_content_align">
+          {{ list.benefitContent }}
+        </div>
+        <div class="benefit_inside_list">
+          <div class="flex items-center gap-2" v-for="(advancedList, ListIndex) in list.benefitList" :key="ListIndex">
+            <span class="flex items-start">
+              <TicIcon v-if="!advancedList.content?.includes('-NA')" />
+              <CloseIcon v-else />
+              <!-- <img v-if="!list.listBenefit" src="assets\icons\check-circle.svg" width="15" />
+              <img v-else src="assets\icons\checked-circle.svg" width="15" /> -->
+            </span>
+            <span class="content_color_align">
+              {{ advancedList.content }}
+            </span>
+          </div>
+        </div>
+        <button
+          class="bg-transparent hover:bg-indigo-700 text-indigo-800 font-semibold hover:text-white py-2 px-4 border border-indigo-700 hover:border-transparent rounded-lg"
+          @click="choosePlan(list.plan)">
+          {{
+            orgBilling?.plan_code === list.plan_code
+              ? list.currentPlan
+              : list.choosePlan
+          }}
+          <!-- {{ list.choosePlan }} -->
+        </button>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-
+const router = useRouter();
 definePageMeta({
   middleware: "admin-only",
 });
 
 const { user } = await useUser();
 const [firstName, lastName] = user.value?.username?.split(" ") || [];
-
 const billingVariation = ref([
   {
     _id: 1,
@@ -113,9 +109,9 @@ const billingVariation = ref([
       },
     ],
     plan: "free_test",
-    choosePlan: 'down grade',
-    currentPlan: 'current plan',
-
+    choosePlan: "down grade",
+    currentPlan: "current plan",
+    plan_code: "FREE",
   },
   {
     _id: 2,
@@ -138,21 +134,22 @@ const billingVariation = ref([
         content: "Extra message limit-200",
       },
       {
+        content: "Widget Customization-Yes",
+      },
+      {
         content: "Lead Gen-NA",
       },
       {
         content: "CRM Integration-NA",
       },
-      {
-        content: "Widget Customization-Yes",
-      },
+
       {
         content: "No Tring Branding-NA",
       },
     ],
     plan: `chat_intelligence`,
-    choosePlan: 'upgrade',
-    currentPlan: 'current plan',
+    choosePlan: "upgrade",
+    currentPlan: "current plan",
   },
   {
     _id: 3,
@@ -188,8 +185,8 @@ const billingVariation = ref([
       },
     ],
     plan: "chat_super_intelligence",
-    choosePlan: 'upgrade',
-    currentPlan: 'current plan',
+    choosePlan: "upgrade",
+    currentPlan: "current plan",
   },
   {
     _id: 4,
@@ -224,11 +221,10 @@ const billingVariation = ref([
         content: "No Tring Branding-Yes",
       },
     ],
-    choosePlan: 'contact us',
+    choosePlan: "contact us",
   },
 ]);
-const previusIndex: any = ref(false);
-const mostPopularPlan = ref(false);
+const orgBilling = await $fetch("/api/org/usage");
 
 const choosePlan = async (plan: any) => {
   const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName}`;
@@ -260,8 +256,9 @@ const choosePlan = async (plan: any) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 20px;
-  padding: 0 35px 20px 25px;
+  /* padding-bottom: 20px; */
+  padding: 20px 25px 10px 0px;
+  /* padding: 0 35px 20px 25px; */
   /* padding-top: 20px; */
   border-bottom: 0.5px solid rgba(181, 181, 181, 1);
 }
@@ -289,8 +286,12 @@ const choosePlan = async (plan: any) => {
   border-radius: 10px;
 }
 
+.selected-plan {
+  background: rgba(66, 75, 209, 1);
+}
+
 .main_card_align {
-  padding: 30px 40px 30px 40px;
+  padding: 20px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -366,8 +367,8 @@ const choosePlan = async (plan: any) => {
 }
 
 .main_card_align:hover {
-  background: rgba(66, 75, 209, 1);
-  color: white;
+  /* background: rgba(66, 75, 209, 1); */
+  /* color: white; */
 }
 
 .type-color {
@@ -376,7 +377,7 @@ const choosePlan = async (plan: any) => {
 }
 
 .main_card_align:hover .type-color {
-  color: rgba(255, 188, 66, 1);
+  /* color: rgba(255, 188, 66, 1); */
 }
 
 .content_color_align {
@@ -387,7 +388,7 @@ const choosePlan = async (plan: any) => {
   /* height: 30px; */
 }
 
-.main_card_align:hover .content_color_align {
+/* .main_card_align:hover .content_color_align {
   color: white;
 }
 
@@ -398,10 +399,19 @@ const choosePlan = async (plan: any) => {
 .main_card_align:hover .choose_btn_align {
   background: rgba(255, 188, 66, 1);
   color: rgba(255, 248, 235, 1);
-}
+} */
 
 .bill-content-align {
   margin-bottom: 15px;
+}
+
+.billing-details-card-align {
+  padding: 0 10px;
+}
+
+.main-containter {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 /* .yearly_btn_align {
