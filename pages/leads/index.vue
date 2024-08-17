@@ -4,64 +4,44 @@
       <div class="flex items-center">
         <span class="text-[20px] font-bold">Leads</span>
       </div>
-      <div
-        v-if="false"
-        class="flex items-center space-x-4"
-        style="width: 350px"
-      >
-        <span class="calender-align">
-          <img src="assets\icons\calendar_month.svg" width="20" />
-        </span>
-        <span class="right-dropdown-align" style="color: rgba(138, 138, 138, 1)"
-          >Filter:
-          <span class="text-[14px] font-bold text-black">
-            <UiSelect v-model="selectedValue">
-              <UiSelectTrigger class="ui-select-trigger w-[110px]">
-                <UiSelectValue placeholder="Select a fruit" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectGroup>
-                  <!-- <UiSelectLabel>Today</UiSelectLabel> -->
-                  <UiSelectItem value="Today"> Today </UiSelectItem>
-                  <UiSelectItem value="Weekly"> Weekly </UiSelectItem>
-                  <UiSelectItem value="Monthly"> Monthly </UiSelectItem>
-                  <UiSelectItem value="Quarterly"> Quarterly </UiSelectItem>
-                  <UiSelectItem value="Halfyearly"> Halfyearly </UiSelectItem>
-                  <UiSelectItem value="Yearly"> Yearly </UiSelectItem>
-                </UiSelectGroup>
-              </UiSelectContent>
-            </UiSelect>
-          </span></span
-        >
-        <span>
-          <img src="assets\icons\export_btn.svg" width="110" />
-        </span>
-      </div>
     </div>
-    <div class="document-align gap-4">
-      <div class="count-align gap-3">
-        <span class="font-bold">
-          Total Chats:
-          <span style="color: rgba(66, 75, 209, 1)">{{
-            analyticsData?.chats
-          }}</span>
-        </span>
-        <span class="font-bold">
-          Total Leads:
-          <span style="color: rgba(66, 75, 209, 1)">{{
-            analyticsData?.leads
-          }}</span>
-        </span>
+    <!-- <div class="document-align gap-4">
+      
       </div>
-      <!-- <span>
-        <img src="assets\icons\pdf_upload_document.svg" width="100" />
-      </span>
-      <div class="flex items-center gap-2">
-        <span class="upload-document-align font-bold"> Upload Document </span>
-        <span class="only-content-align"> (Only Pdf) </span>
-      </div> -->
-    </div>
-    <div class="bot-main-align">
+    </div> -->
+    <div class="bot-main-align max-h-[80vh] overflow-y-scroll px-4 pb-4">
+      <div class="flex items-center justify-between gap-2 pb-4">
+        <div class="flex items-center gap-2">
+          <UiInput
+            v-model="searchBot"
+            class="max-w-[200px]"
+            placeholder="Search Leads..."
+          />
+          <!-- <UiPopover>
+            <UiPopoverTrigger as-child>
+              <UiButton variant="outline">Search by Date</UiButton>
+            </UiPopoverTrigger>
+            <UiPopoverContent class="w-80">
+              <RangeCalendar v-model="dateRange" class="rounded-md border" />
+            </UiPopoverContent>
+          </UiPopover> -->
+        </div>
+      
+        <div class="count-align gap-3">
+          <span class="font-bold">
+            Total Chats:
+            <span style="color: rgba(66, 75, 209, 1)">{{
+              analyticsData?.chats
+            }}</span>
+          </span>
+          <span class="font-bold">
+            Total Leads:
+            <span style="color: rgba(66, 75, 209, 1)">{{
+              analyticsData?.leads
+            }}</span>
+          </span>
+        </div>
+      </div>
       <DataTable
         :data="leads"
         :is-loading="isDataLoading"
@@ -78,20 +58,39 @@
   </div>
 </template>
 <script setup lang="ts">
+  import { Icon, UiButton } from "#components";
+  import { RangeCalendar } from "@/components/ui/range-calendar";
+  import { getLocalTimeZone, today } from "@internationalized/date";
+  import { createColumnHelper } from "@tanstack/vue-table";
+  import type { DateRange } from "radix-vue";
+
   definePageMeta({
     middleware: "admin-only",
   });
-  import { createColumnHelper } from "@tanstack/vue-table";
-  import { Icon, UiButton } from "#components";
+  const searchBot = ref("");
+  const searchBotDebounced = refDebounced(searchBot, 500);
 
   const selectedValue = ref("Today");
   const loading = ref(true);
   const error: any = ref(null);
   // const ListLeads = ref()
-  const ListLeads = await listLeads();
+  const start = today(getLocalTimeZone());
+  const end = start.add({ days: 7 });
 
+  const ListLeads = await listLeads();
+  const dateRange = ref({
+    start,
+    end,
+  }) as Ref<DateRange>;
+  const dateRangeDebounced = refDebounced(dateRange, 500);
+  watch(dateRangeDebounced, async (newDate, previousDate) => {
+    console.log({ newDate });
+  });
   const { status, data: leads } = await useLazyFetch("/api/org/leads", {
     server: false,
+    query: {
+      q: searchBotDebounced,
+    },
     default: () => [],
   });
   const isDataLoading = computed(() => status.value === "pending");
@@ -135,7 +134,7 @@
         h(
           UiButton,
           {
-            onClick: () => viewBot(row.original.id),
+            onClick: () => viewBot(row.original.chatId),
             class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
           },
           [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],

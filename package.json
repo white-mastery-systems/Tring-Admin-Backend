@@ -16,7 +16,6 @@
   "dependencies": {
     "@unovis/ts": "^1.4.3",
     "@unovis/vue": "^1.4.3",
-    "@vueuse/core": "^10.11.1",
     "lucide-vue-next": "^0.424.0",
     "nuxt": "^3.12.4",
     "radix-vue": "^1.9.2",
@@ -37,6 +36,8 @@
     "@types/pg": "^8.11.6",
     "@types/uuid": "^10.0.0",
     "@vee-validate/zod": "^4.13.2",
+    "@vueuse/core": "^11.0.0",
+    "@vueuse/nuxt": "^11.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",

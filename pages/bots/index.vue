@@ -65,23 +65,21 @@
     </div>
     <div class="bot-main-align max-h-[80vh] overflow-y-scroll px-4 pb-4">
       <div class="flex items-center gap-2 py-4">
-        <Input class="max-w-sm" placeholder="Search bot..." />
-        <!-- <DropdownMenu>
-          <DropdownMenuTrigger as-child>
-            <Button variant="outline" class="ml-auto">
-              Columns
-              <ChevronDown class="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuCheckboxItem v-for="column in table.getAllColumns().filter((column) => column.getCanHide())"
-              :key="column.id" class="capitalize" :checked="column.getIsVisible()" @update:checked="(value) => {
-                column.toggleVisibility(!!value)
-              }">
-              {{ column.id }}
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu> -->
+        <UiInput
+          v-model="searchBot"
+          class="max-w-[200px]"
+          placeholder="Search bot..."
+        />
+        <UiSelect v-model="activeStatus">
+          <UiSelectTrigger class="max-w-[200px]">
+            <UiSelectValue placeholder="Filter status" />
+          </UiSelectTrigger>
+          <UiSelectContent>
+            <UiSelectItem value="true">Active</UiSelectItem>
+            <UiSelectItem value="false">In active</UiSelectItem>
+          </UiSelectContent>
+        </UiSelect>
+     
       </div>
 
       <DataTable
@@ -100,7 +98,6 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { Input } from "@/components/ui/input";
   import { createColumnHelper } from "@tanstack/vue-table";
   // import {
   //   DropdownMenu,
@@ -112,7 +109,13 @@
   definePageMeta({
     middleware: "admin-only",
   });
+  const searchBot = ref("");
+  const searchBotDebounce = refDebounced(searchBot, 500);
 
+  const activeStatus = ref("");
+  watch(activeStatus, async (newStatus, previousStatus) => {
+    console.log({ newStatus });
+  });
   const selectedValue = ref("Today");
   const newBotName = ref("");
 
@@ -147,6 +150,10 @@
   const { status, data: bots } = await useLazyFetch("/api/bots", {
     server: false,
     default: () => [],
+    query: {
+      active: activeStatus,
+      q: searchBotDebounce,
+    },
     transform: (bots) =>
       bots.map((bot) => ({
         id: bot.id,
@@ -161,9 +168,9 @@
     const bot = await $fetch("/api/bots", {
       method: "POST",
       body: { name: newBotName.value },
-      query: {
-        organization_id: "4e606bb3-3264-410f-9a2d-4910f17685e3",
-      },
+      // query: {
+      //   organization_id: "4e606bb3-3264-410f-9a2d-4910f17685e3",
+      // },
     });
     return navigateTo({
       name: "bots-id",

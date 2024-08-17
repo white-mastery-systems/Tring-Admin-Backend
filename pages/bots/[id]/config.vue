@@ -1,65 +1,65 @@
 <script setup lang="ts">
-const formSchema = toTypedSchema(
-  z
-    .object({
-      NAME: z.string().min(2, "Name must be at least 2 characters."),
-      COMPANY: z
-        .string()
-        .min(2, "Company name must be at least 2 characters."),
+  const formSchema = toTypedSchema(
+    z
+      .object({
+        NAME: z.string().min(2, "Name must be at least 2 characters."),
+        COMPANY: z
+          .string()
+          .min(2, "Company name must be at least 2 characters."),
 
-      ROLE: z.string().min(2, "Role must be provided."),
-      GOAL: z.string().min(2, "Goal must be provided."),
-      NOTES: z.string().optional().default(""),
-      DESCRIPTION: z.string().optional().default(""),
-      otherRole: z.string().optional().default(""),
-    })
-    .refine(
-      (data) => {
+        ROLE: z.string().min(2, "Role must be provided."),
+        GOAL: z.string().min(2, "Goal must be provided."),
+        NOTES: z.string().optional().default(""),
+        DESCRIPTION: z.string().optional().default(""),
+        otherRole: z.string().optional().default(""),
+      })
+      .refine(
+        (data) => {
+          if (data.ROLE.toLowerCase() === "other") {
+            return data.otherRole.length >= 1;
+          }
+          return true;
+        },
+        {
+          message: "Other role must be provided",
+          path: ["otherRole"],
+        },
+      )
+      .transform((data) => {
         if (data.ROLE.toLowerCase() === "other") {
-          return data.otherRole.length >= 1;
+          return { ...data, role: data.otherRole };
         }
-        return true;
-      },
-      {
-        message: "Other role must be provided",
-        path: ["otherRole"],
-      },
-    )
-    .transform((data) => {
-      if (data.ROLE.toLowerCase() === "other") {
-        return { ...data, role: data.otherRole };
-      }
-      return data;
-    }),
-);
+        return data;
+      }),
+  );
 
-const animationProps = {
-  duration: 500,
-};
-const router = useRouter();
-const route = useRoute("bots-id-config");
-
-const roles = ["Sales Executive", "Customer Support Representative", "Other"];
-
-const botDetails: any = await getBotDetails(route.params.id);
-const defaultFormValues = botDetails.metadata.prompt;
-
-const handleSubmit = async (values: any) => {
-  const payload: any = {
-    id: botDetails.id,
-    metadata: {
-      ...botDetails.metadata,
-      prompt: {
-        ...values,
-      },
-    },
+  const animationProps = {
+    duration: 500,
   };
-  await updateBotDetails(payload);
-  return navigateTo({
-    name: "bots-id",
-    params: { id: botDetails.id },
-  });
-};
+  const router = useRouter();
+  const route = useRoute("bots-id-config");
+
+  const roles = ["Sales Executive", "Customer Support Representative", "Other"];
+
+  const botDetails: any = await getBotDetails(route.params.id);
+  const defaultFormValues = botDetails.metadata.prompt;
+
+  const handleSubmit = async (values: any) => {
+    const payload: any = {
+      id: botDetails.id,
+      metadata: {
+        ...botDetails.metadata,
+        prompt: {
+          ...values,
+        },
+      },
+    };
+    await updateBotDetails(payload);
+    return navigateTo({
+      name: "bots-id",
+      params: { id: botDetails.id },
+    });
+  };
 </script>
 <template>
   <div class="mx-5 mb-4 mt-2 flex items-center gap-2">
@@ -69,25 +69,41 @@ const handleSubmit = async (values: any) => {
     <UiLabel class="text-[20px] font-bold">Bot Configuration</UiLabel>
   </div>
   <div class="mx-5">
-    <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false"
-      :initial-values="defaultFormValues" class="space-y-2" @submit="handleSubmit">
+    <UiForm
+      :validation-schema="formSchema"
+      :keep-values="true"
+      :validate-on-mount="false"
+      :initial-values="defaultFormValues"
+      class="space-y-2"
+      @submit="handleSubmit"
+    >
       <div class="flex gap-4">
         <UiFormField v-slot="{ componentField }" name="NAME">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel>Bot Name <UiLabel class="text-red-500 text-lg">*</UiLabel>
+            <UiFormLabel
+              >Bot Name <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" type="text" placeholder="Eg. Noah,Bob,Chris,Ted" />
+              <UiInput
+                v-bind="componentField"
+                type="text"
+                placeholder="Eg. Noah,Bob,Chris,Ted"
+              />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
         <UiFormField v-slot="{ componentField }" name="COMPANY">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel>Company Name <UiLabel class="text-red-500 text-lg">*</UiLabel>
+            <UiFormLabel
+              >Company Name <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" type="text" placeholder="Eg. Google, Amazon" />
+              <UiInput
+                v-bind="componentField"
+                type="text"
+                placeholder="Eg. Google, Amazon"
+              />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
@@ -96,7 +112,8 @@ const handleSubmit = async (values: any) => {
       <div class="flex gap-4">
         <UiFormField v-slot="{ componentField }" name="ROLE">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel>Bot's Role <UiLabel class="text-red-500 text-lg">*</UiLabel>
+            <UiFormLabel
+              >Bot's Role <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
               <UiSelect v-bind="componentField">
@@ -109,7 +126,11 @@ const handleSubmit = async (values: any) => {
                   }}</UiSelectItem>
                 </UiSelectContent>
               </UiSelect>
-              <UiFormField v-if="componentField.modelValue === 'Other'" v-slot="{ componentField }" name="otherRole">
+              <UiFormField
+                v-if="componentField.modelValue === 'Other'"
+                v-slot="{ componentField }"
+                name="otherRole"
+              >
                 <UiFormItem v-auto-animate="animationProps" class="w-full">
                   <UiFormControl>
                     <UiInput v-bind="componentField" type="text" />
@@ -119,18 +140,26 @@ const handleSubmit = async (values: any) => {
               </UiFormField>
             </UiFormControl>
             <UiFormMessage />
-            <span class="text-xs text-gray-500">This will determine the role of the bot and behavior.</span>
+            <span class="text-xs text-gray-500"
+              >This will determine the role of the bot and behavior.</span
+            >
           </UiFormItem>
         </UiFormField>
         <UiFormField v-slot="{ componentField }" name="GOAL">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel>Goal <UiLabel class="text-red-500 text-lg">*</UiLabel>
+            <UiFormLabel
+              >Goal <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" type="text"
-                placeholder="Eg. To assist the users with the product details" />
+              <UiInput
+                v-bind="componentField"
+                type="text"
+                placeholder="Eg. To assist the users with the product details"
+              />
             </UiFormControl>
-            <span class="text-xs text-gray-500">The bot will be driving the conversation towards this goal.</span>
+            <span class="text-xs text-gray-500"
+              >The bot will be driving the conversation towards this goal.</span
+            >
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
@@ -141,7 +170,9 @@ const handleSubmit = async (values: any) => {
           <UiFormControl>
             <UiTextarea v-bind="componentField" type="text" />
           </UiFormControl>
-          <span class="text-xs text-gray-500">Here you can have additional instructions for your bot.</span>
+          <span class="text-xs text-gray-500"
+            >Here you can have additional instructions for your bot.</span
+          >
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
@@ -151,11 +182,84 @@ const handleSubmit = async (values: any) => {
           <UiFormControl>
             <UiTextarea v-bind="componentField" type="text" />
           </UiFormControl>
-          <span class="text-xs text-gray-500"> Here you can give the bot additional details about your company.</span>
+          <span class="text-xs text-gray-500">
+            Here you can give the bot additional details about your
+            company.</span
+          >
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110" size="lg">Submit</UiButton>
+      <UiButton
+        type="submit"
+        class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
+        size="lg"
+        >Submit</UiButton
+      >
     </UiForm>
+
+    <div class="mt-4 flex items-center justify-between">
+      <h3
+        class="scroll-m-20 text-xl font-semibold tracking-tight text-indigo-600"
+      >
+        Intents Management
+      </h3>
+      <UiDialog>
+        <UiDialogTrigger as-child>
+          <UiButton class="bg-yellow-500" type="button">Add Intents</UiButton>
+        </UiDialogTrigger>
+        <UiDialogContent class="sm:max-w-[425px]">
+          <UiDialogHeader>
+            <UiDialogTitle class="text-indigo-600">Add Intents</UiDialogTitle>
+          </UiDialogHeader>
+          <UiForm class="flex flex-col gap-2">
+            <UiFormField v-slot="{ componentField }" name="ROLE">
+              <UiFormItem v-auto-animate="animationProps" class="w-full">
+                <UiFormLabel
+                  >Actions<UiLabel class="text-lg text-red-500">*</UiLabel>
+                </UiFormLabel>
+                <UiFormControl>
+                  <UiSelect v-bind="componentField">
+                    <UiSelectTrigger>
+                      <UiSelectValue placeholder="Select Intent" />
+                    </UiSelectTrigger>
+                    <UiSelectContent>
+                      <UiSelectItem value="location">Location</UiSelectItem>
+                      <UiSelectItem value="virtual-tour"
+                        >Virtual Tour</UiSelectItem
+                      >
+                      <UiSelectItem value="schedule-call"
+                        >Schedule Call</UiSelectItem
+                      >
+                      <UiSelectItem value="schedule-site-visit"
+                        >Schedule Site Visit</UiSelectItem
+                      >
+                    </UiSelectContent>
+                  </UiSelect>
+                  <UiFormField
+                    v-if="componentField.modelValue === 'Other'"
+                    v-slot="{ componentField }"
+                    name="otherRole"
+                  >
+                    <UiFormItem v-auto-animate="animationProps" class="w-full">
+                      <UiFormControl>
+                        <UiInput v-bind="componentField" type="text" />
+                      </UiFormControl>
+                      <UiFormMessage />
+                    </UiFormItem>
+                  </UiFormField>
+                </UiFormControl>
+                <UiFormMessage />
+                <span class="text-xs text-gray-500">Select your intent.</span>
+              </UiFormItem>
+            </UiFormField>
+            <!-- <UiFormField v-if="componentField.modelValue === 'Other'">
+            </UiFormField> -->
+          </UiForm>
+          <UiDialogFooter>
+            <UiButton type="submit"> Save changes </UiButton>
+          </UiDialogFooter>
+        </UiDialogContent>
+      </UiDialog>
+    </div>
   </div>
 </template>
