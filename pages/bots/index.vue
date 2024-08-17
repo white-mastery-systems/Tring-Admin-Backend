@@ -77,9 +77,9 @@
           <UiSelectContent>
             <UiSelectItem value="true">Active</UiSelectItem>
             <UiSelectItem value="false">In active</UiSelectItem>
+            <UiSelectItem value="">All</UiSelectItem>
           </UiSelectContent>
         </UiSelect>
-     
       </div>
 
       <DataTable

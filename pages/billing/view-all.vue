@@ -1,5 +1,11 @@
 <template>
-  <div class="main-containter grid h-[100vh] place-content-center">
+  <div
+    v-if="isPageLoading"
+    class="grid h-[80vh] place-items-center text-[#424BD1]"
+  >
+    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div>
+  <div v-else class="main-containter grid h-[100vh] place-content-center">
     <div class="header-align mb-2">
       <div class="flex items-center gap-2">
         <UiButton variant="ghost" size="icon" @click="router.back()">
@@ -58,7 +64,7 @@
             :key="ListIndex"
           >
             <span class="flex items-start">
-              <TicIcon v-if="!advancedList.content?.includes('-NA')" />
+              <TicIcon v-if="advancedList.availableInPlan" />
               <CloseIcon v-else />
               <!-- <img v-if="!list.listBenefit" src="assets\icons\check-circle.svg" width="15" />
               <img v-else src="assets\icons\checked-circle.svg" width="15" /> -->
@@ -101,28 +107,36 @@
       listBenefit: false,
       benefitList: [
         {
-          content: "Message Sessions-50",
+          content: "50 Message Sessions",
+          availableInPlan: true,
         },
         {
-          content: "Duration-Lifetime",
+          content: "Lifetime Duration",
+          availableInPlan: true,
         },
         {
-          content: "Extra message cost-NA",
+          content: "Extra message cost",
+          availableInPlan: false,
         },
         {
-          content: "Extra message limit-NA",
+          content: "Extra message limit",
+          availableInPlan: false,
         },
         {
-          content: "Lead Gen-NA",
+          content: "Lead Gen",
+          availableInPlan: false,
         },
         {
-          content: "CRM Integration-NA",
+          content: "CRM Integration",
+          availableInPlan: false,
         },
         {
-          content: "Widget Customization-NA",
+          content: "Widget Customization",
+          availableInPlan: false,
         },
         {
-          content: "No Tring Branding-NA",
+          content: "No Tring Branding",
+          availableInPlan: false,
         },
       ],
       plan: "free_test",
@@ -139,29 +153,37 @@
       listBenefit: false,
       benefitList: [
         {
-          content: "Message Sessions-60",
+          content: "60 Message Sessions",
+          availableInPlan: true,
         },
         {
           content: "Duration-Month",
+          availableInPlan: true,
         },
         {
           content: "Extra message cost-Rs.10",
+          availableInPlan: true,
         },
         {
           content: "Extra message limit-200",
+          availableInPlan: true,
         },
         {
-          content: "Widget Customization-Yes",
+          content: "Widget Customization",
+          availableInPlan: true,
         },
         {
-          content: "Lead Gen-NA",
+          content: "Lead Gen",
+          availableInPlan: false,
         },
         {
-          content: "CRM Integration-NA",
+          content: "CRM Integration",
+          availableInPlan: false,
         },
 
         {
-          content: "No Tring Branding-NA",
+          content: "No Tring Branding",
+          availableInPlan: false,
         },
       ],
       plan: `chat_intelligence`,
@@ -177,28 +199,33 @@
       listBenefit: false,
       benefitList: [
         {
-          content: "Message Sessions-250",
+          content: "250 Message Sessions",
+          availableInPlan: true,
         },
         {
           content: "Duration-Month",
+          availableInPlan: true,
         },
         {
-          content: "Extra message cost-8",
+          content: "Extra message cost - Rs.8",
+          availableInPlan: true,
         },
         {
-          content: "Extra message limit-1000",
+          content: "1000 Extra message limit",
+          availableInPlan: true,
         },
         {
-          content: "Lead Gen-Yes",
+          content: "Lead Gen",
+          availableInPlan: true,
         },
         {
-          content: "CRM Integration-Yes",
+          content: "CRM Integration",
+          availableInPlan: true,
         },
+
         {
-          content: "CRM Integration-Yes",
-        },
-        {
-          content: "No Tring Branding-Paid",
+          content: "No Tring Branding (Addon)",
+          availableInPlan: true,
         },
       ],
       plan: "chat_super_intelligence",
@@ -214,34 +241,47 @@
       listBenefit: false,
       benefitList: [
         {
-          content: "Message Sessions-1000+",
+          content: "1000+ Message Sessions",
+          availableInPlan: true,
         },
         {
           content: "Duration-Month",
+          availableInPlan: true,
         },
         {
           content: "Extra message cost-Talk to sales",
+          availableInPlan: true,
         },
         {
           content: "Extra message limit-Unlimited",
+          availableInPlan: true,
         },
         {
-          content: "Lead Gen-Yes",
+          content: "Lead Gen",
+          availableInPlan: true,
         },
         {
-          content: "CRM Integration-Yes",
+          content: "CRM Integration",
+          availableInPlan: true,
         },
         {
           content: "Widget Customization-Advance",
+          availableInPlan: true,
         },
         {
-          content: "No Tring Branding-Yes",
+          content: "No Tring Branding (Addon)",
+          availableInPlan: true,
         },
       ],
       choosePlan: "contact us",
+      availableInPlan: true,
     },
   ]);
-  const orgBilling = await $fetch("/api/org/usage");
+
+  const { status, data: orgBilling } = await useLazyFetch("/api/org/usage", {
+    server: false,
+  });
+  const isPageLoading = computed(() => status.value === "pending");
 
   const choosePlan = async (plan: any) => {
     const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName}`;

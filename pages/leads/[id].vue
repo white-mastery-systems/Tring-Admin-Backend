@@ -1,5 +1,11 @@
 <template>
-  <div class="analytics_leads-main-container">
+  <div
+    v-if="isPageLoading"
+    class="grid h-[80vh] place-items-center text-[#424BD1]"
+  >
+    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div>
+  <div v-else class="analytics_leads-main-container">
     <div class="header-align">
       <div class="flex gap-2">
         <div class="flex items-center gap-2">
@@ -132,21 +138,30 @@
   });
 
   const router = useRouter();
-  const route = useRoute();
+  const route = useRoute("leads-id");
   const paramId: any = route;
-  const leadData = await getLeadTranscript(paramId.params.id);
+
+  const { status, data: leadData } = await useLazyFetch(
+    () => `/api/org/chat/${route.params.id}`,
+    {
+      server: false,
+    },
+  );
+  const isPageLoading = computed(() => status.value === "pending");
 
   const details = computed(() => {
-    if (!leadData) return [undefined, undefined];
-    const { params, ...rest } = leadData.metadata as Record<string, any>;
+    if (!leadData.value) return [undefined, undefined];
+    const { params, ...rest } = leadData.value.metadata as Record<string, any>;
     return [Object.entries(rest), Object.entries(params)];
   });
 
   const isDeleteConfirmationOpen = ref(false);
   const handleDelete = async () => {
     isDeleteConfirmationOpen.value = false;
-    await $fetch(`/api/org/lead/${leadData?.lead?.id}`, { method: "DELETE" });
-    return navigateTo({ name: "AnalyticsLeads" });
+    await $fetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
+      method: "DELETE",
+    });
+    return navigateTo({ name: "leads" });
   };
 </script>
 <style scoped>
