@@ -9,10 +9,10 @@
           <span class="text-lg font-bold">{{ leadData?.botUser?.name }}</span>
         </div>
       </div>
-      <UiButton variant="destructive" class="bg-[#ff0000] hover:bg-[#ff0000]/90"
+      <!-- <UiButton variant="destructive" class="bg-[#ff0000] hover:bg-[#ff0000]/90"
         @click="isDeleteConfirmationOpen = true">
         <Icon name="lucide:trash-2" />
-      </UiButton>
+      </UiButton> -->
     </div>
   </div>
   <!-- <template> -->

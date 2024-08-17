@@ -77,7 +77,7 @@ const handleSubmit = async (values: any) => {
             <UiFormLabel>Bot Name <UiLabel class="text-red-500 text-lg">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" type="text" placeholder="Eg. Zia, Siri, Alexa" />
+              <UiInput v-bind="componentField" type="text" placeholder="Eg. Noah,Bob,Chris,Ted" />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>

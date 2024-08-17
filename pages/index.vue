@@ -28,8 +28,8 @@
     <div>
       <div class="dashboard-main-paage">
         <div class="card-align">
-          <div>
-            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
+          <div class="bg-yellow-500 rounded-md p-2">
+            <BotIcon />
           </div>
           <div>
             <div class="content-align font-semibold">Chat Bots</div>
@@ -37,8 +37,8 @@
           </div>
         </div>
         <div class="card-align">
-          <div>
-            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
+          <div class="bg-yellow-500 rounded-md p-2">
+            <ChatSession></ChatSession>
           </div>
           <div>
             <div class="content-align font-semibold">Chat Sessions</div>
@@ -46,8 +46,8 @@
           </div>
         </div>
         <div class="card-align">
-          <div>
-            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
+          <div class="bg-yellow-500 rounded-md p-2">
+            <Leads></Leads>
           </div>
           <div>
             <div class="content-align font-semibold">Chat Leads</div>
@@ -55,8 +55,8 @@
           </div>
         </div>
         <div class="card-align">
-          <div>
-            <img src="assets\icons\contact_count_icon.svg" width="34" height="34" />
+          <div class="bg-yellow-500 rounded-md p-2">
+            <SingleUser></SingleUser>
           </div>
           <div>
             <div class="content-align font-semibold">Unique Sessions</div>
@@ -106,6 +106,8 @@
   </div>
 </template>
 <script setup lang="ts">
+import Leads from '~/components/icons/Leads.vue';
+
 
 definePageMeta({
   middleware: "user",

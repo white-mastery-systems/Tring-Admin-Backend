@@ -15,32 +15,67 @@ const orgBilling = await $fetch("/api/org/usage");
         <span>
           Subscription Details
         </span>
+
         <UiButton class="font-medium bg-[#FFBC42] hover:bg-[#FFBC42] hover:brighten-50 text-[#FFFFFF]">
           <NuxtLink to="/billing/view-all" class="align_border">Change Plan</NuxtLink>
         </UiButton>
       </div>
       <div class="flex items-center justify-between list-content-align gap-3">
         <span class="font-medium"> Current Plan </span>
-        <span class="creator-chip rounded-[11px] text-[12px] font-medium lowercase">
-          {{ orgBilling?.plan_code }}
-        </span>
+        <div class="flex justify-center items-center w-[160px]">
+          <span class="creator-chip rounded-[11px] text-[12px] font-medium lowercase">
+            {{ orgBilling?.plan_code }}
+
+          </span>
+        </div>
       </div>
       <div class="flex items-center justify-between list-content-align gap-3 font-medium">
         <span> Subscription status </span>
-        <span class="active-chip rounded-[11px] text-[12px]"> active </span>
+        <div class="flex justify-center items-center w-[160px]">
+          <span class="active-chip rounded-[11px] text-[12px]"> active </span>
+        </div>
       </div>
       <div class="flex items-center justify-between list-content-align gap-3 font-medium">
-        <span> subscribed quota </span>
-        <span class="rounded-xl text-[15px]">
+        <span> Total chat sessions in plan </span>
+        <span class="rounded-xl flex justify-center items-center text-[15px] w-[160px]">
           {{ orgBilling?.max_quota }}
         </span>
       </div>
       <div class="flex items-center justify-between list-content-align gap-3 font-medium rounded-b-lg">
-        <span> Available quota </span>
-        <span class="rounded-xl text-[15px]">
+        <span> chat sessions used in plan </span>
+        <span class="flex justify-center items-center rounded-xl text-[15px] w-[160px]">
           {{ orgBilling?.available_quota }}
         </span>
       </div>
+
+
+
+
+      <div class="flex items-center justify-between list-content-align gap-3 font-medium rounded-b-lg">
+        <span> available chat sessions in plan </span>
+        <span class="flex justify-center items-center rounded-xl text-[15px] w-[160px]">
+          {{ orgBilling?.available_quota }}
+        </span>
+      </div>
+
+
+      <div class="flex items-center justify-between list-content-align gap-3 font-medium rounded-b-lg">
+        <span> extra chat sessions </span>
+        <span class="flex justify-center items-center rounded-xl text-[15px] w-[160px]">
+          20
+        </span>
+      </div>
+
+
+      <div class="flex items-center justify-between list-content-align gap-3 font-medium rounded-b-lg">
+        <span> extra chat session billing </span>
+        <span class="flex justify-center items-center rounded-xl text-[15px] w-[160px]">
+          100
+        </span>
+      </div>
+
+
+
     </div>
   </div>
 </template>
@@ -70,7 +105,7 @@ const orgBilling = await $fetch("/api/org/usage");
 }
 
 .list-content-align {
-  padding: 20px 40px;
+  padding: 20px 30px 20px 30px;
 }
 
 .content-align:last-child {

@@ -6,10 +6,9 @@
           <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
         </UiButton>
         <span class="text-[20px] font-bold">{{ botDetails.name }}</span>
+
       </div>
-      <UiButton variant="destructive" @click="handleDelete" class="bg-[#ff0000] hover:bg-[#ff0000]/90">
-        <Icon name="lucide:trash-2" />
-      </UiButton>
+
       <ConfirmationModal v-model:open="modelOpen" title="Confirm Delete" description="Are you sure you want to delete ?"
         @confirm="handleDeleteBot" />
     </div>
@@ -31,32 +30,13 @@
             <span class="text-[17px] font-bold text-black">Date Created:
               <span class="text-[15px] font-medium text-black">{{
                 dateFormate
-              }}</span>
+                }}</span>
             </span>
             <UiButton class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50" @click="handleActivateBot"
               :disabled="isSubmitting" v-if="!botDetails.documentId">
               Activate Bot</UiButton>
-            <UiDialog v-if="!botDetails.documentId" v-model:open="isDocumentListOpen">
-              <UiDialogTrigger class=""> </UiDialogTrigger>
-              <UiDialogContent align="end" class="sm:max-w-md">
-                <UiDialogHeader>
-                  <UiDialogTitle>Launch Bot</UiDialogTitle>
-                  <UiDialogDescription>
-                    Choose a document to deploy your bot
-                  </UiDialogDescription>
-                </UiDialogHeader>
-                <UiButton class="deploy-bot-list-align text-[15px] text-black" v-for="list in getDocumentList.filter(
-                  (item: any) => item.status === 'ready',
-                )" :key="list.id" @click="async () => {
-                  isSubmitting = true;
-                  isDocumentListOpen = false;
-                  await singleDocumentDeploy(list);
-                }
-                  ">
-                  {{ list.name }}
-                </UiButton>
-              </UiDialogContent>
-            </UiDialog>
+
+
             <span v-if="botDetails.documentId" class="flex gap-4">
               <UiButton class="button-align text-[14px] font-medium" @click="deactivateBot">Deactivate Bot</UiButton>
               <ConfirmationModal v-model:open="modalOpen" title="Confirm Deactivation"
@@ -66,7 +46,31 @@
                 Bot</UiButton>
               <UiButton class="bg-[#e1dede] text-black hover:bg-[#d4d2d2]" @click="copyScript">Copy Script</UiButton>
             </span>
+            <UiButton variant="destructive" @click="handleDelete" class="bg-[#ff0000] hover:bg-[#ff0000]/90 pl-4">
+              <Icon name="lucide:trash-2" />
+            </UiButton>
           </div>
+          <UiDialog v-if="!botDetails.documentId" v-model:open="isDocumentListOpen">
+            <UiDialogTrigger class=""> </UiDialogTrigger>
+            <UiDialogContent align="end" class="sm:max-w-md">
+              <UiDialogHeader>
+                <UiDialogTitle>Launch Bot</UiDialogTitle>
+                <UiDialogDescription>
+                  Choose a document to deploy your bot
+                </UiDialogDescription>
+              </UiDialogHeader>
+              <UiButton class="deploy-bot-list-align text-[15px] text-black" v-for="list in getDocumentList.filter(
+                (item: any) => item.status === 'ready',
+              )" :key="list.id" @click="async () => {
+                  isSubmitting = true;
+                  isDocumentListOpen = false;
+                  await singleDocumentDeploy(list);
+                }
+                  ">
+                {{ list.name }}
+              </UiButton>
+            </UiDialogContent>
+          </UiDialog>
           <!-- <span class="font-semibold content-align">Date Created</span>
           <span class="font-semibold content-align">Status</span> -->
         </div>
@@ -132,20 +136,20 @@ const dataList = ref([
   {
     _id: 1,
     bot: "UI Customization",
-    helperText: "Color ,Logo, Icon, etc...",
+    helperText: "Color,Logo,Icon etc...",
     routeName: "bots-id-ui-customization",
   },
 
   {
     _id: 3,
     bot: "Bot Configuration",
-    helperText: "Name, Description, Notes, etc...",
+    helperText: "Name,Description,Notes etc...",
     routeName: "bots-id-config",
   },
   {
     _id: 4,
     bot: "Document Management",
-    helperText: "Knowledge base, Training data, etc...",
+    helperText: "Knowledge base,Training data etc...",
     routeName: "bots-id-documents",
 
   },

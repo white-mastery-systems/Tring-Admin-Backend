@@ -16,9 +16,10 @@
             </UiDialogHeader>
             <div class="individual-form-align">
               <label for="frole" class="pb-2 pl-0 font-medium">Bot Name</label>
-              <input type="text" id="frole" v-model="newBotName" name="fname" />
+              <input type="text" id="frole" v-model="newBotName" name="fname" placeholder="Enter Bot Name" />
               <UiButton @click="addBot"
-                class="mt-2 w-1/2 bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">Create</UiButton>
+                class="mt-4 w-1/2 bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90 self-end">Create
+              </UiButton>
             </div>
           </UiDialogContent>
         </UiDialog>
@@ -43,52 +44,43 @@
           </span></span>
       </div>
     </div>
-    <div class="bot-main-align">
-      <div class="list-header-align">
-        <div class="header-content-align">
-          <span class="content-align font-extrabold text-black">Bot Name</span>
-          <span class="content-align font-extrabold text-black">Date Created</span>
-          <span class="content-align font-extrabold text-black">Status</span>
-        </div>
+    <div class="px-4  bot-main-align max-h-[80vh] overflow-y-scroll">
+      <div class="flex gap-2 items-center py-4 ">
+        <Input class="max-w-sm" placeholder="Search bot..." />
+        <!-- <DropdownMenu>
+          <DropdownMenuTrigger as-child>
+            <Button variant="outline" class="ml-auto">
+              Columns
+              <ChevronDown class="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuCheckboxItem v-for="column in table.getAllColumns().filter((column) => column.getCanHide())"
+              :key="column.id" class="capitalize" :checked="column.getIsVisible()" @update:checked="(value) => {
+                column.toggleVisibility(!!value)
+              }">
+              {{ column.id }}
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu> -->
       </div>
-      <div class="overflow_align mt-3">
-        <div v-if="botList.length" class="list_align">
-          <NuxtLink class="bot-list-align text-[15px]" v-for="(list, index) in botList" :key="index"
-            :to="`/bots/${list.id}`">
-            <span class="bot_name_align font-bold ">{{
-              list.name
-            }}</span>
-            <span class="createAt_align font-medium text-black" :style="{
-              'padding-inline-end': !list.status ? '110px' : '123px',
-            }">{{ list.createdAt }}</span>
-            <div v-if="list.status" class="acive_class font-medium">
-              <div class="active-circle-align rounded-full"></div>
-              <span>Active</span>
-            </div>
-            <div v-else class="deacive_class pl-2 font-medium">
-              <div class="deactive-circle-align rounded-full"></div>
-              <span>Inactive</span>
-            </div>
-            <!-- v-if="!list.arrowChange" -->
-            <div class="pr-4">
-              <!-- <img src="assets\icons\left_arrow.svg" width="30"> -->
-              <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
-            </div>
-            <!-- <div v-else>
-              <img src="assets\icons\yellow_left_arrow.svg" width="30">
-            </div> -->
-          </NuxtLink>
-          <!-- <div>
-          </div> -->
-        </div>
-        <div v-else class="font-regular flex items-center justify-center text-[#8A8A8A]">
-          No bots created
-        </div>
-      </div>
+
+      <DataTable @row-click="(row: any) => {
+        console.log({ row })
+        navigateTo(`/bots/${row.original.id}`)
+      }" :columns="columns" :data="botList" :page-size="5" />
     </div>
   </div>
 </template>
 <script setup lang="ts">
+import { Input } from '@/components/ui/input';
+import { createColumnHelper } from "@tanstack/vue-table";
+// import {
+//   DropdownMenu,
+//   DropdownMenuCheckboxItem,
+//   DropdownMenuContent,
+//   DropdownMenuTrigger,
+// } from '@/components/ui/dropdown-menu'
 
 definePageMeta({
   middleware: "admin-only",
@@ -133,18 +125,39 @@ const addBot = async () => {
       organization_id: "4e606bb3-3264-410f-9a2d-4910f17685e3",
     },
   });
-  // return navigateTo({
-  //   name: "BotManagementDetails-id",
-  //   params: { id: bot.id },
-  // });
+  return navigateTo({
+    name: "bots-id",
+    params: { id: bot.id },
+  });
 };
 
 const botManagementDetails = async (list: any) => {
-  // return navigateTo({
-  //   name: "BotManagementDetails-id",
-  //   params: { id: list.id },
-  // });
+  return navigateTo({
+    name: "bots-id",
+    params: { id: list.id },
+  });
 };
+
+const statusComponent = (status: boolean) =>
+  status
+    ? h("span", { class: "text-green-500" }, "Active")
+    : h("span", { class: "text-red-500" }, "Inactive");
+
+const columnHelper = createColumnHelper<(typeof botList)[0]>();
+const columns = [
+  columnHelper.accessor("name", {
+    header: "Bot Name",
+  }),
+  columnHelper.accessor("createdAt", {
+    header: "Date Created",
+  }),
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: ({ row }) => {
+      return statusComponent(row.original.status);
+    },
+  }),
+];
 </script>
 
 <style scoped>
@@ -168,6 +181,8 @@ const botManagementDetails = async (list: any) => {
 
 .bot-manage-main-container {
   padding: 0 25px;
+  height: 100%;
+  overflow: hidden;
 }
 
 .right-dropdown-align {
@@ -188,11 +203,10 @@ const botManagementDetails = async (list: any) => {
 }
 
 .bot-main-align {
-  padding: 20px;
   margin-top: 30px;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05);
-  height: calc(100vh - 130px);
+  height: calc(100vh - 0px);
   /* overflow-y: scroll; */
 }
 
@@ -213,7 +227,7 @@ const botManagementDetails = async (list: any) => {
 }
 
 .list-header-align {
-  padding: 10px 30px;
+  padding: 10px 48px;
   display: flex;
   /* justify-content: space-between; */
   width: 100%;
@@ -225,8 +239,11 @@ const botManagementDetails = async (list: any) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: calc(100vh - 200px);
+  height: 100%;
+  overflow-y: scroll;
+  /* height: calc(100% - 200px); */
   cursor: pointer;
+  padding: 0 15px 15px 15px;
 
   /* width: 100%; */
   /* background: rgba(255, 255, 255, 1); */
@@ -241,10 +258,10 @@ const botManagementDetails = async (list: any) => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 70vh;
+  height: 90%;
   overflow-y: scroll;
   width: 100%;
-  padding: 5px;
+  padding: 5px 5px 20px 5px;
 }
 
 .bot-list-align {
