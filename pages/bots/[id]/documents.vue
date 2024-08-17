@@ -57,7 +57,7 @@
         await navigateTo('botpdfdocument')
         }" -->
 
-        <div v-if="documents?.documents.length" class="overflow_align">
+        <div v-if="documents?.documents?.length" class="overflow_align">
           <div
             class="bot-list-align relative overflow-hidden text-[15px]"
             v-for="(list, index) in documents?.documents"
@@ -172,10 +172,6 @@
   });
   const isPageLoading = computed(() => status.value === "pending");
 
-  // onMounted(async () => {
-  //   documents.value = await listDocumentsByBotId(paramId.params.id);
-  // });
-
   const handleDeleteDocument = () => {
     deleteDocumentModelOpen.value = true;
   };
@@ -190,13 +186,13 @@
       },
     };
     await createDocument(payload.botId, payload.document);
-    refresh();
+    documents.value = await listDocumentsByBotId(paramId.params.id);
 
     selectedFile.value = null;
 
     documentFetchInterval.value = setInterval(async () => {
       console.log("inside timeout");
-      refresh;
+      documents.value = await listDocumentsByBotId(paramId.params.id);
     }, 1000);
   };
   const handleAction = (list: any, action: any) => {
@@ -221,7 +217,7 @@
   const singleDocumentDelete = async (list: any) => {
     console.log("inside");
     await deleteDocument(paramId.params.id, list.id);
-    refresh();
+    documents.value = await listDocumentsByBotId(paramId.params.id);
   };
   const singleDocumentDownload = async (list: any) => {
     viewDocument(paramId.params.id, list.id);
