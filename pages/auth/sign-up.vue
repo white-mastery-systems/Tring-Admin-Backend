@@ -43,26 +43,13 @@ const togglePasswordVisibility = () => {
 const toggleConfirmPasswordVisibility = () => {
   confirmPasswordVisible.value = !confirmPasswordVisible.value;
 };
-const togglePasswordVisibility = () => {
-  passwordVisible.value = !passwordVisible.value;
-};
-const toggleConfirmPasswordVisibility = () => {
-  confirmPasswordVisible.value = !confirmPasswordVisible.value;
-};
+// const togglePasswordVisibility = () => {
+//   passwordVisible.value = !passwordVisible.value;
+// };
+// const toggleConfirmPasswordVisibility = () => {
+//   confirmPasswordVisible.value = !confirmPasswordVisible.value;
+// };
 
-const onSubmit = (values: any) => {
-  // if (
-  //   loginData.username.length < 1 ||
-  //   loginData.password.length < 1 ||
-  //   loginData.password !== loginData.confirmPassword
-  // ) {
-  //   toast.error("Please enter valid details");
-  // }
-  authHandlers.signup({
-    email: values.username,
-    password: values.password,
-  });
-};
 const onSubmit = (values: any) => {
   // if (
   //   loginData.username.length < 1 ||

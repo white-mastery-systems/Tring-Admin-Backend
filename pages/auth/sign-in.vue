@@ -2,16 +2,28 @@
 definePageMeta({
   layout: "auth",
   middleware: "guest-only",
-});
-definePageMeta({
-  layout: "auth",
-  middleware: "guest-only",
-});
+})
+// definePageMeta({
+//   layout: "auth",
+//   middleware: "guest-only",
+// });
 
-const loginData = reactive({
-  email: "",
-  password: "",
-});
+// const loginData = reactive({
+//   email: "",
+//   password: "",
+// });
+// const formSchema = toTypedSchema(
+//   z.object({
+//     email: z.string().email("Invalid email address."),
+//     password: z
+//       .string()
+//       .min(6, "Password must be at least 6 characters long."),
+//   }),
+// );
+// const passwordVisible = ref(false);
+// const animationProps = {
+//   duration: 500,
+// };
 const formSchema = toTypedSchema(
   z.object({
     email: z.string().email("Invalid email address."),
@@ -19,23 +31,7 @@ const formSchema = toTypedSchema(
       .string()
       .min(6, "Password must be at least 6 characters long."),
   }),
-);
-const passwordVisible = ref(false);
-const animationProps = {
-  duration: 500,
-};
-const loginData = reactive({
-  email: "",
-  password: "",
-});
-const formSchema = toTypedSchema(
-  z.object({
-    email: z.string().email("Invalid email address."),
-    password: z
-      .string()
-      .min(6, "Password must be at least 6 characters long."),
-  }),
-);
+)
 const passwordVisible = ref(false);
 const animationProps = {
   duration: 500,
@@ -44,9 +40,9 @@ const animationProps = {
 const togglePasswordVisibility = () => {
   passwordVisible.value = !passwordVisible.value;
 };
-const togglePasswordVisibility = () => {
-  passwordVisible.value = !passwordVisible.value;
-};
+// const togglePasswordVisibility = () => {
+//   passwordVisible.value = !passwordVisible.value;
+// };
 </script>
 <template>
   <div class="flex flex-col items-center justify-center w-full h-full">
