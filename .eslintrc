@@ -1,5 +1,8 @@
 {
-  "extends": ["@nuxt/eslint-config", "prettier"],
+  "extends": [
+    "@nuxt/eslint-config",
+    "prettier"
+  ],
   "rules": {
     "no-unused-vars": "off",
     "vue/require-default-prop": "off",
@@ -8,8 +11,8 @@
       {
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_",
-        "caughtErrorsIgnorePattern": "^_",
-      },
-    ],
-  },
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ]
+  }
 }

@@ -18,12 +18,18 @@
             </UiDialogHeader>
             <div class="individual-form-align">
               <label for="frole" class="pb-2 pl-0 font-medium">Bot Name</label>
-              <input type="text" id="frole" v-model="newBotName" name="fname" placeholder="Enter Bot Name" />
+              <input
+                type="text"
+                id="frole"
+                v-model="newBotName"
+                name="fname"
+                placeholder="Enter Bot Name"
+              />
               <UiButton
                 @click="addBot"
-                class="mt-4 w-1/2 bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
-                >Create</UiButton
-              >
+                class="mt-4 w-1/2 self-end bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
+                >Create
+              </UiButton>
             </div>
           </UiDialogContent>
         </UiDialog>
@@ -57,65 +63,52 @@
         >
       </div>
     </div>
-    <div class="bot-main-align rounded-lg">
-      <div class="list-header-align">
-        <div class="header-content-align">
-          <span class="content-align font-extrabold text-black">Bot Name</span>
-          <span class="content-align font-extrabold text-black"
-            >Date Created</span
-          >
-          <span class="content-align font-extrabold text-black">Status</span>
-        </div>
+    <div class="bot-main-align max-h-[80vh] overflow-y-scroll px-4">
+      <div class="flex items-center gap-2 py-4">
+        <Input class="max-w-sm" placeholder="Search bot..." />
+        <!-- <DropdownMenu>
+          <DropdownMenuTrigger as-child>
+            <Button variant="outline" class="ml-auto">
+              Columns
+              <ChevronDown class="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuCheckboxItem v-for="column in table.getAllColumns().filter((column) => column.getCanHide())"
+              :key="column.id" class="capitalize" :checked="column.getIsVisible()" @update:checked="(value) => {
+                column.toggleVisibility(!!value)
+              }">
+              {{ column.id }}
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu> -->
       </div>
-      <div class="overflow_align mt-3">
-        <div v-if="botList.length" class="list_align">
-          <div
-            class="bot-list-align text-[15px]"
-            v-for="(list, index) in botList"
-            :key="index"
-            @click="botManagementDetails(list)"
-          >
-            <span class="bot_name_align font-bold ">{{
-              list.name
-            }}</span>
-            <span
-              class="createAt_align font-medium text-black"
-              :style="{
-                'padding-inline-end': !list.status ? '110px' : '123px',
-              }"
-              >{{ list.createdAt }}</span
-            >
-            <div v-if="list.status" class="acive_class font-medium">
-              <div class="active-circle-align rounded-full"></div>
-              <span>Active</span>
-            </div>
-            <div v-else class="deacive_class pl-2 font-medium">
-              <div class="deactive-circle-align rounded-full"></div>
-              <span>Inactive</span>
-            </div>
-            <!-- v-if="!list.arrowChange" -->
-            <div class="pr-4">
-              <!-- <img src="assets\icons\left_arrow.svg" width="30"> -->
-              <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
-            </div>
-            <!-- <div v-else>
-              <img src="assets\icons\yellow_left_arrow.svg" width="30">
-            </div> -->
-          </div>
-          <!-- <div>
-          </div> -->
-        </div>
-        <div
-          v-else
-          class="font-regular flex items-center justify-center text-[#8A8A8A]"
-        >
-          No bots created
-        </div>
-      </div>
+
+      <DataTable
+        @row-click="
+          (row: any) => {
+            console.log({ row });
+            return navigateTo(`/bots/${row.original.id}`);
+          }
+        "
+        :columns="columns"
+        :data="bots"
+        :page-size="8"
+        :is-loading="isDataLoading"
+      />
     </div>
   </div>
 </template>
 <script setup lang="ts">
+  import { Input } from "@/components/ui/input";
+  import { createColumnHelper } from "@tanstack/vue-table";
+  // import {
+  //   DropdownMenu,
+  //   DropdownMenuCheckboxItem,
+  //   DropdownMenuContent,
+  //   DropdownMenuTrigger,
+  // } from '@/components/ui/dropdown-menu'
+
   definePageMeta({
     middleware: "admin-only",
   });
@@ -149,8 +142,21 @@
       value: "Yearly",
     },
   ]);
-  const previousIndex = ref(0);
-  const botList = await listApiBots();
+  // const botList = await listApiBots();
+
+  const { status, data: bots } = await useLazyFetch("/api/bots", {
+    server: false,
+    default: () => [],
+    transform: (bots) =>
+      bots.map((bot) => ({
+        id: bot.id,
+        name: bot.name,
+        status: bot.documentId ? true : false,
+        createdAt: formatDateStringToDate(bot.createdAt),
+      })),
+  });
+  const isDataLoading = computed(() => status.value === "pending");
+
   const addBot = async () => {
     const bot = await $fetch("/api/bots", {
       method: "POST",
@@ -160,17 +166,38 @@
       },
     });
     return navigateTo({
-      name: "BotManagementDetails-id",
+      name: "bots-id",
       params: { id: bot.id },
     });
   };
 
   const botManagementDetails = async (list: any) => {
     return navigateTo({
-      name: "BotManagementDetails-id",
+      name: "bots-id",
       params: { id: list.id },
     });
   };
+
+  const statusComponent = (status: boolean) =>
+    status
+      ? h("span", { class: "text-green-500" }, "Active")
+      : h("span", { class: "text-red-500" }, "Inactive");
+
+  const columnHelper = createColumnHelper<(typeof bots.value)[0]>();
+  const columns = [
+    columnHelper.accessor("name", {
+      header: "Bot Name",
+    }),
+    columnHelper.accessor("createdAt", {
+      header: "Date Created",
+    }),
+    columnHelper.accessor("status", {
+      header: "Status",
+      cell: ({ row }) => {
+        return statusComponent(row.original.status);
+      },
+    }),
+  ];
 </script>
 
 <style scoped>
@@ -216,11 +243,10 @@
   }
 
   .bot-main-align {
-    padding: 20px;
     margin-top: 30px;
     background: rgba(255, 255, 255, 1);
     box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05);
-    height: calc(100vh - 150px);
+    height: calc(100vh - 0px);
     /* overflow-y: scroll; */
   }
 

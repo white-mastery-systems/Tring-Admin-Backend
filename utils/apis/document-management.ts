@@ -14,7 +14,7 @@ export const deployDocument = async (botId: string, documentId: string) => {
   await $fetch(`/api/bots/${botId}/documents/${documentId}/deploy`);
   toast.success("Document deployed successfully");
   await navigateTo({
-    name: "BotManagementDetails-id",
+    name: "bots-id",
     params: { id: botId },
   });
 };

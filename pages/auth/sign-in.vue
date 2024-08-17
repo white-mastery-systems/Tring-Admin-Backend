@@ -3,6 +3,10 @@ definePageMeta({
   layout: "auth",
   middleware: "guest-only",
 });
+definePageMeta({
+  layout: "auth",
+  middleware: "guest-only",
+});
 
 const loginData = reactive({
   email: "",
@@ -20,7 +24,26 @@ const passwordVisible = ref(false);
 const animationProps = {
   duration: 500,
 };
+const loginData = reactive({
+  email: "",
+  password: "",
+});
+const formSchema = toTypedSchema(
+  z.object({
+    email: z.string().email("Invalid email address."),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters long."),
+  }),
+);
+const passwordVisible = ref(false);
+const animationProps = {
+  duration: 500,
+};
 
+const togglePasswordVisibility = () => {
+  passwordVisible.value = !passwordVisible.value;
+};
 const togglePasswordVisibility = () => {
   passwordVisible.value = !passwordVisible.value;
 };

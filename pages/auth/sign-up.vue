@@ -43,7 +43,26 @@ const togglePasswordVisibility = () => {
 const toggleConfirmPasswordVisibility = () => {
   confirmPasswordVisible.value = !confirmPasswordVisible.value;
 };
+const togglePasswordVisibility = () => {
+  passwordVisible.value = !passwordVisible.value;
+};
+const toggleConfirmPasswordVisibility = () => {
+  confirmPasswordVisible.value = !confirmPasswordVisible.value;
+};
 
+const onSubmit = (values: any) => {
+  // if (
+  //   loginData.username.length < 1 ||
+  //   loginData.password.length < 1 ||
+  //   loginData.password !== loginData.confirmPassword
+  // ) {
+  //   toast.error("Please enter valid details");
+  // }
+  authHandlers.signup({
+    email: values.username,
+    password: values.password,
+  });
+};
 const onSubmit = (values: any) => {
   // if (
   //   loginData.username.length < 1 ||
@@ -107,7 +126,8 @@ const onSubmit = (values: any) => {
             <UiFormControl>
               <UiInput v-bind="componentField" placeholder="Confirm Your Password"
                 :type="confirmPasswordVisible ? 'text' : 'password'" class="outline-none font-medium h-[50px] rounded-lg bg-[#F6F6F6]" />
-              <div @click="toggleConfirmPasswordVisibility" type="button" class="absolute top-[38px] right-[10px]">
+              <div variant="outline" size="icon" @click="toggleConfirmPasswordVisibility" type="button"
+                class="absolute top-[38px] right-[10px]">
                 <OpenEye v-if="confirmPasswordVisible" />
                 <CloseEyeIcon v-else />
               </div>
