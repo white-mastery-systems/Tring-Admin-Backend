@@ -96,3 +96,7 @@ export function hslToHex(hslString) {
 
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
+
+export function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

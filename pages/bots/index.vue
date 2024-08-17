@@ -27,9 +27,9 @@
               />
               <UiButton
                 @click="addBot"
-                class="mt-4 w-1/2 bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
-                >Create</UiButton
-              >
+                class="mt-4 w-1/2 self-end bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
+                >Create
+              </UiButton>
             </div>
           </UiDialogContent>
         </UiDialog>
@@ -63,13 +63,51 @@
         >
       </div>
     </div>
-    <div class="bot-main-align">
-      <DataTable :columns="columns" :data="botList" :page-size="10" />
+    <div class="bot-main-align max-h-[80vh] overflow-y-scroll px-4">
+      <div class="flex items-center gap-2 py-4">
+        <Input class="max-w-sm" placeholder="Search bot..." />
+        <!-- <DropdownMenu>
+          <DropdownMenuTrigger as-child>
+            <Button variant="outline" class="ml-auto">
+              Columns
+              <ChevronDown class="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuCheckboxItem v-for="column in table.getAllColumns().filter((column) => column.getCanHide())"
+              :key="column.id" class="capitalize" :checked="column.getIsVisible()" @update:checked="(value) => {
+                column.toggleVisibility(!!value)
+              }">
+              {{ column.id }}
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu> -->
+      </div>
+
+      <DataTable
+        @row-click="
+          (row: any) => {
+            console.log({ row });
+            return navigateTo(`/bots/${row.original.id}`);
+          }
+        "
+        :columns="columns"
+        :data="bots"
+        :page-size="8"
+        :is-loading="isDataLoading"
+      />
     </div>
   </div>
 </template>
 <script setup lang="ts">
+  import { Input } from "@/components/ui/input";
   import { createColumnHelper } from "@tanstack/vue-table";
+  // import {
+  //   DropdownMenu,
+  //   DropdownMenuCheckboxItem,
+  //   DropdownMenuContent,
+  //   DropdownMenuTrigger,
+  // } from '@/components/ui/dropdown-menu'
 
   definePageMeta({
     middleware: "admin-only",
@@ -104,8 +142,21 @@
       value: "Yearly",
     },
   ]);
-  const previousIndex = ref(0);
-  const botList = await listApiBots();
+  // const botList = await listApiBots();
+
+  const { status, data: bots } = await useLazyFetch("/api/bots", {
+    server: false,
+    default: () => [],
+    transform: (bots) =>
+      bots.map((bot) => ({
+        id: bot.id,
+        name: bot.name,
+        status: bot.documentId ? true : false,
+        createdAt: formatDateStringToDate(bot.createdAt),
+      })),
+  });
+  const isDataLoading = computed(() => status.value === "pending");
+
   const addBot = async () => {
     const bot = await $fetch("/api/bots", {
       method: "POST",
@@ -115,14 +166,14 @@
       },
     });
     return navigateTo({
-      name: "BotManagementDetails-id",
+      name: "bots-id",
       params: { id: bot.id },
     });
   };
 
   const botManagementDetails = async (list: any) => {
     return navigateTo({
-      name: "BotManagementDetails-id",
+      name: "bots-id",
       params: { id: list.id },
     });
   };
@@ -132,7 +183,7 @@
       ? h("span", { class: "text-green-500" }, "Active")
       : h("span", { class: "text-red-500" }, "Inactive");
 
-  const columnHelper = createColumnHelper<(typeof botList)[0]>();
+  const columnHelper = createColumnHelper<(typeof bots.value)[0]>();
   const columns = [
     columnHelper.accessor("name", {
       header: "Bot Name",
@@ -192,11 +243,10 @@
   }
 
   .bot-main-align {
-    padding: 20px;
     margin-top: 30px;
     background: rgba(255, 255, 255, 1);
     box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05);
-    height: calc(100vh - 150px);
+    height: calc(100vh - 0px);
     /* overflow-y: scroll; */
   }
 

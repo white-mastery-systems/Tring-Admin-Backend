@@ -10,6 +10,6 @@
   <td
     :class="cn('p-4 align-middle [&:has([role=checkbox])]:pr-0', props.class)"
   >
-    <slot />
+    <slot></slot>
   </td>
 </template>

@@ -2,10 +2,10 @@
   import type { ColumnDef, SortingState } from "@tanstack/vue-table";
   import {
     FlexRender,
-    useVueTable,
     getCoreRowModel,
     getPaginationRowModel,
     getSortedRowModel,
+    useVueTable,
   } from "@tanstack/vue-table";
 
   const props = defineProps<{
@@ -13,6 +13,7 @@
     columns: ColumnDef<T, any>[];
     footer?: boolean;
     pageSize?: number;
+    isLoading?: boolean;
   }>();
 
   const sorting = ref<SortingState>([]);
@@ -52,7 +53,7 @@
             <UiTableHead
               v-for="header in headerGroup.headers"
               :key="header.id"
-              class="text-nowrap px-6 py-5 text-lg font-bold text-gray-700"
+              class="text-md text-nowrap px-6 py-2 font-extrabold text-gray-700"
               scope="col"
               @click="header.column.getToggleSortingHandler()?.($event)"
             >
@@ -65,17 +66,31 @@
           </UiTableRow>
         </UiTableHeader>
         <UiTableBody>
-          <template v-if="table.getRowModel().rows?.length">
+          <tr v-if="isLoading" class="h-36">
+            <td :colspan="columns.length">
+              <div class="grid h-full place-items-center">
+                <Icon
+                  name="svg-spinners:90-ring-with-bg"
+                  class="mx-auto h-8 w-8"
+                />
+              </div>
+            </td>
+          </tr>
+          <template
+            class="bg-black-400"
+            v-else-if="table.getRowModel().rows?.length"
+          >
             <UiTableRow
               v-for="row in table.getRowModel().rows"
               :key="row.id"
-              class="border-b p-2 even:bg-white"
+              class="cursor-pointer border-b p-1 even:bg-white"
+              @click="$emit('row-click', row)"
               :data-state="row.getIsSelected() && 'selected'"
             >
               <UiTableCell
                 v-for="cell in row.getVisibleCells()"
                 :key="cell.id"
-                class="px-6 py-4 text-lg font-semibold"
+                class="text-md px-6 py-4 font-semibold"
               >
                 <FlexRender
                   :render="cell.column.columnDef.cell"
@@ -98,7 +113,7 @@
             <UiTableHead
               v-for="footer_h in footerGroup.headers"
               :key="footer_h.id"
-              class="px-6 font-bold lg:text-lg"
+              class="mx-6 px-6 font-bold lg:text-lg"
               :colspan="footer_h.colSpan"
             >
               <FlexRender
@@ -120,11 +135,16 @@
         {{ table.getFilteredRowModel().rows.length }} results
       </p>
       <div class="flex space-x-4">
-        <UiButton size="icon" @click="table.setPageIndex(0)">
+        <UiButton
+          size="icon"
+          @click="table.setPageIndex(0)"
+          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
+        >
           <Icon name="lucide:chevrons-left" class="h-6 w-6" />
         </UiButton>
         <UiButton
           size="icon"
+          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
           :disabled="!table.getCanPreviousPage()"
           @click="table.previousPage()"
         >
@@ -134,12 +154,14 @@
           size="icon"
           :disabled="!table.getCanNextPage()"
           @click="table.nextPage()"
+          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
         >
           <Icon name="lucide:chevron-right" class="h-6 w-6" />
         </UiButton>
         <UiButton
           size="icon"
           @click="table.setPageIndex(table.getPageCount() - 1)"
+          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
         >
           <Icon name="lucide:chevrons-right" class="h-6 w-6" />
         </UiButton>

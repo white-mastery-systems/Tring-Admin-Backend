@@ -4,11 +4,16 @@
       <div class="flex items-center">
         <span class="text-[20px] font-bold">Leads</span>
       </div>
-      <div v-if="false" class="flex items-center space-x-4" style="width: 350px">
+      <div
+        v-if="false"
+        class="flex items-center space-x-4"
+        style="width: 350px"
+      >
         <span class="calender-align">
           <img src="assets\icons\calendar_month.svg" width="20" />
         </span>
-        <span class="right-dropdown-align" style="color: rgba(138, 138, 138, 1)">Filter:
+        <span class="right-dropdown-align" style="color: rgba(138, 138, 138, 1)"
+          >Filter:
           <span class="text-[14px] font-bold text-black">
             <UiSelect v-model="selectedValue">
               <UiSelectTrigger class="ui-select-trigger w-[110px]">
@@ -26,7 +31,8 @@
                 </UiSelectGroup>
               </UiSelectContent>
             </UiSelect>
-          </span></span>
+          </span></span
+        >
         <span>
           <img src="assets\icons\export_btn.svg" width="110" />
         </span>
@@ -38,13 +44,13 @@
           Total Chats:
           <span style="color: rgba(66, 75, 209, 1)">{{
             analyticsData?.chats
-            }}</span>
+          }}</span>
         </span>
         <span class="font-bold">
           Total Leads:
           <span style="color: rgba(66, 75, 209, 1)">{{
             analyticsData?.leads
-            }}</span>
+          }}</span>
         </span>
       </div>
       <!-- <span>
@@ -55,66 +61,19 @@
         <span class="only-content-align"> (Only Pdf) </span>
       </div> -->
     </div>
-    <div class="bot-main-align rounded-lg">
-      <div class="list-header-align">
-        <div class="header-content-align px-[13px]">
-          <span class="content-align font-extrabold text-black">Lead Name</span>
-          <span class="content-align font-extrabold text-black">Bot Name</span>
-          <span class="content-align font-extrabold text-black"
-            >Date Created</span
-          >
-          <span class="content-align font-extrabold text-black">Actions</span>
-        </div>
-      </div>
-      <div class="content-scroll-align cursor-pointer">
-        <!-- {{ rep }} || asda -->
-        <div style="height: 100%" v-if="ListLeads.length" class="px-[15px] overflow-y-auto pb-3">
-          <div class="bot-list-align" v-for="(list, index) in ListLeads" :key="index" @click="
-              async () => {
-                await navigateTo({
-                  name: 'AnalyticsLeadsInfo-id',
-                  params: { id: list.chatId },
-                });
-              }
-            ">
-            <div class="list_align">
-              <span class="user_name_align font-bold">{{
-                list.botUser.name
-                }}</span>
-              <span class="bot_name_align font-medium">{{
-                list.bot.name
-                }}</span>
-              <span class="create_at-align font-medium">{{
-                formatDateStringToDate(list.createdAt)
-                }}</span>
-              <!-- <div v-if="list.status" class="acive_class font-medium">
-                <div class="rounded-full active-circle-align"></div>
-                <span>Active</span>
-              </div> -->
-              <span class="view_align" @click="viewBot(list.chatId)">
-                <img src="assets\icons\Edit_view.svg" width="70" />
-              </span>
-              <!-- <div v-else-if="list.Processing" class="process_class font-medium">
-                <div class="rounded-full process-circle-align"></div>
-                <span>Processing</span>
-              </div>
-              <div v-else class="deacive_class font-medium">
-                <div class="rounded-full deactive-circle-align"></div>
-                <span>Inactive</span>
-              </div> -->
-              <!-- <span>
-                <img src="assets\icons\more_horiz.svg" width="30">
-              </span> -->
-            </div>
-            <!-- <div>
-              <img src="assets\icons\left_arrow.svg" width="30">
-            </div> -->
-          </div>
-        </div>
-        <div v-else class="font-regular flex items-center justify-center text-[#8A8A8A]">
-          No leads generated
-        </div>
-      </div>
+    <div class="bot-main-align">
+      <DataTable
+        :data="leads"
+        :is-loading="isDataLoading"
+        :columns="columns"
+        :page-size="8"
+        @row-click="
+          (row: any) => {
+            console.log({ row });
+            navigateTo(`/leads/${row.original.chatId}`);
+          }
+        "
+      />
     </div>
   </div>
 </template>
@@ -122,13 +81,20 @@
   definePageMeta({
     middleware: "admin-only",
   });
-  import { ref } from "vue";
+  import { createColumnHelper } from "@tanstack/vue-table";
+  import { Icon, UiButton } from "#components";
 
   const selectedValue = ref("Today");
   const loading = ref(true);
   const error: any = ref(null);
   // const ListLeads = ref()
   const ListLeads = await listLeads();
+
+  const { status, data: leads } = await useLazyFetch("/api/org/leads", {
+    server: false,
+    default: () => [],
+  });
+  const isDataLoading = computed(() => status.value === "pending");
 
   const analyticsData = ref();
 
@@ -145,10 +111,37 @@
 
   const viewBot = async (chatId: any) => {
     await navigateTo({
-      name: "AnalyticsLeadsInfo-id",
+      name: "leads-id",
       params: { id: chatId },
     });
   };
+
+  const columnHelper = createColumnHelper<(typeof leads.value)[0]>();
+  const columns = [
+    columnHelper.accessor("botUser.name", {
+      header: "Lead Name",
+    }),
+    columnHelper.accessor("bot.name", {
+      header: "Bot Name",
+    }),
+    columnHelper.accessor("createdAt", {
+      header: "Date Created",
+      cell: ({ row }) =>
+        formatDate(new Date(row.original.createdAt), "dd.MM.yyyy"),
+    }),
+    columnHelper.accessor("id", {
+      header: "Action",
+      cell: ({ row }) =>
+        h(
+          UiButton,
+          {
+            onClick: () => viewBot(row.original.id),
+            class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
+          },
+          [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
+        ),
+    }),
+  ];
 </script>
 
 <style scoped>
