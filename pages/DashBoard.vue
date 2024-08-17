@@ -1,6 +1,6 @@
 <template>
-  <div class="dashboard-main-container">
-    <div class="header-align">
+  <div class="dashboard-main-container px-6">
+    <div class="header-alignflex items-center ">
       <span class="text-[20px] font-bold">Dashboard</span>
       <div class="flex items-center gap-3">
         <!-- <span class="calender-align">
@@ -267,7 +267,7 @@
     --tw-ring-offset-width: none;
   }
   .dashboard-main-container {
-    padding: 0px 25px;
+    /* padding: 0px 25px; */
     /* width: 100%; */
     height: calc(100vh - 30px);
     /* overflow-y: scroll; */

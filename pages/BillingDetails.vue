@@ -223,7 +223,7 @@ const billingVariation = ref([
 ]);
 const orgBilling = await $fetch("/api/org/usage");
 
-
+const choosePlan = async (plan: any) => {
     if (!plan) {
       return navigateTo("https://tring-web.pripod.com/contact", {
         external: true,

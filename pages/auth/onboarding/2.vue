@@ -1,247 +1,165 @@
 <script setup lang="ts">
-  const showCustomRoleInput = ref(false);
+const showCustomRoleInput = ref(false);
 
-  definePageMeta({
-    layout: "auth",
-  });
-
-  const loginData = reactive({
-    name: "",
-    industry: "Real Estate",
-    customIndustry: "",
-    avgTraffic: "Less than 100 visits",
-    employeeCount: "Less than 10 employees",
-  });
-
-  const handleRoleChange = (selectItem: any) => {
-    if (loginData.industry === "Other") {
-      showCustomRoleInput.value = true;
+definePageMeta({
+  layout: "auth",
+});
+const formSchema = toTypedSchema(
+  z.object({
+    name: z.string().min(1, 'Company Name is required'),
+    industry: z.string().min(2, "Industry must be provided."),
+    avgTraffic: z.string().min(2, 'Monthly Website Traffic must be provided.'),
+    employeeCount: z.string().min(2, 'No. of Employees must be provided')
+  }).refine(
+    (data: any) => {
+      if (data.industry.toLowerCase() === "other") {
+        return data.otherRole.length >= 1;
+      }
+      return true;
+    },
+    {
+      message: "Other role must be provided",
+      path: ["otherRole"],
+    },
+  ).transform((data: any) => {
+    if (data.industry.toLowerCase() === "other") {
+      return { ...data, industry: data.otherRole };
     }
-  };
-  const handleChange = () => {
-    loginData.customIndustry = loginData.industry;
-  };
-  const onSubmit = async () => {
-    if (loginData.name.length < 1) {
-      toast.error("Please enter valid details");
-      return;
-    }
+    return data;
+  })
+)
+const animationProps = {
+  duration: 500,
+};
 
-    await $fetch("/api/auth/onboarding/2", {
-      method: "POST",
-      body: loginData,
-    });
-    return navigateTo("/DashBoard");
-  };
+const defaultFormValues = reactive({
+  name: "",
+  industry: "Real Estate",
+  customIndustry: "",
+  avgTraffic: "Less than 100 visits",
+  employeeCount: "Less than 10 employees",
+});
+const industry = ['Real Estate', 'Finance', 'Healthcare', 'Technology', 'Education', 'Other']
+const avgTraffic = ['Less than 100 visits', '100-500 visits', '500-1000 visits', '1000-5000 visits', '5000-10000 visits', '10000+ visits']
+const employeeCount = ['Less than 10 employees', '10-50 employees', '50-100 employees', '100-500 employees', '500-1000 employees', '1000+ employees']
+
+const onSubmit = async (value: any) => {
+  // if (loginData.name.length < 1) {
+  //   toast.error("Please enter valid details");
+  //   return;
+  // }
+
+  await $fetch("/api/auth/onboarding/2", {
+    method: "POST",
+    body: value,
+  });
+  return navigateTo("/DashBoard");
+};
 </script>
 <template>
-  <div class="sign-in-align">
-    <div class="top-content-align flex items-center gap-1 font-bold">
+  <div class="flex flex-col items-center justify-center w-full h-full">
+    <div class="text-[#424bd1] w-[80%] px-[21px] pb-[20px] flex items-center gap-1 font-bold">
       <RightArrow />
       <span> Company Details </span>
     </div>
-    <div class="form-align">
-      <!-- <div> -->
-      <div class="individual-form-align">
-        <label for="fpassword" class="font-bold">Company Name *</label>
-        <div class="input-container">
-          <UiInput v-model="loginData.name" class="font-medium" placeholder="Enter Your Company Name" />
+    <div class="flex flex-col w-[80%] px-6">
+      <UiForm :validation-schema="formSchema" :keep-values="true" :initial-values="defaultFormValues"
+        :validate-on-mount="false" @submit="onSubmit" class="space-y-5">
+        <UiFormField v-slot="{ componentField }" name="name">
+          <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormLabel class="font-bold"> Company Name <UiLabel class="text-red-500 text-lg">*</UiLabel>
+            </UiFormLabel>
+            <UiFormControl>
+              <UiInput v-bind="componentField" type="text" placeholder="Enter your Company Name"
+                class="h-[50px] font-regular border-none bg-[#F6F6F6]" />
+            </UiFormControl>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
+        <!-- <div class="flex gap-4 mb-4"> -->
+        <UiFormField v-slot="{ componentField }" name="industry">
+          <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormLabel class="font-bold"> Industry <UiLabel class="text-red-500 text-lg">*</UiLabel>
+            </UiFormLabel>
+            <UiFormControl>
+              <UiSelect v-bind="componentField">
+                <UiSelectTrigger class="h-[50px] border-0 bg-[#FFFFFF] field_shadow">
+                  <UiSelectValue class="font-medium" />
+                </UiSelectTrigger>
+                <UiSelectContent>
+                  <UiSelectItem v-for="(role, index) in industry" :value="role">{{
+                    role
+                    }}</UiSelectItem>
+                </UiSelectContent>
+              </UiSelect>
+              <UiFormField v-if="componentField.modelValue === 'Other'" v-slot="{ componentField }" name="otherRole">
+                <UiFormItem v-auto-animate="animationProps" class="w-full">
+                  <UiFormControl>
+                    <UiInput v-bind="componentField" type="text" class="h-[50px]" />
+                  </UiFormControl>
+                  <UiFormMessage />
+                </UiFormItem>
+              </UiFormField>
+            </UiFormControl>
+            <UiFormMessage />
+            <!-- <span class="text-xs text-gray-500">This will determine the role of the bot and behavior.</span> -->
+          </UiFormItem>
+        </UiFormField>
+        <UiFormField v-slot="{ componentField }" name="avgTraffic">
+          <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormLabel class="font-bold"> Monthly Website Traffic <UiLabel class="text-red-500 text-lg">*</UiLabel>
+            </UiFormLabel>
+            <UiFormControl>
+              <UiSelect v-bind="componentField">
+                <UiSelectTrigger class="h-[50px] border-0 bg-[#FFFFFF] field_shadow">
+                  <UiSelectValue class="font-medium" />
+                </UiSelectTrigger>
+                <UiSelectContent>
+                  <UiSelectItem v-for="(traffic, index) in avgTraffic" :value="traffic">{{
+                    traffic
+                    }}</UiSelectItem>
+                </UiSelectContent>
+              </UiSelect>
+            </UiFormControl>
+            <UiFormMessage />
+            <!-- <span class="text-xs text-gray-500">This will determine the role of the bot and behavior.</span> -->
+          </UiFormItem>
+        </UiFormField>
+        <!-- </div> -->
+        <div class="mb-[10px]">
+          <UiFormField v-slot="{ componentField }" name="employeeCount">
+            <UiFormItem v-auto-animate="animationProps" class="w-full">
+              <UiFormLabel class="font-bold"> No. of Employees <UiLabel class="text-red-500 text-lg">*</UiLabel>
+              </UiFormLabel>
+              <UiFormControl>
+                <UiSelect v-bind="componentField">
+                  <UiSelectTrigger class="h-[50px] border-0 bg-[#FFFFFF] field_shadow">
+                    <UiSelectValue class="font-medium" />
+                  </UiSelectTrigger>
+                  <UiSelectContent>
+                    <UiSelectItem v-for="(countList, index) in employeeCount" :value="countList">{{
+                      countList
+                      }}</UiSelectItem>
+                  </UiSelectContent>
+                </UiSelect>
+              </UiFormControl>
+              <UiFormMessage />
+              <!-- <span class="text-xs text-gray-500">This will determine the role of the bot and behavior.</span> -->
+            </UiFormItem>
+          </UiFormField>
         </div>
-      </div>
-      <div class="individual-form-align">
-        <label for="fpassword" class="font-bold">Industry *</label>
-        <div class="input-container">
-          <UiSelect v-model="loginData.industry" @update:model-value="handleRoleChange(loginData.industry)">
-            <UiSelectTrigger class="select-input-align font-medium"> {{ loginData.industry }} </UiSelectTrigger>
-            <UiSelectContent>
-              <UiSelectItem value="Real Estate">Real Estate</UiSelectItem>
-              <UiSelectItem value="Finance">Finance</UiSelectItem>
-              <UiSelectItem value="Healthcare">Healthcare</UiSelectItem>
-              <UiSelectItem value="Technology">Technology</UiSelectItem>
-              <UiSelectItem value="Education">Education</UiSelectItem>
-              <UiSelectItem value="Other">Other</UiSelectItem>
-            </UiSelectContent>
-          </UiSelect>
-        </div>
-      </div>
-      <div v-if="showCustomRoleInput" class="individual-form-align">
-        <!-- <label for="fmail" class="mb-4 font-bold">Enter your Role</label> -->
-        <div class="input-container">
-          <input @change="handleChange()" class="mb-2 mt-2 font-medium" type="otp" id="fmail" name="otp"
-            placeholder="Enter your Industry" v-model="loginData.customIndustry" />
-        </div>
-      </div>
-      <div class="individual-form-align">
-        <label for="fpassword" class="font-bold">Monthly Website Traffic *</label>
-        <div class="input-container">
-          <UiSelect v-model="loginData.avgTraffic">
-            <UiSelectTrigger class="select-input-align font-medium"> {{ loginData.avgTraffic }} </UiSelectTrigger>
-            <UiSelectContent>
-              <UiSelectItem value="Less than 100 visits"
-                >Less than 100 visits</UiSelectItem
-              >
-              <UiSelectItem value="100-500 visits">100-500 visits</UiSelectItem>
-              <UiSelectItem value="500-1000 visits"
-                >500-1000 visits</UiSelectItem
-              >
-              <UiSelectItem value="1000-5000 visits"
-                >1000-5000 visits</UiSelectItem
-              >
-              <UiSelectItem value="5000-10000 visits"
-                >5000-10000 visits</UiSelectItem
-              >
-              <UiSelectItem value="10000+ visits">10000+ visits</UiSelectItem>
-            </UiSelectContent>
-          </UiSelect>
-        </div>
-        <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
-      </div>
-      <div class="individual-form-align">
-        <label for="fmail" class="mb-4 font-bold">No. of Employees *</label>
-        <div class="input-container">
-          <UiSelect v-model="loginData.employeeCount">
-            <UiSelectTrigger class="select-input-align font-medium"> {{ loginData.employeeCount }} </UiSelectTrigger>
-            <UiSelectContent>
-              <UiSelectItem value="Less than 10 employees"
-                >Less than 10 employees</UiSelectItem
-              >
-              <UiSelectItem value="10-50 employees"
-                >10-50 employees</UiSelectItem
-              >
-              <UiSelectItem value="50-100 employees"
-                >50-100 employees</UiSelectItem
-              >
-              <UiSelectItem value="100-500 employees"
-                >100-500 employees</UiSelectItem
-              >
-              <UiSelectItem value="500-1000 employees"
-                >500-1000 employees</UiSelectItem
-              >
-              <UiSelectItem value="1000+ employees"
-                >1000+ employees</UiSelectItem
-              >
-            </UiSelectContent>
-          </UiSelect>
-        </div>
-      </div>
-      <div class="submit-btn-align">
-        <button class="font-bold" type="submit" @click="onSubmit">
+        <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110 w-full mt-[15px]" size="lg">
           Proceed
-        </button>
-      </div>
-      <!-- </div> -->
+        </UiButton>
+      </UiForm>
     </div>
-    <div class="footer-align flex items-center gap-1">
-      <span class="bottom-content-align">
+    <div class="absolute bottom-[30px] flex items-center gap-1">
+      <span class="text-[#8a8a8a] text-[12px]">
         By Signing up, I Agree to Tring AI
       </span>
-      <a
-        target="_blank"
-        href="https://tringlabs.ai/terms-and-conditions"
-        class="term-align"
-      >
+      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="text-[12px] underline">
         Terms & Conditions
       </a>
     </div>
   </div>
 </template>
-<style scoped>
-  .sign-in-align {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-  }
-
-  .top-content-align {
-    color: #424bd1;
-    width: 80%;
-    padding: 0 22px;
-    /* padding-right: 172px; */
-    padding-bottom: 20px;
-  }
-
-  .form-align {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: 80%;
-    padding: 0 25px;
-  }
-
-  /* .individual-form-align {
-    gap: 5px;
-  } */
-  .individual-form-align input {
-    background-color: rgba(246, 246, 246, 1);
-    width: 100%;
-    height: 50px;
-    outline: none;
-    border-radius: 10px;
-    padding: 0 20px;
-  }
-
-  .submit-btn-align {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-
-  .submit-btn-align button {
-    width: 100%;
-    height: 50px;
-    border-radius: 10px;
-    padding: 0 20px;
-    background: #424bd1;
-    color: #ffffff;
-    margin-top: 30px;
-    /* margin-right: 170px; */
-  }
-
-  .input-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    margin-top: 5px;
-  }
-
-  input[type="password"] {
-    padding-right: 2.5rem;
-    /* Adjust based on the icon size */
-    width: 100%;
-  }
-
-  .eye-icon {
-    position: absolute;
-    right: 0.5rem;
-    /* Adjust based on your design */
-    cursor: pointer;
-    font-size: 1rem;
-    /* Adjust size as needed */
-  }
-
-  .eye-icon i {
-    display: inline-block;
-  }
-
-  .bottom-content-align {
-    color: #8a8a8a;
-    font-size: 12px;
-  }
-
-  .term-align {
-    font-size: 12px;
-    text-decoration: underline;
-  }
-
-  .footer-align {
-    position: absolute;
-    bottom: 30px;
-  }
-  .select-input-align {
-    height: 53px;
-  }
-</style>
