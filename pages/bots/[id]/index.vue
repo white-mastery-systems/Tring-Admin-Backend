@@ -6,11 +6,14 @@
           <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
         </UiButton>
         <span class="text-[20px] font-bold">{{ botDetails.name }}</span>
-
       </div>
 
-      <ConfirmationModal v-model:open="modelOpen" title="Confirm Delete" description="Are you sure you want to delete ?"
-        @confirm="handleDeleteBot" />
+      <ConfirmationModal
+        v-model:open="modelOpen"
+        title="Confirm Delete"
+        description="Are you sure you want to delete ?"
+        @confirm="handleDeleteBot"
+      />
     </div>
     <div class="bot-main-align">
       <div class="list-header-align">
@@ -27,65 +30,106 @@
             </div>
           </div>
           <div class="flex items-center gap-4">
-            <span class="text-[17px] font-bold text-black">Date Created:
+            <span class="text-[17px] font-bold text-black"
+              >Date Created:
               <span class="text-[15px] font-medium text-black">{{
                 dateFormate
-                }}</span>
+              }}</span>
             </span>
-            <UiButton class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50" @click="handleActivateBot"
-              :disabled="isSubmitting" v-if="!botDetails.documentId">
-              Activate Bot</UiButton>
-
-
+            <UiButton
+              class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50"
+              @click="handleActivateBot"
+              :disabled="isSubmitting"
+              v-if="!botDetails.documentId"
+            >
+              Activate Bot</UiButton
+            >
             <span v-if="botDetails.documentId" class="flex gap-4">
-              <UiButton class="button-align text-[14px] font-medium" @click="deactivateBot">Deactivate Bot</UiButton>
-              <ConfirmationModal v-model:open="modalOpen" title="Confirm Deactivation"
-                description="Are you sure you want to deactivate bot ?" @confirm="deactivateBotDialog" />
-              <UiButton as="a" :href="previewUrl" target="_blank"
-                class="bg-[#474df9] text-[14px] font-medium text-white hover:bg-[#474df9] hover:brightness-90">Preview
-                Bot</UiButton>
-              <UiButton class="bg-[#e1dede] text-black hover:bg-[#d4d2d2]" @click="copyScript">Copy Script</UiButton>
+              <UiButton
+                class="button-align text-[14px] font-medium"
+                @click="deactivateBot"
+                >Deactivate Bot</UiButton
+              >
+              <ConfirmationModal
+                v-model:open="modalOpen"
+                title="Confirm Deactivation"
+                description="Are you sure you want to deactivate bot ?"
+                @confirm="deactivateBotDialog"
+              />
+              <UiButton
+                as="a"
+                :href="previewUrl"
+                target="_blank"
+                class="bg-[#474df9] text-[14px] font-medium text-white hover:bg-[#474df9] hover:brightness-90"
+                >Preview Bot</UiButton
+              >
+              <UiButton
+                class="bg-[#e1dede] text-black hover:bg-[#d4d2d2]"
+                @click="copyScript"
+                >Copy Script</UiButton
+              >
             </span>
-            <UiButton variant="destructive" @click="handleDelete" class="bg-[#ff0000] hover:bg-[#ff0000]/90 pl-4">
+            <UiButton
+              variant="destructive"
+              @click="handleDelete"
+              class="bg-[#ff0000] pl-4 hover:bg-[#ff0000]/90"
+            >
               <Icon name="lucide:trash-2" />
             </UiButton>
           </div>
-          <UiDialog v-if="!botDetails.documentId" v-model:open="isDocumentListOpen">
-            <UiDialogTrigger class=""> </UiDialogTrigger>
-            <UiDialogContent align="end" class="sm:max-w-md">
-              <UiDialogHeader>
-                <UiDialogTitle>Launch Bot</UiDialogTitle>
-                <UiDialogDescription>
-                  Choose a document to deploy your bot
-                </UiDialogDescription>
-              </UiDialogHeader>
-              <UiButton class="deploy-bot-list-align text-[15px] text-black" v-for="list in getDocumentList.filter(
-                (item: any) => item.status === 'ready',
-              )" :key="list.id" @click="async () => {
-                  isSubmitting = true;
-                  isDocumentListOpen = false;
-                  await singleDocumentDeploy(list);
-                }
-                  ">
-                {{ list.name }}
-              </UiButton>
-            </UiDialogContent>
-          </UiDialog>
+
           <!-- <span class="font-semibold content-align">Date Created</span>
           <span class="font-semibold content-align">Status</span> -->
         </div>
       </div>
+      <LazyUiDialog
+        v-if="!botDetails.documentId"
+        v-model:open="isDocumentListOpen"
+      >
+        <UiDialogTrigger class=""> </UiDialogTrigger>
+        <UiDialogContent align="end" class="sm:max-w-md">
+          <UiDialogHeader>
+            <UiDialogTitle>Launch Bot</UiDialogTitle>
+            <UiDialogDescription>
+              Choose a document to deploy your bot
+            </UiDialogDescription>
+          </UiDialogHeader>
+          <UiButton
+            class="deploy-bot-list-align text-[15px] text-black"
+            v-for="list in getDocumentList.filter(
+              (item: any) => item.status === 'ready',
+            )"
+            :key="list.id"
+            @click="
+              async () => {
+                isSubmitting = true;
+                isDocumentListOpen = false;
+                await singleDocumentDeploy(list);
+              }
+            "
+          >
+            {{ list.name }}
+          </UiButton>
+        </UiDialogContent>
+      </LazyUiDialog>
       <div v-for="(list, index) in dataList" :key="index">
-        <NuxtLink :to='`${list.routeName}`' class="bot-list-align cursor-pointer text-[14px]"
-          @click="botManagementDetails(list, index)">
+        <NuxtLink
+          :to="`${list.routeName}`"
+          class="bot-list-align cursor-pointer text-[14px]"
+          @click="botManagementDetails(list, index)"
+        >
           <div class="list_align">
             <div class="flex flex-col space-y-2">
               <div class="flex flex-row gap-3">
                 <span class="bot_name_align font-medium">{{ list.bot }}</span>
-                <Icon v-if="
-                  list.bot === 'Document Management' &&
-                  botDetails.documents.length === 0
-                " class="h-6 w-6 text-red-500" name="ph:warning" />
+                <Icon
+                  v-if="
+                    list.bot === 'Document Management' &&
+                    botDetails.documents.length === 0
+                  "
+                  class="h-6 w-6 text-red-500"
+                  name="ph:warning"
+                />
               </div>
               <span class="text-xs text-gray-500">{{ list.helperText }}</span>
             </div>
@@ -101,290 +145,294 @@
         </div> -->
         </NuxtLink>
       </div>
-
     </div>
   </div>
 </template>
 <script setup lang="ts">
-definePageMeta({
-  middleware: "admin-only",
-});
-import { useClipboard } from "@vueuse/core";
-import { ref } from "vue";
-import { toast } from "vue-sonner";
-const router = useRouter();
-// const selectedValue = ref("Today");
-const route = useRoute("bots-id");
-const paramId: any = route;
-const botDetails = ref(await getBotDetails(paramId.params.id));
-const modelOpen = ref(false);
-const modalOpen = ref(false);
-const isDocumentListOpen = ref(false);
-const isSubmitting = ref(false);
-const getDocumentList: any = ref();
-
-onMounted(async () => {
-  getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
-  botDetails.value = await getBotDetails(paramId.params.id);
-});
-const handleGoBack = () => {
-  return navigateTo({
-    name: "bots",
+  definePageMeta({
+    middleware: "admin-only",
   });
-};
-const dataList = ref([
-  {
-    _id: 1,
-    bot: "UI Customization",
-    helperText: "Color,Logo,Icon etc...",
-    routeName: "bots-id-ui-customization",
-  },
+  import { useClipboard } from "@vueuse/core";
+  import { ref } from "vue";
+  import { toast } from "vue-sonner";
+  const router = useRouter();
+  // const selectedValue = ref("Today");
+  const route = useRoute("bots-id");
+  const paramId: any = route;
+  const botDetails = ref(await getBotDetails(paramId.params.id));
+  const modelOpen = ref(false);
+  const modalOpen = ref(false);
+  const isDocumentListOpen = ref(false);
+  const isSubmitting = ref(false);
+  const getDocumentList: any = ref();
 
-  {
-    _id: 3,
-    bot: "Bot Configuration",
-    helperText: "Name,Description,Notes etc...",
-    routeName: "bots-id-config",
-  },
-  {
-    _id: 4,
-    bot: "Document Management",
-    helperText: "Knowledge base,Training data etc...",
-    routeName: "bots-id-documents",
-
-  },
-]);
-
-const dateFormate = computed(() => {
-  if (botDetails && botDetails.value.createdAt) {
-    return formatDateStringToDate(botDetails.value.createdAt);
-  }
-  return null;
-});
-
-const previewUrl = computed(() => {
-  let col = botDetails.value.metadata.ui.color as string;
-  col = col
-    ?.split(" ")
-    .map((element) => {
-      if (element.at(-1) === "%") return element.slice(0, -1);
-      else return element;
-    })
-    .join(" ");
-  return `https://tring-databot.pripod.com/?orgname=WMS&chatbotid=${paramId.params.id}&brandcolor=${col}&mode=preview`;
-});
-// onMounted(async () => {
-//   console.log(paramId.params.id, "paramId")
-//   try {
-//     botDetails.value =
-//   } catch (error) {
-//     console.error("Error fetching bot details:", error);
-//   }
-// })
-
-const botManagementDetails = async (list: any, index: any) => {
-  // console.log(list.bot.trim().toLowerCase().replace(/\s+/g, ' ') , "list")
-  // if (list.bot === dataList.value[index].bot) {
-  await navigateTo({
-    name: list.routeName,
-    params: { id: paramId.params.id },
+  onMounted(async () => {
+    getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
+    botDetails.value = await getBotDetails(paramId.params.id);
   });
-  // }
-};
-const deactivateBot = async () => {
-  modalOpen.value = true;
-};
-
-const deactivateBotDialog = async () => {
-  await disableBot(paramId.params.id);
-  modalOpen.value = false;
-};
-
-const botScript =
-  "<" +
-  `script src="https://tring-databot.pripod.com/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS">` +
-  "</" +
-  "script>";
-
-const { copy } = useClipboard({ source: botScript });
-const copyScript = async () => {
-  copy(botScript);
-  toast.success("Copied to clipboard");
-};
-
-const singleDocumentDeploy = async (list: any) => {
-  console.log("Bot Id", paramId.params.id);
-  await deployDocument(paramId.params.id, list.id);
-  botDetails.value = await getBotDetails(paramId.params.id);
-};
-
-const handleDelete = () => {
-  modelOpen.value = true;
-};
-
-const handleDeleteBot = () => {
-  modelOpen.value = false;
-  deleteBot(route.params.id);
-};
-
-const handleActivateBot = async () => {
-  isSubmitting.value = true;
-  const activeDocuments = botDetails.value.documents.filter(
-    (d) => d.status === "ready",
-  );
-
-  if (activeDocuments.length === 0) {
-    toast.success("Please add document to activate bot");
+  const handleGoBack = () => {
     return navigateTo({
-      name: "bots-id-documents",
+      name: "bots",
+    });
+  };
+  const dataList = ref([
+    {
+      _id: 1,
+      bot: "UI Customization",
+      helperText: "Color,Logo,Icon etc...",
+      routeName: "bots-id-ui-customization",
+    },
+    {
+      _id: 2,
+      bot: "CRM Configuration",
+      helperText: "Add CRM Integration",
+      routeName: "bots-id-crm-config",
+    },
+
+    {
+      _id: 3,
+      bot: "Bot Configuration",
+      helperText: "Name,Description,Notes etc...",
+      routeName: "bots-id-config",
+    },
+    {
+      _id: 4,
+      bot: "Document Management",
+      helperText: "Knowledge base,Training data etc...",
+      routeName: "bots-id-documents",
+    },
+  ]);
+
+  const dateFormate = computed(() => {
+    if (botDetails && botDetails.value.createdAt) {
+      return formatDateStringToDate(botDetails.value.createdAt);
+    }
+    return null;
+  });
+
+  const previewUrl = computed(() => {
+    let col = botDetails.value.metadata.ui.color as string;
+    col = col
+      ?.split(" ")
+      .map((element) => {
+        if (element.at(-1) === "%") return element.slice(0, -1);
+        else return element;
+      })
+      .join(" ");
+    return `https://tring-databot.pripod.com/?orgname=WMS&chatbotid=${paramId.params.id}&brandcolor=${col}&mode=preview`;
+  });
+  // onMounted(async () => {
+  //   console.log(paramId.params.id, "paramId")
+  //   try {
+  //     botDetails.value =
+  //   } catch (error) {
+  //     console.error("Error fetching bot details:", error);
+  //   }
+  // })
+
+  const botManagementDetails = async (list: any, index: any) => {
+    // console.log(list.bot.trim().toLowerCase().replace(/\s+/g, ' ') , "list")
+    // if (list.bot === dataList.value[index].bot) {
+    await navigateTo({
+      name: list.routeName,
       params: { id: paramId.params.id },
     });
-  }
+    // }
+  };
+  const deactivateBot = async () => {
+    modalOpen.value = true;
+  };
 
-  if (activeDocuments.length === 1) {
-    try {
-      await singleDocumentDeploy(activeDocuments[0]);
-    } catch (err) {
-      isSubmitting.value = false;
-      toast.error("Failed to active the bot, try again");
-      return;
+  const deactivateBotDialog = async () => {
+    await disableBot(paramId.params.id);
+    modalOpen.value = false;
+  };
+
+  const botScript =
+    "<" +
+    `script src="https://tring-databot.pripod.com/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS">` +
+    "</" +
+    "script>";
+
+  const { copy } = useClipboard({ source: botScript });
+  const copyScript = async () => {
+    copy(botScript);
+    toast.success("Copied to clipboard");
+  };
+
+  const singleDocumentDeploy = async (list: any) => {
+    console.log("Bot Id", paramId.params.id);
+    await deployDocument(paramId.params.id, list.id);
+    botDetails.value = await getBotDetails(paramId.params.id);
+  };
+
+  const handleDelete = () => {
+    modelOpen.value = true;
+  };
+
+  const handleDeleteBot = () => {
+    modelOpen.value = false;
+    deleteBot(route.params.id);
+  };
+
+  const handleActivateBot = async () => {
+    isSubmitting.value = true;
+    const activeDocuments = botDetails.value.documents.filter(
+      (d) => d.status === "ready",
+    );
+
+    if (activeDocuments.length === 0) {
+      toast.success("Please add document to activate bot");
+      return navigateTo({
+        name: "bots-id-documents",
+        params: { id: paramId.params.id },
+      });
     }
-  }
 
-  isSubmitting.value = false;
-  isDocumentListOpen.value = true;
-};
+    if (activeDocuments.length === 1) {
+      try {
+        await singleDocumentDeploy(activeDocuments[0]);
+      } catch (err) {
+        isSubmitting.value = false;
+        toast.error("Failed to active the bot, try again");
+        return;
+      }
+    }
+
+    isSubmitting.value = false;
+    isDocumentListOpen.value = true;
+  };
 </script>
 
 <style scoped>
-.bot-manage-main-container {
-  padding: 7px 25px;
-}
+  .bot-manage-main-container {
+    padding: 7px 25px;
+  }
 
-.header-align {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: segoe UI Regular;
-}
+  .header-align {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: segoe UI Regular;
+  }
 
-.bot-main-align {
-  margin-top: 30px;
-}
+  .bot-main-align {
+    margin-top: 30px;
+  }
 
-.list_align {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 1rem;
-  /* background: rgba(255, 255, 255, 1); */
-  /* padding: 30px 30px; */
-  /* box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important; */
-  border-radius: 10px;
-  /* gap: 100px; */
-  /* margin: 10px 0; */
-}
+  .list_align {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+    /* background: rgba(255, 255, 255, 1); */
+    /* padding: 30px 30px; */
+    /* box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important; */
+    border-radius: 10px;
+    /* gap: 100px; */
+    /* margin: 10px 0; */
+  }
 
-.bot-list-align {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 1);
-  padding: 20px 30px;
-  width: 100% !important;
-  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-  border-radius: 10px;
-  margin: 20px 0;
-}
+  .bot-list-align {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 1);
+    padding: 20px 30px;
+    width: 100% !important;
+    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 10px;
+    margin: 20px 0;
+  }
 
-.deploy-bot-list-align {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 1);
-  padding: 20px 30px;
-  width: 100% !important;
-  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-  border-radius: 10px;
-}
+  .deploy-bot-list-align {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 1);
+    padding: 20px 30px;
+    width: 100% !important;
+    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 10px;
+  }
 
-.acive_class {
-  display: flex;
-  align-items: center;
-  /* width: 50px; */
-  color: rgba(26, 187, 0, 1) !important;
-  gap: 5px;
-}
+  .acive_class {
+    display: flex;
+    align-items: center;
+    /* width: 50px; */
+    color: rgba(26, 187, 0, 1) !important;
+    gap: 5px;
+  }
 
-/* .deacive_class {
+  /* .deacive_class {
   display: flex;
   align-items: center;
   gap: 5px;
   color: rgba(255, 0, 0, 1);
 } */
 
-.active-circle-align {
-  display: flex;
-  align-items: center;
-  background-color: rgba(26, 187, 0, 1);
-  width: 6px;
-  height: 6px;
-}
+  .active-circle-align {
+    display: flex;
+    align-items: center;
+    background-color: rgba(26, 187, 0, 1);
+    width: 6px;
+    height: 6px;
+  }
 
-.header-content-align {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
+  .header-content-align {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
 
-.list-header-align {
-  padding: 10px 0px 10px 20px;
-  display: flex;
-  align-items: center;
-  /* justify-content: space-between; */
-  width: 100%;
-  /* gap: 100px; */
-  border-bottom: 0.5px solid rgba(181, 181, 181, 1);
-}
+  .list-header-align {
+    padding: 10px 0px 10px 20px;
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+    width: 100%;
+    /* gap: 100px; */
+    border-bottom: 0.5px solid rgba(181, 181, 181, 1);
+  }
 
-.button-align {
-  background-color: red;
-  color: white;
-  border-radius: 8px;
-  padding: 10px 10px;
-}
+  .button-align {
+    background-color: red;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 10px;
+  }
 
-.bot-list-align:hover {
-  color: rgba(255, 188, 66, 1);
-  background: rgba(255, 248, 235, 1) !important;
-}
+  .bot-list-align:hover {
+    color: rgba(255, 188, 66, 1);
+    background: rgba(255, 248, 235, 1) !important;
+  }
 
-.arrow-aling {
-  width: 30px;
-}
+  .arrow-aling {
+    width: 30px;
+  }
 
-.deacive_class {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: rgba(255, 0, 0, 1);
-  /* padding-inline-end: 201px; */
-}
+  .deacive_class {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: rgba(255, 0, 0, 1);
+    /* padding-inline-end: 201px; */
+  }
 
-.deactive-circle-align {
-  display: flex;
-  align-items: center;
-  background-color: rgba(255, 0, 0, 1);
-  width: 6px;
-  height: 6px;
-}
+  .deactive-circle-align {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 0, 0, 1);
+    width: 6px;
+    height: 6px;
+  }
 
-/* .right-dropdown-align {
+  /* .right-dropdown-align {
   display: flex;
   align-items: center;
   background: rgba(255, 255, 255, 1);
@@ -393,7 +441,7 @@ const handleActivateBot = async () => {
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
   border-radius: 10px;
 } */
-/* .deactive-circle-align {
+  /* .deactive-circle-align {
   display: flex;
   align-items: center;
   background-color: rgba(255, 0, 0, 1);
@@ -401,7 +449,7 @@ const handleActivateBot = async () => {
   height: 5px;
 } */
 
-/* .bot_name_align {
+  /* .bot_name_align {
   width: 11%;
   white-space: nowrap;
   overflow: hidden;
