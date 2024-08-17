@@ -1,8 +1,39 @@
 <script setup lang="ts">
-  const orgBilling = await $fetch("/api/org/usage");
+  const { status, data: usage } = await useLazyFetch("/api/org/usage", {
+    server: false,
+  });
+  const isPageLoading = computed(() => status.value === "pending");
+
+  const usageDetails = computed(() => {
+    if (!usage.value) return;
+
+    const extraChatsCost = usage.value.used_quota - usage.value.max_quota;
+
+    return {
+      currentPlan: usage.value.plan_code,
+      subscriptionStatus: "active",
+      planSessions: usage.value.max_quota,
+      chatsUsedInPlan:
+        usage.value.used_quota < usage.value.max_quota
+          ? usage.value.used_quota
+          : usage.value.max_quota,
+      chatsAvailableInPlan:
+        usage.value.max_quota < usage.value.used_quota
+          ? 0
+          : usage.value.max_quota - usage.value.used_quota,
+      extraChatsMade: usage.value.used_quota - usage.value.max_quota,
+      extraChatsCost: extraChatsCost * 10,
+    };
+  });
 </script>
 <template>
-  <div class="flex flex-col justify-center">
+  <div
+    v-if="isPageLoading"
+    class="grid h-[80vh] place-items-center text-[#424BD1]"
+  >
+    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div>
+  <div v-else class="flex flex-col justify-center">
     <div class="header-align px-2">
       <div class="text-[20px] font-bold">Billing</div>
       <div class="text-[12px]">
@@ -29,7 +60,7 @@
           <span
             class="creator-chip rounded-[11px] text-[12px] font-medium lowercase"
           >
-            {{ orgBilling?.plan_code }}
+            {{ usage?.plan_code }}
           </span>
         </div>
       </div>
@@ -48,7 +79,7 @@
         <span
           class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
         >
-          {{ orgBilling?.max_quota }}
+          {{ usageDetails?.planSessions }}
         </span>
       </div>
       <div
@@ -58,7 +89,7 @@
         <span
           class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
         >
-          {{ orgBilling?.available_quota }}
+          {{ usageDetails?.chatsUsedInPlan }}
         </span>
       </div>
 
@@ -69,7 +100,7 @@
         <span
           class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
         >
-          {{ orgBilling?.available_quota }}
+          {{ usageDetails?.chatsAvailableInPlan }}
         </span>
       </div>
 
@@ -80,7 +111,7 @@
         <span
           class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
         >
-          20
+          {{ usageDetails?.extraChatsMade }}
         </span>
       </div>
 
@@ -91,7 +122,7 @@
         <span
           class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
         >
-          100
+          {{ usageDetails?.extraChatsCost }}
         </span>
       </div>
     </div>
