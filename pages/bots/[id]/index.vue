@@ -30,13 +30,11 @@
             <span class="text-[17px] font-bold text-black">Date Created:
               <span class="text-[15px] font-medium text-black">{{
                 dateFormate
-                }}</span>
+              }}</span>
             </span>
             <UiButton class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50" @click="handleActivateBot"
               :disabled="isSubmitting" v-if="!botDetails.documentId">
               Activate Bot</UiButton>
-
-
             <span v-if="botDetails.documentId" class="flex gap-4">
               <UiButton class="button-align text-[14px] font-medium" @click="deactivateBot">Deactivate Bot</UiButton>
               <ConfirmationModal v-model:open="modalOpen" title="Confirm Deactivation"
@@ -50,31 +48,32 @@
               <Icon name="lucide:trash-2" />
             </UiButton>
           </div>
-          <UiDialog v-if="!botDetails.documentId" v-model:open="isDocumentListOpen">
-            <UiDialogTrigger class=""> </UiDialogTrigger>
-            <UiDialogContent align="end" class="sm:max-w-md">
-              <UiDialogHeader>
-                <UiDialogTitle>Launch Bot</UiDialogTitle>
-                <UiDialogDescription>
-                  Choose a document to deploy your bot
-                </UiDialogDescription>
-              </UiDialogHeader>
-              <UiButton class="deploy-bot-list-align text-[15px] text-black" v-for="list in getDocumentList.filter(
-                (item: any) => item.status === 'ready',
-              )" :key="list.id" @click="async () => {
-                  isSubmitting = true;
-                  isDocumentListOpen = false;
-                  await singleDocumentDeploy(list);
-                }
-                  ">
-                {{ list.name }}
-              </UiButton>
-            </UiDialogContent>
-          </UiDialog>
+
           <!-- <span class="font-semibold content-align">Date Created</span>
           <span class="font-semibold content-align">Status</span> -->
         </div>
       </div>
+      <LazyUiDialog v-if="!botDetails.documentId" v-model:open="isDocumentListOpen">
+        <UiDialogTrigger class=""> </UiDialogTrigger>
+        <UiDialogContent align="end" class="sm:max-w-md">
+          <UiDialogHeader>
+            <UiDialogTitle>Launch Bot</UiDialogTitle>
+            <UiDialogDescription>
+              Choose a document to deploy your bot
+            </UiDialogDescription>
+          </UiDialogHeader>
+          <UiButton class="deploy-bot-list-align text-[15px] text-black" v-for="list in getDocumentList.filter(
+            (item: any) => item.status === 'ready',
+          )" :key="list.id" @click="async () => {
+            isSubmitting = true;
+            isDocumentListOpen = false;
+            await singleDocumentDeploy(list);
+          }
+            ">
+            {{ list.name }}
+          </UiButton>
+        </UiDialogContent>
+      </LazyUiDialog>
       <div v-for="(list, index) in dataList" :key="index">
         <NuxtLink :to='`${list.routeName}`' class="bot-list-align cursor-pointer text-[14px]"
           @click="botManagementDetails(list, index)">
