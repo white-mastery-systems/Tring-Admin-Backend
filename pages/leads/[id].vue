@@ -1,5 +1,11 @@
 <template>
-  <div class="analytics_leads-main-container">
+  <div
+    v-if="isPageLoading"
+    class="grid h-[80vh] place-items-center text-[#424BD1]"
+  >
+    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div>
+  <div v-else class="analytics_leads-main-container">
     <div class="header-align">
       <div class="flex gap-2">
         <div class="flex items-center gap-2">
@@ -145,8 +151,11 @@
   const isDeleteConfirmationOpen = ref(false);
   const handleDelete = async () => {
     isDeleteConfirmationOpen.value = false;
-    await $fetch(`/api/org/lead/${leadData?.lead?.id}`, { method: "DELETE" });
-    return navigateTo({ name: "AnalyticsLeads" });
+
+    await $fetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
+      method: "DELETE",
+    });
+    return navigateTo({ name: "leads" });
   };
 </script>
 <style scoped>

@@ -7,7 +7,7 @@
   const usageDetails = computed(() => {
     if (!usage.value) return;
 
-    const extraChatsCost = usage.value.used_quota - usage.value.max_quota;
+    const extraChats = usage.value.used_quota - usage.value.max_quota;
 
     return {
       currentPlan: usage.value.plan_code,
@@ -21,8 +21,8 @@
         usage.value.max_quota < usage.value.used_quota
           ? 0
           : usage.value.max_quota - usage.value.used_quota,
-      extraChatsMade: usage.value.used_quota - usage.value.max_quota,
-      extraChatsCost: extraChatsCost * 10,
+      extraChatsMade: extraChats > 0 ? extraChats : 0,
+      extraChatsCost: extraChats < 0 ? 0 : extraChats * 10,
     };
   });
 </script>

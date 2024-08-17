@@ -1,5 +1,11 @@
 <template>
-  <div class="main-containter grid h-[100vh] place-content-center">
+  <div
+    v-if="isPageLoading"
+    class="grid h-[80vh] place-items-center text-[#424BD1]"
+  >
+    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div>
+  <div v-else class="main-containter grid h-[100vh] place-content-center">
     <div class="header-align mb-2">
       <div class="flex items-center gap-2">
         <UiButton variant="ghost" size="icon" @click="router.back()">
@@ -241,7 +247,11 @@
       choosePlan: "contact us",
     },
   ]);
-  const orgBilling = await $fetch("/api/org/usage");
+
+  const { status, data: orgBilling } = await useLazyFetch("/api/org/usage", {
+    server: false,
+  });
+  const isPageLoading = computed(() => status.value === "pending");
 
   const choosePlan = async (plan: any) => {
     const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName}`;
