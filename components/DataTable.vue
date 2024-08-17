@@ -135,11 +135,16 @@
         {{ table.getFilteredRowModel().rows.length }} results
       </p>
       <div class="flex space-x-4">
-        <UiButton size="icon" @click="table.setPageIndex(0)">
+        <UiButton
+          size="icon"
+          @click="table.setPageIndex(0)"
+          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
+        >
           <Icon name="lucide:chevrons-left" class="h-6 w-6" />
         </UiButton>
         <UiButton
           size="icon"
+          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
           :disabled="!table.getCanPreviousPage()"
           @click="table.previousPage()"
         >
@@ -149,12 +154,14 @@
           size="icon"
           :disabled="!table.getCanNextPage()"
           @click="table.nextPage()"
+          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
         >
           <Icon name="lucide:chevron-right" class="h-6 w-6" />
         </UiButton>
         <UiButton
           size="icon"
           @click="table.setPageIndex(table.getPageCount() - 1)"
+          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
         >
           <Icon name="lucide:chevrons-right" class="h-6 w-6" />
         </UiButton>
