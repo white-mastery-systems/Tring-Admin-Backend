@@ -52,7 +52,7 @@ export const deleteBot = async (botId: string) => {
       method: "DELETE",
     });
     toast.success("Bot deleted successfully");
-    return navigateTo({ name: "BotManagement" });
+    return navigateTo({ name: "bots" });
   } catch (error) {
     console.log(error);
     toast.error("Cannot delete: bot has generated leads");

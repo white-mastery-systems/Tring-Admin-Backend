@@ -54,7 +54,7 @@
       <div
         class="list-content-align flex items-center justify-between gap-3 rounded-b-lg font-medium"
       >
-        <span> chat sessions included in plan </span>
+        <span> chat sessions used in plan </span>
         <span
           class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
         >

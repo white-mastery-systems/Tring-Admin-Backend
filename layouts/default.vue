@@ -1,7 +1,7 @@
 <template>
   <div class="default-main-container">
     <div class="navigation-drawer">
-      <NevigationDrawer />
+      <NavigationDrawer />
     </div>
     <!-- :style="{ width: (['Sign'].includes(routeName)) ? '100%' : '86%' }" -->
     <div class="main-router-align">
