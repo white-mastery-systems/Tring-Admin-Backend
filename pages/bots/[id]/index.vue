@@ -133,6 +133,10 @@
               </div>
               <span class="text-xs text-gray-500">{{ list.helperText }}</span>
             </div>
+            <Icon v-if="
+                list.bot === 'Document Management' &&
+                  botDetails.documents.length === 0
+                " class="h-6 w-6 text-red-500" name="nonicons:error-16" />
           </div>
           <div>
             <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />

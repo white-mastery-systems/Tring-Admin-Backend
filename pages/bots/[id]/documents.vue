@@ -26,7 +26,7 @@
         />
         <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
       </span>
-      <div class="flex items-center gap-2">
+      <!-- <div class="flex items-center gap-2">
         <div class="submit-btn-align">
           <button
             v-if="selectedFile"
@@ -37,8 +37,7 @@
             Upload Document
           </button>
         </div>
-        <!-- <span class="upload-document-align font-bold"> Upload Document </span> -->
-      </div>
+      </div> -->
     </div>
     <p class="pt-2 text-sm text-gray-400">only PDF</p>
 
@@ -118,6 +117,17 @@
                     >
                       Delete
                     </div>
+                    <ConfirmationModal
+                      v-model:open="deleteDocumentModelOpen"
+                      title="Confirm Delete"
+                      description="Are you sure you want to delete ?"
+                      @confirm="
+                        () => {
+                          handleAction(list, 'delete');
+                          deleteDocumentModelOpen = false;
+                        }
+                      "
+                    />
                   </UiPopoverContent>
                 </UiPopover>
                 <!-- <img src="assets\icons\more_horiz.svg" width="30"> -->
