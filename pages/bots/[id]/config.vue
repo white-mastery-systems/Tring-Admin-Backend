@@ -135,7 +135,7 @@ const handleSubmit = async (values: any) => {
           </UiFormItem>
         </UiFormField>
       </div>
-      <UiFormField v-slot="{ componentField }" name="notes">
+      <UiFormField v-slot="{ componentField }" name="NOTES">
         <UiFormItem v-auto-animate="animationProps">
           <UiFormLabel>Notes</UiFormLabel>
           <UiFormControl>
