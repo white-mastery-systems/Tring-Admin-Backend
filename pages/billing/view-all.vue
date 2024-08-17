@@ -227,8 +227,6 @@ const billingVariation = ref([
 const orgBilling = await $fetch("/api/org/usage");
 
 const choosePlan = async (plan: any) => {
-  const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName}`;
-
   if (!plan) {
     return navigateTo("https://tring-web.pripod.com/contact", {
       external: true,
@@ -237,6 +235,7 @@ const choosePlan = async (plan: any) => {
       },
     });
   }
+  const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName}`;
 
   navigateTo(planTemplate, {
     external: true,
