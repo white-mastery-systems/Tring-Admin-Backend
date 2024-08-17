@@ -44,8 +44,7 @@
       <Icon name="ic:round-logout" class="h-6 w-6" />
       <p class="text-base">Logout</p>
     </UiButton>
-    <ConfirmationModal v-model:open="modalOpen" title="Confirm Logout" description="Are you sure you want to log out ?"
-      @confirm="handleLogout" />
+    <ConfirmationModal v-model:open="modalOpen" title="Confirm Logout" description="Are you sure you want to log out ?" @confirm="handleLogout" />
     <!-- </div> -->
   </div>
 </template>
