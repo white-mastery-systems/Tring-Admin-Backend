@@ -68,7 +68,7 @@
       <DataTable @row-click="(row: any) => {
         console.log({ row })
         navigateTo(`/bots/${row.original.id}`)
-      }" :columns="columns" :data="botList" :page-size="5" />
+      }" :columns="columns" :data="bots" :page-size="5" :is-loading="isDataLoading"/>
     </div>
   </div>
 </template>
@@ -115,8 +115,21 @@ const menuList = ref([
     value: "Yearly",
   },
 ]);
-const previousIndex = ref(0);
-const botList = await listApiBots();
+// const botList = await listApiBots();
+
+const { status,data: bots } = await useLazyFetch("/api/bots", {
+  server: false,
+  default: () => [],
+  transform: (bots) => bots.map((bot) => 
+    ({
+      id: bot.id,
+      name: bot.name,
+      status: bot.documentId ? true : false,
+      createdAt: formatDateStringToDate(bot.createdAt),
+    })),
+})
+const isDataLoading = computed(() => status.value === "pending");
+
 const addBot = async () => {
   const bot = await $fetch("/api/bots", {
     method: "POST",
@@ -143,7 +156,7 @@ const statusComponent = (status: boolean) =>
     ? h("span", { class: "text-green-500" }, "Active")
     : h("span", { class: "text-red-500" }, "Inactive");
 
-const columnHelper = createColumnHelper<(typeof botList)[0]>();
+const columnHelper = createColumnHelper<(typeof bots.value)[0]>();
 const columns = [
   columnHelper.accessor("name", {
     header: "Bot Name",

@@ -69,7 +69,7 @@
         <div style="height: 100%" v-if="ListLeads.length" class="px-[15px]">
           <div class="bot-list-align" v-for="(list, index) in ListLeads" :key="index" @click="async () => {
               await navigateTo({
-                name: 'AnalyticsLeadsInfo-id',
+                name: 'leads-id',
                 params: { id: list.chatId },
               });
             }

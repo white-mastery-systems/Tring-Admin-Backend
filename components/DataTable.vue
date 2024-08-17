@@ -13,6 +13,7 @@
     columns: ColumnDef<T, any>[];
     footer?: boolean;
     pageSize?: number;
+    isLoading?: boolean;
   }>();
 
   const sorting = ref<SortingState>([]);
@@ -65,9 +66,19 @@
           </UiTableRow>
         </UiTableHeader>
         <UiTableBody>
+          <tr v-if="isLoading" class="h-36">
+            <td :colspan="columns.length">
+              <div class="grid h-full place-items-center">
+                <Icon
+                  name="svg-spinners:90-ring-with-bg"
+                  class="mx-auto h-8 w-8"
+                />
+              </div>
+            </td>
+          </tr>
           <template
             class="bg-black-400"
-            v-if="table.getRowModel().rows?.length"
+            v-else-if="table.getRowModel().rows?.length"
           >
             <UiTableRow
               v-for="row in table.getRowModel().rows"
