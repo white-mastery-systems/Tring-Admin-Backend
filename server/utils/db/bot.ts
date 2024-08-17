@@ -1,4 +1,6 @@
-import { SelectChatBot } from "~/server/schema/bot";
+// import { isNotNull, ne } from "drizzle-orm";
+
+import { isNotNull, isNull, like } from "drizzle-orm";
 
 const db = useDrizzle();
 const cache = useStorage("redis");
@@ -8,9 +10,26 @@ const getCacheBotKey = (botId: string) => `chatbot:${botId}`;
 export const createBot = async (bot: InsertChatBot) =>
   (await db.insert(chatBotSchema).values(bot).returning())[0];
 
-export const listBots = async (organizationId: string) =>
-  await db.query.chatBotSchema.findMany({
-    where: eq(chatBotSchema.organizationId, organizationId),
+interface queryInterface {
+  active?: string;
+  q?: string;
+}
+export const listBots = async (
+  organizationId: string,
+  query: queryInterface,
+) => {
+  let filters: any = [eq(chatBotSchema.organizationId, organizationId)];
+  if (query?.active === "true") {
+    filters.push(isNotNull(chatBotSchema.documentId));
+  } else if (query?.active === "false") {
+    filters.push(isNull(chatBotSchema.documentId));
+  }
+  if (query?.q) {
+    filters.push(like(chatBotSchema.name, `%${query.q}%`));
+  }
+
+  const data = await db.query.chatBotSchema.findMany({
+    where: and(...filters),
     orderBy: [desc(chatBotSchema.createdAt)],
     columns: {
       id: true,
@@ -19,6 +38,8 @@ export const listBots = async (organizationId: string) =>
       documentId: true,
     },
   });
+  return data;
+};
 
 export const getBotDetailsNoCache = async (botId: string) => {
   const bot = await db.query.chatBotSchema.findFirst({

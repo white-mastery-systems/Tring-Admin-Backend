@@ -49,6 +49,7 @@ export default defineEventHandler(async (event) => {
         .set({
           maxQuota: planDetails[apiResponseData.plan_code].availableQuota,
           usedQuota: 0,
+          planCode: apiResponseData.plan_code,
         })
         .where(eq(organizationSchema.id, orgId!));
 

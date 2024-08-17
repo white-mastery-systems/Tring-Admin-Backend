@@ -28,7 +28,7 @@
     <div>
       <div class="dashboard-main-paage">
         <div class="card-align">
-          <div class="bg-yellow-500 rounded-md p-2">
+          <div class="rounded-md bg-[#ffbc42] p-2">
             <BotIcon />
           </div>
           <div>
@@ -37,7 +37,7 @@
           </div>
         </div>
         <div class="card-align">
-          <div class="bg-yellow-500 rounded-md p-2">
+          <div class="rounded-md bg-[#ffbc42] p-2">
             <ChatSession></ChatSession>
           </div>
           <div>
@@ -46,7 +46,7 @@
           </div>
         </div>
         <div class="card-align">
-          <div class="bg-yellow-500 rounded-md p-2">
+          <div class="rounded-md bg-[#ffbc42] p-2">
             <Leads></Leads>
           </div>
           <div>
@@ -55,7 +55,7 @@
           </div>
         </div>
         <div class="card-align">
-          <div class="bg-yellow-500 rounded-md p-2">
+          <div class="rounded-md bg-[#ffbc42] p-2">
             <SingleUser></SingleUser>
           </div>
           <div>
@@ -65,17 +65,28 @@
         </div>
       </div>
       <div class="relative">
-        <div :class="'graph-align my-8 gap-6'">
-          <div v-if="analyticsData?.bots > 0"
-            class="chat-bot-align relative place-content-center rounded-md bg-white shadow">
-            <UiLineChart :data="lineGraphData" index="month" :categories="['Leads Created', 'Sessions Created']"
-              :colors="['#424bd1', '#ffbc42']" :show-grid-line="true" :show-tooltip="true" :margin="{ right: 20 }"
-              :y-formatter="(tick: any) => {
-                return typeof tick === 'number'
-                  ? `${new Intl.NumberFormat('us').format(tick).toString()}`
-                  : '';
-              }
-                " class="h-[380px] w-full" />
+        <div class="graph-align my-8 gap-6">
+          <div
+            v-if="analyticsData?.bots > 0"
+            class="chat-bot-align relative place-content-center rounded-md bg-white"
+          >
+            <UiLineChart
+              :data="lineGraphData"
+              index="month"
+              :categories="['Leads Created', 'Sessions Created']"
+              :colors="['#424bd1', '#ffbc42']"
+              :show-grid-line="true"
+              :show-tooltip="true"
+              :margin="{ right: 20 }"
+              :y-formatter="
+                (tick: any) => {
+                  return typeof tick === 'number'
+                    ? `${new Intl.NumberFormat('us').format(tick).toString()}`
+                    : '';
+                }
+              "
+              class="h-[380px] w-full"
+            />
           </div>
           <!-- <div
             class="voice-bot-align relative place-content-center rounded-md bg-white shadow"
@@ -98,215 +109,220 @@
           </div> -->
         </div>
         <!-- <UiLabel class="absolute right-1/3 top-1/3 z-10  -translate-x-3/4 -translate-y-1/3 text-lg">Getting Started by Creating Bots</UiLabel> -->
-        <UiButton v-if="analyticsData?.bots === 0"
+        <UiButton
+          v-if="analyticsData?.bots === 0"
           class="absolute right-1/2 top-1/2 z-10 h-16 w-56 -translate-y-1/2 translate-x-1/2 bg-[#474df9] text-lg text-white hover:bg-[#474df9] hover:brightness-90"
-          @click="getStarted">Get Started</UiButton>
+          @click="getStarted"
+          >Get Started</UiButton
+        >
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import Leads from '~/components/icons/Leads.vue';
+  import Leads from "~/components/icons/Leads.vue";
 
+  definePageMeta({
+    middleware: "user",
+  });
 
-definePageMeta({
-  middleware: "user",
-});
+  const selectedValue = ref("Today");
 
-const selectedValue = ref("Today");
+  const getButtonName = ref("Get Started");
 
-const getButtonName = ref("Get Started");
+  const analyticsData = ref();
 
-const analyticsData = ref();
+  onMounted(async () => {
+    analyticsData.value = await getAnalyticsData();
 
-onMounted(async () => {
-  analyticsData.value = await getAnalyticsData();
+    // analyticsData.value.bots = 0;
+  });
 
-  // analyticsData.value.bots = 0;
-});
+  const getStarted = () => {
+    if (analyticsData.value.bots === 0) {
+      navigateTo("/bots");
+    }
+  };
 
-const getStarted = () => {
-  if (analyticsData.value.bots === 0) {
-    navigateTo("/bots");
+  interface MonthAbbreviations {
+    [key: string]: string;
   }
-};
 
-interface MonthAbbreviations {
-  [key: string]: string;
-}
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+  // Define a mapping of month abbreviations to full names for comparison
+  const monthAbbreviations: MonthAbbreviations = {
+    Jan: "January",
+    Feb: "February",
+    Mar: "March",
+    Apr: "April",
+    May: "May",
+    Jun: "June",
+    Jul: "July",
+    Aug: "August",
+    Sep: "September",
+    Oct: "October",
+    Nov: "November",
+    Dec: "December",
+  };
 
-// Define a mapping of month abbreviations to full names for comparison
-const monthAbbreviations: MonthAbbreviations = {
-  Jan: "January",
-  Feb: "February",
-  Mar: "March",
-  Apr: "April",
-  May: "May",
-  Jun: "June",
-  Jul: "July",
-  Aug: "August",
-  Sep: "September",
-  Oct: "October",
-  Nov: "November",
-  Dec: "December",
-};
+  // Initialize an empty array for the final data
+  // console.log(
+  const leadsData = computed(() => analyticsData.value?.graph.leads);
+  const leadGraphData = computed(() =>
+    months.map((month) => {
+      // Find the corresponding API data for the current month and year
+      const apiEntry = leadsData.value?.find((entry: any) => {
+        const [apiMonthAbbr, apiYear] = entry.month.split(" ");
+        console.log(apiMonthAbbr, apiYear, "API");
+        const apiMonthFull =
+          monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
+        return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
+      });
 
-// Initialize an empty array for the final data
-// console.log(
-const leadsData = computed(() => analyticsData.value?.graph.leads);
-const leadGraphData = computed(() =>
-  months.map((month) => {
-    // Find the corresponding API data for the current month and year
-    const apiEntry = leadsData.value?.find((entry: any) => {
-      const [apiMonthAbbr, apiYear] = entry.month.split(" ");
-      console.log(apiMonthAbbr, apiYear, "API");
-      const apiMonthFull =
-        monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
-      return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
-    });
+      // Extract the year from the first entry of the API data, or use a default value
+      const year =
+        leadsData.value?.length > 0
+          ? leadsData.value[0].month.split(" ")[1]
+          : "2024";
 
-    // Extract the year from the first entry of the API data, or use a default value
-    const year =
-      leadsData.value?.length > 0
-        ? leadsData.value[0].month.split(" ")[1]
-        : "2024";
+      console.log(year, apiEntry);
 
-    console.log(year, apiEntry);
+      return {
+        month: `${month} ${year}`,
+        "Leads Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
+      };
+    }),
+  );
 
-    return {
-      month: `${month} ${year}`,
-      "Leads Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
-    };
-  }),
-);
+  const sessionsData = computed(() => analyticsData.value?.graph.sessions);
+  const sessionGraphData = computed(() =>
+    months.map((month) => {
+      // Find the corresponding API data for the current month and year
+      const apiEntry = sessionsData.value?.find((entry: any) => {
+        const [apiMonthAbbr, apiYear] = entry.month.split(" ");
+        console.log(apiMonthAbbr, apiYear, "API");
+        const apiMonthFull =
+          monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
+        return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
+      });
 
-const sessionsData = computed(() => analyticsData.value?.graph.sessions);
-const sessionGraphData = computed(() =>
-  months.map((month) => {
-    // Find the corresponding API data for the current month and year
-    const apiEntry = sessionsData.value?.find((entry: any) => {
-      const [apiMonthAbbr, apiYear] = entry.month.split(" ");
-      console.log(apiMonthAbbr, apiYear, "API");
-      const apiMonthFull =
-        monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
-      return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
-    });
+      // Extract the year from the first entry of the API data, or use a default value
+      const year =
+        leadsData.value?.length > 0
+          ? leadsData.value[0].month.split(" ")[1]
+          : "2024";
 
-    // Extract the year from the first entry of the API data, or use a default value
-    const year =
-      leadsData.value?.length > 0
-        ? leadsData.value[0].month.split(" ")[1]
-        : "2024";
+      console.log(year, apiEntry);
 
-    console.log(year, apiEntry);
-
-    return {
-      month: `${month} ${year}`,
-      "Sessions Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
-    };
-  }),
-);
-const lineGraphData = computed(() =>
-  sessionGraphData.value.map((s) => {
-    const lead = leadGraphData.value.find((l) => l.month === s.month);
-    return {
-      month: s.month,
-      "Leads Created": lead ? lead["Leads Created"] : 0,
-      "Sessions Created": s["Sessions Created"],
-    };
-  }),
-);
-// );
+      return {
+        month: `${month} ${year}`,
+        "Sessions Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
+      };
+    }),
+  );
+  const lineGraphData = computed(() =>
+    sessionGraphData.value.map((s) => {
+      const lead = leadGraphData.value.find((l) => l.month === s.month);
+      return {
+        month: s.month,
+        "Leads Created": lead ? lead["Leads Created"] : 0,
+        "Sessions Created": s["Sessions Created"],
+      };
+    }),
+  );
+  // );
 </script>
 <style scoped>
-.focus\:ring-offset-2:focus {
-  --tw-ring-offset-width: none;
-}
+  .focus\:ring-offset-2:focus {
+    --tw-ring-offset-width: none;
+  }
 
-.dashboard-main-container {
-  padding: 0px 25px;
-  /* width: 100%; */
-  height: calc(100vh - 30px);
-  /* overflow-y: scroll; */
-}
+  .dashboard-main-container {
+    padding: 0px 25px;
+    /* width: 100%; */
+    height: calc(100vh - 30px);
+    /* overflow-y: scroll; */
+  }
 
-.header-align {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 20px;
-}
+  .header-align {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 20px;
+  }
 
-.right-dropdown-align {
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 1);
-  padding: 0px 10px;
-  width: 200px !important;
-  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-  border-radius: 10px;
-}
+  .right-dropdown-align {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 1);
+    padding: 0px 10px;
+    width: 200px !important;
+    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 10px;
+  }
 
-.dashboard-main-paage {
-  /* margin-top: 30px; */
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
+  .dashboard-main-paage {
+    /* margin-top: 30px; */
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
 
-.card-align {
-  display: flex;
-  align-items: center;
-  padding: 10px 10px 10px 25px;
-  width: 25%;
-  height: 100px;
-  gap: 15px;
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-  border-radius: 10px;
-}
+  .card-align {
+    display: flex;
+    align-items: center;
+    padding: 10px 10px 10px 25px;
+    width: 25%;
+    height: 100px;
+    gap: 15px;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 10px;
+  }
 
-.content-align {
-  margin-bottom: 5px;
-  color: rgba(138, 138, 138, 1);
-}
+  .content-align {
+    margin-bottom: 5px;
+    color: rgba(138, 138, 138, 1);
+  }
 
-.graph-align {
-  display: flex;
-  height: 59vh;
-}
+  .graph-align {
+    display: flex;
+    height: 59vh;
+    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+    padding-bottom: 20px;
+    border-radius: 10px;
+  }
 
-.calender-align {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 40px;
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-  border-radius: 10px;
-}
+  .calender-align {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 40px;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 10px;
+  }
 
-.chat-bot-align {
-  width: 100%;
-}
+  .chat-bot-align {
+    width: 100%;
+  }
 
-.voice-bot-align {
-  width: 40%;
-}
+  .voice-bot-align {
+    width: 40%;
+  }
 </style>

@@ -3,129 +3,57 @@ definePageMeta({
   layout: "auth",
 });
 
-const loginData = reactive({
-  otp: '',
-});
+const formSchema = toTypedSchema(
+  z.object({
+    otp: z.string().min(4, "Invalid otp."),
+  }));
+const animationProps = {
+  duration: 500,
+}
 </script>
 <template>
-  <div class="sign-in-align">
-    <div class="top-content-align font-bold">
+  <div class="flex flex-col items-center justify-center h-full w-full">
+    <div class="font-bold text-[#424bd1] w-[80%] px-6 pb-[5px]">
       <span>
         OTP Verification
       </span>
     </div>
-    <div class="form-align">
+    <div class="flex flex-col w-[80%] px-6">
       <!-- <div> -->
-      <div class="individual-form-align">
-        <div class="input-container">
-          <input class="mt-2 mb-2" type="otp" id="otp" name="otp" placeholder="Enter your OTP"
-            v-model="loginData.otp" />
+      <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" class="space-y-2"
+        @submit="authHandlers.login">
+        <div class="mb-6 mt-3">
+          <UiFormField v-slot="{ componentField }" name="otp">
+            <UiFormItem v-auto-animate="animationProps" class="w-full">
+              <!-- <UiFormLabel class="font-bold">OTP</UiFormLabel> -->
+              <UiFormControl>
+                <UiInput v-bind="componentField" type="text" placeholder="Enter Your OTP"
+                  class="font-medium h-[50px]" />
+              </UiFormControl>
+              <UiFormMessage />
+            </UiFormItem>
+          </UiFormField>
         </div>
-      </div>
-      <div class="resend-otp">
+        <UiButton type="submit" class="flex justify-center w-full bg-[#424bd1] h-[45px] hover:bg-[#424bd1]">
+          Continue
+        </UiButton>
+      </UiForm>
+      <div class="text-[#FFBC42] text-[14px] underline self-end cursor-pointer mt-3">
         <span>Resend OTP</span>
       </div>
-      <div class="submit-btn-align">
+      <!-- <div class="submit-btn-align">
         <button class="font-bold" type="submit" @click="authHandlers.login(loginData)">
           Continue
         </button>
-      </div>
+      </div> -->
       <!-- </div> -->
     </div>
-    <div class="flex items-center gap-1 footer-align">
-      <span class="bottom-content-align">
+    <div class="flex items-center gap-1 absolute bottom-[30px]">
+      <span class="text-[#8A8A8A] text-[12px]">
         By Signing up, I Agree to Tring AI
       </span>
-      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="term-align"> Terms & Conditions </a>
+      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="underline text-[12px]"> Terms &
+        Conditions </a>
     </div>
   </div>
 </template>
-<style scoped>
-.sign-in-align {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-}
-
-.top-content-align {
-  color: #424bd1;
-  width: 80%;
-  padding: 0 25px;
-  /* padding-right: 172px; */
-  padding-bottom: 5px;
-}
-
-.form-align {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 80%;
-  padding: 0 25px;
-}
-
-/* .individual-form-align {
-    gap: 5px;
-  } */
-.individual-form-align input {
-  background-color: rgba(246, 246, 246, 1);
-  width: 100%;
-  height: 50px;
-  outline: none;
-  border-radius: 10px;
-  padding: 0 20px;
-}
-
-.submit-btn-align {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.submit-btn-align button {
-  width: 100%;
-  height: 50px;
-  border-radius: 10px;
-  padding: 0 20px;
-  background: #424bd1;
-  color: #ffffff;
-  margin-top: 20px;
-  /* margin-right: 170px; */
-}
-
-.input-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-}
-
-input[type="password"] {
-  padding-right: 2.5rem;
-  /* Adjust based on the icon size */
-  width: 100%;
-}
-
-.bottom-content-align {
-  color: #8A8A8A;
-  font-size: 12px;
-}
-
-.term-align {
-  font-size: 12px;
-  text-decoration: underline;
-}
-
-.footer-align {
-  position: absolute;
-  bottom: 30px;
-}
-.resend-otp {
-  text-decoration: underline;
-  color: #FFBC42;
-  font-size: 14px;
-  align-self: flex-end;
-}
-</style>

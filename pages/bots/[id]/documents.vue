@@ -1,5 +1,11 @@
 <template>
-  <div class="bot-manage-main-container">
+  <div
+    v-if="isPageLoading"
+    class="grid h-[80vh] place-items-center text-[#424BD1]"
+  >
+    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div>
+  <div v-else class="bot-manage-main-container">
     <div class="header-align">
       <div class="flex items-center gap-2">
         <UiButton variant="ghost" size="icon" @click="router.back()">
@@ -16,12 +22,18 @@
         <FileUpload
           accept="application/pdf"
           v-model="selectedFile"
+          @upload-document="fileUpload()"
         />
         <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
       </span>
       <!-- <div class="flex items-center gap-2">
         <div class="submit-btn-align">
-          <button v-if="selectedFile" class="text-[14px] font-bold" type="submit" @click="fileUpload">
+          <button
+            v-if="selectedFile"
+            class="text-[14px] font-bold"
+            type="submit"
+            @click="fileUpload"
+          >
             Upload Document
           </button>
         </div>
@@ -44,13 +56,13 @@
         await navigateTo('botpdfdocument')
         }" -->
 
-        <div v-if="getDocumentList?.documents.length" class="overflow_align">
+        <div v-if="documents?.documents?.length" class="overflow_align">
           <div
             class="bot-list-align relative overflow-hidden text-[15px]"
-            v-for="(list, index) in getDocumentList?.documents"
+            v-for="(list, index) in documents?.documents"
             :key="index"
             :class="{
-              'active-row': list.id === getDocumentList?.documentId,
+              'active-row': list.id === documents?.documentId,
             }"
           >
             <!-- {{ list }} -->
@@ -99,12 +111,8 @@
                       Download
                     </div>
                     <div
-                      v-if="list.id !== getDocumentList?.documentId"
-                      @click="
-                        () => {
-                          deleteDocumentModelOpen = true;
-                        }
-                      "
+                      v-if="list.id !== documents?.documentId"
+                      @click="handleAction(list, 'delete')"
                       class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500"
                     >
                       Delete
@@ -148,50 +156,55 @@
   import { ref } from "vue";
   const router = useRouter();
 
-  const route = useRoute();
+  const route = useRoute("bots-id-documents");
   const paramId: any = route;
   const selectedFile = ref();
   const myPopover: any = ref(null);
   // const botDetails: any = await getBotDetails(paramId.params.id)
-  const getDocumentList = ref();
+  // const documents = ref();
   const documentFetchInterval = ref<NodeJS.Timeout>();
 
   const deleteDocumentModelOpen = ref(false);
 
-  onMounted(async () => {
-    getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
+  const {
+    status,
+    refresh,
+    data: documents,
+  } = await useLazyFetch(() => `/api/bots/${route.params.id}/documents`, {
+    server: false,
+    transform: (docs) => ({
+      ...docs,
+      documents: docs?.documents.map((d) => ({
+        ...d,
+        createdAt: formatDate(new Date(d.createdAt), "dd.MM.yyyy"),
+      })),
+    }),
   });
+  const isPageLoading = computed(() => status.value === "pending");
 
-  watch(selectedFile, fileUpload);
-
-   async function fileUpload ()  {
-    if (!selectedFile.value || selectedFile.value.length === 0) {
-      console.log("No file selected");
-      return;
-    }
-
-    const file = selectedFile.value[0];
-    console.log(file, "selectedFile");
-
-    const payload = {
+  const handleDeleteDocument = () => {
+    deleteDocumentModelOpen.value = true;
+  };
+  const fileUpload = async () => {
+    selectedFile.value[0].name;
+    console.log(selectedFile.value[0], "selectedFile");
+    const payload: any = {
       botId: paramId.params.id,
       document: {
-        name: file.name,
-        files: file,
+        name: selectedFile.value[0].name,
+        files: selectedFile.value[0],
       },
     };
-
     await createDocument(payload.botId, payload.document);
-    getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
+    documents.value = await listDocumentsByBotId(paramId.params.id);
 
     selectedFile.value = null;
 
     documentFetchInterval.value = setInterval(async () => {
       console.log("inside timeout");
-      getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
+      documents.value = await listDocumentsByBotId(paramId.params.id);
     }, 1000);
   };
-
   const handleAction = (list: any, action: any) => {
     if (myPopover.value) {
       myPopover.value = false;
@@ -214,16 +227,10 @@
   const singleDocumentDelete = async (list: any) => {
     console.log("inside");
     await deleteDocument(paramId.params.id, list.id);
-    getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
-    // if (myPopover.value) {
-    //   myPopover.value.close()
-    // }
+    documents.value = await listDocumentsByBotId(paramId.params.id);
   };
   const singleDocumentDownload = async (list: any) => {
     viewDocument(paramId.params.id, list.id);
-    // if (myPopover.value) {
-    //   myPopover.value.close()
-    // }
   };
 </script>
 
@@ -357,8 +364,8 @@
   }
 
   /* .create_at-align {
-  padding-inline-end: 130px;
-} */
+    padding-inline-end: 130px;
+  } */
 
   .document-align {
     display: flex;
@@ -412,16 +419,25 @@
     font-weight: 500;
   }
 
+  .active_class {
+    position: relative;
+  }
+
   .active-row::after {
-    content: "";
-    height: 100%;
-    width: 10px;
+    content: "Active";
+    height: fit-content;
+    width: fit-content;
     position: absolute;
-    left: 0;
+    left: 30px;
+    font-size: 10px;
+    top: 5px;
+    padding: 2px 5px;
+    border-radius: 5px;
+    color: white;
     background: rgb(7, 190, 7);
   }
 
   /* :deep(.line-clamp-3) {
-  display: none;
-} */
+    display: none;
+  } */
 </style>

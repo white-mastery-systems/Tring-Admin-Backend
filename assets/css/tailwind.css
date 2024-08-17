@@ -180,6 +180,9 @@
 .focus\:ring-offset-2:focus {
   --tw-ring-offset-width: none !important;
 }
+.field_shadow {
+  box-shadow: 0px 2px 24px 0px #0000000D !important;
+}
 * {
   font-family: "HeyWow";
 }
