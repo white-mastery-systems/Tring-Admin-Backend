@@ -17,6 +17,7 @@ export default defineNuxtConfig({
     "@nuxt/icon",
     "nuxt-typed-router",
     "shadcn-nuxt",
+    "@vueuse/nuxt",
   ],
 
   nitro: {
