@@ -8,6 +8,6 @@
 
 <template>
   <thead :class="cn('[&_tr]:border-b', props.class)">
-    <slot />
+    <slot></slot>
   </thead>
 </template>

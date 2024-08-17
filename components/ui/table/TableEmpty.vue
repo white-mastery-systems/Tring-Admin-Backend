@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { type HTMLAttributes, computed } from "vue";
-  import TableRow from "./TableRow.vue";
   import TableCell from "./TableCell.vue";
+  import TableRow from "./TableRow.vue";
 
   const props = withDefaults(
     defineProps<{
@@ -32,7 +32,7 @@
       v-bind="delegatedProps"
     >
       <div class="flex items-center justify-center py-10">
-        <slot />
+        <slot></slot>
       </div>
     </TableCell>
   </TableRow>

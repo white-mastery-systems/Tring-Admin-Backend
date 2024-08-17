@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const orgBilling = await $fetch("/api/org/usage");
+  const orgBilling = await $fetch("/api/org/usage");
 </script>
 <template>
   <div class="flex flex-col justify-center">
@@ -11,84 +11,134 @@ const orgBilling = await $fetch("/api/org/usage");
     </div>
     <div class="details-card rounded-lg">
       <div
-        class="flex items-center justify-between text-[18px] content-align font-bold rounded-t-xl billing-table-header-align">
-        <span>
-          Subscription Details
-        </span>
+        class="content-align billing-table-header-align flex items-center justify-between rounded-t-xl text-[18px] font-bold"
+      >
+        <span> Subscription Details </span>
 
-        <UiButton class="font-medium bg-[#FFBC42] hover:bg-[#FFBC42] hover:brighten-50 text-[#FFFFFF]">
-          <NuxtLink to="/BillingDetails" class="align_border">Manage Subscription</NuxtLink>
+        <UiButton
+          class="hover:brighten-50 bg-[#FFBC42] font-medium text-[#FFFFFF] hover:bg-[#FFBC42]"
+        >
+          <NuxtLink to="/billing/view-all" class="align_border"
+            >Change Plan</NuxtLink
+          >
         </UiButton>
       </div>
-      <div class="flex items-center justify-between list-content-align gap-3">
+      <div class="list-content-align flex items-center justify-between gap-3">
         <span class="font-medium"> Current Plan </span>
-        <div class="flex justify-center items-center w-[160px]">
-          <span class="creator-chip rounded-[11px] text-[12px] font-medium lowercase">
+        <div class="flex w-[160px] items-center justify-center">
+          <span
+            class="creator-chip rounded-[11px] text-[12px] font-medium lowercase"
+          >
             {{ orgBilling?.plan_code }}
-            <!-- chat_super_intelligence
-            chat_intelligence -->
           </span>
         </div>
       </div>
-      <div class="flex items-center justify-between list-content-align gap-3 font-medium">
+      <div
+        class="list-content-align flex items-center justify-between gap-3 font-medium"
+      >
         <span> Subscription status </span>
-        <div class="flex justify-center items-center w-[160px]">
+        <div class="flex w-[160px] items-center justify-center">
           <span class="active-chip rounded-[11px] text-[12px]"> active </span>
         </div>
       </div>
-      <div class="flex items-center justify-between list-content-align gap-3 font-medium">
-        <span> subscribed quota </span>
-        <span class="rounded-xl flex justify-center items-center text-[15px] w-[160px]">
+      <div
+        class="list-content-align flex items-center justify-between gap-3 font-medium"
+      >
+        <span> Total chat sessions in plan </span>
+        <span
+          class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
+        >
           {{ orgBilling?.max_quota }}
         </span>
       </div>
-      <div class="flex items-center justify-between list-content-align gap-3 font-medium rounded-b-lg">
-        <span> Available quota </span>
-        <span class="flex justify-center items-center rounded-xl text-[15px] w-[160px]">
+      <div
+        class="list-content-align flex items-center justify-between gap-3 rounded-b-lg font-medium"
+      >
+        <span> chat sessions used in plan </span>
+        <span
+          class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
+        >
           {{ orgBilling?.available_quota }}
+        </span>
+      </div>
+
+      <div
+        class="list-content-align flex items-center justify-between gap-3 rounded-b-lg font-medium"
+      >
+        <span> available chat sessions in plan </span>
+        <span
+          class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
+        >
+          {{ orgBilling?.available_quota }}
+        </span>
+      </div>
+
+      <div
+        class="list-content-align flex items-center justify-between gap-3 rounded-b-lg font-medium"
+      >
+        <span> extra chat sessions </span>
+        <span
+          class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
+        >
+          20
+        </span>
+      </div>
+
+      <div
+        class="list-content-align flex items-center justify-between gap-3 rounded-b-lg font-medium"
+      >
+        <span> extra chat session billing </span>
+        <span
+          class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
+        >
+          100
         </span>
       </div>
     </div>
   </div>
 </template>
 <style scoped>
-.header-align {
-  height: 70px;
-  padding: 4px 25px;
-  border-bottom: 1px solid rgb(128, 128, 128, 0.21);
-}
-.billing-table-header-align {
-  border-bottom: 1px solid rgb(128, 128, 128, 0.21);
-}
-.details-card {
-  margin-top: 30px;
-  /* border: 1px solid rgb(128, 128, 128, 0.5); */
-  background-color: white;
-  box-shadow: 0px 2px 24px 0px #0000000D;
-  width: 97%;
-  align-self: center;
-}
+  .header-align {
+    height: 70px;
+    padding: 4px 25px;
+    border-bottom: 1px solid rgb(128, 128, 128, 0.21);
+  }
 
-.content-align {
-  /* border-bottom: 1px solid rgb(128, 128, 128, 0.5); */
-  padding: 20px 30px;
-}
-.list-content-align {
-  padding: 20px 30px 20px 30px;
-}
-.content-align:last-child {
-  border-bottom: none;
-}
+  .billing-table-header-align {
+    border-bottom: 1px solid rgb(128, 128, 128, 0.21);
+  }
 
-.creator-chip {
-  padding: 3px 10px;
-  color: rgba(0, 0, 0, 0.5);
-  background-color: #d9dbe6;
-}
+  .details-card {
+    margin-top: 30px;
+    /* border: 1px solid rgb(128, 128, 128, 0.5); */
+    background-color: white;
+    box-shadow: 0px 2px 24px 0px #0000000d;
+    width: 97%;
+    align-self: center;
+  }
 
-.active-chip {
-  padding: 3px 10px;
-  color: rgb(0, 128, 38, 0.73);
-  background: rgb(60, 179, 113, 0.3);
-}
+  .content-align {
+    /* border-bottom: 1px solid rgb(128, 128, 128, 0.5); */
+    padding: 20px 30px;
+  }
+
+  .list-content-align {
+    padding: 20px 30px 20px 30px;
+  }
+
+  .content-align:last-child {
+    border-bottom: none;
+  }
+
+  .creator-chip {
+    padding: 3px 10px;
+    color: rgba(0, 0, 0, 0.5);
+    background-color: #d9dbe6;
+  }
+
+  .active-chip {
+    padding: 3px 10px;
+    color: rgb(0, 128, 38, 0.73);
+    background: rgb(60, 179, 113, 0.3);
+  }
 </style>

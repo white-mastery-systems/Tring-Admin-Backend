@@ -2,10 +2,10 @@
   import type { ColumnDef, SortingState } from "@tanstack/vue-table";
   import {
     FlexRender,
-    useVueTable,
     getCoreRowModel,
     getPaginationRowModel,
     getSortedRowModel,
+    useVueTable,
   } from "@tanstack/vue-table";
 
   const props = defineProps<{
@@ -52,7 +52,7 @@
             <UiTableHead
               v-for="header in headerGroup.headers"
               :key="header.id"
-              class="text-nowrap px-6 py-5 text-lg font-bold text-gray-700"
+              class="text-md text-nowrap px-6 py-2 font-extrabold text-gray-700"
               scope="col"
               @click="header.column.getToggleSortingHandler()?.($event)"
             >
@@ -65,17 +65,21 @@
           </UiTableRow>
         </UiTableHeader>
         <UiTableBody>
-          <template v-if="table.getRowModel().rows?.length">
+          <template
+            class="bg-black-400"
+            v-if="table.getRowModel().rows?.length"
+          >
             <UiTableRow
               v-for="row in table.getRowModel().rows"
               :key="row.id"
-              class="border-b p-2 even:bg-white"
+              class="cursor-pointer border-b p-1 even:bg-white"
+              @click="$emit('row-click', row)"
               :data-state="row.getIsSelected() && 'selected'"
             >
               <UiTableCell
                 v-for="cell in row.getVisibleCells()"
                 :key="cell.id"
-                class="px-6 py-4 text-lg font-semibold"
+                class="text-md px-6 py-4 font-semibold"
               >
                 <FlexRender
                   :render="cell.column.columnDef.cell"
@@ -98,7 +102,7 @@
             <UiTableHead
               v-for="footer_h in footerGroup.headers"
               :key="footer_h.id"
-              class="px-6 font-bold lg:text-lg"
+              class="mx-6 px-6 font-bold lg:text-lg"
               :colspan="footer_h.colSpan"
             >
               <FlexRender
