@@ -4,203 +4,116 @@ definePageMeta({
   layout: "auth",
 });
 
-const loginData = reactive({
+const defaultFormValues = reactive({
   name: "",
   role: "Chief Executive Officer",
   customRole: ''
 });
+const animationProps = {
+  duration: 500,
+};
+const formSchema = toTypedSchema(
+  z.object({
+    name: z.string().min(1, 'Name is required'),
+    role: z.string().min(2, "Role must be provided."),
+  }).refine(
+    (data: any) => {
+      if (data.role.toLowerCase() === "other") {
+        return data.otherRole.length >= 1;
+      }
+      return true;
+    },
+    {
+      message: "Other role must be provided",
+      path: ["otherRole"],
+    },
+  ).transform((data: any) => {
+    if (data.role.toLowerCase() === "other") {
+      return { ...data, role: data.otherRole };
+    }
+    return data;
+  })
+)
 
+const roles = ['Chief Executive Officer', 'Chief Financial Officer', 'Chief Technology Officer', 'Chief Operating Officer', 'Chief Information Officer', 'Chief Marketing Officer', 'Sales', 'Other']
 
-const handleRoleChange = (selectItem: any) => {
-  if (loginData.role === 'Other') {
-    showCustomRoleInput.value = true
-  }
-}
-const handleChange = () => {
-  loginData.customRole = loginData.customRole
-}
-const onSubmit = async () => {
-  if (loginData.name.length < 1 || loginData.role.length < 1) {
-    toast.error("Please enter valid details");
-  }
-  if (showCustomRoleInput.value) showCustomRoleInput.value = false
-
+// const handleRoleChange = (selectItem: any) => {
+//   if (loginData.role === 'Other') {
+//     showCustomRoleInput.value = true
+//   }
+// }
+// const handleChange = () => {
+//   loginData.customRole = loginData.customRole
+// }
+const onSubmit = async (value: any) => {
   await $fetch("/api/auth/onboarding/1", {
     method: "POST",
-    body: loginData,
+    body: value,
   });
   return navigateTo("/auth/onboarding/2");
 };
 </script>
 <template>
-  <div class="sign-in-align flex items-center">
-    <div class="top-content-align font-bold">Personal Details</div>
-    <div class="form-align">
+  <div class="flex flex-col items-center justify-center w-full h-full">
+    <!-- :initial-values="defaultFormValues" -->
+    <!-- @submit="handleSubmit" -->
+    <div class="font-bold text-[#424bd1] w-[80%] px-6 pb-[20px]">Personal Details</div>
+    <div class="flex flex-col w-[80%] px-6">
       <!-- <div> -->
-      <div class="individual-form-align">
-        <label for="fmail" class="mb-4 font-bold">Full Name *</label>
-        <div class="input-container">
-          <input class="mb-2 mt-2" type="otp" id="fmail" name="otp" placeholder="Enter your Name"
-            v-model="loginData.name" />
-        </div>
-      </div>
-      <div class="individual-form-align gap-3">
-        <label class="font-bold">Role *</label>
-        <UiSelect v-model="loginData.role" @update:model-value="handleRoleChange(loginData.role)">
-          <UiSelectTrigger class="role-align font-medium mt-3 px-2">
-            <UiSelectValue placeholder="Select Role" />
-          </UiSelectTrigger>
-          <UiSelectContent>
-            <UiSelectItem value="Chief Executive Officer">Chief Executive Officer</UiSelectItem>
-            <UiSelectItem value="Chief Financial Officer">Chief Financial Officer</UiSelectItem>
-            <UiSelectItem value="Chief Technology Officer">Chief Technology Officer</UiSelectItem>
-            <UiSelectItem value="Chief Operating Officer">Chief Operating Officer</UiSelectItem>
-            <UiSelectItem value="Chief Information Officer">Chief Information Officer</UiSelectItem>
-            <UiSelectItem value="Chief Marketing Officer">Chief Marketing Officer</UiSelectItem>
-            <UiSelectItem value="Sales">Sales</UiSelectItem>
-            <UiSelectItem value="Other">Other</UiSelectItem>
-          </UiSelectContent>
-        </UiSelect>
-        <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
-      </div>
-      <div v-if="showCustomRoleInput" class="individual-form-align">
-        <!-- <label for="fmail" class="mb-4 font-bold">Enter your Role</label> -->
-        <div class="input-container">
-          <input @change="handleChange()" class="mb-2 mt-2" type="otp" id="fmail" name="otp" placeholder="Enter your Role"
-            v-model="loginData.customRole" />
-        </div>
-      </div>
-      <div class="submit-btn-align">
-        <button class="font-bold" type="submit" @click="onSubmit">
-          Proceed
-        </button>
-      </div>
+      <UiForm :validation-schema="formSchema" :keep-values="true" :initial-values="defaultFormValues"
+        :validate-on-mount="false" @submit="onSubmit" class="space-y-4">
+        <UiFormField v-slot="{ componentField }" name="name">
+          <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormLabel class="font-bold"> Full Name <UiLabel class="text-red-500 text-lg">*</UiLabel>
+            </UiFormLabel>
+            <UiFormControl>
+              <UiInput v-bind="componentField" type="text" placeholder="Enter your Name"
+                class="h-[50px] font-regular border-none bg-[#F6F6F6]" />
+            </UiFormControl>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
+        <!-- <div class="flex gap-4 mb-4"> -->
+        <UiFormField v-slot="{ componentField }" name="role">
+          <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormLabel class="font-bold">Role <UiLabel class="text-red-500 text-lg">*</UiLabel>
+            </UiFormLabel>
+            <UiFormControl>
+              <UiSelect v-bind="componentField">
+                <UiSelectTrigger class="h-[50px] border-0 bg-[#FFFFFF] field_shadow">
+                  <UiSelectValue placeholder="Select Role" class="font-medium" />
+                </UiSelectTrigger>
+                <UiSelectContent>
+                  <UiSelectItem v-for="(role, index) in roles" :value="role">{{
+                    role
+                    }}</UiSelectItem>
+                </UiSelectContent>
+              </UiSelect>
+              <UiFormField v-if="componentField.modelValue === 'Other'" v-slot="{ componentField }" name="otherRole">
+                <UiFormItem v-auto-animate="animationProps" class="w-full">
+                  <UiFormControl>
+                    <UiInput v-bind="componentField" type="text" class="h-[50px]" />
+                  </UiFormControl>
+                  <UiFormMessage />
+                </UiFormItem>
+              </UiFormField>
+            </UiFormControl>
+            <UiFormMessage />
+            <span class="text-xs text-gray-500">This will determine the role of the bot and behavior.</span>
+          </UiFormItem>
+        </UiFormField>
+        <!-- </div> -->
+        <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110 w-full" size="lg">Proceed
+        </UiButton>
+      </UiForm>
       <!-- </div> -->
     </div>
-    <div class="footer-align flex items-center gap-1">
-      <span class="bottom-content-align">
+    <div class="absolute flex items-center bottom-[30px] gap-1">
+      <span class="text-[#8a8a8a] text-[12px]">
         By Signing up, I Agree to Tring AI
       </span>
-      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="term-align"> Terms & Conditions </a>
+      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="text-[12px] underline"> Terms &
+        Conditions </a>
     </div>
   </div>
 </template>
-<style scoped>
-.sign-in-align {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-}
-
-.top-content-align {
-  color: #424bd1;
-  width: 80%;
-  padding: 0 25px;
-  /* padding-right: 172px; */
-  padding-bottom: 20px;
-}
-
-.form-align {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 80%;
-  padding: 0 25px;
-}
-
-/* .individual-form-align {
-    gap: 5px;
-  } */
-.individual-form-align input {
-  background-color: rgba(246, 246, 246, 1);
-  width: 100%;
-  height: 60px;
-  outline: none;
-  border-radius: 10px;
-  padding: 0 20px;
-}
-
-.submit-btn-align {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.submit-btn-align button {
-  width: 100%;
-  height: 50px;
-  border-radius: 10px;
-  padding: 0 20px;
-  background: #424bd1;
-  color: #ffffff;
-  margin-top: 20px;
-  /* margin-right: 170px; */
-}
-
-.input-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-}
-
-input[type="password"] {
-  padding-right: 2.5rem;
-  /* Adjust based on the icon size */
-  width: 100%;
-}
-
-.eye-icon {
-  position: absolute;
-  right: 0.5rem;
-  /* Adjust based on your design */
-  cursor: pointer;
-  font-size: 1rem;
-  /* Adjust size as needed */
-}
-
-.eye-icon i {
-  display: inline-block;
-}
-
-.bottom-content-align {
-  color: #8a8a8a;
-  font-size: 12px;
-}
-
-.term-align {
-  font-size: 12px;
-  text-decoration: underline;
-}
-
-.footer-align {
-  position: absolute;
-  bottom: 30px;
-}
-
-.right-dropdown-align {
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 1);
-  padding: 0px 10px;
-  width: 200px !important;
-  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-  border-radius: 10px;
-}
-
-.role-align {
-  height: 55px;
-  /* color: #8A8A8A; */
-}
-
-/* .role-input {
-   background: rgba(255, 255, 255, 1);
-  padding: 0px 10px;
-  width: 200px !important;
-  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-  border-radius: 10px;
-} */
-</style>

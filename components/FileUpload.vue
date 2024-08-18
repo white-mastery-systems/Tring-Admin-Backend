@@ -4,6 +4,12 @@
   const props = defineProps<{ accept?: string }>();
 
   const fileLen = computed(() => file.value?.length || 0);
+  watch(file, (newFile: any, prevFile) => {
+    if (newFile?.length > 0) {
+      console.log("file changed");
+      // $emit("uploadDocument");
+    }
+  });
   const fileIcon = computed(() =>
     fileLen.value > 1
       ? "ph:files-fill"

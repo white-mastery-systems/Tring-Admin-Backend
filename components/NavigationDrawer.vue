@@ -68,6 +68,20 @@
       <span class="content-align">Bot Management</span>
     </NuxtLink>
     <NuxtLink
+      to="/settings"
+      :class="[
+        route.path?.includes('settings') ? 'activeClass' : 'default-align',
+      ]"
+    >
+      <span>
+        <SettingsIcon
+          :color="route.path?.includes('settings') ? '#fff' : '#424bd1'"
+        />
+       
+      </span>
+      <span class="content-align">Settings</span>
+    </NuxtLink>
+    <NuxtLink
       to="/billing"
       :class="[
         route.path?.includes('/billing') ? 'activeClass' : 'default-align',
@@ -108,6 +122,8 @@
   </div>
 </template>
 <script setup lang="ts">
+  import { SettingsIcon } from "lucide-vue-next";
+
   const route = useRoute();
   const modalOpen = ref(false);
   onMounted(async () => {

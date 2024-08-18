@@ -77,7 +77,7 @@
           <UiSelectContent>
             <UiSelectItem value="true">Active</UiSelectItem>
             <UiSelectItem value="false">In active</UiSelectItem>
-            <UiSelectItem value="">All</UiSelectItem>
+            <UiSelectItem value="all">All</UiSelectItem>
           </UiSelectContent>
         </UiSelect>
       </div>
@@ -113,9 +113,9 @@
   const searchBotDebounce = refDebounced(searchBot, 500);
 
   const activeStatus = ref("");
-  watch(activeStatus, async (newStatus, previousStatus) => {
-    console.log({ newStatus });
-  });
+  // watch(activeStatus, async (newStatus, previousStatus) => {
+  //   console.log({ newStatus });
+  // });
   const selectedValue = ref("Today");
   const newBotName = ref("");
 
@@ -163,8 +163,16 @@
       })),
   });
   const isDataLoading = computed(() => status.value === "pending");
+  watch(status, async (newStatus, previousStatus) => {
+    console.log({ newStatus, previousStatus });
+  });
+  // watch(activeStatus, async (newStatus, previousStatus) => {
+  //   console.log({ newStatus });
+  // });
 
   const addBot = async () => {
+
+  
     const bot = await $fetch("/api/bots", {
       method: "POST",
       body: { name: newBotName.value },

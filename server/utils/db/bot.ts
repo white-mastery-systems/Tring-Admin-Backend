@@ -1,6 +1,7 @@
 // import { isNotNull, ne } from "drizzle-orm";
 
 import { isNotNull, isNull, like } from "drizzle-orm";
+import { InsertIntent } from "~/server/schema/bot";
 
 const db = useDrizzle();
 const cache = useStorage("redis");
@@ -85,3 +86,6 @@ export const deleteBot = async (botId: string) => {
       .returning()
   )[0];
 };
+
+export const createBotIntent = async (intent: InsertIntent) =>
+  (await db.insert(botIntentSchema).values(intent).returning())[0];

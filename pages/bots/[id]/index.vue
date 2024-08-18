@@ -122,17 +122,17 @@
             <div class="flex flex-col space-y-2">
               <div class="flex flex-row gap-3">
                 <span class="bot_name_align font-medium">{{ list.bot }}</span>
-                <Icon
-                  v-if="
-                    list.bot === 'Document Management' &&
-                    botDetails.documents.length === 0
-                  "
-                  class="h-6 w-6 text-red-500"
-                  name="ph:warning"
-                />
               </div>
               <span class="text-xs text-gray-500">{{ list.helperText }}</span>
             </div>
+            <Icon
+              v-if="
+                list.bot === 'Document Management' &&
+                botDetails.documents.length === 0
+              "
+              class="h-6 w-6 text-red-500"
+              name="nonicons:error-16"
+            />
           </div>
           <div>
             <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
@@ -185,7 +185,7 @@
     {
       _id: 2,
       bot: "CRM Configuration",
-      helperText: "Add CRM Integration",
+      helperText: "Add CRM to manage your leads effectively",
       routeName: "bots-id-crm-config",
     },
 

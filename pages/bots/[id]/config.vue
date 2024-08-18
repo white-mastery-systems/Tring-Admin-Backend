@@ -34,7 +34,7 @@
   );
 
   const animationProps = {
-    duration: 500,
+    duration: 0,
   };
   const router = useRouter();
   const route = useRoute("bots-id-config");
@@ -44,6 +44,17 @@
   const botDetails: any = await getBotDetails(route.params.id);
   const defaultFormValues = botDetails.metadata.prompt;
 
+  const addIntents = async (values: any) => {
+    const payload: any = {
+      id: botDetails.id,
+      ...values,
+    };
+    await createBotIntents(payload);
+    return navigateTo({
+      name: "bots-id",
+      params: { id: botDetails.id },
+    });
+  };
   const handleSubmit = async (values: any) => {
     const payload: any = {
       id: botDetails.id,
@@ -164,7 +175,7 @@
           </UiFormItem>
         </UiFormField>
       </div>
-      <UiFormField v-slot="{ componentField }" name="notes">
+      <UiFormField v-slot="{ componentField }" name="NOTES">
         <UiFormItem v-auto-animate="animationProps">
           <UiFormLabel>Notes</UiFormLabel>
           <UiFormControl>
@@ -208,11 +219,11 @@
           <UiButton class="bg-yellow-500" type="button">Add Intents</UiButton>
         </UiDialogTrigger>
         <UiDialogContent class="sm:max-w-[425px]">
-          <UiDialogHeader>
-            <UiDialogTitle class="text-indigo-600">Add Intents</UiDialogTitle>
-          </UiDialogHeader>
-          <UiForm class="flex flex-col gap-2">
-            <UiFormField v-slot="{ componentField }" name="ROLE">
+          <UiForm class="flex flex-col gap-2" @submit="addIntents">
+            <UiDialogHeader>
+              <UiDialogTitle class="text-indigo-600">Add Intents</UiDialogTitle>
+            </UiDialogHeader>
+            <UiFormField v-slot="{ componentField }" name="intent">
               <UiFormItem v-auto-animate="animationProps" class="w-full">
                 <UiFormLabel
                   >Actions<UiLabel class="text-lg text-red-500">*</UiLabel>
@@ -238,7 +249,7 @@
                   <UiFormField
                     v-if="componentField.modelValue === 'Other'"
                     v-slot="{ componentField }"
-                    name="otherRole"
+                    name="link"
                   >
                     <UiFormItem v-auto-animate="animationProps" class="w-full">
                       <UiFormControl>
@@ -252,12 +263,36 @@
                 <span class="text-xs text-gray-500">Select your intent.</span>
               </UiFormItem>
             </UiFormField>
+            <UiFormField v-slot="{ componentField }" name="link">
+              <UiFormItem v-auto-animate="animationProps" class="w-full">
+                <UiFormLabel
+                  >Add Link <UiLabel class="text-lg text-red-500">*</UiLabel>
+                </UiFormLabel>
+                <UiFormControl>
+                  <UiInput
+                    v-bind="componentField"
+                    type="text"
+                    placeholder="Eg: enter your preferred value"
+                  />
+                </UiFormControl>
+                <span class="text-xs text-gray-500"
+                  >The bot will be driving the conversation towards this
+                  goal.</span
+                >
+                <UiFormMessage />
+              </UiFormItem>
+            </UiFormField>
             <!-- <UiFormField v-if="componentField.modelValue === 'Other'">
             </UiFormField> -->
+            <UiDialogFooter>
+              <UiButton
+                class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
+                type="submit"
+              >
+                Save changes
+              </UiButton>
+            </UiDialogFooter>
           </UiForm>
-          <UiDialogFooter>
-            <UiButton type="submit"> Save changes </UiButton>
-          </UiDialogFooter>
         </UiDialogContent>
       </UiDialog>
     </div>
