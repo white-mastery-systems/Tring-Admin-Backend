@@ -27,7 +27,7 @@
               />
               <UiButton
                 @click="addBot"
-                class="mt-4 w-1/2 self-end bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
+                class="mt-4 w-1/2 self-start bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
                 >Create
               </UiButton>
             </div>
