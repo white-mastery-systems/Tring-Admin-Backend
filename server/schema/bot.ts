@@ -127,6 +127,17 @@ export const botIntentSchema = chatbotSchema.table("intents", {
     .notNull(),
 });
 
+export const botIntegrationSchema = chatbotSchema.table("bot_integrations", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  botId: uuid("bot_id")
+    .references(() => chatBotSchema.id)
+    .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  organizationId: uuid("organization_id")
+    .references(() => organizationSchema.id)
+    .notNull(),
+});
+
 // Relations
 export const chatBotRelations = relations(chatBotSchema, ({ one, many }) => ({
   organization: one(organizationSchema, {
@@ -217,6 +228,14 @@ export type InsertLead = InferInsertModel<typeof leadSchema>;
 
 export type SelectIntent = InferSelectModel<typeof botIntentSchema>;
 export type InsertIntent = InferInsertModel<typeof botIntentSchema>;
+
+export type SelectBotIntegration = InferSelectModel<
+  typeof botIntegrationSchema
+>;
+export type InsertBotIntegration = InferInsertModel<typeof botIntegrationSchema>;
+export type zodInsertBotIntegration = InferInsertModel<
+  typeof botIntegrationSchema
+>;
 
 // Validations
 export const zodInsertChatBot = createInsertSchema(chatBotSchema, {

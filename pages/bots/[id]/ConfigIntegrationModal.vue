@@ -7,8 +7,8 @@
       <UiDialogHeader>
         <UiDialogTitle>Link Integration</UiDialogTitle>
       </UiDialogHeader>
-      <UiForm :keep-values="true" :validate-on-mount="false" class="space-y-2">
-        <UiFormField name="integration">
+      <UiForm @submit="handleAddIntegration" class="space-y-2">
+        <UiFormField v-slot="{ componentField }" name="integration">
           <UiFormItem class="w-full">
             <UiFormLabel
               >Select Connected Integation<UiLabel class="text-lg text-red-500"
@@ -16,14 +16,20 @@
               >
             </UiFormLabel>
             <UiFormControl>
-              <UiSelect>
+              <UiSelect v-bind="componentField">
                 <UiSelectTrigger>
                   <UiSelectValue placeholder="Select Integration" />
                 </UiSelectTrigger>
                 <UiSelectContent>
-                  <UiSelectItem value="zoho-crm">Zoho CRM</UiSelectItem>
-                  <UiSelectItem value="zoho-bigin">Zoho Bigin</UiSelectItem>
-                  <UiSelectItem value="sell-do">Sell Do</UiSelectItem>
+                  <UiSelectItem
+                    v-for="(integrationData, index) in integrationsData"
+                    :value="integrationData.name"
+                    >{{
+                      integrationData.name === "sell-do"
+                        ? "Sell Do"
+                        : "Zoho Bigin"
+                    }}</UiSelectItem
+                  >
                 </UiSelectContent>
               </UiSelect>
             </UiFormControl>
@@ -31,24 +37,32 @@
             <span class="text-xs text-gray-500">Select your integration.</span>
           </UiFormItem>
         </UiFormField>
-        <UiFormField name="pipeline">
+        <UiFormField v-slot="{ componentField }" name="campaignId">
           <UiFormItem class="w-full">
-            <UiFormLabel
-              >Select Pipleine<UiLabel class="text-lg text-red-500">*</UiLabel>
-            </UiFormLabel>
+            <UiFormLabel class="font-bold">Campaign Id</UiFormLabel>
             <UiFormControl>
-              <UiSelect>
-                <UiSelectTrigger>
-                  <UiSelectValue placeholder="Select Pipeline" />
-                </UiSelectTrigger>
-                <UiSelectContent>
-                  <UiSelectItem value="zoho-crm">Project-1</UiSelectItem>
-                  <UiSelectItem value="zoho-bigin">Project-2</UiSelectItem>
-                </UiSelectContent>
-              </UiSelect>
+              <UiInput
+                v-bind="componentField"
+                type="text"
+                placeholder="Enter your campaign id"
+              />
             </UiFormControl>
+
             <UiFormMessage />
-            <span class="text-xs text-gray-500">Select your pipeline.</span>
+          </UiFormItem>
+        </UiFormField>
+        <UiFormField v-slot="{ componentField }" name="projectId">
+          <UiFormItem class="w-full">
+            <UiFormLabel class="font-bold">Project Id</UiFormLabel>
+            <UiFormControl>
+              <UiInput
+                placeholder="Enter your project id"
+                v-bind="componentField"
+                type="text"
+              />
+            </UiFormControl>
+
+            <UiFormMessage />
           </UiFormItem>
         </UiFormField>
 
@@ -59,6 +73,21 @@
     </UiDialogContent>
   </UiDialog>
 </template>
-<script>
-  
+<script setup lang="ts">
+  const {
+    status: integrationLoadingStatus,
+    data: integrationsData,
+    refresh: integrationRefresh,
+  } = await useLazyFetch("/api/org/integrations", {
+    server: false,
+    default: () => [],
+  });
+  console.log({ integrationsData });
+  const route = useRoute("bots-id-crm-config");
+  const handleAddIntegration = (value: any) => {
+    addBotIntegration({
+      payload: { ...value, botId: route.params.id },
+      onSuccess: () => {},
+    });
+  };
 </script>
