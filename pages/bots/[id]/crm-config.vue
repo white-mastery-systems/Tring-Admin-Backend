@@ -1,12 +1,4 @@
 <template>
-  <!-- <header>
-    <div class="flex items-center gap-2">
-      <UiButton variant="ghost" size="icon" @click="router.back()">
-        <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
-      </UiButton>
-      <span class="text-[20px] font-bold">CRM Configuration</span>
-    </div>
-  </header> -->
   <Page
     title="CRM Configuration"
     :disableSelector="true"
@@ -28,7 +20,7 @@
   import ConfigurationModal from "./ConfigIntegrationModal.vue";
   const router = useRouter();
   const columnHelper = createColumnHelper<any>();
- 
+
   const columns = [
     columnHelper.accessor("integration", {
       header: "Integration Name",
@@ -41,10 +33,14 @@
       header: "actions",
     }),
   ];
+  const route = useRoute("bots-id-crm-config");
+  const { status, data: integrationsData } = await useLazyFetch(
+    `/api/${route.params.id}/integrations`,
+    {
+      server: false,
+      default: () => [],
+    },
+  );
 
-  const integrations = [
-    { integration: "Zoho CRM", project: "XYZ project" },
-    { integration: "Zoho Bigin", project: "XYZ project" },
-    { integration: "Sell Do", project: "XYZ project" },
-  ];
+  const integrations: any = [];
 </script>

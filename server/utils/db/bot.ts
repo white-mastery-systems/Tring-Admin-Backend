@@ -91,14 +91,6 @@ export const createBotIntent = async (intent: InsertIntent) => {
   return (await db.insert(botIntentSchema).values(intent).returning())[0];
 };
 
-export const createBotIntegration = async (
-  integration: InsertBotIntegration,
-) => {
-  return (
-    await db.insert(botIntegrationSchema).values(integration).returning()
-  )[0];
-};
-
 export const listBotIntents = async (
   // organizationId: string,
   botId: string,
@@ -109,6 +101,30 @@ export const listBotIntents = async (
   const data = await db.query.botIntentSchema.findMany({
     where: and(...filters),
     orderBy: [desc(chatBotSchema.createdAt)],
+    columns: {
+      organizationId: false,
+    },
+  });
+  return data;
+};
+
+export const createBotIntegration = async (
+  integration: InsertBotIntegration,
+) => {
+  return (
+    await db.insert(botIntegrationSchema).values(integration).returning()
+  )[0];
+};
+export const listBotIntegrations = async (
+  // organizationId: string,
+  botId: string,
+  // query: queryInterface,
+) => {
+  let filters: any = [eq(botIntegrationSchema.botId, botId)];
+
+  const data = await db.query.botIntegrationSchema.findMany({
+    where: and(...filters),
+    orderBy: [desc(botIntegrationSchema.createdAt)],
     columns: {
       organizationId: false,
     },

@@ -19,6 +19,7 @@ const schema = {
   billingSchema,
   botIntentSchema,
   integrationSchema,
+  botIntegrationSchema,
   // Relations
   organizationRelations,
   chatBotRelations,

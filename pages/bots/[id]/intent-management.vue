@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { createColumnHelper } from "@tanstack/vue-table";
   import { IntentActions } from "#components";
+  import { createColumnHelper } from "@tanstack/vue-table";
 
   const showIntentDialog = ref(false);
 

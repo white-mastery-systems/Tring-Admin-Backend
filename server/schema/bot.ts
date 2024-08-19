@@ -132,6 +132,8 @@ export const botIntegrationSchema = chatbotSchema.table("bot_integrations", {
   botId: uuid("bot_id")
     .references(() => chatBotSchema.id)
     .notNull(),
+  metadata: jsonb("metadata"),
+  integration: varchar("integration", { length: 64 }).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)
@@ -232,7 +234,9 @@ export type InsertIntent = InferInsertModel<typeof botIntentSchema>;
 export type SelectBotIntegration = InferSelectModel<
   typeof botIntegrationSchema
 >;
-export type InsertBotIntegration = InferInsertModel<typeof botIntegrationSchema>;
+export type InsertBotIntegration = InferInsertModel<
+  typeof botIntegrationSchema
+>;
 export type zodInsertBotIntegration = InferInsertModel<
   typeof botIntegrationSchema
 >;

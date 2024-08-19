@@ -80,3 +80,8 @@ export const addBotIntegration = async ({
     toast.error(err.data.data[0].message);
   }
 };
+
+// export const getBotIntegrations = async (botId: string) => {
+//   const bot = await $fetch<{ SelectBotIntegration }>(`/api/bots/${botId}`);
+//   return bot;
+// };

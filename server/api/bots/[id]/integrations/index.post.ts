@@ -14,9 +14,12 @@ export default defineEventHandler(async (event) => {
   );
   const body = await isValidBodyHandler(event, zodInsertBotIntegration);
   const bot = await createBotIntegration({
-    ...body,
+    integration: body.integration,
     botId,
     organizationId,
+    metadata: {
+      ...body,
+    },
   });
 
   return bot;
