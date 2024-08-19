@@ -66,11 +66,11 @@
 </script>
 <template>
   <Page title="Intent Management" :disableSelector="true">
-    <div class="mb-4 flex items-center justify-end">
+    <template #actionButtons>
       <UiButton type="button" color="primary" @click="showIntentDialog = true"
         >Add Intents</UiButton
       >
-    </div>
+    </template>
     <DataTable
       :columns="columns"
       :data="intentData"

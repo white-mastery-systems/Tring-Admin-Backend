@@ -115,11 +115,7 @@ export const createBotIntegration = async (
     await db.insert(botIntegrationSchema).values(integration).returning()
   )[0];
 };
-export const listBotIntegrations = async (
-  // organizationId: string,
-  botId: string,
-  // query: queryInterface,
-) => {
+export const listBotIntegrations = async (botId: string) => {
   let filters: any = [eq(botIntegrationSchema.botId, botId)];
 
   const data = await db.query.botIntegrationSchema.findMany({

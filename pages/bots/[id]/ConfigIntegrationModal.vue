@@ -1,8 +1,8 @@
 <template>
-  <UiDialog>
-    <UiDialogTrigger as-child>
+  <UiDialog v-model:open="isModalOpen">
+    <!-- <UiDialogTrigger as-child>
       <UiButton variant="outline" color="primary"> Link Integration </UiButton>
-    </UiDialogTrigger>
+    </UiDialogTrigger> -->
     <UiDialogContent class="sm:max-w-[425px]">
       <UiDialogHeader>
         <UiDialogTitle>Link Integration</UiDialogTitle>
@@ -74,6 +74,8 @@
   </UiDialog>
 </template>
 <script setup lang="ts">
+  const isModalOpen = defineModel<boolean>({ default: false, required: true });
+
   const {
     status: integrationLoadingStatus,
     data: integrationsData,
@@ -87,7 +89,9 @@
   const handleAddIntegration = (value: any) => {
     addBotIntegration({
       payload: { ...value, botId: route.params.id },
-      onSuccess: () => {},
+      onSuccess: () => {
+        isModalOpen.value = false;
+      },
     });
   };
 </script>

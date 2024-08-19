@@ -81,7 +81,9 @@ export const addBotIntegration = async ({
   }
 };
 
-// export const getBotIntegrations = async (botId: string) => {
-//   const bot = await $fetch<{ SelectBotIntegration }>(`/api/bots/${botId}`);
-//   return bot;
-// };
+export const getBotIntegrations = async (botId: string) => {
+  const botIntegrations = await $fetch<SelectBotIntegration>(
+    `/api/bots/${botId}/integrations`,
+  );
+  return botIntegrations;
+};
