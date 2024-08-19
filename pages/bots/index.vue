@@ -6,9 +6,7 @@
       <div class="flex gap-4">
         <UiDialog>
           <UiDialogTrigger as-child>
-            <UiButton
-              class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95"
-            >
+            <UiButton class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95">
               Add Bot
             </UiButton>
           </UiDialogTrigger>
@@ -16,28 +14,17 @@
             <UiDialogHeader>
               <UiDialogTitle>Add a New Bot</UiDialogTitle>
             </UiDialogHeader>
-            <div class="individual-form-align">
+            <div class="flex flex-col items-start justify-center h-[150px]">
               <label for="frole" class="pb-2 pl-0 font-medium">Bot Name</label>
-              <input
-                type="text"
-                id="frole"
-                v-model="newBotName"
-                name="fname"
-                placeholder="Enter Bot Name"
-              />
-              <UiButton
-                @click="addBot"
-                class="mt-4 w-1/2 self-end bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
-                >Create
+              <input type="text" id="frole" v-model="newBotName" name="fname"
+                class="bg-[#f6f6f6] w-full h-[50px] outline-0 rounded-[10px] py-5" placeholder="Enter Bot Name" />
+              <UiButton @click="addBot"
+                class="mt-4 w-1/2 self-end bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">Create
               </UiButton>
             </div>
           </UiDialogContent>
         </UiDialog>
-        <span
-          v-if="false"
-          class="right-dropdown-align text-[15px]"
-          style="color: rgba(138, 138, 138, 1)"
-          >Summary:
+        <span v-if="false" class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary:
           <span class="font-bold text-black">
             <!-- <template> -->
             <UiSelect v-model="selectedValue" class="outline-none">
@@ -47,29 +34,20 @@
               <UiSelectContent>
                 <UiSelectGroup class="select_list_align">
                   <!-- <UiSelectLabel>Today</UiSelectLabel> -->
-                  <UiSelectItem
-                    v-for="(list, index) in menuList"
-                    :key="index"
-                    class="content_align"
-                    :value="list.content"
-                  >
+                  <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
+                    :value="list.content">
                     {{ list.content }}
                   </UiSelectItem>
                 </UiSelectGroup>
               </UiSelectContent>
             </UiSelect>
             <!-- </template> -->
-          </span></span
-        >
+          </span></span>
       </div>
     </div>
     <div class="bot-main-align max-h-[80vh] overflow-y-scroll px-4 pb-4">
       <div class="flex items-center gap-2 py-4">
-        <UiInput
-          v-model="searchBot"
-          class="max-w-[200px]"
-          placeholder="Search bot..."
-        />
+        <UiInput v-model="searchBot" class="max-w-[200px]" placeholder="Search bot..." />
         <UiSelect v-model="activeStatus">
           <UiSelectTrigger class="max-w-[200px]">
             <UiSelectValue placeholder="Filter status" />
@@ -77,23 +55,17 @@
           <UiSelectContent>
             <UiSelectItem value="true">Active</UiSelectItem>
             <UiSelectItem value="false">In active</UiSelectItem>
-            <UiSelectItem value="all">All</UiSelectItem>
           </UiSelectContent>
         </UiSelect>
+
       </div>
 
-      <DataTable
-        @row-click="
+      <DataTable @row-click="
           (row: any) => {
             console.log({ row });
             return navigateTo(`/bots/${row.original.id}`);
           }
-        "
-        :columns="columns"
-        :data="bots"
-        :page-size="8"
-        :is-loading="isDataLoading"
-      />
+        " :columns="columns" :data="bots" :page-size="8" :is-loading="isDataLoading" />
     </div>
   </div>
 </template>
@@ -113,9 +85,9 @@
   const searchBotDebounce = refDebounced(searchBot, 500);
 
   const activeStatus = ref("");
-  // watch(activeStatus, async (newStatus, previousStatus) => {
-  //   console.log({ newStatus });
-  // });
+  watch(activeStatus, async (newStatus, previousStatus) => {
+    console.log({ newStatus });
+  });
   const selectedValue = ref("Today");
   const newBotName = ref("");
 
@@ -163,16 +135,8 @@
       })),
   });
   const isDataLoading = computed(() => status.value === "pending");
-  watch(status, async (newStatus, previousStatus) => {
-    console.log({ newStatus, previousStatus });
-  });
-  // watch(activeStatus, async (newStatus, previousStatus) => {
-  //   console.log({ newStatus });
-  // });
 
   const addBot = async () => {
-
-  
     const bot = await $fetch("/api/bots", {
       method: "POST",
       body: { name: newBotName.value },
@@ -216,23 +180,6 @@
 </script>
 
 <style scoped>
-  .individual-form-align {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: center;
-    height: 150px;
-  }
-
-  .individual-form-align input {
-    background-color: rgba(246, 246, 246, 1);
-    width: 100%;
-    height: 50px;
-    outline: none;
-    border-radius: 10px;
-    padding: 0 20px;
-    /* margin-top: 20px; */
-  }
 
   .bot-manage-main-container {
     padding: 0 25px;
