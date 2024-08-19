@@ -17,5 +17,23 @@ export default defineEventHandler(async (event) => {
     botId: botId,
     organizationId,
   });
+  let botDetails: any = await getBotDetails(botId);
+  console.log(
+    botDetails?.metadata.prompt.INTENTS,
+    "botDetails?.metadata.prompt.INTENTS",
+  );
+  let metaData: any = botDetails?.metadata;
+  metaData = {
+    ...metaData,
+    prompt: {
+      ...metaData.prompt,
+      INTENTS: `${botDetails?.metadata.prompt.INTENTS}\n-${body.intent}`,
+    },
+    ...(body.intent === "location" && { location: body.link }),
+  };
+  console.log({ metaData });
+  await updateBotDetails(botId, {
+    metadata: metaData,
+  });
   return bot;
 });
