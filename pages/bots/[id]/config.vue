@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  const showIntentDialog = ref(false);
   const formSchema = toTypedSchema(
     z
       .object({
@@ -45,14 +46,16 @@
   const defaultFormValues = botDetails.metadata.prompt;
 
   const addIntents = async (values: any) => {
-    const payload: any = {
+    const intentDetails: any = {
       id: botDetails.id,
       ...values,
     };
-    await createBotIntents(payload);
-    return navigateTo({
-      name: "bots-id",
-      params: { id: botDetails.id },
+    await createBotIntents({
+      intentDetails,
+      onSuccess: () => {
+        showIntentDialog.value = false;
+        toast.success("Intent added successfully");
+      },
     });
   };
   const handleSubmit = async (values: any) => {
@@ -214,10 +217,14 @@
       >
         Intents Management
       </h3>
-      <UiDialog>
-        <UiDialogTrigger as-child>
-          <UiButton class="bg-yellow-500" type="button">Add Intents</UiButton>
-        </UiDialogTrigger>
+      <UiButton
+        class="bg-yellow-500"
+        type="button"
+        @click="showIntentDialog = true"
+        >Add Intents</UiButton
+      >
+
+      <UiDialog v-model:open="showIntentDialog">
         <UiDialogContent class="sm:max-w-[425px]">
           <UiForm class="flex flex-col gap-2" @submit="addIntents">
             <UiDialogHeader>
