@@ -8,12 +8,21 @@
     />
   </Page>
   <ConfirmationModal
-    v-model:open="OpenDeleteConfirmDialog"
+    v-model:open="openConfirmationDialog.open"
     title="Confirm Delete"
     description="Are you sure you want to delete ?"
     @confirm="
       () => {
-        OpenDeleteConfirmDialog = false;
+        if (openConfirmationDialog?.id) {
+          deleteIntegration({
+            integrationId: openConfirmationDialog.id,
+            onSuccess: () => {
+              integrationRefresh();
+              // refreshNuxtData
+            },
+          });
+          openConfirmationDialog.open = false;
+        }
       }
     "
   />
@@ -22,8 +31,8 @@
   import { createColumnHelper } from "@tanstack/vue-table";
   import Page from "~/components/Page.vue";
   import Button from "~/components/ui/button/Button.vue";
+  // import { deleteIntegration } from "../../utils/db/integrations";
   import ConnectModal from "./ConnectModal.vue";
-
   definePageMeta({
     middleware: "admin-only",
   });
@@ -34,18 +43,17 @@
     { label: "Sell Do", name: "sell-do", status: false },
   ]);
 
-  let OpenDeleteConfirmDialog = ref(false);
-  const { status: integrationLoadingStatus, data: integrationsData } =
-    await useLazyFetch("/api/org/integrations", {
-      server: false,
-      default: () => [],
-      // bots.map((bot) => ({
-      //   id: bot.id,
-      //   name: bot.name,
-      //   status: bot.documentId ? true : false,
-      //   createdAt: formatDateStringToDate(bot.createdAt),
-      // })),
-    });
+  let openConfirmationDialog: { open: boolean; id?: string } = reactive({
+    open: false,
+  });
+  const {
+    status: integrationLoadingStatus,
+    data: integrationsData,
+    refresh: integrationRefresh,
+  } = await useLazyFetch("/api/org/integrations", {
+    server: false,
+    default: () => [],
+  });
   watch(
     integrationsData,
     (newData) => {
@@ -53,7 +61,7 @@
         console.log({ newIntegration });
         integrations.value = integrations.value?.map((integration) => {
           if (integration?.name === newIntegration?.name) {
-            return { ...integration, status: true };
+            return { ...integration, status: true, id: newIntegration.id };
           }
           return integration;
         });
@@ -65,20 +73,42 @@
     () => integrationLoadingStatus.value === "pending",
   );
 
-  const statusComponent = (status: boolean, label: string, name: string) =>
+  const statusComponent = (
+    status: boolean,
+    label: string,
+    name: string,
+    id: string | undefined,
+  ) =>
     status
       ? h(
           Button,
           {
-            class: "text-red-500 bg-red-200",
+            class: "",
             variant: "destructive",
             onClick: () => {
-              OpenDeleteConfirmDialog.value = true;
+              openConfirmationDialog.open = true;
+              openConfirmationDialog.id = id;
             },
           },
           "Disconnect",
         )
-      : h("div", { class: "" }, [h(ConnectModal, { label, name })]);
+      : h(
+          "div",
+          {
+            class: "",
+          },
+          [
+            h(ConnectModal, {
+              label,
+              name,
+              onSuccess: () => {
+                openConfirmationDialog.open = false;
+
+                integrationRefresh();
+              },
+            }),
+          ],
+        );
 
   const columnHelper = createColumnHelper<any>();
   const columns = [
@@ -93,6 +123,7 @@
           row.original.status,
           row.original.label,
           row.original.name,
+          row.original?.id,
         );
       },
     }),
