@@ -4,12 +4,12 @@
   const props = defineProps<{ accept?: string }>();
 
   const fileLen = computed(() => file.value?.length || 0);
-  watch(file, (newFile: any, prevFile) => {
-    if (newFile?.length > 0) {
-      console.log("file changed");
-      // $emit("uploadDocument");
-    }
-  });
+  // watch(file, (newFile: any, prevFile) => {
+  //   if (newFile?.length > 0) {
+  //     console.log("file changed");
+  //     // $emit("uploadDocument");
+  //   }
+  // });
   const fileIcon = computed(() =>
     fileLen.value > 1
       ? "ph:files-fill"
@@ -61,7 +61,12 @@
         type="file"
         class="hidden"
         :accept="accept"
-        @change="file = $event.target.files"
+        @change="
+          (event) => {
+            file = event.target.files;
+            $emit('uploadDocument');
+          }
+        "
         v-bind="$attrs"
       />
     </label>

@@ -1,4 +1,8 @@
 import { createBotIntent } from "~/server/utils/db/bot";
+export const zodInsertChatBotIntent = z.object({
+  intent: z.string().min(2, "Intent too short"),
+  link: z.string().min(5, "Link too short"),
+});
 
 export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
@@ -7,14 +11,11 @@ export default defineEventHandler(async (event) => {
     event,
     checkPayloadId("id"),
   );
-  const body = await readBody(event).catch(() => {});
-
+  const body = await isValidBodyHandler(event, zodInsertChatBotIntent);
   const bot = await createBotIntent({
     ...body,
+    botId: botId,
     organizationId,
   });
   return bot;
-
-  //   console.log(query);
-  //   return await db.execute(query);
 });

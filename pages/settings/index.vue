@@ -7,17 +7,35 @@
       :is-loading="false"
     />
   </Page>
+  <ConfirmationModal
+    v-model:open="OpenDeleteConfirmDialog"
+    title="Confirm Delete"
+    description="Are you sure you want to delete ?"
+    @confirm="
+      () => {
+        OpenDeleteConfirmDialog = false;
+      }
+    "
+  />
 </template>
 <script lang="ts" setup>
   import { createColumnHelper } from "@tanstack/vue-table";
   import Page from "~/components/Page.vue";
   import Button from "~/components/ui/button/Button.vue";
   import ConnectModal from "./ConnectModal.vue";
+  let OpenDeleteConfirmDialog = ref(false);
+
   const statusComponent = (status: boolean, name: string) =>
     status
       ? h(
           Button,
-          { class: "text-red-500 bg-red-200", variant: "destructive" },
+          {
+            class: "text-red-500 bg-red-200",
+            variant: "destructive",
+            onClick: () => {
+              OpenDeleteConfirmDialog.value = true;
+            },
+          },
           "Disconnect",
         )
       : h("div", { class: "" }, [h(ConnectModal, { integrationName: name })]);
@@ -39,6 +57,6 @@
   const integrations = [
     { name: "Zoho CRM", status: false },
     { name: "Zoho Bigin", status: false },
-    { name: "Sell Do", status: false },
+    { name: "Sell Do", status: true },
   ];
 </script>

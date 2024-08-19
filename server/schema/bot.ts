@@ -224,10 +224,10 @@ export const zodInsertChatBot = createInsertSchema(chatBotSchema, {
     schema.name.min(3, "Name Too Short").max(64, "Name Too Long"),
 });
 
-export const zodInsertChatBotIntent = createInsertSchema(botIntentSchema, {
-  intent: (schema) => schema.intent.min(2, "Intent too short"),
-  link: (schema) => schema.link.min(5, "Link too short"),
-});
+// export const zodInsertChatBotIntent = createInsertSchema(botIntentSchema, {
+//   intent: (schema) => schema.intent.min(2, "Intent too short"),
+//   link: (schema) => schema.link.min(5, "Link too short"),
+// });
 
 export const zodUpdateChatBot = zodInsertChatBot
   .omit({
