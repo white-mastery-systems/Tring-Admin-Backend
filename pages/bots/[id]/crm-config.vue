@@ -25,10 +25,10 @@
 </template>
 <script setup lang="ts">
   import { createColumnHelper } from "@tanstack/vue-table";
-import ConfigurationModal from "./ConfigIntegrationModal.vue";
+  import ConfigurationModal from "./ConfigIntegrationModal.vue";
   const router = useRouter();
   const columnHelper = createColumnHelper<any>();
-
+ 
   const columns = [
     columnHelper.accessor("integration", {
       header: "Integration Name",
