@@ -28,9 +28,44 @@
     middleware: "admin-only",
   });
 
-  let OpenDeleteConfirmDialog = ref(false);
+  const integrations = ref([
+    { label: "Zoho CRM", name: "zoho-crm", status: false },
+    { label: "Zoho Bigin", name: "zoho-bigin", status: false },
+    { label: "Sell Do", name: "sell-do", status: false },
+  ]);
 
-  const statusComponent = (status: boolean, name: string) =>
+  let OpenDeleteConfirmDialog = ref(false);
+  const { status: integrationLoadingStatus, data: integrationsData } =
+    await useLazyFetch("/api/org/integrations", {
+      server: false,
+      default: () => [],
+      // bots.map((bot) => ({
+      //   id: bot.id,
+      //   name: bot.name,
+      //   status: bot.documentId ? true : false,
+      //   createdAt: formatDateStringToDate(bot.createdAt),
+      // })),
+    });
+  watch(
+    integrationsData,
+    (newData) => {
+      newData?.map((newIntegration) => {
+        console.log({ newIntegration });
+        integrations.value = integrations.value?.map((integration) => {
+          if (integration?.name === newIntegration?.name) {
+            return { ...integration, status: true };
+          }
+          return integration;
+        });
+      });
+    },
+    { deep: true },
+  );
+  const integrationLoading = computed(
+    () => integrationLoadingStatus.value === "pending",
+  );
+
+  const statusComponent = (status: boolean, label: string, name: string) =>
     status
       ? h(
           Button,
@@ -43,25 +78,23 @@
           },
           "Disconnect",
         )
-      : h("div", { class: "" }, [h(ConnectModal, { integrationName: name })]);
+      : h("div", { class: "" }, [h(ConnectModal, { label, name })]);
 
   const columnHelper = createColumnHelper<any>();
   const columns = [
-    columnHelper.accessor("name", {
+    columnHelper.accessor("label", {
       header: "Integration Name",
     }),
 
     columnHelper.accessor("actions", {
       header: "Actions",
       cell: ({ row }) => {
-        return statusComponent(row.original.status, row.original.name);
+        return statusComponent(
+          row.original.status,
+          row.original.label,
+          row.original.name,
+        );
       },
     }),
-  ];
-
-  const integrations = [
-    { name: "Zoho CRM", status: false },
-    { name: "Zoho Bigin", status: false },
-    { name: "Sell Do", status: true },
   ];
 </script>

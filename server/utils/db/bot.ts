@@ -88,7 +88,6 @@ export const deleteBot = async (botId: string) => {
 };
 
 export const createBotIntent = async (intent: InsertIntent) => {
-  console.log({ intent });
   return (await db.insert(botIntentSchema).values(intent).returning())[0];
 };
 

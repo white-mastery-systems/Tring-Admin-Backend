@@ -14,3 +14,19 @@ export const getLeadTranscript = async (chatId: any) => {
 export const getAnalyticsData = async () => {
   return await $fetch(`/api/org/analytics`);
 };
+
+export const createIntegration = async (integrationDetails: SelectChatBot) => {
+  const createIntegration = await $fetch<SelectChatBot>(
+    `/api/org/integrations`,
+    {
+      method: "POST",
+      body: integrationDetails,
+    },
+  );
+  toast.success("Integration added successfully");
+  // await navigateTo({
+  //   name: "bots-id",
+  //   params: { id: botDetails.id },
+  // });
+  return createIntegration;
+};

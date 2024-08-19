@@ -72,6 +72,9 @@
     columnHelper.accessor("createdAt", {
       header: "Date Created",
     }),
+    // columnHelper.accessor("actions", {
+    //   header: "actions",
+    // }),
   ];
 </script>
 <template>
