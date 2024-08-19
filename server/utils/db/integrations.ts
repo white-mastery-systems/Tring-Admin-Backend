@@ -16,11 +16,6 @@ export const listIntegrations = async (organizationId: string) => {
   const data = await db.query.integrationSchema.findMany({
     where: and(...filters),
     orderBy: [desc(integrationSchema.createdAt)],
-    columns: {
-      id: true,
-      name: true,
-      createdAt: true,
-    },
   });
   return data;
 };
