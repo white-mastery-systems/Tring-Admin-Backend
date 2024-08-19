@@ -23,6 +23,11 @@
   import Page from "~/components/Page.vue";
   import Button from "~/components/ui/button/Button.vue";
   import ConnectModal from "./ConnectModal.vue";
+
+  definePageMeta({
+    middleware: "admin-only",
+  });
+
   let OpenDeleteConfirmDialog = ref(false);
 
   const statusComponent = (status: boolean, name: string) =>

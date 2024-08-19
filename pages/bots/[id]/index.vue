@@ -96,7 +96,7 @@
           </UiDialogHeader>
           <UiButton
             class="deploy-bot-list-align text-[15px] text-black"
-            v-for="list in getDocumentList.filter(
+            v-for="list in getDocumentList.documents.filter(
               (item: any) => item.status === 'ready',
             )"
             :key="list.id"
