@@ -1,5 +1,5 @@
 <template>
-  <Page title="Settings">
+  <Page title="Settings" :disable-back-button="true">
     <DataTable
       :columns="columns"
       :data="integrations"

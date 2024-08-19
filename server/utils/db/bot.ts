@@ -91,3 +91,23 @@ export const createBotIntent = async (intent: InsertIntent) => {
   console.log({ intent });
   return (await db.insert(botIntentSchema).values(intent).returning())[0];
 };
+
+export const listBotIntents = async (
+  // organizationId: string,
+  botId: string,
+  // query: queryInterface,
+) => {
+  let filters: any = [eq(botIntentSchema.botId, botId)];
+
+  const data = await db.query.botIntentSchema.findMany({
+    where: and(...filters),
+    orderBy: [desc(chatBotSchema.createdAt)],
+    columns: {
+      id: true,
+      createdAt: true,
+      link: true,
+      intent: true,
+    },
+  });
+  return data;
+};

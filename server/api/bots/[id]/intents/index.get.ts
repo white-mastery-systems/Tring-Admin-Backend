@@ -1,5 +1,13 @@
+import { listBotIntents } from "~/server/utils/db/bot";
+const getChatBotIntents = z.object({
+  id: z.string().uuid(),
+});
 export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
-  const query = getQuery(event);
-  return await listBots(organizationId, query);
+  const { id: botId } = await isValidRouteParamHandler(
+    event,
+    getChatBotIntents,
+  );
+  console.log({ botId });
+  return await listBotIntents(botId);
 });

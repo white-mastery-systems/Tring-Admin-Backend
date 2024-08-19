@@ -153,8 +153,8 @@
     middleware: "admin-only",
   });
   import { useClipboard } from "@vueuse/core";
-  import { ref } from "vue";
-  import { toast } from "vue-sonner";
+import { ref } from "vue";
+import { toast } from "vue-sonner";
   const router = useRouter();
   // const selectedValue = ref("Today");
   const route = useRoute("bots-id");
@@ -200,6 +200,12 @@
       bot: "Document Management",
       helperText: "Knowledge base,Training data etc...",
       routeName: "bots-id-documents",
+    },
+    {
+      _id: 5,
+      bot: "Intent Management",
+      helperText: "Add your intents Eg: Location Virtual Tour etc...",
+      routeName: "bots-id-intent-management",
     },
   ]);
 

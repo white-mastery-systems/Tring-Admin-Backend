@@ -1,4 +1,6 @@
 <script setup lang="ts">
+  import { createColumnHelper } from "@tanstack/vue-table";
+
   const showIntentDialog = ref(false);
   const formSchema = toTypedSchema(
     z
@@ -42,6 +44,25 @@
 
   const roles = ["Sales Executive", "Customer Support Representative", "Other"];
 
+  const {
+    status: intentLoadingStatus,
+    refresh,
+    data: intentData,
+  } = await useLazyFetch(() => `/api/bots/${route.params.id}/intents`, {
+    server: false,
+    default: () => [],
+    transform: (intents) =>
+      intents.map((intent) => ({
+        link: intent.link,
+        intent: intent.intent,
+        createdAt: formatDate(new Date(intent.createdAt), "dd.MM.yyyy"),
+      })),
+  });
+  console.log({ intentData });
+  const isIntentLoading = computed(
+    () => intentLoadingStatus.value === "pending",
+  );
+
   const botDetails: any = await getBotDetails(route.params.id);
   const defaultFormValues = botDetails.metadata.prompt;
 
@@ -74,6 +95,18 @@
       params: { id: botDetails.id },
     });
   };
+  const columnHelper = createColumnHelper<(typeof intentData.value)[0]>();
+  const columns = [
+    columnHelper.accessor("intent", {
+      header: "Intent Name",
+    }),
+    columnHelper.accessor("link", {
+      header: "Link",
+    }),
+    columnHelper.accessor("createdAt", {
+      header: "Date Created",
+    }),
+  ];
 </script>
 <template>
   <div class="mx-5 mb-4 mt-2 flex items-center gap-2">
@@ -210,98 +243,5 @@
         >Submit</UiButton
       >
     </UiForm>
-
-    <div class="mt-4 flex items-center justify-between">
-      <h3
-        class="scroll-m-20 text-xl font-semibold tracking-tight text-indigo-600"
-      >
-        Intents Management
-      </h3>
-      <UiButton
-        class="bg-yellow-500"
-        type="button"
-        @click="showIntentDialog = true"
-        >Add Intents</UiButton
-      >
-
-      <UiDialog v-model:open="showIntentDialog">
-        <UiDialogContent class="sm:max-w-[425px]">
-          <UiForm class="flex flex-col gap-2" @submit="addIntents">
-            <UiDialogHeader>
-              <UiDialogTitle class="text-indigo-600">Add Intents</UiDialogTitle>
-            </UiDialogHeader>
-            <UiFormField v-slot="{ componentField }" name="intent">
-              <UiFormItem v-auto-animate="animationProps" class="w-full">
-                <UiFormLabel
-                  >Actions<UiLabel class="text-lg text-red-500">*</UiLabel>
-                </UiFormLabel>
-                <UiFormControl>
-                  <UiSelect v-bind="componentField">
-                    <UiSelectTrigger>
-                      <UiSelectValue placeholder="Select Intent" />
-                    </UiSelectTrigger>
-                    <UiSelectContent>
-                      <UiSelectItem value="location">Location</UiSelectItem>
-                      <UiSelectItem value="virtual-tour"
-                        >Virtual Tour</UiSelectItem
-                      >
-                      <UiSelectItem value="schedule-call"
-                        >Schedule Call</UiSelectItem
-                      >
-                      <UiSelectItem value="schedule-site-visit"
-                        >Schedule Site Visit</UiSelectItem
-                      >
-                    </UiSelectContent>
-                  </UiSelect>
-                  <UiFormField
-                    v-if="componentField.modelValue === 'Other'"
-                    v-slot="{ componentField }"
-                    name="link"
-                  >
-                    <UiFormItem v-auto-animate="animationProps" class="w-full">
-                      <UiFormControl>
-                        <UiInput v-bind="componentField" type="text" />
-                      </UiFormControl>
-                      <UiFormMessage />
-                    </UiFormItem>
-                  </UiFormField>
-                </UiFormControl>
-                <UiFormMessage />
-                <span class="text-xs text-gray-500">Select your intent.</span>
-              </UiFormItem>
-            </UiFormField>
-            <UiFormField v-slot="{ componentField }" name="link">
-              <UiFormItem v-auto-animate="animationProps" class="w-full">
-                <UiFormLabel
-                  >Add Link <UiLabel class="text-lg text-red-500">*</UiLabel>
-                </UiFormLabel>
-                <UiFormControl>
-                  <UiInput
-                    v-bind="componentField"
-                    type="text"
-                    placeholder="Eg: enter your preferred value"
-                  />
-                </UiFormControl>
-                <span class="text-xs text-gray-500"
-                  >The bot will be driving the conversation towards this
-                  goal.</span
-                >
-                <UiFormMessage />
-              </UiFormItem>
-            </UiFormField>
-            <!-- <UiFormField v-if="componentField.modelValue === 'Other'">
-            </UiFormField> -->
-            <UiDialogFooter>
-              <UiButton
-                class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
-                type="submit"
-              >
-                Save changes
-              </UiButton>
-            </UiDialogFooter>
-          </UiForm>
-        </UiDialogContent>
-      </UiDialog>
-    </div>
   </div>
 </template>

@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
       ...metaData.prompt,
       INTENTS: `${botDetails?.metadata.prompt.INTENTS}\n-${body.intent}`,
     },
-    ...(body.intent === "location" && { location: body.link }),
+    [body.intent]: body.link,
   };
   console.log({ metaData });
   await updateBotDetails(botId, {
