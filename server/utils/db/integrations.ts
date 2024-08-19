@@ -24,3 +24,13 @@ export const listIntegrations = async (organizationId: string) => {
   });
   return data;
 };
+
+export const deleteIntegration = async (integrationId: string) => {
+  //   cache.removeItem(getCacheBotKey(botId));
+  return (
+    await db
+      .delete(integrationSchema)
+      .where(eq(integrationSchema.id, integrationId))
+      .returning()
+  )[0];
+};

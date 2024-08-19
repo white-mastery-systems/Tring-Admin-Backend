@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  const emit = defineEmits(["onSuccess"]);
   const props = defineProps<{
     label: string;
     name: string;
@@ -15,7 +16,13 @@
       //     // webhookUrl: values.metaData.webhookUrl,
       //   },
     };
-    await createIntegration(payload);
+    await createIntegration({
+      integrationDetails: payload,
+      onSuccess: () => {
+        toast.success("Integration added successfully");
+        emit("onSuccess");
+      },
+    });
     // await updateBotDetails(payload);
     // return navigateTo({
     //   name: "bots-id",
