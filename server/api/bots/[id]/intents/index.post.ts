@@ -1,7 +1,7 @@
 import { createBotIntent } from "~/server/utils/db/bot";
 export const zodInsertChatBotIntent = z.object({
   intent: z.string().min(2, "Intent too short"),
-  link: z.string().min(5, "Link too short"),
+  link: z.string().url().min(5, "Link too short"),
 });
 
 export default defineEventHandler(async (event) => {

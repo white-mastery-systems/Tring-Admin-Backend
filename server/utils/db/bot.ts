@@ -102,11 +102,39 @@ export const listBotIntents = async (
     where: and(...filters),
     orderBy: [desc(chatBotSchema.createdAt)],
     columns: {
-      id: true,
-      createdAt: true,
-      link: true,
-      intent: true,
+      organizationId: false,
     },
   });
   return data;
+};
+
+export const getIntent = async (intentId: string) =>
+  await db.query.botIntentSchema.findFirst({
+    where: eq(botIntentSchema.id, intentId),
+  });
+
+export const deleteBotIntent = async (botId: string, intentId: string) => {
+  const intent = await db.query.botIntentSchema.findFirst({
+    where: eq(botIntentSchema.id, intentId),
+  });
+  const bot = await db.query.chatBotSchema.findFirst({
+    where: eq(chatBotSchema.id, botId),
+  });
+
+  if (!(intent && bot)) return null;
+
+  let metadata = bot.metadata as Record<string, any>;
+  let prevIntents = metadata?.prompt?.INTENTS as string;
+  let currentIntents = prevIntents.replace(`\n-${intent.intent}`, "");
+
+  metadata.prompt.INTENTS = currentIntents;
+
+  await updateBotDetails(botId, {
+    metadata,
+  });
+  const deletedIntent = await db
+    .delete(botIntentSchema)
+    .where(eq(botIntentSchema.id, intentId));
+
+  return deletedIntent;
 };
