@@ -1,86 +1,92 @@
 <script setup lang="ts">
-
-definePageMeta({
-  layout: "auth",
-  middleware: "guest-only",
-});
-// const formSchema = toTypedSchema(
-//     z
-//       .object({
-//         username: z.string().min(2, "Invalid email address."),
-//         password: z
-//           .string(),
-
-//         confirmPassword: z.string().min(2, "Role must be provided."),
-//       })
-//   )
-const formSchema = toTypedSchema(
-  z
-    .object({
-      username: z
-        .string("Invalid email address")
-        .email("Invalid email address."),
-      password: z
-        .string()
-        .min(6, "Password must be at least 6 characters long."),
-      confirmPassword: z
-        .string()
-        .min(6, "Confirm Password must be at least 6 characters long."),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: "Passwords do not match.",
-      path: ["confirmPassword"], // Point to the field that has the issue
-    }),
-);
-
-const loginData = reactive({
-  username: "",
-  password: "",
-  confirmPassword: "",
-});
-const animationProps = {
-  duration: 500,
-};
-const passwordVisible = ref(false);
-const confirmPasswordVisible = ref(false);
-
-const togglePasswordVisibility = () => {
-  passwordVisible.value = !passwordVisible.value;
-};
-const toggleConfirmPasswordVisibility = () => {
-  confirmPasswordVisible.value = !confirmPasswordVisible.value;
-};
-
-const onSubmit = (values: any) => {
-  // if (
-  //   loginData.username.length < 1 ||
-  //   loginData.password.length < 1 ||
-  //   loginData.password !== loginData.confirmPassword
-  // ) {
-  //   toast.error("Please enter valid details");
-  // }
-  authHandlers.signup({
-    email: values.username,
-    password: values.password,
+  definePageMeta({
+    layout: "auth",
+    middleware: "guest-only",
   });
-};
+  // const formSchema = toTypedSchema(
+  //     z
+  //       .object({
+  //         username: z.string().min(2, "Invalid email address."),
+  //         password: z
+  //           .string(),
+
+  //         confirmPassword: z.string().min(2, "Role must be provided."),
+  //       })
+  //   )
+  const formSchema = toTypedSchema(
+    z
+      .object({
+        username: z.string().email("Invalid email address."),
+        password: z
+          .string()
+          .min(6, "Password must be at least 6 characters long."),
+        confirmPassword: z
+          .string()
+          .min(6, "Confirm Password must be at least 6 characters long."),
+      })
+      .refine((data) => data.password === data.confirmPassword, {
+        message: "Passwords do not match.",
+        path: ["confirmPassword"], // Point to the field that has the issue
+      }),
+  );
+  const animationProps = {
+    duration: 500,
+  };
+  const passwordVisible = ref(false);
+  const confirmPasswordVisible = ref(false);
+
+  const togglePasswordVisibility = () => {
+    passwordVisible.value = !passwordVisible.value;
+  };
+  const toggleConfirmPasswordVisibility = () => {
+    confirmPasswordVisible.value = !confirmPasswordVisible.value;
+  };
+  // const togglePasswordVisibility = () => {
+  //   passwordVisible.value = !passwordVisible.value;
+  // };
+  // const toggleConfirmPasswordVisibility = () => {
+  //   confirmPasswordVisible.value = !confirmPasswordVisible.value;
+  // };
+
+  const onSubmit = (values: any) => {
+    // if (
+    //   loginData.username.length < 1 ||
+    //   loginData.password.length < 1 ||
+    //   loginData.password !== loginData.confirmPassword
+    // ) {
+    //   toast.error("Please enter valid details");
+    // }
+    authHandlers.signup({
+      email: values.username,
+      password: values.password,
+    });
+  };
 </script>
 <template>
-  <div class="sign-in-align">
-    <div class="top-content-align font-bold">
+  <div class="flex h-full w-full flex-col items-center justify-center">
+    <div class="w-[80%] px-6 pb-[20px] font-bold text-[#424bd1]">
       <span> Let’s Get Started </span>
     </div>
-    <div class="form-align">
+    <div class="flex w-[80%] flex-col px-6">
       <!-- <div> -->
-      <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" class="space-y-2"
-        @submit="onSubmit">
+      <UiForm
+        :validation-schema="formSchema"
+        :keep-values="true"
+        :validate-on-mount="false"
+        class="mb-6 space-y-5"
+        @submit="onSubmit"
+      >
         <!-- <div class="individual-form-align"> -->
         <UiFormField v-slot="{ componentField }" name="username">
-          <UiFormItem v-auto-animate="animationProps" class="w-full">
+          <UiFormItem class="w-full">
             <UiFormLabel class="font-bold">E-mail</UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" placeholder="Enter Your Email" class="form-input-align font-medium"
-                type="Email" />
+              <UiInput
+                v-bind="componentField"
+                placeholder="Enter Your Email"
+                class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
+                type="Email"
+              />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
@@ -91,12 +97,20 @@ const onSubmit = (values: any) => {
         <!-- <div class="individual-form-align"> -->
         <!-- <label for="fpassword" class="font-bold">Password</label> -->
         <UiFormField v-slot="{ componentField }" name="password">
-          <UiFormItem v-auto-animate="animationProps" class="w-full">
+          <UiFormItem class="w-full">
             <UiFormLabel class="font-bold">Password</UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" placeholder="Enter Your Password"
-                :type="passwordVisible ? 'text' : 'password'" class="form-input-align font-medium" />
-              <div @click="togglePasswordVisibility" type="button" class="absolute eye-icon-align">
+              <UiInput
+                v-bind="componentField"
+                placeholder="Enter Your Password"
+                :type="passwordVisible ? 'text' : 'password'"
+                class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
+              />
+              <div
+                @click="togglePasswordVisibility"
+                type="button"
+                class="absolute right-[10px] top-[38px]"
+              >
                 <OpenEye v-if="passwordVisible" />
                 <CloseEyeIcon v-else />
               </div>
@@ -108,15 +122,27 @@ const onSubmit = (values: any) => {
         <!-- </div> -->
         <!-- <div class="individual-form-align"> -->
         <!-- <label for="confirmPassword" class="font-bold">Confirm Password</label> -->
-        <UiFormField v-slot="{ componentField }" name="confirmPassword">
-          <UiFormItem v-auto-animate="animationProps" class="w-full">
+        <UiFormField
+          v-slot="{ componentField }"
+          name="confirmPassword"
+          class="mb-6"
+        >
+          <UiFormItem class="w-full">
             <UiFormLabel class="font-bold">Confirm Password</UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" placeholder="Confirm Your Password"
+              <UiInput
+                v-bind="componentField"
+                placeholder="Confirm Your Password"
                 :type="confirmPasswordVisible ? 'text' : 'password'"
-                class="form-input-align outline-none font-medium" />
-              <div variant="outline" size="icon" @click="toggleConfirmPasswordVisibility" type="button"
-                class="absolute eye-icon-align">
+                class="h-[50px] rounded-lg bg-[#F6F6F6] font-medium outline-none"
+              />
+              <div
+                variant="outline"
+                size="icon"
+                @click="toggleConfirmPasswordVisibility"
+                type="button"
+                class="absolute right-[10px] top-[38px]"
+              >
                 <OpenEye v-if="confirmPasswordVisible" />
                 <CloseEyeIcon v-else />
               </div>
@@ -130,7 +156,11 @@ const onSubmit = (values: any) => {
             Sign up
           </button>
         </div> -->
-        <UiButton type="submit" class="submit-btn-align">Sign up</UiButton>
+        <UiButton
+          type="submit"
+          class="mt-[20px] w-full bg-[#424bd1] text-[#ffffff] hover:bg-[#424bd1]"
+          >Sign up
+        </UiButton>
       </UiForm>
       <!-- <div class="content-align">
         <span class="border-align"></span> <span>Or login with</span>
@@ -138,160 +168,25 @@ const onSubmit = (values: any) => {
       </div> -->
       <div class="mt-4 flex items-center justify-center gap-1 font-medium">
         <span>Already have an account?</span>
-        <NuxtLink to="/auth/sign-in" class="align_border">Sign in</NuxtLink>
+        <NuxtLink
+          to="/auth/sign-in"
+          class="cursor-pointer text-[#424bd1] underline underline-offset-2"
+          >Sign in
+        </NuxtLink>
       </div>
       <!-- </div> -->
     </div>
-    <div class="footer-align flex items-center gap-1">
-      <span class="bottom-content-align">
+    <div class="absolute bottom-[30px] flex items-center gap-1">
+      <span class="text-[12px] text-[#8a8a8a]">
         By Signing up, I Agree to Tring AI
       </span>
-      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="term-align">
+      <a
+        target="_blank"
+        href="https://tringlabs.ai/terms-and-conditions"
+        class="term-align text-[12px] underline"
+      >
         Terms & Conditions
       </a>
     </div>
   </div>
 </template>
-
-<style scoped>
-.sign-in-align {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-}
-
-.top-content-align {
-  color: #424bd1;
-  width: 80%;
-  padding: 0 25px;
-  /* padding-right: 172px; */
-  padding-bottom: 20px;
-}
-
-.form-align {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 80%;
-  padding: 0 25px;
-}
-
-form {
-  width: 100%;
-  display: flex;
-  gap: 15px;
-  /* flex-wrap: wrap; */
-  flex-direction: column;
-  /* align-items: start; */
-}
-
-/* .individual-form-align {
-    gap: 5px;
-  } */
-.individual-form-align input {
-  background-color: rgba(246, 246, 246, 1);
-  width: 100%;
-  height: 50px;
-  outline: none;
-  border-radius: 10px;
-  padding: 0 20px;
-}
-
-.form-input-align {
-  height: 50px;
-  border-radius: 10px;
-  background-color: #f6f6f6;
-}
-
-/* .submit-btn-align {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-} */
-
-.submit-btn-align {
-  background: #424bd1 !important;
-  color: #ffffff;
-  margin-top: 20px !important;
-  /* margin-right: 170px; */
-}
-
-.input-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-input[type="password"] {
-  padding-right: 2.5rem;
-  /* Adjust based on the icon size */
-  width: 100%;
-}
-
-.eye-icon {
-  position: absolute;
-  right: 0.5rem;
-  /* Adjust based on your design */
-  cursor: pointer;
-  font-size: 1rem;
-  /* Adjust size as needed */
-}
-
-.eye-icon i {
-  display: inline-block;
-}
-
-/* .forget-pws-align {
-  font-size: 13px;
-  margin-top: 10px;
-} */
-
-.align_border {
-  color: #424bd1;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  cursor: pointer;
-}
-
-.content-align {
-  color: #8a8a8a;
-  height: 80px;
-  font-size: 12px;
-  font-weight: 400;
-  gap: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* align-self: center; */
-}
-
-.border-align {
-  width: 30%;
-  height: 10px;
-  margin-top: 11px;
-  border-top: 1px solid #8a8a8a;
-}
-
-.bottom-content-align {
-  color: #8a8a8a;
-  font-size: 12px;
-}
-
-.term-align {
-  font-size: 12px;
-  text-decoration: underline;
-}
-
-.footer-align {
-  position: absolute;
-  bottom: 30px;
-}
-
-.eye-icon-align {
-  top: 35px;
-  right: 10px;
-}
-</style>

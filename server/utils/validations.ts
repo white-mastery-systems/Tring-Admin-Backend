@@ -1,5 +1,5 @@
-import { z, ZodType, ZodTypeDef } from "zod";
 import type { H3Event } from "h3";
+import { z, ZodType } from "zod";
 
 export const checkPayloadId = <T extends string>(key: T) =>
   z.object({
@@ -46,7 +46,7 @@ export const isValidBodyHandler = async <T extends ZodType>(
       createError({
         statusCode: 400,
         statusMessage: "Invalid body",
-        data: body.error.format(),
+        data: body.error.issues,
       }),
     );
   return body.data;

@@ -55,7 +55,7 @@
         </UiButton>
       </div>
       <div class="list-content-align flex items-center justify-between gap-3">
-        <span class="font-medium"> Current Plan </span>
+        <span class="font-medium"> Current plan </span>
         <div class="flex w-[160px] items-center justify-center">
           <span
             class="creator-chip rounded-[11px] text-[12px] font-medium lowercase"
@@ -75,7 +75,7 @@
       <div
         class="list-content-align flex items-center justify-between gap-3 font-medium"
       >
-        <span> Total chat sessions in plan </span>
+        <span> Total chat sessions used </span>
         <span
           class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
         >
@@ -85,7 +85,7 @@
       <div
         class="list-content-align flex items-center justify-between gap-3 rounded-b-lg font-medium"
       >
-        <span> chat sessions used in plan </span>
+        <span>Chat sessions included in plan</span>
         <span
           class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
         >
@@ -96,7 +96,7 @@
       <div
         class="list-content-align flex items-center justify-between gap-3 rounded-b-lg font-medium"
       >
-        <span> available chat sessions in plan </span>
+        <span> Balance chat sessions available in your plan </span>
         <span
           class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
         >
@@ -107,7 +107,7 @@
       <div
         class="list-content-align flex items-center justify-between gap-3 rounded-b-lg font-medium"
       >
-        <span> extra chat sessions </span>
+        <span> Extra chat sessions </span>
         <span
           class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
         >
@@ -118,7 +118,7 @@
       <div
         class="list-content-align flex items-center justify-between gap-3 rounded-b-lg font-medium"
       >
-        <span> extra chat session billing </span>
+        <span> Extra chat session billing </span>
         <span
           class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
         >

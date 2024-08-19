@@ -1,58 +1,93 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: "auth",
-  middleware: "guest-only",
-});
+  definePageMeta({
+    layout: "auth",
+    middleware: "guest-only",
+  });
+  // definePageMeta({
+  //   layout: "auth",
+  //   middleware: "guest-only",
+  // });
 
-const loginData = reactive({
-  email: "",
-  password: "",
-});
-const formSchema = toTypedSchema(
-  z.object({
-    email: z.string().email("Invalid email address."),
-    password: z
-      .string()
-      .min(6, "Password must be at least 6 characters long."),
-  }),
-);
-const passwordVisible = ref(false);
-const animationProps = {
-  duration: 500,
-};
+  // const loginData = reactive({
+  //   email: "",
+  //   password: "",
+  // });
+  // const formSchema = toTypedSchema(
+  //   z.object({
+  //     email: z.string().email("Invalid email address."),
+  //     password: z
+  //       .string()
+  //       .min(6, "Password must be at least 6 characters long."),
+  //   }),
+  // );
+  // const passwordVisible = ref(false);
+  // const animationProps = {
+  //   duration: 500,
+  // };
+  const formSchema = toTypedSchema(
+    z.object({
+      email: z.string().email("Invalid email address."),
+      password: z
+        .string()
+        .min(6, "Password must be at least 6 characters long."),
+    }),
+  );
+  const passwordVisible = ref(false);
+  const animationProps = {
+    duration: 500,
+  };
 
-const togglePasswordVisibility = () => {
-  passwordVisible.value = !passwordVisible.value;
-};
+  const togglePasswordVisibility = () => {
+    passwordVisible.value = !passwordVisible.value;
+  };
+  // const togglePasswordVisibility = () => {
+  //   passwordVisible.value = !passwordVisible.value;
+  // };
 </script>
 <template>
-  <div class="sign-in-align">
-    <div class="top-content-align font-bold">
+  <div class="flex h-full w-full flex-col items-center justify-center">
+    <div class="w-[80%] px-6 pb-[20px] font-bold text-[#424bd1]">
       <span> Let’s Get Started </span>
     </div>
-    <div class="form-align">
+    <div class="flex w-[80%] flex-col px-6">
       <!-- <div> -->
-      <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" class="space-y-2"
-        @submit="authHandlers.login">
-        <div class="individual-form-align">
-          <UiFormField v-slot="{ componentField }" name="email">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiFormLabel class="font-bold">E-mail</UiFormLabel>
-              <UiFormControl>
-                <UiInput v-bind="componentField" class="font-medium" placeholder="Enter Your Email" type="Email" />
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
-        </div>
-        <div class="individual-form-align">
+      <UiForm
+        :validation-schema="formSchema"
+        :keep-values="true"
+        :validate-on-mount="false"
+        class="mb-4 space-y-6"
+        @submit="authHandlers.login"
+      >
+        <UiFormField v-slot="{ componentField }" name="email">
+          <UiFormItem class="w-full">
+            <UiFormLabel class="font-bold">E-mail</UiFormLabel>
+            <UiFormControl>
+              <UiInput
+                v-bind="componentField"
+                class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
+                placeholder="Enter Your Email"
+                type="Email"
+              />
+            </UiFormControl>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
+        <div class="mb-5">
           <UiFormField v-slot="{ componentField }" name="password">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormItem class="w-full">
               <UiFormLabel class="font-bold">Password</UiFormLabel>
               <UiFormControl>
-                <UiInput v-bind="componentField" class="font-medium" placeholder="Enter Your Password"
-                  :type="passwordVisible ? 'text' : 'password'" />
-                <div @click="togglePasswordVisibility" type="button" class="absolute eye-icon-align">
+                <UiInput
+                  v-bind="componentField"
+                  class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
+                  placeholder="Enter Your Password"
+                  :type="passwordVisible ? 'text' : 'password'"
+                />
+                <div
+                  @click="togglePasswordVisibility"
+                  type="button"
+                  class="pointer absolute right-[10px] top-[38px]"
+                >
                   <OpenEye v-if="passwordVisible" />
                   <CloseEyeIcon v-else />
                 </div>
@@ -72,159 +107,38 @@ const togglePasswordVisibility = () => {
             Sign in
           </button>
         </div> -->
-        <UiButton type="submit" class="submit-btn-align">Sign in</UiButton>
+        <UiButton
+          type="submit"
+          class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
+          >Sign in
+        </UiButton>
       </UiForm>
       <!-- <div class="content-align">
         <span class="border-align"></span> <span>Or login with</span>
         <span class="border-align"></span>
       </div> -->
-      <div class="mt-4 flex items-center justify-center gap-1 font-medium">
+      <div class="mt-7 flex items-center justify-center gap-1 font-medium">
         <span>Don’t have an account?</span>
-        <NuxtLink to="/auth/sign-up" class="align_border">Sign Up</NuxtLink>
+        <NuxtLink
+          to="/auth/sign-up"
+          class="cursor-pointer text-[#424bd1] underline underline-offset-2"
+        >
+          Sign Up
+        </NuxtLink>
       </div>
       <!-- </div> -->
     </div>
-    <div class="footer-align flex items-center gap-1">
-      <span class="bottom-content-align">
+    <div class="absolute bottom-[30px] flex items-center gap-1">
+      <span class="text-[12px] text-[#8a8a8a]">
         By Signing up, I Agree to Tring AI
       </span>
-      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="term-align">
+      <a
+        target="_blank"
+        href="https://tringlabs.ai/terms-and-conditions"
+        class="text-[12px] underline"
+      >
         Terms & Conditions
       </a>
     </div>
   </div>
 </template>
-<style scoped>
-.sign-in-align {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-}
-
-.top-content-align {
-  color: #424bd1;
-  width: 80%;
-  padding: 0 25px;
-  /* padding-right: 172px; */
-  padding-bottom: 20px;
-}
-
-.form-align {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 80%;
-  padding: 0 25px;
-}
-
-form {
-  width: 100%;
-  display: flex;
-  gap: 15px;
-  /* flex-wrap: wrap; */
-  flex-direction: column;
-  /* align-items: start; */
-}
-
-/* .individual-form-align {
-    gap: 5px;
-  } */
-.individual-form-align input {
-  background-color: rgba(246, 246, 246, 1) !important;
-  width: 100%;
-  height: 50px;
-  outline: none;
-  border-radius: 10px;
-  padding: 0 20px;
-}
-
-.submit-btn-align {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.submit-btn-align {
-  background: #424bd1;
-  /* margin-right: 170px; */
-}
-
-.input-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-input[type="password"] {
-  padding-right: 2.5rem;
-  /* Adjust based on the icon size */
-  width: 100%;
-}
-
-.eye-icon {
-  position: absolute;
-  right: 0.5rem;
-  /* Adjust based on your design */
-  cursor: pointer;
-  font-size: 1rem;
-  /* Adjust size as needed */
-}
-
-.eye-icon i {
-  display: inline-block;
-}
-
-.forget-pws-align {
-  font-size: 13px;
-  margin-top: 10px;
-}
-
-.align_border {
-  color: #424bd1;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  cursor: pointer;
-}
-
-.content-align {
-  color: #8a8a8a;
-  height: 80px;
-  font-size: 12px;
-  font-weight: 400;
-  gap: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* align-self: center; */
-}
-
-.border-align {
-  width: 30%;
-  height: 10px;
-  margin-top: 11px;
-  border-top: 1px solid #8a8a8a;
-}
-
-.bottom-content-align {
-  color: #8a8a8a;
-  font-size: 12px;
-}
-
-.term-align {
-  font-size: 12px;
-  text-decoration: underline;
-}
-
-.footer-align {
-  position: absolute;
-  bottom: 30px;
-}
-
-.eye-icon-align {
-  top: 38px;
-  right: 10px;
-}
-</style>
