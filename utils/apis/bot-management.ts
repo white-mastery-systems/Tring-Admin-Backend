@@ -68,7 +68,7 @@ export const addBotIntegration = async ({
 }) => {
   try {
     const createdBot = await $fetch<SelectChatBot>(
-      `/api/bots/${payload.id}/integrations`,
+      `/api/bots/${payload.botId}/integrations`,
       {
         method: "POST",
         body: payload,
