@@ -11,7 +11,7 @@
 
   const {
     status: intentLoadingStatus,
-    refresh,
+    refresh: intentRefresh,
     data: intentData,
   } = await useLazyFetch(() => `/api/bots/${route.params.id}/intents`, {
     server: false,
@@ -39,6 +39,7 @@
     await createBotIntents({
       intentDetails,
       onSuccess: () => {
+        intentRefresh();
         showIntentDialog.value = false;
         toast.success("Intent added successfully");
       },

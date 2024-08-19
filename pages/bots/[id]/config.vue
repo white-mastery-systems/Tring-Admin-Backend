@@ -1,6 +1,5 @@
 <script setup lang="ts">
-  import { createColumnHelper } from "@tanstack/vue-table";
-
+  
   const showIntentDialog = ref(false);
   const formSchema = toTypedSchema(
     z
@@ -44,41 +43,9 @@
 
   const roles = ["Sales Executive", "Customer Support Representative", "Other"];
 
-  const {
-    status: intentLoadingStatus,
-    refresh,
-    data: intentData,
-  } = await useLazyFetch(() => `/api/bots/${route.params.id}/intents`, {
-    server: false,
-    default: () => [],
-    transform: (intents) =>
-      intents.map((intent) => ({
-        link: intent.link,
-        intent: intent.intent,
-        createdAt: formatDate(new Date(intent.createdAt), "dd.MM.yyyy"),
-      })),
-  });
-  console.log({ intentData });
-  const isIntentLoading = computed(
-    () => intentLoadingStatus.value === "pending",
-  );
-
   const botDetails: any = await getBotDetails(route.params.id);
   const defaultFormValues = botDetails.metadata.prompt;
 
-  const addIntents = async (values: any) => {
-    const intentDetails: any = {
-      id: botDetails.id,
-      ...values,
-    };
-    await createBotIntents({
-      intentDetails,
-      onSuccess: () => {
-        showIntentDialog.value = false;
-        toast.success("Intent added successfully");
-      },
-    });
-  };
   const handleSubmit = async (values: any) => {
     const payload: any = {
       id: botDetails.id,
@@ -95,18 +62,7 @@
       params: { id: botDetails.id },
     });
   };
-  const columnHelper = createColumnHelper<(typeof intentData.value)[0]>();
-  const columns = [
-    columnHelper.accessor("intent", {
-      header: "Intent Name",
-    }),
-    columnHelper.accessor("link", {
-      header: "Link",
-    }),
-    columnHelper.accessor("createdAt", {
-      header: "Date Created",
-    }),
-  ];
+  
 </script>
 <template>
   <div class="mx-5 mb-4 mt-2 flex items-center gap-2">
