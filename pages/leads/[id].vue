@@ -46,8 +46,13 @@
       </UiTabsContent>
       <UiTabsContent value="Campaign info">
         <div class="client_info_align gap-2">
-          <span v-for="[key, value] in details[1]" class="font-medium uppercase"
-            >{{ key }}: <span class="ml-2 font-bold">{{ value }}</span></span
+          <span
+            v-for="[key, value] in details[1]"
+            class="max-w-full font-medium uppercase"
+            >{{ key }}:
+            <span class="ml-2 max-w-[50%] truncate font-bold">{{
+              value
+            }}</span></span
           >
         </div>
       </UiTabsContent>
@@ -181,6 +186,7 @@
     display: flex;
     flex-direction: column;
     align-items: start;
+    overflow: hidden;
   }
 
   .tab-align {
