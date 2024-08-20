@@ -4,9 +4,17 @@
     :disableSelector="true"
     :actionButtons="[h(ConfigurationModal)]"
   >
-    <div class="mb-2 flex w-full justify-end">
-      <ConfigurationModal />
-    </div>
+    <template #actionButtons>
+      <UiButton
+        @click="openConfigModal.open = true"
+        variant="outline"
+        color="primary"
+      >
+        Link Integration
+      </UiButton>
+
+      <ConfigurationModal v-model="openConfigModal.open" />
+    </template>
     <DataTable
       :columns="columns"
       :data="integrations"
@@ -26,21 +34,27 @@
       header: "Integration Name",
     }),
 
-    columnHelper.accessor("project", {
+    columnHelper.accessor("projectId", {
       header: "project",
     }),
-    columnHelper.accessor("actions", {
-      header: "actions",
-    }),
+    // columnHelper.accessor("actions", {
+    //   header: "actions",
+    // }),
   ];
   const route = useRoute("bots-id-crm-config");
   const { status, data: integrationsData } = await useLazyFetch(
-    `/api/${route.params.id}/integrations`,
+    `/api/bots/${route.params.id}/integrations`,
     {
       server: false,
       default: () => [],
     },
   );
-
-  const integrations: any = [];
+  watch(integrationsData, (newIntegrations: any) => {
+    integrations.value = newIntegrations?.map((item: any) => ({
+      integration: item.integration,
+      projectId: item.metadata?.projectId,
+    }));
+  });
+  const integrations: any = ref([]);
+  const openConfigModal = ref({ open: false });
 </script>

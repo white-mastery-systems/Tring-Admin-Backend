@@ -17,6 +17,7 @@
       <!-- <template v-for="(comp, index) in actionButtons" :key="index" :is="comp">
         {{ comp() }}
       </template> -->
+      <slot name="actionButtons"></slot>
 
       <!-- {{ actionButtons() }} -->
     </div>
