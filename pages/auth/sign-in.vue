@@ -72,7 +72,7 @@
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <div class="mb-5">
+        <div class="mb-5 relative">
           <UiFormField v-slot="{ componentField }" name="password">
             <UiFormItem class="w-full">
               <UiFormLabel class="font-bold">Password</UiFormLabel>

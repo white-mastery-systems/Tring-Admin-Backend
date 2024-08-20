@@ -5,7 +5,7 @@
     </div>
     <!-- <div> -->
     <NuxtLink to="/"
-      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] shadow"
+      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] default-align"
       :class="[route.path === '/' ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]',]">
       <span>
         <!-- <img v-if="route.path === '/'" src=" assets\icons\activeHome.svg" width="22" height="22" />
@@ -18,7 +18,8 @@
       <span class="text-[14px]">Dashboard</span>
     </NuxtLink>
     <NuxtLink to="/leads"
-      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] shadow" :class="[
+      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] default-align"
+      :class="[
         route.path?.includes('/leads') ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]',
       ]">
       <span>
@@ -31,7 +32,7 @@
       <span class="text-[14px]">Leads</span>
     </NuxtLink>
     <NuxtLink to="/bots"
-      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] shadow"
+      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] default-align"
       :class="[route.path?.includes('/bots') ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]']">
       <span>
         <img v-if="route.path?.includes('/bots')" src=" assets\icons\bot_man_active.svg" width="22" height="22" />
@@ -40,7 +41,8 @@
       <span class="text-[14px]">Bot Management</span>
     </NuxtLink>
     <NuxtLink to="/settings"
-      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] shadow" :class="[
+      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] default-align"
+      :class="[
         route.path?.includes('settings') ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]',
       ]">
       <span>
@@ -50,7 +52,8 @@
       <span class="text-[14px]">Settings</span>
     </NuxtLink>
     <NuxtLink to="/billing"
-      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] shadow" :class="[
+      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] default-align"
+      :class="[
         route.path?.includes('/billing') ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]',
       ]">
       <span>
@@ -93,14 +96,7 @@ const handleLogout = () => {
 };
 </script>
 <style scoped>
-/* .default-align {
-  background-color: #ffffff;
-  color: rgba(0, 0, 0, 1);
+.default-align {
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
 }
-
-.activeClass {
-  background: #424bd1;
-  color: rgba(255, 255, 255, 1);
-} */
 </style>

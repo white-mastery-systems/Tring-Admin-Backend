@@ -1,8 +1,8 @@
 <template>
   <Page title="testing" :disable-back-button="false">
     <div class="mx-8 flex justify-around gap-8">
-      <UiTabs default-value="Client Info" class="w-[25%] self-start">
-        <UiTabsList class="bg-[#ffffff] text-[#424bd1] grid w-[23%] items-end grid-cols-2" default-value="Client Info">
+      <UiTabs default-value="Client Info" class="self-start">
+        <UiTabsList class="bg-[#ffffff] text-[#424bd1] grid w-[50%] items-end grid-cols-2" default-value="Client Info">
           <UiTabsTrigger value="Client Info"
             class="tab-align flex justify-start w-auto text-[15px] p-0 text-[#8a8a8a] font-black relative inline-flex no-underline text-left">
             Info
