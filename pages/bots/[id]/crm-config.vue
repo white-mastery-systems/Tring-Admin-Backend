@@ -1,13 +1,60 @@
 <template>
-  <header>
-    <div class="flex items-center gap-2">
-      <UiButton variant="ghost" size="icon" @click="router.back()">
-        <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
+  <Page
+    title="CRM Configuration"
+    :disableSelector="true"
+    :actionButtons="[h(ConfigurationModal)]"
+  >
+    <template #actionButtons>
+      <UiButton
+        @click="openConfigModal.open = true"
+        variant="outline"
+        color="primary"
+      >
+        Link Integration
       </UiButton>
-      <span class="text-[20px] font-bold">CRM Configuration</span>
-    </div>
-  </header>
+
+      <ConfigurationModal v-model="openConfigModal.open" />
+    </template>
+    <DataTable
+      :columns="columns"
+      :data="integrations"
+      :page-size="8"
+      :is-loading="false"
+    />
+  </Page>
 </template>
 <script setup lang="ts">
+  import { createColumnHelper } from "@tanstack/vue-table";
+  import ConfigurationModal from "./ConfigIntegrationModal.vue";
   const router = useRouter();
+  const columnHelper = createColumnHelper<any>();
+
+  const columns = [
+    columnHelper.accessor("integration", {
+      header: "Integration Name",
+    }),
+
+    columnHelper.accessor("projectId", {
+      header: "project",
+    }),
+    // columnHelper.accessor("actions", {
+    //   header: "actions",
+    // }),
+  ];
+  const route = useRoute("bots-id-crm-config");
+  const { status, data: integrationsData } = await useLazyFetch(
+    `/api/bots/${route.params.id}/integrations`,
+    {
+      server: false,
+      default: () => [],
+    },
+  );
+  watch(integrationsData, (newIntegrations: any) => {
+    integrations.value = newIntegrations?.map((item: any) => ({
+      integration: item.integration,
+      projectId: item.metadata?.projectId,
+    }));
+  });
+  const integrations: any = ref([]);
+  const openConfigModal = ref({ open: false });
 </script>

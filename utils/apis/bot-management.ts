@@ -58,3 +58,32 @@ export const deleteBot = async (botId: string) => {
     toast.error("Cannot delete: bot has generated leads");
   }
 };
+
+export const addBotIntegration = async ({
+  payload,
+  onSuccess,
+}: {
+  payload: any;
+  onSuccess: Function;
+}) => {
+  try {
+    const createdBot = await $fetch<SelectChatBot>(
+      `/api/bots/${payload.botId}/integrations`,
+      {
+        method: "POST",
+        body: payload,
+      },
+    );
+    onSuccess();
+    return createdBot;
+  } catch (err: any) {
+    toast.error(err.data.data[0].message);
+  }
+};
+
+export const getBotIntegrations = async (botId: string) => {
+  const botIntegrations = await $fetch<SelectBotIntegration>(
+    `/api/bots/${botId}/integrations`,
+  );
+  return botIntegrations;
+};

@@ -53,7 +53,7 @@
             <UiTableHead
               v-for="header in headerGroup.headers"
               :key="header.id"
-              class="text-md text-nowrap px-6 py-2 font-extrabold text-gray-700"
+              class="text-md text-nowrap rounded-tl-lg rounded-tr-lg px-6 py-2 font-extrabold text-gray-700"
               scope="col"
               @click="header.column.getToggleSortingHandler()?.($event)"
             >
@@ -83,7 +83,7 @@
             <UiTableRow
               v-for="row in table.getRowModel().rows"
               :key="row.id"
-              class="cursor-pointer border-b p-1 even:bg-white"
+              class="cursor-pointer overflow-hidden p-1"
               @click="$emit('row-click', row)"
               :data-state="row.getIsSelected() && 'selected'"
             >
@@ -99,11 +99,13 @@
               </UiTableCell>
             </UiTableRow>
           </template>
-          <UiTableRow v-else>
-            <UiTableCell col-span="{columns.length}" class="h-24 text-center">
-              No results.
-            </UiTableCell>
-          </UiTableRow>
+          <template v-else>
+            <UiTableRow>
+              <UiTableCell col-span="{columns.length}" class="h-24 text-center">
+                No results.
+              </UiTableCell>
+            </UiTableRow>
+          </template>
         </UiTableBody>
         <UiTableFooter v-if="footer">
           <UiTableRow

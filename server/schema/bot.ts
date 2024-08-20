@@ -1,6 +1,5 @@
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
-  boolean,
   jsonb,
   text,
   timestamp,
@@ -9,9 +8,9 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
+import { createInsertSchema } from "drizzle-zod";
 import { chatbotSchema } from ".";
 import { organizationSchema } from "./admin";
-import { createInsertSchema } from "drizzle-zod";
 
 // Tables
 export const chatBotSchema = chatbotSchema.table("bot", {
@@ -115,6 +114,32 @@ export const leadSchema = chatbotSchema.table("leads", {
     .notNull(),
 });
 
+export const botIntentSchema = chatbotSchema.table("intents", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  botId: uuid("bot_id")
+    .references(() => chatBotSchema.id)
+    .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  intent: varchar("intent", { length: 64 }).notNull(),
+  link: varchar("link").notNull(),
+  organizationId: uuid("organization_id")
+    .references(() => organizationSchema.id)
+    .notNull(),
+});
+
+export const botIntegrationSchema = chatbotSchema.table("bot_integrations", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  botId: uuid("bot_id")
+    .references(() => chatBotSchema.id)
+    .notNull(),
+  metadata: jsonb("metadata"),
+  integration: varchar("integration", { length: 64 }).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  organizationId: uuid("organization_id")
+    .references(() => organizationSchema.id)
+    .notNull(),
+});
+
 // Relations
 export const chatBotRelations = relations(chatBotSchema, ({ one, many }) => ({
   organization: one(organizationSchema, {
@@ -203,11 +228,30 @@ export type InsertMessage = InferInsertModel<typeof messageSchema>;
 export type SelectLead = InferSelectModel<typeof leadSchema>;
 export type InsertLead = InferInsertModel<typeof leadSchema>;
 
+export type SelectIntent = InferSelectModel<typeof botIntentSchema>;
+export type InsertIntent = InferInsertModel<typeof botIntentSchema>;
+
+export type SelectBotIntegration = InferSelectModel<
+  typeof botIntegrationSchema
+>;
+export type InsertBotIntegration = InferInsertModel<
+  typeof botIntegrationSchema
+>;
+export type zodInsertBotIntegration = InferInsertModel<
+  typeof botIntegrationSchema
+>;
+
 // Validations
 export const zodInsertChatBot = createInsertSchema(chatBotSchema, {
   name: (schema) =>
     schema.name.min(3, "Name Too Short").max(64, "Name Too Long"),
 });
+
+// export const zodInsertChatBotIntent = createInsertSchema(botIntentSchema, {
+//   intent: (schema) => schema.intent.min(2, "Intent too short"),
+//   link: (schema) => schema.link.min(5, "Link too short"),
+// });
+
 export const zodUpdateChatBot = zodInsertChatBot
   .omit({
     id: true,

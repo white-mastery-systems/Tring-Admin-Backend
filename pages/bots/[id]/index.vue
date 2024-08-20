@@ -96,7 +96,7 @@
           </UiDialogHeader>
           <UiButton
             class="deploy-bot-list-align text-[15px] text-black"
-            v-for="list in getDocumentList.filter(
+            v-for="list in getDocumentList.documents.filter(
               (item: any) => item.status === 'ready',
             )"
             :key="list.id"
@@ -122,21 +122,17 @@
             <div class="flex flex-col space-y-2">
               <div class="flex flex-row gap-3">
                 <span class="bot_name_align font-medium">{{ list.bot }}</span>
-                <Icon
-                  v-if="
-                    list.bot === 'Document Management' &&
-                    botDetails.documents.length === 0
-                  "
-                  class="h-6 w-6 text-red-500"
-                  name="ph:warning"
-                />
               </div>
               <span class="text-xs text-gray-500">{{ list.helperText }}</span>
             </div>
-            <Icon v-if="
+            <Icon
+              v-if="
                 list.bot === 'Document Management' &&
-                  botDetails.documents.length === 0
-                " class="h-6 w-6 text-red-500" name="nonicons:error-16" />
+                botDetails.documents.length === 0
+              "
+              class="h-6 w-6 text-red-500"
+              name="nonicons:error-16"
+            />
           </div>
           <div>
             <LeftArrowIcon class="arrow-aling hover:text-[#ffbc42]" />
@@ -157,8 +153,8 @@
     middleware: "admin-only",
   });
   import { useClipboard } from "@vueuse/core";
-  import { ref } from "vue";
-  import { toast } from "vue-sonner";
+import { ref } from "vue";
+import { toast } from "vue-sonner";
   const router = useRouter();
   // const selectedValue = ref("Today");
   const route = useRoute("bots-id");
@@ -189,7 +185,7 @@
     {
       _id: 2,
       bot: "CRM Configuration",
-      helperText: "Add CRM Integration",
+      helperText: "Add CRM to manage your leads effectively",
       routeName: "bots-id-crm-config",
     },
 
@@ -204,6 +200,12 @@
       bot: "Document Management",
       helperText: "Knowledge base,Training data etc...",
       routeName: "bots-id-documents",
+    },
+    {
+      _id: 5,
+      bot: "Intent Management",
+      helperText: "Add your intents Eg: Location Virtual Tour etc...",
+      routeName: "bots-id-intent-management",
     },
   ]);
 

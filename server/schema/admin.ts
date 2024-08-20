@@ -4,14 +4,15 @@ import {
   integer,
   jsonb,
   text,
+  timestamp,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 
+import { createInsertSchema } from "drizzle-zod";
 import { adminSchema } from ".";
 import { authUserSchema } from "./auth";
-import { chatBotSchema, botUserSchema, leadSchema } from "./bot";
-import { createInsertSchema } from "drizzle-zod";
+import { botUserSchema, chatBotSchema, leadSchema } from "./bot";
 
 // Tables
 export const organizationSchema = adminSchema.table("organization", {
@@ -36,6 +37,22 @@ export const billingSchema = adminSchema.table("billing", {
   plan_code: varchar("plan_code", { length: 64 }),
   subscription_metadata: jsonb("subscription_metadata"),
   customer_metadata: jsonb("customer_metadata"),
+});
+
+export type InsertIntegration = InferInsertModel<typeof integrationSchema>;
+export type SelectIntegration = InferSelectModel<typeof integrationSchema>;
+
+export const integrationSchema = adminSchema.table("integration", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  user_id: uuid("user_id")
+    .notNull()
+    .references(() => authUserSchema.id),
+  org_id: uuid("org_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+  name: varchar("name", { length: 64 }).notNull(),
+  metadata: jsonb("metadata").default({}).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 // Relations

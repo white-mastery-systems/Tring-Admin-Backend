@@ -1,4 +1,6 @@
 <script setup lang="ts">
+  
+  const showIntentDialog = ref(false);
   const formSchema = toTypedSchema(
     z
       .object({
@@ -34,7 +36,7 @@
   );
 
   const animationProps = {
-    duration: 500,
+    duration: 0,
   };
   const router = useRouter();
   const route = useRoute("bots-id-config");
@@ -60,6 +62,7 @@
       params: { id: botDetails.id },
     });
   };
+  
 </script>
 <template>
   <div class="mx-5 mb-4 mt-2 flex items-center gap-2">
@@ -196,70 +199,5 @@
         >Submit</UiButton
       >
     </UiForm>
-
-    <div class="mt-4 flex items-center justify-between">
-      <h3
-        class="scroll-m-20 text-xl font-semibold tracking-tight text-indigo-600"
-      >
-        Intents Management
-      </h3>
-      <UiDialog>
-        <UiDialogTrigger as-child>
-          <UiButton class="bg-yellow-500" type="button">Add Intents</UiButton>
-        </UiDialogTrigger>
-        <UiDialogContent class="sm:max-w-[425px]">
-          <UiDialogHeader>
-            <UiDialogTitle class="text-indigo-600">Add Intents</UiDialogTitle>
-          </UiDialogHeader>
-          <UiForm class="flex flex-col gap-2">
-            <UiFormField v-slot="{ componentField }" name="ROLE">
-              <UiFormItem v-auto-animate="animationProps" class="w-full">
-                <UiFormLabel
-                  >Actions<UiLabel class="text-lg text-red-500">*</UiLabel>
-                </UiFormLabel>
-                <UiFormControl>
-                  <UiSelect v-bind="componentField">
-                    <UiSelectTrigger>
-                      <UiSelectValue placeholder="Select Intent" />
-                    </UiSelectTrigger>
-                    <UiSelectContent>
-                      <UiSelectItem value="location">Location</UiSelectItem>
-                      <UiSelectItem value="virtual-tour"
-                        >Virtual Tour</UiSelectItem
-                      >
-                      <UiSelectItem value="schedule-call"
-                        >Schedule Call</UiSelectItem
-                      >
-                      <UiSelectItem value="schedule-site-visit"
-                        >Schedule Site Visit</UiSelectItem
-                      >
-                    </UiSelectContent>
-                  </UiSelect>
-                  <UiFormField
-                    v-if="componentField.modelValue === 'Other'"
-                    v-slot="{ componentField }"
-                    name="otherRole"
-                  >
-                    <UiFormItem v-auto-animate="animationProps" class="w-full">
-                      <UiFormControl>
-                        <UiInput v-bind="componentField" type="text" />
-                      </UiFormControl>
-                      <UiFormMessage />
-                    </UiFormItem>
-                  </UiFormField>
-                </UiFormControl>
-                <UiFormMessage />
-                <span class="text-xs text-gray-500">Select your intent.</span>
-              </UiFormItem>
-            </UiFormField>
-            <!-- <UiFormField v-if="componentField.modelValue === 'Other'">
-            </UiFormField> -->
-          </UiForm>
-          <UiDialogFooter>
-            <UiButton type="submit"> Save changes </UiButton>
-          </UiDialogFooter>
-        </UiDialogContent>
-      </UiDialog>
-    </div>
   </div>
 </template>

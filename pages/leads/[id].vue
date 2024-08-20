@@ -138,20 +138,26 @@
   });
 
   const router = useRouter();
-  const route = useRoute();
+  const route = useRoute("leads-id");
   const paramId: any = route;
-  const leadData = await getLeadTranscript(paramId.params.id);
+
+  const { status, data: leadData } = await useLazyFetch(
+    () => `/api/org/chat/${route.params.id}`,
+    {
+      server: false,
+    },
+  );
+  const isPageLoading = computed(() => status.value === "pending");
 
   const details = computed(() => {
-    if (!leadData) return [undefined, undefined];
-    const { params, ...rest } = leadData.metadata as Record<string, any>;
+    if (!leadData.value) return [undefined, undefined];
+    const { params, ...rest } = leadData.value.metadata as Record<string, any>;
     return [Object.entries(rest), Object.entries(params)];
   });
 
   const isDeleteConfirmationOpen = ref(false);
   const handleDelete = async () => {
     isDeleteConfirmationOpen.value = false;
-
     await $fetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
       method: "DELETE",
     });
