@@ -65,7 +65,7 @@
   ];
 </script>
 <template>
-  <Page title="Intent Management" :disableSelector="true">
+  <Page title="Smart Actions" :disableSelector="true">
     <template #actionButtons>
       <UiButton type="button" color="primary" @click="showIntentDialog = true"
         >Add Intents</UiButton

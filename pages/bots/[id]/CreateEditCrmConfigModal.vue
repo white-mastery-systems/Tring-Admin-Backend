@@ -1,24 +1,29 @@
 <template>
-  <UiDialog v-model:open="isModalOpen">
+  <UiDialog v-model:open="modalState.open">
     <!-- <UiDialogTrigger as-child>
       <UiButton variant="outline" color="primary"> Link Integration </UiButton>
     </UiDialogTrigger> -->
     <UiDialogContent class="sm:max-w-[425px]">
       <UiDialogHeader>
-        <UiDialogTitle>Link Integration</UiDialogTitle>
+        <UiDialogTitle>Link CRM</UiDialogTitle>
       </UiDialogHeader>
-      <UiForm @submit="handleAddIntegration" class="space-y-2">
-        <UiFormField v-slot="{ componentField }" name="integration">
+      <UiForm
+        v-slot="{ values }"
+        :validation-schema="CRMConfigSchema"
+        @submit="handleAddIntegration"
+        class="space-y-2"
+      >
+        <UiFormField v-slot="{ componentField }" name="crm">
           <UiFormItem class="w-full">
             <UiFormLabel
-              >Select Connected Integation<UiLabel class="text-lg text-red-500"
+              >Select Connected CRM<UiLabel class="text-lg text-red-500"
                 >*</UiLabel
               >
             </UiFormLabel>
             <UiFormControl>
               <UiSelect v-bind="componentField">
                 <UiSelectTrigger>
-                  <UiSelectValue placeholder="Select Integration" />
+                  <UiSelectValue placeholder="Select CRM" />
                 </UiSelectTrigger>
                 <UiSelectContent>
                   <UiSelectItem
@@ -34,10 +39,14 @@
               </UiSelect>
             </UiFormControl>
             <UiFormMessage />
-            <span class="text-xs text-gray-500">Select your integration.</span>
+            <span class="text-xs text-gray-500">Select your crm.</span>
           </UiFormItem>
         </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="campaignId">
+        <UiFormField
+          v-if="values.crm === 'sell-do'"
+          v-slot="{ componentField }"
+          name="campaignId"
+        >
           <UiFormItem class="w-full">
             <UiFormLabel class="font-bold">Campaign Id</UiFormLabel>
             <UiFormControl>
@@ -51,7 +60,11 @@
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="projectId">
+        <UiFormField
+          v-if="values.crm === 'sell-do'"
+          v-slot="{ componentField }"
+          name="projectId"
+        >
           <UiFormItem class="w-full">
             <UiFormLabel class="font-bold">Project Id</UiFormLabel>
             <UiFormControl>
@@ -74,7 +87,10 @@
   </UiDialog>
 </template>
 <script setup lang="ts">
-  const isModalOpen = defineModel<boolean>({ default: false, required: true });
+  const modalState = defineModel<any>({
+    default: { open: false },
+    required: true,
+  });
 
   const {
     status: integrationLoadingStatus,
@@ -87,11 +103,21 @@
   console.log({ integrationsData });
   const route = useRoute("bots-id-crm-config");
   const handleAddIntegration = (value: any) => {
-    addBotIntegration({
-      payload: { ...value, botId: route.params.id },
-      onSuccess: () => {
-        isModalOpen.value = false;
-      },
-    });
+    console.log({ value });
+    modalState.value.open = false;
+
+    // addBotIntegration({
+    //   payload: { ...value, botId: route.params.id },
+    //   onSuccess: () => {
+    //     modalState.open.value = false;
+    //   },
+    // });
   };
+  const CRMConfigSchema = toTypedSchema(
+    z.object({
+      crm: z.string().min(1, { message: "CRM is required" }),
+      campaignId: z.string().min(1, { message: "Campaign ID is required" }),
+      projectId: z.string().min(1, { message: "Project ID is required" }),
+    }),
+  );
 </script>

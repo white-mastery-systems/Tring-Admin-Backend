@@ -10,9 +10,12 @@
         >
           <ChevronLeft className="h-4 w-4" />
         </UiButton>
-        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-          {{ title }}
-        </h3>
+        <div class="flex items-center gap-2">
+          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+            {{ title }}
+          </h3>
+          <span class="text-sm text-gray-600">{{ subtitle }}</span>
+        </div>
       </div>
       <!-- <template v-for="(comp, index) in actionButtons" :key="index" :is="comp">
         {{ comp() }}

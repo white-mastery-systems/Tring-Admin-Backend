@@ -153,8 +153,8 @@
     middleware: "admin-only",
   });
   import { useClipboard } from "@vueuse/core";
-import { ref } from "vue";
-import { toast } from "vue-sonner";
+  import { ref } from "vue";
+  import { toast } from "vue-sonner";
   const router = useRouter();
   // const selectedValue = ref("Today");
   const route = useRoute("bots-id");
@@ -203,7 +203,7 @@ import { toast } from "vue-sonner";
     },
     {
       _id: 5,
-      bot: "Intent Management",
+      bot: "Smart Actions",
       helperText: "Add your intents Eg: Location Virtual Tour etc...",
       routeName: "bots-id-intent-management",
     },

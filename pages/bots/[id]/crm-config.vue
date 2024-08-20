@@ -1,19 +1,17 @@
 <template>
   <Page
     title="CRM Configuration"
+    :subtitle="`(${botDetails.name})`"
     :disableSelector="true"
-    :actionButtons="[h(ConfigurationModal)]"
   >
     <template #actionButtons>
       <UiButton
-        @click="openConfigModal.open = true"
+        @click="crmConfigModalState.open = true"
         variant="outline"
         color="primary"
       >
-        Link Integration
+        Link CRM
       </UiButton>
-
-      <ConfigurationModal v-model="openConfigModal.open" />
     </template>
     <DataTable
       :columns="columns"
@@ -21,13 +19,17 @@
       :page-size="8"
       :is-loading="false"
     />
+    <ConfigurationModal v-model="crmConfigModalState" />
   </Page>
 </template>
 <script setup lang="ts">
   import { createColumnHelper } from "@tanstack/vue-table";
-  import ConfigurationModal from "./ConfigIntegrationModal.vue";
+  import ConfigurationModal from "./CreateEditCrmConfigModal.vue";
   const router = useRouter();
   const columnHelper = createColumnHelper<any>();
+  const route = useRoute("bots-id-crm-config");
+  const paramId: any = route;
+  const botDetails = ref(await getBotDetails(paramId.params.id));
 
   const columns = [
     columnHelper.accessor("integration", {
@@ -41,7 +43,6 @@
     //   header: "actions",
     // }),
   ];
-  const route = useRoute("bots-id-crm-config");
   const { status, data: integrationsData } = await useLazyFetch(
     `/api/bots/${route.params.id}/integrations`,
     {
@@ -56,5 +57,5 @@
     }));
   });
   const integrations: any = ref([]);
-  const openConfigModal = ref({ open: false });
+  const crmConfigModalState = ref({ open: false });
 </script>

@@ -22,19 +22,20 @@ export const createIntegration = async ({
   integrationDetails: any;
   onSuccess: Function;
 }) => {
-  const createIntegration = await $fetch<SelectChatBot>(
-    `/api/org/integrations`,
-    {
-      method: "POST",
-      body: integrationDetails,
-    },
-  );
-  onSuccess()
-  // await navigateTo({
-  //   name: "bots-id",
-  //   params: { id: botDetails.id },
-  // });
-  return createIntegration;
+  try {
+    const createIntegration = await $fetch<SelectChatBot>(
+      `/api/org/integrations`,
+      {
+        method: "POST",
+        body: integrationDetails,
+      },
+    );
+    onSuccess();
+
+    return createIntegration;
+  } catch (err: any) {
+    toast.error(err.data.data[0].message);
+  }
 };
 
 export const deleteIntegration = async ({
@@ -45,20 +46,18 @@ export const deleteIntegration = async ({
   onSuccess: Function;
 }) => {
   try {
-    const createIntegration = await $fetch<SelectChatBot>(
+    const deleteIntegration = await $fetch<SelectChatBot>(
       `/api/org/integrations/${integrationId}`,
       {
         method: "DELETE",
       },
     );
+    console.log("hi");
     onSuccess();
     toast.success("Integration removed successfully");
-    // await navigateTo({
-    //   name: "bots-id",
-    //   params: { id: botDetails.id },
-    // });
-    return createIntegration;
-  } catch (err) {
+
+    return deleteIntegration;
+  } catch (err: any) {
     toast.error(err.data.data[0].message);
   }
 };
