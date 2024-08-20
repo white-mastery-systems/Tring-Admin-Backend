@@ -9,7 +9,8 @@ const formSchema = toTypedSchema(
     name: z.string().min(1, 'Company Name is required'),
     industry: z.string().min(2, "Industry must be provided."),
     avgTraffic: z.string().min(2, 'Monthly Website Traffic must be provided.'),
-    employeeCount: z.string().min(2, 'No. of Employees must be provided')
+    employeeCount: z.string().min(2, 'No. of Employees must be provided'),
+    otherRole: z.string().optional().default(""),
   }).refine(
     (data: any) => {
       if (data.industry.toLowerCase() === "other") {
