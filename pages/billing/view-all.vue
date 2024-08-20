@@ -77,6 +77,10 @@
         <button
           class="rounded-lg border border-indigo-700 bg-transparent px-4 py-2 font-semibold text-indigo-800 hover:border-transparent hover:bg-indigo-700 hover:text-white"
           @click="choosePlan(list.plan)"
+          :disabled="
+            orgBilling?.plan_code === list.plan_code ||
+            list.plan_code?.includes('free')
+          "
         >
           {{
             orgBilling?.plan_code === list.plan_code
@@ -140,7 +144,7 @@
         },
       ],
       plan: "free_test",
-      choosePlan: "down grade",
+      choosePlan: "Downgrade",
       currentPlan: "current plan",
       plan_code: "FREE",
     },
