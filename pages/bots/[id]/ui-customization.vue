@@ -176,12 +176,12 @@ const paramId: any = route;
 const botDetails: any = await getBotDetails(paramId.params.id);
 const defaultSelect = ref(true);
 const defaultFormValues = reactive({
-  logo: botDetails.metadata.ui.logo,
-  color: hslToHex(botDetails.metadata.ui.color),
-  defaultSelect: botDetails.metadata.ui.defaultSelect,
-  widgetSound: botDetails.metadata.ui.widgetSound,
-  widgetPosition: botDetails.metadata.ui.widgetPosition,
-  onlineStatus: botDetails.metadata.ui.onlineStatus,
+  logo: botDetails.metadata.ui.logo ?? '',
+  color: hslToHex(botDetails.metadata.ui.color ?? '236, 61%, 54%, 1'),
+  defaultSelect: botDetails.metadata.ui.defaultSelect ?? true,
+  widgetSound: botDetails.metadata.ui.widgetSound ?? 'Yes',
+  widgetPosition: botDetails.metadata.ui.widgetPosition ?? 'Left',
+  onlineStatus: botDetails.metadata.ui.onlineStatus ?? false,
   generateLead: (botDetails.metadata.prompt.INTENTS !== "-other"),
 })
 const { handleSubmit }: any = useForm({
