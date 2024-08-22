@@ -6,7 +6,9 @@
       <div class="flex gap-4">
         <UiDialog>
           <UiDialogTrigger as-child>
-            <UiButton class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95">
+            <UiButton
+              class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95"
+            >
               Add Bot
             </UiButton>
           </UiDialogTrigger>
@@ -14,31 +16,46 @@
             <UiDialogHeader>
               <UiDialogTitle>Add a New Bot</UiDialogTitle>
             </UiDialogHeader>
-            <UiForm 
-              :validation-schema="formSchema" 
-              :keep-values="true" 
+            <UiForm
+              :validation-schema="formSchema"
+              :keep-values="true"
               :validate-on-mount="false"
-              class="mb-4 space-y-6" @submit="addBot">
+              class="mb-4 space-y-6"
+              @submit="addBot"
+            >
               <UiFormField v-slot="{ componentField }" name="newBotName">
                 <UiFormItem class="w-full">
                   <UiFormLabel class="font-bold">Bot Name</UiFormLabel>
                   <UiFormControl>
-                    <UiInput v-bind="componentField" class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
-                      placeholder="Enter Bot Name" type="text" />
+                    <UiInput
+                      v-bind="componentField"
+                      class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
+                      placeholder="Enter Bot Name"
+                      type="text"
+                    />
+                    <UiFormDescription lass="text-xs text-gray-500"
+                      >Enter your unique identifier for Bot.</UiFormDescription
+                    >
+                    <UiFormMessage />
                   </UiFormControl>
-                  <UiFormMessage />
                 </UiFormItem>
               </UiFormField>
-              <div class="w-full flex justify-end items-center">
-                <UiButton type="submit"
-                  class="mt-4 w-1/2 self-end bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
+              <div class="flex w-full items-center justify-end">
+                <UiButton
+                  type="submit"
+                  class="w-1/2 self-end bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
+                >
                   Create
                 </UiButton>
               </div>
             </UiForm>
           </UiDialogContent>
         </UiDialog>
-        <span v-if="false" class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary:
+        <span
+          v-if="false"
+          class="right-dropdown-align text-[15px]"
+          style="color: rgba(138, 138, 138, 1)"
+          >Summary:
           <span class="font-bold text-black">
             <!-- <template> -->
             <UiSelect v-model="selectedValue" class="outline-none">
@@ -48,20 +65,29 @@
               <UiSelectContent>
                 <UiSelectGroup class="select_list_align">
                   <!-- <UiSelectLabel>Today</UiSelectLabel> -->
-                  <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
-                    :value="list.content">
+                  <UiSelectItem
+                    v-for="(list, index) in menuList"
+                    :key="index"
+                    class="content_align"
+                    :value="list.content"
+                  >
                     {{ list.content }}
                   </UiSelectItem>
                 </UiSelectGroup>
               </UiSelectContent>
             </UiSelect>
             <!-- </template> -->
-          </span></span>
+          </span></span
+        >
       </div>
     </div>
     <div class="bot-main-align max-h-[80vh] overflow-y-scroll px-4 pb-4">
       <div class="flex items-center gap-2 py-4">
-        <UiInput v-model="searchBot" class="max-w-[200px]" placeholder="Search bot..." />
+        <UiInput
+          v-model="searchBot"
+          class="max-w-[200px]"
+          placeholder="Search bot..."
+        />
         <UiSelect v-model="activeStatus">
           <UiSelectTrigger class="max-w-[200px]">
             <UiSelectValue placeholder="Filter status" />
@@ -71,283 +97,289 @@
             <UiSelectItem value="false">In active</UiSelectItem>
           </UiSelectContent>
         </UiSelect>
-
       </div>
 
-      <DataTable @row-click="(row: any) => {
-          console.log({ row });
-          return navigateTo(`/bots/${row.original.id}`);
-        }
-        " :columns="columns" :data="bots" :page-size="8" :is-loading="isDataLoading" />
+      <DataTable
+        @row-click="
+          (row: any) => {
+            console.log({ row });
+            return navigateTo(`/bots/${row.original.id}`);
+          }
+        "
+        :columns="columns"
+        :data="bots"
+        :page-size="8"
+        :is-loading="isDataLoading"
+      />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { createColumnHelper } from "@tanstack/vue-table";
-definePageMeta({
-  middleware: "admin-only",
-});
-
-
-const formSchema = toTypedSchema(
-  z.object({
-    newBotName: z.string().min(2,"Bot Name is requird."),
-  }),
-);
-const searchBot = ref("");
-const searchBotDebounce = refDebounced(searchBot, 500);
-
-const activeStatus = ref("");
-watch(activeStatus, async (newStatus, previousStatus) => {
-  console.log({ newStatus });
-});
-const selectedValue = ref("Today");
-// const newBotName = ref("");
-
-const menuList = ref([
-  {
-    content: "Today",
-    value: "Today",
-  },
-  {
-    content: "Weekly",
-    value: "Weekly",
-  },
-  {
-    content: "Monthly",
-    value: "Monthly",
-  },
-  {
-    content: "Quarterly",
-    value: "Quarterly",
-  },
-  {
-    content: "Halfyearly",
-    value: "Halfyearly",
-  },
-  {
-    content: "Yearly",
-    value: "Yearly",
-  },
-]);
-// const botList = await listApiBots();
-
-const { status, data: bots } = await useLazyFetch("/api/bots", {
-  server: false,
-  default: () => [],
-  query: {
-    active: activeStatus,
-    q: searchBotDebounce,
-  },
-  transform: (bots) =>
-    bots.map((bot) => ({
-      id: bot.id,
-      name: bot.name,
-      status: bot.documentId ? true : false,
-      createdAt: formatDateStringToDate(bot.createdAt),
-    })),
-});
-const isDataLoading = computed(() => status.value === "pending");
-
-const addBot = async (value: any) => {
-  const bot = await $fetch("/api/bots", {
-    method: "POST",
-    body: { name: value.newBotName },
-    // query: {
-    //   organization_id: "4e606bb3-3264-410f-9a2d-4910f17685e3",
-    // },
+  import { createColumnHelper } from "@tanstack/vue-table";
+  definePageMeta({
+    middleware: "admin-only",
   });
-  return navigateTo({
-    name: "bots-id",
-    params: { id: bot.id },
+
+  const formSchema = toTypedSchema(
+    z.object({
+      newBotName: z.string().min(2, "Bot Name is requird."),
+    }),
+  );
+  const searchBot = ref("");
+  const searchBotDebounce = refDebounced(searchBot, 500);
+
+  const activeStatus = ref("");
+  watch(activeStatus, async (newStatus, previousStatus) => {
+    console.log({ newStatus });
   });
-};
+  const selectedValue = ref("Today");
+  // const newBotName = ref("");
 
-const botManagementDetails = async (list: any) => {
-  return navigateTo({
-    name: "bots-id",
-    params: { id: list.id },
-  });
-};
-
-const statusComponent = (status: boolean) =>
-  status
-    ? h("span", { class: "text-green-500" }, "Active")
-    : h("span", { class: "text-red-500" }, "Inactive");
-
-const columnHelper = createColumnHelper<(typeof bots.value)[0]>();
-const columns = [
-  columnHelper.accessor("name", {
-    header: "Bot Name",
-  }),
-  columnHelper.accessor("createdAt", {
-    header: "Date Created",
-  }),
-  columnHelper.accessor("status", {
-    header: "Status",
-    cell: ({ row }) => {
-      return statusComponent(row.original.status);
+  const menuList = ref([
+    {
+      content: "Today",
+      value: "Today",
     },
-  }),
-];
+    {
+      content: "Weekly",
+      value: "Weekly",
+    },
+    {
+      content: "Monthly",
+      value: "Monthly",
+    },
+    {
+      content: "Quarterly",
+      value: "Quarterly",
+    },
+    {
+      content: "Halfyearly",
+      value: "Halfyearly",
+    },
+    {
+      content: "Yearly",
+      value: "Yearly",
+    },
+  ]);
+  // const botList = await listApiBots();
+
+  const { status, data: bots } = await useLazyFetch("/api/bots", {
+    server: false,
+    default: () => [],
+    query: {
+      active: activeStatus,
+      q: searchBotDebounce,
+    },
+    transform: (bots) =>
+      bots.map((bot) => ({
+        id: bot.id,
+        name: bot.name,
+        status: bot.documentId ? true : false,
+        createdAt: formatDateStringToDate(bot.createdAt),
+      })),
+  });
+  const isDataLoading = computed(() => status.value === "pending");
+
+  const addBot = async (value: any) => {
+    try {
+      const bot = await $fetch("/api/bots", {
+        method: "POST",
+        body: { name: value.newBotName },
+      });
+      return navigateTo({
+        name: "bots-id",
+        params: { id: bot.id },
+      });
+    } catch (err: any) {
+      toast.error(err.data.data[0].message);
+    }
+  };
+
+  const botManagementDetails = async (list: any) => {
+    return navigateTo({
+      name: "bots-id",
+      params: { id: list.id },
+    });
+  };
+
+  const statusComponent = (status: boolean) =>
+    status
+      ? h("span", { class: "text-green-500" }, "Active")
+      : h("span", { class: "text-red-500" }, "Inactive");
+
+  const columnHelper = createColumnHelper<(typeof bots.value)[0]>();
+  const columns = [
+    columnHelper.accessor("name", {
+      header: "Bot Name",
+    }),
+    columnHelper.accessor("createdAt", {
+      header: "Date Created",
+    }),
+    columnHelper.accessor("status", {
+      header: "Status",
+      cell: ({ row }) => {
+        return statusComponent(row.original.status);
+      },
+    }),
+  ];
 </script>
 
 <style scoped>
-.bot-manage-main-container {
-  padding: 0 25px;
-  height: 100%;
-  overflow: hidden;
-}
+  .bot-manage-main-container {
+    padding: 0 25px;
+    height: 100%;
+    overflow: hidden;
+  }
 
-.right-dropdown-align {
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 1);
-  padding: 0px 10px;
-  width: 200px !important;
-  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-  border-radius: 10px;
-}
+  .right-dropdown-align {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 1);
+    padding: 0px 10px;
+    width: 200px !important;
+    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 10px;
+  }
 
-.header-align {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: segoe UI Regular;
-}
+  .header-align {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: segoe UI Regular;
+  }
 
-.bot-main-align {
-  margin-top: 30px;
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05);
-  height: calc(100vh - 0px);
-  /* overflow-y: scroll; */
-}
+  .bot-main-align {
+    margin-top: 30px;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05);
+    height: calc(100vh - 0px);
+    /* overflow-y: scroll; */
+  }
 
-.ui-select-trigger {
-  font-weight: 500;
-  /* color: rgba(138, 138, 138, 1); */
-}
+  .ui-select-trigger {
+    font-weight: 500;
+    /* color: rgba(138, 138, 138, 1); */
+  }
 
-.focus\:ring-offset-2:focus {
-  --tw-ring-offset-width: none;
-}
+  .focus\:ring-offset-2:focus {
+    --tw-ring-offset-width: none;
+  }
 
-.content-align {
-  font-size: 16px;
-  /* width: 100px !important; */
-  margin-bottom: 5px;
-  /* color: rgba(138, 138, 138, 1); */
-}
+  .content-align {
+    font-size: 16px;
+    /* width: 100px !important; */
+    margin-bottom: 5px;
+    /* color: rgba(138, 138, 138, 1); */
+  }
 
-.list-header-align {
-  padding: 10px 48px;
-  display: flex;
-  /* justify-content: space-between; */
-  width: 100%;
-  /* gap: 100px; */
-  border-bottom: 0.5px solid rgba(181, 181, 181, 1);
-}
+  .list-header-align {
+    padding: 10px 48px;
+    display: flex;
+    /* justify-content: space-between; */
+    width: 100%;
+    /* gap: 100px; */
+    border-bottom: 0.5px solid rgba(181, 181, 181, 1);
+  }
 
-.list_align {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  overflow-y: scroll;
-  /* height: calc(100% - 200px); */
-  cursor: pointer;
-  padding: 0 15px 15px 15px;
+  .list_align {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    overflow-y: scroll;
+    /* height: calc(100% - 200px); */
+    cursor: pointer;
+    padding: 0 15px 15px 15px;
 
-  /* width: 100%; */
-  /* background: rgba(255, 255, 255, 1); */
-  /* padding: 30px 30px; */
-  /* box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important; */
-  border-radius: 10px;
-  /* gap: 100px; */
-  /* margin: 10px 0; */
-}
+    /* width: 100%; */
+    /* background: rgba(255, 255, 255, 1); */
+    /* padding: 30px 30px; */
+    /* box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important; */
+    border-radius: 10px;
+    /* gap: 100px; */
+    /* margin: 10px 0; */
+  }
 
-.overflow_align {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 90%;
-  overflow-y: scroll;
-  width: 100%;
-  padding: 5px 5px 20px 5px;
-}
+  .overflow_align {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 90%;
+    overflow-y: scroll;
+    width: 100%;
+    padding: 5px 5px 20px 5px;
+  }
 
-.bot-list-align {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(255, 255, 255, 1);
-  padding: 20px 0px;
-  width: 100% !important;
-  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-  border-radius: 10px;
-  margin: 20px 0 0 0;
-  font-size: 15px;
-}
+  .bot-list-align {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 1);
+    padding: 20px 0px;
+    width: 100% !important;
+    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 10px;
+    margin: 20px 0 0 0;
+    font-size: 15px;
+  }
 
-.acive_class {
-  display: flex;
-  align-items: center;
-  color: rgba(26, 187, 0, 1);
-  gap: 5px;
-  padding-inline-end: 213px;
-}
+  .acive_class {
+    display: flex;
+    align-items: center;
+    color: rgba(26, 187, 0, 1);
+    gap: 5px;
+    padding-inline-end: 213px;
+  }
 
-.deacive_class {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: rgba(255, 0, 0, 1);
-  padding-inline-end: 201px;
-}
+  .deacive_class {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: rgba(255, 0, 0, 1);
+    padding-inline-end: 201px;
+  }
 
-.active-circle-align {
-  display: flex;
-  align-items: center;
-  background-color: rgba(26, 187, 0, 1);
-  width: 5px;
-  height: 5px;
-}
+  .active-circle-align {
+    display: flex;
+    align-items: center;
+    background-color: rgba(26, 187, 0, 1);
+    width: 5px;
+    height: 5px;
+  }
 
-.deactive-circle-align {
-  display: flex;
-  align-items: center;
-  background-color: rgba(255, 0, 0, 1);
-  width: 5px;
-  height: 5px;
-}
+  .deactive-circle-align {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 0, 0, 1);
+    width: 5px;
+    height: 5px;
+  }
 
-.header-content-align {
-  display: flex;
-  justify-content: space-between;
-  width: 65%;
-}
+  .header-content-align {
+    display: flex;
+    justify-content: space-between;
+    width: 65%;
+  }
 
-.bot_name_align {
-  width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: inline-block;
-  padding-inline-start: 30px;
-}
+  .bot_name_align {
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    padding-inline-start: 30px;
+  }
 
-.bot-list-align:hover {
-  color: rgba(255, 188, 66, 1);
-  background: rgba(255, 248, 235, 1) !important;
-}
+  .bot-list-align:hover {
+    color: rgba(255, 188, 66, 1);
+    background: rgba(255, 248, 235, 1) !important;
+  }
 
-.arrow-aling {
-  width: 30px;
-}
+  .arrow-aling {
+    width: 30px;
+  }
 
-/* .createAt_align {
+  /* .createAt_align {
   padding-inline-end: 114px;
 } */
 </style>

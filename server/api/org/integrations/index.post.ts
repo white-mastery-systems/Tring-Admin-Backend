@@ -2,7 +2,9 @@ import { ilike } from "drizzle-orm";
 import { createIntegration } from "~/server/utils/db/integrations";
 
 enum CRMType {
-  SellDo = "sell-do",
+  sellDo = "sell-do",
+  zohoCRM = "zoho-crm",
+  zohoBigin = "zoho-bigin",
 }
 const db = useDrizzle();
 
@@ -13,7 +15,8 @@ export default defineEventHandler(async (event) => {
       name: z.string().min(3, "Intent should have atleast 3 characters"),
       crm: z.nativeEnum(CRMType),
       metaData: z.object({
-        apiKey: z.string().min(1, "API key minimum length is 2"),
+        apiKey: z.string().optional(),
+        status: z.string().optional(),
       }),
     })
     .refine(

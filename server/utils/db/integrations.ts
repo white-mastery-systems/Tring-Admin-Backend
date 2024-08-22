@@ -20,6 +20,41 @@ export const listIntegrations = async (organizationId: string) => {
   return data;
 };
 
+export const findIntegrationDetails = async (
+  organizationId: string,
+  id: string,
+) => {
+  const data = await db.query.integrationSchema.findFirst({
+    where: eq(integrationSchema.id, id),
+  });
+  return data;
+};
+export const listLastCreatedIntegrationByCRM = async (
+  organizationId: string,
+  crm: string,
+) => {
+  let filters: any = [
+    and(
+      eq(integrationSchema.org_id, organizationId),
+      eq(integrationSchema.crm, crm),
+    ),
+  ];
+
+  const data = await db.query.integrationSchema.findFirst({
+    where: and(...filters),
+    orderBy: [desc(integrationSchema.createdAt)],
+  });
+  return data;
+};
+export const updateIntegrationById = async (id: string, metadata: any) =>
+  (
+    await db
+      .update(integrationSchema)
+      .set({ metadata })
+      .where(eq(integrationSchema.id, id))
+      .returning()
+  )[0];
+
 export const deleteIntegration = async (integrationId: string) => {
   //   cache.removeItem(getCacheBotKey(botId));
   return (

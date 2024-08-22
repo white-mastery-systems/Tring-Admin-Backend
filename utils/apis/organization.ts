@@ -38,6 +38,29 @@ export const createIntegration = async ({
   }
 };
 
+export const verifyIntegration = async ({
+  integrationDetails,
+  onSuccess,
+}: {
+  integrationDetails: any;
+  onSuccess: Function;
+}) => {
+  try {
+    const createIntegration = await $fetch<SelectChatBot>(
+      `/api/org/integrations`,
+      {
+        method: "PUT",
+        body: integrationDetails,
+      },
+    );
+    onSuccess();
+
+    return createIntegration;
+  } catch (err: any) {
+    toast.error(err.data.data[0].message);
+  }
+};
+
 export const deleteIntegration = async ({
   integrationId,
   onSuccess,
@@ -58,6 +81,9 @@ export const deleteIntegration = async ({
 
     return deleteIntegration;
   } catch (err: any) {
+    if (err.status === 500) {
+      toast.error("Cannot delete: Integration has connected bots");
+    }
     toast.error(err.data.data[0].message);
   }
 };

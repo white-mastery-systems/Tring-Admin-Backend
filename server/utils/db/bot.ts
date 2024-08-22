@@ -121,10 +121,23 @@ export const listBotIntegrations = async (botId: string) => {
   const data = await db.query.botIntegrationSchema.findMany({
     where: and(...filters),
     orderBy: [desc(botIntegrationSchema.createdAt)],
-    columns: {
-      organizationId: false,
+    with: {
+      integration: true,
     },
   });
+  return data;
+};
+
+export const deleteBotIntegration = async (
+  botId: string,
+  integrationId: string,
+) => {
+  let filters: any = [
+    eq(botIntegrationSchema.botId, botId),
+    eq(botIntegrationSchema.id, integrationId),
+  ];
+
+  const data = await db.delete(botIntegrationSchema).where(and(...filters));
   return data;
 };
 

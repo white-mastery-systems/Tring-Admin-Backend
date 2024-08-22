@@ -9,25 +9,60 @@
     console.log({ newIntegrationState });
   });
   async function handleConnect(values: any) {
+    let url = `http://localhost:3000/settings/${values.crm}`;
+    // let url = "https://app.tringlabs.ai/settings";
+    let scope = "";
+    if (values.crm === "zoho-crm") {
+      scope = "ZohoCRM.settings.ALL,ZohoCRM.modules.ALL";
+    } else if (values.crm === "zoho-bigin") {
+      scope = "ZohoBigin.settings.ALL,ZohoBigin.modules.ALL";
+    }
     const payload: any = {
       ...values,
+      scope,
+      url,
+      ...(values.crm !== "sell-do" && { metaData: { status: "pending" } }),
     };
+
     await createIntegration({
       integrationDetails: payload,
       onSuccess: () => {
+        if (values.crm !== "sell-do")
+          window.open(
+            `https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=${scope}&redirect_uri=${url}&prompt=consent&access_type=offline`,
+            "_blank",
+          );
         emit("success");
       },
     });
   }
 
-  const integrationSchema = toTypedSchema(
-    z.object({
-      name: z.string().min(1, { message: "Name is required" }),
-      crm: z.string().min(1, { message: "CRM is required" }),
-      metaData: z.object({
-        apiKey: z.string().min(1, { message: "API key is required" }),
-      }),
+  // const integrationSchema = toTypedSchema(
+  //   z.object({
+  //   name: z.string().min(1, { message: "Name is required" }),
+  //   crm: z.string().min(1, { message: "CRM is required" }),
+  //   metaData: z.object({
+  //     apiKey: z.string().min(1, { message: "API key is required" }),
+  //   }),
+  // }),
+  // );
+  const sellDoSchema = z.object({
+    crm: z.literal("sell-do"),
+    name: z.string().min(1, { message: "Name is required" }),
+    metaData: z.object({
+      apiKey: z.string().min(1, { message: "API key is required" }),
     }),
+  });
+  const zohoCRMSchema = z.object({
+    crm: z.literal("zoho-crm"),
+    name: z.string().min(1, { message: "Name is required" }),
+  });
+  const zohoBiginSchema = z.object({
+    crm: z.literal("zoho-bigin"),
+    name: z.string().min(1, { message: "Name is required" }),
+  });
+  const integrationSchema = toTypedSchema(
+    z.discriminatedUnion("crm", [sellDoSchema, zohoCRMSchema, zohoBiginSchema]),
   );
 </script>
 

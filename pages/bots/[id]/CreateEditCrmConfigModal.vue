@@ -1,19 +1,16 @@
 <template>
   <UiDialog v-model:open="modalState.open">
-    <!-- <UiDialogTrigger as-child>
-      <UiButton variant="outline" color="primary"> Link Integration </UiButton>
-    </UiDialogTrigger> -->
     <UiDialogContent class="sm:max-w-[425px]">
       <UiDialogHeader>
         <UiDialogTitle>Link CRM</UiDialogTitle>
       </UiDialogHeader>
       <UiForm
-        v-slot="{ values }"
+        v-slot="{ values, errors }"
         :validation-schema="CRMConfigSchema"
         @submit="handleAddIntegration"
         class="space-y-2"
       >
-        <UiFormField v-slot="{ componentField }" name="crm">
+        <UiFormField v-slot="{ componentField }" name="integrationId">
           <UiFormItem class="w-full">
             <UiFormLabel
               >Select Connected CRM<UiLabel class="text-lg text-red-500"
@@ -21,19 +18,18 @@
               >
             </UiFormLabel>
             <UiFormControl>
-              <UiSelect v-bind="componentField">
+              <UiSelect
+                v-bind="componentField"
+                @update:model-value="handleCrmChange"
+              >
                 <UiSelectTrigger>
                   <UiSelectValue placeholder="Select CRM" />
                 </UiSelectTrigger>
                 <UiSelectContent>
                   <UiSelectItem
                     v-for="(integrationData, index) in integrationsData"
-                    :value="integrationData.name"
-                    >{{
-                      integrationData.name === "sell-do"
-                        ? "Sell Do"
-                        : "Zoho Bigin"
-                    }}</UiSelectItem
+                    :value="integrationData.id"
+                    >{{ integrationData.name }}</UiSelectItem
                   >
                 </UiSelectContent>
               </UiSelect>
@@ -42,8 +38,47 @@
             <span class="text-xs text-gray-500">Select your crm.</span>
           </UiFormItem>
         </UiFormField>
+
         <UiFormField
-          v-if="values.crm === 'sell-do'"
+          v-if="
+            integrationsData.find(
+              (integration) => integration.id === values.integrationId,
+            )?.crm === 'zoho-bigin'
+          "
+          v-slot="{ componentField }"
+          name="pipelineId"
+        >
+          <UiFormItem class="w-full">
+            <UiFormLabel
+              >Select Pipeline<UiLabel class="text-lg text-red-500">*</UiLabel>
+            </UiFormLabel>
+            <UiFormControl>
+              <UiSelect
+                v-bind="componentField"
+                @update:model-value="handleCrmChange"
+              >
+                <UiSelectTrigger>
+                  <UiSelectValue placeholder="Select Pipeline" />
+                </UiSelectTrigger>
+                <UiSelectContent>
+                  <UiSelectItem
+                    v-for="(integrationData, index) in pipelines"
+                    :value="integrationData.Pipeline.id"
+                    >{{ integrationData.Sub_Pipeline }}</UiSelectItem
+                  >
+                </UiSelectContent>
+              </UiSelect>
+            </UiFormControl>
+            <UiFormMessage />
+            <span class="text-xs text-gray-500">Select your pipeline.</span>
+          </UiFormItem>
+        </UiFormField>
+        <UiFormField
+          v-if="
+            integrationsData.find(
+              (integration) => integration.id === values.integrationId,
+            )?.crm === 'sell-do'
+          "
           v-slot="{ componentField }"
           name="campaignId"
         >
@@ -61,7 +96,11 @@
           </UiFormItem>
         </UiFormField>
         <UiFormField
-          v-if="values.crm === 'sell-do'"
+          v-if="
+            integrationsData.find(
+              (integration) => integration.id === values.integrationId,
+            )?.crm === 'sell-do'
+          "
           v-slot="{ componentField }"
           name="projectId"
         >
@@ -87,11 +126,30 @@
   </UiDialog>
 </template>
 <script setup lang="ts">
+  const emit = defineEmits(["success"]);
+  let pipelines = ref([]);
   const modalState = defineModel<any>({
     default: { open: false },
     required: true,
   });
-
+  const handleCrmChange = async (e: any) => {
+    const matchedCRM: any = integrationsData?.value?.find(
+      (integration: any) => {
+        if (integration.id === e) {
+          console.log({ integration });
+          return integration;
+        }
+      },
+    );
+    console.log({ matchedCRM });
+    if (matchedCRM.crm === "zoho-bigin") {
+      const data: any = await $fetch(
+        `/api/org/integrations/zoho-bigin/pipelines?id=${matchedCRM.id}`,
+      );
+      console.log({ data: data.layouts });
+      pipelines.value = data.data;
+    }
+  };
   const {
     status: integrationLoadingStatus,
     data: integrationsData,
@@ -104,20 +162,22 @@
   const route = useRoute("bots-id-crm-config");
   const handleAddIntegration = (value: any) => {
     console.log({ value });
-    modalState.value.open = false;
-
-    // addBotIntegration({
-    //   payload: { ...value, botId: route.params.id },
-    //   onSuccess: () => {
-    //     modalState.open.value = false;
-    //   },
-    // });
+    const pipelineObj = pipelines.value.find(
+      (pipeline) => pipeline.Pipeline.id === value.pipelineId,
+    );
+    addBotIntegration({
+      payload: { ...value, botId: route.params.id, pipelineObj },
+      onSuccess: () => {
+        emit("success");
+      },
+    });
   };
   const CRMConfigSchema = toTypedSchema(
     z.object({
-      crm: z.string().min(1, { message: "CRM is required" }),
-      campaignId: z.string().min(1, { message: "Campaign ID is required" }),
-      projectId: z.string().min(1, { message: "Project ID is required" }),
+      integrationId: z.string().min(1, { message: "CRM is required" }),
+      campaignId: z.string().optional(),
+      projectId: z.string().optional(),
+      pipelineId: z.string().optional(),
     }),
   );
 </script>

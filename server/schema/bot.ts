@@ -10,7 +10,7 @@ import {
 
 import { createInsertSchema } from "drizzle-zod";
 import { chatbotSchema } from ".";
-import { organizationSchema } from "./admin";
+import { integrationSchema, organizationSchema } from "./admin";
 
 // Tables
 export const chatBotSchema = chatbotSchema.table("bot", {
@@ -133,7 +133,9 @@ export const botIntegrationSchema = chatbotSchema.table("bot_integrations", {
     .references(() => chatBotSchema.id)
     .notNull(),
   metadata: jsonb("metadata"),
-  integration: varchar("integration", { length: 64 }).notNull(),
+  integrationId: uuid("integration_id")
+    .references(() => integrationSchema.id)
+    .notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)
@@ -150,6 +152,16 @@ export const chatBotRelations = relations(chatBotSchema, ({ one, many }) => ({
   chats: many(chatSchema),
   leads: many(leadSchema),
 }));
+
+export const chatBotIntegrationRelations = relations(
+  botIntegrationSchema,
+  ({ one, many }) => ({
+    integration: one(integrationSchema, {
+      fields: [botIntegrationSchema.integrationId],
+      references: [integrationSchema.id],
+    }),
+  }),
+);
 
 export const documentRelations = relations(documentSchema, ({ one }) => ({
   bot: one(chatBotSchema, {

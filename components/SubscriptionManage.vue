@@ -27,69 +27,107 @@
   });
 </script>
 <template>
-  <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
+  <div
+    v-if="isPageLoading"
+    class="grid h-[80vh] place-items-center text-[#424BD1]"
+  >
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
   <div v-else class="flex flex-col justify-center">
-    <div class="px-2 h-[70px] px-6 py-[3px] border-b-[1px] border-[#80808036]">
+    <div class="h-[70px] border-b-[1px] border-[#80808036] px-2 px-6 py-[3px]">
       <div class="text-[20px] font-bold">Billing</div>
       <div class="text-[12px]">
         Manage your subscription and billing information
       </div>
     </div>
-    <div class="details-card rounded-lg mt-[30px] bg-[#fffff] w-[97%] self-center">
+    <div
+      class="details-card mt-[30px] w-[97%] self-center rounded-lg bg-[#fffff]"
+    >
       <div
-        class="flex items-center justify-between rounded-t-xl text-[18px] font-bold border-b-[1px] border-[#80808036] py-5 px-[30px]">
+        class="flex items-center justify-between rounded-t-xl border-b-[1px] border-[#80808036] px-[30px] py-5 text-[18px] font-bold"
+      >
         <span> Subscription Details </span>
 
-        <UiButton class="hover:brighten-50 bg-[#FFBC42] font-medium text-[#FFFFFF] hover:bg-[#FFBC42]">
-          <NuxtLink to="/billing/view-all" class="align_border">Change Plan</NuxtLink>
+        <UiButton
+          class="hover:brighten-50 bg-[#FFBC42] font-medium text-[#FFFFFF] hover:bg-[#FFBC42]"
+        >
+          <NuxtLink to="/billing/view-all" class="align_border"
+            >Change Plan</NuxtLink
+          >
         </UiButton>
       </div>
-      <div class="flex items-center justify-between gap-3 py-5 px-[30px]">
+      <div class="flex items-center justify-between gap-3 px-[30px] py-5">
         <span class="font-medium"> Current plan </span>
         <div class="flex min-w-[80px] items-center justify-center">
-          <span class="rounded-[11px] text-[12px] text-[#00000080] bg-[#d9dbe6] font-medium lowercase px-2.5 py-[3px]">
+          <span
+            class="rounded-[11px] bg-[#d9dbe6] px-2.5 py-[3px] text-[12px] font-medium lowercase text-[#00000080]"
+          >
             {{ usage?.plan_code }}
           </span>
         </div>
       </div>
-      <div class="flex items-center justify-between gap-3 font-medium py-5 px-[30px]">
+      <div
+        class="flex items-center justify-between gap-3 px-[30px] py-5 font-medium"
+      >
         <span> Subscription status </span>
         <div class="flex min-w-[80px] items-center justify-center">
-          <span class="rounded-[11px] text-[12px] text-[#008026ba] bg-[#3cb3714d] px-2.5 py-[3px]"> active </span>
+          <span
+            class="rounded-[11px] bg-[#3cb3714d] px-2.5 py-[3px] text-[12px] text-[#008026ba]"
+          >
+            active
+          </span>
         </div>
       </div>
-      <div class="flex items-center justify-between gap-3 font-medium py-5 px-[30px]">
+      <div
+        class="flex items-center justify-between gap-3 px-[30px] py-5 font-medium"
+      >
         <span> Total chat sessions used </span>
-        <span class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]">
+        <span
+          class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]"
+        >
           {{ usageDetails?.planSessions }}
         </span>
       </div>
-      <div class="flex items-center justify-between gap-3 rounded-b-lg font-medium py-5 px-[30px]">
-        <span>Chat sessions included in plan</span>
-        <span class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]">
+      <div
+        class="flex items-center justify-between gap-3 rounded-b-lg px-[30px] py-5 font-medium"
+      >
+        <span>Chat sessions included in your plan</span>
+        <span
+          class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]"
+        >
           {{ usageDetails?.chatsUsedInPlan }}
         </span>
       </div>
 
-      <div class="flex items-center justify-between gap-3 rounded-b-lg font-medium py-5 px-[30px]">
+      <div
+        class="flex items-center justify-between gap-3 rounded-b-lg px-[30px] py-5 font-medium"
+      >
         <span> Balance chat sessions available in your plan </span>
-        <span class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]">
+        <span
+          class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]"
+        >
           {{ usageDetails?.chatsAvailableInPlan }}
         </span>
       </div>
 
-      <div class="flex items-center justify-between gap-3 rounded-b-lg font-medium py-5 px-[30px]">
-        <span> Extra chat sessions </span>
-        <span class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]">
+      <div
+        class="flex items-center justify-between gap-3 rounded-b-lg px-[30px] py-5 font-medium"
+      >
+        <span> Extra chat sessions used</span>
+        <span
+          class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]"
+        >
           {{ usageDetails?.extraChatsMade }}
         </span>
       </div>
 
-      <div class="flex items-center justify-between gap-3 rounded-b-lg font-medium py-5 px-[30px]">
+      <div
+        class="flex items-center justify-between gap-3 rounded-b-lg px-[30px] py-5 font-medium"
+      >
         <span> Extra chat session billing </span>
-        <span class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]">
+        <span
+          class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]"
+        >
           {{ usageDetails?.extraChatsCost }}
         </span>
       </div>
@@ -97,7 +135,7 @@
   </div>
 </template>
 <style scoped>
-.details-card {
-  box-shadow: 0px 2px 24px 0px #0000000d;
-}
+  .details-card {
+    box-shadow: 0px 2px 24px 0px #0000000d;
+  }
 </style>
