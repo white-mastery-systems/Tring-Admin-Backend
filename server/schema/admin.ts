@@ -51,6 +51,7 @@ export const integrationSchema = adminSchema.table("integration", {
     .notNull()
     .references(() => organizationSchema.id),
   name: varchar("name", { length: 64 }).notNull(),
+  crm: varchar("crm", { length: 64 }).notNull(),
   metadata: jsonb("metadata").default({}).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

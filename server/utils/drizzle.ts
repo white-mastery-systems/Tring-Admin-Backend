@@ -1,5 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
+import { chatBotIntegrationRelations } from "../schema/bot";
 
 const runtimeConfig = useRuntimeConfig();
 
@@ -23,6 +24,7 @@ const schema = {
   // Relations
   organizationRelations,
   chatBotRelations,
+  chatBotIntegrationRelations,
   documentRelations,
   botUserRelations,
   chatsRelations,

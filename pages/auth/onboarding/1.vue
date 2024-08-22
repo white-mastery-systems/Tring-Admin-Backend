@@ -3,12 +3,6 @@ const showCustomRoleInput = ref(false)
 definePageMeta({
   layout: "auth",
 });
-
-const defaultFormValues = reactive({
-  name: "",
-  role: "Chief Executive Officer",
-  customRole: ''
-});
 const animationProps = {
   duration: 500,
 };
@@ -16,6 +10,7 @@ const formSchema = toTypedSchema(
   z.object({
     name: z.string().min(1, 'Name is required'),
     role: z.string().min(2, "Role must be provided."),
+    otherRole: z.string().optional().default(""),
   }).refine(
     (data: any) => {
       if (data.role.toLowerCase() === "other") {
@@ -57,11 +52,12 @@ const onSubmit = async (value: any) => {
   <div class="flex flex-col items-center justify-center w-full h-full">
     <!-- :initial-values="defaultFormValues" -->
     <!-- @submit="handleSubmit" -->
-    <div class="font-bold text-[#424bd1] w-[80%] px-6 pb-[20px]">Personal Details</div>
-    <div class="flex flex-col w-[80%] px-6">
+    <div class="font-bold text-[#424bd1] xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0 pb-[20px]">Personal
+      Details</div>
+    <div class="flex flex-col xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0">
       <!-- <div> -->
-      <UiForm :validation-schema="formSchema" :keep-values="true" :initial-values="defaultFormValues"
-        :validate-on-mount="false" @submit="onSubmit" class="space-y-4">
+      <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" @submit="onSubmit"
+        class="space-y-4">
         <UiFormField v-slot="{ componentField }" name="name">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
             <UiFormLabel class="font-bold"> Full Name <UiLabel class="text-red-500 text-lg">*</UiLabel>

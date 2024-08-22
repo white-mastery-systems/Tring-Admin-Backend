@@ -1,49 +1,61 @@
 <template>
-  <Page title="Settings" :disable-back-button="true">
+  <Page title="Settings" :disable-back-button="true" :disable-elevation="true">
+    <UiTabs default-value="integration" class="w-[400px]">
+      <UiTabsList class="">
+        <UiTabsTrigger value="integration"> Integrations </UiTabsTrigger>
+      </UiTabsList>
+      <UiTabsContent value="integration"> </UiTabsContent>
+    </UiTabs>
+    <template #actionButtons>
+      <UiButton color="primary" @click="integrationModalState.open = true">
+        Add Integration
+      </UiButton>
+    </template>
     <DataTable
       :columns="columns"
-      :data="integrations"
+      :data="integrationsData"
       :page-size="8"
       :is-loading="false"
     />
+    <CreateEditIntegrationModal
+      v-model="integrationModalState"
+      @success="onSuccess()"
+    />
   </Page>
   <ConfirmationModal
-    v-model:open="openConfirmationDialog.open"
+    v-model:open="deleteIntegrationState.open"
     title="Confirm Delete"
     description="Are you sure you want to delete ?"
     @confirm="
       () => {
-        if (openConfirmationDialog?.id) {
+        if (deleteIntegrationState?.id) {
           deleteIntegration({
-            integrationId: openConfirmationDialog.id,
+            integrationId: deleteIntegrationState.id,
             onSuccess: () => {
               integrationRefresh();
+
               // refreshNuxtData
             },
           });
-          openConfirmationDialog.open = false;
+          deleteIntegrationState.open = false;
         }
       }
     "
   />
 </template>
 <script lang="ts" setup>
+  import { Icon, UiBadge, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
   import Page from "~/components/Page.vue";
-  import Button from "~/components/ui/button/Button.vue";
-  // import { deleteIntegration } from "../../utils/db/integrations";
-  import ConnectModal from "./ConnectModal.vue";
+  import CreateEditIntegrationModal from "./CreateEditIntegrationModal.vue";
   definePageMeta({
     middleware: "admin-only",
   });
 
-  const integrations = ref([
-    { label: "Zoho CRM", name: "zoho-crm", status: false },
-    { label: "Zoho Bigin", name: "zoho-bigin", status: false },
-    { label: "Sell Do", name: "sell-do", status: false },
-  ]);
+  const integrationModalState = ref({ open: false });
+  // const integrations = ref([]);
 
-  let openConfirmationDialog: { open: boolean; id?: string } = reactive({
+  let deleteIntegrationState: { open: boolean; id?: string } = reactive({
     open: false,
   });
   const {
@@ -53,78 +65,63 @@
   } = await useLazyFetch("/api/org/integrations", {
     server: false,
     default: () => [],
-  });
-  watch(
-    integrationsData,
-    (newData) => {
-      newData?.map((newIntegration) => {
-        console.log({ newIntegration });
-        integrations.value = integrations.value?.map((integration) => {
-          if (integration?.name === newIntegration?.name) {
-            return { ...integration, status: true, id: newIntegration.id };
-          }
-          return integration;
-        });
-      });
+    transform: (integrations) => {
+      return integrations?.map((integration) => ({
+        ...integration,
+        status: integration?.metadata?.status ?? "Verified",
+      }));
     },
-    { deep: true },
-  );
+  });
+  const onSuccess = () => {
+    integrationModalState.value.open = false;
+    toast.success("Integration added successfully");
+    integrationRefresh();
+  };
   const integrationLoading = computed(
     () => integrationLoadingStatus.value === "pending",
   );
-
-  const statusComponent = (
-    status: boolean,
-    label: string,
-    name: string,
-    id: string | undefined,
-  ) =>
-    status
-      ? h(
-          Button,
-          {
-            class: "",
-            variant: "destructive",
-            onClick: () => {
-              openConfirmationDialog.open = true;
-              openConfirmationDialog.id = id;
-            },
-          },
-          "Disconnect",
-        )
-      : h(
-          "div",
-          {
-            class: "",
-          },
-          [
-            h(ConnectModal, {
-              label,
-              name,
-              onSuccess: () => {
-                openConfirmationDialog.open = false;
-
-                integrationRefresh();
-              },
-            }),
-          ],
-        );
-
+  const actionsComponent = (id: any) =>
+    h(
+      UiButton,
+      {
+        class: "",
+        variant: "destructive",
+        onClick: () => {
+          deleteIntegrationState.id = id;
+          deleteIntegrationState.open = true;
+        },
+      },
+      h(Icon, { name: "lucide:trash-2" }),
+    );
+  const statusComponent = (status: string) => {
+    return h(
+      UiBadge,
+      {
+        ...(status === "pending"
+          ? { variant: "destructive" }
+          : { class: "bg-green-200 text-green-500 hover:bg-green-300" }),
+      },
+      status,
+    );
+  };
   const columnHelper = createColumnHelper<any>();
   const columns = [
-    columnHelper.accessor("label", {
+    columnHelper.accessor("name", {
       header: "Integration Name",
     }),
-
+    columnHelper.accessor("crm", {
+      header: "CRM",
+    }),
+    columnHelper.accessor("status", {
+      header: "Status",
+      cell: ({ row }) => {
+        return statusComponent(row.original?.status);
+      },
+    }),
     columnHelper.accessor("actions", {
       header: "Actions",
       cell: ({ row }) => {
-        return statusComponent(
-          row.original.status,
-          row.original.label,
-          row.original.name,
-          row.original?.id,
-        );
+        return actionsComponent(row.original?.id);
       },
     }),
   ];

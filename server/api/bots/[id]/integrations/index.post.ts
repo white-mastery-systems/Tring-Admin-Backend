@@ -1,8 +1,10 @@
 import { createBotIntegration } from "~/server/utils/db/bot";
 export const zodInsertBotIntegration = z.object({
-  integration: z.string().min(1),
-  campaignId: z.string().min(1),
-  projectId: z.string().min(1),
+  integrationId: z.string().uuid(),
+  campaignId: z.string().optional(),
+  projectId: z.string().optional(),
+  pipelineId: z.string().optional(),
+  pipelineObj: z.any().optional(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -14,7 +16,7 @@ export default defineEventHandler(async (event) => {
   );
   const body = await isValidBodyHandler(event, zodInsertBotIntegration);
   const bot = await createBotIntegration({
-    integration: body.integration,
+    integrationId: body.integrationId,
     botId,
     organizationId,
     metadata: {
