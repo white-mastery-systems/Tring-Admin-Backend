@@ -57,6 +57,17 @@ export default defineEventHandler(async (event) => {
         },
         integrationData: botIntegration?.integration,
       });
+    } else if (botIntegration?.integration?.crm === "sell-do") {
+      const { campaignId, projectId } = botIntegration?.metadata;
+      const apiKey = botIntegration.integration.metadata.apiKey;
+      await createLeadInSellDo(
+        body.note,
+        body.botUser,
+        {},
+        apiKey,
+        projectId,
+        campaignId,
+      );
     }
   });
   return botIntegratsions;
