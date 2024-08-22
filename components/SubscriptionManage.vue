@@ -1,30 +1,30 @@
 <script setup lang="ts">
-const { status, data: usage } = await useLazyFetch("/api/org/usage", {
-  server: false,
-});
-const isPageLoading = computed(() => status.value === "pending");
+  const { status, data: usage } = await useLazyFetch("/api/org/usage", {
+    server: false,
+  });
+  const isPageLoading = computed(() => status.value === "pending");
 
-const usageDetails = computed(() => {
-  if (!usage.value) return;
+  const usageDetails = computed(() => {
+    if (!usage.value) return;
 
-  const extraChats = usage.value.used_quota - usage.value.max_quota;
+    const extraChats = usage.value.used_quota - usage.value.max_quota;
 
-  return {
-    currentPlan: usage.value.plan_code,
-    subscriptionStatus: "active",
-    planSessions: usage.value.max_quota,
-    chatsUsedInPlan:
-      usage.value.used_quota < usage.value.max_quota
-        ? usage.value.used_quota
-        : usage.value.max_quota,
-    chatsAvailableInPlan:
-      usage.value.max_quota < usage.value.used_quota
-        ? 0
-        : usage.value.max_quota - usage.value.used_quota,
-    extraChatsMade: extraChats > 0 ? extraChats : 0,
-    extraChatsCost: extraChats < 0 ? 0 : extraChats * 10,
-  };
-});
+    return {
+      currentPlan: usage.value.plan_code,
+      subscriptionStatus: "active",
+      planSessions: usage.value.max_quota,
+      chatsUsedInPlan:
+        usage.value.used_quota < usage.value.max_quota
+          ? usage.value.used_quota
+          : usage.value.max_quota,
+      chatsAvailableInPlan:
+        usage.value.max_quota < usage.value.used_quota
+          ? 0
+          : usage.value.max_quota - usage.value.used_quota,
+      extraChatsMade: extraChats > 0 ? extraChats : 0,
+      extraChatsCost: extraChats < 0 ? 0 : extraChats * 10,
+    };
+  });
 </script>
 <template>
   <div
@@ -40,7 +40,9 @@ const usageDetails = computed(() => {
         Manage your subscription and billing information
       </div>
     </div>
-    <div class="rounded-lg mt-[30px] bg-[#fffff] w-[97%] self-center field_shadow">
+    <div
+      class="field_shadow mt-[30px] w-[97%] self-center rounded-lg bg-[#fffff]"
+    >
       <div
         class="flex items-center justify-between rounded-t-xl border-b-[1px] border-[#80808036] px-[30px] py-5 text-[18px] font-bold"
       >
@@ -83,7 +85,10 @@ const usageDetails = computed(() => {
         <span
           class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]"
         >
-          {{ usageDetails?.planSessions }}
+          {{
+            Number(usageDetails?.planSessions) +
+            Number(usageDetails?.extraChatsMade)
+          }}
         </span>
       </div>
       <div
@@ -126,9 +131,18 @@ const usageDetails = computed(() => {
         <span
           class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]"
         >
-          {{ usageDetails?.extraChatsCost }}
+          Rs. {{ usageDetails?.extraChatsCost }}
+
+          <!-- ({{
+            Number(usageDetails?.extraChatsMade) /
+            Number(
+              Number(usageDetails?.extraChatsCost) /
+                Number(usageDetails?.extraChatsMade),
+            )
+          }}) -->
         </span>
       </div>
     </div>
   </div>
 </template>
+//TODO Bread crumps for all the pages
