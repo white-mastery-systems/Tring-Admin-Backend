@@ -39,7 +39,7 @@ export const isValidBodyHandler = async <T extends ZodType>(
   event: H3Event,
   validationSchema: T,
 ): Promise<T["_output"]> => {
-  const body = await readValidatedBody(event, validationSchema.safeParse);
+  const body = await readValidatedBody(event, validationSchema.safeParseAsync);
   if (!body.success)
     return sendError(
       event,

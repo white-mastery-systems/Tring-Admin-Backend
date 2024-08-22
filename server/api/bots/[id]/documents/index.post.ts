@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
 
   // Data Validation
   const formData = await readMultipartFormData(event);
+  console.log({ formData });
   if (!formData) {
     return sendError(
       event,
@@ -20,6 +21,7 @@ export default defineEventHandler(async (event) => {
       }),
     );
   }
+  // console.log()
   const body = zodInsertDocument.safeParse({
     name: formData.find(({ name }) => name === "name")?.data.toString()!,
     botId,
@@ -29,7 +31,7 @@ export default defineEventHandler(async (event) => {
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid Document Data",
+        statusMessage: "Invalid Document Data(name)",
         data: body.error.format(),
       }),
     );
@@ -39,7 +41,7 @@ export default defineEventHandler(async (event) => {
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid Document Data",
+        statusMessage: "Invalid Document Data(files)",
       }),
     );
 
@@ -54,8 +56,8 @@ export default defineEventHandler(async (event) => {
 
   const hostname = getRequestHost(event);
   console.log("Document Hostname:", hostname);
-
-  form.append("name", body.data.name);
+  console.log("File name", body.data.name?.replace(/[^a-zA-Z0-9.]/g, ""));
+  form.append("name", body.data.name?.replace(/[^a-zA-Z0-9.]/g, ""));
   form.append("files", file);
   form.append(
     "req",
@@ -69,7 +71,7 @@ export default defineEventHandler(async (event) => {
       callback_url: `https://tring-admin.pripod.com/api/documents/${document.id}`,
     }),
   );
-
+  console.log(conf.llmBaseUrl, "LLMURL");
   $fetch(`/rag/document`, {
     method: "POST",
     baseURL: conf.llmBaseUrl,

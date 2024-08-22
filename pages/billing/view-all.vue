@@ -153,7 +153,6 @@
       amount: "Rs.1999",
       status: "Per Month",
       types: "Intelligence",
-      // benefitContent: 'Advanced tools to take your work to the next level.',
       listBenefit: false,
       benefitList: [
         {
@@ -199,7 +198,6 @@
       amount: "Rs.6999",
       status: "Per Month",
       types: "Super Intelligence",
-      // benefitContent: 'Automation plus enterprise-grade features.',
       listBenefit: false,
       benefitList: [
         {

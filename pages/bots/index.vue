@@ -16,21 +16,39 @@
             <UiDialogHeader>
               <UiDialogTitle>Add a New Bot</UiDialogTitle>
             </UiDialogHeader>
-            <div class="individual-form-align">
-              <label for="frole" class="pb-2 pl-0 font-medium">Bot Name</label>
-              <input
-                type="text"
-                id="frole"
-                v-model="newBotName"
-                name="fname"
-                placeholder="Enter Bot Name"
-              />
-              <UiButton
-                @click="addBot"
-                class="mt-4 w-1/2 self-end bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
-                >Create
-              </UiButton>
-            </div>
+            <UiForm
+              :validation-schema="formSchema"
+              :keep-values="true"
+              :validate-on-mount="false"
+              class="mb-4 space-y-6"
+              @submit="addBot"
+            >
+              <UiFormField v-slot="{ componentField }" name="newBotName">
+                <UiFormItem class="w-full">
+                  <UiFormLabel class="font-bold">Bot Name</UiFormLabel>
+                  <UiFormControl>
+                    <UiInput
+                      v-bind="componentField"
+                      class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
+                      placeholder="Enter Bot Name"
+                      type="text"
+                    />
+                    <UiFormDescription lass="text-xs text-gray-500"
+                      >Enter your unique identifier for Bot.</UiFormDescription
+                    >
+                    <UiFormMessage />
+                  </UiFormControl>
+                </UiFormItem>
+              </UiFormField>
+              <div class="flex w-full items-center justify-end">
+                <UiButton
+                  type="submit"
+                  class="w-1/2 self-end bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
+                >
+                  Create
+                </UiButton>
+              </div>
+            </UiForm>
           </UiDialogContent>
         </UiDialog>
         <span
@@ -77,7 +95,6 @@
           <UiSelectContent>
             <UiSelectItem value="true">Active</UiSelectItem>
             <UiSelectItem value="false">In active</UiSelectItem>
-            <UiSelectItem value="all">All</UiSelectItem>
           </UiSelectContent>
         </UiSelect>
       </div>
@@ -99,25 +116,24 @@
 </template>
 <script setup lang="ts">
   import { createColumnHelper } from "@tanstack/vue-table";
-  // import {
-  //   DropdownMenu,
-  //   DropdownMenuCheckboxItem,
-  //   DropdownMenuContent,
-  //   DropdownMenuTrigger,
-  // } from '@/components/ui/dropdown-menu'
-
   definePageMeta({
     middleware: "admin-only",
   });
+
+  const formSchema = toTypedSchema(
+    z.object({
+      newBotName: z.string().min(2, "Bot Name is requird."),
+    }),
+  );
   const searchBot = ref("");
   const searchBotDebounce = refDebounced(searchBot, 500);
 
   const activeStatus = ref("");
-  // watch(activeStatus, async (newStatus, previousStatus) => {
-  //   console.log({ newStatus });
-  // });
+  watch(activeStatus, async (newStatus, previousStatus) => {
+    console.log({ newStatus });
+  });
   const selectedValue = ref("Today");
-  const newBotName = ref("");
+  // const newBotName = ref("");
 
   const menuList = ref([
     {
@@ -163,27 +179,20 @@
       })),
   });
   const isDataLoading = computed(() => status.value === "pending");
-  watch(status, async (newStatus, previousStatus) => {
-    console.log({ newStatus, previousStatus });
-  });
-  // watch(activeStatus, async (newStatus, previousStatus) => {
-  //   console.log({ newStatus });
-  // });
 
-  const addBot = async () => {
-
-  
-    const bot = await $fetch("/api/bots", {
-      method: "POST",
-      body: { name: newBotName.value },
-      // query: {
-      //   organization_id: "4e606bb3-3264-410f-9a2d-4910f17685e3",
-      // },
-    });
-    return navigateTo({
-      name: "bots-id",
-      params: { id: bot.id },
-    });
+  const addBot = async (value: any) => {
+    try {
+      const bot = await $fetch("/api/bots", {
+        method: "POST",
+        body: { name: value.newBotName },
+      });
+      return navigateTo({
+        name: "bots-id",
+        params: { id: bot.id },
+      });
+    } catch (err: any) {
+      toast.error(err.data.data[0].message);
+    }
   };
 
   const botManagementDetails = async (list: any) => {
@@ -216,24 +225,6 @@
 </script>
 
 <style scoped>
-  .individual-form-align {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: center;
-    height: 150px;
-  }
-
-  .individual-form-align input {
-    background-color: rgba(246, 246, 246, 1);
-    width: 100%;
-    height: 50px;
-    outline: none;
-    border-radius: 10px;
-    padding: 0 20px;
-    /* margin-top: 20px; */
-  }
-
   .bot-manage-main-container {
     padding: 0 25px;
     height: 100%;

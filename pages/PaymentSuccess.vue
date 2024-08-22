@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col justify-center items-center h-[100%] relative">
-    <div class="tring-log-top-align">
+    <div class="absolute top-[20px] left-[30px]">
       <img src="assets\icons\tring_AI_logo.svg" width="80" height="80">
     </div>
     <div class="flex flex-col items-center justify-center p-5 thank-page-align bg-[#FFFFFF] w-[60%] h-[60%]">
@@ -26,13 +26,5 @@
 <style scoped>
 .thank-page-align {
   box-shadow: 0px 2px 24px 0px #0000000D;
-}
-
-.tring-log-top-align {
-  position: absolute;
-  top: 20px;
-  left: 30px;
-  /* width: 100%;
-  padding-top: 50px; */
 }
 </style>
