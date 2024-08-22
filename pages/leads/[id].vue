@@ -5,8 +5,8 @@
   >
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <div v-else class="analytics_leads-main-container">
-    <div class="header-align">
+  <div v-else class="p-[15px]">
+    <div class="flex items-center justify-between pb-[20px]">
       <div class="flex gap-2">
         <div class="flex items-center gap-2">
           <UiButton variant="ghost" size="icon" @click="router.back()">
@@ -170,10 +170,6 @@
   };
 </script>
 <style scoped>
-  .analytics_leads-main-container {
-    padding: 15px;
-  }
-
   .header-align {
     display: flex;
     align-items: center;

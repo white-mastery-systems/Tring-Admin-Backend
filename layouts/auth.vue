@@ -1,9 +1,9 @@
 <!-- layouts\auth.vue -->
 <template>
-  <div class="flex p-[25px] justify-center h-[100vh] overflow-hidden">
-    <div class="flex flex-col justify-center items-center w-[50%]">
+  <div class="flex p-[25px] justify-center h-[100vh] w-full overflow-hidden">
+    <div class="flex flex-col justify-center items-center lg:w-[50%] md:w-[50%] w-full">
       <div class="absolute top-[20px] left-[30px]">
-        <img src="assets\icons\tring_AI_logo.svg" width="80" height="80">
+        <img class="hidden sm:hidden md:hidden lg:hidden xl:block" src="assets\icons\tring_AI_logo.svg" width="80" height="80">
         <div class="flex items-center font-bold text-[15px] gap-2">
           <!-- <RightArrow/>
           <span>Back</span> -->
@@ -11,7 +11,7 @@
       </div>
       <slot />
     </div>
-    <div class="right-card-align relative w-[50%] h-full overflow-hidden rounded-[10px]">
+    <div class="right-card-align relative w-[50%] h-full overflow-hidden rounded-[10px] hidden sm:block">
       <img src="assets\icons\signupImages.svg" class="absolute  w-full h-full object-cover ring-[0px] z-0"></img>
       <div class="font-regular absolute bottom-[70px] left-[70px] text-[#ffff] w-[40%] z-2">
         Welcome to <span class="font-medium text-[16px]">Tring AI</span> your AI-powered telesales partner

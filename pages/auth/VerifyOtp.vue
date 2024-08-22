@@ -13,12 +13,12 @@ const animationProps = {
 </script>
 <template>
   <div class="flex flex-col items-center justify-center h-full w-full">
-    <div class="font-bold text-[#424bd1] w-[80%] px-6 pb-[5px]">
+    <div class="font-bold text-[#424bd1] xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0 pb-[5px]">
       <span>
         OTP Verification
       </span>
     </div>
-    <div class="flex flex-col w-[80%] px-6">
+    <div class="flex flex-col xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0">
       <!-- <div> -->
       <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" class="space-y-2"
         @submit="authHandlers.login">

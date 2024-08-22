@@ -1,4 +1,7 @@
-import { generateLeadInZohoBigin } from "~/server/utils/zoho/modules";
+import {
+  generateContactInZohoBigin,
+  generateLeadInZohoBigin,
+} from "~/server/utils/zoho/modules";
 
 export default defineEventHandler(async (event) => {
   const generateLeadsValidation = z.object({
@@ -18,18 +21,41 @@ export default defineEventHandler(async (event) => {
   let botIntegratsions: any = await listBotIntegrations(botId);
   botIntegratsions?.map(async (botIntegration: any) => {
     if (botIntegration?.integration?.crm === "zoho-bigin") {
+      const name = body?.botUser?.name?.split(" ");
+      let firstName = body?.botUser?.name;
+      let lastName = null;
+      if (name?.length > 1) {
+        firstName = name[0];
+        lastName = name[1];
+      }
+      const generatedContact = await generateContactInZohoBigin({
+        body: {
+          First_Name: firstName,
+          Last_Name: lastName ?? firstName,
+          Email: body?.botUser?.email,
+          Mobile: body?.botUser?.mobile,
+          Title: body?.botUser?.name,
+        },
+        integrationData: botIntegration?.integration,
+        token: botIntegration?.integration?.metadata?.access_token,
+        refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+      });
+      console.log({ generatedContact: JSON.stringify(generatedContact) });
+      console.log(generatedContact?.data[0]?.details?.id, "GOCNTIDI");
       const pipelineObj = botIntegration?.metadata?.pipelineObj;
       await generateLeadInZohoBigin({
         token: botIntegration?.integration?.metadata?.access_token,
+        refreshToken: botIntegration?.integration?.metadata?.refresh_token,
         body: {
           Deal_Name: body?.botUser?.name,
           Sub_Pipeline: pipelineObj?.Sub_Pipeline,
           Stage: pipelineObj?.Stage,
           Pipeline: pipelineObj?.Pipeline,
           Contact_Name: {
-            id: "2034020000000489033",
+            id: generatedContact?.data[0]?.details?.id,
           },
         },
+        integrationData: botIntegration?.integration,
       });
     }
   });

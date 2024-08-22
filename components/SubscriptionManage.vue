@@ -1,30 +1,30 @@
 <script setup lang="ts">
-  const { status, data: usage } = await useLazyFetch("/api/org/usage", {
-    server: false,
-  });
-  const isPageLoading = computed(() => status.value === "pending");
+const { status, data: usage } = await useLazyFetch("/api/org/usage", {
+  server: false,
+});
+const isPageLoading = computed(() => status.value === "pending");
 
-  const usageDetails = computed(() => {
-    if (!usage.value) return;
+const usageDetails = computed(() => {
+  if (!usage.value) return;
 
-    const extraChats = usage.value.used_quota - usage.value.max_quota;
+  const extraChats = usage.value.used_quota - usage.value.max_quota;
 
-    return {
-      currentPlan: usage.value.plan_code,
-      subscriptionStatus: "active",
-      planSessions: usage.value.max_quota,
-      chatsUsedInPlan:
-        usage.value.used_quota < usage.value.max_quota
-          ? usage.value.used_quota
-          : usage.value.max_quota,
-      chatsAvailableInPlan:
-        usage.value.max_quota < usage.value.used_quota
-          ? 0
-          : usage.value.max_quota - usage.value.used_quota,
-      extraChatsMade: extraChats > 0 ? extraChats : 0,
-      extraChatsCost: extraChats < 0 ? 0 : extraChats * 10,
-    };
-  });
+  return {
+    currentPlan: usage.value.plan_code,
+    subscriptionStatus: "active",
+    planSessions: usage.value.max_quota,
+    chatsUsedInPlan:
+      usage.value.used_quota < usage.value.max_quota
+        ? usage.value.used_quota
+        : usage.value.max_quota,
+    chatsAvailableInPlan:
+      usage.value.max_quota < usage.value.used_quota
+        ? 0
+        : usage.value.max_quota - usage.value.used_quota,
+    extraChatsMade: extraChats > 0 ? extraChats : 0,
+    extraChatsCost: extraChats < 0 ? 0 : extraChats * 10,
+  };
+});
 </script>
 <template>
   <div
@@ -40,9 +40,7 @@
         Manage your subscription and billing information
       </div>
     </div>
-    <div
-      class="details-card mt-[30px] w-[97%] self-center rounded-lg bg-[#fffff]"
-    >
+    <div class="rounded-lg mt-[30px] bg-[#fffff] w-[97%] self-center field_shadow">
       <div
         class="flex items-center justify-between rounded-t-xl border-b-[1px] border-[#80808036] px-[30px] py-5 text-[18px] font-bold"
       >
@@ -134,8 +132,3 @@
     </div>
   </div>
 </template>
-<style scoped>
-  .details-card {
-    box-shadow: 0px 2px 24px 0px #0000000d;
-  }
-</style>
