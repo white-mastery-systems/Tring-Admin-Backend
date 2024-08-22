@@ -26,6 +26,7 @@ export default defineEventHandler(async (event) => {
           const result = await getAllPipelinesFromZohoBigin({
             token: data.access_token,
           });
+          
           updateIntegrationById(integrationData.id, {
             ...integrationData.metadata,
             access_token: data.access_token,
