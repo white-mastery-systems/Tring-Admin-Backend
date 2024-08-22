@@ -25,7 +25,7 @@ export function generateLeadInZohoBigin({
   body: any;
   integrationData: any;
 }) {
-  const data = $fetch("https://www.zohoapis.in/bigin/v2/Pipelines", {
+  return $fetch("https://www.zohoapis.in/bigin/v2/Pipelines", {
     method: "POST",
     body: { data: [body] },
     headers: {
@@ -50,7 +50,6 @@ export function generateLeadInZohoBigin({
       });
     }
   });
-  return data;
 }
 
 export function generateContactInZohoBigin({

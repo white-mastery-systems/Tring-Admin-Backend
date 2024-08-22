@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
       console.log({ generatedContact: JSON.stringify(generatedContact) });
       console.log(generatedContact?.data[0]?.details?.id, "GOCNTIDI");
       const pipelineObj = botIntegration?.metadata?.pipelineObj;
-      await generateLeadInZohoBigin({
+      const generatedLead = await generateLeadInZohoBigin({
         token: botIntegration?.integration?.metadata?.access_token,
         refreshToken: botIntegration?.integration?.metadata?.refresh_token,
         body: {
@@ -57,6 +57,7 @@ export default defineEventHandler(async (event) => {
         },
         integrationData: botIntegration?.integration,
       });
+      console.log({ generatedLead: JSON.stringify(generatedLead) });
     } else if (botIntegration?.integration?.crm === "sell-do") {
       const { campaignId, projectId } = botIntegration?.metadata;
       const apiKey = botIntegration.integration.metadata.apiKey;
