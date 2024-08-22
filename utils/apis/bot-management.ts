@@ -87,3 +87,20 @@ export const getBotIntegrations = async (botId: string) => {
   );
   return botIntegrations;
 };
+
+export const deleteBotIntegration = async ({
+  botIntegrationId,
+  botId,
+  onSuccess,
+}: any) => {
+  try {
+    const botIntegrations = await $fetch<SelectBotIntegration>(
+      `/api/bots/${botId}/integrations/${botIntegrationId}`,
+      {
+        method: "DELETE",
+      },
+    );
+    onSuccess();
+    return botIntegrations;
+  } catch (err) {}
+};

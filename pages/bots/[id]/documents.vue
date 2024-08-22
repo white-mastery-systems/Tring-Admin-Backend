@@ -39,7 +39,7 @@
         </div>
       </div> -->
     </div>
-    <p class="pt-2 text-sm text-gray-400">only PDFa</p>
+    <p class="pt-2 text-sm text-gray-400">only PDF</p>
 
     <div class="bot-main-align rounded-lg">
       <div class="list-header-align">
@@ -228,7 +228,7 @@
 
   const singleDocumentDelete = async (list: any) => {
     await deleteDocument(paramId.params.id, list.id);
-   
+
     documents.value = await listDocumentsByBotId(paramId.params.id);
   };
   const singleDocumentDownload = async (list: any) => {

@@ -1,0 +1,95 @@
+export function getAllPipelinesFromZohoBigin({ token }: { token: string }) {
+  try {
+    const data = $fetch(
+      "https://www.zohoapis.in/bigin/v2/Pipelines?fields=Sub_Pipeline,Pipeline,Stage",
+      {
+        headers: {
+          Authorization: `Zoho-oauthtoken ${token}`,
+        },
+      },
+    );
+    return data;
+  } catch (err) {
+    console.log("MESS", err.data);
+  }
+}
+
+export function generateLeadInZohoBigin({
+  token,
+  refreshToken,
+  body,
+  integrationData,
+}: {
+  token: string;
+  refreshToken: String;
+  body: any;
+  integrationData: any;
+}) {
+  const data = $fetch("https://www.zohoapis.in/bigin/v2/Pipelines", {
+    method: "POST",
+    body: { data: [body] },
+    headers: {
+      Authorization: `Zoho-oauthtoken ${token}`,
+    },
+  }).catch((err) => {
+    if (!refreshToken) return;
+    if (err.status === 401) {
+      regenearateTokenWithRefreshToken({
+        refreshToken: refreshToken,
+      }).then(async (data: any) => {
+        updateIntegrationById(integrationData.id, {
+          ...integrationData.metadata,
+          access_token: data?.access_token,
+        });
+        return generateLeadInZohoBigin({
+          token: data?.access_token,
+          refreshToken: "",
+          body: body,
+          integrationData: integrationData,
+        });
+      });
+    }
+  });
+  return data;
+}
+
+export function generateContactInZohoBigin({
+  token,
+  refreshToken,
+  body,
+  integrationData,
+}: {
+  token: string;
+  refreshToken: String;
+  body: any;
+  integrationData: any;
+}) {
+  console.log({ body });
+  return $fetch("https://www.zohoapis.in/bigin/v2/Contacts", {
+    method: "POST",
+    body: { data: [body] },
+    headers: {
+      Authorization: `Zoho-oauthtoken ${token}`,
+    },
+  }).catch((err) => {
+    console.log("err", JSON.stringify(err.data));
+    if (!refreshToken) return;
+    if (err.status === 401) {
+      regenearateTokenWithRefreshToken({
+        refreshToken: refreshToken,
+      }).then(async (data: any) => {
+        updateIntegrationById(integrationData.id, {
+          ...integrationData.metadata,
+          access_token: data?.access_token,
+        });
+        return generateContactInZohoBigin({
+          token: data?.access_token,
+          refreshToken: "",
+          body: body,
+          integrationData: integrationData,
+        });
+      });
+    }
+  });
+  return data;
+}

@@ -1,30 +1,30 @@
 <script setup lang="ts">
-  const { status, data: usage } = await useLazyFetch("/api/org/usage", {
-    server: false,
-  });
-  const isPageLoading = computed(() => status.value === "pending");
+const { status, data: usage } = await useLazyFetch("/api/org/usage", {
+  server: false,
+});
+const isPageLoading = computed(() => status.value === "pending");
 
-  const usageDetails = computed(() => {
-    if (!usage.value) return;
+const usageDetails = computed(() => {
+  if (!usage.value) return;
 
-    const extraChats = usage.value.used_quota - usage.value.max_quota;
+  const extraChats = usage.value.used_quota - usage.value.max_quota;
 
-    return {
-      currentPlan: usage.value.plan_code,
-      subscriptionStatus: "active",
-      planSessions: usage.value.max_quota,
-      chatsUsedInPlan:
-        usage.value.used_quota < usage.value.max_quota
-          ? usage.value.used_quota
-          : usage.value.max_quota,
-      chatsAvailableInPlan:
-        usage.value.max_quota < usage.value.used_quota
-          ? 0
-          : usage.value.max_quota - usage.value.used_quota,
-      extraChatsMade: extraChats > 0 ? extraChats : 0,
-      extraChatsCost: extraChats < 0 ? 0 : extraChats * 10,
-    };
-  });
+  return {
+    currentPlan: usage.value.plan_code,
+    subscriptionStatus: "active",
+    planSessions: usage.value.max_quota,
+    chatsUsedInPlan:
+      usage.value.used_quota < usage.value.max_quota
+        ? usage.value.used_quota
+        : usage.value.max_quota,
+    chatsAvailableInPlan:
+      usage.value.max_quota < usage.value.used_quota
+        ? 0
+        : usage.value.max_quota - usage.value.used_quota,
+    extraChatsMade: extraChats > 0 ? extraChats : 0,
+    extraChatsCost: extraChats < 0 ? 0 : extraChats * 10,
+  };
+});
 </script>
 <template>
   <div
@@ -34,15 +34,15 @@
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
   <div v-else class="flex flex-col justify-center">
-    <div class="header-align px-2">
+    <div class="h-[70px] border-b-[1px] border-[#80808036] px-2 px-6 py-[3px]">
       <div class="text-[20px] font-bold">Billing</div>
       <div class="text-[12px]">
         Manage your subscription and billing information
       </div>
     </div>
-    <div class="details-card rounded-lg">
+    <div class="rounded-lg mt-[30px] bg-[#fffff] w-[97%] self-center field_shadow">
       <div
-        class="content-align billing-table-header-align flex items-center justify-between rounded-t-xl text-[18px] font-bold"
+        class="flex items-center justify-between rounded-t-xl border-b-[1px] border-[#80808036] px-[30px] py-5 text-[18px] font-bold"
       >
         <span> Subscription Details </span>
 
@@ -54,73 +54,77 @@
           >
         </UiButton>
       </div>
-      <div class="list-content-align flex items-center justify-between gap-3">
+      <div class="flex items-center justify-between gap-3 px-[30px] py-5">
         <span class="font-medium"> Current plan </span>
-        <div class="flex w-[160px] items-center justify-center">
+        <div class="flex min-w-[80px] items-center justify-center">
           <span
-            class="creator-chip rounded-[11px] text-[12px] font-medium lowercase"
+            class="rounded-[11px] bg-[#d9dbe6] px-2.5 py-[3px] text-[12px] font-medium lowercase text-[#00000080]"
           >
             {{ usage?.plan_code }}
           </span>
         </div>
       </div>
       <div
-        class="list-content-align flex items-center justify-between gap-3 font-medium"
+        class="flex items-center justify-between gap-3 px-[30px] py-5 font-medium"
       >
         <span> Subscription status </span>
-        <div class="flex w-[160px] items-center justify-center">
-          <span class="active-chip rounded-[11px] text-[12px]"> active </span>
+        <div class="flex min-w-[80px] items-center justify-center">
+          <span
+            class="rounded-[11px] bg-[#3cb3714d] px-2.5 py-[3px] text-[12px] text-[#008026ba]"
+          >
+            active
+          </span>
         </div>
       </div>
       <div
-        class="list-content-align flex items-center justify-between gap-3 font-medium"
+        class="flex items-center justify-between gap-3 px-[30px] py-5 font-medium"
       >
         <span> Total chat sessions used </span>
         <span
-          class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
+          class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]"
         >
           {{ usageDetails?.planSessions }}
         </span>
       </div>
       <div
-        class="list-content-align flex items-center justify-between gap-3 rounded-b-lg font-medium"
+        class="flex items-center justify-between gap-3 rounded-b-lg px-[30px] py-5 font-medium"
       >
-        <span>Chat sessions included in plan</span>
+        <span>Chat sessions included in your plan</span>
         <span
-          class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
+          class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]"
         >
           {{ usageDetails?.chatsUsedInPlan }}
         </span>
       </div>
 
       <div
-        class="list-content-align flex items-center justify-between gap-3 rounded-b-lg font-medium"
+        class="flex items-center justify-between gap-3 rounded-b-lg px-[30px] py-5 font-medium"
       >
         <span> Balance chat sessions available in your plan </span>
         <span
-          class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
+          class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]"
         >
           {{ usageDetails?.chatsAvailableInPlan }}
         </span>
       </div>
 
       <div
-        class="list-content-align flex items-center justify-between gap-3 rounded-b-lg font-medium"
+        class="flex items-center justify-between gap-3 rounded-b-lg px-[30px] py-5 font-medium"
       >
-        <span> Extra chat sessions </span>
+        <span> Extra chat sessions used</span>
         <span
-          class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
+          class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]"
         >
           {{ usageDetails?.extraChatsMade }}
         </span>
       </div>
 
       <div
-        class="list-content-align flex items-center justify-between gap-3 rounded-b-lg font-medium"
+        class="flex items-center justify-between gap-3 rounded-b-lg px-[30px] py-5 font-medium"
       >
         <span> Extra chat session billing </span>
         <span
-          class="flex w-[160px] items-center justify-center rounded-xl text-[15px]"
+          class="flex min-w-[80px] items-center justify-center rounded-xl text-[15px]"
         >
           {{ usageDetails?.extraChatsCost }}
         </span>
@@ -128,48 +132,3 @@
     </div>
   </div>
 </template>
-<style scoped>
-  .header-align {
-    height: 70px;
-    padding: 4px 25px;
-    border-bottom: 1px solid rgb(128, 128, 128, 0.21);
-  }
-
-  .billing-table-header-align {
-    border-bottom: 1px solid rgb(128, 128, 128, 0.21);
-  }
-
-  .details-card {
-    margin-top: 30px;
-    /* border: 1px solid rgb(128, 128, 128, 0.5); */
-    background-color: white;
-    box-shadow: 0px 2px 24px 0px #0000000d;
-    width: 97%;
-    align-self: center;
-  }
-
-  .content-align {
-    /* border-bottom: 1px solid rgb(128, 128, 128, 0.5); */
-    padding: 20px 30px;
-  }
-
-  .list-content-align {
-    padding: 20px 30px 20px 30px;
-  }
-
-  .content-align:last-child {
-    border-bottom: none;
-  }
-
-  .creator-chip {
-    padding: 3px 10px;
-    color: rgba(0, 0, 0, 0.5);
-    background-color: #d9dbe6;
-  }
-
-  .active-chip {
-    padding: 3px 10px;
-    color: rgb(0, 128, 38, 0.73);
-    background: rgb(60, 179, 113, 0.3);
-  }
-</style>

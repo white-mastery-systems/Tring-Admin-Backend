@@ -9,7 +9,8 @@ const formSchema = toTypedSchema(
     name: z.string().min(1, 'Company Name is required'),
     industry: z.string().min(2, "Industry must be provided."),
     avgTraffic: z.string().min(2, 'Monthly Website Traffic must be provided.'),
-    employeeCount: z.string().min(2, 'No. of Employees must be provided')
+    employeeCount: z.string().min(2, 'No. of Employees must be provided'),
+    otherRole: z.string().optional().default(""),
   }).refine(
     (data: any) => {
       if (data.industry.toLowerCase() === "other") {
@@ -58,11 +59,12 @@ const onSubmit = async (value: any) => {
 </script>
 <template>
   <div class="flex flex-col items-center justify-center w-full h-full">
-    <div class="text-[#424bd1] w-[80%] px-[21px] pb-[20px] flex items-center gap-1 font-bold">
+    <div
+      class="text-[#424bd1] xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-[21px] px-0 pb-[20px] flex items-center gap-1 font-bold">
       <RightArrow />
       <span> Company Details </span>
     </div>
-    <div class="flex flex-col w-[80%] px-6">
+    <div class="flex flex-col xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0">
       <UiForm :validation-schema="formSchema" :keep-values="true" :initial-values="defaultFormValues"
         :validate-on-mount="false" @submit="onSubmit" class="space-y-5">
         <UiFormField v-slot="{ componentField }" name="name">
