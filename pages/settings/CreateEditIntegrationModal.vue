@@ -8,8 +8,9 @@
   watch(integrationModalState, (newIntegrationState) => {
     console.log({ newIntegrationState });
   });
+  console.log(window.location.origin, "LOCATION");
   async function handleConnect(values: any) {
-    let url = `http://localhost:3000/settings/${values.crm}`;
+    let url = `${window.location.origin}/settings/${values.crm}`;
     // let url = "https://app.tringlabs.ai/settings";
     let scope = "";
     if (values.crm === "zoho-crm") {

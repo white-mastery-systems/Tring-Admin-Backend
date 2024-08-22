@@ -1,11 +1,11 @@
 <template>
-  <div class="flex flex-col items-center w-[250px] h-[100vh] bg-[#ffffff] gap-5">
+  <div class="flex flex-col items-center justify-center w-[250px] h-[100vh] bg-[#ffffff] gap-5">
     <div class="flex h-[20vh]">
       <img src="assets\icons\tring_AI_logo.svg" width="80" height="80" />
     </div>
     <!-- <div> -->
     <NuxtLink to="/"
-      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] default-align"
+      class="flex items-center w-[90%] sm:w-[90%] xl:w-[90%] md:w-[80%] md:w-[80%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] field_shadow"
       :class="[route.path === '/' ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]',]">
       <span>
         <!-- <img v-if="route.path === '/'" src=" assets\icons\activeHome.svg" width="22" height="22" />
@@ -18,7 +18,7 @@
       <span class="text-[14px]">Dashboard</span>
     </NuxtLink>
     <NuxtLink to="/leads"
-      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] default-align"
+      class="flex items-center w-[90%] sm:w-[90%] xl:w-[90%] md:w-[80%] md:w-[80%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] field_shadow"
       :class="[
         route.path?.includes('/leads') ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]',
       ]">
@@ -32,7 +32,7 @@
       <span class="text-[14px]">Leads</span>
     </NuxtLink>
     <NuxtLink to="/bots"
-      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] default-align"
+      class="flex items-center w-[90%] sm:w-[90%] xl:w-[90%] md:w-[80%] md:w-[80%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] field_shadow"
       :class="[route.path?.includes('/bots') ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]']">
       <span>
         <img v-if="route.path?.includes('/bots')" src=" assets\icons\bot_man_active.svg" width="22" height="22" />
@@ -41,7 +41,7 @@
       <span class="text-[14px]">Bot Management</span>
     </NuxtLink>
     <NuxtLink to="/settings"
-      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] default-align"
+      class="flex items-center w-[90%] sm:w-[90%] xl:w-[90%] md:w-[80%] md:w-[80%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] field_shadow"
       :class="[
         route.path?.includes('settings') ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]',
       ]">
@@ -52,7 +52,7 @@
       <span class="text-[14px]">Settings</span>
     </NuxtLink>
     <NuxtLink to="/billing"
-      class="flex items-center w-[90%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] default-align"
+      class="flex items-center w-[90%] sm:w-[90%] xl:w-[90%] md:w-[80%] md:w-[80%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] field_shadow"
       :class="[
         route.path?.includes('/billing') ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]',
       ]">
@@ -79,13 +79,6 @@ import { HomeIcon, SettingsIcon, WalletIcon } from "lucide-vue-next";
 
 const route = useRoute();
 const modalOpen = ref(false);
-onMounted(async () => {
-  console.log(route.path, "route");
-  // if (route.path === '/') {
-  //   // await navigateTo('/dashBoard')
-  // }
-});
-
 const confirmModel = () => {
   modalOpen.value = true;
 };
@@ -95,8 +88,3 @@ const handleLogout = () => {
   modalOpen.value = false;
 };
 </script>
-<style scoped>
-.default-align {
-  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-}
-</style>

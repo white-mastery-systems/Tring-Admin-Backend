@@ -2,7 +2,6 @@
   const file = defineModel<HTMLInputElement["files"] | string>();
 
   defineProps<{ accept?: string }>();
-
   const fileLen = computed(() => file.value?.length || 0);
   const fileIcon = computed(() =>
     fileLen.value > 1
@@ -20,10 +19,11 @@
   const _ = ref();
   watch(
     () => file.value,
-    () => {
-      console.log(file.value?.length, "file.value");
-      if (typeof file.value !== "string")
-        _.value = URL.createObjectURL(file.value[0]);
+    (newFile) => {
+      if (typeof file.value !== "string"){
+        console.log(newFile)
+        _.value = URL.createObjectURL(newFile);
+      }
       else _.value = file.value;
     },
   );
