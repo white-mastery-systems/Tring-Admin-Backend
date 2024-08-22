@@ -25,6 +25,7 @@ export function generateLeadInZohoBigin({
   body: any;
   integrationData: any;
 }) {
+  console.log({ body: JSON.stringify(body) });
   return $fetch("https://www.zohoapis.in/bigin/v2/Pipelines", {
     method: "POST",
     body: { data: [body] },
@@ -32,6 +33,7 @@ export function generateLeadInZohoBigin({
       Authorization: `Zoho-oauthtoken ${token}`,
     },
   }).catch((err) => {
+    console.log({ err: err.data, errds: err.status });
     if (!refreshToken) return;
     if (err.status === 401) {
       regenearateTokenWithRefreshToken({
