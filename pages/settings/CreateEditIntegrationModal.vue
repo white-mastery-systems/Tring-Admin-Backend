@@ -154,3 +154,4 @@
     </UiDialogContent>
   </UiDialog>
 </template>
+<!-- https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=ZohoBigin.settings.ALL,ZohoBigin.modules.ALL&redirect_uri=https://tring-admin.pripod.com/settings/zoho-bigin&prompt=consent&access_type=offline -->
