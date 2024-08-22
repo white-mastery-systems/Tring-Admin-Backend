@@ -38,6 +38,6 @@ export default defineEventHandler(async (event) => {
   );
   setResponseStatus(event, 201);
 
-  if (user.organizationId) return "/dashboard";
+  if (user.organizationId) return "/";
   return "/auth/onboarding/1";
 });
