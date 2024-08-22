@@ -46,11 +46,6 @@
       </UiTabsContent>
       <UiTabsContent value="Campaign info">
         <div class="client_info_align gap-2">
-          <<<<<<< HEAD
-          <span v-for="[key, value] in details[1]" class="font-medium uppercase"
-            >{{ key }}: <span class="ml-2 font-bold">{{ value }}</span></span
-          >
-          =======
           <span
             v-for="[key, value] in details[1]"
             class="max-w-full font-medium uppercase"
@@ -59,7 +54,6 @@
               value
             }}</span></span
           >
-          >>>>>>> cae1c0cd6a01d6407f3664901f4664dc1b3d79b0
         </div>
       </UiTabsContent>
     </UiTabs>
