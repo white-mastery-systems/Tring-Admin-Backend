@@ -33,7 +33,7 @@ export function generateLeadInZohoBigin({
       Authorization: `Zoho-oauthtoken ${token}`,
     },
   }).catch((err) => {
-    console.log({ err: err.data, errds: err.status });
+    console.log({ err: JSON.stringify(err.data), errds: err.status });
     if (!refreshToken) return;
     if (err.status === 401) {
       regenearateTokenWithRefreshToken({
