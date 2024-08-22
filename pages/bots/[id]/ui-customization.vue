@@ -1,17 +1,11 @@
 <template>
-  <div>
-    <div class="mx-5 mb-5 mt-2 flex items-center gap-2">
-      <UiButton variant="ghost" size="icon" @click="router.back()">
-        <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
-      </UiButton>
-      <UiLabel class="ml-1 text-[20px] font-bold">UI Customization</UiLabel>
-    </div>
-    <!-- <div class="flex flex-row"> -->
+  <page title="UI Customization" :description="false" :disableSelector="true" :disable-back-button="false">
     <div>
       <UiForm :validation-schema="formSchema" :keep-values="true" :initial-values="defaultFormValues"
         :validate-on-mount="false" @submit="uiUpdate" class="space-y-5">
 
-        <div class="form-align flex flex-col p-5 w-[60%] overflow-y-auto gap-[13px] field_shadow ml-11">
+        <div
+          class="form-align flex flex-col p-5 w-full sm:w-full md:w-full lg:w-[60%] xl:w-[60%] overflow-y-auto gap-[13px] field_shadow ml-0 sm:ml-0 md:ml-0 lg:ml-11 xl:ml-11">
           <UiFormField v-slot="{ value, componentField }" name="logo">
             <UiFormItem v-auto-animate="animationProps" class="w-full flex flex-col items-start">
               <UiLabel class="pb-2 text-lg font-medium">Logo</UiLabel>
@@ -63,7 +57,8 @@
                     </UiSelect>
                   </UiFormControl>
                   <UiFormMessage />
-                  <span class="lg:text-xs md:text-[8px] text-gray-500">Notification sound for chat window</span>
+                  <span class="text-[8px] sm:text-[6px] md:text-[8px] lg:text-xs xl:text-xs text-gray-500">Notification
+                    sound for chat window</span>
                 </UiFormItem>
               </UiFormField>
             </div>
@@ -84,7 +79,9 @@
                     </UiSelect>
                   </UiFormControl>
                   <UiFormMessage />
-                  <span class="lg:text-xs md:text-[8px] text-gray-500">Position for chat bubble</span>
+                  <span class="text-[10px] sm:text-[6px] md:text-[8px] lg:text-xs xl:text-xs text-gray-500">Position for
+                    chat
+                    bubble</span>
                 </UiFormItem>
               </UiFormField>
             </div>
@@ -139,9 +136,8 @@
           </div>
         </div>
       </UiForm>
-
     </div>
-  </div>
+  </page>
   <!-- </div> -->
   <!-- <div class="pl-2 pr-10 pt-10">
       <UiLabel class="content-center items-center">Preview Widget</UiLabel>

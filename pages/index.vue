@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard-main-container py-0 px-[25px] ">
+  <div class="py-0 px-[25px] ">
     <div class="flex items-center justify-between pb-[20px]">
       <span class="text-[23px] font-bold">Dashboard</span>
       <div class="flex items-center gap-3">
@@ -28,6 +28,7 @@
     <div>
       <div class="grid gap-6
          grid-cols-1
+         md:grid-cols-2
          xs:grid-cols-2
          lg:grid-cols-4
          ">
@@ -36,8 +37,8 @@
             <BotIcon />
           </div>
           <div>
-            <div class="text-gray-500 font-semibold text-sm mb-1">Chat Bots</div>
-            <div class="font-extrabold text-2xl text-black">{{ analyticsData?.bots }}</div>
+            <div class="text-gray-500 font-semibold text-[16px] mb-1">Chat Bots</div>
+            <div class="font-extrabold text-3xl text-black">{{ analyticsData?.bots }}</div>
           </div>
         </div>
 
@@ -46,8 +47,8 @@
             <ChatSession />
           </div>
           <div>
-            <div class="text-gray-500 font-semibold text-sm mb-1">Chat Sessions</div>
-            <div class="font-extrabold text-2xl text-black">{{ analyticsData?.chats }}</div>
+            <div class="text-gray-500 font-semibold text-[16px] mb-1">Chat Sessions</div>
+            <div class="font-extrabold  text-3xl text-black">{{ analyticsData?.chats }}</div>
           </div>
         </div>
 
@@ -56,8 +57,8 @@
             <Leads />
           </div>
           <div>
-            <div class="text-gray-500 font-semibold text-sm mb-1">Chat Leads</div>
-            <div class="font-extrabold text-2xl text-black">{{ analyticsData?.leads }}</div>
+            <div class="text-gray-500 font-semibold text-[16px] mb-1">Chat Leads</div>
+            <div class="font-extrabold text-3xl text-black">{{ analyticsData?.leads }}</div>
           </div>
         </div>
 
@@ -66,8 +67,8 @@
             <SingleUser />
           </div>
           <div>
-            <div class="text-gray-500 font-semibold text-sm mb-1">Unique Sessions</div>
-            <div class="font-extrabold text-2xl text-black">{{ analyticsData?.users }}</div>
+            <div class="text-gray-500 font-semibold text-[16px] mb-1">Unique Sessions</div>
+            <div class="font-extrabold text-3xl text-black">{{ analyticsData?.users }}</div>
           </div>
         </div>
       </div>
@@ -77,13 +78,12 @@
           <div v-if="analyticsData?.bots > 0" class="w-full relative place-content-center rounded-md bg-white">
             <UiLineChart :data="lineGraphData" index="month" :categories="['Leads Created', 'Sessions Created']"
               :colors="['#424bd1', '#ffbc42']" :show-grid-line="true" :show-tooltip="true" :margin="{ right: 20 }"
-              :y-formatter="
-                (tick: any) => {
+              :y-formatter="(tick: any) => {
                   return typeof tick === 'number'
                     ? `${new Intl.NumberFormat('us').format(tick).toString()}`
                     : '';
                 }
-              " class="h-[380px] w-full" />
+                " class="h-[380px] w-full" />
           </div>
           <!-- <div
             class="voice-bot-align relative place-content-center rounded-md bg-white shadow"
@@ -114,138 +114,134 @@
   </div>
 </template>
 <script setup lang="ts">
-  import Leads from "~/components/icons/Leads.vue";
+import Leads from "~/components/icons/Leads.vue";
 
-  definePageMeta({
-    middleware: "user",
-  });
+definePageMeta({
+  middleware: "user",
+});
 
-  const selectedValue = ref("Today");
+const selectedValue = ref("Today");
 
-  const getButtonName = ref("Get Started");
+const getButtonName = ref("Get Started");
 
-  const analyticsData = ref();
+const analyticsData = ref();
 
-  onMounted(async () => {
-    analyticsData.value = await getAnalyticsData();
+onMounted(async () => {
+  analyticsData.value = await getAnalyticsData();
 
-    // analyticsData.value.bots = 0;
-  });
+  // analyticsData.value.bots = 0;
+});
 
-  const getStarted = () => {
-    if (analyticsData.value.bots === 0) {
-      navigateTo("/bots");
-    }
-  };
-
-  interface MonthAbbreviations {
-    [key: string]: string;
+const getStarted = () => {
+  if (analyticsData.value.bots === 0) {
+    navigateTo("/bots");
   }
+};
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+interface MonthAbbreviations {
+  [key: string]: string;
+}
 
-  // Define a mapping of month abbreviations to full names for comparison
-  const monthAbbreviations: MonthAbbreviations = {
-    Jan: "January",
-    Feb: "February",
-    Mar: "March",
-    Apr: "April",
-    May: "May",
-    Jun: "June",
-    Jul: "July",
-    Aug: "August",
-    Sep: "September",
-    Oct: "October",
-    Nov: "November",
-    Dec: "December",
-  };
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
-  // Initialize an empty array for the final data
-  // console.log(
-  const leadsData = computed(() => analyticsData.value?.graph.leads);
-  const leadGraphData = computed(() =>
-    months.map((month) => {
-      // Find the corresponding API data for the current month and year
-      const apiEntry = leadsData.value?.find((entry: any) => {
-        const [apiMonthAbbr, apiYear] = entry.month.split(" ");
-        console.log(apiMonthAbbr, apiYear, "API");
-        const apiMonthFull =
-          monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
-        return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
-      });
+// Define a mapping of month abbreviations to full names for comparison
+const monthAbbreviations: MonthAbbreviations = {
+  Jan: "January",
+  Feb: "February",
+  Mar: "March",
+  Apr: "April",
+  May: "May",
+  Jun: "June",
+  Jul: "July",
+  Aug: "August",
+  Sep: "September",
+  Oct: "October",
+  Nov: "November",
+  Dec: "December",
+};
 
-      // Extract the year from the first entry of the API data, or use a default value
-      const year =
-        leadsData.value?.length > 0
-          ? leadsData.value[0].month.split(" ")[1]
-          : "2024";
+// Initialize an empty array for the final data
+// console.log(
+const leadsData = computed(() => analyticsData.value?.graph.leads);
+const leadGraphData = computed(() =>
+  months.map((month) => {
+    // Find the corresponding API data for the current month and year
+    const apiEntry = leadsData.value?.find((entry: any) => {
+      const [apiMonthAbbr, apiYear] = entry.month.split(" ");
+      console.log(apiMonthAbbr, apiYear, "API");
+      const apiMonthFull =
+        monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
+      return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
+    });
 
-      console.log(year, apiEntry);
+    // Extract the year from the first entry of the API data, or use a default value
+    const year =
+      leadsData.value?.length > 0
+        ? leadsData.value[0].month.split(" ")[1]
+        : "2024";
 
-      return {
-        month: `${month} ${year}`,
-        "Leads Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
-      };
-    }),
-  );
+    console.log(year, apiEntry);
 
-  const sessionsData = computed(() => analyticsData.value?.graph.sessions);
-  const sessionGraphData = computed(() =>
-    months.map((month) => {
-      // Find the corresponding API data for the current month and year
-      const apiEntry = sessionsData.value?.find((entry: any) => {
-        const [apiMonthAbbr, apiYear] = entry.month.split(" ");
-        console.log(apiMonthAbbr, apiYear, "API");
-        const apiMonthFull =
-          monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
-        return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
-      });
+    return {
+      month: `${month} ${year}`,
+      "Leads Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
+    };
+  }),
+);
 
-      // Extract the year from the first entry of the API data, or use a default value
-      const year =
-        leadsData.value?.length > 0
-          ? leadsData.value[0].month.split(" ")[1]
-          : "2024";
+const sessionsData = computed(() => analyticsData.value?.graph.sessions);
+const sessionGraphData = computed(() =>
+  months.map((month) => {
+    // Find the corresponding API data for the current month and year
+    const apiEntry = sessionsData.value?.find((entry: any) => {
+      const [apiMonthAbbr, apiYear] = entry.month.split(" ");
+      console.log(apiMonthAbbr, apiYear, "API");
+      const apiMonthFull =
+        monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
+      return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
+    });
 
-      console.log(year, apiEntry);
+    // Extract the year from the first entry of the API data, or use a default value
+    const year =
+      leadsData.value?.length > 0
+        ? leadsData.value[0].month.split(" ")[1]
+        : "2024";
 
-      return {
-        month: `${month} ${year}`,
-        "Sessions Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
-      };
-    }),
-  );
-  const lineGraphData = computed(() =>
-    sessionGraphData.value.map((s) => {
-      const lead = leadGraphData.value.find((l) => l.month === s.month);
-      return {
-        month: s.month,
-        "Leads Created": lead ? lead["Leads Created"] : 0,
-        "Sessions Created": s["Sessions Created"],
-      };
-    }),
-  );
-  // );
+    console.log(year, apiEntry);
+
+    return {
+      month: `${month} ${year}`,
+      "Sessions Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
+    };
+  }),
+);
+const lineGraphData = computed(() =>
+  sessionGraphData.value.map((s) => {
+    const lead = leadGraphData.value.find((l) => l.month === s.month);
+    return {
+      month: s.month,
+      "Leads Created": lead ? lead["Leads Created"] : 0,
+      "Sessions Created": s["Sessions Created"],
+    };
+  }),
+);
+// );
 </script>
 <style scoped>
-  .focus\:ring-offset-2:focus {
-    --tw-ring-offset-width: none;
-  }
-
-  .dashboard-main-container {
-    height: calc(100vh - 30px);
-  }
+.focus\:ring-offset-2:focus {
+  --tw-ring-offset-width: none;
+}
 </style>

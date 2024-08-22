@@ -75,7 +75,7 @@ const columns = [
 ];
 </script>
 <template>
-  <Page title="Intent Mangement" :disableSelector="true">
+  <Page title="Intent Mangement" :description="false" :disableSelector="true" :disable-back-button="false">
     <div class="mb-4 flex items-center justify-end">
       <UiButton class="bg-yellow-500" type="button" @click="showIntentDialog = true">Add Intents</UiButton>
 

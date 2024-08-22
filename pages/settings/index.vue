@@ -1,26 +1,6 @@
 <template>
-  <Page title="Settings" :disable-back-button="true" :disable-elevation="true">
-    <UiTabs default-value="integration" class="w-[400px]">
-      <UiTabsList class="">
-        <UiTabsTrigger value="integration"> Integrations </UiTabsTrigger>
-      </UiTabsList>
-      <UiTabsContent value="integration"> </UiTabsContent>
-    </UiTabs>
-    <template #actionButtons>
-      <UiButton color="primary" @click="integrationModalState.open = true">
-        Add Integration
-      </UiButton>
-    </template>
-    <DataTable
-      :columns="columns"
-      :data="integrationsData"
-      :page-size="8"
-      :is-loading="false"
-    />
-    <CreateEditIntegrationModal
-      v-model="integrationModalState"
-      @success="onSuccess()"
-    />
+  <Page title="Settings" :description="false" :disable-back-button="true">
+    <DataTable :columns="columns" :data="integrations" :page-size="8" :is-loading="false" />
   </Page>
   <ConfirmationModal
     v-model:open="deleteIntegrationState.open"

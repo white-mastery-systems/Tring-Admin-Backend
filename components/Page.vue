@@ -5,11 +5,11 @@
         <UiButton v-if="!props.disableBackButton" variant="outline" size="icon" @click="handleBackButtonClick">
           <ChevronLeft className="h-4 w-4" />
         </UiButton>
-        <div class="flex items-center gap-2">
+        <div>
           <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
             {{ title }}
           </h3>
-          <span class="text-sm text-gray-600">{{ subtitle }}</span>
+          <h4 v-if="description" className="text-[12px]">Manage your subscription and billing information</h4>
         </div>
       </div>
       <!-- <template v-for="(comp, index) in actionButtons" :key="index" :is="comp">
@@ -21,7 +21,7 @@
     </div>
     <LazyUiSelectSeparator v-if="!props.disableSelector" class="" />
     <div :class="[
-      props.disableElevation ? '' : 'mt-4 rounded-md bg-white p-6 shadow-md',
+      props.disableElevation ? '' : 'mt-4 rounded-md bg-white p-1 sm:p-1 md:p-6 lg:p-6 xl:p-6 shadow-md overflow-scroll',
     ]">
       <slot></slot>
     </div>
@@ -33,6 +33,7 @@ import { ChevronLeft } from "lucide-vue-next";
 const props = withDefaults(
   defineProps<{
     title: string;
+    description: boolean,
     wrapInPage: boolean;
     disableElevation?: boolean;
     disablePadding?: boolean;

@@ -1,6 +1,6 @@
 <template>
   <div class="bot-manage-main-container">
-    <Page title="Call Bot Leads" :disable-back-button="true">
+    <Page title="Call Bot Leads" :description="false" :disable-back-button="true">
       <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" />
     </Page>
   </div>

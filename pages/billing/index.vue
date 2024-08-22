@@ -1,22 +1,6 @@
 <template>
   <div>
     <div class="billing-main-container h-full">
-      <!-- <div class="header-align">
-        <div class="flex items-center gap-2">
-          <div class="flex items-center gap-2">
-            <span class="text-[20px] font-bold">Billing</span>
-          </div>
-          <span class="text-[16px] text-lg font-bold"></span>
-        </div>
-        <div class="flex items-center space-x-4">
-          <span :class="true ? 'select_btn' : 'btn_align'">
-            <button>Monthly</button>
-          </span>
-          <span class="btn_align">
-            <button class="font-medium text-black">Yearly</button>
-          </span>
-        </div>
-      </div> -->
       <div>
         <SubscriptionManage />
       </div>

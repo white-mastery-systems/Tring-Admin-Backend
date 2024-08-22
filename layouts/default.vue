@@ -1,10 +1,10 @@
 <template>
   <div class="relavtive default-main-container">
     <div
-      class="lg:flex md:flex border-r border-[#8a8a8a1a] flex-col items-center gap-[20px] overflow-auto w-[270px] hidden">
+      class="hidden md:flex xl:felx lg:flex border-r border-[#8a8a8a1a] flex-col items-center gap-[20px] overflow-auto w-[270px]">
       <NavigationDrawer />
     </div>
-    <!-- <div>
+    <div class="block sm:block md:hidden lg:hidden xl:hidden">
       <navigationSheet />
     </div> -->
     <!-- :style="{ width: (['Sign'].includes(routeName)) ? '100%' : '86%' }" -->

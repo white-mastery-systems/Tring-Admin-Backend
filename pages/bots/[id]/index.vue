@@ -1,23 +1,12 @@
 <template>
-  <div class="py-[7px] px-[25px]">
-    <div class="header-align flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <UiButton variant="ghost" size="icon" @click="handleGoBack">
-          <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
-        </UiButton>
-        <span class="text-[20px] font-bold">{{ botDetails.name }}</span>
-      </div>
-
-      <ConfirmationModal v-model:open="modelOpen" title="Confirm Delete" description="Are you sure you want to delete ?"
-        @confirm="handleDeleteBot" />
-    </div>
-    <div class="mt-[30px]">
+  <page :title="botDetails.name ?? ''" :description="false" :disableSelector="true" :disable-back-button="false">
+    <div class="mt-[30px] px-2">
       <div class="flex items-center w-full border-b pt-[10px] pr-[0px] pb-[10px] pl-[20px] mb-[35px] border-[#b5b5b5]">
-        <div class="flex items-center justify-between w-full">
+        <div class="flex flex-col sm:flex-row items-start justify-between w-full">
           <div class="items-cetner flex gap-4">
             <div v-if="botDetails.documentId" class="flex items-center text-[#1abb00] gap-[5px]">
               <div class="flex items-center bg-[#1abb00] w-[6px] h-[6px] rounded-full"></div>
-              <span class="lg:text-[16px] md:text-[13px]">Active</span>
+              <span class="text-[13px] sm:text-[13px] md:text-[13px] lg:text-[16px] xl:text-[16px]">Active</span>
             </div>
             <!-- v-else -->
             <div v-else class="flex items-center gap-[5px] text-[#ff0000] pl-2 font-medium">
@@ -25,29 +14,55 @@
               <span class="lg:text-[16px] md:text-[14px]">Inactive</span>
             </div>
           </div>
-          <div class="flex items-center gap-4">
-            <span class="lg:text-[17px] md:text-[14px] font-bold text-black">Date Created:
+          <div class="flex flex-col sm:flex-row items-start justify-center gap-4">
+            <span
+              class="text-[13px] sm:text-[13px] md:text-[14px] lg:text-[17px] xl:text-[17px] font-bold text-black">Date
+              Created:
               <span class="lg:text-[15px] md:text-[13px] font-medium text-black">{{
                 dateFormate
-              }}</span>
+                }}</span>
             </span>
-            <UiButton class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50 lg:text-[16px] md:text-[14px]"
-              @click="handleActivateBot" :disabled="isSubmitting" v-if="!botDetails.documentId">
-              Activate Bot</UiButton>
-            <span v-if="botDetails.documentId" class="flex gap-4">
-              <UiButton class="bg-[#ff0000] text-white rounded-[8px] p-2.5 text-[14px] font-medium"
-                @click="deactivateBot">Deactivate Bot
+            <div class="flex items-center gap-3">
+              <UiButton class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50 lg:text-[16px] md:text-[14px]"
+                @click="handleActivateBot" :disabled="isSubmitting" v-if="!botDetails.documentId">
+                Activate Bot</UiButton>
+              <span v-if="botDetails.documentId" class="flex gap-4">
+                <UiButton class="bg-[#ff0000] text-white rounded-[8px] p-2.5 text-[14px] font-medium"
+                  @click="deactivateBot">
+                  <!-- Deactivate Bot -->
+                  <span class="hidden md:inline">
+                    Deactivate Bot
+                  </span>
+                  <!-- Icon for small screens -->
+                  <span class="flex items-center justify-center md:hidden">
+                    <Icon name="bx:block" class="h-5 w-5" />
+                  </span>
+                </UiButton>
+                <ConfirmationModal v-model:open="modalOpen" title="Confirm Deactivation"
+                  description="Are you sure you want to deactivate bot ?" @confirm="deactivateBotDialog" />
+                <UiButton as="a" :href="previewUrl" target="_blank"
+                  class="bg-[#474df9] text-[14px] font-medium text-white hover:bg-[#474df9] hover:brightness-90">
+                  <span class="hidden md:inline">
+                    Preview Bot
+                  </span>
+                  <span class="flex items-center justify-center md:hidden">
+                    <Icon name="entypo:controller-play" class="h-5 w-5" />
+                  </span>
+                </UiButton>
+                <UiButton class="bg-[#e1dede] text-black hover:bg-[#d4d2d2]" @click="copyScript">
+                  <span class="hidden md:inline">
+                    Copy Script
+                  </span>
+                  <span class="flex items-center justify-center md:inine">
+                    <Icon name="mdi:content-copy" class="text-white h-4 w-4" />
+                  </span>
+                </UiButton>
+              </span>
+              <UiButton variant="destructive" @click="handleDelete" class="bg-[#ff0000] pl-4 hover:bg-[#ff0000]/90">
+                <Icon name="lucide:trash-2" class="h-4 w-4" />
               </UiButton>
-              <ConfirmationModal v-model:open="modalOpen" title="Confirm Deactivation"
-                description="Are you sure you want to deactivate bot ?" @confirm="deactivateBotDialog" />
-              <UiButton as="a" :href="previewUrl" target="_blank"
-                class="bg-[#474df9] text-[14px] font-medium text-white hover:bg-[#474df9] hover:brightness-90">Preview
-                Bot</UiButton>
-              <UiButton class="bg-[#e1dede] text-black hover:bg-[#d4d2d2]" @click="copyScript">Copy Script</UiButton>
-            </span>
-            <UiButton variant="destructive" @click="handleDelete" class="bg-[#ff0000] pl-4 hover:bg-[#ff0000]/90">
-              <Icon name="lucide:trash-2" />
-            </UiButton>
+
+            </div>
           </div>
 
           <!-- <span class="font-semibold content-align">Date Created</span>
@@ -68,10 +83,10 @@
             v-for="list in getDocumentList.documents.filter(
               (item: any) => item.status === 'ready',
             )" :key="list.id" @click="async () => {
-                isSubmitting = true;
-                isDocumentListOpen = false;
-                await singleDocumentDeploy(list);
-              }
+              isSubmitting = true;
+              isDocumentListOpen = false;
+              await singleDocumentDeploy(list);
+            }
               ">
             {{ list.name }}
           </UiButton>
@@ -105,7 +120,7 @@
         </NuxtLink>
       </div>
     </div>
-  </div>
+  </page>
 </template>
 <script setup lang="ts">
   definePageMeta({

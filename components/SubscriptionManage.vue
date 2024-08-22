@@ -33,14 +33,12 @@ const usageDetails = computed(() => {
   >
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <div v-else class="flex flex-col justify-center">
-    <div class="h-[70px] border-b-[1px] border-[#80808036] px-2 px-6 py-[3px]">
-      <div class="text-[20px] font-bold">Billing</div>
-      <div class="text-[12px]">
-        Manage your subscription and billing information
-      </div>
-    </div>
-    <div class="rounded-lg mt-[30px] bg-[#fffff] w-[97%] self-center field_shadow">
+  <page v-else title="Billing" :description="true" :disableSelector="false" :disable-back-button="true">
+    <!-- <div class="text-[12px]">
+      Manage your subscription and billing information
+    </div> -->
+    <!-- field_shadow -->
+    <div class="rounded-lg bg-[#fffff] w-full self-center">
       <div
         class="flex items-center justify-between rounded-t-xl border-b-[1px] border-[#80808036] px-[30px] py-5 text-[18px] font-bold"
       >
@@ -130,5 +128,5 @@ const usageDetails = computed(() => {
         </span>
       </div>
     </div>
-  </div>
+  </page>
 </template>

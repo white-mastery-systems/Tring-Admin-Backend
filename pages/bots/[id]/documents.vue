@@ -1,32 +1,13 @@
 <template>
-  <div
-    v-if="isPageLoading"
-    class="grid h-[80vh] place-items-center text-[#424BD1]"
-  >
-    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
-  </div>
-  <div v-else class="bot-manage-main-container">
-    <div class="header-align">
-      <div class="flex items-center gap-2">
-        <UiButton variant="ghost" size="icon" @click="router.back()">
-          <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
-        </UiButton>
-        <span class="text-[20px] font-bold">Document Management</span>
-      </div>
-      <!-- <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary: <span
-          class="font-bold text-black">Recent</span></span> -->
-    </div>
-    <div class="document-align">
-      <span class="flex flex-row">
-        <!-- @click="uploadfile" -->
-        <FileUpload
-          accept="application/pdf"
-          v-model="selectedFile"
-          @upload-document="fileUpload()"
-        />
-        <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
-      </span>
-      <!-- <div class="flex items-center gap-2">
+  <Page title="Document Management" :description="false" :disableSelector="true" :disable-back-button="false">
+    <div class="bot-manage-main-container">
+      <div class="document-align">
+        <span class="flex flex-row">
+          <!-- @click="uploadfile" -->
+          <FileUpload accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" />
+          <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
+        </span>
+        <!-- <div class="flex items-center gap-2">
         <div class="submit-btn-align">
           <button
             v-if="selectedFile"
@@ -41,112 +22,89 @@
     </div>
     <p class="pt-2 text-sm text-gray-400">only PDF</p>
 
-    <div class="bot-main-align rounded-lg">
-      <div class="list-header-align">
-        <div class="header-content-align">
-          <span class="content-align font-semibold">File Name</span>
-          <span class="content-align font-semibold">Uploaded Date</span>
-          <span class="content-align font-semibold">Status</span>
-          <span class="content-align font-semibold">Actions</span>
+      <div class="bot-main-align rounded-lg">
+        <div class="list-header-align">
+          <div class="header-content-align">
+            <span class="content-align font-semibold">File Name</span>
+            <span class="content-align font-semibold">Uploaded Date</span>
+            <span class="content-align font-semibold">Status</span>
+            <span class="content-align font-semibold">Actions</span>
+          </div>
         </div>
-      </div>
-      <!-- {{ getDocumentList }} -->
-      <div class="content-scroll-align px-3">
-        <!-- @click="async () => {
+        <!-- {{ getDocumentList }} -->
+        <div class="content-scroll-align px-3">
+          <!-- @click="async () => {
         await navigateTo('botpdfdocument')
         }" -->
 
-        <div v-if="documents?.documents?.length" class="overflow_align">
-          <div
-            class="bot-list-align relative overflow-hidden text-[15px]"
-            v-for="(list, index) in documents?.documents"
-            :key="index"
-            :class="{
-              'active-row': list.id === documents?.documentId,
-            }"
-          >
-            <!-- {{ list }} -->
-            <div class="list_align">
-              <span class="bot_name_align font-medium">{{ list.name }}</span>
-              <span
-                class="create_at-align font-medium"
-                :style="{
+          <div v-if="documents?.documents?.length" class="overflow_align">
+            <div class="bot-list-align relative overflow-hidden text-[15px]"
+              v-for="(list, index) in documents?.documents" :key="index" :class="{
+                'active-row': list.id === documents?.documentId,
+              }">
+              <!-- {{ list }} -->
+              <div class="list_align">
+                <span class="bot_name_align font-medium">{{ list.name }}</span>
+                <span class="create_at-align font-medium" :style="{
                   'padding-inline-end':
                     list.status === 'ready'
                       ? '132px'
                       : list.status === 'processing'
                         ? '133px'
                         : '133px',
-                }"
-                >{{ list.createdAt }}</span
-              >
-              <div
-                v-if="list.status === 'ready'"
-                class="acive_class font-medium"
-              >
-                <div class="active-circle-align rounded-full"></div>
-                <span>Success</span>
+                }">{{ list.createdAt }}</span>
+                <div v-if="list.status === 'ready'" class="acive_class font-medium">
+                  <div class="active-circle-align rounded-full"></div>
+                  <span>Success</span>
+                </div>
+                <div v-else-if="list.status === 'processing'" class="process_class font-medium">
+                  <div class="process-circle-align rounded-full"></div>
+                  <span>Processing</span>
+                </div>
+                <div v-else class="deacive_class font-medium">
+                  <div class="deactive-circle-align rounded-full"></div>
+                  <span>Failed</span>
+                </div>
+                <span>
+                  <UiPopover ref="myPopover">
+                    <UiPopoverTrigger>
+                      <img src="assets\icons\more_horiz.svg" width="30" />
+                    </UiPopoverTrigger>
+                    <UiPopoverContent align="end" class="w-40">
+                      <div @click="handleAction(list, 'download')"
+                        class="menu-align rounded-sm text-center hover:bg-gray-300/20">
+                        Download
+                      </div>
+                      <div v-if="list.id !== documents?.documentId" @click="deleteDocumentModelOpen = true"
+                        class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500">
+                        Delete
+                      </div>
+                      <ConfirmationModal v-model:open="deleteDocumentModelOpen" title="Confirm Delete"
+                        description="Are you sure you want to delete ?" @confirm="() => {
+                            handleAction(list, 'delete');
+                            deleteDocumentModelOpen = false;
+                          }
+                          " />
+                    </UiPopoverContent>
+                  </UiPopover>
+                  <!-- <img src="assets\icons\more_horiz.svg" width="30"> -->
+                </span>
               </div>
-              <div
-                v-else-if="list.status === 'processing'"
-                class="process_class font-medium"
-              >
-                <div class="process-circle-align rounded-full"></div>
-                <span>Processing</span>
-              </div>
-              <div v-else class="deacive_class font-medium">
-                <div class="deactive-circle-align rounded-full"></div>
-                <span>Failed</span>
-              </div>
-              <span>
-                <UiPopover ref="myPopover">
-                  <UiPopoverTrigger>
-                    <img src="assets\icons\more_horiz.svg" width="30" />
-                  </UiPopoverTrigger>
-                  <UiPopoverContent align="end" class="w-40">
-                    <div
-                      @click="handleAction(list, 'download')"
-                      class="menu-align rounded-sm text-center hover:bg-gray-300/20"
-                    >
-                      Download
-                    </div>
-                    <div
-                      v-if="list.id !== documents?.documentId"
-                      @click="deleteDocumentModelOpen = true"
-                      class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500"
-                    >
-                      Delete
-                    </div>
-                    <ConfirmationModal
-                      v-model:open="deleteDocumentModelOpen"
-                      title="Confirm Delete"
-                      description="Are you sure you want to delete ?"
-                      @confirm="
-                        () => {
-                          handleAction(list, 'delete');
-                          deleteDocumentModelOpen = false;
-                        }
-                      "
-                    />
-                  </UiPopoverContent>
-                </UiPopover>
-                <!-- <img src="assets\icons\more_horiz.svg" width="30"> -->
-              </span>
-            </div>
-            <!-- <div>
+              <!-- <div>
               <img src="assets\icons\left_arrow.svg" width="30">
             </div> -->
+            </div>
           </div>
-        </div>
-        <div
-          v-else
-          class="font-regular flex h-[100%] items-center justify-center text-[#8A8A8A]"
-        >
-          No document available
+          <div v-else class="font-regular flex h-[100%] items-center justify-center text-[#8A8A8A]">
+            No document available
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </Page>
+  <!-- <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
+    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div> -->
 </template>
 <script setup lang="ts">
   definePageMeta({
