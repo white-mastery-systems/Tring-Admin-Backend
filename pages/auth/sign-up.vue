@@ -64,10 +64,10 @@
 </script>
 <template>
   <div class="flex h-full w-full flex-col items-center justify-center">
-    <div class="w-[80%] px-6 pb-[20px] font-bold text-[#424bd1]">
+    <div class="xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0 pb-[20px] font-bold text-[#424bd1]">
       <span> Let’s Get Started </span>
     </div>
-    <div class="flex w-[80%] flex-col px-6">
+    <div class="flex xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] flex-col lg:px-6 px-0">
       <!-- <div> -->
       <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" class="mb-6 space-y-5"
         @submit="onSubmit">

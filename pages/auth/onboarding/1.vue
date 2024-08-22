@@ -52,11 +52,12 @@ const onSubmit = async (value: any) => {
   <div class="flex flex-col items-center justify-center w-full h-full">
     <!-- :initial-values="defaultFormValues" -->
     <!-- @submit="handleSubmit" -->
-    <div class="font-bold text-[#424bd1] w-[80%] px-6 pb-[20px]">Personal Details</div>
-    <div class="flex flex-col w-[80%] px-6">
+    <div class="font-bold text-[#424bd1] xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0 pb-[20px]">Personal
+      Details</div>
+    <div class="flex flex-col xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0">
       <!-- <div> -->
-      <UiForm :validation-schema="formSchema" :keep-values="true"
-        :validate-on-mount="false" @submit="onSubmit" class="space-y-4">
+      <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" @submit="onSubmit"
+        class="space-y-4">
         <UiFormField v-slot="{ componentField }" name="name">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
             <UiFormLabel class="font-bold"> Full Name <UiLabel class="text-red-500 text-lg">*</UiLabel>

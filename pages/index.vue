@@ -1,7 +1,7 @@
 <template>
-  <div class="dashboard-main-container">
-    <div class="header-align">
-      <span class="text-[20px] font-bold">Dashboard</span>
+  <div class="dashboard-main-container py-0 px-[25px] ">
+    <div class="flex items-center justify-between pb-[20px]">
+      <span class="text-[23px] font-bold">Dashboard</span>
       <div class="flex items-center gap-3">
         <!-- <span class="calender-align">
           <img src="assets\icons\calendar_month.svg" width="20">
@@ -26,72 +26,69 @@
       </div>
     </div>
     <div>
-      <div class="dashboard-main-paage">
-        <div class="card-align">
+      <div class="grid gap-6
+         grid-cols-1
+         xs:grid-cols-2
+         lg:grid-cols-4
+         ">
+        <div class="field_shadow flex items-center min-h-[120px] gap-6 bg-white rounded-[10px] p-4">
           <div class="rounded-md bg-[#ffbc42] p-2">
             <BotIcon />
           </div>
           <div>
-            <div class="content-align font-semibold">Chat Bots</div>
-            <div class="text-lg font-bold">{{ analyticsData?.bots }}</div>
+            <div class="text-gray-500 font-semibold text-sm mb-1">Chat Bots</div>
+            <div class="font-extrabold text-2xl text-black">{{ analyticsData?.bots }}</div>
           </div>
         </div>
-        <div class="card-align">
+
+        <div class="field_shadow flex items-center min-h-[120px] gap-6 bg-white rounded-[10px] p-4">
           <div class="rounded-md bg-[#ffbc42] p-2">
-            <ChatSession></ChatSession>
+            <ChatSession />
           </div>
           <div>
-            <div class="content-align font-semibold">Chat Sessions</div>
-            <div class="text-lg font-bold">{{ analyticsData?.chats }}</div>
+            <div class="text-gray-500 font-semibold text-sm mb-1">Chat Sessions</div>
+            <div class="font-extrabold text-2xl text-black">{{ analyticsData?.chats }}</div>
           </div>
         </div>
-        <div class="card-align">
+
+        <div class="field_shadow flex items-center min-h-[120px] gap-6 bg-white rounded-[10px] p-4">
           <div class="rounded-md bg-[#ffbc42] p-2">
-            <Leads></Leads>
+            <Leads />
           </div>
           <div>
-            <div class="content-align font-semibold">Chat Leads</div>
-            <div class="text-lg font-bold">{{ analyticsData?.leads }}</div>
+            <div class="text-gray-500 font-semibold text-sm mb-1">Chat Leads</div>
+            <div class="font-extrabold text-2xl text-black">{{ analyticsData?.leads }}</div>
           </div>
         </div>
-        <div class="card-align">
+
+        <div class="field_shadow flex items-center min-h-[120px] gap-6 bg-white rounded-[10px] p-4">
           <div class="rounded-md bg-[#ffbc42] p-2">
-            <SingleUser></SingleUser>
+            <SingleUser />
           </div>
           <div>
-            <div class="content-align font-semibold">Unique Sessions</div>
-            <div class="text-lg font-bold">{{ analyticsData?.users }}</div>
+            <div class="text-gray-500 font-semibold text-sm mb-1">Unique Sessions</div>
+            <div class="font-extrabold text-2xl text-black">{{ analyticsData?.users }}</div>
           </div>
         </div>
       </div>
+
       <div class="relative">
-        <div class="graph-align my-8 gap-6">
-          <div
-            v-if="analyticsData?.bots > 0"
-            class="chat-bot-align relative place-content-center rounded-md bg-white"
-          >
-            <UiLineChart
-              :data="lineGraphData"
-              index="month"
-              :categories="['Leads Created', 'Sessions Created']"
-              :colors="['#424bd1', '#ffbc42']"
-              :show-grid-line="true"
-              :show-tooltip="true"
-              :margin="{ right: 20 }"
+        <div class="field_shadow flex h-[59vh] pb-[20px] rounded-[10px]  my-8 gap-6">
+          <div v-if="analyticsData?.bots > 0" class="w-full relative place-content-center rounded-md bg-white">
+            <UiLineChart :data="lineGraphData" index="month" :categories="['Leads Created', 'Sessions Created']"
+              :colors="['#424bd1', '#ffbc42']" :show-grid-line="true" :show-tooltip="true" :margin="{ right: 20 }"
               :y-formatter="
                 (tick: any) => {
                   return typeof tick === 'number'
                     ? `${new Intl.NumberFormat('us').format(tick).toString()}`
                     : '';
                 }
-              "
-              class="h-[380px] w-full"
-            />
+              " class="h-[380px] w-full" />
           </div>
           <!-- <div
             class="voice-bot-align relative place-content-center rounded-md bg-white shadow"
           >
-            <UiLabel class="absolute top-6 pl-6 text-lg font-bold"
+            <UiLabel class="absolute top-6 pl-6 text-lg font-extrabold"
               >Voice Bot</UiLabel
             >
             <VisBulletLegend
@@ -109,12 +106,9 @@
           </div> -->
         </div>
         <!-- <UiLabel class="absolute right-1/3 top-1/3 z-10  -translate-x-3/4 -translate-y-1/3 text-lg">Getting Started by Creating Bots</UiLabel> -->
-        <UiButton
-          v-if="analyticsData?.bots === 0"
+        <UiButton v-if="analyticsData?.bots === 0"
           class="absolute right-1/2 top-1/2 z-10 h-16 w-56 -translate-y-1/2 translate-x-1/2 bg-[#474df9] text-lg text-white hover:bg-[#474df9] hover:brightness-90"
-          @click="getStarted"
-          >Get Started</UiButton
-        >
+          @click="getStarted">Get Started</UiButton>
       </div>
     </div>
   </div>
@@ -252,77 +246,6 @@
   }
 
   .dashboard-main-container {
-    padding: 0px 25px;
-    /* width: 100%; */
     height: calc(100vh - 30px);
-    /* overflow-y: scroll; */
-  }
-
-  .header-align {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 20px;
-  }
-
-  .right-dropdown-align {
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 1);
-    padding: 0px 10px;
-    width: 200px !important;
-    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-    border-radius: 10px;
-  }
-
-  .dashboard-main-paage {
-    /* margin-top: 30px; */
-    display: flex;
-    align-items: center;
-    gap: 30px;
-  }
-
-  .card-align {
-    display: flex;
-    align-items: center;
-    padding: 10px 10px 10px 25px;
-    width: 25%;
-    height: 100px;
-    gap: 15px;
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-    border-radius: 10px;
-  }
-
-  .content-align {
-    margin-bottom: 5px;
-    color: rgba(138, 138, 138, 1);
-  }
-
-  .graph-align {
-    display: flex;
-    height: 59vh;
-    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-    padding-bottom: 20px;
-    border-radius: 10px;
-  }
-
-  .calender-align {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 40px;
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-    border-radius: 10px;
-  }
-
-  .chat-bot-align {
-    width: 100%;
-  }
-
-  .voice-bot-align {
-    width: 40%;
   }
 </style>

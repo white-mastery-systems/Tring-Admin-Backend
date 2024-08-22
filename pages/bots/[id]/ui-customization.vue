@@ -11,7 +11,7 @@
       <UiForm :validation-schema="formSchema" :keep-values="true" :initial-values="defaultFormValues"
         :validate-on-mount="false" @submit="uiUpdate" class="space-y-5">
 
-        <div class="form-align flex flex-col p-5 w-[60%] overflow-y-auto gap-[13px] shadow-align ml-11">
+        <div class="form-align flex flex-col p-5 w-[60%] overflow-y-auto gap-[13px] field_shadow ml-11">
           <UiFormField v-slot="{ value, componentField }" name="logo">
             <UiFormItem v-auto-animate="animationProps" class="w-full flex flex-col items-start">
               <UiLabel class="pb-2 text-lg font-medium">Logo</UiLabel>
@@ -29,7 +29,7 @@
             <UiFormItem v-auto-animate="animationProps" class="w-full">
               <UiLabel class="text-lg font-medium">Colour</UiLabel>
               <UiFormControl>
-                <div class="flex items-center shadow-align bg-[#ffffff] h-14 gap-8 rounded-lg bg-white px-5">
+                <div class="flex items-center field_shadow bg-[#ffffff] h-14 gap-8 rounded-lg bg-white px-5">
                   <div class="w-full flex justify-between">
                     <label for="color" class="py-auto content-center text-base font-medium">Primary Colour</label>
                     <div class="h-8 w-8 overflow-hidden rounded-full">
@@ -45,46 +45,49 @@
               <span class="text-xs text-gray-500">Select color for chat window</span>
             </UiFormItem>
           </UiFormField>
-          <div class="flex items-center justify-between">
-            <UiFormField v-slot="{ componentField }" name="widgetSound">
-              <UiFormItem v-auto-animate="animationProps">
-                <UiLabel class="text-lg font-medium">Widget Sound</UiLabel>
-                <UiFormControl>
-                  <UiSelect v-bind="componentField">
-                    <UiSelectTrigger
-                      class="hover:focus:none hover:focus-visible:none shadow-align bg-[#ffffff] h-12 w-52">
-                      <UiSelectValue placeholder="Select Widget Sound" />
-                    </UiSelectTrigger>
-                    <UiSelectContent>
-                      <UiSelectItem value="Yes"> Yes </UiSelectItem>
-                      <UiSelectItem value="No"> No </UiSelectItem>
-                    </UiSelectContent>
-                  </UiSelect>
-                </UiFormControl>
-                <UiFormMessage />
-                <span class="text-xs text-gray-500">Notification sound for chat window</span>
-              </UiFormItem>
-            </UiFormField>
-
-            <UiFormField v-slot="{ componentField }" name="widgetPosition">
-              <UiFormItem v-auto-animate="animationProps">
-                <UiLabel class="text-lg font-medium">Widget Position</UiLabel>
-                <UiFormControl>
-                  <UiSelect v-bind="componentField">
-                    <UiSelectTrigger
-                      class="hover:focus-visible:none hover:focus:none shadow-align bg-[#ffffff] h-12 w-52">
-                      <UiSelectValue placeholder="Select Widget Position" />
-                    </UiSelectTrigger>
-                    <UiSelectContent>
-                      <UiSelectItem value="Left"> Left </UiSelectItem>
-                      <UiSelectItem value="Right"> Right </UiSelectItem>
-                    </UiSelectContent>
-                  </UiSelect>
-                </UiFormControl>
-                <UiFormMessage />
-                <span class="text-xs text-gray-500">Position for chat bubble</span>
-              </UiFormItem>
-            </UiFormField>
+          <div class="flex items-center justify-between w-full">
+            <div class="w-[50%]">
+              <UiFormField v-slot="{ componentField }" name="widgetSound">
+                <UiFormItem v-auto-animate="animationProps">
+                  <UiLabel class="text-lg font-medium">Widget Sound</UiLabel>
+                  <UiFormControl>
+                    <UiSelect v-bind="componentField">
+                      <UiSelectTrigger
+                        class="hover:focus:none hover:focus-visible:none field_shadow bg-[#ffffff] h-12 w-[60%]">
+                        <UiSelectValue placeholder="Select Widget Sound" />
+                      </UiSelectTrigger>
+                      <UiSelectContent>
+                        <UiSelectItem value="Yes"> Yes </UiSelectItem>
+                        <UiSelectItem value="No"> No </UiSelectItem>
+                      </UiSelectContent>
+                    </UiSelect>
+                  </UiFormControl>
+                  <UiFormMessage />
+                  <span class="lg:text-xs md:text-[8px] text-gray-500">Notification sound for chat window</span>
+                </UiFormItem>
+              </UiFormField>
+            </div>
+            <div class="w-[50%]">
+              <UiFormField v-slot="{ componentField }" name="widgetPosition">
+                <UiFormItem v-auto-animate="animationProps" class="flex flex-col items-end justify-center">
+                  <UiLabel class="text-lg font-medium">Widget Position</UiLabel>
+                  <UiFormControl>
+                    <UiSelect v-bind="componentField">
+                      <UiSelectTrigger
+                        class="hover:focus-visible:none hover:focus:none field_shadow bg-[#ffffff] h-12 w-[60%]">
+                        <UiSelectValue placeholder="Select Widget Position" />
+                      </UiSelectTrigger>
+                      <UiSelectContent>
+                        <UiSelectItem value="Left"> Left </UiSelectItem>
+                        <UiSelectItem value="Right"> Right </UiSelectItem>
+                      </UiSelectContent>
+                    </UiSelect>
+                  </UiFormControl>
+                  <UiFormMessage />
+                  <span class="lg:text-xs md:text-[8px] text-gray-500">Position for chat bubble</span>
+                </UiFormItem>
+              </UiFormField>
+            </div>
           </div>
 
           <UiFormField v-slot="{ value, handleChange }" name="defaultSelect">
@@ -130,7 +133,7 @@
 
           <div class="flex justify-center w-full my-auto">
             <UiButton type="submit"
-              class="my-auto text-base font-semibold w-[40%] h-[40px] rounded-[10px] bg-[#424bd1] text-[#ffffff]">
+              class="my-auto text-base font-semibold w-[40%] h-[40px] rounded-[10px] bg-[#424bd1] hover:bg-[#424bd1] text-[#ffffff]">
               Submit
             </UiButton>
           </div>
@@ -174,7 +177,6 @@ const route = useRoute();
 const router = useRouter();
 const paramId: any = route;
 const botDetails: any = await getBotDetails(paramId.params.id);
-const defaultSelect = ref(true);
 const defaultFormValues = reactive({
   logo: botDetails.metadata.ui.logo ?? '',
   color: hslToHex(botDetails.metadata.ui.color ?? '236, 61%, 54%, 1'),
@@ -184,13 +186,12 @@ const defaultFormValues = reactive({
   onlineStatus: botDetails.metadata.ui.onlineStatus ?? false,
   generateLead: (botDetails.metadata.prompt.INTENTS !== "-other"),
 })
-const { handleSubmit }: any = useForm({
-  validationSchema: formSchema,
-  initialValues: defaultFormValues,
-})
+// const { handleSubmit }: any = useForm({
+//   validationSchema: formSchema,
+//   initialValues: defaultFormValues,
+// })
 
 const uiUpdate = async (value: any) => {
-  console.log(value, "value")
   // const ges: any = JSON.stringify(values, null, 7)
   // console.log(ges, "value -- value");
   const payload: any = {
@@ -228,8 +229,5 @@ const uiUpdate = async (value: any) => {
 <style scoped>
 .form-align {
   height: calc(100vh - 120px);
-}
-.shadow-align {
-  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
 }
 </style>
