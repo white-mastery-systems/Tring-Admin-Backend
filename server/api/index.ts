@@ -1,8 +1,5 @@
 export default defineEventHandler(async (event) => {
-  const s = useStorage("redis");
-  return await s.getItem("rag/prompts/placeholder");
   // await s.setItem("key", generateRandomString(10));
-
   // const db = useDrizzle();
   // console.log("Selecting from db");
   // debugger;

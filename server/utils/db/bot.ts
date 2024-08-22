@@ -4,7 +4,6 @@ import { isNotNull, isNull, like } from "drizzle-orm";
 import { InsertBotIntegration, InsertIntent } from "~/server/schema/bot";
 
 const db = useDrizzle();
-const cache = useStorage("redis");
 
 const getCacheBotKey = (botId: string) => `chatbot:${botId}`;
 
@@ -67,7 +66,6 @@ export const updateBotDetails = async (
   botId: string,
   bot: ZodInfer<typeof zodUpdateChatBot>,
 ) => {
-  cache.removeItem(getCacheBotKey(botId));
   return (
     await db
       .update(chatBotSchema)
@@ -78,7 +76,6 @@ export const updateBotDetails = async (
 };
 
 export const deleteBot = async (botId: string) => {
-  cache.removeItem(getCacheBotKey(botId));
   return (
     await db
       .delete(chatBotSchema)
