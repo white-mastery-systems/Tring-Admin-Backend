@@ -61,7 +61,7 @@
                 class="flex items-center gap-4"
               >
                 <UiButton
-                  class="rounded-[8px] bg-[#ff0000] p-2.5 text-[14px] font-medium text-white hover:bg-red-400"
+                  class="rounded-[8px] bg-[#ff0000] p-2.5 text-[14px] font-medium text-white hover:bg-[#ff0000]/70"
                   @click="deactivateBot"
                 >
                   <!-- Deactivate Bot -->

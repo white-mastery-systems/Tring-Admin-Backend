@@ -28,7 +28,20 @@
 
       <slot name="actionButtons"></slot>
     </div>
+    <UiBreadcrumb v-if="breadCrumbs?.length > 0" class="mt-4">
+      <UiBreadcrumbList>
+        <UiBreadcrumbItem
+          v-for="({ label, to }, index) in breadCrumbs"
+          :key="index"
+        >
+          <UiBreadcrumbLink :href="to">{{ label }}</UiBreadcrumbLink>
+
+          <UiBreadcrumbSeparator v-if="index < breadCrumbs.length - 1" />
+        </UiBreadcrumbItem>
+      </UiBreadcrumbList>
+    </UiBreadcrumb>
     <LazyUiSelectSeparator v-if="!props.disableSelector" class="" />
+
     <div
       :class="[
         props.disableElevation
@@ -56,6 +69,7 @@
       subTitle?: string;
       customBackRouter?: string;
       disableSelector?: boolean;
+      breadCrumbs?: any;
     }>(),
     {
       wrapInPage: true,
@@ -67,6 +81,7 @@
       disableBackButton: false,
       titleSize: "medium",
       disableSelector: false,
+      breadCrumbs: [],
     },
   );
   const router = useRouter();

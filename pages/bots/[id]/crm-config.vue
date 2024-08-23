@@ -1,7 +1,12 @@
 <template>
   <Page
     title="CRM Configuration"
-    :subtitle="`(${botDetails.name})`"
+    :bread-crumbs="[
+      { label: 'Bot', to: '/bot' },
+      { label: 'Bot', to: '/bot' },
+      { label: 'Bot', to: '/bot' },
+      { label: 'Bot', to: '/bot' },
+    ]"
     :disableSelector="true"
   >
     <template #actionButtons>
