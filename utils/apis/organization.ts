@@ -14,7 +14,17 @@ export const getLeadTranscript = async (chatId: any) => {
 export const getAnalyticsData = async () => {
   return await $fetch(`/api/org/analytics`);
 };
-
+export const filterAnalyticsData = async (value: any) => {
+  try {
+    const response = await useLazyFetch("/api/org/analytics", {
+      method: "POST",
+      body: { period: value },
+    });
+    return response; // Handle the response as needed
+  } catch (error) {
+    console.error("Error fetching analytics data:", error);
+  }
+};
 export const createIntegration = async ({
   integrationDetails,
   onSuccess,

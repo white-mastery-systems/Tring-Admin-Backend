@@ -14,7 +14,7 @@
               Add Bot
             </UiButton>
           </UiDialogTrigger>
-          <UiDialogContent>
+          <UiDialogContent class="w-[90%] rounded-xl">
             <UiDialogHeader>
               <UiDialogTitle>Add a New Bot</UiDialogTitle>
             </UiDialogHeader>

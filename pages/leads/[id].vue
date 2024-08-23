@@ -17,8 +17,10 @@
           </UiTabsList>
           <UiTabsContent value="Client Info">
             <div class="client_info_align gap-2">
-              <span v-for="[key, value] in details[0]" class="font-medium uppercase">{{ key }}: <span
-                  class="ml-2 font-bold">{{ value }}</span></span>
+              <span v-for="[key, value] in details[1]" class="max-w-full font-medium uppercase">{{ key }}:
+                <span class="ml-2 max-w-[50%] truncate font-bold">{{
+                  value
+                }}</span></span>
             </div>
           </UiTabsContent>
           <UiTabsContent value="Campaign info">
@@ -75,97 +77,97 @@
 </template>
 
 <script setup lang="ts">
-  import MdText from "~/components/MdText.vue";
+import MdText from "~/components/MdText.vue";
 
-  definePageMeta({
-    middleware: "admin-only",
+definePageMeta({
+  middleware: "admin-only",
+});
+
+const router = useRouter();
+const route = useRoute("leads-id");
+const paramId: any = route;
+
+const { status, data: leadData } = await useLazyFetch(
+  () => `/api/org/chat/${route.params.id}`,
+  {
+    server: false,
+  },
+);
+const isPageLoading = computed(() => status.value === "pending");
+
+const details = computed(() => {
+  if (!leadData.value) return [undefined, undefined];
+  const { params, ...rest } = leadData.value.metadata as Record<string, any>;
+  return [Object.entries(rest), Object.entries(params)];
+});
+
+const isDeleteConfirmationOpen = ref(false);
+const handleDelete = async () => {
+  isDeleteConfirmationOpen.value = false;
+  await $fetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
+    method: "DELETE",
   });
-
-  const router = useRouter();
-  const route = useRoute("leads-id");
-  const paramId: any = route;
-
-  const { status, data: leadData } = await useLazyFetch(
-    () => `/api/org/chat/${route.params.id}`,
-    {
-      server: false,
-    },
-  );
-  const isPageLoading = computed(() => status.value === "pending");
-
-  const details = computed(() => {
-    if (!leadData.value) return [undefined, undefined];
-    const { params, ...rest } = leadData.value.metadata as Record<string, any>;
-    return [Object.entries(rest), Object.entries(params)];
-  });
-
-  const isDeleteConfirmationOpen = ref(false);
-  const handleDelete = async () => {
-    isDeleteConfirmationOpen.value = false;
-    await $fetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
-      method: "DELETE",
-    });
-    return navigateTo({ name: "leads" });
-  };
+  return navigateTo({ name: "leads" });
+};
 </script>
 <style scoped>
-  .header-align {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 20px;
-    /* border-bottom: 0.5px solid rgba(181, 181, 181, 1); */
-  }
+.header-align {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  /* border-bottom: 0.5px solid rgba(181, 181, 181, 1); */
+}
 
-  .client_info_align {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-  }
+.client_info_align {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
 
-  .tab-align {
-    padding: 0;
-    color: rgba(138, 138, 138, 1);
-    font-weight: 800;
-    position: relative;
-    display: inline-block;
-    text-decoration: none;
-    text-align: left;
-  }
+.tab-align {
+  padding: 0;
+  color: rgba(138, 138, 138, 1);
+  font-weight: 800;
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  text-align: left;
+}
 
-  .group-tap-align {
-    background-color: white;
-    color: rgba(66, 75, 209, 1);
-  }
+.group-tap-align {
+  background-color: white;
+  color: rgba(66, 75, 209, 1);
+}
 
-  .tab-align:active {
-    color: rgba(66, 75, 209, 1);
-    font-weight: 800;
-    text-decoration: underline;
-    text-underline-offset: 8px;
-  }
+.tab-align:active {
+  color: rgba(66, 75, 209, 1);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 8px;
+}
 
-  [data-active="true"] {
-    color: rgba(66, 75, 209, 1);
-    font-weight: 800;
-    text-decoration: underline;
-    text-underline-offset: 8px;
-  }
+[data-active="true"] {
+  color: rgba(66, 75, 209, 1);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 8px;
+}
 
-  .tab-align::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -3px;
-    /* Adjust based on your text-underline-offset */
-    width: 100%;
-    height: 0.5px;
-    /* Adjust thickness of the underline */
-    background-color: rgba(138, 138, 138, 0.5);
-    /* Use the current text color */
-    text-decoration: none;
-    /* Ensure no additional decoration */
-  }
+.tab-align::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  /* Adjust based on your text-underline-offset */
+  width: 100%;
+  height: 0.5px;
+  /* Adjust thickness of the underline */
+  background-color: rgba(138, 138, 138, 0.5);
+  /* Use the current text color */
+  text-decoration: none;
+  /* Ensure no additional decoration */
+}
 
 /* .chatinfo-align {
   width: 50%;
@@ -175,87 +177,87 @@
   overflow-y: hidden;
 } */
 
-  .chat-header-align {
-    width: 100%;
-    height: 70px;
-    background: #424bd1;
-    color: white;
-    padding: 0 20px;
-  }
+.chat-header-align {
+  width: 100%;
+  height: 70px;
+  background: #424bd1;
+  color: white;
+  padding: 0 20px;
+}
 
-  .profile-align {
-    width: 50px;
-    height: 50px;
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-  }
+.profile-align {
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+}
 
-  .message-left-align {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: end;
-    /* justify-content: end; */
-  }
+.message-left-align {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  /* justify-content: end; */
+}
 
-  .chat-container-align {
-    width: 100%;
-    padding: 20px;
-  }
+.chat-container-align {
+  width: 100%;
+  padding: 20px;
+}
 
-  .current-user {
-    flex-direction: column;
-    background: #766ddb;
-    min-width: 20%;
-    max-width: 80%;
-    min-height: 80px;
-    padding: 10px;
-    gap: 10px;
-    color: white;
-    margin-top: 10px;
-  }
+.current-user {
+  flex-direction: column;
+  background: #766ddb;
+  min-width: 20%;
+  max-width: 80%;
+  min-height: 80px;
+  padding: 10px;
+  gap: 10px;
+  color: white;
+  margin-top: 10px;
+}
 
-  .message-right-align {
-    width: 90%;
-    /* background: rgba(255, 255, 255, 1);
+.message-right-align {
+  width: 90%;
+  /* background: rgba(255, 255, 255, 1);
   box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important; */
-  }
+}
 
-  .ai-profile-align {
-    background: #424bd1;
-    color: white;
-    width: 50px;
-    height: 50px;
-  }
+.ai-profile-align {
+  background: #424bd1;
+  color: white;
+  width: 50px;
+  height: 50px;
+}
 
-  .ai-reply-align {
-    margin-top: 10px;
-    min-height: 80px;
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-    padding: 20px;
-  }
+.ai-reply-align {
+  margin-top: 10px;
+  min-height: 80px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+  padding: 20px;
+}
 
-  .web-align-btn {
-    background: #ec848b;
-    color: white;
-    padding: 10px;
-  }
+.web-align-btn {
+  background: #ec848b;
+  color: white;
+  padding: 10px;
+}
 
-  .pricing-align-btn {
-    color: #424bd1;
-    width: auto;
-    /* color: white; */
-    padding: 3% 10px;
-    border: 1px solid #424bd1;
-  }
+.pricing-align-btn {
+  color: #424bd1;
+  width: auto;
+  /* color: white; */
+  padding: 3% 10px;
+  border: 1px solid #424bd1;
+}
 
-  .all-message-align {
-    height: 65vh;
-    overflow-y: scroll;
-  }
+.all-message-align {
+  height: 65vh;
+  overflow-y: scroll;
+}
 
-  /* .custom-underline {
+/* .custom-underline {
   position: relative;
   display: inline-block;
   text-decoration: none;

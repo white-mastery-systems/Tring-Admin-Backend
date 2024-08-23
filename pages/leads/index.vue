@@ -1,14 +1,5 @@
 <template>
-  <div class="py-0 sm:px-[10px] md:px-[25px] lg:px-[25px]">
-    <div class="header-align flex items-center justify-between pb-[20px] border-b border-[#b5b5b5]">
-      <div class="flex items-center">
-        <span class="text-[20px] font-bold">Leads</span>
-      </div>
-    </div>
-    <!-- <div class="document-align gap-4">
-      
-      </div>
-    </div> -->
+  <Page title="Leads" :description="false" :disableSelector="false" :disable-back-button="true">
     <div class="p-[20px] max-h-[80vh] overflow-y-scroll px-4 pb-4 field_shadow">
       <div class="flex items-center justify-between gap-2 pb-4">
         <div class="flex items-center gap-2">
@@ -46,7 +37,7 @@
       }
         " />
     </div>
-  </div>
+  </Page>
 </template>
 <script setup lang="ts">
 import { Icon, UiButton } from "#components";

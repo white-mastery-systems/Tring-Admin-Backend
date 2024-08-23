@@ -6,15 +6,18 @@
         <!-- <span class="calender-align">
           <img src="assets\icons\calendar_month.svg" width="20">
         </span> -->
-        <!-- <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary:
+        <span class="flex -items-ecnter text-[15px] field_shadow rounded-lg" style="color: rgba(138, 138, 138, 1)">
+          <span class="flex -items-center py-2 pl-2">
+            Summary:
+          </span>
           <span class="font-bold text-black">
-            <UiSelect v-model="selectedValue" class="outline-none">
+            <UiSelect v-model="selectedValue" class="outline-none"  @change="filterAnalyticsData">
               <UiSelectTrigger class="ui-select-trigger w-[110px] outline-none">
                 <UiSelectValue />
               </UiSelectTrigger>
               <UiSelectContent>
-                <UiSelectGroup class="select_list_align">
-                  <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
+                <UiSelectGroup>
+                  <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align pr-2"
                     :value="list.content">
                     {{ list.content }}
                   </UiSelectItem>
@@ -22,7 +25,7 @@
               </UiSelectContent>
             </UiSelect>
           </span>
-        </span> -->
+        </span>
       </div>
     </div>
     <div>
@@ -125,6 +128,36 @@ const selectedValue = ref("Today");
 const getButtonName = ref("Get Started");
 
 const analyticsData = ref();
+const menuList = ref([
+  {
+    content: "Today",
+    value: "Today",
+  },
+  {
+    content: "Weekly",
+    value: "Weekly",
+  },
+  {
+    content: "Monthly",
+    value: "Monthly",
+  },
+  {
+    content: "Quarterly",
+    value: "Quarterly",
+  },
+  {
+    content: "Halfyearly",
+    value: "Halfyearly",
+  },
+  {
+    content: "Yearly",
+    value: "Yearly",
+  },
+]);
+
+watch(selectedValue, async (newStatus, previousStatus) => {
+  await filterAnalyticsData(newStatus)
+})
 
 onMounted(async () => {
   analyticsData.value = await getAnalyticsData();
@@ -238,7 +271,6 @@ const lineGraphData = computed(() =>
     };
   }),
 );
-// );
 </script>
 <style scoped>
 .focus\:ring-offset-2:focus {

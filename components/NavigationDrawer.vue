@@ -35,8 +35,8 @@
       class="flex items-center w-[90%] sm:w-[90%] xl:w-[90%] md:w-[80%] md:w-[80%] font-medium cursor-pointer rounded-[10px] gap-3 py-4 px-[18px] field_shadow"
       :class="[route.path?.includes('/bots') ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]']">
       <span>
-        <img v-if="route.path?.includes('/bots')" src=" assets\icons\bot_man_active.svg" width="22" height="22" />
-        <img v-else src="assets\icons\bot_man_deactive.svg" width="19" height="22" />
+        <img v-if="route.path?.includes('/bots')" src=" assets\icons\bot_man_active.svg" width="26"/>
+        <img v-else src="assets\icons\bot_man_deactive.svg" width="18" height="22" />
       </span>
       <span class="text-[14px]">Bot Management</span>
     </NuxtLink>
