@@ -19,6 +19,8 @@ const drizzleOrm = {
     "isNull",
     "isNotNull",
     "like",
+    "ilike",
+    "between",
     { name: "InferInsertModel", type: true },
     { name: "InferSelectModel", type: true },
   ],
