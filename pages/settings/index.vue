@@ -1,10 +1,25 @@
 <template>
-  <Page title="Settings" :disable-back-button="true">
+  <Page title="Settings" :disable-back-button="true" :disable-elevation="true">
+    <UiTabs default-value="integration" class="w-[400px]">
+      <UiTabsList class="">
+        <UiTabsTrigger value="integration"> Integrations </UiTabsTrigger>
+      </UiTabsList>
+      <UiTabsContent value="integration"> </UiTabsContent>
+    </UiTabs>
+    <template #actionButtons>
+      <UiButton color="primary" @click="integrationModalState.open = true">
+        Add Integration
+      </UiButton>
+    </template>
     <DataTable
       :columns="columns"
-      :data="integrations"
+      :data="integrationsData"
       :page-size="8"
       :is-loading="false"
+    />
+    <CreateEditIntegrationModal
+      v-model="integrationModalState"
+      @success="onSuccess()"
     />
   </Page>
   <ConfirmationModal
@@ -32,6 +47,7 @@
   import { Icon, UiBadge, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
   import Page from "~/components/Page.vue";
+  import CreateEditIntegrationModal from "./CreateEditIntegrationModal.vue";
   definePageMeta({
     middleware: "admin-only",
   });

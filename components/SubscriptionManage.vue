@@ -39,12 +39,9 @@
     sub-title="Manage your subscription and billing information"
     :disableSelector="false"
     :disable-back-button="true"
+    :disable-elevation="true"
   >
-    <!-- <div class="text-[12px]">
-      Manage your subscription and billing information
-    </div> -->
-    <!-- field_shadow -->
-    <div class="w-full self-center rounded-lg bg-[#fffff]">
+    <div class="shadow-3xl mt-4 w-full self-center rounded-lg bg-[#fffff]">
       <div
         class="flex items-center justify-between rounded-t-xl border-b-[1px] border-[#80808036] px-[30px] py-5 text-[18px] font-bold"
       >

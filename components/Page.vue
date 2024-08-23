@@ -31,7 +31,7 @@
       :class="[
         props.disableElevation
           ? ''
-          : 'mt-4 overflow-scroll rounded-md bg-white p-1 shadow-md sm:p-1 md:p-6 lg:p-6 xl:p-6',
+          : 'shadow-3xl mt-4 overflow-scroll rounded-md bg-white p-1 sm:p-1 md:p-6 lg:p-6 xl:p-6',
       ]"
     >
       <slot></slot>
