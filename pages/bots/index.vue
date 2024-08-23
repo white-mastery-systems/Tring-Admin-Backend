@@ -101,6 +101,7 @@
           <UiSelectContent>
             <UiSelectItem value="true">Active</UiSelectItem>
             <UiSelectItem value="false">In active</UiSelectItem>
+            <UiSelectItem value="all">All</UiSelectItem>
           </UiSelectContent>
         </UiSelect>
       </div>
