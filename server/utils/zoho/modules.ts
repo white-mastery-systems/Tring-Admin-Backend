@@ -92,9 +92,85 @@ export function generateContactInZohoBigin({
       });
     }
   });
-  return data;
 }
 
-
-
 //TODO:lead not pushing to zoho if contact exists
+
+//zoho-crm
+
+export function getAllLayoutsFromZohoCRM({
+  token,
+  refreshToken,
+  integrationData,
+}: {
+  token: string;
+  refreshToken: String;
+  integrationData: any;
+}) {
+  return $fetch(
+    "https://www.zohoapis.in/crm/v6/settings/layouts?module=Leads",
+    {
+      headers: {
+        Authorization: `Zoho-oauthtoken ${token}`,
+      },
+    },
+  ).catch((err: any) => {
+    console.log("err", JSON.stringify(err.data));
+    if (!refreshToken) return;
+    if (err.status === 401) {
+      regenearateTokenWithRefreshToken({
+        refreshToken: refreshToken,
+      }).then(async (data: any) => {
+        updateIntegrationById(integrationData.id, {
+          ...integrationData.metadata,
+          access_token: data?.access_token,
+        });
+        return getAllLayoutsFromZohoCRM({
+          token: data?.access_token,
+          refreshToken: "",
+          integrationData: integrationData,
+        });
+      });
+    }
+  });
+}
+
+export function generateLeadInZohoCRM({
+  token,
+  refreshToken,
+  body,
+  integrationData,
+}: {
+  token: string;
+  refreshToken: String;
+  body: any;
+  integrationData: any;
+}) {
+  console.log({ body: JSON.stringify(body) });
+  return $fetch("https://www.zohoapis.in/crm/v6/Leads", {
+    method: "POST",
+    body: { data: [body] },
+    headers: {
+      Authorization: `Zoho-oauthtoken ${token}`,
+    },
+  }).catch((err) => {
+    console.log({ err: JSON.stringify(err.data), errds: err.status });
+    if (!refreshToken) return;
+    if (err.status === 401) {
+      regenearateTokenWithRefreshToken({
+        refreshToken: refreshToken,
+      }).then(async (data: any) => {
+        updateIntegrationById(integrationData.id, {
+          ...integrationData.metadata,
+          access_token: data?.access_token,
+        });
+        return generateLeadInZohoCRM({
+          token: data?.access_token,
+          refreshToken: "",
+          body: body,
+          integrationData: integrationData,
+        });
+      });
+    }
+  });
+}
