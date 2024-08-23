@@ -1,9 +1,5 @@
 <template>
-  <Page
-    title="CRM Configuration"
-    :subtitle="`(${botDetails.name})`"
-    :disableSelector="true"
-  >
+  <Page title="CRM Configuration" :disableSelector="true">
     <template #actionButtons>
       <UiButton
         @click="crmConfigModalState.open = true"

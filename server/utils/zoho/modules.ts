@@ -39,10 +39,11 @@ export function generateLeadInZohoBigin({
       regenearateTokenWithRefreshToken({
         refreshToken: refreshToken,
       }).then(async (data: any) => {
-        updateIntegrationById(integrationData.id, {
-          ...integrationData.metadata,
-          access_token: data?.access_token,
-        });
+        if (data?.access_token)
+          updateIntegrationById(integrationData.id, {
+            ...integrationData.metadata,
+            access_token: data?.access_token,
+          });
         return generateLeadInZohoBigin({
           token: data?.access_token,
           refreshToken: "",
@@ -79,10 +80,11 @@ export function generateContactInZohoBigin({
       regenearateTokenWithRefreshToken({
         refreshToken: refreshToken,
       }).then(async (data: any) => {
-        updateIntegrationById(integrationData.id, {
-          ...integrationData.metadata,
-          access_token: data?.access_token,
-        });
+        if (data?.access_token)
+          updateIntegrationById(integrationData.id, {
+            ...integrationData.metadata,
+            access_token: data?.access_token,
+          });
         return generateContactInZohoBigin({
           token: data?.access_token,
           refreshToken: "",
@@ -121,10 +123,11 @@ export function getAllLayoutsFromZohoCRM({
       regenearateTokenWithRefreshToken({
         refreshToken: refreshToken,
       }).then(async (data: any) => {
-        updateIntegrationById(integrationData.id, {
-          ...integrationData.metadata,
-          access_token: data?.access_token,
-        });
+        if (data?.access_token)
+          updateIntegrationById(integrationData.id, {
+            ...integrationData.metadata,
+            access_token: data?.access_token,
+          });
         return getAllLayoutsFromZohoCRM({
           token: data?.access_token,
           refreshToken: "",
@@ -160,10 +163,11 @@ export function generateLeadInZohoCRM({
       regenearateTokenWithRefreshToken({
         refreshToken: refreshToken,
       }).then(async (data: any) => {
-        updateIntegrationById(integrationData.id, {
-          ...integrationData.metadata,
-          access_token: data?.access_token,
-        });
+        if (data?.access_token)
+          updateIntegrationById(integrationData.id, {
+            ...integrationData.metadata,
+            access_token: data?.access_token,
+          });
         return generateLeadInZohoCRM({
           token: data?.access_token,
           refreshToken: "",

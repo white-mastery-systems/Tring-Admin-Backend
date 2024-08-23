@@ -61,7 +61,7 @@
                 class="flex items-center gap-4"
               >
                 <UiButton
-                  class="rounded-[8px] bg-[#ff0000] p-2.5 text-[14px] font-medium text-white hover:bg-red-400"
+                  class="rounded-[8px] bg-[#ff0000] p-2.5 text-[14px] font-medium text-white hover:bg-[#ff0000] hover:brightness-90"
                   @click="deactivateBot"
                 >
                   <!-- Deactivate Bot -->
@@ -101,7 +101,7 @@
               <UiButton
                 variant="destructive"
                 @click="handleDelete"
-                class="bg-[#ff0000] pl-4 hover:bg-[#ff0000]/90"
+                class="bg-[#ff0000] pl-4 hover:bg-[#ff0000]/90 hover:brightness-90"
               >
                 <Icon name="lucide:trash-2" class="h-4 w-4" />
               </UiButton>

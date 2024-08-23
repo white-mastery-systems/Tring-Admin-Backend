@@ -5,6 +5,28 @@
         ? ''
         : 'px-0 pb-2 sm:px-0 md:px-4 md:pt-12 lg:px-4 lg:pt-4 xl:px-4',
     ]"
+    class="w-full py-2"
+    v-if="breadCrumbs?.length > 0"
+  >
+    <UiBreadcrumb>
+      <UiBreadcrumbList>
+        <UiBreadcrumbItem
+          v-for="({ label, to }, index) in breadCrumbs"
+          :key="index"
+        >
+          <UiBreadcrumbLink :href="to">{{ label }}</UiBreadcrumbLink>
+
+          <UiBreadcrumbSeparator v-if="index < breadCrumbs.length - 1" />
+        </UiBreadcrumbItem>
+      </UiBreadcrumbList>
+    </UiBreadcrumb>
+  </div>
+  <div
+    :class="[
+      props.disablePadding
+        ? ''
+        : 'px-0 pb-2 sm:px-0 md:px-4 md:pt-12 lg:px-4 lg:pt-4 xl:px-4',
+    ]"
   >
     <div class="mb-2 flex items-center justify-between">
       <div v-if="props.title" class="flex items-center gap-4">
@@ -28,7 +50,9 @@
 
       <slot name="actionButtons"></slot>
     </div>
+
     <LazyUiSelectSeparator v-if="!props.disableSelector" class="" />
+
     <div
       :class="[
         props.disableElevation
@@ -56,6 +80,7 @@
       subTitle?: string;
       customBackRouter?: string;
       disableSelector?: boolean;
+      breadCrumbs?: any;
     }>(),
     {
       wrapInPage: true,
@@ -67,6 +92,7 @@
       disableBackButton: false,
       titleSize: "medium",
       disableSelector: false,
+      breadCrumbs: [],
     },
   );
   const router = useRouter();
