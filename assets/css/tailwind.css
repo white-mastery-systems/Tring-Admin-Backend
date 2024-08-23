@@ -153,6 +153,7 @@
 
 .ui-select-trigger {
   border: none;
+  width: auto;
 }
 
 .ui-select-trigger:focus {

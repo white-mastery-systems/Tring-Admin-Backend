@@ -33,16 +33,18 @@
   >
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <div v-else class="flex flex-col justify-center">
-    <div class="h-[70px] border-b-[1px] border-[#80808036] px-2 px-6 py-[3px]">
-      <div class="text-[20px] font-bold">Billing</div>
-      <div class="text-[12px]">
-        Manage your subscription and billing information
-      </div>
-    </div>
-    <div
-      class="field_shadow mt-[30px] w-[97%] self-center rounded-lg bg-[#fffff]"
-    >
+  <page
+    v-else
+    title="Billing"
+    sub-title="Manage your subscription and billing information"
+    :disableSelector="false"
+    :disable-back-button="true"
+  >
+    <!-- <div class="text-[12px]">
+      Manage your subscription and billing information
+    </div> -->
+    <!-- field_shadow -->
+    <div class="w-full self-center rounded-lg bg-[#fffff]">
       <div
         class="flex items-center justify-between rounded-t-xl border-b-[1px] border-[#80808036] px-[30px] py-5 text-[18px] font-bold"
       >
@@ -62,7 +64,7 @@
           <span
             class="rounded-[11px] bg-[#d9dbe6] px-2.5 py-[3px] text-[12px] font-medium capitalize text-[#00000080]"
           >
-            {{ usage?.plan_code?.replace("_", " ") }}
+            {{ usage?.plan_code?.replaceAll("_", " ") }}
           </span>
         </div>
       </div>
@@ -85,10 +87,7 @@
         <span
           class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]"
         >
-          {{
-            Number(usageDetails?.planSessions) +
-            Number(usageDetails?.extraChatsMade)
-          }}
+          {{ Number(usageDetails?.chatsUsedInPlan) }}
         </span>
       </div>
       <div
@@ -98,7 +97,7 @@
         <span
           class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]"
         >
-          {{ usageDetails?.chatsUsedInPlan }}
+          {{ usageDetails?.planSessions }}
         </span>
       </div>
 
@@ -132,18 +131,10 @@
           class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]"
         >
           Rs. {{ usageDetails?.extraChatsCost }}
-
-          <!-- ({{
-            Number(usageDetails?.extraChatsMade) /
-            Number(
-              Number(usageDetails?.extraChatsCost) /
-                Number(usageDetails?.extraChatsMade),
-            )
-          }}) -->
         </span>
       </div>
     </div>
-  </div>
+  </page>
 </template>
 <!-- //TODO Bread crumps for all the pages //TODO leads button is larger in size
 (priority) //TODO table scrolling should be removed //TODO free plan should not

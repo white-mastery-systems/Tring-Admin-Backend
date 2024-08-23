@@ -1,25 +1,16 @@
 <template>
-  <div class="px-[25px] py-[7px]">
-    <div class="header-align flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <UiButton variant="ghost" size="icon" @click="handleGoBack">
-          <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
-        </UiButton>
-        <span class="text-[20px] font-bold">{{ botDetails.name }}</span>
-      </div>
-
-      <ConfirmationModal
-        v-model:open="modelOpen"
-        title="Confirm Delete"
-        description="Are you sure you want to delete ?"
-        @confirm="handleDeleteBot"
-      />
-    </div>
-    <div class="mt-[30px]">
+  <page
+    :title="botDetails.name ?? ''"
+    :disableSelector="true"
+    :disable-back-button="false"
+  >
+    <div class="mt-[30px] px-2">
       <div
         class="mb-[35px] flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[20px] pr-[0px] pt-[10px]"
       >
-        <div class="flex w-full items-center justify-between">
+        <div
+          class="flex w-full flex-col items-start justify-between sm:flex-row"
+        >
           <div class="items-cetner flex gap-4">
             <div
               v-if="botDetails.documentId"
@@ -28,7 +19,10 @@
               <div
                 class="flex h-[6px] w-[6px] items-center rounded-full bg-[#1abb00]"
               ></div>
-              <span class="md:text-[13px] lg:text-[16px]">Active</span>
+              <span
+                class="text-[15px] sm:text-[15px] md:text-[17px] lg:text-[16px] xl:text-[16px]"
+                >Active</span
+              >
             </div>
             <!-- v-else -->
             <div
@@ -41,54 +35,76 @@
               <span class="md:text-[14px] lg:text-[16px]">Inactive</span>
             </div>
           </div>
-          <div class="flex items-center gap-4">
-            <span class="font-bold text-black md:text-[14px] lg:text-[17px]"
+          <div
+            class="flex flex-col items-start justify-center gap-4 sm:flex-row sm:items-center lg:items-center xl:items-center"
+          >
+            <span
+              class="text-[15px] font-bold text-black sm:text-[15px] md:text-[17px] lg:text-[17px] xl:text-[17px]"
               >Date Created:
               <span
-                class="font-medium text-black md:text-[13px] lg:text-[15px]"
+                class="font-medium text-black md:text-[17px] lg:text-[15px]"
                 >{{ dateFormate }}</span
               >
             </span>
-            <UiButton
-              class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px]"
-              @click="handleActivateBot"
-              :disabled="isSubmitting"
-              v-if="!botDetails.documentId"
-            >
-              Activate Bot</UiButton
-            >
-            <span v-if="botDetails.documentId" class="flex gap-4">
+            <div class="flex items-center gap-3">
               <UiButton
-                class="rounded-[8px] bg-[#ff0000] p-2.5 text-[14px] font-medium text-white"
-                @click="deactivateBot"
-                >Deactivate Bot
+                class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px]"
+                @click="handleActivateBot"
+                :disabled="isSubmitting"
+                v-if="!botDetails.documentId"
+              >
+                Activate Bot</UiButton
+              >
+              <span
+                v-if="botDetails.documentId"
+                class="flex items-center gap-4"
+              >
+                <UiButton
+                  class="rounded-[8px] bg-[#ff0000] p-2.5 text-[14px] font-medium text-white"
+                  @click="deactivateBot"
+                >
+                  <!-- Deactivate Bot -->
+                  <span class="hidden lg:inline"> Deactivate Bot </span>
+                  <!-- Icon for small screens -->
+                  <span class="flex items-center justify-center lg:hidden">
+                    <Icon name="bx:block" class="h-5 w-5" />
+                  </span>
+                </UiButton>
+                <ConfirmationModal
+                  v-model:open="modalOpen"
+                  title="Confirm Deactivation"
+                  description="Are you sure you want to deactivate bot ?"
+                  @confirm="deactivateBotDialog"
+                />
+                <UiButton
+                  as="a"
+                  :href="previewUrl"
+                  target="_blank"
+                  class="bg-[#474df9] text-[14px] font-medium text-white hover:bg-[#474df9] hover:brightness-90"
+                >
+                  <span class="hidden lg:inline"> Preview Bot </span>
+                  <span class="flex items-center justify-center lg:hidden">
+                    <Icon name="entypo:controller-play" class="h-5 w-5" />
+                  </span>
+                </UiButton>
+                <UiButton
+                  class="bg-[#e1dede] text-black hover:bg-[#d4d2d2]"
+                  @click="copyScript"
+                >
+                  <span class="hidden lg:inline"> Copy Script </span>
+                  <span class="flex items-center justify-center lg:hidden">
+                    <Icon name="mdi:content-copy" class="h-4 w-4 text-white" />
+                  </span>
+                </UiButton>
+              </span>
+              <UiButton
+                variant="destructive"
+                @click="handleDelete"
+                class="bg-[#ff0000] pl-4 hover:bg-[#ff0000]/90"
+              >
+                <Icon name="lucide:trash-2" class="h-4 w-4" />
               </UiButton>
-              <ConfirmationModal
-                v-model:open="modalOpen"
-                title="Confirm Deactivation"
-                description="Are you sure you want to deactivate bot ?"
-                @confirm="deactivateBotDialog"
-              />
-              <UiButton
-                as="a"
-                :href="previewUrl"
-                target="_blank"
-                class="bg-[#474df9] text-[14px] font-medium text-white hover:bg-[#474df9] hover:brightness-90"
-                >Preview Bot</UiButton
-              >
-              <UiButton
-                class="bg-[#e1dede] text-black hover:bg-[#d4d2d2]"
-                @click="copyScript"
-                >Copy Script</UiButton
-              >
-            </span>
-            <UiButton
-              variant="destructive"
-              @click="handleDelete"
-              class="bg-[#ff0000] pl-4 hover:bg-[#ff0000]/90"
-            >
-              <Icon name="lucide:trash-2" />
-            </UiButton>
+            </div>
           </div>
 
           <!-- <span class="font-semibold content-align">Date Created</span>
@@ -159,7 +175,7 @@
         </NuxtLink>
       </div>
     </div>
-  </div>
+  </page>
 </template>
 <script setup lang="ts">
   definePageMeta({

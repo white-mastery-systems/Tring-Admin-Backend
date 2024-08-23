@@ -1,45 +1,20 @@
 <template>
-  <div
-    v-if="isPageLoading"
-    class="grid h-[80vh] place-items-center text-[#424BD1]"
-  >
+  <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <div v-else class="main-containter grid h-[100vh] place-content-center">
-    <div class="header-align mb-2">
-      <div class="flex items-center gap-2">
-        <UiButton variant="ghost" size="icon" @click="router.back()">
-          <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
-        </UiButton>
-        <span class="text-[20px] font-bold">Billing </span>
-        <span class="text-[16px] text-lg font-bold"></span>
-      </div>
-      <div class="flex items-center space-x-4">
-        <!-- <span :class="true ? 'select_btn' : 'btn_align'">
-          <button>Monthly</button>
-        </span> -->
-      </div>
-    </div>
-    <div
-      class="xs:grid-cols-2 billing-details-card-align my-4 grid max-h-[90vh] gap-4 md:grid-cols-2 lg:grid-cols-4"
-    >
+  <page v-else title="Billing" :description="true" :disableSelector="true">
+    <div class="xs:grid-cols-2 billing-details-card-align my-3 my-4 grid max-h-[90vh] gap-4 md:grid-cols-2 lg:grid-cols-4">
       <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->
-      <div
-        :class="[
-          'main_card_align relative border-2 hover:border-yellow-500',
-          orgBilling?.plan_code === list.plan_code
-            ? 'border-2 border-yellow-500'
-            : '',
-          'w-full',
-        ]"
-        v-for="(list, index) in billingVariation"
-        :key="index"
-      >
-        <div
-          v-if="orgBilling?.plan_code === list.plan_code"
-          class="absolute right-2 top-2 rounded-md bg-yellow-400 px-3 py-1 text-white"
-        >
+      <div :class="[
+        'main_card_align relative border-2 hover:border-yellow-500',
+        orgBilling?.plan_code === list.plan_code
+          ? 'border-2 border-yellow-500'
+          : '',
+        'w-full',
+      ]" v-for="(list, index) in billingVariation" :key="index">
+        <div v-if="orgBilling?.plan_code === list.plan_code"
+          class="absolute right-2 top-2 rounded-md bg-yellow-400 px-3 py-1 text-white">
           Current Plan
         </div>
         <div class="type-color text-[23px] font-bold">
@@ -58,11 +33,7 @@
           {{ list.benefitContent }}
         </div>
         <div class="benefit_inside_list">
-          <div
-            class="flex items-center gap-2"
-            v-for="(advancedList, ListIndex) in list.benefitList"
-            :key="ListIndex"
-          >
+          <div class="flex items-center gap-2" v-for="(advancedList, ListIndex) in list.benefitList" :key="ListIndex">
             <span class="flex items-start">
               <TicIcon v-if="advancedList.availableInPlan" />
               <CloseIcon v-else />
@@ -91,7 +62,7 @@
         </button>
       </div>
     </div>
-  </div>
+  </page>
 </template>
 <script setup lang="ts">
   const router = useRouter();

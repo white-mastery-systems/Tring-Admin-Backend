@@ -1,33 +1,45 @@
 <template>
   <Page title="testing" :disable-back-button="false">
     <div class="mx-8 flex justify-around gap-8">
-      <UiTabs default-value="Client Info" class="self-start">
-        <UiTabsList class="bg-[#ffffff] text-[#424bd1] grid w-[50%] items-end grid-cols-2" default-value="Client Info">
-          <UiTabsTrigger value="Client Info"
-            class="tab-align flex justify-start w-auto text-[15px] p-0 text-[#8a8a8a] font-black relative inline-flex no-underline text-left">
+      <UiTabs default-value="Info" class="self-start">
+        <UiTabsList
+          class="grid w-[50%] grid-cols-2 items-end bg-[#ffffff] text-[#424bd1]"
+          default-value="Client Info"
+        >
+          <UiTabsTrigger
+            value="Info"
+            class="tab-align relative flex inline-flex w-auto justify-start p-0 text-left text-[15px] font-black text-[#8a8a8a] no-underline"
+          >
             Info
           </UiTabsTrigger>
         </UiTabsList>
         <UiTabsContent value="Client Info" v-if="true">
-          <div v-for="(key, index) in clientInfoList" class="flex flex-col items-start my-2">
-            <span class="font-medium uppercase">{{ key.content }}: <span class="ml-2 font-bold">
+          <div
+            v-for="(key, index) in clientInfoList"
+            class="my-2 flex flex-col items-start"
+          >
+            <span class="font-medium uppercase"
+              >{{ key.content }}:
+              <span class="ml-2 font-bold">
                 {{ key.value }}
               </span>
             </span>
           </div>
           <div class="py-2">
             <audio controls>
-              <source type="audio/ogg">
-              <source type="audio/mpeg">
+              <source type="audio/ogg" />
+              <source type="audio/mpeg" />
               Your browser does not support the audio element.
             </audio>
           </div>
-
         </UiTabsContent>
       </UiTabs>
-      <div class="chatinfo-align w-[50%] h-[75vh] bg-[#ffffff] overflow-y-hidden rounded-lg shadow">
+      <div
+        class="chatinfo-align h-[75vh] w-[50%] overflow-y-hidden rounded-lg bg-[#ffffff] shadow"
+      >
         <div
-          class="flex items-center justify-between font-medium w-full h-[70px] bg-[#424bd1] text-[#ffffff] px-[20px]">
+          class="flex h-[70px] w-full items-center justify-between bg-[#424bd1] px-[20px] font-medium text-[#ffffff]"
+        >
           <div class="flex items-center gap-2">
             <span class="text-[14px]">
               test
@@ -42,13 +54,14 @@
           <div class="w-full p-[20px]">
             <!-- {{ messageList }} -->
             <!-- v-if="messageList.role === 'user'" -->
-            <div class="flex flex-col items-end w-[100%]">
+            <div class="flex w-[100%] flex-col items-end">
               <span class="text-[14px]" style="color: #8a8a8a">
                 <!-- {{ leadData?.botUser?.name }} -->
                 tester name
               </span>
               <div
-                class="bg-[#766ddb] text-[#ffffff] min-w-[20%] max-w-[80%] min-h-[80px] p-[10px] gap-2.5 mt[10px] flex flex-col items-end justify-center rounded-l-xl rounded-br-xl">
+                class="mt[10px] flex min-h-[80px] min-w-[20%] max-w-[80%] flex-col items-end justify-center gap-2.5 rounded-l-xl rounded-br-xl bg-[#766ddb] p-[10px] text-[#ffffff]"
+              >
                 <!-- <div>{{ messageList.content }}</div> -->
                 How do you handle customer interactions?
                 <div class="text-[12px] opacity-60">
@@ -67,15 +80,19 @@
               </span>
               <!-- ai-reply-align -->
               <div
-                class="flex flex-col mt-[10px] min-h-[80px] bg-[#ffffff] p-[20px] gap-2 rounded-r-xl rounded-bl-xl shadow">
+                class="mt-[10px] flex min-h-[80px] flex-col gap-2 rounded-r-xl rounded-bl-xl bg-[#ffffff] p-[20px] shadow"
+              >
                 <MdText
-                  :content="'I use client-specific entities for customer interactions and can perform actions like booking appointments or checking balances to ensure efficient communication'" />
+                  :content="'I use client-specific entities for customer interactions and can perform actions like booking appointments or checking balances to ensure efficient communication'"
+                />
                 <div class="flex flex-col">
                   <div class="flex items-center gap-2">
                     <!-- v-for="(btn, btnIndex) in JSON.parse(messageList.content)
                 .canned" :key="btnIndex" -->
                     <div class="flex items-center" v-if="false">
-                      <p class="text-[#424bd1] w-auto rounded-xl py-[10px] border-1 border-[#424bd1]	">
+                      <p
+                        class="border-1 w-auto rounded-xl border-[#424bd1] py-[10px] text-[#424bd1]"
+                      >
                         <!-- {{ btn.title }} -->
                       </p>
                     </div>
@@ -98,73 +115,77 @@
 </template>
 
 <script setup lang="ts">
-import MdText from "~/components/MdText.vue";
+  import MdText from "~/components/MdText.vue";
 
-definePageMeta({
-  middleware: "admin-only",
-});
+  definePageMeta({
+    middleware: "admin-only",
+  });
 
-// const router = useRouter();
-// const route = useRoute();
-// const paramId: any = route;
-// const leadData = await getLeadTranscript(paramId.params.id);
-const clientInfoList = ref([
-  {
-    content: 'customer Name',
-    value: 'Raj',
-  }, {
-    content: 'Call From',
-    value: '+1234567890',
-  }, {
-    content: 'Call To',
-    value: '+1234567890',
-  }, {
-    content: 'Customer Location',
-    value: 'Chennai, Tamilnadu,',
-  }, {
-    content: 'Call SID',
-    value: 'IN1243243',
-  },
-])
-// const details = computed(() => {
-//   if (!leadData) return [undefined, undefined];
-//   const { params, ...rest } = leadData.metadata as Record<string, any>;
-//   return [Object.entries(rest), Object.entries(params)];
-// });
+  // const router = useRouter();
+  // const route = useRoute();
+  // const paramId: any = route;
+  // const leadData = await getLeadTranscript(paramId.params.id);
+  const clientInfoList = ref([
+    {
+      content: "customer Name",
+      value: "Raj",
+    },
+    {
+      content: "Call From",
+      value: "+1234567890",
+    },
+    {
+      content: "Call To",
+      value: "+1234567890",
+    },
+    {
+      content: "Customer Location",
+      value: "Chennai, Tamilnadu,",
+    },
+    {
+      content: "Call SID",
+      value: "IN1243243",
+    },
+  ]);
+  // const details = computed(() => {
+  //   if (!leadData) return [undefined, undefined];
+  //   const { params, ...rest } = leadData.metadata as Record<string, any>;
+  //   return [Object.entries(rest), Object.entries(params)];
+  // });
 
-// const isDeleteConfirmationOpen = ref(false);
-// const handleDelete = async () => {
-//   isDeleteConfirmationOpen.value = false;
+  // const isDeleteConfirmationOpen = ref(false);
+  // const handleDelete = async () => {
+  //   isDeleteConfirmationOpen.value = false;
 
-//   await $fetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
-//     method: "DELETE",
-//   });
-//   return navigateTo({ name: "leads" });
-// };
+  //   await $fetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
+  //     method: "DELETE",
+  //   });
+  //   return navigateTo({ name: "leads" });
+  // };
 </script>
 <style scoped>
-.tab-align:active {
-  color: rgba(66, 75, 209, 1);
-  font-weight: 800;
-  text-decoration: underline;
-  text-underline-offset: 8px;
-}
+  .tab-align:active {
+    color: rgba(66, 75, 209, 1);
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 8px;
+  }
 
-[data-active="true"] {
-  color: rgba(66, 75, 209, 1);
-  font-weight: 800;
-  text-decoration: underline;
-  text-underline-offset: 8px;
-}
+  [data-active="true"] {
+    color: rgba(66, 75, 209, 1);
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 8px;
+  }
 
-.tab-align::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -3px;
-  width: 100%;
-  height: 0.5px;
-  background-color: rgba(138, 138, 138, 0.5);
-  text-decoration: none;
-}
+  .tab-align::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 100%;
+    height: 0.5px;
+    background-color: rgba(138, 138, 138, 0.5);
+    text-decoration: none;
+  }
 </style>

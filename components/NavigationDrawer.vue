@@ -5,8 +5,10 @@
     <div class="flex h-[20vh]">
       <img src="assets\icons\tring_AI_logo.svg" width="80" height="80" />
     </div>
+    <!-- <div> -->
     <NuxtLink
       to="/"
+      @click="handleNavigation"
       class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium sm:w-[90%] md:w-[80%] xl:w-[90%]"
       :class="[
         route.path === '/' ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]',
@@ -19,6 +21,7 @@
     </NuxtLink>
     <NuxtLink
       to="/leads"
+      @click="handleNavigation"
       class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium sm:w-[90%] md:w-[80%] xl:w-[90%]"
       :class="[
         route.path?.includes('/leads')
@@ -30,7 +33,7 @@
         <Icon
           name="lucide:chart-no-axes-column-increasing"
           :class="[
-            'h-2 w-2 sm:h-2 sm:w-2 md:h-3 md:w-3 lg:h-4 lg:w-6 xl:h-4 xl:w-6',
+            'h-4 w-4',
 
             route.path?.includes('/leads') ? 'text-[#fff]' : 'text-[#424bd1]',
           ]"
@@ -39,6 +42,7 @@
       <span class="text-[14px]">Leads</span>
     </NuxtLink>
     <NuxtLink
+      @click="handleNavigation"
       to="/bots"
       class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium sm:w-[90%] md:w-[80%] xl:w-[90%]"
       :class="[
@@ -50,7 +54,7 @@
       <Icon
         name="lucide:bot"
         :class="[
-          'h-2 w-2 sm:h-2 sm:w-2 md:h-3 md:w-3 lg:h-6 lg:w-6 xl:h-6 xl:w-6',
+          'h-4 w-4',
           route.path?.includes('/bots') ? 'text-[#fff]' : 'text-[#424bd1]',
         ]"
       />
@@ -58,6 +62,7 @@
     </NuxtLink>
     <NuxtLink
       to="/settings"
+      @click="handleNavigation"
       class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium sm:w-[90%] md:w-[80%] xl:w-[90%]"
       :class="[
         route.path?.includes('settings')
@@ -74,6 +79,7 @@
     </NuxtLink>
     <NuxtLink
       to="/billing"
+      @click="handleNavigation"
       class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium sm:w-[90%] md:w-[80%] xl:w-[90%]"
       :class="[
         route.path?.includes('/billing')
@@ -109,8 +115,11 @@
 </template>
 <script setup lang="ts">
   import { HomeIcon, SettingsIcon, WalletIcon } from "lucide-vue-next";
+
   const route = useRoute();
   const modalOpen = ref(false);
+  const emit = defineEmits(["closeSheet"]);
+
   const confirmModel = () => {
     modalOpen.value = true;
   };
@@ -118,5 +127,8 @@
   const handleLogout = () => {
     authHandlers.logout();
     modalOpen.value = false;
+  };
+  const handleNavigation = () => {
+    emit("closeSheet");
   };
 </script>

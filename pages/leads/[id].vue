@@ -1,132 +1,124 @@
 <template>
-  <div
-    v-if="isPageLoading"
-    class="grid h-[80vh] place-items-center text-[#424BD1]"
+  <Page
+    :title="leadData?.botUser?.name ?? ''"
+    :disable-back-button="false"
+    :disable-elevation="true"
   >
-    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
-  </div>
-  <div v-else class="p-[15px]">
-    <div class="flex items-center justify-between pb-[20px]">
-      <div class="flex gap-2">
-        <div class="flex items-center gap-2">
-          <UiButton variant="ghost" size="icon" @click="router.back()">
-            <Icon name="ic:round-arrow-back-ios-new" class="h-5 w-5" />
-          </UiButton>
-          <span class="text-lg font-bold">{{ leadData?.botUser?.name }}</span>
-        </div>
-      </div>
-      <!-- <UiButton variant="destructive" class="bg-[#ff0000] hover:bg-[#ff0000]/90"
-        @click="isDeleteConfirmationOpen = true">
-        <Icon name="lucide:trash-2" />
-      </UiButton> -->
-    </div>
-  </div>
-  <!-- <template> -->
-  <div class="mx-8 flex justify-around gap-8">
-    <!-- <div> -->
-    <!-- <div>{{ getLeadTranscriptList[0].metadata }}</div> -->
-    <UiTabs default-value="Client Info" class="w-[250px]">
-      <UiTabsList
-        class="group-tap-align grid w-full grid-cols-2"
-        default-value="Client Info"
-      >
-        <UiTabsTrigger value="Client Info" class="tab-align text-[15px]">
-          Client Info
-        </UiTabsTrigger>
-        <UiTabsTrigger value="Campaign info" class="tab-align text-[15px]">
-          Campaign info
-        </UiTabsTrigger>
-      </UiTabsList>
-      <UiTabsContent value="Client Info">
-        <div class="client_info_align gap-2">
-          <span v-for="[key, value] in details[0]" class="font-medium uppercase"
-            >{{ key }}: <span class="ml-2 font-bold">{{ value }}</span></span
-          >
-        </div>
-      </UiTabsContent>
-      <UiTabsContent value="Campaign info">
-        <div class="client_info_align gap-2">
-          <span
-            v-for="[key, value] in details[1]"
-            class="max-w-full font-medium uppercase"
-            >{{ key }}:
-            <span class="ml-2 max-w-[50%] truncate font-bold">{{
-              value
-            }}</span></span
-          >
-        </div>
-      </UiTabsContent>
-    </UiTabs>
-    <!-- </div> -->
-    <!-- {{ getLeadTranscriptList[0].messages.map((item: any) ) }} -->
-    <div class="chatinfo-align rounded-lg">
+    <div
+      class="items-top xs:grid-cols-2 flex grid grid-cols-1 gap-[25px] lg:grid-cols-2"
+    >
+      <!-- mx-8 -->
       <div
-        class="chat-header-align flex items-center justify-between font-medium"
+        class="flex w-full justify-around gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]"
       >
-        <div class="flex items-center gap-2">
-          <!-- <div class="rounded-full profile-align"></div> -->
-          <span class="text-[14px]">
-            {{ leadData?.bot?.name }}
-          </span>
-        </div>
-        <!-- <div>
-            <img src="assets/icons/chat_menu.svg" width="30" height="30" />
-          </div> -->
-      </div>
-      <div class="all-message-align">
-        <div
-          class="chat-container-align"
-          v-for="(messageList, messageIndex) in leadData?.messages.slice(1)"
-          :key="messageIndex"
-        >
-          <!-- {{ messageList }} -->
-          <div class="message-left-align" v-if="messageList.role === 'user'">
-            <span class="text-[14px]" style="color: #8a8a8a">
-              {{ leadData?.botUser?.name }}
-            </span>
-            <div
-              class="current-user flex items-end justify-center rounded-l-xl rounded-br-xl"
-            >
-              <div>{{ messageList.content }}</div>
-              <div class="text-[12px] opacity-60">
-                {{ formatDate(new Date(messageList.createdAt), "hh:mm a") }}
-              </div>
-            </div>
-          </div>
-          <div
-            class="message-right-align"
-            v-if="messageList.role === 'assistant'"
+        <UiTabs default-value="Client Info" class="w-full self-start">
+          <UiTabsList
+            class="grid w-[80%] grid-cols-2 items-end bg-[#ffffff] text-[#424bd1]"
+            default-value="Client Info"
           >
-            <span class="text-[14px]" style="color: #8a8a8a">{{
-              leadData?.bot.metadata.prompt.NAME
-            }}</span>
-            <div
-              class="ai-reply-align flex flex-col gap-2 rounded-r-xl rounded-bl-xl"
+            <UiTabsTrigger
+              value="Client Info"
+              class="tab-align relative flex inline-flex w-auto justify-start p-0 text-left text-[15px] font-black text-[#8a8a8a] no-underline"
             >
-              <MdText :content="JSON.parse(messageList.content).response" />
-              <div class="flex flex-col">
-                <div class="flex items-center gap-2">
-                  <div
-                    class="flex items-center"
-                    v-for="(btn, btnIndex) in JSON.parse(messageList.content)
-                      .canned"
-                    :key="btnIndex"
-                  >
-                    <p class="pricing-align-btn rounded-xl">{{ btn.title }}</p>
-                  </div>
-                  <!-- <Uibutton class="rounded-xl pricing-align-btn">{{ JSON.parse(messageList.content).canned[0].title }}
-                  </Uibutton> -->
-                </div>
-                <div class="self-end text-[12px] text-[#00000066]">
+              Client Info
+            </UiTabsTrigger>
+            <UiTabsTrigger
+              value="Campaign info"
+              class="tab-align relative flex inline-flex w-auto justify-start p-0 text-left text-[15px] font-black text-[#8a8a8a] no-underline"
+            >
+              Campaign info
+            </UiTabsTrigger>
+          </UiTabsList>
+          <UiTabsContent value="Client Info">
+            <div class="client_info_align gap-2">
+              <span
+                v-for="[key, value] in details[1]"
+                class="max-w-full font-medium uppercase"
+                >{{ key }}:
+                <span class="ml-2 max-w-[50%] truncate font-bold">{{
+                  value
+                }}</span></span
+              >
+            </div>
+          </UiTabsContent>
+          <UiTabsContent value="Campaign info">
+            <div class="client_info_align gap-2">
+              <span
+                v-for="[key, value] in details[1]"
+                class="font-medium uppercase"
+                >{{ key }}:
+                <span class="ml-2 font-bold">{{ value }}</span></span
+              >
+            </div>
+          </UiTabsContent>
+        </UiTabs>
+      </div>
+      <div
+        class="field_shadow h-[75vh] w-full overflow-hidden rounded-lg bg-[#ffffff] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]"
+      >
+        <div
+          class="chat-header-align flex items-center justify-between font-medium"
+        >
+          <div class="flex items-center gap-2">
+            <span class="text-[14px]">{{ leadData?.bot?.name }}</span>
+          </div>
+        </div>
+        <div class="all-message-align">
+          <div
+            class="chat-container-align"
+            v-for="(messageList, messageIndex) in leadData?.messages.slice(1)"
+            :key="messageIndex"
+          >
+            <!-- User Message -->
+            <div class="message-left-align" v-if="messageList.role === 'user'">
+              <span class="text-[14px]" style="color: #8a8a8a">{{
+                leadData?.botUser?.name
+              }}</span>
+              <div
+                class="current-user flex items-end justify-center rounded-l-xl rounded-br-xl"
+              >
+                <div>{{ messageList.content }}</div>
+                <div class="text-[12px] opacity-60">
                   {{ formatDate(new Date(messageList.createdAt), "hh:mm a") }}
                 </div>
               </div>
             </div>
+            <!-- Assistant Message -->
+            <div
+              class="message-right-align"
+              v-if="messageList.role === 'assistant'"
+            >
+              <span class="text-[14px]" style="color: #8a8a8a">{{
+                leadData?.bot.metadata.prompt.NAME
+              }}</span>
+              <div
+                class="ai-reply-align flex flex-col gap-2 rounded-r-xl rounded-bl-xl"
+              >
+                <MdText :content="JSON.parse(messageList.content).response" />
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="flex items-center"
+                      v-for="(btn, btnIndex) in JSON.parse(messageList.content)
+                        .canned"
+                      :key="btnIndex"
+                    >
+                      <p class="pricing-align-btn rounded-xl">
+                        {{ btn.title }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="self-end text-[12px] text-[#00000066]">
+                    {{ formatDate(new Date(messageList.createdAt), "hh:mma") }}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </Page>
   <ConfirmationModal
     v-model:open="isDeleteConfirmationOpen"
     title="Confirm Delete"
@@ -228,13 +220,13 @@
     /* Ensure no additional decoration */
   }
 
-  .chatinfo-align {
-    width: 50%;
-    height: 75vh;
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
-    overflow-y: hidden;
-  }
+  /* .chatinfo-align {
+  width: 50%;
+  height: 75vh;
+  background: #ffffff;
+  box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.05) !important;
+  overflow-y: hidden;
+} */
 
   .chat-header-align {
     width: 100%;

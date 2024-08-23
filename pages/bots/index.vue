@@ -3,7 +3,7 @@
   <div
     class="h-full overflow-hidden py-0 sm:px-[10px] md:px-[25px] lg:px-[25px]"
   >
-    <div class="header-align flex items-center justify-between">
+    <div class="header-align flex items-center justify-between mt-3 sm:mt-3 lg:mt-0 xl:mt-0">
       <span class="text-[20px] font-bold">Bot Management</span>
       <div class="flex gap-4">
         <UiDialog>
@@ -14,7 +14,7 @@
               Add Bot
             </UiButton>
           </UiDialogTrigger>
-          <UiDialogContent>
+          <UiDialogContent class="w-[90%] rounded-xl">
             <UiDialogHeader>
               <UiDialogTitle>Add a New Bot</UiDialogTitle>
             </UiDialogHeader>
