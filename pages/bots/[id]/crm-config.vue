@@ -77,7 +77,7 @@
     }),
 
     columnHelper.accessor("projectId", {
-      header: "project",
+      header: "Connected To",
     }),
     columnHelper.accessor("actions", {
       header: "actions",
@@ -101,7 +101,9 @@
       projectId:
         item.integration?.crm === "zoho-bigin"
           ? `${item?.metadata?.pipelineObj?.Pipeline.name}`
-          : (item.metadata?.projectId ?? "N/A"),
+          : item.integration?.crm === "zoho-crm"
+            ? `${item?.metadata?.layoutObj?.name}`
+            : (item.metadata?.projectId ?? "N/A"),
       id: item.id,
     }));
   });
