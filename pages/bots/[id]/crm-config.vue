@@ -1,14 +1,5 @@
 <template>
-  <Page
-    title="CRM Configuration"
-    :bread-crumbs="[
-      { label: 'Bot', to: '/bot' },
-      { label: 'Bot', to: '/bot' },
-      { label: 'Bot', to: '/bot' },
-      { label: 'Bot', to: '/bot' },
-    ]"
-    :disableSelector="true"
-  >
+  <Page title="CRM Configuration" :disableSelector="true">
     <template #actionButtons>
       <UiButton
         @click="crmConfigModalState.open = true"

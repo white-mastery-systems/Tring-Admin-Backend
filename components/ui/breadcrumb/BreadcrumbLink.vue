@@ -14,7 +14,7 @@
 <template>
   <Primitive
     :as="NuxtLink"
-    class="text-xs"
+    class="text-md"
     :as-child="asChild"
     :class="cn('transition-colors hover:text-foreground', props.class)"
   >

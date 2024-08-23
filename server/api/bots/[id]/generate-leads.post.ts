@@ -60,7 +60,6 @@ export default defineEventHandler(async (event) => {
       });
       console.log({ generatedLead: JSON.stringify(generatedLead) });
     } else if (botIntegration?.integration?.crm === "zoho-crm") {
-      console.log("ZOHO CRM ");
       const name = body?.botUser?.name?.split(" ");
       let firstName = body?.botUser?.name;
       let lastName = null;
