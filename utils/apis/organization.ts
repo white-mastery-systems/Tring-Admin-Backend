@@ -16,11 +16,10 @@ export const getAnalyticsData = async () => {
 };
 export const filterAnalyticsData = async (value: any) => {
   try {
-    const response = await useLazyFetch("/api/org/analytics", {
-      method: "POST",
-      body: { period: value },
-    });
-    return response; // Handle the response as needed
+    const response = await useLazyFetch(`/api/org/analytics`, {
+      params: { period: value },
+    })
+    return response;
   } catch (error) {
     console.error("Error fetching analytics data:", error);
   }
