@@ -2,25 +2,26 @@ const db = useDrizzle();
 
 interface QueryInterface {
   q?: string;
+  botId?: string;
+  from?: Date | null;
+  to?: Date | null;
 }
 export const listLeads = async (
   organizationId: string,
   query: QueryInterface,
 ) => {
   let filters: any = [eq(leadSchema.organizationId, organizationId)];
+
+  if (query?.botId) {
+    filters.push(eq(leadSchema.botId, query.botId));
+  }
+
   if (query?.q) {
-    // filters.push(like(botUserSchema.name, `%${query.q}%`));
-    // const data = await db
-    //   .select()
-    //   .from(leadSchema)
-    //   .rightJoin(botUserSchema, and(eq(botUserSchema.id, leadSchema.botUserId)))
-    //   .where(
-    //     and(
-    //       eq(leadSchema.organizationId, organizationId),
-    //       like(botUserSchema.name, `%${query.q}%`),
-    //     ),
-    //   );
-    // .where(like(botUserSchema.name, `%${query.q}%`))
+    filters.push(ilike(botUserSchema.name, `%${query.q}%`));
+  }
+
+  if (query?.from && query?.to) {
+    filters.push(between(leadSchema.createdAt, query.from, query.to));
   }
 
   const leads = await db.query.leadSchema.findMany({
@@ -35,6 +36,8 @@ export const listLeads = async (
       botUser: {
         columns: {
           name: true,
+          email: true,
+          mobile: true,
         },
       },
     },

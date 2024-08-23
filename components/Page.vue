@@ -1,6 +1,12 @@
 <template>
-  <div class="px-0 py-2 sm:px-0 md:px-4 lg:px-4 xl:px-4">
-    <div class="mb-4 flex items-center justify-between">
+  <div
+    :class="[
+      props.disablePadding
+        ? ''
+        : 'px-0 pb-2 pt-4 sm:px-0 md:px-4 lg:px-4 xl:px-4',
+    ]"
+  >
+    <div class="mb-2 flex items-center justify-between">
       <div v-if="props.title" class="flex items-center gap-4">
         <UiButton
           v-if="!props.disableBackButton"
@@ -11,7 +17,7 @@
           <ChevronLeft className="h-4 w-4" />
         </UiButton>
         <div>
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+          <h3 className=" text-2xl font-semibold tracking-tight">
             {{ title }}
           </h3>
           <h4 v-if="props.subTitle" className="text-[12px]">
@@ -19,18 +25,14 @@
           </h4>
         </div>
       </div>
-      <!-- <template v-for="(comp, index) in actionButtons" :key="index" :is="comp">
-        {{ comp() }}
-      </template> -->
-      <slot name="actionButtons"></slot>
 
-      <!-- {{ actionButtons() }} -->
+      <slot name="actionButtons"></slot>
     </div>
     <LazyUiSelectSeparator v-if="!props.disableSelector" class="" />
     <div
       :class="[
         props.disableElevation
-          ? ''
+        ? ''
           : 'shadow-3xl mt-4 overflow-scroll rounded-md bg-white p-1 sm:p-1 md:p-6 lg:p-6 xl:p-6',
       ]"
     >

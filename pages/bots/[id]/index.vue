@@ -4,9 +4,9 @@
     :disableSelector="true"
     :disable-back-button="false"
   >
-    <div class="mt-[30px] px-2">
+    <div class="">
       <div
-        class="mb-[35px] flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[20px] pr-[0px] pt-[10px]"
+        class="mb-[35px] flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[20px] pr-[0px]"
       >
         <div
           class="flex w-full flex-col items-start justify-between sm:flex-row"
@@ -60,7 +60,7 @@
                 class="flex items-center gap-4"
               >
                 <UiButton
-                  class="rounded-[8px] bg-[#ff0000] p-2.5 text-[14px] font-medium text-white"
+                  class="rounded-[8px] bg-[#ff0000] p-2.5 text-[14px] font-medium text-white hover:bg-red-400"
                   @click="deactivateBot"
                 >
                   <!-- Deactivate Bot -->
@@ -124,7 +124,7 @@
             </UiDialogDescription>
           </UiDialogHeader>
           <UiButton
-            class="deploy-bot-list-align text-[15px] text-black"
+            class="deploy-bot-list-align shadow-3xl bg-white text-[15px] text-black hover:bg-[#fff8eb] hover:text-[#ffbc42]"
             v-for="list in getDocumentList.documents.filter(
               (item: any) => item.status === 'ready',
             )"
@@ -166,12 +166,6 @@
           <div>
             <LeftArrowIcon class="w-[30px] hover:text-[#ffbc42]" />
           </div>
-          <!-- <div v-if="!list.arrowChange">
-          <img src="assets\icons\left_arrow.svg" width="30">
-        </div> -->
-          <!-- <div v-else>
-          <img src="assets\icons\yellow_left_arrow.svg" width="30">
-        </div> -->
         </NuxtLink>
       </div>
     </div>
