@@ -3,13 +3,14 @@
     :title="botDetails.name ?? ''"
     :disableSelector="true"
     :disable-back-button="false"
+    :disable-elevation="true"
   >
     <div class="">
       <div
         class="mb-[35px] flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[20px] pr-[0px]"
       >
         <div
-          class="flex w-full flex-col items-start justify-between sm:flex-row"
+          class="flex w-full flex-col items-center justify-between sm:flex-row"
         >
           <div class="items-cetner flex gap-4">
             <div
