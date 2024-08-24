@@ -4,10 +4,11 @@
     :disableSelector="true"
     :disable-back-button="false"
     :disable-elevation="true"
+    custom-back-router="/bots"
   >
     <div class="">
       <div
-        class="mb-[35px] flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[20px] pr-[0px]"
+        class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[20px] pr-[0px]"
       >
         <div
           class="flex w-full flex-col items-center justify-between sm:flex-row"
@@ -39,14 +40,14 @@
           <div
             class="flex flex-col items-start justify-center gap-4 sm:flex-row sm:items-center lg:items-center xl:items-center"
           >
-            <span
+            <!-- <span
               class="text-[15px] font-bold text-black sm:text-[15px] md:text-[17px] lg:text-[17px] xl:text-[17px]"
               >Date Created:
               <span
                 class="font-medium text-black md:text-[17px] lg:text-[15px]"
                 >{{ dateFormate }}</span
               >
-            </span>
+            </span> -->
             <div class="flex items-center gap-3">
               <UiButton
                 class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px]"
@@ -71,6 +72,12 @@
                     <Icon name="bx:block" class="h-5 w-5" />
                   </span>
                 </UiButton>
+                <ConfirmationModal
+                  v-model:open="modelOpen"
+                  title="Confirm Deactivation"
+                  description="Are you sure you want to delete bot ?"
+                  @confirm="handleDeleteBot"
+                />
                 <ConfirmationModal
                   v-model:open="modalOpen"
                   title="Confirm Deactivation"
@@ -312,9 +319,21 @@
     );
 
     if (activeDocuments.length === 0) {
-      toast.success("Please add document to activate bot");
+      toast.error("Please add document to activate bot");
       return navigateTo({
         name: "bots-id-documents",
+        params: { id: paramId.params.id },
+      });
+    } else if (Object.values(botDetails.value.metadata.prompt)?.length === 0) {
+      toast.error("Please add bot configuration to activate bot");
+      return navigateTo({
+        name: "bots-id-config",
+        params: { id: paramId.params.id },
+      });
+    } else if (Object.values(botDetails.value.metadata.ui)?.length === 0) {
+      toast.error("Please update bot user interface to activate bot");
+      return navigateTo({
+        name: "bots-id-ui-customization",
         params: { id: paramId.params.id },
       });
     }

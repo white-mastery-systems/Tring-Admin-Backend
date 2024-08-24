@@ -46,31 +46,50 @@
 </script>
 <template>
   <div class="flex h-full w-full flex-col items-center justify-center">
-    <div class="lg:w-[80%] w-[90%] px-0 lg:px-6 pb-[20px] font-bold text-[#424bd1]">
+    <div
+      class="w-[90%] px-0 pb-[20px] font-bold text-[#424bd1] lg:w-[80%] lg:px-6"
+    >
       <span> Let’s Get Started </span>
     </div>
-    <div class="flex lg:w-[80%] w-[90%] flex-col px-0 lg:px-6">
+    <div class="flex w-[90%] flex-col px-0 lg:w-[80%] lg:px-6">
       <!-- <div> -->
-      <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" class="mb-4 space-y-6"
-        @submit="authHandlers.login">
+      <UiForm
+        :validation-schema="formSchema"
+        :keep-values="true"
+        :validate-on-mount="false"
+        class="mb-4 space-y-6"
+        @submit="authHandlers.login"
+      >
         <UiFormField v-slot="{ componentField }" name="email">
           <UiFormItem class="w-full">
             <UiFormLabel class="font-bold">E-mail</UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
-                placeholder="Enter Your Email" type="Email" />
+              <UiInput
+                v-bind="componentField"
+                class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
+                placeholder="Enter Your Email"
+                type="Email"
+              />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <div class="mb-5 relative">
+        <div class="relative mb-5">
           <UiFormField v-slot="{ componentField }" name="password">
-            <UiFormItem class="w-full">
+            <UiFormItem class="relative w-full">
               <UiFormLabel class="font-bold">Password</UiFormLabel>
               <UiFormControl>
-                <UiInput v-bind="componentField" class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
-                  placeholder="Enter Your Password" :type="passwordVisible ? 'text' : 'password'" />
-                <div @click="togglePasswordVisibility" type="button" class="pointer absolute right-[10px] top-[38px]">
+                <UiInput
+                  v-bind="componentField"
+                  class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
+                  placeholder="Enter Your Password"
+                  :type="passwordVisible ? 'text' : 'password'"
+                />
+                <div
+                  @click="togglePasswordVisibility"
+                  type="button"
+                  class="absolute right-[10px] top-[38px] cursor-pointer"
+                >
                   <OpenEye v-if="passwordVisible" />
                   <CloseEyeIcon v-else />
                 </div>
@@ -90,7 +109,10 @@
             Sign in
           </button>
         </div> -->
-        <UiButton type="submit" class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]">Sign in
+        <UiButton
+          type="submit"
+          class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
+          >Sign in
         </UiButton>
       </UiForm>
       <!-- <div class="content-align">
@@ -99,7 +121,10 @@
       </div> -->
       <div class="mt-7 flex items-center justify-center gap-1 font-medium">
         <span>Don’t have an account?</span>
-        <NuxtLink to="/auth/sign-up" class="cursor-pointer text-[#424bd1] underline underline-offset-2">
+        <NuxtLink
+          to="/auth/sign-up"
+          class="cursor-pointer text-[#424bd1] underline underline-offset-2"
+        >
           Sign Up
         </NuxtLink>
       </div>
@@ -109,7 +134,11 @@
       <span class="text-[12px] text-[#8a8a8a]">
         By Signing up, I Agree to Tring AI
       </span>
-      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="text-[12px] underline">
+      <a
+        target="_blank"
+        href="https://tringlabs.ai/terms-and-conditions"
+        class="text-[12px] underline"
+      >
         Terms & Conditions
       </a>
     </div>

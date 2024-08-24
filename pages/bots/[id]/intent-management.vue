@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { Icon, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
 
   const showIntentDialog = ref(false);
@@ -11,13 +12,14 @@
 
   const {
     status: intentLoadingStatus,
-    refresh,
+    refresh: intentRefresh,
     data: intentData,
   } = await useLazyFetch(() => `/api/bots/${route.params.id}/intents`, {
     server: false,
     default: () => [],
     transform: (intents) =>
       intents.map((intent) => ({
+        id: intent.id,
         link: intent.link,
         intent: intent.intent,
         createdAt: formatDate(new Date(intent.createdAt), "dd.MM.yyyy"),
@@ -43,6 +45,7 @@
         toast.success("Intent added successfully");
       },
     });
+    intentRefresh();
   };
   const handleSubmit = async (values: any) => {
     const payload: any = {
@@ -60,7 +63,23 @@
       params: { id: botDetails.id },
     });
   };
+  const deleteIntentDialogState: any = ref({
+    open: false,
+    id: "",
+  });
   const columnHelper = createColumnHelper<(typeof intentData.value)[0]>();
+  const actionsComponent = (id: string) =>
+    h(
+      UiButton,
+      {
+        variant: "destructive",
+        onClick: () => {
+          deleteIntentDialogState.value.open = true;
+          deleteIntentDialogState.value.id = id;
+        },
+      },
+      h(Icon, { name: "lucide:trash-2" }),
+    );
   const columns = [
     columnHelper.accessor("intent", {
       header: "Intent Name",
@@ -70,6 +89,13 @@
     }),
     columnHelper.accessor("createdAt", {
       header: "Date Created",
+    }),
+    columnHelper.accessor("actions", {
+      header: "actions",
+      cell: ({ row }) => {
+        console.log({ row });
+        return actionsComponent(row.original.id);
+      },
     }),
   ];
 </script>
@@ -176,6 +202,12 @@
       :data="intentData"
       :page-size="8"
       :is-loading="isIntentLoading"
+    />
+    <ConfirmationModal
+      v-model:open="deleteIntentDialogState.open"
+      title="Confirm Delete"
+      description="Are you sure you want to delete this intent ?"
+      @confirm="deleteIntentDialogState.open = false"
     />
   </Page>
 </template>

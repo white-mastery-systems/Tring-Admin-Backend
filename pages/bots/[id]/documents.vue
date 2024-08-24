@@ -3,6 +3,7 @@
     title="Document Management"
     :disableSelector="true"
     :disable-back-button="false"
+    :disable-elevation="true"
   >
     <div class="bot-manage-main-container">
       <div class="document-align">

@@ -5,97 +5,62 @@
     <div class="flex h-[20vh]">
       <img src="assets\icons\tring_AI_logo.svg" width="80" height="80" />
     </div>
-    <!-- <div> -->
-    <NuxtLink
-      to="/"
-      @click="handleNavigation"
-      class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium sm:w-[90%] md:w-[80%] xl:w-[90%]"
-      :class="[
-        route.path === '/' ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]',
-      ]"
-    >
-      <span>
-        <HomeIcon :color="route.path === '/' ? '#fff' : '#424bd1'" />
-      </span>
-      <span class="text-[14px]">Dashboard</span>
-    </NuxtLink>
-    <NuxtLink
-      to="/leads"
-      @click="handleNavigation"
-      class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium sm:w-[90%] md:w-[80%] xl:w-[90%]"
-      :class="[
-        route.path?.includes('/leads')
-          ? 'bg-[#424bd1] text-[#ffffff]'
-          : 'bg-[#ffffff]',
-      ]"
-    >
-      <span>
-        <Icon
-          name="lucide:chart-no-axes-column-increasing"
-          :class="[
-            'h-4 w-4',
-
-            route.path?.includes('/leads') ? 'text-[#fff]' : 'text-[#424bd1]',
-          ]"
-        />
-      </span>
-      <span class="text-[14px]">Leads</span>
-    </NuxtLink>
-    <NuxtLink
-      @click="handleNavigation"
-      to="/bots"
-      class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium sm:w-[90%] md:w-[80%] xl:w-[90%]"
-      :class="[
-        route.path?.includes('/bots')
-          ? 'bg-[#424bd1] text-[#ffffff]'
-          : 'bg-[#ffffff]',
-      ]"
-    >
-      <Icon
-        name="lucide:bot"
+    <template v-for="{ name, icon, path } in navigationModules" :key="path">
+      <NuxtLink
+        v-if="!!(path !== '/')"
+        :to="path"
+        @click="handleNavigation"
+        class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium sm:w-[90%] md:w-[80%] xl:w-[90%]"
         :class="[
-          'h-4 w-4',
-          route.path?.includes('/bots') ? 'text-[#fff]' : 'text-[#424bd1]',
+          route.path?.includes(path)
+            ? 'bg-[#424bd1] text-[#ffffff]'
+            : 'bg-[#ffffff]',
         ]"
-      />
-      <span class="text-[14px]">Bot Management</span>
-    </NuxtLink>
+      >
+        <component :is="icon"></component>
+
+        <span class="text-[14px]">{{ name }}</span>
+      </NuxtLink>
+      <NuxtLink
+        v-else
+        :to="path"
+        @click="handleNavigation"
+        class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium sm:w-[90%] md:w-[80%] xl:w-[90%]"
+        :class="[
+          route.path === path ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]',
+        ]"
+      >
+        <!-- note i tried merge this if else didn't worked so did this way -->
+        <component :is="icon"></component>
+        <span class="text-[14px]">{{ name }}</span>
+      </NuxtLink>
+    </template>
     <NuxtLink
-      to="/settings"
-      @click="handleNavigation"
-      class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium sm:w-[90%] md:w-[80%] xl:w-[90%]"
+      class="flex w-[90%] items-center gap-2 rounded-xl border-[1px] border-[var(border)] px-2 py-1"
+      to="/account"
       :class="[
-        route.path?.includes('settings')
+        route.path === '/account'
           ? 'bg-[#424bd1] text-[#ffffff]'
           : 'bg-[#ffffff]',
       ]"
     >
-      <span>
-        <SettingsIcon
-          :color="route.path?.includes('settings') ? '#fff' : '#424bd1'"
+      <UiAvatar>
+        <UiAvatarImage
+          class="capitalize"
+          :src="userInfo?.profile_image"
+          :alt="userInfo?.username"
         />
-      </span>
-      <span class="text-[14px]">Settings</span>
+        <UiAvatarFallback>{{
+          userInfo?.username?.toUpperCase()?.charAt(0)
+        }}</UiAvatarFallback>
+      </UiAvatar>
+
+      <div class="flex flex-col">
+        <span class="font-bold capitalize">{{ userInfo?.username }}</span>
+        <span>{{ userInfo?.email }}</span>
+      </div>
     </NuxtLink>
-    <NuxtLink
-      to="/billing"
-      @click="handleNavigation"
-      class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium sm:w-[90%] md:w-[80%] xl:w-[90%]"
-      :class="[
-        route.path?.includes('/billing')
-          ? 'bg-[#424bd1] text-[#ffffff]'
-          : 'bg-[#ffffff]',
-      ]"
-    >
-      <span>
-        <WalletIcon
-          :color="route.path?.includes('/billing') ? '#fff' : '#424bd1'"
-        />
-        <!-- <img v-if="route.path?.includes('/billing')" src=" assets\icons\payments_active.svg" width="22" height="22" />
-        <img v-else src="assets\icons\payments_deactive.svg" width="22" height="22" /> -->
-      </span>
-      <span class="text-[14px]">Billing</span>
-    </NuxtLink>
+
     <UiButton
       @click="confirmModel"
       class="mb-8 mt-auto w-3/4 items-start justify-around bg-[#ffffff] pr-12 font-bold text-[#ff0000] hover:bg-gray-300/30 hover:text-[#ff0000] hover:brightness-110"
@@ -114,11 +79,51 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { HomeIcon, SettingsIcon, WalletIcon } from "lucide-vue-next";
+  import {
+    Bot,
+    ChartNoAxesColumnIncreasing,
+    HomeIcon,
+    SettingsIcon,
+    WalletIcon,
+  } from "lucide-vue-next";
+  const { user } = await useUser();
+  // watch(user, (newUserInfo) => {
+  //   console.log({ newUserInfo });
+  // });
+  const userInfo = computed(() => {
+    return user.value;
+  });
 
   const route = useRoute();
   const modalOpen = ref(false);
   const emit = defineEmits(["closeSheet"]);
+  const navigationModules = ref([
+    {
+      name: "Home",
+      icon: HomeIcon,
+      path: "/",
+    },
+    {
+      name: "Leads",
+      icon: ChartNoAxesColumnIncreasing,
+      path: "/leads",
+    },
+    {
+      name: "Bots",
+      icon: Bot,
+      path: "/bots",
+    },
+    {
+      name: "Settings",
+      icon: SettingsIcon,
+      path: "/settings",
+    },
+    {
+      name: "Billing",
+      icon: WalletIcon,
+      path: "/billing",
+    },
+  ]);
 
   const confirmModel = () => {
     modalOpen.value = true;
