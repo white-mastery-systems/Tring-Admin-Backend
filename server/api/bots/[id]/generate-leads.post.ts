@@ -1,6 +1,7 @@
 import {
   generateContactInZohoBigin,
   generateLeadInZohoBigin,
+  generateLeadInZohoCRM,
 } from "~/server/utils/zoho/modules";
 
 export default defineEventHandler(async (event) => {
@@ -54,6 +55,33 @@ export default defineEventHandler(async (event) => {
           Contact_Name: {
             id: generatedContact?.data[0]?.details?.id,
           },
+        },
+        integrationData: botIntegration?.integration,
+      });
+      console.log({ generatedLead: JSON.stringify(generatedLead) });
+    } else if (botIntegration?.integration?.crm === "zoho-crm") {
+      const name = body?.botUser?.name?.split(" ");
+      let firstName = body?.botUser?.name;
+      let lastName = null;
+      if (name?.length > 1) {
+        firstName = name[0];
+        lastName = name[1];
+      }
+
+      const layoutObj = botIntegration?.metadata?.layoutObj;
+      const generatedLead = await generateLeadInZohoCRM({
+        token: botIntegration?.integration?.metadata?.access_token,
+        refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+        body: {
+          Layout: {
+            id: layoutObj?.id,
+          },
+          Lead_Source: "Tring ChatBot",
+          Company: "___",
+          Last_Name: lastName ?? body?.botUser?.name,
+          First_Name: firstName,
+          Email: body?.botUser?.email,
+          Phone: body?.botUser?.phone,
         },
         integrationData: botIntegration?.integration,
       });

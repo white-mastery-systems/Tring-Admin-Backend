@@ -130,6 +130,7 @@
 
         <UiDialogFooter>
           <UiButton
+            color="primary"
             class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
             type="submit"
           >

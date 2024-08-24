@@ -1,12 +1,12 @@
 <template>
   <div class="relavtive default-main-container">
     <div
-      class="lg:flex md:flex border-r border-[#8a8a8a1a] flex-col items-center gap-[20px] overflow-auto w-[270px] hidden">
+      class="hidden md:hidden xl:felx lg:flex border-r border-[#8a8a8a1a] flex-col items-center gap-[20px] overflow-auto w-[270px]">
       <NavigationDrawer />
     </div>
-    <!-- <div>
+    <div class="block sm:block md:block lg:hidden xl:hidden">
       <navigationSheet />
-    </div> -->
+    </div>
     <!-- :style="{ width: (['Sign'].includes(routeName)) ? '100%' : '86%' }" -->
     <div class="main-router-align lg:w-[86%] w-full mt-2 xl:mt-0 lg:mt-0 md:mt-0">
       <slot />
@@ -43,7 +43,7 @@ onMounted( async () => {
   border-right: 2px solid #8a8a8a1a;
 }
 .main-router-align {
-  padding: 30px 10px;
+  /* padding: 30px 10px; */
   /* padding: 0 0 15px 0; */
   height: 100vh;
   overflow-y: scroll;

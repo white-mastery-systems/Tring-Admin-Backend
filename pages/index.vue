@@ -1,89 +1,135 @@
 <template>
-  <div class="dashboard-main-container py-0 px-[25px] ">
-    <div class="flex items-center justify-between pb-[20px]">
-      <span class="text-[23px] font-bold">Dashboard</span>
-      <div class="flex items-center gap-3">
-        <!-- <span class="calender-align">
-          <img src="assets\icons\calendar_month.svg" width="20">
-        </span> -->
-        <!-- <span class="right-dropdown-align text-[15px]" style="color: rgba(138, 138, 138, 1)">Summary:
-          <span class="font-bold text-black">
-            <UiSelect v-model="selectedValue" class="outline-none">
-              <UiSelectTrigger class="ui-select-trigger w-[110px] outline-none">
-                <UiSelectValue />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectGroup class="select_list_align">
-                  <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
-                    :value="list.content">
-                    {{ list.content }}
-                  </UiSelectItem>
-                </UiSelectGroup>
-              </UiSelectContent>
-            </UiSelect>
-          </span>
-        </span> -->
-      </div>
-    </div>
+  <Page
+    :disable-elevation="true"
+    title="Dashboard"
+    :disableSelector="true"
+    :disable-back-button="true"
+  >
+    <template #actionButtons>
+      <span
+        class="-items-ecnter field_shadow flex rounded-lg text-[15px]"
+        style="color: rgba(138, 138, 138, 1)"
+      >
+        <span class="flex -items-center py-2 pl-2"> Summary: </span>
+        <span class="font-bold text-black">
+          <UiSelect
+            v-model="selectedValue"
+            class="outline-none"
+            @change="filterAnalyticsData"
+          >
+            <UiSelectTrigger class="ui-select-trigger w-[110px] outline-none">
+              <UiSelectValue />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup>
+                <UiSelectItem
+                  v-for="(list, index) in menuList"
+                  :key="index"
+                  class="content_align pr-2"
+                  :value="list.content"
+                >
+                  {{ list.content }}
+                </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+        </span>
+      </span>
+    </template>
     <div>
-      <div class="grid gap-6
-         grid-cols-1
-         xs:grid-cols-2
-         lg:grid-cols-4
-         ">
-        <div class="field_shadow flex items-center min-h-[120px] gap-6 bg-white rounded-[10px] p-4">
+      <div
+        class="xs:grid-cols-2 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
+      >
+        <div
+          class="field_shadow flex min-h-[120px] items-center gap-6 rounded-[10px] bg-white p-4"
+        >
           <div class="rounded-md bg-[#ffbc42] p-2">
             <BotIcon />
           </div>
           <div>
-            <div class="text-gray-500 font-semibold text-sm mb-1">Chat Bots</div>
-            <div class="font-extrabold text-2xl text-black">{{ analyticsData?.bots }}</div>
+            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+              Chat Bots
+            </div>
+            <div class="text-3xl font-extrabold text-black">
+              {{ analyticsData?.bots }}
+            </div>
           </div>
         </div>
 
-        <div class="field_shadow flex items-center min-h-[120px] gap-6 bg-white rounded-[10px] p-4">
+        <div
+          class="field_shadow flex min-h-[120px] items-center gap-6 rounded-[10px] bg-white p-4"
+        >
           <div class="rounded-md bg-[#ffbc42] p-2">
             <ChatSession />
           </div>
           <div>
-            <div class="text-gray-500 font-semibold text-sm mb-1">Chat Sessions</div>
-            <div class="font-extrabold text-2xl text-black">{{ analyticsData?.chats }}</div>
+            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+              Chat Sessions
+            </div>
+            <div class="text-3xl font-extrabold text-black">
+              {{ analyticsData?.chats }}
+            </div>
           </div>
         </div>
 
-        <div class="field_shadow flex items-center min-h-[120px] gap-6 bg-white rounded-[10px] p-4">
+        <div
+          class="field_shadow flex min-h-[120px] items-center gap-6 rounded-[10px] bg-white p-4"
+        >
           <div class="rounded-md bg-[#ffbc42] p-2">
             <Leads />
           </div>
           <div>
-            <div class="text-gray-500 font-semibold text-sm mb-1">Chat Leads</div>
-            <div class="font-extrabold text-2xl text-black">{{ analyticsData?.leads }}</div>
+            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+              Chat Leads
+            </div>
+            <div class="text-3xl font-extrabold text-black">
+              {{ analyticsData?.leads }}
+            </div>
           </div>
         </div>
 
-        <div class="field_shadow flex items-center min-h-[120px] gap-6 bg-white rounded-[10px] p-4">
+        <div
+          class="field_shadow flex min-h-[120px] items-center gap-6 rounded-[10px] bg-white p-4"
+        >
           <div class="rounded-md bg-[#ffbc42] p-2">
             <SingleUser />
           </div>
           <div>
-            <div class="text-gray-500 font-semibold text-sm mb-1">Unique Sessions</div>
-            <div class="font-extrabold text-2xl text-black">{{ analyticsData?.users }}</div>
+            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+              Unique Sessions
+            </div>
+            <div class="text-3xl font-extrabold text-black">
+              {{ analyticsData?.users }}
+            </div>
           </div>
         </div>
       </div>
 
       <div class="relative">
-        <div class="field_shadow flex h-[59vh] pb-[20px] rounded-[10px]  my-8 gap-6">
-          <div v-if="analyticsData?.bots > 0" class="w-full relative place-content-center rounded-md bg-white">
-            <UiLineChart :data="lineGraphData" index="month" :categories="['Leads Created', 'Sessions Created']"
-              :colors="['#424bd1', '#ffbc42']" :show-grid-line="true" :show-tooltip="true" :margin="{ right: 20 }"
+        <div
+          class="field_shadow my-8 flex h-[59vh] gap-6 rounded-[10px] pb-[20px]"
+        >
+          <div
+            v-if="analyticsData?.bots > 0"
+            class="relative w-full place-content-center rounded-md bg-white"
+          >
+            <UiLineChart
+              :data="lineGraphData"
+              index="month"
+              :categories="['Leads Created', 'Sessions Created']"
+              :colors="['#424bd1', '#ffbc42']"
+              :show-grid-line="true"
+              :show-tooltip="true"
+              :margin="{ right: 20 }"
               :y-formatter="
                 (tick: any) => {
                   return typeof tick === 'number'
                     ? `${new Intl.NumberFormat('us').format(tick).toString()}`
                     : '';
                 }
-              " class="h-[380px] w-full" />
+              "
+              class="h-[380px] w-full"
+            />
           </div>
           <!-- <div
             class="voice-bot-align relative place-content-center rounded-md bg-white shadow"
@@ -106,12 +152,15 @@
           </div> -->
         </div>
         <!-- <UiLabel class="absolute right-1/3 top-1/3 z-10  -translate-x-3/4 -translate-y-1/3 text-lg">Getting Started by Creating Bots</UiLabel> -->
-        <UiButton v-if="analyticsData?.bots === 0"
+        <UiButton
+          v-if="analyticsData?.bots === 0"
           class="absolute right-1/2 top-1/2 z-10 h-16 w-56 -translate-y-1/2 translate-x-1/2 bg-[#474df9] text-lg text-white hover:bg-[#474df9] hover:brightness-90"
-          @click="getStarted">Get Started</UiButton>
+          @click="getStarted"
+          >Get Started</UiButton
+        >
       </div>
     </div>
-  </div>
+  </Page>
 </template>
 <script setup lang="ts">
   import Leads from "~/components/icons/Leads.vue";
@@ -125,6 +174,36 @@
   const getButtonName = ref("Get Started");
 
   const analyticsData = ref();
+  const menuList = ref([
+    {
+      content: "Today",
+      value: "Today",
+    },
+    {
+      content: "Weekly",
+      value: "Weekly",
+    },
+    {
+      content: "Monthly",
+      value: "Monthly",
+    },
+    {
+      content: "Quarterly",
+      value: "Quarterly",
+    },
+    {
+      content: "Halfyearly",
+      value: "Halfyearly",
+    },
+    {
+      content: "Yearly",
+      value: "Yearly",
+    },
+  ]);
+
+  watch(selectedValue, async (newStatus, previousStatus) => {
+    await filterAnalyticsData(newStatus);
+  });
 
   onMounted(async () => {
     analyticsData.value = await getAnalyticsData();
@@ -238,14 +317,9 @@
       };
     }),
   );
-  // );
 </script>
 <style scoped>
   .focus\:ring-offset-2:focus {
     --tw-ring-offset-width: none;
-  }
-
-  .dashboard-main-container {
-    height: calc(100vh - 30px);
   }
 </style>

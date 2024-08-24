@@ -1,10 +1,7 @@
 <template>
-  <!-- mt-4 -->
-  <div
-    class="h-full overflow-hidden py-0 sm:px-[10px] md:px-[25px] lg:px-[25px]"
-  >
-    <div class="header-align flex items-center justify-between">
-      <span class="text-[20px] font-bold">Bot Management</span>
+
+  <Page title="Bot Management" :disable-back-button="true">
+    <template #actionButtons>
       <div class="flex gap-4">
         <UiDialog>
           <UiDialogTrigger as-child>
@@ -14,7 +11,7 @@
               Add Bot
             </UiButton>
           </UiDialogTrigger>
-          <UiDialogContent>
+          <UiDialogContent class="w-[90%] rounded-xl">
             <UiDialogHeader>
               <UiDialogTitle>Add a New Bot</UiDialogTitle>
             </UiDialogHeader>
@@ -84,41 +81,38 @@
           </span></span
         >
       </div>
-    </div>
-    <div
-      class="bot-main-align field_shadow mt-[30px] max-h-[80vh] overflow-y-scroll bg-[#ffffff] pb-4 sm:px-2 md:px-4 lg:px-4"
-    >
-      <div class="flex items-center gap-2 py-4">
-        <UiInput
-          v-model="searchBot"
-          class="max-w-[200px]"
-          placeholder="Search bot..."
-        />
-        <UiSelect v-model="activeStatus">
-          <UiSelectTrigger class="max-w-[200px]">
-            <UiSelectValue placeholder="Filter status" />
-          </UiSelectTrigger>
-          <UiSelectContent>
-            <UiSelectItem value="true">Active</UiSelectItem>
-            <UiSelectItem value="false">In active</UiSelectItem>
-          </UiSelectContent>
-        </UiSelect>
-      </div>
-
-      <DataTable
-        @row-click="
-          (row: any) => {
-            console.log({ row });
-            return navigateTo(`/bots/${row.original.id}`);
-          }
-        "
-        :columns="columns"
-        :data="bots"
-        :page-size="8"
-        :is-loading="isDataLoading"
+    </template>
+    <div class="flex items-center gap-2 pb-2">
+      <UiInput
+        v-model="searchBot"
+        class="max-w-[200px]"
+        placeholder="Search bot..."
       />
+      <UiSelect v-model="activeStatus">
+        <UiSelectTrigger class="max-w-[200px]">
+          <UiSelectValue placeholder="Filter status" />
+        </UiSelectTrigger>
+        <UiSelectContent>
+          <UiSelectItem value="true">Active</UiSelectItem>
+          <UiSelectItem value="false">In active</UiSelectItem>
+          <UiSelectItem value="all">All</UiSelectItem>
+        </UiSelectContent>
+      </UiSelect>
     </div>
-  </div>
+
+    <DataTable
+      @row-click="
+        (row: any) => {
+          console.log({ row });
+          return navigateTo(`/bots/${row.original.id}`);
+        }
+      "
+      :columns="columns"
+      :data="bots"
+      :page-size="8"
+      :is-loading="isDataLoading"
+    />
+  </Page>
 </template>
 <script setup lang="ts">
   import { createColumnHelper } from "@tanstack/vue-table";

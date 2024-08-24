@@ -1,9 +1,5 @@
 <template>
-  <Page
-    title="CRM Configuration"
-    :subtitle="`(${botDetails.name})`"
-    :disableSelector="true"
-  >
+  <Page title="CRM Configuration" :disableSelector="true">
     <template #actionButtons>
       <UiButton
         @click="crmConfigModalState.open = true"
@@ -77,7 +73,7 @@
     }),
 
     columnHelper.accessor("projectId", {
-      header: "project",
+      header: "Connected To",
     }),
     columnHelper.accessor("actions", {
       header: "actions",
@@ -101,7 +97,9 @@
       projectId:
         item.integration?.crm === "zoho-bigin"
           ? `${item?.metadata?.pipelineObj?.Pipeline.name}`
-          : (item.metadata?.projectId ?? "N/A"),
+          : item.integration?.crm === "zoho-crm"
+            ? `${item?.metadata?.layoutObj?.name}`
+            : (item.metadata?.projectId ?? "N/A"),
       id: item.id,
     }));
   });

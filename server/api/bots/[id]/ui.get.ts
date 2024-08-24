@@ -1,4 +1,4 @@
-export default defineCachedEventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
   const { id } = await isValidRouteParamHandler(event, checkPayloadId("id"));
 
   let bot = await getBotDetailsNoCache(id);

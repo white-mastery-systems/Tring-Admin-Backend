@@ -77,6 +77,40 @@
           v-if="
             integrationsData.find(
               (integration) => integration.id === values.integrationId,
+            )?.crm === 'zoho-crm'
+          "
+          v-slot="{ componentField }"
+          name="layoutId"
+        >
+          <UiFormItem class="w-full">
+            <UiFormLabel
+              >Select Layout<UiLabel class="text-lg text-red-500">*</UiLabel>
+            </UiFormLabel>
+            <UiFormControl>
+              <UiSelect
+                v-bind="componentField"
+                @update:model-value="handleCrmChange"
+              >
+                <UiSelectTrigger>
+                  <UiSelectValue placeholder="Select Layout" />
+                </UiSelectTrigger>
+                <UiSelectContent>
+                  <UiSelectItem
+                    v-for="(integrationData, index) in layouts"
+                    :value="integrationData.id"
+                    >{{ integrationData.name }}</UiSelectItem
+                  >
+                </UiSelectContent>
+              </UiSelect>
+            </UiFormControl>
+            <UiFormMessage />
+            <span class="text-xs text-gray-500">Select your layout.</span>
+          </UiFormItem>
+        </UiFormField>
+        <UiFormField
+          v-if="
+            integrationsData.find(
+              (integration) => integration.id === values.integrationId,
             )?.crm === 'sell-do'
           "
           v-slot="{ componentField }"
@@ -128,6 +162,7 @@
 <script setup lang="ts">
   const emit = defineEmits(["success"]);
   let pipelines = ref([]);
+  let layouts = ref([]);
   const modalState = defineModel<any>({
     default: { open: false },
     required: true,
@@ -148,6 +183,11 @@
       );
       console.log({ data: data.layouts });
       pipelines.value = data.data;
+    } else if (matchedCRM.crm === "zoho-crm") {
+      const data: any = await $fetch(
+        `/api/org/integrations/zoho-crm/layouts?id=${matchedCRM.id}`,
+      );
+      layouts.value = data.layouts;
     }
   };
   const {
@@ -161,12 +201,28 @@
   console.log({ integrationsData });
   const route = useRoute("bots-id-crm-config");
   const handleAddIntegration = (value: any) => {
+    let pipelineObj: any = {};
+    let layoutObj: any = {};
     console.log({ value });
-    const pipelineObj = pipelines.value.find(
-      (pipeline) => pipeline.Pipeline.id === value.pipelineId,
-    );
+    if (value?.pipelineId) {
+      pipelineObj = pipelines.value.find(
+        (pipeline) => pipeline.Pipeline.id === value.pipelineId,
+      );
+    } else if (value?.layoutId) {
+      const layoutData: any = layouts.value.find(
+        (pipeline) => pipeline.id === value.layoutId,
+      );
+      console.log({ layoutData });
+      layoutObj = { name: layoutData.name, id: layoutData.id };
+    }
+
     addBotIntegration({
-      payload: { ...value, botId: route.params.id, pipelineObj },
+      payload: {
+        ...value,
+        botId: route.params.id,
+        ...(pipelineObj && { pipelineObj }),
+        ...(layoutObj && { layoutObj }),
+      },
       onSuccess: () => {
         emit("success");
       },
@@ -178,6 +234,7 @@
       campaignId: z.string().optional(),
       projectId: z.string().optional(),
       pipelineId: z.string().optional(),
+      layoutId: z.string().optional(),
     }),
   );
 </script>

@@ -27,7 +27,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
 
 export const documentSchema = chatbotSchema.table("document", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  name: varchar("name", { length: 64 }).notNull(),
+  name: text("name").notNull(),
   status: varchar("status", {
     enum: ["processing", "ready", "error"],
   })
