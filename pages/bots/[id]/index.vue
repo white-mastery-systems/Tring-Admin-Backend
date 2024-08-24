@@ -72,12 +72,7 @@
                     <Icon name="bx:block" class="h-5 w-5" />
                   </span>
                 </UiButton>
-                <ConfirmationModal
-                  v-model:open="modelOpen"
-                  title="Confirm Deactivation"
-                  description="Are you sure you want to delete bot ?"
-                  @confirm="handleDeleteBot"
-                />
+
                 <ConfirmationModal
                   v-model:open="modalOpen"
                   title="Confirm Deactivation"
@@ -112,6 +107,12 @@
               >
                 <Icon name="lucide:trash-2" class="h-4 w-4" />
               </UiButton>
+              <ConfirmationModal
+                v-model:open="deleteModalState"
+                title="Are you sure?"
+                description="Are you sure you want to delete bot ?"
+                @confirm="handleDeleteBot"
+              />
             </div>
           </div>
 
@@ -132,7 +133,7 @@
             </UiDialogDescription>
           </UiDialogHeader>
           <UiButton
-            class="deploy-bot-list-align shadow-3xl bg-white text-[15px] text-black hover:bg-[#fff8eb] hover:text-[#ffbc42]"
+            class="deploy-bot-list-align bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42]"
             v-for="list in getDocumentList.documents.filter(
               (item: any) => item.status === 'ready',
             )"
@@ -191,7 +192,7 @@
   const route = useRoute("bots-id");
   const paramId: any = route;
   const botDetails = ref(await getBotDetails(paramId.params.id));
-  const modelOpen = ref(false);
+  const deleteModalState = ref(false);
   const modalOpen = ref(false);
   const isDocumentListOpen = ref(false);
   const isSubmitting = ref(false);
@@ -304,11 +305,12 @@
   };
 
   const handleDelete = () => {
-    modelOpen.value = true;
+    deleteModalState.value = true;
+    console.log(deleteModalState.value, "deleteModalState");
   };
 
   const handleDeleteBot = () => {
-    modelOpen.value = false;
+    deleteModalState.value = false;
     deleteBot(route.params.id);
   };
 
