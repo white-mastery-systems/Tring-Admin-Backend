@@ -101,5 +101,3 @@ export default defineEventHandler(async (event) => {
   });
   return botIntegratsions;
 });
-//TODO change url redirections zoho add prod urls as well
-//TODO change nuxt.config.ts in databot since john changed it

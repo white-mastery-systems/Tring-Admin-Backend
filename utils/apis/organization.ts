@@ -11,19 +11,21 @@ export const getLeadTranscript = async (chatId: any) => {
   return await $fetch(`/api/org/chat/${chatId}`);
 };
 
-export const getAnalyticsData = async () => {
-  return await $fetch(`/api/org/analytics`);
+export const getAnalyticsData = async (period: string = "this-month") => {
+  return await $fetch(`/api/org/analytics`, {
+    params: { period },
+  });
 };
-export const filterAnalyticsData = async (value: any) => {
-  try {
-    const response = await useLazyFetch(`/api/org/analytics`, {
-      params: { period: value },
-    })
-    return response;
-  } catch (error) {
-    console.error("Error fetching analytics data:", error);
-  }
-};
+// export const filterAnalyticsData = async (value: any) => {
+//   try {
+//     const response = await useLazyFetch(`/api/org/analytics`, {
+//       params: { period: value },
+//     })
+//     return response;
+//   } catch (error) {
+//     console.error("Error fetching analytics data:", error);
+//   }
+// };
 export const createIntegration = async ({
   integrationDetails,
   onSuccess,

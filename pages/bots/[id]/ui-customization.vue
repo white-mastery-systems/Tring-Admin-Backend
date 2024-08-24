@@ -3,6 +3,7 @@
     title="UI Customization"
     :disableSelector="true"
     :disable-back-button="false"
+    :disable-elevation="true"
   >
     <div>
       <UiForm

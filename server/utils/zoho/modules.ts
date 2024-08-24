@@ -1,17 +1,40 @@
-export function getAllPipelinesFromZohoBigin({ token }: { token: string }) {
-  try {
-    const data = $fetch(
-      "https://www.zohoapis.in/bigin/v2/Pipelines?fields=Sub_Pipeline,Pipeline,Stage",
-      {
-        headers: {
-          Authorization: `Zoho-oauthtoken ${token}`,
-        },
+export function getAllPipelinesFromZohoBigin({
+  token,
+  refreshToken,
+  integrationData,
+}: {
+  token: string;
+  refreshToken: String;
+  integrationData: any;
+}) {
+  const data = $fetch(
+    "https://www.zohoapis.in/bigin/v2/Pipelines?fields=Sub_Pipeline,Pipeline,Stage",
+    {
+      headers: {
+        Authorization: `Zoho-oauthtoken ${token}`,
       },
-    );
-    return data;
-  } catch (err) {
-    console.log("MESS", err.data);
-  }
+    },
+  ).catch((err: any) => {
+    console.log("err", JSON.stringify(err.data));
+    if (!refreshToken) return;
+    if (err.status === 401) {
+      return regenearateTokenWithRefreshToken({
+        refreshToken: refreshToken,
+      }).then(async (data: any) => {
+        if (data?.access_token)
+          updateIntegrationById(integrationData.id, {
+            ...integrationData.metadata,
+            access_token: data?.access_token,
+          });
+        return getAllPipelinesFromZohoBigin({
+          token: data?.access_token,
+          refreshToken: "",
+          integrationData: integrationData,
+        });
+      });
+    }
+  });
+  return data;
 }
 
 export function generateLeadInZohoBigin({
@@ -120,7 +143,7 @@ export function getAllLayoutsFromZohoCRM({
     console.log("err", JSON.stringify(err.data));
     if (!refreshToken) return;
     if (err.status === 401) {
-      regenearateTokenWithRefreshToken({
+      return regenearateTokenWithRefreshToken({
         refreshToken: refreshToken,
       }).then(async (data: any) => {
         if (data?.access_token)

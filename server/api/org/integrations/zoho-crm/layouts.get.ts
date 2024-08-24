@@ -11,6 +11,6 @@ export default defineEventHandler(async (event) => {
   return await getAllLayoutsFromZohoCRM({
     token: integrationData?.metadata?.access_token,
     refreshToken: integrationData?.metadata?.refresh_token,
-    integrationData: integrationData?.metadata,
+    integrationData: integrationData,
   });
 });
