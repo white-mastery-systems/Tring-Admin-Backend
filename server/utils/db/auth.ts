@@ -28,7 +28,10 @@ export const ifUserAlreadyExists = async (username: string, email: string) => {
 export const getUserByUsernameAndEmail = async ({
   email,
   password,
-}: Pick<SelectRawUser, "email" | "password">) => {
+}: {
+  email: string;
+  password?: string;
+}) => {
   const user = await db.query.authUserSchema.findFirst({
     where: or(
       eq(authUserSchema.username, email),
@@ -39,6 +42,8 @@ export const getUserByUsernameAndEmail = async ({
   if (!user) {
     return null;
   }
+
+  if (!password) return user;
 
   const isPasswordValid = await new Argon2id().verify(user.password, password);
   if (!isPasswordValid) {

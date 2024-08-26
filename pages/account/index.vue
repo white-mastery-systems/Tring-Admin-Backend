@@ -85,6 +85,7 @@
         color="primary"
         class="w-[200px] justify-self-end"
         type="submit"
+        :disabled="isUpdating"
       >
         Update Profile
       </UiButton>
@@ -92,7 +93,7 @@
   </Page>
 </template>
 <script setup lang="ts">
-  const { user } = await useUser();
+  const { user, refreshUser } = await useUser();
   const userInfo = computed<Record<string, string>>(() => {
     if (!user?.value) {
       return {};
@@ -106,14 +107,31 @@
     return result;
   });
   const accountSchema = toTypedSchema(
-    z.object({
-      username: z.string().min(2, "Name must be at least 2 characters."),
-      email: z.string().email().default(""),
-      password: z.string().optional().default(""),
-      confirmPassword: z.string().optional().default(""),
-    }),
+    z
+      .object({
+        username: z.string().min(2, "Name must be at least 2 characters."),
+        email: z.string().email().default(""),
+        password: z.string().optional().default(""),
+        confirmPassword: z.string().optional().default(""),
+      })
+      .refine((data) => data.password === data.confirmPassword, {
+        message: "Passwords do not match.",
+        path: ["confirmPassword"], // Point to the field that has the issue
+      }),
   );
-  const handleAccountUpdate = (values) => {
-    console.log({ values });
+
+  const isUpdating = ref(false);
+  const handleAccountUpdate = async (values: Record<string, string>) => {
+    try {
+      isUpdating.value = true;
+      await $fetch("/api/user", { method: "PUT", body: values });
+      refreshUser();
+      toast.success("Account updated successfully");
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to update account, please try again");
+    } finally {
+      isUpdating.value = false;
+    }
   };
 </script>
