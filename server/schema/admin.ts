@@ -39,9 +39,6 @@ export const billingSchema = adminSchema.table("billing", {
   customer_metadata: jsonb("customer_metadata"),
 });
 
-export type InsertIntegration = InferInsertModel<typeof integrationSchema>;
-export type SelectIntegration = InferSelectModel<typeof integrationSchema>;
-
 export const integrationSchema = adminSchema.table("integration", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   user_id: uuid("user_id")
@@ -52,6 +49,18 @@ export const integrationSchema = adminSchema.table("integration", {
     .references(() => organizationSchema.id),
   name: varchar("name", { length: 64 }).notNull(),
   crm: varchar("crm", { length: 64 }).notNull(),
+  metadata: jsonb("metadata").default({}).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const timeline = adminSchema.table("timeline", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  user_id: uuid("user_id")
+    .notNull()
+    .references(() => authUserSchema.id),
+  org_id: uuid("org_id")
+    .notNull()
+    .references(() => organizationSchema.id),
   metadata: jsonb("metadata").default({}).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
@@ -82,6 +91,9 @@ export const billingRelations = relations(billingSchema, ({ one }) => ({
 // Types
 export type SelectOrganization = InferSelectModel<typeof organizationSchema>;
 export type InsertOrganization = InferInsertModel<typeof organizationSchema>;
+
+export type InsertIntegration = InferInsertModel<typeof integrationSchema>;
+export type SelectIntegration = InferSelectModel<typeof integrationSchema>;
 
 // Validation
 export const zodInsertOrganization = createInsertSchema(organizationSchema, {
