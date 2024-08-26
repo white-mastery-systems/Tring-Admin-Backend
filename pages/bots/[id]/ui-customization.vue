@@ -1,6 +1,10 @@
 <template>
   <page
     title="UI Customization"
+    :bread-crumbs="[
+      {label: `${botDetails.name}`, to: `/bots/${botDetails.id}`},
+      {label: 'UI Customization', to: `/bots/${botDetails.id}/ui-customization`},
+    ]"
     :disableSelector="true"
     :disable-back-button="false"
     :disable-elevation="true"

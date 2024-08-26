@@ -112,6 +112,10 @@
 <template>
   <Page
     title="Bot Configuration"
+    :bread-crumbs="[
+      {label: `${botDetails.name}`, to: `/bots/${botDetails.id}`},
+      {label: 'Bot Configuration', to: `/bots/${botDetails.id}/config`},
+    ]"
     :description="true"
     :disableSelector="false"
     :disable-back-button="false"
