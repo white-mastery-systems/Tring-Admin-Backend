@@ -73,7 +73,7 @@
         id: chat.id,
         location: `${chat.metadata?.city} - ${chat.metadata?.state} `,
         createdAt: "Aug 2024",
-        mode: chat.metadata?.mode,
+        mode: chat.metadata?.mode ?? "Live",
       }));
     },
     //   bots.map((bot) => ({
