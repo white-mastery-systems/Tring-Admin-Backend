@@ -20,13 +20,11 @@ export const chatBotSchema = chatbotSchema.table("bot", {
   documentId: uuid("document_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   metadata: jsonb("metadata").default({
-    ui: {
-      color: "236 61% 54%",
-      widgetPosition: "Right",
-    },
-    crm: {},
+    ui: { color: "236 61% 54%", widgetPosition: "Right" },
     prompt: {},
+    crm: {},
   }),
+  channels: jsonb("channels").default({ whatsapp: {} }),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
@@ -73,6 +71,7 @@ export const botUserSchema = chatbotSchema.table(
 export const chatSchema = chatbotSchema.table("chats", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   metadata: jsonb("metadata"),
+  channel: varchar("channel", { length: 64 }).notNull().default("website"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 
   botUserId: uuid("bot_user_id").references(() => botUserSchema.id, {
@@ -104,25 +103,35 @@ export const messageSchema = chatbotSchema.table("messages", {
     .notNull(),
 });
 
-export const leadSchema = chatbotSchema.table("leads", {
-  id: uuid("id").notNull().primaryKey().defaultRandom(),
-  crmLeadId: varchar("crm_lead_id", { length: 128 }),
-  metadata: jsonb("metadata"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+export const leadSchema = chatbotSchema.table(
+  "leads",
+  {
+    id: uuid("id").notNull().primaryKey().defaultRandom(),
+    crmLeadId: varchar("crm_lead_id", { length: 128 }),
+    metadata: jsonb("metadata"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
 
-  botId: uuid("bot_id")
-    .references(() => chatBotSchema.id)
-    .notNull(),
-  botUserId: uuid("bot_user_id")
-    .references(() => botUserSchema.id)
-    .notNull(),
-  chatId: uuid("chat_id")
-    .references(() => chatSchema.id)
-    .notNull(),
-  organizationId: uuid("organization_id")
-    .references(() => organizationSchema.id)
-    .notNull(),
-});
+    botId: uuid("bot_id")
+      .references(() => chatBotSchema.id)
+      .notNull(),
+    botUserId: uuid("bot_user_id")
+      .references(() => botUserSchema.id)
+      .notNull(),
+    chatId: uuid("chat_id")
+      .references(() => chatSchema.id)
+      .notNull(),
+    organizationId: uuid("organization_id")
+      .references(() => organizationSchema.id)
+      .notNull(),
+  },
+  (table) => ({
+    leadConstraint: unique("leads_unique_constraint").on(
+      table.botId,
+      table.botUserId,
+      table.organizationId,
+    ),
+  }),
+);
 
 export const botIntentSchema = chatbotSchema.table("intents", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -149,6 +158,7 @@ export const botIntegrationSchema = chatbotSchema.table("bot_integrations", {
     .references(() => organizationSchema.id)
     .notNull(),
 });
+
 export const analyticsSchema = chatbotSchema.table("analytics", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   sessions: integer("sessions").default(0),
