@@ -1,6 +1,10 @@
 <template>
   <Page
     title="Document Management"
+    :bread-crumbs="[
+      {label: `${botDetails.name}`, to: `/bots/${botDetails.id}`},
+      {label: 'Document Management', to: `/bots/${botDetails.id}/documents`},
+    ]"
     :disableSelector="true"
     :disable-back-button="false"
     :disable-elevation="true"
@@ -154,7 +158,7 @@
   const paramId: any = route;
   const selectedFile = ref();
   const myPopover: any = ref(null);
-  // const botDetails: any = await getBotDetails(paramId.params.id)
+  const botDetails: any = await getBotDetails(paramId.params.id)
   // const documents = ref();
   const documentFetchInterval = ref<NodeJS.Timeout>();
 

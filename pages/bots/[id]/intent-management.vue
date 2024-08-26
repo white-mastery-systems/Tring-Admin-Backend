@@ -102,6 +102,10 @@
 <template>
   <Page
     title="Intent Mangement"
+    :bread-crumbs="[
+      {label: `${botDetails.name}`, to: `/bots/${botDetails.id}`},
+      {label: 'Intent Management', to: `/bots/${botDetails.id}/intent-management`},
+    ]"
     :disableSelector="true"
     :disable-back-button="false"
   >

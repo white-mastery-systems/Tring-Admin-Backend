@@ -2,9 +2,8 @@
   <Page
     title="CRM Configuration"
     :bread-crumbs="[
-      { label: 'Bot', to: '/bot' },
-      { label: 'John', to: '/bot' },
-      { label: 'Crm config', to: '/bot' },
+      {label: `${botDetails.name}`, to: `/bots/${botDetails.id}`},
+      {label: 'CRM Configuration', to: `/bots/${botDetails.id}/crm-config`},
     ]"
     :disableSelector="true"
   >

@@ -13,6 +13,7 @@
         <UiBreadcrumbItem
           v-for="({ label, to }, index) in breadCrumbs"
           :key="index"
+          :class="index === breadCrumbs.length - 1 ? 'text-blue-600' : ''"
         >
           <UiBreadcrumbLink :href="to">{{ label }}</UiBreadcrumbLink>
 
