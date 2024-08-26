@@ -58,21 +58,21 @@
             </div>
           </div>
         </div>
-        <!-- <div
+        <div
           class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
         >
           <div class="rounded-md bg-[#ffbc42] p-2">
-            <BotIcon />
+            <ChatSession />
           </div>
           <div>
             <div class="mb-1 text-[16px] font-semibold text-gray-500">
-              Sessions
+              Interacted Chats
             </div>
             <div class="text-3xl font-extrabold text-black">
-              {{ analyticsData?.sessions }}
+              {{ analyticsData?.interactedChats[0]?.count ?? 0 }}
             </div>
           </div>
-        </div> -->
+        </div>
 
         <div
           class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
