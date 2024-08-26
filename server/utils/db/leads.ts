@@ -18,9 +18,9 @@ export const listLeads = async (
     }
 
     if (query?.q) {
-      filters.push({
-        botUser: ilike(botUserSchema.name, `%${query.q}%`),
-      });
+      // filters.push({
+      //   botUser: ilike(botUserSchema.name, `%${query.q}%`),
+      // });
       // filters.push(sql`${botUserSchema.name} ilike ${`%${query.q}%`}`);
     }
 
@@ -28,11 +28,8 @@ export const listLeads = async (
       filters.push(between(leadSchema.createdAt, query.from, query.to));
     }
 
-    const leads = await db.query.leadSchema.findMany({
-      where: and(
-        ...filters,
-        query?.q ? ilike(botUserSchema.name, query.q) : undefined, // Apply the botUser filter here
-      ),
+    let leads = await db.query.leadSchema.findMany({
+      where: and(...filters),
       with: {
         bot: {
           columns: {
@@ -40,16 +37,16 @@ export const listLeads = async (
           },
         },
         botUser: {
-          // where: query?.q ? ilike(botUserSchema.name, query?.q) : undefined,
-          columns: {
-            name: true,
-            email: true,
-            mobile: true,
-          },
+          where: query?.q ? ilike(botUserSchema.name, query?.q) : undefined,
         },
       },
+
       orderBy: [desc(leadSchema.createdAt)],
     });
+    if (query?.q)
+      leads = leads.filter((lead) => {
+        return lead.botUser !== null;
+      });
 
     return leads;
   } catch (err) {

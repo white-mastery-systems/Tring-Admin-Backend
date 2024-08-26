@@ -1,13 +1,49 @@
 <template>
   <div
-    class="flex h-[100vh] w-[250px] flex-col items-center justify-center gap-5 bg-[#ffffff]"
+    class="flex h-[100vh] w-[250px] flex-col items-center justify-center gap-5 overflow-y-scroll bg-[#ffffff] pt-[80px] sm:pt-[80px] md:pt-[80px] lg:pt-0 xl:pt-0"
   >
     <div class="flex h-[20vh]">
       <img src="assets\icons\tring_AI_logo.svg" width="80" height="80" />
     </div>
-    <template v-for="{ name, icon, path } in navigationModules" :key="path">
+
+    <template
+      v-for="{ name, icon, path, children } in navigationModules"
+      :key="path"
+    >
+      <UiAccordion
+        v-if="children?.length > 0"
+        type="single"
+        class="w-[90%]"
+        collapsible
+      >
+        <UiAccordionItem :value="path" class="shadow-md border-0 bg-white">
+          <div
+            class="field_shadow flex cursor-pointer items-center gap-3 rounded-[10px] px-[16px] font-medium"
+            :class="[
+              route.path?.includes(path)
+                ? 'rounded-bl rounded-br bg-[#424bd1] text-[#ffffff]'
+                : '',
+            ]"
+          >
+            <component :is="icon"></component>
+            <UiAccordionTrigger class="w-full no-underline hover:no-underline">
+              {{ name }}</UiAccordionTrigger
+            >
+          </div>
+          <UiAccordionContent
+            v-for="(item, index) in children"
+            :key="item.path"
+            class="text-md border border-none bg-[#F0F6FF] py-4 pl-4"
+            :class="[route.path?.includes(item.path) && 'text-[#424bd1]']"
+          >
+            <NuxtLink :to="path + item.path">
+              {{ item.name }}
+            </NuxtLink>
+          </UiAccordionContent>
+        </UiAccordionItem>
+      </UiAccordion>
       <NuxtLink
-        v-if="!!(path !== '/')"
+        v-else-if="!!(path !== '/')"
         :to="path"
         @click="handleNavigation"
         class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium sm:w-[90%] md:w-[80%] xl:w-[90%]"
@@ -30,7 +66,6 @@
           route.path === path ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]',
         ]"
       >
-        <!-- note i tried merge this if else didn't worked so did this way -->
         <component :is="icon"></component>
         <span class="text-[14px]">{{ name }}</span>
       </NuxtLink>
@@ -85,6 +120,7 @@
     HomeIcon,
     MessageCircle,
     SettingsIcon,
+    StarsIcon,
     WalletIcon,
   } from "lucide-vue-next";
   const { user } = await useUser();
@@ -94,6 +130,25 @@
   const userInfo = computed(() => {
     return user.value;
   });
+  const accordionItems = [
+    {
+      value: "item-1",
+      title: "Is it accessible?",
+      content: "Yes. It adheres to the WAI-ARIA design pattern.",
+    },
+    {
+      value: "item-2",
+      title: "Is it unstyled?",
+      content:
+        "Yes. It's unstyled by default, giving you freedom over the look and feel.",
+    },
+    {
+      value: "item-3",
+      title: "Can it be animated?",
+      content:
+        "Yes! You can use the transition prop to configure the animation.",
+    },
+  ];
 
   const route = useRoute();
   const modalOpen = ref(false);
@@ -103,33 +158,54 @@
       name: "Home",
       icon: HomeIcon,
       path: "/",
+      children: [],
     },
     {
-      name: "Leads",
+      name: "Analytics",
       icon: ChartNoAxesColumnIncreasing,
-      path: "/leads",
+      path: "/analytics",
+      children: [
+        {
+          name: "Leads",
+          path: "/leads",
+        },
+        {
+          name: "Chats",
+          icon: MessageCircle,
+          children: [],
+          path: "/chats",
+        },
+      ],
     },
     {
       name: "Bots",
       icon: Bot,
-
       path: "/bots",
+      children: [],
     },
-    {
-      name: "Chats",
-      icon: MessageCircle,
 
-      path: "/chats",
-    },
     {
       name: "Settings",
       icon: SettingsIcon,
       path: "/settings",
+      children: [
+        {
+          name: "Playground",
+          icon: StarsIcon,
+          path: "/playground",
+        },
+        {
+          name: "Integrations",
+          icon: SettingsIcon,
+          path: "/integration",
+        },
+      ],
     },
     {
       name: "Billing",
       icon: WalletIcon,
       path: "/billing",
+      children: [],
     },
   ]);
 
