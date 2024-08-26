@@ -4,10 +4,11 @@
     :disableSelector="true"
     :disable-back-button="false"
     :disable-elevation="true"
+    custom-back-router="/bots"
   >
     <div class="">
       <div
-        class="mb-[35px] flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[20px] pr-[0px]"
+        class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[20px] pr-[0px]"
       >
         <div
           class="flex w-full flex-col items-center justify-between sm:flex-row"
@@ -39,14 +40,14 @@
           <div
             class="flex flex-col items-start justify-center gap-4 sm:flex-row sm:items-center lg:items-center xl:items-center"
           >
-            <span
+            <!-- <span
               class="text-[15px] font-bold text-black sm:text-[15px] md:text-[17px] lg:text-[17px] xl:text-[17px]"
               >Date Created:
               <span
                 class="font-medium text-black md:text-[17px] lg:text-[15px]"
                 >{{ dateFormate }}</span
               >
-            </span>
+            </span> -->
             <div class="flex items-center gap-3">
               <UiButton
                 class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px]"
@@ -71,6 +72,7 @@
                     <Icon name="bx:block" class="h-5 w-5" />
                   </span>
                 </UiButton>
+
                 <ConfirmationModal
                   v-model:open="modalOpen"
                   title="Confirm Deactivation"
@@ -105,6 +107,12 @@
               >
                 <Icon name="lucide:trash-2" class="h-4 w-4" />
               </UiButton>
+              <ConfirmationModal
+                v-model:open="deleteModalState"
+                title="Are you sure?"
+                description="Are you sure you want to delete bot ?"
+                @confirm="handleDeleteBot"
+              />
             </div>
           </div>
 
@@ -125,7 +133,7 @@
             </UiDialogDescription>
           </UiDialogHeader>
           <UiButton
-            class="deploy-bot-list-align shadow-3xl bg-white text-[15px] text-black hover:bg-[#fff8eb] hover:text-[#ffbc42]"
+            class="deploy-bot-list-align bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42]"
             v-for="list in getDocumentList.documents.filter(
               (item: any) => item.status === 'ready',
             )"
@@ -184,7 +192,7 @@
   const route = useRoute("bots-id");
   const paramId: any = route;
   const botDetails = ref(await getBotDetails(paramId.params.id));
-  const modelOpen = ref(false);
+  const deleteModalState = ref(false);
   const modalOpen = ref(false);
   const isDocumentListOpen = ref(false);
   const isSubmitting = ref(false);
@@ -297,11 +305,12 @@
   };
 
   const handleDelete = () => {
-    modelOpen.value = true;
+    deleteModalState.value = true;
+    console.log(deleteModalState.value, "deleteModalState");
   };
 
   const handleDeleteBot = () => {
-    modelOpen.value = false;
+    deleteModalState.value = false;
     deleteBot(route.params.id);
   };
 
@@ -312,9 +321,21 @@
     );
 
     if (activeDocuments.length === 0) {
-      toast.success("Please add document to activate bot");
+      toast.error("Please add document to activate bot");
       return navigateTo({
         name: "bots-id-documents",
+        params: { id: paramId.params.id },
+      });
+    } else if (Object.values(botDetails.value.metadata.prompt)?.length === 0) {
+      toast.error("Please add bot configuration to activate bot");
+      return navigateTo({
+        name: "bots-id-config",
+        params: { id: paramId.params.id },
+      });
+    } else if (Object.values(botDetails.value.metadata.ui)?.length === 0) {
+      toast.error("Please update bot user interface to activate bot");
+      return navigateTo({
+        name: "bots-id-ui-customization",
         params: { id: paramId.params.id },
       });
     }

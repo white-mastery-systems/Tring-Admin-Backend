@@ -25,19 +25,64 @@ export const updateOrganization = async (
     .where(eq(organizationSchema.id, id));
 };
 
-export const getAnalytics = async (organizationId: string) => {
+export const getAnalytics = async (
+  organizationId: string,
+  period = "this-month",
+) => {
+  let fromDate = new Date();
+  let toDate = new Date();
+  toDate.setDate(toDate.getDate() + 1);
+  switch (period) {
+    case "today":
+      fromDate.setDate(fromDate.getDate() - 1);
+      break;
+    case "this-month":
+      fromDate.setMonth(fromDate.getMonth() - 1);
+      break;
+    case "last-month":
+      fromDate.setMonth(fromDate.getMonth() - 2);
+      break;
+    case "this-week":
+      fromDate.setDate(fromDate.getDate() - 7);
+      break;
+    case "6-months":
+      fromDate.setMonth(fromDate.getMonth() - 6);
+      break;
+    case "this-year":
+      fromDate.setFullYear(fromDate.getFullYear() - 1);
+      break;
+
+    default:
+      break;
+  }
+
   const orgData = await db.query.organizationSchema.findFirst({
     where: eq(organizationSchema.id, organizationId),
     with: {
-      botUsers: true,
+      botUsers: {
+        where: and(
+          gte(botUserSchema.createdAt, fromDate),
+          lte(botUserSchema.createdAt, toDate),
+        ),
+      },
       bots: {
+        where: and(
+          gte(chatBotSchema.createdAt, fromDate),
+          lte(chatBotSchema.createdAt, toDate),
+        ),
         with: {
           chats: true,
         },
       },
-      leads: true,
+      leads: {
+        where: and(
+          gte(leadSchema.createdAt, fromDate),
+          lte(leadSchema.createdAt, toDate),
+        ),
+      },
     },
   });
+
   if (!orgData) return undefined;
 
   const orgDataByMonth = await db.execute(sql`SELECT
@@ -66,7 +111,9 @@ ORDER BY
       join chatbot.chats as c on c.bot_id = b.id
       where o.id = ${organizationId}
       GROUP BY to_char(c.created_at, 'Mon YYYY')`);
-
+  const sessions = await db.query.analyticsSchema.findFirst({
+    where: eq(analyticsSchema.organizationId, organizationId),
+  });
   return {
     bots: orgData.bots.length,
     chats: orgData.bots.reduce((acc, bot) => {
@@ -74,6 +121,7 @@ ORDER BY
     }, 0),
     users: orgData.botUsers.length,
     leads: orgData.leads.length,
+    sessions: sessions?.sessions ?? 0,
     graph: {
       leads: leadsGraph.rows,
       sessions: sessionsGraph.rows,

@@ -51,7 +51,7 @@
       <slot name="actionButtons"></slot>
     </div>
 
-    <LazyUiSelectSeparator v-if="!props.disableSelector" class="" />
+    <LazyUiSelectSeparator v-if="!props.disableSelector" class="mb-4" />
 
     <div
       :class="[
@@ -93,6 +93,7 @@
       titleSize: "medium",
       disableSelector: false,
       breadCrumbs: [],
+      
     },
   );
   const router = useRouter();

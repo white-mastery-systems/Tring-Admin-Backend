@@ -1,5 +1,4 @@
 <template>
-
   <Page title="Bot Management" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-4">
@@ -109,8 +108,10 @@
       "
       :columns="columns"
       :data="bots"
-      :page-size="8"
+      :page-size="20"
       :is-loading="isDataLoading"
+      :height="60"
+      height-unit="vh"
     />
   </Page>
 </template>

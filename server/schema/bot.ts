@@ -1,5 +1,6 @@
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
+  integer,
   jsonb,
   text,
   timestamp,
@@ -18,8 +19,14 @@ export const chatBotSchema = chatbotSchema.table("bot", {
   name: varchar("name", { length: 64 }).notNull(),
   documentId: uuid("document_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  metadata: jsonb("metadata").default({ ui: {}, crm: {}, prompt: {} }),
-
+  metadata: jsonb("metadata").default({
+    ui: {
+      color: "236 61% 54%",
+      widgetPosition: "Right",
+    },
+    crm: {},
+    prompt: {},
+  }),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
@@ -49,7 +56,6 @@ export const botUserSchema = chatbotSchema.table(
     mobile: varchar("mobile", { length: 16 }),
     metaData: jsonb("metadata"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
-
     organizationId: uuid("organization_id")
       .references(() => organizationSchema.id, { onDelete: "cascade" })
       .notNull(),
@@ -75,6 +81,10 @@ export const chatSchema = chatbotSchema.table("chats", {
   botId: uuid("bot_id")
     .references(() => chatBotSchema.id, { onDelete: "cascade" })
     .notNull(),
+  organizationId: uuid("organization_id").references(
+    () => organizationSchema.id,
+    { onDelete: "cascade" },
+  ),
 });
 
 export const messageSchema = chatbotSchema.table("messages", {
@@ -133,15 +143,22 @@ export const botIntegrationSchema = chatbotSchema.table("bot_integrations", {
     .references(() => chatBotSchema.id)
     .notNull(),
   metadata: jsonb("metadata"),
-  integrationId: uuid("integration_id")
-    .references(() => integrationSchema.id)
-    .notNull(),
+  integrationId: uuid("integration_id").references(() => integrationSchema.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)
     .notNull(),
 });
-
+export const analyticsSchema = chatbotSchema.table("analytics", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  sessions: integer("sessions").default(0),
+  uniqueSessions: integer("unique_sessions").default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  organizationId: uuid("organization_id")
+    .references(() => organizationSchema.id, { onDelete: "cascade" })
+    .notNull(),
+  botId: uuid("bot_id").references(() => chatBotSchema.id),
+});
 // Relations
 export const chatBotRelations = relations(chatBotSchema, ({ one, many }) => ({
   organization: one(organizationSchema, {
@@ -218,6 +235,19 @@ export const leadsRelations = relations(leadSchema, ({ one }) => ({
   }),
 }));
 
+export const analyticsRelations = relations(
+  analyticsSchema,
+  ({ one, many }) => ({
+    organization: one(organizationSchema, {
+      fields: [analyticsSchema.organizationId],
+      references: [organizationSchema.id],
+    }),
+    bot: one(chatBotSchema, {
+      fields: [analyticsSchema.botId],
+      references: [chatBotSchema.id],
+    }),
+  }),
+);
 // Types
 export type SelectChatBot = Omit<
   InferSelectModel<typeof chatBotSchema>,

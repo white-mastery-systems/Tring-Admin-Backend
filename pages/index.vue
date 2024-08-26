@@ -10,15 +10,18 @@
         class="-items-ecnter field_shadow flex rounded-lg text-[15px]"
         style="color: rgba(138, 138, 138, 1)"
       >
-        <span class="flex -items-center py-2 pl-2"> Summary: </span>
+        <span class="flex -items-center py-2 pl-2"></span>
         <span class="font-bold text-black">
           <UiSelect
             v-model="selectedValue"
             class="outline-none"
             @change="filterAnalyticsData"
           >
-            <UiSelectTrigger class="ui-select-trigger w-[110px] outline-none">
-              <UiSelectValue />
+            <UiSelectTrigger
+              class="ui-select-trigger flex w-[110px] items-center gap-2 outline-none"
+            >
+              <span class="font-thin text-gray-400"> Summary </span
+              ><UiSelectValue />
             </UiSelectTrigger>
             <UiSelectContent>
               <UiSelectGroup>
@@ -26,7 +29,7 @@
                   v-for="(list, index) in menuList"
                   :key="index"
                   class="content_align pr-2"
-                  :value="list.content"
+                  :value="list.value"
                 >
                   {{ list.content }}
                 </UiSelectItem>
@@ -41,7 +44,7 @@
         class="xs:grid-cols-2 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
       >
         <div
-          class="field_shadow flex min-h-[120px] items-center gap-6 rounded-[10px] bg-white p-4"
+          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
         >
           <div class="rounded-md bg-[#ffbc42] p-2">
             <BotIcon />
@@ -55,16 +58,31 @@
             </div>
           </div>
         </div>
+        <!-- <div
+          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
+        >
+          <div class="rounded-md bg-[#ffbc42] p-2">
+            <BotIcon />
+          </div>
+          <div>
+            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+              Sessions
+            </div>
+            <div class="text-3xl font-extrabold text-black">
+              {{ analyticsData?.sessions }}
+            </div>
+          </div>
+        </div> -->
 
         <div
-          class="field_shadow flex min-h-[120px] items-center gap-6 rounded-[10px] bg-white p-4"
+          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
         >
           <div class="rounded-md bg-[#ffbc42] p-2">
             <ChatSession />
           </div>
           <div>
             <div class="mb-1 text-[16px] font-semibold text-gray-500">
-              Chat Sessions
+              Chat sessions
             </div>
             <div class="text-3xl font-extrabold text-black">
               {{ analyticsData?.chats }}
@@ -73,7 +91,7 @@
         </div>
 
         <div
-          class="field_shadow flex min-h-[120px] items-center gap-6 rounded-[10px] bg-white p-4"
+          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
         >
           <div class="rounded-md bg-[#ffbc42] p-2">
             <Leads />
@@ -89,14 +107,14 @@
         </div>
 
         <div
-          class="field_shadow flex min-h-[120px] items-center gap-6 rounded-[10px] bg-white p-4"
+          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
         >
           <div class="rounded-md bg-[#ffbc42] p-2">
             <SingleUser />
           </div>
           <div>
             <div class="mb-1 text-[16px] font-semibold text-gray-500">
-              Unique Sessions
+              Unique visitors
             </div>
             <div class="text-3xl font-extrabold text-black">
               {{ analyticsData?.users }}
@@ -169,7 +187,7 @@
     middleware: "user",
   });
 
-  const selectedValue = ref("Today");
+  const selectedValue = ref("this-month");
 
   const getButtonName = ref("Get Started");
 
@@ -177,32 +195,30 @@
   const menuList = ref([
     {
       content: "Today",
-      value: "Today",
+      value: "today",
     },
     {
-      content: "Weekly",
-      value: "Weekly",
+      content: "This Week",
+      value: "this-week",
     },
     {
-      content: "Monthly",
-      value: "Monthly",
+      content: "This Month",
+      value: "this-month",
     },
     {
-      content: "Quarterly",
-      value: "Quarterly",
+      content: "Last 6 months",
+      value: "6-months",
     },
     {
-      content: "Halfyearly",
-      value: "Halfyearly",
-    },
-    {
-      content: "Yearly",
-      value: "Yearly",
+      content: "This Year",
+      value: "this-year",
     },
   ]);
 
-  watch(selectedValue, async (newStatus, previousStatus) => {
-    await filterAnalyticsData(newStatus);
+  watch(selectedValue, async (period) => {
+    const data = await getAnalyticsData(period);
+    console.log({ data });
+    analyticsData.value = data;
   });
 
   onMounted(async () => {

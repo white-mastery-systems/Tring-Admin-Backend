@@ -1,6 +1,14 @@
 <template>
-  <Page title="CRM Configuration" :disableSelector="true">
-    <template #actionButtons>
+  <Page
+    title="CRM Configuration"
+    :bread-crumbs="[
+      { label: 'Bot', to: '/bot' },
+      { label: 'John', to: '/bot' },
+      { label: 'Crm config', to: '/bot' },
+    ]"
+    :disableSelector="true"
+  >
+    <template #actionButtons v-if="integrations.length === 0">
       <UiButton
         @click="crmConfigModalState.open = true"
         variant="outline"

@@ -5,23 +5,32 @@
 </template>
 <script setup lang="ts">
   const route = useRoute();
-  onMounted(() => {
+  onMounted(async () => {
     console.log({ route: route.query, asdf: route.params });
     console.log(route?.query?.code, "route.query.code");
     console.log(route?.query?.location, "location");
     console.log(route?.query["accounts-server"], "accounts");
-    verifyIntegration({
-      integrationDetails: {
-        metaData: {
-          code: route?.query?.code,
-          location: route?.query?.location,
-          accountsServer: route?.query["accounts-server"],
+    if (
+      route?.query?.code &&
+      route?.query?.location &&
+      route?.query["accounts-server"]
+    )
+      verifyIntegration({
+        integrationDetails: {
+          metaData: {
+            code: route?.query?.code,
+            location: route?.query?.location,
+            accountsServer: route?.query["accounts-server"],
+          },
+          crm: route?.params?.id,
         },
-        crm: route?.params?.id,
-      },
-      onSuccess: async () => {
-        await navigateTo("/settings");
-      },
-    });
+        onSuccess: async () => {
+          await navigateTo("/settings");
+        },
+      });
+    else {
+      toast.error("Verification failed");
+      await navigateTo("/settings");
+    }
   });
 </script>
