@@ -55,7 +55,7 @@ export const integrationSchema = adminSchema.table("integration", {
 
 export const timelineSchema = adminSchema.table("timeline", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  user_id: uuid("user_id").references(() => authUserSchema.id),
+  user_id: uuid("user_id").references(() => botUserSchema.id),
   org_id: uuid("org_id").references(() => organizationSchema.id),
   chat_id: uuid("chat_id"),
   metadata: jsonb("metadata").default({}).notNull(),

@@ -22,6 +22,7 @@ const schema = {
   integrationSchema,
   botIntegrationSchema,
   analyticsSchema,
+  timelineSchema,
   // Relations
   organizationRelations,
   chatBotRelations,
