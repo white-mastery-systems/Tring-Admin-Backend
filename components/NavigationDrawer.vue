@@ -85,6 +85,7 @@
     HomeIcon,
     MessageCircle,
     SettingsIcon,
+    StarsIcon,
     WalletIcon,
   } from "lucide-vue-next";
   const { user } = await useUser();
@@ -120,6 +121,12 @@
       icon: MessageCircle,
 
       path: "/chats",
+    },
+    {
+      name: "Playground",
+      icon: StarsIcon,
+
+      path: "/playground",
     },
     {
       name: "Settings",
