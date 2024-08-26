@@ -53,14 +53,11 @@ export const integrationSchema = adminSchema.table("integration", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const timeline = adminSchema.table("timeline", {
+export const timelineSchema = adminSchema.table("timeline", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  user_id: uuid("user_id")
-    .notNull()
-    .references(() => authUserSchema.id),
-  org_id: uuid("org_id")
-    .notNull()
-    .references(() => organizationSchema.id),
+  user_id: uuid("user_id").references(() => authUserSchema.id),
+  org_id: uuid("org_id").references(() => organizationSchema.id),
+  chat_id: uuid("chat_id"),
   metadata: jsonb("metadata").default({}).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
@@ -94,6 +91,7 @@ export type InsertOrganization = InferInsertModel<typeof organizationSchema>;
 
 export type InsertIntegration = InferInsertModel<typeof integrationSchema>;
 export type SelectIntegration = InferSelectModel<typeof integrationSchema>;
+export type InsertTimeline = InferInsertModel<typeof timelineSchema>;
 
 // Validation
 export const zodInsertOrganization = createInsertSchema(organizationSchema, {
