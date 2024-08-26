@@ -1,11 +1,5 @@
 <template>
   <Page title="Settings" :disable-back-button="true" :disable-elevation="true">
-    <UiTabs default-value="integration" class="w-[400px]">
-      <UiTabsList class="">
-        <UiTabsTrigger value="integration"> Integrations </UiTabsTrigger>
-      </UiTabsList>
-      <UiTabsContent value="integration"> </UiTabsContent>
-    </UiTabs>
     <template #actionButtons>
       <UiButton color="primary" @click="integrationModalState.open = true">
         Add Integration
