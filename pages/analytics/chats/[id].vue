@@ -194,7 +194,7 @@
     middleware: "admin-only",
   });
 
-  const route = useRoute("chats-id");
+const route = useRoute("analytics-chats-id");
 
   const data = useLazyFetch(`/api/timeline/chat/${route.params.id}`);
   console.log({ data });

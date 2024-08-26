@@ -86,7 +86,7 @@
                 }}</span>
               <!-- ai-reply-align -->
               <div
-                class="flex flex-col gap-2 rounded-r-xl rounded-bl-xl mt-2.5 min-h-[80px] bg-[#ffffff] field-shadow p-5">
+                class="flex flex-col gap-2 rounded-r-xl rounded-bl-xl mt-2.5 min-h-[80px] bg-[#ffffff] field_shadow p-5">
                 <MdText :content="JSON.parse(messageList.content).response" />
                 <div class="flex flex-col">
                   <div class="flex items-center gap-2">
