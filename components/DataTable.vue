@@ -14,6 +14,8 @@
     footer?: boolean;
     pageSize?: number;
     isLoading?: boolean;
+    height?: number;
+    heightUnit?: string;
   }>();
 
   const sorting = ref<SortingState>([]);
@@ -43,9 +45,14 @@
 
 <template>
   <div class="space-y-4">
-    <div class="rounded-lg border">
+    <div
+      class="relative h-[63vh] overflow-auto rounded-lg border"
+      :class="
+        props.height ? `h-[${props.height}${props.heightUnit}]` : 'h-[63vh]'
+      "
+    >
       <UiTable class="text-left text-gray-500">
-        <UiTableHeader class="bg-gray-50 text-xs uppercase">
+        <UiTableHeader class="sticky top-0 bg-gray-50 text-xs uppercase">
           <UiTableRow
             v-for="headerGroup in table.getHeaderGroups()"
             :key="headerGroup.id"

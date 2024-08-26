@@ -16,3 +16,16 @@ export const getChatDetails = async (chatId: string) => {
     orderBy: desc(chatSchema.createdAt),
   });
 };
+
+export const listChats = async (organisationId: string, query: any) => {
+  return db.query.chatSchema.findMany({
+    where: and(
+      eq(chatSchema.organizationId, organisationId),
+      query?.botId ? eq(chatSchema.botId, query.botId) : undefined,
+    ),
+    with: {
+      botUser: true,
+    },
+    orderBy: [desc(chatSchema.createdAt)],
+  });
+};

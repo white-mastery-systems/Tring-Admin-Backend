@@ -64,7 +64,9 @@
                   <UiSelectItem
                     v-for="(integrationData, index) in pipelines"
                     :value="integrationData.Pipeline.id"
-                    >{{ integrationData.Sub_Pipeline }}</UiSelectItem
+                    >{{ integrationData.Pipeline.name }}--{{
+                      integrationData.Stage
+                    }}</UiSelectItem
                   >
                 </UiSelectContent>
               </UiSelect>
@@ -73,6 +75,42 @@
             <span class="text-xs text-gray-500">Select your pipeline.</span>
           </UiFormItem>
         </UiFormField>
+        <!-- <UiFormField
+          v-if="
+            integrationsData.find(
+              (integration) => integration.id === values.integrationId,
+            )?.crm === 'zoho-bigin'
+          "
+          v-slot="{ componentField }"
+          name="pipelineId"
+        >
+          <UiFormItem class="w-full">
+            <UiFormLabel
+              >Select Pipeline<UiLabel class="text-lg text-red-500">*</UiLabel>
+            </UiFormLabel>
+            <UiFormControl>
+              <UiSelect
+                v-bind="componentField"
+                @update:model-value="handleCrmChange"
+              >
+                <UiSelectTrigger>
+                  <UiSelectValue placeholder="Select Pipeline" />
+                </UiSelectTrigger>
+                <UiSelectContent>
+                  <UiSelectItem
+                    v-for="(integrationData, index) in pipelines?.filter(
+                      (pipeline) => pipeline.Pipeline.id === values.pipelineId,
+                    )"
+                    :value="integrationData.Pipeline.id"
+                    >{{ integrationData.Pipeline.name }}</UiSelectItem
+                  >
+                </UiSelectContent>
+              </UiSelect>
+            </UiFormControl>
+            <UiFormMessage />
+            <span class="text-xs text-gray-500">Select your pipeline.</span>
+          </UiFormItem>
+        </UiFormField> -->
         <UiFormField
           v-if="
             integrationsData.find(
