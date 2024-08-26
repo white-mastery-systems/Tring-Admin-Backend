@@ -25,12 +25,12 @@
           crm: route?.params?.id,
         },
         onSuccess: async () => {
-          await navigateTo("/settings");
+          await navigateTo("/settings/integration");
         },
       });
     else {
       toast.error("Verification failed");
-      await navigateTo("/settings");
+      await navigateTo("/settings/integration");
     }
   });
 </script>

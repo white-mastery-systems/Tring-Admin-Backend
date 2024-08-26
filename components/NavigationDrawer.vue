@@ -96,20 +96,7 @@
       </div>
     </NuxtLink>
 
-    <UiButton
-      @click="confirmModel"
-      class="mb-8 mt-auto w-3/4 items-start justify-around bg-[#ffffff] pr-12 font-bold text-[#ff0000] hover:bg-gray-300/30 hover:text-[#ff0000] hover:brightness-110"
-      variant="ghost"
-    >
-      <Icon name="ic:round-logout" class="h-6 w-6" />
-      <p class="text-base">Logout</p>
-    </UiButton>
-    <ConfirmationModal
-      v-model:open="modalOpen"
-      title="Confirm Logout"
-      description="Are you sure you want to log out ?"
-      @confirm="handleLogout"
-    />
+   
     <!-- </div> -->
   </div>
 </template>
@@ -151,7 +138,6 @@
   ];
 
   const route = useRoute();
-  const modalOpen = ref(false);
   const emit = defineEmits(["closeSheet"]);
   const navigationModules = ref([
     {
@@ -209,14 +195,7 @@
     },
   ]);
 
-  const confirmModel = () => {
-    modalOpen.value = true;
-  };
-
-  const handleLogout = () => {
-    authHandlers.logout();
-    modalOpen.value = false;
-  };
+ 
   const handleNavigation = () => {
     emit("closeSheet");
   };

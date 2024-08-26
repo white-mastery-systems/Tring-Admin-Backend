@@ -1,5 +1,23 @@
 <template>
   <Page title="My Account" :disable-back-button="true">
+    <template #actionButtons>
+      <div>
+        <UiButton
+          @click="confirmModel"
+          class="items-start justify-around bg-[#ffffff] pr-12 font-bold text-[#ff0000] hover:bg-gray-300/30 hover:text-[#ff0000] hover:brightness-110"
+          variant="ghost"
+        >
+          <Icon name="ic:round-logout" class="h-6 w-6" />
+          <p class="text-base">Logout</p>
+        </UiButton>
+      </div>
+    </template>
+    <ConfirmationModal
+      v-model:open="logoutModal"
+      title="Confirm Logout"
+      description="Are you sure you want to log out ?"
+      @confirm="handleLogout"
+    />
     <UiForm
       v-slot="{ values, errors }"
       :validation-schema="accountSchema"
@@ -106,6 +124,16 @@
     });
     return result;
   });
+  const logoutModal = ref(false);
+
+  const confirmModel = () => {
+    logoutModal.value = true;
+  };
+
+  const handleLogout = () => {
+    authHandlers.logout();
+    logoutModal.value = false;
+  };
   const accountSchema = toTypedSchema(
     z
       .object({
