@@ -58,12 +58,11 @@ export const getAnalytics = async (
 
   const orgData = await db.query.organizationSchema.findFirst({
     where: eq(organizationSchema.id, organizationId),
-
     with: {
       botUsers: {
         where: and(
-          gte(leadSchema.createdAt, fromDate),
-          lte(leadSchema.createdAt, toDate),
+          gte(botUserSchema.createdAt, fromDate),
+          lte(botUserSchema.createdAt, toDate),
         ),
       },
       bots: {

@@ -81,6 +81,10 @@ export const chatSchema = chatbotSchema.table("chats", {
   botId: uuid("bot_id")
     .references(() => chatBotSchema.id, { onDelete: "cascade" })
     .notNull(),
+  organizationId: uuid("organization_id").references(
+    () => organizationSchema.id,
+    { onDelete: "cascade" },
+  ),
 });
 
 export const messageSchema = chatbotSchema.table("messages", {

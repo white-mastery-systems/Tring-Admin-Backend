@@ -83,6 +83,7 @@
     Bot,
     ChartNoAxesColumnIncreasing,
     HomeIcon,
+    MessageCircle,
     SettingsIcon,
     WalletIcon,
   } from "lucide-vue-next";
@@ -111,7 +112,14 @@
     {
       name: "Bots",
       icon: Bot,
+
       path: "/bots",
+    },
+    {
+      name: "Chats",
+      icon: MessageCircle,
+
+      path: "/chats",
     },
     {
       name: "Settings",

@@ -2,11 +2,11 @@
   <Page title="Leads" :disableSelector="false" :disable-back-button="true">
     <div class="flex items-center justify-between gap-2 pb-4">
       <div class="flex items-center gap-2">
-        <!-- <UiInput
-          v-model="filters.lead"
+        <UiInput
+          v-model="filters.q"
           class="max-w-[130px] sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder="Search Leads..."
-        /> -->
+        />
         <BotFilter v-model="filters.botId" />
         <DateRangeFilter @change="onDateChange" />
       </div>
@@ -35,12 +35,12 @@
 
   const filters = reactive<{
     botId: string;
-    lead?: string;
+    q?: string;
     from?: string;
     to?: string;
   }>({
     botId: "",
-    lead: undefined,
+    q: undefined,
     from: undefined,
     to: undefined,
   });
