@@ -20,5 +20,5 @@ export default defineEventHandler(async (event) => {
   //   metadata: body.metadata,
   // });
 
-  return bot;
+  // return bot;
 });

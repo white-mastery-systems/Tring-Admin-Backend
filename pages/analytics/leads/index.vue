@@ -19,7 +19,7 @@
       @row-click="
         (row: any) => {
           console.log({ row });
-          navigateTo(`/leads/${row.original.chatId}`);
+          navigateTo(`leads/${row.original.chatId}`);
         }
       "
     />
@@ -27,7 +27,7 @@
 </template>
 <script setup lang="ts">
   import { Icon, UiButton } from "#components";
-  import { createColumnHelper } from "@tanstack/vue-table";
+import { createColumnHelper } from "@tanstack/vue-table";
 
   definePageMeta({
     middleware: "admin-only",
@@ -58,7 +58,7 @@
 
   const viewLead = async (chatId: any) => {
     await navigateTo({
-      name: "leads-id",
+      name: "analytics-leads-id",
       params: { id: chatId },
     });
   };
