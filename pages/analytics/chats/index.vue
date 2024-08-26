@@ -15,7 +15,8 @@
       @row-click="
         (row: any) => {
           console.log({ row });
-          return navigateTo(`/chats/${row.original.id}`);
+          return navigateTo(`chats/${row.original.id}`);
+          //TODO change this
         }
       "
       :columns="columns"
