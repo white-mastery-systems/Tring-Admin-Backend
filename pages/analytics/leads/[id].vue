@@ -14,14 +14,15 @@
               <div v-for="[key, value] in details[0]" class="max-w-full font-medium">
                 <div class="max-w-[100%] truncate">
                   <div class="text-gray-500">{{ key }}</div>
-                  <div>
-                    <a v-if="key === 'Mobile'" href="tel:{{ value }}">
+                  <div class="w-[90%]">
+                    <a v-if="key === 'Mobile'" href="tel:{{ value }}" class="truncate text-[#424bd1]">
                       {{ value }}
                     </a>
-                    <a v-else-if="key === 'Email'" href="mailto:{{ value }}" class="lowercase">
+                    <a v-else-if="key === 'Email'" href="mailto:{{ value }}"
+                      class="lowercase truncate block text-[#424bd1]">
                       {{ value }}
                     </a>
-                    <div v-else>
+                    <div v-else class="truncate">
                       {{ value }}
                     </div>
                   </div>
@@ -34,7 +35,7 @@
               <div v-for="[key, value] in details[1]" class="max-w-full font-medium">
                 <div class="max-w-[100%] truncate">
                   <div class="text-gray-500">{{ key }}</div>
-                  <div>
+                  <div class="truncate w-[90%]">
                     {{ value }}
                   </div>
                 </div>
@@ -44,7 +45,7 @@
         </UiTabs>
       </div>
       <div
-        class="field_shadow h-[75vh] w-full overflow-hidden rounded-lg bg-[#ffffff] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
+        class="field_shadow h-[74vh] w-full overflow-hidden rounded-lg bg-[#ffffff] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
         <div :class="[
             'flex items-center justify-between font-medium w-full h-[70px] text-[#ffffff] px-2.5',
           ]" :style="`background:hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`">
@@ -68,15 +69,19 @@
             </div>
             <!-- User Message -->
             <div class="flex flex-col items-center w-full" v-if="messageList.role === 'user'">
-              <span class="text-[14px]" style="color: #8a8a8a">{{
-                leadData?.botUser?.name
-                }}</span>
-              <div
-                class="flex flex-col items-end justify-center rounded-l-xl rounded-br-xl bg-[#ffffff] max-w-[80%] p-2.5 text-black mt-2.5">
-                <div>{{ messageList.content }}</div>
-              </div>
-              <div class="text-[12px] opacity-60">
-                {{ formatDate(new Date(messageList.createdAt), "hh:mm a") }}
+              <div class="flex flex-col items-end justify-center max-w-[80%]">
+                <span class="text-[14px]" style="color: #8a8a8a">{{
+                  leadData?.botUser?.name
+                  }}</span>
+                <div
+                  class="flex flex-col items-end justify-center rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black mt-2.5">
+                  <div>
+                    {{ messageList.content }}
+                  </div>
+                </div>
+                <div class="text-[12px] opacity-60">
+                  {{ formatDate(new Date(messageList.createdAt), "hh:mm a") }}
+                </div>
               </div>
             </div>
             <!-- Assistant Message -->
@@ -89,7 +94,7 @@
                 class="flex flex-col gap-2 rounded-r-xl rounded-bl-xl mt-2.5 min-h-[80px] bg-[#ffffff] field_shadow p-5">
                 <MdText :content="JSON.parse(messageList.content).response" />
                 <div class="flex flex-col">
-                  <div class="flex items-center gap-2">
+                  <div class="flex flex-wrap items-center gap-2">
                     <div class="flex items-center" v-for="(btn, btnIndex) in JSON.parse(messageList.content)
                         .canned" :key="btnIndex">
                       <p class="w-auto rounded-xl p-2" :style="{

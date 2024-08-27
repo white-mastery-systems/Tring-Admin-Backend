@@ -1,13 +1,10 @@
 <template>
-  <div class="relavtive default-main-container">
+
+  <div class="relavtive flex h-[100vh]">
     <div
-      class="hidden md:hidden xl:felx lg:flex border-r border-[#8a8a8a1a] flex-col items-center gap-[20px] overflow-auto w-[270px]">
+      class="hidden md:hidden xl:felx lg:flex border-r border-[#8a8a8a1a] flex-col items-center gap-[20px] h-[100vh] overflow-auto w-[270px">
       <NavigationDrawer />
     </div>
-    <div class="block sm:block md:block lg:hidden xl:hidden">
-      <navigationSheet />
-    </div>
-    <!-- :style="{ width: (['Sign'].includes(routeName)) ? '100%' : '86%' }" -->
     <div class="main-router-align lg:w-[86%] w-full mt-2 xl:mt-0 lg:mt-0 md:mt-0">
       <slot />
     </div>
@@ -22,13 +19,8 @@ const routeName = ref(route.name)
 onMounted( async () => {
   console.log(routeName, "routeName")
 })
-
 </script>
 <style scoped>
-.default-main-container {
-  display: flex;
-  height: 100vh;
-}
 .navigation-drawer {
   width: 270px;
   /* padding-right: 20px; */

@@ -94,7 +94,7 @@
                   </UiFormControl>
                   <UiFormMessage />
                   <span
-                    class="text-[8px] text-gray-500 sm:text-[6px] md:text-[8px] lg:text-xs xl:text-xs"
+                    class="text-[9px] text-gray-500 sm:text-[6px] md:text-[8px] lg:text-xs xl:text-xs"
                     >Notification sound for chat window</span
                   >
                 </UiFormItem>
@@ -122,7 +122,7 @@
                   </UiFormControl>
                   <UiFormMessage />
                   <span
-                    class="text-[10px] text-gray-500 sm:text-[6px] md:text-[8px] lg:text-xs xl:text-xs"
+                    class="text-[9px] text-gray-500 sm:text-[6px] md:text-[8px] lg:text-xs xl:text-xs"
                     >Position for chat bubble</span
                   >
                 </UiFormItem>
