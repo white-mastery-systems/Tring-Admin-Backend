@@ -1,7 +1,6 @@
 <template>
   <page
     :title="botDetails.name ?? ''"
-    :bread-crumbs="[{ label: `${botDetails.name}`, to: '/bots' }]"
     :disableSelector="true"
     :disable-back-button="false"
     :disable-elevation="true"
