@@ -61,7 +61,7 @@
         userName: chat.botUser?.name || "No name",
         id: chat.id,
         location: `${chat.metadata?.city} - ${chat.metadata?.state} `,
-        createdAt: "Aug 2024",
+        createdAt: "01 Aug 2024",
         mode: chat.metadata?.mode ?? "Live",
       }));
     },
