@@ -170,12 +170,12 @@
           </div> -->
         </div>
         <!-- <UiLabel class="absolute right-1/3 top-1/3 z-10  -translate-x-3/4 -translate-y-1/3 text-lg">Getting Started by Creating Bots</UiLabel> -->
-        <UiButton
+        <!-- <UiButton
           v-if="analyticsData?.bots === 0"
           class="absolute right-1/2 top-1/2 z-10 h-16 w-56 -translate-y-1/2 translate-x-1/2 bg-[#474df9] text-lg text-white hover:bg-[#474df9] hover:brightness-90"
           @click="getStarted"
           >Get Started</UiButton
-        >
+        > -->
       </div>
     </div>
   </Page>
@@ -189,7 +189,7 @@
 
   const selectedValue = ref("this-month");
 
-  const getButtonName = ref("Get Started");
+  // const getButtonName = ref("Get Started");
 
   const analyticsData = ref();
   const menuList = ref([
