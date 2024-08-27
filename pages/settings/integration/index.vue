@@ -10,6 +10,8 @@
       :data="integrationsData"
       :page-size="8"
       :is-loading="false"
+      :height="80"
+      :heightUnit="'vh'"
     />
     <CreateEditIntegrationModal
       v-model="integrationModalState"

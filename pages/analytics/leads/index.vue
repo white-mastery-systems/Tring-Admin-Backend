@@ -1,28 +1,21 @@
 <template>
   <Page title="Leads" :disableSelector="false" :disable-back-button="true">
-    <div class="flex items-center justify-between gap-2 pb-4">
+    <div class="flex items-center justify-between gap-2 pb-4 overflow-x-scroll">
       <div class="flex items-center gap-2">
-        <UiInput
-          v-model="filters.q"
+        <UiInput v-model="filters.q"
           class="max-w-[130px] sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
-          placeholder="Search Leads..."
-        />
+          placeholder="Search Leads..." />
         <BotFilter v-model="filters.botId" />
         <DateRangeFilter @change="onDateChange" />
       </div>
     </div>
-    <DataTable
-      :data="leads"
-      :is-loading="isDataLoading"
-      :columns="columns"
-      :page-size="8"
+    <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="70" height-unit="vh"
       @row-click="
         (row: any) => {
           console.log({ row });
           navigateTo(`leads/${row.original.chatId}`);
         }
-      "
-    />
+      " />
   </Page>
 </template>
 <script setup lang="ts">

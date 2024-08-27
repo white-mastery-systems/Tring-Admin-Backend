@@ -1,31 +1,19 @@
 <template>
   <Page title="Chats" :disable-back-button="true">
     <div class="flex items-center gap-2 pb-2">
-      <UiInput
-        v-model="searchBot"
-        class="max-w-[200px]"
-        placeholder="Search bot..."
-      />
+      <UiInput v-model="searchBot" class="max-w-[200px]" placeholder="Search bot..." />
       <div class="w-[300px]">
         <BotFilter v-model="filters.botId" />
       </div>
+      <DateRangeFilter />
     </div>
-
-    <DataTable
-      @row-click="
+    <DataTable @row-click="
         (row: any) => {
           console.log({ row });
           return navigateTo(`chats/${row.original.id}`);
           //TODO change this
         }
-      "
-      :columns="columns"
-      :data="bots"
-      :page-size="20"
-      :is-loading="isDataLoading"
-      :height="60"
-      height-unit="vh"
-    />
+      " :columns="columns" :data="bots" :page-size="20" :is-loading="isDataLoading" :height="69" height-unit="vh" />
   </Page>
 </template>
 <script setup lang="ts">
