@@ -1,7 +1,11 @@
 <template>
+<<<<<<< HEAD
   <div
     class="flex h-[100vh] w-[250px] flex-col items-center justify-center gap-5 overflow-y-scroll bg-[#ffffff] pt-[80px] sm:pt-[80px] md:pt-[80px] lg:pt-0 xl:pt-0"
   >
+=======
+  <div class="flex w-[250px] flex-col items-center justify-center gap-5 pt-0">
+>>>>>>> 61843c744d31e08b5ad0668ecf713a0d02d3e1b5
     <div class="flex h-[20vh]">
       <img src="assets\icons\tring_AI_logo.svg" width="80" height="80" />
     </div>
@@ -107,14 +111,14 @@
 </template>
 <script setup lang="ts">
   import {
-    Bot,
-    ChartNoAxesColumnIncreasing,
-    HomeIcon,
-    MessageCircle,
-    SettingsIcon,
-    StarsIcon,
-    WalletIcon,
-  } from "lucide-vue-next";
+  Bot,
+  ChartNoAxesColumnIncreasing,
+  HomeIcon,
+  MessageCircle,
+  SettingsIcon,
+  StarsIcon,
+  WalletIcon,
+} from "lucide-vue-next";
   const { user } = await useUser();
   // watch(user, (newUserInfo) => {
   //   console.log({ newUserInfo });

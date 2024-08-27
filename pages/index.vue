@@ -15,7 +15,6 @@
           <UiSelect
             v-model="selectedValue"
             class="outline-none"
-            @change="filterAnalyticsData"
           >
             <UiSelectTrigger
               class="ui-select-trigger flex w-[110px] items-center gap-2 outline-none"

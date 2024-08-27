@@ -1,5 +1,5 @@
 <template>
-  <Page :title="leadData?.botUser?.name ?? ''" :disable-back-button="false" :disable-elevation="true">
+  <Page :title="leadData?.botUser?.name ?? 'Add Name'" :disable-back-button="false" :disable-elevation="true">
     <!-- sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 -->
     <div class="items-top gap-[25px flex items-center justify-center px-3">
       <!-- mx-8 -->
@@ -37,49 +37,54 @@
                       </p>
                     </div>
                     <!-- User Message -->
-                    <div class="flex w-full flex-col items-end" v-if="messageList.role === 'user'">
-                      <span class="text-[14px]" style="color: #8a8a8a">{{
-                        leadData?.botUser?.name
-                        }}</span>
-                      <div
-                        class="mt-2.5 flex min-w-[80%] flex-col items-end justify-center rounded-l-xl rounded-br-xl p-2.5 text-[#ffffff] text-black">
-                        <div>{{ messageList.content }}</div>
+                    <div class="flex w-full flex-col items-center " v-if="messageList.role === 'user'">
+                      <div class="flex flex-col items-end justify-center max-w-[80%]">
+                        <span class="text-[14px]" style="color: #8a8a8a">{{
+                          leadData?.botUser?.name
+                          }}</span>
+                        <div
+                          class="mt-2.5 flex flex-col items-end justify-center rounded-l-xl rounded-br-xl p-2.5 text-[#ffffff] text-black bg-[#ffffff]">
+                          <div>
+                            {{ messageList.content }}
+                          </div>
+                        </div>
+                        <div class="text-[12px] opacity-60">
+                          {{
+                          formatDate(new Date(messageList.createdAt), "hh:mm a")
+                          }}
+                        </div>
+                        </div>
                       </div>
-                      <div class="text-[12px] opacity-60">
-                        {{
-                        formatDate(new Date(messageList.createdAt), "hh:mm a")
-                        }}
-                      </div>
-                    </div>
-                    <!-- Assistant Message -->
-                    <div class="w-[90%]" v-if="messageList.role === 'assistant'">
-                      <span class="text-[14px]" style="color: #8a8a8a">{{
-                        leadData?.bot.metadata.prompt.NAME
-                        }}</span>
-                      <div
-                        class="shadpw-field mt-2.5 flex min-h-[80px] flex-col gap-2 rounded-r-xl rounded-bl-xl bg-[#ffffff] p-2.5">
-                        <MdText :content="JSON.parse(messageList.content).response" />
-                        <div class="flex flex-col">
-                          <div class="flex items-center gap-2">
-                            <div class="flex items-center" v-for="(btn, btnIndex) in JSON.parse(
+                      <!-- Assistant Message -->
+                      <div class="w-[90%]" v-if="messageList.role === 'assistant'">
+                        <span class="text-[14px]" style="color: #8a8a8a">{{
+                          leadData?.bot.metadata.prompt.NAME
+                          }}</span>
+                        <div
+                          class="shadpw-field mt-2.5 flex min-h-[80px] flex-col gap-2 rounded-r-xl rounded-bl-xl bg-[#ffffff] p-2.5">
+                          <MdText :content="JSON.parse(messageList.content).response" />
+                          <div class="flex flex-col">
+                            <div class="flex flex-wrap items-center gap-2">
+                              <div class="flex items-center" v-for="(btn, btnIndex) in JSON.parse(
                                 messageList.content,
                               ).canned" :key="btnIndex">
-                              <p class="w-auto rounded-xl p-2" :style="{
+                                <p class="w-auto rounded-xl p-2" :style="{
                                   // background: `hsl(347 66 39/ 0.15)`,
                                   background: `hsl(${leadData?.bot.metadata.ui?.color?.replaceAll('%', ' ')}/0.15)`,
                                   color: `hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`,
                                 }">
-                                {{ btn.title }}
-                              </p>
+                                  {{ btn.title }}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                          <div class="self-end text-[12px] text-[#00000066]">
-                            {{
-                            formatDate(
-                            new Date(messageList.createdAt),
-                            "hh:mma",
-                            )
-                            }}
+                            <div class="self-end text-[12px] text-[#00000066]">
+                              {{
+                              formatDate(
+                              new Date(messageList.createdAt),
+                              "hh:mma",
+                              )
+                              }}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -87,7 +92,6 @@
                   </div>
                 </div>
               </div>
-            </div>
           </UiTabsContent>
           <UiTabsContent value="Timeline" class="flex justify-center">
             <div class="flex w-[100%] items-center px-5 py-3 capitalize sm:w-[100%] md:w-[80%] lg:w-[65%] xl:w-[65%]">

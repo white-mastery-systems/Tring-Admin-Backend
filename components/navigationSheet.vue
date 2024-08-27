@@ -1,12 +1,12 @@
 <template>
-  <!-- <UiButton @click="isSheetOpen = !isSheetOpen" class="z-40"> -->
-  <div class="absolute top-0 left-0 mb-4 bg-white w-full px-2 py-1">
+  <div>
     <MenuIcon :size="32" @click="isSheetOpen = !isSheetOpen" />
   </div>
   <!-- </UiButton> -->
   <UiSheet v-model:open="isSheetOpen">
     <UiSheetContent side="left" class="px-0 flex items-center self-center w-[250px]">
-      <div class="border-r border-[#8a8a8a1a] flex-col items-center justify-center gap-[20px] w-full">
+      <div
+        class="border-r border-[#8a8a8a1a] flex-col items-center justify-center gap-[20px] h-[100vh] overflow-y-scroll w-full">
         <NavigationDrawer @closeSheet="closeSheet" />
       </div>
     </UiSheetContent>
