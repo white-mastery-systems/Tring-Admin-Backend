@@ -41,7 +41,10 @@
       )
       .transform((data) => {
         if (data.ROLE.toLowerCase() === "other") {
-          return { ...data, role: data.otherRole };
+          return { ...data, ROLE: data.otherRole };
+        }
+        if (data.GOAL.toLowerCase() === "other") {
+          return { ...data, GOAL: data.otherGoal };
         }
         return data;
       }),
@@ -113,8 +116,8 @@
   <Page
     title="Bot Configuration"
     :bread-crumbs="[
-      {label: `${botDetails.name}`, to: `/bots/${botDetails.id}`},
-      {label: 'Bot Configuration', to: `/bots/${botDetails.id}/config`},
+      { label: `${botDetails.name}`, to: `/bots/${botDetails.id}` },
+      { label: 'Bot Configuration', to: `/bots/${botDetails.id}/config` },
     ]"
     :description="true"
     :disableSelector="false"
@@ -214,9 +217,9 @@
                   <UiSelectContent>
                     <UiSelectItem
                       v-for="({ value, label }, index) in goals"
-                      :value="value"
+                      :value="label"
                       >{{ value }}
-                      <p>{{ label }}</p>
+                      <p class="text-xs italic text-gray-500">{{ label }}</p>
                     </UiSelectItem>
                   </UiSelectContent>
                 </UiSelect>
