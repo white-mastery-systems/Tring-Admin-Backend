@@ -1,20 +1,31 @@
 <template>
-  <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
+  <div
+    v-if="isPageLoading"
+    class="grid h-[80vh] place-items-center text-[#424BD1]"
+  >
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
   <page v-else title="Billing" :description="true" :disableSelector="true">
-    <div class="xs:grid-cols-2 billing-details-card-align my-3 my-4 grid max-h-[90vh] gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div
+      class="xs:grid-cols-2 billing-details-card-align my-3 my-4 grid max-h-[90vh] gap-4 md:grid-cols-2 lg:grid-cols-4"
+    >
       <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->
-      <div :class="[
-        'main_card_align relative border-2 hover:border-yellow-500',
-        orgBilling?.plan_code === list.plan_code
-          ? 'border-2 border-yellow-500'
-          : '',
-        'w-full',
-      ]" v-for="(list, index) in billingVariation" :key="index">
-        <div v-if="orgBilling?.plan_code === list.plan_code"
-          class="absolute right-2 top-2 rounded-md bg-yellow-400 px-3 py-1 text-white">
+      <div
+        :class="[
+          'main_card_align relative border-2 hover:border-yellow-500',
+          orgBilling?.plan_code === list.plan_code
+            ? 'border-2 border-yellow-500'
+            : '',
+          'w-full',
+        ]"
+        v-for="(list, index) in billingVariation"
+        :key="index"
+      >
+        <div
+          v-if="orgBilling?.plan_code === list.plan_code"
+          class="absolute right-2 top-2 rounded-md bg-yellow-400 px-3 py-1 text-white"
+        >
           Current Plan
         </div>
         <div class="type-color text-[23px] font-bold">
@@ -33,7 +44,11 @@
           {{ list.benefitContent }}
         </div>
         <div class="benefit_inside_list">
-          <div class="flex items-center gap-2" v-for="(advancedList, ListIndex) in list.benefitList" :key="ListIndex">
+          <div
+            class="flex items-center gap-2"
+            v-for="(advancedList, ListIndex) in list.benefitList"
+            :key="ListIndex"
+          >
             <span class="flex items-start">
               <TicIcon v-if="advancedList.availableInPlan" />
               <CloseIcon v-else />
@@ -257,7 +272,7 @@
   const isPageLoading = computed(() => status.value === "pending");
 
   const choosePlan = async (plan: any) => {
-    const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName}`;
+    const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName || ""}`;
 
     if (!plan) {
       return navigateTo("https://tring-web.pripod.com/contact", {

@@ -1,5 +1,6 @@
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
+  boolean,
   integer,
   jsonb,
   text,
@@ -53,6 +54,7 @@ export const botUserSchema = chatbotSchema.table(
     email: varchar("email", { length: 128 }),
     mobile: varchar("mobile", { length: 16 }),
     metaData: jsonb("metadata"),
+    visitedCount: integer("visited_count").default(0),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     organizationId: uuid("organization_id")
       .references(() => organizationSchema.id, { onDelete: "cascade" })
@@ -73,6 +75,7 @@ export const chatSchema = chatbotSchema.table("chats", {
   metadata: jsonb("metadata"),
   channel: varchar("channel", { length: 64 }).notNull().default("website"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  interacted: boolean("interacted").default(false),
 
   botUserId: uuid("bot_user_id").references(() => botUserSchema.id, {
     onDelete: "cascade",

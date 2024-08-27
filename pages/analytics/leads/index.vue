@@ -19,8 +19,8 @@
   </Page>
 </template>
 <script setup lang="ts">
-  import { Icon, UiButton } from "#components";
-import { createColumnHelper } from "@tanstack/vue-table";
+  import { Icon, UiBadge, UiButton } from "#components";
+  import { createColumnHelper } from "@tanstack/vue-table";
 
   definePageMeta({
     middleware: "admin-only",
@@ -69,6 +69,19 @@ import { createColumnHelper } from "@tanstack/vue-table";
     }),
     columnHelper.accessor("botUser.email", {
       header: "Lead Email",
+    }),
+    columnHelper.accessor("botUser", {
+      header: "Visiting Status",
+      cell: ({ row }) =>
+        h(
+          UiBadge,
+          {
+            ...(Number(row.original.botUser?.visitedCount) > 1
+              ? { variant: "destructive" }
+              : { class: "bg-green-200 text-green-500 hover:bg-green-300" }),
+          },
+          Number(row.original.botUser.visitedCount) > 1 ? "Revisited" : "New",
+        ),
     }),
     columnHelper.accessor("botUser.mobile", {
       header: "Lead Phone",

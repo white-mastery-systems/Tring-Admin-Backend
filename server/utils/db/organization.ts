@@ -1,3 +1,5 @@
+import { count } from "drizzle-orm";
+
 const db = useDrizzle();
 
 export const createOrganization = async (organization: InsertOrganization) => {
@@ -82,6 +84,21 @@ export const getAnalytics = async (
       },
     },
   });
+  const interactedChats = await db
+    .select({ count: count() })
+    .from(chatSchema)
+    .where(
+      and(
+        eq(chatSchema.interacted, true),
+        eq(chatSchema.organizationId, organizationId),
+      ),
+    );
+  // const interactedChats = await db.query.chatSchema.count({
+  //   where: and(
+  //     eq(chatSchema.organizationId, organizationId),
+  //     eq(chatSchema.interacted, true),
+  //   ),
+  // });
 
   if (!orgData) return undefined;
 
@@ -122,6 +139,7 @@ ORDER BY
     users: orgData.botUsers.length,
     leads: orgData.leads.length,
     sessions: sessions?.sessions ?? 0,
+    interactedChats,
     graph: {
       leads: leadsGraph.rows,
       sessions: sessionsGraph.rows,
