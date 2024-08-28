@@ -141,7 +141,7 @@
           </div>
           <div>
             <div class="mb-1 text-[16px] font-semibold text-gray-500">
-              Site Visited
+              Site Visits
             </div>
             <div class="text-3xl font-extrabold text-black">
               {{ analyticsData?.siteVisitTimeline[0]?.count ?? 0 }}

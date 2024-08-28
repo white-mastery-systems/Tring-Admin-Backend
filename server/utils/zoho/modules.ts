@@ -84,6 +84,9 @@ export async function generateLeadInZohoBigin({
           case "phone":
             bodyData[field?.api_name] = "8888888888";
             break;
+          case "currency":
+            bodyData[field?.api_name] = 0;
+            break;
           default:
             // bodyData[field?.api_name] = "TRING_DEFAULT";
             break;
@@ -243,8 +246,46 @@ export function getAllLayoutsFromZohoCRM({
     }
   });
 }
-
-export function generateLeadInZohoCRM({
+// https://www.zohoapis.in/crm/v6/settings/fields?module=Leads
+export function getFieldMetadataFromZohoCRM({
+  token,
+  refreshToken,
+  body,
+  integrationData,
+}: {
+  token: string;
+  refreshToken: String;
+  body: any;
+  integrationData: any;
+}) {
+  return $fetch("https://www.zohoapis.in/crm/v6/settings/fields?module=Leads", {
+    method: "GET",
+    headers: {
+      Authorization: `Zoho-oauthtoken ${token}`,
+    },
+  }).catch((err) => {
+    console.log("err", JSON.stringify(err.data));
+    if (!refreshToken) return;
+    if (err.status === 401) {
+      regenearateTokenWithRefreshToken({
+        refreshToken: refreshToken,
+      }).then(async (data: any) => {
+        if (data?.access_token)
+          updateIntegrationById(integrationData.id, {
+            ...integrationData.metadata,
+            access_token: data?.access_token,
+          });
+        return getFieldMetadataFromZohoBigin({
+          token: data?.access_token,
+          refreshToken: "",
+          body: body,
+          integrationData: integrationData,
+        });
+      });
+    }
+  });
+}
+export async function generateLeadInZohoCRM({
   token,
   refreshToken,
   body,
@@ -256,9 +297,56 @@ export function generateLeadInZohoCRM({
   integrationData: any;
 }) {
   console.log({ body: JSON.stringify(body) });
+  const fieldMetadata = await getFieldMetadataFromZohoCRM({
+    token,
+    refreshToken,
+    body,
+    integrationData,
+  });
+  // console.log({ fieldMetadata: JSON.stringify(fieldMetadata) });
+
+  let bodyData = {
+    ...body,
+  };
+  console.log("REACHED HERE", bodyData);
+  fieldMetadata?.fields?.map((field) => {
+    if (field?.view_type?.create === true) {
+      if (bodyData[field?.api_name] === undefined) {
+        console.log(field?.api_name, field?.data_type, "API NAME");
+        switch (field.data_type) {
+          case "text":
+            bodyData[field?.api_name] = "DEFAULT_TRING";
+            break;
+          case "date":
+            const date = new Date();
+            bodyData[field?.api_name] = format(new Date(), "yyyy-MM-dd");
+            break;
+          case "number":
+            bodyData[field?.api_name] = 0;
+            break;
+          case "website":
+            bodyData[field?.api_name] = "app.tringlabs.ai";
+            break;
+          case "email":
+            bodyData[field?.api_name] = "app@tringlabs.ai";
+            break;
+          case "phone":
+            bodyData[field?.api_name] = "8888888888";
+            break;
+          case "currency":
+            bodyData[field?.api_name] = 0;
+            break;
+          default:
+            // bodyData[field?.api_name] = "TRING_DEFAULT";
+            break;
+        }
+      }
+    }
+  });
+  console.log(JSON.stringify(bodyData));
   return $fetch("https://www.zohoapis.in/crm/v6/Leads", {
     method: "POST",
-    body: { data: [body] },
+    body: { data: [bodyData] },
     headers: {
       Authorization: `Zoho-oauthtoken ${token}`,
     },
