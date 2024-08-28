@@ -55,11 +55,13 @@ export const integrationSchema = adminSchema.table("integration", {
 
 export const timelineSchema = adminSchema.table("timeline", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  user_id: uuid("user_id").references(() => botUserSchema.id),
-  org_id: uuid("org_id").references(() => organizationSchema.id),
-  chat_id: uuid("chat_id"),
+  userId: uuid("user_id").references(() => botUserSchema.id),
+  orgId: uuid("org_id").references(() => organizationSchema.id),
+  chatId: uuid("chat_id"),
+  botId: uuid("bot_id").references(() => chatBotSchema.id),
   metadata: jsonb("metadata").default({}).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  intent: varchar("intent", { length: 64 }),
 });
 
 // Relations

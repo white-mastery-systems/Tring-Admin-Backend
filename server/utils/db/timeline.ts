@@ -7,6 +7,6 @@ export const createTimeline = async (timeline: InsertTimeline) => {
 export const listTimelinesByChatId = async (chatId: string, query: any) => {
   console.log({ chatId });
   return await db.query.timelineSchema.findMany({
-    where: eq(timelineSchema.chat_id, chatId),
+    where: eq(timelineSchema.chatId, chatId),
   });
 };

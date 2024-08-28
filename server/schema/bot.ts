@@ -60,14 +60,14 @@ export const botUserSchema = chatbotSchema.table(
       .references(() => organizationSchema.id, { onDelete: "cascade" })
       .notNull(),
   },
-  (table) => ({
-    emailUnique: unique("bot_user_email")
-      .on(table.email, table.organizationId)
-      .nullsNotDistinct(),
-    mobileUnique: unique("bot_user_mobile")
-      .on(table.mobile, table.organizationId)
-      .nullsNotDistinct(),
-  }),
+  // (table) => ({
+  //   emailUnique: unique("bot_user_email")
+  //     .on(table.email, table.organizationId)
+  //     .nullsNotDistinct(),
+  //   mobileUnique: unique("bot_user_mobile")
+  //     .on(table.mobile, table.organizationId)
+  //     .nullsNotDistinct(),
+  // }),
 );
 
 export const chatSchema = chatbotSchema.table("chats", {
