@@ -12,7 +12,7 @@
       <UiAccordion
         v-if="children?.length > 0"
         type="single"
-        class="w-[90%]"
+        class="w-[90%] md:w-[80%] xl:w-[90%]"
         v-model="openAccordions[path]"
         collapsible
       >
