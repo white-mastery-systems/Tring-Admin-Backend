@@ -21,7 +21,11 @@ export const chatBotSchema = chatbotSchema.table("bot", {
   documentId: uuid("document_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   metadata: jsonb("metadata").default({
-    ui: { color: "236 61% 54%", widgetPosition: "Right" },
+    ui: {
+      color: "236 61% 54%",
+      secondaryColor: "236, 61%, 74%",
+      widgetPosition: "Right",
+    },
     prompt: {},
     crm: {},
   }),
