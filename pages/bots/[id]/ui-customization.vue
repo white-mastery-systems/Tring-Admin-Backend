@@ -2,8 +2,11 @@
   <page
     title="UI Customization"
     :bread-crumbs="[
-      {label: `${botDetails.name}`, to: `/bots/${botDetails.id}`},
-      {label: 'UI Customization', to: `/bots/${botDetails.id}/ui-customization`},
+      { label: `${botDetails.name}`, to: `/bots/${botDetails.id}` },
+      {
+        label: 'UI Customization',
+        to: `/bots/${botDetails.id}/ui-customization`,
+      },
     ]"
     :disableSelector="true"
     :disable-back-button="false"
@@ -22,6 +25,7 @@
           class="form-align field_shadow ml-0 flex w-full flex-col gap-[13px] overflow-y-auto p-5 sm:ml-0 sm:w-full md:ml-0 md:w-full lg:ml-11 lg:w-[60%] xl:ml-11 xl:w-[60%]"
         >
           <UiFormField v-slot="{ value, componentField }" name="logo">
+            {{ console.log(value, "VLAEE<<>>>>") }}
             <UiFormItem
               v-auto-animate="animationProps"
               class="flex w-full flex-col items-start"
@@ -43,37 +47,68 @@
             </UiFormItem>
           </UiFormField>
 
-          <UiFormField v-slot="{ componentField }" name="color">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiLabel class="text-lg font-medium">Colour</UiLabel>
-              <UiFormControl>
-                <div
-                  class="field_shadow flex h-14 items-center gap-8 rounded-lg bg-[#ffffff] bg-white px-5"
-                >
-                  <div class="flex w-full justify-between">
-                    <label
-                      for="color"
-                      class="py-auto content-center text-base font-medium"
-                      >Primary Colour</label
-                    >
-                    <div class="h-8 w-8 overflow-hidden rounded-full">
-                      <UiInput
-                        v-bind="componentField"
-                        type="color"
-                        class="h-20 w-20 -translate-x-1/3 -translate-y-1/3"
-                      />
-                      <!-- <input v-bind="componentField" type="color" id="colorId" name="color"
+          <div class="flex items-center gap-2">
+            <UiFormField v-slot="{ componentField }" name="color">
+              <UiFormItem v-auto-animate="animationProps" class="w-full">
+                <!-- <UiLabel class="text-lg font-medium">Color</UiLabel> -->
+                <UiFormControl>
+                  <div
+                    class="field_shadow flex h-14 items-center gap-8 rounded-lg bg-[#ffffff] bg-white px-5"
+                  >
+                    <div class="flex w-full justify-between">
+                      <label
+                        for="color"
+                        class="py-auto content-center text-base font-medium"
+                        >Primary Color</label
+                      >
+                      <div class="h-8 w-8 overflow-hidden rounded-full">
+                        <UiInput
+                          v-bind="componentField"
+                          type="color"
+                          class="h-20 w-20 -translate-x-1/3 -translate-y-1/3"
+                        />
+                        <!-- <input v-bind="componentField" type="color" id="colorId" name="color"
                         class="h-20 w-20 -translate-x-1/3 -translate-y-1/3" /> -->
+                      </div>
                     </div>
                   </div>
-                </div>
-              </UiFormControl>
-              <UiFormMessage />
-              <span class="text-xs text-gray-500"
-                >Select color for chat window</span
-              >
-            </UiFormItem>
-          </UiFormField>
+                </UiFormControl>
+                <UiFormMessage />
+                <span class="text-xs text-gray-500"
+                  >This color will be used for Messages,Widget Bubble</span
+                >
+              </UiFormItem>
+            </UiFormField>
+            <UiFormField v-slot="{ componentField }" name="secondaryColor">
+              <UiFormItem v-auto-animate="animationProps" class="w-full">
+                <!-- <UiLabel class="text-lg font-medium">Color</UiLabel> -->
+                <UiFormControl>
+                  <div
+                    class="field_shadow flex h-14 items-center gap-8 rounded-lg bg-white px-5"
+                  >
+                    <div class="flex w-full justify-between">
+                      <label
+                        for="color"
+                        class="py-auto content-center text-base font-medium"
+                        >Secondary Color</label
+                      >
+                      <div class="h-8 w-8 overflow-hidden rounded-full">
+                        <UiInput
+                          v-bind="componentField"
+                          type="color"
+                          class="h-20 w-20 -translate-x-1/3 -translate-y-1/3"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </UiFormControl>
+                <UiFormMessage />
+                <span class="text-xs text-gray-500"
+                  >This color will be used for chat buttons</span
+                >
+              </UiFormItem>
+            </UiFormField>
+          </div>
           <div class="flex w-full items-center justify-between">
             <div class="w-[50%]">
               <UiFormField v-slot="{ componentField }" name="widgetSound">
@@ -220,8 +255,10 @@
     z.object({
       logo: z.union([logoAsString, logoAsObject]),
       color: z.string().min(1, "Primary color is required"),
+      secondaryColor: z.string().min(1, "Secondary color is required"),
       widgetSound: z.string().min(1, "Widget sound must be selected"),
       widgetPosition: z.string().min(1, "Widget position must be selected"),
+
       defaultSelect: z.boolean().optional(),
       generateLead: z.boolean().optional(),
       onlineStatus: z.boolean().optional(),
@@ -238,6 +275,9 @@
   const defaultFormValues = reactive({
     logo: botDetails.metadata.ui.logo ?? "",
     color: hslToHex(botDetails.metadata.ui.color ?? "236, 61%, 54%, 1"),
+    secondaryColor: hslToHex(
+      botDetails.metadata.ui.secondaryColor ?? "236, 61%, 74%",
+    ),
     defaultSelect: botDetails.metadata.ui.defaultSelect ?? true,
     widgetSound: botDetails.metadata.ui.widgetSound ?? "Yes",
     widgetPosition: botDetails.metadata.ui.widgetPosition ?? "Left",
@@ -260,6 +300,7 @@
         ui: {
           logo: value.logo,
           color: hexToHSL(value.color),
+          secondaryColor: hexToHSL(value.secondaryColor),
           defaultSelect: value.defaultSelect,
           onlineStatus: value.onlineStatus,
           widgetPosition: value.widgetPosition,
