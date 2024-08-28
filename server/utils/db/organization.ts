@@ -53,7 +53,6 @@ export const getAnalytics = async (
     case "this-year":
       fromDate.setFullYear(fromDate.getFullYear() - 1);
       break;
-
     default:
       break;
   }
@@ -89,16 +88,57 @@ export const getAnalytics = async (
     .from(chatSchema)
     .where(
       and(
+        gte(chatSchema.createdAt, fromDate),
+        lte(chatSchema.createdAt, toDate),
         eq(chatSchema.interacted, true),
         eq(chatSchema.organizationId, organizationId),
       ),
     );
-  // const interactedChats = await db.query.chatSchema.count({
-  //   where: and(
-  //     eq(chatSchema.organizationId, organizationId),
-  //     eq(chatSchema.interacted, true),
-  //   ),
-  // });
+  const callScheduledTimeline = await db
+    .select({ count: count() })
+    .from(timelineSchema)
+    .where(
+      and(
+        gte(timelineSchema.createdAt, fromDate),
+        lte(timelineSchema.createdAt, toDate),
+        eq(timelineSchema.orgId, organizationId),
+        eq(timelineSchema.intent, "schedule_call"),
+      ),
+    );
+
+  const siteVisitTimeline = await db
+    .select({ count: count() })
+    .from(timelineSchema)
+    .where(
+      and(
+        gte(timelineSchema.createdAt, fromDate),
+        lte(timelineSchema.createdAt, toDate),
+        eq(timelineSchema.orgId, organizationId),
+        eq(timelineSchema.intent, "site_visit"),
+      ),
+    );
+  const locationTimeline = await db
+    .select({ count: count() })
+    .from(timelineSchema)
+    .where(
+      and(
+        gte(timelineSchema.createdAt, fromDate),
+        lte(timelineSchema.createdAt, toDate),
+        eq(timelineSchema.orgId, organizationId),
+        eq(timelineSchema.intent, "location"),
+      ),
+    );
+  const virtualTourTimeline = await db
+    .select({ count: count() })
+    .from(timelineSchema)
+    .where(
+      and(
+        gte(timelineSchema.createdAt, fromDate),
+        lte(timelineSchema.createdAt, toDate),
+        eq(timelineSchema.orgId, organizationId),
+        eq(timelineSchema.intent, "virtual_tour"),
+      ),
+    );
 
   if (!orgData) return undefined;
 
@@ -139,6 +179,10 @@ ORDER BY
     users: orgData.botUsers.length,
     leads: orgData.leads.length,
     sessions: sessions?.sessions ?? 0,
+    virtualTourTimeline,
+    locationTimeline,
+    siteVisitTimeline,
+    callScheduledTimeline,
     interactedChats,
     graph: {
       leads: leadsGraph.rows,

@@ -12,10 +12,7 @@
       >
         <span class="flex -items-center py-2 pl-2"></span>
         <span class="font-bold text-black">
-          <UiSelect
-            v-model="selectedValue"
-            class="outline-none"
-          >
+          <UiSelect v-model="selectedValue" class="outline-none">
             <UiSelectTrigger
               class="ui-select-trigger flex w-[110px] items-center gap-2 outline-none"
             >
@@ -117,6 +114,67 @@
             </div>
             <div class="text-3xl font-extrabold text-black">
               {{ analyticsData?.users }}
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
+        >
+          <div class="rounded-md bg-[#ffbc42] p-2">
+            <ChatSession />
+          </div>
+          <div>
+            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+              Call Scheduled
+            </div>
+            <div class="text-3xl font-extrabold text-black">
+              {{ analyticsData?.callScheduledTimeline[0]?.count ?? 0 }}
+            </div>
+          </div>
+        </div>
+        <div
+          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
+        >
+          <div class="rounded-md bg-[#ffbc42] p-2">
+            <ChatSession />
+          </div>
+          <div>
+            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+              Site Visited
+            </div>
+            <div class="text-3xl font-extrabold text-black">
+              {{ analyticsData?.siteVisitTimeline[0]?.count ?? 0 }}
+            </div>
+          </div>
+        </div>
+        <div
+          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
+        >
+          <div class="rounded-md bg-[#ffbc42] p-2">
+            <ChatSession />
+          </div>
+          <div>
+            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+              Virtual Tours
+            </div>
+            <div class="text-3xl font-extrabold text-black">
+              {{ analyticsData?.virtualTourTimeline[0]?.count ?? 0 }}
+            </div>
+          </div>
+        </div>
+        <div
+          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
+        >
+          <div class="rounded-md bg-[#ffbc42] p-2">
+            <ChatSession />
+          </div>
+          <div>
+            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+              Location Visited
+            </div>
+            <div class="text-3xl font-extrabold text-black">
+              {{ analyticsData?.locationTimeline[0]?.count ?? 0 }}
             </div>
           </div>
         </div>
