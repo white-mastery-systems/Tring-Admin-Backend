@@ -69,33 +69,21 @@
 
 <template>
   <UiDialog v-model:open="integrationModalState.open">
-    <UiDialogContent class="sm:max-w-[425px]">
+    <UiDialogContent
+      class="max-w-[330px] sm:max-w-[300px] md:max-w-[400px]  lg:max-w-[400px] xl:max-w-[400px] rounded-lg">
       <UiDialogHeader>
         <UiDialogTitle>Add New Integration</UiDialogTitle>
       </UiDialogHeader>
-      <UiForm
-        v-slot="{ values }"
-        :validation-schema="integrationSchema"
-        @submit="handleConnect"
-        :keep-values="true"
-        :validate-on-mount="false"
-        class="space-y-2"
-      >
+      <UiForm v-slot="{ values }" :validation-schema="integrationSchema" @submit="handleConnect" :keep-values="true"
+        :validate-on-mount="false" class="space-y-2">
         <UiFormField v-slot="{ componentField }" name="name">
           <UiFormItem class="w-full">
-            <UiFormLabel
-              >Name <UiLabel class="text-lg text-red-500">*</UiLabel>
+            <UiFormLabel>Name <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
-              <UiInput
-                type="text"
-                v-bind="componentField"
-                placeholder="Eg: CRM-your company,CRM-your company"
-              />
+              <UiInput type="text" v-bind="componentField" placeholder="Eg: CRM-your company,CRM-your company" />
             </UiFormControl>
-            <span class="text-xs text-gray-500"
-              >Enter a unique identification for CRM integration</span
-            >
+            <span class="text-xs text-gray-500">Enter a unique identification for CRM integration</span>
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
@@ -121,21 +109,12 @@
           </UiFormItem>
         </UiFormField>
 
-        <UiFormField
-          v-if="values.crm === 'sell-do'"
-          v-slot="{ componentField }"
-          name="metaData.apiKey"
-        >
+        <UiFormField v-if="values.crm === 'sell-do'" v-slot="{ componentField }" name="metaData.apiKey">
           <UiFormItem class="w-full">
-            <UiFormLabel
-              >API key <UiLabel class="text-lg text-red-500">*</UiLabel>
+            <UiFormLabel>API key <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
-              <UiInput
-                type="text"
-                v-bind="componentField"
-                placeholder="Eg: api-key-here"
-              />
+              <UiInput type="text" v-bind="componentField" placeholder="Eg: api-key-here" />
             </UiFormControl>
             <span class="text-xs text-gray-500">Enter your API key here</span>
             <UiFormMessage />
@@ -143,11 +122,11 @@
         </UiFormField>
         <UiButton type="submit" class="mt-2" color="primary">
           {{
-            values.crm === "zoho-crm"
-              ? "Connect Zoho CRM"
-              : values.crm === "zoho-bigin"
-                ? "Connect Zoho Bigin"
-                : "Save changes"
+          values.crm === "zoho-crm"
+          ? "Connect Zoho CRM"
+          : values.crm === "zoho-bigin"
+          ? "Connect Zoho Bigin"
+          : "Save changes"
           }}
         </UiButton>
       </UiForm>
