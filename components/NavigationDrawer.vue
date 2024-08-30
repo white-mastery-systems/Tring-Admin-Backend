@@ -68,6 +68,7 @@
         <div class="flex flex-col">
           <span class="font-bold capitalize">{{ userInfo?.username }}</span>
           <span class="truncate max-w-[150px]">{{ userInfo?.email }}</span>
+
         </div>
       </NuxtLink>
     </div>
