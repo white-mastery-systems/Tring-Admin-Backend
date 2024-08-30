@@ -105,6 +105,19 @@ export const listBotIntents = async (
   return data;
 };
 
+export const updateBotIntent = async (botId: string, intentId: string, intent: InsertIntent) => {
+  return (
+    await db.update(botIntentSchema)
+    .set(intent)
+    .where(
+      and(
+        eq(botIntentSchema.botId, botId),
+        eq(botIntentSchema.id, intentId)
+      ))
+    .returning()
+  )[0]
+}
+
 export const createBotIntegration = async (
   integration: InsertBotIntegration,
 ) => {
@@ -124,6 +137,19 @@ export const listBotIntegrations = async (botId: string) => {
   });
   return data;
 };
+
+export const updateBotIntegration = async(botId: string, botIntegrationId: string, botIntegration: zodInsertBotIntegration) =>{
+  return (
+     await db.update(botIntegrationSchema)
+    .set(botIntegration)
+    .where(
+      and(
+      eq(botIntegrationSchema.botId, botId),
+      eq(botIntegrationSchema.id, botIntegrationId)
+    ))
+    .returning()
+    )[0]
+}
 
 export const deleteBotIntegration = async (
   botId: string,
