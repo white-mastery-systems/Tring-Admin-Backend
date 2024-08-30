@@ -178,6 +178,7 @@ const { status, data: leadData } = await useLazyFetch(
 const details = computed(() => {
   if (!leadData.value) return [undefined, undefined];
   const { params, ...rest } = leadData.value.metadata as Record<string, any>;
+  const { name } = leadData.value.bot
   let metaData: any = Object.entries(rest || {}).map(([key, value]) => {
     if (key === "os") {
       return ["OS", value];
@@ -191,11 +192,12 @@ const details = computed(() => {
     botUserDetails.push(
       ["Name", leadData?.value?.botUser?.name],
       ["Email", leadData?.value?.botUser?.email],
-      ["Mobile", leadData?.value?.botUser?.mobile]
+      ["Mobile", leadData?.value?.botUser?.mobile],
+      ["Bot Name", name],
     )
   }
   const paramsData = Object.entries(params)
-  return [...metaData, ...botUserDetails, ...paramsData]
+  return [...metaData, ...paramsData ,...botUserDetails]
 });
 
 const steps = [

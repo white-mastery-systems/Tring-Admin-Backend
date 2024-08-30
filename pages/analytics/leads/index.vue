@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between gap-2 pb-4 overflow-x-scroll">
       <div class="flex items-center gap-2">
         <UiInput v-model="filters.q"
-          class="max-w-[80px] sm:max-w-[80px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+          class="max-w-[130px] sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder="Search Leads..." />
         <BotFilter v-model="filters.botId" />
         <DateRangeFilter @change="onDateChange" />
