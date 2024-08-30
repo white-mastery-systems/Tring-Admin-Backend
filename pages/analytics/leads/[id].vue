@@ -173,7 +173,7 @@
       ["Name", leadData?.value?.botUser?.name],
       ["Email", leadData?.value?.botUser?.email],
       ["Mobile", leadData?.value?.botUser?.mobile],
-      ["Bot Name", name]
+      ["Bot Name", name],
     ];
     return [metaData, Object.entries(params)];
   });

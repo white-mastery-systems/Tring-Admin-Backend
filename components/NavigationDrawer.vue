@@ -1,14 +1,12 @@
 <template>
-  <!-- pt-[80px] sm:pt-[80px] md:pt-[80px] lg:pt-0 xl:pt-0 -->
   <div class="flex h-[100vh] w-[250px] flex-col items-center gap-5 overflow-y-scroll bg-[#ffffff]">
-    <div class="flex justify-center h-[30%] w-[245px] bg-[#ffffff]">
-      <img class="self-center pt-5" src="assets\icons\tring_AI_logo.svg" width="80" height="80" />
+    <div class="flex justify-center h-[25%] w-[245px] bg-[#ffffff]">
+      <img class="self-center pt-[50px] sm:pt-[50px] md:pt-[50px] lg:pt-7 xl:pt-7" src="assets\icons\tring_AI_logo.svg"
+        width="80" height="80" />
     </div>
-    <!-- pt-[150px] -->
-    <div
-      class="flex flex-col w-[100%] md:w-[100%] lg:w-[90%] xl:w-[100%] h-[70%] overflow-scroll gap-4 pt-2 pb-6 px-3">
+    <div class="flex flex-col items-center w-full overflow-scroll gap-4 pt-4 pb-[60px]">
       <template v-for="{ name, icon, path, children } in navigationModules" :key="path">
-        <UiAccordion v-if="children?.length > 0" type="single" class="w-full" v-model="openAccordions[path]"
+        <UiAccordion v-if="children?.length > 0" type="single" class="w-[90%]" v-model="openAccordions[path]"
           collapsible>
           <UiAccordionItem :value="path" class="shadow-md border-0 bg-white">
             <div class="field_shadow flex cursor-pointer items-center gap-3 px-[16px] font-medium" :class="[
@@ -35,7 +33,7 @@
           </UiAccordionItem>
         </UiAccordion>
         <NuxtLink v-else-if="!!(path !== '/')" :to="path" @click="handleNavigation"
-          class="field_shadow flex w-full cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium"
+          class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium"
           :class="[
             route.path?.includes(path)
               ? 'bg-[#424bd1] text-[#ffffff]'
@@ -46,7 +44,7 @@
           <span class="text-[14px]">{{ name }}</span>
         </NuxtLink>
         <NuxtLink v-else :to="path" @click="handleNavigation"
-          class="field_shadow flex w-full cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium"
+          class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium"
           :class="[
             route.path === path ? 'bg-[#424bd1] text-[#ffffff]' : 'bg-[#ffffff]',
           ]">
@@ -54,8 +52,8 @@
           <span class="text-[14px]">{{ name }}</span>
         </NuxtLink>
       </template>
-      <NuxtLink class="flex items-center gap-2 rounded-xl border-[1px] border-[var(border)] px-2 py-1" to="/account"
-        :class="[
+      <NuxtLink class="flex items-center gap-2 rounded-xl w-[90%] border-[1px] border-[var(border)] px-2 py-1"
+        to="/account" :class="[
           route.path === '/account'
             ? 'bg-[#424bd1] text-[#ffffff]'
             : 'bg-[#ffffff]',

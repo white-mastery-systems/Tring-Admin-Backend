@@ -18,9 +18,9 @@
   <div :class="[
       props.disablePadding
         ? ''
-        : 'px-2 pb-2 sm:px-2 md:px-4 md:pt-12 lg:px-4 lg:pt-4 xl:px-4',
+        : 'px-2 pb-2 sm:px-2 md:px-4 md:pt-2 lg:px-4 lg:pt-4 xl:px-4',
     ]">
-    <div class="mb-2 flex items-center justify-between gap-2">
+    <div class="mb-2 pt-2 flex items-center justify-between gap-2">
 
       <div v-if="props.title"
         :class="['flex gap-4 px-0', (!props.disableBackButton) ? 'items-center' : 'items-start']">
