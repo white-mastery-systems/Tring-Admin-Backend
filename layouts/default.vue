@@ -1,12 +1,14 @@
 <template>
   <div class="relavtive flex h-[100vh]">
     <div
-      class="hidden md:hidden xl:felx lg:flex border-r border-[#8a8a8a1a] flex-col items-center gap-[20px] h-[100vh] overflow-auto w-[250px] overflow-x-hidden">
+      class="xl:felx hidden h-[100vh] w-[250px] flex-col items-center gap-[20px] overflow-auto overflow-x-hidden border-r border-[#8a8a8a1a] md:hidden lg:flex"
+    >
       <NavigationDrawer />
     </div>
     <!-- mt-2 -->
-    <div class="lg:w-[86%] w-full xl:mt-0 lg:mt-0 md:mt-0 h-[100vh] overflow-y-scroll">
-
+    <div
+      class="h-[100vh] w-full overflow-y-scroll md:mt-0 lg:mt-0 lg:w-[86%] xl:mt-0"
+    >
       <slot />
     </div>
   </div>
@@ -18,7 +20,7 @@
   const routeName = ref(route.name);
   onMounted(async () => {
     console.log(routeName, "routeName");
-    const eventSource = new EventSource("http://localhost:3000/api/sse");
+    const eventSource = new EventSource("/api/sse");
     // toast.success("Connection established", {
     //   position: "bottom-right",
     //   closeButton: true,
