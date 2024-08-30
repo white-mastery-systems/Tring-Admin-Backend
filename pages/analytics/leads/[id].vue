@@ -140,9 +140,10 @@
   const isPageLoading = computed(() => status.value === "pending");
 
   const details = computed(() => {
-    if (!leadData.value) return [undefined, undefined];
+    if (!leadData.value) return [];
     const { params, ...rest } = leadData.value.metadata as Record<string, any>;
     let metaData: any = Object.entries(rest).map(([key, value]) => {
+      
       if (key === "os") {
         return ["OS", value];
       } else if (key === "ipAddress") {
@@ -150,14 +151,12 @@
       }
       return [key, value];
     });
-    console.log({ metaData });
     metaData = [
       ...metaData,
       ["Name", leadData?.value?.botUser?.name],
       ["Email", leadData?.value?.botUser?.email],
       ["Mobile", leadData?.value?.botUser?.mobile],
     ];
-
     return [metaData, Object.entries(params)];
   });
 
