@@ -1,3 +1,5 @@
+import { InsertLead } from "~/server/schema/bot";
+
 const db = useDrizzle();
 
 interface QueryInterface {
@@ -61,3 +63,12 @@ export const deleteLead = async (leadId: string) => {
     .where(eq(leadSchema.id, leadId))
     .returning();
 };
+
+export const updateLead = async (leadId: string, lead: InsertLead) => {
+  return (
+    await db.update(leadSchema)
+    .set(lead)
+    .where(eq(leadSchema.id, leadId))
+    .returning()
+  )[0]
+}
