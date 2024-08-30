@@ -1,13 +1,13 @@
 <template>
   <UiSelect v-model="bot">
-    <UiSelectTrigger>
+    <UiSelectTrigger class="w-[110px] sm:w-[110px] md:w-[250px] lg:w-[250px] xl:w-[250px]">
       <UiSelectValue placeholder="Select a Bot" />
     </UiSelectTrigger>
     <UiSelectContent>
       <template v-if="status === 'pending'">
-        <UiSelectItem value="loading"
-          ><Icon name="svg-spinners:90-ring-with-bg"
-        /></UiSelectItem>
+        <UiSelectItem value="loading">
+          <Icon name="svg-spinners:90-ring-with-bg" />
+        </UiSelectItem>
       </template>
       <template v-else>
         <UiSelectItem v-for="bot in bots" :key="bot.id" :value="bot.id">

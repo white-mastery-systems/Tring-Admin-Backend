@@ -1,32 +1,19 @@
 <template>
-  <Page
-    :disable-elevation="true"
-    title="Dashboard"
-    :disableSelector="true"
-    :disable-back-button="true"
-  >
+  <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true">
     <template #actionButtons>
-      <span
-        class="-items-ecnter field_shadow flex rounded-lg text-[15px]"
-        style="color: rgba(138, 138, 138, 1)"
-      >
-        <span class="flex -items-center py-2 pl-2"></span>
+      <span class="flex items-center field_shadow rounded-lg text-[15px]" style="color: rgba(138, 138, 138, 1)">
+        <!-- <span class="flex -items-center py-2 pl-2"></span> -->
         <span class="font-bold text-black">
           <UiSelect v-model="selectedValue" class="outline-none">
             <UiSelectTrigger
-              class="ui-select-trigger flex w-[110px] items-center gap-2 outline-none"
-            >
-              <span class="font-thin text-gray-400"> Summary </span
-              ><UiSelectValue />
+              class="ui-select-trigger flex w-[70px] sm:w-[80px] md:w-[200px] lg:w-[200px] xl:w-[200px] items-center gap-2 outline-none text-[10px] sm:text-[10px] md:text-[14px] lg:text-[14px] xl:text-[14px]">
+              <span class="font-thin text-gray-400"> Summary </span>
+              <UiSelectValue />
             </UiSelectTrigger>
             <UiSelectContent>
               <UiSelectGroup>
-                <UiSelectItem
-                  v-for="(list, index) in menuList"
-                  :key="index"
-                  class="content_align pr-2"
-                  :value="list.value"
-                >
+                <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align pr-2"
+                  :value="list.value">
                   {{ list.content }}
                 </UiSelectItem>
               </UiSelectGroup>
@@ -36,12 +23,8 @@
       </span>
     </template>
     <div>
-      <div
-        class="xs:grid-cols-2 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
-      >
-        <div
-          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
-        >
+      <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div v-if="false" class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3">
           <div class="rounded-md bg-[#ffbc42] p-2">
             <BotIcon />
           </div>
@@ -54,126 +37,118 @@
             </div>
           </div>
         </div>
-        <div
-          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
-        >
+        <div class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3">
           <div class="rounded-md bg-[#ffbc42] p-2">
             <ChatSession />
           </div>
           <div>
-            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+            <div
+              class="mb-1 text-[10px] sm:text-[10px] md:text-[16px] lg:text-[16px] xl:text-[16px] font-semibold text-gray-500">
               Interacted Chats
             </div>
-            <div class="text-3xl font-extrabold text-black">
+            <div class="text-xl sm:text-xl md:text-3xl lg:text-3xl xl:text-3xl font-extrabold text-black">
               {{ analyticsData?.interactedChats[0]?.count ?? 0 }}
             </div>
           </div>
         </div>
 
-        <div
-          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
-        >
+        <div class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3">
           <div class="rounded-md bg-[#ffbc42] p-2">
             <ChatSession />
           </div>
           <div>
-            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+            <div
+              class="mb-1 text-[10px] sm:text-[10px] md:text-[16px] lg:text-[16px] xl:text-[16px] font-semibold text-gray-500">
               Chat sessions
             </div>
-            <div class="text-3xl font-extrabold text-black">
+            <div class="text-xl sm:text-xl md:text-3xl lg:text-3xl xl:text-3xl font-extrabold text-black">
               {{ analyticsData?.chats }}
             </div>
           </div>
         </div>
 
-        <div
-          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
-        >
+        <div class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3">
           <div class="rounded-md bg-[#ffbc42] p-2">
             <Leads />
           </div>
           <div>
-            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+            <div
+              class="mb-1 text-[10px] sm:text-[10px] md:text-[16px] lg:text-[16px] xl:text-[16px] font-semibold text-gray-500">
               Chat Leads
             </div>
-            <div class="text-3xl font-extrabold text-black">
+            <div class="text-xl sm:text-xl md:text-3xl lg:text-3xl xl:text-3xl font-extrabold text-black">
               {{ analyticsData?.leads }}
             </div>
           </div>
         </div>
 
-        <div
-          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
-        >
+        <div class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3">
           <div class="rounded-md bg-[#ffbc42] p-2">
             <SingleUser />
           </div>
           <div>
-            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+            <div
+              class="mb-1 text-[10px] sm:text-[10px] md:text-[16px] lg:text-[16px] xl:text-[16px] font-semibold text-gray-500">
               Unique visitors
             </div>
-            <div class="text-3xl font-extrabold text-black">
+            <div class="text-xl sm:text-xl md:text-3xl lg:text-3xl xl:text-3xl font-extrabold text-black">
               {{ analyticsData?.users }}
             </div>
           </div>
         </div>
 
-        <div
-          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
-        >
+        <div class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3">
           <div class="rounded-md bg-[#ffbc42] p-2">
             <ChatSession />
           </div>
           <div>
-            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+            <div
+              class="mb-1 text-[10px] sm:text-[10px] md:text-[16px] lg:text-[16px] xl:text-[16px] font-semibold text-gray-500">
               Call Scheduled
             </div>
-            <div class="text-3xl font-extrabold text-black">
+            <div class="text-xl sm:text-xl md:text-3xl lg:text-3xl xl:text-3xl font-extrabold text-black">
               {{ analyticsData?.callScheduledTimeline[0]?.count ?? 0 }}
             </div>
           </div>
         </div>
-        <div
-          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
-        >
+        <div class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3">
           <div class="rounded-md bg-[#ffbc42] p-2">
             <ChatSession />
           </div>
           <div>
-            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+            <div
+              class="mb-1 text-[10px] sm:text-[10px] md:text-[16px] lg:text-[16px] xl:text-[16px] font-semibold text-gray-500">
               Site Visits
             </div>
-            <div class="text-3xl font-extrabold text-black">
+            <div class="text-xl sm:text-xl md:text-3xl lg:text-3xl xl:text-3xl font-extrabold text-black">
               {{ analyticsData?.siteVisitTimeline[0]?.count ?? 0 }}
             </div>
           </div>
         </div>
-        <div
-          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
-        >
+        <div class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3">
           <div class="rounded-md bg-[#ffbc42] p-2">
             <ChatSession />
           </div>
           <div>
-            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+            <div
+              class="mb-1 text-[10px] sm:text-[10px] md:text-[16px] lg:text-[16px] xl:text-[16px] font-semibold text-gray-500">
               Virtual Tours
             </div>
-            <div class="text-3xl font-extrabold text-black">
+            <div class="text-xl sm:text-xl md:text-3xl lg:text-3xl xl:text-3xl font-extrabold text-black">
               {{ analyticsData?.virtualTourTimeline[0]?.count ?? 0 }}
             </div>
           </div>
         </div>
-        <div
-          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
-        >
+        <div class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3">
           <div class="rounded-md bg-[#ffbc42] p-2">
             <ChatSession />
           </div>
           <div>
-            <div class="mb-1 text-[16px] font-semibold text-gray-500">
+            <div
+              class="mb-1 text-[10px] sm:text-[10px] md:text-[16px] lg:text-[16px] xl:text-[16px] font-semibold text-gray-500">
               Location Visited
             </div>
-            <div class="text-3xl font-extrabold text-black">
+            <div class="text-xl sm:text-xl md:text-3xl lg:text-3xl xl:text-3xl font-extrabold text-black">
               {{ analyticsData?.locationTimeline[0]?.count ?? 0 }}
             </div>
           </div>
@@ -181,30 +156,17 @@
       </div>
 
       <div class="relative">
-        <div
-          class="field_shadow my-8 flex h-[59vh] gap-6 rounded-[10px] pb-[20px]"
-        >
-          <div
-            v-if="analyticsData?.bots > 0"
-            class="relative w-full place-content-center rounded-md bg-white"
-          >
-            <UiLineChart
-              :data="lineGraphData"
-              index="month"
-              :categories="['Leads Created', 'Sessions Created']"
-              :colors="['#424bd1', '#ffbc42']"
-              :show-grid-line="true"
-              :show-tooltip="true"
-              :margin="{ right: 20 }"
+        <div class="field_shadow my-8 flex h-[59vh] gap-6 rounded-[10px] pb-[20px]">
+          <div v-if="analyticsData?.bots > 0" class="relative w-full place-content-center rounded-md bg-white">
+            <UiLineChart :data="lineGraphData" index="month" :categories="['Leads Created', 'Sessions Created']"
+              :colors="['#424bd1', '#ffbc42']" :show-grid-line="true" :show-tooltip="true" :margin="{ right: 20 }"
               :y-formatter="
                 (tick: any) => {
                   return typeof tick === 'number'
                     ? `${new Intl.NumberFormat('us').format(tick).toString()}`
                     : '';
                 }
-              "
-              class="h-[380px] w-full"
-            />
+              " class="h-[380px] w-full" />
           </div>
           <!-- <div
             class="voice-bot-align relative place-content-center rounded-md bg-white shadow"

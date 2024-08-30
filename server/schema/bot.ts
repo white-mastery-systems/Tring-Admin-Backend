@@ -130,6 +130,7 @@ export const leadSchema = chatbotSchema.table(
     organizationId: uuid("organization_id")
       .references(() => organizationSchema.id)
       .notNull(),
+    status: varchar("status").default("default").notNull()
   },
   (table) => ({
     leadConstraint: unique("leads_unique_constraint").on(

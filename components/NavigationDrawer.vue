@@ -6,7 +6,8 @@
     </div>
     <!-- pt-[150px] -->
     <div
-      class="flex flex-col w-[100%] md:w-[100%] lg:w-[90%] xl:w-[100%] h-[100%] overflow-scroll gap-4 pt-2 pb-6 px-3">
+      class="flex flex-col w-[100%] md:w-[100%] lg:w-[90%] xl:w-[100%] h-[70%] overflow-scroll gap-4 pt-2 pb-6 px-3">
+
       <template v-for="{ name, icon, path, children } in navigationModules" :key="path">
         <UiAccordion v-if="children?.length > 0" type="single" class="w-full" v-model="openAccordions[path]"
           collapsible>
@@ -69,7 +70,8 @@
 
         <div class="flex flex-col">
           <span class="font-bold capitalize">{{ userInfo?.username }}</span>
-          <span>{{ userInfo?.email }}</span>
+          <span class="truncate max-w-[150px]">{{ userInfo?.email }}</span>
+
         </div>
       </NuxtLink>
     </div>

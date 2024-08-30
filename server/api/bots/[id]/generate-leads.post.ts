@@ -5,6 +5,7 @@ import {
 } from "~/server/utils/zoho/modules";
 
 export default defineEventHandler(async (event) => {
+  const userId = event.context.user?.id as string
   const generateLeadsValidation = z.object({
     botUser: z.any(),
     note: z.any(),
@@ -99,5 +100,11 @@ export default defineEventHandler(async (event) => {
       );
     }
   });
+
+  const connections = global.userConnections?.get(userId) || []
+  connections.forEach((connection) => {
+    connection({ event: "leads" })
+  })
+
   return botIntegratsions;
 });
