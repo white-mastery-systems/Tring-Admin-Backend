@@ -1,14 +1,13 @@
 <template>
   <div class="relavtive flex h-[100vh]">
     <div
-      class="xl:felx w-[270px hidden h-[100vh] flex-col items-center gap-[20px] overflow-auto border-r border-[#8a8a8a1a] md:hidden lg:flex"
-    >
+      class="hidden md:hidden xl:felx lg:flex border-r border-[#8a8a8a1a] flex-col items-center gap-[20px] h-[100vh] overflow-auto w-[250px] overflow-x-hidden">
       <NavigationDrawer />
     </div>
-    <div
-      class="mt-2 h-[100vh] w-full overflow-y-scroll md:mt-0 lg:mt-0 lg:w-[86%] xl:mt-0"
-    >
-      <slot></slot>
+    <!-- mt-2 -->
+    <div class="lg:w-[86%] w-full xl:mt-0 lg:mt-0 md:mt-0 h-[100vh] overflow-y-scroll">
+
+      <slot />
     </div>
   </div>
 </template>
