@@ -49,16 +49,13 @@
 <template>
   <UiPopover>
     <UiPopoverTrigger as-child>
-      <UiButton
-        variant="outline"
-        :class="
+      <UiButton variant="outline" :class="
           cn(
-            'w-[280px] justify-start text-left font-normal',
+            'w-[120px] sm:w-[120px] md:w-[260px] lg:w-[240px] xl:w-[240px] justify-start text-left font-normal truncate',
             !value && 'text-muted-foreground',
           )
-        "
-      >
-        <CalendarIcon class="mr-2 h-4 w-4" />
+        ">
+        <CalendarIcon class="mr-0 sm:mr-0 md:mr-2 lg:mr-2 xl:mr-2 h-4 w-4" />
         <template v-if="value.start">
           <template v-if="value.end">
             {{ df.format(value.start.toDate(getLocalTimeZone())) }} -
@@ -76,13 +73,8 @@
       <div class="px-8 py-2">
         <DateRangePresetSelect @change="(newValue) => (value = newValue)" />
       </div>
-      <UiRangeCalendar
-        v-model="value"
-        initial-focus
-        :is-date-disabled="isDateDisabled"
-        :number-of-months="2"
-        @update:start-value="(startDate) => (value.start = startDate)"
-      />
+      <UiRangeCalendar v-model="value" initial-focus :is-date-disabled="isDateDisabled" :number-of-months="2"
+        @update:start-value="(startDate) => (value.start = startDate)" />
     </UiPopoverContent>
   </UiPopover>
 </template>

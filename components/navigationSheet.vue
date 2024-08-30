@@ -6,7 +6,7 @@
   <UiSheet v-model:open="isSheetOpen">
     <UiSheetContent side="left" class="px-0 flex items-center self-center w-[250px]">
       <div
-        class="border-r border-[#8a8a8a1a] flex-col items-center justify-center gap-[20px] h-[100vh] overflow-y-scroll w-full">
+        class="border-r border-[#8a8a8a1a] flex-col items-center justify-center gap-[20px] h-[100vh] overflow-y-scroll w-full overflow-x-hidden">
         <NavigationDrawer @closeSheet="closeSheet" />
       </div>
     </UiSheetContent>

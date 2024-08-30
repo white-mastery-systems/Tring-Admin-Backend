@@ -1,14 +1,20 @@
 <template>
   <Page :title="leadData?.botUser?.name ?? ''" :disable-back-button="false" :disable-elevation="true">
+    <template #actionButtons>
+      <div>
+        <UiButton variant="destructive">
+          Mark as Junk
+        </UiButton>
+      </div>
+    </template>
     <div class="items-top xs:grid-cols-2 flex grid grid-cols-1 gap-[25px] lg:grid-cols-2">
       <!-- mx-8 -->
-      <div class="flex w-full justify-around gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]">
+      <div class="flex w-full justify-aro und gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]">
         <UiTabs default-value="client" class="w-full self-start">
           <UiTabsList class="grid w-full grid-cols-2">
             <UiTabsTrigger value="client"> Client Info </UiTabsTrigger>
             <UiTabsTrigger value="campaign"> Campaign Info </UiTabsTrigger>
           </UiTabsList>
-
           <UiTabsContent value="client">
             <div class="flex grid grid-cols-2 flex-col items-center gap-2 pl-4 capitalize">
               <div v-for="[key, value] in details[0]" class="max-w-full font-medium">
@@ -142,6 +148,7 @@
   const details = computed(() => {
     if (!leadData.value) return [];
     const { params, ...rest } = leadData.value.metadata as Record<string, any>;
+    const { name } = leadData.value.bot
     let metaData: any = Object.entries(rest).map(([key, value]) => {
       
       if (key === "os") {
@@ -156,6 +163,7 @@
       ["Name", leadData?.value?.botUser?.name],
       ["Email", leadData?.value?.botUser?.email],
       ["Mobile", leadData?.value?.botUser?.mobile],
+      ["Bot Name", name]
     ];
     return [metaData, Object.entries(params)];
   });
