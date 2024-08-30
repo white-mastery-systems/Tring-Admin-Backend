@@ -1,27 +1,49 @@
 <template>
   <Page :title="leadData?.botUser?.name ?? 'Add Name'" :disable-back-button="false" :disable-elevation="true">
-    <!-- sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 -->
     <div class="items-top gap-[25px flex items-center justify-center px-3">
-      <!-- mx-8 -->
-      <div class="flex w-full justify-around gap-8 sm:w-full md:w-[100%] lg:w-[100%] xl:w-[100%]">
+      <div class="flex w-full justify-around gap-8 grid-cols-2 sm:w-full md:w-[100%] lg:w-[100%] xl:w-[100%]">
         <UiTabs default-value="Chat" class="w-full self-center">
-          <UiTabsList class="mb-4 grid w-[40%] w-full grid-cols-2">
+          <UiTabsList class="mb-4 grid w-full grid-cols-2">
             <UiTabsTrigger value="Chat"> Chat Log </UiTabsTrigger>
             <UiTabsTrigger value="Timeline"> Timeline</UiTabsTrigger>
           </UiTabsList>
-          <!-- <div class="flex justify-center w-[100%]"> -->
-          <UiTabsContent value="Chat" class="flex justify-center">
+          <UiTabsContent value="Chat"
+            class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
             <div
-              class="flex w-[100%] flex-col items-center gap-2 pl-4 capitalize sm:w-[100%] md:w-[80%] lg:w-[65%] xl:w-[65%]">
+              class="flex grid grid-cols-2 flex-col items-center pl-4 pb-4 capitalize h-auto gap-3 sm:h-auto md:h-[100px] lg:h-[100px] xl:h-[100px]">
+              <div v-for="(entry, index) in details" :key="index" class="max-w-full font-medium">
+                <div v-if="Array.isArray(entry) && entry.length === 2">
+                  <div class="max-w-[100%] truncate">
+                    <div class="text-gray-500">{{ entry[0] }}</div>
+                    <div class="w-[90%]">
+                      <a v-if="entry[0] === 'Mobile'" :href="`tel:${entry[1]}`" class="truncate text-[#424bd1]">
+                        {{ entry[1] }}
+                      </a>
+                      <a v-else-if="entry[0] === 'Email'" :href="`mailto:${entry[1]}`"
+                        class="lowercase truncate block text-[#424bd1]">
+                        {{ entry[1] }}
+                      </a>
+                      <div v-else class="truncate">
+                        {{ entry[1] }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div v-else>
+                  Invalid entry
+                </div>
+              </div>
+            </div>
+            <div class="flex w-full flex-col items-center gap-2 pl-0 sm:pl-0 md:pl-4 lg:pl-4 xl:pl-4 capitalize">
               <div
-                class="field_shadow h-[75vh] w-full overflow-hidden rounded-lg bg-[#ffffff] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
+                class="field_shadow h-auto w-full overflow-hidden rounded-lg bg-[#ffffff] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
                 <div :class="[
-                    'flex h-[70px] w-full items-center justify-between px-[20px] font-medium text-[#ffffff]',
-                  ]" :style="`background:hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`">
+                  'flex h-[70px] w-full items-center justify-between px-[20px] font-medium text-[#ffffff]',
+                ]" :style="`background:hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`">
                   <div class="flex items-center gap-2">
                     <span class="text-[14px] capitalize">{{
                       leadData?.bot?.name
-                      }}</span>
+                    }}</span>
                   </div>
                 </div>
                 <div class="h-[65vh] overflow-y-scroll bg-[#f8f6f6]">
@@ -41,7 +63,7 @@
                       <div class="flex flex-col items-end justify-center max-w-[80%]">
                         <span class="text-[14px]" style="color: #8a8a8a">{{
                           leadData?.botUser?.name
-                          }}</span>
+                        }}</span>
                         <div
                           class="mt-2.5 flex flex-col items-end justify-center rounded-l-xl rounded-br-xl p-2.5 text-[#ffffff] text-black bg-[#ffffff]">
                           <div>
@@ -50,41 +72,40 @@
                         </div>
                         <div class="text-[12px] opacity-60">
                           {{
-                          formatDate(new Date(messageList.createdAt), "hh:mm a")
+                            formatDate(new Date(messageList.createdAt), "hh:mm a")
                           }}
                         </div>
-                        </div>
                       </div>
-                      <!-- Assistant Message -->
-                      <div class="w-[90%]" v-if="messageList.role === 'assistant'">
-                        <span class="text-[14px]" style="color: #8a8a8a">{{
-                          leadData?.bot.metadata.prompt.NAME
-                          }}</span>
-                        <div
-                          class="shadpw-field mt-2.5 flex min-h-[80px] flex-col gap-2 rounded-r-xl rounded-bl-xl bg-[#ffffff] p-2.5">
-                          <MdText :content="JSON.parse(messageList.content).response" />
-                          <div class="flex flex-col">
-                            <div class="flex flex-wrap items-center gap-2">
-                              <div class="flex items-center" v-for="(btn, btnIndex) in JSON.parse(
-                                messageList.content,
-                              ).canned" :key="btnIndex">
-                                <p class="w-auto rounded-xl p-2" :style="{
-                                  // background: `hsl(347 66 39/ 0.15)`,
-                                  background: `hsl(${leadData?.bot.metadata.ui?.color?.replaceAll('%', ' ')}/0.15)`,
-                                  color: `hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`,
-                                }">
-                                  {{ btn.title }}
-                                </p>
-                              </div>
+                    </div>
+                    <!-- Assistant Message -->
+                    <div class="w-[90%]" v-if="messageList.role === 'assistant'">
+                      <span class="text-[14px]" style="color: #8a8a8a">{{
+                        leadData?.bot.metadata.prompt.NAME
+                      }}</span>
+                      <div
+                        class="shadpw-field mt-2.5 flex min-h-[80px] flex-col gap-2 rounded-r-xl rounded-bl-xl bg-[#ffffff] p-2.5">
+                        <MdText :content="JSON.parse(messageList.content).response" />
+                        <div class="flex flex-col">
+                          <div class="flex flex-wrap items-center gap-2">
+                            <div class="flex items-center" v-for="(btn, btnIndex) in JSON.parse(
+                              messageList.content,
+                            ).canned" :key="btnIndex">
+                              <p class="w-auto rounded-xl p-2" :style="{
+                                // background: `hsl(347 66 39/ 0.15)`,
+                                background: `hsl(${leadData?.bot.metadata.ui?.color?.replaceAll('%', ' ')}/0.15)`,
+                                color: `hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`,
+                              }">
+                                {{ btn.title }}
+                              </p>
                             </div>
-                            <div class="self-end text-[12px] text-[#00000066]">
-                              {{
+                          </div>
+                          <div class="self-end text-[12px] text-[#00000066]">
+                            {{
                               formatDate(
-                              new Date(messageList.createdAt),
-                              "hh:mma",
+                                new Date(messageList.createdAt),
+                                "hh:mma",
                               )
-                              }}
-                            </div>
+                            }}
                           </div>
                         </div>
                       </div>
@@ -92,6 +113,7 @@
                   </div>
                 </div>
               </div>
+            </div>
           </UiTabsContent>
           <UiTabsContent value="Timeline" class="flex justify-center">
             <div class="flex w-[100%] items-center px-5 py-3 capitalize sm:w-[100%] md:w-[80%] lg:w-[65%] xl:w-[65%]">
@@ -102,13 +124,12 @@
                     class="absolute left-[18px] top-[38px] block h-[105%] w-0.5 shrink-0 rounded-full bg-muted group-data-[state=completed]:bg-primary" />
 
                   <UiStepperTrigger as-child>
-                    <UiButton :variant="
-                        state === 'completed' || state === 'active'
-                          ? 'default'
-                          : 'outline'
+                    <UiButton :variant="state === 'completed' || state === 'active'
+                        ? 'default'
+                        : 'outline'
                       " size="icon" class="z-10 shrink-0 rounded-full" :class="[
                         state === 'active' &&
-                          'ring-2 ring-ring ring-offset-2 ring-offset-background',
+                        'ring-2 ring-ring ring-offset-2 ring-offset-background',
                       ]">
                       <Check v-if="state === 'completed'" class="size-5" />
                       <Circle v-if="state === 'active'" />
@@ -137,41 +158,64 @@
   </Page>
 </template>
 <script setup lang="ts">
-  import { Check, Circle, Dot } from "lucide-vue-next";
+import { Check, Circle, Dot } from "lucide-vue-next";
 
-  definePageMeta({
-    middleware: "admin-only",
-  });
+definePageMeta({
+  middleware: "admin-only",
+});
 
 const route = useRoute("analytics-chats-id");
 
-  const {data: timeLineData} = await useLazyFetch(`/api/timeline/chat/${route.params.id}`);
-  
-  const { status, data: leadData } = await useLazyFetch(
-    () => `/api/org/chat/${route.params.id}`,
-    {
-      server: false,
-    },
-  );
+const { data: timeLineData } = await useLazyFetch(`/api/timeline/chat/${route.params.id}`);
 
-  const steps = [
-    {
-      step: 1,
-      title: "Your details",
-      description:
-        "Provide your name and email address. We will use this information to create your account",
-    },
-    {
-      step: 2,
-      title: "Company details",
-      description:
-        "A few details about your company will help us personalize your experience",
-    },
-    {
-      step: 3,
-      title: "Invite your team",
-      description:
-        "Start collaborating with your team by inviting them to join your account. You can skip this step and invite them later",
-    },
-  ];
+const { status, data: leadData } = await useLazyFetch(
+  () => `/api/org/chat/${route.params.id}`,
+  {
+    server: false,
+  },
+);
+
+const details = computed(() => {
+  if (!leadData.value) return [undefined, undefined];
+  const { params, ...rest } = leadData.value.metadata as Record<string, any>;
+  let metaData: any = Object.entries(rest || {}).map(([key, value]) => {
+    if (key === "os") {
+      return ["OS", value];
+    } else if (key === "ipAddress") {
+      return ["IP Address", value];
+    }
+    return [key, value];
+  });
+  const botUserDetails = []
+  if (leadData?.value.botUser) {
+    botUserDetails.push(
+      ["Name", leadData?.value?.botUser?.name],
+      ["Email", leadData?.value?.botUser?.email],
+      ["Mobile", leadData?.value?.botUser?.mobile]
+    )
+  }
+  const paramsData = Object.entries(params)
+  return [...metaData, ...botUserDetails, ...paramsData]
+});
+
+const steps = [
+  {
+    step: 1,
+    title: "Your details",
+    description:
+      "Provide your name and email address. We will use this information to create your account",
+  },
+  {
+    step: 2,
+    title: "Company details",
+    description:
+      "A few details about your company will help us personalize your experience",
+  },
+  {
+    step: 3,
+    title: "Invite your team",
+    description:
+      "Start collaborating with your team by inviting them to join your account. You can skip this step and invite them later",
+  },
+];
 </script>

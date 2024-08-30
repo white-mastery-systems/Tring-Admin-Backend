@@ -1,12 +1,8 @@
 <template>
   <div class="bot-manage-main-container">
     <Page title="Call Bot Leads" :disable-back-button="true">
-      <DataTable
-        :data="leads"
-        :is-loading="isDataLoading"
-        :columns="columns"
-        :page-size="8"
-      />
+      <!-- isDataLoading -->
+      <DataTable :data="leads" :is-loading="false" :columns="columns" :page-size="8" :height="80" height-unit="vh" />
     </Page>
   </div>
 </template>
@@ -18,13 +14,13 @@
     middleware: "admin-only",
   });
   // const ListLeads = ref()
-  const leads = ref([
+  const leads:any = ref([
     {
       name: "lead name test",
       bot_name: "bot name test",
       createdAt: "18.08.2024",
       id: 1,
-    },
+    }, 
   ]);
   // const { status, data: leads } = await useLazyFetch("/api/org/leads", {
   //   server: false,
@@ -33,7 +29,6 @@
   //   },
   //   default: () => [],
   // });
-  // const isDataLoading = computed(() => status.value === "pending");
 
   // const analyticsData = ref();
 

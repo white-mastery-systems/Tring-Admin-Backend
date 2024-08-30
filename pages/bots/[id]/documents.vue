@@ -134,7 +134,7 @@
           </div>
           <div
             v-else
-            class="font-regular flex h-[100%] items-center justify-center text-[#8A8A8A]"
+            class="font-regular flex h-[40Vh] items-center justify-center text-[#8A8A8A]"
           >
             No document available
           </div>

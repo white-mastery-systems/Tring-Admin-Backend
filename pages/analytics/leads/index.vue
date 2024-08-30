@@ -9,7 +9,7 @@
         <DateRangeFilter @change="onDateChange" />
       </div>
     </div>
-    <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="70" height-unit="vh"
+    <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="73" height-unit="vh"
       @row-click="
         (row: any) => {
           console.log({ row });
@@ -112,15 +112,5 @@
 <style scoped>
   .focus\:ring-offset-2:focus {
     --tw-ring-offset-width: none;
-  }
-
-  /* .bot-manage-main-container {
-  padding: 0 25px 0 25px;
-} */
-
-  .header-align {
-    font-family: segoe UI Regular;
-    /* padding-bottom: 20px;
-  border-bottom: 0.5px solid #b5b5b5; */
   }
 </style>

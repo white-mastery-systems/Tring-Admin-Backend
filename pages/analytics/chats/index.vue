@@ -1,11 +1,13 @@
 <template>
   <Page title="Chats" :disable-back-button="true">
-    <div class="flex items-center gap-2 pb-2">
-      <UiInput v-model="searchBot" class="max-w-[200px]" placeholder="Search bot..." />
-      <div class="w-[300px]">
+    <div class="flex items-center gap-2 pb-2 overflow-x-scroll">
+      <div class="flex items-center gap-2">
+        <UiInput v-model="searchBot"
+          class="max-w-[130px] sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+          placeholder="Search bot..." />
         <BotFilter v-model="filters.botId" />
+        <DateRangeFilter />
       </div>
-      <DateRangeFilter />
     </div>
     <DataTable @row-click="
         (row: any) => {
@@ -13,7 +15,7 @@
           return navigateTo(`chats/${row.original.id}`);
           //TODO change this
         }
-      " :columns="columns" :data="bots" :page-size="20" :is-loading="isDataLoading" :height="69" height-unit="vh" />
+      " :columns="columns" :data="bots" :page-size="20" :is-loading="isDataLoading" :height="65" height-unit="vh" />
   </Page>
 </template>
 <script setup lang="ts">
