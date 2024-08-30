@@ -1,14 +1,15 @@
+import { getAdminByOrgId } from "~/server/utils/db/user";
 import {
   generateContactInZohoBigin,
   generateLeadInZohoBigin,
   generateLeadInZohoCRM,
 } from "~/server/utils/zoho/modules";
-
 export default defineEventHandler(async (event) => {
-  const userId = event.context.user?.id as string
+  const userId = event.context.user?.id as string;
   const generateLeadsValidation = z.object({
     botUser: z.any(),
     note: z.any(),
+    chatId: z.string().uuid(),
   });
   const generateLeadsValidationParams = z.object({
     id: z.string(),
@@ -19,7 +20,9 @@ export default defineEventHandler(async (event) => {
     generateLeadsValidationParams,
   );
   console.log({ body, botId });
-
+  const botDetails: any = await getBotDetails(botId);
+  console.log({ botDetails });
+  const adminUser: any = await getAdminByOrgId(botDetails?.organizationId);
   let botIntegratsions: any = await listBotIntegrations(botId);
   botIntegratsions?.map(async (botIntegration: any) => {
     if (botIntegration?.integration?.crm === "zoho-bigin") {
@@ -100,11 +103,13 @@ export default defineEventHandler(async (event) => {
       );
     }
   });
+  if (adminUser?.id) {
+    const connections = global.userConnections?.get(adminUser?.id) || [];
+    console.log("sse event sent", connections, global.userConnections);
+    connections.forEach((connection) => {
+      connection({ event: "leads", data: body });
+    });
+  }
 
-  const connections = global.userConnections?.get(userId) || []
-  connections.forEach((connection) => {
-    connection({ event: "leads" })
-  })
-
-  return botIntegratsions;
+  return adminUser;
 });

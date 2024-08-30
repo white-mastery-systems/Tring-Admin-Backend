@@ -6,6 +6,7 @@
 
 <template>
   <Sonner
+  
     class="toaster group"
     v-bind="props"
     :toast-options="{
