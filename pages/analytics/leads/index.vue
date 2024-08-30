@@ -76,11 +76,11 @@
         h(
           UiBadge,
           {
-            ...(Number(row.original.botUser?.visitedCount) > 1
+            ...((row.original.status === 'junk')
               ? { variant: "destructive" }
               : { class: "bg-green-200 text-green-500 hover:bg-green-300" }),
           },
-          Number(row.original.botUser.visitedCount) > 1 ? "Revisited" : "New",
+          (row.original.status === 'junk') ? "Junk" : "New",
         ),
     }),
     columnHelper.accessor("botUser.mobile", {

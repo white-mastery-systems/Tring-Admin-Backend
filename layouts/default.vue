@@ -5,7 +5,8 @@
       class="hidden md:hidden xl:felx lg:flex border-r border-[#8a8a8a1a] flex-col items-center gap-[20px] h-[100vh] overflow-auto w-[250px] overflow-x-hidden">
       <NavigationDrawer />
     </div>
-    <div class="lg:w-[86%] w-full mt-2 xl:mt-0 lg:mt-0 md:mt-0 h-[100vh] overflow-y-scroll">
+    <!-- mt-2 -->
+    <div class="lg:w-[86%] w-full xl:mt-0 lg:mt-0 md:mt-0 h-[100vh] overflow-y-scroll">
       <slot />
     </div>
   </div>

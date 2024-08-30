@@ -1,10 +1,18 @@
 <template>
   <Page :title="leadData?.botUser?.name ?? ''" :disable-back-button="false" :disable-elevation="true">
     <template #actionButtons>
-      <div>
-        <UiButton variant="destructive">
+      <div class="flex items-center gap-3">
+        <UiButton v-if="leadData?.lead?.status === 'default'" variant="destructive" @click="() => changeStatus = true">
           Mark as Junk
         </UiButton>
+        <UiButton v-else class="bg-[#424cd1] hover:bg-[#424bd1] hover:brightness-90" @click="() => revertStatus = true">
+          Revert
+        </UiButton>
+        <ConfirmationModal v-model:open="revertStatus" title="Confirm revert status"
+          description="Are you sure you want to revert the status ?" @confirm="confirmChangeStatus('default')" />
+        <ConfirmationModal v-model:open="changeStatus" title="Confirm Change Status"
+          description="Are you sure about the status change ?" @confirm="confirmChangeStatus('junk')" />
+        <!-- @confirm="handleLogout" -->
       </div>
     </template>
     <div class="items-top xs:grid-cols-2 flex grid grid-cols-1 gap-[25px] lg:grid-cols-2">
@@ -136,6 +144,8 @@
   const router = useRouter();
   const route = useRoute("leads-id");
   const paramId: any = route;
+  const changeStatus = ref(false)
+  const revertStatus = ref(false)
 
   const { status, data: leadData } = await useLazyFetch(
     () => `/api/org/chat/${route.params.id}`,
@@ -169,6 +179,7 @@
   });
 
   const isDeleteConfirmationOpen = ref(false);
+  
   const handleDelete = async () => {
     isDeleteConfirmationOpen.value = false;
     await $fetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
@@ -176,4 +187,11 @@
     });
     return navigateTo({ name: "leads" });
   };
+
+const confirmChangeStatus = async (value: any) => {
+  await useLazyFetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
+    method: "PUT",
+    body: { status: value },
+  });
+}
 </script>
