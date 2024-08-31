@@ -43,10 +43,11 @@
                   <div class="flex items-center gap-2">
                     <span class="text-[14px] capitalize">{{
                       leadData?.bot?.name
-                    }}</span>
+                      }}</span>
                   </div>
                 </div>
-                <div class="h-[65vh] overflow-y-scroll bg-[#f8f6f6]">
+                <div
+                  class="h-[60vh] sm:h-[55vh] md:h-[66vh] lg:h-[65vh] xl:h-[67vh] 2xl:[70vh] overflow-y-scroll bg-[#f8f6f6]">
                   <div class="w-full p-5" v-for="(
                       messageList, messageIndex
                     ) in leadData?.messages.slice(1)" :key="messageIndex">
@@ -63,7 +64,7 @@
                       <div class="flex flex-col items-end justify-center max-w-[80%]">
                         <span class="text-[14px]" style="color: #8a8a8a">{{
                           leadData?.botUser?.name
-                        }}</span>
+                          }}</span>
                         <div
                           class="mt-2.5 flex flex-col items-end justify-center rounded-l-xl rounded-br-xl p-2.5 text-[#ffffff] text-black bg-[#ffffff]">
                           <div>
@@ -72,7 +73,7 @@
                         </div>
                         <div class="text-[12px] opacity-60">
                           {{
-                            formatDate(new Date(messageList.createdAt), "hh:mm a")
+                          formatDate(new Date(messageList.createdAt), "hh:mm a")
                           }}
                         </div>
                       </div>
@@ -81,7 +82,7 @@
                     <div class="w-[90%]" v-if="messageList.role === 'assistant'">
                       <span class="text-[14px]" style="color: #8a8a8a">{{
                         leadData?.bot.metadata.prompt.NAME
-                      }}</span>
+                        }}</span>
                       <div
                         class="shadpw-field mt-2.5 flex min-h-[80px] flex-col gap-2 rounded-r-xl rounded-bl-xl bg-[#ffffff] p-2.5">
                         <MdText :content="JSON.parse(messageList.content).response" />
@@ -101,10 +102,10 @@
                           </div>
                           <div class="self-end text-[12px] text-[#00000066]">
                             {{
-                              formatDate(
-                                new Date(messageList.createdAt),
-                                "hh:mma",
-                              )
+                            formatDate(
+                            new Date(messageList.createdAt),
+                            "hh:mma",
+                            )
                             }}
                           </div>
                         </div>
@@ -115,41 +116,9 @@
               </div>
             </div>
           </UiTabsContent>
-          <UiTabsContent value="Timeline" class="flex justify-center">
-            <div class="flex w-[100%] items-center px-5 py-3 capitalize sm:w-[100%] md:w-[80%] lg:w-[65%] xl:w-[65%]">
-              <UiStepper orientation="vertical" class="mx-auto flex w-full flex-col justify-start gap-10">
-                <UiStepperItem v-for="(step, index) in timeLineData" :key="index" v-slot="{ state }"
-                  class="relative flex w-full items-start gap-6" :step="index">
-                  <UiStepperSeparator v-if="index !== steps[steps.length - 1].step"
-                    class="absolute left-[18px] top-[38px] block h-[105%] w-0.5 shrink-0 rounded-full bg-muted group-data-[state=completed]:bg-primary" />
-
-                  <UiStepperTrigger as-child>
-                    <UiButton :variant="state === 'completed' || state === 'active'
-                        ? 'default'
-                        : 'outline'
-                      " size="icon" class="z-10 shrink-0 rounded-full" :class="[
-                        state === 'active' &&
-                        'ring-2 ring-ring ring-offset-2 ring-offset-background',
-                      ]">
-                      <Check v-if="state === 'completed'" class="size-5" />
-                      <Circle v-if="state === 'active'" />
-                      <Dot v-if="state === 'inactive'" />
-                    </UiButton>
-                  </UiStepperTrigger>
-
-                  <div class="flex flex-col gap-1">
-                    <UiStepperTitle :class="[state === 'active' && 'text-primary']"
-                      class="text-sm font-semibold transition lg:text-base">
-                      {{ step?.metadata?.text }}
-                    </UiStepperTitle>
-                    <UiStepperDescription :class="[state === 'active' && 'text-primary']"
-                      class="sr-only text-xs text-muted-foreground transition md:not-sr-only lg:text-sm">
-                      {{ step?.metadata?.type }}
-                    </UiStepperDescription>
-                  </div>
-                </UiStepperItem>
-              </UiStepper>
-            </div>
+          <UiTabsContent value="Timeline" class="flex flex-col justify-center gap-6">
+            <TimeLine v-for="(step, index) in timeLineData" :key="index" :index="index" :data="step"
+              :totalSteps="timeLineData.length" />
           </UiTabsContent>
           <!-- </div> -->
         </UiTabs>
