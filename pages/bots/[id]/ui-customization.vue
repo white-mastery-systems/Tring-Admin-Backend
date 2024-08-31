@@ -24,8 +24,7 @@
         <div
           class="form-align field_shadow ml-0 flex w-full flex-col gap-[13px] overflow-y-auto p-5 sm:ml-0 sm:w-full md:ml-0 md:w-full lg:ml-11 lg:w-[60%] xl:ml-11 xl:w-[60%]"
         >
-          <UiFormField v-slot="{ value, componentField }" name="logo">
-            {{ console.log(value, "VLAEE<<>>>>") }}
+          <UiFormField v-slot="{ handleChange, handleBlur, value }" name="logo">
             <UiFormItem
               v-auto-animate="animationProps"
               class="flex w-full flex-col items-start"
@@ -34,7 +33,9 @@
               <div>
                 <ImageUpload
                   accept="image/*"
-                  v-bind="componentField"
+                  @change="handleChange"
+                  @blur="handleBlur"
+                  :initial-file="value"
                   class="flex justify-start"
                 />
               </div>
@@ -53,7 +54,7 @@
                 <!-- <UiLabel class="text-lg font-medium">Color</UiLabel> -->
                 <UiFormControl>
                   <div
-                    class="field_shadow flex h-14 items-center gap-8 rounded-lg bg-[#ffffff] bg-white px-5"
+                    class="field_shadow flex h-14 items-center gap-8 rounded-lg bg-white px-5"
                   >
                     <div class="flex w-full justify-between">
                       <label
@@ -290,7 +291,7 @@
   // })
 
   const uiUpdate = async (value: any) => {
-    // const ges: any = JSON.stringify(values, null, 7)
+    console.log(JSON.stringify(value, null, 2));
     // console.log(ges, "value -- value");
     const payload: any = {
       // name: botDetails.name,

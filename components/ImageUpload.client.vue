@@ -1,7 +1,13 @@
 <script setup lang="ts">
-  const file = defineModel<HTMLInputElement["files"] | string>();
+  const props = defineProps<{
+    initialFile: HTMLInputElement["files"] | string;
+    accept?: string;
+  }>();
+  const file = ref<HTMLInputElement["files"] | string>(props.initialFile);
+  const emit = defineEmits<{
+    (e: "change", payload: HTMLInputElement["files"] | string): void;
+  }>();
 
-  defineProps<{ accept?: string }>();
   const fileLen = computed(() => file.value?.length || 0);
   const fileIcon = computed(() =>
     fileLen.value > 1
@@ -17,23 +23,25 @@
       .join(", ");
   });
   const _ = ref();
-  watch(
-    () => file.value,
-    (newFile) => {
-      if (typeof file.value !== "string"){
-        console.log(newFile)
-        _.value = URL.createObjectURL(newFile);
-      }
-      else _.value = file.value;
-    },
-  );
+
+  watchEffect(() => {
+    emit("change", file.value);
+    if (!file.value) {
+      return;
+    }
+    if (typeof file.value !== "string") {
+      _.value = URL.createObjectURL(file.value[0]);
+    } else {
+      _.value = file.value;
+    }
+  });
 </script>
 <template>
   <!-- <pre>{{ file[0]?.name }}</pre> -->
   <div class="flex w-full items-center justify-center">
     <label
       for="dropzone-file"
-      class="dark:hover:bg-bray-800 flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-cover hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+      class="dark:hover:bg-bray-800 flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
       :style="{
         backgroundImage:
           typeof file === 'string' ? `url(${file})` : `url(${_})`,

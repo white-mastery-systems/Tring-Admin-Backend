@@ -22,6 +22,8 @@ export default defineEventHandler(async (event) => {
     );
   }
 
+  const baseUrl = getHeader(event, "origin");
+  console.log({ baseUrl });
   const fileData = formData.find(({ name }) => name === "logo");
   if (!fileData?.data)
     return sendError(
@@ -33,7 +35,8 @@ export default defineEventHandler(async (event) => {
     );
 
   const logoPathId = uuid();
-  await writeFile(getLogoPath(logoPathId), fileData.data);
+  const ext = fileData.filename?.split(".").pop() || "png";
+  await writeFile(getLogoPath(logoPathId, ext), fileData.data);
 
   let bot = await getBotDetailsNoCache(botId);
   bot = await isValidReturnType(event, bot);
@@ -45,7 +48,7 @@ export default defineEventHandler(async (event) => {
       ...metadata,
       ui: {
         ...metadata.ui,
-        logo: `https://${getRequestHost(event)}/logo/${logoPathId}.png`,
+        logo: `${baseUrl}/logo/${logoPathId}.${ext}`,
       },
     },
   });
