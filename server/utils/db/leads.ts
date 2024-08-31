@@ -1,4 +1,5 @@
 import { InsertLead } from "~/server/schema/bot";
+import { endOfDay, endOfMonth, endOfWeek, endOfYear, startOfDay, startOfMonth, startOfWeek, startOfYear, subMonths } from 'date-fns';
 
 const db = useDrizzle();
 
@@ -6,6 +7,7 @@ interface QueryInterface {
   q?: string;
   status?: string,
   channel?: string,
+  period?: string,
   botId?: string;
   from?: Date | null;
   to?: Date | null;
@@ -28,14 +30,52 @@ export const listLeads = async (
       // filters.push(sql`${botUserSchema.name} ilike ${`%${query.q}%`}`);
     }
 
-    if(query?.status) {
+    if(query?.status === "default" || query?.status === "junk") {
       filters.push(eq(leadSchema.status, query?.status))
     }
+    
+   // Period-based filtering
+    if (query?.period) {
+      let fromDate: Date | undefined;
+      let toDate: Date | undefined;
+      const now = new Date()
 
-    if (query?.from && query?.to) {
-      filters.push(between(leadSchema.createdAt, query.from, query.to));
+      switch (query.period) {
+        case "today":
+          fromDate = startOfDay(new Date());
+          toDate = endOfDay(new Date());
+          break;
+        case "this-week":
+          fromDate = startOfWeek(new Date());
+          toDate = endOfWeek(new Date());
+          break;
+        case "this-month":
+          fromDate = startOfMonth(new Date());
+          toDate = endOfMonth(new Date());
+          break;
+        case "this-year":
+          fromDate = startOfYear(new Date());
+          toDate = endOfYear(new Date());
+          break;
+        case "last-month":
+          fromDate = startOfMonth(subMonths(new Date(), 1));
+          toDate = endOfMonth(subMonths(new Date(), 1));
+          break;
+        case "6-month":
+          fromDate = startOfMonth(subMonths(new Date(), 6));
+          toDate = endOfMonth(new Date());
+          break;
+        case "custom":
+          fromDate = query?.from || undefined;
+          toDate = query?.to || undefined;
+          break;
+      }
+      console.log({ fromDate, toDate})
+      if (fromDate && toDate) {
+        filters.push(between(leadSchema.createdAt, fromDate, toDate))
+      }
     }
-
+  
     let leads = await db.query.leadSchema.findMany({
       where: and(...filters),
       with: {
@@ -45,7 +85,11 @@ export const listLeads = async (
           },
         },
         botUser: {
-          where: query?.q ? ilike(botUserSchema.name, query?.q) : undefined,
+          where: and (
+            query?.q ? ilike(botUserSchema.name, query?.q) : undefined,
+            query?.status === "new" ? eq(botUserSchema.visitedCount, 1) : undefined,
+            query?.status === "revisited" ? gt(botUserSchema.visitedCount, 1) : undefined
+          ),
         },
         chat: {
           where: query?.channel ? ilike(chatSchema.channel, query?.channel) : undefined,
@@ -54,7 +98,7 @@ export const listLeads = async (
 
       orderBy: [desc(leadSchema.createdAt)],
     });
-    if (query?.q)
+    if (query?.q || query?.status === "new" || query?.status === "revisited")
       leads = leads.filter((lead) => {
         return lead.botUser !== null;
       });
