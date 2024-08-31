@@ -101,7 +101,7 @@
         />
       </div>
 
-      <div class="relative">
+      <!-- <div class="relative">
         <div
           class="field_shadow my-8 flex h-[59vh] gap-6 rounded-[10px] pb-[20px]"
         >
@@ -125,23 +125,44 @@
             />
           </div>
         </div>
-      </div>
+      </div> -->
+      <Line
+        class="relative mt-4 w-full place-content-center rounded-md bg-white"
+        :data="chartData"
+        :options="chartOptions"
+      />
+
+      <!-- <Bar id="my-chart-id" :options="chartOptions" :data="chartData" /> -->
     </div>
   </Page>
 </template>
 <script setup lang="ts">
+  import {
+    CategoryScale,
+    Chart as ChartJS,
+    Legend,
+    LineElement,
+    LinearScale,
+    PointElement,
+    Title,
+    Tooltip,
+  } from "chart.js";
+  import { Line } from "vue-chartjs";
   import ChatSession from "~/components/icons/ChatSession.vue";
   import Leads from "~/components/icons/Leads.vue";
   import SingleUser from "~/components/icons/SingleUser.vue";
 
-  definePageMeta({
-    middleware: "user",
-  });
+  ChartJS.register(
+    Title,
+    Tooltip,
+    Legend,
+    LineElement,
+    LinearScale,
+    PointElement,
+    CategoryScale,
+  );
 
   const selectedValue = ref("this-month");
-
-  // const getButtonName = ref("Get Started");
-
   const analyticsData = ref();
   const menuList = ref([
     {
@@ -165,6 +186,98 @@
       value: "this-year",
     },
   ]);
+  const labels = ref([
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+  ]);
+  const leadsGraphData = ref([]);
+  const sessionsGraphData = ref([]);
+  watch(analyticsData, (newValue, oldValue) => {
+    leadsGraphData.value = newValue.graph.leads?.map((item: any) => item.count);
+    sessionsGraphData.value = newValue.graph.sessions?.map(
+      (item: any) => item.count,
+    );
+    labels.value = newValue.graph.leads?.map((item: any) => item.date);
+  });
+  const chartData = computed(() => ({
+    labels: labels.value,
+    datasets: [
+      {
+        label: "Sessions",
+        borderColor: "#424bd1",
+        backgroundColor: "#424bd1",
+        data: leadsGraphData.value,
+        yAxisID: "y",
+        tension: 0.4,
+        pointRadius: 0,
+      },
+      {
+        label: "Leads",
+        borderColor: "#ffbc42",
+        backgroundColor: "#ffbc42",
+        data: [28, 48, 40, 19, 86, 27, 90],
+        yAxisID: "y1",
+        tension: 0.4,
+        pointRadius: 0,
+      },
+    ],
+  }));
+
+  const chartOptions = ref({
+    responsive: true,
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+    stacked: false,
+
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+      y: {
+        type: "linear",
+        display: true,
+        position: "left",
+        grid: {
+          display: false,
+        },
+      },
+      y1: {
+        type: "linear",
+        display: true,
+        position: "right",
+        grid: {
+          display: false,
+        },
+      },
+    },
+    elements: {
+      line: {
+        tension: 0.4,
+      },
+    },
+    plugins: {
+      customCanvasBackgroundColor: {
+        color: "lightGreen",
+      },
+    },
+
+    backgroundColor: "red",
+  });
+
+  definePageMeta({
+    middleware: "user",
+  });
+
+  // const getButtonName = ref("Get Started");
 
   watch(selectedValue, async (period) => {
     const data = await getAnalyticsData(period);
