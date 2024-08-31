@@ -314,7 +314,6 @@
       },
     };
     await updateBotDetails(payload);
-
     value.logo && (await uploadLogo(botDetails.id, value.logo![0]));
 
     return navigateTo({

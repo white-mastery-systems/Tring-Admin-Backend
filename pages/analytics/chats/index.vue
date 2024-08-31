@@ -3,7 +3,7 @@
     <div class="flex items-center gap-2 pb-2 overflow-x-scroll">
       <div class="flex items-center gap-2">
         <UiInput v-model="searchBot"
-          class="max-w-[130px] sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+          class="max-w-[130px] sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
           placeholder="Search bot..." />
         <BotFilter v-model="filters.botId" />
         <DateRangeFilter />

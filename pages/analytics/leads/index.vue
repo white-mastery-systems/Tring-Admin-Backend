@@ -2,12 +2,11 @@
   <Page title="Leads" :disableSelector="false" :disable-back-button="true">
     <div class="flex items-center justify-between gap-2 overflow-x-scroll pb-4">
       <div class="flex items-center gap-2">
-        <UiInput
-          v-model="filters.q"
-          class="max-w-[130px] sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
-          placeholder="Search Leads..."
-        />
+        <UiInput v-model="filters.q"
+          class="max-w-[130px] sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]  focus-visible:ring-0 focus-visible:ring-offset-0"
+          placeholder=" Search Leads..." />
         <BotFilter v-model="filters.botId" />
+        <StatusFilter @change="onStatusChange" />
         <DateRangeFilter @change="onDateChange" />
       </div>
       <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton>
@@ -90,17 +89,22 @@
     q?: string;
     from?: string;
     to?: string;
+    period: any;
+    status: any;
   }>({
     botId: "",
     q: undefined,
     from: undefined,
     to: undefined,
+    period: undefined,
+    status: undefined,
   });
+
+  const selectedDate = ref('Today')
 
   watchEffect(() => {
     if (filters.botId === "all") filters.botId = "";
   });
-
   const { status, data: leads } = await useLazyFetch("/api/org/leads", {
     server: false,
     query: filters,
@@ -115,11 +119,23 @@
     });
   };
 
-  const onDateChange = (value: { from: string; to: string }) => {
+  const onDateChange = (value: any) => {
     console.log("from index", { value });
-    filters.from = value.from;
-    filters.to = value.to;
+    if (value.from && value.to) {
+      filters.from = value.from;
+      filters.to = value.to;
+    } 
+    else {
+      delete filters.from
+      delete filters.to
+      filters.period = value
+    }
   };
+const onStatusChange = (value: any) => {
+  if (value) {
+    filters.status = value
+  }
+}
 
   const columnHelper = createColumnHelper<(typeof leads.value)[0]>();
   const columns = [
@@ -174,9 +190,3 @@
     }),
   ];
 </script>
-
-<style scoped>
-  .focus\:ring-offset-2:focus {
-    --tw-ring-offset-width: none;
-  }
-</style>
