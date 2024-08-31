@@ -3,6 +3,10 @@
 import { integrationSchema } from "#imports";
 import { InsertIntegration } from "~/server/schema/admin";
 
+interface listIntegrationQuery {
+  q?: string
+}
+
 const db = useDrizzle();
 // const cache = useStorage("redis");
 
@@ -10,8 +14,17 @@ const db = useDrizzle();
 
 export const createIntegration = async (integration: InsertIntegration) =>
   (await db.insert(integrationSchema).values(integration).returning())[0];
-export const listIntegrations = async (organizationId: string) => {
+
+export const listIntegrations = async (organizationId: string, query: listIntegrationQuery) => {
   let filters: any = [eq(integrationSchema.org_id, organizationId)];
+
+  if(query?.q) {
+    if(query?.q === "channel") {
+       filters.push(eq(integrationSchema.crm, "whatsapp"))
+    } else {
+      filters.push(ne(integrationSchema.crm, "whatsapp"))
+    }
+  }
 
   const data = await db.query.integrationSchema.findMany({
     where: and(...filters),

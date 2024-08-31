@@ -50,12 +50,19 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      height: {
+        "screen-minus-11": "calc(100vh - 7rem)",
+        "screen-minus-10": "calc(100vh - 12rem)",
+        "screen-minus-13": "calc(100vh - 14rem)",
+      },
+
       borderRadius: {
         xl: "calc(var(--radius) + 4px)",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+
       keyframes: {
         "accordion-down": {
           from: { height: 0 },

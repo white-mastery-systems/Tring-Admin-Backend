@@ -59,17 +59,17 @@
         </UiTabs>
       </div>
       <div
-        class="field_shadow h-[74vh] w-full overflow-hidden rounded-lg bg-[#ffffff] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
+        class="field_shadow h-screen-minus-11 w-full overflow-hidden rounded-lg bg-[#ffffff] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
         <div :class="[
-            'flex items-center justify-between font-medium w-full h-[70px] text-[#ffffff] px-2.5',
-          ]" :style="`background:hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`">
+          'flex items-center justify-between font-medium w-full h-[70px] text-[#ffffff] px-2.5',
+        ]" :style="`background:hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`">
           <div class="flex items-center gap-2">
             <span class="text-[14px] capitalize">{{
               leadData?.bot?.name
               }}</span>
           </div>
         </div>
-        <div class="bg-[#f8f6f6] h-[65vh] overflow-y-scroll">
+        <div class="bg-[#f8f6f6] h-[calc(100%-70px)] overflow-y-scroll" ref="scrollAnchor">
           <div class="w-full p-5" v-for="(messageList, messageIndex) in leadData?.messages.slice(1)"
             :key="messageIndex">
             <div v-if="messageList.role === 'comment'" class="relative">
@@ -82,7 +82,7 @@
               </p>
             </div>
             <!-- User Message -->
-            <div class="flex flex-col items-center w-full" v-if="messageList.role === 'user'">
+            <div class="flex flex-col items-end w-full" v-if="messageList.role === 'user'">
               <div class="flex flex-col items-end justify-center max-w-[80%]">
                 <span class="text-[14px]" style="color: #8a8a8a">{{
                   leadData?.botUser?.name
@@ -110,12 +110,12 @@
                 <div class="flex flex-col">
                   <div class="flex flex-wrap items-center gap-2">
                     <div class="flex items-center" v-for="(btn, btnIndex) in JSON.parse(messageList.content)
-                        .canned" :key="btnIndex">
+                      .canned" :key="btnIndex">
                       <p class="w-auto rounded-xl p-2" :style="{
-                          // background: `hsl(347 66 39/ 0.15)`,
-                          background: `hsl(${leadData?.bot.metadata.ui?.color?.replaceAll('%', ' ')}/0.15)`,
-                          color: `hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`,
-                        }">
+                        // background: `hsl(347 66 39/ 0.15)`,
+                        background: `hsl(${leadData?.bot.metadata.ui?.color?.replaceAll('%', ' ')}/0.15)`,
+                        color: `hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`,
+                      }">
                         {{ btn.title }}
                       </p>
                     </div>
@@ -136,62 +136,80 @@
 </template>
 
 <script setup lang="ts">
-  import MdText from "~/components/MdText.vue";
-  definePageMeta({
-    middleware: "admin-only",
+import MdText from "~/components/MdText.vue";
+definePageMeta({
+  middleware: "admin-only",
+});
+
+const router = useRouter();
+const route = useRoute("leads-id");
+const paramId: any = route;
+const changeStatus = ref(false)
+const revertStatus = ref(false)
+const status = ref();
+const leadData = ref();
+const scrollAnchor: any = ref(null);
+// const { status, data: leadData } = await useLazyFetch(
+//   () => `/api/org/chat/${route.params.id}`,
+//   {
+//     server: false,
+//   },
+// );
+// const isPageLoading = computed(() => status.value === "pending");
+onMounted(() => {
+  fetchData();
+});
+const details = computed(() => {
+  if (!leadData.value) return [];
+  const { params, ...rest } = leadData.value.metadata as Record<string, any>;
+  const { name } = leadData.value.bot
+  let metaData: any = Object.entries(rest).map(([key, value]) => {
+
+    if (key === "os") {
+      return ["OS", value];
+    } else if (key === "ipAddress") {
+      return ["IP Address", value];
+    }
+    return [key, value];
+  });
+  metaData = [
+    ...metaData,
+    ["Name", leadData?.value?.botUser?.name],
+    ["Email", leadData?.value?.botUser?.email],
+    ["Mobile", leadData?.value?.botUser?.mobile],
+    ["Bot Name", name],
+  ];
+  return [metaData, Object.entries(params)];
+});
+
+const isDeleteConfirmationOpen = ref(false);
+
+const handleDelete = async () => {
+  isDeleteConfirmationOpen.value = false;
+  await $fetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
+    method: "DELETE",
+  });
+  return navigateTo({ name: "leads" });
+};
+
+const fetchData = async () => {
+   leadData.value = await $fetch(`/api/org/chat/${route.params.id}`, {
+    method: 'GET',
   });
 
-  const router = useRouter();
-  const route = useRoute("leads-id");
-  const paramId: any = route;
-  const changeStatus = ref(false)
-  const revertStatus = ref(false)
-
-  const { status, data: leadData } = await useLazyFetch(
-    () => `/api/org/chat/${route.params.id}`,
-    {
-      server: false,
-    },
-  );
-  const isPageLoading = computed(() => status.value === "pending");
-
-  const details = computed(() => {
-    if (!leadData.value) return [];
-    const { params, ...rest } = leadData.value.metadata as Record<string, any>;
-    const { name } = leadData.value.bot
-    let metaData: any = Object.entries(rest).map(([key, value]) => {
-      
-      if (key === "os") {
-        return ["OS", value];
-      } else if (key === "ipAddress") {
-        return ["IP Address", value];
-      }
-      return [key, value];
-    });
-    metaData = [
-      ...metaData,
-      ["Name", leadData?.value?.botUser?.name],
-      ["Email", leadData?.value?.botUser?.email],
-      ["Mobile", leadData?.value?.botUser?.mobile],
-      ["Bot Name", name],
-    ];
-    return [metaData, Object.entries(params)];
-  });
-
-  const isDeleteConfirmationOpen = ref(false);
-  
-  const handleDelete = async () => {
-    isDeleteConfirmationOpen.value = false;
-    await $fetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
-      method: "DELETE",
-    });
-    return navigateTo({ name: "leads" });
-  };
-
+  // // Ensure you're using `ref` to store the reactive data
+  // status.value = status.value;
+  // leadData.value = leadData.value;
+};
 const confirmChangeStatus = async (value: any) => {
-  await useLazyFetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
-    method: "PUT",
-    body: { status: value },
-  });
+  try {
+    await useLazyFetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
+      method: "PUT",
+      body: { status: value },
+    });
+    fetchData()
+  } catch (error) {
+    console.error('Failed to fetch data:', error);
+  }
 }
 </script>

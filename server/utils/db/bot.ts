@@ -138,6 +138,15 @@ export const listBotIntegrations = async (botId: string) => {
   return data;
 };
 
+export const getBotIntegrationById = async (botId: string, botIntegrationId: string) => {
+  return await db.query.botIntegrationSchema.findFirst({
+    where: and(
+      eq(botIntegrationSchema.botId, botId),
+      eq(botIntegrationSchema.id, botIntegrationId)
+    )
+  })
+}
+
 export const updateBotIntegration = async(botId: string, botIntegrationId: string, botIntegration: zodInsertBotIntegration) =>{
   return (
      await db.update(botIntegrationSchema)

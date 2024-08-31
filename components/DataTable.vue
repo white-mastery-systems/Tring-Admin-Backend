@@ -46,10 +46,10 @@
 <template>
   <div class="space-y-4">
     <div
-      class="relative h-[63vh] overflow-auto rounded-lg border"
-      :class="
-        props.height ? `h-[${props.height}${props.heightUnit}]` : 'h-[63vh]'
-      "
+      :class="[
+        'h-screen-minus-13 relative overflow-auto rounded-lg border',
+        props.height ? `h-screen-minus-${props.height}` : '',
+      ]"
     >
       <UiTable class="text-left text-gray-500">
         <UiTableHeader class="sticky top-0 bg-gray-50 text-xs uppercase">
@@ -60,7 +60,7 @@
             <UiTableHead
               v-for="header in headerGroup.headers"
               :key="header.id"
-              class="text-md text-nowrap rounded-tl-lg rounded-tr-lg px-6 py-2 font-extrabold text-gray-700"
+              class="text-md text-nowrap  px-6 py-2 font-extrabold text-gray-700"
               scope="col"
               @click="header.column.getToggleSortingHandler()?.($event)"
             >

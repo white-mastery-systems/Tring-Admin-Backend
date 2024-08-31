@@ -54,7 +54,6 @@ export const createDocument = async (
 
 export const uploadLogo = async (botId: string, logo: File) => {
   const form = new FormData();
-
   form.append("logo", logo);
   await $fetch(`/api/bots/${botId}/add-logo`, {
     method: "POST",

@@ -91,7 +91,7 @@
       <RightArrow />
       <span> Company Details </span>
     </div>
-    <div class="flex w-[80%] flex-col px-6">
+    <div class="flex w-[80%] flex-col overflow-y-auto px-6">
       <UiForm
         :validation-schema="formSchema"
         :keep-values="true"
@@ -221,18 +221,18 @@
           Proceed
         </UiButton>
       </UiForm>
-    </div>
-    <div class="absolute bottom-[30px] flex items-center gap-1">
-      <span class="text-[12px] text-[#8a8a8a]">
-        By Signing up, I Agree to Tring AI
-      </span>
-      <a
-        target="_blank"
-        href="https://tringlabs.ai/terms-and-conditions"
-        class="text-[12px] underline"
-      >
-        Terms & Conditions
-      </a>
+      <div class="flex items-center justify-center gap-1 mt-2">
+        <span class="text-[12px] text-[#8a8a8a]">
+          By Signing up, I Agree to Tring AI
+        </span>
+        <a
+          target="_blank"
+          href="https://tringlabs.ai/terms-and-conditions"
+          class="text-[12px] underline"
+        >
+          Terms & Conditions
+        </a>
+      </div>
     </div>
   </div>
 </template>
