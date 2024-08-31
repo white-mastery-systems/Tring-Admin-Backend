@@ -4,6 +4,8 @@ const db = useDrizzle();
 
 interface QueryInterface {
   q?: string;
+  status?: string,
+  channel?: string,
   botId?: string;
   from?: Date | null;
   to?: Date | null;
@@ -26,6 +28,10 @@ export const listLeads = async (
       // filters.push(sql`${botUserSchema.name} ilike ${`%${query.q}%`}`);
     }
 
+    if(query?.status) {
+      filters.push(eq(leadSchema.status, query?.status))
+    }
+
     if (query?.from && query?.to) {
       filters.push(between(leadSchema.createdAt, query.from, query.to));
     }
@@ -41,6 +47,9 @@ export const listLeads = async (
         botUser: {
           where: query?.q ? ilike(botUserSchema.name, query?.q) : undefined,
         },
+        chat: {
+          where: query?.channel ? ilike(chatSchema.channel, query?.channel) : undefined,
+        } 
       },
 
       orderBy: [desc(leadSchema.createdAt)],
@@ -49,7 +58,10 @@ export const listLeads = async (
       leads = leads.filter((lead) => {
         return lead.botUser !== null;
       });
-
+    if (query?.channel)
+      leads = leads.filter((lead) => {
+        return lead.chat !== null;
+      });
     return leads;
   } catch (err) {
     console.log({ err });

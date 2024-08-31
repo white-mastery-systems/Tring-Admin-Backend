@@ -12,6 +12,8 @@ const queryValidator = z
       .nullish()
       .transform((val) => (val ? new Date(val) : null)),
     q: z.string().optional(),
+    status: z.string().optional(),
+    channel: z.string().optional()
   })
   .refine(
     (data) => {
