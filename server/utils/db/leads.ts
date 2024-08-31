@@ -57,11 +57,7 @@ export const listLeads = async (
           fromDate = startOfYear(new Date());
           toDate = endOfYear(new Date());
           break;
-        case "last-month":
-          fromDate = startOfMonth(subMonths(new Date(), 1));
-          toDate = endOfMonth(subMonths(new Date(), 1));
-          break;
-        case "6-month":
+        case "6-months":
           fromDate = startOfMonth(subMonths(new Date(), 6));
           toDate = endOfMonth(new Date());
           break;
@@ -99,11 +95,11 @@ export const listLeads = async (
       orderBy: [desc(leadSchema.createdAt)],
     });
     if (query?.q || query?.status === "new" || query?.status === "revisited")
-      leads = leads.filter((lead) => {
+      leads = leads.filter((lead: any) => {
         return lead.botUser !== null;
       });
     if (query?.channel)
-      leads = leads.filter((lead) => {
+      leads = leads.filter((lead: any) => {
         return lead.chat !== null;
       });
     return leads;
