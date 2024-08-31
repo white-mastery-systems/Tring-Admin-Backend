@@ -21,5 +21,6 @@
   </div>
 </template>
 <script setup lang="ts">
-  const props = defineProps<{ title: string; count: string ,icon:any}>();
+  const props = defineProps<{ title: string; count: string; icon: any }>();
+  console.log({ count: props.count });
 </script>

@@ -10,6 +10,7 @@
         <BotFilter v-model="filters.botId" />
         <DateRangeFilter @change="onDateChange" />
       </div>
+      <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton>
     </div>
     <DataTable
       :data="leads"
@@ -34,6 +35,55 @@
   definePageMeta({
     middleware: "admin-only",
   });
+  const exportToCSV = () => {
+    if (leads.value.length === 0) {
+      alert("No data to export");
+      return;
+    }
+
+    // Create CSV content
+    const csvContent =
+      columns.map((col) => col.header).join(",") +
+      "\n" +
+      leads.value
+        .map((lead) =>
+          columns
+            .map((col) => {
+              console.log({ col });
+              let cellValue = lead[col.accessorKey];
+
+              // Escape commas and quotes
+              if (cellValue) {
+                cellValue = cellValue.toString().replace(/"/g, '""');
+                if (
+                  cellValue.includes(",") ||
+                  cellValue.includes('"') ||
+                  cellValue.includes("\n")
+                ) {
+                  cellValue = `"${cellValue}"`;
+                }
+                return cellValue;
+              }
+            })
+            .join(","),
+        )
+        .join("\n");
+
+    // Create a Blob with the CSV content
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+    // Create a download link and trigger the download
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", "leads_export.csv");
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
 
   const filters = reactive<{
     botId: string;
