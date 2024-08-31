@@ -266,6 +266,7 @@
       },
     });
   };
+
   const CRMConfigSchema = toTypedSchema(
     z.object({
       integrationId: z.string().min(1, { message: "CRM is required" }),
@@ -274,5 +275,42 @@
       pipelineId: z.string().optional(),
       layoutId: z.string().optional(),
     }),
+    // .refine(
+    //   (data) =>
+    //     integrationsData.value.find(
+    //       (integration: any) => integration.id === data.integrationId,
+    //     )?.crm === "zoho-bigin" && !data.pipelineId,
+    //   {
+    //     message: "Pipeline Id is required.",
+    //     path: ["pipelineId"],
+    //   },
+    // ),
   );
 </script>
+<!-- else if (
+          integrationsData.value.find(
+            (integration: any) => integration.id === data.integrationId,
+          )?.crm === "sell-do"
+        ) {
+          if (!data.campaignId)
+            return {
+              message: "Campaign Id is required.",
+              path: ["campaignId"],
+            };
+          else if (!data.projectId) {
+            return {
+              message: "Project Id is required.",
+              path: ["projectId"],
+            };
+          }
+        } else if (
+          integrationsData.value.find(
+            (integration: any) => integration.id === data.integrationId,
+          )?.crm === "zoho-crm"
+        ) {
+          if (!data.layoutId)
+            return {
+              message: "Layout Id is required.",
+              path: ["layoutId"],
+            };
+        } -->

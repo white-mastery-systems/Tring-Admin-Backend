@@ -2,8 +2,8 @@
   <Page
     title="CRM Configuration"
     :bread-crumbs="[
-      {label: `${botDetails.name}`, to: `/bots/${botDetails.id}`},
-      {label: 'CRM Configuration', to: `/bots/${botDetails.id}/crm-config`},
+      { label: `${botDetails.name}`, to: `/bots/${botDetails.id}` },
+      { label: 'CRM Configuration', to: `/bots/${botDetails.id}/crm-config` },
     ]"
     :disableSelector="true"
   >
@@ -16,6 +16,7 @@
         Link CRM
       </UiButton>
     </template>
+    {{ console.log({ integrations }) }}
     <DataTable
       :columns="columns"
       :data="integrations"
@@ -99,6 +100,9 @@
     default: () => [],
   });
   watch(integrationsData, (newIntegrations: any) => {
+    newIntegrations?.map((item: any) => {
+      console.log({ item });
+    });
     integrations.value = newIntegrations?.map((item: any) => ({
       integration: item.integration?.name,
       projectId:

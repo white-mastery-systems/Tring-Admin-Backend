@@ -127,7 +127,7 @@
         </div>
       </div> -->
       <Line
-        class="relative mt-4 w-full place-content-center rounded-md bg-white"
+        class="shadow-md relative mt-4 w-full place-content-center rounded-md bg-white"
         :data="chartData"
         :options="chartOptions"
       />
@@ -211,7 +211,7 @@
         label: "Sessions",
         borderColor: "#424bd1",
         backgroundColor: "#424bd1",
-        data: leadsGraphData.value,
+        data: sessionsGraphData.value,
         yAxisID: "y",
         tension: 0.4,
         pointRadius: 0,
@@ -220,7 +220,7 @@
         label: "Leads",
         borderColor: "#ffbc42",
         backgroundColor: "#ffbc42",
-        data: [28, 48, 40, 19, 86, 27, 90],
+        data: leadsGraphData.value,
         yAxisID: "y1",
         tension: 0.4,
         pointRadius: 0,
@@ -297,106 +297,106 @@
     }
   };
 
-  interface MonthAbbreviations {
-    [key: string]: string;
-  }
+  // interface MonthAbbreviations {
+  //   [key: string]: string;
+  // }
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+  // const months = [
+  //   "January",
+  //   "February",
+  //   "March",
+  //   "April",
+  //   "May",
+  //   "June",
+  //   "July",
+  //   "August",
+  //   "September",
+  //   "October",
+  //   "November",
+  //   "December",
+  // ];
 
-  // Define a mapping of month abbreviations to full names for comparison
-  const monthAbbreviations: MonthAbbreviations = {
-    Jan: "January",
-    Feb: "February",
-    Mar: "March",
-    Apr: "April",
-    May: "May",
-    Jun: "June",
-    Jul: "July",
-    Aug: "August",
-    Sep: "September",
-    Oct: "October",
-    Nov: "November",
-    Dec: "December",
-  };
+  // // Define a mapping of month abbreviations to full names for comparison
+  // const monthAbbreviations: MonthAbbreviations = {
+  //   Jan: "January",
+  //   Feb: "February",
+  //   Mar: "March",
+  //   Apr: "April",
+  //   May: "May",
+  //   Jun: "June",
+  //   Jul: "July",
+  //   Aug: "August",
+  //   Sep: "September",
+  //   Oct: "October",
+  //   Nov: "November",
+  //   Dec: "December",
+  // };
 
   // Initialize an empty array for the final data
   // console.log(
-  const leadsData = computed(() => analyticsData.value?.graph.leads);
-  const leadGraphData = computed(() =>
-    months.map((month) => {
-      // Find the corresponding API data for the current month and year
-      const apiEntry = leadsData.value?.find((entry: any) => {
-        const [apiMonthAbbr, apiYear] = entry.month.split(" ");
-        console.log(apiMonthAbbr, apiYear, "API");
-        const apiMonthFull =
-          monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
-        return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
-      });
+  // const leadsData = computed(() => analyticsData.value?.graph.leads);
+  // const leadGraphData = computed(() =>
+  //   months.map((month) => {
+  //     // Find the corresponding API data for the current month and year
+  //     const apiEntry = leadsData.value?.find((entry: any) => {
+  //       const [apiMonthAbbr, apiYear] = entry.month.split(" ");
+  //       console.log(apiMonthAbbr, apiYear, "API");
+  //       const apiMonthFull =
+  //         monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
+  //       return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
+  //     });
 
-      // Extract the year from the first entry of the API data, or use a default value
-      const year =
-        leadsData.value?.length > 0
-          ? leadsData.value[0].month.split(" ")[1]
-          : "2024";
+  //     // Extract the year from the first entry of the API data, or use a default value
+  //     const year =
+  //       leadsData.value?.length > 0
+  //         ? leadsData.value[0].month.split(" ")[1]
+  //         : "2024";
 
-      console.log(year, apiEntry);
+  //     console.log(year, apiEntry);
 
-      return {
-        month: `${month} ${year}`,
-        "Leads Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
-      };
-    }),
-  );
+  //     return {
+  //       month: `${month} ${year}`,
+  //       "Leads Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
+  //     };
+  //   }),
+  // );
 
-  const sessionsData = computed(() => analyticsData.value?.graph.sessions);
-  const sessionGraphData = computed(() =>
-    months.map((month) => {
-      // Find the corresponding API data for the current month and year
-      const apiEntry = sessionsData.value?.find((entry: any) => {
-        const [apiMonthAbbr, apiYear] = entry.month.split(" ");
-        console.log(apiMonthAbbr, apiYear, "API");
-        const apiMonthFull =
-          monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
-        return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
-      });
+  // const sessionsData = computed(() => analyticsData.value?.graph.sessions);
+  // const sessionGraphData = computed(() =>
+  //   months.map((month) => {
+  //     // Find the corresponding API data for the current month and year
+  //     const apiEntry = sessionsData.value?.find((entry: any) => {
+  //       const [apiMonthAbbr, apiYear] = entry.month.split(" ");
+  //       console.log(apiMonthAbbr, apiYear, "API");
+  //       const apiMonthFull =
+  //         monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
+  //       return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
+  //     });
 
-      // Extract the year from the first entry of the API data, or use a default value
-      const year =
-        leadsData.value?.length > 0
-          ? leadsData.value[0].month.split(" ")[1]
-          : "2024";
+  //     // Extract the year from the first entry of the API data, or use a default value
+  //     const year =
+  //       leadsData.value?.length > 0
+  //         ? leadsData.value[0].month.split(" ")[1]
+  //         : "2024";
 
-      console.log(year, apiEntry);
+  //     console.log(year, apiEntry);
 
-      return {
-        month: `${month} ${year}`,
-        "Sessions Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
-      };
-    }),
-  );
-  const lineGraphData = computed(() =>
-    sessionGraphData.value.map((s) => {
-      const lead = leadGraphData.value.find((l) => l.month === s.month);
-      return {
-        month: s.month,
-        "Leads Created": lead ? lead["Leads Created"] : 0,
-        "Sessions Created": s["Sessions Created"],
-      };
-    }),
-  );
+  //     return {
+  //       month: `${month} ${year}`,
+  //       "Sessions Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
+  //     };
+  //   }),
+  // );
+  // const lineGraphData = computed(() =>
+  //   sessionGraphData.value.map((s) => {
+  //     const lead = leadGraphData.value.find((l) => l.month === s.month);
+  //     return {
+  //       month: s.month,
+  //       "Leads Created": lead ? lead["Leads Created"] : 0,
+  //       "Sessions Created": s["Sessions Created"],
+  //     };
+  //   }),
+  // );
 </script>
 <style scoped>
   .focus\:ring-offset-2:focus {
