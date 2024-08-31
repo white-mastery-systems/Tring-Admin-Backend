@@ -26,7 +26,6 @@
     </UiTabs>
     <ChannelModal v-model="channelModalState" />
     <CreateEditIntegrationModal v-model="integrationModalState" @success="onSuccess()" />
-    {{ channelModalState }}
   </Page>
   <ConfirmationModal v-model:open="deleteIntegrationState.open" title="Confirm Delete"
     description="Are you sure you want to delete ?" @confirm="
