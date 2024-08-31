@@ -13,7 +13,8 @@ const queryValidator = z
       .transform((val) => (val ? new Date(val) : null)),
     q: z.string().optional(),
     status: z.string().optional(),
-    channel: z.string().optional()
+    channel: z.string().optional(),
+    period: z.string().optional(),
   })
   .refine(
     (data) => {
