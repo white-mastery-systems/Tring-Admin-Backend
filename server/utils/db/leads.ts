@@ -66,8 +66,8 @@ export const listLeads = async (
           toDate = endOfMonth(new Date());
           break;
         case "custom":
-          fromDate = query?.from;
-          toDate = query?.to;
+          fromDate = query?.from || undefined;
+          toDate = query?.to || undefined;
           break;
       }
       console.log({ fromDate, toDate})
