@@ -38,15 +38,7 @@
     });
   }
 
-  // const integrationSchema = toTypedSchema(
-  //   z.object({
-  //   name: z.string().min(1, { message: "Name is required" }),
-  //   crm: z.string().min(1, { message: "CRM is required" }),
-  //   metaData: z.object({
-  //     apiKey: z.string().min(1, { message: "API key is required" }),
-  //   }),
-  // }),
-  // );
+  
   const sellDoSchema = z.object({
     crm: z.literal("sell-do"),
     metaData: z.object({
@@ -66,7 +58,6 @@
     z
       .object({
         name: z.string().min(1, { message: "Name is required" }),
-
         crm: z
           .enum(["sell-do", "zoho-crm", "zoho-bigin"])
           .refine(
