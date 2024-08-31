@@ -2,8 +2,8 @@ const db = useDrizzle();
 
 export const getDocumentPath = (docId: string) => `./assets/docs/${docId}.pdf`;
 
-export const getLogoPath = (logoName: string) =>
-  `./public/logo/${logoName}.png`;
+export const getLogoPath = (logoName: string, extension: string) =>
+  `./public/logo/${logoName}.${extension}`;
 
 export const createDocument = async (document: InsertDocument) =>
   (await db.insert(documentSchema).values(document).returning())[0];
