@@ -2,7 +2,10 @@
   import { Icon, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
 
-  const showIntentDialog = ref(false);
+  const showIntentDialog = ref<{ open: boolean; id?: string | null }>({
+    open: false,
+    id: null,
+  });
 
   const animationProps = {
     duration: 0,
@@ -41,7 +44,7 @@
     await createBotIntents({
       intentDetails,
       onSuccess: () => {
-        showIntentDialog.value = false;
+        showIntentDialog.value.open = false;
         toast.success("Intent added successfully");
       },
     });
@@ -68,18 +71,33 @@
     id: "",
   });
   const columnHelper = createColumnHelper<(typeof intentData.value)[0]>();
-  const actionsComponent = (id: string) =>
-    h(
-      UiButton,
-      {
-        variant: "destructive",
-        onClick: () => {
-          deleteIntentDialogState.value.open = true;
-          deleteIntentDialogState.value.id = id;
+  const actionsComponent = (id: string) => [
+    h("div", { class: "flex items-center gap-2" }, [
+      h(
+        UiButton,
+        {
+          color: "primary",
+          class: "ml-2",
+          onClick: () => {
+            showIntentDialog.value.open = true;
+            showIntentDialog.value.id = id;
+          },
         },
-      },
-      h(Icon, { name: "lucide:trash-2" }),
-    );
+        h(Icon, { name: "lucide:pen" }),
+      ),
+      h(
+        UiButton,
+        {
+          variant: "destructive",
+          onClick: () => {
+            deleteIntentDialogState.value.open = true;
+            deleteIntentDialogState.value.id = id;
+          },
+        },
+        h(Icon, { name: "lucide:trash-2" }),
+      ),
+    ]),
+  ];
   const columns = [
     columnHelper.accessor("intent", {
       header: "Intent Name",
@@ -117,17 +135,20 @@
         <UiButton
           class="bg-yellow-500"
           type="button"
-          @click="showIntentDialog = true"
+          @click="showIntentDialog.open = true"
           color="primary"
           >Add Intents</UiButton
         >
 
-        <UiDialog v-model:open="showIntentDialog">
+        <UiDialog v-model:open="showIntentDialog.open">
           <UiDialogContent class="sm:max-w-[425px]">
             <UiForm class="flex flex-col gap-2" @submit="addIntents">
               <UiDialogHeader>
                 <UiDialogTitle class="text-indigo-600"
-                  >Add Intents</UiDialogTitle
+                  >{{
+                    showIntentDialog?.id ? "Edit" : "Add"
+                  }}
+                  Intent</UiDialogTitle
                 >
               </UiDialogHeader>
               <UiFormField v-slot="{ componentField }" name="intent">

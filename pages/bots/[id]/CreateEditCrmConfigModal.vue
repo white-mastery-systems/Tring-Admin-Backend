@@ -1,9 +1,6 @@
 <template>
   <UiDialog v-model:open="modalState.open">
     <UiDialogContent class="sm:max-w-[425px]">
-      <UiDialogHeader>
-        <UiDialogTitle>Link CRM</UiDialogTitle>
-      </UiDialogHeader>
       <UiForm
         v-slot="{ values, errors }"
         :validation-schema="CRMConfigSchema"

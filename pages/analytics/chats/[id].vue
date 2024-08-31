@@ -169,24 +169,4 @@ const details = computed(() => {
   return [...metaData, ...paramsData ,...botUserDetails]
 });
 
-const steps = [
-  {
-    step: 1,
-    title: "Your details",
-    description:
-      "Provide your name and email address. We will use this information to create your account",
-  },
-  {
-    step: 2,
-    title: "Company details",
-    description:
-      "A few details about your company will help us personalize your experience",
-  },
-  {
-    step: 3,
-    title: "Invite your team",
-    description:
-      "Start collaborating with your team by inviting them to join your account. You can skip this step and invite them later",
-  },
-];
 </script>
