@@ -5,6 +5,7 @@ enum CRMType {
   sellDo = "sell-do",
   zohoCRM = "zoho-crm",
   zohoBigin = "zoho-bigin",
+  whatsapp = "whatsapp"
 }
 const db = useDrizzle();
 
