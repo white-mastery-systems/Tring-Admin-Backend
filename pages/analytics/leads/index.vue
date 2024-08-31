@@ -1,21 +1,30 @@
 <template>
   <Page title="Leads" :disableSelector="false" :disable-back-button="true">
-    <div class="flex items-center justify-between gap-2 pb-4 overflow-x-scroll">
+    <div class="flex items-center justify-between gap-2 overflow-x-scroll pb-4">
       <div class="flex items-center gap-2">
-        <UiInput v-model="filters.q"
+        <UiInput
+          v-model="filters.q"
           class="max-w-[130px] sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
-          placeholder="Search Leads..." />
+          placeholder="Search Leads..."
+        />
         <BotFilter v-model="filters.botId" />
         <DateRangeFilter @change="onDateChange" />
       </div>
     </div>
-    <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="73" height-unit="vh"
+    <DataTable
+      :data="leads"
+      :is-loading="isDataLoading"
+      :columns="columns"
+      :page-size="8"
+      :height="73"
+      height-unit="vh"
       @row-click="
         (row: any) => {
           console.log({ row });
           navigateTo(`leads/${row.original.chatId}`);
         }
-      " />
+      "
+    />
   </Page>
 </template>
 <script setup lang="ts">
@@ -70,19 +79,26 @@
     columnHelper.accessor("botUser.email", {
       header: "Lead Email",
     }),
+
     columnHelper.accessor("botUser", {
       header: "Visiting Status",
       cell: ({ row }) =>
         h(
           UiBadge,
           {
-            ...((row.original.status === 'junk')
+            ...(Number(row.original.botUser?.visitedCount) > 1 ||
+            row.original.status === "junk"
               ? { variant: "destructive" }
               : { class: "bg-green-200 text-green-500 hover:bg-green-300" }),
           },
-          (row.original.status === 'junk') ? "Junk" : "New",
+          row.original.status === "junk"
+            ? "Junk"
+            : Number(row.original.botUser.visitedCount) > 1
+              ? "Revisited"
+              : "New",
         ),
     }),
+
     columnHelper.accessor("botUser.mobile", {
       header: "Lead Phone",
     }),
