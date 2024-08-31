@@ -1,5 +1,19 @@
 import { count } from "drizzle-orm";
-import moment, { months } from "moment";
+import {
+  startOfDay,
+  endOfDay,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  startOfYear,
+  endOfYear,
+  subMonths,
+  eachDayOfInterval,
+  eachMonthOfInterval,
+  eachHourOfInterval,
+  format,
+} from 'date-fns';
 
 const db = useDrizzle();
 
@@ -209,56 +223,62 @@ export const getOrgUsage = async (organizationId: string) => {
 
 // Date range generation function
 const getAllDatesInRange = (period: string) => {
-    let dates = [];
-    let startDate, endDate, dateFormat, type;
+  let dates: string[] = [];
+  let startDate: Date, endDate: Date;
 
-    if (period === "this-week") {
-      startDate = moment().startOf('week');
-      endDate = moment().endOf('week');
-      dateFormat = "YYYY-MM-DD";
-      type = 'day';
-    } else if (period === "this-month") {
-      startDate = moment().startOf('month');
-      endDate = moment().endOf('month');
-      dateFormat = "YYYY-MM-DD";
-      type = 'day';
-    } else if (period === "this-year" || period === "6-months") {
-      startDate = period === "this-year" 
-        ? moment().startOf('year') 
-        : moment().subtract(5, 'months').startOf('month');
-      endDate = moment().endOf('month');
-      dateFormat = "YYYY-MM";
-      type = 'month';
-    } else if (period === "today") {
-      startDate = moment().startOf('day');
-      endDate = moment().endOf('day');
-      dateFormat = "YYYY-MM-DD HH";
-      type = 'hour';
-    } else {
+  const now = new Date();
+
+  switch (period) {
+    case "this-week":
+      startDate = startOfWeek(now, { weekStartsOn: 0 });
+      endDate = endOfWeek(now, { weekStartsOn: 0 });
+      dates = eachDayOfInterval({ start: startDate, end: endDate }).map(date => format(date, "yyyy-MM-dd"));
+      break;
+
+    case "this-month":
+      startDate = startOfMonth(now);
+      endDate = endOfMonth(now);
+      dates = eachDayOfInterval({ start: startDate, end: endDate }).map(date => format(date, "yyyy-MM-dd"));
+      break;
+
+    case "this-year":
+      startDate = startOfYear(now);
+      endDate = endOfYear(now);
+      dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(date => format(date, "yyyy-MM"));
+      break;
+
+    case "6-months":
+      startDate = subMonths(startOfMonth(now), 5);
+      endDate = endOfMonth(now);
+      dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(date => format(date, "yyyy-MM"));
+      break;
+
+    case "today":
+      startDate = startOfDay(now);
+      endDate = endOfDay(now);
+      dates = eachHourOfInterval({ start: startDate, end: endDate }).map(date => format(date, "yyyy-MM-dd HH"));
+      break;
+
+    default:
       throw new Error('Invalid period');
-    }
+  }
 
-    let current = startDate.clone();
-    while (current.isSameOrBefore(endDate)) {
-      dates.push(current.format(dateFormat));
-      current.add(1, type);
-    }
-    return dates;
-}
+  return dates;
+};
 
-// Reduce the data to get the count per date
 const groupAndMapData = ({module, period}: any) => {
-  const groupedData = module.reduce((acc, i) => {
-     let dateKey;
-      if (period === "this-year" || period === "6-months") {
-        dateKey = moment(i.createdAt).format("YYYY-MM");
-      } else if (period === "today") {
-        dateKey = moment(i.createdAt).format("YYYY-MM-DD HH");
-      } else {
-        dateKey = moment(i.createdAt).format("YYYY-MM-DD");
-      }
-      acc[dateKey] = (acc[dateKey] || 0) + 1;
-      return acc;
+   const groupedData = module.reduce((acc, i) => {
+    const date = new Date(i.createdAt);
+    let dateKey;
+    if (period === "this-year" || period === "6-months") {
+      dateKey = format(date, "yyyy-MM");
+    } else if (period === "today") {
+      dateKey = format(date, "yyyy-MM-dd HH");
+    } else {
+      dateKey = format(date, "yyyy-MM-dd");
+    }
+    acc[dateKey] = (acc[dateKey] || 0) + 1;
+    return acc;
   }, {});
 
   // Map the grouped data to the desired format
@@ -270,36 +290,33 @@ const groupAndMapData = ({module, period}: any) => {
 
 // get Date ranges
 const getDateRange = (period: string) => {
+  const now = new Date();
+  
   switch (period) {
     case "today":
       return {
-        fromDate: moment().utc().startOf("day").toDate(),
-        toDate: moment().utc().endOf("day").toDate()
+        fromDate: startOfDay(now),
+        toDate: endOfDay(now)
       };
     case "this-week":
       return {
-        fromDate: moment().utc().startOf("week").toDate(),
-        toDate: moment().utc().endOf("week").toDate()
+        fromDate: startOfWeek(now),
+        toDate: endOfWeek(now)
       };
     case "this-month":
       return {
-        fromDate: moment().utc().startOf("month").toDate(),
-        toDate: moment().utc().endOf("month").toDate()
-      };
-    case "last-month":
-      return {
-        fromDate: moment().utc().subtract(1, 'month').startOf('month').toDate(),
-        toDate: moment().utc().subtract(1, 'month').endOf('month').toDate()
+        fromDate: startOfMonth(now),
+        toDate: endOfMonth(now)
       };
     case "6-months":
       return {
-        fromDate: moment().utc().subtract(6, 'months').startOf('month').toDate(),
-        toDate: moment().utc().endOf('month').toDate()
+        fromDate: startOfMonth(subMonths(now, 6)),
+        toDate: endOfMonth(now)
       };
     case "this-year":
       return {
-        fromDate: moment().utc().startOf("year").toDate(),
-        toDate: moment().utc().endOf("year").toDate()
+        fromDate: startOfYear(now),
+        toDate: endOfYear(now)
       };
     default:
       throw new Error('Invalid period');
@@ -307,151 +324,157 @@ const getDateRange = (period: string) => {
 };
 
 export const getAnalytics = async (organizationId: string, period = "this-month") => {
-  const { fromDate, toDate } = getDateRange(period);
-  
-  console.log({ organizationId, fromDate, toDate });
+  try {
+    const { fromDate, toDate } = getDateRange(period);
+    
+    console.log({ organizationId, fromDate, toDate });
 
-  const [orgData, interactedChats, callScheduledTimeline, siteVisitTimeline, locationTimeline, virtualTourTimeline] = await Promise.all([
-    db.query.organizationSchema.findFirst({
-      where: eq(organizationSchema.id, organizationId),
-      with: {
-        botUsers: {
-          where: and(
-            gte(botUserSchema.createdAt, fromDate),
-            lte(botUserSchema.createdAt, toDate)
-          ),
-        },
-        bots: {
-          with: {
-            chats: {
-              where: and(
-                gte(chatSchema.createdAt, fromDate),
-                lte(chatSchema.createdAt, toDate)
-              ),
+    const [orgData, interactedChats, callScheduledTimeline, siteVisitTimeline, locationTimeline, virtualTourTimeline] = await Promise.all([
+      db.query.organizationSchema.findFirst({
+        where: eq(organizationSchema.id, organizationId),
+        with: {
+          botUsers: {
+            where: and(
+              gte(botUserSchema.createdAt, fromDate),
+              lte(botUserSchema.createdAt, toDate)
+            ),
+          },
+          bots: {
+            with: {
+              chats: {
+                where: and(
+                  gte(chatSchema.createdAt, fromDate),
+                  lte(chatSchema.createdAt, toDate)
+                ),
+              },
             },
           },
+          leads: {
+            where: and(
+              gte(leadSchema.createdAt, fromDate),
+              lte(leadSchema.createdAt, toDate)
+            ),
+          },
         },
-        leads: {
-          where: and(
+      }),
+      db.select({ count: count() })
+        .from(chatSchema)
+        .where(
+          and(
+            gte(chatSchema.createdAt, fromDate),
+            lte(chatSchema.createdAt, toDate),
+            eq(chatSchema.interacted, true),
+            eq(chatSchema.organizationId, organizationId)
+          )
+        ),
+      db.select({ count: count() })
+        .from(timelineSchema)
+        .where(
+          and(
+            gte(timelineSchema.createdAt, fromDate),
+            lte(timelineSchema.createdAt, toDate),
+            eq(timelineSchema.orgId, organizationId),
+            eq(timelineSchema.intent, "schedule_call")
+          )
+        ),
+      db.select({ count: count() })
+        .from(timelineSchema)
+        .where(
+          and(
+            gte(timelineSchema.createdAt, fromDate),
+            lte(timelineSchema.createdAt, toDate),
+            eq(timelineSchema.orgId, organizationId),
+            eq(timelineSchema.intent, "site_visit")
+          )
+        ),
+      db.select({ count: count() })
+        .from(timelineSchema)
+        .where(
+          and(
+            gte(timelineSchema.createdAt, fromDate),
+            lte(timelineSchema.createdAt, toDate),
+            eq(timelineSchema.orgId, organizationId),
+            eq(timelineSchema.intent, "location")
+          )
+        ),
+      db.select({ count: count() })
+        .from(timelineSchema)
+        .where(
+          and(
+            gte(timelineSchema.createdAt, fromDate),
+            lte(timelineSchema.createdAt, toDate),
+            eq(timelineSchema.orgId, organizationId),
+            eq(timelineSchema.intent, "virtual_tour")
+          )
+        ),
+    ]);
+
+
+    if (!orgData) return undefined;
+
+    const [leadData, sessionData, sessions] = await Promise.all([
+      db.select({ createdAt: leadSchema.createdAt })
+        .from(leadSchema)
+        .leftJoin(organizationSchema, eq(leadSchema.organizationId, organizationSchema.id))
+        .where(
+          and(
+            eq(organizationSchema.id, organizationId),
             gte(leadSchema.createdAt, fromDate),
             lte(leadSchema.createdAt, toDate)
-          ),
-        },
-      },
-    }),
-    db.select({ count: count() })
-      .from(chatSchema)
-      .where(
-        and(
-          gte(chatSchema.createdAt, fromDate),
-          lte(chatSchema.createdAt, toDate),
-          eq(chatSchema.interacted, true),
-          eq(chatSchema.organizationId, organizationId)
+          )
         )
-      ),
-    db.select({ count: count() })
-      .from(timelineSchema)
-      .where(
-        and(
-          gte(timelineSchema.createdAt, fromDate),
-          lte(timelineSchema.createdAt, toDate),
-          eq(timelineSchema.orgId, organizationId),
-          eq(timelineSchema.intent, "schedule_call")
+        .groupBy(sql`${leadSchema.createdAt}`)
+        .execute(),
+      db.select({ createdAt: chatSchema.createdAt })
+        .from(chatSchema)
+        .leftJoin(chatBotSchema, eq(chatBotSchema.id, chatSchema.botId))
+        .leftJoin(organizationSchema, eq(organizationSchema.id, chatBotSchema.organizationId))
+        .where(
+          and(
+            eq(organizationSchema.id, organizationId),
+            gte(chatSchema.createdAt, fromDate),
+            lte(chatSchema.createdAt, toDate)
+          )
         )
-      ),
-    db.select({ count: count() })
-      .from(timelineSchema)
-      .where(
-        and(
-          gte(timelineSchema.createdAt, fromDate),
-          lte(timelineSchema.createdAt, toDate),
-          eq(timelineSchema.orgId, organizationId),
-          eq(timelineSchema.intent, "site_visit")
-        )
-      ),
-    db.select({ count: count() })
-      .from(timelineSchema)
-      .where(
-        and(
-          gte(timelineSchema.createdAt, fromDate),
-          lte(timelineSchema.createdAt, toDate),
-          eq(timelineSchema.orgId, organizationId),
-          eq(timelineSchema.intent, "location")
-        )
-      ),
-    db.select({ count: count() })
-      .from(timelineSchema)
-      .where(
-        and(
-          gte(timelineSchema.createdAt, fromDate),
-          lte(timelineSchema.createdAt, toDate),
-          eq(timelineSchema.orgId, organizationId),
-          eq(timelineSchema.intent, "virtual_tour")
-        )
-      ),
-  ]);
+        .groupBy(sql`${chatSchema.createdAt}`)
+        .execute(),
+      db.query.analyticsSchema.findFirst({
+        where: eq(analyticsSchema.organizationId, organizationId),
+      })
+    ]);
 
+    const dates = getAllDatesInRange(period);
 
-  if (!orgData) return undefined;
+    // return { leadData }
 
-  const [leadData, sessionData, sessions] = await Promise.all([
-    db.select({ createdAt: leadSchema.createdAt })
-      .from(leadSchema)
-      .leftJoin(organizationSchema, eq(leadSchema.organizationId, organizationSchema.id))
-      .where(
-        and(
-          eq(organizationSchema.id, organizationId),
-          gte(leadSchema.createdAt, fromDate),
-          lte(leadSchema.createdAt, toDate)
-        )
-      )
-      .groupBy(sql`${leadSchema.createdAt}`)
-      .execute(),
-    db.select({ createdAt: chatSchema.createdAt })
-      .from(chatSchema)
-      .leftJoin(chatBotSchema, eq(chatBotSchema.id, chatSchema.botId))
-      .leftJoin(organizationSchema, eq(organizationSchema.id, chatBotSchema.organizationId))
-      .where(
-        and(
-          eq(organizationSchema.id, organizationId),
-          gte(chatSchema.createdAt, fromDate),
-          lte(chatSchema.createdAt, toDate)
-        )
-      )
-      .groupBy(sql`${chatSchema.createdAt}`)
-      .execute(),
-    db.query.analyticsSchema.findFirst({
-      where: eq(analyticsSchema.organizationId, organizationId),
-    })
-  ]);
+    const leadResult = groupAndMapData({ module: leadData, period });
+    const sessionResult = groupAndMapData({ module: sessionData, period });
 
-  const dates = getAllDatesInRange(period);
+    const leadMap = new Map(leadResult.map(item => [item.date, item.count]));
+    const sessionMap = new Map(sessionResult.map(item => [item.date, item.count]));
 
-  const leadResult = groupAndMapData({ module: leadData, period });
-  const sessionResult = groupAndMapData({ module: sessionData, period });
+    const groupedCounts = (mapData: any) => dates.map(date => ({
+      date,
+      count: mapData.get(date) || 0
+    }));
 
-  const leadMap = new Map(leadResult.map(item => [item.date, item.count]));
-  const sessionMap = new Map(sessionResult.map(item => [item.date, item.count]));
-
-  const groupedCounts = (mapData: any) => dates.map(date => ({
-    date,
-    count: mapData.get(date) || 0
-  }));
-
-  return {
-    bots: orgData.bots.length,
-    chats: orgData.bots.reduce((acc, bot) => acc + bot.chats.length, 0),
-    users: orgData.botUsers.length,
-    leads: orgData.leads.length,
-    sessions: sessions?.sessions ?? 0,
-    virtualTourTimeline,
-    locationTimeline,
-    siteVisitTimeline,
-    callScheduledTimeline,
-    interactedChats,
-    graph: {
-      leads: groupedCounts(leadMap),
-      sessions: groupedCounts(sessionMap)
-    }
-  };
+    return {
+      bots: orgData.bots.length,
+      chats: orgData.bots.reduce((acc, bot) => acc + bot.chats.length, 0),
+      users: orgData.botUsers.length,
+      leads: orgData.leads.length,
+      sessions: sessions?.sessions ?? 0,
+      virtualTourTimeline,
+      locationTimeline,
+      siteVisitTimeline,
+      callScheduledTimeline,
+      interactedChats,
+      graph: {
+        leads: groupedCounts(leadMap),
+        sessions: groupedCounts(sessionMap)
+      }
+    };
+  } catch (error) {
+    throw new Error(`Failed to fetch: ${error}`);
+  }
 };
