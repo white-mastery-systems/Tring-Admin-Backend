@@ -33,6 +33,7 @@
         toast.success(
           `A new lead created generated -- ${data.data?.botUser?.name} `,
           {
+            duration: 6000,
             // position: "bottom-right",
             closeButton: true,
             description: `${data.data?.botUser?.mobile}/${data.data?.botUser?.email}`,

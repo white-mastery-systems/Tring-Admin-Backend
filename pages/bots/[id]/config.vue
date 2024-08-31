@@ -217,7 +217,7 @@
                   <UiSelectContent>
                     <UiSelectItem
                       v-for="({ value, label }, index) in goals"
-                      :value="label"
+                      :value="value"
                       >{{ value }}
                       <p class="text-xs italic text-gray-500">{{ label }}</p>
                     </UiSelectItem>

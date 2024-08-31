@@ -103,8 +103,11 @@
   <Page
     title="Intent Mangement"
     :bread-crumbs="[
-      {label: `${botDetails.name}`, to: `/bots/${botDetails.id}`},
-      {label: 'Intent Management', to: `/bots/${botDetails.id}/intent-management`},
+      { label: `${botDetails.name}`, to: `/bots/${botDetails.id}` },
+      {
+        label: 'Intent Management',
+        to: `/bots/${botDetails.id}/intent-management`,
+      },
     ]"
     :disableSelector="true"
     :disable-back-button="false"
@@ -211,7 +214,20 @@
       v-model:open="deleteIntentDialogState.open"
       title="Confirm Delete"
       description="Are you sure you want to delete this intent ?"
-      @confirm="deleteIntentDialogState.open = false"
+      @confirm="
+        async () => {
+          await deleteIntent({
+            payload: {
+              botId: route.params.id,
+              intentId: deleteIntentDialogState.id,
+            },
+            onSuccess: () => {
+              intentRefresh();
+              deleteIntentDialogState.open = false;
+            },
+          });
+        }
+      "
     />
   </Page>
 </template>
