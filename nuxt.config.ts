@@ -19,7 +19,6 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "@vueuse/nuxt",
   ],
-  
 
   nitro: {
     experimental: { openAPI: true },
@@ -28,7 +27,6 @@ export default defineNuxtConfig({
       presets: [...autoImports.nitro],
     },
   },
-  
 
   imports: {
     dirs: ["stores/**", "composables/**", "utils/**"],
@@ -45,6 +43,7 @@ export default defineNuxtConfig({
     llmBaseUrl: "",
     botBaseUrl: "",
     redirectUrl: "",
+    logoDir: "",
   },
 
   vite: {

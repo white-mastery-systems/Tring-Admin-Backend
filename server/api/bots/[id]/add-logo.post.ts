@@ -36,7 +36,8 @@ export default defineEventHandler(async (event) => {
 
   const logoPathId = uuid();
   const ext = fileData.filename?.split(".").pop() || "png";
-  await writeFile(getLogoPath(logoPathId, ext), fileData.data);
+  const logoPath = getLogoPath(logoPathId, ext);
+  await writeFile(logoPath, fileData.data);
 
   let bot = await getBotDetailsNoCache(botId);
   bot = await isValidReturnType(event, bot);
