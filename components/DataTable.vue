@@ -60,7 +60,7 @@
             <UiTableHead
               v-for="header in headerGroup.headers"
               :key="header.id"
-              class="text-md text-nowrap rounded-tl-lg rounded-tr-lg px-6 py-2 font-extrabold text-gray-700"
+              class="text-md text-nowrap  px-6 py-2 font-extrabold text-gray-700"
               scope="col"
               @click="header.column.getToggleSortingHandler()?.($event)"
             >

@@ -1,28 +1,34 @@
 <template>
-  <Page title="Settings" :disable-back-button="true" :disable-elevation="true">
+  <Page title="Integration" :disable-back-button="true" :disable-elevation="true">
     <template #actionButtons>
-      <UiButton color="primary" @click="integrationModalState.open = true">
-        Add Integration
-      </UiButton>
+      <div class="flex gap-2">
+        <UiButton color="primary" @click="integrationModalState.open = true">
+          Add Integration
+        </UiButton>
+        <UiButton color="primary" @click="channelModalState.open = true">
+          Add Channel
+        </UiButton>
+      </div>
     </template>
-    <DataTable
-      :columns="columns"
-      :data="integrationsData"
-      :page-size="8"
-      :is-loading="false"
-      :height="10"
-      :heightUnit="'vh'"
-    />
-    <CreateEditIntegrationModal
-      v-model="integrationModalState"
-      @success="onSuccess()"
-    />
+    <UiTabs default-value="client" class="w-full self-start">
+      <UiTabsList class="grid w-[40%] grid-cols-2">
+        <UiTabsTrigger value="client"> CRM </UiTabsTrigger>
+        <UiTabsTrigger value="campaign"> Channel </UiTabsTrigger>
+      </UiTabsList>
+      <UiTabsContent value="client">
+        <DataTable :columns="columns" :data="integrationsData" :page-size="8" :is-loading="false" :height="80"
+          :heightUnit="'vh'" />
+      </UiTabsContent>
+      <UiTabsContent value="campaign">
+        <DataTable :columns="statusColumns" :data="integrationsData" :page-size="8" :is-loading="false" :height="10"
+          :heightUnit="'vh'" />
+      </UiTabsContent>
+    </UiTabs>
+    <ChannelModal v-model="channelModalState" />
+    <CreateEditIntegrationModal v-model="integrationModalState" @success="onSuccess()" />
   </Page>
-  <ConfirmationModal
-    v-model:open="deleteIntegrationState.open"
-    title="Confirm Delete"
-    description="Are you sure you want to delete ?"
-    @confirm="
+  <ConfirmationModal v-model:open="deleteIntegrationState.open" title="Confirm Delete"
+    description="Are you sure you want to delete ?" @confirm="
       () => {
         if (deleteIntegrationState?.id) {
           deleteIntegration({
@@ -36,19 +42,20 @@
           deleteIntegrationState.open = false;
         }
       }
-    "
-  />
+    " />
 </template>
 <script lang="ts" setup>
   import { Icon, UiBadge, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
   import Page from "~/components/Page.vue";
   import CreateEditIntegrationModal from "./CreateEditIntegrationModal.vue";
+  import ChannelModal from "./ChannelModal.vue";
   definePageMeta({
     middleware: "admin-only",
   });
 
   const integrationModalState = ref({ open: false });
+  const channelModalState = ref({ open: false });
   // const integrations = ref([]);
 
   let deleteIntegrationState: { open: boolean; id?: string } = reactive({
@@ -68,11 +75,16 @@
       }));
     },
   });
+
   const onSuccess = () => {
     integrationModalState.value.open = false;
     toast.success("Integration added successfully");
     integrationRefresh();
   };
+
+  // const channelModal = () => {
+  //   channelModalState.value.open = false 
+  // }
   const integrationLoading = computed(
     () => integrationLoadingStatus.value === "pending",
   );
@@ -121,4 +133,24 @@
       },
     }),
   ];
+const statusColumns = [
+  columnHelper.accessor("name", {
+    header: "Integration Name",
+  }),
+  columnHelper.accessor("chennal", {
+    header: "Chennal",
+  }),
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: ({ row }) => {
+      return statusComponent(row.original?.status);
+    },
+  }),
+  columnHelper.accessor("actions", {
+    header: "Actions",
+    cell: ({ row }) => {
+      return actionsComponent(row.original?.id);
+    },
+  }),
+];
 </script>
