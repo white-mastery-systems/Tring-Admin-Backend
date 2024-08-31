@@ -8,8 +8,19 @@ const channelModalState = defineModel<{ open: boolean }>({
 watch(channelModalState, (newState) => {
   console.log({ newState });
 });
-const handleConnect = (values: any) => {
-  emit("success")
+const handleConnect = async (values: any) => {
+  console.log(values, "values")
+  const payload = {
+    name: values.name,
+    crm: values.channel,
+    metaData: {
+      pid: values.pid,
+      token: values.token,
+    }
+  }
+  await $fetch(
+    "/api/org/integrations", { method: 'POST', body: payload })
+  // emit("success")
 }
 
 const formSchema = toTypedSchema(
@@ -53,7 +64,7 @@ const formSchema = toTypedSchema(
                   <UiSelectValue placeholder="Select a channel" />
                 </UiSelectTrigger>
                 <UiSelectContent>
-                  <UiSelectItem value="Whats-App">What's App</UiSelectItem>
+                  <UiSelectItem value="whatsapp">What's App</UiSelectItem>
                 </UiSelectContent>
               </UiSelect>
             </UiFormControl>

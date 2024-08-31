@@ -59,7 +59,7 @@
         </UiTabs>
       </div>
       <div
-        class="field_shadow h-[60vh] sm:h-[60vh] md:h-[80vh] lg:h-[84vh] xl:h-[84vh] 2xl:[95vh] w-full overflow-hidden rounded-lg bg-[#ffffff] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
+        class="field_shadow h-screen-minus-11 w-full overflow-hidden rounded-lg bg-[#ffffff] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
         <div :class="[
           'flex items-center justify-between font-medium w-full h-[70px] text-[#ffffff] px-2.5',
         ]" :style="`background:hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`">
@@ -69,7 +69,7 @@
               }}</span>
           </div>
         </div>
-        <div class="bg-[#f8f6f6] h-[calc(100%-70px)] overflow-y-scroll">
+        <div class="bg-[#f8f6f6] h-[calc(100%-70px)] overflow-y-scroll" ref="scrollAnchor">
           <div class="w-full p-5" v-for="(messageList, messageIndex) in leadData?.messages.slice(1)"
             :key="messageIndex">
             <div v-if="messageList.role === 'comment'" class="relative">
@@ -148,6 +148,7 @@ const changeStatus = ref(false)
 const revertStatus = ref(false)
 const status = ref();
 const leadData = ref();
+const scrollAnchor: any = ref(null);
 // const { status, data: leadData } = await useLazyFetch(
 //   () => `/api/org/chat/${route.params.id}`,
 //   {
@@ -190,6 +191,7 @@ const handleDelete = async () => {
   });
   return navigateTo({ name: "leads" });
 };
+
 const fetchData = async () => {
    leadData.value = await $fetch(`/api/org/chat/${route.params.id}`, {
     method: 'GET',
