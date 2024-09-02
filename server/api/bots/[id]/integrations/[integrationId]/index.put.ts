@@ -1,7 +1,7 @@
 import { updateBotIntegration } from "~/server/utils/db/bot";
 
 const zodUpdateBotIntegration = z.object({
-   metadata: z.object({})
+   metadata: z.record(z.any()).optional()
 })
 
 export default defineEventHandler(async (event) => {
