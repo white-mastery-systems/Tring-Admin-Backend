@@ -168,6 +168,21 @@
       ],
     },
     {
+      name: "Bot Management",
+      icon: Bot,
+      path:"/bot-management",
+      children: [
+        {
+          name: 'Voice',
+          path: '/voice-bot',
+        },
+        {
+          name: 'Chat',
+          path: '/chat-bot',
+        }
+      ],
+    },
+    {
       name: "Bots",
       icon: Bot,
       path: "/bots",
