@@ -1,29 +1,40 @@
-import { voicebot } from ".";
-import { uuid, varchar, boolean, jsonb, text } from "drizzle-orm/pg-core";
-import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
-import { organizationSchema } from "./admin"
+import { voiceBotSchema } from ".";
+import { uuid, varchar, boolean, jsonb, timestamp } from "drizzle-orm/pg-core";
+import { InferInsertModel, InferSelectModel } from "drizzle-orm";
+import { organizationSchema, integrationSchema } from "./admin";
 
-export const voicebotSchema = voicebot.table("bot", {
+export const voicebotSchema = voiceBotSchema.table("bot", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name").notNull(),
-  active: boolean("active").default(true),
+  role: varchar("role"),
+  domain: varchar("domain").array(),
+  active: boolean("active").default(false),
   metaData: jsonb("metadata"),
   llmConfig: jsonb("llm_config"),
-  defaultIntents: varchar("default_intents").array(), // Array of strings
+  intents: varchar("intents").array(), // Array of strings
   ivrConfig: jsonb("ivr_config"),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
 })
 
-// relations
-export const voiceBotRelations = relations(voicebotSchema, ({one}) => ({
-   organization: one(organizationSchema, {
-    fields: [voicebotSchema.organizationId],
-    references: [organizationSchema.id],
-  }),
-}))
+export const voicebotIntegrationSchema = voiceBotSchema.table("bot_integrations", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  botId: uuid("bot_id")
+    .references(() => voicebotSchema.id)
+    .notNull(),
+  metadata: jsonb("metadata"),
+  integrationId: uuid("integration_id").references(() => integrationSchema.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  organizationId: uuid("organization_id")
+    .references(() => organizationSchema.id)
+    .notNull(),
+});
+
 
 
 export type SelectVoiceBot = InferSelectModel<typeof voicebotSchema>;
 export type InsertVoiceBot = InferInsertModel<typeof voicebotSchema>;
+
+export type SelectVoicebotIntegration = InferSelectModel<typeof voicebotIntegrationSchema>;
+export type InsertVoicebotIntegration = InferInsertModel<typeof voicebotIntegrationSchema>;
