@@ -1,25 +1,36 @@
 <template>
   <Page title="Chats" :disable-back-button="true">
-    <div class="flex items-center gap-2 pb-2 overflow-x-scroll">
+    <div class="flex items-center gap-2 overflow-x-scroll pb-2">
       <div class="flex items-center gap-2">
-        <UiInput v-model="searchBot"
-          class="max-w-[130px] sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
-          placeholder="Search bot..." />
+        <UiInput
+          v-model="searchBot"
+          class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+          placeholder="Search bot..."
+        />
         <BotFilter v-model="filters.botId" />
         <DateRangeFilter />
       </div>
     </div>
-    <DataTable @row-click="
+    <DataTable
+      @row-click="
         (row: any) => {
           console.log({ row });
           return navigateTo(`chats/${row.original.id}`);
           //TODO change this
         }
-      " :columns="columns" :data="bots" :page-size="20" :is-loading="isDataLoading" :height="65" height-unit="vh" />
+      "
+      :columns="columns"
+      :data="bots"
+      :page-size="20"
+      :is-loading="isDataLoading"
+      :height="65"
+      height-unit="vh"
+    />
   </Page>
 </template>
 <script setup lang="ts">
   import { createColumnHelper } from "@tanstack/vue-table";
+  import { format } from "date-fns";
   definePageMeta({
     middleware: "admin-only",
   });
@@ -62,8 +73,8 @@
       return chats?.map((chat) => ({
         userName: chat.botUser?.name || "No name",
         id: chat.id,
-        location: `${chat.metadata?.city} - ${chat.metadata?.state} `,
-        createdAt: "01 Aug 2024",
+        location: `${chat.metadata?.city ?? "--"} - ${chat.metadata?.state ?? "--"} `,
+        createdAt: `${format(chat?.createdAt, "dd MMM yyyy HH:MM aaa	")}`,
         mode: chat.metadata?.mode ?? "Live",
       }));
     },

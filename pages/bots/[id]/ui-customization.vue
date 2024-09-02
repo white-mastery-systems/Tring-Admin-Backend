@@ -76,7 +76,7 @@
                 </UiFormControl>
                 <UiFormMessage />
                 <span class="text-xs text-gray-500"
-                  >This color will be used for Messages,Widget Bubble</span
+                  >Color for Messages,Widget Bubble</span
                 >
               </UiFormItem>
             </UiFormField>
