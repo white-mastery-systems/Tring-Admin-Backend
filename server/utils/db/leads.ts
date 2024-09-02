@@ -33,39 +33,17 @@ export const listLeads = async (
     if(query?.status === "default" || query?.status === "junk") {
       filters.push(eq(leadSchema.status, query?.status))
     }
+    if(query?.status==="revisited"){
+      filters.push(eq(leadSchema.status,"default"))
+    }
     
    // Period-based filtering
     if (query?.period) {
       let fromDate: Date | undefined;
       let toDate: Date | undefined;
-      const now = new Date()
-
-      switch (query.period) {
-        case "today":
-          fromDate = startOfDay(new Date());
-          toDate = endOfDay(new Date());
-          break;
-        case "this-week":
-          fromDate = startOfWeek(new Date());
-          toDate = endOfWeek(new Date());
-          break;
-        case "this-month":
-          fromDate = startOfMonth(new Date());
-          toDate = endOfMonth(new Date());
-          break;
-        case "this-year":
-          fromDate = startOfYear(new Date());
-          toDate = endOfYear(new Date());
-          break;
-        case "6-months":
-          fromDate = startOfMonth(subMonths(new Date(), 6));
-          toDate = endOfMonth(new Date());
-          break;
-        case "custom":
-          fromDate = query?.from || undefined;
-          toDate = query?.to || undefined;
-          break;
-      }
+      const queryDate = getDateRangeForFilters(query)
+      fromDate = queryDate?.from
+      toDate = queryDate?.to
       console.log({ fromDate, toDate})
       if (fromDate && toDate) {
         filters.push(between(leadSchema.createdAt, fromDate, toDate))
@@ -83,7 +61,7 @@ export const listLeads = async (
         botUser: {
           where: and (
             query?.q ? ilike(botUserSchema.name, query?.q) : undefined,
-            query?.status === "new" ? eq(botUserSchema.visitedCount, 1) : undefined,
+            query?.status === "new" ? lte(botUserSchema.visitedCount, 1) : undefined,
             query?.status === "revisited" ? gt(botUserSchema.visitedCount, 1) : undefined
           ),
         },
@@ -124,3 +102,43 @@ export const updateLead = async (leadId: string, lead: InsertLead) => {
     .returning()
   )[0]
 }
+
+export const getDateRangeForFilters = (query: any) => {
+      switch (query?.period) {
+        case "today":
+          return {
+            from: startOfDay(new Date()),
+            to: endOfDay(new Date())
+          }
+        case "this-week":
+          return {
+            from: startOfWeek(new Date()),
+            to: endOfWeek(new Date())
+          }
+        case "this-month": 
+          return {
+            from: startOfMonth(new Date()),
+            to: endOfMonth(new Date())
+          }
+        case "this-year":
+          return {
+            from: startOfYear(new Date()),
+            to: endOfYear(new Date())
+          }
+        case "6-months":
+          return {
+            from: startOfMonth(subMonths(new Date(), 6)),
+            to: endOfMonth(new Date())
+          }
+        case "custom":
+          return {
+            from: query?.from || undefined,
+            to: query?.to || undefined
+          }
+         case "all":
+          return {
+            from: undefined,
+            to: undefined
+          }
+      }
+};
