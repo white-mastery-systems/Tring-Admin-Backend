@@ -25,10 +25,10 @@ export const getVoicebotById = async (organizationId: string, voicebotId: string
   return data
 }
 
-export const updateVoiceBot = async (voicebotId: string, voiceBot: InsertVoiceBot) => {
+export const updateVoiceBot = async (voicebotId: string, voicebot: InsertVoiceBot) => {
   return (
     await db.update(voicebotSchema)
-    .set(voiceBot)
+    .set(voicebot)
     .where(  
       eq(voicebotSchema.id, voicebotId)
     )
@@ -47,31 +47,50 @@ export const deleteVoiceBot = async (voicebotId: string) => {
 
 
 // voiceBot integrations
-export const createVoiceBotIntegration = async (voiceBotIntegration: InsertVoicebotIntegration) => {
+export const createVoiceBotIntegration = async (voicebotIntegration: InsertVoicebotIntegration) => {
    return (
-    await db.insert(voicebotIntegrationSchema).values(voiceBotIntegration).returning()
+    await db.insert(voicebotIntegrationSchema).values(voicebotIntegration).returning()
    )[0];
 }
 
-export const listVoiceBotIntegrations = async (organizationId: string, voiceBotId: string) => {
+export const listVoiceBotIntegrations = async (organizationId: string, voicebotId: string) => {
   const data = await db.query.voicebotIntegrationSchema.findMany({
     where: and(
       eq(voicebotIntegrationSchema.organizationId, organizationId),
-      eq(voicebotIntegrationSchema.botId, voiceBotId)
+      eq(voicebotIntegrationSchema.botId, voicebotId)
     )
   })
   return data
 }
 
-export const getVoiceBotIntegrationById = async (organizationId: string, voicebotId: string, voiceBotIntegrationId: string) => {
-  const data = await db.query.voicebotSchema.findFirst({ 
+export const getVoiceBotIntegrationById = async (voicebotId:string, voicebotIntegrationId: string) => {
+  const data = await db.query.voicebotIntegrationSchema.findFirst({ 
     where: and(
-      eq(voicebotIntegrationSchema.organizationId, organizationId),
       eq(voicebotIntegrationSchema.botId, voicebotId),
-      eq(voicebotIntegrationSchema.id, voiceBotIntegrationId),
+      eq(voicebotIntegrationSchema.id, voicebotIntegrationId),
     )
   })
   return data
 }
 
-// export const updateVoiceBotIntegration = async ()
+export const updateVoiceBotIntegration = async (voicebotId: string, voicebotIntegrationId: string, voicebotIntegration: InsertVoicebotIntegration) => {
+  return (
+    await db.update(voicebotIntegrationSchema)
+    .set(voicebotIntegration)
+    .where(and(
+      eq(voicebotIntegrationSchema.botId, voicebotId),
+      eq(voicebotIntegrationSchema.id, voicebotIntegrationId),
+    ))
+    .returning()
+  )[0]
+}
+
+export const deleteVoicebotIntegration = async (voicebotId: string, voicebotIntegrationId: string) => {
+  return (
+    await db.delete(voicebotIntegrationSchema)
+    .where(and(
+      eq(voicebotIntegrationSchema.botId, voicebotId),
+      eq(voicebotIntegrationSchema.id, voicebotIntegrationId),
+    )).returning()
+  )[0]
+}
