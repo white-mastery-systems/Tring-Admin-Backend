@@ -186,14 +186,17 @@
         </UiTabs>
       </div>
     </div>
+    <!-- <input type="text" value="hii" ref="chatScreenRef" /> -->
   </Page>
 </template>
 <script setup lang="ts">
   const chatScreenRef = ref(null);
   const scrollChatBox = () => {
     setTimeout(() => {
-      chatScreenRef?.value?.scrollIntoView({ behavior: "smooth" });
-    }, 0);
+      console.log(chatScreenRef.value);
+      if (chatScreenRef.value)
+        chatScreenRef.value.scrollTop = chatScreenRef?.value?.scrollHeight;
+    }, 1000);
   };
   onMounted(() => {
     {

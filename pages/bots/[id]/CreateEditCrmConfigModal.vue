@@ -1,8 +1,9 @@
 <template>
   <DialogWrapper
     v-model="modalState"
-    :title="modalState?.id ? 'Edit CRM' : 'Link CRM'"
+    :title="modalData?.id ? `Edit CRM` : 'Link CRM'"
   >
+   
     <UiForm
       v-slot="{ values, errors }"
       :validation-schema="CRMConfigSchema"
@@ -84,19 +85,19 @@
           <UiFormControl>
             <UiSelect v-bind="componentField">
               <UiSelectTrigger>
-                <UiSelectValue placeholder="Select Pipeline" />
+                <UiSelectValue placeholder="Select Stage" />
               </UiSelectTrigger>
               <UiSelectContent>
                 <UiSelectItem
                   v-for="(stageData, index) in stages"
                   :value="stageData.id"
-                  >{{ stageData.display_label }}</UiSelectItem
+                  >{{ stageData.display_value }}</UiSelectItem
                 >
               </UiSelectContent>
             </UiSelect>
           </UiFormControl>
           <UiFormMessage />
-          <span class="text-xs text-gray-500">Select your pipeline.</span>
+          <span class="text-xs text-gray-500">Select your Pipeline Stage.</span>
         </UiFormItem>
       </UiFormField>
       <UiFormField
@@ -185,37 +186,55 @@
   </DialogWrapper>
 </template>
 <script setup lang="ts">
+  import { useForm } from "vee-validate";
+
+  const { handleSubmit } = useForm();
+
+  // const onSubmit = handleSubmit((values) => {
+  //   // pretty print the values object
+  //   console.log({ values });
+  //   actions.setValues({ email: "value", password: "hi" });
+  // });
+
   const emit = defineEmits(["success"]);
   let pipelines = ref<any>([]);
   let layouts = ref([]);
   const stages = ref<any>([]);
 
-  // const uniquePipelines = ref<any>([]);
-  // const seenPipelines = ref(new Set());
-
-  // const stages = ref([]);
-  // const uniqueStages = ref<any>([]);
-  // const seenStages = ref<any>(new Set());
-  // watch(pipelines, (newPipelines) => {
-  //   newPipelines.forEach((pipeline: any) => {
-  //     if (!seenPipelines.value.has(pipeline.Pipeline.id)) {
-  //       seenPipelines.value.add(pipeline.Pipeline.id);
-  //       uniquePipelines.value.push(pipeline);
-  //     }
-  //   });
-  // });
-  const modalState = defineModel<any>({
+  const modalState = defineModel<{ open: boolean }>({
     default: { open: false },
     required: true,
   });
+  const modalData = defineProps<{ id: any }>();
+  const route = useRoute("bots-id-crm-config");
+  watch(modalData, async (newState) => {
+    const crmConfigData = await $fetch(
+      `/api/bots/${route.params.id}/integrations/${newState.id}`,
+    );
+  });
+
   const handlePipelineChange = async (e: any) => {
     console.log({ e, piipe: pipelines.value });
     // stages.value pipelines.value.map((pipeline: any) => {
     //     return pipeline.id === e;
     //   });
-    stages.value = pipelines.value.find(
-      (pipeline: any) => pipeline.id === e,
-    ).sections;
+    stages.value = pipelines.value
+      .find((pipeline: any) => pipeline.id === e)
+      .sections?.find(
+        (section: any) => section.api_name === "Pipeline Information",
+      )
+      ?.fields?.find(
+        (field: any) => field.field_label === "Stage",
+      )?.pick_list_values;
+    console.log(
+      pipelines.value
+        .find((pipeline: any) => pipeline.id === e)
+        .sections?.find(
+          (section: any) => section.api_name === "Pipeline Information",
+        )
+        ?.fields?.find((field: any) => field.field_label === "Stage"),
+      "LISG LA",
+    );
   };
   const handleCrmChange = async (e: any) => {
     const matchedCRM: any = integrationsData?.value?.find(
@@ -246,19 +265,31 @@
     server: false,
     default: () => [],
   });
-  console.log({ integrationsData });
-  const route = useRoute("bots-id-crm-config");
+
   const handleAddIntegration = (value: any) => {
     let pipelineObj: any = {};
     let layoutObj: any = {};
     console.log({ value });
     if (value?.pipelineId) {
-      pipelineObj = pipelines.value.find(
-        (pipeline) => pipeline.Pipeline.id === value.pipelineId,
+      let pipelineData = pipelines.value.find(
+        (pipeline: any) => pipeline.id === value.pipelineId,
       );
+      let stage = pipelineData.sections
+        ?.find((section: any) => section.api_name === "Pipeline Information")
+        ?.fields?.find((field: any) => field.field_label === "Stage")
+        ?.pick_list_values?.find((list: any) => list.id === value.stageId);
+      console.log({ stage });
+      pipelineObj = {
+        Stage: stage.reference_value,
+        id: stage.id,
+        Pipeline: {
+          name: pipelineData.name,
+          id: pipelineData.id,
+        },
+      };
     } else if (value?.layoutId) {
       const layoutData: any = layouts.value.find(
-        (pipeline) => pipeline.id === value.layoutId,
+        (pipeline: any) => pipeline.id === value.layoutId,
       );
       console.log({ layoutData });
       layoutObj = { name: layoutData.name, id: layoutData.id };
@@ -284,6 +315,7 @@
       projectId: z.string().optional(),
       pipelineId: z.string().optional(),
       layoutId: z.string().optional(),
+      stageId: z.string().optional(),
     }),
   );
 </script>

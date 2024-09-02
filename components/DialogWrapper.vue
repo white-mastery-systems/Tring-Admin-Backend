@@ -1,7 +1,7 @@
 <template>
   <UiDialog v-model:open="modalState.open">
     <UiDialogContent class="sm:max-w-[425px]">
-      <UiDialogHeader>
+      <UiDialogHeader describedby="dialog-description">
         <UiDialogTitle>{{ props?.title }}</UiDialogTitle>
       </UiDialogHeader>
       <slot></slot>

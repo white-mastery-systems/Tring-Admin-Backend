@@ -10,7 +10,12 @@
     <!-- v-if="integrations.length === 0" -->
     <template #actionButtons>
       <UiButton
-        @click="crmConfigModalState.open = true"
+        @click="
+          () => {
+            crmConfigModalState.open = true;
+            crmConfigModalState.id = null;
+          }
+        "
         variant="outline"
         color="primary"
       >
@@ -25,7 +30,8 @@
       :is-loading="false"
     />
     <ConfigurationModal
-      v-model="crmConfigModalState"
+      v-model:open="crmConfigModalState.open"
+      :id="crmConfigModalState?.id"
       @success="handleSuccess()"
     />
     <ConfirmationModal
