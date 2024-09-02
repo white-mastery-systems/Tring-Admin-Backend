@@ -173,17 +173,18 @@
       path:"/bot-management",
       children: [
         {
-          name: 'Voice',
+          name: 'Voice Bot',
           path: '/voice-bot',
         },
         {
-          name: 'Chat',
+          name: 'Chat Bot',
           path: '/chat-bot',
         }
       ],
     },
     {
       name: "Bots",
+
       icon: Bot,
       path: "/bots",
       children: [],
