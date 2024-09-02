@@ -34,7 +34,7 @@ const dateFilters = reactive([
     value: "this-year",
   },
 ]);
-const selectedDate: any = ref('today')
+const selectedDate: any = ref('all')
 
 
 const emit = defineEmits<{
@@ -80,6 +80,7 @@ const isDateDisabled = (date: CalendarDate) => {
       <UiSelectValue placeholder="Select a Date" />
     </UiSelectTrigger>
     <UiSelectContent>
+      <UiSelectItem value="all">All</UiSelectItem>
       <UiSelectItem v-for="(rangeDate, index) in dateFilters" :key="index" :value="rangeDate.value">
         {{ rangeDate.content }}
       </UiSelectItem>

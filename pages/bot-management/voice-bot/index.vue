@@ -13,7 +13,7 @@
               <UiDialogTitle>Add a New Voice Bot</UiDialogTitle>
             </UiDialogHeader>
             <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false"
-              class="mb-4 space-y-6" @submit="addBot">
+              class="mb-4 space-y-6" @submit="addVoiceBot">
               <UiFormField v-slot="{ componentField }" name="newBotName">
                 <UiFormItem class="w-full">
                   <UiFormLabel class="font-bold">Voice Bot Name</UiFormLabel>
@@ -59,7 +59,8 @@
       </div>
     </template>
     <div class="flex items-center gap-2 pb-2">
-      <UiInput v-model="searchBot" class="max-w-[200px]" placeholder="Search bot..." />
+      <UiInput v-model="searchBot" class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
+        placeholder="Search bot..." />
       <UiSelect v-model="activeStatus">
         <UiSelectTrigger class="max-w-[200px]">
           <UiSelectValue placeholder="Filter status" />
@@ -76,11 +77,13 @@
       console.log({ row });
         return navigateTo(`/bot-management/voice-bot/${row.original.id}`);
     }
-      " :columns="columns" :data="bots" :page-size="20" :is-loading="isDataLoading" :height="60" height-unit="vh" />
+      " :columns="columns" :data="voiceBot" :page-size="20" :is-loading="isDataLoading" :height="60"
+      height-unit="vh" />
   </Page>
 </template>
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";
+import { any } from "zod";
 definePageMeta({
   middleware: "admin-only",
 });
@@ -128,31 +131,32 @@ const menuList = ref([
 ]);
 // const botList = await listApiBots();
 
-const { status, data: bots } = await useLazyFetch("/api/bots", {
+const { status, data: voiceBot } = await useLazyFetch("/api/voicebots", {
   server: false,
   default: () => [],
   query: {
     active: activeStatus,
     q: searchBotDebounce,
   },
-  transform: (bots) =>
-    bots.map((bot) => ({
+  transform: (voiceBot) =>
+    voiceBot.map((bot) => ({
       id: bot.id,
       name: bot.name,
-      status: bot.documentId ? true : false,
+      status: bot.active,
       createdAt: formatDateStringToDate(bot.createdAt),
     })),
 });
 const isDataLoading = computed(() => status.value === "pending");
 
-const addBot = async (value: any) => {
+const addVoiceBot = async (value: any) => {
+  console.log(value,"value")
   try {
-    const bot = await $fetch("/api/bots", {
+    const bot = await $fetch("/api/voicebots", {
       method: "POST",
       body: { name: value.newBotName },
     });
     return navigateTo({
-      name: "bots-id",
+      name: "bot-management-voice-bot-id",
       params: { id: bot.id },
     });
   } catch (err: any) {
@@ -162,7 +166,7 @@ const addBot = async (value: any) => {
 
 const botManagementDetails = async (list: any) => {
   return navigateTo({
-    name: "bots-id",
+    name: "bot-management-voice-bot-id",
     params: { id: list.id },
   });
 };

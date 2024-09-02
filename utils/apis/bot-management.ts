@@ -32,7 +32,7 @@ export const updateBotDetails = async (botDetails: SelectChatBot) => {
   });
   toast.success("Bot updated successfully");
   await navigateTo({
-    name: "bots-id",
+    name: "bot-management-chat-bot-id",
     params: { id: botDetails.id },
   });
   return updatedBot;
@@ -43,7 +43,7 @@ export const disableBot = async (botId: string) => {
     method: "DELETE",
   });
   toast.success("Bot disabled");
-  return navigateTo({ name: "bots" });
+  return navigateTo({ name: "bot-management-chat-bot" });
 };
 
 export const deleteBot = async (botId: string) => {
@@ -52,7 +52,7 @@ export const deleteBot = async (botId: string) => {
       method: "DELETE",
     });
     toast.success("Bot deleted successfully");
-    return navigateTo({ name: "bots" });
+    return navigateTo({ name: "bot-management-chat-bot" });
   } catch (error) {
     console.log(error);
     toast.error("Cannot delete: bot has generated leads");
@@ -105,6 +105,26 @@ export const deleteBotIntegration = async ({
   } catch (err) {}
 };
 
+// Voice bot 
+export const getVoiceBotDetails = async (botId: string) => {
+  const bot = await $fetch<SelectChatBot & { documents: SelectDocument[] }>(
+    `/api/voicebots/${botId}`,
+  );
+  return bot;
+};
+
+export const deleteVoiceBot = async (botId: string) => {
+  try {
+    await $fetch(`/api/voicebots/${botId}`, {
+      method: "DELETE",
+    });
+    toast.success("Voice Bot deleted successfully");
+    return navigateTo({ name: "bot-management-voice-bot" });
+  } catch (error) {
+    console.log(error);
+    toast.error("Cannot delete: voice bot has generated leads");
+  }
+};
 
 export const updateLLMConfig = async(payload: any, botId: string) => {
   const updateLLM = await $fetch(`/api/voicebots/${botId}`, {
