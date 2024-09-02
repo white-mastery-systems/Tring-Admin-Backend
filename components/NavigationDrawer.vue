@@ -183,14 +183,6 @@
       ],
     },
     {
-      name: "Bots",
-
-      icon: Bot,
-      path: "/bots",
-      children: [],
-    },
-
-    {
       name: "Settings",
       icon: SettingsIcon,
       path: "/settings",

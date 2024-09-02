@@ -59,7 +59,8 @@
       </div>
     </template>
     <div class="flex items-center gap-2 pb-2">
-      <UiInput v-model="searchBot" class="max-w-[200px]" placeholder="Search bot..." />
+      <UiInput v-model="searchBot" class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
+        placeholder="Search bot..." />
       <UiSelect v-model="activeStatus">
         <UiSelectTrigger class="max-w-[200px]">
           <UiSelectValue placeholder="Filter status" />
