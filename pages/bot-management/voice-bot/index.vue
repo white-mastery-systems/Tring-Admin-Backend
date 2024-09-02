@@ -10,17 +10,17 @@
           </UiDialogTrigger>
           <UiDialogContent class="w-[90%] rounded-xl">
             <UiDialogHeader>
-              <UiDialogTitle>Add a New Bot</UiDialogTitle>
+              <UiDialogTitle>Add a New Voice Bot</UiDialogTitle>
             </UiDialogHeader>
             <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false"
               class="mb-4 space-y-6" @submit="addBot">
               <UiFormField v-slot="{ componentField }" name="newBotName">
                 <UiFormItem class="w-full">
-                  <UiFormLabel class="font-bold">Bot Name</UiFormLabel>
+                  <UiFormLabel class="font-bold">Voice Bot Name</UiFormLabel>
                   <UiFormControl>
                     <UiInput v-bind="componentField" class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
-                      placeholder="Enter Bot Name" type="text" />
-                    <UiFormDescription lass="text-xs text-gray-500">Enter your unique identifier for Bot.
+                      placeholder="Enter Voice Bot Name" type="text" />
+                    <UiFormDescription lass="text-xs text-gray-500">Enter your unique identifier for Voice Bot.
                     </UiFormDescription>
                     <UiFormMessage />
                   </UiFormControl>
@@ -74,7 +74,7 @@
 
     <DataTable @row-click="(row: any) => {
       console.log({ row });
-      return navigateTo(`/bots/${row.original.id}`);
+        return navigateTo(`/bot-management/voice-bot/${row.original.id}`);
     }
       " :columns="columns" :data="bots" :page-size="20" :is-loading="isDataLoading" :height="60" height-unit="vh" />
   </Page>
