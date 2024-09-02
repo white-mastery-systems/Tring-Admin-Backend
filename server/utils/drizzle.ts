@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import { analyticsRelations, chatBotIntegrationRelations } from "../schema/bot";
+import { voiceBotRelations } from "../schema/voicebot";
 
 const runtimeConfig = useRuntimeConfig();
 
@@ -23,6 +24,7 @@ const schema = {
   botIntegrationSchema,
   analyticsSchema,
   timelineSchema,
+  voicebotSchema,
   // Relations
   organizationRelations,
   chatBotRelations,
@@ -34,6 +36,7 @@ const schema = {
   leadsRelations,
   billingRelations,
   analyticsRelations,
+  voiceBotRelations,
 };
 
 const db = drizzle(queryClient, { schema });
