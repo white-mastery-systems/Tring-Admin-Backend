@@ -140,11 +140,18 @@
         <UiFormItem v-auto-animate="animationProps">
           <UiFormLabel>Role</UiFormLabel>
           <UiFormControl>
-            <UiInput
-              v-bind="componentField"
-              type="text"
-              class="focus-visible:none h-12 focus-visible:ring-offset-0"
-            />
+            <UiSelect v-bind="componentField">
+                <UiSelectTrigger
+                  class="hover:focus:none hover:focus-visible:none field_shadow h-12 w-full"
+                >
+                  <UiSelectValue placeholder="Select Role" />
+                </UiSelectTrigger>
+                <UiSelectContent>
+                  <UiSelectItem v-for="({ value, label }, index) in roles" :value="value">{{ label }}
+                      <p class="text-xs italic text-gray-500">{{ value }}</p>
+                    </UiSelectItem>
+                </UiSelectContent>
+              </UiSelect>
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
@@ -156,7 +163,7 @@
             <UiTextarea
               v-bind="componentField"
               type="text"
-              placeholder="guide for gpt goes here"
+              placeholder="Include your company details along with the specifics of the service the bot will be providing"
               class="focus-visible:none h-14 focus-visible:ring-offset-0"
             />
           </UiFormControl>
@@ -167,7 +174,7 @@
         <UiFormItem v-auto-animate="animationProps">
           <UiFormLabel>Additional Instructions</UiFormLabel>
           <UiFormControl>
-            <UiTextarea v-bind="componentField" type="text" class="h-14" />
+            <UiTextarea v-bind="componentField" type="text" class="focus-visible:none h-14 focus-visible:ring-offset-0" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
@@ -176,7 +183,7 @@
         <UiFormItem v-auto-animate="animationProps">
           <UiFormLabel>Notes</UiFormLabel>
           <UiFormControl>
-            <UiTextarea v-bind="componentField" type="text" class="h-14" />
+            <UiTextarea v-bind="componentField" type="text" class="focus-visible:none h-14 focus-visible:ring-offset-0" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
@@ -185,7 +192,7 @@
         <UiFormItem v-auto-animate="animationProps">
           <UiFormLabel>Domain Rules</UiFormLabel>
           <UiFormControl>
-            <UiTextarea v-bind="componentField" type="text" class="h-14" />
+            <UiTextarea v-bind="componentField" type="text" class="focus-visible:none h-14 focus-visible:ring-offset-0" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
@@ -225,12 +232,12 @@
 
   const roles = [
     {
-      label: "Assist customers with their questions and issues.",
-      value: "Customer Support",
+      label: "Customer Support",
+      value: "Assist customers with their questions and issues.",
     },
     {
-      label: "Assist customers queries about room bookings and hotel information",
-      value: "Receptionist",
+      label: "Receptionist",
+      value: "Assist customers queries about room bookings and hotel information",
     }
   ]
 
@@ -240,36 +247,42 @@
     duration: 0,
   };
 
-  const formSchema = z.object({
-    provider: z.string().min(1, "Provider is required."),
-    model: z.string().min(1, "Model is required."),
-    tokens: z.string().min(1, "Max Tokens is required."),
-    temperature: z
-      .number()
-      .min(0, "Temperature must be at least 0.")
-      .max(1, "Temperature cannot exceed 1."),
-    documentId: z.string().min(1, "Document Id is required."),
-    role: z.string().min(1, "Role is required."),
-    guide: z.string().optional().default(""),
-    instruction: z.string().optional().default(""),
-    notes: z.string().optional().default(""),
-    domainRules: z.string().optional().default(""),
-  });
-
   const defaultValues = {
     provider: provider[0].value,
     model: models[0].value,
     tokens: tokens[1],
     temperature: 0,
     documentId: "",
-    role: "",
+    role: roles[1].value,
     guide: "",
     instruction: "",
     notes: "",
     domainRules: "",
   };
 
+  const router = useRouter();
+  const route = useRoute("bot-management-voice-bot-id-llm-config");
+
+  const botDetails: any = await getBotDetails(route.params.id);
+
   const handleLLMConfig = async (values: any) => {
     console.log(values);
+    const payload: any = {
+      provider: values.provider,
+      model: values.model,
+      tokens: values.tokens,
+      temperature: values.temperature,
+      documentId: values.documentId,
+      role: values.role,
+      guide: values.guide,
+      instruction: values.instruction,
+      notes: values.notes,
+      domainRules: values.domainRules,
+    };
+    await updateLLMConfig(payload, botDetails.id);
+    return navigateTo({
+      name: "bot-management-voice-bot-id",
+      params: { id: botDetails.id },
+    });
   };
 </script>
