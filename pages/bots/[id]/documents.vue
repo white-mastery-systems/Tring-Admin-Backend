@@ -184,7 +184,6 @@
     deleteDocumentModelOpen.value = true;
   };
   const fileUpload = async () => {
-    console.log("HII");
     console.log(selectedFile);
     // selectedFile.value[0].name;
     // console.log(selectedFile.value[0], "selectedFile");

@@ -46,8 +46,7 @@
                       }}</span>
                   </div>
                 </div>
-                <div
-                  class="h-[60vh] sm:h-[55vh] md:h-[66vh] lg:h-[65vh] xl:h-[67vh] 2xl:[70vh] overflow-y-scroll bg-[#f8f6f6]">
+                <div class="h-screen-minus-13 overflow-y-scroll bg-[#f8f6f6]">
                   <div class="w-full p-5" v-for="(
                       messageList, messageIndex
                     ) in leadData?.messages.slice(1)" :key="messageIndex">

@@ -2,18 +2,18 @@
   <Page title="Integration" :disable-back-button="true" :disable-elevation="true">
     <template #actionButtons>
       <div class="flex gap-2">
-        <UiButton color="primary" @click="integrationModalState.open = true">
-          Add Integration
-        </UiButton>
-        <UiButton color="primary" @click="channelModalState.open = true">
+        <UiButton v-if="(route.query.q === 'channel')" color="primary" @click="channelModalState.open = true">
           Add Channel
+        </UiButton>
+        <UiButton v-else color="primary" @click="integrationModalState.open = true">
+          Add Integration
         </UiButton>
       </div>
     </template>
     <UiTabs default-value="client" class="w-full self-start">
       <UiTabsList class="grid w-[40%] grid-cols-2">
-        <UiTabsTrigger value="client"> CRM </UiTabsTrigger>
-        <UiTabsTrigger value="campaign"> Channel </UiTabsTrigger>
+        <UiTabsTrigger value="client" @click="navigateToTab('crm')"> CRM </UiTabsTrigger>
+        <UiTabsTrigger value="campaign" @click="navigateToTab('channel')"> Channel </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="client">
         <DataTable :columns="columns" :data="integrationsData" :page-size="8" :is-loading="false" :height="80"
@@ -50,10 +50,14 @@
   import Page from "~/components/Page.vue";
   import CreateEditIntegrationModal from "./CreateEditIntegrationModal.vue";
   import ChannelModal from "./ChannelModal.vue";
+import { useRouter, useRoute } from 'vue-router';
   definePageMeta({
     middleware: "admin-only",
   });
 
+
+  const router = useRouter();
+  const route = useRoute();
   const integrationModalState = ref({ open: false });
   const channelModalState = ref({ open: false });
   // const integrations = ref([]);
@@ -61,6 +65,14 @@
   let deleteIntegrationState: { open: boolean; id?: string } = reactive({
     open: false,
   });
+// const integrationsData = ref()
+watch(route,(newValue)=>{
+  console.log(newValue.query?.q,"QUERY")
+})
+// const q=ref('')
+const filters = computed(()=>({
+  q:route.query?.q
+}))
   const {
     status: integrationLoadingStatus,
     data: integrationsData,
@@ -68,6 +80,7 @@
   } = await useLazyFetch("/api/org/integrations", {
     server: false,
     default: () => [],
+    query: filters,
     transform: (integrations) => {
       return integrations?.map((integration) => ({
         ...integration,
@@ -85,6 +98,11 @@
   // const channelModal = () => {
   //   channelModalState.value.open = false 
   // }
+onMounted(() => {
+  if (!router.currentRoute.value.query.tab) {
+    navigateToTab('crm');
+  }
+});
   const integrationLoading = computed(
     () => integrationLoadingStatus.value === "pending",
   );
@@ -137,8 +155,8 @@ const statusColumns = [
   columnHelper.accessor("name", {
     header: "Integration Name",
   }),
-  columnHelper.accessor("chennal", {
-    header: "Chennal",
+  columnHelper.accessor("crm", {
+    header: "Channel",
   }),
   columnHelper.accessor("status", {
     header: "Status",
@@ -153,4 +171,8 @@ const statusColumns = [
     },
   }),
 ];
+
+const navigateToTab = async (tab: any) => {
+  router.push({ query: { q: tab  } });
+}
 </script>
