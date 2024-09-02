@@ -74,7 +74,7 @@
                 <div class=" block lg:hidden text-[7px]">Delete</div>
               </div>
               <ConfirmationModal v-model:open="deleteModalState" title="Are you sure?"
-                description="Are you sure you want to delete bot ?" @confirm="handleDeleteBot" />
+                description="Are you sure you want to delete voice bot ?" @confirm="handleDeleteBot" />
             </div>
           </div>
 
@@ -140,7 +140,7 @@ const router = useRouter();
 // const selectedValue = ref("Today");
 const route = useRoute("bots-id");
 const paramId: any = route;
-const botDetails = ref(await getBotDetails(paramId.params.id));
+const botDetails = ref(await getVoiceBotDetails(paramId.params.id));
 const deleteModalState = ref(false);
 const modalOpen = ref(false);
 const isDocumentListOpen = ref(false);
@@ -149,11 +149,11 @@ const getDocumentList: any = ref();
 
 onMounted(async () => {
   getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
-  botDetails.value = await getBotDetails(paramId.params.id);
+  botDetails.value = await getVoiceBotDetails(paramId.params.id);
 });
 const handleGoBack = () => {
   return navigateTo({
-    name: "bots",
+    name: "bot-management-voice-bot",
   });
 };
 const dataList = ref([
@@ -267,7 +267,7 @@ const handleDelete = () => {
 
 const handleDeleteBot = () => {
   deleteModalState.value = false;
-  deleteBot(route.params.id);
+  deleteVoiceBot(route.params.id);
 };
 
 const handleActivateBot = async () => {
