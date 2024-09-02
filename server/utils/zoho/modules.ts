@@ -9,8 +9,10 @@ export function getAllPipelinesFromZohoBigin({
   refreshToken: String;
   integrationData: any;
 }) {
-  const data = $fetch(
-    "https://www.zohoapis.in/bigin/v2/Pipelines?fields=Sub_Pipeline,Pipeline,Stage",
+  // "https://www.zohoapis.in/bigin/v2/Pipelines?fields=Sub_Pipeline,Pipeline,Stage",
+  console.log(token, "token");
+  const data: any = $fetch<any>(
+    "https://www.zohoapis.in/bigin/v1/settings/layouts?module=Pipelines",
     {
       headers: {
         Authorization: `Zoho-oauthtoken ${token}`,

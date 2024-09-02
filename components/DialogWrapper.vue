@@ -1,18 +1,25 @@
-<!-- <template>
-  <UiDialog>
-    <UiDialogTrigger as-child>
-      <UiButton variant="outline"> Connect </UiButton>
-    </UiDialogTrigger>
+<template>
+  <UiDialog v-model:open="modalState.open">
     <UiDialogContent class="sm:max-w-[425px]">
       <UiDialogHeader>
-        <UiDialogTitle>Connect {{ props?.integrationName }}</UiDialogTitle>
+        <UiDialogTitle>{{ props?.title }}</UiDialogTitle>
       </UiDialogHeader>
-      <slot />
+      <slot></slot>
     </UiDialogContent>
   </UiDialog>
 </template>
-<setup setup lang="ts">
-const props = defineProps<{
-  title: string;
-}>();
-</setup> -->
+<script setup lang="ts">
+  const modalState = defineModel<{ open: boolean }>({
+    default: { open: false },
+    required: true,
+  });
+  const props = withDefaults(
+    defineProps<{
+      title: string;
+    }>(),
+    {
+      title: "",
+    },
+  );
+  console.log({ props, modalState });
+</script>
