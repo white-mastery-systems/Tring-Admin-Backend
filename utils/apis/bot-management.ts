@@ -125,3 +125,16 @@ export const deleteVoiceBot = async (botId: string) => {
     toast.error("Cannot delete: voice bot has generated leads");
   }
 };
+
+export const updateLLMConfig = async(payload: any, botId: string) => {
+  const updateLLM = await $fetch(`/api/voicebots/${botId}`, {
+    method: "PUT",
+    body: payload,    
+  });
+  toast.success("LLM Configuration updated successfully");
+  await navigateTo({
+    name: "bots-id",
+    params: { id: botId },
+  });
+  return updateLLM;
+}

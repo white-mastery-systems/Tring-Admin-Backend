@@ -9,5 +9,5 @@ export default defineEventHandler(async(event) => {
 
   const voiceBotDelete = await deleteVoiceBot(voicebotId)
 
-  return voiceBotDelete
+   return isValidReturnType(event, voiceBotDelete);
 })

@@ -8,7 +8,18 @@ const zodUpdateVoiceBotSchema = z.object({
   domain: z.array(z.string()).optional(),
   active: z.boolean().optional(),
   metaData: z.record(z.any()).optional(), // Assuming metaData is a JSON object with any structure
-  llmConfig: z.record(z.any()).optional(), // Assuming llmConfig is a JSON object with any structure
+  llmConfig: z.object({
+    provider: z.string().optional(),
+    model: z.string().optional(),
+    tokens: z.string().optional(),
+    temperature: z.number().optional(),
+    documentId: z.string().optional(),
+    role: z.string().optional(),
+    guide: z.string().optional(),
+    instruction: z.string().optional(),
+    notes: z.string().optional(),
+    domainRules: z.string().optional()
+  }).optional(),
   intents: z.array(z.string()).optional(),
   ivrConfig: z.record(z.any()).optional(),
 })
@@ -42,5 +53,5 @@ export default defineEventHandler(async(event) => {
 
   const update = await updateVoiceBot(voicebotId, body)
 
-  return update
+   return isValidReturnType(event, update);
 })

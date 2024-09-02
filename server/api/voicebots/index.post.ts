@@ -33,5 +33,5 @@ export default defineEventHandler(async(event) => {
     organizationId,
   })
 
-  return voiceBot
+   return isValidReturnType(event, voiceBot);
 })
