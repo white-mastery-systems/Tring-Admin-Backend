@@ -7,9 +7,15 @@
     ]"
     :disableSelector="true"
   >
-    <template #actionButtons v-if="integrations.length === 0">
+    <!-- v-if="integrations.length === 0" -->
+    <template #actionButtons>
       <UiButton
-        @click="crmConfigModalState.open = true"
+        @click="
+          () => {
+            crmConfigModalState.open = true;
+            crmConfigModalState.id = null;
+          }
+        "
         variant="outline"
         color="primary"
       >
@@ -24,7 +30,8 @@
       :is-loading="false"
     />
     <ConfigurationModal
-      v-model="crmConfigModalState"
+      v-model:open="crmConfigModalState.open"
+      :id="crmConfigModalState?.id"
       @success="handleSuccess()"
     />
     <ConfirmationModal
@@ -63,18 +70,39 @@
   let deleteIntegrationState: { open: boolean; id?: string } = reactive({
     open: false,
   });
-  const actionsComponent = (id: string) =>
+  const actionsComponent = (id: string) => [
     h(
-      UiButton,
+      "div",
       {
-        variant: "destructive",
-        onClick: () => {
-          deleteIntegrationState.id = id;
-          deleteIntegrationState.open = true;
-        },
+        class: "flex items-center gap-2",
       },
-      h(Icon, { name: "lucide:trash-2" }),
-    );
+      [
+        h(
+          UiButton,
+          {
+            color: "primary",
+            class: "ml-2",
+            onClick: () => {
+              crmConfigModalState.value.open = true;
+              crmConfigModalState.value.id = id;
+            },
+          },
+          h(Icon, { name: "lucide:pen" }),
+        ),
+        h(
+          UiButton,
+          {
+            variant: "destructive",
+            onClick: () => {
+              deleteIntegrationState.id = id;
+              deleteIntegrationState.open = true;
+            },
+          },
+          h(Icon, { name: "lucide:trash-2" }),
+        ),
+      ],
+    ),
+  ];
   const columns = [
     columnHelper.accessor("integration", {
       header: "Integration Name",
@@ -119,5 +147,8 @@
     integrationRefresh();
   };
   const integrations: any = ref([]);
-  const crmConfigModalState = ref({ open: false });
+  const crmConfigModalState = ref<{ open: boolean; id?: string | null }>({
+    open: false,
+    id: null,
+  });
 </script>
