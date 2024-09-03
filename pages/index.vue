@@ -213,6 +213,15 @@ const dateFilters = reactive([
         grid: {
           display: false,
         },
+        ticks: {
+          beginAtZero: true,
+          userCallback: function (label, index, labels) {
+            // when the floored value is the same as the value we have a whole number
+            if (Math.floor(label) === label) {
+              return label;
+            }
+          },
+        },
       },
       y1: {
         type: "linear",
@@ -220,6 +229,14 @@ const dateFilters = reactive([
         position: "right",
         grid: {
           display: false,
+        },
+        beginAtZero: true,
+        userCallback: function (label, index, labels) {
+          console.log(label, "label");
+          // when the floored value is the same as the value we have a whole number
+          if (Math.floor(label) === label) {
+            return label;
+          }
         },
       },
     },

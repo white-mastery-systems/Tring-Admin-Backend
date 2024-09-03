@@ -29,10 +29,10 @@
       :page-size="8"
       :is-loading="false"
     />
-    <ConfigurationModal
-      v-model:open="crmConfigModalState.open"
+    <CreateEditCrmConfigModal
+      v-model="crmConfigModalState"
       :id="crmConfigModalState?.id"
-      @success="handleSuccess()"
+      @success="handleSuccess"
     />
     <ConfirmationModal
       v-model:open="deleteIntegrationState.open"
@@ -60,10 +60,9 @@
 <script setup lang="ts">
   import { Icon, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
-  import ConfigurationModal from "./CreateEditCrmConfigModal.vue";
   const router = useRouter();
   const columnHelper = createColumnHelper<any>();
-  const route = useRoute("bots-id-crm-config");
+  const route = useRoute("bot-management-chat-bot-id-crm-config");
   const paramId: any = route;
   const botDetails = ref(await getBotDetails(paramId.params.id));
 

@@ -130,7 +130,7 @@ export const leadSchema = chatbotSchema.table(
     organizationId: uuid("organization_id")
       .references(() => organizationSchema.id)
       .notNull(),
-    status: varchar("status").default("default").notNull()
+    status: varchar("status").default("default").notNull(),
   },
   (table) => ({
     leadConstraint: unique("leads_unique_constraint").on(
@@ -156,11 +156,11 @@ export const botIntentSchema = chatbotSchema.table("intents", {
 
 export const botIntegrationSchema = chatbotSchema.table("bot_integrations", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  botId: uuid("bot_id")
-    .references(() => chatBotSchema.id)
-    .notNull(),
+  botId: uuid("bot_id").references(() => chatBotSchema.id),
   metadata: jsonb("metadata"),
-  integrationId: uuid("integration_id").references(() => integrationSchema.id),
+  integrationId: uuid("integration_id").references(() => integrationSchema.id, {
+    onDelete: "cascade",
+  }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)

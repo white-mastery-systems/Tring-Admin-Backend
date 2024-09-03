@@ -1,9 +1,8 @@
 <template>
   <DialogWrapper
     v-model="modalState"
-    :title="modalData?.id ? `Edit CRM` : 'Link CRM'"
+    :title="modalProps?.id ? `Edit CRM` : 'Link CRM'"
   >
-   
     <UiForm
       v-slot="{ values, errors }"
       :validation-schema="CRMConfigSchema"
@@ -205,13 +204,51 @@
     default: { open: false },
     required: true,
   });
-  const modalData = defineProps<{ id: any }>();
+  const modalProps = defineProps<{ id: any }>();
   const route = useRoute("bots-id-crm-config");
-  watch(modalData, async (newState) => {
-    const crmConfigData = await $fetch(
-      `/api/bots/${route.params.id}/integrations/${newState.id}`,
-    );
-  });
+  const { setFieldValue } = useForm();
+  watch(
+    () => modalState.value.open,
+    async (isOpen) => {
+      if (isOpen && modalProps.id) {
+        console.log("Modal opened with ID:", modalProps.id);
+        try {
+          const crmConfigData = await $fetch<any>(
+            `/api/bots/${route.params.id}/integrations/${modalProps.id}`,
+          );
+          console.log("Fetched CRM config data:", crmConfigData);
+          setFieldValue("newBotName", "John");
+
+          // Assuming crmConfigData.data contains the relevant information
+          if (crmConfigData) {
+            console.log({ crmConfigData });
+            setFieldValue("integrationId", crmConfigData.id);
+
+            // Set other fields based on the CRM type
+            const selectedCrm = integrationsData.value.find(
+              (integration: any) =>
+                integration.id === crmConfigData.integrationId,
+            );
+
+            if (selectedCrm?.crm === "zoho-bigin") {
+              setFieldValue("pipelineId", crmConfigData.pipelineId);
+              setFieldValue("stageId", crmConfigData.stageId);
+              await handleCrmChange(crmConfigData.integrationId);
+              await handlePipelineChange(crmConfigData.pipelineId);
+            } else if (selectedCrm?.crm === "zoho-crm") {
+              setFieldValue("layoutId", crmConfigData.layoutId);
+              await handleCrmChange(crmConfigData.integrationId);
+            } else if (selectedCrm?.crm === "sell-do") {
+              setFieldValue("campaignId", crmConfigData.campaignId);
+              setFieldValue("projectId", crmConfigData.projectId);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching CRM config data:", error);
+        }
+      }
+    },
+  );
 
   const handlePipelineChange = async (e: any) => {
     console.log({ e, piipe: pipelines.value });

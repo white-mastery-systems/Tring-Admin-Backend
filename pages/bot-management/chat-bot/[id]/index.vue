@@ -4,7 +4,7 @@
     :disableSelector="true"
     :disable-back-button="false"
     :disable-elevation="true"
-    custom-back-router="/bots"
+    custom-back-router="/bot-management/chat-bot"
   >
     <div class="">
       <div
@@ -229,32 +229,32 @@
       _id: 1,
       bot: "UI Customization",
       helperText: "Color,Logo,Icon etc...",
-      routeName: "bots-id-ui-customization",
+      routeName: "bot-management-chat-bot-id-ui-customization",
     },
     {
       _id: 2,
       bot: "CRM Configuration",
       helperText: "Add CRM to manage your leads effectively",
-      routeName: "bots-id-crm-config",
+      routeName: "bot-management-chat-bot-id-crm-config",
     },
 
     {
       _id: 3,
       bot: "Bot Configuration",
       helperText: "Name,Description,Notes etc...",
-      routeName: "bots-id-config",
+      routeName: "bot-management-chat-bot-id-config",
     },
     {
       _id: 4,
       bot: "Document Management",
       helperText: "Knowledge base,Training data etc...",
-      routeName: "bots-id-documents",
+      routeName: "bot-management-chat-bot-id-documents",
     },
     {
       _id: 5,
       bot: "Intent Management",
       helperText: "Add your intents Eg: Location Virtual Tour etc...",
-      routeName: "bots-id-intent-management",
+      routeName: "bot-management-chat-bot-id-intent-management",
     },
   ]);
 
@@ -313,7 +313,7 @@
 
   const botScript =
     "<" +
-    `script src="https://tring-databot.pripod.com/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS">` +
+    `script src="${window?.location?.href?.includes("app.tringlabs.ai") ? "https://chat.tringlabs.ai" : "https://tring-databot.pripod.com"}/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS">` +
     "</" +
     "script>";
 
