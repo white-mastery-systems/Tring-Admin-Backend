@@ -1,5 +1,5 @@
 import { InsertLead } from "~/server/schema/bot";
-import { endOfDay, endOfMonth, endOfWeek, endOfYear, startOfDay, startOfMonth, startOfWeek, startOfYear, subMonths } from 'date-fns';
+import { endOfDay, endOfMonth, endOfYear, startOfDay, startOfMonth, startOfYear, subDays, subMonths, subYears } from 'date-fns';
 
 const db = useDrizzle();
 
@@ -104,41 +104,111 @@ export const updateLead = async (leadId: string, lead: InsertLead) => {
 }
 
 export const getDateRangeForFilters = (query: any) => {
-      switch (query?.period) {
-        case "today":
-          return {
-            from: startOfDay(new Date()),
-            to: endOfDay(new Date())
-          }
-        case "this-week":
-          return {
-            from: startOfWeek(new Date()),
-            to: endOfWeek(new Date())
-          }
-        case "this-month": 
-          return {
-            from: startOfMonth(new Date()),
-            to: endOfMonth(new Date())
-          }
-        case "this-year":
-          return {
-            from: startOfYear(new Date()),
-            to: endOfYear(new Date())
-          }
-        case "6-months":
-          return {
-            from: startOfMonth(subMonths(new Date(), 6)),
-            to: endOfMonth(new Date())
-          }
-        case "custom":
-          return {
-            from: query?.from || undefined,
-            to: query?.to || undefined
-          }
-         case "all":
-          return {
-            from: undefined,
-            to: undefined
-          }
-      }
+  switch (query?.period) {
+    case "today":
+      return {
+        from: startOfDay(new Date()),
+        to: endOfDay(new Date())
+      };
+    case "yesterday":
+      return {
+        from: startOfDay(subDays(new Date(), 1)),
+        to: endOfDay(subDays(new Date(), 1))
+      };
+    case "last-7-days":
+      return {
+        from: startOfDay(subDays(new Date(), 7)),
+        to: endOfDay(new Date())
+      };
+    case "last-30-days":
+      return {
+        from: startOfDay(subDays(new Date(), 30)),
+        to: endOfDay(new Date())
+      };
+    case "current-month":
+      return {
+        from: startOfMonth(new Date()),
+        to: endOfMonth(new Date())
+      };
+    case "last-month":
+      return {
+        from: startOfMonth(subMonths(new Date(), 1)),
+        to: endOfMonth(subMonths(new Date(), 1))
+      };
+    case "current-year":
+      return {
+        from: startOfYear(new Date()),
+        to: endOfYear(new Date())
+      };
+    case "last-year":
+      return {
+        from: startOfYear(subYears(new Date(), 1)),
+        to: endOfYear(subYears(new Date(), 1))
+      };
+    case "current-financial-year":
+      return {
+        from: new Date(new Date().getFullYear(), 3, 1),  // April 1st of the current year
+        to: new Date(new Date().getFullYear() + 1, 2, 31)  // March 31st of the next year
+      };
+    case "last-financial-year":
+      return {
+        from: new Date(new Date().getFullYear() - 1, 3, 1),  // April 1st of the last year
+        to: new Date(new Date().getFullYear(), 2, 31)  // March 31st of the current year
+      };
+    case "custom":
+      return {
+        from: query?.from || undefined,
+        to: query?.to || undefined
+      };
+    case "all-time":
+      return {
+        from: undefined,
+        to: undefined
+      };
+    default:
+      return {
+        from: undefined,
+        to: undefined
+      };
+  }
 };
+
+// export const getDateRangeForFilters = (query: any) => {
+//       switch (query?.period) {
+//         case "today":
+//           return {
+//             from: startOfDay(new Date()),
+//             to: endOfDay(new Date())
+//           }
+//         case "this-week":
+//           return {
+//             from: startOfWeek(new Date()),
+//             to: endOfWeek(new Date())
+//           }
+//         case "this-month": 
+//           return {
+//             from: startOfMonth(new Date()),
+//             to: endOfMonth(new Date())
+//           }
+//         case "this-year":
+//           return {
+//             from: startOfYear(new Date()),
+//             to: endOfYear(new Date())
+//           }
+//         case "6-months":
+//           return {
+//             from: startOfMonth(subMonths(new Date(), 6)),
+//             to: endOfMonth(new Date())
+//           }
+//         case "custom":
+//           return {
+//             from: query?.from || undefined,
+//             to: query?.to || undefined
+//           }
+//          case "all":
+//           return {
+//             from: undefined,
+//             to: undefined
+//           }
+//       }
+// };
