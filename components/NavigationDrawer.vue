@@ -1,9 +1,9 @@
 <template>
   <div class="flex h-[100vh] w-[250px] flex-col items-center gap-5 overflow-y-scroll bg-[#ffffff]">
-    <div class="flex justify-center h-[25%] w-full bg-[#ffffff]">
+    <NuxtLink to="/" class="flex justify-center h-[25%] w-full bg-[#ffffff]">
       <img class="self-center pt-[50px] sm:pt-[50px] md:pt-[50px] lg:pt-7 xl:pt-7" src="assets\icons\tring_AI_logo.svg"
         width="80" height="80" />
-    </div>
+    </NuxtLink>
     <!-- pt-[150px] -->
     <div
       class="flex flex-col items-center w-full overflow-scroll gap-4 pt-4 pb-6">
@@ -182,14 +182,6 @@
         }
       ],
     },
-    {
-      name: "Bots",
-
-      icon: Bot,
-      path: "/bots",
-      children: [],
-    },
-
     {
       name: "Settings",
       icon: SettingsIcon,
