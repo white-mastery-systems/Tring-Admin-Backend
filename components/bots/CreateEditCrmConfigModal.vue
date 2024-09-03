@@ -9,25 +9,6 @@
       @submit="handleAddIntegration"
       class="space-y-2"
     >
-      {{ console.log({ values, errors }) }}
-      <UiFormField v-slot="{ componentField }" name="newBotName">
-        <UiFormItem class="w-full">
-          <UiFormLabel class="font-bold">Chat Bot Name</UiFormLabel>
-          <UiFormControl>
-            <UiInput
-              v-bind="componentField"
-              class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
-              placeholder="Enter Chat Bot Name"
-              type="text"
-            />
-            <UiFormDescription lass="text-xs text-gray-500"
-              >Enter your unique identifier for Chat Bot.
-            </UiFormDescription>
-            <UiFormMessage />
-          </UiFormControl>
-        </UiFormItem>
-      </UiFormField>
-
       <UiFormField v-slot="{ componentField }" name="integrationId">
         <UiFormItem class="w-full">
           <UiFormLabel

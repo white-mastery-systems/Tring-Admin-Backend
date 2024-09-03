@@ -4,7 +4,7 @@
     :disableSelector="true"
     :disable-back-button="false"
     :disable-elevation="true"
-    custom-back-router="/bots"
+    custom-back-router="/bot-management/chat-bot"
   >
     <div class="">
       <div
