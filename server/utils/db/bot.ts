@@ -25,7 +25,7 @@ export const listBots = async (
     filters.push(isNull(chatBotSchema.documentId));
   }
   if (query?.q) {
-    filters.push(like(chatBotSchema.name, `%${query.q}%`));
+    filters.push(ilike(chatBotSchema.name, `%${query.q}%`));
   }
 
   const data = await db.query.chatBotSchema.findMany({
