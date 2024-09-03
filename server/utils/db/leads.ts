@@ -1,5 +1,6 @@
 import { InsertLead } from "~/server/schema/bot";
 import { endOfDay, endOfMonth, endOfYear, startOfDay, startOfMonth, startOfYear, subDays, subMonths, subYears } from 'date-fns';
+import { inArray } from "drizzle-orm";
 
 const db = useDrizzle();
 
@@ -7,6 +8,7 @@ interface QueryInterface {
   q?: string;
   status?: string,
   channel?: string,
+  action?: string,
   period?: string,
   botId?: string;
   from?: Date | null;
@@ -23,11 +25,66 @@ export const listLeads = async (
       filters.push(eq(leadSchema.botId, query.botId));
     }
 
-    if (query?.q) {
-      // filters.push({
-      //   botUser: ilike(botUserSchema.name, `%${query.q}%`),
-      // });
-      // filters.push(sql`${botUserSchema.name} ilike ${`%${query.q}%`}`);
+    let chatIds: any [] = [];
+
+    // Determine the intent and fetch chat IDs accordingly
+    switch (query?.action) {
+      case "site_visit":
+        chatIds = (await db.query.timelineSchema.findMany({
+          where: and(
+            eq(timelineSchema.orgId, organizationId),
+            eq(timelineSchema.intent, "site_visit")
+          ),
+          columns: {
+            chatId: true
+          }
+        })).map((i) => i.chatId);
+        break;
+
+      case "virtual_tour":
+        chatIds = (await db.query.timelineSchema.findMany({
+          where: and(
+            eq(timelineSchema.orgId, organizationId),
+            eq(timelineSchema.intent, "virtual_tour")
+          ),
+          columns: {
+            chatId: true
+          }
+        })).map((i) => i.chatId);
+        break;
+
+      case "location":
+        chatIds = (await db.query.timelineSchema.findMany({
+          where: and(
+            eq(timelineSchema.orgId, organizationId),
+            eq(timelineSchema.intent, "location")
+          ),
+          columns: {
+            chatId: true
+          }
+        })).map((i) => i.chatId);
+        break;
+
+      case "schedule_call":
+        chatIds = (await db.query.timelineSchema.findMany({
+          where: and(
+            eq(timelineSchema.orgId, organizationId),
+            eq(timelineSchema.intent, "schedule_call")
+          ),
+          columns: {
+            chatId: true
+          }
+        })).map((i) => i.chatId);
+        break;
+
+      default:
+        // No filtering by intent
+        chatIds = [];
+        break;
+    }
+
+    if(query?.action && query?.action !== "all") {
+      filters.push(inArray(leadSchema.chatId, chatIds) )
     }
 
     if(query?.status === "junk") {
@@ -61,13 +118,15 @@ export const listLeads = async (
         },
         botUser: {
           where: and (
-            query?.q ? ilike(botUserSchema.name, query?.q) : undefined,
+            query?.q ? ilike(botUserSchema.name, `%${query.q}%`) : undefined,
             query?.status === "new" ? lte(botUserSchema.visitedCount, 1) : undefined,
             query?.status === "revisited" ? gt(botUserSchema.visitedCount, 1) : undefined
           ),
         },
         chat: {
-          where: query?.channel ? ilike(chatSchema.channel, query?.channel) : undefined,
+          where: and ( 
+            query?.channel && query.channel !== "all" ? ilike(chatSchema.channel, query?.channel) : undefined,
+          )
         } 
       },
 
