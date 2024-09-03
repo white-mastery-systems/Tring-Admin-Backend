@@ -7,33 +7,58 @@
           placeholder=" Search Leads..." />
         <BotFilter v-model="filters.botId" />
         <StatusFilter @change="onStatusChange" />
+        <ActionFilter/>
         <DateRangeFilter @change="onDateChange" />
       </div>
+
       <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton>
     </div>
-    <DataTable
-      :data="leads"
-      :is-loading="isDataLoading"
-      :columns="columns"
-      :page-size="8"
-      :height="73"
-      height-unit="vh"
-      @row-click="
-        (row: any) => {
-          console.log({ row });
-          navigateTo(`leads/${row.original.chatId}`);
-        }
-      "
-    />
+    <UiTabs default-value="all" class="w-full self-start">
+      <UiTabsList class="grid w-[295px] grid-cols-3">
+        <UiTabsTrigger value="all" @click="selectedChannel('all')"> All </UiTabsTrigger>
+        <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')"> What's App </UiTabsTrigger>
+        <UiTabsTrigger value="website" @click="selectedChannel('website')"> Website </UiTabsTrigger>
+      </UiTabsList>
+      <UiTabsContent value="All">
+        <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="73"
+          height-unit="vh" @row-click="(row: any) => {
+              console.log({ row });
+              navigateTo(`leads/${row.original.chatId}`);
+            }
+            " />
+      </UiTabsContent>
+      <UiTabsContent value="whatsapp">
+        <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="73"
+          height-unit="vh" @row-click="(row: any) => {
+            console.log({ row });
+            navigateTo(`leads/${row.original.chatId}`);
+          }
+            " />
+      </UiTabsContent>
+      <UiTabsContent value="website">
+        <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="73"
+          height-unit="vh" @row-click="(row: any) => {
+            console.log({ row });
+            navigateTo(`leads/${row.original.chatId}`);
+          }
+            " />
+      </UiTabsContent>
+    </UiTabs>
   </Page>
 </template>
 <script setup lang="ts">
   import { Icon, UiBadge, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
+  import { useRouter, useRoute } from 'vue-router';
 
   definePageMeta({
     middleware: "admin-only",
   });
+  
+
+  const router = useRouter();
+  const route = useRoute();
+
   const exportToCSV = () => {
     if (leads.value.length === 0) {
       alert("No data to export");
@@ -89,18 +114,19 @@
     q?: string;
     from?: string;
     to?: string;
-    period: any;
-    status: any;
+    period: string;
+    status: string;
+    channel: any;
   }>({
     botId: "",
     q: undefined,
     from: undefined,
     to: undefined,
-    period: undefined,
-    status: undefined,
+    period: "",
+    status: "",
+    channel: ""
   });
 
-  const selectedDate = ref('Today')
 
   watchEffect(() => {
     if (filters.botId === "all") filters.botId = "";
@@ -111,6 +137,16 @@
     default: () => [],
   });
   const isDataLoading = computed(() => status.value === "pending");
+  // onMounted(() => {
+  //   if (route.query?.tab) {
+  //     // filters.channel = 
+  //     // route.query?.tab
+  //     console.log(route.query?.tab, "route.query?.tab")
+  //   } else {
+  //     router.push({ query: { tab: 'all' } });
+  //   }
+    
+  // })
 
   const viewLead = async (chatId: any) => {
     await navigateTo({
@@ -189,4 +225,10 @@ const onStatusChange = (value: any) => {
         ),
     }),
   ];
+const selectedChannel = (value: any) => {
+  if (value) {
+    filters.channel = value
+    router.push({ query: { tab: value }})
+  }
+}
 </script>

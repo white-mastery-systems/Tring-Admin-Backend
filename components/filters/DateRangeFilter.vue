@@ -16,25 +16,36 @@ const dateFilters = reactive([
   {
     content: "Today",
     value: "today",
-  },
-  {
-    content: "This Week",
-    value: "this-week",
-  },
-  {
-    content: "This Month",
-    value: "this-month",
-  },
-  {
-    content: "Last 6 months",
-    value: "6-months",
-  },
-  {
-    content: "This Year",
-    value: "this-year",
-  },
+  }, {
+    content: "Yesterday",
+    value: "yesterday",
+  }, {
+    content: "Last 7 days",
+    value: "last-7-days",
+  }, {
+    content: "Last 30 days",
+    value: "last-30-days",
+  }, {
+    content: "Current month",
+    value: "current-month",
+  }, {
+    content: "Last month",
+    value: "last-month",
+  }, {
+    content: "Current year",
+    value: "current-year",
+  }, {
+    content: "Last year",
+    value: "last-year",
+  }, {
+    content: "Current financial year",
+    value: "current-financial-year",
+  }, {
+    content: "Last financial year",
+    value: "last-financial-year",
+  }
 ]);
-const selectedDate: any = ref('all')
+const selectedDate: any = ref('all-time')
 
 
 const emit = defineEmits<{
@@ -80,10 +91,10 @@ const isDateDisabled = (date: CalendarDate) => {
       <UiSelectValue placeholder="Select a Date" />
     </UiSelectTrigger>
     <UiSelectContent>
-      <UiSelectItem value="all">All</UiSelectItem>
       <UiSelectItem v-for="(rangeDate, index) in dateFilters" :key="index" :value="rangeDate.value">
         {{ rangeDate.content }}
       </UiSelectItem>
+      <UiSelectItem value="all-time">All time</UiSelectItem>
       <UiSelectItem value="custom">Custom</UiSelectItem>
     </UiSelectContent>
   </UiSelect>

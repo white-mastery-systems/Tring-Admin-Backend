@@ -70,9 +70,9 @@ watch(route,(newValue)=>{
   console.log(newValue.query?.q,"QUERY")
 })
 // const q=ref('')
-const filters = computed(()=>({
-  q:route.query?.q
-}))
+// const filters = computed(()=>({
+//   q:route.query?.q
+// }))
   const {
     status: integrationLoadingStatus,
     data: integrationsData,
