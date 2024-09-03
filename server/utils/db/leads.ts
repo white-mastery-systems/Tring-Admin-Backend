@@ -30,11 +30,12 @@ export const listLeads = async (
       // filters.push(sql`${botUserSchema.name} ilike ${`%${query.q}%`}`);
     }
 
-    if(query?.status === "default" || query?.status === "junk") {
-      filters.push(eq(leadSchema.status, query?.status))
+    if(query?.status === "junk") {
+      filters.push(ilike(leadSchema.status, query?.status) )
     }
-    if(query?.status==="revisited"){
-      filters.push(eq(leadSchema.status,"default"))
+
+    if(query?.status === "new" || query?.status==="revisited") {
+      filters.push(eq(leadSchema.status, "default"))
     }
     
    // Period-based filtering
