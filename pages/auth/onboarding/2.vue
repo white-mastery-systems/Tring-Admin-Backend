@@ -4,6 +4,7 @@
   definePageMeta({
     layout: "auth",
   });
+  const router = useRouter();
   const formSchema = toTypedSchema(
     z
       .object({
@@ -85,33 +86,23 @@
 </script>
 <template>
   <div class="flex h-full w-full flex-col items-center justify-center">
-    <div
-      class="flex w-[80%] items-center gap-1 px-[21px] pb-[20px] font-bold text-[#424bd1]"
-    >
-      <RightArrow />
-      <span> Company Details </span>
+    <div class="flex w-[80%] items-center gap-1 px-[21px] pb-[20px] font-bold text-[#424bd1]">
+      <div class="flex gap-2 cursor-pointer" @click="router.back()">
+        <RightArrow />
+        <span> Company Details </span>
+      </div>
     </div>
     <div class="flex w-[80%] flex-col overflow-y-auto px-6">
-      <UiForm
-        :validation-schema="formSchema"
-        :keep-values="true"
-        :initial-values="defaultFormValues"
-        :validate-on-mount="false"
-        @submit="onSubmit"
-        class="space-y-5"
-      >
+      <UiForm :validation-schema="formSchema" :keep-values="true" :initial-values="defaultFormValues"
+        :validate-on-mount="false" @submit="onSubmit" class="space-y-5">
         <UiFormField v-slot="{ componentField }" name="name">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
             <UiFormLabel class="font-bold">
               Company Name <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
-              <UiInput
-                v-bind="componentField"
-                type="text"
-                placeholder="Enter your Company Name"
-                class="font-regular h-[50px] border-none bg-[#F6F6F6]"
-              />
+              <UiInput v-bind="componentField" type="text" placeholder="Enter your Company Name"
+                class="font-regular h-[50px] border-none bg-[#F6F6F6]" />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
@@ -124,31 +115,17 @@
             </UiFormLabel>
             <UiFormControl>
               <UiSelect v-bind="componentField">
-                <UiSelectTrigger
-                  class="field_shadow h-[50px] border-0 bg-[#FFFFFF]"
-                >
+                <UiSelectTrigger class="field_shadow h-[50px] border-0 bg-[#FFFFFF]">
                   <UiSelectValue class="font-medium" />
                 </UiSelectTrigger>
                 <UiSelectContent>
-                  <UiSelectItem
-                    v-for="(role, index) in industry"
-                    :value="role"
-                    >{{ role }}</UiSelectItem
-                  >
+                  <UiSelectItem v-for="(role, index) in industry" :value="role">{{ role }}</UiSelectItem>
                 </UiSelectContent>
               </UiSelect>
-              <UiFormField
-                v-if="componentField.modelValue === 'Other'"
-                v-slot="{ componentField }"
-                name="otherRole"
-              >
+              <UiFormField v-if="componentField.modelValue === 'Other'" v-slot="{ componentField }" name="otherRole">
                 <UiFormItem v-auto-animate="animationProps" class="w-full">
                   <UiFormControl>
-                    <UiInput
-                      v-bind="componentField"
-                      type="text"
-                      class="h-[50px]"
-                    />
+                    <UiInput v-bind="componentField" type="text" class="h-[50px]" />
                   </UiFormControl>
                   <UiFormMessage />
                 </UiFormItem>
@@ -166,17 +143,11 @@
             </UiFormLabel>
             <UiFormControl>
               <UiSelect v-bind="componentField">
-                <UiSelectTrigger
-                  class="field_shadow h-[50px] border-0 bg-[#FFFFFF]"
-                >
+                <UiSelectTrigger class="field_shadow h-[50px] border-0 bg-[#FFFFFF]">
                   <UiSelectValue class="font-medium" />
                 </UiSelectTrigger>
                 <UiSelectContent>
-                  <UiSelectItem
-                    v-for="(traffic, index) in avgTraffic"
-                    :value="traffic"
-                    >{{ traffic }}</UiSelectItem
-                  >
+                  <UiSelectItem v-for="(traffic, index) in avgTraffic" :value="traffic">{{ traffic }}</UiSelectItem>
                 </UiSelectContent>
               </UiSelect>
             </UiFormControl>
@@ -194,17 +165,12 @@
               </UiFormLabel>
               <UiFormControl>
                 <UiSelect v-bind="componentField">
-                  <UiSelectTrigger
-                    class="field_shadow h-[50px] border-0 bg-[#FFFFFF]"
-                  >
+                  <UiSelectTrigger class="field_shadow h-[50px] border-0 bg-[#FFFFFF]">
                     <UiSelectValue class="font-medium" />
                   </UiSelectTrigger>
                   <UiSelectContent>
-                    <UiSelectItem
-                      v-for="(countList, index) in employeeCount"
-                      :value="countList"
-                      >{{ countList }}</UiSelectItem
-                    >
+                    <UiSelectItem v-for="(countList, index) in employeeCount" :value="countList">{{ countList }}
+                    </UiSelectItem>
                   </UiSelectContent>
                 </UiSelect>
               </UiFormControl>
@@ -213,11 +179,7 @@
             </UiFormItem>
           </UiFormField>
         </div>
-        <UiButton
-          type="submit"
-          class="mt-[15px] w-full bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
-          size="lg"
-        >
+        <UiButton type="submit" class="mt-[15px] w-full bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110" size="lg">
           Proceed
         </UiButton>
       </UiForm>
@@ -225,11 +187,7 @@
         <span class="text-[12px] text-[#8a8a8a]">
           By Signing up, I Agree to Tring AI
         </span>
-        <a
-          target="_blank"
-          href="https://tringlabs.ai/terms-and-conditions"
-          class="text-[12px] underline"
-        >
+        <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="text-[12px] underline">
           Terms & Conditions
         </a>
       </div>

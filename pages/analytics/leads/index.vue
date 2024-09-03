@@ -16,7 +16,7 @@
     <UiTabs default-value="all" class="w-full self-start">
       <UiTabsList class="grid w-[295px] grid-cols-3">
         <UiTabsTrigger value="all" @click="selectedChannel('all')"> All </UiTabsTrigger>
-        <!-- <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')"> What's App </UiTabsTrigger> -->
+        <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')"> What's App </UiTabsTrigger>
         <UiTabsTrigger value="website" @click="selectedChannel('website')"> Website </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="all">
