@@ -242,7 +242,9 @@ const handleUpdateBotConfig = async (values: any) => {
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110" size="lg">Submit</UiButton>
+        <div class="flex justify-end w-full">
+          <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110" size="lg">Submit</UiButton>
+        </div>
       </UiForm>
     </div>
   </Page>

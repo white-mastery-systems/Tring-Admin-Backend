@@ -2,30 +2,21 @@
   <Page title="Chats" :disable-back-button="true">
     <div class="flex items-center gap-2 overflow-x-scroll pb-2">
       <div class="flex items-center gap-2">
-        <UiInput
-          v-model="searchBot"
+        <UiInput v-model="filters.q"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
-          placeholder="Search bot..."
-        />
+          placeholder="Search bot..." />
         <BotFilter v-model="filters.botId" />
-        <DateRangeFilter />
+        <BotUserFilter @changeAction="onActionChange" />
+        <DateRangeFilter @change="onDateChange" />
       </div>
     </div>
-    <DataTable
-      @row-click="
+    <DataTable @row-click="
         (row: any) => {
           console.log({ row });
           return navigateTo(`chats/${row.original.id}`);
           //TODO change this
         }
-      "
-      :columns="columns"
-      :data="bots"
-      :page-size="20"
-      :is-loading="isDataLoading"
-      :height="65"
-      height-unit="vh"
-    />
+      " :columns="columns" :data="bots" :page-size="20" :is-loading="isDataLoading" :height="65" height-unit="vh" />
   </Page>
 </template>
 <script setup lang="ts">
@@ -41,7 +32,7 @@
     }),
   );
   const searchBot = ref("");
-  const searchBotDebounce = refDebounced(searchBot, 500);
+  // const searchBotDebounce = refDebounced(searchBot, 500);
 
   const activeStatus = ref("");
   watch(activeStatus, async (newStatus, previousStatus) => {
@@ -53,22 +44,20 @@
     q?: string;
     from?: string;
     to?: string;
+    botUserName: string;
+    period: string;
   }>({
     botId: "",
     q: undefined,
     from: undefined,
     to: undefined,
+    botUserName: "",
+    period: "all-time",
   });
-
-  // const botList = await listApiBots();
-
   const { status, data: bots } = await useLazyFetch("/api/chats", {
     server: false,
+    query: filters,
     default: () => [],
-    query: {
-      active: activeStatus,
-      q: searchBotDebounce,
-    },
     transform: (chats) => {
       return chats?.map((chat) => ({
         userName: chat.botUser?.name || "No name",
@@ -122,4 +111,18 @@
       header: "Date Created",
     }),
   ];
+  const onActionChange = (value: any) => {
+    filters.botUserName = value
+  }
+  const onDateChange = (value: any) => {
+  if (value.from && value.to) {
+  filters.from = value.from;
+  filters.to = value.to;
+  }
+  else {
+  delete filters.from
+  delete filters.to
+  filters.period = value
+  }
+  };
 </script>

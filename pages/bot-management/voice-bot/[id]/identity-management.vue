@@ -101,9 +101,11 @@ const onSubmit = async (value: any) => {
           </UiFormItem>
         </UiFormField>
         <!-- </div> -->
-        <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] self-end hover:brightness-110 w-[120px]"
-          size="lg">Submit
-        </UiButton>
+         <div class="flex justify-end w-full">
+           <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] self-end hover:brightness-110 w-[120px]"
+             size="lg">Submit
+           </UiButton>
+         </div>
       </UiForm>
     </div>
   </Page>
