@@ -28,7 +28,7 @@ export const listChats = async (organisationId: string, query: any) => {
       fromDate = queryDate?.from
       toDate = queryDate?.to
     }
-    // console.log({ fromDate, toDate})
+    console.log({ query })
 
    let chats = await db.query.chatSchema.findMany({
     where: and(
@@ -38,18 +38,24 @@ export const listChats = async (organisationId: string, query: any) => {
     ),
     with: {
       botUser: {
-        where: query?.q ? or(
-          ilike(botUserSchema.name, `%${query.q}%`),
-          ilike(botUserSchema.email, `%${query.q}%`),
-          ilike(botUserSchema.mobile, `%${query.q}%`)
-        ) : undefined
+        where: or(
+          query?.q ? or(
+            ilike(botUserSchema.name, `%${query.q}%`),
+            ilike(botUserSchema.email, `%${query.q}%`),
+            ilike(botUserSchema.mobile, `%${query.q}%`)
+          ) : undefined,
+      )
       },
     },
     orderBy: [desc(chatSchema.createdAt)],
   });
   
-  if(query?.q) {
+  if(query?.q || query?.botUserName === "with_name") {
     chats = chats.filter((i) => i.botUser !== null)
+  }
+
+  if(query?.botUserName === "without_name") {
+    chats = chats.filter((i) => i.botUser === null)
   }
 
   return chats
