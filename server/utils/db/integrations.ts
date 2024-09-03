@@ -33,6 +33,16 @@ export const listIntegrations = async (organizationId: string, query: listIntegr
   return data;
 };
 
+export const getIntegrationById = async (organizationId: string, integrationId: string) => {
+  const data = await db.query.integrationSchema.findFirst({
+    where: and(
+      eq(integrationSchema.org_id, organizationId),
+      eq(integrationSchema.id, integrationId)
+    )
+  })
+  return data;
+}
+
 export const findIntegrationDetails = async (
   organizationId: string,
   id: string,

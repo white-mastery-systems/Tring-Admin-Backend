@@ -80,7 +80,7 @@ export const chatSchema = chatbotSchema.table("chats", {
   channel: varchar("channel", { length: 64 }).notNull().default("website"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   interacted: boolean("interacted").default(false),
-
+  visitedCount: integer("visited_count").default(1),
   botUserId: uuid("bot_user_id").references(() => botUserSchema.id, {
     onDelete: "cascade",
   }),

@@ -2,8 +2,6 @@ import { count } from "drizzle-orm";
 import {
   startOfDay,
   endOfDay,
-  startOfWeek,
-  endOfWeek,
   startOfMonth,
   endOfMonth,
   startOfYear,
@@ -13,6 +11,8 @@ import {
   eachMonthOfInterval,
   eachHourOfInterval,
   format,
+  subDays,
+  subYears,
 } from 'date-fns';
 
 const db = useDrizzle();
@@ -229,34 +229,64 @@ const getAllDatesInRange = (period: string) => {
   const now = new Date();
 
   switch (period) {
-    case "this-week":
-      startDate = startOfWeek(now, { weekStartsOn: 0 });
-      endDate = endOfWeek(now, { weekStartsOn: 0 });
-      dates = eachDayOfInterval({ start: startDate, end: endDate }).map(date => format(date, "yyyy-MM-dd"));
+    case "today":
+      startDate = startOfDay(now);
+      endDate = endOfDay(now);
+      dates = eachHourOfInterval({ start: startDate, end: endDate }).map(date => format(date, "hh:mm a"));
+      break;
+    
+    case "yesterday":
+      startDate = startOfDay(subDays(now, 1));
+      endDate = endOfDay(subDays(now, 1));
+      dates = eachHourOfInterval({ start: startDate, end: endDate }).map(date => format(date, "hh:mm a"));
       break;
 
-    case "this-month":
+    case "last-7-days":
+      startDate = startOfDay(subDays(now, 7));
+      endDate = endOfDay(now);
+      dates = eachDayOfInterval({ start: startDate, end: endDate }).map(date => format(date, "dd MMM yyyy"));
+      break;
+    
+    case "last-30-days":
+      startDate = startOfDay(subDays(now, 30));
+      endDate = endOfDay(now);
+      dates = eachDayOfInterval({ start: startDate, end: endDate }).map(date => format(date, "dd MMM yyyy"));
+      break;
+
+    case "current-month":
       startDate = startOfMonth(now);
       endDate = endOfMonth(now);
-      dates = eachDayOfInterval({ start: startDate, end: endDate }).map(date => format(date, "yyyy-MM-dd"));
+      dates = eachDayOfInterval({ start: startDate, end: endDate }).map(date => format(date, "dd MMM yyyy"));
+      break;
+    
+    case "last-month":
+      startDate = startOfMonth(subMonths(now, 1));
+      endDate = endOfMonth(subMonths(now, 1));
+      dates = eachDayOfInterval({ start: startDate, end: endDate }).map(date => format(date, "dd MMM yyyy"));
       break;
 
-    case "this-year":
+    case "current-year":
       startDate = startOfYear(now);
       endDate = endOfYear(now);
       dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(date => format(date, "yyyy-MM"));
       break;
 
-    case "6-months":
-      startDate = subMonths(startOfMonth(now), 5);
-      endDate = endOfMonth(now);
+    case "last-year":
+      startDate = startOfYear(subYears(now, 1));
+      endDate = endOfYear(subYears(now, 1));
       dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(date => format(date, "yyyy-MM"));
       break;
 
-    case "today":
-      startDate = startOfDay(now);
-      endDate = endOfDay(now);
-      dates = eachHourOfInterval({ start: startDate, end: endDate }).map(date => format(date, "yyyy-MM-dd HH"));
+     case "current-financial-year":
+      startDate = new Date(now.getFullYear(), 3, 1);  // April 1st of the current year
+      endDate = new Date(now.getFullYear() + 1, 2, 31);  // March 31st of the next year
+      dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(date => format(date, "yyyy-MM"));
+      break;
+
+     case "last-financial-year":
+      startDate = new Date(now.getFullYear() - 1, 3, 1);  // April 1st of the last year
+      endDate = new Date(now.getFullYear(), 2, 31);  // March 31st of the current year
+      dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(date => format(date, "yyyy-MM"));
       break;
 
     default:
@@ -268,14 +298,14 @@ const getAllDatesInRange = (period: string) => {
 
 const groupAndMapData = ({module, period}: any) => {
    const groupedData = module.reduce((acc, i) => {
-    const date = new Date(i.createdAt);
+    const date = new Date(i.createdAt).setMinutes(0);
     let dateKey;
-    if (period === "this-year" || period === "6-months") {
-      dateKey = format(date, "yyyy-MM");
-    } else if (period === "today") {
-      dateKey = format(date, "yyyy-MM-dd HH");
+    if (period === "today" || period === "yesterday" ) {
+      dateKey = format(date, "hh:mm a");
+    } else if (period === "last-7-days" || period === "last-30-days" || period === "current-month" || period === "last-month"){
+      dateKey = format(date, "dd MMM yyyy");
     } else {
-      dateKey = format(date, "yyyy-MM-dd");
+      dateKey = format(date, "yyyy-MM");
     }
     acc[dateKey] = (acc[dateKey] || 0) + 1;
     return acc;
@@ -293,30 +323,55 @@ const getDateRange = (period: string) => {
   const now = new Date();
   
   switch (period) {
-    case "today":
+     case "today":
       return {
         fromDate: startOfDay(now),
         toDate: endOfDay(now)
       };
-    case "this-week":
+    case "yesterday":
       return {
-        fromDate: startOfWeek(now),
-        toDate: endOfWeek(now)
+        fromDate: startOfDay(subDays(now, 1)),
+        toDate: endOfDay(subDays(now, 1))
       };
-    case "this-month":
+    case "last-7-days":
+      return {
+        fromDate: startOfDay(subDays(now, 7)),
+        toDate: endOfDay(now)
+      };
+    case "last-30-days":
+      return {
+        fromDate: startOfDay(subDays(now, 30)),
+        toDate: endOfDay(now)
+      };
+    case "current-month":
       return {
         fromDate: startOfMonth(now),
         toDate: endOfMonth(now)
       };
-    case "6-months":
+    case "last-month":
       return {
-        fromDate: startOfMonth(subMonths(now, 6)),
-        toDate: endOfMonth(now)
+        fromDate: startOfMonth(subMonths(now, 1)),
+        toDate: endOfMonth(subMonths(now, 1))
       };
-    case "this-year":
+    case "current-year":
       return {
         fromDate: startOfYear(now),
         toDate: endOfYear(now)
+      };
+    case "last-year":
+      return {
+        fromDate: startOfYear(subYears(now, 1)),
+        toDate: endOfYear(subYears(now, 1))
+      };
+    case "current-financial-year":
+      return {
+        fromDate: new Date(now.getFullYear(), 3, 1),  // April 1st of the current year
+        toDate: new Date(now.getFullYear() + 1, 2, 31)  // March 31st of the next year
+      };
+    case "last-financial-year":
+      return {
+        fromDate: new Date(now.getFullYear() - 1, 3, 1),  // April 1st of the last year
+        toDate: new Date(now.getFullYear(), 2, 31)  // March 31st of the current year
       };
     default:
       throw new Error('Invalid period');
@@ -444,8 +499,6 @@ export const getAnalytics = async (organizationId: string, period = "this-month"
     ]);
 
     const dates = getAllDatesInRange(period);
-
-    // return { leadData }
 
     const leadResult = groupAndMapData({ module: leadData, period });
     const sessionResult = groupAndMapData({ module: sessionData, period });
