@@ -384,7 +384,7 @@ export const getAnalytics = async (organizationId: string, period = "this-month"
     
     console.log({ organizationId, fromDate, toDate });
 
-    const [orgData, interactedChats, callScheduledTimeline, siteVisitTimeline, locationTimeline, virtualTourTimeline] = await Promise.all([
+    const [orgData, uniqueVisiters, interactedChats, callScheduledTimeline, siteVisitTimeline, locationTimeline, virtualTourTimeline] = await Promise.all([
       db.query.organizationSchema.findFirst({
         where: eq(organizationSchema.id, organizationId),
         with: {
@@ -412,6 +412,16 @@ export const getAnalytics = async (organizationId: string, period = "this-month"
           },
         },
       }),
+      db.select({ id: chatSchema.id })
+       .from(chatSchema)
+       .where(
+          and(
+            gte(chatSchema.createdAt, fromDate),
+            lte(chatSchema.createdAt, toDate),
+            eq(chatSchema.organizationId, organizationId),
+            gte(chatSchema.visitedCount, 1)
+          )
+       ),
       db.select({ count: count() })
         .from(chatSchema)
         .where(
@@ -514,7 +524,7 @@ export const getAnalytics = async (organizationId: string, period = "this-month"
     return {
       bots: orgData.bots.length,
       chats: orgData.bots.reduce((acc, bot) => acc + bot.chats.length, 0),
-      users: orgData.botUsers.length,
+      users: uniqueVisiters.length ?? 0,
       leads: orgData.leads.length,
       sessions: sessions?.sessions ?? 0,
       virtualTourTimeline,
