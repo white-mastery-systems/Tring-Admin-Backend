@@ -81,7 +81,7 @@
 
         <StatusCountCard
           :icon="ChatSession"
-          title="Call Scheduled"
+          title="Calls Scheduled"
           :count="analyticsData?.callScheduledTimeline[0]?.count"
         />
         <StatusCountCard
