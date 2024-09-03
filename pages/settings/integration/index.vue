@@ -1,34 +1,69 @@
 <template>
-  <Page title="Integration" :disable-back-button="true" :disable-elevation="true">
+  <Page
+    title="Integration"
+    :disable-back-button="true"
+    :disable-elevation="true"
+  >
     <template #actionButtons>
       <div class="flex gap-2">
-        <UiButton v-if="(route.query.q === 'channel')" color="primary" @click="channelModalState.open = true">
+        <UiButton
+          v-if="route.query.q === 'channel'"
+          color="primary"
+          @click="channelModalState.open = true"
+        >
           Add Channel
         </UiButton>
-        <UiButton v-else color="primary" @click="integrationModalState.open = true">
+        <UiButton
+          v-else
+          color="primary"
+          @click="integrationModalState.open = true"
+        >
           Add Integration
         </UiButton>
       </div>
     </template>
     <UiTabs default-value="client" class="w-full self-start">
       <UiTabsList class="grid w-[40%] grid-cols-2">
-        <UiTabsTrigger value="client" @click="navigateToTab('crm')"> CRM </UiTabsTrigger>
-        <UiTabsTrigger value="campaign" @click="navigateToTab('channel')"> Channel </UiTabsTrigger>
+        <UiTabsTrigger value="client" @click="navigateToTab('crm')">
+          CRM
+        </UiTabsTrigger>
+        <UiTabsTrigger value="campaign" @click="navigateToTab('channel')">
+          Channel
+        </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="client">
-        <DataTable :columns="columns" :data="integrationsData" :page-size="8" :is-loading="false" :height="80"
-          :heightUnit="'vh'" />
+        <DataTable
+          :columns="columns"
+          :data="integrationsData"
+          :page-size="8"
+          :is-loading="false"
+          :height="80"
+          :heightUnit="'vh'"
+        />
       </UiTabsContent>
       <UiTabsContent value="campaign">
-        <DataTable :columns="statusColumns" :data="integrationsData" :page-size="8" :is-loading="false" :height="10"
-          :heightUnit="'vh'" />
+        <DataTable
+          :columns="statusColumns"
+          :data="integrationsData"
+          :page-size="8"
+          :is-loading="false"
+          :height="10"
+          :heightUnit="'vh'"
+        />
       </UiTabsContent>
     </UiTabs>
     <ChannelModal v-model="channelModalState" />
-    <CreateEditIntegrationModal v-model="integrationModalState" @success="onSuccess()" />
+    <CreateEditIntegrationModal
+      v-model="integrationModalState"
+      :id="integrationModalState?.id"
+      @success="onSuccess()"
+    />
   </Page>
-  <ConfirmationModal v-model:open="deleteIntegrationState.open" title="Confirm Delete"
-    description="Are you sure you want to delete ?" @confirm="
+  <ConfirmationModal
+    v-model:open="deleteIntegrationState.open"
+    title="Confirm Delete"
+    description="Are you sure you want to delete ?"
+    @confirm="
       () => {
         if (deleteIntegrationState?.id) {
           deleteIntegration({
@@ -42,37 +77,39 @@
           deleteIntegrationState.open = false;
         }
       }
-    " />
+    "
+  />
 </template>
 <script lang="ts" setup>
   import { Icon, UiBadge, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
+  import { useRoute, useRouter } from "vue-router";
   import Page from "~/components/Page.vue";
-  import CreateEditIntegrationModal from "./CreateEditIntegrationModal.vue";
+  import CreateEditIntegrationModal from "../../../components/integrations/CreateEditIntegrationModal.vue";
   import ChannelModal from "./ChannelModal.vue";
-import { useRouter, useRoute } from 'vue-router';
   definePageMeta({
     middleware: "admin-only",
   });
 
-
   const router = useRouter();
   const route = useRoute();
-  const integrationModalState = ref({ open: false });
+  const integrationModalState = ref<{ open: boolean; id?: string | null }>({
+    open: false,
+  });
   const channelModalState = ref({ open: false });
   // const integrations = ref([]);
 
   let deleteIntegrationState: { open: boolean; id?: string } = reactive({
     open: false,
   });
-// const integrationsData = ref()
-watch(route,(newValue)=>{
-  console.log(newValue.query?.q,"QUERY")
-})
-// const q=ref('')
-const filters = computed(()=>({
-  q:route.query?.q
-}))
+  // const integrationsData = ref()
+  watch(route, (newValue) => {
+    console.log(newValue.query?.q, "QUERY");
+  });
+  // const q=ref('')
+  const filters = computed(() => ({
+    q: route.query?.q,
+  }));
   const {
     status: integrationLoadingStatus,
     data: integrationsData,
@@ -96,29 +133,50 @@ const filters = computed(()=>({
   };
 
   // const channelModal = () => {
-  //   channelModalState.value.open = false 
+  //   channelModalState.value.open = false
   // }
-onMounted(() => {
-  if (!router.currentRoute.value.query.tab) {
-    navigateToTab('crm');
-  }
-});
+  onMounted(() => {
+    if (!router.currentRoute.value.query.tab) {
+      navigateToTab("crm");
+    }
+  });
   const integrationLoading = computed(
     () => integrationLoadingStatus.value === "pending",
   );
   const actionsComponent = (id: any) =>
     h(
-      UiButton,
+      "div",
       {
-        class: "",
-        variant: "destructive",
-        onClick: () => {
-          deleteIntegrationState.id = id;
-          deleteIntegrationState.open = true;
-        },
+        class: "flex items-center gap-2",
       },
-      h(Icon, { name: "lucide:trash-2" }),
+      [
+        h(
+          UiButton,
+          {
+            color: "primary",
+            class: "ml-2",
+            onClick: () => {
+              integrationModalState.value.open = true;
+              integrationModalState.value.id = id;
+            },
+          },
+          h(Icon, { name: "lucide:pen" }),
+        ),
+        h(
+          UiButton,
+          {
+            class: "",
+            variant: "destructive",
+            onClick: () => {
+              deleteIntegrationState.id = id;
+              deleteIntegrationState.open = true;
+            },
+          },
+          h(Icon, { name: "lucide:trash-2" }),
+        ),
+      ],
     );
+
   const statusComponent = (status: string) => {
     return h(
       UiBadge,
@@ -151,28 +209,28 @@ onMounted(() => {
       },
     }),
   ];
-const statusColumns = [
-  columnHelper.accessor("name", {
-    header: "Integration Name",
-  }),
-  columnHelper.accessor("crm", {
-    header: "Channel",
-  }),
-  columnHelper.accessor("status", {
-    header: "Status",
-    cell: ({ row }) => {
-      return statusComponent(row.original?.status);
-    },
-  }),
-  columnHelper.accessor("actions", {
-    header: "Actions",
-    cell: ({ row }) => {
-      return actionsComponent(row.original?.id);
-    },
-  }),
-];
+  const statusColumns = [
+    columnHelper.accessor("name", {
+      header: "Integration Name",
+    }),
+    columnHelper.accessor("crm", {
+      header: "Channel",
+    }),
+    columnHelper.accessor("status", {
+      header: "Status",
+      cell: ({ row }) => {
+        return statusComponent(row.original?.status);
+      },
+    }),
+    columnHelper.accessor("actions", {
+      header: "Actions",
+      cell: ({ row }) => {
+        return actionsComponent(row.original?.id);
+      },
+    }),
+  ];
 
-const navigateToTab = async (tab: any) => {
-  router.push({ query: { q: tab  } });
-}
+  const navigateToTab = async (tab: any) => {
+    router.push({ query: { q: tab } });
+  };
 </script>
