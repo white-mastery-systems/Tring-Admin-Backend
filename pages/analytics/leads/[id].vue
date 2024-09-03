@@ -59,7 +59,7 @@
               </div>
             </div>
           </UiTabsContent>
-          <UiTabsContent value="timeline" class="flex flex-col justify-center gap-6">
+          <UiTabsContent value="timeline" class="flex flex-col justify-center gap-6 mt-3">
             <TimeLine v-for="(step, index) in timeLineData" :key="index" :index="index" :data="step"
               :totalSteps="timeLineData.length" />
           </UiTabsContent>
@@ -158,7 +158,7 @@
   };
 
   const { data: timeLineData } = await useLazyFetch(
-  `/api/timeline/chat/${route.params.id}`,
+    `/api/timeline/chat/${route.params.id}`,
   );
 
   onMounted(() => {
@@ -166,6 +166,7 @@
       scrollChatBox();
     }
   });
+
   const paramId: any = route;
   const changeStatus = ref(false);
   const revertStatus = ref(false);

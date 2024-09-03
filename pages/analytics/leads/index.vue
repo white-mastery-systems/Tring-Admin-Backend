@@ -7,7 +7,7 @@
           placeholder=" Search Leads..." />
         <BotFilter v-model="filters.botId" />
         <StatusFilter @change="onStatusChange" />
-        <ActionFilter/>
+        <ActionFilter @changeAction="onActionChange" />
         <DateRangeFilter @change="onDateChange" />
       </div>
 
@@ -16,10 +16,10 @@
     <UiTabs default-value="all" class="w-full self-start">
       <UiTabsList class="grid w-[295px] grid-cols-3">
         <UiTabsTrigger value="all" @click="selectedChannel('all')"> All </UiTabsTrigger>
-        <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')"> What's App </UiTabsTrigger>
+        <!-- <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')"> What's App </UiTabsTrigger> -->
         <UiTabsTrigger value="website" @click="selectedChannel('website')"> Website </UiTabsTrigger>
       </UiTabsList>
-      <UiTabsContent value="All">
+      <UiTabsContent value="all">
         <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="73"
           height-unit="vh" @row-click="(row: any) => {
               console.log({ row });
@@ -117,6 +117,7 @@
     period: string;
     status: string;
     channel: any;
+    action: string,
   }>({
     botId: "",
     q: undefined,
@@ -124,29 +125,20 @@
     to: undefined,
     period: "",
     status: "",
-    channel: ""
+    channel: "all",
+    action: "",
   });
 
 
   watchEffect(() => {
     if (filters.botId === "all") filters.botId = "";
-  });
+    });
   const { status, data: leads } = await useLazyFetch("/api/org/leads", {
     server: false,
     query: filters,
     default: () => [],
   });
   const isDataLoading = computed(() => status.value === "pending");
-  // onMounted(() => {
-  //   if (route.query?.tab) {
-  //     // filters.channel = 
-  //     // route.query?.tab
-  //     console.log(route.query?.tab, "route.query?.tab")
-  //   } else {
-  //     router.push({ query: { tab: 'all' } });
-  //   }
-    
-  // })
 
   const viewLead = async (chatId: any) => {
     await navigateTo({
@@ -167,6 +159,11 @@
       filters.period = value
     }
   };
+const onActionChange = (value: any) => {
+  if (value) {
+   filters.action = value
+  }
+}
 const onStatusChange = (value: any) => {
   if (value) {
     filters.status = value
@@ -228,7 +225,6 @@ const onStatusChange = (value: any) => {
 const selectedChannel = (value: any) => {
   if (value) {
     filters.channel = value
-    router.push({ query: { tab: value }})
   }
 }
 </script>
