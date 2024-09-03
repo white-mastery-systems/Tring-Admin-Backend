@@ -28,17 +28,29 @@ export const listChats = async (organisationId: string, query: any) => {
       fromDate = queryDate?.from
       toDate = queryDate?.to
     }
-    console.log({ fromDate, toDate})
+    // console.log({ fromDate, toDate})
 
-  return db.query.chatSchema.findMany({
+   let chats = await db.query.chatSchema.findMany({
     where: and(
       eq(chatSchema.organizationId, organisationId),
       query?.botId ? eq(chatSchema.botId, query.botId) : undefined,
       query?.period && fromDate && toDate ? between(chatSchema.createdAt, fromDate, toDate) : undefined,
     ),
     with: {
-      botUser: true,
+      botUser: {
+        where: query?.q ? or(
+          ilike(botUserSchema.name, `%${query.q}%`),
+          ilike(botUserSchema.email, `%${query.q}%`),
+          ilike(botUserSchema.mobile, `%${query.q}%`)
+        ) : undefined
+      },
     },
     orderBy: [desc(chatSchema.createdAt)],
   });
+  
+  if(query?.q) {
+    chats = chats.filter((i) => i.botUser !== null)
+  }
+
+  return chats
 };
