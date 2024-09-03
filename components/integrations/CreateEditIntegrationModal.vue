@@ -47,58 +47,66 @@
       ),
   );
 
-  const { setFieldValue, handleSubmit, errors, defineField } = useForm({
-    validationSchema: integrationSchema,
-    initialValues: {
-      name: "",
-    },
-  });
+  const { setFieldValue, handleSubmit, errors, defineField, resetForm } =
+    useForm({
+      validationSchema: integrationSchema,
+      initialValues: {
+        name: "",
+      },
+    });
   console.log({ errors: errors?.value });
   const [name, nameAttrs] = defineField("name");
-  const handleConnect = handleSubmit((values) => {
-    console.log({ values });
-    setFieldValue("name", "john");
-  });
-  // setFieldvalue("name", "john");
+  const [crmField, crmFieldAttrs] = defineField("crm");
+  const [apiKeyField, apiKeyFieldAttrs] = defineField("metaData.apiKey");
 
   watch(
     () => integrationModalState.value.open,
     async (isOpen) => {
+      resetForm();
       const integrationDetails = await $fetch(
         `/api/org/integrations/${integrationModalProps.id}`,
       );
-      console.log({ integrationDetails });
-      setFieldValue("name", "johnddd");
+      setFieldValue("name", integrationDetails?.name);
+      setFieldValue("crm", integrationDetails?.crm);
+      if (integrationDetails?.crm === "sell-do") {
+        setFieldValue("metaData.apiKey", integrationDetails?.metaData?.apiKey);
+      } else if (integrationDetails?.crm === "zoho-crm") {
+      } else if (integrationDetails?.crm === "zoho-bigin") {
+      }
     },
   );
-  // async function handleConnect(values: any) {
-  //   let url = `${window.location.origin}/settings/integration/${values.crm}`;
-  //   // let url = "https://app.tringlabs.ai/settings";
-  //   let scope = "";
-  //   if (values.crm === "zoho-crm") {
-  //     scope = "ZohoCRM.settings.ALL,ZohoCRM.modules.ALL,ZohoCRM.org.READ";
-  //   } else if (values.crm === "zoho-bigin") {
-  //     scope = "ZohoBigin.settings.ALL,ZohoBigin.modules.ALL,ZohoBigin.org.READ";
-  //   }
-  //   const payload: any = {
-  //     ...values,
-  //     scope,
-  //     url,
-  //     ...(values.crm !== "sell-do" && { metaData: { status: "pending" } }),
-  //   };
+  const handleConnect = handleSubmit(async (values: any) => {
+    let url = `${window.location.origin}/settings/integration/${values.crm}`;
+    // let url = "https://app.tringlabs.ai/settings";
+    let scope = "";
+    if (values.crm === "zoho-crm") {
+      scope = "ZohoCRM.settings.ALL,ZohoCRM.modules.ALL,ZohoCRM.org.READ";
+    } else if (values.crm === "zoho-bigin") {
+      scope = "ZohoBigin.settings.ALL,ZohoBigin.modules.ALL,ZohoBigin.org.READ";
+    }
+    const payload: any = {
+      ...values,
+      scope,
+      url,
+      ...(values.crm !== "sell-do" && { metaData: { status: "pending" } }),
+    };
 
-  //   await createIntegration({
-  //     integrationDetails: payload,
-  //     onSuccess: () => {
-  //       if (values.crm !== "sell-do")
-  //         window.open(
-  //           `https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=${scope}&redirect_uri=${url}&prompt=consent&access_type=offline`,
-  //           "_blank",
-  //         );
-  //       emit("success");
-  //     },
-  //   });
-  // }
+    if (integrationModalProps?.id) {
+      emit("success");
+    } else {
+      await createIntegration({
+        integrationDetails: payload,
+        onSuccess: () => {
+          if (values.crm !== "sell-do")
+            window.open(
+              `https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=${scope}&redirect_uri=${url}&prompt=consent&access_type=offline`,
+              "_blank",
+            );
+          emit("success");
+        },
+      });
+    }
+  });
 </script>
 
 <template>
@@ -111,7 +119,6 @@
     <UiForm
       v-slot="{ values }"
       @submit="handleConnect"
-      :keep-values="true"
       :validate-on-mount="false"
       class="space-y-2"
     >
@@ -134,13 +141,13 @@
           >
         </UiFormItem>
       </UiFormField>
-      <UiFormField v-slot="{ componentField }" name="crm">
+      <UiFormField v-model="crmField" v-bind="crmFieldAttrs" name="crm">
         <UiFormItem class="w-full">
           <UiFormLabel>
             CRM<UiLabel class="text-lg text-red-500">*</UiLabel>
           </UiFormLabel>
           <UiFormControl>
-            <UiSelect v-bind="componentField">
+            <UiSelect v-model="crmField" v-bind="crmFieldAttrs">
               <UiSelectTrigger>
                 <UiSelectValue placeholder="Select CRM" />
               </UiSelectTrigger>
@@ -158,7 +165,8 @@
 
       <UiFormField
         v-if="values.crm === 'sell-do'"
-        v-slot="{ componentField }"
+        v-model="apiKeyField"
+        v-bind="apiKeyFieldAttrs"
         name="metaData.apiKey"
       >
         <UiFormItem class="w-full">
@@ -168,7 +176,8 @@
           <UiFormControl>
             <UiInput
               type="text"
-              v-bind="componentField"
+              v-model="apiKeyField"
+              v-bind="apiKeyFieldAttrs"
               placeholder="Eg: api-key-here"
             />
           </UiFormControl>
@@ -179,10 +188,16 @@
       <UiButton type="submit" class="mt-2" color="primary">
         {{
           values.crm === "zoho-crm"
-            ? "Connect Zoho CRM"
+            ? integrationModalProps?.id
+              ? "Reconnect Zoho CRM"
+              : "Connect Zoho CRM"
             : values.crm === "zoho-bigin"
-              ? "Connect Zoho Bigin"
-              : "Save changes"
+              ? integrationModalProps?.id
+                ? "Reconnect Zoho Bigin"
+                : "Connect Zoho Bigin"
+              : integrationModalProps?.id
+                ? "Update changes"
+                : "Save changes"
         }}
       </UiButton>
     </UiForm>
