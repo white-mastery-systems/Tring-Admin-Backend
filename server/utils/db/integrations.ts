@@ -69,11 +69,11 @@ export const listLastCreatedIntegrationByCRM = async (
   });
   return data;
 };
-export const updateIntegrationById = async (id: string, metadata: any) =>
+export const updateIntegrationById = async (id: string, integration: any) =>
   (
     await db
       .update(integrationSchema)
-      .set({ metadata })
+      .set(integration)
       .where(eq(integrationSchema.id, id))
       .returning()
   )[0];
