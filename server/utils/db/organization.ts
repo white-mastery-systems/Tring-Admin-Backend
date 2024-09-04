@@ -527,7 +527,7 @@ export const getAnalytics = async (
             gte(chatSchema.createdAt, fromDate),
             lte(chatSchema.createdAt, toDate),
             eq(chatSchema.organizationId, organizationId),
-            gte(chatSchema.visitedCount, 1),
+            gt(chatSchema.visitedCount, 1),
           ),
         ),
       db
