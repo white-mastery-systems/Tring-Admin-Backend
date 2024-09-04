@@ -45,30 +45,18 @@
 
 <template>
   <div class="space-y-4">
-    <div
-      :class="[
+    <div :class="[
         'h-screen-minus-13 relative overflow-auto rounded-lg border',
         props.height ? `h-screen-minus-${props.height}` : '',
-      ]"
-    >
+      ]">
       <UiTable class="text-left text-gray-500">
         <UiTableHeader class="sticky top-0 bg-gray-50 text-xs uppercase">
-          <UiTableRow
-            v-for="headerGroup in table.getHeaderGroups()"
-            :key="headerGroup.id"
-          >
-            <UiTableHead
-              v-for="header in headerGroup.headers"
-              :key="header.id"
-              class="text-md text-nowrap  px-6 py-2 font-extrabold text-gray-700"
-              scope="col"
-              @click="header.column.getToggleSortingHandler()?.($event)"
-            >
-              <FlexRender
-                v-if="!header.isPlaceholder"
-                :render="header.column.columnDef.header"
-                :props="header.getContext()"
-              />
+          <UiTableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+            <UiTableHead v-for="header in headerGroup.headers" :key="header.id"
+              class="text-md text-nowrap  px-6 py-2 font-extrabold text-gray-700" scope="col"
+              @click="header.column.getToggleSortingHandler()?.($event)">
+              <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header"
+                :props="header.getContext()" />
             </UiTableHead>
           </UiTableRow>
         </UiTableHeader>
@@ -76,33 +64,15 @@
           <tr v-if="isLoading" class="h-36">
             <td :colspan="columns.length">
               <div class="grid h-full place-items-center">
-                <Icon
-                  name="svg-spinners:90-ring-with-bg"
-                  class="mx-auto h-8 w-8"
-                />
+                <Icon name="svg-spinners:90-ring-with-bg" class="mx-auto h-8 w-8" />
               </div>
             </td>
           </tr>
-          <template
-            class="bg-black-400"
-            v-else-if="table.getRowModel().rows?.length"
-          >
-            <UiTableRow
-              v-for="row in table.getRowModel().rows"
-              :key="row.id"
-              class="cursor-pointer overflow-hidden p-1"
-              @click="$emit('row-click', row)"
-              :data-state="row.getIsSelected() && 'selected'"
-            >
-              <UiTableCell
-                v-for="cell in row.getVisibleCells()"
-                :key="cell.id"
-                class="text-md px-6 py-4 font-semibold"
-              >
-                <FlexRender
-                  :render="cell.column.columnDef.cell"
-                  :props="cell.getContext()"
-                />
+          <template class="bg-black-400" v-else-if="table.getRowModel().rows?.length">
+            <UiTableRow v-for="row in table.getRowModel().rows" :key="row.id" class="cursor-pointer overflow-hidden p-1"
+              @click="$emit('row-click', row)" :data-state="row.getIsSelected() && 'selected'">
+              <UiTableCell v-for="cell in row.getVisibleCells()" :key="cell.id" class="text-md px-6 py-4 font-semibold">
+                <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
               </UiTableCell>
             </UiTableRow>
           </template>
@@ -144,34 +114,20 @@
         {{ table.getFilteredRowModel().rows.length }} results
       </p>
       <div class="flex space-x-4">
-        <UiButton
-          size="icon"
-          @click="table.setPageIndex(0)"
-          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
-        >
+        <UiButton size="icon" @click="table.setPageIndex(0)" :disabled="!table.getCanPreviousPage()"
+          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
           <Icon name="lucide:chevrons-left" class="h-6 w-6" />
         </UiButton>
-        <UiButton
-          size="icon"
-          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
-          :disabled="!table.getCanPreviousPage()"
-          @click="table.previousPage()"
-        >
+        <UiButton size="icon" class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
+          :disabled="!table.getCanPreviousPage()" @click="table.previousPage()">
           <Icon name="lucide:chevron-left" class="h-6 w-6" />
         </UiButton>
-        <UiButton
-          size="icon"
-          :disabled="!table.getCanNextPage()"
-          @click="table.nextPage()"
-          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
-        >
+        <UiButton size="icon" :disabled="!table.getCanNextPage()" @click="table.nextPage()"
+          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
           <Icon name="lucide:chevron-right" class="h-6 w-6" />
         </UiButton>
-        <UiButton
-          size="icon"
-          @click="table.setPageIndex(table.getPageCount() - 1)"
-          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
-        >
+        <UiButton size="icon" @click="table.setPageIndex(table.getPageCount() - 1)" :disabled="!table.getCanNextPage()"
+          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
           <Icon name="lucide:chevrons-right" class="h-6 w-6" />
         </UiButton>
       </div>

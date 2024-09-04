@@ -185,10 +185,7 @@ const onStatusChange = (value: any) => {
         h(
           UiBadge,
           {
-            ...(Number(row.original.botUser?.visitedCount) > 1 ||
-            row.original.status === "junk"
-              ? { variant: "destructive" }
-              : { class: "bg-green-200 text-green-500 hover:bg-green-300" }),
+            ...((row.original.status === "junk") ? { class: "bg-red-200 text-red-500 hover:bg-300" } : (Number(row.original.botUser?.visitedCount) > 1) ? { class: "bg-[#424bd1] text-[#ffffff] hover:bg-[#424bd1]" } : { class: "bg-green-200 text-green-500 hover:bg-green-300" }),
           },
           row.original.status === "junk"
             ? "Junk"
