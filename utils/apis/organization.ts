@@ -11,9 +11,9 @@ export const getLeadTranscript = async (chatId: any) => {
   return await $fetch(`/api/org/chat/${chatId}`);
 };
 
-export const getAnalyticsData = async (period: string = "current-month") => {
+export const getAnalyticsData = async (period: any) => {
   return await $fetch(`/api/org/analytics`, {
-    params: { period },
+    params: period,
   });
 };
 // export const filterAnalyticsData = async (value: any) => {

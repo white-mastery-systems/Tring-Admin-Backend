@@ -9,6 +9,21 @@ import {
 
 import { Calendar as CalendarIcon } from "lucide-vue-next";
 import type { DateRange } from "radix-vue";
+
+const selectDate = defineModel<{ selectedValue: any }>({
+  default: {
+    selectedValue: "last-30-days",
+  },
+});
+const props = withDefaults(
+  defineProps<{
+    selectDateField: boolean;
+  }>(),
+  {
+    selectDateField: true,
+  },
+);
+
 const df = new DateFormatter("en-US", {
   dateStyle: "medium",
 });
@@ -61,7 +76,7 @@ const value = ref({
 const debouncedValue = debouncedRef(value, 800);
 
 watch(debouncedValue, (newValue) => {
-  if (newValue.start && newValue.end && (selectedDate.value === 'custom')) {
+  if (newValue.start && newValue.end && ((selectedDate.value === 'custom') || (selectDate.value === 'custom'))) {
     console.log({
       from: newValue.start.toDate(getLocalTimeZone()).toISOString(),
       to: newValue.end.toDate(getLocalTimeZone()).toISOString(),
@@ -79,6 +94,9 @@ watch(debouncedValue, (newValue) => {
 watch(selectedDate, (newValue) => {
   emit("change", newValue);
 })
+watch(selectDate.value.selectedValue, (newValue) => {
+  emit("change", newValue);
+})
 
 const isDateDisabled = (date: CalendarDate) => {
   return date > today(getLocalTimeZone());
@@ -86,7 +104,7 @@ const isDateDisabled = (date: CalendarDate) => {
 </script>
 
 <template>
-  <UiSelect v-model="selectedDate">
+  <UiSelect v-if="props.selectDateField" v-model="selectedDate">
     <UiSelectTrigger class="w-[110px] sm:w-[110px] md:w-[250px] lg:w-[250px] xl:w-[250px]">
       <UiSelectValue placeholder="Select a Date" />
     </UiSelectTrigger>
@@ -98,7 +116,7 @@ const isDateDisabled = (date: CalendarDate) => {
       <UiSelectItem value="custom">Custom</UiSelectItem>
     </UiSelectContent>
   </UiSelect>
-  <UiPopover v-if="selectedDate === 'custom'">
+  <UiPopover v-if="(selectedDate === 'custom') || (selectDate === 'custom')">
     <UiPopoverTrigger as-child>
       <UiButton variant="outline" :class="cn(
         'w-[120px] sm:w-[120px] md:w-[260px] lg:w-[240px] xl:w-[240px] justify-start text-left font-normal truncate',

@@ -1,26 +1,30 @@
 <template>
   <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true">
     <template #actionButtons>
-      <span class="field_shadow flex items-center rounded-lg text-[15px]" style="color: rgba(138, 138, 138, 1)">
-        <!-- <span class="flex -items-center py-2 pl-2"></span> -->
-        <span class="font-bold text-black">
-          <UiSelect v-model="selectedValue" class="outline-none">
-            <UiSelectTrigger
-              class="ui-select-trigger flex w-[70px] items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[200px] md:text-[14px] lg:w-[200px] lg:text-[14px] xl:w-[200px] xl:text-[14px]">
-              <span class="font-thin text-gray-400"> Summary </span>
-              <UiSelectValue />
-            </UiSelectTrigger>
-            <UiSelectContent>
-              <UiSelectGroup>
-                <UiSelectItem v-for="(list, index) in dateFilters" :key="index" class="content_align pr-2"
-                  :value="list.value">
-                  {{ list.content }}
-                </UiSelectItem>
-              </UiSelectGroup>
-            </UiSelectContent>
-          </UiSelect>
+      <div class="flex gap-2">
+        <span class="field_shadow flex items-center rounded-lg text-[15px]" style="color: rgba(138, 138, 138, 1)">
+          <!-- <span class="flex -items-center py-2 pl-2"></span> -->
+          <span class="font-bold text-black">
+            <UiSelect v-model="selectedValue" class="outline-none">
+              <UiSelectTrigger
+                class="ui-select-trigger flex w-[70px] items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[200px] md:text-[14px] lg:w-[200px] lg:text-[14px] xl:w-[200px] xl:text-[14px]">
+                <span class="font-thin text-gray-400"> Summary </span>
+                <UiSelectValue />
+              </UiSelectTrigger>
+              <UiSelectContent>
+                <UiSelectGroup>
+                  <UiSelectItem v-for="(list, index) in dateFilters" :key="index" class="content_align pr-2"
+                    :value="list.value">
+                    {{ list.content }}
+                  </UiSelectItem>
+                  <UiSelectItem value="custom">Custom</UiSelectItem>
+                </UiSelectGroup>
+              </UiSelectContent>
+            </UiSelect>
+          </span>
         </span>
-      </span>
+        <DateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
+      </div>
     </template>
     <div>
       <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -41,19 +45,20 @@
         <StatusCountCard :icon="SingleUser" title="Unique visitors" :count="analyticsData?.users" />
 
         <StatusCountCard :icon="ChatSession" title="Interacted Chats"
-          :count="analyticsData?.interactedChats[0]?.count" />
+          :count="analyticsData?.interactedChats[0]?.count ?? 0" />
 
 
         <StatusCountCard :icon="Leads" title="Chat Leads" :count="analyticsData?.leads" />
 
 
         <StatusCountCard :icon="ChatSession" title="Calls Scheduled"
-          :count="analyticsData?.callScheduledTimeline[0]?.count" />
-        <StatusCountCard :icon="ChatSession" title="Site Visits" :count="analyticsData?.siteVisitTimeline[0]?.count" />
+          :count="analyticsData?.callScheduledTimeline[0]?.count ?? 0" />
+        <StatusCountCard :icon="ChatSession" title="Site Visits"
+          :count="analyticsData?.siteVisitTimeline[0]?.count ?? 0" />
         <StatusCountCard :icon="ChatSession" title="Virtual Tours"
-          :count="analyticsData?.virtualTourTimeline[0]?.count" />
+          :count="analyticsData?.virtualTourTimeline[0]?.count ?? 0" />
         <StatusCountCard :icon="ChatSession" title="Location Visited"
-          :count="analyticsData?.locationTimeline[0]?.count" />
+          :count="analyticsData?.locationTimeline[0]?.count ?? 0" />
       </div>
 
       <!-- <div class="relative">
@@ -113,7 +118,7 @@
     CategoryScale,
   );
 
-const selectedValue = ref("last-30-days");
+const selectedValue: any = ref("last-30-days");
   const analyticsData = ref();
 const dateFilters = reactive([
   {
@@ -163,11 +168,11 @@ const dateFilters = reactive([
   const leadsGraphData = ref([]);
   const sessionsGraphData = ref([]);
   watch(analyticsData, (newValue, oldValue) => {
-    leadsGraphData.value = newValue.graph.leads?.map((item: any) => item.count);
-    sessionsGraphData.value = newValue.graph.sessions?.map(
+    leadsGraphData.value = newValue.graph?.leads?.map((item: any) => item.count);
+    sessionsGraphData.value = newValue.graph?.sessions?.map(
       (item: any) => item.count,
     );
-    labels.value = newValue.graph.leads?.map((item: any) => item.date);
+    labels.value = newValue.graph?.leads?.map((item: any) => item.date);
   });
   const chartData = computed(() => ({
     labels: labels.value,
@@ -258,17 +263,35 @@ const dateFilters = reactive([
   definePageMeta({
     middleware: "user",
   });
-
+  const filter = reactive<{
+    from?: string;
+    to?: string;
+    period: string;
+  }>({
+    from: undefined,
+    to: undefined,
+    period: "current-month",
+  })
   // const getButtonName = ref("Get Started");
 
   watch(selectedValue, async (period) => {
-    const data = await getAnalyticsData(period);
+    filter.period = period
+    if (period != 'custom') {
+      delete filter.from
+      delete filter.to
+    } 
+    // if ((filter.period === 'custom') && !(filter.from)) {
+    //     const date = new Date()
+    //     filter.from = date.toISOString()
+    //     filter.to = date.toISOString();
+    // }
+    const data = await getAnalyticsData(filter);
     console.log({ data });
     analyticsData.value = data;
   });
 
   onMounted(async () => {
-    analyticsData.value = await getAnalyticsData();
+    analyticsData.value = await getAnalyticsData(filter);
 
     // analyticsData.value.bots = 0;
   });
@@ -279,6 +302,15 @@ const dateFilters = reactive([
     }
   };
 
+const onDateChange = async (value: any) => {
+  if (value.from && value.to) {
+    filter.from = value.from;
+    filter.to = value.to;
+
+    const data = await getAnalyticsData(filter)
+    analyticsData.value = data
+  }
+};
   // interface MonthAbbreviations {
   //   [key: string]: string;
   // }
