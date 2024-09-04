@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
       return await $fetch(
         `https://accounts.zoho.in/oauth/v2/token?client_id=${zohoConfig.client_id}&grant_type=refresh_token&client_secret=${zohoConfig.client_secret}&refresh_token=${zohoConfig.refresh_token}`,
       );
-    } catch (err) {
+    } catch (err: any) {
       console.log({ err: err.message });
     }
   };

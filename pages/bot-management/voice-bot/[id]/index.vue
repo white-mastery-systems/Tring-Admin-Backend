@@ -206,7 +206,7 @@
   import { toast } from "vue-sonner";
   const router = useRouter();
   // const selectedValue = ref("Today");
-  const route = useRoute("bots-id");
+  const route = useRoute("bot-management-voice-bot-id");
   const paramId: any = route;
   const botDetails = ref(await getVoiceBotDetails(paramId.params.id));
   const deleteModalState = ref(false);
@@ -352,13 +352,13 @@
     if (activeDocuments.length === 0) {
       toast.error("Please add document to activate bot");
       return navigateTo({
-        name: "bots-id-documents",
+        name: "bot-management-voice-bot-id-documents",
         params: { id: paramId.params.id },
       });
     } else if (!botDetails.value.metadata?.prompt?.NAME) {
       toast.error("Please add bot configuration to activate bot");
       return navigateTo({
-        name: "bots-id-config",
+        name: "bot-management-voice-bot-id-config",
         params: { id: paramId.params.id },
       });
     } else if (Object.values(botDetails.value.metadata.ui)?.length === 0) {

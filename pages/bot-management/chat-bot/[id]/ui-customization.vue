@@ -294,10 +294,7 @@
   // })
 
   const uiUpdate = async (value: any) => {
-    console.log(JSON.stringify(value, null, 2));
-    // console.log(ges, "value -- value");
     const payload: any = {
-      // name: botDetails.name,
       id: botDetails.id,
       metadata: {
         ...botDetails.metadata,
@@ -317,10 +314,14 @@
       },
     };
     await updateBotDetails(payload);
-    value.logo && (await uploadLogo(botDetails.id, value.logo![0]));
+    console.log({ value: typeof value.logo });
+    if (value.logo?.length > 0 && typeof value.logo === "object") {
+      console.log("HIIII");
+      await uploadLogo(botDetails.id, value.logo![0]);
+    }
 
     return navigateTo({
-      name: "bots-id",
+      name: "bot-management-chat-bot-id",
       params: { id: paramId.params.id },
     });
     // console.log(botDetails.name, "botDetails.name")

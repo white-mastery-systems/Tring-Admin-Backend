@@ -9,7 +9,7 @@
 
   const props = defineProps<Props>();
   const emit = defineEmits<Emits>();
-  const route = useRoute("bots-id-intent-management");
+  const route = useRoute();
 
   const showIntentDialog = defineModel<boolean>({
     default: false,

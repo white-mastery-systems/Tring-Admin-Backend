@@ -76,20 +76,7 @@
   });
   const isDataLoading = computed(() => status.value === "pending");
 
-  const addBot = async (value: any) => {
-    try {
-      const bot = await $fetch("/api/bots", {
-        method: "POST",
-        body: { name: value.newBotName },
-      });
-      return navigateTo({
-        name: "bots-id",
-        params: { id: bot.id },
-      });
-    } catch (err: any) {
-      toast.error(err.data.data[0].message);
-    }
-  };
+  
 
   const statusComponent = (status: boolean) =>
     status
