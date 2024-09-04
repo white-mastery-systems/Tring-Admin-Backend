@@ -1,4 +1,5 @@
 import {
+  differenceInDays,
   eachDayOfInterval,
   eachHourOfInterval,
   eachMonthOfInterval,
@@ -13,7 +14,7 @@ import {
   subMonths,
   subYears,
 } from "date-fns";
-import { count } from "drizzle-orm";
+import { count, min } from "drizzle-orm";
 
 const db = useDrizzle();
 
@@ -220,9 +221,10 @@ export const getOrgUsage = async (organizationId: string) => {
 };
 
 // Date range generation function
-const getAllDatesInRange = (period: string) => {
+const getAllDatesInRange = (period: string, from: Date, to: Date) => {
   let dates: string[] = [];
   let startDate: Date, endDate: Date;
+  let difference = 0;
 
   const now = new Date();
 
@@ -302,37 +304,75 @@ const getAllDatesInRange = (period: string) => {
     case "last-financial-year":
       startDate = new Date(now.getFullYear() - 1, 3, 1); // April 1st of the last year
       endDate = new Date(now.getFullYear(), 2, 31); // March 31st of the current year
+      dates = eachDayOfInterval({ start: startDate, end: endDate }).map(
+        (date) => format(date, "yyyy-MM-dd"),
+      );
+      break;
+
+    case "all-time":
+      startDate = startOfYear(from);
+      endDate = endOfYear(now)
       dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
         (date) => format(date, "yyyy-MM"),
       );
+      break;
+
+    case "custom": 
+      difference = differenceInDays(to,from)
+      // console.log({ difference })
+      if(difference > 30) {
+         startDate = startOfYear(from)
+         endDate = endOfYear(to)
+         dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
+          (date) => format(date, "yyyy-MM"),
+         );
+      } else {
+         startDate = startOfDay(from)
+         endDate = endOfDay(to)
+         dates = eachDayOfInterval({ start: startDate, end: endDate }).map(
+          (date) => format(date, "dd MMM yyyy"),
+         );
+      }
       break;
 
     default:
       throw new Error("Invalid period");
   }
 
-  return dates;
+  return{
+    dates,
+    difference
+  };
 };
 
-const groupAndMapData = ({ module, period }: any) => {
+const groupAndMapData = ({ module, period, difference }: any) => {
   const groupedData = module.reduce((acc, i) => {
-    const date = new Date(i.createdAt).setMinutes(0);
+    // console.log({ groupAndMapDataDifference: difference })
+    const date = new Date(i.createdAt).setMinutes(0)
+    
+    // const timeZone = 'Asia/Kolkata';
+    // const date = formatInTimeZone(created, timeZone, "yyyy-MM-dd'T'HH:mm:ssXXX");
+    // const isoDate = new Date(date)
+    // console.log({created_at: i.createdAt, date, isoDate})
     let dateKey;
     if (period === "today" || period === "yesterday") {
       dateKey = format(date, "hh:mm a");
     } else if (
-      period === "last-7-days" ||
-      period === "last-30-days" ||
-      period === "current-month" ||
-      period === "last-month"
+      period === "current-year" ||
+      period === "last-year" ||
+      period === "current-financial-year" ||
+      period === "last-financial-year" ||
+      period === "all-time" || difference > 30 
     ) {
-      dateKey = format(date, "dd MMM yyyy");
-    } else {
       dateKey = format(date, "yyyy-MM");
+    } else {
+      dateKey = format(date, "dd MMM yyyy");
     }
     acc[dateKey] = (acc[dateKey] || 0) + 1;
     return acc;
   }, {});
+
+  // console.log({ groupedData })
 
   // Map the grouped data to the desired format
   return Object.entries(groupedData).map(([date, count]) => ({
@@ -342,8 +382,9 @@ const groupAndMapData = ({ module, period }: any) => {
 };
 
 // get Date ranges
-const getDateRange = (period: string) => {
+const getDateRange = (period: string, from: Date, to: Date) => {
   const now = new Date();
+  // console.log("------", { period, from, to })
 
   switch (period) {
     case "today":
@@ -396,6 +437,18 @@ const getDateRange = (period: string) => {
         fromDate: new Date(now.getFullYear() - 1, 3, 1), // April 1st of the last year
         toDate: new Date(now.getFullYear(), 2, 31), // March 31st of the current year
       };
+    case "all-time": 
+      return {
+        fromDate: startOfYear(from),
+        toDate: endOfYear(now),
+      }
+
+    case "custom": 
+       return {
+        fromDate: from,
+        toDate: to
+      }
+  
     default:
       throw new Error("Invalid period");
   }
@@ -404,11 +457,31 @@ const getDateRange = (period: string) => {
 export const getAnalytics = async (
   organizationId: string,
   period = "current-month",
+  customFromDate: Date | null,
+  customToDate: Date | null
 ) => {
   try {
-    const { fromDate, toDate } = getDateRange(period);
+    let from = customFromDate
+    let to = customToDate
+    if(period == "all-time") {
+      const earliestData = await db.query.chatBotSchema.findFirst({
+        columns: {
+          createdAt: true
+        },
+        where: and(
+          eq(chatBotSchema.organizationId, organizationId),
+        ),
+        orderBy: [asc(chatBotSchema.createdAt)]
+    })
+      // console.log({ earliestData})
+      from = earliestData?.createdAt
+    }
+  //  return
+   console.log({ period, organizationId, from, to });
 
-    console.log({ organizationId, fromDate, toDate });
+    const { fromDate, toDate } = getDateRange(period, from, to);
+
+    console.log({ period, organizationId, fromDate, toDate });
 
     const [
       orgData,
@@ -454,7 +527,7 @@ export const getAnalytics = async (
             gte(chatSchema.createdAt, fromDate),
             lte(chatSchema.createdAt, toDate),
             eq(chatSchema.organizationId, organizationId),
-            gte(chatSchema.visitedCount, 1),
+            gt(chatSchema.visitedCount, 1),
           ),
         ),
       db
@@ -555,21 +628,29 @@ export const getAnalytics = async (
       }),
     ]);
 
-    const dates = getAllDatesInRange(period);
+    const { dates, difference} = getAllDatesInRange(period, from, to);
 
-    const leadResult = groupAndMapData({ module: leadData, period });
-    const sessionResult = groupAndMapData({ module: sessionData, period });
+    //  return { dates }
+    // return { sessionData }
+
+    const leadResult = groupAndMapData({ module: leadData, period, difference });
+    const sessionResult = groupAndMapData({ module: sessionData, period, difference });
+    // return { sessionResult, dates }
 
     const leadMap = new Map(leadResult.map((item) => [item.date, item.count]));
-    const sessionMap = new Map(
-      sessionResult.map((item) => [item.date, item.count]),
-    );
+    const sessionMap = new Map(sessionResult.map((item) => [item.date, item.count]));
+    
+    // return {  sessionMap }
 
     const groupedCounts = (mapData: any) =>
       dates.map((date) => ({
         date,
         count: mapData.get(date) || 0,
       }));
+    //  return { 
+    //     leads: groupedCounts(leadMap),
+    //     sessions: groupedCounts(sessionMap),
+    //   }
 
     return {
       bots: orgData.bots.length,
