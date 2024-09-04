@@ -35,6 +35,7 @@ export const listChats = async (organisationId: string, query: any) => {
       eq(chatSchema.organizationId, organisationId),
       query?.botId ? eq(chatSchema.botId, query.botId) : undefined,
       query?.period && fromDate && toDate ? between(chatSchema.createdAt, fromDate, toDate) : undefined,
+      query?.botUserName === "interacted" ? eq(chatSchema.interacted, true) : undefined
     ),
     with: {
       botUser: {
