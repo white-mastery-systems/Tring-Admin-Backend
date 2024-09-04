@@ -47,7 +47,7 @@
           </h4>
           <div class="flex items-center gap-5" v-if="data.metadata?.website">
             <span class="min-w-[90px] text-[16px] font-semibold">
-              Contact us
+              {{ data.metadata?.title }}
             </span>
             <div class="flex items-center gap-2">
               <span>
