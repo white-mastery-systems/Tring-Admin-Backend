@@ -58,7 +58,7 @@ export const botUserSchema = chatbotSchema.table(
     email: varchar("email", { length: 128 }),
     mobile: varchar("mobile", { length: 16 }),
     metaData: jsonb("metadata"),
-    visitedCount: integer("visited_count").default(0),
+    visitedCount: integer("visited_count").default(1),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     organizationId: uuid("organization_id")
       .references(() => organizationSchema.id, { onDelete: "cascade" })

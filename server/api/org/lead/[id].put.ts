@@ -1,7 +1,7 @@
 import { updateLead } from "~/server/utils/db/leads";
 
 const zodUpdateLead = z.object({
-  status: z.string()
+  status: z.string().toLowerCase()
 })
 
 export default defineEventHandler(async(event) => {

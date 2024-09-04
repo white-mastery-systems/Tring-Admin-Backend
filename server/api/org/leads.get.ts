@@ -12,7 +12,7 @@ const queryValidator = z
       .nullish()
       .transform((val) => (val ? new Date(val) : null)),
     q: z.string().optional(),
-    status: z.string().optional(),
+    status: z.string().toLowerCase().optional(),
     action: z.string().optional(),
     channel: z.string().optional(),
     period: z.string().optional(),
