@@ -51,7 +51,7 @@
             </UiFormItem>
           </UiFormField>
 
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-4">
             <UiFormField v-slot="{ componentField }" name="color">
               <UiFormItem v-auto-animate="animationProps" class="w-full">
                 <!-- <UiLabel class="text-lg font-medium">Color</UiLabel> -->
@@ -79,7 +79,7 @@
                 </UiFormControl>
                 <UiFormMessage />
                 <span class="text-xs text-gray-500"
-                  >This color will be used for Messages,Widget Bubble</span
+                  >color used for Messages,Widget Bubble</span
                 >
               </UiFormItem>
             </UiFormField>
@@ -108,7 +108,7 @@
                 </UiFormControl>
                 <UiFormMessage />
                 <span class="text-xs text-gray-500"
-                  >This color will be used for chat buttons</span
+                  >color used for chat buttons</span
                 >
               </UiFormItem>
             </UiFormField>

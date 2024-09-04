@@ -282,7 +282,7 @@
         else return element;
       })
       .join(" ");
-    return `${window.location.origin}/preview.html?orgname=WMS&chatbotid=${paramId.params.id}&brandcolor=${col}&secondarycolor=${secondaryColor}&mode=preview`;
+    return `${window.location.origin}/preview.html?orgname=WMS&chatbotid=${paramId.params.id}&mode=preview`;
   });
   // onMounted(async () => {
   //   console.log(paramId.params.id, "paramId")
