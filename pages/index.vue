@@ -37,14 +37,15 @@
             </div>
           </div>
         </div>
+        <StatusCountCard :icon="ChatSession" title="Chat sessions" :count="analyticsData?.chats" />
+        <StatusCountCard :icon="SingleUser" title="Unique visitors" :count="analyticsData?.users" />
+
         <StatusCountCard :icon="ChatSession" title="Interacted Chats"
           :count="analyticsData?.interactedChats[0]?.count" />
 
-        <StatusCountCard :icon="ChatSession" title="Chat sessions" :count="analyticsData?.chats" />
 
         <StatusCountCard :icon="Leads" title="Chat Leads" :count="analyticsData?.leads" />
 
-        <StatusCountCard :icon="SingleUser" title="Unique visitors" :count="analyticsData?.users" />
 
         <StatusCountCard :icon="ChatSession" title="Calls Scheduled"
           :count="analyticsData?.callScheduledTimeline[0]?.count" />

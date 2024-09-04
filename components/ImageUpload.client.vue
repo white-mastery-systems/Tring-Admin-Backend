@@ -30,7 +30,16 @@
       return;
     }
     if (typeof file.value !== "string") {
-      _.value = URL.createObjectURL(file.value[0]);
+      try {
+        if (file.value[0]?.type?.startsWith("image")) {
+          _.value = URL.createObjectURL(file.value[0]);
+        } else {
+          toast.error("unsupported file type");
+        }
+        // _.value = URL.createObjectURL(file.value[0]);
+      } catch (err) {
+        console.log("error", err);
+      }
     } else {
       _.value = file.value;
     }
