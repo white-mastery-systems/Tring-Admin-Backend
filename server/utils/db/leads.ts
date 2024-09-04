@@ -27,72 +27,36 @@ export const listLeads = async (
 
     let chatIds: any [] = [];
 
-    // Determine the intent and fetch chat IDs accordingly
-    switch (query?.action) {
-      case "site_visit":
+    if (query?.status && query?.status !== "all") {
+      const intentsMap: Record<string, string> = {
+        site_visit: "site_visit",
+        virtual_tour: "virtual_tour",
+        location: "location",
+        schedule_call: "schedule_call",
+      };
+
+      if (intentsMap[query.status]) {
         chatIds = (await db.query.timelineSchema.findMany({
           where: and(
             eq(timelineSchema.orgId, organizationId),
-            eq(timelineSchema.intent, "site_visit")
+            eq(timelineSchema.intent, intentsMap[query.status])
           ),
           columns: {
-            chatId: true
-          }
+            chatId: true,
+          },
         })).map((i) => i.chatId);
-        break;
 
-      case "virtual_tour":
-        chatIds = (await db.query.timelineSchema.findMany({
-          where: and(
-            eq(timelineSchema.orgId, organizationId),
-            eq(timelineSchema.intent, "virtual_tour")
-          ),
-          columns: {
-            chatId: true
-          }
-        })).map((i) => i.chatId);
-        break;
-
-      case "location":
-        chatIds = (await db.query.timelineSchema.findMany({
-          where: and(
-            eq(timelineSchema.orgId, organizationId),
-            eq(timelineSchema.intent, "location")
-          ),
-          columns: {
-            chatId: true
-          }
-        })).map((i) => i.chatId);
-        break;
-
-      case "schedule_call":
-        chatIds = (await db.query.timelineSchema.findMany({
-          where: and(
-            eq(timelineSchema.orgId, organizationId),
-            eq(timelineSchema.intent, "schedule_call")
-          ),
-          columns: {
-            chatId: true
-          }
-        })).map((i) => i.chatId);
-        break;
-
-      default:
-        // No filtering by intent
-        chatIds = [];
-        break;
-    }
-
-    if(query?.action && query?.action !== "all") {
-      filters.push(inArray(leadSchema.chatId, chatIds) )
-    }
-
-    if(query?.status === "junk") {
-      filters.push(ilike(leadSchema.status, query?.status) )
-    }
-
-    if(query?.status === "new" || query?.status==="revisited") {
-      filters.push(eq(leadSchema.status, "default"))
+        if (chatIds.length > 0) {
+          filters.push(inArray(leadSchema.chatId, chatIds));
+        } else {
+          // If no chat IDs are found, return early to avoid unnecessary processing
+          return [];
+        }
+      } else if (query?.status === "junk") {
+        filters.push(ilike(leadSchema.status, query?.status));
+      } else if (query?.status === "new" || query?.status === "revisited") {
+        filters.push(eq(leadSchema.status, "default"));
+      }
     }
     
    // Period-based filtering

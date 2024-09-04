@@ -309,6 +309,14 @@ const getAllDatesInRange = (period: string, from: Date, to: Date) => {
       );
       break;
 
+    case "all-time":
+      startDate = startOfYear(from);
+      endDate = endOfYear(now)
+      dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
+        (date) => format(date, "yyyy-MM"),
+      );
+      break;
+
     case "custom": 
       difference = differenceInDays(to,from)
       // console.log({ difference })
@@ -353,7 +361,8 @@ const groupAndMapData = ({ module, period, difference }: any) => {
       period === "current-year" ||
       period === "last-year" ||
       period === "current-financial-year" ||
-      period === "last-financial-year" || difference > 30
+      period === "last-financial-year" ||
+      period === "all-time" || difference > 30 
     ) {
       dateKey = format(date, "yyyy-MM");
     } else {
@@ -428,6 +437,11 @@ const getDateRange = (period: string, from: Date, to: Date) => {
         fromDate: new Date(now.getFullYear() - 1, 3, 1), // April 1st of the last year
         toDate: new Date(now.getFullYear(), 2, 31), // March 31st of the current year
       };
+    case "all-time": 
+      return {
+        fromDate: startOfYear(from),
+        toDate: endOfYear(now),
+      }
 
     case "custom": 
        return {
@@ -443,13 +457,31 @@ const getDateRange = (period: string, from: Date, to: Date) => {
 export const getAnalytics = async (
   organizationId: string,
   period = "current-month",
-  from: Date | null,
-  to: Date | null
+  customFromDate: Date | null,
+  customToDate: Date | null
 ) => {
   try {
+    let from = customFromDate
+    let to = customToDate
+    if(period == "all-time") {
+      const earliestData = await db.query.chatBotSchema.findFirst({
+        columns: {
+          createdAt: true
+        },
+        where: and(
+          eq(chatBotSchema.organizationId, organizationId),
+        ),
+        orderBy: [asc(chatBotSchema.createdAt)]
+    })
+      // console.log({ earliestData})
+      from = earliestData?.createdAt
+    }
+  //  return
+   console.log({ period, organizationId, from, to });
+
     const { fromDate, toDate } = getDateRange(period, from, to);
 
-    console.log({ organizationId, fromDate, toDate });
+    console.log({ period, organizationId, fromDate, toDate });
 
     const [
       orgData,
