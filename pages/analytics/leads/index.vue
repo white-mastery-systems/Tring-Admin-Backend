@@ -7,7 +7,7 @@
           placeholder=" Search Leads..." />
         <BotFilter v-model="filters.botId" />
         <StatusFilter @change="onStatusChange" />
-        <ActionFilter @changeAction="onActionChange" />
+        <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
       </div>
 
@@ -16,8 +16,8 @@
     <UiTabs default-value="all" class="w-full self-start">
       <UiTabsList class="grid w-[295px] grid-cols-3">
         <UiTabsTrigger value="all" @click="selectedChannel('all')"> All </UiTabsTrigger>
-        <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')"> What's App </UiTabsTrigger>
         <UiTabsTrigger value="website" @click="selectedChannel('website')"> Website </UiTabsTrigger>
+        <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')"> WhatsApp </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="all">
         <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="73"
@@ -207,7 +207,7 @@ const onStatusChange = (value: any) => {
     columnHelper.accessor("createdAt", {
       header: "Date Created",
       cell: ({ row }) =>
-        formatDate(new Date(row.original.createdAt), "dd.MM.yyyy"),
+        formatDate(new Date(row.original.createdAt), "dd MMM yyyy HH:MM aaa "),
     }),
     columnHelper.accessor("id", {
       header: "Action",

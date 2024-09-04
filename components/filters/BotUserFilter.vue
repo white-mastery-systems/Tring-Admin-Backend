@@ -8,6 +8,9 @@ const actionFilters = reactive([
   }, {
     content: "Without Name",
     value: "without_name",
+  }, {
+    content: "Interacted",
+    value: "interacted",
   }
 ]);
 
@@ -18,7 +21,7 @@ watch(selectedAction, (newValue) => {
 
 <template>
   <UiSelect v-model="selectedAction">
-    <UiSelectTrigger class="w-[110px] sm:w-[110px] md:w-[250px] lg:w-[250px] xl:w-[250px]">
+    <UiSelectTrigger class="w-[150px]">
       <UiSelectValue placeholder="Select a User" />
     </UiSelectTrigger>
     <UiSelectContent>
