@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { useForm } from "vee-validate";
-  // import { updateIntegrationById } from "../utils/apis/organization";
   const emit = defineEmits(["success"]);
   const integrationModalState = defineModel<{ open: boolean }>({
     default: {
@@ -93,20 +92,19 @@
     };
 
     if (integrationModalProps?.id) {
-      // await updateIntegrationById({
-      //   id: integrationModalProps.id,
-      //   integrationDetails: payload,
-      //   onSuccess: () => {
-      //     if (values.crm !== "sell-do")
-      //       window.open(
-      //         `https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=${scope}&redirect_uri=${url}&prompt=consent&access_type=offline`,
-      //         "_blank",
-      //       );
-      //     emit("success");
-      //   },
-      // });
-      //     emit("success");
-
+      await updateIntegrationById({
+        id: integrationModalProps.id,
+        integrationDetails: payload,
+        onSuccess: () => {
+          if (values.crm !== "sell-do")
+            window.open(
+              `https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=${scope}&redirect_uri=${url}&prompt=consent&access_type=offline`,
+              "_blank",
+            );
+          emit("success");
+        },
+      });
+      // emit("success");
     } else {
       await createIntegration({
         integrationDetails: payload,

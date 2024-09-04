@@ -45,6 +45,7 @@ export const updateIntegrationById = async ({
       },
     );
     onSuccess();
+    toast.success("Integration updated successfully");
 
     return createIntegration;
   } catch (err: any) {
