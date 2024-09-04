@@ -169,9 +169,8 @@
       </LazyUiDialog>
       <div v-for="(list, index) in dataList" :key="index">
         <NuxtLink
-          :to="`${list.routeName}`"
+          :to="{ name: list.routeName, params: { id: paramId.params.id } }"
           class="field_shadow mx-0 my-[17px] flex w-full cursor-pointer items-center justify-between rounded-[10px] bg-[#ffffff] px-[30px] py-[20px] text-[14px] hover:bg-[#fff8eb] hover:text-[#ffbc42]"
-          @click="botManagementDetails(list, index)"
         >
           <div class="flex w-full items-center gap-4 rounded-[10px]">
             <div class="flex flex-col space-y-2">
