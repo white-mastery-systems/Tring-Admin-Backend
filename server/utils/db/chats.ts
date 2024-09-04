@@ -28,7 +28,7 @@ export const listChats = async (organisationId: string, query: any) => {
       fromDate = queryDate?.from
       toDate = queryDate?.to
     }
-    console.log({ query })
+    // console.log({ query, fromDate, toDate })
 
    let chats = await db.query.chatSchema.findMany({
     where: and(
