@@ -169,9 +169,8 @@
       </LazyUiDialog>
       <div v-for="(list, index) in dataList" :key="index">
         <NuxtLink
-          :to="`${list.routeName}`"
+          :to="{ name: list.routeName, params: { id: paramId.params.id } }"
           class="field_shadow mx-0 my-[17px] flex w-full cursor-pointer items-center justify-between rounded-[10px] bg-[#ffffff] px-[30px] py-[20px] text-[14px] hover:bg-[#fff8eb] hover:text-[#ffbc42]"
-          @click="botManagementDetails(list, index)"
         >
           <div class="flex w-full items-center gap-4 rounded-[10px]">
             <div class="flex flex-col space-y-2">
@@ -206,7 +205,7 @@
   import { toast } from "vue-sonner";
   const router = useRouter();
   // const selectedValue = ref("Today");
-  const route = useRoute("bots-id");
+  const route = useRoute("bot-management-chat-bot-id");
   const paramId: any = route;
   const botDetails = ref(await getBotDetails(paramId.params.id));
   const deleteModalState = ref(false);
@@ -348,19 +347,19 @@
     if (activeDocuments.length === 0) {
       toast.error("Please add document to activate bot");
       return navigateTo({
-        name: "bots-id-documents",
+        name: "bot-management-chat-bot-id-documents",
         params: { id: paramId.params.id },
       });
     } else if (!botDetails.value.metadata?.prompt?.NAME) {
       toast.error("Please add bot configuration to activate bot");
       return navigateTo({
-        name: "bots-id-config",
+        name: "bot-management-chat-bot-id-config",
         params: { id: paramId.params.id },
       });
     } else if (!botDetails.value.metadata.ui?.logo) {
       toast.error("Please update bot user interface to activate bot");
       return navigateTo({
-        name: "bots-id-ui-customization",
+        name: "bot-management-chat-bot-id-ui-customization",
         params: { id: paramId.params.id },
       });
     }
