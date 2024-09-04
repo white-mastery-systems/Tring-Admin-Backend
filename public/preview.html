@@ -1,11 +1,231 @@
 <html>
   <head>
     <link rel="icon" href="favicon.png" type="image/png" />
-    <title>Tring Ai Chat Bot Preview</title>
+    <title>Tring AI Chat Bot Preview</title>
+    <style>
+      .chat-wrapper {
+        position: fixed;
+        bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: end;
+        gap: 10px;
+        z-index: 99999999 !important;
+      }
+
+      @media only screen and (max-width: 600px) {
+        .chat-wrapper {
+          bottom: 15px;
+          right: 20px;
+        }
+      }
+
+      /**chat circle styles**/
+
+      .chat-circle {
+        background-color: brand-color-bg;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: brand-color-bg 0px 5px 15px;
+        z-index: 99 !important;
+        overflow: hidden;
+      }
+
+      .chat-circle:hover {
+        transform: scale(1.1);
+      }
+
+      .chat-circle:active {
+        transform: scale(0.9);
+      }
+
+      .hide {
+        display: none;
+      }
+
+      .rotate-incoming {
+        animation-name: rotate-incoming;
+        animation-duration: 0.5s;
+        animation-iteration-count: 1;
+      }
+
+      .rotate-outgoing {
+        animation-name: rotate-outgoing;
+        animation-duration: 0.5s;
+        animation-iteration-count: 1;
+      }
+
+      .fade {
+        animation-name: fade;
+        animation-duration: 0.2s;
+        animation-iteration-count: 1;
+      }
+
+      /**button styles**/
+
+      .button {
+        position: relative;
+        right: -400px;
+        animation-name: button-incoming;
+        animation-duration: 0.5s;
+        animation-fill-mode: forwards;
+        padding: 5px 10px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        background-color: #fff;
+        border-radius: 8px;
+        cursor: pointer;
+        color: #000 !important;
+      }
+
+      /**chat widget styles**/
+      #chat-widget {
+        height: 80vh;
+        width: 380px;
+        border-radius: 10px;
+        border: none;
+        position: absolute;
+        bottom: 0px;
+        z-index: 100;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      }
+
+      @media only screen and (max-width: 600px) {
+        #chat-widget {
+          height: 80vh;
+          width: 100vw;
+          right: -20px;
+        }
+      }
+
+      @media only screen and (max-height: 500px) {
+        #chat-widget {
+          height: 60vh;
+        }
+      }
+
+      /**animations**/
+      @keyframes rotate-incoming {
+        0% {
+          transform: rotate(-90deg) scale(0);
+        }
+
+        100% {
+          transform: rotate(0deg) scale(1);
+        }
+      }
+
+      @keyframes rotate-outgoing {
+        0% {
+          transform: rotate(90deg) scale(0);
+        }
+
+        100% {
+          transform: rotate(0deg) scale(1);
+        }
+      }
+
+      @keyframes fade {
+        0% {
+          opacity: 0;
+        }
+
+        100% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes pop-out-msg {
+        0%,
+        60% {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+
+        100% {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .chat-popup-wrapper {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      @media only screen and (max-width: 350px) {
+        .chat-popup-wrapper {
+          flex-direction: column;
+          align-items: end;
+        }
+      }
+
+      .tring-float-tooltip {
+        animation: pop-out-msg 600ms cubic-bezier(0.165, 0.84, 0.44, 1);
+        background-color: #fff;
+        border-radius: 5px;
+        bottom: 0;
+        box-shadow: 1px 1px 10px -1px #aaa;
+        line-height: 1.3;
+        margin: auto;
+        max-width: 300px;
+        min-width: 200px;
+        padding: 10px 15px;
+        bottom: 0px;
+        right: 60px;
+        white-space: nowrap;
+        position: absolute;
+      }
+
+      .tring-float-tooltip:before {
+        background-color: inherit;
+        bottom: 0;
+        box-shadow: -2px -2px 5px 0 rgba(0, 0, 0, 0.08);
+        content: "";
+        height: 10px;
+        margin: auto;
+        position: absolute;
+        right: -5px;
+        top: 0;
+        transform: rotate(135deg);
+        width: 10px;
+        z-index: 1;
+      }
+
+      @media only screen and (max-width: 350px) {
+        .tring-float-tooltip:before {
+          margin: 0px;
+          margin-top: auto;
+          translate: -20px 4.5px;
+          rotate: 90deg;
+        }
+      }
+
+      .tring-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #121212;
+      }
+
+      .tring-subtitle {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 5px;
+        margin-top: 5px;
+        white-space: nowrap;
+        color: #666;
+      }
+    </style>
   </head>
   <body>
     <script>
-      console.log("HII");
       const urlArray = window.location.search?.replace("?", "")?.split("&");
       const script = document.createElement("script");
 
