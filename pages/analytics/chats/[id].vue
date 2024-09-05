@@ -193,7 +193,6 @@
   const chatScreenRef = ref(null);
   const scrollChatBox = () => {
     setTimeout(() => {
-      console.log(chatScreenRef.value);
       if (chatScreenRef.value)
         chatScreenRef.value.scrollTop = chatScreenRef?.value?.scrollHeight;
     }, 1000);

@@ -20,11 +20,10 @@ const login = async (values: Record<string, any>) => {
       method: "post",
       body: values,
     });
-    console.log(data);
+
     return navigateTo("/");
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
-    console.log(error);
   }
 };
 
@@ -39,7 +38,6 @@ const signup = async (values: Record<string, any>) => {
     return navigateTo(data);
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
-    console.log(error);
   }
 };
 

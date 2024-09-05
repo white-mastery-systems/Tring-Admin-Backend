@@ -54,22 +54,29 @@
         name: "",
       },
     });
-  console.log({ errors: errors?.value });
+
   const [name, nameAttrs] = defineField("name");
   const [crmField, crmFieldAttrs] = defineField("crm");
   const [apiKeyField, apiKeyFieldAttrs] = defineField("metaData.apiKey");
-
+  // onMounted(() => {
+  //     resetForm({
+  //       values: {
+  //         name: "",
+  //       },
+  //     });
+  //   });
   watch(
     () => integrationModalState.value.open,
     async (isOpen) => {
-      resetForm();
       const integrationDetails = await $fetch(
         `/api/org/integrations/${integrationModalProps.id}`,
       );
       setFieldValue("name", integrationDetails?.name);
       setFieldValue("crm", integrationDetails?.crm);
       if (integrationDetails?.crm === "sell-do") {
-        setFieldValue("metaData.apiKey", integrationDetails?.metaData?.apiKey);
+        setFieldValue("metaData", {
+          apiKey: integrationDetails?.metadata?.apiKey,
+        });
       } else if (integrationDetails?.crm === "zoho-crm") {
       } else if (integrationDetails?.crm === "zoho-bigin") {
       }
@@ -137,17 +144,19 @@
       <UiFormField v-model="name" v-bind="nameAttrs" name="name">
         <UiFormItem class="w-full">
           <UiFormLabel
-            >Name <UiLabel class="text-lg text-red-500">*</UiLabel>
+            >Name <UiLabel class="text-lg text-red-700">*</UiLabel>
           </UiFormLabel>
           <UiFormControl>
             <UiInput
+              :class="errors?.name ? 'border-red-700' : ''"
               type="text"
               v-model="name"
               v-bind="nameAttrs"
               placeholder="Eg: CRM-your company,CRM-your company"
             />
           </UiFormControl>
-          <UiFormMessage />
+          <p class="mt-0 text-sm text-red-700">{{ errors?.name }}</p>
+          <!-- <UiFormMessage v-model="name" v-bind="nameAttrs" /> -->
           <span class="text-xs text-gray-500"
             >Enter a unique identification for CRM integration</span
           >

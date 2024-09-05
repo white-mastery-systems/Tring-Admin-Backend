@@ -36,8 +36,6 @@ export async function getAccessToken() {
 export async function fetchFromZohoApi(accessToken: string, webHookId: string) {
   const apiUrl = `https://www.zohoapis.in/billing/v1/hostedpages/${webHookId}`;
   try {
-    console.log("Attempting to fetch from Zoho API...", credentials.access_token);
-    console.log("Credentials:", credentials);
     const response = await $fetch<ZohoHostedPageApiResponse>(apiUrl, {
       method: "GET",
       headers: {
@@ -46,7 +44,7 @@ export async function fetchFromZohoApi(accessToken: string, webHookId: string) {
         "Content-Type": "application/json",
       },
     });
-    console.log("Successfully fetched data from Zoho API");
+
     return response;
   } catch (error) {
     console.error("Error in fetchFromZohoApi:", error);
@@ -54,7 +52,6 @@ export async function fetchFromZohoApi(accessToken: string, webHookId: string) {
     if (error instanceof Error) {
       const response = (error as any).response;
       if (response && response.status === 401) {
-        console.log("Token expired, refreshing token...");
         const newAccessToken = await getAccessToken();
         credentials.access_token = newAccessToken;
         writeFileSync(

@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
     },
     [body.intent]: body.link,
   };
-  console.log({ metaData });
+
   await updateBotDetails(botId, {
     metadata: metaData,
   });

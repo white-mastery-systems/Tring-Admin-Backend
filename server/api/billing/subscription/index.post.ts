@@ -1,68 +1,127 @@
-export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  console.log({ body });
-  // const http = require("https");
-  interface zohoConfigInterface {
+import {
+  adminConfigurationSchema,
+  adminPricingSchema,
+} from "~/server/schema/admin";
+interface zohoConfigInterface {
+  metaData: {
     client_id: string;
     client_secret: string;
     refresh_token: string;
     access_token: string;
     organization_id: string;
     code: string;
-  }
-  const zohoConfig: zohoConfigInterface = {
-    client_id: "1000.IO80PNY7SQHW30W8MYY6LNBQ1DDXOG",
-    client_secret: "0a4e4038a27157eb725527ba14f44952443d5aee4b",
-    organization_id: "60031670124",
-    code: "1000.27b82da2be8a1703b0ebc2d1e719dd17.b20bc7c290d964befeec526f2cc8f87f",
-    refresh_token:
-      "1000.503a26dbdb9d341009471790910379ac.f3df7ab33a8abda7852324457a57f6a4",
-    access_token:
-      "1000.9ad25fd0981458fbebeb41b1ca451a73.c2ed0f26ffb16ef889e4899a8ce6ea53",
   };
-  const access_token = async () => {
-    try {
-      //       const generatedAuthResponse: any = await $fetch(
-      //         `https://accounts.zoho.in/oauth/v2/token?client_id=${zohoConfig.client_id}&client_secret=${zohoConfig.client_secret}&grant_type=authorization_code&code=${zohoConfig.code}`,
-      //         { method: "POST" },
-      //       );
-      //       console.log({ generatedAuthResponse });
-      // return generatedAuthResponse;
-      return await $fetch(
-        `https://accounts.zoho.in/oauth/v2/token?client_id=${zohoConfig.client_id}&grant_type=refresh_token&client_secret=${zohoConfig.client_secret}&refresh_token=${zohoConfig.refresh_token}`,
-      );
-    } catch (err: any) {
-      console.log({ err: err.message });
+}
+export default defineEventHandler(async (event) => {
+  const body = await readBody(event);
+
+  // const http = require("https");
+
+  const db = useDrizzle();
+  try {
+    const zohoData: any = await db.query.adminConfigurationSchema.findFirst({
+      where: eq(adminConfigurationSchema.id, 1),
+    });
+    let metaData = {
+      ...zohoData.metaData,
+    };
+    // const userId = event.context.user?.id;
+    const organizationId = (await isOrganizationAdminHandler(event)) as string;
+    const orgDetails = await db.query.organizationSchema.findFirst({
+      where: eq(organizationSchema.id, organizationId),
+    });
+    console.log({ orgDetails });
+    if (orgDetails?.planCode) {
+      const planDetails = await db.query.adminPricingSchema.findFirst({
+        where: eq(adminPricingSchema.planCode, orgDetails?.planCode),
+      });
+      console.log({ planCode });
     }
-  };
-  console.log({ access_token: await access_token() });
 
-  const options = {
-    method: "POST",
-    hostname: "www.zohoapis.com",
-    port: null,
-    path: "/billing/v1/hostedpages/newsubscription",
-    headers: {
-      "X-com-zoho-subscriptions-organizationid": zohoConfig.organization_id,
-      Authorization: `Zoho-oauthtoken ${zohoConfig.access_token}`,
-      "content-type": "application/json",
-    },
-  };
+    const regerateAccessToken = async () => {
+      try {
+        console.log(
+          `https://accounts.zoho.in/oauth/v2/token?client_id=${metaData?.client_id}&grant_type=refresh_token&client_secret=${metaData?.client_secret}&refresh_token=${metaData?.refresh_token}`,
+        );
+        const newAuthInfo: any = await $fetch(
+          `https://accounts.zoho.in/oauth/v2/token?client_id=${metaData?.client_id}&grant_type=refresh_token&client_secret=${metaData?.client_secret}&refresh_token=${zohoData?.metaData?.refresh_token}`,
+          {
+            method: "POST",
+          },
+        );
+        metaData = { ...metaData, ...newAuthInfo };
+        await db
+          .update(adminConfigurationSchema)
+          .set({ metaData: metaData })
+          .where(eq(adminConfigurationSchema.id, 1));
+        return newAuthInfo;
+      } catch (err: any) {
+        console.log(err.status, "ERRO ON AUTH");
+      }
+    };
 
-  // const req = http.request(options, function (res) {
-  //   const chunks = [];
+    try {
+      const generatedHostedPage = await await $fetch(
+        "https://www.zohoapis.in/billing/v1/hostedpages/newsubscription",
+        {
+          method: "POST",
+          headers: {
+            "X-com-zoho-subscriptions-organizationid":
+              zohoData?.metaData.organization_id,
+            Authorization: `Zoho-oauthtoken ${zohoData?.metaData.access_token}`,
+            "content-type": "application/json",
+          },
+          body: {
+            customer: {
+              display_name: "Joseph P A",
+              salutation: "Mr.",
+              first_name: "Joseph",
+              last_name: "Ambattu",
+              email: "benjamin.george@bowmanfurniture.com",
+              company_name: "Bowman Furniture",
+              billing_address: {
+                attention: "Benjamin George",
+                street: "Harrington Bay Street",
+                city: "Salt Lake City",
+                state: "CA",
+                country: "U.S.A",
+                zip: "92612",
+                fax: "4527389",
+              },
+              shipping_address: {
+                attention: "Benjamin George",
+                street: "Harrington Bay Street",
+                city: "Salt Lake City",
+                state: "CA",
+                country: "U.S.A",
+                zip: "92612",
+                fax: "4527389",
+              },
+            },
+            plan: {
+              plan_code: body.plan,
+            },
+            redirect_url: "http://www.zillum.com/products/piperhost",
+            payment_gateways: [
+              {
+                payment_gateway: "razorpay",
+              },
+            ],
+          },
+        },
+      );
+      console.log({ generatedHostedPage });
+      return generatedHostedPage;
+    } catch (err: any) {
+      console.log("ERRRO HAPPEND", err.status, err.data);
 
-  //   res.on("data", function (chunk) {
-  //     chunks.push(chunk);
-  //   });
+      if (err.status === 401) {
+        const response = await regerateAccessToken();
+      }
+    }
+  } catch (err) {
+    if (err instanceof Error) console.log(err.message, "message");
+  }
 
-  //   res.on("end", function () {
-  //     const body = Buffer.concat(chunks);
-  //     console.log(body.toString());
-  //   });
-  // });
-
-  // req.write(JSON.stringify({ field1: "value1", field2: "value2" }));
-  // req.end();
   return { success: "true" };
 });

@@ -191,7 +191,7 @@
 
   // const onSubmit = handleSubmit((values) => {
   //   // pretty print the values object
-  //   console.log({ values });
+  //
   //   actions.setValues({ email: "value", password: "hi" });
   // });
 
@@ -211,17 +211,15 @@
     () => modalState.value.open,
     async (isOpen) => {
       if (isOpen && modalProps.id) {
-        console.log("Modal opened with ID:", modalProps.id);
         try {
           const crmConfigData = await $fetch<any>(
             `/api/bots/${route.params.id}/integrations/${modalProps.id}`,
           );
-          console.log("Fetched CRM config data:", crmConfigData);
+
           setFieldValue("newBotName", "John");
 
           // Assuming crmConfigData.data contains the relevant information
           if (crmConfigData) {
-            console.log({ crmConfigData });
             setFieldValue("integrationId", crmConfigData.id);
 
             // Set other fields based on the CRM type
@@ -251,7 +249,6 @@
   );
 
   const handlePipelineChange = async (e: any) => {
-    console.log({ e, piipe: pipelines.value });
     // stages.value pipelines.value.map((pipeline: any) => {
     //     return pipeline.id === e;
     //   });
@@ -277,7 +274,6 @@
     const matchedCRM: any = integrationsData?.value?.find(
       (integration: any) => {
         if (integration.id === e) {
-          console.log({ integration });
           return integration;
         }
       },
@@ -306,7 +302,7 @@
   const handleAddIntegration = (value: any) => {
     let pipelineObj: any = {};
     let layoutObj: any = {};
-    console.log({ value });
+
     if (value?.pipelineId) {
       let pipelineData = pipelines.value.find(
         (pipeline: any) => pipeline.id === value.pipelineId,
@@ -315,7 +311,7 @@
         ?.find((section: any) => section.api_name === "Pipeline Information")
         ?.fields?.find((field: any) => field.field_label === "Stage")
         ?.pick_list_values?.find((list: any) => list.id === value.stageId);
-      console.log({ stage });
+
       pipelineObj = {
         Stage: stage.reference_value,
         id: stage.id,
@@ -328,7 +324,7 @@
       const layoutData: any = layouts.value.find(
         (pipeline: any) => pipeline.id === value.layoutId,
       );
-      console.log({ layoutData });
+
       layoutObj = { name: layoutData.name, id: layoutData.id };
     }
 

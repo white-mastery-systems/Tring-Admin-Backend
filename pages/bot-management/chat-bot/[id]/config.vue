@@ -95,7 +95,6 @@
   const defaultFormValues = botDetails.metadata.prompt;
 
   const handleUpdateBotConfig = async (values: any) => {
-    console.log({ values });
     const payload: any = {
       id: botDetails.id,
       metadata: {

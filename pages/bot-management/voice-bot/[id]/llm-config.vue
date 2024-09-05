@@ -281,7 +281,6 @@
   const botDetails: any = await getBotDetails(route.params.id);
 
   const handleLLMConfig = async (values: any) => {
-    console.log(values);
     const payload: any = {
       provider: values.provider,
       model: values.model,

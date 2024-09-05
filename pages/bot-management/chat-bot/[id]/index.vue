@@ -323,14 +323,12 @@
   };
 
   const singleDocumentDeploy = async (list: any) => {
-    console.log("Bot Id", paramId.params.id);
     await deployDocument(paramId.params.id, list.id);
     botDetails.value = await getBotDetails(paramId.params.id);
   };
 
   const handleDelete = () => {
     deleteModalState.value = true;
-    console.log(deleteModalState.value, "deleteModalState");
   };
 
   const handleDeleteBot = () => {
@@ -343,7 +341,7 @@
     const activeDocuments = botDetails.value.documents.filter(
       (d) => d.status === "ready",
     );
-    console.log(botDetails.value, "NAME");
+
     if (activeDocuments.length === 0) {
       toast.error("Please add document to activate bot");
       return navigateTo({

@@ -37,9 +37,7 @@
           toast.error("unsupported file type");
         }
         // _.value = URL.createObjectURL(file.value[0]);
-      } catch (err) {
-        console.log("error", err);
-      }
+      } catch (err) {}
     } else {
       _.value = file.value;
     }

@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const baseUrl = getHeader(event, "origin");
-  console.log({ baseUrl });
+
   const fileData = formData.find(({ name }) => name === "logo");
   if (!fileData?.data)
     return sendError(

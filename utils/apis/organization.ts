@@ -113,7 +113,7 @@ export const deleteIntegration = async ({
         method: "DELETE",
       },
     );
-    console.log("hi");
+
     onSuccess();
     toast.success("Integration removed successfully");
 

@@ -15,7 +15,7 @@ const chatQueryValidator = z
       .transform((val) => (val ? new Date(val) : null)),
     q: z.string().optional(),
     period: z.string().optional(),
-    botUserName: z.string().optional()
+    botUserName: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -30,10 +30,9 @@ const chatQueryValidator = z
     },
   );
 
-
 export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const query = await isValidQueryHandler(event, chatQueryValidator);
-  console.log({ query });
+
   return await listChats(organizationId, query);
 });

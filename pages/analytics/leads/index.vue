@@ -2,9 +2,11 @@
   <Page title="Leads" :disableSelector="false" :disable-back-button="true">
     <div class="flex items-center justify-between gap-2 overflow-x-scroll pb-4">
       <div class="flex items-center gap-2">
-        <UiInput v-model="filters.q"
-          class="max-w-[130px] sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]  focus-visible:ring-0 focus-visible:ring-offset-0"
-          placeholder=" Search Leads..." />
+        <UiInput
+          v-model="filters.q"
+          class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+          placeholder=" Search Leads..."
+        />
         <BotFilter v-model="filters.botId" />
         <StatusFilter @change="onStatusChange" />
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
@@ -15,33 +17,60 @@
     </div>
     <UiTabs default-value="all" class="w-full self-start">
       <UiTabsList class="grid w-[295px] grid-cols-3">
-        <UiTabsTrigger value="all" @click="selectedChannel('all')"> All </UiTabsTrigger>
-        <UiTabsTrigger value="website" @click="selectedChannel('website')"> Website </UiTabsTrigger>
-        <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')"> WhatsApp </UiTabsTrigger>
+        <UiTabsTrigger value="all" @click="selectedChannel('all')">
+          All
+        </UiTabsTrigger>
+        <UiTabsTrigger value="website" @click="selectedChannel('website')">
+          Website
+        </UiTabsTrigger>
+        <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')">
+          WhatsApp
+        </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="all">
-        <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="73"
-          height-unit="vh" @row-click="(row: any) => {
-              console.log({ row });
+        <DataTable
+          :data="leads"
+          :is-loading="isDataLoading"
+          :columns="columns"
+          :page-size="8"
+          :height="73"
+          height-unit="vh"
+          @row-click="
+            (row: any) => {
               navigateTo(`leads/${row.original.chatId}`);
             }
-            " />
+          "
+        />
       </UiTabsContent>
       <UiTabsContent value="whatsapp">
-        <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="73"
-          height-unit="vh" @row-click="(row: any) => {
-            console.log({ row });
-            navigateTo(`leads/${row.original.chatId}`);
-          }
-            " />
+        <DataTable
+          :data="leads"
+          :is-loading="isDataLoading"
+          :columns="columns"
+          :page-size="8"
+          :height="73"
+          height-unit="vh"
+          @row-click="
+            (row: any) => {
+              navigateTo(`leads/${row.original.chatId}`);
+            }
+          "
+        />
       </UiTabsContent>
       <UiTabsContent value="website">
-        <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="73"
-          height-unit="vh" @row-click="(row: any) => {
-            console.log({ row });
-            navigateTo(`leads/${row.original.chatId}`);
-          }
-            " />
+        <DataTable
+          :data="leads"
+          :is-loading="isDataLoading"
+          :columns="columns"
+          :page-size="8"
+          :height="73"
+          height-unit="vh"
+          @row-click="
+            (row: any) => {
+              navigateTo(`leads/${row.original.chatId}`);
+            }
+          "
+        />
       </UiTabsContent>
     </UiTabs>
   </Page>
@@ -49,12 +78,11 @@
 <script setup lang="ts">
   import { Icon, UiBadge, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
-  import { useRouter, useRoute } from 'vue-router';
+  import { useRouter, useRoute } from "vue-router";
 
   definePageMeta({
     middleware: "admin-only",
   });
-  
 
   const router = useRouter();
   const route = useRoute();
@@ -73,7 +101,6 @@
         .map((lead) =>
           columns
             .map((col) => {
-              console.log({ col });
               let cellValue = lead[col.accessorKey];
 
               // Escape commas and quotes
@@ -117,7 +144,7 @@
     period: string;
     status: string;
     channel: any;
-    action: string,
+    action: string;
   }>({
     botId: "",
     q: undefined,
@@ -129,10 +156,9 @@
     action: "",
   });
 
-
   watchEffect(() => {
     if (filters.botId === "all") filters.botId = "";
-    });
+  });
   const { status, data: leads } = await useLazyFetch("/api/org/leads", {
     server: false,
     query: filters,
@@ -148,27 +174,25 @@
   };
 
   const onDateChange = (value: any) => {
-    console.log("from index", { value });
     if (value.from && value.to) {
       filters.from = value.from;
       filters.to = value.to;
-    } 
-    else {
-      delete filters.from
-      delete filters.to
-      filters.period = value
+    } else {
+      delete filters.from;
+      delete filters.to;
+      filters.period = value;
     }
   };
-const onActionChange = (value: any) => {
-  if (value) {
-   filters.action = value
-  }
-}
-const onStatusChange = (value: any) => {
-  if (value) {
-    filters.status = value
-  }
-}
+  const onActionChange = (value: any) => {
+    if (value) {
+      filters.action = value;
+    }
+  };
+  const onStatusChange = (value: any) => {
+    if (value) {
+      filters.status = value;
+    }
+  };
 
   const columnHelper = createColumnHelper<(typeof leads.value)[0]>();
   const columns = [
@@ -219,9 +243,9 @@ const onStatusChange = (value: any) => {
         ),
     }),
   ];
-const selectedChannel = (value: any) => {
-  if (value) {
-    filters.channel = value
-  }
-}
+  const selectedChannel = (value: any) => {
+    if (value) {
+      filters.channel = value;
+    }
+  };
 </script>

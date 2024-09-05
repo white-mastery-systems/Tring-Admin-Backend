@@ -111,7 +111,6 @@
   const route = useRoute();
   const modalOpen = ref(false);
   onMounted(async () => {
-    console.log(route.path, "route");
     // if (route.path === '/') {
     //   // await navigateTo('/dashBoard')
     // }

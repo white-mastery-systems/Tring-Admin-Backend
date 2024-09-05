@@ -314,9 +314,8 @@
       },
     };
     await updateBotDetails(payload);
-    console.log({ value: typeof value.logo });
+
     if (value.logo?.length > 0 && typeof value.logo === "object") {
-      console.log("HIIII");
       await uploadLogo(botDetails.id, value.logo![0]);
     }
 

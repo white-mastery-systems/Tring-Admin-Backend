@@ -18,7 +18,6 @@ export const loadKnowledgeBase = async (
   question: string,
   documentId: string,
 ) => {
-  console.log("loading", question, documentId);
   try {
     const knowledge = await $fetch("/api/playground/knowledge", {
       method: "POST",

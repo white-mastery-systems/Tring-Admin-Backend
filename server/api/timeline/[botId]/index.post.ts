@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     event,
     checkPayloadId("botId"),
   );
-  console.log({ botId });
+
   // name: (schema) =>
   //   schema.name.min(3, "Name Too Short").max(64, "Name Too Long"),
   const userId = getCookie(event, "user_id") ?? null;
@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
   // // // Validate Body
   // const body = await isValidBodyHandler(event, zodInsertTimelineSchema);
-  // console.log({ body, userId });
+  //
   try {
     const bot = await createTimeline({
       org_id: chatDetails?.organizationId,

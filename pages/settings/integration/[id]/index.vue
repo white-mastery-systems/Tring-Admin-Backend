@@ -6,10 +6,6 @@
 <script setup lang="ts">
   const route = useRoute();
   onMounted(async () => {
-    console.log({ route: route.query, asdf: route.params });
-    console.log(route?.query?.code, "route.query.code");
-    console.log(route?.query?.location, "location");
-    console.log(route?.query["accounts-server"], "accounts");
     if (
       route?.query?.code &&
       route?.query?.location &&

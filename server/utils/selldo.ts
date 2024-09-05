@@ -38,7 +38,6 @@ export const createLeadInSellDo = async (
 
       if (response.sell_do_lead_id.length > 0) return response.sell_do_lead_id;
 
-      console.log("Lead creation failed, retrying in 5 seconds...");
       await sleep(5000);
     } catch (e) {
       console.error(e);
