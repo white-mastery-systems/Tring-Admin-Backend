@@ -44,75 +44,57 @@
       </div>
     </template>
     <div>
-      <div
-        class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4"
-      >
-        <div
-          v-if="false"
-          class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
-        >
-          <div class="rounded-md bg-[#ffbc42] p-2">
-            <BotIcon />
-          </div>
-          <div>
-            <div class="mb-1 text-[16px] font-semibold text-gray-500">
-              Chat Bots
-            </div>
-            <div class="text-3xl font-extrabold text-black">
-              {{ analyticsData?.bots }}
-            </div>
-          </div>
-        </div>
-        <StatusCountCard
-          :icon="ChatSession"
-          title="Chat sessions"
-          :count="analyticsData?.chats"
-        />
-        <StatusCountCard
-          :icon="SingleUser"
-          title="Unique visitors"
-          :count="analyticsData?.users"
-        />
+      <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <StatusCountCard :icon="ChatSession" title="Chat sessions" :count="analyticsData?.chats" :loading="loading" />
+        <StatusCountCard :icon="SingleUser" title="Unique visitors" :count="analyticsData?.users" :loading="loading" />
 
-        <StatusCountCard
-          :icon="ChatSession"
-          title="Interacted Chats"
-          :count="analyticsData?.interactedChats[0]?.count ?? 0"
-        />
+        <StatusCountCard :icon="ChatSession" title="Interacted Chats"
+          :count="analyticsData?.interactedChats[0]?.count ?? 0" :loading="loading" />
 
-        <StatusCountCard
-          :icon="Leads"
-          title="Chat Leads"
-          :count="analyticsData?.leads"
-        />
 
-        <StatusCountCard
-          :icon="ChatSession"
-          title="Calls Scheduled"
-          :count="analyticsData?.callScheduledTimeline[0]?.count ?? 0"
-        />
-        <StatusCountCard
-          :icon="ChatSession"
-          title="Site Visits"
-          :count="analyticsData?.siteVisitTimeline[0]?.count ?? 0"
-        />
-        <StatusCountCard
-          :icon="ChatSession"
-          title="Virtual Tours"
-          :count="analyticsData?.virtualTourTimeline[0]?.count ?? 0"
-        />
-        <StatusCountCard
-          :icon="ChatSession"
-          title="Location Visited"
-          :count="analyticsData?.locationTimeline[0]?.count ?? 0"
-        />
+        <StatusCountCard :icon="Leads" title="Chat Leads" :count="analyticsData?.leads" :loading="loading" />
+
+
+        <StatusCountCard :icon="ChatSession" title="Calls Scheduled"
+          :count="analyticsData?.callScheduledTimeline[0]?.count ?? 0" :loading="loading" />
+        <StatusCountCard :icon="ChatSession" title="Site Visits"
+          :count="analyticsData?.siteVisitTimeline[0]?.count ?? 0" :loading="loading" />
+        <StatusCountCard :icon="ChatSession" title="Virtual Tours"
+          :count="analyticsData?.virtualTourTimeline[0]?.count ?? 0" :loading="loading" />
+        <StatusCountCard :icon="ChatSession" title="Location Visited"
+          :count="analyticsData?.locationTimeline[0]?.count ?? 0" :loading="loading" />
       </div>
 
-      <Line
-        class="shadow-md relative mt-4 w-full place-content-center rounded-md bg-white"
-        :data="chartData"
-        :options="chartOptions"
-      />
+      <!-- <div class="relative">
+        <div
+          class="field_shadow my-8 flex h-[59vh] gap-6 rounded-[10px] pb-[20px]"
+        >
+          <div class="relative w-full place-content-center rounded-md bg-white">
+            <UiLineChart
+              :data="lineGraphData"
+              index="month"
+              :categories="['Leads Created', 'Sessions Created']"
+              :colors="['#424bd1', '#ffbc42']"
+              :show-grid-line="true"
+              :show-tooltip="true"
+              :margin="{ right: 20 }"
+              :y-formatter="
+                (tick: any) => {
+                  return typeof tick === 'number'
+                    ? `${new Intl.NumberFormat('us').format(tick).toString()}`
+                    : '';
+                }
+              "
+              class="h-[380px] w-full"
+            />
+          </div>
+        </div>
+      </div> -->
+      <Line v-if="!loading" class="shadow-md relative mt-4 w-full place-content-center rounded-md bg-white"
+        :data="chartData" :options="chartOptions" />
+      <div v-else class="flex flex-col space-y-3 mt-4">
+        <UiSkeleton class="w-[100%] rounded-xl h-screen-minus-14" />
+      </div>
       <!-- <Bar id="my-chart-id" :options="chartOptions" :data="chartData" /> -->
     </div>
   </Page>
@@ -143,54 +125,45 @@
     CategoryScale,
   );
 
-  const selectedValue: any = ref("last-30-days");
-  const analyticsData = ref();
-  const dateFilters = reactive([
-    {
-      content: "Today",
-      value: "today",
-    },
-    {
-      content: "Yesterday",
-      value: "yesterday",
-    },
-    {
-      content: "Last 7 days",
-      value: "last-7-days",
-    },
-    {
-      content: "Last 30 days",
-      value: "last-30-days",
-    },
-    {
-      content: "Current month",
-      value: "current-month",
-    },
-    {
-      content: "Last month",
-      value: "last-month",
-    },
-    {
-      content: "Current year",
-      value: "current-year",
-    },
-    {
-      content: "Last year",
-      value: "last-year",
-    },
-    {
-      content: "Current financial year",
-      value: "current-financial-year",
-    },
-    {
-      content: "Last financial year",
-      value: "last-financial-year",
-    },
-    {
-      content: "All time",
-      value: "all-time",
-    },
-  ]);
+const selectedValue: any = ref("last-30-days");
+const analyticsData = ref();
+const loading = ref(false);
+const dateFilters = reactive([
+  {
+    content: "Today",
+    value: "today",
+  }, {
+    content: "Yesterday",
+    value: "yesterday",
+  }, {
+    content: "Last 7 days",
+    value: "last-7-days",
+  }, {
+    content: "Last 30 days",
+    value: "last-30-days",
+  }, {
+    content: "Current month",
+    value: "current-month",
+  }, {
+    content: "Last month",
+    value: "last-month",
+  }, {
+    content: "Current year",
+    value: "current-year",
+  }, {
+    content: "Last year",
+    value: "last-year",
+  }, {
+    content: "Current financial year",
+    value: "current-financial-year",
+  }, {
+    content: "Last financial year",
+    value: "last-financial-year",
+  }, {
+    content: "All time",
+    value: "all-time",
+  },
+]);
   const labels = ref([
     "January",
     "February",
@@ -312,18 +285,22 @@
   // const getButtonName = ref("Get Started");
 
   watch(selectedValue, async (period) => {
-    filter.period = period;
-    if (period != "custom") {
-      delete filter.from;
-      delete filter.to;
-    }
-    // if ((filter.period === 'custom') && !(filter.from)) {
-    //     const date = new Date()
-    //     filter.from = date.toISOString()
-    //     filter.to = date.toISOString();
-    // }
-    const data = await getAnalyticsData(filter);
+    filter.period = period
+    if (period != 'custom') {
+      delete filter.from
+      delete filter.to
+    } 
+    // const data = await getAnalyticsData(filter);
+    loading.value = true;
 
+    try {
+      const data = await getAnalyticsData(filter);
+      analyticsData.value = data;
+    } catch (error) {
+      console.error('Failed to fetch analytics data:', error);
+    } finally {
+      loading.value = false;
+    }
     analyticsData.value = data;
   });
 

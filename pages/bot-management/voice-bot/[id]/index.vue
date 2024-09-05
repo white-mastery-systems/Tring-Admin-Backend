@@ -255,7 +255,7 @@
     },
     {
       _id: 5,
-      bot: "Intent Configuration",
+      bot: "Default Intents",
       helperText:
         "Define the intents that the voice bot will recognize and respond to during interactions with users.",
       routeName: "bot-management-voice-bot-id-intent-config",
