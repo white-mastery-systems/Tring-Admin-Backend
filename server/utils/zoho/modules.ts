@@ -10,7 +10,7 @@ export function getAllPipelinesFromZohoBigin({
   integrationData: any;
 }) {
   // "https://www.zohoapis.in/bigin/v2/Pipelines?fields=Sub_Pipeline,Pipeline,Stage",
-  console.log(token, "token");
+
   const data: any = $fetch<any>(
     "https://www.zohoapis.in/bigin/v1/settings/layouts?module=Pipelines",
     {
@@ -19,7 +19,6 @@ export function getAllPipelinesFromZohoBigin({
       },
     },
   ).catch((err: any) => {
-    console.log("err", JSON.stringify(err.data));
     if (!refreshToken) return;
     if (err.status === 401) {
       return regenearateTokenWithRefreshToken({
@@ -58,14 +57,13 @@ export async function generateLeadInZohoBigin({
     body,
     integrationData,
   });
-  // console.log({ fieldMetadata: JSON.stringify(fieldMetadata) });
+  //
   let bodyData = {
     ...body,
   };
   fieldMetadata?.fields?.map((field) => {
     if (field?.view_type?.create === true) {
       if (bodyData[field?.api_name] === undefined) {
-        console.log(field?.api_name, "API NAME");
         switch (field.data_type) {
           case "text":
             bodyData[field?.api_name] = "DEFAULT_TRING";
@@ -96,7 +94,7 @@ export async function generateLeadInZohoBigin({
       }
     }
   });
-  console.log(JSON.stringify(bodyData));
+
   return $fetch("https://www.zohoapis.in/bigin/v2/Pipelines", {
     method: "POST",
     body: { data: [bodyData] },
@@ -104,7 +102,6 @@ export async function generateLeadInZohoBigin({
       Authorization: `Zoho-oauthtoken ${token}`,
     },
   }).catch((err) => {
-    console.log({ err: JSON.stringify(err.data), errds: err.status });
     if (!refreshToken) return;
     if (err.status === 401) {
       regenearateTokenWithRefreshToken({
@@ -144,7 +141,6 @@ export async function generateContactInZohoBigin({
       Authorization: `Zoho-oauthtoken ${token}`,
     },
   }).catch((err) => {
-    console.log("err", JSON.stringify(err.data));
     if (!refreshToken) return;
     if (err.status === 401) {
       regenearateTokenWithRefreshToken({
@@ -186,7 +182,6 @@ export function getFieldMetadataFromZohoBigin({
       },
     },
   ).catch((err) => {
-    console.log("err", JSON.stringify(err.data));
     if (!refreshToken) return;
     if (err.status === 401) {
       regenearateTokenWithRefreshToken({
@@ -228,7 +223,6 @@ export function getAllLayoutsFromZohoCRM({
       },
     },
   ).catch((err: any) => {
-    console.log("err", JSON.stringify(err.data));
     if (!refreshToken) return;
     if (err.status === 401) {
       return regenearateTokenWithRefreshToken({
@@ -266,7 +260,6 @@ export function getFieldMetadataFromZohoCRM({
       Authorization: `Zoho-oauthtoken ${token}`,
     },
   }).catch((err) => {
-    console.log("err", JSON.stringify(err.data));
     if (!refreshToken) return;
     if (err.status === 401) {
       regenearateTokenWithRefreshToken({
@@ -298,23 +291,21 @@ export async function generateLeadInZohoCRM({
   body: any;
   integrationData: any;
 }) {
-  console.log({ body: JSON.stringify(body) });
   const fieldMetadata = await getFieldMetadataFromZohoCRM({
     token,
     refreshToken,
     body,
     integrationData,
   });
-  // console.log({ fieldMetadata: JSON.stringify(fieldMetadata) });
+  //
 
   let bodyData = {
     ...body,
   };
-  console.log("REACHED HERE", bodyData);
+
   fieldMetadata?.fields?.map((field) => {
     if (field?.view_type?.create === true) {
       if (bodyData[field?.api_name] === undefined) {
-        console.log(field?.api_name, field?.data_type, "API NAME");
         switch (field.data_type) {
           case "text":
             bodyData[field?.api_name] = "DEFAULT_TRING";
@@ -345,7 +336,7 @@ export async function generateLeadInZohoCRM({
       }
     }
   });
-  console.log(JSON.stringify(bodyData));
+
   return $fetch("https://www.zohoapis.in/crm/v6/Leads", {
     method: "POST",
     body: { data: [bodyData] },
@@ -353,7 +344,6 @@ export async function generateLeadInZohoCRM({
       Authorization: `Zoho-oauthtoken ${token}`,
     },
   }).catch((err) => {
-    console.log({ err: JSON.stringify(err.data), errds: err.status });
     if (!refreshToken) return;
     if (err.status === 401) {
       regenearateTokenWithRefreshToken({

@@ -103,9 +103,7 @@
     open: false,
   });
   // const integrationsData = ref()
-  watch(route, (newValue) => {
-    console.log(newValue.query?.q, "QUERY");
-  });
+  watch(route, (newValue) => {});
   // const q=ref('')
   const filters = computed(() => ({
     q: route.query?.q,

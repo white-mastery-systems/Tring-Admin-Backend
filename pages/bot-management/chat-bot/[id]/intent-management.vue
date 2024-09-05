@@ -25,7 +25,7 @@
         createdAt: formatDate(new Date(intent.createdAt), "dd.MM.yyyy"),
       })),
   });
-  console.log({ intentData });
+
   const isIntentLoading = computed(
     () => intentLoadingStatus.value === "pending",
   );
@@ -93,7 +93,6 @@
     columnHelper.accessor("actions", {
       header: "actions",
       cell: ({ row }) => {
-        console.log({ row });
         return actionsComponent(row.original.id);
       },
     }),

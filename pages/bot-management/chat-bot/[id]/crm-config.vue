@@ -40,7 +40,6 @@
       description="Are you sure you want to remove this integration ?"
       @confirm="
         () => {
-          console.log({ deleteIntegrationState });
           if (deleteIntegrationState?.id) {
             deleteBotIntegration({
               botIntegrationId: deleteIntegrationState.id,
@@ -113,7 +112,6 @@
     columnHelper.accessor("actions", {
       header: "actions",
       cell: ({ row }) => {
-        console.log({ row });
         return actionsComponent(row.original.id);
       },
     }),
@@ -127,9 +125,7 @@
     default: () => [],
   });
   watch(integrationsData, (newIntegrations: any) => {
-    newIntegrations?.map((item: any) => {
-      console.log({ item });
-    });
+    newIntegrations?.map((item: any) => {});
     integrations.value = newIntegrations?.map((item: any) => ({
       integration: item.integration?.name,
       projectId:

@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
 
   // Data Validation
   const formData = await readMultipartFormData(event);
-  console.log({ formData });
+
   if (!formData) {
     return sendError(
       event,
@@ -55,8 +55,7 @@ export default defineEventHandler(async (event) => {
   const file = new File([data], filename!, rest);
 
   const hostname = getRequestHost(event);
-  console.log("Document Hostname:", hostname);
-  console.log("File name", body.data.name?.replace(/[^a-zA-Z0-9.]/g, ""));
+
   form.append("name", body.data.name?.replace(/[^a-zA-Z0-9.]/g, ""));
   form.append("files", file);
   form.append(
@@ -71,7 +70,7 @@ export default defineEventHandler(async (event) => {
       callback_url: `https://tring-admin.pripod.com/api/documents/${document.id}`,
     }),
   );
-  console.log(conf.llmBaseUrl, "LLMURL");
+
   $fetch(`/rag/document`, {
     method: "POST",
     baseURL: conf.llmBaseUrl,

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-const props = defineProps<{
-  integrationName: string;
-}>();
-console.log({ props });
-function copy(id: string) {
-  navigator.clipboard.writeText(id);
-}
+  const props = defineProps<{
+    integrationName: string;
+  }>();
+
+  function copy(id: string) {
+    navigator.clipboard.writeText(id);
+  }
 </script>
 
 <template>
@@ -20,7 +20,8 @@ function copy(id: string) {
       <UiForm :keep-values="true" :validate-on-mount="false" class="space-y-2">
         <UiFormField name="GOAL">
           <UiFormItem class="w-full">
-            <UiFormLabel>API key <UiLabel class="text-lg text-red-500">*</UiLabel>
+            <UiFormLabel
+              >API key <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
               <UiInput type="text" placeholder="Eg: api-key-here" />

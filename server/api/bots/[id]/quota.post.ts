@@ -20,6 +20,5 @@ SET
 WHERE
   id = ${bot.organizationId};`;
 
-  console.log(query);
   return await db.execute(query);
 });

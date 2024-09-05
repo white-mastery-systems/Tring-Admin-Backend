@@ -17,8 +17,6 @@
   const handleFileChange = async (event: any) => {
     const file = event.target.files[0];
     if (file) {
-      console.log(file.name);
-
       // Add the playground document with the file and docId
       const response: DocumentResponse = await addPlaygroundDocument({
         name: file.name,

@@ -3,6 +3,7 @@ import {
   boolean,
   integer,
   jsonb,
+  serial,
   text,
   timestamp,
   uuid,
@@ -62,6 +63,11 @@ export const timelineSchema = adminSchema.table("timeline", {
   metadata: jsonb("metadata").default({}).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   intent: varchar("intent", { length: 64 }),
+});
+export const adminConfigurationSchema = adminSchema.table("admin_config", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 128 }).notNull(),
+  metaData: jsonb("metadata").default({}).notNull(),
 });
 
 // Relations

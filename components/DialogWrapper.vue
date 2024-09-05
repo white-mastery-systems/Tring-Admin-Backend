@@ -21,5 +21,4 @@
       title: "",
     },
   );
-  console.log({ props, modalState });
 </script>

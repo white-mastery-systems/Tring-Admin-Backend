@@ -5,7 +5,7 @@ enum CRMType {
   sellDo = "sell-do",
   zohoCRM = "zoho-crm",
   zohoBigin = "zoho-bigin",
-  whatsapp = "whatsapp"
+  whatsapp = "whatsapp",
 }
 const db = useDrizzle();
 
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
     );
   const userId: { id: string } = event.context.user!;
   const body = await isValidBodyHandler(event, zodInsertIntegration);
-  console.log({ body });
+
   const integration = await createIntegration({
     ...body,
     metadata: body.metaData,

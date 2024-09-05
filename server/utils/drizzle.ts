@@ -2,6 +2,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import { analyticsRelations, chatBotIntegrationRelations } from "../schema/bot";
 import { voicebotIntegrationSchema } from "../schema/voicebot";
+import { adminConfigurationSchema } from "../schema/admin";
 
 const runtimeConfig = useRuntimeConfig();
 
@@ -26,6 +27,7 @@ const schema = {
   timelineSchema,
   voicebotSchema,
   voicebotIntegrationSchema,
+  adminConfigurationSchema,
   // Relations
   organizationRelations,
   chatBotRelations,

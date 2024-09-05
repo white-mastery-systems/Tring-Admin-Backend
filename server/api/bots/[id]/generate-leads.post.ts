@@ -19,9 +19,9 @@ export default defineEventHandler(async (event) => {
     event,
     generateLeadsValidationParams,
   );
-  console.log({ body, botId });
+
   const botDetails: any = await getBotDetails(botId);
-  console.log({ botDetails });
+
   const adminUser: any = await getAdminByOrgId(botDetails?.organizationId);
   let botIntegratsions: any = await listBotIntegrations(botId);
   botIntegratsions?.map(async (botIntegration: any) => {
@@ -45,8 +45,7 @@ export default defineEventHandler(async (event) => {
         token: botIntegration?.integration?.metadata?.access_token,
         refreshToken: botIntegration?.integration?.metadata?.refresh_token,
       });
-      console.log({ generatedContact: JSON.stringify(generatedContact) });
-      console.log(generatedContact?.data[0]?.details?.id, "GOCNTIDI");
+
       const pipelineObj = botIntegration?.metadata?.pipelineObj;
       const generatedLead = await generateLeadInZohoBigin({
         token: botIntegration?.integration?.metadata?.access_token,
@@ -62,7 +61,6 @@ export default defineEventHandler(async (event) => {
         },
         integrationData: botIntegration?.integration,
       });
-      console.log({ generatedLead: JSON.stringify(generatedLead) });
     } else if (botIntegration?.integration?.crm === "zoho-crm") {
       const name = body?.botUser?.name?.split(" ");
       let firstName = body?.botUser?.name;
@@ -89,7 +87,6 @@ export default defineEventHandler(async (event) => {
         },
         integrationData: botIntegration?.integration,
       });
-      console.log({ generatedLead: JSON.stringify(generatedLead) });
     } else if (botIntegration?.integration?.crm === "sell-do") {
       const { campaignId, projectId } = botIntegration?.metadata;
       const apiKey = botIntegration.integration.metadata.apiKey;
@@ -105,7 +102,7 @@ export default defineEventHandler(async (event) => {
   });
   if (adminUser?.id) {
     const connections = global.userConnections?.get(adminUser?.id) || [];
-    console.log("sse event sent", connections, global.userConnections);
+
     connections.forEach((connection) => {
       connection({ event: "leads", data: body });
     });

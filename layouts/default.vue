@@ -19,7 +19,6 @@
   const route = useRoute();
   const routeName = ref(route.name);
   onMounted(async () => {
-    console.log(routeName, "routeName");
     const eventSource = new EventSource("/api/sse");
     // toast.success("Connection established", {
     //   position: "bottom-right",
@@ -44,7 +43,6 @@
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.event === "leads") {
-        console.log({ data });
         toast.success(
           `A new lead created generated -- ${data.data?.botUser?.name} `,
           {

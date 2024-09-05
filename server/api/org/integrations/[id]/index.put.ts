@@ -1,14 +1,16 @@
 const zodupdateIntegration = z.object({
-  metadata: z.record(z.any()).optional()
-})
+  metadata: z.record(z.any()).optional(),
+});
 
-export default defineEventHandler (async (event) => {
+export default defineEventHandler(async (event) => {
   await isOrganizationAdminHandler(event);
-  const { id: integrationId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
+  const { id: integrationId } = await isValidRouteParamHandler(
+    event,
+    checkPayloadId("id"),
+  );
 
   const body = await isValidBodyHandler(event, zodupdateIntegration);
-  console.log({ body });
 
-  const updateIntegration = await updateIntegrationById(integrationId, body)
+  const updateIntegration = await updateIntegrationById(integrationId, body);
   return isValidReturnType(event, updateIntegration);
-})
+});

@@ -2,7 +2,7 @@ import type { User } from "lucia";
 
 export const useUser = async () => {
   const user = useState<User | null>("user");
-
+  console.log({ user: user.value });
   const isAdmin = computed(() => {
     if (!user.value) return false;
     return user.value.role === "admin";
@@ -25,3 +25,5 @@ export const useUser = async () => {
 
   return { user, isAdmin, clearUser, refreshUser };
 };
+
+//TODO logger https://github.com/unjs/nitro/discussions/334

@@ -14,8 +14,6 @@
   const confirmation = await $fetch(
     `/api/billing/webhook?hostedpage_id=${hostedpageId}`,
   );
-
-  console.log(confirmation, "confirmation");
 </script>
 
 <template>

@@ -2,21 +2,30 @@
   <Page title="Chats" :disable-back-button="true">
     <div class="flex items-center gap-2 overflow-x-scroll pb-2">
       <div class="flex items-center gap-2">
-        <UiInput v-model="filters.q"
+        <UiInput
+          v-model="filters.q"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
-          placeholder="Search bot..." />
+          placeholder="Search bot..."
+        />
         <BotFilter v-model="filters.botId" />
         <BotUserFilter @changeAction="onActionChange" />
         <DateRangeFilter @change="onDateChange" />
       </div>
     </div>
-    <DataTable @row-click="
+    <DataTable
+      @row-click="
         (row: any) => {
-          console.log({ row });
           return navigateTo(`chats/${row.original.id}`);
           //TODO change this
         }
-      " :columns="columns" :data="bots" :page-size="20" :is-loading="isDataLoading" :height="65" height-unit="vh" />
+      "
+      :columns="columns"
+      :data="bots"
+      :page-size="20"
+      :is-loading="isDataLoading"
+      :height="65"
+      height-unit="vh"
+    />
   </Page>
 </template>
 <script setup lang="ts">
@@ -35,9 +44,7 @@
   // const searchBotDebounce = refDebounced(searchBot, 500);
 
   const activeStatus = ref("");
-  watch(activeStatus, async (newStatus, previousStatus) => {
-    console.log({ newStatus });
-  });
+  watch(activeStatus, async (newStatus, previousStatus) => {});
 
   const filters = reactive<{
     botId: string;
@@ -76,8 +83,6 @@
   });
   const isDataLoading = computed(() => status.value === "pending");
 
-  
-
   const statusComponent = (status: boolean) =>
     status
       ? h("span", { class: "text-green-500" }, "Active")
@@ -99,17 +104,16 @@
     }),
   ];
   const onActionChange = (value: any) => {
-    filters.botUserName = value
-  }
+    filters.botUserName = value;
+  };
   const onDateChange = (value: any) => {
-  if (value.from && value.to) {
-  filters.from = value.from;
-  filters.to = value.to;
-  }
-  else {
-  delete filters.from
-  delete filters.to
-  filters.period = value
-  }
+    if (value.from && value.to) {
+      filters.from = value.from;
+      filters.to = value.to;
+    } else {
+      delete filters.from;
+      delete filters.to;
+      filters.period = value;
+    }
   };
 </script>

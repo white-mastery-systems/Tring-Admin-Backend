@@ -32,6 +32,6 @@ const queryValidator = z
 export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const query = await isValidQueryHandler(event, queryValidator);
-  console.log({ query });
+
   return await listLeads(organizationId, query);
 });

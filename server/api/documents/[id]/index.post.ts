@@ -7,8 +7,6 @@ export default defineEventHandler(async (event) => {
     checkPayloadId("id"),
   );
 
-  console.log("LLM SERVER DOCUMENT SUCCESS: ", documentId);
-
   await db
     .update(documentSchema)
     .set({

@@ -25,11 +25,8 @@ export default defineEventHandler(async (event) => {
     res.write(`data: ${JSON.stringify(data)}\n\n`);
   };
 
-  console.log({ userId });
-
   // Store SSE connection for the user
   if (!global.userConnections.has(userId)) {
-    console.log({ userId });
     global.userConnections.set(userId, []);
   }
   global.userConnections.get(userId)!.push(sendEvent);
@@ -40,8 +37,6 @@ export default defineEventHandler(async (event) => {
       message: "SSE initialized succesfully",
     })}\n\n`,
   );
-
-  console.log({ global: global.userConnections });
 
   // Handle client disconnect
   req.on("close", () => {

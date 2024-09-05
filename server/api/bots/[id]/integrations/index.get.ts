@@ -9,6 +9,6 @@ export default defineEventHandler(async (event) => {
     event,
     getChatBotIntents,
   );
-  console.log({ botId });
+
   return await listBotIntegrations(botId);
 });

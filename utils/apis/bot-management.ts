@@ -54,7 +54,6 @@ export const deleteBot = async (botId: string) => {
     toast.success("Bot deleted successfully");
     return navigateTo({ name: "bot-management-chat-bot" });
   } catch (error) {
-    console.log(error);
     toast.error("Cannot delete: bot has generated leads");
   }
 };
@@ -121,7 +120,6 @@ export const deleteVoiceBot = async (botId: string) => {
     toast.success("Voice Bot deleted successfully");
     return navigateTo({ name: "bot-management-voice-bot" });
   } catch (error) {
-    console.log(error);
     toast.error("Cannot delete: voice bot has generated leads");
   }
 };

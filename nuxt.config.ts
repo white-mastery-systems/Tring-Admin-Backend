@@ -4,13 +4,10 @@ import autoImports from "./autoImports";
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true, timeline: { enabled: true } },
-
   components: [
     { path: "~/components", pathPrefix: false, extensions: ["vue"] },
   ],
-
   ssr: false,
-
   modules: [
     "@nuxtjs/tailwindcss",
     "@formkit/auto-animate",

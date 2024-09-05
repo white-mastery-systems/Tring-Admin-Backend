@@ -14,7 +14,7 @@ import {
   subMonths,
   subYears,
 } from "date-fns";
-import { count, min } from "drizzle-orm";
+import { count } from "drizzle-orm";
 
 const db = useDrizzle();
 
@@ -311,27 +311,27 @@ const getAllDatesInRange = (period: string, from: Date, to: Date) => {
 
     case "all-time":
       startDate = startOfYear(from);
-      endDate = endOfYear(now)
+      endDate = endOfYear(now);
       dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
         (date) => format(date, "yyyy-MM"),
       );
       break;
 
-    case "custom": 
-      difference = differenceInDays(to,from)
+    case "custom":
+      difference = differenceInDays(to, from);
       // console.log({ difference })
-      if(difference > 30) {
-         startDate = startOfYear(from)
-         endDate = endOfYear(to)
-         dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
+      if (difference > 30) {
+        startDate = startOfYear(from);
+        endDate = endOfYear(to);
+        dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
           (date) => format(date, "yyyy-MM"),
-         );
+        );
       } else {
-         startDate = startOfDay(from)
-         endDate = endOfDay(to)
-         dates = eachDayOfInterval({ start: startDate, end: endDate }).map(
+        startDate = startOfDay(from);
+        endDate = endOfDay(to);
+        dates = eachDayOfInterval({ start: startDate, end: endDate }).map(
           (date) => format(date, "dd MMM yyyy"),
-         );
+        );
       }
       break;
 
@@ -339,17 +339,17 @@ const getAllDatesInRange = (period: string, from: Date, to: Date) => {
       throw new Error("Invalid period");
   }
 
-  return{
+  return {
     dates,
-    difference
+    difference,
   };
 };
 
 const groupAndMapData = ({ module, period, difference }: any) => {
   const groupedData = module.reduce((acc, i) => {
     // console.log({ groupAndMapDataDifference: difference })
-    const date = new Date(i.createdAt).setMinutes(0)
-    
+    const date = new Date(i.createdAt).setMinutes(0);
+
     // const timeZone = 'Asia/Kolkata';
     // const date = formatInTimeZone(created, timeZone, "yyyy-MM-dd'T'HH:mm:ssXXX");
     // const isoDate = new Date(date)
@@ -362,7 +362,8 @@ const groupAndMapData = ({ module, period, difference }: any) => {
       period === "last-year" ||
       period === "current-financial-year" ||
       period === "last-financial-year" ||
-      period === "all-time" || difference > 30 
+      period === "all-time" ||
+      difference > 30
     ) {
       dateKey = format(date, "yyyy-MM");
     } else {
@@ -437,18 +438,18 @@ const getDateRange = (period: string, from: Date, to: Date) => {
         fromDate: new Date(now.getFullYear() - 1, 3, 1), // April 1st of the last year
         toDate: new Date(now.getFullYear(), 2, 31), // March 31st of the current year
       };
-    case "all-time": 
+    case "all-time":
       return {
         fromDate: startOfYear(from),
         toDate: endOfYear(now),
-      }
+      };
 
-    case "custom": 
-       return {
+    case "custom":
+      return {
         fromDate: from,
-        toDate: to
-      }
-  
+        toDate: to,
+      };
+
     default:
       throw new Error("Invalid period");
   }
@@ -458,30 +459,25 @@ export const getAnalytics = async (
   organizationId: string,
   period = "current-month",
   customFromDate: Date | null,
-  customToDate: Date | null
+  customToDate: Date | null,
 ) => {
   try {
-    let from = customFromDate
-    let to = customToDate
-    if(period == "all-time") {
+    let from = customFromDate;
+    let to = customToDate;
+    if (period == "all-time") {
       const earliestData = await db.query.chatBotSchema.findFirst({
         columns: {
-          createdAt: true
+          createdAt: true,
         },
-        where: and(
-          eq(chatBotSchema.organizationId, organizationId),
-        ),
-        orderBy: [asc(chatBotSchema.createdAt)]
-    })
+        where: and(eq(chatBotSchema.organizationId, organizationId)),
+        orderBy: [asc(chatBotSchema.createdAt)],
+      });
       // console.log({ earliestData})
-      from = earliestData?.createdAt
+      from = earliestData?.createdAt;
     }
-  //  return
-   console.log({ period, organizationId, from, to });
+    //  return
 
     const { fromDate, toDate } = getDateRange(period, from, to);
-
-    console.log({ period, organizationId, fromDate, toDate });
 
     const [
       orgData,
@@ -628,18 +624,28 @@ export const getAnalytics = async (
       }),
     ]);
 
-    const { dates, difference} = getAllDatesInRange(period, from, to);
+    const { dates, difference } = getAllDatesInRange(period, from, to);
 
     //  return { dates }
     // return { sessionData }
 
-    const leadResult = groupAndMapData({ module: leadData, period, difference });
-    const sessionResult = groupAndMapData({ module: sessionData, period, difference });
+    const leadResult = groupAndMapData({
+      module: leadData,
+      period,
+      difference,
+    });
+    const sessionResult = groupAndMapData({
+      module: sessionData,
+      period,
+      difference,
+    });
     // return { sessionResult, dates }
 
     const leadMap = new Map(leadResult.map((item) => [item.date, item.count]));
-    const sessionMap = new Map(sessionResult.map((item) => [item.date, item.count]));
-    
+    const sessionMap = new Map(
+      sessionResult.map((item) => [item.date, item.count]),
+    );
+
     // return {  sessionMap }
 
     const groupedCounts = (mapData: any) =>
@@ -647,7 +653,7 @@ export const getAnalytics = async (
         date,
         count: mapData.get(date) || 0,
       }));
-    //  return { 
+    //  return {
     //     leads: groupedCounts(leadMap),
     //     sessions: groupedCounts(sessionMap),
     //   }

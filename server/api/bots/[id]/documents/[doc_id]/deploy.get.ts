@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
       break;
     } catch (e) {
       max_retries -= 1;
-      console.log(e);
+
       continue;
     }
   }

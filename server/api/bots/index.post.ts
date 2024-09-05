@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
 
   // Validate Body
   const body = await isValidBodyHandler(event, zodInsertChatBot);
-  console.log({ body });
+
   // const body = await readValidatedBody(
   //   event,
   //   zodInsertChatBot.omit({ organizationId: true }).safeParse,
