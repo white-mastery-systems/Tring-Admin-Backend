@@ -21,6 +21,7 @@ export const authUserSchema = adminSchema.table("user", {
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
   metadata: jsonb("metadata"),
+  address: jsonb("address").default({}),
   organizationId: uuid("organization_id").references(
     () => organizationSchema.id,
     { onDelete: "cascade" },
