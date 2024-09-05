@@ -1,5 +1,5 @@
 import { voiceBotSchema } from ".";
-import { uuid, varchar, boolean, jsonb, timestamp } from "drizzle-orm/pg-core";
+import { uuid, varchar, boolean, jsonb, timestamp, integer } from "drizzle-orm/pg-core";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { organizationSchema, integrationSchema } from "./admin";
 
@@ -10,8 +10,19 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   domain: varchar("domain").array(),
   active: boolean("active").default(false),
   metaData: jsonb("metadata"),
-  llmConfig: jsonb("llm_config"),
-  intents: varchar("intents").array(), // Array of strings
+  llmConfig: jsonb("llm_config").default({
+    provider: varchar("provider").default("openAi"),
+    model: varchar("model").default("gpt-4o-mini"),
+    tokens: varchar("tokens").default("2048"),
+    temperature: integer("temperature").default(1.0),
+    documentId: varchar("document_id"),
+    role: varchar("role").default("Assist-booking"),
+    guide: varchar("guide"),
+    instruction: varchar("instruction"),
+    notes: varchar("notes"),
+    domainRules: varchar("domain_rules")
+  }),
+  intents: varchar("intents").array(), // Array of strings  
   ivrConfig: jsonb("ivr_config"),
   createdAt: timestamp("created_at").defaultNow(),
   organizationId: uuid("organization_id")
