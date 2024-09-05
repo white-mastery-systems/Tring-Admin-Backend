@@ -15,6 +15,7 @@ import {
   subYears,
 } from "date-fns";
 import { count } from "drizzle-orm";
+import { getPricingInformation } from "./pricing";
 
 const db = useDrizzle();
 
@@ -208,8 +209,9 @@ export const updateOrganization = async (
 // };
 
 export const getOrgUsage = async (organizationId: string) => {
-  const org = await getOrganizationById(organizationId);
-
+  const org: any = await getOrganizationById(organizationId);
+  const pricingInformation = await getPricingInformation(org?.planCode);
+  console.log({ pricingInformation });
   if (!org) return undefined;
 
   return {
