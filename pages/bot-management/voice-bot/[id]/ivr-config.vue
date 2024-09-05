@@ -37,8 +37,7 @@ const onSubmit = async (value: any) => {
               <UiFormLabel class="font-bold"> IVR Provider <UiLabel class="text-red-500 text-lg">*</UiLabel>
               </UiFormLabel>
               <UiFormControl>
-                <UiInput v-bind="componentField" type="text" placeholder="Enter Provider"
-                  class="h-[50px] font-regular border-none bg-[#F6F6F6]" />
+                <UiInput v-bind="componentField" type="text" placeholder="Enter Provider" class="h-10 font-regular" />
               </UiFormControl>
               <UiFormMessage />
             </UiFormItem>
@@ -49,19 +48,18 @@ const onSubmit = async (value: any) => {
               <UiFormLabel class="font-bold"> Number <UiLabel class="text-red-500 text-lg">*</UiLabel>
               </UiFormLabel>
               <UiFormControl>
-                <UiInput v-bind="componentField" type="text" placeholder="Enter Number"
-                  class="h-[50px] font-regular border-none bg-[#F6F6F6]" />
+                <UiInput v-bind="componentField" type="text" placeholder="Enter Number" class="h-10 font-regular" />
               </UiFormControl>
               <UiFormMessage />
             </UiFormItem>
           </UiFormField>
         </div>
         <!-- </div> -->
-         <div class="flex justify-end w-full">
-           <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110 w-[120px]"
-             size="lg">Submit
-           </UiButton>
-         </div>
+        <div class="flex justify-end w-full">
+          <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110 w-[120px]" size="lg">
+            Submit
+          </UiButton>
+        </div>
       </UiForm>
     </div>
   </Page>
