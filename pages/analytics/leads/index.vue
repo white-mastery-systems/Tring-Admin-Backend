@@ -80,6 +80,8 @@
   import { createColumnHelper } from "@tanstack/vue-table";
   import { useRouter, useRoute } from "vue-router";
 
+  const rowList = reactive(['name', 'email', 'visitedCount', 'mobile', 'createdAt'])
+
   definePageMeta({
     middleware: "admin-only",
   });
@@ -99,11 +101,9 @@
       "\n" +
       leads.value
         .map((lead) =>
-          columns
+          rowList
             .map((col) => {
-              let cellValue = lead[col.accessorKey];
-
-              // Escape commas and quotes
+              let cellValue = lead.botUser[col]
               if (cellValue) {
                 cellValue = cellValue.toString().replace(/"/g, '""');
                 if (

@@ -46,7 +46,7 @@
 <template>
   <div class="space-y-4">
     <div :class="[
-        'h-screen-minus-13 relative overflow-auto rounded-lg border',
+        'h-screen-minus-11 relative overflow-auto rounded-lg border',
         props.height ? `h-screen-minus-${props.height}` : '',
       ]">
       <UiTable class="text-left text-gray-500">

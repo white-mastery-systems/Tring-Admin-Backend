@@ -1,7 +1,17 @@
 import { createBotIntent } from "~/server/utils/db/bot";
+
 export const zodInsertChatBotIntent = z.object({
   intent: z.string().min(2, "Intent too short"),
-  link: z.string().url().min(5, "Link too short"),
+  link: z.string().url().min(5, "Link too short").optional(),
+}).refine((data) => {
+  // Require `link` only when intent is "location" or "virtual_tour"
+  if (["location", "virtual_tour"].includes(data.intent)) {
+    return !!data.link; 
+  }
+  return true;
+}, {
+  message: "Link is required for 'location' and 'virtual_tour' intents",
+  path: ["link"],
 });
 
 export default defineEventHandler(async (event) => {

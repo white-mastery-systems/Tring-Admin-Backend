@@ -148,7 +148,7 @@ export const botIntentSchema = chatbotSchema.table("intents", {
     .notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   intent: varchar("intent", { length: 64 }).notNull(),
-  link: varchar("link").notNull(),
+  link: varchar("link"),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)
     .notNull(),
