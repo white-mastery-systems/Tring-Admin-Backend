@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   );
 
   // Data Validation
-  const formData: any = await readMultipartFormData(event);
+  const formData = await readMultipartFormData(event);
   // console.log({
   //   formData: formData
   //     .find(({ callback_url }: { callback_url: string }) => callback_url)
