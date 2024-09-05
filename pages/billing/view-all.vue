@@ -274,11 +274,19 @@
   const isPageLoading = computed(() => status.value === "pending");
 
   const choosePlan = async (plan: any) => {
+    const locationData = await $fetch<{
+      ip_address: string;
+      country: string;
+      city: string;
+      region: string;
+    }>(`https://ipv4-check-perf.radar.cloudflare.com/api/info`);
+    console.log({ locationData });
     const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName || ""}`;
     await $fetch("/api/billing/subscription", {
       method: "POST",
       body: {
         plan: plan,
+        locationData: locationData,
       },
     });
     if (!plan) {

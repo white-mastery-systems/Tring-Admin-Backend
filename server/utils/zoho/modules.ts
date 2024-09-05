@@ -10,7 +10,7 @@ export function getAllPipelinesFromZohoBigin({
   integrationData: any;
 }) {
   // "https://www.zohoapis.in/bigin/v2/Pipelines?fields=Sub_Pipeline,Pipeline,Stage",
-
+  console.log({ token });
   const data: any = $fetch<any>(
     "https://www.zohoapis.in/bigin/v1/settings/layouts?module=Pipelines",
     {
@@ -173,6 +173,7 @@ export function getFieldMetadataFromZohoBigin({
   body: any;
   integrationData: any;
 }) {
+  console.log({ token });
   return $fetch(
     "https://www.zohoapis.in/bigin/v1/settings/fields?module=Pipelines",
     {

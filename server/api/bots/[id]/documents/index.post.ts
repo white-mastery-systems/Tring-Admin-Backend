@@ -10,8 +10,12 @@ export default defineEventHandler(async (event) => {
   );
 
   // Data Validation
-  const formData = await readMultipartFormData(event);
-
+  const formData: any = await readMultipartFormData(event);
+  // console.log({
+  //   formData: formData
+  //     .find(({ callback_url }: { callback_url: string }) => callback_url)
+  //     ?.data.toString()!,
+  // });
   if (!formData) {
     return sendError(
       event,
@@ -52,6 +56,7 @@ export default defineEventHandler(async (event) => {
   // Create Form Data
   const form = new FormData();
   const { data, filename, ...rest } = fileData;
+  console.log({ ...rest, data, filename });
   const file = new File([data], filename!, rest);
 
   const hostname = getRequestHost(event);
@@ -67,7 +72,7 @@ export default defineEventHandler(async (event) => {
         model_name: "",
         messages: [],
       },
-      callback_url: `https://tring-admin.pripod.com/api/documents/${document.id}`,
+      callback_url: `https://app.tringlabs.ai/api/documents/${document.id}`,
     }),
   );
 
