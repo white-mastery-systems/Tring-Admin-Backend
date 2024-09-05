@@ -213,12 +213,13 @@ export const getOrgUsage = async (organizationId: string) => {
   const pricingInformation = await getPricingInformation(org?.planCode);
   console.log({ pricingInformation });
   if (!org) return undefined;
-
+  console.log({ pricingInformation });
   return {
     used_quota: org.usedQuota,
     max_quota: org.maxQuota,
     plan_code: org.planCode,
     available_quota: org.maxQuota - org.usedQuota,
+    extra_sessions_cost: pricingInformation?.extraSessionCost,
   };
 };
 

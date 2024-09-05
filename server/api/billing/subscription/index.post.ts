@@ -72,8 +72,8 @@ export default defineEventHandler(async (event) => {
             method: "POST",
             headers: {
               "X-com-zoho-subscriptions-organizationid":
-                zohoData?.metaData.organization_id,
-              Authorization: `Zoho-oauthtoken ${zohoData?.metaData.access_token}`,
+                metaData.organization_id,
+              Authorization: `Zoho-oauthtoken ${metaData.access_token}`,
               "content-type": "application/json",
             },
             body: {

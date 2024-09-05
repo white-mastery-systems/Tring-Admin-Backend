@@ -8,7 +8,7 @@
     if (!usage.value) return;
 
     const extraChats = usage.value.used_quota - usage.value.max_quota;
-
+    console.log({ exrBilling: usage.value });
     return {
       currentPlan: usage.value.plan_code,
       subscriptionStatus: "active",
@@ -22,7 +22,10 @@
           ? 0
           : usage.value.max_quota - usage.value.used_quota,
       extraChatsMade: extraChats > 0 ? extraChats : 0,
-      extraChatsCost: extraChats < 0 ? 0 : extraChats * 10,
+      extraChatsCost:
+        extraChats < 0
+          ? 0
+          : extraChats * Number(usage.value.extra_sessions_cost),
     };
   });
 </script>
