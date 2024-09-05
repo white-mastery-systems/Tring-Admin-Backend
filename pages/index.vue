@@ -108,31 +108,6 @@
         />
       </div>
 
-      <!-- <div class="relative">
-        <div
-          class="field_shadow my-8 flex h-[59vh] gap-6 rounded-[10px] pb-[20px]"
-        >
-          <div class="relative w-full place-content-center rounded-md bg-white">
-            <UiLineChart
-              :data="lineGraphData"
-              index="month"
-              :categories="['Leads Created', 'Sessions Created']"
-              :colors="['#424bd1', '#ffbc42']"
-              :show-grid-line="true"
-              :show-tooltip="true"
-              :margin="{ right: 20 }"
-              :y-formatter="
-                (tick: any) => {
-                  return typeof tick === 'number'
-                    ? `${new Intl.NumberFormat('us').format(tick).toString()}`
-                    : '';
-                }
-              "
-              class="h-[380px] w-full"
-            />
-          </div>
-        </div>
-      </div> -->
       <Line
         class="shadow-md relative mt-4 w-full place-content-center rounded-md bg-white"
         :data="chartData"
@@ -306,6 +281,7 @@
           }
         },
       },
+      
     },
     elements: {
       line: {
