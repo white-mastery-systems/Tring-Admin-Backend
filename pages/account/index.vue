@@ -67,11 +67,11 @@
           </UiFormField>
         </div>
       </div>
+      <h3 class="mb-2 mt-4 scroll-m-20 text-2xl font-semibold tracking-tight">
+        Address Information
+      </h3>
       <div class="grid gap-2 sm:grid-cols-1 sm:gap-4 md:grid-cols-2">
-        <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
-          Address Information
-        </h3>
-        <UiFormField v-slot="{ componentField }" name="street">
+        <UiFormField v-slot="{ componentField }" name="address.street">
           <UiFormItem class="w-full">
             <UiFormLabel> Street Name <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
@@ -81,7 +81,7 @@
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="city">
+        <UiFormField v-slot="{ componentField }" name="address.city">
           <UiFormItem class="w-full">
             <UiFormLabel>City Name <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
@@ -91,7 +91,7 @@
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="state">
+        <UiFormField v-slot="{ componentField }" name="address.state">
           <UiFormItem class="w-full">
             <UiFormLabel>State Name <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
@@ -101,7 +101,7 @@
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="country">
+        <UiFormField v-slot="{ componentField }" name="address.country">
           <UiFormItem class="w-full">
             <UiFormLabel>country Name <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
@@ -111,7 +111,7 @@
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="zipCode">
+        <UiFormField v-slot="{ componentField }" name="address.zipCode">
           <UiFormItem class="w-full">
             <UiFormLabel> zipCode <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
@@ -154,6 +154,17 @@
     authHandlers.logout();
     logoutModal.value = false;
   };
+
+  const addressSchema = z.object({
+    street: z.string().min(2, "Street Name is required"),
+    city: z.string().min(2, "City Name is required"),
+    state: z.string().min(2, "State Name is required"),
+    country: z.string().min(2, "Country Name is required"),
+    zipCode: z.string()
+      .regex(/^\d{5}(-\d{4})?$/, "Invalid zip code format")
+      .min(1, "zipCode is required"),
+  });
+
   const accountSchema = toTypedSchema(
     z
       .object({
@@ -161,13 +172,7 @@
         email: z.string().email().default(""),
         password: z.string().optional().default(""),
         confirmPassword: z.string().optional().default(""),
-        street: z.string().min(2, "Street Name is required"),
-        city: z.string().min(2, "City Name is required"),
-        state: z.string().min(2, "State Name is required"),
-        country: z.string().min(2, "Country Name is required"),
-        zipCode: z.string()
-          .regex(/^\d{5}(-\d{4})?$/, "Invalid zip code format")
-          .min(1, "zipCode is required"),
+        address: addressSchema,
       })
       .refine((data) => data.password === data.confirmPassword, {
         message: "Passwords do not match.",

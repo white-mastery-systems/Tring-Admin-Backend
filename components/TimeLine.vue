@@ -48,7 +48,7 @@
             </div>
           </div>
           <p class="mt-2 text-[14px] font-normal text-gray-600">
-            {{ format(data.createdAt, "dd MMM yyyy HH:MM aaa") }}
+            {{ format(new Date(data.createdAt), "dd MMM yyyy hh:mm aa") }}
           </p>
         </div>
         <UiStepperDescription

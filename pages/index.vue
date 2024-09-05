@@ -49,20 +49,20 @@
         <StatusCountCard :icon="SingleUser" title="Unique visitors" :count="analyticsData?.users" :loading="loading" />
 
         <StatusCountCard :icon="ChatSession" title="Interacted Chats"
-          :count="analyticsData?.interactedChats[0]?.count ?? 0" :loading="loading" />
+          :count="analyticsData?.interactedChats?.count ?? 0" :loading="loading" />
 
 
         <StatusCountCard :icon="Leads" title="Chat Leads" :count="analyticsData?.leads" :loading="loading" />
 
 
         <StatusCountCard :icon="ChatSession" title="Calls Scheduled"
-          :count="analyticsData?.callScheduledTimeline[0]?.count ?? 0" :loading="loading" />
+          :count="analyticsData?.callScheduledTimeline?.count ?? 0" :loading="loading" />
         <StatusCountCard :icon="ChatSession" title="Site Visits"
-          :count="analyticsData?.siteVisitTimeline[0]?.count ?? 0" :loading="loading" />
+          :count="analyticsData?.siteVisitTimeline?.count ?? 0" :loading="loading" />
         <StatusCountCard :icon="ChatSession" title="Virtual Tours"
-          :count="analyticsData?.virtualTourTimeline[0]?.count ?? 0" :loading="loading" />
+          :count="analyticsData?.virtualTourTimeline?.count ?? 0" :loading="loading" />
         <StatusCountCard :icon="ChatSession" title="Location Visited"
-          :count="analyticsData?.locationTimeline[0]?.count ?? 0" :loading="loading" />
+          :count="analyticsData?.locationTimeline?.count ?? 0" :loading="loading" />
       </div>
 
       <!-- <div class="relative">
