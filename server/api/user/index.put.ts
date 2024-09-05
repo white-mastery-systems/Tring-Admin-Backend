@@ -2,9 +2,10 @@ import { Argon2id } from "oslo/password";
 
 const bodyValidator = z
   .object({
-    username: z.string().min(2, "Name must be at least 2 characters."),
-    email: z.string().email().default(""),
+    username: z.string().min(2, "Name must be at least 2 characters.").optional(),
+    email: z.string().email().default("").optional(),
     password: z.string().optional().default(""),
+    address: z.record(z.any()).optional()
   })
   .passthrough();
 
@@ -28,7 +29,10 @@ export default defineEventHandler(async (event) => {
     username: body.username,
     email: body.email,
     ...(newPassword && { password: newPassword }),
+    address: body.address
   };
 
-  await updateUser(user.id, updatedUser);
+  const update = await updateUser(user.id, updatedUser);
+
+  return update
 });
