@@ -105,7 +105,7 @@ export const deleteBotIntegration = async ({
   } catch (err) {}
 };
 
-// Voice bot 
+// Voice bot
 export const getVoiceBotDetails = async (botId: string) => {
   const bot = await $fetch<SelectChatBot & { documents: SelectDocument[] }>(
     `/api/voicebots/${botId}`,
@@ -126,15 +126,15 @@ export const deleteVoiceBot = async (botId: string) => {
   }
 };
 
-export const updateLLMConfig = async(payload: any, botId: string) => {
+export const updateLLMConfig = async (payload: any, botId: string) => {
   const updateLLM = await $fetch(`/api/voicebots/${botId}`, {
     method: "PUT",
-    body: payload,    
+    body: payload,
   });
   toast.success("LLM Configuration updated successfully");
   await navigateTo({
-    name: "bots-id",
+    name: "bot-management-voice-bot-id",
     params: { id: botId },
   });
   return updateLLM;
-}
+};

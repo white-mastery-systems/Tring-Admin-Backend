@@ -1,4 +1,6 @@
 const zodupdateIntegration = z.object({
+  name: z.string().optional(),
+  crm: z.string().optional(),
   metadata: z.record(z.any()).optional()
 })
 

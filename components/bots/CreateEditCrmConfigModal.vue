@@ -205,7 +205,7 @@
     required: true,
   });
   const modalProps = defineProps<{ id: any }>();
-  const route = useRoute("bots-id-crm-config");
+  const route = useRoute("");
   const { setFieldValue } = useForm();
   watch(
     () => modalState.value.open,

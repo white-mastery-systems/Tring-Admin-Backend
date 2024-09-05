@@ -8,7 +8,7 @@
     duration: 0,
   };
   const router = useRouter();
-const route = useRoute("bot-management-chat-bot-id-intent-management");
+  const route = useRoute("bot-management-chat-bot-id-intent-management");
 
   const {
     status: intentLoadingStatus,
@@ -59,7 +59,7 @@ const route = useRoute("bot-management-chat-bot-id-intent-management");
     };
     await updateBotDetails(payload);
     return navigateTo({
-      name: "bots-id",
+      name: "bot-management-chat-bot-id",
       params: { id: botDetails.id },
     });
   };
@@ -100,27 +100,43 @@ const route = useRoute("bot-management-chat-bot-id-intent-management");
   ];
 </script>
 <template>
-  <Page title="Intent Mangement" :bread-crumbs="[
-  { label: `${botDetails.name}`, to: `/bot-management/chat-bot/${botDetails.id}` },
+  <Page
+    title="Intent Mangement"
+    :bread-crumbs="[
+      {
+        label: `${botDetails.name}`,
+        to: `/bot-management/chat-bot/${botDetails.id}`,
+      },
       {
         label: 'Intent Management',
         to: `/bot-management/chat-bot/${botDetails.id}/intent-management`,
       },
-    ]" :disableSelector="true" :disable-back-button="false">
+    ]"
+    :disableSelector="true"
+    :disable-back-button="false"
+  >
     <template #actionButtons>
       <div class="mb-4 flex items-center justify-end">
-        <UiButton class="bg-yellow-500" type="button" @click="showIntentDialog = true" color="primary">Add Intents
+        <UiButton
+          class="bg-yellow-500"
+          type="button"
+          @click="showIntentDialog = true"
+          color="primary"
+          >Add Intents
         </UiButton>
 
         <UiDialog v-model:open="showIntentDialog">
           <UiDialogContent class="sm:max-w-[425px]">
             <UiForm class="flex flex-col gap-2" @submit="addIntents">
               <UiDialogHeader>
-                <UiDialogTitle class="text-indigo-600">Add Intents</UiDialogTitle>
+                <UiDialogTitle class="text-indigo-600"
+                  >Add Intents</UiDialogTitle
+                >
               </UiDialogHeader>
               <UiFormField v-slot="{ componentField }" name="intent">
                 <UiFormItem v-auto-animate="animationProps" class="w-full">
-                  <UiFormLabel>Actions<UiLabel class="text-lg text-red-500">*</UiLabel>
+                  <UiFormLabel
+                    >Actions<UiLabel class="text-lg text-red-500">*</UiLabel>
                   </UiFormLabel>
                   <UiFormControl>
                     <UiSelect v-bind="componentField">
@@ -129,13 +145,26 @@ const route = useRoute("bot-management-chat-bot-id-intent-management");
                       </UiSelectTrigger>
                       <UiSelectContent>
                         <UiSelectItem value="location">Location</UiSelectItem>
-                        <UiSelectItem value="virtual_tour">Virtual Tour</UiSelectItem>
-                        <UiSelectItem value="schedule_call">Schedule Call</UiSelectItem>
-                        <UiSelectItem value="site_visit">Schedule Site Visit</UiSelectItem>
+                        <UiSelectItem value="virtual_tour"
+                          >Virtual Tour</UiSelectItem
+                        >
+                        <UiSelectItem value="schedule_call"
+                          >Schedule Call</UiSelectItem
+                        >
+                        <UiSelectItem value="site_visit"
+                          >Schedule Site Visit</UiSelectItem
+                        >
                       </UiSelectContent>
                     </UiSelect>
-                    <UiFormField v-if="componentField.modelValue === 'Other'" v-slot="{ componentField }" name="link">
-                      <UiFormItem v-auto-animate="animationProps" class="w-full">
+                    <UiFormField
+                      v-if="componentField.modelValue === 'Other'"
+                      v-slot="{ componentField }"
+                      name="link"
+                    >
+                      <UiFormItem
+                        v-auto-animate="animationProps"
+                        class="w-full"
+                      >
                         <UiFormControl>
                           <UiInput v-bind="componentField" type="text" />
                         </UiFormControl>
@@ -149,10 +178,15 @@ const route = useRoute("bot-management-chat-bot-id-intent-management");
               </UiFormField>
               <UiFormField v-slot="{ componentField }" name="link">
                 <UiFormItem v-auto-animate="animationProps" class="w-full">
-                  <UiFormLabel>Add Link <UiLabel class="text-lg text-red-500">*</UiLabel>
+                  <UiFormLabel
+                    >Add Link <UiLabel class="text-lg text-red-500">*</UiLabel>
                   </UiFormLabel>
                   <UiFormControl>
-                    <UiInput v-bind="componentField" type="text" placeholder="Eg: enter your preferred value" />
+                    <UiInput
+                      v-bind="componentField"
+                      type="text"
+                      placeholder="Eg: enter your preferred value"
+                    />
                   </UiFormControl>
                   <span class="text-xs text-gray-500">Enter intent link</span>
                   <UiFormMessage />
@@ -160,7 +194,10 @@ const route = useRoute("bot-management-chat-bot-id-intent-management");
               </UiFormField>
 
               <UiDialogFooter>
-                <UiButton class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110" type="submit">
+                <UiButton
+                  class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
+                  type="submit"
+                >
                   Save changes
                 </UiButton>
               </UiDialogFooter>
@@ -170,9 +207,17 @@ const route = useRoute("bot-management-chat-bot-id-intent-management");
       </div>
     </template>
 
-    <DataTable :columns="columns" :data="intentData" :page-size="8" :is-loading="isIntentLoading" />
-    <ConfirmationModal v-model:open="deleteIntentDialogState.open" title="Confirm Delete"
-      description="Are you sure you want to delete this intent ?" @confirm="
+    <DataTable
+      :columns="columns"
+      :data="intentData"
+      :page-size="8"
+      :is-loading="isIntentLoading"
+    />
+    <ConfirmationModal
+      v-model:open="deleteIntentDialogState.open"
+      title="Confirm Delete"
+      description="Are you sure you want to delete this intent ?"
+      @confirm="
         async () => {
           await deleteIntent({
             payload: {
@@ -185,6 +230,7 @@ const route = useRoute("bot-management-chat-bot-id-intent-management");
             },
           });
         }
-      " />
+      "
+    />
   </Page>
 </template>

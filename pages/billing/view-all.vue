@@ -1,59 +1,79 @@
 <template>
-  <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
+  <div
+    v-if="isPageLoading"
+    class="grid h-[80vh] place-items-center text-[#424BD1]"
+  >
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
   <page v-else title="Billing" :description="true" :disableSelector="true">
-    <div class="xs:grid-cols-2 py-0 px-2.5 my-3 my-4 grid max-h-[90vh] gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div
+      class="xs:grid-cols-2 my-3 my-4 grid max-h-[90vh] gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-4"
+    >
       <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->
-      <div :class="[
-        'main_card_align relative flex flex-col justify-between bg-[#ffffff] rounded-[13px] p-5 border-2 hover:border-yellow-500 field_shadow',
-        orgBilling?.plan_code === list.plan_code
-          ? 'border-2 border-yellow-500'
-          : '',
-        'w-full',
-      ]" v-for="(list, index) in billingVariation" :key="index">
-        <div v-if="orgBilling?.plan_code === list.plan_code"
-          class="absolute right-2 top-2 rounded-md bg-yellow-400 px-3 py-1 text-white">
+      <div
+        :class="[
+          'main_card_align field_shadow relative flex flex-col justify-between rounded-[13px] border-2 bg-[#ffffff] p-5 hover:border-yellow-500',
+          orgBilling?.plan_code === list.plan_code
+            ? 'border-2 border-yellow-500'
+            : '',
+          'w-full',
+        ]"
+        v-for="(list, index) in billingVariation"
+        :key="index"
+      >
+        <div
+          v-if="orgBilling?.plan_code === list.plan_code"
+          class="absolute right-2 top-2 rounded-md bg-yellow-400 px-3 py-1 text-white"
+        >
           Current Plan
         </div>
-        <div class="text-[23px] font-bold text-[#424bd1] mb-[30px]">
+        <div class="mb-[30px] text-[23px] font-bold text-[#424bd1]">
           {{ list.types }}
         </div>
         <div class="bill-content-align mb-[15px]">
           <div class="amount-align text-[23px] font-black">
             {{ list.amount }}
           </div>
-          <div class="text-[#848199] text-[15px] py-[2px] px-0">{{ list.status }}</div>
+          <div class="px-0 py-[2px] text-[15px] text-[#848199]">
+            {{ list.status }}
+          </div>
         </div>
         <div class="text-[30px] font-bold">
           {{ list.types }}
         </div>
-        <div class="text-[#848199] text-[15px]">
+        <div class="text-[15px] text-[#848199]">
           {{ list.benefitContent }}
         </div>
-        <div class="flex flex-col items-start justify-start min-h-[310px]">
-          <div class="flex items-center gap-2" v-for="(advancedList, ListIndex) in list.benefitList" :key="ListIndex">
+        <div class="flex min-h-[310px] flex-col items-start justify-start">
+          <div
+            class="flex items-center gap-2"
+            v-for="(advancedList, ListIndex) in list.benefitList"
+            :key="ListIndex"
+          >
             <span class="flex items-start">
               <TicIcon v-if="advancedList.availableInPlan" />
               <CloseIcon v-else />
               <!-- <img v-if="!list.listBenefit" src="assets\icons\check-circle.svg" width="15" />
               <img v-else src="assets\icons\checked-circle.svg" width="15" /> -->
             </span>
-            <span class="text-[#848199] text-[15px] py-[2px] px-0 min-h-[26px]">
+            <span class="min-h-[26px] px-0 py-[2px] text-[15px] text-[#848199]">
               {{ advancedList.content }}
             </span>
           </div>
         </div>
         <button
           class="rounded-lg border border-indigo-700 bg-transparent px-4 py-2 font-semibold text-indigo-800 hover:border-transparent hover:bg-indigo-700 hover:text-white"
-          @click="choosePlan(list.plan)" :disabled="orgBilling?.plan_code === list.plan_code ||
+          @click="choosePlan(list.plan)"
+          :disabled="
+            orgBilling?.plan_code === list.plan_code ||
             list.plan_code?.includes('free')
-            ">
+          "
+        >
           {{
-          orgBilling?.plan_code === list.plan_code
-          ? list.currentPlan
-          : list.choosePlan
+            orgBilling?.plan_code === list.plan_code
+              ? list.currentPlan
+              : list.choosePlan
           }}
           <!-- {{ list.choosePlan }} -->
         </button>
@@ -62,222 +82,227 @@
   </page>
 </template>
 <script setup lang="ts">
-const router = useRouter();
-definePageMeta({
-  middleware: "admin-only",
-});
+  const router = useRouter();
+  definePageMeta({
+    middleware: "admin-only",
+  });
 
-const { user } = await useUser();
-const [firstName, lastName] = user.value?.username?.split(" ") || [];
-const billingVariation = ref([
-  {
-    _id: 1,
-    amount: "Rs.0",
-    status: "Per Month",
-    types: "Free",
-    benefitContent: "Unleash the power of automation.",
-    listBenefit: false,
-    benefitList: [
-      {
-        content: "50 Message Sessions",
-        availableInPlan: true,
-      },
-      {
-        content: "Lifetime Duration",
-        availableInPlan: true,
-      },
-      {
-        content: "Extra message cost",
-        availableInPlan: false,
-      },
-      {
-        content: "Extra message limit",
-        availableInPlan: false,
-      },
-      {
-        content: "Lead Gen",
-        availableInPlan: false,
-      },
-      {
-        content: "CRM Integration",
-        availableInPlan: false,
-      },
-      {
-        content: "Widget Customization",
-        availableInPlan: false,
-      },
-      {
-        content: "No Tring Branding",
-        availableInPlan: false,
-      },
-    ],
-    plan: "free_test",
-    choosePlan: "Downgrade",
-    currentPlan: "current plan",
-    plan_code: "FREE",
-  },
-  {
-    _id: 2,
-    amount: "Rs.1999",
-    status: "Per Month",
-    types: "Intelligence",
-    listBenefit: false,
-    benefitList: [
-      {
-        content: "60 Message Sessions",
-        availableInPlan: true,
-      },
-      {
-        content: "Duration-Month",
-        availableInPlan: true,
-      },
-      {
-        content: "Extra message cost-Rs.10",
-        availableInPlan: true,
-      },
-      {
-        content: "Extra message limit-200",
-        availableInPlan: true,
-      },
-      {
-        content: "Widget Customization",
-        availableInPlan: true,
-      },
-      {
-        content: "Lead Gen",
-        availableInPlan: false,
-      },
-      {
-        content: "CRM Integration",
-        availableInPlan: false,
-      },
+  const { user } = await useUser();
+  const [firstName, lastName] = user.value?.username?.split(" ") || [];
+  const billingVariation = ref([
+    {
+      _id: 1,
+      amount: "Rs.0",
+      status: "Per Month",
+      types: "Free",
+      benefitContent: "Unleash the power of automation.",
+      listBenefit: false,
+      benefitList: [
+        {
+          content: "50 Message Sessions",
+          availableInPlan: true,
+        },
+        {
+          content: "Lifetime Duration",
+          availableInPlan: true,
+        },
+        {
+          content: "Extra message cost",
+          availableInPlan: false,
+        },
+        {
+          content: "Extra message limit",
+          availableInPlan: false,
+        },
+        {
+          content: "Lead Gen",
+          availableInPlan: false,
+        },
+        {
+          content: "CRM Integration",
+          availableInPlan: false,
+        },
+        {
+          content: "Widget Customization",
+          availableInPlan: false,
+        },
+        {
+          content: "No Tring Branding",
+          availableInPlan: false,
+        },
+      ],
+      plan: "free_test",
+      choosePlan: "Downgrade",
+      currentPlan: "current plan",
+      plan_code: "FREE",
+    },
+    {
+      _id: 2,
+      amount: "Rs.1999",
+      status: "Per Month",
+      types: "Intelligence",
+      listBenefit: false,
+      benefitList: [
+        {
+          content: "60 Message Sessions",
+          availableInPlan: true,
+        },
+        {
+          content: "Duration-Month",
+          availableInPlan: true,
+        },
+        {
+          content: "Extra message cost-Rs.10",
+          availableInPlan: true,
+        },
+        {
+          content: "Extra message limit-200",
+          availableInPlan: true,
+        },
+        {
+          content: "Widget Customization",
+          availableInPlan: true,
+        },
+        {
+          content: "Lead Gen",
+          availableInPlan: false,
+        },
+        {
+          content: "CRM Integration",
+          availableInPlan: false,
+        },
 
-      {
-        content: "No Tring Branding",
-        availableInPlan: false,
-      },
-    ],
-    plan: `chat_intelligence`,
-    choosePlan: "upgrade",
-    currentPlan: "current plan",
-  },
-  {
-    _id: 3,
-    amount: "Rs.6999",
-    status: "Per Month",
-    types: "Super Intelligence",
-    listBenefit: false,
-    benefitList: [
-      {
-        content: "250 Message Sessions",
-        availableInPlan: true,
-      },
-      {
-        content: "Duration-Month",
-        availableInPlan: true,
-      },
-      {
-        content: "Extra message cost - Rs.8",
-        availableInPlan: true,
-      },
-      {
-        content: "1000 Extra message limit",
-        availableInPlan: true,
-      },
-      {
-        content: "Lead Gen",
-        availableInPlan: true,
-      },
-      {
-        content: "CRM Integration",
-        availableInPlan: true,
-      },
+        {
+          content: "No Tring Branding",
+          availableInPlan: false,
+        },
+      ],
+      plan: `chat_intelligence`,
+      choosePlan: "upgrade",
+      currentPlan: "current plan",
+    },
+    {
+      _id: 3,
+      amount: "Rs.6999",
+      status: "Per Month",
+      types: "Super Intelligence",
+      listBenefit: false,
+      benefitList: [
+        {
+          content: "250 Message Sessions",
+          availableInPlan: true,
+        },
+        {
+          content: "Duration-Month",
+          availableInPlan: true,
+        },
+        {
+          content: "Extra message cost - Rs.8",
+          availableInPlan: true,
+        },
+        {
+          content: "1000 Extra message limit",
+          availableInPlan: true,
+        },
+        {
+          content: "Lead Gen",
+          availableInPlan: true,
+        },
+        {
+          content: "CRM Integration",
+          availableInPlan: true,
+        },
 
-      {
-        content: "No Tring Branding (Addon)",
-        availableInPlan: true,
-      },
-    ],
-    plan: "chat_super_intelligence",
-    choosePlan: "upgrade",
-    currentPlan: "current plan",
-  },
-  {
-    _id: 4,
-    amount: "Talk to sales",
-    status: "",
-    types: "Enterprise",
-    // benefitContent: 'Automation plus enterprise-grade features.',
-    listBenefit: false,
-    benefitList: [
-      {
-        content: "1000+ Message Sessions",
-        availableInPlan: true,
-      },
-      {
-        content: "Duration-Month",
-        availableInPlan: true,
-      },
-      {
-        content: "Extra message cost-Talk to sales",
-        availableInPlan: true,
-      },
-      {
-        content: "Extra message limit-Unlimited",
-        availableInPlan: true,
-      },
-      {
-        content: "Lead Gen",
-        availableInPlan: true,
-      },
-      {
-        content: "CRM Integration",
-        availableInPlan: true,
-      },
-      {
-        content: "Widget Customization-Advance",
-        availableInPlan: true,
-      },
-      {
-        content: "No Tring Branding (Addon)",
-        availableInPlan: true,
-      },
-    ],
-    choosePlan: "contact us",
-    availableInPlan: true,
-  },
-]);
+        {
+          content: "No Tring Branding (Addon)",
+          availableInPlan: true,
+        },
+      ],
+      plan: "chat_super_intelligence",
+      choosePlan: "upgrade",
+      currentPlan: "current plan",
+    },
+    {
+      _id: 4,
+      amount: "Talk to sales",
+      status: "",
+      types: "Enterprise",
+      // benefitContent: 'Automation plus enterprise-grade features.',
+      listBenefit: false,
+      benefitList: [
+        {
+          content: "1000+ Message Sessions",
+          availableInPlan: true,
+        },
+        {
+          content: "Duration-Month",
+          availableInPlan: true,
+        },
+        {
+          content: "Extra message cost-Talk to sales",
+          availableInPlan: true,
+        },
+        {
+          content: "Extra message limit-Unlimited",
+          availableInPlan: true,
+        },
+        {
+          content: "Lead Gen",
+          availableInPlan: true,
+        },
+        {
+          content: "CRM Integration",
+          availableInPlan: true,
+        },
+        {
+          content: "Widget Customization-Advance",
+          availableInPlan: true,
+        },
+        {
+          content: "No Tring Branding (Addon)",
+          availableInPlan: true,
+        },
+      ],
+      choosePlan: "contact us",
+      availableInPlan: true,
+    },
+  ]);
 
-const { status, data: orgBilling } = await useLazyFetch("/api/org/usage", {
-  server: false,
-});
-const isPageLoading = computed(() => status.value === "pending");
+  const { status, data: orgBilling } = await useLazyFetch("/api/org/usage", {
+    server: false,
+  });
+  const isPageLoading = computed(() => status.value === "pending");
 
-const choosePlan = async (plan: any) => {
-  const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName || ""}`;
+  const choosePlan = async (plan: any) => {
+    const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName || ""}`;
+    // await $fetch("/api/billing/subscription", {
+    //   method: "POST",
+    //   body: {
+    //     plan: plan,
+    //   },
+    // });
+    if (!plan) {
+      return navigateTo("https://tring-web.pripod.com/contact", {
+        external: true,
+        open: {
+          target: "_blank",
+        },
+      });
+    }
 
-  if (!plan) {
-    return navigateTo("https://tring-web.pripod.com/contact", {
+    navigateTo(planTemplate, {
       external: true,
       open: {
         target: "_blank",
       },
     });
-  }
-
-  navigateTo(planTemplate, {
-    external: true,
-    open: {
-      target: "_blank",
-    },
-  });
-  // await navigateTo('https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/chat_plan_5')
-};
+    // await navigateTo('https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/chat_plan_5')
+  };
 </script>
 <style scoped>
-.main_card_align {
-  transition:
-    background 0.3s ease,
-    color 0.3s ease;
-}
+  .main_card_align {
+    transition:
+      background 0.3s ease,
+      color 0.3s ease;
+  }
 </style>

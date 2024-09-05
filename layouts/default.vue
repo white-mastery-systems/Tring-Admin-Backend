@@ -1,12 +1,14 @@
 <template>
   <div class="relavtive flex h-[100vh]">
     <div
-      class="hidden md:hidden xl:felx lg:flex border-r border-[#8a8a8a1a] flex-col items-center gap-[20px] h-[100vh] overflow-auto min-w-[250px] max-w-[250px] overflow-x-hidden">
+      class="xl:felx hidden h-[100vh] min-w-[250px] max-w-[250px] flex-col items-center gap-[20px] overflow-auto overflow-x-hidden border-r border-[#8a8a8a1a] md:hidden lg:flex"
+    >
       <NavigationDrawer />
     </div>
     <!-- mt-2 -->
-    <div class="w-full lg:w-[86%] !w-full xl:mt-0 lg:mt-0 md:mt-0 h-[100vh] overflow-y-scroll">
-
+    <div
+      class="h-[100vh] !w-full w-full overflow-y-scroll md:mt-0 lg:mt-0 lg:w-[86%] xl:mt-0"
+    >
       <slot />
     </div>
   </div>
@@ -23,6 +25,21 @@
     //   position: "bottom-right",
     //   closeButton: true,
     // });
+    // toast.success(`A new lead created generated -- name `, {
+    //   duration: 10000,
+    //   // position: "bottom-right",
+    //   closeButton: true,
+    //   description: `mobile/phone`,
+    //   action: {
+    //     label: "View",
+    //     onClick: () => {
+    //       return navigateTo({
+    //         name: "analytics-leads-id",
+    //         params: { id: "123" },
+    //       });
+    //     },
+    //   },
+    // });
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -31,7 +48,7 @@
         toast.success(
           `A new lead created generated -- ${data.data?.botUser?.name} `,
           {
-            duration: 6000,
+            duration: 10000,
             // position: "bottom-right",
             closeButton: true,
             description: `${data.data?.botUser?.mobile}/${data.data?.botUser?.email}`,

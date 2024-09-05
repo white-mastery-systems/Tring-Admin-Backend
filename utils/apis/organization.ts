@@ -26,6 +26,33 @@ export const getAnalyticsData = async (period: any) => {
 //     console.error("Error fetching analytics data:", error);
 //   }
 // };
+
+export const updateIntegrationById = async ({
+  id,
+  integrationDetails,
+  onSuccess,
+}: {
+  id: string;
+  integrationDetails: any;
+  onSuccess: Function;
+}) => {
+  try {
+    const createIntegration = await $fetch<SelectChatBot>(
+      `/api/org/integrations/${id}`,
+      {
+        method: "PUT",
+        body: integrationDetails,
+      },
+    );
+    onSuccess();
+    toast.success("Integration updated successfully");
+
+    return createIntegration;
+  } catch (err: any) {
+    toast.error(err.data.data[0].message);
+  }
+};
+
 export const createIntegration = async ({
   integrationDetails,
   onSuccess,

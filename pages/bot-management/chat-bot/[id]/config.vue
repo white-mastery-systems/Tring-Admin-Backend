@@ -54,7 +54,7 @@
     duration: 0,
   };
   const router = useRouter();
-  const route = useRoute("bots-id-config");
+  const route = useRoute("bot-management-chat-bot-id-config");
 
   const roles = [
     {
