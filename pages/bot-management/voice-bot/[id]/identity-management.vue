@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { label } from '@unovis/ts/components/axis/style';
+
 definePageMeta({
   middleware: "admin-only",
 });
@@ -8,12 +10,21 @@ const animationProps = {
 };
 const formSchema = toTypedSchema(
   z.object({
-    provider: z.string().min(1, 'Name is required'),
-    number: z.number().min(2, "Number must be provided."),
+    name: z.string().min(1, 'Name is required'),
+    role: z.string().min(2, "Role must be provided."),
+    domain: z.string().min(2, "Domain must be provided."),
   })
 )
-const roles = ['Customer Support', 'Receptionist']
-const domainList = ['Admin', 'User', 'Editor', 'Viewer', 'Contributor', 'Manager'];
+const roles = [{ content: 'Customer Support', label: "Assist customers with their questions and issues." }, { content: 'Receptionist', label: "Handles visitor interactions and phone calls." }]
+const domainList = [
+  { content: 'Admin', label: 'Manages system settings and user permissions' },
+  { content: 'User', label: 'Regular user with access to basic features' },
+  { content: 'Editor', label: 'Can edit and manage content' },
+  { content: 'Viewer', label: 'Can view content but cannot make changes' },
+  { content: 'Contributor', label: 'Can contribute content but with limited permissions' },
+  { content: 'Manager', label: 'Oversees team and project management' }
+];
+
 const onSubmit = async (value: any) => {
   console.log(value, "value")
 };
@@ -52,9 +63,14 @@ const onSubmit = async (value: any) => {
                     <UiSelectValue placeholder="Select Role" class="font-medium" />
                   </UiSelectTrigger>
                   <UiSelectContent>
-                    <UiSelectItem v-for="(role, index) in roles" :value="role">{{
-                      role
+                    <div v-for="(role, index) in roles">
+                      <UiSelectItem :value="role.content">{{
+                        role.content
                       }}</UiSelectItem>
+                      <span class="mx-2 text-xs italic text-gray-500">{{
+                        role.label
+                      }}</span>
+                    </div>
                   </UiSelectContent>
                 </UiSelect>
                 <!-- <UiFormField v-if="componentField.modelValue === 'Other'" v-slot="{ componentField }" name="otherRole">
@@ -81,9 +97,14 @@ const onSubmit = async (value: any) => {
                   <UiSelectValue placeholder="Select Domain" class="font-medium" />
                 </UiSelectTrigger>
                 <UiSelectContent>
-                  <UiSelectItem v-for="(domain, index) in domainList" :value="domain">{{
-                    domain
+                  <div v-for="(domain, index) in domainList">
+                    <UiSelectItem :value="domain.content">{{
+                      domain.content
                     }}</UiSelectItem>
+                    <span class="mx-2 text-xs italic text-gray-500">{{
+                      domain.label
+                    }}</span>
+                  </div>
                 </UiSelectContent>
               </UiSelect>
               <!-- <UiFormField v-if="componentField.modelValue === 'Other'" v-slot="{ componentField }" name="otherRole">

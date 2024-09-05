@@ -8,9 +8,9 @@ const animationProps = {
 };
 const formSchema = toTypedSchema(
   z.object({
-    name: z.string().min(1, 'Name is required'),
-    role: z.string().min(2, "Role must be provided."),
-    domain: z.string().min(2, "Domain must be provided."),
+    provider: z.string().min(1, 'Name is required'),
+    number: z.number().min(2, "Number must be provided."),
+    calldirection: z.string().min(1, 'Call direction is required'),
   })
 )
 const roles = ['Customer Support', 'Receptionist']
@@ -49,6 +49,16 @@ const onSubmit = async (value: any) => {
               </UiFormLabel>
               <UiFormControl>
                 <UiInput v-bind="componentField" type="text" placeholder="Enter Number" class="h-10 font-regular" />
+              </UiFormControl>
+              <UiFormMessage />
+            </UiFormItem>
+          </UiFormField>
+          <UiFormField v-slot="{ componentField }" name="calldirection">
+            <UiFormItem v-auto-animate="animationProps" class="w-full">
+              <UiFormLabel class="font-bold"> Call Direction <UiLabel class="text-red-500 text-lg">*</UiLabel>
+              </UiFormLabel>
+              <UiFormControl>
+                <UiInput v-bind="componentField" type="text" placeholder="Enter call direction" class="h-10 font-regular" />
               </UiFormControl>
               <UiFormMessage />
             </UiFormItem>

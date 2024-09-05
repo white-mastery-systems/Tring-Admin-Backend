@@ -115,10 +115,12 @@
   </Page>
 </template>
 <script setup lang="ts">
-  import { createColumnHelper } from "@tanstack/vue-table";
-  definePageMeta({
-    middleware: "admin-only",
-  });
+import { createColumnHelper } from "@tanstack/vue-table";
+import { format } from "date-fns";
+
+definePageMeta({
+  middleware: "admin-only",
+});
 
   const formSchema = toTypedSchema(
     z.object({
@@ -161,22 +163,22 @@
   ]);
   // const botList = await listApiBots();
 
-  const { status, data: bots } = await useLazyFetch("/api/bots", {
-    server: false,
-    default: () => [],
-    query: {
-      active: activeStatus,
-      q: searchBotDebounce,
-    },
-    transform: (bots) =>
-      bots.map((bot) => ({
-        id: bot.id,
-        name: bot.name,
-        status: bot.documentId ? true : false,
-        createdAt: formatDateStringToDate(bot.createdAt),
-      })),
-  });
-  const isDataLoading = computed(() => status.value === "pending");
+const { status, data: bots } = await useLazyFetch("/api/bots", {
+  server: false,
+  default: () => [],
+  query: {
+    active: activeStatus,
+    q: searchBotDebounce,
+  },
+  transform: (bots) =>
+    bots.map((bot) => ({
+      id: bot.id,
+      name: bot.name,
+      status: bot.documentId ? true : false,
+      createdAt: `${format(bot.createdAt, "dd MMM yyyy HH:MM aaa")}`,
+    })),
+});
+const isDataLoading = computed(() => status.value === "pending");
 
   const addBot = async (value: any) => {
     try {
