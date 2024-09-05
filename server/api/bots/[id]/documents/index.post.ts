@@ -60,7 +60,9 @@ export default defineEventHandler(async (event) => {
   const file = new File([data], filename!, rest);
 
   const hostname = getRequestHost(event);
-
+  console.log({
+    callback: `${conf.llmCallbackUrl}/api/documents/${document.id}`,
+  });
   form.append("name", body.data.name?.replace(/[^a-zA-Z0-9.]/g, ""));
   form.append("files", file);
   form.append(
@@ -72,7 +74,7 @@ export default defineEventHandler(async (event) => {
         model_name: "",
         messages: [],
       },
-      callback_url: `https://app.tringlabs.ai/api/documents/${document.id}`,
+      callback_url: `${conf.llmCallbackUrl}/api/documents/${document.id}`,
     }),
   );
 

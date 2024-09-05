@@ -43,7 +43,6 @@ export const createDocument = async (
 
   form.append("name", document.name);
   form.append("files", document.files);
-  form.append("callback_url", window.location.href);
 
   await $fetch(`/api/bots/${botId}/documents`, {
     method: "POST",

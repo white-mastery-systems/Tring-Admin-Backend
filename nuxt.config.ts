@@ -41,6 +41,7 @@ export default defineNuxtConfig({
     botBaseUrl: "",
     redirectUrl: "",
     logoDir: "",
+    llmCallbackUrl:""
   },
 
   vite: {
