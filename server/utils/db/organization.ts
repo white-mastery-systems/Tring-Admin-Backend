@@ -457,6 +457,8 @@ const getDateRange = (period: string, from: Date, to: Date) => {
 };
 
 const validQueryValues = [
+  "leads",
+  "sessions",
   "unique_visiters",
   "interacted_chats",
   "schedule_calls",
@@ -732,8 +734,8 @@ export const getAnalytics = async (
     const safeGroupedCounts = (map) => map ? groupedCounts(map) : {}
 
     const graph = {
-      ...!queryArray.length && {  leads: safeGroupedCounts(leadMap) },
-      ...!queryArray.length && {  sessions: safeGroupedCounts(sessionMap)},
+      ...(!queryArray.length || queryArray.includes("leads")) && {  leads: safeGroupedCounts(leadMap) },
+      ...(!queryArray.length || queryArray.includes("sessions")) && {  sessions: safeGroupedCounts(sessionMap)},
       ...queryArray.includes("unique_visiters") && { uniqueVisiters: safeGroupedCounts(uniqueVisitersMap) },
       ...queryArray.includes("interacted_chats") && { interactedChats: safeGroupedCounts(interactedChatsMap) },
       ...queryArray.includes("schedule_calls") && { scheduleCalls: safeGroupedCounts(scheduleCallsMap) },
