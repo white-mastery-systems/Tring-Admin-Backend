@@ -88,6 +88,16 @@ export const adminPricingSchema = adminSchema.table("admin_pricing", {
   tringBranding: varchar("tring_branding").notNull(),
 });
 
+export const numberIntegrationSchema = adminSchema.table("number_integration", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  provider: varchar("provider"),
+  exoPhone: varchar("exo_phone"),
+  countryCode: varchar("country_code"),
+  organizationId: uuid("org_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+})
+
 // Relations
 export const organizationRelations = relations(
   organizationSchema,
@@ -118,6 +128,9 @@ export type InsertOrganization = InferInsertModel<typeof organizationSchema>;
 export type InsertIntegration = InferInsertModel<typeof integrationSchema>;
 export type SelectIntegration = InferSelectModel<typeof integrationSchema>;
 export type InsertTimeline = InferInsertModel<typeof timelineSchema>;
+
+export type SelectNumberIntegration = InferSelectModel<typeof numberIntegrationSchema>;
+export type InsertNumberIntegration = InferInsertModel<typeof numberIntegrationSchema>;
 
 // Validation
 export const zodInsertOrganization = createInsertSchema(organizationSchema, {
