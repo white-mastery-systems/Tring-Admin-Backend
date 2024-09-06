@@ -14,6 +14,7 @@ import { adminSchema } from ".";
 export const authUserSchema = adminSchema.table("user", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   username: varchar("username", { length: 64 }),
+  countryCode: varchar("country_code"),
   mobile: varchar("mobile"),
   role: varchar("role", {
     length: 10,
