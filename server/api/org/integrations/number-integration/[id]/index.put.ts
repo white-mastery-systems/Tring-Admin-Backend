@@ -1,6 +1,6 @@
 const zodUpdateNumberIntegration = z.object({
    provider: z.string().optional(),
-   exoPhone: z.number().optional(),
+   exoPhone: z.string().optional(),
    countryCode: z.string().optional()
 })
 

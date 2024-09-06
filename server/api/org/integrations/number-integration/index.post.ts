@@ -2,7 +2,7 @@ import { createNumberIntegration } from "~/server/utils/db/number-integration"
 
 const zodInsertNumberIntegration = z.object({
    provider: z.string(),
-   exoPhone: z.number(),
+   exoPhone: z.string(),
    countryCode: z.string()
 })
 
