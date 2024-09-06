@@ -103,40 +103,7 @@
         <div class="max-w-[200px]">
           <MutliSelect
             v-model:value="chartValues"
-            :options="[
-              {
-                label: 'Leads',
-                value: 'leads',
-              },
-              {
-                label: 'Sessions',
-                value: 'sessions',
-              },
-              {
-                label: 'Unique Visitors',
-                value: 'unique_visiters',
-              },
-              {
-                label: 'Interacted Chats',
-                value: 'interacted_chats',
-              },
-              {
-                label: 'Schedule Calls',
-                value: 'schedule_calls',
-              },
-              {
-                label: 'Site visits',
-                value: 'site_visits',
-              },
-              {
-                label: 'Locations',
-                value: 'locations',
-              },
-              {
-                label: 'Virtual Tours',
-                value: 'virtual_tours',
-              },
-            ]"
+            :options="graphOptions"
             :maxCount="2"
           />
         </div>
@@ -184,6 +151,40 @@
   const selectedValue: any = ref("last-30-days");
   const analyticsData = ref();
   const loading = ref(false);
+  const graphOptions = ref([
+    {
+      label: "Leads",
+      value: "leads",
+    },
+    {
+      label: "Sessions",
+      value: "sessions",
+    },
+    {
+      label: "Unique Visitors",
+      value: "unique_visiters",
+    },
+    {
+      label: "Interacted Chats",
+      value: "interacted_chats",
+    },
+    {
+      label: "Schedule Calls",
+      value: "schedule_calls",
+    },
+    {
+      label: "Site visits",
+      value: "site_visits",
+    },
+    {
+      label: "Locations",
+      value: "locations",
+    },
+    {
+      label: "Virtual Tours",
+      value: "virtual_tours",
+    },
+  ]);
   const dateFilters = reactive([
     {
       content: "Today",
@@ -254,28 +255,45 @@
     );
     labels.value = newValue.graph?.leads?.map((item: any) => item.date);
   });
-  const chartData = computed(() => ({
+  const colors = ref([
+    {
+      borderColor: "#424bd1",
+      backgroundColor: "#424bd1",
+    },
+  ]);
+  let chartData = computed(() => ({
     labels: labels.value,
-    datasets: [
-      {
-        label: "Sessions",
-        borderColor: "#424bd1",
-        backgroundColor: "#424bd1",
-        data: sessionsGraphData.value,
-        yAxisID: "y",
+    datasets: chartValues.value?.map((item: any, index: number) => {
+      return {
+        label: graphOptions.value?.find(
+          ({ value }: { value: string }) => value === item,
+        )?.label,
         tension: 0.4,
         pointRadius: 0,
-      },
-      {
-        label: "Leads",
-        borderColor: "#ffbc42",
-        backgroundColor: "#ffbc42",
-        data: leadsGraphData.value,
-        yAxisID: "y1",
-        tension: 0.4,
-        pointRadius: 0,
-      },
-    ],
+        ...(index === 1
+          ? {
+              borderColor: "#424bd1",
+              backgroundColor: "#424bd1",
+              data: sessionsGraphData.value,
+              yAxisID: "y",
+            }
+          : {
+              borderColor: "#ffbc42",
+              backgroundColor: "#ffbc42",
+              data: leadsGraphData.value,
+              yAxisID: "y1",
+            }),
+      };
+    }),
+    // datasets: [
+    //   {
+    //     label: "Sessions",
+
+    //   },
+    //   {
+
+    //   },
+    // ],
   }));
 
   const chartOptions = ref({
