@@ -175,7 +175,7 @@ const { status, data: voiceBot } = await useLazyFetch("/api/voicebots", {
       id: bot.id,
       name: bot.name,
       status: bot.active,
-      createdAt: `${format(bot.createdAt, "dd MMM yyy HH:MM aaa")}`,
+      createdAt: `${format(bot.createdAt, "dd MMM yyy HH:MM ")}`,
     })),
 });
 const isDataLoading = computed(() => status.value === "pending");

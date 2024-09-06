@@ -70,7 +70,7 @@
         userName: chat.botUser?.name || "No name",
         id: chat.id,
         location: `${chat.metadata?.city ?? "--"} - ${chat.metadata?.state ?? "--"} `,
-        createdAt: `${format(chat?.createdAt, "dd MMM yyyy HH:MM aaa	")}`,
+        createdAt: `${format(chat?.createdAt, "dd MMM yyyy HH:MM ")}`,
         mode: chat.metadata?.mode ?? "Live",
       }));
     },

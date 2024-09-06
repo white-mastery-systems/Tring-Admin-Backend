@@ -52,7 +52,8 @@ module.exports = {
       },
       height: {
         "screen-minus-11": "calc(100vh - 7rem)",
-        "screen-minus-12": "calc(100vh - 10rem)",
+        "screen-minus-12": "calc(100vh - 9rem)",
+        "screen-minus-15": "calc(100vh - 10rem)",
         "screen-minus-10": "calc(100vh - 12rem)",
         "screen-minus-13": "calc(100vh - 14rem)",
         "screen-minus-14": "calc(100vh - 19rem)",
