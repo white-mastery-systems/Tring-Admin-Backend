@@ -205,7 +205,7 @@
     required: true,
   });
   const modalProps = defineProps<{ id: any }>();
-  const route = useRoute("");
+  const route: any = useRoute();
   const { setFieldValue } = useForm();
   watch(
     () => modalState.value.open,
@@ -249,26 +249,12 @@
   );
 
   const handlePipelineChange = async (e: any) => {
-    // stages.value pipelines.value.map((pipeline: any) => {
-    //     return pipeline.id === e;
-    //   });
     stages.value = pipelines.value
       .find((pipeline: any) => pipeline.id === e)
-      .sections?.find(
-        (section: any) => section.api_name === "Pipeline Information",
-      )
+      .sections?.find((section: any) => section.sequence_number === 2)
       ?.fields?.find(
         (field: any) => field.field_label === "Stage",
       )?.pick_list_values;
-    console.log(
-      pipelines.value
-        .find((pipeline: any) => pipeline.id === e)
-        .sections?.find(
-          (section: any) => section.api_name === "Pipeline Information",
-        )
-        ?.fields?.find((field: any) => field.field_label === "Stage"),
-      "LISG LA",
-    );
   };
   const handleCrmChange = async (e: any) => {
     const matchedCRM: any = integrationsData?.value?.find(
@@ -300,6 +286,7 @@
   });
 
   const handleAddIntegration = (value: any) => {
+    console.log({ value });
     let pipelineObj: any = {};
     let layoutObj: any = {};
 
@@ -308,10 +295,9 @@
         (pipeline: any) => pipeline.id === value.pipelineId,
       );
       let stage = pipelineData.sections
-        ?.find((section: any) => section.api_name === "Pipeline Information")
+        ?.find((section: any) => section.sequence_number === 2)
         ?.fields?.find((field: any) => field.field_label === "Stage")
         ?.pick_list_values?.find((list: any) => list.id === value.stageId);
-
       pipelineObj = {
         Stage: stage.reference_value,
         id: stage.id,

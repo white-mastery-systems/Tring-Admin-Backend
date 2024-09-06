@@ -26,6 +26,9 @@ export default defineEventHandler(async (event) => {
       ...zohoData.metaData,
     };
     const user = event.context.user;
+    const userDetails: any = await db.query.authUserSchema.findFirst({
+      where: eq(authUserSchema.id, user?.id),
+    });
     const organizationId = (await isOrganizationAdminHandler(event)) as string;
     const orgDetails = await db.query.organizationSchema.findFirst({
       where: eq(organizationSchema.id, organizationId),
@@ -85,19 +88,19 @@ export default defineEventHandler(async (event) => {
                 email: user?.email,
                 billing_address: {
                   attention: user?.username,
-                  street: "Harrington Bay Street",
-                  city: "Salt Lake City",
-                  state: "CA",
-                  country: "U.S.A",
-                  zip: "92612",
+                  street: userDetails?.address?.street,
+                  city: userDetails?.address?.city,
+                  state: userDetails?.address?.state,
+                  country: userDetails?.address?.country,
+                  zip: userDetails?.address?.zip,
                 },
                 shipping_address: {
                   attention: user?.username,
-                  street: "Harrington Bay Street",
-                  city: "Salt Lake City",
-                  state: "CA",
-                  country: "U.S.A",
-                  zip: "92612",
+                  street: userDetails?.address?.street,
+                  city: userDetails?.address?.city,
+                  state: userDetails?.address?.state,
+                  country: userDetails?.address?.country,
+                  zip: userDetails?.address?.zip,
                 },
               },
               plan: {

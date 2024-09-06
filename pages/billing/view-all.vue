@@ -5,9 +5,15 @@
   >
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <page v-else title="Billing" :description="true" :disableSelector="true">
+  <page
+    v-else
+    title="Billing"
+    :description="true"
+    :disableSelector="true"
+    :disablePadding="true"
+  >
     <div
-      class="xs:grid-cols-2 my-3 my-4 grid max-h-[90vh] gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-4"
+      class="xs:grid-cols-2 grid max-h-[90vh] gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-4"
     >
       <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->

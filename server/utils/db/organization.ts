@@ -14,7 +14,6 @@ import {
   subMonths,
   subYears,
 } from "date-fns";
-import { count } from "drizzle-orm";
 import { getPricingInformation } from "./pricing";
 
 const db = useDrizzle();
@@ -216,7 +215,7 @@ export const getOrgUsage = async (organizationId: string) => {
   console.log({ pricingInformation });
   return {
     used_quota: org.usedQuota,
-    max_quota: org.maxQuota,
+    max_quota: pricingInformation?.sessions,
     plan_code: org.planCode,
     available_quota: org.maxQuota - org.usedQuota,
     extra_sessions_cost: pricingInformation?.extraSessionCost,
@@ -324,12 +323,12 @@ const getAllDatesInRange = (period: string, from: Date, to: Date) => {
     case "custom":
       difference = differenceInDays(to, from);
       // console.log({ difference })
-      if(difference > 30) {
-         startDate = startOfYear(from)
-         endDate = endOfYear(to)
-         dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
+      if (difference > 30) {
+        startDate = startOfYear(from);
+        endDate = endOfYear(to);
+        dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
           (date) => format(date, "MMM yyyy"),
-         );
+        );
       } else {
         startDate = from;
         endDate = to;
@@ -465,7 +464,7 @@ const validQueryValues = [
   "schedule_calls",
   "site_visits",
   "locations",
-  "virtual_tours"
+  "virtual_tours",
 ];
 
 export const getAnalytics = async (
@@ -473,24 +472,27 @@ export const getAnalytics = async (
   period = "current-month",
   customFromDate: Date | null,
   customToDate: Date | null,
-  graphValues: string | undefined
+  graphValues: string | undefined,
 ) => {
   try {
-    let queryArray = (typeof graphValues === 'string' && graphValues.trim())
-    ? graphValues.split(',').map(value => value.trim())
-    : [];
+    let queryArray =
+      typeof graphValues === "string" && graphValues.trim()
+        ? graphValues.split(",").map((value) => value.trim())
+        : [];
 
     // validate query-values
-    if(queryArray?.length) {
-      const inValidQuery = queryArray.filter((i) => !validQueryValues.includes(i))
+    if (queryArray?.length) {
+      const inValidQuery = queryArray.filter(
+        (i) => !validQueryValues.includes(i),
+      );
       if (inValidQuery.length) {
         throw new Error("Invalid query Values");
       }
     }
 
-    let from = customFromDate
-    let to = customToDate
-    if(period == "all-time") {
+    let from = customFromDate;
+    let to = customToDate;
+    if (period == "all-time") {
       const earliestData = await db.query.chatBotSchema.findFirst({
         columns: {
           createdAt: true,
@@ -501,8 +503,8 @@ export const getAnalytics = async (
       // console.log({ earliestData})
       from = earliestData?.createdAt;
     }
-  //  return
-  //  console.log({ period, organizationId, from, to });
+    //  return
+    //  console.log({ period, organizationId, from, to });
 
     const { fromDate, toDate } = getDateRange(period, from, to);
 
@@ -513,7 +515,7 @@ export const getAnalytics = async (
       callScheduledTimeline,
       siteVisitTimeline,
       locationTimeline,
-      virtualTourTimeline
+      virtualTourTimeline,
     ] = await Promise.all([
       db.query.organizationSchema.findFirst({
         where: eq(organizationSchema.id, organizationId),
@@ -562,7 +564,6 @@ export const getAnalytics = async (
             lte(chatSchema.createdAt, toDate),
             eq(chatSchema.interacted, true),
             eq(chatSchema.organizationId, organizationId),
-            
           ),
         ),
       db
@@ -617,7 +618,7 @@ export const getAnalytics = async (
     const promises = [
       // leads
       db
-        .select({ createdAt: sql`${leadSchema.createdAt}`})
+        .select({ createdAt: sql`${leadSchema.createdAt}` })
         .from(leadSchema)
         .leftJoin(
           organizationSchema,
@@ -650,35 +651,33 @@ export const getAnalytics = async (
         )
         .groupBy(sql`${chatSchema.createdAt}`)
         .execute(),
-    ]
-    
-    if(queryArray.includes("unique_visiters")) {
-      promises.push( db.
-        select({ createdAt: sql`${chatSchema.createdAt}`})
-        .from(chatSchema)
-        .leftJoin(chatBotSchema, eq(chatBotSchema.id, chatSchema.botId))
-        .leftJoin(
-          organizationSchema,
-          eq(organizationSchema.id, chatBotSchema.organizationId),
-        )
-        .where(
-          and(
-            eq(organizationSchema.id, organizationId),
-            gte(chatSchema.createdAt, fromDate),
-            lte(chatSchema.createdAt, toDate),
-            gt(chatSchema.visitedCount, 1)
-          )
-        )
-      )
-    }
-  
-    const [
-      leadGraph,
-      sessionGraph,
-      uniqueVisitersGraph,
-    ] = await Promise.all(promises)
+    ];
 
-    const { dates, difference} = getAllDatesInRange(period, from, to);
+    if (queryArray.includes("unique_visiters")) {
+      promises.push(
+        db
+          .select({ createdAt: sql`${chatSchema.createdAt}` })
+          .from(chatSchema)
+          .leftJoin(chatBotSchema, eq(chatBotSchema.id, chatSchema.botId))
+          .leftJoin(
+            organizationSchema,
+            eq(organizationSchema.id, chatBotSchema.organizationId),
+          )
+          .where(
+            and(
+              eq(organizationSchema.id, organizationId),
+              gte(chatSchema.createdAt, fromDate),
+              lte(chatSchema.createdAt, toDate),
+              gt(chatSchema.visitedCount, 1),
+            ),
+          ),
+      );
+    }
+
+    const [leadGraph, sessionGraph, uniqueVisitersGraph] =
+      await Promise.all(promises);
+
+    const { dates, difference } = getAllDatesInRange(period, from, to);
     // console.log({ callScheduledTimeline });
     // return { callScheduledTimeline: callScheduledTimeline }
 
@@ -690,40 +689,86 @@ export const getAnalytics = async (
     let virtualToursMap = null;
     // let uniqueVisitersMap, interactedChatsMap, scheduleCallsMap, siteVisitsMap, locationsMap, virtualToursMap = null
 
-    const leadResult = groupAndMapData({ module: leadGraph, period, difference });
-    const sessionResult = groupAndMapData({ module: sessionGraph, period, difference });
-    
+    const leadResult = groupAndMapData({
+      module: leadGraph,
+      period,
+      difference,
+    });
+    const sessionResult = groupAndMapData({
+      module: sessionGraph,
+      period,
+      difference,
+    });
+
     const leadMap = new Map(leadResult.map((item) => [item.date, item.count]));
-    const sessionMap = new Map(sessionResult.map((item) => [item.date, item.count]));
+    const sessionMap = new Map(
+      sessionResult.map((item) => [item.date, item.count]),
+    );
 
-    if(uniqueVisitersGraph) {
-      const uniqueVisitersResult = groupAndMapData({ module: uniqueVisitersGraph, period, difference });
-      uniqueVisitersMap = new Map(uniqueVisitersResult.map((item) => [item.date, item.count]))
+    if (uniqueVisitersGraph) {
+      const uniqueVisitersResult = groupAndMapData({
+        module: uniqueVisitersGraph,
+        period,
+        difference,
+      });
+      uniqueVisitersMap = new Map(
+        uniqueVisitersResult.map((item) => [item.date, item.count]),
+      );
     }
 
-    if(interactedChats) {
-      const interactedChatsResult = groupAndMapData({ module: interactedChats, period, difference });
-      interactedChatsMap = new Map(interactedChatsResult.map((item) => [item.date, item.count]))
+    if (interactedChats) {
+      const interactedChatsResult = groupAndMapData({
+        module: interactedChats,
+        period,
+        difference,
+      });
+      interactedChatsMap = new Map(
+        interactedChatsResult.map((item) => [item.date, item.count]),
+      );
     }
 
-    if(callScheduledTimeline) {
-      const scheduleCallsResult = groupAndMapData({ module: callScheduledTimeline, period, difference });
-      scheduleCallsMap = new Map(scheduleCallsResult.map((item) => [item.date, item.count]))
+    if (callScheduledTimeline) {
+      const scheduleCallsResult = groupAndMapData({
+        module: callScheduledTimeline,
+        period,
+        difference,
+      });
+      scheduleCallsMap = new Map(
+        scheduleCallsResult.map((item) => [item.date, item.count]),
+      );
     }
 
-    if(siteVisitTimeline) {
-      const siteVisitsResult = groupAndMapData({ module: siteVisitTimeline, period, difference });
-      siteVisitsMap = new Map(siteVisitsResult.map((item) => [item.date, item.count]))
+    if (siteVisitTimeline) {
+      const siteVisitsResult = groupAndMapData({
+        module: siteVisitTimeline,
+        period,
+        difference,
+      });
+      siteVisitsMap = new Map(
+        siteVisitsResult.map((item) => [item.date, item.count]),
+      );
     }
 
-    if(locationTimeline) {
-      const locationsResult = groupAndMapData({ module: locationTimeline, period, difference });
-      locationsMap = new Map(locationsResult.map((item) => [item.date, item.count]))
+    if (locationTimeline) {
+      const locationsResult = groupAndMapData({
+        module: locationTimeline,
+        period,
+        difference,
+      });
+      locationsMap = new Map(
+        locationsResult.map((item) => [item.date, item.count]),
+      );
     }
 
-    if(virtualTourTimeline) {
-      const virtualToursResult = groupAndMapData({ module: virtualTourTimeline, period, difference });
-      virtualToursMap = new Map(virtualToursResult.map((item) => [item.date, item.count]))
+    if (virtualTourTimeline) {
+      const virtualToursResult = groupAndMapData({
+        module: virtualTourTimeline,
+        period,
+        difference,
+      });
+      virtualToursMap = new Map(
+        virtualToursResult.map((item) => [item.date, item.count]),
+      );
     }
 
     const groupedCounts = (mapData: any) =>
@@ -732,18 +777,30 @@ export const getAnalytics = async (
         count: mapData.get(date) || 0,
       }));
 
-    const safeGroupedCounts = (map) => map ? groupedCounts(map) : {}
+    const safeGroupedCounts = (map) => (map ? groupedCounts(map) : {});
 
     const graph = {
-      ...!queryArray.length && {  leads: safeGroupedCounts(leadMap) },
-      ...!queryArray.length && {  sessions: safeGroupedCounts(sessionMap)},
-      ...queryArray.includes("unique_visiters") && { uniqueVisiters: safeGroupedCounts(uniqueVisitersMap) },
-      ...queryArray.includes("interacted_chats") && { interactedChats: safeGroupedCounts(interactedChatsMap) },
-      ...queryArray.includes("schedule_calls") && { scheduleCalls: safeGroupedCounts(scheduleCallsMap) },
-      ...queryArray.includes("site_visits") && { siteVisits: safeGroupedCounts(siteVisitsMap) },
-      ...queryArray.includes("locations") && { locations: safeGroupedCounts(locationsMap) },
-      ...queryArray.includes("virtual_tours") && { virtualTours: safeGroupedCounts(virtualToursMap) }
-    }
+      ...(!queryArray.length && { leads: safeGroupedCounts(leadMap) }),
+      ...(!queryArray.length && { sessions: safeGroupedCounts(sessionMap) }),
+      ...(queryArray.includes("unique_visiters") && {
+        uniqueVisiters: safeGroupedCounts(uniqueVisitersMap),
+      }),
+      ...(queryArray.includes("interacted_chats") && {
+        interactedChats: safeGroupedCounts(interactedChatsMap),
+      }),
+      ...(queryArray.includes("schedule_calls") && {
+        scheduleCalls: safeGroupedCounts(scheduleCallsMap),
+      }),
+      ...(queryArray.includes("site_visits") && {
+        siteVisits: safeGroupedCounts(siteVisitsMap),
+      }),
+      ...(queryArray.includes("locations") && {
+        locations: safeGroupedCounts(locationsMap),
+      }),
+      ...(queryArray.includes("virtual_tours") && {
+        virtualTours: safeGroupedCounts(virtualToursMap),
+      }),
+    };
 
     // console.log({ graph })
 
@@ -756,7 +813,7 @@ export const getAnalytics = async (
       siteVisitTimeline: siteVisitTimeline.length,
       callScheduledTimeline: callScheduledTimeline.length,
       interactedChats: interactedChats.length,
-      graph
+      graph,
     };
   } catch (error) {
     throw new Error(`Failed to fetch: ${error}`);
