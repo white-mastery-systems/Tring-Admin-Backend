@@ -228,7 +228,7 @@
     columnHelper.accessor("createdAt", {
       header: "Date Created",
       cell: ({ row }) =>
-        formatDate(new Date(row.original.createdAt), "dd MMM yyyy HH:MM aaa "),
+        formatDate(new Date(row.original.createdAt), "dd MMM yyyy HH:MM "),
     }),
     columnHelper.accessor("id", {
       header: "Action",

@@ -1,5 +1,5 @@
 <template>
-  <Page :title="leadData?.botUser?.name ?? 'Add Name'" :disable-back-button="false" :disable-elevation="true">
+  <Page :title="leadData?.botUser?.name ?? 'No Name'" :disable-back-button="false" :disable-elevation="true">
     <div class="items-top gap-[25px flex items-center justify-center px-3">
       <div class="flex w-full grid-cols-2 justify-around gap-8 sm:w-full md:w-[100%] lg:w-[100%] xl:w-[100%]">
         <UiTabs default-value="Chat" class="w-full self-center">
@@ -116,7 +116,7 @@
               </div>
             </div>
           </UiTabsContent>
-          <UiTabsContent value="Timeline" class="flex flex-col gap-6 h-screen-minus-12 overflow-y-scroll pt-3">
+          <UiTabsContent value="Timeline" class="flex flex-col gap-6 h-screen-minus-15 overflow-y-scroll pb-5 pt-3">
             <TimeLine v-for="(step, index) in timeLineData" :key="index" :index="index" :data="step"
               :totalSteps="timeLineData.length" />
           </UiTabsContent>
