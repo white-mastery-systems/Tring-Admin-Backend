@@ -5,7 +5,8 @@ const bodyValidator = z
     username: z.string().min(2, "Name must be at least 2 characters.").optional(),
     email: z.string().email().default("").optional(),
     password: z.string().optional().default(""),
-    address: z.record(z.any()).optional()
+    address: z.record(z.any()).optional(),
+    mobile: z.string().optional(),
   })
   .passthrough();
 
@@ -29,7 +30,8 @@ export default defineEventHandler(async (event) => {
     username: body.username,
     email: body.email,
     ...(newPassword && { password: newPassword }),
-    address: body.address
+    address: body.address,
+    mobile: body.mobile
   };
 
   const update = await updateUser(user.id, updatedUser);
