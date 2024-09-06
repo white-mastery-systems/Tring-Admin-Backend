@@ -244,45 +244,65 @@
     "June",
     "July",
   ]);
-  const leadsGraphData = ref([]);
+  const graphData = ref([]);
   const sessionsGraphData = ref([]);
   watch(analyticsData, (newValue, oldValue) => {
-    leadsGraphData.value = newValue.graph?.leads?.map(
-      (item: any) => item.count,
-    );
-    sessionsGraphData.value = newValue.graph?.sessions?.map(
-      (item: any) => item.count,
-    );
-    labels.value = newValue.graph?.leads?.map((item: any) => item.date);
+    console.log({ newValue });
+    if (newValue?.graph?.length > 0) {
+      labels.value = newValue.graph[0]?.map((item) => item.date);
+    }
+
+    newValue.graph?.map((graphItem) => {
+      graphData.value.push(graphItem?.map((item: any) => item.count));
+    });
+    // leadsGraphData.value = newValue.graph?.leads?.map(
+    //   (item: any) => item.count,
+    // );
+    // sessionsGraphData.value = newValue.graph?.sessions?.map(
+    //   (item: any) => item.count,
+    // );
+    // labels.value = newValue.graph?.leads?.map((item: any) => item.date);
   });
-  const colors = ref([
+  const graphIndexValues = ref([
     {
       borderColor: "#424bd1",
       backgroundColor: "#424bd1",
+      yAxisID: "y",
+    },
+    {
+      borderColor: "#ffbc42",
+      backgroundColor: "#ffbc42",
+      yAxisID: "y1",
     },
   ]);
   let chartData = computed(() => ({
     labels: labels.value,
     datasets: chartValues.value?.map((item: any, index: number) => {
+      console.log({ dd: graphData.value[index] });
       return {
         label: graphOptions.value?.find(
           ({ value }: { value: string }) => value === item,
         )?.label,
         tension: 0.4,
         pointRadius: 0,
-        ...(index === 1
-          ? {
-              borderColor: "#424bd1",
-              backgroundColor: "#424bd1",
-              data: sessionsGraphData.value,
-              yAxisID: "y",
-            }
-          : {
-              borderColor: "#ffbc42",
-              backgroundColor: "#ffbc42",
-              data: leadsGraphData.value,
-              yAxisID: "y1",
-            }),
+        borderColor: graphIndexValues.value[index]?.borderColor,
+        backgroundColor: graphIndexValues.value[index]?.backgroundColor,
+        data: graphData.value[index],
+        yAxisID: graphIndexValues.value[index]?.yAxisID,
+
+        // ...(index === 1
+        //   ? {
+        //       borderColor: "#424bd1",
+        //       backgroundColor: "#424bd1",
+        //       data: sessionsGraphData.value,
+        //       yAxisID: "y",
+        //     }
+        //   : {
+        //       borderColor: "#ffbc42",
+        //       backgroundColor: "#ffbc42",
+        //       // data: leadsGraphData.value,
+        //       yAxisID: "y1",
+        //     }),
       };
     }),
     // datasets: [

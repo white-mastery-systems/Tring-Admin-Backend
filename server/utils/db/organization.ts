@@ -477,10 +477,13 @@ export const getAnalytics = async (
   graphValues: string | undefined,
 ) => {
   try {
-    let queryArray =
+    let reqQuery =
       typeof graphValues === "string" && graphValues.trim()
         ? graphValues.split(",").map((value) => value.trim())
         : [];
+
+    const defaultQueryArray = ["leads", "sessions"];
+    const queryArray = reqQuery.length ? reqQuery : defaultQueryArray;
 
     // validate query-values
     if (queryArray?.length) {
@@ -680,8 +683,6 @@ export const getAnalytics = async (
       await Promise.all(promises);
 
     const { dates, difference } = getAllDatesInRange(period, from, to);
-    // console.log({ callScheduledTimeline });
-    // return { callScheduledTimeline: callScheduledTimeline }
 
     let uniqueVisitersMap = null;
     let interactedChatsMap = null;
@@ -689,7 +690,6 @@ export const getAnalytics = async (
     let siteVisitsMap = null;
     let locationsMap = null;
     let virtualToursMap = null;
-    // let uniqueVisitersMap, interactedChatsMap, scheduleCallsMap, siteVisitsMap, locationsMap, virtualToursMap = null
 
     const leadResult = groupAndMapData({
       module: leadGraph,
@@ -789,26 +789,29 @@ export const getAnalytics = async (
         sessions: safeGroupedCounts(sessionMap),
       }),
       ...(queryArray.includes("unique_visiters") && {
-        uniqueVisiters: safeGroupedCounts(uniqueVisitersMap),
+        unique_visiters: safeGroupedCounts(uniqueVisitersMap),
       }),
       ...(queryArray.includes("interacted_chats") && {
-        interactedChats: safeGroupedCounts(interactedChatsMap),
+        interacted_chats: safeGroupedCounts(interactedChatsMap),
       }),
       ...(queryArray.includes("schedule_calls") && {
-        scheduleCalls: safeGroupedCounts(scheduleCallsMap),
+        schedule_calls: safeGroupedCounts(scheduleCallsMap),
       }),
       ...(queryArray.includes("site_visits") && {
-        siteVisits: safeGroupedCounts(siteVisitsMap),
+        site_visits: safeGroupedCounts(siteVisitsMap),
       }),
       ...(queryArray.includes("locations") && {
         locations: safeGroupedCounts(locationsMap),
       }),
       ...(queryArray.includes("virtual_tours") && {
-        virtualTours: safeGroupedCounts(virtualToursMap),
+        virtual_tours: safeGroupedCounts(virtualToursMap),
       }),
     };
 
-    // console.log({ graph })
+    console.log({ queryArray });
+
+    // Extract values in the specified order from the graph object
+    const graphArray = queryArray.map((key) => graph[key]).filter(Boolean);
 
     return {
       chats: orgData.bots.reduce((acc, bot) => acc + bot.chats.length, 0),
@@ -819,7 +822,7 @@ export const getAnalytics = async (
       siteVisitTimeline: siteVisitTimeline.length,
       callScheduledTimeline: callScheduledTimeline.length,
       interactedChats: interactedChats.length,
-      graph,
+      graph: graphArray,
     };
   } catch (error) {
     throw new Error(`Failed to fetch: ${error}`);
