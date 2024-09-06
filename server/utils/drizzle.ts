@@ -29,6 +29,7 @@ const schema = {
   voicebotIntegrationSchema,
   adminConfigurationSchema,
   adminPricingSchema,
+  numberIntegrationSchema,
   // Relations
   organizationRelations,
   chatBotRelations,

@@ -4,7 +4,9 @@ import { integrationSchema } from "#imports";
 import { InsertIntegration } from "~/server/schema/admin";
 
 interface listIntegrationQuery {
-  q?: string
+  q?: string,
+  page?: string,
+  limit?: string,
 }
 
 const db = useDrizzle();
@@ -26,9 +28,17 @@ export const listIntegrations = async (organizationId: string, query: listIntegr
     }
   }
 
+  const page = query.page ? parseInt(query.page) : 1;
+  const limit = query.limit ? parseInt(query.limit) : 10;
+  const offset = (page - 1) * limit;
+
   const data = await db.query.integrationSchema.findMany({
     where: and(...filters),
     orderBy: [desc(integrationSchema.createdAt)],
+    ...query?.page && query?.limit && {
+      limit,
+      offset
+    }
   });
   return data;
 };

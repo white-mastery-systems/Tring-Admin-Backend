@@ -30,6 +30,10 @@ export const listChats = async (organisationId: string, query: any) => {
     }
     // console.log({ query, fromDate, toDate })
 
+    const page = query.page ? parseInt(query.page) : 1;
+    const limit = query.limit ? parseInt(query.limit) : 10;
+    const offset = (page - 1) * limit;
+
    let chats = await db.query.chatSchema.findMany({
     where: and(
       eq(chatSchema.organizationId, organisationId),
@@ -49,6 +53,10 @@ export const listChats = async (organisationId: string, query: any) => {
       },
     },
     orderBy: [desc(chatSchema.createdAt)],
+    ...query?.page && query?.limit && {
+      limit,
+      offset
+    }
   });
   
   if(query?.q || query?.botUserName === "with_name") {

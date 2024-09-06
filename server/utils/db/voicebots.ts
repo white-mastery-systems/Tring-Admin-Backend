@@ -2,15 +2,42 @@ import { InsertVoicebotIntegration } from "~/server/schema/voicebot";
 
 const db = useDrizzle();
 
+interface listVoicebotQuery {
+  active?: string,
+  q?: string,
+  page?: string,
+  limit?: string,
+}
+
 export const createVoicebot = async (voicebot: InsertVoiceBot) => {
   return (
    await db.insert(voicebotSchema).values(voicebot).returning()
   )[0]
 }
 
-export const listVoicebots = async (organizationId: string) => {
+export const listVoicebots = async (organizationId: string, query: listVoicebotQuery) => {
+
+  let filters: any = [eq(voicebotSchema.organizationId, organizationId)]
+
+  if (query?.active === "true") {
+    filters.push(eq(voicebotSchema.active, true));
+  } else if (query?.active === "false") {
+    filters.push(eq(voicebotSchema.active, false));
+  }
+  if(query?.q) {
+    filters.push(ilike(voicebotSchema.name, `%${query.q}%`))
+  }
+  const page = query.page ? parseInt(query.page) : 1;
+  const limit = query.limit ? parseInt(query.limit) : 10;
+  const offset = (page - 1) * limit;
+
   const data = await db.query.voicebotSchema.findMany({ 
-    where: eq(voicebotSchema.organizationId, organizationId)
+    where: and(...filters),
+    orderBy: [desc(voicebotSchema.createdAt)],
+    ...query?.page && query?.limit && {
+      limit,
+      offset
+    }
   })
   return data
 }
