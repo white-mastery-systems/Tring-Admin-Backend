@@ -11,6 +11,8 @@ export const createBot = async (bot: InsertChatBot) =>
   (await db.insert(chatBotSchema).values(bot).returning())[0];
 
 interface queryInterface {
+  page?: string;
+  limit?: string;
   active?: string;
   q?: string;
 }
@@ -28,6 +30,10 @@ export const listBots = async (
     filters.push(ilike(chatBotSchema.name, `%${query.q}%`));
   }
 
+  const page = query.page ? parseInt(query.page) : 1;
+  const limit = query.limit ? parseInt(query.limit) : 10;
+  const offset = (page - 1) * limit;
+
   const data = await db.query.chatBotSchema.findMany({
     where: and(...filters),
     orderBy: [desc(chatBotSchema.createdAt)],
@@ -37,6 +43,10 @@ export const listBots = async (
       createdAt: true,
       documentId: true,
     },
+   ...query?.page && query?.limit && {
+      limit,
+      offset
+    }
   });
   return data;
 };

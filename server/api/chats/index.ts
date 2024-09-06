@@ -16,6 +16,8 @@ const chatQueryValidator = z
     q: z.string().optional(),
     period: z.string().optional(),
     botUserName: z.string().optional(),
+    page: z.string().optional(),
+    limit: z.string().optional(),
   })
   .refine(
     (data) => {
