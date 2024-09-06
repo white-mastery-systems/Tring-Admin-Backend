@@ -94,7 +94,7 @@ export async function generateLeadInZohoBigin({
       }
     }
   });
-
+  console.log(JSON.stringify(bodyData), token);
   return $fetch("https://www.zohoapis.in/bigin/v2/Pipelines", {
     method: "POST",
     body: { data: [bodyData] },
@@ -102,6 +102,7 @@ export async function generateLeadInZohoBigin({
       Authorization: `Zoho-oauthtoken ${token}`,
     },
   }).catch((err) => {
+    console.log(err, err.data, err.message, "EERRRR");
     if (!refreshToken) return;
     if (err.status === 401) {
       regenearateTokenWithRefreshToken({
@@ -122,7 +123,17 @@ export async function generateLeadInZohoBigin({
     }
   });
 }
-
+export async function getContactById({
+  token,
+  refreshToken,
+  body,
+  integrationData,
+}: {
+  token: string;
+  refreshToken: String;
+  body: any;
+  integrationData: any;
+}) {}
 export async function generateContactInZohoBigin({
   token,
   refreshToken,
@@ -134,32 +145,50 @@ export async function generateContactInZohoBigin({
   body: any;
   integrationData: any;
 }) {
-  return $fetch("https://www.zohoapis.in/bigin/v2/Contacts", {
+  const data = await $fetch("https://www.zohoapis.in/bigin/v2/Contacts", {
     method: "POST",
     body: { data: [body] },
     headers: {
       Authorization: `Zoho-oauthtoken ${token}`,
     },
-  }).catch((err) => {
-    if (!refreshToken) return;
-    if (err.status === 401) {
-      regenearateTokenWithRefreshToken({
-        refreshToken: refreshToken,
-      }).then(async (data: any) => {
-        if (data?.access_token)
-          updateIntegrationById(integrationData.id, {
-            ...integrationData.metadata,
-            access_token: data?.access_token,
+  })
+    .then((data) => {
+      console.log({ data });
+    })
+    .catch((err) => {
+      if (err.status === 400) {
+        // await
+        console.log(err.data[0].details, "DETAILS");
+        return {
+          data: [
+            {
+              details: {
+                id: err.data[0].details?.duplicate_record?.id,
+              },
+            },
+          ],
+        };
+      }
+      if (!refreshToken) return;
+      if (err.status === 401) {
+        regenearateTokenWithRefreshToken({
+          refreshToken: refreshToken,
+        }).then(async (data: any) => {
+          if (data?.access_token)
+            updateIntegrationById(integrationData.id, {
+              ...integrationData.metadata,
+              access_token: data?.access_token,
+            });
+          return generateContactInZohoBigin({
+            token: data?.access_token,
+            refreshToken: "",
+            body: body,
+            integrationData: integrationData,
           });
-        return generateContactInZohoBigin({
-          token: data?.access_token,
-          refreshToken: "",
-          body: body,
-          integrationData: integrationData,
         });
-      });
-    }
-  });
+      }
+    });
+  return data;
 }
 
 export function getFieldMetadataFromZohoBigin({

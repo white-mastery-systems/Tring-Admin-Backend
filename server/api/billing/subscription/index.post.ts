@@ -69,6 +69,7 @@ export default defineEventHandler(async (event) => {
           firstName = firstName?.split(" ")[0];
           lastName = firstName?.split(" ")[1];
         }
+        console.log(userDetails, "MOBILE");
         const generatedHostedPage = await await $fetch(
           "https://www.zohoapis.in/billing/v1/hostedpages/newsubscription",
           {
@@ -79,6 +80,7 @@ export default defineEventHandler(async (event) => {
               Authorization: `Zoho-oauthtoken ${metaData.access_token}`,
               "content-type": "application/json",
             },
+
             body: {
               customer: {
                 display_name: user?.username,
@@ -86,6 +88,7 @@ export default defineEventHandler(async (event) => {
                 first_name: firstName,
                 last_name: lastName,
                 email: user?.email,
+                mobile: `+918848083317`,
                 billing_address: {
                   attention: user?.username,
                   street: userDetails?.address?.street,

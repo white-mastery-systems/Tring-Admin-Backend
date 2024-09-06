@@ -47,6 +47,7 @@ export default defineEventHandler(async (event) => {
       });
 
       const pipelineObj = botIntegration?.metadata?.pipelineObj;
+      console.log(JSON.stringify(generatedContact), "ZOHO CONTACT GENERATED");
       const generatedLead = await generateLeadInZohoBigin({
         token: botIntegration?.integration?.metadata?.access_token,
         refreshToken: botIntegration?.integration?.metadata?.refresh_token,

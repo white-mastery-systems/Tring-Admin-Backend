@@ -274,6 +274,22 @@
       backgroundColor: "#ffbc42",
       yAxisID: "y1",
     },
+    {
+      borderColor: "#dc6570",
+      backgroundColor: "#dc6570",
+      yAxisID: "y1",
+    },
+
+    {
+      borderColor: "#ffbc42",
+      backgroundColor: "#ffbc42",
+      yAxisID: "y1",
+    },
+    {
+      borderColor: "#ffbc42",
+      backgroundColor: "#ffbc42",
+      yAxisID: "y1",
+    },
   ]);
   let chartData = computed(() => ({
     labels: labels.value,
@@ -289,20 +305,6 @@
         backgroundColor: graphIndexValues.value[index]?.backgroundColor,
         data: graphData.value[index],
         yAxisID: graphIndexValues.value[index]?.yAxisID,
-
-        // ...(index === 1
-        //   ? {
-        //       borderColor: "#424bd1",
-        //       backgroundColor: "#424bd1",
-        //       data: sessionsGraphData.value,
-        //       yAxisID: "y",
-        //     }
-        //   : {
-        //       borderColor: "#ffbc42",
-        //       backgroundColor: "#ffbc42",
-        //       // data: leadsGraphData.value,
-        //       yAxisID: "y1",
-        //     }),
       };
     }),
     // datasets: [

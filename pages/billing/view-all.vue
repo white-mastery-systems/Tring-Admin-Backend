@@ -294,7 +294,7 @@
         body: {
           plan: plan,
           locationData: locationData,
-          redirectUrl: `${window.location.origin}/billing/${plan}`,
+          redirectUrl: `${window.location.origin}/billing-confirmation`,
         },
       },
     );
