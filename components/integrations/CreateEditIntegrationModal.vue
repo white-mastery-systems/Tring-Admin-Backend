@@ -141,6 +141,14 @@
       :validate-on-mount="false"
       class="space-y-2"
     >
+      <!-- <TextField
+        name="name"
+        label="Name"
+        :field="name"
+        :field-attrs="nameAttrs"
+        :error="errors?.name"
+        placeHolder="Eg: CRM-your company,CRM-your company"
+      /> -->
       <UiFormField v-model="name" v-bind="nameAttrs" name="name">
         <UiFormItem class="w-full">
           <UiFormLabel
@@ -156,7 +164,6 @@
             />
           </UiFormControl>
           <p class="mt-0 text-sm text-red-700">{{ errors?.name }}</p>
-          <!-- <UiFormMessage v-model="name" v-bind="nameAttrs" /> -->
           <span class="text-xs text-gray-500"
             >Enter a unique identification for CRM integration</span
           >

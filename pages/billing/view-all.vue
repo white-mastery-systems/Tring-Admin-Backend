@@ -5,9 +5,15 @@
   >
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <page v-else title="Billing" :description="true" :disableSelector="true">
+  <page
+    v-else
+    title="Billing"
+    :description="true"
+    :disableSelector="true"
+    :disablePadding="true"
+  >
     <div
-      class="xs:grid-cols-2 my-3 my-4 grid max-h-[90vh] gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-4"
+      class="xs:grid-cols-2 grid max-h-[90vh] gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-4"
     >
       <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->
@@ -281,14 +287,26 @@
       region: string;
     }>(`https://ipv4-check-perf.radar.cloudflare.com/api/info`);
     console.log({ locationData });
-    const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName || ""}`;
-    await $fetch("/api/billing/subscription", {
-      method: "POST",
-      body: {
-        plan: plan,
-        locationData: locationData,
+    const hostedPageUrl = await $fetch<{ hostedpage: { url: string } }>(
+      "/api/billing/subscription",
+      {
+        method: "POST",
+        body: {
+          plan: plan,
+          locationData: locationData,
+          redirectUrl: `${window.location.origin}/billing/${plan}`,
+        },
+      },
+    );
+    console.log(hostedPageUrl?.hostedpage?.url, "URL");
+    navigateTo(hostedPageUrl?.hostedpage?.url, {
+      external: true,
+      open: {
+        target: "_blank",
       },
     });
+    // const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName || ""}`;
+
     if (!plan) {
       return navigateTo("https://tring-web.pripod.com/contact", {
         external: true,
@@ -298,12 +316,12 @@
       });
     }
 
-    navigateTo(planTemplate, {
-      external: true,
-      open: {
-        target: "_blank",
-      },
-    });
+    // navigateTo(planTemplate, {
+    //   external: true,
+    //   open: {
+    //     target: "_blank",
+    //   },
+    // });
     // await navigateTo('https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/chat_plan_5')
   };
 </script>
