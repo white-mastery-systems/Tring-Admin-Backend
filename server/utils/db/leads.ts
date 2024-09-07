@@ -23,6 +23,8 @@ interface QueryInterface {
   botId?: string;
   from?: Date | null;
   to?: Date | null;
+  page?: string;
+  limit?: string;
 }
 export const listLeads = async (
   organizationId: string,
@@ -84,6 +86,10 @@ export const listLeads = async (
       }
     }
 
+    const page = query.page ? parseInt(query.page) : 1;
+    const limit = query.limit ? parseInt(query.limit) : 10;
+    const offset = (page - 1) * limit;
+
     let leads = await db.query.leadSchema.findMany({
       where: and(...filters),
       with: {
@@ -111,8 +117,11 @@ export const listLeads = async (
           ),
         },
       },
-
       orderBy: [desc(leadSchema.createdAt)],
+      ...query?.page && query?.limit && {
+        limit,
+        offset
+      }
     });
     if (query?.q || query?.status === "new" || query?.status === "revisited")
       leads = leads.filter((lead: any) => {
@@ -122,6 +131,7 @@ export const listLeads = async (
       leads = leads.filter((lead: any) => {
         return lead.chat !== null;
       });
+
     return leads;
   } catch (err) {}
 };

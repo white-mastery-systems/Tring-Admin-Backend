@@ -3,6 +3,7 @@ import {
   boolean,
   integer,
   jsonb,
+  pgEnum,
   serial,
   text,
   timestamp,
@@ -26,7 +27,7 @@ export const organizationSchema = adminSchema.table("organization", {
   planCode: varchar("plan_code", { length: 64 }).notNull().default("chat_free"),
   isOnboarded: boolean("is_onboarded").default(false).notNull(),
 });
-
+// const statusEnum = ;
 export const billingSchema = adminSchema.table("billing", {
   user_id: uuid("user_id")
     .notNull()
@@ -41,6 +42,14 @@ export const billingSchema = adminSchema.table("billing", {
   productId: text("product_id"),
   customerId: text("customer_id"),
   customer_metadata: jsonb("customer_metadata"),
+  status: pgEnum("status", [
+    "active",
+    "canceled",
+    "incomplete",
+    "incomplete_expired",
+    "trialing",
+    "unpaid",
+  ])("status"),
 });
 
 export const integrationSchema = adminSchema.table("integration", {
@@ -91,6 +100,16 @@ export const adminPricingSchema = adminSchema.table("admin_pricing", {
   tringBranding: varchar("tring_branding").notNull(),
 });
 
+export const numberIntegrationSchema = adminSchema.table("number_integration", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  provider: varchar("provider"),
+  exoPhone: varchar("exo_phone"),
+  countryCode: varchar("country_code"),
+  organizationId: uuid("org_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+});
+
 // Relations
 export const organizationRelations = relations(
   organizationSchema,
@@ -121,6 +140,13 @@ export type InsertOrganization = InferInsertModel<typeof organizationSchema>;
 export type InsertIntegration = InferInsertModel<typeof integrationSchema>;
 export type SelectIntegration = InferSelectModel<typeof integrationSchema>;
 export type InsertTimeline = InferInsertModel<typeof timelineSchema>;
+
+export type SelectNumberIntegration = InferSelectModel<
+  typeof numberIntegrationSchema
+>;
+export type InsertNumberIntegration = InferInsertModel<
+  typeof numberIntegrationSchema
+>;
 
 // Validation
 export const zodInsertOrganization = createInsertSchema(organizationSchema, {

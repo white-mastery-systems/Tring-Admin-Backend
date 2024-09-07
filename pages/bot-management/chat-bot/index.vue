@@ -175,7 +175,7 @@ const { status, data: bots } = await useLazyFetch("/api/bots", {
       id: bot.id,
       name: bot.name,
       status: bot.documentId ? true : false,
-      createdAt: `${format(bot.createdAt, "dd MMM yyyy HH:MM aaa")}`,
+      createdAt: `${format(bot.createdAt, "dd MMM yyyy HH:MM ")}`,
     })),
 });
 const isDataLoading = computed(() => status.value === "pending");

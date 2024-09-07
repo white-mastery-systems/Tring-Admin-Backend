@@ -41,6 +41,7 @@ export default defineEventHandler(async (event) => {
       subscriptionId: data.data.subscription.subscription_id,
       productId: data.data.subscription.product_id,
       customerId: data.data.subscription.customer_id,
+      status: "active",
     };
     try {
       const billingPromise = db

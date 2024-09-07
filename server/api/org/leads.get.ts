@@ -16,6 +16,8 @@ const queryValidator = z
     action: z.string().optional(),
     channel: z.string().optional(),
     period: z.string().optional(),
+    page: z.string().optional(),
+    limit: z.string().optional(),
   })
   .refine(
     (data) => {
