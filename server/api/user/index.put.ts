@@ -7,6 +7,7 @@ const bodyValidator = z
     password: z.string().optional().default(""),
     address: z.record(z.any()).optional(),
     mobile: z.string().optional(),
+    countryCode: z.string().optional(),
   })
   .passthrough();
 
@@ -26,12 +27,15 @@ export default defineEventHandler(async (event) => {
     ? await new Argon2id().hash(body.password)
     : undefined;
 
+  console.log({ body })
+
   const updatedUser = {
     username: body.username,
     email: body.email,
     ...(newPassword && { password: newPassword }),
     address: body.address,
-    mobile: body.mobile
+    mobile: body.mobile,
+    countryCode: body.countryCode
   };
 
   const update = await updateUser(user.id, updatedUser);

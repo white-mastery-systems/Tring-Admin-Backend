@@ -280,27 +280,6 @@ export const getAnalytics = async (
               lte(botUserSchema.createdAt, toDate),
             ),
           },
-          // bots: {
-          //   where: and(
-          //     gte(chatBotSchema.createdAt, fromDate),
-          //     lte(chatBotSchema.createdAt, toDate),
-          //   ),
-          //   with: {
-          //     chats: {
-          //       where: and(
-          //         eq(chatSchema.organizationId, organizationId),
-          //         gte(chatSchema.createdAt, fromDate),
-          //         lte(chatSchema.createdAt, toDate),
-          //       ),
-          //     },
-          //   },
-          // },
-          leads: {
-            where: and(
-              gte(leadSchema.createdAt, fromDate),
-              lte(leadSchema.createdAt, toDate),
-            ),
-          },
         },
       }),
       db
