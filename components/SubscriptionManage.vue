@@ -8,7 +8,7 @@
     if (!usage.value) return;
 
     const extraChats = usage.value.used_quota - usage.value.max_quota;
-    console.log({ exrBilling: usage.value });
+
     return {
       currentPlan: usage.value.plan_code,
       subscriptionStatus: "active",
@@ -49,14 +49,20 @@
         class="flex items-center justify-between rounded-t-xl border-b-[1px] border-[#80808036] px-[5px] py-5 text-[18px] font-bold sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]"
       >
         <span> Subscription Details </span>
-
-        <UiButton
-          class="hover:brighten-50 bg-[#FFBC42] font-medium text-[#FFFFFF] hover:bg-[#FFBC42]"
-        >
-          <NuxtLink to="/billing/view-all" class="align_border"
-            >Change Plan</NuxtLink
+        <div class="flex gap-2">
+          <UiButton color="primary">
+            <NuxtLink to="/billing/view-wallet" class="align_border"
+              >Refill Wallet</NuxtLink
+            >
+          </UiButton>
+          <UiButton
+            class="hover:brighten-50 bg-[#FFBC42] font-medium text-[#FFFFFF] hover:bg-[#FFBC42]"
           >
-        </UiButton>
+            <NuxtLink to="/billing/view-all" class="align_border"
+              >Change Plan</NuxtLink
+            >
+          </UiButton>
+        </div>
       </div>
       <div
         class="flex items-center justify-between gap-3 px-[5px] py-5 sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]"

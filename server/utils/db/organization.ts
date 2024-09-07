@@ -210,9 +210,9 @@ export const updateOrganization = async (
 export const getOrgUsage = async (organizationId: string) => {
   const org: any = await getOrganizationById(organizationId);
   const pricingInformation = await getPricingInformation(org?.planCode);
-  console.log({ pricingInformation });
+
   if (!org) return undefined;
-  console.log({ pricingInformation });
+
   return {
     used_quota: org.usedQuota,
     max_quota: pricingInformation?.sessions,
@@ -228,7 +228,6 @@ const getAllDatesInRange = (period: string, from: Date, to: Date) => {
   let startDate: Date, endDate: Date;
   let difference = 0;
 
-  // console.log({ from, to, period })
   const now = new Date();
 
   switch (period) {
@@ -322,7 +321,6 @@ const getAllDatesInRange = (period: string, from: Date, to: Date) => {
 
     case "custom":
       difference = differenceInDays(to, from);
-      // console.log({ difference })
       if (difference > 30) {
         startDate = startOfYear(from);
         endDate = endOfYear(to);
@@ -509,7 +507,7 @@ export const getAnalytics = async (
       from = earliestData?.createdAt;
     }
     //  return
-    //  console.log({ period, organizationId, from, to });
+    //
 
     const { fromDate, toDate } = getDateRange(period, from, to);
 
@@ -807,8 +805,6 @@ export const getAnalytics = async (
         virtual_tours: safeGroupedCounts(virtualToursMap),
       }),
     };
-
-    console.log({ queryArray });
 
     // Extract values in the specified order from the graph object
     const graphArray = queryArray.map((key) => graph[key]).filter(Boolean);

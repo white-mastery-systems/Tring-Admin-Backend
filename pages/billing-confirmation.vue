@@ -11,11 +11,18 @@
     }, 1000);
   }
 
-  const confirmation = await $fetch(
-    `/api/billing/webhook?hostedpage_id=${hostedpageId}`,
-  );
+  await $fetch(`/api/billing/verify-payment`, {
+    method: "POST",
+    body: {
+      hostedpageId,
+    },
+  });
+  toast.success("Payment Confirmed");
+  navigateTo({ name: "billing-view-all" });
 </script>
 
 <template>
-  <div><h1>Billing Confirmation</h1></div>
+  <div class="grid h-full items-center justify-center text-[#424BD1]">
+    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div>
 </template>

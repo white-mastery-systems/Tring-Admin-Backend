@@ -26,7 +26,6 @@ const domainList = [
 ];
 
 const onSubmit = async (value: any) => {
-  console.log(value, "value")
 };
 </script>
 <template>

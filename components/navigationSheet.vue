@@ -17,7 +17,6 @@ import { MenuIcon } from "lucide-vue-next";
 const isSheetOpen = ref(false)
 
 const closeSheet = () => {
-  console.log('inidesdadsa')
   isSheetOpen.value = false;
 };
 </script>

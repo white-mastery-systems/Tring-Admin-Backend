@@ -1,19 +1,15 @@
 <template>
+  {{ console.log(orgBilling?.plan_code, "PLAN CODE") }}
+
   <div
     v-if="isPageLoading"
     class="grid h-[80vh] place-items-center text-[#424BD1]"
   >
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <page
-    v-else
-    title="Billing"
-    :description="true"
-    :disableSelector="true"
-    :disablePadding="true"
-  >
+  <page v-else title="Billing" :description="true" :disableSelector="true">
     <div
-      class="xs:grid-cols-2 grid max-h-[90vh] gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-4"
+      class="xs:grid-cols-2 grid gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-4"
     >
       <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->
@@ -28,15 +24,10 @@
         v-for="(list, index) in billingVariation"
         :key="index"
       >
-        <div
-          v-if="orgBilling?.plan_code === list.plan_code"
-          class="absolute right-2 top-2 rounded-md bg-yellow-400 px-3 py-1 text-white"
-        >
-          Current Plan
-        </div>
         <div class="mb-[30px] text-[23px] font-bold text-[#424bd1]">
           {{ list.types }}
         </div>
+
         <div class="bill-content-align mb-[15px]">
           <div class="amount-align text-[23px] font-black">
             {{ list.amount }}
@@ -73,15 +64,14 @@
           @click="choosePlan(list.plan)"
           :disabled="
             orgBilling?.plan_code === list.plan_code ||
-            list.plan_code?.includes('free')
+            list.plan_code?.includes('chat_free')
           "
         >
           {{
             orgBilling?.plan_code === list.plan_code
-              ? list.currentPlan
-              : list.choosePlan
+              ? "Current Plan"
+              : findPlanLevel({ list, current: orgBilling?.plan_code })
           }}
-          <!-- {{ list.choosePlan }} -->
         </button>
       </div>
     </div>
@@ -140,7 +130,7 @@
       plan: "free_test",
       choosePlan: "Downgrade",
       currentPlan: "current plan",
-      plan_code: "FREE",
+      plan_code: "chat_free",
     },
     {
       _id: 2,
@@ -184,6 +174,8 @@
         },
       ],
       plan: `chat_intelligence`,
+      plan_code: "chat_intelligence",
+
       choosePlan: "upgrade",
       currentPlan: "current plan",
     },
@@ -225,6 +217,7 @@
         },
       ],
       plan: "chat_super_intelligence",
+      plan_code: "chat_super_intelligence",
       choosePlan: "upgrade",
       currentPlan: "current plan",
     },
@@ -273,6 +266,21 @@
       availableInPlan: true,
     },
   ]);
+  const findPlanLevel = ({ list, current }: { list: any; current: string }) => {
+    const billInformation = billingVariation.value.find(
+      (data: { plan_code: string }) => data.plan_code === list.plan_code,
+    );
+    console.log({ billInformation });
+    const currentPlanInformation = billingVariation.value.find(
+      (data: { plan_code: string }) => data.plan_code === current,
+    );
+    console.log({ currentPlanInformation, billInformation });
+    if (billInformation?._id > currentPlanInformation?._id) {
+      return "Upgrade Plan";
+    } else {
+      return "Downgrade Plan";
+    }
+  };
 
   const { status, data: orgBilling } = await useLazyFetch("/api/org/usage", {
     server: false,
@@ -286,7 +294,7 @@
       city: string;
       region: string;
     }>(`https://ipv4-check-perf.radar.cloudflare.com/api/info`);
-    console.log({ locationData });
+
     const hostedPageUrl = await $fetch<{ hostedpage: { url: string } }>(
       "/api/billing/subscription",
       {
@@ -298,7 +306,7 @@
         },
       },
     );
-    console.log(hostedPageUrl?.hostedpage?.url, "URL");
+
     navigateTo(hostedPageUrl?.hostedpage?.url, {
       external: true,
       open: {

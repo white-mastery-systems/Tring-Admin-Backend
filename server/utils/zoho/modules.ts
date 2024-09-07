@@ -10,7 +10,7 @@ export function getAllPipelinesFromZohoBigin({
   integrationData: any;
 }) {
   // "https://www.zohoapis.in/bigin/v2/Pipelines?fields=Sub_Pipeline,Pipeline,Stage",
-  console.log({ token });
+
   const data: any = $fetch<any>(
     "https://www.zohoapis.in/bigin/v1/settings/layouts?module=Pipelines",
     {
@@ -94,7 +94,7 @@ export async function generateLeadInZohoBigin({
       }
     }
   });
-  console.log(JSON.stringify(bodyData), token);
+
   return $fetch("https://www.zohoapis.in/bigin/v2/Pipelines", {
     method: "POST",
     body: { data: [bodyData] },
@@ -102,7 +102,6 @@ export async function generateLeadInZohoBigin({
       Authorization: `Zoho-oauthtoken ${token}`,
     },
   }).catch((err) => {
-    console.log(err, err.data, err.message, "EERRRR");
     if (!refreshToken) return;
     if (err.status === 401) {
       regenearateTokenWithRefreshToken({
@@ -152,13 +151,11 @@ export async function generateContactInZohoBigin({
       Authorization: `Zoho-oauthtoken ${token}`,
     },
   })
-    .then((data) => {
-      console.log({ data });
-    })
+    .then((data) => {})
     .catch((err) => {
       if (err.status === 400) {
         // await
-        console.log(err.data[0].details, "DETAILS");
+
         return {
           data: [
             {
@@ -202,7 +199,6 @@ export function getFieldMetadataFromZohoBigin({
   body: any;
   integrationData: any;
 }) {
-  console.log({ token });
   return $fetch(
     "https://www.zohoapis.in/bigin/v1/settings/fields?module=Pipelines",
     {
@@ -394,3 +390,87 @@ export async function generateLeadInZohoCRM({
     }
   });
 }
+
+export async function getHostedPageDetails({
+  token,
+  hostedPageId,
+  integrationData,
+}: {
+  token: string;
+  hostedPageId: string;
+  integrationData: {
+    client_id: string;
+    client_secret: string;
+    refresh_token: string;
+    access_token: string;
+    organization_id: string;
+    code: string;
+  };
+}) {
+  try {
+    const response = await $fetch(
+      `https://www.zohoapis.in/billing/v1/hostedpages/${hostedPageId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Zoho-oauthtoken ${token}`,
+          "X-com-zoho-subscriptions-organizationid":
+            integrationData?.organization_id,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    return response;
+  } catch (error) {
+    console.error("Error in fetchFromZohoApi:", error);
+
+    if (error instanceof Error) {
+      const response = (error as any).response;
+      if (response && response.status === 401) {
+        const newAuthInfo = await regerateAccessTokenForTringAdmin({
+          integrationData,
+        });
+        // credentials.access_token = newAccessToken;
+
+        return await getHostedPageDetails({
+          token: newAuthInfo?.access_token,
+          hostedPageId,
+          integrationData,
+        });
+      } else {
+        throw error;
+      }
+    } else {
+      throw new Error("An unexpected error occurred.");
+    }
+  }
+}
+const db = useDrizzle();
+const regerateAccessTokenForTringAdmin = async ({
+  integrationData,
+}: {
+  integrationData: {
+    client_id: string;
+    client_secret: string;
+    refresh_token: string;
+    access_token: string;
+    organization_id: string;
+    code: string;
+  };
+}) => {
+  try {
+    const newAuthInfo: any = await $fetch(
+      `https://accounts.zoho.in/oauth/v2/token?client_id=${integrationData?.client_id}&grant_type=refresh_token&client_secret=${integrationData?.client_secret}&refresh_token=${integrationData?.refresh_token}`,
+      {
+        method: "POST",
+      },
+    );
+    integrationData = { ...integrationData, ...newAuthInfo };
+    await db
+      .update(adminConfigurationSchema)
+      .set({ metaData: integrationData })
+      .where(eq(adminConfigurationSchema.id, 1));
+    return newAuthInfo;
+  } catch (err: any) {}
+};

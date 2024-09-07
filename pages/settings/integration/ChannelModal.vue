@@ -7,7 +7,6 @@
   });
   watch(channelModalState, (newState) => {});
   const handleConnect = async (values: any) => {
-    console.log(values, "values");
     const payload = {
       name: values.name,
       crm: values.channel,

@@ -28,9 +28,9 @@
     fieldAttrs: any;
     error: string | undefined;
     name: string;
-    placeHolder:string
+    placeHolder: string;
   }>();
-  console.log({ error });
+
   const emit = defineEmits(["update:field"]);
 
   const updateField = (value: any) => {

@@ -2,7 +2,7 @@ import type { User } from "lucia";
 
 export const useUser = async () => {
   const user = useState<User | null>("user");
-  console.log({ user: user.value });
+
   const isAdmin = computed(() => {
     if (!user.value) return false;
     return user.value.role === "admin";

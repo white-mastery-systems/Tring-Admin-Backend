@@ -26,6 +26,12 @@ export default defineEventHandler(async (event) => {
       ...zohoData.metaData,
     };
     const user = event.context.user;
+    if (!user) {
+      return sendError(
+        event,
+        createError({ statusCode: 404, statusMessage: "Invalid User" }),
+      );
+    }
     const userDetails: any = await db.query.authUserSchema.findFirst({
       where: eq(authUserSchema.id, user?.id),
     });
@@ -33,18 +39,14 @@ export default defineEventHandler(async (event) => {
     const orgDetails = await db.query.organizationSchema.findFirst({
       where: eq(organizationSchema.id, organizationId),
     });
-    console.log({ orgDetails, body, user });
+
     if (orgDetails?.planCode) {
       const planDetails = await db.query.adminPricingSchema.findFirst({
         where: eq(adminPricingSchema.planCode, body?.plan),
       });
-      console.log({ planDetails });
 
       const regerateAccessToken = async () => {
         try {
-          console.log(
-            `https://accounts.zoho.in/oauth/v2/token?client_id=${metaData?.client_id}&grant_type=refresh_token&client_secret=${metaData?.client_secret}&refresh_token=${metaData?.refresh_token}`,
-          );
           const newAuthInfo: any = await $fetch(
             `https://accounts.zoho.in/oauth/v2/token?client_id=${metaData?.client_id}&grant_type=refresh_token&client_secret=${metaData?.client_secret}&refresh_token=${zohoData?.metaData?.refresh_token}`,
             {
@@ -57,9 +59,7 @@ export default defineEventHandler(async (event) => {
             .set({ metaData: metaData })
             .where(eq(adminConfigurationSchema.id, 1));
           return newAuthInfo;
-        } catch (err: any) {
-          console.log(err.status, "ERRO ON AUTH");
-        }
+        } catch (err: any) {}
       };
 
       try {
@@ -69,7 +69,7 @@ export default defineEventHandler(async (event) => {
           firstName = firstName?.split(" ")[0];
           lastName = firstName?.split(" ")[1];
         }
-        console.log(userDetails, "MOBILE");
+
         const generatedHostedPage = await await $fetch(
           "https://www.zohoapis.in/billing/v1/hostedpages/newsubscription",
           {
@@ -108,7 +108,7 @@ export default defineEventHandler(async (event) => {
               },
               plan: {
                 plan_code: body.plan,
-                price: planDetails?.price,
+                // price: planDetails?.price,
               },
               redirect_url: body?.redirectUrl,
               payment_gateways: [
@@ -122,18 +122,17 @@ export default defineEventHandler(async (event) => {
             },
           },
         );
-        console.log({ generatedHostedPage });
+
         return generatedHostedPage;
       } catch (err: any) {
-        console.log("ERRRO HAPPEND", err.status, err.data);
-
         if (err.status === 401) {
           const response = await regerateAccessToken();
         }
       }
     }
   } catch (err) {
-    if (err instanceof Error) console.log(err.message, "message");
+    if (err instanceof Error) {
+    }
   }
 
   return { success: "true" };

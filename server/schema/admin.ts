@@ -23,7 +23,7 @@ export const organizationSchema = adminSchema.table("organization", {
   metadata: jsonb("metadata").default({}).notNull(),
   usedQuota: integer("used_quota").default(0).notNull(),
   maxQuota: integer("max_quota").default(50).notNull(),
-  planCode: varchar("plan_code", { length: 64 }).notNull().default("FREE"),
+  planCode: varchar("plan_code", { length: 64 }).notNull().default("chat_free"),
   isOnboarded: boolean("is_onboarded").default(false).notNull(),
 });
 
@@ -37,6 +37,9 @@ export const billingSchema = adminSchema.table("billing", {
   customer_id: text("customer_id").notNull(),
   plan_code: varchar("plan_code", { length: 64 }),
   subscription_metadata: jsonb("subscription_metadata"),
+  subscriptionId: text("subscription_id"),
+  productId: text("product_id"),
+  customerId: text("customer_id"),
   customer_metadata: jsonb("customer_metadata"),
 });
 

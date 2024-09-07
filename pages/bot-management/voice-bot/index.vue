@@ -115,12 +115,11 @@
   </Page>
 </template>
 <script setup lang="ts">
-import { createColumnHelper } from "@tanstack/vue-table";
-import { format } from "date-fns";
-import { any } from "zod";
-definePageMeta({
-  middleware: "admin-only",
-});
+  import { createColumnHelper } from "@tanstack/vue-table";
+  import { format } from "date-fns";
+  definePageMeta({
+    middleware: "admin-only",
+  });
 
   const formSchema = toTypedSchema(
     z.object({
@@ -163,25 +162,24 @@ definePageMeta({
   ]);
   // const botList = await listApiBots();
 
-const { status, data: voiceBot } = await useLazyFetch("/api/voicebots", {
-  server: false,
-  default: () => [],
-  query: {
-    active: activeStatus,
-    q: searchBotDebounce,
-  },
-  transform: (voiceBot) =>
-    voiceBot.map((bot) => ({
-      id: bot.id,
-      name: bot.name,
-      status: bot.active,
-      createdAt: `${format(bot.createdAt, "dd MMM yyy HH:MM aaa")}`,
-    })),
-});
-const isDataLoading = computed(() => status.value === "pending");
+  const { status, data: voiceBot } = await useLazyFetch("/api/voicebots", {
+    server: false,
+    default: () => [],
+    query: {
+      active: activeStatus,
+      q: searchBotDebounce,
+    },
+    transform: (voiceBot) =>
+      voiceBot.map((bot) => ({
+        id: bot.id,
+        name: bot.name,
+        status: bot.active,
+        createdAt: `${format(bot.createdAt, "dd MMM yyy HH:MM aaa")}`,
+      })),
+  });
+  const isDataLoading = computed(() => status.value === "pending");
 
   const addVoiceBot = async (value: any) => {
-    console.log(value, "value");
     try {
       const bot = await $fetch("/api/voicebots", {
         method: "POST",

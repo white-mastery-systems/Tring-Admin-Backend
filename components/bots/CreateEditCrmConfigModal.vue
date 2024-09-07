@@ -286,7 +286,6 @@
   });
 
   const handleAddIntegration = (value: any) => {
-    console.log({ value });
     let pipelineObj: any = {};
     let layoutObj: any = {};
 
