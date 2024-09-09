@@ -174,7 +174,7 @@
     status,
     refresh,
     data: documents,
-  } = await useLazyFetch(() => `/api/chat-bot/${route.params.id}/documents`, {
+  } = await useLazyFetch(() => `/api/bots/${route.params.id}/documents`, {
     server: false,
     transform: (docs) => ({
       ...docs,

@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
   while (max_retries > 0) {
     try {
       const _initialMessage = await $fetch<any>(
-        `/api/bot/${botId}/init-message`,
+        `/api/bots/${botId}/init-message`,
         {
           method: "POST",
           baseURL: config.botBaseUrl,

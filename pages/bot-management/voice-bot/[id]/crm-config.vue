@@ -116,7 +116,7 @@
   //   status,
   //   data: integrationsData,
   //   refresh: integrationRefresh,
-  // } = await useLazyFetch(`/api/chat-bot/${route.params.id}/integrations`, {
+  // } = await useLazyFetch(`/api/bots/${route.params.id}/integrations`, {
   //   server: false,
   //   default: () => [],
   // });

@@ -14,7 +14,7 @@
     status: intentLoadingStatus,
     refresh: intentRefresh,
     data: intentData,
-  } = await useLazyFetch(() => `/api/chat-bot/${route.params.id}/intents`, {
+  } = await useLazyFetch(() => `/api/bots/${route.params.id}/intents`, {
     server: false,
     default: () => [],
     transform: (intents) =>

@@ -287,7 +287,7 @@
       if (isOpen && modalProps.id) {
         try {
           const crmConfigData = await $fetch<any>(
-            `/api/chat-bot/${route.params.id}/integrations/${modalProps.id}`,
+            `/api/bots/${route.params.id}/integrations/${modalProps.id}`,
           );
 
           // Assuming crmConfigData.data contains the relevant information
