@@ -14,6 +14,7 @@ import {
   subMonths,
   subYears,
 } from "date-fns";
+import momentTz from "moment-timezone"
 
 // Date range generation function
 export const getAllDatesInRange = (period: string, from: Date, to: Date) => {
@@ -142,18 +143,13 @@ export const getAllDatesInRange = (period: string, from: Date, to: Date) => {
 };
 
 
-export const groupAndMapData = ({ module, period, difference }: any) => {
-  const groupedData = module.reduce((acc, i) => {
+export const groupAndMapData = ({ module, period, difference, timeZone }: any) => {
+    const groupedData = module.reduce((acc, i) => {
     // console.log({ groupAndMapDataDifference: difference })
-    const date = new Date(i.createdAt).setMinutes(0);
-
-    // const timeZone = 'Asia/Kolkata';
-    // const date = formatInTimeZone(created, timeZone, "yyyy-MM-dd'T'HH:mm:ssXXX");
-    // const isoDate = new Date(date)
-    // console.log({created_at: i.createdAt, date, isoDate})
+    const date = momentTz(i.createdAt).tz(timeZone).minutes(0)
     let dateKey;
     if (period === "today" || period === "yesterday") {
-      dateKey = format(date, "hh:mm a");
+      dateKey = momentTz(date).format("hh:mm A")
     } else if (
       period === "current-year" ||
       period === "last-year" ||
@@ -162,15 +158,13 @@ export const groupAndMapData = ({ module, period, difference }: any) => {
       period === "all-time" ||
       difference > 30
     ) {
-      dateKey = format(date, "MMM yyyy");
+      dateKey =  momentTz(date).format("MMM YYYY");
     } else {
-      dateKey = format(date, "dd MMM yyyy");
+      dateKey =  momentTz(date).format("DD MMM YYYY");
     }
     acc[dateKey] = (acc[dateKey] || 0) + 1;
     return acc;
   }, {});
-
-  // console.log({ groupedData })
 
   // Map the grouped data to the desired format
   return Object.entries(groupedData).map(([date, count]) => ({
