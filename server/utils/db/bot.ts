@@ -52,7 +52,7 @@ export const listBots = async (
   });
   data = data.map((i: any) => ({
     ...i,
-    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY HH:mm")
+    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
   }))
 
   return data;

@@ -62,7 +62,7 @@ export const listChats = async (organisationId: string, query: any, timeZone: st
 
   chats = chats.map((i: any) => ({
     ...i,
-    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY HH:mm")
+    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
   }))
   
   if(query?.q || query?.botUserName === "with_name") {
