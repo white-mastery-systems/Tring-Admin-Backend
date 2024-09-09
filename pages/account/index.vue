@@ -28,7 +28,7 @@
         Personal Information
       </h3>
 
-      <div class="grid gap-2 sm:grid-cols-1 sm:gap-4 md:grid-cols-2">
+      <div class="grid grid-cols-2 gap-2 sm:grid-cols-1 md:grid-cols-2">
         <div>
           <UiFormField
             v-model="usernameField"
@@ -50,35 +50,16 @@
               <UiFormMessage />
             </UiFormItem>
           </UiFormField>
-
-          <UiFormField
-            v-model="emailField"
-            v-bind="emailFieldProps"
-            name="email"
-          >
-            <UiFormItem class="w-full">
-              <UiFormLabel
-                >Email <UiLabel class="text-lg text-red-500">*</UiLabel>
-              </UiFormLabel>
-              <UiFormControl>
-                <UiInput
-                  v-bind="emailFieldProps"
-                  type="email"
-                  placeholder="user@example.com"
-                />
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
         </div>
         <div class="flex gap-2">
           <UiFormField
             v-model="countryCode"
             v-bind="countryCodeProps"
             name="countryCode"
+            class="mt-1"
           >
-            <UiFormItem>
-              <UiFormLabel class="mt-2"
+            <UiFormItem class="mt-1">
+              <UiFormLabel
                 >Country code
                 <span class="text-sm text-red-500">*</span>
               </UiFormLabel>
@@ -171,6 +152,21 @@
             </UiFormItem>
           </UiFormField>
         </div>
+        <UiFormField v-model="emailField" v-bind="emailFieldProps" name="email">
+          <UiFormItem class="w-full">
+            <UiFormLabel
+              >Email <UiLabel class="text-lg text-red-500">*</UiLabel>
+            </UiFormLabel>
+            <UiFormControl>
+              <UiInput
+                v-bind="emailFieldProps"
+                type="email"
+                placeholder="user@example.com"
+              />
+            </UiFormControl>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
       </div>
       <h3 class="mb-2 mt-4 scroll-m-20 text-2xl font-semibold tracking-tight">
         Address Information
