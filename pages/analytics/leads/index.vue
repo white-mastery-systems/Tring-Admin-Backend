@@ -78,9 +78,15 @@
 <script setup lang="ts">
   import { Icon, UiBadge, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
-  import { useRouter, useRoute } from "vue-router";
+  import { useRoute, useRouter } from "vue-router";
 
-  const rowList = reactive(['name', 'email', 'visitedCount', 'mobile', 'createdAt'])
+  const rowList = reactive([
+    "name",
+    "email",
+    "visitedCount",
+    "mobile",
+    "createdAt",
+  ]);
 
   definePageMeta({
     middleware: "admin-only",
@@ -103,7 +109,7 @@
         .map((lead) =>
           rowList
             .map((col) => {
-              let cellValue = lead.botUser[col]
+              let cellValue = lead.botUser[col];
               if (cellValue) {
                 cellValue = cellValue.toString().replace(/"/g, '""');
                 if (
@@ -162,6 +168,9 @@
   const { status, data: leads } = await useLazyFetch("/api/org/leads", {
     server: false,
     query: filters,
+    headers: {
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
     default: () => [],
   });
   const isDataLoading = computed(() => status.value === "pending");
@@ -209,7 +218,11 @@
         h(
           UiBadge,
           {
-            ...((row.original.status === "junk") ? { class: "bg-red-200 text-red-500 hover:bg-300" } : (Number(row.original.botUser?.visitedCount) > 1) ? { class: "bg-[#424bd1] text-[#ffffff] hover:bg-[#424bd1]" } : { class: "bg-green-200 text-green-500 hover:bg-green-300" }),
+            ...(row.original.status === "junk"
+              ? { class: "bg-red-200 text-red-500 hover:bg-300" }
+              : Number(row.original.botUser?.visitedCount) > 1
+                ? { class: "bg-[#424bd1] text-[#ffffff] hover:bg-[#424bd1]" }
+                : { class: "bg-green-200 text-green-500 hover:bg-green-300" }),
           },
           row.original.status === "junk"
             ? "Junk"

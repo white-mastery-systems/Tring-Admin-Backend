@@ -169,6 +169,9 @@
       active: activeStatus,
       q: searchBotDebounce,
     },
+    headers: {
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
     transform: (voiceBot) =>
       voiceBot.map((bot) => ({
         id: bot.id,

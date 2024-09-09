@@ -115,12 +115,12 @@
   </Page>
 </template>
 <script setup lang="ts">
-import { createColumnHelper } from "@tanstack/vue-table";
-import { format } from "date-fns";
+  import { createColumnHelper } from "@tanstack/vue-table";
+  import { format } from "date-fns";
 
-definePageMeta({
-  middleware: "admin-only",
-});
+  definePageMeta({
+    middleware: "admin-only",
+  });
 
   const formSchema = toTypedSchema(
     z.object({
@@ -163,22 +163,25 @@ definePageMeta({
   ]);
   // const botList = await listApiBots();
 
-const { status, data: bots } = await useLazyFetch("/api/bots", {
-  server: false,
-  default: () => [],
-  query: {
-    active: activeStatus,
-    q: searchBotDebounce,
-  },
-  transform: (bots) =>
-    bots.map((bot) => ({
-      id: bot.id,
-      name: bot.name,
-      status: bot.documentId ? true : false,
-      createdAt: `${format(bot.createdAt, "dd MMM yyyy HH:MM ")}`,
-    })),
-});
-const isDataLoading = computed(() => status.value === "pending");
+  const { status, data: bots } = await useLazyFetch("/api/bots", {
+    server: false,
+    default: () => [],
+    query: {
+      active: activeStatus,
+      q: searchBotDebounce,
+    },
+    headers: {
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
+    transform: (bots) =>
+      bots.map((bot) => ({
+        id: bot.id,
+        name: bot.name,
+        status: bot.documentId ? true : false,
+        createdAt: `${format(bot.createdAt, "dd MMM yyyy HH:MM ")}`,
+      })),
+  });
+  const isDataLoading = computed(() => status.value === "pending");
 
   const addBot = async (value: any) => {
     try {

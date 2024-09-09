@@ -65,6 +65,9 @@
     server: false,
     query: filters,
     default: () => [],
+    headers: {
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
     transform: (chats) => {
       return chats?.map((chat) => ({
         userName: chat.botUser?.name || "No name",
