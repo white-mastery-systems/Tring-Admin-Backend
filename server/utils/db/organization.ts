@@ -238,6 +238,7 @@ export const getAnalytics = async (
   customFromDate: Date | null,
   customToDate: Date | null,
   graphValues: string | undefined,
+  timeZone: string,
 ) => {
   try {
     const queryArray = graphValues
@@ -393,19 +394,25 @@ export const getAnalytics = async (
     let locationsMap = null;
     let virtualToursMap = null;
 
+    // return { leads, chats }
+
     // Leads Graph
     const leadResult = groupAndMapData({
       module: leads,
       period,
       difference,
+      timeZone
     });
     const leadMap = new Map(leadResult.map((item) => [item.date, item.count]));
+
+    // return { leadResult }
 
     // sessions Graph
     const sessionResult = groupAndMapData({
       module: chats,
       period,
       difference,
+      timeZone
     });
     const sessionMap = new Map(
       sessionResult.map((item) => [item.date, item.count]),
@@ -416,6 +423,7 @@ export const getAnalytics = async (
         module: uniqueVisiters,
         period,
         difference,
+        timeZone
       });
       uniqueVisitersMap = new Map(
         uniqueVisitersResult.map((item) => [item.date, item.count]),
@@ -427,6 +435,7 @@ export const getAnalytics = async (
         module: interactedChats,
         period,
         difference,
+        timeZone
       });
       interactedChatsMap = new Map(
         interactedChatsResult.map((item) => [item.date, item.count]),
@@ -438,6 +447,7 @@ export const getAnalytics = async (
         module: callScheduledTimeline,
         period,
         difference,
+        timeZone
       });
       scheduleCallsMap = new Map(
         scheduleCallsResult.map((item) => [item.date, item.count]),
@@ -449,6 +459,7 @@ export const getAnalytics = async (
         module: siteVisitTimeline,
         period,
         difference,
+        timeZone
       });
       siteVisitsMap = new Map(
         siteVisitsResult.map((item) => [item.date, item.count]),
@@ -460,6 +471,7 @@ export const getAnalytics = async (
         module: locationTimeline,
         period,
         difference,
+        timeZone
       });
       locationsMap = new Map(
         locationsResult.map((item) => [item.date, item.count]),
@@ -471,6 +483,7 @@ export const getAnalytics = async (
         module: virtualTourTimeline,
         period,
         difference,
+        timeZone
       });
       virtualToursMap = new Map(
         virtualToursResult.map((item) => [item.date, item.count]),

@@ -1,4 +1,5 @@
 import { getDateRangeForFilters } from "./leads";
+import momentTz from "moment-timezone";
 
 const db = useDrizzle();
 
@@ -19,7 +20,7 @@ export const getChatDetails = async (chatId: string) => {
   });
 };
 
-export const listChats = async (organisationId: string, query: any) => {
+export const listChats = async (organisationId: string, query: any, timeZone: string) => {
     // Period-based filtering
     let fromDate: Date | undefined;
     let toDate: Date | undefined;
@@ -58,6 +59,11 @@ export const listChats = async (organisationId: string, query: any) => {
       offset
     }
   });
+
+  chats = chats.map((i: any) => ({
+    ...i,
+    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY HH:mm")
+  }))
   
   if(query?.q || query?.botUserName === "with_name") {
     chats = chats.filter((i) => i.botUser !== null)
