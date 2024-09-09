@@ -127,7 +127,7 @@ export const listLeads = async (
     });
     leads = leads.map((i: any) => ({
         ...i,
-        createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY HH:mm")
+        createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
     }))
     if (query?.q || query?.status === "new" || query?.status === "revisited")
       leads = leads.filter((lead: any) => {
