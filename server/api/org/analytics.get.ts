@@ -14,6 +14,8 @@ const queryValidator = z.object({
 })
 
 export default defineEventHandler(async (event) => {
+  const timeZoneHeader = event.node?.req?.headers["time-zone"];
+  const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
 
   const validatedQuery = await isValidQueryHandler(event, queryValidator);
@@ -25,5 +27,6 @@ export default defineEventHandler(async (event) => {
     validatedQuery?.from,
     validatedQuery?.to,
     validatedQuery?.graphValues,
+    timeZone
   );
 });

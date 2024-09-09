@@ -32,8 +32,10 @@ const queryValidator = z
     },
   );
 export default defineEventHandler(async (event) => {
+  const timeZoneHeader = event.node?.req?.headers["time-zone"];
+  const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const query = await isValidQueryHandler(event, queryValidator);
 
-  return await listLeads(organizationId, query);
+  return await listLeads(organizationId, query, timeZone);
 });
