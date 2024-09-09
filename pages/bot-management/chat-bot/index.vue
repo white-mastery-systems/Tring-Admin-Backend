@@ -178,7 +178,7 @@
         id: bot.id,
         name: bot.name,
         status: bot.documentId ? true : false,
-        createdAt: `${format(bot.createdAt, "dd MMM yyyy HH:MM ")}`,
+        createdAt: `${bot.createdAt}`,
       })),
   });
   const isDataLoading = computed(() => status.value === "pending");
