@@ -76,12 +76,6 @@
         mode: chat.metadata?.mode ?? "Live",
       }));
     },
-    //   bots.map((bot) => ({
-    //     id: bot.id,
-    //     name: bot.name,
-    //     status: bot.documentId ? true : false,
-    //     createdAt: formatDateStringToDate(bot.createdAt),
-    //   })),
   });
   const isDataLoading = computed(() => status.value === "pending");
 

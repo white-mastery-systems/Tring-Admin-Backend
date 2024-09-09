@@ -252,13 +252,6 @@
     newValue.graph?.map((graphItem) => {
       graphData.value.push(graphItem?.map((item: any) => item.count));
     });
-    // leadsGraphData.value = newValue.graph?.leads?.map(
-    //   (item: any) => item.count,
-    // );
-    // sessionsGraphData.value = newValue.graph?.sessions?.map(
-    //   (item: any) => item.count,
-    // );
-    // labels.value = newValue.graph?.leads?.map((item: any) => item.date);
   });
   const graphIndexValues = ref([
     {
@@ -291,11 +284,6 @@
   let chartData = computed(() => ({
     labels: labels.value,
     datasets: chartValues.value?.map((item: any, index: number) => {
-      console.log(
-        graphIndexValues.value[index],
-        "GRAPH VLAUESS",
-        graphData.value[index],
-      );
       return {
         label: graphOptions.value?.find(
           ({ value }: { value: string }) => value === item,
