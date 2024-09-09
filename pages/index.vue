@@ -108,7 +108,6 @@
           />
         </div>
       </div>
-
       <Line
         v-if="!loading"
         class="shadow-md relative mt-4 w-full place-content-center rounded-md bg-white"

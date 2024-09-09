@@ -2,12 +2,14 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
 import { createColumnHelper } from "@tanstack/vue-table";
-
+import { useCount } from '@/composables/useRefresh';
 definePageMeta({
   middleware: "admin-only",
 });
+
 const router = useRouter();
 const route = useRoute();
+const { integrationsData, status, refresh } = useCount(); 
 // const message = inject('message')
 // provide('message', 'testing')
 watch(route, (newValue) => { });
@@ -15,7 +17,7 @@ watch(route, (newValue) => { });
 const filters = computed(() => ({
   q: route.query?.q,
 }));
-const { data: integrationsData, refresh: integrationRefresh } = await useLazyFetch("/api/org/integrations/number-integration");
+// const { status, data: integrationsData, refresh } = await useLazyAsyncData('refresh', () => $fetch('/api/org/integrations/number-integration'));
 const columnHelper = createColumnHelper<any>();
 const NumberColumns = [
   columnHelper.accessor("provider", {
@@ -26,17 +28,6 @@ const NumberColumns = [
   }),
 ];
 
-
-const refreshApi = async () => {
-  if (integrationRefresh) {
-    await integrationRefresh(); // Call the refresh function to refresh the API
-    console.log('API refreshed!');
-  }
-};
-
-defineExpose({
-  refreshApi,
-});
 </script>
 
 <template>

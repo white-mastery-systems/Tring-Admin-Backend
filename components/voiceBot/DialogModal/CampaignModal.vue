@@ -1,25 +1,14 @@
 <script setup lang="ts">
 import countryData from '~/assets/country-codes.json'
-import { useCount } from '@/composables/useRefresh';
 
-const emit = defineEmits(["success", "submitted"]);
-const { refresh } = useCount();
-const numberModalState: any = defineModel<{ open: boolean }>({
+definePageMeta({
+  middleware: "admin-only",
+});
+
+const campaignModalState = defineModel<{ open: boolean }>({
   default: {
     open: false,
   },
-});
-
-const allCoutryDialCode = computed(() =>
-  countryData?.map((country) => country.dial_code),
-);
-
-const {
-  list: countyDialCodes,
-  containerProps,
-  wrapperProps,
-} = useVirtualList(allCoutryDialCode, {
-  itemHeight: 32,
 });
 
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
@@ -29,7 +18,8 @@ const formSchema = toTypedSchema(
     exoPhone: z.string()
       .min(1, 'Phone Number is required')
       .regex(phoneNumberPattern, 'Invalid phone number'),
-      countryCode: z.string().min(1, 'Country Code is required'),
+    countryCode: z.string().min(1, 'Country Code is required'),
+    audienceBucket: z.string().min(1, 'Audience bucket is required'),
   })
 );
 
@@ -44,13 +34,37 @@ const {
   validationSchema: formSchema,
 });
 
-watch(numberModalState, (newState) => { });
 
-// onMounted(async () => {
-//   loadCountries()
-// });
+const allCoutryDialCode = computed(() =>
+  countryData?.map((country) => country.dial_code),
+);
+const {
+  list: countyDialCodes,
+  containerProps,
+  wrapperProps,
+} = useVirtualList(allCoutryDialCode, {
+  itemHeight: 32,
+});
 const [mobileField, mobileFieldProps] = defineField("exoPhone");
-const [countryCode, countryCodeProps] = defineField("countryCode");
+const [countryCode, countryCodeProps] = defineField("countryCode"); 
+
+watch(campaignModalState, (newState) => { });
+
+
+const addVoiceBot = async (value: any) => {
+  try {
+    const bot = await $fetch("/api/voicebots", {
+      method: "POST",
+      body: { name: value.newBotName },
+    });
+    return navigateTo({
+      name: "bot-management-voice-bot-id",
+      params: { id: bot.id },
+    });
+  } catch (err: any) {
+    toast.error(err.data.data[0].message);
+  }
+};
 
 
 const handleConnect = async (values: any) => {
@@ -58,18 +72,15 @@ const handleConnect = async (values: any) => {
   const payload = values
   await $fetch("/api/org/integrations/number-integration", { method: "POST", body: payload });
   // emit("success")
-  refresh()
-  emit('submitted')
 };
 </script>
-
 <template>
-  <DialogWrapper v-model="numberModalState" title="Add New Number">
+  <DialogWrapper v-model="campaignModalState" title="Add a New Campaign">
     <UiForm v-slot="{ values }" :validation-schema="formSchema" @submit="handleConnect" :keep-values="true"
-    :validate-on-mount="false" class="space-y-2">
-    <UiFormField v-slot="{ componentField }" name="provider">
-      <UiFormItem class="w-full">
-        <UiFormLabel>
+      :validate-on-mount="false" class="space-y-2">
+      <UiFormField v-slot="{ componentField }" name="provider">
+        <UiFormItem class="w-full">
+          <UiFormLabel>
             Provider <UiLabel class="text-lg text-red-500">*</UiLabel>
           </UiFormLabel>
           <UiFormControl>
@@ -125,8 +136,8 @@ const handleConnect = async (values: any) => {
                         <UiCommandGroup>
                           <UiCommandItem v-for="dialCode in countyDialCodes" :key="dialCode.data" :value="dialCode.data"
                             @select="() => {
-                                setFieldValue('countryCode', dialCode.data);
-                              }
+                              setFieldValue('countryCode', dialCode.data);
+                            }
                               " style="height: 32px">
                             <Check :class="cn(
                               'mr-2 h-4 w-4',
@@ -159,10 +170,49 @@ const handleConnect = async (values: any) => {
           </UiFormItem>
         </UiFormField>
       </div>
+      <UiFormField v-slot="{ componentField }" name="audienceBucket">
+        <UiFormItem class="w-full">
+          <UiFormLabel>
+            Add Audience Bucket <UiLabel class="text-lg text-red-500">*</UiLabel>
+          </UiFormLabel>
+          <UiFormControl>
+            <UiSelect v-bind="componentField">
+              <UiSelectTrigger>
+                <UiSelectValue placeholder="Select a Bucket" />
+              </UiSelectTrigger>
+              <UiSelectContent>
+                <UiSelectItem value="twilio">Bucket One</UiSelectItem>
+                <UiSelectItem value="exotel">Bucket Two</UiSelectItem>
+                <UiSelectItem value="plivo">Bucket Three</UiSelectItem>
+              </UiSelectContent>
+            </UiSelect>
+          </UiFormControl>
+          <UiFormMessage />
+        </UiFormItem>
+      </UiFormField>
+      <UiFormField v-slot="{ componentField }" name="audienceBucket">
+        <UiFormItem class="w-full">
+          <UiFormLabel>
+            CRM Pipeline <UiLabel class="text-lg text-red-500">*</UiLabel>
+          </UiFormLabel>
+          <UiFormControl>
+            <UiSelect v-bind="componentField">
+              <UiSelectTrigger>
+                <UiSelectValue placeholder="Select a Bucket" />
+              </UiSelectTrigger>
+              <UiSelectContent>
+                <UiSelectItem value="twilio">CRM One</UiSelectItem>
+                <UiSelectItem value="exotel">CRM Two</UiSelectItem>
+                <UiSelectItem value="plivo">CRM Three</UiSelectItem>
+              </UiSelectContent>
+            </UiSelect>
+          </UiFormControl>
+          <UiFormMessage />
+        </UiFormItem>
+      </UiFormField>
       <div class="flex items-center justify-end">
         <UiButton type="submit" class="mt-2" color="primary"> Submit </UiButton>
       </div>
     </UiForm>
   </DialogWrapper>
 </template>
-<!-- https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=ZohoBigin.settings.ALL,ZohoBigin.modules.ALL&redirect_uri=https://tring-admin.pripod.com/settings/integration/zoho-bigin&prompt=consent&access_type=offline -->

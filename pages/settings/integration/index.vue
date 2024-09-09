@@ -13,32 +13,32 @@
         </UiButton>
       </div>
     </template>
-    <UiTabs default-value="crm" class="w-full self-start">
+    <UiTabs default-value="client" class="w-full self-start">
       <UiTabsList class="grid w-[40%] grid-cols-3">
-        <UiTabsTrigger value="crm" @click="navigateToTab('crm')">
+        <UiTabsTrigger value="client" @click="navigateToTab('crm')">
           CRM
         </UiTabsTrigger>
-        <UiTabsTrigger value="channel" @click="navigateToTab('channel')">
+        <UiTabsTrigger value="campaign" @click="navigateToTab('channel')">
           Channel
         </UiTabsTrigger>
         <UiTabsTrigger value="number" @click="navigateToTab('number')">
           Number
         </UiTabsTrigger>
       </UiTabsList>
-      <UiTabsContent value="crm">
+      <UiTabsContent value="client">
         <DataTable :columns="columns" :data="integrationsData" :page-size="8" :is-loading="false" :height="13"
           :heightUnit="'vh'" />
       </UiTabsContent>
-      <UiTabsContent value="channel">
+      <UiTabsContent value="campaign">
         <DataTable :columns="statusColumns" :data="integrationsData" :page-size="8" :is-loading="false" :height="13"
           :heightUnit="'vh'" />
       </UiTabsContent>
       <UiTabsContent value="number">
-        < />
+        <NumberIntegration />
       </UiTabsContent>
     </UiTabs>
-    <ChannelModal v-model="channelModalState" />
-    <NumberModal v-model="numberModalState" />
+    <ChannelModal v-model="channelModalState" @success="onSuccessChannel()" />
+    <NumberModal v-model="numberModalState" @success="onSuccessNumberIntegration()" />
     <CreateEditIntegrationModal v-model="integrationModalState" :id="integrationModalState?.id"
       @success="onSuccess()" />
   </Page>
@@ -71,8 +71,6 @@
 
   const router = useRouter();
   const route = useRoute();
-  const numberIntegration:any = ref(null);
-  // provide('message', 'testing')
   const integrationModalState = ref<{ open: boolean; id?: string | null }>({
     open: false,
   });
@@ -110,6 +108,16 @@
     toast.success("Integration added successfully");
     integrationRefresh();
   };
+const onSuccessNumberIntegration = () => {
+    numberModalState.value.open = false;
+    toast.success("Integration added successfully");
+  };
+
+  const onSuccessChannel = () => {
+    channelModalState.value.open =false
+    toast.success("Integration added successfully");
+    integrationRefresh()
+  }
 
   // const channelModal = () => {
   //   channelModalState.value.open = false
@@ -212,5 +220,4 @@
   const navigateToTab = async (tab: any) => {
     router.push({ query: { q: tab } });
   };
-
 </script>
