@@ -3,7 +3,7 @@
   import { createColumnHelper } from "@tanstack/vue-table";
 
   const showIntentDialog = ref(false);
-  const selectedActions = ref('location') 
+  const selectedActions = ref("location");
   const animationProps = {
     duration: 0,
   };
@@ -144,13 +144,26 @@
                       </UiSelectTrigger>
                       <UiSelectContent>
                         <UiSelectItem value="location">Location</UiSelectItem>
-                        <UiSelectItem value="virtual_tour">Virtual Tour</UiSelectItem>
-                        <UiSelectItem value="schedule_call">Schedule Call</UiSelectItem>
-                        <UiSelectItem value="site_visit">Schedule Site Visit</UiSelectItem>
+                        <UiSelectItem value="virtual_tour"
+                          >Virtual Tour</UiSelectItem
+                        >
+                        <UiSelectItem value="schedule_call"
+                          >Schedule Call</UiSelectItem
+                        >
+                        <UiSelectItem value="site_visit"
+                          >Schedule Site Visit</UiSelectItem
+                        >
                       </UiSelectContent>
                     </UiSelect>
-                    <UiFormField v-if="componentField.modelValue === 'Other'" v-slot="{ componentField }" name="link">
-                      <UiFormItem v-auto-animate="animationProps" class="w-full">
+                    <UiFormField
+                      v-if="componentField.modelValue === 'Other'"
+                      v-slot="{ componentField }"
+                      name="link"
+                    >
+                      <UiFormItem
+                        v-auto-animate="animationProps"
+                        class="w-full"
+                      >
                         <UiFormControl>
                           <UiInput v-bind="componentField" type="text" />
                         </UiFormControl>
@@ -162,13 +175,24 @@
                   <span class="text-xs text-gray-500">Select your intent.</span>
                 </UiFormItem>
               </UiFormField>
-              <UiFormField v-if="((selectedActions === 'location') || (selectedActions === 'virtual_tour'))"
-                v-slot="{ componentField }" name="link">
+              <UiFormField
+                v-if="
+                  selectedActions === 'location' ||
+                  selectedActions === 'virtual_tour'
+                "
+                v-slot="{ componentField }"
+                name="link"
+              >
                 <UiFormItem v-auto-animate="animationProps" class="w-full">
-                  <UiFormLabel>Add Link <UiLabel class="text-lg text-red-500">*</UiLabel>
+                  <UiFormLabel
+                    >Add Link <UiLabel class="text-lg text-red-500">*</UiLabel>
                   </UiFormLabel>
                   <UiFormControl>
-                    <UiInput v-bind="componentField" type="text" placeholder="Eg: enter your preferred value" />
+                    <UiInput
+                      v-bind="componentField"
+                      type="text"
+                      placeholder="Eg: enter your preferred value"
+                    />
                   </UiFormControl>
                   <span class="text-xs text-gray-500">Enter intent link</span>
                   <UiFormMessage />
@@ -176,7 +200,10 @@
               </UiFormField>
 
               <UiDialogFooter>
-                <UiButton class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110" type="submit">
+                <UiButton
+                  class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
+                  type="submit"
+                >
                   Save changes
                 </UiButton>
               </UiDialogFooter>
@@ -186,9 +213,17 @@
       </div>
     </template>
 
-    <DataTable :columns="columns" :data="intentData" :page-size="8" :is-loading="isIntentLoading" />
-    <ConfirmationModal v-model:open="deleteIntentDialogState.open" title="Confirm Delete"
-      description="Are you sure you want to delete this intent ?" @confirm="
+    <DataTable
+      :columns="columns"
+      :data="intentData"
+      :page-size="8"
+      :is-loading="isIntentLoading"
+    />
+    <ConfirmationModal
+      v-model:open="deleteIntentDialogState.open"
+      title="Confirm Delete"
+      description="Are you sure you want to delete this intent ?"
+      @confirm="
         async () => {
           await deleteIntent({
             payload: {
@@ -201,6 +236,7 @@
             },
           });
         }
-      " />
+      "
+    />
   </Page>
 </template>

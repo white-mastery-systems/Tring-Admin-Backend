@@ -234,7 +234,7 @@ const validQueryValues = [
 
 export const getAnalytics = async (
   organizationId: string,
-  period = "current-month",
+  period = "last-30-days",
   customFromDate: Date | null,
   customToDate: Date | null,
   graphValues: string | undefined,

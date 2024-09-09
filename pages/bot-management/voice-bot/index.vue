@@ -169,12 +169,15 @@
       active: activeStatus,
       q: searchBotDebounce,
     },
+    headers: {
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
     transform: (voiceBot) =>
       voiceBot.map((bot) => ({
         id: bot.id,
         name: bot.name,
         status: bot.active,
-        createdAt: `${format(bot.createdAt, "dd MMM yyy h:MM aa")}`,
+        createdAt: `${bot.createdAt}`,
       })),
   });
   const isDataLoading = computed(() => status.value === "pending");

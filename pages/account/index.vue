@@ -239,10 +239,10 @@
                   >
                     {{
                       values?.address?.country
-                        ? countriesList.find(
+                        ? allCoutryNames.find(
                             (country: any) =>
-                              country.data === values?.address?.country,
-                          )?.data
+                              country === values?.address?.country,
+                          )
                         : "Select country..."
                     }}
                     <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -316,10 +316,9 @@
                   >
                     {{
                       values?.address?.state
-                        ? stateRenderList.find(
-                            (state: any) =>
-                              state.data === values?.address?.state,
-                          )?.data
+                        ? statesList.find(
+                            (state: any) => state === values?.address?.state,
+                          )
                         : "Select state..."
                     }}
                     <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -403,9 +402,9 @@
 </template>
 <script setup lang="ts">
   import { Check, ChevronsUpDown } from "lucide-vue-next";
-import { useForm } from "vee-validate";
-import countryData from "~/assets/country-codes.json";
-import stateData from "~/assets/state.json";
+  import { useForm } from "vee-validate";
+  import countryData from "~/assets/country-codes.json";
+  import stateData from "~/assets/state.json";
 
   const countryListOpen = ref(false);
   const value = ref("");
