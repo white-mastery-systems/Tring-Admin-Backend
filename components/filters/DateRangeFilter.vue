@@ -77,10 +77,7 @@ const debouncedValue = debouncedRef(value, 800);
 
 watch(debouncedValue, (newValue) => {
   if (newValue.start && newValue.end && ((selectedDate.value === 'custom') || (selectDate.value === 'custom'))) {
-    console.log({
-      from: newValue.start.toDate(getLocalTimeZone()).toISOString(),
-      to: newValue.end.toDate(getLocalTimeZone()).toISOString(),
-    });
+  
     emit("change", {
       from: newValue.start.toDate(getLocalTimeZone()).toISOString(),
       to: newValue.end

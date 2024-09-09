@@ -1,4 +1,9 @@
-import { getAllDatesInRange, getDateRange, groupAndMapData } from "../analytics";
+import { sum } from "drizzle-orm";
+import {
+  getAllDatesInRange,
+  getDateRange,
+  groupAndMapData,
+} from "../analytics";
 import { getPricingInformation } from "./pricing";
 
 const db = useDrizzle();
@@ -195,18 +200,26 @@ export const updateOrganization = async (
 export const getOrgUsage = async (organizationId: string) => {
   const org: any = await getOrganizationById(organizationId);
   const pricingInformation = await getPricingInformation(org?.planCode);
-  console.log({ pricingInformation });
+  const orgAddons = await db
+    .select({ sum: sum(paymentSchema.amount) })
+    .from(paymentSchema)
+    .where(
+      and(
+        eq(paymentSchema.organizationId, organizationId),
+        eq(paymentSchema.type, "addon"),
+      ),
+    );
   if (!org) return undefined;
-  console.log({ pricingInformation });
+
   return {
     used_quota: org.usedQuota,
     max_quota: pricingInformation?.sessions,
     plan_code: org.planCode,
     available_quota: org.maxQuota - org.usedQuota,
+    wallet_balance: orgAddons[0]?.sum,
     extra_sessions_cost: pricingInformation?.extraSessionCost,
   };
 };
-
 
 const validQueryValues = [
   "leads",
@@ -227,12 +240,15 @@ export const getAnalytics = async (
   graphValues: string | undefined,
 ) => {
   try {
-    const queryArray =
-      graphValues?.trim()?.split(",").map((value) => value.trim()) || 
-      ["leads", "sessions"];
+    const queryArray = graphValues
+      ?.trim()
+      ?.split(",")
+      .map((value) => value.trim()) || ["leads", "sessions"];
 
     // Validate query-values
-    const inValidQuery = queryArray.filter((i) => !validQueryValues.includes(i));
+    const inValidQuery = queryArray.filter(
+      (i) => !validQueryValues.includes(i),
+    );
     if (inValidQuery.length) {
       throw new Error("Invalid query values");
     }
@@ -250,9 +266,9 @@ export const getAnalytics = async (
       // console.log({ earliestData})
       from = earliestData?.createdAt;
     }
-    
+
     const { fromDate, toDate } = getDateRange(period, from, to);
-    
+
     console.log({ period, organizationId, fromDate, toDate });
     const [
       orgData,
@@ -276,16 +292,18 @@ export const getAnalytics = async (
           },
         },
       }),
-      db.select({ createdAt: leadSchema.createdAt })
-       .from(leadSchema)
-       .where(
+      db
+        .select({ createdAt: leadSchema.createdAt })
+        .from(leadSchema)
+        .where(
           and(
             gte(leadSchema.createdAt, fromDate),
             lte(leadSchema.createdAt, toDate),
             eq(leadSchema.organizationId, organizationId),
           ),
         ),
-      db.select({ createdAt: chatSchema.createdAt })
+      db
+        .select({ createdAt: chatSchema.createdAt })
         .from(chatSchema)
         .where(
           and(
@@ -294,7 +312,8 @@ export const getAnalytics = async (
             eq(chatSchema.organizationId, organizationId),
           ),
         ),
-      db.select({ createdAt: chatSchema.createdAt })
+      db
+        .select({ createdAt: chatSchema.createdAt })
         .from(chatSchema)
         .where(
           and(
@@ -304,7 +323,8 @@ export const getAnalytics = async (
             gt(chatSchema.visitedCount, 1),
           ),
         ),
-      db.select({ createdAt: chatSchema.createdAt })
+      db
+        .select({ createdAt: chatSchema.createdAt })
         .from(chatSchema)
         .where(
           and(
@@ -314,7 +334,8 @@ export const getAnalytics = async (
             eq(chatSchema.organizationId, organizationId),
           ),
         ),
-      db.select({ createdAt: timelineSchema.createdAt })
+      db
+        .select({ createdAt: timelineSchema.createdAt })
         .from(timelineSchema)
         .where(
           and(
@@ -324,7 +345,8 @@ export const getAnalytics = async (
             eq(timelineSchema.intent, "schedule_call"),
           ),
         ),
-      db.select({ createdAt: timelineSchema.createdAt })
+      db
+        .select({ createdAt: timelineSchema.createdAt })
         .from(timelineSchema)
         .where(
           and(
@@ -334,7 +356,8 @@ export const getAnalytics = async (
             eq(timelineSchema.intent, "site_visit"),
           ),
         ),
-      db.select({ createdAt: timelineSchema.createdAt })
+      db
+        .select({ createdAt: timelineSchema.createdAt })
         .from(timelineSchema)
         .where(
           and(
@@ -344,7 +367,8 @@ export const getAnalytics = async (
             eq(timelineSchema.intent, "location"),
           ),
         ),
-      db.select({ createdAt: timelineSchema.createdAt })
+      db
+        .select({ createdAt: timelineSchema.createdAt })
         .from(timelineSchema)
         .where(
           and(
@@ -375,9 +399,7 @@ export const getAnalytics = async (
       period,
       difference,
     });
-    const leadMap = new Map(
-      leadResult.map((item) => [item.date, item.count]),
-    );
+    const leadMap = new Map(leadResult.map((item) => [item.date, item.count]));
 
     // sessions Graph
     const sessionResult = groupAndMapData({

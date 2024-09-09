@@ -56,13 +56,11 @@ export default defineEventHandler(async (event) => {
   // Create Form Data
   const form = new FormData();
   const { data, filename, ...rest } = fileData;
-  console.log({ ...rest, data, filename });
+
   const file = new File([data], filename!, rest);
 
   const hostname = getRequestHost(event);
-  console.log({
-    callback: `${conf.llmCallbackUrl}/api/documents/${document.id}`,
-  });
+
   form.append("name", body.data.name?.replace(/[^a-zA-Z0-9.]/g, ""));
   form.append("files", file);
   form.append(

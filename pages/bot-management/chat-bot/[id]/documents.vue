@@ -184,7 +184,7 @@
       })),
     }),
   });
-  console.log({ documents });
+
   const isPageLoading = computed(() => status.value === "pending");
 
   const handleDeleteDocument = () => {

@@ -3,3 +3,4 @@ export default defineEventHandler((event) => {
     methods: "*",
   });
 });
+//https://github.com/radix-vue/radix-vue/discussions/435

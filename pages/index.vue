@@ -232,9 +232,7 @@
     },
   ]);
   const chartValues = ref(["leads", "sessions"]);
-  watch(chartValues, (newChartvalues) => {
-    console.log({ newChartvalues });
-  });
+  watch(chartValues, (newChartvalues) => {});
   const labels = ref([
     "January",
     "February",
@@ -247,7 +245,6 @@
   const graphData = ref([]);
   const sessionsGraphData = ref([]);
   watch(analyticsData, (newValue, oldValue) => {
-    console.log({ newValue });
     if (newValue?.graph?.length > 0) {
       labels.value = newValue.graph[0]?.map((item) => item.date);
     }
@@ -274,11 +271,26 @@
       backgroundColor: "#ffbc42",
       yAxisID: "y1",
     },
+    {
+      borderColor: "#dc6570",
+      backgroundColor: "#dc6570",
+      yAxisID: "y1",
+    },
+
+    {
+      borderColor: "#ffbc42",
+      backgroundColor: "#ffbc42",
+      yAxisID: "y1",
+    },
+    {
+      borderColor: "#ffbc42",
+      backgroundColor: "#ffbc42",
+      yAxisID: "y1",
+    },
   ]);
   let chartData = computed(() => ({
     labels: labels.value,
     datasets: chartValues.value?.map((item: any, index: number) => {
-      console.log({ dd: graphData.value[index] });
       return {
         label: graphOptions.value?.find(
           ({ value }: { value: string }) => value === item,
@@ -289,20 +301,6 @@
         backgroundColor: graphIndexValues.value[index]?.backgroundColor,
         data: graphData.value[index],
         yAxisID: graphIndexValues.value[index]?.yAxisID,
-
-        // ...(index === 1
-        //   ? {
-        //       borderColor: "#424bd1",
-        //       backgroundColor: "#424bd1",
-        //       data: sessionsGraphData.value,
-        //       yAxisID: "y",
-        //     }
-        //   : {
-        //       borderColor: "#ffbc42",
-        //       backgroundColor: "#ffbc42",
-        //       // data: leadsGraphData.value,
-        //       yAxisID: "y1",
-        //     }),
       };
     }),
     // datasets: [
@@ -394,9 +392,8 @@
   // const getButtonName = ref("Get Started");
 
   watch([selectedValue, chartValues], async ([period, chartValues]) => {
-    console.log({ period, chartValues });
     filter.graphValues = chartValues?.join(",");
-    console.log({ filter });
+
     filter.period = period;
     if (period != "custom") {
       delete filter.from;

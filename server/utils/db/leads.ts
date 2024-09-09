@@ -80,7 +80,7 @@ export const listLeads = async (
       const queryDate = getDateRangeForFilters(query);
       fromDate = queryDate?.from;
       toDate = queryDate?.to;
-      console.log({ fromDate, toDate });
+
       if (fromDate && toDate) {
         filters.push(between(leadSchema.createdAt, fromDate, toDate));
       }

@@ -1,8 +1,12 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
+import {
+  adminConfigurationSchema,
+  adminPricingSchema,
+  paymentSchema,
+} from "../schema/admin";
 import { analyticsRelations, chatBotIntegrationRelations } from "../schema/bot";
 import { voicebotIntegrationSchema } from "../schema/voicebot";
-import { adminConfigurationSchema, adminPricingSchema } from "../schema/admin";
 
 const runtimeConfig = useRuntimeConfig();
 
@@ -19,7 +23,7 @@ const schema = {
   chatSchema,
   messageSchema,
   leadSchema,
-  billingSchema,
+  paymentSchema,
   botIntentSchema,
   integrationSchema,
   botIntegrationSchema,

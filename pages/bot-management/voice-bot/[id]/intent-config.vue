@@ -49,7 +49,6 @@ const { handleSubmit } = useForm({
 })
 
 const onSubmit = handleSubmit((values) => {
-  console.log(values, "values")
 })
 </script>
 <template>

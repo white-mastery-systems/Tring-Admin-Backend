@@ -3,6 +3,7 @@ import {
   boolean,
   integer,
   jsonb,
+  pgEnum,
   serial,
   text,
   timestamp,
@@ -23,21 +24,33 @@ export const organizationSchema = adminSchema.table("organization", {
   metadata: jsonb("metadata").default({}).notNull(),
   usedQuota: integer("used_quota").default(0).notNull(),
   maxQuota: integer("max_quota").default(50).notNull(),
-  planCode: varchar("plan_code", { length: 64 }).notNull().default("FREE"),
+  planCode: varchar("plan_code", { length: 64 }).notNull().default("chat_free"),
   isOnboarded: boolean("is_onboarded").default(false).notNull(),
 });
-
-export const billingSchema = adminSchema.table("billing", {
-  user_id: uuid("user_id")
+export const statusEnum = pgEnum("status", [
+  "active",
+  "incomplete",
+  "incomplete_expired",
+  "trialing",
+  "unpaid",
+  "cancelled",
+]);
+export const paymentTypeEnum = pgEnum("type", ["subscription", "addon"]);
+export const paymentSchema = adminSchema.table("payment", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  userId: uuid("user_id")
     .notNull()
     .references(() => authUserSchema.id),
-  org_id: uuid("org_id")
-    .notNull()
-    .references(() => organizationSchema.id),
-  customer_id: text("customer_id").notNull(),
+  organizationId: uuid("org_id").references(() => organizationSchema.id),
+  customerId: text("customer_id").notNull(),
   plan_code: varchar("plan_code", { length: 64 }),
+  amount: integer("amount").notNull().default(0),
   subscription_metadata: jsonb("subscription_metadata"),
+  subscriptionId: text("subscription_id"),
+  productId: text("product_id"),
   customer_metadata: jsonb("customer_metadata"),
+  type: paymentTypeEnum("type").default("subscription").notNull(),
+  status: statusEnum("status").default("active").notNull(),
 });
 
 export const integrationSchema = adminSchema.table("integration", {
@@ -96,7 +109,7 @@ export const numberIntegrationSchema = adminSchema.table("number_integration", {
   organizationId: uuid("org_id")
     .notNull()
     .references(() => organizationSchema.id),
-})
+});
 
 // Relations
 export const organizationRelations = relations(
@@ -106,17 +119,17 @@ export const organizationRelations = relations(
     bots: many(chatBotSchema),
     botUsers: many(botUserSchema),
     leads: many(leadSchema),
-    bills: many(billingSchema),
+    bills: many(paymentSchema),
   }),
 );
 
-export const billingRelations = relations(billingSchema, ({ one }) => ({
+export const billingRelations = relations(paymentSchema, ({ one }) => ({
   organization: one(organizationSchema, {
-    fields: [billingSchema.org_id],
+    fields: [paymentSchema.organizationId],
     references: [organizationSchema.id],
   }),
   user: one(authUserSchema, {
-    fields: [billingSchema.user_id],
+    fields: [paymentSchema.userId],
     references: [authUserSchema.id],
   }),
 }));
@@ -129,8 +142,12 @@ export type InsertIntegration = InferInsertModel<typeof integrationSchema>;
 export type SelectIntegration = InferSelectModel<typeof integrationSchema>;
 export type InsertTimeline = InferInsertModel<typeof timelineSchema>;
 
-export type SelectNumberIntegration = InferSelectModel<typeof numberIntegrationSchema>;
-export type InsertNumberIntegration = InferInsertModel<typeof numberIntegrationSchema>;
+export type SelectNumberIntegration = InferSelectModel<
+  typeof numberIntegrationSchema
+>;
+export type InsertNumberIntegration = InferInsertModel<
+  typeof numberIntegrationSchema
+>;
 
 // Validation
 export const zodInsertOrganization = createInsertSchema(organizationSchema, {

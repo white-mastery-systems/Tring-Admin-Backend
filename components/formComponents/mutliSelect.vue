@@ -26,7 +26,6 @@
     //     }
     //   }
     // }
-    console.log(selectedValues.value, "VALUE");
   };
   const displayLabels = ref<string[]>([]);
   const value = defineModel<any>("value");
@@ -36,23 +35,19 @@
       const findedOption = options?.find(
         ({ value }: { value: string }) => value === val,
       );
-      console.log({ findedOption });
+
       displayLabels.value.push(findedOption.label);
       selectedValues.value = {
         ...selectedValues.value,
         [findedOption.value]: findedOption.label,
       };
-
-      console.log({ selectedValues: selectedValues.value });
     });
   }
   watch(selectedValues, (newValues) => {
     const data: string[] = [];
     Object.entries(newValues as Object).map(([key, value]) => {
-      console.log({ key, value });
       data.push(value);
     });
-    console.log({ data });
 
     displayLabels.value = data;
   });

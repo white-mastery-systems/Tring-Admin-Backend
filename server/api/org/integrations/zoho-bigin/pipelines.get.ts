@@ -10,9 +10,11 @@ export default defineEventHandler(async (event) => {
     organizationId,
     query.id,
   );
-  return await getAllPipelinesFromZohoBigin({
+  const data = await getAllPipelinesFromZohoBigin({
     token: integrationData?.metadata?.access_token,
     refreshToken: integrationData?.metadata?.refresh_token,
     integrationData: integrationData,
   });
+  console.log({ data });
+  return data;
 });
