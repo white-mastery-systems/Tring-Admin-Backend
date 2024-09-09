@@ -84,6 +84,7 @@
           Cancel Subscription
         </UiButton>
         <NuxtLink
+          v-if="!usage?.plan_code?.includes('free')"
           to="/billing/view-wallet"
           class="hover:brighten-50 font-regular grid items-center rounded-md bg-[#424bd1] p-2 px-2 text-sm text-[#FFFFFF] hover:bg-[#424bd1]"
           >Refill Wallet</NuxtLink

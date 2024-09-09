@@ -42,7 +42,7 @@ export function getAllPipelinesFromZohoBigin({
   return data;
 }
 
-export function getAllSubPipelinesFromZohoBigin({
+export async function getAllSubPipelinesFromZohoBigin({
   token,
   refreshToken,
   integrationData,
