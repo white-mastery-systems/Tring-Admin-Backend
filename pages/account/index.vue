@@ -161,7 +161,7 @@
               <UiInput
                 v-bind="emailFieldProps"
                 type="email"
-                placeholder="user@example.com"
+                placeholder="Enter your email"
               />
             </UiFormControl>
             <UiFormMessage />
@@ -403,9 +403,9 @@
 </template>
 <script setup lang="ts">
   import { Check, ChevronsUpDown } from "lucide-vue-next";
-  import { useForm } from "vee-validate";
-  import countryData from "~/assets/country-codes.json";
-  import stateData from "~/assets/state.json";
+import { useForm } from "vee-validate";
+import countryData from "~/assets/country-codes.json";
+import stateData from "~/assets/state.json";
 
   const countryListOpen = ref(false);
   const value = ref("");

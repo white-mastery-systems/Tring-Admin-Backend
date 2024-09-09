@@ -2,6 +2,7 @@
 
 import { isNotNull, isNull, like } from "drizzle-orm";
 import { InsertBotIntegration, InsertIntent } from "~/server/schema/bot";
+import momentTz from "moment-timezone";
 
 const db = useDrizzle();
 
@@ -19,6 +20,7 @@ interface queryInterface {
 export const listBots = async (
   organizationId: string,
   query: queryInterface,
+  timeZone: string,
 ) => {
   let filters: any = [eq(chatBotSchema.organizationId, organizationId)];
   if (query?.active === "true") {
@@ -31,10 +33,10 @@ export const listBots = async (
   }
 
   const page = query.page ? parseInt(query.page) : 1;
-  const limit = query.limit ? parseInt(query.limit) : 10;
+  const limit = query.limit ? parseInt(query.limit) : 10; 
   const offset = (page - 1) * limit;
 
-  const data = await db.query.chatBotSchema.findMany({
+  let data = await db.query.chatBotSchema.findMany({
     where: and(...filters),
     orderBy: [desc(chatBotSchema.createdAt)],
     columns: {
@@ -48,6 +50,11 @@ export const listBots = async (
       offset
     }
   });
+  data = data.map((i: any) => ({
+    ...i,
+    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
+  }))
+
   return data;
 };
 

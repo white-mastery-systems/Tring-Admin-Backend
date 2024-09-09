@@ -11,6 +11,7 @@ import {
 } from "date-fns";
 import { inArray } from "drizzle-orm";
 import { InsertLead } from "~/server/schema/bot";
+import momentTz from "moment-timezone"
 
 const db = useDrizzle();
 
@@ -29,6 +30,7 @@ interface QueryInterface {
 export const listLeads = async (
   organizationId: string,
   query: QueryInterface,
+  timeZone: string,
 ) => {
   try {
     let filters: any = [eq(leadSchema.organizationId, organizationId)];
@@ -123,6 +125,10 @@ export const listLeads = async (
         offset
       }
     });
+    leads = leads.map((i: any) => ({
+        ...i,
+        createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
+    }))
     if (query?.q || query?.status === "new" || query?.status === "revisited")
       leads = leads.filter((lead: any) => {
         return lead.botUser !== null;

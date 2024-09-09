@@ -1,4 +1,5 @@
 import { InsertVoicebotIntegration } from "~/server/schema/voicebot";
+import momentTz from "moment-timezone";
 
 const db = useDrizzle();
 
@@ -15,8 +16,7 @@ export const createVoicebot = async (voicebot: InsertVoiceBot) => {
   )[0]
 }
 
-export const listVoicebots = async (organizationId: string, query: listVoicebotQuery) => {
-
+export const listVoicebots = async (organizationId: string, query: listVoicebotQuery, timeZone: string) => {
   let filters: any = [eq(voicebotSchema.organizationId, organizationId)]
 
   if (query?.active === "true") {
@@ -31,7 +31,7 @@ export const listVoicebots = async (organizationId: string, query: listVoicebotQ
   const limit = query.limit ? parseInt(query.limit) : 10;
   const offset = (page - 1) * limit;
 
-  const data = await db.query.voicebotSchema.findMany({ 
+  let data = await db.query.voicebotSchema.findMany({ 
     where: and(...filters),
     orderBy: [desc(voicebotSchema.createdAt)],
     ...query?.page && query?.limit && {
@@ -39,6 +39,11 @@ export const listVoicebots = async (organizationId: string, query: listVoicebotQ
       offset
     }
   })
+  data = data.map((i: any) => ({
+    ...i,
+    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
+  }))
+
   return data
 }
 
