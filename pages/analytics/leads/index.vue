@@ -33,7 +33,7 @@
           :is-loading="isDataLoading"
           :columns="columns"
           :page-size="8"
-          :height="73"
+          :height="14"
           height-unit="vh"
           @row-click="
             (row: any) => {
@@ -48,7 +48,7 @@
           :is-loading="isDataLoading"
           :columns="columns"
           :page-size="8"
-          :height="73"
+          :height="14"
           height-unit="vh"
           @row-click="
             (row: any) => {
@@ -63,7 +63,7 @@
           :is-loading="isDataLoading"
           :columns="columns"
           :page-size="8"
-          :height="73"
+          :height="14"
           height-unit="vh"
           @row-click="
             (row: any) => {

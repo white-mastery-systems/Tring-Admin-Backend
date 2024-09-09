@@ -13,28 +13,28 @@
         </UiButton>
       </div>
     </template>
-    <UiTabs default-value="client" class="w-full self-start">
+    <UiTabs default-value="crm" class="w-full self-start">
       <UiTabsList class="grid w-[40%] grid-cols-3">
-        <UiTabsTrigger value="client" @click="navigateToTab('crm')">
+        <UiTabsTrigger value="crm" @click="navigateToTab('crm')">
           CRM
         </UiTabsTrigger>
-        <UiTabsTrigger value="campaign" @click="navigateToTab('channel')">
+        <UiTabsTrigger value="channel" @click="navigateToTab('channel')">
           Channel
         </UiTabsTrigger>
         <UiTabsTrigger value="number" @click="navigateToTab('number')">
           Number
         </UiTabsTrigger>
       </UiTabsList>
-      <UiTabsContent value="client">
-        <DataTable :columns="columns" :data="integrationsData" :page-size="8" :is-loading="false" :height="80"
+      <UiTabsContent value="crm">
+        <DataTable :columns="columns" :data="integrationsData" :page-size="8" :is-loading="false" :height="13"
           :heightUnit="'vh'" />
       </UiTabsContent>
-      <UiTabsContent value="campaign">
-        <DataTable :columns="statusColumns" :data="integrationsData" :page-size="8" :is-loading="false" :height="10"
+      <UiTabsContent value="channel">
+        <DataTable :columns="statusColumns" :data="integrationsData" :page-size="8" :is-loading="false" :height="13"
           :heightUnit="'vh'" />
       </UiTabsContent>
       <UiTabsContent value="number">
-          <NumberIntegration />
+        < />
       </UiTabsContent>
     </UiTabs>
     <ChannelModal v-model="channelModalState" />
@@ -71,6 +71,8 @@
 
   const router = useRouter();
   const route = useRoute();
+  const numberIntegration:any = ref(null);
+  // provide('message', 'testing')
   const integrationModalState = ref<{ open: boolean; id?: string | null }>({
     open: false,
   });
@@ -210,4 +212,5 @@
   const navigateToTab = async (tab: any) => {
     router.push({ query: { q: tab } });
   };
+
 </script>

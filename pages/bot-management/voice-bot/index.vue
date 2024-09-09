@@ -4,9 +4,7 @@
       <div class="flex gap-4">
         <UiDialog>
           <UiDialogTrigger as-child>
-            <UiButton
-              class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95"
-            >
+            <UiButton class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95">
               Add Voice Bot
             </UiButton>
           </UiDialogTrigger>
@@ -14,112 +12,114 @@
             <UiDialogHeader>
               <UiDialogTitle>Add a New Voice Bot</UiDialogTitle>
             </UiDialogHeader>
-            <UiForm
-              :validation-schema="formSchema"
-              :keep-values="true"
-              :validate-on-mount="false"
-              class="mb-4 space-y-6"
-              @submit="addVoiceBot"
-            >
+            <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false"
+              class="mb-4 space-y-6" @submit="addVoiceBot">
               <UiFormField v-slot="{ componentField }" name="newBotName">
                 <UiFormItem class="w-full">
                   <UiFormLabel class="font-bold">Voice Bot Name</UiFormLabel>
                   <UiFormControl>
-                    <UiInput
-                      v-bind="componentField"
-                      class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
-                      placeholder="Enter Voice Bot Name"
-                      type="text"
-                    />
-                    <UiFormDescription lass="text-xs text-gray-500"
-                      >Enter your unique identifier for Voice Bot.
+                    <UiInput v-bind="componentField" class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
+                      placeholder="Enter Voice Bot Name" type="text" />
+                    <UiFormDescription lass="text-xs text-gray-500">Enter your unique identifier for Voice Bot.
                     </UiFormDescription>
                     <UiFormMessage />
                   </UiFormControl>
                 </UiFormItem>
               </UiFormField>
               <div class="flex w-full items-center justify-end">
-                <UiButton
-                  type="submit"
-                  class="w-1/2 self-end bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
-                >
+                <UiButton type="submit"
+                  class="w-1/2 self-end bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
                   Create
                 </UiButton>
               </div>
             </UiForm>
           </UiDialogContent>
         </UiDialog>
-        <span
-          v-if="false"
+        <span v-if="false"
           class="field_shadow flex w-[200px] items-center rounded-[10px] bg-[#ffffff] px-[10px] py-0 text-[15px]"
-          style="color: rgba(138, 138, 138, 1)"
-          >Summary:
+          style="color: rgba(138, 138, 138, 1)">Summary:
           <span class="font-bold text-black">
             <!-- <template> -->
             <UiSelect v-model="selectedValue" class="outline-none">
-              <UiSelectTrigger
-                class="ui-select-trigger w-[110px] font-medium outline-none"
-              >
+              <UiSelectTrigger class="ui-select-trigger w-[110px] font-medium outline-none">
                 <UiSelectValue />
               </UiSelectTrigger>
               <UiSelectContent>
                 <UiSelectGroup class="select_list_align">
                   <!-- <UiSelectLabel>Today</UiSelectLabel> -->
-                  <UiSelectItem
-                    v-for="(list, index) in menuList"
-                    :key="index"
-                    class="content_align"
-                    :value="list.content"
-                  >
+                  <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
+                    :value="list.content">
                     {{ list.content }}
                   </UiSelectItem>
                 </UiSelectGroup>
               </UiSelectContent>
             </UiSelect>
             <!-- </template> -->
-          </span></span
-        >
+          </span></span>
       </div>
     </template>
-    <div class="flex items-center gap-2 pb-2">
-      <UiInput
-        v-model="searchBot"
-        class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
-        placeholder="Search bot..."
-      />
-      <UiSelect v-model="activeStatus">
-        <UiSelectTrigger class="max-w-[200px]">
-          <UiSelectValue placeholder="Filter status" />
-        </UiSelectTrigger>
-        <UiSelectContent>
-          <UiSelectItem value="true">Active</UiSelectItem>
-          <UiSelectItem value="false">In active</UiSelectItem>
-          <UiSelectItem value="all">All</UiSelectItem>
-        </UiSelectContent>
-      </UiSelect>
-    </div>
 
-    <DataTable
-      @row-click="
-        (row: any) => {
-          return navigateTo(`/bot-management/voice-bot/${row.original.id}`);
-        }
-      "
-      :columns="columns"
-      :data="voiceBot"
-      :page-size="20"
-      :is-loading="isDataLoading"
-      :height="60"
-      height-unit="vh"
-    />
+    <UiTabs default-value="numbers" class="w-full self-start">
+      <UiTabsList class="grid w-[40%] grid-cols-4">
+        <UiTabsTrigger value="numbers" @click="navigateToTab('numbers')">
+          Numbers
+        </UiTabsTrigger>
+        <UiTabsTrigger value="agents" @click="navigateToTab('agents')">
+          Agents
+        </UiTabsTrigger>
+        <UiTabsTrigger value="campaigns" @click="navigateToTab('campaigns')">
+          Campaigns
+        </UiTabsTrigger>
+        <UiTabsTrigger value="buckets" @click="navigateToTab('buckets')">
+          Buckets
+        </UiTabsTrigger>
+      </UiTabsList>
+      <UiTabsContent value="numbers">
+        Empty
+      </UiTabsContent>
+      <UiTabsContent value="agents">
+        <div class="flex items-center gap-2 pb-2">
+          <UiInput v-model="searchBot" class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
+            placeholder="Search bot..." />
+          <UiSelect v-model="activeStatus">
+            <UiSelectTrigger class="max-w-[200px]">
+              <UiSelectValue placeholder="Filter status" />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectItem value="true">Active</UiSelectItem>
+              <UiSelectItem value="false">In active</UiSelectItem>
+              <UiSelectItem value="all">All</UiSelectItem>
+            </UiSelectContent>
+          </UiSelect>
+        </div>
+
+        <DataTable @row-click="(row: any) => {
+            return navigateTo(`/bot-management/voice-bot/${row.original.id}`);
+          }
+          " :columns="columns" :data="voiceBot" :page-size="20" :is-loading="isDataLoading" :height="13"
+          height-unit="vh" />
+      </UiTabsContent>
+      <UiTabsContent value="campaigns">
+        Empty
+      </UiTabsContent>
+      <UiTabsContent value="buckets">
+        <Buckets />
+      </UiTabsContent>
+    </UiTabs>
+
+
   </Page>
 </template>
 <script setup lang="ts">
-  import { createColumnHelper } from "@tanstack/vue-table";
-  import { format } from "date-fns";
-  definePageMeta({
-    middleware: "admin-only",
-  });
+import { createColumnHelper } from "@tanstack/vue-table";
+import { format } from "date-fns";
+import { any } from "zod";
+import { useRoute, useRouter } from "vue-router";
+
+
+definePageMeta({
+  middleware: "admin-only",
+});
 
   const formSchema = toTypedSchema(
     z.object({
@@ -128,7 +128,7 @@
   );
   const searchBot = ref("");
   const searchBotDebounce = refDebounced(searchBot, 500);
-
+  const router = useRouter();
   const activeStatus = ref("");
   watch(activeStatus, async (newStatus, previousStatus) => {});
   const selectedValue = ref("Today");
@@ -179,6 +179,11 @@
   });
   const isDataLoading = computed(() => status.value === "pending");
 
+onMounted(() => {
+  if (!router.currentRoute.value.query.tab) {
+    navigateToTab("crm");
+  }
+});
   const addVoiceBot = async (value: any) => {
     try {
       const bot = await $fetch("/api/voicebots", {
@@ -221,6 +226,10 @@
       },
     }),
   ];
+
+const navigateToTab = async (tab: any) => {
+  router.push({ query: { q: tab } });
+};
 </script>
 
 <style scoped></style>

@@ -109,7 +109,7 @@
       :data="bots"
       :page-size="20"
       :is-loading="isDataLoading"
-      :height="60"
+      :height="13"
       height-unit="vh"
     />
   </Page>
