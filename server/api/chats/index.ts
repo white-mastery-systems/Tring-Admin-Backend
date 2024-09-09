@@ -33,8 +33,14 @@ const chatQueryValidator = z
   );
 
 export default defineEventHandler(async (event) => {
+  // const logger = useCustomLogger();
+  // logger.info("This is an info message");
+  // logger.error("This is an error message");
+
   const timeZoneHeader = event.node?.req?.headers["time-zone"];
-  const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
+  const timeZone = Array.isArray(timeZoneHeader)
+    ? timeZoneHeader[0]
+    : timeZoneHeader || "Asia/Kolkata";
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const query = await isValidQueryHandler(event, chatQueryValidator);
 
