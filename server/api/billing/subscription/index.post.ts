@@ -69,8 +69,11 @@ export default defineEventHandler(async (event) => {
           firstName = firstName?.split(" ")[0];
           lastName = firstName?.split(" ")[1];
         }
+        const billingInformation = await db.query.paymentSchema.findFirst({
+          where: eq(paymentSchema.organizationId, organizationId),
+        });
 
-        const generatedHostedPage = await await $fetch(
+        const generatedHostedPage = await $fetch(
           "https://www.zohoapis.in/billing/v1/hostedpages/newsubscription",
           {
             method: "POST",
@@ -82,30 +85,48 @@ export default defineEventHandler(async (event) => {
             },
 
             body: {
-              customer: {
-                display_name: user?.username,
-                salutation: "Mr.",
-                first_name: firstName,
-                last_name: lastName,
-                email: user?.email,
-                mobile: `+918848083317`,
-                billing_address: {
-                  attention: user?.username,
-                  street: userDetails?.address?.street,
-                  city: userDetails?.address?.city,
-                  state: userDetails?.address?.state,
-                  country: userDetails?.address?.country,
-                  zip: userDetails?.address?.zip,
-                },
-                shipping_address: {
-                  attention: user?.username,
-                  street: userDetails?.address?.street,
-                  city: userDetails?.address?.city,
-                  state: userDetails?.address?.state,
-                  country: userDetails?.address?.country,
-                  zip: userDetails?.address?.zip,
-                },
-              },
+              ...(billingInformation?.customerId
+                ? {
+                    customer_id: billingInformation?.customerId,
+                  }
+                : {
+                    customer: {
+                      display_name: user?.username,
+                      salutation: "Mr.",
+                      first_name: firstName,
+                      last_name: lastName,
+                      email: user?.email,
+                      mobile: `+918848083317`,
+                      billing_address: {
+                        attention: user?.username,
+                        street: userDetails?.address?.street,
+                        city: userDetails?.address?.city,
+                        state: userDetails?.address?.state,
+                        country: userDetails?.address?.country,
+                        zip: userDetails?.address?.zip,
+                      },
+                      shipping_address: {
+                        attention: user?.username,
+                        street: userDetails?.address?.street,
+                        city: userDetails?.address?.city,
+                        state: userDetails?.address?.state,
+                        country: userDetails?.address?.country,
+                        zip: userDetails?.address?.zip,
+                      },
+                    },
+                  }),
+              // addons: [
+              //   {
+              //     addon_code: "chat_basic",
+              //   },
+              //   {
+              //     addon_code: "chat_pro",
+              //   },
+              //   {
+              //     addon_code: "chat_max",
+              //   },
+              // ],
+
               plan: {
                 plan_code: body.plan,
                 // price: planDetails?.price,
@@ -125,8 +146,10 @@ export default defineEventHandler(async (event) => {
 
         return generatedHostedPage;
       } catch (err: any) {
+        console.log({ err: err.message, errda: err.data });
         if (err.status === 401) {
           const response = await regerateAccessToken();
+          // return generatedHostedPage();
         }
       }
     }

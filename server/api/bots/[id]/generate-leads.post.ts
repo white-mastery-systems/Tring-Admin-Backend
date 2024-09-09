@@ -1,7 +1,6 @@
 import { getAdminByOrgId } from "~/server/utils/db/user";
 import {
   generateContactInZohoBigin,
-  generateLeadInZohoBigin,
   generateLeadInZohoCRM,
 } from "~/server/utils/zoho/modules";
 export default defineEventHandler(async (event) => {
@@ -33,7 +32,7 @@ export default defineEventHandler(async (event) => {
         firstName = name[0];
         lastName = name[1];
       }
-      const generatedContact = await generateContactInZohoBigin({
+      JSON.stringify({
         body: {
           First_Name: firstName,
           Last_Name: lastName ?? firstName,
@@ -45,7 +44,18 @@ export default defineEventHandler(async (event) => {
         token: botIntegration?.integration?.metadata?.access_token,
         refreshToken: botIntegration?.integration?.metadata?.refresh_token,
       });
-
+      const generatedContact: any = await generateContactInZohoBigin({
+        body: {
+          First_Name: firstName,
+          Last_Name: lastName ?? firstName,
+          Email: body?.botUser?.email,
+          Mobile: body?.botUser?.mobile,
+          Title: body?.botUser?.name,
+        },
+        integrationData: botIntegration?.integration,
+        token: botIntegration?.integration?.metadata?.access_token,
+        refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+      });
       const pipelineObj = botIntegration?.metadata?.pipelineObj;
 
       const generatedLead = await generateLeadInZohoBigin({
@@ -53,7 +63,7 @@ export default defineEventHandler(async (event) => {
         refreshToken: botIntegration?.integration?.metadata?.refresh_token,
         body: {
           Deal_Name: body?.botUser?.name,
-          Sub_Pipeline: pipelineObj?.Sub_Pipeline,
+          Sub_Pipeline: pipelineObj?.Sub_Pipeline ?? pipelineObj?.Pipeline,
           Stage: pipelineObj?.Stage,
           Pipeline: pipelineObj?.Pipeline,
           Contact_Name: {
@@ -62,6 +72,7 @@ export default defineEventHandler(async (event) => {
         },
         integrationData: botIntegration?.integration,
       });
+      console.log(JSON.stringify(generatedLead), "LEAD");
     } else if (botIntegration?.integration?.crm === "zoho-crm") {
       const name = body?.botUser?.name?.split(" ");
       let firstName = body?.botUser?.name;

@@ -1,3 +1,4 @@
+import { sum } from "drizzle-orm";
 import {
   getAllDatesInRange,
   getDateRange,
@@ -199,7 +200,15 @@ export const updateOrganization = async (
 export const getOrgUsage = async (organizationId: string) => {
   const org: any = await getOrganizationById(organizationId);
   const pricingInformation = await getPricingInformation(org?.planCode);
-
+  const orgAddons = await db
+    .select({ sum: sum(paymentSchema.amount) })
+    .from(paymentSchema)
+    .where(
+      and(
+        eq(paymentSchema.organizationId, organizationId),
+        eq(paymentSchema.type, "addon"),
+      ),
+    );
   if (!org) return undefined;
 
   return {
@@ -207,6 +216,7 @@ export const getOrgUsage = async (organizationId: string) => {
     max_quota: pricingInformation?.sessions,
     plan_code: org.planCode,
     available_quota: org.maxQuota - org.usedQuota,
+    wallet_balance: orgAddons[0]?.sum,
     extra_sessions_cost: pricingInformation?.extraSessionCost,
   };
 };

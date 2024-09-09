@@ -28,6 +28,8 @@
           : extraChats * Number(usage.value.extra_sessions_cost),
     };
   });
+
+  const cancelModalState = ref(false);
 </script>
 <template>
   <div
@@ -44,25 +46,35 @@
     :disable-back-button="true"
     :disable-elevation="true"
   >
+    <template #actionButtons>
+      <div class="flex gap-2">
+        <UiButton variant="destructive" @click="cancelModalState = true">
+          Cancel Subscription
+        </UiButton>
+        <UiButton color="primary">
+          <NuxtLink to="/billing/view-wallet" class="align_border"
+            >Refill Wallet</NuxtLink
+          >
+        </UiButton>
+        <NuxtLink
+          to="/billing/view-all"
+          class="hover:brighten-50 align_border grid items-center rounded-md bg-[#FFBC42] px-2 text-sm font-bold text-[#FFFFFF] hover:bg-[#FFBC42]"
+          >Change Plan</NuxtLink
+        >
+      </div>
+    </template>
+    <ConfirmationModal
+      :open="cancelModalState"
+      title="Are you sure to cancel your subscription"
+      description="This action is irreversible"
+      @confirm="() => {}"
+    >
+    </ConfirmationModal>
     <div class="mt-4 w-full self-center rounded-lg bg-[#fffff] shadow-3xl">
       <div
         class="flex items-center justify-between rounded-t-xl border-b-[1px] border-[#80808036] px-[5px] py-5 text-[18px] font-bold sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]"
       >
         <span> Subscription Details </span>
-        <div class="flex gap-2">
-          <UiButton color="primary">
-            <NuxtLink to="/billing/view-wallet" class="align_border"
-              >Refill Wallet</NuxtLink
-            >
-          </UiButton>
-          <UiButton
-            class="hover:brighten-50 bg-[#FFBC42] font-medium text-[#FFFFFF] hover:bg-[#FFBC42]"
-          >
-            <NuxtLink to="/billing/view-all" class="align_border"
-              >Change Plan</NuxtLink
-            >
-          </UiButton>
-        </div>
       </div>
       <div
         class="flex items-center justify-between gap-3 px-[5px] py-5 sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]"

@@ -19,9 +19,12 @@
         </div>
         <div class="text-[14px]">
           {{
-            Math.floor(
-              Number(list.amount) / Number(data?.planDetails?.extraSessionCost),
-            )
+            Number(data?.planDetails?.extraSessionCost) !== 0
+              ? Math.floor(
+                  Number(list.amount) /
+                    Number(data?.planDetails?.extraSessionCost),
+                )
+              : 0
           }}
           extra sessions
         </div>
@@ -32,11 +35,12 @@
           </div>
         </div>
 
-        <button
+        <UiButton
+          @click="handlePurchaseWallet(list.plan_code)"
           class="rounded-lg border border-indigo-700 bg-transparent px-4 py-2 font-semibold text-indigo-800 hover:border-transparent hover:bg-indigo-700 hover:text-white"
         >
           Buy now
-        </button>
+        </UiButton>
       </div>
     </div>
   </page>
@@ -56,17 +60,34 @@
     {
       _id: 1,
       title: "Basic",
+      plan_code: "chat_basic",
       amount: "200",
     },
     {
       _id: 2,
       title: "Pro",
+      plan_code: "chat_pro",
       amount: "500",
     },
     {
       _id: 3,
       title: "Max",
+      plan_code: "chat_max",
       amount: "1000",
     },
   ]);
+  const handlePurchaseWallet = async (plan: string) => {
+    const hostedPageResponse = await $fetch("/api/billing/addon", {
+      method: "POST",
+      body: {
+        plan: plan,
+        redirectUrl: `${window.location.origin}/billing/wallet/wallet-confirmation`,
+      },
+    });
+    await navigateTo(hostedPageResponse?.hostedpage?.url, {
+      open: {
+        target: "_blank",
+      },
+    });
+  };
 </script>

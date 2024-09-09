@@ -58,13 +58,7 @@
   const [name, nameAttrs] = defineField("name");
   const [crmField, crmFieldAttrs] = defineField("crm");
   const [apiKeyField, apiKeyFieldAttrs] = defineField("metaData.apiKey");
-  // onMounted(() => {
-  //     resetForm({
-  //       values: {
-  //         name: "",
-  //       },
-  //     });
-  //   });
+
   watch(
     () => integrationModalState.value.open,
     async (isOpen) => {
@@ -103,11 +97,6 @@
         id: integrationModalProps.id,
         integrationDetails: payload,
         onSuccess: () => {
-          if (values.crm !== "sell-do")
-            window.open(
-              `https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=${scope}&redirect_uri=${url}&prompt=consent&access_type=offline`,
-              "_blank",
-            );
           emit("success");
         },
       });
@@ -217,11 +206,11 @@
         {{
           values.crm === "zoho-crm"
             ? integrationModalProps?.id
-              ? "Reconnect Zoho CRM"
+              ? "Update changes"
               : "Connect Zoho CRM"
             : values.crm === "zoho-bigin"
               ? integrationModalProps?.id
-                ? "Reconnect Zoho Bigin"
+                ? "Update changes"
                 : "Connect Zoho Bigin"
               : integrationModalProps?.id
                 ? "Update changes"

@@ -44,6 +44,11 @@ const veeValidateZod = {
   imports: ["toTypedSchema"],
 };
 
+const veeValidate = {
+  from: "vee-validate",
+  imports: ["useForm", "useField"],
+};
+
 const vueSonner = {
   from: "vue-sonner",
   imports: ["toast"],
@@ -56,5 +61,5 @@ const dateFns = {
 
 export default {
   nitro: [drizzleOrm, drizzleZod, zod, dateFns],
-  nuxt: [zod, veeValidateZod, vueSonner, dateFns],
+  nuxt: [zod, veeValidateZod, veeValidate, vueSonner, dateFns],
 };

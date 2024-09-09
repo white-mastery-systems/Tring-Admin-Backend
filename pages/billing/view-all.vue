@@ -7,7 +7,13 @@
   >
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <page v-else title="Billing" :description="true" :disableSelector="true">
+  <page
+    v-else
+    title="Billing"
+    :description="true"
+    :disableSelector="true"
+    :customBackRouter="'/billing'"
+  >
     <div
       class="xs:grid-cols-2 grid gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-4"
     >
@@ -61,7 +67,7 @@
         </div>
         <button
           class="rounded-lg border border-indigo-700 bg-transparent px-4 py-2 font-semibold text-indigo-800 hover:border-transparent hover:bg-indigo-700 hover:text-white"
-          @click="choosePlan(list.plan)"
+          @click="choosePlan(list.plan_code)"
           :disabled="
             orgBilling?.plan_code === list.plan_code ||
             list.plan_code?.includes('chat_free')
@@ -226,6 +232,7 @@
       amount: "Talk to sales",
       status: "",
       types: "Enterprise",
+      plan_code: "chat_enterprise",
       // benefitContent: 'Automation plus enterprise-grade features.',
       listBenefit: false,
       benefitList: [
@@ -267,6 +274,9 @@
     },
   ]);
   const findPlanLevel = ({ list, current }: { list: any; current: string }) => {
+    if (list.plan_code === "chat_enterprise") {
+      return "Contact sales";
+    }
     const billInformation = billingVariation.value.find(
       (data: { plan_code: string }) => data.plan_code === list.plan_code,
     );
@@ -274,7 +284,6 @@
     const currentPlanInformation = billingVariation.value.find(
       (data: { plan_code: string }) => data.plan_code === current,
     );
-    console.log({ currentPlanInformation, billInformation });
     if (billInformation?._id > currentPlanInformation?._id) {
       return "Upgrade Plan";
     } else {
@@ -288,49 +297,47 @@
   const isPageLoading = computed(() => status.value === "pending");
 
   const choosePlan = async (plan: any) => {
-    const locationData = await $fetch<{
-      ip_address: string;
-      country: string;
-      city: string;
-      region: string;
-    }>(`https://ipv4-check-perf.radar.cloudflare.com/api/info`);
-
-    const hostedPageUrl = await $fetch<{ hostedpage: { url: string } }>(
-      "/api/billing/subscription",
-      {
-        method: "POST",
-        body: {
-          plan: plan,
-          locationData: locationData,
-          redirectUrl: `${window.location.origin}/billing-confirmation`,
+    if (plan === "chat_enterprise") {
+      return navigateTo("https://tringlabs.ai/contact", {
+        external: true,
+        open: {
+          target: "_blank",
         },
-      },
-    );
+      });
+    } else {
+      //TODO fix this
+      if (!user?.value?.mobile) {
+        toast.error("Please update all the details to continue");
+        return navigateTo({
+          name: "account",
+        });
+      }
+      const locationData = await $fetch<{
+        ip_address: string;
+        country: string;
+        city: string;
+        region: string;
+      }>(`https://ipv4-check-perf.radar.cloudflare.com/api/info`);
 
-    navigateTo(hostedPageUrl?.hostedpage?.url, {
-      external: true,
-      open: {
-        target: "_blank",
-      },
-    });
-    // const planTemplate = `https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/${plan}?cf_user_id=${user.value?.id}&email=${user.value?.email}&first_name=${firstName || ""}`;
+      const hostedPageUrl = await $fetch<{ hostedpage: { url: string } }>(
+        "/api/billing/subscription",
+        {
+          method: "POST",
+          body: {
+            plan: plan,
+            locationData: locationData,
+            redirectUrl: `${window.location.origin}/billing/billing-confirmation`,
+          },
+        },
+      );
 
-    if (!plan) {
-      return navigateTo("https://tring-web.pripod.com/contact", {
+      navigateTo(hostedPageUrl?.hostedpage?.url, {
         external: true,
         open: {
           target: "_blank",
         },
       });
     }
-
-    // navigateTo(planTemplate, {
-    //   external: true,
-    //   open: {
-    //     target: "_blank",
-    //   },
-    // });
-    // await navigateTo('https://subscriptions.zoho.in/subscribe/3e6d980e80caa44a598af9541ebfccd72b13dd3565a5ef6adbde1ccf1c7a189d/chat_plan_5')
   };
 </script>
 <style scoped>

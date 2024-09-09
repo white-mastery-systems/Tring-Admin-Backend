@@ -1,14 +1,13 @@
-import { text, uuid, varchar, timestamp, jsonb } from "drizzle-orm/pg-core";
 import {
-  type InferSelectModel,
   type InferInsertModel,
+  type InferSelectModel,
   relations,
 } from "drizzle-orm";
+import { jsonb, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
 
-import { organizationSchema, billingSchema } from "./admin";
 import { adminSchema } from ".";
+import { organizationSchema, paymentSchema } from "./admin";
 
 // Table definitions
 export const authUserSchema = adminSchema.table("user", {
@@ -48,7 +47,7 @@ export const userRelations = relations(authUserSchema, ({ many, one }) => ({
     fields: [authUserSchema.organizationId],
     references: [organizationSchema.id],
   }),
-  billsPaid: many(billingSchema),
+  billsPaid: many(paymentSchema),
 }));
 
 export const sessionRelations = relations(authSessionSchema, ({ one }) => ({

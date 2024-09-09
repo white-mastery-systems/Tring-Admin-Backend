@@ -3,13 +3,12 @@
     v-model="modalState"
     :title="modalProps?.id ? `Edit CRM` : 'Link CRM'"
   >
-    <UiForm
-      v-slot="{ values, errors }"
-      :validation-schema="CRMConfigSchema"
-      @submit="handleAddIntegration"
-      class="space-y-2"
-    >
-      <UiFormField v-slot="{ componentField }" name="integrationId">
+    <UiForm @submit="handleAddIntegration" class="space-y-2">
+      <UiFormField
+        v-model="integrationField"
+        v-bind="integrationFieldAttrs"
+        name="integrationId"
+      >
         <UiFormItem class="w-full">
           <UiFormLabel
             >Select Connected CRM<UiLabel class="text-lg text-red-500"
@@ -18,7 +17,8 @@
           </UiFormLabel>
           <UiFormControl>
             <UiSelect
-              v-bind="componentField"
+              v-model="integrationField"
+              v-bind="integrationFieldAttrs"
               @update:model-value="handleCrmChange"
             >
               <UiSelectTrigger>
@@ -33,7 +33,9 @@
               </UiSelectContent>
             </UiSelect>
           </UiFormControl>
-          <UiFormMessage />
+          <!-- <UiFormMessage /> -->
+          <span class="text-sm text-red-500">{{ errors?.integrationId }}</span>
+          <br />
           <span class="text-xs text-gray-500">Select your crm.</span>
         </UiFormItem>
       </UiFormField>
@@ -44,7 +46,8 @@
             (integration) => integration.id === values.integrationId,
           )?.crm === 'zoho-bigin'
         "
-        v-slot="{ componentField }"
+        v-model="pipelineField"
+        v-bind="pipelineFieldAttrs"
         name="pipelineId"
       >
         <UiFormItem class="w-full">
@@ -53,7 +56,8 @@
           </UiFormLabel>
           <UiFormControl>
             <UiSelect
-              v-bind="componentField"
+              v-model="pipelineField"
+              v-bind="pipelineFieldAttrs"
               @update:model-value="handlePipelineChange"
             >
               <UiSelectTrigger>
@@ -68,13 +72,14 @@
               </UiSelectContent>
             </UiSelect>
           </UiFormControl>
-          <UiFormMessage />
+          <span class="text-sm text-red-500">{{ errors?.pipelineId }}</span>
           <span class="text-xs text-gray-500">Select your pipeline.</span>
         </UiFormItem>
       </UiFormField>
       <UiFormField
         v-if="values.pipelineId && values.integrationId"
-        v-slot="{ componentField }"
+        v-model="stageField"
+        v-bind="stageFieldAttrs"
         name="stageId"
       >
         <UiFormItem class="w-full">
@@ -82,7 +87,7 @@
             >Select Stage<UiLabel class="text-lg text-red-500">*</UiLabel>
           </UiFormLabel>
           <UiFormControl>
-            <UiSelect v-bind="componentField">
+            <UiSelect v-model="stageField" v-bind="stageFieldAttrs">
               <UiSelectTrigger>
                 <UiSelectValue placeholder="Select Stage" />
               </UiSelectTrigger>
@@ -95,8 +100,38 @@
               </UiSelectContent>
             </UiSelect>
           </UiFormControl>
-          <UiFormMessage />
+          <span class="text-sm text-red-500">{{ errors?.stageId }}</span>
           <span class="text-xs text-gray-500">Select your Pipeline Stage.</span>
+        </UiFormItem>
+      </UiFormField>
+      <UiFormField
+        v-if="values.pipelineId && values.integrationId"
+        v-model="subPipelineField"
+        v-bind="subPipelineFieldAttrs"
+        name="subPipeline"
+      >
+        <UiFormItem class="w-full">
+          <UiFormLabel
+            >Select Sub Pipeline<UiLabel class="text-lg text-red-500"
+              >*</UiLabel
+            >
+          </UiFormLabel>
+          <UiFormControl>
+            <UiSelect v-model="subPipelineField" v-bind="subPipelineFieldAttrs">
+              <UiSelectTrigger>
+                <UiSelectValue placeholder="Select sub pipeline" />
+              </UiSelectTrigger>
+              <UiSelectContent>
+                <UiSelectItem
+                  v-for="(subPipelineData, index) in subPipelines"
+                  :value="subPipelineData.reference_value"
+                  >{{ subPipelineData.display_value }}</UiSelectItem
+                >
+              </UiSelectContent>
+            </UiSelect>
+          </UiFormControl>
+          <span class="text-sm text-red-500">{{ errors?.subPipeline }}</span>
+          <span class="text-xs text-gray-500">Select your sub pipeline.</span>
         </UiFormItem>
       </UiFormField>
       <UiFormField
@@ -105,7 +140,8 @@
             (integration) => integration.id === values.integrationId,
           )?.crm === 'zoho-crm'
         "
-        v-slot="{ componentField }"
+        v-model="layoutField"
+        v-bind="layoutFieldAttrs"
         name="layoutId"
       >
         <UiFormItem class="w-full">
@@ -114,7 +150,8 @@
           </UiFormLabel>
           <UiFormControl>
             <UiSelect
-              v-bind="componentField"
+              v-model="layoutField"
+              v-bind="layoutFieldAttrs"
               @update:model-value="handleCrmChange"
             >
               <UiSelectTrigger>
@@ -129,7 +166,7 @@
               </UiSelectContent>
             </UiSelect>
           </UiFormControl>
-          <UiFormMessage />
+          <span class="text-sm text-red-500">{{ errors?.layoutId }}</span>
           <span class="text-xs text-gray-500">Select your layout.</span>
         </UiFormItem>
       </UiFormField>
@@ -139,20 +176,22 @@
             (integration) => integration.id === values.integrationId,
           )?.crm === 'sell-do'
         "
-        v-slot="{ componentField }"
+        v-model="campaignField"
+        v-bind="campaignFieldAttrs"
         name="campaignId"
       >
         <UiFormItem class="w-full">
           <UiFormLabel class="font-bold">Campaign Id</UiFormLabel>
           <UiFormControl>
             <UiInput
-              v-bind="componentField"
+              v-model="campaignField"
+              v-bind="campaignFieldAttrs"
               type="text"
               placeholder="Enter your campaign id"
             />
           </UiFormControl>
 
-          <UiFormMessage />
+          <span class="text-sm text-red-500">{{ errors?.campaignId }}</span>
         </UiFormItem>
       </UiFormField>
       <UiFormField
@@ -161,7 +200,8 @@
             (integration) => integration.id === values.integrationId,
           )?.crm === 'sell-do'
         "
-        v-slot="{ componentField }"
+        v-model="projectField"
+        v-bind="projectFieldAttrs"
         name="projectId"
       >
         <UiFormItem class="w-full">
@@ -169,12 +209,13 @@
           <UiFormControl>
             <UiInput
               placeholder="Enter your project id"
-              v-bind="componentField"
+              v-model="projectField"
+              v-bind="projectFieldAttrs"
               type="text"
             />
           </UiFormControl>
 
-          <UiFormMessage />
+          <span class="text-sm text-red-500">{{ errors?.projectId }}</span>
         </UiFormItem>
       </UiFormField>
 
@@ -187,18 +228,11 @@
 <script setup lang="ts">
   import { useForm } from "vee-validate";
 
-  const { handleSubmit } = useForm();
-
-  // const onSubmit = handleSubmit((values) => {
-  //   // pretty print the values object
-  //
-  //   actions.setValues({ email: "value", password: "hi" });
-  // });
-
   const emit = defineEmits(["success"]);
   let pipelines = ref<any>([]);
   let layouts = ref([]);
   const stages = ref<any>([]);
+  const subPipelines = ref<any>([]);
 
   const modalState = defineModel<{ open: boolean }>({
     default: { open: false },
@@ -206,7 +240,39 @@
   });
   const modalProps = defineProps<{ id: any }>();
   const route: any = useRoute();
-  const { setFieldValue } = useForm();
+
+  const CRMConfigSchema = toTypedSchema(
+    z.object({
+      integrationId: z.string().min(1, { message: "CRM is required" }),
+      campaignId: z.string().optional(),
+      projectId: z.string().optional(),
+      pipelineId: z.string().optional(),
+      layoutId: z.string().optional(),
+      stageId: z.string().optional(),
+    }),
+  );
+  const {
+    setFieldValue,
+    values,
+    handleSubmit,
+    errors,
+    defineField,
+    resetForm,
+  } = useForm({
+    validationSchema: CRMConfigSchema,
+    initialValues: {},
+  });
+  const [integrationField, integrationFieldAttrs] =
+    defineField("integrationId");
+  const [campaignField, campaignFieldAttrs] = defineField("campaignId");
+  const [projectField, projectFieldAttrs] = defineField("projectId");
+  const [pipelineField, pipelineFieldAttrs] = defineField("pipelineId");
+  const [layoutField, layoutFieldAttrs] = defineField("layoutId");
+  const [stageField, stageFieldAttrs] = defineField("stageId");
+  const [subPipelineField, subPipelineFieldAttrs] = defineField("subPipeline");
+
+  // subPipelineField
+
   watch(
     () => modalState.value.open,
     async (isOpen) => {
@@ -215,8 +281,6 @@
           const crmConfigData = await $fetch<any>(
             `/api/bots/${route.params.id}/integrations/${modalProps.id}`,
           );
-
-          setFieldValue("newBotName", "John");
 
           // Assuming crmConfigData.data contains the relevant information
           if (crmConfigData) {
@@ -227,6 +291,7 @@
               (integration: any) =>
                 integration.id === crmConfigData.integrationId,
             );
+            console.log({ selectedCrm });
 
             if (selectedCrm?.crm === "zoho-bigin") {
               setFieldValue("pipelineId", crmConfigData.pipelineId);
@@ -264,11 +329,17 @@
         }
       },
     );
+    console.log({ matchedCRM });
     if (matchedCRM.crm === "zoho-bigin") {
       const data: any = await $fetch(
         `/api/org/integrations/zoho-bigin/pipelines?id=${matchedCRM.id}`,
       );
       pipelines.value = data.layouts;
+
+      const subPipelineData = await $fetch(
+        `/api/org/integrations/zoho-bigin/sub-pipelines?id=${matchedCRM.id}`,
+      );
+      subPipelines.value = subPipelineData;
     } else if (matchedCRM.crm === "zoho-crm") {
       const data: any = await $fetch(
         `/api/org/integrations/zoho-crm/layouts?id=${matchedCRM.id}`,
@@ -285,7 +356,7 @@
     default: () => [],
   });
 
-  const handleAddIntegration = (value: any) => {
+  const handleAddIntegration = handleSubmit((value: any) => {
     let pipelineObj: any = {};
     let layoutObj: any = {};
 
@@ -324,16 +395,5 @@
         emit("success");
       },
     });
-  };
-
-  const CRMConfigSchema = toTypedSchema(
-    z.object({
-      integrationId: z.string().min(1, { message: "CRM is required" }),
-      campaignId: z.string().optional(),
-      projectId: z.string().optional(),
-      pipelineId: z.string().optional(),
-      layoutId: z.string().optional(),
-      stageId: z.string().optional(),
-    }),
-  );
+  });
 </script>
