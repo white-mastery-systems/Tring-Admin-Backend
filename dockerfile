@@ -1,4 +1,4 @@
-FROM node:20.11.0-alpine3.19 as builder
+FROM node:20.16.0-alpine as builder
 
 RUN yarn global add pnpm
 
@@ -13,7 +13,7 @@ COPY . .
 
 RUN pnpm build
 
-FROM node:20.11.0-alpine3.19 
+FROM node:20.16.0-alpine 
 
 
 # copy over build files from builder step
