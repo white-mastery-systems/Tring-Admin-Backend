@@ -20,6 +20,11 @@ const zodUpdateVoiceBotSchema = z.object({
     notes: z.string().optional(),
     domainRules: z.string().optional()
   }).optional(),
+  identityManagement: z.object({
+    name: z.string().optional(),
+    role: z.string().optional(),
+    domain: z.string().optional()
+  }),
   intents: z.array(z.string()).optional(),
   ivrConfig: z.record(z.any()).optional(),
 })
