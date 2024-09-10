@@ -1,7 +1,7 @@
 services:
-  tring-chatbot:
-    container_name: tring-chatbot
-    image: tring-chatbot
+  tring-bot:
+    container_name: tring-bot
+    image: tring-bot
     build:
       context: ../tring-databot
       dockerfile: dockerfile
