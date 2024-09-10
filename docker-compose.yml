@@ -31,6 +31,7 @@ services:
       - "NUXT_REDIRECT_URL=https://tring-admin.pripod.com/settings"
       - "NUXT_LOGO_DIR=/app"
       - "NUXT_LLM_CALLBACK_URL=https://tring-admin.pripod.com"
+      - "NUXT_ADMIN_URL=https://tring-admin.pripod.com"
     volumes:
       - tring-suite_admin:/app
     restart: on-failure
