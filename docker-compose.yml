@@ -1,9 +1,9 @@
 services:
-  tring-data-bot:
-    container_name: tring-databot
-    image: tring-databot
+  tring-chatbot:
+    container_name: tring-chatbot
+    image: tring-chatbot
     build:
-      context: ../tring-databot
+      context: ../tring-chatbot
       dockerfile: dockerfile
     ports:
       - 3031:3000
