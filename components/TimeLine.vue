@@ -29,7 +29,7 @@
           <Circle class="absolute left-[9px] top-[45px] size-5 rounded-full bg-[#424BD1]" />
         </div>
       </UiStepperTrigger>
-      <div class="field_shadow flex w-full flex-col gap-1 rounded-lg p-4">
+      <div class="field_shadow flex w-full flex-col gap-1 rounded-lg p-4 pr-6">
         <div class="flex flex-col gap-2">
           <h4 class="scroll-m-20 text-[16px] font-semibold tracking-tight">
             {{ data.metadata?.text }}
@@ -48,7 +48,8 @@
             </div>
           </div>
           <p class="mt-2 text-[14px] font-normal text-gray-600">
-            {{ format(new Date(data.createdAt), "dd MMM yyyy hh:mm aa") }}
+            {{ data.createdAt }}
+            <!-- {{ format(new Date(data.createdAt), "dd MMM yyyy hh:mm aa") }} -->
           </p>
         </div>
         <UiStepperDescription

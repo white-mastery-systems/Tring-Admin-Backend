@@ -2,10 +2,10 @@
   <Page
     title="LLM Configuration"
     :bread-crumbs="[
-      { label: `${botDetails.name}`, to: `/bots/${botDetails.id}` },
+  { label: `${botDetails.name}`, to: `/bot-management/voice-bot/${botDetails.id}` },
       {
         label: 'LLM Configuration',
-        to: `/bots/${botDetails.id}/llm-config`,
+        to: `/bot-management/voice-bot/${botDetails.id}/llm-config`,
       },
     ]"
     :disableSelector="true"
@@ -278,7 +278,7 @@
   const router = useRouter();
   const route = useRoute("bot-management-voice-bot-id-llm-config");
 
-  const botDetails: any = await getBotDetails(route.params.id);
+  const botDetails: any = await getVoiceBotDetails(route.params.id);
 
   const handleLLMConfig = async (values: any) => {
     const payload: any = {

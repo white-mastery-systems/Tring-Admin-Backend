@@ -1,35 +1,26 @@
 <script setup lang="ts">
 import countryData from '~/assets/country-codes.json'
-import { useCount } from '@/composables/useRefresh';
 
-const emit = defineEmits(["success"]);
-const { refresh } = useCount();
-const numberModalState: any = defineModel<{ open: boolean }>({
+definePageMeta({
+  middleware: "admin-only",
+});
+
+const bucketModalState = defineModel<{ open: boolean }>({
   default: {
     open: false,
   },
 });
 
-const allCoutryDialCode = computed(() =>
-  countryData?.map((country) => country.dial_code),
-);
-
-const {
-  list: countyDialCodes,
-  containerProps,
-  wrapperProps,
-} = useVirtualList(allCoutryDialCode, {
-  itemHeight: 32,
-});
-
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 const formSchema = toTypedSchema(
   z.object({
-    provider: z.string().min(1, 'Provider is required'),
+    firstName:z.string().min(1, 'First is required'),
+    lastName: z.string().min(1, 'LastName is required'),
     exoPhone: z.string()
       .min(1, 'Phone Number is required')
       .regex(phoneNumberPattern, 'Invalid phone number'),
-      countryCode: z.string().min(1, 'Country Code is required'),
+    countryCode: z.string().min(1, 'Country Code is required'),
+    addBuckets: z.string().min(1, "Add Audiences is required")
   })
 );
 
@@ -44,53 +35,73 @@ const {
   validationSchema: formSchema,
 });
 
-watch(numberModalState, (newState) => { });
 
-// onMounted(async () => {
-//   loadCountries()
-// });
+const allCoutryDialCode = computed(() =>
+  countryData?.map((country) => country.dial_code),
+);
+const {
+  list: countyDialCodes,
+  containerProps,
+  wrapperProps,
+} = useVirtualList(allCoutryDialCode, {
+  itemHeight: 32,
+});
 const [mobileField, mobileFieldProps] = defineField("exoPhone");
 const [countryCode, countryCodeProps] = defineField("countryCode");
 
+watch(bucketModalState, (newState) => { });
 
-const handleConnect = async (values: any) => {
-  const payload = values
+
+const addVoiceBot = async (value: any) => {
   try {
-    await $fetch("/api/org/integrations/number-integration", { method: "POST", body: payload });
-    refresh()
-    emit('success')
-  } catch(error: any) {
-    console.log(error.data)
-    // toast.success(error.data.)
+    const bot = await $fetch("/api/voicebots", {
+      method: "POST",
+      body: { name: value.newBotName },
+    });
+    return navigateTo({
+      name: "bot-management-voice-bot-id",
+      params: { id: bot.id },
+    });
+  } catch (err: any) {
+    toast.error(err.data.data[0].message);
   }
 };
-</script>
 
+
+const handleConnect = async (values: any) => {
+  console.log(values, "values");
+  const payload = values
+  await $fetch("/api/org/integrations/number-integration", { method: "POST", body: payload });
+  // emit("success")
+};
+</script>
 <template>
-  <DialogWrapper v-model="numberModalState" title="Add New Number">
+  <DialogWrapper v-model="bucketModalState" title="Add Bucket">
+    <!-- <div>Add Audiences for Buckets Manually</div> -->
     <UiForm v-slot="{ values }" :validation-schema="formSchema" @submit="handleConnect" :keep-values="true"
-    :validate-on-mount="false" class="space-y-2">
-    <UiFormField v-slot="{ componentField }" name="provider">
-      <UiFormItem class="w-full">
-        <UiFormLabel>
-            Provider <UiLabel class="text-lg text-red-500">*</UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-bind="componentField">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select a provider" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectItem value="twilio">Twilio</UiSelectItem>
-                <UiSelectItem value="exotel">Exotel</UiSelectItem>
-                <UiSelectItem value="plivo">Plivo</UiSelectItem>
-                <UiSelectItem value="doocti">Doocti</UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
+      :validate-on-mount="false" class="space-y-2">
+      <div class="flex gap-4">
+        <UiFormField v-slot="{ componentField }" name="firstName">
+          <UiFormItem class="w-full">
+            <UiFormLabel>First Name <UiLabel class="text-lg text-red-500">*</UiLabel>
+            </UiFormLabel>
+            <UiFormControl>
+              <UiInput v-bind="componentField" type="text" placeholder="Enter first name" />
+            </UiFormControl>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
+        <UiFormField v-slot="{ componentField }" name="lastName">
+          <UiFormItem class="w-full">
+            <UiFormLabel>Last Name <UiLabel class="text-lg text-red-500">*</UiLabel>
+            </UiFormLabel>
+            <UiFormControl>
+              <UiInput v-bind="componentField" type="text" placeholder="Enter last name" />
+            </UiFormControl>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
+      </div>
       <!-- {{ countryList }} || sdf -->
       <div class="flex gap-2">
         <UiFormField v-model="countryCode" v-bind="countryCodeProps" name="countryCode" class="mt-1">
@@ -128,8 +139,8 @@ const handleConnect = async (values: any) => {
                         <UiCommandGroup>
                           <UiCommandItem v-for="dialCode in countyDialCodes" :key="dialCode.data" :value="dialCode.data"
                             @select="() => {
-                                setFieldValue('countryCode', dialCode.data);
-                              }
+                              setFieldValue('countryCode', dialCode.data);
+                            }
                               " style="height: 32px">
                             <Check :class="cn(
                               'mr-2 h-4 w-4',
@@ -162,10 +173,19 @@ const handleConnect = async (values: any) => {
           </UiFormItem>
         </UiFormField>
       </div>
+      <UiFormField v-slot="{ componentField }" name="addBuckets">
+        <UiFormItem class="w-full">
+          <UiFormLabel>Add Audiences for Buckets in Bulk <UiLabel class="text-lg text-red-500">*</UiLabel>
+          </UiFormLabel>
+          <UiFormControl>
+            <UiInput v-bind="componentField" type="text" placeholder="Enter audience names" />
+          </UiFormControl>
+          <UiFormMessage />
+        </UiFormItem>
+      </UiFormField>
       <div class="flex items-center justify-end">
         <UiButton type="submit" class="mt-2" color="primary"> Submit </UiButton>
       </div>
     </UiForm>
   </DialogWrapper>
 </template>
-<!-- https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=ZohoBigin.settings.ALL,ZohoBigin.modules.ALL&redirect_uri=https://tring-admin.pripod.com/settings/integration/zoho-bigin&prompt=consent&access_type=offline -->

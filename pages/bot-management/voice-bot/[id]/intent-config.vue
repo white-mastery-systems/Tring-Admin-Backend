@@ -35,6 +35,9 @@ const items = reactive([
   },
 ])
 
+const route = useRoute("bot-management-voice-bot-id-intent-config");
+const botDetails: any = await getVoiceBotDetails(route.params.id);
+
 const formSchema = toTypedSchema(z.object({
   items: z.array(z.string()).refine(value => value.some(item => item), {
     message: 'You have to select at least one item.',
@@ -49,12 +52,20 @@ const { handleSubmit } = useForm({
 })
 
 const onSubmit = handleSubmit((values) => {
+  console.log(values, "value -- value")
+  // await updateLLMConfig({ ivrConfig: value }, botDetails.id);
 })
 </script>
 <template>
-  <page title="Default Intents" :disableSelector="true" :disable-back-button="false">
+  <page title="Default Intents" :bread-crumbs="[
+    { label: `${botDetails.name}`, to: `/bot-management/voice-bot/${botDetails.id}` },
+    {
+      label: 'LLM Configuration',
+      to: `/bot-management/voice-bot/${botDetails.id}/intent-config`,
+    },
+  ]" :disableSelector="true" :disable-back-button="false">
     <!-- <template> -->
-    <Uiform @submit="onSubmit">
+    <Uiform @submit.prevent="onSubmit">
       <UiFormField name="items">
         <UiFormItem>
 
