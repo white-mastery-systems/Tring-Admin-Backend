@@ -14,6 +14,9 @@ export const getLeadTranscript = async (chatId: any) => {
 export const getAnalyticsData = async (period: any) => {
   return await $fetch(`/api/org/analytics`, {
     params: period,
+    headers: {
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
   });
 };
 // export const filterAnalyticsData = async (value: any) => {

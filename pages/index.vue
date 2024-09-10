@@ -63,7 +63,7 @@
         <StatusCountCard
           :icon="ChatSession"
           title="Interacted Chats"
-          :count="analyticsData?.interactedChats?.count ?? 0"
+          :count="analyticsData?.interactedChats ?? 0"
           :loading="loading"
         />
 
@@ -77,25 +77,25 @@
         <StatusCountCard
           :icon="ChatSession"
           title="Calls Scheduled"
-          :count="analyticsData?.callScheduledTimeline?.count ?? 0"
+          :count="analyticsData?.callScheduledTimeline ?? 0"
           :loading="loading"
         />
         <StatusCountCard
           :icon="ChatSession"
           title="Site Visits"
-          :count="analyticsData?.siteVisitTimeline?.count ?? 0"
+          :count="analyticsData?.siteVisitTimeline ?? 0"
           :loading="loading"
         />
         <StatusCountCard
           :icon="ChatSession"
           title="Virtual Tours"
-          :count="analyticsData?.virtualTourTimeline?.count ?? 0"
+          :count="analyticsData?.virtualTourTimeline ?? 0"
           :loading="loading"
         />
         <StatusCountCard
           :icon="ChatSession"
           title="Location Visited"
-          :count="analyticsData?.locationTimeline?.count ?? 0"
+          :count="analyticsData?.locationTimeline ?? 0"
           :loading="loading"
         />
       </div>
@@ -251,13 +251,6 @@
     newValue.graph?.map((graphItem) => {
       graphData.value.push(graphItem?.map((item: any) => item.count));
     });
-    // leadsGraphData.value = newValue.graph?.leads?.map(
-    //   (item: any) => item.count,
-    // );
-    // sessionsGraphData.value = newValue.graph?.sessions?.map(
-    //   (item: any) => item.count,
-    // );
-    // labels.value = newValue.graph?.leads?.map((item: any) => item.date);
   });
   const graphIndexValues = ref([
     {
@@ -302,15 +295,6 @@
         yAxisID: graphIndexValues.value[index]?.yAxisID,
       };
     }),
-    // datasets: [
-    //   {
-    //     label: "Sessions",
-
-    //   },
-    //   {
-
-    //   },
-    // ],
   }));
 
   const chartOptions = ref({
@@ -385,7 +369,7 @@
   }>({
     from: undefined,
     to: undefined,
-    period: "current-month",
+    period: "last-30-days",
     graphValues: "leads,sessions",
   });
   // const getButtonName = ref("Get Started");
@@ -433,106 +417,6 @@
       analyticsData.value = data;
     }
   };
-  // interface MonthAbbreviations {
-  //   [key: string]: string;
-  // }
-
-  // const months = [
-  //   "January",
-  //   "February",
-  //   "March",
-  //   "April",
-  //   "May",
-  //   "June",
-  //   "July",
-  //   "August",
-  //   "September",
-  //   "October",
-  //   "November",
-  //   "December",
-  // ];
-
-  // // Define a mapping of month abbreviations to full names for comparison
-  // const monthAbbreviations: MonthAbbreviations = {
-  //   Jan: "January",
-  //   Feb: "February",
-  //   Mar: "March",
-  //   Apr: "April",
-  //   May: "May",
-  //   Jun: "June",
-  //   Jul: "July",
-  //   Aug: "August",
-  //   Sep: "September",
-  //   Oct: "October",
-  //   Nov: "November",
-  //   Dec: "December",
-  // };
-
-  // Initialize an empty array for the final data
-  // console.log(
-  // const leadsData = computed(() => analyticsData.value?.graph.leads);
-  // const leadGraphData = computed(() =>
-  //   months.map((month) => {
-  //     // Find the corresponding API data for the current month and year
-  //     const apiEntry = leadsData.value?.find((entry: any) => {
-  //       const [apiMonthAbbr, apiYear] = entry.month.split(" ");
-  //
-  //       const apiMonthFull =
-  //         monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
-  //       return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
-  //     });
-
-  //     // Extract the year from the first entry of the API data, or use a default value
-  //     const year =
-  //       leadsData.value?.length > 0
-  //         ? leadsData.value[0].month.split(" ")[1]
-  //         : "2024";
-
-  //
-
-  //     return {
-  //       month: `${month} ${year}`,
-  //       "Leads Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
-  //     };
-  //   }),
-  // );
-
-  // const sessionsData = computed(() => analyticsData.value?.graph.sessions);
-  // const sessionGraphData = computed(() =>
-  //   months.map((month) => {
-  //     // Find the corresponding API data for the current month and year
-  //     const apiEntry = sessionsData.value?.find((entry: any) => {
-  //       const [apiMonthAbbr, apiYear] = entry.month.split(" ");
-  //
-  //       const apiMonthFull =
-  //         monthAbbreviations[apiMonthAbbr as keyof MonthAbbreviations];
-  //       return month === apiMonthFull && apiYear === "2024"; // Adjust year if necessary
-  //     });
-
-  //     // Extract the year from the first entry of the API data, or use a default value
-  //     const year =
-  //       leadsData.value?.length > 0
-  //         ? leadsData.value[0].month.split(" ")[1]
-  //         : "2024";
-
-  //
-
-  //     return {
-  //       month: `${month} ${year}`,
-  //       "Sessions Created": apiEntry ? parseInt(apiEntry.count, 10) : 0,
-  //     };
-  //   }),
-  // );
-  // const lineGraphData = computed(() =>
-  //   sessionGraphData.value.map((s) => {
-  //     const lead = leadGraphData.value.find((l) => l.month === s.month);
-  //     return {
-  //       month: s.month,
-  //       "Leads Created": lead ? lead["Leads Created"] : 0,
-  //       "Sessions Created": s["Sessions Created"],
-  //     };
-  //   }),
-  // );
 </script>
 <style scoped>
   .focus\:ring-offset-2:focus {

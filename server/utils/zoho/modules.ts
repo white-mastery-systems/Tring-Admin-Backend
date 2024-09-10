@@ -60,6 +60,7 @@ export async function getAllSubPipelinesFromZohoBigin({
         },
       },
     );
+    console.log({ data }, "DATA FIELDS");
     return data.fields.find((field: any) => field.api_name === "Sub_Pipeline")
       ?.pick_list_values;
   } catch (err: any) {

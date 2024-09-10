@@ -23,6 +23,12 @@ export default defineNuxtConfig({
       dirs: ["server/schema/**", "server/utils/**"],
       presets: [...autoImports.nitro],
     },
+    storage: {
+      log: {
+        driver: "fs",
+        base: "./logs",
+      },
+    },
   },
 
   imports: {
@@ -41,7 +47,7 @@ export default defineNuxtConfig({
     botBaseUrl: "",
     redirectUrl: "",
     logoDir: "",
-    llmCallbackUrl:""
+    llmCallbackUrl: "",
   },
 
   vite: {

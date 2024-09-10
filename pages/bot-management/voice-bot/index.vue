@@ -156,22 +156,25 @@ const menuList = ref([
 ]);
 // const botList = await listApiBots();
 
-const { status, data: voiceBot } = await useLazyFetch("/api/voicebots", {
-  server: false,
-  default: () => [],
-  query: {
-    active: activeStatus,
-    q: searchBotDebounce,
-  },
-  transform: (voiceBot) =>
-    voiceBot.map((bot) => ({
-      id: bot.id,
-      name: bot.name,
-      status: bot.active,
-      createdAt: `${format(bot.createdAt, "dd MMM yyy h:MM aa")}`,
-    })),
-});
-const isDataLoading = computed(() => status.value === "pending");
+  const { status, data: voiceBot } = await useLazyFetch("/api/voicebots", {
+    server: false,
+    default: () => [],
+    query: {
+      active: activeStatus,
+      q: searchBotDebounce,
+    },
+    headers: {
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
+    transform: (voiceBot) =>
+      voiceBot.map((bot) => ({
+        id: bot.id,
+        name: bot.name,
+        status: bot.active,
+        createdAt: `${bot.createdAt}`,
+      })),
+  });
+  const isDataLoading = computed(() => status.value === "pending");
 
 onMounted(() => {
   if (!router.currentRoute.value.query.tab) {

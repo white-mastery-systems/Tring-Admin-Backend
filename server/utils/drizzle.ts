@@ -3,6 +3,7 @@ import pg from "pg";
 import {
   adminConfigurationSchema,
   adminPricingSchema,
+  contactListSchema,
   paymentSchema,
 } from "../schema/admin";
 import { analyticsRelations, chatBotIntegrationRelations } from "../schema/bot";
@@ -34,6 +35,8 @@ const schema = {
   adminConfigurationSchema,
   adminPricingSchema,
   numberIntegrationSchema,
+  contactListSchema,
+  contactSchema,
   // Relations
   organizationRelations,
   chatBotRelations,

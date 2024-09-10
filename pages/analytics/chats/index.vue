@@ -30,7 +30,6 @@
 </template>
 <script setup lang="ts">
   import { createColumnHelper } from "@tanstack/vue-table";
-  import { format } from "date-fns";
   definePageMeta({
     middleware: "admin-only",
   });
@@ -65,21 +64,18 @@
     server: false,
     query: filters,
     default: () => [],
+    headers: {
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
     transform: (chats) => {
       return chats?.map((chat) => ({
         userName: chat.botUser?.name || "No name",
         id: chat.id,
         location: `${chat.metadata?.city ?? "--"} - ${chat.metadata?.state ?? "--"} `,
-        createdAt: `${format(chat?.createdAt, "dd MMM yyyy HH:MM ")}`,
+        createdAt: `${chat?.createdAt}`,
         mode: chat.metadata?.mode ?? "Live",
       }));
     },
-    //   bots.map((bot) => ({
-    //     id: bot.id,
-    //     name: bot.name,
-    //     status: bot.documentId ? true : false,
-    //     createdAt: formatDateStringToDate(bot.createdAt),
-    //   })),
   });
   const isDataLoading = computed(() => status.value === "pending");
 

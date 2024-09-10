@@ -111,6 +111,28 @@ export const numberIntegrationSchema = adminSchema.table("number_integration", {
     .references(() => organizationSchema.id),
 });
 
+export const contactListSchema = adminSchema.table("contact_list", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  name: varchar("name"),
+  organizationId: uuid("organizationId")
+  .notNull()
+  .references(() => organizationSchema.id)
+})
+
+export const contactSchema = adminSchema.table("contacts", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  countryCode: varchar("country_code"),
+  phone: varchar("phone"),
+  contactListId: uuid("contact_list_id")
+  .notNull()
+  .references(() => contactListSchema.id, { onDelete: "cascade" }),
+  organizationId: uuid("organization_id")
+  .notNull()
+  .references(() => organizationSchema.id),
+})
+
 // Relations
 export const organizationRelations = relations(
   organizationSchema,
@@ -134,6 +156,7 @@ export const billingRelations = relations(paymentSchema, ({ one }) => ({
   }),
 }));
 
+
 // Types
 export type SelectOrganization = InferSelectModel<typeof organizationSchema>;
 export type InsertOrganization = InferInsertModel<typeof organizationSchema>;
@@ -148,6 +171,12 @@ export type SelectNumberIntegration = InferSelectModel<
 export type InsertNumberIntegration = InferInsertModel<
   typeof numberIntegrationSchema
 >;
+
+export type SelectContactList = InferSelectModel<typeof contactListSchema>;
+export type InsertContactList = InferInsertModel<typeof contactListSchema>;
+
+export type SelectContacts = InferSelectModel<typeof contactSchema>;
+export type InsertContacts = InferInsertModel<typeof contactSchema>;
 
 // Validation
 export const zodInsertOrganization = createInsertSchema(organizationSchema, {
