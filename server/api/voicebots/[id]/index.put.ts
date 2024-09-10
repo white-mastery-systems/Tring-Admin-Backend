@@ -24,7 +24,7 @@ const zodUpdateVoiceBotSchema = z.object({
     name: z.string().optional(),
     role: z.string().optional(),
     domain: z.string().optional()
-  }),
+  }).optional(),
   intents: z.array(z.string()).optional(),
   ivrConfig: z.record(z.any()).optional(),
 })
@@ -36,25 +36,7 @@ export default defineEventHandler(async(event) => {
     checkPayloadId("id"),
   );
   
-  const body = await isValidBodyHandler(event, zodUpdateVoiceBotSchema)
-
-  const isExists = await db.query.voicebotSchema.findFirst({
-    where: and(
-      eq(voicebotSchema.organizationId, organizationId),
-      ne(voicebotSchema.id, voicebotId),
-      ilike(voicebotSchema.name, body?.name)
-    )
-  })
-
-  if(isExists) {
-    return sendError(
-      event,
-      createError({
-        statusCode: 400,
-        statusMessage: "Name already exists",
-      }),
-    );
-  }
+  const body: any = await isValidBodyHandler(event, zodUpdateVoiceBotSchema)
 
   const update = await updateVoiceBot(voicebotId, body)
 
