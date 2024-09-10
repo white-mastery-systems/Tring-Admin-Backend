@@ -3,10 +3,12 @@ const getChatValidation = z.object({
 });
 
 export default defineEventHandler(async (event) => {
+  const timeZoneHeader = event.node?.req?.headers["time-zone"];
+  const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
   const body = await getValidatedRouterParams(
     event,
     getChatValidation.safeParse,
   );
   if (!body.data) return;
-  return await listTimelinesByChatId(body.data?.chatId, {});
+  return await listTimelinesByChatId(body.data?.chatId, {}, timeZone);
 });
