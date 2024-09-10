@@ -30,10 +30,7 @@
       currentPlan: usage.value.plan_code,
       subscriptionStatus: "active",
       planSessions: usage.value.max_quota,
-      chatsUsedInPlan:
-        usage.value.used_quota < usage.value.max_quota
-          ? usage.value.used_quota
-          : usage.value.max_quota,
+      chatsUsedInPlan: usage.value.used_quota,
       chatsAvailableInPlan:
         usage.value.max_quota < usage.value.used_quota
           ? 0
@@ -133,18 +130,7 @@
           </span>
         </div>
       </div>
-      <div
-        class="flex items-center justify-between gap-3 px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]"
-      >
-        <span>Wallet Balance </span>
-        <div class="flex min-w-[80px] items-center justify-start">
-          <span
-            class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]"
-          >
-            Rs. {{ Number(usageDetails?.walletBalance) ?? 0 }}
-          </span>
-        </div>
-      </div>
+
       <div
         class="flex items-center justify-between gap-3 px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]"
       >
@@ -197,6 +183,18 @@
         >
           Rs. {{ usageDetails?.extraChatsCost }}
         </span>
+      </div>
+      <div
+        class="flex items-center justify-between gap-3 px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]"
+      >
+        <span>Wallet Balance </span>
+        <div class="flex min-w-[80px] items-center justify-start">
+          <span
+            class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]"
+          >
+            Rs. {{ Number(usageDetails?.walletBalance) ?? 0 }}
+          </span>
+        </div>
       </div>
     </div>
   </page>
