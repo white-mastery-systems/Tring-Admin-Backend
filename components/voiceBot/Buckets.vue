@@ -1,10 +1,14 @@
 <template>
   <div>
-    <DataTable :data="!leads" :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="13" height-unit="vh"
-      @row-click="(row: any) => {
-        navigateTo(`leads/${row.original.chatId}`);
-      }
-        " />
+    <div class="flex items-center gap-2 pb-2">
+      <UiInput v-model="searchBucket" class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
+        placeholder="Search buckets..." />
+    </div>
+      <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="14"
+        height-unit="vh" @row-click="(row: any) => {
+          navigateTo(`leads/${row.original.chatId}`);
+        }
+          " />
   </div>
 </template>
 <script setup lang="ts">
@@ -20,7 +24,7 @@ definePageMeta({
 
 const router = useRouter();
 const route = useRoute();
-
+const searchBucket = ref("");
 const exportToCSV = () => {
   if (leads.value.length === 0) {
     alert("No data to export");

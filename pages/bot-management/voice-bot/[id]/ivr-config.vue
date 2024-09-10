@@ -9,14 +9,22 @@ const animationProps = {
 const formSchema = toTypedSchema(
   z.object({
     provider: z.string().min(1, 'Name is required'),
-    number: z.number().min(2, "Number must be provided."),
+    number: z.string().min(2, "Number must be provided."),
     calldirection: z.string().min(1, 'Call direction is required'),
   })
 )
+const route = useRoute("bot-management-voice-bot-id-ivr-config");
+const botDetails: any = await getVoiceBotDetails(route.params.id);
+
 const roles = ['Customer Support', 'Receptionist']
 const domainList = ['Admin', 'User', 'Editor', 'Viewer', 'Contributor', 'Manager'];
 const onSubmit = async (value: any) => {
   console.log(value, "value")
+  await updateLLMConfig({ ivrConfig: value }, botDetails.id);
+  return navigateTo({
+    name: "bot-management-voice-bot-id",
+    params: { id: botDetails.id },
+  });
 };
 </script>
 <template>
@@ -27,7 +35,13 @@ const onSubmit = async (value: any) => {
       to: `/bot-management/chat-bot/${botDetails.id}/intent-management`,
     },
   ]"  -->
-  <Page title="IVR Configuration" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
+  <Page title="IVR Configuration" :bread-crumbs="[
+    { label: `${botDetails.name}`, to: `/bot-management/voice-bot/${botDetails.id}` },
+    {
+      label: 'LLM Configuration',
+      to: `/bot-management/voice-bot/${botDetails.id}/ivr-config`,
+    },
+  ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <div>
       <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" @submit="onSubmit"
         class="space-y-4">

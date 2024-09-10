@@ -29,7 +29,7 @@ const addVoiceBot = async (value: any) => {
       params: { id: bot.id },
     });
   } catch (err: any) {
-    toast.error(err.data.data[0].message);
+    toast.error(err.data.statusMessage);
   }
 };
 </script>

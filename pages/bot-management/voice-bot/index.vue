@@ -5,14 +5,15 @@
         <UiButton v-if="route.query.q === 'agents'" color="primary" @click="agentModalState.open = true">
           Add Voice Bot
         </UiButton>
-        <!-- <div v-else-if="route.query.q === 'campaigns'" class="flex gap-2">
+        <div v-else-if="route.query.q === 'campaigns'" class="flex gap-2">
           <UiButton color="primary" @click="campaignModalState.open = true">
             Add Campaign
           </UiButton>
-          <UiButton class="bg-[#43D371] hover:bg-[#43D371]/90">
+          <UiButton color="primary">
             Import
           </UiButton>
-          <UiButton class="bg-[#43D371] hover:bg-[#43D371]/90">
+          <!-- class="bg-[#43D371] hover:bg-[#43D371]/90" -->
+          <UiButton color="primary">
             Export
           </UiButton>
         </div>
@@ -20,13 +21,13 @@
           <UiButton color="primary" @click="bucketModalState.open = true">
             Add Bucket
           </UiButton>
-          <UiButton class="bg-[#43D371] hover:bg-[#43D371]/90">
+          <UiButton color="primary">
             Import
           </UiButton>
-          <UiButton class="bg-[#43D371] hover:bg-[#43D371]/90">
+          <UiButton color="primary">
             Export
           </UiButton>
-        </div> -->
+        </div>
         <span v-if="false"
           class="field_shadow flex w-[200px] items-center rounded-[10px] bg-[#ffffff] px-[10px] py-0 text-[15px]"
           style="color: rgba(138, 138, 138, 1)">Summary:
@@ -55,11 +56,11 @@
         <UiTabsTrigger value="agents" @click="navigateToTab('agents')">
           Agents
         </UiTabsTrigger>
-        <UiTabsTrigger value="campaigns" @click="navigateToTab('campaigns')">
-          Campaigns
-        </UiTabsTrigger>
         <UiTabsTrigger value="buckets" @click="navigateToTab('buckets')">
           Buckets
+        </UiTabsTrigger>
+        <UiTabsTrigger value="campaigns" @click="navigateToTab('campaigns')">
+          Campaigns
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="agents">
@@ -81,14 +82,14 @@
         <DataTable @row-click="(row: any) => {
           return navigateTo(`/bot-management/voice-bot/${row.original.id}`);
         }
-          " :columns="columns" :data="!voiceBot" :page-size="20" :is-loading="isDataLoading" :height="13"
+          " :columns="columns" :data="voiceBot" :page-size="20" :is-loading="isDataLoading" :height="14"
           height-unit="vh" />
-      </UiTabsContent>
-      <UiTabsContent value="campaigns">
-        <Campaigns />
       </UiTabsContent>
       <UiTabsContent value="buckets">
         <Buckets />
+      </UiTabsContent>
+      <UiTabsContent value="campaigns">
+        <Campaigns />
       </UiTabsContent>
     </UiTabs>
     <!-- <ChannelModal /> -->

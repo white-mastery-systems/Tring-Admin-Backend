@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import countryData from '~/assets/country-codes.json'
+import { toDate } from 'radix-vue/date'
+import { CalendarDate, DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date'
 
 definePageMeta({
   middleware: "admin-only",
@@ -10,10 +12,16 @@ const campaignModalState = defineModel<{ open: boolean }>({
     open: false,
   },
 });
-
+const df = new DateFormatter('en-US', {
+  dateStyle: 'long',
+})
+const placeholder = ref()
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 const formSchema = toTypedSchema(
   z.object({
+    dob: z
+      .string()
+      .refine(v => v, { message: 'A date of birth is required.' }),
     provider: z.string().min(1, 'Provider is required'),
     exoPhone: z.string()
       .min(1, 'Phone Number is required')
@@ -22,6 +30,13 @@ const formSchema = toTypedSchema(
     audienceBucket: z.string().min(1, 'Audience bucket is required'),
   })
 );
+
+// const { handleSubmit, setFieldValue, values } = useForm({
+//   validationSchema: formSchema,
+//   initialValues: {
+
+//   },
+// })
 
 const {
   errors,
@@ -38,6 +53,11 @@ const {
 const allCoutryDialCode = computed(() =>
   countryData?.map((country) => country.dial_code),
 );
+
+const value = computed({
+  get: () => values.dob ? parseDate(values.dob) : undefined,
+  set: val => val,
+})
 const {
   list: countyDialCodes,
   containerProps,
@@ -46,7 +66,8 @@ const {
   itemHeight: 32,
 });
 const [mobileField, mobileFieldProps] = defineField("exoPhone");
-const [countryCode, countryCodeProps] = defineField("countryCode"); 
+const [countryCode, countryCodeProps] = defineField("countryCode");
+const [selectDate, selectDateProps] = defineField("dob"); 
 
 watch(campaignModalState, (newState) => { });
 
@@ -75,28 +96,44 @@ const handleConnect = async (values: any) => {
 };
 </script>
 <template>
-  <DialogWrapper v-model="campaignModalState" title="Add a New Campaign">
+  <DialogWrapper v-model="campaignModalState" title="Add Campaign">
     <UiForm v-slot="{ values }" :validation-schema="formSchema" @submit="handleConnect" :keep-values="true"
       :validate-on-mount="false" class="space-y-2">
-      <UiFormField v-slot="{ componentField }" name="provider">
-        <UiFormItem class="w-full">
-          <UiFormLabel>
-            Provider <UiLabel class="text-lg text-red-500">*</UiLabel>
+      <UiFormField v-model="selectDate" v-bind="selectDateProps" name="dob">
+
+        <UiFormItem class="flex flex-col">
+          <UiFormLabel>Date
+            <UiLabel class="text-lg text-red-500">*</UiLabel>
           </UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-bind="componentField">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select a provider" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectItem value="twilio">Twilio</UiSelectItem>
-                <UiSelectItem value="exotel">Exotel</UiSelectItem>
-                <UiSelectItem value="plivo">Plivo</UiSelectItem>
-                <UiSelectItem value="doocti">Doocti</UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <UiFormMessage />
+          <UiPopover>
+            <UiPopoverTrigger as-child>
+              <UiFormControl>
+                <UiButton variant="outline" :class="cn(
+                  'w-[240px] ps-3 text-start font-normal',
+                    !value && 'text-muted-foreground',
+                )">
+                  <span>{{ value ? df.format(toDate(value)) : "Pick a date" }}</span>
+                  <UiCalendarIcon class="ms-auto h-4 w-4 opacity-50" />
+                </UiButton>
+                <input hidden>
+              </UiFormControl>
+            </UiPopoverTrigger>
+            <UiPopoverContent class="w-auto p-0">
+              <UiCalendar v-model:placeholder="placeholder" v-model="value" calendar-label="Date of birth" initial-focus
+                :min-value="new CalendarDate(1900, 1, 1)" :max-value="today(getLocalTimeZone())" @update:model-value="(v) => {
+                  if (v) {
+                    setFieldValue('dob', v.toString())
+                  }
+                  else {
+                    setFieldValue('dob', undefined)
+                  }
+                }" />
+            </UiPopoverContent>
+          </UiPopover>
+          <!-- <FormDescription>
+            Your date of birth is used to calculate your age.
+          </FormDescription> -->
+          <FormMessage />
         </UiFormItem>
       </UiFormField>
       <!-- {{ countryList }} || sdf -->
@@ -161,7 +198,7 @@ const handleConnect = async (values: any) => {
         <UiFormField class="w-[80%]" v-model="mobileField" v-bind="mobileFieldProps" name="exoPhone">
           <UiFormItem class="w-full">
             <UiFormLabel>
-              Phone Number <UiLabel class="text-lg text-red-500">*</UiLabel>
+              Number Assigned <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
               <UiInput v-model="mobileField" v-bind="mobileFieldProps" placeholder="Enter phone number" />

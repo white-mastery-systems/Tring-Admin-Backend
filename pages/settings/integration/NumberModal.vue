@@ -2,7 +2,7 @@
 import countryData from '~/assets/country-codes.json'
 import { useCount } from '@/composables/useRefresh';
 
-const emit = defineEmits(["success", "submitted"]);
+const emit = defineEmits(["success"]);
 const { refresh } = useCount();
 const numberModalState: any = defineModel<{ open: boolean }>({
   default: {
@@ -54,12 +54,15 @@ const [countryCode, countryCodeProps] = defineField("countryCode");
 
 
 const handleConnect = async (values: any) => {
-  console.log(values, "values");
   const payload = values
-  await $fetch("/api/org/integrations/number-integration", { method: "POST", body: payload });
-  // emit("success")
-  refresh()
-  emit('submitted')
+  try {
+    await $fetch("/api/org/integrations/number-integration", { method: "POST", body: payload });
+    refresh()
+    emit('success')
+  } catch(error: any) {
+    console.log(error.data)
+    // toast.success(error.data.)
+  }
 };
 </script>
 

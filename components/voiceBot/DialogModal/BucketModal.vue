@@ -14,12 +14,13 @@ const bucketModalState = defineModel<{ open: boolean }>({
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 const formSchema = toTypedSchema(
   z.object({
-    provider: z.string().min(1, 'Provider is required'),
+    firstName:z.string().min(1, 'First is required'),
+    lastName: z.string().min(1, 'LastName is required'),
     exoPhone: z.string()
       .min(1, 'Phone Number is required')
       .regex(phoneNumberPattern, 'Invalid phone number'),
     countryCode: z.string().min(1, 'Country Code is required'),
-    audienceBucket: z.string().min(1, 'Audience bucket is required'),
+    addBuckets: z.string().min(1, "Add Audiences is required")
   })
 );
 
@@ -75,30 +76,32 @@ const handleConnect = async (values: any) => {
 };
 </script>
 <template>
-  <DialogWrapper v-model="bucketModalState" title="Add Audiences for Buckets Manually">
+  <DialogWrapper v-model="bucketModalState" title="Add Bucket">
+    <!-- <div>Add Audiences for Buckets Manually</div> -->
     <UiForm v-slot="{ values }" :validation-schema="formSchema" @submit="handleConnect" :keep-values="true"
       :validate-on-mount="false" class="space-y-2">
-      <UiFormField v-slot="{ componentField }" name="provider">
-        <UiFormItem class="w-full">
-          <UiFormLabel>
-            Provider <UiLabel class="text-lg text-red-500">*</UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-bind="componentField">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select a provider" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectItem value="twilio">Twilio</UiSelectItem>
-                <UiSelectItem value="exotel">Exotel</UiSelectItem>
-                <UiSelectItem value="plivo">Plivo</UiSelectItem>
-                <UiSelectItem value="doocti">Doocti</UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
+      <div class="flex gap-4">
+        <UiFormField v-slot="{ componentField }" name="firstName">
+          <UiFormItem class="w-full">
+            <UiFormLabel>First Name <UiLabel class="text-lg text-red-500">*</UiLabel>
+            </UiFormLabel>
+            <UiFormControl>
+              <UiInput v-bind="componentField" type="text" placeholder="Enter first name" />
+            </UiFormControl>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
+        <UiFormField v-slot="{ componentField }" name="lastName">
+          <UiFormItem class="w-full">
+            <UiFormLabel>Last Name <UiLabel class="text-lg text-red-500">*</UiLabel>
+            </UiFormLabel>
+            <UiFormControl>
+              <UiInput v-bind="componentField" type="text" placeholder="Enter last name" />
+            </UiFormControl>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
+      </div>
       <!-- {{ countryList }} || sdf -->
       <div class="flex gap-2">
         <UiFormField v-model="countryCode" v-bind="countryCodeProps" name="countryCode" class="mt-1">
@@ -170,42 +173,12 @@ const handleConnect = async (values: any) => {
           </UiFormItem>
         </UiFormField>
       </div>
-      <UiFormField v-slot="{ componentField }" name="audienceBucket">
+      <UiFormField v-slot="{ componentField }" name="addBuckets">
         <UiFormItem class="w-full">
-          <UiFormLabel>
-            Add Audience Bucket <UiLabel class="text-lg text-red-500">*</UiLabel>
+          <UiFormLabel>Add Audiences for Buckets in Bulk <UiLabel class="text-lg text-red-500">*</UiLabel>
           </UiFormLabel>
           <UiFormControl>
-            <UiSelect v-bind="componentField">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select a Bucket" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectItem value="twilio">Bucket One</UiSelectItem>
-                <UiSelectItem value="exotel">Bucket Two</UiSelectItem>
-                <UiSelectItem value="plivo">Bucket Three</UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
-      <UiFormField v-slot="{ componentField }" name="audienceBucket">
-        <UiFormItem class="w-full">
-          <UiFormLabel>
-            CRM Pipeline <UiLabel class="text-lg text-red-500">*</UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-bind="componentField">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select a Bucket" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectItem value="twilio">CRM One</UiSelectItem>
-                <UiSelectItem value="exotel">CRM Two</UiSelectItem>
-                <UiSelectItem value="plivo">CRM Three</UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
+            <UiInput v-bind="componentField" type="text" placeholder="Enter audience names" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
