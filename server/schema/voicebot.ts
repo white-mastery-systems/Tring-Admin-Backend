@@ -19,6 +19,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   }),
   intents: varchar("intents").array(), // Array of strings  
   ivrConfig: jsonb("ivr_config"),
+  identityManagement: jsonb("identity_management"),
   createdAt: timestamp("created_at").defaultNow(),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })
