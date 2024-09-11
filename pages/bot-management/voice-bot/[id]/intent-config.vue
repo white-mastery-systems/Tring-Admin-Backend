@@ -35,35 +35,44 @@ const items = reactive([
   },
 ])
 
+const route = useRoute("bot-management-voice-bot-id-intent-config");
+const botDetails: any = await getVoiceBotDetails(route.params.id);
+
 const formSchema = toTypedSchema(z.object({
   items: z.array(z.string()).refine(value => value.some(item => item), {
     message: 'You have to select at least one item.',
   }),
 }))
 
-const { handleSubmit } = useForm({
-  validationSchema: formSchema,
-  initialValues: {
-    items: ['greeting', 'audio_check', 'agent_name', 'conclude'],
-  },
-})
+const initialValues = ref(['greeting', 'audio_check', 'agent_name', 'conclude'])
 
-const onSubmit = handleSubmit((values) => {
-})
+const onSubmit = async (value: any) => {
+  await updateLLMConfig({ intents: value.items }, botDetails.id)
+  return navigateTo({
+    name: "bot-management-voice-bot-id",
+    params: { id: botDetails.id }
+  })
+}
 </script>
 <template>
-  <page title="Default Intents" :disableSelector="true" :disable-back-button="false">
+  <page title="Default Intents" :bread-crumbs="[
+    { label: `${botDetails.name}`, to: `/bot-management/voice-bot/${botDetails.id}` },
+    {
+      label: 'LLM Configuration',
+      to: `/bot-management/voice-bot/${botDetails.id}/intent-config`,
+    },
+  ]" :disableSelector="true" :disable-back-button="false">
     <!-- <template> -->
-    <Uiform @submit="onSubmit">
+    <UiForm :validation-schema="formSchema" @submit="onSubmit">
       <UiFormField name="items">
         <UiFormItem>
 
           <UiFormField v-for="item in items" v-slot="{ value, handleChange }" :key="item.id" type="checkbox"
-            :value="item.id" :unchecked-value="false" name="items">
+            v-model="initialValues" :value="item.id" :unchecked-value="false" name="items">
             <UiFormItem class="flex flex-row items-center space-x-3 space-y-3">
               <UiFormControl class="mt-[11px]">
                 <UiCheckbox :checked="value?.includes(item.id)" class="border-zinc-800"
-                  :style="{ background: (value?.includes(item.id)) ? '#43D371' : '#80808078', 'border-color': '#80808078'}"
+                  :style="{ background: (value?.includes(item.id)) ? '#43D371' : '#80808078', 'border-color': '#80808078' }"
                   @update:checked="handleChange" />
               </UiFormControl>
               <UiFormLabel class="font-medium text-[15px]">
@@ -80,7 +89,7 @@ const onSubmit = handleSubmit((values) => {
           Submit
         </UiButton>
       </div>
-    </Uiform>
+    </UiForm>
     <!-- </template> -->
   </page>
 </template>

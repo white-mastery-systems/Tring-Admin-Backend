@@ -116,9 +116,11 @@
               </div>
             </div>
           </UiTabsContent>
-          <UiTabsContent value="Timeline" class="flex flex-col gap-6 h-screen-minus-15 overflow-y-scroll pb-5 pt-3">
-            <TimeLine v-for="(step, index) in timeLineData" :key="index" :index="index" :data="step"
-              :totalSteps="timeLineData.length" />
+          <UiTabsContent value="Timeline">
+            <div class="flex flex-col gap-6 h-screen-minus-15 overflow-y-scroll pb-5 pt-3 pr-4">
+              <TimeLine v-for="(step, index) in timeLineData" :key="index" :index="index" :data="step"
+                :totalSteps="timeLineData.length" />
+            </div>
           </UiTabsContent>
           <!-- </div> -->
         </UiTabs>

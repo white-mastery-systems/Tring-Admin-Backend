@@ -8,6 +8,8 @@ definePageMeta({
 const animationProps = {
   duration: 500,
 };
+const route = useRoute("bot-management-voice-bot-id-identity-management");
+const botDetails: any = await getVoiceBotDetails(route.params.id);
 const formSchema = toTypedSchema(
   z.object({
     name: z.string().min(1, 'Name is required'),
@@ -26,6 +28,12 @@ const domainList = [
 ];
 
 const onSubmit = async (value: any) => {
+  // updateLLMConfig()
+  await updateLLMConfig({ identityManagement: value }, botDetails.id)
+  return navigateTo({
+    name: "bot-management-voice-bot-id",
+    params: { id: botDetails.id }
+  })
 };
 </script>
 <template>
@@ -36,7 +44,13 @@ const onSubmit = async (value: any) => {
       to: `/bot-management/chat-bot/${botDetails.id}/intent-management`,
     },
   ]"  -->
-  <Page title="Identity Management" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
+  <Page title="Identity Management" :bread-crumbs="[
+    { label: `${botDetails.name}`, to: `/bot-management/voice-bot/${botDetails.id}` },
+    {
+      label: 'LLM Configuration',
+      to: `/bot-management/voice-bot/${botDetails.id}/identity-management`,
+    },
+  ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <div>
       <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" @submit="onSubmit"
         class="space-y-4">
@@ -65,10 +79,10 @@ const onSubmit = async (value: any) => {
                     <div v-for="(role, index) in roles">
                       <UiSelectItem :value="role.content">{{
                         role.content
-                      }}</UiSelectItem>
+                        }}</UiSelectItem>
                       <span class="mx-2 text-xs italic text-gray-500">{{
                         role.label
-                      }}</span>
+                        }}</span>
                     </div>
                   </UiSelectContent>
                 </UiSelect>
@@ -99,10 +113,10 @@ const onSubmit = async (value: any) => {
                   <div v-for="(domain, index) in domainList">
                     <UiSelectItem :value="domain.content">{{
                       domain.content
-                    }}</UiSelectItem>
+                      }}</UiSelectItem>
                     <span class="mx-2 text-xs italic text-gray-500">{{
                       domain.label
-                    }}</span>
+                      }}</span>
                   </div>
                 </UiSelectContent>
               </UiSelect>

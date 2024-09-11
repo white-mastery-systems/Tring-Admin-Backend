@@ -13,6 +13,7 @@
       </div>
     </template>
     <ConfirmationModal
+    
       v-model:open="logoutModal"
       title="Confirm Logout"
       description="Are you sure you want to log out ?"
