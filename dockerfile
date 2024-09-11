@@ -17,6 +17,7 @@ FROM node:20.16.0-alpine
 
 
 # copy over build files from builder step
+RUN rm -rf /app/.nuxt /app/.output
 COPY --from=builder /app/.output  app/.output
 COPY --from=builder /app/.nuxt  app/.nuxt
 
