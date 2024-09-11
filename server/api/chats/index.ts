@@ -1,5 +1,6 @@
 import path from "path";
 import { fileURLToPath } from "url";
+import { logger } from "~/server/server";
 import { listChats } from "~/server/utils/db/chats";
 
 const chatQueryValidator = z
@@ -47,6 +48,10 @@ export default defineEventHandler(async (event) => {
     : timeZoneHeader || "Asia/Kolkata";
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const query = await isValidQueryHandler(event, chatQueryValidator);
+  logger.log({
+    level: "info",
+    message: "Hello distributed log files!",
+  });
 
   // console.log("Log file path:", require("path").resolve("combined.log"));
   return await listChats(organizationId, query, timeZone);
