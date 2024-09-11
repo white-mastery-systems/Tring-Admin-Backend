@@ -39,6 +39,8 @@ export const updateContactList = async (id: string, contactList: InsertContactLi
 
 export const deleteContactList = async (id: string) => {
   return (
-    await db.delete(contactListSchema).returning()
+    await db.delete(contactListSchema)
+    .where(eq(contactListSchema.id, id))
+    .returning()
   )[0]
 }
