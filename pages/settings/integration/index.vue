@@ -26,19 +26,19 @@
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="client">
-        <DataTable :columns="columns" :data="integrationsData" :page-size="8" :is-loading="false" :height="80"
+        <DataTable :columns="columns" :data="integrationsData" :page-size="8" :is-loading="false" :height="13"
           :heightUnit="'vh'" />
       </UiTabsContent>
       <UiTabsContent value="campaign">
-        <DataTable :columns="statusColumns" :data="integrationsData" :page-size="8" :is-loading="false" :height="10"
+        <DataTable :columns="statusColumns" :data="integrationsData" :page-size="8" :is-loading="false" :height="13"
           :heightUnit="'vh'" />
       </UiTabsContent>
       <UiTabsContent value="number">
-          <NumberIntegration />
+        <NumberIntegration />
       </UiTabsContent>
     </UiTabs>
-    <ChannelModal v-model="channelModalState" />
-    <NumberModal v-model="numberModalState" />
+    <ChannelModal v-model="channelModalState" @success="onSuccessChannel()" />
+    <NumberModal v-model="numberModalState" @success="onSuccessNumberIntegration()" />
     <CreateEditIntegrationModal v-model="integrationModalState" :id="integrationModalState?.id"
       @success="onSuccess()" />
   </Page>
@@ -108,6 +108,16 @@
     toast.success("Integration added successfully");
     integrationRefresh();
   };
+const onSuccessNumberIntegration = () => {
+    numberModalState.value.open = false;
+    toast.success("Integration added successfully");
+  };
+
+  const onSuccessChannel = () => {
+    channelModalState.value.open =false
+    toast.success("Integration added successfully");
+    integrationRefresh()
+  }
 
   // const channelModal = () => {
   //   channelModalState.value.open = false
