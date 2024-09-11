@@ -58,7 +58,7 @@ const onSubmit = async (value: any) => {
   <page title="Default Intents" :bread-crumbs="[
     { label: `${botDetails.name}`, to: `/bot-management/voice-bot/${botDetails.id}` },
     {
-      label: 'LLM Configuration',
+      label: 'Default Intents',
       to: `/bot-management/voice-bot/${botDetails.id}/intent-config`,
     },
   ]" :disableSelector="true" :disable-back-button="false">
