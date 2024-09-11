@@ -188,7 +188,7 @@
       <div
         class="flex items-center justify-between gap-3 px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]"
       >
-        <span>Wallet Balance </span>
+        <span>Chat sessions available in wallet</span>
         <div class="flex min-w-[80px] items-center justify-start">
           <span
             class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]"
