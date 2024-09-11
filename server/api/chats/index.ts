@@ -1,3 +1,6 @@
+import path from "path";
+import { fileURLToPath } from "url";
+import { logger } from "~/server/server";
 import { listChats } from "~/server/utils/db/chats";
 
 const chatQueryValidator = z
@@ -31,6 +34,8 @@ const chatQueryValidator = z
         "Both 'from' and 'to' must be present if either is provided, or both must be omitted.",
     },
   );
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default defineEventHandler(async (event) => {
   // const logger = useCustomLogger();
@@ -43,6 +48,11 @@ export default defineEventHandler(async (event) => {
     : timeZoneHeader || "Asia/Kolkata";
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const query = await isValidQueryHandler(event, chatQueryValidator);
+  logger.log({
+    level: "info",
+    message: "Hello distributed log files!",
+  });
 
+  // console.log("Log file path:", require("path").resolve("combined.log"));
   return await listChats(organizationId, query, timeZone);
 });

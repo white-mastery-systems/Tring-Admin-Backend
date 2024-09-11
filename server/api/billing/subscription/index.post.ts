@@ -96,7 +96,7 @@ export default defineEventHandler(async (event) => {
                       first_name: firstName,
                       last_name: lastName,
                       email: user?.email,
-                      mobile: `+918848083317`,
+                      mobile: `${userDetails?.countryCode ?? "+91"} ${userDetails.mobile}`,
                       billing_address: {
                         attention: user?.username,
                         street: userDetails?.address?.street,

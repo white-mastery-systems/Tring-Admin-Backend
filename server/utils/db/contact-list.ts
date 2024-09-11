@@ -28,7 +28,10 @@ export const getContactListById = async (id: string) => {
 export const updateContactList = async (id: string, contactList: InsertContactList) => {
   return (
     await db.update(contactListSchema)
-    .set(contactList)
+    .set({
+      ...contactList,
+      updatedAt: new Date()
+    })
     .where(eq(contactListSchema.id, id))
     .returning()
   )[0]
@@ -36,6 +39,8 @@ export const updateContactList = async (id: string, contactList: InsertContactLi
 
 export const deleteContactList = async (id: string) => {
   return (
-    await db.delete(contactListSchema).returning()
+    await db.delete(contactListSchema)
+    .where(eq(contactListSchema.id, id))
+    .returning()
   )[0]
 }

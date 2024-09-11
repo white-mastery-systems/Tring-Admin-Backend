@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { logger } from "~/server/server";
 
 export function getAllPipelinesFromZohoBigin({
   token,
@@ -158,6 +159,10 @@ export async function generateLeadInZohoBigin({
     console.log(JSON.stringify(err.data), "ERR");
     if (!refreshToken) return;
     if (err.status === 401) {
+      logger.log({
+        level: "error",
+        message: JSON.stringify(err.data),
+      });
       const newlyGeneratedData: any = await regenearateTokenWithRefreshToken({
         refreshToken: refreshToken,
       });

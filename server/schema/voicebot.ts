@@ -24,6 +24,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
 export const voicebotIntegrationSchema = voiceBotSchema.table("bot_integrations", {
@@ -37,6 +38,7 @@ export const voicebotIntegrationSchema = voiceBotSchema.table("bot_integrations"
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)
     .notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 

@@ -89,7 +89,10 @@ export const listLastCreatedIntegrationByCRM = async (
 export const updateIntegrationById = async (id: string, integration: any) => {
   const data = await db
     .update(integrationSchema)
-    .set({ metadata: integration })
+    .set({ 
+      metadata: integration,
+      updatedAt: new Date()
+     })
     .where(eq(integrationSchema.id, id))
     .returning();
   console.log(JSON.stringify(data[0]));
