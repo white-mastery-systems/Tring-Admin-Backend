@@ -40,6 +40,7 @@
         extraChats < 0
           ? 0
           : extraChats * Number(usage.value.extra_sessions_cost),
+      individualChatsCost: Number(usage.value.extra_sessions_cost),
       walletBalance: usage.value?.wallet_balance,
     };
   });
@@ -192,7 +193,14 @@
           <span
             class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]"
           >
-            Rs. {{ Number(usageDetails?.walletBalance) ?? 0 }}
+            {{
+              Number(usageDetails?.individualChatsCost) === 0
+                ? 0
+                : (Math.floor(
+                    Number(usageDetails?.walletBalance) /
+                      Number(usageDetails?.individualChatsCost),
+                  ) ?? 0)
+            }}
           </span>
         </div>
       </div>
