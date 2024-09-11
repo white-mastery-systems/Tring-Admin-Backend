@@ -59,10 +59,11 @@
               </div>
             </div>
           </UiTabsContent>
-          <UiTabsContent value="timeline"
-            class="flex flex-col justify-start gap-6 h-screen-minus-12 overflow-y-scroll pb-[1rem] pt-[2rem] pr-4">
-            <TimeLine v-for="(step, index) in timeLineData" :key="index" :index="index" :data="step"
-              :totalSteps="timeLineData.length" />
+          <UiTabsContent value="timeline">
+            <div class="flex flex-col justify-start gap-6 h-screen-minus-12 overflow-y-scroll pb-[1rem] pt-[1rem] pr-4">
+              <TimeLine v-for="(step, index) in timeLineData" :key="index" :index="index" :data="step"
+                :totalSteps="timeLineData.length" />
+            </div>
           </UiTabsContent>
         </UiTabs>
       </div>

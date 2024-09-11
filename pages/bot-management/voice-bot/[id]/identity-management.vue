@@ -29,9 +29,9 @@ const domainList = [
 
 const onSubmit = async (value: any) => {
   // updateLLMConfig()
-  await updateLLMConfig(value, botDetails.id)
+  await updateLLMConfig({ identityManagement: value }, botDetails.id)
   return navigateTo({
-    name: "bot-management-chat-bot-id",
+    name: "bot-management-voice-bot-id",
     params: { id: botDetails.id }
   })
 };

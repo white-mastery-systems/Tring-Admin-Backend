@@ -20,7 +20,7 @@ const formSchema = toTypedSchema(
       .min(1, 'Phone Number is required')
       .regex(phoneNumberPattern, 'Invalid phone number'),
     countryCode: z.string().min(1, 'Country Code is required'),
-    addBuckets: z.string().min(1, "Add Audiences is required")
+    // addBuckets: z.string().min(1, "Add Audiences is required")
   })
 );
 
@@ -77,7 +77,6 @@ const handleConnect = async (values: any) => {
 </script>
 <template>
   <DialogWrapper v-model="bucketModalState" title="Add Bucket">
-    <!-- <div>Add Audiences for Buckets Manually</div> -->
     <UiForm v-slot="{ values }" :validation-schema="formSchema" @submit="handleConnect" :keep-values="true"
       :validate-on-mount="false" class="space-y-2">
       <div class="flex gap-4">
@@ -173,7 +172,7 @@ const handleConnect = async (values: any) => {
           </UiFormItem>
         </UiFormField>
       </div>
-      <UiFormField v-slot="{ componentField }" name="addBuckets">
+      <!-- <UiFormField v-slot="{ componentField }" name="addBuckets">
         <UiFormItem class="w-full">
           <UiFormLabel>Add Audiences for Buckets in Bulk <UiLabel class="text-lg text-red-500">*</UiLabel>
           </UiFormLabel>
@@ -182,7 +181,7 @@ const handleConnect = async (values: any) => {
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
-      </UiFormField>
+      </UiFormField> -->
       <div class="flex items-center justify-end">
         <UiButton type="submit" class="mt-2" color="primary"> Submit </UiButton>
       </div>

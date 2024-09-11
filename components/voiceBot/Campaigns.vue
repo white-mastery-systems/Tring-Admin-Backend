@@ -4,7 +4,7 @@
       <UiInput v-model="searchCampaign" class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
         placeholder="Search campaign..." />
     </div>
-    <DataTable :data="leads" :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="14" height-unit="vh"
+    <DataTable :data="!leads" :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="14" height-unit="vh"
       @row-click="(row: any) => {
         navigateTo(`leads/${row.original.chatId}`);
       }

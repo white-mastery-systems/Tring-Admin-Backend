@@ -120,6 +120,8 @@ const formSchema = toTypedSchema(
 const agentModalState = ref({ open: false });
 const campaignModalState = ref({ open: false });
 const bucketModalState = ref({ open: false });
+const viewCampaignStatusModalState = ref({ open: false });
+
 const searchBot = ref("");
 const searchBotDebounce = refDebounced(searchBot, 500);
 const router = useRouter();
