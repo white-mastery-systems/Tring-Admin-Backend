@@ -33,6 +33,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const documentSchema = chatbotSchema.table("document", {
@@ -48,6 +49,7 @@ export const documentSchema = chatbotSchema.table("document", {
   botId: uuid("bot_id")
     .references(() => chatBotSchema.id, { onDelete: "cascade" })
     .notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const botUserSchema = chatbotSchema.table(
@@ -63,6 +65,7 @@ export const botUserSchema = chatbotSchema.table(
     organizationId: uuid("organization_id")
       .references(() => organizationSchema.id, { onDelete: "cascade" })
       .notNull(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
   // (table) => ({
   //   emailUnique: unique("bot_user_email")
@@ -91,6 +94,7 @@ export const chatSchema = chatbotSchema.table("chats", {
     () => organizationSchema.id,
     { onDelete: "cascade" },
   ),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const messageSchema = chatbotSchema.table("messages", {
@@ -108,6 +112,7 @@ export const messageSchema = chatbotSchema.table("messages", {
       onDelete: "cascade",
     })
     .notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const leadSchema = chatbotSchema.table(
@@ -131,6 +136,7 @@ export const leadSchema = chatbotSchema.table(
       .references(() => organizationSchema.id)
       .notNull(),
     status: varchar("status").default("default").notNull(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
   (table) => ({
     leadConstraint: unique("leads_unique_constraint").on(
@@ -152,6 +158,7 @@ export const botIntentSchema = chatbotSchema.table("intents", {
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)
     .notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const botIntegrationSchema = chatbotSchema.table("bot_integrations", {
@@ -165,6 +172,7 @@ export const botIntegrationSchema = chatbotSchema.table("bot_integrations", {
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)
     .notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const analyticsSchema = chatbotSchema.table("analytics", {
@@ -176,6 +184,7 @@ export const analyticsSchema = chatbotSchema.table("analytics", {
     .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
   botId: uuid("bot_id").references(() => chatBotSchema.id),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 // Relations
 export const chatBotRelations = relations(chatBotSchema, ({ one, many }) => ({

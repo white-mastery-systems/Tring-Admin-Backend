@@ -28,7 +28,10 @@ export const getContactListById = async (id: string) => {
 export const updateContactList = async (id: string, contactList: InsertContactList) => {
   return (
     await db.update(contactListSchema)
-    .set(contactList)
+    .set({
+      ...contactList,
+      updatedAt: new Date()
+    })
     .where(eq(contactListSchema.id, id))
     .returning()
   )[0]
