@@ -30,7 +30,10 @@ export const getContactsById = async (id: string) => {
 export const updateContacts = async (id: string, contacts: InsertContacts) => {
   return (
     await db.update(contactSchema)
-    .set(contacts)
+    .set({
+      ...contacts,
+      updatedAt: new Date()
+    })
     .where(
       eq(contactSchema.id, id)
     )

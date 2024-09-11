@@ -153,7 +153,10 @@ export const updateLead = async (leadId: string, lead: InsertLead) => {
   return (
     await db
       .update(leadSchema)
-      .set(lead)
+      .set({
+        ...lead,
+        updatedAt: new Date()
+      })
       .where(eq(leadSchema.id, leadId))
       .returning()
   )[0];
