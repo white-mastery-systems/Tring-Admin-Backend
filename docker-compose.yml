@@ -40,3 +40,4 @@ services:
 volumes:
   tring-suite_bot:
   tring-suite_admin:
+  tring-admin_docs:
