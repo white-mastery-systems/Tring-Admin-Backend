@@ -70,7 +70,10 @@ export const getUserById = async (id: string) => {
 export const updateUser = async (id: string, user: Partial<InsertUser>) => {
   return (await db
     .update(authUserSchema)
-    .set(user)
+    .set({
+      ...user,
+      updatedAt: new Date()
+    })
     .where(eq(authUserSchema.id, id))
     .returning())[0];
 };

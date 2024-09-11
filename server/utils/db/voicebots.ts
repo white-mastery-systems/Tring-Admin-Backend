@@ -60,7 +60,10 @@ export const getVoicebotById = async (organizationId: string, voicebotId: string
 export const updateVoiceBot = async (voicebotId: string, voicebot: InsertVoiceBot) => {
   return (
     await db.update(voicebotSchema)
-    .set(voicebot)
+    .set({
+      ...voicebot,
+      updatedAt: new Date()
+    })
     .where(  
       eq(voicebotSchema.id, voicebotId)
     )

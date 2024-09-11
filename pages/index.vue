@@ -232,26 +232,38 @@
   ]);
   const chartValues = ref(["leads", "sessions"]);
   watch(chartValues, (newChartvalues) => {});
-  const labels = ref([
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-  ]);
-  const graphData = ref([]);
-  const sessionsGraphData = ref([]);
+
+  const state = reactive<{ graphData: any[]; labels: any[] }>({
+    graphData: [],
+    labels: [],
+  });
+
   watch(analyticsData, (newValue, oldValue) => {
     if (newValue?.graph?.length > 0) {
-      labels.value = newValue.graph[0]?.map((item) => item.date);
+      state.labels = newValue.graph[0]?.map((item) => item.date);
     }
 
-    newValue.graph?.map((graphItem) => {
-      graphData.value.push(graphItem?.map((item: any) => item.count));
-    });
+    state.graphData = newValue.graph?.map((graphItem) =>
+      graphItem?.map((item) => item.count),
+    );
   });
+  let chartData = computed(() => ({
+    labels: state.labels,
+    datasets: chartValues.value?.map((item: any, index: number) => {
+      console.log({ index });
+      return {
+        label: graphOptions.value?.find(
+          ({ value }: { value: string }) => value === item,
+        )?.label,
+        tension: 0.4,
+        pointRadius: 0,
+        borderColor: graphIndexValues.value[index]?.borderColor,
+        backgroundColor: graphIndexValues.value[index]?.backgroundColor,
+        data: state.graphData[index],
+        yAxisID: graphIndexValues.value[index]?.yAxisID,
+      };
+    }),
+  }));
   const graphIndexValues = ref([
     {
       borderColor: "#424bd1",
@@ -280,22 +292,6 @@
       yAxisID: "y1",
     },
   ]);
-  let chartData = computed(() => ({
-    labels: labels.value,
-    datasets: chartValues.value?.map((item: any, index: number) => {
-      return {
-        label: graphOptions.value?.find(
-          ({ value }: { value: string }) => value === item,
-        )?.label,
-        tension: 0.4,
-        pointRadius: 0,
-        borderColor: graphIndexValues.value[index]?.borderColor,
-        backgroundColor: graphIndexValues.value[index]?.backgroundColor,
-        data: graphData.value[index],
-        yAxisID: graphIndexValues.value[index]?.yAxisID,
-      };
-    }),
-  }));
 
   const chartOptions = ref({
     responsive: true,

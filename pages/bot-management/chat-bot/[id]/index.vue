@@ -251,6 +251,12 @@
     },
     {
       _id: 5,
+      bot: "Assets Management",
+      helperText: "Brochures,Images etc...",
+      routeName: "bot-management-chat-bot-id-assets",
+    },
+    {
+      _id: 6,
       bot: "Intent Management",
       helperText: "Add your intents Eg: Location Virtual Tour etc...",
       routeName: "bot-management-chat-bot-id-intent-management",
