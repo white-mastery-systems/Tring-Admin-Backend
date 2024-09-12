@@ -11,9 +11,12 @@ export const createContactList = async (contactList: InsertContactList) => {
    )
 }
 
-export const getContactLists = async (organizationId: string) => {
+export const getContactLists = async (organizationId: string, query: any) => {
   const data = await db.query.contactListSchema.findMany({
-    where: eq(contactListSchema.organizationId, organizationId)
+    where: and(
+       eq(contactListSchema.organizationId, organizationId),
+       query?.q ? ilike(contactListSchema.name, `%${query.q}%`) : undefined
+    )
   })
   return data
 }
