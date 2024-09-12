@@ -9,6 +9,7 @@
           }">
             Add Bucket
           </UiButton>
+
           <UiButton color="primary">
             Import
           </UiButton>
@@ -67,13 +68,16 @@ const formSchema = toTypedSchema(
   }),
 );
 const searchBucket = ref("");
+const searchBotDebounce = refDebounced(searchBucket, 500);
 const deleteBucketState = ref({ open: false, id: null });
 // const campaignModalState = ref({ open: false });
 const addBucketNameModalState = ref({ open: false, id: null });
 const { status, data: contactsList, refresh: integrationRefresh, } = await useLazyFetch("/api/org/contact-list", {
   server: false,
-  // query: filters,
   default: () => [],
+  query: {
+    q: searchBotDebounce
+  },
 });
 // const addBucketNameModalState = defineModel<{ open: boolean, id: string }>({
 //   default: {
@@ -83,8 +87,6 @@ const { status, data: contactsList, refresh: integrationRefresh, } = await useLa
 // });
 const viewCampaignStatusModalState = ref({ open: false });
 
-const searchBot = ref("");
-const searchBotDebounce = refDebounced(searchBot, 500);
 const router = useRouter();
 const route = useRoute();
 const activeStatus = ref("");
@@ -109,9 +111,9 @@ const actionsComponent = (id: any) => h(
         addBucketNameModalState.value.open = true;
         addBucketNameModalState.value.id = id
       },
-      class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
+      color: "primary",
     },
-    [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "Configure"],
+    h(Icon, { name: "lucide:pen" }),
   ),
   h(
     UiButton,
@@ -123,7 +125,7 @@ const actionsComponent = (id: any) => h(
       }, // Add delete functionality
       class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
     },
-    [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Delete"]
+    h(Icon, { name: "lucide:trash-2" })
   ),
   // h(
   //   UiButton,
@@ -155,6 +157,9 @@ const columns = [
         row.original.name
       );
     },
+  }),
+  columnHelper.accessor("noOfAudience", {
+    header: 'No. of Audiences'
   }),
   columnHelper.accessor("id", {
     header: "Action",
