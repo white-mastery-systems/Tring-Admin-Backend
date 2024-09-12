@@ -47,7 +47,7 @@ const onSubmit = async (value: any) => {
   <Page title="Identity Management" :bread-crumbs="[
     { label: `${botDetails.name}`, to: `/bot-management/voice-bot/${botDetails.id}` },
     {
-      label: 'LLM Configuration',
+      label: 'Identity Management',
       to: `/bot-management/voice-bot/${botDetails.id}/identity-management`,
     },
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">

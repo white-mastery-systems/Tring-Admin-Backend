@@ -1,25 +1,31 @@
 <script setup lang="ts">
 import countryData from '~/assets/country-codes.json'
+import { useRoute } from "vue-router";
 
 definePageMeta({
   middleware: "admin-only",
 });
+const emit = defineEmits<{ (e: "confirm"): void }>();
 
-const bucketModalState = defineModel<{ open: boolean }>({
+const route = useRoute();
+const queryId = ref(route.params.id)
+const bucketModalState = defineModel<{ open: boolean, id: any }>({
   default: {
     open: false,
+    id: null,
   },
 });
+
 
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 const formSchema = toTypedSchema(
   z.object({
-    firstName:z.string().min(1, 'First is required'),
-    lastName: z.string().min(1, 'LastName is required'),
-    exoPhone: z.string()
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
+    phone: z.string()
       .min(1, 'Phone Number is required')
       .regex(phoneNumberPattern, 'Invalid phone number'),
-    countryCode: z.string().min(1, 'Country Code is required'),
+    countryCode: z.string().min(1, 'Code is required'),
     // addBuckets: z.string().min(1, "Add Audiences is required")
   })
 );
@@ -31,8 +37,15 @@ const {
   handleSubmit,
   defineField,
   values,
+  resetForm,
 } = useForm({
   validationSchema: formSchema,
+  initialValues: {
+    // firstName: "",
+    // lastName: "",
+    // phone: "",
+    // countryCode: "",
+  },
 });
 
 
@@ -46,57 +59,68 @@ const {
 } = useVirtualList(allCoutryDialCode, {
   itemHeight: 32,
 });
-const [mobileField, mobileFieldProps] = defineField("exoPhone");
+const [firstNameField, firstNameFieldProps] = defineField("firstName");
+const [lastNameField, lastNameFieldProps] = defineField("lastName");
+const [mobileField, mobileFieldProps] = defineField("phone");
 const [countryCode, countryCodeProps] = defineField("countryCode");
 
-watch(bucketModalState, (newState) => { });
-
-
-const addVoiceBot = async (value: any) => {
-  try {
-    const bot = await $fetch("/api/voicebots", {
-      method: "POST",
-      body: { name: value.newBotName },
-    });
-    return navigateTo({
-      name: "bot-management-voice-bot-id",
-      params: { id: bot.id },
-    });
-  } catch (err: any) {
-    toast.error(err.data.data[0].message);
+watch(() => bucketModalState.value.open, async (newState) => { 
+  if (bucketModalState.value.id) {
+    const getSingleDetails: any = await $fetch(`/api/org/contact-list/${queryId.value}/contacts/${bucketModalState.value.id}`)
+      setFieldValue("firstName", getSingleDetails.firstName);
+      setFieldValue("lastName", getSingleDetails.lastName);
+      setFieldValue("countryCode", getSingleDetails.countryCode);
+      setFieldValue("phone", getSingleDetails.phone);
+  } else {
+    resetForm()
   }
-};
+});
 
-
-const handleConnect = async (values: any) => {
-  console.log(values, "values");
-  const payload = values
-  await $fetch("/api/org/integrations/number-integration", { method: "POST", body: payload });
-  // emit("success")
-};
+const handleConnect = handleSubmit(async (values: any) => {
+  try {
+    if (bucketModalState.value.id) {
+      await $fetch(`/api/org/contact-list/${queryId.value}/contacts/${bucketModalState.value.id}`, { method: "PUT", body: values });
+      toast.success("Created successfully")
+    } else {
+      await $fetch(`/api/org/contact-list/${queryId.value}/contacts`, { method: "POST", body: values });
+      toast.success("Updated successfully")
+    }
+    resetForm()
+    emit('confirm')
+  } catch(error: any) {
+    toast.error(error.data.statusMessage)
+  }
+});
 </script>
 <template>
   <DialogWrapper v-model="bucketModalState" title="Add Bucket">
-    <UiForm v-slot="{ values }" :validation-schema="formSchema" @submit="handleConnect" :keep-values="true"
-      :validate-on-mount="false" class="space-y-2">
+    <!-- :validation-schema="formSchema" -->
+    <UiForm v-slot="{ values }" @submit="handleConnect" :keep-values="true" :validate-on-mount="false"
+      class="space-y-2">
       <div class="flex gap-4">
-        <UiFormField v-slot="{ componentField }" name="firstName">
+        <UiFormField v-model="firstNameField" v-bind="firstNameFieldProps" name="firstName">
           <UiFormItem class="w-full">
-            <UiFormLabel>First Name <UiLabel class="text-lg text-red-500">*</UiLabel>
+            <UiFormLabel :class="errors?.firstName ? 'text-[#ef4444]' : ''">First Name <UiLabel
+                class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" type="text" placeholder="Enter first name" />
+              <UiInput v-model="firstNameField" v-bind="firstNameFieldProps" type="text"
+                placeholder="Enter first name" />
+              <!-- :class="errors?.firstNameField ? 'border-red-700' : ''" -->
             </UiFormControl>
+            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.firstName }}</p>
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="lastName">
+        <UiFormField v-model="lastNameField" v-bind="lastNameFieldProps" name="lastName">
           <UiFormItem class="w-full">
-            <UiFormLabel>Last Name <UiLabel class="text-lg text-red-500">*</UiLabel>
+            <UiFormLabel :class="errors?.lastName ? 'text-[#ef4444]' : ''">Last Name <UiLabel
+                class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" type="text" placeholder="Enter last name" />
+              <UiInput v-model="lastNameField" v-bind="lastNameFieldProps" type="text" placeholder="Enter last name" />
             </UiFormControl>
+            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.lastName }}</p>
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
@@ -105,7 +129,7 @@ const handleConnect = async (values: any) => {
       <div class="flex gap-2">
         <UiFormField v-model="countryCode" v-bind="countryCodeProps" name="countryCode" class="mt-1">
           <UiFormItem class="mt-1">
-            <UiFormLabel>Country code
+            <UiFormLabel :class="errors?.countryCode ? 'text-[#ef4444]' : ''">Country code
               <span class="text-sm text-red-500">*</span>
             </UiFormLabel>
             <UiPopover>
@@ -157,18 +181,20 @@ const handleConnect = async (values: any) => {
                 </UiCommand>
               </UiPopoverContent>
             </UiPopover>
+            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.countryCode }}</p>
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <UiFormField class="w-[80%]" v-model="mobileField" v-bind="mobileFieldProps" name="exoPhone">
+        <UiFormField class="w-[80%]" v-model="mobileField" v-bind="mobileFieldProps" name="phone">
           <UiFormItem class="w-full">
-            <UiFormLabel>
+            <UiFormLabel :class="errors?.firstName ? 'text-[#ef4444]' : ''">
               Phone Number <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
               <UiInput v-model="mobileField" v-bind="mobileFieldProps" placeholder="Enter phone number" />
             </UiFormControl>
-            <!-- <UiFormMessage :error="errors.phone?.number" /> -->
+            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.phone }}</p>
+            <!-- <UiFormMessage :error="errors.phone" /> -->
           </UiFormItem>
         </UiFormField>
       </div>

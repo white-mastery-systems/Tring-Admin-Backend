@@ -128,3 +128,27 @@ export const deleteIntegration = async ({
     toast.error(err.data.data[0].message);
   }
 };
+
+export const deleteBucket = async ({
+  integrationId,
+  onSuccess,
+}: {
+  integrationId: string;
+  onSuccess: Function;
+}) => {
+  try {
+    const deleteIntegration = await $fetch(
+      `/api/org/contact-list/${integrationId}`,
+      {
+        method: "DELETE",
+      },
+    );
+
+    onSuccess();
+    toast.success("Removed successfully");
+
+    return deleteIntegration;
+  } catch (err: any) {
+    toast.error(err.data.statusMessage);
+  }
+};

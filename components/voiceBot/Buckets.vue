@@ -2,13 +2,26 @@
   <div>
     <div class="flex items-center gap-2 pb-2">
       <UiInput v-model="searchBucket" class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
-        placeholder="Search buckets..." />
+        placeholder="Search bucket..." />
     </div>
-      <DataTable :data="!leads" :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="14"
-        height-unit="vh" @row-click="(row: any) => {
-          navigateTo(`leads/${row.original.chatId}`);
+    <DataTable :data="contactsList" :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="13"
+      height-unit="vh" />
+
+
+    <ConfirmationModal v-model:open="deleteBucketState.open" title="Confirm Delete"
+      description="Are you sure you want to delete ?" @confirm="() => {
+          if (deleteBucketState?.id) {
+            deleteBucket({
+              integrationId: deleteBucketState.id,
+              onSuccess: () => {
+                console.log('on success')
+                integrationRefresh();
+              },
+            });
+            deleteBucketState.open = false;
+          }
         }
-          " />
+        " />
   </div>
 </template>
 <script setup lang="ts">
@@ -17,60 +30,28 @@ import { createColumnHelper } from "@tanstack/vue-table";
 import { useRouter, useRoute } from "vue-router";
 
 const rowList = reactive(['name', 'email', 'visitedCount', 'mobile', 'createdAt'])
+// const addBucketNameModalState = ref({ open: false, id: null });
+const addBucketModalState: any = ref({ open: false, id: null})
 
 definePageMeta({
   middleware: "admin-only",
 });
 
+const addBucketNameModalState = defineModel<{ open: boolean, id: any }>({
+  default: {
+    open: false,
+    id: "",
+  },
+});
 const router = useRouter();
 const route = useRoute();
 const searchBucket = ref("");
-const exportToCSV = () => {
-  if (leads.value.length === 0) {
-    alert("No data to export");
-    return;
-  }
-
-  // Create CSV content
-  const csvContent =
-    columns.map((col) => col.header).join(",") +
-    "\n" +
-    leads.value
-      .map((lead) =>
-        rowList
-          .map((col) => {
-            let cellValue = lead.botUser[col]
-            if (cellValue) {
-              cellValue = cellValue.toString().replace(/"/g, '""');
-              if (
-                cellValue.includes(",") ||
-                cellValue.includes('"') ||
-                cellValue.includes("\n")
-              ) {
-                cellValue = `"${cellValue}"`;
-              }
-              return cellValue;
-            }
-          })
-          .join(","),
-      )
-      .join("\n");
-
-  // Create a Blob with the CSV content
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-
-  // Create a download link and trigger the download
-  const link = document.createElement("a");
-  if (link.download !== undefined) {
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", "leads_export.csv");
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-};
+let deleteBucketState: { open: boolean; id?: string } = reactive({
+  open: false,
+});
+const bucketsModalState = ref<{ open: boolean; id?: string | null }>({
+  open: false,
+});
 
 const filters = reactive<{
   botId: string;
@@ -95,64 +76,79 @@ const filters = reactive<{
 watchEffect(() => {
   if (filters.botId === "all") filters.botId = "";
 });
-const { status, data: leads } = await useLazyFetch("/api/org/leads", {
+const { status, data: contactsList, refresh: integrationRefresh, } = await useLazyFetch("/api/org/contact-list", {
   server: false,
-  query: filters,
   default: () => [],
 });
 const isDataLoading = computed(() => status.value === "pending");
 
-const viewLead = async (chatId: any) => {
-  await navigateTo({
-    name: "analytics-leads-id",
-    params: { id: chatId },
-  });
-};
 
-const columnHelper = createColumnHelper<(typeof leads.value)[0]>();
+const columnHelper = createColumnHelper<(typeof contactsList.value)[0]>();
 
 const actionsComponent = (id: any) => h(
   "div",
   {
     class: "flex items-center gap-2",
   }, [
+  // h(
+  //   UiButton,
+  //   {
+  //     onClick: (e: Event) => {
+  //       e.stopPropagation();
+  //       addBucketNameModalState.value.open = true;
+  //       addBucketNameModalState.value.id = id
+  //     },
+  //     class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
+  //   },
+  //   [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "Configure"],
+  // ),
   h(
     UiButton,
     {
-      onClick: () => viewLead(id),
-      class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
-    },
-    [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "Configure"],
-  ),
-  h(
-    UiButton,
-    {
-      onClick: () => deleteLead(id), // Add delete functionality
+      onClick: (e: any) => {
+         e.stopPropagation();
+        deleteBucketState.id = id;
+        deleteBucketState.open = true;
+      }, // Add delete functionality
       class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
     },
     [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Delete"]
-  )
+  ),
+    // h(
+    //   UiButton,
+    //   {
+    //     onClick: () => {
+    //       addBucketModalState.value.open = true
+    //       addBucketModalState.value.id = id
+    //       console.log("addBucketModalState")
+    //     }, // Add delete functionality
+    //     class: "bg-[#424bd1] hover:bg-[#424bd1] font-bold", // Different color for delete
+    //   },
+    //   [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Add"]
+    // )
 ]
 )
 
 const columns = [
-  columnHelper.accessor("botUser.name", {
+  columnHelper.accessor("name", {
     header: "Bucket Name",
-  }),
-  columnHelper.accessor("botUser.email", {
-    header: "No. of Audiences",
-  }),
-
-  
-  columnHelper.accessor("createdAt", {
-    header: "Date Created",
-    cell: ({ row }) =>
-      formatDate(new Date(row.original.createdAt), "dd MMM yyyy HH:MM "),
+    cell: ({ row }) => {
+      return h(
+        'div',
+        {
+          class: 'cursor-pointer',
+          onClick: () => {
+            navigateTo(`/contacts/${row.original.id}`); // Navigate on row click
+          },
+        },
+        row.original.name
+      );
+    },
   }),
   columnHelper.accessor("id", {
     header: "Action",
     cell: ({ row }) => {
-      return actionsComponent(row.original.chatId)
+      return actionsComponent(row.original.id)
     }
   }),
 ];
