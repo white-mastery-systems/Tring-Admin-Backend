@@ -43,7 +43,7 @@
           <span class="text-xs text-gray-500">Select your crm.</span>
         </UiFormItem>
       </UiFormField>
-      <UiFormField
+      <!-- <UiFormField
         v-if="
           integrationsData.find(
             (integration) => integration.id === values.integrationId,
@@ -76,7 +76,7 @@
           <span class="text-sm text-red-500">{{ errors?.subPipeline }}</span>
           <span class="text-xs text-gray-500">Select your sub pipeline.</span>
         </UiFormItem>
-      </UiFormField>
+      </UiFormField> -->
       <UiFormField
         v-if="
           integrationsData.find(
@@ -267,7 +267,7 @@
   const [pipelineField, pipelineFieldAttrs] = defineField("pipelineId");
   const [layoutField, layoutFieldAttrs] = defineField("layoutId");
   const [stageField, stageFieldAttrs] = defineField("stageId");
-  const [subPipelineField, subPipelineFieldAttrs] = defineField("subPipeline");
+  // const [subPipelineField, subPipelineFieldAttrs] = defineField("subPipeline");
 
   // subPipelineField
 
@@ -298,10 +298,10 @@
                 "stageId",
                 crmConfigData?.metadata?.pipelineObj?.id,
               );
-              setFieldValue(
-                "subPipeline",
-                crmConfigData?.metadata?.pipelineObj?.Sub_Pipeline,
-              );
+              // setFieldValue(
+              //   "subPipeline",
+              //   crmConfigData?.metadata?.pipelineObj?.Sub_Pipeline,
+              // );
               await handleCrmChange(crmConfigData.integrationId);
               await handlePipelineChange(crmConfigData.pipelineId);
             } else if (selectedCrm?.crm === "zoho-crm") {
@@ -372,13 +372,17 @@
         (pipeline: any) => pipeline.id === value.pipelineId,
       );
       let stage = pipelineData.sections
-        ?.find((section: any) => section.sequence_number === 2)
+        ?.find((section: any) => section.name === "Potential Information")
         ?.fields?.find((field: any) => field.field_label === "Stage")
         ?.pick_list_values?.find((list: any) => list.id === value.stageId);
+      const subPipeline = pipelineData.sections
+        ?.find((section: any) => section.name === "Potential Information")
+        ?.fields?.find((field: any) => field.api_name === "Sub_Pipeline")
+        ?.pick_list_values[0]?.reference_value;
       pipelineObj = {
         Stage: stage.reference_value,
         id: stage.id,
-        Sub_Pipeline: value.subPipeline,
+        Sub_Pipeline: subPipeline,
         Pipeline: {
           name: pipelineData.name,
           id: pipelineData.id,

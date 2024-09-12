@@ -70,18 +70,20 @@
         </UiFormItem>
       </UiFormField>
       <div class="flex w-full items-end">
-        <UiButton color="primary" type="submit"
-          >Submit and copy webhook url</UiButton
+        <UiButton color="primary" type="submit">
+          <CopyIcon class="mr-2 h-4 w-4" />Submit and copy webhook url</UiButton
         >
       </div>
       <span class="text-sm text-gray-500"
-        >enter this webhook url in meta dashboard</span
+        >enter this webhook url in Meta Dashboard</span
       >
     </UiForm>
   </DialogWrapper>
 </template>
 
 <script setup lang="ts">
+  import { CopyIcon } from "lucide-vue-next";
+
   const emit = defineEmits(["success"]);
   const { copy } = useClipboard();
 
