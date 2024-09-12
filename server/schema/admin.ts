@@ -155,6 +155,7 @@ export const campaignSchema = adminSchema.table("campaign", {
   phoneNumber: varchar("phone_number"),
   campaignDate: timestamp("campaign_date"),
   campaignTime: timestamp("campaign_time"),
+  contactListId: uuid("contact_list_id").references(() => contactListSchema.id, { onDelete: "cascade" }),
   organizationId: uuid("organization_id")
   .notNull()
   .references(() => organizationSchema.id),
