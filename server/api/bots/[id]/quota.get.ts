@@ -11,10 +11,18 @@ export default defineEventHandler(async (event) => {
       organization: true,
     },
   });
-  if (!bot) return sendError(event, createError({ statusCode: 404 }));
 
-  const availableQuota = bot.organization.maxQuota - bot.organization.usedQuota;
-  if (bot.organization.planCode === "chat_free" && availableQuota <= 0) {
-    return sendError(event, createError({ statusCode: 403 }));
+  if (!bot) return sendError(event, createError({ statusCode: 404 }));
+  const planDetails = await db.query.adminPricingSchema.findFirst({
+    where: eq(adminPricingSchema.planCode, bot.organization.planCode),
+  });
+  if (!planDetails) {
+    return sendError(event, createError({ statusCode: 404 }));
   }
+  return true;
+
+  // const availableQuota = planDetails?.sessions - bot.organization.usedQuota;
+  // if (bot.organization.planCode === "chat_free" && availableQuota <= 0) {
+  //   return sendError(event, createError({ statusCode: 403 }));
+  // }
 });
