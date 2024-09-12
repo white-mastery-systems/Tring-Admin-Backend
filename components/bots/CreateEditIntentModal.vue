@@ -198,7 +198,21 @@
   };
 
   const handleCreateEditIntent = handleSubmit(async (values) => {
-    if (!modalState.value.id) {
+    if (modalState.value.id) {
+      const intentDetails: any = {
+        id: botDetails.id,
+        intentId: modalState.value.id,
+        ...values,
+      };
+      await updateBotIntentById({
+        intentDetails,
+        onSuccess: () => {
+          modalState.value.open = false;
+          toast.success("Intent updated successfully");
+          emit("success");
+        },
+      });
+    } else {
       const intentDetails: any = {
         id: botDetails.id,
         ...values,
