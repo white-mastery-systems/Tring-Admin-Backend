@@ -4,6 +4,26 @@ interface Payload {
   intentDetails: any;
   onSuccess: Function;
 }
+
+export const updateBotIntentById = async ({
+  intentDetails,
+  onSuccess,
+}: Payload) => {
+  try {
+    const createdIntent = await $fetch(
+      `/api/bots/${intentDetails.id}/intents/${intentDetails?.intentId}`,
+      {
+        method: "PUT",
+        body: intentDetails,
+      },
+    );
+
+    onSuccess();
+    return createdIntent;
+  } catch (err: any) {
+    toast.error(err.data.data[0].message);
+  }
+};
 export const createBotIntents = async ({
   intentDetails,
   onSuccess,
