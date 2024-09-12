@@ -26,6 +26,8 @@ export const organizationSchema = adminSchema.table("organization", {
   maxQuota: integer("max_quota").default(50).notNull(),
   planCode: varchar("plan_code", { length: 64 }).notNull().default("chat_free"),
   isOnboarded: boolean("is_onboarded").default(false).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 export const statusEnum = pgEnum("status", [
   "active",
@@ -51,6 +53,8 @@ export const paymentSchema = adminSchema.table("payment", {
   customer_metadata: jsonb("customer_metadata"),
   type: paymentTypeEnum("type").default("subscription").notNull(),
   status: statusEnum("status").default("active").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const integrationSchema = adminSchema.table("integration", {
@@ -65,6 +69,7 @@ export const integrationSchema = adminSchema.table("integration", {
   crm: varchar("crm", { length: 64 }).notNull(),
   metadata: jsonb("metadata").default({}).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const timelineSchema = adminSchema.table("timeline", {
@@ -76,11 +81,14 @@ export const timelineSchema = adminSchema.table("timeline", {
   metadata: jsonb("metadata").default({}).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   intent: varchar("intent", { length: 64 }),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 export const adminConfigurationSchema = adminSchema.table("admin_config", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 128 }).notNull(),
   metaData: jsonb("metadata").default({}).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 export const adminPricingSchema = adminSchema.table("admin_pricing", {
   id: serial("id").primaryKey(),
@@ -98,7 +106,9 @@ export const adminPricingSchema = adminSchema.table("admin_pricing", {
   leadGenEnabled: boolean("lead_gen_enabled").default(false).notNull(),
   crmConfigEnabled: boolean("crm_config_enabled").default(false).notNull(),
   widgetCustomization: varchar("widget_customization").notNull(),
-  tringBranding: varchar("tring_branding").notNull(),
+  tringBranding: varchar("tring_branding").notNull(),  
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const numberIntegrationSchema = adminSchema.table("number_integration", {
@@ -109,7 +119,48 @@ export const numberIntegrationSchema = adminSchema.table("number_integration", {
   organizationId: uuid("org_id")
     .notNull()
     .references(() => organizationSchema.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const contactListSchema = adminSchema.table("contact_list", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  name: varchar("name"),
+  organizationId: uuid("organizationId")
+  .notNull()
+  .references(() => organizationSchema.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
+export const contactSchema = adminSchema.table("contacts", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  countryCode: varchar("country_code"),
+  phone: varchar("phone"),
+  contactListId: uuid("contact_list_id")
+  .notNull()
+  .references(() => contactListSchema.id, { onDelete: "cascade" }),
+  organizationId: uuid("organization_id")
+  .notNull()
+  .references(() => organizationSchema.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
+export const campaignSchema = adminSchema.table("campaign", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  countryCode: varchar("country_code"),
+  phoneNumber: varchar("phone_number"),
+  campaignDate: timestamp("campaign_date"),
+  campaignTime: timestamp("campaign_time"),
+  organizationId: uuid("organization_id")
+  .notNull()
+  .references(() => organizationSchema.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}) 
 
 // Relations
 export const organizationRelations = relations(
@@ -134,6 +185,7 @@ export const billingRelations = relations(paymentSchema, ({ one }) => ({
   }),
 }));
 
+
 // Types
 export type SelectOrganization = InferSelectModel<typeof organizationSchema>;
 export type InsertOrganization = InferInsertModel<typeof organizationSchema>;
@@ -148,6 +200,15 @@ export type SelectNumberIntegration = InferSelectModel<
 export type InsertNumberIntegration = InferInsertModel<
   typeof numberIntegrationSchema
 >;
+
+export type SelectContactList = InferSelectModel<typeof contactListSchema>;
+export type InsertContactList = InferInsertModel<typeof contactListSchema>;
+
+export type SelectContacts = InferSelectModel<typeof contactSchema>;
+export type InsertContacts = InferInsertModel<typeof contactSchema>;
+
+export type SelectCampaign = InferSelectModel<typeof campaignSchema>;
+export type InsertCampaign = InferInsertModel<typeof campaignSchema>;
 
 // Validation
 export const zodInsertOrganization = createInsertSchema(organizationSchema, {

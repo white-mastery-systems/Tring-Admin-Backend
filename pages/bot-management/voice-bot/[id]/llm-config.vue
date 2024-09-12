@@ -280,7 +280,7 @@
   const router = useRouter();
   const route = useRoute("bot-management-voice-bot-id-llm-config");
 
-  const botDetails: any = await getBotDetails(route.params.id);
+  const botDetails: any = await getVoiceBotDetails(route.params.id);
 
   const handleLLMConfig = async (values: any) => {
     const payload: any = {

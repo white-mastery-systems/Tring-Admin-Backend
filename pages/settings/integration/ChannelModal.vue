@@ -6,18 +6,6 @@
     },
   });
   watch(channelModalState, (newState) => {});
-  const handleConnect = async (values: any) => {
-    const payload = {
-      name: values.name,
-      crm: values.channel,
-      metaData: {
-        pid: values.pid,
-        token: values.token,
-      },
-    };
-    await $fetch("/api/org/integrations", { method: "POST", body: payload });
-    // emit("success")
-  };
 
   const formSchema = toTypedSchema(
     z.object({
@@ -27,6 +15,23 @@
       token: z.string().min(2, "Token is required"),
     }),
   );
+
+  const handleConnect = async (values: any) => {
+    const payload = {
+      name: values.name,
+      crm: values.channel,
+      metaData: {
+        pid: values.pid,
+        token: values.token,
+      },
+    };
+    try {
+      await $fetch("/api/org/integrations", { method: "POST", body: payload });
+      emit("success");
+    } catch (error: any) {
+      toast.error(error?.data?.data[0].message);
+    }
+  };
 </script>
 
 <template>
@@ -73,7 +78,7 @@
                   <UiSelectValue placeholder="Select a channel" />
                 </UiSelectTrigger>
                 <UiSelectContent>
-                  <UiSelectItem value="whatsapp">What's App</UiSelectItem>
+                  <UiSelectItem value="whatsapp">WhatsApp</UiSelectItem>
                 </UiSelectContent>
               </UiSelect>
             </UiFormControl>

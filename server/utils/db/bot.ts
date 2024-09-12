@@ -86,7 +86,10 @@ export const updateBotDetails = async (
   return (
     await db
       .update(chatBotSchema)
-      .set(bot)
+      .set({
+        ...bot,
+        updatedAt: new Date()
+      })
       .where(eq(chatBotSchema.id, botId))
       .returning()
   )[0];
@@ -125,7 +128,10 @@ export const listBotIntents = async (
 export const updateBotIntent = async (botId: string, intentId: string, intent: InsertIntent) => {
   return (
     await db.update(botIntentSchema)
-    .set(intent)
+    .set({
+      ...intent,
+      updatedAt: new Date()
+    })
     .where(
       and(
         eq(botIntentSchema.botId, botId),
@@ -167,7 +173,10 @@ export const getBotIntegrationById = async (botId: string, botIntegrationId: str
 export const updateBotIntegration = async(botId: string, botIntegrationId: string, botIntegration: zodInsertBotIntegration) =>{
   return (
      await db.update(botIntegrationSchema)
-    .set(botIntegration)
+    .set({
+      ...botIntegration,
+      updatedAt: new Date()
+    })
     .where(
       and(
       eq(botIntegrationSchema.botId, botId),

@@ -29,7 +29,10 @@ export const updateOrganization = async (
 ) => {
   return await db
     .update(organizationSchema)
-    .set(organization)
+    .set({
+      ...organization,
+      updatedAt: new Date()
+    })
     .where(eq(organizationSchema.id, id));
 };
 

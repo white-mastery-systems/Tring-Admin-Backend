@@ -18,6 +18,8 @@ export default defineEventHandler(async (event) => {
       metaData: z.object({
         apiKey: z.string().optional(),
         status: z.string().optional(),
+        pid: z.string().optional(),
+        token: z.string().optional(),
       }),
     })
     .refine(

@@ -27,6 +27,8 @@ export const authUserSchema = adminSchema.table("user", {
     () => organizationSchema.id,
     { onDelete: "cascade" },
   ),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const authSessionSchema = adminSchema.table("session", {
@@ -38,6 +40,8 @@ export const authSessionSchema = adminSchema.table("session", {
     withTimezone: true,
     mode: "date",
   }).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 // Relations

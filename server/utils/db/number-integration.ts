@@ -29,7 +29,10 @@ export const getNumberIntegrationById = async (numberIntegrationId: string) => {
 export const updateNumberIntegration = async (id: string, numberIntegration: InsertNumberIntegration) => {
   return (
     await db.update(numberIntegrationSchema)
-    .set(numberIntegration)
+    .set({
+      ...numberIntegration,
+      updatedAt: new Date()
+    })
     .where(eq(numberIntegrationSchema.id, id))
     .returning()
   )[0]
