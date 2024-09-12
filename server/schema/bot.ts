@@ -28,6 +28,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
     },
     prompt: {},
     crm: {},
+    channel: {},
   }),
   channels: jsonb("channels").default({ whatsapp: {} }),
   organizationId: uuid("organization_id")

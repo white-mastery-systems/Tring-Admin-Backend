@@ -48,6 +48,8 @@ export default defineNuxtConfig({
     redirectUrl: "",
     logoDir: "",
     llmCallbackUrl: "",
+    playGroundBotId: "",
+    fileUrl: ""
   },
 
   vite: {

@@ -1,14 +1,35 @@
 <template>
-  <Page title="Integration" :disable-back-button="true" :disable-elevation="true">
+  <Page
+    title="Integration"
+    :disable-back-button="true"
+    :disable-elevation="true"
+  >
     <template #actionButtons>
       <div class="flex gap-2">
-        <UiButton v-if="route.query.q === 'channel'" color="primary" @click="channelModalState.open = true">
+        <UiButton
+          v-if="route.query.q === 'channel'"
+          color="primary"
+          @click="channelModalState.open = true"
+        >
           Add Channel
         </UiButton>
-        <UiButton v-else-if="route.query.q === 'number'" color="primary" @click="numberModalState.open = true">
+        <UiButton
+          v-else-if="route.query.q === 'number'"
+          color="primary"
+          @click="numberModalState.open = true"
+        >
           Add Number
         </UiButton>
-        <UiButton v-else color="primary" @click="integrationModalState.open = true">
+        <UiButton
+          v-else
+          color="primary"
+          @click="
+            () => {
+              integrationModalState.open = true;
+              integrationModalState.id = null;
+            }
+          "
+        >
           Add Integration
         </UiButton>
       </div>
@@ -26,24 +47,45 @@
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="client">
-        <DataTable :columns="columns" :data="integrationsData" :page-size="8" :is-loading="false" :height="13"
-          :heightUnit="'vh'" />
+        <DataTable
+          :columns="columns"
+          :data="integrationsData"
+          :page-size="8"
+          :is-loading="false"
+          :height="13"
+          :heightUnit="'vh'"
+        />
       </UiTabsContent>
       <UiTabsContent value="campaign">
-        <DataTable :columns="statusColumns" :data="integrationsData" :page-size="8" :is-loading="false" :height="13"
-          :heightUnit="'vh'" />
+        <DataTable
+          :columns="statusColumns"
+          :data="integrationsData"
+          :page-size="8"
+          :is-loading="false"
+          :height="13"
+          :heightUnit="'vh'"
+        />
       </UiTabsContent>
       <UiTabsContent value="number">
         <NumberIntegration />
       </UiTabsContent>
     </UiTabs>
     <ChannelModal v-model="channelModalState" @success="onSuccessChannel()" />
-    <NumberModal v-model="numberModalState" @success="onSuccessNumberIntegration()" />
-    <CreateEditIntegrationModal v-model="integrationModalState" :id="integrationModalState?.id"
-      @success="onSuccess()" />
+    <NumberModal
+      v-model="numberModalState"
+      @success="onSuccessNumberIntegration()"
+    />
+    <CreateEditIntegrationModal
+      v-model="integrationModalState"
+      :id="integrationModalState?.id"
+      @success="onSuccess()"
+    />
   </Page>
-  <ConfirmationModal v-model:open="deleteIntegrationState.open" title="Confirm Delete"
-    description="Are you sure you want to delete ?" @confirm="
+  <ConfirmationModal
+    v-model:open="deleteIntegrationState.open"
+    title="Confirm Delete"
+    description="Are you sure you want to delete ?"
+    @confirm="
       () => {
         if (deleteIntegrationState?.id) {
           deleteIntegration({
@@ -55,7 +97,8 @@
           deleteIntegrationState.open = false;
         }
       }
-    " />
+    "
+  />
 </template>
 <script lang="ts" setup>
   import { Icon, UiBadge, UiButton } from "#components";
@@ -108,16 +151,16 @@
     toast.success("Integration added successfully");
     integrationRefresh();
   };
-const onSuccessNumberIntegration = () => {
+  const onSuccessNumberIntegration = () => {
     numberModalState.value.open = false;
     toast.success("Integration added successfully");
   };
 
   const onSuccessChannel = () => {
-    channelModalState.value.open =false
+    channelModalState.value.open = false;
     toast.success("Integration added successfully");
-    integrationRefresh()
-  }
+    integrationRefresh();
+  };
 
   // const channelModal = () => {
   //   channelModalState.value.open = false

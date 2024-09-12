@@ -35,7 +35,7 @@ export const listLeads = async (
   try {
     let filters: any = [eq(leadSchema.organizationId, organizationId)];
 
-    if (query?.botId) {
+    if (query?.botId && query?.botId !== "all") {
       filters.push(eq(leadSchema.botId, query.botId));
     }
 
