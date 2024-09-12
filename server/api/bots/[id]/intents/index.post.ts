@@ -3,6 +3,7 @@ import { createBotIntent } from "~/server/utils/db/bot";
 export const zodInsertChatBotIntent = z.object({
   intent: z.string().min(2, "Intent too short"),
   link: z.string().url().min(5, "Link too short").optional(),
+  uploads: z.array(z.any()).optional()
 }).refine((data) => {
   // Require `link` only when intent is "location" or "virtual_tour"
   if (["location", "virtual_tour"].includes(data.intent)) {
