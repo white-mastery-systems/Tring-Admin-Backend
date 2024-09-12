@@ -4,13 +4,7 @@
 definePageMeta({
   middleware: "admin-only",
 });
-interface Props {
-  id: string;
-}
 
-const props = withDefaults(defineProps<Props>(), {
-  id: "",
-});
 const emit = defineEmits<{ (e: "confirm"): void }>();
 const addBucketNameModalState = defineModel<{ open: boolean, id: any }>({
   default: {
@@ -26,8 +20,8 @@ const formSchema = toTypedSchema(
   })
 );
 watch(() => addBucketNameModalState.value.open, async(newState) => {
-  if (props.id) {
-    const getSingleDetails: any = await $fetch(`/api/org/contact-list/${props.id}`)
+  if (addBucketNameModalState.value.id) {
+    const getSingleDetails: any = await $fetch(`/api/org/contact-list/${addBucketNameModalState.value.id}`)
     setFieldValue("name", getSingleDetails.name)
   } else {
     resetForm()
@@ -81,8 +75,8 @@ watch(addBucketNameModalState, (newState) => { });
 
 const handleConnect = handleSubmit(async (values: any) => {
   try {
-    if (props.id) {
-      const getUpdateValues = await $fetch(`api/org/contact-list/${props.id}`, { method: "PUT", body: values });
+    if (addBucketNameModalState.value.id) {
+      const getUpdateValues = await $fetch(`api/org/contact-list/${addBucketNameModalState.value.id}`, { method: "PUT", body: values });
       toast.success("Updated successfully")
     } else {
       
@@ -96,7 +90,8 @@ const handleConnect = handleSubmit(async (values: any) => {
 });
 </script>
 <template>
-  <DialogWrapper v-model="addBucketNameModalState" title="Add Bucket">
+  <DialogWrapper v-model="addBucketNameModalState"
+    :title="(addBucketNameModalState.id) ?  'Modify Bucket' : 'Add Bucket'">
     <UiForm v-slot="{ values }" @submit="handleConnect" :keep-values="true" :validate-on-mount="false"
       class="space-y-2">
       <div class="flex gap-4">

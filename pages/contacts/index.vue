@@ -40,7 +40,7 @@
         }
           " />
     </div>
-    <AddBucketNameModal v-model="addBucketNameModalState" :id="addBucketNameModalState.id" @confirm="() => {
+    <AddBucketNameModal v-model="addBucketNameModalState" @confirm="() => {
       addBucketNameModalState.open = false
       integrationRefresh()
     }" />

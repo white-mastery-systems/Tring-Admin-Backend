@@ -7,12 +7,6 @@ definePageMeta({
 });
 const emit = defineEmits<{ (e: "confirm"): void }>();
 
-interface Props {
-  id: string;
-}
-const props = withDefaults(defineProps<Props>(), {
-  id: "",
-});
 const route = useRoute();
 const queryId = ref(route.params.id)
 const bucketModalState = defineModel<{ open: boolean, id: any }>({
@@ -84,7 +78,7 @@ watch(() => bucketModalState.value.open, async (newState) => {
 
 const handleConnect = handleSubmit(async (values: any) => {
   try {
-    if (props.id) {
+    if (bucketModalState.value.id) {
       await $fetch(`/api/org/contact-list/${queryId.value}/contacts/${bucketModalState.value.id}`, { method: "PUT", body: values });
       toast.success("Created successfully")
     } else {
