@@ -2,10 +2,16 @@ import { getContactLists } from "~/server/utils/db/contact-list"
 
 const db = useDrizzle()
 
+const zodQueryvalidator = z.object({
+  q: z.string().optional()
+})
+
 export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string
 
-  const contactList = await getContactLists(organizationId)
+  const query = await isValidQueryHandler(event, zodQueryvalidator)
+
+  const contactList = await getContactLists(organizationId, query)
 
   const contacts = await db.query.contactSchema.findMany({
     where: eq(contactSchema.organizationId, organizationId)

@@ -11,6 +11,7 @@ const zodUpdateCampaign = z.object({
       .datetime({ offset: true })
       .nullish()
       .transform((val) => (val ? new Date(val) : null)),
+  contactListId: z.string().optional()
 })
 
 export default defineEventHandler(async (event) => {
