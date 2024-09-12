@@ -9,3 +9,14 @@ export const useCount = () => {
     refresh,   
   };
 };
+
+export const campaignData = () => {
+   const { status, data: campaignDataList, refresh } = useLazyAsyncData('campaign-data', () => 
+    $fetch('/api/org/campaign')
+  );
+  return {
+    status,
+    campaignDataList,
+    refresh,
+  }
+}

@@ -1,0 +1,165 @@
+<template>
+  <Page title="Buckets" :disable-back-button="true">
+    <template #actionButtons>
+      <div class="flex gap-4">
+        <div class="flex gap-2">
+          <UiButton color="primary" @click="addBucketNameModalState.open = true">
+            Add Bucket
+          </UiButton>
+          <UiButton color="primary">
+            Import
+          </UiButton>
+          <UiButton color="primary">
+            Export
+          </UiButton>
+        </div>
+      </div>
+    </template>
+    <div>
+      <div class="flex items-center gap-2 pb-2">
+        <UiInput v-model="searchBucket" class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
+          placeholder="Search bucket..." />
+      </div>
+      <DataTable :data="contactsList" :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="13"
+        height-unit="vh" />
+
+      <ConfirmationModal v-model:open="deleteBucketState.open" title="Confirm Delete"
+        description="Are you sure you want to delete ?" @confirm="() => {
+          if (deleteBucketState?.id) {
+            deleteBucket({
+              integrationId: deleteBucketState.id,
+              onSuccess: () => {
+                integrationRefresh();
+              },
+            });
+            deleteBucketState.open = false;
+          }
+        }
+          " />
+    </div>
+    <AddBucketNameModal v-model="addBucketNameModalState" :id="addBucketNameModalState.id" @confirm="() => {
+      addBucketNameModalState.open = false
+      integrationRefresh()
+    }" />
+
+
+  </Page>
+</template>
+<script setup lang="ts">
+import { createColumnHelper } from "@tanstack/vue-table";
+import { format } from "date-fns";
+import { any } from "zod";
+import { useRoute, useRouter } from "vue-router";
+import AddBucketNameModal from "~/components/voiceBot/DialogModal/AddBucketNameModal.vue";
+import { Icon, UiBadge, UiButton } from "#components";
+
+
+definePageMeta({
+  middleware: "admin-only",
+});
+
+const formSchema = toTypedSchema(
+  z.object({
+    newBotName: z.string().min(2, "Bot Name is requird."),
+  }),
+);
+const searchBucket = ref("");
+const deleteBucketState = ref({ open: false, id: null });
+// const campaignModalState = ref({ open: false });
+const addBucketNameModalState = ref({ open: false, id: null });
+const { status, data: contactsList, refresh: integrationRefresh, } = await useLazyFetch("/api/org/contact-list", {
+  server: false,
+  // query: filters,
+  default: () => [],
+});
+// const addBucketNameModalState = defineModel<{ open: boolean, id: string }>({
+//   default: {
+//     open: false,
+//     id: "",
+//   },
+// });
+const viewCampaignStatusModalState = ref({ open: false });
+
+const searchBot = ref("");
+const searchBotDebounce = refDebounced(searchBot, 500);
+const router = useRouter();
+const route = useRoute();
+const activeStatus = ref("");
+watch(activeStatus, async (newStatus, previousStatus) => { });
+const selectedValue = ref("Today");
+// const newBotName = ref("");
+
+const isDataLoading = computed(() => status.value === "pending");
+
+const columnHelper = createColumnHelper<(typeof contactsList.value)[0]>();
+
+const actionsComponent = (id: any) => h(
+  "div",
+  {
+    class: "flex items-center gap-2",
+  }, [
+  h(
+    UiButton,
+    {
+      onClick: (e: Event) => {
+        e.stopPropagation();
+        addBucketNameModalState.value.open = true;
+        addBucketNameModalState.value.id = id
+      },
+      class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
+    },
+    [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "Configure"],
+  ),
+  h(
+    UiButton,
+    {
+      onClick: (e: any) => {
+        e.stopPropagation();
+        deleteBucketState.value.id = id;
+        deleteBucketState.value.open = true;
+      }, // Add delete functionality
+      class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
+    },
+    [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Delete"]
+  ),
+  // h(
+  //   UiButton,
+  //   {
+  //     onClick: () => {
+  //       addBucketModalState.value.open = true
+  //       addBucketModalState.value.id = id
+  //       console.log("addBucketModalState")
+  //     }, // Add delete functionality
+  //     class: "bg-[#424bd1] hover:bg-[#424bd1] font-bold", // Different color for delete
+  //   },
+  //   [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Add"]
+  // )
+]
+)
+
+const columns = [
+  columnHelper.accessor("name", {
+    header: "Bucket Name",
+    cell: ({ row }) => {
+      return h(
+        'div',
+        {
+          class: 'cursor-pointer',
+          onClick: () => {
+            navigateTo(`/contacts/${row.original.id}`); // Navigate on row click
+          },
+        },
+        row.original.name
+      );
+    },
+  }),
+  columnHelper.accessor("id", {
+    header: "Action",
+    cell: ({ row }) => {
+      return actionsComponent(row.original.id)
+    }
+  }),
+];
+</script>
+
+<style scoped></style>
