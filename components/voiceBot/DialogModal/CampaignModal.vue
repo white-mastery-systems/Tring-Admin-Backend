@@ -114,7 +114,7 @@ const handleConnect = handleSubmit(async (values: any) => {
 });
 </script>
 <template>
-  <DialogWrapper v-model="campaignModalState" title="Add Campaign">
+  <DialogWrapper v-model="campaignModalState" :title="(campaignModalState.id) ? 'Modify Campaign' : 'Add Campaign'">
     <UiForm v-slot="{ values }" @submit="handleConnect" :keep-values="true" :validate-on-mount="false"
       class="space-y-2">
       <UiFormField v-model="selectDate" v-bind="selectDateProps" name="date">

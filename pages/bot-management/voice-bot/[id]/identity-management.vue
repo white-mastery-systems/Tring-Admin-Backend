@@ -37,17 +37,10 @@ const onSubmit = async (value: any) => {
 };
 </script>
 <template>
-  <!-- :bread-crumbs="[
-    { label: `${botDetails.name}`, to: `/bot-management/chat-bot/${botDetails.id}` },
-    {
-      label: 'Intent Management',
-      to: `/bot-management/chat-bot/${botDetails.id}/intent-management`,
-    },
-  ]"  -->
-  <Page title="Identity Management" :bread-crumbs="[
+  <Page title="Bot Details" :bread-crumbs="[
     { label: `${botDetails.name}`, to: `/bot-management/voice-bot/${botDetails.id}` },
     {
-      label: 'Identity Management',
+      label: 'Bot Details',
       to: `/bot-management/voice-bot/${botDetails.id}/identity-management`,
     },
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">

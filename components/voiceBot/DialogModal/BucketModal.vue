@@ -93,7 +93,7 @@ const handleConnect = handleSubmit(async (values: any) => {
 });
 </script>
 <template>
-  <DialogWrapper v-model="bucketModalState" title="Add Bucket">
+  <DialogWrapper v-model="bucketModalState" :title="(bucketModalState.id) ? 'Modify Bucket' : 'Add Bucket'">
     <!-- :validation-schema="formSchema" -->
     <UiForm v-slot="{ values }" @submit="handleConnect" :keep-values="true" :validate-on-mount="false"
       class="space-y-2">

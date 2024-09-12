@@ -227,7 +227,7 @@
   const dataList = ref([
     {
       _id: 1,
-      bot: "Identity Management",
+      bot: "Bot Details",
       helperText:
         "This bot assists with managing user identities, including authentication, authorization, and user profiles.",
       routeName: "bot-management-voice-bot-id-identity-management",
