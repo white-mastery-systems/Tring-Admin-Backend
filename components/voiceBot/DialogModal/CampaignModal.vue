@@ -82,8 +82,8 @@ watch(() => campaignModalState.value.open, async (newState) => {
     setFieldValue("countryCode", getSingleDetails.countryCode);
     setFieldValue("exoPhone", getSingleDetails.phoneNumber);
 
-    // setFieldValue("phone", getSingleDetails.phone);
-    console.log(getSingleDetails, "getSingleDetails")
+  } else {
+    resetForm()
   }
 });
 

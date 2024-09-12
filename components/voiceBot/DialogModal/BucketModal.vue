@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const route = useRoute();
 const queryId = ref(route.params.id)
-const bucketModalState = defineModel<{ open: boolean, id: null }>({
+const bucketModalState = defineModel<{ open: boolean, id: any }>({
   default: {
     open: false,
     id: null,
@@ -71,14 +71,15 @@ const [mobileField, mobileFieldProps] = defineField("phone");
 const [countryCode, countryCodeProps] = defineField("countryCode");
 
 watch(() => bucketModalState.value.open, async (newState) => { 
-  if (queryId.value) {
+  if (bucketModalState.value.id) {
     const getSingleDetails: any = await $fetch(`/api/org/contact-list/${queryId.value}/contacts/${bucketModalState.value.id}`)
       setFieldValue("firstName", getSingleDetails.firstName);
       setFieldValue("lastName", getSingleDetails.lastName);
       setFieldValue("countryCode", getSingleDetails.countryCode);
       setFieldValue("phone", getSingleDetails.phone);
+  } else {
+    resetForm()
   }
-  console.log(bucketModalState, "bucketModalState")
 });
 
 const handleConnect = handleSubmit(async (values: any) => {

@@ -29,6 +29,8 @@ watch(() => addBucketNameModalState.value.open, async(newState) => {
   if (props.id) {
     const getSingleDetails: any = await $fetch(`/api/org/contact-list/${props.id}`)
     setFieldValue("name", getSingleDetails.name)
+  } else {
+    resetForm()
   }
 });
 
@@ -87,7 +89,6 @@ const handleConnect = handleSubmit(async (values: any) => {
       await $fetch("/api/org/contact-list", { method: "POST", body: values });
       toast.success("Created successfully")
     }
-    resetForm()
     emit('confirm')
   } catch(error: any) {
     toast.error(error.data.statusMessage)
