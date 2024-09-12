@@ -12,7 +12,7 @@
     :disable-back-button="false"
     :disable-elevation="false"
   >
-    <div class="shadow-md mx-5 rounded-lg bg-white">
+    <div class="shadow-md mx-5 rounded-lg">
       <UiForm
         v-slot="{ values, errors }"
         :keep-values="true"
@@ -28,7 +28,7 @@
               <UiFormControl>
                 <UiSelect v-bind="componentField">
                   <UiSelectTrigger
-                    class="hover:focus:none hover:focus-visible:none field_shadow h-12 w-full"
+                    class="hover:focus:none hover:focus-visible:none h-12 w-full"
                   >
                     <UiSelectValue placeholder="Select Provider" />
                   </UiSelectTrigger>
@@ -52,7 +52,7 @@
               <UiFormControl>
                 <UiSelect v-bind="componentField">
                   <UiSelectTrigger
-                    class="hover:focus:none hover:focus-visible:none field_shadow h-12 w-full"
+                    class="hover:focus:none hover:focus-visible:none h-12 w-full"
                   >
                     <UiSelectValue placeholder="Select Model" />
                   </UiSelectTrigger>
@@ -78,7 +78,7 @@
               <UiFormControl>
                 <UiSelect v-bind="componentField">
                   <UiSelectTrigger
-                    class="hover:focus:none hover:focus-visible:none field_shadow h-12 w-full"
+                    class="hover:focus:none hover:focus-visible:none h-12 w-full"
                   >
                     <UiSelectValue placeholder="Select Max Tokens" />
                   </UiSelectTrigger>
@@ -140,7 +140,7 @@
             <UiFormControl>
               <UiSelect v-bind="componentField">
                 <UiSelectTrigger
-                  class="hover:focus:none hover:focus-visible:none field_shadow h-12 w-full"
+                  class="hover:focus:none hover:focus-visible:none h-12 w-full"
                 >
                   <UiSelectValue placeholder="Select Role" />
                 </UiSelectTrigger>
