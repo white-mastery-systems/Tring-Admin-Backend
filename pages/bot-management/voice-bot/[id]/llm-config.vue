@@ -15,7 +15,7 @@
     :disable-back-button="false"
     :disable-elevation="false"
   >
-    <div class="shadow-md mx-5 rounded-lg bg-white">
+    <div class="shadow-md mx-5 rounded-lg">
       <UiForm
         v-slot="{ values, errors }"
         :keep-values="true"
@@ -31,7 +31,7 @@
               <UiFormControl>
                 <UiSelect v-bind="componentField">
                   <UiSelectTrigger
-                    class="hover:focus:none hover:focus-visible:none field_shadow h-12 w-full"
+                    class="hover:focus:none hover:focus-visible:none h-12 w-full"
                   >
                     <UiSelectValue placeholder="Select Provider" />
                   </UiSelectTrigger>
@@ -55,7 +55,7 @@
               <UiFormControl>
                 <UiSelect v-bind="componentField">
                   <UiSelectTrigger
-                    class="hover:focus:none hover:focus-visible:none field_shadow h-12 w-full"
+                    class="hover:focus:none hover:focus-visible:none h-12 w-full"
                   >
                     <UiSelectValue placeholder="Select Model" />
                   </UiSelectTrigger>
@@ -81,7 +81,7 @@
               <UiFormControl>
                 <UiSelect v-bind="componentField">
                   <UiSelectTrigger
-                    class="hover:focus:none hover:focus-visible:none field_shadow h-12 w-full"
+                    class="hover:focus:none hover:focus-visible:none h-12 w-full"
                   >
                     <UiSelectValue placeholder="Select Max Tokens" />
                   </UiSelectTrigger>
@@ -101,7 +101,7 @@
           <UiFormField v-slot="{ componentField }" name="temperature">
             <UiFormItem v-auto-animate="animationProps" class="w-full">
               <UiFormLabel> Temperature </UiFormLabel>
-              <UiFormControl>
+              <UiFormControl  class="focus-visible:none h-12 focus-visible:ring-offset-0">
                 <UiNumberField
                   :default-value="0"
                   :step="0.1"
@@ -111,7 +111,6 @@
                   :min="0"
                   :max="1"
                   v-bind="componentField"
-                  class="focus-visible:none h-12 focus-visible:ring-offset-0"
                 >
                   <UiNumberFieldContent>
                     <UiNumberFieldDecrement />
@@ -143,19 +142,35 @@
             <UiFormControl>
               <UiSelect v-bind="componentField">
                 <UiSelectTrigger
-                  class="hover:focus:none hover:focus-visible:none field_shadow h-12 w-full"
+                  class="hover:focus:none hover:focus-visible:none h-12 w-full"
                 >
                   <UiSelectValue placeholder="Select Role" />
                 </UiSelectTrigger>
                 <UiSelectContent>
-                  <UiSelectItem
-                    v-for="({ value, label }, index) in roles"
-                    :value="value"
-                    >{{ label }}
-                    <p class="text-xs italic text-gray-500">{{ value }}</p>
-                  </UiSelectItem>
+                  <div v-for="({ value, label }, index) in roles">
+                    <UiSelectItem :value="value">{{ value }} </UiSelectItem>
+                    <span class="mx-2 text-xs italic text-gray-500">{{
+                      label
+                    }}</span>
+                  </div>
                 </UiSelectContent>
               </UiSelect>
+              <UiFormField
+                v-if="componentField.modelValue === 'Other'"
+                v-slot="{ componentField }"
+                name="otherRole"
+              >
+                <UiFormItem v-auto-animate="animationProps" class="w-full">
+                  <UiFormControl>
+                    <UiInput
+                      v-bind="componentField"
+                      type="text"
+                      class="focus-visible:none h-12 focus-visible:ring-offset-0"
+                    />
+                  </UiFormControl>
+                  <UiFormMessage />
+                </UiFormItem>
+              </UiFormField>
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
@@ -255,6 +270,10 @@
       label: "Receptionist",
       value:
         "Assist customers queries about room bookings and hotel information",
+    },
+    {
+      label: "Perform other custom tasks as needed.",
+      value: "Other",
     },
   ];
 
