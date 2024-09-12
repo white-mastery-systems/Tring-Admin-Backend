@@ -1,11 +1,12 @@
 import { writeFile } from "node:fs/promises";
+import { config } from "node:process";
 
 type UUID = string;
 
 const conf = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
-  const botId: UUID = "eee8fd62-e52b-4cf9-84af-a7c7fe30cc80";
+  const botId: UUID = config?.playGroundBotId;
 
   // Data Validation
   const formData = await readMultipartFormData(event);

@@ -6,7 +6,7 @@
     <UiForm @submit="handleFormSubmission">
       <div>
         <label
-          class="grid h-32 w-24 items-center rounded-sm bg-gray-200 text-center"
+          class="grid h-24 w-24 items-center rounded-sm bg-gray-200 text-center"
         >
           Upload file
           <input class="hidden" type="file" @change="handleFileChange" />

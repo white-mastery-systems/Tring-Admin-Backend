@@ -79,6 +79,27 @@ export const addBotIntegration = async ({
     toast.error(err.data.data[0].message);
   }
 };
+export const updateBotIntegrationById = async ({
+  payload,
+  onSuccess,
+}: {
+  payload: any;
+  onSuccess: Function;
+}) => {
+  try {
+    const createdBot = await $fetch<SelectChatBot>(
+      `/api/bots/${payload.botId}/integrations/${payload.botIntegrationId}`,
+      {
+        method: "PUT",
+        body: payload,
+      },
+    );
+    onSuccess();
+    return createdBot;
+  } catch (err: any) {
+    toast.error(err.data.data[0].message);
+  }
+};
 
 export const getBotIntegrations = async (botId: string) => {
   const botIntegrations = await $fetch<SelectBotIntegration>(

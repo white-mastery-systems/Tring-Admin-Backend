@@ -235,6 +235,7 @@
 </template>
 <script setup lang="ts">
   import { useForm } from "vee-validate";
+  import { createEditCRMConfigValidation } from "~/validationSchema/createEditCrmConfigvalidation";
 
   const emit = defineEmits(["success"]);
   let pipelines = ref<any>([]);
@@ -248,17 +249,6 @@
   });
   const modalProps = defineProps<{ id: any }>();
   const route: any = useRoute();
-
-  const CRMConfigSchema = toTypedSchema(
-    z.object({
-      integrationId: z.string().min(1, { message: "CRM is required" }),
-      campaignId: z.string().optional(),
-      projectId: z.string().optional(),
-      pipelineId: z.string().optional(),
-      layoutId: z.string().optional(),
-      stageId: z.string().optional(),
-    }),
-  );
   const {
     setFieldValue,
     values,
@@ -267,7 +257,7 @@
     defineField,
     resetForm,
   } = useForm({
-    validationSchema: CRMConfigSchema,
+    validationSchema: toTypedSchema(createEditCRMConfigValidation),
     initialValues: {},
   });
   const [integrationField, integrationFieldAttrs] =
@@ -282,17 +272,17 @@
   // subPipelineField
 
   watch(
-    () => modalState.value.open,
-    async (isOpen) => {
-      if (isOpen && modalProps.id) {
+    () => modalState.value,
+    async (value) => {
+      resetForm();
+      if (value.open && modalProps.id) {
         try {
           const crmConfigData = await $fetch<any>(
             `/api/bots/${route.params.id}/integrations/${modalProps.id}`,
           );
-
-          // Assuming crmConfigData.data contains the relevant information
           if (crmConfigData) {
-            setFieldValue("integrationId", crmConfigData.id);
+            console.log({ crmConfigData });
+            setFieldValue("integrationId", crmConfigData.integrationId);
 
             // Set other fields based on the CRM type
             const selectedCrm = integrationsData.value.find(
@@ -302,16 +292,24 @@
             console.log({ selectedCrm });
 
             if (selectedCrm?.crm === "zoho-bigin") {
-              setFieldValue("pipelineId", crmConfigData.pipelineId);
-              setFieldValue("stageId", crmConfigData.stageId);
+              setFieldValue("pipelineId", crmConfigData?.metadata?.pipelineId);
+              console.log("stageId", crmConfigData?.metadata?.pipelineObj?.id);
+              setFieldValue(
+                "stageId",
+                crmConfigData?.metadata?.pipelineObj?.id,
+              );
+              setFieldValue(
+                "subPipeline",
+                crmConfigData?.metadata?.pipelineObj?.Sub_Pipeline,
+              );
               await handleCrmChange(crmConfigData.integrationId);
               await handlePipelineChange(crmConfigData.pipelineId);
             } else if (selectedCrm?.crm === "zoho-crm") {
-              setFieldValue("layoutId", crmConfigData.layoutId);
-              await handleCrmChange(crmConfigData.integrationId);
+              setFieldValue("layoutId", crmConfigData?.metadata?.layoutId);
+              await handleCrmChange(crmConfigData?.integrationId);
             } else if (selectedCrm?.crm === "sell-do") {
-              setFieldValue("campaignId", crmConfigData.campaignId);
-              setFieldValue("projectId", crmConfigData.projectId);
+              setFieldValue("campaignId", crmConfigData?.metadata?.campaignId);
+              setFieldValue("projectId", crmConfigData?.metadata?.projectId);
             }
           }
         } catch (error) {
@@ -319,6 +317,7 @@
         }
       }
     },
+    { deep: true },
   );
 
   const handlePipelineChange = async (e: any) => {
@@ -392,17 +391,33 @@
 
       layoutObj = { name: layoutData.name, id: layoutData.id };
     }
-
-    addBotIntegration({
-      payload: {
-        ...value,
-        botId: route.params.id,
-        ...(pipelineObj && { pipelineObj }),
-        ...(layoutObj && { layoutObj }),
-      },
-      onSuccess: () => {
-        emit("success");
-      },
-    });
+    if (modalProps.id) {
+      updateBotIntegrationById({
+        payload: {
+          ...value,
+          botId: route.params.id,
+          botIntegrationId: modalProps.id,
+          ...(pipelineObj && { pipelineObj }),
+          ...(layoutObj && { layoutObj }),
+        },
+        onSuccess: () => {
+          emit("success");
+          toast.success("Integration updated successfully");
+        },
+      });
+    } else {
+      addBotIntegration({
+        payload: {
+          ...value,
+          botId: route.params.id,
+          ...(pipelineObj && { pipelineObj }),
+          ...(layoutObj && { layoutObj }),
+        },
+        onSuccess: () => {
+          emit("success");
+          toast.success("Integration created successfully");
+        },
+      });
+    }
   });
 </script>

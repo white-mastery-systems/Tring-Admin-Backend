@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
   );
 
   const body: any = await isValidBodyHandler(event, zodUpdateChatBot);
+  console.log({ body });
   let botDetails: any = await getBotDetails(botId);
   let metaData: any = botDetails?.metadata;
   metaData = {
