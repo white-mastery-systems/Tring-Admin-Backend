@@ -1,14 +1,35 @@
 <template>
-  <Page title="Integration" :disable-back-button="true" :disable-elevation="true">
+  <Page
+    title="Integration"
+    :disable-back-button="true"
+    :disable-elevation="true"
+  >
     <template #actionButtons>
       <div class="flex gap-2">
-        <UiButton v-if="route.query.q === 'channel'" color="primary" @click="channelModalState.open = true">
+        <UiButton
+          v-if="route.query.q === 'channel'"
+          color="primary"
+          @click="channelModalState.open = true"
+        >
           Add Channel
         </UiButton>
-        <UiButton v-else-if="route.query.q === 'number'" color="primary" @click="numberModalState.open = true">
+        <UiButton
+          v-else-if="route.query.q === 'number'"
+          color="primary"
+          @click="numberModalState.open = true"
+        >
           Add Number
         </UiButton>
-        <UiButton v-else color="primary" @click="integrationModalState.open = true">
+        <UiButton
+          v-else
+          color="primary"
+          @click="
+            () => {
+              integrationModalState.open = true;
+              integrationModalState.id = null;
+            }
+          "
+        >
           Add Integration
         </UiButton>
       </div>
@@ -26,24 +47,42 @@
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="client">
-        <DataTable :columns="columns" :data="integrationsData" :page-size="8" :is-loading="false" :height="80"
-          :heightUnit="'vh'" />
+        <DataTable
+          :columns="columns"
+          :data="integrationsData"
+          :page-size="8"
+          :is-loading="false"
+          :height="80"
+          :heightUnit="'vh'"
+        />
       </UiTabsContent>
       <UiTabsContent value="campaign">
-        <DataTable :columns="statusColumns" :data="integrationsData" :page-size="8" :is-loading="false" :height="10"
-          :heightUnit="'vh'" />
+        <DataTable
+          :columns="statusColumns"
+          :data="integrationsData"
+          :page-size="8"
+          :is-loading="false"
+          :height="10"
+          :heightUnit="'vh'"
+        />
       </UiTabsContent>
       <UiTabsContent value="number">
-          <NumberIntegration />
+        <NumberIntegration />
       </UiTabsContent>
     </UiTabs>
     <ChannelModal v-model="channelModalState" />
     <NumberModal v-model="numberModalState" />
-    <CreateEditIntegrationModal v-model="integrationModalState" :id="integrationModalState?.id"
-      @success="onSuccess()" />
+    <CreateEditIntegrationModal
+      v-model="integrationModalState"
+      :id="integrationModalState?.id"
+      @success="onSuccess()"
+    />
   </Page>
-  <ConfirmationModal v-model:open="deleteIntegrationState.open" title="Confirm Delete"
-    description="Are you sure you want to delete ?" @confirm="
+  <ConfirmationModal
+    v-model:open="deleteIntegrationState.open"
+    title="Confirm Delete"
+    description="Are you sure you want to delete ?"
+    @confirm="
       () => {
         if (deleteIntegrationState?.id) {
           deleteIntegration({
@@ -55,7 +94,8 @@
           deleteIntegrationState.open = false;
         }
       }
-    " />
+    "
+  />
 </template>
 <script lang="ts" setup>
   import { Icon, UiBadge, UiButton } from "#components";

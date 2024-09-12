@@ -2,10 +2,13 @@
   <Page
     title="LLM Configuration"
     :bread-crumbs="[
-      { label: `${botDetails.name}`, to: `/bots/${botDetails.id}` },
+      {
+        label: `${botDetails.name}`,
+        to: `/bot-management/voice-bot/${botDetails.id}`,
+      },
       {
         label: 'LLM Configuration',
-        to: `/bots/${botDetails.id}/llm-config`,
+        to: `/bot-management/voice-bot/${botDetails.id}/llm-config`,
       },
     ]"
     :disableSelector="true"
@@ -221,7 +224,6 @@
   </Page>
 </template>
 <script setup lang="ts">
-  import { z } from "zod";
   const provider = [
     {
       value: "openai",
