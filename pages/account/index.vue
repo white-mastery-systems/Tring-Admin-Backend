@@ -93,7 +93,7 @@
                 </UiPopoverTrigger>
                 <UiPopoverContent class="w-[200px] p-0">
                   <UiCommand>
-                    <UiCommandInput placeholder="Search code..." />
+                    <!-- <UiCommandInput placeholder="Search code..." /> -->
                     <UiCommandEmpty>No codes found.</UiCommandEmpty>
                     <UiCommandList>
                       <div v-bind="containerProps" class="max-h-52">
@@ -252,7 +252,7 @@
               </UiPopoverTrigger>
               <UiPopoverContent class="w-[200px] p-0">
                 <UiCommand>
-                  <UiCommandInput placeholder="Search code..." />
+                  <!-- <UiCommandInput placeholder="Search code..." /> -->
                   <UiCommandEmpty>No country found.</UiCommandEmpty>
                   <UiCommandList>
                     <div v-bind="containerPropsForCountry" class="max-h-52">
@@ -328,7 +328,7 @@
               </UiPopoverTrigger>
               <UiPopoverContent class="w-[200px] p-0">
                 <UiCommand>
-                  <UiCommandInput placeholder="Search code..." />
+                  <!-- <UiCommandInput placeholder="Search code..." /> -->
                   <UiCommandEmpty>No state found.</UiCommandEmpty>
                   <UiCommandList>
                     <div v-bind="containerPropsForState" class="max-h-52">

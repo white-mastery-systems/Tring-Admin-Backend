@@ -60,11 +60,15 @@
   const [apiKeyField, apiKeyFieldAttrs] = defineField("metaData.apiKey");
 
   watch(
-    () => integrationModalState.value.open,
-    async (isOpen) => {
-      const integrationDetails = await $fetch(
-        `/api/org/integrations/${integrationModalProps.id}`,
-      );
+    () => integrationModalState.value,
+    async (value) => {
+      resetForm();
+      if (!value.id) return;
+      const integrationDetails = await $fetch<{
+        name: string;
+        crm: "sell-do" | "zoho-crm" | "zoho-bigin";
+        metadata?: { apiKey: string };
+      }>(`/api/org/integrations/${integrationModalProps.id}`);
       setFieldValue("name", integrationDetails?.name);
       setFieldValue("crm", integrationDetails?.crm);
       if (integrationDetails?.crm === "sell-do") {
@@ -75,6 +79,7 @@
       } else if (integrationDetails?.crm === "zoho-bigin") {
       }
     },
+    { deep: true },
   );
   const handleConnect = handleSubmit(async (values: any) => {
     let url = `${window.location.origin}/settings/integration/${values.crm}`;

@@ -1,8 +1,9 @@
 <script setup lang="ts">
   import { Icon, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
+  import CreateEditIntentModal from "~/components/bots/CreateEditIntentModal.vue";
 
-  const showIntentDialog = ref(false);
+  const intentDialogState = ref({ open: false, id: null });
   const selectedActions = ref("location");
   const animationProps = {
     duration: 0,
@@ -41,7 +42,7 @@
     await createBotIntents({
       intentDetails,
       onSuccess: () => {
-        showIntentDialog.value = false;
+        intentDialogState.value.open = false;
         toast.success("Intent added successfully");
       },
     });
@@ -70,15 +71,35 @@
   const columnHelper = createColumnHelper<(typeof intentData.value)[0]>();
   const actionsComponent = (id: string) =>
     h(
-      UiButton,
+      "div",
       {
-        variant: "destructive",
-        onClick: () => {
-          deleteIntentDialogState.value.open = true;
-          deleteIntentDialogState.value.id = id;
-        },
+        class: "flex items-center gap-2",
       },
-      h(Icon, { name: "lucide:trash-2" }),
+      [
+        h(
+          UiButton,
+          {
+            color: "primary",
+            class: "ml-2",
+            onClick: () => {
+              intentDialogState.value.open = true;
+              intentDialogState.value.id = id;
+            },
+          },
+          h(Icon, { name: "lucide:pen" }),
+        ),
+        h(
+          UiButton,
+          {
+            variant: "destructive",
+            onClick: () => {
+              deleteIntentDialogState.value.open = true;
+              deleteIntentDialogState.value.id = id;
+            },
+          },
+          h(Icon, { name: "lucide:trash-2" }),
+        ),
+      ],
     );
   const columns = [
     columnHelper.accessor("intent", {
@@ -119,99 +140,21 @@
         <UiButton
           class="bg-yellow-500"
           type="button"
-          @click="showIntentDialog = true"
+          @click="
+            () => {
+              intentDialogState.open = true;
+              intentDialogState.id = null;
+            }
+          "
           color="primary"
           >Add Intents
         </UiButton>
-
-        <UiDialog v-model:open="showIntentDialog">
-          <UiDialogContent class="sm:max-w-[425px]">
-            <UiForm class="flex flex-col gap-2" @submit="addIntents">
-              <UiDialogHeader>
-                <UiDialogTitle class="text-indigo-600"
-                  >Add Intents</UiDialogTitle
-                >
-              </UiDialogHeader>
-              <UiFormField v-slot="{ componentField }" name="intent">
-                <UiFormItem v-auto-animate="animationProps" class="w-full">
-                  <UiFormLabel
-                    >Actions<UiLabel class="text-lg text-red-500">*</UiLabel>
-                  </UiFormLabel>
-                  <UiFormControl>
-                    <UiSelect v-model="selectedActions" v-bind="componentField">
-                      <UiSelectTrigger>
-                        <UiSelectValue placeholder="Select Intent" />
-                      </UiSelectTrigger>
-                      <UiSelectContent>
-                        <UiSelectItem value="location">Location</UiSelectItem>
-                        <UiSelectItem value="virtual_tour"
-                          >Virtual Tour</UiSelectItem
-                        >
-                        <UiSelectItem value="schedule_call"
-                          >Schedule Call</UiSelectItem
-                        >
-                        <UiSelectItem value="site_visit"
-                          >Schedule Site Visit</UiSelectItem
-                        >
-                      </UiSelectContent>
-                    </UiSelect>
-                    <UiFormField
-                      v-if="componentField.modelValue === 'Other'"
-                      v-slot="{ componentField }"
-                      name="link"
-                    >
-                      <UiFormItem
-                        v-auto-animate="animationProps"
-                        class="w-full"
-                      >
-                        <UiFormControl>
-                          <UiInput v-bind="componentField" type="text" />
-                        </UiFormControl>
-                        <UiFormMessage />
-                      </UiFormItem>
-                    </UiFormField>
-                  </UiFormControl>
-                  <UiFormMessage />
-                  <span class="text-xs text-gray-500">Select your intent.</span>
-                </UiFormItem>
-              </UiFormField>
-              <UiFormField
-                v-if="
-                  selectedActions === 'location' ||
-                  selectedActions === 'virtual_tour'
-                "
-                v-slot="{ componentField }"
-                name="link"
-              >
-                <UiFormItem v-auto-animate="animationProps" class="w-full">
-                  <UiFormLabel
-                    >Add Link <UiLabel class="text-lg text-red-500">*</UiLabel>
-                  </UiFormLabel>
-                  <UiFormControl>
-                    <UiInput
-                      v-bind="componentField"
-                      type="text"
-                      placeholder="Eg: enter your preferred value"
-                    />
-                  </UiFormControl>
-                  <span class="text-xs text-gray-500">Enter intent link</span>
-                  <UiFormMessage />
-                </UiFormItem>
-              </UiFormField>
-
-              <UiDialogFooter>
-                <UiButton
-                  class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
-                  type="submit"
-                >
-                  Save changes
-                </UiButton>
-              </UiDialogFooter>
-            </UiForm>
-          </UiDialogContent>
-        </UiDialog>
       </div>
     </template>
+    <CreateEditIntentModal
+      v-model="intentDialogState"
+      @success="intentRefresh()"
+    />
 
     <DataTable
       :columns="columns"

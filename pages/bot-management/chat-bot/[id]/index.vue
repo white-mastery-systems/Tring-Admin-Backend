@@ -50,6 +50,23 @@
             </span> -->
             <div class="flex items-center gap-3">
               <UiButton
+                color="primary"
+                @click="
+                  () => {
+                    channelModalState.open = true;
+                    channelModalState.id = botDetails.id;
+                  }
+                "
+              >
+                <span class="hidden lg:inline"> Configure channel </span>
+                <span
+                  class="flex flex-col items-center justify-center lg:hidden"
+                >
+                  <Icon name="bx:block" class="h-5 w-5" />
+                </span>
+              </UiButton>
+
+              <UiButton
                 class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px]"
                 @click="handleActivateBot"
                 :disabled="isSubmitting"
@@ -75,6 +92,7 @@
                       <Icon name="bx:block" class="h-5 w-5" />
                     </span>
                   </UiButton>
+
                   <div class="block text-[7px] lg:hidden">Deactivate Bot</div>
                 </div>
 
@@ -124,6 +142,7 @@
                 </UiButton>
                 <div class="block text-[7px] lg:hidden">Delete</div>
               </div>
+              <CreateEditChannel v-model="channelModalState" @success="handleSuccess" />
               <ConfirmationModal
                 v-model:open="deleteModalState"
                 title="Are you sure?"
@@ -201,8 +220,8 @@
     middleware: "admin-only",
   });
   import { useClipboard } from "@vueuse/core";
-  import { ref } from "vue";
-  import { toast } from "vue-sonner";
+import { ref } from "vue";
+import { toast } from "vue-sonner";
   const router = useRouter();
   // const selectedValue = ref("Today");
   const route = useRoute("bot-management-chat-bot-id");
@@ -213,7 +232,14 @@
   const isDocumentListOpen = ref(false);
   const isSubmitting = ref(false);
   const getDocumentList: any = ref();
-
+  const channelModalState = ref<{ open: boolean; id: string | null }>({
+    open: false,
+    id: null,
+  });
+ const  handleSuccess=()=>{
+  channelModalState.value.open=false
+  toast.success('Channel Created successfully')
+ }
   onMounted(async () => {
     getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
     botDetails.value = await getBotDetails(paramId.params.id);
@@ -249,14 +275,9 @@
       helperText: "Knowledge base,Training data etc...",
       routeName: "bot-management-chat-bot-id-documents",
     },
+
     {
       _id: 5,
-      bot: "Assets Management",
-      helperText: "Brochures,Images etc...",
-      routeName: "bot-management-chat-bot-id-assets",
-    },
-    {
-      _id: 6,
       bot: "Intent Management",
       helperText: "Add your intents Eg: Location Virtual Tour etc...",
       routeName: "bot-management-chat-bot-id-intent-management",
@@ -289,14 +310,6 @@
       .join(" ");
     return `${window.location.origin}/preview.html?orgname=WMS&chatbotid=${paramId.params.id}&mode=preview`;
   });
-  // onMounted(async () => {
-  //   console.log(paramId.params.id, "paramId")
-  //   try {
-  //     botDetails.value =
-  //   } catch (error) {
-  //     console.error("Error fetching bot details:", error);
-  //   }
-  // })
 
   const botManagementDetails = async (list: any, index: any) => {
     // console.log(list.bot.trim().toLowerCase().replace(/\s+/g, ' ') , "list")
