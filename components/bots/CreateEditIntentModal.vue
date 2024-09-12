@@ -63,7 +63,21 @@
             class="dark:hover:bg-bray-800 flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
           >
             Upload file
-            <input class="hidden" type="file" @change="handleFileChange" />
+            <input
+              class="hidden"
+              type="file"
+              @change="handleFileChange"
+              multiple
+              :accept="
+                (() => {
+                  if (values.intent === 'images') {
+                    return 'image/*';
+                  } else {
+                    return 'application/pdf';
+                  }
+                })()
+              "
+            />
           </label>
           <span class="text-sm text-red-700" v-if="errors.file">
             {{ errors.file }}
@@ -166,6 +180,8 @@
     () => modalState.value,
     async (value) => {
       handleReset();
+      fileRef.value = null;
+      selectedFileName.value = null;
       if (!value.id) return;
       const intentDetails = await $fetch<{ intent: string; link?: string }>(
         `/api/bots/${botDetails.id}/intents/${value.id}`,
@@ -180,37 +196,87 @@
   const [intentField, intentFieldAttrs] = defineField("intent");
   const [linkField, linkFieldAttrs] = defineField("link");
   const [fileName, fileNameAttrs] = defineField("fileName");
-  const fileRef = ref<File | null>(null);
+  const fileRef = ref<FileList | null>(null);
   const selectedFileName = ref<string | null>(null);
 
   const handleFileChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
-      const file = target.files[0];
-      fileRef.value = file;
-      selectedFileName.value = file.name;
-      setFieldValue("file", target.files);
+      const files = Array.from(target.files);
+
+      if (
+        values.intent === "images" &&
+        !files?.map((file: any) => file.type.type?.includes("image/"))
+      ) {
+        toast.error("unsppported image type");
+      } else if (
+        values.intent === "broushure" &&
+        !files?.map((file: any) => file.type.type?.includes("pdf"))
+      ) {
+        toast.error("unsppported pdf type");
+      }
+      fileRef.value = target.files;
+      selectedFileName.value = files?.map((file) => file.type).join(",");
+      // setFieldValue("file", Array.from(target.files));
     } else {
       fileRef.value = null;
       selectedFileName.value = null;
-      setFieldValue("file", null);
+      setFieldValue("file", "");
     }
   };
 
   const handleCreateEditIntent = handleSubmit(async (values) => {
-    if (!modalState.value.id) {
+    if (modalState.value.id) {
       const intentDetails: any = {
         id: botDetails.id,
+        intentId: modalState.value.id,
         ...values,
       };
-      await createBotIntents({
+      await updateBotIntentById({
         intentDetails,
         onSuccess: () => {
           modalState.value.open = false;
-          toast.success("Intent added successfully");
+          toast.success("Intent updated successfully");
           emit("success");
         },
       });
+    } else {
+      if (fileRef.value) {
+        const formData = new FormData();
+        Array.from(fileRef.value)?.map((file) => {
+          formData.append("files", file);
+        });
+        const uploads = await $fetch(`/api/uploads`, {
+          method: "POST",
+          body: formData,
+        });
+        const intentDetails: any = {
+          id: botDetails.id,
+          uploads,
+          ...values,
+        };
+        await createBotIntents({
+          intentDetails,
+          onSuccess: () => {
+            modalState.value.open = false;
+            toast.success("Intent added successfully");
+            emit("success");
+          },
+        });
+      } else {
+        const intentDetails: any = {
+          id: botDetails.id,
+          ...values,
+        };
+        await createBotIntents({
+          intentDetails,
+          onSuccess: () => {
+            modalState.value.open = false;
+            toast.success("Intent added successfully");
+            emit("success");
+          },
+        });
+      }
     }
     return true;
   });
