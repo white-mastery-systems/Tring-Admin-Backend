@@ -42,7 +42,7 @@ export const listChats = async (
   let chats = await db.query.chatSchema.findMany({
     where: and(
       eq(chatSchema.organizationId, organisationId),
-      query?.botId ? eq(chatSchema.botId, query.botId) : undefined,
+      query?.botId && query?.botId !== "all" ? eq(chatSchema.botId, query.botId) : undefined,
       query?.period && fromDate && toDate
         ? between(chatSchema.createdAt, fromDate, toDate)
         : undefined,
