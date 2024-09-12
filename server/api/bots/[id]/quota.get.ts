@@ -16,13 +16,28 @@ export default defineEventHandler(async (event) => {
   const planDetails = await db.query.adminPricingSchema.findFirst({
     where: eq(adminPricingSchema.planCode, bot.organization.planCode),
   });
-  if (!planDetails) {
+
+  if (!planDetails?.sessions) {
     return sendError(event, createError({ statusCode: 404 }));
   }
-  return true;
-
-  // const availableQuota = planDetails?.sessions - bot.organization.usedQuota;
-  // if (bot.organization.planCode === "chat_free" && availableQuota <= 0) {
-  //   return sendError(event, createError({ statusCode: 403 }));
-  // }
+  let availableQuota = planDetails?.sessions - bot.organization.usedQuota;
+  if (availableQuota <= 0) {
+    const data = await db.query.paymentSchema.findMany({
+      where: and(
+        eq(paymentSchema.type, "addon"),
+        eq(paymentSchema.organizationId, bot.organizationId),
+      ),
+    });
+    let extraAddonsPrice = 0;
+    data.map((item) => {
+      extraAddonsPrice += item.amount;
+    });
+    const extrChatsAvailable =
+      Number(extraAddonsPrice) / Number(planDetails?.extraSessionCost);
+    availableQuota += extrChatsAvailable;
+  }
+  if (bot.organization.planCode === "chat_free" && availableQuota <= 0) {
+    return sendError(event, createError({ statusCode: 403 }));
+  }
+  return Math.floor(availableQuota);
 });

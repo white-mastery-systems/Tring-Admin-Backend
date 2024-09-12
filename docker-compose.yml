@@ -12,8 +12,6 @@ services:
       - "NUXT_LLM_URL=http://148.113.16.40:6999"
       - "NUXT_DB_URL=postgresql://postgres:1e095c56156fbae71397e0d406f80ad7b344507adfe44104936d5edfb5358c6b@148.113.16.40:5432/tring"
       - "NUXT_REDIS_URL=redis://default:bab741657e6668cac3355a1ebd625e76c102144b4cc870157fbbe146ebaedae4@148.113.16.40:6380/1"
-    volumes:
-      - tring-suite_bot:/app/node_modules
     restart: on-failure
   tring-admin-panel:
     container_name: tring-admin-panel
