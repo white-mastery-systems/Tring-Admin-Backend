@@ -128,6 +128,7 @@
     SettingsIcon,
     StarsIcon,
     WalletIcon,
+    UserIcon,
   } from "lucide-vue-next";
   const { user } = await useUser();
   // watch(user, (newUserInfo) => {
@@ -181,6 +182,12 @@
           path: "/chats",
         },
       ],
+    },
+    {
+      name: "Contacts",
+      icon: UserIcon,
+      path: "/contacts",
+      children: [],
     },
     {
       name: "Bot Management",

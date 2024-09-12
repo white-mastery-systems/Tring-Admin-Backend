@@ -6,7 +6,10 @@
           Add Voice Bot
         </UiButton>
         <div v-else-if="route.query.q === 'campaigns'" class="flex gap-2">
-          <UiButton color="primary" @click="campaignModalState.open = true">
+          <UiButton color="primary" @click="() => {
+            campaignModalState.open = true
+            campaignModalState.id = null
+          }">
             Add Campaign
           </UiButton>
           <UiButton color="primary">
@@ -17,48 +20,16 @@
             Export
           </UiButton>
         </div>
-        <div v-else class="flex gap-2">
-          <UiButton color="primary" @click="bucketModalState.open = true">
-            Add Bucket
-          </UiButton>
-          <UiButton color="primary">
-            Import
-          </UiButton>
-          <UiButton color="primary">
-            Export
-          </UiButton>
-        </div>
-        <span v-if="false"
-          class="field_shadow flex w-[200px] items-center rounded-[10px] bg-[#ffffff] px-[10px] py-0 text-[15px]"
-          style="color: rgba(138, 138, 138, 1)">Summary:
-          <span class="font-bold text-black">
-            <!-- <template> -->
-            <UiSelect v-model="selectedValue" class="outline-none">
-              <UiSelectTrigger class="ui-select-trigger w-[110px] font-medium outline-none">
-                <UiSelectValue />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectGroup class="select_list_align">
-                  <!-- <UiSelectLabel>Today</UiSelectLabel> -->
-                  <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
-                    :value="list.content">
-                    {{ list.content }}
-                  </UiSelectItem>
-                </UiSelectGroup>
-              </UiSelectContent>
-            </UiSelect>
-            <!-- </template> -->
-          </span></span>
       </div>
     </template>
     <UiTabs default-value="agents" class="w-full self-start">
-      <UiTabsList class="grid w-[40%] grid-cols-3">
+      <UiTabsList class="grid w-[40%] grid-cols-2">
         <UiTabsTrigger value="agents" @click="navigateToTab('agents')">
           Agents
         </UiTabsTrigger>
-        <UiTabsTrigger value="buckets" @click="navigateToTab('buckets')">
+        <!-- <UiTabsTrigger value="buckets" @click="navigateToTab('buckets')">
           Buckets
-        </UiTabsTrigger>
+        </UiTabsTrigger> -->
         <UiTabsTrigger value="campaigns" @click="navigateToTab('campaigns')">
           Campaigns
         </UiTabsTrigger>
@@ -85,17 +56,19 @@
           " :columns="columns" :data="voiceBot" :page-size="20" :is-loading="isDataLoading" :height="14"
           height-unit="vh" />
       </UiTabsContent>
-      <UiTabsContent value="buckets">
+      <!-- <UiTabsContent value="buckets">
         <Buckets />
-      </UiTabsContent>
+      </UiTabsContent> -->
       <UiTabsContent value="campaigns">
-        <Campaigns />
+        <Campaigns v-model="campaignModalState" />
       </UiTabsContent>
     </UiTabs>
     <!-- <ChannelModal /> -->
     <AgentModal v-model="agentModalState" />
-    <CampaignModal v-model="campaignModalState" />
-    <BucketModal v-model="bucketModalState" />
+    <CampaignModal v-model="campaignModalState" @confirm="() =>{
+        campaignModalState.open = false
+    }" />
+    <!-- <BucketModal v-model="bucketModalState" /> -->
     <!-- <AgentModal v-model="agentModalState" /> -->
 
   </Page>
@@ -118,8 +91,7 @@ const formSchema = toTypedSchema(
 );
 
 const agentModalState = ref({ open: false });
-const campaignModalState = ref({ open: false });
-const bucketModalState = ref({ open: false });
+const campaignModalState = ref({ open: false, id: null });
 const viewCampaignStatusModalState = ref({ open: false });
 
 const searchBot = ref("");
