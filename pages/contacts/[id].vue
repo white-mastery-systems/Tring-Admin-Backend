@@ -4,7 +4,10 @@
     <template #actionButtons>
       <div class="flex gap-4">
         <div class="flex gap-2">
-          <UiButton color="primary" @click="addBucketModalState.open = true">
+          <UiButton color="primary" @click="() => {
+            addBucketModalState.open = true
+            addBucketModalState.id = null
+          }">
             Add Number
           </UiButton>
         </div>
@@ -12,7 +15,7 @@
     </template>
     <DataTable :data="contactsList" :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="15"
       height-unit="vh" />
-    <BucketModal v-model="addBucketModalState" :id="addBucketModalState.id" @confirm="() => {
+    <BucketModal v-model="addBucketModalState" @confirm="() => {
       addBucketModalState.open = false
       integrationRefresh()
     }" />

@@ -3,7 +3,10 @@
     <template #actionButtons>
       <div class="flex gap-4">
         <div class="flex gap-2">
-          <UiButton color="primary" @click="addBucketNameModalState.open = true">
+          <UiButton color="primary" @click="() => {
+            addBucketNameModalState.open = true
+            addBucketNameModalState.id = null
+          }">
             Add Bucket
           </UiButton>
           <UiButton color="primary">

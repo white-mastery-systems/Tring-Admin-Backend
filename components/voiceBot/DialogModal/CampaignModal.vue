@@ -14,12 +14,6 @@ const campaignModalState = defineModel<{ open: boolean,id: any }>({
     id: null,
   },
 });
-interface Props {
-  id: string;
-}
-const props = withDefaults(defineProps<Props>(), {
-  id: "",
-});
 const { refresh } = campaignData()
 
 const df = new DateFormatter('en-US', {
@@ -104,8 +98,8 @@ const handleConnect = handleSubmit(async (values: any) => {
   }
   
   try {
-    if(props.id) {
-      await $fetch(`/api/org/campaign/${props.id}`, { method: "PUT", body: payload });
+    if (campaignModalState.value.id) {
+      await $fetch(`/api/org/campaign/${campaignModalState.value.id}`, { method: "PUT", body: payload });
       toast.success("Updated successfully")
     } else {
       await $fetch("/api/org/campaign", { method: "POST", body: payload });

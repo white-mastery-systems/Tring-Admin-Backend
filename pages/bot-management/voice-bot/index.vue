@@ -6,7 +6,10 @@
           Add Voice Bot
         </UiButton>
         <div v-else-if="route.query.q === 'campaigns'" class="flex gap-2">
-          <UiButton color="primary" @click="campaignModalState.open = true">
+          <UiButton color="primary" @click="() => {
+            campaignModalState.open = true
+            campaignModalState.id = null
+          }">
             Add Campaign
           </UiButton>
           <UiButton color="primary">

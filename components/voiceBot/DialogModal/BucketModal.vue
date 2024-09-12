@@ -43,6 +43,7 @@ const {
   handleSubmit,
   defineField,
   values,
+  resetForm,
 } = useForm({
   validationSchema: formSchema,
   initialValues: {
@@ -61,7 +62,6 @@ const {
   list: countyDialCodes,
   containerProps,
   wrapperProps,
-  resetForm,
 } = useVirtualList(allCoutryDialCode, {
   itemHeight: 32,
 });
@@ -72,7 +72,7 @@ const [countryCode, countryCodeProps] = defineField("countryCode");
 
 watch(() => bucketModalState.value.open, async (newState) => { 
   if (queryId.value) {
-    const getSingleDetails: any = await $fetch(`/api/org/campaign/${props.id}`)
+    const getSingleDetails: any = await $fetch(`/api/org/contact-list/${queryId.value}/contacts/${bucketModalState.value.id}`)
       setFieldValue("firstName", getSingleDetails.firstName);
       setFieldValue("lastName", getSingleDetails.lastName);
       setFieldValue("countryCode", getSingleDetails.countryCode);
@@ -90,6 +90,7 @@ const handleConnect = handleSubmit(async (values: any) => {
       await $fetch(`/api/org/contact-list/${queryId.value}/contacts`, { method: "POST", body: values });
       toast.success("Updated successfully")
     }
+    resetForm()
     emit('confirm')
   } catch(error: any) {
     toast.error(error.data.statusMessage)
