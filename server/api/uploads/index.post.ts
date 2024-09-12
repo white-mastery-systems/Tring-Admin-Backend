@@ -22,7 +22,8 @@ export default defineEventHandler(async (event) => {
   if (!existsSync(uploadDir)) {
     mkdirSync(uploadDir, { recursive: true });
   }
-
+ 
+  // return { formData }
   const data = await Promise.all(
     formData.map(async (file) => {
       const mimeType = extname(file.filename || "");
@@ -34,8 +35,9 @@ export default defineEventHandler(async (event) => {
       const fileUrl = `${conf.fileUrl}/uploads/${fileName}`
       return {
         name: file.filename,
+        size: file.data?.length,
         type: fileType,
-        url: fileUrl
+        url: fileUrl,
       }
     })
   )
