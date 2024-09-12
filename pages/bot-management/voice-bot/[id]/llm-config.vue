@@ -2,7 +2,10 @@
   <Page
     title="LLM Configuration"
     :bread-crumbs="[
-  { label: `${botDetails.name}`, to: `/bot-management/voice-bot/${botDetails.id}` },
+      {
+        label: `${botDetails.name}`,
+        to: `/bot-management/voice-bot/${botDetails.id}`,
+      },
       {
         label: 'LLM Configuration',
         to: `/bot-management/voice-bot/${botDetails.id}/llm-config`,
@@ -98,7 +101,7 @@
           <UiFormField v-slot="{ componentField }" name="temperature">
             <UiFormItem v-auto-animate="animationProps" class="w-full">
               <UiFormLabel> Temperature </UiFormLabel>
-              <UiFormControl>
+              <UiFormControl  class="focus-visible:none h-12 focus-visible:ring-offset-0">
                 <UiNumberField
                   :default-value="0"
                   :step="0.1"
@@ -108,7 +111,6 @@
                   :min="0"
                   :max="1"
                   v-bind="componentField"
-                  class="focus-visible:none h-12 focus-visible:ring-offset-0"
                 >
                   <UiNumberFieldContent>
                     <UiNumberFieldDecrement />
@@ -145,14 +147,30 @@
                   <UiSelectValue placeholder="Select Role" />
                 </UiSelectTrigger>
                 <UiSelectContent>
-                  <UiSelectItem
-                    v-for="({ value, label }, index) in roles"
-                    :value="value"
-                    >{{ label }}
-                    <p class="text-xs italic text-gray-500">{{ value }}</p>
-                  </UiSelectItem>
+                  <div v-for="({ value, label }, index) in roles">
+                    <UiSelectItem :value="value">{{ value }} </UiSelectItem>
+                    <span class="mx-2 text-xs italic text-gray-500">{{
+                      label
+                    }}</span>
+                  </div>
                 </UiSelectContent>
               </UiSelect>
+              <UiFormField
+                v-if="componentField.modelValue === 'Other'"
+                v-slot="{ componentField }"
+                name="otherRole"
+              >
+                <UiFormItem v-auto-animate="animationProps" class="w-full">
+                  <UiFormControl>
+                    <UiInput
+                      v-bind="componentField"
+                      type="text"
+                      class="focus-visible:none h-12 focus-visible:ring-offset-0"
+                    />
+                  </UiFormControl>
+                  <UiFormMessage />
+                </UiFormItem>
+              </UiFormField>
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
@@ -253,6 +271,10 @@
       label: "Receptionist",
       value:
         "Assist customers queries about room bookings and hotel information",
+    },
+    {
+      label: "Perform other custom tasks as needed.",
+      value: "Other",
     },
   ];
 
