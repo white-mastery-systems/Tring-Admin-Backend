@@ -28,17 +28,10 @@ const onSubmit = async (value: any) => {
 };
 </script>
 <template>
-  <!-- :bread-crumbs="[
-    { label: `${botDetails.name}`, to: `/bot-management/chat-bot/${botDetails.id}` },
-    {
-      label: 'Intent Management',
-      to: `/bot-management/chat-bot/${botDetails.id}/intent-management`,
-    },
-  ]"  -->
   <Page title="IVR Configuration" :bread-crumbs="[
     { label: `${botDetails.name}`, to: `/bot-management/voice-bot/${botDetails.id}` },
     {
-      label: 'LLM Configuration',
+      label: 'IVR Configuration',
       to: `/bot-management/voice-bot/${botDetails.id}/ivr-config`,
     },
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">

@@ -34,9 +34,9 @@
         </UiButton>
       </div>
     </template>
-    <UiTabs default-value="client" class="w-full self-start">
+    <UiTabs default-value="crm" class="w-full self-start">
       <UiTabsList class="grid w-[40%] grid-cols-3">
-        <UiTabsTrigger value="client" @click="navigateToTab('crm')">
+        <UiTabsTrigger value="crm" @click="navigateToTab('crm')">
           CRM
         </UiTabsTrigger>
         <UiTabsTrigger value="campaign" @click="navigateToTab('channel')">
@@ -46,7 +46,7 @@
           Number
         </UiTabsTrigger>
       </UiTabsList>
-      <UiTabsContent value="client">
+      <UiTabsContent value="crm">
         <DataTable
           :columns="columns"
           :data="integrationsData"
