@@ -3,7 +3,6 @@ import { existsSync, mkdirSync } from 'node:fs';
 import { v4 as uuid } from "uuid";
 import { join, extname } from "node:path";
 
-const conf = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
   const formData = await readMultipartFormData(event)
@@ -32,7 +31,7 @@ export default defineEventHandler(async (event) => {
       const fileType = file.type?.toString()
       const filePath = `./assets/uploads/${fileName}`
       await writeFile(filePath, fileData) 
-      const fileUrl = `${conf.fileUrl}/uploads/${fileName}`
+      const fileUrl = `/uploads/${fileName}`
       return {
         name: file.filename,
         size: file.data?.length,
