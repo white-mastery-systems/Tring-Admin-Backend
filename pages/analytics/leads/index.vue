@@ -4,10 +4,11 @@
       <div class="flex items-center gap-2">
         <UiInput
           v-model="filters.q"
+          @input="filters.page='1'"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder=" Search Leads..."
         />
-        <BotFilter v-model="filters.botId" />
+        <BotFilter v-model="filters.botId"  @input="filters.page='1'"/>
         <StatusFilter @change="onStatusChange" />
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
@@ -29,6 +30,10 @@
       </UiTabsList>
       <UiTabsContent value="all">
         <DataTable
+          @pagination="Pagination"
+          :totalPageCount="totalPageCount"
+          :page="page"
+          :totalCount="totalCount"
           :data="leads"
           :is-loading="isDataLoading"
           :columns="columns"
@@ -96,7 +101,7 @@
   const route = useRoute();
 
   const exportToCSV = () => {
-    if (leads.value.data.length === 0) {
+    if (leads.value.length === 0) {
       alert("No data to export");
       return;
     }
@@ -105,7 +110,7 @@
     const csvContent =
       columns.map((col) => col.header).join(",") +
       "\n" +
-      leads.value.data
+      leads.value
         .map((lead) =>
           rowList
             .map((col) => {
@@ -151,6 +156,8 @@
     status: string;
     channel: any;
     action: string;
+    page:string;
+    limit:string
   }>({
     botId: "",
     q: undefined,
@@ -160,14 +167,19 @@
     status: "",
     channel: "all",
     action: "",
+    page:"1",
+    limit:"8"
   });
 
   watchEffect(() => {
     if (filters.botId === "all") filters.botId = "";
   });
 
-  const params =  ref('/api/org/leads?page=2&limit=8')
-  const { status, data: leads, refresh:getAllleads } = await useLazyFetch(params.value, {
+  let {
+    status,
+    data: leads,
+    refresh: getAllLeads,
+  } = await useLazyFetch("/api/org/leads", {
     server: false,
     query: filters,
     headers: {
@@ -175,6 +187,25 @@
     },
     default: () => [],
   });
+
+  let page = ref(0);
+  let totalPageCount = ref(0);
+  let totalCount = ref(0);  
+  watch(status, (newValue) => {
+    if (newValue === "success") {
+      page.value = leads.value.page;
+      totalPageCount.value = leads.value.totalPageCount;
+      totalCount.value = leads.value.totalCount;
+      leads.value = leads.value.data;
+      console.log(leads.value, totalCount.value);
+    }
+  });
+
+  const Pagination = async ($evnt) => {
+    filters.page = $evnt
+    getAllLeads()
+  };
+
   const isDataLoading = computed(() => status.value === "pending");
 
   const viewLead = async (chatId: any) => {
@@ -193,6 +224,7 @@
       delete filters.to;
       filters.period = value;
     }
+    filters.page='1'
   };
   const onActionChange = (value: any) => {
     if (value) {
@@ -202,10 +234,11 @@
   const onStatusChange = (value: any) => {
     if (value) {
       filters.status = value;
+      filters.page='1'
     }
   };
 
-  const columnHelper = createColumnHelper<(typeof leads.value.data)[0]>();
+  const columnHelper = createColumnHelper<(typeof leads.value)[0]>();
   const columns = [
     columnHelper.accessor("botUser.name", {
       header: "Lead Name",

@@ -16,9 +16,16 @@
     footer?: boolean;
     pageSize?: number;
     isLoading?: boolean;
+    limit: number;
+    page: number;
+    totalCount: number;
+    totalPageCount: number;
     height?: number;
     heightUnit?: string;
   }>();
+
+
+  const emits = defineEmits(['pagination']);
 
   const sorting = ref<SortingState>([]);
   const pageSize = computed(() => props.pageSize || 10);
@@ -43,7 +50,7 @@
       },
     },
   });
-  console.log("header", table.getHeaderGroups());
+  console.log("page", props.page);
 </script>
 
 <template>
@@ -74,12 +81,10 @@
                     :props="header.getContext()"
                   />
                   <div
-                    @click="
-                        header.column.getToggleSortingHandler()?.($event)
-                    "
+                    @click="header.column.getToggleSortingHandler()?.($event)"
                     style="cursor: pointer"
                   >
-                    <ArrowUpNarrowWide size="16" class="ml-2"/>
+                    <ArrowUpNarrowWide size="16" class="ml-2" />
                   </div>
                 </div>
               </div>
@@ -156,19 +161,17 @@
       </UiTable>
     </div>
     <div
-      v-if="table.getFilteredRowModel().rows.length > pageSize"
       class="flex flex-col items-center justify-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0"
     >
-      <p>
-        Page {{ table.getState().pagination.pageIndex + 1 }} of
-        {{ table.getPageCount() }} -
-        {{ table.getFilteredRowModel().rows.length }} results
-      </p>
+      <p>Page {{ page }} of {{ totalPageCount }}</p>
+      <div >
+       TotalCount:{{totalCount}}
+      </div>
       <div class="flex space-x-4">
         <UiButton
           size="icon"
-          @click="table.setPageIndex(0)"
-          :disabled="!table.getCanPreviousPage()"
+          @click="emits('pagination',1)"
+          :disabled="page === 1"
           class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
         >
           <Icon name="lucide:chevrons-left" class="h-6 w-6" />
@@ -176,23 +179,25 @@
         <UiButton
           size="icon"
           class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
-          :disabled="!table.getCanPreviousPage()"
-          @click="table.previousPage()"
+          :disabled="page === 1"
+          @click="emits('pagination',page-1)"
         >
           <Icon name="lucide:chevron-left" class="h-6 w-6" />
         </UiButton>
         <UiButton
           size="icon"
-          :disabled="!table.getCanNextPage()"
-          @click="table.nextPage()"
+          :disabled="totalPageCount === page"
+          @click="()=>{
+         console.log('ssfdf')       
+            emits('pagination',page+1)}"
           class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
         >
           <Icon name="lucide:chevron-right" class="h-6 w-6" />
         </UiButton>
         <UiButton
           size="icon"
-          @click="table.setPageIndex(table.getPageCount() - 1)"
-          :disabled="!table.getCanNextPage()"
+          @click="emits('pagination',totalPageCount)"
+          :disabled="totalPageCount === page"
           class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
         >
           <Icon name="lucide:chevrons-right" class="h-6 w-6" />

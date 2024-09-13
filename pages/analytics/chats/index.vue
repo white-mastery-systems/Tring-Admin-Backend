@@ -4,10 +4,11 @@
       <div class="flex items-center gap-2">
         <UiInput
           v-model="filters.q"
+          @input="filters.page = '1'"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder="Search bot..."
         />
-        <BotFilter v-model="filters.botId" />
+        <BotFilter v-model="filters.botId" @input="filters.page='1'"/>
         <BotUserFilter @changeAction="onActionChange" />
         <DateRangeFilter @change="onDateChange" />
       </div>
@@ -19,6 +20,10 @@
           //TODO change this
         }
       "
+      @pagination="Pagination"
+      :totalPageCount="totalPageCount"
+      :page="page"
+      :totalCount="totalCount"
       :columns="columns"
       :data="bots"
       :page-size="20"
@@ -43,6 +48,7 @@
   // const searchBotDebounce = refDebounced(searchBot, 500);
 
   const activeStatus = ref("");
+
   watch(activeStatus, async (newStatus, previousStatus) => {});
 
   const filters = reactive<{
@@ -52,6 +58,8 @@
     to?: string;
     botUserName: string;
     period: string;
+    page: string;
+    limit: string;
   }>({
     botId: "",
     q: undefined,
@@ -59,24 +67,39 @@
     to: undefined,
     botUserName: "",
     period: "all-time",
+    page: "1",
+    limit: "8",
   });
-  const { status, data: bots } = await useLazyFetch("/api/chats", {
-    server: false,
-    query: filters,
-    default: () => [],
-    headers: {
-      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+
+  let page = ref(0);
+  let totalPageCount = ref(0);
+  let totalCount = ref(0);
+  const { status, data: bots, refresh:getAllChats  } = await useLazyFetch(
+    "/api/chats?page=2&limit=8",
+    {
+      server: false,
+      query: filters,
+      default: () => [],
+      headers: {
+        "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+      transform: (chats) => {
+         page.value = chats.page
+         totalPageCount.value = chats.totalPageCount
+         totalCount.value = chats.totalCount
+        return chats?.data?.map((chat) => ({
+          userName: chat.botUser?.name || "No name",
+          id: chat.id,
+          location: `${chat.metadata?.city ?? "--"} - ${chat.metadata?.state ?? "--"} `,
+          createdAt: `${chat?.createdAt}`,
+          mode: chat.metadata?.mode ?? "Live",
+        }));
+      },
     },
-    transform: (chats) => {
-      return chats?.map((chat) => ({
-        userName: chat.botUser?.name || "No name",
-        id: chat.id,
-        location: `${chat.metadata?.city ?? "--"} - ${chat.metadata?.state ?? "--"} `,
-        createdAt: `${chat?.createdAt}`,
-        mode: chat.metadata?.mode ?? "Live",
-      }));
-    },
-  });
+  );
+
+
+
   const isDataLoading = computed(() => status.value === "pending");
 
   const statusComponent = (status: boolean) =>
@@ -101,6 +124,11 @@
   ];
   const onActionChange = (value: any) => {
     filters.botUserName = value;
+    filters.page='1'
+  };
+  const Pagination = async ($evnt) => {
+    filters.page = $evnt;
+    getAllChats();
   };
   const onDateChange = (value: any) => {
     if (value.from && value.to) {
@@ -111,5 +139,6 @@
       delete filters.to;
       filters.period = value;
     }
+    filters.page='1'
   };
 </script>
