@@ -362,7 +362,7 @@
     } else if (Object.values(botDetails.value.metadata.ui)?.length === 0) {
       toast.error("Please update bot user interface to activate bot");
       return navigateTo({
-        name: "bot-management-chat-bot-id-ui-customization",
+        name: "bot-management-voice-bot-id-ui-customization",
         params: { id: paramId.params.id },
       });
     }

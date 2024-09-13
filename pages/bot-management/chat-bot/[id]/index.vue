@@ -142,7 +142,10 @@
                 </UiButton>
                 <div class="block text-[7px] lg:hidden">Delete</div>
               </div>
-              <CreateEditChannel v-model="channelModalState" @success="handleSuccess" />
+              <CreateEditChannel
+                v-model="channelModalState"
+                @success="handleSuccess"
+              />
               <ConfirmationModal
                 v-model:open="deleteModalState"
                 title="Are you sure?"
@@ -220,8 +223,8 @@
     middleware: "admin-only",
   });
   import { useClipboard } from "@vueuse/core";
-import { ref } from "vue";
-import { toast } from "vue-sonner";
+  import { ref } from "vue";
+  import { toast } from "vue-sonner";
   const router = useRouter();
   // const selectedValue = ref("Today");
   const route = useRoute("bot-management-chat-bot-id");
@@ -236,10 +239,10 @@ import { toast } from "vue-sonner";
     open: false,
     id: null,
   });
- const  handleSuccess=()=>{
-  channelModalState.value.open=false
-  toast.success('Channel Created successfully')
- }
+  const handleSuccess = () => {
+    channelModalState.value.open = false;
+    toast.success("Channel Created successfully");
+  };
   onMounted(async () => {
     getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
     botDetails.value = await getBotDetails(paramId.params.id);
