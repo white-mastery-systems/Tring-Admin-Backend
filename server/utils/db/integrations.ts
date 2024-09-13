@@ -31,20 +31,32 @@ export const listIntegrations = async (
     }
   }
 
-  const page = query.page ? parseInt(query.page) : 1;
-  const limit = query.limit ? parseInt(query.limit) : 10;
-  const offset = (page - 1) * limit;
+  let page, offset, limit = 0
+    
+  if(query.page && query.limit) {
+    page = parseInt(query.page) 
+    limit = parseInt(query.limit)
+    offset = (page - 1) * limit;
+  }
 
   const data = await db.query.integrationSchema.findMany({
     where: and(...filters),
     orderBy: [desc(integrationSchema.createdAt)],
-    ...(query?.page &&
-      query?.limit && {
-        limit,
-        offset,
-      }),
   });
-  return data;
+
+   if(query?.page && query?.limit) {
+      const paginatedIntegrations = data.slice(offset, offset + limit); 
+      return {
+        calls: "Integrations",
+        page: page,
+        limit: limit,
+        totalPageCount: Math.ceil(paginatedIntegrations.length/limit),
+        totalCount: paginatedIntegrations.length,
+        data: paginatedIntegrations
+      }
+    } else {
+      return data
+    }
 };
 
 export const getIntegrationById = async (

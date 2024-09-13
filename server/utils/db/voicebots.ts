@@ -36,31 +36,24 @@ export const listVoicebots = async (organizationId: string, query: listVoicebotQ
     offset = (page - 1) * limit;
   }
 
-   const countTotalDocuments = await db.select({ totalCount: count() })
-          .from(voicebotSchema)
-          .where(eq(voicebotSchema.organizationId, organizationId))
-
-  let data = await db.query.voicebotSchema.findMany({ 
-    where: and(...filters),
-    orderBy: [desc(voicebotSchema.createdAt)],
-    ...query?.page && query?.limit && {
-      limit,
-      offset
-    }
-  })
-  data = data.map((i: any) => ({
-    ...i,
-    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
-  }))
+    let data = await db.query.voicebotSchema.findMany({ 
+      where: and(...filters),
+      orderBy: [desc(voicebotSchema.createdAt)],
+    })
+    data = data.map((i: any) => ({
+      ...i,
+      createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
+    }))
 
     if(query?.page && query?.limit) {
+       const paginatedVoiceBots = data.slice(offset, offset + limit); 
       return {
         calls: "voice-bot",
         page: page,
         limit: limit,
-        totalPageCount: Math.ceil(countTotalDocuments[0].totalCount/ limit),
-        totalCount: countTotalDocuments[0].totalCount,
-        data
+        totalPageCount: Math.ceil(paginatedVoiceBots.length/ limit),
+        totalCount: paginatedVoiceBots.length,
+        data: paginatedVoiceBots
       }
     } else {
       return data

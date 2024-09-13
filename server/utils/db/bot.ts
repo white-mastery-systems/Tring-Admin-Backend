@@ -40,10 +40,6 @@ export const listBots = async (
     offset = (page - 1) * limit;
   }
 
-  const countTotalDocuments = await db.select({ totalCount: count() })
-      .from(chatBotSchema)
-      .where(eq(chatBotSchema.organizationId, organizationId))
-
   let data = await db.query.chatBotSchema.findMany({
     where: and(...filters),
     orderBy: [desc(chatBotSchema.createdAt)],
@@ -53,10 +49,6 @@ export const listBots = async (
       createdAt: true,
       documentId: true,
     },
-   ...query?.page && query?.limit && {
-      limit,
-      offset
-    }
   });
   data = data.map((i: any) => ({
     ...i,
@@ -64,18 +56,18 @@ export const listBots = async (
   }))
 
   if(query?.page && query?.limit) {
-    return {
+     const paginatedChatBots = data.slice(offset, offset + limit); 
+    return {   
       calls: "chat-bots",
       page: page,
       limit: limit,
-      totalPageCount: Math.ceil(countTotalDocuments[0].totalCount/ limit),
-      totalCount: countTotalDocuments[0].totalCount,
-      data
+      totalPageCount: Math.ceil(paginatedChatBots.length/ limit),
+      totalCount: paginatedChatBots.length,
+      data: paginatedChatBots
     }
   } else {
       return data
   }
-
 };
 
 export const getBotDetailsNoCache = async (botId: string) => {
