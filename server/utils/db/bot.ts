@@ -1,6 +1,6 @@
 // import { isNotNull, ne } from "drizzle-orm";
 
-import { isNotNull, isNull, like } from "drizzle-orm";
+import { count, isNotNull, isNull, like } from "drizzle-orm";
 import { InsertBotIntegration, InsertIntent } from "~/server/schema/bot";
 import momentTz from "moment-timezone";
 
@@ -32,9 +32,17 @@ export const listBots = async (
     filters.push(ilike(chatBotSchema.name, `%${query.q}%`));
   }
 
-  const page = query.page ? parseInt(query.page) : 1;
-  const limit = query.limit ? parseInt(query.limit) : 10; 
-  const offset = (page - 1) * limit;
+  let page, offset, limit = 0
+    
+  if(query.page && query.limit) {
+    page = parseInt(query.page) 
+    limit = parseInt(query.limit)
+    offset = (page - 1) * limit;
+  }
+
+  const countTotalDocuments = await db.select({ totalCount: count() })
+      .from(chatBotSchema)
+      .where(eq(chatBotSchema.organizationId, organizationId))
 
   let data = await db.query.chatBotSchema.findMany({
     where: and(...filters),
@@ -55,7 +63,19 @@ export const listBots = async (
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
   }))
 
-  return data;
+  if(query?.page && query?.limit) {
+    return {
+      calls: "chat-bots",
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(countTotalDocuments[0].totalCount/ limit),
+      totalCount: countTotalDocuments[0].totalCount,
+      data
+    }
+  } else {
+      return data
+  }
+
 };
 
 export const getBotDetailsNoCache = async (botId: string) => {
