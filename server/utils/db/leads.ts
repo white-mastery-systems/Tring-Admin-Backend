@@ -9,7 +9,7 @@ import {
   subMonths,
   subYears,
 } from "date-fns";
-import { inArray } from "drizzle-orm";
+import { count, inArray } from "drizzle-orm";
 import { InsertLead } from "~/server/schema/bot";
 import momentTz from "moment-timezone"
 
@@ -88,9 +88,17 @@ export const listLeads = async (
       }
     }
 
-    const page = query.page ? parseInt(query.page) : 1;
-    const limit = query.limit ? parseInt(query.limit) : 10;
-    const offset = (page - 1) * limit;
+    let page, offset, limit = 0
+    
+    if(query.page && query.limit) {
+       page = parseInt(query.page) 
+       limit = parseInt(query.limit)
+       offset = (page - 1) * limit;
+    }
+
+    const countTotalDocuments = await db.select({ totalCount: count() })
+          .from(leadSchema)
+          .where(eq(leadSchema.organizationId, organizationId))
 
     let leads = await db.query.leadSchema.findMany({
       where: and(...filters),
@@ -138,7 +146,18 @@ export const listLeads = async (
         return lead.chat !== null;
       });
 
-    return leads;
+    if(query?.page && query?.limit) {
+      return {
+        calls: "leads",
+        page: page,
+        limit: limit,
+        totalPageCount: Math.ceil(countTotalDocuments[0].totalCount/ limit),
+        totalCount: countTotalDocuments[0].totalCount,
+        data: leads
+      }
+    } else {
+      return leads
+    }
   } catch (err) {}
 };
 
