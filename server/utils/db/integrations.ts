@@ -50,8 +50,8 @@ export const listIntegrations = async (
         calls: "Integrations",
         page: page,
         limit: limit,
-        totalPageCount: Math.ceil(paginatedIntegrations.length/limit),
-        totalCount: paginatedIntegrations.length,
+        totalPageCount: Math.ceil(data.length/limit) || 1,
+        totalCount: data.length,
         data: paginatedIntegrations
       }
     } else {

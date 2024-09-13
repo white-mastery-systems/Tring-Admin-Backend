@@ -51,8 +51,8 @@ export const listVoicebots = async (organizationId: string, query: listVoicebotQ
         calls: "voice-bot",
         page: page,
         limit: limit,
-        totalPageCount: Math.ceil(paginatedVoiceBots.length/ limit),
-        totalCount: paginatedVoiceBots.length,
+        totalPageCount: Math.ceil(data.length/ limit) || 1,
+        totalCount: data.length,
         data: paginatedVoiceBots
       }
     } else {
