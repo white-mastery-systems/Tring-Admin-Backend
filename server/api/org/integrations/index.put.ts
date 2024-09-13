@@ -15,6 +15,7 @@ export default defineEventHandler(async (event) => {
   const zodInsertIntegration = z.object({
     crm: z.nativeEnum(CRMType),
     metaData: z.object({
+      apiKey: z.string().optional(),
       code: z.string().optional(),
       location: z.string().optional(),
       accountsServer: z.string().optional(),
@@ -23,7 +24,7 @@ export default defineEventHandler(async (event) => {
 
   const userId: { id: string } = event.context.user!;
   const body = await isValidBodyHandler(event, zodInsertIntegration);
-
+  console.log({ body });
   const integration = await listLastCreatedIntegrationByCRM(
     organizationId,
     body.crm,
@@ -41,7 +42,7 @@ export default defineEventHandler(async (event) => {
     return generatedAuthResponse;
   }
   const updatedIntegration = await updateIntegrationById(integration.id, {
-    ...body.metaData,
+    ...body,
     ...generatedAuthResponse,
     status: "verified",
   });
