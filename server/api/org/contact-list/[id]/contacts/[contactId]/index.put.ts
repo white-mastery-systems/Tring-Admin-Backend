@@ -5,12 +5,34 @@ const zodUpdateContacts = z.object({
   phone: z.string().optional()
 })
 
+const db = useDrizzle()
+
 export default defineEventHandler(async (event) => {
   await isOrganizationAdminHandler(event)
+
+  const { id: contactListId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
   const { contactId } = await isValidRouteParamHandler(event, checkPayloadId("contactId"))
 
   const body: any = await isValidBodyHandler(event, zodUpdateContacts)
+
+   const isAlreadyExists = await db.query.contactSchema.findFirst({
+    where: and(
+      ne(contactSchema.id, contactId),
+      eq(contactSchema.contactListId, contactListId),
+      eq(contactSchema.phone, body?.phone)
+    )
+  })
+
+  if(isAlreadyExists) {
+     return sendError(
+      event,
+      createError({
+        statusCode: 400,
+        statusMessage: "phone number already exists",
+      }),
+    );
+  }
   
   const data = await updateContacts(contactId, body)
 
