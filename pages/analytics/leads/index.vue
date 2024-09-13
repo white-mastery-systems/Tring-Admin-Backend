@@ -59,7 +59,7 @@
       </UiTabsContent>
       <UiTabsContent value="website">
         <DataTable
-          :data="leads"
+          :data="leads.data"
           :is-loading="isDataLoading"
           :columns="columns"
           :page-size="8"
@@ -96,7 +96,7 @@
   const route = useRoute();
 
   const exportToCSV = () => {
-    if (leads.value.length === 0) {
+    if (leads.value.data.length === 0) {
       alert("No data to export");
       return;
     }
@@ -105,7 +105,7 @@
     const csvContent =
       columns.map((col) => col.header).join(",") +
       "\n" +
-      leads.value
+      leads.value.data
         .map((lead) =>
           rowList
             .map((col) => {
@@ -205,7 +205,7 @@
     }
   };
 
-  const columnHelper = createColumnHelper<(typeof leads.value)[0]>();
+  const columnHelper = createColumnHelper<(typeof leads.value.data)[0]>();
   const columns = [
     columnHelper.accessor("botUser.name", {
       header: "Lead Name",
