@@ -39,6 +39,7 @@ export default defineEventHandler(async (event) => {
       productId: hostedPageData.data.subscription.product_id,
       customerId: hostedPageData.data.subscription.customer_id,
       amount: hostedPageData.data.invoice.sub_total,
+      // expiry: data.data.subscription.expiry ?? Date.now(),
       status: "active",
       type: "addon",
     };

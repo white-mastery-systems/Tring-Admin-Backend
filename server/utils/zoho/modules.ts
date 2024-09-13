@@ -13,7 +13,7 @@ export function getAllPipelinesFromZohoBigin({
   // "https://www.zohoapis.in/bigin/v2/Pipelines?fields=Sub_Pipeline,Pipeline,Stage",
 
   const data: any = $fetch<any>(
-    "https://www.zohoapis.in/bigin/v1/settings/layouts?module=Pipelines",
+    "https://www.zohoapis.in/bigin/v2/settings/layouts?module=Pipelines",
     {
       headers: {
         Authorization: `Zoho-oauthtoken ${token}`,

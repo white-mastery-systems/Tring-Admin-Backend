@@ -1,29 +1,38 @@
-<html>
-  <head>
-    <link rel="icon" href="favicon.png" type="image/png" />
-    <title>Tring AI Chat Bot Preview</title>
-  </head>
-  <body>
-    <script>
-      const urlArray = window.location.search?.replace("?", "")?.split("&");
-      const script = document.createElement("script");
+<!DOCTYPE html>
+<html lang="en">
 
-      urlArray?.map((urlElement) => {
-        if (urlElement?.includes("orgname")) {
-          script.setAttribute("data-orgname", urlElement?.split("=")[1]);
-        } else if (urlElement?.includes("chatbotid")) {
-          script.setAttribute("data-chatbotid", urlElement?.split("=")[1]);
-        }
-      });
-      let url = "http://localhost:3001";
-      if (window.location.host?.includes("pripod")) {
-        url = "https://tring-databot.pripod.com";
+</html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tring AI Chat Bot Preview</title>
+  <link rel="icon" href="favicon.png" type="image/png" />
+</head>
+
+<body>
+  <script>
+    const urlArray = window.location.search?.replace("?", "")?.split("&");
+    const script = document.createElement("script");
+
+    urlArray?.map((urlElement) => {
+      if (urlElement?.includes("orgname")) {
+        script.setAttribute("data-orgname", urlElement?.split("=")[1]);
+      } else if (urlElement?.includes("chatbotid")) {
+        script.setAttribute("data-chatbotid", urlElement?.split("=")[1]);
       }
-      if (window.location.host?.includes("app.tringlabs.ai")) {
-        url = "https://chat.tringlabs.ai";
-      }
-      script.setAttribute("src", `${url}/widget.js`);
-      document.body.append(script);
-    </script>
-  </body>
+    });
+    let url = "http://localhost:3001";
+    if (window.location.host?.includes("pripod")) {
+      url = "https://tring-databot.pripod.com";
+    }
+    if (window.location.host?.includes("app.tringlabs.ai")) {
+      url = "https://chat.tringlabs.ai";
+    }
+    console.log({ url });
+    script.setAttribute("src", `${url}/widget.js`);
+    document.body.append(script);
+  </script>
+</body>
+
 </html>
