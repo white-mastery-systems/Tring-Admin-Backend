@@ -67,6 +67,7 @@ export default defineEventHandler(async (event) => {
       productId: data.data.subscription.product_id,
       customerId: data.data.subscription.customer_id,
       amount: data.data.subscription.amount,
+      expiry: data.data.subscription.expiry ?? Date.now(),
       status: "active",
     };
     try {
