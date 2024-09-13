@@ -99,14 +99,28 @@
           :loading="loading"
         />
       </div>
-      <div class="mt-2 flex justify-end">
-        <div class="max-w-[200px]">
+      <div class="mt-2 flex cursor-pointer gap-2 overflow-x-scroll">
+        <template v-for="graphOption in graphOptions" :key="graphOption.value">
+          <button
+            @click="() => handleEditGraphValues(graphOption)"
+            :class="[
+              `shadow-lg flex h-[40px] w-auto items-center gap-2 rounded-md border-[1px] border-gray-200 px-2 text-center text-sm`,
+            ]"
+          >
+            <PlusIcon v-if="!chartValues.includes(graphOption.value)" />
+            <MinusIcon v-else />
+            <span class="min-w-[100px]" :style="`color:${graphOption.color}`">{{
+              graphOption.label
+            }}</span>
+          </button>
+        </template>
+        <!-- <div class="max-w-[200px]">
           <MutliSelect
             v-model:value="chartValues"
             :options="graphOptions"
             :maxCount="2"
           />
-        </div>
+        </div> -->
       </div>
       <Line
         v-if="!loading"
@@ -132,6 +146,7 @@
     Title,
     Tooltip,
   } from "chart.js";
+  import { MinusIcon, PlusIcon } from "lucide-vue-next";
   import { Line } from "vue-chartjs";
   import ChatSession from "~/components/icons/ChatSession.vue";
   import Leads from "~/components/icons/Leads.vue";
@@ -151,37 +166,46 @@
   const analyticsData = ref();
   const loading = ref(false);
   const graphOptions = ref([
+    //define diffrent color for each of this item
     {
       label: "Leads",
       value: "leads",
+      color: "#4f46e5",
     },
     {
       label: "Sessions",
       value: "sessions",
+      color: "#facc15",
     },
     {
       label: "Unique Visitors",
       value: "unique_visiters",
+      color: "#a855f7",
     },
     {
-      label: "Interacted Chats",
+      label: "Interacted",
       value: "interacted_chats",
+      color: "#dc2626",
     },
     {
       label: "Schedule Calls",
       value: "schedule_calls",
+      color: "#16a34a",
     },
     {
       label: "Site visits",
       value: "site_visits",
+      color: "#2563eb",
     },
     {
       label: "Locations",
       value: "locations",
+      color: "#1e293b",
     },
     {
       label: "Virtual Tours",
       value: "virtual_tours",
+      color: "#e11d48",
     },
   ]);
   const dateFilters = reactive([
@@ -231,8 +255,25 @@
     },
   ]);
   const chartValues = ref(["leads", "sessions"]);
-  watch(chartValues, (newChartvalues) => {});
+  const handleEditGraphValues = async (option: any) => {
+    let localValue = chartValues.value;
+    if (localValue.includes(option.value)) {
+      const index = localValue.indexOf(option.value);
+      localValue.splice(index, 1);
+    } else {
+      localValue.push(option.value);
+    }
+    chartValues.value = localValue;
+    filter.graphValues = chartValues?.value?.join(",");
 
+    filter.period = selectedValue;
+    if (selectedValue != "custom") {
+      delete filter.from;
+      delete filter.to;
+    }
+    const data = await getAnalyticsData(filter);
+    analyticsData.value = data;
+  };
   const state = reactive<{ graphData: any[]; labels: any[] }>({
     graphData: [],
     labels: [],
@@ -250,48 +291,22 @@
   let chartData = computed(() => ({
     labels: state.labels,
     datasets: chartValues.value?.map((item: any, index: number) => {
-      console.log({ index });
       return {
         label: graphOptions.value?.find(
           ({ value }: { value: string }) => value === item,
         )?.label,
         tension: 0.4,
         pointRadius: 0,
-        borderColor: graphIndexValues.value[index]?.borderColor,
-        backgroundColor: graphIndexValues.value[index]?.backgroundColor,
+        borderColor: graphOptions?.value?.find(({ value }) => value === item)
+          ?.color,
+        backgroundColor: graphOptions?.value?.find(
+          ({ value }) => value === item,
+        )?.color,
         data: state.graphData[index],
-        yAxisID: graphIndexValues.value[index]?.yAxisID,
+        yAxisID: `y${index + 1}`,
       };
     }),
   }));
-  const graphIndexValues = ref([
-    {
-      borderColor: "#424bd1",
-      backgroundColor: "#424bd1",
-      yAxisID: "y",
-    },
-    {
-      borderColor: "#ffbc42",
-      backgroundColor: "#ffbc42",
-      yAxisID: "y1",
-    },
-    {
-      borderColor: "#dc6570",
-      backgroundColor: "#dc6570",
-      yAxisID: "y1",
-    },
-
-    {
-      borderColor: "#ffbc42",
-      backgroundColor: "#ffbc42",
-      yAxisID: "y1",
-    },
-    {
-      borderColor: "#ffbc42",
-      backgroundColor: "#ffbc42",
-      yAxisID: "y1",
-    },
-  ]);
 
   const chartOptions = ref({
     responsive: true,
@@ -307,6 +322,11 @@
           display: false,
         },
       },
+      // y: {
+      //   grid: {
+      //     display: false,
+      //   },
+      // },
       y: {
         type: "linear",
         display: true,
@@ -339,6 +359,41 @@
           }
         },
       },
+      y2: {
+        type: "linear",
+        display: false,
+      },
+      y3: {
+        type: "linear",
+        display: false,
+      },
+      y4: {
+        type: "linear",
+        display: false,
+      },
+      y5: {
+        type: "linear",
+        display: false,
+      },
+      y6: {
+        type: "linear",
+        display: false,
+      },
+      y7: {
+        type: "linear",
+        display: false,
+      },
+      y8: {
+        type: "linear",
+        display: false,
+      },
+      // yAxes: [
+      //   {
+      //     gridLines: {
+      //       drawBorder: false,
+      //     },
+      //   },
+      // ],
     },
     elements: {
       line: {
@@ -350,7 +405,17 @@
         color: "lightGreen",
       },
     },
-
+    // options: {
+    //   scales: {
+    //     yAxes: [
+    //       {
+    //         gridLines: {
+    //           drawBorder: false,
+    //         },
+    //       },
+    //     ],
+    //   },
+    // },
     backgroundColor: "red",
   });
 
@@ -371,6 +436,7 @@
   // const getButtonName = ref("Get Started");
 
   watch([selectedValue, chartValues], async ([period, chartValues]) => {
+    console.log({ chartValues });
     filter.graphValues = chartValues?.join(",");
 
     filter.period = period;
