@@ -135,9 +135,7 @@ export default defineEventHandler(async (event) => {
               payment_gateways: [
                 {
                   payment_gateway:
-                    body?.locationData?.country === "IN"
-                      ? "razorpay"
-                      : "razorpay",
+                    userDetails?.address === "india" ? "razorpay" : "razorpay",
                 },
               ],
             },

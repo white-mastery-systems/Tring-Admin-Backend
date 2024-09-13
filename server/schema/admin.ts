@@ -1,3 +1,4 @@
+import { addMonths } from "date-fns";
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   boolean,
@@ -15,6 +16,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { adminSchema } from ".";
 import { authUserSchema } from "./auth";
 import { botUserSchema, chatBotSchema, leadSchema } from "./bot";
+const nextMonthDate = addMonths(new Date(), 1);
 
 // Tables
 export const organizationSchema = adminSchema.table("organization", {
@@ -53,6 +55,7 @@ export const paymentSchema = adminSchema.table("payment", {
   customer_metadata: jsonb("customer_metadata"),
   type: paymentTypeEnum("type").default("subscription").notNull(),
   status: statusEnum("status").default("active").notNull(),
+  expiry: timestamp("expiry").default(nextMonthDate).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -106,7 +109,7 @@ export const adminPricingSchema = adminSchema.table("admin_pricing", {
   leadGenEnabled: boolean("lead_gen_enabled").default(false).notNull(),
   crmConfigEnabled: boolean("crm_config_enabled").default(false).notNull(),
   widgetCustomization: varchar("widget_customization").notNull(),
-  tringBranding: varchar("tring_branding").notNull(),  
+  tringBranding: varchar("tring_branding").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -127,11 +130,11 @@ export const contactListSchema = adminSchema.table("contact_list", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name"),
   organizationId: uuid("organizationId")
-  .notNull()
-  .references(() => organizationSchema.id),
+    .notNull()
+    .references(() => organizationSchema.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-})
+});
 
 export const contactSchema = adminSchema.table("contacts", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -140,14 +143,14 @@ export const contactSchema = adminSchema.table("contacts", {
   countryCode: varchar("country_code"),
   phone: varchar("phone"),
   contactListId: uuid("contact_list_id")
-  .notNull()
-  .references(() => contactListSchema.id, { onDelete: "cascade" }),
+    .notNull()
+    .references(() => contactListSchema.id, { onDelete: "cascade" }),
   organizationId: uuid("organization_id")
-  .notNull()
-  .references(() => organizationSchema.id),
+    .notNull()
+    .references(() => organizationSchema.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-})
+});
 
 export const campaignSchema = adminSchema.table("campaign", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -157,11 +160,11 @@ export const campaignSchema = adminSchema.table("campaign", {
   campaignTime: timestamp("campaign_time"),
   contactListId: uuid("contact_list_id").references(() => contactListSchema.id, { onDelete: "cascade" }),
   organizationId: uuid("organization_id")
-  .notNull()
-  .references(() => organizationSchema.id),
+    .notNull()
+    .references(() => organizationSchema.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-}) 
+});
 
 // Relations
 export const organizationRelations = relations(
@@ -185,7 +188,6 @@ export const billingRelations = relations(paymentSchema, ({ one }) => ({
     references: [authUserSchema.id],
   }),
 }));
-
 
 // Types
 export type SelectOrganization = InferSelectModel<typeof organizationSchema>;
