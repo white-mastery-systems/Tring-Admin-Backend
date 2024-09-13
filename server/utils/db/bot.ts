@@ -61,8 +61,8 @@ export const listBots = async (
       calls: "chat-bots",
       page: page,
       limit: limit,
-      totalPageCount: Math.ceil(paginatedChatBots.length/ limit),
-      totalCount: paginatedChatBots.length,
+      totalPageCount: Math.ceil(data.length/ limit) || 1,
+      totalCount: data.length,
       data: paginatedChatBots
     }
   } else {

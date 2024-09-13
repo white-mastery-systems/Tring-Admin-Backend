@@ -89,8 +89,8 @@ export const listChats = async (
       calls: "chats",
       page: page,
       limit: limit,
-      totalPageCount: Math.ceil(paginatedChats.length/ limit),
-      totalCount: paginatedChats.length,
+      totalPageCount: Math.ceil(chats.length/ limit) || 1,
+      totalCount: chats.length,
       data: paginatedChats
     }
   } else {
