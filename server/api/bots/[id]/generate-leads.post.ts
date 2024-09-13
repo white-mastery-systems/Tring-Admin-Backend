@@ -4,7 +4,7 @@ import {
   generateLeadInZohoCRM,
 } from "~/server/utils/zoho/modules";
 export default defineEventHandler(async (event) => {
-  const userId = event.context.user?.id as string;
+  // const userId = event.context.user?.id as string;
   const generateLeadsValidation = z.object({
     botUser: z.any(),
     note: z.any(),
@@ -102,7 +102,7 @@ export default defineEventHandler(async (event) => {
     } else if (botIntegration?.integration?.crm === "sell-do") {
       const { campaignId, projectId } = botIntegration?.metadata;
       const apiKey = botIntegration.integration.metadata.apiKey;
-      await createLeadInSellDo(
+      const data = await createLeadInSellDo(
         body.note,
         body.botUser,
         {},
@@ -110,6 +110,7 @@ export default defineEventHandler(async (event) => {
         projectId,
         campaignId,
       );
+      console.log({ data });
     }
   });
   if (adminUser?.id) {
