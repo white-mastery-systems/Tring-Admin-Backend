@@ -1,5 +1,6 @@
 import { InsertVoicebotIntegration } from "~/server/schema/voicebot";
 import momentTz from "moment-timezone";
+import { count } from "drizzle-orm";
 
 const db = useDrizzle();
 
@@ -27,9 +28,17 @@ export const listVoicebots = async (organizationId: string, query: listVoicebotQ
   if(query?.q) {
     filters.push(ilike(voicebotSchema.name, `%${query.q}%`))
   }
-  const page = query.page ? parseInt(query.page) : 1;
-  const limit = query.limit ? parseInt(query.limit) : 10;
-  const offset = (page - 1) * limit;
+  let page, offset, limit = 0
+    
+  if(query.page && query.limit) {
+    page = parseInt(query.page) 
+    limit = parseInt(query.limit)
+    offset = (page - 1) * limit;
+  }
+
+   const countTotalDocuments = await db.select({ totalCount: count() })
+          .from(voicebotSchema)
+          .where(eq(voicebotSchema.organizationId, organizationId))
 
   let data = await db.query.voicebotSchema.findMany({ 
     where: and(...filters),
@@ -43,6 +52,19 @@ export const listVoicebots = async (organizationId: string, query: listVoicebotQ
     ...i,
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
   }))
+
+    if(query?.page && query?.limit) {
+      return {
+        calls: "voice-bot",
+        page: page,
+        limit: limit,
+        totalPageCount: Math.ceil(countTotalDocuments[0].totalCount/ limit),
+        totalCount: countTotalDocuments[0].totalCount,
+        data
+      }
+    } else {
+      return data
+    }
 
   return data
 }
