@@ -165,7 +165,9 @@
   watchEffect(() => {
     if (filters.botId === "all") filters.botId = "";
   });
-  const { status, data: leads } = await useLazyFetch("/api/org/leads", {
+
+  const params =  ref('/api/org/leads?page=2&limit=8')
+  const { status, data: leads, refresh:getAllleads } = await useLazyFetch(params.value, {
     server: false,
     query: filters,
     headers: {
