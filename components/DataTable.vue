@@ -24,8 +24,7 @@
     heightUnit?: string;
   }>();
 
-
-  const emits = defineEmits(['pagination']);
+  const emits = defineEmits(["pagination"]);
 
   const sorting = ref<SortingState>([]);
   const pageSize = computed(() => props.pageSize || 10);
@@ -51,6 +50,8 @@
     },
   });
   console.log("page", props.page);
+
+
 </script>
 
 <template>
@@ -164,13 +165,11 @@
       class="flex flex-col items-center justify-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0"
     >
       <p>Page {{ page }} of {{ totalPageCount }}</p>
-      <div >
-       TotalCount:{{totalCount}}
-      </div>
+      <div>TotalCount:{{ totalCount }}</div>
       <div class="flex space-x-4">
         <UiButton
           size="icon"
-          @click="emits('pagination',1)"
+          @click="emits('pagination', 1)"
           :disabled="page === 1"
           class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
         >
@@ -180,23 +179,26 @@
           size="icon"
           class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
           :disabled="page === 1"
-          @click="emits('pagination',page-1)"
+          @click="emits('pagination', page - 1)"
         >
           <Icon name="lucide:chevron-left" class="h-6 w-6" />
         </UiButton>
         <UiButton
           size="icon"
           :disabled="totalPageCount === page"
-          @click="()=>{
-         console.log('ssfdf')       
-            emits('pagination',page+1)}"
+          @click="
+            () => {
+              console.log('ssfdf');
+              emits('pagination', page + 1);
+            }
+          "
           class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
         >
           <Icon name="lucide:chevron-right" class="h-6 w-6" />
         </UiButton>
         <UiButton
           size="icon"
-          @click="emits('pagination',totalPageCount)"
+          @click="emits('pagination', totalPageCount)"
           :disabled="totalPageCount === page"
           class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
         >

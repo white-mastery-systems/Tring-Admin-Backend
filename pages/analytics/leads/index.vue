@@ -4,11 +4,11 @@
       <div class="flex items-center gap-2">
         <UiInput
           v-model="filters.q"
-          @input="filters.page='1'"
+          @input="filters.page = '1'"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder=" Search Leads..."
         />
-        <BotFilter v-model="filters.botId"  @input="filters.page='1'"/>
+        <BotFilter v-model="filters.botId" @input="filters.page = '1'" />
         <StatusFilter @change="onStatusChange" />
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
@@ -156,8 +156,8 @@
     status: string;
     channel: any;
     action: string;
-    page:string;
-    limit:string
+    page: string;
+    limit: string;
   }>({
     botId: "",
     q: undefined,
@@ -167,14 +167,17 @@
     status: "",
     channel: "all",
     action: "",
-    page:"1",
-    limit:"8"
+    page: "1",
+    limit: "8",
   });
 
   watchEffect(() => {
     if (filters.botId === "all") filters.botId = "";
   });
 
+  let page = ref(0);
+  let totalPageCount = ref(0);
+  let totalCount = ref(0);
   let {
     status,
     data: leads,
@@ -186,24 +189,19 @@
       "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
     default: () => [],
+    transform: (leads:any) => {
+      page.value = leads.page;
+      totalPageCount.value = leads.totalPageCount;
+      totalCount.value = leads.totalCount;
+      return leads.data;
+    },
   });
 
-  let page = ref(0);
-  let totalPageCount = ref(0);
-  let totalCount = ref(0);  
-  watch(status, (newValue) => {
-    if (newValue === "success") {
-      page.value = leads.value.page;
-      totalPageCount.value = leads.value.totalPageCount;
-      totalCount.value = leads.value.totalCount;
-      leads.value = leads.value.data;
-      console.log(leads.value, totalCount.value);
-    }
-  });
+
 
   const Pagination = async ($evnt) => {
-    filters.page = $evnt
-    getAllLeads()
+    filters.page = $evnt;
+    getAllLeads();
   };
 
   const isDataLoading = computed(() => status.value === "pending");
@@ -224,7 +222,7 @@
       delete filters.to;
       filters.period = value;
     }
-    filters.page='1'
+    filters.page = "1";
   };
   const onActionChange = (value: any) => {
     if (value) {
@@ -234,7 +232,7 @@
   const onStatusChange = (value: any) => {
     if (value) {
       filters.status = value;
-      filters.page='1'
+      filters.page = "1";
     }
   };
 
