@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     .object({
       name: z.string().min(3, "Intent should have atleast 3 characters"),
       crm: z.nativeEnum(CRMType),
-      metaData: z.object({
+      metadata: z.object({
         apiKey: z.string().optional(),
         status: z.string().optional(),
         pid: z.string().optional(),
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
 
   const integration = await createIntegration({
     ...body,
-    metadata: body.metaData,
+    metadata: body.metadata,
     org_id: organizationId,
     user_id: userId?.id,
   });

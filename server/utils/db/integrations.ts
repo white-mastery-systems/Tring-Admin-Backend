@@ -90,7 +90,7 @@ export const updateIntegrationById = async (id: string, integration: any) => {
   const data = await db
     .update(integrationSchema)
     .set({ 
-      metadata: integration,
+      ...integration,
       updatedAt: new Date()
      })
     .where(eq(integrationSchema.id, id))

@@ -1,5 +1,6 @@
 import momentTz from "moment-timezone";
 import { getDateRangeForFilters } from "./leads";
+import { count } from "drizzle-orm";
 
 const db = useDrizzle();
 
@@ -35,9 +36,17 @@ export const listChats = async (
   }
   // console.log({ query, fromDate, toDate })
 
-  const page = query.page ? parseInt(query.page) : 1;
-  const limit = query.limit ? parseInt(query.limit) : 10;
-  const offset = (page - 1) * limit;
+  let page, offset, limit = 0
+    
+  if(query.page && query.limit) {
+    page = parseInt(query.page) 
+    limit = parseInt(query.limit)
+    offset = (page - 1) * limit;
+  }
+ 
+  const countTotalDocuments = await db.select({ totalCount: count() })
+      .from(chatSchema)
+      .where(eq(chatSchema.organizationId, organisationId))
 
   let chats = await db.query.chatSchema.findMany({
     where: and(
@@ -83,6 +92,16 @@ export const listChats = async (
   if (query?.botUserName === "without_name") {
     chats = chats.filter((i) => i.botUser === null);
   }
-
-  return chats;
+  if(query?.page && query?.limit) {
+    return {
+      calls: "chats",
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(countTotalDocuments[0].totalCount/ limit),
+      totalCount: countTotalDocuments[0].totalCount,
+      data: chats
+    }
+  } else {
+      return chats
+  }
 };
