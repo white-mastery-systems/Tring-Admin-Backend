@@ -322,11 +322,7 @@
           display: false,
         },
       },
-      // y: {
-      //   grid: {
-      //     display: false,
-      //   },
-      // },
+
       y: {
         type: "linear",
         display: true,
@@ -334,6 +330,7 @@
         grid: {
           display: false,
         },
+        beginAtZero: true,
         ticks: {
           beginAtZero: true,
           userCallback: function (label, index, labels) {
@@ -341,6 +338,13 @@
             if (Math.floor(label) === label) {
               return label;
             }
+          },
+        },
+        options: {
+          elements: {
+            point: {
+              radius: 0,
+            },
           },
         },
       },
@@ -357,6 +361,13 @@
           if (Math.floor(label) === label) {
             return label;
           }
+        },
+        options: {
+          elements: {
+            point: {
+              radius: 0,
+            },
+          },
         },
       },
       y2: {
