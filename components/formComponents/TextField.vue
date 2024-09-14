@@ -1,39 +1,49 @@
+<!-- TextField.vue -->
 <template>
-  <UiFormField v-bind="fieldAttrs" :name="name">
+  <UiFormField :name="name">
     <UiFormItem class="w-full">
-      <UiFormLabel
-        >{{ label }} <UiLabel class="text-lg text-red-700">*</UiLabel>
+      <UiFormLabel>
+        {{ label }}
+        <UiLabel v-if="required" class="text-lg text-red-700">*</UiLabel>
       </UiFormLabel>
       <UiFormControl>
         <UiInput
-          :class="error ? 'border-red-700' : ''"
+          :class="{ 'border-red-700': !!errorMessage }"
           type="text"
-          v-bind="fieldAttrs"
-          @input="updateField($event.target.value)"
-          :placeholder="placeHolder"
+          :name="name"
+          :value="modelValue"
+          @input="updateValue"
+          :placeholder="placeholder"
         />
       </UiFormControl>
-      <p v-if="error" class="mt-0 text-sm text-red-700">{{ error }}</p>
-      <!-- <UiFormMessage v-model="name" v-bind="nameAttrs" /> -->
-      <span class="text-xs text-gray-500"
-        >Enter a unique identification for CRM integration</span
-      >
+      <UiFormMessage>
+        {{ errorMessage || helperText }}
+      </UiFormMessage>
     </UiFormItem>
   </UiFormField>
 </template>
+
 <script setup lang="ts">
-  const { label, field, fieldAttrs, error } = defineProps<{
-    label: string;
-    field: any;
-    fieldAttrs: any;
-    error: string | undefined;
+  import { useField } from "vee-validate";
+
+  const props = defineProps<{
     name: string;
-    placeHolder: string;
+    label: string;
+    modelValue: string | undefined;
+    placeholder?: string;
+    helperText?: string;
+    required?: boolean;
   }>();
 
-  const emit = defineEmits(["update:field"]);
+  const emit = defineEmits(["update:modelValue"]);
 
-  const updateField = (value: any) => {
-    emit("update:field", value); // Emit the event to update the field prop
+  const { value, errorMessage } = useField(props.name, undefined, {
+    initialValue: props.modelValue,
+  });
+
+  const updateValue = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    emit("update:modelValue", target.value);
+    value.value = target.value;
   };
 </script>

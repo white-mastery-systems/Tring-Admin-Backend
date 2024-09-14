@@ -1,6 +1,6 @@
 <template>
   <Page title="Speech To Text Configurations">
-    <UiForm>
+    <!-- <UiForm @submit="handleTTlConfig()">
       <UiFormField
         v-model="providerField"
         v-bind="providerFieldAttrs"
@@ -30,15 +30,64 @@
           <span class="text-xs text-gray-500">Select your providers.</span>
         </UiFormItem>
       </UiFormField>
+
+      <TextField
+        name="adaptation"
+        label="Adaptation"
+        v-model="adaptationValue"
+        placeholder="Adaptation Details"
+        helperText="Enter adaptation"
+        required
+      />
+
       <div class="flex w-full justify-end">
         <UiButton color="primary"> Submit </UiButton>
       </div>
+    </UiForm> -->
+    <UiForm @submit="handleSubmit(onSubmit)">
+      <TextField
+        name="adaptation"
+        label="Adaptation"
+        v-model="form.adaptation"
+        placeholder="Adaptation Details"
+        helperText="Enter adaptation"
+        required
+      />
+      <!-- Add more fields as needed -->
+      <UiButton type="submit">Submit</UiButton>
     </UiForm>
   </Page>
 </template>
-
 <script setup lang="ts">
-  import { speechToTextValidation } from "~/validationSchema/speechToTextValidation";
+  import { toTypedSchema } from "@vee-validate/zod";
+  import { useForm } from "vee-validate";
+  import { reactive } from "vue";
+  import * as z from "zod";
+
+  const validationSchema = toTypedSchema(
+    z.object({
+      adaptation: z.string().min(1, "Adaptation is required"),
+      // Add more validation rules as needed
+    }),
+  );
+
+  const form = reactive({
+    adaptation: "",
+  });
+
+  const { handleSubmit, errors } = useForm({
+    validationSchema,
+    initialValues: form,
+  });
+
+  const onSubmit = (values: any) => {
+    // Handle form submission
+    console.log(values);
+  };
+</script>
+
+<!-- <script setup lang="ts">
+  import { textToSpeechValidation } from "~/validationSchema/textToSpeechValidation";
 
   let providers = [
     {
@@ -64,12 +113,26 @@
     values,
     handleReset,
   } = useForm({
-    validationSchema: toTypedSchema(speechToTextValidation),
+    validationSchema: toTypedSchema(textToSpeechValidation),
+    initialValues: {
+      adaptation: "",
+    },
   });
-
+  const handleTTlConfig = handleSubmit((value) => {
+    console.log({ value });
+  });
   watch(errors, (newError) => {
     console.log({ newError });
   });
-  const [langauageField, langauageFieldAttrs] = defineField("language");
-  const [providerField, providerFieldAttrs] = defineField("provider");
-</script>
+
+  const adaptationValue = computed({
+    get: () => values.adaptation as string,
+    set: (value: string) => {
+      if (values.adaptation !== undefined) {
+        values.adaptation = value;
+      }
+    },
+  });
+  //   const [langauageField, langauageFieldAttrs] = defineField("language");
+  const [adaptationField, adaptationFieldAttrs] = defineField("adaptation");
+</script> -->
