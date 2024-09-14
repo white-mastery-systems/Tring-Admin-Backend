@@ -69,7 +69,7 @@
       <UiFormField
         v-model="adaptationField"
         v-bind="adaptationFieldAttrs"
-        name="provider"
+        name="adaptation"
       >
         <UiFormItem class="w-full">
           <UiFormLabel
@@ -78,7 +78,7 @@
           <UiFormControl>
             <UiSelect v-model="adaptationField" v-bind="adaptationFieldAttrs">
               <UiSelectTrigger>
-                <UiSelectValue placeholder="Select Provider" />
+                <UiSelectValue placeholder="Select adaptation" />
               </UiSelectTrigger>
               <UiSelectContent>
                 <UiSelectItem
@@ -93,9 +93,47 @@
             {{ errors.adaptation }}
           </span>
         </br>
-          <span class="text-xs text-gray-500">Select your adaptations.</span>
+          <span class="text-xs text-gray-500">Select your adaptation.</span>
+        </UiFormItem>
+  </UiFormField> 
+        
+     
+
+
+      <!-- end of adaptations -->
+       
+<UiFormField
+        v-model="modelField"
+        v-bind="modelFieldAttrs"
+        name="model"
+      >
+        <UiFormItem class="w-full">
+          <UiFormLabel
+            >Model<UiLabel class="text-lg text-red-500">*</UiLabel>
+          </UiFormLabel>
+          <UiFormControl>
+            <UiSelect v-model="modelField" v-bind="modelFieldAttrs">
+              <UiSelectTrigger>
+                <UiSelectValue placeholder="Select Model" />
+              </UiSelectTrigger>
+              <UiSelectContent>
+                <UiSelectItem
+                  v-for="model in models"
+                  :value="model.value"
+                  >{{ model.label }}</UiSelectItem
+                >
+              </UiSelectContent>
+            </UiSelect>
+          </UiFormControl>
+          <span class="text-sm text-red-500">
+            {{ errors.model }}
+          </span>
+        </br>
+          <span class="text-xs text-gray-500">Select your models.</span>
         </UiFormItem>
       </UiFormField>
+
+
       <div class="flex w-full justify-end">
         <UiButton color="primary"> Submit </UiButton>
       </div>
@@ -147,6 +185,30 @@
       value: "no",
     },
   ]
+  const models=[
+    {
+        label:"Long",
+        value:"long"
+    },{
+        label:"Short",
+        value:"short"
+    },{
+      label:"Nova-2",
+      value:"nova-2"
+    },
+    {
+      label:"Nova",
+      value:"nova"
+    },
+    {
+      label:"Enhanced",
+      value:"enhanced"
+    },
+    {
+      label:"Base",
+      value:"base"
+    }
+  ]
 
   const route = useRoute("bot-management-voice-bot-id-speech-to-text-config");
   const {
@@ -193,4 +255,8 @@
   const [langauageField, langauageFieldAttrs] = defineField("language");
   const [providerField, providerFieldAttrs] = defineField("provider");
   const [adaptationField, adaptationFieldAttrs] = defineField("adaptation");
+  const [amplificationFactorField,amplificationFactorFieldAttrs]=defineField("amplification_factor")
+  const [modelField,modelFieldAttrs]=defineField("model")
+
+
 </script>

@@ -83,7 +83,10 @@
             {{ errors.file }}
           </span>
         </div>
-        <p v-if="selectedFileName" class="mt-2 text-sm text-gray-600">
+        <p
+          v-if="selectedFileName"
+          class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600"
+        >
           {{ selectedFileName }}
         </p>
 
@@ -216,7 +219,7 @@
         toast.error("unsppported pdf type");
       }
       fileRef.value = target.files;
-      selectedFileName.value = files?.map((file) => file.type).join(",");
+      selectedFileName.value = files?.map((file) => file.name).join(",");
       // setFieldValue("file", Array.from(target.files));
     } else {
       fileRef.value = null;
