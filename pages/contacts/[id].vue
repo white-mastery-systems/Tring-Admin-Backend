@@ -107,7 +107,7 @@
   }>({
     q: "",
     page: "1",
-    limit: "8",
+    limit: "10",
   });
   const selectedValue = ref("Today");
   let page = ref(0);

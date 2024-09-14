@@ -73,7 +73,7 @@
     botUserName: "all",
     period: "all-time",
     page: "1",
-    limit: "8",
+    limit: "10",
   });
 
   let page = ref(0);

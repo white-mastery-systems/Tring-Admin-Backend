@@ -1,17 +1,17 @@
 <script setup lang="ts">
   const emit = defineEmits(["changeAction"]);
-  const selectedAction: any = ref("8");
+  const selectedAction: any = ref("10");
   const actionFilters = reactive([
     {
-      content: "Eight Per Page",
-      value: "8",
+      content: "10",
+      value: "10",
     },
     {
-      content: "Fifteen Per Page",
+      content: "15",
       value: "15",
     },
     {
-      content: "Twenty Five Per Page",
+      content: "25",
       value: "25",
     },
   ]);
