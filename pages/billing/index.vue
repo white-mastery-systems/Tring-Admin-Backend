@@ -175,7 +175,7 @@
         </span>
       </div>
 
-      <div
+      <!-- <div
         class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]"
       >
         <span> Extra chat sessions billing </span>
@@ -184,7 +184,7 @@
         >
           Rs. {{ usageDetails?.extraChatsCost }}
         </span>
-      </div>
+      </div> -->
       <div
         class="flex items-center justify-between gap-3 px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]"
       >
