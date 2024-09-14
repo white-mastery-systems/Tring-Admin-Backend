@@ -179,7 +179,7 @@ import ChatSession from "~/components/icons/ChatSession.vue";
     },
   ]);
   const chartValues = ref(["leads", "sessions"]);
-  const handleEditGraphValues = async (option: any) => {
+  const handleEditGraphValues:any = async (option: any) => {
     let localValue = chartValues.value;
     console.log({option})
     if (localValue.includes(option.apiName)) {
