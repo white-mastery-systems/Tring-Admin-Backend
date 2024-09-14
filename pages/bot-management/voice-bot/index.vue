@@ -1,12 +1,8 @@
 <template>
   <Page title="Voice Bot" :disable-back-button="true">
     <template #actionButtons>
-      <div class="flex gap-4">
-        <UiButton
-          v-if="route.query.q === 'agents'"
-          color="primary"
-          @click="agentModalState.open = true"
-        >
+      <div class="flex gap-4 overflow-auto">
+        <UiButton v-if="route.query.q === 'agents'" color="primary" @click="agentModalState.open = true">
           Add Voice Bot
         </UiButton>
         <div v-else-if="route.query.q === 'campaigns'" class="flex gap-2">
@@ -21,14 +17,17 @@
           >
             Add Campaign
           </UiButton>
-          <UiButton color="primary"> Import </UiButton>
-          <!-- class="bg-[#43D371] hover:bg-[#43D371]/90" -->
-          <UiButton color="primary"> Export </UiButton>
+          <!-- <UiButton color="primary">
+            Import
+          </UiButton>
+          <UiButton color="primary">
+            Export
+          </UiButton> -->
         </div>
       </div>
     </template>
     <UiTabs default-value="agents" class="w-full self-start">
-      <UiTabsList class="grid w-[40%] grid-cols-2">
+      <UiTabsList class="grid w-[100%] sm:w-[100%] md:w-[40%] lg:w-[40%] xl:w-[40%] grid-cols-2">
         <UiTabsTrigger value="agents" @click="navigateToTab('agents')">
           Agents
         </UiTabsTrigger>

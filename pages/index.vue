@@ -1,34 +1,23 @@
 <template>
-  <Page
-    :disable-elevation="true"
-    title="Dashboard"
-    :disableSelector="true"
-    :disable-back-button="true"
-  >
+  <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-2">
-        <span
-          class="field_shadow flex items-center rounded-lg text-[15px]"
-          style="color: rgba(138, 138, 138, 1)"
-        >
+        <span class="field_shadow flex items-center rounded-lg text-[15px]" style="color: rgba(138, 138, 138, 1)">
           <!-- <span class="flex -items-center py-2 pl-2"></span> -->
           <span class="font-bold text-black">
             <UiSelect v-model="selectedValue" class="outline-none">
               <UiSelectTrigger
-                class="ui-select-trigger flex w-[70px] items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[200px] md:text-[14px] lg:w-[200px] lg:text-[14px] xl:w-[200px] xl:text-[14px]"
-              >
-                <span class="font-thin text-gray-400"> Summary </span>
+                class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[200px] md:text-[14px] lg:w-[200px] lg:text-[14px] xl:w-[200px] xl:text-[14px]">
+                <span class="font-thin text-gray-400 min-w-[70px]"> Summary </span>
                 <UiSelectValue />
               </UiSelectTrigger>
               <UiSelectContent>
                 <UiSelectGroup>
-                  <UiSelectItem
-                    v-for="(list, index) in dateFilters"
-                    :key="index"
-                    class="content_align pr-2"
-                    :value="list.value"
-                  >
-                    {{ list.content }}
+                  <UiSelectItem v-for="(list, index) in dateFilters" :key="index" class="content_align pr-2"
+                    :value="list.value">
+                    <div class="text-left">
+                      {{ list.content }}
+                    </div>
                   </UiSelectItem>
                   <UiSelectItem value="custom">Custom</UiSelectItem>
                 </UiSelectGroup>
@@ -36,68 +25,27 @@
             </UiSelect>
           </span>
         </span>
-        <DateRangeFilter
-          v-model="selectedValue"
-          :selectDateField="false"
-          @change="onDateChange"
-        />
+        <DateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
       </div>
     </template>
     <div>
-      <div
-        class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4"
-      >
-        <StatusCountCard
-          :icon="ChatSession"
-          title="Chat sessions"
-          :count="analyticsData?.chats"
-          :loading="loading"
-        />
-        <StatusCountCard
-          :icon="SingleUser"
-          title="Unique visitors"
-          :count="analyticsData?.users"
-          :loading="loading"
-        />
+      <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <StatusCountCard :icon="ChatSession" title="Chat sessions" :count="analyticsData?.chats" :loading="loading" />
+        <StatusCountCard :icon="SingleUser" title="Unique visitors" :count="analyticsData?.users" :loading="loading" />
 
-        <StatusCountCard
-          :icon="ChatSession"
-          title="Interacted Chats"
-          :count="analyticsData?.interactedChats ?? 0"
-          :loading="loading"
-        />
+        <StatusCountCard :icon="ChatSession" title="Interacted Chats" :count="analyticsData?.interactedChats ?? 0"
+          :loading="loading" />
 
-        <StatusCountCard
-          :icon="Leads"
-          title="Chat Leads"
-          :count="analyticsData?.leads"
-          :loading="loading"
-        />
+        <StatusCountCard :icon="Leads" title="Chat Leads" :count="analyticsData?.leads" :loading="loading" />
 
-        <StatusCountCard
-          :icon="ChatSession"
-          title="Calls Scheduled"
-          :count="analyticsData?.callScheduledTimeline ?? 0"
-          :loading="loading"
-        />
-        <StatusCountCard
-          :icon="ChatSession"
-          title="Site Visits"
-          :count="analyticsData?.siteVisitTimeline ?? 0"
-          :loading="loading"
-        />
-        <StatusCountCard
-          :icon="ChatSession"
-          title="Virtual Tours"
-          :count="analyticsData?.virtualTourTimeline ?? 0"
-          :loading="loading"
-        />
-        <StatusCountCard
-          :icon="ChatSession"
-          title="Location Visited"
-          :count="analyticsData?.locationTimeline ?? 0"
-          :loading="loading"
-        />
+        <StatusCountCard :icon="ChatSession" title="Calls Scheduled" :count="analyticsData?.callScheduledTimeline ?? 0"
+          :loading="loading" />
+        <StatusCountCard :icon="ChatSession" title="Site Visits" :count="analyticsData?.siteVisitTimeline ?? 0"
+          :loading="loading" />
+        <StatusCountCard :icon="ChatSession" title="Virtual Tours" :count="analyticsData?.virtualTourTimeline ?? 0"
+          :loading="loading" />
+        <StatusCountCard :icon="ChatSession" title="Location Visited" :count="analyticsData?.locationTimeline ?? 0"
+          :loading="loading" />
       </div>
       <div class="mt-2 flex cursor-pointer gap-2 overflow-x-scroll">
         <template v-for="graphOption in graphOptions" :key="graphOption.value">
@@ -122,12 +70,8 @@
           />
         </div> -->
       </div>
-      <Line
-        v-if="!loading"
-        class="shadow-md relative mt-4 w-full place-content-center rounded-md bg-white"
-        :data="chartData"
-        :options="chartOptions"
-      />
+      <Line v-if="!loading" class="shadow-md relative mt-4 w-full place-content-center rounded-md bg-white"
+        :data="chartData" :options="chartOptions" />
       <div v-else class="mt-4 flex flex-col space-y-3">
         <UiSkeleton class="h-screen-minus-14 w-[100%] rounded-xl" />
       </div>
@@ -455,10 +399,10 @@
       delete filter.from;
       delete filter.to;
     }
-    // const data = await getAnalyticsData(filter);
     loading.value = true;
 
     try {
+      if (period === "custom") return
       const data = await getAnalyticsData(filter);
       analyticsData.value = data;
     } catch (error) {

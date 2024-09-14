@@ -6,7 +6,7 @@
           v-model="filters.q"
           @input="filters.page = '1'"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
-          placeholder="Search bot..."
+          placeholder="Search User..."
         />
         <BotFilter v-model="filters.botId" @input="filters.page='1'"/>
         <BotUserFilter @changeAction="onActionChange" />
