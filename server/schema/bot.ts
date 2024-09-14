@@ -81,6 +81,7 @@ export const botUserSchema = chatbotSchema.table(
 export const chatSchema = chatbotSchema.table("chats", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   metadata: jsonb("metadata"),
+  mode: varchar("mode").default("live"),
   channel: varchar("channel", { length: 64 }).notNull().default("website"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   interacted: boolean("interacted").default(false),
