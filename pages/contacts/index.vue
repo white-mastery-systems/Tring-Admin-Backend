@@ -114,7 +114,7 @@
   }>({
     q: "",
     page: "1",
-    limit: "8",
+    limit: "10",
   });
   // const campaignModalState = ref({ open: false });
   const addBucketNameModalState = ref({ open: false, id: null });

@@ -177,7 +177,7 @@
     q: "",
     active: "",
     page: "1",
-    limit: "8",
+    limit: "10",
   });
 
   let page = ref(0);

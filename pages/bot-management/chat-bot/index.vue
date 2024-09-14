@@ -149,7 +149,7 @@
     q: "",
     active: "",
     page: "1",
-    limit: "8",
+    limit: "10",
   });
   const activeStatus = ref("");
   watch(activeStatus, async (newStatus, previousStatus) => {

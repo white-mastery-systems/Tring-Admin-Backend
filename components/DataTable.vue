@@ -27,7 +27,7 @@
   const emits = defineEmits(["pagination", "limit"]);
 
   const sorting = ref<SortingState>([]);
-  const pageLimit = ref(8);
+  const pageLimit = ref(10);
   const table = useVueTable<T>({
     get data() {
       return props.data; // Using a getter for reactivity
