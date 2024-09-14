@@ -197,7 +197,7 @@
               >Domain <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
-              <UiSelect v-bind="componentField" multiple >
+              <UiSelect v-bind="componentField" >
                 <UiSelectTrigger class="h-10">
                   <UiSelectValue
                     placeholder="Select Domain"

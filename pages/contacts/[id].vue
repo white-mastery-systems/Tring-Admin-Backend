@@ -8,7 +8,7 @@
             addBucketModalState.open = true
             addBucketModalState.id = null
           }">
-            Add Number
+            Add Contact
           </UiButton>
         </div>
       </div>
@@ -111,20 +111,21 @@ const actionsComponent = (id: any) => h(
         addBucketModalState.value.open = true
         addBucketModalState.value.id = id
       },
-      class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
+      color: "primary",
     },
-    [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "Configure"],
+    h(Icon, { name: "lucide:pen" }),
   ),
   h(
     UiButton,
     {
+      class: "",
+      variant: "destructive",
       onClick: (e: any) => {
         deleteIntegrateNumber.value.open = true
         deleteIntegrateNumber.value.id = id
       }, // Add delete functionality
-      class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
     },
-    [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Delete"]
+    h(Icon, { name: "lucide:trash-2" }),
   ),
   // h(
   //   UiButton,

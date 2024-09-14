@@ -513,6 +513,7 @@
   });
   const confirmModel = () => {
     logoutModal.value = true;
+    localStorage.clear()
   };
 
   const handleLogout = () => {

@@ -14,7 +14,12 @@ const campaignModalState = defineModel<{ open: boolean,id: any }>({
     id: null,
   },
 });
-const { refresh } = campaignData()
+const {  refresh } = campaignData()
+
+const { status, data: campaignDataList, refresh: integrationRefresh, } = await useLazyFetch("/api/org/contact-list", {
+  server: false,
+  default: () => [],
+});
 
 const df = new DateFormatter('en-US', {
   dateStyle: 'long',
@@ -30,6 +35,7 @@ const formSchema = toTypedSchema(
       .min(1, 'Phone Number is required')
       .regex(phoneNumberPattern, 'Invalid phone number'),
     countryCode: z.string().min(1, 'Country Code is required'),
+    audienceBucket: z.string().min(1, 'Audience Bucket Name is required'),
   })
 );
 
@@ -71,6 +77,7 @@ const {
 const [mobileField, mobileFieldProps] = defineField("exoPhone");
 const [countryCode, countryCodeProps] = defineField("countryCode");
 const [selectDate, selectDateProps] = defineField("date"); 
+const [selectAudienceBucketField, selectAudienceBucketProps] = defineField("audienceBucket")
 
 watch(campaignModalState, (newState) => { });
 
@@ -78,9 +85,11 @@ watch(() => campaignModalState.value.open, async (newState) => {
   console.log(campaignModalState.value, "campaignModalState")
   if (campaignModalState.value.id) {
     const getSingleDetails: any = await $fetch(`/api/org/campaign/${campaignModalState.value.id}`)
+    console.log(getSingleDetails, "getSingleDetails")
     setFieldValue("date", new Date(getSingleDetails.campaignDate).toISOString().slice(0, 10));
     setFieldValue("countryCode", getSingleDetails.countryCode);
     setFieldValue("exoPhone", getSingleDetails.phoneNumber);
+    setFieldValue("audienceBucket", getSingleDetails.contactListId);
 
   } else {
     resetForm()
@@ -95,6 +104,7 @@ const handleConnect = handleSubmit(async (values: any) => {
     campaignDate: new Date(values.date).toISOString(),
     phoneNumber: values.exoPhone,
     campaignTime: new Date(values.date).toISOString(),
+    contactListId: values.audienceBucket,
   }
   
   try {
@@ -114,7 +124,7 @@ const handleConnect = handleSubmit(async (values: any) => {
 });
 </script>
 <template>
-  <DialogWrapper v-model="campaignModalState" title="Add Campaign">
+  <DialogWrapper v-model="campaignModalState" :title="(campaignModalState.id) ? 'Modify Campaign' : 'Add Campaign'">
     <UiForm v-slot="{ values }" @submit="handleConnect" :keep-values="true" :validate-on-mount="false"
       class="space-y-2">
       <UiFormField v-model="selectDate" v-bind="selectDateProps" name="date">
@@ -172,12 +182,12 @@ const handleConnect = handleSubmit(async (values: any) => {
                   )
                     ">
                     {{
-                      values.countryCode
-                        ? allCoutryDialCode.find(
-                          (dialCode: any) =>
-                            dialCode === values.countryCode,
-                        )
-                        : "Select code..."
+                    values.countryCode
+                    ? allCoutryDialCode.find(
+                    (dialCode: any) =>
+                    dialCode === values.countryCode,
+                    )
+                    : "Select code..."
                     }}
                     <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </UiButton>
@@ -229,27 +239,28 @@ const handleConnect = handleSubmit(async (values: any) => {
           </UiFormItem>
         </UiFormField>
       </div>
-      <!-- <UiFormField v-slot="{ componentField }" name="audienceBucket">
+      <UiFormField v-model="selectAudienceBucketField" v-bind="selectAudienceBucketProps" name="audienceBucket">
         <UiFormItem class="w-full">
-          <UiFormLabel>
-            Add Audience Bucket <UiLabel class="text-lg text-red-500">*</UiLabel>
+          <UiFormLabel :class="errors?.audienceBucket ? 'text-[#ef4444]' : ''">
+            Select Audience List <UiLabel class="text-lg text-red-500">*</UiLabel>
           </UiFormLabel>
           <UiFormControl>
-            <UiSelect v-bind="componentField">
+            <UiSelect v-model="selectAudienceBucketField" v-bind="selectAudienceBucketProps">
               <UiSelectTrigger>
-                <UiSelectValue placeholder="Select a Bucket" />
+                <UiSelectValue placeholder="Select Audience" />
               </UiSelectTrigger>
               <UiSelectContent>
-                <UiSelectItem value="twilio">Bucket One</UiSelectItem>
-                <UiSelectItem value="exotel">Bucket Two</UiSelectItem>
-                <UiSelectItem value="plivo">Bucket Three</UiSelectItem>
+                <div v-for="list in campaignDataList" :key="list.id">
+                  <UiSelectItem :value="list.id">{{ list.name }}</UiSelectItem>
+                </div>
               </UiSelectContent>
             </UiSelect>
           </UiFormControl>
+          <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.audienceBucket }}</p>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <UiFormField v-slot="{ componentField }" name="audienceBucket">
+      <!-- <UiFormField v-slot="{ componentField }" name="audienceBucket">
         <UiFormItem class="w-full">
           <UiFormLabel>
             CRM Pipeline <UiLabel class="text-lg text-red-500">*</UiLabel>

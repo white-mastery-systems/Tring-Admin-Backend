@@ -29,8 +29,41 @@ const formSchema = toTypedSchema(
     return data;
   })
 )
+const {
+  errors,
+  setErrors,
+  setFieldValue,
+  handleSubmit,
+  defineField,
+  values,
+  resetForm,
+} = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    // firstName: "",
+    // lastName: "",
+    // phone: "",
+    // countryCode: "",
+  },
+});
+
+
+const [nameField, nameFieldProps] = defineField("name")
+const [roleField, roleFieldProps] = defineField("role")
+const [otherField, otherFieldProps] = defineField("otherRole")
+
 
 const roles = ['Chief Executive Officer', 'Chief Financial Officer', 'Chief Technology Officer', 'Chief Operating Officer', 'Chief Information Officer', 'Chief Marketing Officer', 'Sales', 'Other']
+
+onMounted(() => {
+  const savedForm = localStorage.getItem('onboardingForm');
+  if (savedForm) {
+    const { name, role, otherRole } = JSON.parse(savedForm);
+    setFieldValue("name", name);
+    setFieldValue("role", role);
+    setFieldValue("otherRole", otherRole);
+  }
+});
 
 // const handleRoleChange = (selectItem: any) => {
 //   if (loginData.role === 'Other') {
@@ -40,13 +73,19 @@ const roles = ['Chief Executive Officer', 'Chief Financial Officer', 'Chief Tech
 // const handleChange = () => {
 //   loginData.customRole = loginData.customRole
 // }
-const onSubmit = async (value: any) => {
+const onSubmit = handleSubmit(async (value: any) => {
+  localStorage.setItem('onboardingForm', JSON.stringify({
+    name: nameField.value,
+    role: roleField.value,
+    otherRole: otherField.value,
+  }));
+
   await $fetch("/api/auth/onboarding/1", {
     method: "POST",
     body: value,
   });
   return navigateTo("/auth/onboarding/2");
-};
+});
 </script>
 <template>
   <div class="flex flex-col items-center justify-center w-full h-full">
@@ -56,26 +95,28 @@ const onSubmit = async (value: any) => {
       Details</div>
     <div class="flex flex-col xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0">
       <!-- <div> -->
-      <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" @submit="onSubmit"
-        class="space-y-4">
-        <UiFormField v-slot="{ componentField }" name="name">
+      <UiForm :keep-values="true" :validate-on-mount="false" @submit="onSubmit" class="space-y-4">
+        <UiFormField v-model="nameField" v-bind="nameFieldProps" name="name">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel class="font-bold"> Full Name <UiLabel class="text-red-500 text-lg">*</UiLabel>
+            <UiFormLabel :class="errors?.name ? 'text-[#ef4444]' : ''"> Full Name <UiLabel class="text-red-500 text-lg">
+                *</UiLabel>
             </UiFormLabel>
             <UiFormControl>
-              <UiInput v-bind="componentField" type="text" placeholder="Enter your Name"
+              <UiInput v-model="nameField" v-bind="nameFieldProps" type="text" placeholder="Enter your Name"
                 class="h-[50px] font-regular border-none bg-[#F6F6F6]" />
             </UiFormControl>
+            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.name }}</p>
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
         <!-- <div class="flex gap-4 mb-4"> -->
-        <UiFormField v-slot="{ componentField }" name="role">
+        <UiFormField v-model="roleField" v-bind="roleFieldProps" name="role">
           <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel class="font-bold">Role <UiLabel class="text-red-500 text-lg">*</UiLabel>
+            <UiFormLabel :class="errors?.role ? 'text-[#ef4444]' : ''">Role <UiLabel class="text-red-500 text-lg">*
+              </UiLabel>
             </UiFormLabel>
             <UiFormControl>
-              <UiSelect v-bind="componentField">
+              <UiSelect v-model="roleField" v-bind="roleFieldProps">
                 <UiSelectTrigger class="h-[50px] border-0 bg-[#FFFFFF] field_shadow">
                   <UiSelectValue placeholder="Select Role" class="font-medium" />
                 </UiSelectTrigger>
@@ -85,16 +126,18 @@ const onSubmit = async (value: any) => {
                     }}</UiSelectItem>
                 </UiSelectContent>
               </UiSelect>
-              <UiFormField v-if="componentField.modelValue === 'Other'" v-slot="{ componentField }" name="otherRole">
+              <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.role }}</p>
+              <UiFormField v-if="roleField === 'Other'" name="otherRole">
                 <UiFormItem v-auto-animate="animationProps" class="w-full">
                   <UiFormControl>
-                    <UiInput v-bind="componentField" type="text" class="h-[50px]" />
+                    <UiInput v-model="otherField" v-bind="otherFieldProps" type="text" class="h-[50px]" />
                   </UiFormControl>
                   <UiFormMessage />
                 </UiFormItem>
               </UiFormField>
             </UiFormControl>
             <UiFormMessage />
+            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.otherRole }}</p>
             <span class="text-xs text-gray-500">This will determine the role of the bot and behavior.</span>
           </UiFormItem>
         </UiFormField>

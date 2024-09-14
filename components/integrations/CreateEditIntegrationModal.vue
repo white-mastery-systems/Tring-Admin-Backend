@@ -51,7 +51,7 @@
     useForm({
       validationSchema: integrationSchema,
       initialValues: {
-        name: "",
+        // name: "",
       },
     });
 
@@ -123,18 +123,10 @@
 </script>
 
 <template>
-  <DialogWrapper
-    v-model="integrationModalState"
-    :title="
+  <DialogWrapper v-model="integrationModalState" :title="
       integrationModalProps?.id ? 'Edit Integration' : 'Add New Integration'
-    "
-  >
-    <UiForm
-      v-slot="{ values }"
-      @submit="handleConnect"
-      :validate-on-mount="false"
-      class="space-y-2"
-    >
+    ">
+    <UiForm v-slot="{ values }" @submit="handleConnect" :validate-on-mount="false" class="space-y-2">
       <!-- <TextField
         name="name"
         label="Name"
@@ -145,27 +137,20 @@
       /> -->
       <UiFormField v-model="name" v-bind="nameAttrs" name="name">
         <UiFormItem class="w-full">
-          <UiFormLabel
-            >Name <UiLabel class="text-lg text-red-700">*</UiLabel>
+          <UiFormLabel :class="errors?.name ? 'text-[#ef4444]' : ''">Name <UiLabel class="text-lg text-red-700">*
+            </UiLabel>
           </UiFormLabel>
           <UiFormControl>
-            <UiInput
-              :class="errors?.name ? 'border-red-700' : ''"
-              type="text"
-              v-model="name"
-              v-bind="nameAttrs"
-              placeholder="Eg: CRM-your company,CRM-your company"
-            />
+            <UiInput type="text" v-model="name" v-bind="nameAttrs"
+              placeholder="Eg: CRM-your company,CRM-your company" />
           </UiFormControl>
-          <p class="mt-0 text-sm text-red-700">{{ errors?.name }}</p>
-          <span class="text-xs text-gray-500"
-            >Enter a unique identification for CRM integration</span
-          >
+          <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.name }}</p>
+          <span class="text-xs text-gray-500">Enter a unique identification for CRM integration</span>
         </UiFormItem>
       </UiFormField>
       <UiFormField v-model="crmField" v-bind="crmFieldAttrs" name="crm">
         <UiFormItem class="w-full">
-          <UiFormLabel>
+          <UiFormLabel :class="errors?.crm ? 'text-[#ef4444]' : ''">
             CRM<UiLabel class="text-lg text-red-500">*</UiLabel>
           </UiFormLabel>
           <UiFormControl>
@@ -181,45 +166,37 @@
             </UiSelect>
           </UiFormControl>
           <UiFormMessage />
-          <span class="text-xs text-gray-500">Select your CRM provider.</span>
+          <span v-if="errors.crm" class="mt-0 text-[14px] font-medium text-[#ef4444]">Select your CRM provider.</span>
         </UiFormItem>
       </UiFormField>
 
-      <UiFormField
-        v-if="values.crm === 'sell-do'"
-        v-model="apiKeyField"
-        v-bind="apiKeyFieldAttrs"
-        name="metaData.apiKey"
-      >
+      <UiFormField v-if="values.crm === 'sell-do'" v-model="apiKeyField" v-bind="apiKeyFieldAttrs"
+        name="metaData.apiKey">
         <UiFormItem class="w-full">
-          <UiFormLabel
-            >API key <UiLabel class="text-lg text-red-500">*</UiLabel>
+          <UiFormLabel :class="errors?.['metaData.apiKey'] ? 'text-[#ef4444]' : ''">API key <UiLabel
+              class="text-lg text-red-500">*</UiLabel>
           </UiFormLabel>
           <UiFormControl>
-            <UiInput
-              type="text"
-              v-model="apiKeyField"
-              v-bind="apiKeyFieldAttrs"
-              placeholder="Eg: api-key-here"
-            />
+            <UiInput type="text" v-model="apiKeyField" v-bind="apiKeyFieldAttrs" placeholder="Eg: api-key-here" />
           </UiFormControl>
-          <span class="text-xs text-gray-500">Enter your API key here</span>
+          <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.['metaData.apiKey'] }}</p>
+          <span class="mt-0 text-[14px]">Enter your API key here</span>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
       <UiButton type="submit" class="mt-2" color="primary">
         {{
-          values.crm === "zoho-crm"
-            ? integrationModalProps?.id
-              ? "Update changes"
-              : "Connect Zoho CRM"
-            : values.crm === "zoho-bigin"
-              ? integrationModalProps?.id
-                ? "Update changes"
-                : "Connect Zoho Bigin"
-              : integrationModalProps?.id
-                ? "Update changes"
-                : "Save changes"
+        values.crm === "zoho-crm"
+        ? integrationModalProps?.id
+        ? "Update changes"
+        : "Connect Zoho CRM"
+        : values.crm === "zoho-bigin"
+        ? integrationModalProps?.id
+        ? "Update changes"
+        : "Connect Zoho Bigin"
+        : integrationModalProps?.id
+        ? "Update changes"
+        : "Save changes"
         }}
       </UiButton>
     </UiForm>
