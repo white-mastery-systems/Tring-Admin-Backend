@@ -226,6 +226,27 @@
   };
   const dataList = ref([
     {
+      _id: 7,
+      bot: "Talent Management",
+      helperText:
+        "Manage talent, including hiring, onboarding, and onboarding flows for the voice bot.",
+      routeName: "bot-management-voice-bot-id-talent-mangement",
+    },
+    {
+      _id: 7,
+      bot: "Speech To Text Configurations",
+      helperText:
+        "Configure speech-to-text capabilities for the voice bot, including language detection, speech recognition, and text-to-speech.",
+      routeName: "bot-management-voice-bot-id-speech-to-text-config",
+    },
+    {
+      _id: 7,
+      bot: "Text To Speech Configurations",
+      helperText:
+        "Configure text-to-speech capabilities for the voice bot, including voice synthesis, and speech synthesis.",
+      routeName: "bot-management-voice-bot-id-text-to-speech-config",
+    },
+    {
       _id: 1,
       bot: "Identity Management",
       helperText:
@@ -341,45 +362,7 @@
     deleteVoiceBot(route.params.id);
   };
 
-  const handleActivateBot = async () => {
-    isSubmitting.value = true;
-    const activeDocuments = botDetails.value.documents.filter(
-      (d) => d.status === "ready",
-    );
-
-    if (activeDocuments.length === 0) {
-      toast.error("Please add document to activate bot");
-      return navigateTo({
-        name: "bot-management-voice-bot-id-documents",
-        params: { id: paramId.params.id },
-      });
-    } else if (!botDetails.value.metadata?.prompt?.NAME) {
-      toast.error("Please add bot configuration to activate bot");
-      return navigateTo({
-        name: "bot-management-voice-bot-id-config",
-        params: { id: paramId.params.id },
-      });
-    } else if (Object.values(botDetails.value.metadata.ui)?.length === 0) {
-      toast.error("Please update bot user interface to activate bot");
-      return navigateTo({
-        name: "bot-management-voice-bot-id-ui-customization",
-        params: { id: paramId.params.id },
-      });
-    }
-
-    if (activeDocuments.length === 1) {
-      try {
-        await singleDocumentDeploy(activeDocuments[0]);
-      } catch (err) {
-        isSubmitting.value = false;
-        toast.error("Failed to active the bot, try again");
-        return;
-      }
-    }
-
-    isSubmitting.value = false;
-    isDocumentListOpen.value = true;
-  };
+  const handleActivateBot = async () => {};
 </script>
 
 <style scoped>
