@@ -26,7 +26,10 @@
   // };
   const formSchema = toTypedSchema(
     z.object({
-      email: z.string().email("Invalid email address."),
+      email: z
+        .string()
+        .email("Invalid email address.")
+        .regex(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/, "Email must be in lowercase."),
       password: z
         .string()
         .min(6, "Password must be at least 6 characters long."),

@@ -9,7 +9,10 @@
         <UiButton
           v-if="route.query.q === 'channel'"
           color="primary"
-          @click="channelModalState.open = true"
+          @click="() => {
+            channelModalState.open = true
+            channelModalState.id = null
+          }"
         >
           Add Channel
         </UiButton>
@@ -117,7 +120,7 @@
   const integrationModalState = ref<{ open: boolean; id?: string | null }>({
     open: false,
   });
-  const channelModalState = ref({ open: false });
+  const channelModalState = ref({ open: false, id: null });
   const numberModalState = ref({ open: false });
   // const integrations = ref([]);
 
@@ -158,7 +161,6 @@
 
   const onSuccessChannel = () => {
     channelModalState.value.open = false;
-    toast.success("Integration added successfully");
     integrationRefresh();
   };
 
@@ -188,6 +190,39 @@
             onClick: () => {
               integrationModalState.value.open = true;
               integrationModalState.value.id = id;
+            },
+          },
+          h(Icon, { name: "lucide:pen" }),
+        ),
+        h(
+          UiButton,
+          {
+            class: "",
+            variant: "destructive",
+            onClick: () => {
+              deleteIntegrationState.id = id;
+              deleteIntegrationState.open = true;
+            },
+          },
+          h(Icon, { name: "lucide:trash-2" }),
+        ),
+      ],
+    );
+    const channelActionsComponent = (id: any) =>
+    h(
+      "div",
+      {
+        class: "flex items-center gap-2",
+      },
+      [
+        h(
+          UiButton,
+          {
+            color: "primary",
+            class: "ml-2",
+            onClick: () => {
+              channelModalState.value.open = true;
+              channelModalState.value.id = id;
             },
           },
           h(Icon, { name: "lucide:pen" }),
@@ -255,7 +290,7 @@
     columnHelper.accessor("actions", {
       header: "Actions",
       cell: ({ row }) => {
-        return actionsComponent(row.original?.id);
+        return channelActionsComponent(row.original?.id);
       },
     }),
   ];

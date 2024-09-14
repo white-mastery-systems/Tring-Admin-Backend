@@ -57,7 +57,7 @@
         </UiFormItem>
       </UiFormField>
 
-      <div v-if="values.intent === 'images' || values.intent === 'brochures'">
+      <div v-if="values.intent === 'images' || values.intent === 'brochure'">
         <div>
           <label
             class="dark:hover:bg-bray-800 flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -151,8 +151,8 @@
       value: "images",
     },
     {
-      label: "brochures",
-      value: "brochures",
+      label: "brochure",
+      value: "brochure",
     },
   ];
   const emit = defineEmits(["success"]);
@@ -210,7 +210,7 @@
       ) {
         toast.error("unsppported image type");
       } else if (
-        values.intent === "brochures" &&
+        values.intent === "brochure" &&
         !files?.map((file: any) => file.type.type?.includes("pdf"))
       ) {
         toast.error("unsppported pdf type");

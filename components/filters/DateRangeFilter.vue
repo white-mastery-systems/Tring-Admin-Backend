@@ -60,14 +60,14 @@ const dateFilters = reactive([
     value: "last-financial-year",
   }
 ]);
-const selectedDate: any = ref('all-time')
+const selectedDate: any = ref('')
 
 
 const emit = defineEmits<{
   (event: "change", value: { from: string; to: string }): void;
 }>();
 
-const currentDate = ref(today(getLocalTimeZone()));
+const currentDate = ref();
 const value = ref({
   start: currentDate.value,
   end: currentDate.value,

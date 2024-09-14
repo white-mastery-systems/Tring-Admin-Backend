@@ -34,36 +34,27 @@
         </UiFormItem>
       </UiFormField> -->
 
-      <UiFormField
-        v-model="integrationField"
-        v-bind="integrationFieldAttrs"
-        name="integrationId"
-      >
+      <UiFormField v-model="integrationField" v-bind="integrationFieldAttrs" name="integrationId">
         <UiFormItem class="w-full">
-          <UiFormLabel
-            >Select Connected channel<UiLabel class="text-lg text-red-500"
-              >*</UiLabel
-            >
+          <UiFormLabel :class="errors?.integrationId ? 'text-[#ef4444]' : ''">Select Connected channel<UiLabel
+              class="text-lg text-red-500">*</UiLabel>
           </UiFormLabel>
           <UiFormControl>
-            <UiSelect v-model="integrationField" v-bind="integrationFieldAttrs">
+            <UiSelect v-model="channelField" v-bind="channelFieldAttrs">
               <UiSelectTrigger>
                 <UiSelectValue placeholder="Select integration" />
               </UiSelectTrigger>
               <UiSelectContent>
-                <UiSelectItem
-                  v-for="(integrationData, index) in integrationsData"
-                  :value="integrationData.id"
-                  >{{ integrationData.name }}</UiSelectItem
-                >
+                <UiSelectItem v-for="(integrationData, index) in integrationsData" :value="integrationData.id">{{
+                  integrationData.name }}</UiSelectItem>
               </UiSelectContent>
             </UiSelect>
           </UiFormControl>
           <!-- <UiFormMessage /> -->
           <template v-if="errors?.integrationId">
-            <span class="text-sm text-red-500">{{
+            <span class="mt-0 text-[14px] font-medium text-[#ef4444]">{{
               errors?.integrationId
-            }}</span>
+              }}</span>
             <br />
           </template>
           <span class="text-xs text-gray-500">Select your integration.</span>
@@ -71,12 +62,10 @@
       </UiFormField>
       <div class="flex w-full items-end">
         <UiButton color="primary" type="submit">
-          <CopyIcon class="mr-2 h-4 w-4" />Submit and copy webhook url</UiButton
-        >
+          <CopyIcon class="mr-2 h-4 w-4" />Submit and copy webhook url
+        </UiButton>
       </div>
-      <span class="text-sm text-gray-500"
-        >enter this webhook url in Meta Dashboard</span
-      >
+      <span class="text-sm text-gray-500">enter this webhook url in Meta Dashboard</span>
     </UiForm>
   </DialogWrapper>
 </template>
@@ -98,8 +87,17 @@
       value: "whatsapp",
     },
   ];
-  const { handleSubmit, defineField, errors } = useForm();
-  const [channelField, channelFieldAttrs] = defineField("channel");
+const formSchema = toTypedSchema(
+  z.object({
+    integrationId: z.string().min(1, 'IntegrationId is required'),
+    // lastName: z.string().min(1, 'LastName is required'),
+  })
+);
+
+  const { handleSubmit, defineField, errors } = useForm({
+    validationSchema: formSchema
+  });
+const [channelField, channelFieldAttrs] = defineField("integrationId");
   const [integrationField, integrationFieldAttrs] =
     defineField("integrationId");
 

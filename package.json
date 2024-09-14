@@ -22,6 +22,7 @@
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.45",
     "nuxt": "^3.12.4",
+    "pinia": "^2.2.2",
     "pnpm": "^9.9.0",
     "radix-vue": "^1.9.2",
     "shadcn-nuxt": "^0.10.4",
