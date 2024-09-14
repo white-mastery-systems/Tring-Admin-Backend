@@ -83,7 +83,8 @@
     </template>
     <div class="flex items-center gap-2 pb-2">
       <UiInput
-        v-model="searchBot"
+        v-model="filters.q"
+        @input="filters.page = '1'"
         class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
         placeholder="Search bot..."
       />
@@ -105,6 +106,15 @@
           return navigateTo(`/bot-management/chat-bot/${row.original.id}`);
         }
       "
+      @pagination="Pagination"
+      @limit="
+        ($event) => {
+          (filters.page = '1'), (filters.limit = $event);
+        }
+      "
+      :totalPageCount="totalPageCount"
+      :page="page"
+      :totalCount="totalCount"
       :columns="columns"
       :data="bots"
       :page-size="20"
@@ -130,8 +140,22 @@
   const searchBot = ref("");
   const searchBotDebounce = refDebounced(searchBot, 500);
 
+  const filters = reactive<{
+    q: string;
+    page: string;
+    limit: string;
+    active: string;
+  }>({
+    q: "",
+    active: "",
+    page: "1",
+    limit: "8",
+  });
   const activeStatus = ref("");
-  watch(activeStatus, async (newStatus, previousStatus) => {});
+  watch(activeStatus, async (newStatus, previousStatus) => {
+    filters.active = newStatus;
+    filters.page = "1";
+  });
   const selectedValue = ref("Today");
   // const newBotName = ref("");
 
@@ -162,24 +186,31 @@
     },
   ]);
   // const botList = await listApiBots();
-
-  const { status, data: bots } = await useLazyFetch("/api/bots", {
+  let page = ref(0);
+  let totalPageCount = ref(0);
+  let totalCount = ref(0);
+  const {
+    status,
+    data: bots,
+    refresh: getAllChatBot,
+  } = await useLazyFetch("/api/bots", {
     server: false,
     default: () => [],
-    query: {
-      active: activeStatus,
-      q: searchBotDebounce,
-    },
+    query: filters,
     headers: {
       "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
-    transform: (bots) =>
-      bots.map((bot) => ({
+    transform: (bots) => {
+      page.value = bots.page;
+      totalPageCount.value = bots.totalPageCount;
+      totalCount.value = bots.totalCount;
+      return bots.data.map((bot) => ({
         id: bot.id,
         name: bot.name,
         status: bot.documentId ? true : false,
         createdAt: `${bot.createdAt}`,
-      })),
+      }));
+    },
   });
   const isDataLoading = computed(() => status.value === "pending");
 
@@ -225,6 +256,12 @@
       },
     }),
   ];
+  const Pagination = async ($evnt) => {
+    filters.page = $evnt;
+    console.log(filters.page);
+
+    getAllChatBot();
+  };
 </script>
 
 <style scoped></style>
