@@ -10,12 +10,12 @@
             Add Bucket
           </UiButton>
 
-          <UiButton color="primary">
+          <!-- <UiButton color="primary">
             Import
           </UiButton>
           <UiButton color="primary">
             Export
-          </UiButton>
+          </UiButton> -->
         </div>
       </div>
     </template>
@@ -24,7 +24,9 @@
         <UiInput v-model="searchBucket" class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
           placeholder="Search bucket..." />
       </div>
-      <DataTable :data="contactsList" :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="13"
+      <DataTable @row-click="(row: any) => {
+        return navigateTo(`/contacts/${row.original.id}`);
+      }" :data="contactsList" :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="13"
         height-unit="vh" />
 
       <ConfirmationModal v-model:open="deleteBucketState.open" title="Confirm Delete"
@@ -145,21 +147,9 @@ const actionsComponent = (id: any) => h(
 const columns = [
   columnHelper.accessor("name", {
     header: "Bucket Name",
-    cell: ({ row }) => {
-      return h(
-        'div',
-        {
-          class: 'cursor-pointer',
-          onClick: () => {
-            navigateTo(`/contacts/${row.original.id}`); // Navigate on row click
-          },
-        },
-        row.original.name
-      );
-    },
   }),
   columnHelper.accessor("noOfAudience", {
-    header: 'No. of Audiences'
+    header: 'No. of Audiences',
   }),
   columnHelper.accessor("id", {
     header: "Action",
