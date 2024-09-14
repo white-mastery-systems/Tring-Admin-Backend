@@ -18,7 +18,7 @@ export const getContactLists = async (organizationId: string, query: any) => {
        query?.q ? ilike(contactListSchema.name, `%${query.q}%`) : undefined
     )
   })
-  return data
+      return data
 }
 
 export const getContactListById = async (id: string) => {

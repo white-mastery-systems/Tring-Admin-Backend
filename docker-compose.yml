@@ -35,9 +35,12 @@ services:
     volumes:
       - tring-suite_admin:/app/node_modules
       - tring-admin_docs:/app/assets/docs
+      - tring-admin_uploads:/app/assets/uploads
+
     restart: always
 
 volumes:
   tring-suite_bot:
   tring-suite_admin:
   tring-admin_docs:
+  tring-admin_uploads:
