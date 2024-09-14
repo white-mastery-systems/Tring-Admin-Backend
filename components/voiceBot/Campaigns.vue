@@ -74,24 +74,25 @@ const actionsComponent = (id: any) => h(
   h(
     UiButton,
     {
+      color: "primary",
       onClick: () => {
         campaignModalState.value.open = true
         campaignModalState.value.id = id
       }, // Add delete functionality
       class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
     },
-    [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Configure"]
+    h(Icon, { name: "lucide:pen" }),
   ),
     h(
       UiButton,
       {
+        variant: "destructive",
         onClick: () => {
           deleteCampaigntate.value.open = true
           deleteCampaigntate.value.id = id
         }, // Add delete functionality
-        class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
       },
-      [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Delete"]
+      h(Icon, { name: "lucide:trash-2" })
     )
 ]
 )
@@ -102,17 +103,17 @@ const columns = [
     cell: ({ row }) =>
       formatDate(new Date(row.original.campaignDate), "dd MMM yyyy HH:MM "),
   }),
-  columnHelper.accessor("campaignTime", {
-    header: "Campaign Name",
-    cell: ({ row }) =>
-      formatDate(new Date(row.original.campaignTime), "dd MMM yyyy HH:MM "),
-  }),
+  // columnHelper.accessor("campaignTime", {
+  //   header: "Campaign Name",
+  //   cell: ({ row }) =>
+  //     formatDate(new Date(row.original.campaignTime), "dd MMM yyyy HH:MM "),
+  // }),
 
   columnHelper.accessor("phoneNumber", {
-    header: "Campaign Name",
+    header: "Number",
   }),
   columnHelper.accessor("createdAt", {
-    header: "No. of Audiences",
+    header: "Created At",
     cell: ({ row }) =>
       formatDate(new Date(row.original.createdAt), "dd MMM yyyy HH:MM "),
   }),
