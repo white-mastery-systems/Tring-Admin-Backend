@@ -99,7 +99,7 @@
         id: chat.id,
         location: `${chat.metadata?.city ?? "--"} - ${chat.metadata?.state ?? "--"} `,
         createdAt: `${chat?.createdAt}`,
-        mode: chat.metadata?.mode ?? "Live",
+        mode: chat?.mode,  
       }));
     },
   });
@@ -121,6 +121,9 @@
     }),
     columnHelper.accessor("mode", {
       header: "Mode",
+      cell:(props)=>{
+        return h("span", { class: `${props.row.original.mode==='preview' ? 'text-red-500' : 'text-green-500'}` }, props.row.original.mode)
+      }
     }),
     columnHelper.accessor("createdAt", {
       header: "Date Created",
