@@ -3,9 +3,6 @@ definePageMeta({
   middleware: "admin-only",
 });
 
-const animationProps = {
-  duration: 500,
-};
 const formSchema = toTypedSchema(
   z.object({
     provider: z.string().min(1, 'Name is required'),
@@ -40,7 +37,7 @@ const onSubmit = async (value: any) => {
         class="space-y-4">
         <div class="flex grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
           <UiFormField v-slot="{ componentField }" name="provider">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormItem class="w-full">
               <UiFormLabel class="font-bold"> IVR Provider <UiLabel class="text-red-500 text-lg">*</UiLabel>
               </UiFormLabel>
               <UiFormControl>
@@ -51,7 +48,7 @@ const onSubmit = async (value: any) => {
           </UiFormField>
           <!-- <div class="flex gap-4 mb-4"> -->
           <UiFormField v-slot="{ componentField }" name="number">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormItem class="w-full">
               <UiFormLabel class="font-bold"> Number <UiLabel class="text-red-500 text-lg">*</UiLabel>
               </UiFormLabel>
               <UiFormControl>
@@ -61,7 +58,7 @@ const onSubmit = async (value: any) => {
             </UiFormItem>
           </UiFormField>
           <UiFormField v-slot="{ componentField }" name="calldirection">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormItem class="w-full">
               <UiFormLabel class="font-bold"> Call Direction <UiLabel class="text-red-500 text-lg">*</UiLabel>
               </UiFormLabel>
               <UiFormControl>

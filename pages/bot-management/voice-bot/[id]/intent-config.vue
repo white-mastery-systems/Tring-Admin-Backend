@@ -44,7 +44,15 @@ const formSchema = toTypedSchema(z.object({
   }),
 }))
 
-const initialValues = ref(['greeting', 'audio_check', 'agent_name', 'conclude'])
+const initialValues = ref<any[]>([])
+
+onMounted(async () => {
+  const getUpdates: any = await $fetch(`/api/voicebots/${route.params.id}`)
+  if (getUpdates.intents?.length) initialValues.value.push(...getUpdates.intents) 
+  else {
+    initialValues.value.push(['greeting', 'audio_check', 'agent_name', 'conclude'])
+  }
+})
 
 const onSubmit = async (value: any) => {
   await updateLLMConfig({ intents: value.items }, botDetails.id)

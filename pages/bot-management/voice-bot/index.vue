@@ -60,6 +60,7 @@
       </UiTabsContent> -->
       <UiTabsContent value="campaigns">
         <Campaigns v-model="campaignModalState" />
+        
       </UiTabsContent>
     </UiTabs>
     <!-- <ChannelModal /> -->

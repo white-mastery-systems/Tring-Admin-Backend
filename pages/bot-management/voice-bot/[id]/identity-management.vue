@@ -4,10 +4,6 @@
   definePageMeta({
     middleware: "admin-only",
   });
-
-  const animationProps = {
-    duration: 500,
-  };
   const route = useRoute("bot-management-voice-bot-id-identity-management");
   const botDetails: any = await getVoiceBotDetails(route.params.id);
   console.log(botDetails);
@@ -127,7 +123,7 @@
             v-bind="nameFieldAttrs"
             name="name"
           >
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormItem class="w-full">
               <UiFormLabel class="font-bold">
                 Name <UiLabel class="text-lg text-red-500">*</UiLabel>
               </UiFormLabel>
@@ -149,7 +145,7 @@
             v-bind="roleFieldAttrs"
             name="role"
           >
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
+            <UiFormItem class="w-full">
               <UiFormLabel class="font-bold"
                 >Role <UiLabel class="text-lg text-red-500">*</UiLabel>
               </UiFormLabel>
@@ -192,7 +188,7 @@
           v-bind="domainFieldAttrs"
           name="domain"
         >
-          <UiFormItem v-auto-animate="animationProps" class="w-full">
+          <UiFormItem class="w-full">
             <UiFormLabel class="font-bold"
               >Domain <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
@@ -236,7 +232,7 @@
             name="other"
           > 
 
-            <UiFormItem v-if="domain === 'Others' " v-auto-animate="animationProps" class="w-full">
+            <UiFormItem v-if="domain === 'Others' " class="w-full">
               <UiFormLabel class="font-bold">
                Other Domain Name   <UiLabel class="text-lg text-red-500"></UiLabel>
               </UiFormLabel>
