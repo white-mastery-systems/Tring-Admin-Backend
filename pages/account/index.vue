@@ -13,7 +13,6 @@
       </div>
     </template>
     <ConfirmationModal
-    
       v-model:open="logoutModal"
       title="Confirm Logout"
       description="Are you sure you want to log out ?"
@@ -24,7 +23,7 @@
       :keep-values="true"
       :validate-on-mount="false"
       :initial-values="userInfo" -->
-    <UiForm @submit="handleAccountUpdate">
+    <UiForm @submit="handleAccountUpdate()">
       <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
         Personal Information
       </h3>
@@ -48,7 +47,9 @@
                   placeholder="John Doe"
                 />
               </UiFormControl>
-              <UiFormMessage />
+              <span v-if="errors.username" class="mt-0 text-sm text-red-700">
+                {{ errors.username }}
+              </span>
             </UiFormItem>
           </UiFormField>
         </div>
@@ -129,7 +130,9 @@
                   </UiCommand>
                 </UiPopoverContent>
               </UiPopover>
-              <UiFormMessage />
+              <span v-if="errors.countryCode" class="mt-0 text-sm text-red-700">
+                {{ errors.countryCode }}
+              </span>
             </UiFormItem>
           </UiFormField>
           <UiFormField
@@ -149,6 +152,9 @@
                   placeholder="Enter phone number"
                 />
               </UiFormControl>
+              <span v-if="errors.mobile" class="mt-0 text-sm text-red-700">
+                {{ errors.mobile }}
+              </span>
               <!-- <UiFormMessage :error="errors.phone?.number" /> -->
             </UiFormItem>
           </UiFormField>
@@ -165,7 +171,9 @@
                 placeholder="Enter your email"
               />
             </UiFormControl>
-            <UiFormMessage />
+            <span v-if="errors.email" class="mt-0 text-sm text-red-700">
+              {{ errors.email }}
+            </span>
           </UiFormItem>
         </UiFormField>
       </div>
@@ -190,7 +198,12 @@
                 placeholder="Enter a Street Name"
               />
             </UiFormControl>
-            <UiFormMessage />
+            <span
+              v-if="errors['address.street']"
+              class="mt-0 text-sm text-red-700"
+            >
+              {{ errors["address.street"] }}
+            </span>
           </UiFormItem>
         </UiFormField>
         <UiFormField
@@ -210,7 +223,12 @@
                 placeholder="Enter a City Name"
               />
             </UiFormControl>
-            <UiFormMessage />
+            <span
+              v-if="errors['address.city']"
+              class="mt-0 text-sm text-red-700"
+            >
+              {{ errors["address.city"] }}
+            </span>
           </UiFormItem>
         </UiFormField>
 
@@ -288,7 +306,12 @@
                 </UiCommand>
               </UiPopoverContent>
             </UiPopover>
-            <UiFormMessage />
+            <span
+              v-if="errors['address.country']"
+              class="mt-0 text-sm text-red-700"
+            >
+              {{ errors["address.country"] }}
+            </span>
           </UiFormItem>
         </UiFormField>
         <UiFormField
@@ -364,7 +387,12 @@
                 </UiCommand>
               </UiPopoverContent>
             </UiPopover>
-            <UiFormMessage />
+            <span
+              v-if="errors['address.state']"
+              class="mt-0 text-sm text-red-700"
+            >
+              {{ errors["address.state"] }}
+            </span>
           </UiFormItem>
         </UiFormField>
         <UiFormField
@@ -384,7 +412,12 @@
                 placeholder="Enter a zipCode"
               />
             </UiFormControl>
-            <UiFormMessage />
+            <span
+              v-if="errors['address.zipCode']"
+              class="mt-0 text-sm text-red-700"
+            >
+              {{ errors["address.zipCode"] }}
+            </span>
           </UiFormItem>
         </UiFormField>
       </div>

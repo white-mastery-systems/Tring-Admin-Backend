@@ -3,7 +3,9 @@ import { getContactLists } from "~/server/utils/db/contact-list"
 const db = useDrizzle()
 
 const zodQueryvalidator = z.object({
-  q: z.string().optional()
+  q: z.string().optional(),
+  page: z.string().optional(),
+  limit: z.string().optional()
 })
 
 export default defineEventHandler(async (event) => {
@@ -16,6 +18,13 @@ export default defineEventHandler(async (event) => {
   const contacts = await db.query.contactSchema.findMany({
     where: eq(contactSchema.organizationId, organizationId)
   })
+  let page, offset, limit = 0
+    
+  if(query.page && query.limit) {
+    page = parseInt(query.page) 
+    limit = parseInt(query.limit)
+    offset = (page - 1) * limit;
+  }
 
   const mapData = contactList.map((item) => {
      let noOfAudience = 0;
@@ -28,6 +37,17 @@ export default defineEventHandler(async (event) => {
       noOfAudience
      }
   })
-
-  return mapData
+  if(query?.page && query?.limit) {
+     const paginatedContactList = mapData.slice(offset, offset + limit); 
+    return {
+      calls: "Contact-list",
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(mapData.length/ limit) || 1,
+      totalCount: mapData.length,
+      data: paginatedContactList
+    }
+  } else {
+      return mapData
+  }
 })

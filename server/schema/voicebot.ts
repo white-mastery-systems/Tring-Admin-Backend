@@ -1,7 +1,7 @@
-import { voiceBotSchema } from ".";
-import { uuid, varchar, boolean, jsonb, timestamp, integer } from "drizzle-orm/pg-core";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
-import { organizationSchema, integrationSchema } from "./admin";
+import { boolean, jsonb, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { voiceBotSchema } from ".";
+import { integrationSchema, organizationSchema } from "./admin";
 
 export const voicebotSchema = voiceBotSchema.table("bot", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -17,7 +17,8 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     temperature: 1.0,
     role: "Assist-booking",
   }),
-  intents: varchar("intents").array(), // Array of strings  
+  talentConfig: jsonb("talent_config").default({}),
+  intents: varchar("intents").array(), // Array of strings
   ivrConfig: jsonb("ivr_config"),
   identityManagement: jsonb("identity_management"),
   createdAt: timestamp("created_at").defaultNow(),
@@ -25,26 +26,33 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-})
-
-export const voicebotIntegrationSchema = voiceBotSchema.table("bot_integrations", {
-  id: uuid("id").notNull().primaryKey().defaultRandom(),
-  botId: uuid("bot_id")
-    .references(() => voicebotSchema.id)
-    .notNull(),
-  metadata: jsonb("metadata"),
-  integrationId: uuid("integration_id").references(() => integrationSchema.id),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  organizationId: uuid("organization_id")
-    .references(() => organizationSchema.id)
-    .notNull(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-
+export const voicebotIntegrationSchema = voiceBotSchema.table(
+  "bot_integrations",
+  {
+    id: uuid("id").notNull().primaryKey().defaultRandom(),
+    botId: uuid("bot_id")
+      .references(() => voicebotSchema.id)
+      .notNull(),
+    metadata: jsonb("metadata"),
+    integrationId: uuid("integration_id").references(
+      () => integrationSchema.id,
+    ),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    organizationId: uuid("organization_id")
+      .references(() => organizationSchema.id)
+      .notNull(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+);
 
 export type SelectVoiceBot = InferSelectModel<typeof voicebotSchema>;
 export type InsertVoiceBot = InferInsertModel<typeof voicebotSchema>;
 
-export type SelectVoicebotIntegration = InferSelectModel<typeof voicebotIntegrationSchema>;
-export type InsertVoicebotIntegration = InferInsertModel<typeof voicebotIntegrationSchema>;
+export type SelectVoicebotIntegration = InferSelectModel<
+  typeof voicebotIntegrationSchema
+>;
+export type InsertVoicebotIntegration = InferInsertModel<
+  typeof voicebotIntegrationSchema
+>;
