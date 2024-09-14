@@ -89,49 +89,7 @@ import ChatSession from "~/components/icons/ChatSession.vue";
   const selectedValue: any = ref("last-30-days");
   const analyticsData = ref();
   const loading = ref(false);
-  const graphOptions = ref([
-    //define diffrent color for each of this item
-    {
-      label: "Leads",
-      value: "leads",
-      color: "#4f46e5",
-    },
-    {
-      label: "Sessions",
-      value: "sessions",
-      color: "#facc15",
-    },
-    {
-      label: "Unique Visitors",
-      value: "unique_visiters",
-      color: "#a855f7",
-    },
-    {
-      label: "Interacted",
-      value: "interacted_chats",
-      color: "#dc2626",
-    },
-    {
-      label: "Schedule Calls",
-      value: "schedule_calls",
-      color: "#16a34a",
-    },
-    {
-      label: "Site visits",
-      value: "site_visits",
-      color: "#2563eb",
-    },
-    {
-      label: "Locations",
-      value: "locations",
-      color: "#1e293b",
-    },
-    {
-      label: "Virtual Tours",
-      value: "virtual_tours",
-      color: "#e11d48",
-    },
-  ]);
+
   const dateFilters = reactive([
     {
       content: "Today",
@@ -217,15 +175,15 @@ import ChatSession from "~/components/icons/ChatSession.vue";
     labels: state.labels,
     datasets: chartValues.value?.map((item: any, index: number) => {
       return {
-        label: graphOptions.value?.find(
-          ({ value }: { value: string }) => value === item,
-        )?.label,
+        label: analyticsData?.value?.statistics?.find(
+          ({ apiName }: { apiName: string }) => apiName === item,
+        )?.name,
         tension: 0.4,
         pointRadius: 0,
-        borderColor: graphOptions?.value?.find(({ value }) => value === item)
+        borderColor: analyticsData?.value?.statistics?.find(({ apiName }:{apiName:string}) => apiName === item)
           ?.color,
-        backgroundColor: graphOptions?.value?.find(
-          ({ value }) => value === item,
+        backgroundColor: analyticsData?.value?.statistics?.find(
+          ({ apiName }:{apiName:string}) => apiName === item,
         )?.color,
         data: state.graphData[index],
         yAxisID: `y${index + 1}`,
@@ -320,6 +278,14 @@ import ChatSession from "~/components/icons/ChatSession.vue";
         display: false,
       },
       y8: {
+        type: "linear",
+        display: false,
+      },
+        y9: {
+        type: "linear",
+        display: false,
+      },
+        y10: {
         type: "linear",
         display: false,
       },
