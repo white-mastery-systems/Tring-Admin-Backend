@@ -111,7 +111,7 @@ export const updateOrganization = async (
 //         gte(timelineSchema.createdAt, fromDate),
 //         lte(timelineSchema.createdAt, toDate),
 //         eq(timelineSchema.orgId, organizationId),
-//         eq(timelineSchema.intent, "schedule_call"),
+//         eq(timelineSchema.event, "schedule_call"),
 //       ),
 //     );
 
@@ -123,7 +123,7 @@ export const updateOrganization = async (
 //         gte(timelineSchema.createdAt, fromDate),
 //         lte(timelineSchema.createdAt, toDate),
 //         eq(timelineSchema.orgId, organizationId),
-//         eq(timelineSchema.intent, "site_visit"),
+//         eq(timelineSchema.event, "site_visit"),
 //       ),
 //     );
 //   const locationTimeline = await db
@@ -134,7 +134,7 @@ export const updateOrganization = async (
 //         gte(timelineSchema.createdAt, fromDate),
 //         lte(timelineSchema.createdAt, toDate),
 //         eq(timelineSchema.orgId, organizationId),
-//         eq(timelineSchema.intent, "location"),
+//         eq(timelineSchema.event, "location"),
 //       ),
 //     );
 //   const virtualTourTimeline = await db
@@ -145,7 +145,7 @@ export const updateOrganization = async (
 //         gte(timelineSchema.createdAt, fromDate),
 //         lte(timelineSchema.createdAt, toDate),
 //         eq(timelineSchema.orgId, organizationId),
-//         eq(timelineSchema.intent, "virtual_tour"),
+//         eq(timelineSchema.event, "virtual_tour"),
 //       ),
 //     );
 
@@ -233,6 +233,8 @@ const validQueryValues = [
   "site_visits",
   "locations",
   "virtual_tours",
+  "images",
+  "brochures",
 ];
 
 export const getAnalytics = async (
@@ -293,7 +295,7 @@ export const getAnalytics = async (
                 gte(timelineSchema.createdAt, fromDate),
                 lte(timelineSchema.createdAt, toDate),
                 eq(timelineSchema.orgId, organizationId),
-                eq(timelineSchema.intent, intent),
+                eq(timelineSchema.event, intent),
               ),
             )
         return {

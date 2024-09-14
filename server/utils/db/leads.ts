@@ -54,7 +54,7 @@ export const listLeads = async (
           await db.query.timelineSchema.findMany({
             where: and(
               eq(timelineSchema.orgId, organizationId),
-              eq(timelineSchema.intent, intentsMap[query.status]),
+              eq(timelineSchema.event, intentsMap[query.status]),
             ),
             columns: {
               chatId: true,
