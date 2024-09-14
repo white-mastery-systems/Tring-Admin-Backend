@@ -7,6 +7,7 @@ export const createLeadInSellDo = async (
   campaignId: string,
 ) => {
   while (true) {
+    console.log(apiKey, "APIKEY");
     try {
       const response: any = await $fetch(
         `https://app.sell.do/api/leads/create/`,

@@ -95,9 +95,16 @@
                 </UiButton>
                 <div class="block text-[6px] lg:hidden">Delete</div>
               </div>
-              <CreateEditChannel v-model="channelModalState" @success="handleSuccess" />
-              <ConfirmationModal v-model:open="deleteModalState" title="Are you sure?"
-                description="Are you sure you want to delete bot ?" @confirm="handleDeleteBot" />
+              <CreateEditChannel
+                v-model="channelModalState"
+                @success="handleSuccess"
+              />
+              <ConfirmationModal
+                v-model:open="deleteModalState"
+                title="Are you sure?"
+                description="Are you sure you want to delete bot ?"
+                @confirm="handleDeleteBot"
+              />
             </div>
           </div>
 
@@ -175,10 +182,10 @@ import { Bot, Settings } from "lucide-vue-next";
     open: false,
     id: null,
   });
- const  handleSuccess=()=>{
-  channelModalState.value.open=false
-  toast.success('Channel Created successfully')
- }
+  const handleSuccess = () => {
+    channelModalState.value.open = false;
+    toast.success("Channel Created successfully");
+  };
   onMounted(async () => {
     getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
     botDetails.value = await getBotDetails(paramId.params.id);
