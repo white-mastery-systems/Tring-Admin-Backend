@@ -7,7 +7,7 @@
           <span class="font-bold text-black">
             <UiSelect v-model="selectedValue" class="outline-none">
               <UiSelectTrigger
-                class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[200px] md:text-[14px] lg:w-[200px] lg:text-[14px] xl:w-[200px] xl:text-[14px]">
+                class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[230px] md:text-[14px] lg:w-[230px] lg:text-[14px] xl:w-[230px] xl:text-[14px]">
                 <span class="font-thin text-gray-400 min-w-[70px]"> Summary </span>
                 <UiSelectValue />
               </UiSelectTrigger>
@@ -30,7 +30,7 @@
     </template>
     <div>
       <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <template v-if="analyticsData" v-for="statistics in analyticsData?.statistics" >
+        <template v-if="analyticsData" v-for="statistics in analyticsData?.statistics?.filter(({apiName}) => apiName!=='images'&& apiName!=='brochures')" >
         <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_',' ')" :count="statistics.value" :loading="loading" />
         </template>
      
