@@ -2,7 +2,11 @@
   <Page title="Voice Bot" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-4 overflow-auto">
-        <UiButton v-if="route.query.q === 'agents'" color="primary" @click="agentModalState.open = true">
+        <UiButton
+          v-if="route.query.q === 'agents'"
+          color="primary"
+          @click="agentModalState.open = true"
+        >
           Add Voice Bot
         </UiButton>
         <div v-else-if="route.query.q === 'campaigns'" class="flex gap-2">
@@ -27,7 +31,9 @@
       </div>
     </template>
     <UiTabs default-value="agents" class="w-full self-start">
-      <UiTabsList class="grid w-[100%] sm:w-[100%] md:w-[40%] lg:w-[40%] xl:w-[40%] grid-cols-2">
+      <UiTabsList
+        class="grid w-[100%] grid-cols-2 sm:w-[100%] md:w-[40%] lg:w-[40%] xl:w-[40%]"
+      >
         <UiTabsTrigger value="agents" @click="navigateToTab('agents')">
           Agents
         </UiTabsTrigger>
@@ -42,7 +48,7 @@
         <div class="flex items-center gap-2 pb-2">
           <UiInput
             v-model="filters.q"
-            @input="filters.page='1'"
+            @input="filters.page = '1'"
             class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
             placeholder="Search bot..."
           />
@@ -65,6 +71,11 @@
             }
           "
           @pagination="Pagination"
+          @limit="
+            ($event) => {
+              (filters.page = '1'), (filters.limit = $event);
+            }
+          "
           :totalPageCount="totalPageCount"
           :page="page"
           :totalCount="totalCount"
@@ -123,8 +134,8 @@
   const route = useRoute();
   const activeStatus = ref("");
   watch(activeStatus, async (newStatus, previousStatus) => {
-    filters.active = newStatus
-    filters.page = '1' 
+    filters.active = newStatus;
+    filters.page = "1";
   });
   const selectedValue = ref("Today");
   // const newBotName = ref("");
@@ -163,16 +174,20 @@
     limit: string;
     active: string;
   }>({
-    q:"",
-    active:"",
+    q: "",
+    active: "",
     page: "1",
-    limit:"8"
+    limit: "8",
   });
 
   let page = ref(0);
   let totalPageCount = ref(0);
   let totalCount = ref(0);
-  const { status, data: voiceBot,refresh:getAllvoiceBot } = await useLazyFetch("/api/voicebots", {
+  const {
+    status,
+    data: voiceBot,
+    refresh: getAllvoiceBot,
+  } = await useLazyFetch("/api/voicebots", {
     server: false,
     default: () => [],
     query: filters,
@@ -242,10 +257,10 @@
     }),
   ];
 
-   const Pagination = async ($evnt) => {
+  const Pagination = async ($evnt) => {
     filters.page = $evnt;
     console.log(filters.page);
-    
+
     getAllvoiceBot();
   };
 

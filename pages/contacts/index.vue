@@ -40,6 +40,11 @@
           }
         "
         @pagination="Pagination"
+        @limit="
+          ($event) => {
+            (filters.page = '1'), (filters.limit = $event);
+          }
+        "
         :totalPageCount="totalPageCount"
         :page="page"
         :totalCount="totalCount"
@@ -129,7 +134,7 @@
       page.value = buckets.page;
       totalPageCount.value = buckets.totalPageCount;
       totalCount.value = buckets.totalCount;
-      return buckets.data
+      return buckets.data;
     },
   });
   // const addBucketNameModalState = defineModel<{ open: boolean, id: string }>({
@@ -212,8 +217,7 @@
     }),
   ];
 
-  
-   const Pagination = async ($evnt) => {
+  const Pagination = async ($evnt) => {
     filters.page = $evnt;
     integrationRefresh();
   };

@@ -26,6 +26,11 @@
     <DataTable
       :data="contactsList"
       @pagination="Pagination"
+      @limit="
+        ($event) => {
+          (filters.page = '1'), (filters.limit = $event);
+        }
+      "
       :totalPageCount="totalPageCount"
       :page="page"
       :totalCount="totalCount"
@@ -120,7 +125,7 @@
       page.value = contacts.page;
       totalPageCount.value = contacts.totalPageCount;
       totalCount.value = contacts.totalCount;
-      return contacts.data
+      return contacts.data;
     },
   });
   // const newBotName = ref("");

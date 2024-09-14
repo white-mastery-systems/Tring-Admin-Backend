@@ -10,6 +10,11 @@
     </div>
     <DataTable
       @pagination="Pagination"
+      @limit="
+        ($event) => {
+          (filters.page = '1'), (filters.limit = $event);
+        }
+      "
       :totalPageCount="totalPageCount"
       :page="page"
       :totalCount="totalCount"

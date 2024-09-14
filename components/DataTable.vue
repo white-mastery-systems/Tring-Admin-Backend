@@ -8,7 +8,7 @@
     useVueTable,
   } from "@tanstack/vue-table";
 
-  import { ArrowUpNarrowWide } from "lucide-vue-next";
+  import { ArrowUpNarrowWide, Watch } from "lucide-vue-next";
 
   const props = defineProps<{
     data: T[];
@@ -24,11 +24,10 @@
     heightUnit?: string;
   }>();
 
-  const emits = defineEmits(["pagination"]);
+  const emits = defineEmits(["pagination", "limit"]);
 
   const sorting = ref<SortingState>([]);
-  const pageSize = computed(() => props.pageSize || 10);
-
+  const pageLimit = ref(8);
   const table = useVueTable<T>({
     get data() {
       return props.data; // Using a getter for reactivity
@@ -45,13 +44,19 @@
     },
     initialState: {
       pagination: {
-        pageSize: pageSize.value,
+        pageSize: pageLimit.value,
       },
     },
   });
-  console.log("page", props.page);
-
-
+  watch(pageLimit, (NewValue) => {
+    table.setState((prev) => ({
+      ...prev,
+      pagination: {
+        ...prev.pagination,
+        pageSize: NewValue,
+      },
+    }));
+  });
 </script>
 
 <template>
@@ -167,6 +172,17 @@
       <p>Page {{ page }} of {{ totalPageCount }}</p>
       <div>TotalCount:{{ totalCount }}</div>
       <div class="flex space-x-4">
+        <div>
+          <PageLimitFilter
+            @changeAction="
+              ($event) => {
+                pageLimit = +$event;
+                console.log(pageLimit);
+                emits('limit', $event);
+              }
+            "
+          />
+        </div>
         <UiButton
           size="icon"
           @click="emits('pagination', 1)"

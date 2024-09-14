@@ -12,6 +12,7 @@
         <StatusFilter @change="onStatusChange" />
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
+
       </div>
 
       <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton>
@@ -31,6 +32,10 @@
       <UiTabsContent value="all">
         <DataTable
           @pagination="Pagination"
+          @limit="($event)=>{
+            filters.page = '1',
+            filters.limit = $event
+          }"
           :totalPageCount="totalPageCount"
           :page="page"
           :totalCount="totalCount"

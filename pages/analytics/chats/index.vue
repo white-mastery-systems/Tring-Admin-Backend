@@ -8,8 +8,8 @@
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder="Search User..."
         />
-        <BotFilter v-model="filters.botId" @input="filters.page='1'"/>
-        <BotUserFilter @changeAction="onActionChange" />
+        <BotFilter v-model="filters.botId" @input="filters.page = '1'" />
+        <LivePreviewFilter @changeAction="onActionChange"/>
         <DateRangeFilter @change="onDateChange" />
       </div>
     </div>
@@ -21,6 +21,11 @@
         }
       "
       @pagination="Pagination"
+      @limit="
+        ($event) => {
+          (filters.page = '1'), (filters.limit = $event);
+        }
+      "
       :totalPageCount="totalPageCount"
       :page="page"
       :totalCount="totalCount"
@@ -65,7 +70,7 @@
     q: undefined,
     from: undefined,
     to: undefined,
-    botUserName: "",
+    botUserName: "all",
     period: "all-time",
     page: "1",
     limit: "8",
@@ -74,31 +79,30 @@
   let page = ref(0);
   let totalPageCount = ref(0);
   let totalCount = ref(0);
-  const { status, data: bots, refresh:getAllChats  } = await useLazyFetch(
-    "/api/chats?page=2&limit=8",
-    {
-      server: false,
-      query: filters,
-      default: () => [],
-      headers: {
-        "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-      transform: (chats) => {
-         page.value = chats.page
-         totalPageCount.value = chats.totalPageCount
-         totalCount.value = chats.totalCount
-        return chats?.data?.map((chat) => ({
-          userName: chat.botUser?.name || "No name",
-          id: chat.id,
-          location: `${chat.metadata?.city ?? "--"} - ${chat.metadata?.state ?? "--"} `,
-          createdAt: `${chat?.createdAt}`,
-          mode: chat.metadata?.mode ?? "Live",
-        }));
-      },
+  const {
+    status,
+    data: bots,
+    refresh: getAllChats,
+  } = await useLazyFetch("/api/chats?page=2&limit=8", {
+    server: false,
+    query: filters,
+    default: () => [],
+    headers: {
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
-  );
-
-
+    transform: (chats) => {
+      page.value = chats.page;
+      totalPageCount.value = chats.totalPageCount;
+      totalCount.value = chats.totalCount;
+      return chats?.data?.map((chat) => ({
+        userName: chat.botUser?.name || "No name",
+        id: chat.id,
+        location: `${chat.metadata?.city ?? "--"} - ${chat.metadata?.state ?? "--"} `,
+        createdAt: `${chat?.createdAt}`,
+        mode: chat.metadata?.mode ?? "Live",
+      }));
+    },
+  });
 
   const isDataLoading = computed(() => status.value === "pending");
 
@@ -124,7 +128,7 @@
   ];
   const onActionChange = (value: any) => {
     filters.botUserName = value;
-    filters.page='1'
+    filters.page = "1";
   };
   const Pagination = async ($evnt) => {
     filters.page = $evnt;
@@ -139,6 +143,6 @@
       delete filters.to;
       filters.period = value;
     }
-    filters.page='1'
+    filters.page = "1";
   };
 </script>

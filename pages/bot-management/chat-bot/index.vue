@@ -84,7 +84,7 @@
     <div class="flex items-center gap-2 pb-2">
       <UiInput
         v-model="filters.q"
-        @input="filters.page='1'"
+        @input="filters.page = '1'"
         class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
         placeholder="Search bot..."
       />
@@ -107,6 +107,11 @@
         }
       "
       @pagination="Pagination"
+      @limit="
+        ($event) => {
+          (filters.page = '1'), (filters.limit = $event);
+        }
+      "
       :totalPageCount="totalPageCount"
       :page="page"
       :totalCount="totalCount"
@@ -148,9 +153,8 @@
   });
   const activeStatus = ref("");
   watch(activeStatus, async (newStatus, previousStatus) => {
-   filters.active = newStatus;
-   filters.page = '1'
-
+    filters.active = newStatus;
+    filters.page = "1";
   });
   const selectedValue = ref("Today");
   // const newBotName = ref("");
@@ -252,10 +256,10 @@
       },
     }),
   ];
-     const Pagination = async ($evnt) => {
+  const Pagination = async ($evnt) => {
     filters.page = $evnt;
     console.log(filters.page);
-    
+
     getAllChatBot();
   };
 </script>
