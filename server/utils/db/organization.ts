@@ -111,7 +111,7 @@ export const updateOrganization = async (
 //         gte(timelineSchema.createdAt, fromDate),
 //         lte(timelineSchema.createdAt, toDate),
 //         eq(timelineSchema.orgId, organizationId),
-//         eq(timelineSchema.intent, "schedule_call"),
+//         eq(timelineSchema.event, "schedule_call"),
 //       ),
 //     );
 
@@ -123,7 +123,7 @@ export const updateOrganization = async (
 //         gte(timelineSchema.createdAt, fromDate),
 //         lte(timelineSchema.createdAt, toDate),
 //         eq(timelineSchema.orgId, organizationId),
-//         eq(timelineSchema.intent, "site_visit"),
+//         eq(timelineSchema.event, "site_visit"),
 //       ),
 //     );
 //   const locationTimeline = await db
@@ -134,7 +134,7 @@ export const updateOrganization = async (
 //         gte(timelineSchema.createdAt, fromDate),
 //         lte(timelineSchema.createdAt, toDate),
 //         eq(timelineSchema.orgId, organizationId),
-//         eq(timelineSchema.intent, "location"),
+//         eq(timelineSchema.event, "location"),
 //       ),
 //     );
 //   const virtualTourTimeline = await db
@@ -145,7 +145,7 @@ export const updateOrganization = async (
 //         gte(timelineSchema.createdAt, fromDate),
 //         lte(timelineSchema.createdAt, toDate),
 //         eq(timelineSchema.orgId, organizationId),
-//         eq(timelineSchema.intent, "virtual_tour"),
+//         eq(timelineSchema.event, "virtual_tour"),
 //       ),
 //     );
 
@@ -233,6 +233,8 @@ const validQueryValues = [
   "site_visits",
   "locations",
   "virtual_tours",
+  "images",
+  "brochures",
 ];
 
 export const getAnalytics = async (
@@ -248,6 +250,14 @@ export const getAnalytics = async (
       ?.trim()
       ?.split(",")
       .map((value) => value.trim()) || ["leads", "sessions"];
+
+    const organizationIntents = await db.select({ intents: botIntentSchema.intent })
+        .from(botIntentSchema)
+        .where(eq(botIntentSchema.organizationId, organizationId))
+
+    const intentList = [...new Set(organizationIntents.map((i) => i.intents))]
+
+    // return { queryArray }
 
     // Validate query-values
     const inValidQuery = queryArray.filter(
@@ -273,6 +283,30 @@ export const getAnalytics = async (
 
     const { fromDate, toDate } = getDateRange(period, from, to);
 
+  
+    // find organization intents statistics 
+    const mapIntents = await Promise.all(
+      intentList.map(async (intent) => {
+        const intentDetail = await db
+          .select({ createdAt: timelineSchema.createdAt})
+          .from(timelineSchema)
+          .where(
+              and(
+                gte(timelineSchema.createdAt, fromDate),
+                lte(timelineSchema.createdAt, toDate),
+                eq(timelineSchema.orgId, organizationId),
+                eq(timelineSchema.event, intent),
+              ),
+            )
+        return {
+          name: intent,
+          value: intentDetail.length,
+          intentDetail
+        }
+    }))
+
+    // return {mapIntents}
+
     console.log({ period, organizationId, fromDate, toDate });
     const [
       orgData,
@@ -280,10 +314,6 @@ export const getAnalytics = async (
       chats,
       uniqueVisiters,
       interactedChats,
-      callScheduledTimeline,
-      siteVisitTimeline,
-      locationTimeline,
-      virtualTourTimeline,
     ] = await Promise.all([
       db.query.organizationSchema.findFirst({
         where: eq(organizationSchema.id, organizationId),
@@ -338,50 +368,6 @@ export const getAnalytics = async (
             eq(chatSchema.organizationId, organizationId),
           ),
         ),
-      db
-        .select({ createdAt: timelineSchema.createdAt })
-        .from(timelineSchema)
-        .where(
-          and(
-            gte(timelineSchema.createdAt, fromDate),
-            lte(timelineSchema.createdAt, toDate),
-            eq(timelineSchema.orgId, organizationId),
-            eq(timelineSchema.intent, "schedule_call"),
-          ),
-        ),
-      db
-        .select({ createdAt: timelineSchema.createdAt })
-        .from(timelineSchema)
-        .where(
-          and(
-            gte(timelineSchema.createdAt, fromDate),
-            lte(timelineSchema.createdAt, toDate),
-            eq(timelineSchema.orgId, organizationId),
-            eq(timelineSchema.intent, "site_visit"),
-          ),
-        ),
-      db
-        .select({ createdAt: timelineSchema.createdAt })
-        .from(timelineSchema)
-        .where(
-          and(
-            gte(timelineSchema.createdAt, fromDate),
-            lte(timelineSchema.createdAt, toDate),
-            eq(timelineSchema.orgId, organizationId),
-            eq(timelineSchema.intent, "location"),
-          ),
-        ),
-      db
-        .select({ createdAt: timelineSchema.createdAt })
-        .from(timelineSchema)
-        .where(
-          and(
-            gte(timelineSchema.createdAt, fromDate),
-            lte(timelineSchema.createdAt, toDate),
-            eq(timelineSchema.orgId, organizationId),
-            eq(timelineSchema.intent, "virtual_tour"),
-          ),
-        ),
     ]);
 
     if (!orgData) return undefined;
@@ -392,10 +378,7 @@ export const getAnalytics = async (
 
     let uniqueVisitersMap = null;
     let interactedChatsMap = null;
-    let scheduleCallsMap = null;
-    let siteVisitsMap = null;
-    let locationsMap = null;
-    let virtualToursMap = null;
+    let graphMap = null
 
     // return { leads, chats }
 
@@ -408,7 +391,7 @@ export const getAnalytics = async (
     });
     const leadMap = new Map(leadResult.map((item) => [item.date, item.count]));
 
-    // return { leadResult }
+    // return { leadMap }
 
     // sessions Graph
     const sessionResult = groupAndMapData({
@@ -420,6 +403,23 @@ export const getAnalytics = async (
     const sessionMap = new Map(
       sessionResult.map((item) => [item.date, item.count]),
     );
+
+    const mapIntentsGraphValues = mapIntents.map((i) => {
+      const result = groupAndMapData({
+        module: i.intentDetail,
+        period,
+        difference,
+        timeZone
+      });
+      
+      graphMap = new Map(result.map((item) => [item.date, item.count]));
+
+      return {
+        intent: i.name,
+        result: result,
+        graphMap
+      }
+    })
 
     if (queryArray.includes("unique_visiters")) {
       const uniqueVisitersResult = groupAndMapData({
@@ -445,60 +445,19 @@ export const getAnalytics = async (
       );
     }
 
-    if (queryArray.includes("schedule_calls")) {
-      const scheduleCallsResult = groupAndMapData({
-        module: callScheduledTimeline,
-        period,
-        difference,
-        timeZone
-      });
-      scheduleCallsMap = new Map(
-        scheduleCallsResult.map((item) => [item.date, item.count]),
-      );
-    }
-
-    if (queryArray.includes("site_visits")) {
-      const siteVisitsResult = groupAndMapData({
-        module: siteVisitTimeline,
-        period,
-        difference,
-        timeZone
-      });
-      siteVisitsMap = new Map(
-        siteVisitsResult.map((item) => [item.date, item.count]),
-      );
-    }
-
-    if (queryArray.includes("locations")) {
-      const locationsResult = groupAndMapData({
-        module: locationTimeline,
-        period,
-        difference,
-        timeZone
-      });
-      locationsMap = new Map(
-        locationsResult.map((item) => [item.date, item.count]),
-      );
-    }
-
-    if (queryArray.includes("virtual_tours")) {
-      const virtualToursResult = groupAndMapData({
-        module: virtualTourTimeline,
-        period,
-        difference,
-        timeZone
-      });
-      virtualToursMap = new Map(
-        virtualToursResult.map((item) => [item.date, item.count]),
-      );
-    }
-
     const groupedCounts = (mapData: any) =>
       dates.map((date) => ({
         date,
         count: mapData.get(date) || 0,
       }));
 
+   // Mapping intent as key and graphMap as value
+    let intentsMapping = mapIntentsGraphValues.reduce((acc: any, item) => {
+          acc[item.intent] = item.graphMap;
+          return acc;
+    }, {});
+
+    // return { intentsMapping }
     const safeGroupedCounts = (map) => (map ? groupedCounts(map) : {});
 
     const maps = {
@@ -506,33 +465,50 @@ export const getAnalytics = async (
       sessions: sessionMap,
       unique_visiters: uniqueVisitersMap,
       interacted_chats: interactedChatsMap,
-      schedule_calls: scheduleCallsMap,
-      site_visits: siteVisitsMap,
-      locations: locationsMap,
-      virtual_tours: virtualToursMap,
+      ...intentsMapping,
     };
 
     const graph = Object.entries(maps).reduce((acc: any, [key, map]) => {
       if (!queryArray.length || queryArray.includes(key)) {
         acc[key] = safeGroupedCounts(map);
       }
-      return acc;
+      return acc; 
     }, {});
 
     console.log({ queryArray });
 
     const graphArray = queryArray.map((key) => graph[key]).filter(Boolean);
+    let statistics = [
+        { name: "chats", value: chats.length, apiName: "sessions", color: "#facc15" },
+        { name: "users", value: uniqueVisiters.length ?? 0, apiName: "unique_visiters", color: "#a855f7" },
+        { name: "leads", value: leads.length, apiName: "leads", color: "#4f46e5" },
+        { name: "interactedChats", value: interactedChats.length, apiName: "interacted_chats", color: "#dc2626"  },
+        // Spread the mapIntents into statistics
+        ...mapIntents.map(intent =>{
+          if (intent?.name === "site_visit") {
+            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#2563eb" } 
+          }
+          if (intent?.name === "schedule_call") {
+            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#16a34a" }
+          }
+          if (intent?.name === "virtual_tour") {
+            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#e11d48" }
+          }
+          if (intent?.name === "location") {
+            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#1e293b" }
+          }
+          if (intent?.name === "images") {
+            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#FA8072" }
+          }
+          if (intent?.name === "brochures") {
+            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#40E0D0" }
+          }
+        })
+    ];
 
     return {
-      chats: chats.length,
-      users: uniqueVisiters.length ?? 0,
-      leads: leads.length,
-      virtualTourTimeline: virtualTourTimeline.length,
-      locationTimeline: locationTimeline.length,
-      siteVisitTimeline: siteVisitTimeline.length,
-      callScheduledTimeline: callScheduledTimeline.length,
-      interactedChats: interactedChats.length,
-      graph: graphArray,
+      statistics,
+      graph: graphArray
     };
   } catch (error) {
     throw new Error(`Failed to fetch: ${error}`);

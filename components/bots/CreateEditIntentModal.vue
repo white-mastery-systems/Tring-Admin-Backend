@@ -25,7 +25,7 @@
               </UiSelectContent>
             </UiSelect>
           </UiFormControl>
-          <span class="text-red-500">
+          <span class="text-sm text-red-500">
             {{ errors.intent }}
           </span>
           <span class="text-xs text-gray-500">Select your intent.</span>
@@ -49,7 +49,7 @@
               placeholder="Eg: enter your preferred value"
             />
           </UiFormControl>
-          <span class="text-red-500">
+          <span class="text-sm text-red-500">
             {{ errors.link }}
           </span>
           <span class="text-xs text-gray-500">Enter intent link</span>
@@ -83,7 +83,10 @@
             {{ errors.file }}
           </span>
         </div>
-        <p v-if="selectedFileName" class="mt-2 text-sm text-gray-600">
+        <p
+          v-if="selectedFileName"
+          class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600"
+        >
           {{ selectedFileName }}
         </p>
 
@@ -101,9 +104,9 @@
                 placeholder="Eg:Amenties"
               />
             </UiFormControl>
-            <p v-if="errors.fileName" class="mt-0 text-sm text-red-700">
+            <span v-if="errors.fileName" class="mt-0 text-sm text-red-700">
               {{ errors.fileName }}
-            </p>
+            </span>
             <span class="text-xs text-gray-500"
               >Enter a unique name to identify the intent</span
             >
@@ -216,7 +219,7 @@
         toast.error("unsppported pdf type");
       }
       fileRef.value = target.files;
-      selectedFileName.value = files?.map((file) => file.type).join(",");
+      selectedFileName.value = files?.map((file) => file.name).join(",");
       // setFieldValue("file", Array.from(target.files));
     } else {
       fileRef.value = null;

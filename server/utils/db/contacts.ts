@@ -10,14 +10,33 @@ export const createContacts = async (contacts: InsertContacts) => {
   )[0]
 }
 
-export const getContacts = async (organizationId: string, contactListId: string) => {
+export const getContacts = async (organizationId: string, contactListId: string, query: any) => {
+  let page, offset, limit = 0
+    
+  if(query.page && query.limit) {
+    page = parseInt(query.page) 
+    limit = parseInt(query.limit)
+    offset = (page - 1) * limit;
+  }
   const data = await db.query.contactSchema.findMany({
     where: and(
       eq(contactSchema.contactListId, contactListId),
       eq(contactSchema.organizationId, organizationId)
     )
   })
-  return data
+  if(query?.page && query?.limit) {
+     const paginatedContacts = data.slice(offset, offset + limit); 
+    return {
+      calls: "Contacts",
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length/ limit) || 1,
+      totalCount: data.length,
+      data: paginatedContacts
+    }
+  } else {
+      return data
+  }
 }
 
 export const getContactsById = async (id: string) => {

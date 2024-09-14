@@ -54,7 +54,7 @@ export const listLeads = async (
           await db.query.timelineSchema.findMany({
             where: and(
               eq(timelineSchema.orgId, organizationId),
-              eq(timelineSchema.intent, intentsMap[query.status]),
+              eq(timelineSchema.event, intentsMap[query.status]),
             ),
             columns: {
               chatId: true,
@@ -96,10 +96,6 @@ export const listLeads = async (
        offset = (page - 1) * limit;
     }
 
-    const countTotalDocuments = await db.select({ totalCount: count() })
-          .from(leadSchema)
-          .where(eq(leadSchema.organizationId, organizationId))
-
     let leads = await db.query.leadSchema.findMany({
       where: and(...filters),
       with: {
@@ -128,11 +124,9 @@ export const listLeads = async (
         },
       },
       orderBy: [desc(leadSchema.createdAt)],
-      ...query?.page && query?.limit && {
-        limit,
-        offset
-      }
     });
+
+ 
     leads = leads.map((i: any) => ({
         ...i,
         createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
@@ -146,14 +140,16 @@ export const listLeads = async (
         return lead.chat !== null;
       });
 
+      
     if(query?.page && query?.limit) {
+      const paginatedLeads = leads.slice(offset, offset + limit);
       return {
         calls: "leads",
         page: page,
         limit: limit,
-        totalPageCount: Math.ceil(countTotalDocuments[0].totalCount/ limit),
-        totalCount: countTotalDocuments[0].totalCount,
-        data: leads
+        totalPageCount: Math.ceil(leads.length/limit) || 1,
+        totalCount: leads.length,
+        data: paginatedLeads
       }
     } else {
       return leads

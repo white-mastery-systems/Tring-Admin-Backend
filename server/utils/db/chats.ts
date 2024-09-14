@@ -43,10 +43,6 @@ export const listChats = async (
     limit = parseInt(query.limit)
     offset = (page - 1) * limit;
   }
- 
-  const countTotalDocuments = await db.select({ totalCount: count() })
-      .from(chatSchema)
-      .where(eq(chatSchema.organizationId, organisationId))
 
   let chats = await db.query.chatSchema.findMany({
     where: and(
@@ -57,6 +53,12 @@ export const listChats = async (
         : undefined,
       query?.botUserName === "interacted"
         ? eq(chatSchema.interacted, true)
+        : undefined,
+      query?.botUserName === "live"
+        ? eq(chatSchema.mode, "live")
+        : undefined,
+      query?.botUserName === "preview"
+        ? eq(chatSchema.mode, "preview")
         : undefined,
     ),
     with: {
@@ -73,11 +75,6 @@ export const listChats = async (
       },
     },
     orderBy: [desc(chatSchema.createdAt)],
-    ...(query?.page &&
-      query?.limit && {
-        limit,
-        offset,
-      }),
   });
 
   chats = chats.map((i: any) => ({
@@ -93,13 +90,14 @@ export const listChats = async (
     chats = chats.filter((i) => i.botUser === null);
   }
   if(query?.page && query?.limit) {
+     const paginatedChats = chats.slice(offset, offset + limit); 
     return {
       calls: "chats",
       page: page,
       limit: limit,
-      totalPageCount: Math.ceil(countTotalDocuments[0].totalCount/ limit),
-      totalCount: countTotalDocuments[0].totalCount,
-      data: chats
+      totalPageCount: Math.ceil(chats.length/ limit) || 1,
+      totalCount: chats.length,
+      data: paginatedChats
     }
   } else {
       return chats
