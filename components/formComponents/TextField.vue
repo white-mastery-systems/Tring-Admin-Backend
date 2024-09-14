@@ -1,49 +1,33 @@
-<!-- TextField.vue -->
 <template>
-  <UiFormField :name="name">
-    <UiFormItem class="w-full">
-      <UiFormLabel>
-        {{ label }}
-        <UiLabel v-if="required" class="text-lg text-red-700">*</UiLabel>
-      </UiFormLabel>
-      <UiFormControl>
-        <UiInput
-          :class="{ 'border-red-700': !!errorMessage }"
-          type="text"
-          :name="name"
-          :value="modelValue"
-          @input="updateValue"
-          :placeholder="placeholder"
-        />
-      </UiFormControl>
-      <UiFormMessage>
-        {{ errorMessage || helperText }}
-      </UiFormMessage>
-    </UiFormItem>
-  </UiFormField>
+  <UiLabel :class="['capitalize flex items-center',errorMessage?'text-red-500':'']" v-if="label" :for="replacedId">{{ label }}
+<span v-if="required" class="text-sm text-red-700">*
+            </span>
+
+
+  </UiLabel>
+  <UiInput :placeholder="placeHolder" :id="replacedId" :class="errorMessage?'border-red-500':'border-input'" v-model="value" :type="type || 'text'" />
+  <span :class="['text-xs text-gray-500',errorMessage?' text-red-500 font-medium':'']">{{ errorMessage??helperText }}</span>
 </template>
 
 <script setup lang="ts">
-  import { useField } from "vee-validate";
+import { useField } from 'vee-validate';
 
-  const props = defineProps<{
-    name: string;
-    label: string;
-    modelValue: string | undefined;
-    placeholder?: string;
-    helperText?: string;
-    required?: boolean;
-  }>();
+const props = defineProps<{
+  label?:string,
+  name: string,
+  type?: string,
+  helperText?: string,
+  placeHolder?:string,
+  required?:boolean
+}>();
+const replacedId=ref(props.label??props.name)
+const { value, errorMessage }:{value:any,errorMessage:any} = useField(() => props.name);
 
-  const emit = defineEmits(["update:modelValue"]);
+watch(errorMessage,(newErr)=>{
+  console.log({newErr})
+})
+watch(value,(value)=>{
+  console.log({value})
+})
 
-  const { value, errorMessage } = useField(props.name, undefined, {
-    initialValue: props.modelValue,
-  });
-
-  const updateValue = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    emit("update:modelValue", target.value);
-    value.value = target.value;
-  };
 </script>

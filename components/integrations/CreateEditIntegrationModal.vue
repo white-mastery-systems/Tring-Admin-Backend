@@ -12,7 +12,7 @@
 
   const sellDoSchema = z.object({
     crm: z.literal("sell-do"),
-    metaData: z.object({
+    metadata: z.object({
       apiKey: z.string().min(1, { message: "API key is required" }),
     }),
   });
@@ -28,7 +28,7 @@
   const integrationSchema = toTypedSchema(
     z
       .object({
-        name: z.string().min(1, { message: "Name is required" }),
+        name: z.string({required_error:"Name is required"}).min(1, "Name is required"),
         crm: z
           .enum(["sell-do", "zoho-crm", "zoho-bigin"])
           .refine(
@@ -47,17 +47,13 @@
       ),
   );
 
-  const { setFieldValue, handleSubmit, errors, defineField, resetForm } =
+  const { setFieldValue, handleSubmit, errors,values, defineField, resetForm } =
     useForm({
       validationSchema: integrationSchema,
       initialValues: {
         // name: "",
       },
     });
-
-  const [name, nameAttrs] = defineField("name");
-  const [crmField, crmFieldAttrs] = defineField("crm");
-  const [apiKeyField, apiKeyFieldAttrs] = defineField("metaData.apiKey");
 
   watch(
     () => integrationModalState.value,
@@ -72,7 +68,7 @@
       setFieldValue("name", integrationDetails?.name);
       setFieldValue("crm", integrationDetails?.crm);
       if (integrationDetails?.crm === "sell-do") {
-        setFieldValue("metaData", {
+        setFieldValue("metadata", {
           apiKey: integrationDetails?.metadata?.apiKey,
         });
       } else if (integrationDetails?.crm === "zoho-crm") {
@@ -94,7 +90,7 @@
       ...values,
       scope,
       url,
-      ...(values.crm !== "sell-do" && { metaData: { status: "pending" } }),
+      ...(values.crm !== "sell-do" && { metadata: { status: "pending" } }),
     };
 
     if (integrationModalProps?.id) {
@@ -126,65 +122,38 @@
   <DialogWrapper v-model="integrationModalState" :title="
       integrationModalProps?.id ? 'Edit Integration' : 'Add New Integration'
     ">
-    <UiForm v-slot="{ values }" @submit="handleConnect" :validate-on-mount="false" class="space-y-2">
-      <!-- <TextField
+    <form @submit="handleConnect"  class="space-y-2">
+      <div class="flex flex-col gap-2">
+     <TextField
         name="name"
         label="Name"
-        :field="name"
-        :field-attrs="nameAttrs"
-        :error="errors?.name"
+        helperText="Enter a unique identification for CRM integration"
         placeHolder="Eg: CRM-your company,CRM-your company"
-      /> -->
-      <UiFormField v-model="name" v-bind="nameAttrs" name="name">
-        <UiFormItem class="w-full">
-          <UiFormLabel :class="errors?.name ? 'text-[#ef4444]' : ''">Name <UiLabel class="text-lg text-red-700">*
-            </UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiInput type="text" v-model="name" v-bind="nameAttrs"
-              placeholder="Eg: CRM-your company,CRM-your company" />
-          </UiFormControl>
-          <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.name }}</p>
-          <span class="text-xs text-gray-500">Enter a unique identification for CRM integration</span>
-        </UiFormItem>
-      </UiFormField>
-      <UiFormField v-model="crmField" v-bind="crmFieldAttrs" name="crm">
-        <UiFormItem class="w-full">
-          <UiFormLabel :class="errors?.crm ? 'text-[#ef4444]' : ''">
-            CRM<UiLabel class="text-lg text-red-500">*</UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-model="crmField" v-bind="crmFieldAttrs">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select CRM" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectItem value="sell-do">Sell Do</UiSelectItem>
-                <UiSelectItem value="zoho-crm">Zoho CRM</UiSelectItem>
-                <UiSelectItem value="zoho-bigin">Zoho Bigin</UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <UiFormMessage />
-          <span v-if="errors.crm" class="mt-0 text-[14px] font-medium text-[#ef4444]">Select your CRM provider.</span>
-        </UiFormItem>
-      </UiFormField>
+        required
+      />
+       <SelectField
+      name="crm"
+      label="CRM"
+      placeholder="Select CRM"
+      helperText="Select your CRM provider."
+      :options="[
+        { value: 'sell-do', label: 'Sell Do', },
+        { value: 'zoho-crm', label: 'Zoho CRM' },
+        { value: 'zoho-bigin', label: 'Zoho Bigin' }
+      ]"
+      required
+    />
 
-      <UiFormField v-if="values.crm === 'sell-do'" v-model="apiKeyField" v-bind="apiKeyFieldAttrs"
-        name="metaData.apiKey">
-        <UiFormItem class="w-full">
-          <UiFormLabel :class="errors?.['metaData.apiKey'] ? 'text-[#ef4444]' : ''">API key <UiLabel
-              class="text-lg text-red-500">*</UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiInput type="text" v-model="apiKeyField" v-bind="apiKeyFieldAttrs" placeholder="Eg: api-key-here" />
-          </UiFormControl>
-          <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.['metaData.apiKey'] }}</p>
-          <span class="mt-0 text-[14px]">Enter your API key here</span>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
-      <UiButton type="submit" class="mt-2" color="primary">
+     <TextField
+     v-if="values.crm === 'sell-do'"
+        name="metadata.apiKey"
+        label="Name"
+        helperText="Enter your API key here"
+        placeHolder="Eg: api-key-here"
+        required
+      />
+      <div class="flex justify-end w-full">
+        <UiButton type="submit" class="mt-2" color="primary">
         {{
         values.crm === "zoho-crm"
         ? integrationModalProps?.id
@@ -199,6 +168,8 @@
         : "Save changes"
         }}
       </UiButton>
-    </UiForm>
+      </div>
+      </div>
+    </form>
   </DialogWrapper>
 </template>

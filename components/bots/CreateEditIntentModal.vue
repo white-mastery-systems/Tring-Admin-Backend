@@ -128,9 +128,9 @@
 
 <script setup lang="ts">
   import { toTypedSchema } from "@vee-validate/zod";
-  import { useForm } from "vee-validate";
-  import { ref } from "vue";
-  import { createEditIntentValidation } from "~/validationSchema/createEditIntentValidation";
+import { useForm } from "vee-validate";
+import { ref } from "vue";
+import { createEditIntentValidation } from "~/validationSchema/createEditIntentValidation";
   const route = useRoute("bot-management-chat-bot-id-intent-management");
   const intents = [
     {
