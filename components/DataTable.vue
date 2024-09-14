@@ -1,14 +1,14 @@
 <script setup lang="ts" generic="T extends object">
   import type { ColumnDef, SortingState } from "@tanstack/vue-table";
-  import {
-    FlexRender,
-    getCoreRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    useVueTable,
-  } from "@tanstack/vue-table";
+import {
+  FlexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useVueTable,
+} from "@tanstack/vue-table";
 
-  import { ArrowUpNarrowWide, Watch } from "lucide-vue-next";
+  import { ArrowUpNarrowWide } from "lucide-vue-next";
 
   const props = defineProps<{
     data: T[];
@@ -171,10 +171,9 @@
     >
       <p>Page {{ page }} of {{ totalPageCount }}</p>
       <div class="flex space-x-4">
-        <div  style="align-self: center;">
-          <p>Total Count:{{ totalCount }}</p>
-        </div>
-        <div>
+        
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-gray-600">showing</span>
           <PageLimitFilter
             @changeAction="
               ($event) => {
@@ -184,6 +183,8 @@
               }
             "
           />
+          <span class="text-sm text-gray-500">of {{ totalCount }} records</span>
+
         </div>
         <UiButton
           size="icon"

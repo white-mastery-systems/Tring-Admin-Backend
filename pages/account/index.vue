@@ -94,7 +94,7 @@
                 </UiPopoverTrigger>
                 <UiPopoverContent class="w-[200px] p-0">
                   <UiCommand>
-                    <!-- <UiCommandInput placeholder="Search code..." /> -->
+                    <UiCommandInput placeholder="Search code..." v-model="serchCode" />
                     <UiCommandEmpty>No codes found.</UiCommandEmpty>
                     <UiCommandList>
                       <div v-bind="containerProps" class="max-h-52">
@@ -436,13 +436,13 @@
 </template>
 <script setup lang="ts">
   import { Check, ChevronsUpDown } from "lucide-vue-next";
-  import { useForm } from "vee-validate";
-  import countryData from "~/assets/country-codes.json";
-  import stateData from "~/assets/state.json";
+import { useForm } from "vee-validate";
+import countryData from "~/assets/country-codes.json";
+import stateData from "~/assets/state.json";
 
   const countryListOpen = ref(false);
   const value = ref("");
-
+  const serchCode=ref("")
   const addressSchema = z.object({
     street: z.string().min(2, "Street Name is required"),
     city: z.string().min(2, "City Name is required"),
@@ -480,6 +480,9 @@
   watch(errors, (newError) => {
     console.log({ newError });
   });
+  watch(serchCode,(newSearch)=>{
+    console.log({newSearch})
+  })
   const [usernameField, usernameFieldProps] = defineField("username");
   const [emailField, emailFieldProps] = defineField("email");
   const [mobileField, mobileFieldProps] = defineField("mobile");
