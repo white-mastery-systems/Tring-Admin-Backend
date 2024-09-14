@@ -482,7 +482,7 @@ export const getAnalytics = async (
         { name: "chats", value: chats.length, apiName: "sessions", color: "#facc15" },
         { name: "users", value: uniqueVisiters.length ?? 0, apiName: "unique_visiters", color: "#a855f7" },
         { name: "leads", value: leads.length, apiName: "leads", color: "#4f46e5" },
-        { name: "interactedChats", value: interactedChats.length, apiName: "interacted_chats", color: "#dc2626"  },
+        { name: "interacted chats", value: interactedChats.length, apiName: "interacted_chats", color: "#dc2626"  },
         // Spread the mapIntents into statistics
         ...mapIntents.map(intent =>{
           if (intent?.name === "site_visit") {
