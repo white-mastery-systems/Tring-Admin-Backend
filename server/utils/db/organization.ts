@@ -227,12 +227,12 @@ export const getOrgUsage = async (organizationId: string) => {
 const validQueryValues = [
   "leads",
   "sessions",
-  "unique_visiters",
+  "unique_visitors",
   "interacted_chats",
-  "schedule_calls",
-  "site_visits",
-  "locations",
-  "virtual_tours",
+  "schedule_call",
+  "site_visit",
+  "location",
+  "virtual_tour",
   "images",
   "brochures",
 ];
@@ -421,7 +421,7 @@ export const getAnalytics = async (
       }
     })
 
-    if (queryArray.includes("unique_visiters")) {
+    if (queryArray.includes("unique_visitors")) {
       const uniqueVisitersResult = groupAndMapData({
         module: uniqueVisiters,
         period,
@@ -463,7 +463,7 @@ export const getAnalytics = async (
     const maps = {
       leads: leadMap,
       sessions: sessionMap,
-      unique_visiters: uniqueVisitersMap,
+      unique_visitors: uniqueVisitersMap,
       interacted_chats: interactedChatsMap,
       ...intentsMapping,
     };
@@ -479,23 +479,23 @@ export const getAnalytics = async (
 
     const graphArray = queryArray.map((key) => graph[key]).filter(Boolean);
     let statistics = [
-        { name: "chats", value: chats.length, apiName: "sessions", color: "#facc15" },
-        { name: "users", value: uniqueVisiters.length ?? 0, apiName: "unique_visiters", color: "#a855f7" },
-        { name: "leads", value: leads.length, apiName: "leads", color: "#4f46e5" },
-        { name: "interactedChats", value: interactedChats.length, apiName: "interacted_chats", color: "#dc2626"  },
+        { name: "chat sessions", value: chats.length, apiName: "sessions", color: "#facc15" },
+        { name: "unique visitors", value: uniqueVisiters.length ?? 0, apiName: "unique_visitors", color: "#a855f7" },
+        { name: "chat leads", value: leads.length, apiName: "leads", color: "#4f46e5" },
+        { name: "interacted chats", value: interactedChats.length, apiName: "interacted_chats", color: "#dc2626"  },
         // Spread the mapIntents into statistics
         ...mapIntents.map(intent =>{
           if (intent?.name === "site_visit") {
-            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#2563eb" } 
+            return { name: 'site visits', value: intent.value, apiName: intent.name, color: "#2563eb" } 
           }
           if (intent?.name === "schedule_call") {
-            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#16a34a" }
+            return { name: 'call scheduled', value: intent.value, apiName: intent.name, color: "#16a34a" }
           }
           if (intent?.name === "virtual_tour") {
-            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#e11d48" }
+            return { name: 'virtual tours', value: intent.value, apiName: intent.name, color: "#e11d48" }
           }
           if (intent?.name === "location") {
-            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#1e293b" }
+            return { name: 'location visited', value: intent.value, apiName: intent.name, color: "#1e293b" }
           }
           if (intent?.name === "images") {
             return { name: intent.name, value: intent.value, apiName: intent.name, color: "#FA8072" }
