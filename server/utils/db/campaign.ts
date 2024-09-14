@@ -10,11 +10,30 @@ export const createCampaign = async (campaign: InsertCampaign) => {
   )[0]
 }
 
-export const campaignList = async (organizationId: string) => {
+export const campaignList = async (organizationId: string, query: any) => {
+   let page, offset, limit = 0
+    
+  if(query.page && query.limit) {
+    page = parseInt(query.page) 
+    limit = parseInt(query.limit)
+    offset = (page - 1) * limit;
+  }
   const data = await db.query.campaignSchema.findMany({
     where: eq(campaignSchema.organizationId, organizationId)
   })
-  return data
+  if(query?.page && query?.limit) {
+     const paginatedCampaign = data.slice(offset, offset + limit); 
+    return {
+      calls: "Campaign",
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length/ limit) || 1,
+      totalCount: data.length,
+      data: paginatedCampaign
+    }
+  } else {
+      return data
+  }
 }
 
 export const getCampaignById = async (campaignId: string) => {
