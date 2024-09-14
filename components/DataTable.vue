@@ -170,8 +170,10 @@
       class="flex flex-col items-center justify-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0"
     >
       <p>Page {{ page }} of {{ totalPageCount }}</p>
-      <div>TotalCount:{{ totalCount }}</div>
       <div class="flex space-x-4">
+        <div  style="align-self: center;">
+          <p>Total Count:{{ totalCount }}</p>
+        </div>
         <div>
           <PageLimitFilter
             @changeAction="
