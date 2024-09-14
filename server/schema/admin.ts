@@ -1,4 +1,4 @@
-import { addMonths } from "date-fns";
+import { addDays, addMonths } from "date-fns";
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   boolean,
@@ -17,6 +17,7 @@ import { adminSchema } from ".";
 import { authUserSchema } from "./auth";
 import { botUserSchema, chatBotSchema, leadSchema } from "./bot";
 const nextMonthDate = addMonths(new Date(), 1);
+const nextMonthAndDayDate = addDays(nextMonthDate, 1);
 
 // Tables
 export const organizationSchema = adminSchema.table("organization", {
@@ -55,7 +56,7 @@ export const paymentSchema = adminSchema.table("payment", {
   customer_metadata: jsonb("customer_metadata"),
   type: paymentTypeEnum("type").default("subscription").notNull(),
   status: statusEnum("status").default("active").notNull(),
-  expiry: timestamp("expiry").default(nextMonthDate).notNull(),
+  expiry: timestamp("expiry").default(nextMonthAndDayDate).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -158,7 +159,10 @@ export const campaignSchema = adminSchema.table("campaign", {
   phoneNumber: varchar("phone_number"),
   campaignDate: timestamp("campaign_date"),
   campaignTime: timestamp("campaign_time"),
-  contactListId: uuid("contact_list_id").references(() => contactListSchema.id, { onDelete: "cascade" }),
+  contactListId: uuid("contact_list_id").references(
+    () => contactListSchema.id,
+    { onDelete: "cascade" },
+  ),
   organizationId: uuid("organization_id")
     .notNull()
     .references(() => organizationSchema.id),
