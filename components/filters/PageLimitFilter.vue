@@ -21,9 +21,9 @@
   });
 </script>
 
-<template>
-  <UiSelect v-model="selectedAction">
-    <UiSelectTrigger class="w-[200px]">
+<template >
+  <UiSelect v-model="selectedAction" >
+    <UiSelectTrigger class="w-[60px]">
       <UiSelectValue placeholder="Select a Action" />
     </UiSelectTrigger>
     <UiSelectContent>
