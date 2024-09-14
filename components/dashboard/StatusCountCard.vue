@@ -9,7 +9,7 @@
     </div>
     <div>
       <div
-        class="mb-1 text-[10px] font-semibold text-gray-500 sm:text-[10px] md:text-[16px] lg:text-[16px] xl:text-[16px]"
+        class="capitalize mb-1 text-[10px] font-semibold text-gray-500 sm:text-[10px] md:text-[16px] lg:text-[16px] xl:text-[16px]"
       >
         {{ props.title }}
       </div>
