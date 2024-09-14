@@ -51,6 +51,10 @@
       </UiTabsList>
       <UiTabsContent value="crm">
         <DataTable
+          @pagination="Pagination"
+          :totalPageCount="totalPageCount"
+          :page="page"
+          :totalCount="totalCount"
           :columns="columns"
           :data="integrationsData"
           :page-size="8"
@@ -130,8 +134,13 @@
   // const integrationsData = ref()
   watch(route, (newValue) => {});
   // const q=ref('')
+  let page = ref(0);
+  let totalPageCount = ref(0);
+  let totalCount = ref(0);
   const filters = computed(() => ({
     q: route.query?.q,
+    page: "1",
+    limit: "8",
   }));
   const {
     status: integrationLoadingStatus,
@@ -142,7 +151,10 @@
     default: () => [],
     query: filters,
     transform: (integrations) => {
-      return integrations?.map((integration) => ({
+      page.value = integrations.page;
+      totalPageCount.value = integrations.totalPageCount;
+      totalCount.value = integrations.totalCount;
+      return integrations.data?.map((integration) => ({
         ...integration,
         status: integration?.metadata?.status ?? "Verified",
       }));
@@ -297,5 +309,10 @@
 
   const navigateToTab = async (tab: any) => {
     router.push({ query: { q: tab } });
+  };
+
+    const Pagination = async ($evnt) => {
+    filters.page = $evnt;
+    integrationRefresh();
   };
 </script>

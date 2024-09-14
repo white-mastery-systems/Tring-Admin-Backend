@@ -4,13 +4,15 @@
       <div class="flex items-center gap-2">
         <UiInput
           v-model="filters.q"
+          @input="filters.page = '1'"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder=" Search Leads..."
         />
-        <BotFilter v-model="filters.botId" />
+        <BotFilter v-model="filters.botId" @input="filters.page = '1'" />
         <StatusFilter @change="onStatusChange" />
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
+
       </div>
 
       <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton>
@@ -29,6 +31,14 @@
       </UiTabsList>
       <UiTabsContent value="all">
         <DataTable
+          @pagination="Pagination"
+          @limit="($event)=>{
+            filters.page = '1',
+            filters.limit = $event
+          }"
+          :totalPageCount="totalPageCount"
+          :page="page"
+          :totalCount="totalCount"
           :data="leads"
           :is-loading="isDataLoading"
           :columns="columns"
@@ -59,7 +69,7 @@
       </UiTabsContent>
       <UiTabsContent value="website">
         <DataTable
-          :data="leads"
+          :data="leads.data"
           :is-loading="isDataLoading"
           :columns="columns"
           :page-size="8"
@@ -151,6 +161,8 @@
     status: string;
     channel: any;
     action: string;
+    page: string;
+    limit: string;
   }>({
     botId: "",
     q: undefined,
@@ -160,19 +172,43 @@
     status: "",
     channel: "all",
     action: "",
+    page: "1",
+    limit: "8",
   });
 
   watchEffect(() => {
     if (filters.botId === "all") filters.botId = "";
   });
-  const { status, data: leads } = await useLazyFetch("/api/org/leads", {
+
+  let page = ref(0);
+  let totalPageCount = ref(0);
+  let totalCount = ref(0);
+  let {
+    status,
+    data: leads,
+    refresh: getAllLeads,
+  } = await useLazyFetch("/api/org/leads", {
     server: false,
     query: filters,
     headers: {
       "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
     default: () => [],
+    transform: (leads:any) => {
+      page.value = leads.page;
+      totalPageCount.value = leads.totalPageCount;
+      totalCount.value = leads.totalCount;
+      return leads.data;
+    },
   });
+
+
+
+  const Pagination = async ($evnt) => {
+    filters.page = $evnt;
+    getAllLeads();
+  };
+
   const isDataLoading = computed(() => status.value === "pending");
 
   const viewLead = async (chatId: any) => {
@@ -191,6 +227,7 @@
       delete filters.to;
       filters.period = value;
     }
+    filters.page = "1";
   };
   const onActionChange = (value: any) => {
     if (value) {
@@ -200,6 +237,7 @@
   const onStatusChange = (value: any) => {
     if (value) {
       filters.status = value;
+      filters.page = "1";
     }
   };
 
