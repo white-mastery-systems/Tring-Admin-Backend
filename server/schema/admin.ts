@@ -84,7 +84,7 @@ export const timelineSchema = adminSchema.table("timeline", {
   botId: uuid("bot_id").references(() => chatBotSchema.id),
   metadata: jsonb("metadata").default({}).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  intent: varchar("intent", { length: 64 }),
+  event: varchar("event", { length: 64 }),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 export const adminConfigurationSchema = adminSchema.table("admin_config", {
