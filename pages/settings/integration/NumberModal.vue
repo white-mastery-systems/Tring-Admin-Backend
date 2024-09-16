@@ -4,9 +4,10 @@ import { useCount } from '@/composables/useRefresh';
 
 const emit = defineEmits(["success"]);
 const { refresh } = useCount();
-const numberModalState: any = defineModel<{ open: boolean }>({
+const numberModalState: any = defineModel<{ open: boolean, id: any }>({
   default: {
     open: false,
+    id: null,
   },
 });
 
@@ -40,43 +41,62 @@ const {
   handleSubmit,
   defineField,
   values,
+  resetForm,
 } = useForm({
   validationSchema: formSchema,
 });
 
 watch(numberModalState, (newState) => { });
 
+watch(() => numberModalState.value.open, async () => {
+  if (numberModalState.value.id) {
+    const getSingleDetails:any =  await $fetch(`/api/org/integrations/number-integration/${numberModalState.value.id}`)
+    console.log(getSingleDetails, 'getSingleDetails')
+    setFieldValue("provider", getSingleDetails.provider),
+    setFieldValue("countryCode", getSingleDetails.countryCode),
+    setFieldValue("exoPhone", getSingleDetails.exoPhone)
+  } else {
+    resetForm()
+  }
+})
 // onMounted(async () => {
 //   loadCountries()
 // });
+const [provideField, provideFieldProps] = defineField("provider")
 const [mobileField, mobileFieldProps] = defineField("exoPhone");
 const [countryCode, countryCodeProps] = defineField("countryCode");
 
 
-const handleConnect = async (values: any) => {
+const handleConnect = handleSubmit(async (values: any) => {
   const payload = values
   try {
-    await $fetch("/api/org/integrations/number-integration", { method: "POST", body: payload });
+    if (numberModalState.value.id) {
+      await $fetch(`/api/org/integrations/number-integration/${numberModalState.value.id}`, { method: "PUT", body: payload });
+      toast.success("Integration updated successfully");
+    } else {
+      await $fetch("/api/org/integrations/number-integration", { method: "POST", body: payload });
+      toast.success("Integration added successfully");
+    }
     refresh()
     emit('success')
   } catch(error: any) {
     console.log(error.data)
     // toast.success(error.data.)
   }
-};
+});
 </script>
 
 <template>
-  <DialogWrapper v-model="numberModalState" title="Add New Number">
-    <UiForm v-slot="{ values }" :validation-schema="formSchema" @submit="handleConnect" :keep-values="true"
-    :validate-on-mount="false" class="space-y-2">
-    <UiFormField v-slot="{ componentField }" name="provider">
-      <UiFormItem class="w-full">
-        <UiFormLabel>
+  <DialogWrapper v-model="numberModalState" title="Add New ExoPhone">
+    <UiForm v-slot="{ values }" @submit="handleConnect" :keep-values="true" :validate-on-mount="false"
+      class="space-y-2">
+      <UiFormField v-model="provideField" v-bind="provideFieldProps" name="provider">
+        <UiFormItem class="w-full">
+          <UiFormLabel :class="(errors.provider) ? 'text-[#ef4444]' : ''">
             Provider <UiLabel class="text-lg text-red-500">*</UiLabel>
           </UiFormLabel>
           <UiFormControl>
-            <UiSelect v-bind="componentField">
+            <UiSelect v-model="provideField" v-bind="provideFieldProps">
               <UiSelectTrigger>
                 <UiSelectValue placeholder="Select a provider" />
               </UiSelectTrigger>
@@ -88,6 +108,7 @@ const handleConnect = async (values: any) => {
               </UiSelectContent>
             </UiSelect>
           </UiFormControl>
+          <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors.provider }}</p>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
@@ -95,7 +116,7 @@ const handleConnect = async (values: any) => {
       <div class="flex gap-2">
         <UiFormField v-model="countryCode" v-bind="countryCodeProps" name="countryCode" class="mt-1">
           <UiFormItem class="mt-1">
-            <UiFormLabel>Country code
+            <UiFormLabel :class="(errors.provider) ? 'text-[#ef4444]' : ''">Country code
               <span class="text-sm text-red-500">*</span>
             </UiFormLabel>
             <UiPopover>
@@ -147,18 +168,20 @@ const handleConnect = async (values: any) => {
                 </UiCommand>
               </UiPopoverContent>
             </UiPopover>
+            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors.countryCode }}</p>
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
         <UiFormField class="w-[80%]" v-model="mobileField" v-bind="mobileFieldProps" name="exoPhone">
           <UiFormItem class="w-full">
-            <UiFormLabel>
+            <UiFormLabel :class="(errors.provider) ? 'text-[#ef4444]' : ''">
               Phone Number <UiLabel class="text-lg text-red-500">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
               <UiInput v-model="mobileField" v-bind="mobileFieldProps" placeholder="Enter phone number" />
             </UiFormControl>
             <!-- <UiFormMessage :error="errors.phone?.number" /> -->
+            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors.exoPhone }}</p>
           </UiFormItem>
         </UiFormField>
       </div>

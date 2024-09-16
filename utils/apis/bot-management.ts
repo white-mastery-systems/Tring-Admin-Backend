@@ -157,3 +157,47 @@ export const updateLLMConfig = async (payload: any, botId: string) => {
   });
   return updateLLM;
 };
+
+export const updateVoiceBotIntegrationById = async ({
+  payload,
+  onSuccess,
+}: {
+  payload: any;
+  onSuccess: Function;
+}) => {
+  try {
+    const createdBot = await $fetch<SelectChatBot>(
+      `/api/voicebots/${payload.botId}/integrations/${payload.botIntegrationId}`,
+      {
+        method: "PUT",
+        body: payload,
+      },
+    );
+    onSuccess();
+    return createdBot;
+  } catch (err: any) {
+    toast.error(err.data.data[0].message);
+  }
+};
+
+export const addVoiceBotIntegration = async ({
+  payload,
+  onSuccess,
+}: {
+  payload: any;
+  onSuccess: Function;
+}) => {
+  try {
+    const createdBot = await $fetch<SelectChatBot>(
+      `/api/bots/${payload.botId}/integrations`,
+      {
+        method: "POST",
+        body: payload,
+      },
+    );
+    onSuccess();
+    return createdBot;
+  } catch (err: any) {
+    toast.error(err.data.data[0].message);
+  }
+};
