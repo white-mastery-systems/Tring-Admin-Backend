@@ -1,62 +1,88 @@
 <script setup lang="ts" generic="T extends object">
-  import type { ColumnDef, SortingState } from "@tanstack/vue-table";
-  import {
-    FlexRender,
-    getCoreRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    useVueTable,
-  } from "@tanstack/vue-table";
+import type { ColumnDef, SortingState } from "@tanstack/vue-table";
+import {
+  FlexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useVueTable,
+} from "@tanstack/vue-table";
 
-  const props = defineProps<{
-    data: T[];
-    columns: ColumnDef<T, any>[];
-    footer?: boolean;
-    pageSize?: number;
-    isLoading?: boolean;
-    height?: number;
-    heightUnit?: string;
-  }>();
+import { ArrowUpNarrowWide } from "lucide-vue-next";
 
-  const sorting = ref<SortingState>([]);
-  const pageSize = computed(() => props.pageSize || 10);
+const props = defineProps<{
+  data: T[];
+  columns: ColumnDef<T, any>[];
+  footer?: boolean;
+  pageSize?: number;
+  isLoading?: boolean;
+  limit: number;
+  page: number;
+  totalCount: number;
+  totalPageCount: number;
+  height?: number;
+  heightUnit?: string;
+}>();
 
-  const table = useVueTable<T>({
-    get data() {
-      return props.data; // Using a getter for reactivity
+const emits = defineEmits(["pagination", "limit"]);
+
+const sorting = ref<SortingState>([]);
+const pageLimit = ref(10);
+const table = useVueTable<T>({
+  get data() {
+    return props.data; // Using a getter for reactivity
+  },
+  columns: props.columns,
+  getCoreRowModel: getCoreRowModel<T>(),
+  getPaginationRowModel: getPaginationRowModel(),
+  getSortedRowModel: getSortedRowModel<T>(),
+  onSortingChange: (updaterOrValue) => valueUpdater(updaterOrValue, sorting),
+  state: {
+    get sorting() {
+      return sorting.value;
     },
-    columns: props.columns,
-    getCoreRowModel: getCoreRowModel<T>(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel<T>(),
-    onSortingChange: (updaterOrValue) => valueUpdater(updaterOrValue, sorting),
-    state: {
-      get sorting() {
-        return sorting.value;
-      },
+  },
+  initialState: {
+    pagination: {
+      pageSize: pageLimit.value,
     },
-    initialState: {
-      pagination: {
-        pageSize: pageSize.value,
-      },
+  },
+});
+watch(pageLimit, (NewValue) => {
+  table.setState((prev) => ({
+    ...prev,
+    pagination: {
+      ...prev.pagination,
+      pageSize: NewValue,
     },
-  });
+  }));
+});
 </script>
 
 <template>
   <div class="space-y-4">
     <div :class="[
-        'h-screen-minus-11 relative overflow-auto rounded-lg border',
-        props.height ? `h-screen-minus-${props.height}` : '',
-      ]">
+      'relative h-screen-minus-11 overflow-auto rounded-lg border',
+      props.height ? `h-screen-minus-${props.height}` : '',
+    ]">
       <UiTable class="text-left text-gray-500">
         <UiTableHeader class="sticky top-0 bg-gray-50 text-xs uppercase">
           <UiTableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
-            <UiTableHead v-for="header in headerGroup.headers" :key="header.id"
-              class="text-md text-nowrap  px-6 py-2 font-extrabold text-gray-700" scope="col"
-              @click="header.column.getToggleSortingHandler()?.($event)">
-              <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header"
-                :props="header.getContext()" />
+            <UiTableHead v-for="(header, index) in headerGroup.headers" :key="header.id"
+              class="text-md text-nowrap px-6 py-2 font-extrabold text-gray-700" scope="col">
+              <div v-if="index === 0">
+                <div style="display: flex; align-items: center">
+                  <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header"
+                    :props="header.getContext()" />
+                  <div @click="header.column.getToggleSortingHandler()?.($event)" style="cursor: pointer">
+                    <ArrowUpNarrowWide size="16" class="ml-2" />
+                  </div>
+                </div>
+              </div>
+              <div v-else>
+                <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header"
+                  :props="header.getContext()" />
+              </div>
             </UiTableHead>
           </UiTableRow>
         </UiTableHeader>
@@ -85,48 +111,46 @@
           </template>
         </UiTableBody>
         <UiTableFooter v-if="footer">
-          <UiTableRow
-            v-for="footerGroup in table.getFooterGroups()"
-            :key="footerGroup.id"
-          >
-            <UiTableHead
-              v-for="footer_h in footerGroup.headers"
-              :key="footer_h.id"
-              class="mx-6 px-6 font-bold lg:text-lg"
-              :colspan="footer_h.colSpan"
-            >
-              <FlexRender
-                :render="footer_h.column.columnDef.footer"
-                :props="footer_h.getContext()"
-              />
+          <UiTableRow v-for="footerGroup in table.getFooterGroups()" :key="footerGroup.id">
+            <UiTableHead v-for="footer_h in footerGroup.headers" :key="footer_h.id"
+              class="mx-6 px-6 font-bold lg:text-lg" :colspan="footer_h.colSpan">
+              <FlexRender :render="footer_h.column.columnDef.footer" :props="footer_h.getContext()" />
             </UiTableHead>
           </UiTableRow>
         </UiTableFooter>
       </UiTable>
     </div>
-    <div
-      v-if="table.getFilteredRowModel().rows.length > pageSize"
-      class="flex flex-col items-center justify-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0"
-    >
-      <p>
-        Page {{ table.getState().pagination.pageIndex + 1 }} of
-        {{ table.getPageCount() }} -
-        {{ table.getFilteredRowModel().rows.length }} results
-      </p>
+    <div class="flex flex-col items-center justify-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
+      <p>Page {{ page }} of {{ totalPageCount }}</p>
       <div class="flex space-x-4">
-        <UiButton size="icon" @click="table.setPageIndex(0)" :disabled="!table.getCanPreviousPage()"
+
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-gray-600">showing</span>
+          <PageLimitFilter @changeAction="($event) => {
+              pageLimit = +$event;
+              console.log(pageLimit);
+              emits('limit', $event);
+            }
+            " />
+          <span class="text-sm text-gray-500">of {{ totalCount }} records</span>
+
+        </div>
+        <UiButton size="icon" @click="emits('pagination', 1)" :disabled="page === 1"
           class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
           <Icon name="lucide:chevrons-left" class="h-6 w-6" />
         </UiButton>
         <UiButton size="icon" class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
-          :disabled="!table.getCanPreviousPage()" @click="table.previousPage()">
+          :disabled="page === 1" @click="emits('pagination', page - 1)">
           <Icon name="lucide:chevron-left" class="h-6 w-6" />
         </UiButton>
-        <UiButton size="icon" :disabled="!table.getCanNextPage()" @click="table.nextPage()"
-          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
+        <UiButton size="icon" :disabled="totalPageCount === page" @click="() => {
+            console.log('ssfdf');
+            emits('pagination', page + 1);
+          }
+          " class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
           <Icon name="lucide:chevron-right" class="h-6 w-6" />
         </UiButton>
-        <UiButton size="icon" @click="table.setPageIndex(table.getPageCount() - 1)" :disabled="!table.getCanNextPage()"
+        <UiButton size="icon" @click="emits('pagination', totalPageCount)" :disabled="totalPageCount === page"
           class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
           <Icon name="lucide:chevrons-right" class="h-6 w-6" />
         </UiButton>

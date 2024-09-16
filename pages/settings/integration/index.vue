@@ -37,12 +37,41 @@
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="crm">
-        <DataTable :columns="columns" :data="integrationsData" :page-size="8" :is-loading="false" :height="13"
-          :heightUnit="'vh'" />
+        <DataTable
+          @pagination="Pagination"
+          @limit="
+          ($event) => {
+            (page = '1'), (limit = $event);
+          }
+        "
+          :totalPageCount="totalPageCount"
+          :page="page"
+          :totalCount="totalCount"
+          :columns="columns"
+          :data="integrationsData"
+          :page-size="8"
+          :is-loading="false"
+          :height="13"
+          :heightUnit="'vh'"
+        />
       </UiTabsContent>
       <UiTabsContent value="campaign">
-        <DataTable :columns="statusColumns" :data="integrationsData" :page-size="8" :is-loading="false" :height="13"
-          :heightUnit="'vh'" />
+        <DataTable
+          @pagination="Pagination"
+          @limit="
+          ($event) => {
+            (page = '1'), (limit = $event);
+          }
+        "  :totalPageCount="totalPageCount"
+          :page="page"
+          :totalCount="totalCount"
+          :columns="statusColumns"
+          :data="integrationsData"
+          :page-size="8"
+          :is-loading="false"
+          :height="13"
+          :heightUnit="'vh'"
+        />
       </UiTabsContent>
       <UiTabsContent value="number">
         <NumberIntegration @action="handleAction" />
@@ -118,8 +147,14 @@
   // const integrationsData = ref()
   watch(route, (newValue) => {});
   // const q=ref('')
+  let page = ref('1');
+  let totalPageCount = ref(0);
+  let totalCount = ref(0);
+  const limit = ref('10')
   const filters = computed(() => ({
     q: route.query?.q,
+    page: page.value,
+    limit: limit.value,
   }));
   const {
     status: integrationLoadingStatus,
@@ -130,7 +165,10 @@
     default: () => [],
     query: filters,
     transform: (integrations) => {
-      return integrations?.map((integration) => ({
+      page.value = integrations.page;
+      totalPageCount.value = integrations.totalPageCount;
+      totalCount.value = integrations.totalCount;
+      return integrations.data?.map((integration) => ({
         ...integration,
         status: integration?.metadata?.status ?? "Verified",
       }));
@@ -283,6 +321,8 @@
   ];
 
   const navigateToTab = async (tab: any) => {
+    page.value = '1'
+    limit.value = '10'
     router.push({ query: { q: tab } });
   };
 
@@ -291,4 +331,9 @@ const handleAction = (id: any, modelControl: string) => {
   else deleteExoPhoneState.value.open = true
   numberModalState.value.id = id;
 };
+
+    const Pagination = async ($evnt) => {
+    page.value = $evnt;
+    integrationRefresh();
+  };
 </script>

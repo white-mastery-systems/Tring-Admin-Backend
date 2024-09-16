@@ -1,6 +1,8 @@
 <template>
   <UiSelect v-model="bot">
-    <UiSelectTrigger class="w-[110px] sm:w-[110px] md:w-[250px] lg:w-[250px] xl:w-[250px]">
+    <UiSelectTrigger
+      class="w-[110px] sm:w-[110px] md:w-[250px] lg:w-[250px] xl:w-[250px]"
+    >
       <UiSelectValue placeholder="Select a Bot" />
     </UiSelectTrigger>
     <UiSelectContent>
@@ -19,12 +21,16 @@
   </UiSelect>
 </template>
 <script setup lang="ts">
+  const emit = defineEmits(["input"]);
+
   interface Bot {
     id: string;
     name: string;
   }
   const bot = defineModel<string>({ required: true, default: "all" });
-
+  watch(bot, () => {
+    emit("input")
+  });
   const { status, data: bots } = await useLazyFetch<Bot[]>("/api/bots", {
     server: false,
     default: () => [],

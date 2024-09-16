@@ -7,7 +7,7 @@
           <span class="font-bold text-black">
             <UiSelect v-model="selectedValue" class="outline-none">
               <UiSelectTrigger
-                class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[200px] md:text-[14px] lg:w-[200px] lg:text-[14px] xl:w-[200px] xl:text-[14px]">
+                class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[230px] md:text-[14px] lg:w-[230px] lg:text-[14px] xl:w-[230px] xl:text-[14px]">
                 <span class="font-thin text-gray-400 min-w-[70px]"> Summary </span>
                 <UiSelectValue />
               </UiSelectTrigger>
@@ -30,45 +30,27 @@
     </template>
     <div>
       <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <StatusCountCard :icon="ChatSession" title="Chat sessions" :count="analyticsData?.chats" :loading="loading" />
-        <StatusCountCard :icon="SingleUser" title="Unique visitors" :count="analyticsData?.users" :loading="loading" />
-
-        <StatusCountCard :icon="ChatSession" title="Interacted Chats" :count="analyticsData?.interactedChats ?? 0"
-          :loading="loading" />
-
-        <StatusCountCard :icon="Leads" title="Chat Leads" :count="analyticsData?.leads" :loading="loading" />
-
-        <StatusCountCard :icon="ChatSession" title="Calls Scheduled" :count="analyticsData?.callScheduledTimeline ?? 0"
-          :loading="loading" />
-        <StatusCountCard :icon="ChatSession" title="Site Visits" :count="analyticsData?.siteVisitTimeline ?? 0"
-          :loading="loading" />
-        <StatusCountCard :icon="ChatSession" title="Virtual Tours" :count="analyticsData?.virtualTourTimeline ?? 0"
-          :loading="loading" />
-        <StatusCountCard :icon="ChatSession" title="Location Visited" :count="analyticsData?.locationTimeline ?? 0"
-          :loading="loading" />
+        <template v-if="analyticsData" v-for="statistics in analyticsData?.statistics?.filter(({apiName}) => apiName!=='images'&& apiName!=='brochures')" >
+        <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_',' ')" :count="statistics.value" :loading="loading" />
+        </template>
+     
       </div>
       <div class="mt-2 flex cursor-pointer gap-2 overflow-x-scroll">
-        <template v-for="graphOption in graphOptions" :key="graphOption.value">
+        <template  v-if="analyticsData" v-for="componentValue in analyticsData?.statistics" :key="componentValue.apiName">
           <button
-            @click="() => handleEditGraphValues(graphOption)"
+            @click="() => handleEditGraphValues(componentValue)"
             :class="[
               `shadow-lg flex h-[40px] w-auto items-center gap-2 rounded-md border-[1px] border-gray-200 px-2 text-center text-sm`,
             ]"
           >
-            <PlusIcon v-if="!chartValues.includes(graphOption.value)" />
+            <PlusIcon v-if="!chartValues.includes(componentValue.apiName)" />
             <MinusIcon v-else />
-            <span class="min-w-[100px]" :style="`color:${graphOption.color}`">{{
-              graphOption.label
+            <span class="min-w-[100px] capitalize" :style="`color:${componentValue.color}`">{{
+              componentValue.name?.replace("_"," ")
             }}</span>
           </button>
         </template>
-        <!-- <div class="max-w-[200px]">
-          <MutliSelect
-            v-model:value="chartValues"
-            :options="graphOptions"
-            :maxCount="2"
-          />
-        </div> -->
+       
       </div>
       <Line v-if="!loading" class="shadow-md relative mt-4 w-full place-content-center rounded-md bg-white"
         :data="chartData" :options="chartOptions" />
@@ -81,20 +63,18 @@
 </template>
 <script setup lang="ts">
   import {
-    CategoryScale,
-    Chart as ChartJS,
-    Legend,
-    LineElement,
-    LinearScale,
-    PointElement,
-    Title,
-    Tooltip,
-  } from "chart.js";
-  import { MinusIcon, PlusIcon } from "lucide-vue-next";
-  import { Line } from "vue-chartjs";
-  import ChatSession from "~/components/icons/ChatSession.vue";
-  import Leads from "~/components/icons/Leads.vue";
-  import SingleUser from "~/components/icons/SingleUser.vue";
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LineElement,
+  LinearScale,
+  PointElement,
+  Title,
+  Tooltip,
+} from "chart.js";
+import { MinusIcon, PlusIcon } from "lucide-vue-next";
+import { Line } from "vue-chartjs";
+import ChatSession from "~/components/icons/ChatSession.vue";
 
   ChartJS.register(
     Title,
@@ -109,49 +89,7 @@
   const selectedValue: any = ref("last-30-days");
   const analyticsData = ref();
   const loading = ref(false);
-  const graphOptions = ref([
-    //define diffrent color for each of this item
-    {
-      label: "Leads",
-      value: "leads",
-      color: "#4f46e5",
-    },
-    {
-      label: "Sessions",
-      value: "sessions",
-      color: "#facc15",
-    },
-    {
-      label: "Unique Visitors",
-      value: "unique_visiters",
-      color: "#a855f7",
-    },
-    {
-      label: "Interacted",
-      value: "interacted_chats",
-      color: "#dc2626",
-    },
-    {
-      label: "Schedule Calls",
-      value: "schedule_calls",
-      color: "#16a34a",
-    },
-    {
-      label: "Site visits",
-      value: "site_visits",
-      color: "#2563eb",
-    },
-    {
-      label: "Locations",
-      value: "locations",
-      color: "#1e293b",
-    },
-    {
-      label: "Virtual Tours",
-      value: "virtual_tours",
-      color: "#e11d48",
-    },
-  ]);
+
   const dateFilters = reactive([
     {
       content: "Today",
@@ -199,13 +137,14 @@
     },
   ]);
   const chartValues = ref(["leads", "sessions"]);
-  const handleEditGraphValues = async (option: any) => {
+  const handleEditGraphValues:any = async (option: any) => {
     let localValue = chartValues.value;
-    if (localValue.includes(option.value)) {
-      const index = localValue.indexOf(option.value);
+    console.log({option})
+    if (localValue.includes(option.apiName)) {
+      const index = localValue.indexOf(option.apiName);
       localValue.splice(index, 1);
     } else {
-      localValue.push(option.value);
+      localValue.push(option.apiName);
     }
     chartValues.value = localValue;
     filter.graphValues = chartValues?.value?.join(",");
@@ -236,15 +175,15 @@
     labels: state.labels,
     datasets: chartValues.value?.map((item: any, index: number) => {
       return {
-        label: graphOptions.value?.find(
-          ({ value }: { value: string }) => value === item,
-        )?.label,
+        label: analyticsData?.value?.statistics?.find(
+          ({ apiName }: { apiName: string }) => apiName === item,
+        )?.name,
         tension: 0.4,
         pointRadius: 0,
-        borderColor: graphOptions?.value?.find(({ value }) => value === item)
+        borderColor: analyticsData?.value?.statistics?.find(({ apiName }:{apiName:string}) => apiName === item)
           ?.color,
-        backgroundColor: graphOptions?.value?.find(
-          ({ value }) => value === item,
+        backgroundColor: analyticsData?.value?.statistics?.find(
+          ({ apiName }:{apiName:string}) => apiName === item,
         )?.color,
         data: state.graphData[index],
         yAxisID: `y${index + 1}`,
@@ -339,6 +278,14 @@
         display: false,
       },
       y8: {
+        type: "linear",
+        display: false,
+      },
+        y9: {
+        type: "linear",
+        display: false,
+      },
+        y10: {
         type: "linear",
         display: false,
       },

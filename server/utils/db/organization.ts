@@ -227,12 +227,12 @@ export const getOrgUsage = async (organizationId: string) => {
 const validQueryValues = [
   "leads",
   "sessions",
-  "unique_visiters",
+  "unique_visitors",
   "interacted_chats",
-  "schedule_calls",
-  "site_visits",
-  "locations",
-  "virtual_tours",
+  "schedule_call",
+  "site_visit",
+  "location",
+  "virtual_tour",
   "images",
   "brochures",
 ];
@@ -421,7 +421,7 @@ export const getAnalytics = async (
       }
     })
 
-    if (queryArray.includes("unique_visiters")) {
+    if (queryArray.includes("unique_visitors")) {
       const uniqueVisitersResult = groupAndMapData({
         module: uniqueVisiters,
         period,
@@ -463,7 +463,7 @@ export const getAnalytics = async (
     const maps = {
       leads: leadMap,
       sessions: sessionMap,
-      unique_visiters: uniqueVisitersMap,
+      unique_visitors: uniqueVisitersMap,
       interacted_chats: interactedChatsMap,
       ...intentsMapping,
     };
@@ -480,7 +480,7 @@ export const getAnalytics = async (
     const graphArray = queryArray.map((key) => graph[key]).filter(Boolean);
     let statistics = [
         { name: "chat sessions", value: chats.length, apiName: "sessions", color: "#facc15" },
-        { name: "unique visitors", value: uniqueVisiters.length ?? 0, apiName: "unique_visiters", color: "#a855f7" },
+        { name: "unique visitors", value: uniqueVisiters.length ?? 0, apiName: "unique_visitors", color: "#a855f7" },
         { name: "chat leads", value: leads.length, apiName: "leads", color: "#4f46e5" },
         { name: "interacted chats", value: interactedChats.length, apiName: "interacted_chats", color: "#dc2626"  },
         // Spread the mapIntents into statistics
