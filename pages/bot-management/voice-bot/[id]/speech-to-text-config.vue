@@ -18,8 +18,8 @@
         <TextField label="Amplification factor" :name="`amplificationFactor`" required
           placeholder="Enter Amplification factor" disableCharacters />
 
-        <TextField label="Utterance End Ms" name="utteranceEndMs" required placeholder="Utterance End Ms"
-          disableCharacters />
+        <TextField v-if="values.provider === 'deepgram'" label="Utterance End Ms" name="utteranceEndMs" required
+          placeholder="Utterance End Ms" disableCharacters />
 
         <TextField v-if="values.provider === 'deepgram'" label="End pointing" name="endpointing" required
           placeholder="Enter endpointing" disableCharacters />
@@ -49,12 +49,13 @@
             <div class='flex items-end gap-2 mt-2'>
               <TextField :label="`phrase ${values.provider === 'azure' ? 'list' : 'set'} ${idx + 1}`"
                 :id="`value_${idx}`" :name="`phraseSets[${idx}].value`" required placeholder="Enter phrase" />
-              <UiButton variant="outline" type="button" @click="remove(idx)" :disabled="idx === 0">
+              <UiButton v-if="values.provider !== 'google'" variant="outline" type="button" @click="remove(idx)"
+                :disabled="idx === 0">
                 <CloseIcon class="w-4 h-4" />
               </UiButton>
             </div>
           </fieldset>
-          <div class='flex justify-end w-full'>
+          <div v-if="values.provider !== 'google'" class='flex justify-end w-full'>
             <UiButton class='mt-2' variant="outline" type="button" @click="push({ value: '' })">
               Add phrase set
             </UiButton>

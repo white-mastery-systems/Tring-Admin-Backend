@@ -2,18 +2,26 @@
   <Page title="Text To Speech Configurations">
     <form @submit="onSubmit">
       <div class="flex flex-col gap-2">
-        <TextField name="firstName" label="First Name" helperText="enter your domain name" required
-          placeholder="Enter your first name" />
-        <SelectField name="crm" label="CRM" placeholder="Select CRM" helperText="Select your CRM provider." :options="[
-          { value: 'sell-do', label: 'Sell Do', helperText: 'sell do doesn\'t support text to speech' },
-          { value: 'zoho-crm', label: 'Zoho CRM' },
-          { value: 'zoho-bigin', label: 'Zoho Bigin' }
-        ]" required />
+        <SelectField name="provider" label="provider" placeholder="Select provider" helperText="Select your provider."
+          :options="providers" required />
+        <SelectField name="language" label="Language" placeholder="Select language" helperText="Select your language."
+          :options="languages" required />
+        <SelectField name="voiceType" label="Voice Type" placeholder="Select Voice Type"
+          helperText="Select your voiceType." :options="voiceTypes" required />
+        <TextField label="Speaking Rate" name="speakingRate" required placeholder="Enter speaking Rate"
+          disableCharacters />
+        <TextField label="pitch" name="pitch" required placeholder="Enter pitch" disableCharacters />
+        <TextField label="volume Grain DB" name="volumeGrainDb" required placeholder="Enter volume Grain DB"
+          disableCharacters />
 
-        <CountryCodeField name="countryCode" label="Country Code" helperText="Enter your country code" required />
-        <CountrySelectField name="country" label="country" helperText="Enter your country" required />
-        <RegionSelectField name="state" label="state" helperText="select your state" required
-          :country="values?.country" />
+        <TextField label="Stability" name="stability" required placeholder="Stability" disableCharacters />
+        <TextField label="Similarity Boost" name="similarityBoost" required placeholder="Similarity boost"
+          disableCharacters />
+        <TextField label="Style" name="style" required placeholder="Style" disableCharacters />
+        <TextField label="Use Speaker Boost" name="useSpeakerBoost" required placeholder="Use Speaker Boost"
+          disableCharacters />
+        <SelectField name="voice" label="voice" placeholder="Select voice" helperText="Select your voice."
+          :options="voices" required />
         <UiButton color="primary" type="submit">Submit</UiButton>
       </div>
     </form>
@@ -22,20 +30,107 @@
 
 <script setup>
 import { useForm } from 'vee-validate';
+import { textToSpeechValidation } from '~/validationSchema/textToSpeechValidation';
 
 const { handleSubmit, setFieldValue, values } = useForm({
   initialValues: {
     multiple: []
   },
-  validationSchema: toTypedSchema(z.object({
-    firstName: z.string().min(1, { message: "First name is required" }),
-    crm: z.string({ required_error: "Select your CRM provider." }).min(1, 'Select your CRM provider.'),
-    countryCode: z.string({ required_error: "Enter your country code" }).min(1, 'Enter your country code'),
-    country: z.string({ required_error: "Enter your country" }).min(1, 'Enter your country'),
-    state: z.string({ required_error: "Select your state" }).min(1, 'Select your state'),
-  })),
+  validationSchema: toTypedSchema(textToSpeechValidation)
 });
-
+const providers = [
+  {
+    label: "google",
+    value: "google",
+  },
+  {
+    label: "elevenlabs",
+    value: "elevenlabs"
+  },
+  {
+    label: "deepgram",
+    value: "deepgram"
+  }
+]
+const languages = [{
+  label: "En-US",
+  value: "en-US",
+},
+{
+  label: "En-IN",
+  value: "en-IN",
+},
+{
+  label: "Hindi",
+  value: "hi-IN",
+},
+{
+  label: "Tamil",
+  value: "ta-IN",
+},
+];
+const voiceTypes = [{
+  label: "Hindi Femail",
+  value: "hi-IN-Neural2-A",
+},
+{
+  label: "En-IN",
+  value: "hi-IN-Neural2-B",
+},
+{
+  label: "Hindi",
+  value: "hi-IN-Neural2-C",
+},
+{
+  label: "Tamil",
+  value: "hi-IN-Neural2-D	",
+},
+];
+const voices = [{
+  label: "Asteria English(US)",
+  value: "aura-asteria-en",
+},
+{
+  label: "Luna English(US)",
+  value: "aura-luna-en",
+},
+{
+  label: "Stella English (US)",
+  value: "aura-stella-en",
+},
+{
+  label: "Athena English (UK)	",
+  value: "aura-athena-en",
+},
+{
+  label: "Orion	English (US)",
+  value: "aura-orion-en",
+},
+{
+  label: "Arcas	English (US)",
+  value: "aura-arcas-en",
+},
+{
+  label: "Perseus	English (US)",
+  value: "aura-perseus-en",
+},
+{
+  label: "Angus	English (Ireland)",
+  value: "aura-angus-en",
+},
+{
+  label: "Orpheus	English (US)",
+  value: "aura-orpheus-en",
+},
+{
+  label: "Helios	English (UK)",
+  value: "aura-helios-en",
+},
+{
+  label: "Zeus	English (US)",
+  value: "aura-zeus-en",
+},
+];
 const onSubmit = handleSubmit(values => {
   setFieldValue("passwordConfirm", values.password);
   setFieldValue("firstName", 'appu');
