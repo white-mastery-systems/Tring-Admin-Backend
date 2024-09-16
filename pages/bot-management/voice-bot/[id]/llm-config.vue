@@ -1,46 +1,28 @@
 <template>
-  <Page
-    title="LLM Configuration"
-    :bread-crumbs="[
-      {
-        label: `${botDetails.name}`,
-        to: `/bot-management/voice-bot/${botDetails.id}`,
-      },
-      {
-        label: 'LLM Configuration',
-        to: `/bot-management/voice-bot/${botDetails.id}/llm-config`,
-      },
-    ]"
-    :disableSelector="true"
-    :disable-back-button="false"
-    :disable-elevation="false"
-  >
+  <Page title="LLM Configuration" :bread-crumbs="[
+    {
+      label: `${botDetails.name}`,
+      to: `/bot-management/voice-bot/${botDetails.id}`,
+    },
+    {
+      label: 'LLM Configuration',
+      to: `/bot-management/voice-bot/${botDetails.id}/llm-config`,
+    },
+  ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="false">
     <div class="shadow-md mx-5 rounded-lg">
-      <UiForm
-        v-slot="{ values, errors }"
-        :keep-values="true"
-        :validate-on-mount="false"
-        :initial-values="defaultValues"
-        class="space-y-2"
-        @submit="handleLLMConfig"
-      >
+      <UiForm v-slot="{ values, errors }" :keep-values="true" :validate-on-mount="false" :initial-values="defaultValues"
+        class="space-y-2" @submit="handleLLMConfig">
         <div class="flex gap-4">
           <UiFormField v-slot="{ componentField }" name="provider">
             <UiFormItem v-auto-animate="animationProps" class="w-full">
               <UiFormLabel> Provider </UiFormLabel>
               <UiFormControl>
                 <UiSelect v-bind="componentField">
-                  <UiSelectTrigger
-                    class="hover:focus:none hover:focus-visible:none h-12 w-full"
-                  >
+                  <UiSelectTrigger class="hover:focus:none hover:focus-visible:none h-12 w-full">
                     <UiSelectValue placeholder="Select Provider" />
                   </UiSelectTrigger>
                   <UiSelectContent>
-                    <UiSelectItem
-                      v-for="option in provider"
-                      :key="option.value"
-                      :value="option.value"
-                    >
+                    <UiSelectItem v-for="option in provider" :key="option.value" :value="option.value">
                       {{ option.label }}
                     </UiSelectItem>
                   </UiSelectContent>
@@ -54,17 +36,11 @@
               <UiFormLabel>Model </UiFormLabel>
               <UiFormControl>
                 <UiSelect v-bind="componentField">
-                  <UiSelectTrigger
-                    class="hover:focus:none hover:focus-visible:none h-12 w-full"
-                  >
+                  <UiSelectTrigger class="hover:focus:none hover:focus-visible:none h-12 w-full">
                     <UiSelectValue placeholder="Select Model" />
                   </UiSelectTrigger>
                   <UiSelectContent>
-                    <UiSelectItem
-                      v-for="model in models"
-                      :key="model.value"
-                      :value="model.value"
-                    >
+                    <UiSelectItem v-for="model in models" :key="model.value" :value="model.value">
                       {{ model.label }}
                     </UiSelectItem>
                   </UiSelectContent>
@@ -80,17 +56,11 @@
               <UiFormLabel>Max Tokens </UiFormLabel>
               <UiFormControl>
                 <UiSelect v-bind="componentField">
-                  <UiSelectTrigger
-                    class="hover:focus:none hover:focus-visible:none h-12 w-full"
-                  >
+                  <UiSelectTrigger class="hover:focus:none hover:focus-visible:none h-12 w-full">
                     <UiSelectValue placeholder="Select Max Tokens" />
                   </UiSelectTrigger>
                   <UiSelectContent>
-                    <UiSelectItem
-                      v-for="token in tokens"
-                      :key="token"
-                      :value="token"
-                      >{{ token }}
+                    <UiSelectItem v-for="token in tokens" :key="token" :value="token">{{ token }}
                     </UiSelectItem>
                   </UiSelectContent>
                 </UiSelect>
@@ -101,17 +71,10 @@
           <UiFormField v-slot="{ componentField }" name="temperature">
             <UiFormItem v-auto-animate="animationProps" class="w-full">
               <UiFormLabel> Temperature </UiFormLabel>
-              <UiFormControl  class="focus-visible:none h-12 focus-visible:ring-offset-0">
-                <UiNumberField
-                  :default-value="0"
-                  :step="0.1"
-                  :format-options="{
-                    minimumFractionDigits: 1,
-                  }"
-                  :min="0"
-                  :max="1"
-                  v-bind="componentField"
-                >
+              <UiFormControl class="focus-visible:none h-12 focus-visible:ring-offset-0">
+                <UiNumberField :default-value="0" :step="0.1" :format-options="{
+                  minimumFractionDigits: 1,
+                }" :min="0" :max="1" v-bind="componentField">
                   <UiNumberFieldContent>
                     <UiNumberFieldDecrement />
                     <UiNumberFieldInput />
@@ -127,11 +90,8 @@
           <UiFormItem v-auto-animate="animationProps">
             <UiFormLabel>Document Id</UiFormLabel>
             <UiFormControl>
-              <UiInput
-                v-bind="componentField"
-                type="text"
-                class="focus-visible:none h-12 focus-visible:ring-offset-0"
-              />
+              <UiInput v-bind="componentField" type="text"
+                class="focus-visible:none h-12 focus-visible:ring-offset-0" />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
@@ -141,9 +101,7 @@
             <UiFormLabel>Role</UiFormLabel>
             <UiFormControl>
               <UiSelect v-bind="componentField">
-                <UiSelectTrigger
-                  class="hover:focus:none hover:focus-visible:none h-12 w-full"
-                >
+                <UiSelectTrigger class="hover:focus:none hover:focus-visible:none h-12 w-full">
                   <UiSelectValue placeholder="Select Role" />
                 </UiSelectTrigger>
                 <UiSelectContent>
@@ -155,18 +113,11 @@
                   </div>
                 </UiSelectContent>
               </UiSelect>
-              <UiFormField
-                v-if="componentField.modelValue === 'Other'"
-                v-slot="{ componentField }"
-                name="otherRole"
-              >
+              <UiFormField v-if="componentField.modelValue === 'Other'" v-slot="{ componentField }" name="otherRole">
                 <UiFormItem v-auto-animate="animationProps" class="w-full">
                   <UiFormControl>
-                    <UiInput
-                      v-bind="componentField"
-                      type="text"
-                      class="focus-visible:none h-12 focus-visible:ring-offset-0"
-                    />
+                    <UiInput v-bind="componentField" type="text"
+                      class="focus-visible:none h-12 focus-visible:ring-offset-0" />
                   </UiFormControl>
                   <UiFormMessage />
                 </UiFormItem>
@@ -179,12 +130,9 @@
           <UiFormItem v-auto-animate="animationProps">
             <UiFormLabel>Guide</UiFormLabel>
             <UiFormControl>
-              <UiTextarea
-                v-bind="componentField"
-                type="text"
+              <UiTextarea v-bind="componentField" type="text"
                 placeholder="Include your company details along with the specifics of the service the bot will be providing"
-                class="focus-visible:none h-14 focus-visible:ring-offset-0"
-              />
+                class="focus-visible:none h-14 focus-visible:ring-offset-0" />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
@@ -193,11 +141,8 @@
           <UiFormItem v-auto-animate="animationProps">
             <UiFormLabel>Additional Instructions</UiFormLabel>
             <UiFormControl>
-              <UiTextarea
-                v-bind="componentField"
-                type="text"
-                class="focus-visible:none h-14 focus-visible:ring-offset-0"
-              />
+              <UiTextarea v-bind="componentField" type="text"
+                class="focus-visible:none h-14 focus-visible:ring-offset-0" />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
@@ -206,11 +151,8 @@
           <UiFormItem v-auto-animate="animationProps">
             <UiFormLabel>Notes</UiFormLabel>
             <UiFormControl>
-              <UiTextarea
-                v-bind="componentField"
-                type="text"
-                class="focus-visible:none h-14 focus-visible:ring-offset-0"
-              />
+              <UiTextarea v-bind="componentField" type="text"
+                class="focus-visible:none h-14 focus-visible:ring-offset-0" />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
@@ -219,105 +161,97 @@
           <UiFormItem v-auto-animate="animationProps">
             <UiFormLabel>Domain Rules</UiFormLabel>
             <UiFormControl>
-              <UiTextarea
-                v-bind="componentField"
-                type="text"
-                class="focus-visible:none h-14 focus-visible:ring-offset-0"
-              />
+              <UiTextarea v-bind="componentField" type="text"
+                class="focus-visible:none h-14 focus-visible:ring-offset-0" />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <UiButton
-          type="submit"
-          class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
-          size="lg"
-          >Submit</UiButton
-        >
+        <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110" size="lg">Submit</UiButton>
       </UiForm>
     </div>
   </Page>
 </template>
 <script setup lang="ts">
-  const provider = [
-    {
-      value: "openai",
-      label: "OpenAI",
-    },
-    {
-      value: "google",
-      label: "Gemini",
-    },
-  ];
+const provider = [
+  {
+    value: "openai",
+    label: "OpenAI",
+  },
+  {
+    value: "google",
+    label: "Gemini",
+  },
+];
 
-  const models = [
-    {
-      value: "gpt-4o-mini",
-      label: "gpt-4o-mini",
-    },
-    {
-      value: "gemini-1.5-flash",
-      label: "gemini-1.5-flash",
-    },
-  ];
+const models = [
+  {
+    value: "gpt-4o-mini",
+    label: "gpt-4o-mini",
+  },
+  {
+    value: "gemini-1.5-flash",
+    label: "gemini-1.5-flash",
+  },
+];
 
-  const roles = [
-    {
-      label: "Customer Support",
-      value: "Assist customers with their questions and issues.",
-    },
-    {
-      label: "Receptionist",
-      value:
-        "Assist customers queries about room bookings and hotel information",
-    },
-    {
-      label: "Perform other custom tasks as needed.",
-      value: "Other",
-    },
-  ];
+const roles = [
+  {
+    label: "Customer Support",
+    value: "Assist customers with their questions and issues.",
+  },
+  {
+    label: "Receptionist",
+    value:
+      "Assist customers queries about room bookings and hotel information",
+  },
+  {
+    label: "Perform other custom tasks as needed.",
+    value: "Other",
+  },
+];
 
-  const tokens = ["1024", "2048", "4096"];
+const tokens = ["1024", "2048", "4096"];
 
-  const animationProps = {
-    duration: 0,
+const animationProps = {
+  duration: 0,
+};
+
+const defaultValues = {
+  provider: provider[0].value,
+  model: models[0].value,
+  tokens: tokens[1],
+  temperature: 0,
+  documentId: "",
+  role: roles[1].value,
+  guide: "",
+  instruction: "",
+  notes: "",
+  domainRules: "",
+};
+
+const router = useRouter();
+const route = useRoute("bot-management-voice-bot-id-llm-config");
+
+const botDetails: any = await getVoiceBotDetails(route.params.id);
+
+const handleLLMConfig = async (values: any) => {
+  const payload: any = {
+    provider: values.provider,
+    model: values.model,
+    tokens: values.tokens,
+    temperature: values.temperature,
+    documentId: values.documentId,
+    role: values.role,
+    guide: values.guide,
+    instruction: values.instruction,
+    notes: values.notes,
+    domainRules: values.domainRules,
   };
-
-  const defaultValues = {
-    provider: provider[0].value,
-    model: models[0].value,
-    tokens: tokens[1],
-    temperature: 0,
-    documentId: "",
-    role: roles[1].value,
-    guide: "",
-    instruction: "",
-    notes: "",
-    domainRules: "",
-  };
-
-  const router = useRouter();
-  const route = useRoute("bot-management-voice-bot-id-llm-config");
-
-  const botDetails: any = await getVoiceBotDetails(route.params.id);
-
-  const handleLLMConfig = async (values: any) => {
-    const payload: any = {
-      provider: values.provider,
-      model: values.model,
-      tokens: values.tokens,
-      temperature: values.temperature,
-      documentId: values.documentId,
-      role: values.role,
-      guide: values.guide,
-      instruction: values.instruction,
-      notes: values.notes,
-      domainRules: values.domainRules,
-    };
-    await updateLLMConfig(payload, botDetails.id);
-    return navigateTo({
-      name: "bot-management-voice-bot-id",
-      params: { id: botDetails.id },
-    });
-  };
+  await updateLLMConfig(payload, botDetails.id);
+  return navigateTo({
+    name: "bot-management-voice-bot-id",
+    params: { id: botDetails.id },
+  });
+};
 </script>

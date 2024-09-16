@@ -70,7 +70,7 @@ const languages = [{
 },
 ];
 const voiceTypes = [{
-  label: "Hindi Femail",
+  label: "Hindi Female",
   value: "hi-IN-Neural2-A",
 },
 {
