@@ -15,20 +15,28 @@
     totalSteps: {
       type: Number,
       required: true,
+    }, 
+    height: {
+      type: Number,
+      required: true,
     },
   });
 </script>
 
 <template>
-  <UiStepper orientation="vertical" class="mx-auto flex w-full flex-col justify-start gap-10">
-    <UiStepperItem class="relative flex w-full items-start gap-6" v-slot="{ state }" :step="index + 1">
-      <UiStepperSeparator v-if="index !== totalSteps - 1"
+  <div orientation="vertical" class="mx-auto flex w-full flex-col justify-start gap-10">
+    <div class="relative flex w-full items-start gap-6">
+      <div
         class="absolute left-[18px] top-[64px] block h-[105%] w-0.5 shrink-0 rounded-full opacity-100 group-data-[state=completed]:bg-[#424BD1]" />
-      <UiStepperTrigger as-child class="rounded-full">
+      <div as-child class="rounded-full">
         <div>
-          <Circle class="absolute left-[9px] top-[45px] size-5 rounded-full bg-[#424BD1]" />
+          <Circle class="absolute left-[0px] top-[50%] size-5 rounded-full bg-[#424BD1] z-10" />
+          <div v-if="!(index === (totalSteps - 1))"
+            class="bg-[#8A8A8A] w-[2px] absolute left-[9px] top-[60%] z-0 rounded-xl" :class="[(height) ? `h-[${height}px]` : '']">
+
+          </div>
         </div>
-      </UiStepperTrigger>
+      </div>
       <div class="field_shadow flex w-full flex-col gap-1 rounded-lg p-4 pr-6">
         <div class="flex flex-col gap-2">
           <h4 class="scroll-m-20 text-[16px] font-semibold tracking-tight">
@@ -38,7 +46,7 @@
             <span v-if="data.metadata?.title" class="min-w-[90px] text-[16px] font-semibold">
               {{ data.metadata?.title }}
             </span>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center flex-wrap gap-2">
               <span>
                 <LinkIcon />
               </span>
@@ -52,10 +60,10 @@
             <!-- {{ format(new Date(data.createdAt), "dd MMM yyyy hh:mm aa") }} -->
           </p>
         </div>
-        <UiStepperDescription
+        <span
           class="sr-only flex flex-col items-start gap-2 text-xs text-muted-foreground transition md:not-sr-only lg:text-sm">
-        </UiStepperDescription>
+        </span>
       </div>
-    </UiStepperItem>
-  </UiStepper>
+    </div>
+  </div>
 </template>
