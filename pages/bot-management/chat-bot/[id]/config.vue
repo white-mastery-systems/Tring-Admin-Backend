@@ -1,15 +1,16 @@
 <script setup lang="ts">
   const showIntentDialog = ref(false);
+  
   const formSchema = toTypedSchema(
     z
       .object({
-        NAME: z.string().min(2, "Name must be at least 2 characters."),
+        NAME: z.string({ required_error: "Name must be at least 2 characters." }).min(2, "Name must be at least 2 characters."),
         COMPANY: z
-          .string()
+          .string({ required_error: "Company name must be at least 2 characters." })
           .min(2, "Company name must be at least 2 characters."),
 
-        ROLE: z.string().min(2, "Role must be provided."),
-        GOAL: z.string().min(2, "Goal must be provided."),
+        ROLE: z.string({ required_error: "Role must be provided." }).min(2, "Role must be provided."),
+        GOAL: z.string({ required_error: "Goal must be provided." }).min(2, "Goal must be provided."),
         NOTES: z.string().optional().default(""),
         DESCRIPTION: z.string().optional().default(""),
         otherRole: z.string().optional().default(""),
@@ -56,45 +57,49 @@
   const router = useRouter();
   const route = useRoute("bot-management-chat-bot-id-config");
 
-  const roles = [
+const roles = ref<any>([
     {
-      label: "Handles sales inquiries and closes deals.",
+      helperText: "Handles sales inquiries and closes deals.",
       value: "Sales Executive",
     },
     {
-      label: "Provides assistance and resolves customer issues.",
+      helperText: "Provides assistance and resolves customer issues.",
       value: "Customer Support Representative",
     },
-    { label: "Performs miscellaneous tasks as required.", value: "Other" },
-  ];
+    { helperText: "Performs miscellaneous tasks as required.", value: "Other" },
+  ]);
 
-  const goals = [
+  const goals = ref<any>([
     {
-      label: "Assist customers with their questions and issues.",
+      helperText: "Assist customers with their questions and issues.",
       value: "Customer Support",
     },
     {
-      label: "Collect feedback from users to improve services.",
+      helperText: "Collect feedback from users to improve services.",
       value: "Feedback Collection",
     },
     {
-      label: "Manage appointments and schedule meetings.",
+      helperText: "Manage appointments and schedule meetings.",
       value: "Appointment Scheduling",
     },
     {
-      label: "Provide education or training on specific topics.",
+      helperText: "Provide education or training on specific topics.",
       value: "Education/Training",
     },
     {
-      label: "Perform other custom tasks as needed.",
+      helperText: "Perform other custom tasks as needed.",
       value: "Other",
     },
-  ];
+  ]);
 
   const botDetails: any = await getBotDetails(route.params.id);
   const defaultFormValues = botDetails.metadata.prompt;
 
-  const handleUpdateBotConfig = async (values: any) => {
+const { handleSubmit, values } = useForm({
+  validationSchema: formSchema
+})
+
+  const handleUpdateBotConfig = handleSubmit(async (values: any) => {
     const payload: any = {
       id: botDetails.id,
       metadata: {
@@ -109,12 +114,10 @@
       name: "bot-management-chat-bot-id",
       params: { id: botDetails.id },
     });
-  };
+  });
 </script>
 <template>
-  <Page
-    title="Bot Configuration"
-    :bread-crumbs="[
+  <Page title="Bot Configuration" :bread-crumbs="[
       {
         label: `${botDetails.name}`,
         to: `/bot-management/chat-bot/${botDetails.id}`,
@@ -123,186 +126,39 @@
         label: 'Bot Configuration',
         to: `/bot-management/chat-bot/${botDetails.id}/config`,
       },
-    ]"
-    :description="true"
-    :disableSelector="false"
-    :disable-back-button="false"
-  >
-    <div class="mx-5">
-      <UiForm
-        v-slot="{ values, errors }"
-        :validation-schema="formSchema"
-        :keep-values="true"
-        :validate-on-mount="false"
-        :initial-values="defaultFormValues"
-        class="space-y-2"
-        @submit="handleUpdateBotConfig"
-      >
+    ]" :description="true" :disableSelector="false" :disable-back-button="false">
+    <div class="mx-5 gap-3">
+      <form @submit="handleUpdateBotConfig" class="space-y-3">
         <div class="flex gap-4">
-          <UiFormField v-slot="{ componentField }" name="NAME">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiFormLabel
-                >Bot Name <UiLabel class="text-lg text-red-500">*</UiLabel>
-              </UiFormLabel>
-              <UiFormControl>
-                <UiInput
-                  v-bind="componentField"
-                  type="text"
-                  placeholder="Eg. Noah,Bob,Chris,Ted"
-                />
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
-          <UiFormField v-slot="{ componentField }" name="COMPANY">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiFormLabel
-                >Company Name <UiLabel class="text-lg text-red-500">*</UiLabel>
-              </UiFormLabel>
-              <UiFormControl>
-                <UiInput
-                  v-bind="componentField"
-                  type="text"
-                  placeholder="Eg. Google, Amazon"
-                />
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
+          <TextField name="NAME" label="Bot Name" placeholder="Eg. Noah,Bob,Chris,Ted" required>
+          </TextField>
+          <TextField name="COMPANY" label="Company Name" placeholder="Eg. Google, Amazon" required>
+          </TextField>
         </div>
         <div class="flex gap-4">
-          <UiFormField v-slot="{ componentField }" name="ROLE">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiFormLabel
-                >Bot's Role <UiLabel class="text-lg text-red-500">*</UiLabel>
-              </UiFormLabel>
-              <UiFormControl>
-                <UiSelect v-bind="componentField">
-                  <UiSelectTrigger>
-                    <UiSelectValue placeholder="Select Role" />
-                  </UiSelectTrigger>
-                  <UiSelectContent>
-                    <div v-for="({ value, label }, index) in roles">
-                      <UiSelectItem :value="value">{{ value }} </UiSelectItem>
-                      <span class="mx-2 text-xs italic text-gray-500">{{
-                        label
-                      }}</span>
-                    </div>
-                  
-                  </UiSelectContent>
-                </UiSelect>
-                <UiFormField
-                  v-if="componentField.modelValue === 'Other'"
-                  v-slot="{ componentField }"
-                  name="otherRole"
-                >
-                  <UiFormItem v-auto-animate="animationProps" class="w-full">
-                    <UiFormControl>
-                      <UiInput v-bind="componentField" type="text" />
-                    </UiFormControl>
-                    <UiFormMessage />
-                  </UiFormItem>
-                </UiFormField>
-              </UiFormControl>
-              <UiFormMessage />
-              <span class="text-xs text-gray-500"
-                >This will determine the role of the bot and behavior.</span
-              >
-            </UiFormItem>
-          </UiFormField>
-          <UiFormField v-slot="{ componentField }" name="GOAL">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiFormLabel
-                >Bot's Goal <UiLabel class="text-lg text-red-500">*</UiLabel>
-              </UiFormLabel>
-              <UiFormControl>
-                <UiSelect v-bind="componentField">
-                  <UiSelectTrigger>
-                    <UiSelectValue placeholder="Select Goal" />
-                  </UiSelectTrigger>
-                  <UiSelectContent>
-                    <div v-for="({ value, label }, index) in goals">
-                      <UiSelectItem :value="value">{{ value }} </UiSelectItem>
-                      <span class="mx-2 text-xs italic text-gray-500">{{
-                        label
-                      }}</span>
-                    </div>
-                  </UiSelectContent>
-                </UiSelect>
-                <UiFormField
-                  v-if="componentField.modelValue === 'Other'"
-                  v-slot="{ componentField }"
-                  name="otherGoal"
-                >
-                  <UiFormItem v-auto-animate="animationProps" class="w-full">
-                    <UiFormControl>
-                      <UiInput v-bind="componentField" type="text" />
-                    </UiFormControl>
-                    <UiFormMessage />
-                  </UiFormItem>
-                </UiFormField>
-              </UiFormControl>
-              <UiFormMessage />
-              <span class="text-xs text-gray-500"
-                >The bot will be driving the conversation towards this
-                goal</span
-              >
-            </UiFormItem>
-          </UiFormField>
-          <!-- <UiFormField v-slot="{ componentField }" name="GOAL">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiFormLabel
-                >Goal <UiLabel class="text-lg text-red-500">*</UiLabel>
-              </UiFormLabel>
-              <UiFormControl>
-                <UiInput
-                  v-bind="componentField"
-                  type="text"
-                  placeholder="Eg. To assist the users with the product details"
-                />
-              </UiFormControl>
-              <span class="text-xs text-gray-500"
-                >The bot will be driving the conversation towards this
-                goal.</span
-              >
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField> -->
+          <div class="w-full">
+            <SelectField name="ROLE" label="Bot's Role" placeholder="Select Roal"
+              helperText="This will determine the role of the bot and behavior." :options="roles" required />
+            <TextField v-if="values.ROLE === 'Other'" name="otherRole" helperText="enter role of your bot" required>
+            </TextField>
+          </div>
+          <div class="w-full">
+            <SelectField name="GOAL" label="Bot's Goal" placeholder="Select Goal"
+              helperText="The bot will be driving the conversation towards this goal." :options="goals" required />
+            <TextField v-if="values.GOAL === 'Other'" name="otherGoal" required helperText="enter goal of your bot">
+            </TextField>
+          </div>
         </div>
-        <UiFormField v-slot="{ componentField }" name="NOTES">
-          <UiFormItem v-auto-animate="animationProps">
-            <UiFormLabel>Notes</UiFormLabel>
-            <UiFormControl>
-              <UiTextarea v-bind="componentField" type="text" />
-            </UiFormControl>
-            <span class="text-xs text-gray-500"
-              >Here you can have additional instructions for your bot.</span
-            >
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="DESCRIPTION">
-          <UiFormItem v-auto-animate="animationProps">
-            <UiFormLabel>Company Description</UiFormLabel>
-            <UiFormControl>
-              <UiTextarea v-bind="componentField" type="text" />
-            </UiFormControl>
-            <span class="text-xs text-gray-500">
-              Here you can give the bot additional details about your
-              company.</span
-            >
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <div class="flex w-full justify-end">
-          <UiButton
-            type="submit"
-            class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
-            size="lg"
-            >Submit</UiButton
-          >
+        <TextField name="NOTES" label="Notes" helperText="Here you can have additional instructions for your bot."
+          :isTextarea="true">
+        </TextField>
+        <TextField name="DESCRIPTION" label="Company Description" helperText="Here you can give the bot additional details about your
+              company." :isTextarea="true">
+        </TextField>
+        <div class="flex justify-end w-full">
+          <UiButton color="primary" type="submit">Submit</UiButton>
         </div>
-      </UiForm>
+      </form>
     </div>
   </Page>
 </template>

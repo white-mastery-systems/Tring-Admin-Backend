@@ -14,7 +14,7 @@
           <UiSelectContent>
             <template v-for="option in options" :key="option.value">
               <UiSelectItem :value="option.value">
-                {{ option.label }}
+                {{ option.value }}
               </UiSelectItem>
               <span v-if="option?.helperText" class="mx-2 text-xs italic text-gray-500">{{ option?.helperText }}</span>
 
