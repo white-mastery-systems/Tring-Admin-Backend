@@ -6,22 +6,23 @@
         {{ label }}<UiLabel v-if="required" class="text-lg text-red-500">*</UiLabel>
       </UiFormLabel>
       <UiFormControl>
-        <UiSelect class="focus:ring focus:outline outline-2" v-model="selectedValue" v-bind="$attrs">
-          <UiSelectTrigger :class="['focus:ring',hasError ? 'border-[#ef4444]' : '']">
+        <UiSelect :multiple="multiple" class="mt-2 focus:ring focus:outline outline-2" v-model="selectedValue"
+          v-bind="$attrs">
+          <UiSelectTrigger :class="['focus:ring', hasError ? 'border-[#ef4444]' : '']">
             <UiSelectValue :placeholder="placeholder" />
           </UiSelectTrigger>
           <UiSelectContent>
             <template v-for="option in options" :key="option.value">
- <UiSelectItem  :value="option.value">
-              {{ option.label }}
-            </UiSelectItem>
-               <span v-if="option?.helperText" class="mx-2 text-xs italic text-gray-500">{{option?.helperText}}</span>
-         
+              <UiSelectItem :value="option.value">
+                {{ option.label }}
+              </UiSelectItem>
+              <span v-if="option?.helperText" class="mx-2 text-xs italic text-gray-500">{{ option?.helperText }}</span>
+
             </template>
-            </UiSelectContent>
+          </UiSelectContent>
         </UiSelect>
       </UiFormControl>
-      <UiFormMessage class="text-xs text-red-500 "/>
+      <UiFormMessage class="text-xs text-red-500 " />
       <span v-if="hasError" class="mt-0 text-xs text-[#ef4444]">{{ errorMessage }}</span>
       <span v-else class="mt-0 text-xs text-gray-500">{{ helperText }}</span>
 
@@ -29,41 +30,32 @@
   </UiFormField>
 </template>
 
-<script setup>
+<script setup lang='ts'>
 import { useField } from 'vee-validate';
 import { computed, ref, watch } from 'vue';
-
-const props = defineProps({
-  name: {
-    type: String,
-    required: true
-  },
-  label: {
-    type: String,
-    required: true
-  },
-  placeholder: {
-    type: String,
-    default: 'Select an option'
-  },
-  options: {
-    type: Array,
-    required: true
-  },
-  required: {
-    type: Boolean,
-    default: false
-  },
-  helperText: {
-    type: String
-  }
- 
-});
-
-const { value: fieldValue, errorMessage, meta } = useField(() => props.name);
-// watch([errorMessage,fieldValue],(err)=>{
-//   console.log({err})
+// const options = defineModel('options')
+// watch(options, (opt) => {
+//   console.log({ opt })
 // })
+
+const props = defineProps<{
+  name: string,
+  label?: string,
+  placeholder?: string,
+  required?: boolean,
+  helperText?: string,
+  options: {
+    label: string,
+    value: string,
+    helperText?: string
+  }[],
+  multiple?: boolean
+}>();
+watchEffect(() => {
+  console.log({ options: props.options })
+})
+const { value: fieldValue, errorMessage, meta, errors } = useField(() => props.name);
+
 const selectedValue = ref(fieldValue.value);
 
 watch(selectedValue, (newValue) => {
@@ -71,5 +63,6 @@ watch(selectedValue, (newValue) => {
 });
 
 const hasError = computed(() => meta.touched && errorMessage.value);
-
+// const data = computed(() => errors.value)
+// console.log(data.value, "VALUE")
 </script>
