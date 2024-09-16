@@ -3,6 +3,10 @@ interface DeleteBuckerNumber {
   queryId: any,
   onSuccess: () => void
 }
+interface DeleteExoPhone {
+  id: string,
+  onSuccess: () => void
+}
 
 export const bucketNumber = async ({
   queryId,
@@ -31,9 +35,9 @@ export const bucketNumber = async ({
 export const deleteSingleNumber = async ({
   id,
   onSuccess,
-}:DeleteBuckerNumber) => {
+}:DeleteExoPhone) => {
   try {
-    const deleteIntegration = await $fetch<DeleteBuckerNumber>(
+    const deleteIntegration = await $fetch<DeleteExoPhone>(
       `/api/org/campaign/${id}`,
       {
         method: "DELETE",
@@ -41,6 +45,25 @@ export const deleteSingleNumber = async ({
     );
     onSuccess();
     console.log(deleteIntegration, 'deleteIntegration')
+    toast.success("Removed successfully");
+    return deleteIntegration;
+  } catch (err: any) {
+    toast.error(err.data.statusMessage);
+  }
+}
+
+export const deleteSingleExoPhone = async ({
+  id,
+  onSuccess,
+}:DeleteExoPhone) => {
+  try {
+    const deleteIntegration = await $fetch<DeleteExoPhone>(
+      `/api/org/integrations/number-integration/${id}`,
+      {
+        method: "DELETE",
+      },
+    );
+    onSuccess();
     toast.success("Removed successfully");
     return deleteIntegration;
   } catch (err: any) {

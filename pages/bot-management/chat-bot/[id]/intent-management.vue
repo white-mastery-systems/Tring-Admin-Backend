@@ -3,7 +3,7 @@
   import { createColumnHelper } from "@tanstack/vue-table";
   import CreateEditIntentModal from "~/components/bots/CreateEditIntentModal.vue";
 
-  const intentDialogState = ref({ open: false, id: null });
+  const intentDialogState = ref({ open: false, id: '' });
   const selectedActions = ref("location");
   const animationProps = {
     duration: 0,

@@ -25,7 +25,6 @@
           v-model="openAccordions.path"
           collapsible
         >
-        <!-- openAccordions[path] -->
           <UiAccordionItem :value="path" class="shadow-md border-0 bg-white">
             <div
               class="field_shadow flex cursor-pointer items-center gap-3 px-[16px] font-medium"
