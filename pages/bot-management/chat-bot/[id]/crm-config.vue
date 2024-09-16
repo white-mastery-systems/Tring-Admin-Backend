@@ -136,7 +136,7 @@
       integration: item.integration?.name,
       projectId:
         item.integration?.crm === "zoho-bigin"
-          ? `${item?.metadata?.pipelineObj?.Pipeline.name}`
+          ? `${item?.metadata?.pipelineObj?.Pipeline?.name}`
           : item.integration?.crm === "zoho-crm"
             ? `${item?.metadata?.layoutObj?.name}`
             : (item.metadata?.projectId ?? "N/A"),
