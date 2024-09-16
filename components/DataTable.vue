@@ -121,16 +121,16 @@ watch(pageLimit, (NewValue) => {
       </UiTable>
     </div>
     <div class="flex flex-col items-center justify-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
-      <p>Page {{ page }} of {{ totalPageCount }}</p>
+      <span class='text-xs text-gray-500'>Page {{ page }} of {{ totalPageCount }}</span>
       <div class="flex space-x-4">
 
         <div class="flex items-center gap-2">
           <span class="text-sm text-gray-600">showing</span>
           <PageLimitFilter @changeAction="($event) => {
-              pageLimit = +$event;
-              console.log(pageLimit);
-              emits('limit', $event);
-            }
+            pageLimit = +$event;
+            console.log(pageLimit);
+            emits('limit', $event);
+          }
             " />
           <span class="text-sm text-gray-500">of {{ totalCount }} records</span>
 
@@ -144,9 +144,9 @@ watch(pageLimit, (NewValue) => {
           <Icon name="lucide:chevron-left" class="h-6 w-6" />
         </UiButton>
         <UiButton size="icon" :disabled="totalPageCount === page" @click="() => {
-            console.log('ssfdf');
-            emits('pagination', page + 1);
-          }
+          console.log('ssfdf');
+          emits('pagination', page + 1);
+        }
           " class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
           <Icon name="lucide:chevron-right" class="h-6 w-6" />
         </UiButton>

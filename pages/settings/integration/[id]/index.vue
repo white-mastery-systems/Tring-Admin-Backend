@@ -4,29 +4,29 @@
   </div>
 </template>
 <script setup lang="ts">
-  const route = useRoute();
-  onMounted(async () => {
-    if (
-      route?.query?.code &&
-      route?.query?.location &&
-      route?.query["accounts-server"]
-    )
-      verifyIntegration({
-        integrationDetails: {
-          metaData: {
-            code: route?.query?.code,
-            location: route?.query?.location,
-            accountsServer: route?.query["accounts-server"],
-          },
-          crm: route?.params?.id,
+const route = useRoute();
+onMounted(async () => {
+  if (
+    route?.query?.code &&
+    route?.query?.location &&
+    route?.query["accounts-server"]
+  )
+    verifyIntegration({
+      integrationDetails: {
+        metadata: {
+          code: route?.query?.code,
+          location: route?.query?.location,
+          accountsServer: route?.query["accounts-server"],
         },
-        onSuccess: async () => {
-          await navigateTo("/settings/integration");
-        },
-      });
-    else {
-      toast.error("Verification failed");
-      await navigateTo("/settings/integration");
-    }
-  });
+        crm: route?.params?.id,
+      },
+      onSuccess: async () => {
+        await navigateTo("/settings/integration");
+      },
+    });
+  else {
+    toast.error("Verification failed");
+    await navigateTo("/settings/integration");
+  }
+});
 </script>
