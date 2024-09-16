@@ -9,6 +9,16 @@ const actionFilters = reactive([
     content: "Preview",
     value: "preview",
   },
+  {
+    content: "With Name",
+    value: "with_name",
+  }, {
+    content: "Without Name",
+    value: "without_name",
+  }, {
+    content: "Interacted",
+    value: "interacted",
+  }
 ]);
 
 watch(selectedAction, (newValue) => {

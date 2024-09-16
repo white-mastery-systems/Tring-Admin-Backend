@@ -9,6 +9,7 @@
           placeholder="Search User..."
         />
         <BotFilter v-model="filters.botId" @input="filters.page = '1'" />
+                <!-- <BotUserFilter @changeAction="onActionChange" /> -->
         <LivePreviewFilter @changeAction="onActionChange"/>
         <DateRangeFilter @change="onDateChange" />
       </div>
