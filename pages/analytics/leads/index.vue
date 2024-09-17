@@ -69,7 +69,7 @@
       </UiTabsContent>
       <UiTabsContent value="website">
         <DataTable
-          :data="leads.data"
+          :data="leads"
           :is-loading="isDataLoading"
           :columns="columns"
           :page-size="8"
