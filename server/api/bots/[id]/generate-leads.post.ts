@@ -110,7 +110,6 @@ export default defineEventHandler(async (event) => {
         projectId,
         campaignId,
       );
-      console.log({ data });
     }
   });
   if (adminUser?.id) {
