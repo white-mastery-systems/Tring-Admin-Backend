@@ -17,11 +17,13 @@ import { useDropZone, useFileDialog } from "@vueuse/core";
 const { data: botData, status: botLoadingStatus } = await useLazyFetch<{ talentConfig?: { name?: string } }>(
   `/api/voicebots/${route.params.id}`,
 );
+watch(botData, (newBotData) => {
+  if (newBotData?.value && newBotData.value?.talentConfig) {
+    fileName.value = newBotData.value?.talentConfig?.name ?? ""
 
-if (botData.value?.talentConfig) {
-  fileName.value = botData.value?.talentConfig?.name ?? ""
+  }
+})
 
-}
 
 const { files, open, reset, onChange } = useFileDialog({
   accept:
