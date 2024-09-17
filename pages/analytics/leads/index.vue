@@ -276,6 +276,10 @@
     columnHelper.accessor("bot.name", {
       header: "Bot Name",
     }),
+    columnHelper.accessor("chat.metadata.country", {
+      header: "Country",
+      cell: (info) => info.getValue() || "-",
+    }),
     columnHelper.accessor("createdAt", {
       header: "Date Created",
       cell: ({ row }) => `${row.original.createdAt}`,

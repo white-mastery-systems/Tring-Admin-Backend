@@ -24,7 +24,7 @@
                                             (country: any) =>
                                                 country.dial_code === fieldValue,
                                         )?.dial_code
-                                        : "dial dialCode"
+                                        : "dialCode"
                                 }}
                                 <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </UiButton>

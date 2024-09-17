@@ -143,8 +143,6 @@
   //     id: "",
   //   },
   // });
-  const viewCampaignStatusModalState = ref({ open: false });
-
   const router = useRouter();
   const route = useRoute();
   const activeStatus = ref("");
