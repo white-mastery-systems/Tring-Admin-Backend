@@ -17,6 +17,29 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     temperature: 1.0,
     role: "Assist-booking",
   }),
+  textToSpeechConfig: jsonb("text_to_speech_config").default({
+    provider: "google",
+    language: "en-IN",
+    voiceType: "hi-IN-Neural2-A",
+    volumeTypeGrainDb: 0.5,
+    pitch: 1.0,
+    effectsProfileId: ["telephony-class-application"],
+    speakingRate: ""
+  }),
+  speechToTextConfig: jsonb("speech_to_text_config").default({
+    provider: "deepgram",
+    language: "en-in",
+    model: "nova-2",
+    phraseSets: [
+        {
+            "value": ""
+        }
+    ],
+    keywords: [],
+    amplificationFactor: "2",
+    utteranceEndMs: "1000",
+    endpointing: "550"
+  }),
   talentConfig: jsonb("talent_config").default({}),
   intents: varchar("intents").array(), // Array of strings
   ivrConfig: jsonb("ivr_config"),

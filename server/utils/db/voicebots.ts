@@ -48,7 +48,6 @@ export const listVoicebots = async (organizationId: string, query: listVoicebotQ
     if(query?.page && query?.limit) {
        const paginatedVoiceBots = data.slice(offset, offset + limit); 
       return {
-        calls: "voice-bot",
         page: page,
         limit: limit,
         totalPageCount: Math.ceil(data.length/ limit) || 1,
@@ -103,14 +102,33 @@ export const createVoiceBotIntegration = async (voicebotIntegration: InsertVoice
    )[0];
 }
 
-export const listVoiceBotIntegrations = async (organizationId: string, voicebotId: string) => {
+export const listVoiceBotIntegrations = async (organizationId: string, voicebotId: string, query: any) => {
+  let page, offset, limit = 0
+    
+  if(query.page && query.limit) {
+    page = parseInt(query.page) 
+    limit = parseInt(query.limit)
+    offset = (page - 1) * limit;
+  }
   const data = await db.query.voicebotIntegrationSchema.findMany({
     where: and(
       eq(voicebotIntegrationSchema.organizationId, organizationId),
       eq(voicebotIntegrationSchema.botId, voicebotId)
     )
   })
-  return data
+
+  if(query?.page && query?.limit) {
+     const paginatedVoiceBotIntegrations = data.slice(offset, offset + limit); 
+    return {
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length/ limit) || 1,
+      totalCount: data.length,
+      data: paginatedVoiceBotIntegrations
+    }
+  } else {
+      return data
+  }
 }
 
 export const getVoiceBotIntegrationById = async (voicebotId:string, voicebotIntegrationId: string) => {
