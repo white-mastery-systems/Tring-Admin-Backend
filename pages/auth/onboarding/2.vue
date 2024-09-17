@@ -1,40 +1,13 @@
 <script setup lang="ts">
+import { formSchema } from '~/validationSchema/authValidation/onBoarding/2Validation';
+
   const showCustomRoleInput = ref(false);
 
   definePageMeta({
     layout: "auth",
   });
   const router = useRouter();
-  const formSchema = toTypedSchema(
-    z
-      .object({
-        name: z.string().min(1, "Company Name is required"),
-        industry: z.string().min(2, "Industry must be provided."),
-        avgTraffic: z
-          .string()
-          .min(2, "Monthly Website Traffic must be provided."),
-        employeeCount: z.string().min(2, "No. of Employees must be provided"),
-        otherRole: z.string().optional().default(""),
-      })
-      .refine(
-        (data: any) => {
-          if (data.industry.toLowerCase() === "other") {
-            return data.otherRole.length >= 1;
-          }
-          return true;
-        },
-        {
-          message: "Other role must be provided",
-          path: ["otherRole"],
-        },
-      )
-      .transform((data: any) => {
-        if (data.industry.toLowerCase() === "other") {
-          return { ...data, industry: data.otherRole };
-        }
-        return data;
-      }),
-  );
+
   const animationProps = {
     duration: 500,
   };
@@ -71,7 +44,28 @@
     "1000+ employees",
   ];
 
-  const onSubmit = async (value: any) => {
+   const {
+    errors,
+    setErrors,
+    setFieldValue,
+    handleSubmit,
+    defineField,
+    values,
+    resetForm,
+  } = useForm({
+    validationSchema: formSchema,
+    initialValues: {
+      // firstName: "",
+      // lastName: "",
+      // phone: "",
+      // countryCode: "",
+    },
+  });
+  setFieldValue("industry","Real Estate")
+  setFieldValue("avgTraffic","Less than 100 visits")
+  setFieldValue("employeeCount","Less than 10 employees")
+
+ const onSubmit = handleSubmit(async (value: any) => {
     // if (loginData.name.length < 1) {
     //   toast.error("Please enter valid details");
     //   return;
@@ -82,7 +76,7 @@
       body: value,
     });
     return navigateTo("/");
-  };
+  })
 </script>
 <template>
   <div class="flex h-full w-full flex-col items-center justify-center">
@@ -93,96 +87,53 @@
       </div>
     </div>
     <div class="flex w-[80%] flex-col overflow-y-auto px-6">
-      <UiForm :validation-schema="formSchema" :keep-values="true" :initial-values="defaultFormValues"
-        :validate-on-mount="false" @submit="onSubmit" class="space-y-5">
-        <UiFormField v-slot="{ componentField }" name="name">
-          <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel class="font-bold">
-              Company Name <UiLabel class="text-lg text-red-500">*</UiLabel>
-            </UiFormLabel>
-            <UiFormControl>
-              <UiInput v-bind="componentField" type="text" placeholder="Enter your Company Name"
-                class="font-regular h-[50px] border-none bg-[#F6F6F6]" />
-            </UiFormControl>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <!-- <div class="flex gap-4 mb-4"> -->
-        <UiFormField v-slot="{ componentField }" name="industry">
-          <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel class="font-bold">
-              Industry <UiLabel class="text-lg text-red-500">*</UiLabel>
-            </UiFormLabel>
-            <UiFormControl>
-              <UiSelect v-bind="componentField">
-                <UiSelectTrigger class="field_shadow h-[50px] border-0 bg-[#FFFFFF]">
-                  <UiSelectValue class="font-medium" />
-                </UiSelectTrigger>
-                <UiSelectContent>
-                  <UiSelectItem v-for="(role, index) in industry" :value="role">{{ role }}</UiSelectItem>
-                </UiSelectContent>
-              </UiSelect>
-              <UiFormField v-if="componentField.modelValue === 'Other'" v-slot="{ componentField }" name="otherRole">
-                <UiFormItem v-auto-animate="animationProps" class="w-full">
-                  <UiFormControl>
-                    <UiInput v-bind="componentField" type="text" class="h-[50px]" />
-                  </UiFormControl>
-                  <UiFormMessage />
-                </UiFormItem>
-              </UiFormField>
-            </UiFormControl>
-            <UiFormMessage />
-            <!-- <span class="text-xs text-gray-500">This will determine the role of the bot and behavior.</span> -->
-          </UiFormItem>
-        </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="avgTraffic">
-          <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel class="font-bold">
-              Monthly Website Traffic
-              <UiLabel class="text-lg text-red-500">*</UiLabel>
-            </UiFormLabel>
-            <UiFormControl>
-              <UiSelect v-bind="componentField">
-                <UiSelectTrigger class="field_shadow h-[50px] border-0 bg-[#FFFFFF]">
-                  <UiSelectValue class="font-medium" />
-                </UiSelectTrigger>
-                <UiSelectContent>
-                  <UiSelectItem v-for="(traffic, index) in avgTraffic" :value="traffic">{{ traffic }}</UiSelectItem>
-                </UiSelectContent>
-              </UiSelect>
-            </UiFormControl>
-            <UiFormMessage />
-            <!-- <span class="text-xs text-gray-500">This will determine the role of the bot and behavior.</span> -->
-          </UiFormItem>
-        </UiFormField>
-        <!-- </div> -->
-        <div class="mb-[10px]">
-          <UiFormField v-slot="{ componentField }" name="employeeCount">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiFormLabel class="font-bold">
-                No. of Employees
-                <UiLabel class="text-lg text-red-500">*</UiLabel>
-              </UiFormLabel>
-              <UiFormControl>
-                <UiSelect v-bind="componentField">
-                  <UiSelectTrigger class="field_shadow h-[50px] border-0 bg-[#FFFFFF]">
-                    <UiSelectValue class="font-medium" />
-                  </UiSelectTrigger>
-                  <UiSelectContent>
-                    <UiSelectItem v-for="(countList, index) in employeeCount" :value="countList">{{ countList }}
-                    </UiSelectItem>
-                  </UiSelectContent>
-                </UiSelect>
-              </UiFormControl>
-              <UiFormMessage />
-              <!-- <span class="text-xs text-gray-500">This will determine the role of the bot and behavior.</span> -->
-            </UiFormItem>
-          </UiFormField>
+            <form class="space-y-2" @submit="onSubmit">
+        <div class="flex flex-col gap-3">
+          <TextField
+            type="name"
+            name="name"
+            label="Company Name"
+            placeholder="Enter your Company Name"
+            :required="true"
+          />
+
+          <SelectField
+            name="industry"
+            label="Industry"
+            placeholder="Select Role"
+            :options="industry.map((role) => ({ label: role, value: role }))"
+            :required="true"
+          />
+          <TextField
+          v-if="values.industry === 'Other'"
+            type="name"
+            name="otherRole"
+            :required="true"
+          />
+
+            <SelectField
+            name="avgTraffic"
+            label="Monthly Website Traffic"
+            placeholder="Select Traffic"
+            :options="avgTraffic.map((role) => ({ label: role, value: role }))"
+            :required="true"
+          />
+
+            <SelectField
+            name="employeeCount"
+            label="No. of Employees "
+            placeholder="Select Employees"
+            :options="employeeCount.map((role) => ({ label: role, value: role }))"
+            :required="true"
+          />
+
+          <UiButton
+            type="submit"
+            class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
+            >Proceed
+          </UiButton>
         </div>
-        <UiButton type="submit" class="mt-[15px] w-full bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110" size="lg">
-          Proceed
-        </UiButton>
-      </UiForm>
+      </form>
       <div class="flex items-center justify-center gap-1 mt-2">
         <span class="text-[12px] text-[#8a8a8a]">
           By Signing up, I Agree to Tring AI
