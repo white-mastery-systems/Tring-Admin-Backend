@@ -2,46 +2,12 @@
   <Page title="Chat Bot" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-4">
-        <UiDialog>
-          <UiDialogTrigger as-child>
-            <UiButton class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95">
-              Add Chat Bot
-            </UiButton>
-          </UiDialogTrigger>
-          <UiDialogContent class="w-[90%] rounded-xl">
-            <UiDialogHeader>
-              <UiDialogTitle>Add a New Chat Bot</UiDialogTitle>
-            </UiDialogHeader>
-            <form @submit="handleAddEditBot">
-              <TextField name="name" placeholder="enter your bot name"
-                helperText="Enter your unique identifier for Chat Bot" required>
-              </TextField>
-              <div class="flex justify-end w-full">
-                <UiButton color="primary" type="submit">Submit</UiButton>
-              </div>
-            </form>
-          </UiDialogContent>
-        </UiDialog>
-        <span v-if="false"
-          class="field_shadow flex w-[200px] items-center rounded-[10px] bg-[#ffffff] px-[10px] py-0 text-[15px]"
-          style="color: rgba(138, 138, 138, 1)">Summary:
-          <span class="font-bold text-black">
-            <!-- <template> -->
-            <UiSelect v-model="selectedValue" class="outline-none">
-              <UiSelectTrigger class="ui-select-trigger w-[110px] font-medium outline-none">
-                <UiSelectValue />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectGroup class="select_list_align">
-                  <UiSelectItem v-for="(list, index) in menuList" :key="index" class="content_align"
-                    :value="list.content">
-                    {{ list.content }}
-                  </UiSelectItem>
-                </UiSelectGroup>
-              </UiSelectContent>
-            </UiSelect>
-            <!-- </template> -->
-          </span></span>
+        <UiButton class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95" @click="() => { 
+          agentModalState.open = true
+          agentModalState.id = null
+        }">
+          Add Chat Bot
+        </UiButton>
       </div>
     </template>
     <div class="flex items-center gap-2 pb-2">
@@ -67,22 +33,23 @@
       }
         " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="bots"
       :page-size="20" :is-loading="isDataLoading" :height="13" height-unit="vh" />
-  </Page>
+    </Page>
+    <AddChatBotModal v-model="agentModalState" @confirm="() => {
+      agentModalState.open = false;
+      getAllChatBot()
+    }"></AddChatBotModal>
 </template>
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";
+import { Icon, UiBadge, UiButton } from "#components";
 
 definePageMeta({
   middleware: "admin-only",
 });
 
-const formSchema = toTypedSchema(
-  z.object({
-    name: z.string({ required_error: "bot name is required" }).min(2, "Bot Name is required"),
-  }),
-);
 const searchBot = ref("");
 const searchBotDebounce = refDebounced(searchBot, 500);
+const agentModalState = ref({ open: false, id: null });
 
 const filters = reactive<{
   q: string;
@@ -101,24 +68,6 @@ watch(activeStatus, async (newStatus, previousStatus) => {
   filters.page = "1";
 });
 const selectedValue = ref("Today");
-// const newBotName = ref("");
-const { handleSubmit } = useForm({
-  validationSchema: formSchema
-})
-const handleAddEditBot = handleSubmit(async (values) => {
-  try {
-    const bot = await $fetch("/api/bots", {
-      method: "POST",
-      body: values,
-    });
-    return navigateTo({
-      name: "bot-management-chat-bot-id",
-      params: { id: bot.id },
-    });
-  } catch (err: any) {
-    toast.error(err.data.data[0].message);
-  }
-})
 
 const menuList = ref([
   {
@@ -184,6 +133,28 @@ const botManagementDetails = async (list: any) => {
   });
 };
 
+const actionsComponent = (id: any) =>
+  h(
+    "div",
+    {
+      class: "flex items-center gap-2",
+    },
+    [
+      h(
+        UiButton,
+        {
+          onClick: (e: Event) => {
+            e.stopPropagation();
+            agentModalState.value.open = true;
+            agentModalState.value.id = id;
+          },
+          color: "primary",
+        },
+        h(Icon, { name: "lucide:pen" }),
+      ),
+    ],
+  );
+
 const statusComponent = (status: boolean) =>
   status
     ? h("span", { class: "text-green-500" }, "Active")
@@ -201,6 +172,12 @@ const columns = [
     header: "Status",
     cell: ({ row }) => {
       return statusComponent(row.original.status);
+    },
+  }),
+  columnHelper.accessor("id", {
+    header: "Action",
+    cell: ({ row }) => {
+      return actionsComponent(row.original.id);
     },
   }),
 ];

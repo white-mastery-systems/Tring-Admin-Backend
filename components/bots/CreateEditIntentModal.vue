@@ -1,17 +1,10 @@
 <template>
-  <DialogWrapper
-    v-model="modalState"
-    :title="modalState?.id ? `Edit Intent` : 'Add Intent'"
-  >
+  <DialogWrapper v-model="modalState" :title="modalState?.id ? `Edit Intent` : 'Add Intent'">
     <UiForm class="flex flex-col gap-2" @submit="handleCreateEditIntent()">
-      <UiFormField
-        v-model="intentField"
-        v-bind="intentFieldAttrs"
-        name="intent"
-      >
+      <UiFormField v-model="intentField" v-bind="intentFieldAttrs" name="intent">
         <UiFormItem class="w-full">
-          <UiFormLabel
-            >Actions<UiLabel class="text-lg text-red-500">*</UiLabel>
+          <UiFormLabel :class="errors?.intent ? 'text-[#ef4444]' : ''">Actions<UiLabel class="text-lg text-red-500">*
+            </UiLabel>
           </UiFormLabel>
           <UiFormControl>
             <UiSelect v-model="intentField" v-bind="intentFieldAttrs">
@@ -21,33 +14,24 @@
               <UiSelectContent>
                 <UiSelectItem v-for="intent in intents" :value="intent.value">{{
                   intent.label
-                }}</UiSelectItem>
+                  }}</UiSelectItem>
               </UiSelectContent>
             </UiSelect>
           </UiFormControl>
-          <span class="text-sm text-red-500">
+          <div class="text-xs text-gray-500">Select your intent.</div>
+          <span class="mt-0 text-[14px] font-medium text-[#ef4444]">
             {{ errors.intent }}
           </span>
-          <span class="text-xs text-gray-500">Select your intent.</span>
         </UiFormItem>
       </UiFormField>
-      <UiFormField
-        v-if="values.intent === 'location' || values.intent === 'virtual_tour'"
-        v-model="linkField"
-        v-bind="linkFieldAttrs"
-        name="link"
-      >
+      <UiFormField v-if="values.intent === 'location' || values.intent === 'virtual_tour'" v-model="linkField"
+        v-bind="linkFieldAttrs" name="link">
         <UiFormItem class="w-full">
-          <UiFormLabel
-            >Add Link <UiLabel class="text-lg text-red-500">*</UiLabel>
+          <UiFormLabel>Add Link <UiLabel class="text-lg text-red-500">*</UiLabel>
           </UiFormLabel>
           <UiFormControl>
-            <UiInput
-              v-model="linkField"
-              v-bind="linkFieldAttrs"
-              type="text"
-              placeholder="Eg: enter your preferred value"
-            />
+            <UiInput v-model="linkField" v-bind="linkFieldAttrs" type="text"
+              placeholder="Eg: enter your preferred value" />
           </UiFormControl>
           <span class="text-sm text-red-500">
             {{ errors.link }}
@@ -60,15 +44,9 @@
       <div v-if="values.intent === 'images' || values.intent === 'brochure'">
         <div>
           <label
-            class="dark:hover:bg-bray-800 flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-          >
+            class="dark:hover:bg-bray-800 flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
             Upload file
-            <input
-              class="hidden"
-              type="file"
-              @change="handleFileChange"
-              multiple
-              :accept="
+            <input class="hidden" type="file" @change="handleFileChange" multiple :accept="
                 (() => {
                   if (values.intent === 'images') {
                     return 'image/*';
@@ -76,17 +54,13 @@
                     return 'application/pdf';
                   }
                 })()
-              "
-            />
+              " />
           </label>
           <span class="text-sm text-red-700" v-if="errors.file">
             {{ errors.file }}
           </span>
         </div>
-        <p
-          v-if="selectedFileName"
-          class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600"
-        >
+        <p v-if="selectedFileName" class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
           {{ selectedFileName }}
         </p>
 
@@ -96,29 +70,19 @@
               Intent Name <UiLabel class="text-lg text-red-700">*</UiLabel>
             </UiFormLabel>
             <UiFormControl>
-              <UiInput
-                :class="errors.fileName ? 'border-red-700' : ''"
-                type="text"
-                v-model="fileName"
-                v-bind="fileNameAttrs"
-                placeholder="Eg:Amenties"
-              />
+              <UiInput :class="errors.fileName ? 'border-red-700' : ''" type="text" v-model="fileName"
+                v-bind="fileNameAttrs" placeholder="Eg:Amenties" />
             </UiFormControl>
             <span v-if="errors.fileName" class="mt-0 text-sm text-red-700">
               {{ errors.fileName }}
             </span>
-            <span class="text-xs text-gray-500"
-              >Enter a unique name to identify the intent</span
-            >
+            <span class="text-xs text-gray-500">Enter a unique name to identify the intent</span>
           </UiFormItem>
         </UiFormField>
       </div>
 
       <UiDialogFooter>
-        <UiButton
-          class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
-          type="submit"
-        >
+        <UiButton class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110" type="submit">
           Save changes
         </UiButton>
       </UiDialogFooter>
@@ -154,7 +118,7 @@ import { createEditIntentValidation } from "~/validationSchema/createEditIntentV
       value: "images",
     },
     {
-      label: "brochure",
+      label: "Brochure",
       value: "brochure",
     },
   ];

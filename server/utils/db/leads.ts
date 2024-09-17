@@ -144,7 +144,6 @@ export const listLeads = async (
     if(query?.page && query?.limit) {
       const paginatedLeads = leads.slice(offset, offset + limit);
       return {
-        calls: "leads",
         page: page,
         limit: limit,
         totalPageCount: Math.ceil(leads.length/limit) || 1,

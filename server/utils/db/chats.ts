@@ -92,7 +92,6 @@ export const listChats = async (
   if(query?.page && query?.limit) {
      const paginatedChats = chats.slice(offset, offset + limit); 
     return {
-      calls: "chats",
       page: page,
       limit: limit,
       totalPageCount: Math.ceil(chats.length/ limit) || 1,

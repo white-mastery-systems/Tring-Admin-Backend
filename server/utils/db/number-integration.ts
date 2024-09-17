@@ -25,7 +25,6 @@ export const listNumberIntegration = async (organizationId: string, query: any) 
   if(query?.page && query?.limit) {
     const paginatedNumberIntegration = data.slice(offset, offset + limit); 
     return {
-      calls: "Number Integration",
       page: page,
       limit: limit,
       totalPageCount: Math.ceil(data.length/ limit) || 1,

@@ -27,7 +27,6 @@ export const getContacts = async (organizationId: string, contactListId: string,
   if(query?.page && query?.limit) {
      const paginatedContacts = data.slice(offset, offset + limit); 
     return {
-      calls: "Contacts",
       page: page,
       limit: limit,
       totalPageCount: Math.ceil(data.length/ limit) || 1,
