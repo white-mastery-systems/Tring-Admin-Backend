@@ -40,7 +40,6 @@ export default defineEventHandler(async (event) => {
   if(query?.page && query?.limit) {
      const paginatedContactList = mapData.slice(offset, offset + limit); 
     return {
-      calls: "Contact-list",
       page: page,
       limit: limit,
       totalPageCount: Math.ceil(mapData.length/ limit) || 1,

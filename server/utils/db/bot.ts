@@ -57,8 +57,7 @@ export const listBots = async (
 
   if(query?.page && query?.limit) {
      const paginatedChatBots = data.slice(offset, offset + limit); 
-    return {   
-      calls: "chat-bots",
+    return {
       page: page,
       limit: limit,
       totalPageCount: Math.ceil(data.length/ limit) || 1,
@@ -160,8 +159,16 @@ export const createBotIntegration = async (
     await db.insert(botIntegrationSchema).values(integration).returning()
   )[0];
 };
-export const listBotIntegrations = async (botId: string) => {
+export const listBotIntegrations = async (botId: string, query: any) => {
   let filters: any = [eq(botIntegrationSchema.botId, botId)];
+
+  let page, offset, limit = 0
+    
+  if(query.page && query.limit) {
+    page = parseInt(query.page) 
+    limit = parseInt(query.limit)
+    offset = (page - 1) * limit;
+  }
 
   const data = await db.query.botIntegrationSchema.findMany({
     where: and(...filters),
@@ -170,7 +177,19 @@ export const listBotIntegrations = async (botId: string) => {
       integration: true,
     },
   });
-  return data;
+
+  if(query?.page && query?.limit) {
+     const paginatedChatBotIntegrations = data.slice(offset, offset + limit); 
+     return {
+        page: page,
+        limit: limit,
+        totalPageCount: Math.ceil(data.length/ limit) || 1,
+        totalCount: data.length,
+        data: paginatedChatBotIntegrations
+     }
+  } else {
+      return data
+  }
 };
 
 export const getBotIntegrationById = async (botId: string, botIntegrationId: string) => {

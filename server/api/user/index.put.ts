@@ -1,5 +1,7 @@
 import { Argon2id } from "oslo/password";
 
+const db = useDrizzle()
+
 const bodyValidator = z
   .object({
     username: z.string().min(2, "Name must be at least 2 characters.").optional(),
@@ -13,8 +15,28 @@ const bodyValidator = z
 
 export default defineEventHandler(async (event) => {
   await isOrganizationAdminHandler(event);
+  const userId = event.context.user?.id as string
 
   const body = await isValidBodyHandler(event, bodyValidator);
+
+  // console.log({ userId })
+
+  const isEmailAlreadyExists = await db.query.authUserSchema.findFirst({
+    where: and (
+      ne(authUserSchema.id, userId),
+      eq(authUserSchema.email, body?.email)
+    )
+  })
+
+  if(isEmailAlreadyExists) {
+     return sendError(
+      event,
+      createError({
+        statusCode: 400,
+        statusMessage: "Email already exists",
+      }),
+    );
+  }
 
   const user = event.context.user;
   if (!user)
@@ -27,7 +49,6 @@ export default defineEventHandler(async (event) => {
     ? await new Argon2id().hash(body.password)
     : undefined;
 
-  console.log({ body })
 
   const updatedUser = {
     username: body.username,

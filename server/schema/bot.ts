@@ -1,6 +1,7 @@
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   boolean,
+  index,
   integer,
   jsonb,
   text,
@@ -97,7 +98,9 @@ export const chatSchema = chatbotSchema.table("chats", {
     { onDelete: "cascade" },
   ),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+},(table) => ({
+  chatsBotIdIndex: index("chats_bot_id_index").on(table.botId)
+}));
 
 export const messageSchema = chatbotSchema.table("messages", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -146,6 +149,7 @@ export const leadSchema = chatbotSchema.table(
       table.botUserId,
       table.organizationId,
     ),
+    leadsBotIdIndex: index("leads_bot_id_index").on(table.botId)
   }),
 );
 
