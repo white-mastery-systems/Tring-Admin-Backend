@@ -78,6 +78,7 @@ watch(
   { deep: true },
 );
 const handleConnect = handleSubmit(async (values: any) => {
+  console.log({values})
   let url = `${window.location.origin}/settings/integration/${values.crm}`;
   // let url = "https://app.tringlabs.ai/settings";
   let scope = "";

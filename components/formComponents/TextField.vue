@@ -22,7 +22,7 @@
       " :placeholder="placeholder" :id="replacedId" :class="errorMessage ? 'border-red-500' : 'border-input'"
       v-model="value" :type="type || 'text'" />
 
-    <UiInput v-else class='mt-2' @keypress="(e: any) => {
+    <UiInput  v-else class='mt-2' @keypress="(e: any) => {
       if (disableCharacters) {
         if (e.key === 'Enter') {
           return;
@@ -31,9 +31,9 @@
           e.preventDefault();
         }
       }
-    }
-
-      " :placeholder="placeholder" :id="replacedId" :class="errorMessage ? 'border-red-500' : 'border-input'"
+    } "
+      :disabled="disabled"
+    :placeholder="placeholder" :id="replacedId" :class="errorMessage ? 'border-red-500' : 'border-input'"
       v-model="value" :type="type || 'text'" />
 
     <span :class="['text-xs text-gray-500', errorMessage ? ' text-red-500 font-medium' : '']">{{ errorMessage ??
@@ -54,6 +54,7 @@ const props = withDefaults(defineProps<{
   required?: boolean;
   disableCharacters?: boolean;
   isTextarea: boolean;
+  disabled?: boolean
 }>(), {
   label: '',
   type: 'text',
@@ -62,6 +63,7 @@ const props = withDefaults(defineProps<{
   required: false,
   disableCharacters: false,
   isTextarea: false,
+  disabled: false
 });
 const replacedId = ref(props.label ?? props.name)
 const { value, errorMessage }: { value: any, errorMessage: any } = useField(() => props.name);
