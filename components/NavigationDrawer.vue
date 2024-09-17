@@ -10,7 +10,6 @@
         height="80"
       />
     </NuxtLink>
-    <!-- pt-[150px] -->
     <div
       class="flex w-full flex-col items-center gap-4 overflow-scroll pb-6 pt-4"
     >
@@ -228,9 +227,10 @@
       children: [],
     },
   ]);
-  const openAccordions: any = ref({});
-
-  const handleNavigation = () => {
-    emit("closeSheet");
-  };
+  const openAccordions: any = ref({
+    path: route.path.split('/').slice(0, 2).join('/')
+  });
+const handleNavigation = () => {
+  emit("closeSheet");
+};
 </script>
