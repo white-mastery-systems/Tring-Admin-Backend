@@ -2,8 +2,7 @@
     <div :class="cn('w-full', props?.class)">
         <UiFormField v-model="countryCode" :name="props.name" class="mt-1">
             <UiFormItem class="mt-1 flex flex-col  mt-0">
-                <UiFormLabel>Country code
-                    <span class="text-sm text-red-500">*</span>
+                <UiFormLabel>Country Code<span class="text-sm text-red-500">*</span>
                 </UiFormLabel>
                 <UiPopover class="mt-0">
                     <UiPopoverTrigger as-child class="mt-0">
@@ -14,39 +13,48 @@
                                 'mt-0 space-y-0'
                             )
                                 ">
+                                <img v-if="countryData.find(
+                                    (country: any) =>
+                                        country.dial_code === fieldValue,
+                                )?.dial_code" class="w-[20px] h-[20px]"
+                                    :src='`https://country-code-au6g.vercel.app/${countryData.find((country: any) => country.dial_code === fieldValue)?.code}.svg`' />
                                 {{
                                     fieldValue
-                                        ? allCoutryDialCode.find(
-                                            (dialCode: any) =>
-                                                dialCode === fieldValue,
-                                        )
-                                        : "dial code"
+                                        ? countryData.find(
+                                            (country: any) =>
+                                                country.dial_code === fieldValue,
+                                        )?.dial_code
+                                        : "dial dialCode"
                                 }}
                                 <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </UiButton>
                         </UiFormControl>
                     </UiPopoverTrigger>
                     <UiPopoverContent class="w-[200px] p-0">
-                        <UiCommand>
-                            <UiCommandInput placeholder="Search code..." />
+                        <UiCommand @update:searchTerm="handleSearchCountries">
+                            <UiCommandInput placeholder="Search Code..." @update:modelValue="handleChange" />
                             <UiCommandEmpty>No codes found.</UiCommandEmpty>
                             <UiCommandList>
                                 <div v-bind="containerProps" class="max-h-52">
                                     <div v-bind="wrapperProps">
                                         <UiCommandGroup>
-                                            <UiCommandItem v-for="dialCode in countyDialCodes" :key="dialCode.data"
+                                            <UiCommandItem class="flex gap-2 items-center"
+                                                v-for="dialCode in countyDialCodes" :key="dialCode.data.dialCode"
                                                 :value="dialCode.data" @select="() => {
-                                                    handleChange(dialCode.data);
+                                                    handleChange(dialCode.data.dialCode);
                                                 }
                                                     " style="height: 32px">
-                                                <UiCheck :class="cn(
+                                                <Check :class="cn(
                                                     'mr-2 h-4 w-4',
-                                                    dialCode.data === fieldvalue
+                                                    dialCode.data.dialCode === fieldValue
                                                         ? 'opacity-100'
                                                         : 'opacity-0',
                                                 )
+
                                                     " />
-                                                {{ dialCode.data }}
+                                                <img class="w-[20px] h-[20px]" loading="lazy"
+                                                    :src='`https://country-code-au6g.vercel.app/${dialCode.data?.codeName}.svg`' />
+                                                {{ dialCode.data.dialCode }}
                                             </UiCommandItem>
                                         </UiCommandGroup>
                                     </div>
@@ -64,6 +72,7 @@
     </div>
 </template>
 <script setup lang="ts">
+import { Check } from 'lucide-vue-next';
 import countryData from "~/assets/country-codes.json";
 
 const props = defineProps({
@@ -91,8 +100,9 @@ const props = defineProps({
     }
 
 });
+const searchField = ref('')
 const allCoutryDialCode = computed(() =>
-    countryData?.map((country) => country.dial_code),
+    countryData?.filter((country: any) => country.name.toLowerCase().includes(searchField.value) || country.code.toLowerCase().includes(searchField.value) || country.dial_code.toLowerCase().includes(searchField.value))?.map((country) => ({ dialCode: country.dial_code, codeName: country.code, name: country.name })),
 );
 const {
     list: countyDialCodes,
@@ -107,4 +117,7 @@ const countryCode = ref(fieldValue.value);
 watch(countryCode, (newValue) => {
     fieldValue.value = newValue;
 });
+const handleSearchCountries = (e: string) => {
+    searchField.value = e.toLowerCase()
+}
 </script>

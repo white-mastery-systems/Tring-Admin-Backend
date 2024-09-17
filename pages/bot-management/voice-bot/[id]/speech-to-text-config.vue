@@ -32,7 +32,7 @@
                 placeholder="Enter keyword" />
               <TextField :label="`boost value ${idx + 1}`" :id="`value_${idx}`" :name="`keywords[${idx}].boostValue`"
                 required placeholder="Enter Boost value" disableCharacters />
-              <UiButton variant="outline" type="button" @click="remove(idx)" :disabled="idx === 0">
+              <UiButton variant="outline" type="button" @click="remove(idx)">
                 <CloseIcon class="w-4 h-4" />
               </UiButton>
             </div>

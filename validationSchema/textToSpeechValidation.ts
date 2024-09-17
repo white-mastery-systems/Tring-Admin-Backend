@@ -1,3 +1,3 @@
 export const textToSpeechValidation = z.object({
-  adaptation: z.string().min(1, "adaptation is required"),
+  provider: z.string().min(1, "provider is required"),
 });
