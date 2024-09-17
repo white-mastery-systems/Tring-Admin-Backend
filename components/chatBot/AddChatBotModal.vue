@@ -58,7 +58,7 @@ const handleAddEditBot = handleSubmit(async (values) => {
 </script>
 
 <template>
-  <DialogWrapper v-model="agentModalState" title="Add a New Chat Bot">
+  <DialogWrapper v-model="agentModalState" :title="(agentModalState.id) ? 'Modify Chat Bot' : 'Add a New Chat Bot'">
     <form @submit="handleAddEditBot">
       <TextField name="name" placeholder="enter your bot name" helperText="Enter your unique identifier for Chat Bot"
         required>
