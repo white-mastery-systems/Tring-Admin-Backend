@@ -22,9 +22,8 @@ export const campaignList = async (organizationId: string, query: any) => {
     where: eq(campaignSchema.organizationId, organizationId)
   })
   if(query?.page && query?.limit) {
-     const paginatedCampaign = data.slice(offset, offset + limit); 
+    const paginatedCampaign = data.slice(offset, offset + limit); 
     return {
-      calls: "Campaign",
       page: page,
       limit: limit,
       totalPageCount: Math.ceil(data.length/ limit) || 1,

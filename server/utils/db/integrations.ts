@@ -47,7 +47,6 @@ export const listIntegrations = async (
    if(query?.page && query?.limit) {
       const paginatedIntegrations = data.slice(offset, offset + limit); 
       return {
-        calls: "Integrations",
         page: page,
         limit: limit,
         totalPageCount: Math.ceil(data.length/limit) || 1,
