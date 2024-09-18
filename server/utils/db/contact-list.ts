@@ -1,4 +1,4 @@
-import { InsertContactList } from "~/server/schema/admin";
+import { InsertContactList } from "~/server/schema/admin/contactList.table";
 
 const db = useDrizzle()
 

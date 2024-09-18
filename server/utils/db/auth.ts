@@ -1,5 +1,5 @@
 import { Argon2id } from "oslo/password";
-import type { SelectRawUser } from "@/server/schema/auth";
+import type { SelectRawUser } from "@/server/schema/admin/user.table";
 
 const db = useDrizzle();
 

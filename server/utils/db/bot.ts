@@ -1,7 +1,8 @@
 // import { isNotNull, ne } from "drizzle-orm";
 
 import { count, isNotNull, isNull, like } from "drizzle-orm";
-import { InsertBotIntegration, InsertIntent } from "~/server/schema/bot";
+import { InsertBotIntegration } from "~/server/schema/chatbot/botIntegration.table";
+import { InsertIntent } from "~/server/schema/chatbot/intents.table";
 import momentTz from "moment-timezone";
 
 const db = useDrizzle();

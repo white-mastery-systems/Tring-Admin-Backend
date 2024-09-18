@@ -1,4 +1,4 @@
-import { InsertTimeline, timelineSchema } from "~/server/schema/admin";
+import { InsertTimeline } from "~/server/schema/admin/timeline.table";
 import momentTz from "moment-timezone";
 
 const db = useDrizzle();
