@@ -95,6 +95,8 @@
     "email",
     "visitedCount",
     "mobile",
+    "botName",
+    "country",
     "createdAt",
   ]);
 
@@ -111,16 +113,23 @@
       return;
     }
 
-    // Create CSV content
     const csvContent =
-      columns.map((col) => col.header).join(",") +
+      columns.filter((col) => col.header !== "Action").map((col) => col.header).join(",") + // Headers
       "\n" +
       leads.value
-        .map((lead) =>
-          rowList
+        .map((lead: any) => {
+          console.log(lead, "lead")
+          const mergedObject = {
+            ...lead.botUser,
+            name: lead.botUser.name,
+            botName: lead.bot.name,
+            country: lead.chat?.metadata?.country
+          };
+          return rowList
             .map((col) => {
-              let cellValue = lead.botUser[col];
+              let cellValue = mergedObject[col];
               if (cellValue) {
+                // Escape special characters
                 cellValue = cellValue.toString().replace(/"/g, '""');
                 if (
                   cellValue.includes(",") ||
@@ -129,12 +138,15 @@
                 ) {
                   cellValue = `"${cellValue}"`;
                 }
-                return cellValue;
               }
+
+              return cellValue || "";
             })
-            .join(","),
-        )
+            .join(",");
+        })
         .join("\n");
+
+
 
     // Create a Blob with the CSV content
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });

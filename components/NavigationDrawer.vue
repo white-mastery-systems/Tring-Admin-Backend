@@ -24,7 +24,7 @@
             <div class="rounded-b-lg">
               <UiAccordionContent v-for="(item, index) in children" :key="item.path"
                 class="text-md border border-none bg-[#F0F6FF] py-4 pl-12 font-bold" :class="[
-                  route.path?.includes(item.path) && 'text-[#424bd1]',
+                    route.path?.includes(path + item.path) && 'text-[#424bd1]',
                   index === children.length - 1 ? 'rounded-b-lg' : '',
                 ]">
                 <NuxtLink :to="path + item.path">
@@ -151,27 +151,13 @@
         {
           name: "Contacts",
           path: "/contacts",
-        }, {
+        },
+        {
           name: "Campaigns",
           path: "/campaigns",
-        }
-    ],
+        },
+      ],
     },
-    // {
-    //   name: "Bot Management",
-    //   icon: Bot,
-    //   path: "/bot-management",
-    //   children: [
-    //     {
-    //       name: "Voice Bot",
-    //       path: "/voice-bot",
-    //     },
-    //     {
-    //       name: "Chat Bot",
-    //       path: "/chat-bot",
-    //     },
-    //   ],
-    // },
     {
       name: "Bot Management",
       icon: Bot,

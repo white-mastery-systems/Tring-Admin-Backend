@@ -36,7 +36,7 @@
       <DataTable
         @row-click="
           (row: any) => {
-            return navigateTo(`/contacts/${row.original.id}`);
+            return navigateTo(`/contacts-management/contacts/${row.original.id}`);
           }
         "
         @pagination="Pagination"
