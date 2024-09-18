@@ -5,11 +5,11 @@ import {
 } from "drizzle-orm";
 import { jsonb, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
+import { organizationSchema } from "./organization.table";
+import { paymentSchema } from "./payment.table";
+import { adminSchema } from "..";
+import { authSessionSchema } from "./session.table";
 
-import { adminSchema } from ".";
-import { organizationSchema, paymentSchema } from "./admin";
-
-// Table definitions
 export const authUserSchema = adminSchema.table("user", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   username: varchar("username", { length: 64 }),
@@ -31,19 +31,6 @@ export const authUserSchema = adminSchema.table("user", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const authSessionSchema = adminSchema.table("session", {
-  id: text("id").primaryKey(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => authUserSchema.id, { onDelete: "cascade" }),
-  expiresAt: timestamp("expires_at", {
-    withTimezone: true,
-    mode: "date",
-  }).notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
-
 // Relations
 export const userRelations = relations(authUserSchema, ({ many, one }) => ({
   refreshTokens: many(authSessionSchema),
@@ -54,20 +41,11 @@ export const userRelations = relations(authUserSchema, ({ many, one }) => ({
   billsPaid: many(paymentSchema),
 }));
 
-export const sessionRelations = relations(authSessionSchema, ({ one }) => ({
-  user: one(authUserSchema, {
-    fields: [authSessionSchema.userId],
-    references: [authUserSchema.id],
-  }),
-}));
 
-// Types
 export type SelectRawUser = InferSelectModel<typeof authUserSchema>;
 export type SelectUser = Omit<SelectRawUser, "password">;
 export type InsertUser = InferInsertModel<typeof authUserSchema>;
 
-export type SelectSession = InferSelectModel<typeof authSessionSchema>;
-export type InsertSession = InferInsertModel<typeof authSessionSchema>;
 
 // Validation
 export const zodInsertUser = createInsertSchema(authUserSchema, {

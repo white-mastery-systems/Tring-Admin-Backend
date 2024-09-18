@@ -1,5 +1,7 @@
 import { createBotIntent } from "~/server/utils/db/bot";
 
+const db = useDrizzle()
+
 export const zodInsertChatBotIntent = z.object({
   intent: z.string().min(2, "Intent too short"),
   link: z.string().url().min(5, "Link too short").optional(),
@@ -23,6 +25,23 @@ export default defineEventHandler(async (event) => {
     checkPayloadId("id"),
   );
   const body = await isValidBodyHandler(event, zodInsertChatBotIntent);
+
+  const isAreadyExists = await db.query.botIntentSchema.findFirst({
+    where: and(
+      eq(botIntentSchema.botId, botId),
+      eq(botIntentSchema.intent, body.intent)
+    )
+  })
+  
+  if(isAreadyExists) {
+     return sendError(
+      event,
+      createError({
+        statusCode: 400,
+        statusMessage: "Intent name already exists",
+      }),
+    );
+  }
   const bot = await createBotIntent({
     ...body,
     botId: botId,

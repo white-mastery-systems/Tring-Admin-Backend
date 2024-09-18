@@ -1,7 +1,7 @@
 // import { isNotNull, ne } from "drizzle-orm";
 
 import { integrationSchema } from "#imports";
-import { InsertIntegration } from "~/server/schema/admin";
+import { InsertIntegration } from "~/server/schema/admin/integration.table";
 
 interface listIntegrationQuery {
   q?: string;

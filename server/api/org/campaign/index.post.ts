@@ -11,7 +11,8 @@ const zodInsertCampaign = z.object({
       .datetime({ offset: true })
       .nullish()
       .transform((val) => (val ? new Date(val) : null)),
-  contactListId: z.string().optional()
+  contactListId: z.string().optional(),
+  type: z.string().optional()
 })
 
 export default defineEventHandler(async (event) => {

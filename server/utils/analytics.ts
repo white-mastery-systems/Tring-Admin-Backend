@@ -43,7 +43,7 @@ export const getAllDatesInRange = (period: string, from: Date, to: Date) => {
       break;
 
     case "last-7-days":
-      startDate = startOfDay(subDays(now, 7));
+      startDate = startOfDay(subDays(now, 6));
       endDate = endOfDay(now);
       dates = eachDayOfInterval({ start: startDate, end: endDate }).map(
         (date) => format(date, "dd MMM yyyy"),
@@ -51,7 +51,7 @@ export const getAllDatesInRange = (period: string, from: Date, to: Date) => {
       break;
 
     case "last-30-days":
-      startDate = startOfDay(subDays(now, 30));
+      startDate = startOfDay(subDays(now, 29));
       endDate = endOfDay(now);
       dates = eachDayOfInterval({ start: startDate, end: endDate }).map(
         (date) => format(date, "dd MMM yyyy"),
