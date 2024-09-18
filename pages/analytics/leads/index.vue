@@ -12,7 +12,6 @@
         <StatusFilter @change="onStatusChange" />
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
-
       </div>
 
       <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton>
@@ -32,10 +31,11 @@
       <UiTabsContent value="all">
         <DataTable
           @pagination="Pagination"
-          @limit="($event)=>{
-            filters.page = '1',
-            filters.limit = $event
-          }"
+          @limit="
+            ($event) => {
+              (filters.page = '1'), (filters.limit = $event);
+            }
+          "
           :totalPageCount="totalPageCount"
           :page="page"
           :totalCount="totalCount"
@@ -57,6 +57,9 @@
           :data="leads"
           :is-loading="isDataLoading"
           :columns="columns"
+          :totalPageCount="totalPageCount"
+          :page="page"
+          :totalCount="totalCount"
           :page-size="8"
           :height="14"
           height-unit="vh"
@@ -72,6 +75,9 @@
           :data="leads"
           :is-loading="isDataLoading"
           :columns="columns"
+          :totalPageCount="totalPageCount"
+          :page="page"
+          :totalCount="totalCount"
           :page-size="8"
           :height="14"
           height-unit="vh"
@@ -114,16 +120,19 @@
     }
 
     const csvContent =
-      columns.filter((col) => col.header !== "Action").map((col) => col.header).join(",") + // Headers
+      columns
+        .filter((col) => col.header !== "Action")
+        .map((col) => col.header)
+        .join(",") + // Headers
       "\n" +
       leads.value
         .map((lead: any) => {
-          console.log(lead, "lead")
+          console.log(lead, "lead");
           const mergedObject = {
             ...lead.botUser,
             name: lead.botUser.name,
             botName: lead.bot.name,
-            country: lead.chat?.metadata?.country
+            country: lead.chat?.metadata?.country,
           };
           return rowList
             .map((col) => {
@@ -145,8 +154,6 @@
             .join(",");
         })
         .join("\n");
-
-
 
     // Create a Blob with the CSV content
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -206,15 +213,13 @@
       "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
     default: () => [],
-    transform: (leads:any) => {
+    transform: (leads: any) => {
       page.value = leads.page;
       totalPageCount.value = leads.totalPageCount;
       totalCount.value = leads.totalCount;
       return leads.data;
     },
   });
-
-
 
   const Pagination = async ($evnt) => {
     filters.page = $evnt;
