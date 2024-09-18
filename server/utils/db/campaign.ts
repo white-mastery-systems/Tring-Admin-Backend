@@ -1,4 +1,4 @@
-import { campaignSchema, InsertCampaign } from "~/server/schema/admin"
+import { campaignSchema, InsertCampaign } from "~/server/schema/admin/campaign.table"
 
 const db = useDrizzle()
 
