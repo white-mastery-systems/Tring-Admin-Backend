@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { formSchema } from '~/validationSchema/authValidation/signUpValidation';
+
+
   definePageMeta({
     layout: "auth",
     middleware: "guest-only",
@@ -13,26 +16,21 @@
   //         confirmPassword: z.string().min(2, "Role must be provided."),
   //       })
   //   )
-  const formSchema = toTypedSchema(
-    z
-      .object({
-        email: z
-          .string()
-          .email("Invalid email address.")
-          .regex(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/, "Email must be in lowercase."),
-        // username: z.string().email("Invalid email address."),
-        password: z
-          .string()
-          .min(6, "Password must be at least 6 characters long."),
-        confirmPassword: z
-          .string()
-          .min(6, "Confirm Password must be at least 6 characters long."),
-      })
-      .refine((data) => data.password === data.confirmPassword, {
-        message: "Passwords do not match.",
-        path: ["confirmPassword"], // Point to the field that has the issue
-      }),
-  );
+
+
+  const {
+    setFieldValue,
+    handleSubmit,
+    errors,
+    values,
+    defineField,
+    resetForm,
+  } = useForm({
+    validationSchema: formSchema,
+    initialValues: {
+      // name: "",
+    },
+  });
   const animationProps = {
     duration: 500,
   };
@@ -52,95 +50,89 @@
   //   confirmPasswordVisible.value = !confirmPasswordVisible.value;
   // };
 
-  const onSubmit = (values: any) => {
-    // if (
-    //   loginData.username.length < 1 ||
-    //   loginData.password.length < 1 ||
-    //   loginData.password !== loginData.confirmPassword
-    // ) {
-    //   toast.error("Please enter valid details");
-    // }
-    authHandlers.signup({
-      email: values.email,
-      password: values.password,
-    });
-  };
+  const onSubmit = handleSubmit((value: any) => {
+    authHandlers.signup(value);
+  });
 </script>
 <template>
   <div class="flex h-full w-full flex-col items-center justify-center">
-    <div class="w-[90%] px-0 pb-[20px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
+    <div
+      class="w-[90%] px-0 pb-[20px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]"
+    >
       <span> Let’s Get Started </span>
     </div>
-    <div class="flex w-[90%] flex-col px-0 md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
+    <div
+      class="flex w-[90%] flex-col px-0 md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]"
+    >
       <!-- <div> -->
-      <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" class="mb-6 space-y-5"
-        @submit="onSubmit">
-        <!-- <div class="individual-form-align"> -->
-        <UiFormField v-slot="{ componentField }" name="email">
-          <UiFormItem class="w-full">
-            <UiFormLabel class="font-bold">E-mail</UiFormLabel>
-            <UiFormControl>
-              <UiInput v-bind="componentField" placeholder="Enter Your Email"
-                class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium" type="Email" />
-            </UiFormControl>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <!-- <label for="fmail" class="mb-4 font-[10px] font-bold">E-mail</label>
-        <input class="mb-2 mt-2" type="text" id="frole" name="fmail" v-model="loginData.username" /> -->
-        <!-- </div> -->
-        <!-- <div class="individual-form-align"> -->
-        <!-- <label for="fpassword" class="font-bold">Password</label> -->
-        <UiFormField v-slot="{ componentField }" name="password">
-          <UiFormItem class="relative w-full">
-            <UiFormLabel class="font-bold">Password</UiFormLabel>
-            <UiFormControl>
-              <UiInput v-bind="componentField" placeholder="Enter Your Password"
-                :type="passwordVisible ? 'text' : 'password'" class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium" />
-              <div @click="togglePasswordVisibility" type="button" class="absolute right-[10px] top-[38px]">
+      <form class="space-y-2" @submit="onSubmit">
+             <!-- copy paste the class  below-->
+            <!-- class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium" -->
+
+        <div class="grid  gap-4">
+          <TextField
+            type="email"
+            name="email"
+            label="E-mail"
+            placeholder="Enter Your Email"
+            required
+          />
+          <div class="relative">
+          <TextField
+            :type="passwordVisible ? 'text' : 'password'"
+            name="password"
+            label="Password"
+            placeholder="Password"
+            required
+          >
+            <template #endIcon>
+              <div
+                class="w-[30px] cursor-pointer"
+                @click="togglePasswordVisibility"
+                type="button"
+              >
                 <OpenEye v-if="passwordVisible" />
                 <CloseEyeIcon v-else />
               </div>
-            </UiFormControl>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
-        <!-- </div> -->
-        <!-- <div class="individual-form-align"> -->
-        <!-- <label for="confirmPassword" class="font-bold">Confirm Password</label> -->
-        <UiFormField v-slot="{ componentField }" name="confirmPassword" class="mb-6">
-          <UiFormItem class="relative w-full">
-            <UiFormLabel class="font-bold">Confirm Password</UiFormLabel>
-            <UiFormControl>
-              <UiInput v-bind="componentField" placeholder="Confirm Your Password"
-                :type="confirmPasswordVisible ? 'text' : 'password'"
-                class="h-[50px] rounded-lg bg-[#F6F6F6] font-medium outline-none" />
-              <div variant="outline" size="icon" @click="toggleConfirmPasswordVisibility" type="button"
-                class="absolute right-[10px] top-[38px] cursor-pointer">
+            </template>
+          </TextField>
+        </div>
+  <div class="relative">
+          <TextField
+            :type="confirmPasswordVisible ? 'text' : 'password'"
+            name="confirmPassword"
+            label="Confirm Password"
+            placeholder="Confirm Your Password"
+            required
+          >
+            <template #endIcon>
+              <div
+                class="w-[30px] cursor-pointer"
+                @click="toggleConfirmPasswordVisibility"
+                type="button"
+              >
                 <OpenEye v-if="confirmPasswordVisible" />
                 <CloseEyeIcon v-else />
+              </div> </template></TextField>
               </div>
-            </UiFormControl>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <!-- <div class="forget-pws-align align_border">Forgot Password?</div> -->
-        <!-- <div class="submit-btn-align">
-          <button class="font-bold" type="submit" @click="onSubmit">
-            Sign up
-          </button>
-        </div> -->
-        <UiButton type="submit" class="mt-[20px] w-full bg-[#424bd1] text-[#ffffff] hover:bg-[#424bd1]">Sign up
-        </UiButton>
-      </UiForm>
+   
+          <UiButton
+            type="submit"
+            class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
+            >Sign in
+          </UiButton>
+        </div>
+      </form>
       <!-- <div class="content-align">
         <span class="border-align"></span> <span>Or login with</span>
         <span class="border-align"></span>
       </div> -->
       <div class="mt-4 flex items-center justify-center gap-1 font-medium">
         <span>Already have an account?</span>
-        <NuxtLink to="/auth/sign-in" class="cursor-pointer text-[#424bd1] underline underline-offset-2">Sign in
+        <NuxtLink
+          to="/auth/sign-in"
+          class="cursor-pointer text-[#424bd1] underline underline-offset-2"
+          >Sign in
         </NuxtLink>
       </div>
       <!-- </div> -->
@@ -149,7 +141,11 @@
       <span class="text-[12px] text-[#8a8a8a]">
         By Signing up, I Agree to Tring AI
       </span>
-      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="term-align text-[12px] underline">
+      <a
+        target="_blank"
+        href="https://tringlabs.ai/terms-and-conditions"
+        class="term-align text-[12px] underline"
+      >
         Terms & Conditions
       </a>
     </div>
