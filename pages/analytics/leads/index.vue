@@ -55,6 +55,12 @@
       <UiTabsContent value="whatsapp">
         <DataTable
           :data="leads"
+          @pagination="Pagination"
+          @limit="
+            ($event) => {
+              (filters.page = '1'), (filters.limit = $event);
+            }
+          "
           :is-loading="isDataLoading"
           :columns="columns"
           :totalPageCount="totalPageCount"
@@ -73,6 +79,13 @@
       <UiTabsContent value="website">
         <DataTable
           :data="leads"
+          @pagination="Pagination"
+          @limit="
+            ($event) => {
+              (filters.page = '1'), (filters.limit = $event);
+
+            }
+          "
           :is-loading="isDataLoading"
           :columns="columns"
           :totalPageCount="totalPageCount"
@@ -318,5 +331,6 @@
     if (value) {
       filters.channel = value;
     }
+    filters.page = '1'
   };
 </script>
