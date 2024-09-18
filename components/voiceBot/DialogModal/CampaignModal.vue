@@ -14,12 +14,22 @@ const campaignModalState = defineModel<{ open: boolean,id: any }>({
     id: null,
   },
 });
-const {  refresh } = campaignData()
 
 const { status, data: campaignDataList, refresh: integrationRefresh, } = await useLazyFetch("/api/org/contact-list", {
   server: false,
   default: () => [],
 });
+
+const campaignListWithLabels = computed(() => {
+  if (campaignDataList) {
+    return campaignDataList.value.map((item: any) => {
+       return {
+      value: item.id,
+      label: item.id ? item.name : '' // Change label based on id value
+    };
+    })
+  }
+})
 
 const df = new DateFormatter('en-US', {
   dateStyle: 'long',
@@ -29,15 +39,44 @@ const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 const formSchema = toTypedSchema(
   z.object({
     date: z
-      .string()
-      .refine(v => v, { message: 'A date of birth is required.' }),
-    exoPhone: z.string()
-      .min(1, 'Phone Number is required')
-      .regex(phoneNumberPattern, 'Invalid phone number'),
-    countryCode: z.string().min(1, 'Country Code is required'),
-    audienceBucket: z.string().min(1, 'Audience Bucket Name is required'),
+      .string({required_error: 'A date is required.'})
+      .refine(v => v, { message: 'A date is required.' }),
+    type: z.string({ required_error: 'Type is required' }).min(1, 'Audience Bucket Name is required'),
+    exoPhone: z.string({ required_error: 'Phone Number is required' }).optional().default(""),
+    countryCode: z.string({ required_error: 'Country Code is required' }).optional().default(""),
+    audienceBucket: z.string({ required_error: 'Audience Bucket Name is required' }).min(1, 'Audience Bucket Name is required'),
+  }).refine((data: any) => {
+    if (data.type !== 'whatsapp') {
+      const errors: Record<string, boolean> = {};
+      if (!data.exoPhone) errors.exoPhone = true;
+      if (!data.countryCode) errors.countryCode = true;
+      return Object.keys(errors).length === 0;
+    }
+    return true;
+  }, {
+    message: 'Validation failed.',
+    path: [],
   })
+    .superRefine((data, ctx) => {
+      if (data.type !== 'whatsapp') {
+        if (!data.exoPhone) {
+          ctx.addIssue({
+            path: ['exoPhone'],
+            message: 'Phone Number is required.',
+            code: z.ZodIssueCode.custom,
+          });
+        }
+        if (!data.countryCode) {
+          ctx.addIssue({
+            path: ['countryCode'],
+            message: 'Country Code is required.',
+            code: z.ZodIssueCode.custom,
+          });
+        }
+      }
+    })
 );
+
 
 const {
   errors,
@@ -76,6 +115,7 @@ watch(campaignModalState, (newState) => { });
 
 watch(() => campaignModalState.value.open, async (newState) => {
   console.log(campaignModalState.value, "campaignModalState")
+    resetForm()
   if (campaignModalState.value.id) {
     const getSingleDetails: any = await $fetch(`/api/org/campaign/${campaignModalState.value.id}`)
     console.log(getSingleDetails, "getSingleDetails")
@@ -83,22 +123,28 @@ watch(() => campaignModalState.value.open, async (newState) => {
     setFieldValue("countryCode", getSingleDetails.countryCode);
     setFieldValue("exoPhone", getSingleDetails.phoneNumber);
     setFieldValue("audienceBucket", getSingleDetails.contactListId);
+    setFieldValue("type", getSingleDetails.type);
 
-  } else {
-    resetForm()
-  }
+  } 
 });
 
 
 const handleConnect = handleSubmit(async (values: any) => {
-  console.log(values, 'values')
-  const payload = {
-    countryCode: values.countryCode,
-    campaignDate: new Date(values.date).toISOString(),
-    phoneNumber: values.exoPhone,
-    campaignTime: new Date(values.date).toISOString(),
-    contactListId: values.audienceBucket,
-  }
+  console.log(values, "values -- values")
+  // if (values.type === 'voice') {
+    const payload = {
+      countryCode: values.countryCode,
+      campaignDate: new Date(values.date).toISOString(),
+      phoneNumber: values.exoPhone,
+      campaignTime: new Date(values.date).toISOString(),
+      contactListId: values.audienceBucket,
+      type: values.type,
+    }
+  if (values.type === 'whatsapp') {
+    delete payload.phoneNumber
+    delete payload.countryCode
+  } 
+  // }
   
   try {
     if (campaignModalState.value.id) {
@@ -108,8 +154,7 @@ const handleConnect = handleSubmit(async (values: any) => {
       await $fetch("/api/org/campaign", { method: "POST", body: payload });
       toast.success("Created successfully")
     }
-    refresh()
-    resetForm()
+    // refresh()
     emit("confirm")
   } catch(error: any) {
     toast.error(error.data)
@@ -118,30 +163,32 @@ const handleConnect = handleSubmit(async (values: any) => {
 </script>
 <template>
   <DialogWrapper v-model="campaignModalState" :title="(campaignModalState.id) ? 'Modify Campaign' : 'Add Campaign'">
-    <UiForm v-slot="{ values }" @submit="handleConnect" :keep-values="true" :validate-on-mount="false"
+    <UiForm v-if="false" v-slot="{ values }" @submit="handleConnect" :keep-values="true" :validate-on-mount="false"
       class="space-y-2">
-      <UiFormField v-model="selectDate" v-bind="selectDateProps" name="date">
+      <div class="flex gap-2">
+        <UiFormField v-model="selectDate" v-bind="selectDateProps" name="date">
 
-        <UiFormItem class="flex flex-col">
-          <UiFormLabel :class="errors?.date ? 'text-[#ef4444]' : ''">Date
-            <UiLabel class="text-lg text-red-500">*</UiLabel>
-          </UiFormLabel>
-          <UiPopover>
-            <UiPopoverTrigger as-child>
-              <UiFormControl>
-                <UiButton variant="outline" :class="cn(
+          <UiFormItem class="flex flex-col">
+            <UiFormLabel :class="errors?.date ? 'text-[#ef4444]' : ''">Date
+              <UiLabel class="text-lg text-red-500">*</UiLabel>
+            </UiFormLabel>
+            <UiPopover>
+              <UiPopoverTrigger as-child>
+                <UiFormControl>
+                  <UiButton variant="outline" :class="cn(
                   'w-[240px] ps-3 text-start font-normal',
                     !value && 'text-muted-foreground',
                 )">
-                  <span>{{ value ? df.format(toDate(value)) : "Pick a date" }}</span>
-                  <UiCalendarIcon class="ms-auto h-4 w-4 opacity-50" />
-                </UiButton>
-                <input hidden>
-              </UiFormControl>
-            </UiPopoverTrigger>
-            <UiPopoverContent class="w-auto p-0">
-              <UiCalendar v-model:placeholder="placeholder" v-model="value" calendar-label="Date of birth" initial-focus
-                :min-value="new CalendarDate(1900, 1, 1)" :max-value="today(getLocalTimeZone())" @update:model-value="(v) => {
+                    <span>{{ value ? df.format(toDate(value)) : "Pick a date" }}</span>
+                    <UiCalendarIcon class="ms-auto h-4 w-4 opacity-50" />
+                  </UiButton>
+                  <input hidden>
+                </UiFormControl>
+              </UiPopoverTrigger>
+              <UiPopoverContent class="w-auto p-0">
+                <UiCalendar v-model:placeholder="placeholder" v-model="value" calendar-label="Date of birth"
+                  initial-focus :min-value="new CalendarDate(1900, 1, 1)" :max-value="today(getLocalTimeZone())"
+                  @update:model-value="(v) => {
                   if (v) {
                     setFieldValue('date', v.toString())
                   }
@@ -149,16 +196,17 @@ const handleConnect = handleSubmit(async (values: any) => {
                     setFieldValue('date', undefined)
                   }
                 }" />
-            </UiPopoverContent>
-          </UiPopover>
-          <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.date }}</p>
-          <!-- <FormDescription>
+              </UiPopoverContent>
+            </UiPopover>
+            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.date }}</p>
+            <!-- <FormDescription>
             Your date of birth is used to calculate your age.
           </FormDescription> -->
 
-          <FormMessage />
-        </UiFormItem>
-      </UiFormField>
+            <FormMessage />
+          </UiFormItem>
+        </UiFormField>
+      </div>
       <!-- {{ countryList }} || sdf -->
       <div class="flex gap-2">
         <UiFormField v-model="countryCode" v-bind="countryCodeProps" name="countryCode" class="mt-1">
@@ -277,5 +325,73 @@ const handleConnect = handleSubmit(async (values: any) => {
         <UiButton type="submit" class="mt-2" color="primary"> Submit </UiButton>
       </div>
     </UiForm>
+
+    <form v-if="true" @submit.prevent="handleConnect" class="space-y-2">
+      <div class="flex gap-2">
+        <UiFormField v-model="selectDate" v-bind="selectDateProps" name="date">
+
+          <UiFormItem class="flex flex-col">
+            <UiFormLabel :class="errors?.date ? 'text-[#ef4444]' : ''">Date
+              <UiLabel class="text-lg text-red-500">*</UiLabel>
+            </UiFormLabel>
+            <UiPopover>
+              <UiPopoverTrigger as-child>
+                <UiFormControl>
+                  <UiButton variant="outline" :class="cn(
+                    'w-[240px] ps-3 text-start font-normal',
+                    !value && 'text-muted-foreground',
+                  )">
+                    <span>{{ value ? df.format(toDate(value)) : "Pick a date" }}</span>
+                    <UiCalendarIcon class="ms-auto h-4 w-4 opacity-50" />
+                  </UiButton>
+                  <input hidden>
+                </UiFormControl>
+              </UiPopoverTrigger>
+              <UiPopoverContent class="w-auto p-0">
+                <UiCalendar v-model:placeholder="placeholder" v-model="value" calendar-label="Date of birth"
+                  initial-focus :min-value="new CalendarDate(1900, 1, 1)" :max-value="today(getLocalTimeZone())"
+                  @update:model-value="(v) => {
+                    if (v) {
+                      setFieldValue('date', v.toString())
+                    }
+                    else {
+                      setFieldValue('date', undefined)
+                    }
+                  }" />
+              </UiPopoverContent>
+            </UiPopover>
+            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.date }}</p>
+            <!-- <FormDescription>
+            Your date of birth is used to calculate your age.
+          </FormDescription> -->
+
+            <FormMessage />
+          </UiFormItem>
+        </UiFormField>
+        <SelectField name="type" label="Contact Method" placeholder="Select a method" :options="[
+            {
+              value: 'voice',
+              label: 'Voice',
+            }, {
+              value: 'whatsapp',
+              label: 'Whatsapp',
+            },
+          ]" required />
+        <!-- <TextField name="name" label="Name" placeholder="enter integration name"
+          helperText="Enter a unique identification for CRM integration"
+          placeHolder="Eg: CRM-your company,CRM-your company" required /> -->
+      </div>
+      <div v-if="((values.type) ? (values.type === 'voice') : true)" class='flex gap-2'>
+        <CountryCodeField class='w-[100px]' name="countryCode" label="Country Code" helperText="Enter your country code"
+          required />
+        <TextField :disableCharacters="true" name="exoPhone" label="Mobile number" helperText='' required
+          placeholder="Enter your mobile number" />
+      </div>
+      <SelectField name="audienceBucket" label="Select Audience List" placeholder="Select Audience"
+        :options="campaignListWithLabels" required />
+      <div class="flex justify-end w-full">
+        <UiButton type="submit" class="mt-2" color="primary"> Submit </UiButton>
+      </div>
+    </form>
   </DialogWrapper>
 </template>

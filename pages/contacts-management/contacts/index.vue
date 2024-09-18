@@ -36,7 +36,7 @@
       <DataTable
         @row-click="
           (row: any) => {
-            return navigateTo(`/contacts/${row.original.id}`);
+            return navigateTo(`/contacts-management/contacts/${row.original.id}`);
           }
         "
         @pagination="Pagination"
@@ -52,7 +52,7 @@
         :is-loading="isDataLoading"
         :columns="columns"
         :page-size="20"
-        :height="13"
+        :height="19"
         height-unit="vh"
       />
 
@@ -143,8 +143,6 @@
   //     id: "",
   //   },
   // });
-  const viewCampaignStatusModalState = ref({ open: false });
-
   const router = useRouter();
   const route = useRoute();
   const activeStatus = ref("");
@@ -170,7 +168,8 @@
               e.stopPropagation();
               addBucketNameModalState.value.open = true;
               addBucketNameModalState.value.id = id;
-              console.log("addBucketModalState",addBucketNameModalState.value);
+              console.log(addBucketNameModalState.value);
+              
             },
             color: "primary",
           },

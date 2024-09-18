@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div :class="cn('w-full',props?.endIcon?'relative':'')">
     <UiLabel :class="['capitalize flex items-center', errorMessage ? 'text-red-500' : '']" v-if="label"
       :for="replacedId">
       {{ label }}
@@ -22,7 +22,7 @@
       " :placeholder="placeholder" :id="replacedId" :class="errorMessage ? 'border-red-500' : 'border-input'"
       v-model="value" :type="type || 'text'" />
 
-    <UiInput  v-else class='mt-2' @keypress="(e: any) => {
+    <UiInput  v-else  :class="cn('mt-2',props.class,errorMessage ? 'border-red-500' : 'border-input')" @keypress="(e: any) => {
       if (disableCharacters) {
         if (e.key === 'Enter') {
           return;
@@ -33,8 +33,11 @@
       }
     } "
       :disabled="disabled"
-    :placeholder="placeholder" :id="replacedId" :class="errorMessage ? 'border-red-500' : 'border-input'"
+    :placeholder="placeholder" :id="replacedId" 
       v-model="value" :type="type || 'text'" />
+    <div  :class="cn(props?.endIcon?'absolute right-[10px] top-[38px] cursor-pointer':'absolute right-[10px] top-[38px]')">
+    <slot  name="endIcon"></slot>
+    </div>
 
     <span :class="['text-xs text-gray-500', errorMessage ? ' text-red-500 font-medium' : '']">{{ errorMessage ??
       helperText
@@ -54,7 +57,9 @@ const props = withDefaults(defineProps<{
   required?: boolean;
   disableCharacters?: boolean;
   isTextarea: boolean;
-  disabled?: boolean
+  disabled?: boolean;
+  class?:string;
+  endIcon?:any
 }>(), {
   label: '',
   type: 'text',
@@ -63,7 +68,8 @@ const props = withDefaults(defineProps<{
   required: false,
   disableCharacters: false,
   isTextarea: false,
-  disabled: false
+  disabled: false,
+  class:''
 });
 const replacedId = ref(props.label ?? props.name)
 const { value, errorMessage }: { value: any, errorMessage: any } = useField(() => props.name);

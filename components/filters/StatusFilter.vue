@@ -4,8 +4,8 @@
       <UiSelectValue placeholder="Select a Status" />
     </UiSelectTrigger>
     <UiSelectContent>
-      <UiSelectItem value="all">All</UiSelectItem>
-      <UiSelectItem
+ <UiSelectItem value="all">All Leads</UiSelectItem>
+       <UiSelectItem
         v-for="(rangeDate, index) in dateFilters"
         :key="index"
         :value="rangeDate.value"
