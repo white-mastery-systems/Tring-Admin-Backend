@@ -24,7 +24,7 @@
                     </UiFormControl>
                 </UiPopoverTrigger>
                 <UiPopoverContent class="w-[200px] p-0">
-                    <UiCommand>
+                    <UiCommand  @update:searchTerm="handleSearchCountries">
                         <UiCommandInput placeholder="Search state..." />
                         <UiCommandEmpty>No states found.</UiCommandEmpty>
                         <UiCommandList>
@@ -61,6 +61,8 @@
 </template>
 <script setup lang="ts">
 import stateData from "~/assets/state.json";
+const searchField = ref('')
+
 const country = defineModel('country')
 const props = defineProps({
     name: {
@@ -94,7 +96,7 @@ const statesList: any = computed(() => {
     return stateData
         ?.filter(({ country_name }) => {
             return country_name === country.value
-        })
+        })?.filter(({ name }) => name.toLowerCase().includes(searchField.value))
         .map((item) => item.name);
 });
 const {
@@ -110,4 +112,7 @@ const state = ref(fieldValue.value);
 watch(state, (newValue) => {
     fieldValue.value = newValue;
 });
+const handleSearchCountries = (e: string) => {
+    searchField.value = e.toLowerCase()
+}
 </script>

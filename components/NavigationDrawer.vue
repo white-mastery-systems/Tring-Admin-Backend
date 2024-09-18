@@ -1,56 +1,32 @@
 <template>
-  <div
-    class="flex h-[100vh] w-[250px] flex-col items-center gap-5 overflow-y-scroll bg-[#ffffff]"
-  >
-    <NuxtLink to="/" class="flex h-[25%] w-full justify-center bg-[#ffffff]">
-      <img
-        class="self-center pt-[50px] sm:pt-[50px] md:pt-[50px] lg:pt-7 xl:pt-7"
-        src="assets\icons\tring_AI_logo.svg"
-        width="80"
-        height="80"
-      />
+  <div class="flex h-[100vh] w-[250px] flex-col items-center gap-5 overflow-y-scroll bg-[#ffffff]">
+    <NuxtLink to="/" class="flex h-[15%] w-full justify-center bg-[#ffffff]">
+      <img class="self-center pt-[50px] sm:pt-[50px] md:pt-[50px] lg:pt-7 xl:pt-7"
+        src="assets\icons\Tring-Ai-Logo-with-black-text.png" width="190" height="190" />
     </NuxtLink>
-    <div
-      class="flex w-full flex-col items-center gap-4 overflow-scroll pb-6 pt-4"
-    >
-      <template
-        v-for="{ name, icon, path, children } in navigationModules"
-        :key="path"
-      >
-        <UiAccordion
-          v-if="children?.length > 0"
-          type="single"
-          class="w-[90%]"
-          v-model="openAccordions.path"
-          collapsible
-        >
+    <div class="flex w-full flex-col items-center gap-4 overflow-scroll pb-6 pt-4">
+      <template v-for="{ name, icon, path, children } in navigationModules" :key="path">
+        <!-- {{ openAccordions }}  - sdfdsf
+      {{ path}} -->
+        <UiAccordion v-if="children?.length > 0" type="single" class="w-[90%]" v-model="openAccordions.path"
+          collapsible>
           <UiAccordionItem :value="path" class="shadow-md border-0 bg-white">
-            <div
-              class="field_shadow flex cursor-pointer items-center gap-3 px-[16px] font-medium"
-              :class="[
+            <div class="field_shadow flex cursor-pointer items-center gap-3 px-[16px] font-medium" :class="[
                 route.path?.includes(path) ? 'bg-[#424bd1] text-[#ffffff]' : '',
                 openAccordions[path] === path
                   ? 'rounded-t-[10px]'
                   : 'rounded-[10px]',
-              ]"
-            >
+              ]">
               <component :is="icon"></component>
-              <UiAccordionTrigger
-                class="w-full no-underline hover:no-underline"
-              >
-                {{ name }}</UiAccordionTrigger
-              >
+              <UiAccordionTrigger class="w-full no-underline hover:no-underline">
+                {{ name }}</UiAccordionTrigger>
             </div>
             <div class="rounded-b-lg">
-              <UiAccordionContent
-                v-for="(item, index) in children"
-                :key="item.path"
-                class="text-md border border-none bg-[#F0F6FF] py-4 pl-12 font-bold"
-                :class="[
-                  route.path?.includes(item.path) && 'text-[#424bd1]',
+              <UiAccordionContent v-for="(item, index) in children" :key="item.path"
+                class="text-md border border-none bg-[#F0F6FF] py-4 pl-12 font-bold" :class="[
+                    route.path?.includes(path + item.path) && 'text-[#424bd1]',
                   index === children.length - 1 ? 'rounded-b-lg' : '',
-                ]"
-              >
+                ]">
                 <NuxtLink :to="path + item.path">
                   {{ item.name }}
                 </NuxtLink>
@@ -58,54 +34,39 @@
             </div>
           </UiAccordionItem>
         </UiAccordion>
-        <NuxtLink
-          v-else-if="!!(path !== '/')"
-          :to="path"
-          @click="handleNavigation"
+        <NuxtLink v-else-if="!!(path !== '/')" :to="path" @click="handleNavigation"
           class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium"
           :class="[
             route.path?.includes(path)
               ? 'bg-[#424bd1] text-[#ffffff]'
               : 'bg-[#ffffff]',
-          ]"
-        >
+          ]">
           <component :is="icon"></component>
 
           <span class="text-[14px]">{{ name }}</span>
         </NuxtLink>
-        <NuxtLink
-          v-else
-          :to="path"
-          @click="handleNavigation"
+        <NuxtLink v-else :to="path" @click="handleNavigation"
           class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium"
           :class="[
             route.path === path
               ? 'bg-[#424bd1] text-[#ffffff]'
               : 'bg-[#ffffff]',
-          ]"
-        >
+          ]">
           <component :is="icon"></component>
           <span class="text-[14px]">{{ name }}</span>
         </NuxtLink>
       </template>
-      <NuxtLink
-        class="flex w-[90%] items-center gap-2 rounded-xl border-[1px] border-[var(border)] px-2 py-1"
-        to="/account"
-        :class="[
+      <NuxtLink class="flex w-[90%] items-center gap-2 rounded-xl border-[1px] border-[var(border)] px-2 py-1"
+        to="/account" :class="[
           route.path === '/account'
             ? 'bg-[#424bd1] text-[#ffffff]'
             : 'bg-[#ffffff]',
-        ]"
-      >
+        ]">
         <UiAvatar>
-          <UiAvatarImage
-            class="capitalize"
-            :src="userInfo?.profile_image"
-            :alt="userInfo?.username"
-          />
+          <UiAvatarImage class="capitalize" :src="userInfo?.profile_image" :alt="userInfo?.username" />
           <UiAvatarFallback>{{
             userInfo?.username?.toUpperCase()?.charAt(0)
-          }}</UiAvatarFallback>
+            }}</UiAvatarFallback>
         </UiAvatar>
 
         <div class="flex flex-col">
@@ -185,8 +146,17 @@
     {
       name: "Contacts",
       icon: UserIcon,
-      path: "/contacts",
-      children: [],
+      path: "/contacts-management",
+      children: [
+        {
+          name: "Contacts",
+          path: "/contacts",
+        },
+        {
+          name: "Campaigns",
+          path: "/campaigns",
+        },
+      ],
     },
     {
       name: "Bot Management",

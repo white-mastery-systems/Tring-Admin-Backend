@@ -13,6 +13,11 @@ const addBucketNameModalState = defineModel<{ open: boolean, id: any }>({
   },
 });
 
+watch(addBucketNameModalState,(newValue) => {
+  console.log({newValue});
+  
+})
+
 const formSchema = toTypedSchema(
   z.object({
     name: z.string().min(1, 'First is required'),
@@ -76,7 +81,9 @@ watch(addBucketNameModalState, (newState) => { });
 const handleConnect = handleSubmit(async (values: any) => {
   try {
     if (addBucketNameModalState.value.id) {
-      const getUpdateValues = await $fetch(`api/org/contact-list/${addBucketNameModalState.value.id}`, { method: "PUT", body: values });
+     $fetch("/api/org/contact-list/"+addBucketNameModalState.value.id, { method: "PUT", body: values })
+      
+      // const getUpdateValues = await $fetch(`api/org/contact-list/${addBucketNameModalState.value.id}`, { method: "PUT", body: values });
       toast.success("Updated successfully")
     } else {
       

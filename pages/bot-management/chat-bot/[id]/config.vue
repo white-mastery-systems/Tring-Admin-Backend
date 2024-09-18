@@ -102,9 +102,18 @@ const roles = ref<any>([
   const botDetails: any = await getBotDetails(route.params.id);
   const defaultFormValues = botDetails.metadata.prompt;
 
-const { handleSubmit, values } = useForm({
+const { handleSubmit, values, setFieldValue } = useForm({
   validationSchema: formSchema
 })
+
+setFieldValue("NAME", defaultFormValues.NAME || "");
+setFieldValue("COMPANY", defaultFormValues.COMPANY || "");
+setFieldValue("ROLE", defaultFormValues.ROLE || "");
+setFieldValue("GOAL", defaultFormValues.GOAL || "");
+setFieldValue("NOTES", defaultFormValues.NOTES || "");
+setFieldValue("DESCRIPTION", defaultFormValues.DESCRIPTION || "");
+setFieldValue("otherRole", defaultFormValues.otherRole || "");
+setFieldValue("otherGoal", defaultFormValues.otherGoal || "");
 
   const handleUpdateBotConfig = handleSubmit(async (values: any) => {
     const payload: any = {

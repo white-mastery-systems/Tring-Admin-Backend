@@ -5,6 +5,7 @@
     playgroundRequests,
   } from "~/server/utils/playground";
   import type { DocumentResponse } from "~/utils/apis/playground";
+import { File, Upload, Folder } from 'lucide-vue-next';
 
   const file = ref<HTMLInputElement["files"]>();
 
@@ -92,55 +93,38 @@
         <p class="pr-6">
           {{ fileNames }}
         </p>
-        <label
-          for="dropzone-file"
-          class="button-align cursor-pointer rounded-md bg-[#424bd1] p-2 text-[14px] font-medium text-white hover:bg-[#424bd1] hover:brightness-90"
-        >
-          <input
-            id="dropzone-file"
-            type="file"
-            accept="application/pdf"
-            class="hidden"
-            @change="
+        <label for="dropzone-file"
+          class="button-align cursor-pointer rounded-md bg-[#424bd1] p-2 text-[14px] font-medium text-white hover:bg-[#424bd1] hover:brightness-90">
+          <input id="dropzone-file" type="file" accept="application/pdf" class="hidden" @change="
               async (event) => {
                 handleFileChange(event);
               }
-            "
-            v-bind="$attrs"
-          />
-          Choose File
+            " v-bind="$attrs" />
+          <span class="hidden lg:inline">
+            Choose File
+          </span>
+          <span class="lg:hidden">
+            <component :is="Upload" :size="20"></component>
+          </span>
         </label>
       </div>
     </template>
     <div class="shadow-lg mb-4 overflow-hidden rounded-lg bg-white">
       <div class="space-y-4 p-6 pb-0">
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <div
-            v-for="(prompt, index) in systemPrompts"
-            :key="index"
-            class="space-y-2"
-          >
-            <UiLabel
-              :for="`system-prompt-${index}`"
-              class="block text-sm font-medium text-gray-700"
-            >
+          <div v-for="(prompt, index) in systemPrompts" :key="index" class="space-y-2">
+            <UiLabel :for="`system-prompt-${index}`" class="block text-sm font-medium text-gray-700">
               System Prompt {{ index + 1 }}
             </UiLabel>
-            <UiTextarea
-              :id="`system-prompt-${index}`"
-              v-model="systemPrompts[index]"
+            <UiTextarea :id="`system-prompt-${index}`" v-model="systemPrompts[index]"
               placeholder="Enter system prompt here..."
-              class="min-h-[12rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0"
-            ></UiTextarea>
+              class="min-h-[12rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0">
+            </UiTextarea>
           </div>
         </div>
         <div :class="results.length > 0 ? 'mt-8 h-64' : ''">
           <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <div
-              v-for="(result, index) in results"
-              :key="index"
-              class="space-y-2"
-            >
+            <div v-for="(result, index) in results" :key="index" class="space-y-2">
               <h2 class="block text-sm font-medium text-gray-700">
                 Result {{ index + 1 }}
               </h2>
@@ -153,25 +137,16 @@
       </div>
     </div>
 
-    <div class="shadow-lg overflow-hidden rounded-lg bg-white">
+    <div class="shadow-lg overflow-hidden rounded-lg bg-white pb-9">
       <div class="space-y-4 p-6 pt-0">
         <div class="space-y-2">
-          <UiLabel
-            for="user-input"
-            class="block text-sm font-medium text-gray-700"
-            >User Input</UiLabel
-          >
+          <UiLabel for="user-input" class="block text-sm font-medium text-gray-700">User Input</UiLabel>
           <div class="flex flex-row gap-6">
-            <UiTextarea
-              id="user-input"
-              v-model="userInput"
-              placeholder="Enter user input here..."
-              class="min-h-[0.5rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0"
-            ></UiTextarea>
+            <UiTextarea id="user-input" v-model="userInput" placeholder="Enter user input here..."
+              class="min-h-[0.5rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0">
+            </UiTextarea>
             <div class="flex items-center">
-              <UiButton @click="processInput" color="primary"
-                >Process Input</UiButton
-              >
+              <UiButton @click="processInput" color="primary">Process Input</UiButton>
             </div>
           </div>
         </div>

@@ -1,158 +1,138 @@
 <script setup lang="ts">
-const showCustomRoleInput = ref(false)
-definePageMeta({
-  layout: "auth",
-});
-const animationProps = {
-  duration: 500,
-};
-const formSchema = toTypedSchema(
-  z.object({
-    name: z.string().min(1, 'Name is required'),
-    role: z.string().min(2, "Role must be provided."),
-    otherRole: z.string().optional().default(""),
-  }).refine(
-    (data: any) => {
-      if (data.role.toLowerCase() === "other") {
-        return data.otherRole.length >= 1;
-      }
-      return true;
-    },
-    {
-      message: "Other role must be provided",
-      path: ["otherRole"],
-    },
-  ).transform((data: any) => {
-    if (data.role.toLowerCase() === "other") {
-      return { ...data, role: data.otherRole };
-    }
-    return data;
-  })
-)
-const {
-  errors,
-  setErrors,
-  setFieldValue,
-  handleSubmit,
-  defineField,
-  values,
-  resetForm,
-} = useForm({
-  validationSchema: formSchema,
-  initialValues: {
-    // firstName: "",
-    // lastName: "",
-    // phone: "",
-    // countryCode: "",
-  },
-});
+import { formSchema } from '~/validationSchema/authValidation/onBoarding/1Validation';
 
-
-const [nameField, nameFieldProps] = defineField("name")
-const [roleField, roleFieldProps] = defineField("role")
-const [otherField, otherFieldProps] = defineField("otherRole")
-
-
-const roles = ['Chief Executive Officer', 'Chief Financial Officer', 'Chief Technology Officer', 'Chief Operating Officer', 'Chief Information Officer', 'Chief Marketing Officer', 'Sales', 'Other']
-
-onMounted(() => {
-  const savedForm = localStorage.getItem('onboardingForm');
-  if (savedForm) {
-    const { name, role, otherRole } = JSON.parse(savedForm);
-    setFieldValue("name", name);
-    setFieldValue("role", role);
-    setFieldValue("otherRole", otherRole);
-  }
-});
-
-// const handleRoleChange = (selectItem: any) => {
-//   if (loginData.role === 'Other') {
-//     showCustomRoleInput.value = true
-//   }
-// }
-// const handleChange = () => {
-//   loginData.customRole = loginData.customRole
-// }
-const onSubmit = handleSubmit(async (value: any) => {
-  localStorage.setItem('onboardingForm', JSON.stringify({
-    name: nameField.value,
-    role: roleField.value,
-    otherRole: otherField.value,
-  }));
-
-  await $fetch("/api/auth/onboarding/1", {
-    method: "POST",
-    body: value,
+  const showCustomRoleInput = ref(false);
+  definePageMeta({
+    layout: "auth",
   });
-  return navigateTo("/auth/onboarding/2");
-});
+  const animationProps = {
+    duration: 500,
+  };
+
+  const {
+    errors,
+    setErrors,
+    setFieldValue,
+    handleSubmit,
+    defineField,
+    values,
+    resetForm,
+  } = useForm({
+    validationSchema: formSchema,
+    initialValues: {
+      // firstName: "",
+      // lastName: "",
+      // phone: "",
+      // countryCode: "",
+    },
+  });
+
+
+
+  const roles = [
+    "Chief Executive Officer",
+    "Chief Financial Officer",
+    "Chief Technology Officer",
+    "Chief Operating Officer",
+    "Chief Information Officer",
+    "Chief Marketing Officer",
+    "Sales",
+    "Other",
+  ];
+
+  onMounted(() => {
+    const savedForm = localStorage.getItem("onboardingForm");
+    if (savedForm) {
+      const { name, role, otherRole } = JSON.parse(savedForm);
+      setFieldValue("name", name);
+      setFieldValue("role", role);
+      setFieldValue("otherRole", otherRole);
+    }
+  });
+
+  // const handleRoleChange = (selectItem: any) => {
+  //   if (loginData.role === 'Other') {
+  //     showCustomRoleInput.value = true
+  //   }
+  // }
+  // const handleChange = () => {
+  //   loginData.customRole = loginData.customRole
+  // }
+  const onSubmit = handleSubmit(async (value: any) => {
+    localStorage.setItem(
+      "onboardingForm",
+      JSON.stringify({
+       ...value
+      }),
+    );
+
+    await $fetch("/api/auth/onboarding/1", {
+      method: "POST",
+      body: value,
+    });
+    return navigateTo("/auth/onboarding/2");
+  });
 </script>
 <template>
-  <div class="flex flex-col items-center justify-center w-full h-full">
+  <div class="flex h-full w-full flex-col items-center justify-center">
     <!-- :initial-values="defaultFormValues" -->
     <!-- @submit="handleSubmit" -->
-    <div class="font-bold text-[#424bd1] xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0 pb-[20px]">Personal
-      Details</div>
-    <div class="flex flex-col xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0">
+    <div
+      class="w-[90%] px-0 pb-[20px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]"
+    >
+      Personal Details
+    </div>
+    <div
+      class="flex w-[90%] flex-col px-0 md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]"
+    >
       <!-- <div> -->
-      <UiForm :keep-values="true" :validate-on-mount="false" @submit="onSubmit" class="space-y-4">
-        <UiFormField v-model="nameField" v-bind="nameFieldProps" name="name">
-          <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel :class="errors?.name ? 'text-[#ef4444]' : ''"> Full Name <UiLabel class="text-red-500 text-lg">
-                *</UiLabel>
-            </UiFormLabel>
-            <UiFormControl>
-              <UiInput v-model="nameField" v-bind="nameFieldProps" type="text" placeholder="Enter your Name"
-                class="h-[50px] font-regular border-none bg-[#F6F6F6]" />
-            </UiFormControl>
-            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.name }}</p>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <!-- <div class="flex gap-4 mb-4"> -->
-        <UiFormField v-model="roleField" v-bind="roleFieldProps" name="role">
-          <UiFormItem v-auto-animate="animationProps" class="w-full">
-            <UiFormLabel :class="errors?.role ? 'text-[#ef4444]' : ''">Role <UiLabel class="text-red-500 text-lg">*
-              </UiLabel>
-            </UiFormLabel>
-            <UiFormControl>
-              <UiSelect v-model="roleField" v-bind="roleFieldProps">
-                <UiSelectTrigger class="h-[50px] border-0 bg-[#FFFFFF] field_shadow">
-                  <UiSelectValue placeholder="Select Role" class="font-medium" />
-                </UiSelectTrigger>
-                <UiSelectContent>
-                  <UiSelectItem v-for="(role, index) in roles" :value="role">{{
-                    role
-                    }}</UiSelectItem>
-                </UiSelectContent>
-              </UiSelect>
-              <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.role }}</p>
-              <UiFormField v-if="roleField === 'Other'" name="otherRole">
-                <UiFormItem v-auto-animate="animationProps" class="w-full">
-                  <UiFormControl>
-                    <UiInput v-model="otherField" v-bind="otherFieldProps" type="text" class="h-[50px]" />
-                  </UiFormControl>
-                  <UiFormMessage />
-                </UiFormItem>
-              </UiFormField>
-            </UiFormControl>
-            <UiFormMessage />
-            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.otherRole }}</p>
-            <span class="text-xs text-gray-500">This will determine the role of the bot and behavior.</span>
-          </UiFormItem>
-        </UiFormField>
-        <!-- </div> -->
-        <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110 w-full" size="lg">Proceed
-        </UiButton>
-      </UiForm>
+
+      <form class="space-y-2" @submit="onSubmit">
+        <div class="flex flex-col gap-3">
+          <TextField
+            type="name"
+            name="name"
+            label="Full Name"
+            placeholder="Enter Your Name"
+            class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
+            :required="true"
+          />
+
+          <SelectField
+            name="role"
+            label="Role"
+            placeholder="Select Role"
+            :options="roles.map((role) => ({ label: role, value: role }))"
+            :required="true"
+          />
+          <TextField
+          v-if="values.role === 'Other'"
+            type="name"
+            name="otherRole"
+            class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
+            :required="true"
+          />
+          <UiButton
+            type="submit"
+            class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
+            >Proceed
+          </UiButton>
+        </div>
+      </form>
+
       <!-- </div> -->
     </div>
-    <div class="absolute flex items-center bottom-[30px] gap-1">
-      <span class="text-[#8a8a8a] text-[12px]">
+    <div class="absolute bottom-[30px] flex items-center gap-1">
+      <span class="text-[12px] text-[#8a8a8a]">
         By Signing up, I Agree to Tring AI
       </span>
-      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="text-[12px] underline"> Terms &
-        Conditions </a>
+      <a
+        target="_blank"
+        href="https://tringlabs.ai/terms-and-conditions"
+        class="text-[12px] underline"
+      >
+        Terms & Conditions
+      </a>
     </div>
   </div>
 </template>

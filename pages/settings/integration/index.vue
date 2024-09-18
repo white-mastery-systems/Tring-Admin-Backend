@@ -12,7 +12,7 @@
           numberModalState.open = true
           numberModalState.id = null
           }">
-          ExoPhone
+          Exophone
         </UiButton>
         <UiButton v-else color="primary" @click="
             () => {
@@ -25,7 +25,7 @@
       </div>
     </template>
     <UiTabs default-value="crm" class="w-full self-start">
-      <UiTabsList class="grid w-[40%] grid-cols-3">
+      <UiTabsList class="grid w-[100%] sm:w-[100%] nd:w-[60%] xl:w-[40%] lg:w-[40%] grid-cols-3">
         <UiTabsTrigger value="crm" @click="navigateToTab('crm')">
           CRM
         </UiTabsTrigger>
@@ -33,45 +33,24 @@
           Channel
         </UiTabsTrigger>
         <UiTabsTrigger value="number" @click="navigateToTab('number')">
-          ExoPhone
+          Exophone
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="crm">
-        <DataTable
-          @pagination="Pagination"
-          @limit="
+        <DataTable @pagination="Pagination" @limit="
           ($event) => {
             (page = '1'), (limit = $event);
           }
-        "
-          :totalPageCount="totalPageCount"
-          :page="page"
-          :totalCount="totalCount"
-          :columns="columns"
-          :data="integrationsData"
-          :page-size="8"
-          :is-loading="false"
-          :height="13"
-          :heightUnit="'vh'"
-        />
+        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
+          :data="integrationsData" :page-size="8" :is-loading="false" :height="13" :heightUnit="'vh'" />
       </UiTabsContent>
       <UiTabsContent value="campaign">
-        <DataTable
-          @pagination="Pagination"
-          @limit="
+        <DataTable @pagination="Pagination" @limit="
           ($event) => {
             (page = '1'), (limit = $event);
           }
-        "  :totalPageCount="totalPageCount"
-          :page="page"
-          :totalCount="totalCount"
-          :columns="statusColumns"
-          :data="integrationsData"
-          :page-size="8"
-          :is-loading="false"
-          :height="13"
-          :heightUnit="'vh'"
-        />
+        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="statusColumns"
+          :data="integrationsData" :page-size="8" :is-loading="false" :height="13" :heightUnit="'vh'" />
       </UiTabsContent>
       <UiTabsContent value="number">
         <NumberIntegration @action="handleAction" />
@@ -96,7 +75,7 @@
         }
       }
     " />
-    <ConfirmationModal v-model:open="deleteExoPhoneState.open" title="Confirm Delete"
+  <ConfirmationModal v-model:open="deleteExoPhoneState.open" title="Confirm Delete"
     description="Are you sure you want to delete ?" @confirm="
       () => {
       if (numberModalState.id) {

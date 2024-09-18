@@ -25,7 +25,7 @@
                     </UiFormControl>
                 </UiPopoverTrigger>
                 <UiPopoverContent class="w-[200px] p-0">
-                    <UiCommand>
+                    <UiCommand @update:searchTerm="handleSearchCountries">
                         <UiCommandInput placeholder="Search country..." />
                         <UiCommandEmpty>No countries found.</UiCommandEmpty>
                         <UiCommandList>
@@ -39,7 +39,7 @@
                                                 " style="height: 32px">
                                             <Check :class="cn(
                                                 'mr-2 h-4 w-4',
-                                                country.data === fieldvalue
+                                                country.data === fieldValue
                                                     ? 'opacity-100'
                                                     : 'opacity-0',
                                             )
@@ -61,7 +61,10 @@
     </UiFormField>
 </template>
 <script setup lang="ts">
+import { Check } from 'lucide-vue-next';
+
 import countryData from "~/assets/country-codes.json";
+const searchField = ref('')
 
 const props = defineProps({
     name: {
@@ -87,7 +90,7 @@ const props = defineProps({
 });
 
 const allCoutryNames = computed(() =>
-    countryData?.map((country) => country.name),
+    countryData?.filter((country: any) => country.name.toLowerCase().includes(searchField.value) || country.code.toLowerCase().includes(searchField.value) || country.dial_code.toLowerCase().includes(searchField.value))?.map((country) => country.name),
 );
 const {
     list: countriesList,
@@ -103,4 +106,7 @@ const country = ref(fieldValue.value);
 watch(country, (newValue) => {
     fieldValue.value = newValue;
 });
+const handleSearchCountries = (e: string) => {
+    searchField.value = e.toLowerCase()
+}
 </script>
