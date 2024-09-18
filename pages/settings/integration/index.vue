@@ -42,7 +42,7 @@
             (page = '1'), (limit = $event);
           }
         " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
-          :data="integrationsData" :page-size="8" :is-loading="false" :height="13" :heightUnit="'vh'" />
+          :data="integrationsData" :page-size="8" :is-loading="false" :height="18" :heightUnit="'vh'" />
       </UiTabsContent>
       <UiTabsContent value="campaign">
         <DataTable @pagination="Pagination" @limit="
@@ -50,7 +50,7 @@
             (page = '1'), (limit = $event);
           }
         " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="statusColumns"
-          :data="integrationsData" :page-size="8" :is-loading="false" :height="13" :heightUnit="'vh'" />
+          :data="integrationsData" :page-size="8" :is-loading="false" :height="18" :heightUnit="'vh'" />
       </UiTabsContent>
       <UiTabsContent value="number">
         <NumberIntegration @action="handleAction" />

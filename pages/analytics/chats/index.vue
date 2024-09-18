@@ -34,7 +34,7 @@
       :data="bots"
       :page-size="20"
       :is-loading="isDataLoading"
-      :height="13"
+      :height="16"
       height-unit="vh"
     />
   </Page>
