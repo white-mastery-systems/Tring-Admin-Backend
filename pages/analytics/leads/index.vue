@@ -12,7 +12,6 @@
         <StatusFilter @change="onStatusChange" />
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
-
       </div>
 
       <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton>
@@ -32,10 +31,11 @@
       <UiTabsContent value="all">
         <DataTable
           @pagination="Pagination"
-          @limit="($event)=>{
-            filters.page = '1',
-            filters.limit = $event
-          }"
+          @limit="
+            ($event) => {
+              (filters.page = '1'), (filters.limit = $event);
+            }
+          "
           :totalPageCount="totalPageCount"
           :page="page"
           :totalCount="totalCount"
@@ -55,8 +55,17 @@
       <UiTabsContent value="whatsapp">
         <DataTable
           :data="leads"
+          @pagination="Pagination"
+          @limit="
+            ($event) => {
+              (filters.page = '1'), (filters.limit = $event);
+            }
+          "
           :is-loading="isDataLoading"
           :columns="columns"
+          :totalPageCount="totalPageCount"
+          :page="page"
+          :totalCount="totalCount"
           :page-size="8"
           :height="14"
           height-unit="vh"
@@ -70,8 +79,18 @@
       <UiTabsContent value="website">
         <DataTable
           :data="leads"
+          @pagination="Pagination"
+          @limit="
+            ($event) => {
+              (filters.page = '1'), (filters.limit = $event);
+
+            }
+          "
           :is-loading="isDataLoading"
           :columns="columns"
+          :totalPageCount="totalPageCount"
+          :page="page"
+          :totalCount="totalCount"
           :page-size="8"
           :height="14"
           height-unit="vh"
@@ -155,8 +174,6 @@
         })
         .join("\n");
 
-
-
     // Create a Blob with the CSV content
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 
@@ -215,15 +232,13 @@
       "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
     default: () => [],
-    transform: (leads:any) => {
+    transform: (leads: any) => {
       page.value = leads.page;
       totalPageCount.value = leads.totalPageCount;
       totalCount.value = leads.totalCount;
       return leads.data;
     },
   });
-
-
 
   const Pagination = async ($evnt) => {
     filters.page = $evnt;
@@ -322,5 +337,6 @@
     if (value) {
       filters.channel = value;
     }
+    filters.page = '1'
   };
 </script>
