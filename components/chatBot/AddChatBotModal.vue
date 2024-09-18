@@ -24,7 +24,7 @@ const { handleSubmit, setFieldValue, resetForm } = useForm({
 })
 
 watch(() => agentModalState.value.open, async () => {
-  if (agentModalState.value.open) {
+  if (agentModalState.value.id) {
     const getSingleDetails: any = await $fetch(`/api/bots/${agentModalState.value.id}`)
     console.log(getSingleDetails, "getSingleDetails")
     setFieldValue("name", getSingleDetails.name);
@@ -36,11 +36,6 @@ watch(() => agentModalState.value.open, async () => {
 const handleAddEditBot = handleSubmit(async (values) => {
   try {
     if (agentModalState.value.id) {
-      await $fetch("/api/bots", {
-        method: "POST",
-        body: values,
-      });
-    } else {
       const bot = await $fetch(`/api/bots/${agentModalState.value.id}`, {
         method: "PUT",
         body: values,
@@ -48,6 +43,11 @@ const handleAddEditBot = handleSubmit(async (values) => {
       return navigateTo({
         name: "bot-management-chat-bot-id",
         params: { id: bot.id },
+      });
+    } else {
+      await $fetch("/api/bots", {
+        method: "POST",
+        body: values,
       });
     }
     emit('confirm')

@@ -31,7 +31,7 @@
     <div>
       <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <template v-if="analyticsData"
-          v-for="statistics in analyticsData?.statistics?.filter(({ apiName }) => apiName !== 'images' && apiName !== 'brochures')">
+          v-for="statistics in analyticsData?.statistics?.filter((stat) => stat?.apiName !== 'images' && stat?.apiName !== 'brochures')">
           <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
             :count="statistics.value" :loading="loading" />
         </template>
@@ -39,15 +39,15 @@
       </div>
       <div class="mt-2 flex cursor-pointer gap-2 overflow-x-scroll">
         <template v-if="analyticsData"
-          v-for="componentValue in analyticsData?.statistics?.filter(({ apiName }) => apiName !== 'images' && apiName !== 'brochures')"
-          :key="componentValue.apiName">
+          v-for="componentValue in analyticsData?.statistics?.filter((stat) => stat?.apiName !== 'images' && stat?.apiName !== 'brochures')"
+          :key="componentValue?.apiName">
           <button @click="() => handleEditGraphValues(componentValue)" :class="[
             `shadow-lg flex h-[40px] w-auto items-center gap-2 rounded-md border-[1px] border-gray-200 px-2 text-center text-sm`,
           ]">
-            <PlusIcon v-if="!chartValues.includes(componentValue.apiName)" />
+            <PlusIcon v-if="!chartValues.includes(componentValue?.apiName)" />
             <MinusIcon v-else />
-            <span class="min-w-[100px] capitalize" :style="`color:${componentValue.color}`">{{
-              componentValue.name?.replace("_", " ")
+            <span class="min-w-[100px] capitalize" :style="`color:${componentValue?.color}`">{{
+              componentValue?.name?.replace("_", " ")
             }}</span>
           </button>
         </template>

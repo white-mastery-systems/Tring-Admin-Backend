@@ -164,14 +164,14 @@ export const createBotIntegration = async (
     await db.insert(botIntegrationSchema).values(integration).returning()
   )[0];
 };
-export const listBotIntegrations = async (botId: string, query: any) => {
+export const listBotIntegrations = async (botId: string, query?: any) => {
   let filters: any = [eq(botIntegrationSchema.botId, botId)];
 
   let page,
     offset,
     limit = 0;
 
-  if (query.page && query.limit) {
+  if (query?.page && query?.limit) {
     page = parseInt(query.page);
     limit = parseInt(query.limit);
     offset = (page - 1) * limit;

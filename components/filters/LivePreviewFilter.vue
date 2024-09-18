@@ -32,7 +32,7 @@ watch(selectedAction, (newValue) => {
       <UiSelectValue placeholder="Select a User" />
     </UiSelectTrigger>
     <UiSelectContent>
-      <UiSelectItem value="all">All</UiSelectItem>
+      <UiSelectItem value="all">All Chats</UiSelectItem>
       <UiSelectItem v-for="(list, index) in actionFilters" :key="index" :value="list.value">
         {{ list.content }}
       </UiSelectItem>

@@ -35,7 +35,7 @@
             deleteSingleNumber({
               id: deleteCampaigntate.id,
               onSuccess: () => {
-                refresh();
+                getAllCampaign();
               },
             });
             deleteCampaigntate.open = false;
@@ -97,7 +97,7 @@
       page.value = campaign.page;
       totalPageCount.value = campaign.totalPageCount;
       totalCount.value = campaign.totalCount;
-      return campaign.data;
+      return campaign.data
     },
   });
 

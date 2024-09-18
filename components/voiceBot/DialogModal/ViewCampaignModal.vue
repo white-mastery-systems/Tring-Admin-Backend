@@ -80,7 +80,7 @@ const [selectDate, selectDateProps] = defineField("date");
 // const [selectTime, selectTimeProps] = defineField("time"); 
 // const timeString = ref('12:00 PM')
 
-watch(campaignModalState, (newState) => { });
+// watch(campaignModalState, (newState) => { });
 
 
 // watch(selectTime, (newValue) => {
