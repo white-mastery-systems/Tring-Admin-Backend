@@ -98,6 +98,7 @@
     "botName",
     "country",
     "createdAt",
+    "ClientId",
   ]);
 
   definePageMeta({
@@ -114,16 +115,24 @@
     }
 
     const csvContent =
-      columns.filter((col) => col.header !== "Action").map((col) => col.header).join(",") + // Headers
+      columns.map((col) => {
+        if (col.header === "Action") {
+          return "Client Id";
+        }
+        return col.header;
+      })
+        .join(",") + // Headers
       "\n" +
       leads.value
         .map((lead: any) => {
-          console.log(lead, "lead")
+          console.log(lead.botUser.createdAt, "lead")
           const mergedObject = {
             ...lead.botUser,
             name: lead.botUser.name,
             botName: lead.bot.name,
-            country: lead.chat?.metadata?.country
+            country: lead.chat?.metadata?.country,
+            createdAt: lead.botUser.createdAt,
+            ClientId: lead.botUser.id,
           };
           return rowList
             .map((col) => {

@@ -1,5 +1,5 @@
 <template>
-  <Page title="Integration" :disable-back-button="true" :disable-elevation="true">
+  <Page title="Integration" :disable-back-button="true" :disable-elevation="false">
     <template #actionButtons>
       <div class="flex gap-2">
         <UiButton v-if="route.query.q === 'channel'" color="primary" @click="() => {
@@ -42,7 +42,7 @@
             (page = '1'), (limit = $event);
           }
         " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
-          :data="integrationsData" :page-size="8" :is-loading="false" :height="18" :heightUnit="'vh'" />
+          :data="integrationsData" :page-size="8" :is-loading="false" :height="17" :heightUnit="'vh'" />
       </UiTabsContent>
       <UiTabsContent value="campaign">
         <DataTable @pagination="Pagination" @limit="
@@ -50,7 +50,7 @@
             (page = '1'), (limit = $event);
           }
         " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="statusColumns"
-          :data="integrationsData" :page-size="8" :is-loading="false" :height="18" :heightUnit="'vh'" />
+          :data="integrationsData" :page-size="8" :is-loading="false" :height="17" :heightUnit="'vh'" />
       </UiTabsContent>
       <UiTabsContent value="number">
         <NumberIntegration @action="handleAction" />
