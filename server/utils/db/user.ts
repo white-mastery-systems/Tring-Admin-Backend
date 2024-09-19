@@ -1,9 +1,8 @@
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 import { Argon2id } from "oslo/password";
-import { level } from "winston";
-import { logger } from "~/server/server";
+import { logger } from "~/server/logger";
 
-const config = useRuntimeConfig()
+const config = useRuntimeConfig();
 const db = useDrizzle();
 
 export const getAdminByOrgId = async (orgId: string) => {
@@ -15,44 +14,45 @@ export const getAdminByOrgId = async (orgId: string) => {
   });
 };
 
-
 export const requestResetPassword = async (userDetails: any) => {
   try {
-      const token = jwt.sign({ userId: userDetails?.id }, config?.secretKey, { expiresIn: "5m" })
-      // return token
+    const token = jwt.sign({ userId: userDetails?.id }, config?.secretKey, {
+      expiresIn: "5m",
+    });
+    // return token
 
-      const subject = "Reset Password"
+    const subject = "Reset Password";
 
-      const message = `<h3 style="padding-bottom: 1em;">Dear <b>${userDetails?.username}</b>,</h3>
+    const message = `<h3 style="padding-bottom: 1em;">Dear <b>${userDetails?.username}</b>,</h3>
           <p style="padding-bottom: 1em;">We have reset your password as per your request. Please find your new password below:</p>
           <p>Click here! </p></p><a href="${config?.adminBaseUrl}/forgot-password?token=${token}">
             <button style="background-color: blue; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Reset Password</button>
           </a>
           <p style="padding-top: 1em;padding-bottom: 1em;">We recommend that you log in to your account and change this password immediately to something more secure and memorable</p>
           <p style="padding-top: 1em;padding-bottom: 1em;">If you did not request this password reset, please contact our support team immediately.</p>
-          <p style="padding-top: 1em;">Best Regards</p><br><p>Tring AI</p>`
+          <p style="padding-top: 1em;">Best Regards</p><br><p>Tring AI</p>`;
 
-      const result = await sendEmail(userDetails?.email, subject, message)
-      console.log({ result })
-      if(!result.status) {
-        return { status: false }
-      }
-      return { status: true, result }
-  } catch(error: any) {
-    logger.error({ level: "error", message: error.message })
+    const result = await sendEmail(userDetails?.email, subject, message);
+    console.log({ result });
+    if (!result.status) {
+      return { status: false };
+    }
+    return { status: true, result };
+  } catch (error: any) {
+    logger.error({ level: "error", message: error.message });
   }
-}
-
+};
 
 export const updatePassword = async (userId: string, userDetails: any) => {
   const hashedNewPassword = await new Argon2id().hash(userDetails?.newPassword);
   return (
-    await db.update(authUserSchema)
-    .set({ 
-      password: hashedNewPassword, 
-      updatedAt: new Date() 
-    })
-    .where(eq(authUserSchema.id, userId))
-    .returning()
-  )[0]
-}
+    await db
+      .update(authUserSchema)
+      .set({
+        password: hashedNewPassword,
+        updatedAt: new Date(),
+      })
+      .where(eq(authUserSchema.id, userId))
+      .returning()
+  )[0];
+};

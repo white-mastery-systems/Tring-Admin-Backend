@@ -1,4 +1,3 @@
-import { InsertTimeline } from "~/server/schema/admin/timeline.table";
 import momentTz from "moment-timezone";
 
 const db = useDrizzle();
@@ -6,7 +5,11 @@ export const createTimeline = async (timeline: InsertTimeline) => {
   return (await db.insert(timelineSchema).values(timeline).returning())[0];
 };
 
-export const listTimelinesByChatId = async (chatId: string, query: any, timeZone: string) => {
+export const listTimelinesByChatId = async (
+  chatId: string,
+  query: any,
+  timeZone: string,
+) => {
   let data = await db.query.timelineSchema.findMany({
     where: eq(timelineSchema.chatId, chatId),
     orderBy: [desc(timelineSchema.createdAt)],
@@ -14,17 +17,21 @@ export const listTimelinesByChatId = async (chatId: string, query: any, timeZone
 
   data = data.map((i: any) => ({
     ...i,
-    createdAt:  momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
-  }))
+    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+  }));
 
-  return data
+  return data;
 };
 
-export const getTimeLineByIntent = async (chatId: string, query: any, timeZone: string) => {
-   let data: any = await db.query.timelineSchema.findFirst({
+export const getTimeLineByIntent = async (
+  chatId: string,
+  query: any,
+  timeZone: string,
+) => {
+  let data: any = await db.query.timelineSchema.findFirst({
     where: and(
       eq(timelineSchema.chatId, chatId),
-      eq(timelineSchema.event, query.q)
+      eq(timelineSchema.event, query.q),
     ),
     orderBy: [desc(timelineSchema.createdAt)],
   });
@@ -33,5 +40,5 @@ export const getTimeLineByIntent = async (chatId: string, query: any, timeZone: 
       .tz(timeZone)
       .format("DD MMM YYYY hh:mm A");
   }
-  return data
-}
+  return data;
+};

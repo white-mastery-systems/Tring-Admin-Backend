@@ -1,4 +1,4 @@
-import { logger } from "~/server/server";
+import { logger } from "~/server/logger";
 
 const db = useDrizzle();
 
@@ -18,9 +18,6 @@ const zodInsertCampaign = z.object({
   contactListId: z.string().optional(),
   type: z.string().optional(),
   metadata: z.any(),
-  // integrationId: z.string().optional(),
-  // phoneId: z.string().optional(),
-  // templateId: z.string().optional(),
 });
 
 export default defineEventHandler(async (event) => {
