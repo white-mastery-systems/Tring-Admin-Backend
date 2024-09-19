@@ -11,7 +11,7 @@ const agentModalState = defineModel<{ open: boolean }>({
 
 const formSchema = toTypedSchema(
   z.object({
-    newBotName: z.string().min(2, "Bot Name is requird."),
+    newBotName: z.string({required_error:"Bot Name is requird."}).min(2, "Bot Name is requird."),
   }),
 );
 

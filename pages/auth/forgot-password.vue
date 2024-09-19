@@ -5,11 +5,32 @@ definePageMeta({
 });
 const formSchema = toTypedSchema(
   z.object({
-    email: z.string().email("Invalid email address."),
+    email: z.string({required_error:"Invalid email address."}).email("Invalid email address."),
   }));
 const animationProps = {
   duration: 500,
 }
+  const {
+    setFieldValue,
+    handleSubmit,
+    errors,
+    values,
+    defineField,
+    resetForm,
+  } = useForm({
+    validationSchema: formSchema,
+    initialValues: {
+      // name: "",
+    },
+  });
+
+   const onSubmit =   handleSubmit( async (value:any)=>{
+    authHandlers.login(value)
+
+    const  data = await $fetch('api/user/requestResetPassword',{
+      method:'POST'
+    })
+  }) 
 </script>
 <template>
   <div class="flex flex-col items-center justify-center w-full h-full">
@@ -19,22 +40,27 @@ const animationProps = {
     <div class="flex flex-col xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0">
       <!-- <div> -->
       <!-- @submit="authHandlers.login" -->
-      <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" class="space-y-2">
-        <div class="mb-6">
-          <UiFormField v-slot="{ componentField }" name="email">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiFormLabel class="font-bold">E-mail</UiFormLabel>
-              <UiFormControl>
-                <UiInput v-bind="componentField" type="Email" placeholder="Enter Your Email" class="font-medium" />
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
-        </div>
-        <UiButton type="submit" class="flex justify-center w-full bg-[#424bd1] hover:bg-[#424bd1]">Reset
-          Password
+      <form class="space-y-2" @submit="onSubmit">
+        <div class="flex flex-col gap-2">
+          <TextField
+            type="email"
+            name="email"
+            label="E-mail"
+            placeholder="Enter Your Email"
+            required
+          />
+          <div class="relative">
+         
+          </div>
+               
+
+          <UiButton
+          type="submit"
+          class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
+          >Sign in
         </UiButton>
-      </UiForm>
+        </div>
+      </form>
     </div>
   </div>
 </template>

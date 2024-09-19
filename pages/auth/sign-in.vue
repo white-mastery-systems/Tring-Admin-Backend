@@ -113,7 +113,15 @@ import { formSchema } from '~/validationSchema/authValidation/signInValidation';
         <span class="border-align"></span> <span>Or login with</span>
         <span class="border-align"></span>
       </div> -->
-      <div class="mt-7 flex items-center justify-center gap-1 font-medium">
+            <div class="mt-4 flex  justify-end gap-1 font-medium">
+        <NuxtLink
+          to="/auth/forgot-password"
+          class="cursor-pointer text-[#424bd1] underline underline-offset-2"
+        >
+          Forgot Password
+        </NuxtLink>
+      </div>
+      <div class="mt-4 flex items-center justify-center gap-1 font-medium">
         <span>Don’t have an account?</span>
         <NuxtLink
           to="/auth/sign-up"
