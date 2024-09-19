@@ -23,7 +23,7 @@
           <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
             Personal Information
           </h3>
-          <div class="grid grid-cols-3 gap-2">
+          <div class="grid grid-cols-2 gap-2">
             <TextField
               name="username"
               label="Full Name"
@@ -40,24 +40,18 @@
               placeholder="Enter your email address"
             />
 
-            <SelectField
-              name="metadata.role"
-              label="Role"
-              placeholder="Select Role"
-              :options="roles.map((role) => ({ label: role, value: role }))"
-              :required="true"
-            />
 
-            <div class="flex gap-2">
+
+            <div class="flex gap-2 space-y-2">
               <CountryCodeField
-                class="w-[100px]"
+                class="w-[100px] mt-2 space-y-2"
                 name="countryCode"
                 label="Country Code"
                 helperText="Enter your country code"
                 required
               />
 
-              <TextField
+              <TextField class=""
                 :disableCharacters="true"
                 name="mobile"
                 label="Mobile number"
@@ -66,6 +60,13 @@
                 placeholder="Enter your mobile number"
               />
             </div>
+                        <SelectField
+              name="metadata.role"
+              label="Role"
+              placeholder="Select Role"
+              :options="roles.map((role) => ({ label: role, value: role }))"
+              :required="true"
+            />
           </div>
           <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
             Address Information
