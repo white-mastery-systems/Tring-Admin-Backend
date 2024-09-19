@@ -132,6 +132,7 @@ const {
   setFieldValue,
   values,
   handleReset,
+    resetForm
 } = useForm({
   validationSchema: toTypedSchema(speechToTextValidation),
   initialValues: {
@@ -146,6 +147,8 @@ const { data: botData, status: botLoadingStatus } = await useLazyFetch<{
 }>(`/api/voicebots/${route.params.id}`);
 if (botData.value && botData.value.speechToTextConfig) {
   console.log(botData.value.speechToTextConfig, "SPEECH TO TEXT")
+    resetForm();
+
   setFieldValue("language", botData.value.speechToTextConfig.language);
   setFieldValue("provider", botData.value.speechToTextConfig.provider);
   setFieldValue("amplificationFactor", botData.value.speechToTextConfig.amplificationFactor);

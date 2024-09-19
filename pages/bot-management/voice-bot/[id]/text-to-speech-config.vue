@@ -32,7 +32,7 @@
 import { useForm } from 'vee-validate';
 import { textToSpeechValidation } from '~/validationSchema/textToSpeechValidation';
 
-const { handleSubmit, setFieldValue, values } = useForm({
+const { handleSubmit, setFieldValue, values,resetForm } = useForm({
   initialValues: {
     multiple: []
   },
@@ -131,10 +131,60 @@ const voices = [{
   value: "aura-zeus-en",
 },
 ];
-const onSubmit = handleSubmit(values => {
-  setFieldValue("passwordConfirm", values.password);
-  setFieldValue("firstName", 'appu');
-  setFieldValue("crm", "zoho-crm");
-  alert(JSON.stringify(values, null, 2));
+const route = useRoute("bot-management-voice-bot-id-text-to-speech-config");
+
+const botData = await $fetch(`/api/voicebots/`+route.params.id);
+
+if (botData && botData.textToSpeechConfig) {
+
+  // setFieldValue("language", botData.textToSpeechConfig.language);
+  setFieldValue("provider", botData.textToSpeechConfig.provider);
+
+ if(botData.textToSpeechConfig.pitch) {
+  setFieldValue("pitch", botData.textToSpeechConfig.pitch);
+ }
+ if(botData.textToSpeechConfig.voiceType) {
+  setFieldValue("voiceType", botData.textToSpeechConfig.voiceType);
+ }
+ if(botData.textToSpeechConfig.speakingRate) {
+  setFieldValue("speakingRate", botData.textToSpeechConfig.speakingRate);
+ }
+ if(botData.textToSpeechConfig.volumeGrainDb) {
+  setFieldValue("volumeGrainDb", botData.textToSpeechConfig.volumeGrainDb);
+ }
+ if(botData.textToSpeechConfig.stability) {
+  setFieldValue("stability", botData.textToSpeechConfig.stability);
+ }
+ if(botData.textToSpeechConfig.similarityBoost) {
+  setFieldValue("similarityBoost", botData.textToSpeechConfig.similarityBoost);
+ }
+ if(botData.textToSpeechConfig.style) {
+  setFieldValue("style", botData.textToSpeechConfig.style);
+ }
+ if(botData.textToSpeechConfig.useSpeakerBoost) {
+  setFieldValue("useSpeakerBoost", botData.textToSpeechConfig.useSpeakerBoost);
+ }
+ if(botData.textToSpeechConfig.voice) {
+  setFieldValue("voice", botData.textToSpeechConfig.voice);
+ }
+ console.log(values);
+ 
+ 
+
+}
+
+
+const onSubmit =  handleSubmit(async values => {
+  // setFieldValue("passwordConfirm", values.password);
+  // setFieldValue("firstName", 'appu');
+  // setFieldValue("crm", "zoho-crm");
+  console.log(values);
+  
+  await $fetch(`/api/voicebots/${route.params.id}`, {
+    method: "PUT",
+    body: {
+      textToSpeechConfig: { ...values },
+    },
+  });
 });
 </script>
