@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import { formSchema } from '~/validationSchema/authValidation/signInValidation';
+  import { formSchema } from '~/validationSchema/authValidation/signInValidation';
+  import { useGtag } from 'vue-gtag-next'
+
+  const { event } = useGtag()
+
+  useHead({
+    title: 'Sign In | Conversational AI for Businesses | Tring AI',
+    meta: [
+      {name: 'Description', content: 'Access your Tring AI account to explore AI Powered Solutions. Sign in now to continue your journey and enhance your business efficiency!'}
+    ]
+  })
 
 
   definePageMeta({
@@ -53,7 +63,8 @@ import { formSchema } from '~/validationSchema/authValidation/signInValidation';
   // const togglePasswordVisibility = () => {
   //   passwordVisible.value = !passwordVisible.value;
   // };
-  const onSubmit =   handleSubmit((value:any)=>{
+  const onSubmit =  handleSubmit((value:any)=>{
+    event('button_click', { event_category: 'engagement', event_label: 'sign_in' })
     authHandlers.login(value)
   })
 </script>

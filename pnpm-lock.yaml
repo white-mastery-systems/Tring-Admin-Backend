@@ -162,6 +162,9 @@ importers:
       vee-validate:
         specifier: ^4.13.2
         version: 4.13.2(vue@3.4.35(typescript@5.5.4))
+      vue-gtag-next:
+        specifier: ^1.14.0
+        version: 1.14.0(vue@3.4.35(typescript@5.5.4))
       vue-sonner:
         specifier: ^1.1.4
         version: 1.1.4
@@ -5755,6 +5758,11 @@ packages:
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: '>=6.0.0'
+
+  vue-gtag-next@1.14.0:
+    resolution: {integrity: sha512-iJl+cOG2GU5NuxqzSSIpt03WVOvZqyKB9TOy7d55KiuvRklcnb2nlqxW5B/a3/sbIt7fla+XEkRyMCcoz0zAHw==}
+    peerDependencies:
+      vue: ^3.0.0-rc.11
 
   vue-router@4.4.2:
     resolution: {integrity: sha512-1qNybkn2L7QsLzaXs8nvlQmRKp8XF8DCxZys/Jr1JpQcHsKUxTKzTxCVA1G7NfBfwRIBgCJPoujOG5lHCCNUxw==}
@@ -11845,6 +11853,10 @@ snapshots:
       semver: 7.6.3
     transitivePeerDependencies:
       - supports-color
+
+  vue-gtag-next@1.14.0(vue@3.4.35(typescript@5.5.4)):
+    dependencies:
+      vue: 3.4.35(typescript@5.5.4)
 
   vue-router@4.4.2(vue@3.4.35(typescript@5.5.4)):
     dependencies:

@@ -49,7 +49,10 @@ export default defineNuxtConfig({
     logoDir: "",
     llmCallbackUrl: "",
     playGroundBotId: "",
-    fileUrl: ""
+    fileUrl: "",
+    public: {
+      googleAnalyticsId: "",
+    },
   },
 
   vite: {
@@ -57,4 +60,6 @@ export default defineNuxtConfig({
       exclude: ["vee-validate"],
     },
   },
+
+  plugins: ["~/plugins/vue-gtag.client"],
 });
