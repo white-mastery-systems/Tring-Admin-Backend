@@ -54,6 +54,7 @@ export default defineEventHandler(async (event) => {
     username: body.username,
     email: body.email,
     ...(newPassword && { password: newPassword }),
+    metadata: body.metadata,
     address: body.address,
     mobile: body.mobile,
     countryCode: body.countryCode
