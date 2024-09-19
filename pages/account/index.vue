@@ -41,14 +41,12 @@
             />
 
             <SelectField
-            name="metadata.role"
-            label="Role"
-            placeholder="Select Role"
-            :options="roles.map((role) => ({ label: role, value: role }))"
-            :required="true"
+              name="metadata.role"
+              label="Role"
+              placeholder="Select Role"
+              :options="roles.map((role) => ({ label: role, value: role }))"
+              :required="true"
             />
-
-            
 
             <div class="flex gap-2">
               <CountryCodeField
@@ -58,7 +56,7 @@
                 helperText="Enter your country code"
                 required
               />
-              
+
               <TextField
                 :disableCharacters="true"
                 name="mobile"
@@ -68,8 +66,6 @@
                 placeholder="Enter your mobile number"
               />
             </div>
-
- 
           </div>
           <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
             Address Information
@@ -214,9 +210,9 @@
               :required="true"
             />
 
-          <div class="flex w-full justify-end">
-            <UiButton type="submit" color="primary">Submit</UiButton>
-          </div>
+            <div class="flex w-full justify-end">
+              <UiButton type="submit" color="primary">Submit</UiButton>
+            </div>
           </div>
         </form>
       </UiTabsContent>
@@ -294,7 +290,9 @@
           .string({ required_error: "Country Code is required" })
           .min(1, "Country Code is required"),
         address: addressSchema,
-        metadata:z.object({ role: z.string({ required_error: "Street Name is required" })})
+        metadata: z.object({
+          role: z.string({ required_error: "Street Name is required" }),
+        }),
       })
       .refine((data) => data.password === data.confirmPassword, {
         message: "Passwords do not match.",
@@ -351,14 +349,18 @@
     handleSubmit,
     defineField,
     values,
+    resetForm
   } = useForm({
     validationSchema: computed(() => schema.value),
   });
 
   const { user, refreshUser }: { user: any; refreshUser: any } =
     await useUser();
-    console.log(user.value);
-    
+
+  const { orgDetails } = await $fetch("/api/org", {
+    method: "GET",
+  });
+
   setFieldValue("countryCode", user?.value?.countryCode);
   setFieldValue("username", user?.value?.username);
   setFieldValue("email", user?.value?.email);
@@ -369,8 +371,7 @@
   setFieldValue("address.country", user?.value?.address?.country);
   setFieldValue("address.zipCode", user?.value?.address?.zipCode);
   setFieldValue("metadata.role", user?.value?.metadata?.role);
-  console.log(values);
-  
+
   const logoutModal = ref(false);
 
   const confirmModel = () => {
@@ -387,10 +388,20 @@
   const handleAccountUpdate = handleSubmit(async (values: any) => {
     try {
       isUpdating.value = true;
-      console.log(values)
-      await $fetch("/api/user", { method: "PUT", body: values });
-      refreshUser();
-      toast.success("Account updated successfully");
+      if (tab.value === "companyDetails") {
+        await $fetch("/api/org", {
+          method: "PUT",
+          body: values,
+        });
+        toast.success("Company Details updated successfully");
+      } else {
+        await $fetch("/api/user", { method: "PUT", body: values });
+        refreshUser();
+        toast.success("Account updated successfully");
+        if(tab.value ==='privacy'){
+          resetForm()
+        }
+      }
     } catch (e) {
       console.error(e);
       toast.error("Failed to update account, please try again");
@@ -399,44 +410,46 @@
     }
   });
 
-  
- const onBoardingSchema = toTypedSchema(
-  z
-    .object({
-      name: z
-        .string({ required_error: "Company Name is required" })
-        .min(1, "Company Name is required"),
-      industry: z
-        .string({ required_error: "Industry is required" })
-        .min(2, "Industry must be provided."),
-      avgTraffic: z
-        .string({ required_error: "Website Traffic is required" })
-        .min(2, "Monthly Website Traffic must be provided."),
-      employeeCount: z
-        .string({ required_error: "Employees count is required" })
-        .min(2, "No. of Employees must be provided"),
-      otherRole: z.string().optional().default(""),
-    })
-    .refine(
-      (data: any) => {
+  const onBoardingSchema = toTypedSchema(
+    z
+      .object({
+        name: z
+          .string({ required_error: "Company Name is required" })
+          .min(1, "Company Name is required"),
+        industry: z
+          .string({ required_error: "Industry is required" })
+          .min(2, "Industry must be provided."),
+        avgTraffic: z
+          .string({ required_error: "Website Traffic is required" })
+          .min(2, "Monthly Website Traffic must be provided."),
+        employeeCount: z
+          .string({ required_error: "Employees count is required" })
+          .min(2, "No. of Employees must be provided"),
+        otherRole: z.string().optional().default(""),
+      })
+      .refine(
+        (data: any) => {
+          if (data.industry.toLowerCase() === "other") {
+            return data.otherRole.length >= 1;
+          }
+          return true;
+        },
+        {
+          message: "Other role must be provided",
+          path: ["otherRole"],
+        },
+      )
+      .transform((data: any) => {
         if (data.industry.toLowerCase() === "other") {
-          return data.otherRole.length >= 1;
+          return { ...data, industry: data.otherRole };
         }
-        return true;
-      },
-      {
-        message: "Other role must be provided",
-        path: ["otherRole"],
-      },
-    )
-    .transform((data: any) => {
-      if (data.industry.toLowerCase() === "other") {
-        return { ...data, industry: data.otherRole };
-      }
-      return data;
-    }),
-);
+        return data;
+      }),
+  );
+
+  const tab = ref("personalDetails");
   const selectedChannel = (value: any) => {
+    tab.value = value;
     if (value === "PersonalDetails") {
       schema.value = accountSchema;
       setFieldValue("countryCode", user?.value?.countryCode);
@@ -448,17 +461,28 @@
       setFieldValue("address.state", user?.value?.address?.state);
       setFieldValue("address.country", user?.value?.address?.country);
       setFieldValue("address.zipCode", user?.value?.address?.zipCode);
-     setFieldValue("metadata.role", user?.value?.metadata?.role);
-      
+      setFieldValue("metadata.role", user?.value?.metadata?.role);
     } else if (value === "privacy") {
       schema.value = formSchema;
-    }
-    else {
-      schema.value  = onBoardingSchema
+    } else {
+      schema.value = onBoardingSchema;
+      console.log(orgDetails);
+
+      setFieldValue("name", orgDetails?.name);
+      setFieldValue("industry", orgDetails?.metadata?.industry);
+      setFieldValue("customIndustry", orgDetails?.metadata?.customIndustry);
+      setFieldValue("avgTraffic", orgDetails?.metadata?.avgTraffic);
+      setFieldValue("employeeCount", orgDetails?.metadata?.employeeCount);
+
+      if(orgDetails.metadata.otherRole) {
+      setFieldValue("otherRole", orgDetails?.metadata?.employeeCount);
+
+      }
+      console.log(values);
     }
   };
 
-    const roles = [
+  const roles = [
     "Chief Executive Officer",
     "Chief Financial Officer",
     "Chief Technology Officer",
@@ -468,5 +492,4 @@
     "Sales",
     "Other",
   ];
-
 </script>
