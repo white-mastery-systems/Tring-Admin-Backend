@@ -56,7 +56,7 @@ watchEffect(() => {
 })
 const { value: fieldValue, errorMessage, meta, errors } = useField(() => props.name);
 
-const selectedValue = ref(fieldValue.value);
+const selectedValue = ref<any>(fieldValue.value);
 
 watch(selectedValue, (newValue) => {
   fieldValue.value = newValue;

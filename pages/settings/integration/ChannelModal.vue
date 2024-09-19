@@ -193,7 +193,7 @@ const handleConnect = handleSubmit(async (values: any) => {
       <TextField name="name" label="Name" placeholder="Enter Your Channel Name" helperText="" required>
       </TextField>
       <SelectField name="channel" label="Channel" placeholder="Select a channel" helperText="" :options="[
-        { value: 'whatsapp', label: 'WhatsApp', },
+  { value: 'whatsapp', label: 'Whatsapp', },
       ]" required />
       <!-- <TextField name="pid" label="pid" placeholder="Enter" helperText="" required>
       </TextField> -->
