@@ -2,7 +2,8 @@
   <Page title="Chat Bot" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-4">
-        <UiButton class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95" @click="() => { 
+        <UiButton class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95"
+          @click="() => { 
           agentModalState.open = true
           agentModalState.id = null
         }">
@@ -33,8 +34,8 @@
       }
         " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="bots"
       :page-size="20" :is-loading="isDataLoading" :height="16" height-unit="vh" />
-    </Page>
-    <AddChatBotModal v-model="agentModalState" @confirm="() => {
+  </Page>
+  <AddChatBotModal v-model="agentModalState" @confirm="() => {
       agentModalState.open = false;
       getAllChatBot()
     }"></AddChatBotModal>
@@ -46,6 +47,11 @@ import { Icon, UiBadge, UiButton } from "#components";
 definePageMeta({
   middleware: "admin-only",
 });
+// interface LocationContext {
+//   location: any;
+//   updateLocation: () => void;
+// }
+
 
 const searchBot = ref("");
 const searchBotDebounce = refDebounced(searchBot, 500);
@@ -174,12 +180,12 @@ const columns = [
       return statusComponent(row.original.status);
     },
   }),
-  columnHelper.accessor("id", {
-    header: "Action",
-    cell: ({ row }) => {
-      return actionsComponent(row.original.id);
-    },
-  }),
+  // columnHelper.accessor("id", {
+  //   header: "Action",
+  //   cell: ({ row }) => {
+  //     return actionsComponent(row.original.id);
+  //   },
+  // }),
 ];
 const Pagination = async ($evnt) => {
   filters.page = $evnt;
@@ -187,6 +193,21 @@ const Pagination = async ($evnt) => {
 
   getAllChatBot();
 };
+
+// const location = ref('North Pole')
+
+// function updateLocation() {
+//   location.value = 'South Pole'
+//   console.log("inside0-- asda")
+// }
+
+// provide<LocationContext>('location', {
+//   location,
+//   updateLocation
+// })
+const testing = () => {
+  console.log("testing")
+}
 </script>
 
 <style scoped></style>

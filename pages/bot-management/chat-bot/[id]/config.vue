@@ -153,7 +153,7 @@ setFieldValue("otherGoal", defaultFormValues.otherGoal || "");
         </div>
         <div class="flex gap-4">
           <div class="w-full">
-            <SelectField name="ROLE" label="Bot's Role" placeholder="Select Roal"
+            <SelectField name="ROLE" label="Bot's Role" placeholder="Select Rol"
               helperText="This will determine the role of the bot and behavior." :options="roles" required />
             <TextField v-if="values.ROLE === 'Other'" name="otherRole" helperText="enter role of your bot" required>
             </TextField>

@@ -25,7 +25,7 @@
           Website
         </UiTabsTrigger>
         <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')">
-          WhatsApp
+          Whatsapp
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="all">
