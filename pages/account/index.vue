@@ -183,12 +183,9 @@
               :options="industry.map((role) => ({ label: role, value: role }))"
               :required="true"
             />
-            <TextField
-              v-if="values.industry === 'Other'"
-              type="name"
-              name="otherRole"
-              :required="true"
-            />
+            <div v-if="values.industry === 'Other'">
+              <TextField type="name" name="otherRole" :required="true" />
+            </div>
 
             <SelectField
               name="avgTraffic"
@@ -330,7 +327,7 @@
       )
       .transform((data: any) => {
         if (data.industry.toLowerCase() === "other") {
-          return { ...data, industry: data.otherRole };
+          // return { ...data, industry: data.otherRole };
         }
         return data;
       }),
@@ -423,9 +420,8 @@
   const handleAccountUpdate = handleSubmit(async (values: any) => {
     try {
       isUpdating.value = true;
-      
+
       if (tab.value === "companyDetails") {
-        if(industry.includes(values.industry ))values.industry =  'Other';
         await $fetch("/api/org", {
           method: "PUT",
           body: values,
@@ -473,11 +469,8 @@
       setFieldValue("customIndustry", orgDetails?.metadata?.customIndustry);
       setFieldValue("avgTraffic", orgDetails?.metadata?.avgTraffic);
       setFieldValue("employeeCount", orgDetails?.metadata?.employeeCount);
-
-      if (orgDetails.metadata.otherRole) {
-        setFieldValue("otherRole", orgDetails?.metadata?.employeeCount);
-      }
-      console.log(values);
+        setFieldValue("otherRole", orgDetails?.metadata?.otherRole);
+        
     }
   };
 
