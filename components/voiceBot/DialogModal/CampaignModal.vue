@@ -14,7 +14,6 @@ const campaignModalState = defineModel<{ open: boolean,id: any }>({
     id: null,
   },
 });
-const {  refresh } = campaignData()
 
 const { status, data: campaignDataList, refresh: integrationRefresh, } = await useLazyFetch("/api/org/contact-list", {
   server: false,
@@ -116,6 +115,7 @@ watch(campaignModalState, (newState) => { });
 
 watch(() => campaignModalState.value.open, async (newState) => {
   console.log(campaignModalState.value, "campaignModalState")
+    resetForm()
   if (campaignModalState.value.id) {
     const getSingleDetails: any = await $fetch(`/api/org/campaign/${campaignModalState.value.id}`)
     console.log(getSingleDetails, "getSingleDetails")
@@ -123,10 +123,9 @@ watch(() => campaignModalState.value.open, async (newState) => {
     setFieldValue("countryCode", getSingleDetails.countryCode);
     setFieldValue("exoPhone", getSingleDetails.phoneNumber);
     setFieldValue("audienceBucket", getSingleDetails.contactListId);
+    setFieldValue("type", getSingleDetails.type);
 
-  } else {
-    resetForm()
-  }
+  } 
 });
 
 
@@ -155,7 +154,7 @@ const handleConnect = handleSubmit(async (values: any) => {
       await $fetch("/api/org/campaign", { method: "POST", body: payload });
       toast.success("Created successfully")
     }
-    refresh()
+    // refresh()
     emit("confirm")
   } catch(error: any) {
     toast.error(error.data)

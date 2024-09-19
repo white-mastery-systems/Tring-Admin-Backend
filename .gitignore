@@ -26,4 +26,5 @@ drizzle
 
 assets/docs/*.pdf
 *.png
+!assets/icons/*.png
 !public/favicon.png

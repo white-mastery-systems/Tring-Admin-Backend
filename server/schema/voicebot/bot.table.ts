@@ -24,7 +24,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     volumeTypeGrainDb: 0.5,
     pitch: 1.0,
     effectsProfileId: ["telephony-class-application"],
-    speakingRate: ""
+    speakingRate: 0
   }),
   speechToTextConfig: jsonb("speech_to_text_config").default({
     provider: "deepgram",

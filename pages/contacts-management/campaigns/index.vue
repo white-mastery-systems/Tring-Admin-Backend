@@ -20,9 +20,10 @@
         (filters.page = '1'), (filters.limit = $event);
       }
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
-        :data="campaignDataList" :is-loading="isDataLoading" :page-size="20" :height="13" height-unit="vh" />
+        :data="campaignDataList" :is-loading="isDataLoading" :page-size="20" :height="19" height-unit="vh" />
       <CampaignModal v-model="campaignModalState" @confirm="() => {
         campaignModalState.open = false;
+        getAllCampaign()
       }
       " />
       <ConfirmationModal v-model:open="deleteCampaigntate.open" title="Confirm Delete"
@@ -31,6 +32,8 @@
             deleteSingleNumber({
               id: deleteCampaigntate.id,
               onSuccess: () => {
+                 getAllCampaign()
+
                 // getAllCampaign(
                 // refresh();
               },
