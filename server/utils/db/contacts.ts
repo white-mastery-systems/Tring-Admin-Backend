@@ -10,10 +10,10 @@ export const createContacts = async (contacts: InsertContacts) => {
   )[0]
 }
 
-export const getContacts = async (organizationId: string, contactListId: string, query: any) => {
+export const getContacts = async (organizationId: string, contactListId: string, query?: any) => {
   let page, offset, limit = 0
     
-  if(query.page && query.limit) {
+  if(query?.page && query?.limit) {
     page = parseInt(query.page) 
     limit = parseInt(query.limit)
     offset = (page - 1) * limit;
@@ -22,7 +22,8 @@ export const getContacts = async (organizationId: string, contactListId: string,
     where: and(
       eq(contactSchema.contactListId, contactListId),
       eq(contactSchema.organizationId, organizationId)
-    )
+    ),
+    orderBy: [desc(contactSchema.createdAt)]
   })
   if(query?.page && query?.limit) {
      const paginatedContacts = data.slice(offset, offset + limit); 
