@@ -70,10 +70,22 @@ export default defineEventHandler(async (event) => {
       headers: { "Content-Type": "application/json" },
     },
   );
+
+  // const url =
+  //   "https://graph.facebook.com/v20.0/455294850990360" +
+  //   "?fields=id,name,currency,owner_business_info" +
+  //   "&access_token=EAAwYX9ZCRR1gBO6X9JuMMJHbrKqowgaXD0EPbQv5qLZCUvgAZBlxtMAqjAMIB62i32rZBaY8dz7pTpkttZBQep8RlzcLlwZCBDI6UtEXcRtj6inZA54wuiYFNs3QHEpg5Mv6P7kUx1SNVcx5ntVZBFXqXKUSvZBpt0IEek2GrhqRixtTOMNrojczAZCZBORFbIZCWHduUHOUJEBfvbjzP2iEDuhYAJsf2u3jSKmE8ar73ltqrnk9XweuvKGS7lzrxXWsoWAzK4RYCt9BzgZDZD";
+  // const response = await fetch(url, {
+  //   method: "GET",
+  //   headers: { "Content-Type": "application/json" },
+  // });
+  // const data = await response.json();
+  // console.log(data);
+
   const url =
-    "https://graph.facebook.com/v20.0/455294850990360" +
+    `https://graph.facebook.com/v20.0/${body.metadata.wabaId}` +
     "?fields=id,name,currency,owner_business_info" +
-    "&access_token=EAAwYX9ZCRR1gBO6X9JuMMJHbrKqowgaXD0EPbQv5qLZCUvgAZBlxtMAqjAMIB62i32rZBaY8dz7pTpkttZBQep8RlzcLlwZCBDI6UtEXcRtj6inZA54wuiYFNs3QHEpg5Mv6P7kUx1SNVcx5ntVZBFXqXKUSvZBpt0IEek2GrhqRixtTOMNrojczAZCZBORFbIZCWHduUHOUJEBfvbjzP2iEDuhYAJsf2u3jSKmE8ar73ltqrnk9XweuvKGS7lzrxXWsoWAzK4RYCt9BzgZDZD";
+    `&access_token=${body.metadata.access_token}`;
   const sharedBuisnessResponse = await $fetch(url, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
