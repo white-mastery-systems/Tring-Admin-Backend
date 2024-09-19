@@ -32,6 +32,10 @@ services:
       - "NUXT_LLM_CALLBACK_URL=https://tring-admin.pripod.com"
       - "NUXT_ADMIN_URL=https://tring-admin.pripod.com"
       - "NUXT_PLAY_GROUND_BOT_ID=eee8fd62-e52b-4cf9-84af-a7c7fe30cc80"
+      - "NUXT_NODEMAILER_USER=testing@whitemastery.com"
+      - "NUXT_NODEMAILER_PASS=Testing@2023"
+      - "NUXT_ADMIN_BASE_URL=http://localhost:3000"
+      - "NUXT_SECRET_KEY=secretKey"
     volumes:
       - tring-suite_admin:/app/node_modules
       - tring-admin_docs:/app/assets/docs
