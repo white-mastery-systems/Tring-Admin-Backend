@@ -49,7 +49,11 @@ export default defineNuxtConfig({
     logoDir: "",
     llmCallbackUrl: "",
     playGroundBotId: "",
-    fileUrl: ""
+    fileUrl: "",
+    secretKey: "",
+    nodemailerUser: "",
+    nodemailerPass: "",
+    adminBaseUrl: ""
   },
 
   vite: {
