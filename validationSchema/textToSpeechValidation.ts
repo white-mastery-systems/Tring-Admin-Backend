@@ -1,12 +1,12 @@
 export const textToSpeechValidation = z
   .object({
-    provider: z.string().min(1, "Provider is required").optional(),
+    provider: z.string().min(1, "Provider is required"),
     language: z.string().min(1, "Language is required").optional(),
     pitch: z.string().min(1, "Pitch is required").optional(),
     voiceType: z.string().min(1, "Voice Type is required").optional(),
     speakingRate: z.string().min(1, "Speaking Rate is required").optional(),
-    volumeGrainDb: z.string().min(1, "Volume Grain db is required").optional(),
-    stability: z.string().min(1, "stability is required").optional(),
+    volumeGrainDb: z.string().min(1, "Volume Grain Db is required").optional(),
+    stability: z.string().min(1, "Stability is required").optional(),
     similarityBoost: z
       .string()
       .min(1, "Similarity Boost is required")
@@ -17,65 +17,41 @@ export const textToSpeechValidation = z
       .min(1, "Use Speaker Boost is required")
       .optional(),
     voice: z.string().min(1, "Voice is required").optional(),
-    // voiceType: z.string().min(1, "provider is required"),
   })
-  .refine((data) => {
-    if (data.provider === "google") {
-      if (!data.language?.length) {
-        return {
-          message: "Language is required.",
-          path: ["language"],
-        };
+  .refine(
+    (data:any) => {
+      if (data.provider === "google") {
+        return (
+          !!data.language?.length &&
+          !!data.speakingRate?.length &&
+          !!data.pitch?.length &&
+          !!data.volumeGrainDb?.length
+        );
+      } else if (data.provider === "elevenlabs") {
+        return (
+          !!data.stability?.length &&
+          !!data.similarityBoost?.length &&
+          !!data.style?.length &&
+          !!data.useSpeakerBoost?.length
+        );
+      } else {
+        return !!data.voice?.length;
       }
-      if (!data.speakingRate?.length) {
-        return {
-          message: "Speaking Rate is required.",
-          path: ["speakingRate"],
-        };
-      }
-      if (!data.pitch?.length) {
-        return {
-          message: "Pitch Rate is required.",
-          path: ["pitch"],
-        };
-      }
-      if (!data.volumeGrainDb?.length) {
-        return {
-          message: "volume Grain Db Rate is required.",
-          path: ["volumeGrainDb"],
-        };
-      }
-    } else if (data.provider === "elevenlabs") {
-      if (!data.stability?.length) {
-        return {
-          message: "Stability is required.",
-          path: ["stability"],
-        };
-      }
-      if (!data.similarityBoost?.length) {
-        return {
-          message: "Similarity Boost Rate is required.",
-          path: ["similarityBoost"],
-        };
-      }
-      if (!data.style?.length) {
-        return {
-          message: "Style Rate is required.",
-          path: ["style"],
-        };
-      }
-      if (!data.useSpeakerBoost?.length) {
-        return {
-          message: "Use Speaker Boost is required.",
-          path: ["useSpeakerBoost"],
-        };
-      }
-    } else {
-      if (!data.voice?.length) {
-        return {
-          message: "Voice is required.",
-          path: ["voice"],
-        };
-      }
-    }
-  });
+    },
+    {
+      message: (ctx:any) => {
+        if (ctx.provider === "google")
+          return "Missing required fields for Google TTS.";
+        if (ctx.provider === "elevenlabs")
+          return "Missing required fields for Eleven Labs TTS.";
+        return "Voice is required.";
+      },
+      path: (ctx:any) => {
+        if (ctx.provider === "google")
+          return ["language", "speakingRate", "pitch", "volumeGrainDb"];
+        if (ctx.provider === "elevenlabs")
+          return ["stability", "similarityBoost", "style", "useSpeakerBoost"];
+        return ["voice"];
+      },
+    },
+  );
