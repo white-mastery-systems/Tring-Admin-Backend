@@ -29,7 +29,7 @@
               (filters.page = '1'), (filters.limit = $event);
             }
             " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="voiceBot"
-      :page-size="20" :is-loading="isDataLoading" :height="14" height-unit="vh" />
+      :page-size="20" :is-loading="isDataLoading" :height="16" height-unit="vh" />
     <!-- <ChannelModal /> -->
     <AgentModal v-model="agentModalState" />
     <CampaignModal v-model="campaignModalState" @confirm="
