@@ -236,6 +236,9 @@
 </template>
 <script setup lang="ts">
   import { useForm } from "vee-validate";
+import { accountSchema } from "~/validationSchema/account/accountSchema";
+import { privacySchema } from "~/validationSchema/account/privacySchema";
+import { formSchema } from "~/validationSchema/authValidation/onBoarding/2Validation";
   const passwordVisible = ref(false);
   const confirmPasswordVisible = ref(false);
   const togglePasswordVisibility = () => {
@@ -244,110 +247,8 @@
   const toggleConfirmPasswordVisibility = () => {
     confirmPasswordVisible.value = !confirmPasswordVisible.value;
   };
-  const addressSchema = z.object({
-    street: z
-      .string({ required_error: "Street Name is required" })
-      .min(2, "Street Name is required"),
-    city: z
-      .string({ required_error: "City Name is required" })
-      .min(2, "City Name is required"),
-    state: z
-      .string({ required_error: "State Name is required" })
-      .min(2, "State Name is required"),
-    country: z
-      .string({ required_error: "Country Name is required" })
-      .min(2, "Country Name is required"),
-    zipCode: z
-      .string({ required_error: "zipCode is required" })
-      .min(1, "zipCode is required"),
-  });
 
-  const accountSchema = toTypedSchema(
-    z
-      .object({
-        username: z
-          .string({ required_error: "Name is required" })
-          .min(2, "Name must be at least 2 characters."),
-        email: z
-          .string({ required_error: "Email is required" })
-          .email()
-          .default(""),
-        mobile: z
-          .string({ required_error: "Number is required" })
-          .min(2, "Number must be provided."),
-        password: z
-          .string({ required_error: "Password is required" })
-          .optional()
-          .default(""),
-        confirmPassword: z
-          .string({ required_error: "Confirm Password is required" })
-          .optional()
-          .default(""),
-        countryCode: z
-          .string({ required_error: "Country Code is required" })
-          .min(1, "Country Code is required"),
-        address: addressSchema,
-        metadata: z.object({
-          role: z.string({ required_error: "Street Name is required" }),
-        }),
-      })
-      .refine((data) => data.password === data.confirmPassword, {
-        message: "Passwords do not match.",
-        path: ["confirmPassword"], // Point to the field that has the issue
-      }),
-  );
-  const onBoardingSchema = toTypedSchema(
-    z
-      .object({
-        name: z
-          .string({ required_error: "Company Name is required" })
-          .min(1, "Company Name is required"),
-        industry: z
-          .string({ required_error: "Industry is required" })
-          .min(2, "Industry must be provided."),
-        avgTraffic: z
-          .string({ required_error: "Website Traffic is required" })
-          .min(2, "Monthly Website Traffic must be provided."),
-        employeeCount: z
-          .string({ required_error: "Employees count is required" })
-          .min(2, "No. of Employees must be provided"),
-        otherRole: z.string().optional().default(""),
-      })
-      .refine(
-        (data: any) => {
-          if (data.industry.toLowerCase() === "other") {
-            return data.otherRole.length >= 1;
-          }
-          return true;
-        },
-        {
-          message: "Other role must be provided",
-          path: ["otherRole"],
-        },
-      )
-      .transform((data: any) => {
-        if (data.industry.toLowerCase() === "other") {
-          // return { ...data, industry: data.otherRole };
-        }
-        return data;
-      }),
-  );
-  const formSchema = toTypedSchema(
-    z
-      .object({
-        // username: z.string().email("Invalid email address."),
-        password: z
-          .string({ required_error: "Password is required" })
-          .min(6, "Password must be at least 6 characters long."),
-        confirmPassword: z
-          .string({ required_error: "Confirm is required" })
-          .min(6, "Confirm Password must be at least 6 characters long."),
-      })
-      .refine((data) => data.password === data.confirmPassword, {
-        message: "Passwords do not match.",
-        path: ["confirmPassword"], // Point to the field that has the issue
-      }),
-  );
+
   let schema = ref(accountSchema);
 
   const industry = [
@@ -459,9 +360,9 @@
       setFieldValue("address.zipCode", user?.value?.address?.zipCode);
       setFieldValue("metadata.role", user?.value?.metadata?.role);
     } else if (value === "privacy") {
-      schema.value = formSchema;
+      schema.value = privacySchema;
     } else {
-      schema.value = onBoardingSchema;
+      schema.value = formSchema;
       console.log(orgDetails);
 
       setFieldValue("name", orgDetails?.name);
@@ -469,7 +370,10 @@
       setFieldValue("customIndustry", orgDetails?.metadata?.customIndustry);
       setFieldValue("avgTraffic", orgDetails?.metadata?.avgTraffic);
       setFieldValue("employeeCount", orgDetails?.metadata?.employeeCount);
+      if(orgDetails?.metadata?.industry === 'Other'){
         setFieldValue("otherRole", orgDetails?.metadata?.otherRole);
+
+      }
         
     }
   };
