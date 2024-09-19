@@ -13,7 +13,7 @@ const formSchema = toTypedSchema(
     name: z.string({ required_error: "Name is required." }).min(1, "Name is required."),
     channel: z.string({ required_error: "Channel is required." }).min(2, "Channel is required."),
     pid: z.string({ required_error: "Pid is required" }).min(2, "Pid is required"),
-    token: z.string({ required_error: "Token is required" }).min(2, "Token is required"),
+    code: z.string({ required_error: "code is required" }).min(2, "code is required"),
     wabaId: z.string({ required_error: "wabaId is required" }).min(2, "wabaId is required"),
   }),
 );
@@ -37,7 +37,7 @@ watch(() => channelModalState.value.open, async (newState) => {
     setFieldValue("name", channelSingleDetail.name);
     setFieldValue("channel", channelSingleDetail.crm);
     setFieldValue("pid", channelSingleDetail.metadata?.pid);
-    setFieldValue("token", channelSingleDetail.metadata?.token);
+    setFieldValue("code", channelSingleDetail.metadata?.code);
   } else {
     resetForm()
   }
@@ -78,7 +78,7 @@ const handleSubmssion = async () => {
     crm: values.channel,
     metadata: {
       pid: values.pid,
-      token: values.token,
+      code: values.code,
       wabaId: values.wabaId
     },
   };
@@ -89,6 +89,7 @@ const handleSubmssion = async () => {
     }
 
     else {
+
       await $fetch("/api/org/integrations", { method: "POST", body: payload });
       toast.success("Integration added successfully");
     }
@@ -101,7 +102,8 @@ const fbLoginCallback = (response: any) => {
   if (response.authResponse) {
     const code = response.authResponse.code;
     console.log("FB Code: ", code);
-    setFieldValue("token", code);
+    setFieldValue("code", code);
+
     handleSubmssion()
 
     // Send code to your backend for further processing.
@@ -168,7 +170,7 @@ const handleConnect = handleSubmit(async (values: any) => {
     crm: values.channel,
     metadata: {
       pid: values.pid,
-      token: values.token,
+      code: values.code,
     },
   };
   try {
@@ -199,12 +201,9 @@ const handleConnect = handleSubmit(async (values: any) => {
       </TextField> -->
       <!-- <TextField name="token" label="Token" placeholder="Enter Token" helperText="" required>
       </TextField> -->
-      <!-- <div class="flex items-center justify-end">
-        <UiButton type="submit" class="mt-2" color="primary"> Submit </UiButton>
-      </div> -->
-      <button type="button" @click="launchWhatsAppSignup"
-        style="background-color: #1877f2; border: 0; border-radius: 4px; color: #fff; cursor: pointer; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold; height: 40px; padding: 0 24px;">Login
-        with Facebook</button>
+      <div class="flex items-center justify-end">
+        <UiButton color="primary" type="button" @click="launchWhatsAppSignup">Login with Facebook</UiButton>
+      </div>
     </form>
   </DialogWrapper>
 
