@@ -10,7 +10,7 @@
     >
       <div
         v-if="
-          messageList.role === 'comment' &&
+          messageList?.role === 'comment' &&
           messageList.content !== 'User Details Submitted'
         "
         class="relative"
@@ -27,8 +27,8 @@
       <div
         class="flex w-full flex-col items-end"
         v-if="
-          messageList.role === 'comment' &&
-          messageList.content === 'User Details Submitted' &&
+          messageList?.role === 'comment' &&
+          messageList?.content === 'User Details Submitted' &&
           messageList?.metadata
         "
       >
@@ -71,7 +71,7 @@
       <!-- User Message -->
       <div
         class="flex w-full flex-col items-end"
-        v-if="messageList.role === 'user'"
+        v-if="messageList?.role === 'user'"
       >
         <div class="flex max-w-[80%] flex-col items-end justify-center">
           <span class="text-[14px]" style="color: #8a8a8a">{{
@@ -81,7 +81,7 @@
             class="mt-2.5 flex flex-col items-end justify-center rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black"
           >
             <div>
-              {{ messageList.content }}
+              {{ messageList?.content }}
             </div>
           </div>
           <div class="text-[12px] opacity-60">
@@ -90,7 +90,7 @@
         </div>
       </div>
       <!-- Assistant Message -->
-      <div class="w-[90%]" v-if="messageList.role === 'assistant'">
+      <div class="w-[90%]" v-if="messageList?.role === 'assistant'">
         <span class="text-[14px]" style="color: #8a8a8a">{{
           leadData?.bot.metadata.prompt.NAME
         }}</span>
