@@ -35,7 +35,9 @@ const zodUpdateVoiceBotSchema = z.object({
     type: z.string().optional(),
     size: z.number().optional(),
     url: z.string().optional(),
-  }),
+  }).optional(),
+  textToSpeechConfig: z.record(z.any()).optional(),
+  speechToTextConfig: z.record(z.any()).optional(),
   intents: z.array(z.string()).optional(),
   ivrConfig: z.record(z.any()).optional(),
 });

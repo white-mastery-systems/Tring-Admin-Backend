@@ -115,7 +115,7 @@ const actionsComponent = (id: any) => h(
     :data="integrationsData"
     :page-size="8"
     :is-loading="false"
-    :height="13"
+    :height="17"
     :heightUnit="'vh'"
   />
 </template>

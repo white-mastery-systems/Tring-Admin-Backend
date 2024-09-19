@@ -52,7 +52,7 @@
         :is-loading="isDataLoading"
         :columns="columns"
         :page-size="20"
-        :height="19"
+        :height="16"
         height-unit="vh"
       />
 

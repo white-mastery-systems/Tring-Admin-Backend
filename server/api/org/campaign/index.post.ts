@@ -1,3 +1,7 @@
+import { logger } from "~/server/server"
+
+const db = useDrizzle()
+
 const zodInsertCampaign = z.object({
   countryCode: z.string().optional(),
   phoneNumber: z.string().optional(),
@@ -25,5 +29,18 @@ export default defineEventHandler(async (event) => {
     organizationId,
    })
 
-   return data
+   if(!data) {
+     return { status: false, message: "Failed to create"}
+   }
+
+   const contactList = await db.query.contactSchema.findMany({
+    where: eq(contactSchema.contactListId, data.contactListId)
+   })
+   
+    const schedule = await scheduleEvent(data?.campaignDate, data?.campaignTime, contactList)
+    console.log({ schedule })
+    if(schedule.status) {
+      logger.info({ level: "info", message: "Message scheduled..."})
+    }
+    return data
 })

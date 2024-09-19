@@ -10,16 +10,17 @@ export const createNumberIntegration = async (numberIntegration: InsertNumberInt
   )[0];
 }
 
-export const listNumberIntegration = async (organizationId: string, query: any) => {
+export const listNumberIntegration = async (organizationId: string, query?: any) => {
    let page, offset, limit = 0
     
-  if(query.page && query.limit) {
+  if(query?.page && query?.limit) {
     page = parseInt(query.page) 
     limit = parseInt(query.limit)
     offset = (page - 1) * limit;
   }
   const data = await db.query.numberIntegrationSchema.findMany({
-    where: eq(numberIntegrationSchema.organizationId, organizationId)
+    where: eq(numberIntegrationSchema.organizationId, organizationId),
+    orderBy: [desc(numberIntegrationSchema.createdAt)]
   })
 
   if(query?.page && query?.limit) {
