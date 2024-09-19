@@ -4,23 +4,23 @@
       <div class="flex flex-col gap-2">
         <SelectField name="provider" label="provider" placeholder="Select provider" helperText="Select your provider."
           :options="providers" required />
-        <SelectField name="language" label="Language" placeholder="Select language" helperText="Select your language."
+        <SelectField v-if="values.provider === 'google'" name="language" label="Language" placeholder="Select language" helperText="Select your language."
           :options="languages" required />
         <SelectField name="voiceType" label="Voice Type" placeholder="Select Voice Type"
           helperText="Select your voiceType." :options="voiceTypes" required />
-        <TextField label="Speaking Rate" name="speakingRate" required placeholder="Enter speaking Rate"
+        <TextField v-if="values.provider === 'google'" label="Speaking Rate" name="speakingRate" required placeholder="Enter speaking Rate"
           disableCharacters />
-        <TextField label="pitch" name="pitch" required placeholder="Enter pitch" disableCharacters />
-        <TextField label="volume Grain DB" name="volumeGrainDb" required placeholder="Enter volume Grain DB"
+        <TextField  v-if="values.provider === 'google'" label="pitch" name="pitch" required placeholder="Enter pitch" disableCharacters />
+        <TextField  v-if="values.provider === 'google'" label="volume Grain DB" name="volumeGrainDb" required placeholder="Enter volume Grain DB"
           disableCharacters />
 
-        <TextField label="Stability" name="stability" required placeholder="Stability" disableCharacters />
-        <TextField label="Similarity Boost" name="similarityBoost" required placeholder="Similarity boost"
+        <TextField  v-if="values.provider === 'elevenlabs'" label="Stability" name="stability" required placeholder="Stability" disableCharacters />
+        <TextField v-if="values.provider === 'elevenlabs'" label="Similarity Boost" name="similarityBoost" required placeholder="Similarity boost"
           disableCharacters />
-        <TextField label="Style" name="style" required placeholder="Style" disableCharacters />
-        <TextField label="Use Speaker Boost" name="useSpeakerBoost" required placeholder="Use Speaker Boost"
+        <TextField v-if="values.provider === 'elevenlabs'" label="Style" name="style" required placeholder="Style" disableCharacters />
+        <TextField v-if="values.provider === 'elevenlabs'" label="Use Speaker Boost" name="useSpeakerBoost" required placeholder="Use Speaker Boost"
           disableCharacters />
-        <SelectField name="voice" label="voice" placeholder="Select voice" helperText="Select your voice."
+        <SelectField v-if="values.provider === 'deepgram'" name="voice" label="voice" placeholder="Select voice" helperText="Select your voice."
           :options="voices" required />
         <UiButton color="primary" type="submit">Submit</UiButton>
       </div>

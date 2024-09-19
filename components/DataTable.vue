@@ -120,9 +120,12 @@ watch(pageLimit, (NewValue) => {
         </UiTableFooter>
       </UiTable>
     </div>
-    <div class="flex flex-col items-center justify-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
-      <span class='text-xs text-gray-500'>Page {{ page }} of {{ totalPageCount }}</span>
-      <div class="flex space-x-4">
+    <div
+      class="flex flex-col items-center justify-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0 w-full overflow-x-scroll pb-4 sm:pb-4 md:pb-4 lg:pb-0 xl:pb-0">
+      <span class='text-xs text-gray-500 w-[10%] hidden sm:hidden md:flex lg:flex xl:flex'>Page {{ page }} of {{
+        totalPageCount
+        }}</span>
+      <div class="flex justify-end space-x-4 w-full overflow-x-scroll">
 
         <div class="flex items-center gap-2">
           <span class="text-sm text-gray-600">showing</span>

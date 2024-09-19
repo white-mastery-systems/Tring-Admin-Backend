@@ -27,13 +27,14 @@ export const updateOrganization = async (
   id: string,
   organization: Partial<InsertOrganization>,
 ) => {
-  return await db
+  return (await db
     .update(organizationSchema)
     .set({
       ...organization,
       updatedAt: new Date()
     })
-    .where(eq(organizationSchema.id, id));
+    .where(eq(organizationSchema.id, id))
+    .returning())[0]
 };
 
 // export const getAnalytics = async (
