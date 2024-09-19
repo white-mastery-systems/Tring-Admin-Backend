@@ -1,8 +1,8 @@
 // import { isNotNull, ne } from "drizzle-orm";
 
-import { count, isNotNull, isNull, like } from "drizzle-orm";
-import { InsertBotIntegration, InsertIntent } from "~/server/schema/bot";
+import { isNotNull, isNull } from "drizzle-orm";
 import momentTz from "moment-timezone";
+import { InsertBotIntegration, InsertIntent } from "~/server/schema/bot";
 
 const db = useDrizzle();
 
@@ -32,11 +32,13 @@ export const listBots = async (
     filters.push(ilike(chatBotSchema.name, `%${query.q}%`));
   }
 
-  let page, offset, limit = 0
-    
-  if(query.page && query.limit) {
-    page = parseInt(query.page) 
-    limit = parseInt(query.limit)
+  let page,
+    offset,
+    limit = 0;
+
+  if (query.page && query.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
     offset = (page - 1) * limit;
   }
 
@@ -52,20 +54,20 @@ export const listBots = async (
   });
   data = data.map((i: any) => ({
     ...i,
-    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
-  }))
+    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+  }));
 
-  if(query?.page && query?.limit) {
-     const paginatedChatBots = data.slice(offset, offset + limit); 
+  if (query?.page && query?.limit) {
+    const paginatedChatBots = data.slice(offset, offset + limit);
     return {
       page: page,
       limit: limit,
-      totalPageCount: Math.ceil(data.length/ limit) || 1,
+      totalPageCount: Math.ceil(data.length / limit) || 1,
       totalCount: data.length,
-      data: paginatedChatBots
-    }
+      data: paginatedChatBots,
+    };
   } else {
-      return data
+    return data;
   }
 };
 
@@ -99,7 +101,7 @@ export const updateBotDetails = async (
       .update(chatBotSchema)
       .set({
         ...bot,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(chatBotSchema.id, botId))
       .returning()
@@ -136,21 +138,24 @@ export const listBotIntents = async (
   return data;
 };
 
-export const updateBotIntent = async (botId: string, intentId: string, intent: InsertIntent) => {
+export const updateBotIntent = async (
+  botId: string,
+  intentId: string,
+  intent: InsertIntent,
+) => {
   return (
-    await db.update(botIntentSchema)
-    .set({
-      ...intent,
-      updatedAt: new Date()
-    })
-    .where(
-      and(
-        eq(botIntentSchema.botId, botId),
-        eq(botIntentSchema.id, intentId)
-      ))
-    .returning()
-  )[0]
-}
+    await db
+      .update(botIntentSchema)
+      .set({
+        ...intent,
+        updatedAt: new Date(),
+      })
+      .where(
+        and(eq(botIntentSchema.botId, botId), eq(botIntentSchema.id, intentId)),
+      )
+      .returning()
+  )[0];
+};
 
 export const createBotIntegration = async (
   integration: InsertBotIntegration,
@@ -162,11 +167,13 @@ export const createBotIntegration = async (
 export const listBotIntegrations = async (botId: string, query?: any) => {
   let filters: any = [eq(botIntegrationSchema.botId, botId)];
 
-  let page, offset, limit = 0
-    
-  if(query?.page && query?.limit) {
-    page = parseInt(query.page) 
-    limit = parseInt(query.limit)
+  let page,
+    offset,
+    limit = 0;
+
+  if (query?.page && query?.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
     offset = (page - 1) * limit;
   }
 
@@ -178,44 +185,53 @@ export const listBotIntegrations = async (botId: string, query?: any) => {
     },
   });
 
-  if(query?.page && query?.limit) {
-     const paginatedChatBotIntegrations = data.slice(offset, offset + limit); 
-     return {
-        page: page,
-        limit: limit,
-        totalPageCount: Math.ceil(data.length/ limit) || 1,
-        totalCount: data.length,
-        data: paginatedChatBotIntegrations
-     }
+  if (query?.page && query?.limit) {
+    const paginatedChatBotIntegrations = data.slice(offset, offset + limit);
+    return {
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length / limit) || 1,
+      totalCount: data.length,
+      data: paginatedChatBotIntegrations,
+    };
   } else {
-      return data
+    return data;
   }
 };
 
-export const getBotIntegrationById = async (botId: string, botIntegrationId: string) => {
+export const getBotIntegrationById = async (
+  botId: string,
+  botIntegrationId: string,
+) => {
   return await db.query.botIntegrationSchema.findFirst({
     where: and(
       eq(botIntegrationSchema.botId, botId),
-      eq(botIntegrationSchema.id, botIntegrationId)
-    )
-  })
-}
+      eq(botIntegrationSchema.id, botIntegrationId),
+    ),
+  });
+};
 
-export const updateBotIntegration = async(botId: string, botIntegrationId: string, botIntegration: zodInsertBotIntegration) =>{
+export const updateBotIntegration = async (
+  botId: string,
+  botIntegrationId: string,
+  botIntegration: any,
+) => {
   return (
-     await db.update(botIntegrationSchema)
-    .set({
-      ...botIntegration,
-      updatedAt: new Date()
-    })
-    .where(
-      and(
-      eq(botIntegrationSchema.botId, botId),
-      eq(botIntegrationSchema.id, botIntegrationId)
-    ))
-    .returning()
-    )[0]
-}
+    await db
+      .update(botIntegrationSchema)
+      .set({
+        ...botIntegration,
+        updatedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(botIntegrationSchema.botId, botId),
+          eq(botIntegrationSchema.id, botIntegrationId),
+        ),
+      )
+      .returning()
+  )[0];
+};
 
 export const deleteBotIntegration = async (
   botId: string,

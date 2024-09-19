@@ -1,23 +1,34 @@
 import { updateBotIntegration } from "~/server/utils/db/bot";
 
 const zodUpdateBotIntegration = z.object({
-   metadata: z.record(z.any()).optional()
-})
+  campaignId: z.string().optional(),
+  projectId: z.string().optional(),
+  pipelineId: z.string().optional(),
+  pipelineObj: z.any().optional(),
+  layoutObj: z.any().optional(),
+});
 
 export default defineEventHandler(async (event) => {
   await isOrganizationAdminHandler(event);
   const { id: botId } = await isValidRouteParamHandler(
-      event,
-      checkPayloadId("id"),
+    event,
+    checkPayloadId("id"),
   );
 
   const { integrationId: botIntegrationId } = await isValidRouteParamHandler(
     event,
     checkPayloadId("integrationId"),
   );
-  const botIntegration: any = await isValidBodyHandler(event, zodUpdateBotIntegration);
+  const botIntegration: any = await isValidBodyHandler(
+    event,
+    zodUpdateBotIntegration,
+  );
 
-  const updateIntegration = await updateBotIntegration(botId, botIntegrationId, botIntegration);
+  const updateIntegration = await updateBotIntegration(
+    botId,
+    botIntegrationId,
+    { metadata: botIntegration },
+  );
 
   return updateIntegration;
-})
+});
