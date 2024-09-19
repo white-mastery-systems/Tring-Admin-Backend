@@ -53,7 +53,7 @@ export default defineNuxtConfig({
     secretKey: "",
     nodemailerUser: "",
     nodemailerPass: "",
-    adminBaseUrl: ""
+    adminBaseUrl: "",
     public: {
       googleAnalyticsId: "",
     },
