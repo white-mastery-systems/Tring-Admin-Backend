@@ -70,13 +70,23 @@ export default defineEventHandler(async (event) => {
       headers: { "Content-Type": "application/json" },
     },
   );
+  const url =
+    "https://graph.facebook.com/v20.0/455294850990360" +
+    "?fields=id,name,currency,owner_business_info" +
+    "&access_token=EAAwYX9ZCRR1gBO6X9JuMMJHbrKqowgaXD0EPbQv5qLZCUvgAZBlxtMAqjAMIB62i32rZBaY8dz7pTpkttZBQep8RlzcLlwZCBDI6UtEXcRtj6inZA54wuiYFNs3QHEpg5Mv6P7kUx1SNVcx5ntVZBFXqXKUSvZBpt0IEek2GrhqRixtTOMNrojczAZCZBORFbIZCWHduUHOUJEBfvbjzP2iEDuhYAJsf2u3jSKmE8ar73ltqrnk9XweuvKGS7lzrxXWsoWAzK4RYCt9BzgZDZD";
+  const sharedBuisnessResponse = await $fetch(url, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  console.log({ sharedBuisnessResponse });
+
   // "redirect_uri": "https://developers.facebook.com/es/oauth/callback/?business_id=1388671167900969&nonce=6xTLiGRkpNth3wd9TLxUt62VnSe8tVN3"
 
   // const data = await response.json();
   console.log({ response: JSON.stringify(response) });
   const integration = await createIntegration({
     ...body,
-    metadata: { ...body.metadata, ...response },
+    metadata: { ...body.metadata, ...response, ...sharedBuisnessResponse },
     org_id: organizationId,
     user_id: userId?.id,
   });
