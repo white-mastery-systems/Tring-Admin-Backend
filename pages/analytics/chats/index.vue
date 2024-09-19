@@ -101,6 +101,7 @@
         location: `${chat.metadata?.city ?? "--"} - ${chat.metadata?.state ?? "--"} `,
         createdAt: `${chat?.createdAt}`,
         mode: chat?.mode,  
+        channel: chat?.channel,
       }));
     },
   });
@@ -125,6 +126,9 @@
       cell:(props)=>{
         return h("span", { class: `${props.row.original.mode==='preview' ? 'text-red-500' : 'text-green-500'}` }, props.row.original.mode)
       }
+    }),
+    columnHelper.accessor("channel", {
+      header: "Channel",
     }),
     columnHelper.accessor("createdAt", {
       header: "Date Created",

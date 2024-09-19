@@ -22,7 +22,7 @@ const { status, data: campaignDataList, refresh: integrationRefresh, } = await u
 
 const campaignListWithLabels = computed(() => {
   if (campaignDataList) {
-    return campaignDataList.value.map((item: any) => {
+    return campaignDataList.value?.map((item: any) => {
        return {
       value: item.id,
       label: item.id ? item.name : '' // Change label based on id value
@@ -41,6 +41,10 @@ const formSchema = toTypedSchema(
     date: z
       .string({required_error: 'A date is required.'})
       .refine(v => v, { message: 'A date is required.' }),
+    appt: z
+      .string({ required_error: 'Time is required.' })
+      .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, { message: 'Invalid time format.' })
+      .refine(v => !!v, { message: 'Time is required.' }),
     type: z.string({ required_error: 'Type is required' }).min(1, 'Audience Bucket Name is required'),
     exoPhone: z.string({ required_error: 'Phone Number is required' }).optional().default(""),
     countryCode: z.string({ required_error: 'Country Code is required' }).optional().default(""),
@@ -110,33 +114,48 @@ const [mobileField, mobileFieldProps] = defineField("exoPhone");
 const [countryCode, countryCodeProps] = defineField("countryCode");
 const [selectDate, selectDateProps] = defineField("date"); 
 const [selectAudienceBucketField, selectAudienceBucketProps] = defineField("audienceBucket")
+const [timeField, timeFieldAttrs] = defineField("appt");
 
 watch(campaignModalState, (newState) => { });
 
 watch(() => campaignModalState.value.open, async (newState) => {
   console.log(campaignModalState.value, "campaignModalState")
-    resetForm()
+  resetForm()
   if (campaignModalState.value.id) {
     const getSingleDetails: any = await $fetch(`/api/org/campaign/${campaignModalState.value.id}`)
-    console.log(getSingleDetails, "getSingleDetails")
     setFieldValue("date", new Date(getSingleDetails.campaignDate).toISOString().slice(0, 10));
     setFieldValue("countryCode", getSingleDetails.countryCode);
     setFieldValue("exoPhone", getSingleDetails.phoneNumber);
     setFieldValue("audienceBucket", getSingleDetails.contactListId);
-    setFieldValue("type", getSingleDetails.type);
+    setFieldValue("type", getSingleDetails?.type);
+    const time = getSingleDetails.campaignTime.match(/\d{2}:\d{2}/)[0]
+    setFieldValue("appt", time);
 
-  } 
+  }
 });
 
 
+ 
+const createUTCDate = (dateString: any, timeString: any) => {
+  const [hours, minutes] = timeString.split(':');
+  const dateParts = dateString.split('-'); // Split the date string
+  const year = parseInt(dateParts[0], 10);
+  const month = parseInt(dateParts[1], 10) - 1; // Months are zero-indexed
+  const day = parseInt(dateParts[2], 10);
+
+  // Create a date object in UTC
+  return new Date(Date.UTC(year, month, day, hours, minutes));
+}
+
 const handleConnect = handleSubmit(async (values: any) => {
-  console.log(values, "values -- values")
-  // if (values.type === 'voice') {
+  const getTime = convertTo12HourFormat(values.appt)
+  const getUTC = convertToUTC(getTime)
+
     const payload = {
       countryCode: values.countryCode,
       campaignDate: new Date(values.date).toISOString(),
       phoneNumber: values.exoPhone,
-      campaignTime: new Date(values.date).toISOString(),
+      campaignTime: getUTC,
       contactListId: values.audienceBucket,
       type: values.type,
     }
@@ -144,7 +163,6 @@ const handleConnect = handleSubmit(async (values: any) => {
     delete payload.phoneNumber
     delete payload.countryCode
   } 
-  // }
   
   try {
     if (campaignModalState.value.id) {
@@ -154,220 +172,32 @@ const handleConnect = handleSubmit(async (values: any) => {
       await $fetch("/api/org/campaign", { method: "POST", body: payload });
       toast.success("Created successfully")
     }
-    // refresh()
     emit("confirm")
   } catch(error: any) {
     toast.error(error.data)
   }
+
 });
 </script>
 <template>
   <DialogWrapper v-model="campaignModalState" :title="(campaignModalState.id) ? 'Modify Campaign' : 'Add Campaign'">
-    <UiForm v-if="false" v-slot="{ values }" @submit="handleConnect" :keep-values="true" :validate-on-mount="false"
-      class="space-y-2">
-      <div class="flex gap-2">
-        <UiFormField v-model="selectDate" v-bind="selectDateProps" name="date">
-
-          <UiFormItem class="flex flex-col">
-            <UiFormLabel :class="errors?.date ? 'text-[#ef4444]' : ''">Date
-              <UiLabel class="text-lg text-red-500">*</UiLabel>
-            </UiFormLabel>
-            <UiPopover>
-              <UiPopoverTrigger as-child>
-                <UiFormControl>
-                  <UiButton variant="outline" :class="cn(
-                  'w-[240px] ps-3 text-start font-normal',
-                    !value && 'text-muted-foreground',
-                )">
-                    <span>{{ value ? df.format(toDate(value)) : "Pick a date" }}</span>
-                    <UiCalendarIcon class="ms-auto h-4 w-4 opacity-50" />
-                  </UiButton>
-                  <input hidden>
-                </UiFormControl>
-              </UiPopoverTrigger>
-              <UiPopoverContent class="w-auto p-0">
-                <UiCalendar v-model:placeholder="placeholder" v-model="value" calendar-label="Date of birth"
-                  initial-focus :min-value="new CalendarDate(1900, 1, 1)" :max-value="today(getLocalTimeZone())"
-                  @update:model-value="(v) => {
-                  if (v) {
-                    setFieldValue('date', v.toString())
-                  }
-                  else {
-                    setFieldValue('date', undefined)
-                  }
-                }" />
-              </UiPopoverContent>
-            </UiPopover>
-            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.date }}</p>
-            <!-- <FormDescription>
-            Your date of birth is used to calculate your age.
-          </FormDescription> -->
-
-            <FormMessage />
-          </UiFormItem>
-        </UiFormField>
-      </div>
-      <!-- {{ countryList }} || sdf -->
-      <div class="flex gap-2">
-        <UiFormField v-model="countryCode" v-bind="countryCodeProps" name="countryCode" class="mt-1">
-          <UiFormItem class="mt-1">
-            <UiFormLabel :class="errors?.countryCode ? 'text-[#ef4444]' : ''">Country code
-              <span class="text-sm text-red-500">*</span>
-            </UiFormLabel>
-            <UiPopover>
-              <UiPopoverTrigger as-child>
-                <UiFormControl>
-                  <UiButton variant="outline" role="combobox" :class="cn(
-                    'w-[130px] justify-between',
-                    !values.countryCode && 'text-muted-foreground',
-                  )
-                    ">
-                    {{
-                    values.countryCode
-                    ? allCoutryDialCode.find(
-                    (dialCode: any) =>
-                    dialCode === values.countryCode,
-                    )
-                    : "Select code..."
-                    }}
-                    <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                  </UiButton>
-                </UiFormControl>
-              </UiPopoverTrigger>
-              <UiPopoverContent class="w-[130px] p-0">
-                <UiCommand>
-                  <UiCommandInput placeholder="Search code..." />
-                  <UiCommandEmpty>No codes found.</UiCommandEmpty>
-                  <UiCommandList>
-                    <div v-bind="containerProps" class="max-h-52">
-                      <div v-bind="wrapperProps">
-                        <UiCommandGroup>
-                          <UiCommandItem v-for="dialCode in countyDialCodes" :key="dialCode.data" :value="dialCode.data"
-                            @select="() => {
-                              setFieldValue('countryCode', dialCode.data);
-                            }
-                              " style="height: 32px">
-                            <Check :class="cn(
-                              'mr-2 h-4 w-4',
-                              dialCode.data === values.countryCode
-                                ? 'opacity-100'
-                                : 'opacity-0',
-                            )
-                              " />
-                            {{ dialCode.data }}
-                          </UiCommandItem>
-                        </UiCommandGroup>
-                      </div>
-                    </div>
-                  </UiCommandList>
-                </UiCommand>
-              </UiPopoverContent>
-            </UiPopover>
-            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.countryCode }}</p>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <UiFormField class="w-[80%]" v-model="mobileField" v-bind="mobileFieldProps" name="exoPhone">
-          <UiFormItem class="w-full">
-            <UiFormLabel :class="errors?.exoPhone ? 'text-[#ef4444]' : ''">
-              Number Assigned <UiLabel class="text-lg text-red-500">*</UiLabel>
-            </UiFormLabel>
-            <UiFormControl>
-              <UiInput v-model="mobileField" v-bind="mobileFieldProps" placeholder="Enter phone number" />
-            </UiFormControl>
-            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.exoPhone }}</p>
-            <!-- <UiFormMessage :error="errors.phone?.number" /> -->
-          </UiFormItem>
-        </UiFormField>
-      </div>
-      <UiFormField v-model="selectAudienceBucketField" v-bind="selectAudienceBucketProps" name="audienceBucket">
-        <UiFormItem class="w-full">
-          <UiFormLabel :class="errors?.audienceBucket ? 'text-[#ef4444]' : ''">
-            Select Audience List <UiLabel class="text-lg text-red-500">*</UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-model="selectAudienceBucketField" v-bind="selectAudienceBucketProps">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select Audience" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <div v-for="list in campaignDataList" :key="list.id">
-                  <UiSelectItem :value="list.id">{{ list.name }}</UiSelectItem>
-                </div>
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.audienceBucket }}</p>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
-      <!-- <UiFormField v-slot="{ componentField }" name="audienceBucket">
-        <UiFormItem class="w-full">
-          <UiFormLabel>
-            CRM Pipeline <UiLabel class="text-lg text-red-500">*</UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-bind="componentField">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select a Bucket" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectItem value="twilio">CRM One</UiSelectItem>
-                <UiSelectItem value="exotel">CRM Two</UiSelectItem>
-                <UiSelectItem value="plivo">CRM Three</UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField> -->
-      <div class="flex items-center justify-end">
-        <UiButton type="submit" class="mt-2" color="primary"> Submit </UiButton>
-      </div>
-    </UiForm>
-
     <form v-if="true" @submit.prevent="handleConnect" class="space-y-2">
-      <div class="flex gap-2">
-        <UiFormField v-model="selectDate" v-bind="selectDateProps" name="date">
-
-          <UiFormItem class="flex flex-col">
-            <UiFormLabel :class="errors?.date ? 'text-[#ef4444]' : ''">Date
-              <UiLabel class="text-lg text-red-500">*</UiLabel>
-            </UiFormLabel>
-            <UiPopover>
-              <UiPopoverTrigger as-child>
-                <UiFormControl>
-                  <UiButton variant="outline" :class="cn(
-                    'w-[240px] ps-3 text-start font-normal',
-                    !value && 'text-muted-foreground',
-                  )">
-                    <span>{{ value ? df.format(toDate(value)) : "Pick a date" }}</span>
-                    <UiCalendarIcon class="ms-auto h-4 w-4 opacity-50" />
-                  </UiButton>
-                  <input hidden>
-                </UiFormControl>
-              </UiPopoverTrigger>
-              <UiPopoverContent class="w-auto p-0">
-                <UiCalendar v-model:placeholder="placeholder" v-model="value" calendar-label="Date of birth"
-                  initial-focus :min-value="new CalendarDate(1900, 1, 1)" :max-value="today(getLocalTimeZone())"
-                  @update:model-value="(v) => {
-                    if (v) {
-                      setFieldValue('date', v.toString())
-                    }
-                    else {
-                      setFieldValue('date', undefined)
-                    }
-                  }" />
-              </UiPopoverContent>
-            </UiPopover>
-            <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.date }}</p>
-            <!-- <FormDescription>
-            Your date of birth is used to calculate your age.
-          </FormDescription> -->
-
-            <FormMessage />
-          </UiFormItem>
-        </UiFormField>
+      <div class="flex grid grid-cols-3 gap-2">
+        <DatePickerField name="date" label="Date" placeholder="Select a Date" required />
+        <!-- <div class="flex flex-col justify-start items-center gap-2 font-medium">
+          <label for="appt" class="pb-[1px]">Select a time <span
+              class="pb-2 text-red-500 font-medium text-[18px]">*</span></label>
+          <input type="time" id="appt" name="appt" class="border-[1px] border-solid border-grey rounded-[6px] py-1.5 px-2">
+        </div> -->
+        <div class="flex flex-col justify-start items-center gap-2 font-medium">
+          <label for="appt" class="pb-[1px] text-gray-700 w-[70%]" :class="(errors.appt) ? 'text-red-500' : ''">
+            Time <span class="pb-2 text-red-500 font-medium text-[18px]">*</span>
+          </label>
+          <input v-model="timeField" type="time" id="appt" :class="[
+            'border-[1px] border-solid rounded-[6px] py-[8px] px-2 font-normal text-[14px]',
+          ]">
+          <p v-if="errors.appt" class="text-red-500 text-[13px]">{{ errors.appt }}</p>
+        </div>
         <SelectField name="type" label="Contact Method" placeholder="Select a method" :options="[
             {
               value: 'voice',
@@ -377,9 +207,6 @@ const handleConnect = handleSubmit(async (values: any) => {
               label: 'Whatsapp',
             },
           ]" required />
-        <!-- <TextField name="name" label="Name" placeholder="enter integration name"
-          helperText="Enter a unique identification for CRM integration"
-          placeHolder="Eg: CRM-your company,CRM-your company" required /> -->
       </div>
       <div v-if="((values.type) ? (values.type === 'voice') : true)" class='flex gap-2'>
         <CountryCodeField class='w-[100px]' name="countryCode" label="Country Code" helperText="Enter your country code"

@@ -12,7 +12,11 @@ const agentModalState = defineModel<{ open: boolean, id: any }>({
 });
 const route = useRoute();
 const queryId = ref(route.params.id)
-const emit = defineEmits<{ (e: "confirm"): void }>();
+const emit = defineEmits<{
+  (e: 'confirm'): void;
+  (e: 'editConfirm'): void;
+}>();
+// const emit = defineEmits<{ (e: "confirm"): void, (e: "editConfirm"): void }>();
 const formSchema = toTypedSchema(
   z.object({
     name: z.string({ required_error: "bot name is required" }).min(2, "Bot Name is required"),
@@ -40,17 +44,19 @@ const handleAddEditBot = handleSubmit(async (values) => {
         method: "PUT",
         body: values,
       });
-      return navigateTo({
-        name: "bot-management-chat-bot-id",
-        params: { id: bot.id },
-      });
+      toast.success("Updated successfully")
     } else {
       await $fetch("/api/bots", {
         method: "POST",
         body: values,
       });
+      toast.success("Created successfully")
     }
-    emit('confirm')
+    if (agentModalState.value.id) {
+      emit("editConfirm")
+    } else {
+      emit('confirm')
+    }
   } catch (err: any) {
     toast.error(err.data.data[0].message);
   }
