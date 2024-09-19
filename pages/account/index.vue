@@ -299,8 +299,42 @@
         path: ["confirmPassword"], // Point to the field that has the issue
       }),
   );
-  let schema = ref(accountSchema);
-
+  const onBoardingSchema = toTypedSchema(
+    z
+      .object({
+        name: z
+          .string({ required_error: "Company Name is required" })
+          .min(1, "Company Name is required"),
+        industry: z
+          .string({ required_error: "Industry is required" })
+          .min(2, "Industry must be provided."),
+        avgTraffic: z
+          .string({ required_error: "Website Traffic is required" })
+          .min(2, "Monthly Website Traffic must be provided."),
+        employeeCount: z
+          .string({ required_error: "Employees count is required" })
+          .min(2, "No. of Employees must be provided"),
+        otherRole: z.string().optional().default(""),
+      })
+      .refine(
+        (data: any) => {
+          if (data.industry.toLowerCase() === "other") {
+            return data.otherRole.length >= 1;
+          }
+          return true;
+        },
+        {
+          message: "Other role must be provided",
+          path: ["otherRole"],
+        },
+      )
+      .transform((data: any) => {
+        if (data.industry.toLowerCase() === "other") {
+          return { ...data, industry: data.otherRole };
+        }
+        return data;
+      }),
+  );
   const formSchema = toTypedSchema(
     z
       .object({
@@ -317,6 +351,7 @@
         path: ["confirmPassword"], // Point to the field that has the issue
       }),
   );
+  let schema = ref(accountSchema);
 
   const industry = [
     "Real Estate",
@@ -349,7 +384,7 @@
     handleSubmit,
     defineField,
     values,
-    resetForm
+    resetForm,
   } = useForm({
     validationSchema: computed(() => schema.value),
   });
@@ -388,7 +423,9 @@
   const handleAccountUpdate = handleSubmit(async (values: any) => {
     try {
       isUpdating.value = true;
+      
       if (tab.value === "companyDetails") {
+        if(industry.includes(values.industry ))values.industry =  'Other';
         await $fetch("/api/org", {
           method: "PUT",
           body: values,
@@ -398,8 +435,8 @@
         await $fetch("/api/user", { method: "PUT", body: values });
         refreshUser();
         toast.success("Account updated successfully");
-        if(tab.value ==='privacy'){
-          resetForm()
+        if (tab.value === "privacy") {
+          resetForm();
         }
       }
     } catch (e) {
@@ -409,43 +446,6 @@
       isUpdating.value = false;
     }
   });
-
-  const onBoardingSchema = toTypedSchema(
-    z
-      .object({
-        name: z
-          .string({ required_error: "Company Name is required" })
-          .min(1, "Company Name is required"),
-        industry: z
-          .string({ required_error: "Industry is required" })
-          .min(2, "Industry must be provided."),
-        avgTraffic: z
-          .string({ required_error: "Website Traffic is required" })
-          .min(2, "Monthly Website Traffic must be provided."),
-        employeeCount: z
-          .string({ required_error: "Employees count is required" })
-          .min(2, "No. of Employees must be provided"),
-        otherRole: z.string().optional().default(""),
-      })
-      .refine(
-        (data: any) => {
-          if (data.industry.toLowerCase() === "other") {
-            return data.otherRole.length >= 1;
-          }
-          return true;
-        },
-        {
-          message: "Other role must be provided",
-          path: ["otherRole"],
-        },
-      )
-      .transform((data: any) => {
-        if (data.industry.toLowerCase() === "other") {
-          return { ...data, industry: data.otherRole };
-        }
-        return data;
-      }),
-  );
 
   const tab = ref("personalDetails");
   const selectedChannel = (value: any) => {
@@ -474,9 +474,8 @@
       setFieldValue("avgTraffic", orgDetails?.metadata?.avgTraffic);
       setFieldValue("employeeCount", orgDetails?.metadata?.employeeCount);
 
-      if(orgDetails.metadata.otherRole) {
-      setFieldValue("otherRole", orgDetails?.metadata?.employeeCount);
-
+      if (orgDetails.metadata.otherRole) {
+        setFieldValue("otherRole", orgDetails?.metadata?.employeeCount);
       }
       console.log(values);
     }
