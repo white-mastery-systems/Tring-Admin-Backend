@@ -29,7 +29,6 @@ export const formSchema = toTypedSchema(
     )
     .transform((data: any) => {
       if (data.industry.toLowerCase() === "other") {
-        return { ...data, industry: data.otherRole };
       }
       return data;
     }),

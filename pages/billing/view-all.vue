@@ -66,6 +66,7 @@
         </div>
         <button
           class="rounded-lg border border-indigo-700 px-4 py-2 font-semibold text-indigo-800 hover:border-transparent hover:bg-indigo-700 hover:text-white" :class="[(orgBilling?.plan_code === list.plan_code) ? 'bg-indigo-700 text-white' : '']"
+
           @click="choosePlan(list.plan_code)"
           :disabled="
             orgBilling?.plan_code === list.plan_code ||

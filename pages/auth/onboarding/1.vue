@@ -94,7 +94,6 @@ import { formSchema } from '~/validationSchema/authValidation/onBoarding/1Valida
             name="name"
             label="Full Name"
             placeholder="Enter Your Name"
-            class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
             :required="true"
           />
 

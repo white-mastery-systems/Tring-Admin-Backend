@@ -27,13 +27,14 @@ export const updateOrganization = async (
   id: string,
   organization: Partial<InsertOrganization>,
 ) => {
-  return await db
+  return (await db
     .update(organizationSchema)
     .set({
       ...organization,
       updatedAt: new Date()
     })
-    .where(eq(organizationSchema.id, id));
+    .where(eq(organizationSchema.id, id))
+    .returning())[0]
 };
 
 // export const getAnalytics = async (
@@ -504,7 +505,8 @@ export const getAnalytics = async (
             return { name: intent.name, value: intent.value, apiName: intent.name, color: "#40E0D0" }
           }
         })
-    ];
+    ].filter(item => item !== null)
+    .sort((a, b) => (b?.value ?? 0) - (a?.value ?? 0));
 
     return {
       statistics,

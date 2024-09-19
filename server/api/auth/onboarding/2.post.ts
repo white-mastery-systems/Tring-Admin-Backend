@@ -3,6 +3,7 @@ const bodyValidationSchema = z.object({
   industry: z.string().min(1),
   avgTraffic: z.string().min(1),
   employeeCount: z.string().min(1),
+  otherRole: z.string().optional()
 });
 export default defineEventHandler(async (event) => {
   const body = await isValidBodyHandler(event, bodyValidationSchema);
@@ -20,6 +21,7 @@ export default defineEventHandler(async (event) => {
       industry: body.industry,
       avgTraffic: body.avgTraffic,
       employeeCount: body.employeeCount,
+      otherRole: body?.otherRole
     },
   });
 

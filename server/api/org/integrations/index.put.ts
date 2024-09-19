@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const zodInsertIntegration = z.object({
     crm: z.nativeEnum(CRMType),
-    metaData: z.object({
+    metadata: z.object({
       apiKey: z.string().optional(),
       code: z.string().optional(),
       location: z.string().optional(),
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     body.crm,
   );
   const generatedAuthResponse: any = await $fetch(
-    `https://accounts.zoho.in/oauth/v2/token?client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&grant_type=authorization_code&client_secret=922f18d9e0d820fbebb9d93fee5cc8201e58fbda8c&redirect_uri=${config.redirectUrl}/${body.crm}&code=${body.metaData.code}`,
+    `https://accounts.zoho.in/oauth/v2/token?client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&grant_type=authorization_code&client_secret=922f18d9e0d820fbebb9d93fee5cc8201e58fbda8c&redirect_uri=${config.redirectUrl}/${body.crm}&code=${body.metadata.code}`,
     { method: "POST" },
   );
 
