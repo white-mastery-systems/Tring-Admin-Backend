@@ -23,7 +23,7 @@
           <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
             Personal Information
           </h3>
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-3 gap-2">
             <TextField
               name="username"
               label="Full Name"
@@ -39,6 +39,17 @@
               required
               placeholder="Enter your email address"
             />
+
+            <SelectField
+            name="metadata.role"
+            label="Role"
+            placeholder="Select Role"
+            :options="roles.map((role) => ({ label: role, value: role }))"
+            :required="true"
+            />
+
+            
+
             <div class="flex gap-2">
               <CountryCodeField
                 class="w-[100px]"
@@ -47,6 +58,7 @@
                 helperText="Enter your country code"
                 required
               />
+              
               <TextField
                 :disableCharacters="true"
                 name="mobile"
@@ -56,6 +68,8 @@
                 placeholder="Enter your mobile number"
               />
             </div>
+
+ 
           </div>
           <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
             Address Information
@@ -200,11 +214,9 @@
               :required="true"
             />
 
-            <UiButton
-              type="submit"
-              class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
-              >Proceed
-            </UiButton>
+          <div class="flex w-full justify-end">
+            <UiButton type="submit" color="primary">Submit</UiButton>
+          </div>
           </div>
         </form>
       </UiTabsContent>
@@ -282,6 +294,7 @@
           .string({ required_error: "Country Code is required" })
           .min(1, "Country Code is required"),
         address: addressSchema,
+        metadata:z.object({ role: z.string({ required_error: "Street Name is required" })})
       })
       .refine((data) => data.password === data.confirmPassword, {
         message: "Passwords do not match.",
@@ -344,6 +357,8 @@
 
   const { user, refreshUser }: { user: any; refreshUser: any } =
     await useUser();
+    console.log(user.value);
+    
   setFieldValue("countryCode", user?.value?.countryCode);
   setFieldValue("username", user?.value?.username);
   setFieldValue("email", user?.value?.email);
@@ -353,6 +368,9 @@
   setFieldValue("address.state", user?.value?.address?.state);
   setFieldValue("address.country", user?.value?.address?.country);
   setFieldValue("address.zipCode", user?.value?.address?.zipCode);
+  setFieldValue("metadata.role", user?.value?.metadata?.role);
+  console.log(values);
+  
   const logoutModal = ref(false);
 
   const confirmModel = () => {
@@ -369,6 +387,7 @@
   const handleAccountUpdate = handleSubmit(async (values: any) => {
     try {
       isUpdating.value = true;
+      console.log(values)
       await $fetch("/api/user", { method: "PUT", body: values });
       refreshUser();
       toast.success("Account updated successfully");
@@ -429,6 +448,8 @@
       setFieldValue("address.state", user?.value?.address?.state);
       setFieldValue("address.country", user?.value?.address?.country);
       setFieldValue("address.zipCode", user?.value?.address?.zipCode);
+     setFieldValue("metadata.role", user?.value?.metadata?.role);
+      
     } else if (value === "privacy") {
       schema.value = formSchema;
     }
@@ -436,4 +457,16 @@
       schema.value  = onBoardingSchema
     }
   };
+
+    const roles = [
+    "Chief Executive Officer",
+    "Chief Financial Officer",
+    "Chief Technology Officer",
+    "Chief Operating Officer",
+    "Chief Information Officer",
+    "Chief Marketing Officer",
+    "Sales",
+    "Other",
+  ];
+
 </script>
