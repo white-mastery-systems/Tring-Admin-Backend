@@ -20,6 +20,7 @@ export default defineEventHandler(async (event) => {
         status: z.string().optional(),
         pid: z.string().optional(),
         token: z.string().optional(),
+        wabaId: z.string().optional(),
       }),
     })
     .refine(
