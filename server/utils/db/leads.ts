@@ -10,7 +10,7 @@ import {
   subYears,
 } from "date-fns";
 import { count, inArray } from "drizzle-orm";
-import { InsertLead } from "~/server/schema/bot";
+import { InsertLead } from "~/server/schema/chatbot/leads.table";
 import momentTz from "moment-timezone"
 
 const db = useDrizzle();

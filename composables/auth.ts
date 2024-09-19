@@ -25,6 +25,7 @@ export const useUser = async () => {
      const storedUser = localStorage.getItem('user');
      user.value = storedUser ? JSON.parse(storedUser) : null;
    };
+   
   if (!user.value) {
     await refreshUser();
   }

@@ -1,14 +1,5 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
-import {
-  adminConfigurationSchema,
-  adminPricingSchema,
-  campaignSchema,
-  contactListSchema,
-  paymentSchema,
-} from "../schema/admin";
-import { analyticsRelations, chatBotIntegrationRelations } from "../schema/bot";
-import { voicebotIntegrationSchema } from "../schema/voicebot";
 
 const runtimeConfig = useRuntimeConfig();
 

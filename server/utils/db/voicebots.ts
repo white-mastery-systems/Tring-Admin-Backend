@@ -1,4 +1,4 @@
-import { InsertVoicebotIntegration } from "~/server/schema/voicebot";
+import { InsertVoicebotIntegration } from "~/server/schema/voicebot/botIntegration.table";
 import momentTz from "moment-timezone";
 import { count } from "drizzle-orm";
 

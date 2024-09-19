@@ -1,4 +1,4 @@
-import { InsertNumberIntegration } from "~/server/schema/admin";
+import { InsertNumberIntegration } from "~/server/schema/admin/numberIntegraion.table";
 
 const db = useDrizzle();
 

@@ -54,6 +54,9 @@ export default defineNuxtConfig({
     nodemailerUser: "",
     nodemailerPass: "",
     adminBaseUrl: ""
+    public: {
+      googleAnalyticsId: "",
+    },
   },
 
   vite: {
@@ -61,4 +64,6 @@ export default defineNuxtConfig({
       exclude: ["vee-validate"],
     },
   },
+
+  plugins: ["~/plugins/vue-gtag.client"],
 });
