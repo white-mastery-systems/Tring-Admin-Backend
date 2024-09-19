@@ -5,11 +5,13 @@ const zodQueryvalidator = z.object({
 })
 
 export default defineEventHandler(async (event) => {
+  const timeZoneHeader = event.node?.req?.headers["time-zone"];
+  const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
 
   const query = await isValidQueryHandler(event, zodQueryvalidator)
   
-  const data = await campaignList(organizationId, query)
+  const data = await campaignList(organizationId, query, timeZone)
 
   return data
 })
