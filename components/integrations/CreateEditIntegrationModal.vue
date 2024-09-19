@@ -78,7 +78,7 @@ watch(
   { deep: true },
 );
 const handleConnect = handleSubmit(async (values: any) => {
-  console.log({values})
+  console.log({ values })
   let url = `${window.location.origin}/settings/integration/${values.crm}`;
   // let url = "https://app.tringlabs.ai/settings";
   let scope = "";
@@ -97,7 +97,12 @@ const handleConnect = handleSubmit(async (values: any) => {
   if (integrationModalProps?.id) {
     await updateIntegrationById({
       id: integrationModalProps.id,
-      integrationDetails: payload,
+      integrationDetails: {
+        ...values,
+        scope,
+        url,
+        // ...(values.crm !== "sell-do" && { metadata: { status: "pending" } }),
+      },
       onSuccess: () => {
         emit("success");
       },
