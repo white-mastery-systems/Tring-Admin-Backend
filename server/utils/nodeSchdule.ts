@@ -65,7 +65,7 @@ const sendWhatsappTemplateMessage = async (
  }
 };
 
-export const scheduleEvent = async (date: any, time: any, contactList: any) => {
+export const scheduleEvent = async (date: any, time: any, contactList: any,campaignInformation:any) => {
   try {
     console.log({ contactList })
     const phoneId="361306107076548"
