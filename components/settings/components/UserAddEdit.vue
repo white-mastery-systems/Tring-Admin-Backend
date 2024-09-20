@@ -41,7 +41,7 @@
       @confirm="
         () => {
           if (deleteUserState?.id) {
-            deleteSingleNumber({
+            deleteSingleUser({
               id: deleteUserState.id,
               onSuccess: () => {
                 getAllUser();
