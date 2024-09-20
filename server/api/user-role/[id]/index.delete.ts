@@ -1,0 +1,19 @@
+import { deleteUserRoleById } from "~/server/utils/db/user-role";
+
+export default defineEventHandler(async(event) => {
+  const { id: roleId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
+
+  const roleDetails:any = await getUserRoleById(roleId)
+  if(!roleDetails){
+    return sendError(
+      event,
+      createError({
+        statusCode: 400,
+        statusMessage: "The role data for the provided ID was not found",
+      }),
+    );
+  }
+
+  const data = await deleteUserRoleById(roleId)
+  return data
+  });

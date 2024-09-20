@@ -3,11 +3,16 @@ import {
   type InferSelectModel,
   relations,
 } from "drizzle-orm";
-import { jsonb, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { json, jsonb, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 
 import { adminSchema } from ".";
 import { organizationSchema, paymentSchema } from "./admin";
+
+type permissionsItem = {
+  // key: string;
+  // value: number;
+}
 
 // Table definitions
 export const authUserSchema = adminSchema.table("user", {
@@ -30,6 +35,19 @@ export const authUserSchema = adminSchema.table("user", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+// User Role table
+export const authUserRoleSchema = adminSchema.table("user_role", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  role: text("role").notNull(),
+  organizationId: uuid("organization_id").references(
+    () => organizationSchema.id,
+    { onDelete: "cascade" },
+  ),
+  permissions: json("permissions").$type<permissionsItem[]>().default([]),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
 
 export const authSessionSchema = adminSchema.table("session", {
   id: text("id").primaryKey(),
@@ -65,6 +83,9 @@ export const sessionRelations = relations(authSessionSchema, ({ one }) => ({
 export type SelectRawUser = InferSelectModel<typeof authUserSchema>;
 export type SelectUser = Omit<SelectRawUser, "password">;
 export type InsertUser = InferInsertModel<typeof authUserSchema>;
+
+export type InsertUserRole = InferInsertModel<typeof authUserRoleSchema>;
+export type SelectUserRole = InferInsertModel<typeof authUserRoleSchema>;
 
 export type SelectSession = InferSelectModel<typeof authSessionSchema>;
 export type InsertSession = InferInsertModel<typeof authSessionSchema>;
