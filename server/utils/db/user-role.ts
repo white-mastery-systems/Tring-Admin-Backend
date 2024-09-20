@@ -37,12 +37,12 @@ export const getAllUserRolesByOrgId = async (organizationId: string, query?: any
 
   const conditions = [
     eq(authUserRoleSchema.organizationId, organizationId),
-    ne(authUserRoleSchema.role, "admin"),
+    ne(authUserRoleSchema.name, "admin"),
   ];
   
   if (query?.q) {
     conditions.push(
-      like(authUserRoleSchema.role, `%${query.q}%`) // This simulates the regex behavior
+      like(authUserRoleSchema.name, `%${query.q}%`) // This simulates the regex behavior
     );
   }
   
@@ -65,10 +65,10 @@ export const getAllUserRolesByOrgId = async (organizationId: string, query?: any
   }
 };
 
-export const isRoleExists = async (role: string, organizationId:string) => {
+export const isRoleExists = async (name: string, organizationId:string) => {
   const isExistsRole = await db.query.authUserRoleSchema.findFirst({
     where: and(
-      eq(authUserRoleSchema.role, role),
+      eq(authUserRoleSchema.name, name),
       eq(authUserRoleSchema.organizationId, organizationId),
     )
   })
