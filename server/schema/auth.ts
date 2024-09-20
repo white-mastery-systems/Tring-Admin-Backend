@@ -47,7 +47,7 @@ export const authUserRoleSchema = adminSchema.table("user_role", {
     () => organizationSchema.id,
     { onDelete: "cascade" },
   ),
-  permissions: json("permissions").$type<permissionsItem[]>().default([]),
+  permissions: json("permissions"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })

@@ -3,7 +3,7 @@ import { isRoleExists } from "~/server/utils/db/user-role";
 const bodyValidator = z
   .object({
     name: z.string().optional(),
-    permissions: z.array(z.object({})).optional(),
+    permissions: z.object({}).optional(),
   })
 
 export default defineEventHandler(async(event) => {
