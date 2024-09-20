@@ -35,3 +35,31 @@ export default defineEventHandler(async (event) => {
 
   return { templateResponse, phoneNumberRespone };
 });
+
+async function clientWABAS() {
+  const url =
+    "https://graph.facebook.com/v20.0/1388671167900969/client_whatsapp_business_accounts" +
+    "?fields=id,name,currency,owner_business_info" +
+    "&limit=20" +
+    "&access_token=EAAwYX9ZCRR1gBOwtd4QY2r5D4YZCktWfu5EI4sSCZCVIpjalrnCxE7nJ2ZA7jZCVpvVbCbwYDAZAfuMQVNQ3oiZCEsqFn6CCMFTYDZCIKxhNHi8fdnAnJWBnvrfZCanGJGA2eiDIgcA84y84y2cCakXt5Ngw9qH6qaok2p5OKvZCl0TQ75p2SNQ1FYToQU2uQ2uGPvfwZDZD";
+  const response = await fetch(url, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await response.json();
+  console.log(data);
+}
+
+async function selfOwnedWABAS() {
+  const url =
+    "https://graph.facebook.com/v20.0/1388671167900969/owned_whatsapp_business_accounts" +
+    "?fields=id,name,currency,owner_business_info" +
+    "&limit=20" +
+    "&access_token=EAAwYX9ZCRR1gBOwtd4QY2r5D4YZCktWfu5EI4sSCZCVIpjalrnCxE7nJ2ZA7jZCVpvVbCbwYDAZAfuMQVNQ3oiZCEsqFn6CCMFTYDZCIKxhNHi8fdnAnJWBnvrfZCanGJGA2eiDIgcA84y84y2cCakXt5Ngw9qH6qaok2p5OKvZCl0TQ75p2SNQ1FYToQU2uQ2uGPvfwZDZD";
+  const response = await fetch(url, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await response.json();
+  console.log(data);
+}

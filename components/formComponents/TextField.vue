@@ -1,5 +1,5 @@
 <template>
-  <div :class="cn('w-full',props?.endIcon?'relative':'')">
+  <div :class="cn('w-full', props?.endIcon ? 'relative' : '')">
     <UiLabel :class="['capitalize flex items-center', errorMessage ? 'text-red-500' : '']" v-if="label"
       :for="replacedId">
       {{ label }}
@@ -20,9 +20,9 @@
     }
 
       " :placeholder="placeholder" :id="replacedId" :class="errorMessage ? 'border-red-500' : 'border-input'"
-      v-model="value" :type="type || 'text'" />
+      v-model="value" :type="type === 'phone' ? 'text' : type || 'text'" />
 
-    <UiInput  v-else  :class="cn('mt-2',props.class,errorMessage ? 'border-red-500' : 'border-input')" @keypress="(e: any) => {
+    <UiInput v-else :class="cn('mt-2', props.class, errorMessage ? 'border-red-500' : 'border-input')" @keypress="(e: any) => {
       if (disableCharacters) {
         if (e.key === 'Enter') {
           return;
@@ -31,12 +31,11 @@
           e.preventDefault();
         }
       }
-    } "
-      :disabled="disabled"
-    :placeholder="placeholder" :id="replacedId" 
+    }" :maxlength="props?.type === 'phone' ? 10 : ''" :disabled="disabled" :placeholder="placeholder" :id="replacedId"
       v-model="value" :type="type || 'text'" />
-    <div  :class="cn(props?.endIcon?'absolute right-[10px] top-[38px] cursor-pointer':'absolute right-[10px] top-[38px]')">
-    <slot  name="endIcon"></slot>
+    <div
+      :class="cn(props?.endIcon ? 'absolute right-[10px] top-[38px] cursor-pointer' : 'absolute right-[10px] top-[38px]')">
+      <slot name="endIcon"></slot>
     </div>
 
     <span :class="['text-xs text-gray-500', errorMessage ? ' text-red-500 font-medium' : '']">{{ errorMessage ??
@@ -58,8 +57,8 @@ const props = withDefaults(defineProps<{
   disableCharacters?: boolean;
   isTextarea: boolean;
   disabled?: boolean;
-  class?:string;
-  endIcon?:any
+  class?: string;
+  endIcon?: any;
 }>(), {
   label: '',
   type: 'text',
@@ -69,8 +68,9 @@ const props = withDefaults(defineProps<{
   disableCharacters: false,
   isTextarea: false,
   disabled: false,
-  class:''
+  class: ''
 });
+console.log({ props: props.type })
 const replacedId = ref(props.label ?? props.name)
 const { value, errorMessage }: { value: any, errorMessage: any } = useField(() => props.name);
 
