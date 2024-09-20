@@ -8,7 +8,7 @@ const zodBodyValidator = z.object({
    mobile: z.string(),
    email: z.string(),
    password: z.string(),
-   roleId: z.string()
+   roleId: z.string().optional()
 })
 
 export default defineEventHandler(async (event) => {
