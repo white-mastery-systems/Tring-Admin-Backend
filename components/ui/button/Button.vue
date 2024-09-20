@@ -1,9 +1,10 @@
 <script setup lang="ts">
+
   import { Primitive, type PrimitiveProps } from "radix-vue";
   import type { HTMLAttributes } from "vue";
   import { type ButtonVariants, buttonVariants } from ".";
 
-  interface Props extends PrimitiveProps {
+  interface Props extends /* @vue-ignore */  PrimitiveProps {
     variant?: ButtonVariants["variant"];
     size?: ButtonVariants["size"];
     class?: HTMLAttributes["class"];
@@ -23,7 +24,7 @@
 
 <template>
   <Primitive
-    :as="as"
+    as="button"
     :as-child="asChild"
     :class="
       cn(

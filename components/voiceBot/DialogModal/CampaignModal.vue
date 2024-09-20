@@ -146,7 +146,7 @@ watch(() => campaignModalState.value.open, async (newState) => {
 const handleConnect = handleSubmit(async (values: any) => {
   const getTime = convertTo12HourFormat(values.appt)
   const getUTC = convertToUTC(getTime)
-
+  console.log(values, 'values')
   const payload = {
     countryCode: values.countryCode,
     campaignDate: new Date(values.date).toISOString(),
@@ -157,7 +157,7 @@ const handleConnect = handleSubmit(async (values: any) => {
     metadata: {
       templateId: values.templateId,
       phoneId: values.phoneId,
-      integrationId: values.integrationid
+      integrationId: values.integrationId
     }
   }
   if (values.type === 'whatsapp') {

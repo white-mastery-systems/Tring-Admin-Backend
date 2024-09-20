@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
 
   const body: any = await isValidBodyHandler(event, zodInsertCampaign);
-
+  console.log({ body });
   const data = await createCampaign({
     ...body,
     organizationId,
@@ -37,12 +37,16 @@ export default defineEventHandler(async (event) => {
   const contactList = await db.query.contactSchema.findMany({
     where: eq(contactSchema.contactListId, data.contactListId),
   });
-
+  const integrationData = await db.query.integrationSchema.findFirst({
+    where: eq(integrationSchema.id, body.metadata.integrationId),
+  });
+  console.log(integrationData);
   const schedule = await scheduleEvent(
     data?.campaignDate,
     data?.campaignTime,
     contactList,
     body,
+    integrationData,
   );
   console.log({ schedule });
   if (schedule.status) {
