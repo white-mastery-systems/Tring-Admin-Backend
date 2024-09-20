@@ -61,7 +61,7 @@ const sendWhatsappTemplateMessage = async (
             language: {
               code: language ?? "en_US",
             },
-            components,
+            // components,
           },
         },
       },
@@ -77,16 +77,20 @@ export const scheduleEvent = async (
   time: any,
   contactList: any,
   campaignInformation: any,
+  whatsappInformation: any,
 ) => {
   try {
     console.log({ contactList });
-    const phoneId = "361306107076548";
-    const metaToken =
-      "EAAwYX9ZCRR1gBO2g5XEpsR7ZAhogIpibKW577rwe2GErcWZCQS7uPM3HPO9lsQaKVVlAV2DBBy2ltUU5ByuZCc0BwSKK4jZCZCg6xZCGA0NBKtJAvhd3rLBzf8fe3SoXxtYqaAGbdynj0cbfpOO3qz3Gpn5cF7dY5eDWPKVwkmFpQLe9ZA6ENZC6gkfy529hEAr8THdBfToWDU6uRhu1MMXxo7RUClwByaxRj748LkAVD3UzmUxxULM0pZCkTuEO4gct8y5norOPSs1gZDZD";
+    const phoneId = campaignInformation?.metadata?.phoneId;
+    // const phoneId = "361306107076548";
+    const metaToken = whatsappInformation?.metadata?.access_token;
+    // const metaToken =
+    //   "EAAwYX9ZCRR1gBO2g5XEpsR7ZAhogIpibKW577rwe2GErcWZCQS7uPM3HPO9lsQaKVVlAV2DBBy2ltUU5ByuZCc0BwSKK4jZCZCg6xZCGA0NBKtJAvhd3rLBzf8fe3SoXxtYqaAGbdynj0cbfpOO3qz3Gpn5cF7dY5eDWPKVwkmFpQLe9ZA6ENZC6gkfy529hEAr8THdBfToWDU6uRhu1MMXxo7RUClwByaxRj748LkAVD3UzmUxxULM0pZCkTuEO4gct8y5norOPSs1gZDZD";
     // const metaToken= "EAAwYX9ZCRR1gBO2ioA7fTdz5SUSdLZAcDdHyQZCIi7dAiKkI2OVqYEgpbbY1JUTPF6FsbbvYbV4hFwZBMtehzff98JFdf2V5YFZBALLSEo0BHFYk54tii9cefhX28ZBi3XjIOaDMrpsrDW3xQcQbRv5BYCP5nZBRGXJoUSAcgPd79X0jSPtArfvSdVspKBbesISKQZDZD"
     // const phoneId= "112867458396790"
     // const userPhone= "919841513901"
-    const templateName = "client_follow_up_sis";
+    const templateName = campaignInformation?.metadata?.templateId;
+    // const templateName = "client_follow_up_sis";
     const organization = "South India Shelters";
     const salesmanager = "Reena";
     const language = "en";
