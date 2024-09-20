@@ -40,6 +40,29 @@ const signup = async (values: Record<string, any>) => {
     toast.error(error?.statusMessage || "An error occurred");
   }
 };
+const forgotPassword = async (values: Record<string, any>) => {
+  try {
+    const data = await $fetch("/api/user/requestResetPassword", {
+      method: "post",
+      body: values,
+    });
+      toast.success("Your password change request was successful. Please check your email for further details");
+  } catch (error: any) {
+    toast.error(error?.statusMessage || "An error occurred");
+  }
+};
+const resetPassword = async (values: Record<string, any>,token:any) => {
+  try {
+    const data = await $fetch("/api/user/forgot-password?token=" + token, {
+      method: "post",
+      body: values,
+    });
+      toast.success("Your password changed successfully");
+     return navigateTo("/");
+  } catch (error: any) {
+    toast.error(error?.statusMessage || "An error occurred");
+  }
+};
 
 const logout = async () => {
   await $fetch("/api/auth/logout", {
@@ -63,4 +86,6 @@ export const authHandlers = {
   signup,
   logout,
   redirectToRoleHome,
+  forgotPassword,
+  resetPassword,
 };

@@ -188,6 +188,11 @@
           icon: SettingsIcon,
           path: "/integration",
         },
+        {
+          name: "User Management",
+          icon: SettingsIcon,
+          path: "/user-management",
+        },
       ],
     },
     {

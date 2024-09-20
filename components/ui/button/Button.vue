@@ -24,7 +24,7 @@
 
 <template>
   <Primitive
-    :as="as"
+    as="button"
     :as-child="asChild"
     :class="
       cn(
