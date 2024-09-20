@@ -32,6 +32,9 @@ export const authUserSchema = adminSchema.table("user", {
     () => organizationSchema.id,
     { onDelete: "cascade" },
   ),
+  roleId: uuid("role_id").references(
+    () => authUserRoleSchema.id
+  ),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
