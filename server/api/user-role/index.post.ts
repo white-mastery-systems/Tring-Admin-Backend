@@ -2,7 +2,7 @@ import { isRoleExists } from "~/server/utils/db/user-role";
 
 const bodyValidator = z
   .object({
-    role: z.string().optional(),
+    name: z.string().optional(),
     permissions: z.array(z.object({})).optional(),
   })
 
