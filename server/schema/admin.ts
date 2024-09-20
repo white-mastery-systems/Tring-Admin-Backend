@@ -178,7 +178,6 @@ export const organizationRelations = relations(
   organizationSchema,
   ({ many }) => ({
     users: many(authUserSchema),
-    userRoles: many(authUserRoleSchema),
     bots: many(chatBotSchema),
     botUsers: many(botUserSchema),
     leads: many(leadSchema),
