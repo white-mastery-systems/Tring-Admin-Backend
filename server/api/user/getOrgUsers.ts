@@ -1,7 +1,7 @@
 import { getOrgUsers } from "~/server/utils/db/user"
 
 const zodQueryValidator = z.object({
-  query: z.string().optional(),
+  q: z.string().optional(),
   page: z.string().optional(),
   limit: z.string().optional()
 })

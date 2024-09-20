@@ -15,7 +15,7 @@ import {
 
 import { createInsertSchema } from "drizzle-zod";
 import { adminSchema } from ".";
-import { authUserSchema } from "./auth";
+import { authUserSchema, authUserRoleSchema } from "./auth";
 import { botUserSchema, chatBotSchema, leadSchema } from "./bot";
 const nextMonthDate = addMonths(new Date(), 1);
 const nextMonthAndDayDate = addDays(nextMonthDate, 1);
@@ -178,6 +178,7 @@ export const organizationRelations = relations(
   organizationSchema,
   ({ many }) => ({
     users: many(authUserSchema),
+    userRoles: many(authUserRoleSchema),
     bots: many(chatBotSchema),
     botUsers: many(botUserSchema),
     leads: many(leadSchema),
