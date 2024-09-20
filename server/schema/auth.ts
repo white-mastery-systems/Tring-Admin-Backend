@@ -39,7 +39,7 @@ export const authUserSchema = adminSchema.table("user", {
 // User Role table
 export const authUserRoleSchema = adminSchema.table("user_role", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  role: text("role").notNull(),
+  name: text("name").notNull(),
   organizationId: uuid("organization_id").references(
     () => organizationSchema.id,
     { onDelete: "cascade" },

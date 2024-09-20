@@ -3,7 +3,7 @@ const db = useDrizzle()
 
 const bodyValidator = z
   .object({
-    role: z.string().optional(),
+    name: z.string().optional(),
     permissions: z.array(z.object({})).optional(),
   })
 
@@ -21,11 +21,11 @@ const bodyValidator = z
         }),
       );
     }
-    if(body.role){
+    if(body.name){
       const isExistsRole = await db.query.authUserRoleSchema.findFirst({
         where: and(
           ne(authUserRoleSchema.id, roleId),
-          eq(authUserRoleSchema.role, body.role),
+          eq(authUserRoleSchema.name, body.name),
           eq(authUserRoleSchema.organizationId, roleDetails?.organizationId)
         )
       })
