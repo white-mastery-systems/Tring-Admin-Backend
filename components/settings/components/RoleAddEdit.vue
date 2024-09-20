@@ -74,7 +74,7 @@ const {
   status,
   data: userDataList,
   refresh: getAllUser,
-} = await useLazyFetch("/api/org/campaign", {
+} = await useLazyFetch("/api/user-role", {
   server: false,
   default: () => [],
   query: filters,
