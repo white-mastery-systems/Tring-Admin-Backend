@@ -51,6 +51,25 @@ export const deleteSingleNumber = async ({
     toast.error(err.data.statusMessage);
   }
 }
+export const deleteSingleUser = async ({
+  id,
+  onSuccess,
+}:DeleteExoPhone) => {
+  try {
+    const deleteIntegration = await $fetch<DeleteExoPhone>(
+      `/api/user/${id}`,
+      {
+        method: "DELETE",
+      },
+    );
+    onSuccess();
+    console.log(deleteIntegration, 'deleteIntegration')
+    toast.success("Removed successfully");
+    return deleteIntegration;
+  } catch (err: any) {
+    toast.error(err.data.statusMessage);
+  }
+}
 
 export const deleteSingleExoPhone = async ({
   id,

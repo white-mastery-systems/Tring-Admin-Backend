@@ -9,6 +9,7 @@ const schema = {
   // Tables
   organizationSchema,
   authUserSchema,
+  authUserRoleSchema,
   authSessionSchema,
   chatBotSchema,
   documentSchema,

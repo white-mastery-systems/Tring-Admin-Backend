@@ -25,7 +25,7 @@ export const requestResetPassword = async (userDetails: any) => {
 
     const message = `<h3 style="padding-bottom: 1em;">Dear <b>${userDetails?.username}</b>,</h3>
           <p style="padding-bottom: 1em;">We have reset your password as per your request. Please find your new password below:</p>
-          <p>Click here! </p></p><a href="${config?.adminBaseUrl}/forgot-password?token=${token}">
+          <p>Click here! </p></p><a href="${config?.adminBaseUrl}/auth/forgot-password?token=${token}">
             <button style="background-color: blue; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Reset Password</button>
           </a>
           <p style="padding-top: 1em;padding-bottom: 1em;">We recommend that you log in to your account and change this password immediately to something more secure and memorable</p>
@@ -56,3 +56,77 @@ export const updatePassword = async (userId: string, userDetails: any) => {
       .returning()
   )[0];
 };
+
+
+// Users
+export const createOrgUser = async (user: any) => {
+  const hashedPassword = await new Argon2id().hash(user?.password);
+  return (
+    await db.insert(authUserSchema)
+    .values({
+      ...user,
+      password: hashedPassword
+    })
+    .returning()
+  )[0]
+}
+
+export const getOrgUsers = async (orgId: string, query?: any) => {
+  let page, offset, limit = 0;
+
+  if (query?.page && query?.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
+    offset = (page - 1) * limit;
+  }
+
+  let data: any = await db.query.authUserSchema.findMany({
+    where: and(
+      eq(authUserSchema.organizationId, orgId),
+      ne(authUserSchema.role, "admin")
+    ),
+    orderBy: [desc(authUserSchema.createdAt)]
+  })
+
+  data = data.map(({ password, ...rest }: any) => rest);
+  
+  if (query?.page && query?.limit) {
+     const paginatedOrgUsers = data.slice(offset, offset + limit);
+     return {
+       page: page,
+       limit: limit,
+       totalPageCount: Math.ceil(data.length / limit) || 1,
+       totalCount: data.length,
+       data: paginatedOrgUsers,
+     };
+   } else {
+     return data;
+   }
+}
+
+export const getOrgUserById = async (orgUserId: string) => {
+  const data: any = await db.query.authUserSchema.findFirst({
+    where: eq(authUserSchema.id, orgUserId)
+  })
+
+  const { password, ...rest } = data
+  
+  return rest
+}
+
+export const updateOrgUserById = async (orgUserId: string, user: any) => {
+  return (
+    await db.update(authUserSchema)
+    .set(user)
+    .where(eq(authUserSchema.id, orgUserId))
+    .returning()
+  )[0]
+}
+
+export const deleteOrgUserById = async (orgUserId: string) => {
+  return (
+    await db.delete(authUserSchema)
+    .where(eq(authUserSchema.id, orgUserId))
+    .returning()
+  )[0]
+}

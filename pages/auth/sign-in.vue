@@ -79,7 +79,6 @@
       <span> Let’s Get Started </span>
     </div>
     <div class="flex w-[90%] flex-col px-0 lg:w-[80%] lg:px-6">
-      <!-- <div> -->
 
       <form class="space-y-2" @submit="onSubmit">
         <div class="flex flex-col gap-2">
