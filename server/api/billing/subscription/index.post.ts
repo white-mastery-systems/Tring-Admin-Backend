@@ -1,7 +1,3 @@
-import {
-  adminConfigurationSchema,
-} from "~/server/schema/admin/adminConfig.table";
-import { adminPricingSchema } from "~/server/schema/admin/adminPricing.table"
 interface zohoConfigInterface {
   metaData: {
     client_id: string;

@@ -1,5 +1,4 @@
 import { Argon2id } from "oslo/password";
-import type { SelectRawUser } from "@/server/schema/admin/user.table";
 
 const db = useDrizzle();
 
@@ -68,12 +67,14 @@ export const getUserById = async (id: string) => {
 };
 
 export const updateUser = async (id: string, user: Partial<InsertUser>) => {
-  return (await db
-    .update(authUserSchema)
-    .set({
-      ...user,
-      updatedAt: new Date()
-    })
-    .where(eq(authUserSchema.id, id))
-    .returning())[0];
+  return (
+    await db
+      .update(authUserSchema)
+      .set({
+        ...user,
+        updatedAt: new Date(),
+      })
+      .where(eq(authUserSchema.id, id))
+      .returning()
+  )[0];
 };

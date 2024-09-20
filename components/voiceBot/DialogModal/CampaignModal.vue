@@ -1,21 +1,18 @@
 <script setup lang="ts">
-import countryData from '~/assets/country-codes.json'
-import { toDate } from 'radix-vue/date'
-import { CalendarDate, DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date'
-import { campaignData } from '@/composables/useRefresh';
+import { DateFormatter } from '@internationalized/date';
 
 definePageMeta({
   middleware: "admin-only",
 });
 const emit = defineEmits<{ (e: "confirm"): void }>();
-const campaignModalState = defineModel<{ open: boolean,id: any }>({
+const campaignModalState = defineModel<{ open: boolean, id: any }>({
   default: {
     open: false,
     id: null,
   },
 });
 
-const { status, data: campaignDataList, refresh: integrationRefresh, } = await useLazyFetch("/api/org/contact-list", {
+const { status, data: campaignDataList, refresh: contactsRefresh, } = await useLazyFetch("/api/org/contact-list", {
   server: false,
   default: () => [],
 });
@@ -23,10 +20,10 @@ const { status, data: campaignDataList, refresh: integrationRefresh, } = await u
 const campaignListWithLabels = computed(() => {
   if (campaignDataList) {
     return campaignDataList.value?.map((item: any) => {
-       return {
-      value: item.id,
-      label: item.id ? item.name : '' // Change label based on id value
-    };
+      return {
+        value: item.id,
+        label: item.id ? item.name : '' // Change label based on id value
+      };
     })
   }
 })
@@ -39,7 +36,7 @@ const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 const formSchema = toTypedSchema(
   z.object({
     date: z
-      .string({required_error: 'A date is required.'})
+      .string({ required_error: 'A date is required.' })
       .refine(v => v, { message: 'A date is required.' }),
     appt: z
       .string({ required_error: 'Time is required.' })
@@ -49,6 +46,11 @@ const formSchema = toTypedSchema(
     exoPhone: z.string({ required_error: 'Phone Number is required' }).optional().default(""),
     countryCode: z.string({ required_error: 'Country Code is required' }).optional().default(""),
     audienceBucket: z.string({ required_error: 'Audience Bucket Name is required' }).min(1, 'Audience Bucket Name is required'),
+    integrationId: z.string({ required_error: "IntegrationId is required" }).min(1, 'IntegrationId is required'),
+    templateId: z.string({ required_error: "template is required" }).min(1, "template is required"),
+    phoneId: z.string({ required_error: "phone is required" }).min(1, "phone is required")
+
+
   }).refine((data: any) => {
     if (data.type !== 'whatsapp') {
       const errors: Record<string, boolean> = {};
@@ -93,30 +95,36 @@ const {
 } = useForm({
   validationSchema: formSchema,
 });
-
-
-const allCoutryDialCode = computed(() =>
-  countryData?.map((country) => country.dial_code),
-);
-
-const value = computed({
-  get: () => values.date ? parseDate(values.date) : undefined,
-  set: val => val,
-})
 const {
-  list: countyDialCodes,
-  containerProps,
-  wrapperProps,
-} = useVirtualList(allCoutryDialCode, {
-  itemHeight: 32,
+  status: integrationLoadingStatus,
+  data: integrationsData,
+  refresh: integrationRefresh,
+} = await useLazyFetch("/api/org/integrations?q=channel", {
+  server: false,
+  default: () => [],
 });
-const [mobileField, mobileFieldProps] = defineField("exoPhone");
-const [countryCode, countryCodeProps] = defineField("countryCode");
-const [selectDate, selectDateProps] = defineField("date"); 
-const [selectAudienceBucketField, selectAudienceBucketProps] = defineField("audienceBucket")
-const [timeField, timeFieldAttrs] = defineField("appt");
+const templates = ref<any>([])
+const phoneNumbers = ref<any>([])
 
-watch(campaignModalState, (newState) => { });
+watch(() => values, async (newValue) => {
+  console.log({ newValue })
+  if (newValue) {
+    if (newValue.integrationId) {
+
+      const data = await $fetch("/api/org/integrations/wa-template", {
+        method: "POST",
+        body: {
+          integrationId: newValue.integrationId
+        }
+      })
+      templates.value = data?.templateResponse?.data?.map((dat: { name: string }) => dat.name)
+      phoneNumbers.value = data?.phoneNumberRespone?.data?.map((phone: any) => ({ label: phone.display_phone_number, value: phone.id }))
+
+    }
+  }
+}, { deep: true })
+
+const [timeField, timeFieldAttrs] = defineField("appt");
 
 watch(() => campaignModalState.value.open, async (newState) => {
   console.log(campaignModalState.value, "campaignModalState")
@@ -135,35 +143,28 @@ watch(() => campaignModalState.value.open, async (newState) => {
 });
 
 
- 
-const createUTCDate = (dateString: any, timeString: any) => {
-  const [hours, minutes] = timeString.split(':');
-  const dateParts = dateString.split('-'); // Split the date string
-  const year = parseInt(dateParts[0], 10);
-  const month = parseInt(dateParts[1], 10) - 1; // Months are zero-indexed
-  const day = parseInt(dateParts[2], 10);
-
-  // Create a date object in UTC
-  return new Date(Date.UTC(year, month, day, hours, minutes));
-}
-
 const handleConnect = handleSubmit(async (values: any) => {
   const getTime = convertTo12HourFormat(values.appt)
   const getUTC = convertToUTC(getTime)
-
-    const payload = {
-      countryCode: values.countryCode,
-      campaignDate: new Date(values.date).toISOString(),
-      phoneNumber: values.exoPhone,
-      campaignTime: getUTC,
-      contactListId: values.audienceBucket,
-      type: values.type,
+  console.log(values, 'values')
+  const payload = {
+    countryCode: values.countryCode,
+    campaignDate: new Date(values.date).toISOString(),
+    phoneNumber: values.exoPhone,
+    campaignTime: getUTC,
+    contactListId: values.audienceBucket,
+    type: values.type,
+    metadata: {
+      templateId: values.templateId,
+      phoneId: values.phoneId,
+      integrationId: values.integrationId
     }
+  }
   if (values.type === 'whatsapp') {
     delete payload.phoneNumber
     delete payload.countryCode
-  } 
-  
+  }
+
   try {
     if (campaignModalState.value.id) {
       await $fetch(`/api/org/campaign/${campaignModalState.value.id}`, { method: "PUT", body: payload });
@@ -173,7 +174,7 @@ const handleConnect = handleSubmit(async (values: any) => {
       toast.success("Created successfully")
     }
     emit("confirm")
-  } catch(error: any) {
+  } catch (error: any) {
     toast.error(error.data)
   }
 
@@ -199,14 +200,14 @@ const handleConnect = handleSubmit(async (values: any) => {
           <p v-if="errors.appt" class="text-red-500 text-[13px]">{{ errors.appt }}</p>
         </div>
         <SelectField name="type" label="Contact Method" placeholder="Select a method" :options="[
-            {
-              value: 'voice',
-              label: 'Voice',
-            }, {
-              value: 'whatsapp',
-              label: 'Whatsapp',
-            },
-          ]" required />
+          {
+            value: 'voice',
+            label: 'Voice',
+          }, {
+            value: 'whatsapp',
+            label: 'Whatsapp',
+          },
+        ]" required />
       </div>
       <div v-if="((values.type) ? (values.type === 'voice') : true)" class='flex gap-2'>
         <CountryCodeField class='w-[100px]' name="countryCode" label="Country Code" helperText="Enter your country code"
@@ -216,9 +217,20 @@ const handleConnect = handleSubmit(async (values: any) => {
       </div>
       <SelectField name="audienceBucket" label="Select Audience List" placeholder="Select Audience"
         :options="campaignListWithLabels" required />
+      <SelectField v-if="values.type === 'whatsapp'" label="integration" helperText="Select your integration"
+        name="integrationId" :multiple="false" :required="true" placeholder="Select your integration"
+        :options="integrationsData?.map((integration: any) => ({ label: integration.name, value: integration.id }))" />
+      <SelectField v-if="values.integrationId" label="template" helperText="Select your template" name="templateId"
+        placeholder="Select your template"
+        :options="templates?.map((template: string) => ({ label: template, value: template }))" />
+
+      <SelectField v-if="values.integrationId" label="phone" helperText="Select your phone" name="phoneId"
+        placeholder="Select your phone" :options="phoneNumbers" />
+
       <div class="flex justify-end w-full">
         <UiButton type="submit" class="mt-2" color="primary"> Submit </UiButton>
       </div>
+
     </form>
   </DialogWrapper>
 </template>

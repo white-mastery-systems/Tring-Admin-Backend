@@ -4,9 +4,9 @@
       <div class="flex gap-4">
         <div class="flex gap-2">
           <UiButton color="primary" @click="() => {
-              addBucketNameModalState.open = true;
-              addBucketNameModalState.id = null;
-            }
+            addBucketNameModalState.open = true;
+            addBucketNameModalState.id = null;
+          }
             ">
             Add Bucket
           </UiButton>
@@ -26,32 +26,32 @@
           class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search bucket..." />
       </div>
       <DataTable @row-click="(row: any) => {
-          return navigateTo(`/contacts/${row.original.id}`);
-        }
+        return navigateTo(`contacts/${row.original.id}`);
+      }
         " @pagination="Pagination" @limit="($event) => {
-            (filters.page = '1'), (filters.limit = $event);
-          }
+          (filters.page = '1'), (filters.limit = $event);
+        }
           " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="contactsList"
         :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="16" height-unit="vh" />
 
       <ConfirmationModal v-model:open="deleteBucketState.open" title="Confirm Delete"
         description="Are you sure you want to delete ?" @confirm="() => {
-            if (deleteBucketState?.id) {
-              deleteBucket({
-                integrationId: deleteBucketState.id,
-                onSuccess: () => {
-                  integrationRefresh();
-                },
-              });
-              deleteBucketState.open = false;
-            }
+          if (deleteBucketState?.id) {
+            deleteBucket({
+              integrationId: deleteBucketState.id,
+              onSuccess: () => {
+                integrationRefresh();
+              },
+            });
+            deleteBucketState.open = false;
           }
+        }
           " />
     </div>
     <AddBucketNameModal v-model="addBucketNameModalState" @confirm="() => {
-        addBucketNameModalState.open = false;
-        integrationRefresh();
-      }
+      addBucketNameModalState.open = false;
+      integrationRefresh();
+    }
       " />
   </Page>
 </template>
