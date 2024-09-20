@@ -80,7 +80,7 @@ export const getOrgUsers = async (orgId: string, query?: any) => {
     offset = (page - 1) * limit;
   }
 
-  const data = await db.query.authUserSchema.findMany({
+  let data: any = await db.query.authUserSchema.findMany({
     where: and(
       eq(authUserSchema.organizationId, orgId),
       ne(authUserSchema.role, "admin")
@@ -88,26 +88,30 @@ export const getOrgUsers = async (orgId: string, query?: any) => {
     orderBy: [desc(authUserSchema.createdAt)]
   })
 
-   if (query?.page && query?.limit) {
-      const paginatedOrgUsers = data.slice(offset, offset + limit);
-      return {
-        page: page,
-        limit: limit,
-        totalPageCount: Math.ceil(data.length / limit) || 1,
-        totalCount: data.length,
-        data: paginatedOrgUsers,
-      };
-    } else {
-      return data;
-    }
+  data = data.map(({ password, ...rest }: any) => rest);
+  
+  if (query?.page && query?.limit) {
+     const paginatedOrgUsers = data.slice(offset, offset + limit);
+     return {
+       page: page,
+       limit: limit,
+       totalPageCount: Math.ceil(data.length / limit) || 1,
+       totalCount: data.length,
+       data: paginatedOrgUsers,
+     };
+   } else {
+     return data;
+   }
 }
 
 export const getOrgUserById = async (orgUserId: string) => {
-  const data = await db.query.authUserSchema.findFirst({
+  const data: any = await db.query.authUserSchema.findFirst({
     where: eq(authUserSchema.id, orgUserId)
   })
 
-  return data
+  const { password, ...rest } = data
+  
+  return rest
 }
 
 export const updateOrgUserById = async (orgUserId: string, user: any) => {
