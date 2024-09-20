@@ -4,7 +4,7 @@ const db = useDrizzle()
 
 const bodyValidator = z
   .object({
-    name: z.string().min(2, "Name must be at least 2 characters.").optional(),
+    username: z.string().min(2, "Name must be at least 2 characters.").optional(),
     email: z.string().email().default("").optional(),
     password: z.string().optional().default(""),
     address: z.record(z.any()).optional(),
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
 
 
   const updatedUser = {
-    username: body.name,
+    username: body.username,
     email: body.email,
     ...(newPassword && { password: newPassword }),
     metadata: body.metadata,
