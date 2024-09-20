@@ -41,8 +41,6 @@
   </Page>
 </template>
 <script setup lang="ts">
-import UserAddEdit from './UserAddEdit.vue';
-import RoleAddEdit from './RoleAddEdit.vue';
 
 const channel =  ref("user")
 const  rolePopupState =  ref(false)

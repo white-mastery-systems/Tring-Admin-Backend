@@ -11,9 +11,16 @@ export const userMangementSchema = toTypedSchema(
       name: z
         .string({ required_error: "name is required" })
         .min(1, "name is required"),
+      countryCode: z
+        .string({ required_error: "country Code is required" })
+        .min(1, "Country Code is required"),
       role: z
         .string({ required_error: "role is required" })
-        .min(6, "role is required"),
+        .min(1, "role is required")
+        .optional(),
+      mobile: z
+        .string({ required_error: "mobile is required" })
+        .min(1, "mobile is required"),
       // username: z.string().email("Invalid email address."),
       password: z
         .string({ required_error: "Password is required" })

@@ -98,7 +98,7 @@
     status,
     data: userDataList,
     refresh: getAllUser,
-  } = await useLazyFetch("/api/org/campaign", {
+  } = await useLazyFetch("/api/user/getOrgUsers", {
     server: false,
     default: () => [],
     query: filters,
@@ -175,30 +175,26 @@
       ],
     );
 
-  const columns = [
-    columnHelper.accessor("campaignDate", {
-      header: "Scheduled at",
-      cell: ({ row }) =>
-        formatDate(new Date(row.original.campaignDate), "dd MMM yyyy HH:MM "),
-    }),
-    // columnHelper.accessor("campaignTime", {
-    //   header: "Campaign Name",
-    //   cell: ({ row }) =>
-    //     formatDate(new Date(row.original.campaignTime), "dd MMM yyyy HH:MM "),
-    // }),
 
-    columnHelper.accessor("phoneNumber", {
-      header: "Number",
+  const columns = [
+    columnHelper.accessor("username", {
+      header: "Name",
     }),
-    columnHelper.accessor("createdAt", {
-      header: "Created At",
-      cell: ({ row }) =>
-        formatDate(new Date(row.original.createdAt), "dd MMM yyyy HH:MM "),
+
+    columnHelper.accessor("mobile", {
+      header: "Phone",
     }),
-    columnHelper.accessor("id", {
-      header: "Action",
+    columnHelper.accessor("mobile", {
+      header: "Mobile",
+
+    }),
+    columnHelper.accessor("role", {
+      header: "role",
+    }),
+        columnHelper.accessor("actions", {
+      header: "Actions",
       cell: ({ row }) => {
-        return actionsComponent(row.original.id);
+        return actionsComponent(row.original?.id);
       },
     }),
   ];
@@ -210,13 +206,16 @@
     () => props.popupState,
     (newValue: any) => {
       userModalState.value.open = newValue;
+      userModalState.value.id = null
     },
   );
 
   watch(
     () => userModalState.value.open,
     (newValue) => {
+      if(!newValue){
       emit("popupState", userModalState.value.open);
+      }
     },
   );
   const Pagination = async ($evnt) => {
