@@ -9,9 +9,8 @@ import {
   subMonths,
   subYears,
 } from "date-fns";
-import { count, inArray } from "drizzle-orm";
-import { InsertLead } from "~/server/schema/bot";
-import momentTz from "moment-timezone"
+import { inArray } from "drizzle-orm";
+import momentTz from "moment-timezone";
 
 const db = useDrizzle();
 
@@ -88,12 +87,14 @@ export const listLeads = async (
       }
     }
 
-    let page, offset, limit = 0
-    
-    if(query?.page && query?.limit) {
-       page = parseInt(query.page) 
-       limit = parseInt(query.limit)
-       offset = (page - 1) * limit;
+    let page,
+      offset,
+      limit = 0;
+
+    if (query?.page && query?.limit) {
+      page = parseInt(query.page);
+      limit = parseInt(query.limit);
+      offset = (page - 1) * limit;
     }
 
     let leads = await db.query.leadSchema.findMany({
@@ -126,11 +127,12 @@ export const listLeads = async (
       orderBy: [desc(leadSchema.createdAt)],
     });
 
- 
     leads = leads.map((i: any) => ({
-        ...i,
-        createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
-    }))
+      ...i,
+      createdAt: momentTz(i.createdAt)
+        .tz(timeZone)
+        .format("DD MMM YYYY hh:mm A"),
+    }));
     if (query?.q || query?.status === "new" || query?.status === "revisited")
       leads = leads.filter((lead: any) => {
         return lead.botUser !== null;
@@ -140,18 +142,17 @@ export const listLeads = async (
         return lead.chat !== null;
       });
 
-      
-    if(query?.page && query?.limit) {
+    if (query?.page && query?.limit) {
       const paginatedLeads = leads.slice(offset, offset + limit);
       return {
         page: page,
         limit: limit,
-        totalPageCount: Math.ceil(leads.length/limit) || 1,
+        totalPageCount: Math.ceil(leads.length / limit) || 1,
         totalCount: leads.length,
-        data: paginatedLeads
-      }
+        data: paginatedLeads,
+      };
     } else {
-      return leads
+      return leads;
     }
   } catch (err) {}
 };
@@ -169,7 +170,7 @@ export const updateLead = async (leadId: string, lead: InsertLead) => {
       .update(leadSchema)
       .set({
         ...lead,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(leadSchema.id, leadId))
       .returning()

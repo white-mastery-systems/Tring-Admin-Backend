@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { logger } from "~/server/server";
+import { logger } from "~/server/logger";
 
 export function getAllPipelinesFromZohoBigin({
   token,
@@ -61,7 +61,7 @@ export async function getAllSubPipelinesFromZohoBigin({
         },
       },
     );
-    console.log({ data }, "DATA FIELDS");
+    logger.debug(`Get Sub Pipelines: ${JSON.stringify(data)}`);
     return data.fields.find((field: any) => field.api_name === "Sub_Pipeline")
       ?.pick_list_values;
   } catch (err: any) {
@@ -142,7 +142,7 @@ export async function generateLeadInZohoBigin({
         }
       }
     });
-    console.log(JSON.stringify(bodyData), "BODY");
+    logger.debug(`Generated Leads: ${JSON.stringify(bodyData)}`);
     const generatedPipeline = await $fetch(
       "https://www.zohoapis.in/bigin/v2/Pipelines",
       {
@@ -153,16 +153,13 @@ export async function generateLeadInZohoBigin({
         },
       },
     );
-    console.log(JSON.stringify(generatedPipeline), "PIPELIN");
+    logger.debug(`Generated Pipeline: ${JSON.stringify(generatedPipeline)}`);
     return generatedPipeline;
   } catch (err: any) {
-    console.log(JSON.stringify(err.data), "ERR");
+    logger.error(`Error: ${JSON.stringify(err.data)}`);
     if (!refreshToken) return;
     if (err.status === 401) {
-      logger.log({
-        level: "error",
-        message: JSON.stringify(err.data),
-      });
+      logger.error(`Error Status 401 : ${JSON.stringify(err.data)}`);
       const newlyGeneratedData: any = await regenearateTokenWithRefreshToken({
         refreshToken: refreshToken,
       });
@@ -210,7 +207,7 @@ export async function generateContactInZohoBigin({
         Authorization: `Zoho-oauthtoken ${token}`,
       },
     });
-    console.log({ data });
+    logger.debug(`Generated Contact: ${JSON.stringify(data)}`);
     return data;
   } catch (err: any) {
     if (err.status === 400) {

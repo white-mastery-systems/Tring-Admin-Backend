@@ -35,7 +35,7 @@
                   }
                 ">
                   <span class="hidden lg:inline"> Configure channel </span>
-                  <span class="flex flex-col items-center justify-center lg:hidden"> 
+                  <span class="flex flex-col items-center justify-center lg:hidden">
                     <component :is="Settings" :size="20"></component>
                   </span>
                 </UiButton>
@@ -95,16 +95,21 @@
                 </UiButton>
                 <div class="block text-[6px] lg:hidden">Delete</div>
               </div>
-              <CreateEditChannel
-                v-model="channelModalState"
-                @success="handleSuccess"
-              />
-              <ConfirmationModal
-                v-model:open="deleteModalState"
-                title="Are you sure?"
-                description="Are you sure you want to delete bot ?"
-                @confirm="handleDeleteBot"
-              />
+              <div class="flex flex-col items-center gap-1" @click="agentModalState.open = true">
+                <UiButton variant="destructive"
+                  class="flex items-center justify-center bg-[#424bd1] p-3 hover:bg-[#424bd1]/90 hover:brightness-90">
+                  <Icon name="lucide:pen" class="h-4 w-4" />
+                </UiButton>
+                <div class="block text-[6px] lg:hidden">Edit</div>
+              </div>
+              <CreateEditChannel v-model="channelModalState" @success="handleSuccess" />
+              <ConfirmationModal v-model:open="deleteModalState" title="Are you sure?"
+                description="Are you sure you want to delete bot ?" @confirm="handleDeleteBot" />
+              <AddChatBotModal v-model="agentModalState" @editConfirm="() => {
+                agentModalState.open = false;
+                navigateTo({ name: 'bot-management-chat-bot' });
+                // getAllChatBot()
+              }"></AddChatBotModal>
             </div>
           </div>
 
@@ -163,15 +168,36 @@
 definePageMeta({
   middleware: "admin-only",
 });
+// interface LocationContext {
+//   location: any;
+//   updateLocation: () => void;
+// }
+
 import { useClipboard } from "@vueuse/core";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 import { Bot, Settings } from "lucide-vue-next";
+// import { inject } from 'vue'
+
+// const injectedContext = inject<LocationContext>('location');
+
+// if (injectedContext) {
+//   const { location, updateLocation } = injectedContext;
+//   console.log(location); // Should print 'someLocation'
+//   updateLocation(); // Should call the updateLocation function
+// } else {
+//   console.error('Failed to inject location context!');
+// }
 
   const router = useRouter();
   // const selectedValue = ref("Today");
   const route = useRoute("bot-management-chat-bot-id");
+  const emit = defineEmits<{ (e: "confirm"): void }>();
+  
+  
+  
   const paramId: any = route;
+  const agentModalState = ref({ open: false, id: paramId.params.id });
   const botDetails = ref(await getBotDetails(paramId.params.id));
   const deleteModalState = ref(false);
   const modalOpen = ref(false);

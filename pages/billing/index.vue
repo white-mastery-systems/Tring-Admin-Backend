@@ -1,7 +1,7 @@
 	  
 	  <script setup lang="ts">
     import { format } from "date-fns";
-    import { XCircleIcon, Wallet, Repeat } from "lucide-vue-next";
+    import { Repeat, Wallet, XCircleIcon } from "lucide-vue-next";
     const {
       status,
       data: usage,

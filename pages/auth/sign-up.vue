@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import { formSchema } from '~/validationSchema/authValidation/signUpValidation';
+  import { formSchema } from '~/validationSchema/authValidation/signUpValidation';
+  import { useGtag } from 'vue-gtag-next'
+
+  const { event } = useGtag()
+
+  useHead({
+    title: 'Sign Up | Conversational AI for Businesses | Tring AI',
+    meta: [
+      { name: 'Description', content: 'Sign up with Tring AI to unlock innovative AI-powered solutions for enhancing your business efficiency and growth. Tring AI provides conversational AI chatbot and voice bot solutions for businesses to drive sales, optimize marketing, enhance customer support and boost lead generation. Join the league of AI-powered businesses today.' }
+    ]
+  })
 
 
   definePageMeta({
@@ -51,6 +61,7 @@ import { formSchema } from '~/validationSchema/authValidation/signUpValidation';
   // };
 
   const onSubmit = handleSubmit((value: any) => {
+    event('button_click', { event_category: 'engagement', event_label: 'sign_up' })
     authHandlers.signup(value);
   });
 </script>

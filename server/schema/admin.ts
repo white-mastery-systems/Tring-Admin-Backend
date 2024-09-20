@@ -168,6 +168,7 @@ export const campaignSchema = adminSchema.table("campaign", {
   organizationId: uuid("organization_id")
     .notNull()
     .references(() => organizationSchema.id),
+  metadata: jsonb("metadata").default({}).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

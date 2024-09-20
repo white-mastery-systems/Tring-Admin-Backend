@@ -58,10 +58,7 @@ const dateFns = {
   from: "date-fns",
   imports: ["formatDate"],
 };
-// const logger={
-//   from :"~/server/utils/logger"
-//   imports:["useCustomLogger"]
-// }
+
 export default {
   nitro: [drizzleOrm, drizzleZod, zod, dateFns],
   nuxt: [zod, veeValidateZod, veeValidate, vueSonner, dateFns],

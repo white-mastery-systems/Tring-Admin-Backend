@@ -1,7 +1,6 @@
 // import { isNotNull, ne } from "drizzle-orm";
 
 import { integrationSchema } from "#imports";
-import { InsertIntegration } from "~/server/schema/admin";
 
 interface listIntegrationQuery {
   q?: string;
@@ -31,11 +30,13 @@ export const listIntegrations = async (
     }
   }
 
-  let page, offset, limit = 0
-    
-  if(query?.page && query?.limit) {
-    page = parseInt(query.page) 
-    limit = parseInt(query.limit)
+  let page,
+    offset,
+    limit = 0;
+
+  if (query?.page && query?.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
     offset = (page - 1) * limit;
   }
 
@@ -44,18 +45,18 @@ export const listIntegrations = async (
     orderBy: [desc(integrationSchema.createdAt)],
   });
 
-   if(query?.page && query?.limit) {
-      const paginatedIntegrations = data.slice(offset, offset + limit); 
-      return {
-        page: page,
-        limit: limit,
-        totalPageCount: Math.ceil(data.length/limit) || 1,
-        totalCount: data.length,
-        data: paginatedIntegrations
-      }
-    } else {
-      return data
-    }
+  if (query?.page && query?.limit) {
+    const paginatedIntegrations = data.slice(offset, offset + limit);
+    return {
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length / limit) || 1,
+      totalCount: data.length,
+      data: paginatedIntegrations,
+    };
+  } else {
+    return data;
+  }
 };
 
 export const getIntegrationById = async (
@@ -100,10 +101,10 @@ export const listLastCreatedIntegrationByCRM = async (
 export const updateIntegrationById = async (id: string, integration: any) => {
   const data = await db
     .update(integrationSchema)
-    .set({ 
+    .set({
       ...integration,
-      updatedAt: new Date()
-     })
+      updatedAt: new Date(),
+    })
     .where(eq(integrationSchema.id, id))
     .returning();
   console.log(JSON.stringify(data[0]));

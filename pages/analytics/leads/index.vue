@@ -25,7 +25,7 @@
           Website
         </UiTabsTrigger>
         <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')">
-          WhatsApp
+          Whatsapp
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="all">
@@ -173,6 +173,8 @@
             .join(",");
         })
         .join("\n");
+
+
 
     // Create a Blob with the CSV content
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });

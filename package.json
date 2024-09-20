@@ -33,7 +33,8 @@
     "tailwindcss-animate": "^1.0.7",
     "vue": "latest",
     "vue-chartjs": "^5.3.1",
-    "winston": "^3.14.2"
+    "winston": "^3.14.2",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@formkit/auto-animate": "^0.8.2",
@@ -74,6 +75,7 @@
     "unstorage": "^1.10.2",
     "uuid": "^10.0.0",
     "vee-validate": "^4.13.2",
+    "vue-gtag-next": "^1.14.0",
     "vue-sonner": "^1.1.4",
     "zod": "^3.23.8"
   }

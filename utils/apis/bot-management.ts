@@ -1,5 +1,3 @@
-import type { SelectChatBot, SelectDocument } from "~/server/schema/bot";
-
 export const formatDateStringToDate = (dateString: any) => {
   const date = new Date(dateString);
   return formatDate(date, "dd.MM.yyyy ");
