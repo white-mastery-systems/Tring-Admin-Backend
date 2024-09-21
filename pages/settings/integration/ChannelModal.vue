@@ -15,6 +15,7 @@ const formSchema = toTypedSchema(
     pid: z.string({ required_error: "Pid is required" }).min(2, "Pid is required"),
     code: z.string({ required_error: "code is required" }).min(2, "code is required"),
     wabaId: z.string({ required_error: "wabaId is required" }).min(2, "wabaId is required"),
+    pin: z.string({ required_error: "2FA pin is required" }).min(2, "2FA pin is required"),
   }),
 );
 
@@ -42,14 +43,7 @@ watch(() => channelModalState.value.open, async (newState) => {
     resetForm()
   }
 });
-function created() {
-  let fb = document.createElement('script');
-  fb.setAttribute('src', "https://connect.facebook.net/en_US/sdk.js");
-  fb.setAttribute("crossorigin", "anonymous");
-  fb.setAttribute("async", "true");
-  fb.setAttribute("defer", "true");
-  document.head.appendChild(fb);
-}
+
 onMounted(() => {
   window.fbAsyncInit = function () {
     console.log("HIIIII")
@@ -71,40 +65,41 @@ onMounted(() => {
 });
 
 
-const handleSubmssion = async () => {
-  console.log(values, "values")
-  const payload = {
-    name: values.name,
-    crm: values.channel,
-    metadata: {
-      pid: values.pid,
-      code: values.code,
-      wabaId: values.wabaId
-    },
-  };
-  try {
-    if (channelModalState.value.id) {
-      await $fetch(`/api/org/integrations/${channelModalState.value.id}`, { method: "PUT", body: payload });
-      toast.success("Integration update successfully");
-    }
+// const handleSubmssion = async () => {
+//   console.log(values, "values")
+//   const payload = {
+//     name: values.name,
+//     crm: values.channel,
+//     metadata: {
+//       pid: values.pid,
+//       code: values.code,
+//       wabaId: values.wabaId
+//     },
+//   };
+//   try {
+//     if (channelModalState.value.id) {
+//       await $fetch(`/api/org/integrations/${channelModalState.value.id}`, { method: "PUT", body: payload });
+//       toast.success("Integration update successfully");
+//     }
 
-    else {
+//     else {
 
-      await $fetch("/api/org/integrations", { method: "POST", body: payload });
-      toast.success("Integration added successfully");
-    }
-    emit("success");
-  } catch (error: any) {
-    toast.error(error?.data?.data[0].message);
-  }
-}
+//       await $fetch("/api/org/integrations", { method: "POST", body: payload });
+//       toast.success("Integration added successfully");
+//     }
+//     emit("success");
+//   } catch (error: any) {
+//     toast.error(error?.data?.data[0].message);
+//   }
+// }
+const fbVerified = ref(false)
 const fbLoginCallback = (response: any) => {
   if (response.authResponse) {
     const code = response.authResponse.code;
     console.log("FB Code: ", code);
     setFieldValue("code", code);
-
-    handleSubmssion()
+    fbVerified.value = true
+    // handleSubmssion()
 
     // Send code to your backend for further processing.
   }
@@ -164,20 +159,24 @@ const handleConnectButtonClick = () => {
 
 
 const handleConnect = handleSubmit(async (values: any) => {
-  console.log(values, "values")
   const payload = {
     name: values.name,
     crm: values.channel,
     metadata: {
       pid: values.pid,
       code: values.code,
+      wabaId: values.wabaId,
+      pin: values.pin
     },
   };
   try {
     if (channelModalState.value.id) {
       await $fetch(`/api/org/integrations/${channelModalState.value.id}`, { method: "PUT", body: payload });
       toast.success("Integration update successfully");
-    } else {
+    }
+
+    else {
+
       await $fetch("/api/org/integrations", { method: "POST", body: payload });
       toast.success("Integration added successfully");
     }
@@ -192,18 +191,25 @@ const handleConnect = handleSubmit(async (values: any) => {
 <template>
   <DialogWrapper v-model="channelModalState" :title="channelModalState.id ? 'Modify Channel' : 'Add New Channel'">
     <form @submit="handleConnect" class="space-y-2">
+      <SelectField name="channel" label="Channel" placeholder="Select a channel" helperText="" :options="[
+        { value: 'whatsapp', label: 'Whatsapp', },
+      ]" required />
       <TextField name="name" label="Name" placeholder="Enter Your Channel Name" helperText="" required>
       </TextField>
-      <SelectField name="channel" label="Channel" placeholder="Select a channel" helperText="" :options="[
-  { value: 'whatsapp', label: 'Whatsapp', },
-      ]" required />
+      <TextField v-if="fbVerified" name="pin" label="2FA Pin" placeholder="Enter Your pin" helperText="" required>
+      </TextField>
+
       <!-- <TextField name="pid" label="pid" placeholder="Enter" helperText="" required>
       </TextField> -->
       <!-- <TextField name="token" label="Token" placeholder="Enter Token" helperText="" required>
       </TextField> -->
       <div class="flex items-center justify-end">
-        <UiButton color="primary" type="button" @click="launchWhatsAppSignup">Login with Facebook</UiButton>
+        <UiButton v-if="!fbVerified" color="primary" type="button" @click="launchWhatsAppSignup">Login with Facebook
+        </UiButton>
+        <UiButton v-else color="primary" type="submit">Submit</UiButton>
+
       </div>
+
     </form>
   </DialogWrapper>
 

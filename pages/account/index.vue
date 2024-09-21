@@ -261,8 +261,6 @@ const selectedChannel = (value: any) => {
     schema.value = privacySchema;
   } else {
     schema.value = formSchema;
-    console.log(orgDetails);
-
     setFieldValue("name", orgDetails?.name);
     setFieldValue("industry", orgDetails?.metadata?.industry);
     setFieldValue("customIndustry", orgDetails?.metadata?.customIndustry);
