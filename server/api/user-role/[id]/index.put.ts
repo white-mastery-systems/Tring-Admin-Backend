@@ -4,7 +4,7 @@ const db = useDrizzle()
 const bodyValidator = z
   .object({
     name: z.string().optional(),
-    permissions: z.object({}).optional(),
+    permissions: z.record(z.any()).optional(),
   })
 
 export default defineEventHandler(async(event) => {
