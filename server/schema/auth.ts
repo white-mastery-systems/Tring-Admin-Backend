@@ -3,7 +3,7 @@ import {
   type InferSelectModel,
   relations,
 } from "drizzle-orm";
-import { json, jsonb, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { jsonb, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 
 import { adminSchema } from ".";
@@ -12,8 +12,20 @@ import { organizationSchema, paymentSchema } from "./admin";
 type permissionsItem = {
   // key: string;
   // value: number;
-}
+};
 
+// User Role table
+export const authUserRoleSchema = adminSchema.table("user_role", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  organizationId: uuid("organization_id").references(
+    () => organizationSchema.id,
+    { onDelete: "cascade" },
+  ),
+  permissions: jsonb("permissions").default({}),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
 // Table definitions
 export const authUserSchema = adminSchema.table("user", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -32,25 +44,10 @@ export const authUserSchema = adminSchema.table("user", {
     () => organizationSchema.id,
     { onDelete: "cascade" },
   ),
-  roleId: uuid("role_id").references(
-    () => authUserRoleSchema.id
-  ),
+  roleId: uuid("role_id").references(() => authUserRoleSchema.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
-
-// User Role table
-export const authUserRoleSchema = adminSchema.table("user_role", {
-  id: uuid("id").notNull().primaryKey().defaultRandom(),
-  name: text("name").notNull(),
-  organizationId: uuid("organization_id").references(
-    () => organizationSchema.id,
-    { onDelete: "cascade" },
-  ),
-  permissions: json("permissions"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-})
 
 export const authSessionSchema = adminSchema.table("session", {
   id: text("id").primaryKey(),
