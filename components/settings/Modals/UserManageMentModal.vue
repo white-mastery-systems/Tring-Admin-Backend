@@ -66,7 +66,7 @@
       }
       emit("confirm");
     } catch (error: any) {
-      toast.error(error.data);
+      toast.error(error.statusMessage);
     }
   });
   const passwordVisible = ref(false);

@@ -11,19 +11,20 @@
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
         :data="userDataList" :is-loading="isDataLoading" :page-size="20" :height="16" height-unit="vh" />
       <RoleManageMentModal v-model="roleModalState" @confirm="() => {
-        userModalState.open = false;
-        getAllUser()
+        deleterRoleState.open = false;
+        roleModalState.open = false
+        getAllRole()
       }
       " />
       <ConfirmationModal v-model:open="deleterRoleState.open" title="Confirm Delete"
         description="Are you sure you want to delete ?" @confirm="() => {
           if (deleterRoleState?.id) {
-            deleteSingleNumber({
+            deleteSingleRole({
               id: deleterRoleState.id,
               onSuccess: () => {
-                 getAllUser()
-
-                // getAllUser(
+                 getAllRole()
+              
+                // getAllRole(
                 // refresh();
               },
             });
@@ -73,7 +74,7 @@ let totalCount = ref(0);
 const {
   status,
   data: userDataList,
-  refresh: getAllUser,
+  refresh: getAllRole,
 } = await useLazyFetch("/api/user-role", {
   server: false,
   default: () => [],
@@ -131,8 +132,8 @@ const actionsComponent = (id: any) =>
         {
           color: "primary",
           onClick: () => {
-            userModalState.value.open = true;
-            userModalState.value.id = id;
+            roleModalState.value.open = true;
+            roleModalState.value.id = id;
           }, // Add delete functionality
           class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
         },
@@ -153,26 +154,11 @@ const actionsComponent = (id: any) =>
   );
 
 const columns = [
-  columnHelper.accessor("campaignDate", {
-    header: "Scheduled at",
-    cell: ({ row }) =>
-      formatDate(new Date(row.original.campaignDate), "dd MMM yyyy HH:MM "),
-  }),
-  // columnHelper.accessor("campaignTime", {
-  //   header: "Campaign Name",
-  //   cell: ({ row }) =>
-  //     formatDate(new Date(row.original.campaignTime), "dd MMM yyyy HH:MM "),
-  // }),
 
-  columnHelper.accessor("phoneNumber", {
-    header: "Number",
+  columnHelper.accessor("name", {
+    header: "Name",
   }),
-  columnHelper.accessor("createdAt", {
-    header: "Created At",
 
-    cell: ({ row }) =>
-      formatDate(new Date(row.original.createdAt), "dd MMM yyyy HH:MM "),
-  }),
   columnHelper.accessor("id", {
     header: "Action",
 
@@ -185,16 +171,17 @@ const columns = [
   const emit = defineEmits<{ (e: "popupState", payload:any): void }>();
 
 watch(()=>props.popupState,(newValue:any)=>{
-    console.log(newValue);
-    
-roleModalState.value.open = newValue 
+ roleModalState.value.open = newValue 
+ roleModalState.value.id = null
 })
 
 watch(()=> roleModalState.value.open,(newValue)=>{
+  if(!newValue){
     emit('popupState',roleModalState.value.open)
+  }
 })  
 const Pagination = async ($evnt) => {
   filters.page = $evnt;
-  getAllUser();
+  getAllRole();
 };
 </script>
