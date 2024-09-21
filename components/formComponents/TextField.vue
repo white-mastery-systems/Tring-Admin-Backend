@@ -3,7 +3,7 @@
     <UiLabel :class="['capitalize flex items-center', errorMessage ? 'text-red-500' : '']" v-if="label"
       :for="replacedId">
       {{ label }}
-      <span v-if="required" class="text-sm text-red-700">*
+      <span v-if="required" class="text-lg text-red-500">*
       </span>
 
 
