@@ -3,9 +3,9 @@
     <template #actionButtons>
       <div class="flex gap-2">
         <UiButton color="primary" @click="() => {
-            channelModalState.open = true;
-            channelModalState.id = null;
-          }
+          channelModalState.open = true;
+          channelModalState.id = null;
+        }
           ">
           Add Channel
         </UiButton>
@@ -13,16 +13,16 @@
     </template>
     <div>
       <DataTable @pagination="Pagination" @limit="($event) => {
-          (page = '1'), (limit = $event);
-        }
+        (page = '1'), (limit = $event);
+      }
         " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="statusColumns"
         :data="integrationsData" :page-size="8" :is-loading="false" :height="15" :heightUnit="'vh'" />
       <ChannelModal v-model="channelModalState" @success="onSuccessChannel()" />
-      <ConfirmationModal v-model:open="deleteCampaigntate.open" title="Confirm Delete"
+      <ConfirmationModal v-model:open="deleteChannelState.open" title="Confirm Delete"
         description="Are you sure you want to delete ?" @confirm="() => {
-          if (deleteCampaigntate?.id) {
-            deleteSingleNumber({
-              id: deleteCampaigntate.id,
+          if (deleteChannelState?.id) {
+            deleteIntegration({
+              integrationId: deleteChannelState.id,
               onSuccess: () => {
                 integrationRefresh()
 
@@ -30,10 +30,10 @@
                 // refresh();
               },
             });
-            deleteCampaigntate.open = false;
+            deleteChannelState.open = false;
           }
         }
-        " />
+          " />
     </div>
   </Page>
 </template>
@@ -57,7 +57,7 @@ definePageMeta({
 //   limit: "10",
 // });
 
-let page = ref(0);
+let page = ref(1);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
 const limit = ref('10')
@@ -105,7 +105,7 @@ const {
   },
 });
 
-const deleteCampaigntate = ref({ open: false, id: null });
+const deleteChannelState = ref({ open: false, id: null });
 const channelModalState = ref({ open: false, id: null });
 // const channelModalState = defineModel<{ open: boolean; id: any }>({
 //   default: {
@@ -160,8 +160,8 @@ const channelActionsComponent = (id: any) =>
           class: "",
           variant: "destructive",
           onClick: () => {
-            deleteCampaigntate.value.id = id;
-            deleteCampaigntate.value.open = true;
+            deleteChannelState.value.id = id;
+            deleteChannelState.value.open = true;
           },
         },
         h(Icon, { name: "lucide:trash-2" }),
