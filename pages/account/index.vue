@@ -30,11 +30,7 @@
                 helperText="Enter your country code" required />
 
               <TextField class="" :disableCharacters="true" name="mobile" label="Mobile number" helperText="" required
-<<<<<<< HEAD
                 placeholder="Enter your mobile number" />
-=======
-                placeholder="Enter your mobile number" type="phone" />
->>>>>>> john
             </div>
             <SelectField name="metadata.role" label="Role" placeholder="Select Role"
               :options="roles.map((role) => ({ label: role, value: role }))" :required="true" />
@@ -184,12 +180,9 @@ const {
   resetForm,
 } = useForm({
   validationSchema: computed(() => schema.value),
-<<<<<<< HEAD
   initialValues: {
     countryCode: "+91"
   }
-=======
->>>>>>> john
 });
 
 const { user, refreshUser }: { user: any; refreshUser: any } =
@@ -199,11 +192,7 @@ const { orgDetails } = await $fetch("/api/org", {
   method: "GET",
 });
 
-<<<<<<< HEAD
 setFieldValue("countryCode", user?.value?.countryCode ?? "+91");
-=======
-setFieldValue("countryCode", user?.value?.countryCode);
->>>>>>> john
 setFieldValue("username", user?.value?.username);
 setFieldValue("email", user?.value?.email);
 setFieldValue("mobile", user?.value?.mobile);
@@ -258,11 +247,7 @@ const selectedChannel = (value: any) => {
   tab.value = value;
   if (value === "PersonalDetails") {
     schema.value = accountSchema;
-<<<<<<< HEAD
     setFieldValue("countryCode", user?.value?.countryCode ?? "+91");
-=======
-    setFieldValue("countryCode", user?.value?.countryCode);
->>>>>>> john
     setFieldValue("username", user?.value?.username);
     setFieldValue("email", user?.value?.email);
     setFieldValue("mobile", user?.value?.mobile);
@@ -276,8 +261,6 @@ const selectedChannel = (value: any) => {
     schema.value = privacySchema;
   } else {
     schema.value = formSchema;
-    console.log(orgDetails);
-
     setFieldValue("name", orgDetails?.name);
     setFieldValue("industry", orgDetails?.metadata?.industry);
     setFieldValue("customIndustry", orgDetails?.metadata?.customIndustry);
