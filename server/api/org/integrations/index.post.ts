@@ -1,5 +1,10 @@
 import { ilike } from "drizzle-orm";
 import { createIntegration } from "~/server/utils/db/integrations";
+import {
+  fetchPhoneNumbers,
+  fetchSubscribedApps,
+  getSharedWhatsappDetails,
+} from "~/server/utils/whatsapp/module";
 
 enum CRMType {
   sellDo = "sell-do",
@@ -21,6 +26,7 @@ export default defineEventHandler(async (event) => {
         pid: z.string().optional(),
         code: z.string().optional(),
         wabaId: z.string().optional(),
+        pin: z.string().optional(),
       }),
     })
     .refine(
@@ -43,41 +49,82 @@ export default defineEventHandler(async (event) => {
   const userId: { id: string } = event.context.user!;
   const body = await isValidBodyHandler(event, zodInsertIntegration);
 
-  const response = await $fetch(
-    "https://graph.facebook.com/v20.0/oauth/access_token",
-    {
-      method: "POST",
-      body: {
-        client_id: "3404499776522072",
-        client_secret: "696e6112fe8aafca3e3ccf9332273140",
-        code: body.metadata.code,
-        grant_type: "authorization_code",
-        // redirect_uri:
-        //   "https://6t53p9kf-3000.inc1.devtunnels.ms/settings/integration/meta-oauth",
-      },
-      headers: { "Content-Type": "application/json" },
-    },
-  );
+  //TODO :add this
+  let response: Record<string, any> = {};
+  if (body.crm === "whatsapp") {
+    try {
+      response = await $fetch(
+        "https://graph.facebook.com/v20.0/oauth/access_token",
+        {
+          method: "POST",
+          body: {
+            client_id: "3404499776522072",
+            client_secret: "696e6112fe8aafca3e3ccf9332273140",
+            code: body.metadata.code,
+            grant_type: "authorization_code",
+            // redirect_uri:
+            //   "https://6t53p9kf-3000.inc1.devtunnels.ms/settings/integration/meta-oauth",
+          },
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+      try {
+        if (body?.metadata?.wabaId && response?.access_token) {
+          console.log("here we are");
+          await getSharedWhatsappDetails({
+            code: response?.access_token,
+            id: body.metadata.wabaId,
+          });
+          await fetchPhoneNumbers({
+            code: response?.access_token,
+            id: body.metadata.wabaId,
+          });
+          await fetchSubscribedApps({
+            code: response?.access_token,
+            id: body.metadata.wabaId,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+      console.log({ code: body.metadata.code });
+    } catch (err) {
+      console.log(err.message, err.data, "ERR");
+    }
+  }
+  // console.log({ response });
 
-  const url =
-    `https://graph.facebook.com/v20.0/${body.metadata.wabaId}` +
-    "?fields=id,name,currency,owner_business_info" +
-    `&access_token=${body.metadata.access_token}`;
-  const sharedBuisnessResponse = await $fetch(url, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  const subscribeResponse = await fetch(
-    `https://graph.facebook.com/v20.0/${body.metadata.wabaId}/subscribed_apps`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        access_token: body.metadata.access_token,
-      }),
-      headers: { "Content-Type": "application/json" },
-    },
-  );
+  // const url =
+  //   `https://graph.facebook.com/v20.0/${body.metadata.wabaId}` +
+  //   "?fields=id,name,currency,owner_business_info" +
+  //   `&access_token=${body.metadata.code}`;
+  // const sharedBuisnessResponse: Record<string, any> = await $fetch(url, {
+  //   method: "GET",
+  //   headers: { "Content-Type": "application/json" },
+  // });
+  // const registerPhone = await $fetch(
+  //   `https://graph.facebook.com/v20.0/${body.metadata.pid}/register`,
+  //   {
+  //     method: "POST",
+  //     headers: { Authorization: `Bearer ${body.metadata.code}` },
+  //     body: {
+  //       messaging_product: "whatsapp",
+  //       pin: body.metadata.pin,
+  //     },
+  //   },
+  // );
+  // console.log({ registerPhone });
+  // const subscribeResponse = await fetch(
+  //   `https://graph.facebook.com/v20.0/${body.metadata.wabaId}/subscribed_apps`,
+  //   {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       access_token: body.metadata.access_token,
+  //     }),
+  //     headers: { "Content-Type": "application/json" },
+  //   },
+  // );
+  // console.log({ subscribeResponse });
 
   // const data = await response.json();
   const integration = await createIntegration({
@@ -85,8 +132,8 @@ export default defineEventHandler(async (event) => {
     metadata: {
       ...body.metadata,
       ...response,
-      ...sharedBuisnessResponse,
-      ...subscribeResponse,
+      // ...sharedBuisnessResponse,
+      // ...subscribeResponse,
     },
     org_id: organizationId,
     user_id: userId?.id,
