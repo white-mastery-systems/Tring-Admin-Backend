@@ -108,7 +108,6 @@ import { formSchema } from '~/validationSchema/authValidation/onBoarding/1Valida
           v-if="values.role === 'Other'"
             type="name"
             name="otherRole"
-            class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium"
             :required="true"
           />
           <UiButton
