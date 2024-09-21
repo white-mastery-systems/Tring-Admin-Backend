@@ -8,7 +8,9 @@ const bodyValidator = z
 
 export default defineEventHandler(async(event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
-  const { permissions=[], name }:any = await isValidBodyHandler(event, bodyValidator);
+  const { permissions, name }:any = await isValidBodyHandler(event, bodyValidator);
+  console.log({permissions});
+  
 
   const isExistsRole = await isRoleExists(name, organizationId)
   if (isExistsRole) {
