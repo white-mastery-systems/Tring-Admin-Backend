@@ -18,6 +18,10 @@ export const useUser = async () => {
       const storedUser: any = localStorage.getItem('user');
       user.value = JSON.parse(storedUser)
       localStorage.setItem("user", JSON.stringify(data))
+    } else {
+      localStorage.clear()
+      user.value = null
+      navigateTo("/auth/sign-in")
     }
   };
 
@@ -32,12 +36,14 @@ export const useUser = async () => {
   const handleStorageChange = (event: StorageEvent) => {
     if (event.key === 'user') {
       updateUser();
+      refreshUser()
     }
   };
 
   onMounted(() => {
     // Set up the event listener when the component is mounted
     window.addEventListener('storage', handleStorageChange);
+    refreshUser()
   });
 
   onUnmounted(() => {

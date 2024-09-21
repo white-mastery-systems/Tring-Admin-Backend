@@ -2,13 +2,13 @@
   <Page title="Integration" :disable-back-button="true" :disable-elevation="false">
     <template #actionButtons>
       <div class="flex gap-2">
-        <UiButton v-if="route.query.q === 'channel'" color="primary" @click="() => {
+        <!-- <UiButton v-if="route.query.q === 'channel'" color="primary" @click="() => {
             channelModalState.open = true
             channelModalState.id = null
           }">
           Add Channel
-        </UiButton>
-        <UiButton v-else-if="route.query.q === 'number'" color="primary" @click="() => {
+        </UiButton> -->
+        <UiButton v-if="route.query.q === 'number'" color="primary" @click="() => {
           numberModalState.open = true
           numberModalState.id = null
           }">
@@ -25,13 +25,13 @@
       </div>
     </template>
     <UiTabs default-value="crm" class="w-full self-start">
-      <UiTabsList class="grid w-[100%] sm:w-[100%] nd:w-[60%] xl:w-[40%] lg:w-[40%] grid-cols-3">
+      <UiTabsList class="grid w-[100%] sm:w-[100%] nd:w-[50%] xl:w-[30%] lg:w-[30%] grid-cols-2">
         <UiTabsTrigger value="crm" @click="navigateToTab('crm')">
           CRM
         </UiTabsTrigger>
-        <UiTabsTrigger value="campaign" @click="navigateToTab('channel')">
+        <!-- <UiTabsTrigger value="campaign" @click="navigateToTab('channel')">
           Channel
-        </UiTabsTrigger>
+        </UiTabsTrigger> -->
         <UiTabsTrigger value="number" @click="navigateToTab('number')">
           Exophone
         </UiTabsTrigger>

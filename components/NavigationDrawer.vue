@@ -41,6 +41,7 @@
               ? 'bg-[#424bd1] text-[#ffffff]'
               : 'bg-[#ffffff]',
           ]">
+          <WhatsappIcon v-if="(path === '/whatsapp-bot')"></WhatsappIcon>
           <component :is="icon"></component>
 
           <span class="text-[14px]">{{ name }}</span>
@@ -116,7 +117,6 @@
         "Yes! You can use the transition prop to configure the animation.",
     },
   ];
-
   const route = useRoute();
   const emit = defineEmits(["closeSheet"]);
   const navigationModules = ref([
@@ -172,6 +172,12 @@
           path: "/chat-bot",
         },
       ],
+    },
+    {
+      name: "Whatsapp Bot",
+      icon: '',
+      path: "/whatsapp-bot",
+      children: [],
     },
     {
       name: "Settings",
