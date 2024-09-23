@@ -8,10 +8,11 @@ export const createTimeline = async (timeline: InsertTimeline) => {
 export const listTimelinesByChatId = async (
   chatId: string,
   query: any,
+  botUserId: string,
   timeZone: string,
 ) => {
   let data = await db.query.timelineSchema.findMany({
-    where: eq(timelineSchema.chatId, chatId),
+    where: botUserId ? eq(timelineSchema.userId, botUserId) : eq(timelineSchema.chatId, chatId),
     orderBy: [desc(timelineSchema.createdAt)],
   });
 

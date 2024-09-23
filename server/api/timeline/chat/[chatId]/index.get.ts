@@ -1,3 +1,5 @@
+const db = useDrizzle()
+
 const getChatValidation = z.object({
   chatId: z.string().uuid("chat Id is required"),
 });
@@ -10,5 +12,10 @@ export default defineEventHandler(async (event) => {
     getChatValidation.safeParse,
   );
   if (!body.data) return;
-  return await listTimelinesByChatId(body.data?.chatId, {}, timeZone);
+
+  const botUser: any = await db.query.chatSchema.findFirst({
+    where: eq(chatSchema.id, body.data?.chatId)
+  })
+
+  return await listTimelinesByChatId(body.data?.chatId, {}, botUser?.botUserId, timeZone);
 });
