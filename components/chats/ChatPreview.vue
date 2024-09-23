@@ -5,8 +5,10 @@
         'h-[calc(100%-70px)]',
         'overflow-y-scroll',
         leadData?.channel === 'website' ? 'bg-[#f8f6f6]' : 'bg-[#e5ddd5]',
+        
       )
     "
+    style="background-image :url('../../whatsapp.png')"
     ref="chatScreenRef"
   >
     <div
