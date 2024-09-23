@@ -22,7 +22,7 @@
       :data="userDataList"
       :is-loading="isDataLoading"
       :page-size="20"
-      :height="16"
+      :height="19"
       height-unit="vh"
     />
     <UserManageMentModal

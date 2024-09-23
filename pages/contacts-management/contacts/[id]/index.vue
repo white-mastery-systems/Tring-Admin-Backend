@@ -19,7 +19,7 @@
       }
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :is-loading="isDataLoading"
       :columns="columns" :page-size="20" :height="10" height-unit="vh" />
-    <BucketModal v-model="addBucketModalState" @confirm="() => {
+    <CreateEditBucketNumbertModal v-model="addBucketModalState" @confirm="() => {
         addBucketModalState.open = false;
         integrationRefresh();
       }

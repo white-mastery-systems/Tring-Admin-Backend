@@ -190,7 +190,9 @@ const handleConnect = handleSubmit(async (values: any) => {
               class="pb-2 text-red-500 font-medium text-[18px]">*</span></label>
           <input type="time" id="appt" name="appt" class="border-[1px] border-solid border-grey rounded-[6px] py-1.5 px-2">
         </div> -->
-        <div class="flex flex-col justify-start items-center gap-2 font-medium">
+        <TimePickerField name="appt" label="Time">
+        </TimePickerField>
+        <!-- <div class="flex flex-col justify-start items-center gap-2 font-medium">
           <label for="appt" class="pb-[1px] text-gray-700 w-[70%]" :class="(errors.appt) ? 'text-red-500' : ''">
             Time <span class="pb-2 text-red-500 font-medium text-[18px]">*</span>
           </label>
@@ -198,7 +200,7 @@ const handleConnect = handleSubmit(async (values: any) => {
             'border-[1px] border-solid rounded-[6px] py-[8px] px-2 font-normal text-[14px]',
           ]">
           <p v-if="errors.appt" class="text-red-500 text-[13px]">{{ errors.appt }}</p>
-        </div>
+        </div> -->
         <SelectField name="type" label="Contact Method" placeholder="Select a method" :options="[
           {
             value: 'voice',

@@ -1,32 +1,11 @@
 <template>
   <DialogWrapper v-model="modalState" :title="modalProps?.id ? `Edit CRM` : 'Link CRM'">
-    <UiForm @submit="handleAddIntegration" class="space-y-2">
-      <UiFormField v-model="integrationField" v-bind="integrationFieldAttrs" name="integrationId">
-        <UiFormItem class="w-full">
-          <UiFormLabel :class="errors.integrationId ? 'text-[#ef4444]' : ''">Select Connected CRM<UiLabel
-              class="text-lg text-red-500">*</UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-model="integrationField" v-bind="integrationFieldAttrs" @update:model-value="handleCrmChange">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select CRM" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectItem v-for="(integrationData, index) in integrationsData" :value="integrationData.id">{{
-                  integrationData.name }}</UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <!-- <UiFormMessage /> -->
-          <template v-if="errors?.integrationId">
-            <span class="mt-0 text-[14px] font-medium text-[#ef4444]">{{
-              errors?.integrationId
-              }}</span>
-            <br />
-          </template>
-          <span class="text-xs text-gray-500">Select your crm.</span>
-        </UiFormItem>
-      </UiFormField>
+    <form @submit="handleAddIntegration" class="space-y-2">
+      <SelectField name="integrationId" :multiple="false" :required="true" label="Select Connected CRM"
+        helperText="Select your crm." placeholder="Select Connected CRM" :options="integrationsData.map((integration) => ({
+          value: integration.id,
+          label: integration.name,
+        }))" />
       <!-- <UiFormField
         v-if="
           integrationsData.find(
@@ -61,112 +40,44 @@
           <span class="text-xs text-gray-500">Select your sub pipeline.</span>
         </UiFormItem>
       </UiFormField> -->
-      <UiFormField v-if="
+      <div v-if="
         integrationsData.find(
           (integration) => integration.id === values.integrationId,
         )?.crm === 'zoho-bigin'
-      " v-model="pipelineField" v-bind="pipelineFieldAttrs" name="pipelineId">
-        <UiFormItem class="w-full">
-          <UiFormLabel :class="errors?.pipelineId ? 'text-[#ef4444]' : ''">Select Pipeline<UiLabel
-              class="text-lg text-red-500">*</UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-model="pipelineField" v-bind="pipelineFieldAttrs" @update:model-value="handlePipelineChange">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select Pipeline" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectItem v-for="(integrationData, index) in pipelines" :value="integrationData.id">{{
-                  integrationData.display_label }}</UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <span class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.pipelineId }}</span>
-          <span class="text-xs text-gray-500">Select your pipeline.</span>
-        </UiFormItem>
-      </UiFormField>
-      <UiFormField v-if="values.pipelineId && values.integrationId" v-model="stageField" v-bind="stageFieldAttrs"
-        name="stageId">
-        <UiFormItem class="w-full">
-          <UiFormLabel :class="errors?.stageId ? 'text-[#ef4444]' : ''">Select Stage<UiLabel
-              class="text-lg text-red-500">*</UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-model="stageField" v-bind="stageFieldAttrs">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select Stage" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectItem v-for="(stageData, index) in stages" :value="stageData.id">{{ stageData.display_value }}
-                </UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <span class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.stageId }}</span>
-          <span class="text-xs text-gray-500">Select your Pipeline Stage.</span>
-        </UiFormItem>
-      </UiFormField>
+      ">
+        <SelectField name="pipelineId" :multiple="false" :required="true" label="Select Pipeline"
+          placeholder="Select Pipeline" helperText="Select your pipeline."
+          :options="pipelines.map((pipe) => ({ value: pipe.id, label: pipe.display_label }))" />
 
-      <UiFormField v-if="
+      </div>
+      <div v-if="values.pipelineId && values.integrationId">
+        <SelectField name="stageId" :multiple="false" :required="true" :label="'Select Stage'"
+          helperText="Select your Pipeline Stage." placeholder="Select Stage"
+          :options="stages.map((stage) => ({ value: stage.id, label: stage.display_value }))" />
+      </div>
+      <div v-if="
         integrationsData.find(
           (integration) => integration.id === values.integrationId,
         )?.crm === 'zoho-crm'
-      " v-model="layoutField" v-bind="layoutFieldAttrs" name="layoutId">
-        <UiFormItem class="w-full">
-          <UiFormLabel :class="errors?.layoutId ? 'text-[#ef4444]' : ''">Select Layout<UiLabel
-              class="text-lg text-red-500">*</UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-model="layoutField" v-bind="layoutFieldAttrs" @update:model-value="handleCrmChange">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select Layout" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectItem v-for="(integrationData, index) in layouts" :value="integrationData.id">{{
-                  integrationData.name
-                  }}</UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <span class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.layoutId }}</span>
-          <span class="text-xs text-gray-500">Select your layout.</span>
-        </UiFormItem>
-      </UiFormField>
-      <UiFormField v-if="
+      ">
+        <SelectField name="layoutId" :multiple="false" :required="true" label="Select Layout"
+          placeholder="Select Layout" helperText="Select your layout."
+          :options="layouts.map((layout) => ({ value: layout.id, label: layout.name }))" />
+      </div>
+      <div class="flex flex-col gap-3" v-if="
         integrationsData.find(
           (integration) => integration.id === values.integrationId,
         )?.crm === 'sell-do'
-      " v-model="campaignField" v-bind="campaignFieldAttrs" name="campaignId">
-        <UiFormItem class="w-full">
-          <UiFormLabel class="font-bold" :class="errors?.campaignId ? 'text-[#ef4444]' : ''">Campaign Id</UiFormLabel>
-          <UiFormControl>
-            <UiInput v-model="campaignField" v-bind="campaignFieldAttrs" type="text"
-              placeholder="Enter your campaign id" />
-          </UiFormControl>
+      ">
+        <TextField name="campaignId" label="Campaign Id" placeholder="Enter your campaign id" />
 
-          <span class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.campaignId }}</span>
-        </UiFormItem>
-      </UiFormField>
-      <UiFormField v-if="
-        integrationsData.find(
-          (integration) => integration.id === values.integrationId,
-        )?.crm === 'sell-do'
-      " v-model="projectField" v-bind="projectFieldAttrs" name="projectId">
-        <UiFormItem class="w-full">
-          <UiFormLabel class="font-bold" :class="errors?.projectId ? 'text-[#ef4444]' : ''">Project Id</UiFormLabel>
-          <UiFormControl>
-            <UiInput placeholder="Enter your project id" v-model="projectField" v-bind="projectFieldAttrs"
-              type="text" />
-          </UiFormControl>
-
-          <span class="text-sm text-red-500">{{ errors?.projectId }}</span>
-        </UiFormItem>
-      </UiFormField>
+        <TextField name="projectId" label="Project Id" placeholder="Enter your project id" />
+      </div>
 
       <UiButton type="submit" class="mt-2" color="primary">
         Save changes
       </UiButton>
-    </UiForm>
+    </form>
   </DialogWrapper>
 </template>
 <script setup lang="ts">
@@ -196,17 +107,28 @@ const {
   validationSchema: toTypedSchema(createEditCRMConfigValidation),
   initialValues: {},
 });
-const [integrationField, integrationFieldAttrs] =
-  defineField("integrationId");
-const [campaignField, campaignFieldAttrs] = defineField("campaignId");
-const [projectField, projectFieldAttrs] = defineField("projectId");
-const [pipelineField, pipelineFieldAttrs] = defineField("pipelineId");
-const [layoutField, layoutFieldAttrs] = defineField("layoutId");
-const [stageField, stageFieldAttrs] = defineField("stageId");
+// const [integrationField, integrationFieldAttrs] =
+//   defineField("integrationId");
+// const [campaignField, campaignFieldAttrs] = defineField("campaignId");
+// const [projectField, projectFieldAttrs] = defineField("projectId");
+// const [pipelineField, pipelineFieldAttrs] = defineField("pipelineId");
+// const [layoutField, layoutFieldAttrs] = defineField("layoutId");
+// const [stageField, stageFieldAttrs] = defineField("stageId");
 // const [subPipelineField, subPipelineFieldAttrs] = defineField("subPipeline");
 
 // subPipelineField
 
+watch(()=> values.pipelineId,(newValue)=>{
+  console.log({newValue})
+  handlePipelineChange(newValue)
+})
+
+watch(() => values.integrationId, (newValue, oldValue) => {
+  handleCrmChange(newValue)
+})
+watch(() => values.layoutId, (newValue, oldValue) => {
+  handleCrmChange(newValue)
+})
 watch(
   () => modalState.value,
   async (value) => {

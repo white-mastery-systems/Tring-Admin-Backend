@@ -20,7 +20,7 @@ watch(addBucketNameModalState,(newValue) => {
 
 const formSchema = toTypedSchema(
   z.object({
-    name: z.string().min(1, 'First is required'),
+    name: z.string({ required_error: 'First is required' }).min(1, 'First is required'),
     // lastName: z.string().min(1, 'LastName is required'),
   })
 );
@@ -99,24 +99,15 @@ const handleConnect = handleSubmit(async (values: any) => {
 <template>
   <DialogWrapper v-model="addBucketNameModalState"
     :title="(addBucketNameModalState.id) ?  'Modify Bucket' : 'Add Bucket'" class="rounded-lg">
-    <UiForm v-slot="{ values }" @submit="handleConnect" :keep-values="true" :validate-on-mount="false"
+    <form @submit="handleConnect"
       class="space-y-2">
       <div class="flex gap-4">
-        <UiFormField v-model="nameField" v-bind="nameFieldProps" name="name">
-          <UiFormItem class="w-full">
-            <UiFormLabel>Name <UiLabel class="text-lg text-red-500">*</UiLabel>
-            </UiFormLabel>
-            <UiFormControl>
-              <UiInput v-model="nameField" v-bind="nameFieldProps" type="text" placeholder="Enter Name" />
-              <p class="mt-0 text-[14px] font-medium text-[#ef4444]">{{ errors?.name }}</p>
-            </UiFormControl>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
+        <TextField name="name" label="Name" placeholder="Enter name" required>
+        </TextField>
       </div>
       <div class="flex items-center justify-end">
         <UiButton type="submit" class="mt-2" color="primary"> Submit </UiButton>
       </div>
-    </UiForm>
+    </form>
   </DialogWrapper>
 </template>

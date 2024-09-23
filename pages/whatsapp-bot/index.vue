@@ -17,6 +17,7 @@
       }
         " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="statusColumns"
         :data="integrationsData" :page-size="8" :is-loading="false" :height="15" :heightUnit="'vh'" />
+
       <ChannelModal v-model="channelModalState" @success="onSuccessChannel()" />
       <ConfirmationModal v-model:open="deleteChannelState.open" title="Confirm Delete"
         description="Are you sure you want to delete ?" @confirm="() => {

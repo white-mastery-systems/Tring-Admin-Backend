@@ -9,7 +9,7 @@
           ">
           Add Campaign
         </UiButton>
-        </div>
+      </div>
     </template>
     <div>
       <div class="flex items-center gap-2 pb-2">
@@ -21,7 +21,7 @@
       }
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
         :data="campaignDataList" :is-loading="isDataLoading" :page-size="20" :height="16" height-unit="vh" />
-      <CampaignModal v-model="campaignModalState" @confirm="() => {
+      <CreateEditCampaignModal v-model="campaignModalState" @confirm="() => {
         campaignModalState.open = false;
         getAllCampaign()
       }
