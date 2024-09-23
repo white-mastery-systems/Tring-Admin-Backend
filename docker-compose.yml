@@ -36,7 +36,7 @@ services:
       - "NUXT_NODEMAILER_PASS=Testing@2023"
       - "NUXT_ADMIN_BASE_URL=http://localhost:3000"
       - "NUXT_SECRET_KEY=secretKey"
-      - "NUXT_PUBLIC_GOOGLE_ANALYTICS_ID=G-SSN0YE5QG7"
+      - "NUXT_PUBLIC_GOOGLE_ANALYTICS_ID=ddd"
     volumes:
       - tring-suite_admin:/app/node_modules
       - tring-admin_docs:/app/assets/docs

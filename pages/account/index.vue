@@ -85,7 +85,6 @@ const tab = ref("personalDetails");
 companyDetails()
 const selectedChannel = (value: any) => {
   tab.value = value;
-
 };
 
 
