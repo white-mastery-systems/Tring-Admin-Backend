@@ -22,7 +22,7 @@ export const getChatDetails = async (chatId: string) => {
 };
 
 export const getMessages = async (chatId: string, botUserId: string) => {
-  const list = await db.query.chatSchema.findMany({
+  let list: any = await db.query.chatSchema.findMany({
     where: botUserId ? eq(chatSchema.botUserId, botUserId) : eq(chatSchema.id, chatId),
     with: { 
       botUser: true,
@@ -36,11 +36,15 @@ export const getMessages = async (chatId: string, botUserId: string) => {
     },
     orderBy: desc(chatSchema.createdAt),
   });
-   
-  const mergedMessages = list.reduce((acc: any, obj) => {
-    return acc.concat(obj.messages);
-  }, []); 
-  return mergedMessages
+  
+  list = list.map((i: any)=> ({
+    botId: i.botId,
+    chatId: i.id,
+    messages: i.messages 
+  }))
+
+  return list
+ 
 }
 
 export const listChats = async (
