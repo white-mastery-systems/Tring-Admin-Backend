@@ -1,7 +1,9 @@
 import type { User } from "lucia";
 
 export const useUser = async () => {
-  const user = ref<User | null>(JSON.parse(localStorage.getItem('user') || 'null'));
+  const user = ref<User | null>(
+    JSON.parse(localStorage.getItem("user") || "null"),
+  );
 
   const isAdmin = computed(() => {
     if (!user.value) return false;
@@ -26,15 +28,15 @@ export const useUser = async () => {
   };
 
   const updateUser = () => {
-     const storedUser = localStorage.getItem('user');
-     user.value = storedUser ? JSON.parse(storedUser) : null;
-   };
-   
+    const storedUser = localStorage.getItem("user");
+    user.value = storedUser ? JSON.parse(storedUser) : null;
+  };
+
   if (!user.value) {
     await refreshUser();
   }
   const handleStorageChange = (event: StorageEvent) => {
-    if (event.key === 'user') {
+    if (event.key === "user") {
       updateUser();
       refreshUser()
     }
@@ -42,16 +44,31 @@ export const useUser = async () => {
 
   onMounted(() => {
     // Set up the event listener when the component is mounted
-    window.addEventListener('storage', handleStorageChange);
+   window.addEventListener('storage', handleStorageChange);
     refreshUser()
   });
 
   onUnmounted(() => {
     // Clean up the event listener when the component is unmounted
-    window.removeEventListener('storage', handleStorageChange);
+    window.removeEventListener("storage", handleStorageChange);
   });
 
   return { user, isAdmin, clearUser, refreshUser };
+};
+
+export const companyDetails = async () => {
+  const orgData = JSON.parse(localStorage.getItem("orgDetails") || "null");
+  if (orgData) {
+    return {
+      orgDetails: orgData,
+    };
+  } else {
+    const { orgDetails } = await $fetch("/api/org", {
+      method: "GET",
+    });
+    localStorage.setItem("orgDetails", JSON.stringify(orgDetails));
+   return { orgDetails: orgDetails };
+  }
 };
 
 //TODO logger https://github.com/unjs/nitro/discussions/334

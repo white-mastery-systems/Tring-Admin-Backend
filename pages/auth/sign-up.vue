@@ -130,7 +130,7 @@
           <UiButton
             type="submit"
             class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
-            >Sign in
+            >Sign Up
           </UiButton>
         </div>
       </form>
