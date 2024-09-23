@@ -1,13 +1,20 @@
 <template>
   <div
-    class="h-[calc(100%-70px)] overflow-y-scroll bg-[#f8f6f6]"
+    :class="cn('h-[calc(100%-70px)]' ,'overflow-y-scroll', leadData?.channel ==='website' ? 'bg-[#f8f6f6]':'bg-[#e5ddd5]')"
     ref="chatScreenRef"
   >
+  
     <div
       class="w-full p-5"
       v-for="(messageList, messageIndex) in messages"
       :key="messageIndex"
     >
+         <div style="display: flex;justify-content: center;" v-if="leadData?.channel ==='whatsapp'&& timeStamp(messageIndex)">
+
+          <div class="bg-[#ffffff] " style="width: 150px;text-align: center;">
+                 {{messageList.date}}
+          </div>
+              </div>
       <div
         v-if="
           messageList?.role === 'comment' &&
@@ -38,6 +45,8 @@
           }}</span>
           <div class="mt-2.5 flex gap-5 flex-col items-end justify-center rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black">
             <div class="pt-2 pb-2">
+              
+         
             <div class="pb-2" v-if="messageList?.metadata?.name">
               <TextField
                 label="Name"
@@ -132,8 +141,13 @@
 <script setup lang="ts">
   const props = defineProps<{
     leadData: any;
+    class:String;
   }>();
   const messages=ref([])
+
+  const timeStamp  = (messageIndex:any) => {
+   return !messageIndex? true: messages?.value[messageIndex]?.date !==   messages?.value[messageIndex]?.date
+  }
 
   watch(
     () => props.leadData,
@@ -146,9 +160,8 @@
      localMessagesStore?.splice(messageIndex,1)
      localMessagesStore.splice(messageIndex-1,0,leadMessage)
      localMessagesStore.slice(1)
-     messages.value=localMessagesStore
+     messages.value=localMessagesStore.map((message)=>({...message,date:message.createdAt.split(`T`)[0]}))
       console.log({va:messages.value})
-      
     },
   );
 </script>
