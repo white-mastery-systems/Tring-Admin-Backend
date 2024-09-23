@@ -12,7 +12,7 @@
          <div style="display: flex;justify-content: center;" v-if="leadData?.channel ==='whatsapp'&& timeStamp(messageIndex)">
 
           <div class="bg-[#ffffff] " style="width: 150px;text-align: center;">
-            {{ formatDate(new Date(messageList.createdAt), 'dd MMMM yyyy') }}
+            {{ formatDate(new Date(messageList?.createdAt), 'dd MMMM yyyy') }}
           </div>
               </div>
       <div
@@ -163,7 +163,7 @@
      localMessagesStore?.splice(messageIndex,1)
      localMessagesStore.splice(messageIndex-1,0,leadMessage)
      localMessagesStore.slice(1)
-     messages.value=localMessagesStore.map((message)=>({...message,date:message.createdAt.split(`T`)[0]}))
+     messages.value=localMessagesStore?.map((message)=>({...message,date:message.createdAt.split(`T`)[0]}))
       console.log({va:messages.value})
     },
   );
