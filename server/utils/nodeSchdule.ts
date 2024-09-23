@@ -96,10 +96,13 @@ export const scheduleEvent = async (
     console.log({ contactList });
     console.log({ campaignInformation });
     const phoneId = campaignInformation?.metadata?.phoneId;
+    // const phoneId = "112867458396790";
     // const phoneId = "401871499682721";
     // const phoneId = "361306107076548";
     // const phoneId = "112867458396790";
     const metaToken = whatsappInformation?.metadata?.access_token;
+    // const metaToken =
+    //   "EAAwYX9ZCRR1gBOZC9Ihmxr49ZByWwotyJTCy88DjvVojsVPmbUB5NzkYbQ3eFDhss7lGeN6D4CUkEuoGM5VDIgZB309gV0I36KZA0g7QLGtZBkeFRsozomPZBkCMeJ8SZBOWJbSWzlBkMTvjqmk6Xj5qFEqqduzZAjTqtLo44XaWmHnewprbBYkWmCVBs6xZCxZBZBEk6QhgvJZA4MuZCdiMmpTKOeeQ5WyP38rPBcS5dt";
     // const metaToken =
     //   "EAAwYX9ZCRR1gBO3qnIp3vYgK1UF6GDpA2UC0Xa3rPG3DUvZBAv7uHgMQAsT2jSyUsvk273dRfpRjNKepHKeZBrqjnYBTZAV6KHu8JxRRjpk0fIWKBKnGmZCdMHYqqRfGNH0nw2ZBM0Eda5vl6cWFMGme2mvZCtCUBcKegsbIr1tOJ9CJ5ATNlAQv42K0C3QSguo9gZBO4iM6EVz19HJmJZB0UZAZBzAZANVnQhZCOAZBEZD";
     // const metaToken =
