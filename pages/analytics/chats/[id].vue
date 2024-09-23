@@ -61,6 +61,12 @@
                   v-for="(step, index) in timeLineData"
                   :key="index"
                   :index="index"
+                  @timeLine="($event)=>{
+                    BotId = $event
+                    setTimeout(()=>{
+                      BotId =null
+                    })
+                    }"
                   :data="step"
                   :totalSteps="timeLineData.length"
                   :height="160"
@@ -77,19 +83,32 @@
             :class="[
               'flex h-[70px] w-full items-center justify-between px-2.5 font-medium text-[#ffffff]',
             ]"
-            :style=" leadData?.channel === 'whatsapp' ? 'background:#128C7E': `background:hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`"
+            :style="
+              leadData?.channel === 'whatsapp'
+                ? 'background:#128C7E'
+                : `background:hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`
+            "
           >
             <div class="flex items-center gap-2">
               <!-- {{ leadData?.channel}} -->
-            <WhatsappIcon v-if="leadData?.channel ==='whatsapp'"  class="align-middle"></WhatsappIcon>
+              <WhatsappIcon
+                v-if="leadData?.channel === 'whatsapp'"
+                class="align-middle"
+              ></WhatsappIcon>
 
-                <span class="text-[14px] capitalize">{{
-                  leadData?.bot?.name
-                }}</span>
+              <span class="text-[14px] capitalize">{{
+                leadData?.bot?.name
+              }}</span>
             </div>
           </div>
-      
-          <ChatPreview v-if=" computed(()=> messages?.length && !!leadData)" :leadData="leadData":messages="messages" />
+
+          <ChatPreview
+            v-if="computed(() => messages?.length && !!leadData)"
+            :leadData="leadData"
+            :messages="messages"
+            :scrollChatBox="BotId"
+            @chatId="BotId = null"
+          />
         </div>
       </div>
     </div>
@@ -97,13 +116,18 @@
   </Page>
 </template>
 <script setup lang="ts">
+import { set } from 'date-fns';
+
   const chatScreenRef = ref(null);
+  const BotId = ref(null);
   const scrollChatBox = () => {
     setTimeout(() => {
       if (chatScreenRef.value)
         chatScreenRef.value.scrollTop = chatScreenRef?.value?.scrollHeight;
     }, 1000);
   };
+
+  scrollChatBox;
   onMounted(() => {
     {
       scrollChatBox();
@@ -118,11 +142,10 @@
   const messages = await $fetch(`/api/org/chat/${route.params.id}/messages`, {
     method: "GET",
     server: false,
-  })
-
+  });
 
   console.log(messages, "messages");
-  
+
   const { data: timeLineData } = await useLazyFetch(
     `/api/timeline/chat/${route.params.id}`,
   );

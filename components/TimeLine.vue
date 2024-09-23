@@ -3,6 +3,8 @@
   import { Link } from "lucide-vue-next";
 
   // Props: a single step object and the current index
+const emits = defineEmits(["timeLine"]);
+
   defineProps({
     data: {
       type: Object,
@@ -50,8 +52,8 @@
               <span>
                 <LinkIcon />
               </span>
-              <NuxtLink class="text-indigo-600" :to="data.metadata?.website" target="_blank">
-                {{ data.metadata?.website }}
+              <NuxtLink class="text-indigo-600 cursor-pointer"  @click="emits('timeLine', data.chatId)">
+                {{ data?.chatId }}
               </NuxtLink>
             </div>
           </div>
