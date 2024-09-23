@@ -12,7 +12,7 @@
          <div style="display: flex;justify-content: center;" v-if="leadData?.channel ==='whatsapp'&& timeStamp(messageIndex)">
 
           <div class="bg-[#ffffff] " style="width: 150px;text-align: center;">
-                 {{messageList.date}}
+            {{ formatDate(new Date(messageList.createdAt), 'dd MMMM yyyy') }}
           </div>
               </div>
       <div
@@ -148,6 +148,9 @@
   const timeStamp  = (messageIndex:any) => {
    return !messageIndex? true: messages?.value[messageIndex]?.date !==   messages?.value[messageIndex]?.date
   }
+
+    
+
 
   watch(
     () => props.leadData,
