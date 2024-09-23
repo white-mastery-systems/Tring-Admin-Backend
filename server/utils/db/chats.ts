@@ -21,6 +21,28 @@ export const getChatDetails = async (chatId: string) => {
   });
 };
 
+export const getMessages = async (chatId: string, botUserId: string) => {
+  const list = await db.query.chatSchema.findMany({
+    where: botUserId ? eq(chatSchema.botUserId, botUserId) : eq(chatSchema.id, chatId),
+    with: { 
+      botUser: true,
+      bot: true,
+      lead: {
+        columns: { id: true, status: true },
+      },
+      messages: {
+        orderBy: asc(messageSchema.createdAt),
+      },
+    },
+    orderBy: desc(chatSchema.createdAt),
+  });
+   
+  const mergedMessages = list.reduce((acc: any, obj) => {
+    return acc.concat(obj.messages);
+  }, []); 
+  return mergedMessages
+}
+
 export const listChats = async (
   organisationId: string,
   query: any,
