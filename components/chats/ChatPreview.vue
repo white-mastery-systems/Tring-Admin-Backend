@@ -142,6 +142,7 @@
   const props = defineProps<{
     leadData: any;
     class:String;
+    messages: any;
   }>();
   const messages=ref([])
 
@@ -156,14 +157,14 @@
     () => props.leadData,
     (newValue) => {
       console.log({newValue})
-     const messageIndex= props.leadData.messages?.findIndex((message)=>message?.content==="User Details Submitted")
-     let leadMessage=props.leadData?.messages[messageIndex]
+     const messageIndex= props.messages?.findIndex((message)=>message?.content==="User Details Submitted")
+     let leadMessage=props.messages[messageIndex]
     //  leadMessage.role='assistant'
-     let localMessagesStore=props.leadData?.messages
+     let localMessagesStore=props.messages
      localMessagesStore?.splice(messageIndex,1)
      localMessagesStore.splice(messageIndex-1,0,leadMessage)
      localMessagesStore.slice(1)
-     messages.value=localMessagesStore?.map((message)=>({...message,date:message?.createdAt.split(`T`)[0]}))
+     messages.value=localMessagesStore?.map((message)=>({...message,date:message?.createdAt?.split(`T`)[0]}))
       console.log({va:messages.value})
     },
   );

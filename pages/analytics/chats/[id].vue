@@ -88,7 +88,8 @@
                 }}</span>
             </div>
           </div>
-          <ChatPreview :leadData="leadData" />
+      
+          <ChatPreview v-if=" computed(()=> messages?.length && !!leadData)" :leadData="leadData":messages="messages" />
         </div>
       </div>
     </div>
@@ -114,11 +115,14 @@
 
   const route = useRoute("analytics-chats-id");
 
-  const messages = $fetch(`/api/org/chat/${route.params.id}/messages`, {
+  const messages = await $fetch(`/api/org/chat/${route.params.id}/messages`, {
     method: "GET",
     server: false,
   })
 
+
+  console.log(messages, "messages");
+  
   const { data: timeLineData } = await useLazyFetch(
     `/api/timeline/chat/${route.params.id}`,
   );
