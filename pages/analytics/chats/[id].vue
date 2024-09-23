@@ -114,6 +114,11 @@
 
   const route = useRoute("analytics-chats-id");
 
+  const messages = $fetch(`/api/org/chat/${route.params.id}/messages`, {
+    method: "GET",
+    server: false,
+  })
+
   const { data: timeLineData } = await useLazyFetch(
     `/api/timeline/chat/${route.params.id}`,
   );

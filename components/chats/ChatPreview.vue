@@ -93,8 +93,8 @@
               {{ messageList?.content }}
             </div>
           </div>
-          <div class="text-[12px] opacity-60">
-            {{ formatDate(new Date(messageList.createdAt), "hh:mm a") }}
+          <div class="text-[12px] opacity-60" v-if="messageList?.createdAt">
+            {{ formatDate(new Date(messageList?.createdAt), "hh:mm a") }}
           </div>
         </div>
       </div>
@@ -128,7 +128,7 @@
                 </p>
               </div>
             </div>
-            <div class="self-end text-[12px] text-[#00000066]">
+            <div class="self-end text-[12px] text-[#00000066]" v-if="messageList?.createdAt">
               {{ formatDate(new Date(messageList.createdAt), "hh:mma") }}
             </div>
           </div>
@@ -163,7 +163,7 @@
      localMessagesStore?.splice(messageIndex,1)
      localMessagesStore.splice(messageIndex-1,0,leadMessage)
      localMessagesStore.slice(1)
-     messages.value=localMessagesStore?.map((message)=>({...message,date:message.createdAt.split(`T`)[0]}))
+     messages.value=localMessagesStore?.map((message)=>({...message,date:message?.createdAt.split(`T`)[0]}))
       console.log({va:messages.value})
     },
   );
