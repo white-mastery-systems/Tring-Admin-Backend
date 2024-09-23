@@ -36,11 +36,11 @@ export const getMessages = async (chatId: string, botUserId: string) => {
     },
     orderBy: desc(chatSchema.createdAt),
   });
-  
-  list = list.map((i: any)=> ({
-    botId: i.botId,
-    chatId: i.id,
-    messages: i.messages 
+
+  list = list?.map((i: any)=> ({
+    botId: i?.botId,
+    chatId: i?.id,
+    messages: i?.messages?.slice(1)
   }))
 
   return list
