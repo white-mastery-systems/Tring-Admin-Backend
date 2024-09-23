@@ -50,7 +50,7 @@ onMounted(async () => {
   const getUpdates: any = await $fetch(`/api/voicebots/${route.params.id}`)
   if (getUpdates.intents?.length) initialValues.value.push(...getUpdates.intents) 
   else {
-    initialValues.value.push(['greeting', 'audio_check', 'agent_name', 'conclude'])
+    initialValues.value.push(...['greeting', 'audio_check', 'agent_name', 'conclude'])
   }
 })
 
@@ -74,13 +74,12 @@ const onSubmit = async (value: any) => {
     <UiForm :validation-schema="formSchema" @submit="onSubmit">
       <UiFormField name="items">
         <UiFormItem>
-
           <UiFormField v-for="item in items" v-slot="{ value, handleChange }" :key="item.id" type="checkbox"
             v-model="initialValues" :value="item.id" :unchecked-value="false" name="items">
             <UiFormItem class="flex flex-row items-center space-x-3 space-y-3">
               <UiFormControl class="mt-[11px]">
                 <UiCheckbox :checked="value?.includes(item.id)" class="border-zinc-800"
-                  :style="{ background: (value?.includes(item.id)) ? '#43D371' : '#80808078', 'border-color': '#80808078' }"
+                  :style="{ background: (value?.includes(item.id)) ? '#424bd1' : '#80808078', 'border-color': '#80808078' }"
                   @update:checked="handleChange" />
               </UiFormControl>
               <UiFormLabel class="font-medium text-[15px]">

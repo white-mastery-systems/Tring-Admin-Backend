@@ -46,11 +46,18 @@ const formSchema = toTypedSchema(
     exoPhone: z.string({ required_error: 'Phone Number is required' }).optional().default(""),
     countryCode: z.string({ required_error: 'Country Code is required' }).optional().default(""),
     audienceBucket: z.string({ required_error: 'Audience Bucket Name is required' }).min(1, 'Audience Bucket Name is required'),
-    integrationId: z.string({ required_error: "IntegrationId is required" }).min(1, 'IntegrationId is required'),
-    templateId: z.string({ required_error: "template is required" }).min(1, "template is required"),
-    phoneId: z.string({ required_error: "phone is required" }).min(1, "phone is required")
+    integrationId: z.string({ required_error: "IntegrationId is required" }).optional().default(""),
+    templateId: z.string({ required_error: "template is required" }).optional().default(""),
+    phoneId: z.string({ required_error: "phone is required" }).optional().default(""),
 
-
+  }).refine((data) => {
+    if (data.type === 'whatsapp') {
+      return !!data.integrationId;
+    }
+    return true;
+  }, {
+    message: 'IntegrationId is required when Type is WhatsApp.',
+    path: ['integrationId'],
   }).refine((data: any) => {
     if (data.type !== 'whatsapp') {
       const errors: Record<string, boolean> = {};
@@ -78,6 +85,22 @@ const formSchema = toTypedSchema(
             message: 'Country Code is required.',
             code: z.ZodIssueCode.custom,
           });
+        }
+        if (data.integrationId && data.integrationId.length > 0) {
+          if (!data.templateId) {
+            ctx.addIssue({
+              path: ['templateId'],
+              message: 'Template ID is required when Integration ID is present.',
+              code: z.ZodIssueCode.custom,
+            });
+          }
+          if (!data.phoneId) {
+            ctx.addIssue({
+              path: ['phoneId'],
+              message: 'Phone ID is required when Integration ID is present.',
+              code: z.ZodIssueCode.custom,
+            });
+          }
         }
       }
     })
@@ -146,7 +169,6 @@ watch(() => campaignModalState.value.open, async (newState) => {
 const handleConnect = handleSubmit(async (values: any) => {
   const getTime = convertTo12HourFormat(values.appt)
   const getUTC = convertToUTC(getTime)
-  console.log(values, 'values')
   const payload = {
     countryCode: values.countryCode,
     campaignDate: new Date(values.date).toISOString(),
@@ -201,7 +223,7 @@ const handleConnect = handleSubmit(async (values: any) => {
           ]">
           <p v-if="errors.appt" class="text-red-500 text-[13px]">{{ errors.appt }}</p>
         </div> -->
-        <SelectField name="type" label="Contact Method" placeholder="Select a method" :options="[
+        <SelectField name="type" label="Contact Method" placeholder="Select typ.." :options="[
           {
             value: 'voice',
             label: 'Voice',
