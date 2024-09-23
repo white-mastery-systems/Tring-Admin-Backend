@@ -3,6 +3,7 @@ const db = useDrizzle();
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   console.log("<<>>>>>>>>>");
+  console.log({ body: JSON.stringify(body) });
   if (body.event_type === "subscription_created") {
     const paymentBySubscriptionId = await db.query.paymentSchema.findFirst({
       where: eq(
@@ -10,6 +11,7 @@ export default defineEventHandler(async (event) => {
         body.data.subscription.subscription_id,
       ),
     });
+    // console.log({ paymentBySubscriptionId });
     if (!paymentBySubscriptionId) {
       if (!body.data.subscription?.customer?.email) {
         return;
@@ -45,13 +47,14 @@ export default defineEventHandler(async (event) => {
         .insert(paymentSchema)
         .values(apiResponseData)
         .returning();
-      const organizationPromise = db
+      const organizationPromise = await db
         .update(organizationSchema)
         .set({
           usedQuota: 0,
           planCode: apiResponseData.plan_code,
         })
         .where(eq(organizationSchema.id, userDetails?.organizationId!));
+      console.log(organizationPromise);
       return resp;
     }
   }
