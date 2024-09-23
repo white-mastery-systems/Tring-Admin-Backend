@@ -3,15 +3,13 @@ import { isRoleExists } from "~/server/utils/db/user-role";
 const bodyValidator = z
   .object({
     name: z.string().optional(),
-    permissions: z.object({}).optional(),
+    permissions: z.record(z.any()).optional(),
   })
 
 export default defineEventHandler(async(event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const { permissions, name }:any = await isValidBodyHandler(event, bodyValidator);
-  console.log({permissions});
-  
-
+ 
   const isExistsRole = await isRoleExists(name, organizationId)
   if (isExistsRole) {
     return sendError(
