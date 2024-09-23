@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
       });
     }
     try {
-      const newOne = await db
+      await db
         .update(paymentSchema)
         .set({ status: "cancelled" })
         .where(
@@ -52,7 +52,6 @@ export default defineEventHandler(async (event) => {
           ),
         )
         .returning();
-      console.log({ newOne });
     } catch (err: any) {
       console.log(err.message, "ERROR");
     }
@@ -67,7 +66,6 @@ export default defineEventHandler(async (event) => {
       productId: data.data.subscription.product_id,
       customerId: data.data.subscription.customer_id,
       amount: data.data.subscription.amount,
-      // expiry: data.data.subscription.expiry ?? Date.now(),
       status: "active",
     };
     try {
