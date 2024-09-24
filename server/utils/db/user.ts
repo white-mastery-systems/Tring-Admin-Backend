@@ -115,9 +115,13 @@ export const getOrgUserById = async (orgUserId: string) => {
 }
 
 export const updateOrgUserById = async (orgUserId: string, user: any) => {
+  const hashedPassword = await new Argon2id().hash(user?.password);
   return (
     await db.update(authUserSchema)
-    .set(user)
+    .set({
+      ...user,
+      password: hashedPassword,
+    })
     .where(eq(authUserSchema.id, orgUserId))
     .returning()
   )[0]

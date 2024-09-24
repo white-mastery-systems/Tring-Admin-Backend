@@ -23,7 +23,7 @@ export const formSchema = toTypedSchema(
     )
     .transform((data: any) => {
       if (data.role.toLowerCase() === "other") {
-        return { ...data, role: data.otherRole };
+        // return { ...data, role: data.otherRole };
       }
       return data;
     }),
