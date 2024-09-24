@@ -29,10 +29,10 @@
 
       </UiTabsList>
       <UiTabsContent value="user">
-        <UserAddEdit :popupState="userPopupState" @PopupState="userPopupState = $event"/>
+        <AddEditUser :popupState="userPopupState" @PopupState="userPopupState = $event"/>
       </UiTabsContent>
       <UiTabsContent value="role">
-      <RoleAddEdit :popupState="rolePopupState" @PopupState="rolePopupState = $event"/>
+      <AddEditRole :popupState="rolePopupState" @PopupState="rolePopupState = $event"/>
       </UiTabsContent>
  
     </UiTabs>
