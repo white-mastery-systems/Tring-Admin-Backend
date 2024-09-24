@@ -113,8 +113,10 @@
     },
   });
 
-  const deleteUserState = ref({ open: false, id: null });
-  const userModalState = ref({ open: false, id: null });
+ 
+
+  const deleteUserState = ref({ open: false, id: null, });
+  const userModalState = ref({ open: false, id: null,roles:[] });
   // const userModalState = defineModel<{ open: boolean; id: any }>({
   //   default: {
   //     open: false,
@@ -199,6 +201,24 @@
     }),
   ];
 
+  const {
+  data: roleList,
+  refresh: getAllRole,
+} = await useLazyFetch("/api/user-role", {
+  server: false,
+  default: () => [],
+  query: filters,
+  headers: {
+    "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+  },
+  transform: (role: any) => {
+    return role.data;
+  },
+});
+
+   watch(roleList,(newValue)=>{
+   userModalState.value.roles = newValue
+   })
   const props = defineProps<{ popupState?: boolean }>();
   const emit = defineEmits<{ (e: "popupState", payload: any): void }>();
 

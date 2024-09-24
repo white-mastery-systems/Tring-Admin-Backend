@@ -145,8 +145,9 @@ const {
 const { data: botData, status: botLoadingStatus } = await useLazyFetch<{
   speechToTextConfig: Record<string, string>;
 }>(`/api/voicebots/${route.params.id}`);
-if (botData.value && botData.value.speechToTextConfig) {
-  console.log(botData.value.speechToTextConfig, "SPEECH TO TEXT")
+
+watch(botData,(newValue)=>{
+ console.log(botData.value.speechToTextConfig, "SPEECH TO TEXT")
     resetForm();
 
   setFieldValue("language", botData.value.speechToTextConfig.language);
@@ -154,6 +155,11 @@ if (botData.value && botData.value.speechToTextConfig) {
   setFieldValue("amplificationFactor", botData.value.speechToTextConfig.amplificationFactor);
   setFieldValue("endpointing", botData.value.speechToTextConfig.endpointing);
   setFieldValue("utteranceEndMs", botData.value.speechToTextConfig.utteranceEndMs);
+
+})
+
+if (botData.value && botData.value.speechToTextConfig) {
+ 
 
 }
 
