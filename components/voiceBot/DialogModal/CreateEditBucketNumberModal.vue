@@ -73,10 +73,10 @@ const handleConnect = handleSubmit(async (values: any) => {
   try {
     if (bucketModalState.value.id) {
       await $fetch(`/api/org/contact-list/${queryId.value}/contacts/${bucketModalState.value.id}`, { method: "PUT", body: values });
-      toast.success("Created successfully")
+      toast.success("Updated successfully")
     } else {
       await $fetch(`/api/org/contact-list/${queryId.value}/contacts`, { method: "POST", body: values });
-      toast.success("Updated successfully")
+      toast.success("Created successfully")
     }
     resetForm()
     emit('confirm')
