@@ -9,7 +9,7 @@ const agentModalState = defineModel<{ open: boolean }>({
   },
 });
 
-const formSchema = toTypedSchema(
+const createEditVoiceBotValidation = toTypedSchema(
   z.object({
     newBotName: z.string({required_error:"Bot Name is requird."}).min(2, "Bot Name is requird."),
   }),
@@ -23,7 +23,7 @@ const {
   values,
   resetForm,
 } = useForm({
-  validationSchema: formSchema,
+  validationSchema: createEditVoiceBotValidation,
 });
 
 watch(agentModalState, (newState) => { });

@@ -33,7 +33,7 @@ const df = new DateFormatter('en-US', {
 })
 const placeholder = ref()
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
-const formSchema = toTypedSchema(
+const createEditCampaignValidation = toTypedSchema(
   z.object({
     date: z
       .string({ required_error: 'A date is required.' })
@@ -46,9 +46,9 @@ const formSchema = toTypedSchema(
     exoPhone: z.string({ required_error: 'Phone Number is required' }).optional().default(""),
     countryCode: z.string({ required_error: 'Country Code is required' }).optional().default(""),
     audienceBucket: z.string({ required_error: 'Audience Bucket Name is required' }).min(1, 'Audience Bucket Name is required'),
-    integrationId: z.string({ required_error: "IntegrationId is required" }).optional().default(""),
-    templateId: z.string({ required_error: "template is required" }).optional().default(""),
-    phoneId: z.string({ required_error: "phone is required" }).optional().default(""),
+    integrationId: z.string({ required_error: "Integration ID is required" }).optional().default(""),
+    templateId: z.string({ required_error: "Template is required" }).optional().default(""),
+    phoneId: z.string({ required_error: "Phone is required" }).optional().default(""),
 
   }).refine((data) => {
     if (data.type === 'whatsapp') {
@@ -56,7 +56,7 @@ const formSchema = toTypedSchema(
     }
     return true;
   }, {
-    message: 'IntegrationId is required when Type is WhatsApp.',
+    message: 'Integration ID is required when Type is WhatsApp.',
     path: ['integrationId'],
   }).refine((data: any) => {
     if (data.type !== 'whatsapp') {
@@ -116,7 +116,7 @@ const {
   values,
   resetForm,
 } = useForm({
-  validationSchema: formSchema,
+  validationSchema: createEditCampaignValidation,
 });
 const {
   status: integrationLoadingStatus,

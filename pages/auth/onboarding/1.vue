@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formSchema } from '~/validationSchema/authValidation/onBoarding/1Validation';
+import { personalDetailFormValidation } from '~/validationSchema/authValidation/onBoarding/1Validation';
 
   const showCustomRoleInput = ref(false);
   definePageMeta({
@@ -18,7 +18,7 @@ import { formSchema } from '~/validationSchema/authValidation/onBoarding/1Valida
     values,
     resetForm,
   } = useForm({
-    validationSchema: formSchema,
+    validationSchema: personalDetailFormValidation,
     initialValues: {
       // firstName: "",
       // lastName: "",

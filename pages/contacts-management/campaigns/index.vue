@@ -164,10 +164,8 @@ const actionsComponent = (id: any) =>
   );
 
 const columns = [
-  columnHelper.accessor("campaignDate", {
+  columnHelper.accessor("campaignTime", {
     header: "Scheduled at",
-    cell: ({ row }) =>
-      formatDate(new Date(row.original.campaignDate), "dd MMM yyyy HH:MM "),
   }),
   // columnHelper.accessor("campaignTime", {
   //   header: "Campaign Name",
@@ -180,8 +178,6 @@ const columns = [
   }),
   columnHelper.accessor("createdAt", {
     header: "Created At",
-    cell: ({ row }) =>
-      formatDate(new Date(row.original.createdAt), "dd MMM yyyy HH:MM "),
   }),
   columnHelper.accessor("id", {
     header: "Action",
