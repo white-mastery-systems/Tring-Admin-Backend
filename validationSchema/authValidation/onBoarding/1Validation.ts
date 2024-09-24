@@ -1,4 +1,4 @@
-export const formSchema = toTypedSchema(
+export const personalDetailFormValidation = toTypedSchema(
   z
     .object({
       name: z

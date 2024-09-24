@@ -1,47 +1,17 @@
 <template>
   <DialogWrapper v-model="modalState" :title="modalState?.id ? `Edit Intent` : 'Add Intent'">
-    <UiForm class="flex flex-col gap-2" @submit="handleCreateEditIntent()">
-      <UiFormField v-model="intentField" v-bind="intentFieldAttrs" name="intent">
-        <UiFormItem class="w-full">
-          <UiFormLabel :class="errors?.intent ? 'text-[#ef4444]' : ''">Actions<UiLabel class="text-lg text-red-500">*
-            </UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-model="intentField" v-bind="intentFieldAttrs">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select Intent" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectItem v-for="intent in intents" :value="intent.value">{{
-                  intent.label
-                  }}</UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <div class="text-xs text-gray-500">Select your intent.</div>
-          <span class="mt-0 text-[14px] font-medium text-[#ef4444]">
-            {{ errors.intent }}
-          </span>
-        </UiFormItem>
-      </UiFormField>
-      <UiFormField v-if="values.intent === 'location' || values.intent === 'virtual_tour'" v-model="linkField"
-        v-bind="linkFieldAttrs" name="link">
-        <UiFormItem class="w-full">
-          <UiFormLabel>Add Link <UiLabel class="text-lg text-red-500">*</UiLabel>
-          </UiFormLabel>
-          <UiFormControl>
-            <UiInput v-model="linkField" v-bind="linkFieldAttrs" type="text"
-              placeholder="Eg: enter your preferred value" />
-          </UiFormControl>
-          <span class="text-sm text-red-500">
-            {{ errors.link }}
-          </span>
-          <span class="text-xs text-gray-500">Enter intent link</span>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
+    <form @submit="handleCreateEditIntent" class="space-y-3">
+      <SelectField name="intent" :multiple="false" :required="true" label="Actions" helperText="Select your intent."
+        placeholder="Select Intent" :options="intents" />
 
-      <div v-if="values.intent === 'images' || values.intent === 'brochure'">
+      <!-- <UiSelectItem v-for="intent in intents" :value="intent.value">{{
+        intent.label
+      }}</UiSelectItem> -->
+      <div v-if="values.intent === 'location' || values.intent === 'virtual_tour'">
+        <TextField name="link" label="Add Link" helperText="Enter intent link"
+          placeholder="Eg: enter your preferred value" />
+      </div>
+      <div v-if="values.intent === 'images' || values.intent === 'brochure'" >
         <div>
           <label
             class="dark:hover:bg-bray-800 flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
@@ -63,35 +33,22 @@
         <p v-if="selectedFileName" class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
           {{ selectedFileName }}
         </p>
-
-        <UiFormField v-model="fileName" v-bind="fileNameAttrs" name="fileName">
-          <UiFormItem class="w-full">
-            <UiFormLabel>
-              Intent Name <UiLabel class="text-lg text-red-700">*</UiLabel>
-            </UiFormLabel>
-            <UiFormControl>
-              <UiInput :class="errors.fileName ? 'border-red-700' : ''" type="text" v-model="fileName"
-                v-bind="fileNameAttrs" placeholder="Eg:Amenties" />
-            </UiFormControl>
-            <span v-if="errors.fileName" class="mt-0 text-sm text-red-700">
-              {{ errors.fileName }}
-            </span>
-            <span class="text-xs text-gray-500">Enter a unique name to identify the intent</span>
-          </UiFormItem>
-        </UiFormField>
+        <div class="mt-3">
+          <TextField name="fileName" label="Intent Name" helperText="Enter a unique name to identify the intent"
+            placeholder="Eg:Amenties" />
+        </div>
       </div>
-
-      <UiDialogFooter>
-        <UiButton class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110" type="submit">
+      <div class="flex justify-end">
+        <UiButton type="submit" class="mt-2" color="primary">
           Save changes
         </UiButton>
-      </UiDialogFooter>
-    </UiForm>
+      </div>
+    </form>
   </DialogWrapper>
 </template>
 
 <script setup lang="ts">
-  import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { createEditIntentValidation } from "~/validationSchema/createEditIntentValidation";

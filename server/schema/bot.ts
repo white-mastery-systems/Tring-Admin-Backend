@@ -65,6 +65,7 @@ export const botUserSchema = chatbotSchema.table(
     name: varchar("name", { length: 64 }).notNull(),
     email: varchar("email", { length: 128 }),
     mobile: varchar("mobile", { length: 16 }),
+    countryCode: varchar("country_code"),
     metaData: jsonb("metadata"),
     visitedCount: integer("visited_count").default(1),
     createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -135,7 +136,6 @@ export const leadSchema = chatbotSchema.table(
     crmLeadId: varchar("crm_lead_id", { length: 128 }),
     metadata: jsonb("metadata"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
-
     botId: uuid("bot_id")
       .references(() => chatBotSchema.id)
       .notNull(),

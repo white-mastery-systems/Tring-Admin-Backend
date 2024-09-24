@@ -20,7 +20,7 @@ const login = async (values: Record<string, any>) => {
       method: "post",
       body: values,
     });
-
+    (await useUser()).refreshUser();
     return navigateTo("/");
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
@@ -65,12 +65,21 @@ const resetPassword = async (values: Record<string, any>,token:any) => {
 };
 
 const logout = async () => {
-  await $fetch("/api/auth/logout", {
-    method: "POST",
-  });
-  (await useUser()).clearUser();
-  return navigateTo({ name: "auth-sign-in" });
+    try {
+        const response: any = await $fetch("/api/auth/logout", {
+            method: "POST",
+        });
+        if (response.status) {
+            (await useUser()).clearUser();
+            return navigateTo({ name: "auth-sign-in" });
+        } else {
+          console.error("Logout failed:", response.message);
+        }
+    } catch (error) {
+      console.error("An error occurred during logout:", error);
+    }
 };
+
 
 const redirectToRoleHome = (role: AuthRoles) => {
   // update routes on needs

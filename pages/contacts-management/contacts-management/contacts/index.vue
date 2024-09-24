@@ -3,15 +3,12 @@
     <template #actionButtons>
       <div class="flex gap-4">
         <div class="flex gap-2">
-          <UiButton
-            color="primary"
-            @click="
+          <UiButton color="primary" @click="
               () => {
                 addBucketNameModalState.open = true;
                 addBucketNameModalState.id = null;
               }
-            "
-          >
+            ">
             Add Bucket
           </UiButton>
 
@@ -26,41 +23,22 @@
     </template>
     <div>
       <div class="flex items-center gap-2 pb-2">
-        <UiInput
-          v-model="filters.q"
-          @input="filters.page = '1'"
-          class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
-          placeholder="Search bucket..."
-        />
+        <UiInput v-model="filters.q" @input="filters.page = '1'"
+          class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search bucket..." />
       </div>
-      <DataTable
-        @row-click="
+      <DataTable @row-click="
           (row: any) => {
             return navigateTo(`/contacts-management/contacts/${row.original.id}`);
           }
-        "
-        @pagination="Pagination"
-        @limit="
+        " @pagination="Pagination" @limit="
           ($event) => {
             (filters.page = '1'), (filters.limit = $event);
           }
-        "
-        :totalPageCount="totalPageCount"
-        :page="page"
-        :totalCount="totalCount"
-        :data="contactsList"
-        :is-loading="isDataLoading"
-        :columns="columns"
-        :page-size="20"
-        :height="19"
-        height-unit="vh"
-      />
+        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="contactsList"
+        :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="19" height-unit="vh" />
 
-      <ConfirmationModal
-        v-model:open="deleteBucketState.open"
-        title="Confirm Delete"
-        description="Are you sure you want to delete ?"
-        @confirm="
+      <ConfirmationModal v-model:open="deleteBucketState.open" title="Confirm Delete"
+        description="Are you sure you want to delete ?" @confirm="
           () => {
             if (deleteBucketState?.id) {
               deleteBucket({
@@ -72,18 +50,14 @@
               deleteBucketState.open = false;
             }
           }
-        "
-      />
+        " />
     </div>
-    <AddBucketNameModal
-      v-model="addBucketNameModalState"
-      @confirm="
+    <CreateEditBucketModal v-model="addBucketNameModalState" @confirm="
         () => {
           addBucketNameModalState.open = false;
           integrationRefresh();
         }
-      "
-    />
+      " />
   </Page>
 </template>
 <script setup lang="ts">
@@ -91,7 +65,7 @@
   import { format } from "date-fns";
   import { any } from "zod";
   import { useRoute, useRouter } from "vue-router";
-  import AddBucketNameModal from "~/components/voiceBot/DialogModal/AddBucketNameModal.vue";
+  import AddBucketNameModal from "~/components/voiceBot/DialogModal/CreateEditBucketModal.vue";
   import { Icon, UiBadge, UiButton } from "#components";
 
   definePageMeta({

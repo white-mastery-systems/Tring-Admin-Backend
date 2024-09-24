@@ -33,7 +33,7 @@ const df = new DateFormatter('en-US', {
 })
 const placeholder = ref()
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
-const formSchema = toTypedSchema(
+const createEditCampaignValidation = toTypedSchema(
   z.object({
     date: z
       .string({ required_error: 'A date is required.' })
@@ -46,11 +46,18 @@ const formSchema = toTypedSchema(
     exoPhone: z.string({ required_error: 'Phone Number is required' }).optional().default(""),
     countryCode: z.string({ required_error: 'Country Code is required' }).optional().default(""),
     audienceBucket: z.string({ required_error: 'Audience Bucket Name is required' }).min(1, 'Audience Bucket Name is required'),
-    integrationId: z.string({ required_error: "IntegrationId is required" }).min(1, 'IntegrationId is required'),
-    templateId: z.string({ required_error: "template is required" }).min(1, "template is required"),
-    phoneId: z.string({ required_error: "phone is required" }).min(1, "phone is required")
+    integrationId: z.string({ required_error: "Integration ID is required" }).optional().default(""),
+    templateId: z.string({ required_error: "Template is required" }).optional().default(""),
+    phoneId: z.string({ required_error: "Phone is required" }).optional().default(""),
 
-
+  }).refine((data) => {
+    if (data.type === 'whatsapp') {
+      return !!data.integrationId;
+    }
+    return true;
+  }, {
+    message: 'Integration ID is required when Type is WhatsApp.',
+    path: ['integrationId'],
   }).refine((data: any) => {
     if (data.type !== 'whatsapp') {
       const errors: Record<string, boolean> = {};
@@ -79,6 +86,22 @@ const formSchema = toTypedSchema(
             code: z.ZodIssueCode.custom,
           });
         }
+        if (data.integrationId && data.integrationId.length > 0) {
+          if (!data.templateId) {
+            ctx.addIssue({
+              path: ['templateId'],
+              message: 'Template ID is required when Integration ID is present.',
+              code: z.ZodIssueCode.custom,
+            });
+          }
+          if (!data.phoneId) {
+            ctx.addIssue({
+              path: ['phoneId'],
+              message: 'Phone ID is required when Integration ID is present.',
+              code: z.ZodIssueCode.custom,
+            });
+          }
+        }
       }
     })
 );
@@ -93,7 +116,7 @@ const {
   values,
   resetForm,
 } = useForm({
-  validationSchema: formSchema,
+  validationSchema: createEditCampaignValidation,
 });
 const {
   status: integrationLoadingStatus,
@@ -146,7 +169,6 @@ watch(() => campaignModalState.value.open, async (newState) => {
 const handleConnect = handleSubmit(async (values: any) => {
   const getTime = convertTo12HourFormat(values.appt)
   const getUTC = convertToUTC(getTime)
-  console.log(values, 'values')
   const payload = {
     countryCode: values.countryCode,
     campaignDate: new Date(values.date).toISOString(),
@@ -190,7 +212,9 @@ const handleConnect = handleSubmit(async (values: any) => {
               class="pb-2 text-red-500 font-medium text-[18px]">*</span></label>
           <input type="time" id="appt" name="appt" class="border-[1px] border-solid border-grey rounded-[6px] py-1.5 px-2">
         </div> -->
-        <div class="flex flex-col justify-start items-center gap-2 font-medium">
+        <TimePickerField name="appt" label="Time">
+        </TimePickerField>
+        <!-- <div class="flex flex-col justify-start items-center gap-2 font-medium">
           <label for="appt" class="pb-[1px] text-gray-700 w-[70%]" :class="(errors.appt) ? 'text-red-500' : ''">
             Time <span class="pb-2 text-red-500 font-medium text-[18px]">*</span>
           </label>
@@ -198,8 +222,8 @@ const handleConnect = handleSubmit(async (values: any) => {
             'border-[1px] border-solid rounded-[6px] py-[8px] px-2 font-normal text-[14px]',
           ]">
           <p v-if="errors.appt" class="text-red-500 text-[13px]">{{ errors.appt }}</p>
-        </div>
-        <SelectField name="type" label="Contact Method" placeholder="Select a method" :options="[
+        </div> -->
+        <SelectField name="type" label="Contact Method" placeholder="Select typ.." :options="[
           {
             value: 'voice',
             label: 'Voice',

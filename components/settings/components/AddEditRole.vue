@@ -9,8 +9,9 @@
         (filters.page = '1'), (filters.limit = $event);
       }
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
+
         :data="userDataList" :is-loading="isDataLoading" :page-size="20" :height="16" height-unit="vh" />
-      <RoleManageMentModal v-model="roleModalState" @confirm="() => {
+      <AddEditRoleManageMentModal v-model="roleModalState" @confirm="() => {
         deleterRoleState.open = false;
         roleModalState.open = false
         getAllRole()
