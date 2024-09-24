@@ -1,14 +1,14 @@
 <!-- CustomSelect.vue -->
 <template>
-  <UiFormField   v-model="selectedValue" :name="name">
+  <UiFormField v-model="selectedValue" :name="name">
     <UiFormItem class="w-full">
       <UiFormLabel :class="{ 'text-[#ef4444]': hasError }">
         {{ label }}<UiLabel v-if="required" class="text-lg text-red-500">*</UiLabel>
       </UiFormLabel>
       <UiFormControl>
-        <UiSelect :class="cn(props.class)" :multiple="multiple" class="mt-2 focus:ring focus:outline outline-2" v-model="selectedValue"
+        <UiSelect :class="cn(props.class)" :multiple="multiple" class="mt-2 focus-visible:ring" v-model="selectedValue"
           v-bind="$attrs">
-          <UiSelectTrigger :class="['focus:ring', hasError ? 'border-[#ef4444]' : '']">
+          <UiSelectTrigger :class="[hasError ? 'border-[#ef4444]' : '']">
             <UiSelectValue :placeholder="placeholder" />
           </UiSelectTrigger>
           <UiSelectContent>
@@ -50,7 +50,7 @@ const props = defineProps<{
     helperText?: string
   }[],
   multiple?: boolean
-  class:''
+  class: ''
 }>();
 watchEffect(() => {
   console.log({ options: props.options })

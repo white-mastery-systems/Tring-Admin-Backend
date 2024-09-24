@@ -83,6 +83,18 @@ export default defineEventHandler(async (event) => {
             code: response?.access_token,
             id: body.metadata.wabaId,
           });
+          const registerPhone = await $fetch(
+            `https://graph.facebook.com/v20.0/${body.metadata.pid}/register`,
+            {
+              method: "POST",
+              headers: { Authorization: `Bearer ${response?.access_token}` },
+              body: {
+                messaging_product: "whatsapp",
+                pin: body.metadata.pin,
+              },
+            },
+          );
+          console.log({ registerPhone });
         }
       } catch (err) {
         console.log(err);
@@ -102,17 +114,7 @@ export default defineEventHandler(async (event) => {
   //   method: "GET",
   //   headers: { "Content-Type": "application/json" },
   // });
-  // const registerPhone = await $fetch(
-  //   `https://graph.facebook.com/v20.0/${body.metadata.pid}/register`,
-  //   {
-  //     method: "POST",
-  //     headers: { Authorization: `Bearer ${body.metadata.code}` },
-  //     body: {
-  //       messaging_product: "whatsapp",
-  //       pin: body.metadata.pin,
-  //     },
-  //   },
-  // );
+
   // console.log({ registerPhone });
   // const subscribeResponse = await fetch(
   //   `https://graph.facebook.com/v20.0/${body.metadata.wabaId}/subscribed_apps`,

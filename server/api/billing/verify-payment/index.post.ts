@@ -25,6 +25,7 @@ export default defineEventHandler(async (event) => {
       token: metaData.access_token,
       hostedPageId: body.hostedpageId,
     });
+    console.log(JSON.stringify(data), "VERIFY PAYMENT DATA");
     const userId: string | undefined = event.context.user?.id;
     if (!userId) {
       return sendError(
@@ -41,7 +42,7 @@ export default defineEventHandler(async (event) => {
       });
     }
     try {
-      const newOne = await db
+      await db
         .update(paymentSchema)
         .set({ status: "cancelled" })
         .where(
@@ -52,7 +53,6 @@ export default defineEventHandler(async (event) => {
           ),
         )
         .returning();
-      console.log({ newOne });
     } catch (err: any) {
       console.log(err.message, "ERROR");
     }
@@ -67,7 +67,6 @@ export default defineEventHandler(async (event) => {
       productId: data.data.subscription.product_id,
       customerId: data.data.subscription.customer_id,
       amount: data.data.subscription.amount,
-      // expiry: data.data.subscription.expiry ?? Date.now(),
       status: "active",
     };
     try {
@@ -83,7 +82,15 @@ export default defineEventHandler(async (event) => {
           planCode: apiResponseData.plan_code,
         })
         .where(eq(organizationSchema.id, orgId!));
-      await Promise.allSettled([billingPromise, organizationPromise]);
+      
+      const userPromise = await db
+         .update(authUserSchema)
+         .set({
+          customerId: apiResponseData.customerId
+         })
+         .where(eq(authUserSchema.id, userId))
+
+      await Promise.allSettled([billingPromise, organizationPromise, userPromise]);
       return { status: "Payment Successful" };
     } catch (error) {
       console.error(`Failed to insert data into DB: ${error}`);
