@@ -71,7 +71,21 @@ export const integrationSchema = adminSchema.table("integration", {
     .references(() => organizationSchema.id),
   name: varchar("name", { length: 64 }).notNull(),
   crm: varchar("crm", { length: 64 }).notNull(),
-  metadata: jsonb("metadata").default({}).notNull(),
+  metadata: jsonb("metadata").$type<{
+    apiKey?: string,
+    code?: string,
+    scope?: string,
+    location?: string,
+    api_domain?: string,
+    expires_in?: string,
+    token_type?: string,
+    access_token?: string,
+    refresh_token?: string,
+    accountsServer?: string,
+    pid?: string,
+    pin?: string,
+    wabaId?: string
+  }>().default({}).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
