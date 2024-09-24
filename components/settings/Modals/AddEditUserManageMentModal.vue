@@ -6,32 +6,17 @@
     middleware: "admin-only",
   });
   const emit = defineEmits<{ (e: "confirm"): void }>();
-  const userModalState = defineModel<{ open: boolean; id: any }>({
+  const userModalState = defineModel<{ open: boolean; id: any,roles:Array<any> }>({
     default: {
       open: false,
       id: null,
     },
   });
 
-  const {
-    errors,
-    setErrors,
-    setFieldValue,
-    handleSubmit,
-    defineField,
-    values,
-    resetForm,
-  } = useForm({
-    validationSchema: userMangementSchema,
-  });
-
-  const templates = ref<any>([]);
-  const phoneNumbers = ref<any>([]);
-
-  watch(
+  // const schema =  ref(EdituserMangementSchema)
+    watch(
     () => userModalState.value.open,
     async (newState) => {
-     
       if (newState) {
       resetForm()
       console.log(userModalState.value.id);
@@ -51,6 +36,22 @@
       }
     },
   );
+  const {
+    errors,
+    setErrors,
+    setFieldValue,
+    handleSubmit,
+    defineField,
+    values,
+    resetForm,
+  } = useForm({
+    validationSchema: userMangementSchema,
+  });
+
+  const templates = ref<any>([]);
+  const phoneNumbers = ref<any>([]);
+
+
 
   const handleConnect = handleSubmit(async (values: any) => {
     try {
@@ -103,6 +104,10 @@
           placeholder="Enter Your Email"
           required
         />
+
+        <SelectField label="role" helperText="Select User Role" name="roleId" :multiple="false"
+        :required="true" placeholder="Select your integration"
+        :options="userModalState.roles?.map((role: any) => ({ label: role.name, value: role.id }))" />
         <div class="flex gap-2 space-y-2">
           <CountryCodeField
             class="mt-2 w-[100px] space-y-2"
