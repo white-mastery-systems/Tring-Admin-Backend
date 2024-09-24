@@ -1,4 +1,4 @@
-import { addDays, addMonths } from "date-fns";
+import { addDays } from "date-fns";
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   boolean,
@@ -15,10 +15,9 @@ import {
 
 import { createInsertSchema } from "drizzle-zod";
 import { adminSchema } from ".";
-import { authUserSchema, authUserRoleSchema } from "./auth";
+import { authUserSchema } from "./auth";
 import { botUserSchema, chatBotSchema, leadSchema } from "./bot";
-const nextMonthDate = addMonths(new Date(), 1);
-const nextMonthAndDayDate = addDays(nextMonthDate, 1);
+const nextMonthAndDayDate = addDays(new Date(), 1);
 
 // Tables
 export const organizationSchema = adminSchema.table("organization", {

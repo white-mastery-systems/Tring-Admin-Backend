@@ -10,7 +10,7 @@ interface zohoConfigInterface {
 }
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-
+  console.log({ newBody: JSON.stringify(body) });
   // const http = require("https");
 
   const db = useDrizzle();
@@ -73,7 +73,6 @@ export default defineEventHandler(async (event) => {
           const billingInformation = await db.query.paymentSchema.findFirst({
             where: eq(paymentSchema.organizationId, organizationId),
           });
-
           const generatedHostedPage = await $fetch(
             "https://www.zohoapis.in/billing/v1/hostedpages/newsubscription",
             {
@@ -84,7 +83,6 @@ export default defineEventHandler(async (event) => {
                 Authorization: `Zoho-oauthtoken ${accessToken}`,
                 "content-type": "application/json",
               },
-
               body: {
                 ...(billingInformation?.customerId
                   ? {

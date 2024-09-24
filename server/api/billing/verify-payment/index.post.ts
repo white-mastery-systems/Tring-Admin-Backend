@@ -25,7 +25,6 @@ export default defineEventHandler(async (event) => {
       token: metaData.access_token,
       hostedPageId: body.hostedpageId,
     });
-    console.log(JSON.stringify(data), "VERIFY PAYMENT DATA");
     const userId: string | undefined = event.context.user?.id;
     if (!userId) {
       return sendError(
