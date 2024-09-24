@@ -90,7 +90,7 @@ import { formSchema } from '~/validationSchema/authValidation/onBoarding/2Valida
             <form class="space-y-2" @submit="onSubmit">
         <div class="flex flex-col gap-3">
           <TextField
-            type="name"
+            type="text"
             name="name"
             label="Company Name"
             placeholder="Enter your Company Name"
@@ -106,7 +106,7 @@ import { formSchema } from '~/validationSchema/authValidation/onBoarding/2Valida
           />
           <TextField
           v-if="values.industry === 'Other'"
-            type="name"
+            type="text"
             name="otherRole"
             :required="true"
           />

@@ -90,7 +90,7 @@ import { personalDetailFormValidation } from '~/validationSchema/authValidation/
       <form class="space-y-2" @submit="onSubmit">
         <div class="flex flex-col gap-3">
           <TextField
-            type="name"
+            type="text"
             name="name"
             label="Full Name"
             placeholder="Enter Your Name"
@@ -106,7 +106,7 @@ import { personalDetailFormValidation } from '~/validationSchema/authValidation/
           />
           <TextField
           v-if="values.role === 'Other'"
-            type="name"
+            type="text"
             name="otherRole"
             :required="true"
           />

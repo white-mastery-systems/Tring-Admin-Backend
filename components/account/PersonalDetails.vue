@@ -21,7 +21,7 @@
         <SelectField name="metadata.role" label="Role" placeholder="Select Role"
           :options="roles.map((role) => ({ label: role, value: role }))" :required="true" />
 
-        <TextField v-if="values.metadata?.role === 'Other'" type="name" name="metadata.otherRole" :required="true" />
+        <TextField v-if="values.metadata?.role === 'Other'" type="text" name="metadata.otherRole" :required="true" />
       </div>
     </div>
     <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
