@@ -144,6 +144,7 @@ export const numberIntegrationSchema = adminSchema.table("number_integration", {
 export const contactListSchema = adminSchema.table("contact_list", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name"),
+  isDefault: boolean("is_default").default(false),
   organizationId: uuid("organizationId")
     .notNull()
     .references(() => organizationSchema.id),

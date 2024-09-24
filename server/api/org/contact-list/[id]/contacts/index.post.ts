@@ -6,17 +6,18 @@ const zodInsertContacts = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   countryCode: z.string().optional(),
-  phone: z.string().optional()
+  phone: z.string().optional(),
+  organizationId: z.string().optional()
 })
 
 
 export default defineEventHandler(async (event) => {
-  const organizationId = (await isOrganizationAdminHandler(event)) as string
+  // const organizationId = (await isOrganizationAdminHandler(event)) as string
 
   const { id: contactListId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
   const body = await isValidBodyHandler(event, zodInsertContacts)
-
+  const organizationId=event?.context?.user?.organizationId??body.organizationId
   const isAlreadyExists = await db.query.contactSchema.findFirst({
     where: and(
       eq(contactSchema.contactListId, contactListId),
@@ -35,7 +36,7 @@ export default defineEventHandler(async (event) => {
 
   const data = await createContacts({
     ...body,
-    organizationId,
+    organizationId: organizationId,
     contactListId
   })
 
