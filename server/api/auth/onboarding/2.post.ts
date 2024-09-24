@@ -5,6 +5,7 @@ const bodyValidationSchema = z.object({
   employeeCount: z.string().min(1),
   otherRole: z.string().optional()
 });
+
 export default defineEventHandler(async (event) => {
   const body = await isValidBodyHandler(event, bodyValidationSchema);
 
@@ -24,6 +25,13 @@ export default defineEventHandler(async (event) => {
       otherRole: body?.otherRole
     },
   });
+
+  // create default buckets
+  await createContactList({
+    name: "leads bucket",
+    organizationId: org.id,
+    isDefault: true
+  })
 
   await updateUser(userId, {
     organizationId: org.id,
