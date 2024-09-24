@@ -1,6 +1,5 @@
 FROM node:20.16.0-alpine as builder
 
-RUN yarn global add pnpm
 
 WORKDIR /app
 

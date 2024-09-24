@@ -98,7 +98,7 @@
           name="name"
           label="Name"
           placeholder="Enter Your Role"
-          :required="true"
+          :required="true"  
         />
 
         <div>

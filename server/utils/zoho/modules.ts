@@ -513,7 +513,7 @@ export async function getHostedPageDetails({
   }
 }
 const db = useDrizzle();
-const regerateAccessTokenForTringAdmin = async ({
+export const regerateAccessTokenForTringAdmin = async ({
   integrationData,
 }: {
   integrationData: {
@@ -539,7 +539,9 @@ const regerateAccessTokenForTringAdmin = async ({
       .where(eq(adminConfigurationSchema.id, 1));
     return regerateAccessTokenForTringAdmin({ integrationData });
     // return newAuthInfo;
-  } catch (err: any) {}
+  } catch (err: any) {
+    console.log("regerateAccessTokenForTringAdmin modules error------",{ err: err.response })
+  }
 };
 
 export const cancelSubscriptionFromZohoBilling: any = async ({
