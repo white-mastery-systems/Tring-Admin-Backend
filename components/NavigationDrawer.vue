@@ -1,4 +1,4 @@
-<template>
+~<template>
   <div class="flex h-[100vh] w-[250px] flex-col items-center gap-5 overflow-y-scroll bg-[#ffffff]">
     <NuxtLink to="/" class="flex h-[15%] w-full justify-center bg-[#ffffff]">
       <img class="self-center pt-[50px] sm:pt-[50px] md:pt-[50px] lg:pt-7 xl:pt-7"
@@ -13,7 +13,7 @@
           <UiAccordionItem :value="path" class="shadow-md border-0 bg-white">
             <div class="field_shadow flex cursor-pointer items-center gap-3 px-[16px] font-medium" :class="[
                 route.path?.includes(path) ? 'bg-[#424bd1] text-[#ffffff]' : '',
-                openAccordions[path] === path
+                openAccordions.path === path
                   ? 'rounded-t-[10px]'
                   : 'rounded-[10px]',
               ]">

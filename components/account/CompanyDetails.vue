@@ -2,7 +2,7 @@
   <form class="space-y-2" @submit="handleAccountUpdate">
     <div class="flex flex-col gap-3">
       <TextField
-        type="name"
+        type="text"
         name="name"
         label="Company Name"
         placeholder="Enter your Company Name"
@@ -17,7 +17,7 @@
         :required="true"
       />
       <div v-if="values.industry === 'Other'">
-        <TextField type="name" name="otherRole" :required="true" />
+        <TextField type="text" name="otherRole" :required="true" />
       </div>
 
       <SelectField

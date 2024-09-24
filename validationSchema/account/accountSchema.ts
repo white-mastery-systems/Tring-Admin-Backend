@@ -43,10 +43,22 @@ export const accountSchema = toTypedSchema(
       address: addressSchema,
       metadata: z.object({
         role: z.string({ required_error: "Street Name is required" }),
+        otherRole: z.string().optional().default(""),
       }),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: "Passwords do not match.",
       path: ["confirmPassword"], // Point to the field that has the issue
-    }),
+    }).refine(
+      (data) => {
+        if (data.metadata.role.toLowerCase() === "other") {
+          return data.metadata.otherRole && data.metadata.otherRole.length >= 1;
+        }
+        return true;
+      },
+      {
+        message: "Other role must be provided",
+        path: ["metadata","otherRole"], // Path where error will be shown
+      }
+    )
 );

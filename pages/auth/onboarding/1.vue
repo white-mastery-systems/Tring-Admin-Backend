@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formSchema } from '~/validationSchema/authValidation/onBoarding/1Validation';
+import { personalDetailFormValidation } from '~/validationSchema/authValidation/onBoarding/1Validation';
 
   const showCustomRoleInput = ref(false);
   definePageMeta({
@@ -18,7 +18,7 @@ import { formSchema } from '~/validationSchema/authValidation/onBoarding/1Valida
     values,
     resetForm,
   } = useForm({
-    validationSchema: formSchema,
+    validationSchema: personalDetailFormValidation,
     initialValues: {
       // firstName: "",
       // lastName: "",
@@ -90,7 +90,7 @@ import { formSchema } from '~/validationSchema/authValidation/onBoarding/1Valida
       <form class="space-y-2" @submit="onSubmit">
         <div class="flex flex-col gap-3">
           <TextField
-            type="name"
+            type="text"
             name="name"
             label="Full Name"
             placeholder="Enter Your Name"
@@ -106,7 +106,7 @@ import { formSchema } from '~/validationSchema/authValidation/onBoarding/1Valida
           />
           <TextField
           v-if="values.role === 'Other'"
-            type="name"
+            type="text"
             name="otherRole"
             :required="true"
           />

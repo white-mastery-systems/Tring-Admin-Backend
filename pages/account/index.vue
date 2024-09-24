@@ -49,11 +49,12 @@ const confirmModel = () => {
   localStorage.clear();
 };
 
-const handleLogout = () => {
+const handleLogout = async () => {
   authHandlers.logout();
   logoutModal.value = false;
+  navigateTo({ name: "auth-sign-in" })
 };
-
+  
 const isUpdating = ref(false);
 // const handleAccountUpdate = handleSubmit(async (values: any) => {
 //   try {

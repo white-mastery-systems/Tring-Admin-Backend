@@ -5,24 +5,36 @@ definePageMeta({
 
 const formSchema = toTypedSchema(
   z.object({
-    provider: z.string().min(1, 'Name is required'),
-    number: z.string().min(2, "Number must be provided."),
-    calldirection: z.string().min(1, 'Call direction is required'),
+    provider: z.string({ required_error: 'Name is required' }).min(1, 'Name is required'),
+    number: z.string({ required_error: "Number must be provided." }).min(2, "Number must be provided."),
+    calldirection: z.string({ required_error: 'Call direction is required' }).min(1, 'Call direction is required'),
   })
 )
+
+const {
+  errors,
+  setErrors,
+  handleSubmit,
+  setFieldValue,
+  defineField,
+  values,
+  resetForm,
+} = useForm({
+  validationSchema: formSchema
+})
 const route = useRoute("bot-management-voice-bot-id-ivr-config");
 const botDetails: any = await getVoiceBotDetails(route.params.id);
 
 const roles = ['Customer Support', 'Receptionist']
 const domainList = ['Admin', 'User', 'Editor', 'Viewer', 'Contributor', 'Manager'];
-const onSubmit = async (value: any) => {
-  console.log(value, "value")
+
+const onSubmit = handleSubmit(async (value: any) => {
   await updateLLMConfig({ ivrConfig: value }, botDetails.id);
   return navigateTo({
     name: "bot-management-voice-bot-id",
     params: { id: botDetails.id },
   });
-};
+});
 </script>
 <template>
   <Page title="IVR Configuration" :bread-crumbs="[
@@ -33,48 +45,22 @@ const onSubmit = async (value: any) => {
     },
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <div>
-      <UiForm :validation-schema="formSchema" :keep-values="true" :validate-on-mount="false" @submit="onSubmit"
-        class="space-y-4">
+      <form @submit="onSubmit">
         <div class="flex grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-          <UiFormField v-slot="{ componentField }" name="provider">
-            <UiFormItem class="w-full">
-              <UiFormLabel class="font-bold"> IVR Provider <UiLabel class="text-red-500 text-lg">*</UiLabel>
-              </UiFormLabel>
-              <UiFormControl>
-                <UiInput v-bind="componentField" type="text" placeholder="Enter Provider" class="h-10 font-regular" />
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
-          <!-- <div class="flex gap-4 mb-4"> -->
-          <UiFormField v-slot="{ componentField }" name="number">
-            <UiFormItem class="w-full">
-              <UiFormLabel class="font-bold"> Number <UiLabel class="text-red-500 text-lg">*</UiLabel>
-              </UiFormLabel>
-              <UiFormControl>
-                <UiInput v-bind="componentField" type="text" placeholder="Enter Number" class="h-10 font-regular" />
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
-          <UiFormField v-slot="{ componentField }" name="calldirection">
-            <UiFormItem class="w-full">
-              <UiFormLabel class="font-bold"> Call Direction <UiLabel class="text-red-500 text-lg">*</UiLabel>
-              </UiFormLabel>
-              <UiFormControl>
-                <UiInput v-bind="componentField" type="text" placeholder="Enter call direction" class="h-10 font-regular" />
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
+          <TextField name="provider" label="IVR Provider" placeholder="Enter Provider" helperText="" required>
+          </TextField>
+          <TextField name="number" label="Number" placeholder="Enter Number" helperText="" required>
+          </TextField>
+          <TextField name="calldirection" label="call direction" placeholder="Enter call direction" helperText=""
+            required>
+          </TextField>
         </div>
-        <!-- </div> -->
         <div class="flex justify-end w-full">
           <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110 w-[120px]" size="lg">
             Submit
           </UiButton>
         </div>
-      </UiForm>
+      </form>
     </div>
   </Page>
 </template>

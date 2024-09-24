@@ -48,7 +48,7 @@
         }
           " />
     </div>
-    <AddBucketNameModal v-model="addBucketNameModalState" @confirm="() => {
+    <CreateEditBucketModal v-model="addBucketNameModalState" @confirm="() => {
       addBucketNameModalState.open = false;
       integrationRefresh();
     }
@@ -59,7 +59,7 @@
 import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import { useRoute, useRouter } from "vue-router";
-import AddBucketNameModal from "~/components/voiceBot/DialogModal/AddBucketNameModal.vue";
+import AddBucketNameModal from "~/components/voiceBot/DialogModal/CreateEditBucketModal.vue";
 
 definePageMeta({
   middleware: "admin-only",
