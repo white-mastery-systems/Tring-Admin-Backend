@@ -11,4 +11,5 @@ export default defineEventHandler(async (event) => {
     "Set-Cookie",
     lucia.createBlankSessionCookie().serialize(),
   );
+  return { status: true }
 });
