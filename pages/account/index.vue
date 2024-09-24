@@ -13,10 +13,10 @@
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="PersonalDetails">
-       <PersonalDetailsComponent/>
+       <PersonalDetails/>
       </UiTabsContent>
       <UiTabsContent value="privacy">
-      <PrivacyComponent/>
+      <PrivacyDetails/>
       </UiTabsContent>
       <UiTabsContent value="companyDetails">
           <CompanyDetails/>

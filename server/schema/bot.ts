@@ -31,7 +31,11 @@ export const chatBotSchema = chatbotSchema.table("bot", {
     crm: {},
     channel: {},
   }),
-  channels: jsonb("channels").default({ whatsapp: {} }),
+  channels: jsonb("channels")
+    .$type<{
+      whatsapp?: string;
+    }>()
+    .default({}),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
@@ -79,28 +83,32 @@ export const botUserSchema = chatbotSchema.table(
   // }),
 );
 
-export const chatSchema = chatbotSchema.table("chats", {
-  id: uuid("id").notNull().primaryKey().defaultRandom(),
-  metadata: jsonb("metadata"),
-  mode: varchar("mode").default("live"),
-  channel: varchar("channel", { length: 64 }).notNull().default("website"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  interacted: boolean("interacted").default(false),
-  visitedCount: integer("visited_count").default(1),
-  botUserId: uuid("bot_user_id").references(() => botUserSchema.id, {
-    onDelete: "cascade",
+export const chatSchema = chatbotSchema.table(
+  "chats",
+  {
+    id: uuid("id").notNull().primaryKey().defaultRandom(),
+    metadata: jsonb("metadata"),
+    mode: varchar("mode").default("live"),
+    channel: varchar("channel", { length: 64 }).notNull().default("website"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    interacted: boolean("interacted").default(false),
+    visitedCount: integer("visited_count").default(1),
+    botUserId: uuid("bot_user_id").references(() => botUserSchema.id, {
+      onDelete: "cascade",
+    }),
+    botId: uuid("bot_id")
+      .references(() => chatBotSchema.id, { onDelete: "cascade" })
+      .notNull(),
+    organizationId: uuid("organization_id").references(
+      () => organizationSchema.id,
+      { onDelete: "cascade" },
+    ),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    chatsBotIdIndex: index("chats_bot_id_index").on(table.botId),
   }),
-  botId: uuid("bot_id")
-    .references(() => chatBotSchema.id, { onDelete: "cascade" })
-    .notNull(),
-  organizationId: uuid("organization_id").references(
-    () => organizationSchema.id,
-    { onDelete: "cascade" },
-  ),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-},(table) => ({
-  chatsBotIdIndex: index("chats_bot_id_index").on(table.botId)
-}));
+);
 
 export const messageSchema = chatbotSchema.table("messages", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -149,7 +157,7 @@ export const leadSchema = chatbotSchema.table(
       table.botUserId,
       table.organizationId,
     ),
-    leadsBotIdIndex: index("leads_bot_id_index").on(table.botId)
+    leadsBotIdIndex: index("leads_bot_id_index").on(table.botId),
   }),
 );
 
