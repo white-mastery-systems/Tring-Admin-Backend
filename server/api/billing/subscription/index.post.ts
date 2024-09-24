@@ -73,6 +73,20 @@ export default defineEventHandler(async (event) => {
           const billingInformation = await db.query.paymentSchema.findFirst({
             where: eq(paymentSchema.organizationId, organizationId),
           });
+<<<<<<< HEAD
+=======
+          
+          // get contact-persons
+          const contactPersonInformations = await db.query.authUserSchema.findMany({
+            where: and(
+              eq(authUserSchema.organizationId, organizationId),
+              isNotNull(authUserSchema.contactPersonId)
+            )
+          })
+
+          const contactPersonIdList = contactPersonInformations?.map((i) => ({ contactperson_id: i.contactPersonId }))
+
+>>>>>>> 530550ac6624508ed1c25a674a451b4a3a65f9dc
           const generatedHostedPage = await $fetch(
             "https://www.zohoapis.in/billing/v1/hostedpages/newsubscription",
             {
@@ -114,7 +128,8 @@ export default defineEventHandler(async (event) => {
                         },
                       },
                     }),
-
+                
+                contactpersons: contactPersonIdList,
                 plan: {
                   plan_code: body.plan,
                 },

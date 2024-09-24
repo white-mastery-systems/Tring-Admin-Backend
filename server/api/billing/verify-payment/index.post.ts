@@ -81,7 +81,15 @@ export default defineEventHandler(async (event) => {
           planCode: apiResponseData.plan_code,
         })
         .where(eq(organizationSchema.id, orgId!));
-      await Promise.allSettled([billingPromise, organizationPromise]);
+      
+      const userPromise = await db
+         .update(authUserSchema)
+         .set({
+          customerId: apiResponseData.customerId
+         })
+         .where(eq(authUserSchema.id, userId))
+
+      await Promise.allSettled([billingPromise, organizationPromise, userPromise]);
       return { status: "Payment Successful" };
     } catch (error) {
       console.error(`Failed to insert data into DB: ${error}`);

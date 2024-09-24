@@ -1,6 +1,5 @@
 import momentTz from "moment-timezone";
 import { getDateRangeForFilters } from "./leads";
-import { count } from "drizzle-orm";
 
 const db = useDrizzle();
 
@@ -23,8 +22,10 @@ export const getChatDetails = async (chatId: string) => {
 
 export const getMessages = async (chatId: string, botUserId: string) => {
   let list: any = await db.query.chatSchema.findMany({
-    where: botUserId ? eq(chatSchema.botUserId, botUserId) : eq(chatSchema.id, chatId),
-    with: { 
+    where: botUserId
+      ? eq(chatSchema.botUserId, botUserId)
+      : eq(chatSchema.id, chatId),
+    with: {
       botUser: true,
       bot: true,
       lead: {
@@ -37,15 +38,14 @@ export const getMessages = async (chatId: string, botUserId: string) => {
     orderBy: desc(chatSchema.createdAt),
   });
 
-  list = list?.map((i: any)=> ({
+  list = list?.map((i: any) => ({
     botId: i?.botId,
     chatId: i?.id,
-    messages: i?.messages?.slice(1)
-  }))
+    messages: i?.channel !== "whatsapp" ? i?.messages?.slice(1) : i.messages,
+  }));
 
-  return list
- 
-}
+  return list;
+};
 
 export const listChats = async (
   organisationId: string,
@@ -62,27 +62,29 @@ export const listChats = async (
   }
   // console.log({ query, fromDate, toDate })
 
-  let page, offset, limit = 0
-    
-  if(query.page && query.limit) {
-    page = parseInt(query.page) 
-    limit = parseInt(query.limit)
+  let page,
+    offset,
+    limit = 0;
+
+  if (query.page && query.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
     offset = (page - 1) * limit;
   }
 
   let chats = await db.query.chatSchema.findMany({
     where: and(
       eq(chatSchema.organizationId, organisationId),
-      query?.botId && query?.botId !== "all" ? eq(chatSchema.botId, query.botId) : undefined,
+      query?.botId && query?.botId !== "all"
+        ? eq(chatSchema.botId, query.botId)
+        : undefined,
       query?.period && fromDate && toDate
         ? between(chatSchema.createdAt, fromDate, toDate)
         : undefined,
       query?.botUserName === "interacted"
         ? eq(chatSchema.interacted, true)
         : undefined,
-      query?.botUserName === "live"
-        ? eq(chatSchema.mode, "live")
-        : undefined,
+      query?.botUserName === "live" ? eq(chatSchema.mode, "live") : undefined,
       query?.botUserName === "preview"
         ? eq(chatSchema.mode, "preview")
         : undefined,
@@ -115,16 +117,16 @@ export const listChats = async (
   if (query?.botUserName === "without_name") {
     chats = chats.filter((i) => i.botUser === null);
   }
-  if(query?.page && query?.limit) {
-     const paginatedChats = chats.slice(offset, offset + limit); 
+  if (query?.page && query?.limit) {
+    const paginatedChats = chats.slice(offset, offset + limit);
     return {
       page: page,
       limit: limit,
-      totalPageCount: Math.ceil(chats.length/ limit) || 1,
+      totalPageCount: Math.ceil(chats.length / limit) || 1,
       totalCount: chats.length,
-      data: paginatedChats
-    }
+      data: paginatedChats,
+    };
   } else {
-      return chats
+    return chats;
   }
 };
