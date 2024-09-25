@@ -373,5 +373,7 @@ watchEffect(() => {
         textToSpeechConfig: { ...values },
       },
     });
+          toast.success("Updated successfully");
+
   });
 </script>
