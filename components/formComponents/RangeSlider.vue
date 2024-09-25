@@ -58,7 +58,7 @@
   const { handleSubmit, values, errors } = useForm({
     validationSchema: formSchema,
     initialValues: {
-      duration: [0], // Default value for the slider
+      duration: [props.name ||0], // Default value for the slider
     },
   });
 
@@ -70,7 +70,7 @@
   watch(value, (newValue) => {
     clearTimeout(debounce.value);
     debounce.value = setTimeout(() => {
-      // emit("update", newValue[0]);
+      emit("update", newValue[0]);
     }, 1000);
   });
 </script>

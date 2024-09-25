@@ -73,7 +73,7 @@
           required
           placeholder="Enter speaking Rate"
           min="0"
-          max="0.5"
+          max="1"
         />
         <!-- <TextField
           v-if="values.provider === 'google'"
@@ -97,17 +97,32 @@
           required
           placeholder="Enter speaking Rate"
           min="0"
-          max="0.5"
+          max="1"
         />
 
           <RangeSlider
           v-if="values.provider === 'elevenlabs'"
           :step="0.1"
-          :name="parseFloat(values.stability )"
+          :name="parseFloat(values.similarityBoost )"
           label="Similarity boost"
           @update="
             ($event) => {
               setFieldValue('similarityBoost', $event.toString());
+            }
+          "
+          required
+          placeholder="Enter speaking Rate"
+          min="0"
+          max="1"
+        />
+          <RangeSlider
+          v-if="values.provider === 'elevenlabs'"
+          :step="0.1"
+          :name="parseFloat(values.style )"
+          label="Style"
+          @update="
+            ($event) => {
+              setFieldValue('style', $event.toString());
             }
           "
           required
@@ -147,14 +162,14 @@
           placeholder="Similarity boost"
           disableCharacters
         /> -->
-        <TextField
+        <!-- <TextField
           v-if="values.provider === 'elevenlabs'"
           label="Style"
           name="style"
           required
           placeholder="Style"
           disableCharacters
-        />
+        /> -->
         <TextField
           v-if="values.provider === 'elevenlabs'"
           label="Use Speaker Boost"
@@ -183,12 +198,19 @@
   import { useForm } from "vee-validate";
   import { textToSpeechValidation } from "~/validationSchema/textToSpeechValidation";
 
-  const { handleSubmit, setFieldValue, values, resetForm } = useForm({
+  const { handleSubmit, setFieldValue, values, resetForm ,errors} = useForm({
     initialValues: {
       multiple: [],
     },
     validationSchema: toTypedSchema(textToSpeechValidation),
   });
+
+  watch(errors, (newValues) => {
+    console.log(newValues,values)
+    if (newValues) {
+      console.log("ERRORS", newValues)
+    }
+  })
   const providers = [
     {
       label: "google",
