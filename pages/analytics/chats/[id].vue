@@ -1,6 +1,6 @@
 <template>
   <Page :title="leadData?.botUser?.name ?? 'No Name'" :disable-back-button="false" :disable-elevation="true">
-    <div v-if="!isLoading" class="items-top gap-[25px flex items-center justify-center px-3">
+    <div v-if="!isChatLoading" class="items-top gap-[25px flex items-center justify-center px-3">
       <div class="items-top xs:grid-cols-2 flex grid grid-cols-1 gap-[25px] lg:grid-cols-2">
         <div class="justify-aro und flex w-full gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]">
           <UiTabs default-value="Chat" class="w-full self-start">
@@ -69,7 +69,6 @@
         </div>
       </div>
     </div>
-    {{ console.log(chatLoadingStatus) }}
     <!-- <input type="text" value="hii" ref="chatScreenRef" /> -->
   </Page>
 </template>
@@ -113,7 +112,7 @@ const { status, data: leadData, status: chatLoadingStatus } = await useLazyFetch
     server: false,
   },
 );
-const isDataLoading = computed(() => chatLoadingStatus.value === "pending");
+const isChatLoading = computed(() => chatLoadingStatus.value === "pending");
 
 
 const details = computed(() => {
