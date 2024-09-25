@@ -14,7 +14,7 @@ export const userMangementSchema = toTypedSchema(
       countryCode: z
         .string({ required_error: "country Code is required" })
         .min(1, "Country Code is required"),
-      role: z
+      roleId: z
         .string({ required_error: "role is required" })
         .min(1, "role is required")
         .optional(),
