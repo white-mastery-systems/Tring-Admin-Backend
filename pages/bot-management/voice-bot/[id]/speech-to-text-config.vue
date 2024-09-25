@@ -14,9 +14,25 @@
         <SelectField v-if="values.provider === 'google' || values.provider === 'deepgram'" name="model"
           :options="models" label="model" placeholder="Select model" helperText="Select your model.">
         </SelectField>
+            
+        <div   class="flex flex-col gap-2 mt-5">
+          <RangeSlider
+          :step="0.1"
+          :name="parseFloat(values.amplificationFactor )"
+          label="Amplification Factor"
+          @update="
+            ($event) => {
+              setFieldValue('amplificationFactor', $event.toString());
+            }
+          "
+          required
+          placeholder="Enter speaking Rate"
+          min="0"
+          max="4"
+        />
+        </div>
 
-        <TextField label="Amplification factor" :name="`amplificationFactor`" required
-          placeholder="Enter Amplification factor" disableCharacters />
+
 
         <TextField v-if="values.provider === 'deepgram'" label="Utterance End Ms" name="utteranceEndMs" required
           placeholder="Utterance End Ms" disableCharacters />
@@ -171,6 +187,8 @@ const createEditSpeecToTextConfig = handleSubmit(async (value) => {
       speechToTextConfig: { ...value },
     },
   });
+  toast.success("Updated successfully");
+
 });
 watch(values, (newValues) => {
   if (newValues.language === "tamil" || newValues.language === "hindi") {
