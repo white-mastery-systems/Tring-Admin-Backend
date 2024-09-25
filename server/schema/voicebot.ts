@@ -70,6 +70,21 @@ export const voicebotIntegrationSchema = voiceBotSchema.table(
   },
 );
 
+export const callLogSchema = voiceBotSchema.table("call_logs", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  callSid: varchar("call_sid").notNull(),
+  exophone: varchar("exophone").notNull(),
+  from: varchar("from").notNull(),
+  date: varchar("date").notNull(),
+  duration: varchar("duration").notNull(),
+  direction: varchar("direction").notNull(),
+  callerName: varchar("caller_name").notNull(),
+  callTranscription: varchar("call_transcription").notNull(),
+  inputCredits: varchar("input_credits").notNull(),
+  outputCredits: varchar("output_credits").notNull()
+})
+
+
 export type SelectVoiceBot = InferSelectModel<typeof voicebotSchema>;
 export type InsertVoiceBot = InferInsertModel<typeof voicebotSchema>;
 
@@ -79,3 +94,6 @@ export type SelectVoicebotIntegration = InferSelectModel<
 export type InsertVoicebotIntegration = InferInsertModel<
   typeof voicebotIntegrationSchema
 >;
+
+export type SelectCallLogSchema = InferSelectModel<typeof callLogSchema>;
+export type InsertCallLogSchema = InferInsertModel<typeof callLogSchema>;

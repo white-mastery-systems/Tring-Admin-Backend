@@ -1,6 +1,7 @@
 const zodUpdateContacts = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
+  email: z.string().optional(),
   countryCode: z.string().optional(),
   phone: z.string().optional()
 })
