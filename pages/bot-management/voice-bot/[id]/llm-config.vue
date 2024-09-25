@@ -235,6 +235,15 @@ const route = useRoute("bot-management-voice-bot-id-llm-config");
 
 const botDetails: any = await getVoiceBotDetails(route.params.id);
 
+watchEffect(() => {
+  if (botDetails) {
+    const userName = botDetails?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Voice Bot | ${userName} - LLM Config`,
+    });
+  }
+});
+
 const handleLLMConfig = async (values: any) => {
   const payload: any = {
     provider: values.provider,

@@ -208,6 +208,16 @@ import { Bot, Settings } from "lucide-vue-next";
     open: false,
     id: null,
   });
+
+watchEffect(() => {
+  if (botDetails.value) {
+    const userName = botDetails.value?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Chat Bot | ${userName}`,
+    });
+  }
+});
+
   const handleSuccess = () => {
     channelModalState.value.open = false;
     toast.success("Channel Created successfully");

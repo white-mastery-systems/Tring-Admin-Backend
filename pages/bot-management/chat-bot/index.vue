@@ -47,6 +47,9 @@ import { Icon, UiBadge, UiButton } from "#components";
 definePageMeta({
   middleware: "admin-only",
 });
+useHead({
+  title: 'Bot Management | Chat Bot',
+})
 // interface LocationContext {
 //   location: any;
 //   updateLocation: () => void;

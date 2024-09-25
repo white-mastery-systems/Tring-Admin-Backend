@@ -204,16 +204,20 @@ const handleConnect = handleSubmit(async (values: any) => {
 </script>
 <template>
   <DialogWrapper v-model="campaignModalState" :title="(campaignModalState.id) ? 'Modify Campaign' : 'Add Campaign'">
-    <form v-if="true" @submit.prevent="handleConnect" class="space-y-2">
-      <div class="flex grid grid-cols-3 gap-2">
-        <DatePickerField name="date" label="Date" placeholder="Select a Date" required />
+    <form @submit.prevent="handleConnect" class="space-y-2">
+      <div class="flex gap-2">
+        <span class="w-[70%] sm:w-[70%] md:w-[70%] lg:w-[75%] xl:w-[75%]">
+          <DatePickerField name="date" label="Date" placeholder="Select a Date" required />
+        </span>
         <!-- <div class="flex flex-col justify-start items-center gap-2 font-medium">
           <label for="appt" class="pb-[1px]">Select a time <span
               class="pb-2 text-red-500 font-medium text-[18px]">*</span></label>
           <input type="time" id="appt" name="appt" class="border-[1px] border-solid border-grey rounded-[6px] py-1.5 px-2">
         </div> -->
-        <TimePickerField name="appt" label="Time">
-        </TimePickerField>
+        <span class="w-[30%] sm:w-[30%] md:w-[25%] lg:w-[25%] xl:w-[25%]">
+          <TimePickerField name="appt" label="Time">
+          </TimePickerField>
+        </span>
         <!-- <div class="flex flex-col justify-start items-center gap-2 font-medium">
           <label for="appt" class="pb-[1px] text-gray-700 w-[70%]" :class="(errors.appt) ? 'text-red-500' : ''">
             Time <span class="pb-2 text-red-500 font-medium text-[18px]">*</span>
@@ -223,7 +227,18 @@ const handleConnect = handleSubmit(async (values: any) => {
           ]">
           <p v-if="errors.appt" class="text-red-500 text-[13px]">{{ errors.appt }}</p>
         </div> -->
-        <SelectField name="type" label="Contact Method" placeholder="Select typ.." :options="[
+        <!-- <SelectField name="type" label="Contact Method" placeholder="Select typ.." class="w-full" :options="[
+          {
+            value: 'voice',
+            label: 'Voice',
+          }, {
+            value: 'whatsapp',
+            label: 'Whatsapp',
+          },
+        ]" required /> -->
+      </div>
+      <div>
+        <SelectField name="type" label="Contact Method" placeholder="Select type" class="w-full" :options="[
           {
             value: 'voice',
             label: 'Voice',

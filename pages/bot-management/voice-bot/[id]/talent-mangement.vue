@@ -17,6 +17,19 @@ import { useDropZone, useFileDialog } from "@vueuse/core";
 const { data: botData, status: botLoadingStatus } = await useLazyFetch<{ talentConfig?: { name?: string } }>(
   `/api/voicebots/${route.params.id}`,
 );
+const botDetails: any = ref(await getVoiceBotDetails(route.params.id));
+
+// useHead({
+//   title: `Voice Bot | Talent Management`,
+// });
+watchEffect(() => {
+  if (botDetails.value) {
+    const userName = botDetails.value?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Voice Bot | ${userName} - Talent Management`,
+    });
+  }
+});
 watch(botData, (newBotData) => {
   if (newBotData?.value && newBotData.value?.talentConfig) {
     fileName.value = newBotData.value?.talentConfig?.name ?? ""

@@ -34,6 +34,15 @@
   const botDetails: any = await getBotDetails(route.params.id);
   const defaultFormValues = botDetails.metadata.prompt;
 
+watchEffect(() => {
+  if (botDetails) {
+    const userName = botDetails?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Chat Bot | ${userName} - Intent Management`,
+    });
+  }
+});
+
   const addIntents = async (values: any) => {
     const intentDetails: any = {
       id: botDetails.id,

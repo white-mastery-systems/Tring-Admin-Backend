@@ -45,6 +45,9 @@ import { createColumnHelper } from "@tanstack/vue-table";
 definePageMeta({
   middleware: "admin-only",
 });
+useHead({
+  title: 'Whatsapp Bot',
+})
 
 // const filters = reactive<{
 //   q: string;

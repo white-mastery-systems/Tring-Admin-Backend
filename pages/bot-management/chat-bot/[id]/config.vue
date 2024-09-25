@@ -128,6 +128,15 @@
   setFieldValue("otherRole", defaultFormValues.otherRole || "");
   setFieldValue("otherGoal", defaultFormValues.otherGoal || "");
   setFieldValue("errorMessage", defaultFormValues.errorMessage || "");
+  
+watchEffect(() => {
+  if (botDetails) {
+    const userName = botDetails?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Chat Bot | ${userName} - Bot Config`,
+    });
+  }
+});
 
   const handleUpdateBotConfig = handleSubmit(async (values: any) => {
     const payload: any = {

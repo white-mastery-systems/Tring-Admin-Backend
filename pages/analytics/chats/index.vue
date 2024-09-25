@@ -44,6 +44,9 @@
   definePageMeta({
     middleware: "admin-only",
   });
+  useHead({
+  title: 'Analytics | Chats',
+})
 
   const formSchema = toTypedSchema(
     z.object({

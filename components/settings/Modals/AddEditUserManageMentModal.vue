@@ -84,7 +84,6 @@
   <DialogWrapper
     v-model="userModalState"
     :title="userModalState.id ? 'Modify User' : 'Add User'"
-    class="min-h-[100px] overflow-y-auto min-w-[100px]"
   >
     <form class="space-y-2" @submit="handleConnect">
       <!-- copy paste the class  below-->

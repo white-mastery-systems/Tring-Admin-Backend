@@ -1,7 +1,7 @@
 <!-- CustomDatePicker.vue -->
 <template>
   <UiFormField v-model="selectedDate" :name="name">
-    <UiFormItem>
+    <UiFormItem class="flex flex-col w-full">
       <UiFormLabel :class="{ 'text-[#ef4444]': hasError }">
         {{ label }}<UiLabel v-if="required" class="text-lg text-red-500">*</UiLabel>
       </UiFormLabel>
@@ -22,7 +22,7 @@
         </UiPopoverTrigger>
         <UiPopoverContent class="w-auto p-0">
           <UiCalendar v-model="value" calendar-label="Date" initial-focus :min-value="today(getLocalTimeZone())"
-             @update:model-value="(v) => updateDate(v)" />
+            @update:model-value="(v) => updateDate(v)" />
         </UiPopoverContent>
       </UiPopover>
       <UiFormMessage class="text-xs text-red-500" />

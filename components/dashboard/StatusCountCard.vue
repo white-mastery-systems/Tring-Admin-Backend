@@ -27,10 +27,12 @@
   </div>
 </template>
 <script setup lang="ts">
-  const props = defineProps<{
-    title: string;
-    count: string;
-    icon: any;
-    loading: boolean;
-  }>();
+const props = withDefaults(defineProps<{
+  title: string;
+  count: string;
+  icon: any;
+  loading: boolean;
+}>(), {
+  loading: true,  // default value for loading
+});
 </script>
