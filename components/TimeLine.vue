@@ -52,9 +52,14 @@ const emits = defineEmits(["timeLine"]);
               <span>
                 <LinkIcon />
               </span>
-              <NuxtLink class="text-indigo-600 cursor-pointer"  @click="emits('timeLine', data.chatId)">
+               <!-- @click="emits('timeLine', data.chatId)" -->
+              <NuxtLink v-if="data?.metadata?.website" :to="data?.metadata?.website" target="_blank"  class="text-indigo-600 cursor-pointer" >
+                {{ data?.metadata?.website }}
+              </NuxtLink>
+              <NuxtLink v-else class="text-indigo-600 cursor-pointer"  @click="emits('timeLine', data.chatId)">
                 {{ data?.chatId }}
               </NuxtLink>
+              
             </div>
           </div>
           <p class="mt-2 text-[14px] font-normal text-gray-600">
