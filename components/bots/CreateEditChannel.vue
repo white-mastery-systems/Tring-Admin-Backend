@@ -78,10 +78,7 @@ const handleCreateEditBotChannel = handleSubmit(async (values) => {
     method: "PUT",
     body: {
       channels: {
-        whatsapp: {
-          id: values.integrationId,
-          // crm: data?.crm,
-        },
+        whatsapp: values.integrationId
       },
     },
   });
