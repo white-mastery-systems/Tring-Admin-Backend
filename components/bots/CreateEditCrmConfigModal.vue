@@ -57,17 +57,17 @@
       />
       </div>
 
-      <div class="flex flex-col gap-3" v-if="
-          integrationsData.find(
-            (integration) => integration.id === values.integrationId,
-          )?.crm === 'sell-do'
-        ">
+    <div class="flex flex-col gap-3" v-if="
+        integrationsData.find(
+          (integration) => integration.id === values.integrationId,
+        )?.crm === 'sell-do'
+      ">
 
 
     <TextField  name="campaignId" label="Campaign Id" placeholder="Enter Your Campaign Id"/>
 
 
-    <TextField name="Project Id" label="Project  Id" placeholder="Enter Your Project Id"/>
+    <TextField name="ProjectId" label="Project Id" placeholder="Enter Your Project Id"/>
 
       </div>
       </div>

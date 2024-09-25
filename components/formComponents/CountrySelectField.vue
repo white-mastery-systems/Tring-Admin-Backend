@@ -13,14 +13,14 @@
                         )
                             ">
                             {{
-                                fieldValue
-                                    ? allCoutryNames.find(
-                                        (country: any) =>
-                                            country === fieldValue,
-                                    )
-                                    : "Country name"
+                            fieldValue
+                            ? allCoutryNames.find(
+                            (country: any) =>
+                            country === fieldValue,
+                            )
+                            : "Country name"
                             }}
-                            <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            <component :is="ChevronDown" class="ml-2 h-4 w-4 shrink-0 opacity-50"></component>
                         </UiButton>
                     </UiFormControl>
                 </UiPopoverTrigger>
@@ -62,6 +62,7 @@
 </template>
 <script setup lang="ts">
 import { Check } from 'lucide-vue-next';
+import { ChevronDown } from "lucide-vue-next";
 
 import countryData from "~/assets/country-codes.json";
 const searchField = ref('')

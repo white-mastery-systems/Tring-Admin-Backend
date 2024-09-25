@@ -12,40 +12,44 @@ export const useUser = async () => {
 
   const clearUser = () => {
     user.value = null;
+    localStorage.clear();
   };
-
   const refreshUser = async () => {
+  try {
     const data = await $fetch<User>("/api/user");
     if (data) {
-      const storedUser: any = localStorage.getItem('user');
-      user.value = JSON.parse(storedUser)
-      localStorage.setItem("user", JSON.stringify(data))
+      const storedUser: any = localStorage.getItem("user");
+      user.value = storedUser ? JSON.parse(storedUser) : null;
+      localStorage.setItem("user", JSON.stringify(data));
+      navigateTo("/")
     } else {
-      localStorage.clear()
-      user.value = null
-      navigateTo("/auth/sign-in")
+      localStorage.clear();
+      navigateTo("/auth/sign-in");
     }
-  };
-
-  const updateUser = () => {
-    const storedUser = localStorage.getItem("user");
-    user.value = storedUser ? JSON.parse(storedUser) : null;
-  };
-
-  if (!user.value) {
-    await refreshUser();
+  } catch (error) {
+    console.error("Error refreshing user:", error);
+    localStorage.clear();
+    navigateTo("/auth/sign-in");
   }
-  const handleStorageChange = (event: StorageEvent) => {
+};
+const updateUser = () => {
+  const storedUser = localStorage.getItem("user");
+  user.value = storedUser ? JSON.parse(storedUser) : null;
+};
+
+const handleStorageChange = (event: StorageEvent) => {
     if (event.key === "user") {
-      updateUser();
-      refreshUser()
+      const newUser = JSON.parse(event.newValue || "null");
+      if (JSON.stringify(newUser) !== JSON.stringify(user.value)) {
+        updateUser();
+        refreshUser();
+      }
     }
   };
 
   onMounted(() => {
     // Set up the event listener when the component is mounted
    window.addEventListener('storage', handleStorageChange);
-    refreshUser()
   });
 
   onUnmounted(() => {

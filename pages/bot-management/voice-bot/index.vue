@@ -28,17 +28,15 @@
       " @pagination="Pagination" @limit="($event) => {
               (filters.page = '1'), (filters.limit = $event);
             }
-            " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="voiceBot"
-      :page-size="20" :is-loading="isDataLoading" :height="16" height-unit="vh" />
+            " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
+      :data="voiceBot" :page-size="20" :is-loading="isDataLoading" :height="16" height-unit="vh" />
     <!-- <ChannelModal /> -->
-    <AgentModal v-model="agentModalState" />
-    <CampaignModal v-model="campaignModalState" @confirm="
+    <CreateEditVoiceBotModal v-model="agentModalState" />
+    <CreateEditCampaignModal v-model="campaignModalState" @confirm="
         () => {
           campaignModalState.open = false;
         }
       " />
-    <!-- <BucketModal v-model="bucketModalState" /> -->
-    <!-- <AgentModal v-model="agentModalState" /> -->
   </Page>
 </template>
 <script setup lang="ts">

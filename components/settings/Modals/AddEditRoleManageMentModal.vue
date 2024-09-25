@@ -94,7 +94,7 @@
     <form class="space-y-2" @submit="handleConnect">
       <div class="grid gap-4">
         <TextField
-          type="name"
+          type="text"
           name="name"
           label="Name"
           placeholder="Enter Your Role"
