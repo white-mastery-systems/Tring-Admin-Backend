@@ -60,14 +60,26 @@
             </div>
           </UiTabsContent>
           <UiTabsContent value="timeline">
-            <div class="flex h-screen-minus-12 flex-col justify-start gap-6 overflow-y-scroll pb-[1rem] pr-4 pt-[1rem]">
-              <TimeLine v-for="(step, index) in timeLineData" :key="index" :index="index" :data="step" @timeLine="($event) => {
-                BotId = $event;
-                setTimeout(() => {
-                  BotId = null;
-                });
-              }
-                " :totalSteps="timeLineData.length" :height="190" />
+
+            <div
+              class="flex h-screen-minus-12 flex-col justify-start gap-6 overflow-y-scroll pb-[1rem] pr-4 pt-[1rem]"
+            >
+              <TimeLine
+                v-for="(step, index) in timeLineData"
+                :key="index"
+                :index="index"
+                :data="step"
+                @timeLine="
+                  ($event) => {
+                    BotId = $event;
+                    setTimeout(() => {
+                      BotId = null;
+                    });
+                  }
+                "
+                :totalSteps="timeLineData?.length"
+                :height="190"
+              />
             </div>
           </UiTabsContent>
         </UiTabs>
@@ -99,15 +111,16 @@ definePageMeta({
 });
 const BotId = ref(null);
 
-const router = useRouter();
-const route = useRoute("analytics-leads-id");
-const chatScreenRef: any = ref(null);
-const scrollChatBox = () => {
-  setTimeout(() => {
-    if (chatScreenRef.value)
-      chatScreenRef.value.scrollTop = chatScreenRef?.value?.scrollHeight;
-  }, 1000);
-};
+
+  const router = useRouter();
+  const route = useRoute("analytics-leads-id");
+  const chatScreenRef: any = ref(null);
+  const scrollChatBox = () => {
+    setTimeout(() => {
+      if (chatScreenRef.value)
+        chatScreenRef.value.scrollTop = chatScreenRef?.value?.scrollHeight;
+    }, 1000);
+  };
 
 const { data: timeLineData } = await useLazyFetch(
   `/api/timeline/chat/${route.params.id}`,
