@@ -44,11 +44,11 @@ const emits = defineEmits(["timeLine"]);
           <h4 class="scroll-m-20 text-[16px] font-semibold tracking-tight">
             {{ data.metadata?.text }}
           </h4>
-          <div class="flex items-center gap-5" v-if="data.metadata?.website">
+          <div class="" v-if="data.metadata?.website">
             <span v-if="data.metadata?.title" class="min-w-[90px] text-[16px] font-semibold">
               {{ data.metadata?.title }}
             </span>
-            <div class="flex items-center flex-wrap gap-2">
+            <div class="flex items-center gap-2">
               <span>
                 <LinkIcon />
               </span>
@@ -56,9 +56,9 @@ const emits = defineEmits(["timeLine"]);
               <NuxtLink v-if="data?.metadata?.website" :to="data?.metadata?.website" target="_blank"  class="text-indigo-600 cursor-pointer" >
                 {{ data?.metadata?.website }}
               </NuxtLink>
-              <NuxtLink v-else class="text-indigo-600 cursor-pointer"  @click="emits('timeLine', data.chatId)">
+              <!-- <NuxtLink v-else class="text-indigo-600 cursor-pointer"  @click="emits('timeLine', data.chatId)">
                 {{ data?.chatId }}
-              </NuxtLink>
+              </NuxtLink> -->
               
             </div>
           </div>
