@@ -12,7 +12,7 @@
           Chat {{ chatListIndex + 1 }}
         </div>
       </div>
-      <div class="max-h-[50vh] overflow-y-scroll pt-[1rem] pr-4"
+      <div class="overflow-y-scroll pt-[1rem] pr-4"
         v-for="(messageList, messageIndex) in chatList?.messages" :id="messageList.chatId" :key="messageIndex">
         <div style="display: flex; justify-content: center" v-if="
           leadData?.channel === 'whatsapp' &&

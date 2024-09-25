@@ -84,6 +84,7 @@
   <DialogWrapper
     v-model="userModalState"
     :title="userModalState.id ? 'Modify User' : 'Add User'"
+    class="min-h-[100px] overflow-y-auto min-w-[100px]"
   >
     <form class="space-y-2" @submit="handleConnect">
       <!-- copy paste the class  below-->
@@ -105,12 +106,12 @@
           required
         />
 
-        <SelectField label="role" helperText="Select User Role" name="roleId" :multiple="false"
-        :required="true" placeholder="Select your integration"
+        <SelectField label="Role"  name="roleId" :multiple="false"
+        :required="true" placeholder="Select your role"
         :options="userModalState.roles?.map((role: any) => ({ label: role.name, value: role.id }))" />
-        <div class="flex gap-2 space-y-2">
+        <div class="flex gap-2 ">
           <CountryCodeField
-            class="mt-2 w-[100px] space-y-2"
+            class="mt-1.5 w-[100px] "
             name="countryCode"
             label="Country Code"
             helperText="Enter your country code"
@@ -118,7 +119,6 @@
           />
 
           <TextField
-            class=""
             :disableCharacters="true"
             name="mobile"
             label="Mobile number"
@@ -137,7 +137,7 @@
           >
             <template #endIcon>
               <div
-                class="w-[30px] cursor-pointer"
+                class="w-[30px] cursor-pointer mt-1.5"
                 @click="togglePasswordVisibility"
                 type="button"
               >
@@ -157,7 +157,7 @@
           >
             <template #endIcon>
               <div
-                class="w-[30px] cursor-pointer"
+                class="w-[30px] cursor-pointer mt-1.5"
                 @click="toggleConfirmPasswordVisibility"
                 type="button"
               >

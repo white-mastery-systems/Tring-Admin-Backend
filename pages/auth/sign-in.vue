@@ -98,7 +98,7 @@
             required
           >
           <template #endIcon>
-             <div class="w-[30px] cursor-pointer"
+             <div class="w-[30px] cursor-pointer mt-2"
             @click="togglePasswordVisibility"
             type="button"
           >

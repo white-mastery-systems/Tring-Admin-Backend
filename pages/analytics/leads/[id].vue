@@ -115,7 +115,7 @@
                     });
                   }
                 "
-                :totalSteps="timeLineData.length"
+                :totalSteps="timeLineData?.length"
                 :height="190"
               />
             </div>
@@ -167,7 +167,7 @@
   const BotId = ref(null);
 
   const router = useRouter();
-  const route = useRoute("leads-id");
+  const route = useRoute("analytics-leads-id");
   const chatScreenRef: any = ref(null);
   const scrollChatBox = () => {
     setTimeout(() => {

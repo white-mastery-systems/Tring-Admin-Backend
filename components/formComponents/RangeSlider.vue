@@ -58,7 +58,7 @@
   const { handleSubmit, values, errors } = useForm({
     validationSchema: formSchema,
     initialValues: {
-      duration: [props.name  || 0], // Default value for the slider
+      duration: [props.name ||0], // Default value for the slider
     },
   });
 
@@ -79,7 +79,7 @@
   <FormField :name="'duration'">
     <FormItem>
       <FormLabel>{{ props.label || "Duration" }}</FormLabel>
-      <Slider v-model="value" :default-value="[0]" :max="max"  :step="step"  />
+      <Slider v-model="value" :min="0" :max="max"  :step="step"  />
     </FormItem>
   </FormField>
         <span style="text-align: end;">{{ value?.[0] }}</span>
