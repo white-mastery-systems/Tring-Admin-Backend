@@ -6,7 +6,7 @@ const db = useDrizzle();
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   // console.log({ body: JSON.stringify(body) });
-  billingLogger.info(JSON.stringify(body));
+  billingLogger.info(`${body.event_type}---${JSON.stringify(body)}`);
   if (body.event_type === "subscription_created") {
     const paymentBySubscriptionId = await db.query.paymentSchema.findFirst({
       where: eq(
