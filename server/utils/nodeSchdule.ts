@@ -54,18 +54,19 @@ const sendWhatsappTemplateMessage = async (
         },
         body: {
           messaging_product: "whatsapp",
-          to: "918848083317",
+          to: userPhone,
           type: "template",
           template: {
-            name: "hello_world",
+            name: templateName,
             language: {
-              code: "en_US",
+              code: language ?? "en_US",
             },
             // components,
           },
         },
       },
     );
+    // console.log({ data: JSON.stringify(data) });
     return data;
   } catch (err) {
     console.log(err, "ERRRR");
@@ -116,7 +117,7 @@ export const scheduleEvent = async (
     // const templateName = "client_follow_up_sis";
     const organization = "South India Shelters";
     const salesmanager = "Reena";
-    const language = "en";
+    const language = "en_US";
 
     const assigned_date = new Date(date);
     const assigned_Time = new Date(time);
