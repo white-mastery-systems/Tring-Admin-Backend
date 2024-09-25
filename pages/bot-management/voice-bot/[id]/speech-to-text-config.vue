@@ -28,7 +28,7 @@
           required
           placeholder="Enter speaking Rate"
           min="0"
-          max="1"
+          max="4"
         />
         </div>
 
