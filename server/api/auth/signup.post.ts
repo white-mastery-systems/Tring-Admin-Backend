@@ -35,27 +35,27 @@ export default defineEventHandler(async (event) => {
     role: "admin",
   });
 
-  console.log({ user: user.id })
+  // console.log({ user: user.id })
 
-  const accessToken = jwt.sign({ id: user.id }, config.secretKey, { expiresIn: "1h"})
-  const refreshToken = jwt.sign({ id: user.id }, config.secretKey, { expiresIn: "1d"})
+  // const accessToken = jwt.sign({ id: user.id }, config.secretKey, { expiresIn: "1h"})
+  // const refreshToken = jwt.sign({ id: user.id }, config.secretKey, { expiresIn: "1d"})
 
   // console.log({ accessToken, refreshToken })
 
-  setCookie(event, 'refreshToken', refreshToken, {
-    httpOnly: true,
-    sameSite: 'strict',
-  });
+  // setCookie(event, 'refreshToken', refreshToken, {
+  //   httpOnly: true,
+  //   sameSite: 'strict',
+  // });
 
-  appendHeaders(event, {
-    Authorization: accessToken
-  });
-  // const session = await lucia.createSession(user.id, {});
-  // appendHeader(
-  //   event,
-  //   "Set-Cookie",
-  //   lucia.createSessionCookie(session.id).serialize(),
-  // );
+  // appendHeaders(event, {
+  //   Authorization: accessToken
+  // });
+  const session = await lucia.createSession(user.id, {});
+  appendHeader(
+    event,
+    "Set-Cookie",
+    lucia.createSessionCookie(session.id).serialize(),
+  );
   setResponseStatus(event, 201);
 
   if (user.organizationId) return "/";

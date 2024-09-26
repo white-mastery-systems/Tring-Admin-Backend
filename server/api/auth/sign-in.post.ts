@@ -30,28 +30,28 @@ export default defineEventHandler(async (event) => {
     );
   }
 
-  const userData = { id: user.id, email: user.email, organizationId: user.organizationId, role: user.role }
+  // const userData = { id: user.id, email: user.email, organizationId: user.organizationId, role: user.role }
 
-  const accessToken = jwt.sign(userData, config.secretKey, { expiresIn: "1h"})
-  const refreshToken = jwt.sign(userData, config.secretKey, { expiresIn: "1d"})
+  // const accessToken = jwt.sign(userData, config.secretKey, { expiresIn: "1h"})
+  // const refreshToken = jwt.sign(userData, config.secretKey, { expiresIn: "1d"})
 
-  setCookie(event, 'refreshToken', refreshToken, {
-    httpOnly: true,
-    sameSite: 'strict',
-  });
+  // setCookie(event, 'refreshToken', refreshToken, {
+  //   httpOnly: true,
+  //   sameSite: 'strict',
+  // });
 
-  appendHeaders(event, {
-    Authorization: accessToken
-  });
+  // appendHeaders(event, {
+  //   Authorization: accessToken
+  // });
 
-  // const session = await lucia.createSession(
-  //   user.id,
-  //   { email: user.email },
-  //   { sessionId: uuid() },
-  // );
-  // appendHeader(
-  //   event,
-  //   "Set-Cookie",
-  //   lucia.createSessionCookie(session.id).serialize(),
-  // );
+  const session = await lucia.createSession(
+    user.id,
+    { email: user.email },
+    { sessionId: uuid() },
+  );
+  appendHeader(
+    event,
+    "Set-Cookie",
+    lucia.createSessionCookie(session.id).serialize(),
+  );
 });
