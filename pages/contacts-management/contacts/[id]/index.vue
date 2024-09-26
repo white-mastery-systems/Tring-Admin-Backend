@@ -187,6 +187,12 @@ const columns = [
   columnHelper.accessor("lastName", {
     header: "Last Name",
   }),
+  columnHelper.accessor("email", {
+    header: "Email",
+    cell: ({ row }) => {
+      return row.original.email || "-";
+    }
+  }),
   columnHelper.accessor("phone", {
     header: "Number",
   }),

@@ -12,6 +12,7 @@
         <StatusFilter @change="onStatusChange" />
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
+        <ChannelFilter @changeAction="onChannel"/>
       </div>
 
       <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton>
@@ -350,4 +351,11 @@ useHead({
     }
     filters.page = '1'
   };
+
+  const onChannel = ($event) => {
+    if ($event) { 
+
+      filters.channel = $event;
+    }
+  }
 </script>
