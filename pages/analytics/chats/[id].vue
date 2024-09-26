@@ -152,11 +152,11 @@ const details = computed(() => {
     botUserDetails.push(
       ["Name", leadData?.value?.botUser?.name],
       ["Email", leadData?.value?.botUser?.email],
-      ["Mobile", leadData?.value?.botUser?.mobile],
+      ["Mobile",leadData?.value?.botUser?.countryCode+ leadData?.value?.botUser?.mobile],
       ["Bot Name", name],
     );
   }
-  const paramsData = Object.entries(params);
+  const paramsData = Object.entries(params ?? {});
   return [...metaData, ...paramsData, ...botUserDetails];
 });
 </script>
