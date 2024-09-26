@@ -22,7 +22,7 @@ export const createEditIntentValidation = z
   )
   .refine(
     (data) => {
-      if (data.intent === "images" || data.intent === "brochure") {
+      if (data.intent === "images" || data.intent === "brochures") {
         return data?.fileName;
       }
       return true;

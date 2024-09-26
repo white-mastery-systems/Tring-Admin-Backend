@@ -75,3 +75,5 @@ SET
     updated_at = created_at
 WHERE
     updated_at = '2024-09-13 04:56:10.456897'
+
+UPDATE chatbot.messages SET status = false WHERE content = 'Hi'
