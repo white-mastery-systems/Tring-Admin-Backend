@@ -51,17 +51,23 @@
         const getSingleDetails: any = await $fetch(
           `/api/user-role/${roleModalState.value.id}`,
         );
+        setFieldValue('permissions',getSingleDetails.permissions)
         Object.entries(getSingleDetails).forEach(([key, value]: any) => {
           if (values.hasOwnProperty(key)) {
             setFieldValue(key, value);
           }
         });
+
+        console.log({ getSingleDetails });
+        
       }
     },
   );
 
-  const handleConnect = handleSubmit(async (values: any) => {
+  const handleConnect = handleSubmit(async (value: any) => {
     try {
+      console.log(values);
+      
       if (roleModalState.value.id) {
         await $fetch(`/api/user-role/${roleModalState.value.id}`, {
           method: "PUT",
@@ -73,9 +79,6 @@
           method: "POST",
           body: {
             ...values,
-            permissions: {
-              sendEmail: true,
-            },
           },
         });
         toast.success("Created successfully");
@@ -102,7 +105,14 @@
         />
 
         <div>
-          <Checkbox id="terms" />
+          
+          <Checkbox id="terms"  :checked="values?.permissions?.sendEmail" @update:checked="(value) =>{
+            const permissions = !values?.permissions.sendEmail
+            // console.log(permissions)
+            setFieldValue('permissions',{...values?.permissions,sendEmail:permissions})
+            console.log({values});
+            
+          }" />
           <label
             for="terms"
             class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"

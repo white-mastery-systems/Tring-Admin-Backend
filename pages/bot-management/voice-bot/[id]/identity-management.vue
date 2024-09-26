@@ -27,16 +27,17 @@
     },
   ];
   const domainList = [
-    { value: "Admin", label:"Admin", helperText: "Manages system settings and user permissions" },
-    { value: "User", label:"User", helperText: "Regular user with access to basic features" },
-    { value: "Editor", label:"Editor", helperText: "Can edit and manage content" },
-    { value: "Viewer", label:"Viewer", helperText: "Can view content but cannot make changes" },
+    { value: "Customer Support", label:"Customer Support", },
+    { value: "Sales Assistant", label:"Sales Assistant",  },
+    { value: "Technical Support", label:"Technical Support", },
+    { value: "Lead Generation", label:"Lead Generation", },
     {
-      value: "Contributor",
-      label:"Contributor", helperText: "Can contribute content but with limited permissions",
+      value: "Survey Taker",
+      label:"Survey Taker", helperText: "Can contribute content but with limited permissions",
     },
-    { value: "Manager", label:"Manager", helperText: "Oversees team and project management" },
-    { value: "Others", label:"Others", helperText: "Other" },
+    { value: "Appointment Scheduler", label:"Appointment Scheduler", },
+    { value: "FAQ Bot", label:"FAQ Bot", },
+    { value: "Others", label:"Others", },
   ];
   
   const botSchema = toTypedSchema(
