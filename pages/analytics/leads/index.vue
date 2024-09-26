@@ -314,7 +314,7 @@ useHead({
 
     columnHelper.accessor("channel", {
       header: "Channel",
-      cell:({row}) => row.original?.chat.channel
+      cell:({row}) =>row.original?.chat.channel.charAt(0).toUpperCase() +row.original?.chat.channel.slice(1)
     }),
     columnHelper.accessor("botUser.mobile", {
       header: "Lead Phone",
