@@ -156,6 +156,7 @@ export const contactSchema = adminSchema.table("contacts", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
+  email: varchar("email"),
   countryCode: varchar("country_code"),
   phone: varchar("phone"),
   contactListId: uuid("contact_list_id")

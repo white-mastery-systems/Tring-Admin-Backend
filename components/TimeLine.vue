@@ -1,28 +1,26 @@
 <script setup lang="ts">
-  import { format } from "date-fns";
-  import { Link } from "lucide-vue-next";
 
-  // Props: a single step object and the current index
+// Props: a single step object and the current index
 const emits = defineEmits(["timeLine"]);
 
-  defineProps({
-    data: {
-      type: Object,
-      required: true,
-    },
-    index: {
-      type: Number,
-      required: true,
-    },
-    totalSteps: {
-      type: Number,
-      required: true,
-    }, 
-    height: {
-      type: Number,
-      required: true,
-    },
-  });
+defineProps({
+  data: {
+    type: Object,
+    required: true,
+  },
+  index: {
+    type: Number,
+    required: true,
+  },
+  totalSteps: {
+    type: Number,
+    required: true,
+  },
+  height: {
+    type: Number,
+    required: true,
+  },
+});
 </script>
 
 <template>
@@ -34,7 +32,8 @@ const emits = defineEmits(["timeLine"]);
         <div>
           <Circle class="absolute left-[0px] top-[50%] size-5 rounded-full bg-[#424BD1] z-10" />
           <div v-if="!(index === (totalSteps - 1))"
-            class="bg-[#8A8A8A] w-[2px] absolute left-[9px] top-[60%] z-0 rounded-xl" :class="[(height) ? `h-[${height}px]` : '']">
+            class="bg-[#8A8A8A] w-[2px] absolute left-[9px] top-[60%] z-0 rounded-xl"
+            :class="[(height) ? `h-[${height}px]` : '']">
 
           </div>
         </div>
@@ -52,16 +51,20 @@ const emits = defineEmits(["timeLine"]);
               <span>
                 <LinkIcon />
               </span>
-               <!-- @click="emits('timeLine', data.chatId)" -->
-              <NuxtLink v-if="data?.metadata?.website" :to="data?.metadata?.website" target="_blank"  class="text-indigo-600 cursor-pointer" >
+              <!-- @click="emits('timeLine', data.chatId)" -->
+              <NuxtLink v-if="data?.metadata?.website" :to="data?.metadata?.website" target="_blank"
+                class="text-indigo-600 cursor-pointer">
                 {{ data?.metadata?.website }}
               </NuxtLink>
-              <!-- <NuxtLink v-else class="text-indigo-600 cursor-pointer"  @click="emits('timeLine', data.chatId)">
-                {{ data?.chatId }}
-              </NuxtLink> -->
-              
+
+
             </div>
+
           </div>
+          <NuxtLink v-else class="text-indigo-600 text-underline text-sm cursor-pointer"
+            @click="emits('timeLine', data.chatId)">
+            View chat
+          </NuxtLink>
           <p class="mt-2 text-[14px] font-normal text-gray-600">
             {{ data.createdAt }}
             <!-- {{ format(new Date(data.createdAt), "dd MMM yyyy hh:mm aa") }} -->

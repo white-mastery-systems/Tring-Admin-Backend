@@ -1,3 +1,7 @@
+import jwt from "jsonwebtoken";
+
+const config = useRuntimeConfig();
+
 export default defineEventHandler(async (event) => {
   const body = await readValidatedBody(event, (body: any) =>
     zodSignUpSchema.safeParse({ ...body, role: "user" }),
@@ -30,6 +34,22 @@ export default defineEventHandler(async (event) => {
     password: body.data.password,
     role: "admin",
   });
+
+  // console.log({ user: user.id })
+
+  // const accessToken = jwt.sign({ id: user.id }, config.secretKey, { expiresIn: "1h"})
+  // const refreshToken = jwt.sign({ id: user.id }, config.secretKey, { expiresIn: "1d"})
+
+  // console.log({ accessToken, refreshToken })
+
+  // setCookie(event, 'refreshToken', refreshToken, {
+  //   httpOnly: true,
+  //   sameSite: 'strict',
+  // });
+
+  // appendHeaders(event, {
+  //   Authorization: accessToken
+  // });
   const session = await lucia.createSession(user.id, {});
   appendHeader(
     event,
