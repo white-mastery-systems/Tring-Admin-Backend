@@ -120,7 +120,7 @@ export const messageSchema = chatbotSchema.table("messages", {
   content: text("content").notNull(),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-
+  status: boolean("status").default(true),
   chatId: uuid("chat_id")
     .references(() => chatSchema.id, {
       onDelete: "cascade",

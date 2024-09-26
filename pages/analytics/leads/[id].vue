@@ -27,6 +27,7 @@
         <UiTabs default-value="client" class="w-full self-start">
           <UiTabsList class="grid w-full grid-cols-3">
             <UiTabsTrigger value="client"> Client Info </UiTabsTrigger>
+            <UiTabsTrigger value="campaign"> Campaign Info </UiTabsTrigger>
             <UiTabsTrigger value="timeline"> Time Line </UiTabsTrigger>
           </UiTabsList>
           <UiTabsContent value="client">
