@@ -1,8 +1,19 @@
 <template>
-  <Page :title="leadData?.botUser?.name ?? 'No Name'" :disable-back-button="false" :disable-elevation="true">
-    <div v-if="!isChatLoading" class="items-top gap-[25px flex items-center justify-center px-3">
-      <div class="items-top xs:grid-cols-2 flex grid grid-cols-1 gap-[25px] lg:grid-cols-2">
-        <div class="justify-aro und flex w-full gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]">
+  <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
+    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div>
+  <Page v-else
+    :title="leadData?.botUser?.name ?? 'No Name'"
+    :disable-back-button="false"
+    :disable-elevation="true"
+  >
+    <div class="items-top gap-[25px flex items-center justify-center px-3">
+      <div
+        class="items-top xs:grid-cols-2 flex grid grid-cols-1 gap-[25px] lg:grid-cols-2 w-full"
+      >
+        <div
+          class="justify-aro und flex w-full gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]"
+        >
           <UiTabs default-value="Chat" class="w-full self-start">
             <UiTabsList class="grid w-full grid-cols-2">
               <UiTabsTrigger value="Chat"> Chat Log </UiTabsTrigger>
@@ -106,13 +117,22 @@ const { data: timeLineData } = await useLazyFetch(
   `/api/timeline/chat/${route.params.id}`,
 );
 
-const { status, data: leadData, status: chatLoadingStatus } = await useLazyFetch(
+const { status, data: leadData } = await useLazyFetch(
   () => `/api/org/chat/${route.params.id}`,
   {
     server: false,
   },
 );
-const isChatLoading = computed(() => chatLoadingStatus.value === "pending");
+
+watchEffect(() => {
+  if (leadData.value) {
+    const userName = leadData.value?.botUser?.name ?? 'Unknown User';
+    useHead({
+      title: `Chats | ${userName}`,
+    });
+  }
+});
+const isPageLoading = computed(() => status.value === "pending");
 
 
 const details = computed(() => {

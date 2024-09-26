@@ -48,6 +48,9 @@
   definePageMeta({
     middleware: "admin-only",
   });
+  useHead({
+    title: 'Bot Management | Voice Bot',
+  })
 
   const formSchema = toTypedSchema(
     z.object({

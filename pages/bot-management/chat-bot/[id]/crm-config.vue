@@ -74,6 +74,16 @@
   let deleteIntegrationState: { open: boolean; id?: string } = reactive({
     open: false,
   });
+
+
+watchEffect(() => {
+  if (botDetails.value) {
+    const userName = botDetails.value?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Chat Bot | ${userName} - CRM Config`,
+    });
+  }
+});
   const actionsComponent = (id: string) => [
     h(
       "div",

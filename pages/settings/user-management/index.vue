@@ -41,6 +41,9 @@
   </Page>
 </template>
 <script setup lang="ts">
+useHead({
+  title: 'Settings | User Management',
+})
 
 const channel =  ref("user")
 const  rolePopupState =  ref(false)

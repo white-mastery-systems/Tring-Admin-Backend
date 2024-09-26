@@ -2,6 +2,11 @@
 	  <script setup lang="ts">
     import { format } from "date-fns";
     import { Repeat, Wallet, XCircleIcon } from "lucide-vue-next";
+
+    useHead({
+      title: 'Billing',
+    })
+
     const {
       status,
       data: usage,
