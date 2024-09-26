@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY package.json .
 COPY pnpm-lock.yaml .
-
+RUN yarn global add pnpm
 RUN pnpm install 
 
 COPY . .

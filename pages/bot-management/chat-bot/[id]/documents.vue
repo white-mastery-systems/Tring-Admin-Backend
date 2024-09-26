@@ -183,6 +183,15 @@ const position = ref('bottom')
 
   const isPageLoading = computed(() => status.value === "pending");
 
+watchEffect(() => {
+  if (botDetails) {
+    const userName = botDetails?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Chat Bot | ${userName} - Document Management`,
+    });
+  }
+});
+
   const handleDeleteDocument = () => {
     deleteDocumentModelOpen.value = true;
   };

@@ -34,13 +34,14 @@ services:
       - "NUXT_PLAY_GROUND_BOT_ID=eee8fd62-e52b-4cf9-84af-a7c7fe30cc80"
       - "NUXT_NODEMAILER_USER=testing@whitemastery.com"
       - "NUXT_NODEMAILER_PASS=Testing@2023"
-      - "NUXT_ADMIN_BASE_URL=http://localhost:3000"
+      - "NUXT_ADMIN_BASE_URL=https://tring-admin.pripod.com"
       - "NUXT_SECRET_KEY=secretKey"
       - "NUXT_PUBLIC_GOOGLE_ANALYTICS_ID=ddd"
     volumes:
       - tring-suite_admin:/app/node_modules
       - tring-admin_docs:/app/assets/docs
       - tring-admin_uploads:/app/assets/uploads
+      - tring-admin_logs:/app/logs
 
     restart: always
 
@@ -49,3 +50,4 @@ volumes:
   tring-suite_admin:
   tring-admin_docs:
   tring-admin_uploads:
+  tring-admin_logs:

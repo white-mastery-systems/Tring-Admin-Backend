@@ -52,26 +52,6 @@ const formSchema = toTypedSchema(
 const { handleSubmit, defineField, errors, values } = useForm({
   validationSchema: formSchema
 });
-// const templates = ref<any>([])
-// const phoneNumbers = ref<any>([])
-
-// watch(() => values, async (newValue) => {
-//   console.log({ newValue })
-//   if (newValue) {
-//     if (newValue.integrationId) {
-
-//       const data = await $fetch("/api/org/integrations/wa-template", {
-//         method: "POST",
-//         body: {
-//           integrationId: newValue.integrationId
-//         }
-//       })
-//       templates.value = data?.templateResponse?.data?.map((dat: { name: string }) => dat.name)
-//       phoneNumbers.value = data?.phoneNumberRespone?.data?.map((phone: any) => ({ label: phone.display_phone_number, value: phone.id }))
-
-//     }
-//   }
-// }, { deep: true })
 
 const handleCreateEditBotChannel = handleSubmit(async (values) => {
   await $fetch(`/api/bots/${route.params.id}`, {

@@ -1,3 +1,5 @@
+import { billingLogger } from "~/server/logger";
+
 interface zohoConfigInterface {
   metaData: {
     client_id: string;
@@ -10,7 +12,8 @@ interface zohoConfigInterface {
 }
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  console.log({ newBody: JSON.stringify(body) });
+  // console.log({ newBody: JSON.stringify(body) });
+  billingLogger.info(`${body.type}---${JSON.stringify(body)}`);
   // const http = require("https");
 
   const db = useDrizzle();
@@ -73,16 +76,19 @@ export default defineEventHandler(async (event) => {
           const billingInformation = await db.query.paymentSchema.findFirst({
             where: eq(paymentSchema.organizationId, organizationId),
           });
-          
-          // get contact-persons
-          const contactPersonInformations = await db.query.authUserSchema.findMany({
-            where: and(
-              eq(authUserSchema.organizationId, organizationId),
-              isNotNull(authUserSchema.contactPersonId)
-            )
-          })
 
-          const contactPersonIdList = contactPersonInformations?.map((i) => ({ contactperson_id: i.contactPersonId }))
+          // get contact-persons
+          const contactPersonInformations =
+            await db.query.authUserSchema.findMany({
+              where: and(
+                eq(authUserSchema.organizationId, organizationId),
+                isNotNull(authUserSchema.contactPersonId),
+              ),
+            });
+
+          const contactPersonIdList = contactPersonInformations?.map((i) => ({
+            contactperson_id: i.contactPersonId,
+          }));
 
           const generatedHostedPage = await $fetch(
             "https://www.zohoapis.in/billing/v1/hostedpages/newsubscription",
@@ -125,7 +131,7 @@ export default defineEventHandler(async (event) => {
                         },
                       },
                     }),
-                
+
                 contactpersons: contactPersonIdList,
                 plan: {
                   plan_code: body.plan,

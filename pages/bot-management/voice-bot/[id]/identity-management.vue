@@ -55,6 +55,16 @@
         // name: "",
       },
     });
+
+
+watchEffect(() => {
+  if (botDetails) {
+    const userName = botDetails?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Voice Bot | ${userName} - Identity Management`,
+    });
+  }
+});  
 const onSubmit = handleSubmit(async (value: any) => {
     // updateLLMConfig()
     await updateLLMConfig({ identityManagement: value }, botDetails.id);

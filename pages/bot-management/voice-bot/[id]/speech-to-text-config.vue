@@ -1,5 +1,8 @@
 <template>
-  <Page title="Speech To Text Configurations">
+  <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
+    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div>
+  <Page v-else title="Speech To Text Configurations">
     <form @submit="createEditSpeecToTextConfig">
       <div class='grid grid-cols-2 gap-2 w-full'>
         <SelectField name="language" :options="languages" label="Language" placeholder="Select Language"
@@ -89,6 +92,7 @@
 import { FieldArray } from 'vee-validate';
 import CloseIcon from '~/components/icons/CloseIcon.vue';
 import { speechToTextValidation } from "~/validationSchema/speechToTextValidation";
+
 const languages = [{
   label: "En-US",
   value: "en-US",
@@ -161,6 +165,19 @@ const {
 const { data: botData, status: botLoadingStatus } = await useLazyFetch<{
   speechToTextConfig: Record<string, string>;
 }>(`/api/voicebots/${route.params.id}`);
+
+const botDetails: any = ref(await getVoiceBotDetails(route.params.id));
+
+const isPageLoading = computed(() => botLoadingStatus.value === "pending");
+
+watchEffect(() => {
+  if (botDetails.value) {
+    const userName = botDetails.value?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Voice Bot | ${userName} - Speech To Text Config`,
+});
+  }
+});
 
 watch(botData,(newValue)=>{
  console.log(botData.value.speechToTextConfig, "SPEECH TO TEXT")

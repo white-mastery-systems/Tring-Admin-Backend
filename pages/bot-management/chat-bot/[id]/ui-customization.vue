@@ -293,6 +293,15 @@
   //   initialValues: defaultFormValues,
   // })
 
+watchEffect(() => {
+  if (botDetails) {
+    const userName = botDetails?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Chat Bot | ${userName} - UI Customization`,
+    });
+  }
+});
+
   const uiUpdate = async (value: any) => {
     const payload: any = {
       id: botDetails.id,

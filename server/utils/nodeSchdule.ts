@@ -1,4 +1,3 @@
-import schedule from "node-schedule";
 import { logger } from "~/server/logger";
 
 const generateTemplateComponents = (body: any[], header?: any) => {
@@ -54,18 +53,43 @@ const sendWhatsappTemplateMessage = async (
         },
         body: {
           messaging_product: "whatsapp",
-          to: "918848083317",
+          to: userPhone,
           type: "template",
           template: {
-            name: "hello_world",
+            name: templateName,
             language: {
-              code: "en_US",
+              code: language ?? "en_US",
             },
             // components,
           },
         },
       },
     );
+    logger.info(
+      `meta-whatsapp-${`https://graph.facebook.com/v20.0/${phoneId}/messages`}---->${JSON.stringify(
+        {
+          ignoreResponseError: true,
+          method: "post",
+          headers: {
+            Authorization: `Bearer ${metaToken}`,
+          },
+          body: {
+            messaging_product: "whatsapp",
+            to: userPhone,
+            type: "template",
+            template: {
+              name: templateName,
+              language: {
+                code: language ?? "en_US",
+              },
+              // components,
+            },
+          },
+        },
+      )}`,
+    );
+    // logger.info(`whatsapp-response-${data}`);
+    // console.log({ data: JSON.stringify(data) });
     return data;
   } catch (err) {
     console.log(err, "ERRRR");
@@ -116,7 +140,7 @@ export const scheduleEvent = async (
     // const templateName = "client_follow_up_sis";
     const organization = "South India Shelters";
     const salesmanager = "Reena";
-    const language = "en";
+    const language = "en_US";
 
     const assigned_date = new Date(date);
     const assigned_Time = new Date(time);
@@ -158,44 +182,45 @@ export const scheduleEvent = async (
         components,
         language,
       );
-      console.log({ data });
+      //TODO remove once it is done
+      logger.info(`whatsapp ${JSON.stringify(data)}`);
     });
 
-    const event = schedule.scheduleJob(
-      { year, month, date: day, hour: hours, minute: minutes, tz: "UTC" },
-      () => {
-        logger.info({ level: "info", message: "Message sending..." });
-        contactList.forEach(async (item: any) => {
-          console.log({ item: item.phone });
-          const phoneNumber = `${item.countryCode}${item.phone}`.replace(
-            "+",
-            "",
-          );
-          console.log({ phoneNumber });
-          const components = {
-            name: item.firstName,
-            organization,
-            project: "Testing",
-            number: phoneNumber,
-            manager: salesmanager,
-            organizationName: organization,
-          };
-          const data = await sendWhatsappTemplateMessage(
-            metaToken,
-            phoneId,
-            phoneNumber,
-            templateName,
-            components,
-            language,
-          );
-          console.log({ data });
-        });
-      },
-    );
-    console.log({ event });
-    if (!event) {
-      return { status: false };
-    }
+    // const event = schedule.scheduleJob(
+    //   { year, month, date: day, hour: hours, minute: minutes, tz: "UTC" },
+    //   () => {
+    //     logger.info({ level: "info", message: "Message sending..." });
+    //     contactList.forEach(async (item: any) => {
+    //       console.log({ item: item.phone });
+    //       const phoneNumber = `${item.countryCode}${item.phone}`.replace(
+    //         "+",
+    //         "",
+    //       );
+    //       console.log({ phoneNumber });
+    //       const components = {
+    //         name: item.firstName,
+    //         organization,
+    //         project: "Testing",
+    //         number: phoneNumber,
+    //         manager: salesmanager,
+    //         organizationName: organization,
+    //       };
+    //       const data = await sendWhatsappTemplateMessage(
+    //         metaToken,
+    //         phoneId,
+    //         phoneNumber,
+    //         templateName,
+    //         components,
+    //         language,
+    //       );
+    //       console.log({ data });
+    //     });
+    //   },
+    // );
+    // console.log({ event });
+    // if (!event) {
+    //   return { status: false };
+    // }
     return { status: true };
   } catch (error: any) {
     logger.error({ level: "error", message: error.message });

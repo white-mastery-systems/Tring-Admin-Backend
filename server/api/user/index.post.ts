@@ -9,7 +9,7 @@ const zodBodyValidator = z.object({
    mobile: z.string(),
    email: z.string(),
    password: z.string(),
-   roleId: z.string().optional()
+   roleId: z.string()
 })
 
 export default defineEventHandler(async (event) => {
@@ -40,20 +40,33 @@ export default defineEventHandler(async (event) => {
     role: "user",
     organizationId: organization_id
   })
- 
+  // console.log({ data })
   if(data) {
-    const zohoData: any = await db.query.adminConfigurationSchema.findFirst({
-      where: eq(adminConfigurationSchema.id, 1),
-    });
-    let metaData = zohoData?.metaData
-    const zohoContactPerson = await createContactPerson(organization_id, data, metaData)
-
-    if(zohoContactPerson?.status) {
-      await db
-        .update(authUserSchema)
-        .set({ contactPersonId: zohoContactPerson?.data?.contactperson?.contactperson_id })
-        .where(eq(authUserSchema.id, data.id))
+    // Checking permission
+    const userRolePermission = await db.query.authUserRoleSchema.findFirst({
+      where: eq(authUserRoleSchema.id, data.roleId)
+    })
+    
+    if(userRolePermission.permissions.sendEmail === true) {
+      // console.log("inside")
+      const zohoData: any = await db.query.adminConfigurationSchema.findFirst({
+        where: eq(adminConfigurationSchema.id, 1),
+      });
+      let metaData = zohoData?.metaData
+      
+      const zohoContactPerson = await createContactPerson(organization_id, data, metaData)
+      if(zohoContactPerson?.status) {
+        await db
+          .update(authUserSchema)
+          .set({ contactPersonId: zohoContactPerson?.data?.contactperson?.contactperson_id })
+          .where(eq(authUserSchema.id, data.id))
+      }
     }
   }
+ 
+
+ 
+   
+  
   return isValidReturnType(event, data)
 })

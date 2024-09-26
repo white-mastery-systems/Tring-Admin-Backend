@@ -28,6 +28,16 @@ const botDetails: any = await getVoiceBotDetails(route.params.id);
 const roles = ['Customer Support', 'Receptionist']
 const domainList = ['Admin', 'User', 'Editor', 'Viewer', 'Contributor', 'Manager'];
 
+
+watchEffect(() => {
+  if (botDetails) {
+    const userName = botDetails?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Voice Bot | ${userName} - IVR Config`,
+    });
+  }
+});
+
 const onSubmit = handleSubmit(async (value: any) => {
   await updateLLMConfig({ ivrConfig: value }, botDetails.id);
   return navigateTo({

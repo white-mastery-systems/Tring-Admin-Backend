@@ -48,6 +48,15 @@ const route = useRoute("bot-management-chat-bot-id-crm-config");
 const paramId: any = route;
 const botDetails = ref(await getVoiceBotDetails(paramId.params.id));
 
+watchEffect(() => {
+  if (botDetails.value) {
+    const userName = botDetails.value?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Voice Bot | ${userName} - CRM Config`,
+    });
+  }
+});
+
 let deleteIntegrationState: { open: boolean; id?: string } = reactive({
   open: false,
 });

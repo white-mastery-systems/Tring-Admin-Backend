@@ -64,6 +64,9 @@ import AddBucketNameModal from "~/components/voiceBot/DialogModal/CreateEditBuck
 definePageMeta({
   middleware: "admin-only",
 });
+useHead({
+  title: 'Contacts Management | Contacts',
+})
 
 const formSchema = toTypedSchema(
   z.object({
