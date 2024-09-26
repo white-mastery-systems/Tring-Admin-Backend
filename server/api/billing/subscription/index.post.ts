@@ -1,3 +1,5 @@
+import { billingLogger } from "~/server/logger";
+
 interface zohoConfigInterface {
   metaData: {
     client_id: string;
@@ -10,7 +12,8 @@ interface zohoConfigInterface {
 }
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  console.log({ newBody: JSON.stringify(body) });
+  // console.log({ newBody: JSON.stringify(body) });
+  billingLogger.info(`${body.type}---${JSON.stringify(body)}`);
   // const http = require("https");
 
   const db = useDrizzle();
