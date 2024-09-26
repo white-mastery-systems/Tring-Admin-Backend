@@ -31,6 +31,7 @@ const schema = {
   contactListSchema,
   contactSchema,
   campaignSchema,
+  callLogSchema,
   // Relations
   organizationRelations,
   chatBotRelations,
