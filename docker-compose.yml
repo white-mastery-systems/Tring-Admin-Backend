@@ -41,6 +41,7 @@ services:
       - tring-suite_admin:/app/node_modules
       - tring-admin_docs:/app/assets/docs
       - tring-admin_uploads:/app/assets/uploads
+      - tring-admin_logs:/app/logs
 
     restart: always
 
@@ -49,3 +50,4 @@ volumes:
   tring-suite_admin:
   tring-admin_docs:
   tring-admin_uploads:
+  tring-admin_logs:
