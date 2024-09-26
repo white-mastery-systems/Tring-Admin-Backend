@@ -1,266 +1,212 @@
 <template>
-  <Page title="LLM Configuration" :bread-crumbs="[
-    {
-      label: `${botDetails.name}`,
-      to: `/bot-management/voice-bot/${botDetails.id}`,
-    },
-    {
-      label: 'LLM Configuration',
-      to: `/bot-management/voice-bot/${botDetails.id}/llm-config`,
-    },
-  ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="false">
+  <Page
+    title="LLM Configuration"
+    :bread-crumbs="[
+      {
+        label: `${botDetails.name}`,
+        to: `/bot-management/voice-bot/${botDetails.id}`,
+      },
+      {
+        label: 'LLM Configuration',
+        to: `/bot-management/voice-bot/${botDetails.id}/llm-config`,
+      },
+    ]"
+    :disableSelector="true"
+    :disable-back-button="false"
+    :disable-elevation="false"
+  >
     <div class="shadow-md mx-5 rounded-lg">
-      <UiForm v-slot="{ values, errors }" :keep-values="true" :validate-on-mount="false" :initial-values="defaultValues"
-        class="space-y-2" @submit="handleLLMConfig">
-        <div class="flex gap-4">
-          <UiFormField v-slot="{ componentField }" name="provider">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiFormLabel> Provider </UiFormLabel>
-              <UiFormControl>
-                <UiSelect v-bind="componentField">
-                  <UiSelectTrigger class="hover:focus:none hover:focus-visible:none h-12 w-full">
-                    <UiSelectValue placeholder="Select Provider" />
-                  </UiSelectTrigger>
-                  <UiSelectContent>
-                    <UiSelectItem v-for="option in provider" :key="option.value" :value="option.value">
-                      {{ option.label }}
-                    </UiSelectItem>
-                  </UiSelectContent>
-                </UiSelect>
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
-          <UiFormField v-slot="{ componentField }" name="model">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiFormLabel>Model </UiFormLabel>
-              <UiFormControl>
-                <UiSelect v-bind="componentField">
-                  <UiSelectTrigger class="hover:focus:none hover:focus-visible:none h-12 w-full">
-                    <UiSelectValue placeholder="Select Model" />
-                  </UiSelectTrigger>
-                  <UiSelectContent>
-                    <UiSelectItem v-for="model in models" :key="model.value" :value="model.value">
-                      {{ model.label }}
-                    </UiSelectItem>
-                  </UiSelectContent>
-                </UiSelect>
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
+      <form @submit="handleLLMConfigSubmit">
+        <div class="grid w-full grid-cols-2 gap-2">
+          <SelectField
+            name="provider"
+            label="Provider"
+            placeholder="Select Provider"
+            :options="provider"
+            :required="true"
+          />
+
+          <SelectField
+            name="model"
+            label="Model"
+            placeholder="Select Model"
+            :options="models"
+            :required="true"
+          />
+
+          <SelectField
+            name="tokens"
+            label="Max Tokens"
+            placeholder="Max Tokens"
+            :options="tokens.map((token) => ({ label: token, value: token }))"
+            :required="true"
+          />
+
+          <div class="mt-5 flex flex-col gap-2">
+            <RangeSlider
+              :step="0.1"
+              :name="values.temperature"
+              label="Temperature"
+              @update="
+                ($event) => {
+                  setFieldValue('temperature', $event);
+                }
+              "
+              required
+              placeholder="Enter speaking Rate"
+              min="0"
+              max="1"
+            />
+          </div>
         </div>
-        <div class="flex gap-4">
-          <UiFormField v-slot="{ componentField }" name="tokens">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiFormLabel>Max Tokens </UiFormLabel>
-              <UiFormControl>
-                <UiSelect v-bind="componentField">
-                  <UiSelectTrigger class="hover:focus:none hover:focus-visible:none h-12 w-full">
-                    <UiSelectValue placeholder="Select Max Tokens" />
-                  </UiSelectTrigger>
-                  <UiSelectContent>
-                    <UiSelectItem v-for="token in tokens" :key="token" :value="token">{{ token }}
-                    </UiSelectItem>
-                  </UiSelectContent>
-                </UiSelect>
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
-          <UiFormField v-slot="{ componentField }" name="temperature">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <UiFormLabel> Temperature </UiFormLabel>
-              <UiFormControl class="focus-visible:none h-12 focus-visible:ring-offset-0">
-                <UiNumberField :default-value="0" :step="0.1" :format-options="{
-                  minimumFractionDigits: 1,
-                }" :min="0" :max="1" v-bind="componentField">
-                  <UiNumberFieldContent>
-                    <UiNumberFieldDecrement />
-                    <UiNumberFieldInput />
-                    <UiNumberFieldIncrement />
-                  </UiNumberFieldContent>
-                </UiNumberField>
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
+
+        <div class="spcace-y-2 grid w-full grid-cols-1 gap-2">
+          <!-- <TextField   label="Document Id" name="documentId" 
+          placeholder="Document Id"  /> -->
+          <SelectField
+            name="role"
+            label="Role"
+            placeholder="Role is required"
+            :options="roles"
+            :required="true"
+          />
+          <TextField
+            label="Guide"
+            name="guide"
+            placeholder="Include your company details along with the specifics of the service the bot will be providing"
+            :isTextarea="true"
+          />
+          <TextField
+            label="Additional Instructions"
+            name="instruction"
+            placeholder="Include your company details along with the specifics of the service the bot will be providing"
+            :isTextarea="true"
+          />
+          <TextField
+            label="Notes"
+            name="notes"
+            placeholder="Notes the data"
+            :isTextarea="true"
+          />
+          <TextField
+            label="Domain Rules"
+            name="domainRules"
+            placeholder="Domain Rules"
+            :isTextarea="true"
+          />
         </div>
-        <UiFormField v-slot="{ componentField }" name="documentId">
-          <UiFormItem v-auto-animate="animationProps">
-            <UiFormLabel>Document Id</UiFormLabel>
-            <UiFormControl>
-              <UiInput v-bind="componentField" type="text"
-                class="focus-visible:none h-12 focus-visible:ring-offset-0" />
-            </UiFormControl>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="role">
-          <UiFormItem v-auto-animate="animationProps">
-            <UiFormLabel>Role</UiFormLabel>
-            <UiFormControl>
-              <UiSelect v-bind="componentField">
-                <UiSelectTrigger class="hover:focus:none hover:focus-visible:none h-12 w-full">
-                  <UiSelectValue placeholder="Select Role" />
-                </UiSelectTrigger>
-                <UiSelectContent>
-                  <div v-for="({ value, label }, index) in roles">
-                    <UiSelectItem :value="value">{{ value }} </UiSelectItem>
-                    <span class="mx-2 text-xs italic text-gray-500">{{
-                      label
-                    }}</span>
-                  </div>
-                </UiSelectContent>
-              </UiSelect>
-              <UiFormField v-if="componentField.modelValue === 'Other'" v-slot="{ componentField }" name="otherRole">
-                <UiFormItem v-auto-animate="animationProps" class="w-full">
-                  <UiFormControl>
-                    <UiInput v-bind="componentField" type="text"
-                      class="focus-visible:none h-12 focus-visible:ring-offset-0" />
-                  </UiFormControl>
-                  <UiFormMessage />
-                </UiFormItem>
-              </UiFormField>
-            </UiFormControl>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="guide">
-          <UiFormItem v-auto-animate="animationProps">
-            <UiFormLabel>Guide</UiFormLabel>
-            <UiFormControl>
-              <UiTextarea v-bind="componentField" type="text"
-                placeholder="Include your company details along with the specifics of the service the bot will be providing"
-                class="focus-visible:none h-14 focus-visible:ring-offset-0" />
-            </UiFormControl>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="instruction">
-          <UiFormItem v-auto-animate="animationProps">
-            <UiFormLabel>Additional Instructions</UiFormLabel>
-            <UiFormControl>
-              <UiTextarea v-bind="componentField" type="text"
-                class="focus-visible:none h-14 focus-visible:ring-offset-0" />
-            </UiFormControl>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="notes">
-          <UiFormItem v-auto-animate="animationProps">
-            <UiFormLabel>Notes</UiFormLabel>
-            <UiFormControl>
-              <UiTextarea v-bind="componentField" type="text"
-                class="focus-visible:none h-14 focus-visible:ring-offset-0" />
-            </UiFormControl>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <UiFormField v-slot="{ componentField }" name="domainRules">
-          <UiFormItem v-auto-animate="animationProps">
-            <UiFormLabel>Domain Rules</UiFormLabel>
-            <UiFormControl>
-              <UiTextarea v-bind="componentField" type="text"
-                class="focus-visible:none h-14 focus-visible:ring-offset-0" />
-            </UiFormControl>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-        <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110" size="lg">Submit</UiButton>
-      </UiForm>
+
+        <UiButton
+          type="submit"
+          class="mt-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
+          size="lg"
+          >Submit</UiButton
+        >
+
+        <!-- copy paste the class  below-->
+        <!-- class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium" -->
+      </form>
     </div>
   </Page>
 </template>
 <script setup lang="ts">
-const provider = [
-  {
-    value: "openai",
-    label: "OpenAI",
-  },
-  {
-    value: "google",
-    label: "Gemini",
-  },
-];
+  import { lLmConfigurationValidation } from "~/validationSchema/botManagement/LLmConfigurationValidation";
+  const router = useRouter();
+  const route = useRoute("bot-management-voice-bot-id-llm-config");
 
-const models = [
-  {
-    value: "gpt-4o-mini",
-    label: "gpt-4o-mini",
-  },
-  {
-    value: "gemini-1.5-flash",
-    label: "gemini-1.5-flash",
-  },
-];
+  // import { lLmConfigurationValidation } from "~/validationSchema/botManagement/llmConfigurationValidation";
 
-const roles = [
-  {
-    label: "Customer Support",
-    value: "Assist customers with their questions and issues.",
-  },
-  {
-    label: "Receptionist",
-    value:
-      "Assist customers queries about room bookings and hotel information",
-  },
-  {
-    label: "Perform other custom tasks as needed.",
-    value: "Other",
-  },
-];
+  const provider = [
+    {
+      value: "openai",
+      label: "OpenAI",
+    },
+    {
+      value: "google",
+      label: "Gemini",
+    },
+  ];
 
-const tokens = ["1024", "2048", "4096"];
+  const models = [
+    {
+      value: "gpt-4o-mini",
+      label: "gpt-4o-mini",
+    },
+    {
+      value: "gemini-1.5-flash",
+      label: "gemini-1.5-flash",
+    },
+  ];
 
-const animationProps = {
-  duration: 0,
-};
+  const roles = [
+    {
+      label: "Customer Support",
+      value: "Assist customers with their questions and issues.",
+    },
+    {
+      label: "Receptionist",
+      value:
+        "Assist customers queries about room bookings and hotel information",
+    },
+    {
+      label: "Perform other custom tasks as needed.",
+      value: "Other",
+    },
+  ];
 
-const defaultValues = {
-  provider: provider[0].value,
-  model: models[0].value,
-  tokens: tokens[1],
-  temperature: 0,
-  documentId: "",
-  role: roles[1].value,
-  guide: "",
-  instruction: "",
-  notes: "",
-  domainRules: "",
-};
+  const tokens = ["1024", "2048", "4096"];
 
-const router = useRouter();
-const route = useRoute("bot-management-voice-bot-id-llm-config");
+  const botDetails: any = await getVoiceBotDetails(route.params.id);
 
-const botDetails: any = await getVoiceBotDetails(route.params.id);
-
-watchEffect(() => {
-  if (botDetails) {
-    const userName = botDetails?.name ?? 'Unknown Bot Name';
-    useHead({
-      title: `Voice Bot | ${userName} - LLM Config`,
-    });
-  }
-});
-
-const handleLLMConfig = async (values: any) => {
-  const payload: any = {
-    provider: values.provider,
-    model: values.model,
-    tokens: values.tokens,
-    temperature: values.temperature,
-    documentId: values.documentId,
-    role: values.role,
-    guide: values.guide,
-    instruction: values.instruction,
-    notes: values.notes,
-    domainRules: values.domainRules,
-  };
-  await updateLLMConfig(payload, botDetails.id);
-  return navigateTo({
-    name: "bot-management-voice-bot-id",
-    params: { id: botDetails.id },
+  watchEffect(() => {
+    if (botDetails) {
+      const userName = botDetails?.name ?? "Unknown Bot Name";
+      useHead({
+        title: `Voice Bot | ${userName} - LLM Config`,
+      });
+    }
   });
-};
+
+  const {
+    setFieldValue,
+    handleSubmit,
+    errors,
+    values,
+    defineField,
+    resetForm,
+  } = useForm({
+    validationSchema: lLmConfigurationValidation,
+    initialValues: {
+      // name: "",
+    },
+  });
+  Object.entries(botDetails.llmConfig).forEach(([key, value]: any) => {
+    if (values.hasOwnProperty(key)) {
+      setFieldValue(key, value);
+    }
+  });
+
+  const handleLLMConfigSubmit = handleSubmit(async (value: any) => {
+    await updateLLMConfig({ llmConfig: value }, botDetails.id);
+    return navigateTo({
+      name: "bot-management-voice-bot-id",
+      params: { id: botDetails.id },
+    });
+  });
+
+  // const handleLLMConfig = async (values: any) => {
+  //   const payload: any = {
+  //     provider: values.provider,
+  //     model: values.model,
+  //     tokens: values.tokens,
+  //     temperature: values.temperature,
+  //     documentId: values.documentId,
+  //     role: values.role,
+  //     guide: values.guide,
+  //     instruction: values.instruction,
+  //     notes: values.notes,
+  //     domainRules: values.domainRules,
+  //   };
+
+  // };
 </script>

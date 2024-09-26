@@ -7,18 +7,18 @@
   )
     " :style="leadData?.channel === 'whatsapp' && 'background-image :url(../../whatsapp.png)'" ref="chatScreenRef">
     <div class="w-full p-5" v-for="(chatList, chatListIndex) in messages" :key="chatListIndex">
-      <div style="display: flex; justify-content: center" class="p-2">
-        <div class="bg-[#ffffff]" style="width: 150px; text-align: center">
+      <div style="display: flex; justify-content: center" class="pr-4 ">
+        <div class="bg-[#ffffff] rounded-md" style="width: 150px; text-align: center">
           Chat {{ chatListIndex + 1 }}
         </div>
       </div>
       <div class="overflow-y-scroll pt-[1rem] pr-4"
         v-for="(messageList, messageIndex) in chatList?.messages" :id="messageList.chatId" :key="messageIndex">
-        <div style="display: flex; justify-content: center" v-if="
+        <div   style="display: flex; justify-content: center"  v-if="
           leadData?.channel === 'whatsapp' &&
           timeStamp(messageIndex, messageList)
         ">
-          <div class="bg-[#ffffff]" style="width: 150px; text-align: center">
+          <div class="bg-[#ffffff] rounded-md" style="width: 150px; text-align: center">
             {{ formatDate(new Date(messageList?.createdAt), "dd MMMM yyyy") }}
           </div>
         </div>
@@ -66,7 +66,7 @@
         <!-- User Message -->
         <div class="flex w-full flex-col items-end" v-if="messageList?.role === 'user'">
           <div class="flex max-w-[80%] flex-col items-end justify-center">
-            <span class="text-[14px]" style="color: #8a8a8a">{{
+            <span  :class="cn('text-[14px]', leadData.channel === 'whatsapp' ? 'bg-[#000] p-2 text-slate-50  rounded-md': 'text-gray-500')"  >{{
               leadData?.botUser?.name
             }}</span>
             <div
@@ -75,14 +75,16 @@
                 {{ messageList?.content }}
               </div>
             </div>
-            <div class="text-[12px] opacity-60" v-if="messageList?.createdAt">
+            <div :class="cn('text-[12px]', 
+             leadData?.channel === 'whatsapp' ? 'opacity-1 bg-[#ffffff] p-1.5 text-[#000] mt-1': 'opacity-60',
+            )" v-if="messageList?.createdAt">
               {{ formatDate(new Date(messageList?.createdAt), "hh:mm a") }}
             </div>
           </div>
         </div>
         <!-- Assistant Message -->
         <div class="w-[90%]" v-if="messageList?.role === 'assistant'">
-          <span class="text-[14px]" style="color: #8a8a8a">{{
+          <span  :class="cn('text-[14px]', leadData.channel === 'whatsapp' ? 'bg-[#000] p-2 text-slate-50  rounded-md': 'text-gray-500')" >{{
             leadData?.bot.metadata.prompt.NAME
           }}</span>
           <!-- ai-reply-align -->
