@@ -36,11 +36,11 @@ watch(value, (value) => {
 
 </script>
 <template>
-  <div class="flex flex-col justify-start items-center gap-2 font-medium">
-    <label :for="name" class="pb-[1px] text-gray-700 w-[70%]" :class="(errorMessage) ? 'text-red-500' : ''">
+  <div class="flex flex-col justify-start items-center gap-2 font-medium w-full">
+    <label :for="name" class="pb-[1px] text-gray-700 w-full" :class="(errorMessage) ? 'text-red-500' : ''">
       {{ label }} <span class="pb-2 text-red-500 font-medium text-[18px]">*</span>
     </label>
-    <input v-model="value" type="time" :id="name" :class="[
+    <input v-model="value" type="time" :id="name" class="w-full" :class="[
       'border-[1px] border-solid rounded-[6px] py-[8px] px-2 font-normal text-[14px]',
     ]">
     <p v-if="errorMessage" class="text-red-500 text-[13px]">{{ errorMessage }}</p>

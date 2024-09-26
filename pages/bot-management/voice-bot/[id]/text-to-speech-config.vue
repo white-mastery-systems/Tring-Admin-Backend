@@ -350,6 +350,16 @@
     }
     console.log(values);
   }
+const botDetails = ref(await getVoiceBotDetails(route.params.id));
+
+watchEffect(() => {
+  if (botDetails.value) {
+    const userName = botDetails.value?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Voice Bot | ${userName} - Text To Speech Config`,
+    });
+  }
+});
 
   const onSubmit = handleSubmit(async (values) => {
     // setFieldValue("passwordConfirm", values.password);
@@ -363,5 +373,7 @@
         textToSpeechConfig: { ...values },
       },
     });
+          toast.success("Updated successfully");
+
   });
 </script>

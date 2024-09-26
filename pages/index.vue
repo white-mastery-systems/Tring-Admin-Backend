@@ -77,6 +77,10 @@ import { MinusIcon, PlusIcon } from "lucide-vue-next";
 import { Line } from "vue-chartjs";
 import ChatSession from "~/components/icons/ChatSession.vue";
 
+useHead({
+  title: 'Dashboard',
+})
+
 ChartJS.register(
   Title,
   Tooltip,
@@ -89,7 +93,7 @@ ChartJS.register(
 
 const selectedValue: any = ref("last-30-days");
 const analyticsData = ref();
-const loading = ref(false);
+const loading = ref(true);
 
 const dateFilters = reactive([
   {
@@ -144,6 +148,7 @@ const handleEditGraphValues: any = async (option: any) => {
   if (localValue.includes(option.apiName)) {
     const index = localValue.indexOf(option.apiName);
     localValue.splice(index, 1);
+    
   } else {
     localValue.push(option.apiName);
   }
@@ -363,7 +368,7 @@ watch([selectedValue, chartValues], async ([period, chartValues]) => {
 
 onMounted(async () => {
   analyticsData.value = await getAnalyticsData(filter);
-
+  if (analyticsData.value) loading.value = false
   // analyticsData.value.bots = 0;
 });
 

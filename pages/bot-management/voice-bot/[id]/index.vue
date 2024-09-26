@@ -147,6 +147,15 @@
   const isSubmitting = ref(false);
   const getDocumentList: any = ref();
 
+watchEffect(() => {
+  if (botDetails.value) {
+    const userName = botDetails.value.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Voice Bot | ${userName}`,
+    });
+  }
+});
+
   onMounted(async () => {
     getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
     botDetails.value = await getVoiceBotDetails(paramId.params.id);

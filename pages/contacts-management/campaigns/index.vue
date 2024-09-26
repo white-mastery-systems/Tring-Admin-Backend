@@ -63,6 +63,10 @@ definePageMeta({
   middleware: "admin-only",
 });
 
+useHead({
+  title: 'Contacts Management | Campaigns',
+})
+
 const router = useRouter();
 const route = useRoute();
 const searchCampaign = ref("");

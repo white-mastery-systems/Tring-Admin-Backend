@@ -1,5 +1,8 @@
 <template>
-  <Page title="Speech To Text Configurations">
+  <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
+    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div>
+  <Page v-else title="Speech To Text Configurations">
     <form @submit="createEditSpeecToTextConfig">
       <div class='grid grid-cols-2 gap-2 w-full'>
         <SelectField name="language" :options="languages" label="Language" placeholder="Select Language"
@@ -14,9 +17,25 @@
         <SelectField v-if="values.provider === 'google' || values.provider === 'deepgram'" name="model"
           :options="models" label="model" placeholder="Select model" helperText="Select your model.">
         </SelectField>
+            
+        <div   class="flex flex-col gap-2 mt-5">
+          <RangeSlider
+          :step="0.1"
+          :name="parseFloat(values.amplificationFactor )"
+          label="Amplification Factor"
+          @update="
+            ($event) => {
+              setFieldValue('amplificationFactor', $event.toString());
+            }
+          "
+          required
+          placeholder="Enter speaking Rate"
+          min="0"
+          max="4"
+        />
+        </div>
 
-        <TextField label="Amplification factor" :name="`amplificationFactor`" required
-          placeholder="Enter Amplification factor" disableCharacters />
+
 
         <TextField v-if="values.provider === 'deepgram'" label="Utterance End Ms" name="utteranceEndMs" required
           placeholder="Utterance End Ms" disableCharacters />
@@ -73,6 +92,7 @@
 import { FieldArray } from 'vee-validate';
 import CloseIcon from '~/components/icons/CloseIcon.vue';
 import { speechToTextValidation } from "~/validationSchema/speechToTextValidation";
+
 const languages = [{
   label: "En-US",
   value: "en-US",
@@ -146,6 +166,19 @@ const { data: botData, status: botLoadingStatus } = await useLazyFetch<{
   speechToTextConfig: Record<string, string>;
 }>(`/api/voicebots/${route.params.id}`);
 
+const botDetails: any = ref(await getVoiceBotDetails(route.params.id));
+
+const isPageLoading = computed(() => botLoadingStatus.value === "pending");
+
+watchEffect(() => {
+  if (botDetails.value) {
+    const userName = botDetails.value?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Voice Bot | ${userName} - Speech To Text Config`,
+});
+  }
+});
+
 watch(botData,(newValue)=>{
  console.log(botData.value.speechToTextConfig, "SPEECH TO TEXT")
     resetForm();
@@ -171,6 +204,8 @@ const createEditSpeecToTextConfig = handleSubmit(async (value) => {
       speechToTextConfig: { ...value },
     },
   });
+  toast.success("Updated successfully");
+
 });
 watch(values, (newValues) => {
   if (newValues.language === "tamil" || newValues.language === "hindi") {

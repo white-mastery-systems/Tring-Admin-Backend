@@ -69,6 +69,17 @@ const { data: getSingleDetails } = await useLazyFetch(
   `/api/org/contact-list/${route.params.id}`,
 );
 const activeStatus = ref("");
+
+
+watchEffect(() => {
+  if (getSingleDetails.value?.name) {
+    const userName = getSingleDetails.value?.name ?? 'Unknown Bucket Name ';
+    useHead({
+      title: `Contacts | ${userName}`,
+    });
+  }
+});
+
 watch(activeStatus, async (newStatus, previousStatus) => { });
 const filters = reactive<{
   q: string;

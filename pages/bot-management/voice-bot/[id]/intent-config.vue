@@ -46,6 +46,15 @@ const formSchema = toTypedSchema(z.object({
 
 const initialValues = ref<any[]>([])
 
+watchEffect(() => {
+  if (botDetails) {
+    const userName = botDetails?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Voice Bot | ${userName} - Intent Config`,
+    });
+  }
+});
+
 onMounted(async () => {
   const getUpdates: any = await $fetch(`/api/voicebots/${route.params.id}`)
   if (getUpdates.intents?.length) initialValues.value.push(...getUpdates.intents) 

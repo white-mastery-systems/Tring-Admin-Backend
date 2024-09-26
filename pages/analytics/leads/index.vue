@@ -124,6 +124,10 @@
     middleware: "admin-only",
   });
 
+useHead({
+  title: 'Analytics | Leads',
+})
+
   const router = useRouter();
   const route = useRoute();
 

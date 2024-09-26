@@ -104,6 +104,10 @@
     middleware: "admin-only",
   });
 
+  useHead({
+    title: 'Settings | Integrations',
+  })
+
   const router = useRouter();
   const route = useRoute();
  const { refresh } = useCount();

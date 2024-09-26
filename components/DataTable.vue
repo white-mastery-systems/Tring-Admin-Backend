@@ -89,7 +89,7 @@ watch(pageLimit, (NewValue) => {
         <UiTableBody>
           <tr v-if="isLoading" class="h-36">
             <td :colspan="columns.length">
-              <div class="grid h-full place-items-center">
+              <div class="grid h-full place-items-center text-[#424BD1]">
                 <Icon name="svg-spinners:90-ring-with-bg" class="mx-auto h-8 w-8" />
               </div>
             </td>

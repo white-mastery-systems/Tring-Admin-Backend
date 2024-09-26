@@ -7,6 +7,10 @@
   import type { DocumentResponse } from "~/utils/apis/playground";
 import { File, Upload, Folder } from 'lucide-vue-next';
 
+useHead({
+  title: 'Settings | Playground',
+})
+
   const file = ref<HTMLInputElement["files"]>();
 
   const docId = ref("");

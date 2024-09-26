@@ -13,13 +13,13 @@
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="PersonalDetails">
-       <PersonalDetails/>
+        <PersonalDetails />
       </UiTabsContent>
       <UiTabsContent value="privacy">
-      <PrivacyDetails/>
+        <PrivacyDetails />
       </UiTabsContent>
       <UiTabsContent value="companyDetails">
-          <CompanyDetails/>
+        <CompanyDetails />
       </UiTabsContent>
     </UiTabs>
     <template #actionButtons>
@@ -37,8 +37,9 @@
   </Page>
 </template>
 <script setup lang="ts">
-
-
+useHead({
+  title: 'Account',
+})
 
 
 

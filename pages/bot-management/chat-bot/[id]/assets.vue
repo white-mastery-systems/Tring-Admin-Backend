@@ -19,6 +19,9 @@
   definePageMeta({
     middleware: "admin-only",
   });
+  useHead({
+    title: `Chat Bot | Assets`,
+  });
 
   import { ref } from "vue";
   const router = useRouter();
