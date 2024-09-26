@@ -358,24 +358,53 @@ export const getAnalytics = async (
             gt(chatSchema.visitedCount, 1),
           ),
         ),
-      db
-        .select({ createdAt: chatSchema.createdAt })
-        .from(chatSchema)
-        .where(
-          and(
+       db.query.chatSchema.findMany({
+          columns: {
+            id: true,
+            createdAt: true,
+          },
+          where: and(
+            eq(chatSchema.organizationId, organizationId),
             gte(chatSchema.createdAt, fromDate),
             lte(chatSchema.createdAt, toDate),
-            eq(chatSchema.interacted, true),
-            eq(chatSchema.organizationId, organizationId),
           ),
-        ),
+          with: {
+            messages: {
+              columns: {
+                createdAt: true,
+                chatId: true
+              },
+              where: and(
+                gte(messageSchema.createdAt, fromDate),
+                lte(messageSchema.createdAt, toDate),
+                eq(messageSchema.status, true),
+                eq(messageSchema.role, "user")
+              ),
+            },
+          },
+        }),
+      // db
+      //   .select({ createdAt: chatSchema.createdAt })
+      //   .from(chatSchema)
+      //   .where(
+      //     and(
+      //       gte(chatSchema.createdAt, fromDate),
+      //       lte(chatSchema.createdAt, toDate),
+      //       eq(chatSchema.interacted, true),
+      //       eq(chatSchema.organizationId, organizationId),
+      //     ),
+      //   ),
     ]);
+    
+    const filteredInteractedChats = interactedChats.filter((i: any) => i.messages.length)
 
     if (!orgData) return undefined;
 
     //Graph values
 
     const { dates, difference } = getAllDatesInRange(period, from, to);
+
+    // return { dates, difference }
 
     let uniqueVisitersMap = null;
     let interactedChatsMap = null;
@@ -436,7 +465,7 @@ export const getAnalytics = async (
 
     if (queryArray.includes("interacted_chats")) {
       const interactedChatsResult = groupAndMapData({
-        module: interactedChats,
+        module: filteredInteractedChats,
         period,
         difference,
         timeZone
@@ -483,7 +512,7 @@ export const getAnalytics = async (
         { name: "chat sessions", value: chats.length, apiName: "sessions", color: "#facc15" },
         { name: "unique visitors", value: uniqueVisiters.length ?? 0, apiName: "unique_visitors", color: "#a855f7" },
         { name: "chat leads", value: leads.length, apiName: "leads", color: "#4f46e5" },
-        { name: "interacted chats", value: interactedChats.length, apiName: "interacted_chats", color: "#dc2626"  },
+        { name: "interacted chats", value: filteredInteractedChats.length, apiName: "interacted_chats", color: "#dc2626"  },
         // Spread the mapIntents into statistics
         ...mapIntents.map(intent =>{
           if (intent?.name === "site_visit") {
