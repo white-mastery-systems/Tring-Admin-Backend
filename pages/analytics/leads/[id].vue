@@ -85,7 +85,6 @@
           ? 'background:#128C7E' : `background:hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`">
           <div class="flex items-center gap-2">
             <WhatsappIcon v-if="leadData?.channel === 'whatsapp'" class="align-middle"></WhatsappIcon>
-            <WhatsappIcon v-if="leadData?.channel === 'whatsapp'" class="align-middle"></WhatsappIcon>
             <span class="text-[14px] capitalize">{{
               leadData?.bot?.name
             }}</span>

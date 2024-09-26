@@ -12,6 +12,7 @@
         <StatusFilter @change="onStatusChange" />
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
+        <ChannelFilter @changeAction="onChannel"/>
       </div>
 
       <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton>
@@ -314,7 +315,7 @@ useHead({
 
     columnHelper.accessor("channel", {
       header: "Channel",
-      cell:({row}) => row.original?.chat.channel
+      cell:({row}) =>row.original?.chat.channel.charAt(0).toUpperCase() +row.original?.chat.channel.slice(1)
     }),
     columnHelper.accessor("botUser.mobile", {
       header: "Lead Phone",
@@ -350,4 +351,11 @@ useHead({
     }
     filters.page = '1'
   };
+
+  const onChannel = ($event) => {
+    if ($event) { 
+
+      filters.channel = $event;
+    }
+  }
 </script>
