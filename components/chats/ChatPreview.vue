@@ -66,7 +66,7 @@
         <!-- User Message -->
         <div class="flex w-full flex-col items-end" v-if="messageList?.role === 'user'">
           <div class="flex max-w-[80%] flex-col items-end justify-center">
-            <span  :class="cn('text-[14px]', leadData.channel === 'whatsapp' ? 'bg-[#000] p-2 text-slate-50  rounded-md': 'text-gray-500')"  >{{
+            <span  :class="cn('text-[14px]', leadData.channel === 'whatsapp' ? 'rounded-sm border bg-gray-100 px-2 py-1 text-xs font-thin': 'text-gray-500')"  >{{
               leadData?.botUser?.name
             }}</span>
             <div
@@ -84,7 +84,7 @@
         </div>
         <!-- Assistant Message -->
         <div class="w-[90%]" v-if="messageList?.role === 'assistant'">
-          <span  :class="cn('text-[14px]', leadData.channel === 'whatsapp' ? 'bg-[#000] p-2 text-slate-50  rounded-md': 'text-gray-500')" >{{
+          <span  :class="cn('text-[14px]', leadData.channel === 'whatsapp' ? 'rounded-sm border bg-gray-100 px-2 py-1 text-xs font-thin': 'text-gray-500')" >{{
             leadData?.bot.metadata.prompt.NAME
           }}</span>
           <!-- ai-reply-align -->

@@ -26,6 +26,7 @@ const formSchema = toTypedSchema(
       .min(1, 'Phone Number is required')
       .regex(phoneNumberPattern, 'Invalid phone number'),
     countryCode: z.string({ required_error: 'Code is required' }).min(1, 'Code is required'),
+    email: z.string().optional(),
     // addBuckets: z.string().min(1, "Add Audiences is required")
   })
 );
@@ -66,6 +67,7 @@ watch(() => bucketModalState.value.open, async (newState) => {
       setFieldValue("lastName", getSingleDetails.lastName);
       setFieldValue("countryCode", getSingleDetails.countryCode);
       setFieldValue("phone", getSingleDetails.phone);
+      setFieldValue("email", getSingleDetails.email);
   }
 });
 
@@ -97,11 +99,14 @@ const handleConnect = handleSubmit(async (values: any) => {
       </div>
       <!-- {{ countryList }} || sdf -->
       <div class='flex gap-2'>
-        <CountryCodeField class='w-[100px]' name="countryCode" label="Country Code" helperText="Enter your country code"
+        <CountryCodeField class='w-[100px] mt-1.5' name="countryCode" label="Country Code" helperText="Enter your country code"
           required />
         <TextField :disableCharacters="true" name="phone" label="Mobile number" helperText='' required
           placeholder="Enter your mobile number" />
       </div>
+             <TextField type="email" name="email" label="Email" helperText='' 
+          placeholder="Enter your Email" /> 
+      
       <!-- <UiFormField v-slot="{ componentField }" name="addBuckets">
         <UiFormItem class="w-full">
           <UiFormLabel>Add Audiences for Buckets in Bulk <UiLabel class="text-lg text-red-500">*</UiLabel>
