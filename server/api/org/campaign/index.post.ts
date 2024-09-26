@@ -48,7 +48,6 @@ export default defineEventHandler(async (event) => {
     body,
     integrationData,
   );
-  console.log({ schedule });
   if (schedule.status) {
     logger.info({ level: "info", message: "Message scheduled..." });
   }
