@@ -47,7 +47,7 @@
           height-unit="vh"
           @row-click="
             (row: any) => {
-              navigateTo(`leads/${row.original.chatId}`);
+              navigateTo(`/analytics/leads/${row.original.chatId}`);
             }
           "
         />
@@ -312,8 +312,13 @@ useHead({
         ),
     }),
 
+    columnHelper.accessor("channel", {
+      header: "Channel",
+      cell:({row}) => row.original?.chat.channel
+    }),
     columnHelper.accessor("botUser.mobile", {
       header: "Lead Phone",
+       cell: ({ row }) =>  row.original?.botUser?.countryCode+row.original?.botUser?.mobile,
     }),
     columnHelper.accessor("bot.name", {
       header: "Bot Name",

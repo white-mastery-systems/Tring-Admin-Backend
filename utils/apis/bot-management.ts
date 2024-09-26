@@ -126,7 +126,7 @@ export const deleteBotIntegration = async ({
 // Voice bot
 export const getVoiceBotDetails = async (botId: string) => {
   const bot = await $fetch<SelectChatBot & { documents: SelectDocument[] }>(
-    `/api/voicebots/${botId}`,
+    `/api/voicebots/` + botId,
   );
   return bot;
 };

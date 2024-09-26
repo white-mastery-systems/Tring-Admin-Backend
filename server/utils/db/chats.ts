@@ -35,6 +35,7 @@ export const getMessages = async (chatId: string, botUserId: string) => {
         columns: { id: true, status: true },
       },
       messages: {
+        where: eq(messageSchema.status, true),
         orderBy: asc(messageSchema.createdAt),
       },
     },
@@ -44,7 +45,7 @@ export const getMessages = async (chatId: string, botUserId: string) => {
   list = list?.map((i: any) => ({
     botId: i?.botId,
     chatId: i?.id,
-    messages: i?.channel !== "whatsapp" ? i?.messages?.slice(1) : i.messages,
+    messages: i?.messages,
   }));
 
   return list;

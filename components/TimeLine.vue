@@ -57,16 +57,17 @@ defineProps({
                 {{ data?.metadata?.website }}
               </NuxtLink>
 
-
+              
             </div>
 
           </div>
-          <NuxtLink v-else class="text-indigo-600 text-underline text-sm cursor-pointer"
-            @click="emits('timeLine', data.chatId)">
-            View chat
-          </NuxtLink>
+        
           <p class="mt-2 text-[14px] font-normal text-gray-600">
+
             {{ data.createdAt }}
+              <NuxtLink class="text-indigo-600 cursor-pointer px-2 font-semibold"  @click="emits('timeLine', data.chatId)">
+                Click To  View
+            </NuxtLink>
             <!-- {{ format(new Date(data.createdAt), "dd MMM yyyy hh:mm aa") }} -->
           </p>
         </div>

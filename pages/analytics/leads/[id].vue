@@ -166,7 +166,7 @@ const details = computed(() => {
     ...metaData,
     ["Name", leadData?.value?.botUser?.name],
     ["Email", leadData?.value?.botUser?.email],
-    ["Mobile", leadData?.value?.botUser?.mobile],
+    ["Mobile", leadData?.value?.botUser?.countryCode+leadData?.value?.botUser?.mobile],
     ["Bot Name", name],
   ];
   return [metaData, Object.entries(params)];

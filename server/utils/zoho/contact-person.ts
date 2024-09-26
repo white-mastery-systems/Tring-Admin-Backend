@@ -1,4 +1,3 @@
-import { ConsoleLogWriter } from "drizzle-orm";
 import { regerateAccessTokenForTringAdmin } from "./modules";
 
 const db = useDrizzle()

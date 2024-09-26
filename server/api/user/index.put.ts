@@ -1,4 +1,5 @@
 import { Argon2id } from "oslo/password";
+import { updateZohoCustomer } from "~/server/utils/zoho/customer";
 
 const db = useDrizzle()
 
@@ -61,6 +62,15 @@ export default defineEventHandler(async (event) => {
   };
 
   const update = await updateUser(user.id, updatedUser);
+  // console.log({ update })
+  if(update && update.customerId) {
+    // update customer in zoho
+    const zohoData: any = await db.query.adminConfigurationSchema.findFirst({
+      where: eq(adminConfigurationSchema.id, 1),
+    });
+    let metaData = zohoData?.metaData
+    await updateZohoCustomer(update.customerId, metaData, update)
+  } 
 
   return update
 });
