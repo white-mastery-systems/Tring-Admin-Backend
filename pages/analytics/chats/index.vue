@@ -17,7 +17,7 @@
     <DataTable
       @row-click="
         (row: any) => {
-          return navigateTo(`chats/${row.original.id}`);
+          return navigateTo(`/analytics/chats/${row.original.id}`);
           //TODO change this
         }
       "
