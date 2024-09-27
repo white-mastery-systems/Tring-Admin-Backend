@@ -86,7 +86,7 @@ const exportToExcel = () => {
                     <span>Export as CSV</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem @click="exportToExcel">
-                    <span>Export as Excel</span>
+                    <span>Export as XLSX</span>
                 </DropdownMenuItem>
 
             </DropdownMenuGroup>
