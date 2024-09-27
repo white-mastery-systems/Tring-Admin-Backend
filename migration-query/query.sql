@@ -77,3 +77,10 @@ WHERE
     updated_at = '2024-09-13 04:56:10.456897'
 
 UPDATE chatbot.messages SET status = false WHERE content = 'Hi'
+
+UPDATE chatbot.bot_user 
+SET mobile = regexp_replace(mobile, '\s', '', 'g')
+
+UPDATE chatbot.bot_user 
+SET country_code = LEFT(mobile, LENGTH(mobile) - 10),
+    mobile = RIGHT(mobile, 10)

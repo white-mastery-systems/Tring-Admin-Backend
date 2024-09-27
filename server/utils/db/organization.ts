@@ -367,6 +367,7 @@ export const getAnalytics = async (
             eq(chatSchema.organizationId, organizationId),
             gte(chatSchema.createdAt, fromDate),
             lte(chatSchema.createdAt, toDate),
+            eq(chatSchema.mode, "live")
           ),
           with: {
             messages: {
