@@ -88,8 +88,9 @@ export const getOrgUsers = async (orgId: string, query?: any) => {
     ),
     orderBy: [desc(authUserSchema.createdAt)]
   })
+   
+  data = data.map(({ password, ...rest }: any) => rest);
 
-  
   if (query?.page && query?.limit) {
      const paginatedOrgUsers = data.slice(offset, offset + limit);
      return {
