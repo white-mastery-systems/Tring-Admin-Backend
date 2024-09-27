@@ -526,7 +526,8 @@ export const regerateAccessTokenForTringAdmin = async ({
   };
 }) => {
   try {
-    // console.log({ integrationData })
+    logger.info("Entering in regerateAccessTokenForTringAdmin")
+    logger.info(`Before integrationData----${JSON.stringify(integrationData)}`)
     const newAuthInfo: any = await $fetch(
       `https://accounts.zoho.in/oauth/v2/token?client_id=${integrationData?.client_id}&grant_type=refresh_token&client_secret=${integrationData?.client_secret}&refresh_token=${integrationData?.refresh_token}`,
       {
@@ -534,7 +535,7 @@ export const regerateAccessTokenForTringAdmin = async ({
       },
     );
     integrationData = { ...integrationData, ...newAuthInfo };
-    // console.log({ integrationData })
+    logger.info(`after integrationData----${JSON.stringify(integrationData)}`)
     await db
       .update(adminConfigurationSchema)
       .set({ metaData: integrationData, updatedAt: new Date() })
@@ -542,7 +543,7 @@ export const regerateAccessTokenForTringAdmin = async ({
 
     return integrationData;
   } catch (err: any) {
-    console.log("regerateAccessTokenForTringAdmin modules error------",{ err: err.response })
+    logger.error(`catch error- regerateAccessTokenForTringAdmin----${JSON.stringify(err)}`)
   }
 };
 

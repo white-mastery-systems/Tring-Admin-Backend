@@ -1,8 +1,8 @@
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
-import { boolean, jsonb, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { boolean, jsonb, timestamp, uuid, varchar, unique, index } from "drizzle-orm/pg-core";
 import { voiceBotSchema } from ".";
 import { integrationSchema, organizationSchema } from "./admin";
-
+import {botUserSchema} from './bot'
 export const voicebotSchema = voiceBotSchema.table("bot", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name").notNull(),
@@ -89,6 +89,33 @@ export const callLogSchema = voiceBotSchema.table("call_logs", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
+export const voiceBotLeadSchema = voiceBotSchema.table("leads", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  crmLeadId: varchar("crm_lead_id", { length: 128 }),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  botId: uuid("bot_id")
+    .references(() => voicebotSchema.id)
+    .notNull(),
+  botUserId: uuid("bot_user_id")
+    .references(() => botUserSchema.id)
+    .notNull(),
+  organizationId: uuid("organization_id")
+    .references(() => organizationSchema.id)
+    .notNull(),
+  status: varchar("status").default("default").notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    leadConstraint: unique("Voicebot_leads_unique_constraint").on(
+      table.botId,
+      table.botUserId,
+      table.organizationId,
+    ),
+    leadsBotIdIndex: index("voicebot_leads_bot_id_index").on(table.botId),
+  })
+)
+
 
 export type SelectVoiceBot = InferSelectModel<typeof voicebotSchema>;
 export type InsertVoiceBot = InferInsertModel<typeof voicebotSchema>;
@@ -102,3 +129,6 @@ export type InsertVoicebotIntegration = InferInsertModel<
 
 export type SelectCallLogSchema = InferSelectModel<typeof callLogSchema>;
 export type InsertCallLogSchema = InferInsertModel<typeof callLogSchema>;
+
+export type SelectVoiceBotLead = InferSelectModel<typeof voiceBotLeadSchema>;
+export type InsertVoiceBotLead = InferInsertModel<typeof voiceBotLeadSchema>;

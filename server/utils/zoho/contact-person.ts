@@ -1,8 +1,10 @@
+import { logger } from "~/server/logger";
 import { regerateAccessTokenForTringAdmin } from "./modules";
 
 // create contact-person in zoho
-export const createContactPerson: any = async(organizationId: string, user: any, metaData: any, customerId: string, contactPersonId: string) => {
+export const createContactPerson: any = async(organizationId: string, user: any, metaData: any, customerId: string) => {
   try {
+    logger.info(`entering createContactPerson func----${JSON.stringify(metaData)}`)
     let firstName = user?.name;
     let lastName = "";
     if (firstName?.includes(" ")) {
@@ -28,14 +30,16 @@ export const createContactPerson: any = async(organizationId: string, user: any,
         }
       }
     )
+    logger.info(`auth data---${JSON.stringify(data)}`)
     return { status: true, data }
   } catch (error) {
     const integrationData = metaData
     if (error instanceof Error) {
       const response = (error as any).response;
+      logger.error(`auth error ----${JSON.stringify(response)}`)
       if (response && response.status === 401) {
           const newAuthInfo = await regerateAccessTokenForTringAdmin({ integrationData })
-          // console.log("after----",{ newAuthInfo })
+          logger.info(`newAUthInfo after regerate Access-Token----${JSON.stringify(newAuthInfo)}`)
           return await createContactPerson(
             organizationId,
             user,
