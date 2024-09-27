@@ -39,7 +39,7 @@ export const getMessages = async (chatId: string, botUserId: string) => {
         orderBy: asc(messageSchema.createdAt),
       },
     },
-    orderBy: desc(chatSchema.createdAt),
+    orderBy: asc(chatSchema.createdAt),
   });
 
   list = list?.map((i: any) => ({

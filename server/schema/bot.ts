@@ -66,6 +66,8 @@ export const botUserSchema = chatbotSchema.table(
     email: varchar("email", { length: 128 }),
     mobile: varchar("mobile", { length: 16 }),
     countryCode: varchar("country_code"),
+    secondaryEmail: varchar("secondary_email", { length: 128 }).array(),
+    secondaryMobile: varchar("secondary_mobile", { length: 16 }).array(),
     metaData: jsonb("metadata"),
     visitedCount: integer("visited_count").default(1),
     createdAt: timestamp("created_at").notNull().defaultNow(),
