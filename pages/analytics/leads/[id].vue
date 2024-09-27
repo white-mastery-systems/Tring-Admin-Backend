@@ -151,7 +151,7 @@ onMounted(() => {
 });
 const details = computed(() => {
   if (!leadData.value) return [];
-  const { params, ...rest } = leadData.value.metadata as Record<string, any>;
+  const { params, ...rest } = leadData.value?.metadata ?? { params: null } as Record<string, any>;
   const { name } = leadData.value.bot;
   let metaData: any = Object.entries(rest).map(([key, value]) => {
     if (key === "os") {
@@ -165,10 +165,14 @@ const details = computed(() => {
     ...metaData,
     ["Name", leadData?.value?.botUser?.name],
     ["Email", leadData?.value?.botUser?.email],
-    ["Mobile", leadData?.value?.botUser?.countryCode+leadData?.value?.botUser?.mobile],
+    ["Mobile", leadData?.value?.botUser?.countryCode + leadData?.value?.botUser?.mobile],
     ["Bot Name", name],
   ];
-  return [metaData, Object.entries(params)];
+  if (params) {
+    return [metaData, Object.entries(params)];
+  } else {
+    return [metaData]
+  }
 });
 
 const isDeleteConfirmationOpen = ref(false);
