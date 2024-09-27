@@ -46,18 +46,16 @@ export default defineEventHandler(async (event) => {
       where: eq(adminConfigurationSchema.id, 1),
     });
     let metaData = zohoData?.metaData
-
-    // get customer_id
-    const customer = await db.query.paymentSchema.findFirst({
-      where: eq(paymentSchema.organizationId, organization_id)
-    })
-    if(!customer) {
-       return { status: false }
+    if(metaData) {
+      // get customer_id
+      const customer = await db.query.paymentSchema.findFirst({
+        where: eq(paymentSchema.organizationId, organization_id)
+      })
+      if(customer?.customerId) {
+        const customerId = customer?.customerId
+        await updateContactPerson(organization_id, data, metaData, customerId, data.contactPersonId)
+      }
     }
-    const customerId = customer?.customerId
-
-    await updateContactPerson(organization_id, data, metaData, customerId, data.contactPersonId)
-   
   }
 
   return isValidReturnType(event, data)
