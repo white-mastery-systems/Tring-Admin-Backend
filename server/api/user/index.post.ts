@@ -18,9 +18,7 @@ export default defineEventHandler(async (event) => {
   const body = await isValidBodyHandler(event, zodBodyValidator)
   
   const isAlreadyExists = await db.query.authUserSchema.findFirst({
-    where: and(
-      eq(authUserSchema.organizationId, organization_id),
-      eq(authUserSchema.email, body.email))
+    where: eq(authUserSchema.email, body.email)
   })
 
   if(isAlreadyExists) {
@@ -53,8 +51,17 @@ export default defineEventHandler(async (event) => {
         where: eq(adminConfigurationSchema.id, 1),
       });
       let metaData = zohoData?.metaData
-      
-      const zohoContactPerson = await createContactPerson(organization_id, data, metaData)
+
+      // get customer_id
+      const customer = await db.query.paymentSchema.findFirst({
+        where: eq(paymentSchema.organizationId, organization_id)
+      })
+      if(!customer) {
+         return { status: false }
+      }
+      const customerId = customer?.customerId
+      const zohoContactPerson = await createContactPerson(organization_id, data, metaData, customerId)
+      // console.log({ zohoContactPerson })
       if(zohoContactPerson?.status) {
         await db
           .update(authUserSchema)
@@ -64,9 +71,5 @@ export default defineEventHandler(async (event) => {
     }
   }
  
-
- 
-   
-  
   return isValidReturnType(event, data)
 })
