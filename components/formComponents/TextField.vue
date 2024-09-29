@@ -55,7 +55,7 @@ const props = withDefaults(defineProps<{
   placeholder?: string;
   required?: boolean;
   disableCharacters?: boolean;
-  isTextarea: boolean;
+  isTextarea?: boolean;
   disabled?: boolean;
   class?: string;
   endIcon?: any;
