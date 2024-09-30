@@ -34,7 +34,6 @@ const {
 watch(() => channelModalState.value.open, async (newState) => {
   if (channelModalState.value.id) {
     const channelSingleDetail: any = await $fetch(`/api/org/integrations/${channelModalState.value.id}`)
-    console.log(channelSingleDetail, "channelSingleDetail")
     setFieldValue("name", channelSingleDetail.name);
     setFieldValue("channel", channelSingleDetail.crm);
     setFieldValue("pid", channelSingleDetail.metadata?.pid);
@@ -126,6 +125,8 @@ window.addEventListener('message', (event) => {
     const data = JSON.parse(event.data);
     if (data.type === 'WA_EMBEDDED_SIGNUP') {
       if (data.event === 'FINISH') {
+        console.log({ data: JSON.stringify(data) })
+        console.log({ newData: data })
         const { phone_number_id, waba_id } = data.data;
         console.log("Phone number ID:", phone_number_id, " WhatsApp business account ID:", waba_id);
         setFieldValue("pid", phone_number_id);
@@ -159,6 +160,7 @@ const handleConnectButtonClick = () => {
 
 
 const handleConnect = handleSubmit(async (values: any) => {
+  console.log({ values })
   const payload = {
     name: values.name,
     crm: values.channel,
