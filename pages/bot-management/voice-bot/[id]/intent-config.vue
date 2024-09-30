@@ -88,7 +88,7 @@ const onSubmit = async (value: any) => {
             <UiFormItem class="flex flex-row items-center space-x-3 space-y-3">
               <UiFormControl class="mt-[11px]">
                 <UiCheckbox :checked="value?.includes(item.id)" class="border-zinc-800"
-                  :style="{ background: (value?.includes(item.id)) ? '#424bd1' : '#80808078', 'border-color': '#80808078' }"
+                  :style="{ background: (value?.includes(item.id)) ? '#424bd1' : 'white', 'border-color': '#80808078' }"
                   @update:checked="handleChange" />
               </UiFormControl>
               <UiFormLabel class="font-medium text-[15px]">

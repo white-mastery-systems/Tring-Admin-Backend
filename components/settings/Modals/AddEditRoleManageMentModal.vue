@@ -104,19 +104,17 @@
           :required="true"  
         />
 
-        <div>
-          
-          <Checkbox id="terms"  :checked="values?.permissions?.sendEmail" @update:checked="(value) =>{
+        <div class="flex items-center gap-1">
+          <UiCheckbox id="terms" :checked="values?.permissions?.sendEmail" @update:checked="(value) =>{
             const permissions = !values?.permissions.sendEmail
             // console.log(permissions)
             setFieldValue('permissions',{...values?.permissions,sendEmail:permissions})
             console.log({values});
             
-          }" />
-          <label
-            for="terms"
-            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
+          }"
+            :style="{ background: (values?.permissions?.sendEmail) ? '#424bd1' : 'white', 'border-color': '#80808078' }" />
+          <label for="terms"
+            class="flex items-end text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             Email Config
           </label>
         </div>
