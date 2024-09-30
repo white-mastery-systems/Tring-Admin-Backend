@@ -2,18 +2,10 @@
   <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else
-    :title="leadData?.botUser?.name ?? 'No Name'"
-    :disable-back-button="false"
-    :disable-elevation="true"
-  >
+  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :disable-back-button="false" :disable-elevation="true">
     <div class="items-top gap-[25px flex items-center justify-center px-3">
-      <div
-        class="items-top xs:grid-cols-2 flex grid grid-cols-1 gap-[25px] lg:grid-cols-2 w-full"
-      >
-        <div
-          class="justify-aro und flex w-full gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]"
-        >
+      <div class="items-top xs:grid-cols-2 flex grid grid-cols-1 gap-[25px] lg:grid-cols-2 w-full">
+        <div class="justify-aro und flex w-full gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]">
           <UiTabs default-value="Chat" class="w-full self-start">
             <UiTabsList class="grid w-full grid-cols-2">
               <UiTabsTrigger value="Chat"> Chat Log </UiTabsTrigger>
@@ -137,7 +129,7 @@ const isPageLoading = computed(() => status.value === "pending");
 
 const details = computed(() => {
   if (!leadData.value) return [undefined, undefined];
-  const { params, ...rest } = leadData.value.metadata as Record<string, any>;
+  const { params, ...rest } = leadData.value?.metadata ?? { params: null } as Record<string, any>;
   const { name } = leadData.value.bot;
   let metaData: any = Object.entries(rest || {}).map(([key, value]) => {
     if (key === "os") {
@@ -152,11 +144,17 @@ const details = computed(() => {
     botUserDetails.push(
       ["Name", leadData?.value?.botUser?.name],
       ["Email", leadData?.value?.botUser?.email],
-      ["Mobile",leadData?.value?.botUser?.countryCode+ leadData?.value?.botUser?.mobile],
+      ["Mobile", leadData?.value?.botUser?.countryCode + leadData?.value?.botUser?.mobile],
       ["Bot Name", name],
     );
   }
-  const paramsData = Object.entries(params ?? {});
-  return [...metaData, ...paramsData, ...botUserDetails];
+  let paramsData = null
+  if (params) {
+    paramsData = Object.entries(params);
+  }
+  if (paramsData) {
+    return [...metaData, ...paramsData, ...botUserDetails]
+  } else
+    return [...metaData, ...botUserDetails];
 });
 </script>

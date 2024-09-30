@@ -83,13 +83,14 @@ export const getOrgUsers = async (orgId: string, query?: any) => {
   let data: any = await db.query.authUserSchema.findMany({
     where: and(
       eq(authUserSchema.organizationId, orgId),
-      ne(authUserSchema.role, "admin")
+      ne(authUserSchema.role, "admin"),
+      query?.q ? ilike(authUserSchema.username, `%${query.q}%`) : undefined
     ),
     orderBy: [desc(authUserSchema.createdAt)]
   })
-
+   
   data = data.map(({ password, ...rest }: any) => rest);
-  
+
   if (query?.page && query?.limit) {
      const paginatedOrgUsers = data.slice(offset, offset + limit);
      return {

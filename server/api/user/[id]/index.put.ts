@@ -1,4 +1,5 @@
 import { updateOrgUserById } from "~/server/utils/db/user"
+import { updateContactPerson } from "~/server/utils/zoho/contact-person"
 
 const db = useDrizzle()
 
@@ -20,7 +21,6 @@ export default defineEventHandler(async (event) => {
 
   const isAlreadyExists = await db.query.authUserSchema.findFirst({
     where: and(
-      eq(authUserSchema.organizationId, organization_id),
       eq(authUserSchema.email, body.email),
       ne(authUserSchema.id, orgUserId)
     )
@@ -41,5 +41,22 @@ export default defineEventHandler(async (event) => {
     username: body?.name
   })
 
-  return data
+  if(data?.contactPersonId) {
+    const zohoData: any = await db.query.adminConfigurationSchema.findFirst({
+      where: eq(adminConfigurationSchema.id, 1),
+    });
+    let metaData = zohoData?.metaData
+    if(metaData) {
+      // get customer_id
+      const customer = await db.query.paymentSchema.findFirst({
+        where: eq(paymentSchema.organizationId, organization_id)
+      })
+      if(customer?.customerId) {
+        const customerId = customer?.customerId
+        await updateContactPerson(organization_id, data, metaData, customerId, data.contactPersonId)
+      }
+    }
+  }
+
+  return isValidReturnType(event, data)
 })
