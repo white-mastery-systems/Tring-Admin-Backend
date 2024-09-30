@@ -21,6 +21,7 @@ defineProps({
     required: true,
   },
 });
+
 </script>
 
 <template>
@@ -47,7 +48,7 @@ defineProps({
           </h4>
           
            <h4 class="text-right scroll-m-20 text-[16px] font-semibold tracking-tight">
-            Chat {{ index + 1 }}
+            Chat {{ data.chatIndex }}
            </h4>
           </div>
 
