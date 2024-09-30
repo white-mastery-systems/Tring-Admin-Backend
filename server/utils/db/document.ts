@@ -1,4 +1,5 @@
 import { join } from "path";
+import { InsertPlaygroundDocument, playgroundDocumentSchema } from "~/server/schema/admin";
 
 const db = useDrizzle();
 const config = useRuntimeConfig();
@@ -37,3 +38,12 @@ export const getDocumentById = async (docId: string) =>
   await db.query.documentSchema.findFirst({
     where: eq(documentSchema.id, docId),
   });
+
+
+// Playground Document
+
+export const createPlaygroundDocument = async (document: InsertPlaygroundDocument) => {
+  return (
+    await db.insert(playgroundDocumentSchema).values(document).returning()
+  )[0]
+}
