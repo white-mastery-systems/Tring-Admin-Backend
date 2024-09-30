@@ -63,6 +63,13 @@ export const listVoicebots = async (
   return data;
 };
 
+export const getVoicebot = async (voicebotId: string) => {
+ const data = await db.query.voicebotSchema.findFirst({
+    where: eq(voicebotSchema.id, voicebotId),
+  });
+  return data;
+}
+
 export const getVoicebotById = async (
   organizationId: string,
   voicebotId: string,
@@ -116,13 +123,13 @@ export const createVoiceBotIntegration = async (
 export const listVoiceBotIntegrations = async (
   organizationId: string,
   voicebotId: string,
-  query: any,
+  query?: any,
 ) => {
   let page,
     offset,
     limit = 0;
 
-  if (query.page && query.limit) {
+  if (query?.page && query?.limit) {
     page = parseInt(query.page);
     limit = parseInt(query.limit);
     offset = (page - 1) * limit;
@@ -196,3 +203,12 @@ export const deleteVoicebotIntegration = async (
       .returning()
   )[0];
 };
+
+
+// Leads creation
+export const createVoiceBotLead = async (leads: any) => {
+  return (
+    await db.insert(voiceBotLeadSchema).values(leads).returning()
+  )[0]
+}
+

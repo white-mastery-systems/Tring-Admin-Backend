@@ -1,28 +1,24 @@
-import { getAdminByOrgId } from "~/server/utils/db/user";
-import {
-  generateContactInZohoBigin,
-  generateLeadInZohoCRM,
-} from "~/server/utils/zoho/modules";
 export default defineEventHandler(async (event) => {
-  // const userId = event.context.user?.id as string;
-  const generateLeadsValidation = z.object({
+   const generateVoicebotLeadsValidation = z.object({
     botUser: z.any(),
     note: z.any(),
+    chatId: z.string().uuid(),
   });
-  const generateLeadsValidationParams = z.object({
+  const generateVoicebotLeadsValidationParams = z.object({
     id: z.string(),
   });
-  const body = await isValidBodyHandler(event, generateLeadsValidation);
-  const { id: botId } = await isValidRouteParamHandler(
+  const body = await isValidBodyHandler(event, generateVoicebotLeadsValidation);
+  const { id: voicebotId } = await isValidRouteParamHandler(
     event,
-    generateLeadsValidationParams,
+    generateVoicebotLeadsValidationParams,
   );
 
-  const botDetails: any = await getBotDetails(botId);
+  const voicebotDetails: any = await getBotDetails(voicebotId);
+  const adminUser: any = await getAdminByOrgId(voicebotDetails?.organizationId);
 
-  const adminUser: any = await getAdminByOrgId(botDetails?.organizationId);
-  let botIntegratsions: any = await listBotIntegrations(botId);
-  botIntegratsions?.map(async (botIntegration: any) => {
+  let voicebotIntegrations = await listVoiceBotIntegrations(voicebotDetails?.organizationId,voicebotId)
+
+  voicebotIntegrations?.map(async (botIntegration: any) => {
     if (botIntegration?.integration?.crm === "zoho-bigin") {
       const name = body?.botUser?.name?.split(" ");
       let firstName = body?.botUser?.name;
@@ -89,7 +85,7 @@ export default defineEventHandler(async (event) => {
           Layout: {
             id: layoutObj?.id,
           },
-          Lead_Source: "Tring ChatBot",
+          Lead_Source: "Tring VoiceBot",
           Company: "___",
           Last_Name: lastName ?? body?.botUser?.name,
           First_Name: firstName,
@@ -118,6 +114,5 @@ export default defineEventHandler(async (event) => {
       connection({ event: "leads", data: body });
     });
   }
-
   return adminUser;
-});
+})
