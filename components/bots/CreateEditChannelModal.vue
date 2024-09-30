@@ -12,6 +12,10 @@
 
       <SelectField v-if="values.integrationId" label="phone" helperText="Select your phone" name="phoneId"
         placeholder="Select your phone" :options="phoneNumbers" /> -->
+      <div class="flex items-center space-x-2 my-4">
+        <UiSwitch :checked="showButtons" id="show-button" @update:checked="handleShowButton" />
+        <UiLabel for="show-button">Show Buttons</UiLabel>
+      </div>
 
       <div class="flex w-full justify-items-end">
         <UiButton color="primary" type="submit">
@@ -26,7 +30,10 @@
 <script setup lang="ts">
 
 const emit = defineEmits(["success"]);
-
+const showButtons = ref(false)
+function handleShowButton(value: boolean) {
+  showButtons.value = value
+}
 const modalState = defineModel<{ open: boolean; id: string | null }>({
   default: { open: false, id: null },
   required: true,
@@ -55,11 +62,15 @@ watch(
     handleReset();
 
     if (!value.id) return;
-    const botDetails = await $fetch<{ channels: { whatsapp: string } }>(
+    const botDetails = await $fetch<{ channels: { whatsapp: string }, metadata: { showButtons: boolean } }>(
       `/api/bots/${value.id}`,
     );
-    if (typeof botDetails?.channels?.whatsapp === "string" && botDetails?.channels?.whatsapp)
+    if (typeof botDetails?.channels?.whatsapp === "string" && botDetails?.channels?.whatsapp) {
       setFieldValue("integrationId", botDetails.channels?.whatsapp);
+    }
+    if (botDetails?.metadata) {
+      showButtons.value = !!botDetails?.metadata?.showButtons
+    }
     // setFieldValue("link", intentDetails?.link);
   },
   { deep: true },
@@ -75,6 +86,9 @@ const handleCreateEditBotChannel = handleSubmit(async (values) => {
       channels: {
         whatsapp: values.integrationId
       },
+      metadata: {
+        showButtons: showButtons.value
+      }
     },
   });
   emit("success");
