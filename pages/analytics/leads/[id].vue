@@ -90,7 +90,7 @@
             }}</span>
           </div>
         </div>
-        <ChatPreview :messages="messages" :scrollChatBox="BotId" @chatId="BotId = null" :leadData="leadData" />
+        <ChatPreview :chatValue="allChat" :scrollChatBox="BotId" @chatId="BotId = null" :leadDataValue="leadData" />
       </div>
     </div>
   </Page>
@@ -99,6 +99,8 @@
 </template>
 
 <script setup lang="ts">
+import chats from '~/server/api/chats';
+
 definePageMeta({
   middleware: "admin-only",
 });
@@ -195,7 +197,7 @@ const fetchData = async () => {
   // leadData.value = leadData.value;
 };
 const chatData = ref([]);
-const messages = await $fetch(`/api/org/chat/${route.params.id}/messages`, {
+const allChat = await $fetch(`/api/org/chat/${route.params.id}/messages`, {
   method: "GET",
   server: false,
 });

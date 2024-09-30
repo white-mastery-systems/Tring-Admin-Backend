@@ -2,19 +2,19 @@
   <div :class="cn(
     'h-[calc(100%-70px)]',
     'overflow-y-scroll',
-    leadData?.channel === 'website' ? 'bg-[#f8f6f6]' : 'bg-[#e5ddd5]',
+    leadDataValue?.channel === 'website' ? 'bg-[#f8f6f6]' : 'bg-[#e5ddd5]',
 
-  )" :style="leadData?.channel === 'whatsapp' && 'background-image :url(../../whatsapp.png)'" ref="chatScreenRef">
-    <div class="w-full p-5" v-for="(chatList, chatListIndex) in messages" :key="chatListIndex">
+  )" :style="leadDataValue?.channel === 'whatsapp' && 'background-image :url(../../whatsapp.png)'" ref="chatScreenRef">
+    <div class="w-full p-5" v-for="(chatList, chatListIndex) in chatValue" :key="chatListIndex">
       <div style="display: flex; justify-content: center" class="pr-4 ">
         <div class="bg-[#ffffff] rounded-md" style="width: 150px; text-align: center">
           Chat {{ chatListIndex + 1 }}
         </div>
       </div>
-      <div class="overflow-y-scroll pt-[1rem] pr-4" v-for="(messageList, messageIndex) in chatList?.messages"
+      <div class="overflow-y-scroll pt-[1rem] pr-4" v-for="(messageList, messageIndex) in leadDataReplace(chatList?.messages)"
         :id="messageList.chatId" :key="messageIndex">
         <div style="display: flex; justify-content: center" v-if="
-          leadData?.channel === 'whatsapp' &&
+          leadDataValue?.channel === 'whatsapp' &&
           timeStamp(messageIndex, messageList)
         ">
           <div class="bg-[#ffffff] rounded-md" style="width: 150px; text-align: center">
@@ -39,7 +39,7 @@
         ">
           <div class="flex max-w-[80%] flex-col items-end justify-center">
             <span class="text-[14px]" style="color: #8a8a8a">{{
-              leadData?.botUser?.name
+              leadDataValue?.botUser?.name
             }}</span>
             <div
               class="mt-2.5 flex flex-col items-end justify-center gap-5 rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black">
@@ -66,8 +66,8 @@
         <div class="flex w-full flex-col items-end" v-if="messageList?.role === 'user'">
           <div class="flex max-w-[80%] flex-col items-end justify-center">
             <span
-              :class="cn('text-[14px]', leadData?.channel === 'whatsapp' ? 'rounded-sm border bg-gray-100 px-2 py-1 text-xs font-thin' : 'text-gray-500')">{{
-                leadData?.botUser?.name
+              :class="cn('text-[14px]', leadDataValue?.channel === 'whatsapp' ? 'rounded-sm border bg-gray-100 px-2 py-1 text-xs font-thin' : 'text-gray-500')">{{
+                leadDataValue?.botUser?.name
               }}</span>
             <div
               class="mt-2.5 flex flex-col items-end justify-center rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black">
@@ -76,7 +76,7 @@
               </div>
             </div>
             <div :class="cn('text-[12px]',
-              leadData?.channel === 'whatsapp' ? 'opacity-1 bg-[#ffffff] p-1.5 text-[#000] mt-1' : 'opacity-60',
+              leadDataValue?.channel === 'whatsapp' ? 'opacity-1 bg-[#ffffff] p-1.5 text-[#000] mt-1' : 'opacity-60',
             )" v-if="messageList?.createdAt">
               {{ formatDate(new Date(messageList?.createdAt), "hh:mm a") }}
             </div>
@@ -85,8 +85,8 @@
         <!-- Assistant Message -->
         <div class="w-[90%]" v-if="messageList?.role === 'assistant'">
           <span
-            :class="cn('text-[14px]', leadData?.channel === 'whatsapp' ? 'rounded-sm border bg-gray-100 px-2 py-1 text-xs font-thin' : 'text-gray-500')">{{
-              leadData?.bot.metadata.prompt.NAME
+            :class="cn('text-[14px]', leadDataValue?.channel === 'whatsapp' ? 'rounded-sm border bg-gray-100 px-2 py-1 text-xs font-thin' : 'text-gray-500')">{{
+              leadDataValue?.bot.metadata.prompt.NAME
             }}</span>
           <!-- ai-reply-align -->
           <div class="field_shadow mt-2.5 flex min-h-[80px] flex-col gap-2 rounded-r-xl rounded-bl-xl bg-[#ffffff] p-5">
@@ -97,8 +97,8 @@
                   :key="btnIndex">
                   <p class="w-auto rounded-xl p-2" :style="{
                     // background: `hsl(347 66 39/ 0.15)`,
-                    background: `hsl(${leadData?.bot.metadata.ui?.color?.replaceAll('%', ' ')}/0.15)`,
-                    color: `hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`,
+                    background: `hsl(${leadDataValue?.bot.metadata.ui?.color?.replaceAll('%', ' ')}/0.15)`,
+                    color: `hsl(${leadDataValue?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`,
                   }">
                     {{ btn.title }}
                   </p>
@@ -117,9 +117,9 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  leadData: any;
+  leadDataValue: any;
   class?: String;
-  messages: any[];
+  chatValue: any[];
   scrollChatBox?: any;
 }>();
 const safeParseJson = (jsonString: string) => {
@@ -163,23 +163,23 @@ const timeStamp = (messageIndex: any, messageList: any) => {
 //   },
 // );
 
-// const leadDataReplace = (messages) => {
+const leadDataReplace = (messages:any) => {
 
-//   let message = [];
-//   const messageIndex = messages?.findIndex(
-//     (message) => message?.content === "User Details Submitted",
-//   );
-//   if (messageIndex < 0) return messages
-//   let leadMessage = messages[messageIndex];
-//   if (!leadMessage?.metadata) return messages
-//   // leadMessage.role = "assistant";
-//   let localMessagesStore = messages;
-//   localMessagesStore?.splice(messageIndex, 1);
-//   localMessagesStore.splice(messageIndex - 1, 0, leadMessage);
-//   localMessagesStore.slice(1);
-//   message = localMessagesStore;
-//   return message;
-// };
+  let message = [];
+  const messageIndex = messages?.findIndex(
+    (message:any) => message?.content === "User Details Submitted",
+  );
+  if (messageIndex < 0) return messages
+  let leadMessage = messages[messageIndex];
+  if (!leadMessage?.metadata) return messages
+  // leadMessage.role = "assistant";
+  let localMessagesStore = messages;
+  localMessagesStore?.splice(messageIndex, 1);
+  localMessagesStore.splice(messageIndex - 1, 0, leadMessage);
+  localMessagesStore.slice(1);
+  message = localMessagesStore;
+  return message;
+};
 
 
 // watch(() => props.chatId, (newValue) => {
