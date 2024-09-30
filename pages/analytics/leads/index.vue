@@ -63,6 +63,7 @@
 <script setup lang="ts">
 import { Icon, UiBadge, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
+import { format } from "date-fns";
 import { useRoute, useRouter } from "vue-router";
 
 const rowList = reactive([
@@ -87,70 +88,6 @@ useHead({
 const router = useRouter();
 const route = useRoute();
 
-
-const exportToCSV = () => {
-  if (leads.value.length === 0) {
-    alert("No data to export");
-    return;
-  }
-
-    const csvContent =
-      columns.map((col) => {
-        if (col.header === "Action") {
-          return "Client Id";
-        }
-        return col.header;
-      })
-        .join(",") + // Headers
-      "\n" +
-      leads.value
-        .map((lead: any) => {
-          const mergedObject = {
-            ...lead.botUser,
-            name: lead.botUser.name,
-            botName: lead.bot.name,
-            country: lead.chat?.metadata?.country,
-            createdAt: lead.botUser.createdAt,
-            ClientId: lead.botUser.id,
-          };
-          return rowList
-            .map((col) => {
-              let cellValue = mergedObject[col];
-              if (cellValue) {
-                // Escape special characters
-                cellValue = cellValue.toString().replace(/"/g, '""');
-                if (
-                  cellValue.includes(",") ||
-                  cellValue.includes('"') ||
-                  cellValue.includes("\n")
-                ) {
-                  cellValue = `"${cellValue}"`;
-                }
-              }
-
-            return cellValue || "";
-          })
-          .join(",");
-      })
-      .join("\n");
-
-
-
-  // Create a Blob with the CSV content
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-
-  // Create a download link and trigger the download
-  const link = document.createElement("a");
-  if (link.download !== undefined) {
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", "leads_export.csv");
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-};
 
 const filters = reactive<{
   botId: string;
@@ -206,12 +143,15 @@ const exportReadyRows = computed(() => {
   return leads.value
     .map((lead: any) => {
       const mergedObject = {
-        phoneNumber: lead?.botUser?.countryCode + lead?.botUser?.mobile,
-        name: lead.botUser.name,
-        botName: lead.bot.name,
-        country: lead.chat?.metadata?.country,
-        createdAt: lead.botUser.createdAt,
-        ClientId: lead.botUser.id,
+        name: lead.botUser.name ?? '---',
+        email: lead.botUser.email ?? '---',
+        mobile: lead?.botUser?.mobile ?? "---",
+        countryCode: lead?.botUser?.countryCode ?? "+91",
+        visitedStatus: Number(lead?.botUser?.visitedCount) > 1 ? "Revisited" : "New",
+        botName: lead.bot.name ?? "---",
+        country: lead.chat?.metadata?.country ?? "---",
+        createdAt: format(lead.botUser.createdAt, "MMMM d, yyyy"),
+        // ClientId: lead.botUser.id,
       };
       return mergedObject
     })
@@ -222,14 +162,14 @@ watch(exportReadyRows, () => {
 })
 const exportReadyColumns = computed(() => {
   return [
-    "name",
-    "email",
-    "visitedCount",
-    "mobile",
-    "botName",
-    "country",
-    "createdAt",
-    "ClientId",
+    "Name",
+    "Email",
+    "Mobile",
+    "Country code",
+    "Visited status",
+    "Bot name",
+    "Country",
+    "Created at",
   ]
 })
 const Pagination = async ($evnt) => {
