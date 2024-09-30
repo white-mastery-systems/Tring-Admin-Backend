@@ -79,9 +79,10 @@ export const listChats = async (
   let chats = await db.query.chatSchema.findMany({
     where: and(
       eq(chatSchema.organizationId, organisationId),
+      query?.channel && query?.channel !== "all" ? eq(chatSchema.channel, query?.channel) : undefined,
       query?.botId && query?.botId !== "all"
         ? eq(chatSchema.botId, query.botId)
-        : undefined,
+        : undefined,  
       query?.period && fromDate && toDate
         ? between(chatSchema.createdAt, fromDate, toDate)
         : undefined,
@@ -121,6 +122,11 @@ export const listChats = async (
   if (query?.botUserName === "without_name") {
     chats = chats.filter((i) => i.botUser === null);
   }
+
+  if(query?.country && query?.country !== "all") {
+    chats = chats.filter((i) => i.metadata?.country === query?.country);
+  }
+
   if (query?.page && query?.limit) {
     const paginatedChats = chats.slice(offset, offset + limit);
     return {
