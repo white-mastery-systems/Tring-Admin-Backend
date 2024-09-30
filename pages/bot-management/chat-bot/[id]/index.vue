@@ -29,9 +29,9 @@
               class="flex items-top sm:items-top md:items-top lg:items-center xl:items-center gap-3 mt-3 sm:mt-3 md:mt-0 xl:mt-0 lg:mt-0">
               <div class="flex flex-col items-center gap-1">
                 <UiButton color="primary" @click="() => {
-                    channelModalState.open = true;
-                    channelModalState.id = botDetails.id;
-                  }
+                  channelModalState.open = true;
+                  channelModalState.id = botDetails.id;
+                }
                   ">
                   <span class="hidden lg:inline"> Configure channel </span>
                   <span class="flex flex-col items-center justify-center lg:hidden">
@@ -101,7 +101,7 @@
                 </UiButton>
                 <div class="block text-[6px] lg:hidden">Edit</div>
               </div>
-              <CreateEditChannel v-model="channelModalState" @success="handleSuccess"  />
+              <CreateEditChannelModal v-model="channelModalState" @success="handleSuccess" />
               <ConfirmationModal v-model:open="deleteModalState" title="Are you sure?"
                 description="Are you sure you want to delete bot ?" @confirm="handleDeleteBot" />
               <AddChatBotModal v-model="agentModalState" @editConfirm="() => {
@@ -130,10 +130,10 @@
             v-for="list in getDocumentList.documents.filter(
               (item: any) => item.status === 'ready',
             )" :key="list.id" @click="async () => {
-                isSubmitting = true;
-                isDocumentListOpen = false;
-                await singleDocumentDeploy(list);
-              }
+              isSubmitting = true;
+              isDocumentListOpen = false;
+              await singleDocumentDeploy(list);
+            }
               ">
             {{ list.name }}
           </UiButton>
@@ -177,25 +177,25 @@ import { ref } from "vue";
 import { toast } from "vue-sonner";
 
 
-  const router = useRouter();
-  // const selectedValue = ref("Today");
-  const route = useRoute("bot-management-chat-bot-id");
-  const emit = defineEmits<{ (e: "confirm"): void }>();
-  
-  
-  
-  const paramId: any = route;
-  const agentModalState = ref({ open: false, id: paramId.params.id });
-  const botDetails = ref(await getBotDetails(paramId.params.id));
-  const deleteModalState = ref(false);
-  const modalOpen = ref(false);
-  const isDocumentListOpen = ref(false);
-  const isSubmitting = ref(false);
-  const getDocumentList: any = ref();
-  const channelModalState = ref<{ open: boolean; id: string | null }>({
-    open: false,
-    id: null,
-  });
+const router = useRouter();
+// const selectedValue = ref("Today");
+const route = useRoute("bot-management-chat-bot-id");
+const emit = defineEmits<{ (e: "confirm"): void }>();
+
+
+
+const paramId: any = route;
+const agentModalState = ref({ open: false, id: paramId.params.id });
+const botDetails = ref(await getBotDetails(paramId.params.id));
+const deleteModalState = ref(false);
+const modalOpen = ref(false);
+const isDocumentListOpen = ref(false);
+const isSubmitting = ref(false);
+const getDocumentList: any = ref();
+const channelModalState = ref<{ open: boolean; id: string | null }>({
+  open: false,
+  id: null,
+});
 
 watchEffect(() => {
   if (botDetails.value) {
@@ -206,32 +206,32 @@ watchEffect(() => {
   }
 });
 
-  const handleSuccess = () => {
-    channelModalState.value.open = false;
-    toast.success("Channel Created successfully");
-  };
-  onMounted(async () => {
-    getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
-    botDetails.value = await getBotDetails(paramId.params.id);
+const handleSuccess = () => {
+  channelModalState.value.open = false;
+  toast.success("Channel Created successfully");
+};
+onMounted(async () => {
+  getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
+  botDetails.value = await getBotDetails(paramId.params.id);
+});
+const handleGoBack = () => {
+  return navigateTo({
+    name: "bots",
   });
-  const handleGoBack = () => {
-    return navigateTo({
-      name: "bots",
-    });
-  };
-  const dataList = ref([
-    {
-      _id: 1,
-      bot: "UI Customization",
-      helperText: "Color,Logo,Icon etc...",
-      routeName: "bot-management-chat-bot-id-ui-customization",
-    },
-    {
-      _id: 2,
-      bot: "CRM Configuration",
-      helperText: "Add CRM to manage your leads effectively",
-      routeName: "bot-management-chat-bot-id-crm-config",
-    },
+};
+const dataList = ref([
+  {
+    _id: 1,
+    bot: "UI Customization",
+    helperText: "Color,Logo,Icon etc...",
+    routeName: "bot-management-chat-bot-id-ui-customization",
+  },
+  {
+    _id: 2,
+    bot: "CRM Configuration",
+    helperText: "Add CRM to manage your leads effectively",
+    routeName: "bot-management-chat-bot-id-crm-config",
+  },
 
   {
     _id: 3,

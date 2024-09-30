@@ -9,6 +9,7 @@ export const checkPayloadId = <T extends string>(key: T) =>
 export const isOrganizationAdminHandler = async (event: H3Event) => {
   // Check if user is authorized to access bots of the organization
   const user = event.context.user;
+  console.log({ user });
   if (!user || user.role !== AuthRoles.Admin)
     return sendError(
       event,
