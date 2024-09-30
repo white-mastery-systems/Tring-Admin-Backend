@@ -1,12 +1,13 @@
 import { writeFile } from "node:fs/promises";
 import { config } from "node:process";
+import { zodInsertPlaygroundDocument } from "~/server/schema/admin";
+import { createPlaygroundDocument } from "~/server/utils/db/document";
 
 type UUID = string;
 
 const conf = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
-  const botId: UUID = config?.playGroundBotId;
 
   // Data Validation
   const formData = await readMultipartFormData(event);
@@ -20,11 +21,11 @@ export default defineEventHandler(async (event) => {
       }),
     );
   }
-  // console.log()
-  const body = zodInsertDocument.safeParse({
-    name: formData.find(({ name }) => name === "name")?.data.toString()!,
-    botId,
+//  return { formData }
+  const body = zodInsertPlaygroundDocument.safeParse({
+    name: formData.find(({ name }) => name === "name")?.data.toString()!
   });
+  // console.log({ body })
   if (!body.success)
     return sendError(
       event,
@@ -43,9 +44,9 @@ export default defineEventHandler(async (event) => {
         statusMessage: "Invalid Document Data(files)",
       }),
     );
-
+  
   // Create Document
-  const document = await createDocument(body.data);
+  const document = await createPlaygroundDocument(body.data);
   await writeFile(getDocumentPath(document.id), fileData.data);
 
   // Create Form Data

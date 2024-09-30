@@ -9,6 +9,8 @@
         <!-- <BotUserFilter @changeAction="onActionChange" /> -->
         <LivePreviewFilter @changeAction="onActionChange" />
         <DateRangeFilter @change="onDateChange" />
+        <ChannelFilter @changeAction="onChannelChange" />
+        <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
         <ExportButton :rows="exportReadyRows" :columns="exportReadyColumns" />
       </div>
     </div>
@@ -53,6 +55,8 @@ const filters = reactive<{
   period: string;
   page: string;
   limit: string;
+  channel: any;
+  country: string;
 }>({
   botId: "",
   q: undefined,
@@ -62,6 +66,8 @@ const filters = reactive<{
   period: "all-time",
   page: "1",
   limit: "10",
+  channel: "all",
+  country: 'all',
 });
 
 let page = ref(0);
@@ -187,4 +193,16 @@ const onDateChange = (value: any) => {
   }
   filters.page = "1";
 };
+
+const onChannelChange = ($event) => {
+  if ($event) {
+
+    filters.channel = $event;
+  }
+}
+const onCountryChange = ($event) => {
+  if ($event) {
+    filters.country = $event;
+  }
+}
 </script>

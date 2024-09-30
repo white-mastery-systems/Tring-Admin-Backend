@@ -1,4 +1,5 @@
 import { ilike } from "drizzle-orm";
+import { logger } from "~/server/logger";
 import { createIntegration } from "~/server/utils/db/integrations";
 import {
   fetchPhoneNumbers,
@@ -83,18 +84,23 @@ export default defineEventHandler(async (event) => {
             code: response?.access_token,
             id: body.metadata.wabaId,
           });
-          const registerPhone = await $fetch(
-            `https://graph.facebook.com/v20.0/${body.metadata.pid}/register`,
-            {
-              method: "POST",
-              headers: { Authorization: `Bearer ${response?.access_token}` },
-              body: {
-                messaging_product: "whatsapp",
-                pin: body.metadata.pin,
+          try {
+            const registerPhone = await $fetch(
+              `https://graph.facebook.com/v20.0/${body.metadata.pid}/register`,
+              {
+                method: "POST",
+                headers: { Authorization: `Bearer ${response?.access_token}` },
+                body: {
+                  messaging_product: "whatsapp",
+                  pin: body.metadata.pin,
+                },
               },
-            },
-          );
-          console.log({ registerPhone });
+            );
+            logger.info(`registed phone ${JSON.stringify(registerPhone)}`);
+            console.log({ registerPhone });
+          } catch (err) {
+            logger.info(`registed phone err ${JSON.stringify(err)}`);
+          }
         }
       } catch (err) {
         console.log(err);
