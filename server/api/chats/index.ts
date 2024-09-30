@@ -17,6 +17,8 @@ const chatQueryValidator = z
       .nullish()
       .transform((val) => (val ? new Date(val) : null)),
     q: z.string().optional(),
+    channel: z.string().optional(),
+    country: z.string().optional(),
     period: z.string().optional(),
     botUserName: z.string().optional(),
     page: z.string().optional(),
