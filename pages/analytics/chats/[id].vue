@@ -67,7 +67,7 @@
             </div>
           </div>
 
-          <ChatPreview v-if="computed(() => messages?.length && !!leadData)" :leadData="leadData" :messages="messages"
+          <ChatPreview v-if="computed(() => chats?.length && !!leadData)" :leadDataValue="leadData" :chatValue="chats"
             :scrollChatBox="BotId" @chatId="BotId = null" />
         </div>
       </div>
@@ -98,12 +98,12 @@ definePageMeta({
 
 const route = useRoute("analytics-chats-id");
 
-const messages = await $fetch(`/api/org/chat/${route.params.id}/messages`, {
+const chats = await $fetch(`/api/org/chat/${route.params.id}/messages`, {
   method: "GET",
   server: false,
 });
 
-console.log(messages, "messages");
+console.log(chats, "messages");
 
 const { data: timeLineData } = await useLazyFetch(
   `/api/timeline/chat/${route.params.id}`,

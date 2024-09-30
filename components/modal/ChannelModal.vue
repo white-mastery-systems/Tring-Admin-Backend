@@ -34,7 +34,6 @@ const {
 watch(() => channelModalState.value.open, async (newState) => {
   if (channelModalState.value.id) {
     const channelSingleDetail: any = await $fetch(`/api/org/integrations/${channelModalState.value.id}`)
-    console.log(channelSingleDetail, "channelSingleDetail")
     setFieldValue("name", channelSingleDetail.name);
     setFieldValue("channel", channelSingleDetail.crm);
     setFieldValue("pid", channelSingleDetail.metadata?.pid);

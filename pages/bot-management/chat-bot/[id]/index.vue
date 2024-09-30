@@ -101,7 +101,7 @@
                 </UiButton>
                 <div class="block text-[6px] lg:hidden">Edit</div>
               </div>
-              <CreateEditChannel v-model="channelModalState" @success="handleSuccess" />
+              <CreateEditChannel v-model="channelModalState" @success="handleSuccess"  />
               <ConfirmationModal v-model:open="deleteModalState" title="Are you sure?"
                 description="Are you sure you want to delete bot ?" @confirm="handleDeleteBot" />
               <AddChatBotModal v-model="agentModalState" @editConfirm="() => {

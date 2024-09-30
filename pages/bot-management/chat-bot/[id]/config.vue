@@ -66,23 +66,23 @@ const animationProps = {
 const router = useRouter();
 const route = useRoute("bot-management-chat-bot-id-config");
 
-const roles = ref<any>([
-  {
-    helperText: "Handles sales inquiries and closes deals.",
-    label: "Sales Executive",
-    value: "Sales Executive",
-  },
-  {
-    helperText: "Provides assistance and resolves customer issues.",
-    label: "Customer Support Representative.",
-    value: "Customer Support Representative",
-  },
-  {
-    helperText: "Performs miscellaneous tasks as required.",
-    label: "Other",
-    value: "Other",
-  },
-]);
+  const roles = ref<any>([
+    {
+      helperText: "Handles sales inquiries and closes deals.",
+      label: "Sales Executive",
+      value: "Sales Executive",
+    },
+    {
+      helperText: "Provides assistance and resolves customer issues.",
+      label: "Customer Support Representative.",
+      value: "Customer Support Representative",
+    },
+    {
+      helperText: "Performs miscellaneous tasks as required.",
+      label: "Other",
+      value: "Other",
+    },
+  ]);
 
 const goals = ref<any>([
   {

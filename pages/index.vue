@@ -29,13 +29,19 @@
       </div>
     </template>
     <div>
-      <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <template v-if="analyticsData"
+      <div v-if="analyticsData?.statistics?.length"
+        class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <template
           v-for="statistics in analyticsData?.statistics?.filter((stat) => stat?.apiName !== 'images' && stat?.apiName !== 'brochures')">
           <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
             :count="statistics.value" :loading="loading" />
         </template>
-
+      </div>
+      <div v-if="loading && !analyticsData?.statistics?.length"
+        class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <template v-for="n in 8" :key="n">
+          <StatusCountCard :icon="ChatSession" :title="'Loading...'" :count="0" :loading="loading" />
+        </template>
       </div>
       <div class="mt-2 flex cursor-pointer gap-2 overflow-x-scroll">
         <template v-if="analyticsData"
@@ -48,7 +54,7 @@
             <MinusIcon v-else />
             <span class="min-w-[100px] capitalize" :style="`color:${componentValue?.color}`">{{
               componentValue?.name?.replace("_", " ")
-            }}</span>
+              }}</span>
           </button>
         </template>
 

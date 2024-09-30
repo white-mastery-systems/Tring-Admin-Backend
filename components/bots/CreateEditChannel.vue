@@ -1,6 +1,6 @@
 <template>
   <DialogWrapper v-model="modalState" :title="'Channel Configuration'">
-    <form @submit="handleCreateEditBotChannel()">
+    <form @submit="handleCreateEditBotChannel">
 
 
       <SelectField label="integration" helperText="Select your integration" name="integrationId" :multiple="false"
@@ -13,9 +13,9 @@
       <SelectField v-if="values.integrationId" label="phone" helperText="Select your phone" name="phoneId"
         placeholder="Select your phone" :options="phoneNumbers" /> -->
 
-      <div class="flex w-full items-end">
+      <div class="flex w-full justify-items-end">
         <UiButton color="primary" type="submit">
-          <CopyIcon class="mr-2 h-4 w-4" />Submit and copy webhook url
+          Submit
         </UiButton>
       </div>
       <span class="text-sm text-gray-500">enter this webhook url in Meta Dashboard</span>
@@ -24,10 +24,8 @@
 </template>
 
 <script setup lang="ts">
-import { CopyIcon } from "lucide-vue-next";
 
 const emit = defineEmits(["success"]);
-const { copy } = useClipboard();
 
 const modalState = defineModel<{ open: boolean; id: string | null }>({
   default: { open: false, id: null },
@@ -43,17 +41,34 @@ const channels = [
 const formSchema = toTypedSchema(
   z.object({
     integrationId: z.string({ required_error: "IntegrationId is required" }).min(1, 'IntegrationId is required'),
-    templateId: z.string({ required_error: "template is required" }).min(1, "template is required"),
-    phoneId: z.string({ required_error: "phone is required" }).min(1, "phone is required")
-
   })
 );
 
-const { handleSubmit, defineField, errors, values } = useForm({
+const { handleSubmit, defineField, errors, values, handleReset, setFieldValue } = useForm({
   validationSchema: formSchema
 });
 
+
+watch(
+  () => modalState.value,
+  async (value) => {
+    handleReset();
+
+    if (!value.id) return;
+    const botDetails = await $fetch<{ channels: { whatsapp: string } }>(
+      `/api/bots/${value.id}`,
+    );
+    if (typeof botDetails?.channels?.whatsapp === "string" && botDetails?.channels?.whatsapp)
+      setFieldValue("integrationId", botDetails.channels?.whatsapp);
+    // setFieldValue("link", intentDetails?.link);
+  },
+  { deep: true },
+);
+watch(errors, (newValues) => {
+  console.log(newValues)
+})
 const handleCreateEditBotChannel = handleSubmit(async (values) => {
+  console.log({ values })
   await $fetch(`/api/bots/${route.params.id}`, {
     method: "PUT",
     body: {
@@ -62,7 +77,6 @@ const handleCreateEditBotChannel = handleSubmit(async (values) => {
       },
     },
   });
-  copy(`https://app.tringlabs.ai/whatsapp?botId=${route.params.id}`);
   emit("success");
 });
 const {

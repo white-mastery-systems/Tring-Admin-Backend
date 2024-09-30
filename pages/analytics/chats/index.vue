@@ -9,28 +9,29 @@
         <!-- <BotUserFilter @changeAction="onActionChange" /> -->
         <LivePreviewFilter @changeAction="onActionChange" />
         <DateRangeFilter @change="onDateChange" />
+        <ExportButton :rows="exportReadyRows" :columns="exportReadyColumns" />
       </div>
     </div>
     <DataTable @row-click="(row: any) => {
-        return navigateTo(`/analytics/chats/${row.original.id}`);
-        //TODO change this
-      }
+      return navigateTo(`/analytics/chats/${row.original.id}`);
+      //TODO change this
+    }
       " @pagination="Pagination" @limit="($event) => {
-          (filters.page = '1'), (filters.limit = $event);
-        }
-        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="bots"
+        (filters.page = '1'), (filters.limit = $event);
+      }
+        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="chats"
       :page-size="20" :is-loading="isDataLoading" :height="16" height-unit="vh" />
   </Page>
 </template>
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";
+import { format } from "date-fns";
 definePageMeta({
   middleware: "admin-only",
 });
 useHead({
   title: 'Analytics | Chats',
 })
-
 const formSchema = toTypedSchema(
   z.object({
     newBotName: z.string().min(2, "Bot Name is requird."),
@@ -68,7 +69,7 @@ let totalPageCount = ref(0);
 let totalCount = ref(0);
 const {
   status,
-  data: bots,
+  data: chats,
   refresh: getAllChats,
 } = await useLazyFetch("/api/chats?page=2&limit=8", {
   server: false,
@@ -77,29 +78,76 @@ const {
   headers: {
     "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
   },
-  transform: (chats) => {
+  transform: (chats: any) => {
     page.value = chats.page;
     totalPageCount.value = chats.totalPageCount;
     totalCount.value = chats.totalCount;
-    return chats?.data?.map((chat) => ({
+    return chats?.data?.map((chat: any) => ({
       userName: chat.botUser?.name || "No name",
+      email: chat?.botUser?.email,
+      mobile: chat?.botUser?.mobile,
+      countryCode: chat?.botUser?.countryCode,
       id: chat.id,
       location: `${chat.metadata?.city ?? "--"} - ${chat.metadata?.state ?? "--"} `,
       createdAt: `${chat?.createdAt}`,
+      metadata: chat?.metadata,
       mode: chat?.mode,
       channel: chat?.channel,
     }));
   },
 });
 
-const isDataLoading = computed(() => status.value === "pending");
+
+
+const exportReadyRows = computed(() => {
+  try {
+    return chats.value
+      .map((chat: any) => {
+
+        console.log({ chat })
+        const mergedObject = {
+          name: chat?.userName ?? '---',
+          email: chat?.email ?? '---',
+          countryCode: chat?.countryCode ?? "+91",
+          mobile: chat?.mobile ?? "---",
+          botName: chat?.bot?.name ?? "---",
+          country: chat?.metadata?.country ?? "---",
+          createdAt: format(chat?.createdAt, "MMMM d, yyyy"),
+          channel: chat?.channel,
+          mode: chat?.mode
+        };
+        return mergedObject
+      })
+  } catch (err) {
+    console.log({ err })
+  }
+
+})
+const exportReadyColumns = computed(() => {
+  return [
+    "Name",
+    "Email",
+    "Country code",
+    "Mobile",
+    // "Visited status",
+    "Bot name",
+    "Country",
+    "Created at",
+    "Channel"
+  ]
+})
+
+const isDataLoading = computed(() => {
+  console.log(status.value, "VALUE STATUS")
+  return status.value === "pending"
+});
 
 const statusComponent = (status: boolean) =>
   status
     ? h("span", { class: "text-green-500" }, "Active")
     : h("span", { class: "text-red-500" }, "Inactive");
 
-const columnHelper = createColumnHelper<(typeof bots.value)[0]>();
+const columnHelper = createColumnHelper<(typeof chats.value)[0]>();
 const columns = [
   columnHelper.accessor("userName", {
     header: "User Name",

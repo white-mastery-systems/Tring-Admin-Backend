@@ -46,7 +46,6 @@ const sendWhatsappTemplateMessage = async (
     const data = await $fetch(
       `https://graph.facebook.com/v20.0/${phoneId}/messages`,
       {
-        ignoreResponseError: true,
         method: "post",
         headers: {
           Authorization: `Bearer ${metaToken}`,
@@ -58,7 +57,7 @@ const sendWhatsappTemplateMessage = async (
           template: {
             name: templateName,
             language: {
-              code: language ?? "en_US",
+              code: language ?? "en",
             },
             // components,
           },
@@ -140,7 +139,7 @@ export const scheduleEvent = async (
     // const templateName = "client_follow_up_sis";
     const organization = "South India Shelters";
     const salesmanager = "Reena";
-    const language = "en_US";
+    const language = "en";
 
     const assigned_date = new Date(date);
     const assigned_Time = new Date(time);

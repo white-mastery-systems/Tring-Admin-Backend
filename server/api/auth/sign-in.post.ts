@@ -1,5 +1,5 @@
-import { v4 as uuid } from "uuid";
 import jwt from "jsonwebtoken";
+import { v4 as uuid } from "uuid";
 
 const config = useRuntimeConfig();
 
@@ -30,19 +30,24 @@ export default defineEventHandler(async (event) => {
     );
   }
 
-  // const userData = { id: user.id, email: user.email, organizationId: user.organizationId, role: user.role }
+  const userData = {
+    id: user.id,
+    email: user.email,
+    organizationId: user.organizationId,
+    role: user.role,
+  };
 
-  // const accessToken = jwt.sign(userData, config.secretKey, { expiresIn: "1h"})
-  // const refreshToken = jwt.sign(userData, config.secretKey, { expiresIn: "1d"})
+  const accessToken = jwt.sign(userData, config.secretKey, { expiresIn: "1h" });
+  const refreshToken = jwt.sign(userData, config.secretKey);
 
-  // setCookie(event, 'refreshToken', refreshToken, {
-  //   httpOnly: true,
-  //   sameSite: 'strict',
-  // });
+  setCookie(event, "refreshToken", refreshToken, {
+    httpOnly: true,
+    sameSite: "strict",
+  });
 
-  // appendHeaders(event, {
-  //   Authorization: accessToken
-  // });
+  appendHeaders(event, {
+    Authorization: accessToken,
+  });
 
   const session = await lucia.createSession(
     user.id,

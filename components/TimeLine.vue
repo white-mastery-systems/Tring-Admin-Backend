@@ -40,9 +40,19 @@ defineProps({
       </div>
       <div class="field_shadow flex w-full flex-col gap-1 rounded-lg p-4 pr-6">
         <div class="flex flex-col gap-2">
+          
+          <div class="grid grid-cols-2 gap-2">
           <h4 class="scroll-m-20 text-[16px] font-semibold tracking-tight">
             {{ data.metadata?.text }}
           </h4>
+          
+           <h4 class="text-right scroll-m-20 text-[16px] font-semibold tracking-tight">
+            Chat {{ index + 1 }}
+           </h4>
+          </div>
+
+
+
           <div class="" v-if="data.metadata?.website">
             <span v-if="data.metadata?.title" class="min-w-[90px] text-[16px] font-semibold">
               {{ data.metadata?.title }}

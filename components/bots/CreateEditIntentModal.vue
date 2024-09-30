@@ -3,15 +3,15 @@
     <form @submit="handleCreateEditIntent" class="space-y-3">
       <SelectField name="intent" :multiple="false" :required="true" label="Actions" helperText="Select your intent."
         placeholder="Select Intent" :options="intents" />
-
       <!-- <UiSelectItem v-for="intent in intents" :value="intent.value">{{
         intent.label
       }}</UiSelectItem> -->
-      <div v-if="values.intent === 'location' || values.intent === 'virtual_tour'">
+      <div v-if="(values.intent === 'location') || (values.intent === 'virtual_tour')">
         <TextField name="link" label="Add Link" helperText="Enter intent link"
           placeholder="Eg: enter your preferred value" />
       </div>
       <div v-if="values.intent === 'images' || values.intent === 'brochures'">
+        {{ values.intent }}
         <div>
           <label
             class="dark:hover:bg-bray-800 flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
@@ -106,12 +106,16 @@ watch(
     fileRef.value = null;
     selectedFileName.value = null;
     if (!value.id) return;
-    const intentDetails = await $fetch<{ intent: string; link?: string }>(
+    const intentDetails:any = await $fetch<{ intent: string; link?: string }>(
       `/api/bots/${botDetails.id}/intents/${value.id}`,
     );
     setFieldValue("intent", intentDetails.intent);
-    setFieldValue("link", intentDetails?.link);
-    // setFieldValue("link", intentDetails?.link);
+    if (intentDetails?.link) setFieldValue("link", intentDetails?.link);
+    fileRef.value = intentDetails?.uploads?.map(
+      (file: any) => new File([file.content], file.name, { type: file.type })
+    ) || [];
+    selectedFileName.value = intentDetails?.uploads?.map((file: any) => file.name).join(",");
+    // setFieldValue("fileName", intentDetails.fileName); // need fileName value from api response
   },
   { deep: true },
 );
@@ -150,19 +154,30 @@ const handleFileChange = (e: Event) => {
 
 const handleCreateEditIntent = handleSubmit(async (values) => {
   if (modalState.value.id) {
-    const intentDetails: any = {
-      id: botDetails.id,
-      intentId: modalState.value.id,
-      ...values,
-    };
-    await updateBotIntentById({
-      intentDetails,
-      onSuccess: () => {
-        modalState.value.open = false;
-        toast.success("Intent updated successfully");
-        emit("success");
-      },
-    });
+    if (fileRef.value) {
+      const formData = new FormData();
+      Array.from(fileRef.value).forEach((file) => {
+        formData.append("files", file);
+      });
+      const uploads = await $fetch(`/api/uploads`, {
+        method: "POST",
+        body: formData,
+      });
+      const intentDetails: any = {
+        id: botDetails.id,
+        intentId: modalState.value.id,
+        uploads,
+        ...values,
+      };
+      await updateBotIntentById({
+        intentDetails,
+        onSuccess: () => {
+          modalState.value.open = false;
+          toast.success("Intent updated successfully");
+          emit("success");
+        },
+      });
+    }
   } else {
     if (fileRef.value) {
       const formData = new FormData();
