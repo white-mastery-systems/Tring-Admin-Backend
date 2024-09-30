@@ -59,6 +59,7 @@ const props = withDefaults(defineProps<{
   disabled?: boolean;
   class?: string;
   endIcon?: any;
+  validation:Boolean;
 }>(), {
   label: '',
   type: 'text',
@@ -68,11 +69,12 @@ const props = withDefaults(defineProps<{
   disableCharacters: false,
   isTextarea: false,
   disabled: false,
-  class: ''
+  class: '',
+  validation:true
 });
 console.log({ props: props.type })
 const replacedId = ref(props.label ?? props.name)
-const { value, errorMessage }: { value: any, errorMessage: any } = useField(() => props.name);
+const { value, errorMessage }: { value: any, errorMessage: any } = !props.validation?{value:props.name,errorMessage:''}: useField(() => props.name);
 
 watch(errorMessage, (newErr) => {
   console.log({ newErr })
