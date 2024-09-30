@@ -74,7 +74,7 @@
     },
     {
       helperText: "Provides assistance and resolves customer issues.",
-      label: "Provides assistance and resolves customer issues.",
+      label: "Customer Support Representative.",
       value: "Customer Support Representative",
     },
     {
@@ -195,7 +195,7 @@ watchEffect(() => {
             <SelectField
               name="ROLE"
               label="Bot's Role"
-              placeholder="Select Rol"
+              placeholder="Select Role"
               helperText="This will determine the role of the bot and behavior."
               :options="roles"
               required

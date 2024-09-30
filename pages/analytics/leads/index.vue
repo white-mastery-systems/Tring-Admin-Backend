@@ -149,7 +149,6 @@ useHead({
       "\n" +
       leads.value
         .map((lead: any) => {
-          console.log(lead.botUser.createdAt, "lead")
           const mergedObject = {
             ...lead.botUser,
             name: lead.botUser.name,

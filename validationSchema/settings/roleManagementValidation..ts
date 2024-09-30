@@ -3,6 +3,11 @@ export const roleMangementSchema = toTypedSchema(
     name: z
       .string({ required_error: "name is required" })
       .min(1, "name is required"),
-    permissions: z.object({}).optional(),
+    // permissions: z.object({}).optional(),
+    permissions: z
+      .object({
+        sendEmail: z.boolean().optional(),
+      })
+      .default({ sendEmail: false }), // default permissions
   }),
 );
