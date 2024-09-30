@@ -188,6 +188,18 @@ export const campaignSchema = adminSchema.table("campaign", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const playgroundDocumentSchema = adminSchema.table("playground_document", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  status: varchar("status", {
+    enum: ["processing", "ready", "error"],
+  })
+    .default("processing")
+    .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 // Relations
 export const organizationRelations = relations(
   organizationSchema,
@@ -235,8 +247,13 @@ export type InsertContacts = InferInsertModel<typeof contactSchema>;
 export type SelectCampaign = InferSelectModel<typeof campaignSchema>;
 export type InsertCampaign = InferInsertModel<typeof campaignSchema>;
 
+export type SelectPlaygroundDocument = InferSelectModel<typeof playgroundDocumentSchema>;
+export type InsertPlaygroundDocument = InferInsertModel<typeof playgroundDocumentSchema>;
+
 // Validation
 export const zodInsertOrganization = createInsertSchema(organizationSchema, {
   name: (schema) =>
     schema.name.min(3, "Name Too Short").max(64, "Name Too Long"),
 });
+
+export const zodInsertPlaygroundDocument = createInsertSchema(playgroundDocumentSchema)
