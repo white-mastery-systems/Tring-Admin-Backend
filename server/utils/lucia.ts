@@ -1,6 +1,6 @@
-import { Lucia } from "lucia";
-import type { H3Event } from "h3";
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
+import type { H3Event } from "h3";
+import { Lucia } from "lucia";
 
 const adapter = new DrizzlePostgreSQLAdapter(
   useDrizzle(),
@@ -13,6 +13,12 @@ export const lucia = new Lucia(adapter, {
     attributes: {
       // secure: !import.meta.dev,
       secure: true,
+    },
+    getSessionAttributes: (attributes) => {
+      console.log({ attributes });
+      return {
+        ipCountry: attributes.ip_country,
+      };
     },
   },
   getUserAttributes: (attributes) => ({
