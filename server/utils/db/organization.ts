@@ -27,14 +27,16 @@ export const updateOrganization = async (
   id: string,
   organization: Partial<InsertOrganization>,
 ) => {
-  return (await db
-    .update(organizationSchema)
-    .set({
-      ...organization,
-      updatedAt: new Date()
-    })
-    .where(eq(organizationSchema.id, id))
-    .returning())[0]
+  return (
+    await db
+      .update(organizationSchema)
+      .set({
+        ...organization,
+        updatedAt: new Date(),
+      })
+      .where(eq(organizationSchema.id, id))
+      .returning()
+  )[0];
 };
 
 // export const getAnalytics = async (
@@ -252,11 +254,12 @@ export const getAnalytics = async (
       ?.split(",")
       .map((value) => value.trim()) || ["leads", "sessions"];
 
-    const organizationIntents = await db.select({ intents: botIntentSchema.intent })
-        .from(botIntentSchema)
-        .where(eq(botIntentSchema.organizationId, organizationId))
+    const organizationIntents = await db
+      .select({ intents: botIntentSchema.intent })
+      .from(botIntentSchema)
+      .where(eq(botIntentSchema.organizationId, organizationId));
 
-    const intentList = [...new Set(organizationIntents.map((i) => i.intents))]
+    const intentList = [...new Set(organizationIntents.map((i) => i.intents))];
 
     // return { queryArray }
 
@@ -284,120 +287,117 @@ export const getAnalytics = async (
 
     const { fromDate, toDate } = getDateRange(period, from, to);
 
-  
-    // find organization intents statistics 
+    // find organization intents statistics
     const mapIntents = await Promise.all(
       intentList.map(async (intent) => {
         const intentDetail = await db
-          .select({ createdAt: timelineSchema.createdAt})
+          .select({ createdAt: timelineSchema.createdAt })
           .from(timelineSchema)
           .where(
-              and(
-                gte(timelineSchema.createdAt, fromDate),
-                lte(timelineSchema.createdAt, toDate),
-                eq(timelineSchema.orgId, organizationId),
-                eq(timelineSchema.event, intent),
-              ),
-            )
+            and(
+              gte(timelineSchema.createdAt, fromDate),
+              lte(timelineSchema.createdAt, toDate),
+              eq(timelineSchema.orgId, organizationId),
+              eq(timelineSchema.event, intent),
+            ),
+          );
         return {
           name: intent,
           value: intentDetail.length,
-          intentDetail
-        }
-    }))
+          intentDetail,
+        };
+      }),
+    );
 
     // return {mapIntents}
 
     console.log({ period, organizationId, fromDate, toDate });
-    const [
-      orgData,
-      leads,
-      chats,
-      uniqueVisiters,
-      interactedChats,
-    ] = await Promise.all([
-      db.query.organizationSchema.findFirst({
-        where: eq(organizationSchema.id, organizationId),
-        with: {
-          botUsers: {
-            where: and(
-              gte(botUserSchema.createdAt, fromDate),
-              lte(botUserSchema.createdAt, toDate),
-            ),
-          },
-        },
-      }),
-      db
-        .select({ createdAt: leadSchema.createdAt })
-        .from(leadSchema)
-        .where(
-          and(
-            gte(leadSchema.createdAt, fromDate),
-            lte(leadSchema.createdAt, toDate),
-            eq(leadSchema.organizationId, organizationId),
-          ),
-        ),
-      db
-        .select({ createdAt: chatSchema.createdAt })
-        .from(chatSchema)
-        .where(
-          and(
-            gte(chatSchema.createdAt, fromDate),
-            lte(chatSchema.createdAt, toDate),
-            eq(chatSchema.organizationId, organizationId),
-          ),
-        ),
-      db
-        .select({ createdAt: chatSchema.createdAt })
-        .from(chatSchema)
-        .where(
-          and(
-            gte(chatSchema.createdAt, fromDate),
-            lte(chatSchema.createdAt, toDate),
-            eq(chatSchema.organizationId, organizationId),
-            gt(chatSchema.visitedCount, 1),
-          ),
-        ),
-       db.query.chatSchema.findMany({
-          columns: {
-            id: true,
-            createdAt: true,
-          },
-          where: and(
-            eq(chatSchema.organizationId, organizationId),
-            gte(chatSchema.createdAt, fromDate),
-            lte(chatSchema.createdAt, toDate),
-            eq(chatSchema.mode, "live")
-          ),
+    const [orgData, leads, chats, uniqueVisiters, interactedChats] =
+      await Promise.all([
+        db.query.organizationSchema.findFirst({
+          where: eq(organizationSchema.id, organizationId),
           with: {
-            messages: {
-              columns: {
-                createdAt: true,
-                chatId: true
-              },
+            botUsers: {
               where: and(
-                gte(messageSchema.createdAt, fromDate),
-                lte(messageSchema.createdAt, toDate),
-                eq(messageSchema.status, true),
-                eq(messageSchema.role, "user")
+                gte(botUserSchema.createdAt, fromDate),
+                lte(botUserSchema.createdAt, toDate),
               ),
             },
           },
         }),
-      // db
-      //   .select({ createdAt: chatSchema.createdAt })
-      //   .from(chatSchema)
-      //   .where(
-      //     and(
-      //       gte(chatSchema.createdAt, fromDate),
-      //       lte(chatSchema.createdAt, toDate),
-      //       eq(chatSchema.interacted, true),
-      //       eq(chatSchema.organizationId, organizationId),
-      //     ),
-      //   ),
-    ]);
-    
-    const filteredInteractedChats = interactedChats.filter((i: any) => i.messages.length)
+        db
+          .select({ createdAt: leadSchema.createdAt })
+          .from(leadSchema)
+          .where(
+            and(
+              gte(leadSchema.createdAt, fromDate),
+              lte(leadSchema.createdAt, toDate),
+              eq(leadSchema.organizationId, organizationId),
+            ),
+          ),
+        db
+          .select({ createdAt: chatSchema.createdAt })
+          .from(chatSchema)
+          .where(
+            and(
+              gte(chatSchema.createdAt, fromDate),
+              lte(chatSchema.createdAt, toDate),
+              eq(chatSchema.organizationId, organizationId),
+            ),
+          ),
+        db
+          .select({ createdAt: chatSchema.createdAt })
+          .from(chatSchema)
+          .where(
+            and(
+              gte(chatSchema.createdAt, fromDate),
+              lte(chatSchema.createdAt, toDate),
+              eq(chatSchema.organizationId, organizationId),
+              gt(chatSchema.visitedCount, 1),
+            ),
+          ),
+        //  db.query.chatSchema.findMany({
+        //     columns: {
+        //       id: true,
+        //       createdAt: true,
+        //     },
+        //     where: and(
+        //       eq(chatSchema.organizationId, organizationId),
+        //       gte(chatSchema.createdAt, fromDate),
+        //       lte(chatSchema.createdAt, toDate),
+        //       eq(chatSchema.mode, "live")
+        //     ),
+        //     with: {
+        //       messages: {
+        //         columns: {
+        //           createdAt: true,
+        //           chatId: true
+        //         },
+        //         where: and(
+        //           gte(messageSchema.createdAt, fromDate),
+        //           lte(messageSchema.createdAt, toDate),
+        //           eq(messageSchema.status, true),
+        //           eq(messageSchema.role, "user")
+        //         ),
+        //       },
+        //     },
+        //   }),
+        db
+          .select({ createdAt: chatSchema.createdAt })
+          .from(chatSchema)
+          .where(
+            and(
+              gte(chatSchema.createdAt, fromDate),
+              lte(chatSchema.createdAt, toDate),
+              eq(chatSchema.interacted, true),
+              eq(chatSchema.organizationId, organizationId),
+            ),
+          ),
+      ]);
+
+    // const filteredInteractedChats = interactedChats.filter(
+    //   (i: any) => i.messages?.length,
+    // );
 
     if (!orgData) return undefined;
 
@@ -409,7 +409,7 @@ export const getAnalytics = async (
 
     let uniqueVisitersMap = null;
     let interactedChatsMap = null;
-    let graphMap = null
+    let graphMap = null;
 
     // return { leads, chats }
 
@@ -418,7 +418,7 @@ export const getAnalytics = async (
       module: leads,
       period,
       difference,
-      timeZone
+      timeZone,
     });
     const leadMap = new Map(leadResult.map((item) => [item.date, item.count]));
 
@@ -429,7 +429,7 @@ export const getAnalytics = async (
       module: chats,
       period,
       difference,
-      timeZone
+      timeZone,
     });
     const sessionMap = new Map(
       sessionResult.map((item) => [item.date, item.count]),
@@ -440,24 +440,24 @@ export const getAnalytics = async (
         module: i.intentDetail,
         period,
         difference,
-        timeZone
+        timeZone,
       });
-      
+
       graphMap = new Map(result.map((item) => [item.date, item.count]));
 
       return {
         intent: i.name,
         result: result,
-        graphMap
-      }
-    })
+        graphMap,
+      };
+    });
 
     if (queryArray.includes("unique_visitors")) {
       const uniqueVisitersResult = groupAndMapData({
         module: uniqueVisiters,
         period,
         difference,
-        timeZone
+        timeZone,
       });
       uniqueVisitersMap = new Map(
         uniqueVisitersResult.map((item) => [item.date, item.count]),
@@ -466,10 +466,10 @@ export const getAnalytics = async (
 
     if (queryArray.includes("interacted_chats")) {
       const interactedChatsResult = groupAndMapData({
-        module: filteredInteractedChats,
+        module: interactedChats,
         period,
         difference,
-        timeZone
+        timeZone,
       });
       interactedChatsMap = new Map(
         interactedChatsResult.map((item) => [item.date, item.count]),
@@ -482,10 +482,10 @@ export const getAnalytics = async (
         count: mapData.get(date) || 0,
       }));
 
-   // Mapping intent as key and graphMap as value
+    // Mapping intent as key and graphMap as value
     let intentsMapping = mapIntentsGraphValues.reduce((acc: any, item) => {
-          acc[item.intent] = item.graphMap;
-          return acc;
+      acc[item.intent] = item.graphMap;
+      return acc;
     }, {});
 
     // return { intentsMapping }
@@ -503,44 +503,95 @@ export const getAnalytics = async (
       if (!queryArray.length || queryArray.includes(key)) {
         acc[key] = safeGroupedCounts(map);
       }
-      return acc; 
+      return acc;
     }, {});
 
     console.log({ queryArray });
 
     const graphArray = queryArray.map((key) => graph[key]).filter(Boolean);
     let statistics = [
-        { name: "chat sessions", value: chats.length, apiName: "sessions", color: "#facc15" },
-        { name: "unique visitors", value: uniqueVisiters.length ?? 0, apiName: "unique_visitors", color: "#a855f7" },
-        { name: "chat leads", value: leads.length, apiName: "leads", color: "#4f46e5" },
-        { name: "interacted chats", value: filteredInteractedChats.length, apiName: "interacted_chats", color: "#dc2626"  },
-        // Spread the mapIntents into statistics
-        ...mapIntents.map(intent =>{
-          if (intent?.name === "site_visit") {
-            return { name: 'site visits', value: intent.value, apiName: intent.name, color: "#2563eb" } 
-          }
-          if (intent?.name === "schedule_call") {
-            return { name: 'call scheduled', value: intent.value, apiName: intent.name, color: "#16a34a" }
-          }
-          if (intent?.name === "virtual_tour") {
-            return { name: 'virtual tours', value: intent.value, apiName: intent.name, color: "#e11d48" }
-          }
-          if (intent?.name === "location") {
-            return { name: 'location visited', value: intent.value, apiName: intent.name, color: "#1e293b" }
-          }
-          if (intent?.name === "images") {
-            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#FA8072" }
-          }
-          if (intent?.name === "brochures") {
-            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#40E0D0" }
-          }
-        })
-    ].filter(item => item !== null)
-    .sort((a, b) => (b?.value ?? 0) - (a?.value ?? 0));
+      {
+        name: "chat sessions",
+        value: chats.length,
+        apiName: "sessions",
+        color: "#facc15",
+      },
+      {
+        name: "unique visitors",
+        value: uniqueVisiters.length ?? 0,
+        apiName: "unique_visitors",
+        color: "#a855f7",
+      },
+      {
+        name: "chat leads",
+        value: leads.length,
+        apiName: "leads",
+        color: "#4f46e5",
+      },
+      {
+        name: "interacted chats",
+        value: interactedChats.length,
+        apiName: "interacted_chats",
+        color: "#dc2626",
+      },
+      // Spread the mapIntents into statistics
+      ...mapIntents.map((intent) => {
+        if (intent?.name === "site_visit") {
+          return {
+            name: "site visits",
+            value: intent.value,
+            apiName: intent.name,
+            color: "#2563eb",
+          };
+        }
+        if (intent?.name === "schedule_call") {
+          return {
+            name: "call scheduled",
+            value: intent.value,
+            apiName: intent.name,
+            color: "#16a34a",
+          };
+        }
+        if (intent?.name === "virtual_tour") {
+          return {
+            name: "virtual tours",
+            value: intent.value,
+            apiName: intent.name,
+            color: "#e11d48",
+          };
+        }
+        if (intent?.name === "location") {
+          return {
+            name: "location visited",
+            value: intent.value,
+            apiName: intent.name,
+            color: "#1e293b",
+          };
+        }
+        if (intent?.name === "images") {
+          return {
+            name: intent.name,
+            value: intent.value,
+            apiName: intent.name,
+            color: "#FA8072",
+          };
+        }
+        if (intent?.name === "brochures") {
+          return {
+            name: intent.name,
+            value: intent.value,
+            apiName: intent.name,
+            color: "#40E0D0",
+          };
+        }
+      }),
+    ]
+      .filter((item) => item !== null)
+      .sort((a, b) => (b?.value ?? 0) - (a?.value ?? 0));
 
     return {
       statistics,
-      graph: graphArray
+      graph: graphArray,
     };
   } catch (error) {
     throw new Error(`Failed to fetch: ${error}`);
