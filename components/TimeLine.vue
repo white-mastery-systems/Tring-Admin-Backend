@@ -76,7 +76,10 @@ defineProps({
           <p class="mt-2 text-[14px] font-normal text-gray-600">
 
             {{ data.createdAt }}
-              <NuxtLink class="text-indigo-600 cursor-pointer px-2 font-semibold"  @click="emits('timeLine', data.chatId)">
+              <NuxtLink class="text-indigo-600 cursor-pointer px-2 font-semibold"  @click="emits('timeLine', {
+                chatId:data.chatId,
+                chatIndex:data.chatIndex
+                })">
                 Click To  View
             </NuxtLink>
             <!-- {{ format(new Date(data.createdAt), "dd MMM yyyy hh:mm aa") }} -->
