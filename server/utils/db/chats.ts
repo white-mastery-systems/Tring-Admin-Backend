@@ -60,7 +60,7 @@ export const listChats = async (
   let fromDate: Date | undefined;
   let toDate: Date | undefined;
   if (query?.period) {
-    const queryDate = getDateRangeForFilters(query);
+    const queryDate = getDateRangeForFilters(query, timeZone);
     fromDate = queryDate?.from;
     toDate = queryDate?.to;
   }
