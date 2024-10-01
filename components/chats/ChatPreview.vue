@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="overflow-y-scroll pt-[1rem] pr-4" v-for="(messageList, messageIndex) in leadDataReplace(chatList?.messages)"
-        :id="messageList.chatId" :key="messageIndex">
+        :id="messageList.chatId+`_id${messageIndex}`" :key="messageIndex">
         <div style="display: flex; justify-content: center" v-if="
           leadDataValue?.channel === 'whatsapp' &&
           timeStamp(messageIndex, messageList)
@@ -159,6 +159,8 @@
 </template>
 
 <script setup lang="ts">
+import { set } from 'date-fns';
+
 const props = defineProps<{
   leadDataValue: any;
   class?: String;
@@ -232,13 +234,22 @@ const leadDataReplace = (messages:any) => {
 
 watch(() => props.scrollChatBox, (newValue) => {
   console.log({ newValue })
-  if (newValue) scrollToMessage(newValue)
+  if (newValue !==null) scrollToMessage(newValue)
+})
+
+watch(() => props.leadDataValue, (newValue) => {
+  setTimeout(() => {
+  scrollToMessage({chatIndex: props.chatValue.length}) 
+  },10)
 })
 
 // Function to scroll to a specific message based on chatId
 const emit = defineEmits(['chatId'])
-const scrollToMessage = (chatId: string) => {
-  const element = document.getElementById(chatId);
+const scrollToMessage = ({chatIndex}) => {
+  const chats  = [...props.chatValue[chatIndex-1].messages]
+  const {chatId} =[...chats].pop()
+  const element = document.getElementById(chatId+`_id${chats.length-1}`);
+  
   if (element) {
     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
