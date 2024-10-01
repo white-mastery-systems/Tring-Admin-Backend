@@ -1,11 +1,11 @@
 export const playgroundRequests = async (
-  systemPrompts: string[],
-  userInput: string,
+  systemInstructions: string[],
+  userQueries: string[],
 ) => {
   try {
     const response = await $fetch("/api/playground", {
       method: "POST",
-      body: { systemPrompts, userInput },
+      body: { systemInstructions, userQueries },
     });
     return response;
   } catch (error) {
@@ -15,14 +15,14 @@ export const playgroundRequests = async (
 };
 
 export const loadKnowledgeBase = async (
-  question: string,
+  questions: string[],
   documentId: string,
 ) => {
   try {
     const knowledge = await $fetch("/api/playground/knowledge", {
       method: "POST",
       body: {
-        question,
+        questions,
         documentId,
       },
     });
