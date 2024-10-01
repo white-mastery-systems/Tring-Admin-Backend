@@ -216,7 +216,7 @@ const leadDataReplace = (messages:any) => {
   let leadMessage = messages[messageIndex];
   if (!leadMessage?.metadata) return messages
   // leadMessage.role = "assistant";
-  let localMessagesStore = messages;
+  let localMessagesStore = [...messages];
   localMessagesStore?.splice(messageIndex, 1);
   localMessagesStore?.splice(messageIndex - 1, 0, leadMessage);
   // localMessagesStore?.slice(1);
@@ -240,17 +240,17 @@ const emit = defineEmits(['chatId'])
 const scrollToMessage = (chatId: string) => {
   const element = document.getElementById(chatId);
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   else {
 
   }
-
+emit('chatId',null)
 };
 
 
 const  dateTimeFormat = (text, format) => {
-const dateTimeStr = text?.replace("Site Visit Scheduled on", "").trim();
+const dateTimeStr = text?.replace("Site Visit Scheduled on", "")?.trim();
 const [dateStr, timeStr] = dateTimeStr?.split(' - ');
 console.log({ dateStr, timeStr });
 if(format === 'time')  return timeStr
