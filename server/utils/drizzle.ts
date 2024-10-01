@@ -1,5 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
+import { playgroundDocumentSchema } from "../schema/admin";
 
 const runtimeConfig = useRuntimeConfig();
 
@@ -32,6 +33,7 @@ const schema = {
   contactSchema,
   campaignSchema,
   callLogSchema,
+  playgroundDocumentSchema,
   // Relations
   organizationRelations,
   chatBotRelations,

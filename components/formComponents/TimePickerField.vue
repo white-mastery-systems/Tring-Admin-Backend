@@ -12,7 +12,8 @@ const props = withDefaults(defineProps<{
   isTextarea: boolean;
   disabled?: boolean;
   class?: string;
-  endIcon?: any
+  endIcon?: any;
+  validation:boolean;
 }>(), {
   label: '',
   type: 'text',
@@ -22,10 +23,11 @@ const props = withDefaults(defineProps<{
   disableCharacters: false,
   isTextarea: false,
   disabled: false,
-  class: ''
+  class: '',
+  validation:true
 });
 const replacedId = ref(props.label ?? props.name)
-const { value, errorMessage }: { value: any, errorMessage: any } = useField(() => props.name);
+const { value, errorMessage }: { value: any, errorMessage: any } = !props.validation ?  {value:props.name,errorMessage:''}:useField(() => props.name);
 
 watch(errorMessage, (newErr) => {
   console.log({ newErr })
@@ -38,9 +40,9 @@ watch(value, (value) => {
 <template>
   <div class="flex flex-col justify-start items-center gap-2 font-medium w-full">
     <label :for="name" class="pb-[1px] text-gray-700 w-full" :class="(errorMessage) ? 'text-red-500' : ''">
-      {{ label }} <span class="pb-2 text-red-500 font-medium text-[18px]">*</span>
+      {{ label }} <span v-if="required" class="pb-2 text-red-500 font-medium text-[18px]">*</span>
     </label>
-    <input v-model="value" type="time" :id="name" class="w-full" :class="[
+    <input v-model="value" type="time" :id="name" class="w-full" :readonly="disabled" :class="[
       'border-[1px] border-solid rounded-[6px] py-[8px] px-2 font-normal text-[14px]',
     ]">
     <p v-if="errorMessage" class="text-red-500 text-[13px]">{{ errorMessage }}</p>

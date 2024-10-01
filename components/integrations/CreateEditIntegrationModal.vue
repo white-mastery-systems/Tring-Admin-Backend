@@ -138,7 +138,7 @@ const handleConnect = handleSubmit(async (values: any) => {
           { value: 'zoho-bigin', label: 'Zoho Bigin' }
         ]" required />
 
-        <TextField v-if="values.crm === 'sell-do'" name="metadata.apiKey" label="Name"
+        <TextField v-if="values.crm === 'sell-do'" name="metadata.apiKey" label="Api key"
           helperText="Enter your API key here" placeHolder="Eg: api-key-here" required />
         <div class="flex justify-end w-full">
           <UiButton type="submit" class="mt-2" color="primary">

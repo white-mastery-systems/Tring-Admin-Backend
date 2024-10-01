@@ -39,13 +39,16 @@ import { CalendarDate, today, getLocalTimeZone, parseDate, DateFormatter } from 
 import { toDate } from 'radix-vue/date'
 
 // Define component props
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   name: string,
   label?: string,
   placeholder?: string,
   required?: boolean,
   helperText?: string,
-}>();
+  validation:boolean
+}>(),{
+  validation:true
+});
 
 // Use vee-validate to handle form field and validation
 const df = new DateFormatter('en-US', {
@@ -53,7 +56,7 @@ const df = new DateFormatter('en-US', {
   day: 'numeric',
   year: 'numeric',
 })
-const { value: fieldValue, errorMessage, meta } = useField(props.name);
+const { value: fieldValue, errorMessage, meta } = !props.validation ?  {value:props.name,errorMessage:''}: useField(props.name);
 // Define reactive date selection and error handling
 const selectedDate = ref<any>(fieldValue.value);
 

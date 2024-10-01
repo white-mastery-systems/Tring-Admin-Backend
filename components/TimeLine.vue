@@ -21,10 +21,11 @@ defineProps({
     required: true,
   },
 });
+
 </script>
 
 <template>
-  <div orientation="vertical" class="mx-auto flex w-full flex-col justify-start gap-10">
+  <div  orientation="vertical" class="mx-auto flex w-full flex-col justify-start gap-10">
     <div class="relative flex w-full items-start gap-6">
       <div
         class="absolute left-[18px] top-[64px] block h-[105%] w-0.5 shrink-0 rounded-full opacity-100 group-data-[state=completed]:bg-[#424BD1]" />
@@ -47,22 +48,22 @@ defineProps({
           </h4>
           
            <h4 class="text-right scroll-m-20 text-[16px] font-semibold tracking-tight">
-            Chat {{ index + 1 }}
+            Chat {{ data.chatIndex }}
            </h4>
           </div>
 
 
 
-          <div class="" v-if="data.metadata?.website">
+          <div class="max-w-[600px] overflow-y-auto" v-if="data.metadata?.website">
             <span v-if="data.metadata?.title" class="min-w-[90px] text-[16px] font-semibold">
               {{ data.metadata?.title }}
             </span>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2  ">
               <span>
                 <LinkIcon />
               </span>
               <!-- @click="emits('timeLine', data.chatId)" -->
-              <NuxtLink v-if="data?.metadata?.website" :to="data?.metadata?.website" target="_blank"
+              <NuxtLink  v-if="data?.metadata?.website" :to="data?.metadata?.website" target="_blank"
                 class="text-indigo-600 cursor-pointer">
                 {{ data?.metadata?.website }}
               </NuxtLink>

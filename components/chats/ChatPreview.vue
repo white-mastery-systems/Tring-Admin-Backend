@@ -24,13 +24,56 @@
         <div v-if="
           messageList?.role === 'comment' &&
           messageList.content !== 'User Details Submitted'
-        " class="relative">
-          <div
+          
+        "
+        class="flex w-full flex-col items-end">
+         <!-- class="relative" -->
+          <!-- <div
             class="absolute left-1/2 top-1/2 h-[0.5px] w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500/50">
           </div>
           <p class="relative mx-auto w-fit rounded-sm border bg-gray-100 px-2 py-1 text-xs font-thin">
             {{ messageList.content }}
-          </p>
+          </p> -->
+
+          <div class="flex max-w-[80%] flex-col items-end justify-center">
+            <span class="text-[14px]" style="color: #8a8a8a">{{
+              leadDataValue?.botUser?.name
+            }}</span>
+            <div
+              class="mt-2.5 flex flex-col items-end justify-center gap-5 rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black">
+              <div class="pb-2 pt-2">
+               
+               <span>
+                Site Visit Scheduled on
+               </span>
+                 <!-- {{dateTimeFormat(messageList.content,'date')}} -->
+                  <div class="pt-4">
+                 <TextField  label="Date" :validation="false"  :name="dateTimeFormat(messageList.content,'date')" :required="false" :disabled="true"/>
+                  </div>
+                  <div class="pt-4">
+                 <TextField  label="Time" :validation="false"  :name="dateTimeFormat(messageList.content,'time')" :required="false" :disabled="true"/>
+
+                  </div>
+                <!-- <DatePickerField label="Date" :validation="false"  :name="dateTimeFormat(messageList.content,'date')" :required="false" :disabled="true"/> -->
+                <!-- <TimePickerField label="Time"  :required="false" :disabled="true" 
+                :validation="false":name="dateTimeFormat(messageList.content,'time')"></TimePickerField> -->
+                <!-- <div class="pb-2" v-if="messageList?.metadata?.name">
+                  <TextField label="Name" :disabled="true" :disableCharacters="true"  
+                    :placeholder="messageList?.metadata.name" />
+                </div>
+                <div class="pb-2 pt-2" v-if="messageList?.metadata?.email">
+                  <TextField label="Email" :disabled="true" :disableCharacters="true"
+                    :placeholder="messageList.metadata.email" />
+                </div>
+                <div class="pb-2 pt-2" v-if="messageList?.metadata?.mobile">
+                  <TextField label="Mobile" :disabled="true" :placeholder="messageList?.metadata?.mobile" />
+                </div> -->
+              </div>
+            </div>
+            <div class="text-[12px] opacity-60">
+              {{ formatDate(new Date(messageList.createdAt), "hh:mm a") }}
+            </div>
+          </div>
         </div>
         <div class="flex w-full flex-col items-end" v-if="
           messageList?.role === 'comment' &&
@@ -173,10 +216,10 @@ const leadDataReplace = (messages:any) => {
   let leadMessage = messages[messageIndex];
   if (!leadMessage?.metadata) return messages
   // leadMessage.role = "assistant";
-  let localMessagesStore = messages;
+  let localMessagesStore = [...messages];
   localMessagesStore?.splice(messageIndex, 1);
-  localMessagesStore.splice(messageIndex - 1, 0, leadMessage);
-  localMessagesStore.slice(1);
+  localMessagesStore?.splice(messageIndex - 1, 0, leadMessage);
+  // localMessagesStore?.slice(1);
   message = localMessagesStore;
   return message;
 };
@@ -197,11 +240,22 @@ const emit = defineEmits(['chatId'])
 const scrollToMessage = (chatId: string) => {
   const element = document.getElementById(chatId);
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   else {
 
   }
-
+emit('chatId',null)
 };
+
+
+const  dateTimeFormat = (text, format) => {
+const dateTimeStr = text?.replace("Site Visit Scheduled on", "")?.trim();
+const [dateStr, timeStr] = dateTimeStr?.split(' - ');
+console.log({ dateStr, timeStr });
+if(format === 'time')  return timeStr
+else{
+ return dateStr
+}
+}
 </script>

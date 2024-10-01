@@ -63,6 +63,7 @@ export default defineEventHandler(async (event) => {
 
   form.append("name", body.data.name?.replace(/[^a-zA-Z0-9.]/g, ""));
   form.append("files", file);
+  console.log(conf.llmCallbackUrl, "LLMCALLBACK");
   form.append(
     "req",
     JSON.stringify({
