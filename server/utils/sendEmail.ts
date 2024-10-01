@@ -7,7 +7,7 @@ const sendEmail = (to: string, subject: string, message: any) => {
     return new Promise((resolve) => {
       console.log({ user: config?.nodemailerUser , pass: config?.nodemailerPass})
       const transporter = nodemailer.createTransport({
-        host: "lin.ezveb.com",
+        host: 'smtp.gmail.com',
         port: 465,
         secure: true,
         auth: {
@@ -24,7 +24,10 @@ const sendEmail = (to: string, subject: string, message: any) => {
       }
 
     transporter.sendMail(mailOptions, (error) => {
-      if (error) resolve({ status: false })
+      if (error){
+        console.log("error", error)
+         resolve({ status: false })
+        }
       else resolve({ status: true })
     })
   })
