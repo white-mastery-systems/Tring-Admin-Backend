@@ -1,14 +1,3 @@
-import {
-  endOfDay,
-  endOfMonth,
-  endOfYear,
-  startOfDay,
-  startOfMonth,
-  startOfYear,
-  subDays,
-  subMonths,
-  subYears,
-} from "date-fns";
 import { inArray } from "drizzle-orm";
 import momentTz from "moment-timezone";
 
@@ -17,6 +6,7 @@ const db = useDrizzle();
 interface QueryInterface {
   q?: string;
   status?: string;
+  country?: string;
   channel?: string;
   action?: string;
   period?: string;
@@ -32,6 +22,7 @@ export const listLeads = async (
   timeZone: string,
 ) => {
   try {
+    // console.log({ query })
     let filters: any = [eq(leadSchema.organizationId, organizationId)];
 
     if (query?.botId && query?.botId !== "all") {
@@ -78,10 +69,10 @@ export const listLeads = async (
     if (query?.period) {
       let fromDate: Date | undefined;
       let toDate: Date | undefined;
-      const queryDate = getDateRangeForFilters(query);
+      const queryDate = getDateRangeForFilters(query, timeZone);
       fromDate = queryDate?.from;
       toDate = queryDate?.to;
-
+      console.log("leads",{ fromDate, toDate })
       if (fromDate && toDate) {
         filters.push(between(leadSchema.createdAt, fromDate, toDate));
       }
@@ -141,6 +132,10 @@ export const listLeads = async (
       leads = leads.filter((lead: any) => {
         return lead.chat !== null;
       });
+    
+    if(query?.country && query?.country !== "all") {
+       leads = leads.filter((i: any) => i.chat?.metadata?.country === query.country)
+     }
 
     if (query?.page && query?.limit) {
       const paginatedLeads = leads.slice(offset, offset + limit);
@@ -177,62 +172,63 @@ export const updateLead = async (leadId: string, lead: InsertLead) => {
   )[0];
 };
 
-export const getDateRangeForFilters = (query: any) => {
+export const getDateRangeForFilters = (query: any, timeZone: string) => {
+  const now = momentTz().tz(timeZone);
   switch (query?.period) {
     case "today":
       return {
-        from: startOfDay(new Date()),
-        to: endOfDay(new Date()),
+        from: now.clone().startOf("day").toDate(),
+        to: now.clone().endOf("day").toDate(),
       };
     case "yesterday":
       return {
-        from: startOfDay(subDays(new Date(), 1)),
-        to: endOfDay(subDays(new Date(), 1)),
+        from: now.clone().subtract(1, 'day').startOf("day").toDate(),
+        to: now.clone().subtract(1, 'day').endOf("day").toDate(),
       };
     case "last-7-days":
       return {
-        from: startOfDay(subDays(new Date(), 7)),
-        to: endOfDay(new Date()),
+        from: now.clone().subtract(7, 'days').startOf("day").toDate(),
+        to: now.clone().endOf("day").toDate(),
       };
     case "last-30-days":
       return {
-        from: startOfDay(subDays(new Date(), 30)),
-        to: endOfDay(new Date()),
+        from: now.clone().subtract(30, 'days').startOf("day").toDate(),
+        to: now.clone().endOf("day").toDate(),
       };
     case "current-month":
       return {
-        from: startOfMonth(new Date()),
-        to: endOfMonth(new Date()),
+        from:  now.clone().startOf("month").toDate(),
+        to: now.clone().endOf("month").toDate(),
       };
     case "last-month":
       return {
-        from: startOfMonth(subMonths(new Date(), 1)),
-        to: endOfMonth(subMonths(new Date(), 1)),
+        from: now.clone().subtract(1, 'month').startOf("month").toDate(),
+        to: now.clone().subtract(1, 'month').endOf("month").toDate(),
       };
     case "current-year":
       return {
-        from: startOfYear(new Date()),
-        to: endOfYear(new Date()),
+        from: now.clone().startOf("year").toDate(),
+        to: now.clone().endOf("year").toDate(),
       };
     case "last-year":
       return {
-        from: startOfYear(subYears(new Date(), 1)),
-        to: endOfYear(subYears(new Date(), 1)),
+        from: now.clone().subtract(1, 'year').startOf("year").toDate(),
+        to: now.clone().subtract(1, 'year').endOf("year").toDate(),
       };
     case "current-financial-year":
       return {
-        from: new Date(new Date().getFullYear(), 3, 1), // April 1st of the current year
-        to: new Date(new Date().getFullYear() + 1, 2, 31), // March 31st of the next year
+        from: momentTz(`${now.year()}-04-01`).tz(timeZone).toDate(), // April 1st of the current year
+        to: momentTz(`${now.year() + 1}-03-31`).tz(timeZone).toDate(), // March 31st of the next year
       };
     case "last-financial-year":
       return {
-        from: new Date(new Date().getFullYear() - 1, 3, 1), // April 1st of the last year
-        to: new Date(new Date().getFullYear(), 2, 31), // March 31st of the current year
+        from: momentTz(`${now.year() - 1}-04-01`).tz(timeZone).toDate(), // April 1st of the last year
+        to: momentTz(`${now.year()}-03-31`).tz(timeZone).toDate(), // March 31st of the current year
       };
     case "custom":
       return {
-        from: query?.from || undefined,
-        to: query?.to || undefined,
+        from: momentTz(query?.from).startOf("day").tz(timeZone).toDate() || undefined,
+        to: momentTz(query?.to).endOf("day").tz(timeZone).toDate() || undefined,
       };
     case "all-time":
       return {

@@ -1,139 +1,117 @@
-import {
-  differenceInDays,
-  eachDayOfInterval,
-  eachHourOfInterval,
-  eachMonthOfInterval,
-  endOfDay,
-  endOfMonth,
-  endOfYear,
-  format,
-  startOfDay,
-  startOfMonth,
-  startOfYear,
-  subDays,
-  subMonths,
-  subYears,
-} from "date-fns";
+import moment from "moment";
 import momentTz from "moment-timezone"
 
-// Date range generation function
-export const getAllDatesInRange = (period: string, from: Date, to: Date) => {
-  let dates: string[] = [];
-  let startDate: Date, endDate: Date;
-  let difference = 0;
 
-  // console.log({ from, to, period })
-  const now = new Date();
+// Date range generation function
+export const getAllDatesInRange = (period: string, from: Date, to: Date, timeZone: string) => {
+  console.log({ from, to })
+  let dates: string[] = [];
+  let startDate, endDate, dateFormat, type;
+  let difference = 0;
+  const now = momentTz().tz(timeZone);
 
   switch (period) {
     case "today":
-      startDate = startOfDay(now);
-      endDate = endOfDay(now);
-      dates = eachHourOfInterval({ start: startDate, end: endDate }).map(
-        (date) => format(date, "hh:mm a"),
-      );
+      startDate = now.clone().startOf("day");
+      endDate = now.clone().endOf("day");
+      dateFormat = "hh:mm A";
+      type = 'hour';
       break;
 
     case "yesterday":
-      startDate = startOfDay(subDays(now, 1));
-      endDate = endOfDay(subDays(now, 1));
-      dates = eachHourOfInterval({ start: startDate, end: endDate }).map(
-        (date) => format(date, "hh:mm a"),
-      );
+      startDate = now.clone().subtract(1, 'day').startOf("day");
+      endDate = now.clone().subtract(1, 'day').endOf("day");
+      dateFormat = "hh:mm A";
+      type = 'hour';
       break;
 
     case "last-7-days":
-      startDate = startOfDay(subDays(now, 6));
-      endDate = endOfDay(now);
-      dates = eachDayOfInterval({ start: startDate, end: endDate }).map(
-        (date) => format(date, "dd MMM yyyy"),
-      );
+      startDate = now.clone().subtract(6, 'day').startOf("day");
+      endDate = now.clone().endOf("day");
+      dateFormat = "DD MMM YYYY";
+      type = 'day';
       break;
 
     case "last-30-days":
-      startDate = startOfDay(subDays(now, 29));
-      endDate = endOfDay(now);
-      dates = eachDayOfInterval({ start: startDate, end: endDate }).map(
-        (date) => format(date, "dd MMM yyyy"),
-      );
+      startDate = now.clone().subtract(29, 'day').startOf("day");
+      endDate = now.clone().endOf("day");
+      dateFormat = "DD MMM YYYY";
+      type = 'day';
       break;
 
     case "current-month":
-      startDate = startOfMonth(now);
-      endDate = endOfMonth(now);
-      dates = eachDayOfInterval({ start: startDate, end: endDate }).map(
-        (date) => format(date, "dd MMM yyyy"),
-      );
+      startDate = now.clone().startOf("month");
+      endDate = now.clone().endOf("month");
+      dateFormat = "DD MMM YYYY";
+      type = 'day';
       break;
 
     case "last-month":
-      startDate = startOfMonth(subMonths(now, 1));
-      endDate = endOfMonth(subMonths(now, 1));
-      dates = eachDayOfInterval({ start: startDate, end: endDate }).map(
-        (date) => format(date, "dd MMM yyyy"),
-      );
+      startDate = now.clone().subtract(1, 'month').startOf("month");
+      endDate = now.clone().subtract(1, 'month').endOf("month");
+      dateFormat = "DD MMM YYYY";
+      type = 'day';
       break;
 
     case "current-year":
-      startDate = startOfYear(now);
-      endDate = endOfYear(now);
-      dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
-        (date) => format(date, "MMM yyyy"),
-      );
+      startDate = now.clone().startOf("year");
+      endDate = now.clone().endOf("year");
+      dateFormat = "MMM YYYY";
+      type = 'month';
       break;
 
     case "last-year":
-      startDate = startOfYear(subYears(now, 1));
-      endDate = endOfYear(subYears(now, 1));
-      dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
-        (date) => format(date, "MMM yyyy"),
-      );
+      startDate = now.clone().subtract(1, 'year').startOf("year");
+      endDate = now.clone().subtract(1, 'year').endOf("year");
+      dateFormat = "MMM YYYY";
+      type = 'month';
       break;
 
     case "current-financial-year":
-      startDate = new Date(now.getFullYear(), 3, 1); // April 1st of the current year
-      endDate = new Date(now.getFullYear() + 1, 2, 31); // March 31st of the next year
-      dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
-        (date) => format(date, "MMM yyyy"),
-      );
+      startDate = momentTz(`${now.year()}-04-01`).tz(timeZone); // April 1st of the current year
+      endDate = momentTz(`${now.year() + 1}-03-31`).tz(timeZone); // March 31st of the next year
+      dateFormat = "MMM YYYY";
+      type = 'month';
       break;
 
     case "last-financial-year":
-      startDate = new Date(now.getFullYear() - 1, 3, 1); // April 1st of the last year
-      endDate = new Date(now.getFullYear(), 2, 31); // March 31st of the current year
-      dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
-        (date) => format(date, "MMM yyyy"),
-      );
+      startDate = momentTz(`${now.year() - 1}-04-01`).tz(timeZone); // April 1st of the last year
+      endDate = momentTz(`${now.year()}-03-31`).tz(timeZone); // March 31st of the current year
+      dateFormat = "MMM YYYY";
+      type = 'month';
       break;
 
     case "all-time":
-      startDate = startOfYear(from);
-      endDate = endOfYear(now);
-      dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
-        (date) => format(date, "MMM yyyy"),
-      );
+      startDate = momentTz(from).startOf("year").tz(timeZone);
+      endDate = now.clone().endOf("year");
+      dateFormat = "MMM YYYY";
+      type = 'month';
       break;
 
     case "custom":
-      difference = differenceInDays(to, from);
-      // console.log({ difference })
+      difference = moment(to).diff(moment(from), 'days');
+      console.log({ difference })
       if (difference > 30) {
-        startDate = startOfYear(from);
-        endDate = endOfYear(to);
-        dates = eachMonthOfInterval({ start: startDate, end: endDate }).map(
-          (date) => format(date, "MMM yyyy"),
-        );
+        startDate = momentTz(from).startOf("year").tz(timeZone);
+        endDate = momentTz(to).endOf("year").tz(timeZone);
+        dateFormat = "MMM YYYY";
+        type = 'month';
       } else {
-        startDate = from;
-        endDate = to;
-        dates = eachDayOfInterval({ start: startDate, end: endDate }).map(
-          (date) => format(date, "dd MMM yyyy"),
-        );
+        startDate = momentTz(from).startOf("day").tz(timeZone);
+        endDate = momentTz(to).endOf("day").tz(timeZone);
+        dateFormat = "DD MMM YYYY";
+        type = 'day';
       }
       break;
 
     default:
       throw new Error("Invalid period");
+  }
+
+  let current = startDate.clone();
+  while (current.isSameOrBefore(endDate)) {
+    dates.push(current.format(dateFormat));
+    current.add(1, type);
   }
 
   return {
@@ -175,74 +153,84 @@ export const groupAndMapData = ({ module, period, difference, timeZone }: any) =
 
 
 // get Date ranges
-export const getDateRange = (period: string, from: Date, to: Date) => {
-  const now = new Date();
-  // console.log("------", { period, from, to })
+export const getDateRange = (period: string, from: Date, to: Date, timeZone: string) => {
+  const now = momentTz().tz(timeZone); // Ensure we are using UTC
 
   switch (period) {
     case "today":
       return {
-        fromDate: startOfDay(now),
-        toDate: endOfDay(now),
+        fromDate: now.clone().startOf("day").toDate(),
+        toDate: now.clone().endOf("day").toDate(),
       };
+
     case "yesterday":
       return {
-        fromDate: startOfDay(subDays(now, 1)),
-        toDate: endOfDay(subDays(now, 1)),
+        fromDate: now.clone().subtract(1, 'day').startOf("day").toDate(),
+        toDate: now.clone().subtract(1, 'day').endOf("day").toDate(),
       };
+
     case "last-7-days":
       return {
-        fromDate: startOfDay(subDays(now, 7)),
-        toDate: endOfDay(now),
+        fromDate: now.clone().subtract(7, 'days').startOf("day").toDate(),
+        toDate: now.clone().endOf("day").toDate(),
       };
+
     case "last-30-days":
       return {
-        fromDate: startOfDay(subDays(now, 30)),
-        toDate: endOfDay(now),
+        fromDate: now.clone().subtract(30, 'days').startOf("day").toDate(),
+        toDate: now.clone().endOf("day").toDate(),
       };
+
     case "current-month":
       return {
-        fromDate: startOfMonth(now),
-        toDate: endOfMonth(now),
+        fromDate: now.clone().startOf("month").toDate(),
+        toDate: now.clone().endOf("month").toDate(),
       };
+
     case "last-month":
       return {
-        fromDate: startOfMonth(subMonths(now, 1)),
-        toDate: endOfMonth(subMonths(now, 1)),
+        fromDate: now.clone().subtract(1, 'month').startOf("month").toDate(),
+        toDate: now.clone().subtract(1, 'month').endOf("month").toDate(),
       };
+
     case "current-year":
       return {
-        fromDate: startOfYear(now),
-        toDate: endOfYear(now),
+        fromDate: now.clone().startOf("year").toDate(),
+        toDate: now.clone().endOf("year").toDate(),
       };
+
     case "last-year":
       return {
-        fromDate: startOfYear(subYears(now, 1)),
-        toDate: endOfYear(subYears(now, 1)),
+        fromDate: now.clone().subtract(1, 'year').startOf("year").toDate(),
+        toDate: now.clone().subtract(1, 'year').endOf("year").toDate(),
       };
+
     case "current-financial-year":
       return {
-        fromDate: new Date(now.getFullYear(), 3, 1), // April 1st of the current year
-        toDate: new Date(now.getFullYear() + 1, 2, 31), // March 31st of the next year
+        fromDate: momentTz(`${now.year()}-04-01`).tz(timeZone).toDate(), // April 1st of the current year
+        toDate: momentTz(`${now.year() + 1}-03-31`).tz(timeZone).toDate(), // March 31st of the next year
       };
+
     case "last-financial-year":
       return {
-        fromDate: new Date(now.getFullYear() - 1, 3, 1), // April 1st of the last year
-        toDate: new Date(now.getFullYear(), 2, 31), // March 31st of the current year
+        fromDate: momentTz(`${now.year() - 1}-04-01`).tz(timeZone).toDate(), // April 1st of the last year
+        toDate: momentTz(`${now.year()}-03-31`).tz(timeZone).toDate(), // March 31st of the current year
       };
+
     case "all-time":
       return {
-        fromDate: startOfYear(from),
-        toDate: endOfYear(now),
+        fromDate: momentTz(from).startOf("year").tz(timeZone).toDate(),
+        toDate: now.clone().endOf("year").toDate(),
       };
 
     case "custom":
       return {
-        fromDate: from,
-        toDate: to,
+        fromDate: momentTz(from).startOf("day").tz(timeZone).toDate(),
+        toDate: momentTz(to).endOf("day").tz(timeZone).toDate(),
       };
 
     default:
       throw new Error("Invalid period");
   }
 };
+

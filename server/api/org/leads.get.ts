@@ -14,6 +14,7 @@ const queryValidator = z
     q: z.string().optional(),
     status: z.string().toLowerCase().optional(),
     action: z.string().optional(),
+    country: z.string().optional(),
     channel: z.string().optional(),
     period: z.string().optional(),
     page: z.string().optional(),

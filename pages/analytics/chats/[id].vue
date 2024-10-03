@@ -50,8 +50,11 @@
                         >
                           {{ entry[1] }}
                         </a>
+                        <div class="text-indigo-600 cursor-pointer"  v-else-if="entry[0] === 'parentUrl'">
+                        <NuxtLink :to="entry[1]" target="_blank">Website</NuxtLink>
+                        </div>
                         <div v-else class="truncate">
-                          {{ entry[1] }}
+                          {{ entry[1] }} 
                         </div>
                       </div>
                     </div>
@@ -134,7 +137,6 @@
     }, 1000);
   };
 
-  scrollChatBox;
   onMounted(() => {
     {
       scrollChatBox();
