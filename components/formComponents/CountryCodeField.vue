@@ -5,7 +5,7 @@
                 <UiFormLabel>Country Code<span class="text-sm text-red-500">*</span>
                 </UiFormLabel>
                 <UiPopover class="mt-0">
-                    <UiPopoverTrigger as-child class="mt-0">
+                    <UiPopoverTrigger as-child class="mt-0" :disabled="disabled">
                         <UiFormControl class="mt-0">
                             <UiButton variant="outline" role="combobox" :class="cn(
                                 'w-[100px] justify-between overflow-hidden mt-0',
@@ -97,6 +97,12 @@ const props = defineProps({
     },
     class: {
         type: String
+    },
+    validation:{
+        type:Boolean
+    },
+    disabled:{
+        type:Boolean
     }
 
 });
@@ -111,12 +117,13 @@ const {
 } = useVirtualList(allCoutryDialCode, {
     itemHeight: 32,
 });
-const { value: fieldValue, errorMessage, meta, handleChange } = useField(() => props.name);
+const { value: fieldValue, errorMessage, meta, handleChange } = props.validation ===false ? { value: props.name, errorMessage: '',handleChange:()=>{} } : useField(() => props.name);
 const countryCode = ref(fieldValue.value);
 
 watch(countryCode, (newValue) => {
     fieldValue.value = newValue;
 });
+
 const handleSearchCountries = (e: string) => {
     searchField.value = e.toLowerCase()
 }
