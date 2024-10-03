@@ -1,116 +1,158 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { loadKnowledgeBase, playgroundRequests } from '~/server/utils/playground'
-import type { DocumentResponse } from '~/utils/apis/playground'
-import { Upload } from 'lucide-vue-next'
+  import { ref, computed } from "vue";
+  import { useRouter, useRoute } from "vue-router";
+  import {
+    getCurrentPrompt,
+    loadKnowledgeBase,
+    playgroundRequests,
+  } from "~/server/utils/playground";
+  import type { DocumentResponse } from "~/utils/apis/playground";
+  import { Upload } from "lucide-vue-next";
 
-useHead({
-  title: 'Settings | Playground',
-})
+  useHead({
+    title: "Settings | Playground",
+  });
 
-const router = useRouter()
-const route = useRoute()
+  const router = useRouter();
+  const route = useRoute();
 
-const selectedFile = ref<File | null>(null)
-const documentId = ref(route.query.id as string)
+  const selectedFile = ref<File | null>(null);
+  const documentId = ref(route.query.id as string);
 
-const systemInstructions = ref(['', '', '', ''])
-const userQueries = ref(['', '', '', ''])
-const knowledgeBaseResults = ref<string[]>([])
-const processedResults = ref<string[]>([])
+  const systemInstructions = ref(["", "", "", ""]);
+  const userQueries = ref(["", "", "", ""]);
+  const processedResults = ref<string[]>([]);
+  const variables = ref({});
+  const systemPrompt = ref("Hello ${da} and ${dg}");
 
-const handleFileChange = async (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0]
-  if (file) {
-    selectedFile.value = file
-    // Add the playground document with the file and documentId
-    const response: DocumentResponse = await addPlaygroundDocument({
-      name: file.name,
-      files: file,
-    })
-    documentId.value = response.id
+  const handleFileChange = async (event: Event) => {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      selectedFile.value = file;
 
-    // Navigate to the same route with the documentId as a query parameter
-    router.push({
-      path: route.path,
-      query: { id: response.id },
-    })
-  }
-}
+      const response: DocumentResponse = await addPlaygroundDocument({
+        name: file.name,
+        files: file,
+      });
+      documentId.value = response.id;
 
-const processUserInput = async () => {
-  try {
-    processedResults.value = []
-
-    if (!documentId.value) {
-      toast.error('Please choose a document before chatting')
-      return
+      router.push({
+        path: route.path,
+        query: { id: response.id },
+      });
     }
+  };
 
-    const knowledgeResults = await loadKnowledgeBase(userQueries.value, documentId.value)
+  const processUserInput = async () => {
+    try {
+      processedResults.value = [];
 
-    // Filter and map system instructions
-    const validInstructions = systemInstructions.value
-      .map((instruction, index) => ({ instruction, index }))
-      .filter((item) => item.instruction.trim() !== '')
-
-    // Check if we have valid system instructions to process
-    if (validInstructions.length === 0) {
-      processedResults.value = ['No valid system instructions to process.']
-      return
-    }
-
-    const updatedInstructions = validInstructions.map((instructionItem, idx) => {
-      const knowledgeEntry = knowledgeResults[idx] || ''
-      const updatedInstruction = instructionItem.instruction.replace(
-        '${CONTEXT}',
-        knowledgeEntry,
-      )
-      return { ...instructionItem, instruction: updatedInstruction }
-    })
-
-    const instructionsArray = updatedInstructions.map((item) => item.instruction)
-
-    const response = await playgroundRequests(instructionsArray, userQueries.value)
-
-    if (!response || !response.responses) {
-      processedResults.value = ['Error: No valid response received.']
-      return
-    }
-
-    const resultsArray = new Array(systemInstructions.value.length).fill(null)
-
-    validInstructions.forEach((item, index) => {
-      if (response.responses[index]) {
-        resultsArray[item.index] = `${response.responses[index]}`
+      if (!documentId.value) {
+        toast.error("Please choose a document before chatting");
+        return;
       }
-    })
 
-    processedResults.value = resultsArray
-      .map((result, index) => {
-        if (result) {
-          return result
-        } else {
-          return `No response received for instruction: "${systemInstructions.value[index]}"`
+      const knowledgeResults = await loadKnowledgeBase(
+        userQueries.value,
+        documentId.value,
+      );
+
+      const validInstructions = systemInstructions.value
+        .map((instruction, index) => ({ instruction, index }))
+        .filter((item) => item.instruction.trim() !== "");
+
+      if (validInstructions.length === 0) {
+        processedResults.value = ["No valid system instructions to process."];
+        return;
+      }
+
+      const updatedInstructions = validInstructions.map(
+        (instructionItem, idx) => {
+          const knowledgeEntry = knowledgeResults[idx] || "";
+          const updatedInstruction = instructionItem.instruction.replace(
+            "${CONTEXT}",
+            knowledgeEntry,
+          );
+          return { ...instructionItem, instruction: updatedInstruction };
+        },
+      );
+
+      const instructionsArray = updatedInstructions.map(
+        (item) => item.instruction,
+      );
+
+      const response = await playgroundRequests(
+        instructionsArray,
+        userQueries.value,
+      );
+
+      if (!response || !response.responses) {
+        processedResults.value = ["Error: No valid response received."];
+        return;
+      }
+
+      const resultsArray = new Array(systemInstructions.value.length).fill(
+        null,
+      );
+
+      validInstructions.forEach((item, index) => {
+        if (response.responses[index]) {
+          resultsArray[item.index] = `${response.responses[index]}`;
         }
-      })
-      .filter((result) => result !== null)
-  } catch (error) {
-    console.error('Error processing input:', error)
-    processedResults.value = ['Error occurred while fetching results.']
-  }
-}
+      });
 
-const fileNames = computed(() => {
-  return selectedFile.value ? selectedFile.value.name : ''
-})
+      processedResults.value = resultsArray
+        .map((result, index) => {
+          if (result) {
+            return result;
+          } else {
+            return `No response received for instruction: "${systemInstructions.value[index]}"`;
+          }
+        })
+        .filter((result) => result !== null);
+    } catch (error) {
+      console.error("Error processing input:", error);
+      processedResults.value = ["Error occurred while fetching results."];
+    }
+  };
+
+  const fileNames = computed(() => {
+    return selectedFile.value ? selectedFile.value.name : "";
+  });
+
+  const handleUpdateVariables = (newVariables: any) => {
+    variables.value = newVariables.reduce((acc: any, v: any) => {
+      acc[v.name] = v.value;
+      return acc;
+    }, {});
+
+    systemInstructions.value = systemInstructions.value.map(
+      (instruction: string) => {
+        return instruction.replace(/\${(\w+)}/g, (match: any, key:any) => {
+          return variables.value[key] || match;
+        });
+      },
+    );
+  };
+
+  onMounted(async () => {
+    const prompt = await getCurrentPrompt();
+
+    if (prompt) {
+      systemInstructions.value = systemInstructions.value.map(() => prompt);
+      systemPrompt.value = systemInstructions.value[0];
+    }
+  });
 </script>
 
 <template>
   <Page title="Tring AI Playground" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex items-center gap-2">
+        <PlaygroundSheet
+          :system-prompt="systemPrompt"
+          @update-variables="handleUpdateVariables"
+        />
         <p class="pr-6">
           {{ fileNames }}
         </p>
@@ -137,6 +179,7 @@ const fileNames = computed(() => {
         </label>
       </div>
     </template>
+
     <div class="shadow-lg mb-4 overflow-hidden rounded-lg bg-white">
       <div class="space-y-4 p-6 pb-0">
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -171,7 +214,7 @@ const fileNames = computed(() => {
                 Result {{ index + 1 }}
               </h2>
               <div class="h-52 overflow-y-auto rounded-md border px-3">
-                <p class="whitespace-pre-wrap text-gray-700">{{ result }}</p>
+                <p class="whitespace-pre-wrap text-gray-700 text-sm">{{ result }}</p>
               </div>
             </div>
           </div>

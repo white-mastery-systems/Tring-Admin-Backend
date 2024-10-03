@@ -200,6 +200,13 @@ export const playgroundDocumentSchema = adminSchema.table("playground_document",
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const promptSchema = adminSchema.table("prompt", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  prompt: text("prompt"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 // Relations
 export const organizationRelations = relations(
   organizationSchema,
