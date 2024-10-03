@@ -7,6 +7,7 @@ const zodInsertTemplates = z.object({
   headerFile: z.string().optional(),
   headerLocation: z.string().optional(),
   body: z.string().optional(),
+  footer: z.string(),
   templateVariables: z.array(z.string()).optional()
 })
 
