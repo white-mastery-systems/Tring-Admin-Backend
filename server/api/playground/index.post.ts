@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
           method: "POST",
           body: JSON.stringify({
             provider: "openai",
-            model_name: "gpt-4-turbo",
+            model_name: "gpt-4o-mini",
             messages: [
               { role: "system", content: instruction },
               { role: "user", content: userQueries[index] },
