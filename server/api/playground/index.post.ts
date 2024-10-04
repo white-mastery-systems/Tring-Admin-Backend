@@ -1,7 +1,7 @@
 const config = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
-  const { systemInstructions, userQueries } = await readBody(event);
+  const { systemInstructions, userQueries, provider, model } = await readBody(event);
 
   const requests = systemInstructions.map(
     async (instruction: string, index: number) => {
@@ -9,8 +9,8 @@ export default defineEventHandler(async (event) => {
         const response = await $fetch<{ output: string }>("/ai/gen/", {
           method: "POST",
           body: JSON.stringify({
-            provider: "openai",
-            model_name: "gpt-4o-mini",
+            provider: provider || "openai",
+            model_name: model || "gpt-4o-mini",
             messages: [
               { role: "system", content: instruction },
               { role: "user", content: userQueries[index] },

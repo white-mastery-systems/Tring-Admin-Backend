@@ -5,11 +5,13 @@ interface Prompt {
 export const playgroundRequests = async (
   systemInstructions: string[],
   userQueries: string[],
+  provider: string,
+  model: string,
 ) => {
   try {
     const response = await $fetch("/api/playground", {
       method: "POST",
-      body: { systemInstructions, userQueries },
+      body: { systemInstructions, userQueries, provider, model },
     });
     return response;
   } catch (error) {
