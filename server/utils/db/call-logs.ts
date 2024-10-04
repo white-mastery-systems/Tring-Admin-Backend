@@ -52,7 +52,10 @@ export const getCallLogById = async (callLogId: string) => {
 export const updateCallLogById = async (callLogId: string, callLogs: InsertCallLogSchema) => {
   return (
     await db.update(callLogSchema)
-    .set(callLogs)
+    .set({
+      ...callLogs,
+      updatedAt: new Date()
+    })
     .where(eq(callLogSchema.id, callLogId))
     .returning()
   )[0]
