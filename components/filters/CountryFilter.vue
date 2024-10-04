@@ -9,8 +9,11 @@ const searchField = ref('');
 // const fieldValue = ref(null)
 const allCountryCodes = computed(() =>
   countryData
-    ?.filter((country: any) => country.code.toLowerCase().includes(searchField.value.toLowerCase()))
-    ?.map((country) => country.code)
+    ?.filter((country: any) => country.name.toLowerCase().includes(searchField.value.toLowerCase())  || country.code.toLowerCase().includes(searchField.value.toLowerCase()))
+    ?.map((country: any) => ({
+      name: country.name,
+      code: country.code,
+    }))
 );
 
 // Virtual list setup
@@ -26,11 +29,13 @@ const { list: countriesList, containerProps: containerPropsForCountry, wrapperPr
 
 
 const emit = defineEmits(["changeCountry"]);
-const selectedCountry: any = ref("all");
+const selectedCountry: any = ref({
+  name: "All",
+  code: "all",
+});
 
 watch(selectedCountry, (newValue) => {
-  console.log(selectedCountry.value, "selectedCountry")
-  emit("changeCountry", newValue);
+  emit("changeCountry", newValue.code);
 });
 
 const handleSearchCountries = (e: string) => {
@@ -40,18 +45,20 @@ const handleSearchCountries = (e: string) => {
 
 <template>
   <!-- Country selection using UiSelect -->
-  <div>
+  <div class="w-[180px] truncate">
     <UiPopover>
-      <UiPopoverTrigger v-if="true" as-child class="min-w-[70px] py-[8px] rounded-[6px]">
+      <UiPopoverTrigger v-if="true" as-child class="w-full py-[8px] rounded-[6px]">
         <div class="flex items-center justify-between text-[14px] w-full" :class="cn(
-          'w-full cursor-pointer p-2 border border-gray-300 rounded capitalize',
+          'w-full cursor-pointer p-2 border border-gray-300 rounded capitalize truncate',
           !selectedCountry && ''
         )">
-          {{
-          selectedCountry
-          ? selectedCountry
-          : "Select Country"
-          }}
+          <span class="w-[80%] truncate">
+            {{
+            selectedCountry.name
+            ? selectedCountry.name
+            : "Select Country"
+            }}
+          </span>
           <component :is="ChevronDown" class="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </div>
       </UiPopoverTrigger>
@@ -64,21 +71,24 @@ const handleSearchCountries = (e: string) => {
             <div v-bind="containerPropsForCountry" class="max-h-52 overflow-y-auto"> <!-- Added overflow -->
               <div v-bind="wrapperPropsForCountry">
                 <UiCommandGroup>
-                  <UiCommandItem value="all" class="cursor-pointer pl-2" @select="() => { selectedCountry = 'all' }">
+                  <UiCommandItem value="all" class="cursor-pointer pl-2" @select="() => { selectedCountry = {
+                    name: 'All',
+                    code: 'all'
+                  } }">
                     <Check :class="cn(
                       'mr-2 h-4 w-4',
-                      selectedCountry === 'all' ? 'opacity-100' : 'opacity-0'
+                      selectedCountry.code === 'all' ? 'opacity-100' : 'opacity-0'
                     )" />
                     All
                   </UiCommandItem>
-                  <UiCommandItem v-for="country in countriesList" :key="country.data" :value="country.data"
+                  <UiCommandItem v-for="country in countriesList" :key="country.data.code" :value="country.data.code"
                     @select="() => { selectedCountry = country.data }" style="height: 32px; cursor: pointer;">
                     <!-- Added cursor pointer -->
                     <Check :class="cn(
                       'mr-2 h-4 w-4',
-                      country.data === selectedCountry ? 'opacity-100' : 'opacity-0'
+                      country.data.code === selectedCountry.code ? 'opacity-100' : 'opacity-0'
                     )" />
-                    {{ country.data }}
+                    {{ country.data.name }}
                   </UiCommandItem>
                 </UiCommandGroup>
               </div>

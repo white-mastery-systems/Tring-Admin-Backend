@@ -186,6 +186,9 @@ const columns = [
   }),
   columnHelper.accessor("lastName", {
     header: "Last Name",
+    cell: ({ row }) => {
+      return row.original.lastName || "-"
+    }
   }),
   columnHelper.accessor("email", {
     header: "Email",
