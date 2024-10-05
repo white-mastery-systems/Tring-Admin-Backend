@@ -3,10 +3,14 @@ const config = useRuntimeConfig();
 export default defineEventHandler(async (event) => {
   const { systemInstructions, userQueries, provider, model } = await readBody(event);
 
+  var responses = [];
+  var response: any;
+
   const requests = systemInstructions.map(
     async (instruction: string, index: number) => {
       try {
-        const response = await $fetch<{ output: string }>("/ai/gen/", {
+        instruction === null ? responses.push(null) : 
+        response = await $fetch<{ output: string }>("/ai/gen/", {
           method: "POST",
           body: JSON.stringify({
             provider: provider || "openai",
@@ -30,7 +34,7 @@ export default defineEventHandler(async (event) => {
     },
   );
 
-  const responses = await Promise.all(requests);
+  responses = await Promise.all(requests);
 
   return {
     status: 200,

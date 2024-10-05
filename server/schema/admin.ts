@@ -207,6 +207,23 @@ export const promptSchema = adminSchema.table("prompt", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
+export const templateSchema = adminSchema.table("templates", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  name: varchar("name"),
+  header: varchar("header"),
+  headerText: varchar("header_text"),
+  headerFile: varchar("header_file"),
+  headerLocation: varchar("header_location"),
+  body: varchar("body"),
+  footer: varchar("footer"),
+  templateVariables: varchar("template_variables").array(),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 // Relations
 export const organizationRelations = relations(
   organizationSchema,
@@ -256,6 +273,11 @@ export type InsertCampaign = InferInsertModel<typeof campaignSchema>;
 
 export type SelectPlaygroundDocument = InferSelectModel<typeof playgroundDocumentSchema>;
 export type InsertPlaygroundDocument = InferInsertModel<typeof playgroundDocumentSchema>;
+
+export type SelectTemplates = InferSelectModel<typeof templateSchema>;
+export type InsertTemplates = InferInsertModel<typeof templateSchema>;
+
+
 
 // Validation
 export const zodInsertOrganization = createInsertSchema(organizationSchema, {
