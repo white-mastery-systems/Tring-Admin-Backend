@@ -75,7 +75,12 @@
       </div>
 
       <UiButton type="submit" class="mt-2" color="primary">
-        Save changes
+        <template v-if="isLoading">
+          <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+        </template>
+        <template v-else>
+          Save changes
+        </template>
       </UiButton>
     </form>
   </DialogWrapper>
@@ -89,6 +94,7 @@ let pipelines = ref<any>([]);
 let layouts = ref([]);
 const stages = ref<any>([]);
 const subPipelines = ref<any>([]);
+const isLoading = ref(false)
 
 const modalState = defineModel<{ open: boolean }>({
   default: { open: false },
@@ -222,6 +228,7 @@ const {
 });
 
 const handleAddIntegration = handleSubmit((value: any) => {
+  isLoading.value = true
   let pipelineObj: any = {};
   let layoutObj: any = {};
 
@@ -265,6 +272,7 @@ const handleAddIntegration = handleSubmit((value: any) => {
       onSuccess: () => {
         emit("success");
         toast.success("Integration updated successfully");
+        isLoading.value = false
       },
     });
   } else {
@@ -278,8 +286,10 @@ const handleAddIntegration = handleSubmit((value: any) => {
       onSuccess: () => {
         emit("success");
         toast.success("Integration created successfully");
+        isLoading.value = false
       },
     });
   }
+  isLoading.value = false
 });
 </script>

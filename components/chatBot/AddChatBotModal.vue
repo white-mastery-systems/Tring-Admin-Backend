@@ -16,6 +16,7 @@ const emit = defineEmits<{
   (e: 'confirm'): void;
   (e: 'editConfirm'): void;
 }>();
+const isLoading = ref(false)
 // const emit = defineEmits<{ (e: "confirm"): void, (e: "editConfirm"): void }>();
 const formSchema = toTypedSchema(
   z.object({
@@ -38,6 +39,7 @@ watch(() => agentModalState.value.open, async () => {
 })
 
 const handleAddEditBot = handleSubmit(async (values) => {
+  isLoading.value = true
   try {
     if (agentModalState.value.id) {
       const bot = await $fetch(`/api/bots/${agentModalState.value.id}`, {
@@ -58,8 +60,10 @@ const handleAddEditBot = handleSubmit(async (values) => {
       emit('confirm')
     }
   } catch (err: any) {
+    isLoading.value = false
     toast.error(err.data.data[0].message);
   }
+  isLoading.value = false
 })
 </script>
 
@@ -70,7 +74,14 @@ const handleAddEditBot = handleSubmit(async (values) => {
         required>
       </TextField>
       <div class="flex justify-end w-full">
-        <UiButton color="primary" type="submit">Submit</UiButton>
+        <UiButton color="primary" type="submit">
+          <template v-if="isLoading">
+            <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+          </template>
+          <template v-else>
+            Submit
+          </template>
+        </UiButton>
       </div>
     </form>
   </DialogWrapper>

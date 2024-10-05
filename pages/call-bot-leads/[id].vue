@@ -1,191 +1,139 @@
 <template>
-  <Page title="testing" :disable-back-button="false">
-    <div class="mx-8 flex justify-around gap-8">
-      <UiTabs default-value="Info" class="self-start">
-        <UiTabsList
-          class="grid w-[50%] grid-cols-2 items-end bg-[#ffffff] text-[#424bd1]"
-          default-value="Client Info"
-        >
-          <UiTabsTrigger
-            value="Info"
-            class="tab-align relative flex inline-flex w-auto justify-start p-0 text-left text-[15px] font-black text-[#8a8a8a] no-underline"
-          >
-            Info
-          </UiTabsTrigger>
-        </UiTabsList>
-        <UiTabsContent value="Client Info" v-if="true">
-          <div
-            v-for="(key, index) in clientInfoList"
-            class="my-2 flex flex-col items-start"
-          >
-            <span class="font-medium uppercase"
-              >{{ key.content }}:
-              <span class="ml-2 font-bold">
-                {{ key.value }}
-              </span>
-            </span>
-          </div>
-          <div class="py-2">
-            <audio controls>
-              <source type="audio/ogg" />
-              <source type="audio/mpeg" />
-              Your browser does not support the audio element.
-            </audio>
-          </div>
-        </UiTabsContent>
-      </UiTabs>
-      <div
-        class="chatinfo-align h-[75vh] w-[50%] overflow-y-hidden rounded-lg bg-[#ffffff] shadow"
-      >
-        <div
-          class="flex h-[70px] w-full items-center justify-between bg-[#424bd1] px-[20px] font-medium text-[#ffffff]"
-        >
-          <div class="flex items-center gap-2">
-            <span class="text-[14px]">
-              test
-              <!-- {{ leadData?.bot?.name }} -->
-            </span>
-          </div>
-          <!-- <div>
-          <img src="assets/icons/chat_menu.svg" width="30" height="30" />
-        </div> -->
-        </div>
-        <div class="h-[65vh] overflow-y-scroll">
-          <div class="w-full p-[20px]">
-            <!-- {{ messageList }} -->
-            <!-- v-if="messageList.role === 'user'" -->
-            <div class="flex w-[100%] flex-col items-end">
-              <span class="text-[14px]" style="color: #8a8a8a">
-                <!-- {{ leadData?.botUser?.name }} -->
-                tester name
-              </span>
-              <div
-                class="mt[10px] flex min-h-[80px] min-w-[20%] max-w-[80%] flex-col items-end justify-center gap-2.5 rounded-l-xl rounded-br-xl bg-[#766ddb] p-[10px] text-[#ffffff]"
-              >
-                <!-- <div>{{ messageList.content }}</div> -->
-                How do you handle customer interactions?
-                <div class="text-[12px] opacity-60">
-                  06:00 PM
-                  <!-- {{ formatDate(new Date(messageList.createdAt), "hh:mm a") }} -->
-                </div>
-              </div>
-            </div>
-            <!-- v-if="messageList.role === 'assistant'" -->
-            <div class="w-[90%]">
-              <span class="text-[14px]" style="color: #8a8a8a">
-                <!-- {{
-            leadData?.bot.metadata.prompt.NAME
-            }} -->
-                bot name
-              </span>
-              <!-- ai-reply-align -->
-              <div
-                class="mt-[10px] flex min-h-[80px] flex-col gap-2 rounded-r-xl rounded-bl-xl bg-[#ffffff] p-[20px] shadow"
-              >
-                <MdText
-                  :content="'I use client-specific entities for customer interactions and can perform actions like booking appointments or checking balances to ensure efficient communication'"
-                />
-                <div class="flex flex-col">
-                  <div class="flex items-center gap-2">
-                    <!-- v-for="(btn, btnIndex) in JSON.parse(messageList.content)
-                .canned" :key="btnIndex" -->
-                    <div class="flex items-center" v-if="false">
-                      <p
-                        class="border-1 w-auto rounded-xl border-[#424bd1] py-[10px] text-[#424bd1]"
-                      >
-                        <!-- {{ btn.title }} -->
-                      </p>
+  <!-- <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
+    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div> -->
+  <!-- v-else -->
+   <!-- leadData?.botUser?.name ??  -->
+  <Page :title="'No Name'" :disable-back-button="false" :disable-elevation="true">
+    <div class="items-top gap-[25px flex items-center justify-center px-3">
+      <div class="items-top xs:grid-cols-2 flex grid w-full grid-cols-1 gap-[25px] lg:grid-cols-2">
+        <div class="justify-aro und flex w-full gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]">
+          <UiTabs default-value="Client" class="w-full self-start">
+            <UiTabsList class="grid w-full grid-cols-2">
+              <UiTabsTrigger value="Client"> Client Info </UiTabsTrigger>
+              <UiTabsTrigger value="Campaign"> Campaign info</UiTabsTrigger>
+            </UiTabsList>
+            <UiTabsContent value="Client">
+              <div v-if="false" class="flex grid grid-cols-2 flex-col items-center gap-2 pl-4 capitalize">
+                <div v-for="(entry, index) in details" :key="index" class="max-w-full font-medium">
+                  <div v-if="Array.isArray(entry) && entry.length === 2">
+                    <div class="max-w-[100%] truncate">
+                      <div class="text-gray-500">{{ entry[0] }}</div>
+                      <div class="w-[90%]">
+                        <a v-if="entry[0] === 'Mobile'" :href="`tel:${entry[1]}`" class="truncate text-[#424bd1]">
+                          {{ entry[1] }}
+                        </a>
+                        <a v-else-if="entry[0] === 'Email'" :href="`mailto:${entry[1]}`"
+                          class="block truncate lowercase text-[#424bd1]">
+                          {{ entry[1] }}
+                        </a>
+                        <div class="text-indigo-600 cursor-pointer" v-else-if="entry[0] === 'parentUrl'">
+                          <NuxtLink :to="entry[1]" target="_blank">Website</NuxtLink>
+                        </div>
+                        <div v-else class="truncate">
+                          {{ entry[1] }}
+                        </div>
+                      </div>
                     </div>
-                    <!-- <Uibutton class="rounded-xl pricing-align-btn">
-                  {{ JSON.parse(messageList.content).canned[0].title }}
-                </Uibutton> -->
                   </div>
-                  <div class="self-end text-[12px] text-[#00000066]">
-                    06:00 PM
-                    <!-- {{ formatDate(new Date(messageList.createdAt), "hh:mm a") }} -->
-                  </div>
+                  <div v-else>Invalid entry</div>
                 </div>
               </div>
+            </UiTabsContent>
+            <UiTabsContent value="Campaign">
+            </UiTabsContent>
+            <!-- </div> -->
+          </UiTabs>
+        </div>
+        <div v-if="false"
+          class="field_shadow h-screen-minus-11 w-full overflow-hidden rounded-lg bg-[#ffffff] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
+          <div :class="[
+            'flex h-[70px] w-full items-center justify-between px-2.5 font-medium text-[#ffffff]',
+          ]" :style="leadData?.channel === 'whatsapp'
+                ? 'background:#128C7E'
+                : `background:hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`
+              ">
+            <div class="flex items-center gap-2">
+              <!-- {{ leadData?.channel}} -->
+              <WhatsappIcon v-if="leadData?.channel === 'whatsapp'" class="align-middle"></WhatsappIcon>
+
+              <span class="text-[14px] capitalize">{{
+                leadData?.bot?.name
+                }}</span>
             </div>
           </div>
+
+          <!-- <ChatPreview v-if="computed(() => chats?.length && !!leadData)" :leadDataValue="leadData" :chatValue="chats"
+            :scrollChatBox="BotId" @chatId="BotId = null" /> -->
         </div>
       </div>
     </div>
+    <!-- <input type="text" value="hii" ref="chatScreenRef" /> -->
   </Page>
 </template>
-
 <script setup lang="ts">
-  import MdText from "~/components/MdText.vue";
 
-  definePageMeta({
-    middleware: "admin-only",
-  });
+// const scrollChatBox = () => {
+//   setTimeout(() => {
+//     if (chatScreenRef.value)
+//       chatScreenRef.value.scrollTop = chatScreenRef?.value?.scrollHeight;
+//   }, 1000);
+// };
 
-  // const router = useRouter();
-  // const route = useRoute();
-  // const paramId: any = route;
-  // const leadData = await getLeadTranscript(paramId.params.id);
-  const clientInfoList = ref([
-    {
-      content: "customer Name",
-      value: "Raj",
-    },
-    {
-      content: "Call From",
-      value: "+1234567890",
-    },
-    {
-      content: "Call To",
-      value: "+1234567890",
-    },
-    {
-      content: "Customer Location",
-      value: "Chennai, Tamilnadu,",
-    },
-    {
-      content: "Call SID",
-      value: "IN1243243",
-    },
-  ]);
-  // const details = computed(() => {
-  //   if (!leadData) return [undefined, undefined];
-  //   const { params, ...rest } = leadData.metadata as Record<string, any>;
-  //   return [Object.entries(rest), Object.entries(params)];
-  // });
+definePageMeta({
+  middleware: "admin-only",
+});
 
-  // const isDeleteConfirmationOpen = ref(false);
-  // const handleDelete = async () => {
-  //   isDeleteConfirmationOpen.value = false;
 
-  //   await $fetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
-  //     method: "DELETE",
-  //   });
-  //   return navigateTo({ name: "leads" });
-  // };
+// const { status, data: leadData } = await useLazyFetch(
+//   () => `/api/org/chat/${route.params.id}`,
+//   {
+//     server: false,
+//   },
+// );
+
+// watchEffect(() => {
+//   if (leadData.value) {
+//     const userName = leadData.value?.botUser?.name ?? "Unknown User";
+//     useHead({
+//       title: `Chats | ${userName}`,
+//     });
+//   }
+// });
+// const isPageLoading = computed(() => status.value === "pending");
+
+// const details = computed(() => {
+//   if (!leadData.value) return [undefined, undefined];
+//   const { params, ...rest } =
+//     leadData.value?.metadata ?? ({ params: null } as Record<string, any>);
+//   const { name } = leadData.value.bot;
+//   let metaData: any = Object.entries(rest || {}).map(([key, value]) => {
+//     if (key === "os") {
+//       return ["OS", value];
+//     } else if (key === "ipAddress") {
+//       return ["IP Address", value];
+//     }
+//     return [key, value];
+//   });
+//   const botUserDetails = [];
+//   if (leadData?.value.botUser) {
+//     botUserDetails.push(
+//       ["Name", leadData?.value?.botUser?.name],
+//       ["Email", leadData?.value?.botUser?.email],
+//       [
+//         "Mobile",
+//         leadData?.value?.botUser?.countryCode +
+//         leadData?.value?.botUser?.mobile,
+//       ],
+//       ["Bot Name", name],
+//     );
+//   }
+//   let paramsData = null;
+//   if (params) {
+//     paramsData = Object.entries(params);
+//   }
+//   if (paramsData) {
+//     return [...metaData, ...paramsData, ...botUserDetails];
+//   } else return [...metaData, ...botUserDetails];
+// });
 </script>
-<style scoped>
-  .tab-align:active {
-    color: rgba(66, 75, 209, 1);
-    font-weight: 800;
-    text-decoration: underline;
-    text-underline-offset: 8px;
-  }
-
-  [data-active="true"] {
-    color: rgba(66, 75, 209, 1);
-    font-weight: 800;
-    text-decoration: underline;
-    text-underline-offset: 8px;
-  }
-
-  .tab-align::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -3px;
-    width: 100%;
-    height: 0.5px;
-    background-color: rgba(138, 138, 138, 0.5);
-    text-decoration: none;
-  }
-</style>

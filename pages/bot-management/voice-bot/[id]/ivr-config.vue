@@ -27,7 +27,7 @@ const botDetails: any = await getVoiceBotDetails(route.params.id);
 
 const roles = ['Customer Support', 'Receptionist']
 const domainList = ['Admin', 'User', 'Editor', 'Viewer', 'Contributor', 'Manager'];
-
+const isLoading = ref(false)
 
 watchEffect(() => {
   if (botDetails) {
@@ -39,7 +39,9 @@ watchEffect(() => {
 });
 
 const onSubmit = handleSubmit(async (value: any) => {
+  isLoading.value = true
   await updateLLMConfig({ ivrConfig: value }, botDetails.id);
+  isLoading.value = false
   return navigateTo({
     name: "bot-management-voice-bot-id",
     params: { id: botDetails.id },
@@ -66,8 +68,13 @@ const onSubmit = handleSubmit(async (value: any) => {
           </TextField>
         </div>
         <div class="flex justify-end w-full">
-          <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110 w-[120px]" size="lg">
-            Submit
+          <UiButton type="submit" color="primary" size="lg">
+            <template v-if="isLoading">
+              <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+            </template>
+            <template v-else>
+              Submit
+            </template>
           </UiButton>
         </div>
       </form>

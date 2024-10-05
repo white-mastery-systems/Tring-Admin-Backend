@@ -17,22 +17,13 @@
         <SelectField v-if="values.provider === 'google' || values.provider === 'deepgram'" name="model"
           :options="models" label="model" placeholder="Select model" helperText="Select your model.">
         </SelectField>
-            
-        <div   class="flex flex-col gap-2 mt-5">
-          <RangeSlider
-          :step="0.1"
-          :name="parseFloat(values.amplificationFactor )"
-          label="Amplification Factor"
-          @update="
+
+        <div class="flex flex-col gap-2 mt-5">
+          <RangeSlider :step="0.1" :name="parseFloat(values.amplificationFactor )" label="Amplification Factor" @update="
             ($event) => {
               setFieldValue('amplificationFactor', $event.toString());
             }
-          "
-          required
-          placeholder="Enter speaking Rate"
-          min="0"
-          max="4"
-        />
+          " required placeholder="Enter speaking Rate" min="0" max="4" />
         </div>
 
 
@@ -82,7 +73,14 @@
         </FieldArray>
       </div>
       <div class="flex w-full justify-end">
-        <UiButton color="primary"> Submit </UiButton>
+        <UiButton color="primary"> 
+          <template v-if="isLoading">
+            <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+          </template>
+          <template v-else>
+            Submit
+          </template>
+        </UiButton>
       </div>
     </form>
   </Page>
@@ -145,6 +143,7 @@ const models = ref([
 ]
 )
 const route = useRoute("bot-management-voice-bot-id-speech-to-text-config");
+const isLoading = ref(false)
 const {
   handleSubmit,
   defineField,
@@ -198,6 +197,7 @@ if (botData.value && botData.value.speechToTextConfig) {
 
 const createEditSpeecToTextConfig = handleSubmit(async (value) => {
   console.log({ value })
+  isLoading.value = true
   await $fetch(`/api/voicebots/${route.params.id}`, {
     method: "PUT",
     body: {
@@ -205,7 +205,7 @@ const createEditSpeecToTextConfig = handleSubmit(async (value) => {
     },
   });
   toast.success("Updated successfully");
-
+  isLoading.value = false
 });
 watch(values, (newValues) => {
   if (newValues.language === "tamil" || newValues.language === "hindi") {

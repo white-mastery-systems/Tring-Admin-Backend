@@ -128,6 +128,7 @@ const {
 });
 const templates = ref<any>([])
 const phoneNumbers = ref<any>([])
+const isLoading = ref(false)
 
 watch(() => values, async (newValue) => {
   console.log({ newValue })
@@ -150,7 +151,6 @@ watch(() => values, async (newValue) => {
 const [timeField, timeFieldAttrs] = defineField("appt");
 
 watch(() => campaignModalState.value.open, async (newState) => {
-  console.log(campaignModalState.value, "campaignModalState")
   resetForm()
   if (campaignModalState.value.id) {
     const getSingleDetails: any = await $fetch(`/api/org/campaign/${campaignModalState.value.id}`)
@@ -186,7 +186,7 @@ const handleConnect = handleSubmit(async (values: any) => {
     delete payload.phoneNumber
     delete payload.countryCode
   }
-
+  isLoading.value = true
   try {
     if (campaignModalState.value.id) {
       await $fetch(`/api/org/campaign/${campaignModalState.value.id}`, { method: "PUT", body: payload });
@@ -197,9 +197,10 @@ const handleConnect = handleSubmit(async (values: any) => {
     }
     emit("confirm")
   } catch (error: any) {
+    isLoading.value = false
     toast.error(error.data)
   }
-
+  isLoading.value = false
 });
 </script>
 <template>
@@ -267,7 +268,14 @@ const handleConnect = handleSubmit(async (values: any) => {
         placeholder="Select your phone" :options="phoneNumbers" />
 
       <div class="flex justify-end w-full">
-        <UiButton type="submit" class="mt-2" color="primary"> Submit </UiButton>
+        <UiButton type="submit" class="mt-2" color="primary">
+          <template v-if="isLoading">
+            <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+          </template>
+          <template v-else>
+            Submit
+          </template>
+        </UiButton>
       </div>
 
     </form>

@@ -39,7 +39,12 @@
       </div>
       <div class="flex justify-end">
         <UiButton type="submit" class="mt-2" color="primary">
-          Save changes
+          <template v-if="isLoading">
+            <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+          </template>
+          <template v-else>
+            Save changes
+          </template>
         </UiButton>
       </div>
     </form>
@@ -84,6 +89,8 @@ const modalState = defineModel<{ open: boolean; id: string | null }>({
   default: { open: false, id: null },
   required: true,
 });
+const isLoading = ref(false)
+
 
 const {
   handleSubmit,
@@ -153,6 +160,7 @@ const handleFileChange = (e: Event) => {
 };
 
 const handleCreateEditIntent = handleSubmit(async (values) => {
+  isLoading.value = true
   if (modalState.value.id) {
     if (fileRef.value) {
       const formData = new FormData();
@@ -175,6 +183,7 @@ const handleCreateEditIntent = handleSubmit(async (values) => {
           modalState.value.open = false;
           toast.success("Intent updated successfully");
           emit("success");
+          isLoading.value = false
         },
       });
     }
@@ -199,6 +208,7 @@ const handleCreateEditIntent = handleSubmit(async (values) => {
           modalState.value.open = false;
           toast.success("Intent added successfully");
           emit("success");
+          isLoading.value = false
         },
       });
     } else {
@@ -212,9 +222,11 @@ const handleCreateEditIntent = handleSubmit(async (values) => {
           modalState.value.open = false;
           toast.success("Intent added successfully");
           emit("success");
+          isLoading.value = false
         },
       });
     }
+    isLoading.value = false
   }
   return true;
 });

@@ -114,6 +114,7 @@ const goals = ref<any>([
 
 const botDetails: any = await getBotDetails(route.params.id);
 const defaultFormValues = botDetails.metadata.prompt;
+const isLoading = ref(false)
 
 const { handleSubmit, values, setFieldValue } = useForm({
   validationSchema: formSchema,
@@ -139,6 +140,7 @@ watchEffect(() => {
 });
 
 const handleUpdateBotConfig = handleSubmit(async (values: any) => {
+  isLoading.value = true
   const payload: any = {
     id: botDetails.id,
     metadata: {
@@ -149,6 +151,7 @@ const handleUpdateBotConfig = handleSubmit(async (values: any) => {
     },
   };
   await updateBotDetails(payload);
+  isLoading.value = false
   return navigateTo({
     name: "bot-management-chat-bot-id",
     params: { id: botDetails.id },
@@ -197,7 +200,14 @@ const handleUpdateBotConfig = handleSubmit(async (values: any) => {
               company." :isTextarea="true">
         </TextField>
         <div class="flex w-full justify-end">
-          <UiButton color="primary" type="submit">Submit</UiButton>
+          <UiButton color="primary" type="submit" size="lg">
+            <template v-if="isLoading">
+              <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+            </template>
+            <template v-else>
+              Submit
+            </template>
+          </UiButton>
         </div>
       </form>
     </div>

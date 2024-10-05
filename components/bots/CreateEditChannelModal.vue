@@ -19,7 +19,12 @@
 
       <div class="flex w-full justify-items-end">
         <UiButton color="primary" type="submit">
-          Submit
+          <template v-if="isLoading">
+            <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+          </template>
+          <template v-else>
+            Submit
+          </template>
         </UiButton>
       </div>
       <span class="text-sm text-gray-500">enter this webhook url in Meta Dashboard</span>
@@ -34,6 +39,7 @@ const showButtons = ref(false)
 function handleShowButton(value: boolean) {
   showButtons.value = value
 }
+const isLoading = ref(false)
 const modalState = defineModel<{ open: boolean; id: string | null }>({
   default: { open: false, id: null },
   required: true,
@@ -79,6 +85,7 @@ watch(errors, (newValues) => {
   console.log(newValues)
 })
 const handleCreateEditBotChannel = handleSubmit(async (values) => {
+  isLoading.value = true
   console.log({ values })
   await $fetch(`/api/bots/${route.params.id}`, {
     method: "PUT",
@@ -92,6 +99,7 @@ const handleCreateEditBotChannel = handleSubmit(async (values) => {
     },
   });
   emit("success");
+  isLoading.value = false
 });
 const {
   status: integrationLoadingStatus,

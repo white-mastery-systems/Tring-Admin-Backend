@@ -39,7 +39,8 @@
     { value: "FAQ Bot", label:"FAQ Bot", },
     { value: "Others", label:"Others", },
   ];
-  
+  const isLoading = ref(false)
+
   const botSchema = toTypedSchema(
     z.object({
       name: z.string({ required_error: "Name is required" }).min(1, { message: "Name is required" }),
@@ -67,7 +68,9 @@ watchEffect(() => {
 });  
 const onSubmit = handleSubmit(async (value: any) => {
     // updateLLMConfig()
+    isLoading.value = true
     await updateLLMConfig({ identityManagement: value }, botDetails.id);
+    isLoading.value = false
     return navigateTo({
       name: "bot-management-voice-bot-id",
       params: { id: botDetails.id },
@@ -134,7 +137,13 @@ if (botDetails.identityManagement) {
         </div>
         <div class="flex w-full justify-end">
           <UiButton type="submit" class="w-[120px] self-end bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
-            size="lg">Submit
+            size="lg">
+            <template v-if="isLoading">
+              <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+            </template>
+            <template v-else>
+              Submit
+            </template>
           </UiButton>
         </div>
       </form>

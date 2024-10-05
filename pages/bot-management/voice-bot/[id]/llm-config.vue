@@ -1,7 +1,5 @@
 <template>
-  <Page
-    title="LLM Configuration"
-    :bread-crumbs="[
+  <Page title="LLM Configuration" :bread-crumbs="[
       {
         label: `${botDetails.name}`,
         to: `/bot-management/voice-bot/${botDetails.id}`,
@@ -10,99 +8,50 @@
         label: 'LLM Configuration',
         to: `/bot-management/voice-bot/${botDetails.id}/llm-config`,
       },
-    ]"
-    :disableSelector="true"
-    :disable-back-button="false"
-    :disable-elevation="false"
-  >
+    ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="false">
     <div class="shadow-md mx-5 rounded-lg">
       <form @submit="handleLLMConfigSubmit">
         <div class="grid w-full grid-cols-2 gap-2">
-          <SelectField
-            name="provider"
-            label="Provider"
-            placeholder="Select Provider"
-            :options="provider"
-            :required="true"
-          />
+          <SelectField name="provider" label="Provider" placeholder="Select Provider" :options="provider"
+            :required="true" />
 
-          <SelectField
-            name="model"
-            label="Model"
-            placeholder="Select Model"
-            :options="models"
-            :required="true"
-          />
+          <SelectField name="model" label="Model" placeholder="Select Model" :options="models" :required="true" />
 
-          <SelectField
-            name="tokens"
-            label="Max Tokens"
-            placeholder="Max Tokens"
-            :options="tokens.map((token) => ({ label: token, value: token }))"
-            :required="true"
-          />
+          <SelectField name="tokens" label="Max Tokens" placeholder="Max Tokens"
+            :options="tokens.map((token) => ({ label: token, value: token }))" :required="true" />
 
           <div class="mt-5 flex flex-col gap-2">
-            <RangeSlider
-              :step="0.1"
-              :name="values.temperature"
-              label="Temperature"
-              @update="
+            <RangeSlider :step="0.1" :name="values.temperature" label="Temperature" @update="
                 ($event) => {
                   setFieldValue('temperature', $event);
                 }
-              "
-              required
-              placeholder="Enter speaking Rate"
-              min="0"
-              max="1"
-            />
+              " required placeholder="Enter speaking Rate" min="0" max="1" />
           </div>
         </div>
 
         <div class="spcace-y-2 grid w-full grid-cols-1 gap-2">
           <!-- <TextField   label="Document Id" name="documentId" 
           placeholder="Document Id"  /> -->
-          <SelectField
-            name="role"
-            label="Role"
-            placeholder="Role is required"
-            :options="roles"
-            :required="true"
-          />
-          <TextField
-            label="Guide"
-            name="guide"
+          <SelectField name="role" label="Role" placeholder="Role is required" :options="roles" :required="true" />
+          <TextField label="Guide" name="guide"
             placeholder="Include your company details along with the specifics of the service the bot will be providing"
-            :isTextarea="true"
-          />
-          <TextField
-            label="Additional Instructions"
-            name="instruction"
+            :isTextarea="true" />
+          <TextField label="Additional Instructions" name="instruction"
             placeholder="Include your company details along with the specifics of the service the bot will be providing"
-            :isTextarea="true"
-          />
-          <TextField
-            label="Notes"
-            name="notes"
-            placeholder="Notes the data"
-            :isTextarea="true"
-          />
-          <TextField
-            label="Domain Rules"
-            name="domainRules"
-            placeholder="Domain Rules"
-            :isTextarea="true"
-          />
+            :isTextarea="true" />
+          <TextField label="Notes" name="notes" placeholder="Notes the data" :isTextarea="true" />
+          <TextField label="Domain Rules" name="domainRules" placeholder="Domain Rules" :isTextarea="true" />
         </div>
-
-        <UiButton
-          type="submit"
-          class="mt-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
-          size="lg"
-          >Submit</UiButton
-        >
-
+        <div class="flex items-center justify-end mt-4">
+          <UiButton type="submit" color="primary">
+            <template v-if="isLoading">
+              <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+            </template>
+            <template v-else>
+              Submit
+            </template>
+          </UiButton>
+        </div>
         <!-- copy paste the class  below-->
         <!-- class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium" -->
       </form>
@@ -113,7 +62,7 @@
   import { lLmConfigurationValidation } from "~/validationSchema/botManagement/LLmConfigurationValidation";
   const router = useRouter();
   const route = useRoute("bot-management-voice-bot-id-llm-config");
-
+  const isLoading = ref(false)
   // import { lLmConfigurationValidation } from "~/validationSchema/botManagement/llmConfigurationValidation";
 
   const provider = [
@@ -187,7 +136,9 @@
   });
 
   const handleLLMConfigSubmit = handleSubmit(async (value: any) => {
+    isLoading.value = true
     await updateLLMConfig({ llmConfig: value }, botDetails.id);
+    isLoading.value = false
     return navigateTo({
       name: "bot-management-voice-bot-id",
       params: { id: botDetails.id },

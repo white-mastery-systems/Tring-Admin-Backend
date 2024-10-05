@@ -37,6 +37,7 @@ const items = reactive([
 
 const route = useRoute("bot-management-voice-bot-id-intent-config");
 const botDetails: any = await getVoiceBotDetails(route.params.id);
+const isLoading = ref(false)
 
 const formSchema = toTypedSchema(z.object({
   items: z.array(z.string()).refine(value => value.some(item => item), {
@@ -64,7 +65,9 @@ onMounted(async () => {
 })
 
 const onSubmit = async (value: any) => {
+  isLoading.value = true
   await updateLLMConfig({ intents: value.items }, botDetails.id)
+  isLoading.value = false
   return navigateTo({
     name: "bot-management-voice-bot-id",
     params: { id: botDetails.id }
@@ -101,8 +104,13 @@ const onSubmit = async (value: any) => {
       </UiFormField>
 
       <div class="flex justify-end mt-4">
-        <UiButton type="submit" class="bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110">
-          Submit
+        <UiButton type="submit" color="primary" size="lg">
+          <template v-if="isLoading">
+            <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+          </template>
+          <template v-else>
+            Submit
+          </template>
         </UiButton>
       </div>
     </UiForm>
