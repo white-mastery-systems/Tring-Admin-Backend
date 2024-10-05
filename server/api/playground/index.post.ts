@@ -1,24 +1,24 @@
 const config = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
-  const { systemInstructions, userQueries, provider, model } = await readBody(event);
+  const { systemInstructions, userQueries, provider, model, modelConfig } =
+    await readBody(event);
 
-  var responses = [];
-  var response: any;
+  const responses = await Promise.all(
+    systemInstructions.map(async (instruction: any, index: any) => {
+      if (instruction === null) return null;
 
-  const requests = systemInstructions.map(
-    async (instruction: string, index: number) => {
       try {
-        instruction === null ? responses.push(null) : 
-        response = await $fetch<{ output: string }>("/ai/gen/", {
+        const response = await $fetch<{ output: string }>("/ai/gen/", {
           method: "POST",
           body: JSON.stringify({
-            provider: provider || "openai",
-            model_name: model || "gpt-4o-mini",
+            provider,
+            model_name: model,
             messages: [
               { role: "system", content: instruction },
               { role: "user", content: userQueries[index] },
             ],
+            model_configuration: modelConfig,
           }),
           baseURL: config.llmBaseUrl,
         });
@@ -31,13 +31,8 @@ export default defineEventHandler(async (event) => {
         );
         return null;
       }
-    },
+    }),
   );
 
-  responses = await Promise.all(requests);
-
-  return {
-    status: 200,
-    responses,
-  };
+  return { status: 200, responses };
 });
