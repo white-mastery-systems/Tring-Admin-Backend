@@ -1,7 +1,7 @@
 <template>
   <Page title="Leads" :disableSelector="false" :disable-back-button="true">
     <div class="flex items-center justify-between gap-2 overflow-x-scroll pb-4">
-      <div class="flex items-center gap-2">
+    nediv class="flex items-center gap-2">
         <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder=" Search Leads..." />
@@ -101,7 +101,6 @@ const filters = reactive<{
   action: string;
   page: string;
   limit: string;
-  country: string;
 }>({
   botId: "",
   q: undefined,
@@ -113,9 +112,7 @@ const filters = reactive<{
   action: "",
   page: "1",
   limit: "10",
-  country: 'all',
 });
-
 
 watchEffect(() => {
   if (filters.botId === "all") filters.botId = "";
@@ -124,8 +121,6 @@ watchEffect(() => {
 let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
-
-
 let {
   status,
   data: leads,
@@ -144,26 +139,8 @@ let {
     return leads.data;
   },
 });
-
-const exportFilters = computed(() => {
-  const { page, limit, ...restFilters } = filters; // Destructure to exclude 'page' and 'limit'
-  return restFilters;
-});
-
-let {
-  data: exportLeads,
-  refresh: getAllExportLeads,
-} = await useLazyFetch("/api/org/leads", {
-  server: false,
-  query: exportFilters,
-  headers: {
-    "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-  },
-  default: () => [],
-});
-
 const exportReadyRows = computed(() => {
-  return exportLeads.value
+  return leads.value
     .map((lead: any) => {
       const mergedObject = {
         name: lead.botUser.name ?? '---',
@@ -302,12 +279,8 @@ const selectedChannel = (value: any) => {
 
 const onChannel = ($event) => {
   if ($event) {
+
     filters.channel = $event;
-  }
-}
-const onCountryChange = ($event) => {
-  if ($event) {
-    filters.country = $event;
   }
 }
 </script>
