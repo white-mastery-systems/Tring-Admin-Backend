@@ -1,15 +1,19 @@
 import { createContactList } from "~/server/utils/db/contact-list";
 
 const zodInsertContactList = z.object({
-   name: z.string()
+   name: z.string(),
+   organizationId: z.string().optional(),
+   isDefault: z.boolean().optional()
 })
 
 const db = useDrizzle()
 
 export default defineEventHandler(async (event) => {
-   const organizationId = (await isOrganizationAdminHandler(event)) as string;
-
+   // const organizationId = (await isOrganizationAdminHandler(event)) as string;
+   
    const body = await isValidBodyHandler(event, zodInsertContactList)
+   // console.log({ event: event?.context?.user })
+   const organizationId = event?.context?.user?.organizationId ?? body?.organizationId
 
    const isAlreadyExists = await db.query.contactListSchema.findFirst({
       where: and(

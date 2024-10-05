@@ -40,16 +40,20 @@ export default defineEventHandler(async (event) => {
   const integrationData = await db.query.integrationSchema.findFirst({
     where: eq(integrationSchema.id, body.metadata.integrationId),
   });
-  console.log(integrationData);
-  const schedule = await scheduleEvent(
-    data?.campaignDate,
-    data?.campaignTime,
-    contactList,
-    body,
-    integrationData,
-  );
-  if (schedule.status) {
-    logger.info({ level: "info", message: "Message scheduled..." });
-  }
+  // console.log(integrationData);
+
+  // bull-queue
+  const job = await campaignQueue.add({
+      campaignId: data?.id,
+      campaignDate: data?.campaignDate,
+      campaignTime: data?.campaignTime,
+      contactList,
+      body,
+      integrationData
+    }, 
+  // { delay: 5000 }
+  )
+  logger.info(`Job (id: ${job.id}, CampaignId - ${data?.id}) added at: ${new Date()}`)
+ 
   return data;
 });

@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
   const { id: contactListId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
   const body = await isValidBodyHandler(event, zodInsertContacts)
-  const organizationId=event?.context?.user?.organizationId??body.organizationId
+  const organizationId = event?.context?.user?.organizationId ?? body.organizationId
   const isAlreadyExists = await db.query.contactSchema.findFirst({
     where: and(
       eq(contactSchema.contactListId, contactListId),
