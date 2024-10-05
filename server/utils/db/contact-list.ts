@@ -1,7 +1,7 @@
 const db = useDrizzle();
 
 export const createContactList = async (contactList: InsertContactList) => {
-  return await db.insert(contactListSchema).values(contactList).returning();
+  return (await db.insert(contactListSchema).values(contactList).returning())[0];
 };
 
 export const getContactLists = async (organizationId: string, query?: any) => {

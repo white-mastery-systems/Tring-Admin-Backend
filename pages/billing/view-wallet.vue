@@ -26,7 +26,8 @@
                 )
               : 0
           }}
-          extra sessions
+          {{ isVoiceBilling ? 'extra minutes' : 'extra sessions' }}
+          <!-- extra sessions -->
         </div>
 
         <div class="bill-content-align mb-[15px]">
@@ -46,17 +47,25 @@
   </page>
 </template>
 <script setup lang="ts">
+import { useRoute, useRouter } from "vue-router";
   const router = useRouter();
   definePageMeta({
     middleware: "admin-only",
   });
 
   const { user } = await useUser();
-  const { data } = await useLazyFetch("/api/org", { server: false });
-  console.log({ data: data.value });
+  const route = useRoute();
+  const filters = computed(() => ({
+    type: route.query?.type,
+  }));
+  const { data } = await useLazyFetch("/api/org", { 
+      server: false,
+      query: filters,
+    }
+  );
   //   const [firstName, lastName] = user.value?.username?.split(" ") || [];
   console.log(user.value, "USER");
-  const billingVariation = ref([
+  const chatBillingVariation = ref([
     {
       _id: 1,
       title: "Basic",
@@ -76,8 +85,43 @@
       amount: "1000",
     },
   ]);
+  const voiceBillingVariation = ref([
+    {
+      _id: 1,
+      title: "Basic",
+      plan_code: "voice_basic",
+      amount: "5000",
+    },
+    {
+      _id: 2,
+      title: "Pro",
+      plan_code: "voice_pro",
+      amount: "10000",
+    },
+    {
+      _id: 3,
+      title: "Max",
+      plan_code: "voice_max",
+      amount: "15000",
+    },
+  ]);
+
+  const billingVariation = computed(() => {
+    if (route.query.type === 'chat') {
+      return chatBillingVariation.value;
+    } else if (route.query.type === 'voice') {
+      return voiceBillingVariation.value;
+    }
+    return [];
+  })
+
+  const isVoiceBilling = computed(() => {
+    // Assuming you have access to the current route
+    return route.query?.type === 'voice';
+  });
+  
   const handlePurchaseWallet = async (plan: string) => {
-    const hostedPageResponse = await $fetch("/api/billing/addon", {
+    const hostedPageResponse = await $fetch(`/api/billing/addon?${filters.value.type}`, {
       method: "POST",
       body: {
         plan: plan,

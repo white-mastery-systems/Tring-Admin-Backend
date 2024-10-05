@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
 
   // create default buckets
   await createContactList({
-    name: "leads bucket",
+    name: "leads contacts",
     organizationId: org.id,
     isDefault: true
   })

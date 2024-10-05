@@ -21,11 +21,10 @@ export default defineEventHandler(async (event) => {
       }),
     );
   }
-//  return { formData }
   const body = zodInsertPlaygroundDocument.safeParse({
     name: formData.find(({ name }) => name === "name")?.data.toString()!
   });
-  // console.log({ body })
+
   if (!body.success)
     return sendError(
       event,

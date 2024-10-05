@@ -5,6 +5,7 @@ import {
   fetchPhoneNumbers,
   fetchSubscribedApps,
   getSharedWhatsappDetails,
+  subscribeApp,
 } from "~/server/utils/whatsapp/module";
 
 enum CRMType {
@@ -80,6 +81,11 @@ export default defineEventHandler(async (event) => {
             code: response?.access_token,
             id: body.metadata.wabaId,
           });
+          if (body.metadata.pid)
+            await subscribeApp({
+              code: response?.access_token,
+              id: body.metadata.pid,
+            });
           await fetchSubscribedApps({
             code: response?.access_token,
             id: body.metadata.wabaId,
@@ -106,7 +112,7 @@ export default defineEventHandler(async (event) => {
         console.log(err);
       }
       console.log({ code: body.metadata.code });
-    } catch (err) {
+    } catch (err: any) {
       console.log(err.message, err.data, "ERR");
     }
   }

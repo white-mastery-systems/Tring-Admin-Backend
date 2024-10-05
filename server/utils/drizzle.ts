@@ -34,6 +34,8 @@ const schema = {
   campaignSchema,
   callLogSchema,
   playgroundDocumentSchema,
+  promptSchema,
+  templateSchema,
   // Relations
   organizationRelations,
   chatBotRelations,

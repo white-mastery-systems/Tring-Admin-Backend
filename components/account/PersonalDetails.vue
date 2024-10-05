@@ -9,7 +9,9 @@
       <TextField type="email" name="email" label="Email address" helperText="" required
         placeholder="Enter your email address" />
 
-      <div class="flex gap-2 ">
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">
+      <div class="flex gap-2">
         <CountryCodeField class="w-[100px] mt-1.5" name="countryCode" label="Country Code"
           helperText="Enter your country code" required />
 
@@ -17,7 +19,7 @@
           placeholder="Enter your mobile number" />
       </div>
       <!-- {{ values }} -->
-      <div>
+      <div class="w-full">
         <SelectField name="metadata.role" label="Role" placeholder="Select Role"
           :options="roles.map((role) => ({ label: role, value: role }))" :required="true" />
 
@@ -31,7 +33,7 @@
       <TextField name="address.street" label="Street name" helperText="" required
         placeholder="Enter your street address" />
       <TextField name="address.city" label="city name" helperText="" required placeholder="Enter your city name" />
-      <CountrySelectField name="address.country" label="country" helperText="Enter your country" required ></CountrySelectField>
+      <CountrySelectField name="address.country" label="country" helperText="Enter your country" required></CountrySelectField>
       <RegionSelectField name="address.state" label="state" helperText="select your state" required
         :country="values?.address?.country" />
       <TextField name="address.zipCode" label="zip code" helperText="" required placeholder="Enter your zip code"

@@ -14,7 +14,7 @@
     :customBackRouter="'/billing'"
   >
     <div
-      class="xs:grid-cols-2 grid gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-4"
+      :class="['grid gap-4 px-2.5 py-0',(route.query.type === 'voice') ? 'md:grid-cols-2 xs:grid-cols-2 lg:grid-cols-3' : 'md:grid-cols-2 xs:grid-cols-2 lg:grid-cols-4']"
     >
       <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->
@@ -84,14 +84,17 @@
   </page>
 </template>
 <script setup lang="ts">
-  const router = useRouter();
+import { useRoute, useRouter } from "vue-router";
+
   definePageMeta({
     middleware: "admin-only",
   });
 
+  const router = useRouter();
+  const route = useRoute();
   const { user } = await useUser();
   const [firstName, lastName] = user.value?.username?.split(" ") || [];
-  const billingVariation = ref([
+  const chatBillingVariation = ref([
     {
       _id: 1,
       amount: "Rs.0",
@@ -273,6 +276,142 @@
       availableInPlan: true,
     },
   ]);
+  
+  const voiceBillingVariation = ref([
+    {
+      _id: 1,
+      amount: "Rs.14999",
+      status: "Per Month",
+      types: "Fluent",
+      // benefitContent: "Unleash the power of automation.",
+      listBenefit: false,
+      benefitList: [
+        {
+          content: "Lead Gen",
+          availableInPlan: true,
+        },
+        {
+          content: "CRM Integration",
+          availableInPlan: true,
+        },
+        {
+          content: "Real Time Booking",
+          availableInPlan: true,
+        },
+        {
+          content: "1500 Mins",
+          availableInPlan: true,
+        },
+        {
+          content: "Rs.6 per Extra Minute",
+          availableInPlan: true,
+        },
+        {
+          content: "Voice Customization",
+          availableInPlan: true,
+        },
+        {
+          content: "Multi-lingual",
+          availableInPlan: false,
+        },
+      ],
+      plan: "voice_fluent",
+      choosePlan: "Downgrade",
+      currentPlan: "current plan",
+      plan_code: "voice_fluent",
+    },
+    {
+      _id: 2,
+      amount: "Rs.39999",
+      status: "Per Month",
+      types: "Lucid",
+      listBenefit: false,
+      benefitList: [
+        {
+          content: "Lead Gen",
+          availableInPlan: true,
+        },
+        {
+          content: "CRM Integration",
+          availableInPlan: true,
+        },
+        {
+          content: "Real Time Booking",
+          availableInPlan: true,
+        },
+        {
+          content: "5000 Mins",
+          availableInPlan: true,
+        },
+        {
+          content: "Rs.5 per Extra Minute",
+          availableInPlan: true,
+        },
+        {
+          content: "Advanced Voice Customization",
+          availableInPlan: true,
+        },
+        {
+          content: "Multi-lingual",
+          availableInPlan: true,
+        },
+      ],
+      plan: `voice_lucid`,
+      plan_code: "voice_lucid",
+
+      choosePlan: "upgrade",
+      currentPlan: "current plan",
+    },
+    {
+      _id: 4,
+      amount: "Talk to sales",
+      status: "",
+      types: "Eloquent (Enterprise)",
+      plan_code: "chat_enterprise",
+      // benefitContent: 'Automation plus enterprise-grade features.',
+      listBenefit: false,
+      benefitList: [
+        {
+          content: "Lead Gen",
+          availableInPlan: true,
+        },
+        {
+          content: "CRM Integration",
+          availableInPlan: true,
+        },
+        {
+          content: "Real Time Booking",
+          availableInPlan: true,
+        },
+        {
+          content: "10,000+ Mins",
+          availableInPlan: true,
+        },
+        {
+          content: "Talk to Sales for Extra Mins Cost",
+          availableInPlan: true,
+        },
+        {
+          content: "Advanced Voice Customization",
+          availableInPlan: true,
+        },
+        {
+          content: "Multi-lingual",
+          availableInPlan: true,
+        },
+      ],
+      choosePlan: "contact us",
+      availableInPlan: true,
+    },
+  ]);
+  const filters = computed(() => ({
+    type: route.query?.type,
+  }));
+
+  const billingVariation = computed(() => {
+    return route.query.type === 'voice' ? voiceBillingVariation.value : chatBillingVariation.value;
+  });
+
   const findPlanLevel = ({ list, current }: { list: any; current: string }) => {
     if (list.plan_code === "chat_enterprise") {
       return "Contact sales";
@@ -293,6 +432,7 @@
 
   const { status, data: orgBilling } = await useLazyFetch("/api/org/usage", {
     server: false,
+    query: filters,
   });
   const isPageLoading = computed(() => status.value === "pending");
 
@@ -320,7 +460,7 @@
       }>(`https://ipv4-check-perf.radar.cloudflare.com/api/info`);
 
       const hostedPageUrl = await $fetch<{ hostedpage: { url: string } }>(
-        "/api/billing/subscription",
+        `/api/billing/subscription?type=${filters.value.type}`,
         {
           method: "POST",
           body: {

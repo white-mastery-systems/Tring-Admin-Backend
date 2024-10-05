@@ -20,15 +20,15 @@ export const createEditIntentValidation = z
       path: ["link"],
     },
   )
-  .refine(
-    (data) => {
-      if (data.intent === "images" || data.intent === "brochures") {
-        return data?.fileName;
-      }
-      return true;
-    },
-    {
-      message: "intent name must be provided",
-      path: ["fileName"],
-    },
-  );
+  // .refine(
+  //   (data) => {
+  //     if (data.intent === "images" || data.intent === "brochures") {
+  //       return data?.fileName;
+  //     }
+  //     return true;
+  //   },
+  //   {
+  //     message: "intent name must be provided",
+  //     path: ["fileName"],
+  //   },
+  // );
