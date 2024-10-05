@@ -227,6 +227,10 @@ const columns = [
 //     toast.error(err.data.data[0].message);
 //   }
 // }
+const Pagination = async ($evnt) => {
+  filters.page = $evnt;
+  integrationRefresh();
+};
 </script>
 
 <style scoped></style>
