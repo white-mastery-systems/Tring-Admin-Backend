@@ -32,10 +32,10 @@
         <p v-if="selectedFileName" class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
           {{ selectedFileName }}
         </p>
-        <div class="mt-3">
+        <!-- <div class="mt-3">
           <TextField name="fileName" label="Intent Name" helperText="Enter a unique name to identify the intent"
             placeholder="Eg:Amenties" />
-        </div>
+        </div> -->
       </div>
       <div class="flex justify-end">
         <UiButton type="submit" class="mt-2" color="primary">

@@ -10,6 +10,7 @@
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
         <ChannelFilter @changeAction="onChannel" />
+        <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
       </div>
       <ExportButton :rows="exportReadyRows" :columns="exportReadyColumns" />
       <!-- <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton> -->
@@ -100,6 +101,7 @@ const filters = reactive<{
   action: string;
   page: string;
   limit: string;
+  country: string;
 }>({
   botId: "",
   q: undefined,
@@ -111,7 +113,9 @@ const filters = reactive<{
   action: "",
   page: "1",
   limit: "10",
+  country: 'all',
 });
+
 
 watchEffect(() => {
   if (filters.botId === "all") filters.botId = "";
@@ -120,6 +124,8 @@ watchEffect(() => {
 let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
+
+
 let {
   status,
   data: leads,
@@ -138,9 +144,26 @@ let {
     return leads.data;
   },
 });
+
+const exportFilters = computed(() => {
+  const { page, limit, ...restFilters } = filters; // Destructure to exclude 'page' and 'limit'
+  return restFilters;
+});
+
+let {
+  data: exportLeads,
+  refresh: getAllExportLeads,
+} = await useLazyFetch("/api/org/leads", {
+  server: false,
+  query: exportFilters,
+  headers: {
+    "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+  },
+  default: () => [],
+});
+
 const exportReadyRows = computed(() => {
-  console.log({ leads: leads.value })
-  return leads.value
+  return exportLeads.value
     .map((lead: any) => {
       const mergedObject = {
         name: lead.botUser.name ?? '---',
@@ -279,8 +302,12 @@ const selectedChannel = (value: any) => {
 
 const onChannel = ($event) => {
   if ($event) {
-
     filters.channel = $event;
+  }
+}
+const onCountryChange = ($event) => {
+  if ($event) {
+    filters.country = $event;
   }
 }
 </script>

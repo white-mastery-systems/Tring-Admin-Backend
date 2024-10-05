@@ -3,21 +3,12 @@
     <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
       Privacy
     </h3>
-    <div class="grid grid-cols-2 gap-2">
+    <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">
       <div class="relative">
-        <TextField
-          :type="passwordVisible ? 'text' : 'password'"
-          name="password"
-          label="Password"
-          placeholder="Password"
-          required
-        >
+        <TextField :type="passwordVisible ? 'text' : 'password'" name="password" label="Password" placeholder="Password"
+          required>
           <template #endIcon>
-            <div
-              class="w-[30px] cursor-pointer mt-1"
-              @click="togglePasswordVisibility"
-              type="button"
-            >
+            <div class="w-[30px] cursor-pointer mt-1" @click="togglePasswordVisibility" type="button">
               <OpenEye v-if="passwordVisible" />
               <CloseEyeIcon v-else />
             </div>
@@ -25,19 +16,10 @@
         </TextField>
       </div>
       <div class="relative ">
-        <TextField
-          :type="confirmPasswordVisible ? 'text' : 'password'"
-          name="confirmPassword"
-          label="Confirm Password"
-          placeholder="Confirm Your Password"
-          required
-        >
+        <TextField :type="confirmPasswordVisible ? 'text' : 'password'" name="confirmPassword" label="Confirm Password"
+          placeholder="Confirm Your Password" required>
           <template #endIcon>
-            <div
-              class="w-[30px] cursor-pointer mt-1"
-              @click="toggleConfirmPasswordVisibility"
-              type="button"
-            >
+            <div class="w-[30px] cursor-pointer mt-1" @click="toggleConfirmPasswordVisibility" type="button">
               <OpenEye v-if="confirmPasswordVisible" />
               <CloseEyeIcon v-else />
             </div>
