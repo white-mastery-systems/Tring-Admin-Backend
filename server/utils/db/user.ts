@@ -14,7 +14,7 @@ export const getAdminByOrgId = async (orgId: string) => {
   });
 };
 
-export const requestResetPassword = async (userDetails: any) => {
+export const requestResetPassword = (userDetails: any) => {
   try {
     const token = jwt.sign({ userId: userDetails?.id }, config?.secretKey, {
       expiresIn: "5m",
@@ -32,14 +32,12 @@ export const requestResetPassword = async (userDetails: any) => {
           <p style="padding-top: 1em;padding-bottom: 1em;">If you did not request this password reset, please contact our support team immediately.</p>
           <p style="padding-top: 1em;">Best Regards</p><br><p>Tring AI</p>`;
 
-    const result = await sendEmail(userDetails?.email, subject, message);
-    console.log({ result });
-    if (!result.status) {
-      return { status: false };
-    }
-    return { status: true, result };
+    sendEmail(userDetails?.email, subject, message);
+
+    return { status: true };
   } catch (error: any) {
     logger.error({ level: "error", message: error.message });
+    return { status: false };
   }
 };
 
