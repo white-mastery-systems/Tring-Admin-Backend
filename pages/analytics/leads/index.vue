@@ -9,7 +9,7 @@
         <StatusFilter @change="onStatusChange" />
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
-        <ChannelFilter @changeAction="onChannel" />
+        <!-- <ChannelFilter @changeAction="onChannel" /> -->
         <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
       </div>
       <ExportButton :rows="exportReadyRows" :columns="exportReadyColumns" />

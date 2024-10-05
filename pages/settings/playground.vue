@@ -7,7 +7,8 @@
     playgroundRequests,
   } from "~/server/utils/playground";
   import type { DocumentResponse } from "~/utils/apis/playground";
-  import { Upload } from "lucide-vue-next";
+  import { Upload, RotateCw } from "lucide-vue-next";
+
   useHead({
     title: "Settings | Playground",
   });
@@ -25,12 +26,38 @@ interface UserResponse {
   const isPageLoading = ref(false)
 
   const systemInstructions = ref(["", "", "", ""]);
-  const userQueries = ref(["Pricing details", "Pricing details", "Pricing details", "Pricing details"]);
+  const userQueries:any = ref(["", "", "", ""]);
   const processedResults = ref<string[]>([]);
   const variables = ref({});
   const systemPrompt = ref("Hello ${da} and ${dg}");
-const allProcessedResults = ref<UserResponse[][]>([]); // Store all results globally or in a parent scope
+  const allProcessedResults = ref<UserResponse[][]>([]); // Store all results globally or in a parent scope
 
+
+
+onMounted(async () => {
+  const prompt = await getCurrentPrompt();
+
+  if (prompt) {
+    systemInstructions.value = systemInstructions.value.map(() => prompt);
+    systemPrompt.value = systemInstructions.value[0];
+  }
+  const savedData = localStorage.getItem('playground_Value');
+  if (savedData) {
+    try {
+      const getChatPromptResponse = JSON.parse(savedData);
+      // Check if the parsed data has the expected structure
+      if (Array.isArray(getChatPromptResponse)) {
+        allProcessedResults.value = getChatPromptResponse;
+      } else {
+        console.error('Unexpected data format:', getChatPromptResponse);
+      }
+    } catch (error) {
+      console.error('Error parsing saved data:', error);
+    }
+  }
+});
+
+  
   const handleFileChange = async (event: Event) => {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
@@ -50,15 +77,23 @@ const allProcessedResults = ref<UserResponse[][]>([]); // Store all results glob
   };
 
 const processUserInput = async () => {
+  isPageLoading.value = true
   try {
     if (!documentId.value) {
       toast.error("Please choose a document before chatting");
+      isPageLoading.value = false
       return;
     }
-
+    const processedUserQueries: any = userQueries.value.map((query: any) => query.trim() === "" ? null : query);
+    const allQueriesNull = processedUserQueries.every((query: any) => query === null);
     // Load knowledge base
+    if (allQueriesNull) {
+      toast.error("Please Enter Input");
+      isPageLoading.value = false
+      return
+    }
     const knowledgeResults: any = await loadKnowledgeBase(
-      userQueries.value,
+      processedUserQueries,
       documentId.value,
     );
 
@@ -77,7 +112,7 @@ const processUserInput = async () => {
     });
 
     // Fetch the responses
-    const response = await playgroundRequests(instructionsArray, userQueries.value);
+    const response = await playgroundRequests(instructionsArray, processedUserQueries);
 
     if (!response || !response.responses) {
       console.error("Error: No valid response received.");
@@ -108,8 +143,11 @@ const processUserInput = async () => {
     // Log all processed results in the desired format
 
   } catch (error) {
+    toast.error("Error processing input");
     console.error("Error processing input:", error);
+    isPageLoading.value = false
   }
+  isPageLoading.value = false
 };
 
   const fileNames = computed(() => {
@@ -139,24 +177,28 @@ const safeParseJson = (jsonString: string) => {
   }
 };
 
-  onMounted(async () => {
-    const prompt = await getCurrentPrompt();
+const resetChatPrompt = () => {
+  isPageLoading.value = true
+  localStorage.removeItem('playground_Value')
+  allProcessedResults.value = []
+  isPageLoading.value = false
+}
 
-    if (prompt) {
-      systemInstructions.value = systemInstructions.value.map(() => prompt);
-      systemPrompt.value = systemInstructions.value[0];
-    }
-    const savedData = localStorage.getItem('playground_Value');
-    if (savedData) {
-      allProcessedResults.value = JSON.parse(savedData);
-    }
-  });
+const questionControl = (item:string, index: any) => {
+  userQueries.value[index] = ""
+  if (!Array.isArray(userQueries.value[index])) {
+    userQueries.value[index] = []; // Initialize it as an empty array
+  }
+  userQueries.value[index] = item;
+}
 </script>
 
 <template>
-  <Page title="Tring AI Playground" :disable-back-button="true" class="relative">
+  <!-- class="relative" -->
+  <Page title="Tring AI Playground" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex items-center gap-2">
+        <ModalProvider/>
         <PlaygroundSheet :system-prompt="systemPrompt" @update-variables="handleUpdateVariables" />
         <p class="pr-6">
           {{ fileNames }}
@@ -177,6 +219,12 @@ const safeParseJson = (jsonString: string) => {
     </template>
 
     <div class="shadow-lg mb-4 overflow-hidden rounded-lg bg-white">
+      <div class="flex items-center justify-end cursor-pointer" @click="resetChatPrompt">
+        <span class="flex items-center gap-1 font-medium hover:text-[#424bd1]">
+          Reset
+          <component :is="RotateCw" :size="16"></component>
+        </span>
+      </div>
       <div class="space-y-4 p-6 pb-0">
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <div v-for="(prompt, index) in systemInstructions" :key="index" class="space-y-2">
@@ -217,69 +265,64 @@ const safeParseJson = (jsonString: string) => {
 
           </div>
           <div class="flex items-center justify-end pt-3">
-            <UiButton @click="processUserInput" color="primary">Process Input</UiButton>
+            <UiButton @click="processUserInput" class="bg-[#FFBC42] hover:bg-[#FFBC42] text-white hover:brightness-90">
+              <template v-if="isPageLoading">
+                <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+              </template>
+              <template v-else>
+                Process Input
+              </template>
+              <!-- Process Input -->
+            </UiButton>
+            <!-- <div v-if="isPageLoading" class="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+              <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20 pointer-events-auto text-[#424BD1]" />
+            </div> -->
           </div>
         </div>
       </div>
     </div>
 
-    <div v-if="true">
-      <div class="bg-[#ffffff] grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <div v-for="(chatList, chatListIndex) in allProcessedResults" :key="chatListIndex"
-          class="p-2 max-h-[50vh] scrollable-container overflow-y-scroll field_shadow rounded-xl">
+    <div v-if="allProcessedResults?.length">
+      <div class="pl-2 font-bold text-[22px] pb-4 text-[#424BD1]">Processed Chat Prompts</div>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div v-for="(chatList, chatListIndex) in allProcessedResults" :key="chatListIndex" class="p-2">
+          <div class="font-bold text-[18px] pb-4">Result {{ chatListIndex + 1}}</div>
           <!-- {{chatList}} || asda -->
-          <div v-if="true" class="bg-[#ffffff] p-2 min-h-full" v-for="(chatItem, itemIndex) in chatList"
-            :key="itemIndex">
-            <div class="flex w-full flex-col items-end">
-              <div
-                class="w-[90%] mt-2.5 flex flex-col items-end justify-center rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black field_shadow">
-                <div>
-                  {{ chatItem.user }}
-                </div>
-              </div>
-
-            </div>
-            <div
-              class="w-[90%] field_shadow mt-2.5 flex min-h-[80px] flex-col gap-2 rounded-r-xl rounded-bl-xl bg-[#ffffff] p-5">
-              <div>
-                <MdText :content="safeParseJson(chatItem.response).response" />
-                <div class="flex flex-col" v-if="false">
-                  <div class="flex flex-wrap items-center gap-2">
-                    <!-- v-for="(btn, btnIndex) in safeParseJson(messageList.content)?.canned" :key="btnIndex" -->
-                    {{ safeParseJson(chatItem.response).response }}
-                  </div>
-                </div>
-              </div>
-              <!-- <div class="self-end text-[12px] text-[#00000066]">
-                    {{ formatDate(new Date(messageList.createdAt), "hh:mma") }}
-                    date
-                  </div> -->
-            </div>
-          </div>
-          <div v-if="false" class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <div v-for="(chatItem, itemIndex) in chatList" :key="itemIndex"
-              class="p-2.5 text-black rounded-l-xl rounded-br-xl mt-2.5 overflow-hidden">
-              <div class="flex w-full flex-col items-end">
-                <div
-                  class="w-[90%] mt-2.5 flex flex-col items-end justify-center rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black field_shadow">
-                  <div>
-                    {{ chatItem.user }}
-                  </div>
-                </div>
-              </div>
-
-              <div class="field_shadow mt-2.5 flex flex-col gap-2 rounded-r-xl rounded-bl-xl p-5">
-                <div class="overflow-y-auto max-h-[150px]"> <!-- Added max height and overflow for scrolling -->
-                  <!-- <MdText :content="safeParseJson(chatItem.response)" /> -->
-                  <div class="flex flex-col">
-                    <div class="flex flex-wrap items-center gap-2">
-                      <!-- {{ chatItem.response }} -->
-                      {{ safeParseJson(chatItem.response).response }}
+          <div class="bg-[#ffffff] field_shadow max-h-[50vh] scrollable-container overflow-y-scroll rounded-xl">
+            <div class="min-h-full" v-for="(chatItem, itemIndex) in chatList" :key="itemIndex">
+              <div v-if="chatItem?.user" class="bg-[#ffffff] p-2 min-h-full">
+                <div class="flex w-full flex-col items-end">
+                  <div
+                    class="w-[90%] mt-2.5 flex flex-col items-end justify-center rounded-l-xl rounded-br-xl bg-[#766DDB] text-white p-2.5 text-black field_shadow">
+                    <div>
+                      {{ chatItem?.user }}
                     </div>
                   </div>
+
                 </div>
-                <div class="self-end text-[12px] text-[#00000066]">
-                  <!-- Add date formatting here if needed -->
+                <div
+                  class="w-[90%] field_shadow mt-2.5 flex min-h-[80px] flex-col gap-2 rounded-r-xl rounded-bl-xl bg-[#ffffff] p-5">
+                  <div>
+                    <MdText :content="safeParseJson(chatItem.response)?.response" />
+                    <div class="flex flex-col" v-if="true">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <div v-if="true" class="flex items-center"
+                          v-for="(btn, btnIndex) in safeParseJson(chatItem.response)?.canned" :key="btnIndex">
+                          <p class="w-auto rounded-xl p-2 cursor-pointer" :style="{
+                            background: `hsl(347 66 39/ 0.15)`,
+                          }" @click="questionControl(btn.question, chatListIndex)">
+                            {{ btn.title }}
+                            <!-- {{ btn.question }} -->
+                          </p>
+                        </div>
+                        <!-- {{ safeParseJson(chatItem.response)?.response }} -->
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="self-end text-[12px] text-[#00000066]">
+                         {{ formatDate(new Date(messageList.createdAt), "hh:mma") }}
+                         date
+                       </div> -->
                 </div>
               </div>
             </div>
@@ -287,29 +330,23 @@ const safeParseJson = (jsonString: string) => {
         </div>
       </div>
     </div>
-    <div v-if="isPageLoading" class="absolute flex items-center justify-center bg-white">
-      <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
-    </div>
-    <!-- <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
-      <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
-    </div>
-    <div v-if="isPageLoading" class="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
-      <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+    <!-- <div v-if="isPageLoading" class="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+      <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20 pointer-events-auto text-[#424BD1]" />
     </div> -->
   </Page>
 </template>
 <style scoped>
 .scrollable-container::-webkit-scrollbar {
   display: block;
-  width: 4px;
+  width: 6px;
 }
 .scrollable-container::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
+  background: #EC848D;
   border-radius: 10px;
    
 }
 .scrollable-container::-webkit-scrollbar-track {
-  max-height: 15px !important;
+  max-height: 8px !important;
   margin-block: 1rem !important;
 }
 </style>

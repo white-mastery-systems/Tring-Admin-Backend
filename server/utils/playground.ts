@@ -39,7 +39,7 @@ export const loadKnowledgeBase = async (
 
 export const getCurrentPrompt = async () => {
   try {
-    const currentPrompt = await $fetch<Prompt>("/api/org/prompt");
+    const currentPrompt = await $fetch<Prompt>("/api/prompt");
     return currentPrompt.prompt;
   } catch (error) {
     console.error("Error retrieving current prompt:", error);
