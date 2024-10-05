@@ -139,7 +139,6 @@ let {
   },
 });
 const exportReadyRows = computed(() => {
-  console.log({ leads: leads.value })
   return leads.value
     .map((lead: any) => {
       const mergedObject = {

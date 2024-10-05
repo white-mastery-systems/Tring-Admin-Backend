@@ -1,11 +1,15 @@
+interface Prompt {
+  prompt: string;
+}
+
 export const playgroundRequests = async (
-  systemPrompts: string[],
-  userInput: string,
+  systemInstructions: string[],
+  userQueries: string[],
 ) => {
   try {
     const response = await $fetch("/api/playground", {
       method: "POST",
-      body: { systemPrompts, userInput },
+      body: { systemInstructions, userQueries },
     });
     return response;
   } catch (error) {
@@ -15,20 +19,30 @@ export const playgroundRequests = async (
 };
 
 export const loadKnowledgeBase = async (
-  question: string,
+  questions: string[],
   documentId: string,
 ) => {
   try {
     const knowledge = await $fetch("/api/playground/knowledge", {
       method: "POST",
       body: {
-        question,
+        questions,
         documentId,
       },
     });
     return knowledge;
   } catch (error) {
     console.error("Error fetching knowledge:", error);
+    return null;
+  }
+};
+
+export const getCurrentPrompt = async () => {
+  try {
+    const currentPrompt = await $fetch<Prompt>("/api/org/prompt");
+    return currentPrompt.prompt;
+  } catch (error) {
+    console.error("Error retrieving current prompt:", error);
     return null;
   }
 };

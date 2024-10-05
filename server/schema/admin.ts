@@ -215,6 +215,7 @@ export const templateSchema = adminSchema.table("templates", {
   headerFile: varchar("header_file"),
   headerLocation: varchar("header_location"),
   body: varchar("body"),
+  footer: varchar("footer"),
   templateVariables: varchar("template_variables").array(),
   organizationId: uuid("organization_id")
     .notNull()

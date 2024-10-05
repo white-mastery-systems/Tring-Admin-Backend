@@ -10,6 +10,7 @@
         <LivePreviewFilter @changeAction="onActionChange" />
         <DateRangeFilter @change="onDateChange" />
         <ChannelFilter @changeAction="onChannelChange" />
+
         <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
         <ExportButton :rows="exportReadyRows" :columns="exportReadyColumns" />
       </div>
@@ -103,19 +104,42 @@ const {
   },
 });
 
+const exportFilters = computed(() => {
+  const { page, limit, ...restFilters } = filters; // Destructure to exclude 'page' and 'limit'
+  return restFilters;
+});
+
+const {
+  data: exportChats,
+} = await useLazyFetch("/api/chats", {
+  server: false,
+  query: exportFilters,
+  default: () => [],
+  headers: {
+    "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+  },
+});
 
 
 const exportReadyRows = computed(() => {
+  let formatExportChats: any;
+
+  if (Array.isArray(exportChats.value)) {
+    formatExportChats = toRaw(exportChats.value); // Convert to plain array
+  } else if (exportChats.value && typeof exportChats.value === 'object') {
+    formatExportChats = toRaw(exportChats.value.data) || []; // Convert to plain object or array
+  }
+
   try {
-    return chats.value
+    return formatExportChats
       .map((chat: any) => {
 
         console.log({ chat })
         const mergedObject = {
-          name: chat?.userName ?? '---',
-          email: chat?.email ?? '---',
-          countryCode: chat?.countryCode ?? "+91",
-          mobile: chat?.mobile ?? "---",
+          name: chat?.botUser?.name ?? '---',
+          email: chat?.botUser?.email ?? '---',
+          countryCode: chat?.botUser?.countryCode ?? "+91",
+          mobile: chat?.botUser?.mobile ?? "---",
           botName: chat?.bot?.name ?? "---",
           country: chat?.metadata?.country ?? "---",
           createdAt: format(chat?.createdAt, "MMMM d, yyyy"),

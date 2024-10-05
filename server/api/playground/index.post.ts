@@ -1,29 +1,34 @@
 const config = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
-  const { systemPrompts, userInput } = await readBody(event);
+  const { systemInstructions, userQueries } = await readBody(event);
 
-  const requests = systemPrompts.map(async (prompt: string) => {
-    try {
-      const response = await $fetch<{ output: string }>("/ai/gen/", {
-        method: "POST",
-        body: JSON.stringify({
-          provider: "openai",
-          model_name: "gpt-4o-mini",
-          messages: [
-            { role: "system", content: prompt },
-            { role: "user", content: userInput },
-          ],
-        }),
-        baseURL: config.llmBaseUrl,
-      });
+  const requests = systemInstructions.map(
+    async (instruction: string, index: number) => {
+      try {
+        const response = await $fetch<{ output: string }>("/ai/gen/", {
+          method: "POST",
+          body: JSON.stringify({
+            provider: "openai",
+            model_name: "gpt-4o-mini",
+            messages: [
+              { role: "system", content: instruction },
+              { role: "user", content: userQueries[index] },
+            ],
+          }),
+          baseURL: config.llmBaseUrl,
+        });
 
-      return response.output;
-    } catch (error) {
-      console.error("Error fetching response:", error);
-      return null;
-    }
-  });
+        return response.output;
+      } catch (error) {
+        console.error(
+          `Error fetching response for instruction ${index}:`,
+          error,
+        );
+        return null;
+      }
+    },
+  );
 
   const responses = await Promise.all(requests);
 

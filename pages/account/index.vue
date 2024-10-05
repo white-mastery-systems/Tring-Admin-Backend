@@ -3,13 +3,16 @@
     <UiTabs default-value="PersonalDetails" class="w-full self-start">
       <UiTabsList class="grid w-full grid-cols-3">
         <UiTabsTrigger value="PersonalDetails" @click="selectedChannel('PersonalDetails')">
-          Personal Details
+          <span class="sm:hidden">Personal</span>
+          <span class="hidden sm:inline">Personal Details</span>
+          <!-- Personal Details -->
         </UiTabsTrigger>
         <UiTabsTrigger value="privacy" @click="selectedChannel('privacy')">
           Privacy
         </UiTabsTrigger>
         <UiTabsTrigger value="companyDetails" @click="selectedChannel('companyDetails')">
-          Company Details
+          <span class="sm:hidden">Company</span>
+          <span class="hidden sm:inline">Company Details</span>
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="PersonalDetails">

@@ -23,7 +23,7 @@
 
 <template >
   <UiSelect v-model="selectedAction" >
-    <UiSelectTrigger class="w-[60px]">
+    <UiSelectTrigger class="w-[135px]">
       <UiSelectValue placeholder="Select a Channel" />
     </UiSelectTrigger>
     <UiSelectContent>

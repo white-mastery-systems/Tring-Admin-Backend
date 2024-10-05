@@ -81,7 +81,7 @@
                   "
                   :data="step"
                   :totalSteps="timeLineData.length"
-                  :height="160"
+                  :height="48"
                 />
               </div>
             </UiTabsContent>
