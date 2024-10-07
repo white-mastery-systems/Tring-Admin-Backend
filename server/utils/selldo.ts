@@ -1,3 +1,6 @@
+import { logger } from "~/server/logger";
+
+
 export const createLeadInSellDo = async (
   notes: string,
   user: Record<string, any>,
@@ -40,8 +43,8 @@ export const createLeadInSellDo = async (
       if (response.sell_do_lead_id.length > 0) return response.sell_do_lead_id;
 
       await sleep(5000);
-    } catch (e) {
-      console.error(e);
+    } catch (err: any) {
+      logger.error(`createLeadInSellDo - apiKey: ${apiKey},projectId: ${projectId},campaignId: ${campaignId},analytics: ${JSON.stringify(analytics)},user: ${JSON.stringify(user)},notes: ${notes}, error: ${JSON.stringify(err.data)}`)
       await sleep(5000);
       continue;
     }
