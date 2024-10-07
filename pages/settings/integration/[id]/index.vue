@@ -4,29 +4,42 @@
   </div>
 </template>
 <script setup lang="ts">
-const route = useRoute();
-onMounted(async () => {
-  if (
-    route?.query?.code &&
-    route?.query?.location &&
-    route?.query["accounts-server"]
-  )
-    verifyIntegration({
-      integrationDetails: {
-        metadata: {
-          code: route?.query?.code,
-          location: route?.query?.location,
-          accountsServer: route?.query["accounts-server"],
+  const route = useRoute();
+  onMounted(async () => {
+    if (
+      route?.query?.code &&
+      route?.query?.location &&
+      route?.query["accounts-server"]
+    )
+      verifyIntegration({
+        integrationDetails: {
+          metadata: {
+            code: route?.query?.code,
+            location: route?.query?.location,
+            accountsServer: route?.query["accounts-server"],
+          },
+          crm: route?.params?.id,
         },
-        crm: route?.params?.id,
-      },
-      onSuccess: async () => {
-        await navigateTo("/settings/integration");
-      },
-    });
-  else {
-    toast.error("Verification failed");
-    await navigateTo("/settings/integration");
-  }
-});
+        onSuccess: async () => {
+          await navigateTo("/settings/integration");
+        },
+      });
+    else if (route?.query?.code) {
+      console.log({ ree: route.query.code });
+      verifyIntegration({
+        integrationDetails: {
+          metadata: {
+            code: route?.query?.code,
+          },
+          crm: route?.params?.id,
+        },
+        onSuccess: async () => {
+          await navigateTo("/settings/integration");
+        },
+      });
+    } else {
+      toast.error("Verification failed");
+      await navigateTo("/settings/integration");
+    }
+  });
 </script>
