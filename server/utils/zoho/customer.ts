@@ -1,4 +1,6 @@
-export const updateZohoCustomer = async (customerId: string, metaData: any, customerDetails: any) => {
+import { logger } from "~/server/logger";
+
+export const updateZohoCustomer: any = async (customerId: string, metaData: any, customerDetails: any) => {
   try {
     let firstName = customerDetails?.username;
     let lastName = "";
@@ -30,7 +32,7 @@ export const updateZohoCustomer = async (customerId: string, metaData: any, cust
         country: customerDetails?.address?.country
     }
     }
-    console.log({ metaData })
+    // console.log({ metaData })
     const data = await await $fetch(
       `https://www.zohoapis.in/billing/v1/customers/${customerId}`,
       {
@@ -43,13 +45,13 @@ export const updateZohoCustomer = async (customerId: string, metaData: any, cust
         body: updatedCustomer
       }
     )
-    console.log({ data })
+    logger.info(`Zoho update-customer: - ${JSON.stringify(data)}`)
     return { status: true, data }
   } catch(error) {
     const integrationData = metaData
     if (error instanceof Error) {
       const response = (error as any).response;
-      console.log({ response })
+      logger.error(`Error: Zoho update-customer:${JSON.stringify(response)}`)
       if (response && response.status === 401) {
           // console.log({ integrationData })
           const newAuthInfo = await regerateAccessTokenForTringAdmin({ integrationData })
@@ -60,7 +62,7 @@ export const updateZohoCustomer = async (customerId: string, metaData: any, cust
             customerDetails
           );
       } else {
-        console.log({ error })
+        logger.error(`Error: Zoho update-customer:${JSON.stringify(error)}`)
         return { status: false }
       }
     }
