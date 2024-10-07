@@ -158,15 +158,21 @@ const columns = [
 
   columnHelper.accessor("name", {
     header: "Name",
+
   }),
+
 
   columnHelper.accessor("id", {
     header: "Action",
-
+    
     cell: ({ row }) => {
       return actionsComponent(row.original.id);
     },
+     size: 150, // Set the desired size for the "Action" column
+    minSize: 100, // Minimum size during resizing
+    maxSize: 300, // Maximum size during resizing
   }),
+  
 ];
   const props =  defineProps<{ popupState?: boolean }>();
   const emit = defineEmits<{ (e: "popupState", payload:any): void }>();

@@ -1,6 +1,6 @@
 <template>
   <form class="space-y-2" @submit="handleAccountUpdate">
-    <div class="flex flex-col gap-3">
+    <div class="grid grid-cols-2 gap-3">
       <TextField
         type="text"
         name="name"
@@ -17,7 +17,7 @@
         :required="true"
       />
       <div v-if="values.industry === 'Other'">
-        <TextField type="text" name="otherRole" :required="true" />
+        <TextField type="text" name="otherRole" label="Other Industry" :required="true" />
       </div>
 
       <SelectField

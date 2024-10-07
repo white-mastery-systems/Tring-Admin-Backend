@@ -199,6 +199,11 @@
           icon: SettingsIcon,
           path: "/user-management",
         },
+        {
+          name: "Whatsapp Template",
+          icon: SettingsIcon,
+          path: "/whatsapp-template",
+        },
       ],
     },
     {

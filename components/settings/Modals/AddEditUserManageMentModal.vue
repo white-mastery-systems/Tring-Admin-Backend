@@ -89,7 +89,7 @@
       <!-- copy paste the class  below-->
       <!-- class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium" -->
 
-      <div class="grid gap-4">
+      <div class="grid grid-cols-2 gap-3">
         <TextField
           type="text"
           name="name"
@@ -104,11 +104,8 @@
           placeholder="Enter Your Email"
           required
         />
+    
 
-        <SelectField label="Role"  name="roleId" :multiple="false"
-        :required="true" placeholder="Select your role"
-        :options="userModalState.roles?.map((role: any) => ({ label: role.name, value: role.id }))" />
-        <div class="flex gap-2 ">
           <CountryCodeField
             class="mt-1.5 w-[100px] "
             name="countryCode"
@@ -117,7 +114,7 @@
             required
           />
 
-          <TextField
+        <TextField
             :disableCharacters="true"
             name="mobile"
             label="Mobile number"
@@ -125,7 +122,10 @@
             required
             placeholder="Enter your mobile number"
           />
-        </div>
+  
+                  <SelectField label="Role"  name="roleId" :multiple="false"
+        :required="true" placeholder="Select your role"
+        :options="userModalState.roles?.map((role: any) => ({ label: role.name, value: role.id }))" />
         <div class="relative">
           <TextField
             :type="passwordVisible ? 'text' : 'password'"
@@ -151,7 +151,7 @@
             :type="confirmPasswordVisible ? 'text' : 'password'"
             name="confirmPassword"
             label="Confirm Password"
-            placeholder="Confirm Your Password"
+            placeholder="Confirm  Password"
             required
           >
             <template #endIcon>
