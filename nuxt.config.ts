@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     "nuxt-typed-router",
     "shadcn-nuxt",
     "@vueuse/nuxt",
+    "@pinia/nuxt",
   ],
 
   nitro: {
@@ -29,7 +30,7 @@ export default defineNuxtConfig({
         base: "./logs",
       },
     },
-    plugins: ['~/server/plugin/yaml-watcher.ts']
+    plugins: ["~/server/plugin/yaml-watcher.ts"],
   },
 
   imports: {
@@ -63,7 +64,7 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       exclude: ["vee-validate"],
-      include: ['chokidar', 'js-yaml']
+      include: ["chokidar", "js-yaml"],
     },
   },
 

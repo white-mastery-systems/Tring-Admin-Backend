@@ -26,6 +26,8 @@
       "
       @keypress="
         (e: any) => {
+          console.log(e.key);
+          
           if (disableCharacters) {
             if (e.key === 'Enter') {
               return;
@@ -34,8 +36,14 @@
               e.preventDefault();
             }
           }
+          if(['{','}'].includes(e.key))emit('input',e.key)
         }
       "
+      @keydown="($event)=>{
+        if($event.code=='Backspace' || $event.code=='Delete')
+        emit('input','keydown')
+        }"
+       @input="emit('input','change')" 
       :placeholder="placeholder"
       :id="replacedId"
       :class="errorMessage ? 'border-red-500' : 'border-input'"
@@ -64,6 +72,7 @@
       "
       @keypress="
         (e: any) => {
+          
           if (disableCharacters) {
             if (e.key === 'Enter') {
               return;
@@ -92,6 +101,7 @@
       v-model="value"
       :type="type || 'text'"
       :accept="accept || ''"
+      @input="emit('input',$event)"
     />
     <div
       :class="
@@ -117,7 +127,7 @@
 
 <script setup lang="ts">
   import { useField } from "vee-validate";
-
+  const emit = defineEmits(['input'])
   const props = withDefaults(
     defineProps<{
       label?: string;

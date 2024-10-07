@@ -70,12 +70,18 @@ import { formSchema } from '~/validationSchema/authValidation/onBoarding/2Valida
     //   toast.error("Please enter valid details");
     //   return;
     // }
-
+   try {
     await $fetch("/api/auth/onboarding/2", {
       method: "POST",
       body: value,
     });
-    return navigateTo("/");
+    navigateTo("/signUpSuccess");
+    setTimeout(() => {
+      navigateTo("/");
+    }, 3000)
+   } catch (error) {
+     console.error("Error during submission:", error);
+   }
   })
 </script>
 <template>

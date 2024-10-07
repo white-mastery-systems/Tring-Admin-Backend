@@ -23,8 +23,8 @@ export default defineEventHandler(async (event) => {
     );
   }
   
-  const data = await requestResetPassword(userDetails)
-  if(!data.status) {
+  const data = requestResetPassword(userDetails)
+  if(!data?.status) {
     return { status: false, message: "Failed to sent email"}
   }
   return { status: true, message: "Email sent successfully"}
