@@ -10,17 +10,17 @@ const zodInsertCallLogsValidator = z.object({
   callerName: z.string(),
   callTranscription: z.string(),
   inputCredits: z.string(),
-  outputCredits: z.string()
+  outputCredits: z.string(),
+  organizationId: z.string(),
+  botId: z.string(),
 })
 
 export default defineEventHandler(async (event) => {
-  const organizationId = (await isOrganizationAdminHandler(event)) as string
 
   const body = await isValidBodyHandler(event, zodInsertCallLogsValidator)
 
   const data = await createCallLogs({
     ...body,
-    organizationId: organizationId
   })
 
   return isValidReturnType(event, data)

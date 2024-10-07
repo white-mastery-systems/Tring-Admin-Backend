@@ -82,6 +82,9 @@ export const callLogSchema = voiceBotSchema.table("call_logs", {
   callTranscription: varchar("call_transcription").notNull(),
   inputCredits: varchar("input_credits").notNull(),
   outputCredits: varchar("output_credits").notNull(),
+  botId: uuid("bot_id")
+      .references(() => voicebotSchema.id)
+      .notNull(),
   organizationId: uuid("organization_id")
       .references(() => organizationSchema.id)
       .notNull(),
