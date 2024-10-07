@@ -3,7 +3,7 @@ import { logger } from "~/server/logger";
 
 const config = useRuntimeConfig();
 
-const sendEmail = (to: string, subject: string, message: any) => {
+const sendEmail = (to: string[] | string, subject: string, message: any) => {
   try {
     return new Promise((resolve) => {
       console.log({ user: config?.nodemailerUser , pass: config?.nodemailerPass})
