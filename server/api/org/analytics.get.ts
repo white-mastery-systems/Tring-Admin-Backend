@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
       validatedQuery?.graphValues,
       timeZone,
     );
-    console.log({ data });
+    // console.log({ data });
     return data;
   } catch (err: any) {
     console.log(err.message, "ERRR");

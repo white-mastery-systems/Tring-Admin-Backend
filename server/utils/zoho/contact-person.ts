@@ -30,13 +30,13 @@ export const createContactPerson: any = async(organizationId: string, user: any,
         }
       }
     )
-    logger.info(`auth data---${JSON.stringify(data)}`)
+    logger.info(`Zoho create contact-person data:---${JSON.stringify(data)}`)
     return { status: true, data }
   } catch (error) {
     const integrationData = metaData
     if (error instanceof Error) {
       const response = (error as any).response;
-      logger.error(`auth error ----${JSON.stringify(response)}`)
+      logger.error(`Error: Zoho create contact-person:----${JSON.stringify(response)}`)
       if (response && response.status === 401) {
           const newAuthInfo = await regerateAccessTokenForTringAdmin({ integrationData })
           logger.info(`newAUthInfo after regerate Access-Token----${JSON.stringify(newAuthInfo)}`)
@@ -47,7 +47,7 @@ export const createContactPerson: any = async(organizationId: string, user: any,
             customerId
           );
       } else {
-        console.log({ error })
+        logger.error(`Error: Zoho create contact-person:----${JSON.stringify(error)}`)
         return { status: false }
       }
     }
@@ -78,11 +78,13 @@ export const updateContactPerson: any = async (organizationId: string, user: any
           }
         }
       )
+      logger.info(`Zoho update contact-person data:---${JSON.stringify(data)}`)
       return { status: true, data }
   } catch (error) {
       const integrationData = metaData
       if (error instanceof Error) {
         const response = (error as any).response;
+        logger.error(`Error: Zoho update contact-person:---${JSON.stringify(response)}`)
         if (response && response.status === 401) {
             const newAuthInfo = await regerateAccessTokenForTringAdmin({ integrationData })
             return await updateContactPerson(
@@ -93,7 +95,7 @@ export const updateContactPerson: any = async (organizationId: string, user: any
               contactPersonId
             );
         } else {
-          console.log({ error })
+          logger.error(`Error: Zoho update contact-person:---${JSON.stringify(error)}`)
           return { status: false }
         }
       }

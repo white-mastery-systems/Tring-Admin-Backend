@@ -6,6 +6,8 @@
           <UiButton color="primary" @click="() => {
             addWhatappTemplateModalState.open = true;
             addWhatappTemplateModalState.id = null;
+            console.log('addWhatappTemplateModalState', addWhatappTemplateModalState);
+
           }
             ">
             Add Template
@@ -34,21 +36,22 @@
           " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="contactsList"
         :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="16" height-unit="vh" />
 
-      <ConfirmationModal v-model:open="deleteBucketState.open" title="Confirm Delete"
+      <ConfirmationModal v-model:open="deleteTemplateState.open" title="Confirm Delete"
         description="Are you sure you want to delete ?" @confirm="() => {
-          if (deleteBucketState?.id) {
-            deleteBucket({
-              integrationId: deleteBucketState.id,
+          if (deleteTemplateState?.id) {
+            deleteSingleTemplate({
+              id: deleteTemplateState.id,
               onSuccess: () => {
                 integrationRefresh();
               },
             });
-            deleteBucketState.open = false;
+            deleteTemplateState.open = false;
           }
         }
           " />
     </div>
-    <AddEditWhatsappTemplateModal v-model="addWhatappTemplateModalState" @confirm="() => {
+    <AddEditWhatsappTemplateModal
+    v-model="addWhatappTemplateModalState" @confirm="() => {
       addWhatappTemplateModalState.open = false;
       integrationRefresh();
     }
@@ -59,7 +62,6 @@
 import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import { useRoute, useRouter } from "vue-router";
-import AddBucketNameModal from "~/components/voiceBot/DialogModal/CreateEditBucketModal.vue";
 
 definePageMeta({
   middleware: "admin-only",
@@ -75,7 +77,7 @@ const formSchema = toTypedSchema(
 );
 const searchBucket = ref("");
 const searchBotDebounce = refDebounced(searchBucket, 500);
-const deleteBucketState = ref({ open: false, id: null });
+const deleteTemplateState = ref({ open: false, id: null });
 
 const filters = reactive<{
   q: string;
@@ -89,6 +91,11 @@ const filters = reactive<{
 // const campaignModalState = ref({ open: false });
 const addWhatappTemplateModalState = ref({ open: false, id: null });
 
+watch(() =>addWhatappTemplateModalState,(newValue)=>{
+  console.log("addWhatappTemplateModalState", newValue);
+  
+})
+
 let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
@@ -96,7 +103,7 @@ const {
   status,
   data: contactsList,
   refresh: integrationRefresh,
-} = await useLazyFetch("/api/org/contact-list", {
+} = await useLazyFetch("/api/templates", {
   server: false,
   default: () => [],
   query: filters,
@@ -151,8 +158,8 @@ const actionsComponent = (id: any) =>
         {
           onClick: (e: any) => {
             e.stopPropagation();
-            deleteBucketState.value.id = id;
-            deleteBucketState.value.open = true;
+            deleteTemplateState.value.id = id;
+            deleteTemplateState.value.open = true;
           }, // Add delete functionality
           class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
         },
