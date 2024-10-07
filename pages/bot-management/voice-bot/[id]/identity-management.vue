@@ -137,13 +137,8 @@ if (botDetails.identityManagement) {
         </div>
         <div class="flex w-full justify-end">
           <UiButton type="submit" class="w-[120px] self-end bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
-            size="lg">
-            <template v-if="isLoading">
-              <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-            </template>
-            <template v-else>
-              Submit
-            </template>
+            size="lg" :loading="isLoading">
+            Submit
           </UiButton>
         </div>
       </form>

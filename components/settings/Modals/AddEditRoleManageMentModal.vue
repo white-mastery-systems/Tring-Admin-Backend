@@ -115,13 +115,8 @@
         </div>
 
         <div class="flex w-full justify-end">
-          <UiButton type="submit" class="mt-2" color="primary">
-            <template v-if="isLoading">
-              <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-            </template>
-            <template v-else>
-              Submit
-            </template>
+          <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
+            Submit
           </UiButton>
         </div>
       </div>

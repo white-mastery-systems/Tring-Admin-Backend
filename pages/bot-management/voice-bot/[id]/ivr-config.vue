@@ -68,13 +68,8 @@ const onSubmit = handleSubmit(async (value: any) => {
           </TextField>
         </div>
         <div class="flex justify-end w-full">
-          <UiButton type="submit" color="primary" size="lg">
-            <template v-if="isLoading">
-              <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-            </template>
-            <template v-else>
-              Submit
-            </template>
+          <UiButton type="submit" color="primary" size="lg" :loading="isLoading">
+            Submit
           </UiButton>
         </div>
       </form>

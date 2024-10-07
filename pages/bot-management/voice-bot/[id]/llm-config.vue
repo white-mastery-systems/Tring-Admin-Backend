@@ -43,13 +43,8 @@
           <TextField label="Domain Rules" name="domainRules" placeholder="Domain Rules" :isTextarea="true" />
         </div>
         <div class="flex items-center justify-end mt-4">
-          <UiButton type="submit" color="primary">
-            <template v-if="isLoading">
-              <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-            </template>
-            <template v-else>
-              Submit
-            </template>
+          <UiButton type="submit" color="primary" :loading="isLoading">
+            Submit
           </UiButton>
         </div>
         <!-- copy paste the class  below-->

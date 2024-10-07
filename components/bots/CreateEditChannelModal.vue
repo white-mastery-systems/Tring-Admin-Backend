@@ -18,13 +18,8 @@
       </div>
 
       <div class="flex w-full justify-items-end">
-        <UiButton color="primary" type="submit">
-          <template v-if="isLoading">
-            <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-          </template>
-          <template v-else>
-            Submit
-          </template>
+        <UiButton type="submit" color="primary" :loading="isLoading">
+          Submit
         </UiButton>
       </div>
       <span class="text-sm text-gray-500">enter this webhook url in Meta Dashboard</span>

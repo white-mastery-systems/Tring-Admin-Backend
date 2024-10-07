@@ -54,13 +54,8 @@ const addVoiceBot = handleSubmit(async (value: any) => {
       <TextField name="newBotName" label="Voice Bot Name" placeholder="Enter Voice Bot Name" required>
       </TextField>
       <div class="flex w-full items-center justify-end">
-        <UiButton type="submit" class="mt-2" color="primary">
-          <template v-if="isLoading">
-            <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-          </template>
-          <template v-else>
-            Create
-          </template>
+        <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
+          Create
         </UiButton>
       </div>
     </form>

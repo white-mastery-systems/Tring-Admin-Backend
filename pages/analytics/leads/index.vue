@@ -12,7 +12,7 @@
         <!-- <ChannelFilter @changeAction="onChannel" /> -->
         <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
       </div>
-      <ExportButton :rows="exportReadyRows" :columns="exportReadyColumns" />
+      <ExportButton :rows="exportReadyRows" :columns="exportReadyColumns" @export="exportData" />
       <!-- <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton> -->
     </div>
     <UiTabs default-value="all" class="w-full self-start">
@@ -88,7 +88,7 @@ useHead({
 
 const router = useRouter();
 const route = useRoute();
-
+const fetchExportData = ref(false);
 
 const filters = reactive<{
   botId: string;
@@ -101,6 +101,7 @@ const filters = reactive<{
   action: string;
   page: string;
   limit: string;
+  country: string;
 }>({
   botId: "",
   q: undefined,
@@ -112,6 +113,7 @@ const filters = reactive<{
   action: "",
   page: "1",
   limit: "10",
+  country: "all",
 });
 
 watchEffect(() => {
@@ -121,6 +123,10 @@ watchEffect(() => {
 let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
+
+
+
+
 let {
   status,
   data: leads,
@@ -139,8 +145,40 @@ let {
     return leads.data;
   },
 });
+
+const exportFilters = computed(() => {
+  const { page, limit, ...restFilters } = filters; // Destructure to exclude 'page' and 'limit'
+  return restFilters;
+});
+// watch(exportFilters, async () => {
+//   await fetchExportLeads(); // Fetch data when filters change
+// }, { immediate: true, deep: true });
+
+// let {
+//   data: exportLeads,
+//   refresh: getAllExportLeads,
+// } = await useLazyFetch("/api/org/leads", {
+//   server: false,
+//   query: exportFilters,
+//   headers: {
+//     "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+//   },
+//   default: () => [],
+// });
+let { data: exportLeads, execute } = await useLazyFetch("/api/org/leads", {
+  server: false,
+  query: exportFilters,
+  headers: {
+    "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+  },
+  immediate: fetchExportData.value,
+  default: () => [],
+});
+
+
 const exportReadyRows = computed(() => {
-  return leads.value
+  console.log(exportLeads.value, "exportLeads.value")
+  return (exportLeads.value ?? [])
     .map((lead: any) => {
       const mergedObject = {
         name: lead.botUser.name ?? '---',
@@ -155,7 +193,6 @@ const exportReadyRows = computed(() => {
       };
       return mergedObject
     })
-
 })
 watch(exportReadyRows, () => {
   console.log({ exportReadyRows: exportReadyRows.value })
@@ -282,5 +319,16 @@ const onChannel = ($event) => {
 
     filters.channel = $event;
   }
+}
+
+const onCountryChange = ($event) => {
+  if ($event) {
+    filters.country = $event;
+  }
+}
+const exportData = () => {
+  fetchExportData.value = true
+  execute()
+  fetchExportData.value = false
 }
 </script>

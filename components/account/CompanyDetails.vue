@@ -16,13 +16,8 @@
         :options="employeeCount.map((role) => ({ label: role, value: role }))" :required="true" />
 
       <div class="flex w-full justify-end">
-        <UiButton type="submit" color="primary" size="lg">
-          <template v-if="isLoading">
-            <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-          </template>
-          <template v-else>
-            Submit
-          </template>
+        <UiButton type="submit" color="primary" size="lg" :loading="isLoading">
+          Submit
         </UiButton>
       </div>
     </div>

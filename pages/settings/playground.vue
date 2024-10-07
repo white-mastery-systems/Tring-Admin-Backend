@@ -23,7 +23,7 @@ interface UserResponse {
 
   const selectedFile = ref<File | null>(null);
   const documentId = ref(route.query.id as string);
-  const isPageLoading = ref(false)
+  const isLoading = ref(false)
 
   const systemInstructions = ref(["", "", "", ""]);
   const userQueries:any = ref(["", "", "", ""]);
@@ -55,6 +55,11 @@ onMounted(async () => {
       console.error('Error parsing saved data:', error);
     }
   }
+
+  setTimeout(()=>{
+    const Scroll =  document.getElementById('scrollToBottom')
+    Scroll?.scrollIntoView({ behavior:'smooth',block: 'end' })
+  },1000)
 });
 
   
@@ -77,11 +82,11 @@ onMounted(async () => {
   };
 
 const processUserInput = async () => {
-  isPageLoading.value = true
+  isLoading.value = true
   try {
     if (!documentId.value) {
       toast.error("Please choose a document before chatting");
-      isPageLoading.value = false
+      isLoading.value = false
       return;
     }
     const processedUserQueries: any = userQueries.value.map((query: any) => query.trim() === "" ? null : query);
@@ -89,7 +94,7 @@ const processUserInput = async () => {
     // Load knowledge base
     if (allQueriesNull) {
       toast.error("Please Enter Input");
-      isPageLoading.value = false
+      isLoading.value = false
       return
     }
     const knowledgeResults: any = await loadKnowledgeBase(
@@ -145,9 +150,9 @@ const processUserInput = async () => {
   } catch (error) {
     toast.error("Error processing input");
     console.error("Error processing input:", error);
-    isPageLoading.value = false
+    isLoading.value = false
   }
-  isPageLoading.value = false
+  isLoading.value = false
 };
 
   const fileNames = computed(() => {
@@ -178,10 +183,10 @@ const safeParseJson = (jsonString: string) => {
 };
 
 const resetChatPrompt = () => {
-  isPageLoading.value = true
+  isLoading.value = true
   localStorage.removeItem('playground_Value')
   allProcessedResults.value = []
-  isPageLoading.value = false
+  isLoading.value = false
 }
 
 const questionControl = (item:string, index: any) => {
@@ -198,7 +203,7 @@ const questionControl = (item:string, index: any) => {
   <Page title="Tring AI Playground" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex items-center gap-2">
-        <ModalProvider/>
+        <ModalProvider />
         <PlaygroundSheet :system-prompt="systemPrompt" @update-variables="handleUpdateVariables" />
         <p class="pr-6">
           {{ fileNames }}
@@ -227,7 +232,8 @@ const questionControl = (item:string, index: any) => {
       </div>
       <div class="space-y-4 p-6 pb-0">
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <div v-for="(prompt, index) in systemInstructions" :key="index" class="space-y-2">
+          <div :id="'systemInstructions' + index" v-for="(prompt, index) in systemInstructions" :key="index"
+            class="space-y-2">
             <UiLabel :for="`system-prompt-${index}`" class="block text-sm font-medium text-gray-700">
               System Prompt {{ index + 1 }}
             </UiLabel>
@@ -237,6 +243,7 @@ const questionControl = (item:string, index: any) => {
             </UiTextarea>
           </div>
         </div>
+        <div id="scrollToBottom"></div>
         <!-- {{allProcessedResults}} || asfa -->
         <!-- <pre>{{ JSON.stringify(allProcessedResults, null, 2) }} || zsfadfa</pre> -->
       </div>
@@ -265,16 +272,12 @@ const questionControl = (item:string, index: any) => {
 
           </div>
           <div class="flex items-center justify-end pt-3">
-            <UiButton @click="processUserInput" class="bg-[#FFBC42] hover:bg-[#FFBC42] text-white hover:brightness-90">
-              <template v-if="isPageLoading">
-                <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-              </template>
-              <template v-else>
-                Process Input
-              </template>
+            <UiButton @click="processUserInput" class="bg-[#FFBC42] hover:bg-[#FFBC42] text-white hover:brightness-90"
+              :loading="isLoading">
+              Process Input
               <!-- Process Input -->
             </UiButton>
-            <!-- <div v-if="isPageLoading" class="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+            <!-- <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
               <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20 pointer-events-auto text-[#424BD1]" />
             </div> -->
           </div>
@@ -330,7 +333,7 @@ const questionControl = (item:string, index: any) => {
         </div>
       </div>
     </div>
-    <!-- <div v-if="isPageLoading" class="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+    <!-- <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
       <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20 pointer-events-auto text-[#424BD1]" />
     </div> -->
   </Page>

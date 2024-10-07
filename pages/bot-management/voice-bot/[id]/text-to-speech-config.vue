@@ -103,13 +103,8 @@
           helperText="Select your voice." :options="voices" required />
       </div>
       <div class="flex w-full justify-end mt-2">
-        <UiButton color="primary" type="submit">
-          <template v-if="isLoading">
-            <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-          </template>
-          <template v-else>
-            Submit
-          </template>
+        <UiButton color="primary" type="submit" :loading="isLoading">
+          Submit
         </UiButton>
       </div>
     </form>

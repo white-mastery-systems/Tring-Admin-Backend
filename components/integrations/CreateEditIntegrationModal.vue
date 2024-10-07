@@ -146,25 +146,20 @@ const handleConnect = handleSubmit(async (values: any) => {
         <TextField v-if="values.crm === 'sell-do'" name="metadata.apiKey" label="Api key"
           helperText="Enter your API key here" placeHolder="Eg: api-key-here" required />
         <div class="flex justify-end w-full">
-          <UiButton type="submit" class="mt-2" color="primary">
-            <template v-if="isLoading">
-              <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-            </template>
-            <template v-else>
-              {{
-              values.crm === "zoho-crm"
-              ? integrationModalProps?.id
-              ? "Update changes"
-              : "Connect Zoho CRM"
-              : values.crm === "zoho-bigin"
-              ? integrationModalProps?.id
-              ? "Update changes"
-              : "Connect Zoho Bigin"
-              : integrationModalProps?.id
-              ? "Update changes"
-              : "Save changes"
-              }}
-            </template>
+          <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
+            {{
+            values.crm === "zoho-crm"
+            ? integrationModalProps?.id
+            ? "Update changes"
+            : "Connect Zoho CRM"
+            : values.crm === "zoho-bigin"
+            ? integrationModalProps?.id
+            ? "Update changes"
+            : "Connect Zoho Bigin"
+            : integrationModalProps?.id
+            ? "Update changes"
+            : "Save changes"
+            }}
           </UiButton>
         </div>
       </div>

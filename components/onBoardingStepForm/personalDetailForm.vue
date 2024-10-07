@@ -15,7 +15,7 @@
           v-model="formData.role" />
         <TextField v-if="formData.role === 'Other'" type="text" name="otherRole" label="Custom Role"
           placeholder="Enter Your Custom Role" v-model="formData.otherRole" />
-        <UiButton type="submit" class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]">Proceed
+        <UiButton type="submit" class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]" :loading="isLoading">Proceed
         </UiButton>
       </form>
 
@@ -38,7 +38,7 @@ import { defineEmits, defineProps } from 'vue';
 
 const props = defineProps(['formData', 'setFieldValue', 'personalCompanyDetail']);
 const emit = defineEmits(['next']);
-
+const isLoading = ref(false)
 const showCustomRoleInput = ref(false);
 const roles = [
   "Chief Executive Officer",
@@ -58,10 +58,12 @@ props.setFieldValue('otherRole', props?.formData?.otherRole)
 // };
 
 const onSubmit = () => {
+  isLoading.value = true
   emit('next', {
     name: props.formData.name,
     role: props.formData.role,
     otherRole: props.formData.otherRole,
   });
+  isLoading.value = false
 };
 </script>

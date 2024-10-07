@@ -200,13 +200,8 @@ const handleUpdateBotConfig = handleSubmit(async (values: any) => {
               company." :isTextarea="true">
         </TextField>
         <div class="flex w-full justify-end">
-          <UiButton color="primary" type="submit" size="lg">
-            <template v-if="isLoading">
-              <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-            </template>
-            <template v-else>
-              Submit
-            </template>
+          <UiButton color="primary" type="submit" size="lg" :loading="isLoading">
+            Submit
           </UiButton>
         </div>
       </form>

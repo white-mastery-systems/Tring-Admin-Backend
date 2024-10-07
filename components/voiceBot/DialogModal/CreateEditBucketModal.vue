@@ -109,13 +109,8 @@ const handleConnect = handleSubmit(async (values: any) => {
         </TextField>
       </div>
       <div class="flex items-center justify-end">
-        <UiButton type="submit" class="mt-2" color="primary">
-          <template v-if="isLoading">
-            <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-          </template>
-          <template v-else>
+        <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
             Submit
-          </template>
         </UiButton>
       </div>
     </form>
