@@ -210,13 +210,7 @@ export const promptSchema = adminSchema.table("prompt", {
 export const templateSchema = adminSchema.table("templates", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name"),
-  header: varchar("header"),
-  headerText: varchar("header_text"),
-  headerFile: varchar("header_file"),
-  headerLocation: varchar("header_location"),
-  body: varchar("body"),
-  footer: varchar("footer"),
-  templateVariables: varchar("template_variables").array(),
+  metadata: jsonb("metadata").default({}),
   organizationId: uuid("organization_id")
     .notNull()
     .references(() => organizationSchema.id),

@@ -2,14 +2,40 @@ interface Prompt {
   prompt: string;
 }
 
+export const createModelConfiguration = (provider: string) => {
+  const baseConfig = {
+    temperature: 0,
+  };
+  if (provider === "groq" || provider === "openai") {
+    return {
+      temperature: 0,
+      response_format: { type: "json_object" },
+    };
+  } else if (provider === "google") {
+    return {
+      temperature: 0,
+      response_mime_type: "application/json",
+    };
+  }
+  return baseConfig;
+};
+
 export const playgroundRequests = async (
   systemInstructions: string[],
   userQueries: string[],
+  provider: string,
+  model: string,
 ) => {
   try {
     const response = await $fetch("/api/playground", {
       method: "POST",
-      body: { systemInstructions, userQueries },
+      body: {
+        systemInstructions,
+        userQueries,
+        provider,
+        model,
+        modelConfig: createModelConfiguration(provider),
+      },
     });
     return response;
   } catch (error) {
@@ -39,10 +65,24 @@ export const loadKnowledgeBase = async (
 
 export const getCurrentPrompt = async () => {
   try {
-    const currentPrompt = await $fetch<Prompt>("/api/org/prompt");
+    const currentPrompt = await $fetch<Prompt>("/api/prompt");
     return currentPrompt.prompt;
   } catch (error) {
     console.error("Error retrieving current prompt:", error);
+    return null;
+  }
+};
+
+export const getProviderModels = async (provider: string) => {
+  try {
+    const response = await $fetch<string[]>(
+      `/api/playground/models?provider=${provider}`,
+      {
+        method: "GET",
+      },
+    );
+    return response;
+  } catch (error) {
     return null;
   }
 };
