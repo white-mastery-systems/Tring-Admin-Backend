@@ -14,6 +14,16 @@
     <UiTextarea
       v-if="isTextarea"
       class="mt-2"
+      @paste="
+        (e: any) => {
+          if (disableCharacters) {
+            console.log(e.clipboardData.getData('text/plain'));
+            if (isNaN(Number(e.clipboardData.getData('text/plain')))) {
+              e.preventDefault();
+            }
+          }
+        }
+      "
       @keypress="
         (e: any) => {
           console.log(e.key);
@@ -49,6 +59,16 @@
           props.class,
           errorMessage ? 'border-red-500' : 'border-input',
         )
+      "
+      @paste="
+        (e: any) => {
+          if (disableCharacters) {
+            console.log(e.clipboardData.getData('text/plain'));
+            if (isNaN(Number(e.clipboardData.getData('text/plain')))) {
+              e.preventDefault();
+            }
+          }
+        }
       "
       @keypress="
         (e: any) => {
@@ -123,7 +143,7 @@
       endIcon?: any;
       validation: Boolean;
       disableSpecialCharacters?: boolean;
-      accept?: string
+      accept?: string;
     }>(),
     {
       label: "",
@@ -151,12 +171,11 @@
     console.log({ newErr });
   });
   watch(value, (data) => {
-    if(props.disableSpecialCharacters) {
-          setTimeout(() => {
-      value.value = value.value.replace(/ /g, "_");
-      value.value = value.value.replace(/[^\w\s]/gi, '');
-    }, 0);
+    if (props.disableSpecialCharacters) {
+      setTimeout(() => {
+        value.value = value.value.replace(/ /g, "_");
+        value.value = value.value.replace(/[^\w\s]/gi, "");
+      }, 0);
     }
-
   });
 </script>
