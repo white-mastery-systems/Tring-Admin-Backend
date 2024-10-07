@@ -5,19 +5,23 @@ export default defineEventHandler(async (event) => {
 
   const questionList = Array.isArray(questions) ? questions : [questions];
 
+  var apiResponses = [];
+
   const apiCalls = questionList.map((singleQuestion) =>
-    $fetch("/rag/knowledge", {
-      method: "POST",
-      body: {
-        question: singleQuestion,
-        document_id: documentId,
-        provider: "openai",
-      },
-      baseURL: config.llmBaseUrl,
-    }),
+    singleQuestion === null
+      ? apiResponses.push(null)
+      : $fetch("/rag/knowledge", {
+          method: "POST",
+          body: {
+            question: singleQuestion,
+            document_id: documentId,
+            provider: "openai",
+          },
+          baseURL: config.llmBaseUrl,
+        }),
   );
 
-  const apiResponses = await Promise.all(apiCalls);
+  apiResponses = await Promise.all(apiCalls);
 
   return apiResponses;
 });

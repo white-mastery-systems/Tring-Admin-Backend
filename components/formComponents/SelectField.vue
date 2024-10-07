@@ -58,9 +58,10 @@ watchEffect(() => {
 const { value: fieldValue, errorMessage, meta, errors } = useField(() => props.name);
 
 const selectedValue = ref<any>(fieldValue.value);
-
+const emit = defineEmits(['input']);
 watch(selectedValue, (newValue) => {
   fieldValue.value = newValue;
+  emit('input', newValue);
 });
 
 const hasError = computed(() => meta.touched && errorMessage.value);

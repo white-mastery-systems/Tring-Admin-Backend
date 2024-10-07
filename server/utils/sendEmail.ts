@@ -1,8 +1,9 @@
 import nodemailer from "nodemailer"
+import { logger } from "~/server/logger";
 
 const config = useRuntimeConfig();
 
-const sendEmail = (to: string, subject: string, message: any) => {
+const sendEmail = (to: string[] | string, subject: string, message: any) => {
   try {
     return new Promise((resolve) => {
       console.log({ user: config?.nodemailerUser , pass: config?.nodemailerPass})
@@ -25,14 +26,14 @@ const sendEmail = (to: string, subject: string, message: any) => {
 
     transporter.sendMail(mailOptions, (error) => {
       if (error){
-        console.log("error", error)
+         logger.error(`Error: sending mail: ${JSON.stringify(error)}`)
          resolve({ status: false })
         }
       else resolve({ status: true })
     })
   })
   } catch (err) {
-    console.error(err)
+    logger.error(`Error: sending mail: ${JSON.stringify(err)}`)
     return { status: false }
   }
 }

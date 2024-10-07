@@ -88,6 +88,24 @@ export const deleteSingleRole = async ({
     toast.error(err.data.statusMessage);
   }
 }
+export const deleteSingleTemplate = async ({
+  id,
+  onSuccess,
+}:DeleteExoPhone) => {
+  try {
+    const deleteIntegration = await $fetch<DeleteExoPhone>(
+      `/api/templates/${id}`,
+      {
+        method: "DELETE",
+      },
+    );
+    onSuccess();
+    toast.success("Removed successfully");
+    return deleteIntegration;
+  } catch (err: any) {
+    toast.error(err.data.statusMessage);
+  }
+}
 
 export const deleteSingleExoPhone = async ({
   id,

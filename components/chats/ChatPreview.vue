@@ -112,6 +112,24 @@
             </div>
           </div>
         </div>
+
+      <div
+        v-if="
+          messageList?.role === 'comment' &&
+          messageList.content !== 'User Details Submitted'
+        "
+        class="relative"
+      >
+        <div
+          class="absolute left-1/2 top-1/2 h-[0.5px] w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500/50"
+        ></div>
+        <p
+          class="relative mx-auto w-fit rounded-sm border bg-gray-100 px-2 py-1 text-xs font-thin"
+        >
+          {{ messageList.content }}
+        </p>
+      </div>
+
         <div
           class="flex w-full flex-col items-end"
           v-if="
