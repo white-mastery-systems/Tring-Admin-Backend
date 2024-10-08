@@ -92,13 +92,13 @@
     setFieldValue("headerLocation", getSingleDetails.headerLocation);
     setFieldValue("body", getSingleDetails.body);
     setFieldValue("footer", getSingleDetails.footer);
-    setFieldValue(
+  if(getSingleDetails.templateVariables)  setFieldValue(
       "templateVariables",
-      parseJson(getSingleDetails.templateVariables),
+      getSingleDetails.templateVariables,
     );
-    setFieldValue(
+ if(getSingleDetails.headerTextTemplateVariables)   setFieldValue(
       "headerTextTemplateVariables",
-      parseJson(getSingleDetails.headerTextTemplateVariables),
+      getSingleDetails.headerTextTemplateVariables,
     );
     dispatchTemplateState();
     emit("getApistatus");
