@@ -5,7 +5,6 @@
   import { useTemplateStore } from "~/store/whatsAppTemplateStore";
   import { whatsAppTemplateSchema } from "~/validationSchema/settings/whatAppTemplateValidation";
   const templateStore = useTemplateStore();
-  console.log("dispatchTemplate", templateStore.values.templateVariables);
 
   // import countryData from '~/assets/country-codes.json'
   definePageMeta({
@@ -15,12 +14,12 @@
   const varaibleLabelName = (id) => {
     return `{{${id + 1}}}`;
   };
-    const parseJson = (str:any = []) => {
+  const parseJson = (str: any = []) => {
     return JSON.parse(str);
   };
 
-  const stringifyJson = (str:any = []) => {
-    return JSON.stringify(str) ;
+  const stringifyJson = (str: any = []) => {
+    return JSON.stringify(str);
   };
   const headerOptions = [
     { label: "None", value: "none" },
@@ -40,16 +39,11 @@
     id: String;
     getStatus: Boolean;
   }>();
-  console.log(whatsppModalState.open, whatsppModalState.id);
 
-  watch(whatsppModalState.open, (newValue) => {
-    console.log({ newValue });
-  });
+  watch(whatsppModalState.open, (newValue) => {});
   watch(
     () => whatsppModalState.id,
-    (newValue) => {
-      console.log({ newValue });
-    },
+    (newValue) => {},
   );
 
   const {
@@ -65,21 +59,17 @@
   });
 
   const dispatchTemplateState = () => {
-    console.log("dispatchTemplate", values.templateVariables);
     debounce(
       templateStore.updateValues({
         ...values,
         templateVariables: stringifyJson(values.templateVariables),
         headerTextTemplateVariables: stringifyJson(
-          values.headerTextTemplateVariables ,
+          values.headerTextTemplateVariables,
         ),
       }),
       1000,
     );
-    console.log("dispatchTemplate", templateStore.values.templateVariables);
   };
-
-
 
   if (whatsppModalState?.id && whatsppModalState.getStatus) {
     const { metadata: getSingleDetails }: any = await $fetch(
@@ -92,14 +82,13 @@
     setFieldValue("headerLocation", getSingleDetails.headerLocation);
     setFieldValue("body", getSingleDetails.body);
     setFieldValue("footer", getSingleDetails.footer);
-  if(getSingleDetails.templateVariables)  setFieldValue(
-      "templateVariables",
-      getSingleDetails.templateVariables,
-    );
- if(getSingleDetails.headerTextTemplateVariables)   setFieldValue(
-      "headerTextTemplateVariables",
-      getSingleDetails.headerTextTemplateVariables,
-    );
+    if (getSingleDetails.templateVariables)
+      setFieldValue("templateVariables", getSingleDetails.templateVariables);
+    if (getSingleDetails.headerTextTemplateVariables)
+      setFieldValue(
+        "headerTextTemplateVariables",
+        getSingleDetails.headerTextTemplateVariables,
+      );
     dispatchTemplateState();
     emit("getApistatus");
   } else {
@@ -200,14 +189,11 @@
       emit("confirm");
       templateStore.resetValues();
     } catch (error: any) {
-      console.log(error);
-
       toast.error(error.statusMessage);
     }
   });
 
   const channel = ref("form");
-  console.log(templateStore.values.templateVariables);
 
   setFieldValue("name", templateStore.values.name);
   setFieldValue("footer", templateStore.values.footer);
@@ -234,9 +220,7 @@
 
   watch(
     () => errors,
-    (newValue) => {
-      console.log(errors);
-    },
+    (newValue) => {},
   );
 </script>
 
@@ -314,7 +298,7 @@
                 'headerText',
                 (values.headerText || '') + `{{${fields.length}}}`,
               );
-              console.log('pushed');
+
               dispatchTemplateState();
             }
           "

@@ -25,7 +25,6 @@
         },
       });
     else if (route?.query?.code) {
-      console.log({ ree: route.query.code });
       verifyIntegration({
         integrationDetails: {
           metadata: {

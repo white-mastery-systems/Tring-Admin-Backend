@@ -10,14 +10,14 @@
         />
         <BotFilter v-model="filters.botId" @input="filters.page = '1'" />
         <StatusFilter @change="onStatusChange" />
-        
+
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
         <!-- <ChannelFilter @changeAction="onChannel" /> -->
         <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
       </div>
       <ExportButton
-        :isExporting="fetchExportDataStatus"
+        v-model="exportDataHandler"
         :rows="exportReadyRows"
         :columns="exportReadyColumns"
         @export="exportData"
@@ -136,7 +136,7 @@
     title: "Analytics | Leads",
   });
 
-  const fetchExportDataStatus = ref(false);
+  const exportDataHandler = ref({ status: false, type: "csv" });
   const router = useRouter();
   const route = useRoute();
   const fetchExportData = ref(false);
@@ -198,39 +198,36 @@
     const { page, limit, ...restFilters } = filters; // Destructure to exclude 'page' and 'limit'
     return restFilters;
   });
-
+  const exportReadyRows = ref<any>([]);
   // const exportReadyRows = computed(async () => {
-  //   // let exportLeads = await $fetch("/api/org/leads", {
-  //   //   server: false,
-  //   //   query: exportFilters,
-  //   //   headers: {
-  //   //     "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-  //   //   },
-  //   //   immediate: fetchExportData.value,
-  //   //   default: () => [],
-  //   // });
-  //   // console.log({ data: exportLeads });
-  //   // return (exportLeads ?? []).map((lead: any) => {
-  //   //   const mergedObject = {
-  //   //     name: lead.botUser.name ?? "---",
-  //   //     email: lead.botUser.email ?? "---",
-  //   //     mobile: lead?.botUser?.mobile ?? "---",
-  //   //     countryCode: lead?.botUser?.countryCode ?? "+91",
-  //   //     visitedStatus:
-  //   //       Number(lead?.botUser?.visitedCount) > 1 ? "Revisited" : "New",
-  //   //     botName: lead.bot.name ?? "---",
-  //   //     country: lead.chat?.metadata?.country ?? "---",
-  //   //     createdAt: format(lead.botUser.createdAt, "MMMM d, yyyy"),
-  //   //     // ClientId: lead.botUser.id,
-  //   //   };
-  //   //   return mergedObject;
-  //   // });
+  //   let exportLeads = await $fetch("/api/org/leads", {
+  //     server: false,
+  //     query: exportFilters,
+  //     headers: {
+  //       "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+  //     },
+  //     immediate: fetchExportData.value,
+  //     default: () => [],
+  //   });
+
+  //   return (exportLeads ?? []).map((lead: any) => {
+  //     const mergedObject = {
+  //       name: lead.botUser.name ?? "---",
+  //       email: lead.botUser.email ?? "---",
+  //       mobile: lead?.botUser?.mobile ?? "---",
+  //       countryCode: lead?.botUser?.countryCode ?? "+91",
+  //       visitedStatus:
+  //         Number(lead?.botUser?.visitedCount) > 1 ? "Revisited" : "New",
+  //       botName: lead.bot.name ?? "---",
+  //       country: lead.chat?.metadata?.country ?? "---",
+  //       createdAt: format(lead.botUser.createdAt, "MMMM d, yyyy"),
+  //       // ClientId: lead.botUser.id,
+  //     };
+  //     return mergedObject;
+  //   });
   //   return [];
   // });
-  const exportReadyRows = ref<any>([]);
-  watch(exportReadyRows, () => {
-    console.log({ exportReadyRows: exportReadyRows.value });
-  });
+  watch(exportReadyRows, () => {});
   const exportReadyColumns = computed(() => {
     return [
       "Name",
@@ -363,7 +360,6 @@
     }
   };
   const exportData = async () => {
-    fetchExportDataStatus.value = true;
     try {
       const exportLeads = await $fetch("/api/org/leads", {
         query: exportFilters.value,
@@ -372,7 +368,6 @@
           "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
       });
-      console.log({ exportLeads });
 
       const exportReadObject = (exportLeads ?? []).map((lead: any) => {
         const mergedObject = {
@@ -389,11 +384,8 @@
         };
         return mergedObject;
       });
-      fetchExportDataStatus.value = false;
+      exportDataHandler.value.status = true;
       exportReadyRows.value = exportReadObject;
-    } catch (err) {
-      console.log(err);
-    }
-    // fetchExportData.value = false;
+    } catch (err) {}
   };
 </script>

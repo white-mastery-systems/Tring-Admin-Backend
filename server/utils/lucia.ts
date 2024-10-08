@@ -15,7 +15,6 @@ export const lucia = new Lucia(adapter, {
       secure: true,
     },
     getSessionAttributes: (attributes) => {
-      console.log({ attributes });
       return {
         ipCountry: attributes.ip_country,
       };

@@ -14,11 +14,11 @@ export default defineEventHandler(async (event) => {
       eq(paymentSchema.type, "subscription"),
     ),
   });
-  console.log({ subscriptionData });
+
   const subscriptionDataFromZoho = await cancelSubscriptionFromZohoBilling({
     subscriptionId: subscriptionData.subscriptionId,
   });
-  console.log({ subscriptionDataFromZoho });
+
   const orgData = await db
     .update(organizationSchema)
     .set({ planCode: "chat_free" })

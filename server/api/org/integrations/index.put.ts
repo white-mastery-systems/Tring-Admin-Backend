@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
 
   const userId: { id: string } = event.context.user!;
   const body = await isValidBodyHandler(event, zodInsertIntegration);
-  // console.log({ body });
+  //
   const integration = await listLastCreatedIntegrationByCRM(
     organizationId,
     body.crm,
@@ -40,14 +40,14 @@ export default defineEventHandler(async (event) => {
         "https://6t53p9kf-3000.inc1.devtunnels.ms/settings/integration/hubspot",
       authCode: body.metadata.code,
     });
-    console.log({ data });
+
     generatedAuthResponse = data.response;
   } else if (body.crm === "slack" && body.metadata.code) {
     // code=1234 -F client_id=3336676.569200954261 -F client_secret=ABCDEFGH https://slack.com/api/oauth.v2.access
     const data = await generateAccessTokenFromCodeForSlack({
       code: body.metadata.code,
     });
-    console.log({ data });
+
     generatedAuthResponse = data;
   } else if (body.crm === "zoho-bigin" || body.crm === "zoho-crm") {
     generatedAuthResponse = await $fetch(
@@ -55,8 +55,6 @@ export default defineEventHandler(async (event) => {
       { method: "POST" },
     );
   }
-
-  console.log({ generatedAuthResponse: JSON.stringify(generatedAuthResponse) });
 
   // https: accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=ZohoBigin.settings.ALL,ZohoBigin.modules.ALL&redirect_uri=https://tring-admin.pripod.com/settings/integration/zoho-bigin&prompt=consent&access_type=offline
   if (!integration) {
@@ -93,6 +91,6 @@ export default defineEventHandler(async (event) => {
   //     ...updatedIntegration,
   //   },
   // });
-  // console.log(blabla);
+  //
   return updatedIntegration;
 });

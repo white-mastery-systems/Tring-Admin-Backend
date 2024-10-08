@@ -12,7 +12,7 @@ interface zohoConfigInterface {
 }
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  // console.log({ newBody: JSON.stringify(body) });
+  //
   billingLogger.info(`${body.type}---${JSON.stringify(body)}`);
   // const http = require("https");
 
@@ -154,9 +154,7 @@ export default defineEventHandler(async (event) => {
           );
           return generatedHostedPage;
         } catch (err: any) {
-          console.log({ err: err.message, errda: err.data });
           if (err.status === 401) {
-            console.log("FAILED");
             const response = await regerateAccessToken();
             // return generatedHostedPage();
             return runHostedPageApi({ accessToken: response?.access_token });

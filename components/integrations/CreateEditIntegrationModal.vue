@@ -103,7 +103,6 @@
     { deep: true },
   );
   const handleConnect = handleSubmit(async (values: any) => {
-    console.log({ values });
     isLoading.value = true;
 
     let url = `${window.location.origin}/settings/integration/${values.crm}`;

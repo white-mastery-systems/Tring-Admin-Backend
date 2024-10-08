@@ -135,7 +135,7 @@
 
   const confirmSelection = () => {
     // Here you would typically emit the selected date and time to the parent component
-    console.log("Selected Date and Time:", selectedDateTime.value);
+
     closePopover();
   };
 

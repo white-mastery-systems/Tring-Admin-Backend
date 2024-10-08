@@ -5,7 +5,7 @@ const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  // console.log({ body: JSON.stringify(body) });
+  //
   billingLogger.info(
     `subscription-${body.event_type}---${JSON.stringify(body)}`,
   );
@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
       const userDetails = await db.query.authUserSchema.findFirst({
         where: eq(authUserSchema.email, body.data.subscription.customer.email),
       });
-      console.log({ userDetails });
+
       await db
         .update(paymentSchema)
         .set({ status: "cancelled" })
@@ -118,7 +118,7 @@ export default defineEventHandler(async (event) => {
         planCode: apiResponseData.plan_code,
       })
       .where(eq(organizationSchema.id, userDetails?.organizationId!));
-    console.log(organizationPromise);
+
     return resp;
   }
 

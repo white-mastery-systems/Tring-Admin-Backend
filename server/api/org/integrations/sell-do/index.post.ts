@@ -140,10 +140,9 @@ export default defineEventHandler(async (event) => {
           },
         },
       );
-      console.log({ data });
+
       return data;
     } catch (err: any) {
-      console.log(err.message, err.data);
       logger.info(`error ${JSON.stringify(err)} ${err.message}`);
     }
   }

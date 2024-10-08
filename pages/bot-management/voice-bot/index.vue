@@ -8,8 +8,12 @@
       </div>
     </template>
     <div class="flex items-center gap-2 pb-2">
-      <UiInput v-model="filters.q" @input="filters.page = '1'"
-        class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search bot..." />
+      <UiInput
+        v-model="filters.q"
+        @input="filters.page = '1'"
+        class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
+        placeholder="Search bot..."
+      />
       <UiSelect v-model="activeStatus">
         <UiSelectTrigger class="max-w-[200px]">
           <UiSelectValue placeholder="Filter status" />
@@ -22,35 +26,50 @@
       </UiSelect>
     </div>
 
-    <DataTable @row-click="(row: any) => {
-        return navigateTo(`/bot-management/voice-bot/${row.original.id}`);
-      }
-      " @pagination="Pagination" @limit="($event) => {
-              (filters.page = '1'), (filters.limit = $event);
-            }
-            " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
-      :data="voiceBot" :page-size="20" :is-loading="isDataLoading" :height="16" height-unit="vh" />
+    <DataTable
+      @row-click="
+        (row: any) => {
+          return navigateTo(`/bot-management/voice-bot/${row.original.id}`);
+        }
+      "
+      @pagination="Pagination"
+      @limit="
+        ($event) => {
+          (filters.page = '1'), (filters.limit = $event);
+        }
+      "
+      :totalPageCount="totalPageCount"
+      :page="page"
+      :totalCount="totalCount"
+      :columns="columns"
+      :data="voiceBot"
+      :page-size="20"
+      :is-loading="isDataLoading"
+      :height="16"
+      height-unit="vh"
+    />
     <!-- <ChannelModal /> -->
     <CreateEditVoiceBotModal v-model="agentModalState" />
-    <CreateEditCampaignModal v-model="campaignModalState" @confirm="
+    <CreateEditCampaignModal
+      v-model="campaignModalState"
+      @confirm="
         () => {
           campaignModalState.open = false;
         }
-      " />
+      "
+    />
   </Page>
 </template>
 <script setup lang="ts">
   import { createColumnHelper } from "@tanstack/vue-table";
-  import { format } from "date-fns";
-  import { any } from "zod";
   import { useRoute, useRouter } from "vue-router";
 
   definePageMeta({
     middleware: "admin-only",
   });
   useHead({
-    title: 'Bot Management | Voice Bot',
-  })
+    title: "Bot Management | Voice Bot",
+  });
 
   const formSchema = toTypedSchema(
     z.object({
@@ -166,7 +185,6 @@
 
   const Pagination = async ($evnt) => {
     filters.page = $evnt;
-    console.log(filters.page);
 
     getAllvoiceBot();
   };

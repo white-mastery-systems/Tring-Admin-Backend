@@ -17,11 +17,11 @@ export default defineEventHandler(async (event) => {
     //   },
     //   headers: { "Content-Type": "application/json" },
     // });
-    // console.log(response);
+    //
     // const data = await response.json();
-    // console.log(data);
+    //
   }
-  console.log({ body });
+
   let botDetails: any = await getBotDetails(botId);
   let metaData: any = botDetails?.metadata;
   metaData = {

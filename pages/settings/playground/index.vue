@@ -1,13 +1,13 @@
 <script setup lang="ts">
-  import { ref, computed } from "vue";
-  import { useRouter, useRoute } from "vue-router";
+  import { RotateCw, Upload } from "lucide-vue-next";
+  import { computed, ref } from "vue";
+  import { useRoute, useRouter } from "vue-router";
   import {
     getCurrentPrompt,
     loadKnowledgeBase,
     playgroundRequests,
   } from "~/server/utils/playground";
   import type { DocumentResponse } from "~/utils/apis/playground";
-  import { Upload, RotateCw } from "lucide-vue-next";
 
   useHead({
     title: "Settings | Playground",
@@ -32,7 +32,7 @@
   const userQueries: any = ref(["", "", "", ""]);
   const variables = ref({});
   const systemPrompt = ref("");
-  const allProcessedResults = ref<UserResponse[][]>([]); 
+  const allProcessedResults = ref<UserResponse[][]>([]);
 
   onMounted(async () => {
     const prompt = await getCurrentPrompt();
@@ -93,7 +93,7 @@
       const allQueriesNull = processedUserQueries.every(
         (query: any) => query === null,
       );
-      
+
       if (allQueriesNull) {
         toast.error("Please Enter Input");
         isPageLoading.value = false;
@@ -135,11 +135,11 @@
       }
 
       userQueries.value.forEach((query: string, index: number) => {
-        const responseValue = response.responses[index] || "No response"; 
+        const responseValue = response.responses[index] || "No response";
 
         const pairObject = {
           user: query,
-          response: responseValue, 
+          response: responseValue,
         };
 
         const arrayIndex = index % 4;
@@ -149,7 +149,6 @@
           JSON.stringify(allProcessedResults.value),
         );
       });
-
     } catch (error) {
       toast.error("Error processing input");
       console.error("Error processing input:", error);
@@ -180,8 +179,8 @@
     try {
       return JSON.parse(jsonString);
     } catch (error) {
-      console.error('Invalid JSON:', error);
-      return null; 
+      console.error("Invalid JSON:", error);
+      return null;
     }
   };
 
@@ -203,12 +202,10 @@
   const handleProviderChange = (newProvider: string) => {
     provider.value = newProvider;
     model.value = ""; // Reset model when provider changes
-    console.log("Provider changed:", newProvider);
   };
 
   const handleModelChange = (newModel: string) => {
     model.value = newModel;
-    console.log("Model changed:", newModel);
   };
 </script>
 

@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   const generateLeadsValidation = z.object({
     botUser: z.any(),
     note: z.any(),
-    chatId: z.string().uuid()
+    chatId: z.string().uuid(),
   });
   const generateLeadsValidationParams = z.object({
     id: z.string(),
@@ -72,7 +72,6 @@ export default defineEventHandler(async (event) => {
         },
         integrationData: botIntegration?.integration,
       });
-      console.log(JSON.stringify(generatedLead), "LEAD");
     } else if (botIntegration?.integration?.crm === "zoho-crm") {
       const name = body?.botUser?.name?.split(" ");
       let firstName = body?.botUser?.name;
