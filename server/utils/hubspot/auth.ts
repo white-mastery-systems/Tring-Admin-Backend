@@ -1,7 +1,7 @@
 import { logger } from "~/server/logger";
 
-const clientId = "2d35af31-b5cc-4408-8eb6-377fe23592b5";
-const clientSecret = "bc65ff3e-204c-4367-8b85-eb409ec9af13";
+const clientId = "ae187200-936d-44f3-8e59-5bab2f50aa3c";
+const clientSecret = "ebf7f5a1-51ea-4a18-8147-995c841bd390";
 
 export const getHubspotAccessToken = async (body: any) => {
   const redirectUri = body?.redirectUri;
