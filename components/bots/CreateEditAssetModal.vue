@@ -57,9 +57,7 @@
   const { handleSubmit, defineField, errors, setFieldValue, values } = useForm({
     validationSchema: toTypedSchema(assetsValidation),
   });
-  watch(values, (value) => {
-    console.log({ value });
-  });
+  watch(values, (value) => {});
 
   const [nameField, nameFieldAttrs] = defineField("name");
   const fileRef = ref<File | null>(null);

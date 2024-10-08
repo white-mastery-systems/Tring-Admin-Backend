@@ -74,7 +74,6 @@ export default defineEventHandler(async (event) => {
       );
       try {
         if (body?.metadata?.wabaId && response?.access_token) {
-          console.log("here we are");
           await getSharedWhatsappDetails({
             code: response?.access_token,
             id: body.metadata.wabaId,
@@ -105,20 +104,14 @@ export default defineEventHandler(async (event) => {
               },
             );
             logger.info(`registed phone ${JSON.stringify(registerPhone)}`);
-            console.log({ registerPhone });
           } catch (err) {
             logger.info(`registed phone err ${JSON.stringify(err)}`);
           }
         }
-      } catch (err) {
-        console.log(err);
-      }
-      console.log({ code: body.metadata.code });
-    } catch (err: any) {
-      console.log(err.message, err.data, "ERR");
-    }
+      } catch (err) {}
+    } catch (err: any) {}
   }
-  // console.log({ response });
+  //
 
   // const url =
   //   `https://graph.facebook.com/v20.0/${body.metadata.wabaId}` +
@@ -129,7 +122,7 @@ export default defineEventHandler(async (event) => {
   //   headers: { "Content-Type": "application/json" },
   // });
 
-  // console.log({ registerPhone });
+  //
   // const subscribeResponse = await fetch(
   //   `https://graph.facebook.com/v20.0/${body.metadata.wabaId}/subscribed_apps`,
   //   {
@@ -140,7 +133,7 @@ export default defineEventHandler(async (event) => {
   //     headers: { "Content-Type": "application/json" },
   //   },
   // );
-  // console.log({ subscribeResponse });
+  //
 
   // const data = await response.json();
   const integration = await createIntegration({

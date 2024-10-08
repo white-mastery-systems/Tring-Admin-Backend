@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { DateFormatter } from "@internationalized/date";
-  import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
   import { roleMangementSchema } from "~/validationSchema/settings/roleManagementValidation.";
 
   definePageMeta({
@@ -13,7 +12,7 @@
       id: null,
     },
   });
-  const isLoading = ref(false)
+  const isLoading = ref(false);
 
   const campaignListWithLabels = computed(() => {
     if (roleModalState) {
@@ -52,24 +51,19 @@
         const getSingleDetails: any = await $fetch(
           `/api/user-role/${roleModalState.value.id}`,
         );
-        setFieldValue('permissions',getSingleDetails.permissions)
+        setFieldValue("permissions", getSingleDetails.permissions);
         Object.entries(getSingleDetails).forEach(([key, value]: any) => {
           if (values.hasOwnProperty(key)) {
             setFieldValue(key, value);
           }
         });
-
-        console.log({ getSingleDetails });
-        
       }
     },
   );
 
   const handleConnect = handleSubmit(async (value: any) => {
-    isLoading.value = true
+    isLoading.value = true;
     try {
-      console.log(values);
-      
       if (roleModalState.value.id) {
         await $fetch(`/api/user-role/${roleModalState.value.id}`, {
           method: "PUT",
@@ -87,35 +81,61 @@
       }
       emit("confirm");
     } catch (error: any) {
-      isLoading.value = false
+      isLoading.value = false;
       toast.error(error.statusMessage);
     }
-    isLoading.value = false
+    isLoading.value = false;
   });
 </script>
 <template>
-  <DialogWrapper v-model="roleModalState" :title="roleModalState.id ? 'Modify Role' : 'Add Role'">
+  <DialogWrapper
+    v-model="roleModalState"
+    :title="roleModalState.id ? 'Modify Role' : 'Add Role'"
+  >
     <form class="space-y-2" @submit="handleConnect">
       <div class="grid gap-4">
-        <TextField type="text" name="name" label="Name" placeholder="Enter Your Role" :required="true" />
+        <TextField
+          type="text"
+          name="name"
+          label="Name"
+          placeholder="Enter Your Role"
+          :required="true"
+        />
 
         <div class="flex items-center gap-1">
-          <UiCheckbox id="terms" :checked="values?.permissions?.sendEmail" @update:checked="(value) =>{
-            const permissions = !values?.permissions.sendEmail
-            // console.log(permissions)
-            setFieldValue('permissions',{...values?.permissions,sendEmail:permissions})
-            console.log({values});
-            
-          }"
-            :style="{ background: (values?.permissions?.sendEmail) ? '#424bd1' : 'white', 'border-color': '#80808078' }" />
-          <label for="terms"
-            class="flex items-end text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          <UiCheckbox
+            id="terms"
+            :checked="values?.permissions?.sendEmail"
+            @update:checked="
+              (value) => {
+                const permissions = !values?.permissions.sendEmail;
+                // console.log(permissions)
+                setFieldValue('permissions', {
+                  ...values?.permissions,
+                  sendEmail: permissions,
+                });
+              }
+            "
+            :style="{
+              background: values?.permissions?.sendEmail ? '#424bd1' : 'white',
+              'border-color': '#80808078',
+            }"
+          />
+          <label
+            for="terms"
+            class="flex items-end text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
             Email Config
           </label>
         </div>
 
         <div class="flex w-full justify-end">
-          <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
+          <UiButton
+            type="submit"
+            class="mt-2"
+            color="primary"
+            :loading="isLoading"
+          >
             Submit
           </UiButton>
         </div>

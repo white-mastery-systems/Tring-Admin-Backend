@@ -20,10 +20,11 @@ export function getAllPipelinesFromZohoBigin({
       },
     },
   ).catch((err: any) => {
-    logger.error(`getAllPipelinesFromZohoBigin: token:${token}, refreshToken: ${refreshToken}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`)
+    logger.error(
+      `getAllPipelinesFromZohoBigin: token:${token}, refreshToken: ${refreshToken}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
+    );
     if (!refreshToken) return;
     if (err.status === 401) {
-      console.log(err.data);
       return regenearateTokenWithRefreshToken({
         refreshToken: refreshToken,
       }).then(async (data: any) => {
@@ -65,10 +66,11 @@ export async function getAllSubPipelinesFromZohoBigin({
     return data.fields.find((field: any) => field.api_name === "Sub_Pipeline")
       ?.pick_list_values;
   } catch (err: any) {
-    logger.error(`getAllSubPipelinesFromZohoBigin: token:${token}, refreshToken: ${refreshToken}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`)
+    logger.error(
+      `getAllSubPipelinesFromZohoBigin: token:${token}, refreshToken: ${refreshToken}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
+    );
     if (!refreshToken) return;
     if (err.status === 401) {
-      console.log(err.data);
       return regenearateTokenWithRefreshToken({
         refreshToken: refreshToken,
       }).then(async (data: any) => {
@@ -156,7 +158,9 @@ export async function generateLeadInZohoBigin({
     logger.debug(`Generated Pipeline: ${JSON.stringify(generatedPipeline)}`);
     return generatedPipeline;
   } catch (err: any) {
-     logger.error(`generateLeadInZohoBigin - token: ${token},refreshToken: ${refreshToken},body: ${JSON.stringify(body)},integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`)
+    logger.error(
+      `generateLeadInZohoBigin - token: ${token},refreshToken: ${refreshToken},body: ${JSON.stringify(body)},integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
+    );
     if (!refreshToken) return;
     if (err.status === 401) {
       logger.error(`Error Status 401 : ${JSON.stringify(err.data)}`);
@@ -211,7 +215,9 @@ export async function generateContactInZohoBigin({
     logger.debug(`Generated Contact: ${JSON.stringify(data)}`);
     return data;
   } catch (err: any) {
-    logger.error(`generateContactInZohoBigin - token: ${token},refreshToken: ${refreshToken},body: ${JSON.stringify(body)},integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`)
+    logger.error(
+      `generateContactInZohoBigin - token: ${token},refreshToken: ${refreshToken},body: ${JSON.stringify(body)},integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
+    );
     if (err.status === 400) {
       return {
         data: [
@@ -264,7 +270,9 @@ export function getFieldMetadataFromZohoBigin({
       },
     },
   ).catch((err) => {
-    logger.error(`getFieldMetadataFromZohoBigin: token:${token}, refreshToken: ${refreshToken},body: ${JSON.stringify(body)}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`)
+    logger.error(
+      `getFieldMetadataFromZohoBigin: token:${token}, refreshToken: ${refreshToken},body: ${JSON.stringify(body)}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
+    );
 
     if (!refreshToken) return;
     if (err.status === 401) {
@@ -307,7 +315,9 @@ export function getAllLayoutsFromZohoCRM({
       },
     },
   ).catch((err: any) => {
-    logger.error(`getAllLayoutsFromZohoCRM: token:${token}, refreshToken: ${refreshToken}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`)
+    logger.error(
+      `getAllLayoutsFromZohoCRM: token:${token}, refreshToken: ${refreshToken}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
+    );
 
     if (!refreshToken) return;
     if (err.status === 401) {
@@ -346,7 +356,9 @@ export function getFieldMetadataFromZohoCRM({
       Authorization: `Zoho-oauthtoken ${token}`,
     },
   }).catch((err) => {
-    logger.error(`getFieldMetadataFromZohoCRM: token:${token}, refreshToken: ${refreshToken},body: ${JSON.stringify(body)}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`)
+    logger.error(
+      `getFieldMetadataFromZohoCRM: token:${token}, refreshToken: ${refreshToken},body: ${JSON.stringify(body)}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
+    );
 
     if (!refreshToken) return;
     if (err.status === 401) {
@@ -432,7 +444,9 @@ export async function generateLeadInZohoCRM({
       Authorization: `Zoho-oauthtoken ${token}`,
     },
   }).catch((err) => {
-     logger.error(`generateLeadInZohoCRM - token:${token}, refreshToken:${refreshToken}, body: ${JSON.stringify(body)},integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`)
+    logger.error(
+      `generateLeadInZohoCRM - token:${token}, refreshToken:${refreshToken}, body: ${JSON.stringify(body)},integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
+    );
     if (!refreshToken) return;
     if (err.status === 401) {
       regenearateTokenWithRefreshToken({
@@ -499,7 +513,9 @@ export async function getHostedPageDetails({
     return response;
   } catch (error: any) {
     // console.error("Error in fetchFromZohoApi:", error);
-    logger.error(`getHostedPageDetails: token: ${token}, hostedPageId: ${hostedPageId}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(error.data)}`)
+    logger.error(
+      `getHostedPageDetails: token: ${token}, hostedPageId: ${hostedPageId}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(error.data)}`,
+    );
 
     if (error instanceof Error) {
       const response = (error as any).response;
@@ -536,8 +552,8 @@ export const regerateAccessTokenForTringAdmin = async ({
   };
 }) => {
   try {
-    logger.info("Entering in regerateAccessTokenForTringAdmin")
-    logger.info(`Before integrationData----${JSON.stringify(integrationData)}`)
+    logger.info("Entering in regerateAccessTokenForTringAdmin");
+    logger.info(`Before integrationData----${JSON.stringify(integrationData)}`);
     const newAuthInfo: any = await $fetch(
       `https://accounts.zoho.in/oauth/v2/token?client_id=${integrationData?.client_id}&grant_type=refresh_token&client_secret=${integrationData?.client_secret}&refresh_token=${integrationData?.refresh_token}`,
       {
@@ -545,7 +561,7 @@ export const regerateAccessTokenForTringAdmin = async ({
       },
     );
     integrationData = { ...integrationData, ...newAuthInfo };
-    logger.info(`after integrationData----${JSON.stringify(integrationData)}`)
+    logger.info(`after integrationData----${JSON.stringify(integrationData)}`);
     await db
       .update(adminConfigurationSchema)
       .set({ metaData: integrationData, updatedAt: new Date() })
@@ -553,7 +569,9 @@ export const regerateAccessTokenForTringAdmin = async ({
 
     return integrationData;
   } catch (err: any) {
-    logger.error(`regerateAccessTokenForTringAdmin: integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`)
+    logger.error(
+      `regerateAccessTokenForTringAdmin: integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
+    );
   }
 };
 
@@ -588,7 +606,9 @@ export const cancelSubscriptionFromZohoBilling: any = async ({
       },
     );
   } catch (err: any) {
-    logger.error(`cancelSubscriptionFromZohoBilling: integrationData: ${JSON.stringify(integrationData)}, subscriptionId: ${subscriptionId}, error: ${JSON.stringify(err.data)}`)
+    logger.error(
+      `cancelSubscriptionFromZohoBilling: integrationData: ${JSON.stringify(integrationData)}, subscriptionId: ${subscriptionId}, error: ${JSON.stringify(err.data)}`,
+    );
     if (err.status === 401) {
       const newAuthInfo: any = await $fetch(
         `https://accounts.zoho.in/oauth/v2/token?client_id=${integrationData?.client_id}&grant_type=refresh_token&client_secret=${integrationData?.client_secret}&refresh_token=${integrationData?.refresh_token}`,
@@ -654,10 +674,12 @@ export const createAddonInZohoBilling: any = async ({
       },
     );
 
-    // console.log({ data });
+    //
     return data;
   } catch (err: any) {
-    logger.error(`createAddonInZohoBilling: integrationData: ${JSON.stringify(integrationData)}, body: ${JSON.stringify(body)}, error: ${JSON.stringify(err.data)}`)
+    logger.error(
+      `createAddonInZohoBilling: integrationData: ${JSON.stringify(integrationData)}, body: ${JSON.stringify(body)}, error: ${JSON.stringify(err.data)}`,
+    );
     if (err.status === 401) {
       const newAuthInfo: any = await $fetch(
         `https://accounts.zoho.in/oauth/v2/token?client_id=${integrationData?.client_id}&grant_type=refresh_token&client_secret=${integrationData?.client_secret}&refresh_token=${integrationData?.refresh_token}`,

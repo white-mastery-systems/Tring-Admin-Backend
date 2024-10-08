@@ -26,6 +26,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
       color: "236 61% 54%",
       secondaryColor: "236, 61%, 74%",
       widgetPosition: "Right",
+      fontFamily: "kanit"
     },
     prompt: {},
     crm: {},

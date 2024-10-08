@@ -29,7 +29,7 @@
     if (window.location.host?.includes("app.tringlabs.ai")) {
       url = "https://chat.tringlabs.ai";
     }
-    console.log({ url });
+    
     script.setAttribute("src", `${url}/widget.js`);
     document.body.append(script);
   </script>

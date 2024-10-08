@@ -1,6 +1,4 @@
 <script setup lang="ts">
-
-
   const addWhatappTemplateModalState = defineModel<{ open: boolean; id: any }>({
     default: {
       open: false,
@@ -9,17 +7,12 @@
   });
   const emit = defineEmits<{ (e: "confirm"): void }>();
   const getApiStatus = ref(true);
-  console.log(getApiStatus);
-  
-  watch(addWhatappTemplateModalState, (newValue) => {
-    console.log({ newValue });
 
+  watch(addWhatappTemplateModalState, (newValue) => {
     // if (!newValue.open) {
     //   emit("confirm");
     // }
   });
-
-
 </script>
 <template>
   <DialogWrapper
@@ -29,10 +22,8 @@
     "
     class="grid grid-cols-2 rounded-lg"
   >
-
     <UiTabs default-value="form" class="w-full self-start">
       <UiTabsList class="grid w-full grid-cols-2">
-
         <UiTabsTrigger value="form"> Template </UiTabsTrigger>
         <UiTabsTrigger value="preview"> Template Preview </UiTabsTrigger>
       </UiTabsList>
@@ -41,7 +32,7 @@
           @confirm="
             addWhatappTemplateModalState.open = false;
             emit('confirm');
-            getApiStatus=true;
+            getApiStatus = true;
           "
           :open="addWhatappTemplateModalState.open"
           :id="addWhatappTemplateModalState.id"

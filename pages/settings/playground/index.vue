@@ -1,13 +1,13 @@
 <script setup lang="ts">
-  import { ref, computed } from "vue";
-  import { useRouter, useRoute } from "vue-router";
+  import { RotateCw, Upload } from "lucide-vue-next";
+  import { computed, ref } from "vue";
+  import { useRoute, useRouter } from "vue-router";
   import {
     getCurrentPrompt,
     loadKnowledgeBase,
     playgroundRequests,
   } from "~/server/utils/playground";
   import type { DocumentResponse } from "~/utils/apis/playground";
-  import { Upload, RotateCw } from "lucide-vue-next";
 
   useHead({
     title: "Settings | Playground",
@@ -32,7 +32,7 @@
   const userQueries: any = ref(["", "", "", ""]);
   const variables = ref({});
   const systemPrompt = ref("");
-  const allProcessedResults = ref<UserResponse[][]>([]); 
+  const allProcessedResults = ref<UserResponse[][]>([]);
 
   onMounted(async () => {
     const prompt = await getCurrentPrompt();
@@ -93,7 +93,7 @@
       const allQueriesNull = processedUserQueries.every(
         (query: any) => query === null,
       );
-      
+
       if (allQueriesNull) {
         toast.error("Please Enter Input");
         isPageLoading.value = false;
@@ -135,11 +135,11 @@
       }
 
       userQueries.value.forEach((query: string, index: number) => {
-        const responseValue = response.responses[index] || "No response"; 
+        const responseValue = response.responses[index] || "No response";
 
         const pairObject = {
           user: query,
-          response: responseValue, 
+          response: responseValue,
         };
 
         const arrayIndex = index % 4;
@@ -149,7 +149,6 @@
           JSON.stringify(allProcessedResults.value),
         );
       });
-
     } catch (error) {
       toast.error("Error processing input");
       console.error("Error processing input:", error);
@@ -180,8 +179,8 @@
     try {
       return JSON.parse(jsonString);
     } catch (error) {
-      console.error('Invalid JSON:', error);
-      return null; 
+      console.error("Invalid JSON:", error);
+      return null;
     }
   };
 
@@ -203,46 +202,29 @@
   const handleProviderChange = (newProvider: string) => {
     provider.value = newProvider;
     model.value = ""; // Reset model when provider changes
-    console.log("Provider changed:", newProvider);
   };
 
   const handleModelChange = (newModel: string) => {
     model.value = newModel;
-    console.log("Model changed:", newModel);
   };
 </script>
 
 <template>
   <Page title="Tring AI Playground" :disable-back-button="true">
     <template #actionButtons>
-      <div class="flex items-center gap-2">
-        <ModelProvider
-          @providerChange="handleProviderChange"
-          @modelChange="handleModelChange"
-        />
-        <PlaygroundSheet
-          :system-prompt="systemPrompt"
-          @update-variables="handleUpdateVariables"
-        />
+      <div class="flex items-center gap-2 overflow-scroll">
+        <ModelProvider @providerChange="handleProviderChange" @modelChange="handleModelChange" />
+        <PlaygroundSheet :system-prompt="systemPrompt" @update-variables="handleUpdateVariables" />
         <p class="pr-6">
           {{ fileNames }}
         </p>
-        <label
-          for="dropzone-file"
-          class="button-align cursor-pointer rounded-md bg-[#424bd1] p-2 text-[14px] font-medium text-white hover:bg-[#424bd1] hover:brightness-90"
-        >
-          <input
-            id="dropzone-file"
-            type="file"
-            accept="application/pdf"
-            class="hidden"
-            @change="
+        <label for="dropzone-file"
+          class="button-align cursor-pointer rounded-md bg-[#424bd1] p-2 text-[14px] font-medium text-white hover:bg-[#424bd1] hover:brightness-90">
+          <input id="dropzone-file" type="file" accept="application/pdf" class="hidden" @change="
               async (event) => {
                 handleFileChange(event);
               }
-            "
-            v-bind="$attrs"
-          />
+            " v-bind="$attrs" />
           <span class="hidden lg:inline"> Choose File </span>
           <span class="lg:hidden">
             <component :is="Upload" :size="20"></component>
@@ -252,10 +234,7 @@
     </template>
 
     <div class="shadow-lg mb-4 overflow-hidden rounded-lg bg-white">
-      <div
-        class="flex cursor-pointer items-center justify-end"
-        @click="resetChatPrompt"
-      >
+      <div class="flex cursor-pointer items-center justify-end" @click="resetChatPrompt">
         <span class="flex items-center gap-1 font-medium hover:text-[#424bd1]">
           Reset
           <component :is="RotateCw" :size="16"></component>
@@ -263,80 +242,43 @@
       </div>
       <div class="space-y-4 p-6 pb-0">
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <div
-            v-for="(prompt, index) in systemInstructions"
-            :key="index"
-            class="space-y-2"
-          >
-            <UiLabel
-              :for="`system-prompt-${index}`"
-              class="block text-sm font-medium text-gray-700"
-            >
+          <div v-for="(prompt, index) in systemInstructions" :key="index" class="space-y-2">
+            <UiLabel :for="`system-prompt-${index}`" class="block text-sm font-medium text-gray-700">
               System Prompt {{ index + 1 }}
             </UiLabel>
-            <UiTextarea
-              :id="`system-prompt-${index}`"
-              v-model="systemInstructions[index]"
+            <UiTextarea :id="`system-prompt-${index}`" v-model="systemInstructions[index]"
               placeholder="Enter system prompt here..."
-              class="min-h-[12rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0"
-            >
+              class="min-h-[12rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0">
             </UiTextarea>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="shadow-lg overflow-hidden rounded-lg bg-white">
+    <div class="shadow-lg overflow-hidden rounded-lg bg-white pb-6">
       <div class="space-y-4 p-6 pt-0">
         <div class="space-y-2">
-          <UiLabel
-            for="user-input"
-            class="block text-sm font-medium text-gray-700"
-            >User Input</UiLabel
-          >
+          <UiLabel for="user-input" class="block text-sm font-medium text-gray-700">User Input</UiLabel>
           <div class="flex flex-row gap-6">
             <!-- First User Input -->
-            <UiTextarea
-              id="user-input-1"
-              v-model="userQueries[0]"
-              placeholder="Enter first input here..."
-              class="min-h-[0.5rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0"
-            />
+            <UiTextarea id="user-input-1" v-model="userQueries[0]" placeholder="Enter first input here..."
+              class="min-h-[0.5rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0" />
 
             <!-- Second User Input -->
-            <UiTextarea
-              id="user-input-2"
-              v-model="userQueries[1]"
-              placeholder="Enter second input here..."
-              class="min-h-[0.5rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0"
-            />
+            <UiTextarea id="user-input-2" v-model="userQueries[1]" placeholder="Enter second input here..."
+              class="min-h-[0.5rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0" />
 
             <!-- Third User Input -->
-            <UiTextarea
-              id="user-input-3"
-              v-model="userQueries[2]"
-              placeholder="Enter third input here..."
-              class="min-h-[0.5rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0"
-            />
+            <UiTextarea id="user-input-3" v-model="userQueries[2]" placeholder="Enter third input here..."
+              class="min-h-[0.5rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0" />
 
             <!-- Fourth User Input -->
-            <UiTextarea
-              id="user-input-4"
-              v-model="userQueries[3]"
-              placeholder="Enter fourth input here..."
-              class="min-h-[0.5rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0"
-            />
+            <UiTextarea id="user-input-4" v-model="userQueries[3]" placeholder="Enter fourth input here..."
+              class="min-h-[0.5rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0" />
           </div>
           <div class="flex items-center justify-end pt-3">
-            <UiButton
-              @click="processUserInput"
-              class="bg-[#FFBC42] text-white hover:bg-[#FFBC42] hover:brightness-90"
-            >
+            <UiButton @click="processUserInput" class="bg-[#FFBC42] text-white hover:bg-[#FFBC42] hover:brightness-90">
               <template v-if="isPageLoading">
-                <Icon
-                  name="svg-spinners:90-ring-with-bg"
-                  class="h-6 w-6 animate-spin text-white"
-                />
+                <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
               </template>
               <template v-else> Process Input </template>
               <!-- Process Input -->
@@ -346,63 +288,40 @@
       </div>
     </div>
 
-    <div v-if="allProcessedResults?.length">
+    <div v-if="allProcessedResults?.length" class="pb-6">
       <div class="pb-4 pl-2 text-[22px] font-bold text-[#424BD1]">
         Processed Chat Prompts
       </div>
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <div
-          v-for="(chatList, chatListIndex) in allProcessedResults"
-          :key="chatListIndex"
-          class="p-2"
-        >
+        <div v-for="(chatList, chatListIndex) in allProcessedResults" :key="chatListIndex" class="p-2">
           <div class="pb-4 text-[18px] font-bold">
             Result {{ chatListIndex + 1 }}
           </div>
-          <div
-            class="field_shadow scrollable-container max-h-[50vh] overflow-y-scroll rounded-xl bg-[#ffffff]"
-          >
-            <div
-              class="min-h-full"
-              v-for="(chatItem, itemIndex) in chatList"
-              :key="itemIndex"
-            >
+          <div class="field_shadow scrollable-container max-h-[50vh] overflow-y-scroll rounded-xl bg-[#ffffff]">
+            <div class="min-h-full" v-for="(chatItem, itemIndex) in chatList" :key="itemIndex">
               <div v-if="chatItem?.user" class="min-h-full bg-[#ffffff] p-2">
                 <div class="flex w-full flex-col items-end">
                   <div
-                    class="field_shadow mt-2.5 flex w-[90%] flex-col items-end justify-center rounded-l-xl rounded-br-xl bg-[#766DDB] p-2.5 text-white"
-                  >
+                    class="field_shadow mt-2.5 flex w-[90%] flex-col items-end justify-center rounded-l-xl rounded-br-xl bg-[#766DDB] p-2.5 text-white">
                     <div>
                       {{ chatItem?.user }}
                     </div>
                   </div>
                 </div>
                 <div
-                  class="field_shadow mt-2.5 flex min-h-[80px] w-[90%] flex-col gap-2 rounded-r-xl rounded-bl-xl bg-[#ffffff] p-5"
-                >
+                  class="field_shadow mt-2.5 flex min-h-[80px] w-[90%] flex-col gap-2 rounded-r-xl rounded-bl-xl bg-[#ffffff] p-5">
                   <div>
-                    <MdText
-                      :content="safeParseJson(chatItem.response)?.response"
-                    />
-                    <div class="flex flex-col" v-if="true">
-                      <div class="flex flex-wrap items-center gap-2">
-                        <div
-                          v-if="true"
-                          class="flex items-center"
-                          v-for="(btn, btnIndex) in safeParseJson(
+                    <MdText :content="safeParseJson(chatItem.response)?.response" />
+                    <div class="flex flex-col">
+                      <div class="flex flex-wrap items-center gap-2" v-if="chatItem.response.length">
+                        <div class="flex items-center" v-for="(btn, btnIndex) in safeParseJson(
                             chatItem.response,
-                          )?.canned"
-                          :key="btnIndex"
-                        >
-                          <p
-                            class="w-auto cursor-pointer rounded-xl p-2"
-                            :style="{
+                          )?.canned" :key="btnIndex">
+                          <p class="w-auto cursor-pointer rounded-xl p-2" :style="{
                               background: `hsl(347 66 39/ 0.15)`,
-                            }"
-                            @click="
+                            }" @click="
                               questionControl(btn.question, chatListIndex)
-                            "
-                          >
+                            ">
                             {{ btn.title }}
                           </p>
                         </div>

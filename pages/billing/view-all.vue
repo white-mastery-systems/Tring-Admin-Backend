@@ -14,7 +14,12 @@
     :customBackRouter="'/billing'"
   >
     <div
-      :class="['grid gap-4 px-2.5 py-0',(route.query.type === 'voice') ? 'md:grid-cols-2 xs:grid-cols-2 lg:grid-cols-3' : 'md:grid-cols-2 xs:grid-cols-2 lg:grid-cols-4']"
+      :class="[
+        'grid gap-4 px-2.5 py-0',
+        route.query.type === 'voice'
+          ? 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3'
+          : 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-4',
+      ]"
     >
       <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->
@@ -65,8 +70,12 @@
           </div>
         </div>
         <button
-          class="rounded-lg border border-indigo-700 px-4 py-2 font-semibold text-indigo-800 hover:border-transparent hover:bg-indigo-700 hover:text-white" :class="[(orgBilling?.plan_code === list.plan_code) ? 'bg-indigo-700 text-white' : '']"
-
+          class="rounded-lg border border-indigo-700 px-4 py-2 font-semibold text-indigo-800 hover:border-transparent hover:bg-indigo-700 hover:text-white"
+          :class="[
+            orgBilling?.plan_code === list.plan_code
+              ? 'bg-indigo-700 text-white'
+              : '',
+          ]"
           @click="choosePlan(list.plan_code)"
           :disabled="
             orgBilling?.plan_code === list.plan_code ||
@@ -84,7 +93,7 @@
   </page>
 </template>
 <script setup lang="ts">
-import { useRoute, useRouter } from "vue-router";
+  import { useRoute, useRouter } from "vue-router";
 
   definePageMeta({
     middleware: "admin-only",
@@ -276,7 +285,7 @@ import { useRoute, useRouter } from "vue-router";
       availableInPlan: true,
     },
   ]);
-  
+
   const voiceBillingVariation = ref([
     {
       _id: 1,
@@ -409,7 +418,9 @@ import { useRoute, useRouter } from "vue-router";
   }));
 
   const billingVariation = computed(() => {
-    return route.query.type === 'voice' ? voiceBillingVariation.value : chatBillingVariation.value;
+    return route.query.type === "voice"
+      ? voiceBillingVariation.value
+      : chatBillingVariation.value;
   });
 
   const findPlanLevel = ({ list, current }: { list: any; current: string }) => {
@@ -419,7 +430,7 @@ import { useRoute, useRouter } from "vue-router";
     const billInformation = billingVariation.value.find(
       (data: { plan_code: string }) => data.plan_code === list.plan_code,
     );
-    console.log({ billInformation });
+
     const currentPlanInformation = billingVariation.value.find(
       (data: { plan_code: string }) => data.plan_code === current,
     );

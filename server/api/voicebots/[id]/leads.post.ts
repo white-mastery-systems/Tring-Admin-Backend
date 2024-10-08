@@ -2,7 +2,7 @@ import { SelectVoiceBotLead } from "~/server/schema/voicebot";
 import { getBotUserById } from "~/server/utils/db/bot-user";
 import { createVoiceBotLead, getVoicebot } from "~/server/utils/db/voicebots";
 
-const db = useDrizzle()
+const db = useDrizzle();
 const config = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
@@ -14,7 +14,6 @@ export default defineEventHandler(async (event) => {
     event,
     z.object({ userId: z.string().optional() }),
   );
-  console.log({ query });
 
   const botUserId = getCookie(event, "user_id") ?? query?.userId;
   if (!botUserId)
@@ -23,39 +22,40 @@ export default defineEventHandler(async (event) => {
       createError({ statusCode: 400, statusMessage: "Invalid Request" }),
     );
 
-  const voiceBotDetails = await getVoicebot(voicebotId)
+  const voiceBotDetails = await getVoicebot(voicebotId);
   if (!voiceBotDetails)
     return sendError(
       event,
       createError({ statusCode: 400, statusMessage: "Invalid Bot" }),
     );
 
-  const botUserDetails = await getBotUserById(botUserId, voiceBotDetails.organizationId)
+  const botUserDetails = await getBotUserById(
+    botUserId,
+    voiceBotDetails.organizationId,
+  );
   if (!botUserDetails)
     return sendError(
       event,
       createError({ statusCode: 400, statusMessage: "Invalid User" }),
     );
-  let lead : SelectVoiceBotLead
-  
+  let lead: SelectVoiceBotLead;
+
   try {
     lead = await createVoiceBotLead({
       voicebotId,
       botUserId,
       organizationId: voiceBotDetails.organizationId,
     });
-  } catch (err) {
-    console.log("Duplicate voicebot Lead: ", err);
-  }
+  } catch (err) {}
 
   const bucketList = await db.query.contactListSchema.findFirst({
     where: and(
       eq(contactListSchema.organizationId, voiceBotDetails.organizationId),
-      eq(contactListSchema.isDefault, true)
-    )
-  })
-  console.log({ bucketList })
-  if(bucketList) {
+      eq(contactListSchema.isDefault, true),
+    ),
+  });
+  console.log({ bucketList });
+  if (bucketList) {
     let firstName = botUserDetails?.name;
     let lastName = "";
     if (firstName?.includes(" ")) {
@@ -68,11 +68,11 @@ export default defineEventHandler(async (event) => {
       countryCode: botUserDetails.countryCode,
       phone: botUserDetails.mobile,
       organizationId: voiceBotDetails.organizationId,
-      contactListId: bucketList?.id
-    }
-    await createContacts(contactsBody)
+      contactListId: bucketList?.id,
+    };
+    await createContacts(contactsBody);
   }
-  
+
   const body = await isValidBodyHandler(
     event,
     z.object({ note: z.string().default("") }),
@@ -87,4 +87,4 @@ export default defineEventHandler(async (event) => {
     },
   });
   return "Voicebot leads are created";
-})
+});

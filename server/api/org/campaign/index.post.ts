@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
 
   const body: any = await isValidBodyHandler(event, zodInsertCampaign);
-  console.log({ body });
+
   const data = await createCampaign({
     ...body,
     organizationId,
@@ -40,20 +40,23 @@ export default defineEventHandler(async (event) => {
   const integrationData = await db.query.integrationSchema.findFirst({
     where: eq(integrationSchema.id, body.metadata.integrationId),
   });
-  // console.log(integrationData);
+  //
 
   // bull-queue
-  const job = await campaignQueue.add({
+  const job = await campaignQueue.add(
+    {
       campaignId: data?.id,
       campaignDate: data?.campaignDate,
       campaignTime: data?.campaignTime,
       contactList,
       body,
-      integrationData
-    }, 
-  // { delay: 5000 }
-  )
-  logger.info(`Job (id: ${job.id}, CampaignId - ${data?.id}) added at: ${new Date()}`)
- 
+      integrationData,
+    },
+    // { delay: 5000 }
+  );
+  logger.info(
+    `Job (id: ${job.id}, CampaignId - ${data?.id}) added at: ${new Date()}`,
+  );
+
   return data;
 });

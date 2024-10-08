@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-   const generateVoicebotLeadsValidation = z.object({
+  const generateVoicebotLeadsValidation = z.object({
     botUser: z.any(),
     note: z.any(),
     chatId: z.string().uuid(),
@@ -16,7 +16,10 @@ export default defineEventHandler(async (event) => {
   const voicebotDetails: any = await getBotDetails(voicebotId);
   const adminUser: any = await getAdminByOrgId(voicebotDetails?.organizationId);
 
-  let voicebotIntegrations = await listVoiceBotIntegrations(voicebotDetails?.organizationId,voicebotId)
+  let voicebotIntegrations = await listVoiceBotIntegrations(
+    voicebotDetails?.organizationId,
+    voicebotId,
+  );
 
   voicebotIntegrations?.map(async (botIntegration: any) => {
     if (botIntegration?.integration?.crm === "zoho-bigin") {
@@ -67,7 +70,6 @@ export default defineEventHandler(async (event) => {
         },
         integrationData: botIntegration?.integration,
       });
-      console.log(JSON.stringify(generatedLead), "LEAD");
     } else if (botIntegration?.integration?.crm === "zoho-crm") {
       const name = body?.botUser?.name?.split(" ");
       let firstName = body?.botUser?.name;
@@ -115,4 +117,4 @@ export default defineEventHandler(async (event) => {
     });
   }
   return adminUser;
-})
+});

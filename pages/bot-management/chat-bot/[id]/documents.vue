@@ -118,13 +118,10 @@
                             Download
                           </div>
                         </UiDropdownMenuItem>
-                        <UiDropdownMenuItem
-                          v-if="list.id !== documents?.documentId"
-                          @click="deleteDocumentModelOpen = true"
-                        >
-                          <div
-                            class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500"
-                          >
+                        <UiDropdownMenuItem v-if="list.id !== documents?.documentId"
+                          @click="deleteDocumentModelOpen[list.id] = true">
+                          <div class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500">
+
                             Delete
                           </div>
                         </UiDropdownMenuItem>
@@ -132,51 +129,14 @@
                     </UiDropdownMenuContent>
                   </UiDropdownMenu>
                 </span>
-                <ConfirmationModal
-                  v-model:open="deleteDocumentModelOpen"
-                  title="Confirm Delete"
-                  description="Are you sure you want to delete ?"
-                  @confirm="
-                    () => {
+                <ConfirmationModal v-model:open="deleteDocumentModelOpen[list.id]" title="Confirm Delete"
+                  description="Are you sure you want to delete ?" @confirm="() => {
+
                       handleAction(list, 'delete');
-                      deleteDocumentModelOpen = false;
+                      deleteDocumentModelOpen[list.id] = false;
                     }
-                  "
-                />
-                <span v-if="false">
-                  <UiPopover ref="myPopover">
-                    <UiPopoverTrigger @click="isSheetOpen = !isSheetOpen">
-                      <img src="assets\icons\more_horiz.svg" width="30" />
-                    </UiPopoverTrigger>
-                    <UiPopoverContent align="end" class="w-40">
-                      <div
-                        @click="handleAction(list, 'download')"
-                        class="menu-align rounded-sm text-center hover:bg-gray-300/20"
-                      >
-                        Download
-                      </div>
-                      <div
-                        v-if="list.id !== documents?.documentId"
-                        @click="deleteDocumentModelOpen = true"
-                        class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500"
-                      >
-                        Delete
-                      </div>
-                      <ConfirmationModal
-                        v-model:open="deleteDocumentModelOpen"
-                        title="Confirm Delete"
-                        description="Are you sure you want to delete ?"
-                        @confirm="
-                          () => {
-                            handleAction(list, 'delete');
-                            deleteDocumentModelOpen = false;
-                          }
-                        "
-                      />
-                    </UiPopoverContent>
-                  </UiPopover>
-                  <!-- <img src="assets\icons\more_horiz.svg" width="30"> -->
-                </span>
+                    " />
+
               </div>
               <!-- <div>
               <img src="assets\icons\left_arrow.svg" width="30">
@@ -213,9 +173,10 @@
   // const documents = ref();
   const documentFetchInterval = ref<NodeJS.Timeout>();
 
-  const deleteDocumentModelOpen = ref(false);
-  const isSheetOpen = ref(false);
-  const position = ref("bottom");
+  const deleteDocumentModelOpen: any = reactive({})
+  const isSheetOpen = ref(false)
+  const position = ref('bottom')
+
 
   const {
     status,
@@ -240,7 +201,7 @@
     const eventSource = new EventSource("/api/sse");
     eventSource.onmessage = async (event) => {
       const data = JSON.parse(event.data);
-      console.log({ data });
+
       if (data.event === "Document is ready") {
         if (data?.data?.botId === paramId.params.id) {
           documentsRefresh();
@@ -252,18 +213,15 @@
   });
   const isPageLoading = computed(() => status.value === "pending");
 
-  watchEffect(() => {
-    if (botDetails) {
-      const userName = botDetails?.name ?? "Unknown Bot Name";
-      useHead({
-        title: `Chat Bot | ${userName} - Document Management`,
-      });
-    }
-  });
+watchEffect(() => {
+  if (botDetails) {
+    const userName = botDetails?.name ?? 'Unknown Bot Name';
+    useHead({
+      title: `Chat Bot | ${userName} - Document Management`,
+    });
+  }
+});
 
-  const handleDeleteDocument = () => {
-    deleteDocumentModelOpen.value = true;
-  };
   const fileUpload = async () => {
     // selectedFile.value[0].name;
     //
@@ -284,7 +242,6 @@
     // }, 1000);
   };
   const handleAction = (list: any, action: any) => {
-    console.log(myPopover.value, "myPopover.value");
     if (myPopover.value) {
       myPopover.value = false;
     }

@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
         createError({ statusCode: 404, statusMessage: "Invalid User" }),
       );
     }
-    console.log("addOn", JSON.stringify(hostedPageData.data.subscription));
+
     const apiResponseData: any = {
       userId: userId,
       organizationId: orgId!,

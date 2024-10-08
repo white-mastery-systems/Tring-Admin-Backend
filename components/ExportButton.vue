@@ -13,49 +13,72 @@
   const props = defineProps<{
     rows: any[];
     columns: any[];
-    isExporting: boolean;
   }>();
+  const modalvalue = defineModel<{ status: boolean; type: string }>({
+    default: {
+      status: false,
+      type: "csv",
+    },
+  });
+  watch(
+    () => modalvalue.value,
+    (exportStatus: any) => {
+      if (!exportStatus.status) {
+        return;
+      }
+      if (exportStatus.type === "csv") {
+        const csvRows = [];
+        // Headers
+        const headers = props.columns;
+        csvRows.push(headers.join(","));
+
+        // Rows
+        props.rows.forEach((item) => {
+          const values = Object.values(item).map((val) => `"${val}"`);
+          csvRows.push(values.join(","));
+        });
+
+        // Create CSV Blob and trigger download
+        const csvString = csvRows.join("\n");
+        const blob = new Blob([csvString], { type: "text/csv" });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "data.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        const ws = XLSX.utils.json_to_sheet(props.rows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+        // Create Excel Blob and trigger download
+        XLSX.writeFile(wb, "data.xlsx");
+      }
+    },
+    { deep: true },
+  );
   const emit = defineEmits<{ (e: "export"): void }>();
 
   watch(
     () => props.rows,
-    (newValue) => {
-      console.log({ newValue });
-    },
+    (newValue) => {},
     { deep: true, immediate: true },
   );
   function exportAsCSV() {
+    if (modalvalue.value?.status) {
+      modalvalue.value.status = false;
+      modalvalue.value.type = "csv";
+    }
+
     emit("export");
-    console.log(props.isExporting);
-    const csvRows = [];
-    // Headers
-    const headers = props.columns;
-    csvRows.push(headers.join(","));
-
-    // Rows
-    props.rows.forEach((item) => {
-      const values = Object.values(item).map((val) => `"${val}"`);
-      csvRows.push(values.join(","));
-    });
-
-    // Create CSV Blob and trigger download
-    const csvString = csvRows.join("\n");
-    const blob = new Blob([csvString], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "data.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   }
   const exportToExcel = () => {
+    if (modalvalue.value?.status) {
+      modalvalue.value.status = false;
+      modalvalue.value.type = "xlsx";
+    }
     emit("export");
-    const ws = XLSX.utils.json_to_sheet(props.rows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-    // Create Excel Blob and trigger download
-    XLSX.writeFile(wb, "data.xlsx");
   };
 </script>
 

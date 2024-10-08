@@ -26,7 +26,7 @@
                 )
               : 0
           }}
-          {{ isVoiceBilling ? 'extra minutes' : 'extra sessions' }}
+          {{ isVoiceBilling ? "extra minutes" : "extra sessions" }}
           <!-- extra sessions -->
         </div>
 
@@ -47,7 +47,7 @@
   </page>
 </template>
 <script setup lang="ts">
-import { useRoute, useRouter } from "vue-router";
+  import { useRoute, useRouter } from "vue-router";
   const router = useRouter();
   definePageMeta({
     middleware: "admin-only",
@@ -58,13 +58,12 @@ import { useRoute, useRouter } from "vue-router";
   const filters = computed(() => ({
     type: route.query?.type,
   }));
-  const { data } = await useLazyFetch("/api/org", { 
-      server: false,
-      query: filters,
-    }
-  );
+  const { data } = await useLazyFetch("/api/org", {
+    server: false,
+    query: filters,
+  });
   //   const [firstName, lastName] = user.value?.username?.split(" ") || [];
-  console.log(user.value, "USER");
+
   const chatBillingVariation = ref([
     {
       _id: 1,
@@ -107,27 +106,30 @@ import { useRoute, useRouter } from "vue-router";
   ]);
 
   const billingVariation = computed(() => {
-    if (route.query.type === 'chat') {
+    if (route.query.type === "chat") {
       return chatBillingVariation.value;
-    } else if (route.query.type === 'voice') {
+    } else if (route.query.type === "voice") {
       return voiceBillingVariation.value;
     }
     return [];
-  })
+  });
 
   const isVoiceBilling = computed(() => {
     // Assuming you have access to the current route
-    return route.query?.type === 'voice';
+    return route.query?.type === "voice";
   });
-  
+
   const handlePurchaseWallet = async (plan: string) => {
-    const hostedPageResponse = await $fetch(`/api/billing/addon?${filters.value.type}`, {
-      method: "POST",
-      body: {
-        plan: plan,
-        redirectUrl: `${window.location.origin}/billing/wallet/wallet-confirmation`,
+    const hostedPageResponse = await $fetch(
+      `/api/billing/addon?${filters.value.type}`,
+      {
+        method: "POST",
+        body: {
+          plan: plan,
+          redirectUrl: `${window.location.origin}/billing/wallet/wallet-confirmation`,
+        },
       },
-    });
+    );
     await navigateTo(hostedPageResponse?.hostedpage?.url, {
       open: {
         target: "_blank",

@@ -8,12 +8,11 @@
         label: 'UI Customization',
         to: `/bot-management/chat-bot/${botDetails.id}/ui-customization`,
       },
-    ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="true">
+    ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="false">
     <div>
-      <UiForm :validation-schema="formSchema" :keep-values="true" :initial-values="defaultFormValues"
-        :validate-on-mount="false" @submit="uiUpdate" class="space-y-5">
+      <form @submit.prevent="uiUpdate" class="space-y-6">
         <div
-          class="form-align field_shadow ml-0 flex w-full flex-col gap-[13px] overflow-y-auto p-5 sm:ml-0 sm:w-full md:ml-0 md:w-full lg:ml-11 lg:w-[60%] xl:ml-11 xl:w-[60%]">
+          class="form-align ml-0 flex w-full flex-col gap-[13px] p-5 sm:ml-0 sm:w-full md:ml-0 md:w-full lg:ml-11 lg:w-[60%] xl:ml-11 xl:w-[60%] overflow-scroll">
           <UiFormField v-slot="{ handleChange, handleBlur, value }" name="logo">
             <UiFormItem v-auto-animate="animationProps" class="flex w-full flex-col items-start">
               <UiLabel class="pb-2 text-lg font-medium">Logo</UiLabel>
@@ -68,101 +67,92 @@
               </UiFormItem>
             </UiFormField>
           </div>
-          <div class="flex w-full items-center justify-between">
-            <div class="w-[50%]">
-              <UiFormField v-slot="{ componentField }" name="widgetSound">
-                <UiFormItem v-auto-animate="animationProps">
-                  <UiLabel class="text-lg font-medium">Widget Sound</UiLabel>
-                  <UiFormControl>
-                    <UiSelect v-bind="componentField">
-                      <UiSelectTrigger
-                        class="hover:focus:none hover:focus-visible:none field_shadow h-12 w-[60%] bg-[#ffffff]">
-                        <UiSelectValue placeholder="Select Widget Sound" />
-                      </UiSelectTrigger>
-                      <UiSelectContent>
-                        <UiSelectItem value="Yes"> Yes </UiSelectItem>
-                        <UiSelectItem value="No"> No </UiSelectItem>
-                      </UiSelectContent>
-                    </UiSelect>
-                  </UiFormControl>
-                  <UiFormMessage />
-                  <span class="text-[9px] text-gray-500 sm:text-[6px] md:text-[8px] lg:text-xs xl:text-xs">Notification
-                    sound for chat window</span>
-                </UiFormItem>
-              </UiFormField>
-            </div>
-            <div class="w-[50%]">
-              <UiFormField v-slot="{ componentField }" name="widgetPosition">
-                <UiFormItem v-auto-animate="animationProps" class="flex flex-col items-end justify-center">
-                  <UiLabel class="text-lg font-medium">Widget Position</UiLabel>
-                  <UiFormControl>
-                    <UiSelect v-bind="componentField">
-                      <UiSelectTrigger
-                        class="hover:focus-visible:none hover:focus:none field_shadow h-12 w-[60%] bg-[#ffffff]">
-                        <UiSelectValue placeholder="Select Widget Position" />
-                      </UiSelectTrigger>
-                      <UiSelectContent>
-                        <UiSelectItem value="Left"> Left </UiSelectItem>
-                        <UiSelectItem value="Right"> Right </UiSelectItem>
-                      </UiSelectContent>
-                    </UiSelect>
-                  </UiFormControl>
-                  <UiFormMessage />
-                  <span class="text-[9px] text-gray-500 sm:text-[6px] md:text-[8px] lg:text-xs xl:text-xs">Position for
-                    chat bubble</span>
-                </UiFormItem>
-              </UiFormField>
-            </div>
+          <div class="flex w-full items-center gap-3">
+            <SelectField name="widgetSound" label="Widget Sound" placeholder="Select Widget Sound" :options="[
+              {
+                value: 'Yes',
+                label: 'Yes',
+              }, {
+                value: 'No',
+                label: 'No',
+              },
+            ]" required />
+            <SelectField name="widgetPosition" label="Widget Position" placeholder="Select Widget Sound" :options="[
+              {
+                value: 'Left',
+                label: 'Left',
+              }, {
+                value: 'Right',
+                label: 'Right',
+              },
+            ]" required />
           </div>
-
-          <UiFormField v-slot="{ value, handleChange }" name="defaultSelect">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <div class="flex justify-between">
-                <UiLabel class="text-base font-medium">Open By Default</UiLabel>
+          <div class="flex w-full items-center gap-5">
+            <SelectField name="fontFamily" label="Font Famliy" placeholder="Select Font" :options="[
+            {
+              value: 'Kanit',
+              label: 'Kanit',
+            }, {
+              value: 'Gilroy',
+              label: 'Gilroy',
+            }, {
+              value: 'Jost',
+              label: 'Jost',
+            }, {
+              value: 'Lexend deca',
+              label: 'Lexend deca',
+            },
+          ]" required />
+            <UiFormField v-slot="{ value, handleChange }" name="generateLead">
+              <UiFormItem v-auto-animate="animationProps" class="flex w-full items-center justify-between">
+                <!-- <div class="flex items-center justify-between"> -->
+                <UiLabel class="text-base font-medium">Generate Leads</UiLabel>
                 <UiFormControl>
-                  <UiSwitch id="defaultSelect" :checked="value" @update:checked="handleChange"
+                  <UiSwitch id="generateLead" :checked="value" @update:checked="handleChange"
                     :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
                 </UiFormControl>
+                <!-- </div> -->
                 <UiFormMessage />
-              </div>
-              <span class="text-xs text-gray-500">Open chat window by default</span>
-            </UiFormItem>
-          </UiFormField>
+              </UiFormItem>
+            </UiFormField>
+          </div>
+          <div class="flex w-full items-center gap-5">
+            <UiFormField v-slot="{ value, handleChange }" name="defaultSelect">
+              <UiFormItem v-auto-animate="animationProps" class="w-full">
+                <div class="flex justify-between">
+                  <UiLabel class="text-base font-medium">Open By Default</UiLabel>
+                  <UiFormControl>
+                    <UiSwitch id="defaultSelect" :checked="value" @update:checked="handleChange"
+                      :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
+                  </UiFormControl>
+                  <UiFormMessage />
+                </div>
+                <span class="text-xs text-gray-500">Open chat window by default</span>
+              </UiFormItem>
+            </UiFormField>
+  
+            <UiFormField v-slot="{ value, handleChange }" name="onlineStatus">
+              <UiFormItem v-auto-animate="animationProps" class="w-full">
+                <div class="flex items-center justify-between">
+                  <UiLabel class="text-base font-medium">Online Status</UiLabel>
+                  <UiFormControl>
+                    <UiSwitch id="online-status" :checked="value" :style="{ background: value ? '#424BD1' : '#8A8A8A' }"
+                      @update:checked="handleChange" />
+                  </UiFormControl>
+                  <UiFormMessage />
+                </div>
+                <span class="text-xs text-gray-500">Live tag status of chat window</span>
+              </UiFormItem>
+            </UiFormField>
+          </div>
 
-          <UiFormField v-slot="{ value, handleChange }" name="generateLead">
-            <UiFormItem v-auto-animate="animationProps" class="flex w-full items-center justify-between">
-              <!-- <div class="flex items-center justify-between"> -->
-              <UiLabel class="text-base font-medium">Generate Leads</UiLabel>
-              <UiFormControl>
-                <UiSwitch id="generateLead" :checked="value" @update:checked="handleChange"
-                  :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
-              </UiFormControl>
-              <!-- </div> -->
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
-
-          <UiFormField v-slot="{ value, handleChange }" name="onlineStatus">
-            <UiFormItem v-auto-animate="animationProps" class="w-full">
-              <div class="flex items-center justify-between">
-                <UiLabel class="text-base font-medium">Online Status</UiLabel>
-                <UiFormControl>
-                  <UiSwitch id="online-status" :checked="value" :style="{ background: value ? '#424BD1' : '#8A8A8A' }"
-                    @update:checked="handleChange" />
-                </UiFormControl>
-                <UiFormMessage />
-              </div>
-              <span class="text-xs text-gray-500">Live tag status of chat window</span>
-            </UiFormItem>
-          </UiFormField>
-
-          <div class="my-auto flex w-full justify-center">
+          <div class="my-auto flex w-full justify-end pb-2">
             <UiButton type="submit" color="primary" size="lg" :loading="isLoading">
               Submit
             </UiButton>
           </div>
         </div>
-      </UiForm>
+      </form>
     </div>
   </page>
   <!-- </div> -->
@@ -181,14 +171,14 @@
   const isLoading = ref(false)
 
 
-  const formSchema = toTypedSchema(
+  const uiCustomizationValidation = toTypedSchema(
     z.object({
       logo: z.union([logoAsString, logoAsObject]),
       color: z.string().min(1, "Primary color is required"),
       secondaryColor: z.string().min(1, "Secondary color is required"),
       widgetSound: z.string().min(1, "Widget sound must be selected"),
       widgetPosition: z.string().min(1, "Widget position must be selected"),
-
+      fontFamily: z.string().min(1, "Font family color is required"),
       defaultSelect: z.boolean().optional(),
       generateLead: z.boolean().optional(),
       onlineStatus: z.boolean().optional(),
@@ -202,22 +192,28 @@
   const router = useRouter();
   const paramId: any = route;
   const botDetails: any = await getBotDetails(paramId.params.id);
-  const defaultFormValues = reactive({
-    logo: botDetails.metadata.ui.logo ?? "",
-    color: hslToHex(botDetails.metadata.ui.color ?? "236, 61%, 54%, 1"),
-    secondaryColor: hslToHex(
-      botDetails.metadata.ui.secondaryColor ?? "236, 61%, 74%",
-    ),
-    defaultSelect: botDetails.metadata.ui.defaultSelect ?? true,
-    widgetSound: botDetails.metadata.ui.widgetSound ?? "Yes",
-    widgetPosition: botDetails.metadata.ui.widgetPosition ?? "Left",
-    onlineStatus: botDetails.metadata.ui.onlineStatus ?? false,
-    generateLead: botDetails.metadata.prompt.INTENTS !== "-other",
-  });
-  // const { handleSubmit }: any = useForm({
-  //   validationSchema: formSchema,
-  //   initialValues: defaultFormValues,
-  // })
+const {
+  errors,
+  setErrors,
+  setFieldValue,
+  handleSubmit,
+  defineField,
+  values,
+  resetForm,
+} = useForm({
+  validationSchema: uiCustomizationValidation,
+});
+setFieldValue("logo", (botDetails.metadata.ui.logo ?? ""))
+setFieldValue("color", (hslToHex(botDetails.metadata.ui.color ?? "236, 61%, 54%, 1")))
+setFieldValue("secondaryColor", (hslToHex(
+  botDetails.metadata.ui.secondaryColor ?? "236, 61%, 74%",
+)))    
+setFieldValue("widgetSound", (botDetails.metadata.ui.widgetSound ?? "Yes"))
+setFieldValue("widgetPosition", (botDetails.metadata.ui.widgetPosition ?? "Left"))
+setFieldValue("defaultSelect", (botDetails.metadata.ui.defaultSelect ?? true))
+setFieldValue("onlineStatus", (botDetails.metadata.ui.onlineStatus ?? false))
+setFieldValue("generateLead", (botDetails.metadata.prompt.INTENTS !== "-other"))
+setFieldValue("fontFamily", (botDetails.metadata?.ui.fontFamily ?? "Kanit"))
 
 watchEffect(() => {
   if (botDetails) {
@@ -228,7 +224,7 @@ watchEffect(() => {
   }
 });
 
-  const uiUpdate = async (value: any) => {
+const uiUpdate = handleSubmit(async (value: any) => {
     isLoading.value = true
     const payload: any = {
       id: botDetails.id,
@@ -242,6 +238,7 @@ watchEffect(() => {
           onlineStatus: value.onlineStatus,
           widgetPosition: value.widgetPosition,
           widgetSound: value.widgetSound,
+          fontFamily: value.fontFamily,
         },
         prompt: {
           ...botDetails.metadata.prompt,
@@ -262,7 +259,7 @@ watchEffect(() => {
     // console.log(botDetails.name, "botDetails.name")
     // console.log(pickColor.value, "pickColor.value")
     // console.log(defualtSelect.value, "pickColor.value")
-  };
+  });
 </script>
 <style scoped>
   .form-align {
