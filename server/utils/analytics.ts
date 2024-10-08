@@ -256,7 +256,7 @@ export const getDateRange = (period: string, from: Date, to: Date, timeZone: str
 
 // calculate percentage change of statistic values
 export const calculatePercentageChange = (current: number, previous: number) => {
-  console.log({ current, previous })
+  // console.log({ current, previous })
   if (previous === 0) {
     return current === 0 ? "No change" : "+100%"; // Handle no previous data case
   }
