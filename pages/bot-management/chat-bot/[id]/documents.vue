@@ -89,7 +89,7 @@
                           </div>
                         </UiDropdownMenuItem>
                         <UiDropdownMenuItem v-if="list.id !== documents?.documentId"
-                          @click="deleteDocumentModelOpen = true">
+                          @click="deleteDocumentModelOpen[list.id] = true">
                           <div class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500">
                             Delete
                           </div>
@@ -98,37 +98,12 @@
                     </UiDropdownMenuContent>
                   </UiDropdownMenu>
                 </span>
-                <ConfirmationModal v-model:open="deleteDocumentModelOpen" title="Confirm Delete"
+                <ConfirmationModal v-model:open="deleteDocumentModelOpen[list.id]" title="Confirm Delete"
                   description="Are you sure you want to delete ?" @confirm="() => {
                       handleAction(list, 'delete');
-                      deleteDocumentModelOpen = false;
+                      deleteDocumentModelOpen[list.id] = false;
                     }
                     " />
-                <span v-if="false">
-                  <UiPopover ref="myPopover">
-                    <UiPopoverTrigger @click="isSheetOpen = !isSheetOpen">
-                      <img src="assets\icons\more_horiz.svg" width="30" />
-                    </UiPopoverTrigger>
-                    <UiPopoverContent align="end" class="w-40">
-                      <div @click="handleAction(list, 'download')"
-                        class="menu-align rounded-sm text-center hover:bg-gray-300/20">
-                        Download
-                      </div>
-                      <div v-if="list.id !== documents?.documentId" @click="deleteDocumentModelOpen = true"
-                        class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500">
-                        Delete
-                      </div>
-                      <ConfirmationModal v-model:open="deleteDocumentModelOpen" title="Confirm Delete"
-                        description="Are you sure you want to delete ?" @confirm="
-                          () => {
-                            handleAction(list, 'delete');
-                            deleteDocumentModelOpen = false;
-                          }
-                        " />
-                    </UiPopoverContent>
-                  </UiPopover>
-                  <!-- <img src="assets\icons\more_horiz.svg" width="30"> -->
-                </span>
               </div>
               <!-- <div>
               <img src="assets\icons\left_arrow.svg" width="30">
@@ -162,9 +137,9 @@
   // const documents = ref();
   const documentFetchInterval = ref<NodeJS.Timeout>();
 
-  const deleteDocumentModelOpen = ref(false);
+  const deleteDocumentModelOpen: any = reactive({})
   const isSheetOpen = ref(false)
-const position = ref('bottom')
+  const position = ref('bottom')
 
   const {
     status,
@@ -191,10 +166,6 @@ watchEffect(() => {
     });
   }
 });
-
-  const handleDeleteDocument = () => {
-    deleteDocumentModelOpen.value = true;
-  };
   const fileUpload = async () => {
     // selectedFile.value[0].name;
     //
