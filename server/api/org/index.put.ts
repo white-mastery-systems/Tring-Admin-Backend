@@ -4,6 +4,7 @@ const zodBodyValidator = z.object({
   avgTraffic: z.string().min(1).optional(),
   employeeCount: z.string().min(1).optional(),
   otherRole: z.string().optional(),
+  gst: z.string().optional()
 })
 
 export default defineEventHandler(async (event) => {
@@ -13,6 +14,7 @@ export default defineEventHandler(async (event) => {
 
   const updateOrg = {
     name: body.name,
+    gst: body?.gst,
     metadata: {
        industry: body?.industry,
        avgTraffic: body?.avgTraffic,
