@@ -142,15 +142,16 @@
             );
           } else if (values.crm === "hubspot") {
             const authUrl =
-              "https://app.hubspot.com/oauth/authorize?client_id=2d35af31-b5cc-4408-8eb6-377fe23592b5&redirect_uri=https://6t53p9kf-3000.inc1.devtunnels.ms/settings/integration/hubspot&scope=oauth";
-            // const authUrl =
-            //   "https://app.hubspot.com/oauth/authorize" +
-            //   `?client_id=${encodeURIComponent(CLIENT_ID)}` +
-            //   `&scope=${encodeURIComponent(SCOPES)}` +
-            //   `&redirect_uri=${encodeURIComponent('https://app.hubspot.com/oauth/authorize?client_id=2d35af31-b5cc-4408-8eb6-377fe23592b5&redirect_uri=https://6t53p9kf-3000.inc1.devtunnels.ms/integrations/hubspot&scope=oauth')}`;
-            console.log({ authUrl });
+              "https://app.hubspot.com/oauth/authorize?client_id=2d35af31-b5cc-4408-8eb6-377fe23592b5&redirect_uri=https://6t53p9kf-3000.inc1.devtunnels.ms/settings/integration/hubspot&scope=crm.objects.contacts.write%20oauth%20crm.objects.leads.read%20crm.objects.contacts.read%20crm.objects.leads.write";
             window.open(authUrl, "_blank");
+          } else if (values.crm === "slack") {
+            window.open(
+              "https://slack.com/oauth/v2/authorize?scope=conversations.connect%3Amanage%2Cchat%3Awrite&user_scope=&redirect_uri=https://6t53p9kf-3000.inc1.devtunnels.ms/settings/integration/slack&client_id=7856740970225.7841202988373",
+              // "https://slack.com/oauth/v2/authorize?scope=incoming-webhook&client_id=7856740970225.7841202988373",
+              "_blank",
+            );
           }
+          //b2c6269af5da3c2f7fb3fb929de90af7
           emit("success");
         },
       });
