@@ -71,7 +71,7 @@
         </UiAvatar>
 
         <div class="flex flex-col">
-          <span class="font-bold capitalize">{{ userInfo?.username }}</span>
+          <span class="font-bold capitalize max-w-[150px] truncate">{{ userInfo?.username }}</span>
           <span class="max-w-[150px] truncate">{{ userInfo?.email }}</span>
         </div>
       </NuxtLink>
