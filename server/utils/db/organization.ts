@@ -1,10 +1,12 @@
 import { sum } from "drizzle-orm";
 import {
+  calculatePercentageChange,
   getAllDatesInRange,
   getDateRange,
   groupAndMapData,
 } from "../analytics";
 import { getPricingInformation } from "./pricing";
+import { logger } from "~/server/logger";
 
 const db = useDrizzle();
 
@@ -258,8 +260,6 @@ export const getAnalytics = async (
 
     const intentList = [...new Set(organizationIntents.map((i: any) => i.intents))]
 
-    // return { queryArray }
-
     // Validate query-values
     const inValidQuery = queryArray.filter(
       (i) => !validQueryValues.includes(i),
@@ -278,12 +278,11 @@ export const getAnalytics = async (
         where: and(eq(chatBotSchema.organizationId, organizationId)),
         orderBy: [asc(chatBotSchema.createdAt)],
       });
-      // console.log({ earliestData})
+      // console.log({ earliestData: earliestData?.createdAt })
       from = earliestData?.createdAt;
     }
 
-    const { fromDate, toDate } = getDateRange(period, from, to, timeZone);
-
+    const { fromDate, toDate, previousFromDate, previousToDate } = getDateRange(period, from, to, timeZone);
 
     // find organization intents statistics 
     const mapIntents = await Promise.all(
@@ -299,16 +298,31 @@ export const getAnalytics = async (
                 eq(timelineSchema.event, intent),
               ),
             )
+            // Find previous date intents
+         const previousDateIntentDetail = await db
+          .select({ createdAt: timelineSchema.createdAt})
+          .from(timelineSchema)
+          .where(
+              and(
+                gte(timelineSchema.createdAt, previousFromDate),
+                lte(timelineSchema.createdAt, previousToDate),
+                eq(timelineSchema.orgId, organizationId),
+                eq(timelineSchema.event, intent),
+              ),
+            )
         return {
           name: intent,
           value: intentDetail.length,
-          intentDetail
+          intentDetail,
+          previousDateValue: previousDateIntentDetail?.length
         }
     }))
 
     // return {mapIntents}
 
-    console.log({ period, organizationId, fromDate, toDate });
+    console.log({ period, organizationId, fromDate, toDate, previousFromDate, previousToDate });
+
+    // get current period statistics
     const [orgData, leads, chats, uniqueVisiters, interactedChats] =
       await Promise.all([
         db.query.organizationSchema.findFirst({
@@ -343,42 +357,22 @@ export const getAnalytics = async (
             ),
           ),
         db
-          .select({ createdAt: chatSchema.createdAt })
+          .select()
           .from(chatSchema)
           .where(
             and(
               gte(chatSchema.createdAt, fromDate),
               lte(chatSchema.createdAt, toDate),
               eq(chatSchema.organizationId, organizationId),
-              gt(chatSchema.visitedCount, 1),
+              or(
+                gt(chatSchema.visitedCount, 1),
+                and(
+                gte(chatSchema.visitedCount, 0),
+                isNotNull(chatSchema.botUserId)
+                )
+              )
             ),
           ),
-        //  db.query.chatSchema.findMany({
-        //     columns: {
-        //       id: true,
-        //       createdAt: true,
-        //     },
-        //     where: and(
-        //       eq(chatSchema.organizationId, organizationId),
-        //       gte(chatSchema.createdAt, fromDate),
-        //       lte(chatSchema.createdAt, toDate),
-        //       eq(chatSchema.mode, "live")
-        //     ),
-        //     with: {
-        //       messages: {
-        //         columns: {
-        //           createdAt: true,
-        //           chatId: true
-        //         },
-        //         where: and(
-        //           gte(messageSchema.createdAt, fromDate),
-        //           lte(messageSchema.createdAt, toDate),
-        //           eq(messageSchema.status, true),
-        //           eq(messageSchema.role, "user")
-        //         ),
-        //       },
-        //     },
-        //   }),
         db
           .select({ createdAt: chatSchema.createdAt })
           .from(chatSchema)
@@ -391,10 +385,61 @@ export const getAnalytics = async (
             ),
           ),
       ]);
+    
+    // get previous date statistics
+    const [previousLeads, previousChats, previousUniqueVisiters, previousInteractedChats] =  await Promise.all([
+        db
+          .select({ createdAt: leadSchema.createdAt })
+          .from(leadSchema)
+          .where(
+            and(
+              gte(leadSchema.createdAt, previousFromDate),
+              lte(leadSchema.createdAt, previousToDate),
+              eq(leadSchema.organizationId, organizationId),
+            ),
+          ),
+        db
+          .select({ createdAt: chatSchema.createdAt })
+          .from(chatSchema)
+          .where(
+            and(
+              gte(chatSchema.createdAt, previousFromDate),
+              lte(chatSchema.createdAt, previousToDate),
+              eq(chatSchema.organizationId, organizationId),
+            ),
+          ),
+        db
+          .select()
+          .from(chatSchema)
+          .where(
+            and(
+              gte(chatSchema.createdAt, previousFromDate),
+              lte(chatSchema.createdAt, previousToDate),
+              eq(chatSchema.organizationId, organizationId),
+              or(
+                gt(chatSchema.visitedCount, 1),
+                and(
+                gte(chatSchema.visitedCount, 0),
+                isNotNull(chatSchema.botUserId)
+                )
+              )
+            ),
+          ),
+        db
+          .select({ createdAt: chatSchema.createdAt })
+          .from(chatSchema)
+          .where(
+            and(
+              gte(chatSchema.createdAt, previousFromDate),
+              lte(chatSchema.createdAt, previousToDate),
+              eq(chatSchema.interacted, true),
+              eq(chatSchema.organizationId, organizationId),
+            ),
+          ),
+      ]);
 
-    // const filteredInteractedChats = interactedChats.filter(
-    //   (i: any) => i.messages?.length,
-    // );
+    const currentPeriodUniqueVisitors = getUniqueVisitors(uniqueVisiters)
+    const previousPeriodUniqueVisitors = getUniqueVisitors(previousUniqueVisiters)
 
     if (!orgData) return undefined;
 
@@ -428,7 +473,7 @@ export const getAnalytics = async (
     // unique-visitors Graph
     if (queryArray.includes("unique_visitors")) {
       const uniqueVisitersResult = groupAndMapData({
-        module: uniqueVisiters,
+        module: currentPeriodUniqueVisitors,
         period,
         difference,
         timeZone
@@ -498,33 +543,91 @@ export const getAnalytics = async (
       return acc; 
     }, {});
 
-    console.log({ queryArray });
-
     const graphArray = queryArray.map((key) => graph[key]).filter(Boolean);
     let statistics = [
-        { name: "chat sessions", value: chats?.length, apiName: "sessions", color: "#facc15" },
-        { name: "unique visitors", value: uniqueVisiters?.length ?? 0, apiName: "unique_visitors", color: "#a855f7" },
-        { name: "chat leads", value: leads?.length, apiName: "leads", color: "#4f46e5" },
-        { name: "interacted chats", value: interactedChats?.length, apiName: "interacted_chats", color: "#dc2626"  },
+        { 
+          name: "chat sessions", 
+          value: chats?.length, 
+          apiName: "sessions", 
+          color: "#facc15",
+          averagePercentage: calculatePercentageChange(chats?.length, previousChats?.length)
+        },
+        { 
+          name: "unique visitors", 
+          value: currentPeriodUniqueVisitors?.length ?? 0, 
+          apiName: "unique_visitors",
+          color: "#a855f7",
+          averagePercentage: calculatePercentageChange(currentPeriodUniqueVisitors?.length ?? 0, previousPeriodUniqueVisitors?.length)
+        },
+        { 
+          name: "chat leads", 
+          value: leads?.length, 
+          apiName: "leads", 
+          color: "#4f46e5",
+          averagePercentage: calculatePercentageChange(leads?.length, previousLeads?.length) 
+        },
+        { 
+          name: "interacted chats", 
+          value: interactedChats?.length, 
+          apiName: "interacted_chats", 
+          color: "#dc2626",
+          averagePercentage: calculatePercentageChange(interactedChats?.length, previousInteractedChats?.length) 
+        },
         // Spread the mapIntents into statistics
         ...mapIntents.map(intent =>{
           if (intent?.name === "site_visit") {
-            return { name: 'site visits', value: intent.value, apiName: intent.name, color: "#2563eb" } 
+            return { 
+              name: 'site visits', 
+              value: intent?.value, 
+              apiName: intent.name, 
+              color: "#2563eb",
+              averagePercentage: calculatePercentageChange(intent?.value, intent?.previousDateValue) 
+            } 
           }
           if (intent?.name === "schedule_call") {
-            return { name: 'call scheduled', value: intent.value, apiName: intent.name, color: "#16a34a" }
+            return { 
+              name: 'call scheduled', 
+              value: intent?.value, 
+              apiName: intent.name, 
+              color: "#16a34a",
+              averagePercentage: calculatePercentageChange(intent?.value, intent?.previousDateValue)  
+            }
           }
           if (intent?.name === "virtual_tour") {
-            return { name: 'virtual tours', value: intent.value, apiName: intent.name, color: "#e11d48" }
+            return { 
+              name: 'virtual tours', 
+              value: intent?.value, 
+              apiName: intent.name, 
+              color: "#e11d48",
+              averagePercentage: calculatePercentageChange(intent?.value, intent?.previousDateValue) 
+            }
           }
           if (intent?.name === "location") {
-            return { name: 'location visited', value: intent.value, apiName: intent.name, color: "#1e293b" }
+            return { 
+              name: 'location visited', 
+              value: intent?.value, 
+              apiName: intent.name, 
+              color: "#1e293b",
+              averagePercentage: calculatePercentageChange(intent?.value, intent?.previousDateValue) 
+            }
           }
           if (intent?.name === "images") {
-            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#FA8072" }
+            return { 
+              name: intent.name, 
+              value: intent?.value, 
+              apiName: intent.name, 
+              color: "#FA8072",
+              averagePercentage: calculatePercentageChange(intent?.value, intent?.previousDateValue) 
+             }
           }
           if (intent?.name === "brochures") {
-            return { name: intent.name, value: intent.value, apiName: intent.name, color: "#40E0D0" }
+            return { 
+              name: intent.name, 
+              value: intent?.value, 
+              apiName: intent.name, 
+              color: "#40E0D0",
+              averagePercentage: calculatePercentageChange(intent?.value, intent?.previousDateValue) 
+             }
           }
         })
     ].filter(item => item !== null)
@@ -535,8 +638,22 @@ export const getAnalytics = async (
       graph: graphArray
     };
   } catch (error) {
+    logger.error(`Error: getAnalytics catch block:${JSON.stringify(error)}`)
     throw new Error(`Failed to fetch: ${error}`);
   }
 };
 
 
+function getUniqueVisitors(chats: any) {
+  const uniqueVisitors = new Map();
+  
+  chats?.map((chat: any) => {
+    const { id, botUserId, createdAt } = chat;
+    uniqueVisitors.set(botUserId ?? id, { createdAt });
+  })
+  const uniqueValues = Array.from(uniqueVisitors, ([key, value]) => ({
+    id: key,
+    ...value,
+    }));
+  return uniqueValues
+}
