@@ -19,15 +19,14 @@ export default defineEventHandler(async (event) => {
 
   // const userPhone= "919841513901"
   // const userPhone= "918848083317"
-  const userPhone = body?.mobile;
+  const userPhone = body?.lead?.phone;
   const organization = body?.organization ?? "South India Shelters";
   const salesmanager = body?.salesmanager ?? "Reena";
-  // console.log({metT})
+
   let waBody = {
     messaging_product: "whatsapp",
     // to: "919884074715",
-    to: "918848073317",
-
+    to: userPhone?.replace("+", ""),
     type: "template",
     template: {
       name: "tring_followup_template",
@@ -79,28 +78,75 @@ export default defineEventHandler(async (event) => {
       ],
     },
   };
-
+  if (body?.event === "unqualified") {
+    waBody = {
+      messaging_product: "whatsapp",
+      // to: "919884074715",
+      to: userPhone?.replace("+", ""),
+      type: "template",
+      template: {
+        name: "not_interested_followup_sis ",
+        language: {
+          code: "en",
+        },
+        components: [
+          {
+            type: "header",
+            parameters: [
+              {
+                type: "image",
+                image: {
+                  link: "https://app.tringlabs.ai/uploads/1e66997c-7b9c-4711-8079-eb54a286d745.jpg",
+                  // link: "https://plus.unsplash.com/premium_photo-1674761372287-554e42777b9f?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                },
+              },
+            ],
+          },
+          {
+            type: "body",
+            parameters: [
+              {
+                type: "text",
+                text: body?.lead?.first_name + " " + body?.lead?.last_name,
+              },
+              {
+                type: "text",
+                text: "sis.in",
+              },
+              {
+                type: "text",
+                text: "+918848083317",
+              },
+            ],
+          },
+        ],
+      },
+    };
+  }
   // body?.payload?.stage === "unqualified";
   //TODO remove consoles
-  // if (body?.event === "outgoing_call_not_answered") {
-  //   try {
-  //     const data = await $fetch(
-  //       "https://graph.facebook.com/v20.0/448392115020601/messages",
-  //       {
-  //         method: "POST",
-  //         body: waBody,
-  //         headers: {
-  //           authorization: `Bearer ${metaToken}`,
-  //         },
-  //       },
-  //     );
-  //     console.log({ data });
-  //     return data;
-  //   } catch (err: any) {
-  //     console.log(err.message);
-  //     logger.info(`error ${JSON.stringify(err)} ${err.message}`);
-  //   }
-  // }
+  if (
+    body?.event === "outgoing_call_not_answered" ||
+    body?.event === "unqualified"
+  ) {
+    try {
+      const data = await $fetch(
+        "https://graph.facebook.com/v20.0/448392115020601/messages",
+        {
+          method: "POST",
+          body: waBody,
+          headers: {
+            authorization: `Bearer ${metaToken}`,
+          },
+        },
+      );
+      console.log({ data });
+      return data;
+    } catch (err: any) {
+      console.log(err.message, err.data);
+      logger.info(`error ${JSON.stringify(err)} ${err.message}`);
+    }
+  }
 
   // const components: any[] = generateTemplateComponents([
   //   body?.fullName,

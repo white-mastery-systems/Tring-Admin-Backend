@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
       where: eq(authUserSchema.id, user?.id),
     });
     const organizationId = (await isOrganizationAdminHandler(event)) as string;
-    const orgDetails = await db.query.organizationSchema.findFirst({
+    const orgDetails: any = await db.query.organizationSchema.findFirst({
       where: eq(organizationSchema.id, organizationId),
     });
 
@@ -129,13 +129,17 @@ export default defineEventHandler(async (event) => {
                           country: userDetails?.address?.country,
                           zip: userDetails?.address?.zip,
                         },
+                        gst_no: orgDetails?.metadata?.gst,
+                        gst_treatment: "business_gst",
                       },
                     }),
-
+                gst_no: orgDetails?.metadata?.gst,
+                gst_treatment: "business_gst",
                 contactpersons: contactPersonIdList,
                 plan: {
                   plan_code: body.plan,
                 },
+
                 redirect_url: body?.redirectUrl,
                 payment_gateways: [
                   {

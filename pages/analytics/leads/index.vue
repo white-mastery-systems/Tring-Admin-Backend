@@ -1,10 +1,13 @@
 <template>
   <Page title="Leads" :disableSelector="false" :disable-back-button="true">
     <div class="flex items-center justify-between gap-2 overflow-x-scroll pb-4">
-    <div class="flex items-center gap-2">
-        <UiInput v-model="filters.q" @input="filters.page = '1'"
+      <div class="flex items-center gap-2">
+        <UiInput
+          v-model="filters.q"
+          @input="filters.page = '1'"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
-          placeholder=" Search Leads..." />
+          placeholder=" Search Leads..."
+        />
         <BotFilter v-model="filters.botId" @input="filters.page = '1'" />
         <StatusFilter @change="onStatusChange" />
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
@@ -12,7 +15,12 @@
         <!-- <ChannelFilter @changeAction="onChannel" /> -->
         <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
       </div>
-      <ExportButton :rows="exportReadyRows" :columns="exportReadyColumns" @export="exportData" />
+      <ExportButton
+        :isExporting="fetchExportDataStatus"
+        :rows="exportReadyRows"
+        :columns="exportReadyColumns"
+        @export="exportData"
+      />
       <!-- <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton> -->
     </div>
     <UiTabs default-value="all" class="w-full self-start">
@@ -28,307 +36,363 @@
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="all">
-        <DataTable @pagination="Pagination" @limit="($event) => {
-          (filters.page = '1'), (filters.limit = $event);
-        }
-          " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="leads"
-          :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="14" height-unit="vh" @row-click="(row: any) => {
-            navigateTo(`/analytics/leads/${row.original.chatId}`);
-          }
-            " />
+        <DataTable
+          @pagination="Pagination"
+          @limit="
+            ($event) => {
+              (filters.page = '1'), (filters.limit = $event);
+            }
+          "
+          :totalPageCount="totalPageCount"
+          :page="page"
+          :totalCount="totalCount"
+          :data="leads"
+          :is-loading="isDataLoading"
+          :columns="columns"
+          :page-size="8"
+          :height="14"
+          height-unit="vh"
+          @row-click="
+            (row: any) => {
+              navigateTo(`/analytics/leads/${row.original.chatId}`);
+            }
+          "
+        />
       </UiTabsContent>
       <UiTabsContent value="whatsapp">
-        <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {
-          (filters.page = '1'), (filters.limit = $event);
-        }
-          " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
-          :totalCount="totalCount" :page-size="8" :height="14" height-unit="vh" @row-click="(row: any) => {
-            navigateTo(`leads/${row.original.chatId}`);
-          }
-            " />
+        <DataTable
+          :data="leads"
+          @pagination="Pagination"
+          @limit="
+            ($event) => {
+              (filters.page = '1'), (filters.limit = $event);
+            }
+          "
+          :is-loading="isDataLoading"
+          :columns="columns"
+          :totalPageCount="totalPageCount"
+          :page="page"
+          :totalCount="totalCount"
+          :page-size="8"
+          :height="14"
+          height-unit="vh"
+          @row-click="
+            (row: any) => {
+              navigateTo(`leads/${row.original.chatId}`);
+            }
+          "
+        />
       </UiTabsContent>
       <UiTabsContent value="website">
-        <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {
-          (filters.page = '1'), (filters.limit = $event);
-
-        }
-          " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
-          :totalCount="totalCount" :page-size="8" :height="14" height-unit="vh" @row-click="(row: any) => {
-            navigateTo(`leads/${row.original.chatId}`);
-          }
-            " />
+        <DataTable
+          :data="leads"
+          @pagination="Pagination"
+          @limit="
+            ($event) => {
+              (filters.page = '1'), (filters.limit = $event);
+            }
+          "
+          :is-loading="isDataLoading"
+          :columns="columns"
+          :totalPageCount="totalPageCount"
+          :page="page"
+          :totalCount="totalCount"
+          :page-size="8"
+          :height="14"
+          height-unit="vh"
+          @row-click="
+            (row: any) => {
+              navigateTo(`leads/${row.original.chatId}`);
+            }
+          "
+        />
       </UiTabsContent>
     </UiTabs>
   </Page>
 </template>
 <script setup lang="ts">
-import { Icon, UiBadge, UiButton } from "#components";
-import { createColumnHelper } from "@tanstack/vue-table";
-import { format } from "date-fns";
-import { useRoute, useRouter } from "vue-router";
+  import { Icon, UiBadge, UiButton } from "#components";
+  import { createColumnHelper } from "@tanstack/vue-table";
+  import { format } from "date-fns";
+  import { useRoute, useRouter } from "vue-router";
 
-const rowList = reactive([
-  "name",
-  "email",
-  "visitedCount",
-  "mobile",
-  "botName",
-  "country",
-  "createdAt",
-  "ClientId",
-]);
+  const rowList = reactive([
+    "name",
+    "email",
+    "visitedCount",
+    "mobile",
+    "botName",
+    "country",
+    "createdAt",
+    "ClientId",
+  ]);
 
-definePageMeta({
-  middleware: "admin-only",
-});
-
-useHead({
-  title: 'Analytics | Leads',
-})
-
-const router = useRouter();
-const route = useRoute();
-const fetchExportData = ref(false);
-
-const filters = reactive<{
-  botId: string;
-  q?: string;
-  from?: string;
-  to?: string;
-  period: string;
-  status: string;
-  channel: any;
-  action: string;
-  page: string;
-  limit: string;
-  country: string;
-}>({
-  botId: "",
-  q: undefined,
-  from: undefined,
-  to: undefined,
-  period: "",
-  status: "",
-  channel: "all",
-  action: "",
-  page: "1",
-  limit: "10",
-  country: "all",
-});
-
-watchEffect(() => {
-  if (filters.botId === "all") filters.botId = "";
-});
-
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
-
-
-
-
-let {
-  status,
-  data: leads,
-  refresh: getAllLeads,
-} = await useLazyFetch("/api/org/leads", {
-  server: false,
-  query: filters,
-  headers: {
-    "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-  },
-  default: () => [],
-  transform: (leads: any) => {
-    page.value = leads.page;
-    totalPageCount.value = leads.totalPageCount;
-    totalCount.value = leads.totalCount;
-    return leads.data;
-  },
-});
-
-const exportFilters = computed(() => {
-  const { page, limit, ...restFilters } = filters; // Destructure to exclude 'page' and 'limit'
-  return restFilters;
-});
-// watch(exportFilters, async () => {
-//   await fetchExportLeads(); // Fetch data when filters change
-// }, { immediate: true, deep: true });
-
-// let {
-//   data: exportLeads,
-//   refresh: getAllExportLeads,
-// } = await useLazyFetch("/api/org/leads", {
-//   server: false,
-//   query: exportFilters,
-//   headers: {
-//     "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-//   },
-//   default: () => [],
-// });
-let { data: exportLeads, execute } = await useLazyFetch("/api/org/leads", {
-  server: false,
-  query: exportFilters,
-  headers: {
-    "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-  },
-  immediate: fetchExportData.value,
-  default: () => [],
-});
-
-
-const exportReadyRows = computed(() => {
-  console.log(exportLeads.value, "exportLeads.value")
-  return (exportLeads.value ?? [])
-    .map((lead: any) => {
-      const mergedObject = {
-        name: lead.botUser.name ?? '---',
-        email: lead.botUser.email ?? '---',
-        mobile: lead?.botUser?.mobile ?? "---",
-        countryCode: lead?.botUser?.countryCode ?? "+91",
-        visitedStatus: Number(lead?.botUser?.visitedCount) > 1 ? "Revisited" : "New",
-        botName: lead.bot.name ?? "---",
-        country: lead.chat?.metadata?.country ?? "---",
-        createdAt: format(lead.botUser.createdAt, "MMMM d, yyyy"),
-        // ClientId: lead.botUser.id,
-      };
-      return mergedObject
-    })
-})
-watch(exportReadyRows, () => {
-  console.log({ exportReadyRows: exportReadyRows.value })
-})
-const exportReadyColumns = computed(() => {
-  return [
-    "Name",
-    "Email",
-    "Mobile",
-    "Country code",
-    "Visited status",
-    "Bot name",
-    "Country",
-    "Created at",
-  ]
-})
-const Pagination = async ($evnt) => {
-  filters.page = $evnt;
-  getAllLeads();
-};
-
-const isDataLoading = computed(() => status.value === "pending");
-
-const viewLead = async (chatId: any) => {
-  await navigateTo({
-    name: "analytics-leads-id",
-    params: { id: chatId },
+  definePageMeta({
+    middleware: "admin-only",
   });
-};
 
-const onDateChange = (value: any) => {
-  if (value.from && value.to) {
-    filters.from = value.from;
-    filters.to = value.to;
-  } else {
-    delete filters.from;
-    delete filters.to;
-    filters.period = value;
-  }
-  filters.page = "1";
-};
-const onActionChange = (value: any) => {
-  if (value) {
-    filters.action = value;
-  }
-};
-const onStatusChange = (value: any) => {
-  if (value) {
-    filters.status = value;
+  useHead({
+    title: "Analytics | Leads",
+  });
+
+  const fetchExportDataStatus = ref(false);
+  const router = useRouter();
+  const route = useRoute();
+  const fetchExportData = ref(false);
+
+  const filters = reactive<{
+    botId: string;
+    q?: string;
+    from?: string;
+    to?: string;
+    period: string;
+    status: string;
+    channel: any;
+    action: string;
+    page: string;
+    limit: string;
+    country: string;
+  }>({
+    botId: "",
+    q: undefined,
+    from: undefined,
+    to: undefined,
+    period: "",
+    status: "",
+    channel: "all",
+    action: "",
+    page: "1",
+    limit: "10",
+    country: "all",
+  });
+
+  watchEffect(() => {
+    if (filters.botId === "all") filters.botId = "";
+  });
+
+  let page = ref(0);
+  let totalPageCount = ref(0);
+  let totalCount = ref(0);
+
+  let {
+    status,
+    data: leads,
+    refresh: getAllLeads,
+  } = await useLazyFetch("/api/org/leads", {
+    server: false,
+    query: filters,
+    headers: {
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
+    default: () => [],
+    transform: (leads: any) => {
+      page.value = leads.page;
+      totalPageCount.value = leads.totalPageCount;
+      totalCount.value = leads.totalCount;
+      return leads.data;
+    },
+  });
+
+  const exportFilters = computed(() => {
+    const { page, limit, ...restFilters } = filters; // Destructure to exclude 'page' and 'limit'
+    return restFilters;
+  });
+
+  // const exportReadyRows = computed(async () => {
+  //   // let exportLeads = await $fetch("/api/org/leads", {
+  //   //   server: false,
+  //   //   query: exportFilters,
+  //   //   headers: {
+  //   //     "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+  //   //   },
+  //   //   immediate: fetchExportData.value,
+  //   //   default: () => [],
+  //   // });
+  //   // console.log({ data: exportLeads });
+  //   // return (exportLeads ?? []).map((lead: any) => {
+  //   //   const mergedObject = {
+  //   //     name: lead.botUser.name ?? "---",
+  //   //     email: lead.botUser.email ?? "---",
+  //   //     mobile: lead?.botUser?.mobile ?? "---",
+  //   //     countryCode: lead?.botUser?.countryCode ?? "+91",
+  //   //     visitedStatus:
+  //   //       Number(lead?.botUser?.visitedCount) > 1 ? "Revisited" : "New",
+  //   //     botName: lead.bot.name ?? "---",
+  //   //     country: lead.chat?.metadata?.country ?? "---",
+  //   //     createdAt: format(lead.botUser.createdAt, "MMMM d, yyyy"),
+  //   //     // ClientId: lead.botUser.id,
+  //   //   };
+  //   //   return mergedObject;
+  //   // });
+  //   return [];
+  // });
+  const exportReadyRows = ref<any>([]);
+  watch(exportReadyRows, () => {
+    console.log({ exportReadyRows: exportReadyRows.value });
+  });
+  const exportReadyColumns = computed(() => {
+    return [
+      "Name",
+      "Email",
+      "Mobile",
+      "Country code",
+      "Visited status",
+      "Bot name",
+      "Country",
+      "Created at",
+    ];
+  });
+  const Pagination = async ($evnt) => {
+    filters.page = $evnt;
+    getAllLeads();
+  };
+
+  const isDataLoading = computed(() => status.value === "pending");
+
+  const viewLead = async (chatId: any) => {
+    await navigateTo({
+      name: "analytics-leads-id",
+      params: { id: chatId },
+    });
+  };
+
+  const onDateChange = (value: any) => {
+    if (value.from && value.to) {
+      filters.from = value.from;
+      filters.to = value.to;
+    } else {
+      delete filters.from;
+      delete filters.to;
+      filters.period = value;
+    }
     filters.page = "1";
-  }
-};
+  };
+  const onActionChange = (value: any) => {
+    if (value) {
+      filters.action = value;
+    }
+  };
+  const onStatusChange = (value: any) => {
+    if (value) {
+      filters.status = value;
+      filters.page = "1";
+    }
+  };
 
-const columnHelper = createColumnHelper<(typeof leads.value)[0]>();
-const columns = [
-  columnHelper.accessor("botUser.name", {
-    header: "Lead Name",
-  }),
-  columnHelper.accessor("botUser.email", {
-    header: "Lead Email",
-  }),
+  const columnHelper = createColumnHelper<(typeof leads.value)[0]>();
+  const columns = [
+    columnHelper.accessor("botUser.name", {
+      header: "Lead Name",
+    }),
+    columnHelper.accessor("botUser.email", {
+      header: "Lead Email",
+    }),
 
-  columnHelper.accessor("botUser", {
-    header: "Visiting Status",
-    cell: ({ row }) =>
-      h(
-        UiBadge,
-        {
-          ...(row.original.status === "junk"
-            ? { class: "bg-red-200 text-red-500 hover:bg-300" }
-            : Number(row.original.botUser?.visitedCount) > 1
-              ? { class: "bg-[#424bd1] text-[#ffffff] hover:bg-[#424bd1]" }
-              : { class: "bg-green-200 text-green-500 hover:bg-green-300" }),
+    columnHelper.accessor("botUser", {
+      header: "Visiting Status",
+      cell: ({ row }) =>
+        h(
+          UiBadge,
+          {
+            ...(row.original.status === "junk"
+              ? { class: "bg-red-200 text-red-500 hover:bg-300" }
+              : Number(row.original.botUser?.visitedCount) > 1
+                ? { class: "bg-[#424bd1] text-[#ffffff] hover:bg-[#424bd1]" }
+                : { class: "bg-green-200 text-green-500 hover:bg-green-300" }),
+          },
+          row.original.status === "junk"
+            ? "Junk"
+            : Number(row.original.botUser.visitedCount) > 1
+              ? "Revisited"
+              : "New",
+        ),
+    }),
+
+    columnHelper.accessor("channel", {
+      header: "Channel",
+      cell: ({ row }) =>
+        row.original?.chat.channel.charAt(0).toUpperCase() +
+        row.original?.chat.channel.slice(1),
+    }),
+    columnHelper.accessor("botUser.mobile", {
+      header: "Lead Phone",
+      cell: ({ row }) =>
+        row.original?.botUser?.countryCode + row.original?.botUser?.mobile,
+    }),
+    columnHelper.accessor("bot.name", {
+      header: "Bot Name",
+    }),
+    columnHelper.accessor("chat.metadata.country", {
+      header: "Country",
+      cell: (info) => info.getValue() || "-",
+    }),
+    columnHelper.accessor("createdAt", {
+      header: "Date Created",
+      cell: ({ row }) => `${row.original.createdAt}`,
+    }),
+    columnHelper.accessor("id", {
+      header: "Action",
+      cell: ({ row }) =>
+        h(
+          UiButton,
+          {
+            onClick: () => viewLead(row.original.chatId),
+            class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
+          },
+          [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
+        ),
+    }),
+  ];
+  const selectedChannel = (value: any) => {
+    if (value) {
+      filters.channel = value;
+    }
+    filters.page = "1";
+  };
+
+  const onChannel = ($event) => {
+    if ($event) {
+      filters.channel = $event;
+    }
+  };
+
+  const onCountryChange = ($event) => {
+    if ($event) {
+      filters.country = $event;
+    }
+  };
+  const exportData = async () => {
+    fetchExportDataStatus.value = true;
+    try {
+      const exportLeads = await $fetch("/api/org/leads", {
+        query: exportFilters.value,
+        method: "GET",
+        headers: {
+          "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
-        row.original.status === "junk"
-          ? "Junk"
-          : Number(row.original.botUser.visitedCount) > 1
-            ? "Revisited"
-            : "New",
-      ),
-  }),
+      });
+      console.log({ exportLeads });
 
-  columnHelper.accessor("channel", {
-    header: "Channel",
-    cell: ({ row }) => row.original?.chat.channel.charAt(0).toUpperCase() + row.original?.chat.channel.slice(1)
-  }),
-  columnHelper.accessor("botUser.mobile", {
-    header: "Lead Phone",
-    cell: ({ row }) => row.original?.botUser?.countryCode + row.original?.botUser?.mobile,
-  }),
-  columnHelper.accessor("bot.name", {
-    header: "Bot Name",
-  }),
-  columnHelper.accessor("chat.metadata.country", {
-    header: "Country",
-    cell: (info) => info.getValue() || "-",
-  }),
-  columnHelper.accessor("createdAt", {
-    header: "Date Created",
-    cell: ({ row }) => `${row.original.createdAt}`,
-  }),
-  columnHelper.accessor("id", {
-    header: "Action",
-    cell: ({ row }) =>
-      h(
-        UiButton,
-        {
-          onClick: () => viewLead(row.original.chatId),
-          class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
-        },
-        [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
-      ),
-  }),
-];
-const selectedChannel = (value: any) => {
-  if (value) {
-    filters.channel = value;
-  }
-  filters.page = '1'
-};
-
-const onChannel = ($event) => {
-  if ($event) {
-
-    filters.channel = $event;
-  }
-}
-
-const onCountryChange = ($event) => {
-  if ($event) {
-    filters.country = $event;
-  }
-}
-const exportData = () => {
-  fetchExportData.value = true
-  execute()
-  fetchExportData.value = false
-}
+      const exportReadObject = (exportLeads ?? []).map((lead: any) => {
+        const mergedObject = {
+          name: lead.botUser.name ?? "---",
+          email: lead.botUser.email ?? "---",
+          mobile: lead?.botUser?.mobile ?? "---",
+          countryCode: lead?.botUser?.countryCode ?? "+91",
+          visitedStatus:
+            Number(lead?.botUser?.visitedCount) > 1 ? "Revisited" : "New",
+          botName: lead.bot.name ?? "---",
+          country: lead.chat?.metadata?.country ?? "---",
+          createdAt: format(lead.botUser.createdAt, "MMMM d, yyyy"),
+          // ClientId: lead.botUser.id,
+        };
+        return mergedObject;
+      });
+      fetchExportDataStatus.value = false;
+      exportReadyRows.value = exportReadObject;
+    } catch (err) {
+      console.log(err);
+    }
+    // fetchExportData.value = false;
+  };
 </script>
