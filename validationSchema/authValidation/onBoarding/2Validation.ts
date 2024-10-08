@@ -19,7 +19,7 @@ export const formSchema = toTypedSchema(
         .max(15, "GST number must be 15 characters")
         .min(15, "GST number must be 15 characters")
         .optional()
-         .refine((val) =>  val?.length === 15|| val?.length === 0, {
+         .refine((val) => ( val?.length > 0 ? val?.length === 15 : false), {
     message: "GST number must be exactly 15 characters if provided",
   })
     })

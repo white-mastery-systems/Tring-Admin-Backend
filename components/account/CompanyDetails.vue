@@ -78,6 +78,9 @@
   if (orgDetails?.metadata?.industry === "Other") {
     setFieldValue("otherRole", orgDetails?.metadata?.otherRole);
   }
+  
+   if(orgDetails?.metadata?.gst) setFieldValue("gst", orgDetails?.metadata?.gst);
+
 
   const handleAccountUpdate = handleSubmit(async (values: any) => {
     isLoading.value = true
