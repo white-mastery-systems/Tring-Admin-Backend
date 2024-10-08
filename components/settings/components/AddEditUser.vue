@@ -182,13 +182,9 @@
     columnHelper.accessor("username", {
       header: "Name",
     }),
-
-    columnHelper.accessor("mobile", {
-      header: "Phone",
-    }),
     columnHelper.accessor("mobile", {
       header: "Mobile",
-
+      cell: ({ row }) => `${row.original?.countryCode || ''} ${row.original?.mobile || ''}`.trim(),
     }),
     columnHelper.accessor("role", {
       header: "role",

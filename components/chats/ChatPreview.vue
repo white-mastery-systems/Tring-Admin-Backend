@@ -167,15 +167,15 @@
                   class="pb-2 pt-2 flex flex-col-2 "
                   v-if="messageList?.metadata?.countryCode"
                 >
-                  <CountryCodeField
-                  class="max-w-[110px]"
-                    :name="messageList?.metadata?.countryCode"
-                    :disabled="true"
-                    label="Country Code"
-                    helperText="Enter your country code"
-                    required
-                  />
-                  <div  class="max-w-[100%] pt-1" v-if="messageList?.metadata?.mobile">
+                <div  class="max-w-[120px] px-1" >
+                      <TextField
+                      label="Country Code"
+                      :disabled="true"
+                      :placeholder="messageList?.metadata?.countryCode"
+                    />
+                </div>
+
+                  <div  class="max-w-[100%]" v-if="messageList?.metadata?.mobile">
                     <TextField
                       label="Mobile"
                       :disabled="true"
@@ -361,7 +361,10 @@
   );
 
   onMounted(() => {
+    setTimeout(() => {
     scrollToMessage({ chatIndex: props.chatValue.length });
+      
+    },100)
   });
 
   // Function to scroll to a specific message based on chatId

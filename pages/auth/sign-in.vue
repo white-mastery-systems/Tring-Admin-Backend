@@ -22,6 +22,7 @@ const passwordVisible = ref(false);
 const animationProps = {
   duration: 500,
 };
+const isLoading = ref(false)
 
 const {
   setFieldValue,
@@ -41,8 +42,10 @@ const togglePasswordVisibility = () => {
 };
 
 const onSubmit = handleSubmit((value: any) => {
+  isLoading.value = true
   event('button_click', { event_category: 'engagement', event_label: 'sign_in' })
   authHandlers.login(value)
+  isLoading.value = false
 })
 </script>
 
@@ -72,7 +75,8 @@ const onSubmit = handleSubmit((value: any) => {
           </div>
 
 
-          <UiButton type="submit" class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]">Sign in
+          <UiButton type="submit" class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
+            :loading="isLoading">Sign in
           </UiButton>
         </div>
       </form>

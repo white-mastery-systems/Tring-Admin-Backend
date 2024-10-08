@@ -74,7 +74,7 @@
         <TextField name="projectId" label="Project Id" placeholder="Enter your project id" />
       </div>
 
-      <UiButton type="submit" class="mt-2" color="primary">
+      <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
         Save changes
       </UiButton>
     </form>
@@ -89,6 +89,7 @@ let pipelines = ref<any>([]);
 let layouts = ref([]);
 const stages = ref<any>([]);
 const subPipelines = ref<any>([]);
+const isLoading = ref(false)
 
 const modalState = defineModel<{ open: boolean }>({
   default: { open: false },
@@ -222,6 +223,7 @@ const {
 });
 
 const handleAddIntegration = handleSubmit((value: any) => {
+  isLoading.value = true
   let pipelineObj: any = {};
   let layoutObj: any = {};
 
@@ -265,6 +267,7 @@ const handleAddIntegration = handleSubmit((value: any) => {
       onSuccess: () => {
         emit("success");
         toast.success("Integration updated successfully");
+        isLoading.value = false
       },
     });
   } else {
@@ -278,8 +281,10 @@ const handleAddIntegration = handleSubmit((value: any) => {
       onSuccess: () => {
         emit("success");
         toast.success("Integration created successfully");
+        isLoading.value = false
       },
     });
   }
+  isLoading.value = false
 });
 </script>

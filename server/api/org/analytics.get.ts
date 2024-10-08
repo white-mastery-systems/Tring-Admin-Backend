@@ -16,6 +16,10 @@ const queryValidator = z.object({
 });
 
 export default defineEventHandler(async (event) => {
+  // return createError({
+  //   statusCode: 401,
+  //   statusMessage: "Bad Request",
+  // })
   const timeZoneHeader = event.node?.req?.headers["time-zone"];
   const timeZone = Array.isArray(timeZoneHeader)
     ? timeZoneHeader[0]

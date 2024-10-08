@@ -5,6 +5,7 @@ import { personalDetailFormValidation } from '~/validationSchema/authValidation/
   definePageMeta({
     layout: "auth",
   });
+  const isLoading = ref(false)
   const animationProps = {
     duration: 500,
   };
@@ -59,6 +60,7 @@ import { personalDetailFormValidation } from '~/validationSchema/authValidation/
   //   loginData.customRole = loginData.customRole
   // }
   const onSubmit = handleSubmit(async (value: any) => {
+    isLoading.value = true
     localStorage.setItem(
       "onboardingForm",
       JSON.stringify({
@@ -70,6 +72,7 @@ import { personalDetailFormValidation } from '~/validationSchema/authValidation/
       method: "POST",
       body: value,
     });
+    isLoading.value = false
     return navigateTo("/auth/onboarding/2");
   });
 </script>
@@ -77,43 +80,21 @@ import { personalDetailFormValidation } from '~/validationSchema/authValidation/
   <div class="flex h-full w-full flex-col items-center justify-center">
     <!-- :initial-values="defaultFormValues" -->
     <!-- @submit="handleSubmit" -->
-    <div
-      class="w-[90%] px-0 pb-[20px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]"
-    >
+    <div class="w-[90%] px-0 pb-[20px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
       Personal Details
     </div>
-    <div
-      class="flex w-[90%] flex-col px-0 md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]"
-    >
+    <div class="flex w-[90%] flex-col px-0 md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
       <!-- <div> -->
 
       <form class="space-y-2" @submit="onSubmit">
         <div class="flex flex-col gap-3">
-          <TextField
-            type="text"
-            name="name"
-            label="Full Name"
-            placeholder="Enter Your Name"
-            :required="true"
-          />
+          <TextField type="text" name="name" label="Full Name" placeholder="Enter Your Name" :required="true" />
 
-          <SelectField
-            name="role"
-            label="Role"
-            placeholder="Select Role"
-            :options="roles.map((role) => ({ label: role, value: role }))"
-            :required="true"
-          />
-          <TextField
-          v-if="values.role === 'Other'"
-            type="text"
-            name="otherRole"
-            :required="true"
-          />
-          <UiButton
-            type="submit"
-            class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
-            >Proceed
+          <SelectField name="role" label="Role" placeholder="Select Role"
+            :options="roles.map((role) => ({ label: role, value: role }))" :required="true" />
+          <TextField v-if="values.role === 'Other'" type="text" name="otherRole" :required="true" />
+          <UiButton type="submit" class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
+            :loading="isLoading">Proceed
           </UiButton>
         </div>
       </form>
@@ -124,11 +105,7 @@ import { personalDetailFormValidation } from '~/validationSchema/authValidation/
       <span class="text-[12px] text-[#8a8a8a]">
         By Signing up, I Agree to Tring AI
       </span>
-      <a
-        target="_blank"
-        href="https://tringlabs.ai/terms-and-conditions"
-        class="text-[12px] underline"
-      >
+      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="text-[12px] underline">
         Terms & Conditions
       </a>
     </div>

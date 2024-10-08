@@ -82,7 +82,7 @@
               </div>
           <div class="flex flex-col">
             <div class="flex flex-wrap items-center gap-2 ">
-              <div v-if="templateStore?.values?.body" class="flex items-center">
+              <div v-if="templateStore?.values?.body" class="flex items-center max-w-[250px] overflow-scroll ">
                 {{ templateStore?.values?.body }}
               </div>
             </div>

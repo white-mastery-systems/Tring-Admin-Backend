@@ -149,7 +149,7 @@
       path: "/contacts-management",
       children: [
         {
-          name: "Contacts",
+          name: "Contacts Buckets",
           path: "/contacts",
         },
         {
@@ -198,6 +198,11 @@
           name: "User Management",
           icon: SettingsIcon,
           path: "/user-management",
+        },
+        {
+          name: "Whatsapp Template",
+          icon: SettingsIcon,
+          path: "/whatsapp-template",
         },
       ],
     },

@@ -10,7 +10,7 @@ const numberModalState: any = defineModel<{ open: boolean, id: any }>({
     id: null,
   },
 });
-
+const isLoading = ref(false)
 const allCoutryDialCode = computed(() =>
   countryData?.map((country) => country.dial_code),
 );
@@ -83,6 +83,7 @@ const [countryCode, countryCodeProps] = defineField("countryCode");
 
 
 const handleConnect = handleSubmit(async (values: any) => {
+  isLoading.value = true
   const payload = values
   try {
     if (numberModalState.value.id) {
@@ -96,8 +97,10 @@ const handleConnect = handleSubmit(async (values: any) => {
     emit('success')
   } catch(error: any) {
     console.log(error.data)
+    isLoading.value = false
     // toast.success(error.data.)
   }
+  isLoading.value = false
 });
 </script>
 
@@ -113,7 +116,7 @@ const handleConnect = handleSubmit(async (values: any) => {
           placeholder="Enter phone number" />
       </div>
       <div class="flex justify-end w-full">
-        <UiButton type="submit" class="mt-2" color="primary">
+        <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
           Submit
         </UiButton>
       </div>

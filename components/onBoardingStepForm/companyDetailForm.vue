@@ -21,7 +21,7 @@
         <SelectField name="employeeCount" label="No. of Employees" placeholder="Select Employees"
           :options="employeeCount.map((count) => ({ label: count, value: count }))" :required="true"
           v-model="formData.employeeCount" />
-        <UiButton type="submit" class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]">Proceed
+        <UiButton type="submit" class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]" :loading="isLoading">Proceed
         </UiButton>
         <!-- <UiButton @click="$emit('prev')">Back</UiButton> -->
       </form>
@@ -42,7 +42,7 @@ import { ref } from 'vue';
 import { defineEmits, defineProps } from 'vue';
 const props = defineProps(['formData', 'setFieldValue', 'personalCompanyDetail']);
 const emit = defineEmits(['next', 'prev']);
-
+const isLoading = ref(false)
 
 const industry = [
   "Real Estate",
@@ -76,6 +76,7 @@ props.setFieldValue('avgTraffic', props.formData?.avgTraffic)
 props.setFieldValue('employeeCount', props.formData?.employeeCount)
 
 const onSubmit = () => {
+  isLoading.value = true
   emit('next', {
     companyName: props.formData.companyName,
     industry: props.formData.industry,
@@ -83,5 +84,6 @@ const onSubmit = () => {
     avgTraffic: props.formData.avgTraffic,
     employeeCount: props.formData.employeeCount,
   });
+  isLoading.value = false
 };
 </script>

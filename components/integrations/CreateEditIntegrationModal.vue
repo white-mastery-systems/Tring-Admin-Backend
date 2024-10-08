@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { useForm } from "vee-validate";
   const emit = defineEmits(["success"]);
+  const isLoading = ref(false);
   const integrationModalState = defineModel<{ open: boolean }>({
     default: {
       open: false,
@@ -102,6 +103,8 @@
   );
   const handleConnect = handleSubmit(async (values: any) => {
     console.log({ values });
+    isLoading.value = true;
+
     let url = `${window.location.origin}/settings/integration/${values.crm}`;
     // let url = "https://app.tringlabs.ai/settings";
     let scope = "";
@@ -126,10 +129,16 @@
           url,
           // ...(values.crm !== "sell-do" && { metadata: { status: "pending" } }),
         },
+        /**
+         * This function is called after the integration is updated successfully.
+         * It emits a success event back to the parent component.
+         */
         onSuccess: () => {
           emit("success");
         },
       });
+      isLoading.value = false;
+
       // emit("success");
     } else {
       await createIntegration({
@@ -152,8 +161,10 @@
           }
           //b2c6269af5da3c2f7fb3fb929de90af7
           emit("success");
+          isLoading.value = false;
         },
       });
+      isLoading.value = false;
     }
   });
 </script>
@@ -199,7 +210,12 @@
           required
         />
         <div class="flex w-full justify-end">
-          <UiButton type="submit" class="mt-2" color="primary">
+          <UiButton
+            type="submit"
+            class="mt-2"
+            color="primary"
+            :loading="isLoading"
+          >
             {{
               values.crm === "zoho-crm"
                 ? integrationModalProps?.id
