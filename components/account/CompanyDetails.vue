@@ -1,12 +1,12 @@
 <template>
   <form class="space-y-2" @submit="handleAccountUpdate">
-    <div class="flex flex-col gap-3">
+    <div class="grid grid-cols-2 gap-3">
       <TextField type="text" name="name" label="Company Name" placeholder="Enter your Company Name" :required="true" />
 
       <SelectField name="industry" label="Industry" placeholder="Select Role"
         :options="industry.map((role) => ({ label: role, value: role }))" :required="true" />
       <div v-if="values.industry === 'Other'">
-        <TextField type="text" name="otherRole" :required="true" />
+        <TextField type="text" name="otherRole" label="Other Industry" :required="true" />
       </div>
 
       <SelectField name="avgTraffic" label="Monthly Website Traffic" placeholder="Select Traffic"
