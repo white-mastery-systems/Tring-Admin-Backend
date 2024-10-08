@@ -30,7 +30,7 @@
           <navigationSheet />
         </div>
         <div>
-          <h3 className=" text-2xl font-semibold tracking-tight">
+          <h3 className="text-2xl font-semibold tracking-tight">
             {{ title }}
           </h3>
           <h4 v-if="props.subTitle" className="text-[12px]">
