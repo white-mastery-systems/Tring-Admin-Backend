@@ -10,6 +10,7 @@
         />
         <BotFilter v-model="filters.botId" @input="filters.page = '1'" />
         <StatusFilter @change="onStatusChange" />
+        
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
         <!-- <ChannelFilter @changeAction="onChannel" /> -->
