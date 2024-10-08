@@ -1,22 +1,45 @@
 <template>
-  <page :title="botDetails.name ?? ''" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
-    custom-back-router="/bot-management/chat-bot">
+  <page
+    :title="botDetails.name ?? ''"
+    :disableSelector="true"
+    :disable-back-button="false"
+    :disable-elevation="true"
+    custom-back-router="/bot-management/chat-bot"
+  >
     <div class="">
-      <div class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]">
-        <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
+      <div
+        class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]"
+      >
+        <div
+          class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row"
+        >
           <div class="items-cetner flex gap-4">
-            <div v-if="botDetails.documentId" class="flex items-center gap-[5px] text-[#1abb00]">
-              <div class="flex h-[6px] w-[6px] items-center rounded-full bg-[#1abb00]"></div>
-              <span class="text-[15px] sm:text-[15px] md:text-[17px] lg:text-[16px] xl:text-[16px]">Active</span>
+            <div
+              v-if="botDetails.documentId"
+              class="flex items-center gap-[5px] text-[#1abb00]"
+            >
+              <div
+                class="flex h-[6px] w-[6px] items-center rounded-full bg-[#1abb00]"
+              ></div>
+              <span
+                class="text-[15px] sm:text-[15px] md:text-[17px] lg:text-[16px] xl:text-[16px]"
+                >Active</span
+              >
             </div>
             <!-- v-else -->
-            <div v-else class="flex items-center gap-[5px] pl-2 font-medium text-[#ff0000]">
-              <div class="flex h-[6px] w-[6px] items-center rounded-full bg-[#ff0000]"></div>
+            <div
+              v-else
+              class="flex items-center gap-[5px] pl-2 font-medium text-[#ff0000]"
+            >
+              <div
+                class="flex h-[6px] w-[6px] items-center rounded-full bg-[#ff0000]"
+              ></div>
               <span class="md:text-[14px] lg:text-[16px]">Inactive</span>
             </div>
           </div>
           <div
-            class="flex flex-col items-start justify-center gap-4 sm:flex-row sm:items-center lg:items-center xl:items-center">
+            class="flex flex-col items-start justify-center gap-4 sm:flex-row sm:items-center lg:items-center xl:items-center"
+          >
             <!-- <span
               class="text-[15px] font-bold text-black sm:text-[15px] md:text-[17px] lg:text-[17px] xl:text-[17px]"
               >Date Created:
@@ -26,50 +49,79 @@
               >
             </span> -->
             <div
-              class="flex items-top sm:items-top md:items-top lg:items-center xl:items-center gap-3 mt-3 sm:mt-3 md:mt-0 xl:mt-0 lg:mt-0">
+              class="items-top sm:items-top md:items-top mt-3 flex gap-3 sm:mt-3 md:mt-0 lg:mt-0 lg:items-center xl:mt-0 xl:items-center"
+            >
               <div class="flex flex-col items-center gap-1">
-                <UiButton color="primary" @click="() => {
-                  channelModalState.open = true;
-                  channelModalState.id = botDetails.id;
-                }
-                  ">
+                <UiButton
+                  color="primary"
+                  @click="
+                    () => {
+                      channelModalState.open = true;
+                      channelModalState.id = botDetails.id;
+                    }
+                  "
+                >
                   <span class="hidden lg:inline"> Configure channel </span>
-                  <span class="flex flex-col items-center justify-center lg:hidden">
+                  <span
+                    class="flex flex-col items-center justify-center lg:hidden"
+                  >
                     <component :is="Settings" :size="20"></component>
                   </span>
                 </UiButton>
                 <div class="block text-[6px] lg:hidden">Configure channel</div>
               </div>
-              <div class="flex flex-col items-center gap-1" v-if="!botDetails.documentId">
-                <UiButton class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px]"
-                  @click="handleActivateBot" :disabled="isSubmitting">
+              <div
+                class="flex flex-col items-center gap-1"
+                v-if="!botDetails.documentId"
+              >
+                <UiButton
+                  class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50"
+                  @click="handleActivateBot"
+                  :disabled="isSubmitting"
+                >
                   <span class="hidden lg:inline"> Activate Bot </span>
-                  <span class="flex flex-col items-center justify-center lg:hidden">
+                  <span
+                    class="flex flex-col items-center justify-center lg:hidden"
+                  >
                     <component :is="Bot"></component>
                   </span>
                 </UiButton>
                 <div class="block text-[6px] lg:hidden">Activate Bot</div>
               </div>
-              <span v-if="botDetails.documentId" class="flex items-center gap-4">
+              <span
+                v-if="botDetails.documentId"
+                class="flex items-center gap-4"
+              >
                 <div class="flex flex-col items-center gap-1">
                   <UiButton
                     class="rounded-[8px] bg-[#ff0000] p-2 p-2.5 text-[14px] font-medium text-white hover:bg-[#ff0000] hover:brightness-90"
-                    @click="deactivateBot">
+                    @click="deactivateBot"
+                  >
                     <!-- Deactivate Bot -->
                     <span class="hidden lg:inline"> Deactivate Bot </span>
                     <!-- Icon for small screens -->
-                    <span class="flex flex-col items-center justify-center lg:hidden">
+                    <span
+                      class="flex flex-col items-center justify-center lg:hidden"
+                    >
                       <Icon name="bx:block" class="h-5 w-5" />
                     </span>
                   </UiButton>
                   <div class="block text-[6px] lg:hidden">Deactivate Bot</div>
                 </div>
 
-                <ConfirmationModal v-model:open="modalOpen" title="Confirm Deactivation"
-                  description="Are you sure you want to deactivate bot ?" @confirm="deactivateBotDialog" />
+                <ConfirmationModal
+                  v-model:open="modalOpen"
+                  title="Confirm Deactivation"
+                  description="Are you sure you want to deactivate bot ?"
+                  @confirm="deactivateBotDialog"
+                />
                 <div class="flex flex-col items-center gap-1">
-                  <UiButton as="a" :href="previewUrl" target="_blank"
-                    class="bg-[#474df9] p-2 text-[14px] font-medium text-white hover:bg-[#474df9] hover:brightness-90">
+                  <UiButton
+                    as="a"
+                    :href="previewUrl"
+                    target="_blank"
+                    class="bg-[#474df9] p-2 text-[14px] font-medium text-white hover:bg-[#474df9] hover:brightness-90"
+                  >
                     <span class="hidden lg:inline"> Preview Bot </span>
                     <span class="flex items-center justify-center lg:hidden">
                       <Icon name="entypo:controller-play" class="h-5 w-5" />
@@ -78,37 +130,63 @@
                   <div class="block text-[6px] lg:hidden">Preview Bot</div>
                 </div>
                 <div class="flex flex-col items-center gap-1">
-                  <UiButton class="bg-[#e1dede] p-2 text-black hover:bg-[#d4d2d2]" @click="copyScript">
+                  <UiButton
+                    class="bg-[#e1dede] p-2 text-black hover:bg-[#d4d2d2]"
+                    @click="copyScript"
+                  >
                     <span class="hidden lg:inline"> Copy Script </span>
                     <span class="flex items-center justify-center lg:hidden">
-                      <Icon name="mdi:content-copy" class="h-4 w-4 px-1 text-white" />
+                      <Icon
+                        name="mdi:content-copy"
+                        class="h-4 w-4 px-1 text-white"
+                      />
                     </span>
                   </UiButton>
                   <div class="block text-[6px] lg:hidden">Copy Script</div>
                 </div>
               </span>
               <div class="flex flex-col items-center gap-1">
-                <UiButton variant="destructive" @click="handleDelete"
-                  class="flex items-center justify-center bg-[#ff0000] p-3 hover:bg-[#ff0000]/90 hover:brightness-90">
+                <UiButton
+                  variant="destructive"
+                  @click="handleDelete"
+                  class="flex items-center justify-center bg-[#ff0000] p-3 hover:bg-[#ff0000]/90 hover:brightness-90"
+                >
                   <Icon name="lucide:trash-2" class="h-4 w-4" />
                 </UiButton>
                 <div class="block text-[6px] lg:hidden">Delete</div>
               </div>
-              <div class="flex flex-col items-center gap-1" @click="agentModalState.open = true">
-                <UiButton variant="destructive"
-                  class="flex items-center justify-center bg-[#424bd1] p-3 hover:bg-[#424bd1]/90 hover:brightness-90">
+              <div
+                class="flex flex-col items-center gap-1"
+                @click="agentModalState.open = true"
+              >
+                <UiButton
+                  variant="destructive"
+                  class="flex items-center justify-center bg-[#424bd1] p-3 hover:bg-[#424bd1]/90 hover:brightness-90"
+                >
                   <Icon name="lucide:pen" class="h-4 w-4" />
                 </UiButton>
                 <div class="block text-[6px] lg:hidden">Edit</div>
               </div>
-              <CreateEditChannelModal v-model="channelModalState" @success="handleSuccess" />
-              <ConfirmationModal v-model:open="deleteModalState" title="Are you sure?"
-                description="Are you sure you want to delete bot ?" @confirm="handleDeleteBot" />
-              <AddChatBotModal v-model="agentModalState" @editConfirm="() => {
-                agentModalState.open = false;
-                navigateTo({ name: 'bot-management-chat-bot' });
-                // getAllChatBot()
-              }"></AddChatBotModal>
+              <CreateEditChannelModal
+                v-model="channelModalState"
+                @success="handleSuccess"
+              />
+              <ConfirmationModal
+                v-model:open="deleteModalState"
+                title="Are you sure?"
+                description="Are you sure you want to delete bot ?"
+                @confirm="handleDeleteBot"
+              />
+              <AddChatBotModal
+                v-model="agentModalState"
+                @editConfirm="
+                  () => {
+                    agentModalState.open = false;
+                    navigateTo({ name: 'bot-management-chat-bot' });
+                    // getAllChatBot()
+                  }
+                "
+              ></AddChatBotModal>
             </div>
           </div>
 
@@ -116,7 +194,10 @@
           <span class="font-semibold content-align">Status</span> -->
         </div>
       </div>
-      <LazyUiDialog v-if="!botDetails.documentId" v-model:open="isDocumentListOpen">
+      <LazyUiDialog
+        v-if="!botDetails.documentId"
+        v-model:open="isDocumentListOpen"
+      >
         <UiDialogTrigger class=""> </UiDialogTrigger>
         <UiDialogContent align="end" class="sm:max-w-md">
           <UiDialogHeader>
@@ -129,19 +210,25 @@
             class="deploy-bot-list-align bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42]"
             v-for="list in getDocumentList.documents.filter(
               (item: any) => item.status === 'ready',
-            )" :key="list.id" @click="async () => {
-              isSubmitting = true;
-              isDocumentListOpen = false;
-              await singleDocumentDeploy(list);
-            }
-              ">
+            )"
+            :key="list.id"
+            @click="
+              async () => {
+                isSubmitting = true;
+                isDocumentListOpen = false;
+                await singleDocumentDeploy(list);
+              }
+            "
+          >
             {{ list.name }}
           </UiButton>
         </UiDialogContent>
       </LazyUiDialog>
       <div v-for="(list, index) in dataList" :key="index">
-        <NuxtLink :to="{ name: list.routeName, params: { id: paramId.params.id } }"
-          class="field_shadow mx-0 my-[17px] flex w-full cursor-pointer items-center justify-between rounded-[10px] bg-[#ffffff] px-[30px] py-[20px] text-[14px] hover:bg-[#fff8eb] hover:text-[#ffbc42]">
+        <NuxtLink
+          :to="{ name: list.routeName, params: { id: paramId.params.id } }"
+          class="field_shadow mx-0 my-[17px] flex w-full cursor-pointer items-center justify-between rounded-[10px] bg-[#ffffff] px-[30px] py-[20px] text-[14px] hover:bg-[#fff8eb] hover:text-[#ffbc42]"
+        >
           <div class="flex w-full items-center gap-4 rounded-[10px]">
             <div class="flex flex-col space-y-2">
               <div class="flex flex-row gap-3">
@@ -149,10 +236,14 @@
               </div>
               <span class="text-xs text-gray-500">{{ list.helperText }}</span>
             </div>
-            <Icon v-if="
-              list.bot === 'Document Management' &&
-              botDetails.documents.length === 0
-            " class="h-6 w-6 text-red-500" name="nonicons:error-16" />
+            <Icon
+              v-if="
+                list.bot === 'Document Management' &&
+                botDetails.documents.length === 0
+              "
+              class="h-6 w-6 text-red-500"
+              name="nonicons:error-16"
+            />
           </div>
           <div>
             <LeftArrowIcon class="w-[30px] hover:text-[#ffbc42]" />
@@ -163,215 +254,212 @@
   </page>
 </template>
 <script setup lang="ts">
-definePageMeta({
-  middleware: "admin-only",
-});
-// interface LocationContext {
-//   location: any;
-//   updateLocation: () => void;
-// }
-
-import { useClipboard } from "@vueuse/core";
-import { Bot, Settings } from "lucide-vue-next";
-import { ref } from "vue";
-import { toast } from "vue-sonner";
-
-
-const router = useRouter();
-// const selectedValue = ref("Today");
-const route = useRoute("bot-management-chat-bot-id");
-const emit = defineEmits<{ (e: "confirm"): void }>();
-
-
-
-const paramId: any = route;
-const agentModalState = ref({ open: false, id: paramId.params.id });
-const botDetails = ref(await getBotDetails(paramId.params.id));
-const deleteModalState = ref(false);
-const modalOpen = ref(false);
-const isDocumentListOpen = ref(false);
-const isSubmitting = ref(false);
-const getDocumentList: any = ref();
-const channelModalState = ref<{ open: boolean; id: string | null }>({
-  open: false,
-  id: null,
-});
-
-watchEffect(() => {
-  if (botDetails.value) {
-    const userName = botDetails.value?.name ?? 'Unknown Bot Name';
-    useHead({
-      title: `Chat Bot | ${userName}`,
-    });
-  }
-});
-
-const handleSuccess = () => {
-  channelModalState.value.open = false;
-  toast.success("Channel Created successfully");
-};
-onMounted(async () => {
-  getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
-  botDetails.value = await getBotDetails(paramId.params.id);
-});
-const handleGoBack = () => {
-  return navigateTo({
-    name: "bots",
+  definePageMeta({
+    middleware: "admin-only",
   });
-};
-const dataList = ref([
-  {
-    _id: 1,
-    bot: "UI Customization",
-    helperText: "Color,Logo,Icon etc...",
-    routeName: "bot-management-chat-bot-id-ui-customization",
-  },
-  {
-    _id: 2,
-    bot: "CRM Configuration",
-    helperText: "Add CRM to manage your leads effectively",
-    routeName: "bot-management-chat-bot-id-crm-config",
-  },
-
-  {
-    _id: 3,
-    bot: "Bot Configuration",
-    helperText: "Name,Description,Notes etc...",
-    routeName: "bot-management-chat-bot-id-config",
-  },
-  {
-    _id: 4,
-    bot: "Document Management",
-    helperText: "Knowledge base,Training data etc...",
-    routeName: "bot-management-chat-bot-id-documents",
-  },
-
-  {
-    _id: 5,
-    bot: "Intent Management",
-    helperText: "Add your intents Eg: Location Virtual Tour etc...",
-    routeName: "bot-management-chat-bot-id-intent-management",
-  },
-]);
-
-const dateFormate = computed(() => {
-  if (botDetails && botDetails.value.createdAt) {
-    return formatDateStringToDate(botDetails.value.createdAt);
-  }
-  return null;
-});
-
-const previewUrl = computed(() => {
-  let col = botDetails.value.metadata.ui.color as string;
-  col = col
-    ?.split(" ")
-    .map((element) => {
-      if (element.at(-1) === "%") return element.slice(0, -1);
-      else return element;
-    })
-    .join(" ");
-  let secondaryColor = botDetails.value.metadata.ui.secondaryColor as string;
-  secondaryColor = secondaryColor
-    ?.split(" ")
-    .map((element) => {
-      if (element.at(-1) === "%") return element.slice(0, -1);
-      else return element;
-    })
-    .join(" ");
-  return `${window.location.origin}/preview.html?orgname=WMS&chatbotid=${paramId.params.id}&mode=preview`;
-});
-
-const botManagementDetails = async (list: any, index: any) => {
-  // console.log(list.bot.trim().toLowerCase().replace(/\s+/g, ' ') , "list")
-  // if (list.bot === dataList.value[index].bot) {
-  await navigateTo({
-    name: list.routeName,
-    params: { id: paramId.params.id },
-  });
+  // interface LocationContext {
+  //   location: any;
+  //   updateLocation: () => void;
   // }
-};
-const deactivateBot = async () => {
-  modalOpen.value = true;
-};
 
-const deactivateBotDialog = async () => {
-  await disableBot(paramId.params.id);
-  modalOpen.value = false;
-};
+  import { useClipboard } from "@vueuse/core";
+  import { Bot, Settings } from "lucide-vue-next";
+  import { ref } from "vue";
+  import { toast } from "vue-sonner";
 
-const botScript =
-  "<" +
-  `script src="${window?.location?.href?.includes("app.tringlabs.ai") ? "https://chat.tringlabs.ai" : "https://tring-databot.pripod.com"}/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS">` +
-  "</" +
-  "script>";
+  const router = useRouter();
+  // const selectedValue = ref("Today");
+  const route = useRoute("bot-management-chat-bot-id");
+  const emit = defineEmits<{ (e: "confirm"): void }>();
 
-const { copy } = useClipboard({ source: botScript });
-const copyScript = async () => {
-  copy(botScript);
-  toast.success("Copied to clipboard");
-};
+  const paramId: any = route;
+  const agentModalState = ref({ open: false, id: paramId.params.id });
+  const botDetails = ref(await getBotDetails(paramId.params.id));
+  const deleteModalState = ref(false);
+  const modalOpen = ref(false);
+  const isDocumentListOpen = ref(false);
+  const isSubmitting = ref(false);
+  const getDocumentList: any = ref();
+  const channelModalState = ref<{ open: boolean; id: string | null }>({
+    open: false,
+    id: null,
+  });
 
-const singleDocumentDeploy = async (list: any) => {
-  await deployDocument(paramId.params.id, list.id);
-  botDetails.value = await getBotDetails(paramId.params.id);
-};
-
-const handleDelete = () => {
-  deleteModalState.value = true;
-};
-
-const handleDeleteBot = () => {
-  deleteModalState.value = false;
-  deleteBot(route.params.id);
-};
-
-const handleActivateBot = async () => {
-  isSubmitting.value = true;
-  const activeDocuments = botDetails.value.documents.filter(
-    (d) => d.status === "ready",
-  );
-
-  if (activeDocuments.length === 0) {
-    toast.error("Please add document to activate bot");
-    return navigateTo({
-      name: "bot-management-chat-bot-id-documents",
-      params: { id: paramId.params.id },
-    });
-  } else if (!botDetails.value.metadata?.prompt?.NAME) {
-    toast.error("Please add bot configuration to activate bot");
-    return navigateTo({
-      name: "bot-management-chat-bot-id-config",
-      params: { id: paramId.params.id },
-    });
-  } else if (!botDetails.value.metadata.ui?.logo) {
-    toast.error("Please update bot user interface to activate bot");
-    return navigateTo({
-      name: "bot-management-chat-bot-id-ui-customization",
-      params: { id: paramId.params.id },
-    });
-  }
-
-  if (activeDocuments.length === 1) {
-    try {
-      await singleDocumentDeploy(activeDocuments[0]);
-    } catch (err) {
-      isSubmitting.value = false;
-      toast.error("Failed to active the bot, try again");
-      return;
+  watchEffect(() => {
+    if (botDetails.value) {
+      const userName = botDetails.value?.name ?? "Unknown Bot Name";
+      useHead({
+        title: `Chat Bot | ${userName}`,
+      });
     }
-  }
+  });
 
-  isSubmitting.value = false;
-  isDocumentListOpen.value = true;
-};
+  const handleSuccess = () => {
+    channelModalState.value.open = false;
+    toast.success("Channel Created successfully");
+  };
+  onMounted(async () => {
+    getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
+    botDetails.value = await getBotDetails(paramId.params.id);
+  });
+  const handleGoBack = () => {
+    return navigateTo({
+      name: "bots",
+    });
+  };
+  const dataList = ref([
+    {
+      _id: 1,
+      bot: "UI Customization",
+      helperText: "Color,Logo,Icon etc...",
+      routeName: "bot-management-chat-bot-id-ui-customization",
+    },
+    {
+      _id: 2,
+      bot: "CRM Configuration",
+      helperText: "Add CRM to manage your leads effectively",
+      routeName: "bot-management-chat-bot-id-crm-config",
+    },
+
+    {
+      _id: 3,
+      bot: "Bot Configuration",
+      helperText: "Name,Description,Notes etc...",
+      routeName: "bot-management-chat-bot-id-config",
+    },
+    {
+      _id: 4,
+      bot: "Document Management",
+      helperText: "Knowledge base,Training data etc...",
+      routeName: "bot-management-chat-bot-id-documents",
+    },
+
+    {
+      _id: 5,
+      bot: "Intent Management",
+      helperText: "Add your intents Eg: Location Virtual Tour etc...",
+      routeName: "bot-management-chat-bot-id-intent-management",
+    },
+  ]);
+
+  const dateFormate = computed(() => {
+    if (botDetails && botDetails.value.createdAt) {
+      return formatDateStringToDate(botDetails.value.createdAt);
+    }
+    return null;
+  });
+
+  const previewUrl = computed(() => {
+    let col = botDetails.value.metadata.ui.color as string;
+    col = col
+      ?.split(" ")
+      .map((element) => {
+        if (element.at(-1) === "%") return element.slice(0, -1);
+        else return element;
+      })
+      .join(" ");
+    let secondaryColor = botDetails.value.metadata.ui.secondaryColor as string;
+    secondaryColor = secondaryColor
+      ?.split(" ")
+      .map((element) => {
+        if (element.at(-1) === "%") return element.slice(0, -1);
+        else return element;
+      })
+      .join(" ");
+    return `${window.location.origin}/preview.html?orgname=WMS&chatbotid=${paramId.params.id}&mode=preview`;
+  });
+
+  const botManagementDetails = async (list: any, index: any) => {
+    // console.log(list.bot.trim().toLowerCase().replace(/\s+/g, ' ') , "list")
+    // if (list.bot === dataList.value[index].bot) {
+    await navigateTo({
+      name: list.routeName,
+      params: { id: paramId.params.id },
+    });
+    // }
+  };
+  const deactivateBot = async () => {
+    modalOpen.value = true;
+  };
+
+  const deactivateBotDialog = async () => {
+    await disableBot(paramId.params.id);
+    modalOpen.value = false;
+  };
+
+  const botScript =
+    "<" +
+    `script src="${window?.location?.href?.includes("app.tringlabs.ai") ? "https://chat.tringlabs.ai" : "https://tring-databot.pripod.com"}/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS">` +
+    "</" +
+    "script>";
+
+  const { copy } = useClipboard({ source: botScript });
+  const copyScript = async () => {
+    copy(botScript);
+    toast.success("Copied to clipboard");
+  };
+
+  const singleDocumentDeploy = async (list: any) => {
+    await deployDocument(paramId.params.id, list.id);
+    botDetails.value = await getBotDetails(paramId.params.id);
+  };
+
+  const handleDelete = () => {
+    deleteModalState.value = true;
+  };
+
+  const handleDeleteBot = () => {
+    deleteModalState.value = false;
+    deleteBot(route.params.id);
+  };
+
+  const handleActivateBot = async () => {
+    isSubmitting.value = true;
+    const activeDocuments = botDetails.value.documents.filter(
+      (d) => d.status === "ready",
+    );
+
+    if (activeDocuments.length === 0) {
+      toast.error("Please add document to activate bot");
+      return navigateTo({
+        name: "bot-management-chat-bot-id-documents",
+        params: { id: paramId.params.id },
+      });
+    } else if (!botDetails.value.metadata?.prompt?.NAME) {
+      toast.error("Please add bot configuration to activate bot");
+      return navigateTo({
+        name: "bot-management-chat-bot-id-config",
+        params: { id: paramId.params.id },
+      });
+    } else if (!botDetails.value.metadata.ui?.logo) {
+      toast.error("Please update bot user interface to activate bot");
+      return navigateTo({
+        name: "bot-management-chat-bot-id-ui-customization",
+        params: { id: paramId.params.id },
+      });
+    }
+
+    if (activeDocuments.length === 1) {
+      try {
+        await singleDocumentDeploy(activeDocuments[0]);
+      } catch (err) {
+        isSubmitting.value = false;
+        toast.error("Failed to active the bot, try again");
+        return;
+      }
+    }
+
+    isSubmitting.value = false;
+    isDocumentListOpen.value = true;
+  };
 </script>
 
 <style scoped>
-/* .bot-manage-main-container {
+  /* .bot-manage-main-container {
     padding: 7px 25px;
   } */
 
-.header-align {
-  font-family: segoe UI Regular;
-}
+  .header-align {
+    font-family: segoe UI Regular;
+  }
 </style>

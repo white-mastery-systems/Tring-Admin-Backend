@@ -1,5 +1,7 @@
 <template>
-  <Page title="Document Management" :bread-crumbs="[
+  <Page
+    title="Document Management"
+    :bread-crumbs="[
       {
         label: `${botDetails.name}`,
         to: `/bot-management/chat-bot/${botDetails.id}`,
@@ -8,12 +10,20 @@
         label: 'Document Management',
         to: `/bot-management/chat-bot/${botDetails.id}/documents`,
       },
-    ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="true">
+    ]"
+    :disableSelector="true"
+    :disable-back-button="false"
+    :disable-elevation="true"
+  >
     <div class="bot-manage-main-container">
       <div class="document-align">
         <span class="flex flex-row">
           <!-- @click="uploadfile" -->
-          <FileUpload accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" />
+          <FileUpload
+            accept="application/pdf"
+            v-model="selectedFile"
+            @upload-document="fileUpload()"
+          />
           <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
         </span>
         <!-- <div class="flex items-center gap-2">
@@ -47,26 +57,40 @@
         }" -->
 
           <div v-if="documents?.documents?.length" class="overflow_align">
-            <div class="bot-list-align relative overflow-hidden text-[15px]"
-              v-for="(list, index) in documents?.documents" :key="index" :class="{
+            <div
+              class="bot-list-align relative overflow-hidden text-[15px]"
+              v-for="(list, index) in documents?.documents"
+              :key="index"
+              :class="{
                 'active-row': list.id === documents?.documentId,
-              }">
+              }"
+            >
               <!-- {{ list }} -->
               <div class="list_align">
                 <span class="bot_name_align font-medium">{{ list.name }}</span>
-                <span class="create_at-align font-medium" :style="{
+                <span
+                  class="create_at-align font-medium"
+                  :style="{
                     'padding-inline-end':
                       list.status === 'ready'
                         ? '132px'
                         : list.status === 'processing'
                           ? '133px'
                           : '133px',
-                  }">{{ list.createdAt }}</span>
-                <div v-if="list.status === 'ready'" class="acive_class font-medium">
+                  }"
+                  >{{ list.createdAt }}</span
+                >
+                <div
+                  v-if="list.status === 'ready'"
+                  class="acive_class font-medium"
+                >
                   <div class="active-circle-align rounded-full"></div>
                   <span>Success</span>
                 </div>
-                <div v-else-if="list.status === 'processing'" class="process_class font-medium">
+                <div
+                  v-else-if="list.status === 'processing'"
+                  class="process_class font-medium"
+                >
                   <div class="process-circle-align rounded-full"></div>
                   <span>Processing</span>
                 </div>
@@ -82,15 +106,25 @@
                       <!-- </UiButton> -->
                     </UiDropdownMenuTrigger>
                     <UiDropdownMenuContent class="w-36">
-                      <UiDropdownMenuGroup class="flex flex-col items-center justify-center">
-                        <UiDropdownMenuItem @click="handleAction(list, 'download')">
-                          <div class="menu-align rounded-sm text-center hover:bg-gray-300/20">
+                      <UiDropdownMenuGroup
+                        class="flex flex-col items-center justify-center"
+                      >
+                        <UiDropdownMenuItem
+                          @click="handleAction(list, 'download')"
+                        >
+                          <div
+                            class="menu-align rounded-sm text-center hover:bg-gray-300/20"
+                          >
                             Download
                           </div>
                         </UiDropdownMenuItem>
-                        <UiDropdownMenuItem v-if="list.id !== documents?.documentId"
-                          @click="deleteDocumentModelOpen = true">
-                          <div class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500">
+                        <UiDropdownMenuItem
+                          v-if="list.id !== documents?.documentId"
+                          @click="deleteDocumentModelOpen = true"
+                        >
+                          <div
+                            class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500"
+                          >
                             Delete
                           </div>
                         </UiDropdownMenuItem>
@@ -98,33 +132,47 @@
                     </UiDropdownMenuContent>
                   </UiDropdownMenu>
                 </span>
-                <ConfirmationModal v-model:open="deleteDocumentModelOpen" title="Confirm Delete"
-                  description="Are you sure you want to delete ?" @confirm="() => {
+                <ConfirmationModal
+                  v-model:open="deleteDocumentModelOpen"
+                  title="Confirm Delete"
+                  description="Are you sure you want to delete ?"
+                  @confirm="
+                    () => {
                       handleAction(list, 'delete');
                       deleteDocumentModelOpen = false;
                     }
-                    " />
+                  "
+                />
                 <span v-if="false">
                   <UiPopover ref="myPopover">
                     <UiPopoverTrigger @click="isSheetOpen = !isSheetOpen">
                       <img src="assets\icons\more_horiz.svg" width="30" />
                     </UiPopoverTrigger>
                     <UiPopoverContent align="end" class="w-40">
-                      <div @click="handleAction(list, 'download')"
-                        class="menu-align rounded-sm text-center hover:bg-gray-300/20">
+                      <div
+                        @click="handleAction(list, 'download')"
+                        class="menu-align rounded-sm text-center hover:bg-gray-300/20"
+                      >
                         Download
                       </div>
-                      <div v-if="list.id !== documents?.documentId" @click="deleteDocumentModelOpen = true"
-                        class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500">
+                      <div
+                        v-if="list.id !== documents?.documentId"
+                        @click="deleteDocumentModelOpen = true"
+                        class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500"
+                      >
                         Delete
                       </div>
-                      <ConfirmationModal v-model:open="deleteDocumentModelOpen" title="Confirm Delete"
-                        description="Are you sure you want to delete ?" @confirm="
+                      <ConfirmationModal
+                        v-model:open="deleteDocumentModelOpen"
+                        title="Confirm Delete"
+                        description="Are you sure you want to delete ?"
+                        @confirm="
                           () => {
                             handleAction(list, 'delete');
                             deleteDocumentModelOpen = false;
                           }
-                        " />
+                        "
+                      />
                     </UiPopoverContent>
                   </UiPopover>
                   <!-- <img src="assets\icons\more_horiz.svg" width="30"> -->
@@ -135,7 +183,10 @@
             </div> -->
             </div>
           </div>
-          <div v-else class="font-regular flex h-[40Vh] items-center justify-center text-[#8A8A8A]">
+          <div
+            v-else
+            class="font-regular flex h-[40Vh] items-center justify-center text-[#8A8A8A]"
+          >
             No document available
           </div>
         </div>
@@ -163,15 +214,20 @@
   const documentFetchInterval = ref<NodeJS.Timeout>();
 
   const deleteDocumentModelOpen = ref(false);
-  const isSheetOpen = ref(false)
-const position = ref('bottom')
+  const isSheetOpen = ref(false);
+  const position = ref("bottom");
 
   const {
     status,
-    refresh,
+    refresh: documentsRefresh,
     data: documents,
   } = await useLazyFetch(() => `/api/bots/${route.params.id}/documents`, {
     server: false,
+    /**
+     * Transform the API response to format the createdAt date of each document
+     * @param {object} docs - The API response
+     * @returns {object} The transformed response
+     */
     transform: (docs) => ({
       ...docs,
       documents: docs?.documents.map((d) => ({
@@ -180,17 +236,30 @@ const position = ref('bottom')
       })),
     }),
   });
+  onMounted(async () => {
+    const eventSource = new EventSource("/api/sse");
+    eventSource.onmessage = async (event) => {
+      const data = JSON.parse(event.data);
+      console.log({ data });
+      if (data.event === "Document is ready") {
+        if (data?.data?.botId === paramId.params.id) {
+          documentsRefresh();
+        }
+      }
 
+      // Update your component state with the received data
+    };
+  });
   const isPageLoading = computed(() => status.value === "pending");
 
-watchEffect(() => {
-  if (botDetails) {
-    const userName = botDetails?.name ?? 'Unknown Bot Name';
-    useHead({
-      title: `Chat Bot | ${userName} - Document Management`,
-    });
-  }
-});
+  watchEffect(() => {
+    if (botDetails) {
+      const userName = botDetails?.name ?? "Unknown Bot Name";
+      useHead({
+        title: `Chat Bot | ${userName} - Document Management`,
+      });
+    }
+  });
 
   const handleDeleteDocument = () => {
     deleteDocumentModelOpen.value = true;
@@ -210,16 +279,16 @@ watchEffect(() => {
 
     selectedFile.value = null;
 
-    documentFetchInterval.value = setInterval(async () => {
-      documents.value = await listDocumentsByBotId(paramId.params.id);
-    }, 1000);
+    // documentFetchInterval.value = setInterval(async () => {
+    //   documents.value = await listDocumentsByBotId(paramId.params.id);
+    // }, 1000);
   };
   const handleAction = (list: any, action: any) => {
-    console.log(myPopover.value, "myPopover.value")
+    console.log(myPopover.value, "myPopover.value");
     if (myPopover.value) {
       myPopover.value = false;
     }
-    isSheetOpen.value = false
+    isSheetOpen.value = false;
 
     switch (action) {
       case "download":
