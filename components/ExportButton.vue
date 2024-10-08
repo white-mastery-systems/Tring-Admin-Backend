@@ -16,12 +16,14 @@ const props = defineProps<{
     rows: any[],
     columns: any[]
 }>()
+const emit = defineEmits<{ (e: "export"): void }>();
+
 watch(() => props.rows, (newValue) => {
     console.log({ newValue })
 }, { deep: true, immediate: true })
 function exportAsCSV() {
+    emit('export')
     const csvRows = [];
-
     // Headers
     const headers = props.columns
     csvRows.push(headers.join(','));
@@ -42,9 +44,9 @@ function exportAsCSV() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
 }
 const exportToExcel = () => {
+    emit('export')
     const ws = XLSX.utils.json_to_sheet(props.rows);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');

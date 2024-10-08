@@ -149,7 +149,7 @@
       path: "/contacts-management",
       children: [
         {
-          name: "Contacts",
+          name: "Contacts Buckets",
           path: "/contacts",
         },
         {
