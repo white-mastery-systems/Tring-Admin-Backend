@@ -30,8 +30,8 @@ export const useTemplateStore = defineStore("template", {
         headerText: "",
         body: "",
         footer: "",
-        templateVariables: [],
-        headerTextTemplateVariables: [],
+        templateVariables: '',
+        headerTextTemplateVariables: '',
       };
     },
   },
