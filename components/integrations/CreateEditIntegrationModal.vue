@@ -200,6 +200,7 @@
             { value: 'zoho-bigin', label: 'Zoho Bigin' },
             { value: 'hubspot', label: 'Hubspot' },
             { value: 'slack', label: 'Slack' },
+            { value: 'shopify', label: 'Shopify' },
           ]"
           required
         />
