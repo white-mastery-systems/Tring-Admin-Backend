@@ -9,6 +9,7 @@
   });
   const integrationModalProps = defineProps<{
     id?: string;
+    title?: string;
   }>();
 
   const sellDoSchema = z.object({
@@ -173,7 +174,9 @@
   <DialogWrapper
     v-model="integrationModalState"
     :title="
-      integrationModalProps?.id ? 'Edit Integration' : 'Add New Integration'
+      integrationModalProps?.id
+        ? `Edit ${integrationModalProps?.title} Channel`
+        : `Add ${integrationModalProps?.title} Channel`
     "
   >
     <form @submit="handleConnect" class="space-y-2">
