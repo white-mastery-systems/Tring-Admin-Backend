@@ -12,6 +12,7 @@ const addBucketNameModalState = defineModel<{ open: boolean, id: any }>({
     id: "",
   },
 });
+const isLoading = ref(false)
 
 watch(addBucketNameModalState,(newValue) => {
   console.log({newValue});
@@ -79,6 +80,7 @@ watch(addBucketNameModalState, (newState) => { });
 
 
 const handleConnect = handleSubmit(async (values: any) => {
+  isLoading.value = true
   try {
     if (addBucketNameModalState.value.id) {
      $fetch("/api/org/contact-list/"+addBucketNameModalState.value.id, { method: "PUT", body: values })
@@ -93,20 +95,23 @@ const handleConnect = handleSubmit(async (values: any) => {
     emit('confirm')
   } catch(error: any) {
     toast.error(error.data.statusMessage)
+    isLoading.value = false
   }
+  isLoading.value = false
 });
 </script>
 <template>
   <DialogWrapper v-model="addBucketNameModalState"
     :title="(addBucketNameModalState.id) ?  'Modify Bucket' : 'Add Bucket'" class="rounded-lg">
-    <form @submit="handleConnect"
-      class="space-y-2">
+    <form @submit="handleConnect" class="space-y-2">
       <div class="flex gap-4">
         <TextField name="name" label="Name" placeholder="Enter name" required>
         </TextField>
       </div>
       <div class="flex items-center justify-end">
-        <UiButton type="submit" class="mt-2" color="primary"> Submit </UiButton>
+        <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
+            Submit
+        </UiButton>
       </div>
     </form>
   </DialogWrapper>

@@ -12,6 +12,7 @@ import { whatsAppTemplateSchema } from "~/validationSchema/settings/whatAppTempl
     middleware: "admin-only",
   });
 
+  const isLoading = ref(false)
   const varaibleLabelName = (id) => {
     return `{{${id + 1}}}`;
   };
@@ -150,6 +151,7 @@ id:String
   // };
 
   const handleConnect = handleSubmit(async (values: any) => {
+    isLoading.value = true
     try {
       if(!!values.headerFile){
         values.headerFile = JSON.stringify(values.headerFile)
@@ -170,7 +172,9 @@ id:String
       console.log(error);
       
       toast.error(error.statusMessage);
+      isLoading.value = false
     }
+    isLoading.value = false
   });
 
 
@@ -178,13 +182,13 @@ id:String
   const channel = ref("form");
 
   
-   setFieldValue("name", templateStore.values.name);
-      setFieldValue("footer",  templateStore.values.footer);
-      setFieldValue("body",  templateStore.values.body);
-      setFieldValue("header",  templateStore.values.header);
-      setFieldValue("headerText",  templateStore.values.headerText)
-        setFieldValue("headerLocation",  templateStore.values.headerLocation)
-      if(['text', 'image', 'video', 'document'].includes( templateStore.values.header))  setFieldValue("headerFile",  templateStore.values.headerFile)
+  setFieldValue("name", templateStore.values.name);
+  setFieldValue("footer",  templateStore.values.footer);
+  setFieldValue("body",  templateStore.values.body);
+  setFieldValue("header",  templateStore.values.header);
+  setFieldValue("headerText",  templateStore.values.headerText)
+  setFieldValue("headerLocation",  templateStore.values.headerLocation)
+  if(['text', 'image', 'video', 'document'].includes( templateStore.values.header))  setFieldValue("headerFile",  templateStore.values.headerFile)
   // if(values)
   const updatChannel = (value: any) => {
     channel.value = value;
@@ -200,105 +204,51 @@ id:String
 
 <template>
   {{ errors }}
-   <form  @submit="handleConnect" class="space-y-2">
-          <div class="grid grid-cols-1 gap-4">
-            <TextField
-              type="text"
-              :disableSpecialCharacters="true"
-              name="name"
-              label="Name  Of Template"
-              placeholder="Enter name"
-              required
-              @input="dispatchTemplateState()"
+  <form @submit="handleConnect" class="space-y-2">
+    <div class="grid grid-cols-1 gap-4">
+      <TextField type="text" :disableSpecialCharacters="true" name="name" label="Name  Of Template"
+        placeholder="Enter name" required @input="dispatchTemplateState()">
+      </TextField>
+      <div>
+        <div class="pt-4">
+          <SelectField name="header" :options="headerOptions" label="Header" placeholder="Enter type" required
+            @input="dispatchTemplateState()" />
+        </div>
+      </div>
 
-            >
-            </TextField>
-            <div>
-              <div class="pt-4">
-                <SelectField
-                  name="header"
-                  :options="headerOptions"
-                  label="Header"
-                  placeholder="Enter type"
-                  required
-                  @input="dispatchTemplateState()"
-                />
-              </div>
-            </div>
+      <TextField v-if="values.header === 'text'" type="text" name="headerText" placeholder="Enter Value" required
+        @input="dispatchTemplateState()">
+      </TextField>
 
-            <TextField
-              v-if="values.header === 'text'"
-              type="text"
-              name="headerText"
-              placeholder="Enter Value"
-              required
-               @input="dispatchTemplateState()"
-            >
-            </TextField>
+      <div v-if="values.header === 'image'">
+        <span class="semibold pt-4 text-sm"> Header Content </span>
+        <imageField @change="uploadFile" name="headerFile" accept="image/png, image/jpeg" />
+        <!-- <TextField type='file' name="headerImage" accept="image/png, image/jpeg"/> -->
+      </div>
+      <div v-else-if="values.header === 'document'">
+        <span class="semibold pt-4 text-sm"> Header Content </span>
+        <imageField @change="uploadFile" name="headerFile" accept="application/pdf" />
+      </div>
+      <div v-else-if="values.header === 'video'">
+        <span class="semibold pt-4 text-sm"> Header Content </span>
+        <imageField @change="uploadFile" name="headerFile" accept="video/mp4" />
+      </div>
 
-            <div v-if="values.header === 'image'">
-              <span class="semibold pt-4 text-sm"> Header Content </span>
-              <imageField
-                @change="uploadFile"
-                name="headerFile"
-                accept="image/png, image/jpeg"
-              />
-              <!-- <TextField type='file' name="headerImage" accept="image/png, image/jpeg"/> -->
-            </div>
-            <div v-else-if="values.header === 'document'">
-              <span class="semibold pt-4 text-sm"> Header Content </span>
-              <imageField
-                @change="uploadFile"
-                name="headerFile"
-                accept="application/pdf"
-              />
-            </div>
-            <div v-else-if="values.header === 'video'">
-              <span class="semibold pt-4 text-sm"> Header Content </span>
-              <imageField
-                @change="uploadFile"
-                name="headerFile"
-                accept="video/mp4"
-              />
-            </div>
+      <TextField @input="updateBody($event)" :isTextarea="true" type="text" name="body" placeholder="Enter Value"
+        required>
+      </TextField>
 
-            <TextField
-              @input="updateBody($event)"
-              :isTextarea="true"
-              type="text"
-              name="body"
-              placeholder="Enter Value"
-              required
-            >
-            </TextField>
+      <FieldArray name="templateVariables" v-slot="{ fields, push, remove }">
+        <fieldset class="InputGroup" v-for="(field, idx) in fields" :key="field.key">
+          <TextField :label="'Variable' + ' ' + varaibleLabelName(idx)" :id="`name_${idx}`"
+            :name="`templateVariables[${idx}]`" />
 
-            <FieldArray
-              name="templateVariables"
-              v-slot="{ fields, push, remove }"
-            >
-              <fieldset
-                class="InputGroup"
-                v-for="(field, idx) in fields"
-                :key="field.key"
-              >
-                <TextField
-                  :label="'Variable' + ' ' + varaibleLabelName(idx)"
-                  :id="`name_${idx}`"
-                  :name="`templateVariables[${idx}]`"
-                />
+          <button type="button" @click="removeTemplateVariable(idx, remove, fields)">
+            remove
+          </button>
+        </fieldset>
 
-                <button
-                  type="button"
-                  @click="removeTemplateVariable(idx, remove, fields)"
-                >
-                  remove
-                </button>
-              </fieldset>
-
-              <button
-                class="text-align-right"
-                type="button"
-                @click="
+        <button class="text-align-right" type="button" @click="
                   () => {
                     push('');
                     setFieldValue(
@@ -307,26 +257,17 @@ id:String
                     );
                     dispatchTemplateState()
                   }
-                "
-              >
-                Add Variable +
-              </button>
-            </FieldArray>
+                ">
+          Add Variable +
+        </button>
+      </FieldArray>
 
-            <TextField
-              @input="dispatchTemplateState()"
-              type="text"
-              label="Footer"
-              name="footer"
-              placeholder="Enter Value"
-              
-            >
-            </TextField>
-          </div>
-          <div class="flex items-center justify-end">
-            <UiButton   type="submit" class="mt-2" color="primary"
-              >Submit
-            </UiButton>
-          </div>
-        </form>
+      <TextField @input="dispatchTemplateState()" type="text" label="Footer" name="footer" placeholder="Enter Value">
+      </TextField>
+    </div>
+    <div class="flex items-center justify-end">
+      <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">Submit
+      </UiButton>
+    </div>
+  </form>
 </template>

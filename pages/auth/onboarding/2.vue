@@ -7,7 +7,7 @@ import { formSchema } from '~/validationSchema/authValidation/onBoarding/2Valida
     layout: "auth",
   });
   const router = useRouter();
-
+  const isLoading = ref(false)
   const animationProps = {
     duration: 500,
   };
@@ -70,6 +70,7 @@ import { formSchema } from '~/validationSchema/authValidation/onBoarding/2Valida
     //   toast.error("Please enter valid details");
     //   return;
     // }
+   isLoading.value = true
    try {
     await $fetch("/api/auth/onboarding/2", {
       method: "POST",
@@ -80,8 +81,10 @@ import { formSchema } from '~/validationSchema/authValidation/onBoarding/2Valida
       navigateTo("/");
     }, 3000)
    } catch (error) {
+    isLoading.value = false
      console.error("Error during submission:", error);
    }
+   isLoading.value = false
   })
 </script>
 <template>
@@ -93,50 +96,23 @@ import { formSchema } from '~/validationSchema/authValidation/onBoarding/2Valida
       </div>
     </div>
     <div class="flex w-[80%] flex-col overflow-y-auto px-6">
-            <form class="space-y-2" @submit="onSubmit">
+      <form class="space-y-2" @submit="onSubmit">
         <div class="flex flex-col gap-3">
-          <TextField
-            type="text"
-            name="name"
-            label="Company Name"
-            placeholder="Enter your Company Name"
-            :required="true"
-          />
+          <TextField type="text" name="name" label="Company Name" placeholder="Enter your Company Name"
+            :required="true" />
 
-          <SelectField
-            name="industry"
-            label="Industry"
-            placeholder="Select Role"
-            :options="industry.map((role) => ({ label: role, value: role }))"
-            :required="true"
-          />
-          <TextField
-          v-if="values.industry === 'Other'"
-            type="text"
-            name="otherRole"
-            :required="true"
-          />
+          <SelectField name="industry" label="Industry" placeholder="Select Role"
+            :options="industry.map((role) => ({ label: role, value: role }))" :required="true" />
+          <TextField v-if="values.industry === 'Other'" type="text" name="otherRole" :required="true" />
 
-            <SelectField
-            name="avgTraffic"
-            label="Monthly Website Traffic"
-            placeholder="Select Traffic"
-            :options="avgTraffic.map((role) => ({ label: role, value: role }))"
-            :required="true"
-          />
+          <SelectField name="avgTraffic" label="Monthly Website Traffic" placeholder="Select Traffic"
+            :options="avgTraffic.map((role) => ({ label: role, value: role }))" :required="true" />
 
-            <SelectField
-            name="employeeCount"
-            label="No. of Employees "
-            placeholder="Select Employees"
-            :options="employeeCount.map((role) => ({ label: role, value: role }))"
-            :required="true"
-          />
+          <SelectField name="employeeCount" label="No. of Employees " placeholder="Select Employees"
+            :options="employeeCount.map((role) => ({ label: role, value: role }))" :required="true" />
 
-          <UiButton
-            type="submit"
-            class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
-            >Proceed
+          <UiButton type="submit" class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
+            :loading="isLoading">Proceed
           </UiButton>
         </div>
       </form>

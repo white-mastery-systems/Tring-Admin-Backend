@@ -9,10 +9,12 @@
     size?: ButtonVariants["size"];
     class?: HTMLAttributes["class"];
     color?: string;
+    loading?: boolean;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     as: "button",
+    loading: false,
   });
   function styleHandler(type: string | undefined): string {
     if (type === "primary") {
@@ -20,20 +22,22 @@
     }
     return "";
   }
+const { loading } = toRefs(props);
 </script>
 
 <template>
-  <Primitive
-    as="button"
-    :as-child="asChild"
-    :class="
+  <Primitive as="button" :as-child="asChild" :class="
       cn(
         buttonVariants({ variant, size }),
         props.class,
         styleHandler(props?.color),
       )
-    "
-  >
-    <slot />
+    " :disabled="loading || false">
+    <template v-if="loading">
+      <Icon name="svg-spinners:90-ring-with-bg"
+        class="h-6 w-6 animate-spin text-white"
+        />
+    </template>
+    <slot v-else />
   </Primitive>
 </template>

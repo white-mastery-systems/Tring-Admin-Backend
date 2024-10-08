@@ -33,7 +33,8 @@
       <TextField name="address.street" label="Street name" helperText="" required
         placeholder="Enter your street address" />
       <TextField name="address.city" label="city name" helperText="" required placeholder="Enter your city name" />
-      <CountrySelectField name="address.country" label="country" helperText="Enter your country" required></CountrySelectField>
+      <CountrySelectField name="address.country" label="country" helperText="Enter your country" required>
+      </CountrySelectField>
       <RegionSelectField name="address.state" label="state" helperText="select your state" required
         :country="values?.address?.country" />
       <TextField name="address.zipCode" label="zip code" helperText="" required placeholder="Enter your zip code"
@@ -41,7 +42,9 @@
     </div>
 
     <div class="flex w-full justify-end">
-      <UiButton type="submit" color="primary">Submit</UiButton>
+      <UiButton type="submit" color="primary" size="lg" :loading="isLoading">
+        Submit
+      </UiButton>
     </div>
   </form>
 </template>
@@ -65,6 +68,7 @@ const {
   }
 });
 
+const isLoading = ref(false)
 const { user, refreshUser }: { user: any; refreshUser: any } =
   await useUser();
 
@@ -81,6 +85,7 @@ setFieldValue("metadata.role", user?.value?.metadata?.role);
 setFieldValue("metadata.otherRole", user?.value?.metadata?.otherRole);
 
 const handleAccountUpdate = handleSubmit(async (values: any) => {
+  isLoading.value = true
   try {
     await $fetch("/api/user", { method: "PUT", body: values });
       refreshUser();
@@ -89,8 +94,9 @@ const handleAccountUpdate = handleSubmit(async (values: any) => {
     console.error(e);
     toast.error("Failed to update account, please try again");
   } finally {
-
+    isLoading.value = false
   }
+  isLoading.value = false 
 });
 
 const roles = [

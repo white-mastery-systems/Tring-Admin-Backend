@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useForm } from "vee-validate";
 const emit = defineEmits(["success"]);
+const isLoading = ref(false)
 const integrationModalState = defineModel<{ open: boolean }>({
   default: {
     open: false,
@@ -78,6 +79,7 @@ watch(
   { deep: true },
 );
 const handleConnect = handleSubmit(async (values: any) => {
+  isLoading.value = true
   console.log({ values })
   let url = `${window.location.origin}/settings/integration/${values.crm}`;
   // let url = "https://app.tringlabs.ai/settings";
@@ -105,6 +107,7 @@ const handleConnect = handleSubmit(async (values: any) => {
       },
       onSuccess: () => {
         emit("success");
+        isLoading.value = false
       },
     });
     // emit("success");
@@ -118,9 +121,11 @@ const handleConnect = handleSubmit(async (values: any) => {
             "_blank",
           );
         emit("success");
+        isLoading.value = false
       },
     });
   }
+  isLoading.value = false
 });
 </script>
 
@@ -141,19 +146,19 @@ const handleConnect = handleSubmit(async (values: any) => {
         <TextField v-if="values.crm === 'sell-do'" name="metadata.apiKey" label="Api key"
           helperText="Enter your API key here" placeHolder="Eg: api-key-here" required />
         <div class="flex justify-end w-full">
-          <UiButton type="submit" class="mt-2" color="primary">
+          <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
             {{
-              values.crm === "zoho-crm"
-                ? integrationModalProps?.id
-                  ? "Update changes"
-                  : "Connect Zoho CRM"
-                : values.crm === "zoho-bigin"
-                  ? integrationModalProps?.id
-                    ? "Update changes"
-                    : "Connect Zoho Bigin"
-                  : integrationModalProps?.id
-                    ? "Update changes"
-                    : "Save changes"
+            values.crm === "zoho-crm"
+            ? integrationModalProps?.id
+            ? "Update changes"
+            : "Connect Zoho CRM"
+            : values.crm === "zoho-bigin"
+            ? integrationModalProps?.id
+            ? "Update changes"
+            : "Connect Zoho Bigin"
+            : integrationModalProps?.id
+            ? "Update changes"
+            : "Save changes"
             }}
           </UiButton>
         </div>

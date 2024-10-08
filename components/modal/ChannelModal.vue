@@ -8,6 +8,7 @@ const channelModalState = defineModel<{ open: boolean, id: any }>({
     id: null,
   },
 });
+const isLoading = ref(false)
 const formSchema = toTypedSchema(
   z.object({
     name: z.string({ required_error: "Name is required." }).min(1, "Name is required."),
@@ -160,6 +161,7 @@ const handleConnectButtonClick = () => {
 
 
 const handleConnect = handleSubmit(async (values: any) => {
+  isLoading.value = true
   console.log({ values })
   const payload = {
     name: values.name,
@@ -176,16 +178,16 @@ const handleConnect = handleSubmit(async (values: any) => {
       await $fetch(`/api/org/integrations/${channelModalState.value.id}`, { method: "PUT", body: payload });
       toast.success("Integration update successfully");
     }
-
     else {
-
       await $fetch("/api/org/integrations", { method: "POST", body: payload });
       toast.success("Integration added successfully");
     }
     emit("success");
   } catch (error: any) {
+    isLoading.value = false
     toast.error(error?.data?.data[0].message);
   }
+  isLoading.value = false
 });
 </script>
 
@@ -208,8 +210,9 @@ const handleConnect = handleSubmit(async (values: any) => {
       <div class="flex items-center justify-end">
         <UiButton v-if="!fbVerified" color="primary" type="button" @click="launchWhatsAppSignup">Login with Facebook
         </UiButton>
-        <UiButton v-else color="primary" type="submit">Submit</UiButton>
-
+        <UiButton v-else color="primary" type="submit" :loading="isLoading">
+          Submit
+        </UiButton>
       </div>
 
     </form>

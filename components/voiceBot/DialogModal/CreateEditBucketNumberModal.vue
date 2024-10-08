@@ -15,7 +15,7 @@ const bucketModalState = defineModel<{ open: boolean, id: any }>({
     id: null,
   },
 });
-
+const isLoading = ref(false)
 
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 const formSchema = toTypedSchema(
@@ -72,6 +72,7 @@ watch(() => bucketModalState.value.open, async (newState) => {
 });
 
 const handleConnect = handleSubmit(async (values: any) => {
+  isLoading.value = true
   try {
     if (bucketModalState.value.id) {
       await $fetch(`/api/org/contact-list/${queryId.value}/contacts/${bucketModalState.value.id}`, { method: "PUT", body: values });
@@ -83,8 +84,10 @@ const handleConnect = handleSubmit(async (values: any) => {
     resetForm()
     emit('confirm')
   } catch(error: any) {
+    isLoading.value = false
     toast.error(error.data.statusMessage)
   }
+  isLoading.value = false
 });
 </script>
 <template>
@@ -99,14 +102,13 @@ const handleConnect = handleSubmit(async (values: any) => {
       </div>
       <!-- {{ countryList }} || sdf -->
       <div class='flex gap-2'>
-        <CountryCodeField class='w-[100px] mt-1.5' name="countryCode" label="Country Code" helperText="Enter your country code"
-          required />
+        <CountryCodeField class='w-[100px] mt-1.5' name="countryCode" label="Country Code"
+          helperText="Enter your country code" required />
         <TextField :disableCharacters="true" name="phone" label="Mobile number" helperText='' required
           placeholder="Enter your mobile number" />
       </div>
-             <TextField type="email" name="email" label="Email" helperText='' 
-          placeholder="Enter your Email" /> 
-      
+      <TextField type="email" name="email" label="Email" helperText='' placeholder="Enter your Email" />
+
       <!-- <UiFormField v-slot="{ componentField }" name="addBuckets">
         <UiFormItem class="w-full">
           <UiFormLabel>Add Audiences for Buckets in Bulk <UiLabel class="text-lg text-red-500">*</UiLabel>
@@ -118,7 +120,9 @@ const handleConnect = handleSubmit(async (values: any) => {
         </UiFormItem>
       </UiFormField> -->
       <div class="flex items-center justify-end">
-        <UiButton type="submit" class="mt-2" color="primary"> Submit </UiButton>
+        <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
+          Submit
+        </UiButton>
       </div>
     </form>
   </DialogWrapper>
