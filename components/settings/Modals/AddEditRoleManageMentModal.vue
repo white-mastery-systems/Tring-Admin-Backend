@@ -13,6 +13,7 @@
       id: null,
     },
   });
+  const isLoading = ref(false)
 
   const campaignListWithLabels = computed(() => {
     if (roleModalState) {
@@ -65,6 +66,7 @@
   );
 
   const handleConnect = handleSubmit(async (value: any) => {
+    isLoading.value = true
     try {
       console.log(values);
       
@@ -85,24 +87,17 @@
       }
       emit("confirm");
     } catch (error: any) {
+      isLoading.value = false
       toast.error(error.statusMessage);
     }
+    isLoading.value = false
   });
 </script>
 <template>
-  <DialogWrapper
-    v-model="roleModalState"
-    :title="roleModalState.id ? 'Modify Role' : 'Add Role'"
-  >
+  <DialogWrapper v-model="roleModalState" :title="roleModalState.id ? 'Modify Role' : 'Add Role'">
     <form class="space-y-2" @submit="handleConnect">
       <div class="grid gap-4">
-        <TextField
-          type="text"
-          name="name"
-          label="Name"
-          placeholder="Enter Your Role"
-          :required="true"  
-        />
+        <TextField type="text" name="name" label="Name" placeholder="Enter Your Role" :required="true" />
 
         <div class="flex items-center gap-1">
           <UiCheckbox id="terms" :checked="values?.permissions?.sendEmail" @update:checked="(value) =>{
@@ -120,7 +115,7 @@
         </div>
 
         <div class="flex w-full justify-end">
-          <UiButton type="submit" class="mt-2" color="primary">
+          <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
             Submit
           </UiButton>
         </div>

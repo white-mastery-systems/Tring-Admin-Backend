@@ -29,7 +29,9 @@
     </div>
 
     <div class="flex w-full justify-end">
-      <UiButton type="submit" color="primary">Submit</UiButton>
+      <UiButton type="submit" color="primary" size="lg" :loading="isLoading">
+        Submit
+      </UiButton>
     </div>
   </form>
 </template>
@@ -52,6 +54,9 @@
 
   const passwordVisible = ref(false);
   const confirmPasswordVisible = ref(false);
+  const isLoading = ref(false)
+
+
   const togglePasswordVisibility = () => {
     passwordVisible.value = !passwordVisible.value;
   };
@@ -60,6 +65,7 @@
   };
 
   const handleAccountUpdate = handleSubmit(async () => {
+    isLoading.value = true
     try {
       await $fetch("/api/user", { method: "PUT", body: values });
       toast.success("Password updated successfully");
@@ -67,6 +73,8 @@
     } catch (e) {
       console.error(e);
       toast.error("Failed to update Password, please try again");
+      isLoading.value = false
     }
+    isLoading.value = false
   });
 </script>

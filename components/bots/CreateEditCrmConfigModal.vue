@@ -1,78 +1,51 @@
 <template>
-  <DialogWrapper
-    v-model="modalState"
-    :title="modalProps?.id ? `Edit CRM` : 'Link CRM'"
-  >
+  <DialogWrapper v-model="modalState" :title="modalProps?.id ? `Edit CRM` : 'Link CRM'">
     <form @submit="handleAddIntegration">
 
       <div class="flex flex-col gap-3">
-      <SelectField
-        name="integrationId"
-        :multiple="false"
-        :required="true"
-        label="Select Connected CRM"
-        placeholder="Select Connected CRM"
-        :options="integrationsData.map((integration) => ({
+        <SelectField name="integrationId" :multiple="false" :required="true" label="Select Connected CRM"
+          placeholder="Select Connected CRM" :options="integrationsData.map((integration) => ({
           value:integration.id,
           label:integration.name,
-        }))"
-      />
-      <div
-        v-if="
+        }))" />
+        <div v-if="
           integrationsData.find(
             (integration) => integration.id === values.integrationId,
           )?.crm === 'zoho-bigin'
-        "
-      > 
-       <SelectField
-        name="pipelineId"
-        :multiple="false"
-        :required="true"
-        label="Select Pipeline"
-        placeholder="Select Pipeline"
-        :options="pipelines.map((pipe)=>({value:pipe.id, label:pipe.display_label}))"
-      />
-      </div>
-      <div v-if="values.pipelineId && values.integrationId">
-        <SelectField
-        name="stageId"
-        :multiple="false"
-        :required="true"
-        :label="'Select Stage'"
-        :options="stages.map((stage)=>({value:stage.id, label:stage.display_value}))"
-      />
-      </div>
-      <div v-if="
+        ">
+          <SelectField name="pipelineId" :multiple="false" :required="true" label="Select Pipeline"
+            placeholder="Select Pipeline"
+            :options="pipelines.map((pipe)=>({value:pipe.id, label:pipe.display_label}))" />
+        </div>
+        <div v-if="values.pipelineId && values.integrationId">
+          <SelectField name="stageId" :multiple="false" :required="true" :label="'Select Stage'"
+            :options="stages.map((stage)=>({value:stage.id, label:stage.display_value}))" />
+        </div>
+        <div v-if="
           integrationsData.find(
             (integration) => integration.id === values.integrationId,
           )?.crm === 'zoho-crm'
         ">
-        <SelectField
-         name="layoutId"
-        :multiple="false"
-        :required="true"
-        label="Select Layout"
-        placeholder="Select Layout"
-        :options="layouts.map((layout)=>({value:layout.id, label:layout.name}))"
-      />
-      </div>
+          <SelectField name="layoutId" :multiple="false" :required="true" label="Select Layout"
+            placeholder="Select Layout" :options="layouts.map((layout)=>({value:layout.id, label:layout.name}))" />
+        </div>
 
-    <div class="flex flex-col gap-3" v-if="
+        <div class="flex flex-col gap-3" v-if="
         integrationsData.find(
           (integration) => integration.id === values.integrationId,
         )?.crm === 'sell-do'
       ">
 
 
-    <TextField  name="campaignId" label="Campaign Id" placeholder="Enter Your Campaign Id"/>
+          <TextField name="campaignId" label="Campaign Id" placeholder="Enter Your Campaign Id" />
 
 
-    <TextField name="ProjectId" label="Project Id" placeholder="Enter Your Project Id"/>
+          <TextField name="ProjectId" label="Project Id" placeholder="Enter Your Project Id" />
 
+        </div>
       </div>
-      </div>
 
-        <UiButton type="submit" class="mt-2" color="primary">
+      <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
         Save changes
       </UiButton>
     </form>
@@ -88,6 +61,8 @@
   let layouts = ref([]);
   const stages = ref<any>([]);
   const subPipelines = ref<any>([]);
+  const isLoading = ref(false)
+
 
   const modalState = defineModel<{ open: boolean }>({
     default: { open: false },
@@ -222,6 +197,7 @@
   });
 
   const handleAddIntegration = handleSubmit((value: any) => {
+    isLoading.value = true
     let pipelineObj: any = {};
     let layoutObj: any = {};
 
@@ -265,6 +241,7 @@
         onSuccess: () => {
           emit("success");
           toast.success("Integration updated successfully");
+          isLoading.value = false
         },
       });
     } else {
@@ -278,6 +255,7 @@
         onSuccess: () => {
           emit("success");
           toast.success("Integration created successfully");
+          isLoading.value = false
         },
       });
     }

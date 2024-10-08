@@ -373,7 +373,14 @@ watch([selectedValue, chartValues], async ([period, chartValues]) => {
 });
 
 onMounted(async () => {
+try{
   analyticsData.value = await getAnalyticsData(filter);
+
+}
+catch(e){
+  authHandlers.logout();
+  
+}
   if (analyticsData.value) loading.value = false
   // analyticsData.value.bots = 0;
 });
@@ -383,6 +390,7 @@ const getStarted = () => {
     navigateTo("/bots");
   }
 };
+
 
 const onDateChange = async (value: any) => {
   if (value.from && value.to) {

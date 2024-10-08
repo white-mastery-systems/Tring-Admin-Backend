@@ -42,17 +42,27 @@
     },
   );
   console.log({ props: props.type });
+const selectedFileName =  ref('')
+
   const replacedId = ref(props.label ?? props.name);
   let { value, errorMessage }: { value: any; errorMessage: any } =
     !props.validation
       ? { value: props.name, errorMessage: "" }
       : useField(() => props.name);
+        console.log(value.value);
 
+      if(value?.value.name){
+        selectedFileName.value =  value?.value.name
+      }
+      
   watch(errorMessage, (newErr) => {
     console.log({ newErr });
   });
 
-const selectedFileName =  ref('')
+  watch(value, (newValue) => {
+    console.log({ newValue });
+    
+  })
 
 const emit = defineEmits(['change'])
 const handleFileChange = (e: Event) => {

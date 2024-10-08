@@ -7,6 +7,7 @@
             addWhatappTemplateModalState.open = true;
             addWhatappTemplateModalState.id = null;
             console.log('addWhatappTemplateModalState', addWhatappTemplateModalState);
+            templateStore.resetValues();
 
           }
             ">
@@ -25,12 +26,9 @@
     <div>
       <div class="flex items-center gap-2 pb-2">
         <UiInput v-model="filters.q" @input="filters.page = '1'"
-          class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search bucket..." />
+          class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search Template..." />
       </div>
-      <DataTable @row-click="(row: any) => {
-        return navigateTo(`contacts/${row.original.id}`);
-      }
-        " @pagination="Pagination" @limit="($event) => {
+      <DataTable  @pagination="Pagination" @limit="($event) => {
           (filters.page = '1'), (filters.limit = $event);
         }
           " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="contactsList"
@@ -51,6 +49,7 @@
           " />
     </div>
     <AddEditWhatsappTemplateModal
+    v-if="addWhatappTemplateModalState.open"
     v-model="addWhatappTemplateModalState" @confirm="() => {
       addWhatappTemplateModalState.open = false;
       integrationRefresh();
@@ -59,9 +58,12 @@
   </Page>
 </template>
 <script setup lang="ts">
+
 import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import { useRoute, useRouter } from "vue-router";
+import { useTemplateStore } from "~/store/whatsAppTemplateStore";
+  const templateStore = useTemplateStore();
 
 definePageMeta({
   middleware: "admin-only",
@@ -147,6 +149,7 @@ const actionsComponent = (id: any) =>
             e.stopPropagation();
             addWhatappTemplateModalState.value.open = true;
             addWhatappTemplateModalState.value.id = id;
+
             console.log("addWhatappTemplateModalState", addWhatappTemplateModalState.value);
           },
           color: "primary",
@@ -182,11 +185,9 @@ const actionsComponent = (id: any) =>
 
 const columns = [
   columnHelper.accessor("name", {
-    header: "Bucket Name",
+    header: "Template Name",
   }),
-  columnHelper.accessor("noOfAudience", {
-    header: "No. of Audiences",
-  }),
+
   columnHelper.accessor("id", {
     header: "Action",
     cell: ({ row }) => {

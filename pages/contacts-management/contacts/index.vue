@@ -1,5 +1,5 @@
 <template>
-  <Page title="Buckets" :disable-back-button="true">
+  <Page title="Contacts Buckets" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-4">
         <div class="flex gap-2">

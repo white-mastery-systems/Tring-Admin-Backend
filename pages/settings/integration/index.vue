@@ -1,68 +1,105 @@
 <template>
-  <Page title="Integration" :disable-back-button="true" :disable-elevation="false">
+  <Page
+    title="Integration"
+    :disable-back-button="true"
+    :disable-elevation="false"
+  >
     <template #actionButtons>
       <div class="flex gap-2">
-        <!-- <UiButton v-if="route.query.q === 'channel'" color="primary" @click="() => {
-            channelModalState.open = true
-            channelModalState.id = null
-          }">
-          Add Channel
-        </UiButton> -->
-        <UiButton v-if="route.query.q === 'number'" color="primary" @click="() => {
-          numberModalState.open = true
-          numberModalState.id = null
-          }">
-          Exophone
-        </UiButton>
-        <UiButton v-else color="primary" @click="
+        <UiButton
+          color="primary"
+          @click="
             () => {
+              if (route.query.q === 'number') {
+                numberModalState.open = true;
+                numberModalState.id = null;
+                return;
+              }
               integrationModalState.open = true;
               integrationModalState.id = null;
             }
-          ">
-          Add Integration
+          "
+        >
+          Add
+          {{
+            (() => {
+              if (route.query.q === "number") {
+                return "Exophone";
+              } else if (route.query.q === "crm") {
+                return "CRM";
+              } else if (route.query.q === "communication") {
+                return "Communication";
+              } else if (route.query.q === "ecommerce") {
+                return "E-Commerce";
+              }
+            })()
+          }}
+          Channel
         </UiButton>
       </div>
     </template>
     <UiTabs default-value="crm" class="w-full self-start">
-      <UiTabsList class="grid w-[100%] sm:w-[100%] nd:w-[50%] xl:w-[30%] lg:w-[30%] grid-cols-2">
+      <UiTabsList
+        class="grid w-[100%] grid-cols-4 sm:w-[100%] md:w-[50%] lg:w-[60%] xl:w-[50%]"
+      >
         <UiTabsTrigger value="crm" @click="navigateToTab('crm')">
           CRM
         </UiTabsTrigger>
-        <!-- <UiTabsTrigger value="campaign" @click="navigateToTab('channel')">
-          Channel
-        </UiTabsTrigger> -->
+        <UiTabsTrigger
+          value="communication"
+          @click="navigateToTab('communication')"
+        >
+          Communication
+        </UiTabsTrigger>
+        <UiTabsTrigger value="ecommerce" @click="navigateToTab('ecommerce')">
+          E-Commerce
+        </UiTabsTrigger>
+
         <UiTabsTrigger value="number" @click="navigateToTab('number')">
           Exophone
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="crm">
-        <DataTable @pagination="Pagination" @limit="
-          ($event) => {
-            (page = '1'), (limit = $event);
-          }
-        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
-          :data="integrationsData" :page-size="8" :is-loading="false" :height="17" :heightUnit="'vh'" />
+        <DataTable
+          @pagination="Pagination"
+          @limit="
+            ($event) => {
+              (page = '1'), (limit = $event);
+            }
+          "
+          :totalPageCount="totalPageCount"
+          :page="page"
+          :totalCount="totalCount"
+          :columns="columns"
+          :data="integrationsData"
+          :page-size="8"
+          :is-loading="false"
+          :height="17"
+          :heightUnit="'vh'"
+        />
       </UiTabsContent>
-      <!-- <UiTabsContent value="campaign">
-        <DataTable @pagination="Pagination" @limit="
-          ($event) => {
-            (page = '1'), (limit = $event);
-          }
-        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="statusColumns"
-          :data="integrationsData" :page-size="8" :is-loading="false" :height="13" :heightUnit="'vh'" />
-      </UiTabsContent> -->
+
       <UiTabsContent value="number">
         <NumberIntegration @action="handleAction" />
       </UiTabsContent>
     </UiTabs>
     <ChannelModal v-model="channelModalState" @success="onSuccessChannel()" />
-    <NumberModal v-model="numberModalState" @success="onSuccessNumberIntegration()" />
-    <CreateEditIntegrationModal v-model="integrationModalState" :id="integrationModalState?.id"
-      @success="onSuccess()" />
+    <NumberModal
+      v-model="numberModalState"
+      @success="onSuccessNumberIntegration()"
+    />
+    <CreateEditIntegrationModal
+      :title="findTitleForIntegrationModal()"
+      v-model="integrationModalState"
+      :id="integrationModalState?.id"
+      @success="onSuccess()"
+    />
   </Page>
-  <ConfirmationModal v-model:open="deleteIntegrationState.open" title="Confirm Delete"
-    description="Are you sure you want to delete ?" @confirm="
+  <ConfirmationModal
+    v-model:open="deleteIntegrationState.open"
+    title="Confirm Delete"
+    description="Are you sure you want to delete ?"
+    @confirm="
       () => {
         if (deleteIntegrationState?.id) {
           deleteIntegration({
@@ -74,21 +111,26 @@
           deleteIntegrationState.open = false;
         }
       }
-    " />
-  <ConfirmationModal v-model:open="deleteExoPhoneState.open" title="Confirm Delete"
-    description="Are you sure you want to delete ?" @confirm="
+    "
+  />
+  <ConfirmationModal
+    v-model:open="deleteExoPhoneState.open"
+    title="Confirm Delete"
+    description="Are you sure you want to delete ?"
+    @confirm="
       () => {
-      if (numberModalState.id) {
-        deleteSingleExoPhone({
+        if (numberModalState.id) {
+          deleteSingleExoPhone({
             id: numberModalState.id,
             onSuccess: () => {
               refresh();
             },
           });
-        deleteExoPhoneState.open = false;
+          deleteExoPhoneState.open = false;
         }
       }
-    " />
+    "
+  />
 </template>
 <script lang="ts" setup>
   import { Icon, UiBadge, UiButton } from "#components";
@@ -99,19 +141,28 @@
   import ChannelModal from "./ChannelModal.vue";
   import NumberModal from "./NumberModal.vue";
 
-
   definePageMeta({
     middleware: "admin-only",
   });
 
   useHead({
-    title: 'Settings | Integrations',
-  })
+    title: "Settings | Integrations",
+  });
 
   const router = useRouter();
   const route = useRoute();
- const { refresh } = useCount();
-
+  const { refresh } = useCount();
+  function findTitleForIntegrationModal() {
+    if (route.query.q === "number") {
+      return "Exophone";
+    } else if (route.query.q === "crm") {
+      return "CRM";
+    } else if (route.query.q === "communication") {
+      return "Communication";
+    } else if (route.query.q === "ecommerce") {
+      return "E-Commerce";
+    }
+  }
   const integrationModalState = ref<{ open: boolean; id?: string | null }>({
     open: false,
   });
@@ -130,10 +181,10 @@
   // const integrationsData = ref()
   watch(route, (newValue) => {});
   // const q=ref('')
-  let page = ref('1');
+  let page = ref("1");
   let totalPageCount = ref(0);
   let totalCount = ref(0);
-  const limit = ref('10')
+  const limit = ref("10");
   const filters = computed(() => ({
     q: route.query?.q,
     page: page.value,
@@ -216,7 +267,7 @@
         ),
       ],
     );
-    const channelActionsComponent = (id: any) =>
+  const channelActionsComponent = (id: any) =>
     h(
       "div",
       {
@@ -304,18 +355,18 @@
   ];
 
   const navigateToTab = async (tab: any) => {
-    page.value = '1'
-    limit.value = '10'
+    page.value = "1";
+    limit.value = "10";
     router.push({ query: { q: tab } });
   };
 
-const handleAction = (id: any, modelControl: string) => {
-  if (modelControl === 'edit') numberModalState.value.open = true;
-  else deleteExoPhoneState.value.open = true
-  numberModalState.value.id = id;
-};
+  const handleAction = (id: any, modelControl: string) => {
+    if (modelControl === "edit") numberModalState.value.open = true;
+    else deleteExoPhoneState.value.open = true;
+    numberModalState.value.id = id;
+  };
 
-    const Pagination = async ($evnt) => {
+  const Pagination = async ($evnt) => {
     page.value = $evnt;
     integrationRefresh();
   };

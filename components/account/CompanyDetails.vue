@@ -1,45 +1,29 @@
 <template>
   <form class="space-y-2" @submit="handleAccountUpdate">
-    <div class="flex flex-col gap-3">
-      <TextField
-        type="text"
-        name="name"
-        label="Company Name"
-        placeholder="Enter your Company Name"
-        :required="true"
-      />
+    <div class="grid grid-cols-2 gap-3">
+      <TextField  helperText="Goods Service Tax" type="text" name="name" label="Company Name" placeholder="Enter your Company Name" :required="true" />
 
-      <SelectField
-        name="industry"
-        label="Industry"
-        placeholder="Select Role"
-        :options="industry.map((role) => ({ label: role, value: role }))"
-        :required="true"
-      />
+      <SelectField name="industry" label="Industry" placeholder="Select Role"
+        :options="industry.map((role) => ({ label: role, value: role }))" :required="true" />
       <div v-if="values.industry === 'Other'">
-        <TextField type="text" name="otherRole" :required="true" />
+        <TextField type="text" name="otherRole" label="Other Industry" :required="true" />
       </div>
 
-      <SelectField
-        name="avgTraffic"
-        label="Monthly Website Traffic"
-        placeholder="Select Traffic"
-        :options="avgTraffic.map((role) => ({ label: role, value: role }))"
-        :required="true"
-      />
+      <SelectField name="avgTraffic" label="Monthly Website Traffic" placeholder="Select Traffic"
+        :options="avgTraffic.map((role) => ({ label: role, value: role }))" :required="true" />
 
-      <SelectField
-        name="employeeCount"
-        label="No. of Employees "
-        placeholder="Select Employees"
-        :options="employeeCount.map((role) => ({ label: role, value: role }))"
-        :required="true"
-      />
-
-      <div class="flex w-full justify-end">
-        <UiButton type="submit" color="primary">Submit</UiButton>
-      </div>
+      <SelectField name="employeeCount" label="No. of Employees " placeholder="Select Employees"
+        :options="employeeCount.map((role) => ({ label: role, value: role }))" :required="true" />
+         
+        <div class="mt-2">
+        <TextField type="text" name="gst" label="GST" helperText="Enter your 15-digit GSTIN" placeholder="Enter Your Gst" />
+        </div>
     </div>
+          <div class="text-right">
+        <UiButton type="submit" color="primary" size="lg" :loading="isLoading">
+          Submit
+        </UiButton>
+      </div>
   </form>
 </template>
 
@@ -84,6 +68,7 @@
     initialValues: {},
   });
   const { orgDetails } = await companyDetails()
+  const isLoading = ref(false)
 
   setFieldValue("name", orgDetails?.name);
   setFieldValue("industry", orgDetails?.metadata?.industry);
@@ -93,8 +78,12 @@
   if (orgDetails?.metadata?.industry === "Other") {
     setFieldValue("otherRole", orgDetails?.metadata?.otherRole);
   }
+  
+   if(orgDetails?.metadata?.gst) setFieldValue("gst", orgDetails?.metadata?.gst);
+
 
   const handleAccountUpdate = handleSubmit(async (values: any) => {
+    isLoading.value = true
     try{
    const orgData = await $fetch("/api/org", {
       method: "PUT",
@@ -105,8 +94,9 @@
     toast.success("Company Details updated successfully");
     }
     catch(e){
-    toast.error("Company Details failed to update");
+      toast.error("Company Details failed to update");
+      isLoading.value = false
     }
-
+    isLoading.value = false
   });
 </script>

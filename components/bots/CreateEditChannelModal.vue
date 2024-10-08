@@ -18,7 +18,7 @@
       </div>
 
       <div class="flex w-full justify-items-end">
-        <UiButton color="primary" type="submit">
+        <UiButton type="submit" color="primary" :loading="isLoading">
           Submit
         </UiButton>
       </div>
@@ -34,6 +34,7 @@ const showButtons = ref(false)
 function handleShowButton(value: boolean) {
   showButtons.value = value
 }
+const isLoading = ref(false)
 const modalState = defineModel<{ open: boolean; id: string | null }>({
   default: { open: false, id: null },
   required: true,
@@ -79,6 +80,7 @@ watch(errors, (newValues) => {
   console.log(newValues)
 })
 const handleCreateEditBotChannel = handleSubmit(async (values) => {
+  isLoading.value = true
   console.log({ values })
   await $fetch(`/api/bots/${route.params.id}`, {
     method: "PUT",
@@ -92,6 +94,7 @@ const handleCreateEditBotChannel = handleSubmit(async (values) => {
     },
   });
   emit("success");
+  isLoading.value = false
 });
 const {
   status: integrationLoadingStatus,

@@ -8,6 +8,7 @@ const agentModalState = defineModel<{ open: boolean }>({
     open: false,
   },
 });
+const isLoading = ref(false)
 
 const createEditVoiceBotValidation = toTypedSchema(
   z.object({
@@ -30,6 +31,7 @@ watch(agentModalState, (newState) => { });
 
 
 const addVoiceBot = handleSubmit(async (value: any) => {
+  isLoading.value = true
   try {
     const bot = await $fetch("/api/voicebots", {
       method: "POST",
@@ -40,18 +42,19 @@ const addVoiceBot = handleSubmit(async (value: any) => {
       params: { id: bot.id },
     });
   } catch (err: any) {
+    isLoading.value = false
     toast.error(err.data.statusMessage);
   }
+  isLoading.value = false
 });
 </script>
 <template>
   <DialogWrapper v-model="agentModalState" title="Add a New Voice Bot">
-    <form class="mb-4 space-y-6"
-      @submit="addVoiceBot">
+    <form class="mb-4 space-y-6" @submit="addVoiceBot">
       <TextField name="newBotName" label="Voice Bot Name" placeholder="Enter Voice Bot Name" required>
       </TextField>
       <div class="flex w-full items-center justify-end">
-        <UiButton type="submit" class="w-1/2 self-end bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
+        <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
           Create
         </UiButton>
       </div>

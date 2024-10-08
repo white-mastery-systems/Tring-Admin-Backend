@@ -2,7 +2,16 @@
   <div class="bot-manage-main-container">
     <Page title="Call Bot Leads" :disable-back-button="true">
       <!-- isDataLoading -->
-      <DataTable :data="leads" :is-loading="false" :columns="columns" :page-size="8" :height="80" height-unit="vh" />
+      <!-- @pagination="Pagination"  -->
+      <DataTable @limit="($event) => {
+        (filters.page = '1'), (filters.limit = $event);
+      }
+        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="leads" :columns="columns"
+        :page-size="8" :height="15" height-unit="vh" @row-click="(row: any) => {
+        navigateTo(`/call-bot-leads-id/${row.original.chatId}`);
+        }
+          " />
+      <!-- <DataTable :data="leads" :is-loading="false" :columns="columns" :page-size="8" :height="80" height-unit="vh" /> -->
     </Page>
   </div>
 </template>
@@ -13,6 +22,34 @@
   definePageMeta({
     middleware: "admin-only",
   });
+
+let page = ref(0);
+let totalPageCount = ref(0);
+let totalCount = ref(0);
+
+const filters = reactive<{
+  q?: string;
+  from?: string;
+  to?: string;
+  period: string;
+  status: string;
+  channel: any;
+  action: string;
+  page: string;
+  limit: string;
+  country: string;
+}>({
+  q: undefined,
+  from: undefined,
+  to: undefined,
+  period: "",
+  status: "",
+  channel: "all",
+  action: "",
+  page: "1",
+  limit: "10",
+  country: 'all',
+});
   // const ListLeads = ref()
   const leads:any = ref([
     {

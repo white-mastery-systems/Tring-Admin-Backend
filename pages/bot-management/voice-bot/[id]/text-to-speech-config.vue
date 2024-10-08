@@ -2,79 +2,33 @@
   <Page title="Text To Speech Configurations">
     <form @submit="onSubmit">
       <div class="flex flex-col gap-2">
-        <SelectField
-          name="provider"
-          label="provider"
-          placeholder="Select provider"
-          helperText="Select your provider."
-          :options="providers"
-          required
-        />
-        <SelectField
-          v-if="values.provider === 'google'"
-          name="language"
-          label="Language"
-          placeholder="Select language"
-          helperText="Select your language."
-          :options="languages"
-          required
-        />
-        <SelectField
-          name="voiceType"
-          label="Voice Type"
-          placeholder="Select Voice Type"
-          helperText="Select your voiceType."
-          :options="voiceTypes"
-          required
-        />
-        <RangeSlider
-          v-if="values.provider === 'google'"
-          :step="0.1"
-          :name="parseFloat(values.speakingRate)"
-          label="Speaking Rate"
-          @update="
+        <SelectField name="provider" label="provider" placeholder="Select provider" helperText="Select your provider."
+          :options="providers" required />
+        <SelectField v-if="values.provider === 'google'" name="language" label="Language" placeholder="Select language"
+          helperText="Select your language." :options="languages" required />
+        <SelectField name="voiceType" label="Voice Type" placeholder="Select Voice Type"
+          helperText="Select your voiceType." :options="voiceTypes" required />
+        <RangeSlider v-if="values.provider === 'google'" :step="0.1" :name="parseFloat(values.speakingRate)"
+          label="Speaking Rate" @update="
             ($event) => {
               setFieldValue('speakingRate', $event.toString());
             }
-          "
-          required
-          placeholder="Enter speaking Rate"
-          min="0"
-          max="1"
-        />
+          " required placeholder="Enter speaking Rate" min="0" max="1" />
         <!-- <TextField v-if="values.provider === 'google'" label="Speaking Rate" name="speakingRate" required placeholder="Enter speaking Rate" -->
         <!-- disableCharacters /> -->
 
-        <RangeSlider
-          v-if="values.provider === 'google'"
-          :step="0.1"
-          :name="parseFloat(values.pitch)"
-          label="Enter pitch"
-          @update="
+        <RangeSlider v-if="values.provider === 'google'" :step="0.1" :name="parseFloat(values.pitch)"
+          label="Enter pitch" @update="
             ($event) => {
               setFieldValue('pitch', $event.toString());
             }
-          "
-          required
-          placeholder="Enter speaking Rate"
-          min="0"
-          max="1"
-        />
-        <RangeSlider
-          v-if="values.provider === 'google'"
-          :step="0.1"
-          :name="parseFloat(values.volumeGrainDb )"
-          label="volume Grain DB"
-          @update="
+          " required placeholder="Enter speaking Rate" min="0" max="1" />
+        <RangeSlider v-if="values.provider === 'google'" :step="0.1" :name="parseFloat(values.volumeGrainDb )"
+          label="volume Grain DB" @update="
             ($event) => {
               setFieldValue('volumeGrainDb', $event.toString());
             }
-          "
-          required
-          placeholder="Enter speaking Rate"
-          min="0"
-          max="1"
-        />
+          " required placeholder="Enter speaking Rate" min="0" max="1" />
         <!-- <TextField
           v-if="values.provider === 'google'"
           label="volume Grain DB"
@@ -84,53 +38,26 @@
           disableCharacters
         /> -->
 
-          <RangeSlider
-          v-if="values.provider === 'elevenlabs'"
-          :step="0.1"
-          :name="parseFloat(values.stability )"
-          label="Stability"
-          @update="
+        <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.1" :name="parseFloat(values.stability )"
+          label="Stability" @update="
             ($event) => {
               setFieldValue('stability', $event.toString());
             }
-          "
-          required
-          placeholder="Enter speaking Rate"
-          min="0"
-          max="1"
-        />
+          " required placeholder="Enter speaking Rate" min="0" max="1" />
 
-          <RangeSlider
-          v-if="values.provider === 'elevenlabs'"
-          :step="0.1"
-          :name="parseFloat(values.similarityBoost )"
-          label="Similarity boost"
-          @update="
+        <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.1" :name="parseFloat(values.similarityBoost )"
+          label="Similarity boost" @update="
             ($event) => {
               setFieldValue('similarityBoost', $event.toString());
             }
-          "
-          required
-          placeholder="Enter speaking Rate"
-          min="0"
-          max="1"
-        />
-          <RangeSlider
-          v-if="values.provider === 'elevenlabs'"
-          :step="0.1"
-          :name="parseFloat(values.style )"
-          label="Style"
+          " required placeholder="Enter speaking Rate" min="0" max="1" />
+        <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.1" :name="parseFloat(values.style )" label="Style"
           @update="
             ($event) => {
               setFieldValue('style', $event.toString());
             }
-          "
-          required
-          placeholder="Enter speaking Rate"
-          min="0"
-          max="1"
-        />
-          <!-- <RangeSlider
+          " required placeholder="Enter speaking Rate" min="0" max="1" />
+        <!-- <RangeSlider
           v-if="values.provider === 'elevenlabs'"
           :step="0.1"
           :name="parseFloat(values.stability )"
@@ -170,24 +97,15 @@
           placeholder="Style"
           disableCharacters
         /> -->
-        <TextField
-          v-if="values.provider === 'elevenlabs'"
-          label="Use Speaker Boost"
-          name="useSpeakerBoost"
-          required
-          placeholder="Use Speaker Boost"
-          disableCharacters
-        />
-        <SelectField
-          v-if="values.provider === 'deepgram'"
-          name="voice"
-          label="voice"
-          placeholder="Select voice"
-          helperText="Select your voice."
-          :options="voices"
-          required
-        />
-        <UiButton color="primary" type="submit">Submit</UiButton>
+        <TextField v-if="values.provider === 'elevenlabs'" label="Use Speaker Boost" name="useSpeakerBoost" required
+          placeholder="Use Speaker Boost" disableCharacters />
+        <SelectField v-if="values.provider === 'deepgram'" name="voice" label="voice" placeholder="Select voice"
+          helperText="Select your voice." :options="voices" required />
+      </div>
+      <div class="flex w-full justify-end mt-2">
+        <UiButton color="primary" type="submit" :loading="isLoading">
+          Submit
+        </UiButton>
       </div>
     </form>
   </Page>
@@ -204,6 +122,7 @@
     },
     validationSchema: toTypedSchema(textToSpeechValidation),
   });
+  const isLoading = ref(false)
 
   watch(errors, (newValues) => {
     console.log(newValues,values)
@@ -362,6 +281,7 @@ watchEffect(() => {
 });
 
   const onSubmit = handleSubmit(async (values) => {
+    isLoading.value = true
     // setFieldValue("passwordConfirm", values.password);
     // setFieldValue("firstName", 'appu');
     // setFieldValue("crm", "zoho-crm");
@@ -373,7 +293,7 @@ watchEffect(() => {
         textToSpeechConfig: { ...values },
       },
     });
-          toast.success("Updated successfully");
-
+      toast.success("Updated successfully");
+      isLoading.value = false
   });
 </script>

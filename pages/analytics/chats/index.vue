@@ -12,7 +12,7 @@
         <ChannelFilter @changeAction="onChannelChange" />
 
         <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
-        <ExportButton :rows="exportReadyRows" :columns="exportReadyColumns" />
+        <ExportButton :rows="exportReadyRows" :columns="exportReadyColumns" @export="exportData" />
       </div>
     </div>
     <DataTable @row-click="(row: any) => {
@@ -74,6 +74,7 @@ const filters = reactive<{
 let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
+const fetchExportData = ref(false);
 const {
   status,
   data: chats,
@@ -111,19 +112,20 @@ const exportFilters = computed(() => {
 
 const {
   data: exportChats,
+  execute
 } = await useLazyFetch("/api/chats", {
   server: false,
   query: exportFilters,
-  default: () => [],
   headers: {
     "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
   },
+  immediate: fetchExportData.value,
+  default: () => [],
 });
 
 
 const exportReadyRows = computed(() => {
   let formatExportChats: any;
-
   if (Array.isArray(exportChats.value)) {
     formatExportChats = toRaw(exportChats.value); // Convert to plain array
   } else if (exportChats.value && typeof exportChats.value === 'object') {
@@ -228,5 +230,9 @@ const onCountryChange = ($event) => {
   if ($event) {
     filters.country = $event;
   }
+}
+const exportData = () => {
+  fetchExportData.value = true
+  execute()
 }
 </script>
