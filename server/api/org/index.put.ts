@@ -14,12 +14,12 @@ export default defineEventHandler(async (event) => {
 
   const updateOrg = {
     name: body.name,
-    gst: body?.gst,
     metadata: {
        industry: body?.industry,
        avgTraffic: body?.avgTraffic,
        employeeCount: body?.employeeCount,
-       otherRole: body?.otherRole
+       otherRole: body?.otherRole,
+       gst: body?.gst,
     }
   }
 
