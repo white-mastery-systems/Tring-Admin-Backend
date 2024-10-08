@@ -2,7 +2,7 @@
   <div :class="cn('w-full', props?.class)">
     <UiFormField v-model="countryCode" :name="props.name" class="mt-1">
       <UiFormItem class="mt-0 mt-1 flex flex-col">
-        <UiFormLabel
+        <UiFormLabel class="mb-1"
           >Country Code<span class="text-sm text-red-500">*</span>
         </UiFormLabel>
         <UiPopover class="mt-0">

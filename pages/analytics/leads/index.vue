@@ -1,12 +1,13 @@
 <template>
   <Page title="Leads" :disableSelector="false" :disable-back-button="true">
     <div class="flex items-center justify-between gap-2 overflow-x-scroll pb-4">
-    <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2">
         <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder=" Search Leads..." />
         <BotFilter v-model="filters.botId" @input="filters.page = '1'" />
         <StatusFilter @change="onStatusChange" />
+        
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
         <DateRangeFilter @change="onDateChange" />
         <!-- <ChannelFilter @changeAction="onChannel" /> -->
@@ -177,7 +178,6 @@ let { data: exportLeads, execute } = await useLazyFetch("/api/org/leads", {
 
 
 const exportReadyRows = computed(() => {
-  console.log(exportLeads.value, "exportLeads.value")
   return (exportLeads.value ?? [])
     .map((lead: any) => {
       const mergedObject = {

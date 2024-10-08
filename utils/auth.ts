@@ -35,7 +35,8 @@ const signup = async (values: Record<string, any>) => {
       redirect: "follow",
     });
     // @ts-expect-error
-    return navigateTo(data);
+    return navigateTo('/auth/onboarding');
+    // return navigateTo(data);
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
   }

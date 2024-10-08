@@ -12,7 +12,7 @@
         <ChannelFilter @changeAction="onChannelChange" />
 
         <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
-        <ExportButton :rows="exportReadyRows" :columns="exportReadyColumns" @export="exportData" />
+        <ExportButton :rows="exportReadyRows" :columns="exportReadyColumns" @export="exportData" @exportCompleted="" />
       </div>
     </div>
     <DataTable @row-click="(row: any) => {
@@ -135,8 +135,6 @@ const exportReadyRows = computed(() => {
   try {
     return formatExportChats
       .map((chat: any) => {
-
-        console.log({ chat })
         const mergedObject = {
           name: chat?.botUser?.name ?? '---',
           email: chat?.botUser?.email ?? '---',
@@ -165,7 +163,8 @@ const exportReadyColumns = computed(() => {
     "Bot name",
     "Country",
     "Created at",
-    "Channel"
+    "Channel",
+    "Mode",
   ]
 })
 
