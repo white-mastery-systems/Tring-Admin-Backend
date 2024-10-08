@@ -37,10 +37,9 @@ export default defineEventHandler(async (event) => {
       validatedQuery?.graphValues,
       timeZone,
     );
-    // console.log({ data });
+    //
     return data;
   } catch (err: any) {
-    console.log(err.message, "ERRR");
     logger.info(`get analytics error ${JSON.stringify(err)}`);
   }
 });

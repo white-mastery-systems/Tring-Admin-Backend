@@ -36,6 +36,6 @@ export async function generateAccessTokenFromCodeForSlack({
       "Content-Type": "application/x-www-form-urlencoded",
     },
   });
-  console.log({ response });
+
   return response;
 }

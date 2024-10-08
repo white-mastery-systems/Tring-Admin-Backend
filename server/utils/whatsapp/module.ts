@@ -77,7 +77,6 @@ export async function fetchSubscribedApps({
 }
 export async function subscribeApp({ code, id }: { code: string; id: string }) {
   try {
-    console.log({ code, id });
     const url = `https://graph.facebook.com/v20.0/${id}/subscribed_apps`;
     const subscribeAppResponse = await $fetch(url, {
       method: "POST",
@@ -87,7 +86,7 @@ export async function subscribeApp({ code, id }: { code: string; id: string }) {
       headers: { "Content-Type": "application/json" },
     });
     logger.info(`subscribeAppResponse ${JSON.stringify(subscribeAppResponse)}`);
-    console.log("subscribed");
+
     return subscribeAppResponse;
   } catch (err: any) {
     logger.info(`logging failed ${err.message}`);

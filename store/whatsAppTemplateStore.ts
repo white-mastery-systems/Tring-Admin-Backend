@@ -6,15 +6,14 @@ export const useTemplateStore = defineStore("template", {
       headerText: "",
       body: "",
       footer: "",
-      templateVariables: '[]',
-      headerTextTemplateVariables: '[]',
+      templateVariables: "[]",
+      headerTextTemplateVariables: "[]",
       headerLocation: "",
       headerFile: {},
     },
   }),
   actions: {
     updateValues(newValues: any) {
-      console.log({ newValues });
       this.values = { ...this.values, ...newValues };
     },
     // addTemplateVariable() {
@@ -30,8 +29,8 @@ export const useTemplateStore = defineStore("template", {
         headerText: "",
         body: "",
         footer: "",
-        templateVariables: '[]',
-        headerTextTemplateVariables: '[]',
+        templateVariables: "[]",
+        headerTextTemplateVariables: "[]",
       };
     },
   },

@@ -31,6 +31,5 @@ export async function createContactInHubspot({
           integrationData: integrationData,
         });
     }
-    console.log(err);
   }
 }

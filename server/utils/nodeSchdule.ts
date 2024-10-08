@@ -42,7 +42,7 @@ const sendWhatsappTemplateMessage = async (
       body.manager,
       body.organizationName,
     ]);
-    console.log({ components });
+
     const data = await $fetch(
       `https://graph.facebook.com/v20.0/${phoneId}/messages`,
       {
@@ -88,11 +88,9 @@ const sendWhatsappTemplateMessage = async (
       )}`,
     );
     // logger.info(`whatsapp-response-${data}`);
-    // console.log({ data: JSON.stringify(data) });
+    //
     return data;
-  } catch (err) {
-    console.log(err, "ERRRR");
-  }
+  } catch (err) {}
 };
 
 export const scheduleEvent = async (
@@ -115,9 +113,8 @@ export const scheduleEvent = async (
     //   headers: {"Content-Type": "application/json"},
     // });
     // const data = await response.json();
-    // console.log(data);
-    console.log({ contactList });
-    console.log({ campaignInformation });
+    //
+
     const phoneId = campaignInformation?.metadata?.phoneId;
     // const phoneId = "112867458396790";
     // const phoneId = "401871499682721";
@@ -162,9 +159,8 @@ export const scheduleEvent = async (
     });
 
     contactList.forEach(async (item: any) => {
-      console.log({ item: item.phone });
       const phoneNumber = `${item.countryCode}${item.phone}`.replace("+", "");
-      console.log({ phoneNumber });
+
       const components = {
         name: item.firstName,
         organization,
@@ -190,12 +186,12 @@ export const scheduleEvent = async (
     //   () => {
     //     logger.info({ level: "info", message: "Message sending..." });
     //     contactList.forEach(async (item: any) => {
-    //       console.log({ item: item.phone });
+    //
     //       const phoneNumber = `${item.countryCode}${item.phone}`.replace(
     //         "+",
     //         "",
     //       );
-    //       console.log({ phoneNumber });
+    //
     //       const components = {
     //         name: item.firstName,
     //         organization,
@@ -212,11 +208,11 @@ export const scheduleEvent = async (
     //         components,
     //         language,
     //       );
-    //       console.log({ data });
+    //
     //     });
     //   },
     // );
-    // console.log({ event });
+    //
     // if (!event) {
     //   return { status: false };
     // }

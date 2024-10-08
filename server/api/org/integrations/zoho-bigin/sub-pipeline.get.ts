@@ -15,6 +15,6 @@ export default defineEventHandler(async (event) => {
     refreshToken: integrationData?.metadata?.refresh_token,
     integrationData: integrationData,
   });
-  console.log({ data });
+
   return data;
 });

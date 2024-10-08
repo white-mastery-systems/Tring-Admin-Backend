@@ -107,7 +107,7 @@ export const updateIntegrationById = async (id: string, integration: any) => {
     })
     .where(eq(integrationSchema.id, id))
     .returning();
-  console.log(JSON.stringify(data[0]));
+
   return data[0];
 };
 

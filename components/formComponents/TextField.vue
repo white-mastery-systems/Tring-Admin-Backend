@@ -17,7 +17,6 @@
       @paste="
         (e: any) => {
           if (disableCharacters) {
-            console.log(e.clipboardData.getData('text/plain'));
             if (isNaN(Number(e.clipboardData.getData('text/plain')))) {
               e.preventDefault();
             }
@@ -26,8 +25,6 @@
       "
       @keypress="
         (e: any) => {
-          console.log(e.key);
-          
           if (disableCharacters) {
             if (e.key === 'Enter') {
               return;
@@ -36,14 +33,16 @@
               e.preventDefault();
             }
           }
-          if(['{','}'].includes(e.key))emit('input',e.key)
+          if (['{', '}'].includes(e.key)) emit('input', e.key);
         }
       "
-      @keydown="($event)=>{
-        if($event.code=='Backspace' || $event.code=='Delete')
-        emit('input','keydown')
-        }"
-       @input="emit('input','change')" 
+      @keydown="
+        ($event) => {
+          if ($event.code == 'Backspace' || $event.code == 'Delete')
+            emit('input', 'keydown');
+        }
+      "
+      @input="emit('input', 'change')"
       :placeholder="placeholder"
       :id="replacedId"
       :class="errorMessage ? 'border-red-500' : 'border-input'"
@@ -63,7 +62,6 @@
       @paste="
         (e: any) => {
           if (disableCharacters) {
-            console.log(e.clipboardData.getData('text/plain'));
             if (isNaN(Number(e.clipboardData.getData('text/plain')))) {
               e.preventDefault();
             }
@@ -72,7 +70,6 @@
       "
       @keypress="
         (e: any) => {
-          
           if (disableCharacters) {
             if (e.key === 'Enter') {
               return;
@@ -101,7 +98,7 @@
       v-model="value"
       :type="type || 'text'"
       :accept="accept || ''"
-      @input="emit('input',$event)"
+      @input="emit('input', $event)"
     />
     <div
       :class="
@@ -127,7 +124,7 @@
 
 <script setup lang="ts">
   import { useField } from "vee-validate";
-  const emit = defineEmits(['input'])
+  const emit = defineEmits(["input"]);
   const props = withDefaults(
     defineProps<{
       label?: string;
@@ -160,16 +157,14 @@
       accept: "",
     },
   );
-  console.log({ props: props.type });
+
   const replacedId = ref(props.label ?? props.name);
   const { value, errorMessage }: { value: any; errorMessage: any } =
     !props.validation
       ? { value: props.name, errorMessage: "" }
       : useField(() => props.name);
 
-  watch(errorMessage, (newErr) => {
-    console.log({ newErr });
-  });
+  watch(errorMessage, (newErr) => {});
   watch(value, (data) => {
     if (props.disableSpecialCharacters) {
       setTimeout(() => {

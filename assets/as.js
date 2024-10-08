@@ -1772,7 +1772,7 @@ data.map((dat) => {
     phoneLength: map.get(dat.code),
   });
 });
-console.log(newValue);
+
 // for (const [key, value] of map) {
 //   newValue.push(value);
 // }
@@ -1782,7 +1782,6 @@ fs.writeFile("country-codes.json", JSON.stringify(newValue), (err) => {
     console.error(err);
     return;
   }
-  console.log("File has been created");
 });
 
-// console.log({ data });
+//

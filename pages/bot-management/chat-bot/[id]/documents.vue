@@ -201,7 +201,7 @@
     const eventSource = new EventSource("/api/sse");
     eventSource.onmessage = async (event) => {
       const data = JSON.parse(event.data);
-      console.log({ data });
+
       if (data.event === "Document is ready") {
         if (data?.data?.botId === paramId.params.id) {
           documentsRefresh();
@@ -242,7 +242,6 @@ watchEffect(() => {
     // }, 1000);
   };
   const handleAction = (list: any, action: any) => {
-    console.log(myPopover.value, "myPopover.value");
     if (myPopover.value) {
       myPopover.value = false;
     }

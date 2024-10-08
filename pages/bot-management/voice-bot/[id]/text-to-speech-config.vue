@@ -2,33 +2,79 @@
   <Page title="Text To Speech Configurations">
     <form @submit="onSubmit">
       <div class="flex flex-col gap-2">
-        <SelectField name="provider" label="provider" placeholder="Select provider" helperText="Select your provider."
-          :options="providers" required />
-        <SelectField v-if="values.provider === 'google'" name="language" label="Language" placeholder="Select language"
-          helperText="Select your language." :options="languages" required />
-        <SelectField name="voiceType" label="Voice Type" placeholder="Select Voice Type"
-          helperText="Select your voiceType." :options="voiceTypes" required />
-        <RangeSlider v-if="values.provider === 'google'" :step="0.1" :name="parseFloat(values.speakingRate)"
-          label="Speaking Rate" @update="
+        <SelectField
+          name="provider"
+          label="provider"
+          placeholder="Select provider"
+          helperText="Select your provider."
+          :options="providers"
+          required
+        />
+        <SelectField
+          v-if="values.provider === 'google'"
+          name="language"
+          label="Language"
+          placeholder="Select language"
+          helperText="Select your language."
+          :options="languages"
+          required
+        />
+        <SelectField
+          name="voiceType"
+          label="Voice Type"
+          placeholder="Select Voice Type"
+          helperText="Select your voiceType."
+          :options="voiceTypes"
+          required
+        />
+        <RangeSlider
+          v-if="values.provider === 'google'"
+          :step="0.1"
+          :name="parseFloat(values.speakingRate)"
+          label="Speaking Rate"
+          @update="
             ($event) => {
               setFieldValue('speakingRate', $event.toString());
             }
-          " required placeholder="Enter speaking Rate" min="0" max="1" />
+          "
+          required
+          placeholder="Enter speaking Rate"
+          min="0"
+          max="1"
+        />
         <!-- <TextField v-if="values.provider === 'google'" label="Speaking Rate" name="speakingRate" required placeholder="Enter speaking Rate" -->
         <!-- disableCharacters /> -->
 
-        <RangeSlider v-if="values.provider === 'google'" :step="0.1" :name="parseFloat(values.pitch)"
-          label="Enter pitch" @update="
+        <RangeSlider
+          v-if="values.provider === 'google'"
+          :step="0.1"
+          :name="parseFloat(values.pitch)"
+          label="Enter pitch"
+          @update="
             ($event) => {
               setFieldValue('pitch', $event.toString());
             }
-          " required placeholder="Enter speaking Rate" min="0" max="1" />
-        <RangeSlider v-if="values.provider === 'google'" :step="0.1" :name="parseFloat(values.volumeGrainDb )"
-          label="volume Grain DB" @update="
+          "
+          required
+          placeholder="Enter speaking Rate"
+          min="0"
+          max="1"
+        />
+        <RangeSlider
+          v-if="values.provider === 'google'"
+          :step="0.1"
+          :name="parseFloat(values.volumeGrainDb)"
+          label="volume Grain DB"
+          @update="
             ($event) => {
               setFieldValue('volumeGrainDb', $event.toString());
             }
-          " required placeholder="Enter speaking Rate" min="0" max="1" />
+          "
+          required
+          placeholder="Enter speaking Rate"
+          min="0"
+          max="1"
+        />
         <!-- <TextField
           v-if="values.provider === 'google'"
           label="volume Grain DB"
@@ -38,25 +84,52 @@
           disableCharacters
         /> -->
 
-        <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.1" :name="parseFloat(values.stability )"
-          label="Stability" @update="
+        <RangeSlider
+          v-if="values.provider === 'elevenlabs'"
+          :step="0.1"
+          :name="parseFloat(values.stability)"
+          label="Stability"
+          @update="
             ($event) => {
               setFieldValue('stability', $event.toString());
             }
-          " required placeholder="Enter speaking Rate" min="0" max="1" />
+          "
+          required
+          placeholder="Enter speaking Rate"
+          min="0"
+          max="1"
+        />
 
-        <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.1" :name="parseFloat(values.similarityBoost )"
-          label="Similarity boost" @update="
+        <RangeSlider
+          v-if="values.provider === 'elevenlabs'"
+          :step="0.1"
+          :name="parseFloat(values.similarityBoost)"
+          label="Similarity boost"
+          @update="
             ($event) => {
               setFieldValue('similarityBoost', $event.toString());
             }
-          " required placeholder="Enter speaking Rate" min="0" max="1" />
-        <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.1" :name="parseFloat(values.style )" label="Style"
+          "
+          required
+          placeholder="Enter speaking Rate"
+          min="0"
+          max="1"
+        />
+        <RangeSlider
+          v-if="values.provider === 'elevenlabs'"
+          :step="0.1"
+          :name="parseFloat(values.style)"
+          label="Style"
           @update="
             ($event) => {
               setFieldValue('style', $event.toString());
             }
-          " required placeholder="Enter speaking Rate" min="0" max="1" />
+          "
+          required
+          placeholder="Enter speaking Rate"
+          min="0"
+          max="1"
+        />
         <!-- <RangeSlider
           v-if="values.provider === 'elevenlabs'"
           :step="0.1"
@@ -97,12 +170,25 @@
           placeholder="Style"
           disableCharacters
         /> -->
-        <TextField v-if="values.provider === 'elevenlabs'" label="Use Speaker Boost" name="useSpeakerBoost" required
-          placeholder="Use Speaker Boost" disableCharacters />
-        <SelectField v-if="values.provider === 'deepgram'" name="voice" label="voice" placeholder="Select voice"
-          helperText="Select your voice." :options="voices" required />
+        <TextField
+          v-if="values.provider === 'elevenlabs'"
+          label="Use Speaker Boost"
+          name="useSpeakerBoost"
+          required
+          placeholder="Use Speaker Boost"
+          disableCharacters
+        />
+        <SelectField
+          v-if="values.provider === 'deepgram'"
+          name="voice"
+          label="voice"
+          placeholder="Select voice"
+          helperText="Select your voice."
+          :options="voices"
+          required
+        />
       </div>
-      <div class="flex w-full justify-end mt-2">
+      <div class="mt-2 flex w-full justify-end">
         <UiButton color="primary" type="submit" :loading="isLoading">
           Submit
         </UiButton>
@@ -112,24 +198,23 @@
 </template>
 
 <script setup>
-  import { getValue } from "@unovis/ts";
   import { useForm } from "vee-validate";
   import { textToSpeechValidation } from "~/validationSchema/textToSpeechValidation";
 
-  const { handleSubmit, setFieldValue, values, resetForm ,errors} = useForm({
+  const { handleSubmit, setFieldValue, values, resetForm, errors } = useForm({
     initialValues: {
       multiple: [],
     },
     validationSchema: toTypedSchema(textToSpeechValidation),
   });
-  const isLoading = ref(false)
+  const isLoading = ref(false);
 
   watch(errors, (newValues) => {
-    console.log(newValues,values)
+    console.log(newValues, values);
     if (newValues) {
-      console.log("ERRORS", newValues)
+      console.log("ERRORS", newValues);
     }
-  })
+  });
   const providers = [
     {
       label: "google",
@@ -267,25 +352,23 @@
     if (botData.textToSpeechConfig.voice) {
       setFieldValue("voice", botData.textToSpeechConfig.voice);
     }
-    console.log(values);
   }
-const botDetails = ref(await getVoiceBotDetails(route.params.id));
+  const botDetails = ref(await getVoiceBotDetails(route.params.id));
 
-watchEffect(() => {
-  if (botDetails.value) {
-    const userName = botDetails.value?.name ?? 'Unknown Bot Name';
-    useHead({
-      title: `Voice Bot | ${userName} - Text To Speech Config`,
-    });
-  }
-});
+  watchEffect(() => {
+    if (botDetails.value) {
+      const userName = botDetails.value?.name ?? "Unknown Bot Name";
+      useHead({
+        title: `Voice Bot | ${userName} - Text To Speech Config`,
+      });
+    }
+  });
 
   const onSubmit = handleSubmit(async (values) => {
-    isLoading.value = true
+    isLoading.value = true;
     // setFieldValue("passwordConfirm", values.password);
     // setFieldValue("firstName", 'appu');
     // setFieldValue("crm", "zoho-crm");
-    console.log(values);
 
     await $fetch(`/api/voicebots/${route.params.id}`, {
       method: "PUT",
@@ -293,7 +376,7 @@ watchEffect(() => {
         textToSpeechConfig: { ...values },
       },
     });
-      toast.success("Updated successfully");
-      isLoading.value = false
+    toast.success("Updated successfully");
+    isLoading.value = false;
   });
 </script>

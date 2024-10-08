@@ -1,47 +1,99 @@
 <template>
-  <DialogWrapper v-model="modalState" :title="modalProps?.id ? `Edit CRM` : 'Link CRM'">
+  <DialogWrapper
+    v-model="modalState"
+    :title="modalProps?.id ? `Edit CRM` : 'Link CRM'"
+  >
     <form @submit="handleAddIntegration">
-
       <div class="flex flex-col gap-3">
-        <SelectField name="integrationId" :multiple="false" :required="true" label="Select Connected CRM"
-          placeholder="Select Connected CRM" :options="integrationsData.map((integration) => ({
-          value:integration.id,
-          label:integration.name,
-        }))" />
-        <div v-if="
-          integrationsData.find(
-            (integration) => integration.id === values.integrationId,
-          )?.crm === 'zoho-bigin'
-        ">
-          <SelectField name="pipelineId" :multiple="false" :required="true" label="Select Pipeline"
+        <SelectField
+          name="integrationId"
+          :multiple="false"
+          :required="true"
+          label="Select Connected CRM"
+          placeholder="Select Connected CRM"
+          :options="
+            integrationsData.map((integration) => ({
+              value: integration.id,
+              label: integration.name,
+            }))
+          "
+        />
+        <div
+          v-if="
+            integrationsData.find(
+              (integration) => integration.id === values.integrationId,
+            )?.crm === 'zoho-bigin'
+          "
+        >
+          <SelectField
+            name="pipelineId"
+            :multiple="false"
+            :required="true"
+            label="Select Pipeline"
             placeholder="Select Pipeline"
-            :options="pipelines.map((pipe)=>({value:pipe.id, label:pipe.display_label}))" />
+            :options="
+              pipelines.map((pipe) => ({
+                value: pipe.id,
+                label: pipe.display_label,
+              }))
+            "
+          />
         </div>
         <div v-if="values.pipelineId && values.integrationId">
-          <SelectField name="stageId" :multiple="false" :required="true" :label="'Select Stage'"
-            :options="stages.map((stage)=>({value:stage.id, label:stage.display_value}))" />
+          <SelectField
+            name="stageId"
+            :multiple="false"
+            :required="true"
+            :label="'Select Stage'"
+            :options="
+              stages.map((stage) => ({
+                value: stage.id,
+                label: stage.display_value,
+              }))
+            "
+          />
         </div>
-        <div v-if="
-          integrationsData.find(
-            (integration) => integration.id === values.integrationId,
-          )?.crm === 'zoho-crm'
-        ">
-          <SelectField name="layoutId" :multiple="false" :required="true" label="Select Layout"
-            placeholder="Select Layout" :options="layouts.map((layout)=>({value:layout.id, label:layout.name}))" />
+        <div
+          v-if="
+            integrationsData.find(
+              (integration) => integration.id === values.integrationId,
+            )?.crm === 'zoho-crm'
+          "
+        >
+          <SelectField
+            name="layoutId"
+            :multiple="false"
+            :required="true"
+            label="Select Layout"
+            placeholder="Select Layout"
+            :options="
+              layouts.map((layout) => ({
+                value: layout.id,
+                label: layout.name,
+              }))
+            "
+          />
         </div>
 
-        <div class="flex flex-col gap-3" v-if="
-        integrationsData.find(
-          (integration) => integration.id === values.integrationId,
-        )?.crm === 'sell-do'
-      ">
+        <div
+          class="flex flex-col gap-3"
+          v-if="
+            integrationsData.find(
+              (integration) => integration.id === values.integrationId,
+            )?.crm === 'sell-do'
+          "
+        >
+          <TextField
+            name="campaignId"
+            label="Campaign Id"
+            placeholder="Enter Your Campaign Id"
+          />
 
-
-          <TextField name="campaignId" label="Campaign Id" placeholder="Enter Your Campaign Id" />
-
-
-          <TextField name="ProjectId" label="Project Id" placeholder="Enter Your Project Id" />
-
+          <TextField
+            name="ProjectId"
+            label="Project Id"
+            placeholder="Enter Your Project Id"
+          />
         </div>
       </div>
 
@@ -49,7 +101,6 @@
         Save changes
       </UiButton>
     </form>
-
   </DialogWrapper>
 </template>
 <script setup lang="ts">
@@ -61,8 +112,7 @@
   let layouts = ref([]);
   const stages = ref<any>([]);
   const subPipelines = ref<any>([]);
-  const isLoading = ref(false)
-
+  const isLoading = ref(false);
 
   const modalState = defineModel<{ open: boolean }>({
     default: { open: false },
@@ -85,17 +135,26 @@
 
   // subPipelineField
 
-  watch(()=> values.pipelineId,(newValue)=>{
-    console.log({newValue})
-    handlePipelineChange(newValue)
-  })
+  watch(
+    () => values.pipelineId,
+    (newValue) => {
+      console.log({ newValue });
+      handlePipelineChange(newValue);
+    },
+  );
 
-  watch(()=>values.integrationId,(newValue,oldValue)=>{
-      handleCrmChange(newValue)
-  })
-  watch(()=>values.layoutId,(newValue,oldValue)=>{
-      handleCrmChange(newValue)
-  })
+  watch(
+    () => values.integrationId,
+    (newValue, oldValue) => {
+      handleCrmChange(newValue);
+    },
+  );
+  watch(
+    () => values.layoutId,
+    (newValue, oldValue) => {
+      handleCrmChange(newValue);
+    },
+  );
 
   watch(
     () => modalState.value,
@@ -107,7 +166,6 @@
             `/api/bots/${route.params.id}/integrations/${modalProps.id}`,
           );
           if (crmConfigData) {
-            console.log({ crmConfigData });
             setFieldValue("integrationId", crmConfigData.integrationId);
 
             // Set other fields based on the CRM type
@@ -115,11 +173,10 @@
               (integration: any) =>
                 integration.id === crmConfigData.integrationId,
             );
-            console.log({ selectedCrm });
 
             if (selectedCrm?.crm === "zoho-bigin") {
               setFieldValue("pipelineId", crmConfigData?.metadata?.pipelineId);
-              console.log("stageId", crmConfigData?.metadata?.pipelineObj?.id);
+
               setFieldValue(
                 "stageId",
                 crmConfigData?.metadata?.pipelineObj?.id,
@@ -147,10 +204,12 @@
   );
 
   const handlePipelineChange = async (e: any) => {
-  console.log(pipelines.value
-      .find((pipeline: any) => pipeline.id === e)
-      .sections?.find((section: any) => section.sequence_number === 2));
-  
+    console.log(
+      pipelines.value
+        .find((pipeline: any) => pipeline.id === e)
+        .sections?.find((section: any) => section.sequence_number === 2),
+    );
+
     stages.value = pipelines.value
       .find((pipeline: any) => pipeline.id === e)
       .sections?.find((section: any) => section.sequence_number === 2)
@@ -166,7 +225,7 @@
         }
       },
     );
-    console.log({ matchedCRM });
+
     if (matchedCRM.crm === "zoho-bigin") {
       const data: any = await $fetch(
         `/api/org/integrations/zoho-bigin/pipelines?id=${matchedCRM.id}`,
@@ -190,14 +249,14 @@
     refresh: integrationRefresh,
   } = await useLazyFetch("/api/org/integrations", {
     server: false,
-    query:{
-      q:'crm'
+    query: {
+      q: "crm",
     },
     default: () => [],
   });
 
   const handleAddIntegration = handleSubmit((value: any) => {
-    isLoading.value = true
+    isLoading.value = true;
     let pipelineObj: any = {};
     let layoutObj: any = {};
 
@@ -241,7 +300,7 @@
         onSuccess: () => {
           emit("success");
           toast.success("Integration updated successfully");
-          isLoading.value = false
+          isLoading.value = false;
         },
       });
     } else {
@@ -255,7 +314,7 @@
         onSuccess: () => {
           emit("success");
           toast.success("Integration created successfully");
-          isLoading.value = false
+          isLoading.value = false;
         },
       });
     }

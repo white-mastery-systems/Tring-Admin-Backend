@@ -3,7 +3,6 @@ const db = useDrizzle();
 export const createNumberIntegration = async (
   numberIntegration: InsertNumberIntegration,
 ) => {
-  console.log({ numberIntegration });
   return (
     await db
       .insert(numberIntegrationSchema)
