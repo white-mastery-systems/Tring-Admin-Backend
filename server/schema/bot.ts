@@ -28,7 +28,9 @@ export const chatBotSchema = chatbotSchema.table("bot", {
       widgetPosition: "Right",
       fontFamily: "kanit"
     },
-    prompt: {},
+    prompt:  {
+      errorMessage: "We are currently unavailable, but an agent will get back to you shortly. Thank you for your understanding"
+    },
     crm: {},
     channel: {},
   }),
