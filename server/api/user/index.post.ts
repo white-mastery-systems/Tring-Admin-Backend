@@ -38,34 +38,47 @@ export default defineEventHandler(async (event) => {
     role: "user",
     organizationId: organization_id
   })
-  // console.log({ data })
+
   if(data) {
+    sendEmail(data?.email, "Login credentials", `email: ${data?.email}, password: ${body?.password}`)
     // Checking permission
     const userRolePermission = await db.query.authUserRoleSchema.findFirst({
       where: eq(authUserRoleSchema.id, data.roleId)
     })
     
     if(userRolePermission.permissions.sendEmail === true) {
-      // console.log("inside")
       const zohoData: any = await db.query.adminConfigurationSchema.findFirst({
         where: eq(adminConfigurationSchema.id, 1),
       });
       let metaData = zohoData?.metaData
       if (metaData) {
-        // get customer_id
-        const customer = await db.query.paymentSchema.findFirst({
-          where: eq(paymentSchema.organizationId, organization_id)
+        let customerId
+        const customer = await db.query.authUserSchema.findFirst({
+            where: and(
+              eq(authUserSchema.organizationId, organization_id),
+              eq(authUserSchema.role, "admin")
+            ) 
         })
-        if (customer?.customerId) {
-          const customerId = customer?.customerId
-          const zohoContactPerson = await createContactPerson(organization_id, data, metaData, customerId)
-          // console.log({ zohoContactPerson })
-          if(zohoContactPerson?.status) {
-            await db
-              .update(authUserSchema)
-              .set({ contactPersonId: zohoContactPerson?.data?.contactperson?.contactperson_id })
-              .where(eq(authUserSchema.id, data.id))
+        if(!customer?.customerId) {
+            // create customer in zoho
+          const zohoCustomer = await createZohoCustomer(metaData, customer)
+          if(zohoCustomer) {
+            customerId = zohoCustomer?.data?.customer?.customer_id
+            // update the zoho-customer-id in user schema
+            await updateUser(customer?.id, {
+              customerId
+            });
           }
+        } else {
+          customerId = customer?.customerId
+        }
+        const zohoContactPerson = await createContactPerson(organization_id, data, metaData, customerId)
+
+        if(zohoContactPerson?.status) {
+          await db
+            .update(authUserSchema)
+            .set({ contactPersonId: zohoContactPerson?.data?.contactperson?.contactperson_id })
+            .where(eq(authUserSchema.id, data.id))
         }
       }
     }
