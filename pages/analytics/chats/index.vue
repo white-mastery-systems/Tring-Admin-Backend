@@ -28,7 +28,6 @@
       @row-click="
         (row: any) => {
           return navigateTo(`/analytics/chats/${row.original.id}`);
-          //TODO change this
         }
       "
       @pagination="Pagination"

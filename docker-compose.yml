@@ -37,6 +37,7 @@ services:
       - "NUXT_ADMIN_BASE_URL=https://tring-admin.pripod.com"
       - "NUXT_SECRET_KEY=secretKey"
       - "NUXT_PUBLIC_GOOGLE_ANALYTICS_ID=ddd"
+      - "NUXT_ENV_TYPE=stage"
     volumes:
       - tring-suite_admin:/app/node_modules
       - tring-admin_docs:/app/assets/docs
