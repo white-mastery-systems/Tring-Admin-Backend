@@ -25,8 +25,8 @@ export const listIntegrations = async (
   if (query?.q) {
     if (query?.q === "channel") {
       filters.push(eq(integrationSchema.crm, "whatsapp"));
-    } else {
-      filters.push(ne(integrationSchema.crm, "whatsapp"));
+    } else if(query?.q) {
+      filters.push(eq(integrationSchema.type, query?.q))
     }
   }
 
