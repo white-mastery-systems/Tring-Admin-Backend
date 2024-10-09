@@ -106,9 +106,15 @@ export default defineEventHandler(async (event) => {
             logger.info(`registed phone ${JSON.stringify(registerPhone)}`);
           } catch (err) {
             logger.info(`registed phone err ${JSON.stringify(err)}`);
+            return createError({
+              statusCode: 400,
+              statusMessage: "2FA failed,make sure to use 2FA of owner",
+            });
           }
         }
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     } catch (err: any) {}
   }
   //

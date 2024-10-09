@@ -145,13 +145,3 @@
     </UiTabs>
   </page>
 </template>
-<!-- //TODO Bread crumps for all the pages //TODO leads button is larger in size
-(priority) //TODO table scrolling should be removed //TODO free plan should not
-be able to use more than 50 sessions //TODO billing items should be seperated by
-lines //TODO we should create a new user if the bot id and org id doesn't match
-happens when i bet a bot from other org in the same browser i opened and
-conversed with other org bot //TODO chatbot Customization //TODO chat bot
-preview exactly how it is //TODO ask sateesh to add padding fields in bot
-customisation -->
-<!-- //TODO https://github.com/shadcn-ui/ui/issues/1151 -->
-<!-- //TODO https://www.bigin.com/developer/docs/apis/field-meta.html -->

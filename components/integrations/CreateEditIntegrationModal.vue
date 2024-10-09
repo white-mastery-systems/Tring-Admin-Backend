@@ -40,7 +40,14 @@
           .string({ required_error: "Name is required" })
           .min(1, "Name is required"),
         crm: z
-          .enum(["sell-do", "zoho-crm", "zoho-bigin", "hubspot", "slack"])
+          .enum([
+            "sell-do",
+            "zoho-crm",
+            "zoho-bigin",
+            "hubspot",
+            "slack",
+            "shopify",
+          ])
           .refine(
             (
               value,
@@ -49,7 +56,8 @@
               | "zoho-crm"
               | "zoho-bigin"
               | "hubspot"
-              | "slack" => true,
+              | "slack"
+              | "shopify" => true,
             {
               message: "CRM type is required",
             },

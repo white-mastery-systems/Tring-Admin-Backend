@@ -226,6 +226,7 @@ export const getOrgUsage = async (organizationId: string) => {
     available_quota: org.maxQuota - org.usedQuota,
     wallet_balance: orgAddons[0]?.sum,
     extra_sessions_cost: pricingInformation?.extraSessionCost,
+    gst: org?.metadata?.gst
   };
 };
 

@@ -158,6 +158,12 @@ export default defineEventHandler(async (event) => {
             const response = await regerateAccessToken();
             // return generatedHostedPage();
             return runHostedPageApi({ accessToken: response?.access_token });
+          } else if (err.status === 400) {
+            console.log(err.data);
+            return createError({
+              statusCode: 400,
+              statusMessage: err.data.message,
+            });
           }
         }
       };
@@ -167,6 +173,7 @@ export default defineEventHandler(async (event) => {
       return data;
     }
   } catch (err) {
+    console.log({ error });
     if (err instanceof Error) {
     }
   }

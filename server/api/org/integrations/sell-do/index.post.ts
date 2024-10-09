@@ -124,28 +124,27 @@ export default defineEventHandler(async (event) => {
     };
   }
   // body?.payload?.stage === "unqualified";
-  //TODO remove consoles
-  if (
-    body?.event === "outgoing_call_not_answered" ||
-    body?.event === "unqualified"
-  ) {
-    try {
-      const data = await $fetch(
-        "https://graph.facebook.com/v20.0/448392115020601/messages",
-        {
-          method: "POST",
-          body: waBody,
-          headers: {
-            authorization: `Bearer ${metaToken}`,
-          },
-        },
-      );
+  // if (
+  //   body?.event === "outgoing_call_not_answered" ||
+  //   body?.event === "unqualified"
+  // ) {
+  //   try {
+  //     const data = await $fetch(
+  //       "https://graph.facebook.com/v20.0/448392115020601/messages",
+  //       {
+  //         method: "POST",
+  //         body: waBody,
+  //         headers: {
+  //           authorization: `Bearer ${metaToken}`,
+  //         },
+  //       },
+  //     );
 
-      return data;
-    } catch (err: any) {
-      logger.info(`error ${JSON.stringify(err)} ${err.message}`);
-    }
-  }
+  //     return data;
+  //   } catch (err: any) {
+  //     logger.info(`error ${JSON.stringify(err)} ${err.message}`);
+  //   }
+  // }
 
   // const components: any[] = generateTemplateComponents([
   //   body?.fullName,
