@@ -1,6 +1,6 @@
 <template>
   <Page title="My Account" :disable-back-button="true">
-    <UiTabs default-value="PersonalDetails" class="w-full self-start">
+    <UiTabs :default-value="tabValue" class="w-full self-start">
       <UiTabsList class="grid w-full max-w-[50%] grid-cols-3">
         <UiTabsTrigger
           value="PersonalDetails"
@@ -52,53 +52,58 @@
   </Page>
 </template>
 <script setup lang="ts">
-  useHead({
-    title: "Account",
-  });
+    useHead({
+      title: "Account",
+    });
 
-  const logoutModal = ref(false);
+    const logoutModal = ref(false);
+    const route  = useRoute();
+    const tabValue =    ref("PersonalDetails");
+    if(route?.query?.tab ==='company-details'){
+     tabValue.value =  "companyDetails"
+    }
 
-  const confirmModel = () => {
-    logoutModal.value = true;
-    localStorage.clear();
-  };
+    const confirmModel = () => {
+      logoutModal.value = true;
+      localStorage.clear();
+    };
 
-  const handleLogout = async () => {
-    authHandlers.logout();
-    logoutModal.value = false;
-    navigateTo({ name: "auth-sign-in" });
-  };
+    const handleLogout = async () => {
+      authHandlers.logout();
+      logoutModal.value = false;
+      navigateTo({ name: "auth-sign-in" });
+    };
 
-  const isUpdating = ref(false);
-  // const handleAccountUpdate = handleSubmit(async (values: any) => {
-  //   try {
-  //     isUpdating.value = true;
+    const isUpdating = ref(false);
+    // const handleAccountUpdate = handleSubmit(async (values: any) => {
+    //   try {
+    //     isUpdating.value = true;
 
-  //     if (tab.value === "companyDetails") {
-  //       await $fetch("/api/org", {
-  //         method: "PUT",
-  //         body: values,
-  //       });
-  //       toast.success("Company Details updated successfully");
-  //     } else {
-  //       await $fetch("/api/user", { method: "PUT", body: values });
-  //       refreshUser();
-  //       toast.success("Account updated successfully");
-  //       if (tab.value === "privacy") {
-  //         resetForm();
-  //       }
-  //     }
-  //   } catch (e) {
-  //     console.error(e);
-  //     toast.error("Failed to update account, please try again");
-  //   } finally {
-  //     isUpdating.value = false;
-  //   }
-  // });
+    //     if (tab.value === "companyDetails") {
+    //       await $fetch("/api/org", {
+    //         method: "PUT",
+    //         body: values,
+    //       });
+    //       toast.success("Company Details updated successfully");
+    //     } else {
+    //       await $fetch("/api/user", { method: "PUT", body: values });
+    //       refreshUser();
+    //       toast.success("Account updated successfully");
+    //       if (tab.value === "privacy") {
+    //         resetForm();
+    //       }
+    //     }
+    //   } catch (e) {
+    //     console.error(e);
+    //     toast.error("Failed to update account, please try again");
+    //   } finally {
+    //     isUpdating.value = false;
+    //   }
+    // });
 
-  const tab = ref("personalDetails");
-  companyDetails();
-  const selectedChannel = (value: any) => {
-    tab.value = value;
-  };
+    const tab = ref("personalDetails");
+    companyDetails();
+    const selectedChannel = (value: any) => {
+      tab.value = value;
+    };
 </script>
