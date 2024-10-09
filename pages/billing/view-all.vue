@@ -103,9 +103,7 @@
   const route = useRoute();
   const { user } = await useUser();
   console.log({ user });
-  // const { data: orgDetails, status } = await useLazyFetch("/api/org", {
-  //   method: "GET",
-  // });
+
   const [firstName, lastName] = user.value?.username?.split(" ") || [];
   const chatBillingVariation = ref([
     {
@@ -468,10 +466,11 @@
         });
       }
       //TODO add org details in api endpoint
-      if (!orgBilling?.gst) {
+      if (!orgBilling.value?.gst) {
         toast.error("Please update GST information to continue");
         return navigateTo({
           name: "account",
+          query: { tab: "company-details" },
         });
       }
       const locationData = await $fetch<{
@@ -481,24 +480,34 @@
         region: string;
       }>(`https://ipv4-check-perf.radar.cloudflare.com/api/info`);
 
-      const hostedPageUrl = await $fetch<{ hostedpage: { url: string } }>(
-        `/api/billing/subscription?type=${filters.value.type}`,
-        {
-          method: "POST",
-          body: {
-            plan: plan,
-            locationData: locationData,
-            redirectUrl: `${window.location.origin}/billing/billing-confirmation`,
+      try {
+        const hostedPageUrl = await $fetch<{ hostedpage: { url: string } }>(
+          `/api/billing/subscription?type=${filters.value.type}`,
+          {
+            method: "POST",
+            body: {
+              plan: plan,
+              locationData: locationData,
+              redirectUrl: `${window.location.origin}/billing/billing-confirmation`,
+            },
           },
-        },
-      );
+        );
 
-      navigateTo(hostedPageUrl?.hostedpage?.url, {
-        external: true,
-        open: {
-          target: "_blank",
-        },
-      });
+        navigateTo(hostedPageUrl?.hostedpage?.url, {
+          external: true,
+          open: {
+            target: "_blank",
+          },
+        });
+      } catch (err) {
+        toast.error("ERROR: " + err.data.statusMessage);
+        if (err.data.statusMessage?.includes("gst_no")) {
+          navigateTo({
+            name: "account",
+            query: { tab: "company-details" },
+          });
+        }
+      }
     }
   };
 </script>

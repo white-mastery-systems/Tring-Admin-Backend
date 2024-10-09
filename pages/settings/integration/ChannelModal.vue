@@ -58,6 +58,7 @@
         setFieldValue("code", channelSingleDetail.metadata?.code);
       } else {
         resetForm();
+        fbVerified.value = false;
       }
     },
   );
@@ -162,16 +163,6 @@
       // document.getElementById("session-info-response").textContent = JSON.stringify(data, null, 2);
     } catch {}
   });
-  const handleConnectButtonClick = () => {
-    // window?.fbAsyncInit = function () {
-    //   FB.init({
-    //     appId: '3404499776522072',
-    //     autoLogAppEvents: true,
-    //     xfbml: true,
-    //     version: 'v20.0'
-    //   });
-    // };
-  };
 
   const handleConnect = handleSubmit(async (values: any) => {
     isLoading.value = true;
@@ -191,17 +182,28 @@
           method: "PUT",
           body: payload,
         });
-        toast.success("Integration update successfully");
+        toast.success("Integration updated successfully");
       } else {
-        await $fetch("/api/org/integrations", {
-          method: "POST",
-          body: payload,
-        });
-        toast.success("Integration added successfully");
+        try {
+          await $fetch("/api/org/integrations", {
+            method: "POST",
+            body: payload,
+          });
+          toast.success("Integration added successfully");
+        } catch (err) {
+          console.log({ err });
+          toast.error(err.data.statusMessage);
+        }
       }
       emit("success");
+      fbVerified.value = false;
     } catch (error: any) {
-      toast.error(error?.data?.data[0].message);
+      console.log({ error });
+      if (error.data.statusMessage) {
+        toast.error(error.data.statusMessage);
+      } else {
+        toast.error(error?.data?.data[0].message);
+      }
       isLoading.value = false;
     }
     isLoading.value = false;
@@ -240,10 +242,6 @@
       >
       </TextField>
 
-      <!-- <TextField name="pid" label="pid" placeholder="Enter" helperText="" required>
-      </TextField> -->
-      <!-- <TextField name="token" label="Token" placeholder="Enter Token" helperText="" required>
-      </TextField> -->
       <div class="flex items-center justify-end">
         <UiButton
           v-if="!fbVerified"
@@ -259,103 +257,3 @@
     </form>
   </DialogWrapper>
 </template>
-<!-- https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=ZohoBigin.settings.ALL,ZohoBigin.modules.ALL&redirect_uri=https://tring-admin.pripod.com/settings/integration/zoho-bigin&prompt=consent&access_type=offline -->
-
-<!-- 
-<script setup lang="ts">
-import { onMounted } from 'vue';
-
-// Your form setup, validations, and modal state code (same as before)
-// ...
-
-const launchWhatsAppSignup = () => {
-  // FB.login(fbLoginCallback, {
-  //   config_id: '', // Your configuration ID
-  //   response_type: 'code',
-  //   override_default_response_type: true,
-  //   extras: {
-  //     setup: {},
-  //     featureType: '',
-  //     sessionInfoVersion: '2',
-  //   }
-  // });
-};
-
-const fbLoginCallback = (response: any) => {
-  if (response.authResponse) {
-    const code = response.authResponse.code;
-    
-    // Send code to your backend for further processing.
-  }
-  // document.getElementById("sdk-response").textContent = JSON.stringify(response, null, 2);
-};
-
-// Initialize the Facebook SDK
-onMounted(() => {
-  // window.fbAsyncInit = function () {
-  //   FB.init({
-  //     appId: '', // Your Facebook app ID
-  //     autoLogAppEvents: true,
-  //     xfbml: true,
-  //     version: 'v20.0',
-  //   });
-  // };
-
-  // // Load the Facebook SDK
-  // const sdkScript = document.createElement('script');
-  // sdkScript.src = "https://connect.facebook.net/en_US/sdk.js";
-  // sdkScript.async = true;
-  // sdkScript.defer = true;
-  // sdkScript.crossorigin = "anonymous";
-  // document.body.appendChild(sdkScript);
-});
-
-// Handle messages from the Facebook embedded signup
-window.addEventListener('message', (event) => {
-  if (event.origin !== "https://www.facebook.com" && event.origin !== "https://web.facebook.com") {
-    return;
-  }
-  try {
-    const data = JSON.parse(event.data);
-    if (data.type === 'WA_EMBEDDED_SIGNUP') {
-      if (data.event === 'FINISH') {
-        const { phone_number_id, waba_id } = data.data;
-        
-      } else if (data.event === 'CANCEL') {
-        const { current_step } = data.data;
-        console.warn("Cancel at:", current_step);
-      } else if (data.event === 'ERROR') {
-        const { error_message } = data.data;
-        console.error("Error:", error_message);
-      }
-    }
-    // document.getElementById("session-info-response").textContent = JSON.stringify(data, null, 2);
-  } catch {
-    
-  }
-});
-</script>
-<template>
-  <DialogWrapper v-model="channelModalState" :title="channelModalState.id ? 'Modify Channel' : 'Add New Channel'">
-    <form @submit="handleConnect" class="space-y-2">
-      <TextField name="name" label="Name" placeholder="Enter Your Channel Name" helperText="" required />
-      <SelectField name="channel" label="Channel" placeholder="Select a channel" helperText="" :options="[
-        { value: 'whatsapp', label: 'WhatsApp' },
-      ]" required />
-      <TextField name="pid" label="pid" placeholder="Enter" helperText="" required />
-      <TextField name="token" label="Token" placeholder="Enter Token" helperText="" required />
-
-      <div class="flex items-center justify-end">
-        <UiButton type="submit" class="mt-2" color="primary"> Submit </UiButton>
-      </div>
-
-      <UiButton @click="launchWhatsAppSignup" color="primary" type="button">Login With Facebook</UiButton>
-
-      <p>Session info response:</p>
-      <pre id="session-info-response"></pre>
-
-      <p>SDK response:</p>
-      <pre id="sdk-response"></pre>
-    </form>
-  </DialogWrapper>
-</template> -->
