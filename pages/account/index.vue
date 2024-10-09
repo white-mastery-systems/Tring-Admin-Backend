@@ -1,6 +1,6 @@
 <template>
   <Page title="My Account" :disable-back-button="true">
-    <UiTabs default-value="PersonalDetails" class="w-full self-start">
+    <UiTabs :default-value="defaultTab" class="w-full self-start">
       <UiTabsList class="grid w-full grid-cols-3">
         <UiTabsTrigger value="PersonalDetails" @click="selectedChannel('PersonalDetails')">
           <span class="sm:hidden">Personal</span>
@@ -44,8 +44,12 @@ useHead({
   title: 'Account',
 })
 
-
-
+const defaultTab = ref("PersonalDetails");
+const route = useRoute()
+  if(route.query.tab  ==='company-details'){
+    defaultTab.value = 'companyDetails'
+  }
+  
 const logoutModal = ref(false);
 
 const confirmModel = () => {
