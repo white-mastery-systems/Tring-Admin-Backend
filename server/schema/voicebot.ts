@@ -2,46 +2,82 @@ import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { boolean, jsonb, timestamp, uuid, varchar, unique, index } from "drizzle-orm/pg-core";
 import { voiceBotSchema } from ".";
 import { integrationSchema, organizationSchema } from "./admin";
-import {botUserSchema} from './bot'
+
 export const voicebotSchema = voiceBotSchema.table("bot", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name").notNull(),
+  mobile: varchar("mobile"),
+  countryCode: varchar("country_code"),
   role: varchar("role"),
   domain: varchar("domain").array(),
   active: boolean("active").default(false),
   metaData: jsonb("metadata"),
   llmConfig: jsonb("llm_config").default({
-    provider: "openAi",
+    provider: "openai",
     model: "gpt-4o-mini",
-    tokens: "2048",
-    temperature: 1.0,
+    temperature: 0,
     role: "Assist-booking",
+    configuration: 0,
+    top_p: "0.95",
+    top_k: "64",
+    max_output_token: "4096",
+    prompt: ""
   }),
   textToSpeechConfig: jsonb("text_to_speech_config").default({
     provider: "google",
-    language: "en-IN",
-    voiceType: "hi-IN-Neural2-A",
-    volumeTypeGrainDb: 0.5,
-    pitch: 1.0,
-    effectsProfileId: ["telephony-class-application"],
-    speakingRate: 0
+    google: {
+      name: "en-IN-Neural2-A",
+      speaking_rate: 1,
+      pitch: 1,
+      volume_gain_db: 0.5,
+      effects_profile_id: [
+        "telephony-class-application"
+      ]
+    }
   }),
   speechToTextConfig: jsonb("speech_to_text_config").default({
     provider: "deepgram",
-    language: "en-in",
-    model: "nova-2",
-    phraseSets: [
-        {
-            "value": ""
-        }
-    ],
-    keywords: [],
-    amplificationFactor: "2",
-    utteranceEndMs: "1000",
-    endpointing: "550"
+    deepgram: {
+      version: "1",
+      encoding: "MULAW",
+      live_options: {
+          model: "nova-2",
+          smart_format: true,
+          channels: 1,
+          sample_rate: 8000,
+          interim_results: true,
+          utterance_end_ms: "1000",
+          vad_events: true,
+          endpointing: 550,
+          no_delay: true,
+          punctuate: true,
+          diarize: false,
+          filler_words: false,
+          numerals: true,
+          profanity_filter: true,
+          keywords: []
+      },
+      addons: {
+          measurements: "true",
+          dictation: "true"
+      },
+      amplification_factor: 2,
+      noise_gate: 0
+    }
   }),
-  talentConfig: jsonb("talent_config").default({}),
-  intents: varchar("intents").array(), // Array of strings
+  client_config: jsonb("client_config").default({
+    agent_name: "Jenna",
+    llm_caching: false,
+    dynamic_caching: false,
+    distance_threshold: 0.1,
+    tools: [],
+    default_tools: [
+        "currentDate",
+        "concludeCall"
+    ]
+  }),
+  // talentConfig: jsonb("talent_config").default({}),
+  // intents: varchar("intents").array(), // Array of strings
   ivrConfig: jsonb("ivr_config"),
   identityManagement: jsonb("identity_management"),
   createdAt: timestamp("created_at").defaultNow(),
@@ -69,6 +105,21 @@ export const voicebotIntegrationSchema = voiceBotSchema.table(
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
 );
+
+export const voiceBotUserSchema = voiceBotSchema.table("bot_user",{
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  name: varchar("name").notNull(),
+  mobile: varchar("mobile").notNull(),
+  metadata: jsonb("metadata"),
+  botId: uuid("bot_id")
+    .references(() => voicebotSchema.id)
+    .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  organizationId: uuid("organization_id")
+    .references(() => organizationSchema.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
 
 export const callLogSchema = voiceBotSchema.table("call_logs", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -101,7 +152,7 @@ export const voiceBotLeadSchema = voiceBotSchema.table("leads", {
     .references(() => voicebotSchema.id)
     .notNull(),
   botUserId: uuid("bot_user_id")
-    .references(() => botUserSchema.id)
+    .references(() => voiceBotUserSchema.id)
     .notNull(),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)
