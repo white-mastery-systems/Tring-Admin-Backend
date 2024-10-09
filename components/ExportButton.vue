@@ -26,6 +26,7 @@
       if (!exportStatus.status) {
         return;
       }
+      console.log(exportStatus, "EXPORT STATUS");
       if (exportStatus.type === "csv") {
         const csvRows = [];
         // Headers
@@ -60,13 +61,8 @@
   );
   const emit = defineEmits<{ (e: "export"): void }>();
 
-  watch(
-    () => props.rows,
-    (newValue) => {},
-    { deep: true, immediate: true },
-  );
   function exportAsCSV() {
-    if (modalvalue.value?.status) {
+    if (modalvalue.value) {
       modalvalue.value.status = false;
       modalvalue.value.type = "csv";
     }
@@ -74,7 +70,8 @@
     emit("export");
   }
   const exportToExcel = () => {
-    if (modalvalue.value?.status) {
+    if (modalvalue.value) {
+      console.log("sss");
       modalvalue.value.status = false;
       modalvalue.value.type = "xlsx";
     }

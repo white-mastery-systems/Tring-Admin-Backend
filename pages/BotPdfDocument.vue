@@ -58,7 +58,6 @@
                   <img src="assets\icons\more_horiz.svg" width="30" />
                 </UiPopoverTrigger>
                 <UiPopoverContent align="end" class="w-40">
-                  <!-- TODO: Add your content here @Sathish1-M -->
                 </UiPopoverContent>
               </UiPopover>
               <!-- <img src="assets\icons\more_horiz.svg" width="30"> -->

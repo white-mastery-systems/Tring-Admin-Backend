@@ -102,6 +102,10 @@
   const router = useRouter();
   const route = useRoute();
   const { user } = await useUser();
+  console.log({ user });
+  // const { data: orgDetails, status } = await useLazyFetch("/api/org", {
+  //   method: "GET",
+  // });
   const [firstName, lastName] = user.value?.username?.split(" ") || [];
   const chatBillingVariation = ref([
     {
@@ -459,6 +463,13 @@
       //TODO fix this
       if (!user?.value?.mobile) {
         toast.error("Please update all the details to continue");
+        return navigateTo({
+          name: "account",
+        });
+      }
+      //TODO add org details in api endpoint
+      if (!orgBilling?.gst) {
+        toast.error("Please update GST information to continue");
         return navigateTo({
           name: "account",
         });

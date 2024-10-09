@@ -15,29 +15,29 @@ export const useUser = async () => {
     localStorage.clear();
   };
   const refreshUser = async () => {
-  try {
-    const data = await $fetch<User>("/api/user");
-    if (data) {
-      const storedUser: any = localStorage.getItem("user");
-      user.value = storedUser ? JSON.parse(storedUser) : null;
-      localStorage.setItem("user", JSON.stringify(data));
-      navigateTo("/")
-    } else {
+    try {
+      const data = await $fetch<User>("/api/user");
+      if (data) {
+        const storedUser: any = localStorage.getItem("user");
+        user.value = storedUser ? JSON.parse(storedUser) : null;
+        localStorage.setItem("user", JSON.stringify(data));
+        navigateTo("/");
+      } else {
+        localStorage.clear();
+        navigateTo("/auth/sign-in");
+      }
+    } catch (error) {
+      console.error("Error refreshing user:", error);
       localStorage.clear();
       navigateTo("/auth/sign-in");
     }
-  } catch (error) {
-    console.error("Error refreshing user:", error);
-    localStorage.clear();
-    navigateTo("/auth/sign-in");
-  }
-};
-const updateUser = () => {
-  const storedUser = localStorage.getItem("user");
-  user.value = storedUser ? JSON.parse(storedUser) : null;
-};
+  };
+  const updateUser = () => {
+    const storedUser = localStorage.getItem("user");
+    user.value = storedUser ? JSON.parse(storedUser) : null;
+  };
 
-const handleStorageChange = (event: StorageEvent) => {
+  const handleStorageChange = (event: StorageEvent) => {
     if (event.key === "user") {
       const newUser = JSON.parse(event.newValue || "null");
       if (JSON.stringify(newUser) !== JSON.stringify(user.value)) {
@@ -49,7 +49,7 @@ const handleStorageChange = (event: StorageEvent) => {
 
   onMounted(() => {
     // Set up the event listener when the component is mounted
-   window.addEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
   });
 
   onUnmounted(() => {
@@ -71,8 +71,6 @@ export const companyDetails = async () => {
       method: "GET",
     });
     localStorage.setItem("orgDetails", JSON.stringify(orgDetails));
-   return { orgDetails: orgDetails };
+    return { orgDetails: orgDetails };
   }
 };
-
-//TODO logger https://github.com/unjs/nitro/discussions/334
