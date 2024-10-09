@@ -24,6 +24,7 @@ export default defineEventHandler(async (event) => {
     .object({
       name: z.string().min(3, "Intent should have atleast 3 characters"),
       crm: z.nativeEnum(CRMType),
+      type: z.string(),
       metadata: z.object({
         apiKey: z.string().optional(),
         status: z.string().optional(),
