@@ -72,6 +72,7 @@ export const integrationSchema = adminSchema.table("integration", {
     .references(() => organizationSchema.id),
   name: varchar("name", { length: 64 }).notNull(),
   crm: varchar("crm", { length: 64 }).notNull(),
+  type: varchar("type"),
   metadata: jsonb("metadata").$type<{
     apiKey?: string,
     code?: string,
