@@ -72,22 +72,25 @@ export const integrationSchema = adminSchema.table("integration", {
     .references(() => organizationSchema.id),
   name: varchar("name", { length: 64 }).notNull(),
   crm: varchar("crm", { length: 64 }).notNull(),
-  type: varchar("type"),
-  metadata: jsonb("metadata").$type<{
-    apiKey?: string,
-    code?: string,
-    scope?: string,
-    location?: string,
-    api_domain?: string,
-    expires_in?: string,
-    token_type?: string,
-    access_token?: string,
-    refresh_token?: string,
-    accountsServer?: string,
-    pid?: string,
-    pin?: string,
-    wabaId?: string
-  }>().default({}).notNull(),
+  type: varchar("type").default("crm"),
+  metadata: jsonb("metadata")
+    .$type<{
+      apiKey?: string;
+      code?: string;
+      scope?: string;
+      location?: string;
+      api_domain?: string;
+      expires_in?: string;
+      token_type?: string;
+      access_token?: string;
+      refresh_token?: string;
+      accountsServer?: string;
+      pid?: string;
+      pin?: string;
+      wabaId?: string;
+    }>()
+    .default({})
+    .notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -190,24 +193,27 @@ export const campaignSchema = adminSchema.table("campaign", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const playgroundDocumentSchema = adminSchema.table("playground_document", {
-  id: uuid("id").notNull().primaryKey().defaultRandom(),
-  name: text("name").notNull(),
-  status: varchar("status", {
-    enum: ["processing", "ready", "error"],
-  })
-    .default("processing")
-    .notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+export const playgroundDocumentSchema = adminSchema.table(
+  "playground_document",
+  {
+    id: uuid("id").notNull().primaryKey().defaultRandom(),
+    name: text("name").notNull(),
+    status: varchar("status", {
+      enum: ["processing", "ready", "error"],
+    })
+      .default("processing")
+      .notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+);
 
 export const promptSchema = adminSchema.table("prompt", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   prompt: text("prompt"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-})
+});
 
 export const templateSchema = adminSchema.table("templates", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -218,7 +224,7 @@ export const templateSchema = adminSchema.table("templates", {
     .references(() => organizationSchema.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-})
+});
 
 // Relations
 export const organizationRelations = relations(
@@ -267,13 +273,15 @@ export type InsertContacts = InferInsertModel<typeof contactSchema>;
 export type SelectCampaign = InferSelectModel<typeof campaignSchema>;
 export type InsertCampaign = InferInsertModel<typeof campaignSchema>;
 
-export type SelectPlaygroundDocument = InferSelectModel<typeof playgroundDocumentSchema>;
-export type InsertPlaygroundDocument = InferInsertModel<typeof playgroundDocumentSchema>;
+export type SelectPlaygroundDocument = InferSelectModel<
+  typeof playgroundDocumentSchema
+>;
+export type InsertPlaygroundDocument = InferInsertModel<
+  typeof playgroundDocumentSchema
+>;
 
 export type SelectTemplates = InferSelectModel<typeof templateSchema>;
 export type InsertTemplates = InferInsertModel<typeof templateSchema>;
-
-
 
 // Validation
 export const zodInsertOrganization = createInsertSchema(organizationSchema, {
@@ -281,4 +289,6 @@ export const zodInsertOrganization = createInsertSchema(organizationSchema, {
     schema.name.min(3, "Name Too Short").max(64, "Name Too Long"),
 });
 
-export const zodInsertPlaygroundDocument = createInsertSchema(playgroundDocumentSchema)
+export const zodInsertPlaygroundDocument = createInsertSchema(
+  playgroundDocumentSchema,
+);

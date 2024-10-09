@@ -17,7 +17,7 @@
     pageSize?: number;
     isLoading?: boolean;
     limit: number;
-    page: number;
+    page: number | string;
     totalCount: number;
     totalPageCount: number;
     height?: number;
