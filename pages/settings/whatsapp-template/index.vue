@@ -35,23 +35,11 @@
           placeholder="Search Template..."
         />
       </div>
-      <DataTable
-        @pagination="Pagination"
-        @limit="
-          ($event) => {
-            (filters.page = '1'), (filters.limit = $event);
-          }
-        "
-        :totalPageCount="totalPageCount"
-        :page="page"
-        :totalCount="totalCount"
-        :data="contactsList"
-        :is-loading="isDataLoading"
-        :columns="columns"
-        :page-size="20"
-        :height="16"
-        height-unit="vh"
-      />
+      <DataTable @pagination="Pagination" @limit="($event) => {
+          (filters.page = '1'), (filters.limit = $event);
+        }
+          " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="contactsList"
+        :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="16" height-unit="vh" />
 
       <ConfirmationModal
         v-model:open="deleteTemplateState.open"
@@ -72,16 +60,12 @@
         "
       />
     </div>
-    <AddEditWhatsappTemplateModal
-      v-if="addWhatappTemplateModalState.open"
-      v-model="addWhatappTemplateModalState"
-      @confirm="
-        () => {
-          addWhatappTemplateModalState.open = false;
-          integrationRefresh();
-        }
-      "
-    />
+    <AddEditWhatsappTemplateModal v-if="addWhatappTemplateModalState.open" v-model="addWhatappTemplateModalState"
+      @confirm="() => {
+      addWhatappTemplateModalState.open = false;
+      integrationRefresh();
+    }
+      " />
   </Page>
 </template>
 <script setup lang="ts">

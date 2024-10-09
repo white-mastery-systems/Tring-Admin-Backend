@@ -120,12 +120,9 @@
         label: 'Bot Details',
         to: `/bot-management/voice-bot/${botDetails.id}/identity-management`,
       },
-    ]"
-    :disableSelector="true"
-    :disable-back-button="false"
-    :disableElevation="false"
-  >
-    <div>
+    ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
+    <div class="pb-2 sm:pb-0">
+
       <form @submit="onSubmit" class="flex flex-col gap-2">
         <div class="flex grid grid-cols-2 gap-3">
           <span>
@@ -162,13 +159,9 @@
           >
           </TextField>
         </div>
-        <div class="flex w-full justify-end">
-          <UiButton
-            type="submit"
-            class="w-[120px] self-end bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
-            size="lg"
-            :loading="isLoading"
-          >
+        <div class="flex w-full justify-end mt-1">
+          <UiButton type="submit" class="w-[120px] self-end bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
+            size="lg" :loading="isLoading">
             Submit
           </UiButton>
         </div>

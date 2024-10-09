@@ -1,30 +1,33 @@
 <template>
-  <form class="space-y-2" @submit="handleAccountUpdate">
-    <div class="grid grid-cols-2 gap-3">
-      <TextField  helperText="Goods Service Tax" type="text" name="name" label="Company Name" placeholder="Enter your Company Name" :required="true" />
+  <div class="pb-2">
+    <form class="space-y-2" @submit="handleAccountUpdate">
+      <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:md:grid-cols-2 gap-3">
+        <TextField helperText="Goods Service Tax" type="text" name="name" label="Company Name"
+          placeholder="Enter your Company Name" :required="true" />
 
-      <SelectField name="industry" label="Industry" placeholder="Select Role"
-        :options="industry.map((role) => ({ label: role, value: role }))" :required="true" />
-      <div v-if="values.industry === 'Other'">
-        <TextField type="text" name="otherRole" label="Other Industry" :required="true" />
-      </div>
-
-      <SelectField name="avgTraffic" label="Monthly Website Traffic" placeholder="Select Traffic"
-        :options="avgTraffic.map((role) => ({ label: role, value: role }))" :required="true" />
-
-      <SelectField name="employeeCount" label="No. of Employees " placeholder="Select Employees"
-        :options="employeeCount.map((role) => ({ label: role, value: role }))" :required="true" />
-         
-        <div class="mt-2">
-        <TextField type="text" name="gst" label="GST" helperText="Enter your 15-digit GSTIN" placeholder="Enter Your Gst" />
+        <SelectField name="industry" label="Industry" placeholder="Select Role"
+          :options="industry.map((role) => ({ label: role, value: role }))" :required="true" />
+        <div v-if="values.industry === 'Other'">
+          <TextField type="text" name="otherRole" label="Other Industry" :required="true" />
         </div>
-    </div>
-          <div class="text-right">
+        <SelectField name="avgTraffic" label="Monthly Website Traffic" placeholder="Select Traffic"
+          :options="avgTraffic.map((role) => ({ label: role, value: role }))" :required="true" />
+
+        <SelectField name="employeeCount" label="No. of Employees " placeholder="Select Employees"
+          :options="employeeCount.map((role) => ({ label: role, value: role }))" :required="true" />
+
+        <div class="mt-2">
+          <TextField type="text" name="gst" label="GST" helperText="Enter your 15-digit GSTIN"
+            placeholder="Enter Your Gst" />
+        </div>
+      </div>
+      <div class="text-right">
         <UiButton type="submit" color="primary" size="lg" :loading="isLoading">
           Submit
         </UiButton>
       </div>
-  </form>
+    </form>
+  </div>
 </template>
 
 <script setup lang="ts">

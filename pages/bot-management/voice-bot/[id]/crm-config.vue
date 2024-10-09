@@ -19,7 +19,6 @@
         Link CRM
       </UiButton>
     </template>
-    {{ console.log({ integrations }) }}
     <DataTable :columns="columns" :data="integrations" :page-size="8" :is-loading="false" />
     <CreateEditCrmConfig v-model="crmConfigModalState" :id="crmConfigModalState?.id" @success="handleSuccess" />
     <ConfirmationModal v-model:open="deleteIntegrationState.open" title="Confirm Removal"

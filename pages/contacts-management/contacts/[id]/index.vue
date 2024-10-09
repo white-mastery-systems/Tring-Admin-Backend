@@ -1,5 +1,14 @@
 <template>
-  <Page :title="getSingleDetails?.name" :disableSelector="true" :disable-elevation="true" :disable-back-button="false">
+  <Page :title="getSingleDetails?.name" :bread-crumbs="[
+    {
+    label: `${getSingleDetails?.name}`,
+      to: `/contacts-management/contacts`,
+    },
+    {
+      label: 'Add Contact',
+      to: `/contacts-management/contacts`,
+    },
+  ]" :disableSelector="true" :disable-elevation="true" :disable-back-button="false">
     <!-- {{ getSingleDetails }} -->
     <template #actionButtons>
       <div class="flex gap-4">
