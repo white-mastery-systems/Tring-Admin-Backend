@@ -15,31 +15,12 @@
 </template>
 <script setup lang="ts">
   import { onMounted, ref } from "vue";
+  import { useRouter } from "vue-router";
 
   const route = useRoute();
   const routeName = ref(route.name);
   onMounted(async () => {
     const eventSource = new EventSource("/api/sse");
-    // toast.success("Connection established", {
-    //   position: "bottom-right",
-    //   closeButton: true,
-    // });
-    // toast.success(`A new lead created generated -- name `, {
-    //   duration: 10000,
-    //   // position: "bottom-right",
-    //   closeButton: true,
-    //   description: `mobile/phone`,
-    //   action: {
-    //     label: "View",
-    //     onClick: () => {
-    //       return navigateTo({
-    //         name: "analytics-leads-id",
-    //         params: { id: "123" },
-    //       });
-    //     },
-    //   },
-    // });
-
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.event === "leads") {
@@ -65,7 +46,10 @@
 
       // Update your component state with the received data
     };
-
+    /*************  ✨ Codeium Command ⭐  *************/
+    // Handle any errors that occur when receiving events, such as network errors
+    // or parser errors.
+    /******  5fd36ab0-c1a6-4a11-8f92-1cad8884cf1b  *******/
     eventSource.onerror = (error) => {
       console.error("SSE error:", error);
     };
@@ -74,4 +58,18 @@
       eventSource.close(); // Close the connection when the component unmounts
     };
   });
+
+  const loading = ref(false);
+  const router = useRouter();
+
+  watch(
+    () => router.currentRoute.value,
+    (to, from) => {
+      console.log(loading, "LOADING");
+      loading.value = true;
+      setTimeout(() => {
+        loading.value = false; // Simulate loading completion after 1 second
+      }, 1000);
+    },
+  );
 </script>
