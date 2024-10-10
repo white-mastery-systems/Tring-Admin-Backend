@@ -26,10 +26,11 @@ export const chatBotSchema = chatbotSchema.table("bot", {
       color: "236 61% 54%",
       secondaryColor: "236, 61%, 74%",
       widgetPosition: "Right",
-      fontFamily: "kanit"
+      fontFamily: "kanit",
     },
-    prompt:  {
-      errorMessage: "We are currently unavailable, but an agent will get back to you shortly. Thank you for your understanding"
+    prompt: {
+      errorMessage:
+        "We are currently unavailable, but an agent will get back to you shortly. Thank you for your understanding",
     },
     crm: {},
     channel: {},
@@ -69,6 +70,7 @@ export const botUserSchema = chatbotSchema.table(
     email: varchar("email", { length: 128 }),
     mobile: varchar("mobile", { length: 16 }),
     countryCode: varchar("country_code"),
+    isNameVerified: boolean("is_name_verified").default(true),
     secondaryEmail: varchar("secondary_email", { length: 128 }).array(),
     secondaryMobile: varchar("secondary_mobile", { length: 16 }).array(),
     metaData: jsonb("metadata"),

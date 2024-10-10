@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     { path: "~/components", pathPrefix: false, extensions: ["vue"] },
   ],
   ssr: false,
+
   modules: [
     "@nuxtjs/tailwindcss",
     "@formkit/auto-animate",
