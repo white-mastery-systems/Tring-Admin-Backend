@@ -95,6 +95,11 @@ export const listChats = async (
         : undefined,
     ),
     with: {
+      bot: {
+        columns: {
+          name: true,
+        },
+      },
       botUser: {
         where: or(
           query?.q

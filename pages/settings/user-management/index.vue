@@ -1,5 +1,5 @@
 <template>
-  <Page title="User Details" :disable-back-button="true">
+  <Page :title="(channel === 'user') ? 'User Details' : 'Role Details'" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-2">
         <UiButton v-if="channel=== 'user'" color="primary" @click="() => {

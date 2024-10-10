@@ -1,8 +1,17 @@
 <template>
-  <page :title="botDetails.name ?? ''" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
+  <page :title="botDetails.name ?? ''" :bread-crumbs="[
+    {
+      label: `${botDetails.name}`,
+      to: `/bot-management/voice-bot`,
+    },
+    {
+      label: 'Voice Bot',
+      to: `/bot-management/voice-bot`,
+    },
+  ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
     custom-back-router="/bot-management/voice-bot">
     <div class="">
-      <div v-if="true" class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]">
+      <div class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]">
         <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
           <div class="items-cetner flex gap-4">
             <div v-if="botDetails.documentId" class="flex items-center gap-[5px] text-[#1abb00]">
@@ -106,25 +115,27 @@
           </UiButton>
         </UiDialogContent>
       </LazyUiDialog>
-      <div v-for="(list, index) in dataList" :key="index">
-        <NuxtLink :to="{ name: list.routeName, params: { id: paramId.params.id } }"
-          class="field_shadow mx-0 my-[17px] flex w-full cursor-pointer items-center justify-between rounded-[10px] bg-[#ffffff] px-[30px] py-[20px] text-[14px] hover:bg-[#fff8eb] hover:text-[#ffbc42]">
-          <div class="flex w-full items-center gap-4 rounded-[10px]">
-            <div class="flex flex-col space-y-2">
-              <div class="flex flex-row gap-3">
-                <span class="bot_name_align font-medium">{{ list.bot }}</span>
+      <div class="pb-8">
+        <div v-for="(list, index) in dataList" :key="index">
+          <NuxtLink :to="{ name: list.routeName, params: { id: paramId.params.id } }"
+            class="field_shadow mx-0 my-[17px] flex w-full cursor-pointer items-center justify-between rounded-[10px] bg-[#ffffff] px-[30px] py-[20px] text-[14px] hover:bg-[#fff8eb] hover:text-[#ffbc42]">
+            <div class="flex w-full items-center gap-4 rounded-[10px]">
+              <div class="flex flex-col space-y-2">
+                <div class="flex flex-row gap-3">
+                  <span class="bot_name_align font-medium">{{ list.bot }}</span>
+                </div>
+                <span class="text-xs text-gray-500">{{ list.helperText }}</span>
               </div>
-              <span class="text-xs text-gray-500">{{ list.helperText }}</span>
+              <Icon v-if="
+                  list.bot === 'Document Management' &&
+                  botDetails.documents.length === 0
+                " class="h-6 w-6 text-red-500" name="nonicons:error-16" />
             </div>
-            <Icon v-if="
-                list.bot === 'Document Management' &&
-                botDetails.documents.length === 0
-              " class="h-6 w-6 text-red-500" name="nonicons:error-16" />
-          </div>
-          <div>
-            <LeftArrowIcon class="w-[30px] hover:text-[#ffbc42]" />
-          </div>
-        </NuxtLink>
+            <div>
+              <LeftArrowIcon class="w-[30px] hover:text-[#ffbc42]" />
+            </div>
+          </NuxtLink>
+        </div>
       </div>
     </div>
   </page>

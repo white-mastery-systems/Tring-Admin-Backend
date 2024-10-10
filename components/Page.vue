@@ -22,7 +22,7 @@
   ]">
     <div class="mb-2 pt-2 flex items-center justify-between gap-2">
 
-      <div v-if="props.title" :class="['flex gap-4 px-0', (!props.disableBackButton) ? 'items-center' : 'items-start']">
+      <div v-if="props.title" :class="['flex gap-4 px-0', (!props.disableBackButton) ? 'items-center' : 'items-center']">
         <UiButton v-if="!props.disableBackButton" variant="outline" size="icon" @click="handleBackButtonClick">
           <ChevronLeft className="h-4 w-4" />
         </UiButton>
@@ -30,7 +30,7 @@
           <navigationSheet />
         </div>
         <div>
-          <h3 className="text-2xl font-semibold tracking-tight">
+          <h3 className="text-[15px] sm:text-[15px] md:text-2xl lg:text-2xl xl:text-2xl font-semibold tracking-tight">
             {{ title }}
           </h3>
           <h4 v-if="props.subTitle" className="text-[12px]">

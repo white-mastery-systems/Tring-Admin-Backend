@@ -51,7 +51,7 @@
           :is-loading="isDataLoading"
           :columns="columns"
           :page-size="8"
-          :height="14"
+          :height="16"
           height-unit="vh"
           @row-click="
             (row: any) => {

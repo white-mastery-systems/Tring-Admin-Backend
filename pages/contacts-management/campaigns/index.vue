@@ -179,6 +179,7 @@ const columns = [
 
   columnHelper.accessor("phoneNumber", {
     header: "Number",
+    cell: (info) => info.getValue() || "--",
   }),
   columnHelper.accessor("createdAt", {
     header: "Created At",

@@ -6,7 +6,6 @@ export const createContacts = async (contacts: InsertContacts) => {
 
 export const getContacts = async (
   organizationId: string,
-  contactListId: string,
   query?: any,
 ) => {
   let page,
@@ -19,10 +18,8 @@ export const getContacts = async (
     offset = (page - 1) * limit;
   }
   const data = await db.query.contactSchema.findMany({
-    where: and(
-      eq(contactSchema.contactListId, contactListId),
-      eq(contactSchema.organizationId, organizationId),
-    ),
+    where: eq(contactSchema.organizationId, organizationId),
+
     orderBy: [desc(contactSchema.createdAt)],
   });
   if (query?.page && query?.limit) {

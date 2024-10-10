@@ -9,13 +9,13 @@
         to: `/bot-management/voice-bot/${botDetails.id}/llm-config`,
       },
     ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="false">
-    <div class="shadow-md mx-5 rounded-lg">
-      <form @submit="handleLLMConfigSubmit">
+    <div class="shadow-md mx-5 rounded-lg ">
+      <form @submit.prevent="handleLLMConfigSubmit">
         <div class="grid w-full grid-cols-2 gap-2">
-          <SelectField name="provider" label="Provider" placeholder="Select Provider" :options="provider"
-            :required="true" />
+          <SelectField name="provider" label="Provider" placeholder="Select Provider" :options="provider" required />
+          <!-- <SelectField name="provider" label="Provider" placeholder="Select Provider" :options="provider" required /> -->
 
-          <SelectField name="model" label="Model" placeholder="Select Model" :options="models" :required="true" />
+          <SelectField name="model" label="Model" placeholder="Select Model" :options="models" required />
 
           <SelectField name="tokens" label="Max Tokens" placeholder="Max Tokens"
             :options="tokens.map((token) => ({ label: token, value: token }))" :required="true" />
@@ -54,7 +54,7 @@
   </Page>
 </template>
 <script setup lang="ts">
-  import { lLmConfigurationValidation } from "~/validationSchema/botManagement/LLmConfigurationValidation";
+  import { llmConfigurationValidation } from "~/validationSchema/botManagement/LLmConfigurationValidation";
   const router = useRouter();
   const route = useRoute("bot-management-voice-bot-id-llm-config");
   const isLoading = ref(false)
@@ -101,7 +101,7 @@
   const tokens = ["1024", "2048", "4096"];
 
   const botDetails: any = await getVoiceBotDetails(route.params.id);
-
+  
   watchEffect(() => {
     if (botDetails) {
       const userName = botDetails?.name ?? "Unknown Bot Name";
@@ -119,10 +119,7 @@
     defineField,
     resetForm,
   } = useForm({
-    validationSchema: lLmConfigurationValidation,
-    initialValues: {
-      // name: "",
-    },
+    validationSchema: llmConfigurationValidation,
   });
   Object.entries(botDetails.llmConfig).forEach(([key, value]: any) => {
     if (values.hasOwnProperty(key)) {

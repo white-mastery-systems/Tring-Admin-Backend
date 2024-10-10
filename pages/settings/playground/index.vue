@@ -26,7 +26,7 @@
 
   const selectedFile = ref<File | null>(null);
   const documentId = ref(route.query.id as string);
-  const isPageLoading = ref(false);
+  const isLoading = ref(false);
 
   const systemInstructions = ref(["", "", "", ""]);
   const userQueries: any = ref(["", "", "", ""]);
@@ -75,7 +75,7 @@
   };
 
   const processUserInput = async () => {
-    isPageLoading.value = true;
+    isLoading.value = true;
     try {
       if (!provider.value || !model.value) {
         toast.error("Please select a provider and model");
@@ -84,7 +84,7 @@
 
       if (!documentId.value) {
         toast.error("Please choose a document before chatting");
-        isPageLoading.value = false;
+        isLoading.value = false;
         return;
       }
       const processedUserQueries: any = userQueries.value.map((query: any) =>
@@ -96,7 +96,7 @@
 
       if (allQueriesNull) {
         toast.error("Please Enter Input");
-        isPageLoading.value = false;
+        isLoading.value = false;
         return;
       }
       const knowledgeResults: any = await loadKnowledgeBase(
@@ -152,9 +152,9 @@
     } catch (error) {
       toast.error("Error processing input");
       console.error("Error processing input:", error);
-      isPageLoading.value = false;
+      isLoading.value = false;
     }
-    isPageLoading.value = false;
+    isLoading.value = false;
   };
 
   const fileNames = computed(() => {
@@ -185,10 +185,10 @@
   };
 
   const resetChatPrompt = () => {
-    isPageLoading.value = true;
+    isLoading.value = true;
     localStorage.removeItem("playground_Value");
     allProcessedResults.value = [];
-    isPageLoading.value = false;
+    isLoading.value = false;
   };
 
   const questionControl = (item: string, index: any) => {
@@ -276,11 +276,9 @@
               class="min-h-[0.5rem] w-full resize-none rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus-visible:ring-offset-0" />
           </div>
           <div class="flex items-center justify-end pt-3">
-            <UiButton @click="processUserInput" class="bg-[#FFBC42] text-white hover:bg-[#FFBC42] hover:brightness-90">
-              <template v-if="isPageLoading">
-                <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-              </template>
-              <template v-else> Process Input </template>
+            <UiButton @click="processUserInput" class="bg-[#FFBC42] text-white hover:bg-[#FFBC42] hover:brightness-90"
+              :loading="isLoading">
+              Process Input
               <!-- Process Input -->
             </UiButton>
           </div>
