@@ -50,14 +50,23 @@
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="crm">
-        <DataTable @pagination="Pagination" @limit="
-            ($event) => {
-              (page = '1'), (limit = $event);
-            }
-          " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
-          :data="integrationsData" :page-size="8" :is-loading="false" :height="17" :heightUnit="'vh'" />
+        <IntegrationTable
+          v-model:integrationModalState="integrationModalState"
+          v-model:deleteIntegrationState="deleteIntegrationState"
+        />
       </UiTabsContent>
-
+      <UiTabsContent value="communication">
+        <IntegrationTable
+          v-model:integrationModalState="integrationModalState"
+          v-model:deleteIntegrationState="deleteIntegrationState"
+        />
+      </UiTabsContent>
+      <UiTabsContent value="ecommerce">
+        <IntegrationTable
+          v-model:integrationModalState="integrationModalState"
+          v-model:deleteIntegrationState="deleteIntegrationState"
+        />
+      </UiTabsContent>
       <UiTabsContent value="number">
         <NumberIntegration @action="handleAction" />
       </UiTabsContent>
@@ -101,6 +110,7 @@
   import { createColumnHelper } from "@tanstack/vue-table";
   import { useRoute, useRouter } from "vue-router";
   import Page from "~/components/Page.vue";
+  import IntegrationTable from "~/components/settings/integrations/IntegrationTable.vue";
   import CreateEditIntegrationModal from "../../../components/integrations/CreateEditIntegrationModal.vue";
   import ChannelModal from "./ChannelModal.vue";
   import NumberModal from "./NumberModal.vue";
@@ -150,7 +160,7 @@
   let totalCount = ref(0);
   const limit = ref("10");
   const filters = computed(() => ({
-    q: route.query?.q,
+    q: route.query?.q ?? "crm",
     page: page.value,
     limit: limit.value,
   }));
@@ -191,9 +201,9 @@
   //   channelModalState.value.open = false
   // }
   onMounted(() => {
-    if (!router.currentRoute.value.query.tab) {
-      navigateToTab("crm");
-    }
+    // if (!router.currentRoute.value.query.tab) {
+    //   navigateToTab("crm");
+    // }
   });
   const integrationLoading = computed(
     () => integrationLoadingStatus.value === "pending",
@@ -213,39 +223,6 @@
             onClick: () => {
               integrationModalState.value.open = true;
               integrationModalState.value.id = id;
-            },
-          },
-          h(Icon, { name: "lucide:pen" }),
-        ),
-        h(
-          UiButton,
-          {
-            class: "",
-            variant: "destructive",
-            onClick: () => {
-              deleteIntegrationState.value.id = id;
-              deleteIntegrationState.value.open = true;
-            },
-          },
-          h(Icon, { name: "lucide:trash-2" }),
-        ),
-      ],
-    );
-  const channelActionsComponent = (id: any) =>
-    h(
-      "div",
-      {
-        class: "flex items-center gap-2",
-      },
-      [
-        h(
-          UiButton,
-          {
-            color: "primary",
-            class: "ml-2",
-            onClick: () => {
-              channelModalState.value.open = true;
-              channelModalState.value.id = id;
             },
           },
           h(Icon, { name: "lucide:pen" }),
@@ -294,26 +271,6 @@
       header: "Actions",
       cell: ({ row }) => {
         return actionsComponent(row.original?.id);
-      },
-    }),
-  ];
-  const statusColumns = [
-    columnHelper.accessor("name", {
-      header: "Integration Name",
-    }),
-    columnHelper.accessor("crm", {
-      header: "Channel",
-    }),
-    columnHelper.accessor("status", {
-      header: "Status",
-      cell: ({ row }) => {
-        return statusComponent(row.original?.status);
-      },
-    }),
-    columnHelper.accessor("actions", {
-      header: "Actions",
-      cell: ({ row }) => {
-        return channelActionsComponent(row.original?.id);
       },
     }),
   ];
