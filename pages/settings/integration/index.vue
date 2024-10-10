@@ -1,13 +1,8 @@
 <template>
-  <Page
-    title="Integration"
-    :disable-back-button="true"
-    :disable-elevation="false"
-  >
+  <Page title="Integration" :disable-back-button="true" :disable-elevation="false">
     <template #actionButtons>
       <div class="flex gap-2">
-        <UiButton
-          color="primary"
+        <UiButton color="primary" class="text-[10.5px] sm:text-[10.5px] md:text-[14px] lg:text-[14px] xl:text-[14px]"
           @click="
             () => {
               if (route.query.q === 'number') {
@@ -18,8 +13,7 @@
               integrationModalState.open = true;
               integrationModalState.id = null;
             }
-          "
-        >
+          ">
           Add
           {{
             (() => {
@@ -35,6 +29,7 @@
                 return "CRM";
               }
             })()
+
           }}
           Channel
         </UiButton>
@@ -42,15 +37,11 @@
     </template>
     <UiTabs default-value="crm" class="w-full self-start">
       <UiTabsList
-        class="grid w-[100%] grid-cols-4 sm:w-[100%] md:w-[50%] lg:w-[60%] xl:w-[50%]"
-      >
+        class="grid w-[100%] grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 sm:w-[100%] md:w-[50%] lg:w-[60%] xl:w-[50%] h-[10%]">
         <UiTabsTrigger value="crm" @click="navigateToTab('crm')">
           CRM
         </UiTabsTrigger>
-        <UiTabsTrigger
-          value="communication"
-          @click="navigateToTab('communication')"
-        >
+        <UiTabsTrigger value="communication" @click="navigateToTab('communication')">
           Communication
         </UiTabsTrigger>
         <UiTabsTrigger value="ecommerce" @click="navigateToTab('ecommerce')">
@@ -84,22 +75,12 @@
       </UiTabsContent>
     </UiTabs>
     <ChannelModal v-model="channelModalState" @success="onSuccessChannel()" />
-    <NumberModal
-      v-model="numberModalState"
-      @success="onSuccessNumberIntegration()"
-    />
-    <CreateEditIntegrationModal
-      :title="findTitleForIntegrationModal()"
-      v-model="integrationModalState"
-      :id="integrationModalState?.id"
-      @success="onSuccess()"
-    />
+    <NumberModal v-model="numberModalState" @success="onSuccessNumberIntegration()" />
+    <CreateEditIntegrationModal :title="findTitleForIntegrationModal()" v-model="integrationModalState"
+      :id="integrationModalState?.id" @success="onSuccess()" />
   </Page>
-  <ConfirmationModal
-    v-model:open="deleteIntegrationState.open"
-    title="Confirm Delete"
-    description="Are you sure you want to delete ?"
-    @confirm="
+  <ConfirmationModal v-model:open="deleteIntegrationState.open" title="Confirm Delete"
+    description="Are you sure you want to delete ?" @confirm="
       () => {
         if (deleteIntegrationState?.id) {
           deleteIntegration({
@@ -111,13 +92,9 @@
           deleteIntegrationState.open = false;
         }
       }
-    "
-  />
-  <ConfirmationModal
-    v-model:open="deleteExoPhoneState.open"
-    title="Confirm Delete"
-    description="Are you sure you want to delete ?"
-    @confirm="
+    " />
+  <ConfirmationModal v-model:open="deleteExoPhoneState.open" title="Confirm Delete"
+    description="Are you sure you want to delete ?" @confirm="
       () => {
         if (numberModalState.id) {
           deleteSingleExoPhone({
@@ -129,8 +106,7 @@
           deleteExoPhoneState.open = false;
         }
       }
-    "
-  />
+    " />
 </template>
 <script lang="ts" setup>
   import { Icon, UiBadge, UiButton } from "#components";

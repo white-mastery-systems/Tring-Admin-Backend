@@ -164,9 +164,6 @@ export const contactSchema = adminSchema.table("contacts", {
   email: varchar("email"),
   countryCode: varchar("country_code"),
   phone: varchar("phone"),
-  contactListId: uuid("contact_list_id")
-    .notNull()
-    .references(() => contactListSchema.id, { onDelete: "cascade" }),
   organizationId: uuid("organization_id")
     .notNull()
     .references(() => organizationSchema.id),

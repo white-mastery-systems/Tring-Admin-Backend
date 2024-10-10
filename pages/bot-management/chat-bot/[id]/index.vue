@@ -1,11 +1,15 @@
 <template>
-  <page
-    :title="botDetails.name ?? ''"
-    :disableSelector="true"
-    :disable-back-button="false"
-    :disable-elevation="true"
-    custom-back-router="/bot-management/chat-bot"
-  >
+  <page :title="botDetails.name ?? ''" :bread-crumbs="[
+    {
+      label: `${botDetails.name}`,
+      to: `/bot-management/chat-bot`,
+    },
+    {
+      label: 'Chat Bot',
+      to: `/bot-management/chat-bot`,
+    },
+  ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
+    custom-back-router="/bot-management/chat-bot">
     <div class="">
       <div
         class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]"
@@ -52,15 +56,11 @@
               class="items-top sm:items-top md:items-top mt-3 flex gap-3 sm:mt-3 md:mt-0 lg:mt-0 lg:items-center xl:mt-0 xl:items-center"
             >
               <div class="flex flex-col items-center gap-1">
-                <UiButton
-                  color="primary"
-                  @click="
-                    () => {
-                      channelModalState.open = true;
-                      channelModalState.id = botDetails.id;
-                    }
-                  "
-                >
+                <UiButton color="primary" class="p-2" @click="() => {
+                  channelModalState.open = true;
+                  channelModalState.id = botDetails.id;
+                }
+                  ">
                   <span class="hidden lg:inline"> Configure channel </span>
                   <span
                     class="flex flex-col items-center justify-center lg:hidden"
@@ -68,25 +68,18 @@
                     <component :is="Settings" :size="20"></component>
                   </span>
                 </UiButton>
-                <div class="block text-[6px] lg:hidden">Configure channel</div>
+                <div class="block text-[4px] lg:hidden">Configure channel</div>
               </div>
-              <div
-                class="flex flex-col items-center gap-1"
-                v-if="!botDetails.documentId"
-              >
+              <div class="flex flex-col items-center gap-1" v-if="!botDetails.documentId">
                 <UiButton
-                  class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50"
-                  @click="handleActivateBot"
-                  :disabled="isSubmitting"
-                >
-                  <span class="hidden lg:inline"> Activate Bot </span>
-                  <span
-                    class="flex flex-col items-center justify-center lg:hidden"
-                  >
+                  class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px] p-2"
+                  @click="handleActivateBot" :disabled="isSubmitting">
+                  <span class="hidden lg:inline "> Activate Bot </span>
+                  <span class="flex flex-col items-center justify-center lg:hidden">
                     <component :is="Bot"></component>
                   </span>
                 </UiButton>
-                <div class="block text-[6px] lg:hidden">Activate Bot</div>
+                <div class="block text-[4px] lg:hidden">Activate Bot</div>
               </div>
               <span
                 v-if="botDetails.documentId"
@@ -94,9 +87,8 @@
               >
                 <div class="flex flex-col items-center gap-1">
                   <UiButton
-                    class="rounded-[8px] bg-[#ff0000] p-2 p-2.5 text-[14px] font-medium text-white hover:bg-[#ff0000] hover:brightness-90"
-                    @click="deactivateBot"
-                  >
+                    class="rounded-[8px] bg-[#ff0000] p-2 text-[14px] font-medium text-white hover:bg-[#ff0000] hover:brightness-90"
+                    @click="deactivateBot">
                     <!-- Deactivate Bot -->
                     <span class="hidden lg:inline"> Deactivate Bot </span>
                     <!-- Icon for small screens -->
@@ -106,7 +98,7 @@
                       <Icon name="bx:block" class="h-5 w-5" />
                     </span>
                   </UiButton>
-                  <div class="block text-[6px] lg:hidden">Deactivate Bot</div>
+                  <div class="block text-[4px] lg:hidden">Deactivate Bot</div>
                 </div>
 
                 <ConfirmationModal
@@ -127,7 +119,7 @@
                       <Icon name="entypo:controller-play" class="h-5 w-5" />
                     </span>
                   </UiButton>
-                  <div class="block text-[6px] lg:hidden">Preview Bot</div>
+                  <div class="block text-[4px] lg:hidden">Preview Bot</div>
                 </div>
                 <div class="flex flex-col items-center gap-1">
                   <UiButton
@@ -142,7 +134,7 @@
                       />
                     </span>
                   </UiButton>
-                  <div class="block text-[6px] lg:hidden">Copy Script</div>
+                  <div class="block text-[4px] lg:hidden">Copy Script</div>
                 </div>
               </span>
               <div class="flex flex-col items-center gap-1">
@@ -153,7 +145,7 @@
                 >
                   <Icon name="lucide:trash-2" class="h-4 w-4" />
                 </UiButton>
-                <div class="block text-[6px] lg:hidden">Delete</div>
+                <div class="block text-[4px] lg:hidden">Delete</div>
               </div>
               <div
                 class="flex flex-col items-center gap-1"
@@ -165,7 +157,7 @@
                 >
                   <Icon name="lucide:pen" class="h-4 w-4" />
                 </UiButton>
-                <div class="block text-[6px] lg:hidden">Edit</div>
+                <div class="block text-[4px] lg:hidden">Edit</div>
               </div>
               <CreateEditChannelModal
                 v-model="channelModalState"

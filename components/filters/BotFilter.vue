@@ -12,10 +12,10 @@
         </UiSelectItem>
       </template>
       <template v-else>
+        <UiSelectItem value="all">All</UiSelectItem>
         <UiSelectItem v-for="bot in bots" :key="bot.id" :value="bot.id">
           {{ bot.name }}
         </UiSelectItem>
-        <UiSelectItem value="all">All</UiSelectItem>
       </template>
     </UiSelectContent>
   </UiSelect>
