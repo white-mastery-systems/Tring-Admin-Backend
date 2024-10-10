@@ -206,7 +206,7 @@ const handleConnect = handleSubmit(async (values: any) => {
 <template>
   <DialogWrapper v-model="campaignModalState" :title="(campaignModalState.id) ? 'Modify Campaign' : 'Add Campaign'">
     <form @submit.prevent="handleConnect" class="space-y-2">
-      <div class="flex gap-2">
+      <div class="flex items-center gap-2">
         <span class="w-[70%] sm:w-[70%] md:w-[70%] lg:w-[75%] xl:w-[75%]">
           <DatePickerField name="date" label="Date" placeholder="Select a Date" required />
         </span>
@@ -215,7 +215,7 @@ const handleConnect = handleSubmit(async (values: any) => {
               class="pb-2 text-red-500 font-medium text-[18px]">*</span></label>
           <input type="time" id="appt" name="appt" class="border-[1px] border-solid border-grey rounded-[6px] py-1.5 px-2">
         </div> -->
-        <span class="w-[30%] sm:w-[30%] md:w-[25%] lg:w-[25%] xl:w-[25%]">
+        <span class="w-[30%] sm:w-[30%] md:w-[25%] lg:w-[25%] xl:w-[25%] pb-1">
           <TimePickerField name="appt" label="Time">
           </TimePickerField>
         </span>

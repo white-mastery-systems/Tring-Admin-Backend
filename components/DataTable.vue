@@ -147,32 +147,19 @@
           </template>
         </UiTableBody>
         <UiTableFooter v-if="footer">
-          <UiTableRow
-            v-for="footerGroup in table.getFooterGroups()"
-            :key="footerGroup.id"
-          >
-            <UiTableHead
-              v-for="footer_h in footerGroup.headers"
-              :key="footer_h.id"
-              class="mx-6 px-6 font-bold lg:text-lg"
-              :colspan="footer_h.colSpan"
-            >
-              <FlexRender
-                :render="footer_h.column.columnDef.footer"
-                :props="footer_h.getContext()"
-              />
+          <UiTableRow v-for="footerGroup in table.getFooterGroups()" :key="footerGroup.id">
+            <UiTableHead v-for="footer_h in footerGroup.headers" :key="footer_h.id"
+              class="mx-6 px-6 font-bold lg:text-lg" :colspan="footer_h.colSpan">
+              <FlexRender :render="footer_h.column.columnDef.footer" :props="footer_h.getContext()" />
             </UiTableHead>
           </UiTableRow>
         </UiTableFooter>
       </UiTable>
     </div>
     <div
-      class="flex w-full flex-col items-center justify-center space-y-2 overflow-x-scroll pb-4 sm:flex-row sm:justify-between sm:space-y-0 sm:pb-4 md:pb-4 lg:pb-0 xl:pb-0"
-    >
-      <span
-        class="hidden w-[10%] text-xs text-gray-500 sm:hidden md:flex lg:flex xl:flex"
-        >Page {{ page }} of {{ totalPageCount }}</span
-      >
+      class="flex w-full flex-col items-center justify-center space-y-2 overflow-x-scroll pb-[50px] sm:flex-row sm:justify-between sm:space-y-0 sm:pb-[50px] md:pb-4 lg:pb-0 xl:pb-0">
+      <span class="hidden w-[10%] text-xs text-gray-500 sm:hidden md:flex lg:flex xl:flex">Page {{ page }} of {{
+        totalPageCount }}</span>
       <div class="flex w-full justify-end space-x-4 overflow-x-scroll">
         <div class="flex items-center gap-2">
           <span class="text-sm text-gray-600">showing</span>

@@ -12,9 +12,9 @@
     <div>
       <form @submit.prevent="uiUpdate" class="space-y-6">
         <div
-          class="form-align ml-0 flex w-full flex-col gap-[13px] p-5 sm:ml-0 sm:w-full md:ml-0 md:w-full lg:ml-11 lg:w-[60%] xl:ml-11 xl:w-[60%] overflow-scroll">
+          class="ml-0 flex w-full flex-col gap-[13px] p-5 sm:ml-0 sm:w-full md:ml-0 md:w-full lg:ml-11 lg:w-[60%] xl:ml-11 xl:w-[60%] overflow-scroll">
           <UiFormField v-slot="{ handleChange, handleBlur, value }" name="logo">
-            <UiFormItem v-auto-animate="animationProps" class="flex w-full flex-col items-start">
+            <UiFormItem class="flex w-full flex-col items-start">
               <UiLabel class="pb-2 text-lg font-medium">Logo</UiLabel>
               <div>
                 <ImageUpload accept="image/*" @change="handleChange" @blur="handleBlur" :initial-file="value"
@@ -29,17 +29,16 @@
 
           <div class="flex items-center gap-4">
             <UiFormField v-slot="{ componentField }" name="color">
-              <UiFormItem v-auto-animate="animationProps" class="w-full">
+              <UiFormItem class="w-full">
                 <!-- <UiLabel class="text-lg font-medium">Color</UiLabel> -->
                 <UiFormControl>
-                  <div class="field_shadow flex h-14 items-center gap-8 rounded-lg bg-white px-5">
+                  <div class="field_shadow flex h-14 items-center gap-8 rounded-lg bg-white px-5"
+                    @click="openPrimaryColorPicker">
                     <div class="flex w-full justify-between">
                       <label for="color" class="py-auto content-center text-base font-medium">Primary Color</label>
                       <div class="h-8 w-8 overflow-hidden rounded-full">
-                        <UiInput v-bind="componentField" type="color"
+                        <UiInput ref="colorInput" v-bind="componentField" type="color"
                           class="h-20 w-20 -translate-x-1/3 -translate-y-1/3" />
-                        <!-- <input v-bind="componentField" type="color" id="colorId" name="color"
-                        class="h-20 w-20 -translate-x-1/3 -translate-y-1/3" /> -->
                       </div>
                     </div>
                   </div>
@@ -49,14 +48,14 @@
               </UiFormItem>
             </UiFormField>
             <UiFormField v-slot="{ componentField }" name="secondaryColor">
-              <UiFormItem v-auto-animate="animationProps" class="w-full">
+              <UiFormItem class="w-full">
                 <!-- <UiLabel class="text-lg font-medium">Color</UiLabel> -->
                 <UiFormControl>
-                  <div class="field_shadow flex h-14 items-center gap-8 rounded-lg bg-white px-5">
+                  <div class="field_shadow flex h-14 items-center gap-8 rounded-lg bg-white px-5" @click="openSecondaryColorPicker">
                     <div class="flex w-full justify-between">
                       <label for="color" class="py-auto content-center text-base font-medium">Secondary Color</label>
                       <div class="h-8 w-8 overflow-hidden rounded-full">
-                        <UiInput v-bind="componentField" type="color"
+                        <UiInput ref="secondarycolorInput" v-bind="componentField" type="color"
                           class="h-20 w-20 -translate-x-1/3 -translate-y-1/3" />
                       </div>
                     </div>
@@ -104,7 +103,7 @@
             },
           ]" required />
             <UiFormField v-slot="{ value, handleChange }" name="generateLead">
-              <UiFormItem v-auto-animate="animationProps" class="flex w-full items-center justify-between">
+              <UiFormItem class="flex w-full items-center justify-between">
                 <!-- <div class="flex items-center justify-between"> -->
                 <UiLabel class="text-base font-medium">Generate Leads</UiLabel>
                 <UiFormControl>
@@ -118,7 +117,7 @@
           </div>
           <div class="flex w-full items-center gap-5">
             <UiFormField v-slot="{ value, handleChange }" name="defaultSelect">
-              <UiFormItem v-auto-animate="animationProps" class="w-full">
+              <UiFormItem class="w-full">
                 <div class="flex justify-between">
                   <UiLabel class="text-base font-medium">Open By Default</UiLabel>
                   <UiFormControl>
@@ -130,9 +129,9 @@
                 <span class="text-xs text-gray-500">Open chat window by default</span>
               </UiFormItem>
             </UiFormField>
-  
+
             <UiFormField v-slot="{ value, handleChange }" name="onlineStatus">
-              <UiFormItem v-auto-animate="animationProps" class="w-full">
+              <UiFormItem class="w-full">
                 <div class="flex items-center justify-between">
                   <UiLabel class="text-base font-medium">Online Status</UiLabel>
                   <UiFormControl>
@@ -176,22 +175,20 @@
       logo: z.union([logoAsString, logoAsObject]),
       color: z.string().min(1, "Primary color is required"),
       secondaryColor: z.string().min(1, "Secondary color is required"),
-      widgetSound: z.string().min(1, "Widget sound must be selected"),
-      widgetPosition: z.string().min(1, "Widget position must be selected"),
+      widgetSound: z.string({ required_error: "Widget sound must be selected" }).min(1, "Widget sound must be selected"),
+      widgetPosition: z.string({ required_error: "Widget position must be selected" }).min(1, "Widget position must be selected"),
       fontFamily: z.string().min(1, "Font family color is required"),
       defaultSelect: z.boolean().optional(),
       generateLead: z.boolean().optional(),
       onlineStatus: z.boolean().optional(),
     }),
   );
-  const animationProps = {
-    duration: 500,
-  };
-
   const route = useRoute("bot-management-chat-bot-id-ui-customization");
   const router = useRouter();
   const paramId: any = route;
   const botDetails: any = await getBotDetails(paramId.params.id);
+  const colorInput:any = ref();
+  const secondarycolorInput: any = ref();
 const {
   errors,
   setErrors,
@@ -260,9 +257,10 @@ const uiUpdate = handleSubmit(async (value: any) => {
     // console.log(pickColor.value, "pickColor.value")
     // console.log(defualtSelect.value, "pickColor.value")
   });
+const openPrimaryColorPicker = () => {
+  colorInput.value.$el.click()
+}
+const openSecondaryColorPicker = () => {
+  secondarycolorInput.value.$el.click()
+}
 </script>
-<style scoped>
-  .form-align {
-    height: calc(100vh - 120px);
-  }
-</style>
