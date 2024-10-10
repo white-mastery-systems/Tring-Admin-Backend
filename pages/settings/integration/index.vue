@@ -31,6 +31,8 @@
                 return "Communication";
               } else if (route.query.q === "ecommerce") {
                 return "E-Commerce";
+              } else {
+                return "CRM";
               }
             })()
           }}

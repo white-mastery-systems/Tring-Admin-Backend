@@ -36,8 +36,7 @@ export default defineEventHandler(async (event) => {
   let generatedAuthResponse: any = null;
   if (body.crm === "hubspot") {
     const data = await getHubspotAccessToken({
-      redirectUri:
-        "https://6t53p9kf-3000.inc1.devtunnels.ms/settings/integration/hubspot",
+      redirectUri: `${config.redirectUrl}/hubspot`,
       authCode: body.metadata.code,
     });
 
