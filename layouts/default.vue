@@ -1,4 +1,5 @@
 <template>
+  <div class="relavtive flex h-[100vh] overflow-hidden">
     <div
       class="xl:felx hidden h-[100vh] min-w-[250px] max-w-[250px] flex-col items-center gap-[20px] overflow-auto overflow-x-hidden border-r border-[#8a8a8a1a] md:hidden lg:flex"
     >
@@ -14,7 +15,7 @@
 </template>
 <script setup lang="ts">
   import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+  import { useRouter } from "vue-router";
 
   const route = useRoute();
   const routeName = ref(route.name);

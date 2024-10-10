@@ -85,7 +85,6 @@
   watch(
     () => route?.query?.q,
     (queryParam) => {
-      console.log({ queryParam });
       if (queryParam === "crm") {
         integrationTypes.value = [
           { value: "sell-do", label: "Sell Do" },
