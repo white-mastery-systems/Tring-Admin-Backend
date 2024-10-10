@@ -73,7 +73,32 @@
         ]),
       ),
   );
-
+  const integrationTypes = ref([
+    { value: "sell-do", label: "Sell Do" },
+    { value: "zoho-crm", label: "Zoho CRM" },
+    { value: "zoho-bigin", label: "Zoho Bigin" },
+    { value: "hubspot", label: "Hubspot" },
+    { value: "slack", label: "Slack" },
+    { value: "shopify", label: "Shopify" },
+  ]);
+  const route = useRoute();
+  watch(
+    () => route?.query?.q,
+    (queryParam) => {
+      if (queryParam === "crm") {
+        integrationTypes.value = [
+          { value: "sell-do", label: "Sell Do" },
+          { value: "zoho-crm", label: "Zoho CRM" },
+          { value: "zoho-bigin", label: "Zoho Bigin" },
+          { value: "hubspot", label: "Hubspot" },
+        ];
+      } else if (queryParam === "communication") {
+        integrationTypes.value = [{ value: "slack", label: "Slack" }];
+      } else if (queryParam === "ecommerce") {
+        integrationTypes.value = [{ value: "shopify", label: "Shopify" }];
+      }
+    },
+  );
   const {
     setFieldValue,
     handleSubmit,
@@ -125,6 +150,7 @@
       ...values,
       scope,
       url,
+      type: route.query.q ?? "crm",
       ...(values.crm !== "sell-do" && { metadata: { status: "pending" } }),
     };
 
@@ -135,7 +161,7 @@
           ...values,
           scope,
           url,
-          // ...(values.crm !== "sell-do" && { metadata: { status: "pending" } }),
+          type: route.query.q ?? "crm",
         },
         /**
          * This function is called after the integration is updated successfully.
@@ -175,6 +201,15 @@
       isLoading.value = false;
     }
   });
+  function findIntegrationTypeLabel() {
+    if (route?.query?.q === "crm") {
+      return "Select CRM";
+    } else if (route?.query?.q === "communication") {
+      return "Select App";
+    } else if (route?.query?.q === "ecommerce") {
+      return "Select Platform";
+    }
+  }
 </script>
 
 <template>
@@ -182,8 +217,8 @@
     v-model="integrationModalState"
     :title="
       integrationModalProps?.id
-        ? `Edit ${integrationModalProps?.title} Channel`
-        : `Add ${integrationModalProps?.title} Channel`
+        ? `Edit ${integrationModalProps?.title ?? 'CRM'} Channel`
+        : `Add ${integrationModalProps?.title ?? 'CRM'} Channel`
     "
   >
     <form @submit="handleConnect" class="space-y-2">
@@ -198,17 +233,10 @@
         />
         <SelectField
           name="crm"
-          label="CRM"
-          placeholder="Select CRM"
-          helperText="Select your CRM provider."
-          :options="[
-            { value: 'sell-do', label: 'Sell Do' },
-            { value: 'zoho-crm', label: 'Zoho CRM' },
-            { value: 'zoho-bigin', label: 'Zoho Bigin' },
-            { value: 'hubspot', label: 'Hubspot' },
-            { value: 'slack', label: 'Slack' },
-            { value: 'shopify', label: 'Shopify' },
-          ]"
+          :label="findIntegrationTypeLabel()"
+          :placeholder="findIntegrationTypeLabel()"
+          helperText="Select your channel"
+          :options="integrationTypes"
           required
         />
 
