@@ -16,17 +16,20 @@
           ">
           Add
           {{
-          (() => {
-          if (route.query.q === "number") {
-          return "Exophone";
-          } else if (route.query.q === "crm") {
-          return "CRM";
-          } else if (route.query.q === "communication") {
-          return "Communication";
-          } else if (route.query.q === "ecommerce") {
-          return "E-Commerce";
-          }
-          })()
+            (() => {
+              if (route.query.q === "number") {
+                return "Exophone";
+              } else if (route.query.q === "crm") {
+                return "CRM";
+              } else if (route.query.q === "communication") {
+                return "Communication";
+              } else if (route.query.q === "ecommerce") {
+                return "E-Commerce";
+              } else {
+                return "CRM";
+              }
+            })()
+
           }}
           Channel
         </UiButton>

@@ -98,7 +98,12 @@ export const listLeads = async (
         },
         botUser: {
           where: and(
-            query?.q ? ilike(botUserSchema.name, `%${query.q}%`) : undefined,
+            query?.q ?
+              or(
+                ilike(botUserSchema.name, `%${query.q}%`),
+                ilike(botUserSchema.email, `%${query.q}%`),
+                ilike(botUserSchema.mobile, `%${query.q}%`),
+              ) : undefined,
             query?.status === "new"
               ? lte(botUserSchema.visitedCount, 1)
               : undefined,
