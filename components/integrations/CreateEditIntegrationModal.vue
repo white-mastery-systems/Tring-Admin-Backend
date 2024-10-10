@@ -208,6 +208,8 @@
       return "Select App";
     } else if (route?.query?.q === "ecommerce") {
       return "Select Platform";
+    } else {
+      return "Select CRM";
     }
   }
 </script>
