@@ -65,7 +65,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
       noise_gate: 0
     }
   }),
-  client_config: jsonb("client_config").default({
+  clientConfig: jsonb("client_config").default({
     agent_name: "Jenna",
     llm_caching: false,
     dynamic_caching: false,
