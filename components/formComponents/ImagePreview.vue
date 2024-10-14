@@ -2,6 +2,7 @@
   <div>
     <label
       class="dark:hover:bg-bray-800 flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+      v-if="!url.length"
     >
       Upload file
       <input
@@ -12,6 +13,19 @@
         :accept="accept"
       />
     </label>
+    <div v-else>
+      <label for="imageView">
+        <img :class="class" :src="url" alt="">
+        <input
+          class="hidden"
+          type="file"
+          @change="handleFileChange"
+          :multiple="multiple"
+          :accept="accept"
+          id="imageView"
+        />
+      </label>
+    </div>
     <span class="text-sm text-red-700" v-if="errorMessage">
       {{ errorMessage }}
     </span>
@@ -39,6 +53,7 @@
       accept?: string;
       multiple?: boolean;
       showFilename?: boolean;
+      url:any
     }>(),
     {
       label: "",
@@ -50,7 +65,8 @@
       validation: true,
       accept: "",
       multiple: false,
-      showFilename:true
+      showFilename: true,
+      url:"",
     },
   );
 
@@ -66,9 +82,6 @@
     selectedFileName.value = value?.value.name;
   }
 
-
-
-
   const emit = defineEmits(["change"]);
   const handleFileChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
@@ -77,11 +90,9 @@
       selectedFileName.value = files?.map((file) => file.name).join(",");
       value.value = target.files;
     } else {
-      selectedFileName.value = '';
-      value.value = target.files
+      selectedFileName.value = "";
+      value.value = target.files;
     }
-      emit("change", target.files);
-
-
+    emit("change", target.files);
   };
 </script>

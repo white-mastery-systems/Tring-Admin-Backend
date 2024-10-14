@@ -11,7 +11,7 @@ export const whatsAppTemplateSchema = toTypedSchema(
       .optional(),
     body: z.string({ required_error: "body is required" }),
     footer: z.string({ required_error: "footer is required" }).optional(),
-    templateVariables: z
+    templateVariables: z  
       .array(z.string({ required_error: "value is required" }))
       .optional(),
     headerTextTemplateVariables: z
