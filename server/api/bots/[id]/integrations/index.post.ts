@@ -5,7 +5,8 @@ export const zodInsertBotIntegration = z.object({
   projectId: z.string().optional(),
   pipelineId: z.string().optional(),
   pipelineObj: z.any().optional(),
-  layoutObj:z.any().optional()
+  channelId: z.string().optional(),
+  layoutObj: z.any().optional(),
 });
 
 export default defineEventHandler(async (event) => {
