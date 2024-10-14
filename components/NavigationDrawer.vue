@@ -149,8 +149,12 @@
       path: "/contacts-management",
       children: [
         {
-          name: "Contacts Buckets",
+          name: "Contacts",
           path: "/contacts",
+        },
+        {
+          name: "Buckets",
+          path: "/buckets",
         },
         {
           name: "Campaigns",

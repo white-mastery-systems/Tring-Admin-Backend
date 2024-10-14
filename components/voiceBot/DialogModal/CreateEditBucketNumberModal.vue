@@ -62,7 +62,7 @@ const {
 watch(() => bucketModalState.value.open, async (newState) => { 
   resetForm()
   if (bucketModalState.value.id) {
-    const getSingleDetails: any = await $fetch(`/api/org/contact-list/${queryId.value}/contacts/${bucketModalState.value.id}`)
+    const getSingleDetails: any = await $fetch(`/api/org/contacts/${bucketModalState.value.id}`)
       setFieldValue("firstName", getSingleDetails.firstName);
       setFieldValue("lastName", getSingleDetails.lastName);
       setFieldValue("countryCode", getSingleDetails.countryCode);
@@ -75,10 +75,10 @@ const handleConnect = handleSubmit(async (values: any) => {
   isLoading.value = true
   try {
     if (bucketModalState.value.id) {
-      await $fetch(`/api/org/contact-list/${queryId.value}/contacts/${bucketModalState.value.id}`, { method: "PUT", body: values });
+      await $fetch(`/api/org/contacts/${bucketModalState.value.id}`, { method: "PUT", body: values });
       toast.success("Updated successfully")
     } else {
-      await $fetch(`/api/org/contact-list/${queryId.value}/contacts`, { method: "POST", body: values });
+      await $fetch(`/api/org/contacts`, { method: "POST", body: values });
       toast.success("Created successfully")
     }
     resetForm()
@@ -91,7 +91,7 @@ const handleConnect = handleSubmit(async (values: any) => {
 });
 </script>
 <template>
-  <DialogWrapper v-model="bucketModalState" :title="(bucketModalState.id) ? 'Modify Bucket' : 'Add Bucket'">
+  <DialogWrapper v-model="bucketModalState" :title="(bucketModalState.id) ? 'Modify Contact' : 'Add Contact'">
     <!-- :validation-schema="formSchema" -->
     <form @submit="handleConnect" class="space-y-3">
       <div class="flex gap-4">

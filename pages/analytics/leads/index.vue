@@ -1,13 +1,10 @@
 <template>
-  <Page title="Leads" :disableSelector="false" :disable-back-button="true">
+  <Page title="Leads" :disableSelector="true" :disable-elevation="true" :disable-back-button="true">
     <div class="flex items-center justify-between gap-2 overflow-x-scroll pb-4">
       <div class="flex items-center gap-2">
-        <UiInput
-          v-model="filters.q"
-          @input="filters.page = '1'"
+        <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
-          placeholder=" Search Leads..."
-        />
+          placeholder=" Search Leads..." />
         <BotFilter v-model="filters.botId" @input="filters.page = '1'" />
         <StatusFilter @change="onStatusChange" />
 
@@ -16,12 +13,8 @@
         <!-- <ChannelFilter @changeAction="onChannel" /> -->
         <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
       </div>
-      <ExportButton
-        v-model="exportDataHandler"
-        :rows="exportReadyRows"
-        :columns="exportReadyColumns"
-        @export="exportData"
-      />
+      <ExportButton v-model="exportDataHandler" :rows="exportReadyRows" :columns="exportReadyColumns"
+        @export="exportData" />
       <!-- <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton> -->
     </div>
     <UiTabs default-value="all" class="w-full self-start">
@@ -37,76 +30,40 @@
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="all">
-        <DataTable
-          @pagination="Pagination"
-          @limit="
+        <DataTable @pagination="Pagination" @limit="
             ($event) => {
               (filters.page = '1'), (filters.limit = $event);
             }
-          "
-          :totalPageCount="totalPageCount"
-          :page="page"
-          :totalCount="totalCount"
-          :data="leads"
-          :is-loading="isDataLoading"
-          :columns="columns"
-          :page-size="8"
-          :height="16"
-          height-unit="vh"
-          @row-click="
+          " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="leads"
+          :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="16" height-unit="vh" @row-click="
             (row: any) => {
               navigateTo(`/analytics/leads/${row.original.chatId}`);
             }
-          "
-        />
+          " />
       </UiTabsContent>
       <UiTabsContent value="whatsapp">
-        <DataTable
-          :data="leads"
-          @pagination="Pagination"
-          @limit="
+        <DataTable :data="leads" @pagination="Pagination" @limit="
             ($event) => {
               (filters.page = '1'), (filters.limit = $event);
             }
-          "
-          :is-loading="isDataLoading"
-          :columns="columns"
-          :totalPageCount="totalPageCount"
-          :page="page"
-          :totalCount="totalCount"
-          :page-size="8"
-          :height="14"
-          height-unit="vh"
-          @row-click="
+          " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
+          :totalCount="totalCount" :page-size="8" :height="14" height-unit="vh" @row-click="
             (row: any) => {
               navigateTo(`leads/${row.original.chatId}`);
             }
-          "
-        />
+          " />
       </UiTabsContent>
       <UiTabsContent value="website">
-        <DataTable
-          :data="leads"
-          @pagination="Pagination"
-          @limit="
+        <DataTable :data="leads" @pagination="Pagination" @limit="
             ($event) => {
               (filters.page = '1'), (filters.limit = $event);
             }
-          "
-          :is-loading="isDataLoading"
-          :columns="columns"
-          :totalPageCount="totalPageCount"
-          :page="page"
-          :totalCount="totalCount"
-          :page-size="8"
-          :height="14"
-          height-unit="vh"
-          @row-click="
+          " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
+          :totalCount="totalCount" :page-size="8" :height="14" height-unit="vh" @row-click="
             (row: any) => {
               navigateTo(`leads/${row.original.chatId}`);
             }
-          "
-        />
+          " />
       </UiTabsContent>
     </UiTabs>
   </Page>

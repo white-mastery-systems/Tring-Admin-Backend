@@ -185,6 +185,20 @@
 .field_shadow {
   box-shadow: 0px 2px 24px 0px #0000000D !important;
 }
+.table-scroll::-webkit-scrollbar {
+  display: block;
+  width: 4px;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+  background: #80808094;
+  border-radius: 10px;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+  max-height: 8px !important;
+  margin-block: 1rem !important;
+}
 * {
   font-family: "HeyWow";
 }
