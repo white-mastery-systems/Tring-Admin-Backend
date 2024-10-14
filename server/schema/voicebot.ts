@@ -12,6 +12,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   domain: varchar("domain").array(),
   active: boolean("active").default(false),
   metaData: jsonb("metadata"),
+  audioFiles: jsonb("audio_files"),
   llmConfig: jsonb("llm_config").default({
     provider: "openai",
     model: "gpt-4o-mini",

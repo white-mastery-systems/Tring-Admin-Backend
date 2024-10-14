@@ -166,17 +166,20 @@
     const target = e.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
       const files = Array.from(target.files);
-
+      console.log(values.intent, "values.intent",files?.map((file: any) => file.type?.includes("image/"))?.find(item=>item===true));
       if (
         values.intent === "images" &&
-        !files?.map((file: any) => file.type.type?.includes("image/"))
+        !files?.map((file: any) => file.type?.includes("image/"))?.find(item=>item===true)
       ) {
         toast.error("unsppported image type");
+        return
       } else if (
         values.intent === "brochures" &&
-        !files?.map((file: any) => file.type.type?.includes("pdf"))
+        !files?.map((file: any) => file.type?.includes("pdf"))?.find(item=>item===true)
       ) {
         toast.error("unsppported pdf type");
+        return
+
       }
       fileRef.value = target.files;
       selectedFileName.value = files?.map((file) => file.name).join(",");
