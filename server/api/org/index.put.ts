@@ -15,6 +15,7 @@ export default defineEventHandler(async (event) => {
 
   const updateOrg = {
     name: body.name,
+    logo: body?.logo,
     metadata: {
        industry: body?.industry,
        avgTraffic: body?.avgTraffic,
