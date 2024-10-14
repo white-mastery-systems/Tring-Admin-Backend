@@ -1,6 +1,6 @@
 export const createEditIntentValidation = z
   .object({
-    intent: z.string().min(1, { message: "intent is required" }),
+    intent: z.string({required_error: "intent is required" }).min(1, { message: "intent is required" }),
     link: z.string().optional(),
     fileName: z.string().optional(),
     file: z.string().optional(),

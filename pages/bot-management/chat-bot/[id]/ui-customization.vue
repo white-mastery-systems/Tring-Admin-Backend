@@ -103,15 +103,16 @@
             },
           ]" required />
             <UiFormField v-slot="{ value, handleChange }" name="generateLead">
-              <UiFormItem class="flex w-full items-center justify-between">
-                <!-- <div class="flex items-center justify-between"> -->
-                <UiLabel class="text-base font-medium">Generate Leads</UiLabel>
-                <UiFormControl>
-                  <UiSwitch id="generateLead" :checked="value" @update:checked="handleChange"
-                    :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
-                </UiFormControl>
-                <!-- </div> -->
-                <UiFormMessage />
+              <UiFormItem class="w-full">
+                <div class="flex justify-between">
+                  <UiLabel class="text-base font-medium">Generate Leads</UiLabel>
+                  <UiFormControl>
+                    <UiSwitch id="generateLead" :checked="value" @update:checked="handleChange"
+                      :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
+                  </UiFormControl>
+                  <UiFormMessage />
+                </div>
+                <span class="text-xs text-gray-500">Show lead generation form</span>
               </UiFormItem>
             </UiFormField>
           </div>
@@ -141,6 +142,21 @@
                   <UiFormMessage />
                 </div>
                 <span class="text-xs text-gray-500">Live tag status of chat window</span>
+              </UiFormItem>
+            </UiFormField>
+          </div>
+          <div class="flex w-full items-center gap-5">
+            <UiFormField v-slot="{ value, handleChange }" name="defaultRibbon">
+              <UiFormItem class="w-[49%]">
+                <div class="flex justify-between">
+                  <UiLabel class="text-base font-medium">Open Chat Ribbon</UiLabel>
+                  <UiFormControl>
+                    <UiSwitch id="defaultRibbon" :checked="value" @update:checked="handleChange"
+                      :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
+                  </UiFormControl>
+                  <UiFormMessage />
+                </div>
+                <span class="text-xs text-gray-500">Open chat ribbon by default</span>
               </UiFormItem>
             </UiFormField>
           </div>
@@ -181,6 +197,7 @@
       defaultSelect: z.boolean().optional(),
       generateLead: z.boolean().optional(),
       onlineStatus: z.boolean().optional(),
+      defaultRibbon: z.boolean().optional(),
     }),
   );
   const route = useRoute("bot-management-chat-bot-id-ui-customization");
@@ -208,8 +225,9 @@ setFieldValue("secondaryColor", (hslToHex(
 setFieldValue("widgetSound", (botDetails.metadata.ui.widgetSound ?? "Yes"))
 setFieldValue("widgetPosition", (botDetails.metadata.ui.widgetPosition ?? "Left"))
 setFieldValue("defaultSelect", (botDetails.metadata.ui.defaultSelect ?? true))
-setFieldValue("onlineStatus", (botDetails.metadata.ui.onlineStatus ?? false))
-setFieldValue("generateLead", (botDetails.metadata.prompt.INTENTS !== "-other"))
+setFieldValue("onlineStatus", (botDetails.metadata.ui.onlineStatus ?? true))
+setFieldValue("generateLead", (botDetails.metadata.ui.generateLead ?? true))
+setFieldValue("defaultRibbon", (botDetails.metadata.ui.defaultRibbon ?? true))
 setFieldValue("fontFamily", (botDetails.metadata?.ui.fontFamily ?? "Kanit"))
 
 watchEffect(() => {
@@ -236,6 +254,8 @@ const uiUpdate = handleSubmit(async (value: any) => {
           widgetPosition: value.widgetPosition,
           widgetSound: value.widgetSound,
           fontFamily: value.fontFamily,
+          generateLead: value.generateLead,
+          defaultRibbon: value.defaultRibbon
         },
         prompt: {
           ...botDetails.metadata.prompt,
@@ -253,9 +273,7 @@ const uiUpdate = handleSubmit(async (value: any) => {
       name: "bot-management-chat-bot-id",
       params: { id: paramId.params.id },
     });
-    // console.log(botDetails.name, "botDetails.name")
-    // console.log(pickColor.value, "pickColor.value")
-    // console.log(defualtSelect.value, "pickColor.value")
+  
   });
 const openPrimaryColorPicker = () => {
   colorInput.value.$el.click()
