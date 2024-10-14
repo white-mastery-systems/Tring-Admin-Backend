@@ -13,13 +13,24 @@ export async function regenerateAccessTokenForSlack({
 }) {
   const response = await fetch("https://slack.com/api/oauth.v2.access", {
     method: "POST",
-
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
   });
 }
 
+/*************  ✨ Codeium Command ⭐  *************/
+/**
+ * Generates a Slack access token given a code obtained from
+ * Slack's authorization flow.
+ * @param {Object} opts
+ * @param {string} opts.code - Authorization code obtained from
+ *   Slack's authorization flow.
+ * @return {Promise<Object>} A promise that resolves to an object
+ *   containing the access token, refresh token, and other
+ *   information about the token.
+ */
+/******  523ef877-df58-4dd5-a1a2-dd1283714e9b  *******/
 export async function generateAccessTokenFromCodeForSlack({
   code,
 }: {

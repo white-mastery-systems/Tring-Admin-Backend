@@ -112,12 +112,13 @@ export const listChats = async (
         ),
       },
     },
-    orderBy: [desc(chatSchema.createdAt)],
+    orderBy: [desc(chatSchema.updatedAt)],
   });
 
   chats = chats.map((i: any) => ({
     ...i,
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
   }));
 
   if (query?.q || query?.botUserName === "with_name") {

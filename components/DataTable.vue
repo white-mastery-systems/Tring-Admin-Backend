@@ -63,7 +63,7 @@
   <div class="space-y-4">
     <div
       :class="[
-        'relative h-screen-minus-11 overflow-auto rounded-lg border',
+        'relative h-screen-minus-11 overflow-auto rounded-lg border table-scroll',
         props.height ? `h-screen-minus-${props.height}` : '',
       ]"
     >

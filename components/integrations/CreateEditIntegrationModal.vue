@@ -188,7 +188,8 @@
             window.open(authUrl, "_blank");
           } else if (values.crm === "slack") {
             window.open(
-              `https://slack.com/oauth/v2/authorize?scope=conversations.connect%3Amanage%2Cchat%3Awrite&user_scope=&redirect_uri=${url}&client_id=7763394615058.7867610213248`,
+              // `https://slack.com/oauth/v2/authorize?scope=chat%3Awrite&user_scope=chat%3Awrite&redirect_uri=https%3A%2F%2F6t53p9kf-3000.inc1.devtunnels.ms%2Fsettings%2Fintegration%2Fslack&client_id=7763394615058.7867610213248`
+              `https://slack.com/oauth/v2/authorize?scope=chat:write,channels:read&redirect_uri=${url}&client_id=7763394615058.7867610213248`,
               // "https://slack.com/oauth/v2/authorize?scope=incoming-webhook&client_id=7856740970225.7841202988373",
               "_blank",
             );

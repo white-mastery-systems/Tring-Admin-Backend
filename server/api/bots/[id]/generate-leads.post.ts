@@ -94,7 +94,7 @@ export default defineEventHandler(async (event) => {
           Last_Name: lastName ?? body?.botUser?.name,
           First_Name: firstName,
           Email: body?.botUser?.email,
-          Phone: body?.botUser?.phone,
+          Phone: body?.botUser?.mobile,
         },
         integrationData: botIntegration?.integration,
       });
@@ -109,6 +109,87 @@ export default defineEventHandler(async (event) => {
         projectId,
         campaignId,
       );
+    } else if (botIntegration?.integration?.crm === "slack") {
+      if (botIntegration?.metadata?.channelId) {
+        const name = body?.botUser?.name?.split(" ");
+        let firstName = body?.botUser?.name;
+        let lastName = null;
+        if (name?.length > 1) {
+          firstName = name[0];
+          lastName = name[1];
+        }
+
+        try {
+          console.log(
+            botIntegration?.integration?.metadata?.access_token,
+            botIntegration?.metadata?.channelId,
+          );
+          const data = await $fetch("https://slack.com/api/chat.postMessage", {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${botIntegration?.integration?.metadata?.access_token}`,
+            },
+            body: {
+              channel: botIntegration?.metadata?.channelId,
+              text: `Lead Generated :tada:\nFirst Name: ${firstName}\nLast Name: ${lastName ?? body?.botUser?.name}\nEmail: ${body?.botUser?.email}\nPhone: ${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
+            },
+          });
+          console.log({ data });
+        } catch (err) {
+          console.log({ err: JSON.stringify(err) });
+        }
+      }
+    } else if (botIntegration?.integration?.crm === "hubspot") {
+      const name = body?.botUser?.name?.split(" ");
+      let firstName = body?.botUser?.name;
+      let lastName = null;
+      if (name?.length > 1) {
+        firstName = name[0];
+        lastName = name[1];
+      }
+
+      const data = await $fetch(
+        "https://api.hubapi.com/crm/v3/objects/contacts",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${botIntegration?.integration?.metadata?.access_token}`,
+          },
+          body: {
+            properties: {
+              email: body?.botUser?.email,
+              firstname: firstName,
+              lastname: lastName,
+              phone: `${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
+              company: "HubSpot",
+              website: "hubspot.com",
+              lifecyclestage: "marketingqualifiedlead",
+            },
+          },
+        },
+      );
+      console.log(JSON.stringify(data));
+      const properties = await $fetch(
+        "https://api.hubapi.com/crm/v3/properties/leads",
+        {
+          headers: {
+            Authorization: `Bearer ${botIntegration?.integration?.metadata?.access_token}`,
+          },
+        },
+      );
+      const finalPayloadToSubmit: any = {};
+      properties?.results.map((result) => {
+        if (result.hidden) {
+          return;
+        }
+        if (result.fieldType === "checkbox") {
+          finalPayloadToSubmit[result.name] = true;
+        } else if (result.fieldType === "select") {
+          finalPayloadToSubmit[result.name] = {
+            value: result.options[0]?.value,
+          };
+        }
+      });
     }
   });
   if (adminUser?.id) {

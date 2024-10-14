@@ -71,7 +71,7 @@
               class="mt-2.5 flex flex-col items-end justify-center gap-5 rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black"
             >
               <div class="pb-2 pt-2">
-                <span> Site Visit Scheduled on </span>
+                <span> {{messageList.content.indexOf('Call Scheduled On') > -1 ? 'Call Scheduled On': 'Site Visit Scheduled On'}}</span>
                 <!-- {{dateTimeFormat(messageList.content,'date')}} -->
                 <div class="pt-4">
                   <TextField

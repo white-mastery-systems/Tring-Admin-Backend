@@ -113,14 +113,14 @@
                           @click="handleAction(list, 'download')"
                         >
                           <div
-                            class="menu-align rounded-sm text-center hover:bg-gray-300/20"
+                            class="menu-align rounded-sm text-center"
                           >
                             Download
                           </div>
                         </UiDropdownMenuItem>
                         <UiDropdownMenuItem v-if="list.id !== documents?.documentId"
                           @click="deleteDocumentModelOpen[list.id] = true">
-                          <div class="menu-align rounded-sm text-center hover:bg-red-300/20 hover:text-red-500">
+                          <div class="menu-align rounded-sm text-center">
 
                             Delete
                           </div>
@@ -225,18 +225,26 @@ watchEffect(() => {
   const fileUpload = async () => {
     // selectedFile.value[0].name;
     //
-    const payload: any = {
-      botId: paramId.params.id,
-      document: {
-        name: selectedFile.value[0].name,
-        files: selectedFile.value[0],
-      },
-    };
-    await createDocument(payload.botId, payload.document);
-    documents.value = await listDocumentsByBotId(paramId.params.id);
-
-    selectedFile.value = null;
-
+    if (selectedFile.value && selectedFile.value[0]) {
+      const file = selectedFile.value[0];
+      if (!file.type.includes("pdf")) {
+        toast.error("Unsupported file type. Only PDFs are allowed.");
+        selectedFile.value = null;
+        return;
+      }
+      const payload: any = {
+        botId: paramId.params.id,
+        document: {
+          name: selectedFile.value[0].name,
+          files: selectedFile.value[0],
+        },
+      };
+      await createDocument(payload.botId, payload.document);
+      documents.value = await listDocumentsByBotId(paramId.params.id);
+      selectedFile.value = null;
+  } else {
+      selectedFile.value = null
+  }
     // documentFetchInterval.value = setInterval(async () => {
     //   documents.value = await listDocumentsByBotId(paramId.params.id);
     // }, 1000);
