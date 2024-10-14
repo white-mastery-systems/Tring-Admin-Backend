@@ -120,10 +120,11 @@
         countryCode: chat?.botUser?.countryCode,
         id: chat.id,
         location: `${chat.metadata?.city ?? "--"} - ${chat.metadata?.state ?? "--"} `,
-        createdAt: `${chat?.createdAt}`,
+        updatedAt: `${chat?.updatedAt}`,
         metadata: chat?.metadata,
         mode: chat?.mode,
         channel: chat?.channel,
+        botUser: chat.bot?.name,
       }));
     },
   });
@@ -164,12 +165,12 @@
     return [
       "Name",
       "Email",
-      "Country code",
+      "Country Code",
       "Mobile",
       // "Visited status",
       "Bot name",
       "Country",
-      "Created at",
+      "Updated At",
       "Channel",
       "Mode",
     ];
@@ -208,15 +209,22 @@
     columnHelper.accessor("channel", {
       header: "Channel",
     }),
-    columnHelper.accessor("createdAt", {
-      header: "Date Created",
+    columnHelper.accessor("botUser", {
+    header: "Bot Name",
+  }),
+    columnHelper.accessor("metadata.country", {
+      header: "Country",
+      cell: (info) => info.getValue() || "-",
+    }),
+    columnHelper.accessor("updatedAt", {
+      header: "Updated At",
     }),
   ];
   const onActionChange = (value: any) => {
     filters.botUserName = value;
     filters.page = "1";
   };
-  const Pagination = async ($evnt) => {
+  const Pagination = async ($evnt: any) => {
     filters.page = $evnt;
     getAllChats();
   };
@@ -265,7 +273,7 @@
           mobile: chat?.botUser?.mobile ?? "---",
           botName: chat?.bot?.name ?? "---",
           country: chat?.metadata?.country ?? "---",
-          createdAt: format(chat?.createdAt, "MMMM d, yyyy"),
+          updatedAt: format(chat?.updatedAt, "MMMM d, yyyy"),
           channel: chat?.channel,
           mode: chat?.mode,
         };

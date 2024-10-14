@@ -1,226 +1,280 @@
 <template>
-  <Page title="Contacts Buckets" :disable-back-button="true">
+  <Page title="Contacts" :disable-back-button="true">
+    <!-- {{ getSingleDetails }} -->
     <template #actionButtons>
       <div class="flex gap-4">
         <div class="flex gap-2">
-          <UiButton
-            color="primary"
-            @click="
-              () => {
-                addBucketNameModalState.open = true;
-                addBucketNameModalState.id = null;
-              }
-            "
-          >
-            Add Bucket
+          <UiButton color="primary" @click="() => {
+            addBucketModalState.open = true;
+            addBucketModalState.id = null;
+          }
+            ">
+            Add Contact
           </UiButton>
-
-          <!-- <UiButton color="primary">
-            Import
-          </UiButton>
-          <UiButton color="primary">
-            Export
-          </UiButton> -->
         </div>
       </div>
     </template>
-    <div>
-      <div class="flex items-center gap-2 pb-2">
-        <UiInput
-          v-model="filters.q"
-          @input="filters.page = '1'"
-          class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
-          placeholder="Search bucket..."
-        />
+    <div class="flex items-center justify-end gap-2 overflow-x-scroll pb-4">
+      <div class="flex items-center gap-2">
+        <ImportNumberFile accept=".csv, .xls, .xlsx"
+          v-model="selectedFile"
+          @uploadDocument="fileUpload"
+          />
+        <ExportButton v-model="exportDataHandler" :rows="exportReadyRows" :columns="exportReadyColumns"
+          @export="exportData" />
       </div>
-      <DataTable
-        @row-click="
-          (row: any) => {
-            return navigateTo(`contacts/${row.original.id}`);
-          }
-        "
-        @pagination="Pagination"
-        @limit="
-          ($event) => {
-            (filters.page = '1'), (filters.limit = $event);
-          }
-        "
-        :totalPageCount="totalPageCount"
-        :page="page"
-        :totalCount="totalCount"
-        :data="contactsList"
-        :is-loading="isDataLoading"
-        :columns="columns"
-        :page-size="20"
-        :height="16"
-        height-unit="vh"
-      />
-
-      <ConfirmationModal
-        v-model:open="deleteBucketState.open"
-        title="Confirm Delete"
-        description="Are you sure you want to delete ?"
-        @confirm="
-          () => {
-            if (deleteBucketState?.id) {
-              deleteBucket({
-                integrationId: deleteBucketState.id,
-                onSuccess: () => {
-                  integrationRefresh();
-                },
-              });
-              deleteBucketState.open = false;
-            }
-          }
-        "
-      />
     </div>
-    <CreateEditBucketModal
-      v-model="addBucketNameModalState"
-      @confirm="
-        () => {
-          addBucketNameModalState.open = false;
-          integrationRefresh();
+    <DataTable :data="contactsList" @pagination="Pagination" @limit="($event) => {
+      (filters.page = '1'), (filters.limit = $event);
+    }
+      " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :is-loading="isDataLoading"
+      :columns="columns" :page-size="20" :height="16" height-unit="vh" />
+    <CreateEditBucketNumberModal v-model="addBucketModalState" @confirm="() => {
+      addBucketModalState.open = false;
+      integrationRefresh();
+    }
+      " />
+
+    <ConfirmationModal v-model:open="deleteIntegrateNumber.open" title="Confirm Delete"
+      description="Are you sure you want to delete ?" @confirm="() => {
+        if (deleteIntegrateNumber?.id) {
+          bucketNumber({
+            queryId: queryId,
+            id: deleteIntegrateNumber.id,
+            onSuccess: () => {
+              integrationRefresh();
+            },
+          });
+          deleteIntegrateNumber.open = false;
         }
-      "
-    />
+      }
+      " />
   </Page>
 </template>
 <script setup lang="ts">
-  import { Icon, UiButton } from "#components";
-  import { createColumnHelper } from "@tanstack/vue-table";
-  import { useRoute, useRouter } from "vue-router";
+import { createColumnHelper } from "@tanstack/vue-table";
+import { Icon, UiBadge, UiButton } from "#components";
 
-  definePageMeta({
-    middleware: "admin-only",
-  });
-  useHead({
-    title: "Contacts Management | Contacts",
-  });
+definePageMeta({
+  middleware: "admin-only",
+});
+useHead({
+  title: "Contacts"
+});
 
-  const formSchema = toTypedSchema(
-    z.object({
-      newBotName: z.string().min(2, "Bot Name is requird."),
-    }),
-  );
-  const searchBucket = ref("");
-  const searchBotDebounce = refDebounced(searchBucket, 500);
-  const deleteBucketState = ref({ open: false, id: null });
+const addBucketModalState: any = ref({ open: false, id: null });
+const deleteIntegrateNumber = ref({ open: false, id: null });
+const exportDataHandler = ref({ status: false, type: "csv" });
+const activeStatus = ref("");
+const exportReadyRows = ref<any>([]);
+const selectedFile = ref();
 
-  const filters = reactive<{
-    q: string;
-    page: string;
-    limit: string;
-  }>({
-    q: "",
-    page: "1",
-    limit: "10",
-  });
-  // const campaignModalState = ref({ open: false });
-  const addBucketNameModalState = ref({ open: false, id: null });
+const filters = reactive<{
+  q: string;
+  page: string;
+  limit: string;
+}>({
+  q: "",
+  page: "1",
+  limit: "10",
+});
+let page = ref(0);
+let totalPageCount = ref(0);
+let totalCount = ref(0);
+const {
+  status,
+  data: contactsList,
+  refresh: integrationRefresh,
+} = await useLazyFetch(`/api/org/contacts`, {
+  server: false,
+  query: filters,
+  default: () => [],
+  transform: (contacts: any) => {
+    page.value = contacts.page;
+    totalPageCount.value = contacts.totalPageCount;
+    totalCount.value = contacts.totalCount;
+    return contacts.data;
+  },
+});
+// const newBotName = ref("");
+// const botList = await listApiBots();
 
-  let page = ref(0);
-  let totalPageCount = ref(0);
-  let totalCount = ref(0);
-  const {
-    status,
-    data: contactsList,
-    refresh: integrationRefresh,
-  } = await useLazyFetch("/api/org/contact-list", {
-    server: false,
-    default: () => [],
-    query: filters,
-    transform: (buckets: any) => {
-      page.value = buckets.page;
-      totalPageCount.value = buckets.totalPageCount;
-      totalCount.value = buckets.totalCount;
-      return buckets.data;
+// const { status, data: voiceBot } = await useLazyFetch("/api/voicebots", {
+//   server: false,
+//   default: () => [],
+//   query: {
+//     active: activeStatus,
+//     q: searchBotDebounce,
+//   },
+//   headers: {
+//     "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+//   },
+//   transform: (voiceBot) =>
+//     voiceBot.map((bot) => ({
+//       id: bot.id,
+//       name: bot.name,
+//       status: bot.active,
+//       createdAt: `${bot.createdAt}`,
+//     })),
+// });
+const exportReadyColumns = computed(() => {
+  return [
+    "First Name",
+    "Last Name",
+    "Email",
+    "Country Code",
+    "Number",
+  ]
+})
+const isDataLoading = computed(() => status.value === "pending");
+const columnHelper = createColumnHelper<(typeof contactsList.value)[0]>();
+
+const actionsComponent = (id: any) =>
+  h(
+    "div",
+    {
+      class: "flex items-center gap-2",
     },
-  });
-  // const addBucketNameModalState = defineModel<{ open: boolean, id: string }>({
-  //   default: {
-  //     open: false,
-  //     id: "",
-  //   },
-  // });
-  const viewCampaignStatusModalState = ref({ open: false });
-
-  const router = useRouter();
-  const route = useRoute();
-  const activeStatus = ref("");
-  watch(activeStatus, async (newStatus, previousStatus) => {});
-  const selectedValue = ref("Today");
-  // const newBotName = ref("");
-
-  const isDataLoading = computed(() => status.value === "pending");
-
-  const columnHelper = createColumnHelper<(typeof contactsList.value)[0]>();
-
-  const actionsComponent = (id: any) =>
-    h(
-      "div",
-      {
-        class: "flex items-center gap-2",
-      },
-      [
-        h(
-          UiButton,
-          {
-            onClick: (e: Event) => {
-              e.stopPropagation();
-              addBucketNameModalState.value.open = true;
-              addBucketNameModalState.value.id = id;
-            },
-            color: "primary",
+    [
+      h(
+        UiButton,
+        {
+          onClick: (e: Event) => {
+            // e.stopPropagation();
+            // addBucketNameModalState.value.open = true;
+            // addBucketNameModalState.value.id = id
+            addBucketModalState.value.open = true;
+            addBucketModalState.value.id = id;
           },
-          h(Icon, { name: "lucide:pen" }),
-        ),
-        h(
-          UiButton,
-          {
-            onClick: (e: any) => {
-              e.stopPropagation();
-              deleteBucketState.value.id = id;
-              deleteBucketState.value.open = true;
-            }, // Add delete functionality
-            class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
-          },
-          h(Icon, { name: "lucide:trash-2" }),
-        ),
-        // h(
-        //   UiButton,
-        //   {
-        //     onClick: () => {
-        //       addBucketModalState.value.open = true
-        //       addBucketModalState.value.id = id
-        //       console.log("addBucketModalState")
-        //     }, // Add delete functionality
-        //     class: "bg-[#424bd1] hover:bg-[#424bd1] font-bold", // Different color for delete
-        //   },
-        //   [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Add"]
-        // )
-      ],
-    );
+          color: "primary",
+        },
+        h(Icon, { name: "lucide:pen" }),
+      ),
+      h(
+        UiButton,
+        {
+          class: "",
+          variant: "destructive",
+          onClick: (e: any) => {
+            deleteIntegrateNumber.value.open = true;
+            deleteIntegrateNumber.value.id = id;
+          }, // Add delete functionality
+        },
+        h(Icon, { name: "lucide:trash-2" }),
+      ),
+      // h(
+      //   UiButton,
+      //   {
+      //     onClick: () => {
+      //       addBucketModalState.value.open = true
+      //       addBucketModalState.value.id = id
+      //       console.log("addBucketModalState")
+      //     }, // Add delete functionality
+      //     class: "bg-[#424bd1] hover:bg-[#424bd1] font-bold", // Different color for delete
+      //   },
+      //   [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Add"]
+      // )
+    ],
+  );
+const columns = [
+  columnHelper.accessor("firstName", {
+    header: "First Name",
+  }),
+  columnHelper.accessor("lastName", {
+    header: "Last Name",
+    cell: ({ row }) => {
+      return row.original.lastName || "-"
+    }
+  }),
+  columnHelper.accessor("email", {
+    header: "Email",
+    cell: ({ row }) => {
+      return row.original.email || "-";
+    }
+  }),
+  columnHelper.accessor("phone", {
+    header: "Number",
+    cell: ({ row }) => `${row.original?.countryCode || ''} ${row.original?.phone || ''}`.trim(),
+  }),
+  columnHelper.accessor("id", {
+    header: "Action",
+    cell: ({ row }) => {
+      return actionsComponent(row.original.id);
+    },
+  }),
+];
 
-  const columns = [
-    columnHelper.accessor("name", {
-      header: "Bucket Name",
-    }),
-    columnHelper.accessor("noOfAudience", {
-      header: "No. of Audiences",
-    }),
-    columnHelper.accessor("id", {
-      header: "Action",
-      cell: ({ row }) => {
-        return actionsComponent(row.original.id);
+// const bucketNumber = as(id: any) => {
+//   try {
+//     const deleteIntegration = await $fetch<SelectChatBot>(
+//       `/api/org/integrations/${integrationId}`,
+//       {
+//         method: "DELETE",
+//       },
+//     );
+
+//     onSuccess();
+//     toast.success("Integration removed successfully");
+
+//     return deleteIntegration;
+//   } catch (err: any) {
+//     if (err.status === 500) {
+//       toast.error("Cannot delete: Integration has connected bots");
+//     }
+//     toast.error(err.data.data[0].message);
+//   }
+// }
+const Pagination = async ($evnt) => {
+  filters.page = $evnt;
+  integrationRefresh();
+};
+const exportData = async () => {
+  try {
+    const exportContacts = await $fetch(`/api/org/contacts`, {
+      method: "GET",
+      headers: {
+        "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
-    }),
-  ];
+    });
+    console.log(exportContacts, "exportContacts")
+    const exportReadObject = (exportContacts ?? []).map((contacts: any) => {
+      const mergedObject = {
+        firstName: contacts.firstName ?? "---",
+        lastName: contacts.lastName ?? "---",
+        email: contacts.email ?? "---",
+        countryCode: contacts.countryCode ?? "+91",
+        number: contacts.phone ?? "---",
+      }
+      return mergedObject;
+    })
+    exportDataHandler.value.status = true;
+    exportReadyRows.value = exportReadObject
+  } catch(error) {
+    console.log(error)
+  }
+}
+const fileUpload = async () => {
+  if (selectedFile.value) {
+    const file = selectedFile.value[0];
+    console.log(file, "file -- file")
+    const fileExtension = file.name.split('.').pop().toLowerCase();
 
-  const Pagination = async ($evnt) => {
-    filters.page = $evnt;
-    integrationRefresh();
-  };
+    if (fileExtension === "csv") {
+      console.log("Uploading CSV file");
+      await uploadNumber(file);
+    } else if (fileExtension === "xls" || fileExtension === "xlsx") {
+      console.log("Uploading Excel file");
+      await uploadNumber(file);
+    } else {
+      console.error("Unsupported file type:", fileExtension);
+      toast.error("Only CSV and Excel files are allowed.");
+      return;
+    }
+  } else {
+    console.log("No file selected");
+  }
+
+};
 </script>
 
-<style scoped></style>
+
