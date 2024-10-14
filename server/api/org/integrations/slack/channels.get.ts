@@ -1,0 +1,21 @@
+import { findIntegrationDetails } from "~/server/utils/db/integrations";
+import { getAllChannelsFromSlack } from "~/server/utils/slack/modules";
+
+export default defineEventHandler(async (event) => {
+  const organizationId = (await isOrganizationAdminHandler(event)) as string;
+  // const query = getQuery(event);
+  // return await listIntegrations(organizationId);
+  const query: any = await getQuery(event);
+  const integrationData: any = await findIntegrationDetails(
+    organizationId,
+    query.id,
+  );
+  console.log(query.id, integrationData.metadata.access_token, "Access Token");
+  const data = await getAllChannelsFromSlack({
+    token: integrationData?.metadata?.access_token,
+    refreshToken: integrationData?.metadata?.refresh_token,
+    integrationData: integrationData,
+  });
+
+  return data;
+});
