@@ -1,15 +1,21 @@
 <template>
-  <page :title="botDetails.name ?? ''" :bread-crumbs="[
-    {
-      label: `${botDetails.name}`,
-      to: `/bot-management/chat-bot`,
-    },
-    {
-      label: 'Chat Bot',
-      to: `/bot-management/chat-bot`,
-    },
-  ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
-    custom-back-router="/bot-management/chat-bot">
+  <page
+    :title="botDetails.name ?? ''"
+    :bread-crumbs="[
+      {
+        label: `${botDetails.name}`,
+        to: `/bot-management/chat-bot`,
+      },
+      {
+        label: 'Chat Bot',
+        to: `/bot-management/chat-bot`,
+      },
+    ]"
+    :disableSelector="true"
+    :disable-back-button="false"
+    :disable-elevation="true"
+    custom-back-router="/bot-management/chat-bot"
+  >
     <div class="">
       <div
         class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]"
@@ -56,11 +62,16 @@
               class="items-top sm:items-top md:items-top mt-3 flex gap-3 sm:mt-3 md:mt-0 lg:mt-0 lg:items-center xl:mt-0 xl:items-center"
             >
               <div class="flex flex-col items-center gap-1">
-                <UiButton color="primary" class="p-2" @click="() => {
-                  channelModalState.open = true;
-                  channelModalState.id = botDetails.id;
-                }
-                  ">
+                <UiButton
+                  color="primary"
+                  class="p-2"
+                  @click="
+                    () => {
+                      channelModalState.open = true;
+                      channelModalState.id = botDetails.id;
+                    }
+                  "
+                >
                   <span class="hidden lg:inline"> Configure channel </span>
                   <span
                     class="flex flex-col items-center justify-center lg:hidden"
@@ -70,12 +81,19 @@
                 </UiButton>
                 <div class="block text-[4px] lg:hidden">Configure channel</div>
               </div>
-              <div class="flex flex-col items-center gap-1" v-if="!botDetails.documentId">
+              <div
+                class="flex flex-col items-center gap-1"
+                v-if="!botDetails.documentId"
+              >
                 <UiButton
-                  class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px] p-2"
-                  @click="handleActivateBot" :disabled="isSubmitting">
-                  <span class="hidden lg:inline "> Activate Bot </span>
-                  <span class="flex flex-col items-center justify-center lg:hidden">
+                  class="bg-[#424bd1] p-2 hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px]"
+                  @click="handleActivateBot"
+                  :disabled="isSubmitting"
+                >
+                  <span class="hidden lg:inline"> Activate Bot </span>
+                  <span
+                    class="flex flex-col items-center justify-center lg:hidden"
+                  >
                     <component :is="Bot"></component>
                   </span>
                 </UiButton>
@@ -88,7 +106,8 @@
                 <div class="flex flex-col items-center gap-1">
                   <UiButton
                     class="rounded-[8px] bg-[#ff0000] p-2 text-[14px] font-medium text-white hover:bg-[#ff0000] hover:brightness-90"
-                    @click="deactivateBot">
+                    @click="deactivateBot"
+                  >
                     <!-- Deactivate Bot -->
                     <span class="hidden lg:inline"> Deactivate Bot </span>
                     <!-- Icon for small screens -->
@@ -255,9 +274,9 @@
   // }
 
   import { useClipboard } from "@vueuse/core";
-  import { Bot, Settings } from "lucide-vue-next";
-  import { ref } from "vue";
-  import { toast } from "vue-sonner";
+import { Bot, Settings } from "lucide-vue-next";
+import { ref } from "vue";
+import { toast } from "vue-sonner";
 
   const router = useRouter();
   // const selectedValue = ref("Today");
@@ -312,22 +331,28 @@
       helperText: "Add CRM to manage your leads effectively",
       routeName: "bot-management-chat-bot-id-crm-config",
     },
-
     {
       _id: 3,
+      bot: "Communication Channel Configuration",
+      helperText: "Add Communication channel to manage your leads effectively",
+      routeName: "bot-management-chat-bot-id-communication-channel-config",
+    },
+
+    {
+      _id: 4,
       bot: "Bot Configuration",
       helperText: "Name,Description,Notes etc...",
       routeName: "bot-management-chat-bot-id-config",
     },
     {
-      _id: 4,
+      _id: 5,
       bot: "Document Management",
       helperText: "Knowledge base,Training data etc...",
       routeName: "bot-management-chat-bot-id-documents",
     },
 
     {
-      _id: 5,
+      _id: 6,
       bot: "Intent Management",
       helperText: "Add your intents Eg: Location Virtual Tour etc...",
       routeName: "bot-management-chat-bot-id-intent-management",
