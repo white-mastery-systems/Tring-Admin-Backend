@@ -87,7 +87,11 @@
             ]" required />
           </div>
           <div class="flex w-full items-center gap-5">
-            <SelectField name="fontFamily" label="Font Famliy" placeholder="Select Font" :options="[
+            <SelectField 
+            name="fontFamily" 
+            label="Font Famliy" 
+            placeholder="Select Font" 
+            :options="[
             {
               value: 'Kanit',
               label: 'Kanit',
@@ -200,12 +204,17 @@
       defaultRibbon: z.boolean().optional(),
     }),
   );
+  const animationProps = {
+    duration: 500,
+  };
+
   const route = useRoute("bot-management-chat-bot-id-ui-customization");
   const router = useRouter();
   const paramId: any = route;
   const botDetails: any = await getBotDetails(paramId.params.id);
   const colorInput:any = ref();
   const secondarycolorInput: any = ref();
+  
 const {
   errors,
   setErrors,
@@ -217,8 +226,11 @@ const {
 } = useForm({
   validationSchema: uiCustomizationValidation,
 });
+
 setFieldValue("logo", (botDetails.metadata.ui.logo ?? ""))
+
 setFieldValue("color", (hslToHex(botDetails.metadata.ui.color ?? "236, 61%, 54%, 1")))
+
 setFieldValue("secondaryColor", (hslToHex(
   botDetails.metadata.ui.secondaryColor ?? "236, 61%, 74%",
 )))    

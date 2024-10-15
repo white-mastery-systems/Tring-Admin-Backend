@@ -96,6 +96,7 @@ watchEffect(() => {
           {
             color: "primary",
             class: "ml-2",
+
             onClick: () => {
               crmConfigModalState.value.open = true;
               crmConfigModalState.value.id = id;

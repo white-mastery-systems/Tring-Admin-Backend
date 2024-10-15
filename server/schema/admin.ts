@@ -29,6 +29,7 @@ export const organizationSchema = adminSchema.table("organization", {
   maxQuota: integer("max_quota").default(50).notNull(),
   planCode: varchar("plan_code", { length: 64 }).notNull().default("chat_free"),
   voicePlanCode: varchar("voice_plan_code").notNull().default("voice_free"),
+  logo: jsonb("logo").default({}),
   isOnboarded: boolean("is_onboarded").default(false).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
