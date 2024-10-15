@@ -12,6 +12,36 @@ export default defineEventHandler(async (event) => {
   const body = await isValidBodyHandler(event, zodInsertTemplates);
   try {
     const metadata: any = { ...body.metadata };
+
+    logger.info(
+      JSON.stringify({
+        name: body.name,
+        language: "en_US",
+        category: "MARKETING",
+        components: [
+          {
+            type: "HEADER",
+            format: body?.metadata?.header,
+            [body?.metadata?.header]: body?.metadata?.headerText,
+            example: {
+              header_text: body?.metadata?.headerTextTemplateVariables,
+            },
+          },
+          {
+            type: "BODY",
+            text: body?.metadata?.body,
+            example: {
+              body_text: [body?.metadata?.templateVariables],
+            },
+          },
+          {
+            type: "FOOTER",
+            text: body?.metadata?.footer,
+          },
+        ],
+      }),
+    );
+
     console.log(metadata, "HEADER");
     const components = [
       {
@@ -48,44 +78,19 @@ export default defineEventHandler(async (event) => {
         },
       },
     );
+    console.log({ res: resp?.status?.toLowerCase() });
     const data = await createTemplate({
       ...body,
       verificationStatus: resp?.status?.toLowerCase(),
       organizationId,
     });
     console.log({ resp });
+    return data;
   } catch (err) {
     console.log({ err: JSON.stringify(err) });
+    return createError({
+      status: 400,
+      err: err?.data,
+    });
   }
-
-  logger.info(
-    JSON.stringify({
-      name: body.name,
-      language: "en_US",
-      category: "MARKETING",
-      components: [
-        {
-          type: "HEADER",
-          format: body?.metadata?.header,
-          [body?.metadata?.header]: body?.metadata?.headerText,
-          example: {
-            header_text: body?.metadata?.headerTextTemplateVariables,
-          },
-        },
-        {
-          type: "BODY",
-          text: body?.metadata?.body,
-          example: {
-            body_text: [body?.metadata?.templateVariables],
-          },
-        },
-        {
-          type: "FOOTER",
-          text: body?.metadata?.footer,
-        },
-      ],
-    }),
-  );
-
-  return data;
 });

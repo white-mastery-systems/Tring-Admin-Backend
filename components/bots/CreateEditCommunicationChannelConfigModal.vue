@@ -81,7 +81,7 @@
       if (value.open && modalProps.id) {
         try {
           const crmConfigData = await $fetch<any>(
-            `/api/bots/${route.params.id}/integrations/${modalProps.id}`,
+            `/api/bots/${route.params.id}/integrations/${modalProps.id}?q=communication`,
           );
           if (crmConfigData) {
             setFieldValue("integrationId", crmConfigData.integrationId);
