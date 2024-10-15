@@ -1,24 +1,66 @@
 <template>
   <div class="pb-2">
     <form class="space-y-2" @submit="handleAccountUpdate">
-      <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:md:grid-cols-2 gap-3">
-        <TextField helperText="Goods Service Tax" type="text" name="name" label="Company Name"
-          placeholder="Enter your Company Name" :required="true" />
+      <ImagePreview
+        @change="handleLogoChange"
+        name="logo"
+        label="Logo"
+        :required="true"
+        :accept="'image/*'"
+        :url="values?.logo?.url"
+        :class="'h-24 cursor-pointer'"
+      />
+      <div
+        class="grid grid-cols-1 gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:md:grid-cols-2"
+      >
+        <TextField
+          helperText="Goods Service Tax"
+          type="text"
+          name="name"
+          label="Company Name"
+          placeholder="Enter your Company Name"
+          :required="true"
+        />
 
-        <SelectField name="industry" label="Industry" placeholder="Select Role"
-          :options="industry.map((role) => ({ label: role, value: role }))" :required="true" />
+        <SelectField
+          name="industry"
+          label="Industry"
+          placeholder="Select Role"
+          :options="industry.map((role) => ({ label: role, value: role }))"
+          :required="true"
+        />
         <div v-if="values.industry === 'Other'">
-          <TextField type="text" name="otherRole" label="Other Industry" :required="true" />
+          <TextField
+            type="text"
+            name="otherRole"
+            label="Other Industry"
+            :required="true"
+          />
         </div>
-        <SelectField name="avgTraffic" label="Monthly Website Traffic" placeholder="Select Traffic"
-          :options="avgTraffic.map((role) => ({ label: role, value: role }))" :required="true" />
+        <SelectField
+          name="avgTraffic"
+          label="Monthly Website Traffic"
+          placeholder="Select Traffic"
+          :options="avgTraffic.map((role) => ({ label: role, value: role }))"
+          :required="true"
+        />
 
-        <SelectField name="employeeCount" label="No. of Employees " placeholder="Select Employees"
-          :options="employeeCount.map((role) => ({ label: role, value: role }))" :required="true" />
+        <SelectField
+          name="employeeCount"
+          label="No. of Employees "
+          placeholder="Select Employees"
+          :options="employeeCount.map((role) => ({ label: role, value: role }))"
+          :required="true"
+        />
 
         <div class="mt-2">
-          <TextField type="text" name="gst" label="GST" helperText="Enter your 15-digit GSTIN"
-            placeholder="Enter Your Gst" />
+          <TextField
+            type="text"
+            name="gst"
+            label="GST"
+            helperText="Enter your 15-digit GSTIN"
+            placeholder="Enter Your Gst"
+          />
         </div>
       </div>
       <div class="text-right">
@@ -70,36 +112,52 @@
     validationSchema: formSchema,
     initialValues: {},
   });
-  const { orgDetails } = await companyDetails()
-  const isLoading = ref(false)
+  const { orgDetails } = await companyDetails();
+  const isLoading = ref(false);
 
   setFieldValue("name", orgDetails?.name);
   setFieldValue("industry", orgDetails?.metadata?.industry);
   // setFieldValue("customIndustry", orgDetails?.metadata?.customIndustry);
   setFieldValue("avgTraffic", orgDetails?.metadata?.avgTraffic);
   setFieldValue("employeeCount", orgDetails?.metadata?.employeeCount);
+  setFieldValue("logo", orgDetails?.logo);
   if (orgDetails?.metadata?.industry === "Other") {
     setFieldValue("otherRole", orgDetails?.metadata?.otherRole);
   }
-  
-   if(orgDetails?.metadata?.gst) setFieldValue("gst", orgDetails?.metadata?.gst);
+
+  if (orgDetails?.metadata?.gst)
+    setFieldValue("gst", orgDetails?.metadata?.gst);
 
 
-  const handleAccountUpdate = handleSubmit(async (values: any) => {
-    isLoading.value = true
-    try{
-   const orgData = await $fetch("/api/org", {
-      method: "PUT",
-      body: values,
+  const handleLogoChange = async (e: any) => {
+    console.log(e, "handleLogoChange");
+    const formData = new FormData();
+    Array.from(e).forEach((file) => {
+      formData.append("files", file);
     });
-    localStorage.setItem("orgDetails", JSON.stringify(orgData));
+    const [res] = await $fetch("/api/uploads", {
+      method: "POST",
+      body: formData,
+    });
+    setFieldValue("logo", res);
+
     
-    toast.success("Company Details updated successfully");
-    }
-    catch(e){
+  };
+
+  const handleAccountUpdate = handleSubmit(async (value: any) => {
+    isLoading.value = true;
+    try {
+      const orgData = await $fetch("/api/org", {
+        method: "PUT",
+        body: {...value,logo:values.logo},
+      });
+      localStorage.setItem("orgDetails", JSON.stringify(orgData));
+
+      toast.success("Company Details updated successfully");
+    } catch (e) {
       toast.error("Company Details failed to update");
-      isLoading.value = false
+      isLoading.value = false;
     }
-    isLoading.value = false
+    isLoading.value = false;
   });
 </script>

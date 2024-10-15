@@ -15,6 +15,7 @@ enum CRMType {
   whatsapp = "whatsapp",
   hubspot = "hubspot",
   slack = "slack",
+  shopify = "shopify",
 }
 const db = useDrizzle();
 

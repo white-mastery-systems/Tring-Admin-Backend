@@ -33,6 +33,13 @@
     crm: z.literal("slack"),
   });
 
+  const shopifySchema = z.object({
+    crm: z.literal("shopify"),
+    metadata: z.object({
+      shopName: z.string().min(1, { message: "API key is required" }),
+    }),
+  });
+
   const integrationSchema = toTypedSchema(
     z
       .object({
@@ -70,6 +77,7 @@
           zohoBiginSchema,
           hubSpotSchema,
           slackSchema,
+          shopifySchema,
         ]),
       ),
   );
@@ -120,7 +128,13 @@
       if (!value.id) return;
       const integrationDetails = await $fetch<{
         name: string;
-        crm: "sell-do" | "zoho-crm" | "zoho-bigin";
+        crm:
+          | "sell-do"
+          | "zoho-crm"
+          | "zoho-bigin"
+          | "hubspot"
+          | "slack"
+          | "shopify";
         metadata?: { apiKey: string };
       }>(`/api/org/integrations/${integrationModalProps.id}`);
       setFieldValue("name", integrationDetails?.name);
@@ -193,6 +207,11 @@
               // "https://slack.com/oauth/v2/authorize?scope=incoming-webhook&client_id=7856740970225.7841202988373",
               "_blank",
             );
+          } else if (values.crm === "shopify") {
+            window.open(
+              `https://${values.metadata.shopName}.myshopify.com/admin/oauth/authorize?client_id=e766d107bd1a2d83dfd696f9f16282b1&scope=write_products,read_shipping,read_inventory&redirect_uri=${url}`,
+              "_blank",
+            );
           }
           //b2c6269af5da3c2f7fb3fb929de90af7
           emit("success");
@@ -242,6 +261,25 @@
           :options="integrationTypes"
           required
         />
+        <div class="relative">
+          <TextField
+            v-if="values.crm === 'shopify'"
+            name="metadata.shopName"
+            label="Shop Name"
+            helperText="Enter your shopname"
+            placeHolder="Eg: vaanium"
+            required
+          >
+            <template #endSlot>
+              <div
+                class="h-full w-full cursor-pointer rounded-md bg-gray-200 p-2"
+                type="button"
+              >
+                .myshopify.com
+              </div>
+            </template>
+          </TextField>
+        </div>
 
         <TextField
           v-if="values.crm === 'sell-do'"
