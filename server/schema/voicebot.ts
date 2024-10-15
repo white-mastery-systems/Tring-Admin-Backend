@@ -1,5 +1,13 @@
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
-import { boolean, jsonb, timestamp, uuid, varchar, unique, index } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  index,
+  jsonb,
+  timestamp,
+  unique,
+  uuid,
+  varchar,
+} from "drizzle-orm/pg-core";
 import { voiceBotSchema } from ".";
 import { integrationSchema, organizationSchema } from "./admin";
 
@@ -22,7 +30,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     top_p: "0.95",
     top_k: "64",
     max_output_token: "4096",
-    prompt: ""
+    prompt: "",
   }),
   textToSpeechConfig: jsonb("text_to_speech_config").default({
     provider: "google",
@@ -31,10 +39,8 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
       speaking_rate: 1,
       pitch: 1,
       volume_gain_db: 0.5,
-      effects_profile_id: [
-        "telephony-class-application"
-      ]
-    }
+      effects_profile_id: ["telephony-class-application"],
+    },
   }),
   speechToTextConfig: jsonb("speech_to_text_config").default({
     provider: "deepgram",
@@ -42,29 +48,29 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
       version: "1",
       encoding: "MULAW",
       live_options: {
-          model: "nova-2",
-          smart_format: true,
-          channels: 1,
-          sample_rate: 8000,
-          interim_results: true,
-          utterance_end_ms: "1000",
-          vad_events: true,
-          endpointing: 550,
-          no_delay: true,
-          punctuate: true,
-          diarize: false,
-          filler_words: false,
-          numerals: true,
-          profanity_filter: true,
-          keywords: []
+        model: "nova-2",
+        smart_format: true,
+        channels: 1,
+        sample_rate: 8000,
+        interim_results: true,
+        utterance_end_ms: "1000",
+        vad_events: true,
+        endpointing: 550,
+        no_delay: true,
+        punctuate: true,
+        diarize: false,
+        filler_words: false,
+        numerals: true,
+        profanity_filter: true,
+        keywords: [],
       },
       addons: {
-          measurements: "true",
-          dictation: "true"
+        measurements: "true",
+        dictation: "true",
       },
       amplification_factor: 2,
-      noise_gate: 0
-    }
+      noise_gate: 0,
+    },
   }),
   clientConfig: jsonb("client_config").default({
     agent_name: "Jenna",
@@ -72,10 +78,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     dynamic_caching: false,
     distance_threshold: 0.1,
     tools: [],
-    default_tools: [
-        "currentDate",
-        "concludeCall"
-    ]
+    default_tools: ["currentDate", "concludeCall"],
   }),
   // talentConfig: jsonb("talent_config").default({}),
   // intents: varchar("intents").array(), // Array of strings
@@ -107,7 +110,7 @@ export const voicebotIntegrationSchema = voiceBotSchema.table(
   },
 );
 
-export const voiceBotUserSchema = voiceBotSchema.table("bot_user",{
+export const voiceBotUserSchema = voiceBotSchema.table("bot_user", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name").notNull(),
   mobile: varchar("mobile").notNull(),
@@ -120,7 +123,7 @@ export const voiceBotUserSchema = voiceBotSchema.table("bot_user",{
     .references(() => organizationSchema.id)
     .notNull(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-})
+});
 
 export const callLogSchema = voiceBotSchema.table("call_logs", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -135,31 +138,33 @@ export const callLogSchema = voiceBotSchema.table("call_logs", {
   inputCredits: varchar("input_credits").notNull(),
   outputCredits: varchar("output_credits").notNull(),
   botId: uuid("bot_id")
-      .references(() => voicebotSchema.id)
-      .notNull(),
-  organizationId: uuid("organization_id")
-      .references(() => organizationSchema.id)
-      .notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-})
-
-export const voiceBotLeadSchema = voiceBotSchema.table("leads", {
-  id: uuid("id").notNull().primaryKey().defaultRandom(),
-  crmLeadId: varchar("crm_lead_id", { length: 128 }),
-  metadata: jsonb("metadata"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  botId: uuid("bot_id")
     .references(() => voicebotSchema.id)
-    .notNull(),
-  botUserId: uuid("bot_user_id")
-    .references(() => voiceBotUserSchema.id)
     .notNull(),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)
     .notNull(),
-  status: varchar("status").default("default").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const voiceBotLeadSchema = voiceBotSchema.table(
+  "leads",
+  {
+    id: uuid("id").notNull().primaryKey().defaultRandom(),
+    crmLeadId: varchar("crm_lead_id", { length: 128 }),
+    metadata: jsonb("metadata"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    botId: uuid("bot_id")
+      .references(() => voicebotSchema.id)
+      .notNull(),
+    botUserId: uuid("bot_user_id")
+      .references(() => voiceBotUserSchema.id)
+      .notNull(),
+    organizationId: uuid("organization_id")
+      .references(() => organizationSchema.id)
+      .notNull(),
+    status: varchar("status").default("default").notNull(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
   (table) => ({
     leadConstraint: unique("Voicebot_leads_unique_constraint").on(
@@ -168,9 +173,8 @@ export const voiceBotLeadSchema = voiceBotSchema.table("leads", {
       table.organizationId,
     ),
     leadsBotIdIndex: index("voicebot_leads_bot_id_index").on(table.botId),
-  })
-)
-
+  }),
+);
 
 export type SelectVoiceBot = InferSelectModel<typeof voicebotSchema>;
 export type InsertVoiceBot = InferInsertModel<typeof voicebotSchema>;

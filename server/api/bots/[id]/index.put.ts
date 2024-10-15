@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
   );
 
   const body: any = await isValidBodyHandler(event, zodUpdateChatBot);
+
   if (body?.channels?.whatsapp) {
     // const url =
     //   "https://graph.facebook.com/v20.0/455294850990360/subscribed_apps";
