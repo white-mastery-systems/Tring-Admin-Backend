@@ -28,14 +28,17 @@ const zodUpdateVoiceBotSchema = z.object({
       role: z.string().optional(),
       domain: z.string().optional(),
       other: z.string().optional(),
+      language: z.string().optional(),
     })
     .optional(),
-  talentConfig: z.object({
-    name: z.string().optional(),
-    type: z.string().optional(),
-    size: z.number().optional(),
-    url: z.string().optional(),
-  }).optional(),
+  talentConfig: z
+    .object({
+      name: z.string().optional(),
+      type: z.string().optional(),
+      size: z.number().optional(),
+      url: z.string().optional(),
+    })
+    .optional(),
   audioFiles: z.record(z.any()).optional(),
   textToSpeechConfig: z.record(z.any()).optional(),
   speechToTextConfig: z.record(z.any()).optional(),

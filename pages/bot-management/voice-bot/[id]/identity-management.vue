@@ -59,6 +59,13 @@
           >
           </TextField>
         </div>
+        <SelectField
+          name="language"
+          label="Language"
+          placeholder="Select Language"
+          :options="languageList"
+          required
+        />
         <div class="w-full gap-3 pt-2">
           <div style="align-self: center">Welcome Audio</div>
           <div>
@@ -187,6 +194,161 @@
       helperText: "Handles visitor interactions and phone calls.",
     },
   ];
+
+  const languageList = [
+    {
+      label: "Bulgarian",
+      value: "bg",
+    },
+    {
+      label: "Catalan",
+      value: "ca",
+    },
+    {
+      label: "Chinese (Mandarin, Simplified)",
+      value: "zh,zh-CN,zh-Hans",
+    },
+    {
+      label: "Chinese (Mandarin, Traditional)",
+      value: "zh-TW,zh-Hant",
+    },
+    {
+      label: "Chinese (Cantonese, Traditional)",
+      value: "zh-HK",
+    },
+    {
+      label: "Czech",
+      value: "cs",
+    },
+    {
+      label: "Danish",
+      value: "da, da-DK",
+    },
+    {
+      label: "Dutch",
+      value: "nl",
+    },
+    {
+      label: "English",
+      value: "en, en-US, en-AU, en-GB, en-NZ, en-IN",
+    },
+    {
+      label: "Estonian",
+      value: "et",
+    },
+    {
+      label: "Finnish",
+      value: "fi",
+    },
+    {
+      label: "Flemish",
+      value: "nl-BE",
+    },
+    {
+      label: "French",
+      value: "fr, fr-CA",
+    },
+    {
+      label: "German",
+      value: "de",
+    },
+    {
+      label: "German-CH",
+      value: "de-CH",
+    },
+    {
+      label: "Greek",
+      value: "el",
+    },
+    {
+      label: "Hindi",
+      value: "hi",
+    },
+    {
+      label: "Hungarian",
+      value: "hu",
+    },
+    {
+      label: "Indonesian",
+      value: "id",
+    },
+    {
+      label: "Italian",
+      value: "it",
+    },
+    {
+      label: "Japanese",
+      value: "ja",
+    },
+    {
+      label: "Korean",
+      value: "ko, ko-KR",
+    },
+    {
+      label: "Latvian",
+      value: "lv",
+    },
+    {
+      label: "Lithuanian",
+      value: "lt",
+    },
+    {
+      label: "Malay",
+      value: "ms",
+    },
+    {
+      label: "Multilingual (Spanish + English)",
+      value: "multi",
+    },
+    {
+      label: "Norwegian",
+      value: "no",
+    },
+    {
+      label: "Polish",
+      value: "pl",
+    },
+    {
+      label: "Portuguese",
+      value: "pt, pt-BR",
+    },
+    {
+      label: "Romanian",
+      value: "ro",
+    },
+    {
+      label: "Russian",
+      value: "ru",
+    },
+    {
+      label: "Slovak",
+      value: "sk",
+    },
+    {
+      label: "Spanish",
+      value: "es, es-419",
+    },
+    {
+      label: "Swedish",
+      value: "sv, sv-SE",
+    },
+    {
+      label: "Thai",
+      value: "th, th-TH",
+    },
+    {
+      label: "Turkish",
+      value: "tr",
+    },
+    {
+      label: "Ukrainian",
+      value: "uk",
+    },
+    {
+      label: "Vietnamese",
+      value: "vi",
+    },
+  ];
   const domainList = [
     { value: "Customer Support", label: "Customer Support" },
     { value: "Sales Assistant", label: "Sales Assistant" },
@@ -217,6 +379,7 @@
       other: z.string().optional(),
       welcomeFile: z.any(),
       concludeFile: z.any(),
+      language: z.string(),
       headerFile: z.object({}).optional(),
     }),
   );
@@ -261,12 +424,19 @@
       await audioDelete(botDetails);
       payload = {
         ...payload,
-        audioFiles:{
-          welcome: welcomeFilesData.value.filter((welcomeFile:any) => !deleteFileBucket.value.includes(welcomeFile)  && (!welcomeFile instanceof File)),
-          conclude: concludeFilesData.value.filter((concludeFile:any) => !deleteFileBucket.value.includes(concludeFile) && (!concludeFile instanceof File))
-        }
-      }
-    
+        audioFiles: {
+          welcome: welcomeFilesData.value.filter(
+            (welcomeFile: any) =>
+              !deleteFileBucket.value.includes(welcomeFile) &&
+              (!welcomeFile) instanceof File,
+          ),
+          conclude: concludeFilesData.value.filter(
+            (concludeFile: any) =>
+              !deleteFileBucket.value.includes(concludeFile) &&
+              (!concludeFile) instanceof File,
+          ),
+        },
+      };
     }
     if (formData.getAll("files").length) {
       formData.append("bot_id", botDetails.id);
@@ -274,13 +444,27 @@
       formData.append("ivr", botDetails.ivrConfig.provider);
       const resData = await audioUpload(formData, "");
       const data = await resData?.json();
-           payload = {
+      payload = {
         ...payload,
-        audioFiles:{
-          welcome: [...welcomeFilesData.value.filter((welcomeFile) => !deleteFileBucket.value.includes(welcomeFile) && (!welcomeFile instanceof File)),...data.welcome],
-          conclude: [...concludeFilesData.value.filter((concludeFile) => !deleteFileBucket.value.includes(concludeFile) && (!concludeFile instanceof File)),...data.conclude]
-        }
-      }
+        audioFiles: {
+          welcome: [
+            ...welcomeFilesData.value.filter(
+              (welcomeFile) =>
+                !deleteFileBucket.value.includes(welcomeFile) &&
+                (!welcomeFile) instanceof File,
+            ),
+            ...data.welcome,
+          ],
+          conclude: [
+            ...concludeFilesData.value.filter(
+              (concludeFile) =>
+                !deleteFileBucket.value.includes(concludeFile) &&
+                (!concludeFile) instanceof File,
+            ),
+            ...data.conclude,
+          ],
+        },
+      };
       console.log(data);
     }
 
@@ -298,6 +482,7 @@
     setFieldValue("role", botDetails.identityManagement?.role);
     setFieldValue("domain", botDetails.identityManagement?.domain);
     setFieldValue("other", botDetails.identityManagement?.other);
+    setFieldValue("language", botDetails.identityManagement?.language);
   }
 
   const [name, nameFieldAttrs] = defineField("name");
@@ -361,7 +546,7 @@
   };
 
   const deleteFile = (data, files, index) => {
-      files.splice(index, 1);
+    files.splice(index, 1);
     if (data?.path) {
       deleteFileBucket.value.push(data.path);
     }
@@ -394,11 +579,11 @@
           "Content-Type": "application/json", // Specify the type of data you're sending
         },
         body: JSON.stringify({
-    files: deleteFileBucket.value, // ensure this is serializable (possibly a file path or metadata, not a File object)
-    bot_id: data.id,
-    organization_id: data.organizationId,
-    ivr: data.ivrConfig.provider,
-  }),
+          files: deleteFileBucket.value, // ensure this is serializable (possibly a file path or metadata, not a File object)
+          bot_id: data.id,
+          organization_id: data.organizationId,
+          ivr: data.ivrConfig.provider,
+        }),
       });
       return console.log("deleted");
     } catch (error) {
@@ -409,8 +594,9 @@
   };
 
   const getLastFileNumber = (fileNames: string) => {
-
-    return   fileNames === "welcomeFile" ? welcomeFilesData.value.length : concludeFilesData.value.length;
+    return fileNames === "welcomeFile"
+      ? welcomeFilesData.value.length
+      : concludeFilesData.value.length;
     // let fileName =
     //   fileNames === "welcomeFile" ? welcomeString.value : concludeString.value;
     // let fileNameArray = fileName.split(",").map((file: string) => file.trim());
