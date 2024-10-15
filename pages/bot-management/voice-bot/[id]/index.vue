@@ -158,14 +158,14 @@
   const isSubmitting = ref(false);
   const getDocumentList: any = ref();
 
-watchEffect(() => {
+   watchEffect(() => {
   if (botDetails.value) {
     const userName = botDetails.value.name ?? 'Unknown Bot Name';
     useHead({
       title: `Voice Bot | ${userName}`,
     });
   }
-});
+   });
 
   onMounted(async () => {
     getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
@@ -261,14 +261,8 @@ watchEffect(() => {
       .join(" ");
     return `${window.location.origin}/preview.html?orgname=WMS&chatbotid=${paramId.params.id}&brandcolor=${col}&secondarycolor=${secondaryColor}&mode=preview`;
   });
-  // onMounted(async () => {
-  //   console.log(paramId.params.id, "paramId")
-  //   try {
-  //     botDetails.value =
-  //   } catch (error) {
-  //     console.error("Error fetching bot details:", error);
-  //   }
-  // })
+
+  
 
   const botManagementDetails = async (list: any, index: any) => {
     // console.log(list.bot.trim().toLowerCase().replace(/\s+/g, ' ') , "list")
