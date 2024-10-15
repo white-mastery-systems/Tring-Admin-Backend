@@ -219,6 +219,9 @@ export const templateSchema = adminSchema.table("templates", {
   organizationId: uuid("organization_id")
     .notNull()
     .references(() => organizationSchema.id),
+  verificationStatus: varchar("verification_status", { length: 64 }).default(
+    "PENDING",
+  ),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
