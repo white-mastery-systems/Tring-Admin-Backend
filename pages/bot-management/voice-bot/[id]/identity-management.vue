@@ -442,6 +442,7 @@
       formData.append("bot_id", botDetails.id);
       formData.append("organization_id", botDetails.organizationId);
       formData.append("ivr", botDetails.ivrConfig.provider);
+      formData.append("language", value.language);
       const resData = await audioUpload(formData, "");
       const data = await resData?.json();
       payload = {
