@@ -50,6 +50,7 @@ export const listBots = async (
       name: true,
       createdAt: true,
       documentId: true,
+      type: true,
     },
   });
   data = data.map((i: any) => ({

@@ -32,6 +32,15 @@
           <UiSelectItem value="all">All</UiSelectItem>
         </UiSelectContent>
       </UiSelect>
+      <UiSelect v-model="botTypeFilter">
+        <UiSelectTrigger class="max-w-[200px]">
+          <UiSelectValue placeholder="Filter Type" />
+        </UiSelectTrigger>
+        <UiSelectContent>
+          <UiSelectItem value="ecommerce">E Commerce</UiSelectItem>
+          <UiSelectItem value="real-estate">Real Estate</UiSelectItem>
+        </UiSelectContent>
+      </UiSelect>
     </div>
 
     <DataTable
@@ -98,38 +107,17 @@
     limit: "10",
   });
   const activeStatus = ref("");
+  const botTypeFilter = ref("");
   watch(activeStatus, async (newStatus, previousStatus) => {
     filters.active = newStatus;
     filters.page = "1";
   });
+  watch(botTypeFilter, async (newStatus, previousStatus) => {
+    filters.type = newStatus;
+    filters.page = "1";
+  });
   const selectedValue = ref("Today");
 
-  const menuList = ref([
-    {
-      content: "Today",
-      value: "Today",
-    },
-    {
-      content: "Weekly",
-      value: "Weekly",
-    },
-    {
-      content: "Monthly",
-      value: "Monthly",
-    },
-    {
-      content: "Quarterly",
-      value: "Quarterly",
-    },
-    {
-      content: "Halfyearly",
-      value: "Halfyearly",
-    },
-    {
-      content: "Yearly",
-      value: "Yearly",
-    },
-  ]);
   // const botList = await listApiBots();
   let page = ref(0);
   let totalPageCount = ref(0);
@@ -149,12 +137,23 @@
       page.value = bots.page;
       totalPageCount.value = bots.totalPageCount;
       totalCount.value = bots.totalCount;
-      return bots.data.map((bot) => ({
-        id: bot.id,
-        name: bot.name,
-        status: bot.documentId ? true : false,
-        createdAt: `${bot.createdAt}`,
-      }));
+      return bots.data.map((bot) => {
+        const type = () => {
+          if (bot.type === "ecommerce") {
+            return "E-Commerce";
+          } else {
+            return "Real Estate";
+          }
+        };
+
+        return {
+          id: bot.id,
+          name: bot.name,
+          status: bot.documentId ? true : false,
+          createdAt: `${bot.createdAt}`,
+          type: type(),
+        };
+      });
     },
   });
   const isDataLoading = computed(() => status.value === "pending");
@@ -197,6 +196,12 @@
   const columns = [
     columnHelper.accessor("name", {
       header: "Bot Name",
+    }),
+    columnHelper.accessor("Bot Type", {
+      header: "Bot Type",
+      cell: ({ row }) => {
+        return row.original.type;
+      },
     }),
     columnHelper.accessor("createdAt", {
       header: "Date Created",
