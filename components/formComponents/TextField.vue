@@ -1,5 +1,5 @@
 <template>
-  <div :class="cn('w-full', props?.endIcon ? 'relative' : '')">
+  <div :class="cn('w-full', 'relative')">
     <UiLabel
       :class="[
         'flex items-center capitalize',
@@ -111,6 +111,17 @@
     >
       <slot name="endIcon"></slot>
     </div>
+    <div
+      :class="
+        cn(
+          props?.endSlot
+            ? 'absolute right-[0px] top-[36px]'
+            : 'absolute right-[0px] top-[36px]',
+        )
+      "
+    >
+      <slot name="endSlot"></slot>
+    </div>
 
     <span
       :class="[
@@ -138,6 +149,7 @@
       disabled?: boolean;
       class?: string;
       endIcon?: any;
+      endSlot?: any;
       validation: Boolean;
       disableSpecialCharacters?: boolean;
       accept?: string;

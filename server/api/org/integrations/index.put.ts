@@ -3,6 +3,7 @@ import {
   updateIntegrationById,
 } from "~/server/utils/db/integrations";
 import { getHubspotAccessToken } from "~/server/utils/hubspot/auth";
+import { generateAccessTokenFromCodeForShopify } from "~/server/utils/shopify/auth";
 import { generateAccessTokenFromCodeForSlack } from "~/server/utils/slack/auth";
 
 enum CRMType {
@@ -11,6 +12,7 @@ enum CRMType {
   zohoBigin = "zoho-bigin",
   hubspot = "hubspot",
   slack = "slack",
+  shopify = "shopify",
 }
 const db = useDrizzle();
 const config = useRuntimeConfig();
@@ -21,6 +23,7 @@ export default defineEventHandler(async (event) => {
     metadata: z.object({
       apiKey: z.string().optional(),
       code: z.string().optional(),
+      shop: z.string().optional(),
       location: z.string().optional(),
       accountsServer: z.string().optional(),
     }),
@@ -45,6 +48,17 @@ export default defineEventHandler(async (event) => {
     // code=1234 -F client_id=3336676.569200954261 -F client_secret=ABCDEFGH https://slack.com/api/oauth.v2.access
     const data = await generateAccessTokenFromCodeForSlack({
       code: body.metadata.code,
+    });
+
+    generatedAuthResponse = data;
+  } else if (
+    body.crm === "shopify" &&
+    body.metadata.code &&
+    body.metadata.shop
+  ) {
+    const data = await generateAccessTokenFromCodeForShopify({
+      code: body.metadata.code,
+      shop: body.metadata.shop,
     });
 
     generatedAuthResponse = data;

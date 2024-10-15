@@ -29,6 +29,7 @@
         integrationDetails: {
           metadata: {
             code: route?.query?.code,
+            shop: route?.query?.shop,
           },
           crm: route?.params?.id,
         },
