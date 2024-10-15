@@ -54,6 +54,8 @@
         );
         console.log(getSingleDetails, "getSingleDetails");
         setFieldValue("name", getSingleDetails.name);
+        setFieldValue("type", getSingleDetails.type);
+        setFieldValue("integrationId", getSingleDetails?.integrationId);
       } else {
         resetForm();
       }
