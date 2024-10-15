@@ -8,8 +8,25 @@ export default defineEventHandler(async (event) => {
   //   schema.name.min(3, "Name Too Short").max(64, "Name Too Long"),
   const zodInsertChatBot = z
     .object({
-      name: z.string().min(3, "Name Too Short").max(64, "Name Too Long"),
+      name: z
+        .string({ required_error: "name is required" })
+        .min(3, "Name Too Short")
+        .max(64, "Name Too Long"),
+      type: z.string({ required_error: "Type is required" }),
+      integrationId: z.string().optional(),
     })
+    .refine(
+      (data) => {
+        if (data.type === "ecommerce" && !data?.integrationId) {
+          return false;
+        }
+        return true;
+      },
+      {
+        message: "Other role must be provided",
+        path: ["otherRole"],
+      },
+    )
     .refine(
       async (data) => {
         const isBotExisting = await db.query.chatBotSchema.findFirst({

@@ -20,7 +20,7 @@
     :title="
       addWhatappTemplateModalState.id ? 'Modify Template' : 'Add Template'
     "
-    class="grid grid-cols-2 rounded-lg"
+    class="xl:max-h-[90%] xl:max-w-[90%]"
   >
     <UiTabs default-value="form" class="w-full self-start">
       <UiTabsList class="grid w-full grid-cols-2">

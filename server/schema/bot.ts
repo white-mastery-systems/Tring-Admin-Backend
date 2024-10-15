@@ -20,6 +20,8 @@ export const chatBotSchema = chatbotSchema.table("bot", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name", { length: 64 }).notNull(),
   documentId: uuid("document_id"),
+  integrationId: uuid("integration_id").references(() => integrationSchema.id),
+  type: varchar("type", { length: 64 }).default("real-estate"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   metadata: jsonb("metadata").default({
     ui: {
