@@ -223,6 +223,7 @@ export const templateSchema = adminSchema.table("templates", {
   verificationStatus: varchar("verification_status", { length: 64 }).default(
     "pending",
   ),
+  whatsappTemplateId: varchar("whatsapp_template_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

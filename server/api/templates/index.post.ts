@@ -7,62 +7,57 @@ const zodInsertTemplates = z.object({
 });
 
 export default defineEventHandler(async (event) => {
+  const conf = useRuntimeConfig();
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
 
   const body = await isValidBodyHandler(event, zodInsertTemplates);
   try {
     const metadata: any = { ...body.metadata };
 
+    let components: any[] = [];
+    if (metadata.body) {
+      components.push({
+        type: "BODY",
+        text: metadata?.body,
+        ...(metadata?.templateVariables?.length > 0 && {
+          example: {
+            body_text: [metadata?.templateVariables],
+          },
+        }),
+      });
+    }
+    if (metadata?.header === "text") {
+      components.push({
+        type: "HEADER",
+        format: metadata?.header,
+        [metadata?.header]: metadata?.headerText,
+        ...(metadata?.headerTextTemplateVariables?.length > 0 && {
+          example: {
+            header_text: metadata?.headerTextTemplateVariables,
+          },
+        }),
+      });
+    } else if (metadata?.headerFile) {
+      components.push({
+        type: "header",
+        format: metadata?.header,
+        example: {
+          header_handle: `${conf.llmCallbackUrl}${metadata?.headerFile?.url}`,
+        },
+      });
+    }
+    if (metadata?.footer) {
+      components.push({ type: "FOOTER", text: metadata?.footer });
+    }
+    console.log({ components });
     logger.info(
       JSON.stringify({
         name: body.name,
         language: "en_US",
         category: "MARKETING",
-        components: [
-          {
-            type: "HEADER",
-            format: body?.metadata?.header,
-            [body?.metadata?.header]: body?.metadata?.headerText,
-            example: {
-              header_text: body?.metadata?.headerTextTemplateVariables,
-            },
-          },
-          {
-            type: "BODY",
-            text: body?.metadata?.body,
-            example: {
-              body_text: [body?.metadata?.templateVariables],
-            },
-          },
-          {
-            type: "FOOTER",
-            text: body?.metadata?.footer,
-          },
-        ],
+        components,
       }),
     );
-
-    console.log(metadata, "HEADER");
-    const components = [
-      {
-        type: "HEADER",
-        format: metadata?.header,
-        [metadata?.header]: metadata?.headerText,
-        ...(metadata?.header && {
-          example: {
-            header_text: metadata?.headerTextTemplateVariables,
-          },
-        }),
-      },
-      {
-        type: "BODY",
-        text: metadata?.body,
-        example: {
-          body_text: [metadata?.templateVariables],
-        },
-      },
-      { type: "FOOTER", text: metadata?.footer },
-    ];
     const resp: any = await $fetch(
       "https://graph.facebook.com/v21.0/454567781066093/message_templates",
       {
@@ -81,13 +76,18 @@ export default defineEventHandler(async (event) => {
     console.log({ res: resp?.status?.toLowerCase() });
     const data = await createTemplate({
       ...body,
+      whatsappTemplateId: resp?.id,
       verificationStatus: resp?.status?.toLowerCase(),
       organizationId,
     });
     console.log({ resp });
     return data;
   } catch (err) {
-    console.log({ err: JSON.stringify(err) });
+    console.log({
+      err: JSON.stringify(err),
+      errdd: err.data,
+      msg: err.message,
+    });
     return createError({
       status: 400,
       err: err?.data,

@@ -173,6 +173,7 @@
         pid: values.pid,
         code: values.code,
         wabaId: values.wabaId,
+        type: "whatsapp",
         pin: values.pin,
       },
     };
