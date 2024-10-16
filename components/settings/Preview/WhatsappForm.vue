@@ -21,6 +21,15 @@
   const stringifyJson = (str: any = []) => {
     return JSON.stringify(str);
   };
+  const {
+    status: integrationLoadingStatus,
+    data: integrationsData,
+    refresh: integrationRefresh,
+  } = await useLazyFetch("/api/org/integrations?q=channel", {
+    server: false,
+    default: () => [],
+  });
+
   const headerOptions = [
     { label: "None", value: "none" },
     { label: "Text", value: "text" },
@@ -156,33 +165,26 @@
     dispatchTemplateState();
   };
 
-  // const addVoiceBot = async (value: any) => {
-  //   try {
-  //     const bot = await $fetch("/api/voicebots", {
-  //       method: "POST",
-  //       body: { name: value.newBotName },
-  //     });
-  //     return navigateTo({
-  //       name: "bot-management-voice-bot-id",
-  //       params: { id: bot.id },
-  //     });
-  //   } catch (err: any) {
-  //     toast.error(err.data.data[0].message);
-  //   }
-  // };
-
   const handleConnect = handleSubmit(async (value: any) => {
     try {
       if (whatsppModalState?.id) {
         await $fetch(`/api/templates/${whatsppModalState.id}`, {
           method: "PUT",
-          body: { metadata: { ...values }, name: values.name },
+          body: {
+            metadata: { ...values },
+            name: values.name,
+            integrationId: values.integrationId,
+          },
         });
         toast.success("Updated successfully");
       } else {
         await $fetch("/api/templates", {
           method: "POST",
-          body: { metadata: { ...values }, name: values.name },
+          body: {
+            metadata: { ...values },
+            name: values.name,
+            integrationId: values.integrationId,
+          },
         });
         toast.success("Created successfully");
       }
@@ -205,6 +207,7 @@
     "templateVariables",
     parseJson(templateStore.values.templateVariables),
   );
+  setFieldValue("integrationId", templateStore.values.integrationId);
   setFieldValue(
     "headerTextTemplateVariables",
     parseJson(templateStore.values.headerTextTemplateVariables),
@@ -222,11 +225,31 @@
     () => errors,
     (newValue) => {},
   );
+  const variableOptions = [
+    { label: "First Name", value: "firstname" },
+    { label: "Last Name", value: "lastname" },
+    { label: "Full Name", value: "fullname" },
+    { label: "Email", value: "email" },
+    { label: "Mobile", value: "mobile" },
+  ];
 </script>
 
 <template>
   <form @submit="handleConnect" class="space-y-2">
     <div class="grid grid-cols-1 gap-4">
+      <SelectField
+        name="integrationId"
+        :options="
+          integrationsData?.map((integration: any) => ({
+            label: integration.name,
+            value: integration.id,
+          }))
+        "
+        label="Integration"
+        placeholder="Select your integration"
+        helperText="template will be created with this integration"
+        required
+      />
       <TextField
         type="text"
         :disableSpecialCharacters="true"
@@ -273,38 +296,51 @@
           v-for="(field, idx) in fields"
           :key="field.key"
         >
-          <TextField
-            :label="'Variable' + ' ' + varaibleLabelName(idx)"
-            :id="`textname_${idx}`"
-            :name="`headerTextTemplateVariables[${idx}]`"
-          />
-
-          <button
-            type="button"
-            @click="removeTemplateVariable(idx, remove, fields, 'headerText')"
-          >
-            remove
-          </button>
+          <div class="flex items-end gap-2">
+            <SelectField
+              :options="variableOptions"
+              :label="'Variable' + ' ' + varaibleLabelName(idx)"
+              :id="`textname_${idx}`"
+              :name="`headerTextTemplateVariables[${idx}]`"
+            />
+            <UiButton
+              variant="outline"
+              type="button"
+              class="mt-2"
+              @click="removeTemplateVariable(idx, remove, fields, 'headerText')"
+            >
+              <CloseIcon class="h-4 w-4" />
+            </UiButton>
+          </div>
         </fieldset>
+        <UiTooltipProvider>
+          <UiTooltip>
+            <UiTooltipTrigger as-child>
+              <UiButton
+                type="button"
+                class="mt-2 max-w-[130px]"
+                color="primary"
+                :disabled="fields.length >= 1"
+                @click="
+                  () => {
+                    push('');
+                    setFieldValue(
+                      'headerText',
+                      (values.headerText || '') + `{{${fields.length}}}`,
+                    );
 
-        <UiButton
-          type="button"
-          class="mt-2 max-w-[130px]"
-          color="primary"
-          @click="
-            () => {
-              push('');
-              setFieldValue(
-                'headerText',
-                (values.headerText || '') + `{{${fields.length}}}`,
-              );
-
-              dispatchTemplateState();
-            }
-          "
-        >
-          Add Variable +
-        </UiButton>
+                    dispatchTemplateState();
+                  }
+                "
+              >
+                Add Variable
+              </UiButton>
+            </UiTooltipTrigger>
+            <UiTooltipContent>
+              <p>Variables are limited to maximum of 1</p>
+            </UiTooltipContent>
+          </UiTooltip>
+        </UiTooltipProvider>
       </FieldArray>
 
       <div v-if="values.header === 'image'">
@@ -346,24 +382,29 @@
           v-for="(field, idx) in fields"
           :key="field.key"
         >
-          <TextField
-            :label="'Variable' + ' ' + varaibleLabelName(idx)"
-            :id="`name_${idx}`"
-            :name="`templateVariables[${idx}]`"
-          />
-
-          <button
-            type="button"
-            @click="removeTemplateVariable(idx, remove, fields)"
-          >
-            remove
-          </button>
+          <div class="flex items-end gap-2">
+            <SelectField
+              :options="variableOptions"
+              :label="'Variable' + ' ' + varaibleLabelName(idx)"
+              :id="`name_${idx}`"
+              :name="`templateVariables[${idx}]`"
+            />
+            <UiButton
+              variant="outline"
+              type="button"
+              class="mt-2"
+              @click="removeTemplateVariable(idx, remove, fields)"
+            >
+              <CloseIcon class="h-4 w-4" />
+            </UiButton>
+          </div>
         </fieldset>
 
         <UiButton
           type="button"
           class="mt-2 max-w-[130px]"
           color="primary"
+          :disabled="fields.length >= 15"
           @click="
             () => {
               push('');

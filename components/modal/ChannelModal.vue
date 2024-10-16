@@ -180,6 +180,8 @@
     const payload = {
       name: values.name,
       crm: values.channel,
+      type: "whatsapp",
+
       metadata: {
         pid: values.pid,
         code: values.code,

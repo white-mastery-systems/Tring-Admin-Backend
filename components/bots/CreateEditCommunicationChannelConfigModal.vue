@@ -81,7 +81,7 @@
       if (value.open && modalProps.id) {
         try {
           const crmConfigData = await $fetch<any>(
-            `/api/bots/${route.params.id}/integrations/${modalProps.id}?q=communication`,
+            `/api/bots/${route.params.id}/integrations/${modalProps.id}`,
           );
           if (crmConfigData) {
             setFieldValue("integrationId", crmConfigData.integrationId);
@@ -134,11 +134,7 @@
       const data: any = await $fetch(
         `/api/org/integrations/slack/channels?id=${matchedCRM.id}`,
       );
-      //   const data = await $fetch("https://slack.com/api/conversations.list", {
-      //     headers: {
-      //       authorization: `Bearer ${matchedCRM.metadata.access_token}`,
-      //     },
-      //   });
+
       channels.value = data.channels;
       console.log({ data });
       //   const data: any = await $fetch(
