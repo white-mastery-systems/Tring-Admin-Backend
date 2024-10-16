@@ -1,30 +1,50 @@
-import { getIntegrationDetails } from "~/server/utils/db/shopify";
+import { getShopifyIntegrationDetails } from "~/server/utils/db/shopify";
 import { logger } from "~/server/logger";
 
 export default defineEventHandler(async (event) => {
-  const { integrationId } = await readBody(event);
+  try {
+    const { shopifyIntegrationId } = await readBody(event);
 
-  const integrationMetadata = await getIntegrationDetails(integrationId);
+    logger.info(
+      `Fetching Shopify integration details for ID: ${shopifyIntegrationId}`,
+    );
+    const shopifyIntegration =
+      await getShopifyIntegrationDetails(shopifyIntegrationId);
 
-  logger.info("integrationMetadata", integrationMetadata);
+    if (!shopifyIntegration) {
+      logger.error(
+        `Shopify integration not found for ID: ${shopifyIntegrationId}`,
+      );
+      throw createError({
+        statusCode: 404,
+        message: `Shopify integration with ID ${shopifyIntegrationId} not found.`,
+      });
+    }
 
-  if (!integrationMetadata) {
+    logger.info(
+      `Shopify integration found for shop: ${shopifyIntegration.shop}`,
+    );
+
+    const shopifyProductsApiUrl = `https://${shopifyIntegration.shop}/admin/api/2023-04/products.json`;
+
+    logger.info(`Fetching products from Shopify API: ${shopifyProductsApiUrl}`);
+    const shopifyResponse: any = await $fetch(shopifyProductsApiUrl, {
+      headers: {
+        "X-Shopify-Access-Token": `${shopifyIntegration.access_token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    logger.info(
+      `Successfully fetched ${shopifyResponse.products.length} products from Shopify`,
+    );
+
+    return shopifyResponse.products;
+  } catch (error: any) {
+    logger.error(`Error fetching Shopify products: ${error.message}`);
     throw createError({
-      statusCode: 404,
-      message: `Integration with ID ${integrationId} not found.`,
+      statusCode: error.response?.status || 500,
+      message: `Failed to fetch Shopify products: ${error.message}`,
     });
   }
-
-  const shopifyApiUrl = `https://${integrationMetadata.shop}/admin/api/2023-04/products.json`;
-
-  const response = await $fetch(shopifyApiUrl, {
-    headers: {
-      "X-Shopify-Access-Token": `${integrationMetadata.access_token}`,
-      "Content-Type": "application/json",
-    },
-  });
-
-  logger.info("Products", response);
-
-  return response;
 });
