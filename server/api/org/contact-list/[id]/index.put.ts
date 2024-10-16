@@ -6,7 +6,7 @@ const zodUpdateContactList = z.object({
 const db = useDrizzle()
 
 export default defineEventHandler(async (event) => {
-   await isOrganizationAdminHandler(event)
+  //  await isOrganizationAdminHandler(event)
 
    const { id: contactListId} = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
