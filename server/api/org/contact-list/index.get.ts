@@ -15,9 +15,6 @@ export default defineEventHandler(async (event) => {
 
   const contactList = await getContactLists(organizationId, query)
 
-  const contacts = await db.query.contactSchema.findMany({
-    where: eq(contactSchema.organizationId, organizationId)
-  })
   let page, offset, limit = 0
     
   if(query.page && query.limit) {
@@ -28,7 +25,7 @@ export default defineEventHandler(async (event) => {
 
   const mapData = contactList.map((item) => {
      let noOfAudience = 0;
-     const audience = contacts.filter((j) => j.contactListId === item.id).length
+     const audience = item.contactIds ? item.contactIds.length : 0
      if(audience) {
        noOfAudience = audience
      }

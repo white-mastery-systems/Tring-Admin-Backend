@@ -1,5 +1,6 @@
 const zodUpdateContactList = z.object({
-  name: z.string().optional()
+  name: z.string().optional(),
+  contactIds: z.array(z.string()).optional(),
 })
 
 const db = useDrizzle()

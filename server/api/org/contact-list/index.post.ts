@@ -3,6 +3,7 @@ import { createContactList } from "~/server/utils/db/contact-list";
 const zodInsertContactList = z.object({
    name: z.string(),
    organizationId: z.string().optional(),
+   contactIds: z.array(z.string()).optional(),
    isDefault: z.boolean().optional()
 })
 
