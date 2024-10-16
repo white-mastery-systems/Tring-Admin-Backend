@@ -21,6 +21,15 @@
   const stringifyJson = (str: any = []) => {
     return JSON.stringify(str);
   };
+  const {
+    status: integrationLoadingStatus,
+    data: integrationsData,
+    refresh: integrationRefresh,
+  } = await useLazyFetch("/api/org/integrations?q=channel", {
+    server: false,
+    default: () => [],
+  });
+
   const headerOptions = [
     { label: "None", value: "none" },
     { label: "Text", value: "text" },
@@ -161,13 +170,21 @@
       if (whatsppModalState?.id) {
         await $fetch(`/api/templates/${whatsppModalState.id}`, {
           method: "PUT",
-          body: { metadata: { ...values }, name: values.name },
+          body: {
+            metadata: { ...values },
+            name: values.name,
+            integrationId: values.integrationId,
+          },
         });
         toast.success("Updated successfully");
       } else {
         await $fetch("/api/templates", {
           method: "POST",
-          body: { metadata: { ...values }, name: values.name },
+          body: {
+            metadata: { ...values },
+            name: values.name,
+            integrationId: values.integrationId,
+          },
         });
         toast.success("Created successfully");
       }
@@ -190,6 +207,7 @@
     "templateVariables",
     parseJson(templateStore.values.templateVariables),
   );
+  setFieldValue("integrationId", templateStore.values.integrationId);
   setFieldValue(
     "headerTextTemplateVariables",
     parseJson(templateStore.values.headerTextTemplateVariables),
@@ -210,6 +228,7 @@
   const variableOptions = [
     { label: "First Name", value: "firstname" },
     { label: "Last Name", value: "lastname" },
+    { label: "Full Name", value: "fullname" },
     { label: "Email", value: "email" },
     { label: "Mobile", value: "mobile" },
   ];
@@ -218,6 +237,19 @@
 <template>
   <form @submit="handleConnect" class="space-y-2">
     <div class="grid grid-cols-1 gap-4">
+      <SelectField
+        name="integrationId"
+        :options="
+          integrationsData?.map((integration: any) => ({
+            label: integration.name,
+            value: integration.id,
+          }))
+        "
+        label="Integration"
+        placeholder="Select your integration"
+        helperText="template will be created with this integration"
+        required
+      />
       <TextField
         type="text"
         :disableSpecialCharacters="true"
