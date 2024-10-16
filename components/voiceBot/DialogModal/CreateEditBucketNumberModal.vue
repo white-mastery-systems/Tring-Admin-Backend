@@ -7,6 +7,7 @@ definePageMeta({
 });
 const emit = defineEmits<{ (e: "confirm"): void }>();
 
+
 const route = useRoute();
 const queryId = ref(route.params.id)
 const bucketModalState = defineModel<{ open: boolean, id: any }>({
@@ -97,15 +98,15 @@ const handleConnect = handleSubmit(async (values: any) => {
       <div class="flex gap-4">
         <TextField name="firstName" label="First Name" placeholder="Enter first name" required>
         </TextField>
-        <TextField name="lastName" label="LastName Name" placeholder="Enter last name" required>
+        <TextField name="lastName" label="Last Name" placeholder="Enter last name" required>
         </TextField>
       </div>
       <!-- {{ countryList }} || sdf -->
       <div class='flex gap-2'>
-        <CountryCodeField class='w-[100px]' name="countryCode" label="Country Code"
-          helperText="Enter your country code" required />
+        <CountryCodeField class='w-[100px]' name="countryCode" label="Country Code" helperText="Enter your country code"
+        required />
         <TextField :disableCharacters="true" name="phone" label="Mobile number" helperText='' required
-          placeholder="Enter your mobile number" />
+        placeholder="Enter your mobile number" />
       </div>
       <TextField type="email" name="email" label="Email" helperText='' placeholder="Enter your Email" />
 

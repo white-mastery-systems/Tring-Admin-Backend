@@ -1,13 +1,18 @@
 <template>
   <Page title="Chats" :disable-back-button="true">
+    <template #actionButtons>
+      <div class="flex gap-4">
+        <div class="flex gap-2">
+          <ExportButton v-model="exportDataHandler" :rows="exportReadyRows" :columns="exportReadyColumns"
+            @export="exportData" :exportCompleted="fetchExportData" buttonContent="Export Data" />
+        </div>
+      </div>
+    </template>
     <div class="flex items-center gap-2 overflow-x-scroll pb-2">
       <div class="flex items-center gap-2">
-        <UiInput
-          v-model="filters.q"
-          @input="filters.page = '1'"
+        <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
-          placeholder="Search User..."
-        />
+          placeholder="Search User..." />
         <BotFilter v-model="filters.botId" @input="filters.page = '1'" />
         <!-- <BotUserFilter @changeAction="onActionChange" /> -->
         <LivePreviewFilter @changeAction="onActionChange" />
@@ -15,37 +20,18 @@
         <ChannelFilter @changeAction="onChannelChange" />
 
         <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
-        <ExportButton
-          v-model="exportDataHandler"
-          :rows="exportReadyRows"
-          :columns="exportReadyColumns"
-          @export="exportData"
-          :exportCompleted="fetchExportData"
-        />
       </div>
     </div>
-    <DataTable
-      @row-click="
+    <DataTable @row-click="
         (row: any) => {
           return navigateTo(`/analytics/chats/${row.original.id}`);
         }
-      "
-      @pagination="Pagination"
-      @limit="
+      " @pagination="Pagination" @limit="
         ($event) => {
           (filters.page = '1'), (filters.limit = $event);
         }
-      "
-      :totalPageCount="totalPageCount"
-      :page="page"
-      :totalCount="totalCount"
-      :columns="columns"
-      :data="chats"
-      :page-size="20"
-      :is-loading="isDataLoading"
-      :height="16"
-      height-unit="vh"
-    />
+      " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="chats"
+      :page-size="20" :is-loading="isDataLoading" :height="16" height-unit="vh" />
   </Page>
 </template>
 <script setup lang="ts">

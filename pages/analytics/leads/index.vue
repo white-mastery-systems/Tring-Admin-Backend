@@ -1,5 +1,13 @@
 <template>
-  <Page title="Leads" :disableSelector="true" :disable-elevation="true" :disable-back-button="true">
+  <Page title="Leads" :disable-back-button="true">
+    <template #actionButtons>
+      <div class="flex gap-4">
+        <div class="flex gap-2">
+          <ExportButton v-model="exportDataHandler" buttonContent="Export Data" :rows="exportReadyRows"
+        :columns="exportReadyColumns" @export="exportData" />
+        </div>
+      </div>
+    </template>
     <div class="flex items-center justify-between gap-2 overflow-x-scroll pb-4">
       <div class="flex items-center gap-2">
         <UiInput v-model="filters.q" @input="filters.page = '1'"
@@ -13,8 +21,6 @@
         <!-- <ChannelFilter @changeAction="onChannel" /> -->
         <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
       </div>
-      <ExportButton v-model="exportDataHandler" :rows="exportReadyRows" :columns="exportReadyColumns"
-        @export="exportData" />
       <!-- <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton> -->
     </div>
     <UiTabs default-value="all" class="w-full self-start">

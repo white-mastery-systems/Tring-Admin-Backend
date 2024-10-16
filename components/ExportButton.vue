@@ -13,6 +13,7 @@
   const props = defineProps<{
     rows: any[];
     columns: any[];
+    buttonContent:string;
   }>();
   const modalvalue = defineModel<{ status: boolean; type: string }>({
     default: {
@@ -50,7 +51,20 @@
         link.click();
         document.body.removeChild(link);
       } else {
-        const ws = XLSX.utils.json_to_sheet(props.rows);
+
+        // Capitalize headers with spaces
+        const rowsWithFormattedHeaders = props.rows.map(row => {
+          return Object.keys(row).reduce((acc, key) => {
+            const formattedKey = key
+              .replace(/([a-z])([A-Z])/g, '$1 $2')
+              .replace(/_/g, ' ') 
+              .replace(/\b\w/g, char => char.toUpperCase());
+
+            acc[formattedKey] = row[key];
+            return acc;
+          }, {});
+        });
+        const ws = XLSX.utils.json_to_sheet(rowsWithFormattedHeaders);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
         // Create Excel Blob and trigger download
@@ -82,10 +96,10 @@
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
-      <Button variant="outline">
+      <UiButton color="primary">
         <ArrowUpFromLine class="mr-2 h-4 w-4" />
-        Export Data
-      </Button>
+        {{ props.buttonContent }}
+      </UiButton>
     </DropdownMenuTrigger>
     <DropdownMenuContent class="w-full">
       <DropdownMenuGroup>
