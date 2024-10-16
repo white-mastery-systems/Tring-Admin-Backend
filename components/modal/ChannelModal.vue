@@ -42,11 +42,6 @@
     resetForm,
   } = useForm({
     validationSchema: formSchema,
-    initialValues: {
-      code: "adf",
-      pid: "asdf",
-      wabaId: "asdf",
-    },
   });
 
   watch(
@@ -113,7 +108,7 @@
   //     toast.error(error?.data?.data[0].message);
   //   }
   // }
-  const fbVerified = ref(true);
+  const fbVerified = ref(false);
   const fbLoginCallback = (response: any) => {
     if (response.authResponse) {
       const code = response.authResponse.code;
@@ -253,14 +248,14 @@
       <!-- <TextField name="token" label="Token" placeholder="Enter Token" helperText="" required>
       </TextField> -->
       <div class="flex items-center justify-end">
-        <!-- <UiButton
+        <UiButton
           v-if="!fbVerified"
           color="primary"
           type="button"
           @click="launchWhatsAppSignup"
           >Login with Facebook
-        </UiButton> -->
-        <UiButton color="primary" type="submit" :loading="isLoading">
+        </UiButton>
+        <UiButton v-else color="primary" type="submit" :loading="isLoading">
           Submit
         </UiButton>
       </div>
