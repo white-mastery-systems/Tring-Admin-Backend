@@ -1,5 +1,3 @@
-import { logger } from "~/server/logger";
-
 const db = useDrizzle();
 
 const zodInsertCampaign = z.object({
@@ -16,6 +14,7 @@ const zodInsertCampaign = z.object({
     .nullish()
     .transform((val) => (val ? new Date(val) : null)),
   contactListId: z.string().optional(),
+  templateId: z.string().optional(),
   type: z.string().optional(),
   metadata: z.any(),
 });
@@ -33,30 +32,46 @@ export default defineEventHandler(async (event) => {
   if (!data) {
     return { status: false, message: "Failed to create" };
   }
-
-  const contactList = await db.query.contactSchema.findMany({
-    where: eq(contactSchema.contactListId, data.contactListId),
-  });
-  const integrationData = await db.query.integrationSchema.findFirst({
-    where: eq(integrationSchema.id, body.metadata.integrationId),
-  });
-  //
-
-  // bull-queue
-  const job = await campaignQueue.add(
-    {
-      campaignId: data?.id,
-      campaignDate: data?.campaignDate,
-      campaignTime: data?.campaignTime,
-      contactList,
-      body,
-      integrationData,
-    },
-    // { delay: 5000 }
+  const contactList = await db
+    .select()
+    .from(contactListSchema)
+    .where(eq(contactListSchema.id, body.contactListId))
+    .leftJoin(
+      contactSchema,
+      eq(contactSchema.id, contactListSchema.contactIds),
+    );
+  console.log(contactList, "contactList");
+  return contactList;
+  const templateData = await db
+    .select()
+    .from(templateSchema)
+    .where(eq(templateSchema.id, data.templateId))
+    .leftJoin(
+      integrationSchema,
+      eq(integrationSchema.id, templateSchema.integrationId),
+    );
+  console.log(templateData, "templateData");
+  scheduleEvent(
+    data?.campaignDate,
+    data?.campaignTime,
+    contactList,
+    body,
+    templateData[0],
   );
-  logger.info(
-    `Job (id: ${job.id}, CampaignId - ${data?.id}) added at: ${new Date()}`,
-  );
+  // const job = await campaignQueue.add(
+  //   {
+  //     campaignId: data?.id,
+  //     campaignDate: data?.campaignDate,
+  //     campaignTime: data?.campaignTime,
+  //     contactList,
+  //     body,
+  //     templateData: templateData[0],
+  //   },
+  //   // { delay: 5000 }
+  // );
+  // logger.info(
+  //   `Job (id: ${job.id}, CampaignId - ${data?.id}) added at: ${new Date()}`,
+  // );
 
   return data;
 });
