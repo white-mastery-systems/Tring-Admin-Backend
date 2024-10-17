@@ -226,9 +226,9 @@
     (newValue) => {},
   );
   const variableOptions = [
-    { label: "First Name", value: "firstname" },
-    { label: "Last Name", value: "lastname" },
-    { label: "Full Name", value: "fullname" },
+    { label: "First Name", value: "firstName" },
+    { label: "Last Name", value: "lastName" },
+    { label: "Full Name", value: "fullName" },
     { label: "Email", value: "email" },
     { label: "Mobile", value: "mobile" },
   ];

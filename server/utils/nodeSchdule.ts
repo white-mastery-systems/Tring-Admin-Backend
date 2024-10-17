@@ -1,28 +1,5 @@
 import { logger } from "~/server/logger";
-
-const generateTemplateComponents = (body: any[], header?: any) => {
-  const components: any[] = [
-    {
-      type: "header",
-      parameters: [
-        {
-          type: "image",
-          image: {
-            link:
-              header ?? "https://www.sis.in/florence/assets/img/popup1-new.jpg",
-          },
-        },
-      ],
-    },
-  ];
-  if (body.length) {
-    components.push({
-      type: "body",
-      parameters: body.map((item) => ({ type: "text", text: item })),
-    });
-  }
-  return components;
-};
+const conf = useRuntimeConfig();
 
 const sendWhatsappTemplateMessage = async (
   metaToken: string,
@@ -33,37 +10,6 @@ const sendWhatsappTemplateMessage = async (
   language?: string,
 ) => {
   try {
-    const body = components;
-    components = generateTemplateComponents([
-      body.name,
-      body.organization,
-      body.project,
-      body.number,
-      body.manager,
-      body.organizationName,
-    ]);
-
-    const data = await $fetch(
-      `https://graph.facebook.com/v20.0/${phoneId}/messages`,
-      {
-        method: "post",
-        headers: {
-          Authorization: `Bearer ${metaToken}`,
-        },
-        body: {
-          messaging_product: "whatsapp",
-          to: userPhone,
-          type: "template",
-          template: {
-            name: templateName,
-            language: {
-              code: language ?? "en",
-            },
-            // components,
-          },
-        },
-      },
-    );
     logger.info(
       `meta-whatsapp-${`https://graph.facebook.com/v20.0/${phoneId}/messages`}---->${JSON.stringify(
         {
@@ -81,16 +27,43 @@ const sendWhatsappTemplateMessage = async (
               language: {
                 code: language ?? "en_US",
               },
-              // components,
+              components,
             },
           },
         },
       )}`,
     );
+    const data = await $fetch(
+      `https://graph.facebook.com/v20.0/${phoneId}/messages`,
+      {
+        method: "post",
+        headers: {
+          Authorization: `Bearer ${metaToken}`,
+        },
+        body: {
+          messaging_product: "whatsapp",
+          to: userPhone,
+          type: "template",
+          template: {
+            name: templateName,
+            language: {
+              code: language ?? "en",
+            },
+            components,
+          },
+        },
+      },
+    );
+
     // logger.info(`whatsapp-response-${data}`);
     //
     return data;
-  } catch (err) {}
+  } catch (err: any) {
+    console.log(err);
+    logger.error(
+      `https://graph.facebook.com/v20.0/${phoneId}/messages----${JSON.stringify(err)} ${JSON.stringify(err.data)}`,
+    );
+  }
 };
 
 export const scheduleEvent = async (
@@ -98,44 +71,14 @@ export const scheduleEvent = async (
   time: any,
   contactList: any,
   campaignInformation: any,
-  whatsappInformation: any,
+  templateInformation: any,
 ) => {
   try {
-    //    const url = "https://graph.facebook.com/v20.0/361306107076548/register";
-    // const response = await fetch(url, {
-    //   method: "POST",
-    //   body: JSON.stringify({
-    //     "messaging_product": "whatsapp",
-    //     "pin": "000000",
-    //     "tier": "prod",
-    //     "access_token": "EAAwYX9ZCRR1gBO89XVgTPjAzYShyfOaYVa5hOgkzqfG1Ftm0WzXVoikW2Ikhy56h6IqwyZCvYj5pnIL2NJa90c25nQqeoEnfBl4ZAUZAuDBKoRvVNsbar9lZBX6Pi3ZC7qaczSgnvEInv75Fi6iHqWYA1BDNxkfLjzdyMEejpfZCpQaA6j6ZCyYgP0QeCnDfIrZBGLvnHjCbu1mX1dEiZCqaApBpeh6tzKsG9SEGfdKjxUOZAYVsEmflnlLDtOC2KU6"
-    //   }),
-    //   headers: {"Content-Type": "application/json"},
-    // });
-    // const data = await response.json();
-    //
-
-    const phoneId = campaignInformation?.metadata?.phoneId;
-    // const phoneId = "112867458396790";
-    // const phoneId = "401871499682721";
-    // const phoneId = "361306107076548";
-    // const phoneId = "112867458396790";
-    const metaToken = whatsappInformation?.metadata?.access_token;
-    // const metaToken =
-    //   "EAAwYX9ZCRR1gBOZC9Ihmxr49ZByWwotyJTCy88DjvVojsVPmbUB5NzkYbQ3eFDhss7lGeN6D4CUkEuoGM5VDIgZB309gV0I36KZA0g7QLGtZBkeFRsozomPZBkCMeJ8SZBOWJbSWzlBkMTvjqmk6Xj5qFEqqduzZAjTqtLo44XaWmHnewprbBYkWmCVBs6xZCxZBZBEk6QhgvJZA4MuZCdiMmpTKOeeQ5WyP38rPBcS5dt";
-    // const metaToken =
-    //   "EAAwYX9ZCRR1gBO3qnIp3vYgK1UF6GDpA2UC0Xa3rPG3DUvZBAv7uHgMQAsT2jSyUsvk273dRfpRjNKepHKeZBrqjnYBTZAV6KHu8JxRRjpk0fIWKBKnGmZCdMHYqqRfGNH0nw2ZBM0Eda5vl6cWFMGme2mvZCtCUBcKegsbIr1tOJ9CJ5ATNlAQv42K0C3QSguo9gZBO4iM6EVz19HJmJZB0UZAZBzAZANVnQhZCOAZBEZD";
-    // const metaToken =
-    //   "EAAwYX9ZCRR1gBO7uLjZCbu8rgnvV1VOuz23Yl9W5sDoHEykuaZBfGWMfI7nfrHl5Sn1tkrZB9G3aP9FjQ1gZBxSrSNzNYZBAIduJZAyS7kuTFLH20yZBJFFnWHnCycOOcZCEdlZA79kaF2hALBxWz1TbxlTgxbe9M9IkQZAhKvjeP0eSXkPARMZCS9CL0QNhX12X6DeHigQZBwZAWPMZBsDtvJvjIrXxq4DbWx6OpBMgDEZD";
-    // const metaToken =
-    //   "EAAwYX9ZCRR1gBO2g5XEpsR7ZAhogIpibKW577rwe2GErcWZCQS7uPM3HPO9lsQaKVVlAV2DBBy2ltUU5ByuZCc0BwSKK4jZCZCg6xZCGA0NBKtJAvhd3rLBzf8fe3SoXxtYqaAGbdynj0cbfpOO3qz3Gpn5cF7dY5eDWPKVwkmFpQLe9ZA6ENZC6gkfy529hEAr8THdBfToWDU6uRhu1MMXxo7RUClwByaxRj748LkAVD3UzmUxxULM0pZCkTuEO4gct8y5norOPSs1gZDZD";
-    // const metaToken= "EAAwYX9ZCRR1gBO2ioA7fTdz5SUSdLZAcDdHyQZCIi7dAiKkI2OVqYEgpbbY1JUTPF6FsbbvYbV4hFwZBMtehzff98JFdf2V5YFZBALLSEo0BHFYk54tii9cefhX28ZBi3XjIOaDMrpsrDW3xQcQbRv5BYCP5nZBRGXJoUSAcgPd79X0jSPtArfvSdVspKBbesISKQZDZD"
-    // const phoneId= "112867458396790"
-    // const userPhone= "919841513901"
-    const templateName = campaignInformation?.metadata?.templateId;
-    // const templateName = "client_follow_up_sis";
-    const organization = "South India Shelters";
-    const salesmanager = "Reena";
+    const phoneId = templateInformation?.integration?.metadata?.pid;
+    const metaToken = templateInformation?.integration?.metadata?.access_token;
+    const templateName = templateInformation?.templates?.name;
+    // const organization = "South India Shelters";
+    // const salesmanager = "Reena";
     const language = "en";
 
     const assigned_date = new Date(date);
@@ -158,17 +101,119 @@ export const scheduleEvent = async (
       tz: "UTC",
     });
 
-    contactList.forEach(async (item: any) => {
-      const phoneNumber = `${item.countryCode}${item.phone}`.replace("+", "");
-
-      const components = {
-        name: item.firstName,
-        organization,
-        project: "Testing",
-        number: phoneNumber,
-        manager: salesmanager,
-        organizationName: organization,
-      };
+    contactList.forEach(async (contact: any) => {
+      const phoneNumber = `${contact.countryCode}${contact.phone}`.replace(
+        "+",
+        "",
+      );
+      console.log("HI", templateInformation, "TEMPLATEVARIABLES");
+      // let components = [
+      //   {
+      //     type: "header",
+      //     parameters: [
+      //       {
+      //         type: "image",
+      //         image: {
+      //           link: "https://app.tringlabs.ai/uploads/1e66997c-7b9c-4711-8079-eb54a286d745.jpg",
+      //         },
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     type: "body",
+      //     parameters: [
+      //       {
+      //         type: "text",
+      //         text: body?.lead?.first_name + " " + body?.lead?.last_name,
+      //       },
+      //       {
+      //         type: "text",
+      //         text: "South India Shelters",
+      //       },
+      //       {
+      //         type: "text",
+      //         text: body?.payload?.interested_properties_name[0],
+      //       },
+      //       {
+      //         type: "text",
+      //         text: "+918848083317",
+      //       },
+      //       {
+      //         type: "text",
+      //         text: "Reena",
+      //       },
+      //       {
+      //         type: "text",
+      //         text: "South India Shelters",
+      //       },
+      //     ],
+      //   },
+      // ];
+      let components: any[] = [];
+      if (
+        templateInformation?.templates?.metadata?.templateVariables?.length > 0
+      ) {
+        let parameters: any = [];
+        templateInformation?.templates?.metadata?.templateVariables?.map(
+          (variable: string) => {
+            console.log({ variable });
+            if (variable === "firstName") {
+              parameters.push({ type: "text", text: contact.firstName });
+            } else if (variable === "lastName") {
+              parameters.push({ type: "text", text: contact.lastName });
+            } else if (variable === "fullName") {
+              parameters.push({
+                type: "text",
+                text: `${contact.firstName} ${contact.lastName}`,
+              });
+            } else if (variable === "mobile") {
+              parameters.push({ type: "text", text: phoneNumber });
+            }
+          },
+        );
+        components.push({
+          type: "BODY",
+          parameters,
+        });
+      }
+      if (
+        templateInformation?.templates?.metadata?.headerTextTemplateVariables
+          ?.length > 0
+      ) {
+        let parameters: any = [];
+        templateInformation?.templates?.metadata?.headerTextTemplateVariables?.map(
+          (variable: string) => {
+            if (variable === "firstName") {
+              parameters.push({ type: "text", text: contact.firstName });
+            } else if (variable === "lastName") {
+              parameters.push({ type: "text", text: contact.lastName });
+            } else if (variable === "fullName") {
+              parameters.push({
+                type: "text",
+                text: `${contact.firstName} ${contact.lastName}`,
+              });
+            } else if (variable === "mobile") {
+              parameters.push({ type: "text", text: phoneNumber });
+            }
+          },
+        );
+        components.push({
+          type: "`HEADER`",
+          parameters,
+        });
+      } else if (templateInformation?.templates?.metadata?.header !== "text") {
+        components.push({
+          type: "header",
+          parameters: [
+            {
+              type: templateInformation?.templates?.metadata?.header,
+              image: {
+                link: `${conf.llmCallbackUrl}${templateInformation?.templates?.metadata?.headerFile?.url}`,
+              },
+            },
+          ],
+        });
+      }
       const data = await sendWhatsappTemplateMessage(
         metaToken,
         phoneId,
