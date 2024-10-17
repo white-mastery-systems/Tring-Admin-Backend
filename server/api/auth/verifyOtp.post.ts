@@ -37,15 +37,21 @@ export default defineEventHandler(async (event) => {
     return { success: false, message: "Invalid OTP" }
   }
 
-   // OTP is valid, mark it as verified in the database
-  await db.update(userOTPSchema)
-    .set({ 
-      otp: {
-        ...userOTP.otp,
-        status: "verified"
-     } 
-    })
-    .where(eq(userOTPSchema.userId, body.userId))
+  // OTP is valid, mark it as verified in the database
+  await Promise.all([
+    db.update(userOTPSchema)
+      .set({ 
+        otp: {
+          ...userOTP.otp,
+          status: "verified"
+        } 
+      }).where(eq(userOTPSchema.userId, body.userId)),
 
+    db.update(authUserSchema)
+      .set({
+       isVerified: true
+      }).where(eq(authUserSchema.id, body.userId))
+  ])
+  
   return { success: true, message: "OTP verified successfully" };
 })
