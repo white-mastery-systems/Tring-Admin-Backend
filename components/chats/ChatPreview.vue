@@ -295,7 +295,7 @@
     try {
       return JSON.parse(jsonString);
     } catch (error) {
-      // console.error('Invalid JSON:', error);
+      // console.error('Invalid JSON:', error)
       return null; // Return null or a fallback object
     }
   };

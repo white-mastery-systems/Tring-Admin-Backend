@@ -4,6 +4,8 @@
   import TextField from "~/components/formComponents/TextField.vue";
   import { useTemplateStore } from "~/store/whatsAppTemplateStore";
   import { whatsAppTemplateSchema } from "~/validationSchema/settings/whatAppTemplateValidation";
+  import FileUpload from "~/components/formComponents/fileUpload.vue";
+
   const templateStore = useTemplateStore();
 
   // import countryData from '~/assets/country-codes.json'
@@ -152,21 +154,26 @@
   };
 
   const uploadFile = async ($event: any) => {
-    const formData = new FormData();
-    Array.from($event).forEach((file) => {
-      formData.append("files", file);
-    });
-    const [res] = await $fetch("/api/uploads", {
-      method: "POST",
-      body: formData,
-    });
-
-    setFieldValue("headerFile", res);
-    dispatchTemplateState();
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      console.log(e.target.result);
+      setFieldValue("headerFile", { url: e.target.result, file: $event[0] });
+      dispatchTemplateState();
+    };
+    reader.readAsDataURL($event[0]);
   };
 
   const handleConnect = handleSubmit(async (value: any) => {
     try {
+      if (values?.headerFile?.file instanceof File) {
+        const formData = new FormData();
+        formData.append("files", values?.headerFile?.file);
+        const [res] = await $fetch("/api/uploads", {
+          method: "POST",
+          body: formData,
+        });
+        setFieldValue("headerFile", res);
+      }
       if (whatsppModalState?.id) {
         await $fetch(`/api/templates/${whatsppModalState.id}`, {
           method: "PUT",
@@ -215,7 +222,12 @@
   if (
     ["text", "image", "video", "document"].includes(templateStore.values.header)
   )
-    setFieldValue("headerFile", templateStore.values.headerFile);
+    setFieldValue(
+      "headerFile",
+      templateStore.values.headerFile instanceof Object
+        ? templateStore.values.headerFile
+        : null,
+    );
   // if(values)
   const updatChannel = (value: any) => {
     channel.value = value;
@@ -345,24 +357,46 @@
 
       <div v-if="values.header === 'image'">
         <span class="semibold pt-4 text-sm"> Header Content </span>
-        <imageField
+        <FileUpload
           @change="uploadFile"
+          label="Upload Image"
           name="headerFile"
-          accept="image/png, image/jpeg"
+          :url="values?.headerFile?.url"
+          :required="true"
+          accept="image/png,image/jpeg"
+          :fileType="true"
+          :class="'h-24 cursor-pointer'"
+          :helperText="'Accept Only JPG and PNG'"
         />
         <!-- <TextField type='file' name="headerImage" accept="image/png, image/jpeg"/> -->
       </div>
       <div v-else-if="values.header === 'document'">
         <span class="semibold pt-4 text-sm"> Header Content </span>
-        <imageField
+        <FileUpload
           @change="uploadFile"
+          label="Upload Document"
           name="headerFile"
+          :url="values?.headerFile?.url"
+          :required="true"
           accept="application/pdf"
+          :fileType="'file'"
+          :class="'h-24 cursor-pointer'"
+          :helperText="'Accept Only Pdf'"
         />
       </div>
       <div v-else-if="values.header === 'video'">
         <span class="semibold pt-4 text-sm"> Header Content </span>
-        <imageField @change="uploadFile" name="headerFile" accept="video/mp4" />
+            <FileUpload
+          @change="uploadFile"
+          label="Upload Video"
+          name="headerFile"
+          :url="values?.headerFile?.url"
+          :required="true"
+          accept="video/mp4"
+          :fileType="'video'"
+          :class="'h-24 cursor-pointer'"
+          :helperText="'Accept Only Video'"
+        />
       </div>
 
       <TextField
