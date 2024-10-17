@@ -30,11 +30,23 @@ export default defineEventHandler(async (event) => {
 
 
   if (diffInMinutes > 10) {
-    return { success: false, message: "OTP expired" };
+     return sendError(
+      event,
+      createError({
+        statusCode: 400,
+        statusMessage: "OTP expired",
+      }),
+    )
   }
 
   if (userOTP.otp?.otpNumber !== body.otp) {
-    return { success: false, message: "Invalid OTP" }
+    return sendError(
+      event,
+      createError({
+        statusCode: 400,
+        statusMessage: "Invalid OTP",
+      }),
+    )
   }
 
   // OTP is valid, mark it as verified in the database
