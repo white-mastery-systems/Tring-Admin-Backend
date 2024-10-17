@@ -1,4 +1,5 @@
 import { getAdminByOrgId } from "~/server/utils/db/user";
+import { createSlackMessage } from "~/server/utils/slack/modules";
 import {
   generateContactInZohoBigin,
   generateLeadInZohoCRM,
@@ -119,25 +120,18 @@ export default defineEventHandler(async (event) => {
           lastName = name[1];
         }
 
-        try {
-          console.log(
-            botIntegration?.integration?.metadata?.access_token,
-            botIntegration?.metadata?.channelId,
-          );
-          const data = await $fetch("https://slack.com/api/chat.postMessage", {
-            method: "POST",
-            headers: {
-              authorization: `Bearer ${botIntegration?.integration?.metadata?.access_token}`,
-            },
-            body: {
-              channel: botIntegration?.metadata?.channelId,
-              text: `Lead Generated :tada:\nFirst Name: ${firstName}\nLast Name: ${lastName ?? body?.botUser?.name}\nEmail: ${body?.botUser?.email}\nPhone: ${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
-            },
-          });
-          console.log({ data });
-        } catch (err) {
-          console.log({ err: JSON.stringify(err) });
+        const payload = {
+          firstName,
+          lastName,
+          email: body?.botUser?.email,
+          phone: `${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         }
+        console.log(
+          botIntegration?.integration?.metadata?.access_token,
+          botIntegration?.metadata?.channelId,
+        );
+        const data = await createSlackMessage(botIntegration?.integration?.metadata, botIntegration?.metadata?.channelId, payload)
+       
       }
     } else if (botIntegration?.integration?.crm === "hubspot") {
       const name = body?.botUser?.name?.split(" ");

@@ -151,6 +151,7 @@ export const contactListSchema = adminSchema.table("contact_list", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name"),
   isDefault: boolean("is_default").default(false),
+  contactIds: varchar("contact_ids").array(),
   organizationId: uuid("organizationId")
     .notNull()
     .references(() => organizationSchema.id),
@@ -179,6 +180,7 @@ export const campaignSchema = adminSchema.table("campaign", {
   campaignDate: timestamp("campaign_date"),
   campaignTime: timestamp("campaign_time"),
   type: varchar("type"),
+  templateId: uuid("template_id").references(() => templateSchema.id),
   contactListId: uuid("contact_list_id").references(
     () => contactListSchema.id,
     { onDelete: "cascade" },
@@ -223,6 +225,7 @@ export const templateSchema = adminSchema.table("templates", {
   verificationStatus: varchar("verification_status", { length: 64 }).default(
     "pending",
   ),
+  integrationId: uuid("integration_id").references(() => integrationSchema.id),
   whatsappTemplateId: varchar("whatsapp_template_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

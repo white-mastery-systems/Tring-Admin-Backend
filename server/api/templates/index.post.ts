@@ -4,9 +4,11 @@ import { createTemplate } from "~/server/utils/db/templates";
 const zodInsertTemplates = z.object({
   name: z.string().optional(),
   metadata: z.record(z.any()).optional(),
+  integrationId: z.string({ required_error: "integrationId is required" }),
 });
 
 export default defineEventHandler(async (event) => {
+  const db = useDrizzle();
   const conf = useRuntimeConfig();
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
 
@@ -58,12 +60,16 @@ export default defineEventHandler(async (event) => {
         components,
       }),
     );
+    const integrationDetails: any = await db.query.integrationSchema.findFirst({
+      where: and(eq(integrationSchema.id, body.integrationId)),
+    });
+    console.log(integrationDetails, "INTEID");
     const resp: any = await $fetch(
-      "https://graph.facebook.com/v21.0/454567781066093/message_templates",
+      `https://graph.facebook.com/v21.0/${integrationDetails?.metadata?.wabaId}/message_templates`,
       {
         method: "POST",
         headers: {
-          authorization: `Bearer EAAwYX9ZCRR1gBOwWFT3FNunZA1iUHXU2XFxKLaBQpVMU9AlGsxuEGmDo5EzkoxRe3JWJfgPegPabBZAMeZB39Fd9plt0r8OIXQ0Yx7vAlV1moZBDwL0EKF2dymLtCUtr7fBIK6WyKemDKbr8if32lhKLeIxbtH2yFS6NvRI4DSpGmrlSbJ8b4QmZAodBZBWOZCuda2ZCL2oKGk3o5Aj8jAhL0yTYAUEDbWmZBWIQBlWWCkRKwOeqp0kdlazl3fN6Oe`,
+          authorization: `Bearer ${integrationDetails?.metadata?.access_token}`,
         },
         body: {
           name: body.name,

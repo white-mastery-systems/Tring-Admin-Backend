@@ -16,6 +16,7 @@ interface queryInterface {
   limit?: string;
   active?: string;
   q?: string;
+  type?: string;
 }
 export const listBots = async (
   organizationId: string,
@@ -30,6 +31,10 @@ export const listBots = async (
   }
   if (query?.q) {
     filters.push(ilike(chatBotSchema.name, `%${query.q}%`));
+  }
+
+  if(query?.type) {
+    filters.push(eq(chatBotSchema.type, query?.type));
   }
 
   let page,
