@@ -25,10 +25,7 @@
         <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search bucket..." />
       </div>
-      <DataTable @row-click="(row: any) => {
-          return navigateTo(`contacts/${row.original.id}`);
-        }
-        " @pagination="Pagination" @limit="($event) => {
+      <DataTable @pagination="Pagination" @limit="($event) => {
             (filters.page = '1'), (filters.limit = $event);
           }
           " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="contactsList"
@@ -118,6 +115,9 @@ const router = useRouter();
 const route = useRoute();
 const activeStatus = ref("");
 watch(activeStatus, async (newStatus, previousStatus) => { });
+watch(addBucketNameModalState, (newValue) => {
+  console.log('Modal State Changed:', newValue);
+});
 const selectedValue = ref("Today");
 // const newBotName = ref("");
 

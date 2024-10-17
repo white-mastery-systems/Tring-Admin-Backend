@@ -16,12 +16,10 @@
     </template>
     <div class="flex items-center justify-end gap-2 overflow-x-scroll pb-4">
       <div class="flex items-center gap-2">
-        <ImportNumberFile accept=".csv, .xls, .xlsx"
-          v-model="selectedFile"
-          @uploadDocument="fileUpload"
-          />
+        <ImportNumberFile accept=".csv, .xls, .xlsx" v-model="selectedFile" @uploadDocument="fileUpload" />
+        <SampleImport :columns="exportReadyColumns" />
         <ExportButton v-model="exportDataHandler" :rows="exportReadyRows" :columns="exportReadyColumns"
-          @export="exportData" />
+          @export="exportData" buttonContent="Export Contacts" />
       </div>
     </div>
     <DataTable :data="contactsList" @pagination="Pagination" @limit="($event) => {
