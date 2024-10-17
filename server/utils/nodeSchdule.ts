@@ -79,7 +79,7 @@ export const scheduleEvent = async (
     const templateName = templateInformation?.templates?.name;
     // const organization = "South India Shelters";
     // const salesmanager = "Reena";
-    const language = "en";
+    const language = "en_US";
 
     const assigned_date = new Date(date);
     const assigned_Time = new Date(time);
@@ -107,48 +107,7 @@ export const scheduleEvent = async (
         "",
       );
       console.log("HI", templateInformation, "TEMPLATEVARIABLES");
-      // let components = [
-      //   {
-      //     type: "header",
-      //     parameters: [
-      //       {
-      //         type: "image",
-      //         image: {
-      //           link: "https://app.tringlabs.ai/uploads/1e66997c-7b9c-4711-8079-eb54a286d745.jpg",
-      //         },
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     type: "body",
-      //     parameters: [
-      //       {
-      //         type: "text",
-      //         text: body?.lead?.first_name + " " + body?.lead?.last_name,
-      //       },
-      //       {
-      //         type: "text",
-      //         text: "South India Shelters",
-      //       },
-      //       {
-      //         type: "text",
-      //         text: body?.payload?.interested_properties_name[0],
-      //       },
-      //       {
-      //         type: "text",
-      //         text: "+918848083317",
-      //       },
-      //       {
-      //         type: "text",
-      //         text: "Reena",
-      //       },
-      //       {
-      //         type: "text",
-      //         text: "South India Shelters",
-      //       },
-      //     ],
-      //   },
-      // ];
+
       let components: any[] = [];
       if (
         templateInformation?.templates?.metadata?.templateVariables?.length > 0

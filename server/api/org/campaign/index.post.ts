@@ -32,13 +32,16 @@ export default defineEventHandler(async (event) => {
   if (!data) {
     return { status: false, message: "Failed to create" };
   }
-  const contactList = await db.query.contactSchema.findMany({
-    where: and(
-      eq(contactSchema.organizationId, data.organizationId),
-      eq(contactSchema.phone, "8848083317"),
-    ),
-  });
+  const contactList = await db
+    .select()
+    .from(contactListSchema)
+    .where(eq(contactListSchema.id, body.contactListId))
+    .leftJoin(
+      contactSchema,
+      eq(contactSchema.id, contactListSchema.contactIds),
+    );
   console.log(contactList, "contactList");
+  return contactList;
   const templateData = await db
     .select()
     .from(templateSchema)
