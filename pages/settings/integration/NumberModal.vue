@@ -105,7 +105,7 @@ const handleConnect = handleSubmit(async (values: any) => {
 </script>
 
 <template>
-  <DialogWrapper v-model="numberModalState" title="Add New ExoPhone">
+  <DialogWrapper v-model="numberModalState" title="Add New Exophone">
     <Form @submit="handleConnect" class="space-y-3">
       <SelectField name="provider" placeholder="Select a provider" :options="providerList">
       </SelectField>
