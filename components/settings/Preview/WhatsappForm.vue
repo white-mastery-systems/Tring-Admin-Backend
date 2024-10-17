@@ -12,6 +12,7 @@
   definePageMeta({
     middleware: "admin-only",
   });
+  const isLoading = ref(false);
 
   const varaibleLabelName = (id) => {
     return `{{${id + 1}}}`;
@@ -93,6 +94,7 @@
     setFieldValue("headerLocation", getSingleDetails.headerLocation);
     setFieldValue("body", getSingleDetails.body);
     setFieldValue("footer", getSingleDetails.footer);
+    setFieldValue("integrationId", getSingleDetails.integrationId);
     if (getSingleDetails.templateVariables)
       setFieldValue("templateVariables", getSingleDetails.templateVariables);
     if (getSingleDetails.headerTextTemplateVariables)
@@ -153,6 +155,13 @@
     dispatchTemplateState();
   };
 
+  watch(values, (newValue) => { 
+    console.log(newValue)
+   });
+  watch(errors, (newValue) => { 
+    console.log(errors)
+   });
+
   const uploadFile = async ($event: any) => {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -165,6 +174,7 @@
 
   const handleConnect = handleSubmit(async (value: any) => {
     try {
+      isLoading.value = true;
       if (values?.headerFile?.file instanceof File) {
         const formData = new FormData();
         formData.append("files", values?.headerFile?.file);
@@ -197,6 +207,7 @@
       }
       emit("confirm");
       templateStore.resetValues();
+       isLoading.value = false;
     } catch (error: any) {
       toast.error(error.statusMessage);
     }
@@ -226,7 +237,7 @@
       "headerFile",
       templateStore.values.headerFile instanceof Object
         ? templateStore.values.headerFile
-        : null,
+        : {},
     );
   // if(values)
   const updatChannel = (value: any) => {
@@ -364,7 +375,7 @@
           :url="values?.headerFile?.url"
           :required="true"
           accept="image/png,image/jpeg"
-          :fileType="true"
+          :fileType="'image'"
           :class="'h-24 cursor-pointer'"
           :helperText="'Accept Only JPG and PNG'"
         />
@@ -464,7 +475,8 @@
       </TextField>
     </div>
     <div class="flex items-center justify-end">
-      <UiButton type="submit" class="mt-2" color="primary">Submit </UiButton>
+  
+      <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">Submit </UiButton>
     </div>
   </form>
 </template>
