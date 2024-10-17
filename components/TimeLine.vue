@@ -25,7 +25,7 @@ defineProps({
 </script>
 
 <template>
-  <div  orientation="vertical" class="mx-auto flex w-full flex-col justify-start gap-10">
+  <div orientation="vertical" class="mx-auto flex w-full flex-col justify-start gap-10 bg-[#FFFFFF]">
     <div class="relative flex w-full items-start gap-6">
       <div
         class="absolute left-[18px] top-[64px] block h-[105%] w-0.5 shrink-0 rounded-full opacity-100 group-data-[state=completed]:bg-[#424BD1]" />
@@ -39,17 +39,17 @@ defineProps({
           </div>
         </div>
       </div>
-      <div class="field_shadow flex w-full flex-col gap-1 rounded-lg p-4 pr-6">
+      <div class="field_shadow flex w-[90%] flex-col gap-1 rounded-lg p-4 mr-2">
         <div class="flex flex-col gap-2">
-          
+
           <div class="grid grid-cols-2 gap-2">
-          <h4 class="scroll-m-20 text-[16px] font-semibold tracking-tight">
-            {{ data.metadata?.text }}
-          </h4>
-          
-           <h4 class="text-right scroll-m-20 text-[16px] font-semibold tracking-tight">
-            Chat {{ data.chatIndex }}
-           </h4>
+            <h4 class="scroll-m-20 text-[16px] font-semibold tracking-tight">
+              {{ data.metadata?.text }}
+            </h4>
+
+            <h4 class="text-right scroll-m-20 text-[16px] font-semibold tracking-tight">
+              Chat {{ data.chatIndex }}
+            </h4>
           </div>
 
 
@@ -63,24 +63,24 @@ defineProps({
                 <LinkIcon />
               </span>
               <!-- @click="emits('timeLine', data.chatId)" -->
-              <NuxtLink  v-if="data?.metadata?.website" :to="data?.metadata?.website" target="_blank"
+              <NuxtLink v-if="data?.metadata?.website" :to="data?.metadata?.website" target="_blank"
                 class="text-indigo-600 cursor-pointer">
                 {{ data?.metadata?.website }}
               </NuxtLink>
 
-              
+
             </div>
 
           </div>
-        
+
           <p class="mt-2 text-[14px] font-normal text-gray-600">
 
             {{ data.createdAt }}
-              <NuxtLink class="text-indigo-600 cursor-pointer px-2 font-semibold"  @click="emits('timeLine', {
+            <NuxtLink class="text-indigo-600 cursor-pointer px-2 font-semibold" @click="emits('timeLine', {
                 chatId:data.chatId,
                 chatIndex:data.chatIndex
                 })">
-                Click To  View
+              Click To View
             </NuxtLink>
             <!-- {{ format(new Date(data.createdAt), "dd MMM yyyy hh:mm aa") }} -->
           </p>

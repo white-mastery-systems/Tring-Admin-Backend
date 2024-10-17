@@ -19,7 +19,9 @@ const fileNames = computed(() => {
     .map((f) => f.name)
     .join(", ");
 });
-
+const triggerFileUpload = () => {
+  document.getElementById('dropzone-file').click();
+};
 // // Emit custom event when file changes
 // const emitFileChange = () => {
 //   emit('uploadDocument'); // Emit the event
@@ -34,16 +36,18 @@ const fileNames = computed(() => {
       file = event.target.files;
       $emit('uploadDocument');
     }" />
-    <label for="dropzone-file"
+    <!-- <label for="dropzone-file"
       class="flex-1 cursor-pointer rounded-md border border-[#e5e5e5] bg-white p-[8.5px] text-gray-700 hover:bg-gray-100 focus:border-blue-500 focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600">
       <div class="flex items-center justify-between">
         <File class="mr-2 h-4 w-4" />
-        <span class="font-medium text-[14px]"> Import File </span>
-        <!-- <span class="font-medium text-[14px]">{{ fileLen > 0 ? fileNames : "Upload File" }}</span> -->
-        <!-- <span class="material-icons">
-          {{ fileLen > 1 ? "ph:files-fill" : "material-symbols:upload-file-rounded" }}
-        </span> -->
+        <span class="font-medium text-[14px]"> Import Contacts </span>
       </div>
-    </label>
+    </label> -->
+    <UiButton color="primary" @click="triggerFileUpload">
+      <div class="flex items-center justify-between">
+        <File class="mr-2 h-4 w-4" />
+        <span class="font-medium text-[14px]"> Import Contacts </span>
+      </div>
+    </UiButton>
   </div>
 </template>
