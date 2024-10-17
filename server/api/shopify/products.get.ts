@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
       `Shopify integration found for shop: ${shopifyIntegration.shop}`,
     );
 
-    const shopifyProductsApiUrl = `https://${shopifyIntegration.shop}/admin/api/2023-04/products.json`;
+    const shopifyProductsApiUrl = `https://${shopifyIntegration.shop}/admin/api/2024-04/products.json`;
 
     logger.info(`Fetching products from Shopify API: ${shopifyProductsApiUrl}`);
     const shopifyResponse: any = await $fetch(shopifyProductsApiUrl, {
