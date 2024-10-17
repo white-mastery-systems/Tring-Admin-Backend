@@ -64,6 +64,16 @@ export const authSessionSchema = adminSchema.table("session", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const userOTPSchema = adminSchema.table("otp", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  otp: jsonb("otp"),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => authUserSchema.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 // Relations
 export const userRelations = relations(authUserSchema, ({ many, one }) => ({
   refreshTokens: many(authSessionSchema),

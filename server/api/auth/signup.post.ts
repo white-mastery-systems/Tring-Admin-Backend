@@ -1,4 +1,8 @@
+import { userOTPSchema } from "~/server/schema/auth";
+
 const config = useRuntimeConfig();
+
+const db = useDrizzle()
 
 export default defineEventHandler(async (event) => {
   const body = await readValidatedBody(event, (body: any) =>
@@ -56,6 +60,20 @@ export default defineEventHandler(async (event) => {
   );
   setResponseStatus(event, 201);
 
+  const otpNumber = Math.floor(1000 + Math.random() * 9000)
+
+  await db.insert(userOTPSchema).values({
+    userId: user?.id,
+    otp: {
+      otpNumber: otpNumber.toString(),
+      timestamp: new Date(),
+      status: "pending"
+    }
+  })
+
+  sendEmail(user?.email, "Tring admin - OTP", `Your one-time password (OTP) for verifying your account is: ${otpNumber}. This OTP is valid for 10 minutes.`)
+
   if (user.organizationId) return "/";
-  return "/auth/onboarding/1";
+  // return "/auth/onboarding/1";
+   return { status: true, message: "OTP sent to your email!", data: user }
 });
