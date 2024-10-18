@@ -7,6 +7,7 @@ const isResendDisabled = ref(false)
 const userDetails = ref()
 onMounted(() => {
   const storedDetails = localStorage.getItem('userDetails');
+  // userDetails.value = null
   if (storedDetails) {
     try {
       userDetails.value = JSON.parse(storedDetails); // Parse string into object

@@ -20,7 +20,7 @@ const login = async (values: Record<string, any>) => {
       method: "post",
       body: values,
     });
-    if(data?.data?.status) {
+    if(data?.status) {
       (await useUser()).refreshUser();
       return navigateTo("/")
     } 
