@@ -1,6 +1,7 @@
 import { v4 as uuid } from "uuid";
 
 const config = useRuntimeConfig();
+const db = useDrizzle()
 
 export default defineEventHandler(async (event) => {
   const body = await readValidatedBody(event, (body: any) =>
@@ -27,6 +28,26 @@ export default defineEventHandler(async (event) => {
         statusMessage: "Incorrect username or password",
       }),
     );
+  }
+
+  if(!user.isVerified) {
+    const otpNumber = Math.floor(1000 + Math.random() * 9000)
+
+    await db.update(userOTPSchema)
+    .set({
+      otp: {
+        otpNumber: otpNumber.toString(),
+        timestamp: new Date(),
+        status: "pending"
+      }
+    }).where(eq(userOTPSchema.userId, user?.id))
+
+    sendEmail(user?.email, "Tring admin - OTP", `Your one-time password (OTP) for verifying your account is: ${otpNumber}. This OTP is valid for 10 minutes.`)
+    return {
+      status: false,
+      message: "Your account is not verified. An OTP has been sent to your email. Please verify your account.",
+      data: user
+    }
   }
 
   // const userData = {
@@ -66,4 +87,6 @@ export default defineEventHandler(async (event) => {
     "Set-Cookie",
     lucia.createSessionCookie(session.id).serialize(),
   );
+
+ return { status: true }
 });

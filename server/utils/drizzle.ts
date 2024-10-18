@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
-import { playgroundDocumentSchema } from "../schema/admin";
+import { contactListAndContactsRelations, contactListContactsSchema, playgroundDocumentSchema } from "../schema/admin";
 import { userOTPSchema } from "../schema/auth";
 
 const runtimeConfig = useRuntimeConfig();
@@ -33,6 +33,7 @@ const schema = {
   numberIntegrationSchema,
   contactListSchema,
   contactSchema,
+  contactListContactsSchema,
   campaignSchema,
   callLogSchema,
   playgroundDocumentSchema,
@@ -49,6 +50,7 @@ const schema = {
   leadsRelations,
   billingRelations,
   analyticsRelations,
+  contactListAndContactsRelations
 };
 
 const db = drizzle(queryClient, { schema });
