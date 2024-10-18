@@ -155,7 +155,7 @@ export default defineEventHandler(async (event) => {
           return generatedHostedPage;
         } catch (err: any) {
           logger.error(
-            `Error creating hosted page: ${err.message} ${JSON.stringify(err?.data)} `,
+            `Error creating hosted page: ${err.message} ${JSON.stringify(err?.data)} ${JSON.stringify(err)} `,
           );
           if (err.status === 401) {
             const response = await regerateAccessToken();
