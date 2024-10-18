@@ -155,7 +155,57 @@ export default defineEventHandler(async (event) => {
           return generatedHostedPage;
         } catch (err: any) {
           logger.error(
-            `Error creating hosted page: ${err.message} ${JSON.stringify(err?.data)} `,
+            `${JSON.stringify({
+              ...(billingInformation?.customerId
+                ? {
+                    customer_id: billingInformation?.customerId,
+                  }
+                : {
+                    customer: {
+                      display_name: user?.username,
+                      salutation: "Mr.",
+                      first_name: firstName,
+                      last_name: lastName,
+                      email: user?.email,
+                      mobile: `${userDetails?.countryCode ?? "+91"} ${userDetails.mobile}`,
+                      billing_address: {
+                        attention: user?.username,
+                        street: userDetails?.address?.street,
+                        city: userDetails?.address?.city,
+                        state: userDetails?.address?.state,
+                        country: userDetails?.address?.country,
+                        zip: userDetails?.address?.zip,
+                      },
+                      shipping_address: {
+                        attention: user?.username,
+                        street: userDetails?.address?.street,
+                        city: userDetails?.address?.city,
+                        state: userDetails?.address?.state,
+                        country: userDetails?.address?.country,
+                        zip: userDetails?.address?.zip,
+                      },
+                      gst_no: orgDetails?.metadata?.gst,
+                      // gst_treatment: "business_gst",
+                    },
+                  }),
+              gst_no: orgDetails?.metadata?.gst,
+              // gst_treatment: "business_gst",
+              contactpersons: contactPersonIdList,
+              plan: {
+                plan_code: body.plan,
+              },
+
+              redirect_url: body?.redirectUrl,
+              payment_gateways: [
+                {
+                  payment_gateway:
+                    userDetails?.address === "india" ? "razorpay" : "razorpay",
+                },
+              ],
+            })}`,
+          );
+          logger.error(
+            `Error creating hosted page: ${err.message} ${JSON.stringify(err?.data)} ${JSON.stringify(err)} `,
           );
           if (err.status === 401) {
             const response = await regerateAccessToken();
