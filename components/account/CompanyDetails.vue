@@ -1,13 +1,14 @@
 <template>
   <div class="pb-2">
     <form class="space-y-2" @submit="handleAccountUpdate">
-      <ImagePreview
+      <FileUpload
         @change="handleLogoChange"
         name="logo"
-        label="Logo"
+        label="Upload Image"
         :required="true"
         :accept="'image/*'"
         :url="values?.logo?.url"
+        :fileType="'image'"
         :class="'h-24 cursor-pointer'"
       />
       <div
@@ -74,6 +75,10 @@
 
 <script setup lang="ts">
   import { formSchema } from "~/validationSchema/authValidation/onBoarding/2Validation";
+  import { useOrgDetailsStore } from "~/store/orgDetailsStore";
+  import FileUpload from "~/components/formComponents/fileUpload.vue";
+  const useOrgDetails = useOrgDetailsStore();
+  console.log(useOrgDetails);
 
   const industry = [
     "Real Estate",
@@ -128,31 +133,37 @@
   if (orgDetails?.metadata?.gst)
     setFieldValue("gst", orgDetails?.metadata?.gst);
 
+  const logoData = ref("");
+  const handleLogoChange = async (event: any) => {
+    logoData.value = event[0];
 
-  const handleLogoChange = async (e: any) => {
-    console.log(e, "handleLogoChange");
-    const formData = new FormData();
-    Array.from(e).forEach((file) => {
-      formData.append("files", file);
-    });
-    const [res] = await $fetch("/api/uploads", {
-      method: "POST",
-      body: formData,
-    });
-    setFieldValue("logo", res);
-
-    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setFieldValue("logo", { url: e.target.result });
+    };
+    reader.readAsDataURL(logoData.value);
   };
 
   const handleAccountUpdate = handleSubmit(async (value: any) => {
     isLoading.value = true;
     try {
+      if (logoData.value instanceof File) {
+        const formData = new FormData();
+        formData.append("files", logoData.value);
+        const [res] = await $fetch("/api/uploads", {
+          method: "POST",
+          body: formData,
+        });
+        setFieldValue("logo", res);
+        logoData.value = "";
+      }
+
       const orgData = await $fetch("/api/org", {
         method: "PUT",
-        body: {...value,logo:values.logo},
+        body: { ...value, logo: values.logo },
       });
       localStorage.setItem("orgDetails", JSON.stringify(orgData));
-
+      useOrgDetails.updateValues();
       toast.success("Company Details updated successfully");
     } catch (e) {
       toast.error("Company Details failed to update");

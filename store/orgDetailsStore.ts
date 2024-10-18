@@ -1,14 +1,16 @@
 export const useOrgDetailsStore = defineStore("org", {
   state: () => ({
     values: {
-      logo: "",
+      logo: localStorage.getItem("orgDetails")
+        ? JSON.parse(localStorage.getItem("orgDetails")).logo.url
+        : null,
     },
   }),
   actions: {
     updateValues() {
       this.values = {
         logo: localStorage.getItem("orgDetails")
-          ? (localStorage.getItem("orgDetails") as string)?.log?.url
+          ? JSON.parse(localStorage.getItem("orgDetails")).logo.url
           : null,
       };
     },
