@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
   import { useOrgDetailsStore } from "~/store/orgDetailsStore";
-import { formSchema } from "~/validationSchema/authValidation/onBoarding/2Validation";
+  import { formSchema } from "~/validationSchema/authValidation/onBoarding/2Validation";
   const useOrgDetails = useOrgDetailsStore();
   console.log(useOrgDetails);
 
