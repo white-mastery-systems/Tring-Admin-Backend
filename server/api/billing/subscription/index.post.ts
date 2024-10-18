@@ -226,7 +226,10 @@ export default defineEventHandler(async (event) => {
       return data;
     }
   } catch (err) {
-    console.log({ error });
+    console.log({ err });
+    logger.error(
+      `Error creating hosted page: ${err.message} ${JSON.stringify(err?.data)} ${JSON.stringify(err)} `,
+    );
     if (err instanceof Error) {
     }
   }
