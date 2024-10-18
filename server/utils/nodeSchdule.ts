@@ -101,7 +101,7 @@ export const scheduleEvent = async (
       tz: "UTC",
     });
 
-    contactList.forEach(async (contact: any) => {
+    contactList.forEach(async ({ contacts: contact }: { contacts: any }) => {
       const phoneNumber = `${contact.countryCode}${contact.phone}`.replace(
         "+",
         "",
