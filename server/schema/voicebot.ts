@@ -177,6 +177,14 @@ export const voiceBotLeadSchema = voiceBotSchema.table(
   }),
 );
 
+// Relations
+export const callLogsRelations = relations(callLogSchema, ({one}) => ({
+   bot: one(voicebotSchema, {
+      fields: [callLogSchema.botId],
+      references: [voicebotSchema.id],
+    }),
+}))
+
 export type SelectVoiceBot = InferSelectModel<typeof voicebotSchema>;
 export type InsertVoiceBot = InferInsertModel<typeof voicebotSchema>;
 
