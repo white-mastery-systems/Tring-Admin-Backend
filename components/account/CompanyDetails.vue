@@ -74,9 +74,8 @@
 </template>
 
 <script setup lang="ts">
-  import { formSchema } from "~/validationSchema/authValidation/onBoarding/2Validation";
   import { useOrgDetailsStore } from "~/store/orgDetailsStore";
-  import FileUpload from "~/components/formComponents/fileUpload.vue";
+  import { formSchema } from "~/validationSchema/authValidation/onBoarding/2Validation";
   const useOrgDetails = useOrgDetailsStore();
   console.log(useOrgDetails);
 
