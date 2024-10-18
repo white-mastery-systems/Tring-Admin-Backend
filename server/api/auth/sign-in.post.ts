@@ -88,5 +88,5 @@ export default defineEventHandler(async (event) => {
     lucia.createSessionCookie(session.id).serialize(),
   );
 
-
+ return { status: true }
 });
