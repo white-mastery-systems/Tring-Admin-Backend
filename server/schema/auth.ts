@@ -3,7 +3,7 @@ import {
   type InferSelectModel,
   relations,
 } from "drizzle-orm";
-import { jsonb, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { jsonb, text, timestamp, uuid, varchar, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 
 import { adminSchema } from ".";
@@ -44,6 +44,7 @@ export const authUserSchema = adminSchema.table("user", {
     () => organizationSchema.id,
     { onDelete: "cascade" },
   ),
+  isVerified: boolean("is_verified").default(false),
   customerId: varchar("customer_id"),
   contactPersonId: varchar("contact_person_id"),
   roleId: uuid("role_id").references(() => authUserRoleSchema.id),

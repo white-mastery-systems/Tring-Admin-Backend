@@ -1,3 +1,4 @@
+import { contactListContactsSchema } from "~/server/schema/admin";
 import { createContactList } from "~/server/utils/db/contact-list";
 
 const zodInsertContactList = z.object({
@@ -37,5 +38,18 @@ export default defineEventHandler(async (event) => {
      organizationId,
    })
 
+   if(data) {
+     const uniqueContactIds = [...new Set(body?.contactIds)]
+     const mapContactsData = uniqueContactIds?.map((i) => {
+         return {
+            contactListId: data?.id,
+            contactId: i,
+            organizationId: organizationId
+         }
+     })
+   //   return { mapContactsData }
+     await db.insert(contactListContactsSchema).values(mapContactsData)
+   }
+  
    return isValidReturnType(event, data)
 })
