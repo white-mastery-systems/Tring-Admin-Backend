@@ -67,21 +67,17 @@
           .string({ required_error: "Template is required" })
 
           .default(""),
-        phoneId: z
-          .string({ required_error: "Phone is required" })
-          .optional()
-          .default(""),
       })
       .refine(
         (data) => {
           if (data.type === "whatsapp") {
-            return !!data.integrationId;
+            return !!data.templateId;
           }
           return true;
         },
         {
-          message: "Integration ID is required when Type is WhatsApp.",
-          path: ["integrationId"],
+          message: "Template ID is required.",
+          path: ["templateId"],
         },
       )
       .refine(
@@ -221,10 +217,7 @@
       campaignTime: getUTC,
       contactListId: values.audienceBucket,
       type: values.type,
-      metadata: {
-        templateId: values.templateId,
-        phoneId: values.phoneId,
-      },
+      templateId: values.templateId,
     };
     if (values.type === "whatsapp") {
       delete payload.phoneNumber;
@@ -352,28 +345,6 @@
             value: integration.id,
           }))
         "
-      />
-      <SelectField
-        v-if="values.integrationId"
-        label="template"
-        helperText="Select your template"
-        name="templateId"
-        placeholder="Select your template"
-        :options="
-          templates?.map((template: string) => ({
-            label: template,
-            value: template,
-          }))
-        "
-      />
-
-      <SelectField
-        v-if="values.integrationId"
-        label="phone"
-        helperText="Select your phone"
-        name="phoneId"
-        placeholder="Select your phone"
-        :options="phoneNumbers"
       />
 
       <div class="flex w-full justify-end">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowUpFromLine } from "lucide-vue-next";
+import { Download  } from "lucide-vue-next";
 import { Button as UiButton } from "@/components/ui/button";
 
 const props = defineProps<{
@@ -31,7 +31,7 @@ function exportAsCSV() {
 <template>
   <div>
     <UiButton color="primary" @click="exportAsCSV">
-      <ArrowUpFromLine class="mr-2 h-4 w-4" />
+      <Download  class="mr-2 h-4 w-4" />
       Sample Contacts Import
     </UiButton>
   </div>

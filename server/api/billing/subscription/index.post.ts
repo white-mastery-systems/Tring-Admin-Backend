@@ -1,4 +1,4 @@
-import { billingLogger } from "~/server/logger";
+import { billingLogger, logger } from "~/server/logger";
 
 interface zohoConfigInterface {
   metaData: {
@@ -130,11 +130,11 @@ export default defineEventHandler(async (event) => {
                           zip: userDetails?.address?.zip,
                         },
                         gst_no: orgDetails?.metadata?.gst,
-                        gst_treatment: "business_gst",
+                        // gst_treatment: "business_gst",
                       },
                     }),
                 gst_no: orgDetails?.metadata?.gst,
-                gst_treatment: "business_gst",
+                // gst_treatment: "business_gst",
                 contactpersons: contactPersonIdList,
                 plan: {
                   plan_code: body.plan,
@@ -154,6 +154,9 @@ export default defineEventHandler(async (event) => {
           );
           return generatedHostedPage;
         } catch (err: any) {
+          logger.error(
+            `Error creating hosted page: ${err.message} ${JSON.stringify(err?.data)} `,
+          );
           if (err.status === 401) {
             const response = await regerateAccessToken();
             // return generatedHostedPage();

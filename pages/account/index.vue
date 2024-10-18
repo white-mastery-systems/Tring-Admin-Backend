@@ -58,10 +58,16 @@
 
   const logoutModal = ref(false);
   const route = useRoute();
+  const router = useRouter();
   const tabValue = ref("PersonalDetails");
   if (route?.query?.tab === "company-details") {
     tabValue.value = "companyDetails";
+  } else if (route?.query?.tab === "privacy") {
+    tabValue.value = "privacy";
+  } else if (route?.query?.tab === "personal-details") {
+    tabValue.value = "PersonalDetails";
   }
+
 
   const confirmModel = () => {
     logoutModal.value = true;
@@ -80,5 +86,14 @@
   companyDetails();
   const selectedChannel = (value: any) => {
     tab.value = value;
+    let queryValue ;
+    if (value === "companyDetails") {
+      queryValue = "company-details";
+    } else if (value === "privacy") {
+      queryValue = "privacy";         
+    }else if (value === "PersonalDetails") {
+      queryValue = "personal-details";
+    }
+    router.push({ query: { tab: queryValue } });
   };
 </script>

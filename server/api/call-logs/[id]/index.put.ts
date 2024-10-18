@@ -6,7 +6,7 @@ const zodUpdateCallLogValidator = z.object({
   duration: z.string().optional(),
   direction: z.string().optional(),
   callerName: z.string().optional(),
-  callTranscription: z.string().optional(),
+  callTranscription: z.record(z.any()).optional(),
   inputCredits: z.string().optional(),
   outputCredits: z.string().optional()
 })

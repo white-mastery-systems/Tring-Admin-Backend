@@ -8,7 +8,7 @@ const zodInsertCallLogsValidator = z.object({
   duration: z.string(),
   direction: z.string(),
   callerName: z.string(),
-  callTranscription: z.string(),
+  callTranscription: z.record(z.any()),
   inputCredits: z.string(),
   outputCredits: z.string(),
   organizationId: z.string(),

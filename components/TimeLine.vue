@@ -76,7 +76,7 @@ defineProps({
           <p class="mt-2 text-[14px] font-normal text-gray-600">
 
             {{ data.createdAt }}
-            <NuxtLink class="text-indigo-600 cursor-pointer px-2 font-semibold" @click="emits('timeLine', {
+            <NuxtLink v-if="!['User visited the website','User re visited the website'].includes(data.metadata?.text)" class="text-indigo-600 cursor-pointer px-2 font-semibold" @click="emits('timeLine', {
                 chatId:data.chatId,
                 chatIndex:data.chatIndex
                 })">

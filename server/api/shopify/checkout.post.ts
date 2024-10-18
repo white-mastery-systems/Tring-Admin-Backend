@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
   }
 
   logger.info(`Creating checkout for Shopify shop: ${shopifyIntegration.shop}`);
-  const shopifyCheckoutApiUrl = `https://${shopifyIntegration.shop}/admin/api/2023-04/checkouts.json`;
+  const shopifyCheckoutApiUrl = `https://${shopifyIntegration.shop}/admin/api/2024-04/checkouts.json`;
 
   try {
     const shopifyResponse: any = await $fetch(shopifyCheckoutApiUrl, {

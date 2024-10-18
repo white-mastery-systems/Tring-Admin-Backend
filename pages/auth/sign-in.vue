@@ -41,10 +41,10 @@ const togglePasswordVisibility = () => {
   passwordVisible.value = !passwordVisible.value;
 };
 
-const onSubmit = handleSubmit((value: any) => {
+const onSubmit = handleSubmit(async(value: any) => {
   isLoading.value = true
   event('button_click', { event_category: 'engagement', event_label: 'sign_in' })
-  authHandlers.login(value)
+  await authHandlers.login(value)
   isLoading.value = false
 })
 </script>
