@@ -43,7 +43,7 @@ const signup = async (values: Record<string, any>) => {
     });
     localStorage.setItem("userDetails", JSON.stringify(data?.data))
     // @ts-expect-error
-    return navigateTo("/auth/verifyOtp");
+    return navigateTo("/auth/verify-otp");
     // return navigateTo(data);
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
