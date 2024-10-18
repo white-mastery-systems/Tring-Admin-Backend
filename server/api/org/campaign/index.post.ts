@@ -1,3 +1,5 @@
+import { contactListContactsSchema } from "~/server/schema/admin";
+
 const db = useDrizzle();
 
 const zodInsertCampaign = z.object({
@@ -32,16 +34,22 @@ export default defineEventHandler(async (event) => {
   if (!data) {
     return { status: false, message: "Failed to create" };
   }
-  const contactList = await db
-    .select()
-    .from(contactListSchema)
-    .where(eq(contactListSchema.id, body.contactListId))
-    .leftJoin(
-      contactSchema,
-      eq(contactSchema.id, contactListSchema.contactIds),
-    );
+  // const contactList = await db
+  //   .select()
+  //   .from(contactListContactsSchema)
+  //   .where(eq(contactListContactsSchema.contactListId, body.contactListId))
+  //   .leftJoin(
+  //     contactSchema,
+  //     eq(contactSchema.id, contactListContactsSchema.contactId),
+  //   );
+  const contactList = await db.query.contactListContactsSchema.findMany({
+    with: {
+      contacts: true,
+    },
+    where: eq(contactListContactsSchema.contactListId, body.contactListId),
+  });
   console.log(contactList, "contactList");
-  return contactList;
+  // return contactList;
   const templateData = await db
     .select()
     .from(templateSchema)
