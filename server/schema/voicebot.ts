@@ -137,6 +137,7 @@ export const callLogSchema = voiceBotSchema.table("call_logs", {
   callTranscription: jsonb("call_transcription").array(),
   inputCredits: varchar("input_credits").notNull(),
   outputCredits: varchar("output_credits").notNull(),
+  summary: varchar("summary"),
   botId: uuid("bot_id")
     .references(() => voicebotSchema.id)
     .notNull(),
