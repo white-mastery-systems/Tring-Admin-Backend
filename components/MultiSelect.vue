@@ -3,10 +3,10 @@
     <div class="pb-[1px] text-gray-700 w-full font-medium" :class="{ 'text-red-500': errorMessage }">
       {{ label }} <span v-if="required" class="pb-0 text-red-500 font-medium text-[18px]">*</span>
     </div>
-    <multiselect v-model="internalValue" :options="options" selectLabel="" selectedLabel="" deselectLabel=""
+    <multiselect v-model="internalValue" :options="options"
       :multiple="true" :close-on-select="false" :clear-on-select="false" :max-height="150" :preserve-search="true"
       :placeholder="placeholder" openDirection="bottom" label="name" track-by="value" class="w-full mb-5"
-      :append-to-body="true">
+      :append-to-body="true" :show-labels="false">
       <!-- Custom selected values -->
       <template #selection="{ values, isOpen }">
         <span class="text-sm font-medium" v-if="values.length && !isOpen">

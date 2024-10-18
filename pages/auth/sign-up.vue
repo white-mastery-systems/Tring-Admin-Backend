@@ -62,10 +62,10 @@
   //   confirmPasswordVisible.value = !confirmPasswordVisible.value;
   // };
 
-  const onSubmit = handleSubmit((value: any) => {
+  const onSubmit = handleSubmit( async(value: any) => {
     isLoading.value = true
     event('button_click', { event_category: 'engagement', event_label: 'sign_up' })
-    authHandlers.signup(value);
+    await authHandlers.signup(value);
     isLoading.value = false
   });
 </script>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Upload, File } from 'lucide-vue-next';
+import { Download } from 'lucide-vue-next';
 const file = defineModel<HTMLInputElement["files"]>(); // Define v-model support
 
-const props = defineProps<{ accept?: string }>(); // Allow accept prop for file types
+const props = defineProps<{ accept?: string, isLoading: boolean }>(); // Allow accept prop for file types
 
 const emit = defineEmits<{ (e: "uploadDocument"): void }>();
 const fileLen = computed(() => file.value?.length || 0);
@@ -43,9 +43,9 @@ const triggerFileUpload = () => {
         <span class="font-medium text-[14px]"> Import Contacts </span>
       </div>
     </label> -->
-    <UiButton color="primary" @click="triggerFileUpload">
+    <UiButton color="primary" @click="triggerFileUpload" :loading="isLoading">
       <div class="flex items-center justify-between">
-        <File class="mr-2 h-4 w-4" />
+        <Download class="mr-2 h-4 w-4" />
         <span class="font-medium text-[14px]"> Import Contacts </span>
       </div>
     </UiButton>

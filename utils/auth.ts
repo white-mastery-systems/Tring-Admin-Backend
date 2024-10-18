@@ -16,12 +16,19 @@ export type AuthRoleMiddlewares =
 
 const login = async (values: Record<string, any>) => {
   try {
-    const data = await $fetch("/api/auth/sign-in", {
+    const data: any = await $fetch("/api/auth/sign-in", {
       method: "post",
       body: values,
     });
-    (await useUser()).refreshUser();
-    return navigateTo("/");
+    if(data?.data?.status) {
+      (await useUser()).refreshUser();
+      return navigateTo("/")
+    } 
+    else {
+      toast.success(data?.message);
+      localStorage.setItem("userDetails", JSON.stringify(data?.data))
+      return navigateTo("/auth/verify-otp");
+    }
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
   }
@@ -34,8 +41,9 @@ const signup = async (values: Record<string, any>) => {
       body: values,
       redirect: "follow",
     });
+    localStorage.setItem("userDetails", JSON.stringify(data?.data))
     // @ts-expect-error
-    return navigateTo("/auth/onboarding");
+    return navigateTo("/auth/verifyOtp");
     // return navigateTo(data);
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
@@ -79,7 +87,7 @@ const logout = async () => {
       console.error("Logout failed:", response.message);
     }
   } catch (error) {
-    if (error.toString().indexOf("400") > -1) {
+    if (error?.toString().indexOf("400") > -1) {
       (await useUser()).clearUser();
       return navigateTo({ name: "auth-sign-in" });
     }
@@ -95,6 +103,31 @@ const redirectToRoleHome = (role: AuthRoles) => {
   }
 };
 
+const OtpVerification = async (values: Record<string, any>) => {
+  try {
+    const dataOtpResponse = await $fetch("/api/auth/verifyOtp", {
+      method: "post",
+      body: values,
+    });
+    toast.success("OTP verified successfully!");
+    return navigateTo("/auth/onboarding");
+  } catch (error: any) {
+    toast.error(error?.statusMessage || "Invalid OTP");
+  }
+};
+
+const resendOtpVerification = async (values: Record<string, any>) => {
+  try {
+    await $fetch("/api/auth/resendOtp", {
+      method: "post",
+      body: values,
+    });
+    toast.success("OTP resent successfully!");
+  } catch (error: any) {
+    toast.error(error?.statusMessage || "An error occurred");
+  }
+};
+
 export const authHandlers = {
   login,
   signup,
@@ -102,4 +135,6 @@ export const authHandlers = {
   redirectToRoleHome,
   forgotPassword,
   resetPassword,
+  OtpVerification,
+  resendOtpVerification,
 };
