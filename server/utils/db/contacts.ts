@@ -18,7 +18,15 @@ export const getContacts = async (
     offset = (page - 1) * limit;
   }
   const data = await db.query.contactSchema.findMany({
-    where: eq(contactSchema.organizationId, organizationId),
+    where: and(
+      eq(contactSchema.organizationId, organizationId),
+      query?.q ? or(
+        ilike(contactSchema.firstName, `%${query.q}%`),
+        ilike(contactSchema.email, `%${query.q}%`),
+        ilike(contactSchema.phone, `%${query.q}%`),
+      )
+      : undefined,
+    ),
 
     orderBy: [desc(contactSchema.createdAt)],
   });
