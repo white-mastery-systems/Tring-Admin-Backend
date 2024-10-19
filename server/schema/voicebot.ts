@@ -25,7 +25,6 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     provider: "openai",
     model: "gpt-4o-mini",
     temperature: 0,
-    role: "Assist-booking",
     configuration: 0,
     top_p: "0.95",
     top_k: "64",
