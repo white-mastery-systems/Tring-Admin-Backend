@@ -16,7 +16,12 @@ export default defineEventHandler(async (event) => {
   
   const data = await db.query.contactListContactsSchema.findMany({
     with: {
-      contacts: true
+      contacts: true,
+      bucket: {
+        columns: {
+          name: true
+        }
+      }
     },
     where: eq(contactListContactsSchema.contactListId, contactListId)
   })

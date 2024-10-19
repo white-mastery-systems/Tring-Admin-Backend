@@ -197,6 +197,13 @@ export const callLogsRelations = relations(callLogSchema, ({one}) => ({
     }),
 }))
 
+export const voicebotRelations =relations(voicebotSchema, ({one}) => ({
+   ivrConfigDetail: one(numberIntegrationSchema, {
+      fields: [voicebotSchema.ivrConfig],
+      references: [numberIntegrationSchema.id],
+    }),
+}))
+
 export type SelectVoiceBot = InferSelectModel<typeof voicebotSchema>;
 export type InsertVoiceBot = InferInsertModel<typeof voicebotSchema>;
 
