@@ -4,7 +4,6 @@
   import TextField from "~/components/formComponents/TextField.vue";
   import { useTemplateStore } from "~/store/whatsAppTemplateStore";
   import { whatsAppTemplateSchema } from "~/validationSchema/settings/whatAppTemplateValidation";
-  import FileUpload from "~/components/formComponents/fileUpload.vue";
 
   const templateStore = useTemplateStore();
 
@@ -155,12 +154,12 @@
     dispatchTemplateState();
   };
 
-  watch(values, (newValue) => { 
-    console.log(newValue)
-   });
-  watch(errors, (newValue) => { 
-    console.log(errors)
-   });
+  watch(values, (newValue) => {
+    console.log(newValue);
+  });
+  watch(errors, (newValue) => {
+    console.log(errors);
+  });
 
   const uploadFile = async ($event: any) => {
     const reader = new FileReader();
@@ -207,7 +206,7 @@
       }
       emit("confirm");
       templateStore.resetValues();
-       isLoading.value = false;
+      isLoading.value = false;
     } catch (error: any) {
       toast.error(error.statusMessage);
     }
@@ -397,7 +396,7 @@
       </div>
       <div v-else-if="values.header === 'video'">
         <span class="semibold pt-4 text-sm"> Header Content </span>
-            <FileUpload
+        <FileUpload
           @change="uploadFile"
           label="Upload Video"
           name="headerFile"
@@ -475,8 +474,9 @@
       </TextField>
     </div>
     <div class="flex items-center justify-end">
-  
-      <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">Submit </UiButton>
+      <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading"
+        >Submit
+      </UiButton>
     </div>
   </form>
 </template>
