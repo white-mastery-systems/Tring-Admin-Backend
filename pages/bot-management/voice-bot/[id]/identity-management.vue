@@ -374,14 +374,17 @@
         .min(1, { message: "Name is required" }),
       role: z
         .string({ required_error: "Select A Role" })
-        .min(1, { message: "Select A Role" }),
+        .min(1, { message: "Select A Role" })
+        .optional(),
       domain: z
         .string({ required_error: "Select  A Domain" })
-        .min(1, { message: "Select  A Domain" }),
+        .min(1, { message: "Select  A Domain" })
+        .optional(),
       other: z.string().optional(),
       welcomeFile: z.any(),
       concludeFile: z.any(),
-      language: z.string(),
+      language: z.string()
+        .optional(),
       headerFile: z.object({}).optional(),
     }),
   );
