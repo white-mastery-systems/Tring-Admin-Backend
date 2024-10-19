@@ -20,6 +20,7 @@ const zodUpdateVoiceBotSchema = z.object({
       instruction: z.string().optional(),
       notes: z.string().optional(),
       domainRules: z.string().optional(),
+      prompt: z.string()
     })
     .optional(),
   identityManagement: z

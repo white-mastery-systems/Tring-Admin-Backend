@@ -4,7 +4,7 @@
       cn(
         'h-[calc(100%-70px)]',
         'overflow-y-scroll',
-        leadDataValue?.channel === 'website' ? 'bg-[#f8f6f6]' : 'bg-[#e5ddd5]',
+        leadDataValue?.channel === 'website' ? 'bg-[#f8f6f6]' : (messageListCheck) ? 'bg-[#e5ddd5]' : 'bg-[#f8f6f6]',
       )
     "
     :style="
@@ -19,14 +19,15 @@
       :key="chatListIndex"
     >
       <div style="display: flex; justify-content: center" class="pr-4">
-        <div
+        <div v-if="messageListCheck"
           class="rounded-md bg-[#ffffff]"
           style="width: 150px; text-align: center"
         >
           Chat {{ chatListIndex + 1 }}
         </div>
       </div>
-      <div
+      <!-- <div>{{ chatList.meesages }}</div> -->
+      <div  v-if="messageListCheck"
         class="overflow-y-scroll pr-4 pt-[1rem]"
         v-for="(messageList, messageIndex) in leadDataReplace(
           chatList?.messages,
@@ -280,17 +281,105 @@
           </div>
         </div>
       </div>
+      <div v-else>
+        <!-- User Message -->
+         <div 
+          class="overflow-y-scroll pr-4 pt-[1rem]"
+          v-for="(callLogMessageList, messageIndex) in chatList.meesages"
+          :key="messageIndex"
+         >
+           <div
+             class="flex w-full flex-col items-end"
+             v-if="callLogMessageList?.role === 'user'"
+           >
+             <div class="flex max-w-[80%] flex-col items-end justify-center">
+               <span
+                 :class="
+                   cn(
+                     'text-[14px] text-gray-500',
+                   )
+                 "
+                 >{{ callLogMessageList.role }}</span
+               >
+               <div
+                 class="mt-2.5 flex flex-col items-end justify-center rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black"
+               >
+                 <div>
+                   {{ callLogMessageList?.content }}
+                 </div>
+               </div>
+               <div
+                 :class="
+                   cn(
+                     'text-[12px] opacity-60',
+                   )
+                 "
+                 v-if="callLogMessageList?.createdAt"
+               >
+                 {{ formatDate(new Date(callLogMessageList?.createdAt), "hh:mm a") }}
+               </div>
+             </div>
+           </div>
+           <!-- Assistant Message -->
+           <div class="w-[90%]" v-if="callLogMessageList?.role === 'assistant'">
+             <span
+               :class="
+                 cn(
+                   'text-[14px] text-gray-500',
+                 )
+               "
+               >{{ callLogMessageList.role }}</span
+             >
+             <!-- ai-reply-align -->
+             <div
+               class="field_shadow mt-2.5 flex min-h-[80px] flex-col gap-2 rounded-r-xl rounded-bl-xl bg-[#ffffff] p-5"
+             >
+               <MdText :content="callLogMessageList.content" />
+               <!-- <div class="flex flex-col">
+                 <div class="flex flex-wrap items-center gap-2">
+                   <div
+                    class="flex items-center"
+                   >
+                   v-for="(btn, btnIndex) in safeParseJson(messageList.content)
+                       ?.canned"
+                    :key="btnIndex"
+                     <p
+                       class="w-auto rounded-xl p-2"
+                     >
+                       :style="{
+                         // background: `hsl(347 66 39/ 0.15)`,
+                         background: `hsl(${leadDataValue?.bot.metadata.ui?.color?.replaceAll('%', ' ')}/0.15)`,
+                         color: `hsl(${leadDataValue?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`,
+                       }"
+                       {{ btn.title }}
+                     </p>
+                   </div>
+                 </div>
+                 <div
+                   class="self-end text-[12px] text-[#00000066]"
+                   v-if="callLogMessageList?.createdAt"
+                 >
+                   {{ formatDate(new Date(callLogMessageList.createdAt), "hh:mma") }}
+                 </div>
+               </div> -->
+             </div>
+           </div>
+         </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  const props = defineProps<{
-    leadDataValue: any;
-    class?: String;
-    chatValue: any[];
-    scrollChatBox?: any;
-  }>();
+const props = withDefaults(defineProps<{
+  leadDataValue: any;
+  class?: String;
+  chatValue: any[];
+  scrollChatBox?: any;
+  messageListCheck?: boolean
+}>(),{
+  messageListCheck: true
+}) 
   const safeParseJson = (jsonString: string) => {
     try {
       return JSON.parse(jsonString);
@@ -336,7 +425,7 @@
     const messageIndex = messages?.findIndex(
       (message: any) => message?.content === "User Details Submitted",
     );
-    if (messageIndex < 0) return messages;
+    if (messageIndex < 0 || messageIndex === undefined) return messages;
     let leadMessage = messages[messageIndex];
     if (!leadMessage?.metadata) return messages;
     // leadMessage.role = "assistant";

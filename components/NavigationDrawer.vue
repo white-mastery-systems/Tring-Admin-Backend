@@ -186,12 +186,12 @@
           children: [],
           path: "/chats",
         }, 
-        // {
-        //   name: "Call Logs",
-        //   icon: MessageCircle,
-        //   children: [],
-        //   path: "/call-logs",
-        // },
+        {
+          name: "Call Logs",
+          icon: MessageCircle,
+          children: [],
+          path: "/call-logs",
+        },
       ],
     },
     {

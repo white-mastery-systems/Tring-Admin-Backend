@@ -32,15 +32,14 @@
         <div class="spcace-y-2 grid w-full grid-cols-1 gap-2">
           <!-- <TextField   label="Document Id" name="documentId" 
           placeholder="Document Id"  /> -->
-          <SelectField name="role" label="Role" placeholder="Role is required" :options="roles" :required="true" />
-          <TextField label="Guide" name="guide"
-            placeholder="Include your company details along with the specifics of the service the bot will be providing"
-            :isTextarea="true" />
-          <TextField label="Additional Instructions" name="instruction"
+          <!-- <SelectField name="role" label="Role" placeholder="Role is required" :options="roles" :required="true" /> -->
+          <TextField label="System Prompt" name="prompt" placeholder="Enter prompt" :isTextarea="true"  required/>
+          <!-- <TextField label="Additional Instructions" name="instruction"
             placeholder="Include your company details along with the specifics of the service the bot will be providing"
             :isTextarea="true" />
           <TextField label="Notes" name="notes" placeholder="Notes the data" :isTextarea="true" />
-          <TextField label="Domain Rules" name="domainRules" placeholder="Domain Rules" :isTextarea="true" />
+          <TextField label="Domain Rules" name="domainRules" placeholder="Domain Rules" :isTextarea="true" /> -->
+          <!-- <TextField label="Domain Rules" name="domainRules" placeholder="Domain Rules" :isTextarea="true" /> -->
         </div>
         <div class="flex items-center justify-end mt-4">
           <UiButton type="submit" color="primary" :loading="isLoading">

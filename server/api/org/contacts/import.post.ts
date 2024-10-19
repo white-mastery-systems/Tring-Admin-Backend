@@ -82,13 +82,7 @@ export default defineEventHandler(async (event) => {
     const uniqueContactsData = parsedData.filter((contact: any) => !existingPhoneNumbers.has(contact["Number"]));
 
     if (!uniqueContactsData.length) {
-      return sendError(
-        event,
-        createError({
-          statusCode: 400,
-          statusMessage: "No unique phonenumbers found to insert",
-        })
-      );
+      return { status: false, message: "No unique phonenumbers found to insert"}
     }
   
     const contactsData = uniqueContactsData.map((i: any) => { 

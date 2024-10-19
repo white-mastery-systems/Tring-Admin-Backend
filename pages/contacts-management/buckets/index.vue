@@ -25,7 +25,10 @@
         <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search bucket..." />
       </div>
-      <DataTable @pagination="Pagination" @limit="($event) => {
+      <DataTable @row-click="(row: any) => {
+       navigateTo(`/contacts-management/buckets/${row.original.id}`);
+      }
+        " @pagination="Pagination" @limit="($event) => {
             (filters.page = '1'), (filters.limit = $event);
           }
           " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="contactsList"
