@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
      organizationId,
    })
 
-   if(data) {
+   if(data && body?.contactIds) {
      const uniqueContactIds = [...new Set(body?.contactIds)]
      const mapContactsData = uniqueContactIds?.map((i) => {
          return {

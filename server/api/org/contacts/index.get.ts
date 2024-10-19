@@ -2,7 +2,8 @@ import { getContacts } from "~/server/utils/db/contacts"
 
 const zodQueryvalidator = z.object({
   page: z.string().optional(),
-  limit: z.string().optional()
+  limit: z.string().optional(),
+  q: z.string().optional()
 })
 
 export default defineEventHandler(async (event) => {
