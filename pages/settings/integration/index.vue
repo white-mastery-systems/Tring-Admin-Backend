@@ -53,22 +53,16 @@
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="crm">
-        <IntegrationTable
-          v-model:integrationModalState="integrationModalState"
-          v-model:deleteIntegrationState="deleteIntegrationState"
-        />
+        <IntegrationTable v-model:integrationModalState="integrationModalState"
+          v-model:deleteIntegrationState="deleteIntegrationState" />
       </UiTabsContent>
       <UiTabsContent value="communication">
-        <IntegrationTable
-          v-model:integrationModalState="integrationModalState"
-          v-model:deleteIntegrationState="deleteIntegrationState"
-        />
+        <IntegrationTable v-model:integrationModalState="integrationModalState"
+          v-model:deleteIntegrationState="deleteIntegrationState" />
       </UiTabsContent>
       <UiTabsContent value="ecommerce">
-        <IntegrationTable
-          v-model:integrationModalState="integrationModalState"
-          v-model:deleteIntegrationState="deleteIntegrationState"
-        />
+        <IntegrationTable v-model:integrationModalState="integrationModalState"
+          v-model:deleteIntegrationState="deleteIntegrationState" />
       </UiTabsContent>
       <UiTabsContent value="number">
         <NumberIntegration @action="handleAction" />
@@ -94,7 +88,8 @@
       }
     " />
   <ConfirmationModal v-model:open="deleteExoPhoneState.open" title="Confirm Delete"
-    description="Are you sure you want to delete ?" @confirm="
+    description="Are you certain you want to delete the Exophone integration? Please note that doing so will also remove all bots associated with this number?"
+    @confirm="
       () => {
         if (numberModalState.id) {
           deleteSingleExoPhone({
