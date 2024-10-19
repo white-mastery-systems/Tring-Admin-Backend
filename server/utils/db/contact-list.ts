@@ -46,3 +46,10 @@ export const deleteContactList = async (id: string) => {
       .returning()
   )[0];
 };
+
+
+export const createContactListContacts = async (contactsData: any) => {
+  return (
+    await db.insert(contactListContactsSchema).values(contactsData).returning()
+  )[0]
+}

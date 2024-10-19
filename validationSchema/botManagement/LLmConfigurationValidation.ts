@@ -12,12 +12,17 @@ export const llmConfigurationValidation = toTypedSchema(
     temperature: z
       .number({ required_error: "number is required" })
       .min(0,"Temperature minumum value should be zero"),
-    role: z
+       prompt: z
       .string({
-        required_error: "role is required",
+        required_error: "System prompt is required",
       })
-      .min(1, "role is required",)
-      .default("Assist customers with their questions and issues."),
+      .min(1, "System prompt is required"),
+    // role: z
+    //   .string({
+    //     required_error: "role is required",
+    //   })
+    //   .min(1, "role is required",)
+    //   .default("Assist customers with their questions and issues."),
     guide: z
       .string({
         required_error: "guide is required",

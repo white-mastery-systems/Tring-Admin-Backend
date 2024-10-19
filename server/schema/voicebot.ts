@@ -25,7 +25,6 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     provider: "openai",
     model: "gpt-4o-mini",
     temperature: 0,
-    role: "Assist-booking",
     configuration: 0,
     top_p: "0.95",
     top_k: "64",
@@ -137,6 +136,7 @@ export const callLogSchema = voiceBotSchema.table("call_logs", {
   callTranscription: jsonb("call_transcription").array(),
   inputCredits: varchar("input_credits").notNull(),
   outputCredits: varchar("output_credits").notNull(),
+  summary: varchar("summary"),
   botId: uuid("bot_id")
     .references(() => voicebotSchema.id)
     .notNull(),
@@ -175,6 +175,14 @@ export const voiceBotLeadSchema = voiceBotSchema.table(
     leadsBotIdIndex: index("voicebot_leads_bot_id_index").on(table.botId),
   }),
 );
+
+// Relations
+export const callLogsRelations = relations(callLogSchema, ({one}) => ({
+   bot: one(voicebotSchema, {
+      fields: [callLogSchema.botId],
+      references: [voicebotSchema.id],
+    }),
+}))
 
 export type SelectVoiceBot = InferSelectModel<typeof voicebotSchema>;
 export type InsertVoiceBot = InferInsertModel<typeof voicebotSchema>;

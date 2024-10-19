@@ -261,9 +261,11 @@ const fileUpload = async () => {
     if (fileExtension === "csv") {
       console.log("Uploading CSV file");
       await uploadNumber(file);
+      integrationRefresh()
     } else if (fileExtension === "xls" || fileExtension === "xlsx") {
       console.log("Uploading Excel file");
       await uploadNumber(file);
+      integrationRefresh()
     } else {
       isLoading.value = false
       console.error("Unsupported file type:", fileExtension);

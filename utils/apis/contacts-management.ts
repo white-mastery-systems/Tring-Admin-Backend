@@ -3,12 +3,12 @@ export const uploadNumber = async (files: File) => {
   form.append("file", files);
 
   try {
-    await $fetch("/api/org/contacts/import", {
+    const data = await $fetch("/api/org/contacts/import", {
       method: "POST",
       body: form,
     });
-
-    toast.success("File uploaded successfully");
+     if (!data?.status) toast.error(data?.message);
+     else toast.success("File uploaded successfully");
   } catch (error) {
     toast.error("File upload failed");
     console.error("Upload error:", error);

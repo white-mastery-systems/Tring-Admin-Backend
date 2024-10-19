@@ -193,6 +193,24 @@ export default defineEventHandler(async (event) => {
       connection({ event: "leads", data: body });
     });
   }
+  sendEmail(adminUser?.email, "Head's Up, New Lead Notification from Your Chatbot", `<div>
+  <p>Dear ${adminUser?.username},</p>
+  
+  <p>We are excited to let you know that a new lead has been generated through your chatbot!</p>
+  
+  <div>
+    <p><strong>Lead Details:</strong></p>
+    <p>Name: ${body?.botUser?.name}</p>
+    <p>Email: ${body?.botUser?.email}</p>
+    <p>Phone Number: ${body?.botUser?.countryCode}${body?.botUser?.mobile}</p>
+    <p>Bot's Name: ${botDetails?.name}</p>
+    <p>Location: ${botDetails?.metadata?.country}</p>
+  </div>
+  
+  <p>You can follow up with the lead at your earliest convenience to ensure timely engagement.</p>
+  
+  <p>Best regards,<br/>Tring AI</p>
+</div>`)
 
   return adminUser;
 });
