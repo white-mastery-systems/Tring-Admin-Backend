@@ -9,9 +9,9 @@
       <div class="items-top xs:grid-cols-2 flex grid w-full grid-cols-1 gap-[25px] lg:grid-cols-2">
         <div class="justify-aro und flex w-full gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]">
           <UiTabs default-value="Client" class="w-full self-start">
-            <UiTabsList class="grid w-full grid-cols-2">
+            <UiTabsList class="grid w-full grid-cols-1">
               <UiTabsTrigger value="Client"> Client Info </UiTabsTrigger>
-              <UiTabsTrigger value="Campaign"> Campaign info</UiTabsTrigger>
+              <!-- <UiTabsTrigger value="Campaign"> Campaign info</UiTabsTrigger> -->
             </UiTabsList>
             <UiTabsContent value="Client">
               <!-- {{formattedCallData}} || asfa -->
@@ -30,13 +30,16 @@
           </UiTabs>
         </div>
         <div v-if="true"
-          class="field_shadow h-screen-minus-11 w-full overflow-hidden rounded-lg bg-[#ffffff] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
-
-          <ChatPreview :chatValue="callLogs?.callTranscription" />
+          class="field_shadow h-screen-minus-11 w-full overflow-hidden rounded-lg bg-[#f8f6f6] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
+            <div :class="[
+              'flex h-[70px] w-full items-center justify-between px-2.5 font-medium text-[#ffffff] bg-[#424bd1]',
+            ]">
+            </div>
+            <ChatPreview :chatValue="[{meesages:callLogs?.callTranscription}]" :messageListCheck="false" />
+          </div>
         </div>
       </div>
-    </div>
-    <!-- <input type="text" value="hii" ref="chatScreenRef" /> -->
+      <!-- <input type="text" value="hii" ref="chatScreenRef" /> -->
   </Page>
 </template>
 <script setup lang="ts">
@@ -87,12 +90,12 @@ const formattedCallData = computed(() => {
     "From": callData.from,
     "To": callData.exophone,
     "Call Duration": `${Math.round(callData.duration)} Secs`,
-    "Direction": callData.direction === 'inbound' ? 'Incoming' : 'Outgoing',
+    "Direction": callData.direction,
     "Session ID": callData.callSid,
     "Called At": formattedDate,
-    "Country Name": "India",  // Static values
-    "State Prov": "Maharashtra", // Static values
-    "City": "Navi Mumbai", // Static values
+    // "Country Name": "",  // Static values
+    // "State Prov": "", // Static values
+    // "City": "", // Static values
   };
 });
 // const { status, data: leadData } = await useLazyFetch(

@@ -1,5 +1,5 @@
 import { contactListContactsSchema } from "~/server/schema/admin";
-import { createContactList } from "~/server/utils/db/contact-list";
+import { createContactList, createContactListContacts } from "~/server/utils/db/contact-list";
 
 const zodInsertContactList = z.object({
    name: z.string(),
@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
      organizationId,
    })
 
-   if(data) {
+   if(data && body?.contactIds) {
      const uniqueContactIds = [...new Set(body?.contactIds)]
      const mapContactsData = uniqueContactIds?.map((i) => {
          return {
@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
          }
      })
    //   return { mapContactsData }
-     await db.insert(contactListContactsSchema).values(mapContactsData)
+     await createContactListContacts(mapContactsData)
    }
   
    return isValidReturnType(event, data)

@@ -6,9 +6,10 @@ const zodUpdateCallLogValidator = z.object({
   duration: z.string().optional(),
   direction: z.string().optional(),
   callerName: z.string().optional(),
-  callTranscription: z.record(z.any()).optional(),
+  callTranscription: z.array(z.any()).optional(),
   inputCredits: z.string().optional(),
-  outputCredits: z.string().optional()
+  outputCredits: z.string().optional(),
+  summary: z.string().optional()
 })
 
 export default defineEventHandler(async (event) => {

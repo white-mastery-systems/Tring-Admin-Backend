@@ -23,27 +23,47 @@ export default defineEventHandler(async (event) => {
     offset = (page - 1) * limit;
   }
 
-  const mapData = contactList.map((item) => {
-     let noOfAudience = 0;
-     const audience = item.contactIds ? item.contactIds.length : 0
-     if(audience) {
-       noOfAudience = audience
-     }
-     return {
-      ...item,
-      noOfAudience
-     }
+  const data = await db.query.contactListContactsSchema.findMany({
+    with: {
+      contacts: true
+    },
+    where: eq(contactListContactsSchema.organizationId, organizationId)
   })
+  
+  // return contactList
+
+  const groupedByContactListId = data.reduce((acc: any, item: any) => {
+    // Check if the contactListId exists in the accumulator object
+    if (!acc[item.contactListId]) {
+        // Initialize it with an empty array
+        acc[item.contactListId] = [];
+    }
+    
+    // Push the contact to the corresponding contactListId group
+    acc[item.contactListId].push(item.contacts);
+    
+    return acc;
+  }, {});
+  
+  const allContactListwithContacts = contactList.map((list: any) => {
+    const contactCount = groupedByContactListId[list.id] ? groupedByContactListId[list.id].length : 0;
+    return {
+        ...list,
+        noOfAudience: contactCount
+    };
+  });
+
+
   if(query?.page && query?.limit) {
-     const paginatedContactList = mapData.slice(offset, offset + limit); 
+     const paginatedContactList = allContactListwithContacts.slice(offset, offset + limit); 
     return {
       page: page,
       limit: limit,
-      totalPageCount: Math.ceil(mapData.length/ limit) || 1,
-      totalCount: mapData.length,
+      totalPageCount: Math.ceil(allContactListwithContacts.length/ limit) || 1,
+      totalCount: allContactListwithContacts.length,
       data: paginatedContactList
     }
   } else {
-      return mapData
+      return allContactListwithContacts
   }
 })

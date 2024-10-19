@@ -64,10 +64,10 @@ const {
     totalCount.value = callLogData.totalCount;
     return callLogData.data.map((calls: any) => ({
       id: calls.id,
-      botName: calls.BotName,
+      botName: calls.bot.name,
       callerName: calls.callerName,
       CalledDateTime: `${calls.date}`,
-      calledDuration: calls.duration,
+      calledDuration: `${Math.round(calls.duration)} Secs`,
     }));
   },
 });
@@ -87,7 +87,7 @@ const isDataLoading = computed(() => status.value === "pending");
 
   const viewBot = async () => {
     await navigateTo({
-      name: "analytics-call-logs-id",
+      name: "analytics-call-logs",
       params: { id: 1 },
     });
   };
@@ -103,6 +103,11 @@ const columnHelper = createColumnHelper<typeof callLogData.value>();
   
     columnHelper.accessor("CalledDateTime", {
       header: "Called Date & Time",
+      cell: (info) => {
+      const rawDate = info.getValue();
+      const formattedDate = rawDate.slice(0, 16);
+      return formattedDate;
+     },
     }),
     columnHelper.accessor("calledDuration", {
       header: "Call Duration",

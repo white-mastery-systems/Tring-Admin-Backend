@@ -8,11 +8,12 @@ const zodInsertCallLogsValidator = z.object({
   duration: z.string(),
   direction: z.string(),
   callerName: z.string(),
-  callTranscription: z.record(z.any()),
+  callTranscription: z.array(z.any()),
   inputCredits: z.string(),
   outputCredits: z.string(),
   organizationId: z.string(),
   botId: z.string(),
+  summary: z.string()
 })
 
 export default defineEventHandler(async (event) => {
