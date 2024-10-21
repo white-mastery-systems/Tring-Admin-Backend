@@ -1,14 +1,14 @@
 <template>
   <Page title="Bucket Contacts" :bread-crumbs="[
     {
-      label: ``,
+    label: getBucketDetails[0]?.bucket.name,
        to: `/contacts-management/buckets`,
     },
     {
       label: 'Buckets',
       to: `/contacts-management/buckets`,
     },
-  ]" :disable-back-button="true">
+  ]" :disable-back-button="false">
     <DataTable :data="contactsList" @pagination="Pagination" @limit="($event) => {
       (filters.page = '1'), (filters.limit = $event);
     }
@@ -58,6 +58,8 @@ let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
 const queryId = ref(route.params.id)
+const getBucketDetails = await getBucketContactsDetails(route.params.id)
+
 const {
   status,
   data: contactsList,

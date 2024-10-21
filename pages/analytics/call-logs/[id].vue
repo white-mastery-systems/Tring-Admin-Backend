@@ -23,6 +23,29 @@
                   </div>
                 </div>
               </div>
+              <div class="flex justify-center mt-4">
+                <div class="w-[53%] relative">
+                  <!-- Loader is displayed when audio is loading -->
+                  <div v-if="isAudioLoading"
+                    class="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-10">
+                    <!-- Customize your loader -->
+                    <!-- <template> -->
+                    <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+                    <!-- </template> -->
+                  </div>
+
+                  <div>
+                    <audio controls
+                      :src="`https://5z2vwb9t-5000.inc1.devtunnels.ms/recording/?bot_id=${callLogs.botId}&organization_id=${callLogs.organizationId}&sid=${callLogs.callSid}`"
+                      @loadeddata="onAudioLoaded" @waiting="onAudioLoading" ref="audioPlayer">
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                  <!-- <div class="mt-3 flex justify-end">
+                    <UiButton color="primary" class="text-[12px]" @click.prevent="handleDownload">Download</UiButton>
+                  </div> -->
+                </div>
+              </div>
             </UiTabsContent>
             <UiTabsContent value="Campaign">
             </UiTabsContent>
@@ -31,15 +54,15 @@
         </div>
         <div v-if="true"
           class="field_shadow h-screen-minus-11 w-full overflow-hidden rounded-lg bg-[#f8f6f6] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
-            <div :class="[
+          <div :class="[
               'flex h-[70px] w-full items-center justify-between px-2.5 font-medium text-[#ffffff] bg-[#424bd1]',
             ]">
-            </div>
-            <ChatPreview :chatValue="[{meesages:callLogs?.callTranscription}]" :messageListCheck="false" />
           </div>
+          <ChatPreview :chatValue="[{meesages:callLogs?.callTranscription}]" :messageListCheck="false" />
         </div>
       </div>
-      <!-- <input type="text" value="hii" ref="chatScreenRef" /> -->
+    </div>
+    <!-- <input type="text" value="hii" ref="chatScreenRef" /> -->
   </Page>
 </template>
 <script setup lang="ts">
@@ -56,7 +79,9 @@ definePageMeta({
 });
 
 const route = useRoute("analytics-call-logs-id");
-
+const audioSrc = ref()
+const audioElement = ref(null)
+const isAudioLoading = ref(true)
 // const chats = await $fetch(`/api/call-logs/${route.params.id}`, {
 //   method: "GET",
 //   server: false,
@@ -149,4 +174,34 @@ const details = computed(() => {
   //   return [...metaData, ...paramsData, ...botUserDetails];
   // } else return [...metaData, ...botUserDetails];
 });
+
+onMounted(() => {
+  audioElement.value = document.querySelector('audio')
+})
+
+const playAudio = () => {
+  audioElement.value.play()
+}
+
+const pauseAudio = () => {
+  audioElement.value.pause()
+}
+
+// const handleDownload = () =>{
+//   const downloadLink = `https://5z2vwb9t-5000.inc1.devtunnels.ms/recording/?bot_id=${callLogs.value.botId}&organization_id=${callLogs.value.organizationId}&sid=${callLogs.value.callSid}`;
+
+//   // Create a temporary link element for downloading
+//   const link = document.createElement('a');
+//   link.href = downloadLink;
+//   link.download = 'recording.wav'; // Specify the desired file name
+//   document.body.appendChild(link);
+//   link.click();
+//   document.body.removeChild(link);
+// }
+const onAudioLoaded = () => {
+  isAudioLoading.value = false
+}
+const onAudioLoading = () => {
+  isAudioLoading.value = true
+}
 </script>

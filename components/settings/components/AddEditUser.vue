@@ -25,7 +25,7 @@
       :height="14"
       height-unit="vh"
     />
-    <AddEditUserManageMentModal
+    <CreateEditUserManageMentModal
       v-model="userModalState"
       @confirm="
         () => {
