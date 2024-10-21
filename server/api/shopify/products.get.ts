@@ -3,7 +3,15 @@ import { logger } from "~/server/logger";
 
 export default defineEventHandler(async (event) => {
   try {
-    const { shopifyIntegrationId } = await readBody(event);
+    const query = getQuery(event);
+    const shopifyIntegrationId = query.shopifyIntegrationId as string;
+
+    if (!shopifyIntegrationId) {
+      throw createError({
+        statusCode: 400,
+        message: "shopifyIntegrationId query parameter is required",
+      });
+    }
 
     logger.info(
       `Fetching Shopify integration details for ID: ${shopifyIntegrationId}`,
@@ -27,21 +35,43 @@ export default defineEventHandler(async (event) => {
 
     const shopifyProductsApiUrl = `https://${shopifyIntegration.shop}/admin/api/2024-04/products.json`;
 
+    // Using Nitro's built-in $fetch
     logger.info(`Fetching products from Shopify API: ${shopifyProductsApiUrl}`);
-    const shopifyResponse: any = await $fetch(shopifyProductsApiUrl, {
-      headers: {
-        "X-Shopify-Access-Token": `${shopifyIntegration.access_token}`,
-        "Content-Type": "application/json",
+    const shopifyResponse = await $fetch<{ products: any[] }>(
+      shopifyProductsApiUrl,
+      {
+        method: "GET",
+        headers: {
+          "X-Shopify-Access-Token": `${shopifyIntegration.access_token}`,
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
 
     logger.info(
       `Successfully fetched ${shopifyResponse.products.length} products from Shopify`,
     );
 
+    setHeader(event, "Cache-Control", "public, max-age=60");
+
     return shopifyResponse.products;
   } catch (error: any) {
     logger.error(`Error fetching Shopify products: ${error.message}`);
+
+    if (error.response?.status === 401) {
+      throw createError({
+        statusCode: 401,
+        message: "Unauthorized access to Shopify API",
+      });
+    }
+
+    if (error.response?.status === 429) {
+      throw createError({
+        statusCode: 429,
+        message: "Shopify API rate limit exceeded",
+      });
+    }
+
     throw createError({
       statusCode: error.response?.status || 500,
       message: `Failed to fetch Shopify products: ${error.message}`,
