@@ -200,7 +200,7 @@
       secondaryColor: z.string().min(1, "Secondary color is required"),
       widgetSound: z.string({ required_error: "Widget sound must be selected" }).min(1, "Widget sound must be selected"),
       widgetPosition: z.string({ required_error: "Widget position must be selected" }).min(1, "Widget position must be selected"),
-      fontFamily: z.string().min(1, "Font family color is required"),
+      fontFamily: z.string().min(1, "Font family color is required").default('Kanit'),
       defaultSelect: z.boolean().optional(),
       generateLead: z.boolean().optional(),
       onlineStatus: z.boolean().optional(),
