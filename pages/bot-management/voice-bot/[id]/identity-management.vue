@@ -295,8 +295,8 @@ import { useLanguageList } from '~/composables/useLanguageList';
     if (formData.getAll("files").length) {
       formData.append("bot_id", botDetails.id);
       formData.append("organization_id", botDetails.organizationId);
-      formData.append("ivr", botDetails.ivrConfig.provider);
-      formData.append("language", value.language);
+      formData.append("ivr", botDetails.ivrConfigDetail.provider);
+      formData.append("language", botDetails.speechToTextConfig.language);
       const resData = await audioUpload(formData, "");
       const data = await resData?.json();
       payload = {
@@ -410,7 +410,7 @@ import { useLanguageList } from '~/composables/useLanguageList';
   const audioUpload = async (formData, type) => {
     try {
       const response = await fetch(
-        "https://5z2vwb9t-5000.inc1.devtunnels.ms/audio-upload/",
+        "http://148.113.16.40:5050/audio-upload/",
         {
           method: "POST",
           body: formData,
@@ -428,7 +428,7 @@ import { useLanguageList } from '~/composables/useLanguageList';
     console.log(welcomeFilesData.value);
 
     try {
-      await fetch("https://5z2vwb9t-5000.inc1.devtunnels.ms/audio-upload/", {
+      await fetch("http://148.113.16.40:5050/audio-upload/", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json", // Specify the type of data you're sending
