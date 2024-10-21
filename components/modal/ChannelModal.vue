@@ -26,9 +26,7 @@
       wabaId: z
         .string({ required_error: "wabaId is required" })
         .min(2, "wabaId is required"),
-      pin: z
-        .string({ required_error: "2FA pin is required" })
-        .min(2, "2FA pin is required"),
+      pin: z.string({ required_error: "2FA pin is required" }).optional(),
     }),
   );
 
@@ -239,8 +237,7 @@
         name="pin"
         label="2FA Pin"
         placeholder="Enter Your pin"
-        helperText=""
-        required
+        helperText="Enter your 2FA pin if enabled for this number"
       >
       </TextField>
 

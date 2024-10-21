@@ -75,6 +75,9 @@ export const getVoicebotById = async (
   voicebotId: string,
 ) => {
   const data = await db.query.voicebotSchema.findFirst({
+    with: {
+      ivrConfigDetail: true,
+    },
     where: and(
       eq(voicebotSchema.organizationId, organizationId),
       eq(voicebotSchema.id, voicebotId),

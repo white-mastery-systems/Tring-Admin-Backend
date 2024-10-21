@@ -21,7 +21,15 @@ export const getCallLogsList = async (organizationId: string, query: any, timeZo
   }
 
   let data = await db.query.callLogSchema.findMany({
-    where: eq(callLogSchema.organizationId, organizationId)
+    with: {
+      bot: {
+        columns: {
+          name: true,
+        },
+      }
+    },
+    where: 
+      eq(callLogSchema.organizationId, organizationId),
   })
   data = data.map((i: any) => ({
     ...i,

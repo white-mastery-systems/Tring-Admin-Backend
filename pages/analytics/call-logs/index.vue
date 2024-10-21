@@ -1,16 +1,16 @@
 <template>
   <div class="bot-manage-main-container">
-    <Page title="Call Bot Leads" :disable-back-button="true">
+    <Page title="Call Logs" :disable-back-button="true">
       <!-- isDataLoading -->
       <!-- @pagination="Pagination"  -->
-      <DataTable @limit="($event) => {
+      <DataTable  @row-click="(row: any) => {
+          navigateTo(`/analytics/call-logs/${row.original.id}`);
+        }
+          "  @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
       }
-        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="callLogData" :columns="columns" :is-loading="isDataLoading"
-        :page-size="8" :height="15" height-unit="vh" @row-click="(row: any) => {
-        navigateTo(`/call-bot-leads-id/${row.original.chatId}`);
-        }
-          " />
+        " @pagination="Pagination" :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="callLogData" :columns="columns" :is-loading="isDataLoading"
+        :page-size="8" :height="15" height-unit="vh" />
       <!-- <DataTable :data="leads" :is-loading="false" :columns="columns" :page-size="8" :height="80" height-unit="vh" /> -->
     </Page>
   </div>
@@ -50,36 +50,24 @@ const filters = reactive<{
   limit: "10",
   country: 'all',
 });
-  // const ListLeads = ref()
-  const leads:any = ref([
-    {
-      name: "lead name test",
-      bot_name: "bot name test",
-      createdAt: "18.08.2024",
-      id: 1,
-    }, 
-  ]);
 const {
   status,
   data: callLogData,
-  refresh: getAllvoiceBot,
+  refresh: getAllBotCallLogs,
 } = await useLazyFetch("/api/call-logs", {
   server: false,
   default: () => [],
   query: filters,
-  headers: {
-    "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-  },
   transform: (callLogData: any) => {
     page.value = callLogData.page;
     totalPageCount.value = callLogData.totalPageCount;
     totalCount.value = callLogData.totalCount;
     return callLogData.data.map((calls: any) => ({
       id: calls.id,
-      botName: calls.BotName,
+      botName: calls.bot.name,
       callerName: calls.callerName,
       CalledDateTime: `${calls.date}`,
-      calledDuration: calls.duration,
+      calledDuration: `${Math.round(calls.duration)} Secs`,
     }));
   },
 });
@@ -99,7 +87,7 @@ const isDataLoading = computed(() => status.value === "pending");
 
   const viewBot = async () => {
     await navigateTo({
-      name: "call-bot-leads-id",
+      name: "analytics-call-logs",
       params: { id: 1 },
     });
   };
@@ -115,6 +103,11 @@ const columnHelper = createColumnHelper<typeof callLogData.value>();
   
     columnHelper.accessor("CalledDateTime", {
       header: "Called Date & Time",
+      cell: (info) => {
+      const rawDate = info.getValue();
+      const formattedDate = rawDate.slice(0, 16);
+      return formattedDate;
+     },
     }),
     columnHelper.accessor("calledDuration", {
       header: "Call Duration",
@@ -133,4 +126,9 @@ const columnHelper = createColumnHelper<typeof callLogData.value>();
         ),
     }),
   ];
+
+const Pagination = async ($evnt: any) => {
+  filters.page = $evnt;
+  getAllBotCallLogs();
+};
 </script>

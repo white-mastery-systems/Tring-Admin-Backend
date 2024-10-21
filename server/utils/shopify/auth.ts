@@ -5,7 +5,7 @@ const authConfig = {
 
 //https://johnbstore.myshopify.com/admin/oauth/authorize?client_id=e766d107bd1a2d83dfd696f9f16282b1&scope=write_products,read_shipping,read_inventory&redirect_uri=https://6t53p9kf-3000.inc1.devtunnels.ms/settings/integration/shopify
 
-export async function regenerateAccessTokenForSlack({
+export async function regenerateAccessTokenForShopify({
   refreshToken,
   integrationData,
 }: {

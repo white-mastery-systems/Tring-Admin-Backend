@@ -14,9 +14,15 @@
         </div>
       </div>
     </template>
-    <div class="flex items-center justify-end gap-2 overflow-x-scroll pb-4">
+    <div class="flex items-center justify-between gap-2 overflow-x-scroll pb-4">
+      <div>
+        <UiInput v-model="filters.q" @input="filters.page = '1'"
+          class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+          placeholder=" Search Contacts..." />
+      </div>
       <div class="flex items-center gap-2">
-        <ImportNumberFile accept=".csv, .xls, .xlsx" v-model="selectedFile" @uploadDocument="fileUpload" />
+        <ImportNumberFile accept=".csv, .xls, .xlsx" v-model="selectedFile" @uploadDocument="fileUpload"
+          :isLoading="isLoading" />
         <SampleImport :columns="exportReadyColumns" />
         <ExportButton v-model="exportDataHandler" :rows="exportReadyRows" :columns="exportReadyColumns"
           @export="exportData" buttonContent="Export Contacts" />
@@ -66,7 +72,7 @@ const exportDataHandler = ref({ status: false, type: "csv" });
 const activeStatus = ref("");
 const exportReadyRows = ref<any>([]);
 const selectedFile = ref();
-
+const isLoading = ref(false)
 const filters = reactive<{
   q: string;
   page: string;
@@ -252,26 +258,30 @@ const exportData = async () => {
   }
 }
 const fileUpload = async () => {
+  isLoading.value = true
   if (selectedFile.value) {
     const file = selectedFile.value[0];
-    console.log(file, "file -- file")
     const fileExtension = file.name.split('.').pop().toLowerCase();
 
     if (fileExtension === "csv") {
       console.log("Uploading CSV file");
       await uploadNumber(file);
+      integrationRefresh()
     } else if (fileExtension === "xls" || fileExtension === "xlsx") {
       console.log("Uploading Excel file");
       await uploadNumber(file);
+      integrationRefresh()
     } else {
+      isLoading.value = false
       console.error("Unsupported file type:", fileExtension);
       toast.error("Only CSV and Excel files are allowed.");
       return;
     }
   } else {
+    isLoading.value = false
     console.log("No file selected");
   }
-
+  isLoading.value = false
 };
 </script>
 

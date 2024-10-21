@@ -10,6 +10,7 @@ export const useTemplateStore = defineStore("template", {
       headerTextTemplateVariables: "[]",
       headerLocation: "",
       headerFile: {},
+      integrationId:"",
     },
   }),
   actions: {
@@ -31,6 +32,7 @@ export const useTemplateStore = defineStore("template", {
         footer: "",
         templateVariables: "[]",
         headerTextTemplateVariables: "[]",
+        integrationId:"",
       };
     },
   },

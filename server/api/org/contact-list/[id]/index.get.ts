@@ -1,22 +1,49 @@
+import { contactListContactsSchema } from "~/server/schema/admin"
+
 const db = useDrizzle()
 
+const zodQueryValidator = z.object({
+  page: z.string().optional(),
+  limit: z.string().optional()
+})
+
 export default defineEventHandler(async (event) => {
-   const organizationId = await isOrganizationAdminHandler(event)
+  const organizationId = await isOrganizationAdminHandler(event)
 
-   const { id: contactListId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
+  const { id: contactListId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
-   let data = await getContactListById(contactListId)
+  const query = await isValidQueryHandler(event, zodQueryValidator)
+  
+  const data = await db.query.contactListContactsSchema.findMany({
+    with: {
+      contacts: true,
+      bucket: {
+        columns: {
+          name: true
+        }
+      }
+    },
+    where: eq(contactListContactsSchema.contactListId, contactListId)
+  })
 
-   const contacts = await db.query.contactSchema.findMany({
-    where: eq(contactSchema.organizationId, organizationId)
-   })
-
-   const contactDetails = data.contactIds.map((item: any) => contacts.filter((j) => j.id === item ))
+  let page, offset, limit = 0
     
-   data = {
-     ...data,
-     contactDetails
-   }
-
-   return data
+  if(query.page && query.limit) {
+    page = parseInt(query.page) 
+    limit = parseInt(query.limit)
+    offset = (page - 1) * limit;
+  }
+  
+   if(query?.page && query?.limit) {
+    const paginatedContacts = data.slice(offset, offset + limit); 
+    return {
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length/ limit) || 1,
+      totalCount: data.length,
+      data: paginatedContacts
+    }
+  } else {
+      return data
+  }
 })

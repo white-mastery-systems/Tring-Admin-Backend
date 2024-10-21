@@ -101,7 +101,7 @@ export default defineEventHandler(async (event) => {
                 headers: { Authorization: `Bearer ${response?.access_token}` },
                 body: {
                   messaging_product: "whatsapp",
-                  pin: body.metadata.pin,
+                  pin: body.metadata?.pin ?? "000000",
                 },
               },
             );

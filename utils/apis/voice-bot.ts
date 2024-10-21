@@ -125,3 +125,24 @@ export const deleteSingleExoPhone = async ({
     toast.error(err.data.statusMessage);
   }
 }
+export const insideBucketNumber = async ({
+  queryId,
+  id,
+  onSuccess,
+}:DeleteBuckerNumber) => {
+  try {
+    const deleteIntegration = await $fetch<DeleteBuckerNumber>(
+      `/api/org/contact-list/${queryId}/contactListContacts`,
+      {
+        method: "DELETE",
+        body: {contactId: id},
+      },
+    );
+    onSuccess();
+    console.log(deleteIntegration, 'deleteIntegration')
+    toast.success("Removed successfully");
+    return deleteIntegration;
+  } catch (err: any) {
+    toast.error(err.data.statusMessage);
+  }
+} 

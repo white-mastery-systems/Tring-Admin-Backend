@@ -1,4 +1,4 @@
-import { logger } from "~/server/logger";
+import { contactListContactsSchema } from "~/server/schema/admin";
 
 const db = useDrizzle();
 
@@ -16,6 +16,7 @@ const zodInsertCampaign = z.object({
     .nullish()
     .transform((val) => (val ? new Date(val) : null)),
   contactListId: z.string().optional(),
+  templateId: z.string().optional(),
   type: z.string().optional(),
   metadata: z.any(),
 });
@@ -33,30 +34,52 @@ export default defineEventHandler(async (event) => {
   if (!data) {
     return { status: false, message: "Failed to create" };
   }
-
-  const contactList = await db.query.contactSchema.findMany({
-    where: eq(contactSchema.contactListId, data.contactListId),
-  });
-  const integrationData = await db.query.integrationSchema.findFirst({
-    where: eq(integrationSchema.id, body.metadata.integrationId),
-  });
-  //
-
-  // bull-queue
-  const job = await campaignQueue.add(
-    {
-      campaignId: data?.id,
-      campaignDate: data?.campaignDate,
-      campaignTime: data?.campaignTime,
-      contactList,
-      body,
-      integrationData,
+  // const contactList = await db
+  //   .select()
+  //   .from(contactListContactsSchema)
+  //   .where(eq(contactListContactsSchema.contactListId, body.contactListId))
+  //   .leftJoin(
+  //     contactSchema,
+  //     eq(contactSchema.id, contactListContactsSchema.contactId),
+  //   );
+  const contactList = await db.query.contactListContactsSchema.findMany({
+    with: {
+      contacts: true,
     },
-    // { delay: 5000 }
+    where: eq(contactListContactsSchema.contactListId, body.contactListId),
+  });
+  console.log(contactList, "contactList");
+  // return contactList;
+  const templateData = await db
+    .select()
+    .from(templateSchema)
+    .where(eq(templateSchema.id, data.templateId))
+    .leftJoin(
+      integrationSchema,
+      eq(integrationSchema.id, templateSchema.integrationId),
+    );
+  console.log(templateData, "templateData");
+  scheduleEvent(
+    data?.campaignDate,
+    data?.campaignTime,
+    contactList,
+    body,
+    templateData[0],
   );
-  logger.info(
-    `Job (id: ${job.id}, CampaignId - ${data?.id}) added at: ${new Date()}`,
-  );
+  // const job = await campaignQueue.add(
+  //   {
+  //     campaignId: data?.id,
+  //     campaignDate: data?.campaignDate,
+  //     campaignTime: data?.campaignTime,
+  //     contactList,
+  //     body,
+  //     templateData: templateData[0],
+  //   },
+  //   // { delay: 5000 }
+  // );
+  // logger.info(
+  //   `Job (id: ${job.id}, CampaignId - ${data?.id}) added at: ${new Date()}`,
+  // );
 
   return data;
 });

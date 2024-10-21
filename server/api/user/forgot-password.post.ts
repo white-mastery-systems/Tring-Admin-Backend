@@ -10,13 +10,34 @@ const zodBodyValidator = z.object({
 
 export default defineEventHandler(async (event) => {
   const query = await getQuery(event)
-  const token = query?.token
-
-  const isValidToken = jwt.verify(token, config?.secretKey)
+  const token = query?.token as string
+  let isValidToken;
+  try {
+    isValidToken = jwt.verify(token, config?.secretKey)
+  } catch(error) {
+     return sendError(
+      event,
+      createError({
+        statusCode: 400,
+        statusMessage: "The requested link has expired. Please request a new one.",
+      }),
+    );
+  }
   
-  const body = await isValidBodyHandler(event, zodBodyValidator)
+ const body = await isValidBodyHandler(event, zodBodyValidator);
   
-  const update = await updatePassword(isValidToken.userId, body)
+  // Ensure `isValidToken` is defined and contains `userId`
+  if (!isValidToken?.userId) {
+    return sendError(
+      event,
+      createError({
+        statusCode: 400,
+        statusMessage: "Invalid token",
+      })
+    );
+  }
 
-  return update
+  const update = await updatePassword(isValidToken.userId, body);
+
+  return update;
 })

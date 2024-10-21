@@ -151,7 +151,6 @@ export const contactListSchema = adminSchema.table("contact_list", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name"),
   isDefault: boolean("is_default").default(false),
-  contactIds: varchar("contact_ids").array(),
   organizationId: uuid("organizationId")
     .notNull()
     .references(() => organizationSchema.id),
@@ -172,6 +171,20 @@ export const contactSchema = adminSchema.table("contacts", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const contactListContactsSchema = adminSchema.table( "contact_list_contacts", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  contactListId: uuid("contact_list_id")
+    .notNull()
+    .references(() => contactListSchema.id, { onDelete: 'cascade' }), // Foreign key to contact_list
+  contactId: uuid("contact_id")
+    .notNull()
+    .references(() => contactSchema.id, { onDelete: 'cascade' }), // Foreign key to contacts
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+  }
+);
 
 export const campaignSchema = adminSchema.table("campaign", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -242,6 +255,20 @@ export const organizationRelations = relations(
     bills: many(paymentSchema),
   }),
 );
+
+export const contactListAndContactsRelations = relations(
+  contactListContactsSchema,
+  ({ one }) => ({
+    contacts: one(contactSchema, {
+       fields: [contactListContactsSchema.contactId],
+       references: [contactSchema.id],
+    }),
+    bucket: one(contactListSchema, {
+       fields: [contactListContactsSchema.contactListId],
+       references: [contactListSchema.id],
+    }),
+  }),
+)
 
 export const billingRelations = relations(paymentSchema, ({ one }) => ({
   organization: one(organizationSchema, {

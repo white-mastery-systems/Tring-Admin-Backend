@@ -19,7 +19,7 @@
       <div class="document-align">
         <span class="flex flex-row">
           <!-- @click="uploadfile" -->
-          <FileUpload
+          <DocumentUpload
             accept="application/pdf"
             v-model="selectedFile"
             @upload-document="fileUpload()"
@@ -112,16 +112,15 @@
                         <UiDropdownMenuItem
                           @click="handleAction(list, 'download')"
                         >
-                          <div
-                            class="menu-align rounded-sm text-center"
-                          >
+                          <div class="menu-align rounded-sm text-center">
                             Download
                           </div>
                         </UiDropdownMenuItem>
-                        <UiDropdownMenuItem v-if="list.id !== documents?.documentId"
-                          @click="deleteDocumentModelOpen[list.id] = true">
+                        <UiDropdownMenuItem
+                          v-if="list.id !== documents?.documentId"
+                          @click="deleteDocumentModelOpen[list.id] = true"
+                        >
                           <div class="menu-align rounded-sm text-center">
-
                             Delete
                           </div>
                         </UiDropdownMenuItem>
@@ -129,14 +128,17 @@
                     </UiDropdownMenuContent>
                   </UiDropdownMenu>
                 </span>
-                <ConfirmationModal v-model:open="deleteDocumentModelOpen[list.id]" title="Confirm Delete"
-                  description="Are you sure you want to delete ?" @confirm="() => {
-
+                <ConfirmationModal
+                  v-model:open="deleteDocumentModelOpen[list.id]"
+                  title="Confirm Delete"
+                  description="Are you sure you want to delete ?"
+                  @confirm="
+                    () => {
                       handleAction(list, 'delete');
                       deleteDocumentModelOpen[list.id] = false;
                     }
-                    " />
-
+                  "
+                />
               </div>
               <!-- <div>
               <img src="assets\icons\left_arrow.svg" width="30">
@@ -173,10 +175,9 @@
   // const documents = ref();
   const documentFetchInterval = ref<NodeJS.Timeout>();
 
-  const deleteDocumentModelOpen: any = reactive({})
-  const isSheetOpen = ref(false)
-  const position = ref('bottom')
-
+  const deleteDocumentModelOpen: any = reactive({});
+  const isSheetOpen = ref(false);
+  const position = ref("bottom");
 
   const {
     status,
@@ -213,14 +214,14 @@
   });
   const isPageLoading = computed(() => status.value === "pending");
 
-watchEffect(() => {
-  if (botDetails) {
-    const userName = botDetails?.name ?? 'Unknown Bot Name';
-    useHead({
-      title: `Chat Bot | ${userName} - Document Management`,
-    });
-  }
-});
+  watchEffect(() => {
+    if (botDetails) {
+      const userName = botDetails?.name ?? "Unknown Bot Name";
+      useHead({
+        title: `Chat Bot | ${userName} - Document Management`,
+      });
+    }
+  });
 
   const fileUpload = async () => {
     // selectedFile.value[0].name;
@@ -242,9 +243,9 @@ watchEffect(() => {
       await createDocument(payload.botId, payload.document);
       documents.value = await listDocumentsByBotId(paramId.params.id);
       selectedFile.value = null;
-  } else {
-      selectedFile.value = null
-  }
+    } else {
+      selectedFile.value = null;
+    }
     // documentFetchInterval.value = setInterval(async () => {
     //   documents.value = await listDocumentsByBotId(paramId.params.id);
     // }, 1000);

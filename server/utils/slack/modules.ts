@@ -10,21 +10,25 @@ export async function getAllChannelsFromSlack({
   integrationData: any;
 }) {
   try {
-    const data: any = await $fetch<any>("https://slack.com/api/conversations.list", {
+    const data: any = await $fetch<any>(
+      "https://slack.com/api/conversations.list",
+      {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-    })
-    if(!data.ok  && data?.error === "invalid_auth") {
-      console.log(`Slack access_token expired, ${JSON.stringify(data)}`)
-      const newIntegrationData: any = await regenerateAccessTokenForSlack({integrationData})
-      console.log("newIntegrationData", newIntegrationData)
-      return await getAllChannelsFromSlack(newIntegrationData?.access_token)
+      },
+    );
+    if (!data.ok && data?.error === "invalid_auth") {
+      console.log(`Slack access_token expired, ${JSON.stringify(data)}`);
+      const newIntegrationData: any = await regenerateAccessTokenForSlack({
+        integrationData,
+      });
+      console.log("newIntegrationData", newIntegrationData);
+      return await getAllChannelsFromSlack(newIntegrationData?.access_token);
     }
-    console.log({ data })
+    console.log({ data });
     return data;
-  }
-   catch(error: any){
+  } catch (error: any) {
     logger.error(
       `getAllChannelsFromSlack: token:${token}, refreshToken: ${refreshToken}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(error?.data)}`,
     );
@@ -48,7 +52,11 @@ export async function getAllChannelsFromSlack({
   }
 }
 
-export const createSlackMessage = async (integrationData: any, channelId: string, payload: any) => {
+export const createSlackMessage = async (
+  integrationData: any,
+  channelId: string,
+  payload: any,
+) => {
   try {
     const data: any = await $fetch("https://slack.com/api/chat.postMessage", {
       method: "POST",
@@ -61,13 +69,15 @@ export const createSlackMessage = async (integrationData: any, channelId: string
       },
     });
 
-    if(!data.ok  && data?.error === "invalid_auth") {
-      const newIntegrationData = await regenerateAccessTokenForSlack({integrationData})
-      return await createSlackMessage(newIntegrationData, channelId, payload)
+    if (!data.ok && data?.error === "invalid_auth") {
+      const newIntegrationData = await regenerateAccessTokenForSlack({
+        integrationData,
+      });
+      return await createSlackMessage(newIntegrationData, channelId, payload);
     }
 
-    return data
+    return data;
   } catch (error) {
-    logger.error(`Error creating slack message: ${JSON.stringify(error)}`)
+    logger.error(`Error creating slack message: ${JSON.stringify(error)}`);
   }
-}
+};

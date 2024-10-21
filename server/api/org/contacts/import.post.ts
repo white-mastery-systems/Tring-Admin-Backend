@@ -2,6 +2,7 @@ import csvParser from "csv-parser";
 import { logger } from "~/server/logger"
 import { Readable } from "stream";
 import * as xlsx from "xlsx/xlsx.mjs";
+import { inArray } from 'drizzle-orm'
 
 const db = useDrizzle()
 
@@ -55,10 +56,36 @@ export default defineEventHandler(async (event) => {
         }),
       );
     }
-    
-    // return { parsedData }
+
+    // Check if parsedData is empty (no rows)
+    if (!parsedData || parsedData.length === 0) {
+      return sendError(
+        event,
+        createError({
+          statusCode: 400,
+          statusMessage: "The uploaded file is empty",
+        })
+      );
+    }
+
+     // Extract phone numbers from parsedData
+    const phoneNumbers = parsedData.map((i: any) => i["Number"]).filter(Boolean); // Ensure no empty numbers
+
+    // Query the database to find existing phone numbers
+    const existingContacts = await db.select()
+      .from(contactSchema)
+      .where(inArray(contactSchema.phone, phoneNumbers));
+
+    const existingPhoneNumbers = new Set(existingContacts.map((contact: any) => contact.phone));
+
+    // Filter out the parsed data with unique phone numbers not in the database
+    const uniqueContactsData = parsedData.filter((contact: any) => !existingPhoneNumbers.has(contact["Number"]));
+
+    if (!uniqueContactsData.length) {
+      return { status: false, message: "No unique phonenumbers found to insert"}
+    }
   
-    const contactsData = parsedData.map((i: any) => { 
+    const contactsData = uniqueContactsData.map((i: any) => { 
       return {
         firstName: i["First Name"],
         lastName: i["Last Name"],
@@ -74,8 +101,8 @@ export default defineEventHandler(async (event) => {
     await db.insert(contactSchema).values(contactsData).returning()
   
     return { status: true }
-  } catch (error) {
-    logger.error(`Contacts import: ${JSON.stringify(error)}`)
+  } catch (error: any) {
+    logger.error(`Contacts import: ${JSON.stringify(error?.message)}`)
     return { status: false }
   }
 })

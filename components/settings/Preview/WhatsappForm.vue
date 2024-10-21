@@ -4,12 +4,14 @@
   import TextField from "~/components/formComponents/TextField.vue";
   import { useTemplateStore } from "~/store/whatsAppTemplateStore";
   import { whatsAppTemplateSchema } from "~/validationSchema/settings/whatAppTemplateValidation";
+
   const templateStore = useTemplateStore();
 
   // import countryData from '~/assets/country-codes.json'
   definePageMeta({
     middleware: "admin-only",
   });
+  const isLoading = ref(false);
 
   const varaibleLabelName = (id) => {
     return `{{${id + 1}}}`;
@@ -91,6 +93,7 @@
     setFieldValue("headerLocation", getSingleDetails.headerLocation);
     setFieldValue("body", getSingleDetails.body);
     setFieldValue("footer", getSingleDetails.footer);
+    setFieldValue("integrationId", getSingleDetails.integrationId);
     if (getSingleDetails.templateVariables)
       setFieldValue("templateVariables", getSingleDetails.templateVariables);
     if (getSingleDetails.headerTextTemplateVariables)
@@ -151,22 +154,35 @@
     dispatchTemplateState();
   };
 
-  const uploadFile = async ($event: any) => {
-    const formData = new FormData();
-    Array.from($event).forEach((file) => {
-      formData.append("files", file);
-    });
-    const [res] = await $fetch("/api/uploads", {
-      method: "POST",
-      body: formData,
-    });
+  watch(values, (newValue) => {
+    console.log(newValue);
+  });
+  watch(errors, (newValue) => {
+    console.log(errors);
+  });
 
-    setFieldValue("headerFile", res);
-    dispatchTemplateState();
+  const uploadFile = async ($event: any) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      console.log(e.target.result);
+      setFieldValue("headerFile", { url: e.target.result, file: $event[0] });
+      dispatchTemplateState();
+    };
+    reader.readAsDataURL($event[0]);
   };
 
   const handleConnect = handleSubmit(async (value: any) => {
     try {
+      isLoading.value = true;
+      if (values?.headerFile?.file instanceof File) {
+        const formData = new FormData();
+        formData.append("files", values?.headerFile?.file);
+        const [res] = await $fetch("/api/uploads", {
+          method: "POST",
+          body: formData,
+        });
+        setFieldValue("headerFile", res);
+      }
       if (whatsppModalState?.id) {
         await $fetch(`/api/templates/${whatsppModalState.id}`, {
           method: "PUT",
@@ -190,8 +206,14 @@
       }
       emit("confirm");
       templateStore.resetValues();
+      isLoading.value = false;
     } catch (error: any) {
       toast.error(error.statusMessage);
+       isLoading.value = false;
+    }
+    finally {
+       isLoading.value = false;
+
     }
   });
 
@@ -215,7 +237,12 @@
   if (
     ["text", "image", "video", "document"].includes(templateStore.values.header)
   )
-    setFieldValue("headerFile", templateStore.values.headerFile);
+    setFieldValue(
+      "headerFile",
+      templateStore.values.headerFile instanceof Object
+        ? templateStore.values.headerFile
+        : {},
+    );
   // if(values)
   const updatChannel = (value: any) => {
     channel.value = value;
@@ -226,9 +253,9 @@
     (newValue) => {},
   );
   const variableOptions = [
-    { label: "First Name", value: "firstname" },
-    { label: "Last Name", value: "lastname" },
-    { label: "Full Name", value: "fullname" },
+    { label: "First Name", value: "firstName" },
+    { label: "Last Name", value: "lastName" },
+    { label: "Full Name", value: "fullName" },
     { label: "Email", value: "email" },
     { label: "Mobile", value: "mobile" },
   ];
@@ -345,24 +372,46 @@
 
       <div v-if="values.header === 'image'">
         <span class="semibold pt-4 text-sm"> Header Content </span>
-        <imageField
+        <FileUpload
           @change="uploadFile"
+          label="Upload Image"
           name="headerFile"
-          accept="image/png, image/jpeg"
+          :url="values?.headerFile?.url"
+          :required="true"
+          accept="image/png,image/jpeg"
+          :fileType="'image'"
+          :class="'h-24 cursor-pointer'"
+          :helperText="'Accept Only JPG and PNG'"
         />
         <!-- <TextField type='file' name="headerImage" accept="image/png, image/jpeg"/> -->
       </div>
       <div v-else-if="values.header === 'document'">
         <span class="semibold pt-4 text-sm"> Header Content </span>
-        <imageField
+        <FileUpload
           @change="uploadFile"
+          label="Upload Document"
           name="headerFile"
+          :url="values?.headerFile?.url"
+          :required="true"
           accept="application/pdf"
+          :fileType="'file'"
+          :class="'h-24 cursor-pointer'"
+          :helperText="'Accept Only Pdf'"
         />
       </div>
       <div v-else-if="values.header === 'video'">
         <span class="semibold pt-4 text-sm"> Header Content </span>
-        <imageField @change="uploadFile" name="headerFile" accept="video/mp4" />
+        <FileUpload
+          @change="uploadFile"
+          label="Upload Video"
+          name="headerFile"
+          :url="values?.headerFile?.url"
+          :required="true"
+          accept="video/mp4"
+          :fileType="'video'"
+          :class="'h-24 cursor-pointer'"
+          :helperText="'Accept Only Video'"
+        />
       </div>
 
       <TextField
@@ -430,7 +479,9 @@
       </TextField>
     </div>
     <div class="flex items-center justify-end">
-      <UiButton type="submit" class="mt-2" color="primary">Submit </UiButton>
+      <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading"
+        >Submit
+      </UiButton>
     </div>
   </form>
 </template>

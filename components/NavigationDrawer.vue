@@ -185,6 +185,12 @@
           icon: MessageCircle,
           children: [],
           path: "/chats",
+        }, 
+        {
+          name: "Call Logs",
+          icon: MessageCircle,
+          children: [],
+          path: "/call-logs",
         },
       ],
     },
@@ -265,16 +271,17 @@
   const openAccordions: any = ref({
     path: route.path.split("/").slice(0, 2).join("/"),
   });
+  const OrgDetails = useOrgDetailsStore();
+  const avatarValue = ref(OrgDetails.values?.logo || userInfo.value?.profile_image)
+  watch(OrgDetails,
+    (newOrgDetails) => {
+      console.log(newOrgDetails?.values.logo);
+      avatarValue.value = newOrgDetails?.values?.logo
+    },
+  );
 
-  const avatarValue = computed(() => {
-    let logo = localStorage.getItem("orgDetails")
-      ? JSON.parse(localStorage.getItem("orgDetails") as string)?.logo?.url
-      : null;
-    return logo || userInfo.value?.profile_image;
-  });
+
   const handleNavigation = () => {
     emit("closeSheet");
   };
-  const OrgDetails = useOrgDetailsStore();
-
 </script>

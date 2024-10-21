@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ArrowUpFromLine } from "lucide-vue-next";
+  import { Upload } from "lucide-vue-next";
   import * as XLSX from "xlsx";
 
   import { Button } from "@/components/ui/button";
@@ -97,7 +97,7 @@
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <UiButton color="primary">
-        <ArrowUpFromLine class="mr-2 h-4 w-4" />
+        <Upload class="mr-2 h-4 w-4" />
         {{ props.buttonContent }}
       </UiButton>
     </DropdownMenuTrigger>
