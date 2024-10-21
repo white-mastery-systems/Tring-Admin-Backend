@@ -253,9 +253,6 @@
         }
       };
 
-    console.log("Successfully constructed updatedConfig");
-    console.log(updatedConfig, "Updated Configuration");
-
     await $fetch(`/api/voicebots/${route.params.id}`, {
       method: "PUT",
       body: {

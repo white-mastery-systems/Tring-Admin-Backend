@@ -36,7 +36,7 @@
 
                   <div>
                     <audio controls
-                      :src="`https://5z2vwb9t-5000.inc1.devtunnels.ms/recording/?bot_id=${callLogs.botId}&organization_id=${callLogs.organizationId}&sid=${callLogs.callSid}`"
+                      :src="`http://148.113.16.40:5050/recording/?bot_id=${callLogs.botId}&organization_id=${callLogs.organizationId}&sid=${callLogs.callSid}`"
                       @loadeddata="onAudioLoaded" @waiting="onAudioLoading" ref="audioPlayer">
                       Your browser does not support the audio element.
                     </audio>
