@@ -1,4 +1,4 @@
-import { InferInsertModel, InferSelectModel } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -9,13 +9,11 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { voiceBotSchema } from ".";
-import { integrationSchema, organizationSchema } from "./admin";
+import { integrationSchema, organizationSchema, numberIntegrationSchema } from "./admin";
 
 export const voicebotSchema = voiceBotSchema.table("bot", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name").notNull(),
-  mobile: varchar("mobile"),
-  countryCode: varchar("country_code"),
   role: varchar("role"),
   domain: varchar("domain").array(),
   active: boolean("active").default(false),
@@ -44,32 +42,46 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   speechToTextConfig: jsonb("speech_to_text_config").default({
     provider: "deepgram",
     deepgram: {
-      version: "1",
-      encoding: "MULAW",
-      live_options: {
-        model: "nova-2",
-        smart_format: true,
-        channels: 1,
-        sample_rate: 8000,
-        interim_results: true,
-        utterance_end_ms: "1000",
-        vad_events: true,
-        endpointing: 550,
-        no_delay: true,
-        punctuate: true,
-        diarize: false,
-        filler_words: false,
-        numerals: true,
-        profanity_filter: true,
-        keywords: [],
-      },
-      addons: {
-        measurements: "true",
-        dictation: "true",
-      },
-      amplification_factor: 2,
-      noise_gate: 0,
+        "version": "1",
+        "encoding": "MULAW",
+        "live_options":{
+            "model": "nova-2",
+            "smart_format": true,
+            "channels": 1,
+            "sample_rate": 8000,
+            "interim_results": true,
+            "utterance_end_ms": "1000",
+            "vad_events": true,
+            "endpointing": 50,
+            "no_delay": true,
+            "punctuate": true,
+            "diarize": false,
+            "filler_words": false,
+            "numerals": true,
+            "profanity_filter": true,
+            "keywords": [
+                "double room:1",
+                "single room:1",
+                "chauffer:1",
+                "transport:1",
+                "5000:1",
+                "10000:1",
+                "amenities:1",
+                "single bedroom:1",
+                "double bedroom:1",
+                "pricing:1",
+                "features:1",
+                "availability:1"
+            ]
+        },
+        "addons": {
+            "measurements": "true",
+            "dictation": "true"
+        },
+        "amplification_factor": 2,
+        "noise_gate": 0
     },
+    language: "en-IN",
   }),
   clientConfig: jsonb("client_config").default({
     agent_name: "Jenna",
@@ -81,7 +93,8 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   }),
   // talentConfig: jsonb("talent_config").default({}),
   // intents: varchar("intents").array(), // Array of strings
-  ivrConfig: jsonb("ivr_config"),
+  ivrConfig: uuid("ivr_config")
+    .references(() => numberIntegrationSchema.id, { onDelete: "cascade" }),
   identityManagement: jsonb("identity_management"),
   createdAt: timestamp("created_at").defaultNow(),
   organizationId: uuid("organization_id")
@@ -181,6 +194,13 @@ export const callLogsRelations = relations(callLogSchema, ({one}) => ({
    bot: one(voicebotSchema, {
       fields: [callLogSchema.botId],
       references: [voicebotSchema.id],
+    }),
+}))
+
+export const voicebotRelations =relations(voicebotSchema, ({one}) => ({
+   ivrConfigDetail: one(numberIntegrationSchema, {
+      fields: [voicebotSchema.ivrConfig],
+      references: [numberIntegrationSchema.id],
     }),
 }))
 

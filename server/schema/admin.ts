@@ -262,7 +262,11 @@ export const contactListAndContactsRelations = relations(
     contacts: one(contactSchema, {
        fields: [contactListContactsSchema.contactId],
        references: [contactSchema.id],
-    })
+    }),
+    bucket: one(contactListSchema, {
+       fields: [contactListContactsSchema.contactListId],
+       references: [contactListSchema.id],
+    }),
   }),
 )
 
