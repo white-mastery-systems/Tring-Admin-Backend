@@ -14,7 +14,7 @@
       <div class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]">
         <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
           <div class="items-cetner flex gap-4">
-            <div v-if="botDetails.documentId" class="flex items-center gap-[5px] text-[#1abb00]">
+            <div v-if="botDetails.active" class="flex items-center gap-[5px] text-[#1abb00]">
               <div class="flex h-[6px] w-[6px] items-center rounded-full bg-[#1abb00]"></div>
               <span class="text-[15px] sm:text-[15px] md:text-[17px] lg:text-[16px] xl:text-[16px]">Active</span>
             </div>
@@ -36,13 +36,13 @@
             </span> -->
             <div class="flex items-center gap-3">
               <UiButton class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px]"
-                @click="handleActivateBot" :disabled="isSubmitting" v-if="!botDetails.documentId">
+                @click="handleActivateBot" :disabled="botDetails.active">
                 Activate Bot</UiButton>
-              <span v-if="botDetails.documentId" class="flex items-center gap-4">
+              <span class="flex items-center gap-4">
                 <div class="flex flex-col items-center gap-1">
                   <UiButton
                     class="rounded-[8px] bg-[#ff0000] p-2 p-2.5 text-[14px] font-medium text-white hover:bg-[#ff0000] hover:brightness-90"
-                    @click="deactivateBot">
+                    @click="handleActivateBot" :disabled="!botDetails.active">
                     <!-- Deactivate Bot -->
                     <span class="hidden lg:inline"> Deactivate Bot </span>
                     <!-- Icon for small screens -->
@@ -106,11 +106,11 @@
               (item: any) => item.status === 'ready',
             )" :key="list.id" @click="
               async () => {
-                isSubmitting = true;
                 isDocumentListOpen = false;
                 await singleDocumentDeploy(list);
               }
-            ">
+              ">
+              <!-- isSubmitting = true; -->
             {{ list.name }}
           </UiButton>
         </UiDialogContent>
@@ -151,12 +151,15 @@
   // const selectedValue = ref("Today");
   const route = useRoute("bot-management-voice-bot-id");
   const paramId: any = route;
-  const botDetails = ref(await getVoiceBotDetails(paramId.params.id));
+  // const botDetails = ref(await getVoiceBotDetails(paramId.params.id));
+const { data: botDetails, status: botLoadingStatus, refresh: integrationRefresh } = await useLazyFetch(`/api/voicebots/${route.params.id}`);
+
   const deleteModalState = ref(false);
   const modalOpen = ref(false);
   const isDocumentListOpen = ref(false);
   const isSubmitting = ref(false);
   const getDocumentList: any = ref();
+  const voiceBotActive = ref(false)
 
    watchEffect(() => {
   if (botDetails.value) {
@@ -308,7 +311,22 @@
     deleteVoiceBot(route.params.id);
   };
 
-  const handleActivateBot = async () => {};
+const handleActivateBot = async () => {
+  let getActive = botDetails.value.active
+  getActive = !getActive
+  try {
+    await $fetch(`/api/voicebots/${paramId.params.id}/deploy`, {
+      method: "PUT", body: {
+        active: getActive,
+      },
+     });
+    integrationRefresh()
+    toast.success("Activated successfully");
+  } catch (error) {
+    toast.error(error.statusMessage);
+  }
+};
+
 </script>
 
 <style scoped>
