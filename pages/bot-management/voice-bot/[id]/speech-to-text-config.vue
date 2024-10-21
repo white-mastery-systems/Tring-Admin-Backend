@@ -192,15 +192,24 @@
     );
     if (botData.value.speechToTextConfig.provider === "deepgram") {
       setFieldValue("endpointing", botData.value.speechToTextConfig.deepgram.live_options.endpointing);
+      setFieldValue("adaptation", botData.value.speechToTextConfig?.google?.adaptation)
       setFieldValue(
         "utteranceEndMs",
         botData.value.speechToTextConfig.deepgram.live_options.utterance_end_ms,
       );
       
-      setFieldValue(
-        "model",
-        botData.value.speechToTextConfig[botData.value.speechToTextConfig.provider].live_options.model
-      );
+      if (values.provider === "deepgram") {
+        console.log(botData.value.speechToTextConfig, "botData.value.speechToTextConfig")
+        setFieldValue(
+          "model",
+          botData.value.speechToTextConfig.deepgram.live_options.model
+        );
+      } else {
+        setFieldValue(
+          "model",
+          botData.value.speechToTextConfig.google.model
+        );
+      }
       const keywords = botData.value.speechToTextConfig.deepgram.live_options?.keywords || [];
       const formattedKeywords = keywords.map(keyword => {
         const [value, boostValue] = keyword.split(":");
