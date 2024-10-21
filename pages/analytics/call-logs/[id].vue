@@ -41,9 +41,6 @@
                       Your browser does not support the audio element.
                     </audio>
                   </div>
-                  <!-- <div class="mt-3 flex justify-end">
-                    <UiButton color="primary" class="text-[12px]" @click.prevent="handleDownload">Download</UiButton>
-                  </div> -->
                 </div>
               </div>
             </UiTabsContent>
@@ -118,6 +115,7 @@ const formattedCallData = computed(() => {
     "Direction": callData.direction,
     "Session ID": callData.callSid,
     "Called At": formattedDate,
+    "summary": callData.summary,
     // "Country Name": "",  // Static values
     // "State Prov": "", // Static values
     // "City": "", // Static values

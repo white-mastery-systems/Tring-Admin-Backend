@@ -5,8 +5,8 @@ export const speechToTextValidation = z.object({
   model: z.string().optional(),
   phraseSets:z.array(z.any()).optional(),
   keywords:z.array(z.any()).optional(),
-  amplificationFactor:z.string({required_error: "amplificationFactor is required"}).optional(),
-  utteranceEndMs:z.string({required_error:"utteranceEndMs is required"}).optional(),
+  amplificationFactor:z.string({required_error: "amplificationFactor is required"}).min(1, "amplificationFactor is required"),
+  utteranceEndMs:z.string({required_error:"utteranceEndMs is required"}).min(1, "utteranceEndMs is required"),
   endpointing: z
     .number({ required_error: "endpointing is required" })
     .min(0, "endpointing must be a positive number")
