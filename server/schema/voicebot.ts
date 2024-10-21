@@ -30,21 +30,57 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     prompt: "",
   }),
   textToSpeechConfig: jsonb("text_to_speech_config").default({
-    provider: "google",
-    google: {
-      name: "en-IN-Neural2-A",
-      speaking_rate: 1,
-      pitch: 1,
-      volume_gain_db: 0.5,
-      effects_profile_id: ["telephony-class-application"],
+    "provider": "google",
+    "google": {
+        "name": "en-IN-Neural2-A",
+        "speaking_rate": 1,
+        "pitch": 1,
+        "volume_gain_db": 0.5,
+        "effects_profile_id": [
+            "telephony-class-application"
+        ]
     },
+    "elevenlabs": {
+        "api_key": "sk_3b0e5afba913980ebc8c96ee6150678ba99517b62501c576",
+        "voice": "jBYIjE7vMSfVJhyXWNqw",
+        "model": "eleven_turbo_v2",
+        "stability": 0.5,
+        "similarity_boost": 1,
+        "style": 0.5,
+        "use_speaker_boost": false
+    },
+    "deepgram": {
+        "voice": "aura-asteria-en"
+    }
   }),
   speechToTextConfig: jsonb("speech_to_text_config").default({
-    provider: "deepgram",
-    deepgram: {
+    "provider": "deepgram",
+    "google": {
+        "adaptation": true,
+        "phrase_sets": [
+        ],
+        "encoding": "MULAW",
+        "sample_rate_hertz": 8000,
+        "audio_channel_count": 1,
+        "model": "short",
+        "intermediate_pause": 1,
+        "response_timeout": 1,
+        "recognizer": "projects/tringai-project1/locations/global/recognizers/english-in-short",
+        "amplification_factor": 3,
+        "noise_gate": 0
+    },
+    "azure": {
+        "phrase_list": [],
+        "encoding": "MULAW",
+        "sample_rate_hertz": 8000,
+        "audio_channel_count": 1,
+        "amplification_factor": 3,
+        "noise_gate": 0
+    },
+    "deepgram": {
         "version": "1",
         "encoding": "MULAW",
-        "live_options":{
+        "live_options": {
             "model": "nova-2",
             "smart_format": true,
             "channels": 1,
@@ -60,18 +96,6 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
             "numerals": true,
             "profanity_filter": true,
             "keywords": [
-                "double room:1",
-                "single room:1",
-                "chauffer:1",
-                "transport:1",
-                "5000:1",
-                "10000:1",
-                "amenities:1",
-                "single bedroom:1",
-                "double bedroom:1",
-                "pricing:1",
-                "features:1",
-                "availability:1"
             ]
         },
         "addons": {
@@ -81,7 +105,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
         "amplification_factor": 2,
         "noise_gate": 0
     },
-    language: "en-IN",
+    "language": "en-IN"
   }),
   clientConfig: jsonb("client_config").default({
     agent_name: "Jenna",

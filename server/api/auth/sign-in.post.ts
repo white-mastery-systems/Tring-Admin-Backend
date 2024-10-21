@@ -43,11 +43,14 @@ export default defineEventHandler(async (event) => {
     }).where(eq(userOTPSchema.userId, user?.id))
 
     sendEmail(user?.email, "Tring admin - OTP", `Your one-time password (OTP) for verifying your account is: ${otpNumber}. This OTP is valid for 10 minutes.`)
-    return {
-      status: false,
-      message: "Your account is not verified. An OTP has been sent to your email. Please verify your account.",
-      data: user
-    }
+    return sendError(
+      event,
+      createError({
+        statusCode: 400,
+        statusMessage: "User not verified",
+        data: user
+      }),
+    );
   }
 
   // const userData = {
