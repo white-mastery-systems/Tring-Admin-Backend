@@ -11,7 +11,7 @@
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
 
         :data="userDataList" :is-loading="isDataLoading" :page-size="20" :height="14" height-unit="vh" />
-      <AddEditRoleManageMentModal v-model="roleModalState" @confirm="() => {
+      <CreateEditRoleManageMentModal v-model="roleModalState" @confirm="() => {
         deleterRoleState.open = false;
         roleModalState.open = false
         getAllRole()

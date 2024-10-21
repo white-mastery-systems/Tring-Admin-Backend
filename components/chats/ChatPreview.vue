@@ -458,7 +458,7 @@ const props = withDefaults(defineProps<{
   // Function to scroll to a specific message based on chatId
   const emit = defineEmits(["chatId"]);
   const scrollToMessage = ({ chatIndex }) => {
-    const chats = [...props.chatValue[chatIndex - 1].messages];
+    const chats = [...props.chatValue[chatIndex - 1]?.messages];
     const { chatId } = [...chats].pop();
     const element = document.getElementById(chatId + `_id${chats.length - 1}`);
 

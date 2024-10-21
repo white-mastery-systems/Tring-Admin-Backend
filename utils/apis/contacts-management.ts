@@ -14,3 +14,12 @@ export const uploadNumber = async (files: File) => {
     console.error("Upload error:", error);
   }
 };
+
+
+// Voice bot
+export const getBucketContactsDetails = async (id: string) => {
+  const getSingleBucketDetails = await $fetch<SelectChatBot & { documents: SelectDocument[] }>(
+    `/api/org/contact-list/` + id,
+  );
+  return getSingleBucketDetails;
+};
