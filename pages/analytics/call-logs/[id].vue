@@ -36,7 +36,7 @@
 
                   <div>
                     <audio controls
-                      :src="`http://148.113.16.40:5050/recording/?bot_id=${callLogs.botId}&organization_id=${callLogs.organizationId}&sid=${callLogs.callSid}`"
+                      :src="`${config.public.voiceBotUrl}/recording/?bot_id=${callLogs.botId}&organization_id=${callLogs.organizationId}&sid=${callLogs.callSid}`"
                       @loadeddata="onAudioLoaded" @waiting="onAudioLoading" ref="audioPlayer">
                       Your browser does not support the audio element.
                     </audio>
@@ -79,6 +79,7 @@ const route = useRoute("analytics-call-logs-id");
 const audioSrc = ref()
 const audioElement = ref(null)
 const isAudioLoading = ref(true)
+const config = useRuntimeConfig()
 // const chats = await $fetch(`/api/call-logs/${route.params.id}`, {
 //   method: "GET",
 //   server: false,

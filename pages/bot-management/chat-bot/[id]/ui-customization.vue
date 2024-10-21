@@ -103,8 +103,11 @@
               label: 'Jost',
             }, {
               value: 'Lexend deca',
-              label: 'Lexend deca',
-            },
+              label: 'Lexend Deca',
+            }, {
+              value: 'Museo',
+              label: 'Museo',
+            }
           ]" required />
             <UiFormField v-slot="{ value, handleChange }" name="generateLead">
               <UiFormItem class="w-full">

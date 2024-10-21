@@ -198,7 +198,7 @@
               "_blank",
             );
           } else if (values.crm === "hubspot") {
-            const authUrl = `https://app.hubspot.com/oauth/authorize?client_id=ae187200-936d-44f3-8e59-5bab2f50aa3c&redirect_uri=${url}&scope=crm.objects.contacts.write%20oauth%20crm.objects.leads.read%20crm.objects.contacts.read%20crm.objects.leads.write%20crm.objects.deals.write%20crm.schemas.deals.write`;
+            const authUrl = `https://app.hubspot.com/oauth/authorize?client_id=ae187200-936d-44f3-8e59-5bab2f50aa3c&redirect_uri=${url}&scope=crm.objects.contacts.write,oauth,crm.objects.leads.read,crm.objects.contacts.read,crm.objects.leads.write,crm.objects.deals.write,crm.objects.deals.read,crm.schemas.deals.write,crm.schemas.deals.read`;
             window.open(authUrl, "_blank");
           } else if (values.crm === "slack") {
             window.open(
