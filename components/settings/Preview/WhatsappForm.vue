@@ -209,6 +209,11 @@
       isLoading.value = false;
     } catch (error: any) {
       toast.error(error.statusMessage);
+       isLoading.value = false;
+    }
+    finally {
+       isLoading.value = false;
+
     }
   });
 

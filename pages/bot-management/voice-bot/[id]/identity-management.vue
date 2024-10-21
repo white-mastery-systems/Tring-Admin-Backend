@@ -34,22 +34,22 @@
             />
           </span>
           <span>
-            <SelectField
+            <!-- <SelectField
               name="role"
               label="Role"
               placeholder="Select a Role"
               :options="roles"
               required
-            />
+            /> -->
           </span>
         </div>
-        <SelectField
+        <!-- <SelectField
           name="domain"
           label="Domain"
           placeholder="Select Domain"
           :options="domainList"
           required
-        />
+        /> -->
         <div v-if="values.domain === 'Others'">
           <TextField
             name="name"
@@ -59,15 +59,17 @@
           >
           </TextField>
         </div>
-        <SelectField
+        <!-- <SelectField
           name="language"
           label="Language"
           placeholder="Select Language"
           :options="languageList"
           required
-        />
+        /> -->
         <div class="w-full gap-3 pt-2">
           <div style="align-self: center">Welcome Audio</div>
+
+          <!-- <Audio name="welcomeAudio"></Audio> -->
           <div>
             <imageField
               name="welcomeFile"
@@ -167,7 +169,7 @@
   const botDetails: any = await getVoiceBotDetails(route.params.id);
   const welcomeFilesData = ref([]);
   const concludeFilesData = ref([]);
-  const deleteFileBucket = ref([]);
+  const deleteFileBucket = ref([ ]);
 
   if (botDetails?.audioFiles?.welcome?.length) {
     welcomeFilesData.value = botDetails?.audioFiles?.welcome.map(
@@ -372,14 +374,17 @@
         .min(1, { message: "Name is required" }),
       role: z
         .string({ required_error: "Select A Role" })
-        .min(1, { message: "Select A Role" }),
+        .min(1, { message: "Select A Role" })
+        .optional(),
       domain: z
         .string({ required_error: "Select  A Domain" })
-        .min(1, { message: "Select  A Domain" }),
+        .min(1, { message: "Select  A Domain" })
+        .optional(),
       other: z.string().optional(),
       welcomeFile: z.any(),
       concludeFile: z.any(),
-      language: z.string(),
+      language: z.string()
+        .optional(),
       headerFile: z.object({}).optional(),
     }),
   );

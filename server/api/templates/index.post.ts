@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
         type: "header",
         format: metadata?.header,
         example: {
-          header_handle: `${conf.llmCallbackUrl}${metadata?.headerFile?.url}`,
+          header_handle: `${conf.adminBaseUrl}${metadata?.headerFile?.url}`,
         },
       });
     }
