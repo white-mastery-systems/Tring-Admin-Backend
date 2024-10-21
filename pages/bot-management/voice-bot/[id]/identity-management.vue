@@ -163,7 +163,7 @@
 
 <script setup lang="ts">
 import { useLanguageList } from '~/composables/useLanguageList';
-
+ const config=useRuntimeConfig()
   definePageMeta({
     middleware: "admin-only",
   });
@@ -410,7 +410,7 @@ import { useLanguageList } from '~/composables/useLanguageList';
   const audioUpload = async (formData, type) => {
     try {
       const response = await fetch(
-        "http://148.113.16.40:5050/audio-upload/",
+        `${config.public.voiceBotUrl}/audio-upload/`,
         {
           method: "POST",
           body: formData,
@@ -428,7 +428,7 @@ import { useLanguageList } from '~/composables/useLanguageList';
     console.log(welcomeFilesData.value);
 
     try {
-      await fetch("http://148.113.16.40:5050/audio-upload/", {
+      await fetch(`${config.public.voiceBotUrl}/audio-upload/`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json", // Specify the type of data you're sending
@@ -437,7 +437,7 @@ import { useLanguageList } from '~/composables/useLanguageList';
           files: deleteFileBucket.value, // ensure this is serializable (possibly a file path or metadata, not a File object)
           bot_id: data.id,
           organization_id: data.organizationId,
-          ivr: data.ivrConfig.provider,
+          ivr: data.ivrConfigDetail.provider,
         }),
       });
       return console.log("deleted");
