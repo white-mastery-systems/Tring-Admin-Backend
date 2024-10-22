@@ -160,7 +160,9 @@ export default defineEventHandler(async (event) => {
       let [{ id: hubspotOwnerId }] = ownerIds[0]?.id;
       await createDeals(
         botIntegration?.integration?.metadata?.access_token,
-        id,
+        hubspotOwnerId,
+        botIntegration?.integration?.metadata?.amount,
+        botIntegration?.integration?.metadata?.stage,
         firstName,
         lastName,
       );
