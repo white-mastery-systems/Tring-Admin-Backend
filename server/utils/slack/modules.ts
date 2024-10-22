@@ -32,23 +32,49 @@ export async function getAllChannelsFromSlack({
     logger.error(
       `getAllChannelsFromSlack: token:${token}, refreshToken: ${refreshToken}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(error?.data)}`,
     );
-    // if (!refreshToken) return;
-    // if (error.status === 401) {
-    //   //   return regenearateTokenWithRefreshToken({
-    //   //     refreshToken: refreshToken,
-    //   //   }).then(async (data: any) => {
-    //   //     if (data?.access_token)
-    //   //       updateIntegrationById(integrationData.id, {
-    //   //         ...integrationData.metadata,
-    //   //         access_token: data?.access_token,
-    //   //       });
-    //   //     return getAllChannelsFromSlack({
-    //   //       token: data?.access_token,
-    //   //       refreshToken: "",
-    //   //       integrationData: integrationData,
-    //   //     });
-    //   //   });
-    // }
+  }
+}
+
+export async function joinSlackChannel({
+  token,
+  refreshToken,
+  integrationData,
+  channelId,
+}: {
+  token: string;
+  refreshToken: String;
+  integrationData: any;
+  channelId: string;
+}) {
+  try {
+    const data: any = await $fetch<any>(
+      "https://slack.com/api/conversations.join",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        method: "POST",
+        body: new URLSearchParams({
+          channel: channelId,
+        }),
+      },
+    );
+    logger.info(`${JSON.stringify(data)}`);
+    if (!data.ok && data?.error === "invalid_auth") {
+      console.log(`Slack access_token expired, ${JSON.stringify(data)}`);
+      const newIntegrationData: any = await regenerateAccessTokenForSlack({
+        integrationData,
+      });
+      console.log("newIntegrationData", newIntegrationData);
+      return await getAllChannelsFromSlack(newIntegrationData?.access_token);
+    }
+    console.log({ data });
+    return data;
+  } catch (error: any) {
+    logger.error(
+      `getAllChannelsFromSlack: token:${token}, refreshToken: ${refreshToken}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(error?.data)}`,
+    );
   }
 }
 
