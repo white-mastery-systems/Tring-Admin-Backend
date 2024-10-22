@@ -68,6 +68,36 @@ export default defineEventHandler(async (event) => {
       );
     }
 
+    const expectedColumns = ['First Name', 'Last Name', 'Email', 'Country Code', 'Number'];
+    const actualColumns = Object.keys(parsedData[0])
+
+    // return { actualColumns }
+
+    const missingColumns = expectedColumns.filter(col => !actualColumns.includes(col));
+    const extraColumns = actualColumns.filter(col => !expectedColumns.includes(col))
+
+    // return { extraColumns }
+  
+    if (missingColumns.length) {
+      return sendError(
+         event,
+         createError({
+           statusCode: 400,
+           statusMessage: `Missing columns - ${missingColumns.join(', ')}`,
+         })
+       );
+    }
+
+    if(extraColumns.length) {
+       return sendError(
+         event,
+         createError({
+           statusCode: 400,
+           statusMessage: `Extra columns - ${extraColumns.join(', ')}`,
+         })
+       );
+    }
+
      // Extract phone numbers from parsedData
     const phoneNumbers = parsedData.map((i: any) => i["Number"]).filter(Boolean); // Ensure no empty numbers
 
