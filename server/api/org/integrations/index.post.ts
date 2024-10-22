@@ -33,6 +33,7 @@ export default defineEventHandler(async (event) => {
         code: z.string().optional(),
         wabaId: z.string().optional(),
         pin: z.string().optional(),
+        stage: z.string().optional(),
       }),
     })
     .refine(

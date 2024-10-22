@@ -30,7 +30,6 @@
     crm: z.literal("hubspot"),
     metadata: z.object({
       stage: z.any({ required_error: "pipeline is required" }),
-      amount: z.number({ required_error: "amount is required" }).default(0),
     }),
   });
   const slackSchema = z.object({
@@ -124,7 +123,7 @@
       // name: "",
     },
   });
-
+const metadata = ref<any>({});
   watch(
     () => integrationModalState.value,
     async (value) => {
@@ -141,18 +140,20 @@
           | "shopify";
         metadata?: { apiKey: string };
       }>(`/api/org/integrations/${integrationModalProps.id}`);
-      log({ integrationDetails });
       setFieldValue("name", integrationDetails?.name);
       setFieldValue("crm", integrationDetails?.crm);
+      metadata.value = integrationDetails?.metadata || {};
       if (integrationDetails?.crm === "sell-do") {
         setFieldValue("metadata", {
           apiKey: integrationDetails?.metadata?.apiKey,
         });
       } else if (integrationDetails?.crm === "zoho-crm") {
       } else if (integrationDetails?.crm === "zoho-bigin") {
-      } else if (integrationDetails?.crm === "hubspot") {
-        setFieldValue("metadata.stage", integrationDetails?.metadata?.stage);
-        setFieldValue("metadata.amount", integrationDetails?.metadata?.amount);
+      }
+      else if(integrationDetails?.crm === "hubspot") {
+        setFieldValue("metadata", {
+          ...integrationDetails?.metadata
+        })
       }
     },
     { deep: true },
@@ -177,18 +178,19 @@
       ...(values.crm !== "sell-do" && { metadata: { status: "pending" } }),
     };
 
-    if(values.crm === "hubspot") {
+  if(values.crm ==='hubspot'){
       payload.metadata = {
         ...payload.metadata,
         ...values.metadata
       }
-    }
+  }
 
     if (integrationModalProps?.id) {
       await updateIntegrationById({
         id: integrationModalProps.id,
         integrationDetails: {
           ...values,
+          metadata:{ ...metadata.value,...(values?.metadata||{})},
           scope,
           url,
           type: route.query.q ?? "crm",
@@ -326,15 +328,7 @@
           :required="true"
         />
 
-        <TextField
-          type="number"
-          v-if="values.crm === 'hubspot'"
-          name="metadata.amount"
-          label="Amount"
-          helperText="Enter the deal Amount"
-          placeHolder="0"
-          required
-        />
+ 
         <div class="flex w-full justify-end">
           <UiButton
             type="submit"
