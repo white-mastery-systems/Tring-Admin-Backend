@@ -139,42 +139,42 @@ export default defineEventHandler(async (event) => {
         lastName = name[1];
       }
 
-      const data = await createContactInHubspot(
-        botIntegration?.integration?.metadata?.access_token,
-        botIntegration?.integration?.metadata?.refresh_token,
-        body,
-        firstName,
-        lastName,
-      );
-
-      const ownerIds = await getOwners(
-        botIntegration?.integration?.metadata?.access_token,
-      );
-
-      if (ownerIds.length) {
-        let [{ id: hubspotOwnerId }] = ownerIds[0]?.id;
-        await createDeals(
-          botIntegration?.integration?.metadata?.access_token,
-          hubspotOwnerId,
-          botIntegration?.integration?.metadata?.amount,
-          botIntegration?.integration?.metadata?.stage,
+      const data =
+        (await createContactInHubspot({
+          token: botIntegration?.integration?.metadata?.access_token,
+          refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+          body: body,
           firstName,
           lastName,
-        );
-      } else {
-        logger.error({ level: "error", message: "No owner found" });
-      }
+          botIntegration,
+        })) || {};
 
-      console.log(JSON.stringify(data));
-      const properties = await $fetch(
-        "https://api.hubapi.com/crm/v3/properties/leads",
-        {
-          headers: {
-            Authorization: `Bearer ${botIntegration?.integration?.metadata?.access_token}`,
-          },
-        },
-      );
-      const finalPayloadToSubmit: any = {};
+      // const ownerIds = await getOwners(token);
+
+      // if (ownerIds.length) {
+      //   let [{ id: hubspotOwnerId }] = ownerIds[0]?.id;
+      //   await createDeals(
+      //     token,
+      //     hubspotOwnerId,
+      //     botIntegration?.integration?.metadata?.amount,
+      //     botIntegration?.integration?.metadata?.stage,
+      //     firstName,
+      //     lastName,
+      //   );
+      // } else {
+      //   logger.error({ level: "error", message: "No owner found" });
+      // }
+
+      // console.log(JSON.stringify(data));
+      // const properties = await $fetch(
+      //   "https://api.hubapi.com/crm/v3/properties/leads",
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${botIntegration?.integration?.metadata?.access_token}`,
+      //     },
+      //   },
+      // );
+      // const finalPayloadToSubmit: any = {};
       // properties?.results.map((result) => {
       //   if (result.hidden) {
       //     return;
