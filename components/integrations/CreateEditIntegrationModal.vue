@@ -28,6 +28,9 @@
   });
   const hubSpotSchema = z.object({
     crm: z.literal("hubspot"),
+        metadata: z.object({
+      pipeline: z.string({ required_error: "pipeline is required" }).min(1, { message: "pipeline is required" }),
+    }),
   });
   const slackSchema = z.object({
     crm: z.literal("slack"),
@@ -39,6 +42,8 @@
       shopName: z.string().min(1, { message: "API key is required" }),
     }),
   });
+
+
 
   const integrationSchema = toTypedSchema(
     z
@@ -288,6 +293,23 @@
           helperText="Enter your API key here"
           placeHolder="Eg: api-key-here"
           required
+        />
+       <!-- {{values.metadata}} -->
+        <SelectField
+          v-if="values.crm === 'hubspot'"
+          name="metadata.pipeline"
+          label="pipeLine"
+          placeholder="Select Pipeline"
+          :options="[
+          { label:'Appointment Scheduled', value: 'businessWithGst' }, 
+          { label: 'Qualified to Buy', value: 'qualifiedtobuy' },
+          { label: 'Presentation Scheduled', value: 'presentationscheduled' },
+          { label: 'Decision Maker Bought-In', value: 'decisionmakerboughtin' },
+          { label: 'Contract Sent', value: 'contractsent' },
+          { label: 'Closed Won', value: 'closedwon' },
+          { label: 'Closed Lost', value: 'closedlost' },
+          ]"
+          :required="true"
         />
         <div class="flex w-full justify-end">
           <UiButton
