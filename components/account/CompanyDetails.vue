@@ -45,6 +45,13 @@
           :options="avgTraffic.map((role) => ({ label: role, value: role }))"
           :required="true"
         />
+                <SelectField
+          name="buisnessName"
+          label="Business Name"
+          placeholder="Select Buisness"
+          :options="[{ label: 'Buisness With Gst', value: 'businessWithGst' }, { label: 'Buisness Without Gst', value: 'businessWithoutGst' }]"
+          :required="true"
+        />
 
         <SelectField
           name="employeeCount"
@@ -63,6 +70,7 @@
             placeholder="Enter Your Gst"
           />
         </div>
+
       </div>
       <div class="text-right">
         <UiButton type="submit" color="primary" size="lg" :loading="isLoading">
@@ -75,6 +83,7 @@
 
 <script setup lang="ts">
   import { useOrgDetailsStore } from "~/store/orgDetailsStore";
+import { companyDetailsSchema } from "~/validationSchema/account/companyDetails";
   import { formSchema } from "~/validationSchema/authValidation/onBoarding/2Validation";
   const useOrgDetails = useOrgDetailsStore();
   console.log(useOrgDetails);
@@ -113,7 +122,7 @@
     values,
     resetForm,
   } = useForm({
-    validationSchema: formSchema,
+    validationSchema: companyDetailsSchema,
     initialValues: {},
   });
   const { orgDetails } = await companyDetails();
