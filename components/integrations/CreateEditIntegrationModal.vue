@@ -28,6 +28,10 @@
   });
   const hubSpotSchema = z.object({
     crm: z.literal("hubspot"),
+        metadata: z.object({
+      stage: z.any({ required_error: "pipeline is required" }),
+      amount: z.number({ required_error: "amount is required" }).default(0),
+    }),
   });
   const slackSchema = z.object({
     crm: z.literal("slack"),
@@ -39,6 +43,8 @@
       shopName: z.string().min(1, { message: "API key is required" }),
     }),
   });
+
+
 
   const integrationSchema = toTypedSchema(
     z
@@ -146,6 +152,10 @@
       } else if (integrationDetails?.crm === "zoho-crm") {
       } else if (integrationDetails?.crm === "zoho-bigin") {
       }
+      else if(integrationDetails?.crm === "hubspot") {
+          setFieldValue("metadata.stage", integrationDetails?.metadata?.stage);
+          setFieldValue("metadata.amount", integrationDetails?.metadata?.amount);
+      }
     },
     { deep: true },
   );
@@ -198,7 +208,7 @@
               "_blank",
             );
           } else if (values.crm === "hubspot") {
-            const authUrl = `https://app.hubspot.com/oauth/authorize?client_id=ae187200-936d-44f3-8e59-5bab2f50aa3c&redirect_uri=${url}&scope=crm.objects.contacts.write%20oauth%20crm.objects.leads.read%20crm.objects.contacts.read%20crm.objects.leads.write`;
+            const authUrl = `https://app.hubspot.com/oauth/authorize?client_id=ae187200-936d-44f3-8e59-5bab2f50aa3c&redirect_uri=${url}&scope=crm.objects.contacts.write%20oauth%20crm.objects.deals.read%20crm.objects.deals.write%20crm.objects.contacts.read&optional_scope=crm.schemas.deals.write%20crm.objects.owners.read`;
             window.open(authUrl, "_blank");
           } else if (values.crm === "slack") {
             window.open(
@@ -287,6 +297,33 @@
           label="Api key"
           helperText="Enter your API key here"
           placeHolder="Eg: api-key-here"
+          required
+        />
+       <!-- {{values.metadata}} -->
+        <SelectField
+          v-if="values.crm === 'hubspot'"
+          name="metadata.stage"
+          label="pipeLine"
+          placeholder="Select Stage"
+          :options="[
+          { label:'Appointment Scheduled', value: 'appointmentscheduled' }, 
+          { label: 'Qualified to Buy', value: 'qualifiedtobuy' },
+          { label: 'Presentation Scheduled', value: 'presentationscheduled' },
+          { label: 'Decision Maker Bought-In', value: 'decisionmakerboughtin' },
+          { label: 'Contract Sent', value: 'contractsent' },
+          { label: 'Closed Won', value: 'closedwon' },
+          { label: 'Closed Lost', value: 'closedlost' },
+          ]"
+          :required="true"
+        />
+
+        <TextField
+          type="number"
+          v-if="values.crm === 'hubspot'"
+          name="metadata.amount"
+          label="Amount"
+          helperText="Enter the deal Amount"
+          placeHolder="0"
           required
         />
         <div class="flex w-full justify-end">

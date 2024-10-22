@@ -9,9 +9,9 @@
       <div class="items-top xs:grid-cols-2 flex grid w-full grid-cols-1 gap-[25px] lg:grid-cols-2">
         <div class="justify-aro und flex w-full gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]">
           <UiTabs default-value="Client" class="w-full self-start">
-            <UiTabsList class="grid w-full grid-cols-2">
+            <UiTabsList class="grid w-full grid-cols-1">
               <UiTabsTrigger value="Client"> Client Info </UiTabsTrigger>
-              <UiTabsTrigger value="Campaign"> Campaign info</UiTabsTrigger>
+              <!-- <UiTabsTrigger value="Campaign"> Campaign info</UiTabsTrigger> -->
             </UiTabsList>
             <UiTabsContent value="Client">
               <!-- {{formattedCallData}} || asfa -->
@@ -23,6 +23,26 @@
                   </div>
                 </div>
               </div>
+              <div class="flex justify-center mt-4">
+                <div class="w-[53%] relative">
+                  <!-- Loader is displayed when audio is loading -->
+                  <div v-if="isAudioLoading"
+                    class="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-10">
+                    <!-- Customize your loader -->
+                    <!-- <template> -->
+                    <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+                    <!-- </template> -->
+                  </div>
+
+                  <div>
+                    <audio controls
+                      :src="`${config.public.voiceBotUrl}/recording/?bot_id=${callLogs.botId}&organization_id=${callLogs.organizationId}&sid=${callLogs.callSid}`"
+                      @loadeddata="onAudioLoaded" @waiting="onAudioLoading" ref="audioPlayer">
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                </div>
+              </div>
             </UiTabsContent>
             <UiTabsContent value="Campaign">
             </UiTabsContent>
@@ -30,9 +50,12 @@
           </UiTabs>
         </div>
         <div v-if="true"
-          class="field_shadow h-screen-minus-11 w-full overflow-hidden rounded-lg bg-[#ffffff] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
-
-          <ChatPreview :chatValue="callLogs?.callTranscription" />
+          class="field_shadow h-screen-minus-11 w-full overflow-hidden rounded-lg bg-[#f8f6f6] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
+          <div :class="[
+              'flex h-[70px] w-full items-center justify-between px-2.5 font-medium text-[#ffffff] bg-[#424bd1]',
+            ]">
+          </div>
+          <ChatPreview :chatValue="[{meesages:callLogs?.callTranscription}]" :messageListCheck="false" />
         </div>
       </div>
     </div>
@@ -53,7 +76,10 @@ definePageMeta({
 });
 
 const route = useRoute("analytics-call-logs-id");
-
+const audioSrc = ref()
+const audioElement = ref(null)
+const isAudioLoading = ref(true)
+const config = useRuntimeConfig()
 // const chats = await $fetch(`/api/call-logs/${route.params.id}`, {
 //   method: "GET",
 //   server: false,
@@ -87,12 +113,13 @@ const formattedCallData = computed(() => {
     "From": callData.from,
     "To": callData.exophone,
     "Call Duration": `${Math.round(callData.duration)} Secs`,
-    "Direction": callData.direction === 'inbound' ? 'Incoming' : 'Outgoing',
+    "Direction": callData.direction,
     "Session ID": callData.callSid,
     "Called At": formattedDate,
-    "Country Name": "India",  // Static values
-    "State Prov": "Maharashtra", // Static values
-    "City": "Navi Mumbai", // Static values
+    "summary": callData.summary,
+    // "Country Name": "",  // Static values
+    // "State Prov": "", // Static values
+    // "City": "", // Static values
   };
 });
 // const { status, data: leadData } = await useLazyFetch(
@@ -146,4 +173,34 @@ const details = computed(() => {
   //   return [...metaData, ...paramsData, ...botUserDetails];
   // } else return [...metaData, ...botUserDetails];
 });
+
+onMounted(() => {
+  audioElement.value = document.querySelector('audio')
+})
+
+const playAudio = () => {
+  audioElement.value.play()
+}
+
+const pauseAudio = () => {
+  audioElement.value.pause()
+}
+
+// const handleDownload = () =>{
+//   const downloadLink = `https://5z2vwb9t-5000.inc1.devtunnels.ms/recording/?bot_id=${callLogs.value.botId}&organization_id=${callLogs.value.organizationId}&sid=${callLogs.value.callSid}`;
+
+//   // Create a temporary link element for downloading
+//   const link = document.createElement('a');
+//   link.href = downloadLink;
+//   link.download = 'recording.wav'; // Specify the desired file name
+//   document.body.appendChild(link);
+//   link.click();
+//   document.body.removeChild(link);
+// }
+const onAudioLoaded = () => {
+  isAudioLoading.value = false
+}
+const onAudioLoading = () => {
+  isAudioLoading.value = true
+}
 </script>

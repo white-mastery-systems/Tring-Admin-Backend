@@ -11,25 +11,31 @@ export default defineEventHandler(async (event) => {
 
   // console.log({ body })
 
-  const voiceBotDetail: any = await db.query.voicebotSchema.findFirst({
-    where: eq(voicebotSchema.mobile, body?.mobile),
+  const numberIntegrationDetail: any = await db.query.numberIntegrationSchema.findFirst({
+    where: eq(numberIntegrationSchema.exoPhone, body?.mobile),
   });
 
-  if (!voiceBotDetail) {
+  if (!numberIntegrationDetail) {
     return sendError(
       event,
       createError({
-        statusCode: 500,
+        statusCode: 400,
         statusMessage: "Mobile number does not exist",
       }),
     );
   }
 
+  const integrationId = numberIntegrationDetail?.id
+
+  const voiceBotDetail = await db.query.voicebotSchema.findFirst({
+    where: eq(voicebotSchema.ivrConfig, integrationId)
+  })
+
   if (!voiceBotDetail.active) {
     return sendError(
       event,
       createError({
-        statusCode: 500,
+        statusCode: 400,
         statusMessage: "Bot is not active",
       }),
     );
@@ -45,7 +51,7 @@ export default defineEventHandler(async (event) => {
     return sendError(
       event,
       createError({
-        statusCode: 500,
+        statusCode: 400,
         statusMessage: "The user was a free plan",
       }),
     );
@@ -58,6 +64,6 @@ export default defineEventHandler(async (event) => {
     tts_config: voiceBotDetail.textToSpeechConfig,
     llm_config: voiceBotDetail.llmConfig,
     client_config: voiceBotDetail.clientConfig,
-    language: voiceBotDetail.identityManagement?.language,
+    language: voiceBotDetail.speechToTextConfig?.language,
   };
 });

@@ -20,6 +20,7 @@ const zodUpdateVoiceBotSchema = z.object({
       instruction: z.string().optional(),
       notes: z.string().optional(),
       domainRules: z.string().optional(),
+      prompt: z.string()
     })
     .optional(),
   identityManagement: z
@@ -28,7 +29,6 @@ const zodUpdateVoiceBotSchema = z.object({
       role: z.string().optional(),
       domain: z.string().optional(),
       other: z.string().optional(),
-      language: z.string().optional(),
     })
     .optional(),
   talentConfig: z
@@ -43,7 +43,7 @@ const zodUpdateVoiceBotSchema = z.object({
   textToSpeechConfig: z.record(z.any()).optional(),
   speechToTextConfig: z.record(z.any()).optional(),
   intents: z.array(z.string()).optional(),
-  ivrConfig: z.record(z.any()).optional(),
+  ivrConfig: z.string().optional(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -54,6 +54,23 @@ export default defineEventHandler(async (event) => {
   );
 
   const body: any = await isValidBodyHandler(event, zodUpdateVoiceBotSchema);
+  
+  if(body?.ivrConfig) {
+    const voiceBot = await db.query.voicebotSchema.findFirst({ 
+      where: eq(voicebotSchema.ivrConfig, body?.ivrConfig)
+    })
+
+    if(voiceBot) {
+      return sendError(
+        event,
+        createError({ 
+          statusCode: 400, 
+          statusMessage: "This ivr-configuration already integrated with some other bot" 
+        }),
+      );
+    }
+  }
+
 
   const update = await updateVoiceBot(voicebotId, body);
 

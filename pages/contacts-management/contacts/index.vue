@@ -14,7 +14,12 @@
         </div>
       </div>
     </template>
-    <div class="flex items-center justify-end gap-2 overflow-x-scroll pb-4">
+    <div class="flex items-center justify-between gap-2 overflow-x-scroll pb-4">
+      <div>
+        <UiInput v-model="filters.q" @input="filters.page = '1'"
+          class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+          placeholder=" Search Contacts..." />
+      </div>
       <div class="flex items-center gap-2">
         <ImportNumberFile accept=".csv, .xls, .xlsx" v-model="selectedFile" @uploadDocument="fileUpload"
           :isLoading="isLoading" />
@@ -261,9 +266,11 @@ const fileUpload = async () => {
     if (fileExtension === "csv") {
       console.log("Uploading CSV file");
       await uploadNumber(file);
+      integrationRefresh()
     } else if (fileExtension === "xls" || fileExtension === "xlsx") {
       console.log("Uploading Excel file");
       await uploadNumber(file);
+      integrationRefresh()
     } else {
       isLoading.value = false
       console.error("Unsupported file type:", fileExtension);

@@ -1,5 +1,6 @@
 import { inArray } from 'drizzle-orm'
 import { contactListContactsSchema } from '~/server/schema/admin'
+import { createContactListContacts } from '~/server/utils/db/contact-list'
 
 const db = useDrizzle()
 
@@ -55,7 +56,7 @@ export default defineEventHandler(async (event) => {
        organizationId,
     }))
 
-    await db.insert(contactListContactsSchema).values(uniqueContactsData)
+    await createContactListContacts(uniqueContactsData)
   }
 
   return update;
