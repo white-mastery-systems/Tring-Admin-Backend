@@ -1,4 +1,4 @@
-import { logger } from "nuxt/kit";
+import { logger } from "~/server/logger";
 import { getAdminByOrgId } from "~/server/utils/db/user";
 import { getOwners } from "~/server/utils/hubspot/contact";
 import { createSlackMessage } from "~/server/utils/slack/modules";
