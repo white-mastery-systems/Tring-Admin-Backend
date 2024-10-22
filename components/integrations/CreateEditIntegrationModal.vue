@@ -29,8 +29,8 @@
   const hubSpotSchema = z.object({
     crm: z.literal("hubspot"),
         metadata: z.object({
-      pipeline: z.string({ required_error: "pipeline is required" }).min(1, { message: "pipeline is required" }),
-      amount: z.number({ required_error: "amount is required" }).min(1, { message: "amount is required" }).default(0),
+      stage: z.any({ required_error: "pipeline is required" }),
+      amount: z.number({ required_error: "amount is required" }).default(0),
     }),
   });
   const slackSchema = z.object({
@@ -298,11 +298,11 @@
        <!-- {{values.metadata}} -->
         <SelectField
           v-if="values.crm === 'hubspot'"
-          name="metadata.pipeline"
+          name="metadata.stage"
           label="pipeLine"
           placeholder="Select Stage"
           :options="[
-          { label:'Appointment Scheduled', value: 'businessWithGst' }, 
+          { label:'Appointment Scheduled', value: 'appointmentscheduled' }, 
           { label: 'Qualified to Buy', value: 'qualifiedtobuy' },
           { label: 'Presentation Scheduled', value: 'presentationscheduled' },
           { label: 'Decision Maker Bought-In', value: 'decisionmakerboughtin' },
