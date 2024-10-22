@@ -18,10 +18,14 @@ export async function getAllChannelsFromSlack({
         },
       },
     );
-    if (!data.ok && data?.error === "invalid_auth") {
+
+    if (
+      (!data.ok && data?.error === "invalid_auth") ||
+      (!data.ok && data.error === "token_revoked")
+    ) {
       console.log(`Slack access_token expired, ${JSON.stringify(data)}`);
       const newIntegrationData: any = await regenerateAccessTokenForSlack({
-        integrationData,
+        integrationData: integrationData,
       });
       console.log("newIntegrationData", newIntegrationData);
       return await getAllChannelsFromSlack(newIntegrationData?.access_token);
@@ -61,10 +65,13 @@ export async function joinSlackChannel({
       },
     );
     logger.info(`${JSON.stringify(data)}`);
-    if (!data.ok && data?.error === "invalid_auth") {
+    if (
+      (!data.ok && data?.error === "invalid_auth") ||
+      (!data.ok && data.error === "token_revoked")
+    ) {
       console.log(`Slack access_token expired, ${JSON.stringify(data)}`);
       const newIntegrationData: any = await regenerateAccessTokenForSlack({
-        integrationData,
+        integrationData: integrationData,
       });
       console.log("newIntegrationData", newIntegrationData);
       return await getAllChannelsFromSlack(newIntegrationData?.access_token);
@@ -91,13 +98,28 @@ export const createSlackMessage = async (
       },
       body: {
         channel: channelId,
-        text: `Lead Generated :tada:\nFirst Name: ${payload?.firstName}\nLast Name: ${payload?.lastName}\nEmail: ${payload?.email}\nPhone: ${payload?.countryCode}${payload?.mobile}`,
+        text: `Lead Generated :tada:\nName: ${payload?.name}\nEmail: ${payload?.email}\nPhone: ${payload?.phone}`,
       },
     });
-
-    if (!data.ok && data?.error === "invalid_auth") {
+    console.log(
+      JSON.stringify({
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${integrationData?.access_token}`,
+        },
+        body: {
+          channel: channelId,
+          text: `Lead Generated :tada:\nFirst Name: ${payload?.firstName}\nLast Name: ${payload?.lastName}\nEmail: ${payload?.email}\nPhone: ${payload?.countryCode}${payload?.mobile}`,
+        },
+      }),
+    );
+    console.log({ data: JSON.stringify(data) });
+    if (
+      (!data.ok && data?.error === "invalid_auth") ||
+      (!data.ok && data.error === "token_revoked")
+    ) {
       const newIntegrationData = await regenerateAccessTokenForSlack({
-        integrationData,
+        integrationData: integrationData,
       });
       return await createSlackMessage(newIntegrationData, channelId, payload);
     }
