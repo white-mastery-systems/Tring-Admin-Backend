@@ -28,9 +28,6 @@
   });
   const hubSpotSchema = z.object({
     crm: z.literal("hubspot"),
-    metadata: z.object({
-      stage: z.any({ required_error: "pipeline is required" }),
-    }),
   });
   const slackSchema = z.object({
     crm: z.literal("slack"),
@@ -310,25 +307,7 @@ const metadata = ref<any>({});
           required
         />
         <!-- {{values.metadata}} -->
-        <SelectField
-          v-if="values.crm === 'hubspot'"
-          name="metadata.stage"
-          label="pipeLine"
-          placeholder="Select Stage"
-          :options="[
-            { label: 'Appointment Scheduled', value: 'appointmentscheduled' },
-            { label: 'Qualified to Buy', value: 'qualifiedtobuy' },
-            { label: 'Presentation Scheduled', value: 'presentationscheduled' },
-            {
-              label: 'Decision Maker Bought-In',
-              value: 'decisionmakerboughtin',
-            },
-            { label: 'Contract Sent', value: 'contractsent' },
-            { label: 'Closed Won', value: 'closedwon' },
-            { label: 'Closed Lost', value: 'closedlost' },
-          ]"
-          :required="true"
-        />
+
 
  
         <div class="flex w-full justify-end">

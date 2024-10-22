@@ -95,6 +95,36 @@
             placeholder="Enter Your Project Id"
           />
         </div>
+
+        <div
+          v-if="
+            integrationsData.find(
+              (integration) => integration.id === values.integrationId,
+            )?.crm === 'hubspot'
+          "
+        >
+          <SelectField
+            name="stage"
+            label="pipeLine"
+            placeholder="Select Stage"
+            :options="[
+              { label: 'Appointment Scheduled', value: 'appointmentscheduled' },
+              { label: 'Qualified to Buy', value: 'qualifiedtobuy' },
+              {
+                label: 'Presentation Scheduled',
+                value: 'presentationscheduled',
+              },
+              {
+                label: 'Decision Maker Bought-In',
+                value: 'decisionmakerboughtin',
+              },
+              { label: 'Contract Sent', value: 'contractsent' },
+              { label: 'Closed Won', value: 'closedwon' },
+              { label: 'Closed Lost', value: 'closedlost' },
+            ]"
+            :required="true"
+          />
+        </div>
       </div>
 
       <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
