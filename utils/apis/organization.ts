@@ -40,13 +40,21 @@ export const updateIntegrationById = async ({
   onSuccess: Function;
 }) => {
   try {
-    const createIntegration = await $fetch<SelectChatBot>(
-      `/api/org/integrations/${id}`,
-      {
-        method: "PUT",
-        body: integrationDetails,
-      },
-    );
+    if (
+      integrationDetails.crm === "hubspot" &&
+      !integrationDetails.metadata.hasOwnProperty("stage")
+    ) {
+      const stage = localStorage.getItem("stage");
+      console.log({ stage });
+      integrationDetails.metadata.stage = stage;
+    }
+      const createIntegration = await $fetch<SelectChatBot>(
+        `/api/org/integrations/${id}`,
+        {
+          method: "PUT",
+          body: integrationDetails,
+        },
+      );
     onSuccess();
     toast.success("Integration updated successfully");
 
