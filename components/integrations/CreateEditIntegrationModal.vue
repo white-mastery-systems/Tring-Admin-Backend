@@ -126,7 +126,7 @@
       // name: "",
     },
   });
-
+const metadata = ref<any>({});
   watch(
     () => integrationModalState.value,
     async (value) => {
@@ -143,9 +143,9 @@
           | "shopify";
         metadata?: { apiKey: string };
       }>(`/api/org/integrations/${integrationModalProps.id}`);
-      log({ integrationDetails });
       setFieldValue("name", integrationDetails?.name);
       setFieldValue("crm", integrationDetails?.crm);
+      metadata.value = integrationDetails?.metadata || {};
       if (integrationDetails?.crm === "sell-do") {
         setFieldValue("metadata", {
           apiKey: integrationDetails?.metadata?.apiKey,
@@ -154,8 +154,9 @@
       } else if (integrationDetails?.crm === "zoho-bigin") {
       }
       else if(integrationDetails?.crm === "hubspot") {
-          setFieldValue("metadata.stage", integrationDetails?.metadata?.stage);
-          setFieldValue("metadata.amount", integrationDetails?.metadata?.amount);
+        setFieldValue("metadata", {
+          ...integrationDetails?.metadata
+        })
       }
     },
     { deep: true },
@@ -180,18 +181,14 @@
       ...(values.crm !== "sell-do" && { metadata: { status: "pending" } }),
     };
 
-    if(values.crm === "hubspot") {
-      payload.metadata = {
-        ...payload.metadata,
-        ...values.metadata
-      }
-    }
+
 
     if (integrationModalProps?.id) {
       await updateIntegrationById({
         id: integrationModalProps.id,
         integrationDetails: {
           ...values,
+          metadata:{ ...metadata.value,...(values?.metadata||{})},
           scope,
           url,
           type: route.query.q ?? "crm",
