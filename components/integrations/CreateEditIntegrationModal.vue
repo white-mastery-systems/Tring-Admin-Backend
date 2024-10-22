@@ -141,6 +141,7 @@
           | "shopify";
         metadata?: { apiKey: string };
       }>(`/api/org/integrations/${integrationModalProps.id}`);
+      log({ integrationDetails });
       setFieldValue("name", integrationDetails?.name);
       setFieldValue("crm", integrationDetails?.crm);
       if (integrationDetails?.crm === "sell-do") {
@@ -167,6 +168,7 @@
     } else if (values.crm === "zoho-bigin") {
       scope = "ZohoBigin.settings.ALL,ZohoBigin.modules.ALL,ZohoBigin.org.READ";
     }
+
     const payload: any = {
       ...values,
       scope,
@@ -174,6 +176,13 @@
       type: route.query.q ?? "crm",
       ...(values.crm !== "sell-do" && { metadata: { status: "pending" } }),
     };
+
+    if(values.crm === "hubspot") {
+      payload.metadata = {
+        ...payload.metadata,
+        ...values.metadata
+      }
+    }
 
     if (integrationModalProps?.id) {
       await updateIntegrationById({
