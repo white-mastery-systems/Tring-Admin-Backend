@@ -87,7 +87,7 @@ export const createSlackMessage = async (
     const data: any = await $fetch("https://slack.com/api/chat.postMessage", {
       method: "POST",
       headers: {
-        authorization: `Bearer ${integrationData?.accessToken}`,
+        authorization: `Bearer ${integrationData?.access_token}`,
       },
       body: {
         channel: channelId,
