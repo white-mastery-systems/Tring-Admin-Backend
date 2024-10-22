@@ -28,7 +28,7 @@
   });
   const hubSpotSchema = z.object({
     crm: z.literal("hubspot"),
-        metadata: z.object({
+    metadata: z.object({
       stage: z.any({ required_error: "pipeline is required" }),
       amount: z.number({ required_error: "amount is required" }).default(0),
     }),
@@ -43,8 +43,6 @@
       shopName: z.string().min(1, { message: "API key is required" }),
     }),
   });
-
-
 
   const integrationSchema = toTypedSchema(
     z
@@ -151,10 +149,9 @@
         });
       } else if (integrationDetails?.crm === "zoho-crm") {
       } else if (integrationDetails?.crm === "zoho-bigin") {
-      }
-      else if(integrationDetails?.crm === "hubspot") {
-          setFieldValue("metadata.stage", integrationDetails?.metadata?.stage);
-          setFieldValue("metadata.amount", integrationDetails?.metadata?.amount);
+      } else if (integrationDetails?.crm === "hubspot") {
+        setFieldValue("metadata.stage", integrationDetails?.metadata?.stage);
+        setFieldValue("metadata.amount", integrationDetails?.metadata?.amount);
       }
     },
     { deep: true },
@@ -213,7 +210,7 @@
           } else if (values.crm === "slack") {
             window.open(
               // `https://slack.com/oauth/v2/authorize?scope=chat%3Awrite&user_scope=chat%3Awrite&redirect_uri=https%3A%2F%2F6t53p9kf-3000.inc1.devtunnels.ms%2Fsettings%2Fintegration%2Fslack&client_id=7763394615058.7867610213248`
-              `https://slack.com/oauth/v2/authorize?scope=chat:write,channels:read&redirect_uri=${url}&client_id=7763394615058.7867610213248`,
+              `https://slack.com/oauth/v2/authorize?scope=chat:write,channels:read,channels:join&redirect_uri=${url}&client_id=7763394615058.7867610213248`,
               // "https://slack.com/oauth/v2/authorize?scope=incoming-webhook&client_id=7856740970225.7841202988373",
               "_blank",
             );
@@ -299,20 +296,23 @@
           placeHolder="Eg: api-key-here"
           required
         />
-       <!-- {{values.metadata}} -->
+        <!-- {{values.metadata}} -->
         <SelectField
           v-if="values.crm === 'hubspot'"
           name="metadata.stage"
           label="pipeLine"
           placeholder="Select Stage"
           :options="[
-          { label:'Appointment Scheduled', value: 'appointmentscheduled' }, 
-          { label: 'Qualified to Buy', value: 'qualifiedtobuy' },
-          { label: 'Presentation Scheduled', value: 'presentationscheduled' },
-          { label: 'Decision Maker Bought-In', value: 'decisionmakerboughtin' },
-          { label: 'Contract Sent', value: 'contractsent' },
-          { label: 'Closed Won', value: 'closedwon' },
-          { label: 'Closed Lost', value: 'closedlost' },
+            { label: 'Appointment Scheduled', value: 'appointmentscheduled' },
+            { label: 'Qualified to Buy', value: 'qualifiedtobuy' },
+            { label: 'Presentation Scheduled', value: 'presentationscheduled' },
+            {
+              label: 'Decision Maker Bought-In',
+              value: 'decisionmakerboughtin',
+            },
+            { label: 'Contract Sent', value: 'contractsent' },
+            { label: 'Closed Won', value: 'closedwon' },
+            { label: 'Closed Lost', value: 'closedlost' },
           ]"
           :required="true"
         />
