@@ -161,6 +161,8 @@ const metadata = ref<any>({});
   const handleConnect = handleSubmit(async (values: any) => {
     isLoading.value = true;
 
+ if(values.crm === 'hubspot')  localStorage.setItem('stage', values.metadata.stage)
+
     let url = `${window.location.origin}/settings/integration/${values.crm}`;
     // let url = "https://app.tringlabs.ai/settings";
     let scope = "";
