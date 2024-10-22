@@ -1,6 +1,8 @@
 <script setup lang="ts">
   import { useRoute, useRouter } from "vue-router";
-
+  definePageMeta({
+    middleware: "user",
+  });
   useHead({
     title: "Billing",
   });

@@ -41,6 +41,9 @@
   </Page>
 </template>
 <script setup lang="ts">
+definePageMeta({
+  middleware: "user",
+});
 useHead({
   title: 'Settings | User Management',
 })

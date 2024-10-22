@@ -1,7 +1,7 @@
 <template>
   <Page title="Bucket Contacts" :bread-crumbs="[
     {
-    label: getBucketDetails[0]?.bucket.name,
+    label: contactsList[0]?.bucket.name,
        to: `/contacts-management/buckets`,
     },
     {
@@ -58,7 +58,7 @@ let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
 const queryId = ref(route.params.id)
-const getBucketDetails = await getBucketContactsDetails(route.params.id)
+// const getBucketDetails = await getBucketContactsDetails(route.params.id)
 
 const {
   status,
@@ -69,12 +69,14 @@ const {
   query: filters,
   default: () => [],
   transform: (contacts: any) => {
+    console.log(contacts, "contacts")
     page.value = contacts.page;
     totalPageCount.value = contacts.totalPageCount;
     totalCount.value = contacts.totalCount;
-    return contacts.map((items: any) => items.contacts);
+    return contacts.data;
   },
 });
+
 const isDataLoading = computed(() => status.value === "pending");
 const columnHelper = createColumnHelper<(typeof contactsList.value)[0]>();
 
@@ -102,28 +104,30 @@ const actionsComponent = (id: any) =>
 const columns = [
   columnHelper.accessor("firstName", {
     header: "First Name",
+    cell: ({ row }) => {
+      return row.original.contacts.firstName || "-"
+    }
   }),
   columnHelper.accessor("lastName", {
     header: "Last Name",
     cell: ({ row }) => {
-      console.log(row, "row")
-      return row.original.lastName || "-"
+      return row.original.contacts.lastName || "-"
     }
   }),
   columnHelper.accessor("email", {
     header: "Email",
     cell: ({ row }) => {
-      return row.original.email || "-";
+      return row.original.contacts.email || "-";
     }
   }),
   columnHelper.accessor("phone", {
     header: "Number",
-    cell: ({ row }) => `${row.original?.countryCode || ''} ${row.original?.phone || ''}`.trim(),
+    cell: ({ row }) => `${row.original?.contacts.countryCode || ''} ${row.original?.contacts.phone || ''}`.trim(),
   }),
   columnHelper.accessor("id", {
     header: "Action",
     cell: ({ row }) => {
-      return actionsComponent(row.original.id);
+      return actionsComponent(row.original.contacts.id);
     },
   }),
 ];

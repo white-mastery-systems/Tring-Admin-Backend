@@ -61,7 +61,7 @@ import { createColumnHelper } from "@tanstack/vue-table";
 import { useRoute, useRouter } from "vue-router";
 
 definePageMeta({
-  middleware: "admin-only",
+  middleware: "user",
 });
 useHead({
   title: "Contacts Management | Contacts",

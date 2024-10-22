@@ -20,7 +20,7 @@
   import { createColumnHelper } from "@tanstack/vue-table";
 
   definePageMeta({
-    middleware: "admin-only",
+    middleware: "user",
   });
 
 let page = ref(0);

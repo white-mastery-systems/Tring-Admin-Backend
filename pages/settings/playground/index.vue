@@ -8,6 +8,10 @@
     playgroundRequests,
   } from "~/server/utils/playground";
   import type { DocumentResponse } from "~/utils/apis/playground";
+  definePageMeta({
+    middleware: "user",
+  });
+
 
   useHead({
     title: "Settings | Playground",
