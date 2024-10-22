@@ -30,6 +30,7 @@
     crm: z.literal("hubspot"),
         metadata: z.object({
       pipeline: z.string({ required_error: "pipeline is required" }).min(1, { message: "pipeline is required" }),
+      amount: z.number({ required_error: "amount is required" }).min(1, { message: "amount is required" }).default(0),
     }),
   });
   const slackSchema = z.object({
@@ -299,7 +300,7 @@
           v-if="values.crm === 'hubspot'"
           name="metadata.pipeline"
           label="pipeLine"
-          placeholder="Select Pipeline"
+          placeholder="Select Stage"
           :options="[
           { label:'Appointment Scheduled', value: 'businessWithGst' }, 
           { label: 'Qualified to Buy', value: 'qualifiedtobuy' },
@@ -310,6 +311,16 @@
           { label: 'Closed Lost', value: 'closedlost' },
           ]"
           :required="true"
+        />
+
+        <TextField
+          type="number"
+          v-if="values.crm === 'hubspot'"
+          name="metadata.amount"
+          label="Amount"
+          helperText="Enter the deal Amount"
+          placeHolder="0"
+          required
         />
         <div class="flex w-full justify-end">
           <UiButton
