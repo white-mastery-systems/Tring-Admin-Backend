@@ -285,7 +285,6 @@
       const layoutData: any = layouts.value.find(
         (pipeline: any) => pipeline.id === value.layoutId,
       );
-
       layoutObj = { name: layoutData.name, id: layoutData.id };
     }
     if (modalProps.id) {
