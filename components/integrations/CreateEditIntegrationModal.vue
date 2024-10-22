@@ -30,7 +30,6 @@
     crm: z.literal("hubspot"),
         metadata: z.object({
       stage: z.any({ required_error: "pipeline is required" }),
-      amount: z.number({ required_error: "amount is required" }).default(0),
     }),
   });
   const slackSchema = z.object({
@@ -181,7 +180,12 @@ const metadata = ref<any>({});
       ...(values.crm !== "sell-do" && { metadata: { status: "pending" } }),
     };
 
-
+  if(values.crm ==='hubspot'){
+      payload.metadata = {
+        ...payload.metadata,
+        ...values.metadata
+      }
+  }
 
     if (integrationModalProps?.id) {
       await updateIntegrationById({
@@ -323,15 +327,7 @@ const metadata = ref<any>({});
           :required="true"
         />
 
-        <TextField
-          type="number"
-          v-if="values.crm === 'hubspot'"
-          name="metadata.amount"
-          label="Amount"
-          helperText="Enter the deal Amount"
-          placeHolder="0"
-          required
-        />
+ 
         <div class="flex w-full justify-end">
           <UiButton
             type="submit"
