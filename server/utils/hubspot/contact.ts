@@ -53,17 +53,17 @@ export async function getOwners(token) {
   });
 }
 // Creating Leads or Deals IN Hubspot
-export async function createDeals(token,ownerId,firstName,lastName) {
+export async function createDeals(token, ownerId, amount,dealStage, firstName, lastName) {
   return $fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
       properties: {
-        amount: "0",
+        amount: amount ?? 0,
         closedate: new Date(),
-        dealname: firstName +" "+lastName,
+        dealname: firstName + " " + lastName,
         pipeline: "default",
-        dealstage: "appointmentscheduled",
+        dealstage: dealStage,
         hubspot_owner_id: ownerId,
       },
     },
