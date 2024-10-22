@@ -16,6 +16,7 @@ enum CRMType {
   hubspot = "hubspot",
   slack = "slack",
   shopify = "shopify",
+  zohoCliq = "zoho-cliq"
 }
 const db = useDrizzle();
 
