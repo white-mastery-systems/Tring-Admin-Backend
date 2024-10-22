@@ -152,6 +152,12 @@
       } else if (integrationDetails?.crm === "zoho-crm") {
       } else if (integrationDetails?.crm === "zoho-bigin") {
       }
+      else if(integrationDetails?.crm === "hubspot") {
+          setFieldValue("metadata", {
+          stage: integrationDetails?.metadata?.stage,
+          amount: integrationDetails?.metadata?.amount,
+        });
+      }
     },
     { deep: true },
   );
