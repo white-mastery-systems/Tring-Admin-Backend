@@ -43,3 +43,43 @@ export const generateLeadsInZohoCliq: any = async(metaData: any, body: any, inte
     }
   }
 }
+
+
+export const getZohoCliqChannels: any = async (id: string, metadata: any) => {
+   try {
+    const data = await $fetch(`https://cliq.zoho.in/api/v2/channels`,
+      {
+        method: "GET",
+        headers: { 
+          Authorization: `Zoho-oauthtoken ${metadata?.access_token}`
+        },
+      }
+    )
+   return data
+
+  } catch (error) {
+     const integrationData = metadata
+    if (error instanceof Error) {
+      const response = (error as any).response;
+      logger.error(`Error: zohoCliqChannels:----${JSON.stringify(response)}`)
+      if (response && response.status === 401) {
+         const newAuthInfo = await regenerateCliqAccessToken(integrationData?.refresh_token)
+         logger.info(`zohoCliqChannels Access-Token----${JSON.stringify(newAuthInfo)}`)
+          if(newAuthInfo) {
+          await db.update(integrationSchema).set({
+            metadata: {
+              ...integrationData,
+              ...newAuthInfo
+            },
+            updatedAt: new Date()
+          }).where(eq(integrationSchema.id, id))
+          
+          return await getZohoCliqChannels(id, newAuthInfo);
+          }
+      } else {
+        logger.error(`Error: zohoCliqChannels:----${JSON.stringify(error)}`)
+        return { status: false }
+      }
+    }
+  }
+}
