@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Argon2id } from "oslo/password";
 import { logger } from "~/server/logger";
+import { resetPasswordEmailTemplate } from "../email-templates";
 
 const config = useRuntimeConfig();
 const db = useDrizzle();
@@ -23,14 +24,7 @@ export const requestResetPassword = (userDetails: any) => {
 
     const subject = "Reset Password";
 
-    const message = `<h3 style="padding-bottom: 1em;">Dear <b>${userDetails?.username}</b>,</h3>
-          <p style="padding-bottom: 1em;">We have reset your password as per your request. Please find your new password below:</p>
-          <p>Click here! </p></p><a href="${config?.adminBaseUrl}/auth/forgot-password?token=${token}">
-            <button style="background-color: blue; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Reset Password</button>
-          </a>
-          <p style="padding-top: 1em;padding-bottom: 1em;">We recommend that you log in to your account and change this password immediately to something more secure and memorable</p>
-          <p style="padding-top: 1em;padding-bottom: 1em;">If you did not request this password reset, please contact our support team immediately.</p>
-          <p style="padding-top: 1em;">Best Regards</p><br><p>Tring AI</p>`;
+    const message = resetPasswordEmailTemplate(userDetails, token, config)
 
     sendEmail(userDetails?.email, subject, message);
 
