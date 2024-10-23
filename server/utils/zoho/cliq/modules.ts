@@ -2,10 +2,10 @@ import { logger } from "~/server/logger";
 
 const db = useDrizzle()
 
-export const generateLeadsInZohoCliq: any = async(metaData: any, body: any, integrationId: string) => {
+export const generateLeadsInZohoCliq: any = async(metaData: any, channelId: string, body: any, integrationId: string) => {
   try {
     // console.log("generateLeadsInZohoCliq",{ metaData, body })
-     const data = await $fetch(`https://cliq.zoho.in/api/v2/channels/${metaData?.channelId}/message`, {
+     const data = await $fetch(`https://cliq.zoho.in/api/v2/channels/${channelId}/message`, {
       method: "POST",
       headers: { 
         Authorization: `Zoho-oauthtoken ${metaData.access_token}`
@@ -34,7 +34,7 @@ export const generateLeadsInZohoCliq: any = async(metaData: any, body: any, inte
             updatedAt: new Date()
           }).where(eq(integrationSchema.id, integrationId))
           
-          return await generateLeadsInZohoCliq(newAuthInfo, body);
+          return await generateLeadsInZohoCliq(newAuthInfo,channelId, body);
           }
       } else {
         logger.error(`Error: generateLeadsInZohoCliq:----${JSON.stringify(error)}`)
