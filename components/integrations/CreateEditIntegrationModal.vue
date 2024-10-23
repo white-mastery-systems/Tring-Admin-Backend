@@ -39,8 +39,11 @@
   const shopifySchema = z.object({
     crm: z.literal("shopify"),
     metadata: z.object({
-      shopName: z.string().min(1, { message: "API key is required" }),
+      shopName: z.string().min(1, { message: "Shop name is required" }),
     }),
+  });
+  const zohoCliqSchema = z.object({
+    crm: z.literal("zoho-cliq"),
   });
 
   const integrationSchema = toTypedSchema(
@@ -57,6 +60,7 @@
             "hubspot",
             "slack",
             "shopify",
+            "zoho-cliq",
           ])
           .refine(
             (
@@ -67,7 +71,8 @@
               | "zoho-bigin"
               | "hubspot"
               | "slack"
-              | "shopify" => true,
+              | "shopify"
+              | "zoho-cliq" => true,
             {
               message: "CRM type is required",
             },
@@ -81,12 +86,14 @@
           hubSpotSchema,
           slackSchema,
           shopifySchema,
+          zohoCliqSchema,
         ]),
       ),
   );
   const integrationTypes = ref([
     { value: "sell-do", label: "Sell Do" },
     { value: "zoho-crm", label: "Zoho CRM" },
+    { value: "zoho-cliq", label: "Zoho Cliq" },
     { value: "zoho-bigin", label: "Zoho Bigin" },
     { value: "hubspot", label: "Hubspot" },
     { value: "slack", label: "Slack" },
@@ -95,7 +102,7 @@
   const route = useRoute();
   watch(
     () => route?.query?.q,
-    (queryParam) => {
+    (queryParam: string) => {
       if (queryParam === "crm") {
         integrationTypes.value = [
           { value: "sell-do", label: "Sell Do" },
@@ -104,7 +111,10 @@
           { value: "hubspot", label: "Hubspot" },
         ];
       } else if (queryParam === "communication") {
-        integrationTypes.value = [{ value: "slack", label: "Slack" }];
+        integrationTypes.value = [
+          { value: "slack", label: "Slack" },
+          { value: "zoho-cliq", label: "Zoho Cliq" },
+        ];
       } else if (queryParam === "ecommerce") {
         integrationTypes.value = [{ value: "shopify", label: "Shopify" }];
       }
@@ -123,7 +133,7 @@
       // name: "",
     },
   });
-const metadata = ref<any>({});
+  const metadata = ref<any>({});
   watch(
     () => integrationModalState.value,
     async (value) => {
@@ -137,7 +147,8 @@ const metadata = ref<any>({});
           | "zoho-bigin"
           | "hubspot"
           | "slack"
-          | "shopify";
+          | "shopify"
+          | "zoho-cliq";
         metadata?: { apiKey: string };
       }>(`/api/org/integrations/${integrationModalProps.id}`);
       setFieldValue("name", integrationDetails?.name);
@@ -149,11 +160,10 @@ const metadata = ref<any>({});
         });
       } else if (integrationDetails?.crm === "zoho-crm") {
       } else if (integrationDetails?.crm === "zoho-bigin") {
-      }
-      else if(integrationDetails?.crm === "hubspot") {
+      } else if (integrationDetails?.crm === "hubspot") {
         setFieldValue("metadata", {
-          ...integrationDetails?.metadata
-        })
+          ...integrationDetails?.metadata,
+        });
       }
     },
     { deep: true },
@@ -161,7 +171,8 @@ const metadata = ref<any>({});
   const handleConnect = handleSubmit(async (values: any) => {
     isLoading.value = true;
 
- if(values.crm === 'hubspot')  localStorage.setItem('stage', values.metadata.stage)
+    if (values.crm === "hubspot")
+      localStorage.setItem("stage", values.metadata.stage);
 
     let url = `${window.location.origin}/settings/integration/${values.crm}`;
     // let url = "https://app.tringlabs.ai/settings";
@@ -170,6 +181,10 @@ const metadata = ref<any>({});
       scope = "ZohoCRM.settings.ALL,ZohoCRM.modules.ALL,ZohoCRM.org.READ";
     } else if (values.crm === "zoho-bigin") {
       scope = "ZohoBigin.settings.ALL,ZohoBigin.modules.ALL,ZohoBigin.org.READ";
+    } else if (values.crm === "zoho-cliq") {
+      scope =
+        "ZohoCliq.Channels.CREATE,ZohoCliq.Channels.READ,ZohoCliq.Channels.UPDATE,ZohoCliq.Webhooks.CREATE";
+      // scope = "https://accounts.zoho.in/oauth/v2/auth?scope=&client_id=1000.K0KXY300LK9C1SEEXNQG4P5I37YG4I&response_type=code&redirect_uri=https://tring-admin.pripod.com/settings/integration/zoho-cliq&access_type=offline";
     }
 
     const payload: any = {
@@ -180,19 +195,19 @@ const metadata = ref<any>({});
       ...(values.crm !== "sell-do" && { metadata: { status: "pending" } }),
     };
 
-  if(values.crm ==='hubspot'){
+    if (values.crm === "hubspot") {
       payload.metadata = {
         ...payload.metadata,
-        ...values.metadata
-      }
-  }
+        ...values.metadata,
+      };
+    }
 
     if (integrationModalProps?.id) {
       await updateIntegrationById({
         id: integrationModalProps.id,
         integrationDetails: {
           ...values,
-          metadata:{ ...metadata.value,...(values?.metadata||{})},
+          metadata: { ...metadata.value, ...(values?.metadata || {}) },
           scope,
           url,
           type: route.query.q ?? "crm",
@@ -215,6 +230,11 @@ const metadata = ref<any>({});
           if (values.crm === "zoho-bigin" || values.crm === "zoho-crm") {
             window.open(
               `https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=${scope}&redirect_uri=${url}&prompt=consent&access_type=offline`,
+              "_blank",
+            );
+          } else if (values.crm === "zoho-cliq") {
+            window.open(
+              `https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.K0KXY300LK9C1SEEXNQG4P5I37YG4I&scope=${scope}&redirect_uri=${url}&prompt=consent&access_type=offline`,
               "_blank",
             );
           } else if (values.crm === "hubspot") {
@@ -330,7 +350,6 @@ const metadata = ref<any>({});
           :required="true"
         />
 
- 
         <div class="flex w-full justify-end">
           <UiButton
             type="submit"

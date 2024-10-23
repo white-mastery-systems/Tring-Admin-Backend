@@ -35,6 +35,7 @@ export default defineEventHandler(async (event) => {
         wabaId: z.string().optional(),
         pin: z.string().optional(),
         stage: z.string().optional(),
+        channelId: z.string().optional()
       }),
     })
     .refine(

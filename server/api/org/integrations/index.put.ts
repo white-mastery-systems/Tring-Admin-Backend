@@ -29,6 +29,7 @@ export default defineEventHandler(async (event) => {
       location: z.string().optional(),
       accountsServer: z.string().optional(),
       stage: z.string().optional(),
+      channelId: z.string().optional()
     }),
   });
 
