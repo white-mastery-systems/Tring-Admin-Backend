@@ -10,9 +10,7 @@ export async function regenerateAccessTokenForSlack({
   integrationData: any;
 }) {
   try {
-    console.log(
-      `https://slack.com/api/oauth.v2.access?client_id=${clientId}&client_secret=${clientSecret}&grant_type=refresh_token&refresh_token=${integrationData?.refresh_token}`,
-    );
+
     const response = await $fetch(
       `https://slack.com/api/oauth.v2.access?client_id=${clientId}&client_secret=${clientSecret}&grant_type=refresh_token&refresh_token=${integrationData?.refresh_token}`,
       {

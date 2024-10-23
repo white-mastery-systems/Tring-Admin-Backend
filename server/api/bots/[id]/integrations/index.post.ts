@@ -18,11 +18,11 @@ export default defineEventHandler(async (event) => {
     checkPayloadId("id"),
   );
   const body = await isValidBodyHandler(event, zodInsertBotIntegration);
-  if (body?.channelId) {
-    const integrationData: any = await findIntegrationDetails(
+  const integrationData: any = await findIntegrationDetails(
       organizationId,
       body?.integrationId,
     );
+  if (body?.channelId && integrationData?.crm==="slack") {
     joinSlackChannel({
       token: integrationData?.metadata?.access_token,
       refreshToken: integrationData?.metadata?.refresh_token,

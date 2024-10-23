@@ -30,6 +30,7 @@ export const getCallLogsList = async (organizationId: string, query: any, timeZo
     },
     where: 
       eq(callLogSchema.organizationId, organizationId),
+    orderBy: [desc(callLogSchema.createdAt)],
   })
   data = data.map((i: any) => ({
     ...i,

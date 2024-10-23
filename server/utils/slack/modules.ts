@@ -1,40 +1,37 @@
 import { logger } from "~/server/logger";
 
-export async function getAllChannelsFromSlack({
-  token,
-  refreshToken,
-  integrationData,
-}: {
-  token: string;
-  refreshToken: String;
-  integrationData: any;
-}) {
+export async function getAllChannelsFromSlack(integrationData: any, integrationId: string) {
   try {
+    // console.log({ integrationData, integrationId })
     const data: any = await $fetch<any>(
       "https://slack.com/api/conversations.list",
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${integrationData?.access_token}`,
         },
       },
     );
-
     if (
       (!data.ok && data?.error === "invalid_auth") ||
-      (!data.ok && data.error === "token_revoked")
+      (!data.ok && data.error === "token_revoked") ||  (!data.ok && data.error === "token_expired")
     ) {
-      console.log(`Slack access_token expired, ${JSON.stringify(data)}`);
+      logger.error(`Slack access_token expired, ${JSON.stringify(data)}`);
       const newIntegrationData: any = await regenerateAccessTokenForSlack({
         integrationData: integrationData,
       });
-      console.log("newIntegrationData", newIntegrationData);
-      return await getAllChannelsFromSlack(newIntegrationData?.access_token);
+      if(newIntegrationData.ok) {
+        logger.error(`newIntegrationData, ${JSON.stringify(newIntegrationData)}`);
+        await updateIntegrationById(integrationId, {...integrationData, ...newIntegrationData})
+        return await getAllChannelsFromSlack(newIntegrationData, integrationId);
+      }
     }
-    console.log({ data });
-    return data;
+    // console.log("success", { data });
+
+    return data
+  
   } catch (error: any) {
     logger.error(
-      `getAllChannelsFromSlack: token:${token}, refreshToken: ${refreshToken}, integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(error?.data)}`,
+      `getAllChannelsFromSlack: integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(error?.data)}`,
     );
   }
 }
