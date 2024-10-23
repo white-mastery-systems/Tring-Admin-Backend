@@ -86,6 +86,7 @@ export const integrationSchema = adminSchema.table("integration", {
       access_token?: string;
       refresh_token?: string;
       accountsServer?: string;
+      stage:String;
       pid?: string;
       pin?: string;
       wabaId?: string;

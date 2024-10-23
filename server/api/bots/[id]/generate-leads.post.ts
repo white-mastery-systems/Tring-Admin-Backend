@@ -1,4 +1,6 @@
+import { logger } from "~/server/logger";
 import { getAdminByOrgId } from "~/server/utils/db/user";
+import { getOwners } from "~/server/utils/hubspot/contact";
 import { createSlackMessage } from "~/server/utils/slack/modules";
 import {
   generateContactInZohoBigin,
@@ -112,26 +114,21 @@ export default defineEventHandler(async (event) => {
       );
     } else if (botIntegration?.integration?.crm === "slack") {
       if (botIntegration?.metadata?.channelId) {
-        const name = body?.botUser?.name?.split(" ");
-        let firstName = body?.botUser?.name;
-        let lastName = null;
-        if (name?.length > 1) {
-          firstName = name[0];
-          lastName = name[1];
-        }
-
+        console.log(body?.botUser);
         const payload = {
-          firstName,
-          lastName,
+          name: body?.botUser?.name,
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
-        }
+        };
         console.log(
           botIntegration?.integration?.metadata?.access_token,
           botIntegration?.metadata?.channelId,
         );
-        const data = await createSlackMessage(botIntegration?.integration?.metadata, botIntegration?.metadata?.channelId, payload)
-       
+        const data = await createSlackMessage(
+          botIntegration?.integration?.metadata,
+          botIntegration?.metadata?.channelId,
+          payload,
+        );
       }
     } else if (botIntegration?.integration?.crm === "hubspot") {
       const name = body?.botUser?.name?.split(" ");
@@ -142,26 +139,32 @@ export default defineEventHandler(async (event) => {
         lastName = name[1];
       }
 
-      const data = await $fetch(
-        "https://api.hubapi.com/crm/v3/objects/contacts",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${botIntegration?.integration?.metadata?.access_token}`,
-          },
-          body: {
-            properties: {
-              email: body?.botUser?.email,
-              firstname: firstName,
-              lastname: lastName,
-              phone: `${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
-              company: "HubSpot",
-              website: "hubspot.com",
-              lifecyclestage: "marketingqualifiedlead",
-            },
-          },
-        },
+      const data = await createContactInHubspot(
+        botIntegration?.integration?.metadata?.access_token,
+        botIntegration?.integration?.metadata?.refresh_token,
+        body,
+        firstName,
+        lastName,
       );
+
+      const ownerIds = await getOwners(
+        botIntegration?.integration?.metadata?.access_token,
+      );
+
+      if (ownerIds.length) {
+        let [{ id: hubspotOwnerId }] = ownerIds[0]?.id;
+        await createDeals(
+          botIntegration?.integration?.metadata?.access_token,
+          hubspotOwnerId,
+          botIntegration?.integration?.metadata?.amount,
+          botIntegration?.integration?.metadata?.stage,
+          firstName,
+          lastName,
+        );
+      } else {
+        logger.error({ level: "error", message: "No owner found" });
+      }
+
       console.log(JSON.stringify(data));
       const properties = await $fetch(
         "https://api.hubapi.com/crm/v3/properties/leads",
@@ -172,18 +175,18 @@ export default defineEventHandler(async (event) => {
         },
       );
       const finalPayloadToSubmit: any = {};
-      properties?.results.map((result) => {
-        if (result.hidden) {
-          return;
-        }
-        if (result.fieldType === "checkbox") {
-          finalPayloadToSubmit[result.name] = true;
-        } else if (result.fieldType === "select") {
-          finalPayloadToSubmit[result.name] = {
-            value: result.options[0]?.value,
-          };
-        }
-      });
+      // properties?.results.map((result) => {
+      //   if (result.hidden) {
+      //     return;
+      //   }
+      //   if (result.fieldType === "checkbox") {
+      //     finalPayloadToSubmit[result.name] = true;
+      //   } else if (result.fieldType === "select") {
+      //     finalPayloadToSubmit[result.name] = {
+      //       value: result.options[0]?.value,
+      //     };
+      //   }
+      // });
     }
   });
   if (adminUser?.id) {
@@ -193,7 +196,10 @@ export default defineEventHandler(async (event) => {
       connection({ event: "leads", data: body });
     });
   }
-  sendEmail(adminUser?.email, "Head's Up, New Lead Notification from Your Chatbot", `<div>
+  sendEmail(
+    adminUser?.email,
+    "Head's Up, New Lead Notification from Your Chatbot",
+    `<div>
   <p>Dear ${adminUser?.username},</p>
   
   <p>We are excited to let you know that a new lead has been generated through your chatbot!</p>
@@ -210,7 +216,8 @@ export default defineEventHandler(async (event) => {
   <p>You can follow up with the lead at your earliest convenience to ensure timely engagement.</p>
   
   <p>Best regards,<br/>Tring AI</p>
-</div>`)
+</div>`,
+  );
 
   return adminUser;
 });

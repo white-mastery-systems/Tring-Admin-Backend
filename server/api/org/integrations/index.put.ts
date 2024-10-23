@@ -26,6 +26,7 @@ export default defineEventHandler(async (event) => {
       shop: z.string().optional(),
       location: z.string().optional(),
       accountsServer: z.string().optional(),
+      stage: z.string().optional(),
     }),
   });
 

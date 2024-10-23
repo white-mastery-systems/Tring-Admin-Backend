@@ -28,6 +28,9 @@
   });
   const hubSpotSchema = z.object({
     crm: z.literal("hubspot"),
+    metadata: z.object({
+      stage: z.any({ required_error: "pipeline is required" }),
+    }),
   });
   const slackSchema = z.object({
     crm: z.literal("slack"),
@@ -120,7 +123,7 @@
       // name: "",
     },
   });
-
+const metadata = ref<any>({});
   watch(
     () => integrationModalState.value,
     async (value) => {
@@ -139,6 +142,7 @@
       }>(`/api/org/integrations/${integrationModalProps.id}`);
       setFieldValue("name", integrationDetails?.name);
       setFieldValue("crm", integrationDetails?.crm);
+      metadata.value = integrationDetails?.metadata || {};
       if (integrationDetails?.crm === "sell-do") {
         setFieldValue("metadata", {
           apiKey: integrationDetails?.metadata?.apiKey,
@@ -146,11 +150,18 @@
       } else if (integrationDetails?.crm === "zoho-crm") {
       } else if (integrationDetails?.crm === "zoho-bigin") {
       }
+      else if(integrationDetails?.crm === "hubspot") {
+        setFieldValue("metadata", {
+          ...integrationDetails?.metadata
+        })
+      }
     },
     { deep: true },
   );
   const handleConnect = handleSubmit(async (values: any) => {
     isLoading.value = true;
+
+ if(values.crm === 'hubspot')  localStorage.setItem('stage', values.metadata.stage)
 
     let url = `${window.location.origin}/settings/integration/${values.crm}`;
     // let url = "https://app.tringlabs.ai/settings";
@@ -160,6 +171,7 @@
     } else if (values.crm === "zoho-bigin") {
       scope = "ZohoBigin.settings.ALL,ZohoBigin.modules.ALL,ZohoBigin.org.READ";
     }
+
     const payload: any = {
       ...values,
       scope,
@@ -168,11 +180,19 @@
       ...(values.crm !== "sell-do" && { metadata: { status: "pending" } }),
     };
 
+  if(values.crm ==='hubspot'){
+      payload.metadata = {
+        ...payload.metadata,
+        ...values.metadata
+      }
+  }
+
     if (integrationModalProps?.id) {
       await updateIntegrationById({
         id: integrationModalProps.id,
         integrationDetails: {
           ...values,
+          metadata:{ ...metadata.value,...(values?.metadata||{})},
           scope,
           url,
           type: route.query.q ?? "crm",
@@ -198,12 +218,12 @@
               "_blank",
             );
           } else if (values.crm === "hubspot") {
-            const authUrl = `https://app.hubspot.com/oauth/authorize?client_id=ae187200-936d-44f3-8e59-5bab2f50aa3c&redirect_uri=${url}&scope=crm.objects.contacts.write,oauth,crm.objects.leads.read,crm.objects.contacts.read,crm.objects.leads.write,crm.objects.deals.write,crm.objects.deals.read,crm.schemas.deals.write,crm.schemas.deals.read`;
+            const authUrl = `https://app.hubspot.com/oauth/authorize?client_id=ae187200-936d-44f3-8e59-5bab2f50aa3c&redirect_uri=${url}&scope=crm.objects.contacts.write%20oauth%20crm.objects.deals.read%20crm.objects.deals.write%20crm.objects.contacts.read&optional_scope=crm.schemas.deals.write%20crm.objects.owners.read`;
             window.open(authUrl, "_blank");
           } else if (values.crm === "slack") {
             window.open(
               // `https://slack.com/oauth/v2/authorize?scope=chat%3Awrite&user_scope=chat%3Awrite&redirect_uri=https%3A%2F%2F6t53p9kf-3000.inc1.devtunnels.ms%2Fsettings%2Fintegration%2Fslack&client_id=7763394615058.7867610213248`
-              `https://slack.com/oauth/v2/authorize?scope=chat:write,channels:read&redirect_uri=${url}&client_id=7763394615058.7867610213248`,
+              `https://slack.com/oauth/v2/authorize?scope=chat:write,channels:read,channels:join&redirect_uri=${url}&client_id=7763394615058.7867610213248`,
               // "https://slack.com/oauth/v2/authorize?scope=incoming-webhook&client_id=7856740970225.7841202988373",
               "_blank",
             );
@@ -289,6 +309,28 @@
           placeHolder="Eg: api-key-here"
           required
         />
+        <!-- {{values.metadata}} -->
+        <SelectField
+          v-if="values.crm === 'hubspot'"
+          name="metadata.stage"
+          label="pipeLine"
+          placeholder="Select Stage"
+          :options="[
+            { label: 'Appointment Scheduled', value: 'appointmentscheduled' },
+            { label: 'Qualified to Buy', value: 'qualifiedtobuy' },
+            { label: 'Presentation Scheduled', value: 'presentationscheduled' },
+            {
+              label: 'Decision Maker Bought-In',
+              value: 'decisionmakerboughtin',
+            },
+            { label: 'Contract Sent', value: 'contractsent' },
+            { label: 'Closed Won', value: 'closedwon' },
+            { label: 'Closed Lost', value: 'closedlost' },
+          ]"
+          :required="true"
+        />
+
+ 
         <div class="flex w-full justify-end">
           <UiButton
             type="submit"

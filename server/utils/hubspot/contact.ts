@@ -4,7 +4,8 @@ export async function createContactInHubspot({
   token,
   refreshToken,
   body,
-  integrationData,
+  firstName,
+  lastName,
 }: {
   token: string;
   refreshToken: string;
@@ -14,7 +15,17 @@ export async function createContactInHubspot({
   try {
     return $fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
       method: "POST",
-      body: { data: [body] },
+      body: {
+        properties: {
+          email: body?.botUser?.email,
+          firstname: firstName,
+          lastname: lastName,
+          phone: `${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
+          company: "HubSpot",
+          website: "hubspot.com",
+          lifecyclestage: "marketingqualifiedlead",
+        },
+      },
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -28,8 +39,33 @@ export async function createContactInHubspot({
           token: generatedResponse?.response?.access_token,
           refreshToken: refreshToken,
           body: body,
-          integrationData: integrationData,
         });
     }
   }
+}
+
+export async function getOwners(token) {
+  return $fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+// Creating Leads or Deals IN Hubspot
+export async function createDeals(token, ownerId, amount,dealStage, firstName, lastName) {
+  return $fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      properties: {
+        amount: amount ?? 0,
+        closedate: new Date(),
+        dealname: firstName + " " + lastName,
+        pipeline: "default",
+        dealstage: dealStage,
+        hubspot_owner_id: ownerId,
+      },
+    },
+  });
 }
