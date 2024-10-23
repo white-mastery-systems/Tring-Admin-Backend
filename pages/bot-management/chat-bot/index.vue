@@ -81,7 +81,7 @@
   import { createColumnHelper } from "@tanstack/vue-table";
 
   definePageMeta({
-    middleware: "admin-only",
+    middleware: "user",
   });
   useHead({
     title: "Bot Management | Chat Bot",

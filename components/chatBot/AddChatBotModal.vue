@@ -18,28 +18,39 @@
   }>();
   const isLoading = ref(false);
   // const emit = defineEmits<{ (e: "confirm"): void, (e: "editConfirm"): void }>();
-  const formSchema = toTypedSchema(
-    z
-      .object({
-        name: z
-          .string({ required_error: "bot name is required" })
-          .min(2, "Bot Name is required"),
-        type: z.string({ required_error: "bot type is required" }),
-        integrationId: z.string().optional(),
-      })
-      .refine(
-        (data) => {
-          if (data.type === "ecommerce" && !data?.integrationId) {
-            return false;
-          }
-          return true;
-        },
-        {
-          message: "Other role must be provided",
-          path: ["otherRole"],
-        },
-      ),
-  );
+
+const formSchema = toTypedSchema(
+  z.object({
+    name: z
+      .string({ required_error: "Bot name is required" })
+      .min(2, "Bot Name is required"),
+    type: z.string({ required_error: "Bot type is required" }),
+    integrationId: z.string().optional(), // Always optional
+  })
+);
+
+  // const formSchema = toTypedSchema(
+  //   z
+  //     .object({
+  //       name: z
+  //         .string({ required_error: "bot name is required" })
+  //         .min(2, "Bot Name is required"),
+  //       type: z.string({ required_error: "bot type is required" }),
+  //       integrationId: z.string().optional(),
+  //     })
+  //     // .refine(
+  //     //   (data) => {
+  //     //     if (data.type === "ecommerce" && !data?.integrationId) {
+  //     //       return true;
+  //     //     }
+  //     //     return true;
+  //     //   },
+  //     //   {
+  //     //     message: "Other role must be provided",
+  //     //     path: ["otherRole"],
+  //     //   },
+  //     // ),
+  // );
 
   const { handleSubmit, setFieldValue, resetForm, values } = useForm({
     validationSchema: formSchema,
@@ -48,6 +59,7 @@
   watch(
     () => agentModalState.value.open,
     async () => {
+      resetForm();
       if (agentModalState.value.id) {
         const getSingleDetails: any = await $fetch(
           `/api/bots/${agentModalState.value.id}`,
@@ -56,8 +68,6 @@
         setFieldValue("name", getSingleDetails.name);
         setFieldValue("type", getSingleDetails.type);
         setFieldValue("integrationId", getSingleDetails?.integrationId);
-      } else {
-        resetForm();
       }
     },
   );
@@ -131,7 +141,6 @@
         v-if="values.type === 'ecommerce'"
         name="integrationId"
         :multiple="false"
-        :required="true"
         label="Select Integration"
         placeholder="Select Integration"
         :options="

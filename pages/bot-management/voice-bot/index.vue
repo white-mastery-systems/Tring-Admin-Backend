@@ -65,7 +65,7 @@
   import { useRoute, useRouter } from "vue-router";
 
   definePageMeta({
-    middleware: "admin-only",
+    middleware: "user",
   });
   useHead({
     title: "Bot Management | Voice Bot",

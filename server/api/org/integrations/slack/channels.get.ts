@@ -11,11 +11,7 @@ export default defineEventHandler(async (event) => {
     query.id,
   );
   console.log(query.id, integrationData.metadata.access_token, "Access Token");
-  const data = await getAllChannelsFromSlack({
-    token: integrationData?.metadata?.access_token,
-    refreshToken: integrationData?.metadata?.refresh_token,
-    integrationData: integrationData?.metadata,
-  });
+  const data = await getAllChannelsFromSlack(integrationData.metadata, integrationData?.id);
 
   return data;
 });

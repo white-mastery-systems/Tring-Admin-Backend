@@ -92,7 +92,7 @@
   const templateStore = useTemplateStore();
 
   definePageMeta({
-    middleware: "admin-only",
+    middleware: "user",
   });
   useHead({
     title: "Contacts Management | Contacts",

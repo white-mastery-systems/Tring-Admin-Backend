@@ -168,8 +168,6 @@
   const handleConnect = handleSubmit(async (values: any) => {
     isLoading.value = true;
 
-    if (values.crm === "hubspot")
-      localStorage.setItem("stage", values.metadata.stage);
 
     let url = `${window.location.origin}/settings/integration/${values.crm}`;
     // let url = "https://app.tringlabs.ai/settings";
@@ -192,12 +190,6 @@
       ...(values.crm !== "sell-do" && { metadata: { status: "pending" } }),
     };
 
-    if (values.crm === "hubspot") {
-      payload.metadata = {
-        ...payload.metadata,
-        ...values.metadata,
-      };
-    }
 
     if (integrationModalProps?.id) {
       await updateIntegrationById({

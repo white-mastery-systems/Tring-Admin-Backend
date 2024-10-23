@@ -114,7 +114,7 @@
   import NumberModal from "./NumberModal.vue";
 
   definePageMeta({
-    middleware: "admin-only",
+    middleware: "user",
   });
 
   useHead({
