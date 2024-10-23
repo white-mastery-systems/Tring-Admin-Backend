@@ -6,6 +6,7 @@ const zodUpdateBotIntegration = z.object({
   pipelineId: z.string().optional(),
   pipelineObj: z.any().optional(),
   layoutObj: z.any().optional(),
+  stage: z.string().optional(),
 });
 
 export default defineEventHandler(async (event) => {

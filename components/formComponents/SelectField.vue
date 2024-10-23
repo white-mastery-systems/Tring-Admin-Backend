@@ -60,6 +60,8 @@ const { value: fieldValue, errorMessage, meta, errors } = useField(() => props.n
 const selectedValue = ref<any>(fieldValue.value);
 const emit = defineEmits(['input']);
 watch(selectedValue, (newValue) => {
+  console.log();
+  
   fieldValue.value = newValue;
   emit('input', newValue);
 });

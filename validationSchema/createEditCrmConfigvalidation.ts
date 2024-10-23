@@ -6,4 +6,5 @@ export const createEditCRMConfigValidation = z.object({
   layoutId: z.string().optional(),
   stageId: z.string().optional(),
   subPipeline: z.string().optional(),
+  stage: z.string().optional(),
 });
