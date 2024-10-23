@@ -39,6 +39,25 @@
             "
           />
         </div>
+
+        <SelectField  
+                  v-if="
+            integrationsData.find(
+              (integration) => integration.id === values.integrationId,
+            )?.crm === 'zoho-cliq'
+          "           
+             name="channelId"
+            :multiple="false"
+            :required="true"
+            label="Select Channel"
+            placeholder="Select Channel"
+            :options="
+              channels?.map((channel) => ({
+                value: channel.channel_id,
+                label: channel.name.slice(1),
+              }))
+            "
+          />
       </div>
 
       <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
@@ -146,6 +165,14 @@
       //     `/api/org/integrations/zoho-bigin/sub-pipeline?id=${matchedCRM.id}`,
       //   );
       //   subPipelines.value = subPipelineData;
+    }
+    else if(matchedCRM.crm === "zoho-cliq"){
+            const data: any = await $fetch(
+        `/api/org/integrations/zoho-cliq/channels?id=${matchedCRM.id}`,
+      );
+      channels.value = data.channels;
+      
+      
     }
   };
   watch(
