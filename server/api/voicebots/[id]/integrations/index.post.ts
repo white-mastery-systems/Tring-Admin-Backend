@@ -6,7 +6,8 @@ export const zodInsertVoiceBotIntegration = z.object({
   projectId: z.string().optional(),
   pipelineId: z.string().optional(),
   pipelineObj: z.any().optional(),
-  layoutObj:z.any().optional()
+  layoutObj:z.any().optional(),
+  stage:z.string().optional()
 });
 
 export default defineEventHandler(async (event) => {

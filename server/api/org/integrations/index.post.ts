@@ -16,6 +16,7 @@ enum CRMType {
   hubspot = "hubspot",
   slack = "slack",
   shopify = "shopify",
+  zohoCliq = "zoho-cliq"
 }
 const db = useDrizzle();
 
@@ -34,6 +35,7 @@ export default defineEventHandler(async (event) => {
         wabaId: z.string().optional(),
         pin: z.string().optional(),
         stage: z.string().optional(),
+        channelId: z.string().optional()
       }),
     })
     .refine(

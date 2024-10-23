@@ -139,42 +139,43 @@ export default defineEventHandler(async (event) => {
         lastName = name[1];
       }
 
-      const data = await createContactInHubspot(
-        botIntegration?.integration?.metadata?.access_token,
-        botIntegration?.integration?.metadata?.refresh_token,
-        body,
-        firstName,
-        lastName,
-      );
-
-      const ownerIds = await getOwners(
-        botIntegration?.integration?.metadata?.access_token,
-      );
-
-      if (ownerIds.length) {
-        let [{ id: hubspotOwnerId }] = ownerIds[0]?.id;
-        await createDeals(
-          botIntegration?.integration?.metadata?.access_token,
-          hubspotOwnerId,
-          botIntegration?.integration?.metadata?.amount,
-          botIntegration?.integration?.metadata?.stage,
+      const data =
+        (await createContactInHubspot({
+          token: botIntegration?.integration?.metadata?.access_token,
+          refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+          body: body,
           firstName,
           lastName,
-        );
-      } else {
-        logger.error({ level: "error", message: "No owner found" });
-      }
+          botIntegration,
+          
+        })) || {};
 
-      console.log(JSON.stringify(data));
-      const properties = await $fetch(
-        "https://api.hubapi.com/crm/v3/properties/leads",
-        {
-          headers: {
-            Authorization: `Bearer ${botIntegration?.integration?.metadata?.access_token}`,
-          },
-        },
-      );
-      const finalPayloadToSubmit: any = {};
+      // const ownerIds = await getOwners(token);
+
+      // if (ownerIds.length) {
+      //   let [{ id: hubspotOwnerId }] = ownerIds[0]?.id;
+      //   await createDeals(
+      //     token,
+      //     hubspotOwnerId,
+      //     botIntegration?.integration?.metadata?.amount,
+      //     botIntegration?.integration?.metadata?.stage,
+      //     firstName,
+      //     lastName,
+      //   );
+      // } else {
+      //   logger.error({ level: "error", message: "No owner found" });
+      // }
+
+      // console.log(JSON.stringify(data));
+      // const properties = await $fetch(
+      //   "https://api.hubapi.com/crm/v3/properties/leads",
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${botIntegration?.integration?.metadata?.access_token}`,
+      //     },
+      //   },
+      // );
+      // const finalPayloadToSubmit: any = {};
       // properties?.results.map((result) => {
       //   if (result.hidden) {
       //     return;
@@ -187,6 +188,25 @@ export default defineEventHandler(async (event) => {
       //     };
       //   }
       // });
+    } else if(botIntegration?.integration?.crm === "zoho-cliq") {
+      const name = body?.botUser?.name?.split(" ");
+      let firstName = body?.botUser?.name;
+      let lastName = null;
+      if (name?.length > 1) {
+        firstName = name[0];
+        lastName = name[1];
+      }
+      const payload = {
+         First_Name: firstName,
+         Last_Name: lastName ?? firstName,
+         Email: body?.botUser?.email,
+         Mobile: body?.botUser?.mobile,
+         Title: body?.botUser?.name,
+      }
+      let textContent = Object.entries(payload)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join('\n');
+      await generateLeadsInZohoCliq(botIntegration?.integration?.metadata, textContent, botIntegration?.integration?.id)
     }
   });
   if (adminUser?.id) {
