@@ -42,7 +42,7 @@ export async function createContactInHubspot({
         token,
         hubspotOwnerId,
         0,
-        botIntegration?.integration?.metadata?.stage || "appointmentscheduled",
+        botIntegration?.metadata?.stage || "appointmentscheduled",
         firstName || "",
         lastName || "",
       );
@@ -54,6 +54,10 @@ export async function createContactInHubspot({
       const generatedResponse =
         await generateHubspotAccessTokenWithRefreshToken(refreshToken);
       if (generatedResponse?.response?.access_token)
+          updateIntegrationById(botIntegration.id, {
+               ...botIntegration.metadata,
+               access_token: generatedResponse?.response?.access_token,
+           });
         createContactInHubspot({
           token: generatedResponse?.response?.access_token,
           refreshToken: refreshToken,
@@ -66,7 +70,7 @@ export async function createContactInHubspot({
 }
 
 export async function getOwners(token) {
-  return $fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
+  return $fetch("https://api.hubapi.com/crm/v3/owners", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -74,31 +78,50 @@ export async function getOwners(token) {
   });
 }
 // Creating Leads or Deals IN Hubspot
-export async function createDeals(token, ownerId, amount,dealStage, firstName, lastName) {
-  try{
-    
-  const data = await $fetch("https://api.hubapi.com/crm/v3/objects/deals", {
-    method: "POST",
-    body:{
+export async function createDeals(
+  token,
+  ownerId,
+  amount,
+  dealStage,
+  firstName,
+  lastName,
+) {
+  try {
+    // Logging the request body for debugging
+    console.log({
+      properties: {
+        amount: amount || "0", // Ensure the correct amount is passed
+        closedate: new Date().toISOString(),
+        dealname: firstName + " " + lastName || "New Deal", // Fallback in parentheses
+        pipeline: "default",
+        dealstage: dealStage,
+        hubspot_owner_id: ownerId,
+      },
+    });
+
+    // Making the POST request
+    const data = await $fetch("https://api.hubapi.com/crm/v3/objects/deals", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", // Adding Content-Type header
+      },
+      body: JSON.stringify({
         properties: {
-          amount: amount ?? '0',
+          amount: amount || "0", // Ensure the correct amount is passed
           closedate: new Date().toISOString(),
           dealname: firstName + " " + lastName || "New Deal",
           pipeline: "default",
           dealstage: dealStage,
           hubspot_owner_id: ownerId,
         },
-    },
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+      }),
+    });
+
+    // Logging the response
     console.log(data);
-
+  } catch (error) {
+    // Logging any errors
+    console.log(error);
   }
-  catch(errr){
-  console.log(errr);
-  
-  }
-
 }

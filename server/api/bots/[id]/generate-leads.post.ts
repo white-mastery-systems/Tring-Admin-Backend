@@ -147,6 +147,7 @@ export default defineEventHandler(async (event) => {
           firstName,
           lastName,
           botIntegration,
+          
         })) || {};
 
       // const ownerIds = await getOwners(token);

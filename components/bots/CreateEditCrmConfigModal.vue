@@ -211,6 +211,7 @@
                 "stageId",
                 crmConfigData?.metadata?.pipelineObj?.id,
               );
+
               // setFieldValue(
               //   "subPipeline",
               //   crmConfigData?.metadata?.pipelineObj?.Sub_Pipeline,
@@ -224,6 +225,12 @@
               setFieldValue("campaignId", crmConfigData?.metadata?.campaignId);
               setFieldValue("projectId", crmConfigData?.metadata?.projectId);
             }
+              else if (selectedCrm?.crm === "hubspot") {
+                setFieldValue(
+                "stage",
+                crmConfigData?.metadata?.stage,
+              );
+              }
           }
         } catch (error) {
           console.error("Error fetching CRM config data:", error);
