@@ -20,17 +20,15 @@ const login = async (values: Record<string, any>) => {
       method: "post",
       body: values,
     });
-    if(data?.status) {
-      (await useUser()).refreshUser();
-      return navigateTo("/")
-    } 
-    else {
-      toast.success(data?.message);
-      localStorage.setItem("userDetails", JSON.stringify(data?.data))
-      return navigateTo("/auth/verify-otp");
-    }
+    (await useUser()).refreshUser();
+    return navigateTo("/")
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
+    if (error?.statusMessage === "User not verified") {
+      localStorage.setItem("userDetails", JSON.stringify(error?.data.data))
+      return navigateTo("/auth/verify-otp");
+
+    }
   }
 };
 

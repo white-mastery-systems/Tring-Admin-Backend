@@ -60,7 +60,7 @@ const rowList = reactive([
 ]);
 
 definePageMeta({
-  middleware: "admin-only",
+  middleware: "user",
 });
 
 useHead({

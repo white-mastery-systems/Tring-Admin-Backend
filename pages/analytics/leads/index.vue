@@ -92,7 +92,7 @@
   ]);
 
   definePageMeta({
-    middleware: "admin-only",
+    middleware: "user",
   });
 
   useHead({

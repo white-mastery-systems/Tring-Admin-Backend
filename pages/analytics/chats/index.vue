@@ -38,7 +38,7 @@
   import { createColumnHelper } from "@tanstack/vue-table";
   import { format } from "date-fns";
   definePageMeta({
-    middleware: "admin-only",
+    middleware: "user",
   });
   useHead({
     title: "Analytics | Chats",

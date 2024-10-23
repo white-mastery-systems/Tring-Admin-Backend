@@ -69,7 +69,7 @@
   import { Icon, UiBadge, UiButton } from "#components";
 
   definePageMeta({
-    middleware: "admin-only",
+    middleware: "user",
   });
 
   const formSchema = toTypedSchema(
