@@ -4,7 +4,7 @@ const db = useDrizzle()
 
 export const generateLeadsInZohoCliq: any = async(metaData: any, channelId: string, body: any, integrationId: string) => {
   try {
-    // console.log("generateLeadsInZohoCliq",{ metaData, body })
+    console.log("generateLeadsInZohoCliq",{ metaData, channelId, body  })
      const data = await $fetch(`https://cliq.zoho.in/api/v2/channels/${channelId}/message`, {
       method: "POST",
       headers: { 
@@ -14,10 +14,11 @@ export const generateLeadsInZohoCliq: any = async(metaData: any, channelId: stri
         text: `Lead generated:\n${body}`
       }
     })
+    console.log({ success: data })
     return data
 
   } catch (error) {
-    logger.error(`generateLeadsInZohoCliq Error: ${JSON.stringify(error)}, metadata- ${metaData}, body - ${body}`)
+    logger.error(`generateLeadsInZohoCliq Error: ${JSON.stringify(error)}, metadata- ${JSON.stringify(metaData)}, body - ${body}`)
     const integrationData = metaData
     if (error instanceof Error) {
       const response = (error as any).response;
@@ -34,7 +35,7 @@ export const generateLeadsInZohoCliq: any = async(metaData: any, channelId: stri
             updatedAt: new Date()
           }).where(eq(integrationSchema.id, integrationId))
           
-          return await generateLeadsInZohoCliq(newAuthInfo,channelId, body);
+          return await generateLeadsInZohoCliq(newAuthInfo, channelId, body);
           }
       } else {
         logger.error(`Error: generateLeadsInZohoCliq:----${JSON.stringify(error)}`)
