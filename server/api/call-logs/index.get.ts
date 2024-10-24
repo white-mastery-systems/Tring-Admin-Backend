@@ -1,6 +1,18 @@
 const zodQueryValidator = z.object({
   page: z.string().optional(),
-  limit: z.string().optional()
+  limit: z.string().optional(),
+  period: z.string().optional(),
+  q: z.string().optional(),
+  from: z
+      .string()
+      .datetime({ offset: true })
+      .nullish()
+      .transform((val) => (val ? new Date(val) : null)),
+  to: z
+      .string()
+      .datetime({ offset: true })
+      .nullish()
+      .transform((val) => (val ? new Date(val) : null)),
 })
 
 export default defineEventHandler(async (event) => {
