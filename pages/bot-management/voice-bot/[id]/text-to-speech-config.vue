@@ -12,8 +12,10 @@
           <TextField v-if="values.provider === 'google'" type="text" label="Name" name="name" required
             placeholder="Name" />
           <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">
-            <TextField v-if="values.provider === 'elevenlabs'" type="text" label="Model" name="model" required
-              placeholder="Model" />
+            <!-- <TextField v-if="values.provider === 'elevenlabs'" type="text" label="Model" name="model" required
+              placeholder="Model" /> -->
+            <SelectField v-if="values.provider === 'elevenlabs'" name="model" label="Model" placeholder="Model"
+              helperText="Select your model." :options="modalList" required />
             <TextField v-if="values.provider === 'elevenlabs'" type="text" label="voice" name="elevenlabsvoice" required
               placeholder="voice" />
           </div>
@@ -111,7 +113,7 @@
           <SelectField v-if="values.provider === 'elevenlabs'" name="useSpeakerBoost" :options="useSpeakerBooster"
             label="Use Speaker Boost" placeholder="Use Speaker Boost">
           </SelectField>
-          <SelectField v-if="values.provider === 'deepgram'" name="voice" label="Use Speaker Boost"
+          <SelectField v-if="values.provider === 'deepgram'" name="voice" label="Voice"
             placeholder="Select voice" helperText="Select your voice." :options="voices" required />
         </div>
         <div class="flex w-full justify-end mt-2">
@@ -154,6 +156,24 @@
       value: "deepgram",
     },
   ];
+  const modalList = [
+    {
+      label: "English v1",
+      value: "eleven_monolingual_v1",
+    }, {
+      label: "Multilingual v1",
+      value: "eleven_multilingual_v1",
+    }, {
+      label: "Multilingual v2",
+      value: "eleven_multilingual_v2",
+    }, {
+      label: "Turbo v2",
+      value: "eleven_turbo_v2",
+    }, {
+      label: "Turbo v2.5",
+      value: "eleven_turbo_v2_5",
+    },
+  ] 
 const useSpeakerBooster = [
   {
     label: "Yes",

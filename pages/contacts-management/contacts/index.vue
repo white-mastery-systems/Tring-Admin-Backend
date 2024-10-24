@@ -21,9 +21,9 @@
           placeholder=" Search Contacts..." />
       </div>
       <div class="flex items-center gap-2">
+        <SampleImport :columns="exportReadyColumns" />
         <ImportNumberFile accept=".csv, .xls, .xlsx" v-model="selectedFile" @uploadDocument="fileUpload"
           :isLoading="isLoading" />
-        <SampleImport :columns="exportReadyColumns" />
         <ExportButton v-model="exportDataHandler" :rows="exportReadyRows" :columns="exportReadyColumns"
           @export="exportData" buttonContent="Export Contacts" />
       </div>
