@@ -1,22 +1,13 @@
 <template>
-  <Page
-    :disable-elevation="true"
-    title="Dashboard"
-    :disableSelector="true"
-    :disable-back-button="true"
-  >
+  <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-2">
-        <span
-          class="field_shadow flex items-center rounded-lg text-[15px]"
-          style="color: rgba(138, 138, 138, 1)"
-        >
+        <span class="field_shadow flex items-center rounded-lg text-[15px]" style="color: rgba(138, 138, 138, 1)">
           <!-- <span class="flex -items-center py-2 pl-2"></span> -->
           <span class="font-bold text-black">
             <UiSelect v-model="selectedValue" class="outline-none">
               <UiSelectTrigger
-                class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[230px] md:text-[14px] lg:w-[230px] lg:text-[14px] xl:w-[230px] xl:text-[14px]"
-              >
+                class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[230px] md:text-[14px] lg:w-[230px] lg:text-[14px] xl:w-[230px] xl:text-[14px]">
                 <span class="min-w-[70px] font-thin text-gray-400">
                   Summary
                 </span>
@@ -24,12 +15,8 @@
               </UiSelectTrigger>
               <UiSelectContent>
                 <UiSelectGroup>
-                  <UiSelectItem
-                    v-for="(list, index) in dateFilters"
-                    :key="index"
-                    class="content_align pr-2"
-                    :value="list.value"
-                  >
+                  <UiSelectItem v-for="(list, index) in dateFilters" :key="index" class="content_align pr-2"
+                    :value="list.value">
                     <div class="text-left">
                       {{ list.content }}
                     </div>
@@ -40,77 +27,43 @@
             </UiSelect>
           </span>
         </span>
-        <DateRangeFilter
-          v-model="selectedValue"
-          :selectDateField="false"
-          @change="onDateChange"
-        />
+        <DateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
       </div>
     </template>
     <div>
-      <div
-        v-if="analyticsData?.statistics?.length"
-        class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4"
-      >
-        <template
-          v-for="statistics in analyticsData?.statistics?.filter(
-            (stat) =>
+      <div v-if="analyticsData?.statistics?.length"
+        class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <template v-for="statistics in analyticsData?.statistics?.filter(
+            (stat: any) =>
               stat?.apiName !== 'images' && stat?.apiName !== 'brochures',
-          )"
-        >
-          <StatusCountCard
-            v-if="statistics"
-            :icon="ChatSession"
-            :title="statistics.name?.replace('_', ' ')"
-            :count="statistics.value"
-            :loading="loading"
-          />
+          )">
+          <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
+            :count="statistics.value" :loading="loading" />
         </template>
       </div>
-      <div
-        v-if="loading && !analyticsData?.statistics?.length"
-        class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4"
-      >
+      <div v-if="loading && !analyticsData?.statistics?.length"
+        class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <template v-for="n in 8" :key="n">
-          <StatusCountCard
-            :icon="ChatSession"
-            :title="'Loading...'"
-            :count="0"
-            :loading="loading"
-          />
+          <StatusCountCard :icon="ChatSession" :title="'Loading...'" :count="0" :loading="loading" />
         </template>
       </div>
       <div class="mt-2 flex cursor-pointer gap-2 overflow-x-scroll">
-        <template
-          v-if="analyticsData"
-          v-for="componentValue in analyticsData?.statistics?.filter(
-            (stat) =>
+        <template v-if="analyticsData" v-for="componentValue in analyticsData?.statistics?.filter(
+            (stat: any) =>
               stat?.apiName !== 'images' && stat?.apiName !== 'brochures',
-          )"
-          :key="componentValue?.apiName"
-        >
-          <button
-            @click="() => handleEditGraphValues(componentValue)"
-            :class="[
+          )" :key="componentValue?.apiName">
+          <button @click="() => handleEditGraphValues(componentValue)" :class="[
               `shadow-lg flex h-[40px] w-auto items-center gap-2 rounded-md border-[1px] border-gray-200 px-2 text-center text-sm`,
-            ]"
-          >
+            ]">
             <PlusIcon v-if="!chartValues.includes(componentValue?.apiName)" />
             <MinusIcon v-else />
-            <span
-              class="min-w-[100px] capitalize"
-              :style="`color:${componentValue?.color}`"
-              >{{ componentValue?.name?.replace("_", " ") }}</span
-            >
+            <span class="min-w-[100px] capitalize" :style="`color:${componentValue?.color}`">{{
+              componentValue?.name?.replace("_", " ") }}</span>
           </button>
         </template>
       </div>
-      <Line
-        v-if="!loading"
-        class="shadow-md relative mt-4 w-full place-content-center rounded-md bg-white"
-        :data="chartData"
-        :options="chartOptions"
-      />
+      <Line v-if="!loading" class="shadow-md relative mt-4 w-full place-content-center rounded-md bg-white"
+        :data="chartData" :options="chartOptions" />
       <div v-else class="mt-4 flex flex-col space-y-3">
         <UiSkeleton class="h-screen-minus-14 w-[100%] rounded-xl" />
       </div>
@@ -200,10 +153,9 @@
   const chartValues = ref(["leads", "sessions"]);
   const handleEditGraphValues: any = async (option: any) => {
     let localValue = chartValues.value;
-    console.log({ option });
     if (localValue.includes(option.apiName)) {
       const index = localValue.indexOf(option.apiName);
-      localValue.splice(index, 1);
+      if ((option.apiName !== "sessions") && (option.apiName !== "leads")) localValue.splice(index, 1);
     } else {
       localValue.push(option.apiName);
     }
@@ -225,11 +177,11 @@
 
   watch(analyticsData, (newValue, oldValue) => {
     if (newValue?.graph?.length > 0) {
-      state.labels = newValue.graph[0]?.map((item) => item.date);
+      state.labels = newValue.graph[0]?.map((item: any) => item.date);
     }
 
-    state.graphData = newValue.graph?.map((graphItem) =>
-      graphItem?.map((item) => item.count),
+    state.graphData = newValue.graph?.map((graphItem: any) =>
+      graphItem?.map((item: any) => item.count),
     );
   });
   let chartData = computed(() => ({

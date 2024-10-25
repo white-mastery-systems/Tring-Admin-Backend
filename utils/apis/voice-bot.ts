@@ -63,7 +63,6 @@ export const deleteSingleUser = async ({
       },
     );
     onSuccess();
-    console.log(deleteIntegration, 'deleteIntegration')
     toast.success("Removed successfully");
     return deleteIntegration;
   } catch (err: any) {
