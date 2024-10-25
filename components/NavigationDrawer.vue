@@ -75,7 +75,7 @@
           <WhatsappIcon v-if="path === '/whatsapp-bot'"></WhatsappIcon>
           <component :is="icon"></component>
 
-          <span class="text-[14px]">{{ name }}</span>
+          <span class="text-[16px]">{{ name }}</span>
         </NuxtLink>
         <NuxtLink
           v-else
