@@ -1,7 +1,7 @@
 <template>
     <UiFormField v-model="state" :name="props.name" class="mt-1">
         <UiFormItem class="mt-1 flex flex-col gap-1 ">
-            <UiFormLabel>state
+            <UiFormLabel>State
                 <span class="text-sm text-red-500">*</span>
             </UiFormLabel>
             <UiPopover>
@@ -17,7 +17,7 @@
                                     ? statesList.find((state: any) =>
                                         state === fieldValue,
                                     )
-                                    : "state name"
+                                    : "State name"
                             }}
                             <component :is="ChevronDown" class="ml-2 h-4 w-4 shrink-0 opacity-50"></component>
                         </UiButton>

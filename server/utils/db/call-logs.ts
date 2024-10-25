@@ -12,7 +12,16 @@ export const createCallLogs = async (callLog: InsertCallLogSchema) => {
 }
 
 export const getCallLogsList = async (organizationId: string, query: any, timeZone: string) => {
-   let page, offset, limit = 0;
+  // Period-based filtering
+  let fromDate: Date | undefined;
+  let toDate: Date | undefined;
+  if (query?.period) {
+    const queryDate = getDateRangeForFilters(query, timeZone);
+    fromDate = queryDate?.from;
+    toDate = queryDate?.to;
+  }
+
+  let page, offset, limit = 0;
 
   if (query.page && query.limit) {
     page = parseInt(query.page);
@@ -21,21 +30,30 @@ export const getCallLogsList = async (organizationId: string, query: any, timeZo
   }
 
   let data = await db.query.callLogSchema.findMany({
+    where: and(
+      eq(callLogSchema.organizationId, organizationId),
+      query?.period && fromDate && toDate
+        ? between(callLogSchema.createdAt, fromDate, toDate)
+        : undefined,
+    ),
     with: {
       bot: {
+        where: query?.q ? ilike(voicebotSchema.name, `%${query.q}%`) : undefined,
         columns: {
-          name: true,
-        },
+          name: true
+        }
       }
     },
-    where: 
-      eq(callLogSchema.organizationId, organizationId),
-    orderBy: [desc(callLogSchema.createdAt)],
+     orderBy: [desc(callLogSchema.createdAt)],
   })
   data = data.map((i: any) => ({
     ...i,
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
+
+  if(query?.q) {
+    data = data.filter((i: any) => i.bot !== null);
+  }
 
   if (query?.page && query?.limit) {
     const paginatedCallLogs = data.slice(offset, offset + limit);

@@ -375,7 +375,8 @@ watch(
         adaptation: value.adaptation !== undefined
           ? value.adaptation
           : botData.value.speechToTextConfig.google?.adaptation || true,
-        model: value.model || botData.value.speechToTextConfig.google?.model || 'short',
+        // model: value.model || botData.value.speechToTextConfig.google?.model || 'short',
+        model: (value.provider === 'google') ? (value.model || botData.value.speechToTextConfig.google?.model || 'short') : botData.value.speechToTextConfig.google?.model,
         phrase_sets: value.phraseSets?.length
           ? value.phraseSets.map((item: any) => item.value)
           : botData.value.speechToTextConfig.google?.phrase_sets || [
@@ -390,6 +391,7 @@ watch(
         audio_channel_count: botData.value.speechToTextConfig.google?.audio_channel_count || 1,
         response_timeout: botData.value.speechToTextConfig.google?.response_timeout || 1,
         recognizer: botData.value.speechToTextConfig.google?.recognizer || 'projects/tringai-project1/locations/global/recognizers/english-in-short',
+        intermediate_pause: botData.value.speechToTextConfig.google?.intermediate_pause || 1
       },
 
       // Azure config
@@ -416,7 +418,7 @@ watch(
         encoding: botData.value.speechToTextConfig.deepgram?.encoding || 'MULAW',
         noise_gate: botData.value.speechToTextConfig.deepgram?.noise_gate || 0,
         live_options: {
-          model: value.model || botData.value.speechToTextConfig.deepgram?.live_options?.model || 'nova-2',
+          model: (value.provider === 'deepgram') ? (value.model || botData.value.speechToTextConfig.deepgram?.live_options?.model || 'nova-2') : botData.value.speechToTextConfig.deepgram?.live_options?.model,
           endpointing: value.endpointing !== undefined
             ? value.endpointing
             : botData.value.speechToTextConfig.deepgram?.live_options?.endpointing || 50,
@@ -439,6 +441,7 @@ watch(
           filler_words: botData.value.speechToTextConfig.deepgram?.live_options?.filler_words || false,
           profanity_filter: botData.value.speechToTextConfig.deepgram?.live_options?.profanity_filter || true,
           vad_events: botData.value.speechToTextConfig.deepgram?.live_options?.vad_events || true,
+          smart_format: botData.value.speechToTextConfig.deepgram?.live_options?.smart_format || true
         }
       }
     };
@@ -524,63 +527,24 @@ watch(
 
 
 
-  watch(values, (newValues) => {
-    if (newValues.language === "tamil" || newValues.language === "hindi") {
-      console.log("HI IT CHANGED");
-      providers.value = [
-        {
-          label: "Google",
-          value: "google",
-        },
-      ];
-    } else {
-      providers.value = [
-        {
-          label: "Google",
-          value: "google",
-        },
-        {
-          label: "Azure",
-          value: "azure",
-        },
-        {
-          label: "Deepgram",
-          value: "deepgram",
-        },
-      ];
-    }
-    if (newValues.provider === "deepgram") {
-      models.value = [
-        {
-          label: "Nova-2",
-          value: "nova-2",
-        },
-        {
-          label: "Nova",
-          value: "nova",
-        },
-        {
-          label: "Enhanced",
-          value: "enhanced",
-        },
-        {
-          label: "Base",
-          value: "base",
-        },
-      ];
-    } else {
-      models.value = [
-        {
-          label: "Long",
-          value: "long",
-        },
-        {
-          label: "Short",
-          value: "short",
-        },
-      ];
-    }
-  });
+watch(values, (newValues) => {
+  if (newValues.provider === "deepgram") {
+    models.value = JSON.parse(JSON.stringify([
+      { label: "Nova-2", value: "nova-2" },
+      { label: "Nova", value: "nova" },
+      { label: "Enhanced", value: "enhanced" },
+      { label: "Base", value: "base" },
+    ]));
+  } else if (newValues.provider === "google") {
+    models.value = JSON.parse(JSON.stringify([
+      { label: "Long", value: "long" },
+      { label: "Short", value: "short" },
+    ]));
+  } else {
+    // Default or other providers if needed
+    models.value = [];
+  }
+});
 
   watch(errors, (newError) => {});
 </script>

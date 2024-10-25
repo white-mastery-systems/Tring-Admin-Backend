@@ -246,7 +246,7 @@
       </div>
       <div class="space-y-4 p-6 pb-0">
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <div v-for="(prompt, index) in systemInstructions" :key="index" class="space-y-2">
+          <div v-for="(prompt, index) in systemInstructions" :key="index" class="space-y-2 mb-2">
             <UiLabel :for="`system-prompt-${index}`" class="block text-sm font-medium text-gray-700">
               System Prompt {{ index + 1 }}
             </UiLabel>

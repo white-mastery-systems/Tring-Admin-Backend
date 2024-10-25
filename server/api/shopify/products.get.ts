@@ -16,8 +16,7 @@ export default defineEventHandler(async (event) => {
     logger.info(
       `Fetching Shopify integration details for ID: ${shopifyIntegrationId}`,
     );
-    const shopifyIntegration =
-      await getShopifyIntegrationDetails(shopifyIntegrationId);
+    const shopifyIntegration = await getShopifyIntegrationDetails(shopifyIntegrationId);
 
     if (!shopifyIntegration) {
       logger.error(
@@ -32,8 +31,14 @@ export default defineEventHandler(async (event) => {
     logger.info(
       `Shopify integration found for shop: ${shopifyIntegration.shop}`,
     );
-
-    const shopifyProductsApiUrl = `https://${shopifyIntegration.shop}/admin/api/2024-04/products.json`;
+    
+    let shopifyProductsApiUrl
+    
+    if(query?.productIds) {
+      shopifyProductsApiUrl = `https://${shopifyIntegration.shop}/admin/api/2024-04/products.json?ids=${query.productIds}`;
+    } else {
+      shopifyProductsApiUrl = `https://${shopifyIntegration.shop}/admin/api/2024-04/products.json`;
+    }
 
     // Using Nitro's built-in $fetch
     logger.info(`Fetching products from Shopify API: ${shopifyProductsApiUrl}`);

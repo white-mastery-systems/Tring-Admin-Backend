@@ -3,14 +3,21 @@
     <Page title="Call Logs" :disable-back-button="true">
       <!-- isDataLoading -->
       <!-- @pagination="Pagination"  -->
-      <DataTable  @row-click="(row: any) => {
+      <div class="flex items-center gap-2 overflow-x-scroll pb-2">
+        <UiInput v-model="filters.q" @input="filters.page = '1'"
+          class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+          placeholder="Search Bot Name..." />
+        <DateRangeFilter @change="onDateChange" />
+      </div>
+      <DataTable @row-click="(row: any) => {
           navigateTo(`/analytics/call-logs/${row.original.id}`);
         }
-          "  @limit="($event) => {
+          " @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
       }
-        " @pagination="Pagination" :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="callLogData" :columns="columns" :is-loading="isDataLoading"
-        :page-size="8" :height="15" height-unit="vh" />
+        " @pagination="Pagination" :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount"
+        :data="callLogData" :columns="columns" :is-loading="isDataLoading" :page-size="8" :height="15"
+        height-unit="vh" />
       <!-- <DataTable :data="leads" :is-loading="false" :columns="columns" :page-size="8" :height="80" height-unit="vh" /> -->
     </Page>
   </div>
@@ -66,6 +73,8 @@ const {
       id: calls.id,
       botName: calls.bot.name,
       callerName: calls.callerName,
+      from: calls.from,
+      to: calls.exophone,
       CalledDateTime: `${calls.date}`,
       calledDuration: `${Math.round(calls.duration)} Secs`,
     }));
@@ -100,7 +109,12 @@ const columnHelper = createColumnHelper<typeof callLogData.value>();
     columnHelper.accessor("callerName", {
       header: "Caller Name",
     }),
-  
+    columnHelper.accessor("from", {
+      header: "Call From",
+    }),
+    columnHelper.accessor("to", {
+      header: "Call To",
+    }),
     columnHelper.accessor("CalledDateTime", {
       header: "Called Date & Time",
       cell: (info) => {

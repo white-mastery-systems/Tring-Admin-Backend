@@ -238,7 +238,7 @@
             );
           } else if (values.crm === "shopify") {
             window.open(
-              `https://${values.metadata.shopName}.myshopify.com/admin/oauth/authorize?client_id=e766d107bd1a2d83dfd696f9f16282b1&scope=read_products,unauthenticated_read_checkouts,unauthenticated_write_checkouts,read_shipping,read_inventory&redirect_uri=${url}`,
+              `https://${values.metadata.shopName}.myshopify.com/admin/oauth/authorize?client_id=e766d107bd1a2d83dfd696f9f16282b1&scope=read_products,unauthenticated_read_checkouts,unauthenticated_write_checkouts,read_shipping,read_inventory,write_draft_orders,read_draft_orders&redirect_uri=${url}`,
               "_blank",
             );
           }
