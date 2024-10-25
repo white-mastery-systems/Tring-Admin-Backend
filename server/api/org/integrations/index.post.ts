@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
         return true;
       },
       {
-        message: "Bot name already exists",
+        message: "Integration name already exists",
       },
     );
   const userId: { id: string } = event.context.user!;
