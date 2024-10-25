@@ -42,6 +42,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
       whatsapp?: string;
     }>()
     .default({}),
+  formStructure: jsonb("form_structure").default({}),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
