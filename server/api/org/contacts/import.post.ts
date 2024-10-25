@@ -6,6 +6,18 @@ import { inArray } from 'drizzle-orm'
 
 const db = useDrizzle()
 
+// Define the Zod schema for a single contact
+const zodContactValidation = z.object({
+  "First Name": z.string().min(1, "First Name is required"),
+  "Last Name": z.string().optional(),
+  "Email": z.string().email("Invalid email format"),
+  "Country Code": z.string().regex(/^\+?\d{1,4}$/, "Invalid country code format"),
+  "Number": z.string().regex(/^\d{7,15}$/, "Invalid phone number format")
+});
+
+// Define a schema for an array of contacts
+const contactsArraySchema = z.array(zodContactValidation);
+
 export default defineEventHandler(async (event) => {
   try {
     const organizationId = (await isOrganizationAdminHandler(event)) as string
@@ -98,8 +110,29 @@ export default defineEventHandler(async (event) => {
        );
     }
 
+     // Validate the parsed data with the Zod schema
+    const validationResult = contactsArraySchema.safeParse(parsedData);
+
+    // return { validationResult }
+
+    if (!validationResult.success) {
+      return sendError(
+        event,
+        createError({
+          statusCode: 400,
+          statusMessage: "Validation errors in the imported file",
+          data: validationResult
+        })
+      );
+    }
+
+    // Proceed with processing valid data
+    const validContactData = validationResult.data; 
+
      // Extract phone numbers from parsedData
-    const phoneNumbers = parsedData.map((i: any) => i["Number"]).filter(Boolean); // Ensure no empty numbers
+    const phoneNumbers = validContactData.map((i: any) => i["Number"]).filter(Boolean); // Ensure no empty numbers
+
+    // return { phoneNumbers }
 
     // Query the database to find existing phone numbers
     const existingContacts = await db.select()
@@ -109,7 +142,7 @@ export default defineEventHandler(async (event) => {
     const existingPhoneNumbers = new Set(existingContacts.map((contact: any) => contact.phone));
 
     // Filter out the parsed data with unique phone numbers not in the database
-    const uniqueContactsData = parsedData.filter((contact: any) => !existingPhoneNumbers.has(contact["Number"]));
+    const uniqueContactsData = validContactData.filter((contact: any) => !existingPhoneNumbers.has(contact["Number"]));
 
     if (!uniqueContactsData.length) {
       return { status: false, message: "No unique phonenumbers found to insert"}
