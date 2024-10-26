@@ -6,49 +6,46 @@ import { Icon, UiBadge, UiButton } from "#components";
 definePageMeta({
   middleware: "admin-only",
 });
+// const props = withDefaults(defineProps<Props>(), {
+//   title: "",
+//   description: "",
+// });
+const props: any = withDefaults(defineProps<{
+  integrateResponse: Array<any>; // Define the type according to your data structure
+  totalPageCount: number;
+  totalCount: number;
+  filters: {
+    page: any;
+    limit: string;
+  };
+}>(), {
+  totalPageCount: 0,
+  totalCount: 0,
+  filters: {
+    page: '1',
+    limit: '10',
+  },
+});
 
   const router = useRouter();
   const route = useRoute();
-  const filters = reactive<{
-    q: string;
-    page: string;
-    limit: string;
-  }>({
-    q: "",
-    page: "1",
-    limit: "10",
-  });
-  let page = ref(0);
-  let totalPageCount = ref(0);
-  let totalCount = ref(0);
-  const {
-    data: integrationsData,
-    status,
-    refresh: integrationRefresh,
-  } = await useLazyFetch("/api/org/integrations/number-integration", {
-    server: false,
-    default: () => [],
-    query: filters,
-    transform: (number: any) => {
-      page.value = number.page;
-      totalPageCount.value = number.totalPageCount;
-      totalCount.value = number.totalCount;
-      return number.data;
-    },
-  });
+  // const filters = reactive
   const numberModalState: any = defineModel<{ open: boolean, id: any }>({
   default: {
     open: false,
     id: null,
   },
 });
-const emit = defineEmits<{ (e: "action", id: any, modelControl: string): void }>();
+const emit = defineEmits<{ 
+  (e: "action", id: any, modelControl: string): void; 
+  (e: 'pagenation', page: number): void;
+  (e: 'limitChange', limit: string): void; // Emit limit change event
+ }>();
 // const message = inject('message')
   // provide('message', 'testing')
   watch(route, (newValue) => {});
   // const q=ref('')
   
-
 const actionsComponent = (id: any) => h(
   "div",
   {
@@ -79,7 +76,6 @@ const actionsComponent = (id: any) => h(
     )
   ]
 )
-// const { status, data: integrationsData, refresh } = await useLazyAsyncData('refresh', () => $fetch('/api/org/integrations/number-integration'));
   const columnHelper = createColumnHelper<any>();
   const NumberColumns = [
     columnHelper.accessor("provider", {
@@ -95,24 +91,23 @@ const actionsComponent = (id: any) => h(
     }
   }),
 ];
-  const Pagination = async ($evnt) => {
-    filters.page = $evnt;
-  };
+const Pagination = async ($event: any) => {
+  emit('pagenation', $event)
+};
+const changeLimit = ($event: any) => {
+  emit('limitChange', $event); // Emit limit change event
+};
 </script>
 
 <template>
   <DataTable
     @pagination="Pagination"
-    @limit="
-      ($event) => {
-        (filters.page = '1'), (filters.limit = $event);
-      }
-    "
-    :totalPageCount="totalPageCount"
-    :page="page"
-    :totalCount="totalCount"
+    @limit="changeLimit"
+    :totalPageCount="props.totalPageCount"
+    :page="parseInt(props.filters.page)"
+    :totalCount="props.totalCount"
     :columns="NumberColumns"
-    :data="integrationsData"
+    :data="integrateResponse"
     :page-size="8"
     :is-loading="false"
     :height="17"

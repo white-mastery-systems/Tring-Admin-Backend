@@ -93,7 +93,6 @@ const handleConnect = handleSubmit(async (values: any) => {
       await $fetch("/api/org/integrations/number-integration", { method: "POST", body: payload });
       toast.success("Integration added successfully");
     }
-    refresh()
     emit('success')
   } catch(error: any) {
     console.log(error.data)
