@@ -49,6 +49,16 @@ export const chatBotSchema = chatbotSchema.table("bot", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const botDynamicFormSchema = chatbotSchema.table("bot_dynamic_form", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  botId: uuid("bot_id")
+    .references(() => chatBotSchema.id, { onDelete: "cascade" })
+    .notNull(),
+  formValues: jsonb("form_values").default({}),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 export const documentSchema = chatbotSchema.table("document", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: text("name").notNull(),

@@ -2,7 +2,7 @@
 
 import { isNotNull, isNull } from "drizzle-orm";
 import momentTz from "moment-timezone";
-import { InsertBotIntegration, InsertIntent } from "~/server/schema/bot";
+import { botDynamicFormSchema, InsertBotIntegration, InsertIntent } from "~/server/schema/bot";
 
 const db = useDrizzle();
 
@@ -282,3 +282,10 @@ export const deleteBotIntent = async (botId: string, intentId: string) => {
 
   return deletedIntent;
 };
+
+
+export const addDynamicFormValues = async (formValues: any) => {
+  return (
+    await db.insert(botDynamicFormSchema).values(formValues).returning()
+  )[0]
+}
