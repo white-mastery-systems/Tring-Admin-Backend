@@ -53,7 +53,8 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
         "voice": "aura-asteria-en"
     }
   }),
-  speechToTextConfig: jsonb("speech_to_text_config").default({
+  speechToTextConfig: jsonb("speech_to_text_config").default(
+  {
     "default": {
         "provider": "deepgram",
         "google": {
@@ -206,7 +207,8 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
             "amplification_factor": 2,
             "noise_gate": 0
         }
-    }
+    },
+    "language": "en-IN"
   }),
   clientConfig: jsonb("client_config").default({
     agent_name: "Jenna",
