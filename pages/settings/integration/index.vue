@@ -16,19 +16,19 @@
           ">
           Add
           {{
-            (() => {
-              if (route.query.q === "number") {
-                return "Exophone";
-              } else if (route.query.q === "crm") {
-                return "CRM";
-              } else if (route.query.q === "communication") {
-                return "Communication";
-              } else if (route.query.q === "ecommerce") {
-                return "E-Commerce";
-              } else {
-                return "CRM";
-              }
-            })()
+          (() => {
+          if (route.query.q === "number") {
+          return "Exophone";
+          } else if (route.query.q === "crm") {
+          return "CRM";
+          } else if (route.query.q === "communication") {
+          return "Communication";
+          } else if (route.query.q === "ecommerce") {
+          return "E-Commerce";
+          } else {
+          return "CRM";
+          }
+          })()
 
           }}
           Channel
@@ -39,6 +39,7 @@
       <UiTabsList
         class="grid w-[100%] grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 sm:w-[100%] md:w-[50%] lg:w-[60%] xl:w-[50%] h-[10%]">
         <UiTabsTrigger value="crm" @click="navigateToTab('crm')">
+
           CRM
         </UiTabsTrigger>
         <UiTabsTrigger value="communication" @click="navigateToTab('communication')">
@@ -54,22 +55,30 @@
       </UiTabsList>
       <UiTabsContent value="crm">
         <IntegrationTable v-model:integrationModalState="integrationModalState"
-          v-model:deleteIntegrationState="deleteIntegrationState" />
+          v-model:deleteIntegrationState="deleteIntegrationState" :integrateResponse="integrationsData"
+          :totalPageCount="totalPageCount" :totalCount="totalCount" :filters="filters" @action="handleAction"
+          @pagenation="Pagination" @limitChange="updateLimit" />
       </UiTabsContent>
       <UiTabsContent value="communication">
         <IntegrationTable v-model:integrationModalState="integrationModalState"
-          v-model:deleteIntegrationState="deleteIntegrationState" />
+          v-model:deleteIntegrationState="deleteIntegrationState" :integrateResponse="integrationsData"
+          :totalPageCount="totalPageCount" :totalCount="totalCount" :filters="filters" @action="handleAction"
+          @pagenation="Pagination" @limitChange="updateLimit" />
       </UiTabsContent>
       <UiTabsContent value="ecommerce">
         <IntegrationTable v-model:integrationModalState="integrationModalState"
-          v-model:deleteIntegrationState="deleteIntegrationState" />
+          v-model:deleteIntegrationState="deleteIntegrationState" :integrateResponse="integrationsData"
+          :totalPageCount="totalPageCount" :totalCount="totalCount" :filters="filters" @action="handleAction"
+          @pagenation="Pagination" @limitChange="updateLimit" />
       </UiTabsContent>
       <UiTabsContent value="number">
-        <NumberIntegration @action="handleAction" />
+        <NumberIntegration :integrateResponse="integrationsData" :totalPageCount="totalPageCount"
+          :totalCount="totalCount" :filters="filters" @action="handleAction" @pagenation="Pagination"
+          @limitChange="updateLimit" />
       </UiTabsContent>
     </UiTabs>
-    <ChannelModal v-model="channelModalState" @success="onSuccessChannel()" />
-    <NumberModal v-model="numberModalState" @success="onSuccessNumberIntegration()" />
+    <ChannelModal v-model="channelModalState" @success="onSuccess()" />
+    <NumberModal v-model="numberModalState" @success="onSuccess()" />
     <CreateEditIntegrationModal :title="findTitleForIntegrationModal()" v-model="integrationModalState"
       :id="integrationModalState?.id" @success="onSuccess()" />
   </Page>
@@ -95,7 +104,8 @@
           deleteSingleExoPhone({
             id: numberModalState.id,
             onSuccess: () => {
-              refresh();
+              integrationRefresh();
+              console.log('main --- main')
             },
           });
           deleteExoPhoneState.open = false;
@@ -123,7 +133,6 @@
 
   const router = useRouter();
   const route = useRoute();
-  const { refresh } = useCount();
   function findTitleForIntegrationModal() {
     if (route.query.q === "number") {
       return "Exophone";
@@ -139,7 +148,7 @@
     open: false,
   });
   const channelModalState = ref({ open: false, id: null });
-  const numberModalState = ref({ open: false, id: null });
+  const numberModalState: any = ref({ open: false, id: null });
   // const integrations = ref([]);
 
   let deleteIntegrationState = ref({
@@ -151,49 +160,83 @@
     id: null,
   });
   // const integrationsData = ref()
-  watch(route, (newValue) => {});
   // const q=ref('')
   let page = ref("1");
   let totalPageCount = ref(0);
   let totalCount = ref(0);
   const limit = ref("10");
+  const apiPathControler: any = ref("crm")
   const filters = computed(() => ({
-    q: route.query?.q ?? "crm",
-    page: page.value,
-    limit: limit.value,
-  }));
-  const {
-    status: integrationLoadingStatus,
-    data: integrationsData,
-    refresh: integrationRefresh,
-  } = await useLazyFetch("/api/org/integrations", {
-    server: false,
-    default: () => [],
-    query: filters,
-    transform: (integrations) => {
+        q: route.query?.q ?? "crm",
+        page: page.value,
+        limit: limit.value,
+      }));
+      // watch(route.query, () => {
+        //   console.log(route.query?.q, 'route.query?.q -- route.query?.q')
+        // })
+        // const filters = reactive({
+          //   q: "number",
+          //   page: page.value,
+          //   limit: limit.value,
+          // });
+const changepath = computed(() => {
+    if (route.query.q === 'number') {
+      return "/api/org/integrations/number-integration";
+    } else {
+      return "/api/org/integrations"; // Adjust as needed for your actual path
+    }
+  });
+          // const { fetchIntegrations, refreshNumberIntegration } = useIntegrations(filters);
+const {
+  data: integrationsData,
+  status,
+  refresh: integrationRefresh,
+} = await useLazyFetch(changepath, {
+  server: false,
+  default: () => [],
+  query: filters,
+  transform: (integrations: any) => {
+    if (changepath.value === "/api/org/integrations/number-integration") {
       page.value = integrations.page;
       totalPageCount.value = integrations.totalPageCount;
       totalCount.value = integrations.totalCount;
-      return integrations.data?.map((integration) => ({
+      return integrations.data;
+    } else {
+      page.value = integrations.page;
+      totalPageCount.value = integrations.totalPageCount;
+      totalCount.value = integrations.totalCount;
+      return integrations.data?.map((integration: any) => ({
         ...integration,
         status: integration?.metadata?.status ?? "Verified",
       }));
-    },
-  });
-
+    }
+  },
+});
+// watch(() => filters.q, (newValue) => {
+//   console.log(newValue, "newValue")
+//   apiPathControler.value = newValue; // Set apiPathControler to the new value of filters.q
+//   console.log(apiPathControler.value, "apiPathControler.value");
+// },{ deep: true });
   const onSuccess = () => {
-    integrationModalState.value.open = false;
-    toast.success("Integration added successfully");
-    integrationRefresh();
+    console.log(route.query.q, "route.query.q --- route.query.q")
+    if (route.query.q === 'number') {
+      numberModalState.value.open = false;
+      numberModalState.value.id = null;
+      integrationRefresh();
+    } else {
+      integrationModalState.value.open = false;
+    }
+    // toast.success("Integration added successfully");
+    // refreshNumberIntegration()
   };
-  const onSuccessNumberIntegration = () => {
-    numberModalState.value.open = false;
-  };
+  // const onSuccessNumberIntegration = () => {
+  //   numberModalState.value.open = false;
+  // };
 
-  const onSuccessChannel = () => {
-    channelModalState.value.open = false;
-    integrationRefresh();
-  };
+  // const onSuccessChannel = () => {
+  //   channelModalState.value.open = false;
+  //   integrationRefresh();
+  // };
 
   // const channelModal = () => {
   //   channelModalState.value.open = false
@@ -283,10 +326,20 @@
     if (modelControl === "edit") numberModalState.value.open = true;
     else deleteExoPhoneState.value.open = true;
     numberModalState.value.id = id;
+    integrationRefresh()
   };
 
-  const Pagination = async ($evnt) => {
-    page.value = $evnt;
-    integrationRefresh();
+  const Pagination = async (evnt: any) => {
+    console.log('asdfasf', evnt)
+    page.value = evnt;
+    console.log(page.value,'value --sdvsdv-dsv-dsvd-s')
+    // integrationRefresh();
   };
+
+const updateLimit = (newLimit: string) => {
+  console.log("Limit updated:", newLimit);
+  filters.value.limit = newLimit;
+  // integrationRefresh()
+  // fetchData(); // Fetch the data based on new limit
+};
 </script>
