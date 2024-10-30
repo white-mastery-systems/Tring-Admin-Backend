@@ -10,17 +10,24 @@ export async function regenerateAccessTokenForSlack({
   integrationData: any;
 }) {
   try {
-
+    // console.log({ integrationData })
     const response = await $fetch(
-      `https://slack.com/api/oauth.v2.access?client_id=${clientId}&client_secret=${clientSecret}&grant_type=refresh_token&refresh_token=${integrationData?.refresh_token}`,
+      "https://slack.com/api/oauth.v2.access",
       {
         method: "POST",
+        body: new URLSearchParams({
+          client_id: clientId,
+          client_secret: clientSecret,
+          grant_type: "refresh_token",
+          refresh_token: integrationData?.refresh_token,
+        }),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
       },
     );
-    console.log(`regenerating token: ${JSON.stringify(response)}`);
+   
+    // console.log(`regenerating token: ${JSON.stringify(response)}`);
     return response;
   } catch (error) {
     logger.info(

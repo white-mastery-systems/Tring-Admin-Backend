@@ -53,57 +53,160 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
         "voice": "aura-asteria-en"
     }
   }),
-  speechToTextConfig: jsonb("speech_to_text_config").default({
-    "provider": "deepgram",
-    "google": {
-        "adaptation": true,
-        "phrase_sets": [
-        ],
-        "encoding": "MULAW",
-        "sample_rate_hertz": 8000,
-        "audio_channel_count": 1,
-        "model": "short",
-        "intermediate_pause": 1,
-        "response_timeout": 1,
-        "recognizer": "projects/tringai-project1/locations/global/recognizers/english-in-short",
-        "amplification_factor": 3,
-        "noise_gate": 0
-    },
-    "azure": {
-        "phrase_list": [],
-        "encoding": "MULAW",
-        "sample_rate_hertz": 8000,
-        "audio_channel_count": 1,
-        "amplification_factor": 3,
-        "noise_gate": 0
-    },
-    "deepgram": {
-        "version": "1",
-        "encoding": "MULAW",
-        "live_options": {
-            "model": "nova-2",
-            "smart_format": true,
-            "channels": 1,
-            "sample_rate": 8000,
-            "interim_results": true,
-            "utterance_end_ms": "1000",
-            "vad_events": true,
-            "endpointing": 50,
-            "no_delay": true,
-            "punctuate": true,
-            "diarize": false,
-            "filler_words": false,
-            "numerals": true,
-            "profanity_filter": true,
-            "keywords": [
-            ]
+  speechToTextConfig: jsonb("speech_to_text_config").default(
+  {
+    "default": {
+        "provider": "deepgram",
+        "google": {
+            "adaptation": true,
+            "phrase_sets": [],
+            "encoding": "MULAW",
+            "sample_rate_hertz": 8000,
+            "audio_channel_count": 1,
+            "model": "short",
+            "intermediate_pause": 1,
+            "response_timeout": 1,
+            "recognizer": "projects/tringai-project1/locations/global/recognizers/english-in-short",
+            "amplification_factor": 3,
+            "noise_gate": 0
         },
-        "addons": {
-            "measurements": "true",
-            "dictation": "true"
+        "azure": {
+            "phrase_list": [],
+            "encoding": "MULAW",
+            "sample_rate_hertz": 8000,
+            "audio_channel_count": 1,
+            "amplification_factor": 3,
+            "noise_gate": 0
         },
-        "amplification_factor": 2,
-        "noise_gate": 0
+        "deepgram": {
+            "version": "1",
+            "encoding": "MULAW",
+            "live_options": {
+                "model": "nova-2",
+                "smart_format": true,
+                "channels": 1,
+                "sample_rate": 8000,
+                "interim_results": true,
+                "utterance_end_ms": "1000",
+                "vad_events": true,
+                "endpointing": 50,
+                "no_delay": true,
+                "punctuate": true,
+                "diarize": false,
+                "filler_words": false,
+                "numerals": true,
+                "profanity_filter": true,
+                "keywords": []
+            },
+            "addons": {
+                "measurements": "true",
+                "dictation": "true"
+            },
+            "amplification_factor": 2,
+            "noise_gate": 0
+        }
+    },
+    "exotel": {
+        "provider": "deepgram",
+        "google": {
+            "adaptation": true,
+            "phrase_sets": [],
+            "encoding": "LINEAR16",
+            "sample_rate_hertz": 8000,
+            "audio_channel_count": 1,
+            "model": "short",
+            "intermediate_pause": 1,
+            "response_timeout": 1,
+            "recognizer": "projects/tringai-project1/locations/global/recognizers/english-in-short",
+            "amplification_factor": 0,
+            "noise_gate": 0
+        },
+        "azure": {
+            "phrase_list": [],
+            "encoding": "LINEAR16",
+            "sample_rate_hertz": 8000,
+            "audio_channel_count": 1,
+            "amplification_factor": 0,
+            "noise_gate": 0
+        },
+        "deepgram": {
+            "version": "1",
+            "encoding": "LINEAR16",
+            "live_options": {
+                "model": "nova-2",
+                "smart_format": true,
+                "channels": 1,
+                "sample_rate": 8000,
+                "interim_results": true,
+                "utterance_end_ms": "1000",
+                "vad_events": true,
+                "endpointing": 50,
+                "no_delay": true,
+                "punctuate": true,
+                "diarize": false,
+                "filler_words": false,
+                "numerals": true,
+                "profanity_filter": true,
+                "keywords": []
+            },
+            "addons": {
+                "measurements": "true",
+                "dictation": "true"
+            },
+            "amplification_factor": 2,
+            "noise_gate": 0
+        }
+    },
+    "twilio": {
+        "provider": "deepgram",
+        "google": {
+            "adaptation": true,
+            "phrase_sets": [],
+            "encoding": "LINEAR16",
+            "sample_rate_hertz": 8000,
+            "audio_channel_count": 1,
+            "model": "short",
+            "intermediate_pause": 1,
+            "response_timeout": 1,
+            "recognizer": "projects/tringai-project1/locations/global/recognizers/english-in-short",
+            "amplification_factor": 0,
+            "noise_gate": 0
+        },
+        "azure": {
+            "phrase_list": [],
+            "encoding": "LINEAR16",
+            "sample_rate_hertz": 8000,
+            "audio_channel_count": 1,
+            "amplification_factor": 0,
+            "noise_gate": 0
+        },
+        "deepgram": {
+            "version": "1",
+            "encoding": "LINEAR16",
+            "live_options": {
+                "model": "nova-2",
+                "smart_format": true,
+                "channels": 1,
+                "sample_rate": 8000,
+                "interim_results": true,
+                "utterance_end_ms": "1000",
+                "vad_events": true,
+                "endpointing": 50,
+                "no_delay": true,
+                "punctuate": true,
+                "diarize": false,
+                "filler_words": false,
+                "numerals": true,
+                "profanity_filter": true,
+                "keywords": []
+            },
+            "addons": {
+                "measurements": "true",
+                "dictation": "true"
+            },
+            "amplification_factor": 2,
+            "noise_gate": 0
+        }
     },
     "language": "en-IN"
   }),
