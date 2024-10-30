@@ -13,7 +13,7 @@ export async function getAllChannelsFromSlack(integrationData: any, integrationI
     );
     if (
       (!data.ok && data?.error === "invalid_auth") ||
-      (!data.ok && data.error === "token_revoked") ||  (!data.ok && data.error === "token_expired")
+      (!data.ok && data.error === "token_revoked") || (!data.ok && data.error === "token_expired")
     ) {
       logger.error(`Slack access_token expired, ${JSON.stringify(data)}`);
       const newIntegrationData: any = await regenerateAccessTokenForSlack({
@@ -21,7 +21,12 @@ export async function getAllChannelsFromSlack(integrationData: any, integrationI
       });
       if(newIntegrationData.ok) {
         logger.error(`newIntegrationData, ${JSON.stringify(newIntegrationData)}`);
-        await updateIntegrationById(integrationId, {...integrationData, ...newIntegrationData})
+  
+        await updateIntegrationById(integrationId, { 
+          metadata: {
+          ...integrationData, 
+          ...newIntegrationData
+        }})
         return await getAllChannelsFromSlack(newIntegrationData, integrationId);
       }
     }
@@ -41,11 +46,13 @@ export async function joinSlackChannel({
   refreshToken,
   integrationData,
   channelId,
+  integrationId
 }: {
   token: string;
   refreshToken: String;
   integrationData: any;
   channelId: string;
+  integrationId: string
 }) {
   try {
     const data: any = await $fetch<any>(
@@ -62,18 +69,25 @@ export async function joinSlackChannel({
       },
     );
     logger.info(`${JSON.stringify(data)}`);
-    if (
+     if (
       (!data.ok && data?.error === "invalid_auth") ||
-      (!data.ok && data.error === "token_revoked")
+      (!data.ok && data.error === "token_revoked") || (!data.ok && data.error === "token_expired")
     ) {
-      console.log(`Slack access_token expired, ${JSON.stringify(data)}`);
+      // console.log(`Slack access_token expired, ${JSON.stringify(data)}`);
       const newIntegrationData: any = await regenerateAccessTokenForSlack({
         integrationData: integrationData,
       });
-      console.log("newIntegrationData", newIntegrationData);
-      return await getAllChannelsFromSlack(newIntegrationData?.access_token);
+      if(newIntegrationData.ok) { 
+        await updateIntegrationById(integrationId, { 
+          metadata: {
+          ...integrationData, 
+          ...newIntegrationData
+        }})
+      // console.log("newIntegrationData", newIntegrationData);
+      return await getAllChannelsFromSlack(newIntegrationData?.access_token, integrationId);
+      }
     }
-    console.log({ data });
+    // console.log({ data });
     return data;
   } catch (error: any) {
     logger.error(
@@ -82,10 +96,11 @@ export async function joinSlackChannel({
   }
 }
 
-export const createSlackMessage = async (
+export const createSlackMessage: any = async (
   integrationData: any,
   channelId: string,
   payload: any,
+  integrationId: any
 ) => {
   try {
     const data: any = await $fetch("https://slack.com/api/chat.postMessage", {
@@ -98,27 +113,34 @@ export const createSlackMessage = async (
         text: `Lead Generated :tada:\nName: ${payload?.name}\nEmail: ${payload?.email}\nPhone: ${payload?.phone}`,
       },
     });
-    console.log(
-      JSON.stringify({
-        method: "POST",
-        headers: {
-          authorization: `Bearer ${integrationData?.access_token}`,
-        },
-        body: {
-          channel: channelId,
-          text: `Lead Generated :tada:\nFirst Name: ${payload?.firstName}\nLast Name: ${payload?.lastName}\nEmail: ${payload?.email}\nPhone: ${payload?.countryCode}${payload?.mobile}`,
-        },
-      }),
-    );
-    console.log({ data: JSON.stringify(data) });
-    if (
+    // console.log(
+    //   JSON.stringify({
+    //     method: "POST",
+    //     headers: {
+    //       authorization: `Bearer ${integrationData?.access_token}`,
+    //     },
+    //     body: {
+    //       channel: channelId,
+    //       text: `Lead Generated :tada:\nFirst Name: ${payload?.firstName}\nLast Name: ${payload?.lastName}\nEmail: ${payload?.email}\nPhone: ${payload?.countryCode}${payload?.mobile}`,
+    //     },
+    //   }),
+    // );
+    // console.log({ data: JSON.stringify(data) });
+     if (
       (!data.ok && data?.error === "invalid_auth") ||
-      (!data.ok && data.error === "token_revoked")
-    ) {
-      const newIntegrationData = await regenerateAccessTokenForSlack({
+      (!data.ok && data.error === "token_revoked") || (!data.ok && data.error === "token_expired")
+    ){
+      const newIntegrationData: any = await regenerateAccessTokenForSlack({
         integrationData: integrationData,
       });
-      return await createSlackMessage(newIntegrationData, channelId, payload);
+      if(newIntegrationData.ok) {
+        await updateIntegrationById(integrationId, { 
+          metadata: {
+          ...integrationData, 
+          ...newIntegrationData
+        }})
+         return await createSlackMessage(newIntegrationData, channelId, payload, integrationId);
+      }
     }
 
     return data;
