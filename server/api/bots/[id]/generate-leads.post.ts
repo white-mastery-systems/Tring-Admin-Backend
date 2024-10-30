@@ -128,6 +128,7 @@ export default defineEventHandler(async (event) => {
           botIntegration?.integration?.metadata,
           botIntegration?.metadata?.channelId,
           payload,
+          botIntegration?.integration?.id
         );
       }
     } else if (botIntegration?.integration?.crm === "hubspot") {
@@ -202,7 +203,7 @@ export default defineEventHandler(async (event) => {
           Last_Name: lastName ?? firstName,
           Email: body?.botUser?.email,
           Mobile: body?.botUser?.mobile,
-          Title: body?.botUser?.name,
+          // Title: body?.botUser?.name,
         }
         let textContent = Object.entries(payload)
         .map(([key, value]) => `${key}: ${value}`)
