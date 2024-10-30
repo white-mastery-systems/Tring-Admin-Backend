@@ -1,58 +1,54 @@
 <template>
-  <DataTable
-    @pagination="Pagination"
-    @limit="
-      ($event) => {
-        (page = '1'), (limit = $event);
-      }
-    "
-    :totalPageCount="totalPageCount"
-    :page="page"
-    :totalCount="totalCount"
-    :columns="columns"
-    :data="integrationsData"
-    :page-size="8"
-    :is-loading="false"
-    :height="17"
-    :heightUnit="'vh'"
-  />
+  <DataTable @pagination="Pagination" @limit="changeLimit" :totalPageCount="props.totalPageCount"
+    :page="parseInt(props.filters.page)" :totalCount="props.totalCount" :columns="columns" :data="integrateResponse"
+    :page-size="8" :is-loading="false" :height="17" :heightUnit="'vh'" />
 </template>
 <script setup lang="ts">
   import { Icon, UiBadge, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
+const props: any = withDefaults(defineProps<{
+  integrateResponse: Array<any>; // Define the type according to your data structure
+  totalPageCount: number;
+  totalCount: number;
+  filters: {
+    page: any;
+    limit: string;
+  };
+}>(), {
+  totalPageCount: 0,
+  totalCount: 0,
+  filters: {
+    page: '1',
+    limit: '10',
+  },
+});
+const emit = defineEmits<{
+  (e: "action", id: any, integrationModalState: string): void;
+  (e: 'pagenation', page: number): void;
+  (e: 'limitChange', limit: string): void; // Emit limit change event
+}>();
 
-  let page = ref<string>("1");
-
-  let totalPageCount = ref(0);
-  let totalCount = ref(0);
-  const limit = ref("10");
-  const route = useRoute();
-  const filters = computed(() => ({
-    q: route.query?.q ?? "crm",
-    page: page.value,
-    limit: limit.value,
-  }));
   const integrationModalState = defineModel<any>("integrationModalState");
   const deleteIntegrationState = defineModel<any>("deleteIntegrationState");
 
-  const {
-    status: integrationLoadingStatus,
-    data: integrationsData,
-    refresh: integrationRefresh,
-  } = await useLazyFetch("/api/org/integrations", {
-    server: false,
-    default: () => [],
-    query: filters,
-    transform: (integrations: any) => {
-      page.value = integrations.page;
-      totalPageCount.value = integrations.totalPageCount;
-      totalCount.value = integrations.totalCount;
-      return integrations.data?.map((integration: any) => ({
-        ...integration,
-        status: integration?.metadata?.status ?? "Verified",
-      }));
-    },
-  });
+  // const {
+  //   status: integrationLoadingStatus,
+  //   data: integrationsData,
+  //   refresh: integrationRefresh,
+  // } = await useLazyFetch("/api/org/integrations", {
+  //   server: false,
+  //   default: () => [],
+  //   query: filters,
+  //   transform: (integrations: any) => {
+  //     page.value = integrations.page;
+  //     totalPageCount.value = integrations.totalPageCount;
+  //     totalCount.value = integrations.totalCount;
+  //     return integrations.data?.map((integration: any) => ({
+  //       ...integration,
+  //       status: integration?.metadata?.status ?? "Verified",
+  //     }));
+  //   },
+  // });
 
   const actionsComponent = (id: any) =>
     h(
@@ -124,8 +120,10 @@
       },
     }),
   ];
-  const Pagination = async ($evnt: any) => {
-    page.value = $evnt;
-    integrationRefresh();
-  };
+const Pagination = async ($event: any) => {
+  emit('pagenation', $event)
+};
+const changeLimit = ($event: any) => {
+  emit('limitChange', $event); // Emit limit change event
+};
 </script>

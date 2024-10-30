@@ -16,7 +16,7 @@
         (filters.page = '1'), (filters.limit = $event);
       }
         " @pagination="Pagination" :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount"
-        :data="callLogData" :columns="columns" :is-loading="isDataLoading" :page-size="8" :height="15"
+        :data="callLogData" :columns="columns" :is-loading="isDataLoading" :page-size="20" :height="16"
         height-unit="vh" />
       <!-- <DataTable :data="leads" :is-loading="false" :columns="columns" :page-size="8" :height="80" height-unit="vh" /> -->
     </Page>
@@ -144,5 +144,17 @@ const columnHelper = createColumnHelper<typeof callLogData.value>();
 const Pagination = async ($evnt: any) => {
   filters.page = $evnt;
   getAllBotCallLogs();
+};
+
+const onDateChange = (value: any) => {
+  if (value.from && value.to) {
+    filters.from = value.from;
+    filters.to = value.to;
+  } else {
+    delete filters.from;
+    delete filters.to;
+    filters.period = value;
+  }
+  filters.page = "1";
 };
 </script>
