@@ -269,12 +269,18 @@ import { toast } from "vue-sonner";
       helperText: "Add your intents Eg: Location Virtual Tour etc...",
       routeName: "bot-management-chat-bot-id-intent-management",
     },
-    // {
-    //   _id: 7,
-    //   bot: "Email Configuration",
-    //   helperText: "Configure the email settings for your bot",
-    //   routeName: "bot-management-chat-bot-id-email-editor",
-    // },
+    {
+      _id: 7,
+      bot: "Dynamic Form",
+      helperText: "Define the fields for your dynamic form. Each field should include details like type, label, placeholder, and whether it's required.",
+      routeName: "bot-management-chat-bot-id-dynamic-form",
+    },
+    {
+      _id: 8,
+      bot: "Email Configuration",
+      helperText: "Configure the email settings for your bot",
+      routeName: "bot-management-chat-bot-id-email-editor",
+    },
   ]);
 
   const dateFormate = computed(() => {

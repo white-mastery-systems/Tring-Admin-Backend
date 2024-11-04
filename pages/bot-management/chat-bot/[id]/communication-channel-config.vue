@@ -7,7 +7,7 @@
         to: `/bot-management/chat-bot/${botDetails.id}`,
       },
       {
-        label: 'CRM Configuration',
+        label: 'Channel Configuration',
         to: `/bot-management/chat-bot/${botDetails.id}/communication-channel-config`,
       },
     ]"

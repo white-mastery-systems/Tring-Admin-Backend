@@ -35,9 +35,17 @@
               >
             </span> -->
             <div class="flex items-center gap-3">
-              <UiButton class="bg-[#424bd1] hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px]"
-                @click="handleActivateBot" :disabled="botDetails.active">
-                Activate Bot</UiButton>
+              <div class="flex flex-col items-center gap-1">
+                <UiButton
+                  class="bg-[#424bd1] p-2 hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px]"
+                  @click="handleActivateBot" :disabled="botDetails.active">
+                  <span class="hidden lg:inline"> Activate Bot </span>
+                  <span class="flex flex-col items-center justify-center lg:hidden">
+                    <component :is="Bot"></component>
+                  </span>
+                </UiButton>
+                <div class="block text-[4px] lg:hidden">Activate Bot</div>
+              </div>
               <span class="flex items-center gap-4">
                 <div class="flex flex-col items-center gap-1">
                   <UiButton
@@ -50,7 +58,7 @@
                       <Icon name="bx:block" class="h-5 w-5" />
                     </span>
                   </UiButton>
-                  <div class="block text-[7px] lg:hidden">Deactivate Bot</div>
+                  <div class="block text-[4px] lg:hidden">Deactivate Bot</div>
                 </div>
 
                 <ConfirmationModal v-model:open="modalOpen" title="Confirm Deactivation"
@@ -63,7 +71,7 @@
                       <Icon name="entypo:controller-play" class="h-5 w-5" />
                     </span>
                   </UiButton>
-                  <div class="block text-[7px] lg:hidden">Preview Bot</div>
+                  <div class="block text-[4px] lg:hidden">Preview Bot</div>
                 </div>
                 <div class="flex flex-col items-center gap-1">
                   <UiButton class="bg-[#e1dede] p-2 text-black hover:bg-[#d4d2d2]" @click="copyScript">
@@ -72,7 +80,7 @@
                       <Icon name="mdi:content-copy" class="h-4 w-4 px-1 text-white" />
                     </span>
                   </UiButton>
-                  <div class="block text-[7px] lg:hidden">Copy Script</div>
+                  <div class="block text-[4px] lg:hidden">Copy Script</div>
                 </div>
               </span>
               <div class="flex flex-col items-center gap-1">
@@ -80,7 +88,7 @@
                   class="bg-[#ff0000] p-2 hover:bg-[#ff0000]/90 hover:brightness-90">
                   <Icon name="lucide:trash-2" class="h-4 w-4" />
                 </UiButton>
-                <div class="block text-[7px] lg:hidden">Delete</div>
+                <div class="block text-[4px] lg:hidden">Delete</div>
               </div>
               <ConfirmationModal v-model:open="deleteModalState" title="Are you sure?"
                 description="Are you sure you want to delete voice bot ?" @confirm="handleDeleteBot" />
@@ -110,7 +118,7 @@
                 await singleDocumentDeploy(list);
               }
               ">
-              <!-- isSubmitting = true; -->
+            <!-- isSubmitting = true; -->
             {{ list.name }}
           </UiButton>
         </UiDialogContent>
@@ -147,6 +155,7 @@
   import { useClipboard } from "@vueuse/core";
   import { ref } from "vue";
   import { toast } from "vue-sonner";
+  import { Bot } from "lucide-vue-next";
   const router = useRouter();
   // const selectedValue = ref("Today");
   const route = useRoute("bot-management-voice-bot-id");

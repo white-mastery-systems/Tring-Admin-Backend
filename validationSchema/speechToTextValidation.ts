@@ -20,9 +20,14 @@ export const speechToTextValidation = z.object({
   language: z.string().min(1, "Language is required"),
   adaptation: z.boolean().optional(),
   model: z.string().optional(),
+  // amplificationFactor: z
+  //   .number()
+  //   .min(1, "Amplification Factor is required"),
   amplificationFactor: z
     .number()
-    .min(1, "Amplification Factor is required"),
+    .refine((val) => val > 0, {
+      message: "Amplification Factor is required",
+    }),
   utteranceEndMs: z.string().optional(),
   endpointing: z
     .number()
@@ -33,6 +38,9 @@ export const speechToTextValidation = z.object({
     boostValue: z.string().optional(),
   })).optional(),
   phraseSets: z.array(z.object({
+    value: z.string().optional(),
+  })).optional(),
+  phraseLists: z.array(z.object({
     value: z.string().optional(),
   })).optional(),
 }).refine((data) => {

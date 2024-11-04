@@ -57,6 +57,21 @@
                   </UiTooltip>
                 </div>
               </div>
+              <div class="flex gap-2 mt-3">
+                <div v-for="[key, value] in details[0]" :key="key" class="flex gap-2">
+                  <a v-if="key === 'Mobile'" :href="`https://wa.me/${value}`" target="_blank" rel="noopener noreferrer">
+                    <UiButton color="primary">Whatsapp</UiButton>
+                  </a>
+                  <!-- <a v-if="key === 'Mobile'">
+                    <UiButton color="primary">Call</UiButton>
+                  </a> -->
+                  <a v-if="key === 'Email'"
+                    :href="`https://mail.google.com/mail/?view=cm&fs=1&to=${value}&su=Your%20Subject&body=Your%20message%20here`"
+                    target="_blank" rel="noopener noreferrer">
+                    <UiButton color="primary">Email</UiButton>
+                  </a>
+                </div>
+              </div>
             </UiTabsContent>
           </UiTooltipProvider>
 
