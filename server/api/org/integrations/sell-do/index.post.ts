@@ -161,6 +161,6 @@ export default defineEventHandler(async (event) => {
   //   templateName,
   //   components,
   // );
-  return true;
+  return {success:true};
   // return true
 });

@@ -83,6 +83,10 @@ export const userRelations = relations(authUserSchema, ({ many, one }) => ({
     references: [organizationSchema.id],
   }),
   billsPaid: many(paymentSchema),
+  userRole: one(authUserRoleSchema, {
+    fields: [authUserSchema.roleId],
+    references: [authUserRoleSchema.id],
+  })
 }));
 
 export const sessionRelations = relations(authSessionSchema, ({ one }) => ({
