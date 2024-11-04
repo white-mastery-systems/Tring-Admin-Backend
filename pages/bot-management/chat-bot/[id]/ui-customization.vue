@@ -166,9 +166,23 @@
                 <span class="text-xs text-gray-500">Open chat ribbon by default</span>
               </UiFormItem>
             </UiFormField>
+
+            <UiFormField v-slot="{ value, handleChange }" name="dynamicForm">
+              <UiFormItem class="w-[49%]">
+                <div class="flex justify-between">
+                  <UiLabel class="text-base font-medium">Dynamic Form</UiLabel>
+                  <UiFormControl>
+                    <UiSwitch id="defaultRibbon" :checked="value" @update:checked="handleChange"
+                      :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
+                  </UiFormControl>
+                  <UiFormMessage />
+                </div>
+                <span class="text-xs text-gray-500">Show dynamic form </span>
+              </UiFormItem>
+            </UiFormField>
           </div>
 
-          <div class="my-auto flex w-full justify-end pb-2">
+          <div class="my-auto flex w-full justify-end py-2">
             <UiButton type="submit" color="primary" size="lg" :loading="isLoading">
               Submit
             </UiButton>
@@ -205,6 +219,7 @@
       generateLead: z.boolean().optional(),
       onlineStatus: z.boolean().optional(),
       defaultRibbon: z.boolean().optional(),
+      dynamicForm: z.boolean().optional(),
     }),
   );
   const animationProps = {
@@ -244,6 +259,7 @@ setFieldValue("onlineStatus", (botDetails.metadata.ui.onlineStatus ?? true))
 setFieldValue("generateLead", (botDetails.metadata.ui.generateLead ?? true))
 setFieldValue("defaultRibbon", (botDetails.metadata.ui.defaultRibbon ?? true))
 setFieldValue("fontFamily", (botDetails.metadata?.ui.fontFamily ?? "Kanit"))
+setFieldValue("dynamicForm", (botDetails.metadata?.ui?.dynamicForm ?? false))
 
 watchEffect(() => {
   if (botDetails) {
@@ -270,7 +286,8 @@ const uiUpdate = handleSubmit(async (value: any) => {
           widgetSound: value.widgetSound,
           fontFamily: value.fontFamily,
           generateLead: value.generateLead,
-          defaultRibbon: value.defaultRibbon
+          defaultRibbon: value.defaultRibbon,
+          dynamicForm: value.dynamicForm
         },
         prompt: {
           ...botDetails.metadata.prompt,
