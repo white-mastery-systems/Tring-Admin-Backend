@@ -20,7 +20,7 @@
     middleware: "admin-only",
   });
   useHead({
-    title: `Chat Bot | Assets`,
+    title: "Chat Bot | Assets",
   });
 
   import { ref } from "vue";

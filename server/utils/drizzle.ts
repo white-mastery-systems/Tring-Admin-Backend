@@ -55,7 +55,8 @@ const schema = {
   analyticsRelations,
   contactListAndContactsRelations,
   callLogsRelations,
-  voicebotRelations
+  voicebotRelations,
+  userRelations
 };
 
 const db = drizzle(queryClient, { schema });
