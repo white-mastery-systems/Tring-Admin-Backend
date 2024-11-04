@@ -109,6 +109,10 @@
       label: "Brochures",
       value: "brochures",
     },
+    {
+      label: "Form",
+      value: "form",
+    }
   ];
   const emit = defineEmits(["success"]);
   const botDetails: any = await getBotDetails(route.params.id);

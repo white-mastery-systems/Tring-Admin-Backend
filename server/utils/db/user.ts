@@ -78,6 +78,13 @@ export const getOrgUsers = async (orgId: string, query?: any) => {
       ne(authUserSchema.role, "admin"),
       query?.q ? ilike(authUserSchema.username, `%${query.q}%`) : undefined
     ),
+    with: {
+      userRole: {
+        columns: {
+          name: true
+        }
+      }
+    },
     orderBy: [desc(authUserSchema.createdAt)]
   })
    

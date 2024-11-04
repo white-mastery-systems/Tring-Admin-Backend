@@ -49,6 +49,7 @@ export default defineEventHandler(async (event) => {
       refreshToken: integrationData?.metadata?.refresh_token,
       integrationData: integrationData?.metadata,
       channelId: body?.channelId,
+      integrationId: integrationData?.id,
     });
   }
   const bot = await createBotIntegration({
