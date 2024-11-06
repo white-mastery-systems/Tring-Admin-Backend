@@ -129,33 +129,48 @@
           placeholder="Enter your project id"
         />
       </div>
-  
-          <SelectField
-            v-if="
-              integrationsData.find(
-                (integration) => integration.id === values.integrationId,
-              )?.crm === 'hubspot'
-            "
-            name="stage"
-            label="pipeLine"
-            placeholder="Select Stage"
-            :options="[
-              { label: 'Appointment Scheduled', value: 'appointmentscheduled' },
-              { label: 'Qualified to Buy', value: 'qualifiedtobuy' },
-              {
-                label: 'Presentation Scheduled',
-                value: 'presentationscheduled',
-              },
-              {
-                label: 'Decision Maker Bought-In',
-                value: 'decisionmakerboughtin',
-              },
-              { label: 'Contract Sent', value: 'contractsent' },
-              { label: 'Closed Won', value: 'closedwon' },
-              { label: 'Closed Lost', value: 'closedlost' },
-            ]"
-            :required="true"
-          />
+
+      <div
+        class="flex flex-col gap-3"
+        v-if="
+          integrationsData.find(
+            (integration) => integration.id === values.integrationId,
+          )?.crm === 'reserve-go'
+        "
+      >
+        <TextField
+          name="restaurantId"
+          label="Restaurant Id"
+          placeholder="Enter Your Restaurant Id"
+        />
+      </div>
+
+      <SelectField
+        v-if="
+          integrationsData.find(
+            (integration) => integration.id === values.integrationId,
+          )?.crm === 'hubspot'
+        "
+        name="stage"
+        label="pipeLine"
+        placeholder="Select Stage"
+        :options="[
+          { label: 'Appointment Scheduled', value: 'appointmentscheduled' },
+          { label: 'Qualified to Buy', value: 'qualifiedtobuy' },
+          {
+            label: 'Presentation Scheduled',
+            value: 'presentationscheduled',
+          },
+          {
+            label: 'Decision Maker Bought-In',
+            value: 'decisionmakerboughtin',
+          },
+          { label: 'Contract Sent', value: 'contractsent' },
+          { label: 'Closed Won', value: 'closedwon' },
+          { label: 'Closed Lost', value: 'closedlost' },
+        ]"
+        :required="true"
+      />
       <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
         Save changes
       </UiButton>
@@ -173,7 +188,7 @@
   const subPipelines = ref<any>([]);
   const isLoading = ref(false);
 
-  const modalState = defineModel<{ open: boolean }>({
+  const modalState = defineModel<{ open: boolean, }>({
     default: { open: false },
     required: true,
   });
@@ -257,12 +272,11 @@
             } else if (selectedCrm?.crm === "sell-do") {
               setFieldValue("campaignId", crmConfigData?.metadata?.campaignId);
               setFieldValue("projectId", crmConfigData?.metadata?.projectId);
+            } else if (selectedCrm?.crm === "hubspot") {
+              setFieldValue("stage", crmConfigData?.metadata?.stage);
+            } else if (selectedCrm?.crm === "reserve-go") {
+              setFieldValue("restaurantId", crmConfigData?.metadata?.restaurantId);
             }
-              else if (selectedCrm?.crm === "hubspot") {
-                setFieldValue(
-                "stage",
-                crmConfigData?.metadata?.stage,
-              )}
           }
         } catch (error) {
           console.error("Error fetching CRM config data:", error);

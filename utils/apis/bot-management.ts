@@ -214,7 +214,7 @@ export const addVoiceBotIntegration = async ({
 }) => {
   try {
     const createdBot = await $fetch<SelectChatBot>(
-      `/api/bots/${payload.botId}/integrations`,
+      `/api/voicebots/${payload.botId}/integrations`,
       {
         method: "POST",
         body: payload,
