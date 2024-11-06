@@ -1,6 +1,6 @@
 import { logger } from "~/server/logger";
 
-const reverseGoBaseUrl = " https://stagingapi.reservego.co"
+const reverseGoBaseUrl = "https://stagingapi.reservego.co"
 
 export const createNewReservation = async (integrationData: any, reqObj : any) => {
   try {

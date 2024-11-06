@@ -10,7 +10,7 @@ const zodReservegoValidation = z.object({
     .datetime({ offset: true })
     .nullish()
     .transform((val) => (val ? new Date(val) : null)),
-  generatedTime:z
+  generatedTime: z
     .string()
     .datetime({ offset: true })
     .nullish()
@@ -57,5 +57,11 @@ export default defineEventHandler(async (event) => {
   }
   
   const data = await createNewReservation({ restaurantId, apiKey }, body)
+  if(!data.status) {
+    return sendError(
+      event,
+      createError({ statusCode: 500, statusMessage: "Unable to create reservation" }),
+    );
+  }
   return data
 })
