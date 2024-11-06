@@ -683,7 +683,7 @@ export const getAnalytics = async (
         }
       }),
     ]
-      .filter((item) => item !== null)
+      .filter((item) => item !== undefined)
       .sort((a, b) => (b?.value ?? 0) - (a?.value ?? 0));
 
     return {

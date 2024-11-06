@@ -168,7 +168,6 @@
   watch(
     () => values.pipelineId,
     (newValue) => {
-      console.log({ newValue });
       handlePipelineChange(newValue);
     },
   );

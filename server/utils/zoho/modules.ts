@@ -30,9 +30,10 @@ export function getAllPipelinesFromZohoBigin({
       }).then(async (data: any) => {
         if (data?.access_token)
           updateIntegrationById(integrationData.id, {
+           metadata:{
             ...integrationData.metadata,
             access_token: data?.access_token,
-          });
+          }});
         return getAllPipelinesFromZohoBigin({
           token: data?.access_token,
           refreshToken: "",
@@ -76,9 +77,10 @@ export async function getAllSubPipelinesFromZohoBigin({
       }).then(async (data: any) => {
         if (data?.access_token)
           updateIntegrationById(integrationData.id, {
+          metadata:{
             ...integrationData.metadata,
             access_token: data?.access_token,
-          });
+          }});
         return getAllSubPipelinesFromZohoBigin({
           token: data?.access_token,
           refreshToken: "",
@@ -169,8 +171,10 @@ export async function generateLeadInZohoBigin({
       });
       if (newlyGeneratedData?.access_token)
         updateIntegrationById(integrationData.id, {
+          metadata: {
           ...integrationData.metadata,
           access_token: newlyGeneratedData?.access_token,
+          }
         });
       return generateLeadInZohoBigin({
         token: newlyGeneratedData?.access_token,
@@ -237,9 +241,10 @@ export async function generateContactInZohoBigin({
 
       if (generatedData?.access_token)
         updateIntegrationById(integrationData.id, {
+        metadata:{
           ...integrationData.metadata,
           access_token: generatedData?.access_token,
-        });
+        }});
       return generateContactInZohoBigin({
         token: generatedData?.access_token,
         refreshToken: "",
@@ -249,6 +254,64 @@ export async function generateContactInZohoBigin({
     }
   }
 }
+
+export async function updateNotesInZohoBigin({
+  zohoBiginLeadId,
+  token,
+  refreshToken,
+  body,
+  integrationData,
+}: {
+  zohoBiginLeadId: string
+  token: string;
+  refreshToken: String;
+  body: any;
+  integrationData: any;
+}) {
+  try{
+    const data = await $fetch(`https://www.zohoapis.in/bigin/v2/Pipelines/${zohoBiginLeadId}/Notes`, {
+      method: "POST",
+      body: { 
+        data: [
+          {
+            "Note_Title": body
+          }
+        ],
+      },
+      headers: {
+        Authorization: `Zoho-oauthtoken ${token}`,
+      },
+    });
+    logger.debug(`updateNotesInZohoBigin: ${JSON.stringify(data)}`);
+    return data;
+  }
+  catch (err: any) {
+    logger.error(
+      `updateNotesInZohoBigin -zohoBiginLeadId: ${zohoBiginLeadId} token: ${token},refreshToken: ${refreshToken},body: ${JSON.stringify(body)},integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
+    );
+    if (!refreshToken) return;
+    if (err.status === 401) {
+      const generatedData: any = await regenearateTokenWithRefreshToken({
+        refreshToken: refreshToken,
+      });
+
+      if (generatedData?.access_token)
+        updateIntegrationById(integrationData.id,{ 
+        metadata:{
+          ...integrationData.metadata,
+          access_token: generatedData?.access_token,
+        }});
+      return updateNotesInZohoBigin({
+        zohoBiginLeadId,
+        token: generatedData?.access_token,
+        refreshToken: "",
+        body: body,
+        integrationData: integrationData,
+      });
+    }
+  }
+}
+
 
 export function getFieldMetadataFromZohoBigin({
   token,
@@ -281,9 +344,10 @@ export function getFieldMetadataFromZohoBigin({
       }).then(async (data: any) => {
         if (data?.access_token)
           updateIntegrationById(integrationData.id, {
+          metadata:{
             ...integrationData.metadata,
             access_token: data?.access_token,
-          });
+          }});
         return getFieldMetadataFromZohoBigin({
           token: data?.access_token,
           refreshToken: "",
@@ -326,9 +390,10 @@ export function getAllLayoutsFromZohoCRM({
       }).then(async (data: any) => {
         if (data?.access_token)
           updateIntegrationById(integrationData.id, {
+          metadata: {
             ...integrationData.metadata,
             access_token: data?.access_token,
-          });
+          }});
         return getAllLayoutsFromZohoCRM({
           token: data?.access_token,
           refreshToken: "",
@@ -366,10 +431,11 @@ export function getFieldMetadataFromZohoCRM({
         refreshToken: refreshToken,
       }).then(async (data: any) => {
         if (data?.access_token)
-          updateIntegrationById(integrationData.id, {
+          updateIntegrationById(integrationData.id,{ 
+          metadata:{
             ...integrationData.metadata,
             access_token: data?.access_token,
-          });
+          }});
         return getFieldMetadataFromZohoBigin({
           token: data?.access_token,
           refreshToken: "",
@@ -454,9 +520,10 @@ export async function generateLeadInZohoCRM({
       }).then(async (data: any) => {
         if (data?.access_token)
           updateIntegrationById(integrationData.id, {
+          metadata:{
             ...integrationData.metadata,
             access_token: data?.access_token,
-          });
+          }});
         return generateLeadInZohoCRM({
           token: data?.access_token,
           refreshToken: "",

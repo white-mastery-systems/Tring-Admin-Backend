@@ -60,6 +60,7 @@ export default defineNuxtConfig({
     public: {
     googleAnalyticsId: "",
     voiceBotUrl:"",
+    adminUrl: process.env.NUXT_ADMIN_URL || "",
     },
   },
 

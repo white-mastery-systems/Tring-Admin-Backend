@@ -293,28 +293,28 @@ const { handleSubmit, setFieldValue, values, resetForm, errors } = useForm({
 
 watch(botData, () => {
   // setFieldValue("language", botData.value.speechToTextConfig.language);
-  setFieldValue("provider", botData.value.textToSpeechConfig.provider);
+  setFieldValue("provider", botData.value?.textToSpeechConfig.provider);
   
-  setFieldValue("pitch", botData.value.textToSpeechConfig?.google.pitch);
-  setFieldValue("name", botData.value.textToSpeechConfig?.google.name);
-  setFieldValue("elevenlabsvoice", botData.value.textToSpeechConfig?.elevenlabs.voice);
-  setFieldValue("model", botData.value.textToSpeechConfig?.elevenlabs.model);
-  if (botData.value.textToSpeechConfig.voiceType) {
-    setFieldValue("voiceType", botData.value.textToSpeechConfig.voiceType);
+  setFieldValue("pitch", botData.value?.textToSpeechConfig?.google.pitch);
+  setFieldValue("name", botData.value?.textToSpeechConfig?.google.name);
+  setFieldValue("elevenlabsvoice", botData.value?.textToSpeechConfig?.elevenlabs.voice);
+  setFieldValue("model", botData.value?.textToSpeechConfig?.elevenlabs.model);
+  if (botData.value?.textToSpeechConfig.voiceType) {
+    setFieldValue("voice", botData.value?.textToSpeechConfig.voiceType);
   }
-  setFieldValue("speakingRate", botData.value.textToSpeechConfig?.google.speaking_rate);
-  setFieldValue("volumeGrainDb", botData.value.textToSpeechConfig?.google.volume_gain_db);
-    setFieldValue("stability", botData.value.textToSpeechConfig?.elevenlabs.stability);
+  setFieldValue("speakingRate", botData.value?.textToSpeechConfig?.google.speaking_rate);
+  setFieldValue("volumeGrainDb", botData.value?.textToSpeechConfig?.google.volume_gain_db);
+    setFieldValue("stability", botData.value?.textToSpeechConfig?.elevenlabs.stability);
     setFieldValue(
       "similarityBoost",
-      botData.value.textToSpeechConfig?.elevenlabs.similarity_boost,
+      botData.value?.textToSpeechConfig?.elevenlabs.similarity_boost,
     );
-    setFieldValue("style", botData.value.textToSpeechConfig?.elevenlabs.style);
+    setFieldValue("style", botData.value?.textToSpeechConfig?.elevenlabs.style);
     setFieldValue(
       "useSpeakerBoost",
-      botData.value.textToSpeechConfig.elevenlabs.use_speaker_boost,
+      botData.value?.textToSpeechConfig.elevenlabs.use_speaker_boost,
     );
-    setFieldValue("voice", botData.value.textToSpeechConfig?.deepgram.voice);
+    setFieldValue("voice", botData.value?.textToSpeechConfig?.deepgram.voice);
 }, { deep: true })
 watch(errors, (newValues) => {
   console.log(newValues, values);
@@ -326,26 +326,28 @@ watch(errors, (newValues) => {
 watch(
   () => toRaw(values.provider),
   (newValue) => {
-    setFieldValue("pitch", botData.value.textToSpeechConfig?.google.pitch);
-    setFieldValue("name", botData.value.textToSpeechConfig?.google.name);
-    setFieldValue("elevenlabsvoice", botData.value.textToSpeechConfig?.elevenlabs.voice);
-    setFieldValue("model", botData.value.textToSpeechConfig?.elevenlabs.model);
-    // if (botData.value.textToSpeechConfig.voiceType) {
-    //   setFieldValue("voiceType", botData.value.textToSpeechConfig.voiceType);
+    console.log(values.model, "values.model")
+    console.log(((values.model !== undefined || values.model !== ''), "values.model !== undefined"))
+    setFieldValue("pitch", botData.value?.textToSpeechConfig?.google.pitch);
+    setFieldValue("name", botData.value?.textToSpeechConfig?.google.name);
+    setFieldValue("elevenlabsvoice", botData.value?.textToSpeechConfig?.elevenlabs.voice);
+    setFieldValue("model", botData.value?.textToSpeechConfig?.elevenlabs.model);
+    // if (botData.value?.textToSpeechConfig.voiceType) {
+    //   setFieldValue("voiceType", botData.value?.textToSpeechConfig.voiceType);
     // }
-    setFieldValue("speakingRate", botData.value.textToSpeechConfig?.google.speaking_rate);
-    setFieldValue("volumeGrainDb", botData.value.textToSpeechConfig?.google.volume_gain_db);
-    setFieldValue("stability", botData.value.textToSpeechConfig?.elevenlabs.stability);
+    setFieldValue("speakingRate", botData.value?.textToSpeechConfig?.google.speaking_rate);
+    setFieldValue("volumeGrainDb", botData.value?.textToSpeechConfig?.google.volume_gain_db);
+    setFieldValue("stability", botData.value?.textToSpeechConfig?.elevenlabs.stability);
     setFieldValue(
       "similarityBoost",
-      botData.value.textToSpeechConfig?.elevenlabs.similarity_boost,
+      botData.value?.textToSpeechConfig?.elevenlabs.similarity_boost,
     );
-    setFieldValue("style", botData.value.textToSpeechConfig?.elevenlabs.style);
+    setFieldValue("style", botData.value?.textToSpeechConfig?.elevenlabs.style);
     setFieldValue(
       "useSpeakerBoost",
-      botData.value.textToSpeechConfig.elevenlabs.use_speaker_boost,
+      botData.value?.textToSpeechConfig.elevenlabs.use_speaker_boost,
     );
-    setFieldValue("voice", botData.value.textToSpeechConfig?.deepgram.voice);
+    setFieldValue("voice", botData.value?.textToSpeechConfig?.deepgram.voice);
   })
 
   watchEffect(() => {
@@ -359,38 +361,38 @@ watch(
 
 const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true;
-
+  console.log(values.model !== undefined, "values.model !== undefined")
   const updatedConfig = {
     // Use submitted provider or fallback to existing one
-    provider: values.provider || botData.value.textToSpeechConfig.provider || 'google', // Default to 'google'
+    provider: values.provider || botData.value?.textToSpeechConfig.provider || 'google', // Default to 'google'
 
     // Google config
     google: {
-      ...botData.value.textToSpeechConfig.google, // Keep existing Google config
-      name: values.name !== undefined ? values.name : botData.value.textToSpeechConfig.google.name || "en-IN-Neural2-A",
-      speaking_rate: values.speakingRate !== undefined ? values.speakingRate : botData.value.textToSpeechConfig.google.speaking_rate || 1,
-      pitch: values.pitch !== undefined ? values.pitch : botData.value.textToSpeechConfig.google.pitch || 1,
-      volume_gain_db: values.volumeGrainDb !== undefined ? values.volumeGrainDb : botData.value.textToSpeechConfig.google.volume_gain_db || 0.5,
-      effects_profile_id: botData.value.textToSpeechConfig.google.effects_profile_id || ["telephony-class-application"], // Fallback to default
+      // ...botData.value?.textToSpeechConfig.google, // Keep existing Google config
+      name: values.name !== undefined ? values.name : botData.value?.textToSpeechConfig.google.name || "en-IN-Neural2-A",
+      speaking_rate: values.speakingRate !== undefined ? values.speakingRate : botData.value?.textToSpeechConfig.google.speaking_rate || 1,
+      pitch: values.pitch !== undefined ? values.pitch : botData.value?.textToSpeechConfig.google.pitch || 1,
+      volume_gain_db: values.volumeGrainDb !== undefined ? values.volumeGrainDb : botData.value?.textToSpeechConfig.google.volume_gain_db || 0.5,
+      effects_profile_id: botData.value?.textToSpeechConfig.google.effects_profile_id || ["telephony-class-application"], // Fallback to default
     },
 
     // ElevenLabs config
     elevenlabs: {
-      ...botData.value.textToSpeechConfig.elevenlabs, // Keep existing Elevenlabs config
-      api_key: botData.value.textToSpeechConfig.elevenlabs.api_key || "", // Consider secure handling of API keys
-      voice: values.elevenlabsvoice !== undefined ? values.elevenlabsvoice : botData.value.textToSpeechConfig.elevenlabs.voice || "jBYIjE7vMSfVJhyXWNqw",
-      model: values.model !== undefined ? values.model : botData.value.textToSpeechConfig.elevenlabs.model || "eleven_turbo_v2",
-      stability: values.stability !== undefined ? values.stability : botData.value.textToSpeechConfig.elevenlabs.stability || 0.5,
-      similarity_boost: values.similarityBoost !== undefined ? values.similarityBoost : botData.value.textToSpeechConfig.elevenlabs.similarity_boost || 1,
-      style: values.style !== undefined ? values.style : botData.value.textToSpeechConfig.elevenlabs.style || 0.5,
-      use_speaker_boost: values.useSpeakerBoost !== undefined ? values.useSpeakerBoost : botData.value.textToSpeechConfig.elevenlabs.use_speaker_boost || false,
+      // ...botData.value?.textToSpeechConfig.elevenlabs, // Keep existing Elevenlabs config
+      api_key: botData.value?.textToSpeechConfig.elevenlabs.api_key || "", // Consider secure handling of API keys
+      voice: values.elevenlabsvoice !== undefined ? values.elevenlabsvoice : botData.value?.textToSpeechConfig.elevenlabs.voice || "jBYIjE7vMSfVJhyXWNqw",
+      model: values.model !== undefined ? values.model : botData.value?.textToSpeechConfig.elevenlabs?.model || "eleven_turbo_v2",
+      stability: values.stability !== undefined ? values.stability : botData.value?.textToSpeechConfig.elevenlabs.stability || 0.5,
+      similarity_boost: values.similarityBoost !== undefined ? values.similarityBoost : botData.value?.textToSpeechConfig.elevenlabs.similarity_boost || 1,
+      style: values.style !== undefined ? values.style : botData.value?.textToSpeechConfig.elevenlabs.style || 0.5,
+      use_speaker_boost: values.useSpeakerBoost !== undefined ? values.useSpeakerBoost : botData.value?.textToSpeechConfig.elevenlabs.use_speaker_boost || false,
     },
 
     // Deepgram config
     deepgram: {
-      ...botData.value.textToSpeechConfig.deepgram, // Keep existing Deepgram config
-      voice: values.deepgramVoice !== undefined ? values.deepgramVoice : botData.value.textToSpeechConfig.deepgram.voice || "aura-asteria-en",
-      amplification_factor: values.amplificationFactor !== undefined ? values.amplificationFactor : botData.value.textToSpeechConfig.deepgram.amplification_factor || 2,
+      // ...botData.value?.textToSpeechConfig.deepgram, // Keep existing Deepgram config
+      voice: values.deepgramVoice !== undefined ? values.deepgramVoice : botData.value?.textToSpeechConfig.deepgram.voice || "aura-asteria-en",
+      // amplification_factor: values.amplificationFactor !== undefined ? values.amplificationFactor : botData.value?.textToSpeechConfig.deepgram.amplification_factor || 2,
       // Add any other necessary Deepgram-specific fields similarly
     },
     // Add other providers as necessary
