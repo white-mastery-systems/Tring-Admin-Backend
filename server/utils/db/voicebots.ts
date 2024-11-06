@@ -138,6 +138,9 @@ export const listVoiceBotIntegrations = async (
     offset = (page - 1) * limit;
   }
   const data = await db.query.voicebotIntegrationSchema.findMany({
+    with: {
+      integration: true
+    },
     where: and(
       eq(voicebotIntegrationSchema.organizationId, organizationId),
       eq(voicebotIntegrationSchema.botId, voicebotId),
