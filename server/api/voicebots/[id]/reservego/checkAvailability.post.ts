@@ -1,10 +1,7 @@
-import { getReservationStatus } from "~/server/utils/reservego/module"
-
 export default defineEventHandler(async (event) => {
   const body = await isValidBodyHandler(event, z.object({
-    phoneNumber: z.string()
+    date: z.string()
   }))
-
   const { id: botId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
   const botDetails: any = await getVoicebot(botId)
@@ -36,7 +33,7 @@ export default defineEventHandler(async (event) => {
       createError({ statusCode: 400, statusMessage: "Reserve-go restaurantId is missing in integration-data" }),
     );
   }
-  const data = await getReservationStatus({ restaurantId, apiKey }, body)
+  const data = await checkAvailabilty({ restaurantId, apiKey }, body)
 
   if(!data.status) {
     return sendError(

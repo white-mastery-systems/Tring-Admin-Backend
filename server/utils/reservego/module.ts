@@ -47,3 +47,23 @@ export const getReservationStatus = async (integrationData: any, reqObj : any) =
     return { status: false }
   }
 }
+
+export const checkAvailabilty = async (integrationData: any, reqObj: any) => {
+  try {
+    const data: any = await $fetch(`${reverseGoBaseUrl}/api/bookings/cloudTelephony/outlet/inventory`, {
+      method: "POST",
+      body: {
+        "rgApiKey": integrationData?.apiKey,
+        "rgRestaurantId": integrationData?.restaurantId,
+        "date": reqObj?.date
+      }
+    })
+     if(data?.code !== "SUCCESS") {
+      return { status: false, data }
+    }
+    return { status: true, data }
+  } catch (error) {
+    logger.error(`voicebot-checkAvailabilty error, ${JSON.stringify(error)}`)
+    return { status: false }
+  }
+}
