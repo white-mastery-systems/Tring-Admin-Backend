@@ -11,21 +11,22 @@
   ]" :description="true" :disableSelector="false" :disable-back-button="false">
     <form @submit.prevent="dynamicForm" class="space-y-4">
       <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3 px-2">
-        <!-- <div> -->
-        <TextField name="title" label="Title" placeholder="Title" />
-        <TextField :name="`fields[0].label`" label="Label" placeholder="Label" />
-        <SelectField :name="`fields[0].type`" label="Type" :options="typeList" required />
-        <SelectField :name="`fields[0].required`" label="Required" :options="requiredList" required />
-        <TextField :name="`fields[0].placeholder`" label="Placeholder" placeholder="Placeholder" />
-        <TextField :name="`fields[0].model`" label="Model" placeholder="Model" />
+        <TextField name="fields[0].label" label="Label" placeholder="Label" required />
+        <SelectField name="fields[0].type" label="Type" :options="typeList" required />
+        <!-- <SelectField name="fields[0].required" label="Required" :options="requiredList" required /> -->
+        <TextField name="fields[0].placeholder" label="Placeholder" placeholder="Placeholder" required />
+        <TextField name="fields[0].model" label="Model" placeholder="Model" required />
+        <TextField name="fields[0].errorMessage" label="Error Message" placeholder="Enter error message" required />
+        <TextField v-if="values.fields[0].type === 'text'" name="fields[0].minLength" label="Minimum Length"
+          type="number" placeholder="Minimum length" />
+        <TextField v-if="values.fields[0].type === 'text'" name="fields[0].maxLength" label="Maximum Length"
+          type="number" placeholder="Maximum length" />
       </div>
       <div class="flex w-full justify-end gap-2">
         <div>
           <UiButton color="primary" type="button" size="lg" @click="addField">Add Field</UiButton>
         </div>
-        <UiButton color="primary" type="submit" size="lg" :loading="isLoading">
-          Submit
-        </UiButton>
+        <UiButton color="primary" type="submit" size="lg" :loading="isLoading">Submit</UiButton>
       </div>
     </form>
   </Page>
@@ -51,32 +52,35 @@ const typeList = reactive([
   { label: "Number", value: "number" },
   { label: "Date", value: "date" },
   { label: "Time", value: "time" },
-  { label: "Textarea", value: "textarea" },
+  // { label: "Textarea", value: "textarea" },
 ]);
 
 const formSchema = toTypedSchema(
   z.object({
-    title: z.string({ required_error: "Title is required." }).min(2, "Title must be at least 2 characters."),
     fields: z.array(
       z.object({
-        type: z.string({ required_error: "Type is required." }),
-        label: z.string({ required_error: "Label is required." }),
-        placeholder: z.string().optional(),
-        model: z.string({ required_error: "Model is required." }).optional(),
-        required: z.boolean().optional(),
+        type: z.string({ required_error: "Type is required." }).min(2,"Type is required."),
+        label: z.string({ required_error: "Label is required." }).min(2, "Label is required."),
+        placeholder: z.string({ required_error: "Placeholder is required." }).min(2, "Placeholder is required."), // Make placeholder required
+        model: z.string({ required_error: "Model is required." }).min(2, "Model is required."), // Make model required
+        errorMessage: z.string({ required_error: "Error message is required." }).min(2, "Error message is required."), // Make errorMessage required
+        minLength: z.number().optional(),
+        maxLength: z.number().optional(),
       })
     ),
   })
 );
 
-const { handleSubmit, values, setFieldValue } = useForm({
+const { handleSubmit, values, setFieldValue,resetForm } = useForm({
   validationSchema: formSchema,
   initialValues: {
-    title: '',
     fields: [{
       label: '',
       type: 'text',
-      required: false,
+      errorMessage: '',
+      minLength: 1,
+      maxLength: 10,
+      // required: false,
       placeholder: '',
       model: ''
     }],
@@ -94,10 +98,9 @@ const dynamicForm = handleSubmit(async (values: any) => {
 const addField = () => {
   if (!values.title) return
   values.fields?.forEach((items: any) => {
-    formattedValue.value.push({...items})
+    formattedValue.value.push({ ...items, required: true})
   })
   toast.success("Field added successfully", formattedValue.value.length);
-  console.log(formattedValue.value, "formattedValue -- formattedValue")
 };
 
 const removeField = (index: number) => {
