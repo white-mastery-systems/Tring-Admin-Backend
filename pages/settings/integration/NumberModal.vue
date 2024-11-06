@@ -1,20 +1,31 @@
 <script setup lang="ts">
 import countryData from '~/assets/country-codes.json'
 import { useCount } from '@/composables/useRefresh';
+import type { AnyFn } from '@vueuse/core';
 
+interface NumberModalState {
+  open: string;
+  id: string;
+  // add other properties here
+}
+const props = defineProps<{
+  numberModalState: {
+    open: boolean,
+    id: number | null
+  }
+}>();
 const emit = defineEmits(["success"]);
 const { refresh } = useCount();
-const numberModalState: any = defineModel<{ open: boolean, id: any }>({
-  default: {
-    open: false,
-    id: null,
-  },
-});
+// const numberModalState: any = defineModel<{ open: boolean, id: any }>({
+//   default: {
+//     open: false,
+//     id: null,
+//   },
+// });
 const isLoading = ref(false)
 const allCoutryDialCode = computed(() =>
   countryData?.map((country) => country.dial_code),
 );
-
 const providerList = ref([
   {
     value: 'twilio',
@@ -61,11 +72,13 @@ const {
   validationSchema: formSchema,
 });
 
-watch(numberModalState, (newState) => { });
+// watch(props.numberModalState, (newState) => { 
+//   console.log(newState, "newState -- newState")
+// });
 
-watch(() => numberModalState.value.open, async () => {
-  if (numberModalState.value.id) {
-    const getSingleDetails:any =  await $fetch(`/api/org/integrations/number-integration/${numberModalState.value.id}`)
+watch(() => props.numberModalState.open, async () => {
+  if (props.numberModalState.id) {
+    const getSingleDetails:any =  await $fetch(`/api/org/integrations/number-integration/${props.numberModalState.id}`)
     console.log(getSingleDetails, 'getSingleDetails')
     setFieldValue("provider", getSingleDetails.provider),
     setFieldValue("countryCode", getSingleDetails.countryCode),
@@ -86,8 +99,8 @@ const handleConnect = handleSubmit(async (values: any) => {
   isLoading.value = true
   const payload = values
   try {
-    if (numberModalState.value.id) {
-      await $fetch(`/api/org/integrations/number-integration/${numberModalState.value.id}`, { method: "PUT", body: payload });
+    if (props.numberModalState.id) {
+      await $fetch(`/api/org/integrations/number-integration/${props.numberModalState.id}`, { method: "PUT", body: payload });
       toast.success("Integration updated successfully");
     } else {
       await $fetch("/api/org/integrations/number-integration", { method: "POST", body: payload });
@@ -104,7 +117,7 @@ const handleConnect = handleSubmit(async (values: any) => {
 </script>
 
 <template>
-  <DialogWrapper v-model="numberModalState" title="Add New Exophone">
+  <DialogWrapper v-model="props.numberModalState" title="Add New Exophone">
     <Form @submit="handleConnect" class="space-y-3">
       <SelectField name="provider" placeholder="Select a provider" :options="providerList">
       </SelectField>

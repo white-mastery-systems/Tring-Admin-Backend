@@ -83,8 +83,8 @@ export const textToSpeechValidation = z.object({
     message: 'Voice is required',
   }),
   
-  modal: z.string().optional().refine(value => !!value?.trim(), {
-    message: 'Modal is required',
+  model: z.string().optional().refine(value => !!value?.trim(), {
+    message: 'Model is required',
   }),
   
   stability: z.union([

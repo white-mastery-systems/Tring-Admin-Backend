@@ -123,6 +123,33 @@ export const deleteBotIntegration = async ({
   } catch (err) {}
 };
 
+
+export const dynamicaFormDetails = async (botDetails: any, formDetails:any) => {
+  const updatedBot = await $fetch<SelectChatBot>(`/api/bots/${botDetails}`, {
+    method: "PUT",
+    body: formDetails,
+  });
+  toast.success("Form added successfully");
+  await navigateTo({
+    name: "bot-management-chat-bot-id",
+    params: { id: botDetails.id },
+  });
+  return updatedBot;
+};
+
+export const emailTemplateEditor = async (botDetailsWithEmailTemplateEditValue: SelectChatBot) => {
+  const updatedBot = await $fetch<SelectChatBot>(`/api/bots/${botDetailsWithEmailTemplateEditValue.id}`, {
+    method: "PUT",
+    body: botDetailsWithEmailTemplateEditValue,
+  });
+  toast.success("Uploaded successfully");
+  // await navigateTo({
+  //   name: "bot-management-chat-bot-id",
+  //   params: { id: botDetails.id },
+  // });
+  return updatedBot;
+};
+
 // Voice bot
 export const getVoiceBotDetails = async (botId: string) => {
   const bot = await $fetch<SelectChatBot & { documents: SelectDocument[] }>(

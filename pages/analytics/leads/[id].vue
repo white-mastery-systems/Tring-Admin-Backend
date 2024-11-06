@@ -2,7 +2,17 @@
   <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else :title="leadData?.botUser?.name ?? ''" :disable-back-button="false" :disable-elevation="true">
+  <Page v-else :title="leadData?.botUser?.name ?? ''" :disable-back-button="false" :disable-elevation="true"
+    :bread-crumbs="[
+      {
+    label: `${leadData?.botUser?.name}`,
+    to: `/analytics/leads`,
+      },
+      {
+        label: 'Leads',
+        to: `/analytics/leads`,
+      },
+    ]">
     <template #actionButtons>
       <div class="flex items-center gap-3">
         <UiButton v-if="leadData?.lead?.status === 'default'" variant="destructive"
@@ -24,7 +34,7 @@
       class="items-top flex grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-[25px]">
       <div class="flex w-full justify-around gap-8 sm:w-full md:w-[90%] lg:w-[90%] xl:w-[90%]">
         <UiTabs default-value="client" class="w-full self-start">
-          <UiTabsList class="grid w-[90%] grid-cols-3">
+          <UiTabsList class="grid w-[100%] sm:w-[100%] md:w-[90%] lg:w-[90%] xl:w-[90%] grid-cols-3">
             <UiTabsTrigger value="client"> Client Info </UiTabsTrigger>
             <UiTabsTrigger value="campaign"> Campaign Info </UiTabsTrigger>
             <UiTabsTrigger value="timeline"> Time Line </UiTabsTrigger>
@@ -55,6 +65,21 @@
                       <p>{{ value }}</p> <!-- Show the full value or any additional info -->
                     </UiTooltipContent>
                   </UiTooltip>
+                </div>
+              </div>
+              <div class="flex gap-2 mt-3">
+                <div v-for="[key, value] in details[0]" :key="key" class="flex gap-2">
+                  <a v-if="key === 'Mobile'" :href="`https://wa.me/${value}`" target="_blank" rel="noopener noreferrer">
+                    <UiButton color="primary">Whatsapp</UiButton>
+                  </a>
+                  <!-- <a v-if="key === 'Mobile'">
+                    <UiButton color="primary">Call</UiButton>
+                  </a> -->
+                  <a v-if="key === 'Email'"
+                    :href="`https://mail.google.com/mail/?view=cm&fs=1&to=${value}&su=Your%20Subject&body=Your%20message%20here`"
+                    target="_blank" rel="noopener noreferrer">
+                    <UiButton color="primary">Email</UiButton>
+                  </a>
                 </div>
               </div>
             </UiTabsContent>
@@ -128,20 +153,8 @@
 
   const router = useRouter();
   const route = useRoute("analytics-leads-id");
-  const chatScreenRef: any = ref(null);
-  const scrollChatBox = () => {
-    setTimeout(() => {
-      if (chatScreenRef.value)
-        chatScreenRef.value.scrollTop = chatScreenRef?.value?.scrollHeight;
-    }, 1000);
-  };
 
   const isPageLoading = computed(() => responseStatus.value === "pending");
-  onMounted(() => {
-    {
-      scrollChatBox();
-    }
-  });
 
   const paramId: any = route;
   const changeStatus = ref(false);

@@ -13,11 +13,11 @@ import { label } from "@unovis/ts/components/axis/style"
     },
     {
       label: "Chinese (Mandarin, Simplified)",
-      value: "zh,zh-CN,zh-Hans",
+      value: "zh-CN",
     },
     {
       label: "Chinese (Mandarin, Traditional)",
-      value: "zh-TW,zh-Hant",
+      value: "zh-TW",
     },
     {
       label: "Chinese (Cantonese, Traditional)",
@@ -29,7 +29,7 @@ import { label } from "@unovis/ts/components/axis/style"
     },
     {
       label: "Danish",
-      value: "da, da-DK",
+      value: "da-DK",
     },
     {
       label: "Dutch",
@@ -57,7 +57,7 @@ import { label } from "@unovis/ts/components/axis/style"
     },
     {
       label: "French",
-      value: "fr, fr-CA",
+      value: "fr-CA",
     },
     {
       label: "German",
@@ -93,7 +93,7 @@ import { label } from "@unovis/ts/components/axis/style"
     },
     {
       label: "Korean",
-      value: "ko, ko-KR",
+      value: "ko-KR",
     },
     {
       label: "Latvian",
@@ -121,7 +121,7 @@ import { label } from "@unovis/ts/components/axis/style"
     },
     {
       label: "Portuguese",
-      value: "pt, pt-BR",
+      value: "pt-BR",
     },
     {
       label: "Romanian",
@@ -137,15 +137,15 @@ import { label } from "@unovis/ts/components/axis/style"
     },
     {
       label: "Spanish",
-      value: "es, es-419",
+      value: "es-419",
     },
     {
       label: "Swedish",
-      value: "sv, sv-SE",
+      value: "sv-SE",
     },
     {
       label: "Thai",
-      value: "th, th-TH",
+      value: "th-TH",
     },
     {
       label: "Turkish",

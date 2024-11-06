@@ -87,6 +87,7 @@
             ]" required />
           </div>
           <div class="flex w-full items-center gap-5">
+            {{ values}}
             <SelectField 
             name="fontFamily" 
             label="Font Famliy" 
@@ -214,7 +215,7 @@
       secondaryColor: z.string().min(1, "Secondary color is required"),
       widgetSound: z.string({ required_error: "Widget sound must be selected" }).min(1, "Widget sound must be selected"),
       widgetPosition: z.string({ required_error: "Widget position must be selected" }).min(1, "Widget position must be selected"),
-      fontFamily: z.string().min(1, "Font family color is required").default('Kanit'),
+      fontFamily: z.string({required_error: "Font family is required"}).min(1, "Font family is required"),
       defaultSelect: z.boolean().optional(),
       generateLead: z.boolean().optional(),
       onlineStatus: z.boolean().optional(),
@@ -254,11 +255,11 @@ setFieldValue("secondaryColor", (hslToHex(
 )))    
 setFieldValue("widgetSound", (botDetails.metadata.ui.widgetSound ?? "Yes"))
 setFieldValue("widgetPosition", (botDetails.metadata.ui.widgetPosition ?? "Left"))
+setFieldValue("fontFamily", (botDetails.metadata?.ui.fontFamily ?? "Kanit"))
 setFieldValue("defaultSelect", (botDetails.metadata.ui.defaultSelect ?? true))
 setFieldValue("onlineStatus", (botDetails.metadata.ui.onlineStatus ?? true))
 setFieldValue("generateLead", (botDetails.metadata.ui.generateLead ?? true))
 setFieldValue("defaultRibbon", (botDetails.metadata.ui.defaultRibbon ?? true))
-setFieldValue("fontFamily", (botDetails.metadata?.ui.fontFamily ?? "Kanit"))
 setFieldValue("dynamicForm", (botDetails.metadata?.ui?.dynamicForm ?? false))
 
 watchEffect(() => {

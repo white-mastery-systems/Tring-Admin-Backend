@@ -159,7 +159,6 @@
   watch(
     () => values,
     async (newValue) => {
-      console.log({ newValue });
       if (newValue) {
         if (newValue.integrationId) {
           const data = await $fetch("/api/org/integrations/wa-template", {

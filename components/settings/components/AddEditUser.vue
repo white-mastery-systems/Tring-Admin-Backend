@@ -234,7 +234,7 @@
       }
     },
   );
-  const Pagination = async ($evnt) => {
+  const Pagination = async ($evnt: any) => {
     filters.page = $evnt;
     getAllUser();
   };
