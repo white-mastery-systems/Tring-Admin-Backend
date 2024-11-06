@@ -134,13 +134,19 @@ export const listBotIntents = async (
 ) => {
   let filters: any = [eq(botIntentSchema.botId, botId)];
 
-  const data = await db.query.botIntentSchema.findMany({
+  let data = await db.query.botIntentSchema.findMany({
     where: and(...filters),
     orderBy: [desc(chatBotSchema.createdAt)],
     columns: {
       organizationId: false,
     },
   });
+  
+  data = data.map((i) => ( {
+     ...i,
+     uploads: i.uploads ?? []
+  }))
+  
   return data;
 };
 
@@ -170,6 +176,7 @@ export const createBotIntegration = async (
     await db.insert(botIntegrationSchema).values(integration).returning()
   )[0];
 };
+
 export const listBotIntegrations = async (botId: string, query?: any) => {
   let filters: any = [eq(botIntegrationSchema.botId, botId)];
 
@@ -183,13 +190,19 @@ export const listBotIntegrations = async (botId: string, query?: any) => {
     offset = (page - 1) * limit;
   }
 
-  const data = await db.query.botIntegrationSchema.findMany({
+  let data: any = await db.query.botIntegrationSchema.findMany({
     where: and(...filters),
     orderBy: [desc(botIntegrationSchema.createdAt)],
     with: {
-      integration: true,
+      integration: {
+        where: query?.q ? eq(integrationSchema.type, query?.q) : undefined,
+      },
     },
   });
+
+  if(query?.q) {
+     data = data.filter((i: any) => i.integration !== null)
+  }
 
   if (query?.page && query?.limit) {
     const paginatedChatBotIntegrations = data.slice(offset, offset + limit);
