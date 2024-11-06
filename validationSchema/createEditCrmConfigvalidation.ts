@@ -7,4 +7,5 @@ export const createEditCRMConfigValidation = z.object({
   stageId: z.string().optional(),
   subPipeline: z.string().optional(),
   stage: z.string().optional(),
+  restaurantId: z.string().optional(),
 });

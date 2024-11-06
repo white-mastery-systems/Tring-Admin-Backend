@@ -11,7 +11,8 @@ export const zodInsertBotIntegration = z.object({
   pipelineObj: z.any().optional(),
   channelId: z.string().optional(),
   layoutObj: z.any().optional(),
-  stage: z.string().optional()
+  stage: z.string().optional(),
+  restaurantId: z.string().optional()
 });
 
 export default defineEventHandler(async (event) => {
