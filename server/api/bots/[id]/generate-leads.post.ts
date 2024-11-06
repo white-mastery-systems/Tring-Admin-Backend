@@ -1,10 +1,12 @@
 import { logger } from "~/server/logger";
+import { updateBotUser } from "~/server/utils/db/bot-user";
 import { getAdminByOrgId } from "~/server/utils/db/user";
 import { getOwners } from "~/server/utils/hubspot/contact";
 import { createSlackMessage } from "~/server/utils/slack/modules";
 import {
   generateContactInZohoBigin,
   generateLeadInZohoCRM,
+  updateNotesInZohoBigin,
 } from "~/server/utils/zoho/modules";
 export default defineEventHandler(async (event) => {
   // const userId = event.context.user?.id as string;
@@ -21,6 +23,8 @@ export default defineEventHandler(async (event) => {
     event,
     generateLeadsValidationParams,
   );
+  
+  // console.log("bot user", { botUser: body.botUser })
 
   const botDetails: any = await getBotDetails(botId);
 
@@ -28,53 +32,66 @@ export default defineEventHandler(async (event) => {
   let botIntegratsions: any = await listBotIntegrations(botId);
   botIntegratsions?.map(async (botIntegration: any) => {
     if (botIntegration?.integration?.crm === "zoho-bigin") {
-      const name = body?.botUser?.name?.split(" ");
-      let firstName = body?.botUser?.name;
-      let lastName = null;
-      if (name?.length > 1) {
-        firstName = name[0];
-        lastName = name[1];
+      if(!body.botUser?.metaData?.zohoBiginLeadId) {
+         const name = body?.botUser?.name?.split(" ");
+         let firstName = body?.botUser?.name;
+         let lastName = null;
+         if (name?.length > 1) {
+           firstName = name[0];
+           lastName = name[1];
+         }
+         JSON.stringify({
+           body: {
+             First_Name: firstName,
+             Last_Name: lastName ?? firstName,
+             Email: body?.botUser?.email,
+             Mobile: body?.botUser?.mobile,
+             Title: body?.botUser?.name,
+           },
+           integrationData: botIntegration?.integration,
+           token: botIntegration?.integration?.metadata?.access_token,
+           refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+         });
+         const generatedContact: any = await generateContactInZohoBigin({
+           body: {
+             First_Name: firstName,
+             Last_Name: lastName ?? firstName,
+             Email: body?.botUser?.email,
+             Mobile: body?.botUser?.mobile,
+             Title: body?.botUser?.name,
+           },
+           integrationData: botIntegration?.integration,
+           token: botIntegration?.integration?.metadata?.access_token,
+           refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+         });
+         const pipelineObj = botIntegration?.metadata?.pipelineObj;
+   
+         const generatedLead: any = await generateLeadInZohoBigin({
+           token: botIntegration?.integration?.metadata?.access_token,
+           refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+           body: {
+             Deal_Name: body?.botUser?.name,
+             Sub_Pipeline: pipelineObj?.Sub_Pipeline ?? pipelineObj?.Pipeline,
+             Stage: pipelineObj?.Stage,
+             Pipeline: pipelineObj?.Pipeline,
+             Contact_Name: {
+               id: generatedContact?.data[0]?.details?.id,
+             },
+           },
+           integrationData: botIntegration?.integration,
+         });
+   
+         logger.info(`generateZohoBiginLead, ${JSON.stringify(generatedLead)}`)
+         await updateBotUser(body?.botUser?.id, {zohoBiginLeadId: generatedLead?.data[0]?.details?.id})
+      } else {
+          const updateLeadWithNotes = await updateNotesInZohoBigin({
+            zohoBiginLeadId: body.botUser?.metaData?.zohoBiginLeadId,
+            integrationData: botIntegration?.integration,
+            token: botIntegration?.integration?.metadata?.access_token,
+            refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+            body: body?.note
+          })
       }
-      JSON.stringify({
-        body: {
-          First_Name: firstName,
-          Last_Name: lastName ?? firstName,
-          Email: body?.botUser?.email,
-          Mobile: body?.botUser?.mobile,
-          Title: body?.botUser?.name,
-        },
-        integrationData: botIntegration?.integration,
-        token: botIntegration?.integration?.metadata?.access_token,
-        refreshToken: botIntegration?.integration?.metadata?.refresh_token,
-      });
-      const generatedContact: any = await generateContactInZohoBigin({
-        body: {
-          First_Name: firstName,
-          Last_Name: lastName ?? firstName,
-          Email: body?.botUser?.email,
-          Mobile: body?.botUser?.mobile,
-          Title: body?.botUser?.name,
-        },
-        integrationData: botIntegration?.integration,
-        token: botIntegration?.integration?.metadata?.access_token,
-        refreshToken: botIntegration?.integration?.metadata?.refresh_token,
-      });
-      const pipelineObj = botIntegration?.metadata?.pipelineObj;
-
-      const generatedLead = await generateLeadInZohoBigin({
-        token: botIntegration?.integration?.metadata?.access_token,
-        refreshToken: botIntegration?.integration?.metadata?.refresh_token,
-        body: {
-          Deal_Name: body?.botUser?.name,
-          Sub_Pipeline: pipelineObj?.Sub_Pipeline ?? pipelineObj?.Pipeline,
-          Stage: pipelineObj?.Stage,
-          Pipeline: pipelineObj?.Pipeline,
-          Contact_Name: {
-            id: generatedContact?.data[0]?.details?.id,
-          },
-        },
-        integrationData: botIntegration?.integration,
-      });
     } else if (botIntegration?.integration?.crm === "zoho-crm") {
       const name = body?.botUser?.name?.split(" ");
       let firstName = body?.botUser?.name;
