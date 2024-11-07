@@ -210,24 +210,16 @@ export default defineEventHandler(async (event) => {
       // });
     } else if(botIntegration?.integration?.crm === "zoho-cliq") {
       if(botIntegration?.metadata?.channelId) {
-        const name = body?.botUser?.name?.split(" ");
-        let firstName = body?.botUser?.name;
-        let lastName = null;
-        if (name?.length > 1) {
-          firstName = name[0];
-          lastName = name[1];
-        }
         const payload = {
-          First_Name: firstName,
-          Last_Name: lastName ?? firstName,
-          Email: body?.botUser?.email,
-          Mobile: body?.botUser?.mobile,
-          // Title: body?.botUser?.name,
+          "First Name": body?.botUser?.name,
+          "Email": body?.botUser?.email,
+          "Mobile": body?.botUser?.mobile,
+          "Bot Name": body?.botUser?.name,
         }
         let textContent = Object.entries(payload)
         .map(([key, value]) => `${key}: ${value}`)
         .join('\n');
-        await generateLeadsInZohoCliq(botIntegration?.integration?.metadata, botIntegration?.metadata?.channelId, textContent, botIntegration?.integration?.id)
+        await generateLeadsInZohoCliq(botIntegration?.integration?.metadata, botIntegration?.metadata?.channelId, textContent, botIntegration?.integration?.id, body?.note)
         }
     }
   });
