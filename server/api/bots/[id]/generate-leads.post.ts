@@ -131,21 +131,23 @@ export default defineEventHandler(async (event) => {
       );
     } else if (botIntegration?.integration?.crm === "slack") {
       if (botIntegration?.metadata?.channelId) {
-        console.log(body?.botUser);
+        // console.log(body?.botUser);
         const payload = {
           name: body?.botUser?.name,
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
+          botName: `${botDetails?.name}`
         };
-        console.log(
-          botIntegration?.integration?.metadata?.access_token,
-          botIntegration?.metadata?.channelId,
-        );
+        // console.log(
+        //   botIntegration?.integration?.metadata?.access_token,
+        //   botIntegration?.metadata?.channelId,
+        // );
         const data = await createSlackMessage(
           botIntegration?.integration?.metadata,
           botIntegration?.metadata?.channelId,
           payload,
-          botIntegration?.integration?.id
+          botIntegration?.integration?.id,
+          body?.note
         );
       }
     } else if (botIntegration?.integration?.crm === "hubspot") {
