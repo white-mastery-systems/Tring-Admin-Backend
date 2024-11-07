@@ -2,7 +2,7 @@
   <div :class="[
     props.disablePadding
       ? ''
-      : 'px-3 pb-2 sm:px-3 md:px-4 md:pt-12 lg:px-4 lg:pt-4 xl:px-4',
+    : 'px-3 pb-6 sm:px-3 md:px-4 pt-12 md:pt-12 lg:px-4 lg:pt-4 xl:px-4',
   ]" class="w-full py-2" v-if="breadCrumbs?.length > 0">
     <UiBreadcrumb>
       <UiBreadcrumbList>
@@ -16,9 +16,10 @@
     </UiBreadcrumb>
   </div>
   <div :class="[
-    props.disablePadding
-      ? ''
-      : 'px-2 pb-2 sm:px-2 md:px-4 md:pt-2 lg:px-4 lg:pt-4 xl:px-4',
+    props.disablePadding 
+      ? '' 
+    : `${leadPage === 'leads' ? (browserClass === 'brave-browser') ? 'pt-[73px] sm:pt-[73px]' : 'pt-[30px] sm:pt-[30px]' : 'pb-2 sm:pb-2'} px-2 sm:px-2 md:px-4 lg:px-4 xl:px-4`,
+    'pb-2'
   ]">
     <div class="mb-2 pt-2 flex items-center justify-between gap-2">
       <div v-if="props.title"
@@ -69,6 +70,7 @@ const props = withDefaults(
     customBackRouter?: string;
     disableSelector?: boolean;
     breadCrumbs?: any;
+    leadPage:string;
   }>(),
   {
     actionButtons: [],
@@ -80,7 +82,7 @@ const props = withDefaults(
     titleSize: "medium",
     disableSelector: false,
     breadCrumbs: [],
-
+    leadPage: "",
   },
 );
 watch(props, (updatedProps) => {
@@ -94,4 +96,22 @@ const handleBackButtonClick = () => {
     router.back();
   }
 };
+const browserClass = computed(() => {
+  const userAgent = navigator.userAgent;
+
+  // Detect Brave browser
+  const isBrave = navigator.brave || (/Brave/i.test(userAgent) && /Chrome/i.test(userAgent));
+
+  if (isBrave) {
+    return 'brave-browser';
+  } else if (/chrome/i.test(userAgent) && !isBrave) {
+    return 'chrome-browser';
+  } else if (/firefox/i.test(userAgent)) {
+    return 'firefox-browser';
+  } else if (/safari/i.test(userAgent) && !/chrome/i.test(userAgent)) {
+    return 'safari-browser';
+  } else {
+    return '';
+  }
+});
 </script>

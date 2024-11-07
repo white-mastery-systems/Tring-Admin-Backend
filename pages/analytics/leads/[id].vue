@@ -2,8 +2,7 @@
   <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else :title="leadData?.botUser?.name ?? ''" :disable-back-button="false" :disable-elevation="true"
-    :bread-crumbs="[
+  <!-- :bread-crumbs="[
       {
     label: `${leadData?.botUser?.name}`,
     to: `/analytics/leads`,
@@ -12,7 +11,9 @@
         label: 'Leads',
         to: `/analytics/leads`,
       },
-    ]">
+    ]" -->
+  <Page v-else :title="leadData?.botUser?.name ?? ''" leadPage="leads" :disable-back-button="false"
+    :disable-elevation="true">
     <template #actionButtons>
       <div class="flex items-center gap-3">
         <UiButton v-if="leadData?.lead?.status === 'default'" variant="destructive"
