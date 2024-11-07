@@ -100,7 +100,8 @@ export const createSlackMessage: any = async (
   integrationData: any,
   channelId: string,
   payload: any,
-  integrationId: any
+  integrationId: any,
+  notes: string
 ) => {
   try {
     const data: any = await $fetch("https://slack.com/api/chat.postMessage", {
@@ -110,7 +111,7 @@ export const createSlackMessage: any = async (
       },
       body: {
         channel: channelId,
-        text: `Lead Generated :tada:\nName: ${payload?.name}\nEmail: ${payload?.email}\nPhone: ${payload?.phone}`,
+        text: `*${notes ? notes : "Lead Generated" }* :tada:\nName: ${payload?.name}\nEmail: ${payload?.email}\nPhone: ${payload?.phone}\nBot Name: ${payload?.botName}`,
       },
     });
     // console.log(
