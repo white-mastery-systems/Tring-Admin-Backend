@@ -97,6 +97,21 @@
         </div>
 
         <div
+          class="flex flex-col gap-3"
+          v-if="
+            integrationsData.find(
+              (integration) => integration.id === values.integrationId,
+            )?.crm === 'reserve-go'
+          "
+        >
+          <TextField
+            name="restaurantId"
+            label="Restaurant Id"
+            placeholder="Enter Your Restaurant Id"
+          />
+        </div>
+
+        <div
           v-if="
             integrationsData.find(
               (integration) => integration.id === values.integrationId,
@@ -223,13 +238,11 @@
             } else if (selectedCrm?.crm === "sell-do") {
               setFieldValue("campaignId", crmConfigData?.metadata?.campaignId);
               setFieldValue("projectId", crmConfigData?.metadata?.projectId);
+            } else if (selectedCrm?.crm === "hubspot") {
+              setFieldValue("stage", crmConfigData?.metadata?.stage);
+            } else if (selectedCrm?.crm === "reserve-go") {
+              setFieldValue("restaurantId", crmConfigData?.metadata?.restaurantId);
             }
-              else if (selectedCrm?.crm === "hubspot") {
-                setFieldValue(
-                "stage",
-                crmConfigData?.metadata?.stage,
-              );
-              }
           }
         } catch (error) {
           console.error("Error fetching CRM config data:", error);

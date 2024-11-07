@@ -12,7 +12,7 @@
       />
     </NuxtLink>
     <div
-      class="flex w-full flex-col items-center gap-4 overflow-scroll pb-6 pt-4"
+      class="flex w-full flex-col items-center gap-4 overflow-scroll pb-[60px] pt-4"
     >
       <template
         v-for="{ name, icon, path, children } in navigationModules"

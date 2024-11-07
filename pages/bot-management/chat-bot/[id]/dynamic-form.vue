@@ -96,11 +96,10 @@ const dynamicForm = handleSubmit(async (values: any) => {
 });
 
 const addField = () => {
-  if (!values.title) return
   values.fields?.forEach((items: any) => {
     formattedValue.value.push({ ...items, required: true})
   })
-  toast.success("Field added successfully", formattedValue.value.length);
+  toast.success(`Field added successfully ${formattedValue.value.length}`);
 };
 
 const removeField = (index: number) => {
