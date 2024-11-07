@@ -48,7 +48,7 @@
         </template>
       </div>
       <div class="mt-2 flex cursor-pointer gap-2 overflow-x-scroll">
-        <template v-if="analyticsData" v-for="componentValue in analyticsData?.statistics?.filter(
+        <template v-if="analyticsData" v-for="componentValue in analyticsChartData?.statistics?.filter(
             (stat: any) =>
               stat?.apiName !== 'images' && stat?.apiName !== 'brochures',
           )" :key="componentValue?.apiName">
@@ -102,6 +102,7 @@
 
   const selectedValue: any = ref("last-30-days");
   const analyticsData = ref();
+  const analyticsChartData = ref()
   const loading = ref(true);
 
   const dateFilters = reactive([
@@ -169,7 +170,8 @@
       delete filter.to;
     }
     const data = await getAnalyticsData(filter);
-    responseFormat(data)
+    analyticsData.value = data
+    responseFormat(JSON.parse(JSON.stringify(data)))
   };
   const state = reactive<{ graphData: any[]; labels: any[] }>({
     graphData: [],
@@ -365,7 +367,8 @@
     try {
       if (period === "custom") return;
       const data = await getAnalyticsData(filter);
-      responseFormat(data)
+      analyticsData.value = data
+      responseFormat(JSON.parse(JSON.stringify(data)))
     } catch (error) {
       console.error("Failed to fetch analytics data:", error);
     } finally {
@@ -377,8 +380,8 @@
   onMounted(async () => {
     try {
       const data = await getAnalyticsData(filter);
-      responseFormat(data)
-
+      analyticsData.value = data
+      responseFormat(JSON.parse(JSON.stringify(data)))
     } catch (e) {
       authHandlers.logout();
     }
@@ -398,7 +401,8 @@
       filter.to = value.to;
 
       const data = await getAnalyticsData(filter);
-      getAnalyticsData(data)
+      analyticsData.value = data
+      responseFormat(JSON.parse(JSON.stringify(data)))
       // analyticsData.value = data;
     }
   };
@@ -410,7 +414,7 @@
       const [chatLeads] = getResponse?.statistics.splice(chatLeadsIndex, 1); // Remove the object
       getResponse?.statistics.splice(1, 0, chatLeads); // Insert it at index 1
     }
-    analyticsData.value = getResponse;
+    analyticsChartData.value = getResponse;
   }
 </script>
 <style scoped>
