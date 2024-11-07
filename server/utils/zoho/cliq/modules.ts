@@ -2,7 +2,7 @@ import { logger } from "~/server/logger";
 
 const db = useDrizzle()
 
-export const generateLeadsInZohoCliq: any = async(metaData: any, channelId: string, body: any, integrationId: string) => {
+export const generateLeadsInZohoCliq: any = async(metaData: any, channelId: string, body: any, integrationId: string, notes: string) => {
   try {
     console.log("generateLeadsInZohoCliq",{ metaData, channelId, body  })
      const data = await $fetch(`https://cliq.zoho.in/api/v2/channels/${channelId}/message`, {
@@ -11,7 +11,7 @@ export const generateLeadsInZohoCliq: any = async(metaData: any, channelId: stri
         Authorization: `Zoho-oauthtoken ${metaData.access_token}`
       },
       body: {
-        text: `Lead generated:\n${body}`
+        text: `*${notes ? notes : "Lead generated"}:*\n${body}`
       }
     })
     console.log({ success: data })
