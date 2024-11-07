@@ -11,11 +11,10 @@
   ]" :description="true" :disableSelector="false" :disable-back-button="false">
     <form @submit.prevent="dynamicForm" class="space-y-4">
       <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3 px-2">
-        <TextField name="fields[0].label" label="Label" placeholder="Label" required />
         <SelectField name="fields[0].type" label="Type" :options="typeList" required />
+        <TextField name="fields[0].label" label="Label" placeholder="Label" required />
         <!-- <SelectField name="fields[0].required" label="Required" :options="requiredList" required /> -->
         <TextField name="fields[0].placeholder" label="Placeholder" placeholder="Placeholder" required />
-        <TextField name="fields[0].model" label="Model" placeholder="Model" required />
         <TextField name="fields[0].errorMessage" label="Error Message" placeholder="Enter error message" required />
         <TextField v-if="values.fields[0].type === 'text'" name="fields[0].minLength" label="Minimum Length"
           type="number" placeholder="Minimum length" />
@@ -50,11 +49,13 @@ const typeList = reactive([
   { label: "Text", value: "text" },
   { label: "Email", value: "email" },
   { label: "Number", value: "number" },
+  { label: "Phone", value: "phone" },
   { label: "Date", value: "date" },
   { label: "Time", value: "time" },
   // { label: "Textarea", value: "textarea" },
 ]);
 
+const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 const formSchema = toTypedSchema(
   z.object({
     fields: z.array(
@@ -62,7 +63,6 @@ const formSchema = toTypedSchema(
         type: z.string({ required_error: "Type is required." }).min(2,"Type is required."),
         label: z.string({ required_error: "Label is required." }).min(2, "Label is required."),
         placeholder: z.string({ required_error: "Placeholder is required." }).min(2, "Placeholder is required."), // Make placeholder required
-        model: z.string({ required_error: "Model is required." }).min(2, "Model is required."), // Make model required
         errorMessage: z.string({ required_error: "Error message is required." }).min(2, "Error message is required."), // Make errorMessage required
         minLength: z.number().optional(),
         maxLength: z.number().optional(),
@@ -80,24 +80,35 @@ const { handleSubmit, values, setFieldValue,resetForm } = useForm({
       errorMessage: '',
       minLength: 1,
       maxLength: 10,
-      // required: false,
-      placeholder: '',
-      model: ''
+      placeholder: ''
     }],
   },
 });
 
 const dynamicForm = handleSubmit(async (values: any) => {
+  // title: values.title,
+  console.log("values -- values", values)
   const formattedData: any = {
-    title: values.title,
-    fields: formattedValue.value.length > 0 ? formattedValue.value : values.fields
+    fields: formattedValue.value.length > 0 ? formattedValue.value : values.fields.map((field: any) => ({
+      ...field,
+      required: true,
+      model: toCamelCase(field.label)  // Convert label to camelCase for each field
+    }))
   };
   await dynamicaFormDetails(route.params.id, { formStructure: formattedData})
 });
 
+const toCamelCase = (str: string) => {
+  return str
+    .toLowerCase()
+    .replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) =>
+      index === 0 ? match.toLowerCase() : match.toUpperCase()
+    )
+    .replace(/\s+/g, '');
+}
 const addField = () => {
   values.fields?.forEach((items: any) => {
-    formattedValue.value.push({ ...items, required: true})
+    formattedValue.value.push({ ...items, required: true, model: toCamelCase(items.label) })
   })
   toast.success(`Field added successfully ${formattedValue.value.length}`);
 };
