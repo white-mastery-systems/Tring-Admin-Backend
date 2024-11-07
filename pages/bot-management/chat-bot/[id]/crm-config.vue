@@ -28,7 +28,6 @@
         Link CRM
       </UiButton>
     </template>
-    {{ console.log({ integrations }) }}
     <DataTable
       :columns="columns"
       :data="integrations"
@@ -74,7 +73,15 @@
   let deleteIntegrationState: { open: boolean; id?: string } = reactive({
     open: false,
   });
-
+const {
+  status,
+  data: integrationsData,
+  refresh: integrationRefresh,
+} = await useLazyFetch(`/api/bots/${route.params.id}/integrations`, {
+  server: false,
+  query: { q: "crm" },
+  default: () => [],
+});
 
 watchEffect(() => {
   if (botDetails.value) {
@@ -133,14 +140,6 @@ watchEffect(() => {
       },
     }),
   ];
-  const {
-    status,
-    data: integrationsData,
-    refresh: integrationRefresh,
-  } = await useLazyFetch(`/api/bots/${route.params.id}/integrations`, {
-    server: false,
-    default: () => [],
-  });
   watch(integrationsData, (newIntegrations: any) => {
     newIntegrations?.map((item: any) => {});
     integrations.value = newIntegrations?.map((item: any) => ({
