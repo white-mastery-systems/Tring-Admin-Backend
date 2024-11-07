@@ -150,12 +150,13 @@
       value: "all-time",
     },
   ]);
-  const chartValues = ref(["leads", "sessions"]);
+  const chartValues = ref(["leads","sessions"]);
   const handleEditGraphValues: any = async (option: any) => {
     let localValue = chartValues.value;
     if (localValue.includes(option.apiName)) {
       const index = localValue.indexOf(option.apiName);
-      if ((option.apiName !== "sessions") && (option.apiName !== "leads")) localValue.splice(index, 1);
+      // if ((option.apiName !== "sessions") && (option.apiName !== "leads"))
+      if (localValue.length > 1) localValue.splice(index, 1);
     } else {
       localValue.push(option.apiName);
     }
@@ -168,7 +169,7 @@
       delete filter.to;
     }
     const data = await getAnalyticsData(filter);
-    analyticsData.value = data;
+    responseFormat(data)
   };
   const state = reactive<{ graphData: any[]; labels: any[] }>({
     graphData: [],
@@ -364,7 +365,7 @@
     try {
       if (period === "custom") return;
       const data = await getAnalyticsData(filter);
-      analyticsData.value = data;
+      responseFormat(data)
     } catch (error) {
       console.error("Failed to fetch analytics data:", error);
     } finally {
@@ -375,7 +376,9 @@
 
   onMounted(async () => {
     try {
-      analyticsData.value = await getAnalyticsData(filter);
+      const data = await getAnalyticsData(filter);
+      responseFormat(data)
+
     } catch (e) {
       authHandlers.logout();
     }
@@ -395,9 +398,20 @@
       filter.to = value.to;
 
       const data = await getAnalyticsData(filter);
-      analyticsData.value = data;
+      getAnalyticsData(data)
+      // analyticsData.value = data;
     }
   };
+  const responseFormat = (getResponse: any) => {
+    const chatLeadsIndex: any = getResponse?.statistics.findIndex((stat: any) => stat.name === "chat leads");
+
+    // Remove "chat leads" from its original position and insert it at index 1
+    if (chatLeadsIndex !== -1) {
+      const [chatLeads] = getResponse?.statistics.splice(chatLeadsIndex, 1); // Remove the object
+      getResponse?.statistics.splice(1, 0, chatLeads); // Insert it at index 1
+    }
+    analyticsData.value = getResponse;
+  }
 </script>
 <style scoped>
   .focus\:ring-offset-2:focus {

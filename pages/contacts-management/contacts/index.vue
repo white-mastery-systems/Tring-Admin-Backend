@@ -17,7 +17,7 @@
     <div class="flex items-center justify-between gap-2 overflow-x-scroll pb-4">
       <div>
         <UiInput v-model="filters.q" @input="filters.page = '1'"
-          class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+          class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder=" Search Contacts..." />
       </div>
       <div class="flex items-center gap-2">

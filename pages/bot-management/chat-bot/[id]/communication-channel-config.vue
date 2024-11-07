@@ -25,8 +25,9 @@
         variant="outline"
         color="primary"
       >
-        Link Communication channel
-      </UiButton>
+        Link channel
+      </UiButton> 
+      <!-- Communication -->
     </template>
     <DataTable
       :columns="columns"
@@ -136,6 +137,7 @@
     refresh: integrationRefresh,
   } = await useLazyFetch(`/api/bots/${route.params.id}/integrations`, {
     server: false,
+    query: { q: "communication" },
     default: () => [],
   });
   watch(integrationsData, (newIntegrations: any) => {

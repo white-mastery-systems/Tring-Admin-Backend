@@ -21,8 +21,8 @@
       : 'px-2 pb-2 sm:px-2 md:px-4 md:pt-2 lg:px-4 lg:pt-4 xl:px-4',
   ]">
     <div class="mb-2 pt-2 flex items-center justify-between gap-2">
-
-      <div v-if="props.title" :class="['flex gap-4 px-0', (!props.disableBackButton) ? 'items-center' : 'items-center']">
+      <div v-if="props.title"
+        :class="['flex gap-4 px-0', (!props.disableBackButton) ? 'items-center' : 'items-center']">
         <UiButton v-if="!props.disableBackButton" variant="outline" size="icon" @click="handleBackButtonClick">
           <ChevronLeft className="h-4 w-4" />
         </UiButton>
@@ -47,7 +47,7 @@
     <div :class="[
       props.disableElevation
         ? ''
-        : 'shadow-3xl mt-4 overflow-scroll rounded-md bg-white p-1 sm:p-1 md:p-6 lg:p-6 xl:p-6',
+    : 'shadow-3xl p-1 lg:p-4 xl:p-4 sm:p-1 pb-[14px] mt-4 mb-[95px] sm:mb-[90px] md:mb-0 lg:mb-0 xl:mb-0 overflow-scroll rounded-md bg-white p-1', // sm:p-1  lg:p-6 xl:p-6
     ]">
       <slot></slot>
     </div>
