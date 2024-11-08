@@ -83,7 +83,6 @@ const typeList = reactive([
   { label: "Time", value: "time" },
   // { label: "Textarea", value: "textarea" },
 ]);
-const dynamicFormFieldObj = ref([])
 
   const {
     data: formattedValue,
@@ -93,7 +92,7 @@ const dynamicFormFieldObj = ref([])
     server: false,
     default: () => [],
     transform: (integrations: any) => {
-      return integrations.formStructure?.fields
+      return integrations.formStructure?.fields ?? []
     }
   });
 
@@ -148,10 +147,8 @@ const toCamelCase = (str: string) => {
     .replace(/\s+/g, '');
 }
 const addField = () => {
-  console.log(formattedValue.value.length, "formattedValue.value.length")
-  console.log((formattedValue.value.length === 1), "formattedValue.value.length === 1")
   if (!formattedValue.value.length) {
-    const isValid = values.fields.every((field) =>
+    const isValid = values.fields?.every((field) =>
       field.label && field.type && field.errorMessage &&
       field.minLength !== undefined && field.maxLength !== undefined && field.placeholder
     );
