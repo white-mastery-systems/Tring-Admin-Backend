@@ -6,9 +6,7 @@
       to: `/bot-management/chat-bot/${botDetails.id}/intent-management`,
     },
   ]"  -->
-  <Page
-    title="Bot Details"
-    :bread-crumbs="[
+  <Page title="Bot Details" :bread-crumbs="[
       {
         label: `${botDetails.name}`,
         to: `/bot-management/voice-bot/${botDetails.id}`,
@@ -17,21 +15,12 @@
         label: 'Bot Details',
         to: `/bot-management/voice-bot/${botDetails.id}/identity-management`,
       },
-    ]"
-    :disableSelector="true"
-    :disable-back-button="false"
-    :disableElevation="false"
-  >
+    ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <div class="pb-2 sm:pb-0">
       <form @submit="onSubmit" class="flex flex-col gap-2">
-        <div class="flex grid grid-cols-2 gap-3">
+        <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3">
           <span>
-            <TextField
-              name="name"
-              label="Name"
-              required
-              placeholder="Enter name"
-            />
+            <TextField name="name" label="Name" required placeholder="Enter name" />
           </span>
           <span>
             <!-- <SelectField
@@ -51,12 +40,7 @@
           required
         /> -->
         <div v-if="values.domain === 'Others'">
-          <TextField
-            name="name"
-            label="Other Domain Name"
-            placeholder="Enter name"
-            required
-          >
+          <TextField name="name" label="Other Domain Name" placeholder="Enter name" required>
           </TextField>
         </div>
         <!-- <SelectField
@@ -66,93 +50,62 @@
           :options="languageList"
           required
         /> -->
-        <div class="w-full gap-3 pt-2">
-          <div style="align-self: center">Welcome Audio</div>
-
-          <!-- <Audio name="welcomeAudio"></Audio> -->
-          <div>
-            <imageField
-              name="welcomeFile"
-              @change="
-                ($event) => {
-                  console.log('data');
-                  uploadFile($event, 'welcome');
-                }
-              "
-              :fileName="values.welcomeFile"
-              :showFilename="false"
-              :multiple="true"
-              :accept="'audio/*'"
-            />
-          </div>
-          <div v-for="(welcomeFile, welcomeFileIndex) in welcomeFilesData">
+        <div class="flex">
+          <div class="w-full sm:w-full md:w-[15%] lg:w-[15%] xl:w-[15%] gap-3 pt-2">
+            <div style="align-self: center">Welcome Audio</div>
+  
+            <!-- <Audio name="welcomeAudio"></Audio> -->
             <div>
-              {{
+              <imageField name="welcomeFile" @change="
+                  ($event) => {
+                    console.log('data');
+                    uploadFile($event, 'welcome');
+                  }
+                " :fileName="values.welcomeFile" :showFilename="false" :multiple="true" :accept="'audio/*'" />
+            </div>
+            <div v-for="(welcomeFile, welcomeFileIndex) in welcomeFilesData">
+              <div>
+                {{
                 `welcome${welcomeFileIndex + 1}.${welcomeFile.type.split("/").pop()}`
-              }}
+                }}
+              </div>
+  
+              <UiButton type="button" size="icon" color="primary" style="min-width: 80px !important" @click="
+                  deleteFile(welcomeFile, welcomeFilesData, welcomeFileIndex)
+                ">
+                remove
+              </UiButton>
             </div>
-
-            <UiButton
-              type="button"
-              size="icon"
-              color="primary"
-              style="min-width: 80px !important"
-              @click="
-                deleteFile(welcomeFile, welcomeFilesData, welcomeFileIndex)
-              "
-            >
-              remove
-            </UiButton>
           </div>
-        </div>
-        <div class="w-full gap-3 pt-2">
-          <div style="align-self: center">Conclude Audio</div>
-          <div>
-            <imageField
-              name="concludeFile"
-              @change="
-                ($event) => {
-                  console.log('data');
-                  uploadFile($event, 'conclude', 'concludeFile');
-                }
-              "
-              :fileName="values.welcomeFile"
-              :showFilename="false"
-              :multiple="true"
-              :accept="'audio/*'"
-            />
-          </div>
-
-          <div
-            v-for="(concludeFile, concludeFileIndex) in concludeFilesData"
-            class="grid gap-2"
-          >
+          <div class="w-full sm:w-full md:w-[15%] lg:w-[15%] xl:w-[15%] gap-3 pt-2">
+            <div style="align-self: center">Conclude Audio</div>
             <div>
-              {{
-                `conclude${concludeFileIndex + 1}.${concludeFile.type.split("/").pop()}`
-              }}
+              <imageField name="concludeFile" @change="
+                  ($event) => {
+                    console.log('data');
+                    uploadFile($event, 'conclude', 'concludeFile');
+                  }
+                " :fileName="values.welcomeFile" :showFilename="false" :multiple="true" :accept="'audio/*'" />
             </div>
-
-            <UiButton
-              @click="
-                deleteFile(concludeFile, concludeFilesData, concludeFileIndex)
-              "
-              size="icon"
-              color="primary"
-              type="button"
-              style="min-width: 80px !important"
-            >
-              remove
-            </UiButton>
+  
+            <div v-for="(concludeFile, concludeFileIndex) in concludeFilesData" class="grid gap-2">
+              <div>
+                {{
+                `conclude${concludeFileIndex + 1}.${concludeFile.type.split("/").pop()}`
+                }}
+              </div>
+  
+              <UiButton @click="
+                  deleteFile(concludeFile, concludeFilesData, concludeFileIndex)
+                " size="icon" color="primary" type="button" style="min-width: 80px !important">
+                remove
+              </UiButton>
+            </div>
           </div>
         </div>
         <div class="flex w-full justify-end">
-          <UiButton
-            type="submit"
-            class="w-[120px] self-end bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
-            size="lg"
-            :loading="isLoading"
-          >
+          <UiButton type="submit" class="w-[120px] self-end bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
+            size="lg" :loading="isLoading">
             Submit
           </UiButton>
         </div>
