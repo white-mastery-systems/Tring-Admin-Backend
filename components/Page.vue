@@ -18,7 +18,7 @@
   <div :class="[
     props.disablePadding 
       ? '' 
-    : `${leadPage === 'leads' ? (browserClass === 'brave-browser') ? 'pt-[73px] sm:pt-[73px]' : 'pt-[30px] sm:pt-[30px]' : 'pb-2 sm:pb-2'} px-2 sm:px-2 md:px-4 lg:px-4 xl:px-4`,
+    : `${(leadPage === 'leads') ? (browserClass === 'brave-browser') ? 'pt-[100px] sm:pt-[100px]' : 'pt-[60px] sm:pt-[60px]' : 'pb-2 sm:pb-2'} px-2 sm:px-2 md:px-4 lg:px-4 xl:px-4`,
     'pb-2'
   ]">
     <div class="mb-2 pt-2 flex items-center justify-between gap-2">
