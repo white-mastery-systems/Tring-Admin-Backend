@@ -28,6 +28,35 @@
         <UiButton color="primary" type="submit" size="lg" :loading="isLoading">Submit</UiButton>
       </div>
     </form>
+    <!-- Preview Section -->
+    <div class="mt-8" v-if="formattedValue.length">
+      <h2 class="text-xl font-semibold">Form Preview</h2>
+      <form class="space-y-4">
+        <div v-for="(field, index) in formattedValue" :key="index" class="space-y-3 flex items-end gap-2">
+          <!-- Type Field in Preview -->
+          <div v-if="field.type === 'Date'" class="w-full">
+            <DatePickerField :name="field.model" :label="field.label" :placeholder="field.placeholder" required
+              disabled />
+          </div>
+          <div v-else-if="field.type === 'Time'" class="w-full">
+            <TimePickerField :name="field.model" :label="field.label" :placeholder="field.placeholder" required
+              disabled>
+            </TimePickerField>
+            <!-- <UiButton variant="outline" type="button" @click="removeField(index)">
+              <CloseIcon class="w-4 h-4" />
+            </UiButton> -->
+          </div>
+          <div v-else class="w-full">
+            <TextField :name="field.model" :label="field.label" :placeholder="field.placeholder" :type="field.type"
+              required disabled />
+            </div>
+            <UiButton variant="outline" type="button" @click="removeField(index)">
+              <CloseIcon class="w-4 h-4" />
+            </UiButton>
+        </div>
+      </form>
+    </div>
+
   </Page>
 </template>
 
@@ -35,11 +64,11 @@
 import { ref, reactive } from 'vue';
 import { useForm } from 'vee-validate'; // assuming you're using vee-validate
 import * as z from 'zod'; // assuming you're using zod for validation
+import CloseIcon from "~/components/icons/CloseIcon.vue";
 
 const isLoading = ref(false);
-const route = useRoute("bot-management-chat-bot-id-dynamic-form");
+const route:any = useRoute("bot-management-chat-bot-id-dynamic-form");
 const botDetails: any = await getBotDetails(route.params.id);
-const formattedValue:any = ref([])
 
 const requiredList = reactive([
   { label: "Yes", value: true },
@@ -54,6 +83,19 @@ const typeList = reactive([
   { label: "Time", value: "time" },
   // { label: "Textarea", value: "textarea" },
 ]);
+const dynamicFormFieldObj = ref([])
+
+  const {
+    data: formattedValue,
+    status,
+    refresh: integrationRefresh,
+  } = await useLazyFetch(`/api/bots/${botDetails.id}`, {
+    server: false,
+    default: () => [],
+    transform: (integrations: any) => {
+      return integrations.formStructure?.fields
+    }
+  });
 
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 const formSchema = toTypedSchema(
@@ -87,7 +129,6 @@ const { handleSubmit, values, setFieldValue,resetForm } = useForm({
 
 const dynamicForm = handleSubmit(async (values: any) => {
   // title: values.title,
-  console.log("values -- values", values)
   const formattedData: any = {
     fields: formattedValue.value.length > 0 ? formattedValue.value : values.fields.map((field: any) => ({
       ...field,
@@ -107,14 +148,32 @@ const toCamelCase = (str: string) => {
     .replace(/\s+/g, '');
 }
 const addField = () => {
+  console.log(formattedValue.value.length, "formattedValue.value.length")
+  console.log((formattedValue.value.length === 1), "formattedValue.value.length === 1")
+  if (!formattedValue.value.length) {
+    const isValid = values.fields.every((field) =>
+      field.label && field.type && field.errorMessage &&
+      field.minLength !== undefined && field.maxLength !== undefined && field.placeholder
+    );
+
+    if (!isValid) {
+      toast.error("Please fill in all required fields before adding.");
+      return;
+    }
+    if (!isValid) return
+  }
   values.fields?.forEach((items: any) => {
     formattedValue.value.push({ ...items, required: true, model: toCamelCase(items.label) })
   })
   toast.success(`Field added successfully ${formattedValue.value.length}`);
 };
 
-const removeField = (index: number) => {
-  values.fields?.splice(index, 1);
+const removeField = async (index: number) => {
+  formattedValue.value?.splice(index, 1);
+  await deleteDynamicForm({
+    payload: { fields: formattedValue.value },
+    botId: route.params.id,
+  });
 };
 </script>
 

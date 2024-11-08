@@ -2,7 +2,7 @@
   <div :class="[
     props.disablePadding
       ? ''
-    : 'px-3 pb-6 sm:px-3 md:px-4 pt-12 md:pt-12 lg:px-4 lg:pt-4 xl:px-4',
+    : 'px-3 pb-2 sm:px-3 md:px-4 pt-4 md:pt-4 lg:px-4 lg:pt-4 xl:px-4',
   ]" class="w-full py-2" v-if="breadCrumbs?.length > 0">
     <UiBreadcrumb>
       <UiBreadcrumbList>
@@ -18,7 +18,7 @@
   <div :class="[
     props.disablePadding 
       ? '' 
-    : `${(leadPage === 'leads') ? (browserClass === 'brave-browser') ? 'pt-[100px] sm:pt-[100px]' : 'pt-[60px] sm:pt-[60px]' : 'pb-2 sm:pb-2'} px-2 sm:px-2 md:px-4 lg:px-4 xl:px-4`,
+    : `${(leadPage === 'leads') ? (browserClass === 'brave-browser') ? 'pt-[100px] sm:pt-[100px]' : 'pt-[60px] sm:pt-[60px]' : 'pb-2 sm:pb-2'} px-2 sm:px-2 md:px-4 lg:px-4 xl:px-4 md:pt-0 lg:pt-0 xl:pt-0`,
     'pb-2'
   ]">
     <div class="mb-2 pt-2 flex items-center justify-between gap-2">
