@@ -24,7 +24,7 @@
       <!-- <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton> -->
     </div>
     <UiTabs default-value="all" class="w-full self-start">
-      <UiTabsList class="grid w-[295px] grid-cols-3">
+      <UiTabsList class="grid w-full sm:w-full md:w-[30%] lg:w-[30%] xl:w-[30%] grid-cols-3">
         <UiTabsTrigger value="all" @click="selectedChannel('all')">
           All
         </UiTabsTrigger>

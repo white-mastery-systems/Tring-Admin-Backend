@@ -24,13 +24,13 @@
                 </div>
               </div>
               <div class="flex justify-center mt-4">
-                <div class="w-[53%] relative">
+                <div class="w-[100%] relative">
                   <div v-if="isAudioLoading"
                     class="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-10">
                     <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
                   </div>
 
-                  <div>
+                  <div class="flex justify-center">
                     <audio controls
                       :src="`${config.public.voiceBotUrl}/recording/?bot_id=${callLogs.botId}&organization_id=${callLogs.organizationId}&sid=${callLogs.callSid}`"
                       @loadeddata="onAudioLoaded" @waiting="onAudioLoading" @error="onAudioError" ref="audioPlayer">
@@ -73,7 +73,7 @@ definePageMeta({
 
 const route = useRoute("analytics-call-logs-id");
 const audioSrc = ref()
-const audioElement = ref(null)
+const audioElement: any = ref(null)
 const isAudioLoading = ref(true)
 const config = useRuntimeConfig()
 // const chats = await $fetch(`/api/call-logs/${route.params.id}`, {
