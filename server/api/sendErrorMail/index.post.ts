@@ -3,7 +3,14 @@ import { logger } from "~/server/logger"
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    let recipients = ["sainath@whitemastery.com", "johnbabu@whitemastery.com", "purushothaman@whitemastery.com", "joseph@whitemastery.com" ]
+    let recipients = [
+      "habeeb@whitemastery.com",
+      "purushothaman@whitemastery.com",
+      "joseph@whitemastery.com",
+      "dhanalakshmi@whitemastery.com",
+      "sathish@whitemastery.com",
+      "naveenkumar@whitemastery.com",
+    ];
     if(body?.envType === "PROD") {
       recipients.push("rianozal@gmail.com")
     }

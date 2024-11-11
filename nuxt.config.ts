@@ -57,10 +57,11 @@ export default defineNuxtConfig({
     nodemailerUser: "",
     nodemailerPass: "",
     adminBaseUrl: "",
+    reserveGoUrl: "",
     public: {
-    googleAnalyticsId: "",
-    voiceBotUrl:"",
-    adminUrl: process.env.NUXT_ADMIN_URL || "",
+      googleAnalyticsId: "",
+      voiceBotUrl: "",
+      adminUrl: process.env.NUXT_ADMIN_URL || "",
     },
   },
 
