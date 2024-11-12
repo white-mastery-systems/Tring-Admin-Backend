@@ -1,3 +1,4 @@
+import { getReservegoApikeyAndRestaurantId } from "~/server/utils/db/reservego"
 import { getReservationStatus } from "~/server/utils/reservego/module"
 
 export default defineEventHandler(async (event) => {
@@ -7,35 +8,18 @@ export default defineEventHandler(async (event) => {
 
   const { id: botId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
-  const botDetails: any = await getVoicebot(botId)
+  const voicebotReservego = await getReservegoApikeyAndRestaurantId(botId, "voicebot")
 
-  const botIntegrationList: any = await listVoiceBotIntegrations(botDetails?.organizationId, botId)
-
-  const reservegoCrm = botIntegrationList.find((i: any)=> i.integration.crm  === "reserve-go")
-
-  if(!reservegoCrm) {
+  if(!voicebotReservego?.status) {
     return sendError(
       event,
-      createError({ statusCode: 400, statusMessage: "This bot is not integrated with reserve-go" }),
+      createError({ statusCode: 400, statusMessage: voicebotReservego?.message }),
     );
   }
 
-  const restaurantId = reservegoCrm?.metadata?.restaurantId
-  const apiKey = reservegoCrm?.integration?.metadata?.apiKey
+  const restaurantId = voicebotReservego?.data?.restaurantId
+  const apiKey = voicebotReservego?.data?.apiKey
 
-  if(!restaurantId) {
-    return sendError(
-      event,
-      createError({ statusCode: 400, statusMessage: "Reserve-go restaurantId is missing in integration-data" }),
-    );
-  }
-
-  if(!apiKey) {
-    return sendError(
-      event,
-      createError({ statusCode: 400, statusMessage: "Reserve-go restaurantId is missing in integration-data" }),
-    );
-  }
   const data = await getReservationStatus({ restaurantId, apiKey }, body)
 
   if(!data.status) {

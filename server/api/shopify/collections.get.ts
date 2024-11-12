@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
    logger.info(
      `Fetching Shopify integration details for ID: ${shopifyIntegrationId}`,
    );
-   const shopifyIntegration = await getShopifyIntegrationDetails(shopifyIntegrationId);
+   const shopifyIntegration: any = await getShopifyIntegrationDetails(shopifyIntegrationId);
   
    const data: any = await $fetch(`https://${shopifyIntegration.shop}/admin/api/2024-04/smart_collections.json`, {
       method: "GET",
