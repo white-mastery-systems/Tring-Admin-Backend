@@ -74,7 +74,7 @@ export const addBotIntegration = async ({
     onSuccess();
     return createdBot;
   } catch (err: any) {
-    toast.error(err.data.data[0].message);
+    toast.error(err.data.statusMessage);
   }
 };
 export const updateBotIntegrationById = async ({
@@ -95,6 +95,7 @@ export const updateBotIntegrationById = async ({
     onSuccess();
     return createdBot;
   } catch (err: any) {
+    console.log(err.data, "err.data -- err.data")
     toast.error(err.data.data[0].message);
   }
 };

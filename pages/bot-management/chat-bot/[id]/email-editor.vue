@@ -282,9 +282,9 @@ const submitContent = async () => {
 </script>
 
 <template>
-  <Page title="Bot Configuration" :bread-crumbs="[
+  <Page title="Email Template Editor" :bread-crumbs="[
     { label: `${botDetails.name}`, to: `/bot-management/chat-bot/${botDetails.id}` },
-    { label: 'Bot Configuration', to: `/bot-management/chat-bot/${botDetails.id}/config` }
+  { label: 'Email Template Editor', to: `/bot-management/chat-bot/${botDetails.id}/config` }
   ]">
     <!-- <div>{{ config.public.adminUrl }} || sdfsf</div> -->
     <div class="relative">
