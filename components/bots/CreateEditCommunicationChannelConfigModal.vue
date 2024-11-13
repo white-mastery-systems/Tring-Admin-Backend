@@ -68,7 +68,7 @@
 </template>
 <script setup lang="ts">
   import { useForm } from "vee-validate";
-  import { createEditCRMConfigValidation } from "~/validationSchema/createEditCrmConfigvalidation";
+  import { createEditCRMConfigValidation } from "~/validationSchema/createEditCommunicationChannel";
 
   const emit = defineEmits(["success"]);
   let channels = ref<any>([]);
@@ -104,33 +104,7 @@
           );
           if (crmConfigData) {
             setFieldValue("integrationId", crmConfigData.integrationId);
-
-            // Set other fields based on the CRM type
-            const selectedCrm = integrationsData.value.find(
-              (integration: any) =>
-                integration.id === crmConfigData.integrationId,
-            );
-
-            if (selectedCrm?.crm === "zoho-bigin") {
-              setFieldValue("channelId", crmConfigData?.metadata?.channelId);
-
-              setFieldValue(
-                "stageId",
-                crmConfigData?.metadata?.pipelineObj?.id,
-              );
-              // setFieldValue(
-              //   "subPipeline",
-              //   crmConfigData?.metadata?.pipelineObj?.Sub_Pipeline,
-              // );
-              await handleCrmChange(crmConfigData.integrationId);
-              await handlePipelineChange(crmConfigData.channelId);
-            } else if (selectedCrm?.crm === "zoho-crm") {
-              setFieldValue("layoutId", crmConfigData?.metadata?.layoutId);
-              await handleCrmChange(crmConfigData?.integrationId);
-            } else if (selectedCrm?.crm === "sell-do") {
-              setFieldValue("campaignId", crmConfigData?.metadata?.campaignId);
-              setFieldValue("projectId", crmConfigData?.metadata?.projectId);
-            }
+            setFieldValue("channelId", crmConfigData.metadata.channelId)
           }
         } catch (error) {
           console.error("Error fetching CRM config data:", error);
