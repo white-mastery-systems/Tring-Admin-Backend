@@ -147,18 +147,21 @@ const toCamelCase = (str: string) => {
     .replace(/\s+/g, '');
 }
 const addField = () => {
-  if (!formattedValue.value.length) {
-    const isValid = values.fields?.every((field) =>
-      field.label && field.type && field.errorMessage &&
-      field.minLength !== undefined && field.maxLength !== undefined && field.placeholder
-    );
-
+    const isValid = values.fields?.every((field) => {
+      if (field.type === "Text") {
+        // For type 'Text', check all fields
+        return field.label && field.type && field.errorMessage &&
+          field.minLength !== undefined && field.maxLength !== undefined && field.placeholder;
+      } else {
+        // For other types, only check label, placeholder, and errorMessage
+        return field.label && field.placeholder && field.errorMessage;
+      }
+    });
     if (!isValid) {
       toast.error("Please fill in all required fields before adding.");
       return;
     }
-    if (!isValid) return
-  }
+
   values.fields?.forEach((items: any) => {
     formattedValue.value.push({ ...items, required: true, model: toCamelCase(items.label) })
   })

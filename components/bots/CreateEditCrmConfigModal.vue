@@ -1,128 +1,74 @@
 <template>
-  <DialogWrapper
-    v-model="modalState"
-    :title="modalProps?.id ? `Edit CRM` : 'Link CRM'"
-  >
+  <DialogWrapper v-model="modalState" :title="modalProps?.id ? `Edit CRM` : 'Link CRM'">
     <form @submit="handleAddIntegration">
       <div class="flex flex-col gap-3">
-        <SelectField
-          name="integrationId"
-          :multiple="false"
-          :required="true"
-          label="Select Connected CRM"
-          placeholder="Select Connected CRM"
-          :options="
+        <SelectField name="integrationId" :multiple="false" :required="true" label="Select Connected CRM"
+          placeholder="Select Connected CRM" :options="
             integrationsData.map((integration) => ({
               value: integration.id,
               label: integration.name,
             }))
-          "
-        />
-        <div
-          v-if="
+          " />
+        <div v-if="
             integrationsData.find(
               (integration) => integration.id === values.integrationId,
             )?.crm === 'zoho-bigin'
-          "
-        >
-          <SelectField
-            name="pipelineId"
-            :multiple="false"
-            :required="true"
-            label="Select Pipeline"
-            placeholder="Select Pipeline"
-            :options="
+          ">
+          <SelectField name="pipelineId" :multiple="false" :required="true" label="Select Pipeline"
+            placeholder="Select Pipeline" :options="
               pipelines.map((pipe) => ({
                 value: pipe.id,
                 label: pipe.display_label,
               }))
-            "
-          />
+            " />
         </div>
         <div v-if="values.pipelineId && values.integrationId">
-          <SelectField
-            name="stageId"
-            :multiple="false"
-            :required="true"
-            :label="'Select Stage'"
-            :options="
+          <SelectField name="stageId" :multiple="false" :required="true" :label="'Select Stage'"
+            placeholder="Select Stage" :options="
               stages.map((stage) => ({
                 value: stage.id,
                 label: stage.display_value,
               }))
-            "
-          />
+            " />
         </div>
-        <div
-          v-if="
+        <div v-if="
             integrationsData.find(
               (integration) => integration.id === values.integrationId,
             )?.crm === 'zoho-crm'
-          "
-        >
-          <SelectField
-            name="layoutId"
-            :multiple="false"
-            :required="true"
-            label="Select Layout"
-            placeholder="Select Layout"
-            :options="
+          ">
+          <SelectField name="layoutId" :multiple="false" :required="true" label="Select Layout"
+            placeholder="Select Layout" :options="
               layouts.map((layout) => ({
                 value: layout.id,
                 label: layout.name,
               }))
-            "
-          />
+            " />
         </div>
 
-        <div
-          class="flex flex-col gap-3"
-          v-if="
+        <div class="flex flex-col gap-3" v-if="
             integrationsData.find(
               (integration) => integration.id === values.integrationId,
             )?.crm === 'sell-do'
-          "
-        >
-          <TextField
-            name="campaignId"
-            label="Campaign Id"
-            placeholder="Enter Your Campaign Id"
-          />
+          ">
+          <TextField name="campaignId" label="Campaign Id" placeholder="Enter Your Campaign Id" />
 
-          <TextField
-            name="ProjectId"
-            label="Project Id"
-            placeholder="Enter Your Project Id"
-          />
+          <TextField name="projectId" label="Project Id" placeholder="Enter Your Project Id" />
         </div>
 
-        <div
-          class="flex flex-col gap-3"
-          v-if="
+        <div class="flex flex-col gap-3" v-if="
             integrationsData.find(
               (integration) => integration.id === values.integrationId,
             )?.crm === 'reserve-go'
-          "
-        >
-          <TextField
-            name="restaurantId"
-            label="Restaurant Id"
-            placeholder="Enter Your Restaurant Id"
-          />
+          ">
+          <TextField name="restaurantId" label="Restaurant Id" placeholder="Enter Your Restaurant Id" />
         </div>
 
-        <div
-          v-if="
+        <div v-if="
             integrationsData.find(
               (integration) => integration.id === values.integrationId,
             )?.crm === 'hubspot'
-          "
-        >
-          <SelectField
-            name="stage"
-            label="pipeLine"
-            placeholder="Select Stage"
-            :options="[
+          ">
+          <SelectField name="stage" label="pipeLine" placeholder="Select Stage" :options="[
               { label: 'Appointment Scheduled', value: 'appointmentscheduled' },
               { label: 'Qualified to Buy', value: 'qualifiedtobuy' },
               {
@@ -136,9 +82,7 @@
               { label: 'Contract Sent', value: 'contractsent' },
               { label: 'Closed Won', value: 'closedwon' },
               { label: 'Closed Lost', value: 'closedlost' },
-            ]"
-            :required="true"
-          />
+            ]" :required="true" />
         </div>
       </div>
 
@@ -179,24 +123,29 @@
   // const [subPipelineField, subPipelineFieldAttrs] = defineField("subPipeline");
 
   // subPipelineField
-
+watchEffect(async () => {
+  if (values.pipelineId) {
+    await handlePipelineChange(values.pipelineId)
+    // You can add any logic here that depends on values.pipelineId
+  }
+});
   watch(
     () => values.pipelineId,
-    (newValue) => {
-      handlePipelineChange(newValue);
+    async (newValue) => {
+      await handlePipelineChange(newValue);
     },
-  );
+  { deep: true });
 
   watch(
     () => values.integrationId,
-    (newValue, oldValue) => {
-      handleCrmChange(newValue);
+    async (newValue, oldValue) => {
+      await handleCrmChange(newValue);
     },
   );
   watch(
     () => values.layoutId,
-    (newValue, oldValue) => {
-      handleCrmChange(newValue);
+    async (newValue, oldValue) => {
+      await handleCrmChange(newValue);
     },
   );
 
@@ -220,7 +169,6 @@
 
             if (selectedCrm?.crm === "zoho-bigin") {
               setFieldValue("pipelineId", crmConfigData?.metadata?.pipelineId);
-
               setFieldValue(
                 "stageId",
                 crmConfigData?.metadata?.pipelineObj?.id,
@@ -233,7 +181,7 @@
               await handleCrmChange(crmConfigData.integrationId);
               await handlePipelineChange(crmConfigData.pipelineId);
             } else if (selectedCrm?.crm === "zoho-crm") {
-              setFieldValue("layoutId", crmConfigData?.metadata?.layoutId);
+              setFieldValue("layoutId", crmConfigData?.metadata?.layoutObj.id);
               await handleCrmChange(crmConfigData?.integrationId);
             } else if (selectedCrm?.crm === "sell-do") {
               setFieldValue("campaignId", crmConfigData?.metadata?.campaignId);
@@ -258,7 +206,6 @@
         .find((pipeline: any) => pipeline.id === e)
         .sections?.find((section: any) => section.sequence_number === 2),
     );
-
     stages.value = pipelines.value
       .find((pipeline: any) => pipeline.id === e)
       .sections?.find((section: any) => section.sequence_number === 2)
@@ -274,12 +221,17 @@
         }
       },
     );
-
+    if(!matchedCRM) return 
     if (matchedCRM.crm === "zoho-bigin") {
       const data: any = await $fetch(
         `/api/org/integrations/zoho-bigin/pipelines?id=${matchedCRM.id}`,
       );
-      pipelines.value = data.layouts;
+      if (data) {
+        pipelines.value = data.layouts;
+      }
+      // else {
+      //   toast.error('Pipeline field is empty')
+      // }
 
       const subPipelineData = await $fetch(
         `/api/org/integrations/zoho-bigin/sub-pipeline?id=${matchedCRM.id}`,
@@ -289,7 +241,7 @@
       const data: any = await $fetch(
         `/api/org/integrations/zoho-crm/layouts?id=${matchedCRM.id}`,
       );
-      layouts.value = data.layouts;
+      layouts.value = data?.layouts;
     }
   };
   const {
@@ -316,7 +268,7 @@
       let stage = pipelineData.sections
         ?.find((section: any) => section.name === "Potential Information")
         ?.fields?.find((field: any) => field.field_label === "Stage")
-        ?.pick_list_values?.find((list: any) => list.id === value.stageId);
+        ?.pick_list_values?.find((list: any) => list.id === value.stageId)
       const subPipeline = pipelineData.sections
         ?.find((section: any) => section.name === "Potential Information")
         ?.fields?.find((field: any) => field.api_name === "Sub_Pipeline")
@@ -366,5 +318,6 @@
         },
       });
     }
+    isLoading.value = false;
   });
 </script>

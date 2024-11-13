@@ -1,12 +1,15 @@
 import { updateBotIntegration } from "~/server/utils/db/bot";
 
 const zodUpdateBotIntegration = z.object({
+  integrationId: z.string().uuid().optional(),
   campaignId: z.string().optional(),
   projectId: z.string().optional(),
   pipelineId: z.string().optional(),
   pipelineObj: z.any().optional(),
+  channelId: z.string().optional(),
   layoutObj: z.any().optional(),
   stage: z.string().optional(),
+  restaurantId: z.string().optional()
 });
 
 export default defineEventHandler(async (event) => {
@@ -28,7 +31,10 @@ export default defineEventHandler(async (event) => {
   const updateIntegration = await updateBotIntegration(
     botId,
     botIntegrationId,
-    { metadata: botIntegration },
+    { 
+      metadata: botIntegration, 
+      integrationId: botIntegration.integrationId 
+    },
   );
 
   return updateIntegration;

@@ -303,6 +303,7 @@
         { value: "zoho-crm", label: "Zoho CRM" },
         { value: "zoho-bigin", label: "Zoho Bigin" },
         { value: "hubspot", label: "Hubspot" },
+        { value: "reserve-go", label: "Reserve Go" },
       ];
     } else if (queryParam === "communication") {
       integrationTypes.value = [
