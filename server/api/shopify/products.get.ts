@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     logger.info(
       `Fetching Shopify integration details for ID: ${shopifyIntegrationId}`,
     );
-    const shopifyIntegration = await getShopifyIntegrationDetails(shopifyIntegrationId);
+    const shopifyIntegration: any = await getShopifyIntegrationDetails(shopifyIntegrationId);
 
     if (!shopifyIntegration) {
       logger.error(

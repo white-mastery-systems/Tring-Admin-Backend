@@ -1,7 +1,5 @@
 <template>
-  <Page
-    title="Document Management"
-    :bread-crumbs="[
+  <Page title="Document Management" :bread-crumbs="[
       {
         label: `${botDetails.name}`,
         to: `/bot-management/chat-bot/${botDetails.id}`,
@@ -10,163 +8,55 @@
         label: 'Document Management',
         to: `/bot-management/chat-bot/${botDetails.id}/documents`,
       },
-    ]"
-    :disableSelector="true"
-    :disable-back-button="false"
-    :disable-elevation="true"
-  >
-    <div class="bot-manage-main-container">
+    ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="true">
+    <div class="mb-7">
       <div class="document-align">
         <span class="flex flex-row">
           <!-- @click="uploadfile" -->
-          <DocumentUpload
-            accept="application/pdf"
-            v-model="selectedFile"
-            @upload-document="fileUpload()"
-          />
+          <DocumentUpload accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" />
           <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
         </span>
-        <!-- <div class="flex items-center gap-2">
-        <div class="submit-btn-align">
-          <button
-            v-if="selectedFile"
-            class="text-[14px] font-bold"
-            type="submit"
-            @click="fileUpload"
-          >
-            Upload Document
-          </button>
-        </div>
-      </div> -->
       </div>
       <p class="pt-2 text-sm text-gray-400">only PDF</p>
-
-      <div class="bot-main-align rounded-lg">
-        <div class="list-header-align">
-          <div class="header-content-align">
-            <span class="content-align font-semibold">File Name</span>
-            <span class="content-align font-semibold">Uploaded Date</span>
-            <span class="content-align font-semibold">Status</span>
-            <span class="content-align font-semibold">Actions</span>
-          </div>
-        </div>
-        <!-- {{ getDocumentList }} -->
-        <div class="content-scroll-align px-3">
-          <!-- @click="async () => {
-        await navigateTo('botpdfdocument')
-        }" -->
-
-          <div v-if="documents?.documents?.length" class="overflow_align">
-            <div
-              class="bot-list-align relative overflow-hidden text-[15px]"
-              v-for="(list, index) in documents?.documents"
-              :key="index"
-              :class="{
-                'active-row': list.id === documents?.documentId,
-              }"
-            >
-              <!-- {{ list }} -->
-              <div class="list_align">
-                <span class="bot_name_align font-medium">{{ list.name }}</span>
-                <span
-                  class="create_at-align font-medium"
-                  :style="{
-                    'padding-inline-end':
-                      list.status === 'ready'
-                        ? '132px'
-                        : list.status === 'processing'
-                          ? '133px'
-                          : '133px',
-                  }"
-                  >{{ list.createdAt }}</span
-                >
-                <div
-                  v-if="list.status === 'ready'"
-                  class="acive_class font-medium"
-                >
-                  <div class="active-circle-align rounded-full"></div>
-                  <span>Success</span>
-                </div>
-                <div
-                  v-else-if="list.status === 'processing'"
-                  class="process_class font-medium"
-                >
-                  <div class="process-circle-align rounded-full"></div>
-                  <span>Processing</span>
-                </div>
-                <div v-else class="deacive_class font-medium">
-                  <div class="deactive-circle-align rounded-full"></div>
-                  <span>Failed</span>
-                </div>
-                <span>
-                  <UiDropdownMenu>
-                    <UiDropdownMenuTrigger as-child>
-                      <!-- <UiButton variant="outline"> -->
-                      <img src="assets\icons\more_horiz.svg" width="30" />
-                      <!-- </UiButton> -->
-                    </UiDropdownMenuTrigger>
-                    <UiDropdownMenuContent class="w-36">
-                      <UiDropdownMenuGroup
-                        class="flex flex-col items-center justify-center"
-                      >
-                        <UiDropdownMenuItem
-                          @click="handleAction(list, 'download')"
-                        >
-                          <div class="menu-align rounded-sm text-center">
-                            Download
-                          </div>
-                        </UiDropdownMenuItem>
-                        <UiDropdownMenuItem
-                          v-if="list.id !== documents?.documentId"
-                          @click="deleteDocumentModelOpen[list.id] = true"
-                        >
-                          <div class="menu-align rounded-sm text-center">
-                            Delete
-                          </div>
-                        </UiDropdownMenuItem>
-                      </UiDropdownMenuGroup>
-                    </UiDropdownMenuContent>
-                  </UiDropdownMenu>
-                </span>
-                <ConfirmationModal
-                  v-model:open="deleteDocumentModelOpen[list.id]"
-                  title="Confirm Delete"
-                  description="Are you sure you want to delete ?"
-                  @confirm="
-                    () => {
-                      handleAction(list, 'delete');
-                      deleteDocumentModelOpen[list.id] = false;
-                    }
-                  "
-                />
-              </div>
-              <!-- <div>
-              <img src="assets\icons\left_arrow.svg" width="30">
-            </div> -->
-            </div>
-          </div>
-          <div
-            v-else
-            class="font-regular flex h-[40Vh] items-center justify-center text-[#8A8A8A]"
-          >
-            No document available
-          </div>
-        </div>
-      </div>
     </div>
+    <!-- <BotDocumentMenu></BotDocumentMenu> -->
+    <DataTable @pagination="Pagination" @limit="($event) => {
+        (filters.page = '1'), (filters.limit = $event);
+      }
+      " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="documentItems"
+      :is-loading="isDataLoading" :page-size="20" :height="14" height-unit="vh" />
+    <!-- <ConfirmationModal v-model:open="deleteDocumentModelOpen[list.id]" title="Confirm Delete"
+      description="Are you sure you want to delete ?" @confirm="() => {
+          handleAction(list, 'delete');
+          deleteDocumentModelOpen[list.id] = false;
+        }
+        " /> -->
   </Page>
   <!-- <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div> -->
 </template>
 <script setup lang="ts">
+import { createColumnHelper } from "@tanstack/vue-table";
+import { h } from 'vue';
+
   definePageMeta({
     middleware: "admin-only",
   });
 
   import { ref } from "vue";
   const router = useRouter();
-
+  const filters = reactive<{
+    q: string;
+    page: string;
+    limit: string;
+    active: string;
+  }>({
+    q: "",
+    active: "",
+    page: "1",
+    limit: "10",
+  });
   const route = useRoute("bot-management-chat-bot-id-documents");
   const paramId: any = route;
   const selectedFile = ref();
@@ -178,26 +68,110 @@
   const deleteDocumentModelOpen: any = reactive({});
   const isSheetOpen = ref(false);
   const position = ref("bottom");
+  let page = ref(0);
+  let totalPageCount = ref(0);
+  let totalCount = ref(0);
 
-  const {
-    status,
-    refresh: documentsRefresh,
-    data: documents,
-  } = await useLazyFetch(() => `/api/bots/${route.params.id}/documents`, {
-    server: false,
-    /**
-     * Transform the API response to format the createdAt date of each document
-     * @param {object} docs - The API response
-     * @returns {object} The transformed response
-     */
-    transform: (docs) => ({
+const {
+  status,
+  refresh: documentsRefresh,
+  data: documents,
+} = await useLazyFetch(() => `/api/bots/${route.params.id}/documents`, {
+  server: false,
+  /**
+   * Transform the API response to format the createdAt date of each document
+   * @param {object} docs - The API response
+   * @returns {object} The transformed response
+   */
+  transform: (docs: any) => {
+    page.value = docs.page;
+    totalPageCount.value = docs.totalPageCount;
+    totalCount.value = docs.totalCount;
+
+    return {
       ...docs,
-      documents: docs?.documents.map((d) => ({
+      documents: docs.documents.map((d: any) => ({
         ...d,
         createdAt: formatDate(new Date(d.createdAt), "dd.MM.yyyy"),
-      })),
-    }),
-  });
+      }))
+    };
+  },
+});
+
+const documentItems = computed(() => documents.value?.documents || []);
+
+const isDataLoading = computed(() => status.value === "pending");
+const columnHelper = createColumnHelper<(typeof documentItems.value)[0]>();
+setTimeout(() => {
+  console.log(documentItems.value, "documentItems")
+}, 2000);
+
+const statusComponent = (status: any) => {
+  const statusText = status === 'ready' ? 'Success'
+    : status === 'processing' ? 'Processing'
+      : 'Failed';
+
+  const statusClass = status === 'ready' ? 'text-green-500'
+    : status === 'processing' ? 'text-yellow-500'
+      : 'text-red-500';
+
+  const circleClass = status === 'ready' ? 'bg-green-500'
+    : status === 'processing' ? 'bg-yellow-500'
+      : 'bg-red-500';
+
+  return h(
+    "div",
+    { class: `flex items-center font-medium ${statusClass}`, style: { gap: '5px' } },
+    [
+      h("div", { class: `rounded-full ${circleClass}`, style: { width: '5px', height: '5px' } }),
+      h("span", statusText)
+    ]
+  );
+};
+
+
+
+const columns = [
+  columnHelper.accessor("name", {
+    header: "File Name",
+  }),
+
+  columnHelper.accessor("createdAt", {
+    header: "Uploaded Date",
+  }),
+
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: ({ row }) => statusComponent(row.original.status),
+  }),
+  columnHelper.accessor("id", {
+    header: "Actions",
+    cell: ({ row }) => {
+      const BotDocumentMenu = defineAsyncComponent(() => import('@/components/bots/BotDocumentMenu.vue'));
+
+      return h(BotDocumentMenu, {
+        row: row.original, // Pass the row data to the component
+        documents: documentItems.value,
+        // Handle the download and delete actions
+        onDownload: (id: any) => {
+          console.log(`Download document with id: ${id}`);
+          // Call your existing method for handling download
+          singleDocumentDownload(id);
+        },
+        onDelete: (list: any) => {
+          console.log(`Delete document with id: ${list}`);
+          // Call your existing method for handling delete
+          singleDocumentDelete(list);
+          // console.log(list.id, 'list')
+          // console.log(deleteDocumentModelOpen,"deleteDocumentModelOpen -- deleteDocumentModelOpen")
+          // deleteDocumentModelOpen[list.id] = true
+          // console.log(deleteDocumentModelOpen[list.id], "deleteDocumentModelOpen[list.id] - -deleteDocumentModelOpen[list.id]")
+        },
+      });
+    },
+  }),
+];
+
   onMounted(async () => {
     const eventSource = new EventSource("/api/sse");
     eventSource.onmessage = async (event) => {
@@ -278,6 +252,10 @@
   const singleDocumentDownload = async (list: any) => {
     viewDocument(paramId.params.id, list.id);
   };
+  const Pagination = async ($event: any) => {
+    filters.page = $event
+    documentsRefresh()
+  }
 </script>
 
 <style scoped>

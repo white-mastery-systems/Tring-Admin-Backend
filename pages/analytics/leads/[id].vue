@@ -243,9 +243,9 @@
   } = await useLazyFetch(`/api/timeline/chat/${route.params.id}`, {
     transform: (data: any) => {
       let chatIndex = 1;
-      const  allChat = chats.map((chat)=>chat.chatId)
+      const  allChat = chats.map((chat: any)=>chat.chatId)
       return data.map((item: any, index: number) => {
-          const chatIndex =  allChat.findIndex((chat)=>chat === item.chatId)
+          const chatIndex =  allChat.findIndex((chat: any)=>chat === item.chatId)
           return { ...item, chatIndex:chatIndex+1 };
         });
     },

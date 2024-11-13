@@ -1,4 +1,3 @@
-import api from "~/server/api"
 import { getReservegoApikeyAndRestaurantId } from "~/server/utils/db/reservego"
 import { createNewReservation } from "~/server/utils/reservego/module"
 
@@ -27,17 +26,17 @@ export default defineEventHandler(async (event) => {
 
   const { id: botId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
-  const voicebotReservego = await getReservegoApikeyAndRestaurantId(botId, "voicebot")
+  const chatbotReservego = await getReservegoApikeyAndRestaurantId(botId, "chatbot")
 
-  if(!voicebotReservego?.status) {
+  if(!chatbotReservego?.status) {
     return sendError(
       event,
-      createError({ statusCode: 400, statusMessage: voicebotReservego?.message }),
+      createError({ statusCode: 400, statusMessage: chatbotReservego?.message }),
     );
   }
 
-  const restaurantId = voicebotReservego?.data?.restaurantId
-  const apiKey = voicebotReservego?.data?.apiKey
+  const restaurantId = chatbotReservego?.data?.restaurantId
+  const apiKey = chatbotReservego?.data?.apiKey
 
   const data = await createNewReservation({ restaurantId, apiKey }, body)
   if(!data.status) {

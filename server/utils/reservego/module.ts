@@ -23,7 +23,7 @@ export const createNewReservation = async (integrationData: any, reqObj : any) =
     }
     return { status: true, data }
   } catch (error) {
-    logger.error(`voicebot-createNewReservation error, ${JSON.stringify(error)}`)
+    logger.error(`Reservego-createNewReservation error, ${JSON.stringify(error)}`)
     return { status: false }
   }
 }
@@ -43,7 +43,7 @@ export const getReservationStatus = async (integrationData: any, reqObj : any) =
     }
     return { status: true, data }
   } catch (error) {
-    logger.error(`voicebot-getReservationStatus error, ${JSON.stringify(error)}`)
+    logger.error(`Reservego-getReservationStatus error, ${JSON.stringify(error)}`)
     return { status: false }
   }
 }
@@ -63,7 +63,7 @@ export const checkAvailabilty = async (integrationData: any, reqObj: any) => {
     }
     return { status: true, data }
   } catch (error) {
-    logger.error(`voicebot-checkAvailabilty error, ${JSON.stringify(error)}`)
+    logger.error(`Reservego-checkAvailabilty error, ${JSON.stringify(error)}`)
     return { status: false }
   }
 }

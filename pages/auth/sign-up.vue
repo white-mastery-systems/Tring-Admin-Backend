@@ -86,7 +86,8 @@
             <TextField :type="passwordVisible ? 'text' : 'password'" name="password" label="Password"
               placeholder="Password" required>
               <template #endIcon>
-                <div class="w-[30px] cursor-pointer" @click="togglePasswordVisibility" type="button">
+                <div class="w-[30px] cursor-pointer absolute right-0 top-[5px]" @click="togglePasswordVisibility"
+                  type="button">
                   <OpenEye v-if="passwordVisible" />
                   <CloseEyeIcon v-else />
                 </div>
@@ -97,7 +98,8 @@
             <TextField :type="confirmPasswordVisible ? 'text' : 'password'" name="confirmPassword"
               label="Confirm Password" placeholder="Confirm Your Password" required>
               <template #endIcon>
-                <div class="w-[30px] cursor-pointer" @click="toggleConfirmPasswordVisibility" type="button">
+                <div class="w-[30px] cursor-pointer absolute right-0 top-[5px]"
+                  @click="toggleConfirmPasswordVisibility" type="button">
                   <OpenEye v-if="confirmPasswordVisible" />
                   <CloseEyeIcon v-else />
                 </div>

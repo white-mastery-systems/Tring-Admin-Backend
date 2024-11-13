@@ -19,6 +19,7 @@ export async function getAllChannelsFromSlack(integrationData: any, integrationI
       const newIntegrationData: any = await regenerateAccessTokenForSlack({
         integrationData: integrationData,
       });
+      logger.info(`newIntegrationData regenerateAccessTokenForSlack - ${JSON.stringify(newIntegrationData)}`)
       if(newIntegrationData.ok) {
         logger.error(`newIntegrationData, ${JSON.stringify(newIntegrationData)}`);
   
