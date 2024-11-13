@@ -231,20 +231,20 @@ const { data: botDetails, status: botLoadingStatus, refresh: integrationRefresh 
         "Configure CRM integration for the voice bot, enabling it to access and update customer data during voice interactions.",
       routeName: "bot-management-voice-bot-id-crm-config",
     },
-    {
-      _id: 6,
-      bot: "Pre Recorded Audio",
-      // helperText:
-      //   "Configure CRM integration for the voice bot, enabling it to access and update customer data during voice interactions.",
-      // routeName: "bot-management-voice-bot-id-crm-config",
-    },
-    {
-      _id: 7,
-      bot: "Tools",
-      // helperText:
-      //   "Configure CRM integration for the voice bot, enabling it to access and update customer data during voice interactions.",
-      // routeName: "bot-management-voice-bot-id-crm-config",
-    },
+    // {
+    //   _id: 6,
+    //   bot: "Pre Recorded Audio",
+    //   helperText:
+    //     "Configure CRM integration for the voice bot, enabling it to access and update customer data during voice interactions.",
+    //   routeName: "bot-management-voice-bot-id-crm-config",
+    // },
+    // {
+    //   _id: 7,
+    //   bot: "Tools",
+    //   helperText:
+    //     "Configure CRM integration for the voice bot, enabling it to access and update customer data during voice interactions.",
+    //   routeName: "bot-management-voice-bot-id-crm-config",
+    // },
     {
       _id: 8,
       bot: "IVR Configuration",
