@@ -123,7 +123,7 @@
           </UiButton>
         </UiDialogContent>
       </LazyUiDialog>
-      <div class="pb-8">
+      <div class="pb-10 mb-10">
         <div v-for="(list, index) in dataList" :key="index">
           <NuxtLink :to="{ name: list.routeName, params: { id: paramId.params.id } }"
             class="field_shadow mx-0 my-[17px] flex w-full cursor-pointer items-center justify-between rounded-[10px] bg-[#ffffff] px-[30px] py-[20px] text-[14px] hover:bg-[#fff8eb] hover:text-[#ffbc42]">
@@ -189,27 +189,13 @@ const { data: botDetails, status: botLoadingStatus, refresh: integrationRefresh 
     });
   };
   const dataList = ref([
-    {
-      _id: 7,
-      bot: "Talent Management",
-      helperText:
-        "Manage talent, including hiring, onboarding, and onboarding flows for the voice bot.",
-      routeName: "bot-management-voice-bot-id-talent-mangement",
-    },
-    {
-      _id: 7,
-      bot: "Speech To Text Configurations",
-      helperText:
-        "Configure speech-to-text capabilities for the voice bot, including language detection, speech recognition, and text-to-speech.",
-      routeName: "bot-management-voice-bot-id-speech-to-text-config",
-    },
-    {
-      _id: 7,
-      bot: "Text To Speech Configurations",
-      helperText:
-        "Configure text-to-speech capabilities for the voice bot, including voice synthesis, and speech synthesis.",
-      routeName: "bot-management-voice-bot-id-text-to-speech-config",
-    },
+    // {
+    //   _id: 7,
+    //   bot: "Talent Management",
+    //   helperText:
+    //     "Manage talent, including hiring, onboarding, and onboarding flows for the voice bot.",
+    //   routeName: "bot-management-voice-bot-id-talent-mangement",
+    // },
     {
       _id: 1,
       bot: "Bot Details",
@@ -219,32 +205,60 @@ const { data: botDetails, status: botLoadingStatus, refresh: integrationRefresh 
     },
     {
       _id: 2,
-      bot: "CRM Configuration",
+      bot: "Speech To Text Configurations",
       helperText:
-        "Configure CRM integration for the voice bot, enabling it to access and update customer data during voice interactions.",
-      routeName: "bot-management-voice-bot-id-crm-config",
+        "Configure speech-to-text capabilities for the voice bot, including language detection, speech recognition, and text-to-speech.",
+      routeName: "bot-management-voice-bot-id-speech-to-text-config",
     },
     {
       _id: 3,
+      bot: "Text To Speech Configurations",
+      helperText:
+        "Configure text-to-speech capabilities for the voice bot, including voice synthesis, and speech synthesis.",
+      routeName: "bot-management-voice-bot-id-text-to-speech-config",
+    },
+    {
+      _id: 4,
       bot: "LLM Configuration",
       helperText:
         "Set up large language models for the voice bot, optimizing it for understanding and generating natural language responses.",
       routeName: "bot-management-voice-bot-id-llm-config",
     },
     {
-      _id: 4,
+      _id: 5,
+      bot: "CRM Configuration",
+      helperText:
+        "Configure CRM integration for the voice bot, enabling it to access and update customer data during voice interactions.",
+      routeName: "bot-management-voice-bot-id-crm-config",
+    },
+    // {
+    //   _id: 6,
+    //   bot: "Pre Recorded Audio",
+    //   helperText:
+    //     "Configure CRM integration for the voice bot, enabling it to access and update customer data during voice interactions.",
+    //   routeName: "bot-management-voice-bot-id-crm-config",
+    // },
+    // {
+    //   _id: 7,
+    //   bot: "Tools",
+    //   helperText:
+    //     "Configure CRM integration for the voice bot, enabling it to access and update customer data during voice interactions.",
+    //   routeName: "bot-management-voice-bot-id-crm-config",
+    // },
+    {
+      _id: 8,
       bot: "IVR Configuration",
       helperText:
         "Configure the IVR settings to manage call flows and automate responses for the voice bot.",
       routeName: "bot-management-voice-bot-id-ivr-config",
     },
-    {
-      _id: 5,
-      bot: "Default Intents",
-      helperText:
-        "Define the intents that the voice bot will recognize and respond to during interactions with users.",
-      routeName: "bot-management-voice-bot-id-intent-config",
-    },
+    // {
+    //   _id: 7,
+    //   bot: "Default Intents",
+    //   helperText:
+    //     "Define the intents that the voice bot will recognize and respond to during interactions with users.",
+    //   routeName: "bot-management-voice-bot-id-intent-config",
+    // },
   ]);
 
   const dateFormate = computed(() => {

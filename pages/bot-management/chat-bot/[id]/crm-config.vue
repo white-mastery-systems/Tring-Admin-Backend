@@ -142,14 +142,14 @@ watchEffect(() => {
   ];
   watch(integrationsData, (newIntegrations: any) => {
     newIntegrations?.map((item: any) => {});
-    integrations.value = newIntegrations?.map((item: any) => ({
+    integrations.value = newIntegrations?.map((item: any) => ({ 
       integration: item.integration?.name,
       projectId:
         item.integration?.crm === "zoho-bigin"
           ? `${item?.metadata?.pipelineObj?.Pipeline?.name}`
           : item.integration?.crm === "zoho-crm"
             ? `${item?.metadata?.layoutObj?.name}`
-            : (item.metadata?.projectId ?? "N/A"),
+            : item.integration?.crm === "hubspot" ? `${item?.metadata?.stage}` : item.integration?.crm === "reserve-go" ? `${item?.metadata?.restaurantId}` : (item.metadata?.projectId ?? "N/A"),
       id: item.id,
     }));
   });
