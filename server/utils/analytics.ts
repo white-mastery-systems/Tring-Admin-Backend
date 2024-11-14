@@ -243,8 +243,8 @@ export const getDateRange = (period: string, from: Date, to: Date, timeZone: str
 
     case "custom":
       return {
-        fromDate: momentTz(from).startOf("day").tz(timeZone).toDate(),
-        toDate: momentTz(to).endOf("day").tz(timeZone).toDate(),
+        fromDate: momentTz(from).tz(timeZone).toDate(),
+        toDate: momentTz(to).tz(timeZone).toDate(),
         previousFromDate: null,
         previousToDate: null
       };
