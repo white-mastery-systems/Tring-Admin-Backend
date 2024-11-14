@@ -103,9 +103,7 @@
             messageList?.metadata
           ">
           <div class="flex max-w-[80%] flex-col items-end justify-center">
-            <span class="text-[14px]" style="color: #8a8a8a">{{
-              leadDataValue?.botUser?.name
-              }}</span>
+            <span class="text-[14px]" style="color: #8a8a8a">{{ leadDataValue?.botUser?.name }}</span>
             <div
               class="mt-2.5 flex flex-col items-end justify-center gap-5 rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black">
               <div class="pb-2 pt-2">
@@ -134,7 +132,34 @@
               {{ formatDate(new Date(messageList.createdAt), "hh:mm a") }}
             </div>
           </div>
-        </div>
+        </div> 
+         <div class="flex w-full flex-col items-end" v-if="
+            messageList?.role === 'comment' &&
+            messageList?.content === 'Booking Details Submitted' &&
+            messageList?.metadata
+          ">
+          <div class="flex max-w-[80%] flex-col items-end justify-center">
+            <span class="text-[14px]" style="color: #8a8a8a">{{ leadDataValue?.botUser?.name }}</span>
+            <div
+              class="mt-2.5 flex flex-col items-end justify-center gap-5 rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black">
+              <div class="p-2 w-[300px]">
+                 <div v-for="(value, key) in messageList.metadata" :key="key">
+                  <div class="w-full pb-3">
+                    <TextField
+                      :label="formatLabel(key)"
+                      :disabled="true"
+                      :disableCharacters="true"
+                      :placeholder="value"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-[12px] opacity-60">
+              {{ formatDate(new Date(messageList.createdAt), "hh:mm a") }}
+            </div>
+          </div>
+        </div> 
         <!-- User Message -->
         <div class="flex w-full flex-col items-end" v-if="messageList?.role === 'user'">
           <div class="flex max-w-[80%] flex-col items-end justify-center">
@@ -377,4 +402,9 @@ const props = withDefaults(defineProps<{
       return dateStr;
     }
   };
+
+const formatLabel = (key: any) => {
+  // Convert camelCase or PascalCase to words with spaces
+  return key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z])/g, ' $1').trim();
+}
 </script>
