@@ -20,13 +20,10 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   metaData: jsonb("metadata"),
   audioFiles: jsonb("audio_files"),
   llmConfig: jsonb("llm_config").default({
-    provider: "openai",
-    model: "gpt-4o-mini",
-    temperature: 0,
-    configuration: 0,
+    temperature: 1,
     top_p: "0.95",
     top_k: "64",
-    max_output_token: "4096",
+    max_output_token: "8192",
     prompt: "",
   }),
   textToSpeechConfig: jsonb("text_to_speech_config").default({
@@ -35,15 +32,9 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
         "name": "en-IN-Neural2-A",
         "speaking_rate": 1,
         "pitch": 1,
-        "volume_gain_db": 0.5,
-        "effects_profile_id": [
-            "telephony-class-application"
-        ]
+        "volume_gain_db": 0.5
     },
     "elevenlabs": {
-        "api_key": "sk_3b0e5afba913980ebc8c96ee6150678ba99517b62501c576",
-        "voice": "jBYIjE7vMSfVJhyXWNqw",
-        "model": "eleven_turbo_v2",
         "stability": 0.5,
         "similarity_boost": 1,
         "style": 0.5,
@@ -51,175 +42,45 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     },
     "deepgram": {
         "voice": "aura-asteria-en"
+    },
+    "tring": {
+        "speaker": "jaya", // (dropdown values Jaya,Kevin,Sneha)
+        "speed": 1, // (0 to 2)
+        "sample_rate": 44100
     }
   }),
   speechToTextConfig: jsonb("speech_to_text_config").default(
-  {
-    "default": {
-        "provider": "deepgram",
-        "google": {
-            "adaptation": true,
-            "phrase_sets": [],
-            "encoding": "MULAW",
-            "sample_rate_hertz": 8000,
-            "audio_channel_count": 1,
-            "model": "short",
-            "intermediate_pause": 1,
-            "response_timeout": 1,
-            "recognizer": "projects/tringai-project1/locations/global/recognizers/english-in-short",
-            "amplification_factor": 3,
-            "noise_gate": 0
-        },
-        "azure": {
-            "phrase_list": [],
-            "encoding": "MULAW",
-            "sample_rate_hertz": 8000,
-            "audio_channel_count": 1,
-            "amplification_factor": 3,
-            "noise_gate": 0
-        },
-        "deepgram": {
-            "version": "1",
-            "encoding": "MULAW",
-            "live_options": {
-                "model": "nova-2",
-                "smart_format": true,
-                "channels": 1,
-                "sample_rate": 8000,
-                "interim_results": true,
-                "utterance_end_ms": "1000",
-                "vad_events": true,
-                "endpointing": 50,
-                "no_delay": true,
-                "punctuate": true,
-                "diarize": false,
-                "filler_words": false,
-                "numerals": true,
-                "profanity_filter": true,
-                "keywords": []
-            },
-            "addons": {
-                "measurements": "true",
-                "dictation": "true"
-            },
-            "amplification_factor": 2,
-            "noise_gate": 0
-        }
+  {     
+    "provider": "deepgram",
+    "google": {
+        "adaptation": true,
+        "phrase_sets": [],
+        "model": "short",
     },
-    "exotel": {
-        "provider": "deepgram",
-        "google": {
-            "adaptation": true,
-            "phrase_sets": [],
-            "encoding": "LINEAR16",
-            "sample_rate_hertz": 8000,
-            "audio_channel_count": 1,
-            "model": "short",
-            "intermediate_pause": 1,
-            "response_timeout": 1,
-            "recognizer": "projects/tringai-project1/locations/global/recognizers/english-in-short",
-            "amplification_factor": 0,
-            "noise_gate": 0
-        },
-        "azure": {
-            "phrase_list": [],
-            "encoding": "LINEAR16",
-            "sample_rate_hertz": 8000,
-            "audio_channel_count": 1,
-            "amplification_factor": 0,
-            "noise_gate": 0
-        },
-        "deepgram": {
-            "version": "1",
-            "encoding": "LINEAR16",
-            "live_options": {
-                "model": "nova-2",
-                "smart_format": true,
-                "channels": 1,
-                "sample_rate": 8000,
-                "interim_results": true,
-                "utterance_end_ms": "1000",
-                "vad_events": true,
-                "endpointing": 50,
-                "no_delay": true,
-                "punctuate": true,
-                "diarize": false,
-                "filler_words": false,
-                "numerals": true,
-                "profanity_filter": true,
-                "keywords": []
-            },
-            "addons": {
-                "measurements": "true",
-                "dictation": "true"
-            },
-            "amplification_factor": 2,
-            "noise_gate": 0
-        }
+    "azure": {
+        "phrase_list": [],
+        "amplification_factor": 3,
     },
-    "twilio": {
-        "provider": "deepgram",
-        "google": {
-            "adaptation": true,
-            "phrase_sets": [],
-            "encoding": "LINEAR16",
-            "sample_rate_hertz": 8000,
-            "audio_channel_count": 1,
-            "model": "short",
-            "intermediate_pause": 1,
-            "response_timeout": 1,
-            "recognizer": "projects/tringai-project1/locations/global/recognizers/english-in-short",
-            "amplification_factor": 0,
-            "noise_gate": 0
-        },
-        "azure": {
-            "phrase_list": [],
-            "encoding": "LINEAR16",
-            "sample_rate_hertz": 8000,
-            "audio_channel_count": 1,
-            "amplification_factor": 0,
-            "noise_gate": 0
-        },
-        "deepgram": {
-            "version": "1",
-            "encoding": "LINEAR16",
-            "live_options": {
-                "model": "nova-2",
-                "smart_format": true,
-                "channels": 1,
-                "sample_rate": 8000,
-                "interim_results": true,
-                "utterance_end_ms": "1000",
-                "vad_events": true,
-                "endpointing": 50,
-                "no_delay": true,
-                "punctuate": true,
-                "diarize": false,
-                "filler_words": false,
-                "numerals": true,
-                "profanity_filter": true,
-                "keywords": []
-            },
-            "addons": {
-                "measurements": "true",
-                "dictation": "true"
-            },
-            "amplification_factor": 2,
-            "noise_gate": 0
-        }
+    "deepgram": {
+        "model": "nova-2",
+        "utterance_end_ms": "1000",
+        "endpointing": 250,
+        "keywords": [],
+        "amplification_factor": 2,
     },
-    "language": "en-IN"
+    "assemblyai" : {
+        "word_boost": [],
+        "end_utterance_silence_threshold": 300, // (0 to 5000)
+    }
   }),
+  botDetails: jsonb("bot_details"),
+  preRecordedAudios: jsonb("pre_recorded_audios"),
+  tools: jsonb("tools"),
   clientConfig: jsonb("client_config").default({
-    agent_name: "Jenna",
-    llm_caching: false,
-    dynamic_caching: false,
-    distance_threshold: 0.1,
-    tools: [],
-    default_tools: ["currentDate", "concludeCall"],
+    llmCaching: false,
+    dynamicCaching: false,
+    distance: 0,
   }),
-  // talentConfig: jsonb("talent_config").default({}),
-  // intents: varchar("intents").array(), // Array of strings
   ivrConfig: uuid("ivr_config")
     .references(() => numberIntegrationSchema.id, { onDelete: "cascade" }),
   identityManagement: jsonb("identity_management"),
@@ -229,6 +90,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     .notNull(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
 
 export const voicebotIntegrationSchema = voiceBotSchema.table(
   "bot_integrations",

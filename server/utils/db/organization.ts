@@ -7,6 +7,7 @@ import {
   groupAndMapData,
 } from "../analytics";
 import { getPricingInformation } from "./pricing";
+import momentTz from "moment-timezone";
 
 const db = useDrizzle();
 
@@ -205,7 +206,7 @@ export const updateOrganization = async (
 //   };
 // };
 
-export const getOrgUsage = async (organizationId: string) => {
+export const getOrgUsage = async (organizationId: string, timeZone: string, query: any) => {
   const org: any = await getOrganizationById(organizationId);
   const pricingInformation = await getPricingInformation(org?.planCode);
   const orgAddons = await db
@@ -218,13 +219,28 @@ export const getOrgUsage = async (organizationId: string) => {
       ),
     );
   if (!org) return undefined;
+  
+  const currentMonthStartDate = momentTz().tz(timeZone).startOf("month").toDate()
+  const currentMonthEndDate = momentTz().tz(timeZone).endOf("month").toDate()
+  // interacted sessions
+  const interactedSessions = await db.query.chatSchema.findMany({
+    where: and(
+      gte(chatSchema.createdAt, currentMonthStartDate),
+      lte(chatSchema.createdAt, currentMonthEndDate),
+      eq(chatSchema.interacted, true),
+      eq(chatSchema.organizationId, organizationId),
+    )
+  })
+  const maxSessions = pricingInformation?.sessions || 0
+  const usedSessions = interactedSessions?.length
+  const availableSessions = maxSessions - usedSessions
 
   return {
-    used_quota: org.usedQuota,
-    max_quota: pricingInformation?.sessions,
+    used_quota: usedSessions,
+    max_quota: maxSessions,
     plan_code: org.planCode,
-    available_quota: org.maxQuota - org.usedQuota,
-    wallet_balance: orgAddons[0]?.sum,
+    available_quota: availableSessions > 0 ? availableSessions : 0,
+    wallet_balance: orgAddons[0]?.sum ? orgAddons[0]?.sum / 10 : 0,
     extra_sessions_cost: pricingInformation?.extraSessionCost,
     gst: org?.metadata?.gst
   };
