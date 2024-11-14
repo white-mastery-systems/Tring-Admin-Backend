@@ -112,7 +112,7 @@ export const createSlackMessage: any = async (
       },
       body: {
         channel: channelId,
-        text: `*${notes ? notes : "Lead Generated" }* :tada:\nName: ${payload?.name}\nEmail: ${payload?.email}\nPhone: ${payload?.phone}\nBot Name: ${payload?.botName}`,
+        text: `*${notes ? notes : "Lead Generated" }* :tada:\nName: ${payload?.name}\nEmail: ${payload?.email}\nPhone: ${payload?.phone}\nBot Name: ${payload?.botName}\nChat Link: ${payload?.chatLink}`,
       },
     });
     // console.log(
