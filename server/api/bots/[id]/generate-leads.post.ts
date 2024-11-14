@@ -8,6 +8,9 @@ import {
   generateLeadInZohoCRM,
   updateNotesInZohoBigin,
 } from "~/server/utils/zoho/modules";
+
+const config = useRuntimeConfig();
+
 export default defineEventHandler(async (event) => {
   // const userId = event.context.user?.id as string;
   const generateLeadsValidation = z.object({
@@ -136,7 +139,8 @@ export default defineEventHandler(async (event) => {
           name: body?.botUser?.name,
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
-          botName: `${botDetails?.name}`
+          botName: `${botDetails?.name}`,
+          chatLink: `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
         };
         // console.log(
         //   botIntegration?.integration?.metadata?.access_token,
