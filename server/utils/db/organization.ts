@@ -234,12 +234,13 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   const maxSessions = pricingInformation?.sessions || 0
   const usedSessions = interactedSessions?.length
   const availableSessions = maxSessions - usedSessions
+
   return {
     used_quota: usedSessions,
     max_quota: maxSessions,
     plan_code: org.planCode,
     available_quota: availableSessions > 0 ? availableSessions : 0,
-    wallet_balance: orgAddons[0]?.sum,
+    wallet_balance: orgAddons[0]?.sum ? orgAddons[0]?.sum / 10 : 0,
     extra_sessions_cost: pricingInformation?.extraSessionCost,
     gst: org?.metadata?.gst
   };
