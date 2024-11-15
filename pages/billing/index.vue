@@ -27,6 +27,9 @@
   }>("/api/org/usage", {
     server: false,
     query: filters,
+    headers: {
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
   });
   const {
     status: subscriptionLoadingStatus,
@@ -36,13 +39,16 @@
     server: false,
     query: filters,
   });
+
   const isPageLoading = computed(() => status.value === "pending");
+
+  console.log(usage, "usage.value");
 
   const usageDetails = computed(() => {
     if (!usage.value) return;
 
     const extraChats = usage.value.used_quota - usage.value.max_quota;
-    //
+    
     return {
       currentPlan: usage.value.plan_code,
       subscriptionStatus: "active",
@@ -58,7 +64,7 @@
           ? 0
           : extraChats * Number(usage.value.extra_sessions_cost),
       individualChatsCost: Number(usage.value.extra_sessions_cost),
-      walletBalance: usage.value?.wallet_balance,
+      walletBalance: usage.value.wallet_balance,
     };
   });
 

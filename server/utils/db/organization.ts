@@ -292,7 +292,7 @@ export const getAnalytics = async (
 
     let from = customFromDate;
     let to = customToDate;
-    if (period == "all-time") {
+    if (period === "all-time") {
       const earliestData = await db.query.chatBotSchema.findFirst({
         columns: {
           createdAt: true,
