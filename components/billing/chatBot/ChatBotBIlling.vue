@@ -1,13 +1,3 @@
-<script setup lang="ts">
-import { format } from "date-fns";
-
-const props = defineProps({
-  usageDetails: Object,
-  subscriptionData: Object,
-  usage: Object,
-});
-</script>
-
 <template>
   <div
     class="mt-4 mb-[120px] sm:mb-[120px] md:mb-0 lg:mb-0 xl:mb-0 w-full self-center rounded-lg bg-[#fffff] shadow-3xl">
@@ -92,13 +82,23 @@ const props = defineProps({
           </span>
         </div>
       </div>
-      <div v-if="subscriptionData?.subscription_metadata?.current_term_ends_at"
+      <div v-if="usageDetails?.expiryDate"
         class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span> Billing Expiry Date </span>
         <span class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]">
-          {{ format(subscriptionData.subscription_metadata.current_term_ends_at, "MMMM d, yyyy") }}
+          {{format(new Date(usageDetails?.expiryDate), "MMMM d, yyyy")}}
         </span>
       </div>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { format } from "date-fns";
+
+const props = defineProps({
+  usageDetails: Object,
+  subscriptionData: Object,
+  usage: Object,
+});
+</script>
