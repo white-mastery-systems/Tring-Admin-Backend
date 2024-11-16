@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
   const integrationId = numberIntegrationDetail?.id
 
-  const voiceBotDetail = await db.query.voicebotSchema.findFirst({
+  const voiceBotDetail: any = await db.query.voicebotSchema.findFirst({
     where: eq(voicebotSchema.ivrConfig, integrationId)
   })
 
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // check the plan-code of the orgaination
-  const voicebotPlan = await db.query.organizationSchema.findFirst({
+  const voicebotPlan: any = await db.query.organizationSchema.findFirst({
     where: eq(organizationSchema.id, voiceBotDetail.organizationId),
   });
 
@@ -57,13 +57,5 @@ export default defineEventHandler(async (event) => {
     );
   }
   //TODO - add extra and normal quota validation
-  return {
-    bot_id: voiceBotDetail.id,
-    organization_id: voiceBotDetail.organizationId,
-    stt_config: voiceBotDetail.speechToTextConfig,
-    tts_config: voiceBotDetail.textToSpeechConfig,
-    llm_config: voiceBotDetail.llmConfig,
-    client_config: voiceBotDetail.clientConfig,
-    language: voiceBotDetail.speechToTextConfig?.language,
-  };
+  return voiceBotDetail
 });
