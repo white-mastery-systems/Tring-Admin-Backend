@@ -246,6 +246,16 @@ export const templateSchema = adminSchema.table("templates", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const orgVisitorSchema =  adminSchema.table("org_visitors", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  visitorId: uuid("visitor_id").notNull(),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 // Relations
 export const organizationRelations = relations(
   organizationSchema,
