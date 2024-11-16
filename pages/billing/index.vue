@@ -9,6 +9,7 @@
 
   const route = useRoute();
   const router = useRouter();
+  const config = useRuntimeConfig();
 
   const filters = computed(() => ({
     type: route.query?.type,
@@ -27,6 +28,9 @@
   }>("/api/org/usage", {
     server: false,
     query: filters,
+    headers: {
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
   });
   const {
     status: subscriptionLoadingStatus,
@@ -36,13 +40,20 @@
     server: false,
     query: filters,
   });
+
+  const organization = await $fetch("/api/org", {
+    method: "GET",
+  });
+
   const isPageLoading = computed(() => status.value === "pending");
+
+  console.log(usage, "usage.value");
 
   const usageDetails = computed(() => {
     if (!usage.value) return;
 
     const extraChats = usage.value.used_quota - usage.value.max_quota;
-    //
+
     return {
       currentPlan: usage.value.plan_code,
       subscriptionStatus: "active",
@@ -58,7 +69,7 @@
           ? 0
           : extraChats * Number(usage.value.extra_sessions_cost),
       individualChatsCost: Number(usage.value.extra_sessions_cost),
-      walletBalance: usage.value?.wallet_balance,
+      walletBalance: usage.value.wallet_balance,
     };
   });
 
@@ -68,6 +79,18 @@
     if (!router.currentRoute.value.query.tab) {
       navigateToTab("chat");
     }
+
+    const eventSource = new EventSource(
+      `${config.public.chatBotUrl}/api/sse?organizationId=${organization.orgDetails.id}`,
+    );
+    eventSource.onmessage = async (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.event === "update") {
+        console.log("Update event received, refreshing usage...");
+        usageRefresh();
+      }
+    };
   });
   const handleOpenCancelModal = () => {
     cancelModalState.value = true;

@@ -7,7 +7,6 @@ export default defineEventHandler(async (event) => {
   const query = await isValidQueryHandler(event, z.object({
     type: z.string()
   }))
-  // console.log({ query })
   const usage = await getOrgUsage(organizationId, timeZone, query);
 
   return usage;
