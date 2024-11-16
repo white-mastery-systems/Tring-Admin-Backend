@@ -284,7 +284,6 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
     used_quota: usedSessions,
     max_quota: maxSessions,
     plan_code: org.planCode,
-    available_quota: availableSessions > 0 ? availableSessions : 0,
     wallet_balance: walletBalance,
     extra_sessions_cost: extraSessionCost,
     gst: org?.metadata?.gst,
@@ -317,33 +316,33 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   if (currentDate > expiryDate) {
     return {
       ...resObj,
-      availableSessions: availableSessions > 0 ? availableSessions : 0,
+      available_sessions: availableSessions > 0 ? availableSessions : 0,
       subscription_status: "inactive",
-      expiry_date: expiryDate,
+      expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
     };
   } else {
     if(usedSessions > maxSessions) {
       if (walletBalance > 0) {
          return {
            ...resObj,
-           availableSessions: walletBalance - usedSessions,
+           available_sessions: walletBalance - usedSessions,
            subscription_status: "active",
-           expiry_date: expiryDate,
+           expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
          };
       } else {
          return {
            ...resObj,
-           availableSessions: availableSessions > 0 ? availableSessions : 0,
+           available_sessions: availableSessions > 0 ? availableSessions : 0,
            subscription_status: "inactive",
-           expiry_date: expiryDate,
+           expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
          };
       }
     } else { // Subscription is active and within session limits
         return {
           ...resObj,
-          availableSessions: availableSessions > 0 ? availableSessions : 0,
+          available_sessions: availableSessions > 0 ? availableSessions : 0,
           subscription_status: "active",
-          expiry_date: expiryDate,
+          expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
         };
     }
   }
