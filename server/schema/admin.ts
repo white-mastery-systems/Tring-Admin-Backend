@@ -132,6 +132,7 @@ export const adminPricingSchema = adminSchema.table("admin_pricing", {
   crmConfigEnabled: boolean("crm_config_enabled").default(false).notNull(),
   widgetCustomization: varchar("widget_customization").notNull(),
   tringBranding: varchar("tring_branding").notNull(),
+  addons: jsonb("addons").array(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
