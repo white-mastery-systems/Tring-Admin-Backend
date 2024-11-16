@@ -40,6 +40,7 @@ services:
       - "NUXT_PUBLIC_GOOGLE_ANALYTICS_ID=ddd"
       - "NUXT_PUBLIC_VOICE_BOT_URL=https://tring-voice.pripod.com"
       - "NUXT_RESERVE_GO_URL=https://stagingapi.reservego.co"
+      - "NUXT_PUBLIC_CHAT_BOT_URL=https://tring-databot.pripod.com"
       - "NUXT_ENV_TYPE=stage"
     volumes:
       - tring-suite_admin:/app/node_modules
