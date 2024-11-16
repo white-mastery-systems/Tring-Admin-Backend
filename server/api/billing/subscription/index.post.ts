@@ -1,5 +1,6 @@
 import { billingLogger, logger } from "~/server/logger";
 import { getStateCode } from "~/server/utils/billing.utils";
+import momentTz from "moment-timezone";
 
 interface zohoConfigInterface {
   metaData: {
@@ -13,6 +14,7 @@ interface zohoConfigInterface {
 }
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
+  
   //
   billingLogger.info(`${body.type}---${JSON.stringify(body)}`);
   // logger.info(`subscription body, ${JSON.stringify(body)}`)
@@ -20,6 +22,29 @@ export default defineEventHandler(async (event) => {
 
   const db = useDrizzle();
   try {
+    const timeZoneHeader = event.node?.req?.headers["time-zone"];
+    const timeZone = Array.isArray(timeZoneHeader)
+    ? timeZoneHeader[0]
+    : timeZoneHeader || "Asia/Kolkata";
+
+    const organizationId = (await isOrganizationAdminHandler(event)) as string;
+    const activePlan = await db.query.paymentSchema.findFirst({
+      where: and(
+        eq(paymentSchema.organizationId, organizationId),
+        eq(paymentSchema.status, "active"),
+        eq(paymentSchema.type, "subscription"),
+      ),
+    });
+    if(activePlan) {
+      const expiryDate = momentTz(activePlan?.subscription_metadata?.next_billing_at).tz(timeZone).toDate();
+      const currentDate =  momentTz().tz(timeZone).toDate();
+      if(currentDate < expiryDate) {
+        return sendError(
+          event,
+          createError({ statusCode: 400, statusMessage: "You can't upgrade or downgrade plan" }),
+        );
+      }
+    }
     const zohoData: any = await db.query.adminConfigurationSchema.findFirst({
       where: eq(adminConfigurationSchema.id, 1),
     });
@@ -36,7 +61,7 @@ export default defineEventHandler(async (event) => {
     const userDetails: any = await db.query.authUserSchema.findFirst({
       where: eq(authUserSchema.id, user?.id),
     });
-    const organizationId = (await isOrganizationAdminHandler(event)) as string;
+  
     const orgDetails: any = await db.query.organizationSchema.findFirst({
       where: eq(organizationSchema.id, organizationId),
     });

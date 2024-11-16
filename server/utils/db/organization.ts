@@ -42,6 +42,31 @@ export const updateOrganization = async (
   )[0];
 };
 
+// Organization visitors
+export const createOrgVisitors = async (body: any) => {
+  return (
+    await db.insert(orgVisitorSchema).values(body).returning()
+  )[0]
+}
+
+export const getOrgVisitor = async (organizationId: string, visitorId: string) => {
+  return await db.query.orgVisitorSchema.findFirst({
+    where: and(
+      eq(orgVisitorSchema.organizationId, organizationId),
+      eq(orgVisitorSchema.visitorId, visitorId)
+    )
+  })
+}
+
+export const updateOrgVisitor = async (visitorId: string) => {
+  return (
+    await db.update(orgVisitorSchema)
+    .set({ updatedAt: new Date() })
+    .where(eq(orgVisitorSchema.visitorId, visitorId))
+    .returning()
+  )[0]
+}
+
 // export const getAnalytics = async (
 //   organizationId: string,
 //   period = "this-month",
