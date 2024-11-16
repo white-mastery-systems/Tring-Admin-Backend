@@ -21,9 +21,10 @@ const zodUpdateVoiceBotSchema = z.object({
   clientConfig: z.object({
     llmCaching: z.boolean().optional(),
     dynamicCaching: z.boolean().optional(),
-    distance: z.string().optional()
+    distance: z.number().optional()
   }).optional(),
   audioFiles: z.record(z.any()).optional(),
+  tools: z.record(z.any()).optional(),
   textToSpeechConfig: z.record(z.any()).optional(),
   speechToTextConfig: z.record(z.any()).optional(),
   ivrConfig: z.string().optional(),
