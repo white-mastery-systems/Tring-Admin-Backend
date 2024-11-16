@@ -9,16 +9,17 @@ export default defineEventHandler(async (event) => {
   const { req, res } = event.node;
   const userId = event.context.user?.id as string;
 
-  // Set headers to establish SSE connection
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-  res.flushHeaders();
-
   // Ensure global.userConnections is initialized
   if (!global.userConnections) {
     global.userConnections = new Map<string, ((data: any) => void)[]>();
   }
+
+  setResponseHeaders(event, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    Connection: "keep-alive",
+    "Access-Control-Allow-Origin": "*",
+  });
 
   // Function to send messages to the client
   const sendEvent = (data: any) => {

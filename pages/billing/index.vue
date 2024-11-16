@@ -9,6 +9,7 @@
 
   const route = useRoute();
   const router = useRouter();
+  const config = useRuntimeConfig();
 
   const filters = computed(() => ({
     type: route.query?.type,
@@ -40,6 +41,10 @@
     query: filters,
   });
 
+  const organization = await $fetch("/api/org", {
+    method: "GET",
+  });
+
   const isPageLoading = computed(() => status.value === "pending");
 
   console.log(usage, "usage.value");
@@ -48,7 +53,7 @@
     if (!usage.value) return;
 
     const extraChats = usage.value.used_quota - usage.value.max_quota;
-    
+
     return {
       currentPlan: usage.value.plan_code,
       subscriptionStatus: "active",
@@ -74,6 +79,18 @@
     if (!router.currentRoute.value.query.tab) {
       navigateToTab("chat");
     }
+
+    const eventSource = new EventSource(
+      `${config.public.chatBotUrl}/api/sse?organizationId=${organization.orgDetails.id}`,
+    );
+    eventSource.onmessage = async (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.event === "update") {
+        console.log("Update event received, refreshing usage...");
+        usageRefresh();
+      }
+    };
   });
   const handleOpenCancelModal = () => {
     cancelModalState.value = true;
