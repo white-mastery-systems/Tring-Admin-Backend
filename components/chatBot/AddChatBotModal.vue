@@ -1,3 +1,47 @@
+<template>
+  <DialogWrapper
+    v-model="agentModalState"
+    :title="agentModalState.id ? 'Modify Chat Bot' : 'Add a New Chat Bot'"
+  >
+    <form @submit="handleAddEditBot">
+      <TextField
+        label="Bot Name"
+        name="name"
+        placeholder="enter your bot name"
+        helperText="Enter your unique identifier for Chat Bot"
+        required
+      >
+      </TextField>
+      <SelectField
+        name="type"
+        label="Bot Type "
+        placeholder="Select Type"
+        :options="botTypes"
+        :required="true"
+      />
+      <SelectField
+        v-if="values.type === 'ecommerce'"
+        name="integrationId"
+        :multiple="false"
+        label="Select Integration"
+        placeholder="Select Integration"
+        :options="
+          integrationsData.map((integration) => ({
+            value: integration.id,
+            label: integration.name,
+          }))
+        "
+      />
+
+      <div class="mt-2 flex w-full justify-end">
+        <UiButton type="submit" color="primary" :loading="isLoading">
+          Submit
+        </UiButton>
+      </div>
+    </form>
+  </DialogWrapper>
+</template>
+
 <script setup lang="ts">
   import { useRoute } from "vue-router";
   definePageMeta({
@@ -17,40 +61,16 @@
     (e: "editConfirm"): void;
   }>();
   const isLoading = ref(false);
-  // const emit = defineEmits<{ (e: "confirm"): void, (e: "editConfirm"): void }>();
 
-const formSchema = toTypedSchema(
-  z.object({
-    name: z
-      .string({ required_error: "Bot name is required" })
-      .min(2, "Bot Name is required"),
-    type: z.string({ required_error: "Bot type is required" }),
-    integrationId: z.string().optional(), // Always optional
-  })
-);
-
-  // const formSchema = toTypedSchema(
-  //   z
-  //     .object({
-  //       name: z
-  //         .string({ required_error: "bot name is required" })
-  //         .min(2, "Bot Name is required"),
-  //       type: z.string({ required_error: "bot type is required" }),
-  //       integrationId: z.string().optional(),
-  //     })
-  //     // .refine(
-  //     //   (data) => {
-  //     //     if (data.type === "ecommerce" && !data?.integrationId) {
-  //     //       return true;
-  //     //     }
-  //     //     return true;
-  //     //   },
-  //     //   {
-  //     //     message: "Other role must be provided",
-  //     //     path: ["otherRole"],
-  //     //   },
-  //     // ),
-  // );
+  const formSchema = toTypedSchema(
+    z.object({
+      name: z
+        .string({ required_error: "Bot name is required" })
+        .min(2, "Bot Name is required"),
+      type: z.string({ required_error: "Bot type is required" }),
+      integrationId: z.string().optional(), // Always optional
+    }),
+  );
 
   const { handleSubmit, setFieldValue, resetForm, values } = useForm({
     validationSchema: formSchema,
@@ -100,8 +120,16 @@ const formSchema = toTypedSchema(
     isLoading.value = false;
   });
   const botTypes = [
-    { label: "E-commerce", value: "ecommerce" },
+    { label: "Government Sectors", value: "government-sectors" },
+    { label: "Finance & Banking", value: "finance-banking" },
     { label: "Real Estate", value: "real-estate" },
+    { label: "Healthcare", value: "healthcare" },
+    { label: "E-commerce", value: "ecommerce" },
+    { label: "Energy & Utilities", value: "energy-utilities" },
+    { label: "Telecommunications", value: "telecommunications" },
+    { label: "Travel & Hospitality", value: "travel-hospitality" },
+    { label: "Logistics", value: "logistics" },
+    { label: "Education", value: "education" },
   ];
   const {
     status: integrationLoadingStatus,
@@ -115,47 +143,3 @@ const formSchema = toTypedSchema(
     default: () => [],
   });
 </script>
-
-<template>
-  <DialogWrapper
-    v-model="agentModalState"
-    :title="agentModalState.id ? 'Modify Chat Bot' : 'Add a New Chat Bot'"
-  >
-    <form @submit="handleAddEditBot">
-      <TextField
-        label="Bot Name"
-        name="name"
-        placeholder="enter your bot name"
-        helperText="Enter your unique identifier for Chat Bot"
-        required
-      >
-      </TextField>
-      <SelectField
-        name="type"
-        label="Bot Type "
-        placeholder="Select Type"
-        :options="botTypes"
-        :required="true"
-      />
-      <SelectField
-        v-if="values.type === 'ecommerce'"
-        name="integrationId"
-        :multiple="false"
-        label="Select Integration"
-        placeholder="Select Integration"
-        :options="
-          integrationsData.map((integration) => ({
-            value: integration.id,
-            label: integration.name,
-          }))
-        "
-      />
-
-      <div class="mt-2 flex w-full justify-end">
-        <UiButton type="submit" color="primary" :loading="isLoading">
-          Submit
-        </UiButton>
-      </div>
-    </form>
-  </DialogWrapper>
-</template>

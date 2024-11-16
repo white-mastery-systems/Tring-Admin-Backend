@@ -42,6 +42,7 @@ const schema = {
   promptSchema,
   templateSchema,
   botDynamicFormSchema,
+  orgVisitorSchema,
   // Relations
   organizationRelations,
   chatBotRelations,

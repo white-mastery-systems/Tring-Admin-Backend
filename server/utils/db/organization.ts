@@ -1,4 +1,4 @@
-import { sum } from "drizzle-orm";
+import { max, sum } from "drizzle-orm";
 import { logger } from "~/server/logger";
 import {
   calculatePercentageChange,
@@ -41,6 +41,31 @@ export const updateOrganization = async (
       .returning()
   )[0];
 };
+
+// Organization visitors
+export const createOrgVisitors = async (body: any) => {
+  return (
+    await db.insert(orgVisitorSchema).values(body).returning()
+  )[0]
+}
+
+export const getOrgVisitor = async (organizationId: string, visitorId: string) => {
+  return await db.query.orgVisitorSchema.findFirst({
+    where: and(
+      eq(orgVisitorSchema.organizationId, organizationId),
+      eq(orgVisitorSchema.visitorId, visitorId)
+    )
+  })
+}
+
+export const updateOrgVisitor = async (visitorId: string) => {
+  return (
+    await db.update(orgVisitorSchema)
+    .set({ updatedAt: new Date() })
+    .where(eq(orgVisitorSchema.visitorId, visitorId))
+    .returning()
+  )[0]
+}
 
 // export const getAnalytics = async (
 //   organizationId: string,
@@ -207,9 +232,15 @@ export const updateOrganization = async (
 // };
 
 export const getOrgUsage = async (organizationId: string, timeZone: string, query: any) => {
-  const org: any = await getOrganizationById(organizationId);
-  const pricingInformation = await getPricingInformation(org?.planCode);
-  const orgAddons = await db
+  // Determine date range for the current month
+  const currentDate = momentTz().tz(timeZone).toDate();
+  const currentMonthStartDate = momentTz().tz(timeZone).startOf("month").toDate()
+  const currentMonthEndDate = momentTz().tz(timeZone).endOf("month").toDate()
+
+  // Fetch all necessary data at once
+  const [org, orgAddons, interactedSessions, activeSubscription] = await Promise.all([
+    getOrganizationById(organizationId),
+    db
     .select({ sum: sum(paymentSchema.amount) })
     .from(paymentSchema)
     .where(
@@ -217,33 +248,104 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
         eq(paymentSchema.organizationId, organizationId),
         eq(paymentSchema.type, "addon"),
       ),
-    );
-  if (!org) return undefined;
+    ),
+    db.query.chatSchema.findMany({
+      where: and(
+        gte(chatSchema.createdAt, currentMonthStartDate),
+        lte(chatSchema.createdAt, currentMonthEndDate),
+        eq(chatSchema.interacted, true),
+        eq(chatSchema.organizationId, organizationId),
+      ),
+    }),
+    db.query.paymentSchema.findFirst({
+      where: and(
+        eq(paymentSchema.organizationId, organizationId),
+        eq(paymentSchema.status, "active"),
+        eq(paymentSchema.type, "subscription")
+      ),
+    }),
+  ]);
   
-  const currentMonthStartDate = momentTz().tz(timeZone).startOf("month").toDate()
-  const currentMonthEndDate = momentTz().tz(timeZone).endOf("month").toDate()
-  // interacted sessions
-  const interactedSessions = await db.query.chatSchema.findMany({
-    where: and(
-      gte(chatSchema.createdAt, currentMonthStartDate),
-      lte(chatSchema.createdAt, currentMonthEndDate),
-      eq(chatSchema.interacted, true),
-      eq(chatSchema.organizationId, organizationId),
-    )
-  })
-  const maxSessions = pricingInformation?.sessions || 0
-  const usedSessions = interactedSessions?.length
-  const availableSessions = maxSessions - usedSessions
+  if (!org) {
+     throw new Error("organization not found")
+  }
+  // get Pricing information
+  const pricingInformation = await getPricingInformation(org?.planCode)
 
-  return {
+  const maxSessions = pricingInformation?.sessions || 0;
+  const extraSessionCost = pricingInformation?.extraSessionCost || 0
+
+  const usedSessions = interactedSessions?.length || 0;
+
+  let availableSessions = maxSessions - usedSessions
+  let walletBalance = orgAddons[0].sum ? Number(orgAddons[0].sum) : 0
+
+  const resObj = {
     used_quota: usedSessions,
     max_quota: maxSessions,
     plan_code: org.planCode,
-    available_quota: availableSessions > 0 ? availableSessions : 0,
-    wallet_balance: orgAddons[0]?.sum ? orgAddons[0]?.sum / 10 : 0,
-    extra_sessions_cost: pricingInformation?.extraSessionCost,
-    gst: org?.metadata?.gst
+    wallet_balance: walletBalance,
+    extra_sessions_cost: extraSessionCost,
+    gst: org?.metadata?.gst,
   };
+
+  // If there is no active subscription or no additional sessions available
+  if (!activeSubscription) {
+    if(usedSessions > maxSessions) {
+      return {
+        ...resObj,
+        availableSessions: availableSessions > 0 ? availableSessions : 0,
+        subscription_status: "inactive",
+      };
+    } else {
+      return {
+        ...resObj,
+        availableSessions: availableSessions > 0 ? availableSessions : 0,
+        subscription_status: "active",
+      };
+    }
+  }
+  
+  // Calculate expiry date and check if the subscription is expired
+  const expiryDate = momentTz(activeSubscription?.subscription_metadata?.next_billing_at)
+  .tz(timeZone)
+  .toDate();
+  
+  // console.log({ active: currentDate > expiryDate, expiryDate, currentDate })
+
+  if (currentDate > expiryDate) {
+    return {
+      ...resObj,
+      available_sessions: availableSessions > 0 ? availableSessions : 0,
+      subscription_status: "inactive",
+      expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
+    };
+  } else {
+    if(usedSessions > maxSessions) {
+      if (walletBalance > 0) {
+         return {
+           ...resObj,
+           available_sessions: walletBalance - usedSessions,
+           subscription_status: "active",
+           expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
+         };
+      } else {
+         return {
+           ...resObj,
+           available_sessions: availableSessions > 0 ? availableSessions : 0,
+           subscription_status: "inactive",
+           expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
+         };
+      }
+    } else { // Subscription is active and within session limits
+        return {
+          ...resObj,
+          available_sessions: availableSessions > 0 ? availableSessions : 0,
+          subscription_status: "active",
+          expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
+        };
+    }
+  }
 };
 
 const validQueryValues = [
@@ -292,7 +394,7 @@ export const getAnalytics = async (
 
     let from = customFromDate;
     let to = customToDate;
-    if (period == "all-time") {
+    if (period === "all-time") {
       const earliestData = await db.query.chatBotSchema.findFirst({
         columns: {
           createdAt: true,

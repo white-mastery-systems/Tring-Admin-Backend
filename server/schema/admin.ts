@@ -132,6 +132,7 @@ export const adminPricingSchema = adminSchema.table("admin_pricing", {
   crmConfigEnabled: boolean("crm_config_enabled").default(false).notNull(),
   widgetCustomization: varchar("widget_customization").notNull(),
   tringBranding: varchar("tring_branding").notNull(),
+  addons: jsonb("addons").array(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -244,6 +245,16 @@ export const templateSchema = adminSchema.table("templates", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const orgVisitorSchema =  adminSchema.table("org_visitors", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  visitorId: uuid("visitor_id").notNull(),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
 
 // Relations
 export const organizationRelations = relations(

@@ -45,11 +45,14 @@
           :options="avgTraffic.map((role) => ({ label: role, value: role }))"
           :required="true"
         />
-                <SelectField
+        <SelectField
           name="buisnessName"
           label="Business Name"
           placeholder="Select Buisness"
-          :options="[{ label: 'Buisness With Gst', value: 'businessWithGst' }, { label: 'Buisness Without Gst', value: 'businessWithoutGst' }]"
+          :options="[
+            { label: 'Buisness With Gst', value: 'businessWithGst' },
+            { label: 'Buisness Without Gst', value: 'businessWithoutGst' },
+          ]"
           :required="true"
         />
 
@@ -70,7 +73,6 @@
             placeholder="Enter Your Gst"
           />
         </div>
-
       </div>
       <div class="text-right">
         <UiButton type="submit" color="primary" size="lg" :loading="isLoading">
@@ -83,19 +85,24 @@
 
 <script setup lang="ts">
   import { useOrgDetailsStore } from "~/store/orgDetailsStore";
-import { companyDetailsSchema } from "~/validationSchema/account/companyDetails";
-  import { formSchema } from "~/validationSchema/authValidation/onBoarding/2Validation";
+  import { companyDetailsSchema } from "~/validationSchema/account/companyDetails";
   const useOrgDetails = useOrgDetailsStore();
   console.log(useOrgDetails);
 
   const industry = [
+    "Government Sectors",
+    "Finance & Banking",
     "Real Estate",
-    "Finance",
     "Healthcare",
-    "Technology",
+    "E-commerce",
+    "Energy & Utilities",
+    "Telecommunications",
+    "Travel & Hospitality",
+    "Logistics",
     "Education",
     "Other",
   ];
+
   const avgTraffic = [
     "Less than 100 visits",
     "100-500 visits",

@@ -37,8 +37,25 @@
           <UiSelectValue placeholder="Filter Type" />
         </UiSelectTrigger>
         <UiSelectContent>
-          <UiSelectItem value="ecommerce">E Commerce</UiSelectItem>
+          <UiSelectItem value="government-sectors"
+            >Government Sectors</UiSelectItem
+          >
+          <UiSelectItem value="finance-banking">Finance & Banking</UiSelectItem>
           <UiSelectItem value="real-estate">Real Estate</UiSelectItem>
+          <UiSelectItem value="healthcare">Healthcare</UiSelectItem>
+          <UiSelectItem value="ecommerce">E-commerce</UiSelectItem>
+          <UiSelectItem value="energy-utilities"
+            >Energy & Utilities</UiSelectItem
+          >
+          <UiSelectItem value="telecommunications"
+            >Telecommunications</UiSelectItem
+          >
+          <UiSelectItem value="travel-hospitality"
+            >Travel & Hospitality</UiSelectItem
+          >
+          <UiSelectItem value="logistics">Logistics</UiSelectItem>
+          <UiSelectItem value="education">Education</UiSelectItem>
+          <UiSelectItem value="other">Other</UiSelectItem>
         </UiSelectContent>
       </UiSelect>
     </div>
@@ -76,6 +93,7 @@
     "
   ></AddChatBotModal>
 </template>
+
 <script setup lang="ts">
   import { Icon, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
@@ -139,10 +157,29 @@
       totalCount.value = bots.totalCount;
       return bots.data.map((bot) => {
         const type = () => {
-          if (bot.type === "ecommerce") {
-            return "E-Commerce";
-          } else {
-            return "Real Estate";
+          switch (bot.type) {
+            case "ecommerce":
+              return "E-commerce";
+            case "real-estate":
+              return "Real Estate";
+            case "government-sectors":
+              return "Government Sectors";
+            case "finance-banking":
+              return "Finance & Banking";
+            case "healthcare":
+              return "Healthcare";
+            case "energy-utilities":
+              return "Energy & Utilities";
+            case "telecommunications":
+              return "Telecommunications";
+            case "travel-hospitality":
+              return "Travel & Hospitality";
+            case "logistics":
+              return "Logistics";
+            case "education":
+              return "Education & Training";
+            default:
+              return "Other";
           }
         };
 
@@ -240,5 +277,3 @@
     console.log("testing");
   };
 </script>
-
-<style scoped></style>

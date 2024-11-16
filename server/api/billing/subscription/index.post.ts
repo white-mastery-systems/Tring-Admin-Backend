@@ -1,4 +1,6 @@
 import { billingLogger, logger } from "~/server/logger";
+import { getStateCode } from "~/server/utils/billing.utils";
+import momentTz from "moment-timezone";
 
 interface zohoConfigInterface {
   metaData: {
@@ -12,12 +14,37 @@ interface zohoConfigInterface {
 }
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
+  
   //
   billingLogger.info(`${body.type}---${JSON.stringify(body)}`);
+  // logger.info(`subscription body, ${JSON.stringify(body)}`)
   // const http = require("https");
 
   const db = useDrizzle();
   try {
+    const timeZoneHeader = event.node?.req?.headers["time-zone"];
+    const timeZone = Array.isArray(timeZoneHeader)
+    ? timeZoneHeader[0]
+    : timeZoneHeader || "Asia/Kolkata";
+
+    const organizationId = (await isOrganizationAdminHandler(event)) as string;
+    const activePlan = await db.query.paymentSchema.findFirst({
+      where: and(
+        eq(paymentSchema.organizationId, organizationId),
+        eq(paymentSchema.status, "active"),
+        eq(paymentSchema.type, "subscription"),
+      ),
+    });
+    if(activePlan) {
+      const expiryDate = momentTz(activePlan?.subscription_metadata?.next_billing_at).tz(timeZone).toDate();
+      const currentDate =  momentTz().tz(timeZone).toDate();
+      if(currentDate < expiryDate) {
+        return sendError(
+          event,
+          createError({ statusCode: 400, statusMessage: "You can't upgrade or downgrade plan" }),
+        );
+      }
+    }
     const zohoData: any = await db.query.adminConfigurationSchema.findFirst({
       where: eq(adminConfigurationSchema.id, 1),
     });
@@ -34,7 +61,7 @@ export default defineEventHandler(async (event) => {
     const userDetails: any = await db.query.authUserSchema.findFirst({
       where: eq(authUserSchema.id, user?.id),
     });
-    const organizationId = (await isOrganizationAdminHandler(event)) as string;
+  
     const orgDetails: any = await db.query.organizationSchema.findFirst({
       where: eq(organizationSchema.id, organizationId),
     });
@@ -90,6 +117,59 @@ export default defineEventHandler(async (event) => {
             contactperson_id: i.contactPersonId,
           }));
 
+          logger.info(`subscription body, ${JSON.stringify({body: {
+                ...(billingInformation?.customerId
+                  ? {
+                      customer_id: billingInformation?.customerId,
+                    }
+                  : {
+                      customer: {
+                        display_name: user?.username,
+                        salutation: "Mr.",
+                        first_name: firstName,
+                        last_name: lastName,
+                        email: user?.email,
+                        mobile: `${userDetails?.countryCode ?? "+91"} ${userDetails.mobile}`,
+                        billing_address: {
+                          attention: user?.username,
+                          street: userDetails?.address?.street,
+                          city: userDetails?.address?.city,
+                          state: userDetails?.address?.state,
+                          country: userDetails?.address?.country,
+                          zip: userDetails?.address?.zip,
+                        },
+                        shipping_address: {
+                          attention: user?.username,
+                          street: userDetails?.address?.street,
+                          city: userDetails?.address?.city,
+                          state: userDetails?.address?.state,
+                          country: userDetails?.address?.country,
+                          zip: userDetails?.address?.zip,
+                        },
+                        gst_no: orgDetails?.metadata?.gst,
+                        gst_treatment: "business_gst",
+                      },
+                    }),
+                gst_no: orgDetails?.metadata?.gst,
+                gst_treatment: "business_gst",
+                 place_of_supply: getStateCode(userDetails?.address?.state),
+                contactpersons: contactPersonIdList,
+                plan: {
+                  plan_code: body.plan,
+                },
+
+                redirect_url: body?.redirectUrl,
+                payment_gateways: [
+                  {
+                    payment_gateway:
+                      userDetails?.address === "india"
+                        ? "razorpay"
+                        : "razorpay",
+                  },
+                ],
+              }})}`)
+
+
           const generatedHostedPage = await $fetch(
             "https://www.zohoapis.in/billing/v1/hostedpages/newsubscription",
             {
@@ -129,12 +209,13 @@ export default defineEventHandler(async (event) => {
                           country: userDetails?.address?.country,
                           zip: userDetails?.address?.zip,
                         },
-                        // gst_no: orgDetails?.metadata?.gst,
-                        // gst_treatment: "business_gst",
+                        gst_no: orgDetails?.metadata?.gst,
+                        gst_treatment: "business_gst",
                       },
                     }),
-                // gst_no: orgDetails?.metadata?.gst,
-                // gst_treatment: "business_gst",
+                gst_no: orgDetails?.metadata?.gst,
+                gst_treatment: "business_gst",
+                place_of_supply: getStateCode(userDetails?.address?.state),
                 contactpersons: contactPersonIdList,
                 plan: {
                   plan_code: body.plan,
