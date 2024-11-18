@@ -81,6 +81,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     dynamicCaching: false,
     distance: 0,
   }),
+  intent: varchar("intent"),
   ivrConfig: uuid("ivr_config")
     .references(() => numberIntegrationSchema.id, { onDelete: "cascade" }),
   identityManagement: jsonb("identity_management"),
