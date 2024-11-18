@@ -58,6 +58,7 @@ export default defineNuxtConfig({
     nodemailerPass: "",
     adminBaseUrl: "",
     reserveGoUrl: "",
+    envType: "",
     public: {
       googleAnalyticsId: "",
       voiceBotUrl: "",
