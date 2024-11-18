@@ -25,6 +25,7 @@ const zodUpdateVoiceBotSchema = z.object({
   }).optional(),
   audioFiles: z.record(z.any()).optional(),
   tools: z.record(z.any()).optional(),
+  intent: z.string().optional(),
   textToSpeechConfig: z.record(z.any()).optional(),
   speechToTextConfig: z.record(z.any()).optional(),
   ivrConfig: z.string().optional(),
