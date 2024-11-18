@@ -486,19 +486,12 @@ export const getAnalytics = async (
           ),
         db
           .select()
-          .from(chatSchema)
+          .from(orgVisitorSchema)
           .where(
             and(
-              gte(chatSchema.createdAt, fromDate),
-              lte(chatSchema.createdAt, toDate),
-              eq(chatSchema.organizationId, organizationId),
-              or(
-                gt(chatSchema.visitedCount, 1),
-                and(
-                  gte(chatSchema.visitedCount, 0),
-                  isNotNull(chatSchema.botUserId),
-                ),
-              ),
+              gte(orgVisitorSchema.createdAt, fromDate),
+              lte(orgVisitorSchema.createdAt, toDate),
+              eq(orgVisitorSchema.organizationId, organizationId),
             ),
           ),
         db
@@ -543,20 +536,13 @@ export const getAnalytics = async (
         ),
       db
         .select()
-        .from(chatSchema)
+        .from(orgVisitorSchema)
         .where(
           and(
-            gte(chatSchema.createdAt, previousFromDate),
-            lte(chatSchema.createdAt, previousToDate),
-            eq(chatSchema.organizationId, organizationId),
-            or(
-              gt(chatSchema.visitedCount, 1),
-              and(
-                gte(chatSchema.visitedCount, 0),
-                isNotNull(chatSchema.botUserId),
-              ),
-            ),
-          ),
+            gte(orgVisitorSchema.createdAt, previousFromDate),
+            lte(orgVisitorSchema.createdAt, previousToDate),
+            eq(orgVisitorSchema.organizationId, organizationId),
+          )
         ),
       db
         .select({ createdAt: chatSchema.createdAt })
@@ -569,12 +555,7 @@ export const getAnalytics = async (
             eq(chatSchema.organizationId, organizationId),
           ),
         ),
-    ]);
-
-    const currentPeriodUniqueVisitors = getUniqueVisitors(uniqueVisiters);
-    const previousPeriodUniqueVisitors = getUniqueVisitors(
-      previousUniqueVisiters,
-    );
+    ]);    
 
     if (!orgData) return undefined;
 
@@ -613,7 +594,7 @@ export const getAnalytics = async (
     // unique-visitors Graph
     if (queryArray.includes("unique_visitors")) {
       const uniqueVisitersResult = groupAndMapData({
-        module: currentPeriodUniqueVisitors,
+        module: uniqueVisiters,
         period,
         difference,
         timeZone,
@@ -697,12 +678,12 @@ export const getAnalytics = async (
       },
       {
         name: "unique visitors",
-        value: currentPeriodUniqueVisitors?.length ?? 0,
+        value: uniqueVisiters?.length ?? 0,
         apiName: "unique_visitors",
         color: "#a855f7",
         averagePercentage: calculatePercentageChange(
-          currentPeriodUniqueVisitors?.length ?? 0,
-          previousPeriodUniqueVisitors?.length,
+          uniqueVisiters?.length ?? 0,
+          previousUniqueVisiters?.length,
         ),
       },
       {
@@ -813,17 +794,3 @@ export const getAnalytics = async (
     throw new Error(`Failed to fetch: ${error}`);
   }
 };
-
-function getUniqueVisitors(chats: any) {
-  const uniqueVisitors = new Map();
-
-  chats?.map((chat: any) => {
-    const { id, botUserId, createdAt } = chat;
-    uniqueVisitors.set(botUserId ?? id, { createdAt });
-  });
-  const uniqueValues = Array.from(uniqueVisitors, ([key, value]) => ({
-    id: key,
-    ...value,
-  }));
-  return uniqueValues;
-}
