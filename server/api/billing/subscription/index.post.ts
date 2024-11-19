@@ -31,15 +31,15 @@ export default defineEventHandler(async (event) => {
     : timeZoneHeader || "Asia/Kolkata";
 
     const organizationId = (await isOrganizationAdminHandler(event)) as string;
-    const activePlan = await db.query.paymentSchema.findFirst({
+    const getOrgCurrentActivePlan = await db.query.orgSubscriptionSchema.findFirst({
       where: and(
-        eq(paymentSchema.organizationId, organizationId),
-        eq(paymentSchema.status, "active"),
-        eq(paymentSchema.type, "subscription"),
-      ),
-    });
-    if(activePlan) {
-      const expiryDate = momentTz(activePlan?.subscription_metadata?.next_billing_at).tz(timeZone).toDate();
+        eq(orgSubscriptionSchema.organizationId, organizationId),
+        eq(orgSubscriptionSchema.status, "active")
+      )
+    })
+
+    if(getOrgCurrentActivePlan) {
+      const expiryDate = momentTz(getOrgCurrentActivePlan?.expiryDate).tz(timeZone).toDate();
       const currentDate =  momentTz().tz(timeZone).toDate();
       if(currentDate < expiryDate) {
         return sendError(
