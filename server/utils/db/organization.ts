@@ -230,6 +230,27 @@ export const updateOrgVisitor = async (visitorId: string) => {
 //     },
 //   };
 // };
+const updateChatbotStatus = async(organizationId: string, botStatus: string) => {
+  await db
+  .update(chatBotSchema)
+  .set({
+    status: botStatus
+  })
+  .where(and(
+    eq(chatBotSchema.organizationId, organizationId),
+    isNotNull(chatBotSchema.documentId)
+  ))
+}
+
+const updateOrgSubscriptionStatus = async(organizationId: string, status: string) => {
+  await db
+  .update(orgSubscriptionSchema)
+  .set({
+    status: status
+  })
+  .where(eq(orgSubscriptionSchema.organizationId, organizationId))
+}
+
 
 export const getOrgUsage = async (organizationId: string, timeZone: string, query: any) => {
   // Determine date range for the current month
@@ -261,106 +282,69 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   // get Pricing information
   const pricingInformation = await getPricingInformation(org?.planCode)
 
-  const maxSessions = pricingInformation?.sessions || 0;
+  let subscriptionStatus: "inactive" | "active" = "active";
   const extraSessionCost = pricingInformation?.extraSessionCost || 0
-  //  const usedSessions = 10000
+
+  // const usedSessions = 10000
+  const maxSessions = pricingInformation?.sessions || 0;
   const usedSessions = interactedSessions?.length || 0;
+  const availableSessions = Math.max(maxSessions - usedSessions, 0)
+
   const orgWalletSessions = orgSubscription?.walletSessions || 0
-
-  let availableSessions = maxSessions - usedSessions
-  // let walletBalance = 0
-
-  // const orgSubscription = await 
   let extraSessions = 0
-  
-  let walletBalance = orgSubscription && orgWalletSessions > 0 ? orgWalletSessions : 0
+
+  const updateStatuses = async (newStatus: "active" | "inactive") => {
+    if (orgSubscription?.status !== newStatus) {
+      await updateOrgSubscriptionStatus(organizationId, newStatus);
+    }
+    await updateChatbotStatus(organizationId, newStatus);
+  };
 
   const resObj = {
     used_quota: usedSessions,
     max_quota: maxSessions,
     plan_code: org.planCode,
-    wallet_balance: walletBalance,
+    wallet_balance: orgWalletSessions,
     extra_sessions_cost: extraSessionCost,
-    gst: org?.metadata?.gst,
     extra_sessions: extraSessions,
+    available_sessions: availableSessions,
+    expiry_date: orgSubscription?.expiryDate ?? undefined
   };
 
-  // If there is no active subscription or no additional sessions available
+  // If there is no active subscription or no additional sessions available (i.e free-plan)
   if (!orgSubscription) {
-    if(usedSessions > maxSessions) {
-      return {
-        ...resObj,
-        availableSessions: availableSessions > 0 ? availableSessions : 0,
-        subscription_status: "inactive",
-      };
-    } else {
-      return {
-        ...resObj,
-        availableSessions: availableSessions > 0 ? availableSessions : 0,
-        subscription_status: "active",
-      };
-    }
+    subscriptionStatus = usedSessions > maxSessions ? "inactive" : "active";
+    await updateStatuses(subscriptionStatus);
+    return { ...resObj, subscription_status: subscriptionStatus };
   }
   
   // Calculate expiry date and check if the subscription is expired
   const expiryDate = momentTz(orgSubscription.expiryDate)
   .tz(timeZone)
   .toDate();
-  
-  // console.log({ active: currentDate > expiryDate, expiryDate, currentDate })
+
   if (currentDate > expiryDate) {
-    const updatedData = (await db.update(orgSubscriptionSchema).set({ 
-      status: "inactive"
-    }).where(eq(orgSubscriptionSchema.organizationId, organizationId)).returning())[0]
-
-    return {
-      ...resObj,
-      available_sessions: availableSessions > 0 ? availableSessions : 0,
-      subscription_status: updatedData.status,
-      expiry_date: updatedData.expiryDate
-    };
-  } else {
-    if(usedSessions > maxSessions) {
-        extraSessions = usedSessions - maxSessions
-        const currentWallet = walletBalance - extraSessions
-      if (currentWallet > 0) {
-         const updatedData = (await db.update(orgSubscriptionSchema).set({ 
-          status: "active"
-        }).where(eq(orgSubscriptionSchema.organizationId, organizationId)).returning())[0]
-         return {
-           ...resObj,
-           available_sessions: 0,
-           extra_sessions: extraSessions,
-           wallet_balance: currentWallet > 0 ? currentWallet : 0,
-           subscription_status: "active",
-           expiry_date: orgSubscription.expiryDate,
-         };
-      } else {
-         const updatedData = (await db.update(orgSubscriptionSchema).set({
-            status: "inactive"
-          }).where(eq(orgSubscriptionSchema.organizationId, organizationId)).returning())[0]
-
-         return {
-           ...resObj,
-           available_sessions: availableSessions > 0 ? availableSessions : 0,
-           wallet_balance: currentWallet > 0 ? currentWallet : 0,
-           extra_sessions: extraSessions,
-           subscription_status: updatedData.status,
-           expiry_date: updatedData.expiryDate,
-         };
-      }
-    } else { // Subscription is active and within session limits
-        const updatedData = (await db.update(orgSubscriptionSchema).set({ 
-          status: "active"
-        }).where(eq(orgSubscriptionSchema.organizationId, organizationId)).returning())[0]
-        return {
-          ...resObj,
-          available_sessions: availableSessions > 0 ? availableSessions : 0,
-          subscription_status: updatedData.status,
-          expiry_date: updatedData.expiryDate,
-        };
+    subscriptionStatus = "inactive";
+    await updateStatuses(subscriptionStatus);
+    return { ...resObj, subscription_status: subscriptionStatus };
+  }
+  
+  if(usedSessions > maxSessions) {
+    extraSessions = Math.max(usedSessions - maxSessions, 0)
+    const currentWallet = Math.max(orgWalletSessions - extraSessions, 0)
+    if (currentWallet > 0) {
+      subscriptionStatus = "active";
+      await updateStatuses(subscriptionStatus);
+      return { ...resObj, subscription_status: subscriptionStatus, wallet_balance: currentWallet, extra_sessions: extraSessions, extra_sessions_cost: extraSessions * Number(pricingInformation?.extraSessionCost) };
+    } else {
+      subscriptionStatus = "inactive";
+      await updateStatuses(subscriptionStatus);
+      return { ...resObj, subscription_status: subscriptionStatus, wallet_balance: currentWallet ,extra_sessions: extraSessions, extra_sessions_cost: extraSessions * Number(pricingInformation?.extraSessionCost) };
     }
   }
+  subscriptionStatus = "active";
+  await updateStatuses(subscriptionStatus);
+  return { ...resObj, subscription_status: subscriptionStatus };
 };
 
 const validQueryValues = [
