@@ -134,6 +134,14 @@ const statusComponent = (status: any) => {
 const columns = [
   columnHelper.accessor("name", {
     header: "File Name",
+    cell: ({ row }) => {
+      const isActive = row.original.id === documentItems.value?.documentId; // Check condition
+      return h("div", [
+        h("span", row.original.name), // Display file name
+        isActive &&
+        h("div", { class: "active-row" }, "Active") // Conditionally render Active label
+      ]);
+    }
   }),
 
   columnHelper.accessor("createdAt", {

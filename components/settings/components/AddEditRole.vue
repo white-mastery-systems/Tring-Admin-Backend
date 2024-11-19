@@ -10,7 +10,7 @@
       }
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
 
-        :data="userDataList" :is-loading="isDataLoading" :page-size="20" :height="14" height-unit="vh" />
+        :data="userDataList" :is-loading="isDataLoading" :page-size="20" :height="16" height-unit="vh" />
       <CreateEditRoleManageMentModal v-model="roleModalState" @confirm="() => {
         deleterRoleState.open = false;
         roleModalState.open = false

@@ -1,7 +1,5 @@
 <template>
-  <Page
-    title="Channel Configuration"
-    :bread-crumbs="[
+  <Page title="Channel Configuration" :bread-crumbs="[
       {
         label: `${botDetails.name}`,
         to: `/bot-management/chat-bot/${botDetails.id}`,
@@ -10,41 +8,25 @@
         label: 'Channel Configuration',
         to: `/bot-management/chat-bot/${botDetails.id}/communication-channel-config`,
       },
-    ]"
-    :disableSelector="true"
-  >
+    ]" :disableSelector="true">
     <!-- v-if="integrations.length === 0" -->
     <template #actionButtons>
-      <UiButton
-        @click="
+      <UiButton @click="
           () => {
             communicationChannelModalState.open = true;
             communicationChannelModalState.id = null;
           }
-        "
-        variant="outline"
-        color="primary"
-      >
+        " variant="outline" color="primary">
         Link channel
-      </UiButton> 
+      </UiButton>
       <!-- Communication -->
     </template>
-    <DataTable
-      :columns="columns"
-      :data="integrations"
-      :page-size="8"
-      :is-loading="false"
-    />
-    <CreateEditCommunicationChannelConfigModal
-      v-model="communicationChannelModalState"
-      :id="communicationChannelModalState?.id"
-      @success="handleSuccess"
-    />
-    <ConfirmationModal
-      v-model:open="deleteIntegrationState.open"
-      title="Confirm Removal"
-      description="Are you sure you want to remove this integration ?"
-      @confirm="
+    <DataTable :columns="columns" :data="integrations" :page-size="8" :is-loading="false" :height="20"
+      height-unit="vh" />
+    <CreateEditCommunicationChannelConfigModal v-model="communicationChannelModalState"
+      :id="communicationChannelModalState?.id" @success="handleSuccess" />
+    <ConfirmationModal v-model:open="deleteIntegrationState.open" title="Confirm Removal"
+      description="Are you sure you want to remove this integration ?" @confirm="
         () => {
           if (deleteIntegrationState?.id) {
             deleteBotIntegration({
@@ -58,8 +40,7 @@
             deleteIntegrationState.open = false;
           }
         }
-      "
-    />
+      " />
   </Page>
 </template>
 <script setup lang="ts">

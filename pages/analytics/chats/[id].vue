@@ -46,6 +46,22 @@
                     <div v-else>Invalid entry</div>
                   </div>
                 </div>
+                <div v-if="formattedChats.length" class="flex justify-center font-medium mt-4">Dynamic Forms</div>
+                <div v-if="formattedChats.length" class="overflow-scroll h-[40vh] gap-2 scrollable-container">
+                  <div v-for="(value, key) in formattedChats" :key="key">
+                    <div class="text-[#424bd1] font-medium py-4">
+                      {{ `Form ${key + 1}` }}
+                    </div>
+                    <div class="flex grid grid-cols-2 gap-2 font-regular">
+                      <div v-for="(dynamicForm, keys) in value?.metadata" :key="keys">
+                        <div class="w-full pb-3">
+                          <TextField :label="formatLabel(keys)" :disabled="true" :disableCharacters="true"
+                            :placeholder="dynamicForm" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </UiTabsContent>
             </UiTooltipProvider>
 
@@ -145,6 +161,12 @@
       });
     }
   });
+
+const formatLabel = (key: any) => {
+  // Convert camelCase or PascalCase to words with spaces
+  return key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z])/g, ' $1').trim();
+}
+
   const isPageLoading = computed(() => status.value === "pending");
 
   const details = computed(() => {
@@ -181,4 +203,40 @@
       return [...metaData, ...paramsData, ...botUserDetails];
     } else return [...metaData, ...botUserDetails];
   });
+
+const formattedChats = computed(() => {
+  return chats.map((chat: any) => {
+    // Filter messages that have role 'comment' and content 'Booking Details Submitted'
+    const filteredMessages = chat.messages.filter((message: any) =>
+      message.role === 'comment' && message.content === 'Booking Details Submitted' && message.metadata
+    );
+
+    // For each message, format the metadata and createdAt date
+    const formattedMessages = filteredMessages.map((message: any) => {
+      return {
+        id: message.id,
+        createdAt: formatDate(new Date(message.createdAt), "hh:mm a"),
+        metadata: message.metadata
+      };
+    });
+
+    return formattedMessages;
+  }).flat();  // Flatten the array if there are multiple messages per chat
+});
 </script>
+<style scoped>
+.scrollable-container::-webkit-scrollbar {
+  display: block;
+  width: 6px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 10px;
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+  max-height: 8px !important;
+  margin-block: 1rem !important;
+}
+</style>

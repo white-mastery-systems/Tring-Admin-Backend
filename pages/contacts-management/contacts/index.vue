@@ -32,7 +32,7 @@
       (filters.page = '1'), (filters.limit = $event);
     }
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :is-loading="isDataLoading"
-      :columns="columns" :page-size="20" :height="16" height-unit="vh" />
+      :columns="columns" :page-size="20" :height="13" height-unit="vh" />
     <CreateEditBucketNumberModal v-model="addBucketModalState" @confirm="() => {
       addBucketModalState.open = false;
       integrationRefresh();

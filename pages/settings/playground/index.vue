@@ -345,7 +345,7 @@
     width: 6px;
   }
   .scrollable-container::-webkit-scrollbar-thumb {
-    background: #ec848d;
+    background: #9ca3af;
     border-radius: 10px;
   }
   .scrollable-container::-webkit-scrollbar-track {

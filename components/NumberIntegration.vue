@@ -157,7 +157,7 @@
       (filters.page = '1'), (filters.limit = $event);
     }
     " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="NumberColumns"
-      :data="integrationsData" :page-size="8" :is-loading="false" :height="17" :heightUnit="'vh'" />
+      :data="integrationsData" :page-size="8" :is-loading="false" :height="20" :heightUnit="'vh'" />
     <NumberModal :numberModalState="numberModalState" @success="onSuccess()" />
     <ConfirmationModal v-model:open="deleteExoPhoneState.open" title="Confirm Delete"
       description="Are you certain you want to delete the Exophone integration? Please note that doing so will also remove all bots associated with this number?"

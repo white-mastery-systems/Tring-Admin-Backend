@@ -1,5 +1,4 @@
 <template>
-  {{ console.log(orgBilling?.plan_code, "PLAN CODE") }}
   <div
     v-if="isPageLoading"
     class="grid h-[80vh] place-items-center text-[#424BD1]"

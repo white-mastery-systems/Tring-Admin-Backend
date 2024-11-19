@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div>
     <div class="flex items-center gap-2 pb-2">
       <UiInput
@@ -22,7 +22,7 @@
       :data="userDataList"
       :is-loading="isDataLoading"
       :page-size="20"
-      :height="14"
+      :height="16"
       height-unit="vh"
     />
     <CreateEditUserManageMentModal

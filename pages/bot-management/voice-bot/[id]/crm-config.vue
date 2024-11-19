@@ -1,7 +1,5 @@
 <template>
-  <Page
-    title="CRM Configuration"
-    :bread-crumbs="[
+  <Page title="CRM Configuration" :bread-crumbs="[
       {
         label: `${botDetails.name}`,
         to: `/bot-management/voice-bot/${botDetails.id}`,
@@ -10,40 +8,22 @@
         label: 'CRM Configuration',
         to: `/bot-management/voice-bot/${botDetails.id}/crm-config`,
       },
-    ]"
-    :disableSelector="true"
-  >
+    ]" :disableSelector="true">
     <!-- v-if="integrations.length === 0" -->
     <template #actionButtons>
-      <UiButton
-        @click="
+      <UiButton @click="
           () => {
             crmConfigModalState.open = true;
             crmConfigModalState.id = null;
           }
-        "
-        variant="outline"
-        color="primary"
-      >
+        " variant="outline" color="primary">
         Link CRM
       </UiButton>
     </template>
-    <DataTable
-      :columns="columns"
-      :data="integrations"
-      :page-size="8"
-      :is-loading="false"
-    />
-    <CreateEditCrmConfig
-      v-model="crmConfigModalState"
-      :id="crmConfigModalState?.id"
-      @success="handleSuccess"
-    />
-    <ConfirmationModal
-      v-model:open="deleteIntegrationState.open"
-      title="Confirm Removal"
-      description="Are you sure you want to remove this integration ?"
-      @confirm="
+    <DataTable :columns="columns" :data="integrations" :page-size="8" :height="10" :is-loading="false" />
+    <CreateEditCrmConfig v-model="crmConfigModalState" :id="crmConfigModalState?.id" @success="handleSuccess" />
+    <ConfirmationModal v-model:open="deleteIntegrationState.open" title="Confirm Removal"
+      description="Are you sure you want to remove this integration ?" @confirm="
         () => {
           if (deleteIntegrationState?.id) {
             deleteBotIntegration({
@@ -57,8 +37,7 @@
             deleteIntegrationState.open = false;
           }
         }
-      "
-    />
+      " />
   </Page>
 </template>
 <script setup lang="ts">
