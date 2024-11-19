@@ -2,6 +2,7 @@ import { billingLogger, logger } from "~/server/logger";
 import { getStateCode } from "~/server/utils/billing.utils";
 import momentTz from "moment-timezone";
 
+const config = useRuntimeConfig();
 interface zohoConfigInterface {
   metaData: {
     client_id: string;
@@ -12,6 +13,8 @@ interface zohoConfigInterface {
     code: string;
   };
 }
+
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   
@@ -28,15 +31,15 @@ export default defineEventHandler(async (event) => {
     : timeZoneHeader || "Asia/Kolkata";
 
     const organizationId = (await isOrganizationAdminHandler(event)) as string;
-    const activePlan = await db.query.paymentSchema.findFirst({
+    const getOrgCurrentActivePlan = await db.query.orgSubscriptionSchema.findFirst({
       where: and(
-        eq(paymentSchema.organizationId, organizationId),
-        eq(paymentSchema.status, "active"),
-        eq(paymentSchema.type, "subscription"),
-      ),
-    });
-    if(activePlan) {
-      const expiryDate = momentTz(activePlan?.subscription_metadata?.next_billing_at).tz(timeZone).toDate();
+        eq(orgSubscriptionSchema.organizationId, organizationId),
+        eq(orgSubscriptionSchema.status, "active")
+      )
+    })
+
+    if(getOrgCurrentActivePlan) {
+      const expiryDate = momentTz(getOrgCurrentActivePlan?.expiryDate).tz(timeZone).toDate();
       const currentDate =  momentTz().tz(timeZone).toDate();
       if(currentDate < expiryDate) {
         return sendError(
@@ -117,59 +120,63 @@ export default defineEventHandler(async (event) => {
             contactperson_id: i.contactPersonId,
           }));
 
-          logger.info(`subscription body, ${JSON.stringify({body: {
-                ...(billingInformation?.customerId
-                  ? {
-                      customer_id: billingInformation?.customerId,
-                    }
-                  : {
-                      customer: {
-                        display_name: user?.username,
-                        salutation: "Mr.",
-                        first_name: firstName,
-                        last_name: lastName,
-                        email: user?.email,
-                        mobile: `${userDetails?.countryCode ?? "+91"} ${userDetails.mobile}`,
-                        billing_address: {
-                          attention: user?.username,
-                          street: userDetails?.address?.street,
-                          city: userDetails?.address?.city,
-                          state: userDetails?.address?.state,
-                          country: userDetails?.address?.country,
-                          zip: userDetails?.address?.zip,
-                        },
-                        shipping_address: {
-                          attention: user?.username,
-                          street: userDetails?.address?.street,
-                          city: userDetails?.address?.city,
-                          state: userDetails?.address?.state,
-                          country: userDetails?.address?.country,
-                          zip: userDetails?.address?.zip,
-                        },
-                        gst_no: orgDetails?.metadata?.gst,
-                        gst_treatment: "business_gst",
-                      },
-                    }),
+          const reqObj = {
+            ...(billingInformation?.customerId
+            ? {
+                customer_id: billingInformation?.customerId,
+              }
+            : {
+                customer: {
+                  display_name: user?.username,
+                  salutation: "Mr.",
+                  first_name: firstName,
+                  last_name: lastName,
+                  email: user?.email,
+                  mobile: `${userDetails?.countryCode ?? "+91"} ${userDetails.mobile}`,
+                  billing_address: {
+                    attention: user?.username,
+                    street: userDetails?.address?.street,
+                    city: userDetails?.address?.city,
+                    state: userDetails?.address?.state,
+                    country: userDetails?.address?.country,
+                    zip: userDetails?.address?.zip,
+                  },
+                  shipping_address: {
+                    attention: user?.username,
+                    street: userDetails?.address?.street,
+                    city: userDetails?.address?.city,
+                    state: userDetails?.address?.state,
+                    country: userDetails?.address?.country,
+                    zip: userDetails?.address?.zip,
+                  },
+                   ...(config.envType !== "stage" && {
+                    gst_no: orgDetails?.metadata?.gst,
+                    gst_treatment: "business_gst",
+                  })
+                },
+              }),
+              ...(config.envType !== "stage" && {
                 gst_no: orgDetails?.metadata?.gst,
                 gst_treatment: "business_gst",
-                 place_of_supply: getStateCode(userDetails?.address?.state),
-                contactpersons: contactPersonIdList,
-                plan: {
-                  plan_code: body.plan,
+                place_of_supply: getStateCode(userDetails?.address?.state),
+              }),
+              contactpersons: contactPersonIdList,
+              plan: {
+                plan_code: body.plan,
+              },
+              redirect_url: body?.redirectUrl,
+              payment_gateways: [
+                {
+                  payment_gateway:
+                    userDetails?.address === "india"
+                      ? "razorpay"
+                      : "razorpay",
                 },
+              ],
+          }
 
-                redirect_url: body?.redirectUrl,
-                payment_gateways: [
-                  {
-                    payment_gateway:
-                      userDetails?.address === "india"
-                        ? "razorpay"
-                        : "razorpay",
-                  },
-                ],
-              }})}`)
-
-
+          logger.info(`subscription body, ${JSON.stringify(reqObj)}`)
+          
           const generatedHostedPage = await $fetch(
             "https://www.zohoapis.in/billing/v1/hostedpages/newsubscription",
             {
@@ -180,108 +187,8 @@ export default defineEventHandler(async (event) => {
                 Authorization: `Zoho-oauthtoken ${accessToken}`,
                 "content-type": "application/json",
               },
-              body: {
-                ...(billingInformation?.customerId
-                  ? {
-                      customer_id: billingInformation?.customerId,
-                    }
-                  : {
-                      customer: {
-                        display_name: user?.username,
-                        salutation: "Mr.",
-                        first_name: firstName,
-                        last_name: lastName,
-                        email: user?.email,
-                        mobile: `${userDetails?.countryCode ?? "+91"} ${userDetails.mobile}`,
-                        billing_address: {
-                          attention: user?.username,
-                          street: userDetails?.address?.street,
-                          city: userDetails?.address?.city,
-                          state: userDetails?.address?.state,
-                          country: userDetails?.address?.country,
-                          zip: userDetails?.address?.zip,
-                        },
-                        shipping_address: {
-                          attention: user?.username,
-                          street: userDetails?.address?.street,
-                          city: userDetails?.address?.city,
-                          state: userDetails?.address?.state,
-                          country: userDetails?.address?.country,
-                          zip: userDetails?.address?.zip,
-                        },
-                        gst_no: orgDetails?.metadata?.gst,
-                        gst_treatment: "business_gst",
-                      },
-                    }),
-                gst_no: orgDetails?.metadata?.gst,
-                gst_treatment: "business_gst",
-                place_of_supply: getStateCode(userDetails?.address?.state),
-                contactpersons: contactPersonIdList,
-                plan: {
-                  plan_code: body.plan,
-                },
-
-                redirect_url: body?.redirectUrl,
-                payment_gateways: [
-                  {
-                    payment_gateway:
-                      userDetails?.address === "india"
-                        ? "razorpay"
-                        : "razorpay",
-                  },
-                ],
-              },
+              body: reqObj,
             },
-          );
-          logger.error(
-            `${JSON.stringify({
-              ...(billingInformation?.customerId
-                ? {
-                    customer_id: billingInformation?.customerId,
-                  }
-                : {
-                    customer: {
-                      display_name: user?.username,
-                      salutation: "Mr.",
-                      first_name: firstName,
-                      last_name: lastName,
-                      email: user?.email,
-                      mobile: `${userDetails?.countryCode ?? "+91"} ${userDetails.mobile}`,
-                      billing_address: {
-                        attention: user?.username,
-                        street: userDetails?.address?.street,
-                        city: userDetails?.address?.city,
-                        state: userDetails?.address?.state,
-                        country: userDetails?.address?.country,
-                        zip: userDetails?.address?.zip,
-                      },
-                      shipping_address: {
-                        attention: user?.username,
-                        street: userDetails?.address?.street,
-                        city: userDetails?.address?.city,
-                        state: userDetails?.address?.state,
-                        country: userDetails?.address?.country,
-                        zip: userDetails?.address?.zip,
-                      },
-                      gst_no: orgDetails?.metadata?.gst,
-                      // gst_treatment: "business_gst",
-                    },
-                  }),
-              gst_no: orgDetails?.metadata?.gst,
-              // gst_treatment: "business_gst",
-              contactpersons: contactPersonIdList,
-              plan: {
-                plan_code: body.plan,
-              },
-
-              redirect_url: body?.redirectUrl,
-              payment_gateways: [
-                {
-                  payment_gateway:
-                    userDetails?.address === "india" ? "razorpay" : "razorpay",
-                },
-              ],
-            })}`,
           );
           return generatedHostedPage;
         } catch (err: any) {

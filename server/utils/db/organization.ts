@@ -230,6 +230,27 @@ export const updateOrgVisitor = async (visitorId: string) => {
 //     },
 //   };
 // };
+const updateChatbotStatus = async(organizationId: string, botStatus: string) => {
+  await db
+  .update(chatBotSchema)
+  .set({
+    status: botStatus
+  })
+  .where(and(
+    eq(chatBotSchema.organizationId, organizationId),
+    isNotNull(chatBotSchema.documentId)
+  ))
+}
+
+const updateOrgSubscriptionStatus = async(organizationId: string, status: string) => {
+  await db
+  .update(orgSubscriptionSchema)
+  .set({
+    status: status
+  })
+  .where(eq(orgSubscriptionSchema.organizationId, organizationId))
+}
+
 
 export const getOrgUsage = async (organizationId: string, timeZone: string, query: any) => {
   // Determine date range for the current month
@@ -237,18 +258,8 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   const currentMonthStartDate = momentTz().tz(timeZone).startOf("month").toDate()
   const currentMonthEndDate = momentTz().tz(timeZone).endOf("month").toDate()
 
-  // Fetch all necessary data at once
-  const [org, orgAddons, interactedSessions, activeSubscription] = await Promise.all([
+  const [org, interactedSessions, orgSubscription] = await Promise.all([
     getOrganizationById(organizationId),
-    db
-    .select({ sum: sum(paymentSchema.amount) })
-    .from(paymentSchema)
-    .where(
-      and(
-        eq(paymentSchema.organizationId, organizationId),
-        eq(paymentSchema.type, "addon"),
-      ),
-    ),
     db.query.chatSchema.findMany({
       where: and(
         gte(chatSchema.createdAt, currentMonthStartDate),
@@ -257,11 +268,9 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
         eq(chatSchema.organizationId, organizationId),
       ),
     }),
-    db.query.paymentSchema.findFirst({
+    db.query.orgSubscriptionSchema.findFirst({
       where: and(
-        eq(paymentSchema.organizationId, organizationId),
-        eq(paymentSchema.status, "active"),
-        eq(paymentSchema.type, "subscription")
+        eq(orgSubscriptionSchema.organizationId, organizationId),
       ),
     }),
   ]);
@@ -269,83 +278,74 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   if (!org) {
      throw new Error("organization not found")
   }
+ 
   // get Pricing information
   const pricingInformation = await getPricingInformation(org?.planCode)
 
-  const maxSessions = pricingInformation?.sessions || 0;
+  let subscriptionStatus: "inactive" | "active" = "active";
   const extraSessionCost = pricingInformation?.extraSessionCost || 0
 
+  // const usedSessions = 10000
+  const maxSessions = pricingInformation?.sessions || 0;
   const usedSessions = interactedSessions?.length || 0;
+  const availableSessions = Math.max(maxSessions - usedSessions, 0)
 
-  let availableSessions = maxSessions - usedSessions
-  let walletBalance = orgAddons[0].sum ? Number(orgAddons[0].sum) : 0
+  const orgWalletSessions = orgSubscription?.walletSessions || 0
+  let extraSessions = 0
+
+  const updateStatuses = async (newStatus: "active" | "inactive") => {
+    if (orgSubscription?.status !== newStatus) {
+      await updateOrgSubscriptionStatus(organizationId, newStatus);
+    }
+    await updateChatbotStatus(organizationId, newStatus);
+  };
 
   const resObj = {
     used_quota: usedSessions,
     max_quota: maxSessions,
     plan_code: org.planCode,
-    wallet_balance: walletBalance,
+    wallet_balance: orgWalletSessions,
     extra_sessions_cost: extraSessionCost,
     gst: org?.metadata?.gst,
+    extra_sessions: extraSessions,
+    available_sessions: availableSessions,
+    expiry_date: orgSubscription?.expiryDate ?? undefined
   };
 
-  // If there is no active subscription or no additional sessions available
-  if (!activeSubscription) {
-    if(usedSessions > maxSessions) {
-      return {
-        ...resObj,
-        availableSessions: availableSessions > 0 ? availableSessions : 0,
-        subscription_status: "inactive",
-      };
-    } else {
-      return {
-        ...resObj,
-        availableSessions: availableSessions > 0 ? availableSessions : 0,
-        subscription_status: "active",
-      };
-    }
+  // If there is no active subscription or no additional sessions available (i.e free-plan)
+  if (!orgSubscription) {
+    subscriptionStatus = usedSessions > maxSessions ? "inactive" : "active";
+    await updateStatuses(subscriptionStatus);
+    return { ...resObj, subscription_status: subscriptionStatus };
   }
   
   // Calculate expiry date and check if the subscription is expired
-  const expiryDate = momentTz(activeSubscription?.subscription_metadata?.next_billing_at)
+  const expiryDate = momentTz(orgSubscription.expiryDate)
   .tz(timeZone)
   .toDate();
-  
-  // console.log({ active: currentDate > expiryDate, expiryDate, currentDate })
 
   if (currentDate > expiryDate) {
-    return {
-      ...resObj,
-      available_sessions: availableSessions > 0 ? availableSessions : 0,
-      subscription_status: "inactive",
-      expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
-    };
-  } else {
-    if(usedSessions > maxSessions) {
-      if (walletBalance > 0) {
-         return {
-           ...resObj,
-           available_sessions: walletBalance - usedSessions,
-           subscription_status: "active",
-           expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
-         };
-      } else {
-         return {
-           ...resObj,
-           available_sessions: availableSessions > 0 ? availableSessions : 0,
-           subscription_status: "inactive",
-           expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
-         };
-      }
-    } else { // Subscription is active and within session limits
-        return {
-          ...resObj,
-          available_sessions: availableSessions > 0 ? availableSessions : 0,
-          subscription_status: "active",
-          expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
-        };
+    subscriptionStatus = "inactive";
+    await updateStatuses(subscriptionStatus);
+    return { ...resObj, subscription_status: subscriptionStatus };
+  }
+  
+  if(usedSessions > maxSessions) {
+    extraSessions = Math.max(usedSessions - maxSessions, 0)
+    const currentWallet = Math.max(orgWalletSessions - extraSessions, 0)
+    if (currentWallet > 0) {
+      subscriptionStatus = "active";
+      await updateStatuses(subscriptionStatus);
+      return { ...resObj, subscription_status: subscriptionStatus, wallet_balance: currentWallet, extra_sessions: extraSessions, extra_sessions_cost: extraSessions * Number(pricingInformation?.extraSessionCost) };
+    } else {
+      subscriptionStatus = "inactive";
+      await updateStatuses(subscriptionStatus);
+      return { ...resObj, subscription_status: subscriptionStatus, wallet_balance: currentWallet ,extra_sessions: extraSessions, extra_sessions_cost: extraSessions * Number(pricingInformation?.extraSessionCost) };
     }
   }
+  subscriptionStatus = "active";
+  await updateStatuses(subscriptionStatus);
+  return { ...resObj, subscription_status: subscriptionStatus };
 };
 
 const validQueryValues = [
@@ -486,19 +486,12 @@ export const getAnalytics = async (
           ),
         db
           .select()
-          .from(chatSchema)
+          .from(orgVisitorSchema)
           .where(
             and(
-              gte(chatSchema.createdAt, fromDate),
-              lte(chatSchema.createdAt, toDate),
-              eq(chatSchema.organizationId, organizationId),
-              or(
-                gt(chatSchema.visitedCount, 1),
-                and(
-                  gte(chatSchema.visitedCount, 0),
-                  isNotNull(chatSchema.botUserId),
-                ),
-              ),
+              gte(orgVisitorSchema.createdAt, fromDate),
+              lte(orgVisitorSchema.createdAt, toDate),
+              eq(orgVisitorSchema.organizationId, organizationId),
             ),
           ),
         db
@@ -543,20 +536,13 @@ export const getAnalytics = async (
         ),
       db
         .select()
-        .from(chatSchema)
+        .from(orgVisitorSchema)
         .where(
           and(
-            gte(chatSchema.createdAt, previousFromDate),
-            lte(chatSchema.createdAt, previousToDate),
-            eq(chatSchema.organizationId, organizationId),
-            or(
-              gt(chatSchema.visitedCount, 1),
-              and(
-                gte(chatSchema.visitedCount, 0),
-                isNotNull(chatSchema.botUserId),
-              ),
-            ),
-          ),
+            gte(orgVisitorSchema.createdAt, previousFromDate),
+            lte(orgVisitorSchema.createdAt, previousToDate),
+            eq(orgVisitorSchema.organizationId, organizationId),
+          )
         ),
       db
         .select({ createdAt: chatSchema.createdAt })
@@ -569,12 +555,7 @@ export const getAnalytics = async (
             eq(chatSchema.organizationId, organizationId),
           ),
         ),
-    ]);
-
-    const currentPeriodUniqueVisitors = getUniqueVisitors(uniqueVisiters);
-    const previousPeriodUniqueVisitors = getUniqueVisitors(
-      previousUniqueVisiters,
-    );
+    ]);    
 
     if (!orgData) return undefined;
 
@@ -613,7 +594,7 @@ export const getAnalytics = async (
     // unique-visitors Graph
     if (queryArray.includes("unique_visitors")) {
       const uniqueVisitersResult = groupAndMapData({
-        module: currentPeriodUniqueVisitors,
+        module: uniqueVisiters,
         period,
         difference,
         timeZone,
@@ -697,12 +678,12 @@ export const getAnalytics = async (
       },
       {
         name: "unique visitors",
-        value: currentPeriodUniqueVisitors?.length ?? 0,
+        value: uniqueVisiters?.length ?? 0,
         apiName: "unique_visitors",
         color: "#a855f7",
         averagePercentage: calculatePercentageChange(
-          currentPeriodUniqueVisitors?.length ?? 0,
-          previousPeriodUniqueVisitors?.length,
+          uniqueVisiters?.length ?? 0,
+          previousUniqueVisiters?.length,
         ),
       },
       {
@@ -813,17 +794,3 @@ export const getAnalytics = async (
     throw new Error(`Failed to fetch: ${error}`);
   }
 };
-
-function getUniqueVisitors(chats: any) {
-  const uniqueVisitors = new Map();
-
-  chats?.map((chat: any) => {
-    const { id, botUserId, createdAt } = chat;
-    uniqueVisitors.set(botUserId ?? id, { createdAt });
-  });
-  const uniqueValues = Array.from(uniqueVisitors, ([key, value]) => ({
-    id: key,
-    ...value,
-  }));
-  return uniqueValues;
-}
