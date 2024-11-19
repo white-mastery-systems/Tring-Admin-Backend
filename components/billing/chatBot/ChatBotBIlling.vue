@@ -16,7 +16,7 @@
           <span
             class="rounded-[11px] bg-[#d9dbe6] px-2.5 py-[3px] text-[12px] font-medium capitalize text-[#00000080]"
           >
-            {{ usage?.plan_code?.replaceAll("_", " ")?.replace("chat", "") }}
+            {{ usageDetails?.currentPlan?.replaceAll("_", " ")?.replace("chat", "") }}
           </span>
         </div>
       </div>
@@ -26,9 +26,13 @@
         <span> Subscription status </span>
         <div class="flex min-w-[80px] items-center justify-start">
           <span
-            class="rounded-[11px] bg-[#3cb3714d] px-2.5 py-[3px] text-[12px] capitalize text-[#008026ba]"
+            :class="{
+              'bg-[#3cb3714d] text-[#008026ba]': usageDetails?.subscriptionStatus === 'active',
+              'bg-[#eb3930f3] text-white': usageDetails?.subscriptionStatus !== 'active'
+            }"
+            class="rounded-[11px] px-2.5 py-[3px] text-[12px] capitalize"
           >
-            active
+            {{ usageDetails?.subscriptionStatus }}
           </span>
         </div>
       </div>
@@ -96,10 +100,7 @@
             {{
               Number(usageDetails?.individualChatsCost) === 0
                 ? 0
-                : (Math.floor(
-                    Number(usageDetails?.walletBalance) /
-                      Number(usageDetails?.individualChatsCost),
-                  ) ?? 0)
+                : usageDetails?.walletBalance
             }}
           </span>
         </div>
