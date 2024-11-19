@@ -451,7 +451,7 @@
 
   const choosePlan = async (plan: any) => {
     if (plan === "chat_enterprise") {
-      return navigateTo("https://tringlabs.ai/contact", {
+      return navigateTo("https://tringlabs.ai/contact-us/", {
         external: true,
         open: {
           target: "_blank",
