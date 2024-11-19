@@ -1,4 +1,6 @@
 const db = useDrizzle();
+import { billingLogger, logger } from "~/server/logger";
+import { orgSubscriptionSchema } from "~/server/schema/admin";
 
 export default defineEventHandler(async (event) => {
   const body = await readValidatedBody(
@@ -28,7 +30,7 @@ export default defineEventHandler(async (event) => {
         createError({ statusCode: 404, statusMessage: "Invalid User" }),
       );
     }
-
+    billingLogger.info(`addon.post, hostedPageData: ${JSON.stringify(hostedPageData)}`)
     const apiResponseData: any = {
       userId: userId,
       organizationId: orgId!,
@@ -39,6 +41,7 @@ export default defineEventHandler(async (event) => {
       productId: hostedPageData.data.subscription.product_id,
       customerId: hostedPageData.data.subscription.customer_id,
       amount: hostedPageData.data.invoice.sub_total,
+      addonCode: hostedPageData.data.invoice.invoice_items[0].code,
       // expiry: data.data.subscription.expiry ?? Date.now(),
       status: "active",
       type: "addon",
@@ -48,7 +51,35 @@ export default defineEventHandler(async (event) => {
         .insert(paymentSchema)
         .values(apiResponseData)
         .returning();
-      await Promise.resolve(billingPromise);
+
+       // get Pricing information
+      const pricingInformation = await getPricingInformation(apiResponseData.plan_code)
+    
+      // get Addons information
+      const orgAddons = await db
+        .select()
+        .from(paymentSchema)
+        .where(
+          and(
+            eq(paymentSchema.plan_code, apiResponseData.plan_code),
+            eq(paymentSchema.organizationId, orgId),
+            eq(paymentSchema.type, "addon"),
+          ),
+      )
+      const walletSessions = orgAddons.reduce((acc, i) => {
+        const addon: any = pricingInformation?.addons?.find((j: any) => i.addonCode === j.name);
+        console.log({addon})
+        return addon ? acc + addon?.sessions : acc;
+      }, 0);
+
+      const orgSubscriptionPromise = await db
+        .update(orgSubscriptionSchema)
+        .set({
+          walletSessions: walletSessions,
+        })
+        .where(eq(orgSubscriptionSchema.organizationId, orgId!));
+
+      
       return { status: "Payment Successful" };
     } catch (error) {
       console.error(`Failed to insert data into DB: ${error}`);

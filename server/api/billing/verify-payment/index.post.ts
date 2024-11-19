@@ -1,3 +1,5 @@
+import { orgSubscriptionSchema } from "~/server/schema/admin";
+
 const db = useDrizzle();
 
 // Load credentials from JSON file
@@ -66,6 +68,15 @@ export default defineEventHandler(async (event) => {
       amount: data.data.subscription.amount,
       status: "active",
     };
+    
+    const orgSubscription = {
+      organizationId: orgId!,
+      botType: "chat",
+      subscriptionId: data.data.subscription.subscription_id,
+      planCode: data.data.subscription.plan.plan_code,
+      expiryDate: data.data.subscription.next_billing_at
+    }
+
     try {
       const billingPromise = await db
         .insert(paymentSchema)
@@ -80,6 +91,21 @@ export default defineEventHandler(async (event) => {
         })
         .where(eq(organizationSchema.id, orgId!));
 
+      const isExistSubscription = await db.query.orgSubscriptionSchema.findFirst({
+        where: (eq(orgSubscriptionSchema.organizationId, orgId))
+      })
+
+      if(isExistSubscription) {
+        await db
+          .update(orgSubscriptionSchema)
+          .set(orgSubscription)
+          .where(eq(orgSubscriptionSchema.organizationId, orgId))
+      } else {
+        await db
+         .insert(orgSubscriptionSchema)
+         .values(orgSubscription)
+      }
+      
       const userPromise = await db
         .update(authUserSchema)
         .set({

@@ -237,18 +237,8 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   const currentMonthStartDate = momentTz().tz(timeZone).startOf("month").toDate()
   const currentMonthEndDate = momentTz().tz(timeZone).endOf("month").toDate()
 
-  // Fetch all necessary data at once
-  const [org, orgAddons, interactedSessions, activeSubscription] = await Promise.all([
+  const [org, interactedSessions, orgSubscription] = await Promise.all([
     getOrganizationById(organizationId),
-    db
-    .select({ sum: sum(paymentSchema.amount) })
-    .from(paymentSchema)
-    .where(
-      and(
-        eq(paymentSchema.organizationId, organizationId),
-        eq(paymentSchema.type, "addon"),
-      ),
-    ),
     db.query.chatSchema.findMany({
       where: and(
         gte(chatSchema.createdAt, currentMonthStartDate),
@@ -257,11 +247,9 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
         eq(chatSchema.organizationId, organizationId),
       ),
     }),
-    db.query.paymentSchema.findFirst({
+    db.query.orgSubscriptionSchema.findFirst({
       where: and(
-        eq(paymentSchema.organizationId, organizationId),
-        eq(paymentSchema.status, "active"),
-        eq(paymentSchema.type, "subscription")
+        eq(orgSubscriptionSchema.organizationId, organizationId),
       ),
     }),
   ]);
@@ -269,16 +257,23 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   if (!org) {
      throw new Error("organization not found")
   }
+ 
   // get Pricing information
   const pricingInformation = await getPricingInformation(org?.planCode)
 
   const maxSessions = pricingInformation?.sessions || 0;
   const extraSessionCost = pricingInformation?.extraSessionCost || 0
-
+  //  const usedSessions = 10000
   const usedSessions = interactedSessions?.length || 0;
+  const orgWalletSessions = orgSubscription?.walletSessions || 0
 
   let availableSessions = maxSessions - usedSessions
-  let walletBalance = orgAddons[0].sum ? Number(orgAddons[0].sum) : 0
+  // let walletBalance = 0
+
+  // const orgSubscription = await 
+  let extraSessions = 0
+  
+  let walletBalance = orgSubscription && orgWalletSessions > 0 ? orgWalletSessions : 0
 
   const resObj = {
     used_quota: usedSessions,
@@ -287,10 +282,11 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
     wallet_balance: walletBalance,
     extra_sessions_cost: extraSessionCost,
     gst: org?.metadata?.gst,
+    extra_sessions: extraSessions,
   };
 
   // If there is no active subscription or no additional sessions available
-  if (!activeSubscription) {
+  if (!orgSubscription) {
     if(usedSessions > maxSessions) {
       return {
         ...resObj,
@@ -307,42 +303,61 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   }
   
   // Calculate expiry date and check if the subscription is expired
-  const expiryDate = momentTz(activeSubscription?.subscription_metadata?.next_billing_at)
+  const expiryDate = momentTz(orgSubscription.expiryDate)
   .tz(timeZone)
   .toDate();
   
   // console.log({ active: currentDate > expiryDate, expiryDate, currentDate })
-
   if (currentDate > expiryDate) {
+    const updatedData = (await db.update(orgSubscriptionSchema).set({ 
+      status: "inactive"
+    }).where(eq(orgSubscriptionSchema.organizationId, organizationId)).returning())[0]
+
     return {
       ...resObj,
       available_sessions: availableSessions > 0 ? availableSessions : 0,
-      subscription_status: "inactive",
-      expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
+      subscription_status: updatedData.status,
+      expiry_date: updatedData.expiryDate
     };
   } else {
     if(usedSessions > maxSessions) {
-      if (walletBalance > 0) {
+        extraSessions = usedSessions - maxSessions
+        const currentWallet = walletBalance - extraSessions
+      if (currentWallet > 0) {
+         const updatedData = (await db.update(orgSubscriptionSchema).set({ 
+          status: "active"
+        }).where(eq(orgSubscriptionSchema.organizationId, organizationId)).returning())[0]
          return {
            ...resObj,
-           available_sessions: walletBalance - usedSessions,
+           available_sessions: 0,
+           extra_sessions: extraSessions,
+           wallet_balance: currentWallet > 0 ? currentWallet : 0,
            subscription_status: "active",
-           expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
+           expiry_date: orgSubscription.expiryDate,
          };
       } else {
+         const updatedData = (await db.update(orgSubscriptionSchema).set({
+            status: "inactive"
+          }).where(eq(orgSubscriptionSchema.organizationId, organizationId)).returning())[0]
+
          return {
            ...resObj,
            available_sessions: availableSessions > 0 ? availableSessions : 0,
-           subscription_status: "inactive",
-           expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
+           wallet_balance: currentWallet > 0 ? currentWallet : 0,
+           extra_sessions: extraSessions,
+           subscription_status: updatedData.status,
+           expiry_date: updatedData.expiryDate,
          };
       }
     } else { // Subscription is active and within session limits
+        const updatedData = (await db.update(orgSubscriptionSchema).set({ 
+          status: "active"
+        }).where(eq(orgSubscriptionSchema.organizationId, organizationId)).returning())[0]
         return {
           ...resObj,
           available_sessions: availableSessions > 0 ? availableSessions : 0,
-          subscription_status: "active",
-          expiry_date: momentTz(expiryDate).format("YYYY-MM-DD"),
+          subscription_status: updatedData.status,
+          expiry_date: updatedData.expiryDate,
         };
     }
   }

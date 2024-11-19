@@ -723,11 +723,6 @@ export const createAddonInZohoBilling: any = async ({
     });
   }
   try {
-    console.log({
-      body: JSON.stringify(body),
-      token: integrationData?.access_token,
-      org: integrationData?.organization_id,
-    });
     const data = await $fetch(
       `https://www.zohoapis.in/billing/v1/hostedpages/buyonetimeaddon`,
       {
