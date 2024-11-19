@@ -56,12 +56,29 @@ export const paymentSchema = adminSchema.table("payment", {
   subscriptionId: text("subscription_id"),
   productId: text("product_id"),
   customer_metadata: jsonb("customer_metadata"),
+  addonCode: varchar("addon_code"),
   type: paymentTypeEnum("type").default("subscription").notNull(),
   status: statusEnum("status").default("active").notNull(),
   expiry: timestamp("expiry").default(nextMonthAndDayDate).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const orgSubscriptionSchema = adminSchema.table("org_subscription", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+  botType: varchar("bot_type"),
+  subscriptionId: text("subscription_id"),
+  planCode: varchar("plan_code"),
+  expiryDate: text("expiry_date"),
+  status: text("status").default("active"),
+  walletSessions: integer("wallet_sessions").default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 
 export const integrationSchema = adminSchema.table("integration", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
