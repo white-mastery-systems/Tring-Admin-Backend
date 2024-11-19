@@ -306,6 +306,7 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
     plan_code: org.planCode,
     wallet_balance: orgWalletSessions,
     extra_sessions_cost: extraSessionCost,
+    gst_no: org?.metadata?.gst,
     extra_sessions: extraSessions,
     available_sessions: availableSessions,
     expiry_date: orgSubscription?.expiryDate ?? undefined
