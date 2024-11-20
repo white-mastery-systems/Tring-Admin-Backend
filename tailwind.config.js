@@ -3,7 +3,12 @@ const animate = require("tailwindcss-animate");
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  safelist: ["dark"],
+  safelist: ["dark",
+    {
+      pattern: /h-screen-minus-\d+/,
+      variants: ['sm', 'md', 'lg'], // Optional: Add if using responsive variants
+    }
+  ],
   prefix: "",
 
   theme: {
@@ -61,6 +66,9 @@ module.exports = {
         "screen-minus-17": "calc(100vh - 17rem)",
         "screen-minus-18": "calc(100vh - 15rem)",
         "screen-minus-19": "calc(100vh - 20rem)",
+        "screen-minus-20": "calc(100vh - 13rem)",
+        "screen-minus-21": "calc(100vh - 11rem)",
+        "screen-minus-22": "calc(100vh - 10rem)",
       },
 
       borderRadius: {
@@ -100,4 +108,8 @@ module.exports = {
     },
   },
   plugins: [animate],
+  content: [
+  './src/**/*.{vue,js,ts,jsx,tsx}', // Scan your components
+  './public/**/*.html',             // Include static files, if any
+],
 };

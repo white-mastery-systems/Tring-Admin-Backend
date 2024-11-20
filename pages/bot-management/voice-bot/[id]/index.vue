@@ -189,13 +189,6 @@ const { data: botDetails, status: botLoadingStatus, refresh: integrationRefresh 
     });
   };
   const dataList = ref([
-    // {
-    //   _id: 7,
-    //   bot: "Talent Management",
-    //   helperText:
-    //     "Manage talent, including hiring, onboarding, and onboarding flows for the voice bot.",
-    //   routeName: "bot-management-voice-bot-id-talent-mangement",
-    // },
     {
       _id: 1,
       bot: "Bot Details",
@@ -231,34 +224,34 @@ const { data: botDetails, status: botLoadingStatus, refresh: integrationRefresh 
         "Configure CRM integration for the voice bot, enabling it to access and update customer data during voice interactions.",
       routeName: "bot-management-voice-bot-id-crm-config",
     },
-    // {
-    //   _id: 6,
-    //   bot: "Pre Recorded Audio",
-    //   helperText:
-    //     "Configure CRM integration for the voice bot, enabling it to access and update customer data during voice interactions.",
-    //   routeName: "bot-management-voice-bot-id-crm-config",
-    // },
-    // {
-    //   _id: 7,
-    //   bot: "Tools",
-    //   helperText:
-    //     "Configure CRM integration for the voice bot, enabling it to access and update customer data during voice interactions.",
-    //   routeName: "bot-management-voice-bot-id-crm-config",
-    // },
+    {
+      _id: 6,
+      bot: "Pre Recorded Audio",
+      helperText:
+        "Configure and upload pre-recorded audio clips for the voice bot.",
+      routeName: "bot-management-voice-bot-id-pre-recorded-audio",
+    },
+    {
+      _id: 7,
+      bot: "LLM Caching",
+      helperText:
+        "Optimize the performance of large language models by managing caching configurations.",
+      routeName: "bot-management-voice-bot-id-llm-caching",
+    },
     {
       _id: 8,
+      bot: "Tools",
+      helperText:
+        "Manage and configure tools integrated with the voice bot.",
+      routeName: "bot-management-voice-bot-id-tools",
+    },
+    {
+      _id: 9,
       bot: "IVR Configuration",
       helperText:
         "Configure the IVR settings to manage call flows and automate responses for the voice bot.",
       routeName: "bot-management-voice-bot-id-ivr-config",
     },
-    // {
-    //   _id: 7,
-    //   bot: "Default Intents",
-    //   helperText:
-    //     "Define the intents that the voice bot will recognize and respond to during interactions with users.",
-    //   routeName: "bot-management-voice-bot-id-intent-config",
-    // },
   ]);
 
   const dateFormate = computed(() => {

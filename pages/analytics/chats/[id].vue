@@ -2,8 +2,16 @@
   <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" leadPage="leads" :disable-back-button="false"
-    :disable-elevation="true">
+  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="[
+    {
+    label: `${leadData?.botUser?.name}`,
+    to: `/analytics/chats`,
+    },
+    {
+      label: 'Chats',
+      to: `/analytics/chats/${leadData?.id}`,
+    },
+  ]" leadPage="leads" :disable-back-button="false" :disable-elevation="true">
     <div class="items-top gap-[25px flex items-center justify-center px-3">
       <div class="items-top xs:grid-cols-2 flex grid w-full grid-cols-1 gap-[25px] lg:grid-cols-2">
         <div class="justify-aro und flex w-full gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]">
@@ -44,6 +52,22 @@
                       </UiTooltip>
                     </div>
                     <div v-else>Invalid entry</div>
+                  </div>
+                </div>
+                <div v-if="formattedChats.length" class="flex justify-center font-medium mt-4">Dynamic Forms</div>
+                <div v-if="formattedChats.length" class="overflow-scroll h-[40vh] gap-2 scrollable-container">
+                  <div v-for="(value, key) in formattedChats" :key="key">
+                    <div class="text-[#424bd1] font-medium py-4">
+                      {{ `Form ${key + 1}` }}
+                    </div>
+                    <div class="flex grid grid-cols-2 gap-2 font-regular">
+                      <div v-for="(dynamicForm, keys) in value?.metadata" :key="keys">
+                        <div class="w-full pb-3">
+                          <TextField :label="formatLabel(keys)" :disabled="true" :disableCharacters="true"
+                            :placeholder="dynamicForm" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </UiTabsContent>
@@ -145,6 +169,12 @@
       });
     }
   });
+
+const formatLabel = (key: any) => {
+  // Convert camelCase or PascalCase to words with spaces
+  return key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z])/g, ' $1').trim();
+}
+
   const isPageLoading = computed(() => status.value === "pending");
 
   const details = computed(() => {
@@ -181,4 +211,40 @@
       return [...metaData, ...paramsData, ...botUserDetails];
     } else return [...metaData, ...botUserDetails];
   });
+
+const formattedChats = computed(() => {
+  return chats.map((chat: any) => {
+    // Filter messages that have role 'comment' and content 'Booking Details Submitted'
+    const filteredMessages = chat.messages.filter((message: any) =>
+      message.role === 'comment' && message.content === 'Booking Details Submitted' && message.metadata
+    );
+
+    // For each message, format the metadata and createdAt date
+    const formattedMessages = filteredMessages.map((message: any) => {
+      return {
+        id: message.id,
+        createdAt: formatDate(new Date(message.createdAt), "hh:mm a"),
+        metadata: message.metadata
+      };
+    });
+
+    return formattedMessages;
+  }).flat();  // Flatten the array if there are multiple messages per chat
+});
 </script>
+<style scoped>
+.scrollable-container::-webkit-scrollbar {
+  display: block;
+  width: 6px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 10px;
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+  max-height: 8px !important;
+  margin-block: 1rem !important;
+}
+</style>

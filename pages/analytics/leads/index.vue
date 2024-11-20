@@ -41,7 +41,7 @@
               (filters.page = '1'), (filters.limit = $event);
             }
           " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="leads"
-          :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="16" height-unit="vh" @row-click="
+          :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="17" height-unit="vh" @row-click="
             (row: any) => {
               navigateTo(`/analytics/leads/${row.original.chatId}`);
             }
@@ -53,7 +53,7 @@
               (filters.page = '1'), (filters.limit = $event);
             }
           " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
-          :totalCount="totalCount" :page-size="8" :height="14" height-unit="vh" @row-click="
+          :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="
             (row: any) => {
               navigateTo(`leads/${row.original.chatId}`);
             }
@@ -65,7 +65,7 @@
               (filters.page = '1'), (filters.limit = $event);
             }
           " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
-          :totalCount="totalCount" :page-size="8" :height="14" height-unit="vh" @row-click="
+          :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="
             (row: any) => {
               navigateTo(`leads/${row.original.chatId}`);
             }

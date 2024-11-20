@@ -1,7 +1,16 @@
 <template>
-  <Page title="Text To Speech Configurations">
+  <Page title="Text To Speech Configurations" :bread-crumbs="[
+    {
+      label: `${botDetails.name}`,
+      to: `/bot-management/voice-bot/${botDetails.id}`,
+    },
+    {
+      label: 'Text To Speech Configurations',
+      to: `/bot-management/voice-bot/${botDetails.id}/text-to-speech-config`,
+    },
+  ]">
     <div class="pb-2 sm:pb-0">
-      <form @submit="onSubmit">
+      <form @submit.prevent="onSubmit">
         <div class="flex flex-col gap-2">
           <SelectField name="provider" label="provider" placeholder="Select provider" helperText="Select your provider."
             :options="providers" required />
@@ -12,6 +21,10 @@
           <TextField v-if="values.provider === 'google'" type="text" label="Name" name="name" required
             placeholder="Name" />
           <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">
+            <TextField v-if="values.provider === 'tring'" type="text" label="Speaker" name="speaker" required
+              placeholder="Speaker" />
+            <TextField v-if="values.provider === 'tring'" type="number" label="Sample Rate" name="sampleRate" required
+              placeholder="Sample Rate" disableCharacters />
             <!-- <TextField v-if="values.provider === 'elevenlabs'" type="text" label="Model" name="model" required
               placeholder="Model" /> -->
             <SelectField v-if="values.provider === 'elevenlabs'" name="model" label="Model" placeholder="Model"
@@ -19,25 +32,37 @@
             <TextField v-if="values.provider === 'elevenlabs'" type="text" label="voice" name="elevenlabsvoice" required
               placeholder="voice" />
           </div>
-          <RangeSlider v-if="values.provider === 'google'" :step="0.1" :name="parseFloat(values.speakingRate)"
+          <RangeSlider v-if="values.provider === 'google'" :step="0.05" :name="parseFloat(values.speakingRate)"
             label="Speaking Rate" @update="
               ($event) => {
-                setFieldValue('speakingRate', $event.toString());
+                $event.stopPropagation()
+                setFieldValue('speakingRate', $event);
               }
-            " required placeholder="Enter speaking Rate" min="0" max="1" />
+            " required placeholder="Enter speaking speed" min="0" max="1" />
+          <div v-if="values.provider === 'tring'" class="flex items-center grid grid-cols-2 gap-2">
+            <TextField type="rangeSlider" label="Speaking speed" name="speakingSpeed" @input="($event) => {
+              const numericValue = Number($event.target.value)
+              setFieldValue('speakingSpeed', numericValue)
+            }" required placeholder="Enter Speaking Rate" disableCharacters />
+            <RangeSlider :step="0.05" :name="parseFloat(values.speakingSpeed)" label="Speaking speed" @update="
+              ($event) => {
+                setFieldValue('speakingSpeed', $event);
+              }
+            " required placeholder="Enter speaking speed" min="0" max="1" />
+          </div>
           <!-- <TextField v-if="values.provider === 'google'" label="Speaking Rate" name="speakingRate" required placeholder="Enter speaking Rate" -->
           <!-- disableCharacters /> -->
 
-          <RangeSlider v-if="values.provider === 'google'" :step="0.1" :name="parseFloat(values.pitch)"
+          <RangeSlider v-if="values.provider === 'google'" :step="0.05" :name="parseFloat(values.pitch)"
             label="Enter pitch" @update="
               ($event) => {
-                setFieldValue('pitch', $event.toString());
+                setFieldValue('pitch', $event);
               }
             " required placeholder="Enter speaking Rate" min="0" max="1" />
-          <RangeSlider v-if="values.provider === 'google'" :step="0.1" :name="parseFloat(values.volumeGrainDb )"
+          <RangeSlider v-if="values.provider === 'google'" :step="0.05" :name="parseFloat(values.volumeGrainDb)"
             label="volume Grain DB" @update="
               ($event) => {
-                setFieldValue('volumeGrainDb', $event.toString());
+                setFieldValue('volumeGrainDb', $event);
               }
             " required placeholder="Enter speaking Rate" min="0" max="1" />
           <!-- <TextField
@@ -49,23 +74,23 @@
             disableCharacters
           /> -->
 
-          <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.1" :name="parseFloat(values.stability )"
+          <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.stability)"
             label="Stability" @update="
               ($event) => {
-                setFieldValue('stability', $event.toString());
+                setFieldValue('stability', $event);
               }
             " required placeholder="Enter speaking Rate" min="0" max="1" />
 
-          <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.1" :name="parseFloat(values.similarityBoost )"
+          <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.similarityBoost)"
             label="Similarity boost" @update="
               ($event) => {
-                setFieldValue('similarityBoost', $event.toString());
+                setFieldValue('similarityBoost', $event);
               }
             " required placeholder="Enter speaking Rate" min="0" max="1" />
-          <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.1" :name="parseFloat(values.style )"
+          <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.style)"
             label="Style" @update="
               ($event) => {
-                setFieldValue('style', $event.toString());
+                setFieldValue('style', $event);
               }
             " required placeholder="Enter speaking Rate" min="0" max="1" />
           <!-- <RangeSlider
@@ -113,11 +138,11 @@
           <SelectField v-if="values.provider === 'elevenlabs'" name="useSpeakerBoost" :options="useSpeakerBooster"
             label="Use Speaker Boost" placeholder="Use Speaker Boost">
           </SelectField>
-          <SelectField v-if="values.provider === 'deepgram'" name="voice" label="Voice"
-            placeholder="Select voice" helperText="Select your voice." :options="voices" required />
+          <SelectField v-if="values.provider === 'deepgram'" name="voice" label="Voice" placeholder="Select voice"
+            helperText="Select your voice." :options="voices" required />
         </div>
         <div class="flex w-full justify-end mt-2">
-          <UiButton color="primary" type="submit" :loading="isLoading">
+          <UiButton color="primary" :loading="isLoading">
             Submit
           </UiButton>
         </div>
@@ -143,6 +168,10 @@
   const isLoading = ref(false);
 
   const providers = [
+    {
+      label: "tring",
+      value: "tring",
+    },
     {
       label: "google",
       value: "google",
@@ -202,7 +231,7 @@ const useSpeakerBooster = [
   //     value: "ta-IN",
   //   },
   // ];
-const { languageList } = useLanguageList();
+  const { languageList } = useLanguageList();
   const voiceTypes = [
     {
       label: "Hindi Female",
@@ -270,26 +299,10 @@ const { languageList } = useLanguageList();
 const botDetails = ref(await getVoiceBotDetails(route.params.id));
 
 const { handleSubmit, setFieldValue, values, resetForm, errors } = useForm({
-  initialValues: {
-    // multiple: [],
-    // provider: 'google', // Default provider (change as needed)
-    // language: '',
-    // pitch: 1,            // Default values for Google
-    // speakingRate: 1,
-    // volumeGrainDb: 0,
-    // stability: 0,       // Default for Elevenlabs
-    // similarityBoost: 0,
-    // style: 0,
-    // useSpeakerBoost: 0,
-    // voice: '',          // Default for Deepgram
-  },
   validationSchema: toTypedSchema(textToSpeechValidation),
+  initialValues: {
+  },
 });
-  // const botData = await $fetch(`/api/voicebots/` + route.params.id);
-//  const { data: botData, status: botLoadingStatus } = await useLazyFetch<{
-//    textToSpeechConfig: Record<string, string>;
-//   }>(`/api/voicebots/${route.params.id}`);  
-
 
 watch(botData, () => {
   // setFieldValue("language", botData.value.speechToTextConfig.language);
@@ -315,6 +328,9 @@ watch(botData, () => {
       botData.value?.textToSpeechConfig.elevenlabs.use_speaker_boost,
     );
     setFieldValue("voice", botData.value?.textToSpeechConfig?.deepgram.voice);
+    setFieldValue("speaker", botData.value?.textToSpeechConfig?.tring.speaker);
+    setFieldValue("speakingSpeed", botData.value?.textToSpeechConfig?.tring.speed);
+    setFieldValue("sampleRate", botData.value?.textToSpeechConfig?.tring.sample_rate);
 }, { deep: true })
 watch(errors, (newValues) => {
   console.log(newValues, values);
@@ -348,6 +364,9 @@ watch(
       botData.value?.textToSpeechConfig.elevenlabs.use_speaker_boost,
     );
     setFieldValue("voice", botData.value?.textToSpeechConfig?.deepgram.voice);
+    setFieldValue("speaker", botData.value?.textToSpeechConfig?.tring.speaker);
+    setFieldValue("speakingSpeed", botData.value?.textToSpeechConfig?.tring.speed);
+    setFieldValue("sampleRate", botData.value?.textToSpeechConfig?.tring.sample_rate);
   })
 
   watchEffect(() => {
@@ -361,7 +380,6 @@ watch(
 
 const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true;
-  console.log(values.model !== undefined, "values.model !== undefined")
   const updatedConfig = {
     // Use submitted provider or fallback to existing one
     provider: values.provider || botData.value?.textToSpeechConfig.provider || 'google', // Default to 'google'
@@ -393,6 +411,13 @@ const onSubmit = handleSubmit(async (values) => {
       // ...botData.value?.textToSpeechConfig.deepgram, // Keep existing Deepgram config
       voice: values.deepgramVoice !== undefined ? values.deepgramVoice : botData.value?.textToSpeechConfig.deepgram.voice || "aura-asteria-en",
       // amplification_factor: values.amplificationFactor !== undefined ? values.amplificationFactor : botData.value?.textToSpeechConfig.deepgram.amplification_factor || 2,
+      // Add any other necessary Deepgram-specific fields similarly
+    },
+    tring: {
+      // ...botData.value?.textToSpeechConfig.deepgram, // Keep existing Deepgram config
+      speed: values.speakingSpeed !== undefined ? values.speakingSpeed : botData.value?.textToSpeechConfig.tring.speed || 1,
+      speaker: values.speaker !== undefined ? values.speaker : botData.value?.textToSpeechConfig.tring.speaker || "jaya",
+      sample_rate: values.sampleRate !== undefined ? values.sampleRate : botData.value?.textToSpeechConfig.tring.sample_rate || 44100,
       // Add any other necessary Deepgram-specific fields similarly
     },
     // Add other providers as necessary

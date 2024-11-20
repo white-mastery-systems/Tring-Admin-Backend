@@ -2,7 +2,7 @@
   <div :class="
       cn(
         'h-[calc(100%-70px)]',
-        'overflow-y-scroll',
+        'overflow-y-scroll scrollable-container',
         leadDataValue?.channel === 'website' ? 'bg-[#f8f6f6]' : (messageListCheck) ? 'bg-[#e5ddd5]' : 'bg-[#f8f6f6]',
       )
     " :style="
@@ -29,7 +29,7 @@
         </div>
         <div v-if="
             messageList?.role === 'comment' &&
-            messageList.content !== 'User Details Submitted'
+            (messageList.content !== 'User Details Submitted') && (messageList.content !== 'Booking Details Submitted')
           " class="flex w-full flex-col items-end">
           <!-- class="relative" -->
           <!-- <div
@@ -39,13 +39,13 @@
             {{ messageList.content }}
           </p> -->
 
-          <div class="flex max-w-[80%] flex-col items-end justify-center">
+          <div class="flex max-w-[80%] flex-col items-end justify-center" v-if="messageList.content.includes('Rescheduled Site') || messageList.content.includes('Site Visit Scheduled') || messageList.content.includes('Rescheduled Call')">
             <span class="text-[14px]" style="color: #8a8a8a">{{
               leadDataValue?.botUser?.name
               }}</span>
             <div
               class="mt-2.5 flex flex-col items-end justify-center gap-5 rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black">
-              <div class="pb-2 pt-2">
+              <div class="pb-2 pt-2" >
                 <span>
                   {{
                     (messageList.content.includes('Rescheduled Site') || messageList.content.includes('Site Visit Scheduled'))
@@ -85,18 +85,6 @@
           </div>
         </div>
 
-        <div v-if="
-            messageList?.role === 'comment' &&
-            messageList.content !== 'User Details Submitted'
-          " class="relative">
-          <div
-            class="absolute left-1/2 top-1/2 h-[0.5px] w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500/50">
-          </div>
-          <p class="relative mx-auto w-fit rounded-sm border bg-gray-100 px-2 py-1 text-xs font-thin">
-            {{ messageList.content }}
-          </p>
-        </div>
-
         <div class="flex w-full flex-col items-end" v-if="
             messageList?.role === 'comment' &&
             messageList?.content === 'User Details Submitted' &&
@@ -133,6 +121,17 @@
             </div>
           </div>
         </div> 
+         <div v-if="
+            messageList?.role === 'comment' &&
+            messageList.content === 'User Details Submitted'
+          " class="relative">
+          <div
+            class="absolute left-1/2 top-1/2 h-[0.5px] w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500/50">
+          </div>
+          <p class="relative mx-auto w-fit rounded-sm border bg-gray-100 px-2 py-1 text-xs font-thin">
+            {{ messageList.content }}
+          </p>
+        </div>
          <div class="flex w-full flex-col items-end" v-if="
             messageList?.role === 'comment' &&
             messageList?.content === 'Booking Details Submitted' &&
@@ -160,6 +159,17 @@
             </div>
           </div>
         </div> 
+          <div v-if="
+            messageList?.role === 'comment' &&
+        messageList.content === 'Booking Details Submitted'
+          " class="relative">
+          <div
+            class="absolute left-1/2 top-1/2 h-[0.5px] w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500/50">
+          </div>
+          <p class="relative mx-auto w-fit rounded-sm border bg-gray-100 px-2 py-1 text-xs font-thin">
+            {{ messageList.content }}
+          </p>
+        </div>
         <!-- User Message -->
         <div class="flex w-full flex-col items-end" v-if="messageList?.role === 'user'">
           <div class="flex max-w-[80%] flex-col items-end justify-center">
@@ -321,6 +331,15 @@ const props = withDefaults(defineProps<{
   //   // chats.value = updatedMessages;
   // }, { deep: true });
 
+
+const isSiteVisit = computed(() => {
+  const content = props.messageList?.content || '';
+  return (
+    content.includes('Rescheduled Site') ||
+    content.includes('Site Visit Scheduled')
+  );
+});
+
   const timeStamp = (messageIndex: any, messageList: any) => {
     return !messageIndex
       ? true
@@ -408,3 +427,19 @@ const formatLabel = (key: any) => {
   return key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z])/g, ' $1').trim();
 }
 </script>
+<style scoped>
+.scrollable-container::-webkit-scrollbar {
+  display: block;
+  width: 6px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 10px;
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+  max-height: 8px !important;
+  margin-block: 1rem !important;
+}
+</style>

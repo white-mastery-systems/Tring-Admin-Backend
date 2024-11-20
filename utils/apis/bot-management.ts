@@ -171,12 +171,12 @@ export const deleteVoiceBot = async (botId: string) => {
   }
 };
 
-export const updateLLMConfig = async (payload: any, botId: string) => {
+export const updateLLMConfig = async (payload: any, botId: string, message: string) => {
   const updateLLM = await $fetch(`/api/voicebots/${botId}`, {
     method: "PUT",
     body: payload,
   });
-  toast.success("LLM Configuration updated successfully");
+  toast.success(message);
   await navigateTo({
     name: "bot-management-voice-bot-id",
     params: { id: botId },

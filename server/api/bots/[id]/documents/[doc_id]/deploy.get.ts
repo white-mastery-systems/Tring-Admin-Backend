@@ -1,12 +1,29 @@
 import { getDocumentById } from "~/server/utils/db/document";
 const config = useRuntimeConfig();
 
+const db = useDrizzle()
+
 const routeParamValidator = z.object({
   id: z.string().uuid(),
   doc_id: z.string().uuid(),
 });
 export default defineEventHandler(async (event) => {
-  await isOrganizationAdminHandler(event);
+  try {
+ const organizationId = (await isOrganizationAdminHandler(event) as string)
+
+  const getOrgCurrentActivePlan = await db.query.orgSubscriptionSchema.findFirst({
+      where: and(
+        eq(orgSubscriptionSchema.organizationId, organizationId),
+        eq(orgSubscriptionSchema.status, "active")
+      )
+  })
+  // console.log({ getOrgCurrentActivePlan })
+  if(!getOrgCurrentActivePlan) {
+    return sendError(
+      event,
+      createError({ statusCode: 400, statusMessage: "You can't activate the bot" }),
+    );   
+  }
   const { id: botId, doc_id } = await isValidRouteParamHandler(
     event,
     routeParamValidator,
@@ -56,4 +73,8 @@ export default defineEventHandler(async (event) => {
       },
     },
   });
+  } catch(error) {
+    console.log(error)
+  }
+ 
 });

@@ -230,24 +230,20 @@ export const updateOrgVisitor = async (visitorId: string) => {
 //     },
 //   };
 // };
-const updateChatbotStatus = async(organizationId: string, botStatus: string) => {
+
+const updateChatbotStatus = async(organizationId: string) => {
   await db
   .update(chatBotSchema)
-  .set({
-    status: botStatus
-  })
-  .where(and(
-    eq(chatBotSchema.organizationId, organizationId),
-    isNotNull(chatBotSchema.documentId)
+  .set({ documentId: null })
+  .where(
+    and(eq(chatBotSchema.organizationId, organizationId),
   ))
 }
 
 const updateOrgSubscriptionStatus = async(organizationId: string, status: string) => {
   await db
   .update(orgSubscriptionSchema)
-  .set({
-    status: status
-  })
+  .set({ status: status })
   .where(eq(orgSubscriptionSchema.organizationId, organizationId))
 }
 
@@ -297,7 +293,9 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
     if (orgSubscription?.status !== newStatus) {
       await updateOrgSubscriptionStatus(organizationId, newStatus);
     }
-    await updateChatbotStatus(organizationId, newStatus);
+    if(newStatus === "inactive") {
+      await updateChatbotStatus(organizationId);
+    }
   };
 
   const resObj = {
