@@ -328,7 +328,7 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
     return { ...resObj, subscription_status: subscriptionStatus };
   }
   
-  if(usedSessions > maxSessions) {
+  if(usedSessions >= maxSessions) {
     extraSessions = Math.max(usedSessions - maxSessions, 0)
     const currentWallet = Math.max(orgWalletSessions - extraSessions, 0)
     if (currentWallet > 0) {
