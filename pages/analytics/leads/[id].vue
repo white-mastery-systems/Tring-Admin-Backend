@@ -2,18 +2,16 @@
   <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <!-- :bread-crumbs="[
-      {
-    label: `${leadData?.botUser?.name}`,
-    to: `/analytics/leads`,
-      },
-      {
-        label: 'Leads',
-        to: `/analytics/leads`,
-      },
-    ]" -->
-  <Page v-else :title="leadData?.botUser?.name ?? ''" leadPage="leads" :disable-back-button="false"
-    :disable-elevation="true">
+  <Page v-else :title="leadData?.botUser?.name ?? ''" :bread-crumbs="[
+    {
+      label: `${leadData?.botUser?.name}`,
+      to: `/analytics/leads`,
+    },
+    {
+      label: 'Leads',
+      to: `/analytics/leads`,
+    },
+  ]" leadPage="leads" :disable-back-button="false" :disable-elevation="true">
     <template #actionButtons>
       <div class="flex items-center gap-3">
         <UiButton v-if="leadData?.lead?.status === 'default'" variant="destructive"
@@ -167,110 +165,110 @@
 </template>
 
 <script setup lang="ts">
-  definePageMeta({
-    middleware: "admin-only",
-  });
+definePageMeta({
+  middleware: "admin-only",
+});
 
-  const BotId = ref(null);
+const BotId = ref(null);
 
-  const router = useRouter();
-  const route = useRoute("analytics-leads-id");
+const router = useRouter();
+const route = useRoute("analytics-leads-id");
 
-  const isPageLoading = computed(() => responseStatus.value === "pending");
+const isPageLoading = computed(() => responseStatus.value === "pending");
 
-  const paramId: any = route;
-  const changeStatus = ref(false);
-  const revertStatus = ref(false);
-  const status = ref();
-  const leadData: any = ref();
-  // const { status, data: leadData } = await useLazyFetch(
-  //   () => `/api/org/chat/${route.params.id}`,
-  //   {
-  //     server: false,
-  //   },
-  // );
-  // const isPageLoading = computed(() => status.value === "pending");
-  watchEffect(() => {
-    if (leadData.value) {
-      const userName = leadData.value?.botUser?.name ?? "Unknown User";
-      useHead({
-        title: `Leads | ${userName}`,
-      });
+const paramId: any = route;
+const changeStatus = ref(false);
+const revertStatus = ref(false);
+const status = ref();
+const leadData: any = ref();
+// const { status, data: leadData } = await useLazyFetch(
+//   () => `/api/org/chat/${route.params.id}`,
+//   {
+//     server: false,
+//   },
+// );
+// const isPageLoading = computed(() => status.value === "pending");
+watchEffect(() => {
+  if (leadData.value) {
+    const userName = leadData.value?.botUser?.name ?? "Unknown User";
+    useHead({
+      title: `Leads | ${userName}`,
+    });
+  }
+});
+onMounted( async() => {
+  await fetchData();
+});
+const details = computed(() => {
+  if (!leadData.value) return [];
+  const { params, ...rest } =
+    leadData.value?.metadata ?? ({ params: null } as Record<string, any>);
+  const { name } = leadData.value.bot;
+  let metaData: any = Object.entries(rest).map(([key, value]) => {
+    if (key === "os") {
+      return ["OS", value];
+    } else if (key === "ipAddress") {
+      return ["IP Address", value];
     }
+    return [key, value];
   });
-  onMounted(() => {
-    fetchData();
+  metaData = [
+    ...metaData,
+    ["Name", leadData?.value?.botUser?.name],
+    ["Email", leadData?.value?.botUser?.email],
+    [
+      "Mobile",
+      leadData?.value?.botUser?.countryCode +
+      leadData?.value?.botUser?.mobile,
+    ],
+    ["Bot Name", name],
+  ];
+  if (params) {
+    return [metaData, Object.entries(params)];
+  } else {
+    return [metaData];
+  }
+});
+
+const isDeleteConfirmationOpen = ref(false);
+
+const handleDelete = async () => {
+  isDeleteConfirmationOpen.value = false;
+  await $fetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
+    method: "DELETE",
   });
-  const details = computed(() => {
-    if (!leadData.value) return [];
-    const { params, ...rest } =
-      leadData.value?.metadata ?? ({ params: null } as Record<string, any>);
-    const { name } = leadData.value.bot;
-    let metaData: any = Object.entries(rest).map(([key, value]) => {
-      if (key === "os") {
-        return ["OS", value];
-      } else if (key === "ipAddress") {
-        return ["IP Address", value];
-      }
-      return [key, value];
-    });
-    metaData = [
-      ...metaData,
-      ["Name", leadData?.value?.botUser?.name],
-      ["Email", leadData?.value?.botUser?.email],
-      [
-        "Mobile",
-        leadData?.value?.botUser?.countryCode +
-          leadData?.value?.botUser?.mobile,
-      ],
-      ["Bot Name", name],
-    ];
-    if (params) {
-      return [metaData, Object.entries(params)];
-    } else {
-      return [metaData];
-    }
-  });
+  return navigateTo({ name: "leads" });
+};
 
-  const isDeleteConfirmationOpen = ref(false);
-
-  const handleDelete = async () => {
-    isDeleteConfirmationOpen.value = false;
-    await $fetch(`/api/org/lead/${leadData.value?.lead?.id}`, {
-      method: "DELETE",
-    });
-    return navigateTo({ name: "leads" });
-  };
-
-  const fetchData = async () => {
-    leadData.value = await $fetch(`/api/org/chat/${route.params.id}`, {
-      method: "GET",
-    });
-    chatData.value = leadData?.value?.messages?.slice(-1);
-    // // Ensure you're using `ref` to store the reactive data
-    // status.value = status.value;
-    // leadData.value = leadData.value;
-  };
-  const chatData = ref([]);
-  const chats = await $fetch(`/api/org/chat/${route.params.id}/messages`, {
+const fetchData = async () => {
+  leadData.value = await $fetch(`/api/org/chat/${route.params.id}`, {
     method: "GET",
-    server: false,
   });
+  chatData.value = leadData?.value?.messages?.slice(-1);
+  // // Ensure you're using `ref` to store the reactive data
+  // status.value = status.value;
+  // leadData.value = leadData.value;
+};
+const chatData = ref([]);
+const chats = await $fetch(`/api/org/chat/${route.params.id}/messages`, {
+  method: "GET",
+  server: false,
+});
 
-  const {
-    status: responseStatus,
-    data: timeLineData,
-    refresh: usageRefresh,
-  } = await useLazyFetch(`/api/timeline/chat/${route.params.id}`, {
-    transform: (data: any) => {
-      let chatIndex = 1;
-      const  allChat = chats.map((chat: any)=>chat.chatId)
-      return data.map((item: any, index: number) => {
-          const chatIndex =  allChat.findIndex((chat: any)=>chat === item.chatId)
-          return { ...item, chatIndex:chatIndex+1 };
-        });
-    },
-  });
+const {
+  status: responseStatus,
+  data: timeLineData,
+  refresh: usageRefresh,
+} = await useLazyFetch(`/api/timeline/chat/${route.params.id}`, {
+  transform: (data: any) => {
+    let chatIndex = 1;
+    const allChat = chats.map((chat: any) => chat.chatId)
+    return data.map((item: any, index: number) => {
+      const chatIndex = allChat.findIndex((chat: any) => chat === item.chatId)
+      return { ...item, chatIndex: chatIndex + 1 };
+    });
+  },
+});
 
 const formattedChats = computed(() => {
   return chats.map((chat: any) => {
