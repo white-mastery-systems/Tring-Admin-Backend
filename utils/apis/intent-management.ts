@@ -40,7 +40,8 @@ export const createBotIntents = async ({
     onSuccess();
     return createdIntent;
   } catch (err: any) {
-    toast.error(err.data.data[0].message);
+    // console.log(err.data.statusMessage, "err -- err");
+    toast.error(err.data.statusMessage);
   }
 };
 interface DeleteIntentInterface {
