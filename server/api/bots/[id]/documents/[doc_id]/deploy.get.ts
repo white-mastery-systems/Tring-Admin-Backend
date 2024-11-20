@@ -17,12 +17,11 @@ export default defineEventHandler(async (event) => {
         eq(orgSubscriptionSchema.status, "active")
       )
   })
-  // console.log({ getOrgCurrentActivePlan })
+
+  console.log(getOrgCurrentActivePlan, "getOrgCurrentActivePlan");
+
   if(!getOrgCurrentActivePlan) {
-    return sendError(
-      event,
-      createError({ statusCode: 400, statusMessage: "You can't activate the bot" }),
-    );   
+    return sendRedirect(event, `${config.adminBaseUrl}/billing?type=chat`);  
   }
   const { id: botId, doc_id } = await isValidRouteParamHandler(
     event,
