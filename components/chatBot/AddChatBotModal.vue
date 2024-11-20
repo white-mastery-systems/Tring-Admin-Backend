@@ -3,7 +3,7 @@
     v-model="agentModalState"
     :title="agentModalState.id ? 'Modify Chat Bot' : 'Add a New Chat Bot'"
   >
-    <form @submit="handleAddEditBot">
+    <form @submit.prevent="handleAddEditBot">
       <TextField
         label="Bot Name"
         name="name"
@@ -69,10 +69,17 @@
         .min(2, "Bot Name is required"),
       type: z.string({ required_error: "Bot type is required" }),
       integrationId: z.string().optional(), // Always optional
-    }),
+    }).superRefine((data, ctx) => {
+      if (data.type === "ecommerce" && !data.integrationId) {
+        ctx.addIssue({
+          path: ["integrationId"],
+          message: "Integration ID is required for E-Commerce type.",
+        })
+       }
+    })
   );
 
-  const { handleSubmit, setFieldValue, resetForm, values } = useForm({
+  const { handleSubmit, setFieldValue, resetForm, values,errors } = useForm({
     validationSchema: formSchema,
   });
 
@@ -87,7 +94,9 @@
         console.log(getSingleDetails, "getSingleDetails");
         setFieldValue("name", getSingleDetails.name);
         setFieldValue("type", getSingleDetails.type);
-        setFieldValue("integrationId", getSingleDetails?.integrationId);
+        if (getSingleDetails?.integrationId) {
+          setFieldValue("integrationId", getSingleDetails?.integrationId);
+        }
       }
     },
   );

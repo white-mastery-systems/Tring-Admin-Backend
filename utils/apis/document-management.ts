@@ -11,12 +11,23 @@ export const listDocumentsByBotId = async (botId: string) => {
 };
 
 export const deployDocument = async (botId: string, documentId: string) => {
-  await $fetch(`/api/bots/${botId}/documents/${documentId}/deploy`);
-  toast.success("Document deployed successfully");
-  await navigateTo({
-    name: "bot-management-chat-bot-id",
-    params: { id: botId },
-  });
+  try {
+    await $fetch(`/api/bots/${botId}/documents/${documentId}/deploy`);
+    toast.success("Document deployed successfully");
+    await navigateTo({
+      name: "bot-management-chat-bot-id",
+      params: { id: botId },
+    });
+  } catch (error) { 
+     if (error?.statusCode === 400) {
+      await navigateTo({
+        name: "billing",
+        query: { type: 'chat' },
+      });
+    } else {
+      toast.error(error?.statusMessage || "Something went wrong");
+    }
+  }
 };
 
 export const viewDocument = async (botId: string, documentId: string) => {
