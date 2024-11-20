@@ -197,6 +197,7 @@
 
   const handleCreateEditIntent = handleSubmit(async (values) => {
     isLoading.value = true;
+   try {
     if (modalState.value.id) {
       if (fileRef.value) {
         const formData = new FormData();
@@ -262,6 +263,9 @@
           },
         });
       }
+      isLoading.value = false;
+    }
+    } catch (error) {
       isLoading.value = false;
     }
     return true;
