@@ -387,7 +387,13 @@ import { toast } from "vue-sonner";
         await singleDocumentDeploy(activeDocuments[0]);
       } catch (err) {
         isSubmitting.value = false;
-        toast.error("Failed to active the bot, try again");
+        if (err && err?.statusCode === 400) {
+          await navigateTo({
+            name: "billing",
+            query: { type: 'chat' },
+          });
+        }
+        // toast.error("Failed to active the bot, try again");
         return;
       }
     }

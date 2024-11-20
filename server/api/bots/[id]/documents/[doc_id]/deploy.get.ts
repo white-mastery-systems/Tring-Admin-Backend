@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
         eq(orgSubscriptionSchema.status, "active")
       )
   })
-  // console.log({ getOrgCurrentActivePlan })
+
   if(!getOrgCurrentActivePlan) {
     return sendError(
       event,
