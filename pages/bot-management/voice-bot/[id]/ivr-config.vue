@@ -64,7 +64,7 @@ watch(botData, (newValue) => {
 const onSubmit = handleSubmit(async (value: any) => {
   isLoading.value = true;
   try {
-    await updateLLMConfig(value, botDetails.id);
+    await updateLLMConfig(value, botDetails.id, "The IVR Configuration has been added successfully.");
     return navigateTo({
       name: "bot-management-voice-bot-id",
       params: { id: botDetails.id },

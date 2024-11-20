@@ -12,10 +12,9 @@
     <div class="shadow-md mx-5 rounded-lg ">
       <form @submit.prevent="handleLLMConfigSubmit">
         <div class="grid w-full grid-cols-2 gap-2">
-          <SelectField name="provider" label="Provider" placeholder="Select Provider" :options="provider" required />
-          <!-- <SelectField name="provider" label="Provider" placeholder="Select Provider" :options="provider" required /> -->
+          <!-- <SelectField name="provider" label="Provider" placeholder="Select Provider" :options="provider" required />
 
-          <SelectField name="model" label="Model" placeholder="Select Model" :options="models" required />
+          <SelectField name="model" label="Model" placeholder="Select Model" :options="models" required /> -->
 
           <SelectField name="tokens" label="Max Tokens" placeholder="Max Tokens"
             :options="tokens.map((token) => ({ label: token, value: token }))" :required="true" />
@@ -28,12 +27,15 @@
               " required placeholder="Enter speaking Rate" min="0" max="1" />
           </div>
         </div>
-
+        <div class="spcace-y-2 grid w-full grid-cols-2 gap-2">
+          <TextField name="top_k" label="Top K" required placeholder="Enter Top K" />
+          <TextField name="top_p" label="Top P" required placeholder="Enter Top P" />
+        </div>
         <div class="spcace-y-2 grid w-full grid-cols-1 gap-2">
           <!-- <TextField   label="Document Id" name="documentId" 
           placeholder="Document Id"  /> -->
           <!-- <SelectField name="role" label="Role" placeholder="Role is required" :options="roles" :required="true" /> -->
-          <TextField label="System Prompt" name="prompt" placeholder="Enter prompt" :isTextarea="true"  required/>
+          <TextField label="System Prompt" name="prompt" placeholder="Enter prompt" :isTextarea="true" required />
           <!-- <TextField label="Additional Instructions" name="instruction"
             placeholder="Include your company details along with the specifics of the service the bot will be providing"
             :isTextarea="true" />
@@ -54,6 +56,7 @@
 </template>
 <script setup lang="ts">
   import { llmConfigurationValidation } from "~/validationSchema/botManagement/LLmConfigurationValidation";
+  
   const router = useRouter();
   const route = useRoute("bot-management-voice-bot-id-llm-config");
   const isLoading = ref(false)
@@ -128,7 +131,7 @@
 
   const handleLLMConfigSubmit = handleSubmit(async (value: any) => {
     isLoading.value = true
-    await updateLLMConfig({ llmConfig: value }, botDetails.id);
+    await updateLLMConfig({ llmConfig: value }, botDetails.id, "The LLM configuration has been added successfully.");
     isLoading.value = false
     return navigateTo({
       name: "bot-management-voice-bot-id",

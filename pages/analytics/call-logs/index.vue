@@ -16,7 +16,7 @@
         (filters.page = '1'), (filters.limit = $event);
       }
         " @pagination="Pagination" :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount"
-        :data="callLogData" :columns="columns" :is-loading="isDataLoading" :page-size="20" :height="16"
+        :data="callLogData" :columns="columns" :is-loading="isDataLoading" :page-size="20" :height="20"
         height-unit="vh" />
       <!-- <DataTable :data="leads" :is-loading="false" :columns="columns" :page-size="8" :height="80" height-unit="vh" /> -->
     </Page>

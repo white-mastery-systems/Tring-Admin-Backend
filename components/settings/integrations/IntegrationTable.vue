@@ -3,7 +3,7 @@
       (page = '1'), (filters.limit = $event);
     }
     " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
-    :data="integrationsData" :page-size="8" :is-loading="false" :height="17" :heightUnit="'vh'" />
+    :data="integrationsData" :page-size="8" :is-loading="false" :height="20" :heightUnit="'vh'" />
   <CreateEditIntegrationModal :title="findTitleForIntegrationModal" :numberModalState="integrationModal"
    @success="() => {
     integrationModal.open = false

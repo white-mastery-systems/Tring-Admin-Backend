@@ -41,9 +41,9 @@
       isTextarea: false,
       disabled: false,
       class: "",
-      min:'',
-      max:'',
-      step:'',
+      min:0,
+      max:4,
+      step:0.05,
     },
   );
 
@@ -55,7 +55,7 @@
   );
 
   // Use useForm to initialize the form
-  const { handleSubmit, values, errors } = useForm({
+const { handleSubmit, setFieldValue, values, errors } = useForm({
     validationSchema: formSchema,
     initialValues: {
       duration: [props.name ||0], // Default value for the slider
@@ -67,21 +67,53 @@
 
   const debounce = ref(null);
   const emit = defineEmits(['update'])
+  watch(
+    () => props.name,
+    (newValue) => {
+      // Update the form value when prop changes
+      setFieldValue("duration", [newValue]);
+    },
+    { immediate: true } // Immediate update when the component is mounted
+  );
+
   watch(value, (newValue) => {
     clearTimeout(debounce.value);
     debounce.value = setTimeout(() => {
       emit("update", newValue[0]);
     }, 1000);
   });
+
+// Increment and decrement methods
+const increment = () => {
+  const currentValue = value.value?.[0] || props.min;
+  if (currentValue < props.max) {
+    const newValue = Math.round((currentValue + props.step) * 100) / 100;
+    setFieldValue("duration", [newValue]);
+  }
+};
+
+const decrement = () => {
+  const currentValue = value.value?.[0] || props.min; // Declare currentValue before usage
+  if (currentValue > props.min) { // Check boundary condition
+    const newValue = Math.round((currentValue - props.step) * 100) / 100; // Ensure proper rounding
+    setFieldValue("duration", [newValue]); // Update the slider value
+  }
+};
 </script>
 
 <template>
   <FormField :name="'duration'">
     <FormItem>
       <FormLabel>{{ props.label || "Duration" }}</FormLabel>
-      <Slider v-model="value" :min="0" :max="max"  :step="step"  />
+      <Slider v-model="value" :min="0" :max="max" :step="step" />
     </FormItem>
   </FormField>
-        <span style="text-align: end;">{{ value?.[0] }}</span>
+  <div class="flex gap-6 justify-end">
+    <div class="flex gap-1">
+      <UiButton type="button" color="primary" size="xs" @click="decrement" :disabled="value?.[0] <= min">-</UiButton>
+      <UiButton type="button" color="primary" size="xs" @click="increment" :disabled="value?.[0] >= max">+</UiButton>
+    </div>
+    <span style="text-align: end;">{{ value?.[0] }}</span>
+  </div>
 
 </template>

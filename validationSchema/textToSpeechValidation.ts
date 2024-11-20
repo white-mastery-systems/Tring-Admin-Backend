@@ -54,78 +54,235 @@
 //   path: [] // No specific path to reference for this general message
 // });
 
+// import { z } from 'zod';
+
+// export const textToSpeechValidation = z.object({
+//   provider: z.string().min(1, "Provider is required"),
+//   name: z.string().optional(),
+  
+//   pitch: z.union([
+//     z.number().min(0, "Pitch is required"),
+//     z.string().transform(Number),
+//   ]).optional(),
+  
+//   speakingRate: z.union([
+//     z.number().min(0, "Speaking Rate is required"),
+//     z.string().transform(Number),
+//   ]).optional(),
+//   speakingSpeed: z.union([
+//     z.number().min(0, "Speaking speed is required"),
+//     z.string().transform(Number),
+//   ]).optional(),
+//   volumeGrainDb: z.union([
+//     z.number().min(0, "Volume Gain dB is required"),
+//     z.string().transform(Number),
+//   ]).optional(),
+//   speaker: z.string().optional(),
+//   SampleRate: z.string({required_error: "Sample Rate is required"}).optional(),
+//   voice: z.string().optional().refine(value => !!value?.trim(), {
+//     message: 'Voice is required',
+//   }),
+  
+//   elevenlabsvoice: z.string().optional().refine(value => !!value?.trim(), {
+//     message: 'Voice is required',
+//   }),
+  
+//   model: z.string().optional().refine(value => !!value?.trim(), {
+//     message: 'Model is required',
+//   }),
+  
+//   stability: z.union([
+//     z.number().min(0, "Stability is required"),
+//     z.string().transform(Number),
+//   ]).optional(),
+  
+//   similarityBoost: z.union([
+//     z.number().min(0, "Similarity Boost is required"),
+//     z.string().transform(Number),
+//   ]).optional(),
+  
+//   style: z.union([
+//     z.number().min(0, "Style is required"),
+//     z.string().transform(Number),
+//   ]).optional(),
+  
+//   useSpeakerBoost: z.boolean().optional(),
+// }).refine(data => {
+//   switch (data.provider) {
+//     case 'google':
+//       return (
+//         data.pitch !== undefined && 
+//         data.speakingRate !== undefined && 
+//         data.volumeGrainDb !== undefined &&
+//         data.name?.trim() !== ''
+//       );
+//     case 'deepgram':
+//       return data.voice?.trim() !== '';
+//     case 'elevenlabs':
+//       return (
+//         data.stability !== undefined && 
+//         data.similarityBoost !== undefined && 
+//         data.style !== undefined && 
+//         data.useSpeakerBoost !== undefined && 
+//         data.elevenlabsvoice?.trim() !== ''
+//       );
+//       case 'tring':
+//       return (
+//         data.speakingSpeed !== undefined && 
+//         (data.speaker?.trim() !== '') && 
+//         (data.SampleRate?.trim() !== '') 
+//       );
+//     default:
+//       return true; // Validation passes for other providers
+//   }
+// }, {
+//   message: "Invalid input based on selected provider",
+//   path: [],
+// });
+
+
 import { z } from 'zod';
 
 export const textToSpeechValidation = z.object({
-  provider: z.string().min(1, "Provider is required"),
+  provider: z.string().min(1, { message: "Provider is required" }),
   name: z.string().optional(),
   
   pitch: z.union([
-    z.number().min(0, "Pitch is required"),
+    z.number().optional(),
     z.string().transform(Number),
   ]).optional(),
   
   speakingRate: z.union([
-    z.number().min(0, "Speaking Rate is required"),
+    z.number().optional(),
+    z.string().transform(Number),
+  ]).optional(),
+  
+  speakingSpeed: z.union([
+    z.number().optional(),
     z.string().transform(Number),
   ]).optional(),
   
   volumeGrainDb: z.union([
-    z.number().min(0, "Volume Gain dB is required"),
+    z.number().optional(),
     z.string().transform(Number),
   ]).optional(),
   
-  voice: z.string().optional().refine(value => !!value?.trim(), {
-    message: 'Voice is required',
-  }),
+  speaker: z.string().optional(),
+  sampleRate: z.number().optional(),
   
-  elevenlabsvoice: z.string().optional().refine(value => !!value?.trim(), {
-    message: 'Voice is required',
-  }),
+  voice: z.string().optional(),
   
-  model: z.string().optional().refine(value => !!value?.trim(), {
-    message: 'Model is required',
-  }),
+  elevenlabsvoice: z.string().optional(),
+  
+  model: z.string().optional(),
   
   stability: z.union([
-    z.number().min(0, "Stability is required"),
+    z.number().optional(),
     z.string().transform(Number),
   ]).optional(),
   
   similarityBoost: z.union([
-    z.number().min(0, "Similarity Boost is required"),
+    z.number().optional(),
     z.string().transform(Number),
   ]).optional(),
   
   style: z.union([
-    z.number().min(0, "Style is required"),
+    z.number().optional(),
     z.string().transform(Number),
   ]).optional(),
   
   useSpeakerBoost: z.boolean().optional(),
-}).refine(data => {
-  switch (data.provider) {
-    case 'google':
-      return (
-        data.pitch !== undefined && 
-        data.speakingRate !== undefined && 
-        data.volumeGrainDb !== undefined &&
-        data.name?.trim() !== ''
-      );
-    case 'deepgram':
-      return data.voice?.trim() !== '';
-    case 'elevenlabs':
-      return (
-        data.stability !== undefined && 
-        data.similarityBoost !== undefined && 
-        data.style !== undefined && 
-        data.useSpeakerBoost !== undefined && 
-        data.elevenlabsvoice?.trim() !== ''
-      );
-    default:
-      return true; // Validation passes for other providers
-  }
-}, {
-  message: "Invalid input based on selected provider",
-  path: [],
-});
+})
+  .superRefine((data, ctx) => {
+    // Validation for Google provider
+    if (data.provider === 'google') {
+      if (data.pitch === undefined) {
+        ctx.addIssue({
+          path: ['pitch'],
+          message: 'Pitch is required for Google.',
+        });
+      }
+      if (data.speakingRate === undefined) {
+        ctx.addIssue({
+          path: ['speakingRate'],
+          message: 'Speaking Rate is required for Google.',
+        });
+      }
+      if (data.volumeGrainDb === undefined) {
+        ctx.addIssue({
+          path: ['volumeGrainDb'],
+          message: 'Volume Gain dB is required for Google.',
+        });
+      }
+      if (!data.name?.trim()) {
+        ctx.addIssue({
+          path: ['name'],
+          message: 'Name is required for Google.',
+        });
+      }
+    }
+
+    // Validation for Deepgram provider
+    if (data.provider === 'deepgram' && !data.voice?.trim()) {
+      ctx.addIssue({
+        path: ['voice'],
+        message: 'Voice is required for Deepgram.',
+      });
+    }
+
+    // Validation for Eleven Labs provider
+    if (data.provider === 'elevenlabs') {
+      if (data.stability === undefined) {
+        ctx.addIssue({
+          path: ['stability'],
+          message: 'Stability is required for Eleven Labs.',
+        });
+      }
+      if (data.similarityBoost === undefined) {
+        ctx.addIssue({
+          path: ['similarityBoost'],
+          message: 'Similarity Boost is required for Eleven Labs.',
+        });
+      }
+      if (data.style === undefined) {
+        ctx.addIssue({
+          path: ['style'],
+          message: 'Style is required for Eleven Labs.',
+        });
+      }
+      if (data.useSpeakerBoost === undefined) {
+        ctx.addIssue({
+          path: ['useSpeakerBoost'],
+          message: 'Use Speaker Boost is required for Eleven Labs.',
+        });
+      }
+      if (!data.elevenlabsvoice?.trim()) {
+        ctx.addIssue({
+          path: ['elevenlabsvoice'],
+          message: 'Voice is required for Eleven Labs.',
+        });
+      }
+    }
+
+    // Validation for Tring provider
+    if (data.provider === 'tring') {
+      if (data.speakingSpeed === undefined) {
+        ctx.addIssue({
+          path: ['speakingSpeed'],
+          message: 'Speaking Speed is required for Tring.',
+        });
+      }
+      if (!data.speaker?.trim()) {
+        ctx.addIssue({
+          path: ['speaker'],
+          message: 'Speaker is required for Tring.',
+        });
+      }
+      if (!data.sampleRate === undefined) {
+        ctx.addIssue({
+          path: ['sampleRate'],
+          message: 'Sample Rate is required for Tring.',
+        });
+      }
+    }
+  });

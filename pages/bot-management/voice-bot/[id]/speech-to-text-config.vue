@@ -2,39 +2,57 @@
   <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else title="Speech To Text Configurations">
+  <Page v-else title="Speech To Text Configurations" :bread-crumbs="[
+    {
+      label: `${botDetails.name}`,
+      to: `/bot-management/voice-bot/${botDetails.id}`,
+    },
+    {
+      label: 'Speech To Text Configurations',
+      to: `/bot-management/voice-bot/${botDetails.id}/speech-to-text-config`,
+    },
+  ]">
     <div class="pb-2 sm:pb-0">
       <form @submit.prevent="createEditSpeecToTextConfig">
         <div class='grid grid-cols-2 gap-2 w-full'>
-          <SelectField name="language" :options="languageList" label="Language" placeholder="Select Language"
+          <!-- <SelectField name="language" :options="languageList" label="Language" placeholder="Select Language"
             helperText="Select your language.">
-          </SelectField>
+          </SelectField> -->
           <SelectField name="provider" :options="providers" label="provider" placeholder="Select provider"
             helperText="Select your provider.">
           </SelectField>
           <SelectField v-if="values.provider === 'google'" name="adaptation" :options="adaptations" label="adaptation"
             placeholder="Select adaptation" helperText="Select your adaptation.">
           </SelectField>
-          <SelectField v-if="values.provider === 'google' || values.provider === 'deepgram'" name="model"
-            :options="models" label="model" placeholder="Select model" helperText="Select your model.">
+          <SelectField v-if="values.provider === 'google'" name="googlemodel" :options="models" label="model"
+            placeholder="Select model" helperText="Select your model.">
           </SelectField>
-
-          <div class="flex flex-col gap-2 mt-5">
-            <RangeSlider :step="0.1" :name="parseFloat(values.amplificationFactor)" label="Amplification Factor"
+          <SelectField v-if="values.provider === 'deepgram'" name="model" :options="models" label="model"
+            placeholder="Select model" helperText="Select your model.">
+          </SelectField>
+          <div class="flex flex-col gap-2 mt-5" v-if="(values.provider === 'azure')">
+            <RangeSlider :step="0.05" :name="parseFloat(values.amplificationFactor)" label="Amplification Factor"
               @update="
               ($event) => {
                 setFieldValue('amplificationFactor', $event);
               }
             " required placeholder="Enter speaking Rate" min="0" max="4" />
           </div>
-
-
-
+          
           <TextField v-if="values.provider === 'deepgram'" label="Utterance End Ms" name="utteranceEndMs" required
-            placeholder="Utterance End Ms" disableCharacters />
-
+          placeholder="Utterance End Ms" disableCharacters />
+          
           <TextField type="number" v-if="values.provider === 'deepgram'" label="End pointing" name="endpointing"
-            required placeholder="Enter endpointing" disableCharacters />
+          required placeholder="Enter endpointing" disableCharacters />
+          <div v-if="(values.provider === 'deepgram')" class="flex flex-col gap-2 mt-5">
+            <RangeSlider :step="0.05" :name="parseFloat(values.assemblyaiamplificationFactor)"
+              label="Amplification Factor" @update="($event) => {
+              setFieldValue('assemblyaiamplificationFactor', $event);
+                }
+                " required placeholder="Enter speaking Rate" min="0" max="4" />
+          </div>
+          <TextField type="number" v-if="values.provider === 'assemblyai'" label="End pointing"
+            name="endutterancesilencethreshold" required placeholder="Enter endpointing" disableCharacters />
         </div>
         <div class="mb-2">
           <FieldArray v-if="values.provider === 'deepgram'" name="keywords" v-slot="{ fields, push, remove }">
@@ -43,6 +61,25 @@
                 <TextField :label="`keyword ${idx + 1}`" :id="`value_${idx}`" :name="`keywords[${idx}].value`"
                   placeholder="Enter keyword" />
                 <TextField :label="`boost value ${idx + 1}`" :id="`value_${idx}`" :name="`keywords[${idx}].boostValue`"
+                  placeholder="Enter Boost value" disableCharacters />
+                <UiButton variant="outline" type="button" @click="remove(idx)">
+                  <CloseIcon class="w-4 h-4" />
+                </UiButton>
+              </div>
+            </fieldset>
+            <div class='flex justify-end w-full'>
+              <UiButton class='mt-2' variant="outline" type="button" @click="push({ value: '' })">
+                Add keyword
+              </UiButton>
+            </div>
+          </FieldArray>
+          <!-- {{ values.provider }} -->
+          <FieldArray v-if="values.provider === 'assemblyai'" name="wordboost" v-slot="{ fields, push, remove }">
+            <fieldset v-for="(field, idx) in fields" :key="field.key">
+              <div class='flex items-end gap-2 mt-2'>
+                <TextField :label="`keyword ${idx + 1}`" :id="`value_${idx}`" :name="`wordboost[${idx}].value`"
+                  placeholder="Enter keyword" />
+                <TextField :label="`boost value ${idx + 1}`" :id="`value_${idx}`" :name="`wordboost[${idx}].boostValue`"
                   placeholder="Enter Boost value" disableCharacters />
                 <UiButton variant="outline" type="button" @click="remove(idx)">
                   <CloseIcon class="w-4 h-4" />
@@ -104,7 +141,7 @@
   import { FieldArray } from "vee-validate";
   import CloseIcon from "~/components/icons/CloseIcon.vue";
   import { speechToTextValidation } from "~/validationSchema/speechToTextValidation";
-  import { useLanguageList } from '~/composables/useLanguageList';
+  // import { useLanguageList } from '~/composables/useLanguageList';
 
   // const languages = [
   //   {
@@ -124,7 +161,7 @@
   //     value: "tamil",
   //   },
   // ];
-  const { languageList } = useLanguageList();
+  // const { languageList } = useLanguageList();
   const providers = ref([
     {
       label: "Google",
@@ -137,6 +174,10 @@
     {
       label: "Deepgram",
       value: "deepgram",
+    },
+    {
+      label: "Assembly Ai",
+      value: "assemblyai",
     },
   ]);
   const adaptations = [
@@ -203,36 +244,47 @@ const phraseArrayName = computed(() => {
 
   watch(botData, (newValue) => {
     resetForm();
-    setFieldValue("language", botData.value?.speechToTextConfig.language);
-    setFieldValue("provider", botData.value?.speechToTextConfig.default.provider);
-    const phraseList = botData.value?.speechToTextConfig.default.azure?.phrase_list || [];
+    // setFieldValue("language", botData.value?.speechToTextConfig.language);
+    setFieldValue("provider", botData.value?.speechToTextConfig.provider);
+    const phraseList = botData.value?.speechToTextConfig.azure?.phrase_list || [];
     const formattedPhraseList = phraseList.map((item: any) => ({ value: item }));
     setFieldValue("phraseLists", formattedPhraseList)
-    const phraseSetList = botData.value?.speechToTextConfig.default.google?.phrase_sets || [];
+    const phraseSetList = botData.value?.speechToTextConfig.google?.phrase_sets || [];
     const formattedPhrasSeteList = phraseSetList?.map((item: any) => ({ value: item }));
     setFieldValue("phraseSets", formattedPhrasSeteList)
     setFieldValue(
-      "amplificationFactor",
-      botData.value?.speechToTextConfig.default[botData.value?.speechToTextConfig.default.provider].amplification_factor,
+      "assemblyaiamplificationFactor",
+      botData.value?.speechToTextConfig.deepgram.amplification_factor,
     );
-      setFieldValue("endpointing", botData.value?.speechToTextConfig.default.deepgram.live_options.endpointing);
-      setFieldValue("adaptation", botData.value?.speechToTextConfig.default?.google?.adaptation)
+    setFieldValue(
+      "amplificationFactor",
+      botData.value?.speechToTextConfig.azure.amplification_factor,
+    );
+    setFieldValue("endpointing", botData.value?.speechToTextConfig.deepgram.endpointing);
+    setFieldValue("adaptation", botData.value?.speechToTextConfig?.google?.adaptation)
+    setFieldValue("endutterancesilencethreshold", botData.value?.speechToTextConfig.assemblyai?.end_utterance_silence_threshold)
+    const word_boost_key = botData.value?.speechToTextConfig.assemblyai?.word_boost || [];
+    const formatted_boost_key = word_boost_key.map((keyword: any) => {
+      const [value, boostValue] = keyword.split(":");
+      return { value, boostValue };
+    })
+    setFieldValue("wordboost", formatted_boost_key)
       setFieldValue(
         "utteranceEndMs",
-        botData.value?.speechToTextConfig.default.deepgram.live_options.utterance_end_ms,
+        botData.value?.speechToTextConfig.deepgram.utterance_end_ms,
       );
       if (values.provider === "deepgram") {
         setFieldValue(
           "model",
-          botData.value?.speechToTextConfig.default.deepgram.live_options.model
+          botData.value?.speechToTextConfig.deepgram.model
         );
       } else if (values.provider === "google") {
         setFieldValue(
-          "model",
-          botData.value?.speechToTextConfig.default.google.model
+          "googlemodel",
+          botData.value?.speechToTextConfig.google.model
         );
       }
-      const keywords = botData.value?.speechToTextConfig.default.deepgram.live_options?.keywords || [];
+      const keywords = botData.value?.speechToTextConfig.deepgram?.keywords || [];
       const formattedKeywords = keywords.map(keyword => {
         const [value, boostValue] = keyword.split(":");
         return {value, boostValue };
@@ -243,7 +295,7 @@ const phraseArrayName = computed(() => {
       );
   });
   watch(errors, (newValues) => {
-    console.log(newValues, values);
+    console.log(newValues);
     if (newValues) {
       console.log("ERRORS", newValues);
     }
@@ -251,36 +303,51 @@ const phraseArrayName = computed(() => {
 watch(
   () => toRaw(values.provider),
   (newValue) => {
-    setFieldValue("language", botData.value?.speechToTextConfig.language);
-    // setFieldValue("provider", botData.value?.speechToTextConfig.default.provider);
-    const phraseList = botData.value?.speechToTextConfig.default.azure?.phrase_list || [];
+    // setFieldValue("language", botData.value?.speechToTextConfig.language);
+    // setFieldValue("provider", botData.value?.speechToTextConfig.provider);
+    const phraseList = botData.value?.speechToTextConfig.azure?.phrase_list || [];
     const formattedPhraseList = phraseList.map((item: any) => ({ value: item }));
     setFieldValue("phraseLists", formattedPhraseList)
-    const phraseSetList = botData.value?.speechToTextConfig.default.google?.phrase_sets || [];
+    const phraseSetList = botData.value?.speechToTextConfig.google?.phrase_sets || [];
     const formattedPhrasSeteList = phraseSetList?.map((item: any) => ({ value: item }));
     setFieldValue("phraseSets", formattedPhrasSeteList)
+    // setFieldValue(
+    //   "amplificationFactor",
+    //   botData.value?.speechToTextConfig[botData.value?.speechToTextConfig.provider].amplification_factor,
+    // );
+    setFieldValue(
+      "assemblyaiamplificationFactor",
+      botData.value?.speechToTextConfig.deepgram.amplification_factor,
+    );
     setFieldValue(
       "amplificationFactor",
-      botData.value?.speechToTextConfig.default[botData.value?.speechToTextConfig.default.provider].amplification_factor,
+      botData.value?.speechToTextConfig.azure.amplification_factor,
     );
-    setFieldValue("endpointing", botData.value?.speechToTextConfig.default.deepgram.live_options.endpointing);
-    setFieldValue("adaptation", botData.value?.speechToTextConfig.default.google?.adaptation)
+    setFieldValue("endpointing", botData.value?.speechToTextConfig.deepgram.endpointing);
+    setFieldValue("adaptation", botData.value?.speechToTextConfig.google?.adaptation)
+    setFieldValue("endutterancesilencethreshold", botData.value?.speechToTextConfig.assemblyai?.end_utterance_silence_threshold)
+    const word_boost_key = botData.value?.speechToTextConfig.assemblyai?.word_boost || [];
+    const formatted_boost_key = word_boost_key.map((keyword: any) => {
+      const [value, boostValue] = keyword.split(":");
+      return { value, boostValue };
+    })
+    setFieldValue("wordboost", formatted_boost_key)
       setFieldValue(
         "utteranceEndMs",
-        botData.value?.speechToTextConfig.default.deepgram.live_options.utterance_end_ms,
+        botData.value?.speechToTextConfig.deepgram.utterance_end_ms,
       );
       if (values.provider === "deepgram") {
         setFieldValue(
           "model",
-          botData.value?.speechToTextConfig.default.deepgram.live_options.model
+          botData.value?.speechToTextConfig.deepgram.model
         );
       } else if (values.provider === "google") {
         setFieldValue(
-          "model",
-          botData.value?.speechToTextConfig.default.google.model
+          "googlemodel",
+          botData.value?.speechToTextConfig.google.model
         );
       }
-      const keywords = botData.value?.speechToTextConfig.default.deepgram.live_options?.keywords || [];
+      const keywords = botData.value?.speechToTextConfig.deepgram?.keywords || [];
     console.log(keywords, "keywords -sdd")
       const formattedKeywords = keywords.map((keyword: any) => {
         const [value, boostValue] = keyword.split(":");
@@ -294,207 +361,99 @@ watch(
     }
 );
 
-  const createEditSpeecToTextConfig = handleSubmit(async (value) => {
-    isLoading.value = true;
-      // const updatedConfig = {
-      //   language: value.language || botData.value.speechToTextConfig.language,
-      //   provider: value.provider || botData.value.speechToTextConfig.provider,
-      //   google: {
-      //     ...botData.value.speechToTextConfig.google,
-      //     adaptation: value.adaptation || botData.value.speechToTextConfig.google?.adaptation,
-      //     model: value.model || botData.value.speechToTextConfig.google?.model,
-      //     phrase_sets: value.phraseSets.length ? value.phraseSets?.map((item: any) => item.value) || [] : botData.value.speechToTextConfig.google?.phrase_sets,
-      //     amplification_factor: value.amplificationFactor || botData.value.speechToTextConfig.google.amplification_factor
-      //   },
-      //   azure: {
-      //     ...botData.value.speechToTextConfig.azure,
-      //     phrase_list: value.phraseSets.length ? value.phraseSets?.map((item: any) => item.value) : botData.value.speechToTextConfig.azure?.phrase_list,
-      //     amplification_factor: value.amplificationFactor || botData.value.speechToTextConfig.azure?.amplification_factor
-      //   },
-      //   deepgram: {
-      //     ...botData.value.speechToTextConfig.deepgram,
-      //     amplification_factor: value.amplificationFactor || botData.value.speechToTextConfig.deepgram?.amplification_factor,
-      //     live_options: {
-      //       ...botData.value.speechToTextConfig.deepgram.live_options,
-      //       model: value.model || botData.value.speechToTextConfig.deepgram.live_options?.model,
-      //       endpointing: value.endpointing || botData.value.speechToTextConfig.deepgram.live_options?.endpointing,
-      //       utterance_end_ms: value.utteranceEndMs !== undefined ? String(value.utteranceEndMs) : botData.value.speechToTextConfig.deepgram.live_options?.utterance_end_ms,
-      //       keywords: value.keywords ? value.keywords?.map(keywordObj => {
-      //         return `${keywordObj.value}:${keywordObj.boostValue}`;
-      //       }) : botData.value.speechToTextConfig.deepgram.live_options?.keywords || []
-      //     }
-      //   }
-      // };
-    // const updatedConfig = {
-    //   language: value.language || botData.value.speechToTextConfig.language,
-    //   provider: value.provider || botData.value.speechToTextConfig.provider,
+const inputChanges = ($event: any) => {
+  const numericValue = Number($event.target.value)
+  // console.log(numericValue, "numericValue --- numericValue")
+  setFieldValue('assemblyaiamplificationFactor', numericValue)
+}
 
-    //   // Google config
-    //   google: {
-    //     adaptation: value.adaptation !== undefined
-    //       ? value.adaptation
-    //       : botData.value.speechToTextConfig.google?.adaptation || false,
-    //     model: value.model || botData.value.speechToTextConfig.google?.model || '',
-    //     phrase_sets: value.phraseSets?.length
-    //       ? value.phraseSets.map((item: any) => item.value)
-    //       : botData.value.speechToTextConfig.google?.phrase_sets || [],
-    //     amplification_factor: value.amplificationFactor !== undefined
-    //       ? value.amplificationFactor
-    //       : botData.value.speechToTextConfig.google?.amplification_factor || 1,
-    //     encoding: botData.value.speechToTextConfig.google?.encoding || 'MULAW',
-    //     noise_gate: botData.value.speechToTextConfig.google?.noise_gate || 0,
-    //     sample_rate_hertz: botData.value.speechToTextConfig.google?.sample_rate_hertz || 8000,
-    //     audio_channel_count: botData.value.speechToTextConfig.google?.audio_channel_count || 1,
-    //     response_timeout: botData.value.speechToTextConfig.google?.response_timeout || 5,
-    //   },
+const createEditSpeecToTextConfig = handleSubmit(async (value) => {
+  isLoading.value = true;
+  console.log(value, "value -- value -- value")
+  const getProvider = Object.keys(botData.value?.speechToTextConfig || {});
 
-    //   // Azure config
-    //   azure: {
-    //     phrase_list: value.phraseSets?.length
-    //       ? value.phraseSets.map((item: any) => item.value)
-    //       : botData.value.speechToTextConfig.azure?.phrase_list || [],
-    //     amplification_factor: value.amplificationFactor !== undefined
-    //       ? value.amplificationFactor
-    //       : botData.value.speechToTextConfig.azure?.amplification_factor || 1,
-    //     encoding: botData.value.speechToTextConfig.azure?.encoding || 'MULAW',
-    //     noise_gate: botData.value.speechToTextConfig.azure?.noise_gate || 0,
-    //     sample_rate_hertz: botData.value.speechToTextConfig.azure?.sample_rate_hertz || 8000,
-    //     audio_channel_count: botData.value.speechToTextConfig.azure?.audio_channel_count || 1,
-    //   },
+  const updatedConfig: any = {
+    // language: value.language || botData.value?.speechToTextConfig.language || "en-IN",
+    provider: value.provider || botData.value?.speechToTextConfig.provider || 'deepgram',
+  };
 
-    //   // Deepgram config
-    //   deepgram: {
-    //     amplification_factor: value.amplificationFactor !== undefined
-    //       ? value.amplificationFactor
-    //       : botData.value.speechToTextConfig.deepgram?.amplification_factor || 1,
-    //     addons: botData.value.speechToTextConfig.deepgram?.addons || { dictation: 'false', measurements: 'false' },
-    //     version: botData.value.speechToTextConfig.deepgram?.version || '1',
-    //     encoding: botData.value.speechToTextConfig.deepgram?.encoding || 'MULAW',
-    //     noise_gate: botData.value.speechToTextConfig.deepgram?.noise_gate || 0,
-    //     live_options: {
-    //       model: value.model || botData.value.speechToTextConfig.deepgram?.live_options?.model || '',
-    //       endpointing: value.endpointing !== undefined
-    //         ? value.endpointing
-    //         : botData.value.speechToTextConfig.deepgram?.live_options?.endpointing || 0,
-    //       utterance_end_ms: value.utteranceEndMs !== undefined
-    //         ? String(value.utteranceEndMs)
-    //         : botData.value.speechToTextConfig.deepgram?.live_options?.utterance_end_ms || '0',
-    //       keywords: value.keywords?.length
-    //         ? value.keywords.map(keywordObj => `${keywordObj.value}:${keywordObj.boostValue}`)
-    //         : botData.value.speechToTextConfig.deepgram?.live_options?.keywords || [],
-    //       diarize: botData.value.speechToTextConfig.deepgram?.live_options?.diarize || false,
-    //       sample_rate: botData.value.speechToTextConfig.deepgram?.live_options?.sample_rate || 8000,
-    //       channels: botData.value.speechToTextConfig.deepgram?.live_options?.channels || 1,
-    //       no_delay: botData.value.speechToTextConfig.deepgram?.live_options?.no_delay || false,
-    //       numerals: botData.value.speechToTextConfig.deepgram?.live_options?.numerals || false,
-    //       punctuate: botData.value.speechToTextConfig.deepgram?.live_options?.punctuate || false,
-    //     }
-    //   }
-    // };
-    console.log(value, "value -- value")
-    const getProvider = Object.keys(botData.value?.speechToTextConfig || {})
-    console.log(botData.value?.speechToTextConfig[getProvider[1]], "botData.value?.speechToTextConfig -- botData.value?.speechToTextConfig")
+  getProvider.forEach((provider) => {
+    if (provider !== "provider") {
+      updatedConfig[provider] = {};
 
-    // console.log(const getProvider = Object.keys(botData.value?.speechToTextConfig[provider] || {}))
-    const updatedConfig:any = {
-      language: value.language ? value.language : botData.value?.speechToTextConfig.language || "en-IN",
-    }
-    getProvider.forEach((provider) => {
-      if (provider !== "language") {
-        updatedConfig[provider] = {
-          provider: value.provider || botData.value?.speechToTextConfig[provider].provider || 'deepgram', // Default provider
-    
-          // Google config
-          google: {
-            adaptation: value.adaptation !== undefined
-              ? value.adaptation
-              : botData.value?.speechToTextConfig[provider].google?.adaptation || true,
-            // model: value.model || botData.value?.speechToTextConfig[provider].google?.model || 'short',
-            model: (value.provider === 'google') ? (value.model || botData.value?.speechToTextConfig[provider].google?.model || 'short') : botData.value?.speechToTextConfig[provider].google?.model,
-            phrase_sets: value.phraseSets?.length
-              ? value.phraseSets.map((item: any) => item.value)
-              : botData.value?.speechToTextConfig[provider].google?.phrase_sets || [
-                ''
-              ],
-            amplification_factor: value.amplificationFactor !== undefined
-              ? value.amplificationFactor
-              : botData.value?.speechToTextConfig[provider].google?.amplification_factor || 3,
-            encoding: botData.value?.speechToTextConfig[provider].google?.encoding || 'MULAW',
-            noise_gate: botData.value?.speechToTextConfig[provider].google?.noise_gate || 0,
-            sample_rate_hertz: botData.value?.speechToTextConfig[provider].google?.sample_rate_hertz || 8000,
-            audio_channel_count: botData.value?.speechToTextConfig[provider].google?.audio_channel_count || 1,
-            response_timeout: botData.value?.speechToTextConfig[provider].google?.response_timeout || 1,
-            recognizer: botData.value?.speechToTextConfig[provider].google?.recognizer || 'projects/tringai-project1/locations/global/recognizers/english-in-short',
-            intermediate_pause: botData.value?.speechToTextConfig[provider].google?.intermediate_pause || 1
-          },
-    
-          // Azure config
-          azure: {
-            phrase_list: value.phraseLists?.length
-              ? value.phraseLists.map((item: any) => item.value)
-              : botData.value?.speechToTextConfig[provider].azure?.phrase_list || [],
-            amplification_factor: value.amplificationFactor !== undefined
-              ? value.amplificationFactor
-              : botData.value?.speechToTextConfig[provider].azure?.amplification_factor || 3,
-            encoding: botData.value?.speechToTextConfig[provider].azure?.encoding || 'MULAW',
-            noise_gate: botData.value?.speechToTextConfig[provider].azure?.noise_gate || 0,
-            sample_rate_hertz: botData.value?.speechToTextConfig[provider].azure?.sample_rate_hertz || 8000,
-            audio_channel_count: botData.value?.speechToTextConfig[provider].azure?.audio_channel_count || 1,
-          },
-    
-          // Deepgram config
-          deepgram: {
-            amplification_factor: value.amplificationFactor !== undefined
-              ? value.amplificationFactor
-              : botData.value?.speechToTextConfig[provider].deepgram?.amplification_factor || 2,
-            addons: botData.value?.speechToTextConfig[provider].deepgram?.addons || { dictation: 'true', measurements: 'true' },
-            version: botData.value?.speechToTextConfig[provider].deepgram?.version || '1',
-            encoding: botData.value?.speechToTextConfig[provider].deepgram?.encoding || 'MULAW',
-            noise_gate: botData.value?.speechToTextConfig[provider].deepgram?.noise_gate || 0,
-            live_options: {
-              model: (value.provider === 'deepgram') ? (value.model || botData.value.speechToTextConfig[provider].deepgram?.live_options?.model || 'nova-2') : botData.value.speechToTextConfig[provider].deepgram?.live_options?.model,
-              endpointing: value.endpointing !== undefined
-                ? value.endpointing
-                : botData.value?.speechToTextConfig[provider].deepgram?.live_options?.endpointing || 50,
-              utterance_end_ms: value.utteranceEndMs !== undefined
-                ? String(value.utteranceEndMs)
-                : botData.value?.speechToTextConfig[provider].deepgram?.live_options?.utterance_end_ms || '1000',
-              keywords: value.keywords?.length
-                ? value.keywords.map(keywordObj => `${keywordObj.value}:${keywordObj.boostValue}`)
-                : botData.value?.speechToTextConfig[provider].deepgram?.live_options?.keywords || [
-                  'double room:1', 'single room:1', 'chauffer:1', 'transport:1', '5000:1', '10000:1', 'amenities:1',
-                  'single bedroom:1', 'double bedroom:1', 'pricing:1', 'features:1', 'availability:1'
-                ],
-              diarize: botData.value?.speechToTextConfig[provider].deepgram?.live_options?.diarize || false,
-              sample_rate: botData.value?.speechToTextConfig[provider].deepgram?.live_options?.sample_rate || 8000,
-              channels: botData.value?.speechToTextConfig[provider].deepgram?.live_options?.channels || 1,
-              no_delay: botData.value?.speechToTextConfig[provider].deepgram?.live_options?.no_delay || true,
-              numerals: botData.value?.speechToTextConfig[provider].deepgram?.live_options?.numerals || true,
-              punctuate: botData.value?.speechToTextConfig[provider].deepgram?.live_options?.punctuate || true,
-              interim_results: botData.value?.speechToTextConfig[provider].deepgram?.live_options?.interim_results || true,
-              filler_words: botData.value?.speechToTextConfig[provider].deepgram?.live_options?.filler_words || false,
-              profanity_filter: botData.value?.speechToTextConfig[provider].deepgram?.live_options?.profanity_filter || true,
-              vad_events: botData.value?.speechToTextConfig[provider].deepgram?.live_options?.vad_events || true,
-              smart_format: botData.value?.speechToTextConfig[provider].deepgram?.live_options?.smart_format || true
-            }
-          }
+      // Google config
+      if (provider === "google") {
+        updatedConfig.google = {
+          model: value.googlemodel || botData.value?.speechToTextConfig.google?.model || 'short',
+          adaptation: value.adaptation !== undefined
+            ? value.adaptation
+            : botData.value?.speechToTextConfig.google?.adaptation || true,
+          phrase_sets: value.phraseSets?.length
+            ? value.phraseSets.map((item: any) => item.value)
+            : botData.value?.speechToTextConfig.google?.phrase_sets || [],
         };
       }
-    })
-    console.log(updatedConfig, "updatedConfig ----- updatedConfig")
-    // await $fetch(`/api/voicebots/${route.params.id}`, {
-    //   method: "PUT",
-    //   body: {
-    //     speechToTextConfig: updatedConfig,
-    //   },
-    // });
-    toast.success("Updated successfully");
-    return navigateTo({
-      name: "bot-management-voice-bot-id",
-      params: { id: route.params.id },
-    });
-    isLoading.value = false;
+
+      // Azure config
+      if (provider === "azure") {
+        updatedConfig.azure = {
+          phrase_list: value.phraseLists?.length
+            ? value.phraseLists.map((item: any) => item.value)
+            : botData.value?.speechToTextConfig.azure?.phrase_list || [],
+          amplification_factor: value.amplificationFactor !== undefined
+            ? value.amplificationFactor
+            : botData.value?.speechToTextConfig.azure?.amplification_factor || 3,
+        };
+      }
+
+      // Deepgram config
+      if (provider === "deepgram") {
+        updatedConfig.deepgram = {
+          model: value.model || botData.value?.speechToTextConfig.deepgram?.model || 'nova-2',
+          keywords: value.keywords?.length
+            ? value.keywords.map((keywordObj: any) => `${keywordObj.value}:${keywordObj.boostValue}`)
+            : botData.value?.speechToTextConfig.deepgram?.keywords || [],
+          endpointing: value.endpointing !== undefined
+            ? value.endpointing
+            : botData.value?.speechToTextConfig.deepgram?.endpointing || 250,
+          utterance_end_ms: value.utteranceEndMs !== undefined
+            ? String(value.utteranceEndMs)
+            : botData.value?.speechToTextConfig.deepgram?.utterance_end_ms || '1000',
+          amplification_factor: value.assemblyaiamplificationFactor !== undefined
+            ? value.assemblyaiamplificationFactor
+            : botData.value?.speechToTextConfig.deepgram?.amplification_factor || 2,
+        };
+      }
+      // AssemblyAI config
+      if (provider === "assemblyai") {
+        updatedConfig.assemblyai = {
+          word_boost: value.wordboost?.length
+            ? value.wordboost.map((keywordObj: any) => `${keywordObj.value}:${keywordObj.boostValue}`)
+            : botData.value?.speechToTextConfig.assemblyai?.word_boost || [],
+          end_utterance_silence_threshold: value.endUtteranceSilenceThreshold !== undefined
+            ? value.endUtteranceSilenceThreshold
+            : botData.value?.speechToTextConfig.assemblyai?.end_utterance_silence_threshold || 300,
+        };
+      }
+    }
   });
+
+  // Uncomment to save changes
+  await $fetch(`/api/voicebots/${route.params.id}`, {
+    method: "PUT",
+    body: {
+      speechToTextConfig: updatedConfig,
+    },
+  });
+
+  toast.success("Updated successfully");
+  navigateTo({
+    name: "bot-management-voice-bot-id",
+    params: { id: route.params.id },
+  });
+  isLoading.value = false;
+});
+
 
 
 // const createEditSpeecToTextConfig = handleSubmit(async (value) => {
@@ -532,17 +491,17 @@ watch(
 //     deepgram: {
 //       ...botData.value.speechToTextConfig.deepgram,
 //       amplification_factor: value.amplificationFactor || botData.value.speechToTextConfig.deepgram.amplification_factor,
-//       live_options: {
-//         ...botData.value.speechToTextConfig.deepgram.live_options,
-//         model: value.model || botData.value.speechToTextConfig.deepgram.live_options.model,
-//         endpointing: value.endpointing || botData.value.speechToTextConfig.deepgram.live_options.endpointing,
+//      : {
+//         ...botData.value.speechToTextConfig.deepgram,
+//         model: value.model || botData.value.speechToTextConfig.deepgram.model,
+//         endpointing: value.endpointing || botData.value.speechToTextConfig.deepgram.endpointing,
 //         utterance_end_ms: value.utteranceEndMs !== undefined
 //           ? String(value.utteranceEndMs)
-//           : botData.value.speechToTextConfig.deepgram.live_options.utterance_end_ms,
+//           : botData.value.speechToTextConfig.deepgram.utterance_end_ms,
 //         // Safely map keywords
 //         keywords: keywords.length > 0
 //           ? keywords.map(keywordObj => `${keywordObj.value}:${keywordObj.boostValue}`)
-//           : botData.value.speechToTextConfig.deepgram.live_options.keywords || []
+//           : botData.value.speechToTextConfig.deepgram.keywords || []
 //       }
 //     }
 //   };
@@ -577,7 +536,7 @@ watch(values, (newValues) => {
       { label: "Short", value: "short" },
     ]));
   } else {
-    // Default or other providers if needed
+    // or other providers if needed
     models.value = [];
   }
 });
