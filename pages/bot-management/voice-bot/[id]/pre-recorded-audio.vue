@@ -29,7 +29,7 @@
           <div v-if="values.intent === 'welcome'" class="w-full gap-3 pt-2">
             <div style="align-self: center">Welcome Audio</div>
             <div>
-              <imageField name="welcomeAudio" @change="($event) => {
+              <imageField :isLoading="isLoading" name="welcomeAudio" @change="($event) => {
                 uploadFile($event, 'welcome', 'welcomeFile');
               }
                 " :fileName="values.welcomeAudio" :showFilename="false" :multiple="true" :accept="'audio/*'" />
@@ -57,7 +57,7 @@
           <div v-if="values.intent === 'conclude'" class="w-full gap-3 pt-2">
             <div style="align-self: center">Conclude Audio</div>
             <div>
-              <imageField name="concludeAudio" @change="($event) => {
+              <imageField :isLoading="isLoading" name="concludeAudio" @change="($event) => {
                 uploadFile($event, 'conclude', 'concludeFile');
               }
                 " :fileName="values.welcomeAudio" :showFilename="false" :multiple="true" :accept="'audio/*'" />
@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { useLanguageList } from '~/composables/useLanguageList';
+import { useLanguageList } from '~/composables/voiceBotLanguageList';
 const config = useRuntimeConfig()
 definePageMeta({
   middleware: "admin-only",
@@ -479,27 +479,32 @@ const audioDelete = async (data: any) => {
   }
 };
 
-// const getLastFileNumber = (fileNames: string) => {
-//   return fileNames === "welcomeFile"
-//     ? formattedUploadAudioFile.value?.welcome.length
-//     : formattedUploadAudioFile.value?.conclude.length;
-// };
-
-const getLastFileNumber = (fileNames: string) => {
+const getLastFileNumber = (fileNames: string, maxNumber = 10000): number => {
   const files = fileNames === "welcomeFile"
     ? welcomeFilesData.value
     : concludeFilesData.value;
 
-  if (files.length === 0) return 0;
+  // Extract existing numbers from file names
+  const usedNumbers = new Set(
+    files.map((file: any) => {
+      const match = file.name.match(/\d+/);
+      return match ? parseInt(match[0], 10) : 0;
+    })
+  );
 
-  // Extract the numbers from file names
-  const numbers = files.map((file: any) => {
-    const match = file.name.match(/\d+/);
-    return match ? parseInt(match[0], 10) : 0;
-  });
+  let randomNumber;
+  let attempts = 0;
 
-  return Math.max(...numbers, 0);
+  // Generate a random number not already in use
+  do {
+    randomNumber = Math.floor(Math.random() * maxNumber) + 1; // Random number between 1 and maxNumber
+    attempts++;
+    if (attempts > maxNumber) throw new Error("Failed to generate a unique number");
+  } while (usedNumbers.has(randomNumber));
+
+  return randomNumber;
 };
+
 
 const onSubmit = handleSubmit(async (value: any) => {
   // updateLLMConfig()
@@ -525,7 +530,7 @@ const onSubmit = handleSubmit(async (value: any) => {
   }
   // console.log(payload, "payload");
   const toster = "Audio files updated successfully";
-  await updateLLMConfig(payload, botDetails.id, toster);
+  await updateLLMConfig(payload, botDetails.id, "Pre-recorded audio files updated successfully.");
   isLoading.value = false;
 
   return navigateTo({

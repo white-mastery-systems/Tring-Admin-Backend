@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { useLanguageList } from '~/composables/useLanguageList';
+import { useLanguageList } from '~/composables/voiceBotLanguageList';
  const config=useRuntimeConfig()
   definePageMeta({
     middleware: "admin-only",
@@ -123,7 +123,7 @@ Object.entries(botDetailsList.botDetails ?? {}).forEach(([key, value]: any) => {
       botDetails: value,
     };
 
-    await updateLLMConfig(payload, botDetailsList.id);
+    await updateLLMConfig(payload, botDetailsList.id, "Bot information added successfully.");
     isLoading.value = false;
 
     return navigateTo({

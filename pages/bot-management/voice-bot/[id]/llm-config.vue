@@ -131,7 +131,7 @@
 
   const handleLLMConfigSubmit = handleSubmit(async (value: any) => {
     isLoading.value = true
-    await updateLLMConfig({ llmConfig: value }, botDetails.id);
+    await updateLLMConfig({ llmConfig: value }, botDetails.id, "The LLM configuration has been added successfully.");
     isLoading.value = false
     return navigateTo({
       name: "bot-management-voice-bot-id",

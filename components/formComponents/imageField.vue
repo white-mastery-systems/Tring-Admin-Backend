@@ -2,7 +2,12 @@
   <div>
     <label
       class="dark:hover:bg-bray-800 flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-      Upload file
+      <div v-if="isLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
+        <Icon name="svg-spinners:90-ring-with-bg" class="h-8 w-8" />
+      </div>
+      <span v-else>
+        Upload file
+      </span>
       <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept" />
     </label>
     <span class="font-medium text-xs text-red-500" v-if="errorMessage">
@@ -30,6 +35,7 @@
       accept?: string;
       multiple?: boolean;
       showFilename?: boolean;
+      isLoading: boolean;
     }>(),
     {
       label: "",
@@ -41,7 +47,8 @@
       validation: true,
       accept: "audio/wav",
       multiple: false,
-      showFilename:true
+      showFilename:true,
+      isLoading: false,
     },
   );
 

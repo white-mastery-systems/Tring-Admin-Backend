@@ -138,7 +138,7 @@ const onSubmit = handleSubmit(async (value: any) => {
   const payload = {
     clientConfig: value
   }
-  await updateLLMConfig(payload, botDetailsList.id);
+  await updateLLMConfig(payload, botDetailsList.id, "LLM Caching Updated Successfully.");
   isLoading.value = false;
 
   return navigateTo({
