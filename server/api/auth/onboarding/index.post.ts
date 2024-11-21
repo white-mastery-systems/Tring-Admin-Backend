@@ -1,3 +1,4 @@
+import { createOrgSubscription } from "~/server/utils/db/organization";
 import { createZohoCustomer } from "~/server/utils/zoho/customer";
 
 const db = useDrizzle()
@@ -48,6 +49,13 @@ export default defineEventHandler(async (event) => {
     organizationId: org.id,
     isDefault: true
   })
+
+  await createOrgSubscription(
+    [
+     { organizationId: org.id, botType: "chat", planCode: "chat_free", status: "active" },
+     { organizationId: org.id, botType: "voice", planCode: "voice_free", status: "active" }
+    ]
+  )
 
   const zohoData: any = await db.query.adminConfigurationSchema.findFirst({
     where: eq(adminConfigurationSchema.id, 1),

@@ -78,7 +78,7 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-      const billingPromise = await db
+      const billingPromise = db
         .insert(paymentSchema)
         .values(apiResponseData)
         .returning();
@@ -91,22 +91,15 @@ export default defineEventHandler(async (event) => {
         })
         .where(eq(organizationSchema.id, orgId!));
 
-      const isExistSubscription = await db.query.orgSubscriptionSchema.findFirst({
-        where: (eq(orgSubscriptionSchema.organizationId, orgId))
-      })
-
-      if(isExistSubscription) {
-        await db
+      const orgSubscriptionPromise = db
           .update(orgSubscriptionSchema)
           .set(orgSubscription)
-          .where(eq(orgSubscriptionSchema.organizationId, orgId))
-      } else {
-        await db
-         .insert(orgSubscriptionSchema)
-         .values(orgSubscription)
-      }
+          .where(and(
+            eq(orgSubscriptionSchema.organizationId, orgId),
+            eq(orgSubscriptionSchema.botType, "chat")
+          ))
       
-      const userPromise = await db
+      const userPromise = db
         .update(authUserSchema)
         .set({
           customerId: apiResponseData.customerId,
@@ -116,6 +109,7 @@ export default defineEventHandler(async (event) => {
       await Promise.allSettled([
         billingPromise,
         organizationPromise,
+        orgSubscriptionPromise,
         userPromise,
       ]);
       return { status: "Payment Successful" };

@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
       type: "addon",
     };
     try {
-      const billingPromise = await db
+      const billingPromise = db
         .insert(paymentSchema)
         .values(apiResponseData)
         .returning();
@@ -68,17 +68,19 @@ export default defineEventHandler(async (event) => {
       )
       const walletSessions = orgAddons.reduce((acc, i) => {
         const addon: any = pricingInformation?.addons?.find((j: any) => i.addonCode === j.name);
-        console.log({addon})
         return addon ? acc + addon?.sessions : acc;
       }, 0);
 
-      const orgSubscriptionPromise = await db
+      const orgSubscriptionPromise = db
         .update(orgSubscriptionSchema)
         .set({
           walletSessions: walletSessions,
         })
-        .where(eq(orgSubscriptionSchema.organizationId, orgId!));
-
+        .where(and(
+            eq(orgSubscriptionSchema.organizationId, orgId),
+            eq(orgSubscriptionSchema.botType, "chat")
+          ));
+      await Promise.allSettled([billingPromise, orgSubscriptionPromise])
       
       return { status: "Payment Successful" };
     } catch (error) {

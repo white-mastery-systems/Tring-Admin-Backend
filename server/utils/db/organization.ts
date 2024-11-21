@@ -231,6 +231,10 @@ export const updateOrgVisitor = async (visitorId: string) => {
 //   };
 // };
 
+export const createOrgSubscription = async(data: any) => {
+  return (await db.insert(orgSubscriptionSchema).values(data).returning())[0]
+}
+
 const updateChatbotStatus = async(organizationId: string) => {
   await db
   .update(chatBotSchema)
