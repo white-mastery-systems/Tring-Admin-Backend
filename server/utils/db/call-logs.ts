@@ -48,7 +48,7 @@ export const getCallLogsList = async (organizationId: string, query: any, timeZo
   })
   data = data.map((i: any) => ({
     ...i,
-    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    date: momentTz(i.date).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
 
   if(query?.q) {
