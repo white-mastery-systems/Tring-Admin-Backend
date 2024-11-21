@@ -6,7 +6,7 @@ export const llmConfigurationValidation = toTypedSchema(
     top_p: z
       .string({ required_error: "Top P is required" })
       .min(1, "Top P is required"),
-    tokens: z
+    max_output_token: z
       .string({ required_error: "tokens is required" })
       .min(1,"tokens is required"),
     temperature: z

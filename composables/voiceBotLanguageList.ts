@@ -1,6 +1,4 @@
-import { label } from "@unovis/ts/components/axis/style"
 
- 
  export const useLanguageList = () => {
  const languageList = [
   {

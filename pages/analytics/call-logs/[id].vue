@@ -22,33 +22,44 @@
               <UiTabsTrigger value="Client"> Client Info </UiTabsTrigger>
               <!-- <UiTabsTrigger value="Campaign"> Campaign info</UiTabsTrigger> -->
             </UiTabsList>
-            <UiTabsContent value="Client">
-              <!-- {{formattedCallData}} || asfa -->
-              <div class="flex grid grid-cols-2 flex-col items-center gap-2 pl-4 capitalize">
-                <div v-for="(value, key) in formattedCallData" :key="key">
-                  <div class="gap-2 pl-4 capitalize max-w-full">
-                    <div class="text-gray-500 font-medium">{{ key }}</div>
-                    <div :class="['font-medium', (key === 'Session ID') ? 'truncate w-45' : '']">{{ value }}</div>
+            <UiTooltipProvider>
+              <UiTabsContent value="Client">
+                <!-- {{formattedCallData}} || asfa -->
+                <div class="flex grid grid-cols-2 flex-col items-center gap-2 pl-4 capitalize">
+                  <div v-for="(value, key) in formattedCallData" :key="key">
+                    <!-- <div v-if="Array.isArray(value) && value.length === 2"> -->
+                      <UiTooltip>
+                        <UiTooltipTrigger as-child>
+                          <div class="gap-2 pl-4 capitalize max-w-full">
+                            <div class="text-gray-500 font-medium cursor-pointer">{{ key }}</div>
+                            <div :class="['font-medium cursor-pointer', (key === 'Session ID') ? 'truncate w-45' : '']">{{ value }}
+                            </div>
+                          </div>
+                        </UiTooltipTrigger>
+                        <UiTooltipContent class="w-auto">
+                          <p>{{ value }}</p>
+                        </UiTooltipContent>
+                      </UiTooltip>
+                    <!-- </div> -->
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="flex justify-center mt-4">
-                <div class="w-[100%] relative">
-                  <div v-if="isAudioLoading"
-                    class="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-10">
-                    <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-                  </div>
+                  <div class="flex justify-center mt-4">
+                    <div class="w-[100%] relative">
+                      <div v-if="isAudioLoading"
+                        class="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-10">
+                        <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+                      </div>
 
-                  <div class="flex justify-center">
-                    <audio controls
-                      :src="`${config.public.voiceBotUrl}/recording/?bot_id=${callLogs.botId}&organization_id=${callLogs.organizationId}&sid=${callLogs.callSid}`"
-                      @loadeddata="onAudioLoaded" @waiting="onAudioLoading" @error="onAudioError" ref="audioPlayer">
-                      Your browser does not support the audio element.
-                    </audio>
+                      <div class="flex justify-center">
+                        <audio controls :src="`${config.public.voiceBotUrl}/callRecording?sid=${callLogs.callSid}`"
+                          @loadeddata="onAudioLoaded" @waiting="onAudioLoading" @error="onAudioError" ref="audioPlayer">
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </UiTabsContent>
+              </UiTabsContent>
+            </UiTooltipProvider>
             <UiTabsContent value="Campaign">
             </UiTabsContent>
             <!-- </div> -->
@@ -181,7 +192,7 @@ const details = computed(() => {
 
 onMounted(() => {
   audioElement.value = document.querySelector('audio')
-})
+});
 
 const playAudio = () => {
   audioElement.value.play()
