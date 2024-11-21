@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
   const restaurantId = voicebotReservego?.data?.restaurantId
   const apiKey = voicebotReservego?.data?.apiKey
 
-  const data = await createNewReservation({ restaurantId, apiKey }, body)
+  const data = await createNewReservation({ restaurantId, apiKey }, body, "voicebot")
   if(!data.status) {
     return sendError(
       event,
