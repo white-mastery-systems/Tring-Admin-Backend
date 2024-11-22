@@ -4,7 +4,7 @@
   </div>
   <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="[
     {
-    label: `${leadData?.botUser?.name}`,
+    label: `${leadData?.botUser?.name ?? 'No Name'}`,
     to: `/analytics/chats`,
     },
     {

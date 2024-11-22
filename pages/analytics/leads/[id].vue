@@ -2,9 +2,9 @@
   <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else :title="leadData?.botUser?.name ?? ''" :bread-crumbs="[
+  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="[
     {
-      label: `${leadData?.botUser?.name}`,
+    label: `${leadData?.botUser?.name ?? 'No Name'}`,
       to: `/analytics/leads`,
     },
     {
