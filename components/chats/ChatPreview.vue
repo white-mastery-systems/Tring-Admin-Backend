@@ -39,7 +39,7 @@
             {{ messageList.content }}
           </p> -->
 
-          <div class="flex max-w-[80%] flex-col items-end justify-center" v-if="messageList.content.includes('Rescheduled Site') || messageList.content.includes('Site Visit Scheduled') || messageList.content.includes('Rescheduled Call')">
+          <div class="flex max-w-[80%] flex-col items-end justify-center" v-if="messageList.content.includes('Call Scheduled') || messageList.content.includes('Rescheduled Site') || messageList.content.includes('Site Visit Scheduled') || messageList.content.includes('Rescheduled Call')">
             <span class="text-[14px]" style="color: #8a8a8a">{{
               leadDataValue?.botUser?.name
               }}</span>

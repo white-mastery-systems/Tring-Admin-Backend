@@ -4,7 +4,7 @@
   </div>
   <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="[
     {
-    label: `${leadData?.botUser?.name}`,
+    label: `${leadData?.botUser?.name ?? 'No Name'}`,
     to: `/analytics/chats`,
     },
     {
@@ -54,7 +54,39 @@
                     <div v-else>Invalid entry</div>
                   </div>
                 </div>
-                <div v-if="formattedChats.length" class="flex justify-center font-medium my-4">Dynamic Forms</div>
+                <div v-if="formattedScheduels.length || formattedChats.length"
+                  class="overflow-scroll h-[40vh] gap-2 scrollable-container field_shadow mt-5 rounded-lg">
+                  <div v-if="formattedScheduels.length" class="flex justify-center font-medium mt-4">Intracted Forms
+                  </div>
+                  <div v-if="formattedScheduels.length" class="gap-2 rounded-lg">
+                    <div v-for="(dynamicForm, keys) in formattedScheduels" :key="keys" class="p-4">
+                      <div class="p-5 rounded-lg gap-4 field_shadow">
+                        <TextField label="Date" :placeholder="`${dynamicForm.content} - ${dynamicForm.date}`"
+                          :required="false" :disabled="true" class="mb-2" />
+                        <TextField label="Time" :validation="false" :required="false"
+                          :placeholder="`${dynamicForm.time}`" :disabled="true" />
+                      </div>
+                    </div>
+                  </div>
+                  <div v-if="formattedChats.length" class="flex justify-center font-medium mt-2">Dynamic Forms</div>
+                  <div v-if="formattedChats.length" class="p-5">
+                    <div v-for="(value, key) in formattedChats" :key="key">
+                      <!-- {{ value.metadata }} -->
+                      <div class="text-[#424bd1] font-medium pb-2">
+                        {{ `Form ${key + 1}` }}
+                      </div>
+                      <div class="flex grid grid-cols-2 gap-2 font-regular">
+                        <div v-for="(dynamicForm, keys) in value.metadata" :key="keys">
+                          <div class="w-full pb-3">
+                            <TextField :label="formatLabel(keys)" :disabled="true" :disableCharacters="true"
+                              :placeholder="dynamicForm" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- <div v-if="formattedChats.length" class="flex justify-center font-medium my-4">Dynamic Forms</div>
                 
                 <div v-if="formattedChats.length"
                   class="overflow-scroll h-[40vh] gap-2 scrollable-container field_shadow p-5 rounded-lg">
@@ -71,7 +103,7 @@
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> -->
               </UiTabsContent>
             </UiTooltipProvider>
 
@@ -232,6 +264,34 @@ const formattedChats = computed(() => {
 
     return formattedMessages;
   }).flat();  // Flatten the array if there are multiple messages per chat
+});
+
+const formattedScheduels = computed(() => {
+  return chats.map((chat: any) => {
+    // Filter messages based on the role and specific content
+    const filteredMessages = chat.messages.filter((message: any) =>
+      message.role === 'comment' &&
+      (message.content.includes('Rescheduled Site') ||
+        message.content.includes('Site Visit Scheduled') ||
+        message.content.includes('Rescheduled Call'))
+    );
+
+    // Map filtered messages to extract content, date, and time
+    const formattedMessages = filteredMessages.map((message: any) => {
+      // Extract content before the date
+      const contentMatch = message.content.match(/^(.*?) on /);
+      const dateMatch = message.content.match(/on ([A-Za-z]+ \d{1,2}, \d{4})/);
+      const timeMatch = message.content.match(/- ([\d:]+ [APM]+)/);
+
+      return {
+        content: contentMatch ? contentMatch[1].trim() : null, // Extracted content
+        date: dateMatch ? dateMatch[1] : null, // Extracted date
+        time: timeMatch ? timeMatch[1] : null, // Extracted time
+      };
+    });
+
+    return formattedMessages;
+  }).flat(); // Flatten the array if there are multiple messages per chat
 });
 </script>
 <style scoped>
