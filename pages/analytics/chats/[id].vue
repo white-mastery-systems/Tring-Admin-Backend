@@ -46,16 +46,18 @@
                             </div>
                           </div>
                         </UiTooltipTrigger>
-                        <UiTooltipContent class="w-80">
-                          <p>{{ entry[1] }}</p> <!-- Show the full value or any additional info -->
+                        <UiTooltipContent class="w-auto">
+                          <p>{{ entry[1] }}</p>
                         </UiTooltipContent>
                       </UiTooltip>
                     </div>
                     <div v-else>Invalid entry</div>
                   </div>
                 </div>
-                <div v-if="formattedChats.length" class="flex justify-center font-medium mt-4">Dynamic Forms</div>
-                <div v-if="formattedChats.length" class="overflow-scroll h-[40vh] gap-2 scrollable-container">
+                <div v-if="formattedChats.length" class="flex justify-center font-medium my-4">Dynamic Forms</div>
+                
+                <div v-if="formattedChats.length"
+                  class="overflow-scroll h-[40vh] gap-2 scrollable-container field_shadow p-5 rounded-lg">
                   <div v-for="(value, key) in formattedChats" :key="key">
                     <div class="text-[#424bd1] font-medium py-4">
                       {{ `Form ${key + 1}` }}

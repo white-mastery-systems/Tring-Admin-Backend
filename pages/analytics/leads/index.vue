@@ -153,7 +153,19 @@
       page.value = leads.page;
       totalPageCount.value = leads.totalPageCount;
       totalCount.value = leads.totalCount;
-      return leads.data;
+      return leads.data.map((lead: any) => ({
+        leadName: lead.botUser?.name,
+        email: lead.botUser?.email,
+        location: `${lead.chat.metadata?.city ?? "--"} - ${lead.chat.metadata?.state ?? "--"} `,
+        botUser: lead.botUser?.visitedCount,
+        channel: lead.chat.channel,
+        mobile: lead.botUser,
+        name: lead.bot?.name,
+        countryName: lead.chat.metadata?.country,
+        createdAt: lead.chat.createdAt,
+        chatId: lead.chatId,
+      }))
+      ;
     },
   });
 
@@ -242,13 +254,15 @@
 
   const columnHelper = createColumnHelper<(typeof leads.value)[0]>();
   const columns = [
-    columnHelper.accessor("botUser.name", {
+    columnHelper.accessor("leadName", {
       header: "Lead Name",
     }),
-    columnHelper.accessor("botUser.email", {
+    columnHelper.accessor("email", {
       header: "Lead Email",
     }),
-
+    columnHelper.accessor("location", {
+      header: "Location",
+    }),
     columnHelper.accessor("botUser", {
       header: "Visiting Status",
       cell: ({ row }) =>
@@ -257,7 +271,7 @@
           {
             ...(row.original.status === "junk"
               ? { class: "bg-red-200 text-red-500 hover:bg-300" }
-              : Number(row.original.botUser?.visitedCount) > 1
+              : Number(row.original.visitedCount) > 1
                 ? { class: "bg-[#424bd1] text-[#ffffff] hover:bg-[#424bd1]" }
                 : { class: "bg-green-200 text-green-500 hover:bg-green-300" }),
           },
@@ -272,18 +286,18 @@
     columnHelper.accessor("channel", {
       header: "Channel",
       cell: ({ row }) =>
-        row.original?.chat.channel.charAt(0).toUpperCase() +
-        row.original?.chat.channel.slice(1),
+        row.original?.channel.charAt(0).toUpperCase() +
+        row.original?.channel.slice(1),
     }),
-    columnHelper.accessor("botUser.mobile", {
+    columnHelper.accessor("mobile", {
       header: "Lead Phone",
       cell: ({ row }) =>
-        row.original?.botUser?.countryCode + row.original?.botUser?.mobile,
+        row.original?.mobile?.countryCode + row.original?.mobile?.mobile,
     }),
-    columnHelper.accessor("bot.name", {
+    columnHelper.accessor("name", {
       header: "Bot Name",
     }),
-    columnHelper.accessor("chat.metadata.country", {
+    columnHelper.accessor("countryName", {
       header: "Country",
       cell: (info) => info.getValue() || "-",
     }),
@@ -291,7 +305,7 @@
       header: "Date Created",
       cell: ({ row }) => `${row.original.createdAt}`,
     }),
-    columnHelper.accessor("id", {
+    columnHelper.accessor("chatId", {
       header: "Action",
       cell: ({ row }) =>
         h(

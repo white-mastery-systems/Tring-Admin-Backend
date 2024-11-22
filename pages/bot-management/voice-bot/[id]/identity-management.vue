@@ -19,10 +19,10 @@
     <div class="pb-2 sm:pb-0">
       <form @submit="onSubmit" class="flex flex-col gap-2">
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3">
-          <!-- <TextField name="agentName" label="Agent Name" required placeholder="Enter agent name" /> -->
-          <SelectField name="agentName" :options="languageList" label="Agent Name" placeholder="Select agent name"
+          <TextField name="agentName" label="Agent Name" required placeholder="Enter agent name" />
+          <SelectField name="agentLanguage" :options="languageList" label="Agent Language" placeholder="Agent Language"
             helperText="Select your language."></SelectField>
-            <TextField name="agentLanguage" label="Agent Language" required placeholder="Enter agent language" />
+          <!-- <TextField name="agentLanguage" label="Agent Language" required placeholder="Enter agent language" /> -->
         </div>
         <div class="flex w-full justify-end">
           <UiButton type="submit" class="w-[120px] self-end bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"

@@ -35,7 +35,6 @@
           <RangeSlider v-if="values.provider === 'google'" :step="0.05" :name="parseFloat(values.speakingRate)"
             label="Speaking Rate" @update="
               ($event) => {
-                $event.stopPropagation()
                 setFieldValue('speakingRate', $event);
               }
             " required placeholder="Enter speaking speed" min="0" max="1" />
@@ -43,12 +42,12 @@
             <TextField type="rangeSlider" label="Speaking speed" name="speakingSpeed" @input="($event) => {
               const numericValue = Number($event.target.value)
               setFieldValue('speakingSpeed', numericValue)
-            }" required placeholder="Enter Speaking Rate" disableCharacters />
+            }" required disableCharacters />
             <RangeSlider :step="0.05" :name="parseFloat(values.speakingSpeed)" label="Speaking speed" @update="
               ($event) => {
                 setFieldValue('speakingSpeed', $event);
               }
-            " required placeholder="Enter speaking speed" min="0" max="1" />
+            " required min="0" max="1" />
           </div>
           <!-- <TextField v-if="values.provider === 'google'" label="Speaking Rate" name="speakingRate" required placeholder="Enter speaking Rate" -->
           <!-- disableCharacters /> -->
@@ -58,13 +57,13 @@
               ($event) => {
                 setFieldValue('pitch', $event);
               }
-            " required placeholder="Enter speaking Rate" min="0" max="1" />
+            " required min="0" max="1" />
           <RangeSlider v-if="values.provider === 'google'" :step="0.05" :name="parseFloat(values.volumeGrainDb)"
             label="volume Grain DB" @update="
               ($event) => {
                 setFieldValue('volumeGrainDb', $event);
               }
-            " required placeholder="Enter speaking Rate" min="0" max="1" />
+            " required min="0" max="1" />
           <!-- <TextField
             v-if="values.provider === 'google'"
             label="volume Grain DB"
@@ -79,20 +78,20 @@
               ($event) => {
                 setFieldValue('stability', $event);
               }
-            " required placeholder="Enter speaking Rate" min="0" max="1" />
+            " required min="0" max="1" />
 
           <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.similarityBoost)"
             label="Similarity boost" @update="
               ($event) => {
                 setFieldValue('similarityBoost', $event);
               }
-            " required placeholder="Enter speaking Rate" min="0" max="1" />
+            " required min="0" max="1" />
           <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.style)"
             label="Style" @update="
               ($event) => {
                 setFieldValue('style', $event);
               }
-            " required placeholder="Enter speaking Rate" min="0" max="1" />
+            " required min="0" max="1" />
           <!-- <RangeSlider
             v-if="values.provider === 'elevenlabs'"
             :step="0.1"
@@ -432,6 +431,10 @@ const onSubmit = handleSubmit(async (values) => {
   });
 
   toast.success("Updated successfully");
+  navigateTo({
+    name: "bot-management-voice-bot-id",
+    params: { id: route.params.id },
+  });
   isLoading.value = false;
 });
 

@@ -60,7 +60,7 @@
                         </div>
                       </div>
                     </UiTooltipTrigger>
-                    <UiTooltipContent class="w-80">
+                    <UiTooltipContent class="w-auto">
                       <p>{{ value }}</p> <!-- Show the full value or any additional info -->
                     </UiTooltipContent>
                   </UiTooltip>
@@ -81,8 +81,8 @@
                   </a>
                 </div>
               </div>
-              <div v-if="formattedChats.length" class="flex justify-center font-medium mt-4">Dynamic Forms</div>
-              <div class="overflow-scroll h-[40vh] gap-2 scrollable-container">
+              <div v-if="formattedChats.length" class="flex justify-center font-medium my-4">Dynamic Forms</div>
+              <div v-if="formattedChats.length" class="overflow-scroll h-[40vh] gap-2 scrollable-container field_shadow p-5 rounded-lg">
                 <div v-for="(value, key) in formattedChats" :key="key">
                   <!-- {{ value.metadata }} -->
                   <div class="text-[#424bd1] font-medium py-4">

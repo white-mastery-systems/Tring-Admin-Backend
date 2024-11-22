@@ -16,7 +16,7 @@
 
           <SelectField name="model" label="Model" placeholder="Select Model" :options="models" required /> -->
 
-          <SelectField name="tokens" label="Max Tokens" placeholder="Max Tokens"
+          <SelectField name="max_output_token" label="Max Tokens" placeholder="Max Tokens"
             :options="tokens.map((token) => ({ label: token, value: token }))" :required="true" />
 
           <div class="mt-5 flex flex-col gap-2">
@@ -100,7 +100,7 @@
     },
   ];
 
-  const tokens = ["1024", "2048", "4096"];
+  const tokens = ["8192", "1024", "2048", "4096"];
 
   const botDetails: any = await getVoiceBotDetails(route.params.id);
   
@@ -125,6 +125,7 @@
   });
   Object.entries(botDetails.llmConfig).forEach(([key, value]: any) => {
     if (values.hasOwnProperty(key)) {
+      console.log(key, "key - -key")
       setFieldValue(key, value);
     }
   });
