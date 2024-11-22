@@ -68,12 +68,12 @@
               </div>
               <div class="flex gap-2 mt-3">
                 <div v-for="[key, value] in details[0]" :key="key" class="flex gap-2">
+                  <a v-if="key === 'Mobile'">
+                    <UiButton color="primary" :disabled="true">Call</UiButton>
+                  </a>
                   <a v-if="key === 'Mobile'" :href="`https://wa.me/${value}`" target="_blank" rel="noopener noreferrer">
                     <UiButton color="primary">Whatsapp</UiButton>
                   </a>
-                  <!-- <a v-if="key === 'Mobile'">
-                    <UiButton color="primary">Call</UiButton>
-                  </a> -->
                   <a v-if="key === 'Email'"
                     :href="`https://mail.google.com/mail/?view=cm&fs=1&to=${value}&su=Your%20Subject&body=Your%20message%20here`"
                     target="_blank" rel="noopener noreferrer">
@@ -81,18 +81,32 @@
                   </a>
                 </div>
               </div>
-              <div v-if="formattedChats.length" class="flex justify-center font-medium my-4">Dynamic Forms</div>
-              <div v-if="formattedChats.length" class="overflow-scroll h-[40vh] gap-2 scrollable-container field_shadow p-5 rounded-lg">
-                <div v-for="(value, key) in formattedChats" :key="key">
-                  <!-- {{ value.metadata }} -->
-                  <div class="text-[#424bd1] font-medium py-4">
-                    {{ `Form ${key + 1}` }}
+              <div v-if="formattedScheduels.length || formattedChats.length"
+                class="overflow-scroll h-[40vh] gap-2 scrollable-container field_shadow mt-5 rounded-lg">
+                <div v-if="formattedScheduels.length" class="flex justify-center font-medium mt-4">Intracted Forms</div>
+                <div v-if="formattedScheduels.length" class="gap-2 rounded-lg">
+                  <div v-for="(dynamicForm, keys) in formattedScheduels" :key="keys" class="p-4">
+                    <div class="p-5 rounded-lg gap-4 field_shadow">
+                      <TextField label="Date" :placeholder="`${dynamicForm.content} - ${dynamicForm.date}`"
+                        :required="false" :disabled="true" class="mb-2" />
+                      <TextField label="Time" :validation="false" :required="false" :placeholder="`${dynamicForm.time}`"
+                        :disabled="true" />
+                    </div>
                   </div>
-                  <div class="flex grid grid-cols-2 gap-2 font-regular">
-                    <div v-for="(dynamicForm, keys) in value.metadata" :key="keys">
-                      <div class="w-full pb-3">
-                        <TextField :label="formatLabel(keys)" :disabled="true" :disableCharacters="true"
-                          :placeholder="dynamicForm" />
+                </div>
+                <div v-if="formattedChats.length" class="flex justify-center font-medium mt-2">Dynamic Forms</div>
+                <div v-if="formattedChats.length" class="p-5">
+                  <div v-for="(value, key) in formattedChats" :key="key">
+                    <!-- {{ value.metadata }} -->
+                    <div class="text-[#424bd1] font-medium pb-2">
+                      {{ `Form ${key + 1}` }}
+                    </div>
+                    <div class="flex grid grid-cols-2 gap-2 font-regular">
+                      <div v-for="(dynamicForm, keys) in value.metadata" :key="keys">
+                        <div class="w-full pb-3">
+                          <TextField :label="formatLabel(keys)" :disabled="true" :disableCharacters="true"
+                            :placeholder="dynamicForm" />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -289,10 +303,65 @@ const formattedChats = computed(() => {
     return formattedMessages;
   }).flat();  // Flatten the array if there are multiple messages per chat
 });
+
+const formattedScheduels = computed(() => {
+  return chats.map((chat: any) => {
+    // Filter messages based on the role and specific content
+    const filteredMessages = chat.messages.filter((message: any) =>
+      message.role === 'comment' &&
+      (message.content.includes('Rescheduled Site') ||
+        message.content.includes('Site Visit Scheduled') ||
+        message.content.includes('Rescheduled Call'))
+    );
+
+    // Map filtered messages to extract content, date, and time
+    const formattedMessages = filteredMessages.map((message: any) => {
+      // Extract content before the date
+      const contentMatch = message.content.match(/^(.*?) on /);
+      const dateMatch = message.content.match(/on ([A-Za-z]+ \d{1,2}, \d{4})/);
+      const timeMatch = message.content.match(/- ([\d:]+ [APM]+)/);
+
+      return {
+        content: contentMatch ? contentMatch[1].trim() : null, // Extracted content
+        date: dateMatch ? dateMatch[1] : null, // Extracted date
+        time: timeMatch ? timeMatch[1] : null, // Extracted time
+      };
+    });
+
+    return formattedMessages;
+  }).flat(); // Flatten the array if there are multiple messages per chat
+});
+// const formattedScheduels = computed(() => {
+//   return chats.map((chat: any) => {
+//     // Filter messages that have role 'comment' and content 'Booking Details Submitted'
+//     const filteredMessages = chat.messages.filter((message: any) =>
+//       message.role === 'comment' && (message.content.includes('Rescheduled Site') || message.content.includes('Site Visit Scheduled') || (message.content.includes('Rescheduled Site') || message.content.includes('Rescheduled Call'))
+//     ));
+
+//     // For each message, format the metadata and createdAt date
+//     const formattedMessages = filteredMessages.map((message: any) => {
+//       return {
+//         content: message.content,
+//       };
+//     });
+
+//     return formattedMessages;
+//   }).flat();  // Flatten the array if there are multiple messages per chat
+// });
 const formatLabel = (key: any) => {
   // Convert camelCase or PascalCase to words with spaces
   return key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z])/g, ' $1').trim();
 }
+const dateTimeFormat = (text, format) => {
+  console.log(text, "text -- text");
+  const dateTimeStr = text?.replace("Site Visit Scheduled on", "")?.trim();
+  const [dateStr, timeStr] = dateTimeStr?.split(" - ");
+
+  if (format === "time") return timeStr;
+  else {
+    return dateStr;
+  }
+};
 
   const confirmChangeStatus = async (value: any) => {
     try {

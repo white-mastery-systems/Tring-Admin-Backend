@@ -107,6 +107,15 @@ const formSchema = toTypedSchema(
         errorMessage: z.string({ required_error: "Error message is required." }).min(2, "Error message is required."), // Make errorMessage required
         minLength: z.number().optional(),
         maxLength: z.number().optional(),
+      }).refine((data) => {
+        // Ensure that if maxLength is provided, it is greater than or equal to minLength
+        if (data.minLength !== undefined && data.maxLength !== undefined) {
+          return data.maxLength >= data.minLength;
+        }
+        return true; // If no minLength or maxLength is provided, validation passes
+      }, {
+        message: "Maximum length must be greater than or equal to minimum length.",
+        path: ["maxLength"],
       })
     ),
   })
