@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
   const restaurantId = chatbotReservego?.data?.restaurantId
   const apiKey = chatbotReservego?.data?.apiKey
 
-  const data = await createNewReservation({ restaurantId, apiKey }, body)
+  const data = await createNewReservation({ restaurantId, apiKey }, body,  "chatbot")
   if(!data.status) {
     return sendError(
       event,

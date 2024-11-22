@@ -103,7 +103,7 @@
                 </UiButton>
               </div>
             </fieldset>
-            <div v-if="values.provider !== 'deepgram'" class='flex justify-end w-full'>
+            <div class='flex justify-end w-full'>
               <UiButton class='mt-2' variant="outline" type="button" @click="push({ value: '' })">
                 Add phrase set
               </UiButton>
@@ -114,13 +114,13 @@
               <div class='flex items-end gap-2 mt-2'>
                 <TextField :label="`phrase list ${idx + 1}`" :id="`value_${idx}`" :name="`phraseLists[${idx}].value`"
                   required placeholder="Enter phrase" />
-                <UiButton v-if="(values.provider === 'google') || (values.provider !== 'azure')" variant="outline"
+                <UiButton v-if="(values.provider === 'azure')" variant="outline"
                   type="button" @click="remove(idx)" :disabled="idx === 0">
                   <CloseIcon class="w-4 h-4" />
                 </UiButton>
               </div>
             </fieldset>
-            <div v-if="values.provider !== 'deepgram'" class='flex justify-end w-full'>
+            <div class='flex justify-end w-full'>
               <UiButton class='mt-2' variant="outline" type="button" @click="push({ value: '' })">
                 Add phrase list
               </UiButton>
@@ -306,11 +306,12 @@ watch(
     // setFieldValue("language", botData.value?.speechToTextConfig.language);
     // setFieldValue("provider", botData.value?.speechToTextConfig.provider);
     const phraseList = botData.value?.speechToTextConfig.azure?.phrase_list || [];
-    const formattedPhraseList = phraseList.map((item: any) => ({ value: item }));
-    setFieldValue("phraseLists", formattedPhraseList)
+    const formattedPhraseList = phraseList?.map((item: any) => ({ value: item }));
     const phraseSetList = botData.value?.speechToTextConfig.google?.phrase_sets || [];
-    const formattedPhrasSeteList = phraseSetList?.map((item: any) => ({ value: item }));
-    setFieldValue("phraseSets", formattedPhrasSeteList)
+    const formattedPhrasSeteList = phraseSetList?.map((item: any) => ({ 
+      value: item
+     }));
+    setFieldValue("phraseSets", formattedPhrasSeteList);
     // setFieldValue(
     //   "amplificationFactor",
     //   botData.value?.speechToTextConfig[botData.value?.speechToTextConfig.provider].amplification_factor,
@@ -327,7 +328,7 @@ watch(
     setFieldValue("adaptation", botData.value?.speechToTextConfig.google?.adaptation)
     setFieldValue("endutterancesilencethreshold", botData.value?.speechToTextConfig.assemblyai?.end_utterance_silence_threshold)
     const word_boost_key = botData.value?.speechToTextConfig.assemblyai?.word_boost || [];
-    const formatted_boost_key = word_boost_key.map((keyword: any) => {
+    const formatted_boost_key = word_boost_key?.map((keyword: any) => {
       const [value, boostValue] = keyword.split(":");
       return { value, boostValue };
     })
@@ -336,24 +337,22 @@ watch(
         "utteranceEndMs",
         botData.value?.speechToTextConfig.deepgram.utterance_end_ms,
       );
-      if (values.provider === "deepgram") {
+      // if (values.provider === "deepgram") {
         setFieldValue(
           "model",
           botData.value?.speechToTextConfig.deepgram.model
         );
-      } else if (values.provider === "google") {
+      // } else if (values.provider === "google") {
         setFieldValue(
           "googlemodel",
           botData.value?.speechToTextConfig.google.model
         );
-      }
-      const keywords = botData.value?.speechToTextConfig.deepgram?.keywords || [];
-    console.log(keywords, "keywords -sdd")
-      const formattedKeywords = keywords.map((keyword: any) => {
-        const [value, boostValue] = keyword.split(":");
+      // }
+    const keywords = botData.value?.speechToTextConfig.deepgram?.keywords || [];
+      const formattedKeywords = keywords?.map((keyword: any) => {
+        const [value, boostValue] = keyword?.split(":");
         return { value, boostValue };
       })
-    console.log(formattedKeywords, "formattedKeywords -- werw")
       setFieldValue(
         "keywords",
         formattedKeywords.length ? formattedKeywords : []
@@ -388,18 +387,16 @@ const createEditSpeecToTextConfig = handleSubmit(async (value) => {
           adaptation: value.adaptation !== undefined
             ? value.adaptation
             : botData.value?.speechToTextConfig.google?.adaptation || true,
-          phrase_sets: value.phraseSets?.length
-            ? value.phraseSets.map((item: any) => item.value)
-            : botData.value?.speechToTextConfig.google?.phrase_sets || [],
+          phrase_sets: value.phraseSets?.map((item: any) => item.value || [])
+        
         };
       }
 
       // Azure config
       if (provider === "azure") {
         updatedConfig.azure = {
-          phrase_list: value.phraseLists?.length
-            ? value.phraseLists.map((item: any) => item.value)
-            : botData.value?.speechToTextConfig.azure?.phrase_list || [],
+          phrase_list: value.phraseLists?.map((item: any) => item.value) || [],
+            
           amplification_factor: value.amplificationFactor !== undefined
             ? value.amplificationFactor
             : botData.value?.speechToTextConfig.azure?.amplification_factor || 3,
@@ -410,9 +407,8 @@ const createEditSpeecToTextConfig = handleSubmit(async (value) => {
       if (provider === "deepgram") {
         updatedConfig.deepgram = {
           model: value.model || botData.value?.speechToTextConfig.deepgram?.model || 'nova-2',
-          keywords: value.keywords?.length
-            ? value.keywords.map((keywordObj: any) => `${keywordObj.value}:${keywordObj.boostValue}`)
-            : botData.value?.speechToTextConfig.deepgram?.keywords || [],
+          keywords: value.keywords?.map((keywordObj: any) => `${keywordObj.value}:${keywordObj.boostValue}`) || [],
+            
           endpointing: value.endpointing !== undefined
             ? value.endpointing
             : botData.value?.speechToTextConfig.deepgram?.endpointing || 250,
@@ -427,9 +423,7 @@ const createEditSpeecToTextConfig = handleSubmit(async (value) => {
       // AssemblyAI config
       if (provider === "assemblyai") {
         updatedConfig.assemblyai = {
-          word_boost: value.wordboost?.length
-            ? value.wordboost.map((keywordObj: any) => `${keywordObj.value}:${keywordObj.boostValue}`)
-            : botData.value?.speechToTextConfig.assemblyai?.word_boost || [],
+          word_boost: value.wordboost?.map((keywordObj: any) => `${keywordObj.value}:${keywordObj.boostValue}` || []),
           end_utterance_silence_threshold: value.endUtteranceSilenceThreshold !== undefined
             ? value.endUtteranceSilenceThreshold
             : botData.value?.speechToTextConfig.assemblyai?.end_utterance_silence_threshold || 300,

@@ -1,17 +1,20 @@
 import { logger } from "~/server/logger";
 
-const reverseGoBaseUrl =
-  useRuntimeConfig().envType === "stage"
+const reverseGoBaseUrl = (type: string) => {
+  return useRuntimeConfig().envType === "stage" || type === "voicebot"
     ? "https://stagingapi.reservego.co"
     : "https://api.reservego.co";
+}
 
 export const createNewReservation = async (
   integrationData: any,
   reqObj: any,
+  type: string
 ) => {
   try {
+    const API_URL = reverseGoBaseUrl(type)
     const data: any = await $fetch(
-      `${reverseGoBaseUrl}/api/bookings/reservation/create`,
+      `${API_URL}/api/bookings/reservation/create`,
       {
         method: "POST",
         body: {
@@ -42,10 +45,12 @@ export const createNewReservation = async (
 export const getReservationStatus = async (
   integrationData: any,
   reqObj: any,
+  type: string
 ) => {
   try {
+    const API_URL = reverseGoBaseUrl(type)
     const data: any = await $fetch(
-      `${reverseGoBaseUrl}/api/bookings/reservation/status`,
+      `${API_URL}/api/bookings/reservation/status`,
       {
         method: "POST",
         body: {
@@ -67,10 +72,11 @@ export const getReservationStatus = async (
   }
 };
 
-export const checkAvailabilty = async (integrationData: any, reqObj: any) => {
+export const checkAvailabilty = async (integrationData: any, reqObj: any, type: string) => {
   try {
+    const API_URL = reverseGoBaseUrl(type)
     const data: any = await $fetch(
-      `${reverseGoBaseUrl}/api/bookings/cloudTelephony/outlet/inventory`,
+      `${API_URL}/api/bookings/cloudTelephony/outlet/inventory`,
       {
         method: "POST",
         body: {

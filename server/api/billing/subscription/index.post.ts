@@ -36,8 +36,7 @@ export default defineEventHandler(async (event) => {
         eq(orgSubscriptionSchema.organizationId, organizationId),
       )
     })
-
-    if(getOrgCurrentActivePlan) {
+    if(getOrgCurrentActivePlan && getOrgCurrentActivePlan?.planCode !== "chat_free") {
       const expiryDate = momentTz(getOrgCurrentActivePlan?.expiryDate).tz(timeZone).toDate();
       const currentDate =  momentTz().tz(timeZone).toDate();
       if(currentDate < expiryDate) {
@@ -53,7 +52,7 @@ export default defineEventHandler(async (event) => {
     let metaData = {
       ...zohoData.metaData,
     };
-    const user = event.context.user;
+    const user: any = event.context.user;
     if (!user) {
       return sendError(
         event,

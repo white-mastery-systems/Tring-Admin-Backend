@@ -170,7 +170,7 @@ const handleUpdateBotConfig = handleSubmit(async (values: any) => {
     },
   ]" :description="true" :disableSelector="false" :disable-back-button="false">
     <div class="mx-5 gap-3">
-      <form @submit="handleUpdateBotConfig" class="space-y-3">
+      <form @submit.prevent="handleUpdateBotConfig" class="space-y-3">
         <div class="flex gap-4">
           <TextField name="NAME" label="Bot Name" placeholder="Eg. Noah,Bob,Chris,Ted" required>
           </TextField>
