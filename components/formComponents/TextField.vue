@@ -184,5 +184,8 @@
         value.value = value.value.replace(/[^\w\s]/gi, "");
       }, 0);
     }
+    if (value.value.trim() === "") {
+      value.value = "";
+    }
   });
 </script>

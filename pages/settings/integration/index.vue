@@ -37,7 +37,7 @@
     </template>
     <UiTabs :default-value="route?.query?.q ?? 'crm'" class="w-full self-start">
       <UiTabsList
-        class="grid w-[100%] grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 sm:w-[100%] md:w-[50%] lg:w-[60%] xl:w-[50%] h-[10%]">
+        class="grid w-[100%] grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 sm:w-[100%] md:w-[70%] lg:w-[60%] xl:w-[50%] h-[10%]">
         <UiTabsTrigger value="crm" @click="navigateToTab('crm')">
 
           CRM

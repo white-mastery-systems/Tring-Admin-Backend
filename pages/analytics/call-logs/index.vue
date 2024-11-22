@@ -117,11 +117,7 @@ const columnHelper = createColumnHelper<typeof callLogData.value>();
     }),
     columnHelper.accessor("CalledDateTime", {
       header: "Called Date & Time",
-      cell: (info) => {
-      const rawDate = info.getValue();
-      const formattedDate = rawDate.slice(0, 16);
-      return formattedDate;
-     },
+      cell: (info) =>info.getValue()
     }),
     columnHelper.accessor("calledDuration", {
       header: "Call Duration",

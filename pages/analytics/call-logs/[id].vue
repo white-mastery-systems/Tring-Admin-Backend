@@ -6,7 +6,7 @@
   <!-- leadData?.botUser?.name ??  -->
   <Page :title="callLogs?.callerName ?? 'No Name'" :bread-crumbs="[
     {
-    label: `${callLogs?.callerName}`,
+    label: `${callLogs?.callerName ?? 'No Name'}`,
     to: `/analytics/call-logs`,
     },
     {
