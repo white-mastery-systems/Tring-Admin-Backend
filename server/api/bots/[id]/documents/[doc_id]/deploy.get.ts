@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
   const getOrgCurrentActivePlan = await db.query.orgSubscriptionSchema.findFirst({
       where: and(
         eq(orgSubscriptionSchema.organizationId, organizationId),
+        eq(orgSubscriptionSchema.botType, "chat"),
         eq(orgSubscriptionSchema.status, "active")
       )
   })
