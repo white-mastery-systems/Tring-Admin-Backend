@@ -248,7 +248,11 @@ const updateOrgSubscriptionStatus = async(organizationId: string, status: string
   await db
   .update(orgSubscriptionSchema)
   .set({ status: status })
-  .where(eq(orgSubscriptionSchema.organizationId, organizationId))
+  .where(and(
+    eq(orgSubscriptionSchema.organizationId, organizationId),
+    eq(orgSubscriptionSchema.botType, "chat")
+    )
+  )
 }
 
 
@@ -271,6 +275,7 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
     db.query.orgSubscriptionSchema.findFirst({
       where: and(
         eq(orgSubscriptionSchema.organizationId, organizationId),
+        eq(orgSubscriptionSchema?.botType, "chat")
       ),
     }),
   ]);
@@ -280,7 +285,7 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   }
  
   // get Pricing information
-  const pricingInformation = await getPricingInformation(org?.planCode)
+  const pricingInformation = await getPricingInformation(orgSubscription?.planCode || org?.planCode)
 
   let subscriptionStatus: "inactive" | "active" = "active";
   const extraSessionCost = pricingInformation?.extraSessionCost || 0
@@ -311,18 +316,12 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
     gst: org?.metadata?.gst,
     extra_sessions: extraSessions,
     available_sessions: availableSessions,
-    expiry_date: orgSubscription?.expiryDate ?? undefined
+    expiry_date: orgSubscription?.expiryDate ?? undefined,
+    subscription_status: orgSubscription?.status
   };
 
-  // If there is no active subscription or no additional sessions available (i.e free-plan)
-  if (!orgSubscription) {
-    subscriptionStatus = usedSessions > maxSessions ? "inactive" : "active";
-    await updateStatuses(subscriptionStatus);
-    return { ...resObj, subscription_status: subscriptionStatus };
-  }
-  
   // Calculate expiry date and check if the subscription is expired
-  const expiryDate = momentTz(orgSubscription.expiryDate)
+  const expiryDate = momentTz(orgSubscription?.expiryDate)
   .tz(timeZone)
   .toDate();
 
@@ -331,23 +330,15 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
     await updateStatuses(subscriptionStatus);
     return { ...resObj, subscription_status: subscriptionStatus };
   }
-  
-  if(usedSessions >= maxSessions) {
+ 
+  if (usedSessions >= maxSessions) {
     extraSessions = Math.max(usedSessions - maxSessions, 0)
     const currentWallet = Math.max(orgWalletSessions - extraSessions, 0)
-    if (currentWallet > 0) {
-      subscriptionStatus = "active";
-      await updateStatuses(subscriptionStatus);
-      return { ...resObj, subscription_status: subscriptionStatus, wallet_balance: currentWallet, extra_sessions: extraSessions, extra_sessions_cost: extraSessions * Number(pricingInformation?.extraSessionCost) };
-    } else {
-      subscriptionStatus = "inactive";
-      await updateStatuses(subscriptionStatus);
-      return { ...resObj, subscription_status: subscriptionStatus, wallet_balance: currentWallet ,extra_sessions: extraSessions, extra_sessions_cost: extraSessions * Number(pricingInformation?.extraSessionCost) };
-    }
+    resObj.wallet_balance = currentWallet
+    resObj.extra_sessions = extraSessions
   }
-  subscriptionStatus = "active";
-  await updateStatuses(subscriptionStatus);
-  return { ...resObj, subscription_status: subscriptionStatus };
+
+  return resObj
 };
 
 const validQueryValues = [
