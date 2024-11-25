@@ -13,7 +13,7 @@ const sendEmail = (to: string[] | string, subject: string, message: any) => {
         secure: true,
         auth: {
           user: config?.nodemailerUser,
-          pass: config?.nodemailerPass,
+          pass: 'hltw xqvl dtxu zhbp',
         },
       })
 
