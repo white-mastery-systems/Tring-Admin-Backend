@@ -99,13 +99,10 @@ const {
 });
 
 const documentItems = computed(() => documents.value?.documents || []);
+const activeDocument = computed(() => documents.value?.documentId)
 
 const isDataLoading = computed(() => status.value === "pending");
 const columnHelper = createColumnHelper<(typeof documentItems.value)[0]>();
-setTimeout(() => {
-  console.log(documentItems.value, "documentItems")
-}, 2000);
-
 const statusComponent = (status: any) => {
   const statusText = status === 'ready' ? 'Success'
     : status === 'processing' ? 'Processing'
@@ -135,15 +132,16 @@ const columns = [
   columnHelper.accessor("name", {
     header: "File Name",
     cell: ({ row }) => {
-      const isActive = row.original.id === documentItems.value?.documentId; // Check condition
+      const isActive = row.original.id === activeDocument.value; // Check condition
       return h("div", [
-        h("span", row.original.name), // Display file name
-        isActive &&
-        h("div", { class: "active-row" }, "Active") // Conditionally render Active label
+        h("span", [
+          row.original.name, // Display file name
+          isActive &&
+          h("span", { class: "text-[#22c55e] ml-4 text-[13px]" }, "Active") // Append "Active" with specific styling
+        ])
       ]);
     }
   }),
-
   columnHelper.accessor("createdAt", {
     header: "Uploaded Date",
   }),

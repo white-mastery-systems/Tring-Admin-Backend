@@ -345,6 +345,7 @@
           required
         />
         <SelectField
+        v-if="!(integrationModalState.numberModalState?.id)"
           name="crm"
           :label="findIntegrationTypeLabel()"
           :placeholder="findIntegrationTypeLabel()"
@@ -373,7 +374,7 @@
         </div>
 
         <TextField
-          v-if="values.crm === 'sell-do' || values.crm === 'reserve-go'"
+          v-if="(values.crm === 'sell-do' || values.crm === 'reserve-go') && !(integrationModalState.numberModalState?.id)"
           name="metadata.apiKey"
           label="Api key"
           helperText="Enter your API key here"

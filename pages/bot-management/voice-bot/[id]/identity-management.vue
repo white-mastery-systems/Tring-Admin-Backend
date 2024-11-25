@@ -19,10 +19,26 @@
     <div class="pb-2 sm:pb-0">
       <form @submit="onSubmit" class="flex flex-col gap-2">
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3">
-          <!-- <TextField name="agentName" label="Agent Name" required placeholder="Enter agent name" /> -->
-          <SelectField name="agentName" :options="languageList" label="Agent Name" placeholder="Select agent name"
+          <TextField name="agentName" label="Agent Name" required placeholder="Enter agent name" />
+          <SelectField name="agentLanguage" :options="languageList" label="Agent Language" placeholder="Agent Language"
             helperText="Select your language."></SelectField>
-            <TextField name="agentLanguage" label="Agent Language" required placeholder="Enter agent language" />
+
+          <UiFormField v-slot="{ value, handleChange }" name="backgroundSoundControler">
+            <UiFormItem class="w-[49%]">
+              <div class="flex justify-between">
+                <UiLabel class="text-[14px] font-medium">Background Sound Controler</UiLabel>
+                <UiFormControl>
+                  <UiSwitch id="backgroundSoundControler" :checked="value" @update:checked="(checked) => {
+                    handleChange(checked);
+                  }" :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
+                </UiFormControl>
+                <UiFormMessage />
+              </div>
+            </UiFormItem>
+          </UiFormField>
+          <SelectField name="backgroundSounds" :options="backgroundSoundList" label="Background Sounds" :disabled="!values.backgroundSoundControler"
+            placeholder="Select Background Sound" helperText="Select your background sound." required></SelectField>
+          <!-- <TextField name="agentLanguage" label="Agent Language" required placeholder="Enter agent language" /> -->
         </div>
         <div class="flex w-full justify-end">
           <UiButton type="submit" class="w-[120px] self-end bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
@@ -62,6 +78,25 @@ import { useLanguageList } from '~/composables/voiceBotLanguageList';
   ];
 
   const { languageList } = useLanguageList();
+
+const backgroundSoundList = [
+  {
+    label: "Sound1",
+    value: "sound1"
+  }, {
+    label: "Sound2",
+    value: "sound2"
+  }, {
+    label: "Sound3",
+    value: "sound3"
+  }, {
+    label: "Sound4",
+    value: "sound4"
+  }, {
+    label: "Sound5",
+    value: "sound5"
+  }, 
+]
   const domainList = [
     { value: "Customer Support", label: "Customer Support" },
     { value: "Sales Assistant", label: "Sales Assistant" },
@@ -86,7 +121,20 @@ import { useLanguageList } from '~/composables/voiceBotLanguageList';
       agentLanguage: z
         .string({ required_error: "Agent Language is required" })
         .min(1, { message: "Agent Language is required" }),
-    }),
+      backgroundSoundControler: z.boolean().optional(),
+      backgroundSounds: z
+        .string().optional()
+    }).superRefine((data, ctx) => {
+      console.log(data, "data -- data")
+      if (data.backgroundSoundControler) {
+        if (!data.backgroundSounds) {
+          ctx.addIssue({
+            path: ["backgroundSounds"],
+            message: "Background Sounds  is required",
+          })
+        }
+      }
+    })
   );
   const {
     setFieldValue,

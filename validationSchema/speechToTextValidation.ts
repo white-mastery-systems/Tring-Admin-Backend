@@ -103,17 +103,37 @@ export const speechToTextValidation = z.object({
 })
   .superRefine((data, ctx) => {
     // Validation for Deepgram provider
-    if (data.provider === 'deepgram' && (!data.utteranceEndMs || data.utteranceEndMs.trim() === '')) {
+    // && (!data.utteranceEndMs || data.utteranceEndMs.trim() === '')
+    if (data.provider === 'deepgram') {
+      if (!data.utteranceEndMs || data.utteranceEndMs.trim() === '') {
       ctx.addIssue({
         path: ['utteranceEndMs'],
         message: "Utterance End Ms is required for Deepgram.",
       });
+    }
       if (data.assemblyaiamplificationFactor === undefined) {
         ctx.addIssue({
           path: ['assemblyaiamplificationFactor'],
           message: "Assembly Ai amplificationFactor is required.",
         });
       }
+      if (data.keywords || data.keywords.length) {
+      // Validate each wordboost entry
+      data.keywords.forEach((item, index) => {
+        if (!item.value || item.value.trim() === '') {
+          ctx.addIssue({
+            path: ['keywords', index, 'value'],
+            message: `Keyword ${index + 1} is required.`,
+          });
+        }
+        if (item.boostValue === undefined || item.boostValue === '') {
+          ctx.addIssue({
+            path: ['keywords', index, 'boostValue'],
+            message: `Boost value ${index + 1} is required.`,
+          });
+        }
+      });
+    }
     }
     // Validation for Google provider
     if (data.provider === 'google') {
@@ -129,16 +149,47 @@ export const speechToTextValidation = z.object({
           message: "Model is required for Google.",
         });
       }
+      if (data.phraseSets || data.phraseSets.length) {
+      // Validate each wordboost entry
+      data.phraseSets.forEach((item, index) => {
+        if (!item.value || item.value.trim() === '') {
+          ctx.addIssue({
+            path: ['phraseSets', index, 'value'],
+            message: `phraseSets ${index + 1} is required.`,
+          });
+        }
+      });
+      }
     }
 
     // Validation for AssemblyAI provider
     if (data.provider === 'assemblyai') {
-      if (!data.wordboost || data.wordboost.length === 0) {
-        ctx.addIssue({
-          path: ['wordboost'],
-          message: "Wordboost is required for AssemblyAI.",
-        });
-      }
+      // if (!data.wordboost || data.wordboost.length === 0) {
+      //   ctx.addIssue({
+      //     path: ['wordboost'],
+      //     message: "Wordboost is required for AssemblyAI.",
+      //   });
+      // }
+        if (data.provider === 'assemblyai') {
+    // Ensure wordboost is required for AssemblyAI
+    if (data.wordboost || data.wordboost.length) {
+      // Validate each wordboost entry
+      data.wordboost.forEach((item, index) => {
+        if (!item.value || item.value.trim() === '') {
+          ctx.addIssue({
+            path: ['wordboost', index, 'value'],
+            message: `Keyword ${index + 1} is required.`,
+          });
+        }
+        if (item.boostValue === undefined || item.boostValue === '') {
+          ctx.addIssue({
+            path: ['wordboost', index, 'boostValue'],
+            message: `Boost value ${index + 1} is required.`,
+          });
+        }
+      });
+    }
+  }
       if (data.endutterancesilencethreshold === undefined) {
         ctx.addIssue({
           path: ['endutterancesilencethreshold'],
@@ -152,6 +203,17 @@ export const speechToTextValidation = z.object({
           path: ['amplificationFactor'],
           message: "AmplificationFactor is required.",
         });
+      }
+      if (data.phraseLists || data.phraseLists.length) {
+      // Validate each wordboost entry
+      data.phraseLists.forEach((item, index) => {
+        if (!item.value || item.value.trim() === '') {
+          ctx.addIssue({
+            path: ['phraseLists', index, 'value'],
+            message: `phraseLists ${index + 1} is required.`,
+          });
+        }
+      });
       }
     }
   });
