@@ -5,6 +5,8 @@ definePageMeta({
 });
 const isResendDisabled = ref(false)
 const userDetails = ref()
+const countdownTime = ref(0)
+
 onMounted(() => {
   const storedDetails = localStorage.getItem('userDetails');
   // userDetails.value = null
@@ -19,7 +21,7 @@ onMounted(() => {
 
 const otpVerifySchema = toTypedSchema(
   z.object({
-    otp: z.string({ required_error: "OTP must be at least 4 characters long." }).min(4, "OTP is required."),
+    otp: z.string({ required_error: "OTP must be at least 4 characters long." }).length(4, "OTP must be exactly 4 characters long."),
   }));
 const {
   setFieldValue,
@@ -63,12 +65,22 @@ const resendOTP = () => {
     return
   }
   authHandlers.resendOtpVerification(getUserEmail)
+  values.otp = ""
+  countDownTimer()
   isResendDisabled.value = true
-
-  setTimeout(() => {
-    isResendDisabled.value = false
-  }, 30000)
 };
+
+const countDownTimer = () => {
+  countdownTime.value = 40
+  const countdownInterval = setInterval(() => {
+    countdownTime.value--;
+
+    if (countdownTime.value < 0) {
+      clearInterval(countdownInterval);
+      isResendDisabled.value = false;
+    }
+  }, 1000)
+} 
 </script>
 <template>
   <div class="flex flex-col items-center justify-center h-full w-full">
@@ -80,15 +92,17 @@ const resendOTP = () => {
     <div class="flex flex-col xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0">
       <!-- <div> -->
 
-      <form @submit="onSubmit" class="space-y-5">
-        <TextField type="text" name="otp" label="OTP Verification" placeholder="Enter Your OTP" required />
+      <form @submit.prevent="onSubmit" class="space-y-5">
+        <TextField type="text" name="otp" label="OTP Verification" placeholder="Enter Your OTP" required
+          disableCharacters />
         <UiButton type="submit" class="flex justify-center w-full bg-[#424bd1] h-[45px] hover:bg-[#424bd1]">
           Continue
         </UiButton>
       </form>
       <div class=" text-[#FFBC42] text-[14px] underline self-end cursor-pointer mt-3"
         :class="{ 'cursor-not-allowed': isResendDisabled }" @click="resendOTP" :disabled="isResendDisabled">
-        <span>Resend OTP</span>
+        <span v-if="!isResendDisabled">Resend OTP</span>
+        <span v-else>Resend available in {{ countdownTime }}</span>
       </div>
       <!-- <div class="submit-btn-align">
         <button class="font-bold" type="submit" @click="authHandlers.login(loginData)">

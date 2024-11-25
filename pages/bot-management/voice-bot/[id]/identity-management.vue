@@ -17,11 +17,11 @@
       },
     ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <div class="pb-2 sm:pb-0">
-      <form @submit="onSubmit" class="flex flex-col gap-2">
+      <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3">
           <TextField name="agentName" label="Agent Name" required placeholder="Enter agent name" />
           <SelectField name="agentLanguage" :options="languageList" label="Agent Language" placeholder="Agent Language"
-            helperText="Select your language."></SelectField>
+            helperText="Select your language." required></SelectField>
 
           <UiFormField v-slot="{ value, handleChange }" name="backgroundSoundControler">
             <UiFormItem class="w-[49%]">
@@ -36,8 +36,9 @@
               </div>
             </UiFormItem>
           </UiFormField>
-          <SelectField name="backgroundSounds" :options="backgroundSoundList" label="Background Sounds" :disabled="!values.backgroundSoundControler"
-            placeholder="Select Background Sound" helperText="Select your background sound." required></SelectField>
+          <SelectField name="backgroundSounds" :options="backgroundSoundList" label="Background Sounds"
+            :disabled="!values.backgroundSoundControler" placeholder="Select Background Sound"
+            helperText="Select your background sound." required></SelectField>
           <!-- <TextField name="agentLanguage" label="Agent Language" required placeholder="Enter agent language" /> -->
         </div>
         <div class="flex w-full justify-end">

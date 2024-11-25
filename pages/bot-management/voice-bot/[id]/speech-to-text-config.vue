@@ -13,24 +13,25 @@
     },
   ]">
     <div class="pb-2 sm:pb-0">
-      <form @submit.prevent="createEditSpeecToTextConfig">
+      <form @submit.prevent="createEditSpeecToTextConfig" class="space-y-3">
         <div class='grid grid-cols-2 gap-2 w-full'>
           <!-- <SelectField name="language" :options="languageList" label="Language" placeholder="Select Language"
             helperText="Select your language.">
           </SelectField> -->
-          <SelectField name="provider" :options="providers" label="provider" placeholder="Select provider"
-            helperText="Select your provider.">
+          <SelectField name="provider" :options="providers" label="Provider" placeholder="Select provider"
+            helperText="Select your provider." required>
           </SelectField>
-          <SelectField v-if="values.provider === 'google'" name="adaptation" :options="adaptations" label="adaptation"
-            placeholder="Select adaptation" helperText="Select your adaptation.">
+          <SelectField v-if="values.provider === 'google'" name="adaptation" :options="adaptations" label="Adaptation"
+            placeholder="Select adaptation" helperText="Select your adaptation." required>
           </SelectField>
-          <SelectField v-if="values.provider === 'google'" name="googlemodel" :options="models" label="model"
-            placeholder="Select model" helperText="Select your model.">
+          <SelectField v-if="values.provider === 'google'" name="googlemodel" :options="models" label="Model"
+            placeholder="Select Model" helperText="Select your model." required>
           </SelectField>
-          <SelectField v-if="values.provider === 'deepgram'" name="model" :options="models" label="model"
-            placeholder="Select model" helperText="Select your model.">
+          <SelectField v-if="values.provider === 'deepgram'" name="model" :options="models" label="Model"
+            placeholder="Select Model" helperText="Select your model.">
           </SelectField>
-          <div class="flex flex-col gap-2 mt-5" v-if="(values.provider === 'azure')">
+          <!-- v-if="(values.provider === 'azure')" -->
+          <div class="flex flex-col gap-2 mt-5">
             <RangeSlider :step="0.05" :name="parseFloat(values.amplificationFactor)" label="Amplification Factor"
               @update="
               ($event) => {
@@ -38,19 +39,20 @@
               }
             " required placeholder="Enter speaking Rate" min="0" max="4" />
           </div>
-          
+
           <TextField v-if="values.provider === 'deepgram'" label="Utterance End Ms" name="utteranceEndMs" required
-          placeholder="Utterance End Ms" disableCharacters />
-          
+            placeholder="Utterance End Ms" disableCharacters />
+          <TextField v-if="values.provider === 'google'" label="Recognizer" name="recognizer" required
+            placeholder="Enter Recognizer" />
           <TextField type="number" v-if="values.provider === 'deepgram'" label="End pointing" name="endpointing"
-          required placeholder="Enter endpointing" disableCharacters />
-          <div v-if="(values.provider === 'deepgram')" class="flex flex-col gap-2 mt-5">
+            required placeholder="Enter endpointing" disableCharacters />
+          <!-- <div v-if="(values.provider === 'deepgram')" class="flex flex-col gap-2 mt-5">
             <RangeSlider :step="0.05" :name="parseFloat(values.assemblyaiamplificationFactor)"
               label="Amplification Factor" @update="($event) => {
               setFieldValue('assemblyaiamplificationFactor', $event);
                 }
                 " required placeholder="Enter speaking Rate" min="0" max="4" />
-          </div>
+          </div> -->
           <TextField type="number" v-if="values.provider === 'assemblyai'" label="End pointing"
             name="endutterancesilencethreshold" required placeholder="Enter endpointing" disableCharacters />
         </div>
@@ -114,8 +116,8 @@
               <div class='flex items-end gap-2 mt-2'>
                 <TextField :label="`phrase list ${idx + 1}`" :id="`value_${idx}`" :name="`phraseLists[${idx}].value`"
                   required placeholder="Enter phrase" />
-                <UiButton v-if="(values.provider === 'azure')" variant="outline"
-                  type="button" @click="remove(idx)" :disabled="idx === 0">
+                <UiButton v-if="(values.provider === 'azure')" variant="outline" type="button" @click="remove(idx)"
+                  :disabled="idx === 0">
                   <CloseIcon class="w-4 h-4" />
                 </UiButton>
               </div>
@@ -262,6 +264,7 @@ const phraseArrayName = computed(() => {
     );
     setFieldValue("endpointing", botData.value?.speechToTextConfig.deepgram.endpointing);
     setFieldValue("adaptation", botData.value?.speechToTextConfig?.google?.adaptation)
+    setFieldValue("recognizer", botData.value?.speechToTextConfig.google?.recognizer || '')
     setFieldValue("endutterancesilencethreshold", botData.value?.speechToTextConfig.assemblyai?.end_utterance_silence_threshold)
     const word_boost_key = botData.value?.speechToTextConfig.assemblyai?.word_boost || [];
     const formatted_boost_key = word_boost_key.map((keyword: any) => {
@@ -316,16 +319,17 @@ watch(
     //   "amplificationFactor",
     //   botData.value?.speechToTextConfig[botData.value?.speechToTextConfig.provider].amplification_factor,
     // );
-    setFieldValue(
-      "assemblyaiamplificationFactor",
-      botData.value?.speechToTextConfig.deepgram.amplification_factor,
-    );
+    // setFieldValue(
+    //   "assemblyaiamplificationFactor",
+    //   botData.value?.speechToTextConfig.deepgram.amplification_factor,
+    // );
     setFieldValue(
       "amplificationFactor",
-      botData.value?.speechToTextConfig.azure.amplification_factor,
+      botData.value?.speechToTextConfig[botData.value?.speechToTextConfig?.provider].amplification_factor,
     );
     setFieldValue("endpointing", botData.value?.speechToTextConfig.deepgram.endpointing);
     setFieldValue("adaptation", botData.value?.speechToTextConfig.google?.adaptation)
+    setFieldValue("recognizer", botData.value?.speechToTextConfig.google?.recognizer || '')
     setFieldValue("endutterancesilencethreshold", botData.value?.speechToTextConfig.assemblyai?.end_utterance_silence_threshold)
     const word_boost_key = botData.value?.speechToTextConfig.assemblyai?.word_boost || [];
     const formatted_boost_key = word_boost_key?.map((keyword: any) => {
@@ -368,69 +372,51 @@ const inputChanges = ($event: any) => {
 
 const createEditSpeecToTextConfig = handleSubmit(async (value) => {
   isLoading.value = true;
-  console.log(value, "value -- value -- value")
-  const getProvider = Object.keys(botData.value?.speechToTextConfig || {});
+  // const getProvider = Object.keys(botData.value?.speechToTextConfig || {});
 
   const updatedConfig: any = {
     // language: value.language || botData.value?.speechToTextConfig.language || "en-IN",
     provider: value.provider || botData.value?.speechToTextConfig.provider || 'deepgram',
   };
+  // Google config
+  if (value.provider === "google") {
+    updatedConfig.google = {
+      model: value.googlemodel || 'short',
+      adaptation: value.adaptation || true,
+      phrase_sets: value.phraseSets?.map((item: any) => item.value || []),
+      amplification_factor: value.amplificationFactor || 2,
+    };
+  }
 
-  getProvider.forEach((provider) => {
-    if (provider !== "provider") {
-      updatedConfig[provider] = {};
+  // Azure config
+  else if (value.provider === "azure") {
+    updatedConfig.azure = {
+      phrase_list: value.phraseLists?.map((item: any) => item.value) || [],
+      amplification_factor: value.amplificationFactor || 2,
+    };
+  }
 
-      // Google config
-      if (provider === "google") {
-        updatedConfig.google = {
-          model: value.googlemodel || botData.value?.speechToTextConfig.google?.model || 'short',
-          adaptation: value.adaptation !== undefined
-            ? value.adaptation
-            : botData.value?.speechToTextConfig.google?.adaptation || true,
-          phrase_sets: value.phraseSets?.map((item: any) => item.value || [])
+  // Deepgram config
+  else if (value.provider === "deepgram") {
+    updatedConfig.deepgram = {
+      model: value.model || 'nova-2',
+      keywords: value.keywords?.map((keywordObj: any) => `${keywordObj.value}:${keywordObj.boostValue}`) || [],
         
-        };
-      }
-
-      // Azure config
-      if (provider === "azure") {
-        updatedConfig.azure = {
-          phrase_list: value.phraseLists?.map((item: any) => item.value) || [],
-            
-          amplification_factor: value.amplificationFactor !== undefined
-            ? value.amplificationFactor
-            : botData.value?.speechToTextConfig.azure?.amplification_factor || 3,
-        };
-      }
-
-      // Deepgram config
-      if (provider === "deepgram") {
-        updatedConfig.deepgram = {
-          model: value.model || botData.value?.speechToTextConfig.deepgram?.model || 'nova-2',
-          keywords: value.keywords?.map((keywordObj: any) => `${keywordObj.value}:${keywordObj.boostValue}`) || [],
-            
-          endpointing: value.endpointing !== undefined
-            ? value.endpointing
-            : botData.value?.speechToTextConfig.deepgram?.endpointing || 250,
-          utterance_end_ms: value.utteranceEndMs !== undefined
-            ? String(value.utteranceEndMs)
-            : botData.value?.speechToTextConfig.deepgram?.utterance_end_ms || '1000',
-          amplification_factor: value.assemblyaiamplificationFactor !== undefined
-            ? value.assemblyaiamplificationFactor
-            : botData.value?.speechToTextConfig.deepgram?.amplification_factor || 2,
-        };
-      }
-      // AssemblyAI config
-      if (provider === "assemblyai") {
-        updatedConfig.assemblyai = {
-          word_boost: value.wordboost?.map((keywordObj: any) => `${keywordObj.value}:${keywordObj.boostValue}` || []),
-          end_utterance_silence_threshold: value.endUtteranceSilenceThreshold !== undefined
-            ? value.endUtteranceSilenceThreshold
-            : botData.value?.speechToTextConfig.assemblyai?.end_utterance_silence_threshold || 300,
-        };
-      }
-    }
-  });
+      endpointing: value.endpointing || 250,
+      utterance_end_ms: String(value.utteranceEndMs) || '1000',
+      amplification_factor: value.amplificationFactor || 2,
+    };
+  }
+  // AssemblyAI config
+  else if (value.provider === "assemblyai") {
+    updatedConfig.assemblyai = {
+      word_boost: value.wordboost?.map((keywordObj: any) => `${keywordObj.value}:${keywordObj.boostValue}` || []),
+      end_utterance_silence_threshold: value.endUtteranceSilenceThreshold || 300,
+      amplification_factor: value.amplificationFactor || 2,
+    };
+  }
+  // getProvider.forEach((provider) => {
+  // });
 
   // Uncomment to save changes
   await $fetch(`/api/voicebots/${route.params.id}`, {

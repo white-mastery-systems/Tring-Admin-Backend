@@ -78,11 +78,12 @@ import { z } from 'zod';
 
 export const speechToTextValidation = z.object({
   provider: z.string().min(1, "Provider is required"),
+  recognizer: z.string().optional(),
   adaptation: z.boolean().optional(),
   model: z.string().optional(),
   googlemodel: z.string().optional(),
-  amplificationFactor: z.number().optional(),
-  assemblyaiamplificationFactor: z.number().optional(),
+  amplificationFactor: z.number({ required_error: "AmplificationFactor is required."}).min(1, "AmplificationFactor is required."),
+  // assemblyaiamplificationFactor: z.number().optional(),
   utteranceEndMs: z.string().optional(),
   endpointing: z.number().optional(),
   endutterancesilencethreshold: z.number().optional(),
@@ -111,12 +112,12 @@ export const speechToTextValidation = z.object({
         message: "Utterance End Ms is required for Deepgram.",
       });
     }
-      if (data.assemblyaiamplificationFactor === undefined) {
-        ctx.addIssue({
-          path: ['assemblyaiamplificationFactor'],
-          message: "Assembly Ai amplificationFactor is required.",
-        });
-      }
+      // if (data.assemblyaiamplificationFactor === undefined) {
+      //   ctx.addIssue({
+      //     path: ['assemblyaiamplificationFactor'],
+      //     message: "Assembly Ai amplificationFactor is required.",
+      //   });
+      // }
       if (data.keywords || data.keywords.length) {
       // Validate each wordboost entry
       data.keywords.forEach((item, index) => {
@@ -149,7 +150,13 @@ export const speechToTextValidation = z.object({
           message: "Model is required for Google.",
         });
       }
-      if (data.phraseSets || data.phraseSets.length) {
+      if (!data.recognizer?.trim()) {
+        ctx.addIssue({
+          path: ['recognizer'],
+          message: "Recognizer is required for Google.",
+        });
+      }
+      if (data.phraseSets || data?.phraseSets?.length) {
       // Validate each wordboost entry
       data.phraseSets.forEach((item, index) => {
         if (!item.value || item.value.trim() === '') {
@@ -172,7 +179,7 @@ export const speechToTextValidation = z.object({
       // }
         if (data.provider === 'assemblyai') {
     // Ensure wordboost is required for AssemblyAI
-    if (data.wordboost || data.wordboost.length) {
+    if (data.wordboost || data?.wordboost?.length) {
       // Validate each wordboost entry
       data.wordboost.forEach((item, index) => {
         if (!item.value || item.value.trim() === '') {
@@ -198,13 +205,13 @@ export const speechToTextValidation = z.object({
       }
     }
     if (data.provider === 'azure') {
-      if (data.amplificationFactor === undefined) {
-        ctx.addIssue({
-          path: ['amplificationFactor'],
-          message: "AmplificationFactor is required.",
-        });
-      }
-      if (data.phraseLists || data.phraseLists.length) {
+      // if (data.amplificationFactor === undefined) {
+      //   ctx.addIssue({
+      //     path: ['amplificationFactor'],
+      //     message: "AmplificationFactor is required.",
+      //   });
+      // }
+      if (data.phraseLists || data?.phraseLists?.length) {
       // Validate each wordboost entry
       data.phraseLists.forEach((item, index) => {
         if (!item.value || item.value.trim() === '') {

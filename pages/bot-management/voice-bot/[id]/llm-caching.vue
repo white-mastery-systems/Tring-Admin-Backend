@@ -17,7 +17,7 @@
     },
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <div class="pb-2 sm:pb-0">
-      <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
+      <form @submit.prevent="onSubmit" class="flex flex-col gap-2 space-y-8">
         <div class="flex flex-col gap-5">
           <!-- LLM Caching Field -->
           <UiFormField v-slot="{ value, handleChange }" name="llmCaching">
@@ -57,9 +57,9 @@
           </UiFormField>
 
           <!-- Distance Field -->
-          <RangeSlider v-if="values.dynamicCaching" :step="0.05" :name="parseFloat(values.distance)" label="Distance"
-            @update="($event) => setFieldValue('distance', $event)" required placeholder="Enter distance"
-            min="0" max="1" />
+          <RangeSlider v-if="values.llmCaching" :step="0.05" :name="parseFloat(values.distance)" label="Distance"
+            @update="($event) => setFieldValue('distance', $event)" required placeholder="Enter distance" min="0"
+            max="1" />
         </div>
 
         <div class="flex w-full justify-end">
