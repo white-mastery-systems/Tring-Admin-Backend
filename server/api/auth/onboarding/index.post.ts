@@ -1,8 +1,8 @@
-
 import { createOrgSubscription } from "~/server/utils/db/organization";
 import { createZohoCustomer } from "~/server/utils/zoho/customer";
 
 const db = useDrizzle()
+const config = useRuntimeConfig();
 
 const bodyValidationSchema = z.object({
   name: z.string().min(1),
@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
   ]) 
  
   sendEmail(
-    "orgtest@yopmail.com", // to
+    `${config?.envType !== "stage" ? "rianozal@tringlabs.ai" : "testing747@yopmail.com" }`, // to
      `Welcome aboard: ${org.name}`, // subject
     `<div>                             
       <p>Hi</p> 
