@@ -152,10 +152,10 @@ export const textToSpeechValidation = z.object({
     z.string().transform(Number),
   ]).optional(),
   
-  speakingRate: z.union([
-    z.number().optional(),
-    z.string().transform(Number),
-  ]).optional(),
+  // speakingRate: z.union([
+  //   z.number().optional(),
+  //   z.string().transform(Number),
+  // ]).optional(),
   
   speakingSpeed: z.union([
     z.number().optional(),
@@ -172,6 +172,7 @@ export const textToSpeechValidation = z.object({
   ]).optional(),
   
   speaker: z.string().optional(),
+  apikey: z.string().optional(),
   sampleRate: z.number().optional(),
   
   voice: z.string().optional(),
@@ -206,12 +207,12 @@ export const textToSpeechValidation = z.object({
           message: 'Pitch is required for Google.',
         });
       }
-      if (data.speakingRate === undefined) {
-        ctx.addIssue({
-          path: ['speakingRate'],
-          message: 'Speaking Rate is required for Google.',
-        });
-      }
+      // if (data.speakingRate === undefined) {
+      //   ctx.addIssue({
+      //     path: ['speakingRate'],
+      //     message: 'Speaking Rate is required for Google.',
+      //   });
+      // }
       if (data.volumeGainDb === undefined) {
         ctx.addIssue({
           path: ['volumeGainDb'],
@@ -266,6 +267,18 @@ export const textToSpeechValidation = z.object({
           message: 'Voice is required for Eleven Labs.',
         });
       }
+      if (!data.apikey?.trim()) {
+        ctx.addIssue({
+          path: ['apikey'],
+          message: 'API key is required for Eleven Labs.',
+        });
+      }
+       if (!data.speaker?.trim()) {
+        ctx.addIssue({
+          path: ['speaker'],
+          message: 'Speaker is required.',
+        });
+      }
     }
 
     // Validation for Tring provider
@@ -292,6 +305,12 @@ export const textToSpeechValidation = z.object({
         ctx.addIssue({
           path: ['sampleRate'],
           message: 'Sample Rate is required for Tring.',
+        });
+      }
+      if (!data.apikey?.trim()) {
+        ctx.addIssue({
+          path: ['apikey'],
+          message: 'API key is required.',
         });
       }
     }

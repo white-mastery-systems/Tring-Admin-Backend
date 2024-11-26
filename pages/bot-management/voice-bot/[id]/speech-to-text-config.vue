@@ -385,6 +385,7 @@ const createEditSpeecToTextConfig = handleSubmit(async (value) => {
       adaptation: value.adaptation || true,
       phrase_sets: value.phraseSets?.map((item: any) => item.value || []),
       amplification_factor: value.amplificationFactor || 2,
+      recognizer: value.recognizer || '',
     };
   }
 
@@ -402,7 +403,7 @@ const createEditSpeecToTextConfig = handleSubmit(async (value) => {
       model: value.model || 'nova-2',
       keywords: value.keywords?.map((keywordObj: any) => `${keywordObj.value}:${keywordObj.boostValue}`) || [],
         
-      endpointing: value.endpointing || 250,
+      endpointing: value.endpointing || 300,
       utterance_end_ms: String(value.utteranceEndMs) || '1000',
       amplification_factor: value.amplificationFactor || 2,
     };
@@ -411,7 +412,7 @@ const createEditSpeecToTextConfig = handleSubmit(async (value) => {
   else if (value.provider === "assemblyai") {
     updatedConfig.assemblyai = {
       word_boost: value.wordboost?.map((keywordObj: any) => `${keywordObj.value}:${keywordObj.boostValue}` || []),
-      end_utterance_silence_threshold: value.endUtteranceSilenceThreshold || 300,
+      end_utterance_silence_threshold: value.endutterancesilencethreshold || 300,
       amplification_factor: value.amplificationFactor || 2,
     };
   }

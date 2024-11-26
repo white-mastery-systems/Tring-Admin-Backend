@@ -118,7 +118,7 @@ export const speechToTextValidation = z.object({
       //     message: "Assembly Ai amplificationFactor is required.",
       //   });
       // }
-      if (data.keywords || data.keywords.length) {
+      if (data.keywords || data?.keywords?.length) {
       // Validate each wordboost entry
       data.keywords.forEach((item, index) => {
         if (!item.value || item.value.trim() === '') {

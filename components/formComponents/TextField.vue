@@ -187,5 +187,8 @@
     if (value.value.trim() === "") {
       value.value = "";
     }
+    // if (props.name === 'apikey') {
+    //   value.value = value.value.replace(/.(?=.{4})/g, "*")
+    // }
   });
 </script>
