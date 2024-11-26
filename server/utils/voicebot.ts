@@ -1,9 +1,10 @@
-export let defaultSpeechToTextConfig = {
+export let defaultSpeechToTextConfig = {     
     "provider": "deepgram",
     "google": {
         "adaptation": true,
         "phrase_sets": [],
         "model": "short",
+        "recognizer": "",
         "amplification_factor": 2
     },
     "azure": {
@@ -37,16 +38,18 @@ export let defaultTextToSpeechConfig = {
         "stability": 0.5,
         "similarity_boost": 1,
         "style": 0.5,
-        "use_speaker_boost": false
+        "use_speaker_boost": false,
+        "voice": "",
+        "model": ""
     },
     "deepgram": {
         "voice": "aura-asteria-en"
     },
     "tring": {
         "api_key": "",
-        "speaker": "jaya", // (dropdown values Jaya,Kevin,Sneha)
-        "speed": 1, // (0 to 2)
-        "sample_rate":  250
+        "speaker": "", 
+        "speed": 1, 
+        "silence_pad":  250
     }
 }
 
