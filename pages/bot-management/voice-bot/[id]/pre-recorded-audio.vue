@@ -21,7 +21,7 @@
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3">
           <!-- <TextField name="intent" label="Intent " required placeholder="Enter Intent " /> -->
           <SelectField name="intent" :options="intentList" label="Intent" placeholder="Select Intent"
-            helperText="Select your intent."></SelectField>
+            helperText="Select your intent." required></SelectField>
         </div>
         <!-- {{ values }} || sdfdsuyfg -->
         <div class="flex">

@@ -10,7 +10,7 @@
       },
     ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="false">
     <div class="shadow-md mx-5 rounded-lg ">
-      <form @submit.prevent="handleLLMConfigSubmit">
+      <form @submit.prevent="handleLLMConfigSubmit" class="space-y-3">
         <div class="grid w-full grid-cols-2 gap-2">
           <!-- <SelectField name="provider" label="Provider" placeholder="Select Provider" :options="provider" required />
 
@@ -24,7 +24,7 @@
                 ($event) => {
                   setFieldValue('temperature', $event);
                 }
-              " required placeholder="Enter speaking Rate" min="0" max="1" />
+              " required placeholder="Enter speaking Rate" min="0" max="2" />
           </div>
         </div>
         <div class="spcace-y-2 grid w-full grid-cols-2 gap-2">
