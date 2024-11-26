@@ -139,7 +139,7 @@
             </UiDialogDescription>
           </UiDialogHeader>
           <UiButton
-            class="deploy-bot-list-align bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42]"
+            class="bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42] min-w-[90%] max-w-[100%]"
             v-for="list in getDocumentList.documents.filter(
               (item: any) => item.status === 'ready',
             )" :key="list.id" @click="
@@ -149,7 +149,9 @@
                 await singleDocumentDeploy(list);
               }
             ">
-            {{ list.name }}
+            <span class="w-[95%] truncate">
+              {{ list.name }}
+            </span>
           </UiButton>
         </UiDialogContent>
       </LazyUiDialog>

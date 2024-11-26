@@ -83,7 +83,8 @@
               </div>
               <div v-if="formattedScheduels.length || formattedChats.length"
                 class="overflow-scroll h-[40vh] gap-2 scrollable-container field_shadow mt-5 rounded-lg">
-                <div v-if="formattedScheduels.length" class="flex justify-center font-medium mt-4">Intracted Forms</div>
+                <div v-if="formattedScheduels.length" class="flex justify-center font-medium mt-4">Interacted Forms
+                </div>
                 <div v-if="formattedScheduels.length" class="gap-2 rounded-lg">
                   <div v-for="(dynamicForm, keys) in formattedScheduels" :key="keys" class="p-4">
                     <div class="p-5 rounded-lg gap-4 field_shadow">

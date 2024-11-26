@@ -5,7 +5,7 @@ definePageMeta({
 
 const formSchema = toTypedSchema(
   z.object({
-    ivrConfig: z.string({ required_error: 'Number is required' }).min(1, 'Number is required'),
+    ivrConfig: z.string({ required_error: 'Number is required' }).min(1, { message: 'Number is required' }),
     // provider: z.string({ required_error: 'Name is required' }).min(1, 'Name is required'),
     // number: z.string({ required_error: "Number must be provided." }).min(2, "Number must be provided."),
     // calldirection: z.string({ required_error: 'Call direction is required' }).min(1, 'Call direction is required'),
@@ -55,13 +55,15 @@ watchEffect(() => {
     });
   }
 });
-watch(botData, (newValue) => {
-  resetForm();
-  setFieldValue("ivrConfig", botData.value.ivrConfig);
-})
+  setFieldValue("ivrConfig", botData.value?.ivrConfig ?? '');
+// watch(botData, (newValue) => {
+//   console.log(botData.value?.ivrConfig, "botData.value?.ivrConfig")
+//   resetForm();
+// })
 
 
 const onSubmit = handleSubmit(async (value: any) => {
+  console.log("sadas -- asfsad")
   isLoading.value = true;
   try {
     await updateLLMConfig(value, botDetails.id, "The IVR Configuration has been added successfully.");
@@ -87,7 +89,7 @@ const onSubmit = handleSubmit(async (value: any) => {
     },
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <div>
-      <form @submit="onSubmit">
+      <form @submit.prevent="onSubmit">
         <div class="flex grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
           <!-- <TextField name="provider" label="IVR Provider" placeholder="Enter Provider" helperText="" required>
           </TextField>
@@ -97,7 +99,7 @@ const onSubmit = handleSubmit(async (value: any) => {
             required>
           </TextField> -->
           <SelectField name="ivrConfig" label="Phone Number" :options="integrationsData"
-            placeholder="Assign a phone number to the bot." />
+            placeholder="Assign a phone number to the bot." required/>
         </div>
         <div class="flex justify-end w-full">
           <UiButton type="submit" color="primary" size="lg" :loading="isLoading">

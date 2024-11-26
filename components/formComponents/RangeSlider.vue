@@ -108,12 +108,13 @@ const decrement = () => {
       <Slider v-model="value" :min="0" :max="max" :step="step" />
     </FormItem>
   </FormField>
-  <div class="flex gap-6 justify-end">
-    <div class="flex gap-1">
-      <UiButton type="button" color="primary" size="xs" @click="decrement" :disabled="value?.[0] <= min">-</UiButton>
+  <div class="relative flex gap-6 justify-end">
+    <div class="absolute bottom-[-27px] right-[70px] flex gap-2">
+      <UiButton type="button" color="primary" class="p-2" size="xs" @click="decrement" :disabled="value?.[0] <= min">-</UiButton>
       <UiButton type="button" color="primary" size="xs" @click="increment" :disabled="value?.[0] >= max">+</UiButton>
     </div>
-    <span style="text-align: end;">{{ value?.[0] }}</span>
+    <div class="absolute bottom-[-27px] right-2 flex gap-2">
+      <span style="text-align: end;">{{ value?.[0] }}</span>
+    </div>
   </div>
-
 </template>

@@ -413,7 +413,7 @@ const isSiteVisit = computed(() => {
   };
 
   const dateTimeFormat = (text, format) => {
-    const dateTimeStr = text?.replace("Site Visit Scheduled on", "")?.trim();
+    const dateTimeStr = text?.replace(/(Call Scheduled on|Site Visit Scheduled on|Rescheduled Site Visit on|Rescheduled Call on)/, "")?.trim();
     const [dateStr, timeStr] = dateTimeStr?.split(" - ");
 
     if (format === "time") return timeStr;
