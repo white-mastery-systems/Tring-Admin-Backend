@@ -74,7 +74,8 @@ export default defineEventHandler(async (event) => {
       botType: "chat",
       subscriptionId: data.data.subscription.subscription_id,
       planCode: data.data.subscription.plan.plan_code,
-      expiryDate: data.data.subscription.next_billing_at
+      expiryDate: data.data.subscription.next_billing_at,
+      status: "active"
     }
 
     try {
