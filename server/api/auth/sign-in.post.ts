@@ -91,5 +91,11 @@ export default defineEventHandler(async (event) => {
     lucia.createSessionCookie(session.id).serialize(),
   );
 
- return { status: true }
+ return { 
+    status: true, 
+    data: {
+      username: user?.username,
+      email: user?.email
+    } 
+  }
 });
