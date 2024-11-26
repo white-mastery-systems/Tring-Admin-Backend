@@ -59,22 +59,25 @@ export default defineEventHandler(async (event) => {
   )
   ]) 
  
-  sendEmail(
-    `${config?.envType !== "stage" ? "rianozal@tringlabs.ai" : "testing747@yopmail.com" }`, // to
-     `Welcome aboard: ${org.name}`, // subject
-    `<div>                             
-      <p>Hi</p> 
-      <p><strong>${updatedUser.username}</strong> just started their journey with Tring AI.</p> 
-      <p>Greetings are sent, and onboarding is in progress.</p>
-      <div>
-        <p><strong>User Details:</strong></p>
-        <p>Name: ${updatedUser.username}</p>
-        <p>Email: ${updatedUser.email}</p>
-        <p>Role: ${updatedUser?.metadata?.role || updatedUser?.metadata?.otherRole}</p>
-        <p>Industry: ${org.metadata?.industry || org?.metadata?.otherRole }</p>
-        </div>
-      <p>Best,<br>support@tringlabs.ai</p>
-    </div>`)
+  if(config?.envType !== "stage") {
+    sendEmail(
+      "rianozal@tringlabs.ai", // to
+      `Welcome aboard: ${org.name}`, // subject
+      `<div>                             
+        <p>Hi</p> 
+        <p><strong>${updatedUser.username}</strong> just started their journey with Tring AI.</p> 
+        <p>Greetings are sent, and onboarding is in progress.</p>
+        <div>
+          <p><strong>User Details:</strong></p>
+          <p>Name: ${updatedUser.username}</p>
+          <p>Email: ${updatedUser.email}</p>
+          <p>Role: ${updatedUser?.metadata?.role || updatedUser?.metadata?.otherRole}</p>
+          <p>Industry: ${org.metadata?.industry || org?.metadata?.otherRole }</p>
+          </div>
+        <p>Best,<br>support@tringlabs.ai</p>
+      </div>`
+    )
+  }
 
    sendEmail(
     updatedUser.email, // to
@@ -82,9 +85,9 @@ export default defineEventHandler(async (event) => {
     `<div>
        <p>Hi <strong>${updatedUser?.username}</strong>,</p>
        <p>Welcome to Tringlabs.ai🎉</p>
-       <p>Wohoo!! We’re Excited to Have You Onboard 🎉</p>
-       <p>We're thrilled to welcome you to Tring AI - your hub for creating captivating conversational voice and chat agents, designed to help you achieve your revenue goals. Here’s to smarter customer service!</p>
-       <p>In just a few simple steps, you'll be on your way to making waves in the world of communication.</p>
+        <p>Wohoo!! We’re Excited to Have You Onboard 🎉</p>
+        <p>We're thrilled to welcome you to Tring AI - your hub for creating captivating conversational voice and chat agents, designed to help you achieve your revenue goals. Here’s to smarter customer service!</p>
+        <p>In just a few simple steps, you'll be on your way to making waves in the world of communication.</p>
        <p>Cheers,<br>Rian Ozal</p>
     </div>`)
 
