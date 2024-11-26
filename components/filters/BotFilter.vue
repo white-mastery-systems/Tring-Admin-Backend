@@ -25,12 +25,12 @@
 <script setup lang="ts">
   const emit = defineEmits(["input"]);
 
-  // interface Bot {
-  //   id: string;
-  //   name: string;
-  // }
-const bot = ref("all");
-  // const bot = defineModel<string>({ required: true, default: "all" });
+  interface Bot {
+    id: string;
+    name: string;
+  }
+// const bot = ref("all");
+  const bot = defineModel<string>({ required: true, default: "all" });
   const { status, data: bots } = await useLazyFetch<Bot[]>("/api/bots", {
     server: false,
     default: () => [],
@@ -38,6 +38,7 @@ const bot = ref("all");
   });
   const findBot = (botId: string) =>
   bots.value.find((bot) => bot.id === botId) as Bot;
+
   watch(bot, (newValue) => {
     emit("input", newValue)
   });

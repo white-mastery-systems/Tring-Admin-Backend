@@ -22,7 +22,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   llmConfig: jsonb("llm_config").default({
     temperature: 1,
     top_p: "0.95",
-    top_k: "64",
+    top_k: "40",
     max_output_token: "8192",
     prompt: "",
   }),
@@ -35,27 +35,32 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
         "volume_gain_db": 0.5
     },
     "elevenlabs": {
+        "api_key": "",
         "stability": 0.5,
         "similarity_boost": 1,
         "style": 0.5,
-        "use_speaker_boost": false
+        "use_speaker_boost": false,
+        "voice": "",
+        "model": ""
     },
     "deepgram": {
         "voice": "aura-asteria-en"
     },
     "tring": {
-        "speaker": "jaya", // (dropdown values Jaya,Kevin,Sneha)
-        "speed": 1, // (0 to 2)
-        "sample_rate": 44100
+        "api_key": "",
+        "speaker": "",
+        "speed": 1,
+        "silence_pad":  250
     }
   }),
-  speechToTextConfig: jsonb("speech_to_text_config").default(
-  {     
+  speechToTextConfig: jsonb("speech_to_text_config").default({     
     "provider": "deepgram",
     "google": {
         "adaptation": true,
         "phrase_sets": [],
         "model": "short",
+        "recognizer": "",
+        "amplification_factor": 2
     },
     "azure": {
         "phrase_list": [],
@@ -70,7 +75,8 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     },
     "assemblyai" : {
         "word_boost": [],
-        "end_utterance_silence_threshold": 300, // (0 to 5000)
+        "end_utterance_silence_threshold": 300,
+        "amplification_factor": 2
     }
   }),
   botDetails: jsonb("bot_details"),

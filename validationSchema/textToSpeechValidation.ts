@@ -3,7 +3,7 @@
 //   language: z.string().min(1, "Language is required").optional(),
 //   pitch: z.string().min(1, "Pitch is required").optional().default("1"),
 //   speakingRate: z.string().min(1, "Speaking Rate is required").optional().default("1"),
-//   volumeGrainDb: z.string().min(1, "Volume Grain db is required").optional().default("0.5"),
+//   volumeGainDb: z.string().min(1, "Volume Grain db is required").optional().default("0.5"),
 //   stability: z.string().min(1, "stability is required").optional().default("0.5"),
 //   similarityBoost: z.string().min(1, "Similarity Boost is required").optional().default("1"),
 //   style: z.string().min(1, "Style is required").optional().default("0.5"),
@@ -19,10 +19,10 @@
 //   name: z.string().optional(),
 //   // pitch: z.number().min(0, "Pitch is required").optional(),
 //   // speakingRate: z.number().min(0, "Speaking Rate is required").optional(),
-//   // volumeGrainDb: z.number().min(0, "Volume Gain dB is required").optional(),
+//   // volumeGainDb: z.number().min(0, "Volume Gain dB is required").optional(),
 //   pitch: z.union([z.number().min(0, "Pitch is required"), z.string().transform(Number)]).optional(),
 //   speakingRate: z.union([z.number().min(0, "Speaking Rate is required"), z.string().transform(Number)]).optional(),
-//   volumeGrainDb: z.union([z.number().min(0, "Volume Gain dB is required"), z.string().transform(Number)]).optional(),
+//   volumeGainDb: z.union([z.number().min(0, "Volume Gain dB is required"), z.string().transform(Number)]).optional(),
 //   voice: z.string({ required_error: 'Voice is required'}).optional(),
 //   elevenlabsvoice: z.string({ required_error: 'Voice is required'}).optional(),
 //   modal: z.string({required_error: 'Modal is required'}).optional(),
@@ -34,7 +34,7 @@
 
 //   if (data.provider === 'google') {
 //     // Ensure 'pitch', 'speakingRate', and 'volumeGainDb' are provided
-//     return data.pitch !== undefined && data.speakingRate !== undefined && data.volumeGrainDb !== undefined && data.name && data.name.trim() !== '';
+//     return data.pitch !== undefined && data.speakingRate !== undefined && data.volumeGainDb !== undefined && data.name && data.name.trim() !== '';
 //   }
 //   if (data.provider === 'deepgram') {
 //     // Ensure 'voice' is provided
@@ -73,7 +73,7 @@
 //     z.number().min(0, "Speaking speed is required"),
 //     z.string().transform(Number),
 //   ]).optional(),
-//   volumeGrainDb: z.union([
+//   volumeGainDb: z.union([
 //     z.number().min(0, "Volume Gain dB is required"),
 //     z.string().transform(Number),
 //   ]).optional(),
@@ -113,7 +113,7 @@
 //       return (
 //         data.pitch !== undefined && 
 //         data.speakingRate !== undefined && 
-//         data.volumeGrainDb !== undefined &&
+//         data.volumeGainDb !== undefined &&
 //         data.name?.trim() !== ''
 //       );
 //     case 'deepgram':
@@ -152,22 +152,27 @@ export const textToSpeechValidation = z.object({
     z.string().transform(Number),
   ]).optional(),
   
-  speakingRate: z.union([
-    z.number().optional(),
-    z.string().transform(Number),
-  ]).optional(),
+  // speakingRate: z.union([
+  //   z.number().optional(),
+  //   z.string().transform(Number),
+  // ]).optional(),
   
   speakingSpeed: z.union([
     z.number().optional(),
     z.string().transform(Number),
   ]).optional(),
+  silence_pad: z.union([
+    z.number().optional(),
+    z.string().transform(Number),
+  ]).optional(),
   
-  volumeGrainDb: z.union([
+  volumeGainDb: z.union([
     z.number().optional(),
     z.string().transform(Number),
   ]).optional(),
   
   speaker: z.string().optional(),
+  apikey: z.string().optional(),
   sampleRate: z.number().optional(),
   
   voice: z.string().optional(),
@@ -202,15 +207,15 @@ export const textToSpeechValidation = z.object({
           message: 'Pitch is required for Google.',
         });
       }
-      if (data.speakingRate === undefined) {
+      // if (data.speakingRate === undefined) {
+      //   ctx.addIssue({
+      //     path: ['speakingRate'],
+      //     message: 'Speaking Rate is required for Google.',
+      //   });
+      // }
+      if (data.volumeGainDb === undefined) {
         ctx.addIssue({
-          path: ['speakingRate'],
-          message: 'Speaking Rate is required for Google.',
-        });
-      }
-      if (data.volumeGrainDb === undefined) {
-        ctx.addIssue({
-          path: ['volumeGrainDb'],
+          path: ['volumeGainDb'],
           message: 'Volume Gain dB is required for Google.',
         });
       }
@@ -262,6 +267,12 @@ export const textToSpeechValidation = z.object({
           message: 'Voice is required for Eleven Labs.',
         });
       }
+      if (!data.apikey?.trim()) {
+        ctx.addIssue({
+          path: ['apikey'],
+          message: 'API key is required for Eleven Labs.',
+        });
+      }
     }
 
     // Validation for Tring provider
@@ -270,6 +281,12 @@ export const textToSpeechValidation = z.object({
         ctx.addIssue({
           path: ['speakingSpeed'],
           message: 'Speaking Speed is required for Tring.',
+        });
+      }
+      if (data.silence_pad === undefined) {
+        ctx.addIssue({
+          path: ['silence_pad'],
+          message: 'Silence Pad is required for Tring.',
         });
       }
       if (!data.speaker?.trim()) {
@@ -282,6 +299,12 @@ export const textToSpeechValidation = z.object({
         ctx.addIssue({
           path: ['sampleRate'],
           message: 'Sample Rate is required for Tring.',
+        });
+      }
+      if (!data.apikey?.trim()) {
+        ctx.addIssue({
+          path: ['apikey'],
+          message: 'API key is required.',
         });
       }
     }

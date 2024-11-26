@@ -12,8 +12,14 @@ import BlotFormatter from 'quill-blot-formatter';
 const modules = {
   module: BlotFormatter,
 }
+const styledContent = `
+  </p><p><strong style="background-color: rgb(255, 255, 0); color: rgb(230, 0, 0);">This is an example paragraph with some styled content.</strong></p><p>
+  </p><p class="ql-align-center"><span style="color: rgb(230, 0, 0);">Center-aligned text.</span></p><p class="ql-align-center"><span style="color: rgb(161, 0, 0);">Sathish Testing Email Editor.</span></p><p>
+</p>
+`;
+
 const { state, setBody } = store; // Destructure to access the reactive state and method
-const content = ref('')
+const content = ref(styledContent)
 const router = useRouter();
 const route = useRoute("bot-management-chat-bot-id-config");
 const quillRef: any = ref(null);
@@ -40,13 +46,12 @@ watch(content, newValue => {
 
 watch(
   () => state.body,
-  (newValue, oldValue) => {
+  (newValue, oldValue) => { 
     if (newContent === newValue) return
     quillRef.value.setHTML(newValue)
 
     nextTick(() => {
       let q = quillRef.value.getQuill()
-      console.log(q, "q")
       q.setSelection(newValue.length, 0, 'api')
       q.focus()
     })

@@ -74,6 +74,7 @@ export default defineEventHandler(async (event) => {
       const orgSubscriptionPromise = db
         .update(orgSubscriptionSchema)
         .set({
+          status: "active",
           walletSessions: walletSessions,
         })
         .where(and(
