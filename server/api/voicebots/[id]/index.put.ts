@@ -1,4 +1,5 @@
 import { updateVoiceBot } from "~/server/utils/db/voicebots";
+import { defaultSpeechToTextConfig, defaultTextToSpeechConfig, updateVoicebotConfig } from "~/server/utils/voicebot";
 
 const db = useDrizzle();
 
@@ -56,6 +57,15 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  if(body.speechToTextConfig) {
+    const data = updateVoicebotConfig(defaultSpeechToTextConfig, body.speechToTextConfig.provider, body.speechToTextConfig);
+    body.speechToTextConfig = data
+  }
+
+  if(body.textToSpeechConfig) {
+    const data = updateVoicebotConfig(defaultTextToSpeechConfig, body.textToSpeechConfig.provider, body.textToSpeechConfig);
+    body.textToSpeechConfig = data
+  }
 
   const update = await updateVoiceBot(voicebotId, body);
 

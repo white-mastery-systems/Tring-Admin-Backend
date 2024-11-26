@@ -22,7 +22,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   llmConfig: jsonb("llm_config").default({
     temperature: 1,
     top_p: "0.95",
-    top_k: "64",
+    top_k: "40",
     max_output_token: "8192",
     prompt: "",
   }),
@@ -35,6 +35,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
         "volume_gain_db": 0.5
     },
     "elevenlabs": {
+        "api_key": "",
         "stability": 0.5,
         "similarity_boost": 1,
         "style": 0.5,
@@ -44,9 +45,10 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
         "voice": "aura-asteria-en"
     },
     "tring": {
+        "api_key": "",
         "speaker": "jaya", // (dropdown values Jaya,Kevin,Sneha)
         "speed": 1, // (0 to 2)
-        "sample_rate": 44100
+        "sample_rate":  250
     }
   }),
   speechToTextConfig: jsonb("speech_to_text_config").default(
@@ -56,6 +58,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
         "adaptation": true,
         "phrase_sets": [],
         "model": "short",
+        "amplification_factor": 2
     },
     "azure": {
         "phrase_list": [],
@@ -71,6 +74,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     "assemblyai" : {
         "word_boost": [],
         "end_utterance_silence_threshold": 300, // (0 to 5000)
+        "amplification_factor": 2
     }
   }),
   botDetails: jsonb("bot_details"),
