@@ -273,12 +273,6 @@ export const textToSpeechValidation = z.object({
           message: 'API key is required for Eleven Labs.',
         });
       }
-       if (!data.speaker?.trim()) {
-        ctx.addIssue({
-          path: ['speaker'],
-          message: 'Speaker is required.',
-        });
-      }
     }
 
     // Validation for Tring provider
