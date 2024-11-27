@@ -20,8 +20,8 @@
         Link CRM
       </UiButton>
     </template>
-    <DataTable :columns="columns" :data="integrations" :page-size="8" :is-loading="false" :height="20"
-      height-unit="vh" />
+    <DataTable :columns="columns" :data="integrations" :page-size="8" :is-loading="false" :height="20" height-unit="vh"
+      :totalCount="totalCount" :totalPageCount="totalPageCount" :page="page" />
     <CreateEditCrmConfigModal v-model="crmConfigModalState" :id="crmConfigModalState?.id" @success="handleSuccess" />
     <ConfirmationModal v-model:open="deleteIntegrationState.open" title="Confirm Removal"
       description="Are you sure you want to remove this integration ?" @confirm="
@@ -50,6 +50,36 @@
   const paramId: any = route;
   const botDetails = ref(await getBotDetails(paramId.params.id));
 
+  const filters = reactive<{
+    botId: string;
+    q?: string;
+    from?: string;
+    to?: string;
+    period: string;
+    status: string;
+    channel: any;
+    action: string;
+    page: string;
+    limit: string;
+    country: string;
+  }>({
+    botId: "",
+    q: "crm",
+    from: undefined,
+    to: undefined,
+    period: "",
+    status: "",
+    channel: "all",
+    action: "",
+    page: "1",
+    limit: "10",
+    country: "all",
+  });
+  let page = ref(0);
+  let totalPageCount = ref(0);
+  let totalCount = ref(0);
+
+
   let deleteIntegrationState: { open: boolean; id?: string } = reactive({
     open: false,
   });
@@ -59,8 +89,14 @@ const {
   refresh: integrationRefresh,
 } = await useLazyFetch(`/api/bots/${route.params.id}/integrations`, {
   server: false,
-  query: { q: "crm" },
+  query: filters,
   default: () => [],
+  transform(data) {
+    page.value = data.page;
+    totalPageCount.value = data.totalPageCount;
+    totalCount.value = data.totalCount;
+    return data.data;
+  }
 });
 
 watchEffect(() => {

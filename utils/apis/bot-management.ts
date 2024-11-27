@@ -121,7 +121,9 @@ export const deleteBotIntegration = async ({
     );
     onSuccess();
     return botIntegrations;
-  } catch (err) {}
+  } catch (err: any) {
+    toast.error(err.data.data[0].message);
+  }
 };
 
 
@@ -202,7 +204,7 @@ export const updateVoiceBotIntegrationById = async ({
     onSuccess();
     return createdBot;
   } catch (err: any) {
-    toast.error(err.data.data[0].message);
+    toast.error(err?.data?.data[0]?.message);
   }
 };
 

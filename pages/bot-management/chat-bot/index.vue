@@ -2,96 +2,41 @@
   <Page title="Chat Bot" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-4">
-        <UiButton
-          class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95"
+        <UiButton class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95"
           @click="
             () => {
               agentModalState.open = true;
               agentModalState.id = null;
             }
-          "
-        >
+          ">
           Add Chat Bot
         </UiButton>
       </div>
     </template>
     <div class="flex items-center gap-2 pb-2">
-      <UiInput
-        v-model="filters.q"
-        @input="filters.page = '1'"
-        class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
-        placeholder="Search bot..."
-      />
-      <UiSelect v-model="activeStatus">
-        <UiSelectTrigger class="max-w-[200px]">
-          <UiSelectValue placeholder="Filter status" />
-        </UiSelectTrigger>
-        <UiSelectContent>
-          <UiSelectItem value="true">Active</UiSelectItem>
-          <UiSelectItem value="false">In active</UiSelectItem>
-          <UiSelectItem value="all">All</UiSelectItem>
-        </UiSelectContent>
-      </UiSelect>
-      <UiSelect v-model="botTypeFilter">
-        <UiSelectTrigger class="max-w-[200px]">
-          <UiSelectValue placeholder="Filter Type" />
-        </UiSelectTrigger>
-        <UiSelectContent>
-          <UiSelectItem value="government-sectors"
-            >Government Sectors</UiSelectItem
-          >
-          <UiSelectItem value="finance-banking">Finance & Banking</UiSelectItem>
-          <UiSelectItem value="real-estate">Real Estate</UiSelectItem>
-          <UiSelectItem value="healthcare">Healthcare</UiSelectItem>
-          <UiSelectItem value="ecommerce">E-commerce</UiSelectItem>
-          <UiSelectItem value="energy-utilities"
-            >Energy & Utilities</UiSelectItem
-          >
-          <UiSelectItem value="telecommunications"
-            >Telecommunications</UiSelectItem
-          >
-          <UiSelectItem value="travel-hospitality"
-            >Travel & Hospitality</UiSelectItem
-          >
-          <UiSelectItem value="logistics">Logistics</UiSelectItem>
-          <UiSelectItem value="education">Education</UiSelectItem>
-          <UiSelectItem value="other">Other</UiSelectItem>
-        </UiSelectContent>
-      </UiSelect>
+      <UiInput v-model="filters.q" @input="filters.page = '1'"
+        class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search bot..." />
+      <BotStatusFilter @change="onChangeStatus" />
+      <BotCategoryFilter @change="onChangeCategory" />
     </div>
 
-    <DataTable
-      @row-click="
+    <DataTable @row-click="
         (row: any) => {
           return navigateTo(`/bot-management/chat-bot/${row.original.id}`);
         }
-      "
-      @pagination="Pagination"
-      @limit="
+      " @pagination="Pagination" @limit="
         ($event) => {
           (filters.page = '1'), (filters.limit = $event);
         }
-      "
-      :totalPageCount="totalPageCount"
-      :page="page"
-      :totalCount="totalCount"
-      :columns="columns"
-      :data="bots"
-      :page-size="20"
-      :is-loading="isDataLoading"
-      :height="20"
-      height-unit="vh"
-    />
+      " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="bots"
+      :page-size="20" :is-loading="isDataLoading" :height="20" height-unit="vh" />
   </Page>
-  <AddChatBotModal
-    v-model="agentModalState"
-    @confirm="
+  <AddChatBotModal v-model="agentModalState" @confirm="
       () => {
         agentModalState.open = false;
         getAllChatBot();
       }
-    "
-  ></AddChatBotModal>
+    "></AddChatBotModal>
 </template>
 
 <script setup lang="ts">
@@ -118,22 +63,24 @@
     page: string;
     limit: string;
     active: string;
+    type: string;
   }>({
     q: "",
     active: "",
     page: "1",
     limit: "10",
+    type: ""
   });
   const activeStatus = ref("");
   const botTypeFilter = ref("");
-  watch(activeStatus, async (newStatus, previousStatus) => {
-    filters.active = newStatus;
-    filters.page = "1";
-  });
-  watch(botTypeFilter, async (newStatus, previousStatus) => {
-    filters.type = newStatus;
-    filters.page = "1";
-  });
+  // watch(activeStatus, async (newStatus, previousStatus) => {
+  //   filters.active = newStatus;
+  //   filters.page = "1";
+  // });
+  // watch(botTypeFilter, async (newStatus, previousStatus) => {
+  //   filters.type = newStatus;
+  //   filters.page = "1";
+  // });
   const selectedValue = ref("Today");
 
   // const botList = await listApiBots();
@@ -261,7 +208,18 @@
 
     getAllChatBot();
   };
-
+const onChangeCategory = (value: any) => {
+  if (value) {
+    filters.type = value;
+    filters.page = "1";
+  }
+}
+const onChangeStatus = (value: any) => {
+  if (value) {
+    filters.active = value;
+    filters.page = "1";
+  }
+}
   // const location = ref('North Pole')
 
   // function updateLocation() {
