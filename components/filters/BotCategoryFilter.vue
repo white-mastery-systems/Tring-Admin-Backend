@@ -5,7 +5,7 @@
          <UiSelectValue placeholder="Select category" />
        </UiSelectTrigger>
        <UiSelectContent>
-          <UiSelectItem value="all">All Category</UiSelectItem>
+          <!-- <UiSelectItem value="all">All Category</UiSelectItem> -->
           <UiSelectItem
             v-for="(category, index) in categories"
             :key="index"
@@ -19,7 +19,7 @@
 </template>
 <script setup lang="ts">
 const emit = defineEmits(['change'])
-const selectedCategory = ref('all')
+const selectedCategory = ref('')
 const categories = reactive([
   { value: 'government-sectors', content: 'Government Sectors' },
   { value: 'finance-banking', content: 'Finance & Banking' },
