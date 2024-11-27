@@ -54,15 +54,22 @@ export let defaultTextToSpeechConfig = {
 }
 
 
-export const updateVoicebotConfig = (config: any, provider: string, newConfig: any) => {
-    // Update the provider
-    config.provider = provider;
+export const updateVoicebotConfig = (config: any, newConfig: any) => {
+   // Deep copy the default configuration
+    const defaultData = JSON.parse(JSON.stringify(config));
 
-    // Update the specific provider configuration
-    if (config[provider]) {
-        delete newConfig.provider
-        config[provider] = newConfig[provider];
+    // Merge updates into the deep copy
+    for (const key in newConfig) {
+        if (typeof newConfig[key] === "object" && newConfig[key] !== null) {
+            // Merge nested objects
+            defaultData[key] = { ...defaultData[key], ...newConfig[key] };
+        } else {
+            // Update simple keys
+            defaultData[key] = newConfig[key];
+        }
     }
 
-    return config;
+    return defaultData;
 }
+
+
