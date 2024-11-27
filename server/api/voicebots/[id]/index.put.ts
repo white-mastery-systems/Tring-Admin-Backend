@@ -58,12 +58,12 @@ export default defineEventHandler(async (event) => {
   }
 
   if(body.speechToTextConfig) {
-    const data = updateVoicebotConfig(defaultSpeechToTextConfig, body.speechToTextConfig.provider, body.speechToTextConfig);
+    const data = updateVoicebotConfig(defaultSpeechToTextConfig, body.speechToTextConfig);
     body.speechToTextConfig = data
   }
 
   if(body.textToSpeechConfig) {
-    const data = updateVoicebotConfig(defaultTextToSpeechConfig, body.textToSpeechConfig.provider, body.textToSpeechConfig);
+    const data = updateVoicebotConfig(defaultTextToSpeechConfig, body.textToSpeechConfig);
     body.textToSpeechConfig = data
   }
 
