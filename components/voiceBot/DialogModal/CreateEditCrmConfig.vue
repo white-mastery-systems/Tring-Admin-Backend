@@ -303,7 +303,7 @@
       },
     );
 
-    if (matchedCRM.crm === "zoho-bigin") {
+    if (matchedCRM?.crm === "zoho-bigin") {
       const data: any = await $fetch(
         `/api/org/integrations/zoho-bigin/pipelines?id=${matchedCRM.id}`,
       );
@@ -313,7 +313,7 @@
         `/api/org/integrations/zoho-bigin/sub-pipeline?id=${matchedCRM.id}`,
       );
       subPipelines.value = subPipelineData;
-    } else if (matchedCRM.crm === "zoho-crm") {
+    } else if (matchedCRM?.crm === "zoho-crm") {
       const data: any = await $fetch(
         `/api/org/integrations/zoho-crm/layouts?id=${matchedCRM.id}`,
       );

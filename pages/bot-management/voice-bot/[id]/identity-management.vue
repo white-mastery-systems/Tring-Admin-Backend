@@ -23,10 +23,10 @@
           <SelectField name="agentLanguage" :options="languageList" label="Agent Language" placeholder="Agent Language"
             helperText="Select your language." required></SelectField>
 
-          <UiFormField v-slot="{ value, handleChange }" name="backgroundSoundControler">
+          <!-- <UiFormField v-slot="{ value, handleChange }" name="backgroundSoundControler">
             <UiFormItem class="w-[49%]">
               <div class="flex justify-between">
-                <UiLabel class="text-[14px] font-medium">Background Sound Controler</UiLabel>
+                <UiLabel class="text-[14px] font-medium">Background Sound Controller</UiLabel>
                 <UiFormControl>
                   <UiSwitch id="backgroundSoundControler" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
@@ -38,7 +38,7 @@
           </UiFormField>
           <SelectField name="backgroundSounds" :options="backgroundSoundList" label="Background Sounds"
             :disabled="!values.backgroundSoundControler" placeholder="Select Background Sound"
-            helperText="Select your background sound." required></SelectField>
+            helperText="Select your background sound." required></SelectField> -->
           <!-- <TextField name="agentLanguage" label="Agent Language" required placeholder="Enter agent language" /> -->
         </div>
         <div class="flex w-full justify-end">
@@ -122,20 +122,21 @@ const backgroundSoundList = [
       agentLanguage: z
         .string({ required_error: "Agent Language is required" })
         .min(1, { message: "Agent Language is required" }),
-      backgroundSoundControler: z.boolean().optional(),
-      backgroundSounds: z
-        .string().optional()
-    }).superRefine((data, ctx) => {
-      console.log(data, "data -- data")
-      if (data.backgroundSoundControler) {
-        if (!data.backgroundSounds) {
-          ctx.addIssue({
-            path: ["backgroundSounds"],
-            message: "Background Sounds  is required",
-          })
-        }
-      }
+      // backgroundSoundControler: z.boolean().optional(),
+      // backgroundSounds: z
+      //   .string().optional()
     })
+    // .superRefine((data, ctx) => {
+    //   console.log(data, "data -- data")
+    //   if (data.backgroundSoundControler) {
+    //     if (!data.backgroundSounds) {
+    //       ctx.addIssue({
+    //         path: ["backgroundSounds"],
+    //         message: "Background Sounds  is required",
+    //       })
+    //     }
+    //   }
+    // })
   );
   const {
     setFieldValue,

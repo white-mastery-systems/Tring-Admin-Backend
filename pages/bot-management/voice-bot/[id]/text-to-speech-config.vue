@@ -401,7 +401,6 @@ const onSubmit = handleSubmit(async (values) => {
       speaking_rate: values.speakingRate || 1,
           pitch: values.pitch || 1,
             volume_gain_db: values.volumeGainDb || 0.5,
-              effects_profile_id: botData.value?.textToSpeechConfig.google.effects_profile_id || ["telephony-class-application"], // Fallback to default
       }
   }
   else if (values.provider === 'elevenlabs') {
@@ -409,7 +408,7 @@ const onSubmit = handleSubmit(async (values) => {
     updatedConfig.elevenlabs = {
       // ...botData.value?.textToSpeechConfig.elevenlabs, // Keep existing Elevenlabs config
       api_key: botData.value?.textToSpeechConfig.elevenlabs.api_key || "", // Consider secure handling of API keys
-        voice: values.elevenlabsvoice || "jBYIjE7vMSfVJhyXWNqw",
+        voice: values.elevenlabsvoice || "",
           model: values.model || "eleven_turbo_v2",
             stability: values.stability || 0.5,
               similarity_boost: values.similarityBoost || 1,
@@ -432,7 +431,7 @@ const onSubmit = handleSubmit(async (values) => {
     updatedConfig.tring = {
       // ...botData.value?.textToSpeechConfig.deepgram, // Keep existing Deepgram config
       speed: values.speakingSpeed || 1,
-      speaker: values.speaker || "jaya",
+      speaker: values.speaker || "",
       silence_pad: values.silence_pad || 250,
       api_key: values.apikey || "",
      }
