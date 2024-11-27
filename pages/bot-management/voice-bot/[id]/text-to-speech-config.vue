@@ -24,56 +24,56 @@
             <TextField v-if="(values.provider === 'tring') || (values.provider === 'elevenlabs')" type="text"
               label="API Key" name="apikey" required placeholder="API Key" @input="apikeyunmasking($event)" />
           </div>
-            <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">
-              <TextField v-if="(values.provider === 'tring') || (values.provider === 'elevenlabs')" type="text"
-                label="Language Speaker" name="speaker" required placeholder="Speaker" />
-              <!-- <TextField v-if="values.provider === 'tring'" type="number" label="Sample Rate" name="sampleRate" required
+          <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">
+            <TextField v-if="(values.provider === 'tring')" type="text" label="Speaker" name="speaker" required
+              placeholder="Speaker" />
+            <!-- <TextField v-if="values.provider === 'tring'" type="number" label="Sample Rate" name="sampleRate" required
               placeholder="Sample Rate" disableCharacters /> -->
-              <!-- <TextField v-if="values.provider === 'elevenlabs'" type="text" label="Model" name="model" required
+            <!-- <TextField v-if="values.provider === 'elevenlabs'" type="text" label="Model" name="model" required
               placeholder="Model" /> -->
-              <SelectField v-if="values.provider === 'elevenlabs'" name="model" label="Model" placeholder="Model"
-                helperText="Select your model." :options="modalList" required />
-              <TextField v-if="values.provider === 'elevenlabs'" type="text" label="voice" name="elevenlabsvoice"
-                required placeholder="voice" />
-              <SelectField v-if="values.provider === 'elevenlabs'" name="useSpeakerBoost" :options="useSpeakerBooster"
-                label="Use Speaker Boost" placeholder="Use Speaker Boost" required>
-              </SelectField>
-            </div>
-            <RangeSlider v-if="values.provider === 'google'" :step="0.05" :name="parseFloat(values.speakingRate)"
-              label="Speaking Rate" @update="($event) => {
+            <SelectField v-if="values.provider === 'elevenlabs'" name="model" label="Model" placeholder="Model"
+              helperText="Select your model." :options="modalList" required />
+            <TextField v-if="values.provider === 'elevenlabs'" type="text" label="voice" name="elevenlabsvoice" required
+              placeholder="voice" />
+            <SelectField v-if="values.provider === 'elevenlabs'" name="useSpeakerBoost" :options="useSpeakerBooster"
+              label="Use Speaker Boost" placeholder="Use Speaker Boost" required>
+            </SelectField>
+          </div>
+          <RangeSlider v-if="values.provider === 'google'" :step="0.05" :name="parseFloat(values.speakingRate)"
+            label="Speaking Rate" @update="($event) => {
               setFieldValue('speakingRate', $event);
             }
               " required placeholder="Enter speaking speed" min="0" max="4" />
-            <!-- <TextField type="rangeSlider" label="Speaking Speed" name="speakingSpeed" @input="($event) => {
+          <!-- <TextField type="rangeSlider" label="Speaking Speed" name="speakingSpeed" @input="($event) => {
               const numericValue = Number($event.target.value)
               setFieldValue('speakingSpeed', numericValue)
             }" required disableCharacters /> -->
-            <!-- <div class="flex gap-2 grid grid-cols-2"> -->
-            <RangeSlider v-if="values.provider === 'tring'" :step="0.05" :name="parseFloat(values.speakingSpeed)"
-              label="Speaking Speed" @update="($event) => {
+          <!-- <div class="flex gap-2 grid grid-cols-2"> -->
+          <RangeSlider v-if="values.provider === 'tring'" :step="0.05" :name="parseFloat(values.speakingSpeed)"
+            label="Speaking Speed" @update="($event) => {
                 setFieldValue('speakingSpeed', $event);
               }
                 " required min="0" max="2" />
-            <RangeSlider v-if="values.provider === 'tring'" :step="0.05" :name="parseFloat(values.silence_pad)"
-              label="Silence Pad" @update="($event) => {
+          <RangeSlider v-if="values.provider === 'tring'" :step="0.05" :name="parseFloat(values.silence_pad)"
+            label="Silence Pad" @update="($event) => {
                 setFieldValue('silence_pad', $event);
               }
                 " required min="0" max="2500" />
-            <!-- </div> -->
-            <!-- <TextField v-if="values.provider === 'google'" label="Speaking Rate" name="speakingRate" required placeholder="Enter speaking Rate" -->
-            <!-- disableCharacters /> -->
+          <!-- </div> -->
+          <!-- <TextField v-if="values.provider === 'google'" label="Speaking Rate" name="speakingRate" required placeholder="Enter speaking Rate" -->
+          <!-- disableCharacters /> -->
 
-            <RangeSlider v-if="values.provider === 'google'" :step="0.05" :name="parseFloat(values.pitch)"
-              label="Enter Pitch" @update="($event) => {
+          <RangeSlider v-if="values.provider === 'google'" :step="0.05" :name="parseFloat(values.pitch)"
+            label="Enter Pitch" @update="($event) => {
               setFieldValue('pitch', $event);
             }
               " required min="0" max="20" />
-            <RangeSlider v-if="values.provider === 'google'" :step="0.05" :name="parseFloat(values.volumeGainDb)"
-              label="Volume Gain  DB" @update="($event) => {
+          <RangeSlider v-if="values.provider === 'google'" :step="0.05" :name="parseFloat(values.volumeGainDb)"
+            label="Volume Gain  DB" @update="($event) => {
               setFieldValue('volumeGainDb', $event);
             }
               " required min="0" max="16" />
-            <!-- <TextField
+          <!-- <TextField
             v-if="values.provider === 'google'"
             label="volume Grain DB"
             name="volumeGainDb"
@@ -82,23 +82,23 @@
             disableCharacters
           /> -->
 
-            <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.stability)"
-              label="Stability" @update="($event) => {
+          <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.stability)"
+            label="Stability" @update="($event) => {
               setFieldValue('stability', $event);
             }
               " required min="0" max="1" />
 
-            <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.similarityBoost)"
-              label="Similarity Boost" @update="($event) => {
+          <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.similarityBoost)"
+            label="Similarity Boost" @update="($event) => {
               setFieldValue('similarityBoost', $event);
             }
               " required min="0" max="1" />
-            <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.style)"
-              label="Style" @update="($event) => {
+          <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.style)"
+            label="Style" @update="($event) => {
               setFieldValue('style', $event);
             }
               " required min="0" max="1" />
-            <!-- <RangeSlider
+          <!-- <RangeSlider
             v-if="values.provider === 'elevenlabs'"
             :step="0.1"
             :name="parseFloat(values.stability )"
@@ -114,7 +114,7 @@
             max="0.5"
           /> -->
 
-            <!-- <TextField
+          <!-- <TextField
             v-if="values.provider === 'elevenlabs'"
             label="Stability"
             name="stability"
@@ -122,7 +122,7 @@
             placeholder="Stability"
             disableCharacters
           /> -->
-            <!-- <TextField
+          <!-- <TextField
             v-if="values.provider === 'elevenlabs'"
             label="Similarity Boost"
             name="similarityBoost"
@@ -130,7 +130,7 @@
             placeholder="Similarity boost"
             disableCharacters
           /> -->
-            <!-- <TextField
+          <!-- <TextField
             v-if="values.provider === 'elevenlabs'"
             label="Style"
             name="style"
@@ -138,16 +138,16 @@
             placeholder="Style"
             disableCharacters
           /> -->
-            <!-- <TextField v-if="values.provider === 'elevenlabs'" label="Use Speaker Boost" name="useSpeakerBoost" required
+          <!-- <TextField v-if="values.provider === 'elevenlabs'" label="Use Speaker Boost" name="useSpeakerBoost" required
             placeholder="Use Speaker Boost" disableCharacters /> -->
-            <SelectField v-if="values.provider === 'deepgram'" name="voice" label="Voice" placeholder="Select voice"
-              helperText="Select your voice." :options="voices" required />
-          </div>
-          <div class="flex w-full justify-end mt-4">
-            <UiButton color="primary" :loading="isLoading">
-              Submit
-            </UiButton>
-          </div>
+          <SelectField v-if="values.provider === 'deepgram'" name="voice" label="Voice" placeholder="Select voice"
+            helperText="Select your voice." :options="voices" required />
+        </div>
+        <div class="flex w-full justify-end mt-4">
+          <UiButton color="primary" :loading="isLoading">
+            Submit
+          </UiButton>
+        </div>
       </form>
     </div>
   </Page>
