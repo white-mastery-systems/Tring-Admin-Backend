@@ -92,13 +92,27 @@ export default defineEventHandler(async (event) => {
         })
         .where(eq(organizationSchema.id, orgId!));
 
-      const orgSubscriptionPromise = db
+      const isOrgSubscriptionExist = await db.query.orgSubscriptionSchema.findFirst({
+        where: and(
+          eq(orgSubscriptionSchema.organizationId, orgId),
+          eq(orgSubscriptionSchema.botType, "chat")
+        )
+      })
+      
+      let orgSubscriptionPromise
+      if(isOrgSubscriptionExist) {
+        orgSubscriptionPromise = db
           .update(orgSubscriptionSchema)
           .set(orgSubscription)
           .where(and(
             eq(orgSubscriptionSchema.organizationId, orgId),
             eq(orgSubscriptionSchema.botType, "chat")
-          ))
+        ))
+      } else {
+         orgSubscriptionPromise = db
+          .insert(orgSubscriptionSchema)
+          .values(orgSubscription)
+      }
       
       const userPromise = db
         .update(authUserSchema)
