@@ -48,17 +48,59 @@ export default defineEventHandler(async (event) => {
         amount: body.data.subscription.amount,
         status: "active",
       };
+
+      const orgSubscription = {
+        organizationId: userDetails?.organizationId!,
+        botType: "chat",
+        subscriptionId: body.data.subscription.subscription_id,
+        planCode: body.data.subscription.plan.plan_code,
+        expiryDate: body.data.subscription.next_billing_at,
+        status: "active"
+      }
       const paymentResult = await db
         .insert(paymentSchema)
         .values(apiResponseData)
         .returning();
-      const organizationPromise = await db
+      const organizationPromise = db
         .update(organizationSchema)
         .set({
           usedQuota: 0,
           planCode: apiResponseData.plan_code,
         })
         .where(eq(organizationSchema.id, userDetails?.organizationId!));
+
+      const isOrgSubscriptionExist = await db.query.orgSubscriptionSchema.findFirst({
+        where: and(
+          eq(orgSubscriptionSchema.organizationId, userDetails?.organizationId!),
+          eq(orgSubscriptionSchema.botType, "chat")
+        )
+      })
+    let orgSubscriptionPromise
+    if(isOrgSubscriptionExist) {
+      orgSubscriptionPromise = db
+        .update(orgSubscriptionSchema)
+        .set(orgSubscription)
+        .where(and(
+          eq(orgSubscriptionSchema.organizationId, userDetails?.organizationId!),
+          eq(orgSubscriptionSchema.botType, "chat")
+      ))
+    } else {
+       orgSubscriptionPromise = db
+        .insert(orgSubscriptionSchema)
+        .values(orgSubscription)
+    }
+    const userPromise = db
+      .update(authUserSchema)
+      .set({
+        customerId: apiResponseData.customerId,
+      })
+      .where(eq(authUserSchema.id, userDetails?.id));
+
+      await Promise.allSettled([
+        organizationPromise,
+        orgSubscriptionPromise,
+        userPromise,
+      ]);
 
       return paymentResult;
     }
@@ -107,11 +149,20 @@ export default defineEventHandler(async (event) => {
       expiry: nextMonthAndDayDate,
       status: "active",
     };
+
+    const orgSubscription = {
+      organizationId: userDetails?.organizationId!,
+      botType: "chat",
+      subscriptionId: body.data.subscription.subscription_id,
+      planCode: body.data.subscription.plan.plan_code,
+      expiryDate: body.data.subscription.next_billing_at,
+      status: "active"
+    }
     const resp = await db
       .insert(paymentSchema)
       .values(apiResponseData)
       .returning();
-    const organizationPromise = await db
+    const organizationPromise = db
       .update(organizationSchema)
       .set({
         usedQuota: 0,
@@ -119,6 +170,38 @@ export default defineEventHandler(async (event) => {
       })
       .where(eq(organizationSchema.id, userDetails?.organizationId!));
 
+    const isOrgSubscriptionExist = await db.query.orgSubscriptionSchema.findFirst({
+        where: and(
+          eq(orgSubscriptionSchema.organizationId, userDetails?.organizationId!),
+          eq(orgSubscriptionSchema.botType, "chat")
+        )
+      })
+    let orgSubscriptionPromise
+    if(isOrgSubscriptionExist) {
+      orgSubscriptionPromise = db
+        .update(orgSubscriptionSchema)
+        .set(orgSubscription)
+        .where(and(
+          eq(orgSubscriptionSchema.organizationId, userDetails?.organizationId!),
+          eq(orgSubscriptionSchema.botType, "chat")
+      ))
+    } else {
+       orgSubscriptionPromise = db
+        .insert(orgSubscriptionSchema)
+        .values(orgSubscription)
+    }
+    const userPromise = db
+      .update(authUserSchema)
+      .set({
+        customerId: apiResponseData.customerId,
+      })
+      .where(eq(authUserSchema.id, userDetails?.id));
+
+      await Promise.allSettled([
+      organizationPromise,
+      orgSubscriptionPromise,
+      userPromise,
+    ]);
     return resp;
   }
 
