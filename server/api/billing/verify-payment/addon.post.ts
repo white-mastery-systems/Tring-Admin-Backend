@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
     event,
     z.object({
       hostedpageId: z.string(),
+      botType: z.string()
     }).parse,
   );
   const orgId = await isOrganizationAdminHandler(event);
@@ -81,7 +82,7 @@ export default defineEventHandler(async (event) => {
         })
         .where(and(
             eq(orgSubscriptionSchema.organizationId, orgId),
-            eq(orgSubscriptionSchema.botType, "chat")
+            eq(orgSubscriptionSchema.botType, body.botType)
           ));
   
       

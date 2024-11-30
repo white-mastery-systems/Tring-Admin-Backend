@@ -259,86 +259,131 @@ const updateOrgSubscriptionStatus = async(organizationId: string, status: string
 export const getOrgUsage = async (organizationId: string, timeZone: string, query: any) => {
   // Determine date range for the current month
   const currentDate = momentTz().tz(timeZone).toDate();
-  const currentMonthStartDate = momentTz().tz(timeZone).startOf("month").toDate()
-  const currentMonthEndDate = momentTz().tz(timeZone).endOf("month").toDate()
 
-  const [org, interactedSessions, orgSubscription] = await Promise.all([
+  const [org, orgSubscription] = await Promise.all([
     getOrganizationById(organizationId),
-    db.query.chatSchema.findMany({
-      where: and(
-        gte(chatSchema.createdAt, currentMonthStartDate),
-        lte(chatSchema.createdAt, currentMonthEndDate),
-        eq(chatSchema.interacted, true),
-        eq(chatSchema.organizationId, organizationId),
-      ),
-    }),
     db.query.orgSubscriptionSchema.findFirst({
       where: and(
         eq(orgSubscriptionSchema.organizationId, organizationId),
-        eq(orgSubscriptionSchema?.botType, "chat")
+        eq(orgSubscriptionSchema?.botType, query.type)
       ),
     }),
   ]);
-  
-  if (!org) {
-     throw new Error("organization not found")
+
+
+  let startDate, endDate
+  if(orgSubscription?.subscriptionCreatedDate) {
+     startDate = momentTz(orgSubscription?.subscriptionCreatedDate).tz(timeZone).toDate()
+     endDate = momentTz(orgSubscription?.expiryDate).tz(timeZone).toDate()
+  } else {
+     startDate = momentTz().tz(timeZone).startOf("month").toDate()
+     endDate = momentTz().tz(timeZone).endOf("month").toDate()
   }
- 
+  if(!org) {
+    throw new Error("organization not found")
+  }
   // get Pricing information
   const pricingInformation = await getPricingInformation(orgSubscription?.planCode || org?.planCode)
-
   let subscriptionStatus: "inactive" | "active" = "active";
-  const extraSessionCost = pricingInformation?.extraSessionCost || 0
-
-  // const usedSessions = 10000
-  const maxSessions = pricingInformation?.sessions || 0;
-  const usedSessions = interactedSessions?.length || 0;
-  const availableSessions = Math.max(maxSessions - usedSessions, 0)
-
   const orgWalletSessions = orgSubscription?.walletSessions || 0
   let extraSessions = 0
+  const extraSessionCost = pricingInformation?.extraSessionCost || 0
 
-  const updateStatuses = async (newStatus: "active" | "inactive") => {
-    if (orgSubscription?.status !== newStatus) {
-      await updateOrgSubscriptionStatus(organizationId, newStatus);
-    }
-    if(newStatus === "inactive") {
-      await updateChatbotStatus(organizationId);
-    }
-  };
-
-  const resObj = {
-    used_quota: usedSessions,
-    max_quota: maxSessions,
-    plan_code: org.planCode,
-    wallet_balance: orgWalletSessions,
-    extra_sessions_cost: extraSessionCost,
-    gst: org?.metadata?.gst,
-    extra_sessions: extraSessions,
-    available_sessions: availableSessions,
-    expiry_date: orgSubscription?.expiryDate ?? undefined,
-    subscription_status: orgSubscription?.status
-  };
-
-  // Calculate expiry date and check if the subscription is expired
-  const expiryDate = momentTz(orgSubscription?.expiryDate)
-  .tz(timeZone)
-  .toDate();
-
-  if (currentDate > expiryDate) {
-    subscriptionStatus = "inactive";
-    await updateStatuses(subscriptionStatus);
-    return { ...resObj, subscription_status: subscriptionStatus };
+  if(query.type === "chat") {
+      // get interacted chats 
+      const interactedSessions = await db.query.chatSchema.findMany({
+          where: and(
+            gte(chatSchema.createdAt, startDate),
+            lte(chatSchema.createdAt, endDate),
+            eq(chatSchema.interacted, true),
+            eq(chatSchema.organizationId, organizationId),
+          ),
+        })
+    
+      // const usedSessions = 10000
+      const maxSessions = pricingInformation?.sessions || 0;
+      const usedSessions = interactedSessions?.length || 0;
+      const availableSessions = Math.max(maxSessions - usedSessions, 0)
+    
+    
+    
+      const updateStatuses = async (newStatus: "active" | "inactive") => {
+        if (orgSubscription?.status !== newStatus) {
+          await updateOrgSubscriptionStatus(organizationId, newStatus);
+        }
+        if(newStatus === "inactive") {
+          await updateChatbotStatus(organizationId);
+        }
+      };
+    
+      const resObj = {
+        used_quota: usedSessions,
+        max_quota: maxSessions,
+        plan_code: org.planCode,
+        wallet_balance: orgWalletSessions,
+        extra_sessions_cost: extraSessionCost,
+        gst: org?.metadata?.gst,
+        extra_sessions: extraSessions,
+        available_sessions: availableSessions,
+        expiry_date: orgSubscription?.expiryDate ?? undefined,
+        subscription_status: orgSubscription?.status
+      };
+    
+      // Calculate expiry date and check if the subscription is expired
+      const expiryDate = momentTz(orgSubscription?.expiryDate)
+      .tz(timeZone)
+      .toDate();
+    
+      if (currentDate > expiryDate) {
+        subscriptionStatus = "inactive";
+        await updateStatuses(subscriptionStatus);
+        return { ...resObj, subscription_status: subscriptionStatus };
+      }
+     
+      if (usedSessions >= maxSessions) {
+        extraSessions = Math.max(usedSessions - maxSessions, 0)
+        const currentWallet = Math.max(orgWalletSessions - extraSessions, 0)
+        resObj.wallet_balance = currentWallet
+        resObj.extra_sessions = extraSessions
+      }
+    
+      return resObj
   }
- 
-  if (usedSessions >= maxSessions) {
-    extraSessions = Math.max(usedSessions - maxSessions, 0)
-    const currentWallet = Math.max(orgWalletSessions - extraSessions, 0)
-    resObj.wallet_balance = currentWallet
-    resObj.extra_sessions = extraSessions
-  }
+  if(query.type === "voice") {
+    const voicebotCallLogs = await db.query.callLogSchema.findMany({
+      columns: {
+         duration: true,
+         date: true,
+      },
+      where: and(
+        eq(callLogSchema.organizationId, organizationId),
+        gte(callLogSchema.date, startDate),
+        lte(callLogSchema.date, endDate)
+      )
+    })
+   
+    const totalMinutes = voicebotCallLogs.reduce((acc, item) => acc + Math.round(item?.duration / 60), 0);
+   
+    // Convert total seconds to minutes
+    const usedCallMinutes = totalMinutes
+    const maxCallMinutes = pricingInformation?.sessions || 0
+    const availableMinutes = Math.max(maxCallMinutes - usedCallMinutes,0)
 
-  return resObj
+    const resObj = {
+      used_quota: usedCallMinutes,
+      max_quota: maxCallMinutes,
+      plan_code: orgSubscription?.planCode,
+      wallet_balance: orgWalletSessions,
+      extra_sessions_cost: extraSessionCost,
+      gst: org?.metadata?.gst,
+      extra_sessions: extraSessions,
+      available_sessions: availableMinutes,
+      expiry_date: orgSubscription?.expiryDate ?? undefined,
+      subscription_status: orgSubscription?.status
+    };
+    return resObj
+  }
+  
 };
 
 const validQueryValues = [

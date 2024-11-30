@@ -1,7 +1,15 @@
 import { updateVoiceBotIntegration } from "~/server/utils/db/voicebots";
 
 const zodUpdateVoiceBotIntegration = z.object({
-   metadata: z.record(z.any()).optional(),
+  integrationId: z.string().uuid().optional(),
+  campaignId: z.string().optional(),
+  projectId: z.string().optional(),
+  pipelineId: z.string().optional(),
+  pipelineObj: z.any().optional(),
+  channelId: z.string().optional(),
+  layoutObj: z.any().optional(),
+  stage: z.string().optional(),
+  restaurantId: z.string().optional()
 });
 
 export default defineEventHandler(async (event) => {
@@ -12,7 +20,13 @@ export default defineEventHandler(async (event) => {
  
   const voiceBotIntegration: any = await isValidBodyHandler(event, zodUpdateVoiceBotIntegration);
  
-  const update = await updateVoiceBotIntegration(voiceBotId,voiceBotIntegrationId, voiceBotIntegration);
+  const update = await updateVoiceBotIntegration(
+    voiceBotId,
+    voiceBotIntegrationId,
+     { 
+      metadata: voiceBotIntegration, 
+      integrationId: voiceBotIntegration.integrationId 
+    });
   
   return isValidReturnType(event, update);
 })
