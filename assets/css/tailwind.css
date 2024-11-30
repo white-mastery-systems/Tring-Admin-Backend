@@ -200,6 +200,20 @@
   max-height: 8px !important;
   margin-block: 1rem !important;
 }
+.textarea-resize-scroll::-webkit-scrollbar {
+  display: block;
+  width: 10px;
+}
+
+.textarea-resize-scroll::-webkit-scrollbar-thumb {
+  background: #80808094;
+  border-radius: 10px;
+}
+
+.textarea-resize-scroll::-webkit-scrollbar-track {
+  max-height: 8px !important;
+  margin-block: 1rem !important;
+}
 * {
   font-family: "HeyWow";
 }
