@@ -5,10 +5,15 @@ const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  //
-  billingLogger.info(
-    `subscription-${body.event_type}---${JSON.stringify(body)}`,
-  );
+  const query:any = await getQuery(event)
+
+  let type : string
+  
+  const getBotType = await getPricingInformation(query.planCode)
+  type = getBotType?.type === "chatbot" ? "chat" : "voice"
+
+  billingLogger.info( `subscription-${body.event_type}---${JSON.stringify(body)}`,);
+
   if (body.event_type === "subscription_created") {
     const paymentBySubscriptionId = await db.query.paymentSchema.findFirst({
       where: eq(
@@ -51,9 +56,10 @@ export default defineEventHandler(async (event) => {
 
       const orgSubscription = {
         organizationId: userDetails?.organizationId!,
-        botType: "chat",
+        botType: type,
         subscriptionId: body.data.subscription.subscription_id,
         planCode: body.data.subscription.plan.plan_code,
+        subscriptionCreatedDate: body.data.subscription.current_term_starts_at,
         expiryDate: body.data.subscription.next_billing_at,
         status: "active"
       }
@@ -65,14 +71,17 @@ export default defineEventHandler(async (event) => {
         .update(organizationSchema)
         .set({
           usedQuota: 0,
-          planCode: apiResponseData.plan_code,
+          ...(type === "chat" 
+            ? { planCode: apiResponseData.plan_code } 
+            : { voicePlanCode: apiResponseData.plan_code }
+          ) 
         })
         .where(eq(organizationSchema.id, userDetails?.organizationId!));
 
       const isOrgSubscriptionExist = await db.query.orgSubscriptionSchema.findFirst({
         where: and(
           eq(orgSubscriptionSchema.organizationId, userDetails?.organizationId!),
-          eq(orgSubscriptionSchema.botType, "chat")
+          eq(orgSubscriptionSchema.botType, type)
         )
       })
     let orgSubscriptionPromise
@@ -82,7 +91,7 @@ export default defineEventHandler(async (event) => {
         .set(orgSubscription)
         .where(and(
           eq(orgSubscriptionSchema.organizationId, userDetails?.organizationId!),
-          eq(orgSubscriptionSchema.botType, "chat")
+          eq(orgSubscriptionSchema.botType, type)
       ))
     } else {
        orgSubscriptionPromise = db
@@ -152,9 +161,10 @@ export default defineEventHandler(async (event) => {
 
     const orgSubscription = {
       organizationId: userDetails?.organizationId!,
-      botType: "chat",
+      botType: type,
       subscriptionId: body.data.subscription.subscription_id,
       planCode: body.data.subscription.plan.plan_code,
+      subscriptionCreatedDate: body.data.subscription.current_term_starts_at,
       expiryDate: body.data.subscription.next_billing_at,
       status: "active"
     }
@@ -166,14 +176,17 @@ export default defineEventHandler(async (event) => {
       .update(organizationSchema)
       .set({
         usedQuota: 0,
-        planCode: apiResponseData.plan_code,
+        ...(type === "chat" 
+          ? { planCode: apiResponseData.plan_code } 
+          : { voicePlanCode: apiResponseData.plan_code }
+        )
       })
       .where(eq(organizationSchema.id, userDetails?.organizationId!));
 
     const isOrgSubscriptionExist = await db.query.orgSubscriptionSchema.findFirst({
         where: and(
           eq(orgSubscriptionSchema.organizationId, userDetails?.organizationId!),
-          eq(orgSubscriptionSchema.botType, "chat")
+          eq(orgSubscriptionSchema.botType, type)
         )
       })
     let orgSubscriptionPromise
@@ -183,7 +196,7 @@ export default defineEventHandler(async (event) => {
         .set(orgSubscription)
         .where(and(
           eq(orgSubscriptionSchema.organizationId, userDetails?.organizationId!),
-          eq(orgSubscriptionSchema.botType, "chat")
+          eq(orgSubscriptionSchema.botType, type)
       ))
     } else {
        orgSubscriptionPromise = db

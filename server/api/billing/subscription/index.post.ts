@@ -1,8 +1,9 @@
-import { billingLogger, logger } from "~/server/logger";
-import { getStateCode } from "~/server/utils/billing.utils";
 import momentTz from "moment-timezone";
+import { billingLogger, logger } from "~/server/logger";
+import { runHostedPageApi } from "~/server/utils/zoho/subscription";
 
-const config = useRuntimeConfig();
+const db = useDrizzle();
+
 interface zohoConfigInterface {
   metaData: {
     client_id: string;
@@ -16,28 +17,24 @@ interface zohoConfigInterface {
 
 
 export default defineEventHandler(async (event) => {
+  const timeZoneHeader = event.node?.req?.headers["time-zone"];
+  const timeZone = Array.isArray(timeZoneHeader)
+  ? timeZoneHeader[0]
+  : timeZoneHeader || "Asia/Kolkata";
   const body = await readBody(event);
-  
-  //
   billingLogger.info(`${body.type}---${JSON.stringify(body)}`);
-  // logger.info(`subscription body, ${JSON.stringify(body)}`)
-  // const http = require("https");
-
-  const db = useDrizzle();
+  const query = await isValidQueryHandler(event, z.object({
+    type: z.string()
+  }))
   try {
-    const timeZoneHeader = event.node?.req?.headers["time-zone"];
-    const timeZone = Array.isArray(timeZoneHeader)
-    ? timeZoneHeader[0]
-    : timeZoneHeader || "Asia/Kolkata";
-
     const organizationId = (await isOrganizationAdminHandler(event)) as string;
     const getOrgCurrentActivePlan = await db.query.orgSubscriptionSchema.findFirst({
       where: and(
         eq(orgSubscriptionSchema.organizationId, organizationId),
-        eq(orgSubscriptionSchema.botType, "chat")
+        eq(orgSubscriptionSchema.botType, query.type)
       )
     })
-    if(getOrgCurrentActivePlan && getOrgCurrentActivePlan?.planCode !== "chat_free") {
+    if(getOrgCurrentActivePlan?.planCode !== "chat_free" && getOrgCurrentActivePlan?.planCode !== "voice_free") {
       const expiryDate = momentTz(getOrgCurrentActivePlan?.expiryDate).tz(timeZone).toDate();
       const currentDate =  momentTz().tz(timeZone).toDate();
       if(currentDate < expiryDate) {
@@ -73,150 +70,14 @@ export default defineEventHandler(async (event) => {
         where: eq(adminPricingSchema.planCode, body?.plan),
       });
 
-      const regerateAccessToken = async () => {
-        try {
-          const newAuthInfo: any = await $fetch(
-            `https://accounts.zoho.in/oauth/v2/token?client_id=${metaData?.client_id}&grant_type=refresh_token&client_secret=${metaData?.client_secret}&refresh_token=${zohoData?.metaData?.refresh_token}`,
-            {
-              method: "POST",
-            },
-          );
-          metaData = { ...metaData, ...newAuthInfo };
-          await db
-            .update(adminConfigurationSchema)
-            .set({ metaData: metaData })
-            .where(eq(adminConfigurationSchema.id, 1));
-          return newAuthInfo;
-        } catch (err: any) {}
-      };
-
-      const runHostedPageApi = async ({
-        accessToken,
-      }: {
-        accessToken: string;
-      }) => {
-        try {
-          let firstName = user?.username;
-          let lastName = "";
-          if (firstName?.includes(" ")) {
-            firstName = firstName?.split(" ")[0];
-            lastName = firstName?.split(" ")[1];
-          }
-          const billingInformation = await db.query.paymentSchema.findFirst({
-            where: eq(paymentSchema.organizationId, organizationId),
-          });
-
-          // get contact-persons
-          const contactPersonInformations =
-            await db.query.authUserSchema.findMany({
-              where: and(
-                eq(authUserSchema.organizationId, organizationId),
-                isNotNull(authUserSchema.contactPersonId),
-              ),
-            });
-
-          const contactPersonIdList = contactPersonInformations?.map((i) => ({
-            contactperson_id: i.contactPersonId,
-          }));
-
-          const reqObj = {
-            ...(billingInformation?.customerId
-            ? {
-                customer_id: billingInformation?.customerId,
-              }
-            : {
-                customer: {
-                  display_name: user?.username,
-                  salutation: "Mr.",
-                  first_name: firstName,
-                  last_name: lastName,
-                  email: user?.email,
-                  mobile: `${userDetails?.countryCode ?? "+91"} ${userDetails.mobile}`,
-                  billing_address: {
-                    attention: user?.username,
-                    street: userDetails?.address?.street,
-                    city: userDetails?.address?.city,
-                    state: userDetails?.address?.state,
-                    country: userDetails?.address?.country,
-                    zip: userDetails?.address?.zip,
-                  },
-                  shipping_address: {
-                    attention: user?.username,
-                    street: userDetails?.address?.street,
-                    city: userDetails?.address?.city,
-                    state: userDetails?.address?.state,
-                    country: userDetails?.address?.country,
-                    zip: userDetails?.address?.zip,
-                  },
-                   ...(config.envType !== "stage" && {
-                    gst_no: orgDetails?.metadata?.gst,
-                    gst_treatment: "business_gst",
-                  })
-                },
-              }),
-              ...(config.envType !== "stage" && {
-                gst_no: orgDetails?.metadata?.gst,
-                gst_treatment: "business_gst",
-                place_of_supply: getStateCode(userDetails?.address?.state),
-              }),
-              contactpersons: contactPersonIdList,
-              plan: {
-                plan_code: body.plan,
-              },
-              redirect_url: body?.redirectUrl,
-              payment_gateways: [
-                {
-                  payment_gateway:
-                    userDetails?.address === "india"
-                      ? "razorpay"
-                      : "razorpay",
-                },
-              ],
-          }
-
-          logger.info(`subscription body, ${JSON.stringify(reqObj)}`)
-          
-          const generatedHostedPage = await $fetch(
-            "https://www.zohoapis.in/billing/v1/hostedpages/newsubscription",
-            {
-              method: "POST",
-              headers: {
-                "X-com-zoho-subscriptions-organizationid":
-                  metaData.organization_id,
-                Authorization: `Zoho-oauthtoken ${accessToken}`,
-                "content-type": "application/json",
-              },
-              body: reqObj,
-            },
-          );
-          return generatedHostedPage;
-        } catch (err: any) {
-          logger.error(
-            `Error creating hosted page: ${err.message} ${JSON.stringify(err?.data)} ${JSON.stringify(err)} `,
-          );
-          if (err.status === 401) {
-            const response = await regerateAccessToken();
-            // return generatedHostedPage();
-            return runHostedPageApi({ accessToken: response?.access_token });
-          } else if (err.status === 400) {
-            console.log(err.data);
-            return createError({
-              statusCode: 400,
-              statusMessage: err.data.message,
-            });
-          }
-        }
-      };
       const data = await runHostedPageApi({
-        accessToken: metaData.access_token,
+       accessToken: metaData.access_token, user, organizationId, userDetails, orgDetails, body, metaData, zohoData
       });
-      return data;
+      return data
     }
-  } catch (err) {
+  } catch (err: any) {
     console.log({ err });
-    logger.error(
-      `Error creating hosted page: ${err.message} ${JSON.stringify(err?.data)} ${JSON.stringify(err)} `,
-    );
+    logger.error(`Error creating hosted page: ${err.message} ${JSON.stringify(err?.data)} ${JSON.stringify(err)} `);
     if (err instanceof Error) {
     }
   }

@@ -2,18 +2,17 @@ import { orgSubscriptionSchema } from "~/server/schema/admin";
 
 const db = useDrizzle();
 
-// Load credentials from JSON file
-// const credentialsPath = join(process.cwd(), "zoho_config.json");
 
 export default defineEventHandler(async (event) => {
   const body = await readValidatedBody(
     event,
     z.object({
       hostedpageId: z.string(),
-      // type: z.optional(z.enum(["subscription", "addon"])),
+      // type: z.optional(z.enum(["subscription", "addon"]))
     }).parse,
   );
-  const orgId = await isOrganizationAdminHandler(event);
+
+  const orgId = (await isOrganizationAdminHandler(event) as string);
   if (!orgId) {
     return createError({ statusCode: 401, statusMessage: "Unauthorized" });
   }
@@ -27,6 +26,12 @@ export default defineEventHandler(async (event) => {
       token: metaData.access_token,
       hostedPageId: body.hostedpageId,
     });
+
+    let botType : string
+  
+    const getBotType = await getPricingInformation(data.data.subscription.plan.plan_code)
+    botType = getBotType?.type === "chatbot" ? "chat" : "voice"
+
     const userId: string | undefined = event.context.user?.id;
     if (!userId) {
       return sendError(
@@ -71,9 +76,10 @@ export default defineEventHandler(async (event) => {
     
     const orgSubscription = {
       organizationId: orgId!,
-      botType: "chat",
+      botType: botType,
       subscriptionId: data.data.subscription.subscription_id,
       planCode: data.data.subscription.plan.plan_code,
+      subscriptionCreatedDate: data.data.subscription.current_term_starts_at,
       expiryDate: data.data.subscription.next_billing_at,
       status: "active"
     }
@@ -84,32 +90,36 @@ export default defineEventHandler(async (event) => {
         .values(apiResponseData)
         .returning();
 
+      const planCode = ( botType === "chat" )
+            ? { planCode: apiResponseData.plan_code}
+            : { voicePlanCode : apiResponseData.plan_code } 
+
       const organizationPromise = db
         .update(organizationSchema)
         .set({
           usedQuota: 0,
-          planCode: apiResponseData.plan_code,
+          ...planCode
         })
         .where(eq(organizationSchema.id, orgId!));
 
       const isOrgSubscriptionExist = await db.query.orgSubscriptionSchema.findFirst({
         where: and(
           eq(orgSubscriptionSchema.organizationId, orgId),
-          eq(orgSubscriptionSchema.botType, "chat")
+          eq(orgSubscriptionSchema.botType, botType)
         )
       })
       
-      let orgSubscriptionPromise
       if(isOrgSubscriptionExist) {
-        orgSubscriptionPromise = db
+        await db
           .update(orgSubscriptionSchema)
           .set(orgSubscription)
-          .where(and(
+          .where(
+            and(
             eq(orgSubscriptionSchema.organizationId, orgId),
-            eq(orgSubscriptionSchema.botType, "chat")
-        ))
+            eq(orgSubscriptionSchema.botType, botType)
+          ))
       } else {
-         orgSubscriptionPromise = db
+         await db
           .insert(orgSubscriptionSchema)
           .values(orgSubscription)
       }
@@ -124,7 +134,6 @@ export default defineEventHandler(async (event) => {
       await Promise.allSettled([
         billingPromise,
         organizationPromise,
-        orgSubscriptionPromise,
         userPromise,
       ]);
       return { status: "Payment Successful" };

@@ -17,7 +17,8 @@ const zodUpdateVoiceBotSchema = z.object({
   }).optional(),
   preRecordedAudios: z.object({
     welcomeAudio: z.array(z.any()).optional(),
-    concludeAudio: z.array(z.any()).optional()
+    concludeAudio: z.array(z.any()).optional(),
+    fillerAudio: z.array(z.any()).optional(),
   }).optional(),
   clientConfig: z.object({
     llmCaching: z.boolean().optional(),
