@@ -44,7 +44,10 @@ export default defineEventHandler(async (event) => {
   
   if(body?.ivrConfig) {
     const voiceBot = await db.query.voicebotSchema.findFirst({ 
-      where: eq(voicebotSchema.ivrConfig, body?.ivrConfig)
+      where: and(
+        eq(voicebotSchema.ivrConfig, body?.ivrConfig),
+        ne(voicebotSchema.id, voicebotId)
+      )
     })
 
     if(voiceBot) {
@@ -68,7 +71,7 @@ export default defineEventHandler(async (event) => {
     body.textToSpeechConfig = data
   }
 
-  if(body.ivrConfig && !body.ivrConfig) {
+  if(body.ivrConfig === null) {
     body.active = false
   }
 
