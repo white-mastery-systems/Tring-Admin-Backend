@@ -30,7 +30,7 @@ const zodUpdateVoiceBotSchema = z.object({
   intent: z.string().optional(),
   textToSpeechConfig: z.record(z.any()).optional(),
   speechToTextConfig: z.record(z.any()).optional(),
-  ivrConfig: z.any().optional(),
+  ivrConfig: z.any().optional()
 });
 
 export default defineEventHandler(async (event) => {
@@ -66,6 +66,10 @@ export default defineEventHandler(async (event) => {
   if(body?.textToSpeechConfig) {
     const data = updateVoicebotConfig(defaultTextToSpeechConfig, body.textToSpeechConfig);
     body.textToSpeechConfig = data
+  }
+
+  if(body.ivrConfig && !body.ivrConfig) {
+    body.active = false
   }
 
   const update = await updateVoiceBot(voicebotId, body);
