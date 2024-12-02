@@ -8,11 +8,10 @@ export default defineEventHandler(async (event) => {
     event,
     z.object({
       hostedpageId: z.string(),
-      // type: z.optional(z.enum(["subscription", "addon"])),
-      botType: z.string()
+      // type: z.optional(z.enum(["subscription", "addon"]))
     }).parse,
   );
-  console.log({ botType: body.botType })
+
   const orgId = (await isOrganizationAdminHandler(event) as string);
   if (!orgId) {
     return createError({ statusCode: 401, statusMessage: "Unauthorized" });
@@ -27,6 +26,12 @@ export default defineEventHandler(async (event) => {
       token: metaData.access_token,
       hostedPageId: body.hostedpageId,
     });
+
+    let botType : string
+  
+    const getBotType = await getPricingInformation(data.data.subscription.plan.plan_code)
+    botType = getBotType?.type === "chatbot" ? "chat" : "voice"
+
     const userId: string | undefined = event.context.user?.id;
     if (!userId) {
       return sendError(
@@ -71,7 +76,7 @@ export default defineEventHandler(async (event) => {
     
     const orgSubscription = {
       organizationId: orgId!,
-      botType: body.botType,
+      botType: botType,
       subscriptionId: data.data.subscription.subscription_id,
       planCode: data.data.subscription.plan.plan_code,
       subscriptionCreatedDate: data.data.subscription.current_term_starts_at,
@@ -85,7 +90,7 @@ export default defineEventHandler(async (event) => {
         .values(apiResponseData)
         .returning();
 
-      const planCode = ( body.botType === "chat" )
+      const planCode = ( botType === "chat" )
             ? { planCode: apiResponseData.plan_code}
             : { voicePlanCode : apiResponseData.plan_code } 
 
@@ -100,7 +105,7 @@ export default defineEventHandler(async (event) => {
       const isOrgSubscriptionExist = await db.query.orgSubscriptionSchema.findFirst({
         where: and(
           eq(orgSubscriptionSchema.organizationId, orgId),
-          eq(orgSubscriptionSchema.botType, body.botType)
+          eq(orgSubscriptionSchema.botType, botType)
         )
       })
       
@@ -111,7 +116,7 @@ export default defineEventHandler(async (event) => {
           .where(
             and(
             eq(orgSubscriptionSchema.organizationId, orgId),
-            eq(orgSubscriptionSchema.botType, body.botType)
+            eq(orgSubscriptionSchema.botType, botType)
           ))
       } else {
          await db
