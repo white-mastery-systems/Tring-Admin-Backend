@@ -104,11 +104,12 @@ export const voicebotIntegrationSchema = voiceBotSchema.table(
   {
     id: uuid("id").notNull().primaryKey().defaultRandom(),
     botId: uuid("bot_id")
-      .references(() => voicebotSchema.id)
-      .notNull(),
+      .references(() => voicebotSchema.id, { onDelete: "cascade"}),
     metadata: jsonb("metadata"),
     integrationId: uuid("integration_id").references(
-      () => integrationSchema.id,
+      () => integrationSchema.id,{
+      onDelete: "cascade",
+     }
     ),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     organizationId: uuid("organization_id")
