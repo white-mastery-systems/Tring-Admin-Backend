@@ -397,16 +397,16 @@ const handleVoiceTypeBilling = async (
   let extraSessions = 0
 
   const resObj = constructResponse({
-      usedQuota: usedCallMinutes,
-      maxQuota: maxCallMinutes,
-      planCode: orgSubscription.planCode,
-      walletBalance: orgWalletSessions,
-      extraSessionsCost: pricingInformation.extraSessionCost,
-      gst,
-      extraSessions,
-      availableSessions: availableMinutes,
-      orgSubscription,
-      subscriptionStatus: orgSubscription.status
+    usedQuota: usedCallMinutes,
+    maxQuota: maxCallMinutes,
+    planCode: orgSubscription.planCode,
+    walletBalance: orgWalletSessions,
+    extraSessionsCost: pricingInformation.extraSessionCost,
+    gst,
+    extraSessions,
+    availableSessions: availableMinutes,
+    orgSubscription,
+    subscriptionStatus: orgSubscription.status
   })
 
   const expiryDate = momentTz(orgSubscription?.expiryDate)
@@ -467,7 +467,7 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   }
 };
 
-const constructResponse = ({ usedQuota, maxQuota, planCode, walletBalance, extraSessionsCost, gst, extraSessions,availableSessions,orgSubscription } :
+const constructResponse = ({ usedQuota, maxQuota, planCode, walletBalance, extraSessionsCost, gst, extraSessions,availableSessions,orgSubscription, subscriptionStatus } :
  { usedQuota: number,
   maxQuota: number,
   planCode: string,
@@ -489,7 +489,7 @@ const constructResponse = ({ usedQuota, maxQuota, planCode, walletBalance, extra
     extra_sessions: extraSessions,
     available_sessions: availableSessions,
     expiry_date: orgSubscription?.expiryDate ?? undefined,
-    subscription_status: orgSubscription?.status,
+    subscription_status: subscriptionStatus,
   };
 };
 
