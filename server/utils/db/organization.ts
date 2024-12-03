@@ -371,7 +371,7 @@ const handleVoiceTypeBilling = async (
       extraSessions: 0,
       availableSessions: 0,
       orgSubscription,
-      subscriptionStatus: "inActive"
+      subscriptionStatus: "inactive"
     })
      return resObj
   }
