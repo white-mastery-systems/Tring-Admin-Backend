@@ -23,39 +23,39 @@
       </div>
       <div class="flex w-full justify-end gap-2">
         <div>
-          <UiButton color="primary" type="button" size="lg" @click="addField">Add Field</UiButton>
+          <UiButton color="primary" type="button" size="lg" @click="addField()"> Add Field</UiButton>
         </div>
         <UiButton color="primary" type="submit" size="lg" :loading="isLoading">Submit</UiButton>
       </div>
     </form>
     <!-- Preview Section -->
-    <div class="mt-8" v-if="formattedValue.length">
-      <h2 class="text-xl font-semibold">Form Preview</h2>
-      <form class="space-y-4">
-        <div v-for="(field, index) in formattedValue" :key="index" class="space-y-3 flex items-end gap-2">
-          <!-- Type Field in Preview -->
-          <div v-if="field.type === 'Date'" class="w-full">
-            <DatePickerField :name="field.model" :label="field.label" :placeholder="field.placeholder" required
-              disabled />
-          </div>
-          <div v-else-if="field.type === 'Time'" class="w-full">
-            <TimePickerField :name="field.model" :label="field.label" :placeholder="field.placeholder" required
-              disabled>
-            </TimePickerField>
-            <!-- <UiButton variant="outline" type="button" @click="removeField(index)">
-              <CloseIcon class="w-4 h-4" />
-            </UiButton> -->
-          </div>
-          <div v-else class="w-full">
-            <TextField :name="field.model" :label="field.label" :placeholder="field.placeholder" :type="field.type"
-              required disabled />
+      <div class="mt-8" v-if="formattedValue.length">
+        <h2 class="text-xl font-semibold">Form Preview</h2>
+        <form class="space-y-4">
+          <div v-for="(field, index) in formattedValue" :key="index" class="space-y-3 flex items-end gap-2">
+            <!-- Type Field in Preview -->
+            <div v-if="field.type === 'Date'" class="w-full">
+              <DatePickerField :name="field.model" :label="field.label" :placeholder="field.placeholder" required
+                disabled />
             </div>
-            <UiButton variant="outline" type="button" @click="removeField(index)">
-              <CloseIcon class="w-4 h-4" />
-            </UiButton>
-        </div>
-      </form>
-    </div>
+            <div v-else-if="field.type === 'Time'" class="w-full">
+              <TimePickerField :name="field.model" :label="field.label" :placeholder="field.placeholder" required
+                disabled>
+              </TimePickerField>
+              <!-- <UiButton variant="outline" type="button" @click="removeField(index)">
+                <CloseIcon class="w-4 h-4" />
+              </UiButton> -->
+            </div>
+            <div v-else class="w-full">
+              <TextField :name="field.model" :label="field.label" :placeholder="field.placeholder" :type="field.type"
+                required disabled />
+              </div>
+              <UiButton variant="outline" type="button" @click="removeField(index)">
+                <CloseIcon class="w-4 h-4" />
+              </UiButton>
+          </div>
+        </form>
+      </div>
 
   </Page>
 </template>
@@ -83,6 +83,25 @@ const typeList = reactive([
   { label: "Time", value: "time" },
   // { label: "Textarea", value: "textarea" },
 ]);
+
+const formattedToolsConfig = computed(() => {
+  // Format the getAddTools data for better readability
+  return {
+    defaultTools: getAddTools.value.defaultTools,
+    clientTools: getAddTools.value.clientTools.map((tool) => ({
+      name: tool.name,
+      description: tool.description,
+      endpoint: tool.endpoint,
+      parameters: tool.parameters.properties.map((param) => ({
+        name: param.name,
+        type: param.type,
+        description: param.description,
+        required: param.required ? "Yes" : "No",
+      })),
+    })),
+  };
+});
+
 
   const {
     data: formattedValue,

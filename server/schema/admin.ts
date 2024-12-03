@@ -72,6 +72,7 @@ export const orgSubscriptionSchema = adminSchema.table("org_subscription", {
   botType: varchar("bot_type"),
   subscriptionId: text("subscription_id"),
   planCode: varchar("plan_code"),
+  subscriptionCreatedDate: text("subscription_created_date"),
   expiryDate: text("expiry_date"),
   status: text("status").default("active"),
   walletSessions: integer("wallet_sessions").default(0),

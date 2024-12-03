@@ -11,6 +11,16 @@ export const createNumberIntegration = async (
   )[0];
 };
 
+export const getNumberIntegration = async (exophone: string, id?: string) => {
+  return await db.query.numberIntegrationSchema.findFirst({
+    where: !id ? eq(numberIntegrationSchema.exoPhone, exophone) 
+    : and(
+      eq(numberIntegrationSchema.exoPhone, exophone),
+      ne(numberIntegrationSchema.id, id)
+    )
+  })
+}
+
 export const listNumberIntegration = async (
   organizationId: string,
   query?: any,

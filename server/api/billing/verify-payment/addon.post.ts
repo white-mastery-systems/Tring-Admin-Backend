@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
     event,
     z.object({
       hostedpageId: z.string(),
+      botType: z.string()
     }).parse,
   );
   const orgId = await isOrganizationAdminHandler(event);
@@ -23,6 +24,12 @@ export default defineEventHandler(async (event) => {
       token: metaData.access_token,
       hostedPageId: body.hostedpageId,
     });
+
+    let botType : string
+  
+    const getBotType = await getPricingInformation(hostedPageData.data.subscription.plan.plan_code)
+    botType = getBotType?.type === "chatbot" ? "chat" : "voice"
+
     const userId: string | undefined = event.context.user?.id;
     if (!userId) {
       return sendError(
@@ -81,7 +88,7 @@ export default defineEventHandler(async (event) => {
         })
         .where(and(
             eq(orgSubscriptionSchema.organizationId, orgId),
-            eq(orgSubscriptionSchema.botType, "chat")
+            eq(orgSubscriptionSchema.botType, botType)
           ));
   
       

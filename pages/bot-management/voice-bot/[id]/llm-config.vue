@@ -20,7 +20,7 @@
             :options="tokens.map((token) => ({ label: token, value: token }))" :required="true" />
 
           <div class="mt-5 flex flex-col gap-2">
-            <RangeSlider :step="0.1" :name="values.temperature" label="Temperature" @update="
+            <RangeSlider :step="0.05" :name="values.temperature" label="Temperature" @update="
                 ($event) => {
                   setFieldValue('temperature', $event);
                 }

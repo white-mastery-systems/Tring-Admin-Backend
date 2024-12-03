@@ -17,7 +17,8 @@ const zodUpdateVoiceBotSchema = z.object({
   }).optional(),
   preRecordedAudios: z.object({
     welcomeAudio: z.array(z.any()).optional(),
-    concludeAudio: z.array(z.any()).optional()
+    concludeAudio: z.array(z.any()).optional(),
+    fillerAudio: z.array(z.any()).optional(),
   }).optional(),
   clientConfig: z.object({
     llmCaching: z.boolean().optional(),
@@ -29,7 +30,7 @@ const zodUpdateVoiceBotSchema = z.object({
   intent: z.string().optional(),
   textToSpeechConfig: z.record(z.any()).optional(),
   speechToTextConfig: z.record(z.any()).optional(),
-  ivrConfig: z.string().optional(),
+  ivrConfig: z.any().optional()
 });
 
 export default defineEventHandler(async (event) => {
@@ -43,7 +44,10 @@ export default defineEventHandler(async (event) => {
   
   if(body?.ivrConfig) {
     const voiceBot = await db.query.voicebotSchema.findFirst({ 
-      where: eq(voicebotSchema.ivrConfig, body?.ivrConfig)
+      where: and(
+        eq(voicebotSchema.ivrConfig, body?.ivrConfig),
+        ne(voicebotSchema.id, voicebotId)
+      )
     })
 
     if(voiceBot) {
@@ -57,14 +61,18 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  if(body.speechToTextConfig) {
+  if(body?.speechToTextConfig) {
     const data = updateVoicebotConfig(defaultSpeechToTextConfig, body.speechToTextConfig);
     body.speechToTextConfig = data
   }
 
-  if(body.textToSpeechConfig) {
+  if(body?.textToSpeechConfig) {
     const data = updateVoicebotConfig(defaultTextToSpeechConfig, body.textToSpeechConfig);
     body.textToSpeechConfig = data
+  }
+
+  if(body.ivrConfig === null) {
+    body.active = false
   }
 
   const update = await updateVoiceBot(voicebotId, body);

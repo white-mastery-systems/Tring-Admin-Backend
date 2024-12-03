@@ -338,7 +338,7 @@ watch(botData, () => {
     setFieldValue("apikey", botData.value?.textToSpeechConfig[botData.value?.textToSpeechConfig?.provider]?.api_key || '');
   }
   // setFieldValue("sampleRate", botData.value?.textToSpeechConfig?.tring.sample_rate);
-}, { deep: true })
+}, { deep: true, immediate: true });
 watch(errors, (newValues) => {
   if (newValues) {
     console.log("ERRORS", newValues);
@@ -453,8 +453,8 @@ const onSubmit = handleSubmit(async (values) => {
   isLoading.value = false;
 });
 
-const apikeyunmasking = ($event: event) => {
-  console.log(apikey.value, "$event asdsad");
-  // const unmasked = "*".repeat(originalLength - 4) + value.slice(-4);
+const apikeyunmasking = ($event: Event) => {
+  const input = $event.target as HTMLInputElement;
+  const newInput = input.value.replace(/\*/g, '');
 }
 </script>
