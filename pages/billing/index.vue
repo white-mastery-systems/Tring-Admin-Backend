@@ -50,8 +50,6 @@
         </UiTabsContent>
         <UiTabsContent value="Voice">
           <VoiceBotBilling
-            :usageDetails="usageDetails"
-            :subscriptionData="subscriptionData"
             :usage="usage"
           >
           </VoiceBotBilling>

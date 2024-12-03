@@ -69,7 +69,7 @@
       <!-- Client Tools Section -->
       <!-- <h2 class="text-xl font-semibold mb-4">Client Tools</h2> -->
       <div class="mb-4">
-        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3 px-2">
+        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3">
           <TextField :name="`clientTools[0].name`" label="Tool Name" placeholder="Enter tool name" required />
           <TextField :name="`clientTools[0].endpoint`" label="Endpoint URL" placeholder="Enter endpoint URL" required />
         </div>
@@ -115,11 +115,10 @@
         </UiButton>
       </div>
     </form>
-
     <!-- Preview Section -->
     <div class="mt-8" v-if="getAddTools">
-      <h2 class="text-xl font-semibold">Tools Configuration Preview</h2>
-      <div v-for="(tool, toolIndex) in getAddTools.clientTools" :key="toolIndex"
+      <h2 class="text-xl font-semibold py-2">Tools Configuration Preview</h2>
+      <div v-for="(tool, toolIndex) in getAddTools?.clientTools" :key="toolIndex"
         class="mb-6 border p-4 rounded relative">
         <div class="font-bold">{{ `Tools  ${toolIndex+1}` }}</div>
         <div class="w-full">
@@ -128,7 +127,7 @@
             :isTextarea="true" />
           <TextField :name="tool.endpoint" label="Endpoint URL" :placeholder="tool.endpoint" required disabled />
           <!-- <div class="flex gap-2"> -->
-          <div v-for="(client, Index) in tool.parameters.properties" :key="Index" class="flex gap-2 w-full">
+          <div v-for="(client, Index) in tool.parameters?.properties" :key="Index" class="flex gap-2 w-full">
             <div class="w-[100%]">
               <TextField :name="client.name" label="Parameter Name" :placeholder="client.name" required />
               <TextField :name="client.type" label="Parameter Type" :placeholder="client.type" required />
@@ -156,7 +155,7 @@
   </Page>
 </template>
 
-  <script setup lang="ts">
+<script setup lang="ts">
 import { useForm } from 'vee-validate';
 import CloseIcon from "~/components/icons/CloseIcon.vue";
 import * as z from 'zod';
@@ -197,8 +196,9 @@ const getAddTools:any = ref(
 
 watchEffect(async () => {
   const getRes = await getVoiceBotDetails(route.params.id)
-  console.log(getRes, "getRes")
-  getAddTools.value = getRes.tools
+  if (getRes.tools) {
+    getAddTools.value = getRes?.tools
+  }
 })
 const parameterTypes = reactive([
   { label: 'String', value: 'string' },

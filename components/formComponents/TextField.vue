@@ -1,20 +1,13 @@
 <template>
   <div :class="cn('w-full', 'relative')">
-    <UiLabel
-      :class="[
+    <UiLabel :class="[
         'flex items-center capitalize',
         errorMessage ? 'text-red-500' : '',
-      ]"
-      v-if="label"
-      :for="replacedId"
-    >
+      ]" v-if="label" :for="replacedId">
       {{ label }}
       <span v-if="required" class="text-lg text-red-500">* </span>
     </UiLabel>
-    <UiTextarea
-      v-if="isTextarea"
-      class="mt-2"
-      @paste="
+    <UiTextarea v-if="isTextarea" class="mt-2 textarea-resize-scroll" @paste="
         (e: any) => {
           if (disableCharacters) {
             if (isNaN(Number(e.clipboardData.getData('text/plain')))) {
@@ -22,8 +15,7 @@
             }
           }
         }
-      "
-      @keypress="
+      " @keypress="
         (e: any) => {
           if (disableCharacters) {
             if (e.key === 'Enter') {
@@ -35,31 +27,22 @@
           }
           if (['{', '}'].includes(e.key)) emit('input', e.key);
         }
-      "
-      @keydown="
+      " @keydown="
         ($event) => {
           if ($event.code == 'Backspace' || $event.code == 'Delete')
             emit('input', 'keydown');
         }
-      "
-      @input="emit('input', 'change')"
-      :placeholder="placeholder"
-      :id="replacedId"
-      :class="errorMessage ? 'border-red-500' : 'border-input'"
-      v-model="value"
-      :type="type === 'phone' ? 'text' : type || 'text'"
-    />
+      " @input="emit('input', 'change')" :placeholder="placeholder" :id="replacedId"
+      :class="errorMessage ? 'border-red-500' : 'border-input'" v-model="value"
+      :type="type === 'phone' ? 'text' : type || 'text'" />
 
-    <UiInput
-      v-else
-      :class="
+    <UiInput v-else :class="
         cn(
           'mt-2',
           props.class,
           errorMessage ? 'border-red-500' : 'border-input',
         )
-      "
-      @paste="
+      " @paste="
         (e: any) => {
           if (disableCharacters) {
             if (isNaN(Number(e.clipboardData.getData('text/plain')))) {
@@ -67,8 +50,7 @@
             }
           }
         }
-      "
-      @keypress="
+      " @keypress="
         (e: any) => {
           if (disableCharacters) {
             if (e.key === 'Enter') {
@@ -90,46 +72,34 @@
             }
           }
         }
-      "
-      :maxlength="props?.type === 'phone' ? 10 : ''"
-      :disabled="disabled"
-      :placeholder="placeholder"
-      :id="replacedId"
-      v-model="value"
-      :type="type || 'text'"
-      :accept="accept || ''"
-      @input="emit('input', $event)"
-    />
-    <div
-      :class="
+      " :disabled="disabled" :placeholder="placeholder" :id="replacedId" v-model="value" :type="type || 'text'"
+      :accept="accept || ''" @input="emit('input', $event)" />
+
+    <div></div>
+    <!-- :maxlength="props?.type === 'phone' ? 10 : ''" -->
+    <div :class="
         cn(
           props?.endIcon
             ? 'absolute right-[10px] top-[38px] cursor-pointer'
             : 'absolute right-[10px] top-[38px]',
         )
-      "
-    >
+      ">
       <slot name="endIcon"></slot>
     </div>
-    <div
-      :class="
+    <div :class="
         cn(
           props?.endSlot
             ? 'absolute right-[0px] top-[36px]'
             : 'absolute right-[0px] top-[36px]',
         )
-      "
-    >
+      ">
       <slot name="endSlot"></slot>
     </div>
 
-    <span
-      :class="[
+    <span :class="[
         'text-xs text-gray-500',
         errorMessage ? 'font-medium text-red-500' : '',
-      ]"
-      >{{ errorMessage ?? helperText }}</span
-    >
+      ]">{{ errorMessage ?? helperText }}</span>
   </div>
 </template>
 
