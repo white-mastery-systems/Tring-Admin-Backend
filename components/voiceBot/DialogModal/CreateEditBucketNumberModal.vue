@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import countryData from '~/assets/country-codes.json'
+// import countryData from '~/assets/country-codes.json'
 import { useRoute } from "vue-router";
 
 definePageMeta({
@@ -23,12 +23,19 @@ const formSchema = toTypedSchema(
   z.object({
     firstName: z.string({ required_error: 'First name is required' }).min(1, 'First name is required'),
     lastName: z.string({ required_error: 'Last name is required' }).min(1, 'Last name is required'),
-    phone: z.string({ required_error: 'Mobile Number is required' })
-      .min(1, 'Phone Number is required')
-      .regex(phoneNumberPattern, 'Invalid phone number'),
+    phone: z.string({ required_error: 'Mobile Number is required' }),
     countryCode: z.string({ required_error: 'Code is required' }).min(1, 'Code is required'),
     email: z.string().optional(),
     // addBuckets: z.string().min(1, "Add Audiences is required")
+  }).superRefine((data, ctx) => {
+    const lengthRequirement = getCountryLengthRequirement(data.countryCode);
+    if (data.phone.length !== lengthRequirement) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Number must be exactly ${lengthRequirement} characters long.`,
+        path: ["phone"], // Field with the issue
+      });
+    }
   })
 );
 
@@ -45,16 +52,16 @@ const {
 });
 
 
-const allCoutryDialCode = computed(() =>
-  countryData?.map((country) => country.dial_code),
-);
-const {
-  list: countyDialCodes,
-  containerProps,
-  wrapperProps,
-} = useVirtualList(allCoutryDialCode, {
-  itemHeight: 32,
-});
+// const allCoutryDialCode = computed(() =>
+//   countryData?.map((country) => country.dial_code),
+// );
+// const {
+//   list: countyDialCodes,
+//   containerProps,
+//   wrapperProps,
+// } = useVirtualList(allCoutryDialCode, {
+//   itemHeight: 32,
+// });
 // const [firstNameField, firstNameFieldProps] = defineField("firstName");
 // const [lastNameField, lastNameFieldProps] = defineField("lastName");
 // const [mobileField, mobileFieldProps] = defineField("phone");

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import countryData from '~/assets/country-codes.json'
 import { useCount } from '@/composables/useRefresh';
 import type { AnyFn } from '@vueuse/core';
 
@@ -23,9 +22,6 @@ const { refresh } = useCount();
 //   },
 // });
 const isLoading = ref(false)
-const allCoutryDialCode = computed(() =>
-  countryData?.map((country) => country.dial_code),
-);
 const providerList = ref([
   {
     value: 'twilio',
@@ -41,22 +37,22 @@ const providerList = ref([
     label: 'Doocti',
   },
 ])
-const {
-  list: countyDialCodes,
-  containerProps,
-  wrapperProps,
-} = useVirtualList(allCoutryDialCode, {
-  itemHeight: 32,
-});
 
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 const formSchema = toTypedSchema(
   z.object({
     provider: z.string({ required_error: 'Provider is required' }).min(1, 'Provider is required'),
-    exoPhone: z.string({ required_error: 'Phone Number is required'  })
-      .min(1, 'Phone Number is required')
-      .regex(phoneNumberPattern, 'Invalid phone number'),
+    exoPhone: z.string({ required_error: 'Phone Number is required'  }),
     countryCode: z.string({ required_error: 'Country Code is required' }).min(1, 'Country Code is required'),
+  }).superRefine((data, ctx) => {
+    const lengthRequirement = getCountryLengthRequirement(data.countryCode);
+    if (data.exoPhone.length !== lengthRequirement) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Number must be exactly ${lengthRequirement} characters long.`,
+        path: ["exoPhone"], // Field with the issue
+      });
+    }
   })
 );
 
