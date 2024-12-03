@@ -59,7 +59,7 @@ export default defineEventHandler(async (event) => {
         botType: type,
         subscriptionId: body.data.subscription.subscription_id,
         planCode: body.data.subscription.plan.plan_code,
-        subscriptionCreatedDate: body.data.subscription.current_term_starts_at,
+        subscriptionCreatedDate: body.data.subscription.updated_time,
         expiryDate: body.data.subscription.next_billing_at,
         status: "active"
       }
@@ -164,7 +164,7 @@ export default defineEventHandler(async (event) => {
       botType: type,
       subscriptionId: body.data.subscription.subscription_id,
       planCode: body.data.subscription.plan.plan_code,
-      subscriptionCreatedDate: body.data.subscription.current_term_starts_at,
+      subscriptionCreatedDate: body.data.subscription.updated_time,
       expiryDate: body.data.subscription.next_billing_at,
       status: "active"
     }
