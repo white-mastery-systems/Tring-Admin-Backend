@@ -79,7 +79,7 @@ export default defineEventHandler(async (event) => {
       botType: botType,
       subscriptionId: data.data.subscription.subscription_id,
       planCode: data.data.subscription.plan.plan_code,
-      subscriptionCreatedDate: data.data.subscription.current_term_starts_at,
+      subscriptionCreatedDate: data.data.subscription.updated_time,
       expiryDate: data.data.subscription.next_billing_at,
       status: "active"
     }

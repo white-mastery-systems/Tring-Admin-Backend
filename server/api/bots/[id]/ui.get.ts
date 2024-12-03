@@ -59,7 +59,7 @@ export default defineEventHandler(async (event) => {
   .toDate();
 
   if (orgSubscription?.planCode === "chat_free") {
-    if(availableSessions <= 0) {
+    if(availableSessions < 0) {
        return sendError(event, createError({ statusCode: 403, statusMessage: "Your free plan has exceeded the session limit" }));
     }
   } else if(currentDate > expiryDate) {
