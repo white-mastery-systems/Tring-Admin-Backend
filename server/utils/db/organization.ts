@@ -433,7 +433,7 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   const [org, orgSubscription] = await getOrgAndSubscription(organizationId, query);
 
   const { startDate, endDate } = calculateDateRange(orgSubscription, timeZone);
-  console.log({ startDate, endDate })
+  // console.log({ startDate, endDate })
 
   if(!org) {
     throw new Error("organization not found")
