@@ -256,7 +256,7 @@ const updateOrgSubscriptionStatus = async(organizationId: string, status: string
 }
 
 const calculateDateRange = (orgSubscription: any, timeZone: string) => {
-  if (orgSubscription?.subscriptionCreatedDate) {
+  if (orgSubscription?.subscriptionCreatedDate && orgSubscription.expiryDate) {
     return {
       startDate: momentTz(orgSubscription?.subscriptionCreatedDate).tz(timeZone).toDate(),
       endDate: momentTz(orgSubscription?.expiryDate).tz(timeZone).toDate(),
@@ -371,7 +371,7 @@ const handleVoiceTypeBilling = async (
       extraSessions: 0,
       availableSessions: 0,
       orgSubscription,
-      subscriptionStatus: "inActive"
+      subscriptionStatus: "inactive"
     })
      return resObj
   }
@@ -433,6 +433,7 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   const [org, orgSubscription] = await getOrgAndSubscription(organizationId, query);
 
   const { startDate, endDate } = calculateDateRange(orgSubscription, timeZone);
+  // console.log({ startDate, endDate })
 
   if(!org) {
     throw new Error("organization not found")
