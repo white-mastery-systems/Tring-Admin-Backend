@@ -229,3 +229,21 @@ export const addVoiceBotIntegration = async ({
     toast.error(err.data.data[0].message);
   }
 };
+export const deleteVoiceBotIntegration = async ({
+  botIntegrationId,
+  botId,
+  onSuccess,
+}: any) => {
+  try {
+    const botIntegrations = await $fetch<SelectBotIntegration>(
+      `/api/voicebots/${botId}/integrations/${botIntegrationId}`,
+      {
+        method: "DELETE",
+      },
+    );
+    onSuccess();
+    return botIntegrations;
+  } catch (err: any) {
+    toast.error(err.data.data[0].message);
+  }
+};

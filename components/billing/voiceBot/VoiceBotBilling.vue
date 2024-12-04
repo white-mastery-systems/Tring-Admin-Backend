@@ -2,8 +2,6 @@
 import { format } from "date-fns";
 
 const props = defineProps({
-  usageDetails: Object,
-  subscriptionData: Object,
   usage: Object,
 });
 </script>
@@ -20,18 +18,18 @@ const props = defineProps({
       <div
         class="flex items-center justify-between gap-3 px-[5px] py-5 sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span class="font-medium"> Current plan </span>
-        <!-- <div class="flex min-w-[80px] items-center justify-start">
+        <div class="flex min-w-[80px] items-center justify-start">
           <span class="rounded-[11px] bg-[#d9dbe6] px-2.5 py-[3px] text-[12px] font-medium capitalize text-[#00000080]">
             {{ usage?.plan_code?.replaceAll("_", " ")?.replace("chat", "") }}
           </span>
-        </div> -->
+        </div>
       </div>
       <div
         class="flex items-center justify-between gap-3 px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span> Subscription status </span>
         <div class="flex min-w-[80px] items-center justify-start">
           <span class="rounded-[11px] bg-[#3cb3714d] px-2.5 py-[3px] text-[12px] capitalize text-[#008026ba]">
-            active
+            {{ usage?.subscription_status }}
           </span>
         </div>
       </div>
@@ -40,14 +38,14 @@ const props = defineProps({
         class="flex items-center justify-between gap-3 px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span> Total call minutes used </span>
         <span class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]">
-          <!-- {{ Number(usageDetails?.chatsUsedInPlan) }} -->
+          {{ Number(usage?.used_quota) }}
         </span>
       </div>
       <div
         class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span> Call minutes included in your plan </span>
         <span class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]">
-          <!-- {{ usageDetails?.chatsAvailableInPlan }} -->
+          {{ usage?.max_quota }}
         </span>
       </div>
 
@@ -55,32 +53,15 @@ const props = defineProps({
         class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span> Balance call minutes available in your plan </span>
         <span class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]">
-          <!-- {{ usageDetails?.extraChatsMade }} -->
+          {{ usage?.available_sessions }}
         </span>
       </div>
-      <!-- <div
-          class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]"
-        >
-          <span> Extra chat sessions billing </span>
-          <span
-            class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]"
-          >
-            Rs. {{ usageDetails?.extraChatsCost }}
-          </span>
-        </div> -->
       <div
         class="flex items-center justify-between gap-3 px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span>Extra call minutes used</span>
         <div class="flex min-w-[80px] items-center justify-start">
           <span class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]">
-            <!-- {{
-            Number(usageDetails?.individualChatsCost) === 0
-            ? 0
-            : (Math.floor(
-            Number(usageDetails?.walletBalance) /
-            Number(usageDetails?.individualChatsCost),
-            ) ?? 0)
-            }} -->
+            {{ usage?.extra_sessions }}
           </span>
         </div>
       </div>
@@ -88,14 +69,14 @@ const props = defineProps({
         class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span> Call minutes available in wallet </span>
         <span class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]">
-          <!-- {{ usageDetails?.extraChatsMade }} -->
+          {{ usage?.wallet_balance }}
         </span>
       </div>
-      <div v-if="subscriptionData?.subscription_metadata?.current_term_ends_at"
+      <div v-if="usage?.expiry_date"
         class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span> Billing Expiry Date </span>
         <span class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]">
-          <!-- {{ format(subscriptionData.subscription_metadata.current_term_ends_at, "MMMM d, yyyy") }} -->
+          {{ format(usage?.expiry_date, "MMMM d, yyyy") }}
         </span>
       </div>
     </div>

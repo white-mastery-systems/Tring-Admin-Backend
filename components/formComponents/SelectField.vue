@@ -8,9 +8,16 @@
       <UiFormControl>
         <UiSelect :class="cn(props.class)" :multiple="multiple" class="mt-2 focus-visible:ring" v-model="selectedValue"
           v-bind="$attrs">
-          <UiSelectTrigger :class="[hasError ? 'border-[#ef4444]' : '']">
+          <div class="relative flex items-center">
+            <UiSelectTrigger :class="[hasError ? 'border-[#ef4444]' : '']">
+              <UiSelectValue :placeholder="placeholder" />
+            </UiSelectTrigger>
+            <CloseIcon v-if="selectedValue && closeIcon" class="absolute right-10 w-4 h-4 cursor-pointer" @click="clearSelectedValue" />
+          </div>
+          <!-- <UiSelectTrigger :class="[hasError ? 'border-[#ef4444]' : '']">
             <UiSelectValue :placeholder="placeholder" />
-          </UiSelectTrigger>
+            <CloseIcon class="w-4 h-4" @click.stop="clearSelectedValue" />
+          </UiSelectTrigger> -->
           <UiSelectContent>
             <template v-for="option in options" :key="option.value">
               <UiSelectItem :value="option.value">
@@ -33,12 +40,13 @@
 <script setup lang='ts'>
 import { useField } from 'vee-validate';
 import { computed, ref, watch } from 'vue';
+import CloseIcon from "~/components/icons/CloseIcon.vue";
 // const options = defineModel('options')
 // watch(options, (opt) => {
 //   console.log({ opt })
 // })
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   name: string,
   label?: string,
   placeholder?: string,
@@ -51,7 +59,10 @@ const props = defineProps<{
   }[],
   multiple?: boolean
   class: ''
-}>();
+  closeIcon?: boolean
+}>(), {
+  closeIcon: false,
+});
 watchEffect(() => {
   console.log({ options: props.options })
 })
@@ -69,4 +80,8 @@ watch(selectedValue, (newValue) => {
 const hasError = computed(() => meta.touched && errorMessage.value);
 // const data = computed(() => errors.value)
 // console.log(data.value, "VALUE")
+
+const clearSelectedValue = () => {
+  selectedValue.value = props.multiple ? [] : ""; // Clear based on multiple or single select
+};
 </script>

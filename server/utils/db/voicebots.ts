@@ -177,7 +177,7 @@ export const getVoiceBotIntegrationById = async (
 export const updateVoiceBotIntegration = async (
   voicebotId: string,
   voicebotIntegrationId: string,
-  voicebotIntegration: InsertVoicebotIntegration,
+  voicebotIntegration: any,
 ) => {
   return (
     await db

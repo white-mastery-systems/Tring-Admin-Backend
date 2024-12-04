@@ -1,52 +1,76 @@
+import momentTz from "moment-timezone"
+
 const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
+  const timeZoneHeader = event.node?.req?.headers["time-zone"];
+  const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
   const { id } = await isValidRouteParamHandler(event, checkPayloadId("id"));
 
   let bot = await getBotDetailsNoCache(id);
   bot = await isValidReturnType(event, bot);
 
   if (!bot) return sendError(event, createError({ statusCode: 404 }));
+  
+  const orgSubscription = await db.query.orgSubscriptionSchema.findFirst({
+    where: and(
+      eq(orgSubscriptionSchema.organizationId, bot.organizationId),
+      eq(orgSubscriptionSchema.botType, "chat")
+    )
+  })
+
   const planDetails = await db.query.adminPricingSchema.findFirst({
-    where: eq(adminPricingSchema.planCode, bot.organization.planCode),
+    where: eq(adminPricingSchema.planCode, orgSubscription?.planCode),
   });
 
   if (!planDetails?.sessions) {
     return sendError(event, createError({ statusCode: 404 }));
   }
-  let availableQuota = planDetails?.sessions - bot.organization.usedQuota;
-  if (availableQuota <= 0) {
-    const data = await db.query.paymentSchema.findMany({
-      where: and(
-        eq(paymentSchema.type, "addon"),
-        eq(paymentSchema.organizationId, bot.organizationId),
-      ),
-    });
-    let extraAddonsPrice = 0;
-    data.map((item: any) => {
-      extraAddonsPrice += item.amount;
-    });
-    const extrChatsAvailable =
-      Number(extraAddonsPrice) / Number(planDetails?.extraSessionCost);
-    availableQuota += extrChatsAvailable;
-  }
-  if (availableQuota <= 0) {
-    return sendError(event, createError({ statusCode: 403 }));
-  }
-  // bot.organization.planCode === "chat_free" &&
-  //  else if (availableQuota <= 0) {
-  //   return sendError(
-  //     event,
-  //     createError({ statusCode: 403, statusMessage: "Trial Expired" }),
-  //   );
-  // }
-  // return Math.floor(availableQuota);
-  // const availableQuota = bot.organization.maxQuota - bot.organization.usedQuota;
-  // if (bot.organization.planCode === "chat_free" && availableQuota <= 0)
-  //   return sendError(
-  //     event,
-  //     createError({ statusCode: 403, statusMessage: "Trial Expired" }),
-  //   );
 
+  let startDate, endDate
+  if(orgSubscription?.subscriptionCreatedDate) {
+     startDate = momentTz(orgSubscription?.subscriptionCreatedDate).tz(timeZone).toDate()
+     endDate = momentTz(orgSubscription?.expiryDate).tz(timeZone).toDate()
+  } else {
+     startDate = momentTz().tz(timeZone).startOf("month").toDate()
+     endDate = momentTz().tz(timeZone).endOf("month").toDate()
+  }
+  
+  // get interacted chats 
+  const interactedSessions = await db.query.chatSchema.findMany({
+      where: and(
+        gte(chatSchema.createdAt, startDate),
+        lte(chatSchema.createdAt, endDate),
+        eq(chatSchema.interacted, true),
+        eq(chatSchema.organizationId, bot.organizationId),
+      ),
+  })
+
+  const usedSessions = interactedSessions.length 
+  const maxSessions = planDetails.sessions
+  const orgWalletSessions = orgSubscription?.walletSessions
+
+  let availableSessions = Math.max(maxSessions - usedSessions, 0);
+
+  // Calculate expiry date and check if the subscription is expired
+  const currentDate = momentTz().tz(timeZone).toDate();
+  const expiryDate = momentTz(orgSubscription?.expiryDate)
+  .tz(timeZone)
+  .toDate();
+
+  if (orgSubscription?.planCode === "chat_free") {
+    if(availableSessions < 0) {
+       return sendError(event, createError({ statusCode: 403, statusMessage: "Your free plan has exceeded the session limit" }));
+    }
+  } else if(currentDate > expiryDate) {
+    return sendError(event, createError({ statusCode: 403, statusMessage: "Your subscription plan has expired" }));
+  } else if(usedSessions > maxSessions) {
+    let extraSessions = Math.max(usedSessions - maxSessions, 0)
+    const currentWallet = Math.max(orgWalletSessions - extraSessions, 0)
+    if (currentWallet < 0) {
+      return sendError(event, createError({ statusCode: 403, statusMessage: "Your wallet balance is exhausted" }));
+    }
+  } 
+ 
   return (bot.metadata as Record<string, any>).ui;
 });

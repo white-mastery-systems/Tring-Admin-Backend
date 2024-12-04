@@ -82,6 +82,34 @@
               </UiButton>
             </div>
           </div>
+          <div v-if="values.intent === 'filler'" class="w-full gap-3 pt-2">
+            <div style="align-self: center">Filler Audio</div>
+            <div>
+              <imageField :isLoading="isLoading" name="fillerAudio" @change="($event) => {
+                uploadFile($event, 'filler', 'fillerFile');
+              }
+                " :fileName="values.welcomeAudio" :showFilename="false" :multiple="true" :accept="'audio/*'" />
+            </div>
+
+            <div v-for="(fillerFile, fillerFileIndex) in formattedUploadAudioFile?.filler" class="grid gap-2">
+              <div class="flex gap-3">
+                <span>
+                  {{
+                    `${fillerFile.audio}.wav`
+                  }}
+                </span>
+                <span>
+                  {{ fillerFile.transcription }}
+                </span>
+              </div>
+
+              <UiButton @click="
+                deleteFile(fillerFile, formattedUploadAudioFile?.filler, fillerFileIndex)
+                " size="icon" color="primary" type="button" style="min-width: 80px !important">
+                remove
+              </UiButton>
+            </div>
+          </div>
         </div>
         <div class="flex w-full justify-end">
           <UiButton type="submit" class="w-[120px] self-end bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
@@ -104,11 +132,13 @@ const route = useRoute("bot-management-voice-bot-id-identity-management");
 const botDetails: any = await getVoiceBotDetails(route.params.id);
 const welcomeFilesData = ref([]);
 const concludeFilesData = ref([]);
+const fillerFilesData = ref([]);
 const deleteFileBucket = ref([]);
 const uploadedAudio = ref();
 const formattedUploadAudioFile = ref({
   welcome: [],
   conclude: [],
+  filler: [],
 })
 // if (botDetails?.audioFiles?.welcome?.length) {
 //   console.log('jbafsakfb --- sfashfbsd')
@@ -161,6 +191,9 @@ const intentList = ref([
   }, {
     label: "Conclude",
     value: "conclude",
+  }, {
+    label: "Filler",
+    value: "filler",
   },
 ])
 const isLoading = ref(false);
@@ -187,6 +220,7 @@ const botSchema = toTypedSchema(
     intent: z.string({ required_error: "Intent is required" }).min(1, "Intent is required"),
     welcomeAudio: z.any().optional(),
     concludeAudio: z.any().optional(),
+    fillerAudio: z.any().optional(),
   })
     .superRefine((data, ctx) => {
       // Conditional validation for 'welcome' intent
@@ -208,6 +242,15 @@ const botSchema = toTypedSchema(
         ctx.addIssue({
           path: ["concludeAudio"],
           message: "Conclude file is required for the 'conclude' intent.",
+        });
+      }
+      if (
+        data.intent === "filler" &&
+        (!data.fillerAudio || data.fillerAudio.length === 0)
+      ) {
+        ctx.addIssue({
+          path: ["fillerAudio"],
+          message: "fillerAudio file is required for the 'filler' intent.",
         });
       }
     })
@@ -251,6 +294,16 @@ Object.entries(botDetails.preRecordedAudios ?? {}).forEach(([key, value]: any) =
       setFieldValue("concludeAudio", concludeAudioFilePaths.join(","));
     }
   }
+  if (key === 'fillerAudio') {
+    if (botDetails.preRecordedAudios?.fillerAudio.length) {
+      const fillerAudioFilePaths: any = botDetails.preRecordedAudios?.fillerAudio?.map((item: any) => item);
+      fillerAudioFilePaths?.map((item: object) => {
+        // concludeFilesData.value.push(item)
+        formattedUploadAudioFile.value.filler.push(item)
+      })
+      setFieldValue("fillerAudio", fillerAudioFilePaths.join(","));
+    }
+  }
 });
 watchEffect(async () => {
   if (botDetails) {
@@ -283,6 +336,10 @@ watch(() => values.intent, (newValue) => {
     const concludeAudioFilePaths = formattedUploadAudioFile.value.conclude.map((item: any) => item)
     setFieldValue("concludeAudio", concludeAudioFilePaths.join(","));
   } 
+  if (formattedUploadAudioFile.value.filler.length) {
+    const fillerAudioFilePaths = formattedUploadAudioFile.value.filler.map((item: any) => item)
+    setFieldValue("fillerAudio", fillerAudioFilePaths.join(","));
+  }
 });
 // watch(botDetails, () => {
 //   resetForm()
@@ -321,6 +378,7 @@ watch(() => values.intent, (newValue) => {
 
 const welcomeString = ref("");
 const concludeString = ref("");
+const fillerString = ref("");
 
 const uploadFile = (
   files: any,
@@ -348,6 +406,8 @@ const uploadFile = (
         welcomeFilesData.value.push(file);
       } else if (fieldName === "concludeFile") {
         concludeFilesData.value.push(file);
+      } else if (fieldName === "fillerFile") {
+        fillerFilesData.value.push(file);
       }
     });
 
@@ -356,10 +416,14 @@ const uploadFile = (
       welcomeString.value +=
         welcomeString.value.length > 0 ? "," + fileNames : fileNames;
       setFieldValue('welcomeAudio', welcomeString.value);
-    } else {
+    } else if (fieldName === "concludeFile") {
       concludeString.value +=
         concludeString.value.length > 0 ? "," + fileNames : fileNames;
       setFieldValue('concludeAudio', concludeString.value);
+    } else {
+      fillerString.value +=
+        fillerString.value.length > 0 ? "," + fileNames : fileNames;
+      setFieldValue('fillerAudio', fillerString.value);
     }
 
   } catch (error) {
@@ -384,7 +448,7 @@ const uploadFile = (
     formData.append("intent", values.intent);
   }
   // Append files from welcome and conclude data
-  [...welcomeFilesData.value, ...concludeFilesData.value].forEach((file: any) => {
+  [...welcomeFilesData.value, ...concludeFilesData.value, ...fillerFilesData.value].forEach((file: any) => {
     if (file instanceof File) {
       formData.append("files", file);
     }
@@ -426,6 +490,7 @@ const deleteFile = (data, files, index) => {
 const audioUpload = async (formData: any, type) => {
   formattedUploadAudioFile.value.welcome = [];
   formattedUploadAudioFile.value.conclude = [];
+  formattedUploadAudioFile.value.filler = [];
   isLoading.value = true;
   try {
     const response = await fetch(
@@ -441,6 +506,7 @@ const audioUpload = async (formData: any, type) => {
       preRecordedAudios: {
         welcomeAudio: formattedUploadAudioFile.value.welcome,
         concludeAudio: formattedUploadAudioFile.value.conclude,
+        fillerAudio: formattedUploadAudioFile.value.filler,
       }
     }
     // return response;
@@ -452,6 +518,7 @@ const audioUpload = async (formData: any, type) => {
     console.log("finally");
     concludeFilesData.value = []
     welcomeFilesData.value = []
+    fillerFilesData.value = []
   }
 };
 const audioDelete = async (data: any) => {
@@ -482,7 +549,7 @@ const audioDelete = async (data: any) => {
 const getLastFileNumber = (fileNames: string, maxNumber = 10000): number => {
   const files = fileNames === "welcomeFile"
     ? welcomeFilesData.value
-    : concludeFilesData.value;
+    : (fileNames === "concludeFile") ? concludeFilesData.value : fillerFilesData.value;
 
   // Extract existing numbers from file names
   const usedNumbers = new Set(
@@ -525,6 +592,7 @@ const onSubmit = handleSubmit(async (value: any) => {
       preRecordedAudios: {
         welcomeAudio: formattedUploadAudioFile.value?.welcome,
         concludeAudio: formattedUploadAudioFile.value?.conclude,
+        fillerAudio: formattedUploadAudioFile.value?.filler,
       },
     };
   }

@@ -28,7 +28,7 @@
     <ConfirmationModal v-model:open="deleteIntegrationState.open" title="Confirm Removal"
       description="Are you sure you want to remove this integration ?" @confirm="() => {
           if (deleteIntegrationState?.id) {
-            deleteBotIntegration({
+            deleteVoiceBotIntegration({
               botIntegrationId: deleteIntegrationState.id,
               botId: route.params.id,
               onSuccess: () => {

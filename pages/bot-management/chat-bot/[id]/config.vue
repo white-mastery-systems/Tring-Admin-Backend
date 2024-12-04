@@ -1,5 +1,60 @@
+<template>
+  <Page title="Bot Configuration" :bread-crumbs="[
+    {
+      label: `${botDetails.name}`,
+      to: `/bot-management/chat-bot/${botDetails.id}`,
+    },
+    {
+      label: 'Bot Configuration',
+      to: `/bot-management/chat-bot/${botDetails.id}/config`,
+    },
+  ]" :description="true" :disableSelector="false" :disable-back-button="false">
+    <div class="mx-5 gap-3">
+      <form @submit.prevent="handleUpdateBotConfig" class="space-y-3">
+        <div class="flex gap-4">
+          <TextField name="NAME" label="Bot Name" placeholder="Eg. Noah,Bob,Chris,Ted" required>
+          </TextField>
+          <TextField name="COMPANY" label="Company Name" placeholder="Eg. Google, Amazon" required>
+          </TextField>
+        </div>
+        <div class="flex gap-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+          <div class="w-full">
+            <SelectField name="ROLE" label="Bot's Role" placeholder="Select Role"
+              helperText="This will determine the role of the bot and behavior." :options="roles" required />
+            <TextField v-if="values.ROLE === 'Other'" name="otherRole" helperText="enter role of your bot" required>
+            </TextField>
+          </div>
+          <div class="w-full">
+            <SelectField name="GOAL" label="Bot's Goal" placeholder="Select Goal"
+              helperText="The bot will be driving the conversation towards this goal." :options="goals" required />
+            <TextField v-if="values.GOAL === 'Other'" name="otherGoal" required helperText="enter goal of your bot">
+            </TextField>
+          </div>
+          <SelectField name="LANGUAGE" :options="languageList" label="Language" placeholder="Language"
+            helperText="Select your language." required></SelectField>
+        </div>
+        <TextField isTextarea="true" name="errorMessage" placeholder="enter error message"
+          helperText="Enter a error mesage that will be shown a error when bot failed  " required />
+        <TextField name="NOTES" label="Notes" helperText="Here you can have additional instructions for your bot."
+          :isTextarea="true">
+        </TextField>
+        <TextField name="DESCRIPTION" label="Company Description" helperText="Here you can give the bot additional details about your
+              company." :isTextarea="true">
+        </TextField>
+        <div class="flex w-full justify-end">
+          <UiButton color="primary" type="submit" size="lg" :loading="isLoading">
+            Submit
+          </UiButton>
+        </div>
+      </form>
+    </div>
+  </Page>
+</template>
 <script setup lang="ts">
+import { useLanguageList } from '~/composables/voiceBotLanguageList';
+
 const showIntentDialog = ref(false);
+const { languageList } = useLanguageList();
 
 const formSchema = toTypedSchema(
   z
@@ -19,6 +74,9 @@ const formSchema = toTypedSchema(
       GOAL: z
         .string({ required_error: "Goal must be provided." })
         .min(2, "Goal must be provided."),
+      LANGUAGE: z
+        .string({ required_error: "Language is required" })
+        .min(1, { message: "Language is required" }),
       NOTES: z.string().optional().default(""),
       DESCRIPTION: z.string().optional().default(""),
       otherRole: z.string().optional().default(""),
@@ -66,23 +124,23 @@ const animationProps = {
 const router = useRouter();
 const route = useRoute("bot-management-chat-bot-id-config");
 
-  const roles = ref<any>([
-    {
-      helperText: "Handles sales inquiries and closes deals.",
-      label: "Sales Executive",
-      value: "Sales Executive",
-    },
-    {
-      helperText: "Provides assistance and resolves customer issues.",
-      label: "Customer Support Representative.",
-      value: "Customer Support Representative",
-    },
-    {
-      helperText: "Performs miscellaneous tasks as required.",
-      label: "Other",
-      value: "Other",
-    },
-  ]);
+const roles = ref<any>([
+  {
+    helperText: "Handles sales inquiries and closes deals.",
+    label: "Sales Executive",
+    value: "Sales Executive",
+  },
+  {
+    helperText: "Provides assistance and resolves customer issues.",
+    label: "Customer Support Representative.",
+    value: "Customer Support Representative",
+  },
+  {
+    helperText: "Performs miscellaneous tasks as required.",
+    label: "Other",
+    value: "Other",
+  },
+]);
 
 const goals = ref<any>([
   {
@@ -123,12 +181,22 @@ const { handleSubmit, values, setFieldValue } = useForm({
 setFieldValue("NAME", defaultFormValues.NAME || "");
 setFieldValue("COMPANY", defaultFormValues.COMPANY || "");
 setFieldValue("ROLE", defaultFormValues.ROLE || "");
-setFieldValue("GOAL", defaultFormValues.GOAL || "");
+if (defaultFormValues.GOAL && defaultFormValues.otherGoal) {
+  setFieldValue("GOAL","Other");
+} else {
+  setFieldValue("GOAL", defaultFormValues.GOAL || "Other");
+}
+if (defaultFormValues.ROLE && defaultFormValues.otherRole) {
+  setFieldValue("ROLE", "Other");
+} else {
+  setFieldValue("ROLE", defaultFormValues.ROLE || "Other");
+}
 setFieldValue("NOTES", defaultFormValues.NOTES || "");
 setFieldValue("DESCRIPTION", defaultFormValues.DESCRIPTION || "");
 setFieldValue("otherRole", defaultFormValues.otherRole || "");
 setFieldValue("otherGoal", defaultFormValues.otherGoal || "");
 setFieldValue("errorMessage", defaultFormValues.errorMessage || "");
+setFieldValue("LANGUAGE", defaultFormValues.LANGUAGE ?? "en-IN");
 
 watchEffect(() => {
   if (botDetails) {
@@ -158,53 +226,3 @@ const handleUpdateBotConfig = handleSubmit(async (values: any) => {
   });
 });
 </script>
-<template>
-  <Page title="Bot Configuration" :bread-crumbs="[
-    {
-      label: `${botDetails.name}`,
-      to: `/bot-management/chat-bot/${botDetails.id}`,
-    },
-    {
-      label: 'Bot Configuration',
-      to: `/bot-management/chat-bot/${botDetails.id}/config`,
-    },
-  ]" :description="true" :disableSelector="false" :disable-back-button="false">
-    <div class="mx-5 gap-3">
-      <form @submit.prevent="handleUpdateBotConfig" class="space-y-3">
-        <div class="flex gap-4">
-          <TextField name="NAME" label="Bot Name" placeholder="Eg. Noah,Bob,Chris,Ted" required>
-          </TextField>
-          <TextField name="COMPANY" label="Company Name" placeholder="Eg. Google, Amazon" required>
-          </TextField>
-        </div>
-        <div class="flex gap-4">
-          <div class="w-full">
-            <SelectField name="ROLE" label="Bot's Role" placeholder="Select Role"
-              helperText="This will determine the role of the bot and behavior." :options="roles" required />
-            <TextField v-if="values.ROLE === 'Other'" name="otherRole" helperText="enter role of your bot" required>
-            </TextField>
-          </div>
-          <div class="w-full">
-            <SelectField name="GOAL" label="Bot's Goal" placeholder="Select Goal"
-              helperText="The bot will be driving the conversation towards this goal." :options="goals" required />
-            <TextField v-if="values.GOAL === 'Other'" name="otherGoal" required helperText="enter goal of your bot">
-            </TextField>
-          </div>
-        </div>
-        <TextField isTextarea="true" name="errorMessage" placeholder="enter error message"
-          helperText="Enter a error mesage that will be shown a error when bot failed  " required />
-        <TextField name="NOTES" label="Notes" helperText="Here you can have additional instructions for your bot."
-          :isTextarea="true">
-        </TextField>
-        <TextField name="DESCRIPTION" label="Company Description" helperText="Here you can give the bot additional details about your
-              company." :isTextarea="true">
-        </TextField>
-        <div class="flex w-full justify-end">
-          <UiButton color="primary" type="submit" size="lg" :loading="isLoading">
-            Submit
-          </UiButton>
-        </div>
-      </form>
-    </div>
-  </Page>
-</template>

@@ -68,36 +68,19 @@
 
           .default(""),
       })
-      .refine(
-        (data) => {
-          if (data.type === "whatsapp") {
-            return !!data.templateId;
-          }
-          return true;
-        },
-        {
-          message: "Template ID is required.",
-          path: ["templateId"],
-        },
-      )
-      .refine(
-        (data: any) => {
-          if (data.type !== "whatsapp") {
-            const errors: Record<string, boolean> = {};
-            if (!data.exoPhone) errors.exoPhone = true;
-            if (!data.countryCode) errors.countryCode = true;
-            return Object.keys(errors).length === 0;
-          }
-          return true;
-        },
-        {
-          message: "Validation failed.",
-          path: [],
-        },
-      )
       .superRefine((data, ctx) => {
-        if (data.type !== "whatsapp") {
-          errors.templateId = true;
+        const lengthRequirement = getCountryLengthRequirement(data.countryCode);
+        if (data.exoPhone.length !== lengthRequirement) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Number must be exactly ${lengthRequirement} characters long.`,
+            path: ["exoPhone"], // Field with the issue
+          });
+        }
+        const isWhatsApp = data.type === "whatsapp";
+
+        // Validate for non-whatsapp types
+        if (!isWhatsApp) {
           if (!data.exoPhone) {
             ctx.addIssue({
               path: ["exoPhone"],
@@ -112,25 +95,90 @@
               code: z.ZodIssueCode.custom,
             });
           }
-          // if (data.integrationId && data.integrationId.length > 0) {
-          //   if (!data.templateId) {
-          //     ctx.addIssue({
-          //       path: ["templateId"],
-          //       message:
-          //         "Template ID is required when Integration ID is present.",
-          //       code: z.ZodIssueCode.custom,
-          //     });
-          //   }
-          //   if (!data.phoneId) {
-          //     ctx.addIssue({
-          //       path: ["phoneId"],
-          //       message: "Phone ID is required when Integration ID is present.",
-          //       code: z.ZodIssueCode.custom,
-          //     });
-          //   }
-          // }
         }
-      }),
+
+        // Additional integration checks (commented section logic)
+        if (data.integrationId && data.integrationId.length > 0) {
+          if (!data.templateId) {
+            ctx.addIssue({
+              path: ["templateId"],
+              message: "Template ID is required when Integration ID is present.",
+              code: z.ZodIssueCode.custom,
+            });
+          }
+          if (!data.phoneId) {
+            ctx.addIssue({
+              path: ["phoneId"],
+              message: "Phone ID is required when Integration ID is present.",
+              code: z.ZodIssueCode.custom,
+            });
+          }
+        }
+      })
+
+      // .refine(
+      //   (data) => {
+      //     if (data.type === "whatsapp") {
+      //       return !!data.templateId;
+      //     }
+      //     return true;
+      //   },
+      //   {
+      //     message: "Template ID is required.",
+      //     path: ["templateId"],
+      //   },
+      // )
+      // .refine(
+      //   (data: any) => {
+      //     if (data.type !== "whatsapp") {
+      //       const errors: Record<string, boolean> = {};
+      //       if (!data.exoPhone) errors.exoPhone = true;
+      //       if (!data.countryCode) errors.countryCode = true;
+      //       return Object.keys(errors).length === 0;
+      //     }
+      //     return true;
+      //   },
+      //   {
+      //     message: "Validation failed.",
+      //     path: [],
+      //   },
+      // )
+      // .superRefine((data, ctx) => {
+      //   if (data.type !== "whatsapp") {
+      //     errors.templateId = true;
+      //     if (!data.exoPhone) {
+      //       ctx.addIssue({
+      //         path: ["exoPhone"],
+      //         message: "Phone Number is required.",
+      //         code: z.ZodIssueCode.custom,
+      //       });
+      //     }
+      //     if (!data.countryCode) {
+      //       ctx.addIssue({
+      //         path: ["countryCode"],
+      //         message: "Country Code is required.",
+      //         code: z.ZodIssueCode.custom,
+      //       });
+      //     }
+      //     // if (data.integrationId && data.integrationId.length > 0) {
+      //     //   if (!data.templateId) {
+      //     //     ctx.addIssue({
+      //     //       path: ["templateId"],
+      //     //       message:
+      //     //         "Template ID is required when Integration ID is present.",
+      //     //       code: z.ZodIssueCode.custom,
+      //     //     });
+      //     //   }
+      //     //   if (!data.phoneId) {
+      //     //     ctx.addIssue({
+      //     //       path: ["phoneId"],
+      //     //       message: "Phone ID is required when Integration ID is present.",
+      //     //       code: z.ZodIssueCode.custom,
+      //     //     });
+      //     //   }
+      //     // }
+      //   }
+      // }),
   );
 
   const {
