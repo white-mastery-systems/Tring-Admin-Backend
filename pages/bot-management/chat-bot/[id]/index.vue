@@ -51,8 +51,7 @@
                 <div class="block text-[4px] lg:hidden">Configure channel</div>
               </div>
               <div class="flex flex-col items-center gap-1" v-if="!botDetails.documentId">
-                <UiButton
-                  class="bg-[#424bd1] p-2 hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px]"
+                <UiButton class="bg-[#424bd1] text-[14px] p-2 hover:bg-[#424bd1]/90 disabled:opacity-50"
                   @click="handleActivateBot" :disabled="isSubmitting">
                   <span class="hidden lg:inline"> Activate Bot </span>
                   <span class="flex flex-col items-center justify-center lg:hidden">

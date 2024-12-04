@@ -415,7 +415,7 @@
     },
   ]);
   const filters = computed(() => ({
-    type: route.query?.type,
+    type: route.query?.type ?? 'chat',
   }));
 
   const billingVariation = computed(() => {
@@ -423,7 +423,6 @@
       ? voiceBillingVariation.value
       : chatBillingVariation.value;
   });
-
   const findPlanLevel = ({ list, current }: { list: any; current: string }) => {
     if (list.plan_code === "chat_enterprise") {
       return "Contact sales";

@@ -65,7 +65,6 @@
   watch(
     () => router.currentRoute.value,
     (to, from) => {
-      console.log(loading, "LOADING");
       loading.value = true;
       setTimeout(() => {
         loading.value = false; // Simulate loading completion after 1 second

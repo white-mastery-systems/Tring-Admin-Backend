@@ -36,15 +36,14 @@
             </span> -->
             <div class="flex items-center gap-3">
               <div class="flex flex-col items-center gap-1">
-                <UiButton
-                  class="bg-[#424bd1] p-2 hover:bg-[#424bd1]/90 disabled:opacity-50 md:text-[14px] lg:text-[16px]"
+                <UiButton class="bg-[#424bd1] text-[14px] p-2 hover:bg-[#424bd1]/90 disabled:opacity-50"
                   @click="handleActivateBot" :disabled="botDetails.active">
                   <span class="hidden lg:inline"> Activate Bot </span>
                   <span class="flex flex-col items-center justify-center lg:hidden">
                     <component :is="Bot"></component>
                   </span>
                 </UiButton>
-                <div class="block text-[4px] lg:hidden">Activate Bot</div>
+                <div class="block text-[4px] lg:hidden"> Activate Bot </div>
               </div>
               <span class="flex items-center gap-4">
                 <div class="flex flex-col items-center gap-1">
@@ -90,7 +89,7 @@
                 </UiButton>
                 <div class="block text-[4px] lg:hidden">Delete</div>
               </div>
-               <div class="flex flex-col items-center gap-1" @click="agentModalState.open = true">
+              <div class="flex flex-col items-center gap-1" @click="agentModalState.open = true">
                 <UiButton variant="destructive"
                   class="flex items-center justify-center bg-[#424bd1] p-3 hover:bg-[#424bd1]/90 hover:brightness-90">
                   <Icon name="lucide:pen" class="h-4 w-4" />
