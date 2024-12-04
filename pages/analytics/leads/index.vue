@@ -164,6 +164,7 @@
         countryName: lead.chat.metadata?.country,
         createdAt: lead.chat.createdAt,
         chatId: lead.chatId,
+        status: lead.status,
       }))
       ;
     },

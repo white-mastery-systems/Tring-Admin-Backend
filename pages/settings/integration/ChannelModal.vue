@@ -1,3 +1,21 @@
+<template>
+  <DialogWrapper v-model="channelModalState" :title="channelModalState.id ? 'Modify Channel' : 'Add New Channel'">
+    <form @submit="handleConnect" class="space-y-2">
+      <SelectField name="channel" label="Channel" placeholder="Select a channel" helperText=""
+        :options="[{ value: 'whatsapp', label: 'Whatsapp' }]" required />
+      <TextField name="name" label="Name" placeholder="Enter Your Channel Name" helperText="" required>
+      </TextField>
+      <TextField v-if="fbVerified" name="pin" label="2FA Pin" placeholder="Enter Your pin" helperText="" required>
+      </TextField>
+
+      <div class="flex items-center justify-end">
+        <UiButton v-if="!fbVerified" color="primary" type="button" @click="launchWhatsAppSignup">Login with Facebook
+        </UiButton>
+        <UiButton v-else color="primary" type="submit" :loading="isLoading">Submit</UiButton>
+      </div>
+    </form>
+  </DialogWrapper>
+</template>
 <script setup lang="ts">
   import { useRoute } from "vue-router";
   const emit = defineEmits(["success"]);
@@ -209,51 +227,3 @@
     isLoading.value = false;
   });
 </script>
-
-<template>
-  <DialogWrapper
-    v-model="channelModalState"
-    :title="channelModalState.id ? 'Modify Channel' : 'Add New Channel'"
-  >
-    <form @submit="handleConnect" class="space-y-2">
-      <SelectField
-        name="channel"
-        label="Channel"
-        placeholder="Select a channel"
-        helperText=""
-        :options="[{ value: 'whatsapp', label: 'Whatsapp' }]"
-        required
-      />
-      <TextField
-        name="name"
-        label="Name"
-        placeholder="Enter Your Channel Name"
-        helperText=""
-        required
-      >
-      </TextField>
-      <TextField
-        v-if="fbVerified"
-        name="pin"
-        label="2FA Pin"
-        placeholder="Enter Your pin"
-        helperText=""
-        required
-      >
-      </TextField>
-
-      <div class="flex items-center justify-end">
-        <UiButton
-          v-if="!fbVerified"
-          color="primary"
-          type="button"
-          @click="launchWhatsAppSignup"
-          >Login with Facebook
-        </UiButton>
-        <UiButton v-else color="primary" type="submit" :loading="isLoading"
-          >Submit</UiButton
-        >
-      </div>
-    </form>
-  </DialogWrapper>
-</template>

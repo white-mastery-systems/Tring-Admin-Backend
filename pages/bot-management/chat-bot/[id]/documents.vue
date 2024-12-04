@@ -9,7 +9,7 @@
         to: `/bot-management/chat-bot/${botDetails.id}/documents`,
       },
     ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="true">
-    <div class="mb-7">
+    <div class="mb-[50px] sm:mb-[50px] md:mb-4 lg:mb-4 xl:mb-4">
       <div class="document-align">
         <span class="flex flex-row">
           <!-- @click="uploadfile" -->
@@ -18,13 +18,13 @@
         </span>
       </div>
       <p class="pt-2 text-sm text-gray-400">only PDF</p>
+      <DataTable @pagination="Pagination" @limit="($event) => {
+          (filters.page = '1'), (filters.limit = $event);
+        }
+        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
+        :data="documentItems" :is-loading="isDataLoading" :page-size="20" :height="23" height-unit="vh" />
     </div>
     <!-- <BotDocumentMenu></BotDocumentMenu> -->
-    <DataTable @pagination="Pagination" @limit="($event) => {
-        (filters.page = '1'), (filters.limit = $event);
-      }
-      " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="documentItems"
-      :is-loading="isDataLoading" :page-size="20" :height="14" height-unit="vh" />
     <!-- <ConfirmationModal v-model:open="deleteDocumentModelOpen[list.id]" title="Confirm Delete"
       description="Are you sure you want to delete ?" @confirm="() => {
           handleAction(list, 'delete');
