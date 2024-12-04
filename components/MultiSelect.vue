@@ -79,4 +79,8 @@ const arraysEqual = (a: any, b: any) => {
 :deep(.multiselect__placeholder) {
   color: grey !important;
 }
+:deep(.multiselect__content-wrapper) {
+  position: unset;
+  box-shadow: 0px 2px 24px 0px #00000014 !important;
+}
 </style>

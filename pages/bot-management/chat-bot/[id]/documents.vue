@@ -17,7 +17,7 @@
           <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
         </span>
       </div>
-      <p class="pt-2 text-sm text-gray-400">only PDF</p>
+      <p class="pt-2 pb-6 text-sm text-gray-400">only PDF</p>
       <DataTable @pagination="Pagination" @limit="($event) => {
           (filters.page = '1'), (filters.limit = $event);
         }
