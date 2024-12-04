@@ -29,3 +29,4 @@ assets/docs/*.pdf
 !assets/icons/*.png
 !public/favicon.png
 !public/whatsapp.png
+docker-compose.yml
