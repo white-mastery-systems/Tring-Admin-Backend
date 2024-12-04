@@ -4,10 +4,10 @@ import { createContactListContacts } from '~/server/utils/db/contact-list'
 
 const db = useDrizzle()
 
-
 const zodUpdateContactList = z.object({
   name: z.string().optional(),
   contactIds: z.array(z.string()).optional(),
+  removedContactIds: z.array(z.string()).optional()
 })
 
 export default defineEventHandler(async (event) => {
@@ -55,8 +55,18 @@ export default defineEventHandler(async (event) => {
        contactId: item,
        organizationId,
     }))
-
-    await createContactListContacts(uniqueContactsData)
+    // console.log({ uniqueContactsData })
+    if(uniqueContactsData?.length) {
+      await createContactListContacts(uniqueContactsData)
+    }
+    if(body.removedContactIds.length) {
+      await db
+      .delete(contactListContactsSchema)
+      .where(and(
+        eq(contactListContactsSchema.contactListId, contactListId),
+        inArray(contactListContactsSchema.contactId, body.removedContactIds))
+      )
+    }
   }
 
   return update;
