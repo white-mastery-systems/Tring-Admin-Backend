@@ -33,7 +33,7 @@ export const listBots = async (
     filters.push(ilike(chatBotSchema.name, `%${query.q}%`));
   }
 
-  if(query?.type) {
+  if(query?.type && query.type !== "all") {
     filters.push(eq(chatBotSchema.type, query?.type));
   }
 
