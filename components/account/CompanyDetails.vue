@@ -137,18 +137,18 @@
   const { orgDetails } = await companyDetails();
   const isLoading = ref(false);
 
-  setFieldValue("name", orgDetails?.name);
-  setFieldValue("industry", orgDetails?.metadata?.industry);
+  setFieldValue("name", orgDetails?.name ?? "");
+  setFieldValue("industry", orgDetails?.metadata?.industry ?? "");
   // setFieldValue("customIndustry", orgDetails?.metadata?.customIndustry);
-  setFieldValue("avgTraffic", orgDetails?.metadata?.avgTraffic);
-  setFieldValue("employeeCount", orgDetails?.metadata?.employeeCount);
-  setFieldValue("logo", orgDetails?.logo);
+  setFieldValue("avgTraffic", orgDetails?.metadata?.avgTraffic ?? "");
+  setFieldValue("employeeCount", orgDetails?.metadata?.employeeCount ?? "");
+  setFieldValue("logo", orgDetails?.logo ?? "");
   if (orgDetails?.metadata?.industry === "Other") {
-    setFieldValue("otherRole", orgDetails?.metadata?.otherRole);
+    setFieldValue("otherRole", orgDetails?.metadata?.otherRole ?? "");
   }
 
   if (orgDetails?.metadata?.gst)
-    setFieldValue("gst", orgDetails?.metadata?.gst);
+    setFieldValue("gst", orgDetails?.metadata?.gst ?? "");
 
   const logoData = ref("");
   const handleLogoChange = async (event: any) => {
