@@ -141,7 +141,7 @@
             <span class="text-[14px]" style="color: #8a8a8a">{{ leadDataValue?.botUser?.name }}</span>
             <div
               class="mt-2.5 flex flex-col items-end justify-center gap-5 rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black">
-              <div class="p-2 w-[300px]">
+              <div class="p-2">
                  <div v-for="(value, key) in messageList.metadata" :key="key">
                   <div class="w-full pb-3">
                     <TextField
@@ -172,7 +172,7 @@
         </div>
         <!-- User Message -->
         <div class="flex w-full flex-col items-end" v-if="messageList?.role === 'user'">
-          <div class="flex max-w-[80%] flex-col items-end justify-center">
+          <div class="flex max-w-[60%] flex-col items-end justify-center">
             <span :class="
                 cn(
                   'text-[14px]',

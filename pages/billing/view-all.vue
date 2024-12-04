@@ -326,7 +326,7 @@
         },
       ],
       plan: "voice_fluent",
-      choosePlan: "Downgrade",
+      choosePlan: "upgrade",
       currentPlan: "current plan",
       plan_code: "voice_fluent",
     },
@@ -431,11 +431,10 @@
     const billInformation = billingVariation.value.find(
       (data: { plan_code: string }) => data.plan_code === list.plan_code,
     );
-
     const currentPlanInformation = billingVariation.value.find(
       (data: { plan_code: string }) => data.plan_code === current,
     );
-    if (billInformation?._id > currentPlanInformation?._id) {
+    if (billInformation?._id > currentPlanInformation?._id || (current === "voice_free")) {
       return "Upgrade Plan";
     } else {
       return "Downgrade Plan";

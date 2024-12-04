@@ -1,3 +1,46 @@
+<template>
+  <Page title="Intent Mangement" :bread-crumbs="[
+      {
+        label: `${botDetails.name}`,
+        to: `/bot-management/chat-bot/${botDetails.id}`,
+      },
+      {
+        label: 'Intent Management',
+        to: `/bot-management/chat-bot/${botDetails.id}/intent-management`,
+      },
+    ]" :disableSelector="true" :disable-back-button="false">
+    <template #actionButtons>
+      <div class="mb-4 flex items-center justify-end">
+        <UiButton class="bg-yellow-500" type="button" @click="
+            () => {
+              intentDialogState.open = true;
+              intentDialogState.id = null;
+            }
+          " color="primary">Add Intents
+        </UiButton>
+      </div>
+    </template>
+    <CreateEditIntentModal v-model="intentDialogState" @success="intentRefresh()" />
+
+    <DataTable :columns="columns" :data="intentData" :page-size="8" :is-loading="isIntentLoading" :height="20"
+      height-unit="vh" />
+    <ConfirmationModal v-model:open="deleteIntentDialogState.open" title="Confirm Delete"
+      description="Are you sure you want to delete this intent ?" @confirm="
+        async () => {
+          await deleteIntent({
+            payload: {
+              botId: route.params.id,
+              intentId: deleteIntentDialogState.id,
+            },
+            onSuccess: () => {
+              intentRefresh();
+              deleteIntentDialogState.open = false;
+            },
+          });
+        }
+      " />
+  </Page>
+</template>
 <script setup lang="ts">
   import { Icon, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
@@ -128,46 +171,3 @@ watchEffect(() => {
     }),
   ];
 </script>
-<template>
-  <Page title="Intent Mangement" :bread-crumbs="[
-      {
-        label: `${botDetails.name}`,
-        to: `/bot-management/chat-bot/${botDetails.id}`,
-      },
-      {
-        label: 'Intent Management',
-        to: `/bot-management/chat-bot/${botDetails.id}/intent-management`,
-      },
-    ]" :disableSelector="true" :disable-back-button="false">
-    <template #actionButtons>
-      <div class="mb-4 flex items-center justify-end">
-        <UiButton class="bg-yellow-500" type="button" @click="
-            () => {
-              intentDialogState.open = true;
-              intentDialogState.id = null;
-            }
-          " color="primary">Add Intents
-        </UiButton>
-      </div>
-    </template>
-    <CreateEditIntentModal v-model="intentDialogState" @success="intentRefresh()" />
-
-    <DataTable :columns="columns" :data="intentData" :page-size="8" :is-loading="isIntentLoading" :height="20"
-      height-unit="vh" />
-    <ConfirmationModal v-model:open="deleteIntentDialogState.open" title="Confirm Delete"
-      description="Are you sure you want to delete this intent ?" @confirm="
-        async () => {
-          await deleteIntent({
-            payload: {
-              botId: route.params.id,
-              intentId: deleteIntentDialogState.id,
-            },
-            onSuccess: () => {
-              intentRefresh();
-              deleteIntentDialogState.open = false;
-            },
-          });
-        }
-      " />
-  </Page>
-</template>

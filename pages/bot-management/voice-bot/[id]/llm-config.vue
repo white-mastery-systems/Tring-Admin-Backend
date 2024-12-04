@@ -10,7 +10,7 @@
       },
     ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="false">
     <div class="shadow-md mx-5 rounded-lg ">
-      <form @submit.prevent="handleLLMConfigSubmit" class="space-y-3">
+      <form @submit.prevent="handleLLMConfigSubmit" class="space-y-6 sm:space-y-6 md:space-y-4 lg:space-y-4 xl:space-y-4">
         <div class="grid w-full grid-cols-2 gap-2">
           <!-- <SelectField name="provider" label="Provider" placeholder="Select Provider" :options="provider" required />
 
