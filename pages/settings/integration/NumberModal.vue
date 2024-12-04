@@ -1,3 +1,22 @@
+<template>
+  <DialogWrapper v-model="props.numberModalState" title="Add New Exophone">
+    <Form @submit="handleConnect" class="space-y-3">
+      <SelectField name="provider" placeholder="Select a provider" :options="providerList">
+      </SelectField>
+      <div class='flex gap-2'>
+        <CountryCodeField class='w-[100px]' name="countryCode" label="Country Code" helperText="Enter your country code"
+          required />
+        <TextField :disableCharacters="true" name="exoPhone" label="Mobile number" helperText='' required
+          placeholder="Enter phone number" />
+      </div>
+      <div class="flex justify-end w-full">
+        <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
+          Submit
+        </UiButton>
+      </div>
+    </Form>
+  </DialogWrapper>
+</template>
 <script setup lang="ts">
 import { useCount } from '@/composables/useRefresh';
 import type { AnyFn } from '@vueuse/core';
@@ -104,31 +123,11 @@ const handleConnect = handleSubmit(async (values: any) => {
     }
     emit('success')
   } catch(error: any) {
-    console.log(error.data)
     isLoading.value = false
-    // toast.success(error.data.)
+    toast.error(error.data.statusMessage)
   }
   isLoading.value = false
 });
 </script>
 
-<template>
-  <DialogWrapper v-model="props.numberModalState" title="Add New Exophone">
-    <Form @submit="handleConnect" class="space-y-3">
-      <SelectField name="provider" placeholder="Select a provider" :options="providerList">
-      </SelectField>
-      <div class='flex gap-2'>
-        <CountryCodeField class='w-[100px]' name="countryCode" label="Country Code" helperText="Enter your country code"
-          required />
-        <TextField :disableCharacters="true" name="exoPhone" label="Mobile number" helperText='' required
-          placeholder="Enter phone number" />
-      </div>
-      <div class="flex justify-end w-full">
-        <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
-          Submit
-        </UiButton>
-      </div>
-    </Form>
-  </DialogWrapper>
-</template>
 <!-- https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=ZohoBigin.settings.ALL,ZohoBigin.modules.ALL&redirect_uri=https://tring-admin.pripod.com/settings/integration/zoho-bigin&prompt=consent&access_type=offline -->
