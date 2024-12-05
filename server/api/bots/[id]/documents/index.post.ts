@@ -65,15 +65,15 @@ export default defineEventHandler(async (event) => {
   form.append("files", file);
 
   form.append(
-    "req",
+    "ragRequest",
     JSON.stringify({
-      document_id: document.id,
-      model_req: {
+      documentId: document.id,
+      ragModelRequest: {
         provider: "openai",
-        model_name: "",
+        modelName: "",
         messages: [],
       },
-      callback_url: `${conf.llmCallbackUrl}/api/documents/${document.id}`,
+      callbackUrl: `${conf.llmCallbackUrl}/api/documents/${document.id}`,
     }),
   );
 
