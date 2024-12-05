@@ -51,7 +51,7 @@
                       </div>
 
                       <div class="flex justify-center">
-                        <audio controls :src="`${config.public.voiceBotUrl}/callRecording?sid=${callLogs.callSid}`"
+                        <audio controls :src="`${config.public.voiceBotUrl}/callRecording?sid=${callLogs?.callSid}`"
                           @loadeddata="onAudioLoaded" @waiting="onAudioLoading" @error="onAudioError" ref="audioPlayer">
                           Your browser does not support the audio element.
                         </audio>

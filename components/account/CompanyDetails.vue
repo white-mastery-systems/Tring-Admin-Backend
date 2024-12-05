@@ -1,16 +1,18 @@
 <template>
   <div class="pb-2">
     <form class="space-y-2" @submit="handleAccountUpdate">
-      <FileUpload
-        @change="handleLogoChange"
-        name="logo"
-        label="Upload Image"
-        :required="true"
-        :accept="'image/*'"
-        :url="values?.logo?.url"
-        :fileType="'image'"
-        :class="'h-24 cursor-pointer'"
-      />
+      <div class="w-[49%] sm:w-[49%] md:w-[12%] lg:w-[12%] xl:w-[12%]">
+        <FileUpload
+          @change="handleLogoChange"
+          name="logo"
+          label="Upload Image"
+          :required="true"
+          :accept="'image/*'"
+          :url="values?.logo?.url"
+          :fileType="'image'"
+          :class="'h-24 cursor-pointer'"
+        />
+      </div>
       <div
         class="grid grid-cols-1 gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:md:grid-cols-2"
       >
@@ -135,18 +137,18 @@
   const { orgDetails } = await companyDetails();
   const isLoading = ref(false);
 
-  setFieldValue("name", orgDetails?.name);
-  setFieldValue("industry", orgDetails?.metadata?.industry);
+  setFieldValue("name", orgDetails?.name ?? "");
+  setFieldValue("industry", orgDetails?.metadata?.industry ?? "");
   // setFieldValue("customIndustry", orgDetails?.metadata?.customIndustry);
-  setFieldValue("avgTraffic", orgDetails?.metadata?.avgTraffic);
-  setFieldValue("employeeCount", orgDetails?.metadata?.employeeCount);
-  setFieldValue("logo", orgDetails?.logo);
+  setFieldValue("avgTraffic", orgDetails?.metadata?.avgTraffic ?? "");
+  setFieldValue("employeeCount", orgDetails?.metadata?.employeeCount ?? "");
+  setFieldValue("logo", orgDetails?.logo ?? "");
   if (orgDetails?.metadata?.industry === "Other") {
-    setFieldValue("otherRole", orgDetails?.metadata?.otherRole);
+    setFieldValue("otherRole", orgDetails?.metadata?.otherRole ?? "");
   }
 
   if (orgDetails?.metadata?.gst)
-    setFieldValue("gst", orgDetails?.metadata?.gst);
+    setFieldValue("gst", orgDetails?.metadata?.gst ?? "");
 
   const logoData = ref("");
   const handleLogoChange = async (event: any) => {

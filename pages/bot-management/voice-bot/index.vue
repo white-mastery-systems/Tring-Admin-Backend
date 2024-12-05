@@ -77,13 +77,12 @@
     }),
   );
 
-  const agentModalState = ref({ open: false });
   const campaignModalState = ref({ open: false, id: null });
-
   const searchBot = ref("");
   const searchBotDebounce = refDebounced(searchBot, 500);
   const router = useRouter();
   const route = useRoute();
+  const agentModalState = ref({ open: false, id: route.params.id });
   const activeStatus = ref("");
   watch(activeStatus, async (newStatus, previousStatus) => {
     filters.active = newStatus;

@@ -326,7 +326,7 @@
         },
       ],
       plan: "voice_fluent",
-      choosePlan: "Downgrade",
+      choosePlan: "upgrade",
       currentPlan: "current plan",
       plan_code: "voice_fluent",
     },
@@ -415,7 +415,7 @@
     },
   ]);
   const filters = computed(() => ({
-    type: route.query?.type,
+    type: route.query?.type ?? 'chat',
   }));
 
   const billingVariation = computed(() => {
@@ -423,7 +423,6 @@
       ? voiceBillingVariation.value
       : chatBillingVariation.value;
   });
-
   const findPlanLevel = ({ list, current }: { list: any; current: string }) => {
     if (list.plan_code === "chat_enterprise") {
       return "Contact sales";
@@ -431,11 +430,10 @@
     const billInformation = billingVariation.value.find(
       (data: { plan_code: string }) => data.plan_code === list.plan_code,
     );
-
     const currentPlanInformation = billingVariation.value.find(
       (data: { plan_code: string }) => data.plan_code === current,
     );
-    if (billInformation?._id > currentPlanInformation?._id) {
+    if (billInformation?._id > currentPlanInformation?._id || (current === "voice_free")) {
       return "Upgrade Plan";
     } else {
       return "Downgrade Plan";

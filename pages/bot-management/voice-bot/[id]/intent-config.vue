@@ -1,3 +1,41 @@
+<template>
+  <page title="Default Intents" :bread-crumbs="[
+    { label: `${botDetails.name}`, to: `/bot-management/voice-bot/${botDetails.id}` },
+    {
+      label: 'Default Intents',
+      to: `/bot-management/voice-bot/${botDetails.id}/intent-config`,
+    },
+  ]" :disableSelector="true" :disable-back-button="false">
+    <!-- <template> -->
+    <UiForm :validation-schema="formSchema" @submit="onSubmit">
+      <UiFormField name="items">
+        <UiFormItem>
+          <UiFormField v-for="item in items" v-slot="{ value, handleChange }" :key="item.id" type="checkbox"
+            v-model="initialValues" :value="item.id" :unchecked-value="false" name="items">
+            <UiFormItem class="flex flex-row items-center space-x-3 space-y-3">
+              <UiFormControl class="mt-[11px]">
+                <UiCheckbox :checked="value?.includes(item.id)" class="border-zinc-800"
+                  :style="{ background: (value?.includes(item.id)) ? '#424bd1' : 'white', 'border-color': '#80808078' }"
+                  @update:checked="handleChange" />
+              </UiFormControl>
+              <UiFormLabel class="font-medium text-[15px]">
+                {{ item.label }}
+              </UiFormLabel>
+            </UiFormItem>
+          </UiFormField>
+          <UiFormMessage />
+        </UiFormItem>
+      </UiFormField>
+
+      <div class="flex justify-end mt-4">
+        <UiButton type="submit" color="primary" size="lg" :loading="isLoading">
+          Submit
+        </UiButton>
+      </div>
+    </UiForm>
+    <!-- </template> -->
+  </page>
+</template>
 <script setup lang="ts">
 import { h } from 'vue'
 import { useForm } from 'vee-validate'
@@ -74,41 +112,3 @@ const onSubmit = async (value: any) => {
   })
 }
 </script>
-<template>
-  <page title="Default Intents" :bread-crumbs="[
-    { label: `${botDetails.name}`, to: `/bot-management/voice-bot/${botDetails.id}` },
-    {
-      label: 'Default Intents',
-      to: `/bot-management/voice-bot/${botDetails.id}/intent-config`,
-    },
-  ]" :disableSelector="true" :disable-back-button="false">
-    <!-- <template> -->
-    <UiForm :validation-schema="formSchema" @submit="onSubmit">
-      <UiFormField name="items">
-        <UiFormItem>
-          <UiFormField v-for="item in items" v-slot="{ value, handleChange }" :key="item.id" type="checkbox"
-            v-model="initialValues" :value="item.id" :unchecked-value="false" name="items">
-            <UiFormItem class="flex flex-row items-center space-x-3 space-y-3">
-              <UiFormControl class="mt-[11px]">
-                <UiCheckbox :checked="value?.includes(item.id)" class="border-zinc-800"
-                  :style="{ background: (value?.includes(item.id)) ? '#424bd1' : 'white', 'border-color': '#80808078' }"
-                  @update:checked="handleChange" />
-              </UiFormControl>
-              <UiFormLabel class="font-medium text-[15px]">
-                {{ item.label }}
-              </UiFormLabel>
-            </UiFormItem>
-          </UiFormField>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
-
-      <div class="flex justify-end mt-4">
-        <UiButton type="submit" color="primary" size="lg" :loading="isLoading">
-          Submit
-        </UiButton>
-      </div>
-    </UiForm>
-    <!-- </template> -->
-  </page>
-</template>

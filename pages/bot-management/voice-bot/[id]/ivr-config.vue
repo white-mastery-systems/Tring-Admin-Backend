@@ -7,7 +7,7 @@
     },
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <div>
-      <form @submit.prevent="onSubmit">
+      <form @submit.prevent="onSubmit" class="space-y-4">
         <div class="flex grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
           <SelectField name="ivrConfig" label="Phone Number" :closeIcon="true" :options="integrationsData"
             placeholder="Assign a phone number to the bot." />
@@ -84,7 +84,6 @@ setFieldValue("ivrConfig", botDetails.ivrConfig ?? "")
 
 
 const onSubmit = handleSubmit(async (value: any) => {
-  console.log("sadas -- asfsad")
   isLoading.value = true;
   try {
     await updateLLMConfig({ ivrConfig: (value.ivrConfig) ? value.ivrConfig : null }, botDetails.id, "The IVR Configuration has been added successfully.");

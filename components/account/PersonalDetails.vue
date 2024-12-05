@@ -146,16 +146,16 @@
     await useUser();
 
   setFieldValue("countryCode", user?.value?.countryCode ?? "+91");
-  setFieldValue("username", user?.value?.username);
-  setFieldValue("email", user?.value?.email);
-  setFieldValue("mobile", user?.value?.mobile);
-  setFieldValue("address.street", user?.value?.address?.street);
-  setFieldValue("address.city", user?.value?.address?.city);
-  setFieldValue("address.state", user?.value?.address?.state);
-  setFieldValue("address.country", user?.value?.address?.country);
-  setFieldValue("address.zipCode", user?.value?.address?.zipCode);
-  setFieldValue("metadata.role", user?.value?.metadata?.role);
-  setFieldValue("metadata.otherRole", user?.value?.metadata?.otherRole);
+  setFieldValue("username", user?.value?.username ?? "");
+  setFieldValue("email", user?.value?.email ?? "");
+  setFieldValue("mobile", user?.value?.mobile ?? "");
+  setFieldValue("address.street", user?.value?.address?.street ?? "");
+  setFieldValue("address.city", user?.value?.address?.city ?? "");
+  setFieldValue("address.state", user?.value?.address?.state ?? "");
+  setFieldValue("address.country", user?.value?.address?.country ?? "");
+  setFieldValue("address.zipCode", user?.value?.address?.zipCode ?? "");
+  setFieldValue("metadata.role", user?.value?.metadata?.role ?? "");
+  setFieldValue("metadata.otherRole", user?.value?.metadata?.otherRole ?? "");
 
   const handleAccountUpdate = handleSubmit(async (values: any) => {
     isLoading.value = true;
