@@ -81,7 +81,13 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   }),
   botDetails: jsonb("bot_details"),
   preRecordedAudios: jsonb("pre_recorded_audios"),
-  tools: jsonb("tools"),
+  tools: jsonb("tools").default({
+    "clientTools": [],
+    "defaultTools": [
+        "currentDate",
+        "concludeCall"
+    ]
+  }),
   clientConfig: jsonb("client_config").default({
     llmCaching: false,
     dynamicCaching: false,
