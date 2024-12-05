@@ -218,7 +218,8 @@ export default defineEventHandler(async (event) => {
           "First Name": body?.botUser?.name,
           "Email": body?.botUser?.email,
           "Mobile": body?.botUser?.mobile,
-          "Bot Name": body?.botUser?.name,
+          "Bot Name": botDetails?.name,
+          "Chat Link": `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
         }
         let textContent = Object.entries(payload)
         .map(([key, value]) => `${key}: ${value}`)
