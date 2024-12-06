@@ -30,7 +30,7 @@
             <TextField v-if="values.GOAL === 'Other'" name="otherGoal" required helperText="enter goal of your bot">
             </TextField>
           </div>
-          <SelectField name="LANGUAGE" :options="languageList" label="Language" placeholder="Language"
+          <SelectField name="LANGUAGE" :options="chatBotList" label="Language" placeholder="Language"
             helperText="Select your language." required></SelectField>
         </div>
         <TextField isTextarea="true" name="errorMessage" placeholder="enter error message"
@@ -51,10 +51,10 @@
   </Page>
 </template>
 <script setup lang="ts">
-import { useLanguageList } from '~/composables/voiceBotLanguageList';
+import { useLanguageList } from '~/composables/chatBotLanguageList';
 
 const showIntentDialog = ref(false);
-const { languageList } = useLanguageList();
+const { chatBotList } = useLanguageList();
 
 const formSchema = toTypedSchema(
   z
@@ -196,7 +196,7 @@ setFieldValue("DESCRIPTION", defaultFormValues.DESCRIPTION || "");
 setFieldValue("otherRole", defaultFormValues.otherRole || "");
 setFieldValue("otherGoal", defaultFormValues.otherGoal || "");
 setFieldValue("errorMessage", defaultFormValues.errorMessage || "");
-setFieldValue("LANGUAGE", defaultFormValues.LANGUAGE ?? "en-IN");
+setFieldValue("LANGUAGE", defaultFormValues.LANGUAGE ?? "English - en");
 
 watchEffect(() => {
   if (botDetails) {
