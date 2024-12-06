@@ -38,6 +38,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
     crm: {},
     channel: {},
   }),
+  emailRecipients: varchar("email_recipients").array(),
   channels: jsonb("channels")
     .$type<{
       whatsapp?: string;
@@ -192,6 +193,8 @@ export const botIntentSchema = chatbotSchema.table("intents", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   intent: varchar("intent", { length: 64 }).notNull(),
   uploads: jsonb("uploads").array(),
+  emailRecipients: varchar("email_recipients").array(),
+  isEmailEnabled: boolean("is_email_enabled").default(false),
   link: varchar("link"),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)

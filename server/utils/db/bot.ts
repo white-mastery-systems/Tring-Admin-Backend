@@ -170,6 +170,16 @@ export const updateBotIntent = async (
   )[0];
 };
 
+export const getIntentByName = async(organizationId: string, botId: string, intent: string) => {
+  return await db.query.botIntentSchema.findFirst({
+      where: and(
+         eq(botIntentSchema.organizationId, organizationId),
+         eq(botIntentSchema.botId, botId),
+         eq(botIntentSchema.intent, intent)
+      )
+   })
+}
+
 export const createBotIntegration = async (
   integration: InsertBotIntegration,
 ) => {
