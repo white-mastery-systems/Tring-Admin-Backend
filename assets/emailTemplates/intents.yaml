@@ -108,13 +108,7 @@ FormSubmissionTemplate: |
     
     <div>
       <p><strong>Form Details:</strong></p>
-      <p>Form Name: {{form_name}}</p>
-      <p>Submission Time: {{date_time}}</p>
-      <p><strong>User Responses:</strong></p>
-      <p>Field 1: {{field_1_response}}</p>
-      <p>Field 2: {{field_2_response}}</p>
-      <p>Field 3: {{field_3_response}}</p>
-      <p>...</p>
+      <p> {{{form_details}}} </p>
     </div>
     
     <p>Please review the details and take appropriate actions.</p>

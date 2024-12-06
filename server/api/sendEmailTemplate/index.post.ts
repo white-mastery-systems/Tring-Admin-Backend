@@ -6,12 +6,13 @@ import { logger } from "~/server/logger"
 import { getIntentByName } from "~/server/utils/db/bot"
 
 export default defineEventHandler(async (event) => {
-   try {
+  try {
       const body = await isValidBodyHandler(event, z.object({
-         botUser: z.any(),
-         botId: z.string().uuid(),
-         intent: z.string(),
-         formValues: z.record(z.any()).optional()
+        botUser: z.any(),
+        botId: z.string().uuid(),
+        intent: z.string(),
+        dateAndTime: z.string(),
+        formValues: z.record(z.any()).optional()
       }))
    
       const botDetails = await getBotDetails(body.botId);
@@ -25,19 +26,31 @@ export default defineEventHandler(async (event) => {
       const { template: intentEmailTemplate, subject: intentSubject } = getIntentEmailTemplate(body.intent)
 
       // return { intentSubject}
-   
+      let datePart, timePart
+      if(body?.dateAndTime) {
+        const dateTimePart = body?.dateAndTime.split("on ")[1]; // "October 4, 2024 - 02:30 PM"
+        [datePart, timePart] = dateTimePart.split(" - "); // ["October 4, 2024", "02:30 PM" ]
+      }
+      let textContent 
+      if(body?.intent === "form") {
+        textContent = Object.entries(body?.formValues)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('\n');
+      }
+
+      // console.log({ textContent })
+      
       const dynamicaValues = {
         business_owner_name: organization?.username,
-        user_email: body?.botUser?.name,
-        user_name: body?.botUser?.email,
+        user_email: body?.botUser?.email,
+        user_name: body?.botUser?.name,
         user_phone: body?.botUser?.mobile,
-        chatbot_name: botDetails?.name
-        // location_link: ,
-        // virtual_tour_link: ,
-        // preferred_date: ,
-        // preferred_time: ,
-        // form_name: ,
-        // date_time: 
+        chatbot_name: botDetails?.name,
+        location_link: orgBotIntent?.link,
+        virtual_tour_link: orgBotIntent?.link,
+        preferred_date: datePart || undefined,
+        preferred_time: timePart || undefined,
+        form_details: textContent ? textContent.replace(/\n/g, '<br />') : undefined
       };
       
       const templateData = Handlebars.compile(intentEmailTemplate)
