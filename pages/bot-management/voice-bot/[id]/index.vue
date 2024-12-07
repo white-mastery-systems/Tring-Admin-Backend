@@ -62,7 +62,7 @@
 
                 <ConfirmationModal v-model:open="modalOpen" title="Confirm Deactivation"
                   description="Are you sure you want to deactivate bot ?" @confirm="deactivateBotDialog" />
-                <div class="flex flex-col items-center gap-1">
+                <!-- <div class="flex flex-col items-center gap-1">
                   <UiButton as="a" :href="previewUrl" target="_blank"
                     class="bg-[#474df9] p-2 text-[14px] font-medium text-white hover:bg-[#474df9] hover:brightness-90">
                     <span class="hidden lg:inline"> Preview Bot </span>
@@ -71,8 +71,8 @@
                     </span>
                   </UiButton>
                   <div class="block text-[4px] lg:hidden">Preview Bot</div>
-                </div>
-                <div class="flex flex-col items-center gap-1">
+                </div> -->
+                <!-- <div class="flex flex-col items-center gap-1">
                   <UiButton class="bg-[#e1dede] p-2 text-black hover:bg-[#d4d2d2]" @click="copyScript">
                     <span class="hidden lg:inline"> Copy Script </span>
                     <span class="flex items-center justify-center lg:hidden">
@@ -80,7 +80,7 @@
                     </span>
                   </UiButton>
                   <div class="block text-[4px] lg:hidden">Copy Script</div>
-                </div>
+                </div> -->
               </span>
               <div class="flex flex-col items-center gap-1">
                 <UiButton variant="destructive" @click="handleDelete"
