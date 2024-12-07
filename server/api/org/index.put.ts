@@ -5,7 +5,12 @@ const zodBodyValidator = z.object({
   employeeCount: z.string().min(1).optional(),
   otherRole: z.string().optional(),
   gst: z.string().optional(),
-  logo: z.record(z.any()).optional()
+  logo: z.record(z.any()).optional(),
+  planToBuild: z.string().optional(),
+  referralSource: z.string().optional(),
+  estimatedMonthlyBudget: z.string().optional(),
+  discoverySource: z.string().optional(),
+  businessName: z.string().optional(),
 })
 
 export default defineEventHandler(async (event) => {
@@ -14,14 +19,19 @@ export default defineEventHandler(async (event) => {
   const body = await isValidBodyHandler(event, zodBodyValidator)
 
   const updateOrg = {
-    name: body.name,
+    name: body?.name,
     logo: body?.logo,
     metadata: {
-       industry: body?.industry,
-       avgTraffic: body?.avgTraffic,
-       employeeCount: body?.employeeCount,
-       otherRole: body?.otherRole,
-       gst: body?.gst,
+      industry: body?.industry,
+      avgTraffic: body?.avgTraffic,
+      employeeCount: body?.employeeCount,
+      otherRole: body?.otherRole,
+      gst: body?.gst,
+      planToBuild: body?.planToBuild,
+      referralSource: body?.referralSource,
+      estimatedMonthlyBudget: body?.estimatedMonthlyBudget,
+      discoverySource: body?.discoverySource,
+      businessName: body?.businessName,
     }
   }
 
