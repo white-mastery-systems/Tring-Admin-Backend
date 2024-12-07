@@ -13,6 +13,12 @@ const bodyValidationSchema = z.object({
   industryOtherRole: z.string().optional(),
   avgTraffic: z.string().min(1),
   employeeCount: z.string().min(1),
+  planToBuild: z.string(),
+  referralSource: z.string(),
+  estimatedMonthlyBudget: z.string(),
+  discoverySource: z.string(),
+  businessName: z.string(),
+  country: z.string(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -31,7 +37,12 @@ export default defineEventHandler(async (event) => {
       industry: body.industry,
       avgTraffic: body.avgTraffic,
       employeeCount: body.employeeCount,
-      otherRole: body?.industryOtherRole
+      otherRole: body?.industryOtherRole,
+      planToBuild: body?.planToBuild,
+      referralSource: body?.referralSource,
+      estimatedMonthlyBudget: body?.estimatedMonthlyBudget,
+      discoverySource: body?.discoverySource,
+      businessName: body?.businessName,
     },
   });
 
@@ -42,6 +53,9 @@ export default defineEventHandler(async (event) => {
       role: body.role,
       otherRole: body?.otherRole
     },
+    address: {
+      country: body?.country
+    }
   });
 
   // create default buckets and free-plan subscription
