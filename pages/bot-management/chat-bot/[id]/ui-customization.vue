@@ -181,6 +181,28 @@
             </UiFormField>
 
           </div>
+          <FieldArray name="emailRecipients" v-slot="{ fields, push, remove }">
+            <div v-if="fields.length" class="space-y-2">
+              <!-- Loop through the fields (emailRecipients) -->
+              <fieldset v-for="(email, index) in fields" :key="email.key">
+                <div :class="['flex gap-2', ((values.emailRecipients[index]) ? 'items-end' : 'items-center')]">
+                  <TextField :label="`Email`" :id="`email_config_${index}`" :name="`emailRecipients[${index}]`"
+                    placeholder="Enter Email." required />
+                  <!-- Button to remove the email -->
+                  <span :class="['flex items-end', (values.emailRecipients[index]) ? '' : 'mt-3']">
+                    <UiButton variant="outline" type="button" @click="remove(index)">
+                      <CloseIcon class="w-4 h-4" />
+                    </UiButton>
+                  </span>
+                </div>
+              </fieldset>
+            </div>
+
+            <!-- Button to add a new email recipient -->
+            <div class="flex w-full justify-end gap-2 mb-3">
+              <UiButton color="primary" type="submit" size="lg" @click="push('')">Add Email</UiButton>
+            </div>
+          </FieldArray>
 
           <div class="my-auto flex w-full justify-end py-2">
             <UiButton type="submit" color="primary" size="lg" :loading="isLoading">
@@ -198,6 +220,8 @@
   <!-- </div> -->
 </template>
 <script setup lang="ts">
+import { FieldArray } from "vee-validate";
+
   definePageMeta({
     middleware: "admin-only",
   });
@@ -215,6 +239,7 @@
       widgetSound: z.string({ required_error: "Widget sound must be selected" }).min(1, "Widget sound must be selected"),
       widgetPosition: z.string({ required_error: "Widget position must be selected" }).min(1, "Widget position must be selected"),
       fontFamily: z.string({required_error: "Font family is required"}).min(1, "Font family is required"),
+      emailRecipients: z.array(z.string().email()),
       defaultSelect: z.boolean().optional(),
       generateLead: z.boolean().optional(),
       onlineStatus: z.boolean().optional(),
@@ -258,6 +283,7 @@ setFieldValue("defaultSelect", (botDetails.metadata.ui.defaultSelect ?? true))
 setFieldValue("onlineStatus", (botDetails.metadata.ui.onlineStatus ?? true))
 setFieldValue("generateLead", (botDetails.metadata.ui.generateLead ?? true))
 setFieldValue("defaultRibbon", (botDetails.metadata.ui.defaultRibbon ?? true))
+setFieldValue("emailRecipients", (botDetails.metadata.ui.emailRecipients ?? []))
 
 watchEffect(() => {
   if (botDetails) {
@@ -285,6 +311,7 @@ const uiUpdate = handleSubmit(async (value: any) => {
           fontFamily: value.fontFamily,
           generateLead: value.generateLead,
           defaultRibbon: value.defaultRibbon,
+          emailRecipients: value.emailRecipients,
         },
         prompt: {
           ...botDetails.metadata.prompt,
