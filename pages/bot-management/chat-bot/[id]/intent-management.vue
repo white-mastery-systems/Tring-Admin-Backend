@@ -159,6 +159,7 @@ watchEffect(() => {
     }),
     columnHelper.accessor("link", {
       header: "Link",
+      cell: (info) => info.getValue() || "--",
     }),
     columnHelper.accessor("createdAt", {
       header: "Date Created",

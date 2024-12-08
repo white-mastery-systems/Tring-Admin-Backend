@@ -32,7 +32,7 @@
           if ($event.code == 'Backspace' || $event.code == 'Delete')
             emit('input', 'keydown');
         }
-      " @input="emit('input', 'change')" :placeholder="placeholder" :id="replacedId"
+      " @input="emit('input', 'change')" :placeholder="placeholder" :disabled="disabled" :id="replacedId"
       :class="errorMessage ? 'border-red-500' : 'border-input'" v-model="value"
       :type="type === 'phone' ? 'text' : type || 'text'" />
 

@@ -76,7 +76,7 @@
               </div>
 
               <UiButton @click="
-  deleteFile(concludeFile, formattedUploadAudioFile?.conclude, concludeFileIndex)
+              deleteFile(concludeFile, formattedUploadAudioFile?.conclude, concludeFileIndex)
                 " size="icon" color="primary" type="button" style="min-width: 80px !important">
                 remove
               </UiButton>
@@ -487,7 +487,7 @@ const deleteFile = (data, files, index) => {
   }
 };
 
-const audioUpload = async (formData: any, type) => {
+const audioUpload = async (formData: any) => {
   formattedUploadAudioFile.value.welcome = [];
   formattedUploadAudioFile.value.conclude = [];
   formattedUploadAudioFile.value.filler = [];
