@@ -1,6 +1,6 @@
 
  export const useLanguageList = () => {
- const languageList = [
+  const languageList = [
   {
     "label": "Afrikaans (South Africa)",
     "value": "af-ZA"

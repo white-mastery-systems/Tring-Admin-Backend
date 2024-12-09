@@ -247,3 +247,20 @@ export const deleteVoiceBotIntegration = async ({
     toast.error(err.data.data[0].message);
   }
 };
+
+
+export const updateEmailConfig = async (emailConfigDetails: object) => {
+  const updatedBot = await $fetch<SelectChatBot>(`/api/bots/${emailConfigDetails.botId}/intents/${emailConfigDetails.id}`, {
+    method: "PUT",
+    body: {
+      emailRecipients: emailConfigDetails?.emailRecipients ?? [],
+      isEmailEnabled: emailConfigDetails.isEmailEnabled
+    },
+  });
+  toast.success("Email Configuration updated successfully");
+  // await navigateTo({
+  //   name: "bot-management-chat-bot-id",
+  //   params: { id: emailConfigDetails.botId },
+  // });
+  return updatedBot;
+};
