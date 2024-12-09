@@ -7,21 +7,24 @@
     </div>
     <div class="flex w-[90%] flex-col px-0 md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
       <!-- <div> -->
-        <form class="space-y-4" @submit.prevent="onSubmit">
+      <form class="space-y-4" @submit.prevent="onSubmit">
         <div class="grid grid-cols-2 gap-3">
           <TextField type="text" name="name" label="Full Name" placeholder="Enter Your Name" :required="true" />
-          <TextField type="text" name="planToBuild" label="Plan To Build" placeholder="Enter Your Plan"
+          <TextField type="text" name="planToBuild" label="What do you plan to build with" placeholder="Enter Your Plan"
             :required="true" />
-          <TextField type="text" name="referralSource" label="Referral Source" placeholder="Enter Your Referral Source"
-            :required="true" />
-          <TextField type="text" name="estimatedMonthlyBudget" label="Estimated Monthly Budget"
+          <TextField type="text" name="referralSource" label="What brought you to"
+            placeholder="Enter Your Referral Source" :required="true" />
+          <TextField type="text" name="estimatedMonthlyBudget" label="your estimated monthly budget"
             placeholder="Enter Your Estimated Monthly Budget" :required="true" />
-          <TextField type="text" name="discoverySource" label="Discovery Source" placeholder="Enter Your Discovery Source"
-            :required="true" />
+          <TextField type="text" name="discoverySource" label=" Where you found us"
+            placeholder="Enter Your Discovery Source" :required="true" />
           <TextField type="text" name="businessName" label="Business Name" placeholder="Enter Your Business Name"
             :required="true" />
-          <TextField type="text" name="country" label="Country" placeholder="Enter Your Country" :required="true" />
-  
+          <!-- <TextField type="text" name="country" label="Country" placeholder="Enter Your Country" :required="true" /> -->
+          <!-- <CountryCodeField class="w-[100px]" name="country" label="Country" helperText="Enter your country" required /> -->
+          <CountrySelectField name="country" label="country" helperText="Enter your country" required>
+          </CountrySelectField>
+
           <SelectField name="role" label="Role" placeholder="Select Role"
             :options="roles.map((role) => ({ label: role, value: role }))" :required="true" v-model="formData.role" />
           <TextField v-if="formData.role === 'Other'" type="text" name="otherRole" label="Custom Role"
