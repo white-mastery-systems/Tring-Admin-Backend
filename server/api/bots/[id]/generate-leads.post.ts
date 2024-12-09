@@ -235,8 +235,11 @@ export default defineEventHandler(async (event) => {
       connection({ event: "leads", data: body });
     });
   }
+
+  const emailRecipients: any = botDetails?.emailRecipients && botDetails?.emailRecipients.length ? [...botDetails?.emailRecipients, adminUser?.email] : [ adminUser?.email ]
+
   sendEmail(
-    adminUser?.email,
+    emailRecipients,
     "Head's Up, New Lead Notification from Your Chatbot",
     `<div>
   <p>Dear ${adminUser?.username},</p>
