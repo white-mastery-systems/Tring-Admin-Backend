@@ -138,7 +138,7 @@ export default defineEventHandler(async (event) => {
         const payload = {
           name: body?.botUser?.name,
           email: body?.botUser?.email,
-          phone: `${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
+          phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: `${botDetails?.name}`,
           chatLink: `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
         };
@@ -217,7 +217,7 @@ export default defineEventHandler(async (event) => {
         const payload = {
           "First Name": body?.botUser?.name,
           "Email": body?.botUser?.email,
-          "Mobile": body?.botUser?.mobile,
+          "Mobile": `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           "Bot Name": botDetails?.name,
           "Chat Link": `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
         }
