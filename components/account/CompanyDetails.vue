@@ -49,7 +49,7 @@
         />
         <SelectField
           name="buisnessName"
-          label="Business Name"
+          label="Business Type"
           placeholder="Select Buisness"
           :options="[
             { label: 'Buisness With Gst', value: 'businessWithGst' },

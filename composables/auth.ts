@@ -16,7 +16,7 @@ export const useUser = async () => {
   };
   const refreshUser = async () => {
     try {
-      const data = await $fetch<User>("/api/user");
+      const data = await getUserDetail();
       if (data) {
         const storedUser: any = localStorage.getItem("user");
         user.value = storedUser ? JSON.parse(storedUser) : null;
