@@ -8,7 +8,7 @@ export async function getSharedWhatsappDetails({
   id: string;
 }) {
   const url =
-    `https://graph.facebook.com/v20.0/${id}` +
+    `https://graph.facebook.com/v21.0/${id}` +
     "?fields=id,name,currency,owner_business_info" +
     `&access_token=${code}`;
   const sharedWhatsappDetails = await $fetch(url, {
@@ -26,7 +26,7 @@ export async function fetchPhoneNumbers({
   id: string;
 }) {
   const url =
-    `https://graph.facebook.com/v20.0/${id}/phone_numbers` +
+    `https://graph.facebook.com/v21.0/${id}/phone_numbers` +
     "?fields=id,cc,country_dial_code,display_phone_number,verified_name,status,quality_rating,search_visibility,platform_type,code_verification_status" +
     `&access_token=${code}`;
   const phoneNumbers = await $fetch(url, {
@@ -44,7 +44,7 @@ export async function fetchMessageTemplates({
   id: string;
 }) {
   const url =
-    `https://graph.facebook.com/v20.0/${id}/message_templates` +
+    `https://graph.facebook.com/v21.0/${id}/message_templates` +
     "?fields=language,name,rejected_reason,status,category,sub_category,last_updated_time,components,quality_score" +
     "&limit=50" +
     `&access_token=${code}`;
@@ -66,7 +66,7 @@ export async function fetchSubscribedApps({
   id: string;
 }) {
   const url =
-    `https://graph.facebook.com/v20.0/${id}/subscribed_apps` +
+    `https://graph.facebook.com/v21.0/${id}/subscribed_apps` +
     `?access_token=${code}`;
   const subscribedApps = await $fetch(url, {
     method: "GET",
@@ -75,9 +75,10 @@ export async function fetchSubscribedApps({
   logger.info(`subscribedApps ${JSON.stringify(subscribedApps)}`);
   return subscribedApps;
 }
-export async function subscribeApp({ code, id }: { code: string; id: string }) {
+
+export async function subscribeApp({ code, wabaId }: { code: string; wabaId: string }) {
   try {
-    const url = `https://graph.facebook.com/v20.0/${id}/subscribed_apps`;
+    const url = `https://graph.facebook.com/v21.0/${wabaId}/subscribed_apps`;
     const subscribeAppResponse = await $fetch(url, {
       method: "POST",
       body: JSON.stringify({

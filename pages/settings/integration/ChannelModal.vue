@@ -16,6 +16,7 @@
     </form>
   </DialogWrapper>
 </template>
+
 <script setup lang="ts">
   import { useRoute } from "vue-router";
   const emit = defineEmits(["success"]);
@@ -83,12 +84,11 @@
 
   onMounted(() => {
     window.fbAsyncInit = function () {
-      console.log("HIIIII");
       FB.init({
         appId: "3404499776522072", // Your Facebook app ID
         autoLogAppEvents: true,
         xfbml: true,
-        version: "v20.0",
+        version: "v21.0",
       });
     };
 
