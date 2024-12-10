@@ -76,6 +76,7 @@ export default defineEventHandler(async (event) => {
           headers: { "Content-Type": "application/json" },
         },
       );
+      logger.info(`Response: ${JSON.stringify(response)}`);
       try {
         if (body?.metadata?.wabaId && response?.access_token) {
           await getSharedWhatsappDetails({
@@ -97,6 +98,7 @@ export default defineEventHandler(async (event) => {
             id: body.metadata.wabaId,
           });
           try {
+            logger.info(`Registered Phone: pid ${body.metadata.pid}, access_token ${response?.access_token}, pin ${body.metadata?.pin}, metadata ${JSON.stringify(body.metadata)}`);
             const registerPhone = await $fetch(
               `https://graph.facebook.com/v21.0/${body.metadata.pid}/register`,
               {
@@ -108,9 +110,9 @@ export default defineEventHandler(async (event) => {
                 },
               },
             );
-            logger.info(`registed phone ${JSON.stringify(registerPhone)}`);
+            logger.info(`Registered Phone Response: ${JSON.stringify(registerPhone)}`);
           } catch (err) {
-            logger.info(`registed phone err ${JSON.stringify(err)}`);
+            logger.info(`Registered Phone Error ${JSON.stringify(err)}`);
             return createError({
               statusCode: 400,
               statusMessage: "2FA failed,make sure to use 2FA of owner",
