@@ -331,7 +331,6 @@ watch(() => values.intent, (newValue) => {
   //     welcomeFilesData.value = []
   //   }
   // }
-  console.log(concludeFilesData.value, "concludeFilesData -- concludeFilesData")
   if (formattedUploadAudioFile.value.conclude.length) {
     const concludeAudioFilePaths = formattedUploadAudioFile.value.conclude.map((item: any) => item)
     setFieldValue("concludeAudio", concludeAudioFilePaths.join(","));
@@ -397,12 +396,8 @@ const uploadFile = (
       let index = fileIndex + 1 + lastFileIndex;
       console.log(file);
       var blob = file.slice(0, file.size, file.type);
-      file = new File([blob], `${type + index}.${fileType}`, {
-        type: file.type,
-      });
       newFiles.push(file);
       if (fieldName === "welcomeFile") {
-        console.log(file, "file -- file")
         welcomeFilesData.value.push(file);
       } else if (fieldName === "concludeFile") {
         concludeFilesData.value.push(file);
@@ -439,7 +434,7 @@ const uploadFile = (
     formData.append("organization_id", botDetails.organizationId);
   }
   // if (botDetails.speechToTextConfig?.language) {
-  formData.append("language", botDetails.speechToTextConfig?.language ?? "en-US");
+  formData.append("language", botDetails.speechToTextConfig?.language ?? "");
   // }
 
 
