@@ -53,6 +53,15 @@ export const runHostedPageApi: any = async ({ accessToken, user, organizationId,
     const contactPersonIdList = contactPersonInformations?.map((i) => ({
       contactperson_id: i.contactPersonId,
     }));
+   
+
+    const priceList = await getPriceList(metaData)
+    const currencyCode = (userDetails.address.country === "India" && body.locationData.country === "IN")? "INR" : "USD"
+
+    const customerPricebook = priceList.pricebooks.find((i: any) => i.currency_code === currencyCode)
+
+    // console.log({ customerPricebook })
+
     const reqObj = {
       ...(billingInformation?.customerId
       ? {
@@ -66,13 +75,14 @@ export const runHostedPageApi: any = async ({ accessToken, user, organizationId,
             last_name: lastName,
             email: user?.email,
             mobile: `${userDetails?.countryCode ?? "+91"} ${userDetails.mobile}`,
+            currency_code: currencyCode,
             billing_address: {
               attention: user?.username,
               street: userDetails?.address?.street,
               city: userDetails?.address?.city,
               state: userDetails?.address?.state,
               country: userDetails?.address?.country,
-              zip: userDetails?.address?.zip,
+              zip: userDetails?.address?.zipCode,
             },
             shipping_address: {
               attention: user?.username,
@@ -80,7 +90,7 @@ export const runHostedPageApi: any = async ({ accessToken, user, organizationId,
               city: userDetails?.address?.city,
               state: userDetails?.address?.state,
               country: userDetails?.address?.country,
-              zip: userDetails?.address?.zip,
+              zip: userDetails?.address?.zipCode,
             },
              ...(config.envType !== "stage" && {
               gst_no: orgDetails?.metadata?.gst,
@@ -94,14 +104,23 @@ export const runHostedPageApi: any = async ({ accessToken, user, organizationId,
           place_of_supply: getStateCode(userDetails?.address?.state),
         }),
         contactpersons: contactPersonIdList,
+        pricebook_id: customerPricebook?.pricebook_id,
         plan: {
           plan_code: body.plan,
         },
         redirect_url: body?.redirectUrl,
+        // payment_gateways: [
+        //   {
+        //     payment_gateway:
+        //       userDetails?.address === "india"
+        //         ? "razorpay"
+        //         : "razorpay",
+        //   },
+        // ],
         payment_gateways: [
           {
             payment_gateway:
-              userDetails?.address === "india"
+              userDetails?.address?.country === "India"
                 ? "razorpay"
                 : "razorpay",
           },
