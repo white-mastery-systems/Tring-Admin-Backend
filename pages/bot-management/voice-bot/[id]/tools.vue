@@ -104,7 +104,7 @@
                   </UiFormField>
                   <div v-if="values.clientTools[toolIdx]?.name">
                     <div
-                      v-for="(concludeFile, concludeFileIndex) in formattedUploadAudioFile[values?.clientTools[toolIdx]?.name]"
+                      v-for="(concludeFile, concludeFileIndex) in integrationsData[values?.clientTools[toolIdx]?.name]"
                       class="grid gap-2">
                       <div class="flex gap-3">
                         <span>
@@ -243,11 +243,24 @@ definePageMeta({
 const isLoading = ref(false);
 const formattedToolsConfig = ref(null);
 const route = useRoute("bot-management-voice-bot-id-tools");
+const paramId: any = route;
 const botDetailsList: any = await getVoiceBotDetails(route.params.id);
 const config = useRuntimeConfig()
 const formattedUploadAudioFile = ref({})
 // const uploadedAudio = ref();
 const deleteFileBucket = ref([]);
+const {
+  data: integrationsData,
+  status,
+  refresh: audioDataRefresh,
+} = await useLazyFetch("https://tring-voice.pripod.com/prerecordedAudio/metaData", {
+  server: false,
+  params: {
+    bot_id: route.params.id,
+    organization_id: botDetailsList.organizationId
+  },
+  default: () => [],
+});
 
 watch(botDetailsList.value, () => {
   if (botDetailsList.value) {
@@ -420,13 +433,13 @@ const uploadAudioFile = (event: Event, toolIdx: number) => {
   // let lastFileIndex = getLastFileNumber()
   try {
     Array.from(files).forEach((file, index) => {
-      let fileType = file.type.split("/").pop();
-      let fileName = file.name
+      // let fileType = file.type.split("/").pop();
+      // let fileName = file.name
       // let fileName = `tool_${toolIdx}_audio_${index + 1 + lastFileIndex}.${fileType}`;
-      let blob = file.slice(0, file.size, file.type);
-      let newFile = new File([blob], fileName, { type: file.type });
+      // let blob = file.slice(0, file.size, file.type);
+      // let newFile = new File([blob], fileName, { type: file.type });
 
-      uploadedFiles.push(newFile);
+      uploadedFiles.push(file);
     });
 
     // Update the tool's audio field in `clientTools`
@@ -473,49 +486,55 @@ const audioUpload = async (formData: any, index: any) => {
   // formattedUploadAudioFile.value.conclude = [];
   // formattedUploadAudioFile.value.filler = [];
   isLoading.value = true;
-  try {
-    const response = await fetch(
-      `${config.public.voiceBotUrl}/prerecordedAudio/`,
-      {
-        method: "POST",
-        body: formData,
-        // redirect: "manual",
-      },
-    );
-    formattedUploadAudioFile.value = await response.json()
-    values.clientTools?.forEach((item: any, index: number) => {
-      // Log the formatted upload audio file for the current item's name
+  if (botDetailsList.botDetails && botDetailsList.botDetails?.agentLanguage) {
+    try {
+      const response = await fetch(
+        `https://tring-voice.pripod.com/prerecordedAudio/`,
+        {
+          method: "POST",
+          body: formData,
+          // redirect: "manual",
+        },
+      );
+      formattedUploadAudioFile.value = await response.json()
+      values.clientTools?.forEach((item: any, index: number) => {
+        // Log the formatted upload audio file for the current item's name
 
-      // Iterate through entries of formattedUploadAudioFile.value
-      for (const [key, value] of Object.entries(formattedUploadAudioFile.value)) {
-        if (item.name === key) {
-          console.log(value, "value -- value");
-          // Set the field value if the name matches the key
-          setFieldValue(`clientTools[${index}].audio`, value);
+        // Iterate through entries of formattedUploadAudioFile.value
+        for (const [key, value] of Object.entries(formattedUploadAudioFile.value)) {
+          if (item.name === key) {
+            console.log(value, "value -- value");
+            // Set the field value if the name matches the key
+            setFieldValue(`clientTools[${index}].audio`, value);
+          }
         }
-      }
-    });
+      });
 
-    if (Array.isArray(values.clientTools)) {
-      formattedUploadAudioFile.value = {}; // Reset object
-      values.clientTools.forEach((item: any) => {
-        formattedUploadAudioFile.value[item.name] = item.audio; // Add key-value pairs
-      })
+      if (Array.isArray(values.clientTools)) {
+        formattedUploadAudioFile.value = {}; // Reset object
+        values.clientTools.forEach((item: any) => {
+          formattedUploadAudioFile.value[item.name] = item.audio; // Add key-value pairs
+        })
+      }
+      audioDataRefresh()
+      toast.success("Audio uploaded successfully. Please submit the form.")
+    } catch (error) {
+      isLoading.value = false;
+      console.error("Error:", error);
+    } finally {
+      isLoading.value = false;
+      console.log("finally");
+      // concludeFilesData.value = []
+      // welcomeFilesData.value = []
+      // fillerFilesData.value = []
     }
-    // uploadedAudio.value = {
-    //   Audios: {
-    //     audio: formattedUploadAudioFile.value,
-    //   }
-    // }
-  } catch (error) {
-    isLoading.value = false;
-    console.error("Error:", error);
-  } finally {
-    isLoading.value = false;
-    console.log("finally");
-    // concludeFilesData.value = []
-    // welcomeFilesData.value = []
-    // fillerFilesData.value = []
+  } else {
+    isLoading.value = false
+    toast.error("Please Fill Bot Details.");
+    await navigateTo({
+      name: "bot-management-voice-bot-id-identity-management",
+      params: { id: paramId.params.id },
+    })
   }
 };
 
@@ -531,14 +550,13 @@ const deleteFile = (file: any, toolIdx: any, index: any) => {
   });
   deleteFileBucket.value.push(file?.audio);
   if (deleteFileBucket.value.length) {
-    audioDelete(values.clientTools[toolIdx].name);
+    audioDelete(values.clientTools[toolIdx].name, toolIdx, index);
   }
 }
 
-const audioDelete = async (toolName: any) => {
+const audioDelete = async (toolName: any, toolIdx: any, index: any) => {
   try {
     const formData = new FormData();
-
     deleteFileBucket.value.forEach((item) => {
       formData.append('files', item);
     })
@@ -548,7 +566,7 @@ const audioDelete = async (toolName: any) => {
     formData.append('intent', toolName);
 
 
-    const deleteResponse = await fetch(`${config.public.voiceBotUrl}/prerecordedAudio/`, {
+    const deleteResponse = await fetch(`https://tring-voice.pripod.com/prerecordedAudio/`, {
       method: "DELETE",
       body: formData,
     });
@@ -559,6 +577,8 @@ const audioDelete = async (toolName: any) => {
         formattedUploadAudioFile.value[item.name] = item.audio; // Add key-value pairs
       })
     }
+    audioDataRefresh()
+    deleteFileBucket.value = []
   } catch (error) {
     console.error("Error:", error);
   } finally {
