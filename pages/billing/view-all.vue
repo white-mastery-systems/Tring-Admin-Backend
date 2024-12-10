@@ -1,62 +1,43 @@
 <template>
-  <div
-    v-if="isPageLoading"
-    class="grid h-[80vh] place-items-center text-[#424BD1]"
-  >
+  <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <page
-    v-else
-    title="Billing"
-    :description="true"
-    :disableSelector="true"
-    :customBackRouter="'/billing'"
-  >
-    <div
-      :class="[
+  <page v-else title="Billing" :description="true" :disableSelector="true" :customBackRouter="'/billing'">
+    <div :class="[
         'grid gap-4 px-2.5 py-0',
         route.query.type === 'voice'
           ? 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3'
           : 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-4',
-      ]"
-    >
+      ]">
       <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->
-      <div
-        :class="[
+      <div :class="[
           'main_card_align field_shadow relative flex flex-col justify-between rounded-[13px] border-2 bg-[#ffffff] p-5 hover:border-yellow-500',
           orgBilling?.plan_code === list.plan_code
             ? 'border-2 border-yellow-500'
             : '',
           'w-full',
-        ]"
-        v-for="(list, index) in billingVariation"
-        :key="index"
-      >
+        ]" v-for="(list, index) in billingVariation" :key="index">
         <div class="mb-[30px] text-[23px] font-bold text-[#424bd1]">
           {{ list.types }}
         </div>
 
         <div class="bill-content-align mb-[15px]">
-          <div class="amount-align text-[23px] font-black">
+          <div class="amount-align text-[30px] font-black">
             {{ list.amount }}
           </div>
           <div class="px-0 py-[2px] text-[15px] text-[#848199]">
             {{ list.status }}
           </div>
         </div>
-        <div class="text-[30px] font-bold">
+        <!-- <div class="text-[30px] font-bold">
           {{ list.types }}
-        </div>
+        </div> -->
         <div class="text-[15px] text-[#848199]">
           {{ list.benefitContent }}
         </div>
         <div class="flex min-h-[310px] flex-col items-start justify-start">
-          <div
-            class="flex items-center gap-2"
-            v-for="(advancedList, ListIndex) in list.benefitList"
-            :key="ListIndex"
-          >
+          <div class="flex items-center gap-2" v-for="(advancedList, ListIndex) in list.benefitList" :key="ListIndex">
             <span class="flex items-start">
               <TicIcon v-if="advancedList.availableInPlan" />
               <CloseIcon v-else />
@@ -74,17 +55,14 @@
             orgBilling?.plan_code === list.plan_code
               ? 'bg-indigo-700 text-white'
               : '',
-          ]"
-          @click="choosePlan(list.plan_code)"
-          :disabled="
+          ]" @click="choosePlan(list.plan_code)" :disabled="
             orgBilling?.plan_code === list.plan_code ||
             list.plan_code?.includes('chat_free')
-          "
-        >
+          ">
           {{
-            orgBilling?.plan_code === list.plan_code
-              ? "Current Plan"
-              : findPlanLevel({ list, current: orgBilling?.plan_code })
+          orgBilling?.plan_code === list.plan_code
+          ? "Current Plan"
+          : findPlanLevel({ list, current: orgBilling?.plan_code })
           }}
         </button>
       </div>
@@ -102,31 +80,33 @@
   const route = useRoute();
   const { user } = await useUser();
   console.log({ user });
-
+  const userDetails = ref(await getUserDetail())
   const [firstName, lastName] = user.value?.username?.split(" ") || [];
+  const countryName = ref()
+  const userLocationDetails = ref(await getLocationDetail())
   const chatBillingVariation = ref([
-    {
+    { 
       _id: 1,
-      amount: "Rs.0",
-      status: "Per Month",
+      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹0" : '$0',
+      status: "Lifetime",
       types: "Free",
-      benefitContent: "Unleash the power of automation.",
+      // benefitContent: "Unleash the power of automation.",
       listBenefit: false,
       benefitList: [
         {
-          content: "50 Message Sessions",
-          availableInPlan: true,
-        },
-        {
-          content: "Lifetime Duration",
-          availableInPlan: true,
-        },
-        {
-          content: "Extra message cost",
+          content: "Extra Chat Session",
           availableInPlan: false,
         },
         {
-          content: "Extra message limit",
+          content: "1 Chatbot",
+          availableInPlan: true,
+        },
+        {
+          content: "50 Free Chat Sessions",
+          availableInPlan: true,
+        },
+        {
+          content: "Widget Customization",
           availableInPlan: false,
         },
         {
@@ -135,14 +115,6 @@
         },
         {
           content: "CRM Integration",
-          availableInPlan: false,
-        },
-        {
-          content: "Widget Customization",
-          availableInPlan: false,
-        },
-        {
-          content: "No Tring Branding",
           availableInPlan: false,
         },
       ],
@@ -153,25 +125,22 @@
     },
     {
       _id: 2,
-      amount: "Rs.1999",
+      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹1999" : "$29",
       status: "Per Month",
       types: "Intelligence",
       listBenefit: false,
       benefitList: [
         {
-          content: "60 Message Sessions",
+          // content: "60 Message Sessions",
+          content: `${((userDetails.value.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹10' : '$0.60'} per Chat Session`,
           availableInPlan: true,
         },
         {
-          content: "Duration-Month",
+          content: "2 Chatbots",
           availableInPlan: true,
         },
         {
-          content: "Extra message cost-Rs.10",
-          availableInPlan: true,
-        },
-        {
-          content: "Extra message limit-200",
+          content: "60 Free Chat Sessions", // Extra message cost-Rs.10
           availableInPlan: true,
         },
         {
@@ -188,8 +157,8 @@
         },
 
         {
-          content: "No Tring Branding",
-          availableInPlan: false,
+          content: "Free 1 year data storage",
+          availableInPlan: true,
         },
       ],
       plan: `chat_intelligence`,
@@ -200,25 +169,25 @@
     },
     {
       _id: 3,
-      amount: "Rs.6999",
+      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹6999" : "$99",
       status: "Per Month",
       types: "Super Intelligence",
       listBenefit: false,
       benefitList: [
         {
-          content: "250 Message Sessions",
+          content: `${((userDetails.value.address.country === 'India') && (userLocationDetails?.value.country === "IN")) ? '₹8' : '$0.45'} Per Chat Session`,
           availableInPlan: true,
         },
         {
-          content: "Duration-Month",
+          content: "10 Chatbots",
           availableInPlan: true,
         },
         {
-          content: "Extra message cost - Rs.8",
+          content: "250 Free Chat Sessions",
           availableInPlan: true,
         },
         {
-          content: "1000 Extra message limit",
+          content: "Advanced Widget Customization",
           availableInPlan: true,
         },
         {
@@ -231,7 +200,7 @@
         },
 
         {
-          content: "No Tring Branding (Addon)",
+          content: "Free 2 years data storage",
           availableInPlan: true,
         },
       ],
@@ -250,19 +219,19 @@
       listBenefit: false,
       benefitList: [
         {
-          content: "1000+ Message Sessions",
+          content: "Talk to sales for Extra Chat Session",
           availableInPlan: true,
         },
         {
-          content: "Duration-Month",
+          content: "Unlimited Chatbots",
           availableInPlan: true,
         },
         {
-          content: "Extra message cost-Talk to sales",
+          content: "1000+ Free Chat Sessions",
           availableInPlan: true,
         },
         {
-          content: "Extra message limit-Unlimited",
+          content: "Advanced Widget Customization",
           availableInPlan: true,
         },
         {
@@ -271,14 +240,6 @@
         },
         {
           content: "CRM Integration",
-          availableInPlan: true,
-        },
-        {
-          content: "Widget Customization-Advance",
-          availableInPlan: true,
-        },
-        {
-          content: "No Tring Branding (Addon)",
           availableInPlan: true,
         },
       ],
@@ -290,7 +251,7 @@
   const voiceBillingVariation = ref([
     {
       _id: 1,
-      amount: "Rs.14999",
+      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹14999" : '$199',
       status: "Per Month",
       types: "Fluent",
       // benefitContent: "Unleash the power of automation.",
@@ -313,7 +274,7 @@
           availableInPlan: true,
         },
         {
-          content: "Rs.6 per Extra Minute",
+          content: `${((userDetails.value.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹6' : '$0.07'} per Extra Minute`,
           availableInPlan: true,
         },
         {
@@ -332,7 +293,7 @@
     },
     {
       _id: 2,
-      amount: "Rs.39999",
+      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹39999" : "$599",
       status: "Per Month",
       types: "Lucid",
       listBenefit: false,
@@ -354,7 +315,7 @@
           availableInPlan: true,
         },
         {
-          content: "Rs.5 per Extra Minute",
+          content: `${((userDetails.value.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹5' : '$0.65'} per Extra Minute`,
           availableInPlan: true,
         },
         {
@@ -414,9 +375,11 @@
       availableInPlan: true,
     },
   ]);
+
   const filters = computed(() => ({
     type: route.query?.type ?? 'chat',
   }));
+  
 
   const billingVariation = computed(() => {
     return route.query.type === "voice"
@@ -433,7 +396,7 @@
     const currentPlanInformation = billingVariation.value.find(
       (data: { plan_code: string }) => data.plan_code === current,
     );
-    if (billInformation?._id > currentPlanInformation?._id || (current === "voice_free")) {
+    if (billInformation?._id > currentPlanInformation?._id || (current === "unAvailable")) {
       return "Upgrade Plan";
     } else {
       return "Downgrade Plan";

@@ -1,3 +1,5 @@
+import type { User } from "lucia";
+
 export const formatDateStringToDate = (dateString: any) => {
   const date = new Date(dateString);
   return formatDate(date, "dd.MM.yyyy ");
@@ -263,4 +265,15 @@ export const updateEmailConfig = async (emailConfigDetails: object) => {
   //   params: { id: emailConfigDetails.botId },
   // });
   return updatedBot;
+};
+
+export const getLocationDetail = async () => {
+  const userLocationDetails = await $fetch(
+    `https://ipv4-check-perf.radar.cloudflare.com/api/info`,
+  );
+  return userLocationDetails;
+};
+export const getUserDetail = async () => {
+  const userDetails = await $fetch<User>("/api/user");
+  return userDetails;
 };

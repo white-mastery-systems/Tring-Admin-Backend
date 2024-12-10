@@ -283,7 +283,7 @@ setFieldValue("defaultSelect", (botDetails.metadata.ui.defaultSelect ?? true))
 setFieldValue("onlineStatus", (botDetails.metadata.ui.onlineStatus ?? true))
 setFieldValue("generateLead", (botDetails.metadata.ui.generateLead ?? true))
 setFieldValue("defaultRibbon", (botDetails.metadata.ui.defaultRibbon ?? true))
-setFieldValue("emailRecipients", (botDetails.metadata.ui.emailRecipients ?? []))
+setFieldValue("emailRecipients", (botDetails.emailRecipients ?? []))
 
 watchEffect(() => {
   if (botDetails) {
@@ -298,6 +298,7 @@ const uiUpdate = handleSubmit(async (value: any) => {
     isLoading.value = true
     const payload: any = {
       id: botDetails.id,
+      emailRecipients: value.emailRecipients,
       metadata: {
         ...botDetails.metadata,
         ui: {
@@ -311,7 +312,6 @@ const uiUpdate = handleSubmit(async (value: any) => {
           fontFamily: value.fontFamily,
           generateLead: value.generateLead,
           defaultRibbon: value.defaultRibbon,
-          emailRecipients: value.emailRecipients,
         },
         prompt: {
           ...botDetails.metadata.prompt,

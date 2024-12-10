@@ -85,12 +85,18 @@
                   <TextField :label="`Description`" :id="`tool_description_${toolIdx}`"
                     :name="`clientTools[${toolIdx}].description`" :isTextarea="true"
                     placeholder="Enter tool description" required />
+
+
                   <UiFormField v-slot="{ handleChange, value }" :name="`clientTools[${toolIdx}].audio`">
                     <UiFormItem class="flex w-full flex-col items-start">
                       <UiLabel class="pb-2 text-lg font-medium">Audio</UiLabel>
                       <div>
-                        <input type="file" accept="audio/*" multiple
-                          @change="($event) => uploadAudioFile($event, toolIdx)" />
+                      <imageField :isLoading="isLoading" :name="`clientTools[${toolIdx}].audio`" @change="($event) => {
+                          uploadAudioFile($event, toolIdx);
+                        }
+                        " :showFilename="false" :multiple="true" :accept="'audio/*'" />
+                        <!-- <input type="file" accept="audio/*" multiple
+                          @change="($event) => uploadAudioFile($event, toolIdx)" /> -->
                       </div>
                       <UiFormMessage />
                       <span class="text-xs text-gray-500">Upload audio files for the tool.</span>
@@ -103,7 +109,7 @@
                       <div class="flex gap-3">
                         <span>
                           {{
-                            `${concludeFile?.audio}.wav`
+                          `${concludeFile?.audio}.wav`
                           }}
                         </span>
                         <span>
@@ -408,14 +414,15 @@ watch(() => botDetailsList?.tools.clientFormControl, () => {
 
 
 const uploadAudioFile = (event: Event, toolIdx: number) => {
-  const files = event.target.files;
+  const files = event;
   if (!files || files.length === 0) return;
   let uploadedFiles: any = [];
-  let lastFileIndex = getLastFileNumber()
+  // let lastFileIndex = getLastFileNumber()
   try {
     Array.from(files).forEach((file, index) => {
       let fileType = file.type.split("/").pop();
-      let fileName = `tool_${toolIdx}_audio_${index + 1 + lastFileIndex}.${fileType}`;
+      let fileName = file.name
+      // let fileName = `tool_${toolIdx}_audio_${index + 1 + lastFileIndex}.${fileType}`;
       let blob = file.slice(0, file.size, file.type);
       let newFile = new File([blob], fileName, { type: file.type });
 
@@ -559,29 +566,29 @@ const audioDelete = async (toolName: any) => {
   }
 };
 
-const getLastFileNumber = (maxNumber = 10000): number => {
-  const files: { name: string }[] = []; // Replace with your actual list of files
+// const getLastFileNumber = (maxNumber = 10000): number => {
+//   const files: { name: string }[] = []; // Replace with your actual list of files
 
-  // Extract existing numbers from file names
-  const usedNumbers = new Set(
-    files.map((file) => {
-      const match = file.name.match(/\d+/); // Extract digits from the file name
-      return match ? parseInt(match[0], 10) : 0;
-    })
-  );
+//   // Extract existing numbers from file names
+//   const usedNumbers = new Set(
+//     files.map((file) => {
+//       const match = file.name.match(/\d+/); // Extract digits from the file name
+//       return match ? parseInt(match[0], 10) : 0;
+//     })
+//   );
 
-  let randomNumber: number;
-  let attempts = 0;
+//   let randomNumber: number;
+//   let attempts = 0;
 
-  // Generate a random number not already in use
-  do {
-    randomNumber = Math.floor(Math.random() * maxNumber) + 1; // Random number between 1 and maxNumber
-    attempts++;
-    if (attempts > maxNumber) throw new Error("Failed to generate a unique number");
-  } while (usedNumbers.has(randomNumber));
+//   // Generate a random number not already in use
+//   do {
+//     randomNumber = Math.floor(Math.random() * maxNumber) + 1; // Random number between 1 and maxNumber
+//     attempts++;
+//     if (attempts > maxNumber) throw new Error("Failed to generate a unique number");
+//   } while (usedNumbers.has(randomNumber));
 
-  return randomNumber;
-};
+//   return randomNumber;
+// };
 
 
 
