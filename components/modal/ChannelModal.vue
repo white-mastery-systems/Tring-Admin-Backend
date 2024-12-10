@@ -1,3 +1,55 @@
+
+<template>
+  <DialogWrapper
+    v-model="channelModalState"
+    :title="channelModalState.id ? 'Modify Channel' : 'Add New Channel'"
+  >
+    <form @submit="handleConnect" class="space-y-2">
+      <SelectField
+        name="channel"
+        label="Channel"
+        placeholder="Select a channel"
+        helperText=""
+        :options="[{ value: 'whatsapp', label: 'Whatsapp' }]"
+        required
+      />
+      <TextField
+        name="name"
+        label="Name"
+        placeholder="Enter Your Channel Name"
+        helperText=""
+        required
+      >
+      </TextField>
+      <TextField
+        v-if="fbVerified"
+        name="pin"
+        label="2FA Pin"
+        placeholder="Enter Your pin"
+        helperText="Enter your 2FA pin if enabled for this number"
+      >
+      </TextField>
+
+      <!-- <TextField name="pid" label="pid" placeholder="Enter" helperText="" required>
+      </TextField> -->
+      <!-- <TextField name="token" label="Token" placeholder="Enter Token" helperText="" required>
+      </TextField> -->
+      <div class="flex items-center justify-end">
+        <UiButton
+          v-if="!fbVerified"
+          color="primary"
+          type="button"
+          @click="launchWhatsAppSignup"
+          >Login with Facebook
+        </UiButton>
+        <UiButton v-else color="primary" type="submit" :loading="isLoading">
+          Submit
+        </UiButton>
+      </div>
+    </form>
+  </DialogWrapper>
+</template>
+
 <script setup lang="ts">
   import { useRoute } from "vue-router";
   const emit = defineEmits(["success"]);
@@ -61,12 +113,11 @@
 
   onMounted(() => {
     window.fbAsyncInit = function () {
-      console.log("HIIIII");
       FB.init({
         appId: "3404499776522072", // Your Facebook app ID
         autoLogAppEvents: true,
         xfbml: true,
-        version: "v20.0",
+        version: "v21.0",
       });
     };
 
@@ -209,57 +260,6 @@
     isLoading.value = false;
   });
 </script>
-
-<template>
-  <DialogWrapper
-    v-model="channelModalState"
-    :title="channelModalState.id ? 'Modify Channel' : 'Add New Channel'"
-  >
-    <form @submit="handleConnect" class="space-y-2">
-      <SelectField
-        name="channel"
-        label="Channel"
-        placeholder="Select a channel"
-        helperText=""
-        :options="[{ value: 'whatsapp', label: 'Whatsapp' }]"
-        required
-      />
-      <TextField
-        name="name"
-        label="Name"
-        placeholder="Enter Your Channel Name"
-        helperText=""
-        required
-      >
-      </TextField>
-      <TextField
-        v-if="fbVerified"
-        name="pin"
-        label="2FA Pin"
-        placeholder="Enter Your pin"
-        helperText="Enter your 2FA pin if enabled for this number"
-      >
-      </TextField>
-
-      <!-- <TextField name="pid" label="pid" placeholder="Enter" helperText="" required>
-      </TextField> -->
-      <!-- <TextField name="token" label="Token" placeholder="Enter Token" helperText="" required>
-      </TextField> -->
-      <div class="flex items-center justify-end">
-        <UiButton
-          v-if="!fbVerified"
-          color="primary"
-          type="button"
-          @click="launchWhatsAppSignup"
-          >Login with Facebook
-        </UiButton>
-        <UiButton v-else color="primary" type="submit" :loading="isLoading">
-          Submit
-        </UiButton>
-      </div>
-    </form>
-  </DialogWrapper>
-</template>
 <!-- https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=ZohoBigin.settings.ALL,ZohoBigin.modules.ALL&redirect_uri=https://tring-admin.pripod.com/settings/integration/zoho-bigin&prompt=consent&access_type=offline -->
 
 <!-- 

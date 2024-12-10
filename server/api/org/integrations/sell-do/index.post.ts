@@ -129,7 +129,7 @@ export default defineEventHandler(async (event) => {
   ) {
     try {
       const data = await $fetch(
-        "https://graph.facebook.com/v20.0/448392115020601/messages",
+        "https://graph.facebook.com/v21.0/448392115020601/messages",
         {
           method: "POST",
           body: waBody,

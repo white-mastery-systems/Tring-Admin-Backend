@@ -17,7 +17,7 @@ enum CRMType {
   slack = "slack",
   shopify = "shopify",
   zohoCliq = "zoho-cliq",
-  reserveGo = "reserve-go"
+  reserveGo = "reserve-go",
 }
 const db = useDrizzle();
 
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
         wabaId: z.string().optional(),
         pin: z.string().optional(),
         stage: z.string().optional(),
-        channelId: z.string().optional()
+        channelId: z.string().optional(),
       }),
     })
     .refine(
@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
   if (body.crm === "whatsapp") {
     try {
       response = await $fetch(
-        "https://graph.facebook.com/v20.0/oauth/access_token",
+        "https://graph.facebook.com/v21.0/oauth/access_token",
         {
           method: "POST",
           body: {
@@ -72,8 +72,6 @@ export default defineEventHandler(async (event) => {
             client_secret: "696e6112fe8aafca3e3ccf9332273140",
             code: body.metadata.code,
             grant_type: "authorization_code",
-            // redirect_uri:
-            //   "https://6t53p9kf-3000.inc1.devtunnels.ms/settings/integration/meta-oauth",
           },
           headers: { "Content-Type": "application/json" },
         },
@@ -88,18 +86,19 @@ export default defineEventHandler(async (event) => {
             code: response?.access_token,
             id: body.metadata.wabaId,
           });
-          if (body.metadata.pid)
+          if (body.metadata?.wabaId) {
             await subscribeApp({
               code: response?.access_token,
-              id: body.metadata.pid,
+              wabaId: body.metadata?.wabaId,
             });
+          }
           await fetchSubscribedApps({
             code: response?.access_token,
             id: body.metadata.wabaId,
           });
           try {
             const registerPhone = await $fetch(
-              `https://graph.facebook.com/v20.0/${body.metadata.pid}/register`,
+              `https://graph.facebook.com/v21.0/${body.metadata.pid}/register`,
               {
                 method: "POST",
                 headers: { Authorization: `Bearer ${response?.access_token}` },
