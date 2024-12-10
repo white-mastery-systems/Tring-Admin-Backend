@@ -80,13 +80,14 @@
   const route = useRoute();
   const { user } = await useUser();
   console.log({ user });
-  const getUserDetails = JSON.parse(localStorage.getItem("user"))
-  const userDetails = ref(getUserDetails);
+  const userDetails = ref(await getUserDetail())
   const [firstName, lastName] = user.value?.username?.split(" ") || [];
+  const countryName = ref()
+  const userLocationDetails = ref(await getLocationDetail())
   const chatBillingVariation = ref([
     { 
       _id: 1,
-      amount: (userDetails.value.address.country === "India") ? "₹0" : '$0',
+      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹0" : '$0',
       status: "Lifetime",
       types: "Free",
       // benefitContent: "Unleash the power of automation.",
@@ -124,14 +125,14 @@
     },
     {
       _id: 2,
-      amount: (userDetails.value.address.country === "India") ? "₹1999" : "$29",
+      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹1999" : "$29",
       status: "Per Month",
       types: "Intelligence",
       listBenefit: false,
       benefitList: [
         {
           // content: "60 Message Sessions",
-          content: `${userDetails.value.address.country === 'India' ? '₹10' : '$0.60'} per Chat Session`,
+          content: `${((userDetails.value.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹10' : '$0.60'} per Chat Session`,
           availableInPlan: true,
         },
         {
@@ -168,13 +169,13 @@
     },
     {
       _id: 3,
-      amount: (userDetails.value.address.country === "India") ? "₹6999" : "$99",
+      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹6999" : "$99",
       status: "Per Month",
       types: "Super Intelligence",
       listBenefit: false,
       benefitList: [
         {
-          content: `${userDetails.value.address.country === 'India' ? '₹8' : '$0.45'} Per Chat Session`,
+          content: `${((userDetails.value.address.country === 'India') && (userLocationDetails?.value.country === "IN")) ? '₹8' : '$0.45'} Per Chat Session`,
           availableInPlan: true,
         },
         {
@@ -250,7 +251,7 @@
   const voiceBillingVariation = ref([
     {
       _id: 1,
-      amount: (userDetails.value.address.country === "India") ? "₹14999" : '$199',
+      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹14999" : '$199',
       status: "Per Month",
       types: "Fluent",
       // benefitContent: "Unleash the power of automation.",
@@ -273,7 +274,7 @@
           availableInPlan: true,
         },
         {
-          content: `${userDetails.value.address.country === 'India' ? '₹6' : '$0.07'} per Extra Minute`,
+          content: `${((userDetails.value.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹6' : '$0.07'} per Extra Minute`,
           availableInPlan: true,
         },
         {
@@ -292,7 +293,7 @@
     },
     {
       _id: 2,
-      amount: (userDetails.value.address.country === "India") ? "₹39999" : "$599",
+      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹39999" : "$599",
       status: "Per Month",
       types: "Lucid",
       listBenefit: false,
@@ -314,7 +315,7 @@
           availableInPlan: true,
         },
         {
-          content: `${userDetails.value.address.country === 'India' ? '₹5' : '$0.65'} per Extra Minute`,
+          content: `${((userDetails.value.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹5' : '$0.65'} per Extra Minute`,
           availableInPlan: true,
         },
         {
@@ -374,9 +375,11 @@
       availableInPlan: true,
     },
   ]);
+
   const filters = computed(() => ({
     type: route.query?.type ?? 'chat',
   }));
+  
 
   const billingVariation = computed(() => {
     return route.query.type === "voice"
