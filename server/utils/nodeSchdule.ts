@@ -11,7 +11,7 @@ const sendWhatsappTemplateMessage = async (
 ) => {
   try {
     logger.info(
-      `meta-whatsapp-${`https://graph.facebook.com/v20.0/${phoneId}/messages`}---->${JSON.stringify(
+      `meta-whatsapp-${`https://graph.facebook.com/v21.0/${phoneId}/messages`}---->${JSON.stringify(
         {
           ignoreResponseError: true,
           method: "post",
@@ -34,7 +34,7 @@ const sendWhatsappTemplateMessage = async (
       )}`,
     );
     const data = await $fetch(
-      `https://graph.facebook.com/v20.0/${phoneId}/messages`,
+      `https://graph.facebook.com/v21.0/${phoneId}/messages`,
       {
         method: "post",
         headers: {
@@ -61,7 +61,7 @@ const sendWhatsappTemplateMessage = async (
   } catch (err: any) {
     console.log(err);
     logger.error(
-      `https://graph.facebook.com/v20.0/${phoneId}/messages----${JSON.stringify(err)} ${JSON.stringify(err.data)}`,
+      `https://graph.facebook.com/v21.0/${phoneId}/messages----${JSON.stringify(err)} ${JSON.stringify(err.data)}`,
     );
   }
 };
