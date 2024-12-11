@@ -411,10 +411,10 @@ const onSubmit = handleSubmit(async (values) => {
         voice: values.elevenlabsvoice || "",
           model: values.model || "eleven_turbo_v2",
             stability: values.stability || 0.5,
-              similarity_boost: values.similarityBoost || 1,
-                style: values.style || 0.5,
-                  use_speaker_boost: values.useSpeakerBoost || false,
-                    api_key: values.apikey || "",
+            similarity_boost: values.similarityBoost || 1,
+            style: values.style || 0.5,
+            use_speaker_boost: values.useSpeakerBoost || false,
+            api_key: values.apikey || "",
    }
 
   }
@@ -422,7 +422,7 @@ const onSubmit = handleSubmit(async (values) => {
     // Deepgram config
     updatedConfig.deepgram = {
       // ...botData.value?.textToSpeechConfig.deepgram, // Keep existing Deepgram config
-      voice: values.deepgramVoice || "aura-asteria-en",
+      voice: values.voice || "aura-asteria-en",
        // amplification_factor: values.amplificationFactor !== undefined ? values.amplificationFactor : botData.value?.textToSpeechConfig.deepgram.amplification_factor || 2,
        // Add any other necessary Deepgram-specific fields similarly
      }

@@ -22,6 +22,7 @@
           <TextField name="agentName" label="Agent Name" required placeholder="Enter agent name" />
           <SelectField name="agentLanguage" :options="languageList" label="Agent Language" placeholder="Agent Language"
             helperText="Select your language." required></SelectField>
+          <RegionISOCodeSelect name="region" label="Region" helperText="Enter your region" required />
 
           <!-- <UiFormField v-slot="{ value, handleChange }" name="backgroundSoundControler">
             <UiFormItem class="w-[49%]">
@@ -122,6 +123,9 @@ const backgroundSoundList = [
       agentLanguage: z
         .string({ required_error: "Agent Language is required" })
         .min(1, { message: "Agent Language is required" }),
+      region: z
+        .string({ required_error: "Country is required" })
+        .min(1, "Country is required"),
       // backgroundSoundControler: z.boolean().optional(),
       // backgroundSounds: z
       //   .string().optional()
@@ -169,8 +173,13 @@ Object.entries(botDetailsList.botDetails ?? {}).forEach(([key, value]: any) => {
   const onSubmit = handleSubmit(async (value: any) => {
     // updateLLMConfig()
     isLoading.value = true;
+    const modifiedData = {
+      agentName: value.agentName,
+      agentLanguage: value.agentLanguage,
+      region: value.region?.split(" ").pop(),
+    }
     let payload = {
-      botDetails: value,
+      botDetails: modifiedData,
     };
 
     await updateLLMConfig(payload, botDetailsList.id, "Bot information added successfully.");
