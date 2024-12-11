@@ -13,7 +13,8 @@ const zodUpdateVoiceBotSchema = z.object({
   identityManagement: z.record(z.any()).optional(),
   botDetails: z.object({
     agentName: z.string().optional(),
-    agentLanguage: z.string().optional()
+    agentLanguage: z.string().optional(),
+    region: z.string().optional()
   }).optional(),
   preRecordedAudios: z.object({
     welcomeAudio: z.array(z.any()).optional(),
