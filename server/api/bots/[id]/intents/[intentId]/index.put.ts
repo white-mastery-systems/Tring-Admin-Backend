@@ -1,5 +1,6 @@
 import { updateBotIntent } from "~/server/utils/db/bot";
-// import { zodInsertChatBotIntent } from "../index.post";
+
+const db = useDrizzle()
 
 const zodIntentUpdate = z.object({
   intent: z.string().optional(),
@@ -26,9 +27,29 @@ export default defineEventHandler(async (event) => {
      );
     const { intentId } = await isValidRouteParamHandler( event, checkPayloadId("intentId"));
 
-    const intent: any = await isValidBodyHandler(event, zodIntentUpdate);
+    const body: any = await isValidBodyHandler(event, zodIntentUpdate);
 
-    const updateIntent = await updateBotIntent(botId, intentId, intent);
+    const isAreadyExists = await db.query.botIntentSchema.findFirst({
+      where: and(
+        eq(botIntentSchema.botId, botId),
+        eq(botIntentSchema.intent, body.intent),
+        ne(botIntentSchema.id, intentId)
+      )
+    })
+  
+    if(isAreadyExists) {
+      return sendError(
+        event,
+        createError({
+          statusCode: 400,
+          statusMessage: "Intent name already exists",
+        }),
+      );
+    }
+
+  
+
+    const updateIntent = await updateBotIntent(botId, intentId, body);
 
     return updateIntent;
 })
