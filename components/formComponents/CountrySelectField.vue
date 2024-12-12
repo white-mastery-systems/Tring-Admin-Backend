@@ -7,7 +7,7 @@
             <UiPopover>
                 <UiPopoverTrigger as-child>
                     <UiFormControl>
-                        <UiButton variant="outline" role="combobox" :class="cn(
+                        <UiButton variant="outline" role="combobox" class="font-normal text-sm" :class="cn(
                             'w-full justify-between overflow-hidden',
                             !fieldValue && 'text-muted-foreground',
                         )

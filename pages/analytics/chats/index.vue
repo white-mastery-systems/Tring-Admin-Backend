@@ -13,7 +13,7 @@
         <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder="Search User..." />
-        <BotFilter v-model="filters.botId" @input="filters.page = '1'" />
+        <BotFilter @input="onBotChange" />
         <!-- <BotUserFilter @changeAction="onActionChange" /> -->
         <LivePreviewFilter @changeAction="onActionChange" />
         <DateRangeFilter @change="onDateChange" />
@@ -226,6 +226,12 @@
     filters.page = "1";
   };
 
+const onBotChange = (value: any) => {
+  if (value) {
+    filters.botId = value
+    filters.page = '1'
+  }
+};
   const onChannelChange = ($event) => {
     if ($event) {
       filters.channel = $event;

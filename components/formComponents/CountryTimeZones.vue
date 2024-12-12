@@ -1,7 +1,7 @@
 <template>
   <UiFormField v-model="country" :name="props.name" class="mt-1">
     <UiFormItem class="mt-1 flex flex-col gap-1 ">
-      <UiFormLabel>Region
+      <UiFormLabel>Time Zones
         <span class="text-sm text-red-500">*</span>
       </UiFormLabel>
       <UiPopover>
@@ -9,7 +9,7 @@
           <UiFormControl>
             <UiButton variant="outline" role="combobox" class="font-normal text-sm" :class="cn(
               'w-full justify-between overflow-hidden',
-              !fieldValue && 'text-muted-foreground',
+  !fieldValue && 'font-normal text-sm',
             )
               ">
               <!-- {{
@@ -22,7 +22,7 @@
               }} -->
               <!-- {{ allCoutryNames }} -->
               <!-- {{ allCoutryNames.find((country: any) => country === fieldValue)}} -->
-              {{ fieldValue ? fieldValue : "Region name" }}
+              {{ fieldValue ? fieldValue : "Select time zones" }}
               <component :is="ChevronDown" class="ml-2 h-4 w-4 shrink-0 opacity-50"></component>
             </UiButton>
           </UiFormControl>
@@ -35,20 +35,18 @@
               <div v-bind="containerPropsForCountry" class="max-h-52">
                 <div v-bind="wrapperPropsForCountry">
                   <UiCommandGroup>
-                    <UiCommandItem v-for="country in countriesList" :key="country.data" :value="country.data" @select="() => {
-                      handleChange(country.data.code);
+                    <UiCommandItem v-for="country in timeZonesList" :key="country.data" :value="country.data" @select="() => {
+                      handleChange(country.data);
                     }
                       " style="height: 32px">
                       <Check :class="cn(
                         'mr-2 h-4 w-4',
-                            (country.data.code === fieldValue)
+                        country.data === fieldValue
                           ? 'opacity-100'
                           : 'opacity-0',
                       )
                         " />
-                        <!-- {{ checkboxControl }}
-                        {{ country.data.name}} -->
-                      {{ `${country.data.name} - ${country.data.code}` }}
+                      {{ country.data }}
                     </UiCommandItem>
                   </UiCommandGroup>
                 </div>
@@ -67,9 +65,11 @@
 <script setup lang="ts">
 import { Check } from 'lucide-vue-next';
 import { ChevronDown } from "lucide-vue-next";
+import { useTImeList } from '~/composables/timeZones';
+// import countryData from "~/assets/country-codes.json";
 
-import countryData from "~/assets/country-codes.json";
 const searchField = ref('')
+const { formattedTimeZones } = useTImeList();
 const props = defineProps({
   name: {
     type: String,
@@ -93,26 +93,15 @@ const props = defineProps({
 
 });
 
-// const allCountryNames = computed(() =>
-//   countryData
-//     ?.filter((country: any) =>
-//       country.name.toLowerCase().includes(searchField.value.toLowerCase()) ||
-//       country.code.toLowerCase().includes(searchField.value.toLowerCase()) ||
-//       country.dial_code.toLowerCase().includes(searchField.value.toLowerCase())
-//     )
-//     ?.map((country) => `${country.name} ${country.code}`)
-// );
 const allCountryNames = computed(() =>
-  countryData
-    ?.filter((country: any) =>
-      country.name.toLowerCase().includes(searchField.value.toLowerCase()) ||
-      country.code.toLowerCase().includes(searchField.value.toLowerCase()) ||
-      country.dial_code.toLowerCase().includes(searchField.value.toLowerCase())
+  formattedTimeZones
+    ?.filter((zones: any) =>
+      zones.timezone.toLowerCase().includes(searchField.value.toLowerCase())
     )
-    ?.map((country) => ({ name: country.name, code: country.code })) // Fixed map syntax
+    ?.map((items: any) => `${items.timezone}`)
 );
 const {
-  list: countriesList,
+  list: timeZonesList,
   containerProps: containerPropsForCountry,
   wrapperProps: wrapperPropsForCountry,
 } = useVirtualList(allCountryNames, {
@@ -123,9 +112,7 @@ const { value: fieldValue, errorMessage, meta, handleChange } = useField(() => p
 const country = ref(fieldValue.value);
 
 watch(country, (newValue) => {
-  if (newValue) {
-    fieldValue.value = newValue; // Assign directly, no need for JSON.parse/stringify
-  }
+  fieldValue.value = newValue;
 });
 const handleSearchCountries = (e: string) => {
   searchField.value = e.toLowerCase()

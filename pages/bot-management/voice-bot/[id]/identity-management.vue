@@ -23,7 +23,8 @@
           <SelectField name="agentLanguage" :options="languageList" label="Agent Language" placeholder="Agent Language"
             helperText="Select your language." required></SelectField>
           <RegionISOCodeSelect name="region" label="Region" helperText="Enter your region" required />
-
+          <CountryTimeZones name="timezone" label="Time Zones" helperText="Enter your time zones" required />
+          <!-- {{ formattedTimeZones }} -->
           <!-- <UiFormField v-slot="{ value, handleChange }" name="backgroundSoundControler">
             <UiFormItem class="w-[49%]">
               <div class="flex justify-between">
@@ -55,6 +56,7 @@
 
 <script setup lang="ts">
 import { useLanguageList } from '~/composables/voiceBotLanguageList';
+import { useTImeList } from '~/composables/timeZones';
  const config=useRuntimeConfig()
   definePageMeta({
     middleware: "admin-only",
@@ -80,41 +82,8 @@ import { useLanguageList } from '~/composables/voiceBotLanguageList';
   ];
 
   const { languageList } = useLanguageList();
-
-const backgroundSoundList = [
-  {
-    label: "Sound1",
-    value: "sound1"
-  }, {
-    label: "Sound2",
-    value: "sound2"
-  }, {
-    label: "Sound3",
-    value: "sound3"
-  }, {
-    label: "Sound4",
-    value: "sound4"
-  }, {
-    label: "Sound5",
-    value: "sound5"
-  }, 
-]
-  const domainList = [
-    { value: "Customer Support", label: "Customer Support" },
-    { value: "Sales Assistant", label: "Sales Assistant" },
-    { value: "Technical Support", label: "Technical Support" },
-    { value: "Lead Generation", label: "Lead Generation" },
-    {
-      value: "Survey Taker",
-      label: "Survey Taker",
-      helperText: "Can contribute content but with limited permissions",
-    },
-    { value: "Appointment Scheduler", label: "Appointment Scheduler" },
-    { value: "FAQ Bot", label: "FAQ Bot" },
-    { value: "Others", label: "Others" },
-  ];
+  const { formattedTimeZones } = useTImeList();
   const isLoading = ref(false);
-
   const botSchema = toTypedSchema(
     z.object({
       agentName: z
@@ -126,6 +95,9 @@ const backgroundSoundList = [
       region: z
         .string({ required_error: "Country is required" })
         .min(1, "Country is required"),
+      timezone: z
+        .string({ required_error: "Time zone is required" })
+        .min(1, "Time zone is required"),
       // backgroundSoundControler: z.boolean().optional(),
       // backgroundSounds: z
       //   .string().optional()
@@ -176,7 +148,8 @@ Object.entries(botDetailsList.botDetails ?? {}).forEach(([key, value]: any) => {
     const modifiedData = {
       agentName: value.agentName,
       agentLanguage: value.agentLanguage,
-      region: value.region?.split(" ").pop(),
+      region: value.region,
+      timezone: value.timezone,
     }
     let payload = {
       botDetails: modifiedData,

@@ -133,8 +133,8 @@
                         </div>
                       </div>
                     </UiTooltipTrigger>
-                    <UiTooltipContent class="w-80">
-                      <p>{{ value }}</p> <!-- Show the full value or any additional info -->
+                    <UiTooltipContent class="w-full">
+                      <p>{{ value }}</p>
                     </UiTooltipContent>
                   </UiTooltip>
                 </div>
@@ -314,12 +314,11 @@ const formattedScheduels = computed(() => {
         message.content.includes('Site Visit Scheduled') ||
         message.content.includes('Rescheduled Call') || message.content.includes('Call Scheduled'))
     );
-
     // Map filtered messages to extract content, date, and time
     const formattedMessages = filteredMessages.map((message: any) => {
       // Extract content before the date
       const contentMatch = message.content.match(/^(.*?) on /);
-      const dateMatch = message.content.match(/on ([A-Za-z]+ \d{1,2}, \d{4})/);
+      const dateMatch = message.content.match(/on\s+([A-Za-z]+ \d{1,2}, \d{4})/); // old /on ([A-Za-z]+ \d{1,2}, \d{4})/
       const timeMatch = message.content.match(/- ([\d:]+ [APM]+)/);
 
       return {
