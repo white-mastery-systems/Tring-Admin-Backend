@@ -14,7 +14,8 @@ const zodUpdateVoiceBotSchema = z.object({
   botDetails: z.object({
     agentName: z.string().optional(),
     agentLanguage: z.string().optional(),
-    region: z.string().optional()
+    region: z.string().optional(),
+    timezone: z.string().optional()
   }).optional(),
   preRecordedAudios: z.object({
     welcomeAudio: z.array(z.any()).optional(),
