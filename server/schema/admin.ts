@@ -159,6 +159,7 @@ export const numberIntegrationSchema = adminSchema.table("number_integration", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   provider: varchar("provider"),
   exoPhone: varchar("exo_phone"),
+  metadata: jsonb("metadata"),
   countryCode: varchar("country_code"),
   organizationId: uuid("org_id")
     .notNull()

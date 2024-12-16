@@ -1,9 +1,16 @@
-import { createNumberIntegration, getNumberIntegration } from "~/server/utils/db/number-integration"
+import { createNumberIntegration, getExophoneByProvider, getNumberIntegration } from "~/server/utils/db/number-integration"
 
 const zodInsertNumberIntegration = z.object({
    provider: z.string(),
-   exoPhone: z.string(),
-   countryCode: z.string()
+   metadata: z.object({
+     accountSid: z.string().optional(),
+     authToken: z.string().optional(),
+     subDomain: z.string().optional(),
+     apiKey: z.string().optional(),
+     apiToken: z.string().optional(),
+     flowId: z.string().optional(),
+     publicKey: z.string().optional()
+  }).optional()
 })
 
 export default defineEventHandler(async (event) => {
@@ -11,14 +18,14 @@ export default defineEventHandler(async (event) => {
   
    const body = await isValidBodyHandler(event, zodInsertNumberIntegration)
 
-   const isAlreadyExists = await getNumberIntegration(body.exoPhone)
+   const isAlreadyExists = await getExophoneByProvider(body.provider, organizationId)
 
    if(isAlreadyExists) {
       return sendError(
          event,
          createError({
             statusCode: 400,
-            statusMessage: "Exophone is already exists",
+            statusMessage: "Provider is already exists",
          }),
       );
    }

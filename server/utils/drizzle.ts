@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import { contactListAndContactsRelations, contactListContactsSchema, orgSubscriptionSchema, playgroundDocumentSchema } from "../schema/admin";
 import { userOTPSchema } from "../schema/auth";
-import { callLogsRelations, voicebotIntegrationRelations, voicebotRelations } from "../schema/voicebot";
+import { callLogsRelations, outboundCallSchema, voicebotIntegrationRelations, voicebotRelations } from "../schema/voicebot";
 import { botDynamicFormSchema } from "../schema/bot";
 
 const runtimeConfig = useRuntimeConfig();
@@ -44,6 +44,7 @@ const schema = {
   botDynamicFormSchema,
   orgVisitorSchema,
   orgSubscriptionSchema,
+  outboundCallSchema,
   // Relations
   organizationRelations,
   chatBotRelations,
