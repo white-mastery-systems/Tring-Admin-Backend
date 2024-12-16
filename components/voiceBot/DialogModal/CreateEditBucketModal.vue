@@ -35,7 +35,6 @@ const {
   server: false,
   default: () => [],
   transform: (contacts: any) => {
-    console.log(contacts, "contacts")
     return contacts.map((contact: any) => ({
       value: contact.id,
       name: `${contact.countryCode} ${contact.phone}`,

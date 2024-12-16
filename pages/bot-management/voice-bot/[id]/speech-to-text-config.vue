@@ -31,7 +31,7 @@
             placeholder="Select Model" helperText="Select your model.">
           </SelectField>
           <!-- v-if="(values.provider === 'azure')" -->
-          <div class="flex flex-col gap-2 mt-5">
+          <div :class="['flex flex-col gap-2', (values.provider === 'deepgram') ? 'my-5' : 'mt-5']">
             <RangeSlider :step="0.05" :name="parseFloat(values.amplificationFactor)" label="Amplification Factor"
               @update="
               ($event) => {

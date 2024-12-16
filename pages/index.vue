@@ -165,10 +165,15 @@
     filter.graphValues = chartValues?.value?.join(",");
 
     filter.period = selectedValue;
-    if (selectedValue != "custom") {
+    if ((filter.from === undefined && filter.to === undefined) && selectedValue.value === "custom") {
+      toast.error("Please select date range")
+      return;
+    } 
+    if (selectedValue.value != "custom") {
       delete filter.from;
       delete filter.to;
-    }
+    } 
+    console.log(filter, "filter asdsadsad --- asd", "selectedValue");
     const data = await getAnalyticsData(filter);
     analyticsData.value = data
     responseFormat(JSON.parse(JSON.stringify(data)))
@@ -363,7 +368,6 @@
       delete filter.to;
     }
     loading.value = true;
-
     try {
       if (period === "custom") return;
       const data = await getAnalyticsData(filter);

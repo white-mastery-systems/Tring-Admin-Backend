@@ -17,7 +17,7 @@
     },
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <div class="pb-2 sm:pb-0">
-      <form @submit="onSubmit" class="flex flex-col gap-2">
+      <form @submit="onSubmit" class="flex flex-col gap-2 space-y-2">
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3">
           <!-- <TextField name="intent" label="Intent " required placeholder="Enter Intent " /> -->
           <SelectField name="intent" :options="intentList" label="Intent" placeholder="Select Intent"
@@ -47,7 +47,7 @@
               </div>
 
               <UiButton type="button" size="icon" color="primary" style="min-width: 80px !important" @click="
-  deleteFile(welcomeFile, audioResponseData?.welcome, welcomeFileIndex)
+                deleteFile(welcomeFile, audioResponseData?.welcome, welcomeFileIndex)
                 ">
                 remove
               </UiButton>
@@ -76,7 +76,7 @@
               </div>
 
               <UiButton @click="
-  deleteFile(concludeFile, audioResponseData?.conclude, concludeFileIndex)
+                deleteFile(concludeFile, audioResponseData?.conclude, concludeFileIndex)
                 " size="icon" color="primary" type="button" style="min-width: 80px !important">
                 remove
               </UiButton>
@@ -88,14 +88,14 @@
               <imageField :isLoading="isLoading" name="fillerAudio" @change="($event) => {
                 uploadFile($event, 'filler', 'fillerFile');
               }
-                " :fileName="values.welcomeAudio" :showFilename="false" :multiple="true" :accept="'audio/*'" />
+                " :fileName="values.fillerAudio" :showFilename="false" :multiple="true" :accept="'audio/*'" />
             </div>
 
             <div v-for="(fillerFile, fillerFileIndex) in audioResponseData?.filler" class="grid gap-2">
               <div class="flex gap-3">
                 <span>
                   {{
-                    `${fillerFile.audio}.wav`
+                  `${fillerFile.audio}.wav`
                   }}
                 </span>
                 <span>
@@ -105,6 +105,77 @@
 
               <UiButton @click="
                 deleteFile(fillerFile, audioResponseData?.filler, fillerFileIndex)
+                " size="icon" color="primary" type="button" style="min-width: 80px !important">
+                remove
+              </UiButton>
+            </div>
+          </div>
+          <div v-if="values.intent === 'ambientNoise'" class="w-full gap-3 pt-2">
+            <div>
+              <div>
+                <div style="align-self: center">Ambient Noise Audio</div>
+                <div>
+                  <imageField :isLoading="isLoading" name="ambientNoiseAudio" @change="($event) => {
+                  uploadFile($event, 'ambientNoise', 'ambientNoiseFile');
+                  }
+                    " :fileName="values.ambientNoiseAudio" :showFilename="false" :multiple="true"
+                    :accept="'audio/*'" />
+                </div>
+              </div>
+              <div>
+                <div class="flex flex-col gap-2 my-6">
+                  <RangeSlider :step="0.05" :name="parseFloat(values.ambientsound)" label="Ambient Sound"
+                    @update="($event) => {
+                      setFieldValue('ambientsound', $event);
+                      }
+                      " required placeholder="Enter ambient sound" min="0" max="1" />
+                </div>
+              </div>
+            </div>
+
+            <div v-for="(ambientNoiseFile, ambientNoiseFileIndex) in audioResponseData?.ambientNoise"
+              class="grid gap-2">
+              <div class="flex gap-3">
+                <span>
+                  {{
+                  `${ambientNoiseFile.audio}.wav`
+                  }}
+                </span>
+                <span>
+                  {{ ambientNoiseFile.transcription }}
+                </span>
+              </div>
+
+              <UiButton @click="
+                deleteFile(ambientNoiseFile, audioResponseData?.ambientNoise, ambientNoiseFileIndex)
+                " size="icon" color="primary" type="button" style="min-width: 80px !important">
+                remove
+              </UiButton>
+            </div>
+          </div>
+          <div v-if="values.intent === 'forwardCall'" class="w-full gap-3 pt-2">
+            <div style="align-self: center">Forward Call Audio</div>
+            <div>
+              <imageField :isLoading="isLoading" name="forwardCallAudio" @change="($event) => {
+                uploadFile($event, 'forwardCall', 'forwardCallFile');
+              }
+                " :fileName="values.forwardCallAudio" :showFilename="false" :multiple="true" :accept="'audio/*'" />
+            </div>
+
+            <div v-for="(forwardCallFile, forwardCallFileIndex) in audioResponseData?.forwardCall" class="grid gap-2">
+              <div class="flex gap-3">
+                <span>
+                  {{
+                  `${forwardCallFile.audio}.wav`
+                  }}
+                </span>
+                <span>
+                  {{ forwardCallFile.transcription }}
+                </span>
+              </div>
+
+              <UiButton @click="
+                deleteFile(forwardCallFile, audioResponseData?.forwardCall, forwardCallFileIndex)
                 " size="icon" color="primary" type="button" style="min-width: 80px !important">
                 remove
               </UiButton>
@@ -134,6 +205,8 @@ const botDetails: any = await getVoiceBotDetails(route.params.id);
 const welcomeFilesData = ref([]);
 const concludeFilesData = ref([]);
 const fillerFilesData = ref([]);
+const ambientNoiseFilesData = ref([]);
+const forwardCallFilesData = ref([]);
 const deleteFileBucket = ref([]);
 const uploadedAudio = ref();
 // const formattedUploadAudioFile = ref({
@@ -187,6 +260,12 @@ const domainList = [
 
 const intentList = ref([
   {
+    label: "Ambient Sound",
+    value: "ambientNoise",
+  }, {
+    label: "Forward Call",
+    value: "forwardCall",
+  }, {
     label: "Welcome",
     value: "welcome",
   }, {
@@ -212,29 +291,15 @@ const {
   },
   default: () => [],
 });
-// const botSchema = toTypedSchema(
-//   z.object({
-//     welcomeFile: z.any(),
-//     concludeFile: z.any(),
-//   }),
-// );
-// const botSchema = toTypedSchema(
-//   z.object({
-//     intent: z.string().min(1, "Intent is required"),
-//     welcomeAudio: z.any().refine(value => value !== undefined && value.length > 0, {
-//       message: "Welcome file is required",
-//     }),
-//     concludeAudio: z.any().refine(value => value !== undefined && value.length > 0, {
-//       message: "Conclude file is required",
-//     }),
-//   })
-// );
 const botSchema = toTypedSchema(
   z.object({
     intent: z.string({ required_error: "Intent is required" }).min(1, "Intent is required"),
     welcomeAudio: z.any().optional(),
     concludeAudio: z.any().optional(),
     fillerAudio: z.any().optional(),
+    ambientNoiseAudio: z.any().optional(),
+    forwardCallAudio: z.any().optional(),
+    ambientsound: z.number().optional(),
   })
     .superRefine((data, ctx) => {
       // Conditional validation for 'welcome' intent
@@ -264,7 +329,33 @@ const botSchema = toTypedSchema(
       ) {
         ctx.addIssue({
           path: ["fillerAudio"],
-          message: "fillerAudio file is required for the 'filler' intent.",
+          message: "Filler audio file is required for the 'filler' intent.",
+        });
+      }
+      if (
+        data.intent === "ambientNoise" &&
+        (!data.ambientNoiseAudio || data.ambientNoiseAudio.length === 0)
+      ) {
+        ctx.addIssue({
+          path: ["ambientNoiseAudio"],
+          message: "Ambient noise audio file is required for the 'ambientNoise' intent.",
+        });
+      }
+      if (
+        data.intent === "ambientNoise" && (data.ambientsound <= 0)
+      ) {
+        ctx.addIssue({
+          path: ["ambientsound"],
+          message: "Ambient sound file is required for the 'ambientNoise' intent.",
+        });
+      }
+      if (
+        data.intent === "forwardCall" &&
+        (!data.forwardCallAudio || data.forwardCallAudio.length === 0)
+      ) {
+        ctx.addIssue({
+          path: ["forwardCallAudio"],
+          message: "Forward call audio file is required for the 'forwardCall' intent.",
         });
       }
     })
@@ -288,7 +379,10 @@ if (botDetails?.intent) setFieldValue("intent", botDetails?.intent)
 else {
   setFieldValue("intent", 'welcome')
 }
+setFieldValue('ambientsound', botDetails?.preRecordedAudios?.ambientsound ?? 0.5)
 Object.entries(botDetails.preRecordedAudios ?? {}).forEach(([key, value]: any) => {
+  // if (botDetails.preRecordedAudios) {
+  // }
   if (key === 'welcomeAudio') {
     if (botDetails.preRecordedAudios?.welcomeAudio.length) {
       const welcomeFilePaths = botDetails.preRecordedAudios?.welcomeAudio.map((item: any) => item)
@@ -319,6 +413,26 @@ Object.entries(botDetails.preRecordedAudios ?? {}).forEach(([key, value]: any) =
         audioResponseData.value?.filler.push(item)
       })
       setFieldValue("fillerAudio", fillerAudioFilePaths.join(","));
+    }
+  }
+  if (key === 'ambientNoiseAudio') {
+    if (botDetails.preRecordedAudios?.ambientNoiseAudio.length) {
+      const ambientNoiseAudioFilePaths: any = botDetails.preRecordedAudios?.ambientNoiseAudio?.map((item: any) => item);
+      ambientNoiseAudioFilePaths?.map((item: object) => {
+        // concludeFilesData.value.push(item)
+        audioResponseData.value?.ambientNoise.push(item)
+      })
+      setFieldValue("ambientNoiseAudio", ambientNoiseAudioFilePaths.join(","));
+    }
+  }
+  if (key === 'forwardCallAudio') {
+    if (botDetails.preRecordedAudios?.forwardCallAudio.length) {
+      const forwardCallAudioFilePaths: any = botDetails.preRecordedAudios?.forwardCallAudio?.map((item: any) => item);
+      forwardCallAudioFilePaths?.map((item: object) => {
+        // concludeFilesData.value.push(item)
+        audioResponseData.value?.forwardCall.push(item)
+      })
+      setFieldValue("forwardCallAudio", forwardCallAudioFilePaths.join(","));
     }
   }
 });
@@ -355,6 +469,14 @@ watch(() => values.intent, (newValue) => {
   if (audioResponseData.value?.filler.length) {
     const fillerAudioFilePaths = audioResponseData.value.filler.map((item: any) => item)
     setFieldValue("fillerAudio", fillerAudioFilePaths.join(","));
+  }
+  if (audioResponseData.value?.ambientNoise.length) {
+    const ambientNoiseAudioFilePaths = audioResponseData.value.ambientNoise.map((item: any) => item)
+    setFieldValue("ambientNoiseAudio", ambientNoiseAudioFilePaths.join(","));
+  }
+  if (audioResponseData.value?.forwardCallAudio.length) {
+    const forwardCallAudioFilePaths = audioResponseData.value.forwardCall.map((item: any) => item)
+    setFieldValue("forwardCallAudio", forwardCallAudioFilePaths.join(","));
   }
 });
 // watch(botDetails, () => {
@@ -395,6 +517,8 @@ watch(() => values.intent, (newValue) => {
 const welcomeString = ref("");
 const concludeString = ref("");
 const fillerString = ref("");
+const ambientNoiseString = ref("");
+const forwardCallString = ref("");
 
 const uploadFile = (
   files: any,
@@ -407,12 +531,12 @@ const uploadFile = (
   // }
   try {
     let newFiles: any = [];
-    let lastFileIndex = getLastFileNumber(fieldName);
+    // let lastFileIndex = getLastFileNumber(fieldName);
     Array.from(files).forEach((file: any, fileIndex: any) => {
-      let fileType: any = file.type.split("/").pop();
-      let index = fileIndex + 1 + lastFileIndex;
-      console.log(file);
-      var blob = file.slice(0, file.size, file.type);
+      // let fileType: any = file.type.split("/").pop();
+      // let index = fileIndex + 1 + lastFileIndex;
+      // console.log(file);
+      // var blob = file.slice(0, file.size, file.type);
       newFiles.push(file);
       if (fieldName === "welcomeFile") {
         welcomeFilesData.value.push(file);
@@ -420,6 +544,10 @@ const uploadFile = (
         concludeFilesData.value.push(file);
       } else if (fieldName === "fillerFile") {
         fillerFilesData.value.push(file);
+      } else if (fieldName === "ambientNoiseFile") {
+        ambientNoiseFilesData.value.push(file);
+      } else if (fieldName === "forwardCallFile") {
+        forwardCallFilesData.value.push(file);
       }
     });
 
@@ -432,10 +560,18 @@ const uploadFile = (
       concludeString.value +=
         concludeString.value.length > 0 ? "," + fileNames : fileNames;
       setFieldValue('concludeAudio', concludeString.value);
-    } else {
+    } else if (fieldName === "fillerFile") {
       fillerString.value +=
         fillerString.value.length > 0 ? "," + fileNames : fileNames;
       setFieldValue('fillerAudio', fillerString.value);
+    } else if (fieldName === "ambientNoiseFile") {
+      ambientNoiseString.value +=
+        ambientNoiseString.value.length > 0 ? "," + fileNames : fileNames;
+      setFieldValue('ambientNoiseAudio', ambientNoiseString.value);
+    } else {
+      forwardCallString.value +=
+        forwardCallString.value.length > 0 ? "," + fileNames : fileNames;
+      setFieldValue('forwardCallAudio', forwardCallString.value);
     }
 
   } catch (error) {
@@ -460,7 +596,7 @@ const uploadFile = (
     formData.append("intent", values.intent);
   }
   // Append files from welcome and conclude data
-  [...welcomeFilesData.value, ...concludeFilesData.value, ...fillerFilesData.value].forEach((file: any) => {
+  [...welcomeFilesData.value, ...concludeFilesData.value, ...fillerFilesData.value, ...ambientNoiseFilesData.value, ...forwardCallFilesData.value].forEach((file: any) => {
     if (file instanceof File) {
       formData.append("files", file);
     }
@@ -524,6 +660,8 @@ const audioUpload = async (formData: any) => {
           welcomeAudio: audioResponseData.value?.welcome,
           concludeAudio: audioResponseData.value?.conclude,
           fillerAudio: audioResponseData.value?.filler,
+          ambientNoiseAudio: audioResponseData.value?.ambientNoise,
+          forwardCallAudio: audioResponseData.value?.forwardCall,
         }
       }
       
@@ -539,6 +677,8 @@ const audioUpload = async (formData: any) => {
       concludeFilesData.value = []
       welcomeFilesData.value = []
       fillerFilesData.value = []
+      ambientNoiseFilesData.value = []
+      forwardCallFilesData.value = []
     }
   } else {
     isLoading.value = false
@@ -575,31 +715,31 @@ const audioDelete = async (data: any) => {
   }
 };
 
-const getLastFileNumber = (fileNames: string, maxNumber = 10000): number => {
-  const files = fileNames === "welcomeFile"
-    ? welcomeFilesData.value
-    : (fileNames === "concludeFile") ? concludeFilesData.value : fillerFilesData.value;
+// const getLastFileNumber = (fileNames: string, maxNumber = 10000): number => {
+//   const files = fileNames === "welcomeFile"
+//     ? welcomeFilesData.value
+//     : (fileNames === "concludeFile") ? concludeFilesData.value : fillerFilesData.value;
 
-  // Extract existing numbers from file names
-  const usedNumbers = new Set(
-    files.map((file: any) => {
-      const match = file.name.match(/\d+/);
-      return match ? parseInt(match[0], 10) : 0;
-    })
-  );
+//   // Extract existing numbers from file names
+//   const usedNumbers = new Set(
+//     files.map((file: any) => {
+//       const match = file.name.match(/\d+/);
+//       return match ? parseInt(match[0], 10) : 0;
+//     })
+//   );
 
-  let randomNumber;
-  let attempts = 0;
+//   let randomNumber;
+//   let attempts = 0;
 
-  // Generate a random number not already in use
-  do {
-    randomNumber = Math.floor(Math.random() * maxNumber) + 1; // Random number between 1 and maxNumber
-    attempts++;
-    if (attempts > maxNumber) throw new Error("Failed to generate a unique number");
-  } while (usedNumbers.has(randomNumber));
+//   // Generate a random number not already in use
+//   do {
+//     randomNumber = Math.floor(Math.random() * maxNumber) + 1; // Random number between 1 and maxNumber
+//     attempts++;
+//     if (attempts > maxNumber) throw new Error("Failed to generate a unique number");
+//   } while (usedNumbers.has(randomNumber));
 
-  return randomNumber;
-};
+//   return randomNumber;
+// };
 
 
 const onSubmit = handleSubmit(async (value: any) => {
@@ -619,9 +759,12 @@ const onSubmit = handleSubmit(async (value: any) => {
       ...payload,
       intent: values.intent,
       preRecordedAudios: {
+        ambientsound: values?.ambientsound,
         welcomeAudio: audioResponseData.value?.welcome,
         concludeAudio: audioResponseData.value?.conclude,
         fillerAudio: audioResponseData.value?.filler,
+        ambientNoiseAudio: audioResponseData.value?.ambientNoise,
+        forwardCallAudio: audioResponseData.value?.forwardCall,
       },
     };
   }

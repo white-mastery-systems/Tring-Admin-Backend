@@ -75,7 +75,6 @@
       " :disabled="disabled" :placeholder="placeholder" :id="replacedId" v-model="value" :type="type || 'text'"
       :accept="accept || ''" @input="emit('input', $event)" />
 
-    <div></div>
     <!-- :maxlength="props?.type === 'phone' ? 10 : ''" -->
     <div :class="
         cn(

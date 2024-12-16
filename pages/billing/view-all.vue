@@ -79,7 +79,6 @@
   const router = useRouter();
   const route = useRoute();
   const { user } = await useUser();
-  console.log({ user });
   const userDetails = ref(await getUserDetail())
   const [firstName, lastName] = user.value?.username?.split(" ") || [];
   const countryName = ref()
