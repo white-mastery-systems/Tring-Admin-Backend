@@ -4,7 +4,7 @@
       <div class="flex gap-4">
         <div class="flex gap-2">
           <ExportButton v-model="exportDataHandler" buttonContent="Export Data" :rows="exportReadyRows"
-        :columns="exportReadyColumns" @export="exportData" />
+            :columns="exportReadyColumns" @export="exportData" />
         </div>
       </div>
     </template>
@@ -13,7 +13,7 @@
         <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder=" Search Leads..." />
-        <BotFilter v-model="filters.botId" @input="filters.page = '1'" />
+        <BotFilter @input="onBotChange" />
         <StatusFilter @change="onStatusChange" />
 
         <!-- <ActionFilter @changeAction="onActionChange" /> -->
@@ -162,7 +162,7 @@
         mobile: lead.botUser,
         name: lead.bot?.name,
         countryName: lead.chat.metadata?.country,
-        createdAt: lead.chat.createdAt,
+        createdAt: lead.createdAt,
         chatId: lead.chatId,
         status: lead.status,
       }))
@@ -246,6 +246,14 @@
       filters.action = value;
     }
   };
+const onBotChange = (value: any) => {
+  if (value) {
+    filters.botId = value
+    filters.page = '1'
+    // filters.status = value;
+    // filters.page = "1";
+  }
+};
   const onStatusChange = (value: any) => {
     if (value) {
       filters.status = value;
@@ -304,7 +312,7 @@
     }),
     columnHelper.accessor("createdAt", {
       header: "Date Created",
-      cell: ({ row }) => `${row.original.createdAt}`,
+      // cell: ({ row }) => `${row.original.createdAt}`,
     }),
     columnHelper.accessor("chatId", {
       header: "Action",

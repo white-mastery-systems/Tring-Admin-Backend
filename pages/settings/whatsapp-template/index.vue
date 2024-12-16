@@ -136,6 +136,7 @@
     default: () => [],
     query: filters,
     transform: (buckets: any) => {
+      console.log("buckets", buckets);
       page.value = buckets.page;
       totalPageCount.value = buckets.totalPageCount;
       totalCount.value = buckets.totalCount;
@@ -208,10 +209,12 @@
     );
 
   const columns = [
-    columnHelper.accessor("name", {
+    // columnHelper.accessor("name", {
+    //   header: "Template Name",
+    // }),
+    columnHelper.accessor((row) => (row.name === "" ? "--" : row.name), {
       header: "Template Name",
     }),
-
     columnHelper.accessor("status", {
       header: "status",
       cell: ({ row }) => {

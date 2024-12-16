@@ -1,16 +1,3 @@
-<script setup lang="ts">
-import { XCircleIcon, Repeat, Wallet } from "lucide-vue-next";
-import { useRouter } from "vue-router";
-
-const props = defineProps({
-  usageDetails: Object,
-  subscriptionData: Object,
-  usage: Object,
-  query: Object,
-});
-
-const emit = defineEmits<{ (e: "change"): void }>();
-</script>
 <template>
   <div class="flex gap-2">
     <!-- {{ subscriptionData }} || sdfdsfjhhb -->
@@ -26,7 +13,7 @@ const emit = defineEmits<{ (e: "change"): void }>();
     </div>
     <!-- :to="{ path: '/billing/view-wallet', query: { action: 'refill' } }" -->
     <!-- to="/billing/view-wallet" -->
-    <NuxtLink v-if="!usage?.plan_code?.includes('free')"
+    <NuxtLink v-if="!usage?.plan_code?.includes('free') && (userLocationDetails.country === 'IN')"
       :to="{ path: '/billing/view-wallet', query: { type: query?.type } }"
       class="hover:brighten-50 font-regular flex items-center rounded-md bg-[#424bd1] p-2 px-2 text-sm text-[#FFFFFF] hover:bg-[#424bd1] hidden lg:flex">
       Refill Wallet
@@ -44,6 +31,8 @@ const emit = defineEmits<{ (e: "change"): void }>();
     </div>
     <!-- :to="{ path: '/billing/view-wallet', query: { type: query?.type } }" -->
     <!-- to="/billing/view-all" -->
+     <!-- {{ userDetails.address.country }}
+     {{ userLocationDetails.country }} -->
     <NuxtLink :to="{ path: '/billing/view-all', query: { type: query?.type } }"
       class="hover:brighten-50 font-regular items-center rounded-md bg-[#FFBC42] p-2 px-2 text-sm text-[#FFFFFF] hover:bg-[#FFBC42] hidden lg:flex">
       Change Plan</NuxtLink>
@@ -57,3 +46,16 @@ const emit = defineEmits<{ (e: "change"): void }>();
     </div>
   </div>
 </template>
+<script setup lang="ts">
+import { XCircleIcon, Repeat, Wallet } from "lucide-vue-next";
+import { useRouter } from "vue-router";
+
+const props = defineProps({
+  usageDetails: Object,
+  subscriptionData: Object,
+  usage: Object,
+  query: Object,
+});
+const userLocationDetails = ref(await getLocationDetail())
+const emit = defineEmits<{ (e: "change"): void }>();
+</script>
