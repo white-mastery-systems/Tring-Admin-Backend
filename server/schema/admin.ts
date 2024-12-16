@@ -120,7 +120,7 @@ export const timelineSchema = adminSchema.table("timeline", {
   userId: uuid("user_id").references(() => botUserSchema.id),
   orgId: uuid("org_id").references(() => organizationSchema.id),
   chatId: uuid("chat_id"),
-  botId: uuid("bot_id").references(() => chatBotSchema.id),
+  botId: uuid("bot_id").references(() => chatBotSchema.id,{ onDelete: "cascade"}),
   metadata: jsonb("metadata").default({}).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   event: varchar("event", { length: 64 }),
