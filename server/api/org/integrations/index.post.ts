@@ -1,4 +1,5 @@
 import { ilike } from "drizzle-orm";
+import { toast } from "vue-sonner";
 import { logger } from "~/server/logger";
 import { createIntegration } from "~/server/utils/db/integrations";
 import {
@@ -98,7 +99,9 @@ export default defineEventHandler(async (event) => {
             id: body.metadata.wabaId,
           });
           try {
-            logger.info(`Registered Phone: pid ${body.metadata.pid}, access_token ${response?.access_token}, pin ${body.metadata?.pin}, metadata ${JSON.stringify(body.metadata)}`);
+            logger.info(
+              `Registered Phone: pid ${body.metadata.pid}, access_token ${response?.access_token}, pin ${body.metadata?.pin}, metadata ${JSON.stringify(body.metadata)}`,
+            );
             const registerPhone = await $fetch(
               `https://graph.facebook.com/v21.0/${body.metadata.pid}/register`,
               {
@@ -110,9 +113,15 @@ export default defineEventHandler(async (event) => {
                 },
               },
             );
-            logger.info(`Registered Phone Response: ${JSON.stringify(registerPhone)}`);
+            logger.info(
+              `Registered Phone Response: ${JSON.stringify(registerPhone)}`,
+            );
+            toast("Phone registered successfully!");
           } catch (err) {
             logger.info(`Registered Phone Error ${JSON.stringify(err)}`);
+            toast(
+              "Failed to register phone. Please ensure 2FA is enabled for the owner.",
+            );
             return createError({
               statusCode: 400,
               statusMessage: "2FA failed,make sure to use 2FA of owner",
