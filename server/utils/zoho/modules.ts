@@ -758,6 +758,43 @@ export const createAddonInZohoBilling: any = async ({
         integrationData,
         body,
       });
-    }
+    } 
   }
 };
+
+
+export const getPriceList: any = async (integrationData: any) => {
+  try {
+    const priceList = await $fetch(`https://www.zohoapis.in/billing/v1/pricebooks`,{
+        method: "GET",
+        headers: {
+          Authorization: `Zoho-oauthtoken ${integrationData?.access_token}`,
+          "X-com-zoho-subscriptions-organizationid":
+            integrationData?.organization_id,
+        },  
+      },)
+
+      // console.log({ priceList })
+
+      return priceList
+  } catch (error: any) {
+    console.log({ error })
+     logger.error(
+      `getPriceList: integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(error.data)}`,
+    );
+    if (error.status === 401) {
+      const newAuthInfo: any = await $fetch(
+        `https://accounts.zoho.in/oauth/v2/token?client_id=${integrationData?.client_id}&grant_type=refresh_token&client_secret=${integrationData?.client_secret}&refresh_token=${integrationData?.refresh_token}`,
+        {
+          method: "POST",
+        },
+      );
+      integrationData = { ...integrationData, ...newAuthInfo };
+      await db
+        .update(adminConfigurationSchema)
+        .set({ metaData: integrationData })
+        .where(eq(adminConfigurationSchema.id, 1));
+      return getPriceList(integrationData)
+  }
+}
+}

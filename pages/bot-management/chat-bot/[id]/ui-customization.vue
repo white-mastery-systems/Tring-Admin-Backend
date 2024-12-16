@@ -199,8 +199,13 @@
             </div>
 
             <!-- Button to add a new email recipient -->
-            <div class="flex w-full justify-end gap-2 mb-3">
-              <UiButton color="primary" type="submit" size="lg" @click="push('')">Add Email</UiButton>
+            <div class="flex flex-col w-full justify-end gap-2 mb-3">
+              <span>
+                <UiButton color="primary" type="submit" size="lg" @click="push('')">Add Email</UiButton>
+              </span>
+              <span class="text-[7px] sm:text-[7px] md:text-xs lg:text-xs xl:text-xs text-gray-500">
+                Click to add more email recipients to be notified when a lead is submitted.
+              </span>
             </div>
           </FieldArray>
 

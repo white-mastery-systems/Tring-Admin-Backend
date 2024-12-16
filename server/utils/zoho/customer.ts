@@ -14,6 +14,7 @@ export const createZohoCustomer: any = async (metaData: any, customerDetails: an
       last_name: lastName,
       email: customerDetails?.email,
       mobile: customerDetails?.mobile,
+      currency_code: customerDetails?.address.country === "India" ? "INR" : "USD",
       billing_address: {
         attention: customerDetails?.username,
         street: customerDetails?.address?.street,
