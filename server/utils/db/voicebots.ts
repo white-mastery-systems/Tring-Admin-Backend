@@ -1,4 +1,5 @@
 import momentTz from "moment-timezone";
+import { outboundCallSchema } from "~/server/schema/voicebot";
 
 const db = useDrizzle();
 
@@ -210,11 +211,34 @@ export const deleteVoicebotIntegration = async (
   )[0];
 };
 
-
-// Leads creation
+// Leads creation for voicebot
 export const createVoiceBotLead = async (leads: any) => {
   return (
     await db.insert(voiceBotLeadSchema).values(leads).returning()
   )[0]
 }
 
+// Get all voicebot
+export const getAllActiveVoicebots = async() => {
+  return db.query.voicebotSchema.findMany({
+    where: eq(voicebotSchema.active, true)
+  })
+}
+
+// outbound calls
+export const getNotDialedCallList = async() => {
+  return db.query.outboundCallSchema.findMany({
+    where: eq(outboundCallSchema.dialStatus, "not dialed"),
+    limit: 3
+  })
+}
+
+// get organization voicebot plan
+export const orgVoicebotSubscription = async (organizationId: string) => {
+  return await db.query.orgSubscriptionSchema.findFirst({
+    where: and(
+      eq(orgSubscriptionSchema.organizationId, organizationId),
+      eq(orgSubscriptionSchema.botType, "voice")
+    )
+  })
+}

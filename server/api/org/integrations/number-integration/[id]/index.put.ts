@@ -1,17 +1,17 @@
-import { getExophoneByProvider, getNumberIntegration } from "~/server/utils/db/number-integration"
-
 const db = useDrizzle()
 
 const zodUpdateNumberIntegration = z.object({
   provider: z.string().optional(),
   metadata: z.object({
    accountSid: z.string().optional(),
+   apiSecret: z.string().optional(),
    authToken: z.string().optional(),
    subDomain: z.string().optional(),
    apiKey: z.string().optional(),
    apiToken: z.string().optional(),
    flowId: z.string().optional(),
-   publicKey: z.string().optional()
+   publicKey: z.string().optional(),
+   connectionId: z.string().optional()
   }).optional()
 })
 

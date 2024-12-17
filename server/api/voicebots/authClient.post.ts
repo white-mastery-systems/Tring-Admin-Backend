@@ -1,4 +1,6 @@
 import momentTz from "moment-timezone"
+import { getCurrentMonthCallLogList } from "~/server/utils/db/call-logs";
+import { orgVoicebotSubscription } from "~/server/utils/db/voicebots";
 
 const db = useDrizzle();
 
@@ -49,12 +51,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // check the plan-code of the orgaination
-  let voicebotPlan: any = await db.query.orgSubscriptionSchema.findFirst({
-    where: and(
-      eq(orgSubscriptionSchema.organizationId, organizationId),
-      eq(orgSubscriptionSchema.botType, "voice")
-    )
-  })
+  let voicebotPlan: any = await orgVoicebotSubscription(organizationId)
   
   const voicebotFreePlan = {
     organizationId,
@@ -80,20 +77,11 @@ export default defineEventHandler(async (event) => {
   //TODO - add extra and normal quota validation
   
   // calculate total minutes for current month
+  const currentDate = momentTz().tz(timeZone).toDate()
   const currentMonthStartDate = momentTz(voicebotPlan?.subscriptionCreatedDate).tz(timeZone).startOf("month").toDate()
   const currentMonthEndDate = momentTz(voicebotPlan?.expiryDate).tz(timeZone).endOf("month").toDate()
   
-  const voicebotCallLogs = await db.query.callLogSchema.findMany({
-    columns: {
-       duration: true,
-       date: true,
-    },
-    where: and(
-      eq(callLogSchema.organizationId, organizationId),
-      gte(callLogSchema.date, currentMonthStartDate),
-      lte(callLogSchema.date, currentMonthEndDate)
-    )
-  })
+  const voicebotCallLogs = await getCurrentMonthCallLogList(organizationId, currentMonthStartDate, currentMonthEndDate)
   // return { voicebotCallLogs }
 
   // get actual voicebot pricing information
@@ -105,10 +93,12 @@ export default defineEventHandler(async (event) => {
   const usedCallMinutes = totalMinutes
   const maxCallMinutes = voicePricingInformation?.sessions || 0
 
-  if(usedCallMinutes > maxCallMinutes) {
-    //  await db.update(voicebotSchema)
-    //  .set({ active: false })
-    //  .where(eq(voicebotSchema.organizationId, organizationId))
+  if(usedCallMinutes > maxCallMinutes || currentDate > voicebotPlan.expiryDate) {
+     await db.update(orgSubscriptionSchema)
+     .set({ status: "inactive" })
+     .where( and(
+      eq(orgSubscriptionSchema.organizationId, organizationId)
+     ))
      return sendError(
       event,
       createError({
