@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
   if(body?.ivrConfig) {
     const voiceBot = await db.query.voicebotSchema.findFirst({ 
       where: and(
-        eq(voicebotSchema.ivrConfig, body?.ivrConfig),
+        eq(voicebotSchema.incomingPhoneNumber, body?.incomingPhoneNumber),
         ne(voicebotSchema.id, voicebotId)
       )
     })
