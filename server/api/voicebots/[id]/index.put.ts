@@ -34,7 +34,8 @@ const zodUpdateVoiceBotSchema = z.object({
   intent: z.string().optional(),
   textToSpeechConfig: z.record(z.any()).optional(),
   speechToTextConfig: z.record(z.any()).optional(),
-  ivrConfig: z.any().optional()
+  ivrConfig: z.any().optional(),
+  incomingPhoneNumber: z.any().optional()
 });
 
 export default defineEventHandler(async (event) => {
