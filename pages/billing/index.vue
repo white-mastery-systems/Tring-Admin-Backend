@@ -2,7 +2,7 @@
   <page title="Billing" sub-title="Manage your subscription and billing information" :disableSelector="false"
     :disable-back-button="true" :disable-elevation="true">
     <template #actionButtons>
-      <ChatBotActionBotton :usageDetails="usageDetails" :subscriptionData="subscriptionData" :query="filters"
+      <ChatBotActionBotton :usageDetails="usageDetails" :query="filters"
         :usage="usage" @change="handleOpenCancelModal">
       </ChatBotActionBotton>
     </template>
@@ -24,7 +24,7 @@
       </div>
       <div v-else>
         <UiTabsContent value="Chat">
-          <ChatBotBIlling :usageDetails="usageDetails" :subscriptionData="subscriptionData" :usage="usage">
+          <ChatBotBIlling :usageDetails="usageDetails" :usage="usage">
           </ChatBotBIlling>
         </UiTabsContent>
         <UiTabsContent value="Voice">
@@ -64,15 +64,6 @@ const {
   headers: {
     "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
   },
-});
-
-const {
-  data: subscriptionData,
-  status: subscriptionLoadingStatus,
-  refresh: subscriptionRefresh,
-} = await useLazyFetch<any>("/api/billing/subscription", {
-  server: false,
-  query: filters,
 });
 
 const organization = await $fetch("/api/org", {
@@ -140,7 +131,6 @@ const handleConfirmPaymentCancellation = async () => {
     method: "DELETE",
     params: filters.value,
   });
-  await subscriptionRefresh();
   await usageRefresh();
 };
 
