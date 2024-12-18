@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
         eq(orgSubscriptionSchema.botType, query.type)
       )
     })
-    if(getOrgCurrentActivePlan?.planCode !== "chat_free" && getOrgCurrentActivePlan?.planCode !== "voice_free") {
+    if(getOrgCurrentActivePlan?.planCode !== "chat_free" && getOrgCurrentActivePlan?.planCode !== "voice_free" && getOrgCurrentActivePlan?.status !== "cancelled") {
       const expiryDate = momentTz(getOrgCurrentActivePlan?.expiryDate).tz(timeZone).toDate();
       const currentDate =  momentTz().tz(timeZone).toDate();
       if(currentDate < expiryDate) {
