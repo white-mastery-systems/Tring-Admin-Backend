@@ -299,6 +299,21 @@ const handleChatTypeBilling = async (
   currentDate: Date,
   pricingInformation: any,
 ) => {
+    if(orgSubscription?.status === "cancelled") {
+      const resObj = constructResponse({
+        usedQuota: 0,
+        maxQuota: 0,
+        planCode: "unAvailable",
+        walletBalance: 0,
+        extraSessionsCost: 0,
+        gst,
+        extraSessions: 0,
+        availableSessions: 0,
+        orgSubscription,
+        subscriptionStatus: "cancelled"
+      })
+      return resObj
+    }
     // get interacted chats 
     const interactedSessions = await db.query.chatSchema.findMany({
         where: and(
@@ -360,7 +375,7 @@ const handleVoiceTypeBilling = async (
   currentDate: Date,
   pricingInformation: any,
 ) => {
-  if(orgSubscription?.planCode === "voice_free") {
+  if(orgSubscription?.planCode === "voice_free" || orgSubscription?.status === "cancelled") {
      const resObj = constructResponse({
       usedQuota: 0,
       maxQuota: 0,
@@ -371,7 +386,7 @@ const handleVoiceTypeBilling = async (
       extraSessions: 0,
       availableSessions: 0,
       orgSubscription,
-      subscriptionStatus: "inactive"
+      subscriptionStatus: orgSubscription?.status === "cancelled"? "cancelled" :"inactive"
     })
      return resObj
   }
@@ -489,7 +504,7 @@ const constructResponse = ({ usedQuota, maxQuota, planCode, walletBalance, extra
     gst,
     extra_sessions: extraSessions,
     available_sessions: availableSessions,
-    expiry_date: orgSubscription?.expiryDate ?? undefined,
+    expiry_date: orgSubscription?.status !== "cancelled" && orgSubscription?.expiryDate ? orgSubscription?.expiryDate : undefined,
     subscription_status: subscriptionStatus,
   };
 };

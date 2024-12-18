@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
   if(body?.ivrConfig) {
     const voiceBot = await db.query.voicebotSchema.findFirst({ 
       where: and(
-        eq(voicebotSchema.ivrConfig, body?.ivrConfig),
+        eq(voicebotSchema.incomingPhoneNumber, body?.incomingPhoneNumber),
         ne(voicebotSchema.id, voicebotId)
       )
     })
@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
         event,
         createError({ 
           statusCode: 400, 
-          statusMessage: "This ivr-configuration already integrated with some other bot" 
+          statusMessage: "This ivr-config phonenumber already integrated with some other bot" 
         }),
       );
     }

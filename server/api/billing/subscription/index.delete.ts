@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
   await Promise.all([
     db.update(orgSubscriptionSchema).set({
-      status: "inactive"
+      status: "cancelled"
     }).where(and(
         eq(orgSubscriptionSchema.organizationId, orgId),
         eq(orgSubscriptionSchema.botType, query.type)
