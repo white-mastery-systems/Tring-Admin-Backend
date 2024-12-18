@@ -1,13 +1,29 @@
 <template>
-  <DialogWrapper v-model="props.numberModalState" title="Add New Exophone">
+  <DialogWrapper v-model="props.numberModalState" title="Add New Cloud Telephone">
     <Form @submit="handleConnect" class="space-y-3">
       <SelectField name="provider" placeholder="Select a provider" :options="providerList">
       </SelectField>
-      <div class='flex gap-2'>
-        <CountryCodeField class='w-[100px]' name="countryCode" label="Country Code" helperText="Enter your country code"
-          required />
-        <TextField :disableCharacters="true" name="exoPhone" label="Mobile number" helperText='' required
-          placeholder="Enter phone number" />
+      <div class='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-2 lg:grid-cols-2 xl:grid-cols-2'>
+        <TextField v-if="values.provider === 'twilio' || values.provider === 'exotel'" name="accountSid"
+          label="Account SID" required placeholder="Enter account SID" />
+        <!-- <TextField v-if="values.provider === 'twilio'" name="authToken" label="Auth Token" required
+          placeholder="Enter auth token" /> -->
+        <TextField v-if="values.provider === 'twilio'" name="apiSecret" label="Api Secret" required
+          placeholder="Enter api secret" />
+
+        <!-- Exotel -->
+        <TextField v-if="values.provider === 'exotel'" name="subDomain" label="Sub Domain" required
+          placeholder="Enter sub domain" />
+        <TextField v-if="values.provider === 'twilio' || values.provider === 'exotel' || values.provider === 'telnyx'" name="apiKey" label="Api Key"
+          required placeholder="Enter Api Key" />
+        <TextField v-if="values.provider === 'exotel'" name="apiToken" label="Api Token" required
+          placeholder="Enter api token" />
+        <TextField v-if="values.provider === 'exotel'" name="flowId" label="flow Id" required
+          placeholder="Enter flow Id" />
+        <TextField v-if="values.provider === 'telnyx'" name="publicKey" label="public key" required
+          placeholder="Enter Public Key" />
+        <TextField v-if="values.provider === 'telnyx'" name="connectionId" label="connection Id" required
+          placeholder="Enter Connection Id" />
       </div>
       <div class="flex justify-end w-full">
         <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
@@ -20,6 +36,7 @@
 <script setup lang="ts">
 import { useCount } from '@/composables/useRefresh';
 import type { AnyFn } from '@vueuse/core';
+import { nextTick } from 'vue';
 
 interface NumberModalState {
   open: string;
@@ -49,30 +66,101 @@ const providerList = ref([
     value: 'exotel',
     label: 'Exotel',
   }, {
-    value: 'plivo',
-    label: 'Plivo',
-  }, {
-    value: 'doocti',
-    label: 'Doocti',
-  },
+    value: 'telnyx',
+    label: 'Telnyx',
+  }
 ])
 
-const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 const formSchema = toTypedSchema(
   z.object({
-    provider: z.string({ required_error: 'Provider is required' }).min(1, 'Provider is required'),
-    exoPhone: z.string({ required_error: 'Phone Number is required'  }),
-    countryCode: z.string({ required_error: 'Country Code is required' }).min(1, 'Country Code is required'),
-  }).superRefine((data, ctx) => {
-    const lengthRequirement = getCountryLengthRequirement(data.countryCode);
-    if (data.exoPhone.length !== lengthRequirement) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `Number must be exactly ${lengthRequirement} characters long.`,
-        path: ["exoPhone"], // Field with the issue
-      });
-    }
-  })
+      provider: z.string({ required_error: 'Provider is required.' }).nonempty({ message: 'Provider is required.' }),
+      accountSid: z.string().optional(),
+      apiSecret: z.string().optional(),
+      // authToken: z.string().optional(),
+      subDomain: z.string().optional(),
+      apiKey: z.string().min(2, 'API Key is required'),
+      apiToken: z.string().optional(),
+      flowId: z.string().optional(),
+      publicKey: z.string().optional(),
+      connectionId: z.string().optional(),
+    })
+    .superRefine((data, ctx) => {
+      // Provider-specific validation
+      if (data.provider === 'twilio') {
+        if (!data.accountSid) {
+          ctx.addIssue({
+            path: ['accountSid'],
+            message: 'Account SID is required for Twilio.',
+          });
+        }
+        // if (!data.authToken) {
+        //   ctx.addIssue({
+        //     path: ['authToken'],
+        //     message: 'Auth Token is required for Twilio.',
+        //   });
+        // }
+        if (!data.apiSecret) {
+          ctx.addIssue({
+            path: ['apiSecret'],
+            message: 'Api secret is required for Twilio.',
+          });
+        }
+      }
+
+      if (data.provider === 'exotel') {
+        if (!data.accountSid) {
+          ctx.addIssue({
+            path: ['accountSid'],
+            message: 'Account SID is required for Exotel.',
+          });
+        }
+        // if (!data.apiKey) {
+        //   ctx.addIssue({
+        //     path: ['apiKey'],
+        //     message: 'API Key is required for Exotel.',
+        //   });
+        // }
+        if (!data.subDomain) {
+          ctx.addIssue({
+            path: ['subDomain'],
+            message: 'Sub Domain is required for Exotel.',
+          });
+        }
+        if (!data.apiToken) {
+          ctx.addIssue({
+            path: ['apiToken'],
+            message: 'API Token is required for Exotel.',
+          });
+        }
+        if (!data.flowId) {
+          ctx.addIssue({
+            path: ['flowId'],
+            message: 'Flow ID is required for Exotel.',
+          });
+        }
+      }
+
+      if (data.provider === 'telnyx') {
+        // if (!data.apiKey) {
+        //   ctx.addIssue({
+        //     path: ['apiKey'],
+        //     message: 'API Key is required for Telnyx.',
+        //   });
+        // }
+        if (!data.publicKey) {
+          ctx.addIssue({
+            path: ['publicKey'],
+            message: 'Public Key is required for Telnyx.',
+          });
+        }
+        if (!data.connectionId) {
+          ctx.addIssue({
+            path: ['connectionId'],
+            message: 'Connection Id is required for Telnyx.',
+          });
+        }
+      }
+    })
 );
 
 const {
@@ -92,27 +180,33 @@ const {
 // });
 
 watch(() => props.numberModalState.open, async () => {
+  resetForm()
   if (props.numberModalState.id) {
     const getSingleDetails:any =  await $fetch(`/api/org/integrations/number-integration/${props.numberModalState.id}`)
-    console.log(getSingleDetails, 'getSingleDetails')
-    setFieldValue("provider", getSingleDetails.provider),
-    setFieldValue("countryCode", getSingleDetails.countryCode),
-    setFieldValue("exoPhone", getSingleDetails.exoPhone)
-  } else {
-    resetForm()
+    setFieldValue("provider", getSingleDetails.provider)
+    if (getSingleDetails.metadata) {
+      // setTimeout(() => {
+      await nextTick()
+        Object.entries(getSingleDetails.metadata ?? {}).forEach(([key, value]: any) =>{
+          if (values.hasOwnProperty(key)) {
+            setFieldValue(key, value)
+          }
+        })
+      // }, 0);
+    }
   }
 })
 // onMounted(async () => {
 //   loadCountries()
 // });
-const [provideField, provideFieldProps] = defineField("provider")
-const [mobileField, mobileFieldProps] = defineField("exoPhone");
-const [countryCode, countryCodeProps] = defineField("countryCode");
-
 
 const handleConnect = handleSubmit(async (values: any) => {
   isLoading.value = true
-  const payload = values
+  const { provider, ...metadata } = values
+  const payload = {
+    provider,
+    metadata,
+  }
   try {
     if (props.numberModalState.id) {
       await $fetch(`/api/org/integrations/number-integration/${props.numberModalState.id}`, { method: "PUT", body: payload });

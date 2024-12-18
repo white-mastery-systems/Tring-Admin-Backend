@@ -19,7 +19,7 @@
           {{
           (() => {
           if (route.query.q === "number") {
-          return "Exophone";
+            return "Cloud Telephone";
           } else if (route.query.q === "crm") {
           return "CRM";
           } else if (route.query.q === "communication") {
@@ -50,7 +50,7 @@
         </UiTabsTrigger>
 
         <UiTabsTrigger value="number" @click="navigateToTab('number')">
-          Exophone
+          Cloud telephone
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="crm">
@@ -61,7 +61,8 @@
       </UiTabsContent>
       <UiTabsContent value="communication">
         <IntegrationTable :integrationModalState="integrationModalState"
-          :findTitleForIntegrationModal="findTitleForIntegrationModal()" @stateControl="integrationModalState = $event" />
+          :findTitleForIntegrationModal="findTitleForIntegrationModal()"
+          @stateControl="integrationModalState = $event" />
       </UiTabsContent>
       <UiTabsContent value="ecommerce">
         <IntegrationTable :integrationModalState="integrationModalState"
@@ -134,7 +135,7 @@
   const route = useRoute();
   function findTitleForIntegrationModal () {
     if (route.query.q === "number") {
-      return "Exophone";
+      return "Cloud Telephone";
     } else if (route.query.q === "crm") {
       return "CRM";
     } else if (route.query.q === "communication") {

@@ -67,8 +67,8 @@ const {
 });
 
 const {
-  status: subscriptionLoadingStatus,
   data: subscriptionData,
+  status: subscriptionLoadingStatus,
   refresh: subscriptionRefresh,
 } = await useLazyFetch<any>("/api/billing/subscription", {
   server: false,
@@ -138,7 +138,7 @@ const handleOpenCancelModal = () => {
 const handleConfirmPaymentCancellation = async () => {
   await $fetch("/api/billing/subscription", {
     method: "DELETE",
-    params: filters,
+    params: filters.value,
   });
   await subscriptionRefresh();
   await usageRefresh();
