@@ -1,9 +1,9 @@
 import momentTz from "moment-timezone"
+import { errorResponse } from "~/server/response/error.response";
 import { getCurrentMonthCallLogList } from "~/server/utils/db/call-logs";
 import { orgVoicebotSubscription } from "~/server/utils/db/voicebots";
 
 const db = useDrizzle();
-
 
 export default defineEventHandler(async (event) => {
   const timeZoneHeader = event.node?.req?.headers["time-zone"];
@@ -66,13 +66,11 @@ export default defineEventHandler(async (event) => {
 
   // console.log({ voicebotPlan })
   if (voicebotPlan?.planCode === "voice_free") {
-    return sendError(
-      event,
-      createError({
-        statusCode: 400,
-        statusMessage: "This user was a free plan",
-      }),
-    );
+    return errorResponse(event, 500, "This user was a free plan")
+  }
+
+  if(voicebotPlan.status === "cancelled" || voicebotPlan.status === "inactive") {
+    return errorResponse(event, 500, "Subscription status is inactive")
   }
   //TODO - add extra and normal quota validation
   
@@ -99,13 +97,7 @@ export default defineEventHandler(async (event) => {
      .where( and(
       eq(orgSubscriptionSchema.organizationId, organizationId)
      ))
-     return sendError(
-      event,
-      createError({
-        statusCode: 500,
-        statusMessage: "Exceeded the allowed call minutes.",
-      }),
-    );
+     return errorResponse(event, 500, "Exceeded the allowed call minutes.")
   }
   
   return voiceBotDetail
