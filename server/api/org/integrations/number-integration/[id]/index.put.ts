@@ -1,26 +1,41 @@
-import { getNumberIntegration } from "~/server/utils/db/number-integration"
+const db = useDrizzle()
 
 const zodUpdateNumberIntegration = z.object({
-   provider: z.string().optional(),
-   exoPhone: z.string().optional(),
-   countryCode: z.string().optional()
+  provider: z.string().optional(),
+  metadata: z.object({
+   accountSid: z.string().optional(),
+   apiSecret: z.string().optional(),
+   authToken: z.string().optional(),
+   subDomain: z.string().optional(),
+   apiKey: z.string().optional(),
+   apiToken: z.string().optional(),
+   flowId: z.string().optional(),
+   publicKey: z.string().optional(),
+   connectionId: z.string().optional()
+  }).optional()
 })
 
 export default defineEventHandler(async (event) => {
-  await isOrganizationAdminHandler(event)
+  const organizationId = await isOrganizationAdminHandler(event)
 
   const { id: numberIntegrationId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
   const body = await isValidBodyHandler(event, zodUpdateNumberIntegration)
 
-  const isAlreadyExists = await getNumberIntegration(body?.exoPhone, numberIntegrationId)
+  const isAlreadyExists = await db.query.numberIntegrationSchema.findFirst({
+    where: and(
+      eq(numberIntegrationSchema.organizationId, organizationId),
+      eq(numberIntegrationSchema.provider, body?.provider),
+      ne(numberIntegrationSchema.id, numberIntegrationId)
+    )
+  })
 
   if(isAlreadyExists) {
     return sendError(
       event,
       createError({
          statusCode: 400,
-         statusMessage: "Exophone is already exists",
+         statusMessage: "Provider is already exists",
       }),
     );
   }

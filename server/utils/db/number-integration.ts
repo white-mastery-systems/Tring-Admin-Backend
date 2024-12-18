@@ -85,3 +85,16 @@ export const deleteNumberIntegration = async (id: string) => {
       .returning()
   )[0];
 };
+
+export const getAllExoPhones = async() => {
+  return await db.query.numberIntegrationSchema.findMany({})
+}
+
+export const getExophoneByProvider = async(providerName: string, organizationId: string) => {
+  return await db.query.numberIntegrationSchema.findFirst({
+    where: and(
+      eq(numberIntegrationSchema.provider, providerName),
+      eq(numberIntegrationSchema.organizationId, organizationId)
+    ) 
+  })
+}
