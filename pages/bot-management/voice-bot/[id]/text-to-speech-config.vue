@@ -303,8 +303,7 @@ const botDetails = ref(await getVoiceBotDetails(route.params.id));
 
 const { handleSubmit, setFieldValue, values, resetForm, errors } = useForm({
   validationSchema: toTypedSchema(textToSpeechValidation),
-  initialValues: {
-  },
+  initialValues: {},
 });
 
 watch(botData, () => {

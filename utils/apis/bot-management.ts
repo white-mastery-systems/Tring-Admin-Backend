@@ -277,3 +277,26 @@ export const getUserDetail = async () => {
   const userDetails = await $fetch<User>("/api/user");
   return userDetails;
 };
+
+export const getIntegratedProviderNumberList = async (providerId: string) => {
+  console.log('asdsajdbajk adsajdsahjb');
+  const numberList = await $fetch<any>(
+    `/api/org/integrations/number-integration/${providerId}/incomingPhoneNumbers`,
+  );
+  return numberList;
+};
+
+export const getPreRecordedAudioDetails = async (botId: string, organizationId: string) => {
+  try {
+    const bot = await $fetch<any>(`https://tring-voice.pripod.com/prerecordedAudio/metaData`, {
+      method: 'GET',
+      params: {
+        bot_id: botId,
+        organization_id: organizationId,
+      },
+    });
+    return bot;
+  } catch (error) {
+    toast.error('Error fetching pre-recorded audio details');
+  }
+};
