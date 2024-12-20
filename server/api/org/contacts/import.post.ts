@@ -18,6 +18,7 @@ const zodVoiceImportsContacts = z.object({
   "Name": z.string().min(1, "Name is required"),
   "Phone": z.string(),
   "Metadata": z.string(),
+  "Country Code": z.string().regex(/^\+?\d{1,4}$/, "Invalid country code format"),
   "Verification Id": z.string(),
 });
 
@@ -56,7 +57,7 @@ export default defineEventHandler(async (event) => {
 
     const expectedColumns = query.type === "chat" 
      ? ['First Name', 'Last Name', 'Email', 'Country Code', 'Number']
-     : ['Name', 'Phone', 'Metadata', 'Verification Id'];
+     : ['Name', 'Phone', 'Country Code', 'Metadata', 'Verification Id'];
     
     const actualColumns = Object.keys(parsedData[0])
 
@@ -143,6 +144,7 @@ export const constructData = (uniqueContactsData: any, type: string, organizatio
       {
         name: i["Name"],
         phone: i["Phone"],
+        countryCode: i["Country Code"],
         metadata: i["Metadata"],
         verificationId: i["Verification Id"],
         organizationId

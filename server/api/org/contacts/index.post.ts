@@ -14,6 +14,7 @@ const zodVoiceContacts = z.object({
   name: z.string().optional(),
   phone: z.string(),
   metadata: z.string().optional(),
+  countryCode: z.string().optional(),
   verificationId: z.string().optional(),
   organizationId: z.string().optional()
 })
