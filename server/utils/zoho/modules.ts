@@ -663,15 +663,18 @@ export const cancelSubscriptionFromZohoBilling: any = async ({
     integrationData = zohoData.metaData;
   }
   try {
-    return await $fetch(
-      `https://zohoapis.in/billing/v1/subscriptions/${subscriptionId}/cancel`,
+    const data = await $fetch(
+      `https://www.zohoapis.in/billing/v1/subscriptions/${subscriptionId}/cancel?cancel_at_end=false`,
       {
         method: "POST",
         headers: {
+          "X-com-zoho-subscriptions-organizationid": integrationData?.organization_id!,
           Authorization: `Zoho-oauthtoken ${integrationData?.access_token}`,
-        },
+          "content-type": "application/json"
+        }
       },
     );
+    return data
   } catch (err: any) {
     logger.error(
       `cancelSubscriptionFromZohoBilling: integrationData: ${JSON.stringify(integrationData)}, subscriptionId: ${subscriptionId}, error: ${JSON.stringify(err.data)}`,
