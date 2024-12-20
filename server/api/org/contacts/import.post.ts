@@ -2,12 +2,11 @@ import csvParser from "csv-parser";
 import { logger } from "~/server/logger"
 import { Readable } from "stream";
 import * as xlsx from "xlsx/xlsx.mjs";
-import { inArray } from 'drizzle-orm'
-
-const db = useDrizzle()
+import { errorResponse } from "~/server/response/error.response";
+import { filterChatContactsByPhone, filterVoiceContactsByPhone } from "~/server/utils/db/contacts";
 
 // Define the Zod schema for a single contact
-const zodContactValidation = z.object({
+const zodChatImportContacts = z.object({
   "First Name": z.string().min(1, "First Name is required"),
   "Last Name": z.string().optional(),
   "Email": z.string().email("Invalid email format"),
@@ -15,154 +14,92 @@ const zodContactValidation = z.object({
   "Number": z.string().regex(/^\d{7,15}$/, "Invalid phone number format")
 });
 
+const zodVoiceImportsContacts = z.object({
+  "Name": z.string().min(1, "Name is required"),
+  "Phone": z.string(),
+  "Metadata": z.string(),
+  "Verification Id": z.string(),
+});
+
 // Define a schema for an array of contacts
-const contactsArraySchema = z.array(zodContactValidation);
+const chatContactsArraySchema = z.array(zodChatImportContacts);
+const voiceContactsArraySchema = z.array(zodVoiceImportsContacts)
 
 export default defineEventHandler(async (event) => {
   try {
     const organizationId = (await isOrganizationAdminHandler(event)) as string
+    const query = await isValidQueryHandler(event, z.object({
+      type: z.string()
+    }))
+
     const formData = await readMultipartFormData(event)
     
-     if (!formData) {
-      return sendError(
-        event,
-        createError({
-          statusCode: 400,
-          statusMessage: "Invalid Data",
-        }),
-      );
-    }
-    // return formData
+    if (!formData) return errorResponse(event, 400, "Invalid Data")
   
     // Find the file field from formData
     const fileField = formData.find((item) => item.name === 'file');
-    
-    if (!fileField) {
-      return sendError(
-        event,
-        createError({
-          statusCode: 400,
-          statusMessage: "No file uploaded",
-        }),
-      );
-    }
-  
-    const { filename, data } = fileField;
-  
+    if (!fileField) return errorResponse(event, 400, "No file uploaded")
+    const { filename, data } : any = fileField;
     const ext = filename?.split('.').pop().toLowerCase();
-  
-    console.log({ ext })
-   
+
     let parsedData
-  
     if (ext === 'csv') {
       parsedData = await parseCSV(data.toString()); // Parse CSV from buffer
     } else if (ext === 'xlsx' || ext === 'xls') {
       parsedData = parseExcelBuffer(data); // Parse Excel from buffer
     } else {
-      return sendError(
-        event,
-        createError({
-          statusCode: 400,
-          statusMessage: "Unsupported file format",
-        }),
-      );
+      return errorResponse(event, 400, "Unsupported file format")
     }
 
     // Check if parsedData is empty (no rows)
-    if (!parsedData || parsedData.length === 0) {
-      return sendError(
-        event,
-        createError({
-          statusCode: 400,
-          statusMessage: "The uploaded file is empty",
-        })
-      );
-    }
+    if (!parsedData || parsedData.length === 0) return errorResponse(event, 400, "The uploaded file is empty")
 
-    const expectedColumns = ['First Name', 'Last Name', 'Email', 'Country Code', 'Number'];
+    const expectedColumns = query.type === "chat" 
+     ? ['First Name', 'Last Name', 'Email', 'Country Code', 'Number']
+     : ['Name', 'Phone', 'Metadata', 'Verification Id'];
+    
     const actualColumns = Object.keys(parsedData[0])
-
-    // return { actualColumns }
 
     const missingColumns = expectedColumns.filter(col => !actualColumns.includes(col));
     const extraColumns = actualColumns.filter(col => !expectedColumns.includes(col))
-
-    // return { extraColumns }
   
-    if (missingColumns.length) {
-      return sendError(
-         event,
-         createError({
-           statusCode: 400,
-           statusMessage: `Missing columns - ${missingColumns.join(', ')}`,
-         })
-       );
-    }
-
-    if(extraColumns.length) {
-       return sendError(
-         event,
-         createError({
-           statusCode: 400,
-           statusMessage: `Extra columns - ${extraColumns.join(', ')}`,
-         })
-       );
-    }
+    if (missingColumns.length) return errorResponse(event, 400, `Missing columns - ${missingColumns.join(', ')}`)
+    if (extraColumns.length) return errorResponse(event, 400, `Extra columns - ${extraColumns.join(', ')}`)
 
      // Validate the parsed data with the Zod schema
-    const validationResult = contactsArraySchema.safeParse(parsedData);
+    const validationResult = query.type === "chat" 
+     ? chatContactsArraySchema.safeParse(parsedData)
+     : voiceContactsArraySchema.safeParse(parsedData)
 
-    // return { validationResult }
+    if (!validationResult.success) return errorResponse(event, 400, "Validation errors in the imported file", validationResult)
 
-    if (!validationResult.success) {
-      return sendError(
-        event,
-        createError({
-          statusCode: 400,
-          statusMessage: "Validation errors in the imported file",
-          data: validationResult
-        })
-      );
-    }
-
-    // Proceed with processing valid data
     const validContactData = validationResult.data; 
 
-     // Extract phone numbers from parsedData
-    const phoneNumbers = validContactData.map((i: any) => i["Number"]).filter(Boolean); // Ensure no empty numbers
-
-    // return { phoneNumbers }
+    // Extract phone numbers from parsedData
+    const phoneNumbers = query.type === "chat" 
+      ? validContactData.map((i: any) => i["Number"]).filter(Boolean)
+      : validContactData.map((i: any) => i["Phone"]).filter(Boolean) // Ensure no empty numbers
 
     // Query the database to find existing phone numbers
-    const existingContacts = await db.select()
-      .from(contactSchema)
-      .where(inArray(contactSchema.phone, phoneNumbers));
+    const existingContacts = query.type === "chat" 
+     ? await filterChatContactsByPhone(phoneNumbers)
+     : await filterVoiceContactsByPhone(phoneNumbers)
 
     const existingPhoneNumbers = new Set(existingContacts.map((contact: any) => contact.phone));
 
     // Filter out the parsed data with unique phone numbers not in the database
-    const uniqueContactsData = validContactData.filter((contact: any) => !existingPhoneNumbers.has(contact["Number"]));
+    const uniqueContactsData = query.type === "chat" 
+    ? validContactData.filter((contact: any) => !existingPhoneNumbers.has(contact["Number"]))
+    : validContactData.filter((contact: any) => !existingPhoneNumbers.has(contact["Phone"]));
 
-    if (!uniqueContactsData.length) {
-      return { status: false, message: "No unique phonenumbers found to insert"}
-    }
+    if (!uniqueContactsData.length) return { status: false, message: "No unique phonenumbers found to insert"}
   
-    const contactsData = uniqueContactsData.map((i: any) => { 
-      return {
-        firstName: i["First Name"],
-        lastName: i["Last Name"],
-        email: i["Email"],
-        countryCode: i["Country Code"],
-        phone: i["Number"],
-        organizationId
-      }
-    })
-  
-    // return { contactsData }
-  
-    await db.insert(contactSchema).values(contactsData).returning()
-  
+    const contactsData = constructData (uniqueContactsData, query.type, organizationId)
+
+    query.type === "chat" 
+     ? await createContacts(contactsData)
+     : await createVoicebotContacts(contactsData)
+
     return { status: true }
   } catch (error: any) {
     logger.error(`Contacts import: ${JSON.stringify(error?.message)}`)
@@ -184,9 +121,31 @@ export async function parseCSV(csvString: string) {
   });
 }
 
-export function parseExcelBuffer(buffer) {
+export function parseExcelBuffer(buffer: any) {
   const workbook = xlsx.read(buffer, { type: 'buffer' });
   const sheetName = workbook.SheetNames[0]; // Assuming data is in the first sheet
   const sheet = workbook.Sheets[sheetName];
   return xlsx.utils.sheet_to_json(sheet);
+}
+
+export const constructData = (uniqueContactsData: any, type: string, organizationId: string) => {
+   uniqueContactsData.map((i: any) => { 
+    return type === "chat" ?
+      {
+        firstName: i["First Name"],
+        lastName: i["Last Name"],
+        email: i["Email"],
+        countryCode: i["Country Code"],
+        phone: i["Number"],
+        organizationId
+      } 
+    : 
+      {
+        name: i["Name"],
+        phone: i["Phone"],
+        metadata: i["Metadata"],
+        verificationId: i["Verification Id"],
+        organizationId
+      } 
+    })
 }
