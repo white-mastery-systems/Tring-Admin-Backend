@@ -21,6 +21,8 @@ const zodUpdateVoiceBotSchema = z.object({
     welcomeAudio: z.array(z.any()).optional(),
     concludeAudio: z.array(z.any()).optional(),
     fillerAudio: z.array(z.any()).optional(),
+    ambientNoiseAudio: z.array(z.any()).optional(),
+    forwardCallAudio: z.array(z.any()).optional(),
   }).optional(),
   clientConfig: z.object({
     llmCaching: z.boolean().optional(),
@@ -32,7 +34,8 @@ const zodUpdateVoiceBotSchema = z.object({
   intent: z.string().optional(),
   textToSpeechConfig: z.record(z.any()).optional(),
   speechToTextConfig: z.record(z.any()).optional(),
-  ivrConfig: z.any().optional()
+  ivrConfig: z.any().optional(),
+  incomingPhoneNumber: z.any().optional()
 });
 
 export default defineEventHandler(async (event) => {
@@ -47,7 +50,7 @@ export default defineEventHandler(async (event) => {
   if(body?.ivrConfig) {
     const voiceBot = await db.query.voicebotSchema.findFirst({ 
       where: and(
-        eq(voicebotSchema.ivrConfig, body?.ivrConfig),
+        eq(voicebotSchema.incomingPhoneNumber, body?.incomingPhoneNumber),
         ne(voicebotSchema.id, voicebotId)
       )
     })
@@ -57,7 +60,7 @@ export default defineEventHandler(async (event) => {
         event,
         createError({ 
           statusCode: 400, 
-          statusMessage: "This ivr-configuration already integrated with some other bot" 
+          statusMessage: "This phonenumber is already mapped to another bot" 
         }),
       );
     }

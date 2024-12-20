@@ -53,7 +53,6 @@
     middleware: "admin-only",
   });
 
-  const { user } = await useUser();
   const route = useRoute();
   const filters = computed(() => ({
     type: route.query?.type,

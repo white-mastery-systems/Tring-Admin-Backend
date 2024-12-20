@@ -9,3 +9,9 @@ export const getPricingInformation = async (plan: string) => {
   });
   return data;
 };
+
+export const getSubscriptionPricingByCountry = async(country: string) => {
+  return await db.query.adminPricingSchema.findMany({
+    where: country === "India" ? eq(adminPricingSchema.isIndiaPricing, true) : eq(adminPricingSchema.isIndiaPricing, false)
+  });
+}

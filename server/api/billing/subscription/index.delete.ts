@@ -1,13 +1,25 @@
+import { updateChatbotStatus } from "~/server/utils/db/organization";
 import { cancelSubscriptionFromZohoBilling } from "~/server/utils/zoho/modules";
 
 const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
   const orgId = event.context.user?.organizationId;
+  const query = await isValidQueryHandler(event, z.object({
+    type: z.string()
+  }))
   if (!orgId) {
     return createError({ statusCode: 401, statusMessage: "Unauthorized" });
   }
-  const subscriptionData: any = await db.query.paymentSchema.findFirst({
+
+  const orgSubscriptionData = await db.query.orgSubscriptionSchema.findFirst({  
+    where: and(
+      eq(orgSubscriptionSchema.organizationId, orgId),
+      eq(orgSubscriptionSchema.botType, query.type)
+    )
+  })
+
+  const paymentSubscriptionData: any = await db.query.paymentSchema.findFirst({
     where: and(
       eq(paymentSchema.status, "active"),
       eq(paymentSchema.organizationId, orgId),
@@ -16,14 +28,23 @@ export default defineEventHandler(async (event) => {
   });
 
   const subscriptionDataFromZoho = await cancelSubscriptionFromZohoBilling({
-    subscriptionId: subscriptionData.subscriptionId,
+    subscriptionId: orgSubscriptionData?.subscriptionId || paymentSubscriptionData.subscriptionId,
   });
 
-  const orgData = await db
-    .update(organizationSchema)
-    .set({ planCode: "chat_free" })
-    .where(eq(organizationSchema.id, orgId));
-  return await db
+  // const orgData = await db
+  //   .update(organizationSchema)
+  //   .set({ planCode: "chat_free" })
+  //   .where(eq(organizationSchema.id, orgId));
+
+  await Promise.all([
+    db.update(orgSubscriptionSchema).set({
+      status: "cancelled"
+    }).where(and(
+        eq(orgSubscriptionSchema.organizationId, orgId),
+        eq(orgSubscriptionSchema.botType, query.type)
+      )),
+   updateChatbotStatus(orgId),
+   db
     .update(paymentSchema)
     .set({
       status: "cancelled",
@@ -35,5 +56,7 @@ export default defineEventHandler(async (event) => {
         eq(paymentSchema.type, "subscription"),
       ),
     )
-    .returning();
+  ])
+  
+    return true
 });

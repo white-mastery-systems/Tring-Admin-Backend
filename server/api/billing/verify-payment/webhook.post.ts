@@ -1,5 +1,6 @@
 import { addDays } from "date-fns";
 import { billingLogger } from "~/server/logger";
+import { updateChatbotStatus } from "~/server/utils/db/organization";
 
 const db = useDrizzle();
 
@@ -12,7 +13,7 @@ export default defineEventHandler(async (event) => {
   const getBotType = await getPricingInformation(query.planCode)
   type = getBotType?.type === "chatbot" ? "chat" : "voice"
 
-  billingLogger.info( `subscription-${body.event_type}---${JSON.stringify(body)}`,);
+  billingLogger.info(`subscription-${body.event_type}---${JSON.stringify(body)}`);
 
   if (body.event_type === "subscription_created") {
     const paymentBySubscriptionId = await db.query.paymentSchema.findFirst({
@@ -113,6 +114,34 @@ export default defineEventHandler(async (event) => {
 
       return paymentResult;
     }
+  } else if(body.event_type === "subscription_cancelled") {
+     if (!body.data.subscription?.customer?.email) {
+      return;
+    }
+     const userDetails = await db.query.authUserSchema.findFirst({
+      where: eq(authUserSchema.email, body.data.subscription.customer.email),
+    });
+
+    await Promise.all([
+    db
+      .update(paymentSchema)
+      .set({ status: "cancelled" })
+      .where(
+        and(
+          eq(paymentSchema.organizationId, userDetails?.organizationId),
+          eq(paymentSchema.status, "active"),
+          eq(paymentSchema.type, "subscription"),
+        ),
+      ),
+    updateChatbotStatus(userDetails?.organizationId!),
+    db
+      .update(orgSubscriptionSchema)
+      .set({ status: "inactive" })
+      .where(and(
+        eq(orgSubscriptionSchema.organizationId, userDetails?.organizationId!),
+        eq(orgSubscriptionSchema.botType, type)
+      ))
+    ])
   } else {
     if (!body.data.subscription?.customer?.email) {
       return;
