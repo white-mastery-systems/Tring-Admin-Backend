@@ -223,6 +223,7 @@
             isLoading.value = false;
           },
         });
+        isLoading.value = false;
       }
     } else {
       if (fileRef.value) {
@@ -265,7 +266,8 @@
       }
       isLoading.value = false;
     }
-    } catch (error) {
+    } catch (error: any) {
+     toast.error(error.statusMessage);
       isLoading.value = false;
     }
     return true;

@@ -19,7 +19,7 @@
           {{
           (() => {
           if (route.query.q === "number") {
-            return "Cloud Telephone";
+          return "Cloud Telephony";
           } else if (route.query.q === "crm") {
           return "CRM";
           } else if (route.query.q === "communication") {
@@ -50,7 +50,7 @@
         </UiTabsTrigger>
 
         <UiTabsTrigger value="number" @click="navigateToTab('number')">
-          Cloud telephone
+          Cloud Telephony
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="crm">
@@ -135,7 +135,7 @@
   const route = useRoute();
   function findTitleForIntegrationModal () {
     if (route.query.q === "number") {
-      return "Cloud Telephone";
+      return "Cloud Telephony";
     } else if (route.query.q === "crm") {
       return "CRM";
     } else if (route.query.q === "communication") {

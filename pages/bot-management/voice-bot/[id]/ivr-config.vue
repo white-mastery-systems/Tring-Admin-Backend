@@ -9,9 +9,10 @@
     <div>
       <form @submit.prevent="onSubmit" class="space-y-4">
         <div class="flex grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-          <SelectField name="ivrConfig" label="Phone Number" :closeIcon="true" @input="onSelectProvider($event)"
-            :options="integrationsData" placeholder="Assign a phone number to the bot." />
-          <SelectField name="incomingPhoneNumber" label="Integrated Number" :closeIcon="true" :options="numberList"
+          <SelectField name="ivrConfig" label="Cloud Telephony provider" :closeIcon="true"
+            @input="onSelectProvider($event)" :options="integrationsData"
+            placeholder="Assign a Cloud Telephony provider to the bot." />
+          <SelectField name="incomingPhoneNumber" label="Integrated Number" :closeIcon="false" :options="numberList"
             placeholder="Assign a integrated number to the bot." />
         </div>
         <div class="flex justify-end w-full">
@@ -52,8 +53,8 @@ const isLoading = ref(false)
 
 const formSchema = toTypedSchema(
   z.object({
-    ivrConfig: z.string().nonempty("IVR Configuration is required."),
-    incomingPhoneNumber: z.string().nonempty("Incoming Phone Number is required."),
+    ivrConfig: z.string().optional(),
+    incomingPhoneNumber: z.string().optional(),
   })
 )
 
@@ -108,6 +109,10 @@ onMounted(async () => {
   }
 });
 
+watch(() => values.ivrConfig, () => {
+  setFieldValue("incomingPhoneNumber", "")
+})
+
 const onSelectProvider = async (value: any) => {
  await getNumberListApiCall(value)
 }
@@ -128,7 +133,7 @@ const onSubmit = handleSubmit(async (value: any) => {
       ivrConfig: value.ivrConfig,
       incomingPhoneNumber: value.incomingPhoneNumber,
     }
-    : null
+    : { ivrConfig: null, incomingPhoneNumber: null };
   try {
     await updateLLMConfig(payload, botDetails.id, "The IVR Configuration has been added successfully.");
     return navigateTo({

@@ -155,7 +155,7 @@
       totalCount.value = leads.totalCount;
       return leads.data.map((lead: any) => ({
         leadName: lead.botUser?.name,
-        email: lead.botUser?.email,
+        email: lead.botUser?.email ?? "--",
         location: `${lead.chat.metadata?.city ?? "--"} - ${lead.chat.metadata?.state ?? "--"} `,
         botUser: lead.botUser?.visitedCount,
         channel: lead.chat.channel,

@@ -180,6 +180,7 @@ const isSubmitting = ref(false);
 const getDocumentList: any = ref();
 const voiceBotActive = ref(false)
 const audioResponseData = ref([])
+const config = useRuntimeConfig()
 
 watchEffect(() => {
   if (botDetails.value) {
@@ -193,7 +194,7 @@ watchEffect(() => {
 onMounted(async () => {
   getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
   botDetails.value = await getVoiceBotDetails(paramId.params.id);
-  audioResponseData.value = await getPreRecordedAudioDetails(paramId.params.id, botDetails.value?.organizationId)
+  audioResponseData.value = await getPreRecordedAudioDetails(paramId.params.id, botDetails.value?.organizationId, config)
 });
 const handleGoBack = () => {
   return navigateTo({

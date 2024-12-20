@@ -253,7 +253,7 @@ const {
   data: integrationsData,
   status,
   refresh: audioDataRefresh,
-} = await useLazyFetch("https://tring-voice.pripod.com/prerecordedAudio/metaData", {
+} = await useLazyFetch(`${config.public.voiceBotUrl}/prerecordedAudio/metaData`, {
   server: false,
   params: {
     bot_id: route.params.id,
@@ -489,7 +489,7 @@ const audioUpload = async (formData: any, index: any) => {
   if (botDetailsList.botDetails && botDetailsList.botDetails?.agentLanguage) {
     try {
       const response = await fetch(
-        `https://tring-voice.pripod.com/prerecordedAudio/`,
+        `${config.public.voiceBotUrl}/prerecordedAudio/`,
         {
           method: "POST",
           body: formData,
@@ -566,7 +566,7 @@ const audioDelete = async (toolName: any, toolIdx: any, index: any) => {
     formData.append('intent', toolName);
 
 
-    const deleteResponse = await fetch(`https://tring-voice.pripod.com/prerecordedAudio/`, {
+    const deleteResponse = await fetch(`${config.public.voiceBotUrl}/prerecordedAudio/`, {
       method: "DELETE",
       body: formData,
     });

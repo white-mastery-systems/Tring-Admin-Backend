@@ -1,5 +1,5 @@
 <template>
-  <DialogWrapper v-model="props.numberModalState" title="Add New Cloud Telephone">
+  <DialogWrapper v-model="props.numberModalState" :title="(numberModalState.id) ? 'Edit New Cloud Telephony' : 'Add New Cloud Telephony'">
     <Form @submit="handleConnect" class="space-y-3">
       <SelectField name="provider" placeholder="Select a provider" :options="providerList">
       </SelectField>
@@ -14,8 +14,8 @@
         <!-- Exotel -->
         <TextField v-if="values.provider === 'exotel'" name="subDomain" label="Sub Domain" required
           placeholder="Enter sub domain" />
-        <TextField v-if="values.provider === 'twilio' || values.provider === 'exotel' || values.provider === 'telnyx'" name="apiKey" label="Api Key"
-          required placeholder="Enter Api Key" />
+        <TextField v-if="values.provider === 'twilio' || values.provider === 'exotel' || values.provider === 'telnyx'"
+          name="apiKey" label="Api Key" required placeholder="Enter Api Key" />
         <TextField v-if="values.provider === 'exotel'" name="apiToken" label="Api Token" required
           placeholder="Enter api token" />
         <TextField v-if="values.provider === 'exotel'" name="flowId" label="flow Id" required
