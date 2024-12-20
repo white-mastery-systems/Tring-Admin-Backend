@@ -1,4 +1,4 @@
-export const uploadNumber = async (files: File) => {
+export const uploadNumber = async (files: File, botType: string) => {
   const form = new FormData();
   form.append("file", files);
 
@@ -6,12 +6,15 @@ export const uploadNumber = async (files: File) => {
     const data = await $fetch("/api/org/contacts/import", {
       method: "POST",
       body: form,
+      params: {
+        type: botType
+      }
     });
-     if (!data?.status) toast.error(data?.message);
+     if (!data?.status) toast.error(data?.message ? data?.message : "File upload failed");
      else toast.success("File uploaded successfully");
-  } catch (error) {
-    toast.error("File upload failed");
+  } catch (error: any) {
     console.error("Upload error:", error);
+    toast.error(error.statusMessage);
   }
 };
 

@@ -8,7 +8,6 @@
         <TextField
           name="username"
           label="Full Name"
-          helperText="enter your first name"
           required
           placeholder="Enter your full name"
         />

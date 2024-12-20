@@ -1,6 +1,7 @@
 interface DeleteBuckerNumber {
   id: string,
   queryId: any,
+  botType: string,
   onSuccess: () => void
 }
 interface DeleteExoPhone {
@@ -11,6 +12,7 @@ interface DeleteExoPhone {
 export const bucketNumber = async ({
   queryId,
   id,
+  botType,
   onSuccess,
 }:DeleteBuckerNumber) => {
   try {
@@ -18,10 +20,12 @@ export const bucketNumber = async ({
       `/api/org/contacts/${id}`,
       {
         method: "DELETE",
+        params: {
+          type: botType
+        }
       },
     );
     onSuccess();
-    console.log(deleteIntegration, 'deleteIntegration')
     toast.success("Removed successfully");
     return deleteIntegration;
   } catch (err: any) {
