@@ -168,9 +168,11 @@ export const numberIntegrationSchema = adminSchema.table("number_integration", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// buckets
 export const contactListSchema = adminSchema.table("contact_list", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name"),
+  type: varchar("type").default("chat"),
   isDefault: boolean("is_default").default(false),
   organizationId: uuid("organizationId")
     .notNull()
@@ -193,7 +195,7 @@ export const contactSchema = adminSchema.table("contacts", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const contactListContactsSchema = adminSchema.table( "contact_list_contacts", {
+export const contactListContactsSchema = adminSchema.table("contact_list_contacts", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   contactListId: uuid("contact_list_id")
     .notNull()
@@ -206,6 +208,19 @@ export const contactListContactsSchema = adminSchema.table( "contact_list_contac
     .references(() => organizationSchema.id),
   }
 );
+
+export const voicebotContactSchema = adminSchema.table("voicebot_contacts", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  name: varchar("name"),
+  phone: varchar("phone"),
+  metadata: varchar("metadata"),
+  verificationId: varchar("verification_id"),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
 
 export const campaignSchema = adminSchema.table("campaign", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -332,6 +347,9 @@ export type InsertContactList = InferInsertModel<typeof contactListSchema>;
 
 export type SelectContacts = InferSelectModel<typeof contactSchema>;
 export type InsertContacts = InferInsertModel<typeof contactSchema>;
+
+export type SelectVoicebotContacts = InferSelectModel<typeof voicebotContactSchema>;
+export type InsertVoicebotContacts = InferInsertModel<typeof voicebotContactSchema>;
 
 export type SelectCampaign = InferSelectModel<typeof campaignSchema>;
 export type InsertCampaign = InferInsertModel<typeof campaignSchema>;

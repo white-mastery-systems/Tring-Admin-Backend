@@ -1,4 +1,6 @@
-const zodUpdateContacts = z.object({
+import { isChatContactsAlreadyExists, isVoicebotContactsAlreadyExists, updateVoicebotContacts } from "~/server/utils/db/contacts"
+
+const zodChatUpdateContacts = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   email: z.string().optional(),
@@ -6,22 +8,31 @@ const zodUpdateContacts = z.object({
   phone: z.string().optional()
 })
 
-const db = useDrizzle()
+const zodVoiceUpdateContacts = z.object({
+  name: z.string().optional(),
+  phone: z.string().optional(),
+  metadata: z.string().optional(),
+  verificationId: z.string().optional(),
+  organizationId: z.string().optional()
+})
 
 export default defineEventHandler(async (event) => {
   await isOrganizationAdminHandler(event)
 
+  const query = await isValidQueryHandler(event, z.object({
+    type: z.string()
+  }))
+
   const { contactId } = await isValidRouteParamHandler(event, checkPayloadId("contactId"))
 
-  const body: any = await isValidBodyHandler(event, zodUpdateContacts)
+  const body: any = query.type === "chat" 
+   ? await isValidBodyHandler(event, zodChatUpdateContacts)
+   : await isValidBodyHandler(event, zodVoiceUpdateContacts)
 
-   const isAlreadyExists = await db.query.contactSchema.findFirst({
-    where: and(
-      ne(contactSchema.id, contactId),
-      eq(contactSchema.phone, body?.phone)
-    )
-  })
-
+  const isAlreadyExists = query.type === "chat"
+  ? await isChatContactsAlreadyExists(contactId, body?.phone)
+  : await isVoicebotContactsAlreadyExists(contactId, body?.phone)
+  
   if(isAlreadyExists) {
      return sendError(
       event,
@@ -32,7 +43,9 @@ export default defineEventHandler(async (event) => {
     );
   }
   
-  const data = await updateContacts(contactId, body)
+  const data = query.type === "chat" 
+  ? await updateContacts(contactId, body)
+  : await updateVoicebotContacts(contactId, body)
 
   return data
 })

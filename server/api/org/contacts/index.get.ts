@@ -1,9 +1,10 @@
-import { getContacts } from "~/server/utils/db/contacts"
+import { getContacts, getVoicebotContacts } from "~/server/utils/db/contacts"
 
 const zodQueryvalidator = z.object({
   page: z.string().optional(),
   limit: z.string().optional(),
-  q: z.string().optional()
+  q: z.string().optional(),
+  type: z.string()
 })
 
 export default defineEventHandler(async (event) => {
@@ -11,7 +12,9 @@ export default defineEventHandler(async (event) => {
 
   const query = await isValidQueryHandler(event, zodQueryvalidator)
   
-  const data = await getContacts(organizationId, query)
+  const data =  query.type === "chat" 
+  ? await getContacts(organizationId, query)
+  : await getVoicebotContacts(organizationId, query)
 
   return data
 })
