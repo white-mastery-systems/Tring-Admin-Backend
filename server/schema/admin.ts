@@ -212,6 +212,7 @@ export const contactListContactsSchema = adminSchema.table("contact_list_contact
 export const voicebotContactSchema = adminSchema.table("voicebot_contacts", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name"),
+  countryCode: varchar("country_code"),
   phone: varchar("phone"),
   metadata: varchar("metadata"),
   verificationId: varchar("verification_id"),
