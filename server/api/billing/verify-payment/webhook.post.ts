@@ -136,7 +136,7 @@ export default defineEventHandler(async (event) => {
     updateChatbotStatus(userDetails?.organizationId!),
     db
       .update(orgSubscriptionSchema)
-      .set({ status: "inactive" })
+      .set({ status: "cancelled" })
       .where(and(
         eq(orgSubscriptionSchema.organizationId, userDetails?.organizationId!),
         eq(orgSubscriptionSchema.botType, type)
