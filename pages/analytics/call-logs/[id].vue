@@ -49,7 +49,6 @@
                         class="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-10">
                         <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
                       </div>
-
                       <div class="flex justify-center">
                         <audio controls :src="`${config.public.voiceBotUrl}/callRecording?sid=${callLogs?.callSid}`"
                           @loadeddata="onAudioLoaded" @waiting="onAudioLoading" @error="onAudioError" ref="audioPlayer">

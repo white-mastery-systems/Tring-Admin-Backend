@@ -21,7 +21,7 @@ export const updateBotIntentById = async ({
     onSuccess();
     return createdIntent;
   } catch (err: any) {
-    toast.error(err.data.data[0].message);
+    toast.error(err.statusMessage);
   }
 };
 export const createBotIntents = async ({

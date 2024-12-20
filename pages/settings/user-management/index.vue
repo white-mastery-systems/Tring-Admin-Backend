@@ -34,10 +34,7 @@
       <UiTabsContent value="role">
       <AddEditRole :popupState="rolePopupState" @PopupState="rolePopupState = $event"/>
       </UiTabsContent>
- 
     </UiTabs>
-
-
   </Page>
 </template>
 <script setup lang="ts">
@@ -53,7 +50,7 @@ const  rolePopupState =  ref(false)
 const  userPopupState =  ref(false)
 
 
-const selectedChannel = (value:any)=>{
+const selectedChannel = (value:any)=> {
   channel.value =value
   if(rolePopupState.value) rolePopupState.value  = false
   if(userPopupState.value) userPopupState.value  = false

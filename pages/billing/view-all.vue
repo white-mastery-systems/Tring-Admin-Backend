@@ -55,10 +55,7 @@
             orgBilling?.plan_code === list.plan_code
               ? 'bg-indigo-700 text-white'
               : '',
-          ]" @click="choosePlan(list.plan_code)" :disabled="
-            orgBilling?.plan_code === list.plan_code ||
-            list.plan_code?.includes('chat_free')
-          ">
+          ]" @click="choosePlan(list.plan_code)" :disabled="list.plan_code?.includes('chat_free')">
           {{
           orgBilling?.plan_code === list.plan_code
           ? "Current Plan"
