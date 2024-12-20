@@ -49,22 +49,19 @@
             </span>
           </div>
         </div>
-        <button
+        <UiButton variant="outline"
           class="rounded-lg border border-indigo-700 px-4 py-2 font-semibold text-indigo-800 hover:border-transparent hover:bg-indigo-700 hover:text-white"
           :class="[
             orgBilling?.plan_code === list.plan_code
               ? 'bg-indigo-700 text-white'
               : '',
-          ]" @click="choosePlan(list.plan_code)" :disabled="
-            orgBilling?.plan_code === list.plan_code ||
-            list.plan_code?.includes('chat_free')
-          ">
+          ]" @click="choosePlan(list.plan_code)" :disabled="list.plan_code?.includes('chat_free')">
           {{
           orgBilling?.plan_code === list.plan_code
           ? "Current Plan"
           : findPlanLevel({ list, current: orgBilling?.plan_code })
           }}
-        </button>
+        </UiButton>
       </div>
     </div>
   </page>
@@ -78,11 +75,10 @@
 
   const router = useRouter();
   const route = useRoute();
-  const { user } = await useUser();
-  const userDetails = ref(await getUserDetail())
-  const [firstName, lastName] = user.value?.username?.split(" ") || [];
-  const countryName = ref()
+  const storedUser = localStorage.getItem('user');
+  const userDetails = ref(storedUser ? JSON.parse(storedUser) : null);
   const userLocationDetails = ref(await getLocationDetail())
+  
   const chatBillingVariation = ref([
     { 
       _id: 1,
@@ -418,7 +414,7 @@
       });
     } else {
       //TODO fix this
-      if (!user?.value?.mobile) {
+      if (!userDetails?.value?.mobile) {
         toast.error("Please update all the details to continue");
         return navigateTo({
           name: "account",

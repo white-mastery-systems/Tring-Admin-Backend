@@ -1,11 +1,4 @@
 <template>
-  <!-- :bread-crumbs="[
-    { label: `${botDetails.name}`, to: `/bot-management/chat-bot/${botDetails.id}` },
-    {
-      label: 'Intent Management',
-      to: `/bot-management/chat-bot/${botDetails.id}/intent-management`,
-    },
-  ]"  -->
   <Page title="Pre Recorded Audio" :bread-crumbs="[
     {
       label: `${botDetails.name}`,
@@ -17,6 +10,7 @@
     },
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <div class="pb-2 sm:pb-0">
+      <!-- {{ audioResponseData }} -->
       <form @submit="onSubmit" class="flex flex-col gap-2 space-y-2">
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3">
           <!-- <TextField name="intent" label="Intent " required placeholder="Enter Intent " /> -->
@@ -67,7 +61,7 @@
               <div class="flex gap-3">
                 <span>
                   {{
-                  `${concludeFile.audio}.wav`
+                    `${concludeFile.audio}.wav`
                   }}
                 </span>
                 <span>
@@ -95,7 +89,7 @@
               <div class="flex gap-3">
                 <span>
                   {{
-                  `${fillerFile.audio}.wav`
+                    `${fillerFile.audio}.wav`
                   }}
                 </span>
                 <span>
@@ -116,41 +110,38 @@
                 <div style="align-self: center">Ambient Noise Audio</div>
                 <div>
                   <imageField :isLoading="isLoading" name="ambientNoiseAudio" @change="($event) => {
-                  uploadFile($event, 'ambientNoise', 'ambientNoiseFile');
+                    uploadFile($event, 'ambientNoise', 'ambientNoiseFile');
                   }
                     " :fileName="values.ambientNoiseAudio" :showFilename="false" :multiple="true"
                     :accept="'audio/*'" />
                 </div>
               </div>
-              <div>
-                <div class="flex flex-col gap-2 my-6">
-                  <RangeSlider :step="0.05" :name="parseFloat(values.ambientsound)" label="Ambient Sound"
-                    @update="($event) => {
-                      setFieldValue('ambientsound', $event);
-                      }
-                      " required placeholder="Enter ambient sound" min="0" max="1" />
-                </div>
-              </div>
             </div>
-
             <div v-for="(ambientNoiseFile, ambientNoiseFileIndex) in audioResponseData?.ambientNoise"
-              class="grid gap-2">
-              <div class="flex gap-3">
+              class="gap-2 space-y-3">
+              <div
+                class="flex items-center gap-3 min-h-[90px] grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4  xl:grid-cols-4">
                 <span>
                   {{
-                  `${ambientNoiseFile.audio}.wav`
+                    `${ambientNoiseFile.audio}.wav`
                   }}
                 </span>
-                <span>
+                <span v-if="ambientNoiseFile.transcription.trim() !== ''">
                   {{ ambientNoiseFile.transcription }}
                 </span>
+                <div class="flex flex-col w-full sm:w-full gap-2">
+                  <RangeSlider :step="0.05" :name="parseFloat(ambientNoiseFile.volume)" label="Ambient Sound"
+                    @update="updateAmbientSound(ambientNoiseFileIndex, $event)" required
+                    placeholder="Enter ambient sound" :min="0" :max="1" />
+                </div>
+
+                <UiButton @click="
+                  deleteFile(ambientNoiseFile, audioResponseData.ambientNoise, ambientNoiseFileIndex)
+                  " size="icon" color="primary" type="button" style="min-width: 80px !important">
+                  remove
+                </UiButton>
               </div>
 
-              <UiButton @click="
-                deleteFile(ambientNoiseFile, audioResponseData?.ambientNoise, ambientNoiseFileIndex)
-                " size="icon" color="primary" type="button" style="min-width: 80px !important">
-                remove
-              </UiButton>
             </div>
           </div>
           <div v-if="values.intent === 'forwardCall'" class="w-full gap-3 pt-2">
@@ -166,7 +157,7 @@
               <div class="flex gap-3">
                 <span>
                   {{
-                  `${forwardCallFile.audio}.wav`
+                    `${forwardCallFile.audio}.wav`
                   }}
                 </span>
                 <span>
@@ -194,8 +185,6 @@
 </template>
 
 <script setup lang="ts">
-import { useLanguageList } from '~/composables/voiceBotLanguageList';
-const config = useRuntimeConfig()
 definePageMeta({
   middleware: "admin-only",
 });
@@ -208,56 +197,6 @@ const fillerFilesData = ref([]);
 const ambientNoiseFilesData = ref([]);
 const forwardCallFilesData = ref([]);
 const deleteFileBucket = ref([]);
-const uploadedAudio = ref();
-// const formattedUploadAudioFile = ref({
-//   welcome: [],
-//   conclude: [],
-//   filler: [],
-// })
-// if (botDetails?.audioFiles?.welcome?.length) {
-//   console.log('jbafsakfb --- sfashfbsd')
-//   welcomeFilesData.value = botDetails?.audioFiles?.welcome.map(
-//     (welcomeValue: any) => ({ ...welcomeValue, type: welcomeValue.filetype }),
-//   );
-// }
-
-// if (botDetails?.audioFiles?.conclude?.length) {
-//   concludeFilesData.value = botDetails?.audioFiles?.conclude.map(
-//     (conclude: any) => ({ ...conclude, type: conclude.filetype }),
-//   );
-// }
-
-// setFieldValue('intent', botDetails?.preRecordedAudios.intent)
-
-const roles = [
-  {
-    value: "Customer Support",
-    label: "Customer Support",
-    helperText: "Assist customers with their questions and issues.",
-  },
-  {
-    value: "Receptionist",
-    label: "Receptionist",
-    helperText: "Handles visitor interactions and phone calls.",
-  },
-];
-
-const { languageList } = useLanguageList();
-const domainList = [
-  { value: "Customer Support", label: "Customer Support" },
-  { value: "Sales Assistant", label: "Sales Assistant" },
-  { value: "Technical Support", label: "Technical Support" },
-  { value: "Lead Generation", label: "Lead Generation" },
-  {
-    value: "Survey Taker",
-    label: "Survey Taker",
-    helperText: "Can contribute content but with limited permissions",
-  },
-  { value: "Appointment Scheduler", label: "Appointment Scheduler" },
-  { value: "FAQ Bot", label: "FAQ Bot" },
-  { value: "Others", label: "Others" },
-];
-
 const intentList = ref([
   {
     label: "Ambient Sound",
@@ -277,13 +216,14 @@ const intentList = ref([
   },
 ])
 const isLoading = ref(false);
+const config = useRuntimeConfig()
 
 
 const {
   data: audioResponseData,
   status,
   refresh: audioDataRefresh,
-} = await useLazyFetch("https://tring-voice.pripod.com/prerecordedAudio/metaData", {
+} = await useLazyFetch(`${config.public.voiceBotUrl}/prerecordedAudio/metaData`, {
   server: false,
   params: {
     bot_id: route.params.id,
@@ -299,13 +239,12 @@ const botSchema = toTypedSchema(
     fillerAudio: z.any().optional(),
     ambientNoiseAudio: z.any().optional(),
     forwardCallAudio: z.any().optional(),
-    ambientsound: z.number().optional(),
   })
     .superRefine((data, ctx) => {
       // Conditional validation for 'welcome' intent
       if (
         data.intent === "welcome" &&
-        (!data.welcomeAudio || data.welcomeAudio.length === 0)
+        (!data.welcomeAudio && (!audioResponseData.value?.welcome || !audioResponseData.value?.welcome.length))
       ) {
         ctx.addIssue({
           path: ["welcomeAudio"],
@@ -316,7 +255,7 @@ const botSchema = toTypedSchema(
       // Conditional validation for 'conclude' intent
       if (
         data.intent === "conclude" &&
-        (!data.concludeAudio || data.concludeAudio.length === 0)
+        (!data.concludeAudio && (!audioResponseData.value?.conclude || !audioResponseData.value?.conclude.length))
       ) {
         ctx.addIssue({
           path: ["concludeAudio"],
@@ -325,7 +264,7 @@ const botSchema = toTypedSchema(
       }
       if (
         data.intent === "filler" &&
-        (!data.fillerAudio || data.fillerAudio.length === 0)
+        (!data.fillerAudio && (!audioResponseData.value?.filler || !audioResponseData.value?.filler.length))
       ) {
         ctx.addIssue({
           path: ["fillerAudio"],
@@ -334,24 +273,17 @@ const botSchema = toTypedSchema(
       }
       if (
         data.intent === "ambientNoise" &&
-        (!data.ambientNoiseAudio || data.ambientNoiseAudio.length === 0)
+        ((!data.ambientNoiseAudio) && (!audioResponseData.value?.ambientNoise || !audioResponseData.value.ambientNoise.length))
       ) {
+        console.log("errorsvsafc")
         ctx.addIssue({
           path: ["ambientNoiseAudio"],
           message: "Ambient noise audio file is required for the 'ambientNoise' intent.",
         });
       }
       if (
-        data.intent === "ambientNoise" && (data.ambientsound <= 0)
-      ) {
-        ctx.addIssue({
-          path: ["ambientsound"],
-          message: "Ambient sound file is required for the 'ambientNoise' intent.",
-        });
-      }
-      if (
         data.intent === "forwardCall" &&
-        (!data.forwardCallAudio || data.forwardCallAudio.length === 0)
+        (!data.forwardCallAudio && (!audioResponseData.value?.forwardCall || !audioResponseData.value?.forwardCall.length))
       ) {
         ctx.addIssue({
           path: ["forwardCallAudio"],
@@ -379,63 +311,6 @@ if (botDetails?.intent) setFieldValue("intent", botDetails?.intent)
 else {
   setFieldValue("intent", 'welcome')
 }
-setFieldValue('ambientsound', botDetails?.preRecordedAudios?.ambientsound ?? 0.5)
-Object.entries(botDetails.preRecordedAudios ?? {}).forEach(([key, value]: any) => {
-  // if (botDetails.preRecordedAudios) {
-  // }
-  if (key === 'welcomeAudio') {
-    if (botDetails.preRecordedAudios?.welcomeAudio.length) {
-      const welcomeFilePaths = botDetails.preRecordedAudios?.welcomeAudio.map((item: any) => item)
-      welcomeFilePaths?.map((item: object) => {
-        // welcomeFilesData.value.push(item)
-        console.log(item, "item")
-        audioResponseData.value?.welcome.push(item)
-      })
-      // welcomeFile.type
-      setFieldValue("welcomeAudio", welcomeFilePaths.join(","));
-    }
-  }
-  if (key === 'concludeAudio') {
-    if (botDetails.preRecordedAudios?.concludeAudio.length) {
-      const concludeAudioFilePaths: any = botDetails.preRecordedAudios?.concludeAudio?.map((item: any) => item);
-      concludeAudioFilePaths?.map((item: object) => {
-        // concludeFilesData.value.push(item)
-        audioResponseData.value?.conclude.push(item)
-      })
-      setFieldValue("concludeAudio", concludeAudioFilePaths.join(","));
-    }
-  }
-  if (key === 'fillerAudio') {
-    if (botDetails.preRecordedAudios?.fillerAudio.length) {
-      const fillerAudioFilePaths: any = botDetails.preRecordedAudios?.fillerAudio?.map((item: any) => item);
-      fillerAudioFilePaths?.map((item: object) => {
-        // concludeFilesData.value.push(item)
-        audioResponseData.value?.filler.push(item)
-      })
-      setFieldValue("fillerAudio", fillerAudioFilePaths.join(","));
-    }
-  }
-  if (key === 'ambientNoiseAudio') {
-    if (botDetails.preRecordedAudios?.ambientNoiseAudio.length) {
-      const ambientNoiseAudioFilePaths: any = botDetails.preRecordedAudios?.ambientNoiseAudio?.map((item: any) => item);
-      ambientNoiseAudioFilePaths?.map((item: object) => {
-        // concludeFilesData.value.push(item)
-        audioResponseData.value?.ambientNoise.push(item)
-      })
-      setFieldValue("ambientNoiseAudio", ambientNoiseAudioFilePaths.join(","));
-    }
-  }
-  if (key === 'forwardCallAudio') {
-    if (botDetails.preRecordedAudios?.forwardCallAudio.length) {
-      const forwardCallAudioFilePaths: any = botDetails.preRecordedAudios?.forwardCallAudio?.map((item: any) => item);
-      forwardCallAudioFilePaths?.map((item: object) => {
-        // concludeFilesData.value.push(item)
-        audioResponseData.value?.forwardCall.push(item)
-      })
-      setFieldValue("forwardCallAudio", forwardCallAudioFilePaths.join(","));
-    }
-  }
-});
 watchEffect(async () => {
   if (botDetails) {
     const userName = botDetails?.name ?? "Unknown Bot Name";
@@ -445,74 +320,6 @@ watchEffect(async () => {
     // await handleApiResponse(botDetails)
   }
 });
-
-watch(() => values.intent, (newValue) => {
-  // console.log(newValue, "newValue", formattedUploadAudioFile.value); // For debugging purposes
-  // if (botDetails?.intent) setFieldValue("intent", botDetails?.intent);
-  if (audioResponseData.value?.welcome.length) {
-    const welcomeFilePaths = audioResponseData.value.welcome.map((item: any) => item)
-    // welcomeFilePaths.map((item: any) => {
-    //   welcomeFilesData.value.push(item)
-    // })
-    // welcomeFile.type
-    setFieldValue("welcomeAudio", welcomeFilePaths.join(","));
-  } 
-  // else {
-  //   if (values.intent != 'welcome') {
-  //     welcomeFilesData.value = []
-  //   }
-  // }
-  if (audioResponseData.value?.conclude.length) {
-    const concludeAudioFilePaths = audioResponseData.value.conclude.map((item: any) => item)
-    setFieldValue("concludeAudio", concludeAudioFilePaths.join(","));
-  } 
-  if (audioResponseData.value?.filler.length) {
-    const fillerAudioFilePaths = audioResponseData.value.filler.map((item: any) => item)
-    setFieldValue("fillerAudio", fillerAudioFilePaths.join(","));
-  }
-  if (audioResponseData.value?.ambientNoise.length) {
-    const ambientNoiseAudioFilePaths = audioResponseData.value.ambientNoise.map((item: any) => item)
-    setFieldValue("ambientNoiseAudio", ambientNoiseAudioFilePaths.join(","));
-  }
-  if (audioResponseData.value?.forwardCallAudio.length) {
-    const forwardCallAudioFilePaths = audioResponseData.value.forwardCall.map((item: any) => item)
-    setFieldValue("forwardCallAudio", forwardCallAudioFilePaths.join(","));
-  }
-});
-// watch(botDetails, () => {
-//   resetForm()
-//   console.log(botDetails.intent, "botDetails.preRecordedAudios?.intent -- botDetails.preRecordedAudios?.intent")
-//   if (botDetails.intent) setFieldValue("intent", botDetails.intent)
-//   // Check and process welcome audio
-//   if (botDetails.preRecordedAudios?.welcome && botDetails.preRecordedAudios.welcome.length) {
-//     // console.log(
-//     //   botDetails.preRecordedAudios.welcome,
-//     //   "botDetails.preRecordedAudios.welcome -- botDetails.preRecordedAudios.welcome"
-//     // );
-
-//     const welcomeFilePaths = botDetails.preRecordedAudios.welcomeAudio.map((item: any) => item.audio)
-//     setFieldValue("welcomeAudio", welcomeFilePaths.join(","));
-//   }
-
-//   // Check and process conclude audio
-//   if (botDetails.preRecordedAudios?.conclude && botDetails.preRecordedAudios.conclude.length) {
-//     console.log(
-//       botDetails.preRecordedAudios.conclude,
-//       "botDetails.preRecordedAudios.conclude -- botDetails.preRecordedAudios.conclude"
-//     );
-
-//     const concludeFilePaths = botDetails.preRecordedAudios.conclude.map((audio: string) => {
-//       const [filePath] = audio.split("|"); // Extract file path before "|FIX ME"
-//       return filePath;
-//     });
-//     console.log(concludeFilePaths, "concludeFilePaths")
-//     setFieldValue("concludeAudio", concludeFilePaths.join(","));
-//   }
-// }, {deep: true})
-
-// setTimeout(() => {
-//   console.log(botDetails.preRecordedAudios, "botDetails -- botDetails")
-// }, 2000);
 
 const welcomeString = ref("");
 const concludeString = ref("");
@@ -525,18 +332,9 @@ const uploadFile = (
   type = "welcome",
   fieldName = "welcomeFile",
 ) => {
-  // let webmStatus =  Array.from(files).some((file:any) => file.type !== "video/wav" && file.type !== "video/raw");
-  // if(webmStatus){
-  // toast.error("file must mbe in webm format");
-  // }
   try {
     let newFiles: any = [];
-    // let lastFileIndex = getLastFileNumber(fieldName);
     Array.from(files).forEach((file: any, fileIndex: any) => {
-      // let fileType: any = file.type.split("/").pop();
-      // let index = fileIndex + 1 + lastFileIndex;
-      // console.log(file);
-      // var blob = file.slice(0, file.size, file.type);
       newFiles.push(file);
       if (fieldName === "welcomeFile") {
         welcomeFilesData.value.push(file);
@@ -605,66 +403,29 @@ const uploadFile = (
   audioUpload(formData, type)
 };
 
-// const handleApiResponse = (response: any) => {
-//   console.log("first")
-//   try {
-//     if (response.intent) {
-//       console.log(response.intent, "bottom")
-//       setFieldValue("intent", response.intent);
-//     }
-//     if (response.welcomeAudio && response.welcomeAudio.length) {
-//       const welcomeFilePaths = response.welcomeAudio.map((audio: any) => audio.filename).join(",");
-//       setFieldValue("welcomeAudio", welcomeFilePaths);
-//     }
-
-//     if (response.concludeAudio && response.concludeAudio.length) {
-//       const concludeFilePaths = response.concludeAudio.map((audio: any) => audio.filename).join(",");
-//       setFieldValue("concludeAudio", concludeFilePaths);
-//     }
-//   } catch (error) {
-//     console.error("Error processing API response:", error);
-//   }
-// };
-
-const deleteFile = (data, files, index) => {
+const deleteFile = async (data, files, index) => {
+  console.log(data, "data")
   files.splice(index, 1);
   // console.log(data.audio)
   if (data?.audio) {
     deleteFileBucket.value.push(data?.audio);
-    // console.log(deleteFileBucket.value, "deleteFileBucket.value -- deleteFileBucket.value")
+    await audioDelete(botDetails)
+    await audioDataRefresh()
   }
 };
 
 const audioUpload = async (formData: any) => {
-  // audioResponseData.value.welcome = [];
-  // audioResponseData.value.conclude = [];
-  // audioResponseData.value.filler = [];
-  // if (!botDetails.botDetails.agentLanguage || botDetails.botDetails.agentLanguage === '') {
-  //   toast.error("Please fill the Bot Details");
-  //   return
-  // }
   isLoading.value = true;
   if (botDetails.botDetails && botDetails.botDetails?.agentLanguage) {
     try {
-      const response = await fetch(
-        `https://tring-voice.pripod.com/prerecordedAudio/`,
+      await fetch(
+        `${config.public.voiceBotUrl}/prerecordedAudio/`,
         {
           method: "POST",
           body: formData,
           // redirect: "manual",
         },
       );
-      audioResponseData.value = await response.json()
-      uploadedAudio.value = {
-        preRecordedAudios: {
-          welcomeAudio: audioResponseData.value?.welcome,
-          concludeAudio: audioResponseData.value?.conclude,
-          fillerAudio: audioResponseData.value?.filler,
-          ambientNoiseAudio: audioResponseData.value?.ambientNoise,
-          forwardCallAudio: audioResponseData.value?.forwardCall,
-        }
-      }
-      
       audioDataRefresh()
       toast.success("Audio uploaded successfully. Please submit the form.")
       // return response;
@@ -690,10 +451,46 @@ const audioUpload = async (formData: any) => {
     // return
   }
 };
+const ambientNoiseAudioUpload = async () => {
+  // Ensure we're not modifying the original array directly if not needed
+  const modifiedFilesData = audioResponseData.value?.ambientNoise?.map((item: any) => {
+    return {
+      filename: `${item.audio}.wav`,
+      volume: item.volume,
+    }
+  });
+
+  const payload = {
+    items: modifiedFilesData,
+    botId: botDetails.id,
+    organizationId: botDetails.organizationId,
+  };
+  console.log(payload, "payload");
+
+  try {
+    await $fetch(
+      `${config.public.voiceBotUrl}/prerecordedAudio`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json", // Ensure the content is JSON
+        },
+        body: payload,
+      }
+    );
+    toast.success("Audio uploaded successfully");
+  } catch (error) {
+    isLoading.value = false;
+    console.error("Error:", error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 const audioDelete = async (data: any) => {
   try {
     const formData = new FormData();
-    deleteFileBucket.value.forEach((item) =>{
+    deleteFileBucket.value.forEach((item) => {
       formData.append('files', item);
     })
     formData.append('bot_id', data.id);
@@ -702,74 +499,38 @@ const audioDelete = async (data: any) => {
     formData.append('intent', values.intent);
 
 
-    const deleteResponse = await fetch(`https://tring-voice.pripod.com/prerecordedAudio/`, {
+    await fetch(`${config.public.voiceBotUrl}/prerecordedAudio/`, {
       method: "DELETE",
       body: formData,
     });
-    const formattedResponse = await deleteResponse.json()
   } catch (error) {
     console.error("Error:", error);
   } finally {
-    toast.success("Audio deleted successfully.")
+    toast.success("Audio deleted successfully. Please submit the form.");
     console.log("finally");
   }
 };
 
-// const getLastFileNumber = (fileNames: string, maxNumber = 10000): number => {
-//   const files = fileNames === "welcomeFile"
-//     ? welcomeFilesData.value
-//     : (fileNames === "concludeFile") ? concludeFilesData.value : fillerFilesData.value;
+const updateAmbientSound = (index, newVolume) => {
+  if (audioResponseData.value?.ambientNoise?.length) {
+    audioResponseData.value.ambientNoise[index].volume = newVolume
+  }
+  if (index >= 0 && index < ambientNoiseFilesData.value.length) {
+    ambientNoiseFilesData.value[index].volume = newVolume;
+  } else {
+    console.error("Invalid index for ambient noise file");
+  }
+};
 
-//   // Extract existing numbers from file names
-//   const usedNumbers = new Set(
-//     files.map((file: any) => {
-//       const match = file.name.match(/\d+/);
-//       return match ? parseInt(match[0], 10) : 0;
-//     })
-//   );
-
-//   let randomNumber;
-//   let attempts = 0;
-
-//   // Generate a random number not already in use
-//   do {
-//     randomNumber = Math.floor(Math.random() * maxNumber) + 1; // Random number between 1 and maxNumber
-//     attempts++;
-//     if (attempts > maxNumber) throw new Error("Failed to generate a unique number");
-//   } while (usedNumbers.has(randomNumber));
-
-//   return randomNumber;
-// };
 
 
 const onSubmit = handleSubmit(async (value: any) => {
   // updateLLMConfig()
   isLoading.value = true;
-  // let formatObj = {
-  //   welcomeAudio: uploadedAudio.value?.welcome
-  //   concludeAudio: uploadedAudio.value?.conclude
-  // };
+  await ambientNoiseAudioUpload()
   let payload = {
     intent: values.intent,
-    ...uploadedAudio.value
-  };
-  if (deleteFileBucket.value.length) {
-    await audioDelete(botDetails);
-    payload = {
-      ...payload,
-      intent: values.intent,
-      preRecordedAudios: {
-        ambientsound: values?.ambientsound,
-        welcomeAudio: audioResponseData.value?.welcome,
-        concludeAudio: audioResponseData.value?.conclude,
-        fillerAudio: audioResponseData.value?.filler,
-        ambientNoiseAudio: audioResponseData.value?.ambientNoise,
-        forwardCallAudio: audioResponseData.value?.forwardCall,
-      },
-    };
   }
-  // console.log(payload, "payload");
-  const toster = "Audio files updated successfully";
   await updateLLMConfig(payload, botDetails.id, "Pre-recorded audio files updated successfully.");
   isLoading.value = false;
 

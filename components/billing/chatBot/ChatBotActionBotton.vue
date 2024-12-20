@@ -1,10 +1,9 @@
 <template>
   <div class="flex gap-2">
-    <!-- {{ subscriptionData }} || sdfdsfjhhb -->
-    <UiButton v-if="subscriptionData" variant="destructive" @click="$emit('change')" class="hidden lg:inline">
+    <UiButton v-if="cancelSubscription" variant="destructive" @click="$emit('change')" class="hidden lg:inline">
       Cancel Subscription
     </UiButton>
-    <div v-if="subscriptionData" class="flex flex-col items-center justify-center gap-1 lg:hidden">
+    <div v-if="cancelSubscription" class="flex flex-col items-center justify-center gap-1 lg:hidden">
       <UiButton variant="destructive" @click="$emit('change')" cass="px-0"
         style="padding-left: 9px; padding-right: 9px">
         <component :is="XCircleIcon"></component>
@@ -13,14 +12,14 @@
     </div>
     <!-- :to="{ path: '/billing/view-wallet', query: { action: 'refill' } }" -->
     <!-- to="/billing/view-wallet" -->
-    <NuxtLink v-if="!usage?.plan_code?.includes('free') && (userLocationDetails.country === 'IN')"
+    <NuxtLink v-if="!usage?.plan_code?.includes('free') && (userLocationDetails.country === 'IN') && cancelSubscription"
       :to="{ path: '/billing/view-wallet', query: { type: query?.type } }"
       class="hover:brighten-50 font-regular flex items-center rounded-md bg-[#424bd1] p-2 px-2 text-sm text-[#FFFFFF] hover:bg-[#424bd1] hidden lg:flex">
       Refill Wallet
     </NuxtLink>
     <!-- to="/billing/view-wallet" -->
     <div class="flex flex-col items-center justify-center gap-1 lg:hidden">
-      <NuxtLink v-if="!usage?.plan_code?.includes('free')"
+      <NuxtLink v-if="!usage?.plan_code?.includes('free') && (userLocationDetails.country === 'IN') && cancelSubscription"
         :to="{ path: '/billing/view-wallet', query: { type: query?.type } }"
         class="hover:brighten-50 font-regular grid items-center rounded-md bg-[#424bd1] p-2 px-2 text-sm text-[#FFFFFF] hover:bg-[#424bd1]">
         <div class="flex flex-col items-center justify-center">
@@ -58,4 +57,18 @@ const props = defineProps({
 });
 const userLocationDetails = ref(await getLocationDetail())
 const emit = defineEmits<{ (e: "change"): void }>();
+
+
+const cancelSubscription = computed(() => {
+  if (!props.usage.expiry_date) {
+    return false; // Return a default value
+  }
+  const currentDate = new Date();
+  const expirationDate = new Date(props.usage.expiry_date);
+  // Compare dates (ignoring time)
+  const isExpired = (currentDate.setHours(0, 0, 0, 0) <= expirationDate.setHours(0, 0, 0, 0));
+
+  // console.log(usage.expiry_date, 'usage.expiry_date');
+  return isExpired;
+});
 </script>

@@ -1,6 +1,9 @@
+import { inArray } from "drizzle-orm";
+import { InsertVoicebotContacts } from "~/server/schema/admin";
+
 const db = useDrizzle();
 
-export const createContacts = async (contacts: InsertContacts) => {
+export const createContacts = async (contacts: any) => {
   return (await db.insert(contactSchema).values(contacts).returning())[0];
 };
 
@@ -69,3 +72,121 @@ export const deleteContacts = async (id: string) => {
     await db.delete(contactSchema).where(eq(contactSchema.id, id)).returning()
   )[0];
 };
+
+export const isChatContactsAlreadyExists = async(contactId: string, phone: string) => {
+  return await db.query.contactSchema.findFirst({
+    where: and(
+      ne(contactSchema.id, contactId),
+      eq(contactSchema.phone, phone)
+    )
+  })
+}
+
+export const checkChatContacts = async (organizationId: string, phone: string) => {
+  return await db.query.contactSchema.findFirst({
+    where: and(
+      eq(contactSchema.phone, phone),
+      eq(contactSchema.organizationId, organizationId)
+    )
+  }) 
+}
+
+export const filterChatContactsByPhone = async (phoneNumbers: any) => {
+  return await db.select()
+    .from(contactSchema)
+    .where(inArray(contactSchema.phone, phoneNumbers));
+}
+
+// Voicebot contacts
+export const checkVoiceContacts = async (organizationId: string, phone: string) => {
+  return await db.query.voicebotContactSchema.findFirst({
+    where: and(
+      eq(voicebotContactSchema.phone, phone),
+      eq(voicebotContactSchema.organizationId, organizationId)
+    )
+  }) 
+}
+
+export const createVoicebotContacts = async (voiceContact: any) => {
+  return (
+    await db.insert(voicebotContactSchema).values(voiceContact).returning()
+  )[0]
+}
+
+export const getVoicebotContacts = async (
+  organizationId: string,
+  query?: any,
+) => {
+  let page, offset, limit = 0;
+
+  if (query?.page && query?.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
+    offset = (page - 1) * limit;
+  }
+  const data = await db.query.voicebotContactSchema.findMany({
+    where: and(
+      eq(voicebotContactSchema.organizationId, organizationId),
+      query?.q ?
+      or(
+        ilike(voicebotContactSchema.name, `%${query.q}%`),
+        ilike(voicebotContactSchema.phone, `%${query.q}%`),
+      )
+      : undefined,
+    ),
+    orderBy: [desc(voicebotContactSchema.createdAt)],
+  });
+  if (query?.page && query?.limit) {
+    const paginatedVoiceContacts = data.slice(offset, offset + limit);
+    return {
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length / limit) || 1,
+      totalCount: data.length,
+      data: paginatedVoiceContacts,
+    };
+  } else {
+    return data;
+  }
+};
+
+export const getVoicebotContactsById = async (id: string) => {
+  const data = await db.query.voicebotContactSchema.findFirst({
+    where: eq(voicebotContactSchema.id, id),
+  });
+  return data;
+};
+
+export const updateVoicebotContacts = async (id: string, contacts: InsertVoicebotContacts) => {
+  return (
+    await db
+      .update(voicebotContactSchema)
+      .set({
+        ...contacts,
+        updatedAt: new Date(),
+      })
+      .where(eq(voicebotContactSchema.id, id))
+      .returning()
+  )[0];
+};
+
+export const deleteVoicebotContacts = async (id: string) => {
+  return (
+    await db.delete(voicebotContactSchema).where(eq(voicebotContactSchema.id, id)).returning()
+  )[0];
+};
+
+export const isVoicebotContactsAlreadyExists = async(contactId: string, phone: string) => {
+  return await db.query.voicebotContactSchema.findFirst({
+    where: and(
+      ne(voicebotContactSchema.id, contactId),
+      eq(voicebotContactSchema.phone, phone)
+    )
+  })
+}
+
+export const filterVoiceContactsByPhone = async (phoneNumbers: any) => {
+  return await db.select()
+    .from(voicebotContactSchema)
+    .where(inArray(voicebotContactSchema.phone, phoneNumbers));
+}

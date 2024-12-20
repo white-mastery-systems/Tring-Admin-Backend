@@ -96,6 +96,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   intent: varchar("intent"),
   ivrConfig: uuid("ivr_config")
     .references(() => numberIntegrationSchema.id, { onDelete: "cascade" }),
+  incomingPhoneNumber: varchar("incoming_phone_number"),
   identityManagement: jsonb("identity_management"),
   createdAt: timestamp("created_at").defaultNow(),
   organizationId: uuid("organization_id")
@@ -103,7 +104,6 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     .notNull(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
-
 
 export const voicebotIntegrationSchema = voiceBotSchema.table(
   "bot_integrations",
@@ -154,10 +154,10 @@ export const callLogSchema = voiceBotSchema.table("call_logs", {
   outputCredits: varchar("output_credits").notNull(),
   summary: varchar("summary"),
   botId: uuid("bot_id")
-    .references(() => voicebotSchema.id)
+    .references(() => voicebotSchema.id, { onDelete: "cascade" })
     .notNull(),
   organizationId: uuid("organization_id")
-    .references(() => organizationSchema.id)
+    .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -171,13 +171,13 @@ export const voiceBotLeadSchema = voiceBotSchema.table(
     metadata: jsonb("metadata"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     botId: uuid("bot_id")
-      .references(() => voicebotSchema.id)
+      .references(() => voicebotSchema.id, { onDelete: "cascade" })
       .notNull(),
     botUserId: uuid("bot_user_id")
       .references(() => voiceBotUserSchema.id)
       .notNull(),
     organizationId: uuid("organization_id")
-      .references(() => organizationSchema.id)
+      .references(() => organizationSchema.id, { onDelete: "cascade" })
       .notNull(),
     status: varchar("status").default("default").notNull(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -191,6 +191,20 @@ export const voiceBotLeadSchema = voiceBotSchema.table(
     leadsBotIdIndex: index("voicebot_leads_bot_id_index").on(table.botId),
   }),
 );
+
+export const outboundCallSchema = voiceBotSchema.table("outbound_calls", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  botId: uuid("bot_id").references(() => voicebotSchema.id, { onDelete: "cascade" }).notNull(),
+  organizationId: uuid("organization_id").references(() => organizationSchema.id,  { onDelete: "cascade" }).notNull(),
+  name: varchar("name"),
+  phone: varchar("phone"),
+  metadata: varchar("metadata"),
+  verificationId: varchar("verification_id"),
+  dialStatus: varchar("dial_status").default("not dialed"),
+  callSid: varchar("call_sid"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
 
 // Relations
 export const callLogsRelations = relations(callLogSchema, ({one}) => ({

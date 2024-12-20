@@ -98,7 +98,7 @@ export const updateBotIntegrationById = async ({
     return createdBot;
   } catch (err: any) {
     console.log(err.data, "err.data -- err.data")
-    toast.error(err.data.data[0].message);
+    toast.error(err.statusMessage);
   }
 };
 
@@ -124,7 +124,7 @@ export const deleteBotIntegration = async ({
     onSuccess();
     return botIntegrations;
   } catch (err: any) {
-    toast.error(err.data.data[0].message);
+    toast.error(err.statusMessage);
   }
 };
 
@@ -228,7 +228,7 @@ export const addVoiceBotIntegration = async ({
     onSuccess();
     return createdBot;
   } catch (err: any) {
-    toast.error(err.data.data[0].message);
+    toast.error(err.statusMessage);
   }
 };
 export const deleteVoiceBotIntegration = async ({
@@ -246,7 +246,7 @@ export const deleteVoiceBotIntegration = async ({
     onSuccess();
     return botIntegrations;
   } catch (err: any) {
-    toast.error(err.data.data[0].message);
+    toast.error(err.statusMessage);
   }
 };
 
@@ -276,4 +276,26 @@ export const getLocationDetail = async () => {
 export const getUserDetail = async () => {
   const userDetails = await $fetch<User>("/api/user");
   return userDetails;
+};
+
+export const getIntegratedProviderNumberList = async (providerId: string) => {
+  const numberList = await $fetch<any>(
+    `/api/org/integrations/number-integration/${providerId}/incomingPhoneNumbers`,
+  );
+  return numberList;
+};
+
+export const getPreRecordedAudioDetails = async (botId: string, organizationId: string,config: any) => {
+  try {
+    const bot = await $fetch<any>(`${config.public.voiceBotUrl}/prerecordedAudio/metaData`, {
+      method: 'GET',
+      params: {
+        bot_id: botId,
+        organization_id: organizationId,
+      },
+    });
+    return bot;
+  } catch (error) {
+    toast.error('Error fetching pre-recorded audio details');
+  }
 };

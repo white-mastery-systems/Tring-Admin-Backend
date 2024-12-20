@@ -23,5 +23,8 @@
     },
   });
   toast.success("Payment Confirmed");
-  navigateTo({ name: "billing-view-all" });
+  navigateTo({ 
+    name: "billing-wallet",
+    query: { type: route.query?.type },
+  });
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen overflow-auto">
-    <form @submit="handleAccountUpdate" class="flex flex-col gap-2">
+    <form @submit="handleAccountUpdate" class="flex flex-col gap-2 p-1">
       <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
         Personal Information
       </h3>
@@ -22,8 +22,7 @@
         />
       </div>
       <div
-        class="grid grid-cols-1 gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2"
-      >
+        class="grid grid-cols-1 gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
         <div class="flex gap-2">
           <CountryCodeField
             class="w-[100px]"
@@ -162,6 +161,7 @@
     try {
       await $fetch("/api/user", { method: "PUT", body: values });
       refreshUser();
+      localStorage.setItem("user", JSON.stringify(user.value));
       toast.success("Account updated successfully");
     } catch (e) {
       console.error(e);

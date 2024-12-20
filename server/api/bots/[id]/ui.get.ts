@@ -57,9 +57,10 @@ export default defineEventHandler(async (event) => {
   const expiryDate = momentTz(orgSubscription?.expiryDate)
   .tz(timeZone)
   .toDate();
-
-  if (orgSubscription?.planCode === "chat_free") {
-    if(availableSessions < 0) {
+  if(orgSubscription?.status === "inactive") {
+    return sendError(event, createError({ statusCode: 403, statusMessage: "Your subscription is not active" }));
+  } else if (orgSubscription?.planCode === "chat_free") {
+    if (availableSessions < 0) {
        return sendError(event, createError({ statusCode: 403, statusMessage: "Your free plan has exceeded the session limit" }));
     }
   } else if(currentDate > expiryDate) {
@@ -70,7 +71,7 @@ export default defineEventHandler(async (event) => {
     if (currentWallet < 0) {
       return sendError(event, createError({ statusCode: 403, statusMessage: "Your wallet balance is exhausted" }));
     }
-  } 
+  }
  
   return (bot.metadata as Record<string, any>).ui;
 });
