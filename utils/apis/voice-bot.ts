@@ -135,7 +135,7 @@ export const insideBucketNumber = async ({
 }:DeleteBuckerNumber) => {
   try {
     const deleteIntegration = await $fetch<DeleteBuckerNumber>(
-      `/api/org/contact-list/${queryId}/contactListContacts`,
+      `/api/org/contact-list/${queryId}/contact`,
       {
         method: "DELETE",
         body: {contactId: id},

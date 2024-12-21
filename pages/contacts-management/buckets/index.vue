@@ -51,6 +51,7 @@
     <CreateEditBucketModal v-model="addBucketNameModalState" @confirm="() => {
         addBucketNameModalState.open = false;
         integrationRefresh()
+        
       }
       " />
   </Page>

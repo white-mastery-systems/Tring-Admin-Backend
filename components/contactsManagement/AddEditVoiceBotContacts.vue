@@ -21,7 +21,7 @@
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :is-loading="isDataLoading"
       :columns="columns" :page-size="20" :height="13" height-unit="vh" />
 
-    <CreateEditBucketNumberModal botType="voice" v-model="addBucketModalState" @confirm="() => {
+    <CreateEditBucketNumberModal :typeOfAddContacts='addVoiceBotContacts' botType="voice" v-model="addBucketModalState" @confirm="() => {
       addBucketModalState.open = false;
       integrationRefresh();
     }
@@ -30,14 +30,25 @@
     <ConfirmationModal v-model:open="deleteIntegrateNumber.open" title="Confirm Delete"
       description="Are you sure you want to delete ?" @confirm="() => {
         if (deleteIntegrateNumber?.id) {
-          bucketNumber({
-            queryId: queryId,
-            id: deleteIntegrateNumber.id,
-            botType: 'voice',
-            onSuccess: () => {
-              integrationRefresh();
-            },
-          });
+          if (props.typeOfAddContacts === 'insideBucket') {
+            console.log('asfsaf sfsadfsafda', deleteIntegrateNumber)
+            insideBucketNumber({
+              queryId: queryId,
+              id: deleteIntegrateNumber.id,
+              onSuccess: () => {
+                integrationRefresh();
+              },
+            });
+          } else {
+              bucketNumber({
+              queryId: queryId,
+              id: deleteIntegrateNumber.id,
+              botType: 'voice',
+              onSuccess: () => {
+                integrationRefresh();
+              },
+            });
+          }
           deleteIntegrateNumber.open = false;
         }
       }
@@ -57,7 +68,7 @@ useHead({
   title: "Contacts"
 });
 
-const props = defineProps<{ popupState?: boolean }>();
+const props = defineProps<{ popupState?: boolean, typeOfAddContacts: string }>();
 const emit = defineEmits<{ (e: "popupState", payload: any): void }>();
 const addBucketModalState: any = ref({ open: false, id: null });
 const deleteIntegrateNumber = ref({ open: false, id: null });
@@ -81,13 +92,20 @@ let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
 const route = useRoute();
+const queryId = ref(route.params.id)
+const addVoiceBotContacts = ref()
 
+const apiUrl = computed(() => {
+  return props.typeOfAddContacts === "insideBucket"
+    ? `/api/org/contact-list/${route.params.id}`
+    : `/api/org/contacts`
+})
 
 const {
   status,
   data: contactsList,
   refresh: integrationRefresh,
-} = await useLazyFetch(`/api/org/contacts`, {
+} = await useLazyFetch(apiUrl, {
   server: false,
   query: filters,
   default: () => [],
@@ -95,10 +113,25 @@ const {
     page.value = contacts.page;
     totalPageCount.value = contacts.totalPageCount;
     totalCount.value = contacts.totalCount;
-    return contacts.data;
+
+    return props.typeOfAddContacts === "insideBucket"
+      ? contacts.data.contacts.map((contact: any) => contact.contacts)
+      : contacts.data;
   },
 });
 
+
+watch(() => route.params.id, (newQueryId) => {
+  if (newQueryId) {
+    integrationRefresh()
+  }
+});
+// watch(() => props.typeOfAddContacts, (newValue) => {
+//   addVoiceBotContacts.value = newValue
+// })
+watchEffect(() => {
+  addVoiceBotContacts.value = props.typeOfAddContacts;
+});
 // const newBotName = ref("");
 // const botList = await listApiBots();
 
@@ -148,27 +181,63 @@ watch(
     }
   },
 );
-const actionsComponent = (id: any) =>
-  h(
+// const actionsComponent = (id: any) =>
+//   h(
+//     "div",
+//     {
+//       class: "flex items-center gap-2",
+//     },
+//     [
+//       h(
+//         UiButton,
+//         {
+//           onClick: (e: Event) => {
+//             // e.stopPropagation();
+//             // addBucketNameModalState.value.open = true;
+//             // addBucketNameModalState.value.id = id
+//             addBucketModalState.value.open = true;
+//             addBucketModalState.value.id = id;
+//           },
+//           color: "primary",
+//         },
+//         h(Icon, { name: "lucide:pen" }),
+//       ),
+//       h(
+//         UiButton,
+//         {
+//           class: "",
+//           variant: "destructive",
+//           onClick: (e: any) => {
+//             deleteIntegrateNumber.value.open = true;
+//             deleteIntegrateNumber.value.id = id;
+//           }, // Add delete functionality
+//         },
+//         h(Icon, { name: "lucide:trash-2" }),
+//       ),
+//     ],
+//   );
+const actionsComponent = (id: any) => {
+  return h(
     "div",
     {
       class: "flex items-center gap-2",
     },
     [
+      // Render the pen button only if props.typeOfAddContacts !== "insideBucket"
+      props.typeOfAddContacts !== "insideBucket" &&
       h(
         UiButton,
         {
           onClick: (e: Event) => {
-            // e.stopPropagation();
-            // addBucketNameModalState.value.open = true;
-            // addBucketNameModalState.value.id = id
             addBucketModalState.value.open = true;
             addBucketModalState.value.id = id;
           },
           color: "primary",
         },
-        h(Icon, { name: "lucide:pen" }),
+        h(Icon, { name: "lucide:pen" })
       ),
+
+      // Always render the delete button
       h(
         UiButton,
         {
@@ -177,24 +246,17 @@ const actionsComponent = (id: any) =>
           onClick: (e: any) => {
             deleteIntegrateNumber.value.open = true;
             deleteIntegrateNumber.value.id = id;
-          }, // Add delete functionality
+          },
         },
-        h(Icon, { name: "lucide:trash-2" }),
+        h(Icon, { name: "lucide:trash-2" })
       ),
-      // h(
-      //   UiButton,
-      //   {
-      //     onClick: () => {
-      //       addBucketModalState.value.open = true
-      //       addBucketModalState.value.id = id
-      //       console.log("addBucketModalState")
-      //     }, // Add delete functionality
-      //     class: "bg-[#424bd1] hover:bg-[#424bd1] font-bold", // Different color for delete
-      //   },
-      //   [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Add"]
-      // )
-    ],
+    ]
   );
+};
+
+
+
+
 const columns = [
   columnHelper.accessor("name", {
     header: "Name",
@@ -258,7 +320,6 @@ const exportData = async () => {
         type: "voice",
       }
     });
-    console.log(exportContacts, "exportContacts")
     const exportReadObject = (exportContacts ?? []).map((contacts: any) => {
       const mergedObject = {
         name: contacts.name ?? "---",
@@ -283,11 +344,13 @@ const fileUpload = async () => {
 
     if (fileExtension === "csv") {
       console.log("Uploading CSV file");
-      await uploadNumber(file, 'voice');
+      if (props.typeOfAddContacts === "insideBucket") await uploadBucketNumber(file, route.params.id);
+      else await uploadNumber(file, 'voice');
       integrationRefresh()
     } else if (fileExtension === "xls" || fileExtension === "xlsx") {
       console.log("Uploading Excel file");
-      await uploadNumber(file, 'voice');
+      if (props.typeOfAddContacts === "insideBucket") await uploadBucketNumber(file, route.params.id);
+      else await uploadNumber(file, 'voice');
       integrationRefresh()
     } else {
       isLoading.value = false

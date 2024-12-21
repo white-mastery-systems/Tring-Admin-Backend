@@ -21,7 +21,8 @@
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :is-loading="isDataLoading"
       :columns="columns" :page-size="20" :height="13" height-unit="vh" />
 
-    <CreateEditBucketNumberModal v-model="addBucketModalState" botType="chat" @confirm="() => {
+    <CreateEditBucketNumberModal :typeOfAddContacts='addChatBotContacts' v-model="addBucketModalState" botType="chat"
+      @confirm="() => {
       addBucketModalState.open = false;
       integrationRefresh();
     }
@@ -30,14 +31,25 @@
     <ConfirmationModal v-model:open="deleteIntegrateNumber.open" title="Confirm Delete"
       description="Are you sure you want to delete ?" @confirm="() => {
         if (deleteIntegrateNumber?.id) {
-          bucketNumber({
-            queryId: queryId,
-            id: deleteIntegrateNumber.id,
-            botType: 'chat',
-            onSuccess: () => {
-              integrationRefresh();
-            },
-          });
+           if (props.typeOfAddContacts === 'insideBucket') {
+            console.log('asfsaf sfsadfsafda', deleteIntegrateNumber)
+            insideBucketNumber({
+              queryId: queryId,
+              id: deleteIntegrateNumber.id,
+              onSuccess: () => {
+                integrationRefresh();
+              },
+            });
+          } else {
+            bucketNumber({
+              queryId: queryId,
+              id: deleteIntegrateNumber.id,
+              botType: 'chat',
+              onSuccess: () => {
+                integrationRefresh();
+              },
+            });
+          }
           deleteIntegrateNumber.open = false;
         }
       }
@@ -56,7 +68,7 @@ useHead({
   title: "Contacts"
 });
 
-const props = defineProps<{ popupState?: boolean }>();
+const props = defineProps<{ popupState?: boolean, typeOfAddContacts: string }>();
 const emit = defineEmits<{ (e: "popupState", payload: any): void }>();
 const addBucketModalState: any = ref({ open: false, id: null });
 const deleteIntegrateNumber = ref({ open: false, id: null });
@@ -79,14 +91,23 @@ const filters = reactive<{
 let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
+const route = useRoute("contacts-management-buckets-id");
 // const searchContacts = ref("");
+const queryId = ref(route.params.id)
+const addChatBotContacts = ref()
 
+
+const apiUrl = computed(() => {
+  return props.typeOfAddContacts === "insideBucket"
+    ? `/api/org/contact-list/${route.params.id}`
+    : `/api/org/contacts`;
+});
 
 const {
   status,
   data: contactsList,
   refresh: integrationRefresh,
-} = await useLazyFetch(`/api/org/contacts`, {
+} = await useLazyFetch(apiUrl, {
   server: false,
   query: filters,
   default: () => [],
@@ -94,9 +115,22 @@ const {
     page.value = contacts.page;
     totalPageCount.value = contacts.totalPageCount;
     totalCount.value = contacts.totalCount;
-    return contacts.data;
+    return props.typeOfAddContacts === "insideBucket"
+      ? contacts.data.contacts.map((contact: any) => contact.contacts)
+      : contacts.data;
+    // return contacts.data;
   },
 });
+
+watch(() => route.params.id, (newQueryId) => {
+  if (newQueryId) {
+    integrationRefresh()
+  }
+})
+
+watchEffect(() => {
+  addChatBotContacts.value = props.typeOfAddContacts
+})
 // const newBotName = ref("");
 // const botList = await listApiBots();
 
@@ -156,6 +190,7 @@ const actionsComponent = (id: any) =>
       class: "flex items-center gap-2",
     },
     [
+      props.typeOfAddContacts !== "insideBucket" &&
       h(
         UiButton,
         {
@@ -283,11 +318,13 @@ const fileUpload = async () => {
 
     if (fileExtension === "csv") {
       console.log("Uploading CSV file");
-      await uploadNumber(file, 'chat');
+      if (props.typeOfAddContacts === "insideBucket") await uploadBucketNumber(file, route.params.id);
+      else await uploadNumber(file, 'chat');
       integrationRefresh()
     } else if (fileExtension === "xls" || fileExtension === "xlsx") {
       console.log("Uploading Excel file");
-      await uploadNumber(file, 'chat');
+      if (props.typeOfAddContacts === "insideBucket") await uploadBucketNumber(file, route.params.id);
+      else await uploadNumber(file, 'chat');
       integrationRefresh()
     } else {
       isLoading.value = false

@@ -24,11 +24,13 @@
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="chat">
-        <AddEditChatBotContacts :popupState="chatPopupState" @PopupState="chatPopupState = $event" />
+        <AddEditChatBotContacts typeOfAddContacts="insideContact" :popupState="chatPopupState"
+          @PopupState="chatPopupState = $event" />
 
       </UiTabsContent>
       <UiTabsContent value="voice">
-        <AddEditVoiceBotContacts :popupState="voicePopupState" @PopupState="voicePopupState = $event" />
+        <AddEditVoiceBotContacts typeOfAddContacts="insideContact" :popupState="voicePopupState"
+          @PopupState="voicePopupState = $event" />
       </UiTabsContent>
     </UiTabs>
   </Page>
