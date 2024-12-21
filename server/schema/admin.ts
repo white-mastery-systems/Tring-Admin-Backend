@@ -332,6 +332,20 @@ export const contactListAndContactsRelations = relations(
   }),
 )
 
+export const voiceBucketContactsRelations = relations(
+  voiceContactLinkSchema,
+  ({ one }) => ({
+    contacts: one(voicebotContactSchema, {
+       fields: [voiceContactLinkSchema.contactId],
+       references: [voicebotContactSchema.id],
+    }),
+    bucket: one(contactListSchema, {
+       fields: [voiceContactLinkSchema.contactListId],
+       references: [contactListSchema.id],
+    }),
+  }),
+)
+
 export const billingRelations = relations(paymentSchema, ({ one }) => ({
   organization: one(organizationSchema, {
     fields: [paymentSchema.organizationId],
