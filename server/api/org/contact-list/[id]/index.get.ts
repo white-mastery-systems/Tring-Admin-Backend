@@ -35,9 +35,17 @@ export default defineEventHandler(async (event) => {
       limit: limit,
       totalPageCount: Math.ceil(data.length/ limit) || 1,
       totalCount: data.length,
-      data: paginatedContacts
+      data: {
+        name: bucketDetail?.name,
+        type: bucketDetail?.type,
+        contacts: paginatedContacts
+      } 
     }
   } else {
-      return data
+      return {
+        name: bucketDetail?.name,
+        type: bucketDetail?.type,
+        contacts: data
+      }
   }
 })
