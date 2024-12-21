@@ -7,6 +7,26 @@ export const createCampaign = async (campaign: InsertCampaign) => {
   return (await db.insert(campaignSchema).values(campaign).returning())[0];
 };
 
+export const checkCampaignNameExist = async (
+  organizationId: string,
+  campaignName: string,
+  campaignId?: string
+) => {
+  const conditions = [
+    eq(campaignSchema.organizationId, organizationId),
+    ilike(campaignSchema.campaignName, campaignName),
+  ];
+
+  // Exclude the specific bucket ID if provided
+  if (campaignId) {
+    conditions.push(ne(campaignSchema.id, campaignId));
+  }
+
+  return await db.query.campaignSchema.findFirst({
+    where: and(...conditions),
+  });
+};
+
 export const campaignList = async (
   organizationId: string,
   query?: any,
@@ -25,15 +45,15 @@ export const campaignList = async (
     where: eq(campaignSchema.organizationId, organizationId),
     orderBy: [desc(campaignSchema.createdAt)],
   });
-  data = data.map((i: any) => ({
-    ...i,
-    campaignTime: momentTz(i?.campaignTime)
-      .tz(timeZone)
-      .format("DD MMM YYYY HH:mm"),
-    createdAt: momentTz(i?.createdAt)
-      .tz(timeZone)
-      .format("DD MMM YYYY hh:mm A"),
-  }));
+  // data = data.map((i: any) => ({
+  //   ...i,
+  //   campaignTime: momentTz(i?.campaignTime)
+  //     .tz(timeZone)
+  //     .format("DD MMM YYYY HH:mm"),
+  //   createdAt: momentTz(i?.createdAt)
+  //     .tz(timeZone)
+  //     .format("DD MMM YYYY hh:mm A"),
+  // }));
 
   if (query?.page && query?.limit) {
     const paginatedCampaign = data.slice(offset, offset + limit);
