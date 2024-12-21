@@ -1,6 +1,5 @@
 import { inArray } from 'drizzle-orm'
 import { contactListContactsSchema } from '~/server/schema/admin'
-import { createContactListContacts } from '~/server/utils/db/contact-list'
 
 const db = useDrizzle()
 
@@ -28,7 +27,7 @@ export default defineEventHandler(async (event) => {
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Name already exists",
+        statusMessage: "Bucket ame already exists",
       }),
     );
    }
