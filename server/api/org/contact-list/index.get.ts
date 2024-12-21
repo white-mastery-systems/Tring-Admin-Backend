@@ -1,4 +1,4 @@
-import { getContactLists } from "~/server/utils/db/contact-list"
+import { getAllChatContactLink, getAllVoiceContactLink, getContactLists } from "~/server/utils/db/contact-list"
 
 const db = useDrizzle()
 
@@ -21,44 +21,24 @@ export default defineEventHandler(async (event) => {
     offset = (page - 1) * limit;
   }
 
-  const chatContactsData = await db.query.contactListContactsSchema.findMany({
-    with: {
-      contacts: true
-    },
-    where: eq(contactListContactsSchema.organizationId, organizationId)
-  })
+  const chatContactsData = await getAllChatContactLink(organizationId)
 
-  const voiceContactsData = await db.query.voiceContactLinkSchema.findMany({
-    with: {
-      contacts: true
-    },
-    where: eq(voiceContactLinkSchema.organizationId, organizationId)
-  })
-
-
+  const voiceContactsData = await getAllVoiceContactLink(organizationId)
   // return contactList
 
   const groupedChatByContactListId = chatContactsData.reduce((acc: any, item: any) => {
-    // Check if the contactListId exists in the accumulator object
     if (!acc[item.contactListId]) {
-        // Initialize it with an empty array
         acc[item.contactListId] = [];
     }
-    // Push the contact to the corresponding contactListId group
     acc[item.contactListId].push(item.contacts);
-    
     return acc;
   }, {});
 
   const groupedVoiceByContactListId =  voiceContactsData.reduce((acc: any, item: any) => {
-    // Check if the contactListId exists in the accumulator object
     if (!acc[item.contactListId]) {
-        // Initialize it with an empty array
         acc[item.contactListId] = [];
     }
-    // Push the contact to the corresponding contactListId group
     acc[item.contactListId].push(item.contacts);
-    
     return acc;
   }, {});
   
@@ -71,7 +51,6 @@ export default defineEventHandler(async (event) => {
         noOfAudience: contactCount
     };
   });
-
 
   if(query?.page && query?.limit) {
      const paginatedContactList = allContactListwithContacts.slice(offset, offset + limit); 

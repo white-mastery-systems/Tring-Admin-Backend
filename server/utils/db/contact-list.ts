@@ -85,3 +85,51 @@ export const findExistingVoiceContactsLink = async (bucketId: string) => {
    .where(eq(voiceContactLinkSchema.contactListId, bucketId)
   );
 }
+
+// Chat contacts link
+export const getAllChatContactLink = async (organizationId: string) => {
+  return await db.query.contactListContactsSchema.findMany({
+    with: {
+      contacts: true
+    },
+    where: eq(contactListContactsSchema.organizationId, organizationId)
+  })
+}
+
+export const getContactsByChatBucketId = async (contactListId: string) => {
+  return await db.query.contactListContactsSchema.findMany({
+      with: {
+        contacts: true,
+        bucket: {
+          columns: {
+            name: true
+          }
+        }
+      },
+    where: eq(contactListContactsSchema.contactListId, contactListId)
+  })
+}
+
+// Voice contact link
+export const getAllVoiceContactLink = async (organizationId: string) => {
+  return await db.query.voiceContactLinkSchema.findMany({
+    with: {
+      contacts: true
+    },
+    where: eq(voiceContactLinkSchema.organizationId, organizationId)
+  })
+}
+
+export const getContactsByVoiceBucketId = async (contactListId: string) => {
+  return await db.query.voiceContactLinkSchema.findMany({
+    with: {
+      contacts: true,
+      bucket: {
+        columns: {
+          name: true
+        }
+      }
+    },
+    where: eq(voiceContactLinkSchema.contactListId, contactListId)
+  })
+}

@@ -1,6 +1,4 @@
-import { contactListContactsSchema } from "~/server/schema/admin"
-
-const db = useDrizzle()
+import { getContactsByChatBucketId, getContactsByVoiceBucketId } from "~/server/utils/db/contact-list"
 
 const zodQueryValidator = z.object({
   page: z.string().optional(),
@@ -13,18 +11,14 @@ export default defineEventHandler(async (event) => {
   const { id: contactListId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
   const query = await isValidQueryHandler(event, zodQueryValidator)
+
+  const bucketDetail = await getContactListById(contactListId)
+
+  const type = bucketDetail?.type
   
-  const data = await db.query.contactListContactsSchema.findMany({
-    with: {
-      contacts: true,
-      bucket: {
-        columns: {
-          name: true
-        }
-      }
-    },
-    where: eq(contactListContactsSchema.contactListId, contactListId)
-  })
+  const data = type === "chat" 
+  ? await getContactsByChatBucketId(contactListId)
+  : await getContactsByVoiceBucketId(contactListId)
 
   let page, offset, limit = 0
     
@@ -34,7 +28,7 @@ export default defineEventHandler(async (event) => {
     offset = (page - 1) * limit;
   }
   
-   if(query?.page && query?.limit) {
+  if(query?.page && query?.limit) {
     const paginatedContacts = data.slice(offset, offset + limit); 
     return {
       page: page,
