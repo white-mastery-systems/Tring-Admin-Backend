@@ -141,7 +141,7 @@ export default defineEventHandler(async (event) => {
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: `${botDetails?.name}`,
           chatLink: `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
-          whatsappLink: `https://wa.me/${body?.botUser?.mobile}`,
+          whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
         // console.log(
         //   botIntegration?.integration?.metadata?.access_token,
@@ -221,7 +221,7 @@ export default defineEventHandler(async (event) => {
           "Mobile": `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           "Bot Name": botDetails?.name,
           "Chat Link": `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
-          "Whatsapp Link": `https://wa.me/${body?.botUser?.mobile}`,
+          "Whatsapp Link": `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         }
         let textContent = Object.entries(payload)
         .map(([key, value]) => `${key}: ${value}`)
