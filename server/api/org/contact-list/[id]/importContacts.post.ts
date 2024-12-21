@@ -36,11 +36,13 @@ export default defineEventHandler(async (event) => {
   const newContacts = contactFileData.filter((item: any) =>
     !existingDbContacts.includes(type === "chat" ? item.Number : item.Phone)
   )
-  
+
   if(newContacts.length) {
+    const mapNewContactWithOrgId = constructData(newContacts, type, organizationId);
+  
     type === "chat"
-     ? await createContacts(newContacts) 
-     : await createVoicebotContacts(newContacts)
+     ? await createContacts(mapNewContactWithOrgId) 
+     : await createVoicebotContacts(mapNewContactWithOrgId)
   }
 
   const allDbContactList = type === "chat" 
@@ -64,7 +66,7 @@ export default defineEventHandler(async (event) => {
        organizationId,
   }))
 
-  console.log({ uniqueContactsData })
+  // console.log({ uniqueContactsData })
 
   if(!uniqueContactsData?.length) return errorResponse(event, 400, "No unique phonenumbers to import")
     

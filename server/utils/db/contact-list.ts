@@ -16,15 +16,27 @@ export const getContactLists = async (organizationId: string, query?: any) => {
   return data; 
 };
 
-export const isBucketNameAlreadyExists = async (organizationId: string, bucketName: string, type: string) => {
+export const checkBucketNameExists = async (
+  organizationId: string,
+  bucketName: string,
+  type: string,
+  contactListId?: string
+) => {
+  const conditions = [
+    eq(contactListSchema.organizationId, organizationId),
+    eq(contactListSchema.type, type),
+    ilike(contactListSchema.name, bucketName),
+  ];
+
+  // Exclude the specific bucket ID if provided
+  if (contactListId) {
+    conditions.push(ne(contactListSchema.id, contactListId));
+  }
+
   return await db.query.contactListSchema.findFirst({
-      where: and(
-         eq(contactListSchema.organizationId, organizationId),
-         eq(contactListSchema.type, type),
-         ilike(contactListSchema.name, bucketName)
-      )
-   })
-}
+    where: and(...conditions),
+  });
+};
 
 export const getContactListById = async (id: string) => {
   const data = await db.query.contactListSchema.findFirst({
@@ -132,4 +144,23 @@ export const getContactsByVoiceBucketId = async (contactListId: string) => {
     },
     where: eq(voiceContactLinkSchema.contactListId, contactListId)
   })
+}
+
+// delete contact link with bucket
+export const deleteChatContactFromBucket = async(bucketId: string, contactId: string) => {
+  return (await db.delete(contactListContactsSchema).where(
+    and(
+      eq(contactListContactsSchema.contactListId, bucketId),
+      eq(contactListContactsSchema.contactId, contactId)
+    )
+  ).returning())[0]
+}
+
+export const deleteVoiceContactFromBucket = async(bucketId: string, contactId: string) => {
+  return (await db.delete(voiceContactLinkSchema).where(
+    and(
+      eq(voiceContactLinkSchema.contactListId, bucketId),
+      eq(voiceContactLinkSchema.contactId, contactId)
+    )
+  ).returning())[0]
 }
