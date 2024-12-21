@@ -141,7 +141,7 @@ export default defineEventHandler(async (event) => {
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: `${botDetails?.name}`,
           chatLink: `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
-          whatsappLink: `https://wa.me/${body?.botUser?.mobile}`,
+          whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
         // console.log(
         //   botIntegration?.integration?.metadata?.access_token,

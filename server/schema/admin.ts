@@ -209,6 +209,21 @@ export const contactListContactsSchema = adminSchema.table("contact_list_contact
   }
 );
 
+export const voiceContactLinkSchema = adminSchema.table("voice_contact_links", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  contactListId: uuid("contact_list_id") // bucket id
+    .notNull()
+    .references(() => contactListSchema.id, { onDelete: 'cascade' }), // Foreign key to contact_list
+  contactId: uuid("contact_id")
+    .notNull()
+    .references(() => voicebotContactSchema.id, { onDelete: 'cascade' }), // Foreign key to contacts
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+  }
+);
+
+
 export const voicebotContactSchema = adminSchema.table("voicebot_contacts", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name"),
@@ -312,6 +327,20 @@ export const contactListAndContactsRelations = relations(
     }),
     bucket: one(contactListSchema, {
        fields: [contactListContactsSchema.contactListId],
+       references: [contactListSchema.id],
+    }),
+  }),
+)
+
+export const voiceBucketContactsRelations = relations(
+  voiceContactLinkSchema,
+  ({ one }) => ({
+    contacts: one(voicebotContactSchema, {
+       fields: [voiceContactLinkSchema.contactId],
+       references: [voicebotContactSchema.id],
+    }),
+    bucket: one(contactListSchema, {
+       fields: [voiceContactLinkSchema.contactListId],
        references: [contactListSchema.id],
     }),
   }),
