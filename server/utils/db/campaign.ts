@@ -73,14 +73,14 @@ export const getCampaignById = async (campaignId: string, timeZone: string) => {
   const data: any = await db.query.campaignSchema.findFirst({
     where: eq(campaignSchema.id, campaignId),
   });
-  if (data) {
-    data.createdAt = momentTz(data?.createdAt)
-      .tz(timeZone)
-      .format("DD MMM YYYY hh:mm A");
-    data.campaignTime = momentTz(data?.campaignTime)
-      .tz(timeZone)
-      .format("DD MMM YYYY HH:mm");
-  }
+  // if (data) {
+  //   data.createdAt = momentTz(data?.createdAt)
+  //     .tz(timeZone)
+  //     .format("DD MMM YYYY hh:mm A");
+  //   data.campaignTime = momentTz(data?.campaignTime)
+  //     .tz(timeZone)
+  //     .format("DD MMM YYYY HH:mm");
+  // }
   return data;
 };
 
