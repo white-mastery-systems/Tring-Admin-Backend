@@ -1,0 +1,76 @@
+import { errorResponse } from "~/server/response/error.response";
+import { createChatContactBucketLink, createVoiceContactBucketLink, findExistingChatContactsLink, findExistingVoiceContactsLink } from "~/server/utils/db/contact-list";
+import { parseContactsFormDataFile } from "~/server/utils/db/contacts";
+
+export default defineEventHandler(async (event) => {
+  const organizationId = (await isOrganizationAdminHandler(event)) as string
+
+  const { id: bucketId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
+
+  const bucketDetail: any = await getContactListById(bucketId)
+
+  const type = bucketDetail.type!
+
+  const formData = await readMultipartFormData(event);
+  if (!formData) return errorResponse(event, 500, "Invalid Data")
+
+  const fileField = formData.find((item) => item.name === "file")
+  if (!fileField) return errorResponse(event, 500, "No file uploaded")
+
+  const { filename, data }: any = fileField;
+  const ext = filename?.split('.').pop().toLowerCase();
+  
+  const contactFileData = await parseContactsFormDataFile({ file: data, fileType: ext, queryType: type! })
+
+  if(!contactFileData.length) return errorResponse(event, 500, "Uploaded file is empty")
+
+  const contactFilePhoneNumbers = contactFileData.map((item: any) => type === "chat" ? item.Number : item.Phone)
+ 
+  const dbContactList = type === "chat" 
+   ? await filterChatContactsByPhone(organizationId,contactFilePhoneNumbers)
+   : await filterVoiceContactsByPhone(organizationId,contactFilePhoneNumbers)
+
+  // Extract phone numbers from the fetched contactList
+  const existingDbContacts = dbContactList.map((contact: any) => contact.phone);
+
+  const newContacts = contactFileData.filter((item: any) =>
+    !existingDbContacts.includes(type === "chat" ? item.Number : item.Phone)
+  )
+  
+  if(newContacts.length) {
+    type === "chat"
+     ? await createContacts(newContacts) 
+     : await createVoicebotContacts(newContacts)
+  }
+
+  const allDbContactList = type === "chat" 
+   ? await filterChatContactsByPhone(organizationId,contactFilePhoneNumbers)
+   : await filterVoiceContactsByPhone(organizationId,contactFilePhoneNumbers)
+
+  const contactIds = allDbContactList.map((item) => item.id)
+
+  const existingBucketContactsLink = 
+   type === "chat"
+  ? await findExistingChatContactsLink(bucketId)
+  : await findExistingVoiceContactsLink(bucketId)
+
+  const existingBucketContactIds: any = new Set(existingBucketContactsLink.map((item: any) => item.contactId ))
+
+  const uniqueContactsData = contactIds
+    .filter((contact: any) => !existingBucketContactIds.has(contact))
+    .map((item: any) => ({
+       contactListId: bucketId,
+       contactId: item,
+       organizationId,
+  }))
+
+  console.log({ uniqueContactsData })
+
+  if(!uniqueContactsData?.length) return errorResponse(event, 400, "No unique phonenumbers to import")
+    
+  type === "chat" 
+  ? await createChatContactBucketLink(uniqueContactsData)
+  : await createVoiceContactBucketLink(uniqueContactsData)
+
+  return true
+})

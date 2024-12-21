@@ -1,7 +1,30 @@
 import { inArray } from "drizzle-orm";
 import { InsertVoicebotContacts } from "~/server/schema/admin";
+import { logger } from "~/server/logger"
+import { z } from "zod";
 
 const db = useDrizzle();
+
+// Define the Zod schema for a single contact
+const zodChatImportContacts = z.object({
+  "First Name": z.string().min(1, "First Name is required"),
+  "Last Name": z.string().optional(),
+  "Email": z.string().email("Invalid email format"),
+  "Country Code": z.string().regex(/^\+?\d{1,4}$/, "Invalid country code format"),
+  "Number": z.string().regex(/^\d{7,15}$/, "Invalid phone number format")
+});
+
+const zodVoiceImportsContacts = z.object({
+  "Name": z.string().min(1, "Name is required"),
+  "Phone": z.string(),
+  "Country Code": z.string(),
+  "Metadata": z.string(),
+  "Verification Id": z.string(),
+});
+
+// Define a schema for an array of contacts
+const chatContactsArraySchema = z.array(zodChatImportContacts);
+const voiceContactsArraySchema = z.array(zodVoiceImportsContacts)
 
 export const createContacts = async (contacts: any) => {
   return (await db.insert(contactSchema).values(contacts).returning())[0];
@@ -91,10 +114,14 @@ export const checkChatContacts = async (organizationId: string, phone: string) =
   }) 
 }
 
-export const filterChatContactsByPhone = async (phoneNumbers: any) => {
-  return await db.select()
+export const filterChatContactsByPhone = async (organizationId: string, phoneNumbers: any) => {
+  return await db.select({ id: contactSchema.id, phone: contactSchema.phone })
     .from(contactSchema)
-    .where(inArray(contactSchema.phone, phoneNumbers));
+    .where(
+      and(
+      inArray(contactSchema.phone, phoneNumbers),
+       eq(contactSchema.organizationId, organizationId)
+    ))
 }
 
 // Voicebot contacts
@@ -185,8 +212,81 @@ export const isVoicebotContactsAlreadyExists = async(contactId: string, phone: s
   })
 }
 
-export const filterVoiceContactsByPhone = async (phoneNumbers: any) => {
-  return await db.select()
+export const filterVoiceContactsByPhone = async (organizationId: string, phoneNumbers: any) => {
+  return await db.select({ id: voicebotContactSchema.id, phone: voicebotContactSchema.phone })
     .from(voicebotContactSchema)
-    .where(inArray(voicebotContactSchema.phone, phoneNumbers));
+    .where(
+      and(
+        inArray(voicebotContactSchema.phone, phoneNumbers),
+        eq(voicebotContactSchema.organizationId, organizationId)
+      )
+    )
+}
+
+export const constructData = (uniqueContactsData: any, type: string, organizationId: string) => {
+  return uniqueContactsData.map((i: any) => { 
+    return type === "chat" ?
+      {
+        firstName: i["First Name"],
+        lastName: i["Last Name"],
+        email: i["Email"],
+        countryCode: i["Country Code"],
+        phone: i["Number"],
+        organizationId
+      } 
+    : 
+      {
+        name: i["Name"],
+        phone: i["Phone"],
+        countryCode: i["Country Code"],
+        metadata: i["Metadata"],
+        verificationId: i["Verification Id"],
+        organizationId
+      } 
+    })
+}
+
+export const parseContactsFormDataFile = async ({ file, fileType, queryType } : {
+    file: any,
+    fileType: string,
+    queryType: string
+  }) => {
+  try {
+    let parsedData;
+    if (fileType === "csv") {
+      parsedData = await parseCSV(file.toString());
+    } else if (fileType === "xlsx" || fileType === "xls") {
+      parsedData = parseExcelBuffer(file);
+    } else {
+      throw new Error("Unsupported file format");
+    }
+
+    if (!parsedData || !parsedData.length) throw new Error("The uploaded file is empty");
+
+    // Define expected columns based on query type
+    const expectedColumns = queryType === "chat" 
+      ? ["First Name", "Last Name", "Email", "Country Code", "Number"]
+      : ["Name", "Phone", "Country Code", "Metadata", "Verification Id"];
+
+    const actualColumns = Object.keys(parsedData[0]);
+    const missingColumns = expectedColumns.filter(col => !actualColumns.includes(col));
+    const extraColumns = actualColumns.filter(col => !expectedColumns.includes(col));
+
+    if (missingColumns.length) throw new Error(`Missing columns - ${missingColumns.join(", ")}`);
+    if (extraColumns.length) throw new Error(`Extra columns - ${extraColumns.join(", ")}`);
+
+    // Validate parsed data using Zod schema
+    const validationResult = queryType === "chat"
+      ? chatContactsArraySchema.safeParse(parsedData)
+      : voiceContactsArraySchema.safeParse(parsedData);
+
+    if (!validationResult.success) throw new Error("Validation errors in the imported file");
+
+    const validContactData = validationResult.data;
+
+    return validContactData;
+  } catch (error: any) {
+    logger.error(`Contacts import function error: ${JSON.stringify(error?.message)}`);
+    throw new Error(error);
+  }
 }
