@@ -1,5 +1,5 @@
 import momentTz from "moment-timezone";
-import { outboundCallSchema } from "~/server/schema/voicebot";
+import { InsertVoicebotSchedular, outboundCallSchema, voicebotSchedularSchema } from "~/server/schema/voicebot";
 
 const db = useDrizzle();
 
@@ -220,17 +220,26 @@ export const createVoiceBotLead = async (leads: any) => {
 
 // Get all voicebot
 export const getAllActiveVoicebots = async() => {
-  return db.query.voicebotSchema.findMany({
+  return await db.query.voicebotSchema.findMany({
     where: eq(voicebotSchema.active, true)
   })
 }
 
 // outbound calls
 export const getNotDialedCallList = async() => {
-  return db.query.outboundCallSchema.findMany({
-    where: eq(outboundCallSchema.dialStatus, "not dialed"),
-    limit: 3
+  return await db.query.voicebotSchedularSchema.findMany({
+    where: eq(voicebotSchedularSchema.callStatus, "not dialed"),
+    limit: 1
   })
+}
+
+export const updateVoiceCallStatus = async(id: string, body: any) => {
+  return await db.update(voicebotSchedularSchema)
+    .set({ 
+      ...body,
+      updatedAt: new Date()
+    })
+    .where(eq(voicebotSchedularSchema.id, id))
 }
 
 // get organization voicebot plan
@@ -241,4 +250,9 @@ export const orgVoicebotSubscription = async (organizationId: string) => {
       eq(orgSubscriptionSchema.botType, "voice")
     )
   })
+}
+
+// voicebot schedular
+export const createVoicebotSchedular = async (voicebotSchedular: InsertVoicebotSchedular[]) => {
+  return await db.insert(voicebotSchedularSchema).values(voicebotSchedular).returning()
 }

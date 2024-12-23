@@ -15,12 +15,29 @@ export const getAvailablePhoneNumbers = async (provider: string, metadata: any) 
       case "telnyx":
         incomingPhoneNumber = await telnyxIncomingPhoneNumbers({ apiKey: metadata.apiKey })
         break
+
+      case "sandbox": 
+        incomingPhoneNumber = sandboxIncomingPhoneNumbers()
+        break
     }
     return incomingPhoneNumber
   } catch (error: any) {
     logger.error(`Cloud telephony - get available phone-numbers Error, ${JSON.stringify(error.message)}`)
     throw new Error(error)
   }
+}
+
+export const sandboxIncomingPhoneNumbers = () =>{
+  const start = 100000; // Start of the range
+  const end = 1001000; // End of the range
+  const prefix = "+91"; // Prefix for each number
+
+  // Generate the numbers in the range
+  const numbers = [];
+  for (let i = start; i <= end; i++) {
+    numbers.push(`${prefix}${i}`);
+  }
+  return numbers
 }
 
 export const twilioIncomingPhoneNumbers = async ({ apiKey, apiSecret, accountSid } : 
