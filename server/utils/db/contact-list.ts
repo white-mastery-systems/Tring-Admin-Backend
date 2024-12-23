@@ -164,3 +164,22 @@ export const deleteVoiceContactFromBucket = async(bucketId: string, contactId: s
     )
   ).returning())[0]
 }
+
+// check chat contact link with bucket 
+export const getSingleChatContactLink = async (bucketId: string, contactId: string) => {
+  return await db.query.contactListContactsSchema.findFirst({
+      where: and(
+        eq(contactListContactsSchema.contactId, contactId),
+        eq(contactListContactsSchema.contactListId, bucketId)
+      )
+  })
+}
+
+export const getSingleVoiceContactLink = async (bucketId: string, contactId: string) => {
+  return await db.query.voiceContactLinkSchema.findFirst({
+      where: and(
+        eq(voiceContactLinkSchema.contactId, contactId),
+        eq(voiceContactLinkSchema.contactListId, bucketId)
+      )
+  })
+}

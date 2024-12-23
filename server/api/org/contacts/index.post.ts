@@ -1,7 +1,7 @@
 import { errorResponse } from "~/server/response/error.response"
 import { checkChatContacts, checkVoiceContacts, createContacts, createVoicebotContacts } from "~/server/utils/db/contacts"
 
-const zodChatContacts = z.object({
+export const zodChatContacts = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   email: z.string().optional(),
@@ -10,7 +10,7 @@ const zodChatContacts = z.object({
   organizationId: z.string().optional()
 })
 
-const zodVoiceContacts = z.object({
+export const zodVoiceContacts = z.object({
   name: z.string().optional(),
   phone: z.string(),
   metadata: z.string().optional(),

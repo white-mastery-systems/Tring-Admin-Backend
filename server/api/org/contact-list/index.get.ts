@@ -5,7 +5,8 @@ const db = useDrizzle()
 const zodQueryvalidator = z.object({
   q: z.string().optional(),
   page: z.string().optional(),
-  limit: z.string().optional()
+  limit: z.string().optional(),
+  type: z.string().optional()
 })
 
 export default defineEventHandler(async (event) => {
@@ -52,8 +53,13 @@ export default defineEventHandler(async (event) => {
     };
   });
 
+  if(query?.type) {
+    const bucketList = allContactListwithContacts.filter((i) => i.type === query.type)
+    return bucketList
+  }
+
   if(query?.page && query?.limit) {
-     const paginatedContactList = allContactListwithContacts.slice(offset, offset + limit); 
+    const paginatedContactList = allContactListwithContacts.slice(offset, offset + limit); 
     return {
       page: page,
       limit: limit,

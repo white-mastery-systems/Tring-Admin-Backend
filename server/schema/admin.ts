@@ -222,8 +222,6 @@ export const voiceContactLinkSchema = adminSchema.table("voice_contact_links", {
     .references(() => organizationSchema.id),
   }
 );
-
-
 export const voicebotContactSchema = adminSchema.table("voicebot_contacts", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name"),
@@ -240,20 +238,17 @@ export const voicebotContactSchema = adminSchema.table("voicebot_contacts", {
 
 export const campaignSchema = adminSchema.table("campaign", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  countryCode: varchar("country_code"),
-  phoneNumber: varchar("phone_number"),
-  campaignDate: timestamp("campaign_date"),
-  campaignTime: timestamp("campaign_time"),
-  type: varchar("type"),
-  templateId: uuid("template_id").references(() => templateSchema.id),
-  contactListId: uuid("contact_list_id").references(
+  campaignName: varchar("campaign_name"),
+  contactMethod: varchar("contact_method"),
+  bucketId: uuid("bucket_id").references(
     () => contactListSchema.id,
-    { onDelete: "cascade" },
+    { onDelete: "cascade" }
   ),
+  botConfig: jsonb("bot_config"),
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizationSchema.id),
-  metadata: jsonb("metadata").default({}).notNull(),
+    .references(() => organizationSchema.id
+  ),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

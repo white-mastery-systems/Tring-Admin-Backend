@@ -1,4 +1,5 @@
 import momentTz from "moment-timezone"
+import { error } from "winston";
 import { errorResponse } from "~/server/response/error.response";
 import { getCurrentMonthCallLogList } from "~/server/utils/db/call-logs";
 import { orgVoicebotSubscription } from "~/server/utils/db/voicebots";
@@ -8,47 +9,21 @@ const db = useDrizzle();
 export default defineEventHandler(async (event) => {
   const timeZoneHeader = event.node?.req?.headers["time-zone"];
   const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
-  const body = await readValidatedBody(
-    event,
-    z.object({
-      mobile: z.string(),
-      countryCode: z.string(),
-    }).parse,
-  );
-
-  // console.log({ body })
-  // console.log({ moment: momentTz.tz.zonesForCountry("IN")})
-
-  const numberIntegrationDetail: any = await db.query.numberIntegrationSchema.findFirst({
-    where: eq(numberIntegrationSchema.exoPhone, body?.mobile),
-  });
-
-  if (!numberIntegrationDetail) {
-    return sendError(
-      event,
-      createError({
-        statusCode: 400,
-        statusMessage: "Mobile number does not exist",
-      }),
-    );
-  }
-
-  const integrationId = numberIntegrationDetail?.id
+  const query = await isValidQueryHandler(event, z.object({
+    phoneNumber: z.any()
+  }))
   
+  const incomingPhoneNumber = (`+${query.phoneNumber}`).replace(/\s+/g, "")
+
   const voiceBotDetail: any = await db.query.voicebotSchema.findFirst({
-    where: eq(voicebotSchema.ivrConfig, integrationId)
+    where: eq(voicebotSchema.incomingPhoneNumber, incomingPhoneNumber)
   })
+
+  if (!voiceBotDetail) return errorResponse(event, 400, "Mobile number does not exist")
+
   const organizationId = voiceBotDetail?.organizationId
 
-  if (!voiceBotDetail.active) {
-    return sendError(
-      event,
-      createError({
-        statusCode: 400,
-        statusMessage: "Bot is not active",
-      }),
-    );
-  }
+  if (!voiceBotDetail.active) return errorResponse(event, 400, "Bot is not active")
 
   // check the plan-code of the orgaination
   let voicebotPlan: any = await orgVoicebotSubscription(organizationId)
