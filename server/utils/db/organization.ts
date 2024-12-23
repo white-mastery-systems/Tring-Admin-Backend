@@ -244,6 +244,12 @@ export const updateChatbotStatus = async(organizationId: string) => {
   ))
 }
 
+export const getAllOrgVoiceSubscription = async() => {
+  return await db.query.orgSubscriptionSchema.findMany({
+    where: eq(orgSubscriptionSchema.botType, "voice")
+  })
+}
+
 const updateOrgSubscriptionStatus = async(organizationId: string, status: string) => {
   await db
   .update(orgSubscriptionSchema)

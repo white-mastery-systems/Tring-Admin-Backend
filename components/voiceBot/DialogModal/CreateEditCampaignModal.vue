@@ -5,7 +5,8 @@
       <span class="flex gap-2 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
         <TextField name="campaignName" label="Campaign Name" placeholder="Enter campaign name" required>
         </TextField>
-        <SelectField name="contactMethod" label="Contact Method" placeholder="Select type" class="w-full" @input="handleType($event)" :options="[
+        <SelectField name="contactMethod" label="Contact Method" placeholder="Select type" class="w-full"
+          @input="handleType($event)" :options="[
           {
             value: 'voice',
             label: 'Voice',
@@ -20,20 +21,20 @@
         <SelectField name="bucketId" label="Select Bucket" placeholder="Select bot" :options="BucketList" required />
         <DatePickerField v-if="values.contactMethod === 'whatsapp'" name="date" label="Date" placeholder="Select a Date"
           required />
-        <SelectField v-if="values.contactMethod === 'voice'" name="botId" label="Select Bot" placeholder="Select bot list"
-          :options="BotList" required />
+        <SelectField v-if="values.contactMethod === 'voice'" name="botId" label="Select Bot"
+          placeholder="Select bot list" :options="BotList" required />
       </div>
       <div v-if="values.contactMethod === 'voice'" class="flex grid grid-cols-2 gap-2">
         <span>
-          <TimePickerField name="startTime" label="Start Time"> </TimePickerField>
+          <TimePickerField name="startTime" label="Start Time" required> </TimePickerField>
         </span>
         <span>
-          <TimePickerField name="endTime" label="End Time"> </TimePickerField>
+          <TimePickerField name="endTime" label="End Time" required> </TimePickerField>
         </span>
       </div>
-      <!-- <span v-if="values.contactMethod === 'whatsapp'">
-        <TimePickerField name="time" label="Time"> </TimePickerField>
-      </span> -->
+      <span v-if="values.contactMethod === 'whatsapp'">
+        <TimePickerField name="time" label="Time" required> </TimePickerField>
+      </span>
       <!-- <div v-if="values.contactMethod === 'whatsapp'" class="flex gap-2">
         <CountryCodeField class="w-[100px]" name="countryCode" label="Country Code" helperText="Enter your country code"
           required />
@@ -51,8 +52,8 @@
           }))
             " />
       </div>
-      <TextField v-if="values.contactMethod === 'voice'" type="number" label="Calls Per Trigger" name="callsPerTrigger" required
-        placeholder="Enter calls per trigger" disableCharacters />
+      <TextField v-if="values.contactMethod === 'voice'" type="number" label="Calls Per Trigger" name="callsPerTrigger"
+        required placeholder="Enter calls per trigger" disableCharacters />
 
       <div class="flex w-full justify-end">
         <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
@@ -103,101 +104,6 @@ const campaignListWithLabels = computed(() => {
 const df = new DateFormatter("en-US", {
   dateStyle: "long",
 });
-// const createEditCampaignValidation = toTypedSchema(
-//   z
-//     .object({
-//       date: z
-//         .string({ required_error: "A date is required." })
-//         .refine((v) => v, { message: "A date is required." }),
-//       startTime: z
-//         .string({ required_error: "Time is required." })
-//         .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
-//           message: "Invalid start time format.",
-//         })
-//         .refine((v) => !!v, { message: "Time is required." }),
-//       endTime: z
-//         .string({ required_error: "Time is required." })
-//         .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
-//           message: "Invalid end time format.",
-//         })
-//         .refine((v) => !!v, { message: "Time is required." }),
-//       type: z
-//         .string({ required_error: "Type is required" })
-//         .min(1, "Audience Bucket Name is required"),
-//       botList: z.string(),
-//       bucketList: z.string(),
-//       exoPhone: z
-//         .string({ required_error: "Phone Number is required" })
-//         .optional()
-//         .default(""),
-//       countryCode: z
-//         .string({ required_error: "Country Code is required" })
-//         .optional()
-//         .default(""),
-//       audienceBucket: z
-//         .string({ required_error: "Audience Bucket Name is required" })
-//         .min(1, "Audience Bucket Name is required"),
-//       templateId: z
-//         .string({ required_error: "Template is required" })
-
-//         .default(""),
-//     })
-//     .superRefine((data, ctx) => {
-//       if ((data.type === "voice") && data.exoPhone.trim() === "") {
-//         ctx.addIssue({
-//           code: z.ZodIssueCode.custom,
-//           message: `Number is required.`,
-//           path: ["exoPhone"], // Field with the issue
-//         });
-//         return; // Stop further validation for this field if empty
-//       }
-//       const lengthRequirement = getCountryLengthRequirement(data.countryCode);
-//       if ((data.type === "voice") && (data.exoPhone.length !== lengthRequirement)) {
-//         ctx.addIssue({
-//           code: z.ZodIssueCode.custom,
-//           message: `Number must be exactly ${lengthRequirement} characters long.`,
-//           path: ["exoPhone"], // Field with the issue
-//         });
-//       }
-//       const isWhatsApp = data.type === "whatsapp";
-
-//       // Validate for non-whatsapp types
-//       if (!isWhatsApp) {
-//         if (!data.exoPhone) {
-//           ctx.addIssue({
-//             path: ["exoPhone"],
-//             message: "Phone Number is required.",
-//             code: z.ZodIssueCode.custom,
-//           });
-//         }
-//         if (!data.countryCode) {
-//           ctx.addIssue({
-//             path: ["countryCode"],
-//             message: "Country Code is required.",
-//             code: z.ZodIssueCode.custom,
-//           });
-//         }
-//       }
-
-//       // Additional integration checks (commented section logic)
-//       if (data.integrationId && data.integrationId.length > 0) {
-//         if (!data.templateId) {
-//           ctx.addIssue({
-//             path: ["templateId"],
-//             message: "Template ID is required when Integration ID is present.",
-//             code: z.ZodIssueCode.custom,
-//           });
-//         }
-//         if (!data.phoneId) {
-//           ctx.addIssue({
-//             path: ["phoneId"],
-//             message: "Phone ID is required when Integration ID is present.",
-//             code: z.ZodIssueCode.custom,
-//           });
-//         }
-//       }
-//     })
-// );
 const createEditCampaignValidation = toTypedSchema(z
     .object({
       campaignName: z.string().min(1, { message: "Campaign Name is required." }),
@@ -356,6 +262,7 @@ watch(
       setFieldValue("botId", getSingleDetails?.botConfig.botId);
       setFieldValue("startTime", getSingleDetails?.botConfig.workingStartTime);
       setFieldValue("endTime", getSingleDetails?.botConfig.workingEndTime);
+      setFieldValue("time", getSingleDetails?.botConfig.scheduleTime);
       setFieldValue("callsPerTrigger", Number(getSingleDetails?.botConfig.callsPerTrigger));
       const time = getSingleDetails.campaignTime.match(/\d{2}:\d{2}/)[0];
       setFieldValue("startTime", time);
@@ -423,6 +330,7 @@ const handleConnect = handleSubmit(async (values: any) => {
         callsPerTrigger: values.callsPerTrigger.toString(),
       }
       : {
+        scheduleTime: values.time,
         date: values.date,
         templateId: values.templateId,
       };

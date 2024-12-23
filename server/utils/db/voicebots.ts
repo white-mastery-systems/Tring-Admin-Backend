@@ -226,10 +226,12 @@ export const getAllActiveVoicebots = async() => {
 }
 
 // outbound calls
-export const getNotDialedCallList = async() => {
+export const getNotDialedVoiceCallList = async() => {
   return await db.query.voicebotSchedularSchema.findMany({
-    where: eq(voicebotSchedularSchema.callStatus, "not dialed"),
-    limit: 1
+    where: or(
+      eq(voicebotSchedularSchema.callStatus, "not dialed"),
+      eq(voicebotSchedularSchema.callStatus, "failed")
+    ),
   })
 }
 
