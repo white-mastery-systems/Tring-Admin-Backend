@@ -29,7 +29,7 @@ export const getAvailablePhoneNumbers = async (provider: string, metadata: any) 
 
 export const sandboxIncomingPhoneNumbers = () =>{
   const start = 100000; // Start of the range
-  const end = 101000; // End of the range
+  const end = 100100; // End of the range
   const prefix = "+91"; // Prefix for each number
 
   // Generate the numbers in the range
