@@ -1,5 +1,6 @@
 import { checkCampaignNameExist } from "~/server/utils/db/campaign";
 import { errorResponse } from "~/server/response/error.response";
+import { createVoicebotSchedular } from "~/server/utils/db/voicebots";
 
 const zodInsertCampaign = z.object({
   campaignName: z.string(),
@@ -30,6 +31,24 @@ export default defineEventHandler(async (event) => {
     organizationId
   })
 
+  if(data.contactMethod === "voice") {
+    // fetch voiceContactIds of bucket
+    const voiceContactList = await getContactsByVoiceBucketId(data?.bucketId)
+
+    const voiceContactIds = voiceContactList.map((i) => i.contactId)
+
+    const mapVoiceContactWithSchedular = voiceContactIds.map((contactId) => {
+      return {
+        campaignId: data.id,
+        bucketId: data?.bucketId!,
+        contactId: contactId,
+        botId: data?.botConfig?.botId,
+        organizationId: organizationId,
+      }
+    })
+    // create campaign data in schedular table
+    await createVoicebotSchedular(mapVoiceContactWithSchedular)
+  }
   return data
 })
 

@@ -15,6 +15,10 @@ export const getAvailablePhoneNumbers = async (provider: string, metadata: any) 
       case "telnyx":
         incomingPhoneNumber = await telnyxIncomingPhoneNumbers({ apiKey: metadata.apiKey })
         break
+
+      case "sandbox": 
+        incomingPhoneNumber = ["+91 100000", "+91 1001000"]
+        break
     }
     return incomingPhoneNumber
   } catch (error: any) {
