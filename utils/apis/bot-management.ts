@@ -163,6 +163,13 @@ export const getVoiceBotDetails = async (botId: string) => {
   return bot;
 };
 
+export const getVoiceBotList = async () => {
+  const bot = await $fetch<any>(
+    `/api/voicebots?active=${true}`,
+  );
+  return bot;
+};
+
 export const deleteVoiceBot = async (botId: string) => {
   try {
     await $fetch(`/api/voicebots/${botId}`, {

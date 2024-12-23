@@ -60,6 +60,9 @@ const { refresh } = useCount();
 const isLoading = ref(false)
 const providerList = ref([
   {
+    value: 'sandbox',
+    label: 'Sandbox',
+  }, {
     value: 'twilio',
     label: 'Twilio',
   }, {
@@ -78,13 +81,19 @@ const formSchema = toTypedSchema(
       apiSecret: z.string().optional(),
       // authToken: z.string().optional(),
       subDomain: z.string().optional(),
-      apiKey: z.string().min(2, 'API Key is required'),
+      apiKey: z.string().optional(),
       apiToken: z.string().optional(),
       flowId: z.string().optional(),
       publicKey: z.string().optional(),
       connectionId: z.string().optional(),
     })
     .superRefine((data, ctx) => {
+      if (data.provider !== 'sandbox' && !data.apiKey) {
+        ctx.addIssue({
+          path: ['apiKey'],
+          message: 'API Key is required unless the provider is "sandbox".',
+        });
+      }
       // Provider-specific validation
       if (data.provider === 'twilio') {
         if (!data.accountSid) {
@@ -175,10 +184,9 @@ const {
   validationSchema: formSchema,
 });
 
-// watch(props.numberModalState, (newState) => { 
-//   console.log(newState, "newState -- newState")
-// });
-
+watch(errors, (newErrors) => {
+  console.log(newErrors)
+})
 watch(() => props.numberModalState.open, async () => {
   resetForm()
   if (props.numberModalState.id) {

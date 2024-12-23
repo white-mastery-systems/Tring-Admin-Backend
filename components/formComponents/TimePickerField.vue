@@ -39,12 +39,12 @@ watch(value, (value) => {
 </script>
 <template>
   <div class="flex flex-col justify-start items-center gap-2 font-medium w-full">
-    <label :for="name" class="pb-[1px] text-gray-700 w-full" :class="(errorMessage) ? 'text-red-500' : ''">
+    <label :for="name" class="pb-[1px] text-gray-700 w-full text-sm" :class="(errorMessage) ? 'text-red-500' : ''">
       {{ label }} <span v-if="required" class="pb-2 text-red-500 font-medium text-[18px]">*</span>
     </label>
     <input v-model="value" type="time" :id="name" class="w-full" :readonly="disabled" :class="[
       'border-[1px] border-solid rounded-[6px] py-[8px] px-2 font-normal text-[14px]',
     ]">
-    <p v-if="errorMessage" class="text-red-500 text-[13px]">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="text-red-500 text-[13px] w-full">{{ errorMessage }}</p>
   </div>
 </template>

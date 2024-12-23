@@ -79,7 +79,6 @@
       totalPageCount.value = integrations.totalPageCount;
       totalCount.value = integrations.totalCount;
       return integrations.data;
-
     },
   });
   // const message = inject('message')
@@ -167,7 +166,6 @@
               id: deleteExoPhoneState.id,
               onSuccess: () => {
                 integrationRefresh();
-                console.log('main --- main')
               },
             });
             deleteExoPhoneState.open = false;

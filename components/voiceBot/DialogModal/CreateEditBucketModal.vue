@@ -2,15 +2,18 @@
   <DialogWrapper v-model="addBucketNameModalState" :title="addBucketNameModalState.id ? 'Modify Bucket' : 'Add Bucket'"
     class="rounded-lg">
     <form @submit="handleConnect" class="space-y-4">
-      <div class="flex gap-4">
-        <TextField name="name" label="Name" placeholder="Enter name" required>
-        </TextField>
-      </div>
-      <!-- {{ selectedContacts }} -->
-      <div class="space-y-4">
-        <MultiSelect v-model="selectedContacts" :options="filteredContactsList" name="contactIds" label="Contacts"
-          placeholder="Select Contacts" :multiple="true" :track-by="'value'" :append-to-body="true" required />
-      </div>
+      <TextField name="name" label="Name" placeholder="Enter name" required>
+      </TextField>
+      <SelectField v-if="!addBucketNameModalState.id" name="type" label="Select Bot Type"
+        placeholder="Select bot type" :options="[
+          {
+            value: 'chat',
+            label: 'Chat',
+          }, {
+            value: 'voice',
+            label: 'Voice',
+          },
+        ]" required />
       <!-- <MultiSelect v-model="selectedOptions" :options="options"  /> -->
       <div class="flex items-center justify-end">
         <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
@@ -42,7 +45,6 @@ const {
   },
 });
 // Local state to hold the selected values
-const selectedContacts = ref([]);
 
 const emit = defineEmits<{ (e: "confirm"): void }>();
 const addBucketNameModalState = defineModel<{ open: boolean; id: any }>({
@@ -63,32 +65,39 @@ const bucketSchema = toTypedSchema(
     name: z
       .string({ required_error: "Name is required" })
       .min(1, "Name is required"),
-    contactIds: z.array(z.object({
-      value: z.string({ required_error: "At least one contact must be selected" }).min(1, "Contact is required"),
-    })).nonempty("At least one contact must be selected"),
-  }),
-);
+    type: z.string().optional(),
+  }).superRefine((data, ctx) => {
+    // Check if `type` is not empty and additional conditions apply
+    if (data.type === undefined && addBucketNameModalState.value.id === null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "A valid ID is required when type is provided",
+        path: ["type"], // Highlight the "type" field
+      })
+    }
+  }))
+
 watch(
   () => addBucketNameModalState.value.open,
   async (newState) => {
     if (newState) { // Only perform fetch when opening
       resetForm()
-      selectedContacts.value = []
+      // selectedContacts.value = []
       if (addBucketNameModalState.value.id) {
         getSingleDetails.value = await $fetch(
           `/api/org/contact-list/${addBucketNameModalState.value.id}`
         );
-        setFieldValue("name", getSingleDetails.value[0].bucket.name);
-        
+        setFieldValue("name", getSingleDetails.value.name);
+        // setFieldValue("type", getSingleDetails.value[0].bucket.type);
 
-        const formattedContactIds = getSingleDetails.value.map((item: any) => {
-          return {
-            value: item.contactId, // The ID for the MultiSelect
-            name: `${item.contacts.countryCode} ${item.contacts.phone}`, // Format name as country code and phone number
-            };
-        })
-        setFieldValue("contactIds", formattedContactIds);
-        selectedContacts.value = formattedContactIds
+        // const formattedContactIds = getSingleDetails.value.map((item: any) => {
+        //   return {
+        //     value: item.contactId, // The ID for the MultiSelect
+        //     name: `${item.contacts.countryCode} ${item.contacts.phone}`, // Format name as country code and phone number
+        //     };
+        // })
+        // setFieldValue("contactIds", formattedContactIds);
+        // selectedContacts.value = formattedContactIds
       }
     }
   }
@@ -110,32 +119,35 @@ const [nameField, nameFieldProps] = defineField("name");
 const handleConnect = handleSubmit(async (values: any) => {
   isLoading.value = true;
 
-  // let removedContacts: any = []
-  const formattedContact = values.contactIds.map((contact: { value: string }) => contact.value)
+  // // let removedContacts: any = []
+  // const formattedContact = values.contactIds.map((contact: { value: string }) => contact.value)
   
-  // Find removed contacts using filter
-  const removedContacts = getSingleDetails.value
-    .filter((item: any) => !formattedContact.includes(item.contactId))
-    .map((items: any) => items.contactId)
+  // // Find removed contacts using filter
+  // const removedContacts = getSingleDetails.value
+  //   .filter((item: any) => !formattedContact.includes(item.contactId))
+  //   .map((items: any) => items.contactId)
 
-  const transformedValues = {
-    ...values,
-    contactIds: values.contactIds.map((contact: { value: string }) => contact.value),
-    removedContactIds: removedContacts,
-  };
+  // const transformedValues = {
+  //   ...values,
+  //   contactIds: values.contactIds.map((contact: { value: string }) => contact.value),
+  //   removedContactIds: removedContacts,
+  // };
 
   try {
     if (addBucketNameModalState.value.id) {
       $fetch("/api/org/contact-list/" + addBucketNameModalState.value.id, {
         method: "PUT",
-        body: transformedValues,
+        body: values,
       });
 
       // const getUpdateValues = await $fetch(`api/org/contact-list/${addBucketNameModalState.value.id}`, { method: "PUT", body: values });
       toast.success("Updated successfully");
     } else {
-      await $fetch("/api/org/contact-list", { method: "POST", body: transformedValues });
+      await $fetch("/api/org/contact-list", { method: "POST", body: values });
       toast.success("Created successfully");
+      await navigateTo({
+        name: 'contacts-management-buckets',
+      });
     }
     emit("confirm");
   } catch (error: any) {
