@@ -131,27 +131,6 @@ watch(() => route.params.id, (newQueryId) => {
 watchEffect(() => {
   addChatBotContacts.value = props.typeOfAddContacts
 })
-// const newBotName = ref("");
-// const botList = await listApiBots();
-
-// const { status, data: voiceBot } = await useLazyFetch("/api/voicebots", {
-//   server: false,
-//   default: () => [],
-//   query: {
-//     active: activeStatus,
-//     q: searchBotDebounce,
-//   },
-//   headers: {
-//     "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-//   },
-//   transform: (voiceBot) =>
-//     voiceBot.map((bot) => ({
-//       id: bot.id,
-//       name: bot.name,
-//       status: bot.active,
-//       createdAt: `${bot.createdAt}`,
-//     })),
-// });
 const exportReadyColumns = computed(() => {
   return [
     "First Name",
@@ -163,10 +142,6 @@ const exportReadyColumns = computed(() => {
 })
 const isDataLoading = computed(() => status.value === "pending");
 const columnHelper = createColumnHelper<(typeof contactsList.value)[0]>();
-
-// watch(searchContacts,(newValue: any) => {
-//   filters.type = newValue
-// })
 
 watch(
     () => props.popupState,
@@ -195,9 +170,6 @@ const actionsComponent = (id: any) =>
         UiButton,
         {
           onClick: (e: Event) => {
-            // e.stopPropagation();
-            // addBucketNameModalState.value.open = true;
-            // addBucketNameModalState.value.id = id
             addBucketModalState.value.open = true;
             addBucketModalState.value.id = id;
           },
@@ -217,18 +189,6 @@ const actionsComponent = (id: any) =>
         },
         h(Icon, { name: "lucide:trash-2" }),
       ),
-      // h(
-      //   UiButton,
-      //   {
-      //     onClick: () => {
-      //       addBucketModalState.value.open = true
-      //       addBucketModalState.value.id = id
-      //       console.log("addBucketModalState")
-      //     }, // Add delete functionality
-      //     class: "bg-[#424bd1] hover:bg-[#424bd1] font-bold", // Different color for delete
-      //   },
-      //   [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Add"]
-      // )
     ],
   );
 const columns = [
@@ -259,26 +219,6 @@ const columns = [
   }),
 ];
 
-// const bucketNumber = as(id: any) => {
-//   try {
-//     const deleteIntegration = await $fetch<SelectChatBot>(
-//       `/api/org/integrations/${integrationId}`,
-//       {
-//         method: "DELETE",
-//       },
-//     );
-
-//     onSuccess();
-//     toast.success("Integration removed successfully");
-
-//     return deleteIntegration;
-//   } catch (err: any) {
-//     if (err.status === 500) {
-//       toast.error("Cannot delete: Integration has connected bots");
-//     }
-//     toast.error(err.data.data[0].message);
-//   }
-// }
 const Pagination = async ($evnt) => {
   filters.page = $evnt;
   integrationRefresh();
@@ -296,11 +236,11 @@ const exportData = async () => {
     });
     const exportReadObject = (exportContacts ?? []).map((contacts: any) => {
       const mergedObject = {
-        firstName: contacts.firstName ?? "---",
-        lastName: contacts.lastName ?? "---",
-        email: contacts.email ?? "---",
+        firstName: contacts.firstName ?? "",
+        lastName: contacts.lastName ?? "",
+        email: contacts.email ?? "",
         countryCode: contacts.countryCode ?? "+91",
-        number: contacts.phone ?? "---",
+        number: contacts.phone ?? "",
       }
       return mergedObject;
     })

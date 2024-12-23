@@ -13,8 +13,6 @@
       <div v-if="props.botType === 'voice'" class="flex gap-4">
         <TextField name="name" label="Name" placeholder="Enter name" required>
         </TextField>
-        <TextField name="metadata" label="MetaData" placeholder="Enter MetaData" required>
-        </TextField>
       </div>
       <!-- {{ countryList }} || sdf -->
       <div class='flex gap-2'>
@@ -25,9 +23,13 @@
       </div>
       <TextField v-if="props.botType === 'chat'" type="email" name="email" label="Email" helperText=''
         placeholder="Enter your Email" />
-      <TextField v-if="props.botType === 'voice'" name="verificationId" label="Verification Id"
-        placeholder="Enter verification id" required>
+    <div v-if="props.botType === 'voice'" class="flex gap-4">
+      <TextField name="metadata" label="MetaData" placeholder="Enter MetaData">
       </TextField>
+      <TextField name="verificationId" label="Verification Id"
+        placeholder="Enter verification id">
+      </TextField>
+    </div>
 
       <div class="flex items-center justify-end">
         <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
@@ -115,20 +117,20 @@ const formSchema = toTypedSchema(
             path: ["name"],
           });
         }
-        if (!data.metadata) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Metadata is required for voiceBot.",
-            path: ["metadata"],
-          });
-        }
-        if (!data.verificationId) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Verification ID is required for voiceBot.",
-            path: ["verificationId"],
-          });
-        }
+        // if (!data.metadata) {
+        //   ctx.addIssue({
+        //     code: z.ZodIssueCode.custom,
+        //     message: "Metadata is required for voiceBot.",
+        //     path: ["metadata"],
+        //   });
+        // }
+        // if (!data.verificationId) {
+        //   ctx.addIssue({
+        //     code: z.ZodIssueCode.custom,
+        //     message: "Verification ID is required for voiceBot.",
+        //     path: ["verificationId"],
+        //   });
+        // }
 
         // if (!data.phone) {
         //   ctx.addIssue({
@@ -224,9 +226,6 @@ const handleConnect = handleSubmit(async (values: any) => {
         });
       }
       toast.success("Created successfully");
-      // if (props.typeOfAddContacts === "insideBucket") await $fetch(`/api/org/contact-list/${route.params.id}`, { method: "POST", body: values });
-      // else await $fetch(`/api/org/contacts?type=${props.botType ?? 'chat'}`, { method: "POST", body: values });
-      // toast.success("Created successfully")
     }
     resetForm()
     emit('confirm')
