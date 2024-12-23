@@ -177,6 +177,10 @@ export const getVoicebotContacts = async (
   }
 };
 
+export const getAllVoicebotContacts = async () => {
+  return await db.query.voicebotContactSchema.findMany({})
+}
+
 export const getVoicebotContactsById = async (id: string) => {
   const data = await db.query.voicebotContactSchema.findFirst({
     where: eq(voicebotContactSchema.id, id),

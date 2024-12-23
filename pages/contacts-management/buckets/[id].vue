@@ -1,7 +1,7 @@
 <template>
   <Page title="Bucket Contacts" :bread-crumbs="[
     {
-    label: contactsList[0]?.bucket.name,
+    label: `${getBucketDetails?.name}`,
        to: `/contacts-management/buckets`,
     },
     {
@@ -9,42 +9,39 @@
       to: `/contacts-management/buckets`,
     },
   ]" :disable-back-button="false">
-    <DataTable :data="contactsList" @pagination="Pagination" @limit="($event) => {
-      (filters.page = '1'), (filters.limit = $event);
-    }
-      " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :is-loading="isDataLoading"
-      :columns="columns" :page-size="20" :height="16" height-unit="vh" />
-
-    <ConfirmationModal v-model:open="deleteBucketListNumber.open" title="Confirm Delete"
-      description="Are you sure you want to delete ?" @confirm="() => {
-        if (deleteBucketListNumber?.id) {
-          insideBucketNumber({
-            queryId: queryId,
-            id: deleteBucketListNumber.id,
-            onSuccess: () => {
-              integrationRefresh();
-            },
-          });
-          deleteBucketListNumber.open = false;
-        }
-      }
-        " />
+    <template #actionButtons>
+      <div class="flex gap-4">
+        <div class="flex gap-2">
+          <UiButton color="primary" @click="() => {
+            if (getBucketDetails?.type === 'voice') voicePopupState = true
+            else chatPopupState = true
+          }
+            ">
+            {{ (getBucketDetails?.type === 'voice') ? 'Add Voice Contact' : 'Add Chat Contact' }}
+          </UiButton>
+        </div>
+      </div>
+    </template>
+    <UiTabs :default-value="getBucketDetails?.type ?? 'chat'" class="w-full self-start">
+      <UiTabsContent value="chat">
+        <AddEditChatBotContacts typeOfAddContacts="insideBucket" :popupState="chatPopupState" @PopupState="chatPopupState = $event" />
+      </UiTabsContent>
+      <UiTabsContent value="voice">
+        <AddEditVoiceBotContacts typeOfAddContacts="insideBucket" :popupState="voicePopupState" @PopupState="voicePopupState = $event" />
+      </UiTabsContent>
+    </UiTabs>
   </Page>
 </template>
 <script setup lang="ts">
-import { createColumnHelper } from "@tanstack/vue-table";
 import { Icon, UiBadge, UiButton } from "#components";
+import { useRoute, useRouter } from "vue-router";
 
 definePageMeta({
-  middleware: "admin-only",
+  middleware: "user",
 });
 useHead({
   title: "Contacts"
 });
-
-const route = useRoute("contacts-management-buckets-id");
-
-const deleteBucketListNumber = ref({ open: false, id: null });
 const filters = reactive<{
   q: string;
   page: string;
@@ -54,85 +51,21 @@ const filters = reactive<{
   page: "1",
   limit: "10",
 });
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
-const queryId = ref(route.params.id)
-// const getBucketDetails = await getBucketContactsDetails(route.params.id)
 
-const {
-  status,
-  data: contactsList,
-  refresh: integrationRefresh,
-} = await useLazyFetch(`/api/org/contact-list/${route.params.id}`, {
-  server: false,
-  query: filters,
-  default: () => [],
-  transform: (contacts: any) => {
-    console.log(contacts, "contacts")
-    page.value = contacts.page;
-    totalPageCount.value = contacts.totalPageCount;
-    totalCount.value = contacts.totalCount;
-    return contacts.data;
-  },
-});
 
-const isDataLoading = computed(() => status.value === "pending");
-const columnHelper = createColumnHelper<(typeof contactsList.value)[0]>();
+const chatPopupState = ref(false)
+const voicePopupState = ref(false)
+const route = useRoute();
 
-const actionsComponent = (id: any) =>
-  h(
-    "div",
-    {
-      class: "flex items-center gap-2",
-    },
-    [
-      h(
-        UiButton,
-        {
-          class: "",
-          variant: "destructive",
-          onClick: (e: any) => {
-            deleteBucketListNumber.value.open = true;
-            deleteBucketListNumber.value.id = id;
-          }, // Add delete functionality
-        },
-        h(Icon, { name: "lucide:trash-2" }),
-      ),
-    ],
-  );
-const columns = [
-  columnHelper.accessor("firstName", {
-    header: "First Name",
-    cell: ({ row }) => {
-      return row.original.contacts.firstName || "-"
-    }
-  }),
-  columnHelper.accessor("lastName", {
-    header: "Last Name",
-    cell: ({ row }) => {
-      return row.original.contacts.lastName || "-"
-    }
-  }),
-  columnHelper.accessor("email", {
-    header: "Email",
-    cell: ({ row }) => {
-      return row.original.contacts.email || "-";
-    }
-  }),
-  columnHelper.accessor("phone", {
-    header: "Number",
-    cell: ({ row }) => `${row.original?.contacts.countryCode || ''} ${row.original?.contacts.phone || ''}`.trim(),
-  }),
-  columnHelper.accessor("id", {
-    header: "Action",
-    cell: ({ row }) => {
-      return actionsComponent(row.original.contacts.id);
-    },
-  }),
-];
-const Pagination = async ($evnt) => {
-  filters.page = $evnt;
-  integrationRefresh();
-};
+// const {
+//   status,
+//   data: contactsList,
+//   refresh: contactsRefresh,
+// } = await useLazyFetch("/api/org/contact-list", {
+//   server: false,
+//   query: filters,
+//   default: () => [],
+// });
+
+const getBucketDetails = await getBucketContactsDetails(route.params.id)
 </script>

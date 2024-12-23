@@ -27,6 +27,10 @@ export const checkCampaignNameExist = async (
   });
 };
 
+export const getAllCampaigns = async () => {
+  return await db.query.campaignSchema.findMany({})
+}
+
 export const campaignList = async (
   organizationId: string,
   query?: any,

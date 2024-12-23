@@ -168,7 +168,7 @@ export const numberIntegrationSchema = adminSchema.table("number_integration", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-// buckets
+// bucket called as contactList
 export const contactListSchema = adminSchema.table("contact_list", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name"),

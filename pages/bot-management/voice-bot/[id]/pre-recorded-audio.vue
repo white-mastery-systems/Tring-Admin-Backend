@@ -469,7 +469,7 @@ const ambientNoiseAudioUpload = async () => {
 
   try {
     await $fetch(
-      `${config.public.voiceBotUrl}/prerecordedAudio`,
+      `${config.public.voiceBotUrl}/prerecordedAudio/`,
       {
         method: "PUT",
         headers: {

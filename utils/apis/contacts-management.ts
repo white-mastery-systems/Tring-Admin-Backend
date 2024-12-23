@@ -1,4 +1,4 @@
-export const uploadNumber = async (files: File) => {
+export const uploadNumber = async (files: File, botType: string) => {
   const form = new FormData();
   form.append("file", files);
 
@@ -6,12 +6,32 @@ export const uploadNumber = async (files: File) => {
     const data = await $fetch("/api/org/contacts/import", {
       method: "POST",
       body: form,
+      params: {
+        type: botType
+      }
     });
-     if (!data?.status) toast.error(data?.message);
+     if (!data?.status) toast.error(data?.message ? data?.message : "File upload failed");
      else toast.success("File uploaded successfully");
-  } catch (error) {
-    toast.error("File upload failed");
+  } catch (error: any) {
     console.error("Upload error:", error);
+    toast.error(error.statusMessage);
+  }
+};
+
+export const uploadBucketNumber = async (files: File, bucketId: string) => {
+  const form = new FormData();
+  form.append("file", files);
+
+  try {
+    const data = await $fetch(`/api/org/contact-list/${bucketId}/importContacts`, {
+      method: "POST",
+      body: form,
+    });
+    console.log(data, "data -- data")
+    if (!data) toast.error(data?.message ? data?.message : "File upload failed");
+    toast.success("File uploaded successfully");
+  } catch (error: any) {
+    toast.error(error.statusMessage);
   }
 };
 
@@ -20,6 +40,14 @@ export const uploadNumber = async (files: File) => {
 export const getBucketContactsDetails = async (id: string) => {
   const getSingleBucketDetails = await $fetch<SelectChatBot & { documents: SelectDocument[] }>(
     `/api/org/contact-list/` + id,
+  );
+  return getSingleBucketDetails;
+};
+
+// Voice bot
+export const getBucketDetailsAddCampaign = async (botType: string) => {
+  const getSingleBucketDetails = await $fetch<SelectChatBot & { documents: SelectDocument[] }>(
+    `/api/org/contact-list?type=${botType}`,
   );
   return getSingleBucketDetails;
 };

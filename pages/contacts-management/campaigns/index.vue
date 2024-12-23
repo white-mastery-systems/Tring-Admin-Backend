@@ -168,8 +168,8 @@ const actionsComponent = (id: any) =>
   );
 
 const columns = [
-  columnHelper.accessor("campaignTime", {
-    header: "Scheduled at",
+  columnHelper.accessor("campaignName", {
+    header: "Campaign Name",
   }),
   // columnHelper.accessor("campaignTime", {
   //   header: "Campaign Name",
@@ -177,8 +177,8 @@ const columns = [
   //     formatDate(new Date(row.original.campaignTime), "dd MMM yyyy HH:MM "),
   // }),
 
-  columnHelper.accessor("phoneNumber", {
-    header: "Mobile Number",
+  columnHelper.accessor("contactMethod", {
+    header: "Contact Method",
     cell: (info) => info.getValue() || "--",
   }),
   columnHelper.accessor("createdAt", {
