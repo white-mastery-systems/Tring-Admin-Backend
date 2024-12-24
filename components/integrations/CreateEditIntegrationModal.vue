@@ -1,3 +1,98 @@
+<template>
+  <DialogWrapper
+    v-model="integrationModalState.numberModalState"
+    :title="
+      integrationModalState.numberModalState?.id
+        ? `Edit ${integrationModalState?.title ?? 'CRM'} Channel`
+        : `Add ${integrationModalState?.title ?? 'CRM'} Channel`
+    "
+  >
+    <form @submit="handleConnect" class="space-y-2">
+      <!-- {{ values }} || sdfdsf -->
+      <div class="flex flex-col gap-2">
+        <TextField
+          name="name"
+          label="Integration Name"
+          placeholder="Enter integration name"
+          helperText="Enter a unique identification for CRM integration"
+          placeHolder="Eg: CRM-your company,CRM-your company"
+          required
+        />
+        <SelectField
+        v-if="!(integrationModalState.numberModalState?.id)"
+          name="crm"
+          :label="findIntegrationTypeLabel()"
+          :placeholder="findIntegrationTypeLabel()"
+          helperText="Select your channel"
+          :options="integrationTypes"
+          required
+        />
+        <div class="relative">
+          <TextField
+            v-if="values.crm === 'shopify'"
+            name="metadata.shop"
+            label="Shop Name"
+            helperText="Enter your shopname"
+            placeHolder="Eg: vaanium"
+            required
+          >
+            <template #endSlot>
+              <div
+                class="h-full w-full cursor-pointer rounded-md bg-gray-200 p-2"
+                type="button"
+              >
+                .myshopify.com
+              </div>
+            </template>
+          </TextField>
+        </div>
+
+        <TextField
+         v-if="values.crm === 'whatsapp'"
+         name="metadata.phoneNumber"
+         label="Phone Number"
+         helperText="Enter a valid phone number"
+         placeholder="Eg: 1234567890"
+         required
+        />
+
+        <TextField
+          v-if="(values.crm === 'sell-do' || values.crm === 'reserve-go') && !(integrationModalState.numberModalState?.id)"
+          name="metadata.apiKey"
+          label="Api key"
+          helperText="Enter your API key here"
+          placeholder="Eg: api-key-here"
+          required
+        />
+        <!-- {{values.metadata}} -->
+
+        <div class="flex w-full justify-end">
+          <UiButton
+            type="submit"
+            class="mt-2"
+            color="primary"
+            :loading="isLoading"
+          >
+            {{
+              values.crm === "zoho-crm"
+                ? integrationModalState.numberModalState?.id
+                  ? "Update changes"
+                  : "Connect Zoho CRM"
+                : values.crm === "zoho-bigin"
+                  ? integrationModalState.numberModalState?.id
+                    ? "Update changes"
+                    : "Connect Zoho Bigin"
+                  : integrationModalState.numberModalState?.id
+                    ? "Update changes"
+                    : "Save changes"
+            }}
+          </UiButton>
+        </div>
+      </div>
+    </form>
+  </DialogWrapper>
+</template>
+
 <script setup lang="ts">
   import { useForm } from "vee-validate";
   const emit = defineEmits(["success"]);
@@ -42,6 +137,12 @@
   const slackSchema = z.object({
     crm: z.literal("slack"),
   });
+  const whatsappSchema = z.object({
+    crm: z.literal("whatsapp"),
+    metadata: z.object({
+      phoneNumber: z.string().min(10, { message: "Phone number is required" }),
+    }),
+  });
 
   const shopifySchema = z.object({
     crm: z.literal("shopify"),
@@ -74,6 +175,7 @@
             "slack",
             "shopify",
             "zoho-cliq",
+            "whatsapp",
             "reserve-go",
           ])
           .refine(
@@ -87,6 +189,7 @@
               | "slack"
               | "shopify"
               | "zoho-cliq"
+              | "whatsapp"
               | "reserve-go" => true,
             {
               message: "CRM type is required",
@@ -103,6 +206,7 @@
           shopifySchema,
           zohoCliqSchema,
           reserveGoSchema,
+          whatsappSchema,
         ]),
       ),
   );
@@ -159,6 +263,7 @@
           | "slack"
           | "shopify"
           | "zoho-cliq"
+          | "whatsapp"
           | "reserve-go";
         metadata?: { apiKey: string };
       }>(`/api/org/integrations/${integrationModalState.numberModalState.id}`); // integrationModalState
@@ -172,6 +277,10 @@
       } else if (integrationDetails?.crm === "reserve-go") {
         setFieldValue("metadata", {
           apiKey: integrationDetails?.metadata?.apiKey,
+        });
+      } else if (integrationDetails?.crm === "whatsapp") {
+        setFieldValue("metadata", {
+          phoneNumber: integrationDetails?.metadata?.phoneNumber,
         });
       } else if (integrationDetails?.crm === "zoho-crm") {
       } else if (integrationDetails?.crm === "zoho-bigin") {
@@ -212,7 +321,7 @@
       scope,
       url,
       type: route.query.q ?? "crm",
-      ...(values.crm !== "sell-do" && values.crm !== "reserve-go"
+      ...(values.crm !== "sell-do" && values.crm !== "reserve-go" && values.crm !== "whatsapp"
         ? {
             metadata: { status: "Pending" },
           }
@@ -309,6 +418,7 @@
       integrationTypes.value = [
         { value: "slack", label: "Slack" },
         { value: "zoho-cliq", label: "Zoho Cliq" },
+        { value: "whatsapp", label: "Whatsapp" },
       ];
     } else if (queryParam === "ecommerce") {
       integrationTypes.value = [{ value: "shopify", label: "Shopify" }];
@@ -323,89 +433,3 @@
     }
   };
 </script>
-
-<template>
-  <DialogWrapper
-    v-model="integrationModalState.numberModalState"
-    :title="
-      integrationModalState.numberModalState?.id
-        ? `Edit ${integrationModalState?.title ?? 'CRM'} Channel`
-        : `Add ${integrationModalState?.title ?? 'CRM'} Channel`
-    "
-  >
-    <form @submit="handleConnect" class="space-y-2">
-      <!-- {{ values }} || sdfdsf -->
-      <div class="flex flex-col gap-2">
-        <TextField
-          name="name"
-          label="Name"
-          placeholder="enter integration name"
-          helperText="Enter a unique identification for CRM integration"
-          placeHolder="Eg: CRM-your company,CRM-your company"
-          required
-        />
-        <SelectField
-        v-if="!(integrationModalState.numberModalState?.id)"
-          name="crm"
-          :label="findIntegrationTypeLabel()"
-          :placeholder="findIntegrationTypeLabel()"
-          helperText="Select your channel"
-          :options="integrationTypes"
-          required
-        />
-        <div class="relative">
-          <TextField
-            v-if="values.crm === 'shopify'"
-            name="metadata.shop"
-            label="Shop Name"
-            helperText="Enter your shopname"
-            placeHolder="Eg: vaanium"
-            required
-          >
-            <template #endSlot>
-              <div
-                class="h-full w-full cursor-pointer rounded-md bg-gray-200 p-2"
-                type="button"
-              >
-                .myshopify.com
-              </div>
-            </template>
-          </TextField>
-        </div>
-
-        <TextField
-          v-if="(values.crm === 'sell-do' || values.crm === 'reserve-go') && !(integrationModalState.numberModalState?.id)"
-          name="metadata.apiKey"
-          label="Api key"
-          helperText="Enter your API key here"
-          placeHolder="Eg: api-key-here"
-          required
-        />
-        <!-- {{values.metadata}} -->
-
-        <div class="flex w-full justify-end">
-          <UiButton
-            type="submit"
-            class="mt-2"
-            color="primary"
-            :loading="isLoading"
-          >
-            {{
-              values.crm === "zoho-crm"
-                ? integrationModalState.numberModalState?.id
-                  ? "Update changes"
-                  : "Connect Zoho CRM"
-                : values.crm === "zoho-bigin"
-                  ? integrationModalState.numberModalState?.id
-                    ? "Update changes"
-                    : "Connect Zoho Bigin"
-                  : integrationModalState.numberModalState?.id
-                    ? "Update changes"
-                    : "Save changes"
-            }}
-          </UiButton>
-        </div>
-      </div>
-    </form>
-  </DialogWrapper>
-</template>
