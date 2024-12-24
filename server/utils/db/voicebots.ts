@@ -1,5 +1,5 @@
 import momentTz from "moment-timezone";
-import { InsertVoicebotSchedular, outboundCallSchema, voicebotSchedularSchema } from "~/server/schema/voicebot";
+import { InsertVoicebotSchedular, outboundCallSchema, voicebotLeadSchema, voicebotSchedularSchema } from "~/server/schema/voicebot";
 
 const db = useDrizzle();
 
@@ -201,12 +201,10 @@ export const deleteVoicebotIntegration = async (
   return (
     await db
       .delete(voicebotIntegrationSchema)
-      .where(
-        and(
-          eq(voicebotIntegrationSchema.botId, voicebotId),
-          eq(voicebotIntegrationSchema.id, voicebotIntegrationId),
-        ),
-      )
+      .where(and(
+        eq(voicebotIntegrationSchema.botId, voicebotId),
+        eq(voicebotIntegrationSchema.id, voicebotIntegrationId),
+      ))
       .returning()
   )[0];
 };
@@ -214,8 +212,55 @@ export const deleteVoicebotIntegration = async (
 // Leads creation for voicebot
 export const createVoiceBotLead = async (leads: any) => {
   return (
-    await db.insert(voiceBotLeadSchema).values(leads).returning()
+    await db.insert(voicebotLeadSchema).values(leads).returning()
   )[0]
+}
+
+export const voicebotLeadList = async (organizationId: string, query: any, timeZone: string) => {
+  let filters: any = [eq(leadSchema.organizationId, organizationId)];
+  let page, offset, limit = 0;
+
+  if (query?.page && query?.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
+    offset = (page - 1) * limit;
+  }
+  if (query?.period) {
+    let fromDate: Date | undefined;
+    let toDate: Date | undefined;
+
+    const queryDate = getDateRangeForFilters(query, timeZone);
+    fromDate = queryDate?.from;
+    toDate = queryDate?.to;
+    
+    if (fromDate && toDate) {
+      filters.push(between(voicebotLeadSchema.createdAt, fromDate, toDate));
+    }
+  }
+
+  let voicebotLeads = await db.query.voicebotLeadSchema.findMany({
+    where: and(...filters),
+    orderBy: [desc(voicebotLeadSchema.createdAt)]
+  })
+
+  voicebotLeads = voicebotLeads.map((i: any) => ({
+    ...i,
+    scheduledDate: momentTz(i.scheduledDate).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+  }));
+  
+  if (query?.page && query?.limit) {
+    const paginatedvoicebotLeads = voicebotLeads.slice(offset, offset + limit);
+    return {
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(voicebotLeads.length / limit) || 1,
+      totalCount: voicebotLeads.length,
+      data: paginatedvoicebotLeads,
+    };
+  } else {
+    return voicebotLeads;
+  }
 }
 
 // Get all voicebot

@@ -163,34 +163,23 @@ export const callLogSchema = voiceBotSchema.table("call_logs", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const voiceBotLeadSchema = voiceBotSchema.table(
-  "leads",
-  {
-    id: uuid("id").notNull().primaryKey().defaultRandom(),
-    crmLeadId: varchar("crm_lead_id", { length: 128 }),
-    metadata: jsonb("metadata"),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-    botId: uuid("bot_id")
-      .references(() => voicebotSchema.id, { onDelete: "cascade" })
-      .notNull(),
-    botUserId: uuid("bot_user_id")
-      .references(() => voiceBotUserSchema.id)
-      .notNull(),
-    organizationId: uuid("organization_id")
-      .references(() => organizationSchema.id, { onDelete: "cascade" })
-      .notNull(),
-    status: varchar("status").default("default").notNull(),
-    updatedAt: timestamp("updated_at").notNull().defaultNow(),
-  },
-  (table) => ({
-    leadConstraint: unique("Voicebot_leads_unique_constraint").on(
-      table.botId,
-      table.botUserId,
-      table.organizationId,
-    ),
-    leadsBotIdIndex: index("voicebot_leads_bot_id_index").on(table.botId),
-  }),
-);
+export const voicebotLeadSchema = voiceBotSchema.table("leads",{
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  name: varchar("name"),
+  location: varchar("location"),
+  phone: varchar("phone"),
+  notes: varchar("notes"),
+  scheduledDate: timestamp("scheduled_date"),
+  metadata: jsonb("metadata"),
+  botId: uuid("bot_id")
+  .references(() => voicebotSchema.id, { onDelete: "cascade" })
+  .notNull(),
+  organizationId: uuid("organization_id")
+  .references(() => organizationSchema.id, { onDelete: "cascade" })
+  .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
 
 export const outboundCallSchema = voiceBotSchema.table("outbound_calls", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -260,5 +249,5 @@ export type InsertCallLogSchema = InferInsertModel<typeof callLogSchema>;
 export type SelectVoicebotSchedular = InferSelectModel<typeof voicebotSchedularSchema>;
 export type InsertVoicebotSchedular = InferInsertModel<typeof voicebotSchedularSchema>;
 
-export type SelectVoiceBotLead = InferSelectModel<typeof voiceBotLeadSchema>;
-export type InsertVoiceBotLead = InferInsertModel<typeof voiceBotLeadSchema>;
+export type SelectVoiceBotLead = InferSelectModel<typeof voicebotLeadSchema>;
+export type InsertVoiceBotLead = InferInsertModel<typeof voicebotLeadSchema>;
