@@ -42,7 +42,7 @@ export const voicebotDialer = async () => {
       // Process schedular concurrently
       await Promise.all(
         voiceScheduleContactList.map(async (schedular) => {
-          const voiceContactInfo = voiceContactList.find((contact) => contact.id, schedular.contactId)
+          const voiceContactInfo = voiceContactList.find((contact) => contact.id === schedular.contactId)
           const currentDateTime = momentTz().tz(timeZone)
   
           if(!currentDateTime.isBetween(workingStartTime, workingEndTime)) {
@@ -65,7 +65,7 @@ export const voicebotDialer = async () => {
           }
           const { createdAt, updatedAt, ...data } = payload
           try {
-            const dialVoiceCall = await $fetch(config.voiceBotUrl, {
+            const dialVoiceCall = await $fetch(config.public.voiceBotUrl, {
               method: "POST",
               body: data
             })
