@@ -65,7 +65,7 @@ export const voicebotDialer = async () => {
           }
           const { createdAt, updatedAt, ...data } = payload
           try {
-            const dialVoiceCall = await $fetch(config.public.voiceBotUrl, {
+            const dialVoiceCall = await $fetch(`${config.public.voiceBotUrl}/dial`, {
               method: "POST",
               body: data
             })
