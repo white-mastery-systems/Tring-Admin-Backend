@@ -176,12 +176,6 @@
           botIntegrationId: modalProps.id,
           channelId: values.channelId,
         },
-        /*************  ✨ Codeium Command ⭐  *************/
-        /**
-         * Called when the integration is updated successfully.
-         * Emits a 'success' event, shows a success toast and sets isLoading to false.
-         */
-        /******  a754d21e-bca4-4208-a938-0b7bb8ae7a60  *******/
         onSuccess: () => {
           emit("success");
           toast.success("Integration updated successfully");
