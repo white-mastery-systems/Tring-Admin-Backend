@@ -93,3 +93,34 @@ export async function subscribeApp({ code, wabaId }: { code: string; wabaId: str
     logger.info(`logging failed ${err.message}`);
   }
 }
+
+export async function createWhatsAppMessage(
+  payload: any,
+  userPhone: string,
+  notes: string,
+) {
+  const url = "https://graph.facebook.com/v21.0/452727801267302/messages";
+  const messageBody = {
+    messaging_product: "whatsapp",
+    to: userPhone,
+    type: "text",
+    text: {
+      preview_url: true,
+      body: `*${notes ? notes : "Lead Generated"}* :tada:\nName: ${payload.name}\nEmail: ${payload.email}\nPhone: ${payload.phone}\nBot Name: ${payload.botName}\nChat Link: ${payload.chatLink}\nWhatsapp Link: ${payload.whatsappLink}`,
+    },
+  };
+
+  try {
+    const response = await $fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer EAAwYX9ZCRR1gBOwNBNZAz3LwQ0v6ZBwoHLd97D15OjURolHq25V3P1FbtUNB0satNpPwTmH1DHwpBE8zhZAQWGMorf4Aj1oOpn9r3eWbCdsJrk0yWoRHSFN7BjUgVrBiSrBlnuR7Qyrg8AyITi0r6DubAox2qXHLc9IKZAFFU5irqGb0shqeY6n2Oxc9C7hFMz6p9kmjCtl80ZCH8zHQZB2QbYKmemGNA07mDp0zB4MAnNZCP6ZAuNSATKSrdMZBhq`,
+      },
+      body: messageBody,
+    });
+
+    return response;
+  } catch (error) {
+    logger.info(`Error sending whatsapp message ${error?.message}`);
+  }
+}
