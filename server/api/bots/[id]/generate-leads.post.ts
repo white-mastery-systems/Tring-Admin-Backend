@@ -159,7 +159,7 @@ export default defineEventHandler(async (event) => {
         );
       }
     } else if (botIntegration?.integration?.crm === "whatsapp") {
-      if (botIntegration?.metadata?.userPhoneNumber) {
+      if (botIntegration?.metadata?.phoneNumber) {
         const whatsappPayload = {
           name: body?.botUser?.name,
           email: body?.botUser?.email,
