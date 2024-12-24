@@ -11,12 +11,12 @@ const zodChatImportContacts = z.object({
   "Last Name": z.string().optional(),
   "Email": z.string().email("Invalid email format"),
   "Country Code": z.string().regex(/^\+?\d{1,4}$/, "Invalid country code format"),
-  "Number": z.string().regex(/^\d{7,15}$/, "Invalid phone number format")
+  "Number": z.any()
 });
 
 const zodVoiceImportsContacts = z.object({
   "Name": z.string().min(1, "Name is required"),
-  "Phone": z.string(),
+  "Phone": z.any(),
   "Country Code": z.string(),
   "Metadata": z.string(),
   "Verification Id": z.string(),
