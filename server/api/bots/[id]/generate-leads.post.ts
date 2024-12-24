@@ -3,6 +3,7 @@ import { updateBotUser } from "~/server/utils/db/bot-user";
 import { getAdminByOrgId } from "~/server/utils/db/user";
 import { getOwners } from "~/server/utils/hubspot/contact";
 import { createSlackMessage } from "~/server/utils/slack/modules";
+import { createWhatsAppMessage } from "~/server/utils/whatsapp/module";
 import {
   generateContactInZohoBigin,
   generateLeadInZohoCRM,
@@ -26,7 +27,7 @@ export default defineEventHandler(async (event) => {
     event,
     generateLeadsValidationParams,
   );
-  
+
   // console.log("bot user", { botUser: body.botUser })
 
   const botDetails: any = await getBotDetails(botId);
@@ -35,65 +36,67 @@ export default defineEventHandler(async (event) => {
   let botIntegratsions: any = await listBotIntegrations(botId);
   botIntegratsions?.map(async (botIntegration: any) => {
     if (botIntegration?.integration?.crm === "zoho-bigin") {
-      if(!body.botUser?.metaData?.zohoBiginLeadId) {
-         const name = body?.botUser?.name?.split(" ");
-         let firstName = body?.botUser?.name;
-         let lastName = null;
-         if (name?.length > 1) {
-           firstName = name[0];
-           lastName = name[1];
-         }
-         JSON.stringify({
-           body: {
-             First_Name: firstName,
-             Last_Name: lastName ?? firstName,
-             Email: body?.botUser?.email,
-             Mobile: body?.botUser?.mobile,
-             Title: body?.botUser?.name,
-           },
-           integrationData: botIntegration?.integration,
-           token: botIntegration?.integration?.metadata?.access_token,
-           refreshToken: botIntegration?.integration?.metadata?.refresh_token,
-         });
-         const generatedContact: any = await generateContactInZohoBigin({
-           body: {
-             First_Name: firstName,
-             Last_Name: lastName ?? firstName,
-             Email: body?.botUser?.email,
-             Mobile: body?.botUser?.mobile,
-             Title: body?.botUser?.name,
-           },
-           integrationData: botIntegration?.integration,
-           token: botIntegration?.integration?.metadata?.access_token,
-           refreshToken: botIntegration?.integration?.metadata?.refresh_token,
-         });
-         const pipelineObj = botIntegration?.metadata?.pipelineObj;
-   
-         const generatedLead: any = await generateLeadInZohoBigin({
-           token: botIntegration?.integration?.metadata?.access_token,
-           refreshToken: botIntegration?.integration?.metadata?.refresh_token,
-           body: {
-             Deal_Name: body?.botUser?.name,
-             Sub_Pipeline: pipelineObj?.Sub_Pipeline ?? pipelineObj?.Pipeline,
-             Stage: pipelineObj?.Stage,
-             Pipeline: pipelineObj?.Pipeline,
-             Contact_Name: {
-               id: generatedContact?.data[0]?.details?.id,
-             },
-           },
-           integrationData: botIntegration?.integration,
-         });
-   
-         logger.info(`generateZohoBiginLead, ${JSON.stringify(generatedLead)}`)
-         await updateBotUser(body?.botUser?.id, {zohoBiginLeadId: generatedLead?.data[0]?.details?.id})
+      if (!body.botUser?.metaData?.zohoBiginLeadId) {
+        const name = body?.botUser?.name?.split(" ");
+        let firstName = body?.botUser?.name;
+        let lastName = null;
+        if (name?.length > 1) {
+          firstName = name[0];
+          lastName = name[1];
+        }
+        JSON.stringify({
+          body: {
+            First_Name: firstName,
+            Last_Name: lastName ?? firstName,
+            Email: body?.botUser?.email,
+            Mobile: body?.botUser?.mobile,
+            Title: body?.botUser?.name,
+          },
+          integrationData: botIntegration?.integration,
+          token: botIntegration?.integration?.metadata?.access_token,
+          refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+        });
+        const generatedContact: any = await generateContactInZohoBigin({
+          body: {
+            First_Name: firstName,
+            Last_Name: lastName ?? firstName,
+            Email: body?.botUser?.email,
+            Mobile: body?.botUser?.mobile,
+            Title: body?.botUser?.name,
+          },
+          integrationData: botIntegration?.integration,
+          token: botIntegration?.integration?.metadata?.access_token,
+          refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+        });
+        const pipelineObj = botIntegration?.metadata?.pipelineObj;
+
+        const generatedLead: any = await generateLeadInZohoBigin({
+          token: botIntegration?.integration?.metadata?.access_token,
+          refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+          body: {
+            Deal_Name: body?.botUser?.name,
+            Sub_Pipeline: pipelineObj?.Sub_Pipeline ?? pipelineObj?.Pipeline,
+            Stage: pipelineObj?.Stage,
+            Pipeline: pipelineObj?.Pipeline,
+            Contact_Name: {
+              id: generatedContact?.data[0]?.details?.id,
+            },
+          },
+          integrationData: botIntegration?.integration,
+        });
+
+        logger.info(`generateZohoBiginLead, ${JSON.stringify(generatedLead)}`);
+        await updateBotUser(body?.botUser?.id, {
+          zohoBiginLeadId: generatedLead?.data[0]?.details?.id,
+        });
       } else {
-          const updateLeadWithNotes = await updateNotesInZohoBigin({
-            zohoBiginLeadId: body.botUser?.metaData?.zohoBiginLeadId,
-            integrationData: botIntegration?.integration,
-            token: botIntegration?.integration?.metadata?.access_token,
-            refreshToken: botIntegration?.integration?.metadata?.refresh_token,
-            body: body?.note
-          })
+        const updateLeadWithNotes = await updateNotesInZohoBigin({
+          zohoBiginLeadId: body.botUser?.metaData?.zohoBiginLeadId,
+          integrationData: botIntegration?.integration,
+          token: botIntegration?.integration?.metadata?.access_token,
+          refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+          body: body?.note,
+        });
       }
     } else if (botIntegration?.integration?.crm === "zoho-crm") {
       const name = body?.botUser?.name?.split(" ");
@@ -152,7 +155,23 @@ export default defineEventHandler(async (event) => {
           botIntegration?.metadata?.channelId,
           payload,
           botIntegration?.integration?.id,
-          body?.note
+          body?.note,
+        );
+      }
+    } else if (botIntegration?.integration?.crm === "whatsapp") {
+      if (botIntegration?.metadata?.userPhoneNumber) {
+        const whatsappPayload = {
+          name: body?.botUser?.name,
+          email: body?.botUser?.email,
+          phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
+          botName: `${botDetails?.name}`,
+          chatLink: `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
+          whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
+        };
+        const data = await createWhatsAppMessage(
+          whatsappPayload,
+          botIntegration?.metadata?.phoneNumber,
+          body?.note,
         );
       }
     } else if (botIntegration?.integration?.crm === "hubspot") {
@@ -172,7 +191,6 @@ export default defineEventHandler(async (event) => {
           firstName,
           lastName,
           botIntegration,
-          
         })) || {};
 
       // const ownerIds = await getOwners(token);
@@ -213,21 +231,27 @@ export default defineEventHandler(async (event) => {
       //     };
       //   }
       // });
-    } else if(botIntegration?.integration?.crm === "zoho-cliq") {
-      if(botIntegration?.metadata?.channelId) {
+    } else if (botIntegration?.integration?.crm === "zoho-cliq") {
+      if (botIntegration?.metadata?.channelId) {
         const payload = {
           "First Name": body?.botUser?.name,
-          "Email": body?.botUser?.email,
-          "Mobile": `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
+          Email: body?.botUser?.email,
+          Mobile: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           "Bot Name": botDetails?.name,
           "Chat Link": `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
           "Whatsapp Link": `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
-        }
+        };
         let textContent = Object.entries(payload)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join('\n');
-        await generateLeadsInZohoCliq(botIntegration?.integration?.metadata, botIntegration?.metadata?.channelId, textContent, botIntegration?.integration?.id, body?.note)
-        }
+          .map(([key, value]) => `${key}: ${value}`)
+          .join("\n");
+        await generateLeadsInZohoCliq(
+          botIntegration?.integration?.metadata,
+          botIntegration?.metadata?.channelId,
+          textContent,
+          botIntegration?.integration?.id,
+          body?.note,
+        );
+      }
     }
   });
   if (adminUser?.id) {
@@ -238,7 +262,10 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const emailRecipients: any = botDetails?.emailRecipients && botDetails?.emailRecipients.length ? [...botDetails?.emailRecipients, adminUser?.email] : [ adminUser?.email ]
+  const emailRecipients: any =
+    botDetails?.emailRecipients && botDetails?.emailRecipients.length
+      ? [...botDetails?.emailRecipients, adminUser?.email]
+      : [adminUser?.email];
 
   sendEmail(
     emailRecipients,
