@@ -25,7 +25,7 @@ export const voicebotDialer = async () => {
 
       const voiceScheduleContactList = notDialedScheduledVoiceCallList.filter((schedular) => schedular.campaignId === campaign.id).slice(0, noOfCallsPerTrigger)
       if(!voiceScheduleContactList.length) {
-        logger.error("No call list available for the voicebot to dial")
+        logger.error("No call list available to dial call")
         return
       } 
 
@@ -71,7 +71,8 @@ export const voicebotDialer = async () => {
             })
 
             await updateVoiceCallStatus(schedular.id, { callSid: dialVoiceCall, callStatus: "dialed" })
-          } catch (error) {
+          } catch (error: any) {
+            logger.error(`voice Dial API Error: ${error.message}`)
            await updateVoiceCallStatus(schedular.id, { callStatus: "failed" })
           }
         }) 
