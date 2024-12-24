@@ -69,18 +69,17 @@ export const listLeads = async (
     if (query?.period) {
       let fromDate: Date | undefined;
       let toDate: Date | undefined;
+
       const queryDate = getDateRangeForFilters(query, timeZone);
       fromDate = queryDate?.from;
       toDate = queryDate?.to;
-      console.log("leads",{ fromDate, toDate })
+
       if (fromDate && toDate) {
         filters.push(between(leadSchema.createdAt, fromDate, toDate));
       }
     }
 
-    let page,
-      offset,
-      limit = 0;
+    let page, offset, limit = 0;
 
     if (query?.page && query?.limit) {
       page = parseInt(query.page);
