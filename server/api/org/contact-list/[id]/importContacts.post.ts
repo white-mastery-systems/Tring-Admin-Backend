@@ -1,4 +1,5 @@
 import { errorResponse } from "~/server/response/error.response";
+import { getVoiceBucketCampaignId } from "~/server/utils/db/campaign";
 import { createChatContactBucketLink, createVoiceContactBucketLink, findExistingChatContactsLink, findExistingVoiceContactsLink } from "~/server/utils/db/contact-list";
 import { parseContactsFormDataFile } from "~/server/utils/db/contacts";
 
@@ -74,5 +75,21 @@ export default defineEventHandler(async (event) => {
   ? await createChatContactBucketLink(uniqueContactsData)
   : await createVoiceContactBucketLink(uniqueContactsData)
 
+  if(type === "voice") {
+    const campaignData = await getVoiceBucketCampaignId(bucketId)
+    if(!campaignData) return
+    const mapVoiceContactWithSchedular = uniqueContactsData.map((unique: any) => {
+      return {
+        campaignId: campaignData.id,
+        bucketId: unique?.contactListId!,
+        contactId: unique.contactId,
+        botId: campaignData?.botConfig?.botId,
+        organizationId: unique.organizationId,
+      }
+    })
+    // create campaign data in schedular table
+    await createVoicebotSchedular(mapVoiceContactWithSchedular)
+  }
+ 
   return true
 })

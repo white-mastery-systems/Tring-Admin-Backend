@@ -69,10 +69,13 @@ export const getCallLogsList = async (organizationId: string, query: any, timeZo
   }
 }
 
-export const getCallLogById = async (callLogId: string) => {
-  const data = await db.query.callLogSchema.findFirst({
+export const getCallLogById = async (callLogId: string, timeZone: string) => {
+  let data: any = await db.query.callLogSchema.findFirst({
     where: eq(callLogSchema.id, callLogId)
   })
+  if(data?.date) {
+    data.date =  momentTz(data.date).tz(timeZone).format("DD MMM YYYY hh:mm A")
+  }  
   return data
 }
 
