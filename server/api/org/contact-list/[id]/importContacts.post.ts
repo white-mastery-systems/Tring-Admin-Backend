@@ -1,4 +1,5 @@
 import { errorResponse } from "~/server/response/error.response";
+import { getVoiceBucketCampaignId } from "~/server/utils/db/campaign";
 import { createChatContactBucketLink, createVoiceContactBucketLink, findExistingChatContactsLink, findExistingVoiceContactsLink } from "~/server/utils/db/contact-list";
 import { parseContactsFormDataFile } from "~/server/utils/db/contacts";
 
@@ -69,10 +70,27 @@ export default defineEventHandler(async (event) => {
   // console.log({ uniqueContactsData })
 
   if(!uniqueContactsData?.length) return errorResponse(event, 400, "No unique phonenumbers to import")
-    
-  type === "chat" 
-  ? await createChatContactBucketLink(uniqueContactsData)
-  : await createVoiceContactBucketLink(uniqueContactsData)
 
+  if(type === "chat") {
+    await createChatContactBucketLink(uniqueContactsData)
+  } else {
+    await createVoiceContactBucketLink(uniqueContactsData)
+
+    // check campaign data
+    const campaignData = await getVoiceBucketCampaignId(bucketId)
+    if(campaignData) {
+      const mapVoiceContactWithSchedular = uniqueContactsData.map((unique: any) => {
+        return {
+          campaignId: campaignData.id,
+          bucketId: unique?.contactListId!,
+          contactId: unique.contactId,
+          botId: campaignData?.botConfig?.botId,
+          organizationId: unique.organizationId,
+        }
+      })
+      // create campaign data in schedular table
+      await createVoicebotSchedular(mapVoiceContactWithSchedular)
+    }
+  }
   return true
 })

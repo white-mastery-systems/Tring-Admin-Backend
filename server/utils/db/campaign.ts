@@ -90,6 +90,15 @@ export const getCampaignById = async (campaignId: string, timeZone: string) => {
   return data;
 };
 
+export const getVoiceBucketCampaignId = async (contactListId: string) => {
+  return await db.query.campaignSchema.findFirst({
+      where: and(
+        eq(campaignSchema.bucketId, contactListId),
+        eq(campaignSchema.contactMethod, "voice"),
+      )
+  })
+}
+
 export const updateCampaign = async (
   campaignId: string,
   campaign: InsertCampaign,

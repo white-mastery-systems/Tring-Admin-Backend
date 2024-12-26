@@ -300,6 +300,6 @@ export const orgVoicebotSubscription = async (organizationId: string) => {
 }
 
 // voicebot schedular
-export const createVoicebotSchedular = async (voicebotSchedular: InsertVoicebotSchedular[]) => {
+export const createVoicebotSchedular = async (voicebotSchedular: any) => {
   return await db.insert(voicebotSchedularSchema).values(voicebotSchedular).returning()
 }
