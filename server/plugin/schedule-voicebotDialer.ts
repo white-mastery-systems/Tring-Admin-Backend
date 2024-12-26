@@ -4,9 +4,8 @@ import { voicebotDialer } from "../utils/db/voicebotDialer"
 
 export default defineNitroPlugin(async (event) => {
   try {
-    logger.info("Scheduled voice dial call")
     schedule.scheduleJob("*/5 * * * *", async () => {
-      logger.info("Every 5 mins cron is running...")
+      logger.info("Every 5 mins cron is running for outbound call schdeuling...")
       await voicebotDialer()
     })
   } catch (error: any) {
