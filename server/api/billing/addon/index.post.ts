@@ -34,9 +34,15 @@ export default defineEventHandler(async (event) => {
       eq(paymentSchema.type, "subscription"),
     ),
   });
+  const orgSubscription = await db.query.orgSubscriptionSchema.findFirst({
+    where: and(
+      eq(orgSubscriptionSchema.organizationId, orgId),
+      eq(orgSubscriptionSchema.botType, 'chat')
+    )
+  })
   return await createAddonInZohoBilling({
     body: {
-      subscription_id: paymentData?.subscriptionId,
+      subscription_id: orgSubscription?.subscriptionId || paymentData?.subscriptionId,
       addons: [
         {
           addon_code: body.plan,

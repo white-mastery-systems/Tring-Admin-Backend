@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     event,
     z.object({
       hostedpageId: z.string(),
-      botType: z.string()
+      // botType: z.string()
     }).parse,
   );
   const orgId = await isOrganizationAdminHandler(event);

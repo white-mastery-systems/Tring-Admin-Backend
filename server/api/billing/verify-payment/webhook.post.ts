@@ -142,7 +142,7 @@ export default defineEventHandler(async (event) => {
         eq(orgSubscriptionSchema.botType, type)
       ))
     ])
-  } else {
+  } else if(body.event_type === "subscription_reactivated") {
     if (!body.data.subscription?.customer?.email) {
       return;
     }
@@ -184,7 +184,7 @@ export default defineEventHandler(async (event) => {
       productId: body.data.subscription.product_id,
       customerId: body.data.subscription.customer_id,
       amount: body.data.subscription.amount,
-      expiry: nextMonthAndDayDate,
+      expiry: body.data.subscription.current_term_ends_at,
       status: "active",
     };
 
@@ -194,7 +194,7 @@ export default defineEventHandler(async (event) => {
       subscriptionId: body.data.subscription.subscription_id,
       planCode: body.data.subscription.plan.plan_code,
       subscriptionCreatedDate: body.data.subscription.updated_time,
-      expiryDate: body.data.subscription.next_billing_at,
+      expiryDate: body.data.subscription.current_term_ends_at,
       status: "active"
     }
     const resp = await db
@@ -245,6 +245,34 @@ export default defineEventHandler(async (event) => {
       userPromise,
     ]);
     return resp;
+  } else if(body.event_type === "subscription_expired"){ // subscription expired
+     if (!body.data.subscription?.customer?.email) {
+      return;
+    }
+     const userDetails = await db.query.authUserSchema.findFirst({
+      where: eq(authUserSchema.email, body.data.subscription.customer.email),
+    });
+
+    await Promise.all([
+    db
+      .update(paymentSchema)
+      .set({ status: "cancelled" })
+      .where(
+        and(
+          eq(paymentSchema.organizationId, userDetails?.organizationId),
+          eq(paymentSchema.status, "active"),
+          eq(paymentSchema.type, "subscription"),
+        ),
+      ),
+    updateChatbotStatus(userDetails?.organizationId!),
+    db
+      .update(orgSubscriptionSchema)
+      .set({ status: "inactive" })
+      .where(and(
+        eq(orgSubscriptionSchema.organizationId, userDetails?.organizationId!),
+        eq(orgSubscriptionSchema.botType, type)
+      ))
+    ])
   }
 
   return true;
