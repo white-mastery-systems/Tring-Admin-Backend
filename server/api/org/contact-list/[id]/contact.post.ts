@@ -1,8 +1,7 @@
 import { errorResponse } from "~/server/response/error.response"
 import { zodChatContacts, zodVoiceContacts } from "../../contacts/index.post"
 import { getSingleChatContactLink, getSingleVoiceContactLink } from "~/server/utils/db/contact-list"
-
-const db = useDrizzle()
+import { getVoiceBucketCampaignId } from "~/server/utils/db/campaign"
 
 export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string
@@ -41,9 +40,25 @@ export default defineEventHandler(async (event) => {
     organizationId,
   }
 
-  bucketDetail?.type === "chat" 
-    ? await createChatContactBucketLink(data)
-    : await createVoiceContactBucketLink(data)
+  if(bucketDetail?.type === "chat") {
+    await createChatContactBucketLink(data)
+  } else {
+    await createVoiceContactBucketLink(data)
 
+    // check campaign data
+    const campaignData = await getVoiceBucketCampaignId(contactListId)
+    if(campaignData) {  
+      const mapVoiceContactWithSchedular = {
+        campaignId: campaignData.id,
+        bucketId: contactListId!,
+        contactId: checkContactDetail.id,
+        botId: campaignData?.botConfig?.botId,
+        organizationId: organizationId,
+      }
+      // create campaign data in schedular table
+      await createVoicebotSchedular(mapVoiceContactWithSchedular)
+    } 
+  }
+   
   return true
 })

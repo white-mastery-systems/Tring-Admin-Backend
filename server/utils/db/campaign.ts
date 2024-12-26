@@ -27,8 +27,10 @@ export const checkCampaignNameExist = async (
   });
 };
 
-export const getAllCampaigns = async () => {
-  return await db.query.campaignSchema.findMany({})
+export const getAllVoiceCampaigns = async () => {
+  return await db.query.campaignSchema.findMany({ 
+    where: eq(campaignSchema.contactMethod, "voice")
+  })
 }
 
 export const campaignList = async (
@@ -87,6 +89,15 @@ export const getCampaignById = async (campaignId: string, timeZone: string) => {
   // }
   return data;
 };
+
+export const getVoiceBucketCampaignId = async (contactListId: string) => {
+  return await db.query.campaignSchema.findFirst({
+      where: and(
+        eq(campaignSchema.bucketId, contactListId),
+        eq(campaignSchema.contactMethod, "voice"),
+      )
+  })
+}
 
 export const updateCampaign = async (
   campaignId: string,

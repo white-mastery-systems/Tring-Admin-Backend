@@ -24,22 +24,13 @@ export const listIntegrations = async (
 
   if (query?.q) {
     if (query?.q === "channel") {
-      filters.push(eq(integrationSchema.crm, "whatsapp"));
-    } else if(query?.q) {
-      filters.push(
-        and(
-          ne(integrationSchema.crm, "whatsapp"),
-          eq(integrationSchema.type, query?.q)
-       ))
-    } 
-    // else if(query?.q) {
-    //   filters.push(eq(integrationSchema.type, query?.q))
-    // }
+      filters.push(eq(integrationSchema.type, "whatsapp"));
+    } else {
+      filters.push(eq(integrationSchema.type, query?.q))
+    }
   }
 
-  let page,
-    offset,
-    limit = 0;
+  let page, offset, limit = 0;
 
   if (query?.page && query?.limit) {
     page = parseInt(query.page);
