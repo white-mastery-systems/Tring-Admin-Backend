@@ -239,6 +239,13 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
   }
 
   let voicebotLeads = await db.query.voicebotLeadSchema.findMany({
+    with: {
+      bot: {
+        columns: {
+          name: true
+        }
+      }
+    },
     where: and(...filters),
     orderBy: [desc(voicebotLeadSchema.createdAt)]
   })
