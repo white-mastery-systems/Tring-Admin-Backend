@@ -114,11 +114,10 @@ export async function createWhatsAppMessage(
     const response = await $fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer EAAwYX9ZCRR1gBOwNBNZAz3LwQ0v6ZBwoHLd97D15OjURolHq25V3P1FbtUNB0satNpPwTmH1DHwpBE8zhZAQWGMorf4Aj1oOpn9r3eWbCdsJrk0yWoRHSFN7BjUgVrBiSrBlnuR7Qyrg8AyITi0r6DubAox2qXHLc9IKZAFFU5irqGb0shqeY6n2Oxc9C7hFMz6p9kmjCtl80ZCH8zHQZB2QbYKmemGNA07mDp0zB4MAnNZCP6ZAuNSATKSrdMZBhq`,
+        Authorization: `Bearer EAAwYX9ZCRR1gBO1YeuiR4bkaTIrs4YIg2SyqLjpjpADqX76Nlg49IpJUkc0TYS2pBSwsuXtRpOgfrZBJo87ZCrqgIzbSxObAdfbWja3HjVmbZAzbEO9HPawrNt25YVxaWzzqZBSZBZAkoVdCNDuJK4ip0fS0r3pKigZCG8BBWB3WMchmy5etB5p1RNctF7l24oqGWgZDZD`,
       },
       body: messageBody,
     });
-
     return response;
   } catch (error) {
     logger.info(`Error sending whatsapp message ${error?.message}`);
