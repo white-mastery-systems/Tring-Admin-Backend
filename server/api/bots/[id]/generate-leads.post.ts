@@ -146,10 +146,6 @@ export default defineEventHandler(async (event) => {
           chatLink: `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
-        // console.log(
-        //   botIntegration?.integration?.metadata?.access_token,
-        //   botIntegration?.metadata?.channelId,
-        // );
         const data = await createSlackMessage(
           botIntegration?.integration?.metadata,
           botIntegration?.metadata?.channelId,
@@ -159,7 +155,7 @@ export default defineEventHandler(async (event) => {
         );
       }
     } else if (botIntegration?.integration?.crm === "whatsapp") {
-      if (botIntegration?.metadata?.phoneNumber) {
+      if (botIntegration?.integration?.metadata) {
         const whatsappPayload = {
           name: body?.botUser?.name,
           email: body?.botUser?.email,
@@ -170,7 +166,7 @@ export default defineEventHandler(async (event) => {
         };
         const data = await createWhatsAppMessage(
           whatsappPayload,
-          botIntegration?.metadata?.phoneNumber,
+          `${body?.botUser?.countryCode.split("+")[1]}` + botIntegration?.integration?.metadata?.phoneNumber,
           body?.note,
         );
       }
@@ -235,8 +231,8 @@ export default defineEventHandler(async (event) => {
       if (botIntegration?.metadata?.channelId) {
         const payload = {
           "First Name": body?.botUser?.name,
-          Email: body?.botUser?.email,
-          Mobile: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
+          "Email": body?.botUser?.email,
+          "Mobile": `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           "Bot Name": botDetails?.name,
           "Chat Link": `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
           "Whatsapp Link": `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
