@@ -1,5 +1,5 @@
 const db = useDrizzle();
-import { billingLogger, logger } from "~/server/logger";
+import { billingLogger } from "~/server/logger";
 import { orgSubscriptionSchema } from "~/server/schema/admin";
 
 export default defineEventHandler(async (event) => {
@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     event,
     z.object({
       hostedpageId: z.string(),
-      botType: z.string()
+      // botType: z.string()
     }).parse,
   );
   const orgId = await isOrganizationAdminHandler(event);
@@ -62,29 +62,36 @@ export default defineEventHandler(async (event) => {
        // get Pricing information
       const pricingInformation = await getPricingInformation(apiResponseData.plan_code)
 
-      // get Addons information
-      const orgAddons = await db
-        .select()
-        .from(paymentSchema)
-        .where(
-          and(
-            eq(paymentSchema.plan_code, apiResponseData.plan_code),
-            eq(paymentSchema.organizationId, orgId),
-            eq(paymentSchema.type, "addon"),
-          ),
-      )
+      // // get Addons information
+      // const orgAddons = await db
+      //   .select()
+      //   .from(paymentSchema)
+      //   .where(
+      //     and(
+      //       eq(paymentSchema.plan_code, apiResponseData.plan_code),
+      //       eq(paymentSchema.organizationId, orgId),
+      //       eq(paymentSchema.type, "addon"),
+      //     ),
+      // )
 
-      const walletSessions = orgAddons.reduce((acc, i) => {
-        const addon: any = pricingInformation?.addons?.find((j: any) => i.addonCode === j.name);
-        return addon ? acc + addon?.sessions : acc;
-      }, 0);
+      // const walletSessions = orgAddons.reduce((acc, i) => {
+      //   const addon: any = pricingInformation?.addons?.find((j: any) => i.addonCode === j.name);
+      //   return addon ? acc + addon?.sessions : acc;
+      // }, 0);
+     
+      const addon: any = pricingInformation?.addons?.find((j: any) => j.name === apiResponseData.addonCode);
+      const existingWallet = await db.query.orgSubscriptionSchema.findFirst({
+       where: and(
+          eq(orgSubscriptionSchema.organizationId, orgId),
+          eq(orgSubscriptionSchema.botType, botType)
+        ) 
+      })
 
-
-      const orgSubscriptionPromise = await db
+      await db
         .update(orgSubscriptionSchema)
         .set({
           status: "active",
-          walletSessions: walletSessions,
+          walletSessions: (existingWallet?.walletSessions || 0) + (addon.sessions || 0),
         })
         .where(and(
             eq(orgSubscriptionSchema.organizationId, orgId),

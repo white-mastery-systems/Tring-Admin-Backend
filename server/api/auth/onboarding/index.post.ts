@@ -19,6 +19,12 @@ const bodyValidationSchema = z.object({
   discoverySource: z.string(),
   businessName: z.string(),
   country: z.string(),
+  mobile: z.string(),
+  countryCode: z.string(),
+  otherPlan: z.string().optional(),
+  otherReferralSource: z.string().optional(),
+  otherEstimatedMonthlyBudget: z.string().optional(),
+  otherDiscoverySource: z.string().optional(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -43,12 +49,18 @@ export default defineEventHandler(async (event) => {
       estimatedMonthlyBudget: body?.estimatedMonthlyBudget,
       discoverySource: body?.discoverySource,
       businessName: body?.businessName,
+      otherPlan: body?.otherPlan,
+      otherReferralSource: body?.otherReferralSource,
+      otherEstimatedMonthlyBudget: body?.otherEstimatedMonthlyBudget,
+      otherDiscoverySource: body?.otherDiscoverySource
     },
   });
 
   const updatedUser = await updateUser(userId, {
     username: body.name,
     organizationId: org.id,
+    countryCode: body?.countryCode,
+    mobile: body?.mobile,
     metadata: {
       role: body.role,
       otherRole: body?.otherRole

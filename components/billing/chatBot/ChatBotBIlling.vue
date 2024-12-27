@@ -98,9 +98,7 @@
             class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]"
           >
             {{
-              Number(usageDetails?.individualChatsCost) === 0
-                ? 0
-                : usageDetails?.walletBalance
+               usageDetails?.walletBalance || 0
             }}
           </span>
         </div>
