@@ -99,14 +99,14 @@ export async function createWhatsAppMessage(
   userPhone: string,
   notes: string,
 ) {
-  const url = "https://graph.facebook.com/v21.0/452727801267302/messages";
+  const url = "https://graph.facebook.com/v20.0/552375867948675/messages";
   const messageBody = {
     messaging_product: "whatsapp",
     to: userPhone,
     type: "text",
     text: {
       preview_url: true,
-      body: `*${notes ? notes : "Lead Generated"}* :tada:\nName: ${payload.name}\nEmail: ${payload.email}\nPhone: ${payload.phone}\nBot Name: ${payload.botName}\nChat Link: ${payload.chatLink}\nWhatsapp Link: ${payload.whatsappLink}`,
+      body: `*${notes ?? "Lead Generated"}* \nName: ${payload.name}\nEmail: ${payload.email}\nPhone: ${payload.phone}\nBot Name: ${payload.botName}\nChat Link: ${payload.chatLink}\nWhatsapp Link: ${payload.whatsappLink}`,
     },
   };
 
@@ -114,11 +114,11 @@ export async function createWhatsAppMessage(
     const response = await $fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer EAAwYX9ZCRR1gBOwNBNZAz3LwQ0v6ZBwoHLd97D15OjURolHq25V3P1FbtUNB0satNpPwTmH1DHwpBE8zhZAQWGMorf4Aj1oOpn9r3eWbCdsJrk0yWoRHSFN7BjUgVrBiSrBlnuR7Qyrg8AyITi0r6DubAox2qXHLc9IKZAFFU5irqGb0shqeY6n2Oxc9C7hFMz6p9kmjCtl80ZCH8zHQZB2QbYKmemGNA07mDp0zB4MAnNZCP6ZAuNSATKSrdMZBhq`,
+        Authorization: `Bearer EAAwYX9ZCRR1gBO8JXwTbRQuayRxoYhXxMWIoPOKA59WQTy8KAQbOOjSZBCF6ZA9YUH2MRxr7Pm9b7hc0I6y86WyZCn32Nq0vnBlYkxhmeMD6n2CBuJo79pzjZA3NvSiBMkbDh3FF02nZAmb0jNvutje4F2u0VeazaZAphc0bBCZBcLXSFsUHmArXhyiQL5qcrwX0DQZDZD`,
       },
       body: messageBody,
     });
-
+    logger.info(`Whatsapp message sent ${JSON.stringify(response)}`);
     return response;
   } catch (error) {
     logger.info(`Error sending whatsapp message ${error?.message}`);
