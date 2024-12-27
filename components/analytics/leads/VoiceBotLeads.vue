@@ -102,8 +102,11 @@ const columns = [
   columnHelper.accessor("phone", {
     header: "Phone",
   }),
+  columnHelper.accessor("createdAt", {
+    header: "CreatedAt",
+  }),
   columnHelper.accessor("scheduledDate", {
-    header: "Date",
+    header: "Scheduled Date",
   }),
   columnHelper.accessor("notes", {  
     header: "Notes",
