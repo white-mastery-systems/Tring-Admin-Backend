@@ -103,6 +103,9 @@ const { status, data: callLogs } = await useLazyFetch(
   () => `/api/call-logs/${route.params.id}`,
   {
     server: false,
+    headers: {
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
   },
 );
 

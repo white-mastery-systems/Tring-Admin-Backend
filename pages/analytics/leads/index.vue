@@ -96,7 +96,7 @@ const exportReadyColumns = computed(() => {
       "Created at",
     ];
   } else if (exportFilters.value.type === "voice") {
-    return ["Name", "Bot Name", "Notes", "Location", "Phone", "Date"];
+    return ["Name", "Location", "Phone", "createdAt", "scheduledDate", "Notes", "Bot Name",];
   } else {
     // Default or fallback columns
     return [
@@ -141,11 +141,12 @@ const exportReadyColumns = computed(() => {
         } else {
           mergedObject = {
             name: lead.name ?? "---",
-            botName: lead.bot.name ?? "---",
-            notes: lead?.notes ?? "---",
             phone: lead?.phone ?? "---",
             location: lead?.location ?? "---",
             createdAt: format(lead.createdAt, "MMMM d, yyyy"),
+            scheduledDate: format(lead.scheduledDate, "MMMM d, yyyy"),
+            notes: lead?.notes ?? "---",
+            botName: lead.bot.name ?? "---",
             // ClientId: lead.botUser.id,
           };
         }
