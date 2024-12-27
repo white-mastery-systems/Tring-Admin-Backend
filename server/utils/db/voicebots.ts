@@ -217,7 +217,10 @@ export const createVoiceBotLead = async (leads: any) => {
 }
 
 export const voicebotLeadList = async (organizationId: string, query: any, timeZone: string) => {
-  let filters: any = [eq(leadSchema.organizationId, organizationId)];
+  let filters: any = [eq(voicebotLeadSchema.organizationId, organizationId)];
+  if(query.botId && query.botId !== "all") {
+    filters.push(eq(voicebotLeadSchema.botId, query.botId))
+  }
   let page, offset, limit = 0;
 
   if (query?.page && query?.limit) {
