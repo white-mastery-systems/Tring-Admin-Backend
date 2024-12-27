@@ -166,7 +166,7 @@ export default defineEventHandler(async (event) => {
         };
         const data = await createWhatsAppMessage(
           whatsappPayload,
-          `${body?.botUser?.countryCode}` + botIntegration?.integration?.metadata?.phoneNumber,
+          `${body?.botUser?.countryCode.split("+")[1]}` + botIntegration?.integration?.metadata?.phoneNumber,
           body?.note,
         );
       }
