@@ -65,6 +65,9 @@ const {
   server: false,
   default: () => [],
   query: filters,
+  headers: {
+    "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+  },
   transform: (callLogData: any) => {
     page.value = callLogData.page;
     totalPageCount.value = callLogData.totalPageCount;
