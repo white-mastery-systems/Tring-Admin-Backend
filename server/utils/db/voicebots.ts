@@ -221,6 +221,12 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
   if(query.botId && query.botId !== "all") {
     filters.push(eq(voicebotLeadSchema.botId, query.botId))
   }
+  if(query?.q) {
+    filters.push(or(
+      ilike(voicebotLeadSchema.name, `%${query.q}%`),
+      ilike(voicebotLeadSchema.phone, `%${query.q}%`),       
+    ))
+  }
   let page, offset, limit = 0;
 
   if (query?.page && query?.limit) {
