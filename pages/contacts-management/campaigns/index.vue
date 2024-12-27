@@ -16,7 +16,9 @@
         <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search campaign..." />
       </div>
-      <DataTable @pagination="Pagination" @limit="($event) => {
+      <DataTable @pagination="Pagination" @row-click="(row: any) => {
+        navigateTo(`/contacts-management/campaigns/${row.original.id}`);
+      }" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
       }
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
@@ -107,19 +109,6 @@ const {
 
 const deleteCampaigntate = ref({ open: false, id: null });
 const campaignModalState = ref({ open: false, id: null });
-// const campaignModalState = defineModel<{ open: boolean; id: any }>({
-//   default: {
-//     open: false,
-//     id: null,
-//   },
-// });
-// watchEffect(() => {
-//   if (filters.botId === "all") filters.botId = "";
-// });
-// const { status, data: campaignsList,refresh: integrationRefresh, } = await useLazyFetch("/api/org/campaign", {
-//   server: false,
-//   default: () => [],
-// });
 const isDataLoading = computed(() => status.value === "pending");
 
 const columnHelper = createColumnHelper<(typeof campaignDataList.value)[0]>();
@@ -164,8 +153,22 @@ const actionsComponent = (id: any) =>
         },
         h(Icon, { name: "lucide:trash-2" }),
       ),
+      h(
+        UiButton,
+        {
+          onClick: () => viewLead(row.original.id),
+          class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
+        },
+        [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
+      ),
     ],
   );
+const viewLead = async (chatId: any) => {
+  await navigateTo({
+    name: "contacts-management-campaigns-id",
+    params: { id: chatId },
+  });
+};
 
 const columns = [
   columnHelper.accessor("campaignName", {
