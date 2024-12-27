@@ -99,14 +99,14 @@ export async function createWhatsAppMessage(
   userPhone: string,
   notes: string,
 ) {
-  const url = "https://graph.facebook.com/v21.0/552375867948675/messages";
+  const url = "https://graph.facebook.com/v20.0/552375867948675/messages";
   const messageBody = {
     messaging_product: "whatsapp",
     to: userPhone,
     type: "text",
     text: {
       preview_url: true,
-      body: `*${notes ? notes : "Lead Generated"}* :tada:\nName: ${payload.name}\nEmail: ${payload.email}\nPhone: ${payload.phone}\nBot Name: ${payload.botName}\nChat Link: ${payload.chatLink}\nWhatsapp Link: ${payload.whatsappLink}`,
+      body: `*${notes ?? "Lead Generated"}* \nName: ${payload.name}\nEmail: ${payload.email}\nPhone: ${payload.phone}\nBot Name: ${payload.botName}\nChat Link: ${payload.chatLink}\nWhatsapp Link: ${payload.whatsappLink}`,
     },
   };
 

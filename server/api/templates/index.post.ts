@@ -63,7 +63,6 @@ export default defineEventHandler(async (event) => {
     const integrationDetails: any = await db.query.integrationSchema.findFirst({
       where: and(eq(integrationSchema.id, body.integrationId)),
     });
-    console.log(integrationDetails, "INTEID");
     const resp: any = await $fetch(
       `https://graph.facebook.com/v21.0/${integrationDetails?.metadata?.wabaId}/message_templates`,
       {
