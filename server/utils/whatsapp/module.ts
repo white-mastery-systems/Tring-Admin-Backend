@@ -99,7 +99,7 @@ export async function createWhatsAppMessage(
   userPhone: string,
   notes: string,
 ) {
-  const url = "https://graph.facebook.com/v21.0/452727801267302/messages";
+  const url = "https://graph.facebook.com/v21.0/552375867948675/messages";
   const messageBody = {
     messaging_product: "whatsapp",
     to: userPhone,
@@ -114,10 +114,11 @@ export async function createWhatsAppMessage(
     const response = await $fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer EAAwYX9ZCRR1gBO1YeuiR4bkaTIrs4YIg2SyqLjpjpADqX76Nlg49IpJUkc0TYS2pBSwsuXtRpOgfrZBJo87ZCrqgIzbSxObAdfbWja3HjVmbZAzbEO9HPawrNt25YVxaWzzqZBSZBZAkoVdCNDuJK4ip0fS0r3pKigZCG8BBWB3WMchmy5etB5p1RNctF7l24oqGWgZDZD`,
+        Authorization: `Bearer EAAwYX9ZCRR1gBO8JXwTbRQuayRxoYhXxMWIoPOKA59WQTy8KAQbOOjSZBCF6ZA9YUH2MRxr7Pm9b7hc0I6y86WyZCn32Nq0vnBlYkxhmeMD6n2CBuJo79pzjZA3NvSiBMkbDh3FF02nZAmb0jNvutje4F2u0VeazaZAphc0bBCZBcLXSFsUHmArXhyiQL5qcrwX0DQZDZD`,
       },
       body: messageBody,
     });
+    logger.info(`Whatsapp message sent ${JSON.stringify(response)}`);
     return response;
   } catch (error) {
     logger.info(`Error sending whatsapp message ${error?.message}`);
