@@ -257,12 +257,10 @@ const fileUpload = async () => {
     const fileExtension = file.name.split('.').pop().toLowerCase();
 
     if (fileExtension === "csv") {
-      console.log("Uploading CSV file");
       if (props.typeOfAddContacts === "insideBucket") await uploadBucketNumber(file, route.params.id);
       else await uploadNumber(file, 'chat');
       integrationRefresh()
     } else if (fileExtension === "xls" || fileExtension === "xlsx") {
-      console.log("Uploading Excel file");
       if (props.typeOfAddContacts === "insideBucket") await uploadBucketNumber(file, route.params.id);
       else await uploadNumber(file, 'chat');
       integrationRefresh()
