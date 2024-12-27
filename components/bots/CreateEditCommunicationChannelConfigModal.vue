@@ -66,6 +66,7 @@
     </form>
   </DialogWrapper>
 </template>
+
 <script setup lang="ts">
   import { useForm } from "vee-validate";
   import { createEditCRMConfigValidation } from "~/validationSchema/createEditCommunicationChannel";
@@ -102,6 +103,7 @@
           const crmConfigData = await $fetch<any>(
             `/api/bots/${route.params.id}/integrations/${modalProps.id}`,
           );
+          console.log({ crmConfigData }, "crmConfigData");
           if (crmConfigData) {
             setFieldValue("integrationId", crmConfigData.integrationId);
             setFieldValue("channelId", crmConfigData.metadata.channelId)
@@ -145,9 +147,7 @@
         `/api/org/integrations/zoho-cliq/channels?id=${matchedCRM.id}`,
       );
       channels.value = data.channels;
-      
-      
-    }
+    }  
   };
   watch(
     () => values.integrationId,
@@ -169,6 +169,7 @@
 
   const handleAddIntegration = handleSubmit((value: any) => {
     if (modalProps.id) {
+      console.log({ value },"update integration value");
       updateBotIntegrationById({
         payload: {
           ...value,
@@ -183,6 +184,7 @@
         },
       });
     } else {
+      console.log({ value },"add integration value");
       addBotIntegration({
         payload: {
           ...value,
