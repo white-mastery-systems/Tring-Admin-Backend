@@ -240,6 +240,21 @@ export const voicebotLeadRelations = relations(voicebotLeadSchema, ({ one }) => 
   })
 }))
 
+export const voicebotScheduledCallsRelations = relations(voicebotSchedularSchema, ({ one }) => ({
+  bucket: one(contactListSchema, {
+    fields: [voicebotSchedularSchema.bucketId],
+    references: [contactListSchema.id],
+  }),
+  contact: one(voicebotContactSchema, {
+    fields: [voicebotSchedularSchema.contactId],
+    references: [voicebotContactSchema.id],
+  }),
+  bot: one(voicebotSchema, {
+    fields: [voicebotSchedularSchema.botId],
+    references: [voicebotSchema.id],
+  })
+}))
+
 export type SelectVoiceBot = InferSelectModel<typeof voicebotSchema>;
 export type InsertVoiceBot = InferInsertModel<typeof voicebotSchema>;
 

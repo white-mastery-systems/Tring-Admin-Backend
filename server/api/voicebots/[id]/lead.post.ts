@@ -4,12 +4,13 @@ import { createVoiceBotLead, getVoicebot } from "~/server/utils/db/voicebots";
 const zodVoicebotLead = z.object({
   name: z.string(),
   phone: z.string(),
-  location: z.string(),
-  notes: z.string(),
+  location: z.string().optional(),
+  notes: z.string().optional(),
   scheduledDate: z.string()
     .datetime({ offset: true })
     .nullish()
-    .transform((val) => (val ? new Date(val) : null)),
+    .transform((val) => (val ? new Date(val) : null))
+    .optional(),
 })
 
 export default defineEventHandler(async (event) => {

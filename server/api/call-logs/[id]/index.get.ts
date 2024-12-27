@@ -5,9 +5,12 @@ export default defineEventHandler(async (event) => {
     : timeZoneHeader || "Asia/Kolkata";
   await isOrganizationAdminHandler(event)
 
-  const { id: callLogId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
+  const { id: callLogId } = getRouterParams(event)
+  const query = await isValidQueryHandler(event, z.object({
+    callSid: z.string().optional()
+  }))
 
-  const data = await getCallLogById(callLogId, timeZone)
+  const data = await getCallLogById(callLogId, timeZone, query)
 
   return data
 })

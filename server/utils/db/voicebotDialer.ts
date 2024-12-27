@@ -69,8 +69,9 @@ export const voicebotDialer = async () => {
               method: "POST",
               body: data
             })
-
-            await updateVoiceCallStatus(schedular.id, { callSid: dialVoiceCall, callStatus: "dialed" })
+            if(dialVoiceCall) {
+              await updateVoiceCallStatus(schedular.id, { callSid: dialVoiceCall, callStatus: "dialed" })
+            }
           } catch (error: any) {
             logger.error(`voice Dial API Error: ${error.message}`)
            await updateVoiceCallStatus(schedular.id, { callStatus: "failed" })
