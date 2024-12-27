@@ -143,7 +143,7 @@ const exportReadyColumns = computed(() => {
             name: lead.name ?? "---",
             phone: lead?.phone ?? "---",
             location: lead?.location ?? "---",
-            createdAt: format(lead.createdAt, "MMMM d, yyyy"),
+            createdAt: format(lead.scheduledDate, "MMMM d, yyyy"),
             notes: lead?.notes ?? "---",
             botName: lead.bot.name ?? "---",
             // ClientId: lead.botUser.id,
