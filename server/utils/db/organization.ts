@@ -310,7 +310,7 @@ const handleChatTypeBilling = async (
         usedQuota: 0,
         maxQuota: 0,
         planCode: "unAvailable",
-        walletBalance: 0,
+        walletBalance: orgSubscription.walletSessions,
         extraSessionsCost: 0,
         gst,
         extraSessions: 0,
@@ -330,7 +330,6 @@ const handleChatTypeBilling = async (
         ),
       })
   
-    // const usedSessions = 10000
     const usedSessions = interactedSessions?.length || 0;
     const maxSessions = pricingInformation.sessions
     const orgWalletSessions =  orgSubscription.walletSessions || 0
@@ -386,7 +385,7 @@ const handleVoiceTypeBilling = async (
       usedQuota: 0,
       maxQuota: 0,
       planCode: "unAvailable",
-      walletBalance: 0,
+      walletBalance: orgSubscription.walletSessions,
       extraSessionsCost: 0,
       gst,
       extraSessions: 0,
@@ -461,7 +460,7 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   }
   const orgGst = org.metadata?.gst
   // get Pricing information
-  const pricingInformation = await getPricingInformation(orgSubscription?.planCode)
+  const pricingInformation = await getPricingInformation(orgSubscription?.planCode!)
 
   if(query.type === "chat") {
       return handleChatTypeBilling(

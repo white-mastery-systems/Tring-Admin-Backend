@@ -1,5 +1,8 @@
+import { voicebotLeadList } from "~/server/utils/db/voicebots";
+
 const queryValidator = z
   .object({
+    type: z.string(),
     botId: z.string().optional(),
     from: z
       .string()
@@ -38,5 +41,9 @@ export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const query = await isValidQueryHandler(event, queryValidator);
 
-  return await listLeads(organizationId, query, timeZone);
+  const data = query.type === "chat"
+  ? await listLeads(organizationId, query, timeZone)
+  : await voicebotLeadList(organizationId, query, timeZone)
+
+  return data
 });
