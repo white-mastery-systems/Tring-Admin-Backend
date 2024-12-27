@@ -3,7 +3,7 @@
     <form @submit="handleCreateEditBotChannel">
 
 
-      <SelectField label="integration" helperText="Select your integration" name="integrationId" :multiple="false"
+      <SelectField label="Integration" helperText="Select your integration" name="integrationId" :multiple="false"
         :required="true" placeholder="Select your integration"
         :options="integrationsData?.map((integration: any) => ({ label: integration.name, value: integration.id }))" />
       <!-- <SelectField v-if="values.integrationId" label="template" helperText="Select your template" name="templateId"
@@ -22,7 +22,7 @@
           Submit
         </UiButton>
       </div>
-      <span class="text-sm text-gray-500">enter this webhook url in Meta Dashboard</span>
+      <span class="text-sm text-gray-500">Enter this webhook url in Meta Dashboard</span>
     </form>
   </DialogWrapper>
 </template>
