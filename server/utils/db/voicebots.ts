@@ -319,3 +319,74 @@ export const orgVoicebotSubscription = async (organizationId: string) => {
 export const createVoicebotSchedular = async (voicebotSchedular: any) => {
   return await db.insert(voicebotSchedularSchema).values(voicebotSchedular).returning()
 }
+
+export const scheduledCampaignCallList = async (organizationId: string, campaignId: string, timeZone: string, query: any ) => {
+  let filters: any = [eq(voicebotSchedularSchema.organizationId, organizationId), eq(voicebotSchedularSchema.campaignId, campaignId)];
+  let page, offset, limit = 0;
+
+  if (query?.page && query?.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
+    offset = (page - 1) * limit;
+  }
+  if (query?.period) {
+    let fromDate: Date | undefined;
+    let toDate: Date | undefined;
+
+    const queryDate = getDateRangeForFilters(query, timeZone);
+    fromDate = queryDate?.from;
+    toDate = queryDate?.to;
+    if (fromDate && toDate) {
+      filters.push(between(voicebotSchedularSchema.createdAt, fromDate, toDate));
+    }
+  }
+
+  let data = await db.query.voicebotSchedularSchema.findMany({
+    with: {
+      bot: { columns: { name: true } },
+      bucket: { columns: { name: true } },
+      contact: {
+        where:
+          query?.q ? or(
+            ilike(voicebotContactSchema.name, `%${query.q}%`),
+            ilike(voicebotContactSchema.phone, `%${query.q}%`),
+          ) : undefined,
+        columns: {
+          name: true,
+          countryCode: true,
+          phone: true,
+          metadata: true,
+          verificationId: true
+        }
+      }
+    },
+    where: and(...filters),
+    orderBy: [desc(voicebotSchedularSchema.createdAt)],
+  })
+
+  data = data.map((i) => ({
+    ...i,
+    bucket: i.bucket.name,
+    bot: i.bot.name,
+    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+  }))
+
+  if(query.q) {
+    data = data.filter((i) => i.contact !== null )
+  }
+
+  if (query?.page && query?.limit) {
+    const paginatedCallList = data.slice(offset, offset + limit);
+    return {
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length / limit) || 1,
+      totalCount: data.length,
+      data: paginatedCallList,
+    };
+  } else {
+    return data;
+  }
+
+}
