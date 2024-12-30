@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
   
   if(body?.scheduledDate) {
     const localDate = body?.scheduledDate;
-    const timeZone = voicebotDetail?.botDetails?.timezone; // Replace with your timezone
+    const timeZone = voicebotDetail?.botDetails?.timezone || "Asia/Kolkata"; // Replace with your timezone
     const botTime = momentTz.tz(localDate, timeZone);
     // Convert bot local time to UTC time
     scheduledUTCDate = botTime.utc()
