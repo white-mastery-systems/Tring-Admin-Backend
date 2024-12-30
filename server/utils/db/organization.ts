@@ -362,7 +362,8 @@ const handleChatTypeBilling = async (
     
     if (usedSessions >= maxSessions) {
       extraSessions = Math.max(usedSessions - maxSessions, 0)
-      resObj.wallet_balance = orgWalletSessions
+      const currentWallet = Math.max(orgWalletSessions - extraSessions, 0)
+      resObj.wallet_balance = currentWallet
       resObj.extra_sessions = extraSessions
     }
   
