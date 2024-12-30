@@ -106,7 +106,7 @@ export const scheduleEvent = async (
         "+",
         "",
       );
-      console.log("HI", templateInformation, "TEMPLATEVARIABLES");
+      logger.info(`templateInformation: ${JSON.stringify(templateInformation)}`);
 
       let components: any[] = [];
       if (

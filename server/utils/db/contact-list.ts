@@ -2,7 +2,9 @@ const db = useDrizzle();
 
 // chat contacts bucket
 export const createContactList = async (contactList: InsertContactList) => {
-  return (await db.insert(contactListSchema).values(contactList).returning())[0];
+  return (
+    await db.insert(contactListSchema).values(contactList).returning()
+  )[0];
 };
 
 export const getContactLists = async (organizationId: string, query?: any) => {
@@ -13,14 +15,14 @@ export const getContactLists = async (organizationId: string, query?: any) => {
     ),
     orderBy: [desc(contactListSchema.createdAt)],
   });
-  return data; 
+  return data;
 };
 
 export const checkBucketNameExists = async (
   organizationId: string,
   bucketName: string,
   type: string,
-  contactListId?: string
+  contactListId?: string,
 ) => {
   const conditions = [
     eq(contactListSchema.organizationId, organizationId),
@@ -71,66 +73,65 @@ export const deleteContactList = async (id: string) => {
 };
 
 export const findExistingChatContactsLink = async (bucketId: string) => {
-  return await db.select({ contactId: contactListContactsSchema.contactId })
-   .from(contactListContactsSchema)
-   .where(eq(contactListContactsSchema.contactListId, bucketId)
-  );
-}
+  return await db
+    .select({ contactId: contactListContactsSchema.contactId })
+    .from(contactListContactsSchema)
+    .where(eq(contactListContactsSchema.contactListId, bucketId));
+};
 
 export const createChatContactBucketLink = async (contactsData: any) => {
   return (
     await db.insert(contactListContactsSchema).values(contactsData).returning()
-  )[0]
-}
-
+  )[0];
+};
 
 // voicebot contacts buckets
 export const createVoiceContactBucketLink = async (contactsData: any) => {
   return (
     await db.insert(voiceContactLinkSchema).values(contactsData).returning()
-  )[0]
-}
+  )[0];
+};
 
 export const findExistingVoiceContactsLink = async (bucketId: string) => {
-  return await db.select({ contactId: voiceContactLinkSchema.contactId })
-   .from(voiceContactLinkSchema)
-   .where(eq(voiceContactLinkSchema.contactListId, bucketId)
-  );
-}
+  return await db
+    .select({ contactId: voiceContactLinkSchema.contactId })
+    .from(voiceContactLinkSchema)
+    .where(eq(voiceContactLinkSchema.contactListId, bucketId));
+};
 
 // Chat contacts link
 export const getAllChatContactLink = async (organizationId: string) => {
   return await db.query.contactListContactsSchema.findMany({
     with: {
-      contacts: true
+      contacts: true,
     },
-    where: eq(contactListContactsSchema.organizationId, organizationId)
-  })
-}
+    where: eq(contactListContactsSchema.organizationId, organizationId),
+  });
+};
 
 export const getContactsByChatBucketId = async (contactListId: string) => {
   return await db.query.contactListContactsSchema.findMany({
-      with: {
-        contacts: true,
-        bucket: {
-          columns: {
-            name: true
-          }
-        }
+    with: {
+      contacts: true,
+      bucket: {
+        columns: {
+          name: true,
+        },
       },
-    where: eq(contactListContactsSchema.contactListId, contactListId)
-  })
-}
+    },
+    where: eq(contactListContactsSchema.contactListId, contactListId),
+  });
+};
 
 // Voice contact link
 export const getAllVoiceContactLink = async (organizationId: string) => {
   return await db.query.voiceContactLinkSchema.findMany({
     with: {
-      contacts: true
+      contacts: true,
     },
-    where: eq(voiceContactLinkSchema.organizationId, organizationId)
-  })
-}
+    where: eq(voiceContactLinkSchema.organizationId, organizationId),
+  });
+};
 
 export const getContactsByVoiceBucketId = async (contactListId: string) => {
   return await db.query.voiceContactLinkSchema.findMany({
@@ -138,48 +139,79 @@ export const getContactsByVoiceBucketId = async (contactListId: string) => {
       contacts: true,
       bucket: {
         columns: {
-          name: true
-        }
-      }
+          name: true,
+        },
+      },
     },
-    where: eq(voiceContactLinkSchema.contactListId, contactListId)
-  })
-}
+    where: eq(voiceContactLinkSchema.contactListId, contactListId),
+  });
+};
+
+export const getContactsByChatbotBucketId = async (contactListId: string) => {
+  return await db.query.contactListContactsSchema.findMany({
+    with: {
+      contacts: true,
+    },
+    where: eq(contactListContactsSchema.contactListId, contactListId),
+  });
+};
 
 // delete contact link with bucket
-export const deleteChatContactFromBucket = async(bucketId: string, contactId: string) => {
-  return (await db.delete(contactListContactsSchema).where(
-    and(
-      eq(contactListContactsSchema.contactListId, bucketId),
-      eq(contactListContactsSchema.contactId, contactId)
-    )
-  ).returning())[0]
-}
+export const deleteChatContactFromBucket = async (
+  bucketId: string,
+  contactId: string,
+) => {
+  return (
+    await db
+      .delete(contactListContactsSchema)
+      .where(
+        and(
+          eq(contactListContactsSchema.contactListId, bucketId),
+          eq(contactListContactsSchema.contactId, contactId),
+        ),
+      )
+      .returning()
+  )[0];
+};
 
-export const deleteVoiceContactFromBucket = async(bucketId: string, contactId: string) => {
-  return (await db.delete(voiceContactLinkSchema).where(
-    and(
-      eq(voiceContactLinkSchema.contactListId, bucketId),
-      eq(voiceContactLinkSchema.contactId, contactId)
-    )
-  ).returning())[0]
-}
+export const deleteVoiceContactFromBucket = async (
+  bucketId: string,
+  contactId: string,
+) => {
+  return (
+    await db
+      .delete(voiceContactLinkSchema)
+      .where(
+        and(
+          eq(voiceContactLinkSchema.contactListId, bucketId),
+          eq(voiceContactLinkSchema.contactId, contactId),
+        ),
+      )
+      .returning()
+  )[0];
+};
 
-// check chat contact link with bucket 
-export const getSingleChatContactLink = async (bucketId: string, contactId: string) => {
+// check chat contact link with bucket
+export const getSingleChatContactLink = async (
+  bucketId: string,
+  contactId: string,
+) => {
   return await db.query.contactListContactsSchema.findFirst({
-      where: and(
-        eq(contactListContactsSchema.contactId, contactId),
-        eq(contactListContactsSchema.contactListId, bucketId)
-      )
-  })
-}
+    where: and(
+      eq(contactListContactsSchema.contactId, contactId),
+      eq(contactListContactsSchema.contactListId, bucketId),
+    ),
+  });
+};
 
-export const getSingleVoiceContactLink = async (bucketId: string, contactId: string) => {
+export const getSingleVoiceContactLink = async (
+  bucketId: string,
+  contactId: string,
+) => {
   return await db.query.voiceContactLinkSchema.findFirst({
-      where: and(
-        eq(voiceContactLinkSchema.contactId, contactId),
-        eq(voiceContactLinkSchema.contactListId, bucketId)
-      )
-  })
-}
+    where: and(
+      eq(voiceContactLinkSchema.contactId, contactId),
+      eq(voiceContactLinkSchema.contactListId, bucketId),
+    ),
+  });
+};
