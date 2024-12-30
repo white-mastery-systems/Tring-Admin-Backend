@@ -26,20 +26,23 @@ export const accountSchema = toTypedSchema(
         .string({ required_error: "Email is required" })
         .email()
         .default(""),
-      mobile: z.string({ required_error: "Number is required" }), 
-      password: z
+        mobile: z.string({ required_error: "Number is required" }), 
+        password: z
         .string({ required_error: "Password is required" })
         .optional()
         .default(""),
-      confirmPassword: z
+        confirmPassword: z
         .string({ required_error: "Confirm Password is required" })
         .optional()
         .default(""),
-      countryCode: z
+        countryCode: z
         .string({ required_error: "Country Code is required" })
         .min(1, "Country Code is required"),
-      address: addressSchema,
-      metadata: z.object({
+        address: addressSchema,
+        metadata: z.object({
+        businessName: z
+            .string({ required_error: "Business name is required" })
+            .min(1, "Business name is required"),
         role: z.string({ required_error: "Street Name is required" }),
         otherRole: z.string().optional().default(""),
       }),
