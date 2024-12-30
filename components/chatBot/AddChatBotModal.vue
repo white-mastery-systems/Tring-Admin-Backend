@@ -139,6 +139,7 @@
     { label: "Travel & Hospitality", value: "travel-hospitality" },
     { label: "Logistics", value: "logistics" },
     { label: "Education", value: "education" },
+    { label: "IT Service", value: "it-service" },
   ];
   const {
     status: integrationLoadingStatus,

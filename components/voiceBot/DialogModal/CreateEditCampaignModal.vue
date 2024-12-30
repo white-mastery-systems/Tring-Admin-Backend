@@ -1,6 +1,6 @@
 <template>
   <DialogWrapper v-model="campaignModalState" :title="campaignModalState.id ? 'Modify Campaign' : 'Add Campaign'">
-    <form @submit.prevent="handleConnect" class="space-y-2" v-if="true">
+    <form @submit.prevent="handleConnect" class="space-y-2">
       <!-- w-[70%] sm:w-[70%] md:w-[70%] lg:w-[75%] xl:w-[75%] -->
       <span class="flex gap-2 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
         <TextField name="campaignName" label="Campaign Name" placeholder="Enter campaign name" required>
@@ -280,6 +280,7 @@ onMounted(async() => {
 });
 
 const handleType = async (type: string) => {
+  console.log(type, 'type -- type')
   const getResponse = await getBucketDetailsAddCampaign(type);
 
   BucketList.value = getResponse?.map((item: any) => ({
