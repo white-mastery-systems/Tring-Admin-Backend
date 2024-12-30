@@ -39,14 +39,14 @@ export default defineEventHandler(async (event) => {
         createError({ statusCode: 404, statusMessage: "Invalid User" }),
       );
     }
-    const activeSubscription: any = await db.query.paymentSchema.findFirst({
-      where: eq(paymentSchema.organizationId, orgId),
-    });
-    if (activeSubscription) {
-      const subscriptionDataFromZoho = await cancelSubscriptionFromZohoBilling({
-        subscriptionId: activeSubscription.subscriptionId,
-      });
-    }
+    // const activeSubscription: any = await db.query.paymentSchema.findFirst({
+    //   where: eq(paymentSchema.organizationId, orgId),
+    // });
+    // if (activeSubscription) {
+    //   const subscriptionDataFromZoho = await cancelSubscriptionFromZohoBilling({
+    //     subscriptionId: activeSubscription.subscriptionId,
+    //   });
+    // }
     try {
       await db
         .update(paymentSchema)
