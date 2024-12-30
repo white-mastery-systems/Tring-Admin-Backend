@@ -11,7 +11,7 @@
     },
     {
       label: 'Call Logs',
-      to: `/analytics/call-logs/${callLogs.id}`,
+      to: `/analytics/call-logs/${callLogs?.id}`,
     },
   ]" :disable-back-button="false" :disable-elevation="true">
     <div class="items-top gap-[25px flex items-center justify-center px-3">
@@ -100,7 +100,7 @@ const config = useRuntimeConfig()
 //   server: false,
 // });
 const { status, data: callLogs } = await useLazyFetch(
-  () => `/api/call-logs/${route.params.id}`,
+  () => `/api/call-logs/${route.params.id}?callSid=true`,
   {
     server: false,
     headers: {
@@ -108,6 +108,12 @@ const { status, data: callLogs } = await useLazyFetch(
     },
   },
 );
+if ((!callLogs.value || callLogs.value === null) || callLogs.value === undefined) {
+  navigateTo({
+    name: 'contacts-management-campaigns', // Replace with your desired route name
+  });
+  toast.error("No call logs found for this");
+}
 
 const formattedCallData = computed(() => {
   if (!callLogs.value) return null; // Handle the case where callLogs might be undefined
@@ -223,6 +229,6 @@ const onAudioLoading = () => {
 }
 const onAudioError = () => {
   isAudioLoading.value = false
-  toast.error("No recording found")
+  if (callLogs.value.length) toast.error("No recording found")
 }
 </script>
