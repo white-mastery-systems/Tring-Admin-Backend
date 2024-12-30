@@ -1,7 +1,7 @@
 import { checkCampaignNameExist } from "~/server/utils/db/campaign";
 import { errorResponse } from "~/server/response/error.response";
 import { createVoicebotSchedular } from "~/server/utils/db/voicebots";
-
+import { getContactsByChatbotBucketId } from "~/server/utils/db/contact-list";
 const zodInsertCampaign = z.object({
   campaignName: z.string(),
   contactMethod: z.string(),
@@ -11,10 +11,10 @@ const zodInsertCampaign = z.object({
     workingStartTime: z.string().optional(),
     workingEndTime: z.string().optional(),
     callsPerTrigger: z.string().optional(),
-    date: z.string().optional(),
-    scheduleTime: z.string().optional(),
-    templateId: z.string().optional()
-  })
+    campaignDate: z.string().optional(),
+    campaignTime: z.string().optional(),
+    templateId: z.string().optional(),
+  }),
 });
 
 export default defineEventHandler(async (event) => {
@@ -49,9 +49,23 @@ export default defineEventHandler(async (event) => {
     // create campaign data in schedular table
     await createVoicebotSchedular(mapVoiceContactWithSchedular)
   }
-  return data
-})
 
+  if(data.contactMethod === "whatsapp") {
+    const chatbotContactList = await getContactsByChatbotBucketId(data?.bucketId)
+    const templateData = await getTemplateById(data?.botConfig?.templateId)
+    console.log(templateData, "templateData")
+
+    scheduleEvent(
+      data?.botConfig?.campaignDate,
+      data?.botConfig?.campaignTime,
+      chatbotContactList,
+      body,
+      templateData[0],
+    );
+    console.log("WhatsApp campaign scheduled successfully");
+  }
+  return data
+});
 
 
 
@@ -76,7 +90,8 @@ export default defineEventHandler(async (event) => {
 //   //     contactSchema,
 //   //     eq(contactSchema.id, contactListContactsSchema.contactId),
 //   //   );
-//   const contactList = await db.query.contactListContactsSchema.findMany({
+//   const contactList = await db.query.contactListContactsSch
+// ema.findMany({
 //     with: {
 //       contacts: true,
 //     },
