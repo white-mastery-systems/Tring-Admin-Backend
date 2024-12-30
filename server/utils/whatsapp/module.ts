@@ -100,13 +100,40 @@ export async function createWhatsAppMessage(
   notes: string,
 ) {
   const url = "https://graph.facebook.com/v20.0/552375867948675/messages";
+  // const messageBody = {
+  //   messaging_product: "whatsapp",
+  //   to: userPhone,
+  //   type: "template",
+  //   text: {
+  //     preview_url: true,
+  //     body: `*${notes ?? "Lead Details"}* \nName: ${payload.name}\nEmail: ${payload.email}\nPhone: ${payload.phone}\nBot Name: ${payload.botName}\nChat Link: ${payload.chatLink}\nWhatsapp Link: ${payload.whatsappLink}`,
+  //   },
+  // };
+  
   const messageBody = {
     messaging_product: "whatsapp",
     to: userPhone,
-    type: "text",
-    text: {
-      preview_url: true,
-      body: `*${notes ?? "Lead Generated"}* \nName: ${payload.name}\nEmail: ${payload.email}\nPhone: ${payload.phone}\nBot Name: ${payload.botName}\nChat Link: ${payload.chatLink}\nWhatsapp Link: ${payload.whatsappLink}`,
+    type: "template",
+    template: {
+      name: "lead_generated_notification",
+      language: { code: "en" },
+      components: [
+        {
+          type: "header",
+          parameters: [{ type: "text", text: notes ?? "Lead Details" }],
+        },
+        {
+          type: "body",
+          parameters: [
+            { type: "text", text: payload.name },
+            { type: "text", text: payload.email },
+            { type: "text", text: payload.phone },
+            { type: "text", text: payload.botName },
+            { type: "text", text: payload.chatLink },
+            { type: "text", text: payload.whatsappLink },
+          ],
+        },
+      ],
     },
   };
 
