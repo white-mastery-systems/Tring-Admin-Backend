@@ -48,7 +48,6 @@ export default defineEventHandler(async (event) => {
       referralSource: body?.referralSource,
       estimatedMonthlyBudget: body?.estimatedMonthlyBudget,
       discoverySource: body?.discoverySource,
-      businessName: body?.businessName,
       otherPlan: body?.otherPlan,
       otherReferralSource: body?.otherReferralSource,
       otherEstimatedMonthlyBudget: body?.otherEstimatedMonthlyBudget,
@@ -63,7 +62,8 @@ export default defineEventHandler(async (event) => {
     mobile: body?.mobile,
     metadata: {
       role: body.role,
-      otherRole: body?.otherRole
+      otherRole: body?.otherRole,
+      businessName: body?.businessName
     },
     address: {
       country: body?.country
