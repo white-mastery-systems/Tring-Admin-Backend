@@ -114,7 +114,7 @@ export async function createWhatsAppMessage(
     const response = await $fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer EAAwYX9ZCRR1gBO8JXwTbRQuayRxoYhXxMWIoPOKA59WQTy8KAQbOOjSZBCF6ZA9YUH2MRxr7Pm9b7hc0I6y86WyZCn32Nq0vnBlYkxhmeMD6n2CBuJo79pzjZA3NvSiBMkbDh3FF02nZAmb0jNvutje4F2u0VeazaZAphc0bBCZBcLXSFsUHmArXhyiQL5qcrwX0DQZDZD`,
+        Authorization: `Bearer EAAwYX9ZCRR1gBO2Ag3w9gLjmhvJn0iA0LIN6JZAIyFZC8PWBiMPHaqizoW4eHuXxG3CoOZBhqrLlyruTxpLJVW7KnzmwK1guAuIMZB0XZAB2rq0oPIDfWUljoVsrCz8y7kwjToSUAMPZAeOysIuZALweNaOnVxvASZCBgg3hE883kEwIy5sShIvQPVV6P6BErJf87WwZDZD`,
       },
       body: messageBody,
     });
