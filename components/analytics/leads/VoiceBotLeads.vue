@@ -1,6 +1,10 @@
 <template>
   <div>
     <div class="flex items-center gap-2 mb-2">
+      <UiInput v-model="props.filters.q" @input="props.filters.page = '1'"
+        class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+        placeholder=" Search Leads..." />
+      <BotFilter @input="onBotChange" />
       <DateRangeFilter @change="onDateChange" />
     </div>
     <DataTable @pagination="Pagination" @limit="($event) => {
@@ -91,21 +95,24 @@ const columns = [
   columnHelper.accessor("name", {
     header: "Name",
   }),
-  columnHelper.accessor("bot.name", {
-    header: "Bot Name",
-  }),
-  columnHelper.accessor("notes", {  
-    header: "Notes",
-  }),
   columnHelper.accessor("location", {
     header: "Location",
   }),
-
+  
   columnHelper.accessor("phone", {
     header: "Phone",
   }),
   columnHelper.accessor("createdAt", {
-    header: "Date",
+    header: "CreatedAt",
+  }),
+  columnHelper.accessor("scheduledDate", {
+    header: "Scheduled Date",
+  }),
+  columnHelper.accessor("notes", {  
+    header: "Notes",
+  }),
+  columnHelper.accessor("bot.name", {
+    header: "Bot Name",
   }),
 ];
 
@@ -119,5 +126,11 @@ const onDateChange = (value: any) => {
     props.filters.period = value;
   }
   props.filters.page = "1";
+};
+const onBotChange = (value: any) => {
+  if (value) {
+    props.filters.botId = value
+    props.filters.page = '1'
+  }
 };
 </script>
