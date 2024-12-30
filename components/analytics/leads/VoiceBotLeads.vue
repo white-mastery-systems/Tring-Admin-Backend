@@ -97,22 +97,26 @@ const columns = [
   }),
   columnHelper.accessor("location", {
     header: "Location",
+    cell: (info) => info.getValue() || "--"
   }),
   
   columnHelper.accessor("phone", {
     header: "Phone",
   }),
   columnHelper.accessor("createdAt", {
-    header: "CreatedAt",
+    header: "Created At",
   }),
   columnHelper.accessor("scheduledDate", {
     header: "Scheduled Date",
+    cell: (info) => info.getValue() || "--"
   }),
   columnHelper.accessor("notes", {  
     header: "Notes",
+    cell: (info) => info.getValue() || "--"
   }),
   columnHelper.accessor("bot.name", {
     header: "Bot Name",
+    cell: (info) => info.getValue() || "--"
   }),
 ];
 

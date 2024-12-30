@@ -179,6 +179,9 @@ const columns = [
   columnHelper.accessor("name", {
     header: "Bucket Name",
   }),
+  columnHelper.accessor("type", {
+    header: "Bot Type",
+  }),
   columnHelper.accessor("noOfAudience", {
     header: "No. of Audiences",
   }),

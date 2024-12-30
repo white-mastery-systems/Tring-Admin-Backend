@@ -46,8 +46,9 @@ export const getBucketContactsDetails = async (id: string) => {
 
 // Voice bot
 export const getBucketDetailsAddCampaign = async (botType: string) => {
+  const transformadBotType = botType === 'whatsapp' ? 'chat' : botType;
   const getSingleBucketDetails = await $fetch<SelectChatBot & { documents: SelectDocument[] }>(
-    `/api/org/contact-list?type=${botType}`,
+    `/api/org/contact-list?type=${transformadBotType}`,
   );
   return getSingleBucketDetails;
 };
