@@ -78,7 +78,7 @@
   </Page>
 </template>
 <script setup lang="ts">
-
+import { useRoute, useRouter } from "vue-router";
 // const scrollChatBox = () => {
 //   setTimeout(() => {
 //     if (chatScreenRef.value)
@@ -91,16 +91,19 @@ definePageMeta({
 });
 
 const route = useRoute("analytics-call-logs-id");
+const router = useRouter();
 const audioSrc = ref()
 const audioElement: any = ref(null)
 const isAudioLoading = ref(true)
 const config = useRuntimeConfig()
-// const chats = await $fetch(`/api/call-logs/${route.params.id}`, {
-//   method: "GET",
-//   server: false,
-// });
+
+const isBackRouteMatches = computed(() => {
+  const backRoute = router.options.history.state.back; // Assuming `router` is available
+  return backRoute && backRoute.startsWith('/contacts-management/campaigns');
+});
+const query = isBackRouteMatches.value ? "?callSid=true" : "";
 const { status, data: callLogs } = await useLazyFetch(
-  () => `/api/call-logs/${route.params.id}?callSid=true`,
+  () => `/api/call-logs/${route.params.id}${query}`,
   {
     server: false,
     headers: {
@@ -108,12 +111,17 @@ const { status, data: callLogs } = await useLazyFetch(
     },
   },
 );
-if ((!callLogs.value || callLogs.value === null) || callLogs.value === undefined) {
-  navigateTo({
-    name: 'contacts-management-campaigns', // Replace with your desired route name
-  });
-  toast.error("No call logs found for this");
-}
+const isDataLoading = computed(() => status.value === "pending");
+watch(() => isDataLoading.value,(newValue) => {
+  if (!newValue) {
+    if ((!callLogs.value || callLogs.value === null) || callLogs.value === undefined) {
+      navigateTo({
+        name: 'contacts-management-campaigns', // Replace with your desired route name
+      });
+      toast.error("No call logs found for this");
+    }
+  }
+})
 
 const formattedCallData = computed(() => {
   if (!callLogs.value) return null; // Handle the case where callLogs might be undefined

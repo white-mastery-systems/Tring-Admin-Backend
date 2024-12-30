@@ -5,99 +5,41 @@
         Personal Information
       </h3>
       <div class="grid grid-cols-2 gap-2">
-        <TextField
-          name="username"
-          label="Full Name"
-          required
-          placeholder="Enter your full name"
-        />
-        <TextField
-          type="email"
-          name="email"
-          label="Email address"
-          helperText=""
-          required
-          placeholder="Enter your email address"
-        />
+        <TextField name="username" label="Full Name" required placeholder="Enter your full name" />
+        <TextField type="email" name="email" label="Email address" helperText="" required
+          placeholder="Enter your email address" />
       </div>
-      <div
-        class="grid grid-cols-1 gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+        <TextField type="text" name="metadata.businessName" label="Business Name" placeholder="Enter Your Business Name"
+          :required="true" />
         <div class="flex gap-2">
-          <CountryCodeField
-            class="w-[100px]"
-            name="countryCode"
-            label="Country Code"
-            helperText="Enter your country code"
-            required
-          />
+          <CountryCodeField class="w-[100px]" name="countryCode" label="Country Code"
+            helperText="Enter your country code" required />
 
-          <TextField
-            :disableCharacters="true"
-            name="mobile"
-            label="Mobile number"
-            helperText=""
-            required
-            placeholder="Enter your mobile number"
-          />
+          <TextField :disableCharacters="true" name="mobile" label="Mobile number" helperText="" required
+            placeholder="Enter your mobile number" />
         </div>
         <!-- {{ values }} -->
         <div class="w-full">
-          <SelectField
-            name="metadata.role"
-            label="Role"
-            placeholder="Select Role"
-            :options="roles.map((role) => ({ label: role, value: role }))"
-            :required="true"
-          />
+          <SelectField name="metadata.role" label="Role" placeholder="Select Role"
+            :options="roles.map((role) => ({ label: role, value: role }))" :required="true" />
 
-          <TextField
-            v-if="values.metadata?.role === 'Other'"
-            type="text"
-            name="metadata.otherRole"
-            :required="true"
-          />
+          <TextField v-if="values.metadata?.role === 'Other'" type="text" name="metadata.otherRole" :required="true" />
         </div>
       </div>
       <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
         Address Information
       </h3>
       <div class="grid grid-cols-2 gap-2">
-        <TextField
-          name="address.street"
-          label="Street name"
-          helperText=""
-          required
-          placeholder="Enter your street address"
-        />
-        <TextField
-          name="address.city"
-          label="city name"
-          helperText=""
-          required
-          placeholder="Enter your city name"
-        />
-        <CountrySelectField
-          name="address.country"
-          label="country"
-          helperText="Enter your country"
-          required
-        >
+        <TextField name="address.street" label="Street name" helperText="" required
+          placeholder="Enter your street address" />
+        <TextField name="address.city" label="city name" helperText="" required placeholder="Enter your city name" />
+        <CountrySelectField name="address.country" label="country" helperText="Enter your country" required>
         </CountrySelectField>
-        <RegionSelectField
-          name="address.state"
-          label="state"
-          helperText="select your state"
-          required
-          :country="values?.address?.country"
-        />
-        <TextField
-          name="address.zipCode"
-          label="zip code"
-          helperText=""
-          required
-          placeholder="Enter your zip code"
-          :disableCharacters="true"
-        />
+        <RegionSelectField name="address.state" label="state" helperText="select your state" required
+          :country="values?.address?.country" />
+        <TextField name="address.zipCode" label="zip code" helperText="" required placeholder="Enter your zip code"
+          :disableCharacters="true" />
         <!-- <ComboBoxField
           name="data"
           label="data"
@@ -154,6 +96,7 @@
   setFieldValue("address.zipCode", user?.value?.address?.zipCode ?? "");
   setFieldValue("metadata.role", user?.value?.metadata?.role ?? "");
   setFieldValue("metadata.otherRole", user?.value?.metadata?.otherRole ?? "");
+  setFieldValue("metadata.businessName", user?.value?.metadata.businessName ?? "");
 
   const handleAccountUpdate = handleSubmit(async (values: any) => {
     isLoading.value = true;
@@ -172,13 +115,10 @@
   });
 
   const roles = [
-    "Chief Executive Officer",
-    "Chief Financial Officer",
-    "Chief Technology Officer",
-    "Chief Operating Officer",
-    "Chief Information Officer",
-    "Chief Marketing Officer",
-    "Sales",
+    "Business Owner",
+    "Product Manager",
+    "Marketing Manager",
+    "Developer",
     "Other",
   ];
 </script>

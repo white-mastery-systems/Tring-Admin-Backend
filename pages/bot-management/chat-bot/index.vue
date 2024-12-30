@@ -106,7 +106,7 @@
       return bots.data.map((bot) => {
         const type = () => {
           switch (bot.type) {
-            case "ecommerce":
+            case "e-commerce":
               return "E-commerce";
             case "real-estate":
               return "Real Estate";
@@ -124,13 +124,14 @@
               return "Travel & Hospitality";
             case "logistics":
               return "Logistics";
-            case "education":
+            case "education-training":
               return "Education & Training";
+            case "it-service":
+              return "IT Service";
             default:
               return "Other";
           }
         };
-
         return {
           id: bot.id,
           name: bot.name,
@@ -182,11 +183,11 @@
     columnHelper.accessor("name", {
       header: "Bot Name",
     }),
-    columnHelper.accessor("Bot Type", {
+    columnHelper.accessor("type", {
       header: "Bot Type",
-      cell: ({ row }) => {
-        return row.original.type;
-      },
+      // cell: ({ row }) => {
+      //   return row.original.type;
+      // },
     }),
     columnHelper.accessor("createdAt", {
       header: "Date Created",
