@@ -133,12 +133,12 @@
     { label: "Finance & Banking", value: "finance-banking" },
     { label: "Real Estate", value: "real-estate" },
     { label: "Healthcare", value: "healthcare" },
-    { label: "E-commerce", value: "ecommerce" },
+    { label: "E-commerce", value: "e-commerce" },
     { label: "Energy & Utilities", value: "energy-utilities" },
     { label: "Telecommunications", value: "telecommunications" },
     { label: "Travel & Hospitality", value: "travel-hospitality" },
     { label: "Logistics", value: "logistics" },
-    { label: "Education", value: "education" },
+    { label: "Education & Training", value: "education-training" },
     { label: "IT Service", value: "it-service" },
   ];
   const {

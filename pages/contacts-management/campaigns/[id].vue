@@ -14,7 +14,7 @@
       <DateRangeFilter @change="onDateChange" />
     </div>
     <DataTable @pagination="Pagination" @row-click="(row: any) => {
-        navigateTo(`/analytics/call-logs/${row.original.id}`);
+      navigateTo(`/analytics/call-logs/${row.original.id}?campaign=campaign`);
       }" @limit=" ($event)=> {
       (filters.page = '1'), (filters.limit = $event);
       }
