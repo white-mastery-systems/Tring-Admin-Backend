@@ -45,6 +45,9 @@ export const templateList = async (organizationId: string, query: any, timeZone:
 
 export const getTemplateById = async(templateId: string) => {
   const data = await db.query.templateSchema.findFirst({
+    with: {
+      integration: true
+    },
     where: eq(templateSchema.id, templateId)
   })
   return data
