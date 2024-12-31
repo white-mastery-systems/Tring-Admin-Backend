@@ -15,6 +15,8 @@ const zodInsertCampaign = z.object({
     date: z.string().optional(),
     scheduleTime: z.string().optional(),
     templateId: z.string().optional(),
+    integrationId: z.string().optional(),
+    templateName: z.string().optional()
   }),
 });
 
@@ -53,22 +55,22 @@ export default defineEventHandler(async (event) => {
     await createVoicebotSchedular(mapVoiceContactWithSchedular)
   }
 
-  if(data.contactMethod === "whatsapp") {
-    const chatbotContactList = await getContactsByChatbotBucketId(data?.bucketId)
-    const templateData = await getTemplateById(data?.botConfig?.templateId)
-    console.log(templateData, "templateData")
+  // if(data.contactMethod === "whatsapp") {
+  //   const chatbotContactList = await getContactsByChatbotBucketId(data?.bucketId)
+  //   const templateData = await getTemplateById(data?.botConfig?.templateId)
+  //   console.log(templateData, "templateData")
 
-    // create campaign data in schedular table
-    scheduleEvent(
-      data?.botConfig?.date,
-      data?.botConfig?.scheduleTime,
-      chatbotContactList,
-      body,
-      templateData,
-      timeZone
-    );
-    console.log("WhatsApp campaign scheduled successfully");
-  }
+  //   // create campaign data in schedular table
+  //   scheduleEvent(
+  //     data?.botConfig?.date,
+  //     data?.botConfig?.scheduleTime,
+  //     chatbotContactList,
+  //     body,
+  //     templateData,
+  //     timeZone
+  //   );
+  //   console.log("WhatsApp campaign scheduled successfully");
+  // }
   return data
 });
 
