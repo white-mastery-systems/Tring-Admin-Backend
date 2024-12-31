@@ -3,17 +3,14 @@
     <template #actionButtons>
       <div class="flex gap-4">
         <div class="flex gap-2">
-          <UiButton
-            color="primary"
-            @click="
+          <UiButton color="primary" @click="
               () => {
                 addWhatappTemplateModalState.open = true;
                 addWhatappTemplateModalState.id = null;
 
                 templateStore.resetValues();
               }
-            "
-          >
+            ">
             Add Template
           </UiButton>
 
@@ -28,36 +25,19 @@
     </template>
     <div>
       <div class="flex items-center gap-2 pb-2">
-        <UiInput
-          v-model="filters.q"
-          @input="filters.page = '1'"
-          class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
-          placeholder="Search Template..."
-        />
+        <!-- <UiInput v-model="filters.q" @input="filters.page = '1'"
+          class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search Template..." /> -->
+        <WhatsappBotFilter @change="onTemplateChange" />
       </div>
-      <DataTable
-        @pagination="Pagination"
-        @limit="
+      <DataTable @pagination="Pagination" @limit="
           ($event) => {
             (filters.page = '1'), (filters.limit = $event);
           }
-        "
-        :totalPageCount="totalPageCount"
-        :page="page"
-        :totalCount="totalCount"
-        :data="contactsList"
-        :is-loading="isDataLoading"
-        :columns="columns"
-        :page-size="20"
-        :height="20"
-        height-unit="vh"
-      />
+        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="contactsList"
+        :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="20" height-unit="vh" />
 
-      <ConfirmationModal
-        v-model:open="deleteTemplateState.open"
-        title="Confirm Delete"
-        description="Are you sure you want to delete ?"
-        @confirm="
+      <ConfirmationModal v-model:open="deleteTemplateState.open" title="Confirm Delete"
+        description="Are you sure you want to delete ?" @confirm="
           () => {
             if (deleteTemplateState?.id) {
               deleteSingleTemplate({
@@ -69,19 +49,15 @@
               deleteTemplateState.open = false;
             }
           }
-        "
-      />
+        " />
     </div>
-    <AddEditWhatsappTemplateModal
-      v-if="addWhatappTemplateModalState.open"
-      v-model="addWhatappTemplateModalState"
+    <AddEditWhatsappTemplateModal v-if="addWhatappTemplateModalState.open" v-model="addWhatappTemplateModalState"
       @confirm="
         () => {
           addWhatappTemplateModalState.open = false;
           integrationRefresh();
         }
-      "
-    />
+      " />
   </Page>
 </template>
 <script setup lang="ts">
@@ -233,6 +209,7 @@
     filters.page = $evnt;
     integrationRefresh();
   };
+const onTemplateChange = (value: any) => {
+  filters.q = value
+};
 </script>
-
-<style scoped></style>

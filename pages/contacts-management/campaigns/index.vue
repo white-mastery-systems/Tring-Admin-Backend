@@ -133,19 +133,19 @@ const actionsComponent = (id: any) =>
       //   },
       //   [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
       // ),
-      h(
-        UiButton,
-        {
-          color: "primary",
-          onClick: (event: MouseEvent) => {
-            event.stopPropagation(); 
-            campaignModalState.value.open = true;
-            campaignModalState.value.id = id;
-          }, // Add delete functionality
-          class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
-        },
-        h(Icon, { name: "lucide:pen" }),
-      ),
+      // h(
+      //   UiButton,
+      //   {
+      //     color: "primary",
+      //     onClick: (event: MouseEvent) => {
+      //       event.stopPropagation(); 
+      //       campaignModalState.value.open = true;
+      //       campaignModalState.value.id = id;
+      //     }, // Add delete functionality
+      //     class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
+      //   },
+      //   h(Icon, { name: "lucide:pen" }),
+      // ),
       h(
         UiButton,
         {

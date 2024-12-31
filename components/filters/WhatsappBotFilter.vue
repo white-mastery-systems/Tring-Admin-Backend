@@ -1,0 +1,30 @@
+<template>
+  <UiSelect v-model="selectedTemplate">
+    <UiSelectTrigger class="w-[200px]">
+      <UiSelectValue placeholder="Select Integration" />
+    </UiSelectTrigger>
+    <UiSelectContent>
+      <UiSelectItem v-for="(integrationList, index) in integrationsData" :key="index" :value="integrationList.id">
+        {{ integrationList.name }}
+      </UiSelectItem>
+    </UiSelectContent>
+  </UiSelect>
+</template>
+<script setup lang="ts">
+const emit = defineEmits(["change"]);
+const {
+  status: integrationLoadingStatus,
+  data: integrationsData,
+  refresh: integrationRefresh,
+} = useLazyFetch("/api/org/integrations", {
+  server: false,
+  query: { q: "channel" },
+  default: () => [],
+});
+
+const selectedTemplate = ref();
+
+watch(selectedTemplate, (newValue) => {
+  emit("change", newValue);
+});
+</script>
