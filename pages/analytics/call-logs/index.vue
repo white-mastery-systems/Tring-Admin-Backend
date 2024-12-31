@@ -9,10 +9,7 @@
           placeholder="Search Bot Name..." />
         <DateRangeFilter @change="onDateChange" />
       </div>
-      <DataTable @row-click="(row: any) => {
-          navigateTo(`/analytics/call-logs/${row.original.id}`);
-        }
-          " @limit="($event) => {
+      <DataTable @row-click="handleRowClick" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
       }
         " @pagination="Pagination" :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount"
@@ -156,4 +153,7 @@ const onDateChange = (value: any) => {
   }
   filters.page = "1";
 };
+const handleRowClick = (row) => {
+  window.open(`/analytics/call-logs/${row.original.id}`, '_blank');
+}
 </script>
