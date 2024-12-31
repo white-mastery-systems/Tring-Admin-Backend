@@ -9,10 +9,7 @@
           placeholder="Search Bot Name..." />
         <DateRangeFilter @change="onDateChange" />
       </div>
-      <DataTable @row-click="(row: any) => {
-          navigateTo(`/analytics/call-logs/${row.original.id}`);
-        }
-          " @limit="($event) => {
+      <DataTable @row-click="handleRowClick" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
       }
         " @pagination="Pagination" :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount"
@@ -132,7 +129,7 @@ const columnHelper = createColumnHelper<typeof callLogData.value>();
           UiButton,
           {
             // row.original.chatId
-            onClick: () => viewBot(),
+            onClick: () => handleRowClick(),   //viewBot(),
             class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
           },
           [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
@@ -156,4 +153,14 @@ const onDateChange = (value: any) => {
   }
   filters.page = "1";
 };
+const handleRowClick = (row: any) => {
+  const url = `/analytics/call-logs/${row.original.id}`
+  const newTab = window.open(url, '_blank')
+
+  if (newTab) {
+    newTab.focus()
+  } else {
+    toast.error('The new tab could not be opened. Please check your browser settings.');
+  }
+}
 </script>

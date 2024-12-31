@@ -22,11 +22,7 @@
         <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
       </div>
     </div>
-    <DataTable @row-click="
-        (row: any) => {
-          return navigateTo(`/analytics/chats/${row.original.id}`);
-        }
-      " @pagination="Pagination" @limit="
+    <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="
         ($event) => {
           (filters.page = '1'), (filters.limit = $event);
         }
@@ -242,6 +238,16 @@ const onBotChange = (value: any) => {
       filters.country = $event;
     }
   };
+const handleRowClick = (row) => {
+  const url = `/analytics/chats/${row.original.id}`
+  const newTab = window.open(url, '_blank')
+
+  if (newTab) {
+    newTab.focus()
+  } else {
+    toast.error('The new tab could not be opened. Please check your browser settings.')
+  }
+}
   const exportData = async () => {
     try {
       const exportChats = await $fetch("/api/chats", {

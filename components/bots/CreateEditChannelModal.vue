@@ -1,10 +1,7 @@
 <template>
   <DialogWrapper v-model="modalState" :title="'Channel Configuration'">
     <form @submit="handleCreateEditBotChannel">
-
-
-      <SelectField label="Integration" helperText="Select your integration" name="integrationId" :multiple="false"
-        :required="true" placeholder="Select your integration"
+      <SelectField label="Integration" helperText="Select your integration" name="integrationId" :multiple="false" placeholder="Select your integration"
         :options="integrationsData?.map((integration: any) => ({ label: integration.name, value: integration.id }))" />
       <!-- <SelectField v-if="values.integrationId" label="template" helperText="Select your template" name="templateId"
         placeholder="Select your template"
@@ -48,10 +45,9 @@ const channels = [
 ];
 const formSchema = toTypedSchema(
   z.object({
-    integrationId: z.string({ required_error: "IntegrationId is required" }).min(1, 'IntegrationId is required'),
+    integrationId: z.string().optional(),
   })
 );
-
 const { handleSubmit, defineField, errors, values, handleReset, setFieldValue } = useForm({
   validationSchema: formSchema
 });

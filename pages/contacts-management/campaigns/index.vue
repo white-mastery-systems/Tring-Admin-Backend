@@ -12,10 +12,13 @@
       </div>
     </template>
     <div>
-      <div class="flex items-center gap-2 pb-2">
+      <!-- <div class="flex items-center gap-2 pb-2">
         <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search campaign..." />
-      </div>
+      </div> -->
+      <!-- @row-click="(row: any) => {
+      navigateTo(`/contacts-management/campaigns/${row.original.id}`);
+      }" -->
       <DataTable @pagination="Pagination" @row-click="(row: any) => {
         navigateTo(`/contacts-management/campaigns/${row.original.id}`);
       }" @limit="($event) => {
@@ -134,7 +137,8 @@ const actionsComponent = (id: any) =>
         UiButton,
         {
           color: "primary",
-          onClick: () => {
+          onClick: (event: MouseEvent) => {
+            event.stopPropagation(); 
             campaignModalState.value.open = true;
             campaignModalState.value.id = id;
           }, // Add delete functionality
@@ -146,7 +150,8 @@ const actionsComponent = (id: any) =>
         UiButton,
         {
           variant: "destructive",
-          onClick: () => {
+          onClick: (event: MouseEvent) => {
+            event.stopPropagation();
             deleteCampaigntate.value.open = true;
             deleteCampaigntate.value.id = id;
           }, // Add delete functionality
@@ -156,7 +161,7 @@ const actionsComponent = (id: any) =>
       h(
         UiButton,
         {
-          onClick: () => viewLead(row.original.id),
+          onClick: () => viewLead(id),
           class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
         },
         [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
