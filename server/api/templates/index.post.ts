@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
     if (metadata?.footer) {
       components.push({ type: "FOOTER", text: metadata?.footer });
     }
-    console.log({ components });
+    logger.info("components",{ components });
     logger.info(
       JSON.stringify({
         name: body.name,
@@ -72,13 +72,13 @@ export default defineEventHandler(async (event) => {
         },
         body: {
           name: body.name,
-          language: "en_US",
           category: "MARKETING",
+          language: "en_US",
           components,
         },
       },
     );
-    console.log({ res: resp?.status?.toLowerCase() });
+    logger.info({ res: resp?.status?.toLowerCase() });
     const data = await createTemplate({
       ...body,
       whatsappTemplateId: resp?.id,
