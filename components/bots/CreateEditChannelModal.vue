@@ -1,8 +1,10 @@
 <template>
   <DialogWrapper v-model="modalState" :title="'Channel Configuration'">
     <form @submit="handleCreateEditBotChannel">
-      <SelectField label="Integration" helperText="Select your integration" name="integrationId" :multiple="false" placeholder="Select your integration"
-        :options="integrationsData?.map((integration: any) => ({ label: integration.name, value: integration.id }))" />
+      <SelectField label="Integration" helperText="Select your integration" name="integrationId" :multiple="false"
+        placeholder="Select your integration"
+        :options="integrationsData?.map((integration: any) => ({ label: integration.name, value: integration.id }))"
+        :closeIcon="true" />
       <!-- <SelectField v-if="values.integrationId" label="template" helperText="Select your template" name="templateId"
         placeholder="Select your template"
         :options="templates?.map((template: string) => ({ label: template, value: template }))" />
