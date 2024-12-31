@@ -14,13 +14,11 @@ export default defineEventHandler(async (event) => {
 
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
 
-  const query = await isValidQueryHandler(event, zodQueryValidator);
+  const query: any = await isValidQueryHandler(event, zodQueryValidator);
 
-  // const data = await templateList(organizationId, query, timeZone)
+  const integration: any = await getIntegrationById(organizationId, query?.q);
 
-  // const { wabaId, accessToken } = await getIntegrationById(organizationId, query);
-
-  const templateList = await getTemplatesByWabaId(wabaId, accessToken);
+  const templateList = await getTemplatesByWabaId(integration?.metadata?.wabaId, integration?.metadata?.access_token, query?.limit);
 
   return templateList;
 });

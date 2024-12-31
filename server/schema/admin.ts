@@ -352,6 +352,13 @@ export const billingRelations = relations(paymentSchema, ({ one }) => ({
   }),
 }));
 
+export const templateRelations = relations(templateSchema, ({ one }) => ({
+  integration: one(integrationSchema, {
+    fields: [templateSchema.integrationId],
+    references: [integrationSchema.id],
+  }),
+}))
+
 // Types
 export type SelectOrganization = InferSelectModel<typeof organizationSchema>;
 export type InsertOrganization = InferInsertModel<typeof organizationSchema>;
