@@ -66,14 +66,14 @@ export default defineEventHandler(async (event) => {
   const usedCallMinutes = totalMinutes
   const maxCallMinutes = voicePricingInformation?.sessions || 0
 
-  if(usedCallMinutes > maxCallMinutes || currentDate > voicebotPlan.expiryDate) {
-     await db.update(orgSubscriptionSchema)
-     .set({ status: "inactive" })
-     .where( and(
-      eq(orgSubscriptionSchema.organizationId, organizationId)
-     ))
-     return errorResponse(event, 500, "Exceeded the allowed call minutes.")
-  }
+  // if(usedCallMinutes > maxCallMinutes || currentDate > voicebotPlan.expiryDate) {
+  //    await db.update(orgSubscriptionSchema)
+  //    .set({ status: "inactive" })
+  //    .where( and(
+  //     eq(orgSubscriptionSchema.organizationId, organizationId)
+  //    ))
+  //    return errorResponse(event, 500, "Exceeded the allowed call minutes.")
+  // }
   
   return voiceBotDetail
 });
