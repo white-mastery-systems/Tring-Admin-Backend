@@ -33,7 +33,7 @@
           ($event) => {
             (filters.page = '1'), (filters.limit = $event);
           }
-        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="contactsList"
+        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="whatsappTemplateList"
         :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="20" height-unit="vh" />
 
       <ConfirmationModal v-model:open="deleteTemplateState.open" title="Confirm Delete"
@@ -105,18 +105,12 @@
   let totalCount = ref(0);
   const {
     status,
-    data: contactsList,
+    data: whatsappTemplateList,
     refresh: integrationRefresh,
   } = await useLazyFetch("/api/templates", {
     server: false,
     default: () => [],
     query: filters,
-    transform: (buckets: any) => {
-      page.value = buckets.page;
-      totalPageCount.value = buckets.totalPageCount;
-      totalCount.value = buckets.totalCount;
-      return buckets.data;
-    },
   });
   // const addWhatappTemplateModalState = defineModel<{ open: boolean, id: string }>({
   //   default: {
@@ -134,8 +128,7 @@
   // const newBotName = ref("");
 
   const isDataLoading = computed(() => status.value === "pending");
-
-  const columnHelper = createColumnHelper<(typeof contactsList.value)[0]>();
+  const columnHelper = createColumnHelper<(typeof whatsappTemplateList.value)[0]>();
 
   const actionsComponent = (id: any) =>
     h(
@@ -184,17 +177,12 @@
     );
 
   const columns = [
-    // columnHelper.accessor("name", {
-    //   header: "Template Name",
-    // }),
-    columnHelper.accessor((row) => (row.name === "" ? "--" : row.name), {
+    columnHelper.accessor("name", {
       header: "Template Name",
     }),
     columnHelper.accessor("status", {
       header: "status",
-      cell: ({ row }) => {
-        return row.original?.verificationStatus;
-      },
+      cell: ({ row }) => row.original?.status.toLowerCase(),
     }),
 
     columnHelper.accessor("id", {
