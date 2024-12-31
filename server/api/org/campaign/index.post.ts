@@ -55,6 +55,7 @@ export default defineEventHandler(async (event) => {
     const templateData = await getTemplateById(data?.botConfig?.templateId)
     console.log(templateData, "templateData")
 
+    // create campaign data in schedular table
     scheduleEvent(
       data?.botConfig?.campaignDate,
       data?.botConfig?.campaignTime,

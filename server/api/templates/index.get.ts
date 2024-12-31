@@ -1,19 +1,26 @@
+import { getTemplatesByWabaId } from "~/server/utils/template";
+
 const zodQueryValidator = z.object({
   page: z.string().optional(),
   limit: z.string().optional(),
-  q: z.string().optional()
-})
+  q: z.string().optional(),
+});
 
-export default defineEventHandler(async(event) => {
+export default defineEventHandler(async (event) => {
   const timeZoneHeader = event.node?.req?.headers["time-zone"];
-  const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
-  
-  const organizationId = (await isOrganizationAdminHandler(event)) as string
+  const timeZone = Array.isArray(timeZoneHeader)
+    ? timeZoneHeader[0]
+    : timeZoneHeader || "Asia/Kolkata";
 
-  const query = await isValidQueryHandler(event, zodQueryValidator)
+  const organizationId = (await isOrganizationAdminHandler(event)) as string;
 
-  const data = await templateList(organizationId, query, timeZone)
+  const query = await isValidQueryHandler(event, zodQueryValidator);
 
-  return data
+  // const data = await templateList(organizationId, query, timeZone)
 
-})
+  // const { wabaId, accessToken } = await getIntegrationById(organizationId, query);
+
+  const templateList = await getTemplatesByWabaId(wabaId, accessToken);
+
+  return templateList;
+});
