@@ -1,9 +1,10 @@
-import { getTemplatesByWabaId } from "~/server/utils/template";
+import { getTemplatesByWabaId, listAllApprovedTemplates } from "~/server/utils/template";
 
 const zodQueryValidator = z.object({
   page: z.string().optional(),
   limit: z.string().optional(),
   q: z.string().optional(),
+  status: z.string().optional()
 });
 
 export default defineEventHandler(async (event) => {
@@ -18,7 +19,9 @@ export default defineEventHandler(async (event) => {
 
   const integration: any = await getIntegrationById(organizationId, query?.q);
 
-  const templateList = await getTemplatesByWabaId(integration?.metadata?.wabaId, integration?.metadata?.access_token, query?.limit);
-
+  let templateList = query?.status === "approved" 
+  ? await listAllApprovedTemplates(integration?.metadata?.wabaId, integration?.metadata?.access_token)
+  : await getTemplatesByWabaId(integration?.metadata?.wabaId, integration?.metadata?.access_token, query?.limit);
+ 
   return templateList;
 });
