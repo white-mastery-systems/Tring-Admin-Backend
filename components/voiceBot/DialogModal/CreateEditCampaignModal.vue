@@ -64,8 +64,6 @@
           }))
             " />
       </div>
-      {{ values.contactMethod }}
-      {{ values.contactMethod === 'voice' }}
       <TextField v-if="values.contactMethod === 'voice'" type="number" label="Calls Per Trigger" name="callsPerTrigger"
         required placeholder="Enter calls per trigger" disableCharacters />
 
