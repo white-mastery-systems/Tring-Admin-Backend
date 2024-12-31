@@ -2,6 +2,7 @@ import { checkCampaignNameExist } from "~/server/utils/db/campaign";
 import { errorResponse } from "~/server/response/error.response";
 import { createVoicebotSchedular } from "~/server/utils/db/voicebots";
 import { getContactsByChatbotBucketId } from "~/server/utils/db/contact-list";
+
 const zodInsertCampaign = z.object({
   campaignName: z.string(),
   contactMethod: z.string(),
@@ -11,13 +12,17 @@ const zodInsertCampaign = z.object({
     workingStartTime: z.string().optional(),
     workingEndTime: z.string().optional(),
     callsPerTrigger: z.string().optional(),
-    campaignDate: z.string().optional(),
-    campaignTime: z.string().optional(),
+    date: z.string().optional(),
+    scheduleTime: z.string().optional(),
     templateId: z.string().optional(),
+    integrationId: z.string().optional(),
+    templateName: z.string().optional()
   }),
 });
 
 export default defineEventHandler(async (event) => {
+  const timeZoneHeader = event.node?.req?.headers["time-zone"];
+  const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
   const organizationId = await isOrganizationAdminHandler(event) as string
 
   const body = await isValidBodyHandler(event, zodInsertCampaign)
@@ -26,7 +31,7 @@ export default defineEventHandler(async (event) => {
 
   if(isAlreadyExist) return errorResponse(event, 400, "Campaign name already exists")
 
-  const data = await createCampaign({
+  const data: any = await createCampaign({
     ...body,
     organizationId
   })
@@ -50,20 +55,22 @@ export default defineEventHandler(async (event) => {
     await createVoicebotSchedular(mapVoiceContactWithSchedular)
   }
 
-  if(data.contactMethod === "whatsapp") {
-    const chatbotContactList = await getContactsByChatbotBucketId(data?.bucketId)
-    const templateData = await getTemplateById(data?.botConfig?.templateId)
-    console.log(templateData, "templateData")
+  // if(data.contactMethod === "whatsapp") {
+  //   const chatbotContactList = await getContactsByChatbotBucketId(data?.bucketId)
+  //   const templateData = await getTemplateById(data?.botConfig?.templateId)
+  //   console.log(templateData, "templateData")
 
-    scheduleEvent(
-      data?.botConfig?.campaignDate,
-      data?.botConfig?.campaignTime,
-      chatbotContactList,
-      body,
-      templateData[0],
-    );
-    console.log("WhatsApp campaign scheduled successfully");
-  }
+  //   // create campaign data in schedular table
+  //   scheduleEvent(
+  //     data?.botConfig?.date,
+  //     data?.botConfig?.scheduleTime,
+  //     chatbotContactList,
+  //     body,
+  //     templateData,
+  //     timeZone
+  //   );
+  //   console.log("WhatsApp campaign scheduled successfully");
+  // }
   return data
 });
 

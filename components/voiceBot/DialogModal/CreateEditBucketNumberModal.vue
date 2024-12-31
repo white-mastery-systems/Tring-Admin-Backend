@@ -199,12 +199,12 @@ const handleConnect = handleSubmit(async (values: any) => {
   try {
     if (bucketModalState.value.id) {
       if (props.typeOfAddContacts === "insideBucket") {
-        await $fetch(`/api/org/contact-list/${queryId.value}`, {
+        await $fetch(`/api/org/contact-list/${queryId.value ? queryId.value : bucketModalState.value.id}`, {
         method: "PUT",
         body: values,
       });
     } else {
-        await $fetch(`/api/org/contacts/${queryId.value}`, {
+        await $fetch(`/api/org/contacts/${queryId.value ? queryId.value : bucketModalState.value.id}`, {
           method: "PUT",
           body: values,
           params: {

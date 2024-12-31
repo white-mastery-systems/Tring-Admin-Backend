@@ -3,17 +3,14 @@
     <template #actionButtons>
       <div class="flex gap-4">
         <div class="flex gap-2">
-          <UiButton
-            color="primary"
-            @click="
+          <UiButton color="primary" @click="
               () => {
                 addWhatappTemplateModalState.open = true;
                 addWhatappTemplateModalState.id = null;
 
                 templateStore.resetValues();
               }
-            "
-          >
+            ">
             Add Template
           </UiButton>
 
@@ -28,36 +25,19 @@
     </template>
     <div>
       <div class="flex items-center gap-2 pb-2">
-        <UiInput
-          v-model="filters.q"
-          @input="filters.page = '1'"
-          class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
-          placeholder="Search Template..."
-        />
+        <!-- <UiInput v-model="filters.q" @input="filters.page = '1'"
+          class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search Template..." /> -->
+        <WhatsappBotFilter @change="onTemplateChange" />
       </div>
-      <DataTable
-        @pagination="Pagination"
-        @limit="
+      <DataTable @pagination="Pagination" @limit="
           ($event) => {
             (filters.page = '1'), (filters.limit = $event);
           }
-        "
-        :totalPageCount="totalPageCount"
-        :page="page"
-        :totalCount="totalCount"
-        :data="contactsList"
-        :is-loading="isDataLoading"
-        :columns="columns"
-        :page-size="20"
-        :height="20"
-        height-unit="vh"
-      />
+        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="whatsappTemplateList"
+        :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="20" height-unit="vh" />
 
-      <ConfirmationModal
-        v-model:open="deleteTemplateState.open"
-        title="Confirm Delete"
-        description="Are you sure you want to delete ?"
-        @confirm="
+      <ConfirmationModal v-model:open="deleteTemplateState.open" title="Confirm Delete"
+        description="Are you sure you want to delete ?" @confirm="
           () => {
             if (deleteTemplateState?.id) {
               deleteSingleTemplate({
@@ -69,19 +49,15 @@
               deleteTemplateState.open = false;
             }
           }
-        "
-      />
+        " />
     </div>
-    <AddEditWhatsappTemplateModal
-      v-if="addWhatappTemplateModalState.open"
-      v-model="addWhatappTemplateModalState"
+    <AddEditWhatsappTemplateModal v-if="addWhatappTemplateModalState.open" v-model="addWhatappTemplateModalState"
       @confirm="
         () => {
           addWhatappTemplateModalState.open = false;
           integrationRefresh();
         }
-      "
-    />
+      " />
   </Page>
 </template>
 <script setup lang="ts">
@@ -129,18 +105,12 @@
   let totalCount = ref(0);
   const {
     status,
-    data: contactsList,
+    data: whatsappTemplateList,
     refresh: integrationRefresh,
   } = await useLazyFetch("/api/templates", {
     server: false,
     default: () => [],
     query: filters,
-    transform: (buckets: any) => {
-      page.value = buckets.page;
-      totalPageCount.value = buckets.totalPageCount;
-      totalCount.value = buckets.totalCount;
-      return buckets.data;
-    },
   });
   // const addWhatappTemplateModalState = defineModel<{ open: boolean, id: string }>({
   //   default: {
@@ -158,8 +128,7 @@
   // const newBotName = ref("");
 
   const isDataLoading = computed(() => status.value === "pending");
-
-  const columnHelper = createColumnHelper<(typeof contactsList.value)[0]>();
+  const columnHelper = createColumnHelper<(typeof whatsappTemplateList.value)[0]>();
 
   const actionsComponent = (id: any) =>
     h(
@@ -208,17 +177,12 @@
     );
 
   const columns = [
-    // columnHelper.accessor("name", {
-    //   header: "Template Name",
-    // }),
-    columnHelper.accessor((row) => (row.name === "" ? "--" : row.name), {
+    columnHelper.accessor("name", {
       header: "Template Name",
     }),
     columnHelper.accessor("status", {
       header: "status",
-      cell: ({ row }) => {
-        return row.original?.verificationStatus;
-      },
+      cell: ({ row }) => row.original?.status.toLowerCase(),
     }),
 
     columnHelper.accessor("id", {
@@ -233,6 +197,7 @@
     filters.page = $evnt;
     integrationRefresh();
   };
+const onTemplateChange = (value: any) => {
+  filters.q = value
+};
 </script>
-
-<style scoped></style>
