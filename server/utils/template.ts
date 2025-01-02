@@ -69,3 +69,19 @@ export const listAllApprovedTemplates = async (
 
   return approvedTemplates.data;
 };
+
+export const getTemplateDetailsByName = async (
+  wabaId: string,
+  accessToken: string,
+  templateName: string) => {
+  const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?name=${templateName}`;
+
+  const templateDetails = await $fetch(apiUrl, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  return templateDetails.data;  
+};
