@@ -22,6 +22,11 @@ export default defineEventHandler(async (event) => {
   let templateList = query?.status === "approved" 
   ? await listAllApprovedTemplates(integration?.metadata?.wabaId, integration?.metadata?.access_token)
   : await getTemplatesByWabaId(integration?.metadata?.wabaId, integration?.metadata?.access_token, query?.limit);
- 
-  return templateList;
+
+  const result = {
+    integrationId: query?.q,
+    templates: templateList.data,
+  };
+
+  return result;
 });
