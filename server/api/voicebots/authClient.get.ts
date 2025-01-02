@@ -51,8 +51,8 @@ export default defineEventHandler(async (event) => {
   
   // calculate total minutes for current month
   const currentDate = momentTz().tz(timeZone).toDate()
-  const currentMonthStartDate = momentTz(voicebotPlan?.subscriptionCreatedDate).tz(timeZone).startOf("month").toDate()
-  const currentMonthEndDate = momentTz(voicebotPlan?.expiryDate).tz(timeZone).endOf("month").toDate()
+  const currentMonthStartDate = momentTz(voicebotPlan?.subscriptionCreatedDate).tz(timeZone).toDate()
+  const currentMonthEndDate = momentTz(voicebotPlan?.expiryDate).tz(timeZone).toDate()
   
   const voicebotCallLogs = await getCurrentMonthCallLogList(organizationId, currentMonthStartDate, currentMonthEndDate)
   // return { voicebotCallLogs }
