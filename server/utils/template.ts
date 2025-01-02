@@ -15,12 +15,13 @@ export const getTemplatesByWabaId = async (
   return templateList?.data;
 };
 
-export const deleteTemplateByName = async (
+export const deleteTemplateById = async (
   wabaId: string,
-  templateName: string,
   accessToken: string,
+  hsmId: string,
+  templateName: string,
 ): Promise<any> => {
-  const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?name=${templateName}`;
+  const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?hsm_id=${hsmId}&name=${templateName}`;
 
   const deleteResponse = await $fetch(apiUrl, {
     method: "DELETE",
