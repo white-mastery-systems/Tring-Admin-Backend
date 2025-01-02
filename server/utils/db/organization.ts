@@ -250,13 +250,13 @@ export const getAllOrgVoiceSubscription = async() => {
   })
 }
 
-const updateOrgSubscriptionStatus = async(organizationId: string, status: string) => {
+export const updateOrgSubscriptionStatus = async(organizationId: string, status: string, type: string) => {
   await db
   .update(orgSubscriptionSchema)
   .set({ status: status })
   .where(and(
     eq(orgSubscriptionSchema.organizationId, organizationId),
-    eq(orgSubscriptionSchema.botType, "chat")
+    eq(orgSubscriptionSchema.botType, type)
     )
   )
 }
@@ -274,9 +274,9 @@ const calculateDateRange = (orgSubscription: any, timeZone: string) => {
   };
 };
 
-const updateStatuses = async (organizationId: string, newStatus: "active" | "inactive", orgSubscription: any) => {
+const updateStatuses = async (organizationId: string, newStatus: "active" | "inactive", orgSubscription: any, type: string) => {
   if (orgSubscription?.status !== newStatus) {
-    await updateOrgSubscriptionStatus(organizationId, newStatus);
+    await updateOrgSubscriptionStatus(organizationId, newStatus, type);
   }
   if (newStatus === "inactive") {
     await updateChatbotStatus(organizationId);
@@ -304,6 +304,7 @@ const handleChatTypeBilling = async (
   gst: any,
   currentDate: Date,
   pricingInformation: any,
+  type: string
 ) => {
     if(orgSubscription?.status === "cancelled") {
       const resObj = constructResponse({
@@ -356,7 +357,7 @@ const handleChatTypeBilling = async (
   
     if (currentDate > expiryDate) {
       const subscriptionStatus = "inactive";
-      await updateStatuses(organizationId, subscriptionStatus, orgSubscription);
+      await updateStatuses(organizationId, subscriptionStatus, orgSubscription, type);
       return { ...resObj, subscription_status: subscriptionStatus };
     }
     
@@ -379,6 +380,7 @@ const handleVoiceTypeBilling = async (
   gst: any,
   currentDate: Date,
   pricingInformation: any,
+  type: string
 ) => {
   if(orgSubscription?.planCode === "voice_free" || orgSubscription?.status === "cancelled") {
      const resObj = constructResponse({
@@ -395,17 +397,7 @@ const handleVoiceTypeBilling = async (
     })
      return resObj
   }
-  const voicebotCallLogs = await db.query.callLogSchema.findMany({
-    columns: {
-       duration: true,
-       date: true,
-    },
-    where: and(
-      eq(callLogSchema.organizationId, organizationId),
-      gte(callLogSchema.date, startDate),
-      lte(callLogSchema.date, endDate)
-    )
-  })
+  const voicebotCallLogs = await getCurrentMonthCallLogList(organizationId, startDate, endDate)
   
   const totalMinutes = voicebotCallLogs.reduce((acc, item) => acc + Math.round(item?.duration / 60), 0);
   
@@ -413,17 +405,18 @@ const handleVoiceTypeBilling = async (
   const usedCallMinutes = totalMinutes
   const maxCallMinutes = pricingInformation.sessions
   const availableMinutes = Math.max(maxCallMinutes - usedCallMinutes, 0)
-  const orgWalletSessions =  orgSubscription.walletSessions || 0
-  let extraSessions = 0
+  const orgWalletMinutes =  orgSubscription.walletSessions || 0
+
+  let extraMinutes = 0
 
   const resObj = constructResponse({
     usedQuota: usedCallMinutes,
     maxQuota: maxCallMinutes,
     planCode: orgSubscription.planCode,
-    walletBalance: orgWalletSessions,
+    walletBalance: orgWalletMinutes,
     extraSessionsCost: pricingInformation.extraSessionCost,
     gst,
-    extraSessions,
+    extraSessions: extraMinutes,
     availableSessions: availableMinutes,
     orgSubscription,
     subscriptionStatus: orgSubscription.status
@@ -434,14 +427,16 @@ const handleVoiceTypeBilling = async (
     .toDate();
   
   if (currentDate > expiryDate) {
-    return { ...resObj, subscription_status: "inActive" };
+    const subscriptionStatus = "inactive";
+    await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
+    return { ...resObj, subscription_status: subscriptionStatus };
   }
-  
+
   if (usedCallMinutes >= maxCallMinutes) {
-    extraSessions = Math.max(usedCallMinutes - maxCallMinutes, 0)
-    const currentWallet = Math.max(orgWalletSessions - extraSessions, 0)
+    extraMinutes = Math.max(usedCallMinutes - maxCallMinutes, 0)
+    const currentWallet = Math.max(orgWalletMinutes - extraMinutes, 0)
     resObj.wallet_balance = currentWallet
-    resObj.extra_sessions = extraSessions
+    resObj.extra_sessions = extraMinutes
   }
   return resObj
 }
@@ -471,7 +466,8 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
         orgSubscription,
         orgGst,
         currentDate,
-        pricingInformation
+        pricingInformation,
+        query?.type
       )
   }
   if(query.type === "voice") {
@@ -483,7 +479,8 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
         orgSubscription,
         orgGst,
         currentDate,
-        pricingInformation
+        pricingInformation,
+        query?.type
       )
   }
 };

@@ -2,6 +2,7 @@ import momentTz from "moment-timezone"
 import { error } from "winston";
 import { errorResponse } from "~/server/response/error.response";
 import { getCurrentMonthCallLogList } from "~/server/utils/db/call-logs";
+import { updateOrgSubscriptionStatus } from "~/server/utils/db/organization";
 import { orgVoicebotSubscription } from "~/server/utils/db/voicebots";
 
 const db = useDrizzle();
@@ -65,14 +66,21 @@ export default defineEventHandler(async (event) => {
   // Convert total seconds to minutes
   const usedCallMinutes = totalMinutes
   const maxCallMinutes = voicePricingInformation?.sessions || 0
+  let extraMinutes = 0
+  const orgWalletMinutes = voicebotPlan.walletSessions || 0
 
-  if(usedCallMinutes > maxCallMinutes || currentDate > voicebotPlan.expiryDate) {
-     await db.update(orgSubscriptionSchema)
-     .set({ status: "inactive" })
-     .where( and(
-      eq(orgSubscriptionSchema.organizationId, organizationId)
-     ))
-     return errorResponse(event, 500, "Exceeded the allowed call minutes.")
+  if(currentDate > voicebotPlan.expiryDate) {
+    await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
+    return errorResponse(event, 500, "Subscription plan is expired")
+  }
+
+  if(usedCallMinutes >= maxCallMinutes) {
+    extraMinutes = Math.max(usedCallMinutes - maxCallMinutes, 0)
+    const currentWallet = Math.max(orgWalletMinutes - extraMinutes, 0)
+    if(currentWallet <= 0) {
+      await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
+      return errorResponse(event, 500, "Exceeded the allowed call minutes.")
+    }
   }
   
   return voiceBotDetail
