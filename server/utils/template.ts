@@ -5,7 +5,7 @@ export const getTemplatesByWabaId = async (
 ): Promise<any> => {
   const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?fields=name,status&limit=${limit}`;
 
-  const templateList = await $fetch(apiUrl, {
+  const templateList: { data: any } = await $fetch(apiUrl, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -61,28 +61,87 @@ export const listAllApprovedTemplates = async (
 ): Promise<any> => {
   const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?fields=name,status&status=APPROVED`;
 
-  const approvedTemplates = await $fetch(apiUrl, {
+  const approvedTemplates: { data: any } = await $fetch(apiUrl, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   });
 
-  return approvedTemplates.data;
+  return approvedTemplates?.data;
 };
 
 export const getTemplateDetailsByName = async (
   wabaId: string,
   accessToken: string,
-  templateName: string) => {
+  templateName: string,
+) => {
   const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?name=${templateName}`;
 
-  const templateDetails = await $fetch(apiUrl, {
+  const templateDetails: { data: any } = await $fetch(apiUrl, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   });
 
-  return templateDetails.data;  
+  return templateDetails?.data;
+};
+
+export const createWhatsappMessageTemplate = async (
+  wabaId: string,
+  accessToken: string,
+  templateName: string,
+  languageCode: string,
+  templateComponents: any,
+) => {
+  const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates`;
+
+  const createResponse = await $fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: {
+      name: templateName,
+      category: 'MARKETING',
+      language: languageCode,
+      components: templateComponents,
+    },
+  });
+
+  return createResponse;
+};
+
+export const sendWhatsappTemplateMessage = async (
+  phoneId: string,
+  accessToken: string,
+  userPhone: string,
+  templateName: string,
+  templateComponents: Record<string, any>,
+  languageCode?: string,
+) => {
+  const data = await $fetch(
+    `https://graph.facebook.com/v21.0/${phoneId}/messages`,
+    {
+      method: "post",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: {
+        messaging_product: "whatsapp",
+        to: userPhone,
+        type: "template",
+        template: {
+          name: templateName,
+          language: {
+            code: languageCode ?? "en",
+          },
+          components: templateComponents,
+        },
+      },
+    },
+  );
+
+  return data;
 };

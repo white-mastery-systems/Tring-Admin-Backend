@@ -1,18 +1,22 @@
 import { logger } from "~/server/logger";
 import { createTemplate } from "~/server/utils/db/templates";
+import { createWhatsappMessageTemplate } from "~/server/utils/template";
 
 const zodInsertTemplates = z.object({
-  name: z.string().optional(),
+  templateName: z.string().optional(),
+  languageCode: z.string().optional(),
   metadata: z.record(z.any()).optional(),
   integrationId: z.string({ required_error: "integrationId is required" }),
 });
 
-export default defineEventHandler(async (event) => {
-  const db = useDrizzle();
-  const conf = useRuntimeConfig();
-  const organizationId = (await isOrganizationAdminHandler(event)) as string;
+const db = useDrizzle();
+const conf = useRuntimeConfig();
 
+export default defineEventHandler(async (event) => {
+  
+  const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const body = await isValidBodyHandler(event, zodInsertTemplates);
+
   try {
     const metadata: any = { ...body.metadata };
 
@@ -51,33 +55,23 @@ export default defineEventHandler(async (event) => {
     if (metadata?.footer) {
       components.push({ type: "FOOTER", text: metadata?.footer });
     }
-    logger.info("components",{ components });
-    logger.info(
-      JSON.stringify({
-        name: body.name,
-        language: "en_US",
+    logger.info({
+        name: body.templateName,
+        language: body.languageCode,
         category: "MARKETING",
         components,
-      }),
+      },
     );
     const integrationDetails: any = await db.query.integrationSchema.findFirst({
       where: and(eq(integrationSchema.id, body.integrationId)),
     });
-    const resp: any = await $fetch(
-      `https://graph.facebook.com/v21.0/${integrationDetails?.metadata?.wabaId}/message_templates`,
-      {
-        method: "POST",
-        headers: {
-          authorization: `Bearer ${integrationDetails?.metadata?.access_token}`,
-        },
-        body: {
-          name: body.name,
-          category: "MARKETING",
-          language: "en_US",
-          components,
-        },
-      },
-    );
+    const resp: any = await createWhatsappMessageTemplate(
+      integrationDetails?.metadata?.wabaId,
+      integrationDetails?.metadata?.access_token,
+      body.templateName ?? '',
+      body.languageCode ?? 'en',
+      components
+    )
     logger.info({ res: resp?.status?.toLowerCase() });
     const data = await createTemplate({
       ...body,
@@ -85,17 +79,18 @@ export default defineEventHandler(async (event) => {
       verificationStatus: resp?.status?.toLowerCase(),
       organizationId,
     });
-    console.log({ resp });
     return data;
-  } catch (err) {
-    console.log({
-      err: JSON.stringify(err),
-      errdd: err.data,
-      msg: err.message,
+  } catch (error) {
+    logger.error({
+      error: JSON.stringify(error),
+      message: error?.message,
+      errorData: error?.data,
+      
     });
     return createError({
       status: 400,
-      err: err?.data,
+      error: error?.data
+      message: error?.message,
     });
   }
 });
