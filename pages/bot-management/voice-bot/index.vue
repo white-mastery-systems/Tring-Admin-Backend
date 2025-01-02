@@ -25,13 +25,8 @@
         </UiSelectContent>
       </UiSelect>
     </div>
-
     <DataTable
-      @row-click="
-        (row: any) => {
-          return navigateTo(`/bot-management/voice-bot/${row.original.id}`);
-        }
-      "
+      @row-click="handleRowClick"
       @pagination="Pagination"
       @limit="
         ($event) => {
@@ -188,9 +183,17 @@
     getAllvoiceBot();
   };
 
-  const navigateToTab = async (tab: any) => {
-    router.push({ query: { q: tab } });
-  };
-</script>
+  // const navigateToTab = async (tab: any) => {
+  //   router.push({ query: { q: tab } });
+  // };
+const handleRowClick = (row: any) => {
+  const url = `/bot-management/voice-bot/${row.original.id}`
+  const newTab = window.open(url, '_blank')
 
-<style scoped></style>
+  if (newTab) {
+    newTab.focus()
+  } else {
+    toast.error('The new tab could not be opened. Please check your browser settings.')
+  }
+}
+</script>

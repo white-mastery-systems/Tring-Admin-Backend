@@ -20,12 +20,7 @@
       <BotStatusFilter @change="onChangeStatus" />
       <BotCategoryFilter @change="onChangeCategory" />
     </div>
-
-    <DataTable @row-click="
-        (row: any) => {
-          return navigateTo(`/bot-management/chat-bot/${row.original.id}`);
-        }
-      " @pagination="Pagination" @limit="
+    <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="
         ($event) => {
           (filters.page = '1'), (filters.limit = $event);
         }
@@ -233,7 +228,14 @@ const onChangeStatus = (value: any) => {
   //   location,
   //   updateLocation
   // })
-  const testing = () => {
-    console.log("testing");
-  };
+const handleRowClick = (row: any) => {
+  const url = `/bot-management/chat-bot/${row.original.id}`
+  const newTab = window.open(url, '_blank')
+
+  if (newTab) {
+    newTab.focus()
+  } else {
+    toast.error('The new tab could not be opened. Please check your browser settings.')
+}
+}
 </script>
