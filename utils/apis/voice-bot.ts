@@ -8,6 +8,10 @@ interface DeleteExoPhone {
   id: string,
   onSuccess: () => void
 }
+interface DeleteWhatsappTempalte {
+  obj: object,
+  onSuccess: () => void
+}
 
 export const bucketNumber = async ({
   queryId,
@@ -92,23 +96,28 @@ export const deleteSingleRole = async ({
   }
 }
 export const deleteSingleTemplate = async ({
-  id,
+  obj,
   onSuccess,
-}:DeleteExoPhone) => {
+}: DeleteWhatsappTempalte) => {
   try {
-    const deleteIntegration = await $fetch<DeleteExoPhone>(
-      `/api/templates/${id}`,
-      {
-        method: "DELETE",
+    const deleteIntegration = await $fetch<DeleteExoPhone>("/api/templates", {
+      method: "DELETE",
+      params: {
+        q: obj.integrationId || undefined,
+        templateId: obj.id || undefined,
+        templateName: obj.name || undefined,
       },
-    );
+    });
+
     onSuccess();
-    toast.success("Removed successfully");
-    return deleteIntegration;
+    // console.log(deleteIntegration.success, "deleteIntegration -- deleteIntegration")\
+    if (deleteIntegration?.success) toast.success("Removed successfully");
+    // return deleteIntegration;
   } catch (err: any) {
-    toast.error(err.data.statusMessage);
+    toast.error(err.data?.statusMessage || "An error occurred");
   }
-}
+};
+
 
 export const deleteSingleExoPhone = async ({
   id,

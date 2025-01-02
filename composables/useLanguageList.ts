@@ -1,4 +1,4 @@
- export const useLanguageList = () => {
+ export const LanguageList = () => {
  const languageList = [
     {
       label: "Bulgarian",

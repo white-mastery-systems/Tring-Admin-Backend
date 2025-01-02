@@ -156,7 +156,7 @@
 <script setup lang="ts">
 import { useForm } from "vee-validate";
 import { textToSpeechValidation } from "~/validationSchema/textToSpeechValidation";
-import { useLanguageList } from '~/composables/useLanguageList';
+import { LanguageList } from '~/composables/useLanguageList';
 
 const route = useRoute("bot-management-voice-bot-id-text-to-speech-config");
 
@@ -251,7 +251,7 @@ const useSpeakerBooster = [
 //     value: "ta-IN",
 //   },
 // ];
-const { languageList } = useLanguageList();
+const { languageList } = LanguageList();
 const voiceTypes = [
   {
     label: "Hindi Female",

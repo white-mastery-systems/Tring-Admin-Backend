@@ -1,266 +1,3 @@
-<script setup lang="ts">
-  import { debounce } from "chart.js/helpers";
-  import { FieldArray } from "vee-validate";
-  import TextField from "~/components/formComponents/TextField.vue";
-  import { useTemplateStore } from "~/store/whatsAppTemplateStore";
-  import { whatsAppTemplateSchema } from "~/validationSchema/settings/whatAppTemplateValidation";
-
-  const templateStore = useTemplateStore();
-
-  // import countryData from '~/assets/country-codes.json'
-  definePageMeta({
-    middleware: "admin-only",
-  });
-  const isLoading = ref(false);
-
-  const varaibleLabelName = (id) => {
-    return `{{${id + 1}}}`;
-  };
-  const parseJson = (str: any = []) => {
-    return JSON.parse(str);
-  };
-
-  const stringifyJson = (str: any = []) => {
-    return JSON.stringify(str);
-  };
-  const {
-    status: integrationLoadingStatus,
-    data: integrationsData,
-    refresh: integrationRefresh,
-  } = await useLazyFetch("/api/org/integrations?q=channel", {
-    server: false,
-    default: () => [],
-  });
-
-  const headerOptions = [
-    { label: "None", value: "none" },
-    { label: "Text", value: "text" },
-    { label: "Image", value: "image" },
-    { label: "Video", value: "video" },
-    { label: "Document", value: "document" },
-    { label: "Location", value: "Location" },
-  ];
-
-  const emit = defineEmits<{
-    (e: "confirm"): void;
-    (edit: "getApistatus"): void;
-  }>();
-  const whatsppModalState = defineProps<{
-    open: Boolean;
-    id: String;
-    getStatus: Boolean;
-  }>();
-
-  watch(whatsppModalState.open, (newValue) => {});
-  watch(
-    () => whatsppModalState.id,
-    (newValue) => {},
-  );
-
-  const {
-    errors,
-    setErrors,
-    setFieldValue,
-    handleSubmit,
-    defineField,
-    values,
-    resetForm,
-  } = useForm({
-    validationSchema: whatsAppTemplateSchema,
-  });
-
-  const dispatchTemplateState = () => {
-    debounce(
-      templateStore.updateValues({
-        ...values,
-        templateVariables: stringifyJson(values.templateVariables),
-        headerTextTemplateVariables: stringifyJson(
-          values.headerTextTemplateVariables,
-        ),
-      }),
-      1000,
-    );
-  };
-
-  if (whatsppModalState?.id && whatsppModalState.getStatus) {
-    const { metadata: getSingleDetails }: any = await $fetch(
-      `/api/templates/${whatsppModalState.id}`,
-    );
-    setFieldValue("name", getSingleDetails.name);
-    setFieldValue("header", getSingleDetails.header);
-    setFieldValue("headerText", getSingleDetails.headerText);
-    setFieldValue("headerFile", getSingleDetails.headerFile);
-    setFieldValue("headerLocation", getSingleDetails.headerLocation);
-    setFieldValue("body", getSingleDetails.body);
-    setFieldValue("footer", getSingleDetails.footer);
-    setFieldValue("integrationId", getSingleDetails.integrationId);
-    if (getSingleDetails.templateVariables)
-      setFieldValue("templateVariables", getSingleDetails.templateVariables);
-    if (getSingleDetails.headerTextTemplateVariables)
-      setFieldValue(
-        "headerTextTemplateVariables",
-        getSingleDetails.headerTextTemplateVariables,
-      );
-    dispatchTemplateState();
-    emit("getApistatus");
-  } else {
-    resetForm();
-  }
-  const updateBody = ($event: any) => {
-    // if (["{", "}"].includes($event)) {
-    //   setTimeout(() => {
-    //     let body = values.body;
-    //     let templateVariables = [...(values.templateVariables || [])]; // Clone the array
-    //     if (body?.indexOf("{") > -1 && $event === "{") {
-    //       templateVariables.push("");
-    //       body = body.replace("{", `{{${templateVariables.length}}}`);
-    //       setFieldValue("templateVariables", templateVariables);
-    //       setFieldValue("body", body);
-    //     } else if (body?.indexOf("}}") > -1 && $event === "}") {
-    //       templateVariables.push("");
-    //       setFieldValue("templateVariables", templateVariables);
-    //     }
-    // dispatchTemplateState()
-
-    //   }, 0); // Delay to allow input update
-    // } else if ($event === "keydown") {
-    //   setTimeout(() => {
-    //     let body = values.body?.replace(" ", "");
-    //     let templateVariables = [...(values.templateVariables || [])];
-    //     templateVariables = templateVariables.filter(
-    //       (el, index) => !(body.indexOf(`{{${index + 1}`) > -1),
-    //     );
-    //     setFieldValue("templateVariables", templateVariables);
-    //    dispatchTemplateState()
-    //   }, 0);
-    // }
-    // else{
-    // dispatchTemplateState()
-    // }
-    dispatchTemplateState();
-  };
-
-  const removeTemplateVariable = (idx, remove, fields, type = "body") => {
-    setFieldValue(type, values[type]?.replace(`{{${idx + 1}}}`, ""));
-    fields.forEach((field, index) => {
-      if (index > idx) {
-        setFieldValue(
-          type,
-          values[type]?.replace(`{{${index + 1}}}`, `{{${index}}}`),
-        );
-      }
-    });
-    remove(idx);
-    dispatchTemplateState();
-  };
-
-  watch(values, (newValue) => {
-    console.log(newValue);
-  });
-  watch(errors, (newValue) => {
-    console.log(errors);
-  });
-
-  const uploadFile = async ($event: any) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      console.log(e.target.result);
-      setFieldValue("headerFile", { url: e.target.result, file: $event[0] });
-      dispatchTemplateState();
-    };
-    reader.readAsDataURL($event[0]);
-  };
-
-  const handleConnect = handleSubmit(async (value: any) => {
-    try {
-      isLoading.value = true;
-      if (values?.headerFile?.file instanceof File) {
-        const formData = new FormData();
-        formData.append("files", values?.headerFile?.file);
-        const [res] = await $fetch("/api/uploads", {
-          method: "POST",
-          body: formData,
-        });
-        setFieldValue("headerFile", res);
-      }
-      if (whatsppModalState?.id) {
-        await $fetch(`/api/templates/${whatsppModalState.id}`, {
-          method: "PUT",
-          body: {
-            metadata: { ...values },
-            name: values.name,
-            integrationId: values.integrationId,
-          },
-        });
-        toast.success("Updated successfully");
-      } else {
-        await $fetch("/api/templates", {
-          method: "POST",
-          body: {
-            metadata: { ...values },
-            name: values.name,
-            integrationId: values.integrationId,
-          },
-        });
-        toast.success("Created successfully");
-      }
-      emit("confirm");
-      templateStore.resetValues();
-      isLoading.value = false;
-    } catch (error: any) {
-      toast.error(error.statusMessage);
-       isLoading.value = false;
-    }
-    finally {
-       isLoading.value = false;
-
-    }
-  });
-
-  const channel = ref("form");
-
-  setFieldValue("name", templateStore.values.name);
-  setFieldValue("footer", templateStore.values.footer);
-  setFieldValue("body", templateStore.values.body);
-  setFieldValue("header", templateStore.values.header);
-  setFieldValue("headerText", templateStore.values.headerText);
-  setFieldValue("headerLocation", templateStore.values.headerLocation);
-  setFieldValue(
-    "templateVariables",
-    parseJson(templateStore.values.templateVariables),
-  );
-  setFieldValue("integrationId", templateStore.values.integrationId);
-  setFieldValue(
-    "headerTextTemplateVariables",
-    parseJson(templateStore.values.headerTextTemplateVariables),
-  );
-  if (
-    ["text", "image", "video", "document"].includes(templateStore.values.header)
-  )
-    setFieldValue(
-      "headerFile",
-      templateStore.values.headerFile instanceof Object
-        ? templateStore.values.headerFile
-        : {},
-    );
-  // if(values)
-  const updatChannel = (value: any) => {
-    channel.value = value;
-  };
-
-  watch(
-    () => errors,
-    (newValue) => {},
-  );
-  const variableOptions = [
-    { label: "First Name", value: "firstName" },
-    { label: "Last Name", value: "lastName" },
-    { label: "Full Name", value: "fullName" },
-    { label: "Email", value: "email" },
-    { label: "Mobile", value: "mobile" },
-  ];
-</script>
-
 <template>
   <form @submit="handleConnect" class="space-y-2">
     <div class="grid grid-cols-1 gap-4">
@@ -277,7 +14,8 @@
         helperText="template will be created with this integration"
         required
       />
-      <TextField
+      <div class="flex gap-3">
+        <TextField
         type="text"
         :disableSpecialCharacters="true"
         name="name"
@@ -285,8 +23,17 @@
         placeholder="Enter name"
         required
         @input="dispatchTemplateState()"
-      >
+        >
       </TextField>
+      <SelectField
+        name="languageCode"
+        :options="languageList"
+        label="Language"
+        placeholder="Select your language"
+        helperText="template will be created with this language"
+        required
+      />
+    </div>
       <div>
         <div class="pt-4">
           <SelectField
@@ -485,3 +232,267 @@
     </div>
   </form>
 </template>
+<script setup lang="ts">
+  import { debounce } from "chart.js/helpers";
+  import { FieldArray } from "vee-validate";
+  import TextField from "~/components/formComponents/TextField.vue";
+  import { useTemplateStore } from "~/store/whatsAppTemplateStore";
+  import { whatsAppTemplateSchema } from "~/validationSchema/settings/whatAppTemplateValidation";
+  import { whatsappTemplateLanguageList } from '~/composables/whatsappTemplateLanguageList'
+
+  
+  const templateStore = useTemplateStore();
+
+  // import countryData from '~/assets/country-codes.json'
+  definePageMeta({
+    middleware: "admin-only",
+  });
+  const isLoading = ref(false);
+  const { languageList } = whatsappTemplateLanguageList()
+
+  const varaibleLabelName = (id) => {
+    return `{{${id + 1}}}`;
+  };
+  const parseJson = (str: any = []) => {
+    return JSON.parse(str);
+  };
+
+  const stringifyJson = (str: any = []) => {
+    return JSON.stringify(str);
+  };
+  const {
+    status: integrationLoadingStatus,
+    data: integrationsData,
+    refresh: integrationRefresh,
+  } = await useLazyFetch("/api/org/integrations?q=channel", {
+    server: false,
+    default: () => [],
+  });
+
+  const headerOptions = [
+    { label: "None", value: "none" },
+    { label: "Text", value: "text" },
+    { label: "Image", value: "image" },
+    { label: "Video", value: "video" },
+    { label: "Document", value: "document" },
+    { label: "Location", value: "Location" },
+  ];
+
+  const emit = defineEmits<{
+    (e: "confirm"): void;
+    (edit: "getApistatus"): void;
+  }>();
+  const whatsppModalState = defineProps<{
+    open: Boolean;
+    id: String;
+    getStatus: Boolean;
+  }>();
+
+  watch(whatsppModalState.open, (newValue) => {});
+  watch(
+    () => whatsppModalState.id,
+    (newValue) => {},
+  );
+
+  const {
+    errors,
+    setErrors,
+    setFieldValue,
+    handleSubmit,
+    defineField,
+    values,
+    resetForm,
+  } = useForm({
+    validationSchema: whatsAppTemplateSchema,
+  });
+
+  const dispatchTemplateState = () => {
+    debounce(
+      templateStore.updateValues({
+        ...values,
+        templateVariables: stringifyJson(values.templateVariables),
+        headerTextTemplateVariables: stringifyJson(
+          values.headerTextTemplateVariables,
+        ),
+      }),
+      1000,
+    );
+  };
+
+  if (whatsppModalState?.id && whatsppModalState.getStatus) {
+    const { metadata: getSingleDetails }: any = await $fetch(
+      `/api/templates/${whatsppModalState.id}`,
+    );
+    setFieldValue("name", getSingleDetails.name);
+    setFieldValue("header", getSingleDetails.header);
+    setFieldValue("headerText", getSingleDetails.headerText);
+    setFieldValue("headerFile", getSingleDetails.headerFile);
+    setFieldValue("headerLocation", getSingleDetails.headerLocation);
+    setFieldValue("body", getSingleDetails.body);
+    setFieldValue("footer", getSingleDetails.footer);
+    setFieldValue("integrationId", getSingleDetails.integrationId);
+    if (getSingleDetails.templateVariables)
+      setFieldValue("templateVariables", getSingleDetails.templateVariables);
+    if (getSingleDetails.headerTextTemplateVariables)
+      setFieldValue(
+        "headerTextTemplateVariables",
+        getSingleDetails.headerTextTemplateVariables,
+      );
+    dispatchTemplateState();
+    emit("getApistatus");
+  } else {
+    resetForm();
+  }
+  const updateBody = ($event: any) => {
+    // if (["{", "}"].includes($event)) {
+    //   setTimeout(() => {
+    //     let body = values.body;
+    //     let templateVariables = [...(values.templateVariables || [])]; // Clone the array
+    //     if (body?.indexOf("{") > -1 && $event === "{") {
+    //       templateVariables.push("");
+    //       body = body.replace("{", `{{${templateVariables.length}}}`);
+    //       setFieldValue("templateVariables", templateVariables);
+    //       setFieldValue("body", body);
+    //     } else if (body?.indexOf("}}") > -1 && $event === "}") {
+    //       templateVariables.push("");
+    //       setFieldValue("templateVariables", templateVariables);
+    //     }
+    // dispatchTemplateState()
+
+    //   }, 0); // Delay to allow input update
+    // } else if ($event === "keydown") {
+    //   setTimeout(() => {
+    //     let body = values.body?.replace(" ", "");
+    //     let templateVariables = [...(values.templateVariables || [])];
+    //     templateVariables = templateVariables.filter(
+    //       (el, index) => !(body.indexOf(`{{${index + 1}`) > -1),
+    //     );
+    //     setFieldValue("templateVariables", templateVariables);
+    //    dispatchTemplateState()
+    //   }, 0);
+    // }
+    // else{
+    // dispatchTemplateState()
+    // }
+    dispatchTemplateState();
+  };
+
+  const removeTemplateVariable = (idx, remove, fields, type = "body") => {
+    setFieldValue(type, values[type]?.replace(`{{${idx + 1}}}`, ""));
+    fields.forEach((field, index) => {
+      if (index > idx) {
+        setFieldValue(
+          type,
+          values[type]?.replace(`{{${index + 1}}}`, `{{${index}}}`),
+        );
+      }
+    });
+    remove(idx);
+    dispatchTemplateState();
+  };
+  
+  watch(errors, (newValue) => {
+    console.log(newValue);
+  });
+
+  const uploadFile = async ($event: any) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      console.log(e.target.result);
+      setFieldValue("headerFile", { url: e.target.result, file: $event[0] });
+      dispatchTemplateState();
+    };
+    reader.readAsDataURL($event[0]);
+  };
+
+  const handleConnect = handleSubmit(async (value: any) => {
+    try {
+      isLoading.value = true;
+      if (values?.headerFile?.file instanceof File) {
+        const formData = new FormData();
+        formData.append("files", values?.headerFile?.file);
+        const [res] = await $fetch("/api/uploads", {
+          method: "POST",
+          body: formData,
+        });
+        setFieldValue("headerFile", res);
+      }
+      if (whatsppModalState?.id) {
+        await $fetch(`/api/templates/${whatsppModalState.id}`, {
+          method: "PUT",
+          body: {
+            metadata: { ...values },
+            name: values.name,
+            integrationId: values.integrationId,
+          },
+        });
+        toast.success("Updated successfully");
+      } else {
+        const {name,integrationId , languageCode, ...rest} = values
+        await $fetch("/api/templates", {
+          method: "POST",
+          body: {
+            metadata: { ...rest },
+            templateName: values.name,
+            integrationId: values.integrationId,
+            languageCode: values.languageCode,
+          },
+        });
+        toast.success("Created successfully");
+      }
+      emit("confirm");
+      templateStore.resetValues();
+      isLoading.value = false;
+    } catch (error: any) {
+      toast.error(error.statusMessage);
+       isLoading.value = false;
+    }
+    finally {
+       isLoading.value = false;
+
+    }
+  });
+
+  const channel = ref("form");
+
+  setFieldValue("name", templateStore.values.name);
+  setFieldValue("footer", templateStore.values.footer);
+  setFieldValue("body", templateStore.values.body);
+  setFieldValue("header", templateStore.values.header);
+  setFieldValue("headerText", templateStore.values.headerText);
+  setFieldValue("headerLocation", templateStore.values.headerLocation);
+  setFieldValue(
+    "templateVariables",
+    parseJson(templateStore.values.templateVariables),
+  );
+  setFieldValue("integrationId", templateStore.values.integrationId);
+  setFieldValue(
+    "headerTextTemplateVariables",
+    parseJson(templateStore.values.headerTextTemplateVariables),
+  );
+  if (
+    ["text", "image", "video", "document"].includes(templateStore.values.header)
+  )
+    setFieldValue(
+      "headerFile",
+      templateStore.values.headerFile instanceof Object
+        ? templateStore.values.headerFile
+        : {},
+    );
+  // if(values)
+  const updatChannel = (value: any) => {
+    channel.value = value;
+  };
+
+  watch(
+    () => errors,
+    (newValue) => {},
+  );
+  const variableOptions = [
+    { label: "First Name", value: "firstName" },
+    { label: "Last Name", value: "lastName" },
+    { label: "Full Name", value: "fullName" },
+    { label: "Email", value: "email" },
+    { label: "Mobile", value: "mobile" },
+  ];
+</script>
