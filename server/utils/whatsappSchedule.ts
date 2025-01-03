@@ -126,47 +126,41 @@ export const scheduleWhatsAppCampaign = async (
             );
             if (templateInformation) {
               templateLanguageCode = templateInformation.language;
-              console.log(
-                templateInformation.components,
-                "templateInformation",
-              );
-              templateComponents = templateInformation.components.forEach(
+              templateInformation.components.forEach(
                 (component: any) => {
+                  let parameters: any = [];
                   if (
                     component.type === "BODY" &&
                     component.example?.body_text
                   ) {
-                    const bodyTextExample = component.example.body_text[0];
-
-                    // Replace template variables with actual values
-                    component.example.body_text[0] = bodyTextExample.map(
-                      (variable: string) => {
-                        switch (variable) {
-                          case "firstName":
-                            return contact.firstName;
-                          case "lastName":
-                            return contact.lastName;
-                          case "fullName":
-                            return `${contact.firstName} ${contact.lastName}`;
-                          case "mobile":
-                            return phoneNumber;
-                          default:
-                            logger.warn(`Unhandled variable: ${variable}`);
-                            return variable;
-                        }
-                      },
-                    );
+                    component.example.body_text[0].map((variable: string) => {
+                      if (variable === "firstName") {
+                        parameters.push({
+                          type: "text",
+                          text: contact.firstName,
+                        });
+                      } else if (variable === "lastName") {
+                        parameters.push({
+                          type: "text",
+                          text: contact.lastName,
+                        });
+                      } else if (variable === "fullName") {
+                        parameters.push({
+                          type: "text",
+                          text: `${contact.firstName} ${contact.lastName}`,
+                        });
+                      } else if (variable === "mobile") {
+                        parameters.push({ type: "text", text: phoneNumber });
+                      }
+                    });
+                    templateComponents.push({
+                      type: component.type,
+                      parameters,
+                    });
                   }
                 },
               );
             }
-
-            logger.info(
-              "templateComponents",
-              JSON.stringify({
-                templateComponents,
-              }),
-            );
 
             const data = await sendWhatsappTemplateMessage(
               phoneId,
