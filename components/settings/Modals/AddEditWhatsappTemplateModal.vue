@@ -1,19 +1,3 @@
-<script setup lang="ts">
-  const addWhatappTemplateModalState = defineModel<{ open: boolean; id: any }>({
-    default: {
-      open: false,
-      id: "",
-    },
-  });
-  const emit = defineEmits<{ (e: "confirm"): void }>();
-  const getApiStatus = ref(true);
-
-  watch(addWhatappTemplateModalState, (newValue) => {
-    // if (!newValue.open) {
-    //   emit("confirm");
-    // }
-  });
-</script>
 <template>
   <DialogWrapper
     v-model="addWhatappTemplateModalState"
@@ -46,3 +30,19 @@
     </UiTabs>
   </DialogWrapper>
 </template>
+<script setup lang="ts">
+  const addWhatappTemplateModalState = defineModel<{ open: boolean; id: any }>({
+    default: {
+      open: false,
+      id: "",
+    },
+  });
+  const emit = defineEmits<{ (e: "confirm"): void }>();
+  const getApiStatus = ref(true);
+
+  watch(addWhatappTemplateModalState, (newValue) => {
+    // if (!newValue.open) {
+    //   emit("confirm");
+    // }
+  });
+</script>

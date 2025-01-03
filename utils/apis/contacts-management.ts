@@ -52,3 +52,12 @@ export const getBucketDetailsAddCampaign = async (botType: string) => {
   );
   return getSingleBucketDetails;
 };
+
+export const getWhatsappTemplateList = async (integrationId: string) => {
+  // const transformadBotType = botType === 'whatsapp' ? 'chat' : botType;
+  const getTemplateDetails = await $fetch<any>(
+    `/api/templates?q=${integrationId}&status=approved`,
+  );
+  // api / templates ? q = 8a43f116 - a52f - 470f - b49c - ed8bd90687e0 & status=approved
+  return getTemplateDetails;
+};

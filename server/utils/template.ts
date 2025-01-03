@@ -29,7 +29,6 @@ export const deleteTemplateById = async (
       Authorization: `Bearer ${accessToken}`,
     },
   });
-
   return deleteResponse;
 };
 
@@ -96,7 +95,6 @@ export const createWhatsappMessageTemplate = async (
   templateComponents: any,
 ) => {
   const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates`;
-
   const createResponse = await $fetch(apiUrl, {
     method: "POST",
     headers: {

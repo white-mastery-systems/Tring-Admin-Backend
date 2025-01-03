@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { useLanguageList } from '~/composables/useLanguageList';
+import { LanguageList } from '~/composables/useLanguageList';
 const config = useRuntimeConfig()
 definePageMeta({
   middleware: "admin-only",
@@ -83,7 +83,7 @@ const route = useRoute("bot-management-voice-bot-id-identity-management");
 const botDetailsList: any = await getVoiceBotDetails(route.params.id);
 
 
-const { languageList } = useLanguageList();
+const { languageList } = LanguageList();
 const isLoading = ref(false);
 
 const botSchema = toTypedSchema(
