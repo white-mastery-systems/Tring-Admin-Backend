@@ -13,7 +13,6 @@ const db = useDrizzle();
 const conf = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
-  
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const body = await isValidBodyHandler(event, zodInsertTemplates);
 
@@ -21,49 +20,63 @@ export default defineEventHandler(async (event) => {
     const metadata: any = { ...body.metadata };
 
     let components: any[] = [];
+
+    // Add body component if metadata contains a body
     if (metadata.body) {
-      components.push({
-        type: "BODY",
-        text: metadata?.body,
-        ...(metadata?.templateVariables?.length > 0 && {
-          example: {
-            body_text: [metadata?.templateVariables],
-          },
+      const bodyComponent = {
+        type: 'BODY',
+        text: metadata.body,
+        ...(metadata.templateVariables?.length > 0 && {
+          example: { body_text: [metadata?.templateVariables] },
         }),
-      });
+      };
+      components.push(bodyComponent);
     }
-    if (metadata?.header === "text") {
-      components.push({
-        type: "HEADER",
-        format: metadata?.header,
-        [metadata?.header]: metadata?.headerText,
-        ...(metadata?.headerTextTemplateVariables?.length > 0 && {
+
+    // Add header component based on metadata header type, excluding 'none'
+    if (metadata?.header && metadata?.header !== "none") {
+      if (metadata?.header === "text") {
+        const headerComponent = {
+          type: 'HEADER',
+          format: metadata?.header,
+          [metadata.header]: metadata?.headerText,
+          ...(metadata?.headerTextTemplateVariables?.length > 0 && {
+            example: { header_text: metadata?.headerTextTemplateVariables },
+          }),
+        };
+        components.push(headerComponent);
+      } else if (metadata?.headerFile) {
+        const headerFileComponent = {
+          type: 'HEADER',
+          format: metadata?.header,
           example: {
-            header_text: metadata?.headerTextTemplateVariables,
+            header_handle: `${conf.adminBaseUrl}${metadata?.headerFile.url}`,
           },
-        }),
-      });
-    } else if (metadata?.headerFile) {
-      components.push({
-        type: "header",
-        format: metadata?.header,
-        example: {
-          header_handle: `${conf.adminBaseUrl}${metadata?.headerFile?.url}`,
-        },
-      });
+        };
+        components.push(headerFileComponent);
+      }
     }
-    if (metadata?.footer) {
-      components.push({ type: "FOOTER", text: metadata?.footer });
+
+    // Add footer component if metadata contains a footer
+    if (metadata.footer) {
+      const footerComponent = {
+        type: 'FOOTER',
+        text: metadata.footer,
+      };
+      components.push(footerComponent);
     }
-    logger.info({
+
+    logger.info(JSON.stringify({
       name: body.templateName,
       language: body.languageCode,
       category: "MARKETING",
       components,
-    });
+    }));
+
     const integrationDetails: any = await db.query.integrationSchema.findFirst({
       where: and(eq(integrationSchema.id, body.integrationId)),
     });
+
     const resp: any = await createWhatsappMessageTemplate(
       integrationDetails?.metadata?.wabaId,
       integrationDetails?.metadata?.access_token,
@@ -71,20 +84,22 @@ export default defineEventHandler(async (event) => {
       body.languageCode ?? "en",
       components,
     );
-    logger.info({ res: resp?.status?.toLowerCase() });
+    logger.info(JSON.stringify({ res: resp?.status?.toLowerCase() }));
+
     const data = await createTemplate({
       ...body,
       whatsappTemplateId: resp?.id,
       verificationStatus: resp?.status?.toLowerCase(),
       organizationId,
     });
+
     return data;
   } catch (err) {
-    logger.error({
+    logger.error(JSON.stringify({
       err: JSON.stringify(err),
       errdd: err.data,
       msg: err.message,
-    });
+    }));
     return createError({
       status: 400,
       err: err?.data,
