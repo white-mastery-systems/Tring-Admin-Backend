@@ -132,3 +132,65 @@ export const scheduleEvent = async (
     return { status: false }
   }
 };
+
+
+
+// if (templateInformation?.metadata?.templateVariables?.length > 0) {
+//           let parameters: any = [];
+//           templateInformation?.metadata?.templateVariables?.map(
+//             (variable: string) => {
+//               console.log({ variable });
+//               if (variable === "firstName") {
+//                 parameters.push({ type: "text", text: contact.firstName });
+//               } else if (variable === "lastName") {
+//                 parameters.push({ type: "text", text: contact.lastName });
+//               } else if (variable === "fullName") {
+//                 parameters.push({
+//                   type: "text",
+//                   text: `${contact.firstName} ${contact.lastName}`,
+//                 });
+//               } else if (variable === "mobile") {
+//                 parameters.push({ type: "text", text: phoneNumber });
+//               }
+//             },
+//           );
+//           components.push({
+//             type: "BODY",
+//             parameters,
+//           });
+//         }
+//         if (templateInformation?.metadata?.headerTextTemplateVariables?.length > 0) {
+//           let parameters: any = [];
+//           templateInformation?.metadata?.headerTextTemplateVariables?.map(
+//             (variable: string) => {
+//               if (variable === "firstName") {
+//                 parameters.push({ type: "text", text: contact.firstName });
+//               } else if (variable === "lastName") {
+//                 parameters.push({ type: "text", text: contact.lastName });
+//               } else if (variable === "fullName") {
+//                 parameters.push({
+//                   type: "text",
+//                   text: `${contact.firstName} ${contact.lastName}`,
+//                 });
+//               } else if (variable === "mobile") {
+//                 parameters.push({ type: "text", text: phoneNumber });
+//               }
+//             },
+//           );
+//           components.push({
+//             type: "`HEADER`",
+//             parameters,
+//           });
+//         } 
+//         else if (templateInformation?.metadata?.header !== "text") {
+//           components.push({
+//             type: "header",
+//             parameters: [
+//               {
+//                 type: templateInformation?.metadata?.header,
+//                 image: {
+//                   link: `${conf.adminBaseUrl}${templateInformation?.metadata?.headerFile?.url}`,
+//                 },
+//               },
+//             ],
+//           });
