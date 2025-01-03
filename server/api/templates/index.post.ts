@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
     if (metadata?.header && metadata?.header !== "none") {
       if (metadata?.header === "text") {
         const headerComponent = {
-          type: "HEADER",
+          type: 'HEADER',
           format: metadata?.header,
           [metadata.header]: metadata?.headerText,
           ...(metadata?.headerTextTemplateVariables?.length > 0 && {
@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
         components.push(headerComponent);
       } else if (metadata?.headerFile) {
         const headerFileComponent = {
-          type: "HEADER",
+          type: 'HEADER',
           format: metadata?.header,
           example: {
             header_handle: `${conf.adminBaseUrl}${metadata?.headerFile.url}`,
