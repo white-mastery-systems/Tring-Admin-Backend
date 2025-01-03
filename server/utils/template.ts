@@ -3,16 +3,19 @@ export const getTemplatesByWabaId = async (
   accessToken: string,
   limit: string,
 ): Promise<any> => {
-  const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?fields=name,status&limit=${limit}`;
+  const getTemplatesApiEndpoint = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?fields=name,status&limit=${limit}`;
 
-  const templateList: { data: any } = await $fetch(apiUrl, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
+  const templateListApiEndpoint: { data: any } = await $fetch(
+    getTemplatesApiEndpoint,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     },
-  });
+  );
 
-  return templateList?.data;
+  return templateListApiEndpoint?.data;
 };
 
 export const deleteTemplateById = async (
@@ -21,70 +24,75 @@ export const deleteTemplateById = async (
   hsmId: string,
   templateName: string,
 ): Promise<any> => {
-  const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?hsm_id=${hsmId}&name=${templateName}`;
+  const deleteTemplateApiEndpoint = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?hsm_id=${hsmId}&name=${templateName}`;
 
-  const deleteResponse = await $fetch(apiUrl, {
+  const templateDeleteApiResponse = await $fetch(deleteTemplateApiEndpoint, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   });
-  return deleteResponse;
+  return templateDeleteApiResponse;
 };
 
-export const editTemplate = async (
-  wabaId: string,
+export const updateTemplateById = async (
   accessToken: string,
-  category?: string,
-  components?: any,
+  templateId: string,
+  templateComponents?: any,
 ): Promise<any> => {
-  const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates`;
+  const editTemplateApiEndpoint = `https://graph.facebook.com/v21.0/${templateId}`;
 
-  const editResponse = await $fetch(apiUrl, {
+  const templateEditApiResponse = await $fetch(editTemplateApiEndpoint, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
     body: {
-      category: category,
-      components: components,
+      category: "MARKETING",
+      components: templateComponents,
     },
   });
 
-  return editResponse;
+  return templateEditApiResponse;
 };
 
 export const listAllApprovedTemplates = async (
   wabaId: string,
   accessToken: string,
 ): Promise<any> => {
-  const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?fields=name,status&status=APPROVED`;
+  const listApprovedTemplateApiEndpoint = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?fields=name,status&status=APPROVED`;
 
-  const approvedTemplates: { data: any } = await $fetch(apiUrl, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
+  const approvedTemplatesApiResponse: { data: any } = await $fetch(
+    listApprovedTemplateApiEndpoint,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     },
-  });
+  );
 
-  return approvedTemplates?.data;
+  return approvedTemplatesApiResponse?.data;
 };
 
 export const getTemplateDetailsByName = async (
   wabaId: string,
   accessToken: string,
   templateName: string,
-) => {
-  const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?name=${templateName}`;
+): Promise<any> => {
+  const getTemplateDetailsApiEndpoint = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?name=${templateName}`;
 
-  const templateDetails: { data: any } = await $fetch(apiUrl, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
+  const templateDetailsApiResponse: { data: any } = await $fetch(
+    getTemplateDetailsApiEndpoint,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     },
-  });
+  );
 
-  return templateDetails;
+  return templateDetailsApiResponse;
 };
 
 export const createWhatsappMessageTemplate = async (
@@ -93,22 +101,22 @@ export const createWhatsappMessageTemplate = async (
   templateName: string,
   languageCode: string,
   templateComponents: any,
-) => {
-  const apiUrl = `https://graph.facebook.com/v21.0/${wabaId}/message_templates`;
-  const createResponse = await $fetch(apiUrl, {
+): Promise<any> => {
+  const createTemplateApiEndpoint = `https://graph.facebook.com/v21.0/${wabaId}/message_templates`;
+  const templateCreationApiResponse = await $fetch(createTemplateApiEndpoint, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
     body: {
       name: templateName,
-      category: 'MARKETING',
+      category: "MARKETING",
       language: languageCode,
       components: templateComponents,
     },
   });
 
-  return createResponse;
+  return templateCreationApiResponse;
 };
 
 export const sendWhatsappTemplateMessage = async (
@@ -119,10 +127,11 @@ export const sendWhatsappTemplateMessage = async (
   templateComponents: Record<string, any>,
   languageCode?: string,
 ) => {
-  const data = await $fetch(
-    `https://graph.facebook.com/v21.0/${phoneId}/messages`,
+  const sendMessageTemplateApiEndpoint = `https://graph.facebook.com/v21.0/${phoneId}/messages`;
+  const sendMessageTemplateApiResponse = await $fetch(
+    sendMessageTemplateApiEndpoint,
     {
-      method: "post",
+      method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -141,5 +150,5 @@ export const sendWhatsappTemplateMessage = async (
     },
   );
 
-  return data;
+  return sendMessageTemplateApiResponse;
 };
