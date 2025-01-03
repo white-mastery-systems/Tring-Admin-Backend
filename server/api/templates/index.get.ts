@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
 
   const result = {
     integrationId: query?.q,
-    templates: templateList.data,
+    templates: templateList,
   };
 
   return result;

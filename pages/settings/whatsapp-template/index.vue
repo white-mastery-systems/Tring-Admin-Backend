@@ -39,9 +39,9 @@
       <ConfirmationModal v-model:open="deleteTemplateState.open" title="Confirm Delete"
         description="Are you sure you want to delete ?" @confirm="
           () => {
-            if (deleteTemplateState?.id) {
+            if (deleteTemplateState?.obj.id) {
               deleteSingleTemplate({
-                id: deleteTemplateState.id,
+                obj: deleteTemplateState.obj,
                 onSuccess: () => {
                   integrationRefresh();
                 },
@@ -81,7 +81,7 @@
   );
   const searchBucket = ref("");
   const searchBotDebounce = refDebounced(searchBucket, 500);
-  const deleteTemplateState = ref({ open: false, id: null });
+  const deleteTemplateState = ref({ open: false, obj: {} });
 
   const filters = reactive<{
     q: string;
@@ -111,6 +111,15 @@
     server: false,
     default: () => [],
     query: filters,
+    transform: (data) => {
+      // Transform the data to extract and format the templates
+      return data?.templates?.map((template: any) => ({
+        integrationId: data?.integrationId,
+        name: template.name,
+        status: template.status,
+        id: template.id,
+      }));
+    },
   });
   // const addWhatappTemplateModalState = defineModel<{ open: boolean, id: string }>({
   //   default: {
@@ -130,7 +139,7 @@
   const isDataLoading = computed(() => status.value === "pending");
   const columnHelper = createColumnHelper<(typeof whatsappTemplateList.value)[0]>();
 
-  const actionsComponent = (id: any) =>
+  const actionsComponent = (templateObj: any) =>
     h(
       "div",
       {
@@ -143,7 +152,7 @@
             onClick: (e: Event) => {
               e.stopPropagation();
               addWhatappTemplateModalState.value.open = true;
-              addWhatappTemplateModalState.value.id = id;
+              addWhatappTemplateModalState.value.id = templateObj.id;
             },
             color: "primary",
           },
@@ -154,7 +163,7 @@
           {
             onClick: (e: any) => {
               e.stopPropagation();
-              deleteTemplateState.value.id = id;
+              deleteTemplateState.value.obj = templateObj;
               deleteTemplateState.value.open = true;
             }, // Add delete functionality
             class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
@@ -188,7 +197,7 @@
     columnHelper.accessor("id", {
       header: "Action",
       cell: ({ row }) => {
-        return actionsComponent(row.original.id);
+        return actionsComponent(row.original);
       },
     }),
   ];

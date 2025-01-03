@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { useLanguageList } from '~/composables/voiceBotLanguageList';
+import { useVoiceLanguageList } from '~/composables/voiceBotLanguageList';
 import { useTImeList } from '~/composables/timeZones';
  const config=useRuntimeConfig()
   definePageMeta({
@@ -81,7 +81,7 @@ import { useTImeList } from '~/composables/timeZones';
     },
   ];
 
-  const { languageList } = useLanguageList();
+  const { languageList } = useVoiceLanguageList();
   const { formattedTimeZones } = useTImeList();
   const isLoading = ref(false);
   const botSchema = toTypedSchema(

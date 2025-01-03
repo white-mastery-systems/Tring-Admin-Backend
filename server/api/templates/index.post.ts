@@ -56,22 +56,21 @@ export default defineEventHandler(async (event) => {
       components.push({ type: "FOOTER", text: metadata?.footer });
     }
     logger.info({
-        name: body.templateName,
-        language: body.languageCode,
-        category: "MARKETING",
-        components,
-      },
-    );
+      name: body.templateName,
+      language: body.languageCode,
+      category: "MARKETING",
+      components,
+    });
     const integrationDetails: any = await db.query.integrationSchema.findFirst({
       where: and(eq(integrationSchema.id, body.integrationId)),
     });
     const resp: any = await createWhatsappMessageTemplate(
       integrationDetails?.metadata?.wabaId,
       integrationDetails?.metadata?.access_token,
-      body.templateName ?? '',
-      body.languageCode ?? 'en',
-      components
-    )
+      body.templateName ?? "",
+      body.languageCode ?? "en",
+      components,
+    );
     logger.info({ res: resp?.status?.toLowerCase() });
     const data = await createTemplate({
       ...body,
@@ -80,17 +79,15 @@ export default defineEventHandler(async (event) => {
       organizationId,
     });
     return data;
-  } catch (error) {
+  } catch (err) {
     logger.error({
-      error: JSON.stringify(error),
-      message: error?.message,
-      errorData: error?.data,
-      
+      err: JSON.stringify(err),
+      errdd: err.data,
+      msg: err.message,
     });
     return createError({
       status: 400,
-      error: error?.data
-      message: error?.message,
+      err: err?.data,
     });
   }
 });
