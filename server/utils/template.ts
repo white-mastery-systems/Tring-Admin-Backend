@@ -84,7 +84,7 @@ export const getTemplateDetailsByName = async (
     },
   });
 
-  return templateDetails?.data;
+  return templateDetails;
 };
 
 export const createWhatsappMessageTemplate = async (

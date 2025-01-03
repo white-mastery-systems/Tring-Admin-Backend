@@ -1,6 +1,7 @@
 import { logger } from "~/server/logger";
 import momentTz from "moment-timezone"
 import schedule from "node-schedule"
+import { getTemplateDetailsByName } from "./template";
 
 const conf = useRuntimeConfig();
 
@@ -57,14 +58,11 @@ const sendWhatsappTemplateMessage = async (
         },
       },
     );
-
-    // logger.info(`whatsapp-response-${data}`);
-    //
     return data;
   } catch (err: any) {
     console.log(err);
     logger.error(
-      `https://graph.facebook.com/v21.0/${phoneId}/messages----${JSON.stringify(err)} ${JSON.stringify(err.data)}`,
+      `https://graph.facebook.com/v21.0/${phoneId}/messages---->Error: ${JSON.stringify(err.data)}`,
     );
   }
 };
@@ -73,100 +71,43 @@ export const scheduleEvent = async (
   date: any,
   time: any,
   contactList: any, 
-  campaignInformation: any,
-  templateInformation: any,
+  templateName: any,
+  integrationData: any,
   timeZone: string
 ) => {
   try {
-    const phoneId = templateInformation?.integration?.metadata?.pid;
-    const metaToken = templateInformation?.integration?.metadata?.access_token;
-    const templateName = templateInformation?.name;
-    // const organization = "South India Shelters";
-    // const salesmanager = "Reena";
-    const language = "en_US";
-    const assigned_date = momentTz(date);
+    const phoneId = integrationData?.metadata?.pid
+    const metaToken = integrationData?.metadata?.access_token
+    const wabaId = integrationData.metadata?.wabaId
+    
+    const assigned_date = momentTz(date)
+    const localTime = momentTz.tz(time, "HH:mm", timeZone)
+    const utcTime = localTime.clone().utc(); // Convert to UTC
 
-    const istMoment = momentTz.tz(time, "HH:mm", timeZone);
-    const utcMoment = istMoment.clone().utc(); // Convert to UTC
-
-    const year = assigned_date.get("year");
+    const year = assigned_date.get("year")
     const month = assigned_date.get("month")
-    const day = assigned_date.get("date");
-    const hours = utcMoment.get("hour")
-    const minutes = utcMoment.get("minute")
+    const day = assigned_date.get("date")
+    const hours = utcTime.get("hour")
+    const minutes = utcTime.get("minute")
 
-    console.log({ year, month, date: day, hour: hours, minute: minutes, tz: "UTC" });
-     
+    console.log({ year, month, date: day, hour: hours, minute: minutes, tz: "UTC" })
+
     const event = schedule.scheduleJob({ year, month, date: day, hour: hours, minute: minutes, tz: "UTC" }, () => {
       console.log("inside scheduling...")
       contactList.forEach(async ({ contacts: contact }: { contacts: any }) => {
         
         const phoneNumber = `${contact.countryCode}${contact.phone}`.replace("+", "");
-  
-        logger.info(`templateInformation: ${JSON.stringify(templateInformation)}`);
 
         let components: any[] = [];
+        let language = "en_US";
 
-        if (templateInformation?.metadata?.templateVariables?.length > 0) {
-          let parameters: any = [];
-          templateInformation?.metadata?.templateVariables?.map(
-            (variable: string) => {
-              console.log({ variable });
-              if (variable === "firstName") {
-                parameters.push({ type: "text", text: contact.firstName });
-              } else if (variable === "lastName") {
-                parameters.push({ type: "text", text: contact.lastName });
-              } else if (variable === "fullName") {
-                parameters.push({
-                  type: "text",
-                  text: `${contact.firstName} ${contact.lastName}`,
-                });
-              } else if (variable === "mobile") {
-                parameters.push({ type: "text", text: phoneNumber });
-              }
-            },
-          );
-          components.push({
-            type: "BODY",
-            parameters,
-          });
+        const templateDetailList = await getTemplateDetailsByName(wabaId, metaToken, templateName)
+        const templateByName = templateDetailList?.data?.find((i: any) => i.name === templateName)
+        if(templateByName) {
+          // components = templateByName.components
+          language = templateByName.language
         }
-        if (templateInformation?.metadata?.headerTextTemplateVariables?.length > 0) {
-          let parameters: any = [];
-          templateInformation?.metadata?.headerTextTemplateVariables?.map(
-            (variable: string) => {
-              if (variable === "firstName") {
-                parameters.push({ type: "text", text: contact.firstName });
-              } else if (variable === "lastName") {
-                parameters.push({ type: "text", text: contact.lastName });
-              } else if (variable === "fullName") {
-                parameters.push({
-                  type: "text",
-                  text: `${contact.firstName} ${contact.lastName}`,
-                });
-              } else if (variable === "mobile") {
-                parameters.push({ type: "text", text: phoneNumber });
-              }
-            },
-          );
-          components.push({
-            type: "`HEADER`",
-            parameters,
-          });
-        } 
-        else if (templateInformation?.metadata?.header !== "text") {
-          components.push({
-            type: "header",
-            parameters: [
-              {
-                type: templateInformation?.metadata?.header,
-                image: {
-                  link: `${conf.adminBaseUrl}${templateInformation?.metadata?.headerFile?.url}`,
-                },
-              },
-            ],
-          });
-        }
+
         const data = await sendWhatsappTemplateMessage(
           metaToken,
           phoneId,
@@ -176,53 +117,18 @@ export const scheduleEvent = async (
           language,
         );
         //TODO remove once it is done
-        logger.info(`whatsapp ${JSON.stringify(data)}`);
+        logger.info(`whatsapp response: ${JSON.stringify(data)}`);
       });
      })
+    console.log({ event })
     if (!event) {
-      logger.error(`whatsapp campaign event not scheduled`)
-      return false
+      logger.error(`whatsapp campaign event is not scheduled`)
+      return { status: false }
     }
-    logger.info(`whatsapp campaign event not scheduled`)
-    return { status: true };
+    logger.info(`whatsapp campaign event is scheduled`)
+    return { status: true }
   } catch (error: any) {
-    logger.error(`Whatsapp scheduleEvent error: ${JSON.stringify(error.message)}`);
-    return { status: false };
+    logger.error(`Whatsapp scheduleEvent error: ${JSON.stringify(error.message)}`)
+    return { status: false }
   }
 };
-
-// const event = schedule.scheduleJob(
-    //   { year, month, date: day, hour: hours, minute: minutes, tz: "UTC" },
-    //   () => {
-    //     logger.info({ level: "info", message: "Message sending..." });
-    //     contactList.forEach(async (item: any) => {
-    //
-    //       const phoneNumber = `${item.countryCode}${item.phone}`.replace(
-    //         "+",
-    //         "",
-    //       );
-    //
-    //       const components = {
-    //         name: item.firstName,
-    //         organization,
-    //         project: "Testing",
-    //         number: phoneNumber,
-    //         manager: salesmanager,
-    //         organizationName: organization,
-    //       };
-    //       const data = await sendWhatsappTemplateMessage(
-    //         metaToken,
-    //         phoneId,
-    //         phoneNumber,
-    //         templateName,
-    //         components,
-    //         language,
-    //       );
-    //
-    //     });
-    //   },
-    // );
-    //
-    // if (!event) {
-    //   return { status: false };
-    // }

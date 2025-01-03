@@ -55,22 +55,22 @@ export default defineEventHandler(async (event) => {
     await createVoicebotSchedular(mapVoiceContactWithSchedular)
   }
 
-  // if(data.contactMethod === "whatsapp") {
-  //   const chatbotContactList = await getContactsByChatbotBucketId(data?.bucketId)
-  //   const templateData = await getTemplateById(data?.botConfig?.templateId)
-  //   console.log(templateData, "templateData")
+  if(data.contactMethod === "whatsapp") {
+    const chatbotContactList = await getContactsByChatbotBucketId(data?.bucketId)
+    const integrationData = await getIntegrationById(organizationId, data?.botConfig?.integrationId)
+    // console.log(integrationData, "integrationData")
 
-  //   // create campaign data in schedular table
-  //   scheduleEvent(
-  //     data?.botConfig?.date,
-  //     data?.botConfig?.scheduleTime,
-  //     chatbotContactList,
-  //     body,
-  //     templateData,
-  //     timeZone
-  //   );
-  //   console.log("WhatsApp campaign scheduled successfully");
-  // }
+    // create campaign data in schedular table
+    scheduleEvent(
+      data?.botConfig?.date,
+      data?.botConfig?.scheduleTime,
+      chatbotContactList,
+      data?.botConfig?.templateName,
+      integrationData,
+      timeZone
+    );
+    // console.log("WhatsApp campaign scheduled successfully");
+  }
   return data
 });
 
