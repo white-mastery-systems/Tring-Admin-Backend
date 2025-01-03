@@ -28,6 +28,12 @@
 
   const selectedTemplate = ref();
 
+  watch(integrationsData, (newData) => {
+    if (newData && newData.length > 0) {
+      selectedTemplate.value = newData[0].id;
+    }
+  }, {immediate: true});
+
   watch(selectedTemplate, (newValue) => {
     emit("change", newValue);
   });

@@ -336,7 +336,7 @@ const handleType = async (type: string) => {
 
 const handleIntegration = async (event: any) => {
   const getList = await getWhatsappTemplateList(event)
-  templateData.value = getList?.map((item: any) => ({
+  templateData.value = getList.templates?.map((item: any) => ({
     label: item.name,
     value: item.name,
   }))

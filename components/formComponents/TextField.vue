@@ -7,73 +7,83 @@
       {{ label }}
       <span v-if="required" class="text-lg text-red-500">* </span>
     </UiLabel>
-    <UiTextarea v-if="isTextarea" class="mt-2 textarea-resize-scroll" @paste="
-        (e: any) => {
-          if (disableCharacters) {
-            if (isNaN(Number(e.clipboardData.getData('text/plain')))) {
-              e.preventDefault();
+    <div v-if="isTextarea" class="flex flex-col gap-1">
+      <UiTextarea class="mt-2 textarea-resize-scroll" @paste="
+          (e: any) => {
+            if (disableCharacters) {
+              if (isNaN(Number(e.clipboardData.getData('text/plain')))) {
+                e.preventDefault();
+              }
             }
           }
-        }
-      " @keypress="
-        (e: any) => {
-          if (disableCharacters) {
-            if (e.key === 'Enter') {
-              return;
+        " @keypress="
+          (e: any) => {
+            if (disableCharacters) {
+              if (e.key === 'Enter') {
+                return;
+              }
+              if (isNaN(e.key)) {
+                e.preventDefault();
+              }
             }
-            if (isNaN(e.key)) {
-              e.preventDefault();
+            if (['{', '}'].includes(e.key)) emit('input', e.key);
+          }
+        " @keydown="
+          ($event) => {
+            if ($event.code == 'Backspace' || $event.code == 'Delete')
+              emit('input', 'keydown');
+          }
+        " @input="emit('input', 'change')" :placeholder="placeholder" :disabled="disabled" :id="replacedId"
+        :class="errorMessage ? 'border-red-500' : 'border-input'" v-model="value"
+        :type="type === 'phone' ? 'text' : type || 'text'" :maxlength="textAreaMaxLength" />
+        <span v-if="textAreaMaxLength" class="mt-2 text-right text-xs text-gray-400">
+          {{value.length}}/{{textAreaMaxLength}}
+        </span>
+    </div>
+      
+    <div v-else class="flex flex-col">
+      <UiInput :class="
+          cn(
+            'mt-2',
+            props.class,
+            errorMessage ? 'border-red-500' : 'border-input',
+          )
+        " @paste="
+          (e: any) => {
+            if (disableCharacters) {
+              if (isNaN(Number(e.clipboardData.getData('text/plain')))) {
+                e.preventDefault();
+              }
             }
           }
-          if (['{', '}'].includes(e.key)) emit('input', e.key);
-        }
-      " @keydown="
-        ($event) => {
-          if ($event.code == 'Backspace' || $event.code == 'Delete')
-            emit('input', 'keydown');
-        }
-      " @input="emit('input', 'change')" :placeholder="placeholder" :disabled="disabled" :id="replacedId"
-      :class="errorMessage ? 'border-red-500' : 'border-input'" v-model="value"
-      :type="type === 'phone' ? 'text' : type || 'text'" />
-
-    <UiInput v-else :class="
-        cn(
-          'mt-2',
-          props.class,
-          errorMessage ? 'border-red-500' : 'border-input',
-        )
-      " @paste="
-        (e: any) => {
-          if (disableCharacters) {
-            if (isNaN(Number(e.clipboardData.getData('text/plain')))) {
-              e.preventDefault();
+        " @keypress="
+          (e: any) => {
+            if (disableCharacters) {
+              if (e.key === 'Enter') {
+                return;
+              }
+              if (isNaN(e.key)) {
+                e.preventDefault();
+              }
+            }
+  
+            if (disableSpecialCharacters) {
+              const regex = /^[a-zA-Z0-9]$/;
+  
+              if (e.key === ' ') {
+                return;
+              }
+              if (!regex.test(e.key)) {
+                e.preventDefault();
+              }
             }
           }
-        }
-      " @keypress="
-        (e: any) => {
-          if (disableCharacters) {
-            if (e.key === 'Enter') {
-              return;
-            }
-            if (isNaN(e.key)) {
-              e.preventDefault();
-            }
-          }
-
-          if (disableSpecialCharacters) {
-            const regex = /^[a-zA-Z0-9]$/;
-
-            if (e.key === ' ') {
-              return;
-            }
-            if (!regex.test(e.key)) {
-              e.preventDefault();
-            }
-          }
-        }
-      " :disabled="disabled" :placeholder="placeholder" :id="replacedId" v-model="value" :type="type || 'text'"
-      :accept="accept || ''" @input="emit('input', $event)" />
+        " :disabled="disabled" :placeholder="placeholder" :id="replacedId" v-model="value" :type="type || 'text'"
+        :accept="accept || ''" @input="emit('input', $event)" :maxlength="textFieldMaxLength" />
+         <span v-if="textFieldMaxLength" class="mt-2 text-right text-xs text-gray-400">
+          {{ value.length }}/{{ textFieldMaxLength }}
+        </span>
+    </div>
 
     <!-- :maxlength="props?.type === 'phone' ? 10 : ''" -->
     <div :class="
@@ -122,6 +132,8 @@
       validation: Boolean;
       disableSpecialCharacters?: boolean;
       accept?: string;
+      textAreaMaxLength: number | null;
+      textFieldMaxLength: number | null;
     }>(),
     {
       label: "",
@@ -136,6 +148,8 @@
       validation: true,
       disableSpecialCharacters: false,
       accept: "",
+      textAreaMaxLength: null,
+      textFieldMaxLength: null,
     },
   );
 

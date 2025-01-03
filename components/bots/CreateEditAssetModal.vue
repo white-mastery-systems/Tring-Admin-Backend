@@ -58,7 +58,10 @@
     validationSchema: toTypedSchema(assetsValidation),
   });
   watch(values, (value) => {});
-
+  const modalState = defineModel<{ open: boolean; id: string | null }>({
+      default: { open: false, id: null },
+      required: true,
+    });
   const [nameField, nameFieldAttrs] = defineField("name");
   const fileRef = ref<File | null>(null);
   const selectedFileName = ref<string | null>(null);
@@ -91,10 +94,5 @@
       });
     }
     return true;
-  });
-
-  const modalState = defineModel<{ open: boolean; id: string | null }>({
-    default: { open: false, id: null },
-    required: true,
   });
 </script>
