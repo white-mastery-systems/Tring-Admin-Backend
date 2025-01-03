@@ -35,7 +35,7 @@ export const deleteTemplateById = async (
   return templateDeleteApiResponse;
 };
 
-export const updateTemplateById = async (
+export const editTemplateById = async (
   accessToken: string,
   templateId: string,
   templateComponents?: any,
