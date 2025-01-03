@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
   });
 
   if (data.contactMethod === "voice") {
-    // fetch voiceContactIds of bucket
+    // fetch voice contact of bucket
     const voiceContactList = await getContactsByVoiceBucketId(data?.bucketId);
 
     const voiceContactIds = voiceContactList.map((i) => i.contactId);
@@ -59,6 +59,7 @@ export default defineEventHandler(async (event) => {
         organizationId: organizationId,
       };
     });
+
     // create campaign data in schedular table
     await createVoicebotSchedular(mapVoiceContactWithSchedular);
   }
@@ -74,7 +75,7 @@ export default defineEventHandler(async (event) => {
       data?.botConfig?.integrationId,
     );
 
-    // schedule WhatsApp campaign
+    // schedule whatsapp campaign
     await scheduleWhatsAppCampaign(
       data?.botConfig?.date,
       data?.botConfig?.scheduleTime,
