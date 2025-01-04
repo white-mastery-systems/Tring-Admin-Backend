@@ -7,12 +7,13 @@
       </UiFormLabel>
       <UiFormControl>
         <UiSelect :class="cn(props.class)" :multiple="multiple" class="mt-2 focus-visible:ring" v-model="selectedValue"
-          v-bind="$attrs">
+          v-bind="$attrs" :disabled="props.disabled">
           <div class="relative flex items-center">
             <UiSelectTrigger :class="[hasError ? 'border-[#ef4444]' : '']">
               <UiSelectValue :placeholder="placeholder" />
             </UiSelectTrigger>
-            <CloseIcon v-if="selectedValue && closeIcon" class="absolute right-10 w-4 h-4 cursor-pointer" @click="clearSelectedValue" />
+            <CloseIcon v-if="selectedValue && closeIcon" class="absolute right-10 w-4 h-4 cursor-pointer"
+              @click="clearSelectedValue" />
           </div>
           <!-- <UiSelectTrigger :class="[hasError ? 'border-[#ef4444]' : '']">
             <UiSelectValue :placeholder="placeholder" />
@@ -60,8 +61,10 @@ const props = withDefaults(defineProps<{
   multiple?: boolean
   class: ''
   closeIcon?: boolean
+  disabled: boolean
 }>(), {
   closeIcon: false,
+  disabled: false,
 });
 watchEffect(() => {
   console.log({ options: props.options })

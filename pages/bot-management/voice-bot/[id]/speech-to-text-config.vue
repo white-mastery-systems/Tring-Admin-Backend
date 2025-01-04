@@ -64,36 +64,44 @@
                   placeholder="Enter keyword" />
                 <TextField :label="`boost value ${idx + 1}`" :id="`value_${idx}`" :name="`keywords[${idx}].boostValue`"
                   placeholder="Enter Boost value" disableCharacters />
-                <UiButton variant="outline" type="button" @click="remove(idx)">
-                  <CloseIcon class="w-4 h-4" />
-                </UiButton>
+                <div
+                  :class="['flex', (field.value?.value && (field.value?.boostValue)) ? 'items-end' : (errors[`keywords[${idx}].value`]) ? 'items-center' : 'items-end' ]">
+                  <UiButton variant="outline" type="button" @click="remove(idx)">
+                    <CloseIcon class="w-4 h-4" />
+                  </UiButton>
+                </div>
               </div>
             </fieldset>
             <div class='flex justify-end w-full'>
-              <UiButton class='mt-2' variant="outline" type="button" @click="push({ value: '' })">
+              <UiButton class='mt-2' variant="outline" type="button" @click="push({ value: '', boostValue: '' })">
                 Add keyword
               </UiButton>
             </div>
           </FieldArray>
           <!-- {{ values.provider }} -->
-          <FieldArray v-if="values.provider === 'assemblyai'" name="wordboost" v-slot="{ fields, push, remove }">
-            <fieldset v-for="(field, idx) in fields" :key="field.key">
-              <div class='flex items-end gap-2 mt-2'>
-                <TextField :label="`keyword ${idx + 1}`" :id="`value_${idx}`" :name="`wordboost[${idx}].value`"
-                  placeholder="Enter keyword" />
-                <TextField :label="`boost value ${idx + 1}`" :id="`value_${idx}`" :name="`wordboost[${idx}].boostValue`"
-                  placeholder="Enter Boost value" disableCharacters />
-                <UiButton variant="outline" type="button" @click="remove(idx)">
-                  <CloseIcon class="w-4 h-4" />
+          <div class="mb-2">
+            <FieldArray v-if="values.provider === 'assemblyai'" name="wordboost" v-slot="{ fields, push, remove }">
+              <fieldset v-for="(field, idx) in fields" :key="field.key">
+                <div class="flex gap-2 mt-2">
+                  <TextField :label="`keyword ${idx + 1}`" :id="`value_${idx}`" :name="`wordboost[${idx}].value`"
+                    placeholder="Enter keyword" />
+                  <TextField :label="`boost value ${idx + 1}`" :id="`value_${idx}`"
+                    :name="`wordboost[${idx}].boostValue`" placeholder="Enter Boost value" disableCharacters />
+                  <div
+                    :class="['flex', (field.value?.value && (field.value?.boostValue)) ? 'items-end' : (errors[`wordboost[${idx}].boostValue`]) ? 'items-center' : 'items-end']">
+                    <UiButton variant="outline" type="button" @click="remove(idx)">
+                      <CloseIcon class="w-4 h-4" />
+                    </UiButton>
+                  </div>
+                </div>
+              </fieldset>
+              <div class='flex justify-end w-full'>
+                <UiButton class='mt-2' variant="outline" type="button" @click="push({ value: '', boostValue: '' })">
+                  Add keyword
                 </UiButton>
               </div>
-            </fieldset>
-            <div class='flex justify-end w-full'>
-              <UiButton class='mt-2' variant="outline" type="button" @click="push({ value: '' })">
-                Add keyword
-              </UiButton>
-            </div>
-          </FieldArray>
+            </FieldArray>
+          </div>
           <FieldArray v-if="values.provider === 'google'" name="phraseSets" v-slot="{ fields, push, remove }">
             <fieldset v-for="(field, idx) in fields" :key="field.key">
               <div class='flex items-end gap-2 mt-2'>
@@ -111,23 +119,31 @@
               </UiButton>
             </div>
           </FieldArray>
-          <FieldArray v-if="values.provider === 'azure'" name="phraseLists" v-slot="{ fields, push, remove }">
-            <fieldset v-for="(field, idx) in fields" :key="field.key">
-              <div class='flex items-end gap-2 mt-2'>
-                <TextField :label="`phrase list ${idx + 1}`" :id="`value_${idx}`" :name="`phraseLists[${idx}].value`"
-                  required placeholder="Enter phrase" />
-                <UiButton v-if="(values.provider === 'azure')" variant="outline" type="button" @click="remove(idx)"
-                  :disabled="idx === 0">
-                  <CloseIcon class="w-4 h-4" />
+          <div class="mb-2">
+            <FieldArray v-if="values.provider === 'azure'" name="phraseLists" v-slot="{ fields, push, remove }">
+              <fieldset v-for="(field, idx) in fields" :key="field.key">
+                <div class='flex gap-2 mt-2'>
+                  <TextField :label="`phrase list ${idx + 1}`" :id="`value_${idx}`" :name="`phraseLists[${idx}].value`"
+                    required placeholder="Enter phrase" />
+                  <!-- {{ field.value }} -->
+                  <!-- {{ errors }} -->
+                  <!-- {{ errors[`phraseLists[${idx}].value`] ? true : false }} -->
+                  <div
+                    :class="['flex', (field.value?.value) ? 'items-end' : (errors[`phraseLists[${idx}].value`]) ? 'items-center mt-2' : 'items-end']">
+                    <UiButton v-if="(values.provider === 'azure')" variant="outline" type="button" @click="remove(idx)"
+                      :disabled="idx === 0">
+                      <CloseIcon class="w-4 h-4" />
+                    </UiButton>
+                  </div>
+                </div>
+              </fieldset>
+              <div class='flex justify-end w-full'>
+                <UiButton class='mt-2' variant="outline" type="button" @click="push({ value: '' })">
+                  Add phrase list
                 </UiButton>
               </div>
-            </fieldset>
-            <div class='flex justify-end w-full'>
-              <UiButton class='mt-2' variant="outline" type="button" @click="push({ value: '' })">
-                Add phrase list
-              </UiButton>
-            </div>
-          </FieldArray>
+            </FieldArray>
+          </div>
         </div>
         <div class="flex w-full justify-end mt-4">
           <UiButton type="text" color="primary" :loading="isLoading">

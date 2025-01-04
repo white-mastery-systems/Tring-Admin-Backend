@@ -24,7 +24,6 @@
             " />
         </div>
       </div>
-
       <TextField v-if="values.header === 'text'" type="text" name="headerText" placeholder="Enter Value" required
         @input="dispatchTemplateState()" :textFieldMaxLength="60">
       </TextField>
@@ -43,7 +42,7 @@
         <UiTooltipProvider>
           <UiTooltip>
             <UiTooltipTrigger as-child>
-              <UiButton type="button" class="mt-2 max-w-[130px]" color="primary" :disabled="fields.length >= 1" @click="
+              <!-- <UiButton type="button" class="mt-2 max-w-[130px]" color="primary" :disabled="fields.length >= 1" @click="
                   () => {
                     push('');
                     setFieldValue(
@@ -55,7 +54,7 @@
                   }
                 ">
                 Add Variable
-              </UiButton>
+              </UiButton> -->
             </UiTooltipTrigger>
             <UiTooltipContent>
               <p>Variables are limited to maximum of 1</p>
@@ -264,10 +263,6 @@ watchEffect(async () => {
     remove(idx);
     dispatchTemplateState();
   };
-  
-  watch(errors, (newValue) => {
-    console.log(newValue);
-  });
 
 const uploadFile = async ($event: any) => {
   const reader = new FileReader();
