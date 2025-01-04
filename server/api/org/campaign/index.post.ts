@@ -85,7 +85,7 @@ export default defineEventHandler(async (event) => {
       timeZone,
     );
 
-    logger.info("WhatsApp campaign scheduled successfully");
+    logger.info("WhatsApp campaign created successfully");
   }
 
   return data;
