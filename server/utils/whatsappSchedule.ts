@@ -93,7 +93,7 @@ export const scheduleWhatsAppCampaign = async (
     const hours = utcTime.get("hour");
     const minutes = utcTime.get("minute");
 
-    logger.debug(
+    logger.info(`scheduled time: ${ 
       JSON.stringify({
         year,
         month,
@@ -101,7 +101,7 @@ export const scheduleWhatsAppCampaign = async (
         hour: hours,
         minute: minutes,
         tz: "UTC",
-      }),
+      })}`
     );
 
     const event = schedule.scheduleJob(
