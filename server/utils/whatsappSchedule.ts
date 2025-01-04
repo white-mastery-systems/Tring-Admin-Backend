@@ -121,7 +121,7 @@ export const scheduleWhatsAppCampaign = async (
               accessToken,
               templateName,
             );
-            const templateInformation = templateDetailList?.data?.find(
+            const templateInformation = templateDetailList?.find(
               (i: any) => i.name === templateName,
             );
             if (templateInformation) {
@@ -191,6 +191,7 @@ export const scheduleWhatsAppCampaign = async (
                 }
               });
             }
+            // console.log({ Component: JSON.stringify(templateComponents)})
 
             const data = await sendWhatsappTemplateMessage(
               phoneId,
