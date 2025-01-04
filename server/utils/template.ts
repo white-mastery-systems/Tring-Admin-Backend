@@ -1,3 +1,5 @@
+import { logger } from "../logger";
+
 export const getTemplatesByWabaId = async (
   wabaId: string,
   accessToken: string,
@@ -5,17 +7,27 @@ export const getTemplatesByWabaId = async (
 ): Promise<any> => {
   const getTemplatesApiEndpoint = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?fields=name,status&limit=${limit}`;
 
-  const templateListApiEndpoint: { data: any } = await $fetch(
-    getTemplatesApiEndpoint,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+  try {
+    const templateListApiEndpoint: { data: any } = await $fetch(
+      getTemplatesApiEndpoint,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
-    },
-  );
+    );
+    logger.info("Templates fetched successfully");
 
-  return templateListApiEndpoint?.data;
+    return templateListApiEndpoint?.data;
+  } catch (error) {
+    logger.error({
+      message: "Error occurred while fetching templates",
+      error: JSON.stringify(error),
+      errorData: error?.data,
+    });
+    throw new Error("Failed to fetch templates");
+  }
 };
 
 export const deleteTemplateById = async (
@@ -26,13 +38,23 @@ export const deleteTemplateById = async (
 ): Promise<any> => {
   const deleteTemplateApiEndpoint = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?hsm_id=${hsmId}&name=${templateName}`;
 
-  const templateDeleteApiResponse = await $fetch(deleteTemplateApiEndpoint, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-  return templateDeleteApiResponse;
+  try {
+    const templateDeleteApiResponse = await $fetch(deleteTemplateApiEndpoint, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    logger.info("Template deleted successfully");
+    return templateDeleteApiResponse;
+  } catch (error) {
+    logger.error({
+      message: "Error occurred while deleting template",
+      error: JSON.stringify(error),
+      errorData: error?.data,
+    });
+    throw new Error("Failed to delete template");
+  }
 };
 
 export const editTemplateById = async (
@@ -42,18 +64,27 @@ export const editTemplateById = async (
 ): Promise<any> => {
   const editTemplateApiEndpoint = `https://graph.facebook.com/v21.0/${templateId}`;
 
-  const templateEditApiResponse = await $fetch(editTemplateApiEndpoint, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: {
-      category: "MARKETING",
-      components: templateComponents,
-    },
-  });
-
-  return templateEditApiResponse;
+  try {
+    const templateEditApiResponse = await $fetch(editTemplateApiEndpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: {
+        category: "MARKETING",
+        components: templateComponents,
+      },
+    });
+    logger.info("Template edited successfully");
+    return templateEditApiResponse;
+  } catch (error) {
+    logger.error({
+      message: "Error occurred while editing template",
+      error: JSON.stringify(error),
+      errorData: error?.data,
+    });
+    throw new Error("Failed to edit template");
+  }
 };
 
 export const listAllApprovedTemplates = async (
@@ -62,17 +93,26 @@ export const listAllApprovedTemplates = async (
 ): Promise<any> => {
   const listApprovedTemplateApiEndpoint = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?fields=name,status&status=APPROVED`;
 
-  const approvedTemplatesApiResponse: { data: any } = await $fetch(
-    listApprovedTemplateApiEndpoint,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+  try {
+    const approvedTemplatesApiResponse: { data: any } = await $fetch(
+      listApprovedTemplateApiEndpoint,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
-    },
-  );
-
-  return approvedTemplatesApiResponse?.data;
+    );
+    logger.info("Approved templates fetched successfully");
+    return approvedTemplatesApiResponse?.data;
+  } catch (error) {
+    logger.error({
+      message: "Error occurred while fetching approved templates",
+      error: JSON.stringify(error),
+      errorData: error?.data,
+    });
+    throw new Error("Failed to fetch approved templates");
+  }
 };
 
 export const getTemplateDetailsByName = async (
@@ -82,17 +122,26 @@ export const getTemplateDetailsByName = async (
 ): Promise<any> => {
   const getTemplateDetailsApiEndpoint = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?name=${templateName}`;
 
-  const templateDetailsApiResponse: { data: any } = await $fetch(
-    getTemplateDetailsApiEndpoint,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+  try {
+    const templateDetailsApiResponse: { data: any } = await $fetch(
+      getTemplateDetailsApiEndpoint,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
-    },
-  );
-
-  return templateDetailsApiResponse;
+    );
+    logger.info("Template details fetched successfully");
+    return templateDetailsApiResponse?.data;
+  } catch (error) {
+    logger.error({
+      message: "Error occurred while fetching template details",
+      error: JSON.stringify(error),
+      errorData: error?.data,
+    });
+    throw new Error("Failed to fetch template details");
+  }
 };
 
 export const createWhatsappMessageTemplate = async (
@@ -103,20 +152,33 @@ export const createWhatsappMessageTemplate = async (
   templateComponents: any,
 ): Promise<any> => {
   const createTemplateApiEndpoint = `https://graph.facebook.com/v21.0/${wabaId}/message_templates`;
-  const templateCreationApiResponse = await $fetch(createTemplateApiEndpoint, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: {
-      name: templateName,
-      category: "MARKETING",
-      language: languageCode,
-      components: templateComponents,
-    },
-  });
 
-  return templateCreationApiResponse;
+  try {
+    const templateCreationApiResponse = await $fetch(
+      createTemplateApiEndpoint,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: {
+          name: templateName,
+          language: languageCode,
+          category: "MARKETING",
+          components: templateComponents,
+        },
+      },
+    );
+    logger.info("Template created successfully");
+    return templateCreationApiResponse;
+  } catch (error) {
+    logger.error({
+      message: "Error occurred while creating template",
+      error: JSON.stringify(error),
+      errorData: error?.data,
+    });
+    throw new Error("Failed to create template");
+  }
 };
 
 export const sendWhatsappTemplateMessage = async (
@@ -128,27 +190,37 @@ export const sendWhatsappTemplateMessage = async (
   languageCode?: string,
 ) => {
   const sendMessageTemplateApiEndpoint = `https://graph.facebook.com/v21.0/${phoneId}/messages`;
-  const sendMessageTemplateApiResponse = await $fetch(
-    sendMessageTemplateApiEndpoint,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: {
-        messaging_product: "whatsapp",
-        to: userPhone,
-        type: "template",
-        template: {
-          name: templateName,
-          language: {
-            code: languageCode ?? "en",
+
+  try {
+    const sendMessageTemplateApiResponse = await $fetch(
+      sendMessageTemplateApiEndpoint,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: {
+          messaging_product: "whatsapp",
+          to: userPhone,
+          type: "template",
+          template: {
+            name: templateName,
+            language: {
+              code: languageCode ?? "en",
+            },
+            components: templateComponents,
           },
-          components: templateComponents,
         },
       },
-    },
-  );
-
-  return sendMessageTemplateApiResponse;
+    );
+    logger.info("WhatsApp template message sent successfully");
+    return sendMessageTemplateApiResponse;
+  } catch (error) {
+    logger.error({
+      message: "Error occurred while sending WhatsApp template message",
+      error: JSON.stringify(error),
+      errorData: error?.data,
+    });
+    throw new Error("Failed to send WhatsApp template message");
+  }
 };

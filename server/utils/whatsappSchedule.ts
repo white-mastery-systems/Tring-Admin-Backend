@@ -107,7 +107,7 @@ export const scheduleWhatsAppCampaign = async (
     const event = schedule.scheduleJob(
       { year, month, date: day, hour: hours, minute: minutes, tz: "UTC" },
       () => {
-        logger.info("inside scheduling...");
+        logger.info("Inside scheduling...");
         contactList.forEach(
           async ({ contacts: contact }: { contacts: any }) => {
             const phoneNumber =
@@ -126,40 +126,70 @@ export const scheduleWhatsAppCampaign = async (
             );
             if (templateInformation) {
               templateLanguageCode = templateInformation.language;
-              templateInformation.components.forEach(
-                (component: any) => {
+              templateInformation.components.forEach((component: any) => {
+                if (
+                  component.type === 'HEADER' &&
+                  component.example?.header_handle &&
+                  component.format === 'IMAGE'
+                ) {
                   let parameters: any = [];
-                  if (
-                    component.type === "BODY" &&
-                    component.example?.body_text
-                  ) {
-                    component.example.body_text[0].map((variable: string) => {
-                      if (variable === "firstName") {
-                        parameters.push({
-                          type: "text",
-                          text: contact.firstName,
-                        });
-                      } else if (variable === "lastName") {
-                        parameters.push({
-                          type: "text",
-                          text: contact.lastName,
-                        });
-                      } else if (variable === "fullName") {
-                        parameters.push({
-                          type: "text",
-                          text: `${contact.firstName} ${contact.lastName}`,
-                        });
-                      } else if (variable === "mobile") {
-                        parameters.push({ type: "text", text: phoneNumber });
-                      }
-                    });
-                    templateComponents.push({
-                      type: component.type,
-                      parameters,
-                    });
-                  }
-                },
-              );
+                  parameters.push({
+                    type: 'image',
+                    image: {
+                      link: component.example.header_handle[0],
+                    },
+                  });
+                  templateComponents.push({
+                    type: component.type,
+                    parameters,
+                  });
+                } else if (
+                  component.type === 'HEADER' &&
+                  component.example?.header_handle &&
+                  component.format === 'DOCUMENT'
+                ) {
+                  let parameters: any = [];
+                  parameters.push({
+                    type: 'document',
+                    document: {
+                      link: component.example.header_handle[0],
+                    },
+                  });
+                  templateComponents.push({
+                    type: component.type,
+                    parameters,
+                  });
+                } else if (
+                  component.type === "BODY" &&
+                  component.example?.body_text
+                ) {
+                  let parameters: any = [];
+                  component.example.body_text[0].map((variable: string) => {
+                    if (variable === "firstName") {
+                      parameters.push({
+                        type: "text",
+                        text: contact.firstName,
+                      });
+                    } else if (variable === "lastName") {
+                      parameters.push({
+                        type: "text",
+                        text: contact.lastName,
+                      });
+                    } else if (variable === "fullName") {
+                      parameters.push({
+                        type: "text",
+                        text: `${contact.firstName} ${contact.lastName}`,
+                      });
+                    } else if (variable === "mobile") {
+                      parameters.push({ type: "text", text: phoneNumber });
+                    }
+                  });
+                  templateComponents.push({
+                    type: component.type,
+                    parameters,
+                  });
+                }
+              });
             }
 
             const data = await sendWhatsappTemplateMessage(
