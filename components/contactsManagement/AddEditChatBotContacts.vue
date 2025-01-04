@@ -225,7 +225,7 @@ const Pagination = async ($evnt) => {
 };
 const exportData = async () => {
   try {
-    const exportContacts = await $fetch(`/api/org/contacts`, {
+    const exportContacts = await $fetch(apiUrl.value, {
       method: "GET",
       headers: {
         "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -234,15 +234,26 @@ const exportData = async () => {
         type: "chat"
       }
     });
-    const exportReadObject = (exportContacts ?? []).map((contacts: any) => {
-      const mergedObject = {
-        firstName: contacts.firstName ?? "",
-        lastName: contacts.lastName ?? "",
-        email: contacts.email ?? "",
-        countryCode: contacts.countryCode ?? "+91",
-        number: contacts.phone ?? "",
+    const exportReadObject = ((props.typeOfAddContacts === "insideBucket") ? exportContacts.contacts : exportContacts ?? []).map((contacts: any) => {
+      if (props.typeOfAddContacts === "insideBucket") {
+        // Inside Bucket Chat Object
+        return {
+          firstName: contacts?.contacts?.firstName ?? "",
+          lastName: contacts?.contacts?.lastName ?? "",
+          email: contacts?.contacts?.email ?? "",
+          countryCode: contacts?.contacts?.countryCode ?? "+91",
+          number: contacts?.contacts?.phone ?? "",
+        };
+      } else {
+        // Default Chat Object
+        return {
+          firstName: contacts.firstName ?? "",
+          lastName: contacts.lastName ?? "",
+          email: contacts.email ?? "",
+          countryCode: contacts.countryCode ?? "+91",
+          number: contacts.phone ?? "",
+        };
       }
-      return mergedObject;
     })
     exportDataHandler.value.status = true;
     exportReadyRows.value = exportReadObject

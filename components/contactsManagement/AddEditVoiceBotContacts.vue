@@ -133,9 +133,9 @@ const exportReadyColumns = computed(() => {
   return [
     "Name",
     "Metadata",
-    "Verification Id",
-    "Country Code",
+    // "Country Code",
     "Phone",
+    "Verification Id",
   ]
 })
 const isDataLoading = computed(() => status.value === "pending");
@@ -231,7 +231,7 @@ const Pagination = async ($evnt) => {
 };
 const exportData = async () => {
   try {
-    const exportContacts = await $fetch(`/api/org/contacts`, {
+    const exportContacts = await $fetch(apiUrl.value, {
       method: "GET",
       headers: {
         "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -240,15 +240,34 @@ const exportData = async () => {
         type: "voice",
       }
     });
-    const exportReadObject = (exportContacts ?? []).map((contacts: any) => {
-      const mergedObject = {
-        name: contacts.name ?? "",
-        metadata: contacts.metadata ?? "",
-        verificationId: contacts.verificationId ?? "",
-        countryCode: contacts.countryCode ?? "+91",
-        phone: contacts.phone ?? "",
+    const exportReadObject = ((props.typeOfAddContacts === "insideBucket") ? exportContacts.contacts : exportContacts ?? []).map((contacts: any) => {
+      if (props.typeOfAddContacts === "insideBucket") { 
+        return {
+          name: contacts.contacts.name ?? "",
+          metadata: contacts.contacts.metadata ?? "",
+          // countryCode: contacts.contacts.countryCode ?? "+91",
+          phone: ((contacts.contacts.countryCode ?? "+91") + contacts.contacts.phone) ?? "",
+          verificationId: contacts.contacts.verificationId ?? "",
+        }
+      } else {
+        return {
+          name: contacts.name ?? "",
+          metadata: contacts.metadata ?? "",
+          countryCode: contacts.countryCode ?? "+91",
+          phone: contacts.phone ?? "",
+          verificationId: contacts.verificationId ?? "",
+        }
       }
-      return mergedObject;
+      // const mergedObject = {
+      // }
+      // const mergedObject = {
+      //   name: contacts.contacts.name ?? "",
+      //   metadata: contacts.contacts.metadata ?? "",
+      //   verificationId: contacts.contacts.verificationId ?? "",
+      //   countryCode: contacts.contacts.countryCode ?? "+91",
+      //   phone: contacts.contacts.phone ?? "",
+      // }
+      // return mergedObject;
     })
     exportDataHandler.value.status = true;
     exportReadyRows.value = exportReadObject
