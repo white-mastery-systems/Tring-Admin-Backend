@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
           type: 'HEADER',
           format: metadata?.header,
           example: {
-            header_handle: `${conf.adminBaseUrl}${metadata?.headerFile.url}`,
+            header_handle: [`${conf.adminBaseUrl}${metadata?.headerFile.url}`]
           },
         };
         components.push(headerFileComponent);
