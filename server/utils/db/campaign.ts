@@ -51,15 +51,12 @@ export const campaignList = async (
     where: eq(campaignSchema.organizationId, organizationId),
     orderBy: [desc(campaignSchema.createdAt)],
   });
-  // data = data.map((i: any) => ({
-  //   ...i,
-  //   campaignTime: momentTz(i?.campaignTime)
-  //     .tz(timeZone)
-  //     .format("DD MMM YYYY HH:mm"),
-  //   createdAt: momentTz(i?.createdAt)
-  //     .tz(timeZone)
-  //     .format("DD MMM YYYY hh:mm A"),
-  // }));
+  data = data.map((i: any) => ({
+    ...i,
+    createdAt: momentTz(i?.createdAt)
+      .tz(timeZone)
+      .format("DD MMM YYYY hh:mm A"),
+  }));
 
   if (query?.page && query?.limit) {
     const paginatedCampaign = data.slice(offset, offset + limit);
