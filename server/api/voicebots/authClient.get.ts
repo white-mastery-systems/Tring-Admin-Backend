@@ -69,19 +69,19 @@ export default defineEventHandler(async (event) => {
   let extraMinutes = 0
   const orgWalletMinutes = voicebotPlan.walletSessions || 0
 
-  if(currentDate > voicebotPlan.expiryDate) {
-    await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
-    return errorResponse(event, 500, "Subscription plan is expired")
-  }
+  // if(currentDate > voicebotPlan.expiryDate) {
+  //   await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
+  //   return errorResponse(event, 500, "Subscription plan is expired")
+  // }
 
-  if(usedCallMinutes >= maxCallMinutes) {
-    extraMinutes = Math.max(usedCallMinutes - maxCallMinutes, 0)
-    const currentWallet = Math.max(orgWalletMinutes - extraMinutes, 0)
-    if(currentWallet <= 0) {
-      await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
-      return errorResponse(event, 500, "Exceeded the allowed call minutes.")
-    }
-  }
+  // if(usedCallMinutes >= maxCallMinutes) {
+  //   extraMinutes = Math.max(usedCallMinutes - maxCallMinutes, 0)
+  //   const currentWallet = Math.max(orgWalletMinutes - extraMinutes, 0)
+  //   if(currentWallet <= 0) {
+  //     await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
+  //     return errorResponse(event, 500, "Exceeded the allowed call minutes.")
+  //   }
+  // }
   
   return voiceBotDetail
 });
