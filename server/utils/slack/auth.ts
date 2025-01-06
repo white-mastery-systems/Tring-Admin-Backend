@@ -1,6 +1,5 @@
 import { logger } from "~/server/logger";
 
-const config = useRuntimeConfig();
 const clientId = "7763394615058.7867610213248";
 const clientSecret = "546e3e06304360fe178e2736ca6b068c";
 
@@ -50,7 +49,7 @@ export async function generateAccessTokenFromCodeForSlack({
           code,
           client_id: clientId,
           client_secret: clientSecret,
-          redirect_uri: `${config.redirectUrl}/slack`,
+          redirect_uri: `${process.env.REDIRECT_URL}/slack`,
         }),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
