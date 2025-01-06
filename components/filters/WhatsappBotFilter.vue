@@ -31,6 +31,7 @@
   watch(integrationsData, (newData) => {
     if (newData && newData.length > 0) {
       selectedTemplate.value = newData[0].id;
+      emit("change", newData[0].id)
     }
   }, {immediate: true});
 
