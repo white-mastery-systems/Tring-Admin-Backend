@@ -6,8 +6,6 @@ import {
   sendWhatsappTemplateMessage,
 } from "./template";
 
-const conf = useRuntimeConfig();
-
 // const sendWhatsappTemplateMessage = async (
 //   metaToken: string,
 //   phoneId: string,

@@ -3,7 +3,6 @@ import { Argon2id } from "oslo/password";
 import { logger } from "~/server/logger";
 import { resetPasswordEmailTemplate } from "../email-templates";
 
-const config = useRuntimeConfig();
 const db = useDrizzle();
 
 export const getAdminByOrgId = async (orgId: string) => {
@@ -17,14 +16,14 @@ export const getAdminByOrgId = async (orgId: string) => {
 
 export const requestResetPassword = (userDetails: any) => {
   try {
-    const token = jwt.sign({ userId: userDetails?.id }, config?.secretKey, {
+    const token = jwt.sign({ userId: userDetails?.id }, process.env.SECRET_KEY!, {
       expiresIn: "5m",
     });
     // return token
 
     const subject = "Reset Password";
 
-    const message = resetPasswordEmailTemplate(userDetails, token, config)
+    const message = resetPasswordEmailTemplate(userDetails, token)
 
     sendEmail(userDetails?.email, subject, message);
 
