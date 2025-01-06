@@ -1,11 +1,8 @@
 import { writeFile } from "node:fs/promises";
-import { config } from "node:process";
 import { zodInsertPlaygroundDocument } from "~/server/schema/admin";
 import { createPlaygroundDocument } from "~/server/utils/db/document";
 
 type UUID = string;
-
-const conf = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
 
@@ -73,7 +70,7 @@ export default defineEventHandler(async (event) => {
   $fetch(`/rag/document`, {
     method: "POST",
     body: form,
-    baseURL: conf.llmBaseUrl,
+    baseURL: process.env.LLM_BASE_URL,
   });
 
   return document;

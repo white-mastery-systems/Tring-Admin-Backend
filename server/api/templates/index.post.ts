@@ -10,7 +10,6 @@ const zodInsertTemplates = z.object({
 });
 
 const db = useDrizzle();
-const conf = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
@@ -50,7 +49,7 @@ export default defineEventHandler(async (event) => {
           type: 'HEADER',
           format: metadata?.header,
           example: {
-            header_handle: [`${conf.adminBaseUrl}${metadata?.headerFile.url}`]
+            header_handle: [`${process.env.ADMIN_BASE_URL}${metadata?.headerFile.url}`]
           },
         };
         components.push(headerFileComponent);

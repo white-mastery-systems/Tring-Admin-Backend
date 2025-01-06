@@ -1,6 +1,5 @@
 import { v4 as uuid } from "uuid";
 
-const config = useRuntimeConfig();
 const db = useDrizzle()
 
 export default defineEventHandler(async (event) => {

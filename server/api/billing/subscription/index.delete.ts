@@ -1,3 +1,5 @@
+
+import { billingLogger, logger } from "~/server/logger";
 import { updateChatbotStatus } from "~/server/utils/db/organization";
 import { cancelSubscriptionFromZohoBilling } from "~/server/utils/zoho/modules";
 
@@ -57,6 +59,7 @@ export default defineEventHandler(async (event) => {
       ),
     )
   ])
+  billingLogger.info(`Zoho subscription cancelled from tring admin panel`)
   
     return true
 });

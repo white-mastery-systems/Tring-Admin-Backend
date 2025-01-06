@@ -1,5 +1,3 @@
-const config = useRuntimeConfig();
-
 export default defineEventHandler(async (event) => {
   const { questions, documentId } = await readBody(event);
 
@@ -17,7 +15,7 @@ export default defineEventHandler(async (event) => {
             document_id: documentId,
             provider: "openai",
           },
-          baseURL: config.llmBaseUrl,
+          baseURL: process.env.LLM_BASE_URL,
         }),
   );
 

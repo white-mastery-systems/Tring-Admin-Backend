@@ -1,7 +1,5 @@
 import { editTemplateById } from "~/server/utils/template";
 
-const conf = useRuntimeConfig();
-
 const zodUpdateTemplate = z.object({
   metadata: z.record(z.any()).optional(),
   integrationId: z.string({ required_error: "integrationId is required" }),
@@ -49,7 +47,7 @@ export default defineEventHandler(async (event) => {
         type: "HEADER",
         format: metadata?.header,
         example: {
-          header_handle: `${conf.adminBaseUrl}${metadata?.headerFile.url}`,
+          header_handle: `${process.env.ADMIN_BASE_URL}${metadata?.headerFile.url}`,
         },
       };
       components.push(headerFileComponent);
