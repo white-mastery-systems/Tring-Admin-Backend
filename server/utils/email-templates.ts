@@ -1,4 +1,4 @@
-export const resetPasswordEmailTemplate = (userDetails: any, token: string, config: any)  => {
+export const resetPasswordEmailTemplate = (userDetails: any, token: string)  => {
   const data = `<!doctype html>
 <html lang='en'>
   
@@ -54,7 +54,7 @@ export const resetPasswordEmailTemplate = (userDetails: any, token: string, conf
                             We received a request to reset the password for your Tring AI account. Click the button below to set a new password:
                          </p> 
                          <div style="margin-top: 0px;">
-                          <a href="${config?.adminBaseUrl}/auth/forgot-password?token=${token}" style="color: #fff!important;background-color:#ffbc42;border: 1px solid #ffbc42;border-radius: 10px!important; font-weight:700;display:inline-block;font-size:12px;line-height:1;padding:12px 16px;text-decoration:none;width:auto;white-space:nowrap;font-family: Poppins, sans-serif!important;" target="_blank">Reset password</a>
+                          <a href="${process.env.ADMIN_BASE_URL}/auth/forgot-password?token=${token}" style="color: #fff!important;background-color:#ffbc42;border: 1px solid #ffbc42;border-radius: 10px!important; font-weight:700;display:inline-block;font-size:12px;line-height:1;padding:12px 16px;text-decoration:none;width:auto;white-space:nowrap;font-family: Poppins, sans-serif!important;" target="_blank">Reset password</a>
                         </div>                  
                         </td>
                       </tr>

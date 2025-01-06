@@ -10,7 +10,6 @@ import {
   updateNotesInZohoBigin,
 } from "~/server/utils/zoho/modules";
 
-const config = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
   // const userId = event.context.user?.id as string;
@@ -143,7 +142,7 @@ export default defineEventHandler(async (event) => {
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: `${botDetails?.name}`,
-          chatLink: `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
+          chatLink: `${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
         const data = await createSlackMessage(
@@ -161,7 +160,7 @@ export default defineEventHandler(async (event) => {
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: `${botDetails?.name}`,
-          chatLink: `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
+          chatLink: `${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
         const data = await createWhatsAppMessage(
@@ -234,7 +233,7 @@ export default defineEventHandler(async (event) => {
           "Email": body?.botUser?.email,
           "Mobile": `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           "Bot Name": botDetails?.name,
-          "Chat Link": `${config.adminBaseUrl}/analytics/leads/${body.chatId}`,
+          "Chat Link": `${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}`,
           "Whatsapp Link": `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
         let textContent = Object.entries(payload)

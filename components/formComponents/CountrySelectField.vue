@@ -8,7 +8,7 @@
                 <UiPopoverTrigger as-child>
                     <UiFormControl>
                         <UiButton variant="outline" role="combobox" class="font-normal text-sm" :class="cn(
-                            'w-full justify-between overflow-hidden',
+                            'w-full justify-between relative overflow-hidden',
                             !fieldValue && 'text-muted-foreground',
                         )
                             ">
@@ -20,7 +20,8 @@
                             )
                             : "Country name"
                             }}
-                            <component :is="ChevronDown" class="ml-2 h-4 w-4 shrink-0 opacity-50"></component>
+                            <component :is="ChevronDown" class="absolute right-3 ml-2 h-4 w-4 shrink-0 opacity-50">
+                            </component>
                         </UiButton>
                     </UiFormControl>
                 </UiPopoverTrigger>

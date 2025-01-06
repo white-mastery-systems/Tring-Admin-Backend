@@ -1,6 +1,5 @@
 import fs from "fs";
 import { join } from "path";
-const config = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
   const base = "data";

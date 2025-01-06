@@ -1,7 +1,7 @@
 import { logger } from "~/server/logger";
 
 const reverseGoBaseUrl = (type: string) => {
-  return useRuntimeConfig().envType === "stage"
+  return process.env.ENV_TYPE === "stage"
     ? "https://stagingapi.reservego.co"
     : "https://api.reservego.co";
 }

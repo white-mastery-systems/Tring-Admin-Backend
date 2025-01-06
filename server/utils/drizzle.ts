@@ -5,9 +5,7 @@ import { userOTPSchema } from "../schema/auth";
 import { callLogsRelations, outboundCallSchema, voicebotIntegrationRelations, voicebotLeadRelations, voicebotLeadSchema, voicebotRelations, voicebotSchedularSchema, voicebotScheduledCallsRelations } from "../schema/voicebot";
 import { botDynamicFormSchema } from "../schema/bot";
 
-const runtimeConfig = useRuntimeConfig();
-
-const queryClient = new pg.Pool({ connectionString: runtimeConfig.dbUrl });
+const queryClient = new pg.Pool({ connectionString: process.env.DB_URL });
 
 const schema = {
   // Tables

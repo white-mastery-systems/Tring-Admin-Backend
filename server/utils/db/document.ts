@@ -2,12 +2,11 @@ import { join } from "path";
 import { InsertPlaygroundDocument, playgroundDocumentSchema } from "~/server/schema/admin";
 
 const db = useDrizzle();
-const config = useRuntimeConfig();
 
 export const getDocumentPath = (docId: string) => `./assets/docs/${docId}.pdf`;
 
 export const getLogoPath = (logoName: string, extension: string) =>
-  join(config.logoDir, `${logoName}.${extension}`);
+  join(process.env.LOGO_DIR, `${logoName}.${extension}`);
 
 export const createDocument = async (document: InsertDocument) =>
   (await db.insert(documentSchema).values(document).returning())[0];

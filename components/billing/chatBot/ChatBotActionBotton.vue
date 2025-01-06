@@ -18,8 +18,8 @@
       Refill Wallet
     </NuxtLink>
     <!-- to="/billing/view-wallet" -->
-    <div class="flex flex-col items-center justify-center gap-1 lg:hidden">
-      <NuxtLink v-if="!usage?.plan_code?.includes('free') && (userLocationDetails.country === 'IN') && cancelSubscription"
+    <div v-if="!usage?.plan_code?.includes('free') && (userLocationDetails.country === 'IN') && cancelSubscription" class="flex flex-col items-center justify-center gap-1 lg:hidden">
+      <NuxtLink
         :to="{ path: '/billing/view-wallet', query: { type: query?.type } }"
         class="hover:brighten-50 font-regular grid items-center rounded-md bg-[#424bd1] p-2 px-2 text-sm text-[#FFFFFF] hover:bg-[#424bd1]">
         <div class="flex flex-col items-center justify-center">
