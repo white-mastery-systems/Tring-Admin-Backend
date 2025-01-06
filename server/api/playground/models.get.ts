@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   try {
     return await $fetch(`/ai/models?provider=${provider}`, {
       method: "GET",
-      baseURL: useRuntimeConfig().llmBaseUrl,
+      baseURL: process.env.LLM_BASE_URL,
     });
   } catch (error) {
     console.error("Error fetching models:", error);

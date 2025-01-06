@@ -1,5 +1,4 @@
 import { getDocumentById } from "~/server/utils/db/document";
-const config = useRuntimeConfig();
 
 const db = useDrizzle()
 
@@ -46,7 +45,7 @@ export default defineEventHandler(async (event) => {
         `/api/bot/${botId}/init-message`,
         {
           method: "POST",
-          baseURL: config.botBaseUrl,
+          baseURL: process.env.BOT_BASE_URL,
           body: { doc_id },
         },
       );

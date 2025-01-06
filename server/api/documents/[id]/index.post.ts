@@ -1,5 +1,4 @@
 const db = useDrizzle();
-const config = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
   const { id: documentId } = await isValidRouteParamHandler(

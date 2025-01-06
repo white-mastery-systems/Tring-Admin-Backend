@@ -6,8 +6,6 @@ import { getAllVoicebotContacts } from "./contacts"
 import { getAllVoiceCampaigns } from "./campaign"
 import { getAllOrgVoiceSubscription } from "./organization"
 
-const config = useRuntimeConfig()
-
 export const voicebotDialer = async () => {
   try {
     const [activeVoicebots, exophoneList, campaignList, voiceContactList, notDialedScheduledVoiceCallList, orgVoiceSubscription] = await Promise.all([
@@ -65,7 +63,7 @@ export const voicebotDialer = async () => {
           }
           const { createdAt, updatedAt, ...data } = payload
           try {
-            const dialVoiceCall = await $fetch(`${config.public.voiceBotUrl}/dial`, {
+            const dialVoiceCall = await $fetch(`${process.env.NUXT_PUBLIC_VOICE_BOT_URL}/dial`, {
               method: "POST",
               body: data
             })

@@ -2,7 +2,6 @@ import { logger } from "~/server/logger";
 import { getStateCode } from "~/server/utils/billing.utils";
 
 const db = useDrizzle()
-const config = useRuntimeConfig();
 
 const regerateAccessToken = async (metaData: any, zohoData: any) => {
   try {
@@ -92,13 +91,13 @@ export const runHostedPageApi: any = async ({ accessToken, user, organizationId,
               country: userDetails?.address?.country,
               zip: userDetails?.address?.zipCode,
             },
-             ...(config.envType !== "stage" && {
+             ...(process.env.ENV_TYPE !== "stage" && {
               gst_no: orgDetails?.metadata?.gst,
               gst_treatment: "business_gst",
             })
           },
         }),
-        ...(config.envType !== "stage" && {
+        ...(process.env.ENV_TYPE !== "stage" && {
           gst_no: orgDetails?.metadata?.gst,
           gst_treatment: "business_gst",
           place_of_supply: getStateCode(userDetails?.address?.state),

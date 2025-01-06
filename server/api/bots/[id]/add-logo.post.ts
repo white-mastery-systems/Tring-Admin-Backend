@@ -1,8 +1,6 @@
 import { writeFile } from "node:fs/promises";
 import { v4 as uuid } from "uuid";
 
-const conf = useRuntimeConfig();
-
 export default defineEventHandler(async (event) => {
   await isOrganizationAdminHandler(event);
   const { id: botId } = await isValidRouteParamHandler(
