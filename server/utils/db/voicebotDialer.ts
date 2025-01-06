@@ -63,7 +63,7 @@ export const voicebotDialer = async () => {
           }
           const { createdAt, updatedAt, ...data } = payload
           try {
-            const dialVoiceCall = await $fetch(`${process.env.PUBLIC_VOICE_BOT_URL}/dial`, {
+            const dialVoiceCall = await $fetch(`${process.env.NUXT_PUBLIC_VOICE_BOT_URL}/dial`, {
               method: "POST",
               body: data
             })
