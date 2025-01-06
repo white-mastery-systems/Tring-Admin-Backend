@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
         modelName: "",
         messages: [],
       },
-      callbackUrl: `${process.env.LLM_BASE_URL}/api/documents/${document.id}`,
+      callbackUrl: `${process.env.LLM_CALLBACK_URL}/api/documents/${document.id}`,
     }),
   );
 
