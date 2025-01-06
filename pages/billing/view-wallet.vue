@@ -1,30 +1,24 @@
 <template>
   <page title="Billing" :description="true" :disableSelector="true">
-    <div
-      class="xs:grid-cols-2 grid gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-3"
-    >
+    <div class="xs:grid-cols-2 grid gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-3">
       <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->
-      <div
-        :class="[
+      <div :class="[
           'main_card_align field_shadow relative flex flex-col justify-between rounded-[13px] border-2 bg-[#ffffff] p-5 hover:border-yellow-500',
 
           'w-full',
-        ]"
-        v-for="(list, index) in billingVariation"
-        :key="index"
-      >
-        <div class="text-[23px] font-bold text-[#424bd1]">
+        ]" v-for="(list, index) in billingVariation" :key="index">
+        <div v-if="!isVoiceBilling" class="text-[23px] font-bold text-[#424bd1]">
           {{ list.title }}
         </div>
-        <div class="text-[14px]">
+        <div class="text-[14px]" v-if="!isVoiceBilling">
           {{
-            Number(data?.planDetails?.extraSessionCost) !== 0
-              ? Math.floor(
-                  Number(list.amount) /
-                    Number(data?.planDetails?.extraSessionCost),
-                )
-              : 0
+          Number(data?.planDetails?.extraSessionCost) !== 0
+          ? Math.floor(
+          Number(list.amount) /
+          Number(data?.planDetails?.extraSessionCost),
+          )
+          : 0
           }}
           {{ isVoiceBilling ? "extra minutes" : "extra sessions" }}
           <!-- extra sessions -->
@@ -36,14 +30,12 @@
           </div>
         </div>
 
-        <UiButton
-          @click="handlePurchaseWallet(list.plan_code)"
-          class="rounded-lg border border-indigo-700 bg-transparent px-4 py-2 font-semibold text-indigo-800 hover:border-transparent hover:bg-indigo-700 hover:text-white"
-        >
+        <UiButton @click="handlePurchaseWallet(list.plan_code)"
+          class="rounded-lg border border-indigo-700 bg-transparent px-4 py-2 font-semibold text-indigo-800 hover:border-transparent hover:bg-indigo-700 hover:text-white">
           Buy now
         </UiButton>
       </div>
-    </div>
+      </div>
   </page>
 </template>
 <script setup lang="ts">
@@ -83,26 +75,53 @@
       amount: "1000",
     },
   ]);
-  const voiceBillingVariation = ref([
-    {
-      _id: 1,
-      title: "Basic",
-      plan_code: "voice_basic",
-      amount: "5000",
-    },
-    {
-      _id: 2,
-      title: "Pro",
-      plan_code: "voice_pro",
-      amount: "10000",
-    },
-    {
-      _id: 3,
-      title: "Max",
-      plan_code: "voice_max",
-      amount: "15000",
-    },
-  ]);
+  // const voiceBillingVariation = ref([
+  //   {
+  //     _id: 1,
+  //     title: "Basic",
+  //     plan_code: "voice_basic",
+  //     amount: "5000",
+  //   },
+  //   {
+  //     _id: 2,
+  //     title: "Pro",
+  //     plan_code: "voice_pro",
+  //     amount: "10000",
+  //   },
+  //   {
+  //     _id: 3,
+  //     title: "Max",
+  //     plan_code: "voice_max",
+  //     amount: "15000",
+  //   },
+  // ]);
+const voiceBillingVariation = ref([
+  {
+    _id: 1,
+    plan_code: "voice_basic",
+    amount: 5000
+  },
+  {
+    _id: 2,
+    plan_code: "voice_pro",
+    amount: 10000
+  },
+  {
+    _id: 3,
+    plan_code: "voice_premium",
+    amount: 20000
+  },
+  {
+    _id: 4,
+    plan_code: "voice_enterprise",
+    amount: 30000
+  },
+  {
+    _id: 5,
+    plan_code: "voice_ultimate",
+    amount: 50000
+  }
+])
 
   const billingVariation = computed(() => {
     if (route.query.type === "chat") {

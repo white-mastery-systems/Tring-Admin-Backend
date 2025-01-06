@@ -8,23 +8,23 @@
                 <UiPopoverTrigger as-child>
                     <UiFormControl>
                         <UiButton variant="outline" role="combobox" :class="cn(
-                            'w-full justify-between overflow-hidden',
+                            'w-full justify-between relative overflow-hidden',
                             !fieldValue && 'text-muted-foreground',
                         )
                             ">
                             {{
-                                fieldValue
-                                    ? statesList.find((state: any) =>
-                                        state === fieldValue,
-                                    )
-                                    : "State name"
+                            fieldValue
+                            ? statesList.find((state: any) =>
+                            state === fieldValue,
+                            )
+                            : "State name"
                             }}
-                            <component :is="ChevronDown" class="ml-2 h-4 w-4 shrink-0 opacity-50"></component>
+                            <component :is="ChevronDown" class="absolute right-3 ml-2 h-4 w-4 shrink-0 opacity-50"></component>
                         </UiButton>
                     </UiFormControl>
                 </UiPopoverTrigger>
                 <UiPopoverContent class="w-[200px] p-0">
-                    <UiCommand  @update:searchTerm="handleSearchCountries">
+                    <UiCommand @update:searchTerm="handleSearchCountries">
                         <UiCommandInput placeholder="Search state..." />
                         <UiCommandEmpty>No states found.</UiCommandEmpty>
                         <UiCommandList>

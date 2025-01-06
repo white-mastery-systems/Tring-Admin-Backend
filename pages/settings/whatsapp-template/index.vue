@@ -146,18 +146,18 @@
         class: "flex items-center gap-2",
       },
       [
-        h(
-          UiButton,
-          {
-            onClick: (e: Event) => {
-              e.stopPropagation();
-              addWhatappTemplateModalState.value.open = true;
-              addWhatappTemplateModalState.value.id = templateObj.id;
-            },
-            color: "primary",
-          },
-          h(Icon, { name: "lucide:pen" }),
-        ),
+        // h(
+        //   UiButton,
+        //   {
+        //     onClick: (e: Event) => {
+        //       e.stopPropagation();
+        //       addWhatappTemplateModalState.value.open = true;
+        //       addWhatappTemplateModalState.value.id = templateObj.id;
+        //     },
+        //     color: "primary",
+        //   },
+        //   h(Icon, { name: "lucide:pen" }),
+        // ),
         h(
           UiButton,
           {
