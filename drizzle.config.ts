@@ -6,6 +6,6 @@ export default defineConfig({
   out: "./drizzle",
   schemaFilter: ["public", "admin", "chatbot", "voicebot"],
   dbCredentials: {
-    url: process.env.NUXT_DB_URL!,
+    url: process.env.DB_URL!,
   },
 });

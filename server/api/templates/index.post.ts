@@ -33,8 +33,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // Add header component based on metadata header type, excluding 'none'
-    if (metadata?.header && metadata?.header !== "none") {
-      if (metadata?.header === "text") {
+    if (metadata?.header && metadata?.header !== 'none') {
+      if (metadata?.header === 'text') {
         const headerComponent = {
           type: 'HEADER',
           format: metadata?.header,
@@ -44,6 +44,15 @@ export default defineEventHandler(async (event) => {
           }),
         };
         components.push(headerComponent);
+      } else if (metadata?.headerFile && metadata?.header === 'image') {
+        const headerImageFileComponent = {
+          type: 'HEADER',
+          format: metadata?.header,
+          example: {
+            header_handle: [`${process.env.ADMIN_BASE_URL}${metadata?.headerFile.url}`]
+          },
+        };
+        components.push(headerImageFileComponent);
       } else if (metadata?.headerFile) {
         const headerFileComponent = {
           type: 'HEADER',
