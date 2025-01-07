@@ -8,8 +8,11 @@ export const uploadMedia = async (
 ): Promise<any> => {
   const uploadMediaApiEndpoint = `https://graph.facebook.com/v21.0/${phoneId}/media`;
 
+  const { data, filename, ...rest } = media
+  const file = new File([data], filename!, rest);
+  
   const form = new FormData();
-  form.append('file', media);
+  form.append('file', file);
   form.append('type', mediaType);
   form.append('messaging_product', 'whatsapp');
 
