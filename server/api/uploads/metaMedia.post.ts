@@ -1,4 +1,5 @@
 import { errorResponse } from "~/server/response/error.response";
+import { createWhatsappMediaSession, uploadWhatsappMediaSession } from "~/server/utils/whatsappMedia";
 
 export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string
@@ -14,8 +15,12 @@ export default defineEventHandler(async (event) => {
 
   const integrationData: any = await getIntegrationById(organizationId, integrationId)
   if(!integrationData) return errorResponse(event, 400, "Integration data not found")
+
+  const whatsappMediaSession: any = await createWhatsappMediaSession(integrationData?.metadata?.access_token, fileData?.data?.length, fileData?.type)
+
+  if(!whatsappMediaSession) return errorResponse(event, 400, "Unable to create whatsapp sesssion")
   
-  const media = await uploadMedia(integrationData?.metadata?.pid, integrationData?.metadata?.access_token, fileData, fileData?.type)
+  const media = await uploadWhatsappMediaSession(integrationData?.metadata?.access_token, fileData?.data?.buffer, whatsappMediaSession?.id)
   
   return media
 })

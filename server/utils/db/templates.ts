@@ -65,7 +65,7 @@ export const updateTemplateById = async(templateId: string, template: any) => {
   )[0]
 }
 
-export const deleteTemplateById = async(templateId: string) => {
+export const removeTemplateById = async(templateId: string) => {
   return (
     await db.delete(templateSchema)
     .where(eq(templateSchema.id, templateId))
