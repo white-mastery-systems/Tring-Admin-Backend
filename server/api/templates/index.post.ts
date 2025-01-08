@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
           type: 'HEADER',
           format: metadata?.header,
           example: {
-            header_handle: [`${process.env.ADMIN_BASE_URL}${metadata?.headerFile.url}`]
+            header_handle: [metadata?.mediaSession]
           },
         };
         components.push(headerFileComponent);

@@ -2,7 +2,7 @@ import momentTz from "moment-timezone"
 import { error } from "winston";
 import { errorResponse } from "~/server/response/error.response";
 import { getCurrentMonthCallLogList } from "~/server/utils/db/call-logs";
-import { updateOrgSubscriptionStatus } from "~/server/utils/db/organization";
+import { updateOrgSubscriptionStatus, updateOrgWallet } from "~/server/utils/db/organization";
 import { orgVoicebotSubscription } from "~/server/utils/db/voicebots";
 
 const db = useDrizzle();
@@ -64,24 +64,31 @@ export default defineEventHandler(async (event) => {
   const totalMinutes = voicebotCallLogs.reduce((acc, item) => acc + Math.round(item?.duration / 60), 0);
 
   // Convert total seconds to minutes
-  const usedCallMinutes = totalMinutes
+  const usedCallMinutes = totalMinutes 
   const maxCallMinutes = voicePricingInformation?.sessions || 0
   let extraMinutes = 0
-  const orgWalletMinutes = voicebotPlan.walletSessions || 0
+  const orgWalletAmount = voicebotPlan.walletSessions || 0
 
-  // if(currentDate > voicebotPlan.expiryDate) {
-  //   await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
-  //   return errorResponse(event, 500, "Subscription plan is expired")
-  // }
+  if(currentDate > voicebotPlan.expiryDate) {
+    await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
+    return errorResponse(event, 500, "Subscription plan is expired")
+  }
 
-  // if(usedCallMinutes >= maxCallMinutes) {
-  //   extraMinutes = Math.max(usedCallMinutes - maxCallMinutes, 0)
-  //   const currentWallet = Math.max(orgWalletMinutes - extraMinutes, 0)
-  //   if(currentWallet <= 0) {
-  //     await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
-  //     return errorResponse(event, 500, "Exceeded the allowed call minutes.")
-  //   }
-  // }
+  if(usedCallMinutes >= maxCallMinutes) {
+    if(orgWalletAmount > 0) {
+      extraMinutes = Math.max(usedCallMinutes - maxCallMinutes, 0)
+      const extraMinutesAmount = extraMinutes * voicePricingInformation?.extraSessionCost!;
+      const currentWallet = Math.max(orgWalletAmount - extraMinutesAmount, 0)
+      await updateOrgWallet(organizationId, "voice", currentWallet)
+      if(currentWallet <= 0) {
+        await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
+        return errorResponse(event, 500, "Exceeded the allowed call minutes.")
+      }
+    } else {
+      await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
+      return errorResponse(event, 500, "Exceeded the allowed call minutes.")
+    }
+  }
   
   return voiceBotDetail
 });

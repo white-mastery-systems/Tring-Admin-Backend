@@ -1,6 +1,6 @@
 const db = useDrizzle();
 
-const planData = [
+const chatAddonPlans = [
   {
     plan: "chat_basic",
     price: 200,
@@ -15,6 +15,29 @@ const planData = [
   },
 ];
 
+const voiceAddonPlans = [
+  {
+    plan: "voice_basic",
+    price: 5000
+  },
+  {
+    plan: "voice_pro",
+    price: 10000
+  },
+ {
+    plan: "voice_max",
+    price: 20000
+  },
+  {
+    plan: "voice_ultra",
+    price: 30000
+  },
+  {
+    plan: "voice_supreme",
+    price: 50000
+  }
+]
+
 export default defineEventHandler(async (event) => {
   const body = await readValidatedBody(
     event,
@@ -23,6 +46,9 @@ export default defineEventHandler(async (event) => {
       redirectUrl: z.string(),
     }).parse,
   );
+  const query = await isValidQueryHandler(event, z.object({
+    type: z.string()
+  }))
   const orgId = await isOrganizationAdminHandler(event);
   if (!orgId) {
     return createError({ statusCode: 401, statusMessage: "Unauthorized" });
@@ -37,9 +63,12 @@ export default defineEventHandler(async (event) => {
   const orgSubscription = await db.query.orgSubscriptionSchema.findFirst({
     where: and(
       eq(orgSubscriptionSchema.organizationId, orgId),
-      eq(orgSubscriptionSchema.botType, 'chat')
+      eq(orgSubscriptionSchema.botType, query?.type)
     )
   })
+
+  const addonPrice = query?.type === "chat" ? chatAddonPlans?.find(({ plan }) => plan === body.plan)?.price : voiceAddonPlans?.find(({ plan }) => plan === body.plan)?.price
+  
   return await createAddonInZohoBilling({
     body: {
       subscription_id: orgSubscription?.subscriptionId || paymentData?.subscriptionId,
@@ -47,7 +76,7 @@ export default defineEventHandler(async (event) => {
         {
           addon_code: body.plan,
           quantity: 1,
-          price: planData?.find(({ plan }) => plan === body.plan)?.price,
+          price: addonPrice,
           tax_id: null,
         },
       ],
