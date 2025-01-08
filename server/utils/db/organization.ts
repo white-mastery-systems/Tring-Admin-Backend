@@ -235,6 +235,18 @@ export const createOrgSubscription = async(data: any) => {
   return (await db.insert(orgSubscriptionSchema).values(data).returning())[0]
 }
 
+export const updateOrgWallet = async(organizationId: string, botType: string, currentWallet: number) => {
+  return await db
+    .update(orgSubscriptionSchema)
+    .set({
+      walletSessions: currentWallet,
+      updatedAt: new Date()
+    }).where(and(
+      eq(orgSubscriptionSchema.organizationId, organizationId),
+      eq(orgSubscriptionSchema.botType, botType)
+    ))
+}
+
 export const updateChatbotStatus = async(organizationId: string) => {
   await db
   .update(chatBotSchema)
@@ -434,8 +446,7 @@ const handleVoiceTypeBilling = async (
 
   if (usedCallMinutes >= maxCallMinutes) {
     extraMinutes = Math.max(usedCallMinutes - maxCallMinutes, 0)
-    const currentWallet = Math.max(orgWalletMinutes - extraMinutes, 0)
-    resObj.wallet_balance = currentWallet
+    resObj.wallet_balance = orgWalletMinutes
     resObj.extra_sessions = extraMinutes
   }
   return resObj

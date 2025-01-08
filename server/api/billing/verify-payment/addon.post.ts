@@ -79,7 +79,9 @@ export default defineEventHandler(async (event) => {
       //   return addon ? acc + addon?.sessions : acc;
       // }, 0);
      
-      const addon: any = pricingInformation?.addons?.find((j: any) => j.name === apiResponseData.addonCode);
+      const addonInfo: any = pricingInformation?.addons?.find((j: any) => j.name === apiResponseData.addonCode);
+      const addons = botType === "chat" ? addonInfo.sessions : addonInfo.amount
+
       const existingWallet = await db.query.orgSubscriptionSchema.findFirst({
        where: and(
           eq(orgSubscriptionSchema.organizationId, orgId),
@@ -91,7 +93,8 @@ export default defineEventHandler(async (event) => {
         .update(orgSubscriptionSchema)
         .set({
           status: "active",
-          walletSessions: (existingWallet?.walletSessions || 0) + (addon.sessions || 0),
+          walletSessions: (existingWallet?.walletSessions || 0) + (addons || 0),
+          updatedAt: new Date()
         })
         .where(and(
             eq(orgSubscriptionSchema.organizationId, orgId),

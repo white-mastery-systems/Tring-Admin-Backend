@@ -1,5 +1,5 @@
 <template>
-  <page title="Billing" :description="true" :disableSelector="true">
+  <page title="Billing" :description="true" :disableSelector="true" :customBackRouter="router.options.history.state.back">
     <div class="xs:grid-cols-2 grid gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-3">
       <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->
@@ -8,7 +8,7 @@
 
           'w-full',
         ]" v-for="(list, index) in billingVariation" :key="index">
-        <div v-if="!isVoiceBilling" class="text-[23px] font-bold text-[#424bd1]">
+        <div class="text-[23px] font-bold text-[#424bd1]">
           {{ list.title }}
         </div>
         <div class="text-[14px]" v-if="!isVoiceBilling">
@@ -35,7 +35,7 @@
           Buy now
         </UiButton>
       </div>
-      </div>
+    </div>
   </page>
 </template>
 <script setup lang="ts">
@@ -98,27 +98,32 @@
 const voiceBillingVariation = ref([
   {
     _id: 1,
+    title: "Basic",
     plan_code: "voice_basic",
     amount: 5000
   },
   {
     _id: 2,
+    title: "Pro",
     plan_code: "voice_pro",
     amount: 10000
   },
   {
     _id: 3,
-    plan_code: "voice_premium",
+    title: "Max",
+    plan_code: "voice_max",
     amount: 20000
   },
   {
     _id: 4,
-    plan_code: "voice_enterprise",
+    title: "Ultra",
+    plan_code: "voice_ultra",
     amount: 30000
   },
   {
     _id: 5,
-    plan_code: "voice_ultimate",
+    title: "Supreme",
+    plan_code: "voice_supreme",
     amount: 50000
   }
 ])
@@ -139,7 +144,7 @@ const voiceBillingVariation = ref([
 
   const handlePurchaseWallet = async (plan: string) => {
     const hostedPageResponse = await $fetch(
-      `/api/billing/addon?${filters.value.type}`,
+      `/api/billing/addon?type=${filters.value.type}`,
       {
         method: "POST",
         body: {
