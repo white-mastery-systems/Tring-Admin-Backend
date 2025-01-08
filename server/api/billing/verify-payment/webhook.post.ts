@@ -114,6 +114,7 @@ export default defineEventHandler(async (event) => {
    
          return paymentResult;
        }
+       billingLogger.info(`Zoho subscription created from zoho billing webhook`)
      } else if(body.event_type === "subscription_cancelled") {
         if (!body.data.subscription?.customer?.email) {
          return;
@@ -142,6 +143,7 @@ export default defineEventHandler(async (event) => {
            eq(orgSubscriptionSchema.botType, type)
          ))
        ])
+       billingLogger.info(`Zoho subscription cancelled from zoho billing webhook`)
      } else if(body.event_type === "subscription_reactivated") {
        if (!body.data.subscription?.customer?.email) {
          return;
@@ -244,6 +246,7 @@ export default defineEventHandler(async (event) => {
          orgSubscriptionPromise,
          userPromise,
        ]);
+        billingLogger.info(`Zoho subscription reactivated from zoho billing webhook`)
        return resp;
      } else if(body.event_type === "subscription_expired"){ // subscription expired
         if (!body.data.subscription?.customer?.email) {
@@ -273,6 +276,7 @@ export default defineEventHandler(async (event) => {
            eq(orgSubscriptionSchema.botType, type)
          ))
        ])
+      billingLogger.info(`Zoho subscription expired from zoho billing webhook`)
      }
    
      return true;

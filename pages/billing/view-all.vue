@@ -2,7 +2,8 @@
   <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <page v-else title="Billing" :description="true" :disableSelector="true" :customBackRouter="'/billing'">
+  <page v-else title="Billing" :description="true" :disableSelector="true"
+    :customBackRouter="router.options.history.state.back">
     <div :class="[
         'grid gap-4 px-2.5 py-0',
         route.query.type === 'voice'

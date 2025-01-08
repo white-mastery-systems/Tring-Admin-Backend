@@ -8,8 +8,11 @@ export const uploadMedia = async (
 ): Promise<any> => {
   const uploadMediaApiEndpoint = `https://graph.facebook.com/v21.0/${phoneId}/media`;
 
+  const { data, filename, ...rest } = media
+  const file = new File([data], filename!, rest);
+  
   const form = new FormData();
-  form.append('file', media);
+  form.append('file', file);
   form.append('type', mediaType);
   form.append('messaging_product', 'whatsapp');
 
@@ -60,3 +63,49 @@ export const retrieveMediaUrl = async (
     throw new Error("Failed to retrieve media URL");
   }
 };
+
+export const createWhatsappMediaSession = async (accessToken: string, fileLength: string, fileType: string) => {
+  try { 
+    const createWhatsappMediaSessionApiUrl = `https://graph.facebook.com/v21.0/3404499776522072/uploads?file_length=${fileLength}&file_type=${fileType}`
+
+    const createWhatsappMediaSessionResponse = await $fetch(createWhatsappMediaSessionApiUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      }
+    })
+    logger.info("Whatsapp media session created successfully");
+    return createWhatsappMediaSessionResponse
+  } catch(error) {
+    logger.error({
+      message: "Error occurred while creating whatsapp media session",
+      error: JSON.stringify(error),
+      errorData: error?.data,
+    })
+    throw new Error("Failed to create whatsapp media session");
+  }
+}
+
+export const uploadWhatsappMediaSession = async (accessToken: string, file: any, mediaSessionId: string) => {
+  try {
+    const uploadWhatsappMediaSessionApiUrl = `https://graph.facebook.com/v21.0/${mediaSessionId}`
+
+    const response = await $fetch(uploadWhatsappMediaSessionApiUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `OAuth ${accessToken}`,
+        // 'Content-Type': 'application/octet-stream',
+      },
+      body: file
+    })
+    logger.info("Whatsapp media session file uploaded successfully");
+    return response
+  } catch (error) {
+     logger.error({
+      message: "Error occurred while upload whatsapp media session file",
+      error: JSON.stringify(error),
+      errorData: error?.data,
+    });
+    throw new Error("Failed to upload whatsapp media session file");
+  }
+}
