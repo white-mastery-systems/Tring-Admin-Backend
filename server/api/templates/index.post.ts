@@ -33,8 +33,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // Add header component based on metadata header type, excluding 'none'
-    if (metadata?.header && metadata?.header !== "none") {
-      if (metadata?.header === "text") {
+    if (metadata?.header && metadata?.header !== 'none') {
+      if (metadata?.header === 'text') {
         const headerComponent = {
           type: 'HEADER',
           format: metadata?.header,
