@@ -44,16 +44,7 @@ export default defineEventHandler(async (event) => {
           }),
         };
         components.push(headerComponent);
-      } else if (metadata?.headerFile && metadata?.header === 'image') {
-        const headerImageFileComponent = {
-          type: 'HEADER',
-          format: metadata?.header,
-          example: {
-            header_handle: [`${process.env.ADMIN_BASE_URL}${metadata?.headerFile.url}`]
-          },
-        };
-        components.push(headerImageFileComponent);
-      } else if (metadata?.headerFile) {
+      } else if (metadata?.mediaSession) {
         const headerFileComponent = {
           type: 'HEADER',
           format: metadata?.header,
