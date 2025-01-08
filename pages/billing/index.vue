@@ -2,20 +2,19 @@
   <page title="Billing" sub-title="Manage your subscription and billing information" :disableSelector="false"
     :disable-back-button="true" :disable-elevation="true">
     <template #actionButtons>
-      <ChatBotActionBotton :usageDetails="usageDetails" :query="filters"
-        :usage="usage" @change="handleOpenCancelModal">
+      <ChatBotActionBotton :usageDetails="usageDetails" :query="filters" :usage="usage" @change="handleOpenCancelModal">
       </ChatBotActionBotton>
     </template>
     <ConfirmationModal v-model:open="cancelModalState" title="Are you sure to cancel your subscription"
       description="This action is irreversible" @confirm="handleConfirmPaymentCancellation">
     </ConfirmationModal>
-    <UiTabs default-value="Chat" class="w-full self-start">
+    <UiTabs :default-value="route.query.type ?? 'chat'" class="w-full self-start">
       <UiTabsList class="grid w-full grid-cols-2">
         <!-- @click="selectedChannel('Chat')" -->
-        <UiTabsTrigger value="Chat" @click="navigateToTab('chat')">
+        <UiTabsTrigger value="chat" @click="navigateToTab('chat')">
           Chat
         </UiTabsTrigger>
-        <UiTabsTrigger value="Voice" @click="navigateToTab('voice')">
+        <UiTabsTrigger value="voice" @click="navigateToTab('voice')">
           Voice
         </UiTabsTrigger>
       </UiTabsList>
@@ -23,11 +22,11 @@
         <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
       </div>
       <div v-else>
-        <UiTabsContent value="Chat">
+        <UiTabsContent value="chat">
           <ChatBotBIlling :usageDetails="usageDetails" :usage="usage">
           </ChatBotBIlling>
         </UiTabsContent>
-        <UiTabsContent value="Voice">
+        <UiTabsContent value="voice">
           <VoiceBotBilling :usage="usage">
           </VoiceBotBilling>
         </UiTabsContent>
@@ -105,8 +104,21 @@ const usageDetails = computed(() => {
 const cancelModalState = ref(false);
 
 onMounted(() => {
-  if (!router.currentRoute.value.query.tab) {
-    navigateToTab("chat");
+  const back = router.options.history.state.back;
+  if (back) {
+    try {
+      const searchParams = new URLSearchParams(back.split('?')[1]); // Get query params part
+      const type = searchParams.get('type');
+      if (!router.currentRoute.value.query.tab && (type === 'chat')) {
+        navigateToTab("chat");
+        console.log("chat")
+      } else if (type === 'voice') {
+        // navigateToTab("voice");
+        filters.value.type = "voice";
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const eventSource = new EventSource(
