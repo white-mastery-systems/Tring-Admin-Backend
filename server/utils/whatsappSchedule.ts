@@ -5,6 +5,7 @@ import {
   getTemplateDetailsByName,
   sendWhatsappTemplateMessage,
 } from "./template";
+import { fetchFileFromUrl } from "./whatsappMedia";
 
 // const sendWhatsappTemplateMessage = async (
 //   metaToken: string,
@@ -102,6 +103,67 @@ export const scheduleWhatsAppCampaign = async (
       })}`
     );
 
+    let templateComponents: any[] = [];
+    let templateLanguageCode = "en";
+
+    const templateDetailList = await getTemplateDetailsByName(
+      wabaId,
+      accessToken,
+      templateName,
+    );
+    const templateInformation = templateDetailList?.find(
+      (i: any) => i.name === templateName,
+    );
+
+    templateInformation.components.forEach(async(component: any) => {
+        if (
+          component.type === 'HEADER' &&
+          component.format === 'IMAGE'
+        ) {
+          const image = await fetchFileFromUrl(
+            component.example.header_handle[0],
+            templateName
+          );
+          const imageMedia = await uploadMedia(phoneId, accessToken, image, 'image/png');
+          let parameters: any = [];
+          parameters.push({
+            type: 'image',
+            image: {
+              id: imageMedia.id,
+            },
+          });
+          templateComponents.push({
+            type: component.type,
+            parameters,
+          });
+        } else if (
+          component.type === 'HEADER' &&
+          component.format === 'DOCUMENT'
+        ) {
+          const document = await fetchFileFromUrl(
+            component.example.header_handle[0],
+            templateName,
+          );
+          const docMedia = await uploadMedia(
+            phoneId,
+            accessToken,
+            document,
+            'application/pdf',
+          );
+          let parameters: any = [];
+          parameters.push({
+            type: 'document',
+            document: {
+              id: docMedia.id,
+            },
+          });
+          templateComponents.push({
+            type: component.type,
+            parameters,
+          });
+        }
+    });
+
     const event = schedule.scheduleJob(
       { year, month, date: day, hour: hours, minute: minutes, tz: "UTC" },
       () => {
@@ -110,54 +172,11 @@ export const scheduleWhatsAppCampaign = async (
           async ({ contacts: contact }: { contacts: any }) => {
             const phoneNumber =
               `${contact.countryCode}${contact.phone}`.replace("+", "");
-
-            let templateComponents: any[] = [];
-            let templateLanguageCode = "en";
-
-            const templateDetailList = await getTemplateDetailsByName(
-              wabaId,
-              accessToken,
-              templateName,
-            );
-            const templateInformation = templateDetailList?.find(
-              (i: any) => i.name === templateName,
-            );
+            
             if (templateInformation) {
               templateLanguageCode = templateInformation.language;
               templateInformation.components.forEach((component: any) => {
-                if (
-                  component.type === 'HEADER' &&
-                  component.example?.header_handle &&
-                  component.format === 'IMAGE'
-                ) {
-                  let parameters: any = [];
-                  parameters.push({
-                    type: 'image',
-                    image: {
-                      link: component.example.header_handle[0],
-                    },
-                  });
-                  templateComponents.push({
-                    type: component.type,
-                    parameters,
-                  });
-                } else if (
-                  component.type === 'HEADER' &&
-                  component.example?.header_handle &&
-                  component.format === 'DOCUMENT'
-                ) {
-                  let parameters: any = [];
-                  parameters.push({
-                    type: 'document',
-                    document: {
-                      link: component.example.header_handle[0],
-                    },
-                  });
-                  templateComponents.push({
-                    type: component.type,
-                    parameters,
-                  });
-                } else if (
+               if (
                   component.type === "BODY" &&
                   component.example?.body_text
                 ) {
