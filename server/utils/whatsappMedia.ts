@@ -109,3 +109,27 @@ export const uploadWhatsappMediaSession = async (accessToken: string, file: any,
     throw new Error("Failed to upload whatsapp media session file");
   }
 }
+
+export const fetchFileFromUrl = async (fileUrl: string, fileName: string) => {
+  try {
+    const response: any = await $fetch(fileUrl, {
+      method: 'GET',
+      responseType: 'blob', // Ensures the response is treated as a binary file
+    });
+
+    // Create a File object from the Blob
+    const file = {
+      data: response, // Blob or Buffer
+      filename: fileName || 'default-filename',
+      type: response.type, // MIME type
+    };
+    return file;
+  } catch (error) {
+    logger.error({
+      message: "Error fetching file",
+      error: JSON.stringify(error),
+      errorData: error?.data,
+    });
+    throw new Error('Failed to fetch file from URL');
+  }
+};
