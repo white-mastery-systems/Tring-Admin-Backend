@@ -151,9 +151,9 @@ const headerOptions = [
   { label: "None", value: "none" },
   { label: "Text", value: "text" },
   { label: "Image", value: "image" },
+  { label: "Document", value: "document" },
 ];
 // { label: "Video", value: "video" },
-// { label: "Document", value: "document" },
 // { label: "Location", value: "Location" },
 
 const emit = defineEmits<{
