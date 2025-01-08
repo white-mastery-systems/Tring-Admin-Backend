@@ -118,19 +118,18 @@ export const scheduleWhatsAppCampaign = async (
     templateInformation.components.forEach(async(component: any) => {
         if (
           component.type === 'HEADER' &&
-          component.example?.header_handle &&
           component.format === 'IMAGE'
         ) {
-          const fileUrl = component.example.header_handle[0]
-          const fileName = templateName;
-          const mediaType = 'image/png';
-          const file = await fetchFileFromUrl(fileUrl, fileName);
-          const media = await uploadMedia(phoneId, accessToken, file, mediaType);
+          const image = await fetchFileFromUrl(
+            component.example.header_handle[0],
+            templateName
+          );
+          const imageMedia = await uploadMedia(phoneId, accessToken, image, 'image/png');
           let parameters: any = [];
           parameters.push({
             type: 'image',
             image: {
-              id: media.id,
+              id: imageMedia.id,
             },
           });
           templateComponents.push({
@@ -139,14 +138,23 @@ export const scheduleWhatsAppCampaign = async (
           });
         } else if (
           component.type === 'HEADER' &&
-          component.example?.header_handle &&
           component.format === 'DOCUMENT'
         ) {
+          const document = await fetchFileFromUrl(
+            component.example.header_handle[0],
+            templateName,
+          );
+          const docMedia = await uploadMedia(
+            phoneId,
+            accessToken,
+            document,
+            'application/pdf',
+          );
           let parameters: any = [];
           parameters.push({
             type: 'document',
             document: {
-              link: component.example.header_handle[0],
+              id: docMedia.id,
             },
           });
           templateComponents.push({
