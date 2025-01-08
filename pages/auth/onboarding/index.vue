@@ -18,7 +18,6 @@ import { companyDetailValidation } from '~/validationSchema/authValidation/onBoa
 
 const steps = [personalDetailForm, companyDetailForm];
 const currentStepIndex = ref(0);
-const errors = ref({}); // Store errors from useForm
 const formData = ref({}); // Store form data
 
 const currentValidationSchema = computed(() => {
@@ -29,6 +28,7 @@ const {
   handleSubmit,
   resetForm,
   values,
+  errors,
 } = useForm({
   validationSchema: currentValidationSchema,
   initialValues: formData.value,

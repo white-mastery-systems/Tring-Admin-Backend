@@ -7,9 +7,9 @@
         <UiPopover class="mt-0">
           <UiPopoverTrigger as-child class="mt-0">
             <UiFormControl class="mt-0">
-              <UiButton variant="outline" role="combobox" :class="
+              <UiButton variant="outline" class="font-normal text-sm" role="combobox" :class="
                   cn(
-                    'mt-0 w-[100px] justify-around overflow-hidden pr-0 pl-1',
+                    'mt-0 w-full justify-between overflow-hidden px-3',
                     !fieldValue && 'text-muted-foreground',
                     'mt-0 space-y-0',
                   )
@@ -26,7 +26,7 @@
                   ? countryData.find(
                   (country: any) => country.dial_code === fieldValue,
                   )?.dial_code
-                  : "dialCode"
+                  : "Country Code"
                   }}
                 </div>
                 <component :is="ChevronDown" class="h-4 w-4 shrink-0 opacity-50"></component>

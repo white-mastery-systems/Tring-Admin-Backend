@@ -8,7 +8,7 @@
         " label="Integration" placeholder="Select your integration"
         helperText="template will be created with this integration" required />
       <div class="flex gap-3 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-        <TextField type="text" :disableSpecialCharacters="true" name="name" label="Name you template"
+        <TextField type="text" :disableSpecialCharacters="true" name="name" label="Name your template"
           placeholder="Enter name" required @input="dispatchTemplateState()" :textFieldMaxLength="512">
         </TextField>
         <SelectField name="languageCode" :options="languageList" label="Select language"
@@ -329,7 +329,6 @@ const variableOptions = [
 const handleConnect = handleSubmit(async (value: any) => {
   try {
     isLoading.value = true;
-    console.log(value, "value -- value")
     if (values?.headerFile?.file instanceof File) {
 
       const formData = new FormData();

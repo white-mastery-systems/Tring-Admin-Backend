@@ -21,13 +21,11 @@ const login = async (values: Record<string, any>) => {
       body: values,
     });
     (await useUser()).refreshUser();
-    return navigateTo("/")
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
     if (error?.statusMessage === "User not verified") {
       localStorage.setItem("userDetails", JSON.stringify(error?.data.data))
       return navigateTo("/auth/verify-otp");
-
     }
   }
 };

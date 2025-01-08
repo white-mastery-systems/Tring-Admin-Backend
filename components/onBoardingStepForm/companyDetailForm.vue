@@ -29,6 +29,7 @@
         <TextField
           v-if="formData.industry === 'Other'"
           type="text"
+          placeholder="Your Industry"
           name="industryOtherRole"
           :required="true"
         />

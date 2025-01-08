@@ -47,9 +47,14 @@
                       <div class="max-w-[100%] truncate cursor-pointer">
                         <div class="text-gray-500">{{ key }}</div>
                         <div class="w-[90%]">
-                          <a v-if="key === 'Mobile'" href="tel:{{ value }}" class="truncate text-[#424bd1]">
-                            {{ value }}
-                          </a>
+                          <template v-if="key === 'Mobile'">
+                            <a href="tel:{{ value }}" class="truncate text-[#424bd1]">
+                              {{ value }}
+                            </a>
+                            <!-- <a :href="getTelLink(value)" class="truncate text-[#424bd1]">
+                              {{ value }}
+                            </a> -->
+                          </template>
                           <a v-else-if="key === 'Email'" href="mailto:{{ value }}"
                             class="block truncate lowercase text-[#424bd1]">
                             {{ value }}
@@ -245,6 +250,21 @@ const details = computed(() => {
   }
 });
 
+// const getTelLink = computed(() => {
+//   const result = {};
+//   Object.entries(props.details[0]).forEach(([key, value]) => {
+//     if (key === 'Mobile') {
+//       const sanitizedValue = value.replace(/\D/g, '');
+//       result[key] =
+//         sanitizedValue.startsWith('91') || sanitizedValue.startsWith('+91')
+//           ? `tel:+${sanitizedValue}`
+//           : `tel:${sanitizedValue}`;
+//     } else {
+//       result[key] = value;
+//     }
+//   });
+//   return result;
+// });
 const isDeleteConfirmationOpen = ref(false);
 
 const handleDelete = async () => {
