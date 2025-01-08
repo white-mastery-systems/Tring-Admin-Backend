@@ -1,4 +1,5 @@
 import { userOTPSchema } from "~/server/schema/auth"
+import { otpEmailTemplate } from "~/server/utils/email-templates"
 
 const db = useDrizzle()
 
@@ -34,7 +35,9 @@ export default defineEventHandler(async (event) =>{
   })
   .where(eq(userOTPSchema.userId, userData?.id))
 
-  sendEmail(body?.email, "Tring admin - OTP", `Your one-time password (OTP) for verifying your account is: ${otpNumber}. This OTP is valid for 10 minutes.`)
-
+  const emailTemplate = otpEmailTemplate(otpNumber)
+  
+  sendEmail(body?.email, "Verify Your Tringlabs Account with OTP", emailTemplate)
+ 
   return { status: true, message: "OTP sent to your email!" }
 })

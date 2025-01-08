@@ -1,4 +1,5 @@
 import { userOTPSchema } from "~/server/schema/auth";
+import { otpEmailTemplate } from "~/server/utils/email-templates";
 
 const config = useRuntimeConfig();
 
@@ -71,7 +72,9 @@ export default defineEventHandler(async (event) => {
     }
   })
 
-  sendEmail(user?.email, "Tring admin - OTP", `Your one-time password (OTP) for verifying your account is: ${otpNumber}. This OTP is valid for 10 minutes.`)
+  const emailTemplate = otpEmailTemplate(otpNumber)
+
+  sendEmail(user?.email, "Verify Your Tringlabs Account with OTP", emailTemplate)
 
   if (user.organizationId) return "/";
   // return "/auth/onboarding/1";

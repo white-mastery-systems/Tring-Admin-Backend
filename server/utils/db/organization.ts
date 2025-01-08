@@ -256,6 +256,12 @@ export const updateChatbotStatus = async(organizationId: string) => {
   ))
 }
 
+export const getOrgSubscriptionPlanByOrgId = async (organizationId: string) => {
+  return await db.query.orgSubscriptionSchema.findMany({
+    where: eq(orgSubscriptionSchema.organizationId, organizationId)
+  })
+}
+
 export const getAllOrgVoiceSubscription = async() => {
   return await db.query.orgSubscriptionSchema.findMany({
     where: eq(orgSubscriptionSchema.botType, "voice")

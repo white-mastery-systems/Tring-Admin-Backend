@@ -44,12 +44,15 @@ export default defineEventHandler(async (event) => {
           }),
         };
         components.push(headerComponent);
-      } else if (metadata?.mediaSession) {
+      } else if (
+        metadata?.mediaSession &&
+        (metadata?.header === 'image' || metadata?.header === 'document')
+      ) {
         const headerFileComponent = {
           type: 'HEADER',
           format: metadata?.header,
           example: {
-            header_handle: [metadata?.mediaSession]
+            header_handle: [metadata?.mediaSession],
           },
         };
         components.push(headerFileComponent);
@@ -65,12 +68,14 @@ export default defineEventHandler(async (event) => {
       components.push(footerComponent);
     }
 
-    logger.info(JSON.stringify({
-      name: body.templateName,
-      language: body.languageCode,
-      category: "MARKETING",
-      components,
-    }));
+    logger.info(
+      JSON.stringify({
+        name: body.templateName,
+        language: body.languageCode,
+        category: 'MARKETING',
+        components,
+      }),
+    );
 
     const integrationDetails: any = await db.query.integrationSchema.findFirst({
       where: and(eq(integrationSchema.id, body.integrationId)),
@@ -94,11 +99,13 @@ export default defineEventHandler(async (event) => {
 
     return data;
   } catch (err) {
-    logger.error(JSON.stringify({
-      err: JSON.stringify(err),
-      errdd: err.data,
-      msg: err.message,
-    }));
+    logger.error(
+      JSON.stringify({
+        err: JSON.stringify(err),
+        errdd: err.data,
+        msg: err.message,
+      }),
+    );
     return createError({
       status: 400,
       err: err?.data,

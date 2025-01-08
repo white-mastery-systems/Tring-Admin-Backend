@@ -7,68 +7,6 @@ import {
 } from "./template";
 import { fetchFileFromUrl } from "./whatsappMedia";
 
-// const sendWhatsappTemplateMessage = async (
-//   metaToken: string,
-//   phoneId: string,
-//   userPhone: string,
-//   templateName: string,
-//   components: Record<string, any>,
-//   language?: string,
-// ) => {
-//   try {
-//     logger.info(
-//       `meta-whatsapp-${`https://graph.facebook.com/v21.0/${phoneId}/messages`}---->${JSON.stringify(
-//         {
-//           ignoreResponseError: true,
-//           method: "post",
-//           headers: {
-//             Authorization: `Bearer ${metaToken}`,
-//           },
-//           body: {
-//             messaging_product: "whatsapp",
-//             to: userPhone,
-//             type: "template",
-//             template: {
-//               name: templateName,
-//               language: {
-//                 code: language ?? "en_US",
-//               },
-//               components,
-//             },
-//           },
-//         },
-//       )}`,
-//     );
-//     const data = await $fetch(
-//       `https://graph.facebook.com/v21.0/${phoneId}/messages`,
-//       {
-//         method: "post",
-//         headers: {
-//           Authorization: `Bearer ${metaToken}`,
-//         },
-//         body: {
-//           messaging_product: "whatsapp",
-//           to: userPhone,
-//           type: "template",
-//           template: {
-//             name: templateName,
-//             language: {
-//               code: language ?? "en",
-//             },
-//             components,
-//           },
-//         },
-//       },
-//     );
-//     return data;
-//   } catch (err: any) {
-//     console.log(err);
-//     logger.error(
-//       `https://graph.facebook.com/v21.0/${phoneId}/messages---->Error: ${JSON.stringify(err.data)}`,
-//     );
-//   }
-// };
-
 export const scheduleWhatsAppCampaign = async (
   date: any,
   time: any,
@@ -124,7 +62,7 @@ export const scheduleWhatsAppCampaign = async (
             component.example.header_handle[0],
             templateName
           );
-          const imageMedia = await uploadMedia(phoneId, accessToken, image, 'image/png');
+          const imageMedia = await uploadMedia(phoneId, accessToken, image, `${image.type}`);
           let parameters: any = [];
           parameters.push({
             type: 'image',
@@ -148,7 +86,7 @@ export const scheduleWhatsAppCampaign = async (
             phoneId,
             accessToken,
             document,
-            'application/pdf',
+            `${document.type}`,
           );
           let parameters: any = [];
           parameters.push({
