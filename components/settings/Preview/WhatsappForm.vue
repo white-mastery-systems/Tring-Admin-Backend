@@ -269,14 +269,41 @@ const removeTemplateVariable = (idx, remove, fields, type = "body") => {
   dispatchTemplateState();
 };
 
+// const uploadFile = async ($event: any) => {
+//   const reader = new FileReader();
+//   reader.onload = (e) => {
+//     setFieldValue("headerFile", { url: e.target.result, file: $event[0] });
+//     dispatchTemplateState();
+//   };
+//   reader.readAsDataURL($event[0]);
+// };
 const uploadFile = async ($event: any) => {
+  if (!$event || !$event[0]) { 
+    return;
+  }
+
+  const file = $event[0];
+  const fileSizeInMB = file.size / (1024 * 1024);
+
+  // Determine maximum file size based on file type
+  const MAX_FILE_SIZE_MB = file.type.startsWith('image/') ? 5 : 100;
+
+  // Validate file size
+  if (fileSizeInMB > MAX_FILE_SIZE_MB) {
+    setFieldValue("headerFile", {});
+    return;
+  }
+
+  // Proceed with reading the file if valid
   const reader = new FileReader();
   reader.onload = (e) => {
-    setFieldValue("headerFile", { url: e.target.result, file: $event[0] });
+    setFieldValue("headerFile", { url: e.target.result, file });
     dispatchTemplateState();
   };
-  reader.readAsDataURL($event[0]);
+  reader.readAsDataURL(file);
 };
+
+
 const varaibleLabelName = (id: any) => {
   return `{{${id + 1}}}`;
 };

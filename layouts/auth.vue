@@ -5,8 +5,6 @@
       <div class="absolute top-[20px] left-[30px]">
         <img class="hidden sm:hidden md:hidden lg:hidden xl:block" src="assets\icons\tring_AI_logo.svg" width="80" height="80">
         <div class="flex items-center font-bold text-[15px] gap-2">
-          <!-- <RightArrow/>
-          <span>Back</span> -->
         </div>
       </div>
       <slot />

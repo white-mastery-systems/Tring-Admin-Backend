@@ -2,7 +2,7 @@
   <div class="flex h-full w-full flex-col items-center justify-center">
     <!-- :initial-values="defaultFormValues" -->
     <!-- @submit="handleSubmit" -->
-    <div class="w-[90%] px-0 pb-[20px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
+    <div class="w-[90%] px-0 pb-[20px] text-[17px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
       Personal Details
     </div>
     <div class="flex w-[90%] flex-col px-0 md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">

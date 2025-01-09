@@ -160,6 +160,7 @@
   const emit = defineEmits(["change"]);
   const handleFileChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
+    
     if (target.files && target.files.length > 0) {
       const files = Array.from(target.files);
       selectedFileName.value = files?.map((file) => file.name).join(",");
@@ -167,6 +168,15 @@
     } else {
       selectedFileName.value = "";
       value.value = target.files;
+    }
+    // Validate file size
+    const file = target.files[0]
+    const fileSizeInMB = file.size / (1024 * 1024)
+    const MAX_FILE_SIZE_MB = file.type.startsWith('image/') ? 5 : 100;
+    // Validate file size
+    if (fileSizeInMB > MAX_FILE_SIZE_MB) {
+      toast.error(`File size exceeds the ${MAX_FILE_SIZE_MB}MB limit. Your file is ${fileSizeInMB.toFixed(2)} MB.`);
+      selectedFileName.value = "";
     }
     emit("change", target.files);
   };
