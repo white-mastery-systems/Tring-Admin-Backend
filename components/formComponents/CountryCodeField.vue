@@ -9,7 +9,7 @@
             <UiFormControl class="mt-0">
               <UiButton variant="outline" class="font-normal text-sm" role="combobox" :class="
                   cn(
-                    'mt-0 w-full justify-between overflow-hidden px-3',
+                    'mt-0 min-w-[140px] w-full justify-between overflow-hidden px-3',
                     !fieldValue && 'text-muted-foreground',
                     'mt-0 space-y-0',
                   )

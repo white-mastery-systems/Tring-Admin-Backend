@@ -202,6 +202,12 @@ const {
   validationSchema: whatsAppTemplateSchema,
 });
 
+watch(() => values.name, (newValue) => {
+  const formatValue = newValue?.toLocaleLowerCase();
+  setFieldValue("name", formatValue);
+});
+
+
 const dispatchTemplateState = () => {
   debounce(
     templateStore.updateValues({

@@ -13,7 +13,7 @@
         <TextField type="text" name="metadata.businessName" label="Business Name" placeholder="Enter Your Business Name"
           :required="true" />
         <div class="flex gap-2">
-          <CountryCodeField class="w-[100px]" name="countryCode" label="Country Code"
+          <CountryCodeField class="w-[150px]" name="countryCode" label="Country Code"
             helperText="Enter your country code" required />
 
           <TextField :disableCharacters="true" name="mobile" label="Mobile number" helperText="" required
