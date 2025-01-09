@@ -76,6 +76,7 @@ export const orgSubscriptionSchema = adminSchema.table("org_subscription", {
   expiryDate: text("expiry_date"),
   status: text("status").default("active"),
   walletSessions: integer("wallet_sessions").default(0),
+  extraSessions: integer("extra_sessions").default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
