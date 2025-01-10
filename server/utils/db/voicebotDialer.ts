@@ -18,7 +18,7 @@ export const voicebotDialer = async () => {
     ])
 
     // Create an array of promises for concurrent processing
-    const campaignPromises = campaignList.map(async (campaign: any) => {
+    campaignList.map(async (campaign: any) => {
       const noOfCallsPerTrigger = parseInt(campaign?.botConfig?.callsPerTrigger) || 1
 
       const voiceScheduleContactList = notDialedScheduledVoiceCallList.filter((schedular) => schedular.campaignId === campaign.id).slice(0, noOfCallsPerTrigger)
@@ -38,7 +38,6 @@ export const voicebotDialer = async () => {
       const workingEndTime = momentTz().tz(timeZone).hour(endHour).minute(endMinute).second(0)
 
       // Process schedular concurrently
-      await Promise.all(
         voiceScheduleContactList.map(async (schedular) => {
           const voiceContactInfo = voiceContactList.find((contact) => contact.id === schedular.contactId)
           const currentDateTime = momentTz().tz(timeZone)
@@ -75,9 +74,8 @@ export const voicebotDialer = async () => {
            await updateVoiceCallStatus(schedular.id, { callStatus: "failed" })
           }
         }) 
-      )
     })
-    await Promise.all(campaignPromises)
+    
   } catch (error: any) {
     logger.error(`voicebot - Dialer schedular Error:,${JSON.stringify(error.message)}`)
     throw new Error(error)
