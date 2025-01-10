@@ -426,7 +426,7 @@ const handleVoiceTypeBilling = async (
   const availableMinutes = Math.max(maxCallMinutes - usedCallMinutes, 0)
   const orgWalletMinutes =  orgSubscription.walletSessions || 0
 
-  let extraMinutes = 0
+  const extraMinutes = orgSubscription.extraSessions
 
   const resObj = constructResponse({
     usedQuota: usedCallMinutes,
@@ -452,7 +452,6 @@ const handleVoiceTypeBilling = async (
   }
 
   if (usedCallMinutes >= maxCallMinutes) {
-    extraMinutes = Math.max(usedCallMinutes - maxCallMinutes, 0)
     resObj.wallet_balance = orgWalletMinutes
     resObj.extra_sessions = extraMinutes
   }
