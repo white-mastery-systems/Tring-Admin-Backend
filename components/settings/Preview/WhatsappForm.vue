@@ -408,7 +408,7 @@ const handleConnect = handleSubmit(async (value: any) => {
       await $fetch("/api/templates", {
         method: "POST",
         body: {
-          metadata: { ...rest, mediaSession: uploadImage.value.h },
+          metadata: { ...rest, mediaSession: uploadImage.value },
           templateName: values.name,
           integrationId: values.integrationId,
           languageCode: values.languageCode,

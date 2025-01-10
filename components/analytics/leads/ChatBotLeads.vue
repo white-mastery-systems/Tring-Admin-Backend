@@ -304,13 +304,25 @@ const columns = [
       h(
         UiButton,
         {
-          onClick: () => viewLead(row.original.chatId),
+          onClick: () => handleRowClick(row),
           class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
         },
         [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
       ),
   }),
 ];
+
+const handleRowClick = (row: any) => {
+  console.log(row, "row -- row");
+  const url = `/analytics/chats/${row.original.id}`
+  const newTab = window.open(url, '_blank')
+
+  if (newTab) {
+    newTab.focus()
+  } else {
+    toast.error('The new tab could not be opened. Please check your browser settings.');
+  }
+}
 const selectedChannel = (value: any) => {
   if (value) {
     props.filters.channel = value;
