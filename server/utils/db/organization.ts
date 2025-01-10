@@ -235,10 +235,11 @@ export const createOrgSubscription = async(data: any) => {
   return (await db.insert(orgSubscriptionSchema).values(data).returning())[0]
 }
 
-export const updateOrgWallet = async(organizationId: string, botType: string, currentWallet: number) => {
+export const updateOrgWallet = async(organizationId: string, botType: string, currentWallet: number, extraSessions?: number) => {
   return await db
     .update(orgSubscriptionSchema)
     .set({
+      ...(extraSessions && { extraSessions: extraSessions }),
       walletSessions: currentWallet,
       updatedAt: new Date()
     }).where(and(
