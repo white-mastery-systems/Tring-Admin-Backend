@@ -18,7 +18,8 @@ export const voicebotDialer = async () => {
     ])
 
     // Create an array of promises for concurrent processing
-    const campaignPromises = campaignList.map(async (campaign: any) => {
+  await Promise.all(
+    campaignList.map(async (campaign: any) => {
       const noOfCallsPerTrigger = parseInt(campaign?.botConfig?.callsPerTrigger) || 1
 
       const voiceScheduleContactList = notDialedScheduledVoiceCallList.filter((schedular) => schedular.campaignId === campaign.id).slice(0, noOfCallsPerTrigger)
@@ -34,26 +35,26 @@ export const voicebotDialer = async () => {
       const [startHour, startMinute] = campaign?.botConfig?.workingStartTime.split(":").map(Number);
       const [endHour, endMinute] = campaign?.botConfig?.workingEndTime.split(":").map(Number);
 
-      const workingStartTime = momentTz().tz(timeZone).hour(startHour).minute(startMinute).second(0)
-      const workingEndTime = momentTz().tz(timeZone).hour(endHour).minute(endMinute).second(0)
-
-      // Process schedular concurrently
-      await Promise.all(
-        voiceScheduleContactList.map(async (schedular) => {
+      
+      for (const schedular of voiceScheduleContactList) {
           const voiceContactInfo = voiceContactList.find((contact) => contact.id === schedular.contactId)
+
+          const workingStartTime = momentTz().tz(timeZone).hour(startHour).minute(startMinute).second(0)
+          const workingEndTime = momentTz().tz(timeZone).hour(endHour).minute(endMinute).second(0)
+    
           const currentDateTime = momentTz().tz(timeZone)
-  
+      
           if(!currentDateTime.isBetween(workingStartTime, workingEndTime)) {
             logger.error("The current time is outside of working hours.")
             return 
           }
-  
-          const orgSubscription = orgVoiceSubscription.find((subscription: any) => subscription.organizationId === schedular.organizationId)   
+    
+          const orgSubscription = orgVoiceSubscription.find((subscription: any) => subscription.organizationId === campaign.organizationId)   
           if(orgSubscription?.status !== "active") {
             logger.error("Organization voice subscription plan status is not active")
             return 
           }
-
+  
           const payload = {
             ...schedular,
             ...voiceContactInfo,
@@ -73,12 +74,13 @@ export const voicebotDialer = async () => {
           } catch (error: any) {
             logger.error(`voice Dial API Error: ${error.message}`)
            await updateVoiceCallStatus(schedular.id, { callStatus: "failed" })
-          }
-        }) 
-      )
+          }    
+       }
+
     })
-    await Promise.all(campaignPromises)
-  } catch (error: any) {
+  )
+
+} catch (error: any) {
     logger.error(`voicebot - Dialer schedular Error:,${JSON.stringify(error.message)}`)
     throw new Error(error)
   }

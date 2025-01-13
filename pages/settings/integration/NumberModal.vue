@@ -1,5 +1,5 @@
 <template>
-  <DialogWrapper v-model="props.numberModalState" :title="(numberModalState.id) ? 'Edit New Cloud Telephony' : 'Add New Cloud Telephony'">
+  <DialogWrapper v-model="props.numberModalState" :title="(numberModalState.id) ? 'Edit Cloud Telephony' : 'Add New Cloud Telephony'">
     <Form @submit="handleConnect" class="space-y-3">
       <SelectField name="provider" placeholder="Select a provider" :options="providerList">
       </SelectField>

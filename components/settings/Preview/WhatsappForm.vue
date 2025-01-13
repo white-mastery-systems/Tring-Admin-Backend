@@ -8,7 +8,7 @@
         " label="Integration" placeholder="Select your integration"
         helperText="template will be created with this integration" required />
       <div class="flex gap-3 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-        <TextField type="text" :disableSpecialCharacters="true" name="name" label="Name you template"
+        <TextField type="text" :disableSpecialCharacters="true" name="name" label="Name your template"
           placeholder="Enter name" required @input="dispatchTemplateState()" :textFieldMaxLength="512">
         </TextField>
         <SelectField name="languageCode" :options="languageList" label="Select language"
@@ -202,6 +202,12 @@ const {
   validationSchema: whatsAppTemplateSchema,
 });
 
+watch(() => values.name, (newValue) => {
+  const formatValue = newValue?.toLocaleLowerCase();
+  setFieldValue("name", formatValue);
+});
+
+
 const dispatchTemplateState = () => {
   debounce(
     templateStore.updateValues({
@@ -263,14 +269,41 @@ const removeTemplateVariable = (idx, remove, fields, type = "body") => {
   dispatchTemplateState();
 };
 
+// const uploadFile = async ($event: any) => {
+//   const reader = new FileReader();
+//   reader.onload = (e) => {
+//     setFieldValue("headerFile", { url: e.target.result, file: $event[0] });
+//     dispatchTemplateState();
+//   };
+//   reader.readAsDataURL($event[0]);
+// };
 const uploadFile = async ($event: any) => {
+  if (!$event || !$event[0]) { 
+    return;
+  }
+
+  const file = $event[0];
+  const fileSizeInMB = file.size / (1024 * 1024);
+
+  // Determine maximum file size based on file type
+  const MAX_FILE_SIZE_MB = file.type.startsWith('image/') ? 5 : 100;
+
+  // Validate file size
+  if (fileSizeInMB > MAX_FILE_SIZE_MB) {
+    setFieldValue("headerFile", {});
+    return;
+  }
+
+  // Proceed with reading the file if valid
   const reader = new FileReader();
   reader.onload = (e) => {
-    setFieldValue("headerFile", { url: e.target.result, file: $event[0] });
+    setFieldValue("headerFile", { url: e.target.result, file });
     dispatchTemplateState();
   };
-  reader.readAsDataURL($event[0]);
+  reader.readAsDataURL(file);
 };
+
+
 const varaibleLabelName = (id: any) => {
   return `{{${id + 1}}}`;
 };
@@ -329,7 +362,6 @@ const variableOptions = [
 const handleConnect = handleSubmit(async (value: any) => {
   try {
     isLoading.value = true;
-    console.log(value, "value -- value")
     if (values?.headerFile?.file instanceof File) {
 
       const formData = new FormData();
@@ -376,7 +408,7 @@ const handleConnect = handleSubmit(async (value: any) => {
       await $fetch("/api/templates", {
         method: "POST",
         body: {
-          metadata: { ...rest, mediaSession: uploadImage.value.h },
+          metadata: { ...rest, mediaSession: uploadImage.value },
           templateName: values.name,
           integrationId: values.integrationId,
           languageCode: values.languageCode,

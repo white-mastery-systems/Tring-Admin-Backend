@@ -20,6 +20,11 @@
       }
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
       :data="getSingleCampaignList" :is-loading="isDataLoading" :page-size="20" :height="20" height-unit="vh" />
+    <CreateEditCampaignModal v-model="campaignModalState" @confirm="() => {
+      campaignModalState.open = false;
+      getSingleCampaign()
+    }
+      " />
   </Page>
 </template>
 <script setup lang="ts">
@@ -45,6 +50,7 @@ const route = useRoute();
 let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
+const campaignModalState = ref({ open: false, id: null });
 
 const {
   status,
@@ -75,6 +81,41 @@ const viewLead = async (callSid: any) => {
   });
 };
 const columnHelper = createColumnHelper<(typeof getSingleCampaignList.value)[0]>();
+
+const actionsComponent = (id: any) => 
+  h(
+    "div",
+    {
+      class: "flex items-center gap-2",
+    }, 
+    [
+      h(
+        UiButton,
+        {
+          color: "primary",
+          class: "ml-2",
+          /**
+           * Opens the integration modal when the edit button is clicked.
+           * @param {Event} _event - The event object from the button click.
+           */
+          onClick: (e:any) => {
+            e.stopPropagation();
+            campaignModalState.value.open = true;
+            // campaignModalState.value.id = id;
+          },
+        },
+        h(Icon, { name: "lucide:pen" }),
+      ),
+      h(
+        UiButton,
+        {
+          onClick: () => viewLead(id),
+          class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
+        },
+        [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
+      ),
+    ]
+  )
 const columns = [
   columnHelper.accessor("contact.name", {
     header: "contact details",
@@ -90,15 +131,9 @@ const columns = [
   }),
   columnHelper.accessor("callSid", {
     header: "Action",
-    cell: ({ row }) =>
-      h(
-        UiButton,
-        {
-          onClick: () => viewLead(row.original.callSid),
-          class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
-        },
-        [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
-      ),
+    cell: ({ row }) => {
+      return actionsComponent(row.original.id);
+    },
   }),
 ];
 

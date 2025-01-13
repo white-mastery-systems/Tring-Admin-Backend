@@ -16,10 +16,14 @@
         <!-- <SelectField name="fields[0].required" label="Required" :options="requiredList" required /> -->
         <TextField name="fields[0].placeholder" label="Placeholder" placeholder="Placeholder" required />
         <TextField name="fields[0].errorMessage" label="Error Message" placeholder="Enter error message" required />
-        <TextField v-if="values.fields[0].type === 'text'" name="fields[0].minLength" label="Minimum Length"
-          type="number" placeholder="Minimum length" />
-        <TextField v-if="values.fields[0].type === 'text'" name="fields[0].maxLength" label="Maximum Length"
-          type="number" placeholder="Maximum length" />
+        <!-- <TextField v-if="values.fields[0].type === 'text'" name="fields[0].minLength" label="Minimum Length"
+          type="number" placeholder="Minimum length" /> -->
+        <!-- <TextField v-if="values.fields[0].type === 'text'" name="fields[0].maxLength" label="Maximum Length"
+          type="number" placeholder="Maximum length" /> -->
+          <TextField v-if="values.fields[0].type === 'text'" :disableCharacters="true" name="fields[0].minLength" label="Minimum Length" helperText="" required
+            placeholder="Minimum length" />
+          <TextField v-if="values.fields[0].type === 'text'" :disableCharacters="true" name="fields[0].maxLength" label="Maximum Length" helperText="" required
+            placeholder="Maximum length" />
       </div>
       <div class="flex w-full justify-end gap-2">
         <div>
@@ -124,19 +128,42 @@ const formSchema = toTypedSchema(
         label: z.string({ required_error: "Label is required." }).min(2, "Label is required."),
         placeholder: z.string({ required_error: "Placeholder is required." }).min(2, "Placeholder is required."), // Make placeholder required
         errorMessage: z.string({ required_error: "Error message is required." }).min(2, "Error message is required."), // Make errorMessage required
-        minLength: z.number().optional(),
-        maxLength: z.number().optional(),
-      }).refine((data) => {
-        // Ensure that if maxLength is provided, it is greater than or equal to minLength
-        if (data.minLength !== undefined && data.maxLength !== undefined) {
-          return data.maxLength >= data.minLength;
+        minLength: z.string().optional(),
+        maxLength: z.string().optional(),
+      }).superRefine((data, ctx) => {
+      // Check if minLength is empty
+      if (data.minLength === undefined || data.minLength === null || data.minLength === "") {
+        ctx.addIssue({
+          path: ["minLength"],
+          message: "Minimum length is required.",
+        });
+      }
+
+      // Check if maxLength is empty
+      if (data.maxLength === undefined || data.maxLength === null || data.maxLength === "") {
+        ctx.addIssue({
+          path: ["maxLength"],
+          message: "Maximum length is required.",
+        });
+      }
+
+      // Check the relationship between minLength and maxLength
+      if (
+        data.minLength !== undefined &&
+        data.maxLength !== undefined &&
+        data.minLength !== "" &&
+        data.maxLength !== ""
+      ) {
+        const min = Number(data.minLength);
+        const max = Number(data.maxLength);
+        if (max < min) {
+          ctx.addIssue({
+            path: ["maxLength"],
+            message: "Maximum length must be greater than or equal to minimum length.",
+          });
         }
-        return true; // If no minLength or maxLength is provided, validation passes
-      }, {
-        message: "Maximum length must be greater than or equal to minimum length.",
-        path: ["maxLength"],
-      })
-    ),
+      }
+    })),
   })
 );
 
@@ -147,8 +174,8 @@ const { handleSubmit, values, setFieldValue,resetForm } = useForm({
       label: '',
       type: 'text',
       errorMessage: '',
-      minLength: 1,
-      maxLength: 10,
+      minLength: '1',
+      maxLength: '10',
       placeholder: ''
     }],
   },
