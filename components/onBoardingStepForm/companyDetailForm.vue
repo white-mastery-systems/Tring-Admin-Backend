@@ -3,7 +3,7 @@
     <div
       class="flex w-[80%] items-center gap-1 px-[21px] pb-[20px] font-bold text-[#424bd1]"
     >
-      <div class="flex cursor-pointer gap-2">
+      <div class="flex cursor-pointer gap-2 text-[17px]">
         <RightArrow @click="$emit('prev')" />
         <span> Company Details </span>
       </div>
@@ -29,6 +29,7 @@
         <TextField
           v-if="formData.industry === 'Other'"
           type="text"
+          placeholder="Your Industry"
           name="industryOtherRole"
           :required="true"
         />

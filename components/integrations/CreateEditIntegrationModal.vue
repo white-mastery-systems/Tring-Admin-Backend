@@ -8,7 +8,6 @@
     "
   >
     <form @submit="handleConnect" class="space-y-2">
-      <!-- {{ values }} || sdfdsf -->
       <div class="flex flex-col gap-2">
         <TextField
           name="name"
@@ -46,15 +45,20 @@
             </template>
           </TextField>
         </div>
-
-        <TextField
-         v-if="values.crm === 'whatsapp'"
-         name="metadata.phoneNumber"
-         label="Phone Number"
-         helperText="Enter a valid phone number"
-         placeholder="Eg: 1234567890"
-         required
-        />
+        <div class="flex gap-3" v-if="values.crm === 'whatsapp'">
+          <CountryCodeField class="w-full" name="metadata.countryCode" label="Country Code"
+            helperText="Enter your country code" required />
+          <!-- <TextField
+            name="metadata.phoneNumber"
+            label="Phone Number"
+            type="number"
+            helperText="Enter a valid phone number"
+            placeholder="Phone Number"
+            required
+            /> -->
+            <TextField :disableCharacters="true" name="metadata.phoneNumber" label="Phone Number" helperText="" required
+            placeholder="Phone Number" />
+        </div>
 
         <TextField
           v-if="(values.crm === 'sell-do' || values.crm === 'reserve-go') && !(integrationModalState.numberModalState?.id)"
@@ -140,6 +144,9 @@
   const whatsappSchema = z.object({
     crm: z.literal("whatsapp"),
     metadata: z.object({
+      countryCode: z
+        .string({ required_error: "Country Code is required" })
+        .min(1, "Country Code is required"),
       phoneNumber: z.string().min(10, { message: "Phone number is required" }),
     }),
   });
@@ -279,9 +286,8 @@
           apiKey: integrationDetails?.metadata?.apiKey,
         });
       } else if (integrationDetails?.crm === "whatsapp") {
-        setFieldValue("metadata", {
-          phoneNumber: integrationDetails?.metadata?.phoneNumber,
-        });
+        setFieldValue("metadata.phoneNumber", integrationDetails?.metadata?.phoneNumber);
+        setFieldValue("metadata.countryCode", integrationDetails?.metadata?.countryCode ?? '+91');
       } else if (integrationDetails?.crm === "zoho-crm") {
       } else if (integrationDetails?.crm === "zoho-bigin") {
       } else if (integrationDetails?.crm === "hubspot") {

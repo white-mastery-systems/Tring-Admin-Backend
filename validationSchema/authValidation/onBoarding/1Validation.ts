@@ -16,9 +16,9 @@ export const personalDetailFormValidation = toTypedSchema(
         discoverySource: z
         .string({ required_error: "Discovery source is required" })
         .min(1, "Discovery source is required"),
-        businessName: z
-        .string({ required_error: "Business name is required" })
-        .min(1, "Business name is required"),
+        // businessName: z
+        // .string({ required_error: "Business name is required" })
+        // .min(1, "Business name is required"),
         country: z
         .string({ required_error: "Country is required" })
         .min(1, "Country is required"),

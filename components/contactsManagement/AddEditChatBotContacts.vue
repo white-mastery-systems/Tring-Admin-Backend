@@ -169,11 +169,16 @@ const actionsComponent = (id: any) =>
       h(
         UiButton,
         {
-          onClick: (e: Event) => {
+          color: "primary",
+          class: "ml-2",
+          /**
+           * Opens the integration modal when the edit button is clicked.
+           * @param {Event} _event - The event object from the button click.
+           */
+          onClick: () => {
             addBucketModalState.value.open = true;
             addBucketModalState.value.id = id;
           },
-          color: "primary",
         },
         h(Icon, { name: "lucide:pen" }),
       ),

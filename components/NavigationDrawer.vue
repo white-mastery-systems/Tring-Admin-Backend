@@ -199,11 +199,11 @@
       icon: SettingsIcon,
       path: "/settings",
       children: [
-        {
-          name: "Playground",
-          icon: StarsIcon,
-          path: "/playground",
-        },
+        // {
+        //   name: "Playground",
+        //   icon: StarsIcon,
+        //   path: "/playground",
+        // },
         {
           name: "Integrations",
           icon: SettingsIcon,
