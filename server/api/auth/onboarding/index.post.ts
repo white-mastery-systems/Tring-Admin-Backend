@@ -16,7 +16,7 @@ const bodyValidationSchema = z.object({
   referralSource: z.string(),
   estimatedMonthlyBudget: z.string(),
   discoverySource: z.string(),
-  businessName: z.string(),
+  // businessName: z.string(),
   country: z.string(),
   mobile: z.string(),
   countryCode: z.string(),
@@ -61,8 +61,7 @@ export default defineEventHandler(async (event) => {
     mobile: body?.mobile,
     metadata: {
       role: body.role,
-      otherRole: body?.otherRole,
-      businessName: body?.businessName
+      otherRole: body?.otherRole
     },
     address: {
       country: body?.country
