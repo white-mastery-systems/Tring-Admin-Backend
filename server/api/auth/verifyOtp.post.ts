@@ -1,3 +1,4 @@
+import { v4 as uuid } from "uuid";
 import { userOTPSchema } from "~/server/schema/auth"
 
 const db = useDrizzle()
@@ -10,7 +11,7 @@ const zodOtpValidator = z.object({
 export default defineEventHandler(async (event) => {
   const body = await isValidBodyHandler(event, zodOtpValidator)
 
-  const userOTP = await db.query.userOTPSchema.findFirst({
+  const userOTP : any = await db.query.userOTPSchema.findFirst({
     where: eq(userOTPSchema.userId,  body.userId)
   })
 
@@ -50,20 +51,32 @@ export default defineEventHandler(async (event) => {
   }
 
   // OTP is valid, mark it as verified in the database
-  await Promise.all([
-    db.update(userOTPSchema)
+  
+    await db.update(userOTPSchema)
       .set({ 
         otp: {
           ...userOTP.otp,
           status: "verified"
         } 
-      }).where(eq(userOTPSchema.userId, body.userId)),
+      }).where(eq(userOTPSchema.userId, body.userId))
 
-    db.update(authUserSchema)
+   const user = (await db.update(authUserSchema)
       .set({
        isVerified: true
-      }).where(eq(authUserSchema.id, body.userId))
-  ])
+      }).where(eq(authUserSchema.id, body.userId)).returning())[0]
+  
+
+  const session = await lucia.createSession(
+      user.id,
+      { email: user.email },
+      { sessionId: uuid() },
+    );
+  
+    appendHeader(
+    event,
+    "Set-Cookie",
+    lucia.createSessionCookie(session.id).serialize(),
+  );
   
   return { success: true, message: "OTP verified successfully" };
 })
