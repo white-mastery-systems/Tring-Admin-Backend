@@ -1,56 +1,3 @@
-<script setup lang="ts">
-import { useGtag } from 'vue-gtag-next';
-import { formSchema } from '~/validationSchema/authValidation/signInValidation';
-
-const { event } = useGtag()
-
-useHead({
-  title: 'Sign In | Conversational AI for Businesses | Tring AI',
-  meta: [
-    { name: 'Description', content: 'Access your Tring AI account to explore AI Powered Solutions. Sign in now to continue your journey and enhance your business efficiency!' }
-  ]
-})
-
-
-definePageMeta({
-  layout: "auth",
-  middleware: "guest-only",
-});
-
-
-const passwordVisible = ref(false);
-const animationProps = {
-  duration: 500,
-};
-const isLoading = ref(false)
-
-const {
-  setFieldValue,
-  handleSubmit,
-  errors,
-  values,
-  defineField,
-  resetForm,
-} = useForm({
-  validationSchema: formSchema,
-  initialValues: {
-    // name: "",
-  },
-});
-const togglePasswordVisibility = () => {
-  passwordVisible.value = !passwordVisible.value;
-};
-
-const onSubmit = handleSubmit(async(value: any) => {
-  isLoading.value = true
-  event('button_click', { event_category: 'engagement', event_label: 'sign_in' })
-  await authHandlers.login(value)
-  isLoading.value = false
-})
-</script>
-
-
-
 <template>
   <div class="flex h-full w-full flex-col items-center justify-center">
     <div class="w-[90%] px-0 pb-[20px] font-bold text-[#424bd1] lg:w-[80%] lg:px-6">
@@ -104,3 +51,53 @@ const onSubmit = handleSubmit(async(value: any) => {
     </div>
   </div>
 </template>
+<script setup lang="ts">
+import { useGtag } from 'vue-gtag-next';
+import { formSchema } from '~/validationSchema/authValidation/signInValidation';
+
+const { event } = useGtag()
+
+useHead({
+  title: 'Sign In | Conversational AI for Businesses | Tring AI',
+  meta: [
+    { name: 'Description', content: 'Access your Tring AI account to explore AI Powered Solutions. Sign in now to continue your journey and enhance your business efficiency!' }
+  ]
+})
+
+
+definePageMeta({
+  layout: "auth",
+  middleware: "guest-only",
+});
+
+
+const passwordVisible = ref(false);
+const animationProps = {
+  duration: 500,
+};
+const isLoading = ref(false)
+
+const {
+  setFieldValue,
+  handleSubmit,
+  errors,
+  values,
+  defineField,
+  resetForm,
+} = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    // name: "",
+  },
+});
+const togglePasswordVisibility = () => {
+  passwordVisible.value = !passwordVisible.value;
+};
+
+const onSubmit = handleSubmit(async (value: any) => {
+  isLoading.value = true
+  event('button_click', { event_category: 'engagement', event_label: 'sign_in' })
+  await authHandlers.login(value)
+  isLoading.value = false
+})
+</script>

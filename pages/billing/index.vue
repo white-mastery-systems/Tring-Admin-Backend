@@ -2,7 +2,7 @@
   <page title="Billing" sub-title="Manage your subscription and billing information" :disableSelector="false"
     :disable-back-button="true" :disable-elevation="true">
     <template #actionButtons>
-      <ChatBotActionBotton :usageDetails="usageDetails" :query="filters" :usage="usage" @change="handleOpenCancelModal">
+      <ChatBotActionBotton :usageDetails="usageDetails" :query="route.query" :usage="usage" @change="handleOpenCancelModal">
       </ChatBotActionBotton>
     </template>
     <ConfirmationModal v-model:open="cancelModalState" title="Are you sure to cancel your subscription"
@@ -47,12 +47,12 @@ useHead({
 const route = useRoute();
 const router = useRouter();
 const config = useRuntimeConfig();
-const filters: any = ref({
-  type: "chat",
-})
-// const filters = computed(() => ({
-//   type: route.query?.type ?? 'chat',
-// }));
+// const filters: any = ref({
+//   type: "chat",
+// })
+const filters = computed(() => ({
+  type: route.query?.type ?? 'chat',
+}));
 const {
   status,
   data: usage,
@@ -104,22 +104,23 @@ const usageDetails = computed(() => {
 const cancelModalState = ref(false);
 
 onMounted(() => {
-  const back = router.options.history.state.back;
-  if (back) {
-    try {
-      const searchParams = new URLSearchParams(back.split('?')[1]); // Get query params part
-      const type = searchParams.get('type');
-      if (!router.currentRoute.value.query.tab && (type === 'chat')) {
-        navigateToTab("chat");
-        console.log("chat")
-      } else if (type === 'voice') {
-        // navigateToTab("voice");
-        filters.value.type = "voice";
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  // const back = router.options.history.state.back;
+  // if (back) {
+  //   try {
+  //     const searchParams = new URLSearchParams(back.split('?')[1]); // Get query params part
+  //     const type = searchParams.get('type');
+  //     if (!router.currentRoute.value.query.tab && (type === 'chat')) {
+  //       // navigateToTab("chat");
+  //       console.log("chat")
+  //     } 
+  //     else if (type === 'voice') {
+  //       // navigateToTab("voice");
+  //       filters.value.type = "voice";
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
   const eventSource = new EventSource(
     `${config.public.chatBotUrl}/api/sse?organizationId=${organization.orgDetails.id}`,

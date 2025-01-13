@@ -33,6 +33,8 @@
 <script setup lang="ts">
   import { createColumnHelper } from "@tanstack/vue-table";
   import { format } from "date-fns";
+  import { Icon, UiBadge, UiButton } from "#components";
+
   definePageMeta({
     middleware: "user",
   });
@@ -168,6 +170,13 @@
       ? h("span", { class: "text-green-500" }, "Active")
       : h("span", { class: "text-red-500" }, "Inactive");
 
+    // const viewChat= async (Id: any) => {
+    //   await navigateTo({
+    //     name: "analytics-chats-id",
+    //     params: { id: Id },
+    //   });
+    // };
+
   const columnHelper = createColumnHelper<(typeof chats.value)[0]>();
   const columns = [
     columnHelper.accessor("userName", {
@@ -194,13 +203,25 @@
     columnHelper.accessor("botUser", {
     header: "Bot Name",
   }),
-    columnHelper.accessor("metadata.country", {
-      header: "Country",
-      cell: (info) => info.getValue() || "-",
-    }),
-    columnHelper.accessor("updatedAt", {
-      header: "Updated At",
-    }),
+  columnHelper.accessor("metadata.country", {
+    header: "Country",
+    cell: (info) => info.getValue() || "-",
+  }),
+  columnHelper.accessor("updatedAt", {
+    header: "Updated At",
+  }),
+  columnHelper.accessor("id", {
+    header: "Action",
+    cell: ({ row }) =>
+      h(
+        UiButton,
+        {
+          // onClick: () => handleRowClick(row),
+          class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
+        },
+        [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
+      ),
+  }),
   ];
   const onActionChange = (value: any) => {
     filters.botUserName = value;
@@ -238,7 +259,7 @@ const onBotChange = (value: any) => {
       filters.country = $event;
     }
   };
-const handleRowClick = (row) => {
+const handleRowClick = (row: any) => {
   const url = `/analytics/chats/${row.original.id}`
   const newTab = window.open(url, '_blank')
 

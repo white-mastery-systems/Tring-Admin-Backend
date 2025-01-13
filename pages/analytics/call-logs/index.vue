@@ -129,7 +129,7 @@ const columnHelper = createColumnHelper<typeof callLogData.value>();
           UiButton,
           {
             // row.original.chatId
-            onClick: () => handleRowClick(),   //viewBot(),
+            // onClick: () => handleRowClick(row),   //viewBot(),
             class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
           },
           [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],

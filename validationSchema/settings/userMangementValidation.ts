@@ -27,12 +27,7 @@ export const userMangementSchema = toTypedSchema(
       confirmPassword: z
         .string({ required_error: "Confirm is required" })
         .min(6, "Confirm Password must be at least 6 characters long."),
-    })
-    // .refine((data) => data.password === data.confirmPassword, {
-    //   message: "Passwords do not match.",
-    //   path: ["confirmPassword"], // Point to the field that has the issue
-    // }),
-    .superRefine((data, ctx) => {
+    }).superRefine((data, ctx) => {
       // Check if passwords match
       if (data.password !== data.confirmPassword) {
         ctx.addIssue({

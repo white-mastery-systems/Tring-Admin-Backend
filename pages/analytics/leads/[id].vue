@@ -47,9 +47,14 @@
                       <div class="max-w-[100%] truncate cursor-pointer">
                         <div class="text-gray-500">{{ key }}</div>
                         <div class="w-[90%]">
-                          <a v-if="key === 'Mobile'" href="tel:{{ value }}" class="truncate text-[#424bd1]">
-                            {{ value }}
-                          </a>
+                          <template v-if="key === 'Mobile'">
+                            <!-- <a href="tel:{{ value }}" class="truncate text-[#424bd1]">
+                              {{ value }}
+                            </a> -->
+                            <a :href="getTelLink(value)" class="truncate text-[#424bd1]">
+                              {{ value }}
+                            </a>
+                          </template>
                           <a v-else-if="key === 'Email'" href="mailto:{{ value }}"
                             class="block truncate lowercase text-[#424bd1]">
                             {{ value }}
@@ -245,6 +250,48 @@ const details = computed(() => {
   }
 });
 
+// const getTelLink = computed(() => {
+//   const result = {};
+//   Object.entries(props.details[0]).forEach(([key, value]) => {
+//     if (key === 'Mobile') {
+//       const sanitizedValue = value.replace(/\D/g, '');
+//       result[key] =
+//         sanitizedValue.startsWith('91') || sanitizedValue.startsWith('+91')
+//           ? `tel:+${sanitizedValue}`
+//           : `tel:${sanitizedValue}`;
+//     } else {
+//       result[key] = value;
+//     }
+//   });
+//   return result;
+// });
+
+// it will work
+// const getTelLink = (value) => {
+//   const sanitizedValue = value.replace(/\D/g, '');
+//   return sanitizedValue.startsWith('91') || sanitizedValue.startsWith('+91')
+//     ? `tel:+${sanitizedValue}`
+//     : `tel:${sanitizedValue}`;
+// };
+const getTelLink = (value: any) => {
+  // Remove all non-digit characters
+  const sanitizedValue = value.replace(/\D/g, '');
+
+  // Handle international numbers
+  if (sanitizedValue.startsWith('00')) {
+    // Convert '00' international prefix to '+'
+    return `tel:+${sanitizedValue.slice(2)}`;
+  } else if (sanitizedValue.startsWith('+')) {
+    // Already a proper international number
+    return `tel:${sanitizedValue}`;
+  } else if (sanitizedValue.length > 10) {
+    // Assume it's an international number without a prefix
+    return `tel:+${sanitizedValue}`;
+  } else {
+    // Handle local numbers (default)
+    return `tel:${sanitizedValue}`;
+  }
+};
 const isDeleteConfirmationOpen = ref(false);
 
 const handleDelete = async () => {
