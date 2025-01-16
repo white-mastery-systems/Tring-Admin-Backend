@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
   }
 
   let startDate, endDate
-  if(orgSubscription?.subscriptionCreatedDate) {
+  if(orgSubscription?.subscriptionCreatedDate && orgSubscription?.expiryDate) {
      startDate = momentTz(orgSubscription?.subscriptionCreatedDate).tz(timeZone).toDate()
      endDate = momentTz(orgSubscription?.expiryDate).tz(timeZone).toDate()
   } else {
