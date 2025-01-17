@@ -133,7 +133,7 @@ export const orgTotalWhatappSessions = async () => {
          const newWhatsappSessionCount = data?.total_conversations || 0
          const orgSubscriptionDetail = await getOrgSubscriptionStatus(integration.org_id, "chat")
 
-         const totalWhatsappSessionCount = (orgSubscriptionDetail?.whatsappUsedSessions || 0)+ newWhatsappSessionCount 
+         const totalWhatsappSessionCount = (orgSubscriptionDetail?.whatsappUsedSessions || 0) + newWhatsappSessionCount 
          await updateOrgWhatsappSessions(integration.org_id, totalWhatsappSessionCount)
         }
       } catch (error) {
