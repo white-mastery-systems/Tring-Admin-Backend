@@ -31,7 +31,7 @@ export default defineNuxtConfig({
         base: "./logs",
       },
     },
-    plugins: ["~/server/plugin/yaml-watcher.ts", "~/server/plugin/schedule-voicebotDialer.ts"],
+    plugins: ["~/server/plugin/yaml-watcher.ts", "~/server/plugin/schedule-voicebotDialer.ts", "~/server/plugin/whatsapp-analytics.ts"],
   },
 
   imports: {

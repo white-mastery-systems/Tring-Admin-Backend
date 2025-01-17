@@ -235,6 +235,26 @@ export const createOrgSubscription = async(data: any) => {
   return (await db.insert(orgSubscriptionSchema).values(data).returning())[0]
 }
 
+export const updateOrgWhatsappSessions = async(organizationId: string, whatsappUsedSessions: number) => {
+  return await db.update(orgSubscriptionSchema)
+  .set({ whatsappUsedSessions })
+  .where(
+    and(
+      eq(orgSubscriptionSchema.organizationId, organizationId),
+      eq(orgSubscriptionSchema.botType, "chat")
+    )
+  )
+}
+
+export const getOrgSubscriptionStatus = async(organizationId: string, type: string) => {
+  return await db.query.orgSubscriptionSchema.findFirst({
+    where: and(
+      eq(orgSubscriptionSchema.organizationId, organizationId),
+      eq(orgSubscriptionSchema.botType, type)
+    )
+  })
+}
+
 export const updateOrgWallet = async(organizationId: string, botType: string, currentWallet: number, extraSessions?: number) => {
   return await db
     .update(orgSubscriptionSchema)
@@ -350,7 +370,7 @@ const handleChatTypeBilling = async (
         ),
       })
   
-    const usedSessions = interactedSessions?.length || 0;
+    const usedSessions = interactedSessions?.length + (orgSubscription?.whatsappUsedSessions || 0) || 0;
     const maxSessions = pricingInformation.sessions
     const orgWalletSessions =  orgSubscription.walletSessions || 0
     const availableSessions = Math.max(maxSessions - usedSessions, 0)
