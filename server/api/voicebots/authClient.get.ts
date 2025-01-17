@@ -67,7 +67,7 @@ export default defineEventHandler(async (event) => {
   const usedCallMinutes = totalMinutes 
   const maxCallMinutes = voicePricingInformation?.sessions || 0
   let extraMinutes = 0
-  const orgWalletAmount = voicebotPlan.walletSessions || 0
+  const orgWalletMinutes = voicebotPlan.walletSessions || 0
 
   if(currentDate > voicebotPlan.expiryDate) {
     await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
@@ -75,12 +75,12 @@ export default defineEventHandler(async (event) => {
   }
 
   if(usedCallMinutes >= maxCallMinutes) {
-    if(orgWalletAmount > 0) {
+    if(orgWalletMinutes > 0) {
       extraMinutes = Math.max(usedCallMinutes - maxCallMinutes, 0)
       const dbExtraMinutes = Math.max(extraMinutes - voicebotPlan.extraSessions, 0)
       if(dbExtraMinutes > 0) {
-        const extraMinutesAmount = dbExtraMinutes * voicePricingInformation?.extraSessionCost!;
-        const currentWallet = Math.max(orgWalletAmount - extraMinutesAmount, 0)
+        // const extraMinutesAmount = dbExtraMinutes * voicePricingInformation?.extraSessionCost!;
+        const currentWallet = Math.max(orgWalletMinutes - dbExtraMinutes, 0)
         await updateOrgWallet(organizationId, "voice", currentWallet, extraMinutes)
         if(currentWallet <= 0) {
           await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")

@@ -80,7 +80,7 @@ export default defineEventHandler(async (event) => {
       // }, 0);
      
       const addonInfo: any = pricingInformation?.addons?.find((j: any) => j.name === apiResponseData.addonCode);
-      const addons = botType === "chat" ? addonInfo.sessions : addonInfo.amount
+      const addons = addonInfo.sessions
 
       const existingWallet = await db.query.orgSubscriptionSchema.findFirst({
        where: and(
