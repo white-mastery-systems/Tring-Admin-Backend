@@ -1,4 +1,6 @@
 import { logger } from "../logger";
+import { getAllWhatsappIntegration } from "./db/integrations";
+import { getOrgSubscriptionStatus, updateOrgWhatsappSessions } from "./db/organization";
 
 interface ConversationDataPoint {
   start: number;
@@ -112,4 +114,32 @@ function getLast24HourTimestamp(): { start: number; end: number } {
     start: startTimestamp,
     end: currentTimestamp,
   };
+}
+
+
+export const orgTotalWhatappSessions = async () => {
+  try {
+    const allAdminWhatsappIntegrations = await getAllWhatsappIntegration()
+
+    logger.error("No whatsapp intergrations are found for calculationg whatsapp session")
+    if(!allAdminWhatsappIntegrations.length) {
+      return
+    }
+
+    allAdminWhatsappIntegrations.forEach(async (integration: any) => {
+      try {
+        const data = await getConversationCount(integration.metadata.wabaId, integration.metadata.access_token)
+        if(data) {
+         const newWhatsappSessionCount = data?.total_conversations || 0
+         const orgSubscriptionDetail = await getOrgSubscriptionStatus(integration.org_id, "chat")
+         const totalWhatsappSessionCount = orgSubscriptionDetail?.whatsappUsedSessions || 0 + newWhatsappSessionCount 
+         await updateOrgWhatsappSessions(integration.org_id, totalWhatsappSessionCount)
+        }
+      } catch (error) {
+        logger.error(`Whatsapp getConversationCount API, Error: ${JSON.stringify(error)}`)
+      }
+    })
+  } catch (error: any) {
+    logger.error(`Error: orgTotalWhatappSessions, ${JSON.stringify(error.message)}`)
+  }
 }
