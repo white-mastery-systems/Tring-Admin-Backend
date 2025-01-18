@@ -102,6 +102,10 @@
       value: "site_visit",
     },
     {
+      label: "Schedule Appointment",
+      value: "schedule_appointment",
+    },
+    {
       label: "Images",
       value: "images",
     },
