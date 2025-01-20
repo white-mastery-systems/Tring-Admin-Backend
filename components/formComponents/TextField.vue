@@ -36,11 +36,11 @@
         " @input="emit('input', 'change')" :placeholder="placeholder" :disabled="disabled" :id="replacedId"
         :class="errorMessage ? 'border-red-500' : 'border-input'" v-model="value"
         :type="type === 'phone' ? 'text' : type || 'text'" :maxlength="textAreaMaxLength" />
-        <span v-if="textAreaMaxLength" class="mt-2 text-right text-xs text-gray-400">
-          {{value.length}}/{{textAreaMaxLength}}
-        </span>
+      <span v-if="textAreaMaxLength" class="mt-2 text-right text-xs text-gray-400">
+        {{value.length}}/{{textAreaMaxLength}}
+      </span>
     </div>
-      
+
     <div v-else class="flex flex-col">
       <UiInput :class="
           cn(
@@ -80,9 +80,9 @@
           }
         " :disabled="disabled" :placeholder="placeholder" :id="replacedId" v-model="value" :type="type || 'text'"
         :accept="accept || ''" @input="emit('input', $event)" :maxlength="textFieldMaxLength" />
-         <span v-if="textFieldMaxLength" class="mt-2 text-right text-xs text-gray-400">
-          {{ value.length }}/{{ textFieldMaxLength }}
-        </span>
+      <span v-if="textFieldMaxLength" class="mt-2 text-right text-xs text-gray-400">
+        {{ value.length }}/{{ textFieldMaxLength }}
+      </span>
     </div>
 
     <!-- :maxlength="props?.type === 'phone' ? 10 : ''" -->
@@ -104,11 +104,18 @@
       ">
       <slot name="endSlot"></slot>
     </div>
+    <div class="flex justify-between items-center">
+      <span :class="[
+          'text-xs text-gray-500',
+          errorMessage ? 'font-medium text-red-500' : '',
+        ]">{{ errorMessage ?? helperText }}</span>
+      <div v-if="name === 'otp'" class=" text-[#FFBC42] text-[13px] underline self-end cursor-pointer mt-3"
+        :class="{ 'cursor-not-allowed': isResendDisabled }" @click="resendOTP" :disabled="isResendDisabled">
+        <span v-if="!isResendDisabled">Resend OTP</span>
+        <span v-else>Resend available in {{ countdownTime }}</span>
+      </div>
 
-    <span :class="[
-        'text-xs text-gray-500',
-        errorMessage ? 'font-medium text-red-500' : '',
-      ]">{{ errorMessage ?? helperText }}</span>
+    </div>
   </div>
 </template>
 
@@ -153,6 +160,10 @@
     },
   );
 
+  const isResendDisabled = ref(false)
+  const userDetails = ref()
+  const countdownTime = ref(0)
+
   const replacedId = ref(props.label ?? props.name);
   const { value, errorMessage }: { value: any; errorMessage: any } =
     !props.validation
@@ -174,4 +185,44 @@
     //   value.value = value.value.replace(/.(?=.{4})/g, "*")
     // }
   });
+onMounted(() => {
+  const storedDetails = localStorage.getItem('userDetails');
+  // userDetails.value = null
+  if (storedDetails) {
+    try {
+      userDetails.value = JSON.parse(storedDetails); // Parse string into object
+    } catch (error) {
+      console.error("Error parsing storedDetails", error);
+    }
+  }
+});
+
+
+const resendOTP = () => {
+  if (isResendDisabled.value) return
+  const getUserEmail = {
+    email: userDetails.value?.email
+  }
+
+  if (!getUserEmail) {
+    console.error("User email not found")
+    return
+  }
+  authHandlers.resendOtpVerification(getUserEmail)
+  value.value = ""
+  countDownTimer()
+  isResendDisabled.value = true
+};
+
+const countDownTimer = () => {
+  countdownTime.value = 40
+  const countdownInterval = setInterval(() => {
+    countdownTime.value--;
+
+    if (countdownTime.value < 0) {
+      clearInterval(countdownInterval);
+      isResendDisabled.value = false;
+    }
+  }, 1000)
+} 
 </script>

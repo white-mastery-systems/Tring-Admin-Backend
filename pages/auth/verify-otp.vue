@@ -10,16 +10,16 @@
 
       <form @submit.prevent="onSubmit" class="space-y-5">
         <TextField type="text" name="otp" label="OTP Verification" placeholder="Enter the OTP sent to your email ID"
-          required disableCharacters />
+          required disableCharacters helperText="OTP has been sent to your mail ID" />
+          <!-- <div class=" text-[#FFBC42] text-[14px] underline self-end cursor-pointer mt-3"
+            :class="{ 'cursor-not-allowed': isResendDisabled }" @click="resendOTP" :disabled="isResendDisabled">
+            <span v-if="!isResendDisabled">Resend OTP</span>
+            <span v-else>Resend available in {{ countdownTime }}</span>
+          </div> -->
         <UiButton type="submit" class="flex justify-center w-full bg-[#424bd1] h-[45px] hover:bg-[#424bd1]">
           Continue
         </UiButton>
       </form>
-      <div class=" text-[#FFBC42] text-[14px] underline self-end cursor-pointer mt-3"
-        :class="{ 'cursor-not-allowed': isResendDisabled }" @click="resendOTP" :disabled="isResendDisabled">
-        <span v-if="!isResendDisabled">Resend OTP</span>
-        <span v-else>Resend available in {{ countdownTime }}</span>
-      </div>
       <!-- <div class="submit-btn-align">
         <button class="font-bold" type="submit" @click="authHandlers.login(loginData)">
           Continue
@@ -91,32 +91,4 @@ const onSubmit = handleSubmit((value: any) => {
   // Call OTP verification handler
   authHandlers.OtpVerification(ottPayload);
 });
-
-const resendOTP = () => {
-  if (isResendDisabled.value) return
-  const getUserEmail = {
-    email: userDetails.value?.email
-  }
-
-  if (!getUserEmail) {
-    console.error("User email not found")
-    return
-  }
-  authHandlers.resendOtpVerification(getUserEmail)
-  values.otp = ""
-  countDownTimer()
-  isResendDisabled.value = true
-};
-
-const countDownTimer = () => {
-  countdownTime.value = 40
-  const countdownInterval = setInterval(() => {
-    countdownTime.value--;
-
-    if (countdownTime.value < 0) {
-      clearInterval(countdownInterval);
-      isResendDisabled.value = false;
-    }
-  }, 1000)
-} 
 </script>

@@ -22,6 +22,21 @@ export const accountSchema = toTypedSchema(
       username: z
         .string({ required_error: "Name is required" })
         .min(2, "Name must be at least 2 characters."),
+      name: z
+        .string({ required_error: "Name is required" })
+        .min(2, "Name must be at least 2 characters."),
+      industry: z
+        .string({ required_error: "Industry is required" })
+        .min(2, "Industry must be provided."),
+      gst: z
+        .string()
+        .max(15, "GST number must be 15 characters")
+        .min(15, "GST number must be 15 characters")
+        .optional()
+        .refine((val) => (val?.length > 0 ? val?.length === 15 : false), {
+          message: "GST number must be exactly 15 characters if provided",
+        }),
+      logo: z.object({}).optional(),
       email: z
         .string({ required_error: "Email is required" })
         .email()
@@ -43,7 +58,7 @@ export const accountSchema = toTypedSchema(
         businessName: z
             .string({ required_error: "Business name is required" })
             .min(1, "Business name is required"),
-        role: z.string({ required_error: "Street Name is required" }),
+        role: z.string().optional(),
         otherRole: z.string().optional().default(""),
       }),
       data: z.string().optional().default(""),

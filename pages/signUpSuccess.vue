@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import SignUpSuccessIcon from '~/components/icons/SignUpSuccessIcon.vue';
-
 definePageMeta({
   layout: "sign-up-success",
 });
+
+const proceedLogin = async () => {
+  (await useUser()).refreshUser();
+};
+
 </script>
 
 <template>
@@ -21,14 +25,26 @@ definePageMeta({
       </div>
 
       <!-- Thank You message -->
-      <div class="font-bold text-[#424BD1] text-[28px] pt-4">
-        Thank You!
+      <div class="font-black text-[#424BD1] text-[32px] pt-4">
+        Welcome to TRING AI
       </div>
 
       <!-- Success message -->
-      <div class="font-medium text-[18px]">
-        Your account has been created successfully. You can log in with your login credentials.
+      <div class="font-bold text-[16px] text-[#333333]">
+        <!-- Your account has been created successfully. You can log in with your login credentials. -->
+        Your Account is Created Successful
       </div>
+      <!-- Success message -->
+      <div class="text-[16px] text-[#8A8A8A] my-6 w-[60%] text-center font-normal">
+        <!-- Your account has been created successfully. You can log in with your login credentials. -->
+        You can create a chatbot which consists of 50 free chat sessions on your current plan
+      </div>
+      <!-- <span>
+        Go to my dashboard
+      </span> -->
+        <UiButton class="bg-[#ffbc42] hover:bg-[#ffbc42] font-semibold text-[16px]" @click="proceedLogin()">
+          Proceed to Dashboard
+        </UiButton>
     </div>
   </div>
 </template>

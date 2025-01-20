@@ -21,15 +21,7 @@ export const useUser = async () => {
         const storedUser: any = localStorage.getItem("user");
         user.value = storedUser ? JSON.parse(storedUser) : null;
         localStorage.setItem("user", JSON.stringify(data));
-
-        const orgBilling = await $fetch("/api/org/subscriptionPlans");
-        const isAnyPlanFree = orgBilling.every((plan: any) => plan.planCode.includes("_free"))
-        
-        if (isAnyPlanFree) {
-          navigateTo("/billing");
-        } else {
-          navigateTo("/");
-        }
+        navigateTo("/");
       } else {
         localStorage.clear();
         navigateTo("/auth/sign-in");

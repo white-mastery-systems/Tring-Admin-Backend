@@ -242,41 +242,39 @@ import { toast } from "vue-sonner";
     },
     {
       _id: 2,
-      bot: "CRM Configuration",
-      helperText: "Add CRM to manage your leads effectively",
-      routeName: "bot-management-chat-bot-id-crm-config",
+      bot: "Document Management",
+      helperText: "Knowledge base,Training data etc...",
+      routeName: "bot-management-chat-bot-id-documents",
     },
     {
       _id: 3,
-      bot: "Communication Channel Configuration",
-      helperText: "Add Communication channel to manage your leads effectively",
-      routeName: "bot-management-chat-bot-id-communication-channel-config",
-    },
-
-    {
-      _id: 4,
       bot: "Bot Configuration",
       helperText: "Name,Description,Notes etc...",
       routeName: "bot-management-chat-bot-id-config",
     },
     {
-      _id: 5,
-      bot: "Document Management",
-      helperText: "Knowledge base,Training data etc...",
-      routeName: "bot-management-chat-bot-id-documents",
-    },
-
-    {
-      _id: 6,
-      bot: "Intent Management",
+      _id: 4,
+      bot: "Agent Actions",
       helperText: "Add your intents Eg: Location Virtual Tour etc...",
       routeName: "bot-management-chat-bot-id-intent-management",
     },
     {
-      _id: 7,
-      bot: "Dynamic Form",
+      _id: 5,
+      bot: "Custom Actions",
       helperText: "Define the fields for your dynamic form. Each field should include details like type, label, placeholder, and whether it's required.",
       routeName: "bot-management-chat-bot-id-dynamic-form",
+    },
+    {
+      _id: 6,
+      bot: "CRM Configuration",
+      helperText: "Add CRM to manage your leads effectively",
+      routeName: "bot-management-chat-bot-id-crm-config",
+    },
+    {
+      _id: 7,
+      bot: "Communication Channel Configuration",
+      helperText: "Add Communication channel to manage your leads effectively",
+      routeName: "bot-management-chat-bot-id-communication-channel-config",
     },
     {
       _id: 8,
