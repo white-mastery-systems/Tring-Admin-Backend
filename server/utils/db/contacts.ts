@@ -9,7 +9,7 @@ const db = useDrizzle();
 const zodChatImportContacts = z.object({
   "First Name": z.string().min(1, "First Name is required"),
   "Last Name": z.string().optional(),
-  "Email": z.string().email("Invalid email format"),
+  "Email": z.string().email("Invalid email format").optional(),
   "Country Code": z.string().regex(/^\+?\d{1,4}$/, "Invalid country code format"),
   "Number": z.any()
 });
@@ -18,8 +18,8 @@ const zodVoiceImportsContacts = z.object({
   "Name": z.string().min(1, "Name is required"),
   "Phone": z.any(),
   "Country Code": z.string(),
-  "Metadata": z.string(),
-  "Verification Id": z.string(),
+  "Metadata": z.string().optional(),
+  "Verification Id": z.string().optional(),
 });
 
 // Define a schema for an array of contacts

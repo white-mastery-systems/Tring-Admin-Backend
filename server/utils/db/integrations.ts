@@ -118,3 +118,12 @@ export const deleteIntegration = async (integrationId: string) => {
       .returning()
   )[0];
 };
+
+export const getAllWhatsappIntegration = async() => {
+  return await db.query.integrationSchema.findMany({
+    where: and(
+      eq(integrationSchema.crm, "whatsapp"),
+      eq(integrationSchema.type, "whatsapp")
+    )
+  })
+}
