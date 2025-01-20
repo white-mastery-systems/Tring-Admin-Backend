@@ -277,6 +277,8 @@ export default defineEventHandler(async (event) => {
     <p>Phone Number: ${body?.botUser?.countryCode}${body?.botUser?.mobile}</p>
     <p>Bot's Name: ${botDetails?.name}</p>
     ${botDetails?.metadata?.country ? `<p>Location: ${botDetails?.metadata?.country} </p>` : ""} 
+    <p>Chat Link: ${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}</p>
+    <p>Whatsapp Link: https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile} </p>
   </div>
   
   <p>You can follow up with the lead at your earliest convenience to ensure timely engagement.</p>
