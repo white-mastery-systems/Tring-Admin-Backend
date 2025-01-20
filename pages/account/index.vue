@@ -1,28 +1,29 @@
 <template>
   <Page title="My Account" :disable-back-button="true">
     <UiTabs :default-value="tabValue" class="w-full self-start">
-      <UiTabsList class="grid w-full max-w-[100%] sm:max-w-[100%] md:max-w-[50%] lg:max-w-[50%] xl:max-w-[50%] grid-cols-3">
+      <UiTabsList
+        class="grid w-full max-w-[100%] sm:max-w-[100%] md:max-w-[50%] lg:max-w-[50%] xl:max-w-[50%] grid-cols-2">
         <UiTabsTrigger value="PersonalDetails" @click="selectedChannel('PersonalDetails')">
-          <span class="sm:hidden">Personal</span>
-          <span class="hidden sm:inline">Personal Details</span>
+          <!-- <span class="sm:hidden">profile</span> -->
+          <span>Profile</span>
           <!-- Personal Details -->
         </UiTabsTrigger>
-        <UiTabsTrigger value="privacy" @click="selectedChannel('privacy')">
-          Privacy
-        </UiTabsTrigger>
-        <UiTabsTrigger value="companyDetails" @click="selectedChannel('companyDetails')">
+        <!-- <UiTabsTrigger value="companyDetails" @click="selectedChannel('companyDetails')">
           <span class="sm:hidden">Company</span>
           <span class="hidden sm:inline">Company Details</span>
+        </UiTabsTrigger> -->
+        <UiTabsTrigger value="security" @click="selectedChannel('security')">
+          Security
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="PersonalDetails">
         <PersonalDetails />
       </UiTabsContent>
-      <UiTabsContent value="privacy">
-        <PrivacyDetails />
-      </UiTabsContent>
-      <UiTabsContent value="companyDetails">
+      <!-- <UiTabsContent value="companyDetails">
         <CompanyDetails />
+      </UiTabsContent> -->
+      <UiTabsContent value="security">
+        <PrivacyDetails />
       </UiTabsContent>
     </UiTabs>
     <template #actionButtons>
@@ -53,8 +54,8 @@ definePageMeta({
   const tabValue = ref("PersonalDetails");
   if (route?.query?.tab === "company-details") {
     tabValue.value = "companyDetails";
-  } else if (route?.query?.tab === "privacy") {
-    tabValue.value = "privacy";
+  } else if (route?.query?.tab === "security") {
+    tabValue.value = "security";
   } else if (route?.query?.tab === "personal-details") {
     tabValue.value = "PersonalDetails";
   }
@@ -80,8 +81,8 @@ definePageMeta({
     let queryValue ;
     if (value === "companyDetails") {
       queryValue = "company-details";
-    } else if (value === "privacy") {
-      queryValue = "privacy";         
+    } else if (value === "security") {
+      queryValue = "security";         
     }else if (value === "PersonalDetails") {
       queryValue = "personal-details";
     }

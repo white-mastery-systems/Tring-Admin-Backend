@@ -121,7 +121,7 @@
       </div> -->
       <div class="mt-4 flex items-center justify-center gap-1 font-medium">
         <span>Already have an account?</span>
-        <NuxtLink to="/auth/sign-in" class="cursor-pointer text-[#424bd1] underline underline-offset-2">Sign in
+        <NuxtLink to="/auth/sign-in" class="cursor-pointer text-[#424bd1] underline underline-offset-2">Log in
         </NuxtLink>
       </div>
       <!-- </div> -->

@@ -1,6 +1,10 @@
 <template>
   <div class="min-h-screen overflow-auto">
     <form @submit="handleAccountUpdate" class="flex flex-col gap-2 p-1">
+      <div class="w-[49%] sm:w-[49%] md:w-[12%] lg:w-[12%] xl:w-[12%]">
+        <FileUpload @change="handleLogoChange" name="logo" label="Upload Image" :required="true" :accept="'image/*'"
+          :url="values?.logo?.url" :fileType="'image'" :class="'h-24 cursor-pointer'" />
+      </div>
       <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
         Personal Information
       </h3>
@@ -22,9 +26,28 @@
         <!-- {{ values }} -->
         <div class="w-full">
           <SelectField name="metadata.role" label="Role" placeholder="Select Role"
-            :options="roles.map((role) => ({ label: role, value: role }))" :required="true" />
+            :options="roles.map((role) => ({ label: role, value: role }))" />
 
-          <TextField v-if="values.metadata?.role === 'Other'" type="text" name="metadata.otherRole" :required="true" />
+          <TextField v-if="values?.metadata?.role === 'Other'" type="text" name="metadata?.otherRole"
+            :required="true" />
+        </div>
+      </div>
+      <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
+        Company Information
+      </h3>
+      <div class="grid grid-cols-2 gap-2">
+        <TextField helperText="Goods Service Tax" type="text" name="name" label="Company Name"
+          placeholder="Enter your Company Name" :required="true" />
+
+        <SelectField name="industry" label="Industry" placeholder="Select Role"
+          :options="industry.map((role) => ({ label: role, value: role }))" :required="true" />
+        <div v-if="values.industry === 'Other'">
+          <TextField type="text" name="otherRole" label="Other Industry" :required="true" />
+        </div>
+
+        <div class="mt-2">
+          <TextField type="text" name="gst" label="GST" helperText="Enter your 15-digit GSTIN"
+            placeholder="Enter Your Gst" />
         </div>
       </div>
       <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
@@ -64,61 +87,114 @@
 </template>
 
 <script setup lang="ts">
-  import { accountSchema } from "~/validationSchema/account/accountSchema";
+import { accountSchema } from "~/validationSchema/account/accountSchema";
+import { useOrgDetailsStore } from "~/store/orgDetailsStore";
 
-  const {
-    errors,
-    setErrors,
-    setFieldValue,
-    handleSubmit,
-    defineField,
-    values,
-    resetForm,
-  } = useForm({
-    validationSchema: accountSchema,
-    initialValues: {
-      countryCode: "+91",
-    },
-  });
+const industry = [
+  "Government Sectors",
+  "Finance & Banking",
+  "Real Estate",
+  "Healthcare",
+  "E-commerce",
+  "Energy & Utilities",
+  "Telecommunications",
+  "Travel & Hospitality",
+  "Logistics",
+  "Education",
+  "Other",
+];
+const useOrgDetails = useOrgDetailsStore();
 
-  const isLoading = ref(false);
-  const { user, refreshUser }: { user: any; refreshUser: any } =
-    await useUser();
+const {
+  errors,
+  setErrors,
+  setFieldValue,
+  handleSubmit,
+  defineField,
+  values,
+  resetForm,
+} = useForm({
+  validationSchema: accountSchema,
+  initialValues: {
+    countryCode: "+91",
+  },
+});
+const logoData = ref("");
+const isLoading = ref(false);
+const { user, refreshUser }: { user: any; refreshUser: any } =
+  await useUser();
+// const { orgDetails } = await fetch("/api/org", {
+//   method: "GET",
+// });
+const { orgDetails } = await $fetch('/api/org')
+console.log(orgDetails, "orgDetails")
+console.log(user.value, "user -- user")
+setFieldValue("countryCode", user?.value?.countryCode ?? "+91");
+setFieldValue("username", user?.value?.username ?? "");
+setFieldValue("email", user?.value?.email ?? "");
+setFieldValue("mobile", user?.value?.mobile ?? "");
+setFieldValue("address.street", user?.value?.address?.street ?? "");
+setFieldValue("address.city", user?.value?.address?.city ?? "");
+setFieldValue("address.state", user?.value?.address?.state ?? "");
+setFieldValue("address.country", user?.value?.address?.country ?? "");
+setFieldValue("address.zipCode", user?.value?.address?.zipCode ?? "");
+setFieldValue("metadata.role", user?.value?.metadata?.role ?? "");
+setFieldValue("metadata.otherRole", user?.value?.metadata?.otherRole ?? "");
+setFieldValue("metadata.businessName", user?.value?.metadata?.businessName ?? "");
+setFieldValue("name", orgDetails?.name ?? "");
+setFieldValue("industry", orgDetails?.metadata?.industry ?? "");
+setFieldValue("logo", orgDetails?.logo ?? "");
+if (orgDetails?.metadata?.industry === "Other") {
+  setFieldValue("otherRole", orgDetails?.metadata?.otherRole ?? "");
+}
+if (orgDetails?.metadata?.gst)
+  setFieldValue("gst", orgDetails?.metadata?.gst ?? "");
+// if (orgDetails?.metadata?.industry === "Other") {
+// }
+const handleLogoChange = async (event: any) => {
+  logoData.value = event[0];
 
-  setFieldValue("countryCode", user?.value?.countryCode ?? "+91");
-  setFieldValue("username", user?.value?.username ?? "");
-  setFieldValue("email", user?.value?.email ?? "");
-  setFieldValue("mobile", user?.value?.mobile ?? "");
-  setFieldValue("address.street", user?.value?.address?.street ?? "");
-  setFieldValue("address.city", user?.value?.address?.city ?? "");
-  setFieldValue("address.state", user?.value?.address?.state ?? "");
-  setFieldValue("address.country", user?.value?.address?.country ?? "");
-  setFieldValue("address.zipCode", user?.value?.address?.zipCode ?? "");
-  setFieldValue("metadata.role", user?.value?.metadata?.role ?? "");
-  setFieldValue("metadata.otherRole", user?.value?.metadata?.otherRole ?? "");
-  setFieldValue("metadata.businessName", user?.value?.metadata.businessName ?? "");
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    setFieldValue("logo", { url: e.target.result });
+  };
+  reader.readAsDataURL(logoData.value);
+};
 
-  const handleAccountUpdate = handleSubmit(async (values: any) => {
-    isLoading.value = true;
-    try {
-      await $fetch("/api/user", { method: "PUT", body: values });
-      refreshUser();
-      localStorage.setItem("user", JSON.stringify(user.value));
-      toast.success("Account updated successfully");
-    } catch (e) {
-      console.error(e);
-      toast.error("Failed to update account, please try again");
-    } finally {
-      isLoading.value = false;
+const handleAccountUpdate = handleSubmit(async (value: any) => {
+  isLoading.value = true;
+  try {
+    if (logoData.value instanceof File) {
+      const formData = new FormData();
+      formData.append("files", logoData.value);
+      const [res] = await $fetch("/api/uploads", {
+        method: "POST",
+        body: formData,
+      });
+      setFieldValue("logo", res);
+      logoData.value = "";
     }
+    await $fetch("/api/user", { method: "PUT", body: {...value, logo: values.logo} });
+    // localStorage.setItem("orgDetails", JSON.stringify(orgData));
+    // useOrgDetails.updateValues();
+    refreshUser();
+    localStorage.setItem("user", JSON.stringify(user.value));
+    toast.success("Account updated successfully");
+  } catch (e) {
+    console.log(e)
+    // console.error(e);
+    // toast.error("Failed to update account, please try again");
+  } finally {
     isLoading.value = false;
-  });
+  }
+  isLoading.value = false;
+});
 
-  const roles = [
-    "Business Owner",
-    "Product Manager",
-    "Marketing Manager",
-    "Developer",
-    "Other",
-  ];
+const roles = [
+  "Business Owner",
+  "Product Manager",
+  "Marketing Manager",
+  "Developer",
+  "Other",
+];
 </script>
