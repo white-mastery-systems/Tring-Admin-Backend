@@ -133,7 +133,7 @@ const exportReadyColumns = computed(() => {
   return [
     "Name",
     "Metadata",
-    // "Country Code",
+    "Country Code",
     "Phone",
     "Verification Id",
   ]
@@ -245,8 +245,9 @@ const exportData = async () => {
         return {
           name: contacts.contacts.name ?? "",
           metadata: contacts.contacts.metadata ?? "",
-          // countryCode: contacts.contacts.countryCode ?? "+91",
-          phone: ((contacts.contacts.countryCode ?? "+91") + contacts.contacts.phone) ?? "",
+          countryCode: contacts.contacts.countryCode ?? "+91",
+          phone: contacts.contacts.phone ?? "",
+          // phone: ((contacts.contacts.countryCode ?? "+91") + contacts.contacts.phone) ?? "",
           verificationId: contacts.contacts.verificationId ?? "",
         }
       } else {
