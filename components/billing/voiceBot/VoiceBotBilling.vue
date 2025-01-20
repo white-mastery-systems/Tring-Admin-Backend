@@ -70,7 +70,7 @@ const props = defineProps({
       </div>
       <div
         class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
-        <span> Call minutes available in wallet </span>
+        <span> Available wallet balance </span>
         <span class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]">
           {{ usage?.wallet_balance }}
         </span>

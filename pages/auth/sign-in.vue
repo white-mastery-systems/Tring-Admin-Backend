@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-full w-full flex-col items-center justify-center">
     <div class="w-[90%] px-0 pb-[20px] font-bold text-[#424bd1] lg:w-[80%] lg:px-6">
-      <span> Let’s Get Started </span>
+      <span> Log in to your account </span>
     </div>
     <div class="flex w-[90%] flex-col px-0 lg:w-[80%] lg:px-6">
 
@@ -20,23 +20,23 @@
             </TextField>
 
           </div>
-
+          <div class="mt-2 mb-4 flex  justify-end gap-1 font-medium">
+            <!-- underline underline-offset-2 -->
+            <NuxtLink to="/auth/forgot-password" class="cursor-pointer text-[#424bd1] font-normal">
+              Forgot Password?
+            </NuxtLink>
+          </div>
 
           <UiButton type="submit" class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
-            :loading="isLoading">Sign in
+            :loading="isLoading"> Continue
           </UiButton>
         </div>
       </form>
 
-      <div class="mt-4 flex  justify-end gap-1 font-medium">
-        <NuxtLink to="/auth/forgot-password" class="cursor-pointer text-[#424bd1] underline underline-offset-2">
-          Forgot Password
-        </NuxtLink>
-      </div>
-      <div class="mt-4 flex items-center justify-center gap-1 font-medium">
+      <div class="mt-4 flex items-center justify-center gap-1 font-normal">
         <span>Don’t have an account?</span>
-        <NuxtLink to="/auth/sign-up" class="cursor-pointer text-[#424bd1] underline underline-offset-2">
-          Sign Up
+        <NuxtLink to="/auth/sign-up" class="cursor-pointer text-[#424bd1] underline underline-offset-2 font-medium">
+          Sign up
         </NuxtLink>
       </div>
       <!-- </div> -->
