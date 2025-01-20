@@ -11,11 +11,16 @@ const bodyValidator = z
     address: z.record(z.any()).optional(),
     mobile: z.string().optional(),
     countryCode: z.string().optional(),
+    name: z.string().min(1).optional(),
+    industry: z.string().min(1).optional(),
+    logo: z.record(z.any()).optional(),
+    gst: z.string().optional(),
+    otherRole: z.string().optional()
   })
   .passthrough();
 
 export default defineEventHandler(async (event) => {
-  await isOrganizationAdminHandler(event);
+  const organizationId = await isOrganizationAdminHandler(event) as string
   const userId = event.context.user?.id as string
 
   const body = await isValidBodyHandler(event, bodyValidator);
@@ -61,6 +66,17 @@ export default defineEventHandler(async (event) => {
     countryCode: body.countryCode
   };
 
+  const updateOrg = {
+    name: body?.name,
+    logo: body?.logo,
+    metadata: {
+      industry: body?.industry,
+      otherRole: body?.otherRole,
+      gst: body?.gst
+    }
+  }
+
+  await updateOrganization(organizationId, updateOrg)
   const update = await updateUser(user.id, updatedUser);
   // console.log({ update })
   if(update && update.customerId) {
