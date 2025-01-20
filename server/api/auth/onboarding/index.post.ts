@@ -5,25 +5,9 @@ const db = useDrizzle()
 
 const bodyValidationSchema = z.object({
   name: z.string().min(1),
-  role: z.string().min(1),
-  otherRole: z.string().optional(),
   companyName: z.string().min(1),
-  industry: z.string().min(1),
-  industryOtherRole: z.string().optional(),
-  avgTraffic: z.string().min(1),
-  employeeCount: z.string().min(1),
-  planToBuild: z.string(),
-  referralSource: z.string(),
-  estimatedMonthlyBudget: z.string(),
-  discoverySource: z.string(),
-  // businessName: z.string(),
-  country: z.string(),
   mobile: z.string(),
   countryCode: z.string(),
-  otherPlan: z.string().optional(),
-  otherReferralSource: z.string().optional(),
-  otherEstimatedMonthlyBudget: z.string().optional(),
-  otherDiscoverySource: z.string().optional(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -37,35 +21,14 @@ export default defineEventHandler(async (event) => {
     );
 
   const org = await createOrganization({
-    name: body.companyName,
-    metadata: {
-      industry: body.industry,
-      avgTraffic: body.avgTraffic,
-      employeeCount: body.employeeCount,
-      otherRole: body?.industryOtherRole,
-      planToBuild: body?.planToBuild,
-      referralSource: body?.referralSource,
-      estimatedMonthlyBudget: body?.estimatedMonthlyBudget,
-      discoverySource: body?.discoverySource,
-      otherPlan: body?.otherPlan,
-      otherReferralSource: body?.otherReferralSource,
-      otherEstimatedMonthlyBudget: body?.otherEstimatedMonthlyBudget,
-      otherDiscoverySource: body?.otherDiscoverySource
-    },
+    name: body.companyName
   });
 
   const updatedUser = await updateUser(userId, {
     username: body.name,
     organizationId: org.id,
     countryCode: body?.countryCode,
-    mobile: body?.mobile,
-    metadata: {
-      role: body.role,
-      otherRole: body?.otherRole
-    },
-    address: {
-      country: body?.country
-    }
+    mobile: body?.mobile
   });
 
   // create default buckets and free-plan subscription
@@ -95,8 +58,6 @@ export default defineEventHandler(async (event) => {
           <p><strong>User Details:</strong></p>
           <p>Name: ${updatedUser.username}</p>
           <p>Email: ${updatedUser.email}</p>
-          <p>Role: ${updatedUser?.metadata?.role || updatedUser?.metadata?.otherRole}</p>
-          <p>Industry: ${org.metadata?.industry || org?.metadata?.otherRole }</p>
           </div>
         <p>Best,<br>support@tringlabs.ai</p>
       </div>`
