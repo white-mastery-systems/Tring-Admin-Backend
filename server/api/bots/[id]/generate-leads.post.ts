@@ -10,7 +10,6 @@ import {
   updateNotesInZohoBigin,
 } from "~/server/utils/zoho/modules";
 
-
 export default defineEventHandler(async (event) => {
   // const userId = event.context.user?.id as string;
   const generateLeadsValidation = z.object({
@@ -165,7 +164,8 @@ export default defineEventHandler(async (event) => {
         };
         const data = await createWhatsAppMessage(
           whatsappPayload,
-          `${body?.botUser?.countryCode.split("+")[1]}` + botIntegration?.integration?.metadata?.phoneNumber,
+          `${body?.botUser?.countryCode.split("+")[1]}` +
+            botIntegration?.integration?.metadata?.phoneNumber,
           body?.note,
         );
       }
@@ -230,8 +230,8 @@ export default defineEventHandler(async (event) => {
       if (botIntegration?.metadata?.channelId) {
         const payload = {
           "First Name": body?.botUser?.name,
-          "Email": body?.botUser?.email,
-          "Mobile": `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
+          Email: body?.botUser?.email,
+          Mobile: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           "Bot Name": botDetails?.name,
           "Chat Link": `${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}`,
           "Whatsapp Link": `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
@@ -277,8 +277,19 @@ export default defineEventHandler(async (event) => {
     <p>Phone Number: ${body?.botUser?.countryCode}${body?.botUser?.mobile}</p>
     <p>Bot's Name: ${botDetails?.name}</p>
     ${botDetails?.metadata?.country ? `<p>Location: ${botDetails?.metadata?.country} </p>` : ""} 
-    <p>Chat Link: ${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}</p>
-    <p>Whatsapp Link: https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile} </p>
+    <p>
+  Chat Link: 
+  <a href="${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}">
+    ${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}
+  </a>
+</p>
+<p>
+  WhatsApp Link: 
+  <a href="https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}">
+    https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}
+  </a>
+</p>
+
   </div>
   
   <p>You can follow up with the lead at your earliest convenience to ensure timely engagement.</p>
