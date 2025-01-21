@@ -3,7 +3,8 @@
     <form @submit="handleAccountUpdate" class="flex flex-col gap-2 p-1">
       <div class="w-[49%] sm:w-[49%] md:w-[12%] lg:w-[12%] xl:w-[12%]">
         <FileUpload @change="handleLogoChange" name="logo" label="Upload Image" :required="true" :accept="'image/*'"
-          :url="values?.logo?.url" :fileType="'image'" :class="'h-24 cursor-pointer'" />
+          :url="values.logo.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
+          :helperText="'Only files up to 5MB can be uploaded.'" />
       </div>
       <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
         Personal Information
@@ -175,8 +176,9 @@ const handleAccountUpdate = handleSubmit(async (value: any) => {
       logoData.value = "";
     }
     await $fetch("/api/user", { method: "PUT", body: {...value, logo: values.logo} });
-    // localStorage.setItem("orgDetails", JSON.stringify(orgData));
-    // useOrgDetails.updateValues();
+    const { orgDetails } = await $fetch('/api/org')
+    localStorage.setItem("orgDetails", JSON.stringify(orgDetails));
+    useOrgDetails.updateValues();
     refreshUser();
     localStorage.setItem("user", JSON.stringify(user.value));
     toast.success("Account updated successfully");

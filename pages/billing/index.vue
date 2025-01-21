@@ -37,6 +37,7 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
+import { useFreeTrial } from '~/store/freeTrailStore'
 definePageMeta({
   middleware: "user",
 });
@@ -47,6 +48,7 @@ useHead({
 const route = useRoute();
 const router = useRouter();
 const config = useRuntimeConfig();
+const freeTrialPopup = useFreeTrial()
 // const filters: any = ref({
 //   type: "chat",
 // })
@@ -103,7 +105,7 @@ const usageDetails = computed(() => {
 
 const cancelModalState = ref(false);
 
-onMounted(() => {
+onMounted(async () => {
   // const back = router.options.history.state.back;
   // if (back) {
   //   try {
@@ -133,6 +135,10 @@ onMounted(() => {
       usageRefresh();
     }
   };
+    const orgBilling = await $fetch("/api/org/subscriptionPlans");
+    const isAnyPlanFree = orgBilling[1].planCode.includes("_free")
+    // const isAnyPlanFree = orgBilling.every((plan: any) => plan.planCode.includes("_free"))
+    if (isAnyPlanFree) freeTrialPopup.planFree = true
 });
 
 const handleOpenCancelModal = () => {

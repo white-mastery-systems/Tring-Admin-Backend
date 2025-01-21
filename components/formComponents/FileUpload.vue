@@ -2,35 +2,25 @@
   <div v-if="fileType === 'image'">
     <div v-if="!url?.length">
       <label
-        class="dark:hover:bg-bray-800 flex h-24 max-w-[130px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-      >
+        class="dark:hover:bg-bray-800 flex h-24 max-w-[130px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
         <span class="whitespace-nowrap">
           {{ props.label || "Upload File" }}
         </span>
-        <input
-          class="hidden"
-          type="file"
-          @change="handleFileChange"
-          :multiple="multiple"
-          :accept="accept"
-        />
+        <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept" />
       </label>
       <span class="text-sm text-gray-500" v-if="props?.helperText?.length">
         {{ props.helperText }}
       </span>
     </div>
 
-    <div v-else>
+    <div v-else class="min-w-[180px]">
       <label for="imageView">
         <img :class="class" :src="url" alt="" />
-        <input
-          class="hidden"
-          type="file"
-          @change="handleFileChange"
-          :multiple="multiple"
-          :accept="accept"
-          id="imageView"
-        />
+        <span class="text-[10px] text-gray-500" v-if="props?.helperText?.length">
+          {{ props.helperText }}
+        </span>
+        <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept"
+          id="imageView" />
       </label>
     </div>
     <span class="text-sm text-red-700" v-if="errorMessage">
@@ -40,23 +30,13 @@
   <div v-else-if="fileType === 'file'">
     <div>
       <label
-        class="dark:hover:bg-bray-800 flex h-24 max-w-[130px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-      >
+        class="dark:hover:bg-bray-800 flex h-24 max-w-[130px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
         <span class="whitespace-nowrap">
           {{ props.label || "Upload File" }}
         </span>
-        <input
-          class="hidden"
-          type="file"
-          @change="handleFileChange"
-          :multiple="multiple"
-          :accept="accept"
-        />
+        <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept" />
       </label>
-      <span
-        class="text-sm text-gray-500"
-        v-if="props?.helperText?.length && !url.length"
-      >
+      <span class="text-sm text-gray-500" v-if="props?.helperText?.length && !url.length">
         {{ props.helperText }}
       </span>
     </div>
@@ -67,18 +47,11 @@
   <div v-else-if="fileType === 'video'">
     <div v-if="!url?.length">
       <label
-        class="dark:hover:bg-bray-800 flex h-24 max-w-[130px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-      >
+        class="dark:hover:bg-bray-800 flex h-24 max-w-[130px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
         <span class="whitespace-nowrap">
           {{ props.label || "Upload File" }}
         </span>
-        <input
-          class="hidden"
-          type="file"
-          @change="handleFileChange"
-          :multiple="multiple"
-          :accept="accept"
-        />
+        <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept" />
       </label>
       <span class="text-sm text-gray-500" v-if="props?.helperText?.length">
         {{ props.helperText }}
@@ -88,24 +61,16 @@
     <div v-else>
       <label for="imageView">
         <video :class="class" :src="url" alt=""></video>
-        <input
-          class="hidden"
-          type="file"
-          @change="handleFileChange"
-          :multiple="multiple"
-          :accept="accept"
-          id="imageView"
-        />
+        <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept"
+          id="imageView" />
       </label>
     </div>
     <span class="text-sm text-red-700" v-if="errorMessage">
       {{ errorMessage }}
     </span>
   </div>
-  <p
-    v-if="selectedFileName && showFilename"
-    class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600"
-  >
+  <p v-if="selectedFileName && showFilename"
+    class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
     {{ selectedFileName }}
   </p>
 </template>
