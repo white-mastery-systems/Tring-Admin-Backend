@@ -130,7 +130,7 @@
       <span class="text-[12px] text-[#8a8a8a]">
         By Signing up, I Agree to Tring AI
       </span>
-      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="term-align text-[12px] underline">
+      <a target="_blank" href="https://tringlabs.ai/terms-conditions" class="term-align text-[12px] underline">
         Terms & Conditions
       </a>
     </div>
