@@ -9,7 +9,7 @@
       <!-- <div> -->
 
       <form @submit.prevent="onSubmit" class="space-y-5">
-        <TextField type="text" name="otp" label="OTP Verification" placeholder="Enter the OTP sent to your email ID"
+        <TextField type="text" name="otp" label="OTP Verification" placeholder="Enter your OTP"
           required disableCharacters helperText="OTP has been sent to your mail ID" />
           <!-- <div class=" text-[#FFBC42] text-[14px] underline self-end cursor-pointer mt-3"
             :class="{ 'cursor-not-allowed': isResendDisabled }" @click="resendOTP" :disabled="isResendDisabled">
@@ -31,7 +31,7 @@
       <span class="text-[#8A8A8A] text-[12px]">
         By Signing up, I Agree to Tring AI
       </span>
-      <a target="_blank" href="https://tringlabs.ai/terms-and-conditions" class="underline text-[12px]"> Terms &
+      <a target="_blank" href="https://tringlabs.ai/terms-conditions" class="underline text-[12px]"> Terms &
         Conditions </a>
     </div>
   </div>

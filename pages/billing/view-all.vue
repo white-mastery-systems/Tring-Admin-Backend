@@ -59,7 +59,7 @@
           ]" @click="choosePlan(list.plan_code)" :disabled="list.plan_code?.includes('chat_free')">
           {{
           orgBilling?.plan_code === list.plan_code
-          ? "Current Plan"
+          ? "Subscribed"
           : findPlanLevel({ list, current: orgBilling?.plan_code })
           }}
         </UiButton>
@@ -68,7 +68,8 @@
   </page>
 </template>
 <script setup lang="ts">
-  import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { useFreeTrial } from '~/store/freeTrailStore'
 
   definePageMeta({
     middleware: "admin-only",
@@ -79,6 +80,7 @@
   const storedUser = localStorage.getItem('user');
   const userDetails = ref(storedUser ? JSON.parse(storedUser) : null);
   const userLocationDetails = ref(await getLocationDetail())
+  const freeTrialPopup = useFreeTrial()
   
   const chatBillingVariation = ref([
     { 
@@ -385,18 +387,20 @@
   const findPlanLevel = ({ list, current }: { list: any; current: string }) => {
     if (list.plan_code === "chat_enterprise") {
       return "Contact sales";
-    }
-    const billInformation = billingVariation.value.find(
-      (data: { plan_code: string }) => data.plan_code === list.plan_code,
-    );
-    const currentPlanInformation = billingVariation.value.find(
-      (data: { plan_code: string }) => data.plan_code === current,
-    );
-    if (billInformation?._id > currentPlanInformation?._id || (current === "unAvailable")) {
-      return "Upgrade Plan";
     } else {
-      return "Downgrade Plan";
+      return 'Subscribe'
     }
+    // const billInformation = billingVariation.value.find(
+    //   (data: { plan_code: string }) => data.plan_code === list.plan_code,
+    // );
+    // const currentPlanInformation = billingVariation.value.find(
+    //   (data: { plan_code: string }) => data.plan_code === current,
+    // );
+    // if (billInformation?._id > currentPlanInformation?._id || (current === "unAvailable")) {
+    //   return "Upgrade Plan";
+    // } else {
+    //   return "Downgrade Plan";
+    // }
   };
 
   const { status, data: orgBilling } = await useLazyFetch("/api/org/usage", {

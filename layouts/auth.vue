@@ -9,13 +9,29 @@
       </div>
       <slot />
     </div>
-    <div class="right-card-align relative w-[50%] h-full overflow-hidden rounded-[10px] hidden sm:block">
-      <img src="assets\icons\signupImages.svg" class="absolute  w-full h-full object-cover ring-[0px] z-0"></img>
-      <div class="font-regular absolute bottom-[70px] left-[70px] text-[#ffff] w-[40%] z-2">
-        Welcome to <span class="font-medium text-[16px]">Tring AI</span> your AI-powered telesales partner
+    <div v-if="(route.name === 'auth-sign-in') || (route.name === 'auth-sign-up')" class="right-card-align relative w-[50%] h-full overflow-hidden rounded-[10px] hidden sm:block">
+        <img
+          src="assets/icons/signupImages.svg"
+          class="absolute inset-0 w-full h-full object-cover z-0"
+          alt="Signup Image"
+        />
+        <div class="font-regular absolute bottom-[70px] left-[70px] text-[#ffff] w-[40%] z-2">
+          Welcome to <span class="font-medium text-[16px]"> Tring AI </span> your AI-powered telesales partner
+        </div>
       </div>
-    </div>
-    <!-- <img src="assets\icons\rectangle_singup.svg" width="600"></img> -->
+      <div v-else-if="route.name === 'auth-verify-otp'" class="right-card-align relative w-[50%] h-full overflow-hidden rounded-[10px] hidden sm:block">
+      <img src="assets\icons\verifyOtp.svg" class="absolute w-full object-fill ring-[0px] z-0"></img>
+      <div class="font-regular absolute bottom-[70px] left-[70px] text-[#ffff] w-[70%] z-2">
+        <span class="font-medium text-[16px]">Tring AI</span> Serves your valued customers with the care and <span class="font-medium text-[16px]"> 24/7 Support </span>
+        they deserve with our highly intelligent voice bot
+      </div>
+      </div>
+      <div v-else-if="route.name === 'auth-onboarding'" class="right-card-align relative w-[50%] h-full overflow-hidden rounded-[10px] hidden sm:block">
+        <img src="assets\icons\onBoardingPageImage.svg" class="absolute w-full object-fill ring-[0px] z-0"></img>
+        <div class="font-regular absolute bottom-[70px] left-[70px] text-[#ffff] w-[70%] z-2">
+          <span class="font-medium text-[16px]"> Tring AI personalizes </span> customer experiences by delivering tailored responses & solutions that meet individual needs, creating meaningful <span class="font-medium text-[16px]">Human like interactions</span>
+        </div>
+      </div>
   </div>
 </template>
 <script setup lang="ts">
