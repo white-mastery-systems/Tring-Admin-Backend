@@ -55,15 +55,19 @@
                               {{ value }}
                             </a>
                           </template>
-                          <a v-else-if="key === 'Email'" href="mailto:{{ value }}"
+                          <a v-else-if="key === 'Email'"
+                            href="mailto:{{ (leadData.channel === 'whatsapp') ? whatsappLead.email : value }}"
                             class="block truncate lowercase text-[#424bd1]">
-                            {{ value }}
+                            {{ leadData.channel === 'whatsapp' ? whatsappLead.email : value }}
                           </a>
-                          <div v-else class="truncate">
-                            {{ value }}
+                          <div v-else-if="key === 'Name'" class="truncate">
+                            {{ leadData.channel === 'whatsapp' ? whatsappLead.name : value }}
+                          </div>
+                            <div v-else class="truncate">
+                              {{ value }}
+                            </div>
                           </div>
                         </div>
-                      </div>
                     </UiTooltipTrigger>
                     <UiTooltipContent class="w-auto">
                       <p>{{ value }}</p> <!-- Show the full value or any additional info -->
@@ -201,6 +205,10 @@ const changeStatus = ref(false);
 const revertStatus = ref(false);
 const status = ref();
 const leadData: any = ref();
+// const whatsappLead = ref();
+const { data: whatsappLead, execute: fetchName } = useLazyFetch(`/api/getName?id=${route.params.id}`, {
+  method: 'GET',
+});
 // const { status, data: leadData } = await useLazyFetch(
 //   () => `/api/org/chat/${route.params.id}`,
 //   {
