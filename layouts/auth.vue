@@ -11,9 +11,9 @@
       <slot />
     </div>
     <div v-if="(route.name === 'auth-sign-in') || (route.name === 'auth-sign-up')"
-      class="right-card-align-signup relative w-[50%] h-full overflow-hidden rounded-[10px] hidden sm:block flex items-center justify-center">
-      <img src="assets/icons/signupImages.png" class="w-auto h-auto max-w-full max-h-full object-contain z-0"
-        alt="Signup Image" />
+      class="right-card-align-signup relative w-[50%] h-full overflow-hidden rounded-[10px] hidden sm:flex items-center justify-center ">
+      <img src="assets/icons/signupImages.png"
+        class="w-auto h-auto max-w-full max-h-full object-contain z-0 hidden sm:block" alt="Signup Image" />
     </div>
     <div v-else-if="route.name === 'auth-verify-otp'"
       class="right-card-align relative w-[50%] h-full overflow-hidden rounded-[10px] hidden sm:block">
@@ -42,12 +42,6 @@ const paramId: any = route
 
 </script>
 <style scoped>
-.right-card-align-signup {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 .right-card-align-signup::after{
   content:"";
   position: absolute;
