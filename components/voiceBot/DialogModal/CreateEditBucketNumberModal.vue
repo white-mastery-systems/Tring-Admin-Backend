@@ -75,7 +75,7 @@ const formSchema = toTypedSchema(
       name: z.string().optional(),
       metadata: z.string().optional(),
       verificationId: z.string().optional(),
-      phone: z.string({ required_error: 'Mobile Number is required' }).optional(),
+      phone: z.string({ required_error: 'Mobile Number is required' }), // .optional()
       countryCode: z.string({ required_error: 'Code is required' }).min(1, 'Code is required'),
     })
     .superRefine((data, ctx) => {

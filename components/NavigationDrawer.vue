@@ -20,7 +20,7 @@
                   : 'rounded-[10px]',
               ]">
               <component :is="icon"></component>
-              <UiAccordionTrigger class="w-full no-underline hover:no-underline">
+              <UiAccordionTrigger class="w-full no-underline hover:no-underline py-[10px]">
                 {{ name }}</UiAccordionTrigger>
             </div>
             <div class="rounded-b-lg">
@@ -37,7 +37,7 @@
           </UiAccordionItem>
         </UiAccordion>
         <NuxtLink v-else-if="!!(path !== '/')" :to="path" @click="handleNavigation"
-          class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium"
+          class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-[10px] font-medium"
           :class="[
             route.path?.includes(path)
               ? 'bg-[#424bd1] text-[#ffffff]'
@@ -49,7 +49,7 @@
           <span class="text-[16px]">{{ name }}</span>
         </NuxtLink>
         <NuxtLink v-else :to="path" @click="handleNavigation"
-          class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-4 font-medium"
+          class="field_shadow flex w-[90%] cursor-pointer items-center gap-3 rounded-[10px] px-[18px] py-[10px] font-medium"
           :class="[
             route.path === path
               ? 'bg-[#424bd1] text-[#ffffff]'
@@ -79,19 +79,21 @@
           <span class="max-w-[150px] truncate">{{ userInfo?.email }}</span>
         </div>
         <div v-if="freeTrialPopup.planFree"
-          class="flex flex-col justify-center gap-4 absolute bottom-[-6px] left-[0px] rounded-lg bg-[#424bd1] field_shadow payment-popup">
+          class="flex flex-col justify-center items-center gap-4 absolute bottom-[-35px] left-[0px] rounded-lg bg-[#424bd1] field_shadow payment-popup">
           <!-- <div class="min-h-[40px] min-w-[40px] max-w-[40px] bg-[#424bd1] rounded-full">
 
           </div> -->
-          <div class="text-[#FFFFFF] text-sm font-normal py-2 px-0 rounded-lg">You’re Currently in the <span class="font-medium text-[16px]">Free Plan.</span>
-            Try your experience for using <span class="font-medium text-[16px]">more features</span>
+          <div class="text-[#FFFFFF] text-sm font-normal py-2 px-0 rounded-lg">You’re on the<span
+              class="font-medium text-[16px]"> Free Plan! </span>
+            Unlock the full potential of <span class="font-medium text-[16px]"> Tring AI, upgrade</span> and
+            <span class="font-medium text-[16px]"> access exclusive features </span> right now!
           </div>
-            <UiButton @click.prevent.stop="redirectToBilling"
-              class="flex justify-center gap-3 text-[13px] bg-[#FFFFFF] font-bold text-[424bd1] rounded-lg hover:bg-[#FFFFFF] hover:brightness-90 w-[90%] text-[#424bd1]">
-              <img src="assets\icons\freeTrailUpgrade.svg"></img>
-              <!-- <component :is="LucideArrowUpRight" class="text-[12px]"></component> -->
-              Upgrade Pro
-            </UiButton>
+          <UiButton @click.prevent.stop="redirectToBilling"
+            class="flex justify-center gap-3 text-[14px] bg-[#FFFFFF] font-bold text-[424bd1] rounded-lg hover:bg-[#FFFFFF] hover:brightness-90 w-[90%] text-[#424bd1]">
+            <img src="assets\icons\freeTrailUpgrade.svg"></img>
+            <!-- <component :is="LucideArrowUpRight" class="text-[12px]"></component> -->
+            Upgrade
+          </UiButton>
         </div>
       </NuxtLink>
       <!-- <div class="absolute bottom-0 w-full"> -->
@@ -267,6 +269,7 @@ const freeTrialPopup = useFreeTrial()
     const isAnyPlanFree = orgBilling[1].planCode.includes("_free")
     // const isAnyPlanFree = orgBilling.every((plan: any) => plan.planCode.includes("_free"))
     if (isAnyPlanFree) freeTrialPopup.planFree = true
+    else freeTrialPopup.planFree = false
   })
 
   const handleNavigation = () => {
@@ -282,7 +285,6 @@ const redirectToBilling = () => {
 .payment-popup {
   position: absolute;
   /* or fixed, depending on your drawer's layout */
-  bottom: -8px;
   /* Center vertically */
   left: 50%;
   /* Center horizontally */
