@@ -5,8 +5,8 @@ export const createZohoCustomer: any = async (metaData: any, customerDetails: an
     let firstName = customerDetails?.username;
     let lastName = "";
     if (firstName?.includes(" ")) {
-      firstName = firstName?.split(" ")[0];
-      lastName = firstName?.split(" ")[1];
+      firstName = customerDetails?.username?.split(" ")[0];
+      lastName = customerDetails?.username?.split(" ")[1];
     }
     const createCustomer = {
       display_name: `${firstName} ${lastName}`,
@@ -14,7 +14,7 @@ export const createZohoCustomer: any = async (metaData: any, customerDetails: an
       last_name: lastName,
       email: customerDetails?.email,
       mobile: customerDetails?.mobile,
-      currency_code: customerDetails?.address.country === "India" ? "INR" : "USD",
+      // currency_code: customerDetails?.address.country === "India" ? "INR" : "USD",
       billing_address: {
         attention: customerDetails?.username,
         street: customerDetails?.address?.street,
@@ -74,8 +74,8 @@ export const updateZohoCustomer: any = async (customerId: string, metaData: any,
     let firstName = customerDetails?.username;
     let lastName = "";
     if (firstName?.includes(" ")) {
-      firstName = firstName?.split(" ")[0];
-      lastName = firstName?.split(" ")[1];
+      firstName = customerDetails?.username?.split(" ")[0];
+      lastName = customerDetails?.username?.split(" ")[1];
     }
    
     const updatedCustomer = {
@@ -84,6 +84,7 @@ export const updateZohoCustomer: any = async (customerId: string, metaData: any,
       last_name: lastName,
       email: customerDetails?.email,
       mobile: customerDetails?.mobile,
+      currency_code: customerDetails?.address.country === "India" ? "INR" : "USD",
       billing_address: {
         attention: customerDetails?.username,
         street: customerDetails?.address?.street,
