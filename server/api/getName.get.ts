@@ -41,11 +41,11 @@ export default defineEventHandler(async (event) => {
       temperature: 0,
     });
 
-    console.log(response.data.choices[0].message.content);
+    console.log(response.choices[0].message.content);
 
-    // const result = response.data.choices[0].message.content.trim();
+    const result = response.choices[0].message.content?.trim();
 
-    return { response };
+    return { result };
   } catch (error) {
     console.error("OpenAI API Error:", error);
     throw createError({
