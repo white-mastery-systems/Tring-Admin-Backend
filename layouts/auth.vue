@@ -18,8 +18,8 @@
     <div v-else-if="route.name === 'auth-verify-otp'"
       class="right-card-align relative w-[50%] h-full overflow-hidden rounded-[10px] hidden sm:block">
       <img src="assets\icons\verifyOtp.svg" class="absolute w-full object-cover ring-[0px] z-0"></img>
-     
-      <div class="font-regular absolute bottom-[70px] left-[70px] text-[#ffff] w-[70%] z-2">
+
+      <div class="font-light absolute bottom-[55px] left-[60px] text-[#ffff] w-[70%] z-2">
         <span class="font-medium text-[16px]">Tring AI</span> Serves your valued customers with the care and <span
           class="font-medium text-[16px]"> 24/7 Support </span>
         they deserve with our highly intelligent voice bot
@@ -28,7 +28,7 @@
     <div v-else-if="route.name === 'auth-onboarding'"
       class="right-card-align relative w-[50%] h-full overflow-hidden rounded-[10px] hidden sm:block">
       <img src="assets\icons\onBoardingPageImage.svg" class="absolute w-full object-fill ring-[0px] z-0"></img>
-      <div class="font-regular absolute bottom-[70px] left-[70px] text-[#ffff] w-[70%] z-2">
+      <div class="font-light absolute bottom-[55px] left-[60px] text-[#ffff] w-[70%] z-2">
         <span class="font-medium text-[16px]"> Tring AI personalizes </span> customer experiences by delivering tailored
         responses & solutions that meet individual needs, creating meaningful <span
           class="font-medium text-[16px]">Human like interactions</span>

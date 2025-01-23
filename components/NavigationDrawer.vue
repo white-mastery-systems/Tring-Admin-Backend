@@ -265,9 +265,12 @@ const freeTrialPopup = useFreeTrial()
     },
   );
   onMounted(async() => {
+    const { orgDetails } = await $fetch('/api/org')
+    localStorage.setItem("orgDetails", JSON.stringify(orgDetails));
+    
     const orgBilling = await $fetch("/api/org/subscriptionPlans");
-    const isAnyPlanFree = orgBilling[1].planCode.includes("_free")
-    // const isAnyPlanFree = orgBilling.every((plan: any) => plan.planCode.includes("_free"))
+    // const isAnyPlanFree = orgBilling[1].planCode.includes("_free")
+    const isAnyPlanFree = orgBilling.every((plan: any) => plan.planCode.includes("_free"))
     if (isAnyPlanFree) freeTrialPopup.planFree = true
     else freeTrialPopup.planFree = false
   })

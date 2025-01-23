@@ -430,7 +430,7 @@ import { useFreeTrial } from '~/store/freeTrailStore'
         toast.error("Please update GST information to continue");
         return navigateTo({
           name: "account",
-          query: { tab: "company-details" },
+          query: { tab: "personal-details" },
         });
       }
       const locationData = await $fetch<{
@@ -464,7 +464,7 @@ import { useFreeTrial } from '~/store/freeTrailStore'
         if (err.data.statusMessage?.includes("gst_no")) {
           navigateTo({
             name: "account",
-            query: { tab: "company-details" },
+            query: { tab: "personal-details" },
           });
         }
       }

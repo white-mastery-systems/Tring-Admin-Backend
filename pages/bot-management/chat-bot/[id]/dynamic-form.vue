@@ -38,11 +38,12 @@
       <form class="space-y-4">
         <div v-for="(field, index) in formattedValue" :key="index" class="space-y-3 flex items-end gap-2">
           <!-- Type Field in Preview -->
-          <div v-if="field.type === 'Date'" class="w-full">
+           <!-- {{ field.placeholder }} -->
+          <div v-if="field.type === 'date'" class="w-full">
             <DatePickerField :name="field.model" :label="field.label" :placeholder="field.placeholder" required
               disabled />
           </div>
-          <div v-else-if="field.type === 'Time'" class="w-full">
+          <div v-else-if="field.type === 'time'" class="w-full">
             <TimePickerField :name="field.model" :label="field.label" :placeholder="field.placeholder" required
               disabled>
             </TimePickerField>

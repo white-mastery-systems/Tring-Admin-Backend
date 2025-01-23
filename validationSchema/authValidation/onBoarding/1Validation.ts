@@ -1,3 +1,26 @@
+export const completeProfileSchema = toTypedSchema(
+  z.object({
+    name: z
+      .string({ required_error: "Name is required" })
+      .min(1, "Name is required"),
+    companyName: z
+      .string({ required_error: "Company Name is required" })
+      .min(1, "Company Name is required"),
+    mobile: z.string({ required_error: "Number is required" }),
+    countryCode: z
+      .string({ required_error: "Country Code is required" })
+      .min(1, "Country Code is required"),
+  }).superRefine((data, ctx) => {
+    const lengthRequirement = getCountryLengthRequirement(data.countryCode);
+    if (data.mobile.length !== lengthRequirement) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Number must be exactly ${lengthRequirement} characters long.`,
+        path: ["mobile"], // Field with the issue
+      });
+    }
+  }))
+
 export const personalDetailFormValidation = toTypedSchema(
   z
     .object({
@@ -87,17 +110,3 @@ export const personalDetailFormValidation = toTypedSchema(
       }
     }),
 );
-export const completeProfileSchema = toTypedSchema(
-  z.object({
-    name: z
-      .string({ required_error: "Name is required" })
-      .min(1, "Name is required"),
-    companyName: z
-      .string({ required_error: "Company Name is required" })
-      .min(1, "Company Name is required"),
-    mobile: z.string({ required_error: "Number is required" }),
-    countryCode: z
-      .string({ required_error: "Country Code is required" })
-      .min(1, "Country Code is required"),
-  })
-)
