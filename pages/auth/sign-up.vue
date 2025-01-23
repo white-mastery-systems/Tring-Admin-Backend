@@ -71,7 +71,7 @@
 </script>
 <template>
   <div class="flex h-full w-full flex-col items-center justify-center">
-    <div class="w-[90%] text-[26px] sm:text-[26px] md:text-[28px] lg:text-[28px] xl:text-[28px] px-0 pb-[20px] font-bold text-[#3d3d3d] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
+    <div class="w-[90%] text-[24px] sm:text-[24px] md:text-[28px] lg:text-[28px] xl:text-[28px] px-0 pb-[20px] font-bold text-[#3d3d3d] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
       <span> Complete Your Profile </span>
     </div>
     <div class="w-[90%] px-0 pb-[20px] text-[20px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">

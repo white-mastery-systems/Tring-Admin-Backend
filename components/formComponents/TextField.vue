@@ -106,10 +106,10 @@
     </div>
     <div class="flex justify-between items-center mt-1">
       <span :class="[
-          'text-[13px] text-gray-500',
+          'text-[11px] md:text-[13px]  text-gray-500',
           errorMessage ? 'font-medium text-red-500' : '',
         ]">{{ errorMessage ?? helperText }}</span>
-      <div v-if="name === 'otp'" class=" text-[#FFBC42] text-[13px] underline self-end cursor-pointer"
+      <div v-if="name === 'otp'" class=" text-[#FFBC42] text-[11px] md:text-[13px] underline self-end cursor-pointer"
         :class="{ 'cursor-not-allowed': isResendDisabled }" @click="resendOTP" :disabled="isResendDisabled">
         <span v-if="!isResendDisabled">Resend OTP</span>
         <span v-else>Resend available in {{ countdownTime }}</span>
