@@ -8,8 +8,8 @@ export const createContactPerson: any = async(organizationId: string, user: any,
     let firstName = user?.name;
     let lastName = "";
     if (firstName?.includes(" ")) {
-      firstName = firstName?.split(" ")[0];
-      lastName = firstName?.split(" ")[1];
+      firstName = user?.name?.split(" ")[0];
+      lastName = user?.name?.split(" ")[1];
     }
   
     // console.log({ customerId })
@@ -59,8 +59,8 @@ export const updateContactPerson: any = async (organizationId: string, user: any
       let firstName = user?.username;
       let lastName = "";
       if (firstName?.includes(" ")) {
-        firstName = firstName?.split(" ")[0];
-        lastName = firstName?.split(" ")[1];
+        firstName = user?.name?.split(" ")[0];
+        lastName = user?.name?.split(" ")[1];
       }
       const data = await $fetch(`https://www.zohoapis.in/billing/v1/customers/${customerId}/contactpersons/${contactPersonId}`,
         {
