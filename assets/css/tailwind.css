@@ -147,6 +147,18 @@
     overflow-y: hidden;
   }
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .tablet-h-inherit {
+      height: inherit;
+    }
+  }
+}
+
 
 ::-webkit-scrollbar {
   display: none;

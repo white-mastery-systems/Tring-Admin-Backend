@@ -254,7 +254,7 @@ import { toast } from "vue-sonner";
     },
     {
       _id: 4,
-      bot: "Agent Actions",
+      bot: "Bot Actions",
       helperText: "Add your intents Eg: Location Virtual Tour etc...",
       routeName: "bot-management-chat-bot-id-intent-management",
     },
