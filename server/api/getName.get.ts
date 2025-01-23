@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
       If either piece of information is not present, return 'Not provided' for that field.
 
       Here's the text to analyze:
-      ${message}
+      ${JSON.stringify(message[0].messages)}
     `;
 
     const response = await client.chat.completions.create({
@@ -40,14 +40,10 @@ export default defineEventHandler(async (event) => {
       max_tokens: 150,
       temperature: 0,
     });
+    const result = response.choices[0].message.content;
 
-    console.log(response.data.choices[0].message.content);
-
-    // const result = response.data.choices[0].message.content.trim();
-
-    return { response };
+    return { result };
   } catch (error) {
-    console.error("OpenAI API Error:", error);
     throw createError({
       statusCode: 500,
       statusMessage: "Failed to process the message with OpenAI.",
