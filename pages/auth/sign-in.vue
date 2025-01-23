@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-full w-full flex-col items-center justify-center">
-    <div class="w-[90%] px-0 pb-[20px] font-bold text-[#424bd1] lg:w-[80%] lg:px-6">
+    <div class="w-[90%] px-0 pb-[20px] text-[20px] font-bold text-[#424bd1] lg:w-[80%] lg:px-6">
       <span> Log in to your account </span>
     </div>
     <div class="flex w-[90%] flex-col px-0 lg:w-[80%] lg:px-6">

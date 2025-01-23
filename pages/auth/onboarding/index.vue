@@ -2,12 +2,13 @@
   <div class="flex h-full w-full flex-col items-center justify-center">
     <!-- :initial-values="defaultFormValues" -->
     <!-- @submit="handleSubmit" -->
-    <div class="w-[90%] px-0 pb-[20px] text-[28px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
+    <div
+      class="w-[90%] px-0 pb-[20px] text-[22px] sm:text-[22px] md:text-[24px] lg:text-[28px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
       Complete your profile!
     </div>
     <div class="flex w-[90%] flex-col px-0 md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
       <!-- <div> -->
-      <form class="space-y-4" @submit.prevent="onSubmit">
+      <form class="space-y-4" @submit="onSubmit">
         <!-- grid grid-cols-2 -->
         <div class="gap-3 p-1 space-y-4">
           <TextField type="text" name="name" label="Full Name" placeholder="Your Name" :required="true" />
@@ -107,7 +108,7 @@ const {
 //   if (props.personalCompanyDetail.estimatedMonthlyBudget) props.setFieldValue("estimatedMonthlyBudget", '')
 // })
 watch(errors, (newValue) => {
-  console.log(newValue, "newValue")
+  console.log(newValue, "error")
 })
 
 

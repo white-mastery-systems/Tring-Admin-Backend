@@ -8,7 +8,7 @@
       <UiFormControl>
         <UiSelect :class="cn(props.class)" :multiple="multiple" class="mt-2 focus-visible:ring" v-model="selectedValue"
           v-bind="$attrs" :disabled="props.disabled">
-          <div class="relative flex items-start">
+          <div class="relative flex items-center">
             <UiSelectTrigger :class="[hasError ? 'border-[#ef4444]' : '']" class="text-start">
               <UiSelectValue :placeholder="placeholder" />
             </UiSelectTrigger>

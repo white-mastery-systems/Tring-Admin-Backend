@@ -142,6 +142,7 @@
     if (fileSizeInMB > MAX_FILE_SIZE_MB) {
       toast.error(`File size exceeds the ${MAX_FILE_SIZE_MB}MB limit. Your file is ${fileSizeInMB.toFixed(2)} MB.`);
       selectedFileName.value = "";
+      return
     }
     emit("change", target.files);
   };

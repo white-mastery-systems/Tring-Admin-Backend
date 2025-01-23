@@ -52,9 +52,10 @@ definePageMeta({
   const route = useRoute();
   const router = useRouter();
   const tabValue = ref("PersonalDetails");
-  if (route?.query?.tab === "company-details") {
-    tabValue.value = "companyDetails";
-  } else if (route?.query?.tab === "security") {
+  // if (route?.query?.tab === "company-details") {
+  //   tabValue.value = "companyDetails";
+  // } else 
+  if (route?.query?.tab === "security") {
     tabValue.value = "security";
   } else if (route?.query?.tab === "personal-details") {
     tabValue.value = "PersonalDetails";
@@ -79,9 +80,10 @@ definePageMeta({
   const selectedChannel = (value: any) => {
     tab.value = value;
     let queryValue ;
-    if (value === "companyDetails") {
-      queryValue = "company-details";
-    } else if (value === "security") {
+    // if (value === "companyDetails") {
+    //   queryValue = "company-details";
+    // } else 
+    if (value === "security") {
       queryValue = "security";         
     }else if (value === "PersonalDetails") {
       queryValue = "personal-details";
