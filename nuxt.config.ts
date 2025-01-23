@@ -62,6 +62,7 @@ export default defineNuxtConfig({
     adminBaseUrl: "",
     reserveGoUrl: "",
     envType: "",
+    openApiKey: "",
     public: {
       googleAnalyticsId: "",
       voiceBotUrl: "",

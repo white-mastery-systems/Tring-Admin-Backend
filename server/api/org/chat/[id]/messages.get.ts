@@ -3,7 +3,7 @@ import { getMessages } from "~/server/utils/db/chats"
 const db = useDrizzle()
 
 export default defineEventHandler(async (event) => {
-   await isOrganizationAdminHandler(event)
+  //  await isOrganizationAdminHandler(event)
 
    const { id: chatId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
