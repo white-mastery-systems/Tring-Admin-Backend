@@ -7,7 +7,7 @@
     </div>
     <div class="flex w-[90%] flex-col px-0 md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
       <!-- <div> -->
-      <form class="space-y-4" @submit.prevent="onSubmit">
+      <form class="space-y-4" @submit="onSubmit">
         <!-- grid grid-cols-2 -->
         <div class="gap-3 p-1 space-y-4">
           <TextField type="text" name="name" label="Full Name" placeholder="Your Name" :required="true" />
@@ -107,7 +107,7 @@ const {
 //   if (props.personalCompanyDetail.estimatedMonthlyBudget) props.setFieldValue("estimatedMonthlyBudget", '')
 // })
 watch(errors, (newValue) => {
-  console.log(newValue, "newValue")
+  console.log(newValue, "error")
 })
 
 

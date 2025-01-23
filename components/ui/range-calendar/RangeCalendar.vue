@@ -33,6 +33,9 @@
   });
 
   const forwarded = useForwardPropsEmits(delegatedProps, emits);
+  const handleClick = (event: Event) => {
+    event.stopPropagation() // Prevents click event from propagating
+  }
 </script>
 
 <template>
@@ -42,12 +45,12 @@
     v-bind="forwarded"
   >
     <RangeCalendarHeader>
-      <RangeCalendarPrevButton />
-      <RangeCalendarHeading />
-      <RangeCalendarNextButton />
+      <RangeCalendarPrevButton @click="handleClick" />
+      <RangeCalendarHeading @click="handleClick" />
+      <RangeCalendarNextButton @click="handleClick" />
     </RangeCalendarHeader>
 
-    <div class="mt-4 flex flex-col gap-y-4 sm:flex-row sm:gap-x-4 sm:gap-y-0">
+    <div class="flex flex-col gap-y-4 mt-4 sm:flex-row sm:gap-x-4 sm:gap-y-0">
       <RangeCalendarGrid v-for="month in grid" :key="month.value.toString()">
         <RangeCalendarGridHead>
           <RangeCalendarGridRow>

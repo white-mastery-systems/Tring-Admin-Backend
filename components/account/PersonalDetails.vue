@@ -48,7 +48,7 @@
 
         <div class="mt-2">
           <TextField type="text" name="gst" label="GST" helperText="Enter your 15-digit GSTIN"
-            placeholder="Enter Your Gst" />
+            placeholder="Enter Your Gst" required />
         </div>
       </div>
       <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">

@@ -136,9 +136,10 @@ onMounted(async () => {
     }
   };
     const orgBilling = await $fetch("/api/org/subscriptionPlans");
-    const isAnyPlanFree = orgBilling[1].planCode.includes("_free")
-    // const isAnyPlanFree = orgBilling.every((plan: any) => plan.planCode.includes("_free"))
+    // const isAnyPlanFree = orgBilling[1].planCode.includes("_free")
+    const isAnyPlanFree = orgBilling.every((plan: any) => plan.planCode.includes("_free"))
     if (isAnyPlanFree) freeTrialPopup.planFree = true
+    else freeTrialPopup.planFree = false
 });
 
 const handleOpenCancelModal = () => {
