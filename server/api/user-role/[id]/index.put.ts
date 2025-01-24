@@ -12,12 +12,13 @@ export default defineEventHandler(async(event) => {
   const body = await isValidBodyHandler(event, bodyValidator); 
 
   const roleDetails:any = await getUserRoleById(roleId)
-  if(!roleDetails){
+  if (!roleDetails) {
     return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "The role data for the provided ID was not found",
+        statusMessage:
+          "Role Not Found: The role data for the provided ID could not be located. Please verify the ID and try again.",
       }),
     );
   }
@@ -29,12 +30,13 @@ export default defineEventHandler(async(event) => {
         eq(authUserRoleSchema.organizationId, roleDetails?.organizationId)
       )
     })
-    if(isExistsRole){
+    if (isExistsRole) {
       return sendError(
         event,
         createError({
           statusCode: 400,
-          statusMessage: "This role already exists in this organization",
+          statusMessage:
+            "Role Already Exists: This role is already assigned within the organization. Please choose a different role name.",
         }),
       );
     }

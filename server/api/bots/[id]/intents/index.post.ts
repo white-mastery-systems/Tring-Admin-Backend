@@ -26,22 +26,24 @@ export default defineEventHandler(async (event) => {
   );
   const body = await isValidBodyHandler(event, zodInsertChatBotIntent);
 
-  const isAreadyExists = await db.query.botIntentSchema.findFirst({
+  const isAlreadyExists = await db.query.botIntentSchema.findFirst({
     where: and(
       eq(botIntentSchema.botId, botId),
       eq(botIntentSchema.intent, body.intent)
     )
   })
   
-  if(isAreadyExists) {
-     return sendError(
+  if (isAlreadyExists) {
+    return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Intent name already exists",
+        statusMessage:
+          "Intent Name Already Exists: The specified intent name is already in use. Please choose a different name or verify that the intent does not already exist.",
       }),
     );
   }
+
   const bot = await createBotIntent({
     ...body,
     botId: botId,

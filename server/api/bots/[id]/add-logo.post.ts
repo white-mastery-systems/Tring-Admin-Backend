@@ -15,7 +15,8 @@ export default defineEventHandler(async (event) => {
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid Logo",
+        statusMessage:
+          "Invalid Logo: The logo data is missing or in an incorrect format. Please provide a valid logo.",
       }),
     );
   }
@@ -28,7 +29,8 @@ export default defineEventHandler(async (event) => {
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid Document Data",
+        statusMessage:
+          "Invalid Document Data: The document data is missing or corrupted. Please upload a valid document.",
       }),
     );
 

@@ -1,30 +1,50 @@
 import { getReservegoApikeyAndRestaurantId } from "~/server/utils/db/reservego";
 
 export default defineEventHandler(async (event) => {
-  const body = await isValidBodyHandler(event, z.object({
-    date: z.string()
-  }))
-  const { id: botId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
+  const body = await isValidBodyHandler(
+    event,
+    z.object({
+      date: z.string(),
+    }),
+  );
+  const { id: botId } = await isValidRouteParamHandler(
+    event,
+    checkPayloadId("id"),
+  );
 
-  const voicebotReservego = await getReservegoApikeyAndRestaurantId(botId, "voicebot")
+  const voicebotReservego = await getReservegoApikeyAndRestaurantId(
+    botId,
+    "voicebot",
+  );
 
-  if(!voicebotReservego?.status) {
+  if (!voicebotReservego?.status) {
     return sendError(
       event,
-      createError({ statusCode: 400, statusMessage: voicebotReservego?.message }),
+      createError({
+        statusCode: 400,
+        statusMessage: voicebotReservego?.message,
+      }),
     );
   }
 
-  const restaurantId = voicebotReservego?.data?.restaurantId
-  const apiKey = voicebotReservego?.data?.apiKey
+  const restaurantId = voicebotReservego?.data?.restaurantId;
+  const apiKey = voicebotReservego?.data?.apiKey;
 
-  const data = await checkAvailabilty({ restaurantId, apiKey }, body, "voicebot")
+  const data = await checkAvailabilty(
+    { restaurantId, apiKey },
+    body,
+    "voicebot",
+  );
 
-  if(!data.status) {
+  if (!data.status) {
     return sendError(
       event,
-      createError({ statusCode: 500, statusMessage: "Unable to get reservations" }),
+      createError({
+        statusCode: 500,
+        statusMessage:
+          "Internal Server Error: Unable to retrieve reservations. Please try again later.",
+      }),
     );
   }
-  return data
-})
+  return data;
+});

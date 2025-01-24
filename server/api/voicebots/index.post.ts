@@ -18,12 +18,13 @@ export default defineEventHandler(async(event) => {
     )
   })
 
-  if(isExists) {
+  if (isExists) {
     return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Name already exists",
+        statusMessage:
+          "Name Already Taken: The provided name already exists. Please choose a different name.",
       }),
     );
   }

@@ -18,11 +18,15 @@ export default defineEventHandler(async (event) => {
       )
   })
 
-  if(!getOrgCurrentActivePlan) {
+  if (!getOrgCurrentActivePlan) {
     return sendError(
       event,
-      createError({ statusCode: 400, statusMessage: "You can't activate the bot" }),
-    );   
+      createError({
+        statusCode: 400,
+        statusMessage:
+          "Bot Activation Failed: You cannot activate the bot because there is no active plan associated with your organization. Please ensure you have an active plan to proceed.",
+      }),
+    );
   }
   const { id: botId, doc_id } = await isValidRouteParamHandler(
     event,

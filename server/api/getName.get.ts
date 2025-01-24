@@ -11,7 +11,8 @@ export default defineEventHandler(async (event) => {
   if (!chatId) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Chat ID is required in the request body.",
+      statusMessage:
+        "Chat ID is missing. Please include 'chatId' in the request body.",
     });
   }
 
@@ -47,13 +48,13 @@ export default defineEventHandler(async (event) => {
     });
     
     const result = response.choices[0].message.content;
-    const formated = JSON.stringify(result);
-    return extractUserInfo(formated)
-    return { result };
+    const formattedResult = JSON.stringify(result);
+
+    return extractUserInfo(formattedResult)
   } catch (error) {
     throw createError({
       statusCode: 500,
-      statusMessage: "Failed to process the message with OpenAI.",
+      statusMessage: "Internal Server Error: Unable to process the message with OpenAI. Please try again later.",
     });
   }
 });

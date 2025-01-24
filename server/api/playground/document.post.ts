@@ -14,32 +14,39 @@ export default defineEventHandler(async (event) => {
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid Document Data",
+        statusMessage:
+          "Missing Document Data: No form data was provided. Please ensure the document data is included in the request.",
       }),
     );
   }
+
   const body = zodInsertPlaygroundDocument.safeParse({
-    name: formData.find(({ name }) => name === "name")?.data.toString()!
+    name: formData.find(({ name }) => name === "name")?.data.toString()!,
   });
 
-  if (!body.success)
+  if (!body.success) {
     return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid Document Data(name)",
+        statusMessage:
+          "Invalid Document Name: The 'name' field is either missing or invalid. Please check the provided name.",
         data: body.error.format(),
       }),
     );
+  }
+
   const fileData = formData.find(({ name }) => name === "files");
-  if (!fileData?.data)
+  if (!fileData?.data) {
     return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid Document Data(files)",
+        statusMessage:
+          "Missing Files: No file data was provided. Please upload a valid document file.",
       }),
     );
+  }
   
   // Create Document
   const document = await createPlaygroundDocument(body.data);

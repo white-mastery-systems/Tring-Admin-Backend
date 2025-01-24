@@ -26,12 +26,13 @@ export default defineEventHandler(async (event) => {
     )
   })
 
-  if(isAlreadyExists) {
+  if (isAlreadyExists) {
     return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Email already exists",
+        statusMessage:
+          "Email Already Registered: The provided email is already associated with an existing account. Please use a different email address.",
       }),
     );
   }

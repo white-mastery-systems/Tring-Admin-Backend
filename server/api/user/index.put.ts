@@ -34,22 +34,28 @@ export default defineEventHandler(async (event) => {
     )
   })
 
-  if(isEmailAlreadyExists) {
-     return sendError(
+  if (isEmailAlreadyExists) {
+    return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Email already exists",
+        statusMessage:
+          "Email Already Registered: The provided email is already associated with an existing account. Please use a different email address.",
       }),
     );
   }
 
   const user = event.context.user;
-  if (!user)
+  if (!user) {
     return sendError(
       event,
-      createError({ statusCode: 404, statusMessage: "Unauthorized" }),
+      createError({
+        statusCode: 404,
+        statusMessage:
+          "Unauthorized: No user found. Please ensure you are logged in before attempting this action.",
+      }),
     );
+  }
 
   const newPassword = body.password
     ? await new Argon2id().hash(body.password)

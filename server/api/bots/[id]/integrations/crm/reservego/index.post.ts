@@ -39,10 +39,14 @@ export default defineEventHandler(async (event) => {
   const apiKey = chatbotReservego?.data?.apiKey
 
   const data = await createNewReservation({ restaurantId, apiKey }, body,  "chatbot")
-  if(!data.status) {
+  if (!data.status) {
     return sendError(
       event,
-      createError({ statusCode: 500, statusMessage: "Unable to create reservation" }),
+      createError({
+        statusCode: 500,
+        statusMessage:
+          "Reservation Creation Failed: We encountered an issue while trying to create the reservation. Please try again later or contact support if the issue persists.",
+      }),
     );
   }
   return data

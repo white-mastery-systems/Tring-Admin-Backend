@@ -11,7 +11,11 @@ export default defineEventHandler(async (event) => {
     type: z.string()
   }))
   if (!orgId) {
-    return createError({ statusCode: 401, statusMessage: "Unauthorized" });
+    return createError({
+      statusCode: 401,
+      statusMessage:
+        "Unauthorized: Organization ID is required to access this resource.",
+    });
   }
 
   const orgSubscriptionData = await db.query.orgSubscriptionSchema.findFirst({  

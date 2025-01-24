@@ -722,7 +722,8 @@ export const createAddonInZohoBilling: any = async ({
   if (!integrationData?.organization_id) {
     return createError({
       statusCode: 400,
-      statusMessage: "Organization Id is required",
+      statusMessage:
+        "Organization ID is required: Please provide a valid organization ID to proceed.",
     });
   }
   try {
