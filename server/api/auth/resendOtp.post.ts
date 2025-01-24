@@ -14,15 +14,17 @@ export default defineEventHandler(async (event) =>{
     where: eq(authUserSchema.email, body.email)
   })
 
-  if(!userData) {
+  if (!userData) {
     return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Incorrect email",
+        statusMessage:
+          "Invalid email address provided. Please check and try again.",
       }),
-    )
+    );
   }
+
   const otpNumber = Math.floor(1000 + Math.random() * 9000)
 
   await db.update(userOTPSchema)

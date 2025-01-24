@@ -19,34 +19,39 @@ export default defineEventHandler(async (event) => {
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid Document Data",
+        statusMessage:
+          "Invalid Document Data: No form data was provided. Please ensure all required fields are included in the request.",
       }),
     );
   }
-  // console.log()
+
   const body = zodInsertDocument.safeParse({
     name: formData.find(({ name }) => name === "name")?.data.toString()!,
     botId,
   });
-  if (!body.success)
+  if (!body.success) {
     return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid Document Data(name)",
+        statusMessage:
+          "Invalid Document Data (name): The 'name' field in the document data is invalid or missing. Please verify the input and try again.",
         data: body.error.format(),
       }),
     );
+  }
+
   const fileData = formData.find(({ name }) => name === "files");
-  if (!fileData?.data)
+  if (!fileData?.data) {
     return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid Document Data(files)",
+        statusMessage:
+          "Invalid Document Data (files): The 'files' field is missing or invalid. Please ensure a valid file is provided.",
       }),
     );
-
+  }
   // Create Document
   const document = await createDocument(body.data);
   await writeFile(getDocumentPath(document.id), fileData.data);

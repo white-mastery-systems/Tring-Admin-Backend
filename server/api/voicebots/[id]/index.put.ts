@@ -1,5 +1,9 @@
 import { updateVoiceBot } from "~/server/utils/db/voicebots";
-import { defaultSpeechToTextConfig, defaultTextToSpeechConfig, updateVoicebotConfig } from "~/server/utils/voicebot";
+import {
+  defaultSpeechToTextConfig,
+  defaultTextToSpeechConfig,
+  updateVoicebotConfig,
+} from "~/server/utils/voicebot";
 
 const db = useDrizzle();
 
@@ -11,31 +15,37 @@ const zodUpdateVoiceBotSchema = z.object({
   metaData: z.record(z.any()).optional(), // Assuming metaData is a JSON object with any structure
   llmConfig: z.record(z.any()).optional(),
   identityManagement: z.record(z.any()).optional(),
-  botDetails: z.object({
-    agentName: z.string().optional(),
-    agentLanguage: z.string().optional(),
-    region: z.string().optional(),
-    timezone: z.string().optional()
-  }).optional(),
-  preRecordedAudios: z.object({
-    welcomeAudio: z.array(z.any()).optional(),
-    concludeAudio: z.array(z.any()).optional(),
-    fillerAudio: z.array(z.any()).optional(),
-    ambientNoiseAudio: z.array(z.any()).optional(),
-    forwardCallAudio: z.array(z.any()).optional(),
-  }).optional(),
-  clientConfig: z.object({
-    llmCaching: z.boolean().optional(),
-    dynamicCaching: z.boolean().optional(),
-    distance: z.number().optional()
-  }).optional(),
+  botDetails: z
+    .object({
+      agentName: z.string().optional(),
+      agentLanguage: z.string().optional(),
+      region: z.string().optional(),
+      timezone: z.string().optional(),
+    })
+    .optional(),
+  preRecordedAudios: z
+    .object({
+      welcomeAudio: z.array(z.any()).optional(),
+      concludeAudio: z.array(z.any()).optional(),
+      fillerAudio: z.array(z.any()).optional(),
+      ambientNoiseAudio: z.array(z.any()).optional(),
+      forwardCallAudio: z.array(z.any()).optional(),
+    })
+    .optional(),
+  clientConfig: z
+    .object({
+      llmCaching: z.boolean().optional(),
+      dynamicCaching: z.boolean().optional(),
+      distance: z.number().optional(),
+    })
+    .optional(),
   audioFiles: z.record(z.any()).optional(),
   tools: z.record(z.any()).optional(),
   intent: z.string().optional(),
   textToSpeechConfig: z.record(z.any()).optional(),
   speechToTextConfig: z.record(z.any()).optional(),
   ivrConfig: z.any().optional(),
-  incomingPhoneNumber: z.any().optional()
+  incomingPhoneNumber: z.any().optional(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -46,38 +56,45 @@ export default defineEventHandler(async (event) => {
   );
 
   const body: any = await isValidBodyHandler(event, zodUpdateVoiceBotSchema);
-  
-  if(body?.ivrConfig) {
-    const voiceBot = await db.query.voicebotSchema.findFirst({ 
+
+  if (body?.ivrConfig) {
+    const voiceBot = await db.query.voicebotSchema.findFirst({
       where: and(
         eq(voicebotSchema.incomingPhoneNumber, body?.incomingPhoneNumber),
-        ne(voicebotSchema.id, voicebotId)
-      )
-    })
+        ne(voicebotSchema.id, voicebotId),
+      ),
+    });
 
-    if(voiceBot) {
+    if (voiceBot) {
       return sendError(
         event,
-        createError({ 
-          statusCode: 400, 
-          statusMessage: "This phonenumber is already mapped to another bot" 
+        createError({
+          statusCode: 400,
+          statusMessage:
+            "Phone Number Already Mapped: This phone number is already linked to another bot. Please use a different number.",
         }),
       );
     }
   }
 
-  if(body?.speechToTextConfig) {
-    const data = updateVoicebotConfig(defaultSpeechToTextConfig, body.speechToTextConfig);
-    body.speechToTextConfig = data
+  if (body?.speechToTextConfig) {
+    const data = updateVoicebotConfig(
+      defaultSpeechToTextConfig,
+      body.speechToTextConfig,
+    );
+    body.speechToTextConfig = data;
   }
 
-  if(body?.textToSpeechConfig) {
-    const data = updateVoicebotConfig(defaultTextToSpeechConfig, body.textToSpeechConfig);
-    body.textToSpeechConfig = data
+  if (body?.textToSpeechConfig) {
+    const data = updateVoicebotConfig(
+      defaultTextToSpeechConfig,
+      body.textToSpeechConfig,
+    );
+    body.textToSpeechConfig = data;
   }
 
-  if(body.ivrConfig === null) {
-    body.active = false
+  if (body.ivrConfig === null) {
+    body.active = false;
   }
 
   const update = await updateVoiceBot(voicebotId, body);

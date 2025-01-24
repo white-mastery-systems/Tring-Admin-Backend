@@ -13,12 +13,13 @@ export default defineEventHandler(async (event) => {
     where: 
       eq(authUserSchema.email, body.email)
   })
-  if(!userDetails) {
-     return sendError(
+  if (!userDetails) {
+    return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Incorrect email",
+        statusMessage:
+          "User Not Found: The provided email does not match any registered account. Please check the email and try again.",
       }),
     );
   }

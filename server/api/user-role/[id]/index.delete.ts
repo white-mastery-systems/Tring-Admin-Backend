@@ -4,12 +4,13 @@ export default defineEventHandler(async(event) => {
   const { id: roleId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
   const roleDetails:any = await getUserRoleById(roleId)
-  if(!roleDetails){
+  if (!roleDetails) {
     return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "The role data for the provided ID was not found",
+        statusMessage:
+          "Role Not Found: The role data for the provided ID could not be located. Please verify the ID and try again.",
       }),
     );
   }
