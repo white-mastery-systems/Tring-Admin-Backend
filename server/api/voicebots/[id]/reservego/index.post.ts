@@ -43,7 +43,11 @@ export default defineEventHandler(async (event) => {
   if(!data.status) {
     return sendError(
       event,
-      createError({ statusCode: 500, statusMessage: "Unable to create reservation" }),
+      createError({
+        statusCode: 500,
+        statusMessage:
+          "Internal Server Error: Unable to create reservation. Please try again later.",
+      }),
     );
   }
   return data

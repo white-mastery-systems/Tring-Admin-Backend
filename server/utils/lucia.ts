@@ -35,8 +35,9 @@ export const isValidUser = (event: H3Event, role: string) => {
     event,
     createError({
       statusCode: 401,
-      statusMessage: "Unauthorized",
-      message: "Unauthorized",
+      statusMessage:
+        "Unauthorized: You do not have permission to access this resource.",
+      message: "Unauthorized: Please check your credentials or access rights.",
     }),
   );
 };

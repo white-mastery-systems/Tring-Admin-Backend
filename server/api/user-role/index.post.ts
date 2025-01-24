@@ -16,7 +16,8 @@ export default defineEventHandler(async(event) => {
       event,
       createError({
         statusCode: 400,
-        statusMessage: "This role already exists in this organization",
+        statusMessage:
+          "Role Already Exists: This role is already assigned within the organization. Please choose a different role name.",
       }),
     );
   }

@@ -14,12 +14,13 @@ export default defineEventHandler(async (event) => {
     isValidToken = jwt.verify(token, process.env.SECRET_KEY!)
   } catch(error) {
      return sendError(
-      event,
-      createError({
-        statusCode: 400,
-        statusMessage: "The requested link has expired. Please request a new one.",
-      }),
-    );
+       event,
+       createError({
+         statusCode: 400,
+         statusMessage:
+           "Link Expired: The requested link has expired. Please request a new link to proceed.",
+       }),
+     );
   }
   
  const body = await isValidBodyHandler(event, zodBodyValidator);
@@ -30,8 +31,9 @@ export default defineEventHandler(async (event) => {
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid token",
-      })
+        statusMessage:
+          "Invalid Token: The provided token is invalid or expired. Please verify your token and try again.",
+      }),
     );
   }
 

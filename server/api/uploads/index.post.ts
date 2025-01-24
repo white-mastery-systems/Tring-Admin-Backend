@@ -12,7 +12,8 @@ export default defineEventHandler(async (event) => {
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid Data",
+        statusMessage:
+          "Invalid Data: The uploaded file is invalid or corrupted. Please upload a valid file and try again.",
       }),
     );
   }

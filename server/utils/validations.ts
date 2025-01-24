@@ -12,7 +12,11 @@ export const isOrganizationAdminHandler = async (event: H3Event) => {
   if (!user || user.role !== AuthRoles.Admin)
     return sendError(
       event,
-      createError({ statusCode: 401, statusMessage: "Unauthorized" }),
+      createError({
+        statusCode: 401,
+        statusMessage:
+          "Unauthorized: You must be an admin to access this resource.",
+      }),
     );
 
   return user.organizationId;
@@ -28,7 +32,8 @@ export const isValidQueryHandler = async <T extends ZodType>(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid query",
+        statusMessage:
+          "Invalid query: The query failed due to incorrect or missing parameters.",
         data: query.error.format(),
       }),
     );
@@ -45,7 +50,8 @@ export const isValidBodyHandler = async <T extends ZodType>(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid body",
+        statusMessage:
+          "Invalid body: The request body contains errors or is malformed.",
         data: body.error.issues,
       }),
     );
@@ -65,7 +71,8 @@ export const isValidRouteParamHandler = async <T extends ZodType>(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Invalid params",
+        statusMessage:
+          "Invalid parameters: The provided parameters are incorrect or incomplete.",
         data: params.error.format(),
       }),
     );
@@ -82,6 +89,8 @@ export const isValidReturnType = async <T>(
       event,
       createError({
         statusCode: 404,
+        statusMessage:
+          "Not Found: The requested resource or data could not be located.",
       }),
     );
   return rv;

@@ -3,7 +3,7 @@ import { otpEmailTemplate } from "~/server/utils/email-templates";
 
 const config = useRuntimeConfig();
 
-const db = useDrizzle()
+const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
   const body = await readValidatedBody(event, (body: any) =>
@@ -15,7 +15,8 @@ export default defineEventHandler(async (event) => {
       event,
       createError({
         statusCode: 400,
-        message: "Invalid User Data",
+        message:
+          "Invalid User Data: The submitted user data is incorrect or incomplete.",
         data: body.error.format(),
       }),
     );
@@ -28,7 +29,8 @@ export default defineEventHandler(async (event) => {
       event,
       createError({
         statusCode: 400,
-        statusMessage: "User already exists",
+        statusMessage:
+          "Conflict: A user with this email or username already exists.",
       }),
     );
 
@@ -61,22 +63,26 @@ export default defineEventHandler(async (event) => {
   );
   setResponseStatus(event, 201);
 
-  const otpNumber = Math.floor(1000 + Math.random() * 9000)
+  const otpNumber = Math.floor(1000 + Math.random() * 9000);
 
   await db.insert(userOTPSchema).values({
     userId: user?.id,
     otp: {
       otpNumber: otpNumber.toString(),
       timestamp: new Date(),
-      status: "pending"
-    }
-  })
+      status: "pending",
+    },
+  });
 
-  const emailTemplate = otpEmailTemplate(otpNumber)
+  const emailTemplate = otpEmailTemplate(otpNumber);
 
-  sendEmail(user?.email, "Verify Your Tringlabs Account with OTP", emailTemplate)
+  sendEmail(
+    user?.email,
+    "Verify Your Tringlabs Account with OTP",
+    emailTemplate,
+  );
 
   if (user.organizationId) return "/";
   // return "/auth/onboarding/1";
-   return { status: true, message: "OTP sent to your email!", data: user }
+  return { status: true, message: "OTP sent to your email!", data: user };
 });

@@ -2,24 +2,104 @@ import { inArray } from "drizzle-orm";
 import { InsertVoicebotContacts } from "~/server/schema/admin";
 import { logger } from "~/server/logger"
 import { z } from "zod";
+import { phoneLength } from "../phonenumberLength";
 
 const db = useDrizzle();
+
+// Function to get valid phone length for a given country code
+function getPhoneLengthByCountry(countryCode: string | number) {
+  const countryData = phoneLength.find(item => item.phone === countryCode);
+  return countryData ? countryData.phoneLength : null;
+}
 
 // Define the Zod schema for a single contact
 const zodChatImportContacts = z.object({
   "First Name": z.string().min(1, "First Name is required"),
   "Last Name": z.string().optional(),
-  "Email": z.string().email("Invalid email format").optional(),
-  "Country Code": z.string().regex(/^\+?\d{1,4}$/, "Invalid country code format"),
-  "Number": z.any()
+  "Email": z.string().optional(),
+  "Country Code": z.union([
+    z.string()
+      .refine((val) => /^\d+$/.test(val), { // Validate only digits
+        message: "Invalid country code format",
+      }),
+    z.number()
+      .refine((val) => /^\d+$/.test(val), { // Validate only digits
+        message: "Invalid country code format",
+      })
+  ]),
+  "Number": z.union([
+    z.string().refine((val) => /^\+?\d+$/.test(val.trim()), {
+      message: "Invalid phone number format",
+    }),
+    z.number().refine((val) => /^\+?\d+$/.test(val.toString().trim()), {
+      message: "Invalid phone number format",
+    }),
+  ]),
+}).refine(data => {
+  const validPhoneLength = getPhoneLengthByCountry(data["Country Code"].toString())
+
+  if (!validPhoneLength) {
+    return false; // If country code is not found
+  }
+
+  const phoneNumber = typeof data["Number"] === "string" 
+        ? data["Number"] 
+        : data["Number"].toString();
+
+  const cleanedPhone = phoneNumber.replace(/[^\d]/g, "").length;
+  
+  if (Array.isArray(validPhoneLength)) {
+    return validPhoneLength.includes(cleanedPhone); // Check for multiple valid lengths
+  }
+
+  return cleanedPhone === validPhoneLength; 
+},{
+  message: "Phone number length is invalid for the given country code.",
+  path: ['phoneNumber'], // Add path to which the error is related
 });
 
 const zodVoiceImportsContacts = z.object({
   "Name": z.string().min(1, "Name is required"),
-  "Phone": z.any(),
-  "Country Code": z.string(),
+  "Phone": z.union([
+    z.string().refine((val) => /^\+?\d+$/.test(val.trim()), {
+      message: "Invalid phone number format",
+    }),
+    z.number().refine((val) => /^\+?\d+$/.test(val.toString().trim()), {
+      message: "Invalid phone number format",
+    }),
+  ]),
+  "Country Code": z.union([
+    z.string()
+      .refine((val) => /^\d+$/.test(val), { // Validate only digits
+        message: "Invalid country code format",
+      }),
+    z.number()
+      .refine((val) => /^\d+$/.test(val), { // Validate only digits
+        message: "Invalid country code format",
+      })
+  ]),
   "Metadata": z.string().optional(),
   "Verification Id": z.string().optional(),
+}).refine(data => {
+  const validPhoneLength = getPhoneLengthByCountry(data["Country Code"].toString())
+  if (!validPhoneLength) {
+    return false; // If country code is not found
+  }
+
+  const phoneNumber = typeof data["Phone"] === "string" 
+        ? data["Phone"] 
+        : data["Phone"].toString();
+
+  const cleanedPhone = phoneNumber.replace(/[^\d]/g, "").length;
+  
+  if (Array.isArray(validPhoneLength)) {
+    return validPhoneLength.includes(cleanedPhone); // Check for multiple valid lengths
+  }
+
+  return cleanedPhone === validPhoneLength; 
+},{
+  message: "Phone number length is invalid for the given country code.",
+  path: ['phoneNumber'], // Add path to which the error is related
 });
 
 // Define a schema for an array of contacts
@@ -120,7 +200,7 @@ export const filterChatContactsByPhone = async (organizationId: string, phoneNum
     .where(
       and(
       inArray(contactSchema.phone, phoneNumbers),
-       eq(contactSchema.organizationId, organizationId)
+      eq(contactSchema.organizationId, organizationId)
     ))
 }
 
@@ -234,7 +314,7 @@ export const constructData = (uniqueContactsData: any, type: string, organizatio
         firstName: i["First Name"],
         lastName: i["Last Name"],
         email: i["Email"],
-        countryCode: i["Country Code"],
+        countryCode: `+${i["Country Code"]}`,
         phone: i["Number"],
         organizationId
       } 
@@ -242,7 +322,7 @@ export const constructData = (uniqueContactsData: any, type: string, organizatio
       {
         name: i["Name"],
         phone: i["Phone"],
-        countryCode: i["Country Code"],
+        countryCode: `+${i["Country Code"]}`,
         metadata: i["Metadata"],
         verificationId: i["Verification Id"],
         organizationId
@@ -267,18 +347,6 @@ export const parseContactsFormDataFile = async ({ file, fileType, queryType } : 
 
     if (!parsedData || !parsedData.length) throw new Error("The uploaded file is empty");
 
-    // Define expected columns based on query type
-    const expectedColumns = queryType === "chat" 
-      ? ["First Name", "Last Name", "Email", "Country Code", "Number"]
-      : ["Name", "Phone", "Country Code", "Metadata", "Verification Id"];
-
-    const actualColumns = Object.keys(parsedData[0]);
-    const missingColumns = expectedColumns.filter(col => !actualColumns.includes(col));
-    const extraColumns = actualColumns.filter(col => !expectedColumns.includes(col));
-
-    if (missingColumns.length) throw new Error(`Missing columns - ${missingColumns.join(", ")}`);
-    if (extraColumns.length) throw new Error(`Extra columns - ${extraColumns.join(", ")}`);
-
     // Validate parsed data using Zod schema
     const validationResult = queryType === "chat"
       ? chatContactsArraySchema.safeParse(parsedData)
@@ -286,7 +354,19 @@ export const parseContactsFormDataFile = async ({ file, fileType, queryType } : 
 
     if (!validationResult.success) throw new Error("Validation errors in the imported file");
 
-    const validContactData = validationResult.data;
+    const validContactData = validationResult.data.map((contact: any) => {
+      if (queryType === "chat") {
+        return {
+          ...contact,
+          Number: contact.Number ? String(contact.Number) : null, // Convert Number to string
+        };
+      } else {
+        return {
+          ...contact,
+          Phone: contact.Phone ? String(contact.Phone) : null, // Convert Phone to string
+        };
+      }
+    });
 
     return validContactData;
   } catch (error: any) {
