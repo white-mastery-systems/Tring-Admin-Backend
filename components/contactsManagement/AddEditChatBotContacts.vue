@@ -8,7 +8,7 @@
           placeholder=" Search Contacts..." />
       </div>
       <div class="flex items-center gap-2">
-        <SampleImport :columns="exportReadyColumns" />
+        <SampleImport :rows="exportSampleRows" :columns="exportReadyColumns" />
         <ImportNumberFile accept=".csv, .xls, .xlsx" v-model="selectedFile" @uploadDocument="fileUpload"
           :isLoading="isLoading" />
         <ExportButton v-model="exportDataHandler" :rows="exportReadyRows" :columns="exportReadyColumns"
@@ -140,6 +140,16 @@ const exportReadyColumns = computed(() => {
     "Number",
   ]
 })
+const exportSampleRows = computed(() => {
+   return [{ 
+      firstName: 'Tyker',
+      lastName: 'Flux',
+      email: 'admin@tykerflux.com',
+      countryCode: '91',
+      number: 9876543210,
+    }]
+})
+
 const isDataLoading = computed(() => status.value === "pending");
 const columnHelper = createColumnHelper<(typeof contactsList.value)[0]>();
 
@@ -246,7 +256,7 @@ const exportData = async () => {
           firstName: contacts?.contacts?.firstName ?? "",
           lastName: contacts?.contacts?.lastName ?? "",
           email: contacts?.contacts?.email ?? "",
-          countryCode: contacts?.contacts?.countryCode ?? "+91",
+          countryCode: contacts?.contacts?.countryCode?.replace('+', '') ?? "91",
           number: contacts?.contacts?.phone ?? "",
         };
       } else {
@@ -255,7 +265,7 @@ const exportData = async () => {
           firstName: contacts.firstName ?? "",
           lastName: contacts.lastName ?? "",
           email: contacts.email ?? "",
-          countryCode: contacts.countryCode ?? "+91",
+          countryCode: contacts.countryCode?.replace('+', '') ?? "91",
           number: contacts.phone ?? "",
         };
       }

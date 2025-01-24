@@ -42,15 +42,20 @@ import { Download } from "lucide-vue-next";
 
 const props = defineProps<{
   columns: string[]; // Expecting columns to be an array of strings
+  rows: any[];
 }>();
 
-function exportAsCSV() {
+const exportAsCSV = () => {
   const csvRows = [];
 
   // Headers
   const headers = props.columns;
   csvRows.push(headers.join(",")); // Join headers with commas
 
+  props.rows.forEach((item) => {
+    const values = Object.values(item).map((val) => val);
+    csvRows.push(values.join(","));
+  });
   // Create CSV Blob and trigger download
   const csvString = csvRows.join("\n");
   const blob = new Blob([csvString], { type: "text/csv" });

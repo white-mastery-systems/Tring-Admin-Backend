@@ -5,13 +5,13 @@
         OTP Verification
       </span>
     </div> -->
-    <div class="flex flex-col xl:w-[80%] lg:w-[90%] md:w-[80%] w-[90%] lg:px-6 px-0">
+    <div class="flex flex-col w-full xl:w-[80%] lg:w-[90%] md:w-[80%] lg:px-6 px-0">
       <!-- <div> -->
 
       <form @submit.prevent="onSubmit" class="space-y-5">
-        <TextField type="text" name="otp" label="OTP Verification" placeholder="Enter your OTP"
-          required disableCharacters helperText="OTP has been sent to your mail ID" />
-          <!-- <div class=" text-[#FFBC42] text-[14px] underline self-end cursor-pointer mt-3"
+        <TextField type="text" name="otp" label="OTP Verification" placeholder="Enter your OTP" required
+          disableCharacters helperText="OTP has been sent to your mail ID" />
+        <!-- <div class=" text-[#FFBC42] text-[14px] underline self-end cursor-pointer mt-3"
             :class="{ 'cursor-not-allowed': isResendDisabled }" @click="resendOTP" :disabled="isResendDisabled">
             <span v-if="!isResendDisabled">Resend OTP</span>
             <span v-else>Resend available in {{ countdownTime }}</span>

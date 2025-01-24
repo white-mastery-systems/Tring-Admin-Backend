@@ -8,7 +8,7 @@
           placeholder=" Search Contacts..." />
       </div>
       <div class="flex items-center gap-2">
-        <SampleImport :columns="exportReadyColumns" />
+        <SampleImport :rows="sampleRowsDate" :columns="exportReadyColumns" />
         <ImportNumberFile accept=".csv, .xls, .xlsx" v-model="selectedFile" @uploadDocument="fileUpload"
           :isLoading="isLoading" />
         <ExportButton v-model="exportDataHandler" :rows="exportReadyRows" :columns="exportReadyColumns"
@@ -138,6 +138,15 @@ const exportReadyColumns = computed(() => {
     "Verification Id",
   ]
 })
+const sampleRowsDate = computed(() => {
+  return [{
+    name: 'Tyker',
+    metadata: '--',
+    phone: 9876543210,
+    countryCode: '91',
+    verificationId: '--',
+  }]
+})
 const isDataLoading = computed(() => status.value === "pending");
 const columnHelper = createColumnHelper<(typeof contactsList.value)[0]>();
 
@@ -245,7 +254,7 @@ const exportData = async () => {
         return {
           name: contacts.contacts.name ?? "",
           metadata: contacts.contacts.metadata ?? "",
-          countryCode: contacts.contacts.countryCode ?? "+91",
+          countryCode: contacts.contacts.countryCode?.replace('+', '') ?? "91",
           phone: contacts.contacts.phone ?? "",
           // phone: ((contacts.contacts.countryCode ?? "+91") + contacts.contacts.phone) ?? "",
           verificationId: contacts.contacts.verificationId ?? "",
@@ -254,7 +263,7 @@ const exportData = async () => {
         return {
           name: contacts.name ?? "",
           metadata: contacts.metadata ?? "",
-          countryCode: contacts.countryCode ?? "+91",
+          countryCode: contacts.countryCode?.replace('+', '') ?? "91",
           phone: contacts.phone ?? "",
           verificationId: contacts.verificationId ?? "",
         }
