@@ -103,9 +103,9 @@
     </DropdownMenuTrigger>
     <DropdownMenuContent class="w-full">
       <DropdownMenuGroup>
-        <DropdownMenuItem @click="exportAsCSV">
+        <!-- <DropdownMenuItem @click="exportAsCSV">
           <span>Export as CSV</span>
-        </DropdownMenuItem>
+        </DropdownMenuItem> -->
         <DropdownMenuItem @click="exportToExcel">
           <span>Export as XLSX</span>
         </DropdownMenuItem>

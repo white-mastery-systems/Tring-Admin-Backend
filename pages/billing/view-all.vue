@@ -85,7 +85,7 @@ import { useFreeTrial } from '~/store/freeTrailStore'
   const chatBillingVariation = ref([
     { 
       _id: 1,
-      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹0" : '$0',
+      amount: ((userDetails.value.countryCode === "+91") && (userLocationDetails.value?.country === "IN")) ? "₹0" : '$0',
       status: "Lifetime",
       types: "Free",
       // benefitContent: "Unleash the power of automation.",
@@ -123,7 +123,7 @@ import { useFreeTrial } from '~/store/freeTrailStore'
     },
     {
       _id: 2,
-      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹1999" : "$29",
+      amount: ((userDetails.value.countryCode === "+91") && (userLocationDetails.value?.country === "IN")) ? "₹1999" : "$29",
       status: "Per Month",
       types: "Intelligence",
       listBenefit: false,
@@ -167,7 +167,7 @@ import { useFreeTrial } from '~/store/freeTrailStore'
     },
     {
       _id: 3,
-      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹6999" : "$99",
+      amount: ((userDetails.value.countryCode === "+91") && (userLocationDetails.value?.country === "IN")) ? "₹6999" : "$99",
       status: "Per Month",
       types: "Super Intelligence",
       listBenefit: false,
@@ -249,7 +249,7 @@ import { useFreeTrial } from '~/store/freeTrailStore'
   const voiceBillingVariation = ref([
     {
       _id: 1,
-      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹14999" : '$199',
+      amount: ((userDetails.value.countryCode === "+91") && (userLocationDetails.value?.country === "IN")) ? "₹14999" : '$199',
       status: "Per Month",
       types: "Fluent",
       // benefitContent: "Unleash the power of automation.",
@@ -291,7 +291,7 @@ import { useFreeTrial } from '~/store/freeTrailStore'
     },
     {
       _id: 2,
-      amount: ((userDetails.value.address.country === "India") && (userLocationDetails.value?.country === "IN")) ? "₹39999" : "$599",
+      amount: ((userDetails.value.countryCode === "+91") && (userLocationDetails.value?.country === "IN")) ? "₹39999" : "$599",
       status: "Per Month",
       types: "Lucid",
       listBenefit: false,
