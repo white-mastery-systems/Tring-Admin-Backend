@@ -9,15 +9,25 @@ const db = useDrizzle();
 const zodChatImportContacts = z.object({
   "First Name": z.string().min(1, "First Name is required"),
   "Last Name": z.string().optional(),
-  "Email": z.string().email("Invalid email format").optional(),
-  "Country Code": z.string().regex(/^\+?\d{1,4}$/, "Invalid country code format"),
+  "Email": z.string().optional(),
+  "Country Code": z.string()
+    .transform((val) => val.replace(/"/g, "").trim()) // Removes quotes and trims spaces
+    .transform((val) => val.replace(/\s+/g, "")) // Removes any internal spaces between the "+" and digits
+    .refine((val) => /^\+\d+$/.test(val), {   // Validates the format (e.g., +23)
+      message: "Invalid country code format",
+    }),
   "Number": z.any()
 });
 
 const zodVoiceImportsContacts = z.object({
   "Name": z.string().min(1, "Name is required"),
   "Phone": z.any(),
-  "Country Code": z.string(),
+  "Country Code":z.string()
+    .transform((val) => val.replace(/"/g, "").trim()) // Removes quotes and trims spaces
+    .transform((val) => val.replace(/\s+/g, "")) // Removes any internal spaces between the "+" and digits
+    .refine((val) => /^\+\d+$/.test(val), {   // Validates the format (e.g., +23)
+      message: "Invalid country code format",
+    }),
   "Metadata": z.string().optional(),
   "Verification Id": z.string().optional(),
 });
@@ -267,18 +277,6 @@ export const parseContactsFormDataFile = async ({ file, fileType, queryType } : 
 
     if (!parsedData || !parsedData.length) throw new Error("The uploaded file is empty");
 
-    // Define expected columns based on query type
-    const expectedColumns = queryType === "chat" 
-      ? ["First Name", "Last Name", "Email", "Country Code", "Number"]
-      : ["Name", "Phone", "Country Code", "Metadata", "Verification Id"];
-
-    const actualColumns = Object.keys(parsedData[0]);
-    const missingColumns = expectedColumns.filter(col => !actualColumns.includes(col));
-    const extraColumns = actualColumns.filter(col => !expectedColumns.includes(col));
-
-    if (missingColumns.length) throw new Error(`Missing columns - ${missingColumns.join(", ")}`);
-    if (extraColumns.length) throw new Error(`Extra columns - ${extraColumns.join(", ")}`);
-
     // Validate parsed data using Zod schema
     const validationResult = queryType === "chat"
       ? chatContactsArraySchema.safeParse(parsedData)
@@ -286,7 +284,19 @@ export const parseContactsFormDataFile = async ({ file, fileType, queryType } : 
 
     if (!validationResult.success) throw new Error("Validation errors in the imported file");
 
-    const validContactData = validationResult.data;
+    const validContactData = validationResult.data.map((contact: any) => {
+      if (queryType === "chat") {
+        return {
+          ...contact,
+          Number: contact.Number ? String(contact.Number) : null, // Convert Number to string
+        };
+      } else {
+        return {
+          ...contact,
+          Phone: contact.Phone ? String(contact.Phone) : null, // Convert Phone to string
+        };
+      }
+    });
 
     return validContactData;
   } catch (error: any) {
