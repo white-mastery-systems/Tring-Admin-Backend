@@ -51,7 +51,11 @@ export default defineEventHandler(async (event) => {
   }))
   const orgId = await isOrganizationAdminHandler(event);
   if (!orgId) {
-    return createError({ statusCode: 401, statusMessage: "Unauthorized" });
+    return createError({
+      statusCode: 401,
+      statusMessage:
+        "Unauthorized: Organization ID is missing. Please ensure you have valid access rights.",
+    });
   }
   const paymentData = await db.query.paymentSchema.findFirst({
     where: and(

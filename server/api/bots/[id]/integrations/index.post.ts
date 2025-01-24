@@ -31,12 +31,13 @@ export default defineEventHandler(async (event) => {
     )
   })
   
-  if(isExist) {
+  if (isExist) {
     return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "Integration already exists",
+        statusMessage:
+          "Integration Already Exists: The specified integration already exists. Please check if the integration is already added or use a different one.",
       }),
     );
   }

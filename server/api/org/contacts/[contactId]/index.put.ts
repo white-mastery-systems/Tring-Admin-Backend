@@ -34,12 +34,13 @@ export default defineEventHandler(async (event) => {
   ? await isChatContactsAlreadyExists(contactId, body?.phone)
   : await isVoicebotContactsAlreadyExists(contactId, body?.phone)
   
-  if(isAlreadyExists) {
-     return sendError(
+  if (isAlreadyExists) {
+    return sendError(
       event,
       createError({
         statusCode: 400,
-        statusMessage: "phone number already exists",
+        statusMessage:
+          "Phone Number Already Exists: The provided phone number is already registered. Please use a different phone number or check for duplicates.",
       }),
     );
   }

@@ -30,12 +30,13 @@ export default defineEventHandler(async (event) => {
     )
   })
 
-  if(isAlreadyExists) {
+  if (isAlreadyExists) {
     return sendError(
       event,
       createError({
-         statusCode: 400,
-         statusMessage: "Provider is already exists",
+        statusCode: 400,
+        statusMessage:
+          "Provider Already Exists: The specified provider is already registered. Please use a different provider or check for duplicates.",
       }),
     );
   }

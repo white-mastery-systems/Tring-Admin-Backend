@@ -12,7 +12,11 @@ export default defineEventHandler(async (event) => {
   );
   const orgId = await isOrganizationAdminHandler(event);
   if (!orgId) {
-    return createError({ statusCode: 401, statusMessage: "Unauthorized" });
+    return createError({
+      statusCode: 401,
+      statusMessage:
+        "Unauthorized: Organization ID is missing. Please ensure you have valid access rights.",
+    });
   }
   try {
     const zohoData: any = await db.query.adminConfigurationSchema.findFirst({
@@ -34,7 +38,11 @@ export default defineEventHandler(async (event) => {
     if (!userId) {
       return sendError(
         event,
-        createError({ statusCode: 404, statusMessage: "Invalid User" }),
+        createError({
+          statusCode: 404,
+          statusMessage:
+            "User Not Found: The specified user could not be found. Please check the user ID.",
+        }),
       );
     }
     billingLogger.info(`addon.post, hostedPageData: ${JSON.stringify(hostedPageData)}`)

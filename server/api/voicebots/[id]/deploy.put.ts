@@ -19,12 +19,13 @@ export default defineEventHandler(async (event) => {
         eq(voicebotSchema.id, voicebotId)
       )
     })
-    if(!voiceBotIvr) {
+    if (!voiceBotIvr) {
       return sendError(
         event,
-        createError({ 
-          statusCode: 400, 
-          statusMessage: "Please add ivr config to active bot" 
+        createError({
+          statusCode: 400,
+          statusMessage:
+            "IVR Configuration Missing: Please add an IVR configuration to the active bot before proceeding.",
         }),
       );
     }

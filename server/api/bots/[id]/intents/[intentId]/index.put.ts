@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
 
     const body: any = await isValidBodyHandler(event, zodIntentUpdate);
 
-    const isAreadyExists = await db.query.botIntentSchema.findFirst({
+    const isAlreadyExists = await db.query.botIntentSchema.findFirst({
       where: and(
         eq(botIntentSchema.botId, botId),
         eq(botIntentSchema.intent, body.intent),
@@ -37,17 +37,17 @@ export default defineEventHandler(async (event) => {
       )
     })
   
-    if(isAreadyExists) {
+    if (isAlreadyExists) {
       return sendError(
         event,
         createError({
           statusCode: 400,
-          statusMessage: "Intent name already exists",
+          statusMessage:
+            "Intent Name Already Exists: The provided intent name is already in use. Please choose a different name or check for duplicates.",
         }),
       );
     }
 
-  
 
     const updateIntent = await updateBotIntent(botId, intentId, body);
 

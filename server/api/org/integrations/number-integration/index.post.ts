@@ -22,14 +22,15 @@ export default defineEventHandler(async (event) => {
 
    const isAlreadyExists = await getExophoneByProvider(body.provider, organizationId)
 
-   if(isAlreadyExists) {
-      return sendError(
-         event,
-         createError({
-            statusCode: 400,
-            statusMessage: "Provider is already exists",
-         }),
-      );
+   if (isAlreadyExists) {
+     return sendError(
+       event,
+       createError({
+         statusCode: 400,
+         statusMessage:
+           "Provider Already Exists: A provider with the same details already exists. Please check and use a different provider or modify the current one.",
+       }),
+     );
    }
   
    const creation = await createNumberIntegration({

@@ -123,10 +123,11 @@ export default defineEventHandler(async (event) => {
             toast(
               "Failed to register phone. Please ensure 2FA is enabled for the owner.",
             );
-            return createError({
-              statusCode: 400,
-              statusMessage: "2FA failed,make sure to use 2FA of owner",
-            });
+           return createError({
+             statusCode: 400,
+             statusMessage:
+               "2FA Failed: Ensure you are using the correct 2FA details of the account owner. Double-check the credentials and try again.",
+           });
           }
         }
       } catch (err) {
