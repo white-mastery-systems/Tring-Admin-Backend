@@ -93,13 +93,13 @@ export const runHostedPageApi: any = async ({ accessToken, user, organizationId,
             },
              ...(process.env.ENV_TYPE !== "stage" && {
               gst_no: orgDetails?.metadata?.gst,
-              gst_treatment: "business_gst",
+              gst_treatment: orgDetails?.metadata?.gstType || "business_gst",
             })
           },
         }),
         ...(process.env.ENV_TYPE !== "stage" && {
           gst_no: orgDetails?.metadata?.gst,
-          gst_treatment: "business_gst",
+          gst_treatment: orgDetails?.metadata?.gstType || "business_gst",
           place_of_supply: getStateCode(userDetails?.address?.state),
         }),
         contactpersons: contactPersonIdList,
