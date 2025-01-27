@@ -15,7 +15,8 @@ const bodyValidator = z
     industry: z.string().min(1).optional(),
     logo: z.record(z.any()).optional(),
     gst: z.string().optional(),
-    otherRole: z.string().optional()
+    otherRole: z.string().optional(),
+    gstType: z.string().optional()
   })
   .passthrough();
 
@@ -78,7 +79,8 @@ export default defineEventHandler(async (event) => {
     metadata: {
       industry: body?.industry,
       otherRole: body?.otherRole,
-      gst: body?.gst
+      gst: body?.gst,
+      gstType: body?.gstType
     }
   }
 
