@@ -87,7 +87,10 @@ export const listChats = async (
         ? between(chatSchema.createdAt, fromDate, toDate)
         : undefined,
       query?.botUserName === "interacted"
-        ? eq(chatSchema.interacted, true)
+        ? and(
+          eq(chatSchema.interacted, true),
+          eq(chatSchema.mode, "live")
+        )
         : undefined,
       query?.botUserName === "live" ? eq(chatSchema.mode, "live") : undefined,
       query?.botUserName === "preview"
