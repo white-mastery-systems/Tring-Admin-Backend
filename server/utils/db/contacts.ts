@@ -16,7 +16,14 @@ function getPhoneLengthByCountry(countryCode: string | number) {
 const zodChatImportContacts = z.object({
   "First Name": z.string().min(1, "First Name is required"),
   "Last Name": z.string().optional(),
-  "Email": z.string().optional(),
+  "Email": z
+   .string()
+    .optional()
+    .transform((val) => (val === "" ? null : val)) // Transform "" to null
+    .nullable()
+    .refine((val) => val === null || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), {
+      message: "Invalid email format",
+    }),
   "Country Code": z.union([
     z.string()
       .refine((val) => /^\d+$/.test(val), { // Validate only digits

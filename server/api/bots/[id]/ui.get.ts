@@ -42,6 +42,7 @@ export default defineEventHandler(async (event) => {
         gte(chatSchema.createdAt, startDate),
         lte(chatSchema.createdAt, endDate),
         eq(chatSchema.interacted, true),
+        eq(chatSchema.mode, "live"),
         eq(chatSchema.organizationId, bot.organizationId),
       ),
   })

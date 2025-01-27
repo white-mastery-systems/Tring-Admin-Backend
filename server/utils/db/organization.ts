@@ -366,6 +366,7 @@ const handleChatTypeBilling = async (
           gte(chatSchema.createdAt, startDate),
           lte(chatSchema.createdAt, endDate),
           eq(chatSchema.interacted, true),
+          eq(chatSchema.mode, "live"),
           eq(chatSchema.organizationId, organizationId),
         ),
       })
@@ -702,6 +703,7 @@ export const getAnalytics = async (
               gte(chatSchema.createdAt, fromDate),
               lte(chatSchema.createdAt, toDate),
               eq(chatSchema.interacted, true),
+              eq(chatSchema.mode, "live"),
               eq(chatSchema.organizationId, organizationId),
             ),
           ),
@@ -752,6 +754,7 @@ export const getAnalytics = async (
             gte(chatSchema.createdAt, previousFromDate),
             lte(chatSchema.createdAt, previousToDate),
             eq(chatSchema.interacted, true),
+            eq(chatSchema.mode, "live"),
             eq(chatSchema.organizationId, organizationId),
           ),
         ),
