@@ -13,7 +13,7 @@ export const createZohoCustomer: any = async (metaData: any, customerDetails: an
       first_name: firstName,
       last_name: lastName,
       email: customerDetails?.email,
-      mobile: customerDetails?.mobile,
+      mobile: `${customerDetails?.countryCode} ${customerDetails.mobile}`,
       // currency_code: customerDetails?.address.country === "India" ? "INR" : "USD",
       billing_address: {
         attention: customerDetails?.username,
@@ -83,7 +83,7 @@ export const updateZohoCustomer: any = async (customerId: string, metaData: any,
       first_name: firstName,
       last_name: lastName,
       email: customerDetails?.email,
-      mobile: customerDetails?.mobile,
+      mobile: `${customerDetails?.countryCode} ${customerDetails.mobile}`,
       currency_code: customerDetails?.address.country === "India" ? "INR" : "USD",
       billing_address: {
         attention: customerDetails?.username,
