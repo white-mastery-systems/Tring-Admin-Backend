@@ -2,15 +2,9 @@ import { inArray } from "drizzle-orm";
 import { InsertVoicebotContacts } from "~/server/schema/admin";
 import { logger } from "~/server/logger"
 import { z } from "zod";
-import { phoneLength } from "../phonenumberLength";
+import { getPhoneLengthByCountry } from "../phonenumberLength";
 
 const db = useDrizzle();
-
-// Function to get valid phone length for a given country code
-function getPhoneLengthByCountry(countryCode: string | number) {
-  const countryData = phoneLength.find(item => item.phone === countryCode);
-  return countryData ? countryData.phoneLength : null;
-}
 
 // Define the Zod schema for a single contact
 const zodChatImportContacts = z.object({
