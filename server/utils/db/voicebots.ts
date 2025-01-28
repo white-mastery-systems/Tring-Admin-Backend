@@ -1,8 +1,7 @@
 import momentTz from "moment-timezone";
-import { InsertVoicebotSchedular, outboundCallSchema, voicebotLeadSchema, voicebotSchedularSchema } from "~/server/schema/voicebot";
+import { voicebotLeadSchema, voicebotSchedularSchema } from "~/server/schema/voicebot";
 
 const db = useDrizzle();
-
 interface listVoicebotQuery {
   active?: string;
   q?: string;
@@ -60,8 +59,6 @@ export const listVoicebots = async (
   } else {
     return data;
   }
-
-  return data;
 };
 
 export const getVoicebot = async (voicebotId: string) => {
@@ -261,7 +258,7 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
 
   voicebotLeads = voicebotLeads.map((i: any) => ({
     ...i,
-    scheduledDate: momentTz(i.scheduledDate).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    scheduledDate: i.scheduledDate && momentTz(i.scheduledDate).tz(timeZone).format("DD MMM YYYY hh:mm A"),
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
   
@@ -341,7 +338,7 @@ export const scheduledCampaignCallList = async (organizationId: string, campaign
     }
   }
 
-  let data = await db.query.voicebotSchedularSchema.findMany({
+  let data: any = await db.query.voicebotSchedularSchema.findMany({
     with: {
       bot: { columns: { name: true } },
       bucket: { columns: { name: true } },
@@ -364,7 +361,7 @@ export const scheduledCampaignCallList = async (organizationId: string, campaign
     orderBy: [desc(voicebotSchedularSchema.createdAt)],
   })
 
-  data = data.map((i) => ({
+  data = data.map((i: any) => ({
     ...i,
     bucket: i.bucket.name,
     bot: i.bot.name,
@@ -373,7 +370,7 @@ export const scheduledCampaignCallList = async (organizationId: string, campaign
   }))
 
   if(query.q) {
-    data = data.filter((i) => i.contact !== null )
+    data = data.filter((i: any) => i.contact !== null )
   }
 
   if (query?.page && query?.limit) {
