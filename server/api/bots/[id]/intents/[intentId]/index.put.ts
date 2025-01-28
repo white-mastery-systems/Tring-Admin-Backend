@@ -7,6 +7,7 @@ const zodIntentUpdate = z.object({
   emailRecipients: z.array(z.string()).optional(),
   isEmailEnabled: z.boolean().optional(),
   link: z.string().url().min(5, "Link too short").optional(),
+  uploads: z.array(z.any()).optional(),
 }).refine((data) => {
   // Require `link` only when intent is "location" or "virtual_tour"
   if (["location", "virtual_tour"].includes(data?.intent)) {

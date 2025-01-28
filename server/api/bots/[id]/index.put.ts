@@ -17,6 +17,10 @@ WHERE channels->>'whatsapp' = ${body?.channels?.whatsapp};
     );
     console.log({ data });
   }
+  
+  if(body?.emailRecipients) {
+    body.emailRecipients = [...new Set(body?.emailRecipients)]
+  }
 
   let botDetails: any = await getBotDetails(botId);
   let metaData: any = botDetails?.metadata;
