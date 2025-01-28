@@ -1,3 +1,5 @@
+import { getPhoneLengthByCountry } from "~/server/utils/phonenumberLength"
+
 export default defineEventHandler(async (event) => {
   const query = await isValidQueryHandler(event, z.object({
    orgId: z.string()
@@ -6,6 +8,7 @@ export default defineEventHandler(async (event) => {
   const orgUserDetails = await getAdminByOrgId(query.orgId)
 
   return {
-    countryCode: orgUserDetails?.countryCode
+    countryCode: orgUserDetails?.countryCode,
+    phonenumberLength: orgUserDetails?.countryCode && getPhoneLengthByCountry(orgUserDetails?.countryCode?.slice(1))
   } 
 })

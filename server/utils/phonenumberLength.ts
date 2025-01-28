@@ -1,3 +1,9 @@
+// Function to get valid phone length for a given country code
+export const getPhoneLengthByCountry = (countryCode: string) => {
+  const countryData = phoneLength.find(item => item.phone === countryCode);
+  return countryData ? countryData.phoneLength : null;
+}
+
 export const phoneLength = [
   { code: "AD", label: "Andorra", phone: "376", phoneLength: 6 },
   { code: "AE", label: "United Arab Emirates", phone: "971", phoneLength: 9 },
