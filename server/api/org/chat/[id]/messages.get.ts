@@ -3,16 +3,22 @@ import { getMessages } from "~/server/utils/db/chats"
 const db = useDrizzle()
 
 export default defineEventHandler(async (event) => {
-  //  await isOrganizationAdminHandler(event)
+   //  await isOrganizationAdminHandler(event)
+   const timeZoneHeader = event.node?.req?.headers["time-zone"];
+   const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
 
    const { id: chatId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
+
+   const query = await isValidQueryHandler(event, z.object({
+    siteVisit: z.string().optional()
+   }))
 
    // get bot user Id 
    const botUser: any  = await db.query.chatSchema.findFirst({
      where: eq(chatSchema.id, chatId)
    })
 
-   const data = await getMessages(chatId, botUser?.botUserId)
+   const data = await getMessages(chatId, botUser?.botUserId, query, timeZone)
 
    return data
 })

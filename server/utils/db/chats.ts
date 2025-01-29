@@ -20,7 +20,10 @@ export const getChatDetails = async (chatId: string) => {
   });
 };
 
-export const getMessages = async (chatId: string, botUserId: string) => {
+export const getMessages = async (chatId: string, botUserId: string, query: any, timeZone: string) => {
+  const startDateTime = momentTz().tz(timeZone).subtract(1, "hour").toDate()
+  const endDateTime = momentTz().tz(timeZone).toDate()
+  
   let list: any = await db.query.chatSchema.findMany({
     where: botUserId
       ? or(
@@ -35,7 +38,10 @@ export const getMessages = async (chatId: string, botUserId: string) => {
         columns: { id: true, status: true },
       },
       messages: {
-        where: eq(messageSchema.status, true),
+        where: and(
+          eq(messageSchema.status, true),
+          query.siteVisit === "true" ? between(messageSchema.createdAt, startDateTime, endDateTime) : undefined,
+        ),
         orderBy: asc(messageSchema.createdAt),
       },
     },
