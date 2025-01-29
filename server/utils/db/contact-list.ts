@@ -109,10 +109,19 @@ export const getAllChatContactLink = async (organizationId: string) => {
   });
 };
 
-export const getContactsByChatBucketId = async (contactListId: string) => {
-  return await db.query.contactListContactsSchema.findMany({
+export const getContactsByChatBucketId = async (contactListId: string, query?: any) => {
+  let data = await db.query.contactListContactsSchema.findMany({
     with: {
-      contacts: true,
+      contacts: {
+        where: query.q ?
+        or(
+          ilike(contactSchema.firstName, `%${query.q}%`),
+          ilike(contactSchema.lastName, `%${query.q}%`),  
+          ilike(contactSchema.email, `%${query.q}%`),
+          ilike(contactSchema.phone, `%${query.q}%`)
+        )
+        : undefined, 
+      },
       bucket: {
         columns: {
           name: true,
@@ -121,6 +130,9 @@ export const getContactsByChatBucketId = async (contactListId: string) => {
     },
     where: eq(contactListContactsSchema.contactListId, contactListId),
   });
+
+  data = data.filter((i) => i.contacts !== null)
+  return data;
 };
 
 // Voice contact link
@@ -133,10 +145,16 @@ export const getAllVoiceContactLink = async (organizationId: string) => {
   });
 };
 
-export const getContactsByVoiceBucketId = async (contactListId: string) => {
-  return await db.query.voiceContactLinkSchema.findMany({
+export const getContactsByVoiceBucketId = async (contactListId: string, query?: any) => {
+  let data = await db.query.voiceContactLinkSchema.findMany({
     with: {
-      contacts: true,
+      contacts: {
+        where: query.q ?  or(
+        ilike(voicebotContactSchema.name, `%${query.q}%`),
+        ilike(voicebotContactSchema.phone, `%${query.q}%`),
+      )
+      : undefined
+      },
       bucket: {
         columns: {
           name: true,
@@ -145,6 +163,10 @@ export const getContactsByVoiceBucketId = async (contactListId: string) => {
     },
     where: eq(voiceContactLinkSchema.contactListId, contactListId),
   });
+
+  data = data.filter((i) => i.contacts !== null)
+
+  return data;
 };
 
 export const getContactsByChatbotBucketId = async (contactListId: string) => {
