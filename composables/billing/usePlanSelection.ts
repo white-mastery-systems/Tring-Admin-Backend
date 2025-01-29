@@ -2,7 +2,7 @@ import { navigateTo } from 'nuxt/app';
 import { useUserDetails } from './useUserDetails';
 import { useBillingVariation } from './useBillingVariation';
 
-const { userDetails, userLocationDetails } = await useUserDetails();
+const { userDetails, userLocationDetails } = useUserDetails();
 const { billingVariation } = useBillingVariation(userDetails.value, userLocationDetails.value,);
 
 export function usePlanSelection(userDetails: any, orgBilling: any, route: any, onBoardingAccount: any) {
