@@ -1,20 +1,22 @@
 <template>
+  <!-- flex items-center -->
   <div class="min-h-screen overflow-auto">
     <form @submit="handleAccountUpdate" class="flex flex-col gap-2 p-1">
-      <div class="w-[49%] sm:w-[49%] md:w-[12%] lg:w-[12%] xl:w-[12%]">
+      <div v-show="props.personalControl" class="w-[49%] sm:w-[49%] md:w-[12%] lg:w-[12%] xl:w-[12%]">
         <FileUpload @change="handleLogoChange" name="logo" label="Upload Image" :required="true" :accept="'image/*'"
           :url="values.logo.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
           :helperText="'Only files up to 5MB can be uploaded.'" />
       </div>
-      <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
+      <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight" v-show="props.personalControl">
         Personal Information
       </h3>
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-2 gap-2" v-show="props.personalControl">
         <TextField name="username" label="Full Name" required placeholder="Enter your full name" />
         <TextField type="email" name="email" label="Email address" helperText="" required
           placeholder="Enter your email address" />
       </div>
-      <div class="grid grid-cols-1 gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+      <div v-show="props.personalControl"
+        class="grid grid-cols-1 gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
         <TextField type="text" name="metadata.businessName" label="Business Name" placeholder="Enter Your Business Name"
           :required="true" />
         <div class="flex gap-2 w-full">
@@ -45,11 +47,12 @@
         <div v-if="values.industry === 'Other'">
           <TextField type="text" name="otherRole" label="Other Industry" :required="true" />
         </div>
-
-        <div class="mt-2">
-          <TextField type="text" name="gst" label="GST" helperText="Enter your 15-digit GSTIN"
-            placeholder="Enter Your Gst" required />
-        </div>
+        <SelectField name="gstType" label="GST Type" placeholder="Select GST Type" :options="gstTypes" :required="true"
+          helperText="Choose the GST type applicable to your business." />
+        <TextField v-if="values.gstType === 'business_gst'" type="text" name="gst" label="GST" helperText="Enter your 15-digit GSTIN"
+          placeholder="Enter Your Gst" required />
+        <!-- <div class="flex gap-2 mt-2">
+        </div> -->
       </div>
       <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
         Address Information
@@ -84,12 +87,29 @@
         </UiButton>
       </div>
     </form>
+    <div v-if="(currentRoute === 'onboarding/account')"
+      class="flex items-center justify-end w-full cursor-pointer text-[#8080809c] pt-3 pr-1">
+      <div @click="proceedLogin()" class="flex items-center gap-2">
+        <span class="flex items-center">
+          Skip
+        </span>
+        <ArrowRight class="w-5 h-5" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { accountSchema } from "~/validationSchema/account/accountSchema";
 import { useOrgDetailsStore } from "~/store/orgDetailsStore";
+import { ArrowRight } from 'lucide-vue-next'
+import { useRouter } from 'vue-router';
+import { helpers } from "handlebars";
+
+const props = withDefaults(defineProps<{ personalControl?: boolean }>(), {
+  personalControl: true,
+});
+const router = useRouter();
 
 const industry = [
   "Government Sectors",
@@ -104,6 +124,29 @@ const industry = [
   "Education",
   "Other",
 ];
+const gstTypes = [
+  {
+    label: "Registered Business - Regular",
+    value: "business_gst",
+    helperText: "Business that is registered under GST"
+  },
+  {
+    label: "Unregistered Business",
+    value: "business_none",
+    helperText: "Business that has not been registered under GST"
+  },
+  {
+    label: "Consumer",
+    value: "consumer",
+    helperText: "A customer who is a regular consumer"  
+  },
+  {
+    label: "Overseas",
+    value: "overseas",
+    helperText: "Persons with whom you do import or export of supplies outside india"
+  }
+];
+
 const useOrgDetails = useOrgDetailsStore();
 
 const {
@@ -124,12 +167,15 @@ const logoData = ref("");
 const isLoading = ref(false);
 const { user, refreshUser }: { user: any; refreshUser: any } =
   await useUser();
+if (!user.value) {
+  console.log("No user");
+  user.value = await getUserDetail();
+}
 // const { orgDetails } = await fetch("/api/org", {
 //   method: "GET",
 // });
+console.log(user.value, "user")
 const { orgDetails } = await $fetch('/api/org')
-console.log(orgDetails, "orgDetails")
-console.log(user.value, "user -- user")
 setFieldValue("countryCode", user?.value?.countryCode ?? "+91");
 setFieldValue("username", user?.value?.username ?? "");
 setFieldValue("email", user?.value?.email ?? "");
@@ -141,7 +187,7 @@ setFieldValue("address.country", user?.value?.address?.country ?? "");
 setFieldValue("address.zipCode", user?.value?.address?.zipCode ?? "");
 setFieldValue("metadata.role", user?.value?.metadata?.role ?? "");
 setFieldValue("metadata.otherRole", user?.value?.metadata?.otherRole ?? "");
-setFieldValue("metadata.businessName", user?.value?.metadata?.businessName ?? "");
+setFieldValue("metadata.businessName", user?.value?.metadata?.businessName ? user?.value?.metadata?.businessName : orgDetails?.name ?? "");
 setFieldValue("name", orgDetails?.name ?? "");
 setFieldValue("industry", orgDetails?.metadata?.industry ?? "");
 setFieldValue("logo", orgDetails?.logo ?? "");
@@ -149,9 +195,13 @@ if (orgDetails?.metadata?.industry === "Other") {
   setFieldValue("otherRole", orgDetails?.metadata?.otherRole ?? "");
 }
 if (orgDetails?.metadata?.gst)
-  setFieldValue("gst", orgDetails?.metadata?.gst ?? "");
+setFieldValue("gst", orgDetails?.metadata?.gst ?? "");
+setFieldValue("gstType", orgDetails?.metadata?.gstType ?? "");
 // if (orgDetails?.metadata?.industry === "Other") {
 // }
+watch(errors, (newErrors) => {
+  console.log(newErrors, "newErrors - -newErrors");
+})
 const handleLogoChange = async (event: any) => {
   logoData.value = event[0];
 
@@ -192,6 +242,12 @@ const handleAccountUpdate = handleSubmit(async (value: any) => {
   isLoading.value = false;
 });
 
+const currentRoute = computed(() => {
+  const fullPath = router.options.history.state.current
+  if (!fullPath) return '';
+  return fullPath.split('/auth/')[1] || '';
+});
+
 const roles = [
   "Business Owner",
   "Product Manager",
@@ -199,4 +255,10 @@ const roles = [
   "Developer",
   "Other",
 ];
+
+const proceedLogin = async () => {
+  console.log("proceedLogin");
+  // refreshUser();
+  navigateTo("/");
+};
 </script>

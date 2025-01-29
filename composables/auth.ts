@@ -1,6 +1,8 @@
 import type { User } from "lucia";
+import { useRoute } from "vue-router";
 
 export const useUser = async () => {
+  const route = useRoute();
   const user = ref<User | null>(
     JSON.parse(localStorage.getItem("user") || "null"),
   );
@@ -14,19 +16,49 @@ export const useUser = async () => {
     user.value = null;
     localStorage.clear();
   };
+
   const refreshUser = async () => {
     try {
       const data = await getUserDetail();
       if (data) {
-        const storedUser: any = localStorage.getItem("user");
+        console.log(data, "data");
+
+        // Update user details in localStorage
+        const storedUser = localStorage.getItem("user");
         user.value = storedUser ? JSON.parse(storedUser) : null;
         localStorage.setItem("user", JSON.stringify(data));
-        navigateTo("/");
+
+        // Fetch or update orgDetails
+        let formattedOrgDetails = JSON.parse(localStorage.getItem("orgDetails") || "null");
+        if (!formattedOrgDetails) {
+          console.log("Fetching orgDetails");
+          const { orgDetails } = await companyDetails();
+          formattedOrgDetails = orgDetails
+          localStorage.setItem("orgDetails", JSON.stringify(formattedOrgDetails));
+        }
+
+
+        // Handle navigation based on orgDetails
+        console.log("formattedOrgDetails top", formattedOrgDetails)
+        if (formattedOrgDetails?.planCode === 'chat_free') {
+          console.log("Free plan", formattedOrgDetails);
+          if (formattedOrgDetails?.metadata?.gst) {
+            navigateTo("/billing/view-all");
+          } else {
+            if (route?.name !== 'auth-onboarding-account') {
+              navigateTo("/");
+            }
+          }
+        } else {
+          navigateTo("/");
+        }
       } else {
+        toast.error("Invalid credentials");
         localStorage.clear();
         navigateTo("/auth/sign-in");
       }
     } catch (error) {
+      toast.error("Error logging in");
       console.error("Error refreshing user:", error);
       localStorage.clear();
       navigateTo("/auth/sign-in");

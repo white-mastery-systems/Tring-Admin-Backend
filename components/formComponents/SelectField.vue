@@ -24,7 +24,7 @@
               <UiSelectItem :value="option.value" class="flex justify-start">
                 {{ option.label }}
               </UiSelectItem>
-              <span v-if="option?.helperText" class="mx-2 text-xs italic text-gray-500">{{ option?.helperText }}</span>
+              <span v-if="option?.helperText" class="mx-2 text-xs italic text-gray-500 py-0">{{ option?.helperText }}</span>
 
             </template>
           </UiSelectContent>
