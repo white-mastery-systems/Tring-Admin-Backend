@@ -1,4 +1,5 @@
 import momentTz from "moment-timezone"
+import { getInteractedSessions } from "~/server/utils/db/chats";
 
 const db = useDrizzle();
 
@@ -37,15 +38,7 @@ export default defineEventHandler(async (event) => {
   }
   
   // get interacted chats 
-  const interactedSessions = await db.query.chatSchema.findMany({
-      where: and(
-        gte(chatSchema.createdAt, startDate),
-        lte(chatSchema.createdAt, endDate),
-        eq(chatSchema.interacted, true),
-        eq(chatSchema.mode, "live"),
-        eq(chatSchema.organizationId, bot.organizationId),
-      ),
-  })
+  const interactedSessions = await getInteractedSessions(bot.organizationId, startDate, endDate)
 
   const usedSessions = interactedSessions.length 
   const maxSessions = planDetails.sessions
