@@ -96,7 +96,7 @@ const orgBillingDetails = ref(null);
 const formattedUserDetails = ref(null);
 
 // Fetch user details
-const { userDetails, userLocationDetails } = await useUserDetails();
+const { userDetails, userLocationDetails } = useUserDetails();
 
 // Get billing information
 const { orgBilling, isPageLoading } = useBillingComposable();
