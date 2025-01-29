@@ -2,6 +2,7 @@
 import SignUpSuccessIcon from '~/components/icons/SignUpSuccessIcon.vue';
 definePageMeta({
   layout: "sign-up-success",
+  middleware: "guest-only",
 });
 
 const proceedLogin = async () => {

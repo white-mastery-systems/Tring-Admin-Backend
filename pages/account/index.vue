@@ -17,7 +17,7 @@
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="PersonalDetails">
-        <PersonalDetails />
+        <PersonalDetails :personalControl="true" />
       </UiTabsContent>
       <!-- <UiTabsContent value="companyDetails">
         <CompanyDetails />
@@ -44,9 +44,9 @@
 definePageMeta({
   middleware: "user",
 });
-  useHead({
-    title: "Account",
-  });
+useHead({
+  title: "Account",
+});
 
   const logoutModal = ref(false);
   const route = useRoute();
