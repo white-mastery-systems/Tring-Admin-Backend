@@ -120,12 +120,7 @@ const onSubmit = handleSubmit(async (values: any) => {
   });
 
   // Navigate to success page
-  navigateTo("/signUpSuccess");
-  // emit('next', {
-  //   name: props.formData.name,
-  //   role: props.formData.role,
-  //   otherRole: props.formData.otherRole,
-  // });
+  navigateTo("/auth/onboarding/billing");
   isLoading.value = false
 });
 </script>

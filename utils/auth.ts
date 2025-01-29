@@ -1,5 +1,11 @@
 import { toast } from "vue-sonner";
 
+
+interface UserResponse {
+  refreshUser: () => Promise<void>; // Replace with the actual type of `refreshUser`
+}
+
+
 export enum AuthRoles {
   Guest = "guest",
   User = "user",
@@ -7,23 +13,25 @@ export enum AuthRoles {
 }
 
 export type AuthRoleMiddlewares =
-  | "guest-only"
-  | "user-only"
-  | "admin-only"
-  | "guest"
-  | "user"
-  | "admin";
+| "guest-only"
+| "user-only"
+| "admin-only"
+| "guest"
+| "user"
+| "admin";
 
 const login = async (values: Record<string, any>) => {
+  const { refreshUser }: UserResponse = await useUser();
   try {
     const data: any = await $fetch("/api/auth/sign-in", {
       method: "post",
       body: values,
     });
-    (await useUser()).refreshUser();
+    await refreshUser()
+    // (await useUser()).refreshUser();
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
-    if (error?.statusMessage === "User not verified") {
+    if (error?.statusMessage === "User not verified. Please verify your account to proceed.") {
       localStorage.setItem("userDetails", JSON.stringify(error?.data.data))
       return navigateTo("/auth/verify-otp");
     }

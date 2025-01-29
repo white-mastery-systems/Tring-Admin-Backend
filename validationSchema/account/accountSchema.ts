@@ -28,14 +28,15 @@ export const accountSchema = toTypedSchema(
       industry: z
         .string({ required_error: "Industry is required" })
         .min(2, "Industry must be provided."),
+      gstType: z.string({ required_error: "GST Type is required" }).min(2, "GST Type is required"),
       gst: z
         .string()
         .max(15, "GST number must be 15 characters")
         .min(15, "GST number must be 15 characters")
-        .optional()
-        .refine((val) => (val?.length > 0 ? val?.length === 15 : false), {
-          message: "GST number must be exactly 15 characters if provided",
-        }),
+        .optional(),
+        // .refine((val) => (val?.length > 0 ? val?.length === 15 : false), {
+        //   message: "GST number must be exactly 15 characters if provided",
+        // }),
       logo: z.object({}).optional(),
       email: z
         .string({ required_error: "Email is required" })
@@ -90,6 +91,15 @@ export const accountSchema = toTypedSchema(
           path: ["metadata", "otherRole"], // Field with the issue
         });
       }
+      // console.log(data.gstType === "business_gst", "validation")
+      // Conditionally require GST if GST Type is provided
+      if ((data.gstType === "business_gst") && data.gstType.length > 0 && (!data.gst || data.gst.length !== 15)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "GST number is required and must be 15 characters.",
+            path: ["gst"], // Field with the issue
+          });
+        }
     }),
     // .refine((data) => data.password === data.confirmPassword, {
     //   message: "Passwords do not match.",
