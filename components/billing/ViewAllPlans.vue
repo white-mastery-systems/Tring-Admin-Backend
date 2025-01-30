@@ -1,9 +1,11 @@
 <template>
+
   <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page title="Billing" :description="true" :disableSelector="true" 
-    :customBackRouter="router.options.history.state.back" :disable-back-button="(currentRoute === 'onboarding/billing')">
+  <Page v-else title="Billing" :description="true" :disableSelector="true" customBackRouter="/Billing"
+    :disable-back-button="(currentRoute === 'onboarding/billing')">
+    <!-- router.options.history.state.back -->
     <div :class="[
         'grid gap-4 px-2.5 py-0',
         route.query.type === 'voice'
@@ -12,11 +14,11 @@
       ]">
       <div :class="[
           'main_card_align field_shadow relative flex flex-col justify-between rounded-[13px] border-2 bg-[#ffffff] p-5 hover:border-yellow-500',
-          orgBillingDetails?.plan_code === list.plan_code
+          orgBilling?.plan_code === list.plan_code
             ? 'border-2 border-yellow-500'
             : '',
           'w-full',
-        ]" v-for="(list, index) in billingVariation" :key="index">
+        ]" v-for="(list, index) in billingVariationDetails" :key="index">
         <div class="mb-[30px] text-[23px] font-bold text-[#424bd1]">
           {{ list.types }}
         </div>
@@ -51,18 +53,20 @@
         <UiButton variant="outline"
           class="rounded-lg border border-indigo-700 px-4 py-2 font-semibold text-indigo-800 hover:border-transparent hover:bg-indigo-700 hover:text-white"
           :class="[
-            orgBillingDetails?.plan_code === list.plan_code
+            orgBilling?.plan_code === list.plan_code
               ? 'bg-indigo-700 text-white'
               : '',
           ]" @click="choosePlan(list.plan_code)" :disabled="list.plan_code?.includes('chat_free')">
           {{
-          orgBillingDetails?.plan_code === list.plan_code ? (orgBillingDetails?.plan_code === 'chat_free') ? "Current Plan" : "Subscribed" : findPlanLevel({ list, current: orgBillingDetails?.plan_code })
+          orgBilling?.plan_code === list.plan_code ? (orgBilling?.plan_code === 'chat_free') ? "Current Plan" :
+          "Subscribed" : findPlanLevel({ list, current: orgBilling?.plan_code })
           }}
         </UiButton>
       </div>
     </div>
   </Page>
-  <div v-if="(currentRoute === 'onboarding/billing')" class="flex items-center justify-end w-[90%] cursor-pointer text-[#8080809c] pt-1">
+  <div v-if="(currentRoute === 'onboarding/billing') && !isPageLoading"
+    class="flex items-center justify-end w-[90%] cursor-pointer text-[#8080809c] pt-1">
     <div @click="proceedLogin()" class="flex items-center gap-2">
       <span class="flex items-center">
         Skip
@@ -77,7 +81,7 @@ definePageMeta({
 });
 
 import { useBillingVariation } from '~/composables/billing/useBillingVariation';
-import { useUserDetails } from '~/composables/billing/useUserDetails';
+import { useUserDetailsComposable } from '~/composables/billing/useDetails';
 import { usePlanSelection } from '~/composables/billing/usePlanSelection';
 import { useRoute, useRouter } from 'vue-router';
 import { usePlanLevel } from "~/composables/billing/usePlanLevel";
@@ -89,20 +93,36 @@ const props = withDefaults(defineProps<{ onBoardingAccount?: boolean }>(), {
 });
 const router = useRouter();
 const route = useRoute();
-const { user, refreshUser } = await useUser();
+const { userDetails, fetchUser } = useUserDetailsComposable()
+fetchUser()
 
-// Reactive variables
-const orgBillingDetails = ref(null);
 const formattedUserDetails = ref(null);
 
-// Fetch user details
-const { userDetails, userLocationDetails } = useUserDetails();
-
-// Get billing information
+const billingVariationDetails = ref()
+const BillingVariationPending = ref(false);
 const { orgBilling, isPageLoading } = useBillingComposable();
 
+import { watch, watchEffect } from 'vue';
+
+watch(
+  () => userDetails, // Only watching userDetails.value
+  async (user) => {
+    if (!user) {
+      fetchUser();
+      return; // Exit if user details are not available
+    }
+
+
+    const { billingVariation, pending } = await useBillingVariation(user.value);
+
+    billingVariationDetails.value = billingVariation.value;
+    BillingVariationPending.value = pending.value;
+  },
+  { immediate: true } // Runs immediately on component mount
+);
+
+
 // Reactive computed property for plan selection
-const { billingVariation } = useBillingVariation(formattedUserDetails.value, userLocationDetails.value, props);
 const currentRoute = computed(() => {
   const fullPath = router.options.history.state.current
   if (!fullPath) return '';
@@ -110,26 +130,12 @@ const currentRoute = computed(() => {
 });
 
 
-// Watch for updates to `orgBilling` and update `orgBillingDetails`
-watch(
-  () => userDetails,
-  (newValue) => {
-    formattedUserDetails.value = newValue;
-  },
-  { immediate: true }
-);
-watch(
-  () => orgBilling.value,
-  (newValue) => {
-    orgBillingDetails.value = newValue;
-  },
-  { immediate: true }
-);
+// Watch for updates to `orgBilling` and update `orgBillingDetails`// );
 
 // Access additional composable methods
 // Dynamically compute `usePlanSelection` based on updated values
 const planSelection = computed(() => {
-  return usePlanSelection((formattedUserDetails.value || {}), (orgBillingDetails.value || {}), (route?.query?.type || {}), (props.onBoardingAccount || {}));
+  return usePlanSelection((userDetails.value || {}), (orgBilling.value || {}), (route?.query?.type || {}), (props.onBoardingAccount || {}));
 });
 
 // Access choosePlan reactively

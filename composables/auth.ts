@@ -47,6 +47,8 @@ export const useUser = async () => {
           } else {
             if (route?.name !== 'auth-onboarding-account') {
               navigateTo("/");
+            } else {
+              navigateTo("/auth/onboarding/account");
             }
           }
         } else {
