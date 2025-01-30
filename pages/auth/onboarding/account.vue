@@ -1,11 +1,11 @@
 <template>
-  <Page title="" :disable-back-button="true">
+  <div class="field_shadow px-4 py-2 my-2 rounded-lg">
     <PersonalDetails :personalControl="false" />
-  </Page>
+  </div>
 </template>
 <script setup lang="ts">
 definePageMeta({
-  layout: "sign-up-success",
+  layout: "billing-account",
   // middleware: "guest-only",
 });
 const { user, refreshUser } = await useUser();

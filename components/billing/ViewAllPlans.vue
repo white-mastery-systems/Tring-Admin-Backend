@@ -98,7 +98,6 @@ const { userDetails, fetchUser } = useUserDetailsComposable()
 const { fetchOrgBillingPlans } = useFreeTrialPopup()
 fetchUser()
 
-const formattedUserDetails = ref(null);
 
 const billingVariationDetails = ref()
 const BillingVariationPending = ref(false);

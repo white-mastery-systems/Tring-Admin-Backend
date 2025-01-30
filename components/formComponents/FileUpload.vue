@@ -8,7 +8,7 @@
         </span>
         <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept" />
       </label>
-      <span class="text-sm text-gray-500" v-if="props?.helperText?.length">
+      <span class="text-[10px] text-gray-500" v-if="props?.helperText?.length">
         {{ props.helperText }}
       </span>
     </div>

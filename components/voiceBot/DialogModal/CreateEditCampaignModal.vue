@@ -16,22 +16,13 @@
             },
           ]" required />
       </span>
-      <!-- {{ BucketList }} -->
       <SelectField v-if="values.contactMethod === 'whatsapp'" name="bucketId" label="Select Bucket"
         placeholder="Select Bucket" :options="BucketList" required />
       <div v-if="values.contactMethod === 'whatsapp'" class="flex gap-2">
         <DatePickerField name="date" label="Date" placeholder="Select a Date" required />
         <TimePickerField name="time" label="Time" required> </TimePickerField>
-        <!-- <SelectField label="Template" name="templateName" :multiple="false" :required="true"
-          placeholder="Select your template" :options="templateData?.map((integration: any) => ({
-            label: integration.name,
-            value: integration.id,
-          }))
-            " /> -->
       </div>
       <div class="flex gap-2 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-        <!-- {{ templateData }} || asdad -->
-        <!-- {{ IntegrationData }} -->
         <SelectField v-if="values.contactMethod === 'voice'" name="bucketId" label="Select Bucket"
           placeholder="Select Bucket" :options="BucketList" required />
         <SelectField v-if="values.contactMethod === 'whatsapp'" label="Integration" name="integrationId"
@@ -54,12 +45,6 @@
           <TimePickerField name="endTime" label="End Time" required> </TimePickerField>
         </span>
       </div>
-      <!-- <div v-if="values.contactMethod === 'whatsapp'" class="flex gap-2">
-        <CountryCodeField class="w-[100px]" name="countryCode" label="Country Code" helperText="Enter your country code"
-          required />
-        <TextField :disableCharacters="true" name="exoPhone" label="Mobile number" helperText="" required
-          placeholder="Enter your mobile number" />
-      </div> -->
       <TextField v-if="values.contactMethod === 'voice'" type="number" label="Calls Per Trigger" name="callsPerTrigger"
         required placeholder="Enter calls per trigger" disableCharacters />
 
@@ -74,6 +59,7 @@
 <script setup lang="ts">
 import { DateFormatter } from "@internationalized/date";
 import { useTimeWatcher } from '~/composables/useTimeWatcher';
+import { createEditCampaignValidation } from "~/validationSchema/contact/createEditCampaign";
 
 definePageMeta({
   middleware: "admin-only",
@@ -88,7 +74,6 @@ const campaignModalState = defineModel<{ open: boolean; id: any }>({
 const BucketList = ref([])
 const BotList = ref([])
 const isFirstRun = ref(true)
-const getEditList = ref([])
 const templateData = ref([])
 
 const {
@@ -114,107 +99,6 @@ const campaignListWithLabels = computed(() => {
 const df = new DateFormatter("en-US", {
   dateStyle: "long",
 });
-const createEditCampaignValidation = toTypedSchema(z
-  .object({
-    campaignName: z.string({ required_error: "Campaign Name is required." }).min(1),
-    contactMethod: z.string({ required_error: "Type is required." }).min(1),
-    bucketId: z.string({ required_error: "Bucket ID is required." }).min(1),
-    integrationId: z.string().optional(),
-    botId: z.string().optional(),
-    date: z
-      .string()
-      .optional()
-      .refine((v) => v || true, { message: "Date is required for WhatsApp." }),
-    time: z
-      .string()
-      .optional(),
-    // .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, { message: "Invalid time format." }),
-    startTime: z
-      .string()
-      .optional(),
-    // .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, { message: "Invalid start time format." }),
-    endTime: z
-      .string()
-      .optional(),
-    // .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, { message: "Invalid end time format." }),
-    // audienceBucket: z.string().optional(),
-    templateName: z.string().optional(),
-    callsPerTrigger: z.number().optional(),
-  })
-  .superRefine((data, ctx) => {
-    const isWhatsApp = data.contactMethod === "whatsapp";
-    const isVoice = data.contactMethod === "voice";
-
-    ctx.path.forEach((path) => {
-      if (path[0] !== "contactMethod") {
-        ctx.addIssue({ path, message: "", code: z.ZodIssueCode.invalid_type });
-      }
-    });
-    // Conditional validation for WhatsApp
-    if (isWhatsApp) {
-      if (!data.date) {
-        ctx.addIssue({
-          path: ["date"],
-          message: "Date is required for WhatsApp campaigns.",
-          code: z.ZodIssueCode.custom,
-        });
-      }
-      // if (!data.audienceBucket) {
-      //   ctx.addIssue({
-      //     path: ["audienceBucket"],
-      //     message: "Audience Bucket is required for WhatsApp.",
-      //     code: z.ZodIssueCode.custom,
-      //   });
-      // }
-      if (!data.templateName) {
-        ctx.addIssue({
-          path: ["templateName"],
-          message: "Template is required for WhatsApp.",
-          code: z.ZodIssueCode.custom,
-        });
-      }
-      if (!data.integrationId) {
-        ctx.addIssue({
-          path: ["integrationId"],
-          message: "IntegrationId is required for WhatsApp.",
-          code: z.ZodIssueCode.custom,
-        });
-      }
-      if (!data.time) {
-        ctx.addIssue({
-          path: ["time"],
-          message: "Time are required for whatsapp campaigns.",
-          code: z.ZodIssueCode.custom,
-        });
-      }
-    }
-
-    // Conditional validation for Voice
-    if (isVoice) {
-      if (!data.botId) {
-        ctx.addIssue({
-          path: ["botId"],
-          message: "Bot ID is required for Voice campaigns.",
-          code: z.ZodIssueCode.custom,
-        });
-      }
-      if (!data.callsPerTrigger) {
-        ctx.addIssue({
-          path: ["callsPerTrigger"],
-          message: "CallsPerTrigger is required for Voice campaigns.",
-          code: z.ZodIssueCode.custom,
-        });
-      }
-      if (!data.startTime || !data.endTime) {
-        ctx.addIssue({
-          path: ["startTime"],
-          message: "Start Time and End Time are required for Voice campaigns.",
-          code: z.ZodIssueCode.custom,
-        });
-      }
-    }
-  })
-);
 
 const {
   errors,
@@ -238,35 +122,8 @@ const {
   query: { q: "channel" },
   default: () => [],
 });
-const templates = ref<any>([]);
-const phoneNumbers = ref<any>([]);
-const isLoading = ref(false);
 
-// watch(
-//   () => values,
-//   async (newValue) => {
-//     if (newValue) {
-//       if (newValue.integrationId) {
-//         const data = await $fetch("/api/org/integrations/wa-template", {
-//           method: "POST",
-//           body: {
-//             integrationId: newValue.integrationId,
-//           },
-//         });
-//         templates.value = data?.templateResponse?.data?.map(
-//           (dat: { name: string }) => dat.name,
-//         );
-//         phoneNumbers.value = data?.phoneNumberRespone?.data?.map(
-//           (phone: any) => ({
-//             label: phone.display_phone_number,
-//             value: phone.id,
-//           }),
-//         );
-//       }
-//     }
-//   },
-//   { deep: true },
-// );
+const isLoading = ref(false);
 
 watch(errors, (newValue) => {
   console.log(newValue, 'newValue')
@@ -309,21 +166,12 @@ watch(() => values.contactMethod, (newValue) => {
 });
 
 onMounted(async () => {
-  const getResponse = await getBucketDetailsAddCampaign('chat');
-
-  BucketList.value = getResponse?.map((item: any) => ({
-    label: item.name,
-    value: item.id,
-  }))
+  await handleBotListDate('chat')
 });
 
 const handleType = async (type: string) => {
-  const getResponse = await getBucketDetailsAddCampaign(type);
+  await handleBotListDate(type)
 
-  BucketList.value = getResponse?.map((item: any) => ({
-    label: item.name,
-    value: item.id,
-  }))
   if (type === 'voice') {
     const getBot = await getVoiceBotList()
 
@@ -333,6 +181,16 @@ const handleType = async (type: string) => {
     }))
   }
 };
+
+const handleBotListDate = async (type: any) => {
+  const getResponse = await getBucketDetailsAddCampaign(type);
+
+  BucketList.value = getResponse?.filter((item: any) => item.noOfAudience > 0)
+    .map((item: any) => ({
+      label: item.name,
+      value: item.id,
+    }))
+}
 
 const handleIntegration = async (event: any) => {
   const getList = await getWhatsappTemplateList(event)
@@ -344,28 +202,13 @@ const handleIntegration = async (event: any) => {
 
 const handleConnect = handleSubmit(async (values: any) => {
   isFirstRun.value = true
-  // const getTime = convertTo12HourFormat(values?.startTime);
-  // const getUTC = convertToUTC(getTime);
 
-  // endTime
-  // const payload = {
-  //   countryCode: values.countryCode,
-  //   campaignDate: new Date(values.date).toISOString(),
-  //   phoneNumber: values.exoPhone,
-  //   campaignTime: getUTC,
-  //   contactListId: values.audienceBucket,
-  //   type: values.type,
-  //   templateName: values.templateName,
-  // };
-  // if (values.type === "whatsapp") {
-  //   delete payload.phoneNumber;
-  //   delete payload.countryCode;
-  // }
   const basePayload = {
     campaignName: values.campaignName,
     contactMethod: values.contactMethod,
     bucketId: values.bucketId,
   };
+
   const botConfig =
     values.contactMethod === 'voice'
       ? {
@@ -380,11 +223,14 @@ const handleConnect = handleSubmit(async (values: any) => {
         integrationId: values.integrationId,
         templateName: values.templateName,
       };
+
   const payload = {
     ...basePayload,
     botConfig,
   };
+
   isLoading.value = true;
+
   try {
     if (campaignModalState.value.id) {
       await $fetch(`/api/org/campaign/${campaignModalState.value.id}`, {
@@ -396,11 +242,13 @@ const handleConnect = handleSubmit(async (values: any) => {
       await $fetch("/api/org/campaign", { method: "POST", body: payload });
       toast.success("Created successfully");
     }
+
     emit("confirm");
   } catch (error: any) {
     isLoading.value = false;
     toast.error(error.data.statusMessage);
   }
+
   isLoading.value = false;
 });
 </script>
