@@ -3,7 +3,7 @@
 </template>
 <script setup lang="ts">
 definePageMeta({
-  layout: "sign-up-success",
+  layout: "billing-account",
   middleware: "guest-only",
 });
 </script>

@@ -33,18 +33,34 @@ export function usePlanSelection(userDetails: any, orgBilling: any, route: any, 
           return navigateTo({ name: 'account', query: { tab: 'personal-details' } });
         }
       }
-      console.log(route, "route -- route useplascsacbnahsv")
       const locationData = await fetchLocation();
 
       try {
-        const hostedPageUrl = await fetchHostedPageUrl(plan, locationData);
-        console.log(hostedPageUrl, 'hostedPageUrl');
+        const hostedPageUrl = await $fetch<{ hostedpage: { url: string } }>(
+          `/api/billing/subscription?type=${route?.type ?? 'chat'}`,
+          {
+            method: "POST",
+            body: {
+              plan: plan,
+              locationData: locationData,
+              redirectUrl: `${window.location.origin}/billing/billing-confirmation`,
+            },
+          },
+        );
+
         navigateTo(hostedPageUrl?.hostedpage?.url, {
           external: true,
-          open: { target: '_blank' },
+          open: {
+            target: "_blank",
+          },
         });
       } catch (err) {
-        handlePlanError(err);
+        toast.error("ERROR: " + err.statusMessage);
+        if (err.statusMessage?.includes("gst_no")) {
+          navigateTo({
+            name: "account",
+          });
+        }
       }
     }
   };
@@ -58,33 +74,6 @@ export function usePlanSelection(userDetails: any, orgBilling: any, route: any, 
     return data.value;
   };
 
-  const fetchHostedPageUrl = async (plan: string, locationData: any) => {
-    console.log('locationData', locationData);
-
-    // Use useFetch to make the API request
-    const { data, error } = await useFetch(`/api/billing/subscription?type=${route?.type}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        plan,
-        locationData,
-        redirectUrl: `${window.location.origin}/billing/billing-confirmation`,
-      }),
-    });
-
-    // Handle error if any
-    if (error.value) {
-      throw new Error('Failed to fetch hosted page URL');
-    }
-
-    return data.value;
-  };
-
-  const handlePlanError = (err: any) => {
-    toast.error('ERROR: ' + err.data.statusMessage);
-    if (err.data.statusMessage?.includes('gst_no')) {
-      navigateTo({ name: 'account', query: { tab: 'personal-details' } });
-    }
-  };
 
   return { choosePlan };
 }

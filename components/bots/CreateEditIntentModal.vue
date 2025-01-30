@@ -1,44 +1,22 @@
 <template>
-  <DialogWrapper
-    v-model="modalState"
-    :title="modalState?.id ? `Edit Intent` : 'Add Intent'"
-  >
+  <DialogWrapper v-model="modalState" :title="modalState?.id ? `Edit Intent` : 'Add Intent'">
     <form @submit="handleCreateEditIntent" class="space-y-3">
-      <SelectField
-        name="intent"
-        :multiple="false"
-        :required="true"
-        label="Actions"
-        helperText="Select your intent."
-        placeholder="Select Intent"
-        :options="intents"
-      />
+      <SelectField name="intent" :multiple="false" :required="true" label="Actions"
+        helperText="Please choose an action before proceeding." placeholder="Select Intent" :options="intents" />
       <!-- <UiSelectItem v-for="intent in intents" :value="intent.value">{{
         intent.label
       }}</UiSelectItem> -->
-      <div
-        v-if="values.intent === 'location' || values.intent === 'virtual_tour'"
-      >
-        <TextField
-          name="link"
-          label="Add Link"
-          helperText="Enter intent link"
-          placeholder="Eg: enter your preferred value"
-        />
+      <div v-if="values.intent === 'location' || values.intent === 'virtual_tour'">
+        <TextField name="link" label="Add Link" helperText="Enter intent link"
+          placeholder="Eg: enter your preferred value" />
       </div>
       <div v-if="values.intent === 'images' || values.intent === 'brochures'">
         {{ values.intent }}
         <div>
           <label
-            class="dark:hover:bg-bray-800 flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-          >
+            class="dark:hover:bg-bray-800 flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
             Upload file
-            <input
-              class="hidden"
-              type="file"
-              @change="handleFileChange"
-              multiple
-              :accept="
+            <input class="hidden" type="file" @change="handleFileChange" multiple :accept="
                 (() => {
                   if (values.intent === 'images') {
                     return 'image/*';
@@ -46,17 +24,13 @@
                     return 'application/pdf';
                   }
                 })()
-              "
-            />
+              " />
           </label>
           <span class="text-sm text-red-700" v-if="errors.file">
             {{ errors.file }}
           </span>
         </div>
-        <p
-          v-if="selectedFileName"
-          class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600"
-        >
+        <p v-if="selectedFileName" class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
           {{ selectedFileName }}
         </p>
         <!-- <div class="mt-3">
@@ -65,12 +39,7 @@
         </div> -->
       </div>
       <div class="flex justify-end">
-        <UiButton
-          type="submit"
-          class="mt-2"
-          color="primary"
-          :loading="isLoading"
-        >
+        <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
           Save changes
         </UiButton>
       </div>
