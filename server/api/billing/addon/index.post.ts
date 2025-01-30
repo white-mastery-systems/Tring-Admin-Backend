@@ -1,3 +1,5 @@
+import { BotType } from "../subscription/index.post";
+
 const db = useDrizzle();
 
 const chatAddonPlans = [
@@ -47,7 +49,7 @@ export default defineEventHandler(async (event) => {
     }).parse,
   );
   const query = await isValidQueryHandler(event, z.object({
-    type: z.string()
+    type: z.nativeEnum(BotType)
   }))
   const orgId = await isOrganizationAdminHandler(event);
   if (!orgId) {
