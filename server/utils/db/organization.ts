@@ -8,6 +8,7 @@ import {
 } from "../analytics";
 import { getPricingInformation } from "./pricing";
 import momentTz from "moment-timezone";
+import { getInteractedSessions } from "./chats";
 
 const db = useDrizzle();
 
@@ -300,7 +301,7 @@ export const updateOrgSubscriptionStatus = async(organizationId: string, status:
   )
 }
 
-const calculateDateRange = (orgSubscription: any, timeZone: string) => {
+export const calculateDateRange = (orgSubscription: any, timeZone: string) => {
   if (orgSubscription?.subscriptionCreatedDate && orgSubscription.expiryDate) {
     return {
       startDate: momentTz(orgSubscription?.subscriptionCreatedDate).tz(timeZone).toDate(),
@@ -361,15 +362,7 @@ const handleChatTypeBilling = async (
       return resObj
     }
     // get interacted chats 
-    const interactedSessions = await db.query.chatSchema.findMany({
-        where: and(
-          gte(chatSchema.createdAt, startDate),
-          lte(chatSchema.createdAt, endDate),
-          eq(chatSchema.interacted, true),
-          eq(chatSchema.mode, "live"),
-          eq(chatSchema.organizationId, organizationId),
-        ),
-      })
+    const interactedSessions = await getInteractedSessions(organizationId, startDate, endDate)
   
     const usedSessions = interactedSessions?.length + (orgSubscription?.whatsappUsedSessions || 0) || 0;
     const maxSessions = pricingInformation.sessions

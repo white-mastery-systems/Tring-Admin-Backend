@@ -121,8 +121,8 @@ export const orgTotalWhatappSessions = async () => {
   try {
     const allAdminWhatsappIntegrations = await getAllWhatsappIntegration()
 
-    logger.error("No whatsapp intergrations are found for calculationg whatsapp session")
     if(!allAdminWhatsappIntegrations.length) {
+      logger.error("No whatsapp intergrations are found for calculationg whatsapp session")
       return
     }
 
