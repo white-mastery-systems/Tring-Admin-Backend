@@ -1,8 +1,8 @@
 <template>
   <!-- flex items-center -->
-  <div class="min-h-screen overflow-auto">
+  <div :class="[((currentRoute === 'onboarding/account')) ? 'min-h[85vh]' : 'min-h-screen' ,'overflow-auto']">
     <form @submit="handleAccountUpdate" class="flex flex-col gap-2 p-1">
-      <div v-show="props.personalControl" class="w-[49%] sm:w-[49%] md:w-[12%] lg:w-[12%] xl:w-[12%]">
+      <div v-show="props.personalControl" class="w-[49%] sm:w-[49%] md:w-[15%] lg:w-[15%] xl:w-[15%]">
         <FileUpload @change="handleLogoChange" name="logo" label="Upload Image" :required="true" :accept="'image/*'"
           :url="values.logo.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
           :helperText="'Only files up to 5MB can be uploaded.'" />

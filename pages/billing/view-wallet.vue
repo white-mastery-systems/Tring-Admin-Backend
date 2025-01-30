@@ -1,5 +1,5 @@
 <template>
-  <page title="Billing" :description="true" :disableSelector="true" :customBackRouter="router.options.history.state.back">
+  <page title="Billing" :description="true" :disableSelector="true" :customBackRouter="router?.options?.history?.state?.back">
     <div class="xs:grid-cols-2 grid gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-3">
       <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->
@@ -47,7 +47,7 @@
 
   const route = useRoute();
   const filters = computed(() => ({
-    type: route.query?.type,
+    type: route?.query?.type ?? 'chat',
   }));
   const { data } = await useLazyFetch("/api/org", {
     server: false,
@@ -127,14 +127,13 @@ const voiceBillingVariation = ref([
     amount: 50000
   }
 ])
-
   const billingVariation = computed(() => {
-    if (route.query.type === "chat") {
-      return chatBillingVariation.value;
-    } else if (route.query.type === "voice") {
+    if (route.query.type === "voice") {
       return voiceBillingVariation.value;
+    } else {
+      return chatBillingVariation.value;
     }
-    return [];
+    // return [];
   });
 
   const isVoiceBilling = computed(() => {

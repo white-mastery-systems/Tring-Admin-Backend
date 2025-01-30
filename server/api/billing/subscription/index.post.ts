@@ -15,6 +15,11 @@ interface zohoConfigInterface {
   };
 }
 
+export enum BotType {
+  chat = 'chat',
+  voice = 'voice',
+}
+
 export default defineEventHandler(async (event) => {
   const timeZoneHeader = event.node?.req?.headers["time-zone"];
   const timeZone = Array.isArray(timeZoneHeader)
@@ -25,7 +30,7 @@ export default defineEventHandler(async (event) => {
   const query = await isValidQueryHandler(
     event,
     z.object({
-      type: z.string(),
+      type: z.nativeEnum(BotType),
     }),
   );
   try {
