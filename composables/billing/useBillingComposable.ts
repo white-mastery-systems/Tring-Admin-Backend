@@ -1,18 +1,16 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useLazyFetch } from 'nuxt/app'; // Adjust this if your app uses a custom fetch method
-import { useFreeTrial } from '~/store/freeTrailStore';
 
 export const useBillingComposable = () => {
   const route = useRoute();
   const router = useRouter();
   const config = useRuntimeConfig();
-  const freeTrialPopup = useFreeTrial();
 
   const cancelModalState = ref(false);
 
   const filters = computed(() => ({
-    type: route.query?.type ?? 'chat',
+    type: route?.query?.type ?? 'chat',
   }));
 
   const {
@@ -26,7 +24,6 @@ export const useBillingComposable = () => {
       "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
   });
-console.log(orgBilling.value, 'orgBilling')
   // const organization = ref(null);
   const { data: organization, status: orgStatus, error, refresh } = useFetch("/api/org", { method: "GET" });
 
@@ -89,17 +86,10 @@ console.log(orgBilling.value, 'orgBilling')
         usageRefresh();
       }
     };
-
-    const { data: orgBilling, status, error, refresh } = await useFetch("/api/org/subscriptionPlans");
-    const isAnyPlanFree = orgBilling.value.every((plan: any) =>
-      plan.planCode.includes("_free")
-    );
-
-    freeTrialPopup.planFree = isAnyPlanFree;
   });
 
   watch(
-    () => route.query.type,
+    () => route?.query?.type,
     (newValue) => {
       if (newValue) filters.value.type = newValue;
     },
@@ -115,5 +105,6 @@ console.log(orgBilling.value, 'orgBilling')
     handleOpenCancelModal,
     handleConfirmPaymentCancellation,
     navigateToTab,
+    refresh,
   };
 };

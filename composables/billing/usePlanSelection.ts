@@ -1,11 +1,14 @@
 import { navigateTo } from 'nuxt/app';
-import { useUserDetails } from './useUserDetails';
-import { useBillingVariation } from './useBillingVariation';
+import { computed } from 'vue';
+import { useAsyncData } from '#app';
+import { useUserDetailsComposable } from '../billing/useDetails';
+import { useBillingComposable } from '../billing/useBillingComposable'
 
-const { userDetails, userLocationDetails } = useUserDetails();
-const { billingVariation } = useBillingVariation(userDetails.value, userLocationDetails.value,);
+const { userDetails, fetchUser } = useUserDetailsComposable();
+fetchUser()
 
 export function usePlanSelection(userDetails: any, orgBilling: any, route: any, onBoardingAccount: any) {
+  console.log(onBoardingAccount, "onBoardingAccount -- onBoardingAccount")
   const choosePlan = async (plan: any) => {
     if (plan === 'chat_enterprise') {
       return navigateTo('https://tringlabs.ai/contact-us/', {
@@ -48,7 +51,6 @@ export function usePlanSelection(userDetails: any, orgBilling: any, route: any, 
 
   const fetchLocation = async () => {
     const { data, error } = await useFetch('https://ipv4-check-perf.radar.cloudflare.com/api/info');
-
     if (error.value) {
       throw new Error('Failed to fetch location data');
     }

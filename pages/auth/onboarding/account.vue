@@ -4,10 +4,9 @@
   </Page>
 </template>
 <script setup lang="ts">
-import { useUserDetails } from "~/composables/useUserDetails";
 definePageMeta({
   layout: "sign-up-success",
-  middleware: "guest-only",
+  // middleware: "guest-only",
 });
 const { user, refreshUser } = await useUser();
 

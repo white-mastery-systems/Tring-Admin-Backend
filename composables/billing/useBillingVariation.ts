@@ -1,15 +1,33 @@
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-export function useBillingVariation(userDetails: any, userLocationDetails: any, props: any) {
+
+export function useBillingVariation(userDetails: any) {
+  const userLocationDetails = ref(null);
+  const pending = ref(true);
+  const error = ref(null);
   const route = useRoute();
-  // const filters = ref({
-  //   type: route?.query?.type ?? 'chat',
-  // });
-  const onBoardingAccount = ref({ ...props })
+
+  const fetchUserLocation = async () => {
+    try {
+      const response = await fetch('https://ipv4-check-perf.radar.cloudflare.com/api/info');
+      if (!response.ok) throw new Error('Failed to fetch data');
+      userLocationDetails.value = await response.json();
+    } catch (err) {
+      toast.error('Unable to fetch location details');
+    } finally {
+      pending.value = false;
+    }
+  };
+  onMounted(fetchUserLocation);
+
+  const isIndianUser = computed(() => {
+    return userDetails?.countryCode === "+91" && userLocationDetails.value?.country === "IN";
+  });
+
   const chatBillingVariation = ref([
     {
       _id: 1,
-      amount: ((userDetails?.countryCode === "+91") && (userLocationDetails?.country === "IN") || onBoardingAccount.value.onBoardingAccount) ? "₹0" : '$0',
+      amount: isIndianUser ? "₹0" : '$0',
       status: "Lifetime",
       types: "Free",
       // benefitContent: "Unleash the power of automation.",
@@ -47,14 +65,14 @@ export function useBillingVariation(userDetails: any, userLocationDetails: any, 
     },
     {
       _id: 2,
-      amount: ((userDetails?.countryCode === "+91") && (userLocationDetails?.country === "IN") || onBoardingAccount.value.onBoardingAccount) ? "₹1999" : "$29",
+      amount: isIndianUser ? "₹1999" : "$29",
       status: "Per Month",
       types: "Intelligence",
       listBenefit: false,
       benefitList: [
         {
           // content: "60 Message Sessions",
-          content: `${((userDetails?.address.country === 'India') && (userLocationDetails?.country === "IN") || onBoardingAccount.value.onBoardingAccount) ? '₹10' : '$0.60'} per Chat Session`,
+          content: `${((userDetails?.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹10' : '$0.60'} per Chat Session`,
           availableInPlan: true,
         },
         {
@@ -91,13 +109,13 @@ export function useBillingVariation(userDetails: any, userLocationDetails: any, 
     },
     {
       _id: 3,
-      amount: ((userDetails?.countryCode === "+91") && (userLocationDetails?.country === "IN") || onBoardingAccount.value.onBoardingAccount) ? "₹6999" : "$99",
+      amount: isIndianUser ? "₹6999" : "$99",
       status: "Per Month",
       types: "Super Intelligence",
       listBenefit: false,
       benefitList: [
         {
-          content: `${((userDetails?.address.country === 'India') && (userLocationDetails?.country === "IN") || onBoardingAccount.value.onBoardingAccount) ? '₹8' : '$0.45'} Per Chat Session`,
+          content: `${((userDetails?.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹8' : '$0.45'} Per Chat Session`,
           availableInPlan: true,
         },
         {
@@ -169,10 +187,11 @@ export function useBillingVariation(userDetails: any, userLocationDetails: any, 
       availableInPlan: true,
     },
   ]);
+
   const voiceBillingVariation = ref([
     {
       _id: 1,
-      amount: ((userDetails?.countryCode === "+91") && (userLocationDetails?.country === "IN") || onBoardingAccount.value.onBoardingAccount) ? "₹14999" : '$199',
+      amount: isIndianUser ? "₹14999" : '$199',
       status: "Per Month",
       types: "Fluent",
       // benefitContent: "Unleash the power of automation.",
@@ -195,7 +214,7 @@ export function useBillingVariation(userDetails: any, userLocationDetails: any, 
           availableInPlan: true,
         },
         {
-          content: `${((userDetails?.address.country === 'India') && (userLocationDetails?.country === "IN") || onBoardingAccount.value.onBoardingAccount) ? '₹6' : '$0.07'} per Extra Minute`,
+          content: `${((userDetails?.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹6' : '$0.07'} per Extra Minute`,
           availableInPlan: true,
         },
         {
@@ -214,7 +233,7 @@ export function useBillingVariation(userDetails: any, userLocationDetails: any, 
     },
     {
       _id: 2,
-      amount: ((userDetails?.countryCode === "+91") && (userLocationDetails?.country === "IN") || onBoardingAccount.value.onBoardingAccount) ? "₹39999" : "$599",
+      amount: isIndianUser ? "₹39999" : "$599",
       status: "Per Month",
       types: "Lucid",
       listBenefit: false,
@@ -236,7 +255,7 @@ export function useBillingVariation(userDetails: any, userLocationDetails: any, 
           availableInPlan: true,
         },
         {
-          content: `${((userDetails?.address.country === 'India') && (userLocationDetails?.country === "IN") || onBoardingAccount.value.onBoardingAccount) ? '₹5' : '$0.65'} per Extra Minute`,
+          content: `${((userDetails?.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹5' : '$0.65'} per Extra Minute`,
           availableInPlan: true,
         },
         {
@@ -296,12 +315,10 @@ export function useBillingVariation(userDetails: any, userLocationDetails: any, 
       availableInPlan: true,
     },
   ]);
-
+  console.log(route, "route --- botom")
   const billingVariation = computed(() => {
-    return route?.query?.type === 'voice'
-      ? voiceBillingVariation.value
-      : chatBillingVariation.value;
+    return route?.query?.type === "voice" ? voiceBillingVariation.value : chatBillingVariation.value;
   });
-  // console.log(filters.value, "filters main")
-  return { billingVariation };
+
+  return { billingVariation, pending, userLocationDetails, error };
 }
