@@ -155,3 +155,16 @@ export const listChats = async (
     return chats;
   }
 };
+
+export const getInteractedSessions = async (organizationId: string, startDate: Date, endDate: Date) => {
+  const interactedSessions = await db.query.chatSchema.findMany({
+    where: and(
+      gte(chatSchema.createdAt, startDate),
+      lte(chatSchema.createdAt, endDate),
+      eq(chatSchema.interacted, true),
+      eq(chatSchema.mode, "live"),
+      eq(chatSchema.organizationId, organizationId),
+    ),
+  })
+  return interactedSessions 
+}
