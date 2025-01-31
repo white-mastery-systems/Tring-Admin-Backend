@@ -125,9 +125,6 @@ const {
 
 const isLoading = ref(false);
 
-watch(errors, (newValue) => {
-  console.log(newValue, 'newValue')
-})
 // const [timeField, timeFieldAttrs] = defineField("startTime");
 
 watch(
@@ -161,7 +158,6 @@ watch(() => values.contactMethod, (newValue) => {
     isFirstRun.value = false
     return
   }
-  console.log("isFirstRun.value", isFirstRun.value);
   if (campaignModalState.value.id && !isFirstRun.value) setFieldValue("bucketId", "");
 });
 

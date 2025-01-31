@@ -312,13 +312,10 @@ import { toast } from "vue-sonner";
   });
 
   const botManagementDetails = async (list: any, index: any) => {
-    // console.log(list.bot.trim().toLowerCase().replace(/\s+/g, ' ') , "list")
-    // if (list.bot === dataList.value[index].bot) {
     await navigateTo({
       name: list.routeName,
       params: { id: paramId.params.id },
     });
-    // }
   };
   const deactivateBot = async () => {
     modalOpen.value = true;

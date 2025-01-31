@@ -11,7 +11,6 @@ export function useUserDetails() {
 
       // Update `user` with localStorage or fetched data
       const storedUser = localStorage.getItem("user");
-      console.log(storedUser, "storedUser");
       user.value = storedUser ? JSON.parse(storedUser) : null;
 
       if (userDetails.value) {

@@ -173,7 +173,6 @@
       delete filter.from;
       delete filter.to;
     } 
-    console.log(filter, "filter asdsadsad --- asd", "selectedValue");
     const data = await getAnalyticsData(filter);
     analyticsData.value = data
     responseFormat(JSON.parse(JSON.stringify(data)))

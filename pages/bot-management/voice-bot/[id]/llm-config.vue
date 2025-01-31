@@ -125,7 +125,6 @@
   });
   Object.entries(botDetails.llmConfig).forEach(([key, value]: any) => {
     if (values.hasOwnProperty(key)) {
-      console.log(key, "key - -key")
       setFieldValue(key, value);
     }
   });

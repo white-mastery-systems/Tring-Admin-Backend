@@ -82,7 +82,6 @@ export const useBillingComposable = () => {
       const data = JSON.parse(event.data);
 
       if (data.event === "update") {
-        console.log("Update event received, refreshing usage...");
         usageRefresh();
       }
     };

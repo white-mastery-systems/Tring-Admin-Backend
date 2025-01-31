@@ -1,5 +1,4 @@
 <template>
-
   <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
@@ -87,7 +86,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { usePlanLevel } from "~/composables/billing/usePlanLevel";
 import { useBillingComposable } from '~/composables/billing/useBillingComposable';
 import { ArrowRight } from 'lucide-vue-next'
-import { useFreeTrialPopup } from '~/composables/billing/useFreeTrialPopup';
+// import { useFreeTrialPopup } from '~/composables/billing/useFreeTrialPopup';
 
 const props = withDefaults(defineProps<{ onBoardingAccount?: boolean }>(), {
   onBoardingAccount: false, // Default value for accept
@@ -95,7 +94,7 @@ const props = withDefaults(defineProps<{ onBoardingAccount?: boolean }>(), {
 const router = useRouter();
 const route = useRoute();
 const { userDetails, fetchUser } = useUserDetailsComposable()
-const { fetchOrgBillingPlans } = useFreeTrialPopup()
+// const { fetchOrgBillingPlans } = useFreeTrialPopup()
 fetchUser()
 
 
@@ -142,9 +141,9 @@ const planSelection = computed(() => {
 const choosePlan = computed(() => planSelection.value?.choosePlan || (() => { }));
 const { findPlanLevel } = usePlanLevel();
 
-onMounted(() => {
-  fetchOrgBillingPlans()
-});
+// onMounted(() => {
+//   fetchOrgBillingPlans()
+// });
 
 const proceedLogin = async () => {
   navigateTo("/signUpSuccess");

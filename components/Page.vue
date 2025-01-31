@@ -85,9 +85,6 @@ const props = withDefaults(
     leadPage: "",
   },
 );
-// watch(props, (updatedProps) => {
-//   console.log({ updatedProps })
-// }, { deep: true })
 const router = useRouter();
 const handleBackButtonClick = () => {
   if (props.customBackRouter) {

@@ -315,7 +315,6 @@ export function useBillingVariation(userDetails: any) {
       availableInPlan: true,
     },
   ]);
-  console.log(route, "route --- botom")
   const billingVariation = computed(() => {
     return route?.query?.type === "voice" ? voiceBillingVariation.value : chatBillingVariation.value;
   });

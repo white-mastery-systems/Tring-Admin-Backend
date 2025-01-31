@@ -107,12 +107,6 @@ const {
   },
 });
 
-// Object.entries(botDetailsList.clientConfig).forEach(([key, value]: any) => {
-//   if (values.hasOwnProperty(key)) {
-//     console.log(key, "key -- key", value, "value -- value")
-//     setFieldValue(key, value);
-//   }
-// });
 setFieldValue("distance", botDetailsList.clientConfig.distance);
 setFieldValue("llmCaching", botDetailsList.clientConfig.llmCaching);
 setFieldValue("dynamicCaching", botDetailsList.clientConfig.dynamicCaching);
@@ -126,13 +120,8 @@ watchEffect(() => {
     });
   }
 });
-// watch(botDetailsList, () => {
-//   console.log(botDetailsList.value.clientConfig, "botDetailsList.value.clientConfig -- botDetailsList.value.clientConfig")
-//   setFieldValue("llmCaching", botDetailsList.value.clientConfig)
-// })
 
 const onSubmit = handleSubmit(async (value: any) => {
-  console.log(value, 'value -- value')
   // updateLLMConfig()
   isLoading.value = true;
   const payload = {

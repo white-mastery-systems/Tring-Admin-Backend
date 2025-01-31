@@ -21,8 +21,6 @@ export const useUser = async () => {
     try {
       const data = await getUserDetail();
       if (data) {
-        console.log(data, "data");
-
         // Update user details in localStorage
         const storedUser = localStorage.getItem("user");
         user.value = storedUser ? JSON.parse(storedUser) : null;
@@ -31,7 +29,6 @@ export const useUser = async () => {
         // Fetch or update orgDetails
         let formattedOrgDetails = JSON.parse(localStorage.getItem("orgDetails") || "null");
         if (!formattedOrgDetails) {
-          console.log("Fetching orgDetails");
           const { orgDetails } = await companyDetails();
           formattedOrgDetails = orgDetails
           localStorage.setItem("orgDetails", JSON.stringify(formattedOrgDetails));
@@ -39,18 +36,12 @@ export const useUser = async () => {
 
 
         // Handle navigation based on orgDetails
-        console.log("formattedOrgDetails top", formattedOrgDetails)
         if (formattedOrgDetails?.planCode === 'chat_free') {
-          console.log("Free plan", formattedOrgDetails);
-          if (formattedOrgDetails?.metadata?.gst) {
+          if (formattedOrgDetails.metadata.gstType || formattedOrgDetails?.metadata?.gst) {
             navigateTo("/billing/view-all");
           } else {
             if (route?.name !== 'auth-onboarding-account') {
               navigateTo("/");
-            } 
-            else {
-              console.log("Already onboarding account page")
-              // navigateTo("/auth/onboarding/account");
             }
           }
         } else {

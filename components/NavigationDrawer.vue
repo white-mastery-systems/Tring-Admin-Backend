@@ -260,7 +260,6 @@ const freeTrialPopup = useFreeTrial()
   const avatarValue = ref(OrgDetails.values?.logo || userInfo.value?.profile_image)
   watch(OrgDetails,
     (newOrgDetails) => {
-      console.log(newOrgDetails?.values.logo);
       avatarValue.value = newOrgDetails?.values?.logo
     },
   );

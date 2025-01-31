@@ -194,8 +194,6 @@
       const data = JSON.parse(event.data);
       if (data.type === "WA_EMBEDDED_SIGNUP") {
         if (data.event === "FINISH") {
-          console.log({ data: JSON.stringify(data) });
-          console.log({ newData: data });
           const { phone_number_id, waba_id } = data.data;
 
           setFieldValue("pid", phone_number_id);
@@ -225,7 +223,6 @@
 
   const handleConnect = handleSubmit(async (values: any) => {
     isLoading.value = true;
-    console.log({ values });
     const payload = {
       name: values.name,
       crm: values.channel,

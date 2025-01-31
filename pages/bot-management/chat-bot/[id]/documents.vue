@@ -160,18 +160,12 @@ const columns = [
         documents: documentItems.value,
         // Handle the download and delete actions
         onDownload: (id: any) => {
-          console.log(`Download document with id: ${id}`);
           // Call your existing method for handling download
           singleDocumentDownload(id);
         },
         onDelete: (list: any) => {
-          console.log(`Delete document with id: ${list}`);
           // Call your existing method for handling delete
           singleDocumentDelete(list);
-          // console.log(list.id, 'list')
-          // console.log(deleteDocumentModelOpen,"deleteDocumentModelOpen -- deleteDocumentModelOpen")
-          // deleteDocumentModelOpen[list.id] = true
-          // console.log(deleteDocumentModelOpen[list.id], "deleteDocumentModelOpen[list.id] - -deleteDocumentModelOpen[list.id]")
         },
       });
     },

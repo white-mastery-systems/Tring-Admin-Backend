@@ -41,9 +41,6 @@ const props = withDefaults(defineProps<{
 const replacedId = ref(props.label ?? props.name)
 const { value, errorMessage }: { value: any, errorMessage: any } = !props.validation ? { value: props.name, errorMessage: '' } : useField(() => props.name);
 
-watch(errorMessage, (newErr) => {
-  console.log({ newErr })
-})
 const handleFocus = (event: Event) => {
   (event.target as HTMLInputElement).showPicker?.();
 };
