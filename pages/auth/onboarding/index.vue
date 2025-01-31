@@ -107,10 +107,6 @@ const {
 // watch(() => props.personalCompanyDetail.country, (newValue, oldValue) => {
 //   if (props.personalCompanyDetail.estimatedMonthlyBudget) props.setFieldValue("estimatedMonthlyBudget", '')
 // })
-watch(errors, (newValue) => {
-  console.log(newValue, "error")
-})
-
 
 const onSubmit = handleSubmit(async (values: any) => {
   isLoading.value = true

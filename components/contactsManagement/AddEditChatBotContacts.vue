@@ -32,7 +32,6 @@
       description="Are you sure you want to delete ?" @confirm="() => {
         if (deleteIntegrateNumber?.id) {
            if (props.typeOfAddContacts === 'insideBucket') {
-            console.log('asfsaf sfsadfsafda', deleteIntegrateNumber)
             insideBucketNumber({
               queryId: queryId,
               id: deleteIntegrateNumber.id,
@@ -297,7 +296,6 @@ const fileUpload = async () => {
     }
   } else {
     isLoading.value = false
-    console.log("No file selected");
   }
   isLoading.value = false
 };

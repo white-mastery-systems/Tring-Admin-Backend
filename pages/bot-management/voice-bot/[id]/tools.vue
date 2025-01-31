@@ -303,7 +303,6 @@ const formSchema = toTypedSchema(
     )
   })
     .superRefine((data, ctx) => {
-      console.log(data, "data");
       if (data.clientFormControl) {
         data.clientTools.forEach((clientTool, index) => {
           // Validate each clientTool
@@ -411,10 +410,6 @@ setFieldValue(`clientFormControl`, botDetailsList?.tools?.clientFormControl ?? f
 setFieldValue(`propertieFormControl`, botDetailsList?.tools?.propertieFormControl ?? false)
 // setFieldValue(`clientTools[0].parameters.properties[0].required`, true)
 
-
-watch(errors, (newValues) => {
-  console.log(newValues)
-})
 watch(() => botDetailsList?.tools.clientFormControl, () => {
   // responseHandle()
   if (Array.isArray(botDetailsList?.tools.clientTools)) {
@@ -503,7 +498,6 @@ const audioUpload = async (formData: any, index: any) => {
         // Iterate through entries of formattedUploadAudioFile.value
         for (const [key, value] of Object.entries(formattedUploadAudioFile.value)) {
           if (item.name === key) {
-            console.log(value, "value -- value");
             // Set the field value if the name matches the key
             setFieldValue(`clientTools[${index}].audio`, value);
           }
@@ -523,7 +517,6 @@ const audioUpload = async (formData: any, index: any) => {
       console.error("Error:", error);
     } finally {
       isLoading.value = false;
-      console.log("finally");
       // concludeFilesData.value = []
       // welcomeFilesData.value = []
       // fillerFilesData.value = []

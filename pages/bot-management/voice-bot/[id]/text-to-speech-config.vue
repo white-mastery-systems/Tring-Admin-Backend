@@ -355,11 +355,6 @@ watch(botData, () => {
   }
   // setFieldValue("sampleRate", botData.value?.textToSpeechConfig?.tring.sample_rate);
 }, { deep: true, immediate: true });
-watch(errors, (newValues) => {
-  if (newValues) {
-    console.log("ERRORS", newValues);
-  }
-});
 
 watch(
   () => toRaw(values.provider),

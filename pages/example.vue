@@ -7,7 +7,4 @@ const count = ref(0)
 function increment() {
     count.value++
 }
-onMounted(() => {
-    console.log(`this initital value is ${count.value}`)
-})
 </script>

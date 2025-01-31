@@ -89,7 +89,6 @@
   import { useOrgDetailsStore } from "~/store/orgDetailsStore";
   import { companyDetailsSchema } from "~/validationSchema/account/companyDetails";
   const useOrgDetails = useOrgDetailsStore();
-  console.log(useOrgDetails);
 
   const industry = [
     "Government Sectors",

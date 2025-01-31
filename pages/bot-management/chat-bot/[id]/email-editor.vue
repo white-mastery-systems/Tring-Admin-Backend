@@ -171,7 +171,6 @@ const columns = [
   columnHelper.accessor("actions", {
     header: "actions",
     cell: ({ row }) => {
-      // console.log(row.original, "row.original -- row.original");
       return actionsComponent(row.original);
     },
   }),

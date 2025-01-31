@@ -103,7 +103,6 @@
           const crmConfigData = await $fetch<any>(
             `/api/bots/${route.params.id}/integrations/${modalProps.id}`,
           );
-          console.log({ crmConfigData }, "crmConfigData");
           if (crmConfigData) {
             setFieldValue("integrationId", crmConfigData.integrationId);
             setFieldValue("channelId", crmConfigData.metadata.channelId)
@@ -131,7 +130,6 @@
       );
 
       channels.value = data.channels;
-      console.log({ data });
       //   const data: any = await $fetch(
       //     `/api/org/integrations/zoho-bigin/pipelines?id=${matchedCRM.id}`,
       //   );
@@ -169,7 +167,6 @@
 
   const handleAddIntegration = handleSubmit((value: any) => {
     if (modalProps.id) {
-      console.log({ value },"update integration value");
       updateBotIntegrationById({
         payload: {
           ...value,
@@ -184,7 +181,6 @@
         },
       });
     } else {
-      console.log({ value },"add integration value");
       addBotIntegration({
         payload: {
           ...value,

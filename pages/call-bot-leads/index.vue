@@ -84,18 +84,6 @@ const {
   },
 });
 const isDataLoading = computed(() => status.value === "pending");
-  // const analyticsData = ref();
-
-  // onMounted(async () => {
-  //   analyticsData.value = await getAnalyticsData();
-  // });
-
-  // const rep = await defineEventHandler()
-
-  // onMounted(async() => {
-  //   ListLeads.value = await listLeads()
-  //   console.log(ListLeads.value, "ListLeads.value")
-  // })
 
   const viewBot = async () => {
     await navigateTo({

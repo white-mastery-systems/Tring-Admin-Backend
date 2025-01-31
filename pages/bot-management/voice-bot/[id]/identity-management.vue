@@ -102,17 +102,6 @@ import { useTImeList } from '~/composables/timeZones';
       // backgroundSounds: z
       //   .string().optional()
     })
-    // .superRefine((data, ctx) => {
-    //   console.log(data, "data -- data")
-    //   if (data.backgroundSoundControler) {
-    //     if (!data.backgroundSounds) {
-    //       ctx.addIssue({
-    //         path: ["backgroundSounds"],
-    //         message: "Background Sounds  is required",
-    //       })
-    //     }
-    //   }
-    // })
   );
   const {
     setFieldValue,

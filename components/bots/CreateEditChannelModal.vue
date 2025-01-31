@@ -74,12 +74,8 @@ watch(
   },
   { deep: true },
 );
-watch(errors, (newValues) => {
-  console.log(newValues)
-})
 const handleCreateEditBotChannel = handleSubmit(async (values) => {
   isLoading.value = true
-  console.log({ values })
   await $fetch(`/api/bots/${route.params.id}`, {
     method: "PUT",
     body: {

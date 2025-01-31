@@ -229,8 +229,6 @@ const handleAccountUpdate = handleSubmit(async (value: any) => {
     toast.success("Account updated successfully");
   } catch (e) {
     console.log(e)
-    // console.error(e);
-    // toast.error("Failed to update account, please try again");
   } finally {
     isLoading.value = false;
   }
@@ -252,7 +250,6 @@ const roles = [
 ];
 
 const proceedLogin = async () => {
-  console.log("proceedLogin");
   // refreshUser();
   navigateTo("/");
 };

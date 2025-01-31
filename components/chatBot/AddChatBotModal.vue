@@ -91,7 +91,6 @@
         const getSingleDetails: any = await $fetch(
           `/api/bots/${agentModalState.value.id}`,
         );
-        console.log(getSingleDetails, "getSingleDetails");
         setFieldValue("name", getSingleDetails.name);
         setFieldValue("type", getSingleDetails.type);
         if (getSingleDetails?.integrationId) {

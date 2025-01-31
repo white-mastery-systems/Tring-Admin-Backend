@@ -184,9 +184,6 @@ const {
   validationSchema: formSchema,
 });
 
-watch(errors, (newErrors) => {
-  console.log(newErrors)
-})
 watch(() => props.numberModalState.open, async () => {
   resetForm()
   if (props.numberModalState.id) {

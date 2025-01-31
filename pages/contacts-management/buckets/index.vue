@@ -119,9 +119,7 @@ const router = useRouter();
 const route = useRoute();
 const activeStatus = ref("");
 watch(activeStatus, async (newStatus, previousStatus) => { });
-watch(addBucketNameModalState, (newValue) => {
-  console.log('Modal State Changed:', newValue);
-});
+
 const selectedValue = ref("Today");
 // const newBotName = ref("");
 
@@ -160,18 +158,6 @@ const actionsComponent = (id: any) =>
         },
         h(Icon, { name: "lucide:trash-2" }),
       ),
-      // h(
-      //   UiButton,
-      //   {
-      //     onClick: () => {
-      //       addBucketModalState.value.open = true
-      //       addBucketModalState.value.id = id
-      //       console.log("addBucketModalState")
-      //     }, // Add delete functionality
-      //     class: "bg-[#424bd1] hover:bg-[#424bd1] font-bold", // Different color for delete
-      //   },
-      //   [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Add"]
-      // )
     ],
   );
 
