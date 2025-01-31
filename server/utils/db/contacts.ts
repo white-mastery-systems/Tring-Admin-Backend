@@ -129,6 +129,7 @@ export const getContacts = async (
       eq(contactSchema.organizationId, organizationId),
       query?.q ? or(
         ilike(contactSchema.firstName, `%${query.q}%`),
+        ilike(contactSchema.lastName, `%${query.q}%`), 
         ilike(contactSchema.email, `%${query.q}%`),
         ilike(contactSchema.phone, `%${query.q}%`),
       )

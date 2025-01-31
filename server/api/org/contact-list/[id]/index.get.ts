@@ -2,7 +2,8 @@ import { getContactsByChatBucketId, getContactsByVoiceBucketId } from "~/server/
 
 const zodQueryValidator = z.object({
   page: z.string().optional(),
-  limit: z.string().optional()
+  limit: z.string().optional(),
+  q: z.string().optional()
 })
 
 export default defineEventHandler(async (event) => {
@@ -17,8 +18,8 @@ export default defineEventHandler(async (event) => {
   const type = bucketDetail?.type
   
   const data = type === "chat" 
-  ? await getContactsByChatBucketId(contactListId)
-  : await getContactsByVoiceBucketId(contactListId)
+  ? await getContactsByChatBucketId(contactListId, query)
+  : await getContactsByVoiceBucketId(contactListId, query)
 
   let page, offset, limit = 0
     

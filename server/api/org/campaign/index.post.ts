@@ -4,6 +4,8 @@ import { createVoicebotSchedular } from "~/server/utils/db/voicebots";
 import { getContactsByChatbotBucketId } from "~/server/utils/db/contact-list";
 import { scheduleWhatsAppCampaign } from "~/server/utils/whatsappSchedule";
 import { logger } from "~/server/logger";
+import { getInteractedSessions } from "~/server/utils/db/chats";
+import { calculateDateRange } from "~/server/utils/db/organization";
 
 const zodInsertCampaign = z.object({
   campaignName: z.string(),
@@ -69,6 +71,19 @@ export default defineEventHandler(async (event) => {
     const chatbotContactList = await getContactsByChatbotBucketId(
       data?.bucketId,
     );
+    const orgSubscription = await getOrgSubscriptionStatus(organizationId, "chat");
+
+    const { startDate, endDate } = calculateDateRange(orgSubscription, timeZone);
+    const interactedSessions = await getInteractedSessions(organizationId, startDate, endDate)
+    const pricingInformation = await getPricingInformation(orgSubscription?.planCode!)
+      
+    const usedSessions = (interactedSessions?.length || 0) + (orgSubscription?.whatsappUsedSessions || 0);
+    const maxSessions = pricingInformation?.sessions || 0;
+    const availableSessions = Math.max(maxSessions - usedSessions, 0)
+
+    if (chatbotContactList.length > availableSessions) {
+      return errorResponse(event, 400, "Insufficient sessions to schedule campaign");
+    }
 
     const integrationData = await getIntegrationById(
       organizationId,

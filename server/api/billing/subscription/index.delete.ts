@@ -2,13 +2,14 @@
 import { billingLogger, logger } from "~/server/logger";
 import { updateChatbotStatus } from "~/server/utils/db/organization";
 import { cancelSubscriptionFromZohoBilling } from "~/server/utils/zoho/modules";
+import { BotType } from "./index.post";
 
 const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
   const orgId = event.context.user?.organizationId;
   const query = await isValidQueryHandler(event, z.object({
-    type: z.string()
+    type: z.nativeEnum(BotType),
   }))
   if (!orgId) {
     return createError({
