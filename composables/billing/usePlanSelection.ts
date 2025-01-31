@@ -2,13 +2,11 @@ import { navigateTo } from 'nuxt/app';
 import { computed } from 'vue';
 import { useAsyncData } from '#app';
 import { useUserDetailsComposable } from '../billing/useDetails';
-import { useBillingComposable } from '../billing/useBillingComposable'
 
 const { userDetails, fetchUser } = useUserDetailsComposable();
 fetchUser()
-export function usePlanSelection(userDetails: any, orgBilling: any, route: any, onBoardingAccount: any) {
-  const { organization } = useBillingComposable()
-  const { orgDetails } = organization.value
+export function usePlanSelection(userDetails: any, orgBilling: any, organization: any, route: any, onBoardingAccount: any) {
+  const { orgDetails } = organization
 
   const choosePlan = async (plan: any) => {
     if (plan === 'chat_enterprise') {
