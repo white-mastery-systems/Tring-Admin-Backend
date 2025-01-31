@@ -2,9 +2,11 @@ import { navigateTo } from 'nuxt/app';
 import { computed } from 'vue';
 import { useAsyncData } from '#app';
 import { useUserDetailsComposable } from '../billing/useDetails';
+import { useSubscriptionCheck } from '../billing/useSubscriptionCheck';
 
 const { userDetails, fetchUser } = useUserDetailsComposable();
 fetchUser()
+const { checkSubscription } = useSubscriptionCheck()
 export function usePlanSelection(userDetails: any, orgBilling: any, organization: any, route: any, onBoardingAccount: any) {
   const { orgDetails } = organization
 
@@ -53,6 +55,7 @@ export function usePlanSelection(userDetails: any, orgBilling: any, organization
             target: "_blank",
           },
         });
+        await checkSubscription()
       } catch (err) {
         toast.error("ERROR: " + err.statusMessage);
         if (err.statusMessage?.includes("gst_no")) {

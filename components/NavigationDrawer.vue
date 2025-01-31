@@ -78,7 +78,7 @@
             }}</span>
           <span class="max-w-[150px] truncate">{{ userInfo?.email }}</span>
         </div>
-        <div v-if="freeTrialPopup.planFree"
+        <div v-if="isAnyPlanFree"
           class="flex flex-col justify-center items-center gap-4 absolute bottom-[-35px] left-[0px] rounded-lg bg-[#424bd1] field_shadow payment-popup">
           <!-- <div class="min-h-[40px] min-w-[40px] max-w-[40px] bg-[#424bd1] rounded-full">
 
@@ -117,11 +117,13 @@ import {
   } from "lucide-vue-next";
 import { useRoute } from "vue-router";
 import { useOrgDetailsStore } from "~/store/orgDetailsStore";
-import { useFreeTrial } from '~/store/freeTrailStore'
+import { useSubscriptionCheck } from '~/composables/billing/useSubscriptionCheck';
+// import { useSubscriptionCheck } from '~/composables/useSubscriptionCheck';
+
+const { isAnyPlanFree } = useSubscriptionCheck()
 
   const { user } = await useUser();
 // const freeTrialPopup = ref(false)
-const freeTrialPopup = useFreeTrial()
   // watch(user, (newUserInfo) => {
   //
   // });
@@ -267,16 +269,16 @@ const freeTrialPopup = useFreeTrial()
     const { orgDetails } = await $fetch('/api/org')
     localStorage.setItem("orgDetails", JSON.stringify(orgDetails));
     
-    const orgBilling = await $fetch("/api/org/subscriptionPlans");
-    // const isAnyPlanFree = orgBilling[1].planCode.includes("_free")
-    const isAnyPlanFree = orgBilling.every((plan: any) => plan.planCode.includes("_free"))
-    if (isAnyPlanFree) freeTrialPopup.planFree = true
-    else freeTrialPopup.planFree = false
+    // const orgBilling = await $fetch("/api/org/subscriptionPlans");
+    // // const isAnyPlanFree = orgBilling[1].planCode.includes("_free")
+    // const isAnyPlanFree = orgBilling.every((plan: any) => plan.planCode.includes("_free"))
+    // if (isAnyPlanFree) freeTrialPopup.planFree = true
+    // else freeTrialPopup.planFree = false
   })
 
-  const handleNavigation = () => {
-    emit("closeSheet");
-  };
+const handleNavigation = () => {
+  emit("closeSheet");
+};
 const redirectToBilling = () => {
   // router.push('/billing')
   navigateTo({ name: 'billing-view-all'})
