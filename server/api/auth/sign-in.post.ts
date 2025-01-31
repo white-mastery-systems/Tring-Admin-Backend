@@ -107,5 +107,6 @@ export default defineEventHandler(async (event) => {
       username: user?.username,
       email: user?.email,
     },
+    token: lucia.createSessionCookie(session.id).serialize()
   };
 });

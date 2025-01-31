@@ -84,5 +84,5 @@ export default defineEventHandler(async (event) => {
 
   if (user.organizationId) return "/";
   // return "/auth/onboarding/1";
-  return { status: true, message: "OTP sent to your email!", data: user };
+  return { status: true, message: "OTP sent to your email!", data: user,  token: lucia.createSessionCookie(session.id).serialize() };
 });
