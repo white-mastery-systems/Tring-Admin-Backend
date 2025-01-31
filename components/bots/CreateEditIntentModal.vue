@@ -143,7 +143,6 @@
     const target = e.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
       const files = Array.from(target.files);
-      console.log(values.intent, "values.intent",files?.map((file: any) => file.type?.includes("image/"))?.find(item=>item===true));
       if (
         values.intent === "images" &&
         !files?.map((file: any) => file.type?.includes("image/"))?.find(item=>item===true)

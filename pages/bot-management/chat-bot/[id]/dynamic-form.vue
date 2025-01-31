@@ -202,9 +202,6 @@ const { handleSubmit, values, errors, setFieldValue, resetForm } = useForm({
   },
 });
 
-watch(errors, () => {
-  console.log("Errors:", errors.value);
-})
 const dynamicForm = handleSubmit(async (values: any) => {
   // title: values.title,
   const formattedData: any = {
@@ -226,7 +223,6 @@ const toCamelCase = (str: string) => {
     .replace(/\s+/g, '');
 }
 const addField = () => {
-  console.log(values.fields, "values.fields -- values.fields")
   const isValid = values.fields?.every((field) => {
       if (field.type === "Text") {
         // For type 'Text', check all fields
@@ -256,116 +252,3 @@ const removeField = async (index: number) => {
   });
 };
 </script>
-
-
-
-
-<!-- <template>
-  <Page title="Dynamic Form" :bread-crumbs="[
-  {
-  label: `${botDetails.name}`,
-  to: `/bot-management/chat-bot/${botDetails.id}`,
-  },
-  {
-    label: 'Dynamic Form',
-  to: `/bot-management/chat-bot/${botDetails.id}/dynamic-form`,
-  },
-  ]" :description="true" :disableSelector="false" :disable-back-button="false">
-    <form @submit.prevent="dynamicForm" class="space-y-4">
-      <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3 px-2">
-        <TextField name="title" label="Title" placeholder="Title">
-        </TextField>
-        <TextField name="fields[0].label" label="label" placeholder="label">
-        </TextField>
-        <SelectField name="fields[0].type" label="Type" placeholder="Select Type" :options="typeList" required />
-        <SelectField name="fields[0].required" label="required" placeholder="Select required" :options="requiredList"
-          required />
-        <TextField name="fields[0].placeholder" label="placeholder" placeholder="placeholder">
-        </TextField>
-        <TextField name="fields[0].model" label="model" placeholder="model">
-        </TextField>
-      </div>
-      <div class="flex w-full justify-end">
-        <UiButton color="primary" type="submit" size="lg" :loading="isLoading">
-          Submit
-        </UiButton>
-      </div>
-    </form>
-  </Page>
-</template>
-
-<script setup lang="ts">
-const isLoading = ref(false)
-const route = useRoute("bot-management-chat-bot-id-dynamic-form");
-const botDetails: any = await getBotDetails(route.params.id);
-
-const requiredList = reactive([
-  {
-    label: "Yes",
-    value: true
-  }, {
-    label: "No",
-    value: false
-  },
-])
-const typeList = reactive([
-  {
-    label: "Text",
-    value: "text"
-  }, {
-    label: "Email",
-    value: "email"
-  }, {
-    label: "Number",
-    value: "number"
-  }, {
-    label: "Date",
-    value: "date"
-  }, {
-    label: "Time",
-    value: "time"
-  }, {
-    label: "Textarea",
-    value: "textarea"
-  },
-])
-const formSchema = toTypedSchema(
-  z.object({
-    title: z.string({ required_error: "Title is required." })
-          .min(2, "Title must be at least 2 characters."),
-    fields: z.array(
-      z.object({
-        type: z.string({ required_error: "Type is required." }),
-        label: z.string({ required_error: "Label is required." }),
-        placeholder: z.string().optional().optional(),
-        model: z.string({ required_error: "Model is required." }).optional(),
-        required: z.boolean().optional(),
-      })
-    ),
-  })
-);
-
-const { handleSubmit, values, setFieldValue } = useForm({
-  validationSchema: formSchema,
-  initialValues: {
-    title: '',
-    fields: [{
-      label: '',
-      type: 'text',
-      required: false,
-      placeholder: '',
-      model: ''
-    }],
-  },
-});
-const dynamicForm = handleSubmit(async (values: any) => {
-  console.log(JSON.stringify(values), "values -- values")
-  // const formattedData = {
-  //   title: values.title, // or use a dynamic title if needed
-  //   fields: values.fields, // Directly use the array of fields
-  // };
-  // console.log(formattedData, "formattedData -- ")
-  // isLoading.value = true
-  // isLoading.value = false
-})
-</script> -->

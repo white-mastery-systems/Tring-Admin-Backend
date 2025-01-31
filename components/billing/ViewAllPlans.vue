@@ -1,5 +1,4 @@
 <template>
-
   <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
@@ -66,7 +65,7 @@
     </div>
   </Page>
   <div v-if="(currentRoute === 'onboarding/billing') && !isPageLoading"
-    class="flex items-center justify-end w-[90%] cursor-pointer text-[#8080809c] pt-1">
+    class="flex items-center justify-end w-[90%] cursor-pointer text-[#8080809c] pt-1 pr-5">
     <div @click="proceedLogin()" class="flex items-center gap-2">
       <span class="flex items-center">
         Skip
@@ -87,21 +86,21 @@ import { useRoute, useRouter } from 'vue-router';
 import { usePlanLevel } from "~/composables/billing/usePlanLevel";
 import { useBillingComposable } from '~/composables/billing/useBillingComposable';
 import { ArrowRight } from 'lucide-vue-next'
-import { useFreeTrialPopup } from '~/composables/billing/useFreeTrialPopup';
+import { useFreeTrial } from '~/store/freeTrailStore'
 
 const props = withDefaults(defineProps<{ onBoardingAccount?: boolean }>(), {
   onBoardingAccount: false, // Default value for accept
 });
 const router = useRouter();
 const route = useRoute();
+const freeTrialPopup = useFreeTrial()
 const { userDetails, fetchUser } = useUserDetailsComposable()
-const { fetchOrgBillingPlans } = useFreeTrialPopup()
 fetchUser()
 
 
 const billingVariationDetails = ref()
 const BillingVariationPending = ref(false);
-const { orgBilling, isPageLoading } = useBillingComposable();
+const { orgBilling, organization, isPageLoading } = useBillingComposable();
 
 import { watch, watchEffect } from 'vue';
 
@@ -135,15 +134,19 @@ const currentRoute = computed(() => {
 // Access additional composable methods
 // Dynamically compute `usePlanSelection` based on updated values
 const planSelection = computed(() => {
-  return usePlanSelection((userDetails.value || {}), (orgBilling.value || {}), (route?.query || {}), (props.onBoardingAccount || {}));
+  return usePlanSelection((userDetails.value || {}), (orgBilling.value || {}), (organization.value || {}), (route?.query || {}), (props.onBoardingAccount || {}));
 });
 
 // Access choosePlan reactively
 const choosePlan = computed(() => planSelection.value?.choosePlan || (() => { }));
 const { findPlanLevel } = usePlanLevel();
 
-onMounted(() => {
-  fetchOrgBillingPlans()
+onMounted(async() => {
+  const orgBilling = await $fetch("/api/org/subscriptionPlans");
+  // const isAnyPlanFree = orgBilling[1].planCode.includes("_free")
+  const isAnyPlanFree = orgBilling.every((plan: any) => plan.planCode.includes("_free"))
+  if (isAnyPlanFree) freeTrialPopup.planFree = true
+  else freeTrialPopup.planFree = false
 });
 
 const proceedLogin = async () => {

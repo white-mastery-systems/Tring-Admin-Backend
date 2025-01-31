@@ -2,13 +2,12 @@ import { navigateTo } from 'nuxt/app';
 import { computed } from 'vue';
 import { useAsyncData } from '#app';
 import { useUserDetailsComposable } from '../billing/useDetails';
-import { useBillingComposable } from '../billing/useBillingComposable'
 
 const { userDetails, fetchUser } = useUserDetailsComposable();
 fetchUser()
+export function usePlanSelection(userDetails: any, orgBilling: any, organization: any, route: any, onBoardingAccount: any) {
+  const { orgDetails } = organization
 
-export function usePlanSelection(userDetails: any, orgBilling: any, route: any, onBoardingAccount: any) {
-  console.log(onBoardingAccount, "onBoardingAccount -- onBoardingAccount")
   const choosePlan = async (plan: any) => {
     if (plan === 'chat_enterprise') {
       return navigateTo('https://tringlabs.ai/contact-us/', {
@@ -24,7 +23,7 @@ export function usePlanSelection(userDetails: any, orgBilling: any, route: any, 
           return navigateTo({ name: 'account' });
         }
       }
-      if (!orgBilling?.gst) {
+      if (!orgDetails?.metadata?.gst && !orgDetails?.metadata?.gstType) {
         toast.error('Please update GST information to continue');
         if (onBoardingAccount === true) {
           return navigateTo({ name: 'auth-onboarding-account' });

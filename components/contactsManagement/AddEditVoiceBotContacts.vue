@@ -31,7 +31,6 @@
       description="Are you sure you want to delete ?" @confirm="() => {
         if (deleteIntegrateNumber?.id) {
           if (props.typeOfAddContacts === 'insideBucket') {
-            console.log('asfsaf sfsadfsafda', deleteIntegrateNumber)
             insideBucketNumber({
               queryId: queryId,
               id: deleteIntegrateNumber.id,
@@ -292,12 +291,10 @@ const fileUpload = async () => {
     const fileExtension = file.name.split('.').pop().toLowerCase();
 
     if (fileExtension === "csv") {
-      console.log("Uploading CSV file");
       if (props.typeOfAddContacts === "insideBucket") await uploadBucketNumber(file, route.params.id);
       else await uploadNumber(file, 'voice');
       integrationRefresh()
     } else if (fileExtension === "xls" || fileExtension === "xlsx") {
-      console.log("Uploading Excel file");
       if (props.typeOfAddContacts === "insideBucket") await uploadBucketNumber(file, route.params.id);
       else await uploadNumber(file, 'voice');
       integrationRefresh()
@@ -309,7 +306,6 @@ const fileUpload = async () => {
     }
   } else {
     isLoading.value = false
-    console.log("No file selected");
   }
   isLoading.value = false
 };

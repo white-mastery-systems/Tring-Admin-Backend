@@ -267,10 +267,6 @@ const estimatedMonthlyBudgetList = computed(() => {
 watch(() => props.personalCompanyDetail.country, (newValue, oldValue) => {
   if (props.personalCompanyDetail.estimatedMonthlyBudget) props.setFieldValue("estimatedMonthlyBudget", '')
 })
-watch(props.errors, (newValue) => {
-  console.log(newValue, "newValue")
-})
-
 
 const onSubmit = () => {
   isLoading.value = true

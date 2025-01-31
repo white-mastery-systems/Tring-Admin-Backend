@@ -408,7 +408,6 @@ const formatLabel = (key: any) => {
   return key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z])/g, ' $1').trim();
 }
 const dateTimeFormat = (text, format) => {
-  console.log(text, "text -- text");
   const dateTimeStr = text?.replace("Site Visit Scheduled on", "")?.trim();
   const [dateStr, timeStr] = dateTimeStr?.split(" - ");
 

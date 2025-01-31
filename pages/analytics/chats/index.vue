@@ -161,7 +161,6 @@
   });
 
   const isDataLoading = computed(() => {
-    console.log(status.value, "VALUE STATUS");
     return status.value === "pending";
   });
 

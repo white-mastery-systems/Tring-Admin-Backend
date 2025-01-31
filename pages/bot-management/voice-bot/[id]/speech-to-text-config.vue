@@ -313,12 +313,6 @@ const phraseArrayName = computed(() => {
         formattedKeywords.length ? formattedKeywords : []
       );
   });
-  watch(errors, (newValues) => {
-    console.log(newValues);
-    if (newValues) {
-      console.log("ERRORS", newValues);
-    }
-  });
 watch(
   () => toRaw(values.provider),
   (newValue) => {
@@ -382,7 +376,6 @@ watch(
 
 const inputChanges = ($event: any) => {
   const numericValue = Number($event.target.value)
-  // console.log(numericValue, "numericValue --- numericValue")
   setFieldValue('assemblyaiamplificationFactor', numericValue)
 }
 
@@ -450,73 +443,6 @@ const createEditSpeecToTextConfig = handleSubmit(async (value) => {
   });
   isLoading.value = false;
 });
-
-
-
-// const createEditSpeecToTextConfig = handleSubmit(async (value) => {
-//   console.log('Form Values:', value);
-//   isLoading.value = true;
-
-//   // Ensure phraseSets and keywords are always arrays
-//   const phraseSets = Array.isArray(value.phraseSets) ? value.phraseSets : [];
-//   const keywords = Array.isArray(value.keywords) ? value.keywords : [];
-
-//   const updatedConfig = {
-//     language: value.language || botData.value.speechToTextConfig.language,
-//     provider: value.provider || botData.value.speechToTextConfig.provider,
-
-//     google: {
-//       ...botData.value.speechToTextConfig.google,
-//       adaptation: value.adaptation || botData.value.speechToTextConfig.google.adaptation,
-//       model: value.model || botData.value.speechToTextConfig.google.model,
-//       // Safely map phraseSets
-//       phrase_sets: phraseSets.length > 0
-//         ? phraseSets.map((item: any) => item.value) || []
-//         : botData.value.speechToTextConfig.google.phrase_sets || [],
-//       amplification_factor: value.amplificationFactor || botData.value.speechToTextConfig.google.amplification_factor
-//     },
-
-//     azure: {
-//       ...botData.value.speechToTextConfig.azure,
-//       // Safely map phraseSets for Azure
-//       phrase_list: phraseSets.length > 0
-//         ? phraseSets.map((item: any) => item.value)
-//         : botData.value.speechToTextConfig.azure.phrase_list,
-//       amplification_factor: value.amplificationFactor || botData.value.speechToTextConfig.azure.amplification_factor
-//     },
-
-//     deepgram: {
-//       ...botData.value.speechToTextConfig.deepgram,
-//       amplification_factor: value.amplificationFactor || botData.value.speechToTextConfig.deepgram.amplification_factor,
-//      : {
-//         ...botData.value.speechToTextConfig.deepgram,
-//         model: value.model || botData.value.speechToTextConfig.deepgram.model,
-//         endpointing: value.endpointing || botData.value.speechToTextConfig.deepgram.endpointing,
-//         utterance_end_ms: value.utteranceEndMs !== undefined
-//           ? String(value.utteranceEndMs)
-//           : botData.value.speechToTextConfig.deepgram.utterance_end_ms,
-//         // Safely map keywords
-//         keywords: keywords.length > 0
-//           ? keywords.map(keywordObj => `${keywordObj.value}:${keywordObj.boostValue}`)
-//           : botData.value.speechToTextConfig.deepgram.keywords || []
-//       }
-//     }
-//   };
-
-//   console.log('Updated Config:', updatedConfig);
-
-//   // Uncomment this block when you are ready to save the changes
-//   // await $fetch(`/api/voicebots/${route.params.id}`, {
-//   //   method: "PUT",
-//   //   body: {
-//   //     speechToTextConfig: updatedConfig,
-//   //   },
-//   // });
-
-//   toast.success("Updated successfully");
-//   isLoading.value = false;
-// });
-
 
 
 watch(values, (newValues) => {

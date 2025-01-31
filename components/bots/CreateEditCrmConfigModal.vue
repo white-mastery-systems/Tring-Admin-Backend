@@ -201,11 +201,6 @@ watchEffect(async () => {
   );
 
   const handlePipelineChange = async (e: any) => {
-    console.log(
-      pipelines.value
-        .find((pipeline: any) => pipeline.id === e)
-        .sections?.find((section: any) => section.sequence_number === 2),
-    );
     stages.value = pipelines.value
       .find((pipeline: any) => pipeline.id === e)
       .sections?.find((section: any) => section.sequence_number === 2)
