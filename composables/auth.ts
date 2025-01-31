@@ -39,18 +39,12 @@ export const useUser = async () => {
 
 
         // Handle navigation based on orgDetails
-        console.log("formattedOrgDetails top", formattedOrgDetails)
         if (formattedOrgDetails?.planCode === 'chat_free') {
-          console.log("Free plan", formattedOrgDetails);
-          if (formattedOrgDetails?.metadata?.gst) {
+          if (formattedOrgDetails.metadata.gstType || formattedOrgDetails?.metadata?.gst) {
             navigateTo("/billing/view-all");
           } else {
             if (route?.name !== 'auth-onboarding-account') {
               navigateTo("/");
-            } 
-            else {
-              console.log("Already onboarding account page")
-              // navigateTo("/auth/onboarding/account");
             }
           }
         } else {

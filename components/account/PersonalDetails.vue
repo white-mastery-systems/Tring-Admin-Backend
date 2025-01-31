@@ -168,13 +168,11 @@ const isLoading = ref(false);
 const { user, refreshUser }: { user: any; refreshUser: any } =
   await useUser();
 if (!user.value) {
-  console.log("No user");
   user.value = await getUserDetail();
 }
 // const { orgDetails } = await fetch("/api/org", {
 //   method: "GET",
 // });
-console.log(user.value, "user")
 const { orgDetails } = await $fetch('/api/org')
 setFieldValue("countryCode", user?.value?.countryCode ?? "+91");
 setFieldValue("username", user?.value?.username ?? "");
@@ -199,9 +197,6 @@ setFieldValue("gst", orgDetails?.metadata?.gst ?? "");
 setFieldValue("gstType", orgDetails?.metadata?.gstType ?? "");
 // if (orgDetails?.metadata?.industry === "Other") {
 // }
-watch(errors, (newErrors) => {
-  console.log(newErrors, "newErrors - -newErrors");
-})
 const handleLogoChange = async (event: any) => {
   logoData.value = event[0];
 
