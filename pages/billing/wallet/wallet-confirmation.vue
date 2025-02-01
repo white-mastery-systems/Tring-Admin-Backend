@@ -24,7 +24,7 @@
   });
   toast.success("Payment Confirmed");
   navigateTo({ 
-    name: "billing-wallet",
-    query: { type: route.query?.type },
+    name: "billing-view-wallet",
+    query: { type: route.query?.type ?? 'chat' },
   });
 </script>
