@@ -1,6 +1,6 @@
 import { logger } from "../logger";
 import { getAllWhatsappIntegration } from "./db/integrations";
-import { getOrgSubscriptionStatus, updateOrgWhatsappSessions } from "./db/organization";
+import { createOrgWhatsappSessions, getOrgSubscriptionStatus, updateOrgWhatsappSessions } from "./db/organization";
 
 interface ConversationDataPoint {
   start: number;
@@ -35,13 +35,16 @@ interface AnalysisResults {
 export const getConversationCount = async (
   wabaId: string,
   accessToken: string,
+  phoneNumber: string,
+
 ) => {
   const last24Hour = getLast24HourTimestamp();
+  phoneNumber = phoneNumber.slice(1).replaceAll(" ", "")
 
-  const getConversationAnalyticsUrl = `https://graph.facebook.com/v21.0/${wabaId}?fields=conversation_analytics.start(${last24Hour.start}).end(${last24Hour.end}).granularity(DAILY).conversation_categories(["MARKETING","SERVICE"]).dimensions(["CONVERSATION_CATEGORY","CONVERSATION_TYPE","COUNTRY","PHONE"])&access_token=${accessToken}`;
+  const getConversationAnalyticsUrl = `https://graph.facebook.com/v21.0/${wabaId}?fields=conversation_analytics.start(${last24Hour.start}).end(${last24Hour.end}).granularity(DAILY).phone_numbers([${phoneNumber}]).conversation_categories(["MARKETING","SERVICE"]).dimensions(["CONVERSATION_CATEGORY","CONVERSATION_TYPE","COUNTRY","PHONE"])&access_token=${accessToken}`;
 
   try {
-    const conversationAnalyticsResponse = await $fetch(
+    const conversationAnalyticsResponse: WhatsAppAnalytics = await $fetch(
       getConversationAnalyticsUrl,
       {
         method: "GET",
@@ -53,9 +56,13 @@ export const getConversationCount = async (
     logger.info(
       `conversationAnalyticsResponse ${JSON.stringify(conversationAnalyticsResponse)}`,
     );
-    return getConversationDetails(
-      conversationAnalyticsResponse as WhatsAppAnalytics,
-    );
+    if(!conversationAnalyticsResponse.conversation_analytics) {
+       logger.info(`conversationAnalyticsResponse is empty for wabaId: ${wabaId} and phone_number: ${phoneNumber}`);
+       return {
+        total_conversations: 0
+       }
+    }
+    return getConversationDetails(conversationAnalyticsResponse);
   } catch (err: any) {
     logger.info(`logging failed ${err.message}`);
   }
@@ -116,7 +123,6 @@ function getLast24HourTimestamp(): { start: number; end: number } {
   };
 }
 
-
 export const orgTotalWhatappSessions = async () => {
   try {
     const allAdminWhatsappIntegrations = await getAllWhatsappIntegration()
@@ -125,22 +131,40 @@ export const orgTotalWhatappSessions = async () => {
       logger.error("No whatsapp intergrations are found for calculationg whatsapp session")
       return
     }
-
-    allAdminWhatsappIntegrations.forEach(async (integration: any) => {
-      try {
-        const data = await getConversationCount(integration.metadata.wabaId, integration.metadata.access_token)
-        if(data) {
-         const newWhatsappSessionCount = data?.total_conversations || 0
-         const orgSubscriptionDetail = await getOrgSubscriptionStatus(integration.org_id, "chat")
-
-         const totalWhatsappSessionCount = (orgSubscriptionDetail?.whatsappUsedSessions || 0) + newWhatsappSessionCount 
-         await updateOrgWhatsappSessions(integration.org_id, totalWhatsappSessionCount)
-        }
-      } catch (error) {
-        logger.error(`Whatsapp getConversationCount API, Error: ${JSON.stringify(error)}`)
+    
+    for(const integration of allAdminWhatsappIntegrations) {
+      if (!integration?.metadata.pid || !integration?.metadata.access_token || !integration?.metadata.wabaId) {
+        return;
       }
-    })
+      const phoneNumber = await getWhatsappPhonenumberByPid(integration.metadata.pid, integration.metadata.access_token);
+      const data = await getConversationCount(integration?.metadata.wabaId, integration.metadata.access_token, phoneNumber);
+      const newWhatsappSessionCount = data?.total_conversations || 0
+      const orgSubscriptionDetail = await getOrgSubscriptionStatus(integration.org_id, "chat")
+      const totalWhatsappSessionCount = (orgSubscriptionDetail?.whatsappUsedSessions || 0) + newWhatsappSessionCount 
+
+      await updateOrgWhatsappSessions(integration.org_id, totalWhatsappSessionCount)
+      await createOrgWhatsappSessions({ 
+        organizationId: integration.org_id,
+        integrationId: integration.id,
+        totalWhatappSessions: newWhatsappSessionCount,
+      })
+    }
   } catch (error: any) {
     logger.error(`Error: orgTotalWhatappSessions, ${JSON.stringify(error.message)}`)
+  }
+}
+
+const getWhatsappPhonenumberByPid = async (pid: string, accessToken: string) => {
+  try {
+    const data: any = await $fetch(`https://graph.facebook.com/v21.0/${pid}?fields=display_phone_number`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${accessToken}`,
+      },
+    })
+    return data?.display_phone_number
+  } catch(error: any) {
+    logger.error(`Error: getWhatsappPhonenumberByPid, ${JSON.stringify(error.message)}`)
   }
 }
