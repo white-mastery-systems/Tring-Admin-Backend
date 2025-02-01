@@ -64,8 +64,7 @@ export default defineEventHandler(async (event) => {
     //     )
     //   }
     // }
-
-  const sessionId = getCookie(event, lucia.sessionCookieName) ?? null;
+  const sessionId = getCookie(event, lucia.sessionCookieName) ?? getHeader(event, "Token") ?? null;
   if (!sessionId) {
     event.context.session = null;
     event.context.user = null;
