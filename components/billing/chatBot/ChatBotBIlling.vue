@@ -64,19 +64,21 @@
         <div class="flex items-center gap-3">
           <span> WhatsApp session used </span>
           <UiTooltipProvider>
-            <UiTooltip>
+            <UiTooltip class="flex justify-center w-[20%]">
               <UiTooltipTrigger as-child>
                 <Info class="w-5 h-5 cursor-pointer" />
               </UiTooltipTrigger>
-              <UiTooltipContent>
-                <p></p>
+              <UiTooltipContent class="max-w-[300px]">
+                <p>Conversation count updates every 24 hours at 12 AM UTC. The
+                  displayed count includes conversations
+                  until the last update, but recent conversations from the past 24 hours won't be reflected until the
+                  next update.</p>
               </UiTooltipContent>
             </UiTooltip>
           </UiTooltipProvider>
         </div>
         <span class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]">
-          <!-- {{ usageDetails?.extraChatsMade }} -->
-          --
+          {{ usageDetails?.whatsappSessions }}
         </span>
       </div>
       <!-- <div
