@@ -2,9 +2,8 @@
   <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else title="Billing" :description="true" :disableSelector="true" customBackRouter="/Billing"
-    :disable-back-button="(currentRoute === 'onboarding/billing')">
-    <!-- router.options.history.state.back -->
+  <Page v-else title="Billings" :description="true" :disableSelector="true"
+    :customBackRouter="correctedUrl" :disable-back-button="(currentRoute === 'onboarding/billing')">
     <div :class="[
         'grid gap-4 px-2.5 py-0',
         route.query.type === 'voice'
@@ -91,6 +90,7 @@ import { useFreeTrial } from '~/store/freeTrailStore'
 const props = withDefaults(defineProps<{ onBoardingAccount?: boolean }>(), {
   onBoardingAccount: false, // Default value for accept
 });
+const correctedUrl = ref('');
 const router = useRouter();
 const route = useRoute();
 const freeTrialPopup = useFreeTrial()
@@ -141,6 +141,22 @@ const planSelection = computed(() => {
 const choosePlan = computed(() => planSelection.value?.choosePlan || (() => { }));
 const { findPlanLevel } = usePlanLevel();
 
+onMounted(() => {
+  if (!route.query.type) { // If `type` is not present in the query
+    router.push({ query: { type: 'chat' } });
+  }
+  if (!(route.name === 'auth-onboard-billing')) {
+    const currentUrl = router.options.history.state.back || 'billing/view-all';
+    if (!currentUrl.includes('?type=chat') && !currentUrl.includes('?type=voice')) {
+      console.log(currentUrl, "currentUrl top")
+      correctedUrl.value = `/billing?type=chat`;
+    } else if (currentUrl.includes('?type=voice')) {
+      correctedUrl.value = `/billing?type=voice`;
+    } else if (currentUrl.includes('?type=chat')) {
+      correctedUrl.value = `/billing?type=chat`;
+    }
+  }
+});
 // onMounted(async() => {
 //   const orgBilling = await $fetch("/api/org/subscriptionPlans");
 //   // const isAnyPlanFree = orgBilling[1].planCode.includes("_free")

@@ -281,7 +281,7 @@ const handleNavigation = () => {
 };
 const redirectToBilling = () => {
   // router.push('/billing')
-  navigateTo({ name: 'billing-view-all'})
+  navigateTo({ name: 'billing-view-all', query: { type: 'chat'} })
 }
 </script>
 

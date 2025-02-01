@@ -35,20 +35,19 @@ export function usePlanSelection(userDetails: any, orgBilling: any, organization
         }
       }
       const locationData = await fetchLocation();
-
+      const billingType = route?.type ?? 'chat'
       try {
         const hostedPageUrl = await $fetch<{ hostedpage: { url: string } }>(
-          `/api/billing/subscription?type=${route?.type ?? 'chat'}`,
+          `/api/billing/subscription?type=${billingType}`,
           {
             method: "POST",
             body: {
               plan: plan,
               locationData: locationData,
-              redirectUrl: `${window.location.origin}/billing/billing-confirmation`,
+              redirectUrl: `${window.location.origin}/billing/billing-confirmation?type=${billingType}`,
             },
           },
         );
-
         navigateTo(hostedPageUrl?.hostedpage?.url, {
           external: true,
           open: {
