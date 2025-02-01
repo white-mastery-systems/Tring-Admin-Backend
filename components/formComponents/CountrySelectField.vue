@@ -8,7 +8,7 @@
                 <UiPopoverTrigger as-child>
                     <UiFormControl>
                         <UiButton variant="outline" role="combobox" class="font-normal text-sm px-3" :class="cn(
-                            'min-w-[257.5px] justify-between relative overflow-hidden',
+                            'min-w-[139.5px] md:min-w-[257.5px] justify-between relative overflow-hidden',
                             !fieldValue && 'text-muted-foreground',
                         )
                             ">

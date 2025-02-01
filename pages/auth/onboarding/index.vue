@@ -45,6 +45,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: "auth",
+  middleware: "guest-only",
 });
 
 import { ref } from 'vue';
