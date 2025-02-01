@@ -2,8 +2,8 @@
   <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else title="Billings" :description="true" :disableSelector="true"
-    :customBackRouter="correctedUrl" :disable-back-button="(currentRoute === 'onboarding/billing')">
+  <Page v-else title="Billings" :description="true" :disableSelector="true" :customBackRouter="correctedUrl"
+    :disable-back-button="(currentRoute === 'onboarding/billing')" class="relative">
     <div :class="[
         'grid gap-4 px-2.5 py-0',
         route.query.type === 'voice'
@@ -62,16 +62,16 @@
         </UiButton>
       </div>
     </div>
-  </Page>
-  <div v-if="(currentRoute === 'onboarding/billing') && !isPageLoading"
-    class="flex items-center justify-end w-[90%] cursor-pointer text-[#8080809c] pt-1 pr-5">
-    <div @click="proceedLogin()" class="flex items-center gap-2">
-      <span class="flex items-center">
-        Skip
-      </span>
-      <ArrowRight class="w-5 h-5" />
+    <div v-if="(currentRoute === 'onboarding/billing') && !isPageLoading"
+      class="sticky right-[72px] bottom-0 cursor-pointer text-[#8080809c] pt-4 pr-3">
+      <div @click="proceedLogin()" class="flex items-center justify-end gap-2">
+        <span class="flex items-center">
+          Skip
+        </span>
+        <ArrowRight class="w-5 h-5" />
+      </div>
     </div>
-  </div>
+  </Page>
 </template>
 <script setup lang="ts">
 definePageMeta({
@@ -142,13 +142,12 @@ const choosePlan = computed(() => planSelection.value?.choosePlan || (() => { })
 const { findPlanLevel } = usePlanLevel();
 
 onMounted(() => {
-  if (!route.query.type) { // If `type` is not present in the query
-    router.push({ query: { type: 'chat' } });
-  }
-  if (!(route.name === 'auth-onboard-billing')) {
+  if ((route.name !== 'auth-onboarding-billing')) {
+    if (!route.query.type) { // If `type` is not present in the query
+      router.push({ query: { type: 'chat' } });
+    }
     const currentUrl = router.options.history.state.back || 'billing/view-all';
     if (!currentUrl.includes('?type=chat') && !currentUrl.includes('?type=voice')) {
-      console.log(currentUrl, "currentUrl top")
       correctedUrl.value = `/billing?type=chat`;
     } else if (currentUrl.includes('?type=voice')) {
       correctedUrl.value = `/billing?type=voice`;
