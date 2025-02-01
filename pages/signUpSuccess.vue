@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import SignUpSuccessIcon from '~/components/icons/SignUpSuccessIcon.vue';
 definePageMeta({
   layout: "sign-up-success",
-  middleware: "guest-only",
+  // middleware: "guest-only",
 });
+import SignUpSuccessIcon from '~/components/icons/SignUpSuccessIcon.vue';
+
+
+const { user, refreshUser }: { user: any; refreshUser: any } =
+  await useUser();
 
 const proceedLogin = async () => {
-  (await useUser()).refreshUser();
+  await refreshUser();
 };
 
 </script>

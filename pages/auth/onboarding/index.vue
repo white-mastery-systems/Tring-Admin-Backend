@@ -45,6 +45,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: "auth",
+  middleware: "guest-only",
 });
 
 import { ref } from 'vue';
@@ -107,10 +108,6 @@ const {
 // watch(() => props.personalCompanyDetail.country, (newValue, oldValue) => {
 //   if (props.personalCompanyDetail.estimatedMonthlyBudget) props.setFieldValue("estimatedMonthlyBudget", '')
 // })
-watch(errors, (newValue) => {
-  console.log(newValue, "error")
-})
-
 
 const onSubmit = handleSubmit(async (values: any) => {
   isLoading.value = true

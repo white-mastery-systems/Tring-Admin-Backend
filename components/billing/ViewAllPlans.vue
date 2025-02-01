@@ -1,11 +1,9 @@
 <template>
-
   <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else title="Billing" :description="true" :disableSelector="true" customBackRouter="/Billing"
-    :disable-back-button="(currentRoute === 'onboarding/billing')">
-    <!-- router.options.history.state.back -->
+  <Page v-else title="Billings" :description="true" :disableSelector="true" :customBackRouter="correctedUrl"
+    :disable-back-button="(currentRoute === 'onboarding/billing')" class="relative">
     <div :class="[
         'grid gap-4 px-2.5 py-0',
         route.query.type === 'voice'
@@ -64,16 +62,16 @@
         </UiButton>
       </div>
     </div>
-  </Page>
-  <div v-if="(currentRoute === 'onboarding/billing') && !isPageLoading"
-    class="flex items-center justify-end w-[90%] cursor-pointer text-[#8080809c] pt-1">
-    <div @click="proceedLogin()" class="flex items-center gap-2">
-      <span class="flex items-center">
-        Skip
-      </span>
-      <ArrowRight class="w-5 h-5" />
+    <div v-if="(currentRoute === 'onboarding/billing') && !isPageLoading"
+      class="sticky right-[72px] bottom-0 cursor-pointer text-[#8080809c] pt-4 pr-3">
+      <div @click="proceedLogin()" class="flex items-center justify-end gap-2">
+        <span class="flex items-center">
+          Skip
+        </span>
+        <ArrowRight class="w-5 h-5" />
+      </div>
     </div>
-  </div>
+  </Page>
 </template>
 <script setup lang="ts">
 definePageMeta({
@@ -87,21 +85,22 @@ import { useRoute, useRouter } from 'vue-router';
 import { usePlanLevel } from "~/composables/billing/usePlanLevel";
 import { useBillingComposable } from '~/composables/billing/useBillingComposable';
 import { ArrowRight } from 'lucide-vue-next'
-import { useFreeTrialPopup } from '~/composables/billing/useFreeTrialPopup';
+import { useFreeTrial } from '~/store/freeTrailStore'
 
 const props = withDefaults(defineProps<{ onBoardingAccount?: boolean }>(), {
   onBoardingAccount: false, // Default value for accept
 });
+const correctedUrl = ref('');
 const router = useRouter();
 const route = useRoute();
+const freeTrialPopup = useFreeTrial()
 const { userDetails, fetchUser } = useUserDetailsComposable()
-const { fetchOrgBillingPlans } = useFreeTrialPopup()
 fetchUser()
 
 
 const billingVariationDetails = ref()
 const BillingVariationPending = ref(false);
-const { orgBilling, isPageLoading } = useBillingComposable();
+const { orgBilling, organization, isPageLoading } = useBillingComposable();
 
 import { watch, watchEffect } from 'vue';
 
@@ -135,7 +134,7 @@ const currentRoute = computed(() => {
 // Access additional composable methods
 // Dynamically compute `usePlanSelection` based on updated values
 const planSelection = computed(() => {
-  return usePlanSelection((userDetails.value || {}), (orgBilling.value || {}), (route?.query || {}), (props.onBoardingAccount || {}));
+  return usePlanSelection((userDetails.value || {}), (orgBilling.value || {}), (organization.value || {}), (route?.query || {}), (props.onBoardingAccount || {}));
 });
 
 // Access choosePlan reactively
@@ -143,8 +142,27 @@ const choosePlan = computed(() => planSelection.value?.choosePlan || (() => { })
 const { findPlanLevel } = usePlanLevel();
 
 onMounted(() => {
-  fetchOrgBillingPlans()
+  if ((route.name !== 'auth-onboarding-billing')) {
+    if (!route.query.type) { // If `type` is not present in the query
+      router.push({ query: { type: 'chat' } });
+    }
+    const currentUrl = router.options.history.state.back || 'billing/view-all';
+    if (!currentUrl.includes('?type=chat') && !currentUrl.includes('?type=voice')) {
+      correctedUrl.value = `/billing?type=chat`;
+    } else if (currentUrl.includes('?type=voice')) {
+      correctedUrl.value = `/billing?type=voice`;
+    } else if (currentUrl.includes('?type=chat')) {
+      correctedUrl.value = `/billing?type=chat`;
+    }
+  }
 });
+// onMounted(async() => {
+//   const orgBilling = await $fetch("/api/org/subscriptionPlans");
+//   // const isAnyPlanFree = orgBilling[1].planCode.includes("_free")
+//   const isAnyPlanFree = orgBilling.every((plan: any) => plan.planCode.includes("_free"))
+//   if (isAnyPlanFree) freeTrialPopup.planFree = true
+//   else freeTrialPopup.planFree = false
+// });
 
 const proceedLogin = async () => {
   navigateTo("/signUpSuccess");

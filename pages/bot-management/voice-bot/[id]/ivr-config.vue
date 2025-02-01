@@ -97,9 +97,6 @@ watch([isPageLoading, integrationsData], () => {
         name: "settings-integration",
         query: { q: 'number' }
       });
-    } else {
-      // Handle successful data load case
-      console.log('Data loaded successfully')
     }
   }
 });

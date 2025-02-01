@@ -2,13 +2,14 @@ import { navigateTo } from 'nuxt/app';
 import { computed } from 'vue';
 import { useAsyncData } from '#app';
 import { useUserDetailsComposable } from '../billing/useDetails';
-import { useBillingComposable } from '../billing/useBillingComposable'
+import { useSubscriptionCheck } from '../billing/useSubscriptionCheck';
 
 const { userDetails, fetchUser } = useUserDetailsComposable();
 fetchUser()
+const { checkSubscription } = useSubscriptionCheck()
+export function usePlanSelection(userDetails: any, orgBilling: any, organization: any, route: any, onBoardingAccount: any) {
+  const { orgDetails } = organization
 
-export function usePlanSelection(userDetails: any, orgBilling: any, route: any, onBoardingAccount: any) {
-  console.log(onBoardingAccount, "onBoardingAccount -- onBoardingAccount")
   const choosePlan = async (plan: any) => {
     if (plan === 'chat_enterprise') {
       return navigateTo('https://tringlabs.ai/contact-us/', {
@@ -24,7 +25,7 @@ export function usePlanSelection(userDetails: any, orgBilling: any, route: any, 
           return navigateTo({ name: 'account' });
         }
       }
-      if (!orgBilling?.gst) {
+      if (!orgDetails?.metadata?.gst && !orgDetails?.metadata?.gstType) {
         toast.error('Please update GST information to continue');
         if (onBoardingAccount === true) {
           return navigateTo({ name: 'auth-onboarding-account' });
@@ -34,26 +35,26 @@ export function usePlanSelection(userDetails: any, orgBilling: any, route: any, 
         }
       }
       const locationData = await fetchLocation();
-
+      const billingType = route?.type ?? 'chat'
       try {
         const hostedPageUrl = await $fetch<{ hostedpage: { url: string } }>(
-          `/api/billing/subscription?type=${route?.type ?? 'chat'}`,
+          `/api/billing/subscription?type=${billingType}`,
           {
             method: "POST",
             body: {
               plan: plan,
               locationData: locationData,
-              redirectUrl: `${window.location.origin}/billing/billing-confirmation`,
+              redirectUrl: `${window.location.origin}/billing/billing-confirmation?type=${billingType}`,
             },
           },
         );
-
         navigateTo(hostedPageUrl?.hostedpage?.url, {
           external: true,
           open: {
             target: "_blank",
           },
         });
+        await checkSubscription()
       } catch (err) {
         toast.error("ERROR: " + err.statusMessage);
         if (err.statusMessage?.includes("gst_no")) {

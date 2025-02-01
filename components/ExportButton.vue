@@ -27,7 +27,6 @@
       if (!exportStatus.status) {
         return;
       }
-      console.log(exportStatus, "EXPORT STATUS");
       if (exportStatus.type === "csv") {
         const csvRows = [];
         // Headers
@@ -85,7 +84,6 @@
   }
   const exportToExcel = () => {
     if (modalvalue.value) {
-      console.log("sss");
       modalvalue.value.status = false;
       modalvalue.value.type = "xlsx";
     }

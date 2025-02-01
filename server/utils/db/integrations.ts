@@ -123,7 +123,17 @@ export const getAllWhatsappIntegration = async() => {
   return await db.query.integrationSchema.findMany({
     where: and(
       eq(integrationSchema.crm, "whatsapp"),
-      eq(integrationSchema.type, "whatsapp")
+      eq(integrationSchema.type, "whatsapp"),
+    )
+  })
+}
+
+export const getOrgWhatsappIntegration = async (orgId: string) => {
+  return await db.query.integrationSchema.findMany({
+    where: and(
+      eq(integrationSchema.type, "whatsapp"),
+      eq(integrationSchema.crm, "whatsapp"),
+      eq(integrationSchema.org_id, orgId)
     )
   })
 }

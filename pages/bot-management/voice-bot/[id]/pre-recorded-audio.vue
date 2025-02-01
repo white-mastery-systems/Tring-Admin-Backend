@@ -275,7 +275,6 @@ const botSchema = toTypedSchema(
         data.intent === "ambientNoise" &&
         ((!data.ambientNoiseAudio) && (!audioResponseData.value?.ambientNoise || !audioResponseData.value.ambientNoise.length))
       ) {
-        console.log("errorsvsafc")
         ctx.addIssue({
           path: ["ambientNoiseAudio"],
           message: "Ambient noise audio file is required for the 'ambientNoise' intent.",
@@ -374,8 +373,6 @@ const uploadFile = (
 
   } catch (error) {
     console.log(error);
-  } finally {
-    console.log("finally");
   }
   let formData = new FormData();
   if (botDetails.id) {
@@ -404,9 +401,7 @@ const uploadFile = (
 };
 
 const deleteFile = async (data, files, index) => {
-  console.log(data, "data")
   files.splice(index, 1);
-  // console.log(data.audio)
   if (data?.audio) {
     deleteFileBucket.value.push(data?.audio);
     await audioDelete(botDetails)
@@ -431,10 +426,8 @@ const audioUpload = async (formData: any) => {
       // return response;
     } catch (error) {
       isLoading.value = false;
-      console.error("Error:", error);
     } finally {
       isLoading.value = false;
-      console.log("finally");
       concludeFilesData.value = []
       welcomeFilesData.value = []
       fillerFilesData.value = []
@@ -465,7 +458,6 @@ const ambientNoiseAudioUpload = async () => {
     botId: botDetails.id,
     organizationId: botDetails.organizationId,
   };
-  console.log(payload, "payload");
 
   try {
     await $fetch(
@@ -507,7 +499,6 @@ const audioDelete = async (data: any) => {
     console.error("Error:", error);
   } finally {
     toast.success("Audio deleted successfully. Please submit the form.");
-    console.log("finally");
   }
 };
 

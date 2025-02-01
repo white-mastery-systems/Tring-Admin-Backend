@@ -14,7 +14,6 @@
             deleteBucket({
               integrationId: deleteBucketState.id,
               onSuccess: () => {
-                console.log('on success')
                 integrationRefresh();
               },
             });

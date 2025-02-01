@@ -66,9 +66,6 @@ const props = withDefaults(defineProps<{
   closeIcon: false,
   disabled: false,
 });
-watchEffect(() => {
-  console.log({ options: props.options })
-})
 const { value: fieldValue, errorMessage, meta, errors } = useField(() => props.name);
 
 const selectedValue = ref<any>(fieldValue.value);
