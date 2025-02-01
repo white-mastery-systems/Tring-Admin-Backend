@@ -1,7 +1,6 @@
 import { logger } from "../logger"
 import * as schedule from "node-schedule"
-import { getAllWhatsappIntegration } from "../utils/db/integrations"
-import { getConversationCount, orgTotalWhatappSessions } from "../utils/whatsappAnalytics"
+import { orgTotalWhatappSessions } from "../utils/whatsappAnalytics"
 
 export default defineNitroPlugin(async (event) => {
   try {

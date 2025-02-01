@@ -9,6 +9,7 @@ import {
 import { getPricingInformation } from "./pricing";
 import momentTz from "moment-timezone";
 import { getInteractedSessions } from "./chats";
+import { whatsappSessionSchema } from "~/server/schema/admin";
 
 const db = useDrizzle();
 
@@ -247,6 +248,20 @@ export const updateOrgWhatsappSessions = async(organizationId: string, whatsappU
   )
 }
 
+export const createOrgWhatsappSessions = async(data: any) =>{
+  return (await db.insert(whatsappSessionSchema).values(data).returning())[0]
+}
+
+export const getWhatsappSessionForSubscriptionMonth = async(organizationId: string, startDate: Date, endDate: Date) => {
+  return await db.query.whatsappSessionSchema.findMany({
+    where: and(
+      eq(whatsappSessionSchema.organizationId, organizationId),
+      gte(whatsappSessionSchema.createdAt, startDate),
+      lte(whatsappSessionSchema.createdAt, endDate)
+    )
+  })
+}
+
 export const getOrgSubscriptionStatus = async(organizationId: string, type: string) => {
   return await db.query.orgSubscriptionSchema.findFirst({
     where: and(
@@ -363,8 +378,11 @@ const handleChatTypeBilling = async (
     }
     // get interacted chats 
     const interactedSessions = await getInteractedSessions(organizationId, startDate, endDate)
+    const whatsapp = await getWhatsappSessionForSubscriptionMonth(organizationId, startDate, endDate)
+
+    const whatsappTotalSessions = whatsapp.reduce((acc, item) => acc + (item?.totalWhatappSessions || 0), 0)
   
-    const usedSessions = interactedSessions?.length + (orgSubscription?.whatsappUsedSessions || 0) || 0;
+    const usedSessions = interactedSessions?.length + whatsappTotalSessions || 0;
     const maxSessions = pricingInformation.sessions
     const orgWalletSessions =  orgSubscription.walletSessions || 0
     const availableSessions = Math.max(maxSessions - usedSessions, 0)
@@ -380,7 +398,8 @@ const handleChatTypeBilling = async (
       extraSessions,
       availableSessions,
       orgSubscription,
-      subscriptionStatus: orgSubscription.status
+      subscriptionStatus: orgSubscription.status,
+      whatsappSession: whatsappTotalSessions || 0
     });
   
     // Calculate expiry date and check if the subscription is expired
@@ -516,7 +535,7 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   }
 };
 
-const constructResponse = ({ usedQuota, maxQuota, planCode, walletBalance, extraSessionsCost, gst, extraSessions,availableSessions,orgSubscription, subscriptionStatus } :
+const constructResponse = ({ usedQuota, maxQuota, planCode, walletBalance, extraSessionsCost, gst, extraSessions,availableSessions,orgSubscription, subscriptionStatus, whatsappSession } :
  { usedQuota: number,
   maxQuota: number,
   planCode: string,
@@ -526,7 +545,8 @@ const constructResponse = ({ usedQuota, maxQuota, planCode, walletBalance, extra
   extraSessions: number,
   availableSessions: number,
   orgSubscription: any,
-  subscriptionStatus: string
+  subscriptionStatus: string,
+  whatsappSession?: number
 }) => {
   return {
     used_quota: usedQuota,
@@ -539,6 +559,7 @@ const constructResponse = ({ usedQuota, maxQuota, planCode, walletBalance, extra
     available_sessions: availableSessions,
     expiry_date: orgSubscription?.status !== "cancelled" && orgSubscription?.expiryDate ? orgSubscription?.expiryDate : undefined,
     subscription_status: subscriptionStatus,
+    whatsapp_sessions: whatsappSession ?? undefined
   };
 };
 
