@@ -36,7 +36,7 @@
 </template>
 <script setup lang="ts">
 import { useBillingComposable } from '~/composables/billing/useBillingComposable';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 definePageMeta({
   middleware: 'user',
@@ -47,6 +47,7 @@ useHead({
 });
 
 const route = useRoute();
+const router = useRouter();
 const {
   cancelModalState,
   filters,
@@ -57,4 +58,10 @@ const {
   handleConfirmPaymentCancellation,
   navigateToTab,
 } = useBillingComposable();
+
+onMounted(() => {
+  if (!route.query.type) { // If `type` is not present in the query
+    router.push({ query: { type: 'chat' } });
+  }
+});
 </script>
