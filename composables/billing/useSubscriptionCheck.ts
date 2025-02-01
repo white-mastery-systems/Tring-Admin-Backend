@@ -1,9 +1,9 @@
 // composables/useSubscriptionCheck.ts
 import { ref, onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
+// import { useRoute } from 'vue-router';
 
 export const useSubscriptionCheck = () => {
-  const route = useRoute();
+  // const route = useRoute();
   const isAnyPlanFree = ref(false);
 
   const checkSubscription = async () => {
@@ -19,9 +19,9 @@ export const useSubscriptionCheck = () => {
     await checkSubscription();
   });
 
-  watch(route, async () => {
-    await checkSubscription();
-  });
+  // watch(route, async () => {
+  //   await checkSubscription();
+  // });
 
   return {
     isAnyPlanFree,
