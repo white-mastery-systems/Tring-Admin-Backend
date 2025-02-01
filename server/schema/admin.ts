@@ -303,6 +303,15 @@ export const orgVisitorSchema =  adminSchema.table("org_visitors", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
+export const whatsappSessionSchema = adminSchema.table("whatsapp_sessions", { 
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id),
+  integrationId: uuid("integration_id").notNull().references(() => integrationSchema.id),
+  totalWhatappSessions: integer("total_whatsapp_sessions").default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 // Relations
 export const organizationRelations = relations(
   organizationSchema,
