@@ -209,7 +209,7 @@ const resendOTP = () => {
     return
   }
   authHandlers.resendOtpVerification(getUserEmail)
-  value.value = ""
+  if (value.value) value.value = ""
   countDownTimer()
   isResendDisabled.value = true
 };

@@ -52,6 +52,7 @@ export const useBillingComposable = () => {
       individualChatsCost: Number(orgBilling.value.extra_sessions_cost),
       walletBalance: orgBilling.value.wallet_balance,
       expiryDate: orgBilling.value.expiry_date,
+      whatsappSessions: orgBilling.value.whatsapp_sessions,
     };
   });
 
