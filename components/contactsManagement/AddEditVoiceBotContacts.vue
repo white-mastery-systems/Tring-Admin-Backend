@@ -141,8 +141,8 @@ const sampleRowsDate = computed(() => {
   return [{
     name: 'Tyker',
     metadata: '--',
-    phone: 9876543210,
     countryCode: '91',
+    phone: 9876543210,
     verificationId: '--',
   }]
 })
