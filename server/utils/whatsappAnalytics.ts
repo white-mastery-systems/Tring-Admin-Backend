@@ -134,9 +134,14 @@ export const orgTotalWhatappSessions = async () => {
     
     for(const integration of allAdminWhatsappIntegrations) {
       if (!integration?.metadata.pid || !integration?.metadata.access_token || !integration?.metadata.wabaId) {
-        return;
+        logger.error(`Skipping integration ${integration.id} due to missing metadata`);
+        continue;
       }
       const phoneNumber = await getWhatsappPhonenumberByPid(integration.metadata.pid, integration.metadata.access_token);
+      if(!phoneNumber) {
+        logger.error(`Skipping integration ${integration.id} due to missing phonenumber`);
+        continue;
+      }
       const data = await getConversationCount(integration?.metadata.wabaId, integration.metadata.access_token, phoneNumber);
       const newWhatsappSessionCount = data?.total_conversations || 0
       const orgSubscriptionDetail = await getOrgSubscriptionStatus(integration.org_id, "chat")

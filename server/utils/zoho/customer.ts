@@ -100,7 +100,11 @@ export const updateZohoCustomer: any = async (customerId: string, metaData: any,
         state: customerDetails?.address?.state,
         zip: customerDetails?.address?.zipCode,
         country: customerDetails?.address?.country
-    }
+      },
+      ...(customerDetails.gst && {
+        gst_no: customerDetails.gst
+      }),
+      gst_treatment: customerDetails.gstType,
     }
     // console.log({ metaData })
     const data = await await $fetch(
