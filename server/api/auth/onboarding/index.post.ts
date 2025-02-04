@@ -58,9 +58,8 @@ export default defineEventHandler(async (event) => {
     ]),
   ]);
 
-  if (process.env.ENV_TYPE !== "stage") {
     sendEmail(
-      "rianozal@tringlabs.ai", // to
+      process.env.ENV_TYPE !== "stage" ? "rianozal@tringlabs.ai" : "tringdev@whitemastery.com", // to
       `Welcome aboard: ${org.name}`, // subject
       `<div>                             
         <p>Hi</p> 
@@ -75,7 +74,6 @@ export default defineEventHandler(async (event) => {
         <p>Best,<br>support@tringlabs.ai</p>
       </div>`,
     );
-  }
 
   sendEmail(
     updatedUser.email, // to
