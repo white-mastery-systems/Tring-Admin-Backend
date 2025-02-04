@@ -41,7 +41,7 @@ export const getConversationCount = async (
   const last24Hour = getLast24HourTimestamp();
   phoneNumber = phoneNumber.slice(1).replaceAll(" ", "")
 
-  const getConversationAnalyticsUrl = `https://graph.facebook.com/v21.0/${wabaId}?fields=conversation_analytics.start(${last24Hour.start}).end(${last24Hour.end}).granularity(DAILY).phone_numbers([${phoneNumber}]).conversation_categories(["MARKETING","SERVICE"]).dimensions(["CONVERSATION_CATEGORY","CONVERSATION_TYPE","COUNTRY","PHONE"])&access_token=${accessToken}`;
+  const getConversationAnalyticsUrl = `https://graph.facebook.com/v21.0/${wabaId}?fields=conversation_analytics.start(${last24Hour.start}).end(${last24Hour.end}).granularity(DAILY).phone_numbers([${phoneNumber}]).conversation_categories(["MARKETING","SERVICE","UTILITY"]).dimensions(["CONVERSATION_CATEGORY","CONVERSATION_TYPE","COUNTRY","PHONE"])&access_token=${accessToken}`;
 
   try {
     const conversationAnalyticsResponse: WhatsAppAnalytics = await $fetch(
