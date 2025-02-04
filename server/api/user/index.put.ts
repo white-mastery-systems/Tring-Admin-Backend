@@ -93,7 +93,8 @@ export default defineEventHandler(async (event) => {
       where: eq(adminConfigurationSchema.id, 1),
     });
     let metaData = zohoData?.metaData
-    await updateZohoCustomer(update.customerId, metaData, update)
+    await updateZohoCustomer(update.customerId, metaData, {...update, gst: body?.gst,
+      gstType: body?.gstType})
   } 
 
   return update

@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
   return {
     organizationId: orgSubscriptionStatus?.id,
     organizationName: organizationDetail?.name,
+    whatsappWalletBalance: orgSubscriptionStatus?.whatsappWallet,
     status: orgSubscriptionStatus?.status
   }
 }) 
