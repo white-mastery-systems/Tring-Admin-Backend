@@ -155,7 +155,7 @@ export default defineEventHandler(async (event) => {
     } else if (botIntegration?.integration?.crm === "whatsapp") {
       if (botIntegration?.integration?.metadata) {
         const whatsappPayload = {
-          name: body?.botUser?.name,
+          name: `*${body?.botUser?.name}*`,
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: `${botDetails?.name}`,
