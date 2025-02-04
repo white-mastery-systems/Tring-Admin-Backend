@@ -238,7 +238,8 @@ const handleChatTypeBilling = async (
       availableSessions,
       orgSubscription,
       subscriptionStatus: orgSubscription.status,
-      whatsappSession: whatsappTotalSessions || 0
+      whatsappSession: whatsappTotalSessions || 0,
+      whatappWalletBalance: orgSubscription.whatsappWallet || 0
     });
   
     // Calculate expiry date and check if the subscription is expired
@@ -374,7 +375,7 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
   }
 };
 
-const constructResponse = ({ usedQuota, maxQuota, planCode, walletBalance, extraSessionsCost, gst, extraSessions,availableSessions,orgSubscription, subscriptionStatus, whatsappSession } :
+const constructResponse = ({ usedQuota, maxQuota, planCode, walletBalance, extraSessionsCost, gst, extraSessions,availableSessions,orgSubscription, subscriptionStatus, whatsappSession, whatappWalletBalance } :
  { usedQuota: number,
   maxQuota: number,
   planCode: string,
@@ -385,7 +386,8 @@ const constructResponse = ({ usedQuota, maxQuota, planCode, walletBalance, extra
   availableSessions: number,
   orgSubscription: any,
   subscriptionStatus: string,
-  whatsappSession?: number
+  whatsappSession?: number,
+  whatappWalletBalance?: number
 }) => {
   return {
     used_quota: usedQuota,
@@ -398,7 +400,8 @@ const constructResponse = ({ usedQuota, maxQuota, planCode, walletBalance, extra
     available_sessions: availableSessions,
     expiry_date: orgSubscription?.status !== "cancelled" && orgSubscription?.expiryDate ? orgSubscription?.expiryDate : undefined,
     subscription_status: subscriptionStatus,
-    whatsapp_sessions: whatsappSession ?? undefined
+    whatsapp_sessions: whatsappSession ?? undefined,
+    whatappWalletBalance: whatappWalletBalance ?? undefined
   };
 };
 
