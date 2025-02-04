@@ -2,6 +2,7 @@ import { addDays } from "date-fns";
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   boolean,
+  doublePrecision,
   integer,
   jsonb,
   pgEnum,
@@ -77,6 +78,7 @@ export const orgSubscriptionSchema = adminSchema.table("org_subscription", {
   status: text("status").default("active"),
   walletSessions: integer("wallet_sessions").default(0),
   whatsappUsedSessions: integer("whatsapp_used_sessions").default(0),
+  whatsappWallet: doublePrecision("whatsapp_wallet").default(0.00),
   extraSessions: integer("extra_sessions").default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
