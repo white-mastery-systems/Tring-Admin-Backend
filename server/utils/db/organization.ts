@@ -73,9 +73,12 @@ export const createOrgSubscription = async(data: any) => {
   return (await db.insert(orgSubscriptionSchema).values(data).returning())[0]
 }
 
-export const updateOrgWhatsappSessions = async(organizationId: string, whatsappUsedSessions: number) => {
+export const updateOrgWhatsappSessions = async(organizationId: string, whatsappUsedSessions: number, whatsappWalletBalance: number) => {
   return await db.update(orgSubscriptionSchema)
-  .set({ whatsappUsedSessions })
+  .set({ 
+    whatsappUsedSessions,
+    whatsappWallet: whatsappWalletBalance
+   })
   .where(
     and(
       eq(orgSubscriptionSchema.organizationId, organizationId),

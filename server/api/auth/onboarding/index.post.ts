@@ -66,10 +66,11 @@ export default defineEventHandler(async (event) => {
         <p>Hi</p> 
         <p><strong>${updatedUser.username}</strong> just started their journey with Tring AI.</p> 
         <p>Greetings are sent, and onboarding is in progress.</p>
-        <div>
-          <p><strong>User Details:</strong></p>
-          <p>Name: ${updatedUser.username}</p>
-          <p>Email: ${updatedUser.email}</p>
+          <div>
+            <p><strong>User Details:</strong></p>
+            <p>Name: ${updatedUser.username}</p>
+            <p>Email: ${updatedUser.email}</p>
+            <p>Mobile: ${updatedUser.countryCode} ${updatedUser.mobile}</p>
           </div>
         <p>Best,<br>support@tringlabs.ai</p>
       </div>`,
