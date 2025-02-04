@@ -38,7 +38,7 @@ export const getConversationCount = async (
   phoneNumber: string,
 
 ) => {
-  const last24Hour = getLast24HourTimestamp();
+  const last24Hour = getYesterdayTimestamps();
   phoneNumber = phoneNumber.slice(1).replaceAll(" ", "")
 
   const getConversationAnalyticsUrl = `https://graph.facebook.com/v21.0/${wabaId}?fields=conversation_analytics.start(${last24Hour.start}).end(${last24Hour.end}).granularity(DAILY).phone_numbers([${phoneNumber}]).conversation_categories(["MARKETING","SERVICE","UTILITY"]).dimensions(["CONVERSATION_CATEGORY","CONVERSATION_TYPE","COUNTRY","PHONE"])&access_token=${accessToken}`;
@@ -113,6 +113,7 @@ export const getConversationDetails = async (data: WhatsAppAnalytics) => {
   return analysisResults;
 };
 
+/* TO DO
 function getLast24HourTimestamp(): { start: number; end: number } {
   const currentTimestamp = Math.floor(Date.now() / 1000);
   const startTimestamp = currentTimestamp - 24 * 60 * 60;
@@ -121,6 +122,18 @@ function getLast24HourTimestamp(): { start: number; end: number } {
     start: startTimestamp,
     end: currentTimestamp,
   };
+}
+ */ 
+
+function getYesterdayTimestamps(): { start: number; end: number } {
+  const now = new Date();
+  now.setDate(now.getDate() - 1);
+
+  const start = Math.floor(new Date(now.setHours(0, 0, 0, 0)).getTime() / 1000);
+  const end = Math.floor(
+    new Date(now.setHours(23, 59, 59, 999)).getTime() / 1000,
+  );
+  return { start, end };
 }
 
 export const orgTotalWhatappSessions = async () => {
