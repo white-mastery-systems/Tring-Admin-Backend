@@ -8,7 +8,7 @@ import { getIntentByName } from "~/server/utils/db/bot"
 export default defineEventHandler(async (event) => {
   try {
       const body = await isValidBodyHandler(event, z.object({
-        botUser: z.any(),
+        userId: z.string(),
         botId: z.string().uuid(),
         intent: z.string(),
         dateAndTime: z.string(),
@@ -17,6 +17,7 @@ export default defineEventHandler(async (event) => {
    
       const botDetails = await getBotDetails(body.botId);
       const organizationId = botDetails?.organizationId !
+      const botUserDetail = await getBotUserById(body.userId, organizationId)
       
       const orgBotIntent = await getIntentByName(organizationId, body.botId, body.intent)
       
@@ -42,9 +43,9 @@ export default defineEventHandler(async (event) => {
       
       const dynamicaValues = {
         business_owner_name: organization?.username,
-        user_email: body?.botUser?.email,
-        user_name: body?.botUser?.name,
-        user_phone: body?.botUser?.mobile,
+        user_email: botUserDetail?.email,
+        user_name: botUserDetail?.name,
+        user_phone: botUserDetail?.mobile,
         chatbot_name: botDetails?.name,
         location_link: orgBotIntent?.link,
         virtual_tour_link: orgBotIntent?.link,
