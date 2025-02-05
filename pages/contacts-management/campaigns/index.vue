@@ -53,7 +53,7 @@
 import { Icon, UiBadge, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import { useRouter, useRoute } from "vue-router";
-import { campaignData } from "@/composables/useRefresh";
+import { useState } from "#app";
 
 const rowList = reactive([
   "name",
@@ -72,8 +72,7 @@ useHead({
 })
 
 const router = useRouter();
-const route = useRoute();
-const searchCampaign = ref("");
+const currentPage = useState("counter", () => '1');
 
 const filters = reactive<{
   q: string;
@@ -83,7 +82,7 @@ const filters = reactive<{
 }>({
   q: "",
   active: "",
-  page: "1",
+  page: currentPage.value,
   limit: "10",
 });
 
@@ -114,6 +113,13 @@ const campaignModalState = ref({ open: false, id: null });
 const isDataLoading = computed(() => status.value === "pending");
 
 const columnHelper = createColumnHelper<(typeof campaignDataList.value)[0]>();
+
+watch(
+  () => filters.page,
+  (newPage) => {
+    currentPage.value = newPage; // Save page number globally
+  }
+);
 
 const actionsComponent = (id: any) =>
   h(
@@ -198,6 +204,21 @@ const columns = [
     },
   }),
 ];
+onMounted(() => {
+  resetPageForCampaigns()
+});
+
+const resetPageForCampaigns = () => {
+  const historyState = router.options.history.state || {};
+  const backPath = historyState.back || "";
+
+  if (!historyState.forward) {
+    if (!backPath?.startsWith("/contacts-management/campaigns/")) {
+      currentPage.value = '1'; // Reset page number when revisiting
+      filters.page = '1';
+    }
+  }
+};
 const Pagination = async ($evnt: any) => {
   filters.page = $evnt;
   getAllCampaign();

@@ -367,7 +367,7 @@ const formattedScheduels = computed(() => {
       message.role === 'comment' &&
       (message.content.includes('Rescheduled Site') ||
         message.content.includes('Site Visit Scheduled') ||
-        message.content.includes('Rescheduled Call') || message.content.includes('Call Scheduled'))
+        message.content.includes('Rescheduled Call') || message.content.includes('Call Scheduled') || message.content.includes('Appointment Scheduled'))
     );
     // Map filtered messages to extract content, date, and time
     const formattedMessages = filteredMessages.map((message: any) => {

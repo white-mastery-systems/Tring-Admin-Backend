@@ -111,13 +111,18 @@ const {
 
 const onSubmit = handleSubmit(async (values: any) => {
   isLoading.value = true
-  await $fetch('/api/auth/onboarding', {
-    method: 'POST',
-    body: values,
-  });
-
-  // Navigate to success page
-  navigateTo("/auth/onboarding/billing");
-  isLoading.value = false
+  try {
+    await $fetch('/api/auth/onboarding', {
+      method: 'POST',
+      body: values,
+    });
+  
+    // Navigate to success page
+    navigateTo("/auth/onboarding/billing");
+  } catch (error) {
+    toast.error(error?.statusMessage);
+  } finally {
+    isLoading.value = false
+  }
 });
 </script>

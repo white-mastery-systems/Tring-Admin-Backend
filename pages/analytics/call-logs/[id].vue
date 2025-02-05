@@ -7,13 +7,13 @@
   <Page :title="callLogs?.callerName ?? 'No Name'" :bread-crumbs="[
     {
       label: `${callLogs?.callerName ?? 'No Name'}`,
+      to: `/analytics/call-logs`,
     },
-    // to: `/analytics/call-logs`,
     {
       label: 'Call Logs',
+      to: `/analytics/call-logs/${callLogs?.id}`,
     },
-    // to: `/analytics/call-logs/${callLogs?.id}`,
-  ]" :disable-back-button="true" :disable-elevation="true">
+  ]" :disable-back-button="false" :disable-elevation="true">
     <div class="items-top gap-[25px flex items-center justify-center px-3">
       <div class="items-top xs:grid-cols-2 flex grid w-full grid-cols-1 gap-[25px] lg:grid-cols-2">
         <div class="justify-aro und flex w-full gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]">
@@ -79,12 +79,6 @@
 </template>
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
-// const scrollChatBox = () => {
-//   setTimeout(() => {
-//     if (chatScreenRef.value)
-//       chatScreenRef.value.scrollTop = chatScreenRef?.value?.scrollHeight;
-//   }, 1000);
-// };
 
 definePageMeta({
   middleware: "admin-only",
@@ -154,81 +148,10 @@ const formattedCallData = computed(() => {
     // "City": "", // Static values
   };
 });
-// const { status, data: leadData } = await useLazyFetch(
-//   () => `/api/org/chat/${route.params.id}`,
-//   {
-//     server: false,
-//   },
-// );
-
-// watchEffect(() => {
-//   if (leadData.value) {
-//     const userName = leadData.value?.botUser?.name ?? "Unknown User";
-//     useHead({
-//       title: `Chats | ${userName}`,
-//     });
-//   }
-// });
-// const isPageLoading = computed(() => status.value === "pending");
-
-const details = computed(() => {
-
-  // const { params, ...rest } =
-  //   leadData.value?.metadata ?? ({ params: null } as Record<string, any>);
-  // const { name } = leadData.value.bot;
-  // let metaData: any = Object.entries(rest || {}).map(([key, value]) => {
-  //   if (key === "os") {
-  //     return ["OS", value];
-  //   } else if (key === "ipAddress") {
-  //     return ["IP Address", value];
-  //   }
-  //   return [key, value];
-  // });
-  // const botUserDetails = [];
-  // if (leadData?.value.botUser) {
-  //   botUserDetails.push(
-  //     ["Name", leadData?.value?.botUser?.name],
-  //     ["Email", leadData?.value?.botUser?.email],
-  //     [
-  //       "Mobile",
-  //       leadData?.value?.botUser?.countryCode +
-  //       leadData?.value?.botUser?.mobile,
-  //     ],
-  //     ["Bot Name", name],
-  //   );
-  // }
-  // let paramsData = null;
-  // if (params) {
-  //   paramsData = Object.entries(params);
-  // }
-  // if (paramsData) {
-  //   return [...metaData, ...paramsData, ...botUserDetails];
-  // } else return [...metaData, ...botUserDetails];
-});
 
 onMounted(() => {
   audioElement.value = document.querySelector('audio')
 });
-
-const playAudio = () => {
-  audioElement.value.play()
-}
-
-const pauseAudio = () => {
-  audioElement.value.pause()
-}
-
-// const handleDownload = () =>{
-//   const downloadLink = `https://5z2vwb9t-5000.inc1.devtunnels.ms/recording/?bot_id=${callLogs.value.botId}&organization_id=${callLogs.value.organizationId}&sid=${callLogs.value.callSid}`;
-
-//   // Create a temporary link element for downloading
-//   const link = document.createElement('a');
-//   link.href = downloadLink;
-//   link.download = 'recording.wav'; // Specify the desired file name
-//   document.body.appendChild(link);
-//   link.click();
-//   document.body.removeChild(link);
-// }
 const onAudioLoaded = () => {
   isAudioLoading.value = false
 }
