@@ -28,32 +28,32 @@
     </UiTabsList>
     <UiTabsContent value="all">
       <DataTable @pagination="Pagination" @limit="($event) => {
-          (filters.page = '1'), (filters.limit = $event);
-        }
+        (filters.page = '1'), (filters.limit = $event);
+      }
         " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="leads"
         :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="17" height-unit="vh" @row-click="(row: any) => {
-            navigateTo(`/analytics/leads/${row.original.chatId}`);
-          }
+          navigateTo(`/analytics/leads/${row.original.chatId}`);
+        }
           " />
     </UiTabsContent>
     <UiTabsContent value="whatsapp">
       <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {
-  (props.filters.page = '1'), (props.filters.limit = $event);
-        }
+        (props.filters.page = '1'), (props.filters.limit = $event);
+      }
         " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
         :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="(row: any) => {
-            navigateTo(`leads/${row.original.chatId}`);
-          }
+          navigateTo(`leads/${row.original.chatId}`);
+        }
           " />
     </UiTabsContent>
     <UiTabsContent value="website">
       <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {
-  (props.filters.page = '1'), (props.filters.limit = $event);
-        }
+        (props.filters.page = '1'), (props.filters.limit = $event);
+      }
         " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
         :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="(row: any) => {
-            navigateTo(`leads/${row.original.chatId}`);
-          }
+          navigateTo(`leads/${row.original.chatId}`);
+        }
           " />
     </UiTabsContent>
   </UiTabs>
@@ -61,8 +61,6 @@
 <script setup lang="ts">
 import { Icon, UiBadge, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
-import { format } from "date-fns";
-import { useRoute, useRouter } from "vue-router";
 
 
 definePageMeta({
@@ -72,12 +70,6 @@ definePageMeta({
 useHead({
   title: "Analytics | Leads",
 });
-
-const exportDataHandler = ref({ status: false, type: "csv" });
-const router = useRouter();
-const route = useRoute();
-const fetchExportData = ref(false);
-
 const props = withDefaults(
   defineProps<{
     filters?: {
@@ -153,53 +145,6 @@ let {
       ;
   },
 });
-
-const exportFilters = computed(() => {
-  const { page, limit, ...restFilters } = props.filters; // Destructure to exclude 'page' and 'limit'
-  return restFilters;
-});
-const exportReadyRows = ref<any>([]);
-// const exportReadyRows = computed(async () => {
-//   let exportLeads = await $fetch("/api/org/leads", {
-//     server: false,
-//     query: exportFilters,
-//     headers: {
-//       "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-//     },
-//     immediate: fetchExportData.value,
-//     default: () => [],
-//   });
-
-//   return (exportLeads ?? []).map((lead: any) => {
-//     const mergedObject = {
-//       name: lead.botUser.name ?? "---",
-//       email: lead.botUser.email ?? "---",
-//       mobile: lead?.botUser?.mobile ?? "---",
-//       countryCode: lead?.botUser?.countryCode ?? "+91",
-//       visitedStatus:
-//         Number(lead?.botUser?.visitedCount) > 1 ? "Revisited" : "New",
-//       botName: lead.bot.name ?? "---",
-//       country: lead.chat?.metadata?.country ?? "---",
-//       createdAt: format(lead.botUser.createdAt, "MMMM d, yyyy"),
-//       // ClientId: lead.botUser.id,
-//     };
-//     return mergedObject;
-//   });
-//   return [];
-// });
-watch(exportReadyRows, () => { });
-const exportReadyColumns = computed(() => {
-  return [
-    "Name",
-    "Email",
-    "Mobile",
-    "Country code",
-    "Visited status",
-    "Bot name",
-    "Country",
-    "Created at",
-  ];
-});
 const Pagination = async ($evnt) => {
   props.filters.page = $evnt;
   getAllLeads();
@@ -224,11 +169,6 @@ const onDateChange = (value: any) => {
     props.filters.period = value;
   }
   props.filters.page = "1";
-};
-const onActionChange = (value: any) => {
-  if (value) {
-    props.filters.action = value;
-  }
 };
 const onBotChange = (value: any) => {
   if (value) {
@@ -311,18 +251,6 @@ const columns = [
       ),
   }),
 ];
-
-// const handleRowClick = (row: any) => {
-//   console.log(row, "row -- row");
-//   const url = `/analytics/chats/${row.original.id}`
-//   const newTab = window.open(url, '_blank')
-
-//   if (newTab) {
-//     newTab.focus()
-//   } else {
-//     toast.error('The new tab could not be opened. Please check your browser settings.');
-//   }
-// }
 const selectedChannel = (value: any) => {
   if (value) {
     props.filters.channel = value;
@@ -330,44 +258,9 @@ const selectedChannel = (value: any) => {
   props.filters.page = "1";
 };
 
-const onChannel = ($event) => {
-  if ($event) {
-    props.filters.channel = $event;
-  }
-};
-
 const onCountryChange = ($event) => {
   if ($event) {
     props.filters.country = $event;
   }
-};
-const exportData = async () => {
-  try {
-    const exportLeads = await $fetch("/api/org/leads", {
-      query: exportFilters.value,
-      method: "GET",
-      headers: {
-        "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-    });
-
-    const exportReadObject = (exportLeads ?? []).map((lead: any) => {
-      const mergedObject = {
-        name: lead.botUser.name ?? "---",
-        email: lead.botUser.email ?? "---",
-        mobile: lead?.botUser?.mobile ?? "---",
-        countryCode: lead?.botUser?.countryCode ?? "+91",
-        visitedStatus:
-          Number(lead?.botUser?.visitedCount) > 1 ? "Revisited" : (lead.status === "junk") ? "Junk" : "New",
-        botName: lead.bot.name ?? "---",
-        country: lead.chat?.metadata?.country ?? "---",
-        createdAt: format(lead.botUser.createdAt, "MMMM d, yyyy"),
-        // ClientId: lead.botUser.id,
-      };
-      return mergedObject;
-    });
-    exportDataHandler.value.status = true;
-    exportReadyRows.value = exportReadObject;
-  } catch (err) { }
 };
 </script>

@@ -34,6 +34,8 @@ const login = async (values: Record<string, any>) => {
     if (error?.statusMessage === "User not verified. Please verify your account to proceed.") {
       localStorage.setItem("userDetails", JSON.stringify(error?.data.data))
       return navigateTo("/auth/verify-otp");
+    } else if (error?.statusMessage === "Onboarding process is incomplete. Please provide your details to proceed.") {
+      return navigateTo("/auth/onboarding");
     }
   }
 };
