@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
         userId: z.string(),
         botId: z.string().uuid(),
         intent: z.string(),
-        dateAndTime: z.string(),
+        dateAndTime: z.string().optional(),
         formValues: z.record(z.any()).optional()
       }))
    
