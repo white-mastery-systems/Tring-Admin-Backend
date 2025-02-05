@@ -63,13 +63,6 @@ export default defineEventHandler(async (event) => {
     );
   }
 
-  if(!user.username) {
-     return sendError(event, createError({
-       statusCode: 400,
-       statusMessage: "Onboarding process is incomplete. Please provide your details to proceed."
-     }))
-  }
-
   const session = await lucia.createSession(
     user.id,
     { email: user.email },
@@ -81,6 +74,13 @@ export default defineEventHandler(async (event) => {
     "Set-Cookie",
     lucia.createSessionCookie(session.id).serialize(),
   );
+
+  if(!user.username) {
+     return sendError(event, createError({
+       statusCode: 400,
+       statusMessage: "Onboarding process is incomplete. Please provide your details to proceed.",
+     }))
+  }
 
   return {
     status: true,
