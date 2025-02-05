@@ -323,6 +323,7 @@ import { toast } from "vue-sonner";
 
   const deactivateBotDialog = async () => {
     await disableBot(paramId.params.id);
+    botDetails.value = await getBotDetails(paramId.params.id)
     modalOpen.value = false;
   };
 

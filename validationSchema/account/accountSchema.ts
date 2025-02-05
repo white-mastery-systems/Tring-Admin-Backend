@@ -13,7 +13,11 @@ const addressSchema = z.object({
     .min(2, "Country Name is required"),
   zipCode: z
     .string({ required_error: "zipCode is required" })
-    .min(1, "zipCode is required"),
+    .min(1, "zipCode is required")
+    .regex(/^\d+$/, "zipCode must be numeric"),
+  // zipCode: z
+  //   .string({ required_error: "zipCode is required" })
+  //   .min(1, "zipCode is required"),
 });
 
 export const accountSchema = toTypedSchema(
@@ -40,8 +44,7 @@ export const accountSchema = toTypedSchema(
       logo: z.object({}).optional(),
       email: z
         .string({ required_error: "Email is required" })
-        .email()
-        .default(""),
+        .optional(),
         mobile: z.string({ required_error: "Number is required" }), 
         password: z
         .string({ required_error: "Password is required" })
@@ -64,7 +67,31 @@ export const accountSchema = toTypedSchema(
       }),
       data: z.string().optional().default(""),
     }).superRefine((data, ctx) => {
-         // Example: Find the country and get the minimum length for the mobile number
+
+      if (data.email && data.email.length > 0) {
+        const localPart = data.email.split('@')[0];
+        if (localPart.length < 6) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "The part before '@' must have at least 6 characters",
+            path: ["email"],
+          });
+        }
+        if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(data.email)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Invalid email format",
+            path: ["email"],
+          });
+        }
+      } else {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Email is required",
+          path: ["email"],
+        });
+      }
+      // Example: Find the country and get the minimum length for the mobile number
       const lengthRequirement = getCountryLengthRequirement(data.countryCode);
       // Validate mobile number length dynamically
       if (data.mobile.length !== lengthRequirement) {

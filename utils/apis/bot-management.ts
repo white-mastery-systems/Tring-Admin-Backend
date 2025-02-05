@@ -43,7 +43,7 @@ export const disableBot = async (botId: string) => {
     method: "DELETE",
   });
   toast.success("Bot disabled");
-  return navigateTo({ name: "bot-management-chat-bot" });
+  // return navigateTo({ name: "bot-management-chat-bot" });
 };
 
 export const deleteBot = async (botId: string) => {
