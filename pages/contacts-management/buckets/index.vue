@@ -59,7 +59,8 @@
 <script setup lang="ts">
 import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
+import { useState } from "#app";
 
 definePageMeta({
   middleware: "user",
@@ -68,14 +69,8 @@ useHead({
   title: "Contacts Management | Contacts",
 });
 
-const formSchema = toTypedSchema(
-  z.object({
-    newBotName: z.string().min(2, "Bot Name is requird."),
-  }),
-);
-const searchBucket = ref("");
-const searchBotDebounce = refDebounced(searchBucket, 500);
 const deleteBucketState = ref({ open: false, id: null });
+const currentPage = useState("counter", () => '1');
 
 const filters = reactive<{
   q: string;
@@ -83,10 +78,9 @@ const filters = reactive<{
   limit: string;
 }>({
   q: "",
-  page: "1",
+  page: currentPage.value,
   limit: "10",
 });
-// const campaignModalState = ref({ open: false });
 const addBucketNameModalState = ref({ open: false, id: null });
 
 let page = ref(0);
@@ -107,23 +101,16 @@ const {
     return buckets.data;
   },
 });
-// const addBucketNameModalState = defineModel<{ open: boolean, id: string }>({
-//   default: {
-//     open: false,
-//     id: "",
-//   },
-// });
-const viewCampaignStatusModalState = ref({ open: false });
-
 const router = useRouter();
-const route = useRoute();
-const activeStatus = ref("");
-watch(activeStatus, async (newStatus, previousStatus) => { });
-
-const selectedValue = ref("Today");
-// const newBotName = ref("");
 
 const isDataLoading = computed(() => status.value === "pending");
+
+watch(
+  () => filters.page,
+  (newPage) => {
+    currentPage.value = newPage; // Save page number globally
+  }
+);
 
 const columnHelper = createColumnHelper<(typeof contactsList.value)[0]>();
 
@@ -178,10 +165,24 @@ const columns = [
     },
   }),
 ];
+onMounted(() => {
+  resetPageOnRevisit()
+});
 
 const Pagination = async ($evnt) => {
   filters.page = $evnt;
   integrationRefresh();
+};
+const resetPageOnRevisit = () => {
+  const historyState = router.options.history.state || {};
+  const backPath = historyState.back || "";
+
+  if (!historyState.forward) {
+    if (!backPath?.startsWith("/contacts-management/buckets/")) {
+      currentPage.value = '1'; // Reset page number when revisiting
+      filters.page = '1';
+    }
+  }
 };
 </script>
 

@@ -26,7 +26,7 @@ export function usePlanSelection(userDetails: any, orgBilling: any, organization
         }
       }
       if (!orgDetails?.metadata?.gst && !orgDetails?.metadata?.gstType) {
-        toast.error('Please update GST information to continue');
+        toast.error('Please complete the billing details before proceeding.');
         if (onBoardingAccount === true) {
           return navigateTo({ name: 'auth-onboarding-account' });
         } else {
