@@ -20,16 +20,20 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { Icon, UiButton } from "#components";
-  import { createColumnHelper } from "@tanstack/vue-table";
+import { Icon, UiButton } from "#components";
+import { createColumnHelper } from "@tanstack/vue-table";
+import { useState } from "#app";
+import { useRouter } from "vue-router";
 
   definePageMeta({
     middleware: "admin-only",
   });
 
+const currentPage = useState("counter", () => '1');
 let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
+const router = useRouter();
 
 const filters = reactive<{
   q?: string;
@@ -50,7 +54,7 @@ const filters = reactive<{
   status: "",
   channel: "all",
   action: "",
-  page: "1",
+  page: currentPage.value,
   limit: "10",
   country: 'all',
 });
@@ -81,25 +85,13 @@ const {
   },
 });
 const isDataLoading = computed(() => status.value === "pending");
-  // const analyticsData = ref();
 
-  // onMounted(async () => {
-  //   analyticsData.value = await getAnalyticsData();
-  // });
-
-  // const rep = await defineEventHandler()
-
-  // onMounted(async() => {
-  //   ListLeads.value = await listLeads()
-  //   console.log(ListLeads.value, "ListLeads.value")
-  // })
-
-  const viewBot = async () => {
-    await navigateTo({
-      name: "analytics-call-logs",
-      params: { id: 1 },
-    });
-  };
+watch(
+  () => filters.page,
+  (newPage) => {
+    currentPage.value = newPage; // Save page number globally
+  }
+);
 
 const columnHelper = createColumnHelper<typeof callLogData.value>();
   const columns = [
@@ -129,13 +121,16 @@ const columnHelper = createColumnHelper<typeof callLogData.value>();
           UiButton,
           {
             // row.original.chatId
-            // onClick: () => handleRowClick(row),   //viewBot(),
+            onClick: () => handleRowClick(row),   //viewBot(),
             class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
           },
           [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
         ),
     }),
   ];
+onMounted(() => {
+  resetPageIfNeeded()
+});
 
 const Pagination = async ($evnt: any) => {
   filters.page = $evnt;
@@ -153,14 +148,21 @@ const onDateChange = (value: any) => {
   }
   filters.page = "1";
 };
-const handleRowClick = (row: any) => {
-  const url = `/analytics/call-logs/${row.original.id}`
-  const newTab = window.open(url, '_blank')
-
-  if (newTab) {
-    newTab.focus()
-  } else {
-    toast.error('The new tab could not be opened. Please check your browser settings.');
-  }
+const handleRowClick = async (row: any) => {
+  await navigateTo({
+    name: "analytics-call-logs-id",
+    params: { id: row.original.id },
+  });
 }
+const resetPageIfNeeded = () => {
+  const historyState = router.options.history.state || {};
+  const backPath = historyState.back || "";
+
+  if (!historyState.forward) {
+    if (!backPath?.startsWith("/analytics/call-logs/")) {
+      currentPage.value = '1'; // Reset page number when revisiting
+      filters.page = '1';
+    }
+  }
+};
 </script>
