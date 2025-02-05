@@ -11,12 +11,7 @@
     ]" :disableSelector="true" :disable-back-button="false">
     <template #actionButtons>
       <div class="mb-4 flex items-center justify-end">
-        <UiButton class="bg-yellow-500" type="button" @click="
-            () => {
-              intentDialogState.open = true;
-              intentDialogState.id = null;
-            }
-          " color="primary">Add Intents
+        <UiButton class="bg-yellow-500" type="button" @click="addNewIntents" color="primary">Add Intents
         </UiButton>
       </div>
     </template>
@@ -46,7 +41,7 @@
   import { createColumnHelper } from "@tanstack/vue-table";
   import CreateEditIntentModal from "~/components/bots/CreateEditIntentModal.vue";
 
-  const intentDialogState = ref({ open: false, id: '' });
+  const intentDialogState = ref({ open: false, id: null });
   const selectedActions = ref("location");
   const animationProps = {
     duration: 0,
@@ -171,4 +166,16 @@ watchEffect(() => {
       },
     }),
   ];
+const addNewIntents = () => {
+  if (botDetails.metadata.ui.generateLead) {
+    intentDialogState.value.open = true;
+    intentDialogState.value.id = null;
+  } else {
+    toast.error("Please enable lead generation in UI customization");
+    setTimeout(() => {
+      navigateTo(`/bot-management/chat-bot/${botDetails.id}/ui-customization`);
+    }, 2000); // 2 seconds delay
+  }
+};
+
 </script>
