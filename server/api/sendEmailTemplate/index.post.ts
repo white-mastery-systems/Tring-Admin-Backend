@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
       
       const orgBotIntent = await getIntentByName(organizationId, body.botId, body.intent)
       
-      if(!orgBotIntent?.isEmailEnabled) return
+      // if(!orgBotIntent?.isEmailEnabled) return
       
       const organization = await getAdminByOrgId(organizationId)
       const { template: intentEmailTemplate, subject: intentSubject } = getIntentEmailTemplate(body.intent)
@@ -57,7 +57,7 @@ export default defineEventHandler(async (event) => {
       
       const emailTemplateWithValues = templateData(dynamicaValues)
    
-      const emailRecipients: any = orgBotIntent.emailRecipients && orgBotIntent.emailRecipients.length ? [...orgBotIntent.emailRecipients, organization?.email] : [ organization?.email ]
+      const emailRecipients: any = botDetails?.emailRecipients && botDetails.emailRecipients.length ? [...botDetails.emailRecipients, organization?.email] : [ organization?.email ]
 
       // return { emailRecipients }
    
@@ -99,15 +99,19 @@ const getIntentEmailTemplate = (intent: string) => {
         subject = parsedYamlIntent.ScheduleSiteVisitRequestSubject
         break
 
-      case "images":
-        template = parsedYamlIntent.ImagesViewedTemplate
-        subject = parsedYamlIntent.ImagesViewedSubject
-        break
+      case "schedule_appointment":
+        template = parsedYamlIntent.ScheduleAppointmentRequestTemplate
+        subject = parsedYamlIntent.ScheduleAppointmentRequestSubject
 
-      case "brochures":
-        template = parsedYamlIntent.BrochureDownloadedTemplate
-        subject = parsedYamlIntent.BrochureDownloadedSubject
-        break
+      // case "images":
+      //   template = parsedYamlIntent.ImagesViewedTemplate
+      //   subject = parsedYamlIntent.ImagesViewedSubject
+      //   break
+
+      // case "brochures":
+      //   template = parsedYamlIntent.BrochureDownloadedTemplate
+      //   subject = parsedYamlIntent.BrochureDownloadedSubject
+      //   break
 
       case "form":
         template = parsedYamlIntent.FormSubmissionTemplate
