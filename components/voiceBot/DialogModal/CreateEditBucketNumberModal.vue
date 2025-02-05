@@ -71,7 +71,9 @@ const formSchema = toTypedSchema(
     .object({
       firstName: z.string().optional(),
       lastName: z.string().optional(),
-      email: z.string().optional(),
+      email: z
+        .string({ required_error: "Email is required" })
+        .optional(),
       name: z.string().optional(),
       metadata: z.string().optional(),
       verificationId: z.string().optional(),
@@ -102,10 +104,33 @@ const formSchema = toTypedSchema(
             path: ["lastName"],
           });
         }
-        if (data.email && !data.email.includes("@")) {
+        // if (data.email && !data.email.includes("@")) {
+        //   ctx.addIssue({
+        //     code: z.ZodIssueCode.custom,
+        //     message: "Invalid email format.",
+        //     path: ["email"],
+        //   });
+        // }
+        if (data.email && data.email.length > 0) {
+          const localPart = data.email.split('@')[0];
+          if (localPart.length < 6) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "The part before '@' must have at least 6 characters",
+              path: ["email"],
+            });
+          }
+          if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(data.email)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Invalid email format",
+              path: ["email"],
+            });
+          }
+        } else {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: "Invalid email format.",
+            message: "Email is required",
             path: ["email"],
           });
         }
