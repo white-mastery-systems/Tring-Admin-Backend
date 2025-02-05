@@ -264,8 +264,8 @@ export default defineEventHandler(async (event) => {
     botDetails?.emailRecipients && botDetails?.emailRecipients.length
       ? [...botDetails?.emailRecipients, adminUser?.email]
       : [adminUser?.email];
-
-  sendEmail(
+  if(!body.note) {
+      sendEmail(
     emailRecipients,
     "Head's Up, New Lead Notification from Your Chatbot",
     `<div>
@@ -300,6 +300,8 @@ export default defineEventHandler(async (event) => {
   <p>Best regards,<br/>Tring AI</p>
 </div>`,
   );
+  }
+
 
   return adminUser;
 });
