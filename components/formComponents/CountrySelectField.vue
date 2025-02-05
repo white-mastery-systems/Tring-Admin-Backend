@@ -108,6 +108,9 @@ const country = ref(fieldValue.value);
 watch(country, (newValue) => {
     fieldValue.value = newValue;
 });
+watch(allCoutryNames, (newValue) => {
+    if (!newValue.length)fieldValue.value= ''
+});
 const handleSearchCountries = (e: string) => {
     searchField.value = e.toLowerCase()
 }

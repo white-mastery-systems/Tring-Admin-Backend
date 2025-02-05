@@ -38,10 +38,10 @@ export const getConversationCount = async (
   phoneNumber: string,
 
 ) => {
-  const last24Hour = getLast24HourTimestamp();
+  const last24Hour = getYesterdayTimestamps();
   phoneNumber = phoneNumber.slice(1).replaceAll(" ", "")
 
-  const getConversationAnalyticsUrl = `https://graph.facebook.com/v21.0/${wabaId}?fields=conversation_analytics.start(${last24Hour.start}).end(${last24Hour.end}).granularity(DAILY).phone_numbers([${phoneNumber}]).conversation_categories(["MARKETING","SERVICE"]).dimensions(["CONVERSATION_CATEGORY","CONVERSATION_TYPE","COUNTRY","PHONE"])&access_token=${accessToken}`;
+  const getConversationAnalyticsUrl = `https://graph.facebook.com/v21.0/${wabaId}?fields=conversation_analytics.start(${last24Hour.start}).end(${last24Hour.end}).granularity(DAILY).phone_numbers([${phoneNumber}]).conversation_categories(["MARKETING","SERVICE","UTILITY"]).dimensions(["CONVERSATION_CATEGORY","CONVERSATION_TYPE","COUNTRY","PHONE"])&access_token=${accessToken}`;
 
   try {
     const conversationAnalyticsResponse: WhatsAppAnalytics = await $fetch(
@@ -113,6 +113,7 @@ export const getConversationDetails = async (data: WhatsAppAnalytics) => {
   return analysisResults;
 };
 
+/* TO DO
 function getLast24HourTimestamp(): { start: number; end: number } {
   const currentTimestamp = Math.floor(Date.now() / 1000);
   const startTimestamp = currentTimestamp - 24 * 60 * 60;
@@ -121,6 +122,18 @@ function getLast24HourTimestamp(): { start: number; end: number } {
     start: startTimestamp,
     end: currentTimestamp,
   };
+}
+ */ 
+
+function getYesterdayTimestamps(): { start: number; end: number } {
+  const now = new Date();
+  now.setDate(now.getDate() - 1);
+
+  const start = Math.floor(new Date(now.setHours(0, 0, 0, 0)).getTime() / 1000);
+  const end = Math.floor(
+    new Date(now.setHours(23, 59, 59, 999)).getTime() / 1000,
+  );
+  return { start, end };
 }
 
 export const orgTotalWhatappSessions = async () => {
@@ -134,15 +147,24 @@ export const orgTotalWhatappSessions = async () => {
     
     for(const integration of allAdminWhatsappIntegrations) {
       if (!integration?.metadata.pid || !integration?.metadata.access_token || !integration?.metadata.wabaId) {
-        return;
+        logger.error(`Skipping integration ${integration.id} due to missing metadata`);
+        continue;
       }
       const phoneNumber = await getWhatsappPhonenumberByPid(integration.metadata.pid, integration.metadata.access_token);
+      if(!phoneNumber) {
+        logger.error(`Skipping integration ${integration.id} due to missing phonenumber`);
+        continue;
+      }
       const data = await getConversationCount(integration?.metadata.wabaId, integration.metadata.access_token, phoneNumber);
       const newWhatsappSessionCount = data?.total_conversations || 0
       const orgSubscriptionDetail = await getOrgSubscriptionStatus(integration.org_id, "chat")
-      const totalWhatsappSessionCount = (orgSubscriptionDetail?.whatsappUsedSessions || 0) + newWhatsappSessionCount 
+      const totalWhatsappSessionCount = (orgSubscriptionDetail?.whatsappUsedSessions || 0) + newWhatsappSessionCount
 
-      await updateOrgWhatsappSessions(integration.org_id, totalWhatsappSessionCount)
+      let whatsappWalletBalance = orgSubscriptionDetail?.whatsappWallet || 0
+      const whatsappSessionPrice = parseFloat((newWhatsappSessionCount * 1.5).toFixed(2))
+      whatsappWalletBalance = Math.max(0, parseFloat((whatsappWalletBalance - whatsappSessionPrice).toFixed(2)));
+      
+      await updateOrgWhatsappSessions(integration.org_id, totalWhatsappSessionCount, whatsappWalletBalance)
       await createOrgWhatsappSessions({ 
         organizationId: integration.org_id,
         integrationId: integration.id,

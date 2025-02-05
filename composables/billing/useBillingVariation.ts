@@ -72,7 +72,7 @@ export function useBillingVariation(userDetails: any) {
       benefitList: [
         {
           // content: "60 Message Sessions",
-          content: `${((userDetails?.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹10' : '$0.60'} per Chat Session`,
+          content: `${isIndianUser ? '₹10' : '$0.60'} per Chat Session`,
           availableInPlan: true,
         },
         {
@@ -115,7 +115,7 @@ export function useBillingVariation(userDetails: any) {
       listBenefit: false,
       benefitList: [
         {
-          content: `${((userDetails?.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹8' : '$0.45'} Per Chat Session`,
+          content: `${isIndianUser ? '₹8' : '$0.45'} Per Chat Session`,
           availableInPlan: true,
         },
         {
@@ -214,7 +214,7 @@ export function useBillingVariation(userDetails: any) {
           availableInPlan: true,
         },
         {
-          content: `${((userDetails?.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹6' : '$0.07'} per Extra Minute`,
+          content: `${isIndianUser ? '₹6' : '$0.07'} per Extra Minute`,
           availableInPlan: true,
         },
         {
@@ -255,7 +255,7 @@ export function useBillingVariation(userDetails: any) {
           availableInPlan: true,
         },
         {
-          content: `${((userDetails?.address.country === 'India') && (userLocationDetails.value?.country === "IN")) ? '₹5' : '$0.65'} per Extra Minute`,
+          content: `${isIndianUser ? '₹5' : '$0.65'} per Extra Minute`,
           availableInPlan: true,
         },
         {

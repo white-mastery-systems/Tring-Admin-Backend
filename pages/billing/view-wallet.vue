@@ -1,5 +1,5 @@
 <template>
-  <page title="Billing" :description="true" :disableSelector="true" :customBackRouter="router?.options?.history?.state?.back">
+  <page title="Billing" :description="true" :disableSelector="true" :customBackRouter="correctedUrl">
     <div class="xs:grid-cols-2 grid gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-3">
       <!-- @mouseover="planCard(index); previusIndex = index"
                 @mouseout="planCardUnHover(index); previusIndex = index" -->
@@ -46,6 +46,7 @@
   });
 
   const route = useRoute();
+  const correctedUrl = ref('');
   const filters = computed(() => ({
     type: route?.query?.type ?? 'chat',
   }));
@@ -141,14 +142,27 @@ const voiceBillingVariation = ref([
     return route.query?.type === "voice";
   });
 
+onMounted(() => {
+    if (!route.query.type) { // If `type` is not present in the query
+      router.push({ query: { type: 'chat' } });
+    }
+  const currentUrl = router.options.history.state.back || 'billing/view-wallet';
+    if (!currentUrl.includes('?type=chat') && !currentUrl.includes('?type=voice')) {
+      correctedUrl.value = `/billing?type=chat`;
+    } else if (currentUrl.includes('?type=voice')) {
+      correctedUrl.value = `/billing?type=voice`;
+    } else if (currentUrl.includes('?type=chat')) {
+      correctedUrl.value = `/billing?type=chat`;
+    }
+});
   const handlePurchaseWallet = async (plan: string) => {
     const hostedPageResponse = await $fetch(
-      `/api/billing/addon?type=${filters.value.type}`,
+      `/api/billing/addon?type=${filters.value.type ?? 'chat'}`,
       {
         method: "POST",
         body: {
           plan: plan,
-          redirectUrl: `${window.location.origin}/billing/wallet/wallet-confirmation`,
+          redirectUrl: `${window.location.origin}/billing/wallet/wallet-confirmation?type=${filters.value.type ?? 'chat'}`,
         },
       },
     );
