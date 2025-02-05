@@ -4,7 +4,7 @@
             <UiFormLabel>State
                 <span class="text-sm text-red-500">*</span>
             </UiFormLabel>
-            <UiPopover>
+            <UiPopover ref="popoverRef">
                 <UiPopoverTrigger as-child>
                     <UiFormControl>
                         <UiButton variant="outline" role="combobox" :class="cn(
@@ -13,13 +13,14 @@
                         )
                             ">
                             {{
-                            fieldValue
-                            ? statesList.find((state: any) =>
-                            state === fieldValue,
-                            )
-                            : "State name"
+                                fieldValue
+                                    ? statesList.find((state: any) =>
+                                        state === fieldValue,
+                                    )
+                                    : "State name"
                             }}
-                            <component :is="ChevronDown" class="absolute right-3 ml-2 h-4 w-4 shrink-0 opacity-50"></component>
+                            <component :is="ChevronDown" class="absolute right-3 ml-2 h-4 w-4 shrink-0 opacity-50">
+                            </component>
                         </UiButton>
                     </UiFormControl>
                 </UiPopoverTrigger>
@@ -64,6 +65,7 @@ import stateData from "~/assets/state.json";
 import { ChevronDown } from "lucide-vue-next";
 
 const searchField = ref('')
+const popoverRef = ref(null)
 
 const country = defineModel('country')
 const props = defineProps({
@@ -117,4 +119,17 @@ watch(state, (newValue) => {
 const handleSearchCountries = (e: string) => {
     searchField.value = e.toLowerCase()
 }
+const handleClickOutside = (event: MouseEvent) => {
+    const popoverElement = popoverRef.value?.$el || popoverRef.value; // Get the real DOM element
+
+    if (popoverElement && !popoverElement.contains(event.target as Node)) {
+        searchField.value = ''; // Clear search field
+    }
+};
+onMounted(() => {
+    document.addEventListener('click', handleClickOutside);
+});
+onUnmounted(() => {
+    document.removeEventListener('click', handleClickOutside);
+})
 </script>
