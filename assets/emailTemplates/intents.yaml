@@ -5,6 +5,7 @@ ScheduleSiteVisitRequestSubject: User Requested a Site Visit
 ImagesViewedSubject: User Viewed Property Images
 BrochureDownloadedSubject: User Downloaded Your Brochure
 FormSubmissionSubject: User Submitted a Form
+ScheduleAppointmentRequestSubject: User Requested an Appointment Schedule
 
 LocationInteractionTemplate: |
   <div>
@@ -68,6 +69,23 @@ ScheduleSiteVisitRequestTemplate: |
     </div>
     
     <p>Kindly get in touch with the user to confirm the site visit.</p>
+    
+    <p>Best regards,<br/>Tring AI</p>
+  </div>
+
+ScheduleAppointmentRequestTemplate: |
+  <div>
+    <p>Hi {{business_owner_name}},</p>
+    
+    <p>>{{user_name}} ({{user_email}}) {{user_phone}} has requested to schedule a appointment with you on the chatbot {{chatbot_name}}.</p>
+    
+    <div>
+      <p><strong>Details Provided:</strong></p>
+      <p>Preferred Date: {{preferred_date}}</p>
+      <p>Preferred Time: {{preferred_time}}</p>
+    </div>
+    
+    <p>Kindly get in touch with the user to confirm the appointment.</p>
     
     <p>Best regards,<br/>Tring AI</p>
   </div>

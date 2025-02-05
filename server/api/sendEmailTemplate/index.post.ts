@@ -8,7 +8,7 @@ import { getIntentByName } from "~/server/utils/db/bot"
 export default defineEventHandler(async (event) => {
   try {
       const body = await isValidBodyHandler(event, z.object({
-        botUser: z.any(),
+        userId: z.string(),
         botId: z.string().uuid(),
         intent: z.string(),
         dateAndTime: z.string(),
@@ -17,10 +17,11 @@ export default defineEventHandler(async (event) => {
    
       const botDetails = await getBotDetails(body.botId);
       const organizationId = botDetails?.organizationId !
+      const botUserDetail = await getBotUserById(body.userId, organizationId)
       
       const orgBotIntent = await getIntentByName(organizationId, body.botId, body.intent)
       
-      if(!orgBotIntent?.isEmailEnabled) return
+      // if(!orgBotIntent?.isEmailEnabled) return
       
       const organization = await getAdminByOrgId(organizationId)
       const { template: intentEmailTemplate, subject: intentSubject } = getIntentEmailTemplate(body.intent)
@@ -42,9 +43,9 @@ export default defineEventHandler(async (event) => {
       
       const dynamicaValues = {
         business_owner_name: organization?.username,
-        user_email: body?.botUser?.email,
-        user_name: body?.botUser?.name,
-        user_phone: body?.botUser?.mobile,
+        user_email: botUserDetail?.email,
+        user_name: botUserDetail?.name,
+        user_phone: botUserDetail?.mobile,
         chatbot_name: botDetails?.name,
         location_link: orgBotIntent?.link,
         virtual_tour_link: orgBotIntent?.link,
@@ -57,7 +58,7 @@ export default defineEventHandler(async (event) => {
       
       const emailTemplateWithValues = templateData(dynamicaValues)
    
-      const emailRecipients: any = orgBotIntent.emailRecipients && orgBotIntent.emailRecipients.length ? [...orgBotIntent.emailRecipients, organization?.email] : [ organization?.email ]
+      const emailRecipients: any = botDetails?.emailRecipients && botDetails.emailRecipients.length ? [...botDetails.emailRecipients, organization?.email] : [ organization?.email ]
 
       // return { emailRecipients }
    
@@ -99,15 +100,19 @@ const getIntentEmailTemplate = (intent: string) => {
         subject = parsedYamlIntent.ScheduleSiteVisitRequestSubject
         break
 
-      case "images":
-        template = parsedYamlIntent.ImagesViewedTemplate
-        subject = parsedYamlIntent.ImagesViewedSubject
-        break
+      case "schedule_appointment":
+        template = parsedYamlIntent.ScheduleAppointmentRequestTemplate
+        subject = parsedYamlIntent.ScheduleAppointmentRequestSubject
 
-      case "brochures":
-        template = parsedYamlIntent.BrochureDownloadedTemplate
-        subject = parsedYamlIntent.BrochureDownloadedSubject
-        break
+      // case "images":
+      //   template = parsedYamlIntent.ImagesViewedTemplate
+      //   subject = parsedYamlIntent.ImagesViewedSubject
+      //   break
+
+      // case "brochures":
+      //   template = parsedYamlIntent.BrochureDownloadedTemplate
+      //   subject = parsedYamlIntent.BrochureDownloadedSubject
+      //   break
 
       case "form":
         template = parsedYamlIntent.FormSubmissionTemplate
