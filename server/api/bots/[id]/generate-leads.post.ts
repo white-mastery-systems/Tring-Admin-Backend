@@ -162,9 +162,12 @@ export default defineEventHandler(async (event) => {
           chatLink: `${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
+        // TODO: Add country code to the phone number
+        // `${body?.botUser?.countryCode.split("+")[1]}` +
+        //   botIntegration?.integration?.metadata?.phoneNumber,
         const data = await createWhatsAppMessage(
           whatsappPayload,
-          `${body?.botUser?.countryCode.split("+")[1]}` +
+          `${botIntegration?.integration?.metadata?.countryCode.split("+")[1]}` +
             botIntegration?.integration?.metadata?.phoneNumber,
           body?.note,
         );
