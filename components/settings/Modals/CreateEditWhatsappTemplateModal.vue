@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  const addWhatappTemplateModalState = defineModel<{ open: boolean; id: any }>({
+  const addWhatsappTemplateModalState = defineModel<{ open: boolean; id: any }>({
     default: {
       open: false,
       id: "",
@@ -8,7 +8,7 @@
   const emit = defineEmits<{ (e: "confirm"): void }>();
   const getApiStatus = ref(true);
 
-  watch(addWhatappTemplateModalState, (newValue) => {
+  watch(addWhatsappTemplateModalState, (newValue) => {
     // if (!newValue.open) {
     //   emit("confirm");
     // }
@@ -16,9 +16,9 @@
 </script>
 <template>
   <DialogWrapper
-    v-model="addWhatappTemplateModalState"
+    v-model="addWhatsappTemplateModalState"
     :title="
-      addWhatappTemplateModalState.id ? 'Modify Template' : 'Add Template'
+      addWhatsappTemplateModalState.id ? 'Modify Template' : 'Add Template'
     "
     class="grid grid-cols-2 rounded-lg"
   >
@@ -30,12 +30,12 @@
       <UiTabsContent value="form">
         <WhatsappForm
           @confirm="
-            addWhatappTemplateModalState.open = false;
+            addWhatsappTemplateModalState.open = false;
             emit('confirm');
             getApiStatus = true;
           "
-          :open="addWhatappTemplateModalState.open"
-          :id="addWhatappTemplateModalState.id"
+          :open="addWhatsappTemplateModalState.open"
+          :id="addWhatsappTemplateModalState.id"
           :getStatus="getApiStatus"
           @getApistatus="getApiStatus = false"
         />

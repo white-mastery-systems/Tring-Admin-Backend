@@ -17,8 +17,8 @@
     </template>
     <CreateEditIntentModal v-model="intentDialogState" @success="intentRefresh()" />
 
-    <DataTable :columns="columns" :data="intentData" :page-size="8" :is-loading="isIntentLoading" :height="20"
-      height-unit="vh" />
+    <DataTable :columns="columns" :data="intentData" :totalPageCount="totalPageCount" :page="page"
+      :totalCount="totalCount" :page-size="8" :is-loading="isIntentLoading" :height="20" height-unit="vh" />
     <ConfirmationModal v-model:open="deleteIntentDialogState.open" title="Confirm Delete"
       description="Are you sure you want to delete this intent ?" @confirm="
         async () => {
@@ -48,6 +48,9 @@
   };
   const router = useRouter();
   const route = useRoute("bot-management-chat-bot-id-intent-management");
+  let page = ref(1);
+  let totalPageCount = ref(1);
+  let totalCount = ref(1);
 
   const {
     status: intentLoadingStatus,
@@ -154,7 +157,14 @@ watchEffect(() => {
     }),
     columnHelper.accessor("link", {
       header: "Link",
-      cell: (info) => info.getValue() || "--",
+      cell: (info) => {
+        const value = info.getValue() || "--";
+        return h(
+          "div",
+          { class: "max-w-[350px] truncate", title: value },
+          value
+        );
+      },
     }),
     columnHelper.accessor("createdAt", {
       header: "Date Created",
