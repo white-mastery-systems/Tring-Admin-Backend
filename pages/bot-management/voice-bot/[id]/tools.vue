@@ -19,7 +19,6 @@
     <form @submit.prevent="dynamicToolsForm" class="space-y-6">
       <!-- Default Tools Section -->
       <div class="mb-6">
-        <!-- <h2 class="text-xl font-semibold mb-4">Default Tools</h2> -->
         <div class="flex flex-wrap gap-4">
           <UiFormField v-slot="{ value, handleChange }" name="currentDate">
             <UiFormItem class="w-[49%]">
@@ -62,9 +61,21 @@
               </div>
             </UiFormItem>
           </UiFormField>
+          <UiFormField v-slot="{ value, handleChange }" name="genderIdentification">
+            <UiFormItem class="w-[49%]">
+              <div class="flex justify-between">
+                <UiLabel class="text-[14px] font-medium"> Gender Identification </UiLabel>
+                <UiFormControl>
+                  <UiSwitch id="genderIdentification" :checked="value" @update:checked="(checked) => {
+                    handleChange(checked);
+                  }" :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
+                </UiFormControl>
+                <UiFormMessage />
+              </div>
+            </UiFormItem>
+          </UiFormField>
         </div>
       </div>
-      <!-- {{ values.clientTools?.length }} -->
       <div class="mb-4">
         <div>
           <FieldArray name="clientTools" v-slot="{ fields, push, remove }">
@@ -91,12 +102,10 @@
                     <UiFormItem class="flex w-full flex-col items-start">
                       <UiLabel class="pb-2 text-lg font-medium">Audio</UiLabel>
                       <div>
-                      <imageField :isLoading="isLoading" :name="`clientTools[${toolIdx}].audio`" @change="($event) => {
+                        <imageField :isLoading="isLoading" :name="`clientTools[${toolIdx}].audio`" @change="($event) => {
                           uploadAudioFile($event, toolIdx);
                         }
-                        " :showFilename="false" :multiple="true" :accept="'audio/*'" />
-                        <!-- <input type="file" accept="audio/*" multiple
-                          @change="($event) => uploadAudioFile($event, toolIdx)" /> -->
+                          " :showFilename="false" :multiple="true" :accept="'audio/*'" />
                       </div>
                       <UiFormMessage />
                       <span class="text-xs text-gray-500">Upload audio files for the tool.</span>
@@ -109,7 +118,7 @@
                       <div class="flex gap-3">
                         <span>
                           {{
-                          `${concludeFile?.audio}.wav`
+                            `${concludeFile?.audio}.wav`
                           }}
                         </span>
                         <span>
@@ -124,8 +133,6 @@
                       </UiButton>
                     </div>
                   </div>
-                  <!-- {{ clientTools[toolIdx].name }} || working.... -->
-                  <!-- Parameters -->
                   <FieldArray :name="`clientTools.${toolIdx}.parameters.properties`"
                     v-slot="{ fields: paramFields, push: pushParam, remove: removeParam }">
                     <div v-if="values.propertieFormControl">
@@ -148,8 +155,6 @@
                             :name="`clientTools[${toolIdx}].parameters.properties[${paramIdx}].description`"
                             :isTextarea="true" placeholder="Enter parameter description" required />
                           <div class="flex items-center justify-around w-full">
-                            <!-- <UiSwitch :label="`Required`" :id="`param_required_${toolIdx}_${paramIdx}`"
-                              :name="`clientTools[${toolIdx}].parameters.properties[${paramIdx}].required`" /> -->
                             <UiFormField v-slot="{ value, handleChange }"
                               :name="`clientTools[${toolIdx}].parameters.properties[${paramIdx}].required`">
                               <UiFormItem class="w-[49%]">
@@ -192,13 +197,6 @@
                       </UiButton>
                     </div>
                   </FieldArray>
-
-                  <!-- Remove Client Tool -->
-                  <!-- <div class="flex w-full justify-end gap-2">
-                    <UiButton color="primary" class="mt-4 ml-4" type="button" @click="remove(toolIdx)">
-                      Remove Client Tool
-                    </UiButton>
-                  </div> -->
                 </div>
               </fieldset>
             </div>
@@ -234,7 +232,7 @@ import { useForm } from 'vee-validate';
 import CloseIcon from "~/components/icons/CloseIcon.vue";
 import * as z from 'zod';
 import { FieldArray } from "vee-validate";
-import { objectEntries } from '@vueuse/core';
+import { addToolschema } from "~/validationSchema/botManagement/voiceBot/addToolsValidation";
 
 definePageMeta({
   middleware: "admin-only",
@@ -275,129 +273,17 @@ const parameterTypes = reactive([
   { label: 'Number', value: 'number' }
 ]);
 
-const formSchema = toTypedSchema(
-  z.object({
-    currentDate: z.boolean(),
-    concludeCall: z.boolean(),
-    forwardCall: z.boolean(),
-    clientFormControl: z.boolean(),
-    propertieFormControl: z.boolean(),
-    clientTools: z.array(
-      z.object({
-        name: z.string().optional(),
-        description: z.string().optional(),
-        endpoint: z.string().optional(),
-        audio: z.any().optional(),
-        parameters: z.object({
-          type: z.literal("object"),
-          properties: z.array(
-            z.object({
-              name: z.string().optional(),
-              type: z.enum(["string", "integer", "boolean", "number"]),
-              description: z.string().optional(),
-              required: z.boolean()
-            })
-          ),
-        })
-      })
-    )
-  })
-    .superRefine((data, ctx) => {
-      if (data.clientFormControl) {
-        data.clientTools.forEach((clientTool, index) => {
-          // Validate each clientTool
-          if (!clientTool.name) {
-            ctx.addIssue({
-              path: ["clientTools", index, "name"],
-              message: "Client tool name is required",
-            });
-          }
-          if (!clientTool.description) {
-            ctx.addIssue({
-              path: ["clientTools", index, "description"],
-              message: "Client tool description is required",
-            });
-          }
-          if (!clientTool.endpoint) {
-            ctx.addIssue({
-              path: ["clientTools", index, "endpoint"],
-              message: "Client tool endpoint is required",
-            });
-          } else {
-            try {
-              new URL(clientTool.endpoint); // Validate URL format
-            } catch {
-              ctx.addIssue({
-                path: ["clientTools", index, "endpoint"],
-                message: "Invalid URL format",
-              });
-            }
-          }
-
-          // Check if properties exist in parameters and validate them
-          if (data.propertieFormControl) {
-            clientTool.parameters?.properties.forEach((property, propIndex) => {
-              if (!property.name?.trim()) {
-                ctx.addIssue({
-                  path: [
-                    "clientTools",
-                    index,
-                    "parameters",
-                    "properties",
-                    propIndex,
-                    "name",
-                  ],
-                  message: "Parameter name is required",
-                });
-              }
-              if (!property.description?.trim()) {
-                ctx.addIssue({
-                  path: [
-                    "clientTools",
-                    index,
-                    "parameters",
-                    "properties",
-                    propIndex,
-                    "description",
-                  ],
-                  message: "Parameter description is required",
-                });
-              }
-            });
-
-            // If no properties exist, add a validation issue for the missing properties
-            // if (!clientTool.parameters?.properties.length) {
-            //   ctx.addIssue({
-            //     path: ["clientTools", index, "parameters", "properties"],
-            //     message: "At least one parameter property is required",
-            //   });
-            // }
-          }
-        });
-      }
-    }))
 
 const { handleSubmit, values, resetForm, errors, setFieldValue } = useForm({
-  validationSchema: formSchema,
+  validationSchema: addToolschema,
   initialValues: {
     currentDate: true,
     concludeCall: true,
     forwardCall: false,
+    genderIdentification: true,
     clientFormControl: false,
     propertieFormControl: false,
-    clientTools: [
-      //   {
-      //   name: "",
-      //   description: "",
-      //   endpoint: "",
-      //   parameters: {
-      //     type: "object",
-      //     properties: [
-
-      //     ],
-      //   }
-      // }
-    ]
+    clientTools: []
   }
 });
 
@@ -405,6 +291,7 @@ const { handleSubmit, values, resetForm, errors, setFieldValue } = useForm({
 setFieldValue('currentDate', botDetailsList?.tools?.defaultTools?.includes('currentDate') ?? true)
 setFieldValue('concludeCall', botDetailsList?.tools?.defaultTools?.includes('concludeCall') ?? true)
 setFieldValue('forwardCall', botDetailsList?.tools?.defaultTools?.includes('forwardCall') ?? false)
+setFieldValue('genderIdentification', botDetailsList?.tools?.defaultTools?.includes('genderIdentification') ??  true)
 setFieldValue('clientTools', botDetailsList?.tools?.clientTools ?? [])
 setFieldValue(`clientFormControl`, botDetailsList?.tools?.clientFormControl ?? false)
 setFieldValue(`propertieFormControl`, botDetailsList?.tools?.propertieFormControl ?? false)
@@ -420,7 +307,6 @@ watch(() => botDetailsList?.tools.clientFormControl, () => {
   }
 }, { immediate: true })
 
-
 const uploadAudioFile = (event: Event, toolIdx: number) => {
   const files = event;
   if (!files || files.length === 0) return;
@@ -428,12 +314,6 @@ const uploadAudioFile = (event: Event, toolIdx: number) => {
   // let lastFileIndex = getLastFileNumber()
   try {
     Array.from(files).forEach((file, index) => {
-      // let fileType = file.type.split("/").pop();
-      // let fileName = file.name
-      // let fileName = `tool_${toolIdx}_audio_${index + 1 + lastFileIndex}.${fileType}`;
-      // let blob = file.slice(0, file.size, file.type);
-      // let newFile = new File([blob], fileName, { type: file.type });
-
       uploadedFiles.push(file);
     });
 
@@ -451,9 +331,7 @@ const uploadAudioFile = (event: Event, toolIdx: number) => {
   if (botDetailsList.organizationId) {
     formData.append("organization_id", botDetailsList.organizationId);
   }
-  // if (botDetails.speechToTextConfig?.language) {
   formData.append("language", botDetailsList.speechToTextConfig?.language ?? "en-US");
-  // }
 
 
   // Append intent
@@ -461,7 +339,6 @@ const uploadAudioFile = (event: Event, toolIdx: number) => {
     formData.append("intent", values?.clientTools[toolIdx].name);
   } else {
     toast.error("Client tools name is required");
-    // values.clientTools[toolIdx].audio
     setFieldValue(`clientTools[${toolIdx}].audio`, []);
     return
   }
@@ -477,9 +354,6 @@ const uploadAudioFile = (event: Event, toolIdx: number) => {
 
 
 const audioUpload = async (formData: any, index: any) => {
-  // formattedUploadAudioFile.value.welcome = [];
-  // formattedUploadAudioFile.value.conclude = [];
-  // formattedUploadAudioFile.value.filler = [];
   isLoading.value = true;
   if (botDetailsList.botDetails && botDetailsList.botDetails?.agentLanguage) {
     try {
@@ -517,9 +391,6 @@ const audioUpload = async (formData: any, index: any) => {
       console.error("Error:", error);
     } finally {
       isLoading.value = false;
-      // concludeFilesData.value = []
-      // welcomeFilesData.value = []
-      // fillerFilesData.value = []
     }
   } else {
     isLoading.value = false
@@ -579,32 +450,6 @@ const audioDelete = async (toolName: any, toolIdx: any, index: any) => {
   }
 };
 
-// const getLastFileNumber = (maxNumber = 10000): number => {
-//   const files: { name: string }[] = []; // Replace with your actual list of files
-
-//   // Extract existing numbers from file names
-//   const usedNumbers = new Set(
-//     files.map((file) => {
-//       const match = file.name.match(/\d+/); // Extract digits from the file name
-//       return match ? parseInt(match[0], 10) : 0;
-//     })
-//   );
-
-//   let randomNumber: number;
-//   let attempts = 0;
-
-//   // Generate a random number not already in use
-//   do {
-//     randomNumber = Math.floor(Math.random() * maxNumber) + 1; // Random number between 1 and maxNumber
-//     attempts++;
-//     if (attempts > maxNumber) throw new Error("Failed to generate a unique number");
-//   } while (usedNumbers.has(randomNumber));
-
-//   return randomNumber;
-// };
-
-
-
 const dynamicToolsForm = handleSubmit(async (values: any) => {
   isLoading.value = true;
   isLoading.value = false;
@@ -612,7 +457,7 @@ const dynamicToolsForm = handleSubmit(async (values: any) => {
   if (values.currentDate) defaultTools.push('currentDate');
   if (values.concludeCall) defaultTools.push('concludeCall');
   if (values.forwardCall) defaultTools.push('forwardCall');
-
+  if (values.genderIdentification) defaultTools.push('genderIdentification');
 
   const payload = {
     tools: {
@@ -623,36 +468,6 @@ const dynamicToolsForm = handleSubmit(async (values: any) => {
     }
   };
 
-
   await updateLLMConfig(payload, botDetailsList.id, "Tools added successfully.")
-  // const result = values.clientTools.map(tool => {
-  //   // Create an object for each tool based on its properties
-  //   const obj = tool.parameters.properties.reduce((acc, property) => {
-  //     return property.name;
-  //   }, {});
-  //   console.log(obj, "obj")
-  // })
-  // console.log(result, "result --- result")
-  // const formattedConfig = {
-  //   tools: {
-  //     defaultTools: defaultTools,
-  //     clientTools: values.clientTools.map(tool => ({
-  //       ...tool,
-  //       parameters: {
-  //         // ...tool.parameters,
-  //         properties: [
-  //           [values.clientTools]
-  //         ]
-  //         required: Object.keys(tool.parameters.properties)
-  //           .filter(key => tool.parameters.properties[key].required)
-  //       }
-  //     }))
-  //   }
-  // };
-  // console.log(formattedConfig, "formattedConfig -- formattedConfig")
-  // formattedToolsConfig.value = formattedConfig;
-
-  // Uncomment and implement actual API call
-  // await updateToolsConfiguration(route.params.id, formattedConfig);
 });
 </script>
