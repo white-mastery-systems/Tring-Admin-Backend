@@ -5,8 +5,8 @@
         <div class="flex gap-2">
           <UiButton color="primary" @click="
               () => {
-                addWhatappTemplateModalState.open = true;
-                addWhatappTemplateModalState.id = null;
+                addWhatsappTemplateModalState.open = true;
+                addWhatsappTemplateModalState.id = null;
 
                 templateStore.resetValues();
               }
@@ -51,10 +51,10 @@
           }
         " />
     </div>
-    <AddEditWhatsappTemplateModal v-if="addWhatappTemplateModalState.open" v-model="addWhatappTemplateModalState"
+    <AddEditWhatsappTemplateModal v-if="addWhatsappTemplateModalState.open" v-model="addWhatsappTemplateModalState"
       @confirm="
         () => {
-          addWhatappTemplateModalState.open = false;
+          addWhatsappTemplateModalState.open = false;
           integrationRefresh();
         }
       " />
@@ -93,10 +93,10 @@
     limit: "10",
   });
   // const campaignModalState = ref({ open: false });
-  const addWhatappTemplateModalState = ref({ open: false, id: null });
+  const addWhatsappTemplateModalState = ref({ open: false, id: null });
 
   watch(
-    () => addWhatappTemplateModalState,
+    () => addWhatsappTemplateModalState,
     (newValue) => {},
   );
 
