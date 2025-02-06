@@ -29,26 +29,32 @@
           (messageList.content !== 'User Details Submitted') && (messageList.content !== 'Booking Details Submitted')
         " class="flex w-full flex-col items-end">
           <div class="flex max-w-[80%] flex-col items-end justify-center"
-            v-if="messageList.content.includes('Call Scheduled') || messageList.content.includes('Rescheduled Site') || messageList.content.includes('Site Visit Scheduled') || messageList.content.includes('Rescheduled Call') || messageList.content.includes('Appointment Scheduled')">
+            v-if="messageList.content.includes('Call Scheduled') || messageList.content.includes('Rescheduled Site') || messageList.content.includes('Site Visit Scheduled') || messageList.content.includes('Rescheduled Call') || messageList.content.includes('Appointment Scheduled') || messageList.content.includes('Rescheduled Appointment')">
             <span class="text-[14px]" style="color: #8a8a8a">{{
               leadDataValue?.botUser?.name
-            }}</span>
+              }}</span>
             <div
               class="mt-2.5 flex flex-col items-end justify-center gap-5 rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black">
               <div class="pb-2 pt-2">
                 <span>
                   <!-- {{
-                    (messageList.content.includes('Rescheduled Site') || messageList.content.includes('Site Visit Scheduled'))
-                    ? (messageList.content.includes('Rescheduled Site') ? 'Rescheduled Site Visit' : 'Site Visit Scheduled')
-                  : (messageList.content.includes('Rescheduled Call') ? 'Rescheduled Call' : 'Call Scheduled')
-                  }} -->
-                  {{
                     (messageList.content.includes('Rescheduled Site') || messageList.content.includes('Site VisitScheduled') || messageList.content.includes('Appointment Scheduled'))
                       ? (messageList.content.includes('Rescheduled Site') ? 'Rescheduled Site Visit' :
                         messageList.content.includes('Site Visit Scheduled') ? 'Site Visit Scheduled' :
-                          messageList.content.includes('Appointment Scheduled') ? 'Appointment Scheduled' : '')
+                        messageList.content.includes('Appointment Scheduled') ? 'Appointment Scheduled' : 'Rescheduled Appointment')
                       : (messageList.content.includes('Rescheduled Call') ? 'Rescheduled Call' : 'Call Scheduled')
+                  }} -->
+                  {{
+                    (messageList.content.includes('Rescheduled Site') ||
+                      messageList.content.includes('Site Visit Scheduled') ||
+                      messageList.content.includes('Appointment Scheduled'))
+                      ? (messageList.content.includes('Rescheduled Site') ? 'Rescheduled Site Visit' :
+                        messageList.content.includes('Site Visit Scheduled') ? 'Site Visit Scheduled' :
+                          messageList.content.includes('Appointment Scheduled') ? 'Appointment Scheduled' : '')
+                      : (messageList.content.includes('Rescheduled Appointment') ? 'Rescheduled Appointment' :
+                  messageList.content.includes('Rescheduled Call') ? 'Rescheduled Call' : 'Call Scheduled')
                   }}
+
                 </span>
                 <div class="pt-4">
                   <TextField label="Date" :validation="false" :name="dateTimeFormat(messageList.content, 'date')"
@@ -320,7 +326,7 @@ const scrollToMessage = ({ chatIndex }) => {
 };
 
 const dateTimeFormat = (text, format) => {
-  const dateTimeStr = text?.replace(/(Call Scheduled on|Site Visit Scheduled on|Appointment Scheduled on|Rescheduled Site Visit on|Rescheduled Call on)/, "")?.trim();
+  const dateTimeStr = text?.replace(/(Call Scheduled on|Site Visit Scheduled on|Appointment Scheduled on|Rescheduled Site Visit on|Rescheduled Call on |Rescheduled Appointment on)/, "")?.trim();
   const [dateStr, timeStr] = dateTimeStr?.split(" - ");
 
   if (format === "time") return timeStr;

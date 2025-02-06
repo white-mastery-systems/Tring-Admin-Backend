@@ -124,7 +124,7 @@ import { debounce } from "chart.js/helpers";
 import { FieldArray } from "vee-validate";
 import TextField from "~/components/formComponents/TextField.vue";
 import { useTemplateStore } from "~/store/whatsAppTemplateStore";
-import { whatsAppTemplateSchema } from "~/validationSchema/settings/whatAppTemplateValidation";
+import { whatsAppTemplateSchema } from "~/validationSchema/settings/whatsAppTemplateValidation";
 import { whatsappTemplateLanguageList } from '~/composables/whatsappTemplateLanguageList'
 
 
