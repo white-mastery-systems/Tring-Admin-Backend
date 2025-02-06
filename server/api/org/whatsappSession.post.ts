@@ -18,9 +18,11 @@ export default defineEventHandler(async (event) => {
   if (whatsappSessionExist) {
     const createdAt = new Date(whatsappSessionExist.createdAt);
     const now = new Date();
-    const hoursDifference = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
+    const hoursDifference = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60); // hours
+    // const minutesDifference = (now.getTime() - createdAt.getTime()) / (1000 * 60)
+    // console.log({current: now.getTime(), createdAt: now.getTime(), difference: hoursDifference })
   
-    if (hoursDifference > 24) {
+    if (hoursDifference > 2) {
       // Handle the case where the session is older than 24 hours
       const data = await createOrgWhatsappSession(body)
       await updateOrgWhatsappSessions(body.organizationId, whatsappWalletBalance)
