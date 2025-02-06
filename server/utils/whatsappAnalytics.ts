@@ -159,12 +159,12 @@ export const orgTotalWhatappSessions = async () => {
       const newWhatsappSessionCount = data?.total_conversations || 0
       const orgSubscriptionDetail = await getOrgSubscriptionStatus(integration.org_id, "chat")
       const totalWhatsappSessionCount = (orgSubscriptionDetail?.whatsappUsedSessions || 0) + newWhatsappSessionCount
-
+ 
       let whatsappWalletBalance = orgSubscriptionDetail?.whatsappWallet || 0
       const whatsappSessionPrice = parseFloat((newWhatsappSessionCount * 1.5).toFixed(2))
       whatsappWalletBalance = Math.max(0, parseFloat((whatsappWalletBalance - whatsappSessionPrice).toFixed(2)));
       
-      await updateOrgWhatsappSessions(integration.org_id, totalWhatsappSessionCount, whatsappWalletBalance)
+      // await updateOrgWhatsappSessions(integration.org_id, totalWhatsappSessionCount, whatsappWalletBalance)
       await createOrgWhatsappSessions({ 
         organizationId: integration.org_id,
         integrationId: integration.id,
