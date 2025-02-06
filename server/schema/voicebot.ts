@@ -85,7 +85,8 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     "clientTools": [],
     "defaultTools": [
         "currentDate",
-        "concludeCall"
+        "concludeCall",
+        "genderIdentification"
     ]
   }),
   clientConfig: jsonb("client_config").default({
