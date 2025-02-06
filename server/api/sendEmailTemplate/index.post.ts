@@ -4,6 +4,9 @@ import yaml from "js-yaml"
 import Handlebars from "handlebars"
 import { logger } from "~/server/logger"
 import { getIntentByName } from "~/server/utils/db/bot"
+import { emailTemplates } from "~/server/utils/intents-emailTemplates"
+
+type IntentType = "location" | "virtual_tour" | "schedule_call" | "site_visit" | "schedule_appointment" | "form";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -24,7 +27,7 @@ export default defineEventHandler(async (event) => {
       // if(!orgBotIntent?.isEmailEnabled) return
       
       const organization = await getAdminByOrgId(organizationId)
-      const { template: intentEmailTemplate, subject: intentSubject } = getIntentEmailTemplate(body.intent)
+      const { template: intentEmailTemplate, subject: intentSubject } = getIntentEmailTemplate(body.intent as IntentType)
 
       // return { intentSubject}
       let datePart, timePart
@@ -45,7 +48,7 @@ export default defineEventHandler(async (event) => {
         business_owner_name: organization?.username,
         user_email: botUserDetail?.email,
         user_name: botUserDetail?.name,
-        user_phone: botUserDetail?.mobile,
+        user_phone: `${botUserDetail?.countryCode} ${botUserDetail?.mobile}`,
         chatbot_name: botDetails?.name,
         location_link: orgBotIntent?.link,
         virtual_tour_link: orgBotIntent?.link,
@@ -71,56 +74,37 @@ export default defineEventHandler(async (event) => {
 })
 
 
-const getIntentEmailTemplate = (intent: string) => {
-   const yamlFilePath = path.resolve('./assets/emailTemplates/intents.yaml')
+const getIntentEmailTemplate = (intent: IntentType) => {
+  let template, subject
 
-   const readYamlFile = fs.readFileSync(yamlFilePath, "utf8")
-   const parsedYamlIntent: any = yaml.load(readYamlFile)
+  switch(intent) {
+    case "location":
+      template = emailTemplates.templates.LocationInteraction;
+      subject = emailTemplates.subjects.LocationInteraction;
+      break;
+    case "virtual_tour":
+      template = emailTemplates.templates.VirtualTourInteraction;
+      subject = emailTemplates.subjects.VirtualTourInteraction;
+      break;
+    case "schedule_call":
+      template = emailTemplates.templates.ScheduleCallRequest;
+      subject = emailTemplates.subjects.ScheduleCallRequest;
+      break;
+    case "site_visit":
+      template = emailTemplates.templates.ScheduleSiteVisitRequest;
+      subject = emailTemplates.subjects.ScheduleSiteVisitRequest;
+      break;
+    case "schedule_appointment":
+      template = emailTemplates.templates.ScheduleAppointmentRequest;
+      subject = emailTemplates.subjects.ScheduleAppointmentRequest;
+      break;
+    case "form":
+      template = emailTemplates.templates.FormSubmission;
+      subject = emailTemplates.subjects.FormSubmission;
+      break;
+  }
 
-   let template, subject
-
-   switch(intent) {
-      case "location":
-        template = parsedYamlIntent.LocationInteractionTemplate
-        subject = parsedYamlIntent.LocationInteractionSubject
-        break
-      
-      case "virtual_tour":
-        template = parsedYamlIntent.VirtualTourInteractionTemplate
-        subject = parsedYamlIntent.VirtualTourInteractionSubject
-        break
-
-      case "schedule_call":
-        template = parsedYamlIntent.ScheduleCallRequestTemplate
-        subject = parsedYamlIntent.ScheduleCallRequestSubject
-        break
-
-      case "site_visit":
-        template = parsedYamlIntent.ScheduleSiteVisitRequestTemplate
-        subject = parsedYamlIntent.ScheduleSiteVisitRequestSubject
-        break
-
-      case "schedule_appointment":
-        template = parsedYamlIntent.ScheduleAppointmentRequestTemplate
-        subject = parsedYamlIntent.ScheduleAppointmentRequestSubject
-
-      // case "images":
-      //   template = parsedYamlIntent.ImagesViewedTemplate
-      //   subject = parsedYamlIntent.ImagesViewedSubject
-      //   break
-
-      // case "brochures":
-      //   template = parsedYamlIntent.BrochureDownloadedTemplate
-      //   subject = parsedYamlIntent.BrochureDownloadedSubject
-      //   break
-
-      case "form":
-        template = parsedYamlIntent.FormSubmissionTemplate
-        subject = parsedYamlIntent.FormSubmissionSubject
-        break
-   }
-
-   return {
+  return {
       template,
       subject
    }
