@@ -62,8 +62,8 @@
       <div
         class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <div class="flex items-center gap-3">
-          <span> WhatsApp session used </span>
-          <UiTooltipProvider>
+          <span> WhatsApp sessions used </span>
+          <!-- <UiTooltipProvider>
             <UiTooltip class="flex justify-center w-[20%]">
               <UiTooltipTrigger as-child>
                 <Info class="w-5 h-5 cursor-pointer" />
@@ -75,7 +75,7 @@
                   next update.</p>
               </UiTooltipContent>
             </UiTooltip>
-          </UiTooltipProvider>
+          </UiTooltipProvider> -->
         </div>
         <span class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]">
           {{ usageDetails?.whatsappSessions }}

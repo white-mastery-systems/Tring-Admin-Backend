@@ -105,25 +105,12 @@ import { useOrgDetailsStore } from "~/store/orgDetailsStore";
 import { ArrowRight } from 'lucide-vue-next'
 import { useRouter } from 'vue-router';
 import { helpers } from "handlebars";
+import { industry } from "~/composables/botManagement/chatBot/useBotType";
 
 const props = withDefaults(defineProps<{ personalControl?: boolean }>(), {
   personalControl: true,
 });
 const router = useRouter();
-
-const industry = [
-  "Government Sectors",
-  "Finance & Banking",
-  "Real Estate",
-  "Healthcare",
-  "E-commerce",
-  "Energy & Utilities",
-  "Telecommunications",
-  "Travel & Hospitality",
-  "Logistics",
-  "Education",
-  "Other",
-];
 const gstTypes = [
   {
     label: "Registered Business - Regular",

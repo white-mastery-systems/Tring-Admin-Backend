@@ -28,15 +28,17 @@ export const useUser = async () => {
 
         // Fetch or update orgDetails
         let formattedOrgDetails = JSON.parse(localStorage.getItem("orgDetails") || "null");
+        let formattedUserPlan = JSON.parse(localStorage.getItem("userPlan") || "null");
         if (!formattedOrgDetails) {
+          const { userPlanDetails } = await userPlan();
+          formattedUserPlan = userPlanDetails
           const { orgDetails } = await companyDetails();
           formattedOrgDetails = orgDetails
           localStorage.setItem("orgDetails", JSON.stringify(formattedOrgDetails));
         }
 
-
         // Handle navigation based on orgDetails
-        if (formattedOrgDetails?.planCode === 'chat_free') {
+        if (formattedUserPlan?.planCode === 'chat_free') {
           if (formattedOrgDetails.metadata.gstType || formattedOrgDetails?.metadata?.gst) {
             navigateTo("/billing/view-all");
           } else {
@@ -101,3 +103,10 @@ export const companyDetails = async () => {
     return { orgDetails: orgDetails };
   }
 };
+export const userPlan = async () => {
+  const orgResponse = await $fetch("/api/org/subscriptionPlans");
+  
+  const userPlanDetails = orgResponse.find((plan: any) => plan.type === "chat");
+  localStorage.setItem("userPlan", JSON.stringify(userPlanDetails));
+  return { userPlanDetails };
+}
