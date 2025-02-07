@@ -125,6 +125,7 @@ export async function createWhatsAppMessage(
         {
           type: "body",
           parameters: [
+            { type: "text", text: payload.intent },
             { type: "text", text: payload.name },
             { type: "text", text: payload.phone },
             { type: "text", text: payload.email },
