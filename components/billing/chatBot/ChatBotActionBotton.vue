@@ -11,9 +11,9 @@
           <div class="text-center text-[#000000] text-[4px] lg:text-[12px] hidden lg:flex">
             <span>
               Credits :
+              {{ usageDetails.whatsappWalletBalance ?? 0 }}
             </span>
             <span>
-              {{ formattedUsageDetails.whatsappWalletBalance ?? 0 }}
             </span>
           </div>
         </UiButton>
@@ -60,7 +60,7 @@
       <div class="text-[4px]">Cancel Subscription</div>
     </div>
     <div>
-      <AddWhatsappWalletBalance v-model="creditBalanceModalState" :usageDetails="formattedUsageDetails" @success="() => {
+      <AddWhatsappWalletBalance v-model="creditBalanceModalState" :usageDetails="usageDetails" @success="() => {
         creditBalanceModalState.open = false;
       }" />
     </div>
@@ -85,12 +85,6 @@ const props = defineProps({
 const userLocationDetails = ref(await getLocationDetail())
 const emit = defineEmits<{ (e: "change"): void }>();
 const creditBalanceModalState = ref({ open: false });
-const formattedUsageDetails = computed(() => {
-  return {
-    ...props.usageDetails,
-    whatsappWalletBalance: props.usageDetails.whatsappWalletBalance ?? 0,
-  };
-});
 
 const cancelSubscription = computed(() => {
   if (!props.usage.expiry_date) {
