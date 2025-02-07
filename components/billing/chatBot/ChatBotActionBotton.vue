@@ -11,9 +11,9 @@
           <div class="text-center text-[#000000] text-[4px] lg:text-[12px] hidden lg:flex">
             <span>
               Credits :
+              {{ formattedUsageDetails.whatsappWalletBalance ?? 0 }}
             </span>
             <span>
-              {{ formattedUsageDetails.whatsappWalletBalance ?? 0 }}
             </span>
           </div>
         </UiButton>
@@ -82,15 +82,18 @@ const props = defineProps({
   query: { type: Object, required: true },
 });
 
+const formattedUsageDetails = ref({});
 const userLocationDetails = ref(await getLocationDetail())
 const emit = defineEmits<{ (e: "change"): void }>();
 const creditBalanceModalState = ref({ open: false });
-const formattedUsageDetails = computed(() => {
-  return {
-    ...props.usageDetails,
-    whatsappWalletBalance: props.usageDetails.whatsappWalletBalance ?? 0,
-  };
-});
+
+watch(
+  () => props.usageDetails, // Watch the prop
+  (newVal) => {
+    formattedUsageDetails.value = newVal ?? {}; // Update ref reactively
+  },
+  { immediate: true } // Runs immediately when component is created
+);
 
 const cancelSubscription = computed(() => {
   if (!props.usage.expiry_date) {
