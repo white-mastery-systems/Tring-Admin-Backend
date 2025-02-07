@@ -13,7 +13,7 @@
               Credits :
             </span>
             <span>
-              {{ props.usageDetails.whatsappWalletBalance ?? 0 }}
+              {{ formattedUsageDetails.whatsappWalletBalance ?? 0 }}
             </span>
           </div>
         </UiButton>
@@ -60,7 +60,7 @@
       <div class="text-[4px]">Cancel Subscription</div>
     </div>
     <div>
-      <AddWhatsappWalletBalance v-model="creditBalanceModalState" :usageDetails="props.usageDetails" @success="() => {
+      <AddWhatsappWalletBalance v-model="creditBalanceModalState" :usageDetails="formattedUsageDetails" @success="() => {
         creditBalanceModalState.open = false;
       }" />
     </div>
@@ -85,7 +85,6 @@ const props = defineProps({
 const userLocationDetails = ref(await getLocationDetail())
 const emit = defineEmits<{ (e: "change"): void }>();
 const creditBalanceModalState = ref({ open: false });
-
 const formattedUsageDetails = computed(() => {
   return {
     ...props.usageDetails,
@@ -93,6 +92,7 @@ const formattedUsageDetails = computed(() => {
   };
 });
 
+console.log(formattedUsageDetails.value)
 const cancelSubscription = computed(() => {
   if (!props.usage.expiry_date) {
     return false; // Return a default value
