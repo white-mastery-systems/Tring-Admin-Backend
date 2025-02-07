@@ -11,7 +11,7 @@
           <div class="text-center text-[#000000] text-[4px] lg:text-[12px] hidden lg:flex">
             <span>
               Credits :
-              {{ formattedUsageDetails.whatsappWalletBalance ?? 0 }}
+              {{ usageDetails.whatsappWalletBalance ?? 0 }}
             </span>
             <span>
             </span>
@@ -60,7 +60,7 @@
       <div class="text-[4px]">Cancel Subscription</div>
     </div>
     <div>
-      <AddWhatsappWalletBalance v-model="creditBalanceModalState" :usageDetails="formattedUsageDetails" @success="() => {
+      <AddWhatsappWalletBalance v-model="creditBalanceModalState" :usageDetails="usageDetails" @success="() => {
         creditBalanceModalState.open = false;
       }" />
     </div>
@@ -82,18 +82,9 @@ const props = defineProps({
   query: { type: Object, required: true },
 });
 
-const formattedUsageDetails = ref({});
 const userLocationDetails = ref(await getLocationDetail())
 const emit = defineEmits<{ (e: "change"): void }>();
 const creditBalanceModalState = ref({ open: false });
-
-watch(
-  () => props.usageDetails, // Watch the prop
-  (newVal) => {
-    formattedUsageDetails.value = newVal ?? {}; // Update ref reactively
-  },
-  { immediate: true } // Runs immediately when component is created
-);
 
 const cancelSubscription = computed(() => {
   if (!props.usage.expiry_date) {
