@@ -85,7 +85,6 @@ const props = defineProps({
 const userLocationDetails = ref(await getLocationDetail())
 const emit = defineEmits<{ (e: "change"): void }>();
 const creditBalanceModalState = ref({ open: false });
-console.log(props.usageDetails);
 const formattedUsageDetails = computed(() => {
   return {
     ...props.usageDetails,
