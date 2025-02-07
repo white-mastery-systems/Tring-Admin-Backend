@@ -43,7 +43,8 @@
 </template>
 
 <script setup lang="ts">
-  import { useRoute } from "vue-router";
+import { useRoute } from "vue-router";
+import { botTypes } from '~/composables/botManagement/chatBot/useBotType'
   definePageMeta({
     middleware: "admin-only",
   });
@@ -127,19 +128,6 @@
     }
     isLoading.value = false;
   });
-  const botTypes = [
-    { label: "Government Sectors", value: "government-sectors" },
-    { label: "Finance & Banking", value: "finance-banking" },
-    { label: "Real Estate", value: "real-estate" },
-    { label: "Healthcare", value: "healthcare" },
-    { label: "E-commerce", value: "e-commerce" },
-    { label: "Energy & Utilities", value: "energy-utilities" },
-    { label: "Telecommunications", value: "telecommunications" },
-    { label: "Travel & Hospitality", value: "travel-hospitality" },
-    { label: "Logistics", value: "logistics" },
-    { label: "Education & Training", value: "education-training" },
-    { label: "IT Service", value: "it-service" },
-  ];
   const {
     status: integrationLoadingStatus,
     data: integrationsData,

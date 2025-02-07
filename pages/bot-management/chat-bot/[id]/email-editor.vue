@@ -110,52 +110,6 @@ const actionsComponent = (objValue: any,) => [
     ],
   ),
 ];
-// const columns = [
-//   {
-//     id: "select",
-//     header: () => {
-//       const allRowIds = data.map(row => row.id); // Replace 'data' with your table data array
-//       const isAllSelected = allRowIds.every(id => selectedRows.value.includes(id));
-
-//       return h("input", {
-//         type: "checkbox",
-//         checked: isAllSelected,
-//         onChange: (event: Event) => {
-//           toggleAllRows((event.target as HTMLInputElement).checked, allRowIds);
-//         },
-//       });
-//     },
-//     cell: ({ row }) => {
-//       const rowId = row.original.id;
-//       return h("input", {
-//         type: "checkbox",
-//         checked: isRowSelected(rowId),
-//         onChange: (event: Event) => {
-//           const checked = (event.target as HTMLInputElement).checked;
-//           if (checked) {
-//             selectedRows.value.push(rowId);
-//           } else {
-//             selectedRows.value = selectedRows.value.filter(id => id !== rowId);
-//           }
-//         },
-//       });
-//     },
-//   },
-//   columnHelper.accessor("integration", {
-//     header: "Intent Name",
-//   }),
-
-//   columnHelper.accessor("connected", {
-//     header: "Template",
-//   }),
-//   columnHelper.accessor("actions", {
-//     header: "actions",
-//     cell: ({ row }) => {
-//       // console.log(row.original.status, "row.original -- row.original");
-//       return actionsComponent(row.original.status, row.original.id);
-//     },
-//   }),
-// ];
 
 const columns = [
   columnHelper.accessor("intent", {

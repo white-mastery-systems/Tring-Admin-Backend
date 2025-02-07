@@ -52,71 +52,12 @@
 </template>
 <script setup lang="ts">
 import { useLanguageList } from '~/composables/chatBotLanguageList';
+import { useConfig } from '~/composables/botManagement/chatBot/useConfig';
+import { botConfigSchema } from '~/validationSchema/botManagement/chatBot/botConfigurationValidation';
 
 const showIntentDialog = ref(false);
 const { chatBotList } = useLanguageList();
-
-const formSchema = toTypedSchema(
-  z
-    .object({
-      NAME: z
-        .string({ required_error: "Name must be at least 2 characters." })
-        .min(2, "Name must be at least 2 characters."),
-      COMPANY: z
-        .string({
-          required_error: "Company name must be at least 2 characters.",
-        })
-        .min(2, "Company name must be at least 2 characters."),
-
-      ROLE: z
-        .string({ required_error: "Role must be provided." })
-        .min(2, "Role must be provided."),
-      GOAL: z
-        .string({ required_error: "Goal must be provided." })
-        .min(2, "Goal must be provided."),
-      LANGUAGE: z
-        .string({ required_error: "Language is required" })
-        .min(1, { message: "Language is required" }),
-      NOTES: z.string().optional().default(""),
-      DESCRIPTION: z.string().optional().default(""),
-      otherRole: z.string().optional().default(""),
-      otherGoal: z.string().optional().default(""),
-      errorMessage: z.string().optional(),
-    })
-    .refine(
-      (data) => {
-        if (data.ROLE.toLowerCase() === "other") {
-          return data.otherRole.length >= 1;
-        }
-        return true;
-      },
-      {
-        message: "Other role must be provided",
-        path: ["otherRole"],
-      },
-    )
-    .refine(
-      (data) => {
-        if (data.GOAL.toLowerCase() === "other") {
-          return data.otherGoal.length >= 1;
-        }
-        return true;
-      },
-      {
-        message: "Other goal must be provided",
-        path: ["otherGoal"],
-      },
-    )
-    .transform((data) => {
-      if (data.ROLE.toLowerCase() === "other") {
-        return { ...data, ROLE: data.otherRole };
-      }
-      if (data.GOAL.toLowerCase() === "other") {
-        return { ...data, GOAL: data.otherGoal };
-      }
-      return data;
-    }),
-);
+const { roles, goals } = useConfig();
 
 const animationProps = {
   duration: 0,
@@ -124,58 +65,12 @@ const animationProps = {
 const router = useRouter();
 const route = useRoute("bot-management-chat-bot-id-config");
 
-const roles = ref<any>([
-  {
-    helperText: "Handles sales inquiries and closes deals.",
-    label: "Sales Executive",
-    value: "Sales Executive",
-  },
-  {
-    helperText: "Provides assistance and resolves customer issues.",
-    label: "Customer Support Representative.",
-    value: "Customer Support Representative",
-  },
-  {
-    helperText: "Performs miscellaneous tasks as required.",
-    label: "Other",
-    value: "Other",
-  },
-]);
-
-const goals = ref<any>([
-  {
-    helperText: "Assist customers with their questions and issues.",
-    label: "Customer Support",
-    value: "Customer Support",
-  },
-  {
-    helperText: "Collect feedback from users to improve services.",
-    label: "Feedback Collection",
-    value: "Feedback Collection",
-  },
-  {
-    helperText: "Manage appointments and schedule meetings.",
-    label: "Appointment Scheduling",
-    value: "Appointment Scheduling",
-  },
-  {
-    helperText: "Provide education or training on specific topics.",
-    label: "Education/Training",
-    value: "Education/Training",
-  },
-  {
-    helperText: "Perform other custom tasks as needed.",
-    label: "Other",
-    value: "Other",
-  },
-]);
-
 const botDetails: any = await getBotDetails(route.params.id);
 const defaultFormValues = botDetails.metadata.prompt;
 const isLoading = ref(false)
 
 const { handleSubmit, values, setFieldValue } = useForm({
-  validationSchema: formSchema,
+  validationSchema: botConfigSchema,
 });
 
 setFieldValue("NAME", defaultFormValues.NAME || "");

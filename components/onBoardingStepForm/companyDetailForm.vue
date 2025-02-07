@@ -79,8 +79,10 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from "vue";
-  import { defineEmits, defineProps } from "vue";
+import { ref } from "vue";
+import { defineEmits, defineProps } from "vue";
+import { industry } from "~/composables/botManagement/chatBot/useBotType";
+
   const props = defineProps([
     "formData",
     "setFieldValue",
@@ -88,20 +90,6 @@
   ]);
   const emit = defineEmits(["next", "prev"]);
   const isLoading = ref(false);
-
-  const industry = [
-    "Government Sectors",
-    "Finance & Banking",
-    "Real Estate",
-    "Healthcare",
-    "E-commerce",
-    "Energy & Utilities",
-    "Telecommunications",
-    "Travel & Hospitality",
-    "Logistics",
-    "Education",
-    "Other",
-  ];
   const avgTraffic = [
     "Less than 100 visits",
     "100-500 visits",
