@@ -15,6 +15,26 @@ const chatAddonPlans = [
     plan: "chat_max",
     price: 1000,
   },
+  {
+    plan: "whatsapp_credits_super",
+    price: 1000
+  },
+    {
+    plan: "whatsapp_credits_pro",
+    price: 5000,
+  },
+  {
+    plan: "whatsapp_credits_ultra",
+    price: 10000,
+  },
+  {
+    plan: "whatsapp_credits_supreme",
+    price: 20000,
+  },
+  {
+    plan: "whatsapp_credits_max",
+    price: 50000,
+  },
 ];
 
 const voiceAddonPlans = [

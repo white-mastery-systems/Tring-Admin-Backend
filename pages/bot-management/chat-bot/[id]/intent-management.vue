@@ -11,19 +11,14 @@
     ]" :disableSelector="true" :disable-back-button="false">
     <template #actionButtons>
       <div class="mb-4 flex items-center justify-end">
-        <UiButton class="bg-yellow-500" type="button" @click="
-            () => {
-              intentDialogState.open = true;
-              intentDialogState.id = null;
-            }
-          " color="primary">Add Intents
+        <UiButton class="bg-yellow-500" type="button" @click="addNewIntents" color="primary">Add Intents
         </UiButton>
       </div>
     </template>
     <CreateEditIntentModal v-model="intentDialogState" @success="intentRefresh()" />
 
-    <DataTable :columns="columns" :data="intentData" :page-size="8" :is-loading="isIntentLoading" :height="20"
-      height-unit="vh" />
+    <DataTable :columns="columns" :data="intentData" :totalPageCount="totalPageCount" :page="page"
+      :totalCount="totalCount" :page-size="8" :is-loading="isIntentLoading" :height="20" height-unit="vh" />
     <ConfirmationModal v-model:open="deleteIntentDialogState.open" title="Confirm Delete"
       description="Are you sure you want to delete this intent ?" @confirm="
         async () => {
@@ -46,13 +41,16 @@
   import { createColumnHelper } from "@tanstack/vue-table";
   import CreateEditIntentModal from "~/components/bots/CreateEditIntentModal.vue";
 
-  const intentDialogState = ref({ open: false, id: '' });
+  const intentDialogState = ref({ open: false, id: null });
   const selectedActions = ref("location");
   const animationProps = {
     duration: 0,
   };
   const router = useRouter();
   const route = useRoute("bot-management-chat-bot-id-intent-management");
+  let page = ref(1);
+  let totalPageCount = ref(1);
+  let totalCount = ref(1);
 
   const {
     status: intentLoadingStatus,
@@ -159,7 +157,14 @@ watchEffect(() => {
     }),
     columnHelper.accessor("link", {
       header: "Link",
-      cell: (info) => info.getValue() || "--",
+      cell: (info) => {
+        const value = info.getValue() || "--";
+        return h(
+          "div",
+          { class: "max-w-[350px] truncate", title: value },
+          value
+        );
+      },
     }),
     columnHelper.accessor("createdAt", {
       header: "Date Created",
@@ -171,4 +176,16 @@ watchEffect(() => {
       },
     }),
   ];
+const addNewIntents = () => {
+  if (botDetails.metadata.ui.generateLead) {
+    intentDialogState.value.open = true;
+    intentDialogState.value.id = null;
+  } else {
+    toast.error("Please enable lead generation in UI customization");
+    setTimeout(() => {
+      navigateTo(`/bot-management/chat-bot/${botDetails.id}/ui-customization`);
+    }, 2000); // 2 seconds delay
+  }
+};
+
 </script>

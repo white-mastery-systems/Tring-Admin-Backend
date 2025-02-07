@@ -4,7 +4,7 @@
             <UiFormLabel>Country
                 <span class="text-sm text-red-500">*</span>
             </UiFormLabel>
-            <UiPopover>
+            <UiPopover ref="popoverRef">
                 <UiPopoverTrigger as-child>
                     <UiFormControl>
                         <UiButton variant="outline" role="combobox" class="font-normal text-sm px-3" :class="cn(
@@ -13,12 +13,12 @@
                         )
                             ">
                             {{
-                            fieldValue
-                            ? allCoutryNames.find(
-                            (country: any) =>
-                            country === fieldValue,
-                            )
-                            : "Country Name"
+                                fieldValue
+                                    ? allCountryNames.find(
+                                        (country: any) =>
+                                            country === fieldValue,
+                                    )
+                                    : "Country Name"
                             }}
                             <component :is="ChevronDown" class="ml-2 h-4 w-4 shrink-0 opacity-50">
                             </component>
@@ -67,7 +67,7 @@ import { ChevronDown } from "lucide-vue-next";
 
 import countryData from "~/assets/country-codes.json";
 const searchField = ref('')
-
+const popoverRef = ref(null)
 const props = defineProps({
     name: {
         type: String,
@@ -91,14 +91,14 @@ const props = defineProps({
 
 });
 
-const allCoutryNames = computed(() =>
+const allCountryNames = computed(() =>
     countryData?.filter((country: any) => country.name.toLowerCase().includes(searchField.value) || country.code.toLowerCase().includes(searchField.value) || country.dial_code.toLowerCase().includes(searchField.value))?.map((country) => country.name),
 );
 const {
     list: countriesList,
     containerProps: containerPropsForCountry,
     wrapperProps: wrapperPropsForCountry,
-} = useVirtualList(allCoutryNames, {
+} = useVirtualList(allCountryNames, {
     // Keep `itemHeight` in sync with the item's row.
     itemHeight: 32,
 });
@@ -108,10 +108,20 @@ const country = ref(fieldValue.value);
 watch(country, (newValue) => {
     fieldValue.value = newValue;
 });
-watch(allCoutryNames, (newValue) => {
-    if (!newValue.length)fieldValue.value= ''
-});
 const handleSearchCountries = (e: string) => {
     searchField.value = e.toLowerCase()
 }
+const handleClickOutside = (event: MouseEvent) => {
+    const popoverElement = popoverRef.value?.$el || popoverRef.value; // Get the real DOM element
+
+    if (popoverElement && !popoverElement.contains(event.target as Node)) {
+        searchField.value = ''; // Clear search field
+    }
+};
+onMounted(() => {
+    document.addEventListener('click', handleClickOutside);
+});
+onUnmounted(() => {
+    document.removeEventListener('click', handleClickOutside);
+})
 </script>

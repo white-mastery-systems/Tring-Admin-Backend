@@ -3,6 +3,9 @@ import { billingLogger } from "~/server/logger";
 import { orgSubscriptionSchema } from "~/server/schema/admin";
 
 export default defineEventHandler(async (event) => {
+  const query = await isValidQueryHandler(event, z.object({
+    type: z.string().optional()
+  }))
   const body = await readValidatedBody(
     event,
     z.object({
@@ -86,9 +89,15 @@ export default defineEventHandler(async (event) => {
       //   const addon: any = pricingInformation?.addons?.find((j: any) => i.addonCode === j.name);
       //   return addon ? acc + addon?.sessions : acc;
       // }, 0);
-     
-      const addonInfo: any = pricingInformation?.addons?.find((j: any) => j.name === apiResponseData.addonCode);
-      const addons = addonInfo.sessions
+      let addons = 0
+      if(query.type === "whatsapp"){
+        addons = hostedPageData.data.invoice.sub_total
+      }
+      else {
+        const addonInfo: any = pricingInformation?.addons?.find((j: any) => j.name === apiResponseData.addonCode);
+        addons = addonInfo.sessions
+      }
+
 
       const existingWallet = await db.query.orgSubscriptionSchema.findFirst({
        where: and(
@@ -101,7 +110,12 @@ export default defineEventHandler(async (event) => {
         .update(orgSubscriptionSchema)
         .set({
           status: "active",
-          walletSessions: (existingWallet?.walletSessions || 0) + (addons || 0),
+          ...(query.type === "whatsapp" ?
+          {
+            whatsappWallet: (existingWallet?.whatsappWallet || 0) + (addons || 0)
+          } : {
+            walletSessions: (existingWallet?.walletSessions || 0) + (addons || 0),
+          }),
           updatedAt: new Date()
         })
         .where(and(
@@ -109,7 +123,6 @@ export default defineEventHandler(async (event) => {
             eq(orgSubscriptionSchema.botType, botType)
           ));
   
-      
       return { status: "Payment Successful" };
     } catch (error) {
       console.error(`Failed to insert data into DB: ${error}`);

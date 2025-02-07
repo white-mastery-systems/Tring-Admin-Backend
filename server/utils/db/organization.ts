@@ -73,10 +73,9 @@ export const createOrgSubscription = async(data: any) => {
   return (await db.insert(orgSubscriptionSchema).values(data).returning())[0]
 }
 
-export const updateOrgWhatsappSessions = async(organizationId: string, whatsappUsedSessions: number, whatsappWalletBalance: number) => {
+export const updateOrgWhatsappSessions = async(organizationId: string, whatsappWalletBalance: number) => {
   return await db.update(orgSubscriptionSchema)
   .set({ 
-    whatsappUsedSessions,
     whatsappWallet: whatsappWalletBalance
    })
   .where(
@@ -168,7 +167,7 @@ export const calculateDateRange = (orgSubscription: any, timeZone: string) => {
   };
 };
 
-const updateStatuses = async (organizationId: string, newStatus: "active" | "inactive", orgSubscription: any, type: string) => {
+export const updateStatuses = async (organizationId: string, newStatus: "active" | "inactive", orgSubscription: any, type: string) => {
   if (orgSubscription?.status !== newStatus) {
     await updateOrgSubscriptionStatus(organizationId, newStatus, type);
   }
@@ -177,7 +176,7 @@ const updateStatuses = async (organizationId: string, newStatus: "active" | "ina
   }
 };
 
-const getOrgAndSubscription = async (organizationId: string, query: any) => {
+export const getOrgAndSubscription = async (organizationId: string, query: any) => {
   return Promise.all([
     getOrganizationById(organizationId),
     db.query.orgSubscriptionSchema.findFirst({
@@ -187,222 +186,6 @@ const getOrgAndSubscription = async (organizationId: string, query: any) => {
       ),
     }),
   ]);
-};
-
-const handleChatTypeBilling = async (
-  organizationId: string,
-  timeZone: string,
-  startDate: Date,
-  endDate: Date,
-  orgSubscription: any,
-  gst: any,
-  currentDate: Date,
-  pricingInformation: any,
-  type: string
-) => {
-    if(orgSubscription?.status === "cancelled") {
-      const resObj = constructResponse({
-        usedQuota: 0,
-        maxQuota: 0,
-        planCode: "unAvailable",
-        walletBalance: orgSubscription.walletSessions,
-        extraSessionsCost: 0,
-        gst,
-        extraSessions: 0,
-        availableSessions: 0,
-        orgSubscription,
-        subscriptionStatus: "cancelled"
-      })
-      return resObj
-    }
-    // get interacted chats 
-    const interactedSessions = await getInteractedSessions(organizationId, startDate, endDate)
-    const whatsapp = await getWhatsappSessionForSubscriptionMonth(organizationId, startDate, endDate)
-
-    const whatsappTotalSessions = whatsapp.reduce((acc, item) => acc + (item?.totalWhatappSessions || 0), 0)
-  
-    const usedSessions = interactedSessions?.length + whatsappTotalSessions || 0;
-    const maxSessions = pricingInformation.sessions
-    const orgWalletSessions =  orgSubscription.walletSessions || 0
-    const availableSessions = Math.max(maxSessions - usedSessions, 0)
-    let extraSessions = 0
-  
-    const resObj = constructResponse({
-      usedQuota: usedSessions,
-      maxQuota: maxSessions,
-      planCode: orgSubscription.planCode,
-      walletBalance: orgWalletSessions,
-      extraSessionsCost: pricingInformation.extraSessionCost,
-      gst,
-      extraSessions,
-      availableSessions,
-      orgSubscription,
-      subscriptionStatus: orgSubscription.status,
-      whatsappSession: whatsappTotalSessions || 0,
-      whatappWalletBalance: orgSubscription.whatsappWallet || 0
-    });
-  
-    // Calculate expiry date and check if the subscription is expired
-    const expiryDate = momentTz(orgSubscription?.expiryDate)
-    .tz(timeZone)
-    .toDate();
-  
-    if (currentDate > expiryDate) {
-      const subscriptionStatus = "inactive";
-      await updateStatuses(organizationId, subscriptionStatus, orgSubscription, type);
-      return { ...resObj, subscription_status: subscriptionStatus };
-    }
-    
-    if (usedSessions >= maxSessions) {
-      extraSessions = Math.max(usedSessions - maxSessions, 0)
-      const currentWallet = Math.max(orgWalletSessions - extraSessions, 0)
-      resObj.wallet_balance = currentWallet
-      resObj.extra_sessions = extraSessions
-    }
-  
-    return resObj
-};
-
-const handleVoiceTypeBilling = async (
-  organizationId: string,
-  timeZone: string,
-  startDate: Date,
-  endDate: Date,
-  orgSubscription: any,
-  gst: any,
-  currentDate: Date,
-  pricingInformation: any,
-  type: string
-) => {
-  if(orgSubscription?.planCode === "voice_free" || orgSubscription?.status === "cancelled") {
-     const resObj = constructResponse({
-      usedQuota: 0,
-      maxQuota: 0,
-      planCode: "unAvailable",
-      walletBalance: orgSubscription.walletSessions,
-      extraSessionsCost: 0,
-      gst,
-      extraSessions: 0,
-      availableSessions: 0,
-      orgSubscription,
-      subscriptionStatus: orgSubscription?.status === "cancelled"? "cancelled" :"inactive"
-    })
-     return resObj
-  }
-  const voicebotCallLogs = await getCurrentMonthCallLogList(organizationId, startDate, endDate)
-  
-  const totalMinutes = voicebotCallLogs.reduce((acc, item) => acc + Math.round(item?.duration / 60), 0);
-  
-  // Convert total seconds to minutes
-  const usedCallMinutes = totalMinutes
-  const maxCallMinutes = pricingInformation.sessions
-  const availableMinutes = Math.max(maxCallMinutes - usedCallMinutes, 0)
-  const orgWalletMinutes =  orgSubscription.walletSessions || 0
-
-  const extraMinutes = orgSubscription.extraSessions
-
-  const resObj = constructResponse({
-    usedQuota: usedCallMinutes,
-    maxQuota: maxCallMinutes,
-    planCode: orgSubscription.planCode,
-    walletBalance: orgWalletMinutes,
-    extraSessionsCost: pricingInformation.extraSessionCost,
-    gst,
-    extraSessions: extraMinutes,
-    availableSessions: availableMinutes,
-    orgSubscription,
-    subscriptionStatus: orgSubscription.status
-  })
-
-  const expiryDate = momentTz(orgSubscription?.expiryDate)
-    .tz(timeZone)
-    .toDate();
-  
-  if (currentDate > expiryDate) {
-    const subscriptionStatus = "inactive";
-    await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
-    return { ...resObj, subscription_status: subscriptionStatus };
-  }
-
-  if (usedCallMinutes >= maxCallMinutes) {
-    resObj.wallet_balance = orgWalletMinutes
-    resObj.extra_sessions = extraMinutes
-  }
-  return resObj
-}
-
-export const getOrgUsage = async (organizationId: string, timeZone: string, query: any) => {
-  // Determine date range for the current month
-  const currentDate = momentTz().tz(timeZone).toDate();
-
-  const [org, orgSubscription] = await getOrgAndSubscription(organizationId, query);
-
-  const { startDate, endDate } = calculateDateRange(orgSubscription, timeZone);
-  // console.log({ startDate, endDate })
-
-  if(!org) {
-    throw new Error("organization not found")
-  }
-  const orgGst = org.metadata?.gst
-  // get Pricing information
-  const pricingInformation = await getPricingInformation(orgSubscription?.planCode!)
-
-  if(query.type === "chat") {
-      return handleChatTypeBilling(
-        organizationId, 
-        timeZone,
-        startDate,
-        endDate,
-        orgSubscription,
-        orgGst,
-        currentDate,
-        pricingInformation,
-        query?.type
-      )
-  }
-  if(query.type === "voice") {
-      return handleVoiceTypeBilling(
-        organizationId, 
-        timeZone,
-        startDate,
-        endDate,
-        orgSubscription,
-        orgGst,
-        currentDate,
-        pricingInformation,
-        query?.type
-      )
-  }
-};
-
-const constructResponse = ({ usedQuota, maxQuota, planCode, walletBalance, extraSessionsCost, gst, extraSessions,availableSessions,orgSubscription, subscriptionStatus, whatsappSession, whatappWalletBalance } :
- { usedQuota: number,
-  maxQuota: number,
-  planCode: string,
-  walletBalance: number,
-  extraSessionsCost: number,
-  gst: string,
-  extraSessions: number,
-  availableSessions: number,
-  orgSubscription: any,
-  subscriptionStatus: string,
-  whatsappSession?: number,
-  whatappWalletBalance?: number
-}) => {
-  return {
-    used_quota: usedQuota,
-    max_quota: maxQuota,
-    plan_code: planCode,
-    wallet_balance: walletBalance,
-    extra_sessions_cost: extraSessionsCost,
-    gst,
-    extra_sessions: extraSessions,
-    available_sessions: availableSessions,
-    expiry_date: orgSubscription?.status !== "cancelled" && orgSubscription?.expiryDate ? orgSubscription?.expiryDate : undefined,
-    subscription_status: subscriptionStatus,
-    whatsapp_sessions: whatsappSession ?? undefined,
-    whatappWalletBalance: whatappWalletBalance ?? undefined
-  };
 };
 
 const validQueryValues = [

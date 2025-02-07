@@ -17,8 +17,7 @@ export const whatsAppTemplateSchema = toTypedSchema(
     headerTextTemplateVariables: z
       .array(z.string({ required_error: "Value is required" }))
       .optional(),
-    integrationId: z.string({ required_error: "IntegrationId is required" }).min(1, 'IntegrationId is required'),
-    // lastName: z.string().min(1, 'LastName is required'),
+    integrationId: z.string({ required_error: "IntegrationId is required" }).min(1, 'IntegrationId is required.'),
   }).superRefine((data, ctx) => {
     // Validate each template variable
     if (data.templateVariables || data?.templateVariables?.length) {
