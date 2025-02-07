@@ -290,14 +290,17 @@ setFieldValue("generateLead", (botDetails.metadata.ui.generateLead ?? true))
 setFieldValue("defaultRibbon", (botDetails.metadata.ui.defaultRibbon ?? true))
 setFieldValue("emailRecipients", (botDetails.emailRecipients ?? []))
 
-watchEffect(() => {
-  if (botDetails) {
-    const userName = botDetails?.name ?? 'Unknown Bot Name';
+watch(
+  () => botDetails?.name, // Watching only the 'name' property
+  (newName) => {
+    const userName = newName ?? "Unknown Bot Name";
     useHead({
       title: `Chat Bot | ${userName} - UI Customization`,
     });
-  }
-});
+  },
+  { immediate: true } // Runs immediately when botDetails is available
+);
+
 
 const uiUpdate = handleSubmit(async (value: any) => {
     isLoading.value = true
