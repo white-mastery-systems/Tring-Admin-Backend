@@ -13,7 +13,7 @@
               Credits :
             </span>
             <span>
-              {{ usageDetails.whatsappWalletBalance ?? 0 }}
+              {{ props.usageDetails.whatsappWalletBalance ?? 0 }}
             </span>
           </div>
         </UiButton>
@@ -60,7 +60,7 @@
       <div class="text-[4px]">Cancel Subscription</div>
     </div>
     <div>
-      <AddWhatsappWalletBalance v-model="creditBalanceModalState" :usageDetails="usageDetails" @success="() => {
+      <AddWhatsappWalletBalance v-model="creditBalanceModalState" :usageDetails="props.usageDetails" @success="() => {
         creditBalanceModalState.open = false;
       }" />
     </div>
@@ -76,16 +76,24 @@
 import { XCircleIcon, Repeat, Wallet } from "lucide-vue-next";
 
 const props = defineProps({
-  usageDetails: Object,
-  subscriptionData: Object,
-  usage: Object,
-  query: Object,
+  usageDetails: { type: Object, required: true },
+  subscriptionData: { type: Object, required: true },
+  usage: { type: Object, required: true },
+  query: { type: Object, required: true },
 });
+
 const userLocationDetails = ref(await getLocationDetail())
 const emit = defineEmits<{ (e: "change"): void }>();
 const creditBalanceModalState = ref({ open: false });
 
+const formattedUsageDetails = computed(() => {
+  return {
+    ...props.usageDetails,
+    whatsappWalletBalance: props.usageDetails.whatsappWalletBalance ?? 0,
+  };
+});
 
+console.log("formattedUsageDetails", formattedUsageDetails.value);
 const cancelSubscription = computed(() => {
   if (!props.usage.expiry_date) {
     return false; // Return a default value
