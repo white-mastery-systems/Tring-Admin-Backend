@@ -93,7 +93,6 @@ const formattedUsageDetails = computed(() => {
   };
 });
 
-console.log("formattedUsageDetails", formattedUsageDetails.value);
 const cancelSubscription = computed(() => {
   if (!props.usage.expiry_date) {
     return false; // Return a default value
