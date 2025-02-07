@@ -32,6 +32,7 @@ export default defineEventHandler(async (event) => {
       metadata: z.object({
         apiKey: z.string().optional(),
         phoneNumber: z.string().optional(),
+        countryCode: z.string().optional(),
         status: z.string().optional(),
         pid: z.string().optional(),
         code: z.string().optional(),
