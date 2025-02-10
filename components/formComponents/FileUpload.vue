@@ -23,7 +23,7 @@
           id="imageView" />
       </label>
     </div>
-    <span class="text-sm text-red-700" v-if="errorMessage">
+    <span class="text-[0.75rem] text-[#ef4444] font-medium" v-if="errorMessage">
       {{ errorMessage }}
     </span>
   </div>

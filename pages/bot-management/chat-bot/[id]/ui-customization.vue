@@ -1,31 +1,33 @@
 <template>
   <page title="UI Customization" :bread-crumbs="[
-      {
-        label: `${botDetails.name}`,
-        to: `/bot-management/chat-bot/${botDetails.id}`,
-      },
-      {
-        label: 'UI Customization',
-        to: `/bot-management/chat-bot/${botDetails.id}/ui-customization`,
-      },
-    ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="false">
+    {
+      label: `${botDetails.name}`,
+      to: `/bot-management/chat-bot/${botDetails.id}`,
+    },
+    {
+      label: 'UI Customization',
+      to: `/bot-management/chat-bot/${botDetails.id}/ui-customization`,
+    },
+  ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="false">
     <div>
       <form @submit.prevent="uiUpdate" class="space-y-6 pb-6">
         <div
           class="ml-0 flex w-full flex-col gap-[13px] p-5 sm:ml-0 sm:w-full md:ml-0 md:w-full lg:ml-11 lg:w-[60%] xl:ml-11 xl:w-[60%] overflow-scroll">
-          <UiFormField v-slot="{ handleChange, handleBlur, value }" name="logo">
+          <FileUpload @change="handleLogoChange" name="logo" label="Upload Logo" :required="true" :accept="'image/*'"
+            :url="values.logo.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
+            :helperText="'Only files up to 5MB can be uploaded.'" />
+          <!-- <UiFormField v-slot="{ handleChange, handleBlur, value }" name="logo">
             <UiFormItem class="flex w-full flex-col items-start">
               <UiLabel class="pb-2 text-lg font-medium">Logo</UiLabel>
               <div>
-                <ImageUpload accept="image/*" @change="handleChange" @blur="handleBlur" :initial-file="value"
+                {{ value }} || sadsad
+                 <ImageUpload accept="image/*" @change="handleChange" @blur="handleBlur" :initial-file="value"
                   class="flex justify-start" />
               </div>
-              <!-- <UiFormControl>
-              </UiFormControl> -->
               <UiFormMessage />
               <span class="text-xs text-gray-500">Logo for chat bubble and avatar</span>
             </UiFormItem>
-          </UiFormField>
+          </UiFormField> -->
 
           <div class="flex items-center gap-4">
             <UiFormField v-slot="{ componentField }" name="color">
@@ -97,23 +99,23 @@
           </div>
           <div class="flex w-full items-center gap-5">
             <SelectField name="fontFamily" label="Font Famliy" placeholder="Select Font" :options="[
-            {
-              value: 'Kanit',
-              label: 'Kanit',
-            }, {
-              value: 'Gilroy',
-              label: 'Gilroy',
-            }, {
-              value: 'Jost',
-              label: 'Jost',
-            }, {
-              value: 'Lexend deca',
-              label: 'Lexend Deca',
-            }, {
-              value: 'Museo',
-              label: 'Museo',
-            }
-          ]" required />
+              {
+                value: 'Kanit',
+                label: 'Kanit',
+              }, {
+                value: 'Gilroy',
+                label: 'Gilroy',
+              }, {
+                value: 'Jost',
+                label: 'Jost',
+              }, {
+                value: 'Lexend deca',
+                label: 'Lexend Deca',
+              }, {
+                value: 'Museo',
+                label: 'Museo',
+              }
+            ]" required />
             <UiFormField v-slot="{ value, handleChange }" name="generateLead">
               <UiFormItem class="w-full">
                 <div class="flex justify-between">
@@ -227,41 +229,46 @@
 <script setup lang="ts">
 import { FieldArray } from "vee-validate";
 
-  definePageMeta({
-    middleware: "admin-only",
-  });
+definePageMeta({
+  middleware: "admin-only",
+});
 
-  const logoAsObject = z.object({}).nonstrict();
-  const logoAsString = z.string().min(1, "Logo is required");
-  const isLoading = ref(false)
+// const logoAsObject = z.object({}).nonstrict();
+// const logoAsString = z.string().min(1, "Logo is required");
+const isLoading = ref(false)
 
 
-  const uiCustomizationValidation = toTypedSchema(
-    z.object({
-      logo: z.union([logoAsString, logoAsObject]),
-      color: z.string().min(1, "Primary color is required"),
-      secondaryColor: z.string().min(1, "Secondary color is required"),
-      widgetSound: z.string({ required_error: "Widget sound must be selected" }).min(1, "Widget sound must be selected"),
-      widgetPosition: z.string({ required_error: "Widget position must be selected" }).min(1, "Widget position must be selected"),
-      fontFamily: z.string({required_error: "Font family is required"}).min(1, "Font family is required"),
-      emailRecipients: z.array(z.string().email()),
-      defaultSelect: z.boolean().optional(),
-      generateLead: z.boolean().optional(),
-      onlineStatus: z.boolean().optional(),
-      defaultRibbon: z.boolean().optional(),
+const uiCustomizationValidation = toTypedSchema(
+  z.object({
+    // logo: z.union([logoAsString, logoAsObject]),
+    // logo: z.object({}).optional(),
+    logo: z.object({
+      url: z.string({ required_error: "Logo is required" }).min(1, "Logo is required"), // Ensure `url` is required and non-empty
     }),
-  );
-  const animationProps = {
-    duration: 500,
-  };
+    color: z.string().min(1, "Primary color is required"),
+    secondaryColor: z.string().min(1, "Secondary color is required"),
+    widgetSound: z.string({ required_error: "Widget sound must be selected" }).min(1, "Widget sound must be selected"),
+    widgetPosition: z.string({ required_error: "Widget position must be selected" }).min(1, "Widget position must be selected"),
+    fontFamily: z.string({ required_error: "Font family is required" }).min(1, "Font family is required"),
+    emailRecipients: z.array(z.string().email()),
+    defaultSelect: z.boolean().optional(),
+    generateLead: z.boolean().optional(),
+    onlineStatus: z.boolean().optional(),
+    defaultRibbon: z.boolean().optional(),
+  }),
+);
+const animationProps = {
+  duration: 500,
+};
 
-  const route = useRoute("bot-management-chat-bot-id-ui-customization");
-  const router = useRouter();
-  const paramId: any = route;
-  const botDetails: any = await getBotDetails(paramId.params.id);
-  const colorInput:any = ref();
-  const secondarycolorInput: any = ref();
-  
+const route = useRoute("bot-management-chat-bot-id-ui-customization");
+const router = useRouter();
+const paramId: any = route;
+const botDetails: any = await getBotDetails(paramId.params.id);
+const colorInput: any = ref();
+const secondarycolorInput: any = ref();
+const logoData = ref("");
+
 const {
   errors,
   setErrors,
@@ -274,13 +281,13 @@ const {
   validationSchema: uiCustomizationValidation,
 });
 
-setFieldValue("logo", (botDetails.metadata.ui.logo ?? ""))
+setFieldValue("logo", (botDetails.metadata.ui.logo ?? {}))
 
 setFieldValue("color", (hslToHex(botDetails.metadata.ui.color ?? "236, 61%, 54%, 1")))
 
 setFieldValue("secondaryColor", (hslToHex(
   botDetails.metadata.ui.secondaryColor ?? "236, 61%, 74%",
-)))    
+)))
 setFieldValue("widgetSound", (botDetails.metadata.ui.widgetSound ?? "Yes"))
 setFieldValue("widgetPosition", (botDetails.metadata.ui.widgetPosition ?? "Left"))
 setFieldValue("fontFamily", (botDetails.metadata?.ui.fontFamily ?? "Kanit"))
@@ -301,44 +308,54 @@ watch(
   { immediate: true } // Runs immediately when botDetails is available
 );
 
+const handleLogoChange = async (event: any) => {
+  logoData.value = event[0];
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    setFieldValue("logo", { url: e.target.result });
+  };
+  reader.readAsDataURL(logoData.value);
+};
 
 const uiUpdate = handleSubmit(async (value: any) => {
-    isLoading.value = true
-    const payload: any = {
-      id: botDetails.id,
-      emailRecipients: value.emailRecipients,
-      metadata: {
-        ...botDetails.metadata,
-        ui: {
-          logo: value.logo,
-          color: hexToHSL(value.color),
-          secondaryColor: hexToHSL(value.secondaryColor),
-          defaultSelect: value.defaultSelect,
-          onlineStatus: value.onlineStatus,
-          widgetPosition: value.widgetPosition,
-          widgetSound: value.widgetSound,
-          fontFamily: value.fontFamily,
-          generateLead: value.generateLead,
-          defaultRibbon: value.defaultRibbon,
-        },
-        prompt: {
-          ...botDetails.metadata.prompt,
-          INTENTS: value.generateLead ? "-details\n-other" : "-other",
-        },
-      },
-    };
-    await updateBotDetails(payload);
+  let uploadedDetails = null;
 
-    if (value.logo?.length > 0 && typeof value.logo === "object") {
-      await uploadLogo(botDetails.id, value.logo![0]);
-    }
-    isLoading.value = false
-    return navigateTo({
-      name: "bot-management-chat-bot-id",
-      params: { id: paramId.params.id },
-    });
-  
+  if (typeof logoData.value === "object") {
+    uploadedDetails = await uploadLogo(botDetails.id, logoData.value);
+  }
+  isLoading.value = true
+  const payload: any = {
+    id: botDetails.id,
+    emailRecipients: value.emailRecipients,
+    metadata: {
+      ...botDetails.metadata,
+      ui: {
+        logo: uploadedDetails.metadata.ui.logo ?? botDetails.metadata.ui?.logo,
+        color: hexToHSL(value.color),
+        secondaryColor: hexToHSL(value.secondaryColor),
+        defaultSelect: value.defaultSelect,
+        onlineStatus: value.onlineStatus,
+        widgetPosition: value.widgetPosition,
+        widgetSound: value.widgetSound,
+        fontFamily: value.fontFamily,
+        generateLead: value.generateLead,
+        defaultRibbon: value.defaultRibbon,
+      },
+      prompt: {
+        ...botDetails.metadata.prompt,
+        INTENTS: value.generateLead ? "-details\n-other" : "-other",
+      },
+    },
+  };
+  await updateBotDetails(payload);
+  isLoading.value = false
+  return navigateTo({
+    name: "bot-management-chat-bot-id",
+    params: { id: paramId.params.id },
   });
+
+});
 const openPrimaryColorPicker = () => {
   colorInput.value.$el.click()
 }
