@@ -71,8 +71,8 @@ function extractDate(input: string) {
 }
 
 function extractTime(input: string) {
-  // const timeRegex = /\b\d{1,2}:\d{2}(?:\s*[APMapm]{2})?\b/;
-  const timeRegex = /\b\d{1,2}(:\d{2})?\s*[APMapm]{2}\b/;
+  // const timeRegex = /\b\d{1,2}(:\d{2})?\s*[APMapm]{2}\b/;
+  const timeRegex = /\b\d{1,2}([ :]\d{2})?\s*[APMampm]{2}\b/;;
   const match = input.match(timeRegex);
   return match ? match[0].trim() : null;
 }
