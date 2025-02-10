@@ -55,7 +55,7 @@
               : 'bg-[#ffffff]',
           ]">
           <component :is="icon"></component>
-          <span class="text-[14px]">{{ name }}</span>
+          <span class="text-[16px]">{{ name }}</span>
         </NuxtLink>
       </template>
       <NuxtLink class="flex relative w-[90%] items-center gap-2 rounded-xl border-[1px] border-[var(border)] px-2 py-1"
