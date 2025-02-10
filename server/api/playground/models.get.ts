@@ -1,3 +1,5 @@
+const config = useRuntimeConfig()
+
 export default defineEventHandler(async (event) => {
   const { provider } = getQuery(event);
 
@@ -15,7 +17,7 @@ export default defineEventHandler(async (event) => {
   try {
     return await $fetch(`/ai/models?provider=${provider}`, {
       method: "GET",
-      baseURL: process.env.LLM_BASE_URL,
+      baseURL: config.llmBaseUrl
     });
   } catch (error) {
     console.error("Error fetching models:", error);

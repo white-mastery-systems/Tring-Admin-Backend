@@ -10,6 +10,8 @@ import {
   updateNotesInZohoBigin,
 } from "~/server/utils/zoho/modules";
 
+const config = useRuntimeConfig()
+
 export default defineEventHandler(async (event) => {
   // const userId = event.context.user?.id as string;
   const generateLeadsValidation = z.object({
@@ -145,7 +147,7 @@ export default defineEventHandler(async (event) => {
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: `${botDetails?.name}`,
-          chatLink: `${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}`,
+          chatLink: `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
         const data = await createSlackMessage(
@@ -164,7 +166,7 @@ export default defineEventHandler(async (event) => {
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: `${botDetails?.name}`,
-          chatLink: `${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}`,
+          chatLink: `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
         // TODO: Add country code to the phone number
@@ -245,7 +247,7 @@ export default defineEventHandler(async (event) => {
           Email: body?.botUser?.email,
           Mobile: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           "Bot Name": botDetails?.name,
-          "Chat Link": `${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}`,
+          "Chat Link": `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`,
           "Whatsapp Link": `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
         let textContent = Object.entries(payload)
@@ -291,8 +293,8 @@ export default defineEventHandler(async (event) => {
     ${botDetails?.metadata?.country ? `<p>Location: ${botDetails?.metadata?.country} </p>` : ""} 
     <p>
   Chat Link: 
-  <a href="${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}">
-    ${process.env.ADMIN_BASE_URL}/analytics/leads/${body.chatId}
+  <a href="${config.public.adminBaseUrl}/analytics/leads/${body.chatId}">
+    ${config.public.adminBaseUrl}/analytics/leads/${body.chatId}
   </a>
 </p>
 <p>

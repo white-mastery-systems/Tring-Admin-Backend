@@ -1,5 +1,7 @@
 import { unlink } from "node:fs/promises";
 
+const config = useRuntimeConfig()
+
 export default defineEventHandler(async (event) => {
   await isOrganizationAdminHandler(event);
   const { id: botId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
@@ -13,7 +15,7 @@ export default defineEventHandler(async (event) => {
 
   $fetch(`/rag/document/${doc_id}`, {
     method: "DELETE",
-    baseURL: process.env.LLM_BASE_URL
+    baseURL: config.llmBaseUrl
   });
   
   const botDetails = await getBotDetailsNoCache(botId)

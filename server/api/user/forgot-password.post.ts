@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken"
 import { updatePassword } from "~/server/utils/db/user"
 
+const config = useRuntimeConfig()
+
 const zodBodyValidator = z.object({
   newPassword: z.string(),
   confirmPassword: z.string()
@@ -11,7 +13,7 @@ export default defineEventHandler(async (event) => {
   const token = query?.token as string
   let isValidToken;
   try {
-    isValidToken = jwt.verify(token, process.env.SECRET_KEY!)
+    isValidToken = jwt.verify(token, config.secretKey)
   } catch(error) {
      return sendError(
        event,

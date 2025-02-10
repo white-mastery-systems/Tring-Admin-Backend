@@ -1,5 +1,7 @@
 import OpenAI from "openai";
 
+const config = useRuntimeConfig()
+
 export default defineEventHandler(async (event) => {
   const { id: chatId, siteVisit="false" } = await isValidQueryHandler(event,
     z.object({
@@ -21,7 +23,7 @@ export default defineEventHandler(async (event) => {
     },
   });
  
-  const client = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
+  const client = new OpenAI({apiKey: config.openApiKey });
 
   try {
     const systemMessage = `
