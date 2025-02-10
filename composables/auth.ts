@@ -29,6 +29,7 @@ export const useUser = async () => {
         // Fetch or update orgDetails
         let formattedOrgDetails = JSON.parse(localStorage.getItem("orgDetails") || "null");
         let formattedUserPlan = JSON.parse(localStorage.getItem("userPlan") || "null");
+
         if (!formattedOrgDetails) {
           const { userPlanDetails } = await userPlan();
           formattedUserPlan = userPlanDetails
@@ -36,11 +37,16 @@ export const useUser = async () => {
           formattedOrgDetails = orgDetails
           localStorage.setItem("orgDetails", JSON.stringify(formattedOrgDetails));
         }
-
+        const getChatDetails = formattedUserPlan.find((item: any) => item.type === "chat");
+        const isAnyPlanFree = formattedUserPlan.every((plan: any) => plan.planCode.includes("_free"));
         // Handle navigation based on orgDetails
-        if (formattedUserPlan?.planCode === 'chat_free') {
+        if (getChatDetails?.planCode === 'chat_free') {
           if (formattedOrgDetails.metadata.gstType || formattedOrgDetails?.metadata?.gst) {
-            navigateTo("/billing/view-all");
+            if (isAnyPlanFree) {
+              navigateTo("/billing/view-all");
+            } else {
+              navigateTo("/")
+            }
           } else {
             if (route?.name !== 'auth-onboarding-account') {
               navigateTo("/");
@@ -105,8 +111,8 @@ export const companyDetails = async () => {
 };
 export const userPlan = async () => {
   const orgResponse = await $fetch("/api/org/subscriptionPlans");
-  
-  const userPlanDetails = orgResponse.find((plan: any) => plan.type === "chat");
+
+  const userPlanDetails = orgResponse;
   localStorage.setItem("userPlan", JSON.stringify(userPlanDetails));
   return { userPlanDetails };
 }
