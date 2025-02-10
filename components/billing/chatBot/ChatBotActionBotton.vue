@@ -1,10 +1,10 @@
 <template>
   <div class="flex items-center justify-end gap-2">
-    <div v-if="query?.type === 'chat'" class="flex items-center justify-between gap-1 cursor-pointer"
+    <div v-if="(query?.type === 'chat') && !usage?.plan_code?.includes('free')" class="flex items-center justify-between gap-1 cursor-pointer"
       @click="creditBalanceModalState.open = true">
-      <div class="flex flex-col items-center gap-1">
+      <div class="flex flex-col items-center gap-1 max-h-[36px]">
         <UiButton
-          class="flex items-center justify-center font-regular text-center text-sm gap-1 bg-[#3ea52e33] hover:bg-[#3ea52e33] hover:brightness-100 px-2">
+          class="flex items-center justify-center font-regular text-center text-sm gap-1 bg-[#3ea52e33] hover:bg-[#3ea52e33] hover:brightness-100 px-2 py-0">
           <span>
             <WhatsappIcon class="text-[#1ABB00] w-6 h-6 md:w-6 md:h-6 lg:w-5 lg:h-5" />
           </span>
@@ -12,8 +12,6 @@
             <span>
               Credits :
               {{ usageDetails.whatsappWalletBalance ?? 0 }}
-            </span>
-            <span>
             </span>
           </div>
         </UiButton>

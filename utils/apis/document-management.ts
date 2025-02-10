@@ -66,8 +66,17 @@ export const createDocument = async (
 export const uploadLogo = async (botId: string, logo: File) => {
   const form = new FormData();
   form.append("logo", logo);
-  await $fetch(`/api/bots/${botId}/add-logo`, {
-    method: "POST",
-    body: form,
-  });
+
+  try {
+    const response = await $fetch(`/api/bots/${botId}/add-logo`, {
+      method: "POST",
+      body: form,
+    });
+    return response;  // Return the response data
+  } catch (error) {
+    toast.error(error.statusMessage)
+    // console.error("Error uploading logo:", error);
+    throw error;  // Optionally rethrow the error or handle it as needed
+  }
 };
+
