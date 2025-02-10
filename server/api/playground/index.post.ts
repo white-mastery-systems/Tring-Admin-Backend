@@ -1,3 +1,5 @@
+const config = useRuntimeConfig()
+
 export default defineEventHandler(async (event) => {
   const { systemInstructions, userQueries, provider, model, modelConfig } =
     await readBody(event);
@@ -18,7 +20,7 @@ export default defineEventHandler(async (event) => {
             ],
             model_configuration: modelConfig,
           }),
-          baseURL: process.env.LLM_BASE_URL,
+          baseURL: config.llmBaseUrl
         });
 
         return response.output;

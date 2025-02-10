@@ -1,4 +1,6 @@
 import OpenAI from "openai";
+
+const config = useRuntimeConfig()
 interface UserInfo {
   name: string | null; // Name can be a string or null if not provided
   email: string;       // Email is a required string
@@ -19,7 +21,7 @@ export default defineEventHandler(async (event) => {
   const message = await $fetch(`/api/org/chat/${chatId}/messages`);
 
   const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: config.openApiKey,
   });
 
   try {

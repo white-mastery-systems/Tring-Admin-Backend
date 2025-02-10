@@ -251,7 +251,7 @@ const {
   data: integrationsData,
   status,
   refresh: audioDataRefresh,
-} = await useLazyFetch(`${config.public.voiceBotUrl}/prerecordedAudio/metaData`, {
+} = await useLazyFetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio/metaData`, {
   server: false,
   params: {
     bot_id: route.params.id,
@@ -358,7 +358,7 @@ const audioUpload = async (formData: any, index: any) => {
   if (botDetailsList.botDetails && botDetailsList.botDetails?.agentLanguage) {
     try {
       const response = await fetch(
-        `${config.public.voiceBotUrl}/prerecordedAudio/`,
+        `${config.public.voiceBotBaseUrl}/prerecordedAudio/`,
         {
           method: "POST",
           body: formData,
@@ -430,7 +430,7 @@ const audioDelete = async (toolName: any, toolIdx: any, index: any) => {
     formData.append('intent', toolName);
 
 
-    const deleteResponse = await fetch(`${config.public.voiceBotUrl}/prerecordedAudio/`, {
+    const deleteResponse = await fetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio/`, {
       method: "DELETE",
       body: formData,
     });

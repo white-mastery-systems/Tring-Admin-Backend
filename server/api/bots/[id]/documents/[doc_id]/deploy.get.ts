@@ -1,6 +1,7 @@
 import { getDocumentById } from "~/server/utils/db/document";
 
 const db = useDrizzle()
+const config = useRuntimeConfig()
 
 const routeParamValidator = z.object({
   id: z.string().uuid(),
@@ -49,7 +50,7 @@ export default defineEventHandler(async (event) => {
         `/api/bot/${botId}/init-message`,
         {
           method: "POST",
-          baseURL: process.env.BOT_BASE_URL,
+          baseURL: config.public.chatBotBaseUrl,
           body: { doc_id },
         },
       );
