@@ -2,6 +2,8 @@ import { format } from "date-fns";
 import { logger } from "~/server/logger";
 import { zohoIntegrationApiBaseUrls } from "~/utils/zohoBaseUrls";
 
+const db = useDrizzle();
+
 export function getAllPipelinesFromZohoBigin({
   token,
   refreshToken,
@@ -14,7 +16,7 @@ export function getAllPipelinesFromZohoBigin({
   // "https://www.zohoapis.in/bigin/v2/Pipelines?fields=Sub_Pipeline,Pipeline,Stage",
 
   const data: any = $fetch<any>(
-    "https://www.zohoapis.in/bigin/v2/settings/layouts?module=Pipelines",
+    `${zohoIntegrationApiBaseUrls[integrationData?.metadata?.location]}/bigin/v2/settings/layouts?module=Pipelines`,
     {
       headers: {
         Authorization: `Zoho-oauthtoken ${token}`,
@@ -58,7 +60,7 @@ export async function getAllSubPipelinesFromZohoBigin({
 }) {
   try {
     const data: any = await $fetch<any>(
-      "https://www.zohoapis.in/bigin/v2/settings/fields?module=Pipelines",
+      `${zohoIntegrationApiBaseUrls[integrationData?.metadata?.location]}/bigin/v2/settings/fields?module=Pipelines`,
       {
         headers: {
           Authorization: `Zoho-oauthtoken ${token}`,
@@ -331,7 +333,7 @@ export function getFieldMetadataFromZohoBigin({
   integrationData: any;
 }) {
   return $fetch(
-    "https://www.zohoapis.in/bigin/v1/settings/fields?module=Pipelines",
+    `${zohoIntegrationApiBaseUrls[integrationData?.metadata?.location]}/bigin/v1/settings/fields?module=Pipelines`,
     {
       method: "GET",
       headers: {
@@ -447,7 +449,7 @@ export function getFieldMetadataFromZohoCRM({
             ...integrationData.metadata,
             access_token: data?.access_token,
           }});
-        return getFieldMetadataFromZohoBigin({
+        return getFieldMetadataFromZohoCRM({
           token: data?.access_token,
           refreshToken: "",
           body: body,
@@ -468,12 +470,13 @@ export async function generateLeadInZohoCRM({
   body: any;
   integrationData: any;
 }) {
-  const fieldMetadata = await getFieldMetadataFromZohoCRM({
-    token,
-    refreshToken,
-    body,
-    integrationData,
-  });
+  try {
+    const fieldMetadata = await getFieldMetadataFromZohoCRM({
+      token,
+      refreshToken,
+      body,
+      integrationData,
+    });
   //
 
   let bodyData = {
@@ -514,14 +517,16 @@ export async function generateLeadInZohoCRM({
     }
   });
 
-  return $fetch(`${zohoIntegrationApiBaseUrls[integrationData.metadata.location]}/crm/v6/Leads`, {
-    method: "POST",
-    body: { data: [bodyData] },
-    headers: {
-      Authorization: `Zoho-oauthtoken ${token}`,
-    },
-  }).catch((err) => {
-    logger.error(
+    const data = await $fetch(`${zohoIntegrationApiBaseUrls[integrationData.metadata.location]}/crm/v6/Leads`, {
+      method: "POST",
+      body: { data: [bodyData] },
+      headers: {
+        Authorization: `Zoho-oauthtoken ${token}`,
+      },
+    })
+    logger.info(`generateLeadInZohoCRM data: ${JSON.stringify(data)}`)
+  } catch (err: any) {
+     logger.error(
       `generateLeadInZohoCRM - token:${token}, refreshToken:${refreshToken}, body: ${JSON.stringify(body)},integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
     );
     if (!refreshToken) return;
@@ -544,7 +549,7 @@ export async function generateLeadInZohoCRM({
         });
       });
     }
-  });
+  }
 }
 
 export async function getHostedPageDetails({
@@ -617,7 +622,7 @@ export async function getHostedPageDetails({
     }
   }
 }
-const db = useDrizzle();
+
 export const regerateAccessTokenForTringAdmin = async ({
   integrationData,
 }: {

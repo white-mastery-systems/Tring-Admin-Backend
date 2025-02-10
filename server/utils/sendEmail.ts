@@ -1,22 +1,24 @@
 import nodemailer from "nodemailer"
 import { logger } from "~/server/logger";
 
+const config = useRuntimeConfig()
+
 const sendEmail = (to: string[] | string, subject: string, message: any) => {
   try {
     return new Promise((resolve) => {
-      console.log({ user: process.env.NODEMAILER_USER , pass: process.env.NODEMAILER_PASS})
+      console.log({ user: config.nodemailerUser , pass: config.nodemailerPass })
       const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
         secure: true,
         auth: {
-          user: process.env.NODEMAILER_USER,
-          pass: process.env.NODEMAILER_PASS,
+          user: config.nodemailerUser,
+          pass: config.nodemailerPass,
         },
       })
 
       const mailOptions = {
-        from: process.env.NODEMAILER_USER,
+        from: config.nodemailerUser,
         to,
         subject,
         html: message,

@@ -7,6 +7,8 @@ export const createLeadInSellDo = async (
   apiKey: string,
   projectId: string,
   campaignId: string,
+  botSource: string,
+  botSubSource: string,
 ) => {
   while (true) {
     try {
@@ -23,8 +25,8 @@ export const createLeadInSellDo = async (
                   email: user.email,
                   phone: user.mobile,
                   campaign_id: campaignId,
-                  source: "Tring Chatbot",
-                  sub_source: "Tring Chatbot",
+                  source: botSource,
+                  sub_source: botSubSource,
                   project_id: projectId,
                 },
                 note: {

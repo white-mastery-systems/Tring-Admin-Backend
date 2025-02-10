@@ -8,6 +8,8 @@ import { generateAccessTokenFromCodeForSlack } from "~/server/utils/slack/auth";
 import { generateCliqAccessToken } from "~/server/utils/zoho/cliq/auth";
 import { zohoAuthApiBaseUrls } from "~/utils/zohoBaseUrls";
 
+const config = useRuntimeConfig()
+
 enum CRMType {
   sellDo = "sell-do",
   zohoCRM = "zoho-crm",
@@ -47,7 +49,7 @@ export default defineEventHandler(async (event) => {
   let generatedAuthResponse: any = null;
   if (body.crm === "hubspot") {
     const data = await getHubspotAccessToken({
-      redirectUri: `${process.env.REDIRECT_URL}/hubspot`,
+      redirectUri: `${config.redirectionUrl}/hubspot`,
       authCode: body.metadata.code,
     });
 
@@ -73,7 +75,7 @@ export default defineEventHandler(async (event) => {
   } else if (body.crm === "zoho-bigin" || body.crm === "zoho-crm") {
     const zohoUrl = zohoAuthApiBaseUrls[body?.metadata?.location]
     generatedAuthResponse = await $fetch(    
-      `${zohoUrl}/oauth/v2/token?client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&grant_type=authorization_code&client_secret=922f18d9e0d820fbebb9d93fee5cc8201e58fbda8c&redirect_uri=${process.env.REDIRECT_URL}/${body.crm}&code=${body.metadata.code}`,
+      `${zohoUrl}/oauth/v2/token?client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&grant_type=authorization_code&client_secret=922f18d9e0d820fbebb9d93fee5cc8201e58fbda8c&redirect_uri=${config.redirectionUrl}/${body.crm}&code=${body.metadata.code}`,
       { method: "POST" },
     );
   } else if (body.crm === "zoho-cliq") {

@@ -4,6 +4,11 @@ import autoImports from "./autoImports";
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true, timeline: { enabled: true } },
+
+  // devServer: {
+  //   host: process.env.HOST ?? "127.0.0.1",
+  //   port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
+  // },
   components: [
     { path: "~/components", pathPrefix: false, extensions: ["vue"] },
   ],
@@ -31,7 +36,11 @@ export default defineNuxtConfig({
         base: "./logs",
       },
     },
-    plugins: ["~/server/plugin/yaml-watcher.ts", "~/server/plugin/schedule-voicebotDialer.ts", "~/server/plugin/whatsapp-analytics.ts"],
+    plugins: [
+      "~/server/plugin/yaml-watcher.ts",
+      "~/server/plugin/schedule-voicebotDialer.ts",
+      "~/server/plugin/whatsapp-analytics.ts",
+    ],
   },
 
   imports: {
@@ -42,32 +51,47 @@ export default defineNuxtConfig({
   shadcn: {
     prefix: "Ui",
   },
-  devServer: {
-    host: process.env.HOST ?? "127.0.0.1",
-    port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
-  },
+
+  // runtimeConfig: {
+  //   dbUrl: "",
+  //   redisUrl: "",
+  //   llmBaseUrl: "",
+  //   botBaseUrl: "",
+  //   redirectUrl: "",
+  //   logoDir: "",
+  //   llmCallbackUrl: "",
+  //   playGroundBotId: "",
+  //   fileUrl: "",
+  //   secretKey: "",
+  //   nodemailerUser: "",
+  //   nodemailerPass: "",
+  //   adminBaseUrl: "",
+  //   reserveGoUrl: "",
+  //   envType: "",
+  //   openApiKey: "",
+  //   public: {
+  //     googleAnalyticsId: "",
+  //     voiceBotUrl: "",
+  //     chatBotUrl: "",
+  //     adminUrl: process.env.NUXT_ADMIN_URL || "",
+  //   },
+  // },
+
   runtimeConfig: {
     dbUrl: "",
-    redisUrl: "",
     llmBaseUrl: "",
-    botBaseUrl: "",
-    redirectUrl: "",
-    logoDir: "",
-    llmCallbackUrl: "",
+    redirectionUrl: "",
     playGroundBotId: "",
-    fileUrl: "",
-    secretKey: "",
     nodemailerUser: "",
     nodemailerPass: "",
-    adminBaseUrl: "",
-    reserveGoUrl: "",
+    secretKey: "",
     envType: "",
     openApiKey: "",
     public: {
+      adminBaseUrl: "",
+      chatBotBaseUrl: "",
+      voiceBotBaseUrl: "",
       googleAnalyticsId: "",
-      voiceBotUrl: "",
-      chatBotUrl: "",
-      adminUrl: process.env.NUXT_ADMIN_URL || "",
     },
   },
 
