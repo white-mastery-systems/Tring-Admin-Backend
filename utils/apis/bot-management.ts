@@ -294,7 +294,7 @@ export const getIntegratedProviderNumberList = async (providerId: string) => {
 
 export const getPreRecordedAudioDetails = async (botId: string, organizationId: string,config: any) => {
   try {
-    const bot = await $fetch<any>(`${config.public.voiceBotUrl}/prerecordedAudio/metaData`, {
+    const bot = await $fetch<any>(`${config.public.voiceBotBaseUrl}/prerecordedAudio/metaData`, {
       method: 'GET',
       params: {
         bot_id: botId,
