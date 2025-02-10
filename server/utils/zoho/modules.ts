@@ -153,7 +153,7 @@ export async function generateLeadInZohoBigin({
     });
     logger.debug(`Generated Leads: ${JSON.stringify(bodyData)}`);
     const generatedPipeline = await $fetch(
-      "https://www.zohoapis.in/bigin/v2/Pipelines",
+      `${zohoIntegrationApiBaseUrls[integrationData?.metadata?.location]}/bigin/v2/Pipelines`,
       {
         method: "POST",
         body: { data: [bodyData] },
@@ -215,7 +215,7 @@ export async function generateContactInZohoBigin({
   integrationData: any;
 }) {
   try {
-    const data = await $fetch("https://www.zohoapis.in/bigin/v2/Contacts", {
+    const data = await $fetch(`${zohoIntegrationApiBaseUrls[integrationData?.metadata?.location]}/bigin/v2/Contacts`, {
       method: "POST",
       body: { data: [body] },
       headers: {
@@ -276,7 +276,7 @@ export async function updateNotesInZohoBigin({
   integrationData: any;
 }) {
   try{
-    const data = await $fetch(`https://www.zohoapis.in/bigin/v2/Pipelines/${zohoBiginLeadId}/Notes`, {
+    const data = await $fetch(`${zohoIntegrationApiBaseUrls[integrationData?.metadata?.location]}/bigin/v2/Pipelines/${zohoBiginLeadId}/Notes`, {
       method: "POST",
       body: { 
         data: [
