@@ -18,8 +18,7 @@ export default defineEventHandler(async (event) => {
     query: { siteVisit, },
     headers: {
       "Content-Type": "application/json",
-      "time-zone":
-        Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Kolkata",
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Kolkata",
     },
   });
  
@@ -34,7 +33,10 @@ export default defineEventHandler(async (event) => {
       Name: Extracted Date
       Email: Extracted Time
 
-      If either piece of information is not present, return 'Not provided' for that field.
+      Guidelines for extraction:  
+      - If the date or time is not mentioned in the text, return 'Not provided' for that field.  
+      - Do not assume or generate a date and time based on the current context.  
+      - If multiple dates and times are mentioned, always extract the **last mentioned date and time** in the text. .
 
       Here's the text to analyze:
       ${JSON.stringify(message[0].messages)}
