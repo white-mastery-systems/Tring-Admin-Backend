@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
   const message = await $fetch(`/api/org/chat/${chatId}/messages`);
 
   const client = new OpenAI({
-    apiKey: config.openApiKey,
+    apiKey: config.openaiApiKey,
   });
 
   try {

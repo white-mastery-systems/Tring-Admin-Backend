@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     },
   });
  
-  const client = new OpenAI({apiKey: config.openApiKey });
+  const client = new OpenAI({apiKey: config.openaiApiKey });
 
   try {
     const systemMessage = `

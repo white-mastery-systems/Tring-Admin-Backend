@@ -86,7 +86,7 @@ export default defineNuxtConfig({
     nodemailerPass: "",
     secretKey: "",
     envType: "",
-    openApiKey: "",
+    openaiApiKey: "",
     public: {
       adminBaseUrl: "",
       chatBotBaseUrl: "",
