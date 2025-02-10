@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { logger } from "../logger";
 
 export default defineEventHandler(async (event) => {
   // const { id:chatId, siteVisit="false"} = getQuery(event);
@@ -29,12 +30,13 @@ export default defineEventHandler(async (event) => {
   try {
     const systemMessage = `
       You are an assistant that analyzes text to extract a user's site visiting date and time.
-      Always provide the result in the following format:
+      Always provide the answer in exactly the following format:
       Date: [Extracted Date]
       Time: [Extracted Time]
 
-      Guidelines for extraction:  
-      - If the date or time is not mentioned in the text, return 'Not provided' for that field.  
+      Extraction Guidelines:
+      - If the text does not contain a date, return "Not provided" for the Date field.
+      - If the text does not contain a time, return "Not provided" for the Time field. 
       - Do not assume or generate a date and time based on the current date and time.  
       - If multiple dates and times are mentioned, always extract the **last mentioned date and time** in the text. .
 
@@ -53,7 +55,8 @@ export default defineEventHandler(async (event) => {
       max_tokens: 150,
       temperature: 0,
     });
-
+    logger.info(`Extracted Date & time: ${JSON.stringify(response)}`)
+    
     const result = response.choices[0].message.content;
     const formattedResult = JSON.stringify(result);
 
