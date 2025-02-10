@@ -55,12 +55,19 @@ export default defineEventHandler(async (event) => {
 
   const metadata = bot.metadata as Record<string, any>;
 
+  const logo = {
+    name: fileData.filename,
+    size: fileData.data.length,
+    type: fileData.type,
+    url: `/logo/${logoPathId}.${ext}`,
+  }
+
   const updatedBot = await updateBotDetails(botId, {
     metadata: {
       ...metadata,
       ui: {
         ...metadata.ui,
-        logo: `${baseUrl}/logo/${logoPathId}.${ext}`,
+        logo: logo,
       },
     },
   });
