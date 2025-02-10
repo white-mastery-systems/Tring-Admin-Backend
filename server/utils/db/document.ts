@@ -5,8 +5,8 @@ const db = useDrizzle();
 
 export const getDocumentPath = (docId: string) => `./assets/docs/${docId}.pdf`;
 
-export const getLogoPath = (logoName: string, extension: string) =>
-  join(process.env.LOGO_DIR, `${logoName}.${extension}`);
+// export const getLogoPath = (logoName: string, extension: string) =>
+//   join(process.env.LOGO_DIR, `${logoName}.${extension}`);
 
 export const createDocument = async (document: InsertDocument) =>
   (await db.insert(documentSchema).values(document).returning())[0];

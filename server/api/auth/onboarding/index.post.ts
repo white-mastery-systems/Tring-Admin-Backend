@@ -2,6 +2,7 @@ import { createOrgSubscription } from "~/server/utils/db/organization";
 import { createZohoCustomer } from "~/server/utils/zoho/customer";
 
 const db = useDrizzle();
+const config = useRuntimeConfig()
 
 const bodyValidationSchema = z.object({
   name: z.string().min(1),
@@ -59,7 +60,7 @@ export default defineEventHandler(async (event) => {
   ]);
 
     sendEmail(
-      process.env.ENV_TYPE !== "stage" ? "rianozal@tringlabs.ai" : "tringdev@whitemastery.com", // to
+      config.envType !== "development" ? "rianozal@tringlabs.ai" : "tringdev@whitemastery.com", // to
       `Welcome aboard: ${org.name}`, // subject
       `<div>                             
         <p>Hi</p> 

@@ -1,5 +1,7 @@
 import { writeFile } from "node:fs/promises";
 
+const config = useRuntimeConfig()
+
 export default defineEventHandler(async (event) => {
   await isOrganizationAdminHandler(event);
   const { id: botId } = await isValidRouteParamHandler(
@@ -76,13 +78,13 @@ export default defineEventHandler(async (event) => {
         modelName: "",
         messages: [],
       },
-      callbackUrl: `${process.env.LLM_CALLBACK_URL}/api/documents/${document.id}`,
+      callbackUrl: `${config.public.adminBaseUrl}/api/documents/${document.id}`,
     }),
   );
 
   $fetch(`/rag/document`, {
     method: "POST",
-    baseURL: process.env.LLM_BASE_URL,
+    baseURL: config.llmBaseUrl,
     body: form,
   });
 

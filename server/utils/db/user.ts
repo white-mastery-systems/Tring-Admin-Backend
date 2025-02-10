@@ -4,6 +4,7 @@ import { logger } from "~/server/logger";
 import { resetPasswordEmailTemplate } from "../email-templates";
 
 const db = useDrizzle();
+const config = useRuntimeConfig()
 
 export const getAdminByOrgId = async (orgId: string) => {
   return await db.query.authUserSchema.findFirst({
@@ -16,7 +17,7 @@ export const getAdminByOrgId = async (orgId: string) => {
 
 export const requestResetPassword = (userDetails: any) => {
   try {
-    const token = jwt.sign({ userId: userDetails?.id }, process.env.SECRET_KEY!, {
+    const token = jwt.sign({ userId: userDetails?.id }, config.secretKey, {
       expiresIn: "5m",
     });
     // return token
