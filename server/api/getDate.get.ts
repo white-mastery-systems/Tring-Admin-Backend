@@ -30,12 +30,12 @@ export default defineEventHandler(async (event) => {
     const systemMessage = `
       You are an assistant that analyzes text to extract a user's site visiting date and time.
       Always provide the result in the following format:
-      Name: Extracted Date
-      Email: Extracted Time
+      Date: [Extracted Date]
+      Time: [Extracted Time]
 
       Guidelines for extraction:  
       - If the date or time is not mentioned in the text, return 'Not provided' for that field.  
-      - Do not assume or generate a date and time based on the current context.  
+      - Do not assume or generate a date and time based on the current date and time.  
       - If multiple dates and times are mentioned, always extract the **last mentioned date and time** in the text. .
 
       Here's the text to analyze:
