@@ -1,7 +1,6 @@
 import OpenAI from "openai";
 
 export default defineEventHandler(async (event) => {
-  // const { id:chatId, siteVisit="false"} = getQuery(event);
   const { id: chatId, siteVisit="false" } = await isValidQueryHandler(event,
     z.object({
       id: z.string(),
@@ -15,26 +14,27 @@ export default defineEventHandler(async (event) => {
 
   const message = await $fetch(`/api/org/chat/${chatId}/messages`, {
     method: "GET",
-    query: { siteVisit, },
+    query: { siteVisit },
     headers: {
       "Content-Type": "application/json",
-      "time-zone":
-        Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Kolkata",
+      "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Kolkata",
     },
   });
  
-  const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
+  const client = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 
   try {
     const systemMessage = `
-      You are an assistant that analyzes text to extract a user's site visiting date and time.
-      Always provide the result in the following format:
-      Name: Extracted Date
-      Email: Extracted Time
+      You are a strict assistant whose sole responsibility is to extract the user's site visiting date and time from the provided text. Your answer must follow these instructions exactly:
+      1. Your output must be in the following format only:
+        Date: [Extracted Date]
+        Time: [Extracted Time]
 
-      If either piece of information is not present, return 'Not provided' for that field.
+      2. Extraction Guidelines:
+      - If the text does not contain a date, return "Not provided" for the Date field.
+      - If the text does not contain a time, return "Not provided" for the Time field. 
+      - Do not assume or generate a date and time based on the current date and time.  
+      - If multiple dates and times are mentioned, always extract the **last mentioned date and time** in the text. .
 
       Here's the text to analyze:
       ${JSON.stringify(message[0].messages)}
@@ -56,7 +56,8 @@ export default defineEventHandler(async (event) => {
     const formattedResult = JSON.stringify(result);
 
     return { date: extractDate(formattedResult), time: extractTime(formattedResult) };
-  } catch (error) {
+  } catch (error:any) {
+    console.log("Get Date Error: ", error?.message)
     throw createError({ statusCode: 500, statusMessage: "Internal Server Error: Unable to process the message with OpenAI. Please try again later.",});
   }
 });
@@ -68,7 +69,8 @@ function extractDate(input: string) {
 }
 
 function extractTime(input: string) {
-  const timeRegex =/\b\d{1,2}:\d{2}(?:\s*[APMapm]{2})?\b/;
+  // const timeRegex = /\b\d{1,2}:\d{2}(?:\s*[APMapm]{2})?\b/;
+  const timeRegex = /\b\d{1,2}(:\d{2})?\s*[APMapm]{2}\b/;
   const match = input.match(timeRegex);
   return match ? match[0].trim() : null;
 }

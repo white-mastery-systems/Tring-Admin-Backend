@@ -6,18 +6,7 @@ import { getHubspotAccessToken } from "~/server/utils/hubspot/auth";
 import { generateAccessTokenFromCodeForShopify } from "~/server/utils/shopify/auth";
 import { generateAccessTokenFromCodeForSlack } from "~/server/utils/slack/auth";
 import { generateCliqAccessToken } from "~/server/utils/zoho/cliq/auth";
-
-const zohoBaseUrls = {
-  eu: "https://accounts.zoho.eu",
-  ae: "https://accounts.zoho.ae",
-  au: "https://accounts.zoho.com.au",
-  in: "https://accounts.zoho.in",
-  jp: "https://accounts.zoho.jp",
-  uk: "https://accounts.zoho.uk",
-  us: "https://accounts.zoho.com",
-  ca: "https://accounts.zohocloud.ca",
-  sa: "https://accounts.zoho.sa",
-};
+import { zohoAuthApiBaseUrls } from "~/utils/zohoBaseUrls";
 
 enum CRMType {
   sellDo = "sell-do",
@@ -82,7 +71,7 @@ export default defineEventHandler(async (event) => {
 
     generatedAuthResponse = data;
   } else if (body.crm === "zoho-bigin" || body.crm === "zoho-crm") {
-    const zohoUrl = zohoBaseUrls[body?.metadata?.location]
+    const zohoUrl = zohoAuthApiBaseUrls[body?.metadata?.location]
     generatedAuthResponse = await $fetch(    
       `${zohoUrl}/oauth/v2/token?client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&grant_type=authorization_code&client_secret=922f18d9e0d820fbebb9d93fee5cc8201e58fbda8c&redirect_uri=${process.env.REDIRECT_URL}/${body.crm}&code=${body.metadata.code}`,
       { method: "POST" },
