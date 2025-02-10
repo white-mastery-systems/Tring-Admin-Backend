@@ -37,6 +37,7 @@ import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import { useState } from "#app";
 import { useRouter } from "vue-router";
+import { useBotType } from "~/composables/botManagement/chatBot/useBotType";
 
 
 definePageMeta({
@@ -85,40 +86,12 @@ const {
     totalPageCount.value = bots.totalPageCount;
     totalCount.value = bots.totalCount;
     return bots.data.map((bot) => {
-      const type = () => {
-        switch (bot.type) {
-          case "e-commerce":
-            return "E-commerce";
-          case "real-estate":
-            return "Real Estate";
-          case "government-sectors":
-            return "Government Sectors";
-          case "finance-banking":
-            return "Finance & Banking";
-          case "healthcare":
-            return "Healthcare";
-          case "energy-utilities":
-            return "Energy & Utilities";
-          case "telecommunications":
-            return "Telecommunications";
-          case "travel-hospitality":
-            return "Travel & Hospitality";
-          case "logistics":
-            return "Logistics";
-          case "education-training":
-            return "Education & Training";
-          case "it-service":
-            return "IT Service";
-          default:
-            return "Other";
-        }
-      };
       return {
         id: bot.id,
         name: bot.name,
         status: bot.documentId ? true : false,
         createdAt: `${bot.createdAt}`,
-        type: type(),
+        type: useBotType(bot.type as BotType),
       };
     });
   },
@@ -130,35 +103,6 @@ watch(
     currentPage.value = newPage; // Save page number globally
   }
 );
-
-// const botManagementDetails = async (list: any) => {
-//   return navigateTo({
-//     name: "bot-management-chat-bot-id",
-//     params: { id: list.id },
-//   });
-// };
-
-// const actionsComponent = (id: any) =>
-//   h(
-//     "div",
-//     {
-//       class: "flex items-center gap-2",
-//     },
-//     [
-//       h(
-//         UiButton,
-//         {
-//           onClick: (e: Event) => {
-//             e.stopPropagation();
-//             agentModalState.value.open = true;
-//             agentModalState.value.id = id;
-//           },
-//           color: "primary",
-//         },
-//         h(Icon, { name: "lucide:pen" }),
-//       ),
-//     ],
-//   );
 
 const statusComponent = (status: boolean) =>
   status

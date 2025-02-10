@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { logger } from "~/server/logger";
+import { zohoIntegrationApiBaseUrls } from "~/utils/zohoBaseUrls";
 
 export function getAllPipelinesFromZohoBigin({
   token,
@@ -26,6 +27,7 @@ export function getAllPipelinesFromZohoBigin({
     if (!refreshToken) return;
     if (err.status === 401) {
       return regenearateTokenWithRefreshToken({
+        location: integrationData.metadata.location || "in",
         refreshToken: refreshToken,
       }).then(async (data: any) => {
         if (data?.access_token)
@@ -73,6 +75,7 @@ export async function getAllSubPipelinesFromZohoBigin({
     if (!refreshToken) return;
     if (err.status === 401) {
       return regenearateTokenWithRefreshToken({
+        location: integrationData.metadata.location || "in",
         refreshToken: refreshToken,
       }).then(async (data: any) => {
         if (data?.access_token)
@@ -167,6 +170,7 @@ export async function generateLeadInZohoBigin({
     if (err.status === 401) {
       logger.error(`Error Status 401 : ${JSON.stringify(err.data)}`);
       const newlyGeneratedData: any = await regenearateTokenWithRefreshToken({
+        location: integrationData.metadata.location || "in",
         refreshToken: refreshToken,
       });
       if (newlyGeneratedData?.access_token)
@@ -236,6 +240,7 @@ export async function generateContactInZohoBigin({
     if (!refreshToken) return;
     if (err.status === 401) {
       const generatedData: any = await regenearateTokenWithRefreshToken({
+        location: integrationData.metadata.location || "in",
         refreshToken: refreshToken,
       });
 
@@ -292,6 +297,7 @@ export async function updateNotesInZohoBigin({
     if (!refreshToken) return;
     if (err.status === 401) {
       const generatedData: any = await regenearateTokenWithRefreshToken({
+        location: integrationData.metadata.location || "in",
         refreshToken: refreshToken,
       });
 
@@ -340,6 +346,7 @@ export function getFieldMetadataFromZohoBigin({
     if (!refreshToken) return;
     if (err.status === 401) {
       regenearateTokenWithRefreshToken({
+        location: integrationData.metadata.location || "in",
         refreshToken: refreshToken,
       }).then(async (data: any) => {
         if (data?.access_token)
@@ -371,8 +378,9 @@ export function getAllLayoutsFromZohoCRM({
   refreshToken: String;
   integrationData: any;
 }) {
+   console.log({ token, refreshToken, integrationData })
   return $fetch(
-    "https://www.zohoapis.in/crm/v6/settings/layouts?module=Leads",
+    `${zohoIntegrationApiBaseUrls[integrationData?.metadata?.location]}/crm/v6/settings/layouts?module=Leads`,
     {
       headers: {
         Authorization: `Zoho-oauthtoken ${token}`,
@@ -386,6 +394,7 @@ export function getAllLayoutsFromZohoCRM({
     if (!refreshToken) return;
     if (err.status === 401) {
       return regenearateTokenWithRefreshToken({
+        location: integrationData?.metadata?.location || "in",
         refreshToken: refreshToken,
       }).then(async (data: any) => {
         if (data?.access_token)
@@ -415,7 +424,8 @@ export function getFieldMetadataFromZohoCRM({
   body: any;
   integrationData: any;
 }) {
-  return $fetch("https://www.zohoapis.in/crm/v6/settings/fields?module=Leads", {
+ 
+  return $fetch(`${zohoIntegrationApiBaseUrls[integrationData.metadata.location]}/crm/v6/settings/fields?module=Leads`, {
     method: "GET",
     headers: {
       Authorization: `Zoho-oauthtoken ${token}`,
@@ -428,6 +438,7 @@ export function getFieldMetadataFromZohoCRM({
     if (!refreshToken) return;
     if (err.status === 401) {
       regenearateTokenWithRefreshToken({
+        location: integrationData.metadata.location || "in",
         refreshToken: refreshToken,
       }).then(async (data: any) => {
         if (data?.access_token)
@@ -503,7 +514,7 @@ export async function generateLeadInZohoCRM({
     }
   });
 
-  return $fetch("https://www.zohoapis.in/crm/v6/Leads", {
+  return $fetch(`${zohoIntegrationApiBaseUrls[integrationData.metadata.location]}/crm/v6/Leads`, {
     method: "POST",
     body: { data: [bodyData] },
     headers: {
@@ -516,6 +527,7 @@ export async function generateLeadInZohoCRM({
     if (!refreshToken) return;
     if (err.status === 401) {
       regenearateTokenWithRefreshToken({
+        location: integrationData.metadata.location || "in",
         refreshToken: refreshToken,
       }).then(async (data: any) => {
         if (data?.access_token)

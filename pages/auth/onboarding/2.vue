@@ -76,9 +76,10 @@
 </template>
 
 <script setup lang="ts">
-  import { formSchema } from "~/validationSchema/authValidation/onBoarding/2Validation";
+import { formSchema } from "~/validationSchema/authValidation/onBoarding/2Validation";
+import { industry } from "~/composables/botManagement/chatBot/useBotType";
 
-  const showCustomRoleInput = ref(false);
+const showCustomRoleInput = ref(false);
 
   definePageMeta({
     layout: "auth",
@@ -96,19 +97,6 @@
     avgTraffic: "Less than 100 visits",
     employeeCount: "Less than 10 employees",
   });
-  const industry = [
-    "Government Sectors",
-    "Finance & Banking",
-    "Real Estate",
-    "Healthcare",
-    "E-commerce",
-    "Energy & Utilities",
-    "Telecommunications",
-    "Travel & Hospitality",
-    "Logistics",
-    "Education",
-    "Other",
-  ];
   const avgTraffic = [
     "Less than 100 visits",
     "100-500 visits",

@@ -1,5 +1,7 @@
 import { writeFile } from "node:fs/promises";
 import { v4 as uuid } from "uuid";
+import { existsSync, mkdirSync } from 'node:fs';
+import { join } from "node:path";
 
 export default defineEventHandler(async (event) => {
   await isOrganizationAdminHandler(event);
@@ -34,9 +36,18 @@ export default defineEventHandler(async (event) => {
       }),
     );
 
+  const uploadDir = join(process.cwd(), 'assets', 'logo');
+  
+  if (!existsSync(uploadDir)) {
+      mkdirSync(uploadDir, { recursive: true });
+  }
+
   const logoPathId = uuid();
   const ext = fileData.filename?.split(".").pop() || "png";
-  const logoPath = getLogoPath(logoPathId, ext);
+
+
+  const logoPath = `./assets/logo/${logoPathId}.${ext}`
+  // getLogoPath(logoPathId, ext);
   await writeFile(logoPath, fileData.data);
 
   let bot = await getBotDetailsNoCache(botId);

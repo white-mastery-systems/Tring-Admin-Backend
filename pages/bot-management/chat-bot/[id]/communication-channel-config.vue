@@ -56,14 +56,17 @@
     open: false,
   });
 
-  watchEffect(() => {
-    if (botDetails.value) {
-      const userName = botDetails.value?.name ?? "Unknown Bot Name";
-      useHead({
-        title: `Chat Bot | ${userName} - CRM Config`,
-      });
-    }
-  });
+watch(
+  () => botDetails.value?.name, // Watching only the 'name' property
+  (newName) => {
+    const userName = newName ?? "Unknown Bot Name";
+    useHead({
+      title: `Chat Bot | ${userName} - CRM Config`,
+    });
+  },
+  { immediate: true } // Runs immediately on mount
+);
+
   const actionsComponent = (id: string) => [
     h(
       "div",

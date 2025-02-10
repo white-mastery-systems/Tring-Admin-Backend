@@ -159,6 +159,7 @@ export default defineEventHandler(async (event) => {
     } else if (botIntegration?.integration?.crm === "whatsapp") {
       if (botIntegration?.integration?.metadata) {
         const whatsappPayload = {
+          intent: "Lead",
           name: `*${body?.botUser?.name}*`,
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
@@ -169,6 +170,10 @@ export default defineEventHandler(async (event) => {
         // TODO: Add country code to the phone number
         // `${body?.botUser?.countryCode.split("+")[1]}` +
         //   botIntegration?.integration?.metadata?.phoneNumber,
+        if (body?.note){
+          const keywords = ["Appointment", "Call Scheduled", "Site Visit"];
+          whatsappPayload.intent = keywords.find((keyword) => body?.note.includes(keyword)) || "Lead";
+        }
         const data = await createWhatsAppMessage(
           whatsappPayload,
           `${botIntegration?.integration?.metadata?.countryCode.split("+")[1]}` +

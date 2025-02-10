@@ -1,14 +1,14 @@
 <template>
   <page :title="botDetails.name ?? ''" :bread-crumbs="[
-      {
-        label: `${botDetails.name}`,
-        to: `/bot-management/chat-bot`,
-      },
-      {
-        label: 'Chat Bot',
-        to: `/bot-management/chat-bot`,
-      },
-    ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
+    {
+      label: `${botDetails.name}`,
+      to: `/bot-management/chat-bot`,
+    },
+    {
+      label: 'Chat Bot',
+      to: `/bot-management/chat-bot`,
+    },
+  ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
     custom-back-router="/bot-management/chat-bot">
     <div>
       <div class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]">
@@ -37,11 +37,10 @@
             <div
               class="items-top sm:items-top md:items-top mt-3 flex gap-3 sm:mt-3 md:mt-0 lg:mt-0 lg:items-center xl:mt-0 xl:items-center">
               <div class="flex flex-col items-center gap-1">
-                <UiButton color="primary" class="p-2" @click="
-                    () => {
-                      channelModalState.open = true;
-                      channelModalState.id = botDetails.id;
-                    }
+                <UiButton color="primary" class="p-2" @click="() => {
+                    channelModalState.open = true;
+                    channelModalState.id = botDetails.id;
+                  }
                   ">
                   <span class="hidden lg:inline"> Configure channel </span>
                   <span class="flex flex-col items-center justify-center lg:hidden">
@@ -114,12 +113,11 @@
               <CreateEditChannelModal v-model="channelModalState" @success="handleSuccess" />
               <ConfirmationModal v-model:open="deleteModalState" title="Are you sure?"
                 description="Are you sure you want to delete bot ?" @confirm="handleDeleteBot" />
-              <AddChatBotModal v-model="agentModalState" @editConfirm="
-                  () => {
-                    agentModalState.open = false;
-                    navigateTo({ name: 'bot-management-chat-bot' });
-                    // getAllChatBot()
-                  }
+              <AddChatBotModal v-model="agentModalState" @editConfirm="() => {
+                  agentModalState.open = false;
+                  navigateTo({ name: 'bot-management-chat-bot' });
+                  // getAllChatBot()
+                }
                 "></AddChatBotModal>
             </div>
           </div>
@@ -141,13 +139,12 @@
             class="bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42] min-w-[90%] max-w-[100%]"
             v-for="list in getDocumentList.documents.filter(
               (item: any) => item.status === 'ready',
-            )" :key="list.id" @click="
-              async () => {
+            )" :key="list.id" @click="async () => {
                 isSubmitting = true;
                 isDocumentListOpen = false;
                 await singleDocumentDeploy(list);
               }
-            ">
+              ">
             <span class="w-[95%] truncate">
               {{ list.name }}
             </span>
@@ -166,9 +163,9 @@
                 <span class="text-xs text-gray-500">{{ list.helperText }}</span>
               </div>
               <Icon v-if="
-                  list.bot === 'Document Management' &&
-                  botDetails.documents.length === 0
-                " class="h-6 w-6 text-red-500" name="nonicons:error-16" />
+                list.bot === 'Document Management' &&
+                botDetails.documents.length === 0
+              " class="h-6 w-6 text-red-500" name="nonicons:error-16" />
             </div>
             <div>
               <LeftArrowIcon class="w-[30px] hover:text-[#ffbc42]" />
@@ -180,226 +177,169 @@
   </page>
 </template>
 <script setup lang="ts">
-  definePageMeta({
-    middleware: "admin-only",
-  });
-  // interface LocationContext {
-  //   location: any;
-  //   updateLocation: () => void;
-  // }
+definePageMeta({
+  middleware: "admin-only",
+});
 
 import { useClipboard } from "@vueuse/core";
 import { Bot, Settings } from "lucide-vue-next";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
+import { useDataList } from "~/composables/botManagement/chatBot/useDataList";
 
-  const router = useRouter();
-  // const selectedValue = ref("Today");
-  const route = useRoute("bot-management-chat-bot-id");
-  const emit = defineEmits<{ (e: "confirm"): void }>();
+const router = useRouter();
+const route = useRoute("bot-management-chat-bot-id");
+const emit = defineEmits<{ (e: "confirm"): void }>();
+const paramId: any = route;
+const agentModalState = ref({ open: false, id: paramId.params.id });
+const botDetails = ref(await getBotDetails(paramId.params.id));
+const deleteModalState = ref(false);
+const modalOpen = ref(false);
+const isDocumentListOpen = ref(false);
+const isSubmitting = ref(false);
+const getDocumentList: any = ref();
+const channelModalState = ref<{ open: boolean; id: string | null }>({
+  open: false,
+  id: null,
+});
+const { dataList } = useDataList()
 
-  const paramId: any = route;
-  const agentModalState = ref({ open: false, id: paramId.params.id });
-  const botDetails = ref(await getBotDetails(paramId.params.id));
-  const deleteModalState = ref(false);
-  const modalOpen = ref(false);
-  const isDocumentListOpen = ref(false);
-  const isSubmitting = ref(false);
-  const getDocumentList: any = ref();
-  const channelModalState = ref<{ open: boolean; id: string | null }>({
-    open: false,
-    id: null,
-  });
-
-  watchEffect(() => {
-    if (botDetails.value) {
-      const userName = botDetails.value?.name ?? "Unknown Bot Name";
-      useHead({
-        title: `Chat Bot | ${userName}`,
-      });
-    }
-  });
-
-  const handleSuccess = () => {
-    channelModalState.value.open = false;
-    toast.success("Channel Created successfully");
-  };
-  onMounted(async () => {
-    getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
-    botDetails.value = await getBotDetails(paramId.params.id);
-  });
-  const handleGoBack = () => {
-    return navigateTo({
-      name: "bots",
+watch(
+  () => botDetails.value?.name,
+  (newName) => {
+    const userName = newName ?? "Unknown Bot Name";
+    useHead({
+      title: `Chat Bot | ${userName}`,
     });
-  };
-  const dataList = ref([
-    {
-      _id: 1,
-      bot: "UI Customization",
-      helperText: "Color,Logo,Icon etc...",
-      routeName: "bot-management-chat-bot-id-ui-customization",
-    },
-    {
-      _id: 2,
-      bot: "Document Management",
-      helperText: "Knowledge base,Training data etc...",
-      routeName: "bot-management-chat-bot-id-documents",
-    },
-    {
-      _id: 3,
-      bot: "Bot Configuration",
-      helperText: "Name,Description,Notes etc...",
-      routeName: "bot-management-chat-bot-id-config",
-    },
-    {
-      _id: 4,
-      bot: "Bot Actions",
-      helperText: "Add your intents Eg: Location Virtual Tour etc...",
-      routeName: "bot-management-chat-bot-id-intent-management",
-    },
-    {
-      _id: 5,
-      bot: "Custom Actions",
-      helperText: "Define the fields for your dynamic form. Each field should include details like type, label, placeholder, and whether it's required.",
-      routeName: "bot-management-chat-bot-id-dynamic-form",
-    },
-    {
-      _id: 6,
-      bot: "CRM Configuration",
-      helperText: "Add CRM to manage your leads effectively",
-      routeName: "bot-management-chat-bot-id-crm-config",
-    },
-    {
-      _id: 7,
-      bot: "Communication Channel Configuration",
-      helperText: "Add Communication channel to manage your leads effectively",
-      routeName: "bot-management-chat-bot-id-communication-channel-config",
-    },
-    {
-      _id: 8,
-      bot: "Email Configuration",
-      helperText: "Configure the email settings for your bot",
-      routeName: "bot-management-chat-bot-id-email-editor",
-    },
-  ]);
+  },
+  { immediate: true }
+);
 
-  const dateFormate = computed(() => {
-    if (botDetails && botDetails.value.createdAt) {
-      return formatDateStringToDate(botDetails.value.createdAt);
-    }
-    return null;
+const handleSuccess = () => {
+  channelModalState.value.open = false;
+  toast.success("Channel Created successfully");
+};
+onMounted(async () => {
+  getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
+  botDetails.value = await getBotDetails(paramId.params.id);
+});
+const handleGoBack = () => {
+  return navigateTo({
+    name: "bots",
   });
+};
+const dateFormate = computed(() => {
+  if (botDetails && botDetails.value.createdAt) {
+    return formatDateStringToDate(botDetails.value.createdAt);
+  }
+  return null;
+});
 
-  const previewUrl = computed(() => {
-    let col = botDetails.value.metadata.ui.color as string;
-    col = col
-      ?.split(" ")
-      .map((element) => {
-        if (element.at(-1) === "%") return element.slice(0, -1);
-        else return element;
-      })
-      .join(" ");
-    let secondaryColor = botDetails.value.metadata.ui.secondaryColor as string;
-    secondaryColor = secondaryColor
-      ?.split(" ")
-      .map((element) => {
-        if (element.at(-1) === "%") return element.slice(0, -1);
-        else return element;
-      })
-      .join(" ");
-    return `${window.location.origin}/preview.html?orgname=WMS&chatbotid=${paramId.params.id}&mode=preview`;
+const previewUrl = computed(() => {
+  let col = botDetails.value.metadata.ui.color as string;
+  col = col
+    ?.split(" ")
+    .map((element) => {
+      if (element.at(-1) === "%") return element.slice(0, -1);
+      else return element;
+    })
+    .join(" ");
+  let secondaryColor = botDetails.value.metadata.ui.secondaryColor as string;
+  secondaryColor = secondaryColor
+    ?.split(" ")
+    .map((element) => {
+      if (element.at(-1) === "%") return element.slice(0, -1);
+      else return element;
+    })
+    .join(" ");
+  return `${window.location.origin}/preview.html?orgname=WMS&chatbotid=${paramId.params.id}&mode=preview`;
+});
+
+const botManagementDetails = async (list: any, index: any) => {
+  await navigateTo({
+    name: list.routeName,
+    params: { id: paramId.params.id },
   });
+};
+const deactivateBot = async () => {
+  modalOpen.value = true;
+};
 
-  const botManagementDetails = async (list: any, index: any) => {
-    await navigateTo({
-      name: list.routeName,
+const deactivateBotDialog = async () => {
+  await disableBot(paramId.params.id);
+  botDetails.value = await getBotDetails(paramId.params.id)
+  modalOpen.value = false;
+};
+
+const botScript =
+  "<" +
+  `script src="${window?.location?.href?.includes("app.tringlabs.ai") ? "https://chat.tringlabs.ai" : "https://tring-databot.pripod.com"}/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS">` +
+  "</" +
+  "script>";
+
+const { copy } = useClipboard({ source: botScript });
+const copyScript = async () => {
+  copy(botScript);
+  toast.success("Copied to clipboard");
+};
+
+const singleDocumentDeploy = async (list: any) => {
+  await deployDocument(paramId.params.id, list.id);
+  botDetails.value = await getBotDetails(paramId.params.id);
+};
+
+const handleDelete = () => {
+  deleteModalState.value = true;
+};
+
+const handleDeleteBot = () => {
+  deleteModalState.value = false;
+  deleteBot(route.params.id);
+};
+
+const handleActivateBot = async () => {
+  isSubmitting.value = true;
+  const activeDocuments = botDetails.value.documents.filter(
+    (d) => d.status === "ready",
+  );
+
+  if (activeDocuments.length === 0) {
+    toast.error("Please add document to activate bot");
+    return navigateTo({
+      name: "bot-management-chat-bot-id-documents",
       params: { id: paramId.params.id },
     });
-  };
-  const deactivateBot = async () => {
-    modalOpen.value = true;
-  };
+  } else if (!botDetails.value.metadata?.prompt?.NAME) {
+    toast.error("Please add bot configuration to activate bot");
+    return navigateTo({
+      name: "bot-management-chat-bot-id-config",
+      params: { id: paramId.params.id },
+    });
+  } else if (!botDetails.value.metadata.ui?.logo) {
+    toast.error("Please update bot user interface to activate bot");
+    return navigateTo({
+      name: "bot-management-chat-bot-id-ui-customization",
+      params: { id: paramId.params.id },
+    });
+  }
 
-  const deactivateBotDialog = async () => {
-    await disableBot(paramId.params.id);
-    botDetails.value = await getBotDetails(paramId.params.id)
-    modalOpen.value = false;
-  };
-
-  const botScript =
-    "<" +
-    `script src="${window?.location?.href?.includes("app.tringlabs.ai") ? "https://chat.tringlabs.ai" : "https://tring-databot.pripod.com"}/widget.js" data-chatbotid="${paramId.params.id}" data-orgname="WMS">` +
-    "</" +
-    "script>";
-
-  const { copy } = useClipboard({ source: botScript });
-  const copyScript = async () => {
-    copy(botScript);
-    toast.success("Copied to clipboard");
-  };
-
-  const singleDocumentDeploy = async (list: any) => {
-    await deployDocument(paramId.params.id, list.id);
-    botDetails.value = await getBotDetails(paramId.params.id);
-  };
-
-  const handleDelete = () => {
-    deleteModalState.value = true;
-  };
-
-  const handleDeleteBot = () => {
-    deleteModalState.value = false;
-    deleteBot(route.params.id);
-  };
-
-  const handleActivateBot = async () => {
-    isSubmitting.value = true;
-    const activeDocuments = botDetails.value.documents.filter(
-      (d) => d.status === "ready",
-    );
-
-    if (activeDocuments.length === 0) {
-      toast.error("Please add document to activate bot");
-      return navigateTo({
-        name: "bot-management-chat-bot-id-documents",
-        params: { id: paramId.params.id },
-      });
-    } else if (!botDetails.value.metadata?.prompt?.NAME) {
-      toast.error("Please add bot configuration to activate bot");
-      return navigateTo({
-        name: "bot-management-chat-bot-id-config",
-        params: { id: paramId.params.id },
-      });
-    } else if (!botDetails.value.metadata.ui?.logo) {
-      toast.error("Please update bot user interface to activate bot");
-      return navigateTo({
-        name: "bot-management-chat-bot-id-ui-customization",
-        params: { id: paramId.params.id },
-      });
+  if (activeDocuments.length === 1) {
+    try {
+      await singleDocumentDeploy(activeDocuments[0]);
+    } catch (err) {
+      isSubmitting.value = false;
+      toast.error("Failed to active the bot, try again");
+      return;
     }
+  }
 
-    if (activeDocuments.length === 1) {
-      try {
-        await singleDocumentDeploy(activeDocuments[0]);
-      } catch (err) {
-        isSubmitting.value = false;
-        toast.error("Failed to active the bot, try again");
-        return;
-      }
-    }
-
-    isSubmitting.value = false;
-    isDocumentListOpen.value = true;
-  };
+  isSubmitting.value = false;
+  isDocumentListOpen.value = true;
+};
 </script>
 
 <style scoped>
-  /* .bot-manage-main-container {
-    padding: 7px 25px;
-  } */
-
-  .header-align {
-    font-family: segoe UI Regular;
-  }
+.header-align {
+  font-family: segoe UI Regular;
+}
 </style>

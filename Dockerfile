@@ -26,6 +26,7 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 
 RUN mkdir -p assets/docs
+RUN mkdir -p assets/logo
 RUN mkdir -p public/logo
 
 EXPOSE 3000
