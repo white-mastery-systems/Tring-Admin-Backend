@@ -525,6 +525,7 @@ export async function generateLeadInZohoCRM({
       },
     })
     logger.info(`generateLeadInZohoCRM data: ${JSON.stringify(data)}`)
+    return data
   } catch (err: any) {
      logger.error(
       `generateLeadInZohoCRM - token:${token}, refreshToken:${refreshToken}, body: ${JSON.stringify(body)},integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
@@ -542,6 +543,62 @@ export async function generateLeadInZohoCRM({
             access_token: data?.access_token,
           }});
         return generateLeadInZohoCRM({
+          token: data?.access_token,
+          refreshToken: "",
+          body: body,
+          integrationData: integrationData,
+        });
+      });
+    }
+  }
+}
+
+export const updateNotesInZohoCRM = async ({
+  zohoCrmLeadId,
+  token,
+  refreshToken,
+  body,
+  integrationData,
+}: {
+  zohoCrmLeadId: string
+  token: string;
+  refreshToken: String;
+  body: any;
+  integrationData: any;
+}) => {
+  try {
+     const data = await $fetch(`${zohoIntegrationApiBaseUrls[integrationData?.metadata?.location]}/crm/v7/Leads/${zohoCrmLeadId}/Notes`, {
+      method: "POST",
+      body: { 
+        data: [
+          {
+            "Note_Content": body
+          }
+        ],
+      },
+      headers: {
+        Authorization: `Zoho-oauthtoken ${token}`,
+      },
+    });
+    logger.debug(`updateNotesInZohoCRM: ${JSON.stringify(data)}`);
+    return data;
+
+  } catch (err: any) {
+    logger.error(`updateNotesInZohoCRM Error: ${JSON.stringify(err.message)}`)
+     if (!refreshToken) return;
+    if (err.status === 401) {
+      regenearateTokenWithRefreshToken({
+        location: integrationData.metadata.location || "in",
+        refreshToken: refreshToken,
+      }).then(async (data: any) => {
+        if (data?.access_token)
+          updateIntegrationById(integrationData.id, {
+          metadata:{
+            ...integrationData.metadata,
+            access_token: data?.access_token,
+          }});
+        return updateNotesInZohoCRM({
+          zohoCrmLeadId: zohoCrmLeadId,
           token: data?.access_token,
           refreshToken: "",
           body: body,
