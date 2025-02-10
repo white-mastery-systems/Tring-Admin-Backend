@@ -4,6 +4,11 @@ import autoImports from "./autoImports";
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true, timeline: { enabled: true } },
+
+  // devServer: {
+  //   host: process.env.HOST ?? "127.0.0.1",
+  //   port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
+  // },
   components: [
     { path: "~/components", pathPrefix: false, extensions: ["vue"] },
   ],
@@ -46,10 +51,7 @@ export default defineNuxtConfig({
   shadcn: {
     prefix: "Ui",
   },
-  devServer: {
-    host: process.env.HOST ?? "127.0.0.1",
-    port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
-  },
+
   // runtimeConfig: {
   //   dbUrl: "",
   //   redisUrl: "",
@@ -74,6 +76,7 @@ export default defineNuxtConfig({
   //     adminUrl: process.env.NUXT_ADMIN_URL || "",
   //   },
   // },
+
   runtimeConfig: {
     dbUrl: "",
     llmBaseUrl: "",
