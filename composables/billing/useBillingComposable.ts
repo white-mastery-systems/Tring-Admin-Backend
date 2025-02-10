@@ -77,7 +77,7 @@ export const useBillingComposable = () => {
     // organization.value = await useFetch("/api/org", { method: "GET" });
 
     const eventSource = new EventSource(
-      `${config.public.chatBotUrl}/api/sse?organizationId=${organization.value.orgDetails.id}`,
+      `${config.public.chatBotBaseUrl}/api/sse?organizationId=${organization.value.orgDetails.id}`,
     );
 
     eventSource.onmessage = async (event) => {
