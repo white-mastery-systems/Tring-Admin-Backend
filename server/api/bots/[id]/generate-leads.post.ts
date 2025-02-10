@@ -16,6 +16,8 @@ export default defineEventHandler(async (event) => {
     botUser: z.any(),
     note: z.any(),
     chatId: z.string().uuid(),
+    botSource: z.string(),
+    botSubSource: z.string(),
   });
   const generateLeadsValidationParams = z.object({
     id: z.string(),
@@ -132,6 +134,8 @@ export default defineEventHandler(async (event) => {
         apiKey,
         projectId,
         campaignId,
+        body.botSource,
+        body.botSubSource,
       );
     } else if (botIntegration?.integration?.crm === "slack") {
       if (botIntegration?.metadata?.channelId) {
