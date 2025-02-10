@@ -1,7 +1,6 @@
 import OpenAI from "openai";
 
 export default defineEventHandler(async (event) => {
-  // const { id:chatId, siteVisit="false"} = getQuery(event);
   const { id: chatId, siteVisit="false" } = await isValidQueryHandler(event,
     z.object({
       id: z.string(),
@@ -22,9 +21,7 @@ export default defineEventHandler(async (event) => {
     },
   });
  
-  const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
+  const client = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 
   try {
     const systemMessage = `
@@ -54,7 +51,6 @@ export default defineEventHandler(async (event) => {
       max_tokens: 150,
       temperature: 0,
     });
-    console.log(`Extracted Date & time: ${JSON.stringify(response)}`);
 
     const result = response.choices[0].message.content;
     const formattedResult = JSON.stringify(result);
@@ -73,7 +69,8 @@ function extractDate(input: string) {
 }
 
 function extractTime(input: string) {
-  const timeRegex =/\b\d{1,2}:\d{2}(?:\s*[APMapm]{2})?\b/;
+  // const timeRegex = /\b\d{1,2}:\d{2}(?:\s*[APMapm]{2})?\b/;
+  const timeRegex = /\b\d{1,2}(:\d{2})?\s*[APMapm]{2}\b/;
   const match = input.match(timeRegex);
   return match ? match[0].trim() : null;
 }
