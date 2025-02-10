@@ -1,4 +1,3 @@
-~
 <template>
   <div class="flex h-[100vh] w-[250px] flex-col items-center gap-5 overflow-y-scroll bg-[#ffffff]">
     <!-- style="box-shadow: 0px 0px 24px 0px #00000000 !important;" -->
@@ -120,7 +119,7 @@ import { useOrgDetailsStore } from "~/store/orgDetailsStore";
 import { useSubscriptionCheck } from '~/composables/billing/useSubscriptionCheck';
 // import { useSubscriptionCheck } from '~/composables/useSubscriptionCheck';
 
-const { isAnyPlanFree } = useSubscriptionCheck()
+const { isAnyPlanFree, checkSubscription } = useSubscriptionCheck()
 
   const { user } = await useUser();
 // const freeTrialPopup = ref(false)
@@ -276,7 +275,8 @@ const { isAnyPlanFree } = useSubscriptionCheck()
     // else freeTrialPopup.planFree = false
   })
 
-const handleNavigation = () => {
+const handleNavigation = async () => {
+  if (isAnyPlanFree.value) await checkSubscription()
   emit("closeSheet");
 };
 const redirectToBilling = () => {
