@@ -6,18 +6,7 @@ import { getHubspotAccessToken } from "~/server/utils/hubspot/auth";
 import { generateAccessTokenFromCodeForShopify } from "~/server/utils/shopify/auth";
 import { generateAccessTokenFromCodeForSlack } from "~/server/utils/slack/auth";
 import { generateCliqAccessToken } from "~/server/utils/zoho/cliq/auth";
-
-const zohoBaseUrls = {
-  eu: "https://accounts.zoho.eu",
-  ae: "https://accounts.zoho.ae",
-  au: "https://accounts.zoho.com.au",
-  in: "https://accounts.zoho.in",
-  jp: "https://accounts.zoho.jp",
-  uk: "https://accounts.zoho.uk",
-  us: "https://accounts.zoho.com",
-  ca: "https://accounts.zohocloud.ca",
-  sa: "https://accounts.zoho.sa",
-};
+import { zohoBaseUrls } from "~/utils/zohoBaseUrls";
 
 enum CRMType {
   sellDo = "sell-do",
