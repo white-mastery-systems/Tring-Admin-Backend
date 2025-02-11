@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
       "sathish@whitemastery.com",
       "naveenkumar@whitemastery.com",
     ];
-    if(body?.envType === "PROD") {
+    if(body?.envType === "production") {
       recipients.push("rianozal@gmail.com")
     }
     logger.info(`send email for LLM server failed", recipients:[${recipients}], req_body: ${JSON.stringify(body)}` )
