@@ -1,10 +1,10 @@
 <template>
-  <div class="flex items-center justify-end gap-2">
-    <div v-if="(query?.type === 'chat') && !usage?.plan_code?.includes('free')" class="flex items-center justify-between gap-1 cursor-pointer"
-      @click="creditBalanceModalState.open = true">
+  <div class="flex items-start justify-end gap-2">
+    <div v-if="(query?.type === 'chat') && !usage?.plan_code?.includes('free')"
+      class="flex items-center justify-between gap-1 cursor-pointer" @click="creditBalanceModalState.open = true">
       <div class="flex flex-col items-center gap-1 max-h-[36px]">
         <UiButton
-          class="flex items-center justify-center font-regular text-center text-sm gap-1 bg-[#3ea52e33] hover:bg-[#3ea52e33] hover:brightness-100 px-2 py-0">
+          class="flex items-center justify-center font-regular text-center text-sm gap-1 bg-[#3ea52e33] hover:bg-[#3ea52e33] hover:brightness-100 px-2 py-2 md:py-2 lg:py-0">
           <span>
             <WhatsappIcon class="text-[#1ABB00] w-6 h-6 md:w-6 md:h-6 lg:w-5 lg:h-5" />
           </span>
@@ -47,7 +47,8 @@
       </NuxtLink>
       <div class="text-[4px]"> Refill Wallet </div>
     </div>
-    <UiButton v-if="cancelSubscription" variant="destructive" @click="$emit('change')" class="hidden lg:inline">
+    <UiButton v-if="cancelSubscription" variant="destructive" @click="$emit('change')"
+      class="max-h-[36px] hidden lg:inline">
       Cancel Subscription
     </UiButton>
     <div v-if="cancelSubscription" class="flex flex-col items-center justify-center gap-1 lg:hidden">
