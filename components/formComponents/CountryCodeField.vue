@@ -78,6 +78,7 @@
   import { Check } from "lucide-vue-next";
   import countryData from "~/assets/country-codes.json";
   import { ChevronDown } from "lucide-vue-next";
+  import { useCountryData } from '~/composables/useCountryData'
 
   const props = defineProps({
     name: {
@@ -104,6 +105,8 @@
     },
   });
   const searchField = ref("");
+  const { fetchLocation, countryDetails } = useCountryData()
+
   const allCoutryDialCode = computed(() =>
     countryData
       ?.filter(
@@ -131,6 +134,7 @@
     meta,
     handleChange,
   } = useField(() => props.name);
+  
   const countryCode = ref(fieldValue.value);
 
   watch(countryCode, (newValue) => {
@@ -139,4 +143,11 @@
   const handleSearchCountries = (e: string) => {
     searchField.value = e.toLowerCase();
   };
+
+onMounted(async () => {
+  await fetchLocation();
+  if (countryDetails.value?.dial_code) {
+    countryCode.value = countryDetails.value.dial_code;
+  }
+});
 </script>
