@@ -420,3 +420,81 @@ export const zodInsertOrganization = createInsertSchema(organizationSchema, {
 export const zodInsertPlaygroundDocument = createInsertSchema(
   playgroundDocumentSchema,
 );
+
+// new schemas
+export const adminOrganizationSchema = adminSchema.table("admin_organizations", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  name: varchar("name", { length: 64 }).notNull(),
+  onboardingMetadata: jsonb("onboarding_metadata"),
+  chatPlanCode: varchar("chat_plan_code").notNull().default("chat_free"),
+  voicePlanCode: varchar("voice_plan_code"),
+  billingEnabled: boolean("billing_enabled"),
+  wallet: doublePrecision("wallet").default(0.00),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow()
+})
+
+export const serviceTypesEnum = pgEnum("serviceTypes", [
+  "chat",
+  "voice"
+]);
+
+export const subscriptionStatusEnum = pgEnum("subscriptionStatus", [
+  "active",
+  "inactive",
+  "cancelled"
+])
+
+export const adminPlanDetailsSchema = adminSchema.table("admin_plan_details", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  serviceType: serviceTypesEnum("service_type").notNull(),
+  interactionLimit: integer("interaction_limit").notNull(),
+  isIndiaSpecific: boolean("is_india_specific").default(true),
+  planDuration: varchar("plan_duration").notNull(),
+  extraInteractionCost: doublePrecision("extra_interaction_cost").default(0.00),
+  extraInteractionLimit: integer("extra_interaction_limit").notNull(),
+  botLimit: integer("bot_limit").notNull(),
+  extraBotLimit: integer("extra_bot_limit").notNull(),
+  extraBotCost: doublePrecision("extra_interaction_cost").default(0.00),
+  leadGenerationEnabled: boolean("lead_generation_enabled").default(false),
+  crmIntegrationEnabled: boolean("crm_integration_enabled").default(false),
+  widgetCustomization: boolean("widget_customization").default(false),
+  brandingIncluded: boolean("branding_included").default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow()
+})
+
+export const adminSubscriptionSchema = adminSchema.table("admin_subscriptions", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organizationId").notNull().references(() => organizationSchema.id),
+  serviceType: serviceTypesEnum("service_type").notNull(),
+  subscriptionId: varchar("subscription_id"),
+  pricingPlanCode: varchar("pricing_plan_code").notNull(),
+  subscriptionStatus: subscriptionStatusEnum("subscription_status").notNull().default("active"),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow()
+})
+
+export const adminPlanUsageSchema = adminSchema.table("admin_plan_usages", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organizationId").notNull().references(() => organizationSchema.id),
+  serviceType: serviceTypesEnum("service_type").notNull(),
+  subscriptionId: varchar("subscription_id"),
+  interactionsUsed: integer("interactions_used").default(0),
+  whatsappSessionsUsed: integer("whatsapp_sessions_used").default(0),
+  status: subscriptionStatusEnum("status").notNull().default("active"),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow()
+})
+
+export const adminNewConfigurationSchema = adminSchema.table("admin_configurations", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  configurationName: varchar("configuration_name").notNull(),
+  configurationMetadata: jsonb("configuration_metadata"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow()
+})

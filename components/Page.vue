@@ -1,9 +1,13 @@
 <template>
   <div :class="[
-    props.disablePadding
-      ? ''
-    : 'px-3 pb-2 sm:px-3 md:px-4 pt-4 md:pt-4 lg:px-4 lg:pt-4 xl:px-4',
-  ]" class="w-full py-2" v-if="breadCrumbs?.length > 0">
+    props.disablePadding ? '' : (
+      leadPage === 'leads'
+        ? (browserClass === 'brave-browser'
+          ? 'px-3 pb-2 pt-[100px] sm:px-3 md:px-4 md:pt-4 lg:px-4 lg:pt-4 xl:px-4'
+          : 'px-3 pb-2 pt-[60px] sm:px-3 md:px-4 md:pt-4 lg:px-4 lg:pt-4 xl:px-4')
+        : 'px-3 py-2 sm:px-3 md:px-4 md:pt-4 lg:px-4 lg:pt-4 xl:px-4'
+    ),
+  ]" class="w-full" v-if="breadCrumbs?.length > 0">
     <UiBreadcrumb>
       <UiBreadcrumbList>
         <UiBreadcrumbItem v-for="({ label, to }, index) in breadCrumbs" :key="index"
@@ -18,7 +22,7 @@
   <div :class="[
     props.disablePadding 
       ? '' 
-    : `${(leadPage === 'leads') ? (browserClass === 'brave-browser') ? 'pt-[100px] sm:pt-[100px]' : 'pt-[60px] sm:pt-[60px]' : 'pb-2 sm:pb-2'} px-2 sm:px-2 md:px-4 lg:px-4 xl:px-4 md:pt-0 lg:pt-0 xl:pt-0`,
+    : `${(leadPage === 'leads') ? (browserClass === 'brave-browser') ? 'pt-[10px] sm:pt-[10px]' : 'pt-[10px] sm:pt-[10px]' : 'pb-2 sm:pb-2'} px-2 sm:px-2 md:px-4 lg:px-4 xl:px-4 md:pt-0 lg:pt-0 xl:pt-0`,
     'pb-2'
   ]">
     <div class="mb-2 pt-2 flex items-center justify-between gap-2">
@@ -31,7 +35,8 @@
           <navigationSheet />
         </div>
         <div>
-          <h3 className="text-[15px] sm:text-[15px] md:text-2xl lg:text-2xl xl:text-2xl font-semibold tracking-tight">
+          <h3
+            className="max-w-[120px] sm:max-w-[120px] md:max-w-[400px] text-[15px] sm:text-[15px] md:text-2xl lg:text-2xl xl:text-2xl font-semibold tracking-tight truncate">
             {{ title }}
           </h3>
           <h4 v-if="props.subTitle" className="text-[12px]">

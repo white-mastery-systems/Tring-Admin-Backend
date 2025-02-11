@@ -102,12 +102,11 @@ export default defineEventHandler(async (event) => {
       }
     } else if (botIntegration?.integration?.crm === "zoho-crm") {
       if(!body.botUser?.metaData?.zohoCrmLeadId) {
-        const name = body?.botUser?.name?.split(" ");
         let firstName = body?.botUser?.name;
-        let lastName = null;
-        if (name?.length > 1) {
-          firstName = name[0];
-          lastName = name[1];
+        let lastName = "";
+        if (firstName?.includes(" ")) {
+          firstName = body?.botUser?.name?.split(" ")[0];
+          lastName = body?.botUser?.name?.split(" ")[1];
         }
   
         const layoutObj = botIntegration?.metadata?.layoutObj;
@@ -118,22 +117,22 @@ export default defineEventHandler(async (event) => {
             Layout: {
               id: layoutObj?.id,
             },
-            Lead_Source: "Tring ChatBot",
+            Lead_Source: "Online - Chatbot",
             Company: "___",
-            Last_Name: lastName ?? body?.botUser?.name,
+            Last_Name: lastName !== "" ? lastName : body?.botUser?.name,
             First_Name: firstName,
             Email: body?.botUser?.email,
-            Phone: body?.botUser?.mobile,
+            Mobile: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
+            Notes: `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`
           },
           integrationData: botIntegration?.integration,
         });
         
-        
-         await updateBotUser(body?.botUser?.id, {
+        await updateBotUser(body?.botUser?.id, {
             zohoCrmLeadId: generatedCrmLead?.data[0]?.details?.id,
           });
       } else {
-        const updateZohoCrmLeadWithNotes = await updateNotesInZohoCRM({
+      await updateNotesInZohoCRM({
           zohoCrmLeadId: body.botUser?.metaData?.zohoCrmLeadId,
           integrationData: botIntegration?.integration,
           token: botIntegration?.integration?.metadata?.access_token,
@@ -141,7 +140,7 @@ export default defineEventHandler(async (event) => {
           body: body?.note,
         });
       }
-    } else if (botIntegration?.integration?.crm === "sell-do") {
+    } else if (botIntegration?.integration?.crm === "sell-do") { 
       const { campaignId, projectId } = botIntegration?.metadata;
       const apiKey = botIntegration.integration.metadata.apiKey;
       const data = await createLeadInSellDo(
