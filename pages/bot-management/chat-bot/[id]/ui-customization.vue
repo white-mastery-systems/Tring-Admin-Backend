@@ -13,9 +13,11 @@
       <form @submit.prevent="uiUpdate" class="space-y-6 pb-6">
         <div
           class="ml-0 flex w-full flex-col gap-[13px] p-5 sm:ml-0 sm:w-full md:ml-0 md:w-full lg:ml-11 lg:w-[60%] xl:ml-11 xl:w-[60%] overflow-scroll">
-          <FileUpload @change="handleLogoChange" name="logo" label="Upload Logo" :required="true" :accept="'image/*'"
-            :url="values.logo.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
-            :helperText="'Only files up to 5MB can be uploaded.'" />
+          <div class="w-[20%]">
+            <FileUpload @change="handleLogoChange" name="logo" label="Upload Logo" :required="true" :accept="'image/*'"
+              :url="values.logo.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
+              :helperText="'Only files up to 5MB can be uploaded.'" />
+          </div>
           <!-- <UiFormField v-slot="{ handleChange, handleBlur, value }" name="logo">
             <UiFormItem class="flex w-full flex-col items-start">
               <UiLabel class="pb-2 text-lg font-medium">Logo</UiLabel>
@@ -307,7 +309,6 @@ watch(
   },
   { immediate: true } // Runs immediately when botDetails is available
 );
-
 const handleLogoChange = async (event: any) => {
   logoData.value = event[0];
 
@@ -331,7 +332,7 @@ const uiUpdate = handleSubmit(async (value: any) => {
     metadata: {
       ...botDetails.metadata,
       ui: {
-        logo: uploadedDetails.metadata.ui.logo ?? botDetails.metadata.ui?.logo,
+        logo: uploadedDetails?.metadata?.ui?.logo ?? botDetails.metadata.ui?.logo,
         color: hexToHSL(value.color),
         secondaryColor: hexToHSL(value.secondaryColor),
         defaultSelect: value.defaultSelect,
@@ -354,7 +355,6 @@ const uiUpdate = handleSubmit(async (value: any) => {
     name: "bot-management-chat-bot-id",
     params: { id: paramId.params.id },
   });
-
 });
 const openPrimaryColorPicker = () => {
   colorInput.value.$el.click()
