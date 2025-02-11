@@ -146,7 +146,7 @@
 
 onMounted(async () => {
   await fetchLocation();
-  if (countryDetails.value?.dial_code) {
+  if (countryDetails.value?.dial_code && !countryCode.value) {
     countryCode.value = countryDetails.value.dial_code;
   }
 });
