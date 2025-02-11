@@ -119,7 +119,7 @@ export default defineEventHandler(async (event) => {
             },
             Lead_Source: "Online - Chatbot",
             Company: "___",
-            Last_Name: lastName,
+            Last_Name: lastName !== "" ? lastName : body?.botUser?.name,
             First_Name: firstName,
             Email: body?.botUser?.email,
             Mobile: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
@@ -128,11 +128,11 @@ export default defineEventHandler(async (event) => {
           integrationData: botIntegration?.integration,
         });
         
-        updateBotUser(body?.botUser?.id, {
+        await updateBotUser(body?.botUser?.id, {
             zohoCrmLeadId: generatedCrmLead?.data[0]?.details?.id,
           });
       } else {
-      updateNotesInZohoCRM({
+      await updateNotesInZohoCRM({
           zohoCrmLeadId: body.botUser?.metaData?.zohoCrmLeadId,
           integrationData: botIntegration?.integration,
           token: botIntegration?.integration?.metadata?.access_token,

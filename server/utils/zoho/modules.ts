@@ -480,7 +480,7 @@ export async function generateLeadInZohoCRM({
     })
     logger.info(`generateLeadInZohoCRM data: ${JSON.stringify(data)}`)
 
-    updateNotesInZohoCRM({
+    await updateNotesInZohoCRM({
       zohoCrmLeadId: data.data[0]?.details?.id,
       integrationData: integrationData,
       token: integrationData?.metadata?.access_token,
@@ -490,7 +490,7 @@ export async function generateLeadInZohoCRM({
     return data
   } catch (err: any) {
      logger.error(
-      `generateLeadInZohoCRM - token:${token}, refreshToken:${refreshToken}, body: ${JSON.stringify(body)},integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
+      `generateLeadInZohoCRM - token:${token}, refreshToken:${refreshToken}, body: ${JSON.stringify(body)},integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err)}`,
     );
     if (!refreshToken) return;
     if (err.status === 401) {
