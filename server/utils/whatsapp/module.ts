@@ -99,7 +99,7 @@ export async function createWhatsAppMessage(
   userPhone: string,
   notes: string,
 ) {
-  const url = "https://graph.facebook.com/v20.0/552375867948675/messages";
+  const url = "https://graph.facebook.com/v21.0/552375867948675/messages";
   // const messageBody = {
   //   messaging_product: "whatsapp",
   //   to: userPhone,

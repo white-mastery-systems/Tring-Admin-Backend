@@ -101,7 +101,7 @@ export default defineEventHandler(async (event) => {
         });
       }
     } else if (botIntegration?.integration?.crm === "zoho-crm") {
-      if(!body.botUser?.metaData?.zohoCrmLeadId) {
+      if(!body?.botUser?.metaData?.zohoCrmLeadId) {
         let firstName = body?.botUser?.name;
         let lastName = "";
         if (firstName?.includes(" ")) {
@@ -123,7 +123,7 @@ export default defineEventHandler(async (event) => {
             First_Name: firstName,
             Email: body?.botUser?.email,
             Mobile: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
-            Notes: `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`
+            Notes: `${config.public.adminBaseUrl}/analytics/leads/${body?.chatId}`
           },
           integrationData: botIntegration?.integration,
         });
@@ -180,7 +180,7 @@ export default defineEventHandler(async (event) => {
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: `${botDetails?.name}`,
-          chatLink: `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`,
+          chatLink: `${config.public.adminBaseUrl}/analytics/leads/${body?.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
         // TODO: Add country code to the phone number
@@ -289,7 +289,7 @@ export default defineEventHandler(async (event) => {
     botDetails?.emailRecipients && botDetails?.emailRecipients.length
       ? [...botDetails?.emailRecipients, adminUser?.email]
       : [adminUser?.email];
-  if(!body.note) {
+  if(!body?.note) {
       sendEmail(
     emailRecipients,
     "Head's Up, New Lead Notification from Your Chatbot",
@@ -326,7 +326,5 @@ export default defineEventHandler(async (event) => {
 </div>`,
   );
   }
-
-
   return adminUser;
 });
