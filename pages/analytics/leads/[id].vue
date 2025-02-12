@@ -30,7 +30,7 @@
             <UiTabsTrigger value="timeline"> Time Line </UiTabsTrigger>
           </UiTabsList>
           <UiTooltipProvider>
-            <UiTabsContent value="client">
+            <UiTabsContent value="client" class="overflow-scroll h-[83vh]">
               <div class="flex grid grid-cols-2 flex-col items-center gap-2 pl-4 capitalize">
                 <div v-for="[key, value] in details[0]" :key="key" class="max-w-full font-medium">
                   <UiTooltip>
