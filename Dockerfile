@@ -1,6 +1,6 @@
 FROM node:20.16.0-alpine AS builder
 
-RUN yarn global add pnpm
+RUN npm install -g pnpm
 
 WORKDIR /app
 
