@@ -18,8 +18,8 @@ export default defineEventHandler(async (event) => {
     botUser: z.any(),
     note: z.any(),
     chatId: z.string().uuid(),
-    botSource: z.string(),
-    botSubSource: z.string(),
+    botSource: z.string().optional(),
+    botSubSource: z.string().optional(),
   });
   const generateLeadsValidationParams = z.object({
     id: z.string(),
