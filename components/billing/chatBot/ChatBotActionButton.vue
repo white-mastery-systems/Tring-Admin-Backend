@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-start justify-end gap-2">
     <div v-if="isPageLoading" class="grid place-items-center text-[#424BD1]">
-      <Icon name="svg-spinners:90-ring-with-bg" class="h-7 w-7" />
+      <!-- <Icon name="svg-spinners:90-ring-with-bg" class="h-7 w-7" /> -->
     </div>
     <div v-else>
       <div v-if="isChatSubscription"
