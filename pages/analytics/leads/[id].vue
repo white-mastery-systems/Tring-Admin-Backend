@@ -2,17 +2,8 @@
   <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="[
-    {
-    label: `${leadData?.botUser?.name ?? 'No Name'}`,
-      to: `/analytics/leads`,
-    },
-    {
-      label: 'Leads',
-      to: `/analytics/leads`,
-    },
-  ]" leadPage="leads" :disable-back-button="false" :disable-elevation="true">
-    <template #actionButtons>
+  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="breadCrum" leadPage="leads" :disable-back-button="!user" :disable-elevation="true">
+    <template #actionButtons v-if="user">
       <div class="flex items-center gap-3">
         <UiButton v-if="leadData?.lead?.status === 'default'" variant="destructive"
           @click="() => (changeStatus = true)">
@@ -63,11 +54,11 @@
                           <div v-else-if="key === 'Name'" class="truncate">
                             {{ leadData.channel === 'whatsapp' ? whatsappLead.name : value }}
                           </div>
-                            <div v-else class="truncate">
-                              {{ value }}
-                            </div>
+                          <div v-else class="truncate">
+                            {{ value }}
                           </div>
                         </div>
+                      </div>
                     </UiTooltipTrigger>
                     <UiTooltipContent class="w-auto">
                       <p>{{ value }}</p> <!-- Show the full value or any additional info -->
@@ -193,6 +184,8 @@ definePageMeta({
   middleware: "admin-only",
 });
 
+const { user, refreshUser }: { user: any; refreshUser: any } =
+  await useUser();
 const BotId = ref(null);
 
 const router = useRouter();
@@ -224,9 +217,28 @@ watchEffect(() => {
     });
   }
 });
+
 onMounted( async() => {
   await fetchData();
 });
+
+const breadCrum  = computed(() => {
+ if (user.value) {
+   return [
+     {
+       label: `${leadData.value?.botUser?.name ?? 'No Name'}`,
+       to: `/analytics/leads`,
+     },
+     {
+       label: 'Leads',
+       to: `/analytics/leads`,
+     },
+   ]
+ } else {
+  []
+ }
+})
+
 const details = computed(() => {
   if (!leadData.value) return [];
   const { params, ...rest } =
