@@ -1,23 +1,27 @@
 <template>
   <div class="flex items-start justify-end gap-2">
-    <div v-if="(query?.type === 'chat') && !usage?.plan_code?.includes('free')"
-      class="flex items-center justify-between gap-1 cursor-pointer" @click="creditBalanceModalState.open = true">
-      <div class="flex flex-col items-center gap-1 max-h-[36px]">
-        <UiButton
-          class="flex items-center justify-center font-regular text-center text-sm gap-1 bg-[#3ea52e33] hover:bg-[#3ea52e33] hover:brightness-100 px-2 py-2 md:py-2 lg:py-0">
-          <span>
-            <WhatsappIcon class="text-[#1ABB00] w-6 h-6 md:w-6 md:h-6 lg:w-5 lg:h-5" />
-          </span>
-          <div class="text-center text-[#000000] text-[4px] lg:text-[12px] hidden lg:flex">
+    <div v-if="isPageLoading">
+    </div>
+    <div v-else>
+      <div v-if="(query?.type === 'chat') && !usage?.plan_code?.includes('free')"
+        class="flex items-center justify-between gap-1 cursor-pointer" @click="creditBalanceModalState.open = true">
+        <div class="flex flex-col items-center gap-1 max-h-[36px]">
+          <UiButton
+            class="flex items-center justify-center font-regular text-center text-sm gap-1 bg-[#3ea52e33] hover:bg-[#3ea52e33] hover:brightness-100 px-2 py-2 md:py-2 lg:py-0">
             <span>
-              Credits :
-              {{ usageDetails.whatsappWalletBalance ?? 0 }}
+              <WhatsappIcon class="text-[#1ABB00] w-6 h-6 md:w-6 md:h-6 lg:w-5 lg:h-5" />
             </span>
-          </div>
-        </UiButton>
-        <span class="text-[4px] lg:text-[12px] flex sm:flex lg:hidden">
-          WhatsApp Credits
-        </span>
+            <div class="text-center text-[#000000] text-[4px] lg:text-[12px] hidden lg:flex">
+              <span>
+                Credits :
+                {{ usageDetails.whatsappWalletBalance ?? 0 }}
+              </span>
+            </div>
+          </UiButton>
+          <span class="text-[4px] lg:text-[12px] flex sm:flex lg:hidden">
+            WhatsApp Credits
+          </span>
+        </div>
       </div>
     </div>
     <NuxtLink :to="{ path: '/billing/view-all', query: { type: query?.type } }"
@@ -79,12 +83,17 @@ const props = defineProps({
   subscriptionData: { type: Object, required: true },
   usage: { type: Object, required: true },
   query: { type: Object, required: true },
+  isPageLoading: { type: Boolean, required: true },
 });
 
 const userLocationDetails = ref(await getLocationDetail())
 const emit = defineEmits<{ (e: "change"): void }>();
 const creditBalanceModalState = ref({ open: false });
 
+
+const isChatAndNotFreePlan = computed(() => {
+  return (props.query?.type === 'chat') && (!props.usage?.plan_code?.includes('free'))
+})
 const cancelSubscription = computed(() => {
   if (!props.usage.expiry_date) {
     return false; // Return a default value
