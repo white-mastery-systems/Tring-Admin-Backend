@@ -4,7 +4,7 @@
       <Icon name="svg-spinners:90-ring-with-bg" class="h-7 w-7" />
     </div>
     <div v-else>
-      <div v-if="(query?.type === 'chat') && !usage?.plan_code?.includes('free')"
+      <div v-if="isChatSubscription"
         class="flex items-center justify-between gap-1 cursor-pointer" @click="creditBalanceModalState.open = true">
         <div class="flex flex-col items-center gap-1 max-h-[36px]" v-if="!isPageLoading">
           <UiButton
@@ -86,6 +86,12 @@ const props = defineProps({
   query: { type: Object, required: true },
   isPageLoading: { type: Boolean, required: true },
 });
+
+const isChatSubscription = computed(() => {
+  return props.query?.type === 'chat' && !props.usage?.plan_code?.includes('free');
+});
+
+const whatsappBalance = computed(() => props.usageDetails?.whatsappWalletBalance ?? 0);
 
 const userLocationDetails = ref(await getLocationDetail())
 const emit = defineEmits<{ (e: "change"): void }>();
