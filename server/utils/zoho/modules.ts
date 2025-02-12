@@ -471,64 +471,26 @@ export async function generateLeadInZohoCRM({
   integrationData: any;
 }) {
   try {
-    const fieldMetadata = await getFieldMetadataFromZohoCRM({
-      token,
-      refreshToken,
-      body,
-      integrationData,
-    });
-  //
-
-  let bodyData = {
-    ...body,
-  };
-
-  fieldMetadata?.fields?.map((field) => {
-    if (field?.view_type?.create === true) {
-      if (bodyData[field?.api_name] === undefined) {
-        switch (field.data_type) {
-          case "text":
-            bodyData[field?.api_name] = "DEFAULT_TRING";
-            break;
-          case "date":
-            const date = new Date();
-            bodyData[field?.api_name] = format(new Date(), "yyyy-MM-dd");
-            break;
-          case "number":
-            bodyData[field?.api_name] = 0;
-            break;
-          case "website":
-            bodyData[field?.api_name] = "app.tringlabs.ai";
-            break;
-          case "email":
-            bodyData[field?.api_name] = "app@tringlabs.ai";
-            break;
-          case "phone":
-            bodyData[field?.api_name] = "8888888888";
-            break;
-          case "currency":
-            bodyData[field?.api_name] = 0;
-            break;
-          default:
-            // bodyData[field?.api_name] = "TRING_DEFAULT";
-            break;
-        }
-      }
-    }
-  });
-
-    const data = await $fetch(`${zohoIntegrationApiBaseUrls[integrationData.metadata.location]}/crm/v6/Leads`, {
+    const data: any = await $fetch(`${zohoIntegrationApiBaseUrls[integrationData.metadata.location]}/crm/v6/Leads`, {
       method: "POST",
-      body: { data: [bodyData] },
+      body: { data: [body] },
       headers: {
         Authorization: `Zoho-oauthtoken ${token}`,
       },
     })
     logger.info(`generateLeadInZohoCRM data: ${JSON.stringify(data)}`)
+
+    await updateNotesInZohoCRM({
+      zohoCrmLeadId: data.data[0]?.details?.id,
+      integrationData: integrationData,
+      token: integrationData?.metadata?.access_token,
+      refreshToken: integrationData?.metadata?.refresh_token,
+      body: body?.Notes,
+    });
     return data
   } catch (err: any) {
      logger.error(
-      `generateLeadInZohoCRM - token:${token}, refreshToken:${refreshToken}, body: ${JSON.stringify(body)},integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err.data)}`,
+      `generateLeadInZohoCRM - token:${token}, refreshToken:${refreshToken}, body: ${JSON.stringify(body)},integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(err)}`,
     );
     if (!refreshToken) return;
     if (err.status === 401) {
