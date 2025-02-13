@@ -106,17 +106,17 @@
         <UiDropdownMenuGroup class="font-medium text-[16px] py-2">
           <UiDropdownMenuItem v-for="item in dropdownMenuItems" :key="item.path" class="py-[10px]">
             <NuxtLink :to="item.path" class="flex items-center w-full">
-              <DropdownMenuShortcut class="pr-1">
+              <DropdownMenuShortcut class="pr-2">
                 <!-- {{ item.icon }} -->
                 <component :is="item.icon" size="18"></component>
               </DropdownMenuShortcut>
               {{ item.label }}
             </NuxtLink>
           </UiDropdownMenuItem>
-          <UiDropdownMenuItem>
+          <UiDropdownMenuItem class="flex items-center w-full">
             <div @click="handleLogout"
-              class="flex items-center justify-around font-medium hover:bg-gray-300/30 hover:brightness-110">
-              <Icon name="ic:round-logout" class="h-5 w-5" />
+              class="flex items-center font-medium hover:bg-gray-300/30 hover:brightness-110 w-full gap-[8px] text-[#ef4444]">
+              <Icon name="ic:round-logout" class="h-[18px] w-[18px]" />
               <p class="text-[16px] font-medium">Logout</p>
             </div>
           </UiDropdownMenuItem>
@@ -164,7 +164,8 @@ onMounted(async () => {
 })
 
 const handleNavigation = async () => {
-  if (isAnyPlanFree.value) await checkSubscription()
+  // if (isAnyPlanFree.value) 
+  await checkSubscription()
   emit("closeSheet");
 };
 const redirectToBilling = () => {
