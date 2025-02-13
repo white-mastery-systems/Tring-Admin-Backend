@@ -26,7 +26,7 @@
         <PrivacyDetails />
       </UiTabsContent>
     </UiTabs>
-    <template #actionButtons>
+    <!-- <template #actionButtons>
       <div>
         <UiButton @click="confirmModel"
           class="items-start justify-around bg-[#ffffff] pr-12 font-bold text-[#ff0000] hover:bg-gray-300/30 hover:text-[#ff0000] hover:brightness-110"
@@ -35,9 +35,9 @@
           <p class="text-base">Logout</p>
         </UiButton>
       </div>
-    </template>
-    <ConfirmationModal v-model:open="logoutModal" title="Confirm Logout"
-      description="Are you sure you want to log out ?" @confirm="handleLogout" />
+    </template> -->
+    <!-- <ConfirmationModal v-model:open="logoutModal" title="Confirm Logout"
+      description="Are you sure you want to log out ?" @confirm="handleLogout" /> -->
   </Page>
 </template>
 <script setup lang="ts">
@@ -62,16 +62,16 @@ useHead({
   }
 
 
-  const confirmModel = () => {
-    logoutModal.value = true;
-    localStorage.clear();
-  };
+  // const confirmModel = () => {
+  //   logoutModal.value = true;
+  //   localStorage.clear();
+  // };
 
-  const handleLogout = async () => {
-    authHandlers.logout();
-    logoutModal.value = false;
-    navigateTo({ name: "auth-sign-in" });
-  };
+  // const handleLogout = async () => {
+  //   authHandlers.logout();
+  //   logoutModal.value = false;
+  //   navigateTo({ name: "auth-sign-in" });
+  // };
 
   const isUpdating = ref(false);
 
