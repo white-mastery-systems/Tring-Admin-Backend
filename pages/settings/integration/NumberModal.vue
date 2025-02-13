@@ -1,9 +1,14 @@
 <template>
-  <DialogWrapper v-model="props.numberModalState" :title="(numberModalState.id) ? 'Edit Cloud Telephony' : 'Add New Cloud Telephony'">
+  <DialogWrapper v-model="props.numberModalState"
+    :title="(numberModalState.id) ? 'Edit Cloud Telephony' : 'Add New Cloud Telephony'">
     <Form @submit="handleConnect" class="space-y-3">
       <SelectField name="provider" placeholder="Select a provider" :options="providerList">
       </SelectField>
       <div class='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-2 lg:grid-cols-2 xl:grid-cols-2'>
+        <TextField v-if="values.provider === 'plivo'" name="authId" label="Auth ID" required placeholder="Enter auth ID" />
+          
+        <TextField v-if="values.provider === 'plivo'" name="authToken" label="Auth Token" required placeholder="Enter auth token" />
+
         <TextField v-if="values.provider === 'twilio' || values.provider === 'exotel'" name="accountSid"
           label="Account SID" required placeholder="Enter account SID" />
         <!-- <TextField v-if="values.provider === 'twilio'" name="authToken" label="Auth Token" required
@@ -37,6 +42,7 @@
 import { useCount } from '@/composables/useRefresh';
 import type { AnyFn } from '@vueuse/core';
 import { nextTick } from 'vue';
+import { cloudTelephonySchema } from '~/validationSchema/settings/cloudTelephonyValidatoin';
 
 interface NumberModalState {
   open: string;
@@ -71,106 +77,11 @@ const providerList = ref([
   }, {
     value: 'telnyx',
     label: 'Telnyx',
+  }, {
+    value: 'plivo',
+    label: 'Plivo',
   }
 ])
-
-const formSchema = toTypedSchema(
-  z.object({
-      provider: z.string({ required_error: 'Provider is required.' }).nonempty({ message: 'Provider is required.' }),
-      accountSid: z.string().optional(),
-      apiSecret: z.string().optional(),
-      // authToken: z.string().optional(),
-      subDomain: z.string().optional(),
-      apiKey: z.string().optional(),
-      apiToken: z.string().optional(),
-      flowId: z.string().optional(),
-      publicKey: z.string().optional(),
-      connectionId: z.string().optional(),
-    })
-    .superRefine((data, ctx) => {
-      if (data.provider !== 'sandbox' && !data.apiKey) {
-        ctx.addIssue({
-          path: ['apiKey'],
-          message: 'API Key is required unless the provider is "sandbox".',
-        });
-      }
-      // Provider-specific validation
-      if (data.provider === 'twilio') {
-        if (!data.accountSid) {
-          ctx.addIssue({
-            path: ['accountSid'],
-            message: 'Account SID is required for Twilio.',
-          });
-        }
-        // if (!data.authToken) {
-        //   ctx.addIssue({
-        //     path: ['authToken'],
-        //     message: 'Auth Token is required for Twilio.',
-        //   });
-        // }
-        if (!data.apiSecret) {
-          ctx.addIssue({
-            path: ['apiSecret'],
-            message: 'Api secret is required for Twilio.',
-          });
-        }
-      }
-
-      if (data.provider === 'exotel') {
-        if (!data.accountSid) {
-          ctx.addIssue({
-            path: ['accountSid'],
-            message: 'Account SID is required for Exotel.',
-          });
-        }
-        // if (!data.apiKey) {
-        //   ctx.addIssue({
-        //     path: ['apiKey'],
-        //     message: 'API Key is required for Exotel.',
-        //   });
-        // }
-        if (!data.subDomain) {
-          ctx.addIssue({
-            path: ['subDomain'],
-            message: 'Sub Domain is required for Exotel.',
-          });
-        }
-        if (!data.apiToken) {
-          ctx.addIssue({
-            path: ['apiToken'],
-            message: 'API Token is required for Exotel.',
-          });
-        }
-        if (!data.flowId) {
-          ctx.addIssue({
-            path: ['flowId'],
-            message: 'Flow ID is required for Exotel.',
-          });
-        }
-      }
-
-      if (data.provider === 'telnyx') {
-        // if (!data.apiKey) {
-        //   ctx.addIssue({
-        //     path: ['apiKey'],
-        //     message: 'API Key is required for Telnyx.',
-        //   });
-        // }
-        if (!data.publicKey) {
-          ctx.addIssue({
-            path: ['publicKey'],
-            message: 'Public Key is required for Telnyx.',
-          });
-        }
-        if (!data.connectionId) {
-          ctx.addIssue({
-            path: ['connectionId'],
-            message: 'Connection Id is required for Telnyx.',
-          });
-        }
-      }
-    })
-);
 
 const {
   errors,
@@ -181,7 +92,7 @@ const {
   values,
   resetForm,
 } = useForm({
-  validationSchema: formSchema,
+  validationSchema: cloudTelephonySchema,
 });
 
 watch(() => props.numberModalState.open, async () => {
