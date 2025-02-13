@@ -16,6 +16,10 @@ export const getAvailablePhoneNumbers = async (provider: string, metadata: any) 
         incomingPhoneNumber = await telnyxIncomingPhoneNumbers({ apiKey: metadata.apiKey })
         break
 
+      case "plivo":
+        incomingPhoneNumber = await plivoIncomingPhoneNumbers({ authId: metadata.authId, authToken: metadata.authToken })
+        break
+
       case "sandbox": 
         incomingPhoneNumber = sandboxIncomingPhoneNumbers()
         break
@@ -25,19 +29,6 @@ export const getAvailablePhoneNumbers = async (provider: string, metadata: any) 
     logger.error(`Cloud telephony - get available phone-numbers Error, ${JSON.stringify(error.message)}`)
     throw new Error(error)
   }
-}
-
-export const sandboxIncomingPhoneNumbers = () =>{
-  const start = 100000; // Start of the range
-  const end = 100100; // End of the range
-  const prefix = "+91"; // Prefix for each number
-
-  // Generate the numbers in the range
-  const numbers = [];
-  for (let i = start; i <= end; i++) {
-    numbers.push(`${prefix}${i}`);
-  }
-  return numbers
 }
 
 export const twilioIncomingPhoneNumbers = async ({ apiKey, apiSecret, accountSid } : 
@@ -53,7 +44,7 @@ export const twilioIncomingPhoneNumbers = async ({ apiKey, apiSecret, accountSid
         Authorization: `Basic ${credentials}`
       }
     })
-    const phoneNumbers = await data.incoming_phone_numbers.map((i: any) => i.phone_number)
+    const phoneNumbers = data.incoming_phone_numbers.map((i: any) => i.phone_number)
     return phoneNumbers
   } catch (error: any) {
     logger.error(`twilioIncomingPhoneNumbers Error: ${JSON.stringify(error.message)}`)
@@ -76,7 +67,7 @@ export const exotelIncomingPhoneNumbers = async ({ apiKey, apiToken, subDomain, 
         Authorization: `Basic ${credentials}`,
       },
     })
-    const phoneNumbers = await data.incoming_phone_numbers.map((i: any) => i.phone_number)
+    const phoneNumbers = data.incoming_phone_numbers.map((i: any) => i.phone_number)
     return phoneNumbers
   } catch (error: any) {
     logger.error(`exotelIncomingPhoneNumbers Error: ${JSON.stringify(error.message)}`)
@@ -91,10 +82,42 @@ export const telnyxIncomingPhoneNumbers = async ({ apiKey }: { apiKey: string })
         Authorization: `Bearer ${apiKey}`
       }
     })
-    const phoneNumbers = await result.data.map((i: any) => i.phone_number)
+    const phoneNumbers = result.data.map((i: any) => i.phone_number)
     return phoneNumbers
   } catch (error: any) {
     logger.error(`telnyxIncomingPhoneNumbers Error: ${JSON.stringify(error.message)}`)
     throw new Error(error)
   }
+}
+
+export const plivoIncomingPhoneNumbers = async ({ authId, authToken } : { authId? : string, authToken? : string }) => {
+  try {
+    console.log("inside")
+    const credentials = btoa("MAZJLMYMI5MDLKMGI2ZD:MDg5MWU4OWM0MjQ4ZDZjZGFkOWYyNGYxNzdhNDEw");
+    const data: any = await $fetch(`https://api.plivo.com/v1/Account/MAZJLMYMI5MDLKMGI2ZD/Number/`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Basic ${credentials}`,
+      },
+    })
+    const phoneNumbers = data.objects.map((i: any) => i.number)
+    return phoneNumbers
+  } catch (error: any) {
+    logger.error(`plivoIncomingPhoneNumbers Error: ${JSON.stringify(error.message)}`)
+    throw new Error(error)
+  }
+}
+
+
+export const sandboxIncomingPhoneNumbers = () =>{
+  const start = 100000; // Start of the range
+  const end = 100100; // End of the range
+  const prefix = "+91"; // Prefix for each number
+
+  // Generate the numbers in the range
+  const numbers = [];
+  for (let i = start; i <= end; i++) {
+    numbers.push(`${prefix}${i}`);
+  }
+  return numbers
 }

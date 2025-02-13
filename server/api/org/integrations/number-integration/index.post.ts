@@ -3,6 +3,7 @@ import { createNumberIntegration, getExophoneByProvider } from "~/server/utils/d
 const zodInsertNumberIntegration = z.object({
    provider: z.string(),
    metadata: z.object({
+     authId: z.string().optional(),
      accountSid: z.string().optional(),
      authToken: z.string().optional(),
      apiSecret: z.string().optional(),
