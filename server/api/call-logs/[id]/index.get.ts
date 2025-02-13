@@ -3,7 +3,6 @@ export default defineEventHandler(async (event) => {
   const timeZone = Array.isArray(timeZoneHeader)
     ? timeZoneHeader[0]
     : timeZoneHeader || "Asia/Kolkata";
-  await isOrganizationAdminHandler(event)
 
   const { id: callLogId } = getRouterParams(event)
   const query = await isValidQueryHandler(event, z.object({
