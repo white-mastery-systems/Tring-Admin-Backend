@@ -45,6 +45,10 @@ export const chatBotSchema = chatbotSchema.table("bot", {
     }>()
     .default({}),
   formStructure: jsonb("form_structure").default({}),
+  tools: jsonb("tools").default({
+    customTools : [],
+    defaultTools: []
+  }),
   status: varchar("status").default("inactive"),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })
