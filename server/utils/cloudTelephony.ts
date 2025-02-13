@@ -44,7 +44,7 @@ export const twilioIncomingPhoneNumbers = async ({ apiKey, apiSecret, accountSid
         Authorization: `Basic ${credentials}`
       }
     })
-    const phoneNumbers = data.incoming_phone_numbers.map((i: any) => i.phone_number)
+    const phoneNumbers = data?.incoming_phone_numbers?.map((i: any) => i.phone_number)
     return phoneNumbers
   } catch (error: any) {
     logger.error(`twilioIncomingPhoneNumbers Error: ${JSON.stringify(error.message)}`)
@@ -67,7 +67,7 @@ export const exotelIncomingPhoneNumbers = async ({ apiKey, apiToken, subDomain, 
         Authorization: `Basic ${credentials}`,
       },
     })
-    const phoneNumbers = data.incoming_phone_numbers.map((i: any) => i.phone_number)
+    const phoneNumbers = data?.incoming_phone_numbers?.map((i: any) => i.phone_number)
     return phoneNumbers
   } catch (error: any) {
     logger.error(`exotelIncomingPhoneNumbers Error: ${JSON.stringify(error.message)}`)
@@ -82,7 +82,7 @@ export const telnyxIncomingPhoneNumbers = async ({ apiKey }: { apiKey: string })
         Authorization: `Bearer ${apiKey}`
       }
     })
-    const phoneNumbers = result.data.map((i: any) => i.phone_number)
+    const phoneNumbers = result?.data?.map((i: any) => i.phone_number)
     return phoneNumbers
   } catch (error: any) {
     logger.error(`telnyxIncomingPhoneNumbers Error: ${JSON.stringify(error.message)}`)
@@ -90,17 +90,16 @@ export const telnyxIncomingPhoneNumbers = async ({ apiKey }: { apiKey: string })
   }
 }
 
-export const plivoIncomingPhoneNumbers = async ({ authId, authToken } : { authId? : string, authToken? : string }) => {
+export const plivoIncomingPhoneNumbers = async ({ authId, authToken } : { authId : string, authToken : string }) => {
   try {
-    console.log("inside")
-    const credentials = btoa("MAZJLMYMI5MDLKMGI2ZD:MDg5MWU4OWM0MjQ4ZDZjZGFkOWYyNGYxNzdhNDEw");
-    const data: any = await $fetch(`https://api.plivo.com/v1/Account/MAZJLMYMI5MDLKMGI2ZD/Number/`, {
+    const credentials = btoa(`${authId}:${authToken}`);
+    const data: any = await $fetch(`https://api.plivo.com/v1/Account/${authId}/Number/`, {
       method: 'GET',
       headers: {
         Authorization: `Basic ${credentials}`,
       },
     })
-    const phoneNumbers = data.objects.map((i: any) => i.number)
+    const phoneNumbers = data?.objects?.map((i: any) => i.number)
     return phoneNumbers
   } catch (error: any) {
     logger.error(`plivoIncomingPhoneNumbers Error: ${JSON.stringify(error.message)}`)
