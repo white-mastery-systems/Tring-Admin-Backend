@@ -392,12 +392,6 @@
     // analyticsData.value.bots = 0;
   });
 
-  const getStarted = () => {
-    if (analyticsData.value.bots === 0) {
-      navigateTo("/bots");
-    }
-  };
-
   const onDateChange = async (value: any) => {
     if (value.from && value.to) {
       filter.from = value.from;

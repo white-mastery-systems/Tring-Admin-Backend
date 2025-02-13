@@ -239,14 +239,14 @@ definePageMeta({
 // const logoAsString = z.string().min(1, "Logo is required");
 const isLoading = ref(false)
 
+const logoAsString = z.string().min(1, "Logo is required");
+const logoAsObject = z.object({
+  url: z.string({ required_error: "Logo is required" }).min(1, "Logo is required"),
+});
 
 const uiCustomizationValidation = toTypedSchema(
   z.object({
-    // logo: z.union([logoAsString, logoAsObject]),
-    // logo: z.object({}).optional(),
-    logo: z.object({
-      url: z.string({ required_error: "Logo is required" }).min(1, "Logo is required"), // Ensure `url` is required and non-empty
-    }),
+    logo: z.union([logoAsString, logoAsObject]),
     color: z.string().min(1, "Primary color is required"),
     secondaryColor: z.string().min(1, "Secondary color is required"),
     widgetSound: z.string({ required_error: "Widget sound must be selected" }).min(1, "Widget sound must be selected"),
@@ -283,7 +283,7 @@ const {
   validationSchema: uiCustomizationValidation,
 });
 
-setFieldValue("logo", (botDetails.metadata.ui.logo ?? {}))
+setFieldValue("logo", ((typeof botDetails.metadata.ui.logo === "object" ? botDetails.metadata.ui.logo : {url: botDetails.metadata.ui.logo}) ?? {}))
 
 setFieldValue("color", (hslToHex(botDetails.metadata.ui.color ?? "236, 61%, 54%, 1")))
 

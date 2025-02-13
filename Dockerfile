@@ -1,11 +1,12 @@
-FROM node:20.16.0-alpine as builder
+FROM node:20.16.0-alpine AS builder
 
+RUN npm install -g pnpm
 
 WORKDIR /app
 
 COPY package.json .
 COPY pnpm-lock.yaml .
-RUN yarn global add pnpm
+
 RUN pnpm install 
 
 COPY . .
@@ -14,9 +15,9 @@ RUN pnpm build
 
 FROM node:20.16.0-alpine 
 
+RUN rm -rf /app/.nuxt /app/.output
 
 # copy over build files from builder step
-# RUN rm -rf /app/.nuxt /app/.output /app/dist
 COPY --from=builder /app/.output  app/.output
 COPY --from=builder /app/.nuxt  app/.nuxt
 
@@ -25,11 +26,8 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 
-RUN mkdir -p assets/docs
-RUN mkdir -p assets/logo
-RUN mkdir -p public/logo
+RUN mkdir -p assets/docs assets/logo public/logo
 
 EXPOSE 3000
 
 CMD [ "node", ".output/server/index.mjs" ]
-

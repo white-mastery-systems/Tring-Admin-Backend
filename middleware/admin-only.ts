@@ -5,9 +5,8 @@ export default defineNuxtRouteMiddleware(async (_to) => {
   if (import.meta.server) return;
 
   const user = (await useUser()).user as Ref<User>;
-
   if (!user.value) {
-    if (_to.name === "analytics-leads-id" && _to.params.id) {
+    if (((_to.name === "analytics-leads-id") || (_to.name === "analytics-chats-id") || (_to.name === "analytics-call-logs-id")) && _to.params.id) {
       useState('layout', () => 'signUpSuccess')
       return
     }

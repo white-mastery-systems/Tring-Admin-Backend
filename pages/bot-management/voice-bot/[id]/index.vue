@@ -318,13 +318,17 @@ const handleActivateBot = async () => {
     let getActive = botDetails.value.active
     getActive = !getActive
     try {
-      await $fetch(`/api/voicebots/${paramId.params.id}/deploy`, {
+      const voiceBotDetails = await $fetch(`/api/voicebots/${paramId.params.id}/deploy`, {
         method: "PUT", body: {
           active: getActive,
         },
       });
       integrationRefresh()
-      toast.success("Activated successfully");
+      if (voiceBotDetails.active) {
+        toast.success("Activated successfully");
+      } else {
+        toast.error("Deactivated successfully")
+      }
     } catch (error) {
       toast.error(error.statusMessage);
     }

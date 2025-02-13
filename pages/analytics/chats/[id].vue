@@ -2,16 +2,8 @@
   <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="[
-    {
-    label: `${leadData?.botUser?.name ?? 'No Name'}`,
-    to: `/analytics/chats`,
-  },
-    {
-      label: 'Chats',
-      to: `/analytics/chats`,
-    },
-  ]" leadPage="leads" :disable-back-button="false" :disable-elevation="true">
+  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="breadCrum" leadPage="leads"
+    :disable-back-button="!user" :disable-elevation="true">
     <div class="items-top gap-[25px flex items-center justify-center px-3">
       <div class="items-top xs:grid-cols-2 flex grid w-full grid-cols-1 gap-[25px] lg:grid-cols-2">
         <div class="justify-aro und flex w-full gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]">
@@ -21,7 +13,7 @@
               <UiTabsTrigger value="Timeline"> Timeline</UiTabsTrigger>
             </UiTabsList>
             <UiTooltipProvider>
-              <UiTabsContent value="Chat">
+              <UiTabsContent value="Chat" class="overflow-scroll h-[83vh]">
                 <div class="flex grid grid-cols-2 flex-col items-center gap-2 pl-4 capitalize">
                   <div v-for="(entry, index) in details" :key="index" class="max-w-full font-medium">
                     <div v-if="Array.isArray(entry) && entry.length === 2">
@@ -150,6 +142,8 @@
   </Page>
 </template>
 <script setup lang="ts">
+const { user, refreshUser }: { user: any; refreshUser: any } =
+  await useUser();
   const chatScreenRef = ref(null);
   const BotId = ref(null);
   const scrollChatBox = () => {
@@ -208,6 +202,24 @@ const formatLabel = (key: any) => {
   // Convert camelCase or PascalCase to words with spaces
   return key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z])/g, ' $1').trim();
 }
+
+const breadCrum = computed(() => {
+  if (user.value) {
+    return [
+      {
+        label: `${leadData.value?.botUser?.name ?? 'No Name'}`,
+        to: `/analytics/chats`,
+      },
+      {
+        label: 'Chats',
+        to: `/analytics/chats`,
+      },
+    ]
+    
+  } else {
+    []
+  }
+})
 
   const isPageLoading = computed(() => status.value === "pending");
 

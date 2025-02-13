@@ -2,8 +2,9 @@
   <page title="Billing" sub-title="Manage your subscription and billing information" :disableSelector="false"
     :disable-back-button="true" :disable-elevation="true">
     <template #actionButtons>
-      <ChatBotActionBotton :usageDetails="usageDetails" :query="route.query" :usage="orgBilling" @change="handleOpenCancelModal">
-      </ChatBotActionBotton>
+      <ChatBotActionButton :usageDetails="usageDetails" :isPageLoading="isPageLoading" :query="route.query"
+        :usage="orgBilling" @change="handleOpenCancelModal">
+      </ChatBotActionButton>
     </template>
     <ConfirmationModal v-model:open="cancelModalState" title="Are you sure to cancel your subscription"
       description="This action is irreversible" @confirm="handleConfirmPaymentCancellation">

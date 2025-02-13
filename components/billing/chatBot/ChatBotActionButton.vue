@@ -1,11 +1,12 @@
 <template>
   <div class="flex items-start justify-end gap-2">
-    <div v-if="isPageLoading">
+    <div v-if="isPageLoading" class="grid place-items-center text-[#424BD1]">
+      <!-- <Icon name="svg-spinners:90-ring-with-bg" class="h-7 w-7" /> -->
     </div>
     <div v-else>
-      <div v-if="(query?.type === 'chat') && !usage?.plan_code?.includes('free')"
+      <div v-if="isChatSubscription"
         class="flex items-center justify-between gap-1 cursor-pointer" @click="creditBalanceModalState.open = true">
-        <div class="flex flex-col items-center gap-1 max-h-[36px]">
+        <div class="flex flex-col items-center gap-1 max-h-[36px]" v-if="!isPageLoading">
           <UiButton
             class="flex items-center justify-center font-regular text-center text-sm gap-1 bg-[#3ea52e33] hover:bg-[#3ea52e33] hover:brightness-100 px-2 py-2 md:py-2 lg:py-0">
             <span>
@@ -85,6 +86,12 @@ const props = defineProps({
   query: { type: Object, required: true },
   isPageLoading: { type: Boolean, required: true },
 });
+
+const isChatSubscription = computed(() => {
+  return props.query?.type === 'chat' && !props.usage?.plan_code?.includes('free');
+});
+
+const whatsappBalance = computed(() => props.usageDetails?.whatsappWalletBalance ?? 0);
 
 const userLocationDetails = ref(await getLocationDetail())
 const emit = defineEmits<{ (e: "change"): void }>();

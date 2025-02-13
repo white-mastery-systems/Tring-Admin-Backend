@@ -36,7 +36,8 @@ export default defineEventHandler(async (event) => {
       - If the text does not contain a date, return "Not provided" for the Date field.
       - If the text does not contain a time, return "Not provided" for the Time field. 
       - Do not assume or generate a date and time based on the current date and time.  
-      - If multiple dates and times are mentioned, always extract the **last mentioned date and time** in the text. .
+      - If multiple dates and times are mentioned, always extract the **last mentioned date and time** in the text.
+      - Do not include any additional text, explanations, or formatting beyond what is specified above.
 
       Here's the text to analyze:
       ${JSON.stringify(message[0].messages)}
@@ -56,6 +57,7 @@ export default defineEventHandler(async (event) => {
 
     const result = response.choices[0].message.content;
     const formattedResult = JSON.stringify(result);
+    console.log({formattedResult});
 
     return { date: extractDate(formattedResult), time: extractTime(formattedResult) };
   } catch (error:any) {
@@ -71,8 +73,8 @@ function extractDate(input: string) {
 }
 
 function extractTime(input: string) {
-  // const timeRegex = /\b\d{1,2}(:\d{2})?\s*[APMapm]{2}\b/;
-  const timeRegex = /\b\d{1,2}([ :]\d{2})?\s*[APMampm]{2}\b/;;
+  // const timeRegex = /\b\d{1,2}([ :]\d{2})?\s*[APMampm]{2}\b/;
+  const timeRegex = /\b\d{1,2}([ :]\d{2})?\s*(?:[APMampm]{2}|O\s*clock)\b/;
   const match = input.match(timeRegex);
   return match ? match[0].trim() : null;
 }
