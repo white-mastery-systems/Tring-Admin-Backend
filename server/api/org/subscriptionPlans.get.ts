@@ -7,7 +7,8 @@ export default defineEventHandler(async (event) => {
 
   orgSubscription = orgSubscription.map((i: any) => ({
     type: i.botType,
-    planCode: i.planCode
+    planCode: i.planCode,
+    subscriptionStatus: i.status
   }))
 
   return orgSubscription
