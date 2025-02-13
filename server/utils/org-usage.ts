@@ -13,21 +13,7 @@ const handleChatTypeBilling = async (
   pricingInformation: any,
   type: string
 ) => {
-    if(orgSubscription?.status === "cancelled") {
-      const resObj = constructResponse({
-        usedQuota: 0,
-        maxQuota: 0,
-        planCode: "unAvailable",
-        walletBalance: orgSubscription.walletSessions,
-        extraSessionsCost: 0,
-        gst,
-        extraSessions: 0,
-        availableSessions: 0,
-        orgSubscription,
-        subscriptionStatus: "cancelled"
-      })
-      return resObj
-    }
+   
     // get interacted chats 
     const interactedSessions = await getInteractedSessions(organizationId, startDate, endDate)
     const whatsapp = await getOrgTotalWhatsappSessionsForMonth(organizationId, startDate, endDate)
@@ -39,6 +25,24 @@ const handleChatTypeBilling = async (
     const orgWalletSessions =  orgSubscription.walletSessions || 0
     const availableSessions = Math.max(maxSessions - usedSessions, 0)
     let extraSessions = 0
+
+    if(orgSubscription?.status === "cancelled") {
+      const resObj = constructResponse({
+        usedQuota: 0,
+        maxQuota: 0,
+        planCode: "unAvailable",
+        walletBalance: orgSubscription.walletSessions,
+        extraSessionsCost: 0,
+        gst,
+        extraSessions: 0,
+        availableSessions: 0,
+        orgSubscription,
+        subscriptionStatus: "cancelled",
+        whatsappSession: whatsappTotalSessions || 0,
+        whatsappWalletBalance: orgSubscription.whatsappWallet || 0
+      })
+      return resObj
+    }
   
     const resObj = constructResponse({
       usedQuota: usedSessions,

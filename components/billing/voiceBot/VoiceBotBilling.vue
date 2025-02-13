@@ -1,11 +1,3 @@
-<script setup lang="ts">
-import { format } from "date-fns";
-
-const props = defineProps({
-  usage: Object,
-});
-</script>
-
 <template>
   <div
     class="mt-4 mb-[120px] sm:mb-[120px] md:mb-0 lg:mb-0 xl:mb-0 w-full self-center rounded-lg bg-[#fffff] shadow-3xl">
@@ -85,3 +77,10 @@ const props = defineProps({
     </div>
   </div>
 </template>
+<script setup lang="ts">
+import { format } from "date-fns";
+
+const props = defineProps({
+  usage: Object,
+});
+</script>

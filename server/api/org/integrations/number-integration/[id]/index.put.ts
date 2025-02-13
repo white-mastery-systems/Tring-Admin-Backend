@@ -3,6 +3,7 @@ const db = useDrizzle()
 const zodUpdateNumberIntegration = z.object({
   provider: z.string().optional(),
   metadata: z.object({
+   authId: z.string().optional(),
    accountSid: z.string().optional(),
    apiSecret: z.string().optional(),
    authToken: z.string().optional(),
