@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
 
   orgSubscription = orgSubscription.map((i: any) => ({
     type: i.botType,
-    planCode: i.planCode === "voice_free" ? "unAvailable" : i.planCode,
+    planCode: i.planCode,
     subscriptionStatus: i.planCode === "voice_free" ? "inactive" : i.status 
   }))
 
