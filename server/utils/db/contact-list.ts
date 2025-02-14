@@ -149,7 +149,7 @@ export const getContactsByVoiceBucketId = async (contactListId: string, query?: 
   let data = await db.query.voiceContactLinkSchema.findMany({
     with: {
       contacts: {
-        where: query.q ?  or(
+        where: query?.q ?  or(
         ilike(voicebotContactSchema.name, `%${query.q}%`),
         ilike(voicebotContactSchema.phone, `%${query.q}%`),
       )

@@ -99,14 +99,13 @@ export const plivoIncomingPhoneNumbers = async ({ authId, authToken } : { authId
         Authorization: `Basic ${credentials}`,
       },
     })
-    const phoneNumbers = data?.objects?.map((i: any) => i.number)
+    const phoneNumbers = data?.objects?.map((i: any) => `+${i?.number}`)
     return phoneNumbers
   } catch (error: any) {
     logger.error(`plivoIncomingPhoneNumbers Error: ${JSON.stringify(error.message)}`)
     throw new Error(error)
   }
 }
-
 
 export const sandboxIncomingPhoneNumbers = () =>{
   const start = 100000; // Start of the range
