@@ -73,7 +73,8 @@
 
           <div class="flex items-center">
             <div class="flex flex-col">
-              <span class="min-w-[135px] max-w-[135px] truncate font-bold capitalize text-left">{{ userInfo?.username }}</span>
+              <span class="min-w-[135px] max-w-[135px] truncate font-bold capitalize text-left">{{ userInfo?.username
+                }}</span>
               <span class="min-w-[135px] max-w-[135px] truncate">{{ userInfo?.email }}</span>
             </div>
             <div>
@@ -117,7 +118,7 @@
             <div @click="handleLogout"
               class="flex items-center font-medium hover:bg-gray-300/30 hover:brightness-110 w-full gap-[8px] text-[#ef4444]">
               <Icon name="ic:round-logout" class="h-[18px] w-[18px]" />
-              <p class="text-[16px] font-medium">Logout</p>
+              <p class="text-sm font-medium">Logout</p>
             </div>
           </UiDropdownMenuItem>
         </UiDropdownMenuGroup>
