@@ -99,17 +99,7 @@ export async function createWhatsAppMessage(
   userPhone: string,
   notes: string,
 ) {
-  const url = "https://graph.facebook.com/v20.0/552375867948675/messages";
-  // const messageBody = {
-  //   messaging_product: "whatsapp",
-  //   to: userPhone,
-  //   type: "template",
-  //   text: {
-  //     preview_url: true,
-  //     body: `*${notes ?? "Lead Details"}* \nName: ${payload.name}\nEmail: ${payload.email}\nPhone: ${payload.phone}\nBot Name: ${payload.botName}\nChat Link: ${payload.chatLink}\nWhatsapp Link: ${payload.whatsappLink}`,
-  //   },
-  // };
-  
+  const url = "https://graph.facebook.com/v21.0/552375867948675/messages"; 
   const messageBody = {
     messaging_product: "whatsapp",
     to: userPhone,
@@ -148,7 +138,8 @@ export async function createWhatsAppMessage(
     });
     logger.info(`Whatsapp message sent ${JSON.stringify(response)}`);
     return response;
-  } catch (error) {
+  } catch (error:any) {
     logger.info(`Error sending whatsapp message ${error?.message}`);
+    return false
   }
 }
