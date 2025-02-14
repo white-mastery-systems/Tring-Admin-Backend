@@ -196,6 +196,15 @@ export default defineEventHandler(async (event) => {
             botIntegration?.integration?.metadata?.phoneNumber,
           body?.note,
         );
+        if(data){
+          await $fetch("/api/org/whatsappLeadsPrice", {
+            method: "POST",
+            body: {
+              organizationId: botDetails?.organizationId,
+              countryCode: botIntegration?.integration?.metadata?.countryCode,
+            },
+          });
+        }
       }
     } else if (botIntegration?.integration?.crm === "hubspot") {
       const name = body?.botUser?.name?.split(" ");

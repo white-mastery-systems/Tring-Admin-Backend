@@ -18,23 +18,24 @@ export const useSubscriptionCheck = () => {
   const checkSubscription = async () => {
     try {
       const orgBilling = await $fetch("/api/org/subscriptionPlans");
+      const allFreePlan = orgBilling.every((plan: any) => plan.planCode.includes("_free"));
+      // Check if ALL plans are either inactive or cancelled
+      const allPlansInactiveOrCancelled = orgBilling.every(plan =>
+        plan.subscriptionStatus === "inactive" ||
+        plan.subscriptionStatus === "cancelled"
+      );
 
-      // Check if any plan is free
-      const hasFreePlan = orgBilling.some((plan: any) =>
-        plan.planCode.includes("_free")
-      );
-      // Check if all plans are either "inactive" or "cancelled"
-      const allInactiveOrCancelled = orgBilling.every(
-        (plan: any) =>
-          plan.subscriptionStatus === "inactive" || plan.subscriptionStatus === "cancelled"
-      );
-      // Set isAnyPlanFree based on both conditions
-      isAnyPlanFree.value = hasFreePlan || allInactiveOrCancelled;
+      if (allFreePlan) {
+        isAnyPlanFree.value = true;
+      } else {
+        isAnyPlanFree.value = allPlansInactiveOrCancelled;
+      }
+
     } catch (error) {
       console.error("Failed to fetch subscription details:", error);
+      isAnyPlanFree.value = false;
     }
   };
-
 
 
   onMounted(async () => {

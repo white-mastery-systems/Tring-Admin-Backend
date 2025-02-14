@@ -33,7 +33,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
     },
     prompt: {
       errorMessage:
-        "We are currently unavailable, but an agent will get back to you shortly. Thank you for your understanding",
+        "Uh-oh, Can you try reloading the page and try chatting with me? It seems like our system is facing an issue. Thank you for your understanding",
     },
     crm: {},
     channel: {},
