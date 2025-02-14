@@ -317,7 +317,7 @@ export const createVoicebotSchedular = async (voicebotSchedular: any) => {
   return await db.insert(voicebotSchedularSchema).values(voicebotSchedular).returning()
 }
 
-export const scheduledCampaignCallList = async (organizationId: string, campaignId: string, timeZone: string, query: any ) => {
+export const scheduledCampaignCallList = async (organizationId: string, campaignId: string, timeZone: string, query?: any ) => {
   let filters: any = [eq(voicebotSchedularSchema.organizationId, organizationId), eq(voicebotSchedularSchema.campaignId, campaignId)];
   let page, offset, limit = 0;
 
@@ -345,8 +345,8 @@ export const scheduledCampaignCallList = async (organizationId: string, campaign
       contact: {
         where:
           query?.q ? or(
-            ilike(voicebotContactSchema.name, `%${query.q}%`),
-            ilike(voicebotContactSchema.phone, `%${query.q}%`),
+            ilike(voicebotContactSchema.name, `%${query?.q}%`),
+            ilike(voicebotContactSchema.phone, `%${query?.q}%`),
           ) : undefined,
         columns: {
           name: true,
@@ -369,7 +369,7 @@ export const scheduledCampaignCallList = async (organizationId: string, campaign
     updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }))
 
-  if(query.q) {
+  if(query?.q) {
     data = data.filter((i: any) => i.contact !== null )
   }
 
