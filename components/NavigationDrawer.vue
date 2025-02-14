@@ -104,7 +104,7 @@
       <UiDropdownMenuContent class="min-w-52 mb-[10px] ml-[9px]" :side="(isMobile) ? 'top' : 'right'">
         <!-- <UiDropdownMenuLabel>My Account</UiDropdownMenuLabel>
           <UiDropdownMenuSeparator /> -->
-        <UiDropdownMenuGroup class="font-medium text-[16px] py-2">
+        <UiDropdownMenuGroup class="font-medium text-[16px] px-2 py-1">
           <UiDropdownMenuItem v-for="item in dropdownMenuItems" :key="item.path" class="py-[10px]"
             @click.prevent="navigateToSamePage(item.path)">
             <NuxtLink :to="item.path" @click.prevent="navigateToSamePage(item.path)" class="flex items-center w-full">
