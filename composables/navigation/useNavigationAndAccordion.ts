@@ -12,7 +12,8 @@ import {
   CircleUserIcon,
 } from "lucide-vue-next";
 
-export function useNavigationAndAccordion() {
+export const useNavigationAndAccordion = () => {
+  
   const navigationModules = ref([
     {
       name: "Home",
@@ -141,8 +142,8 @@ export function useNavigationAndAccordion() {
   //   { label: "Wallet", path: "/billing" },
   // ]);
   const dropdownMenuItems = ref([
-    { label: "General & Profile", path: { path: "/account" }, icon: CircleUserIcon },
-    { label: "Billing & Usages", path: { path: "/billing" }, icon: ReceiptIcon },
+    { label: "General & Profile", path: { path: "/account", query: { tab: "personal-details" } }, icon: CircleUserIcon },
+    { label: "Billing & Usages", path: { path: "/billing", query: { type: "chat" } }, icon: ReceiptIcon },
     { label: "Plan", path: { path: "/billing/view-all", query: { type: "chat" } }, icon: CreditCardIcon },
     { label: "User Management", path: { path: "/user-management" }, icon: SettingsIcon },
     { label: "Wallet", path: { path: "/billing/view-wallet", query: { type: "chat" } }, icon: WalletIcon },

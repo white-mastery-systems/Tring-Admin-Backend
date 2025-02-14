@@ -1,9 +1,9 @@
 <template>
   <Page title="My Account" :disable-back-button="true">
-    <UiTabs :default-value="tabValue" class="w-full self-start">
+    <UiTabs v-model="tabValue" :default-value="tabValue" class="w-full self-start">
       <UiTabsList
         class="grid w-full max-w-[100%] sm:max-w-[100%] md:max-w-[50%] lg:max-w-[50%] xl:max-w-[50%] grid-cols-2">
-        <UiTabsTrigger value="PersonalDetails" @click="selectedChannel('PersonalDetails')">
+        <UiTabsTrigger value="personal-details" @click="selectedChannel('personal-details')">
           <!-- <span class="sm:hidden">profile</span> -->
           <span>Profile</span>
           <!-- Personal Details -->
@@ -16,7 +16,7 @@
           Security
         </UiTabsTrigger>
       </UiTabsList>
-      <UiTabsContent value="PersonalDetails">
+      <UiTabsContent value="personal-details">
         <PersonalDetails :personalControl="true" />
       </UiTabsContent>
       <!-- <UiTabsContent value="companyDetails">
@@ -51,17 +51,12 @@ useHead({
   const logoutModal = ref(false);
   const route = useRoute();
   const router = useRouter();
-  const tabValue = ref("PersonalDetails");
-  // if (route?.query?.tab === "company-details") {
-  //   tabValue.value = "companyDetails";
-  // } else 
-  if (route?.query?.tab === "security") {
-    tabValue.value = "security";
-  } else if (route?.query?.tab === "personal-details") {
-    tabValue.value = "PersonalDetails";
-  }
+  const tabValue = ref("personal-details");
 
 
+  watch(() => route?.query?.tab,(newTab) => {
+    tabValue.value = newTab
+  })
   // const confirmModel = () => {
   //   logoutModal.value = true;
   //   localStorage.clear();
@@ -75,7 +70,7 @@ useHead({
 
   const isUpdating = ref(false);
 
-  const tab = ref("personalDetails");
+  const tab = ref("personal-details");
   companyDetails();
   const selectedChannel = (value: any) => {
     tab.value = value;
@@ -85,7 +80,7 @@ useHead({
     // } else 
     if (value === "security") {
       queryValue = "security";         
-    }else if (value === "PersonalDetails") {
+    }else if (value === "personal-details") {
       queryValue = "personal-details";
     }
     router.push({ query: { tab: queryValue } });
