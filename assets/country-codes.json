@@ -4,6 +4,7 @@
         "flag": "🇮🇳",
         "code": "IN",
         "dial_code": "+91",
+        "leadMessageCost":0.4,
         "phoneLength": 10
     },
     {
@@ -11,6 +12,7 @@
         "flag": "🇺🇸",
         "code": "US",
         "dial_code": "+1",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -18,6 +20,7 @@
         "flag": "🇬🇧",
         "code": "GB",
         "dial_code": "+44",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -25,19 +28,22 @@
         "flag": "🇦🇫",
         "code": "AF",
         "dial_code": "+93",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
         "name": "Åland Islands",
         "flag": "🇦🇽",
         "code": "AX",
-        "dial_code": "+358"
+        "dial_code": "+358",
+        "leadMessageCost": 0.5
     },
     {
         "name": "Albania",
         "flag": "🇦🇱",
         "code": "AL",
         "dial_code": "+355",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -45,6 +51,7 @@
         "flag": "🇩🇿",
         "code": "DZ",
         "dial_code": "+213",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -52,6 +59,7 @@
         "flag": "🇦🇸",
         "code": "AS",
         "dial_code": "+1684",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -59,6 +67,7 @@
         "flag": "🇦🇩",
         "code": "AD",
         "dial_code": "+376",
+        "leadMessageCost":0.5,
         "phoneLength": 6
     },
     {
@@ -66,6 +75,7 @@
         "flag": "🇦🇴",
         "code": "AO",
         "dial_code": "+244",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -73,6 +83,7 @@
         "flag": "🇦🇮",
         "code": "AI",
         "dial_code": "+1264",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -80,6 +91,7 @@
         "flag": "🇦🇶",
         "code": "AQ",
         "dial_code": "+672",
+        "leadMessageCost":0.5,
         "phoneLength": 6
     },
     {
@@ -87,6 +99,7 @@
         "flag": "🇦🇬",
         "code": "AG",
         "dial_code": "+1268",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -94,6 +107,7 @@
         "flag": "🇦🇷",
         "code": "AR",
         "dial_code": "+54",
+        "leadMessageCost":0.5,
         "phoneLength": [
             6,
             7,
@@ -105,6 +119,7 @@
         "flag": "🇦🇲",
         "code": "AM",
         "dial_code": "+374",
+        "leadMessageCost":0.5,
         "phoneLength": 6
     },
     {
@@ -112,6 +127,7 @@
         "flag": "🇦🇼",
         "code": "AW",
         "dial_code": "+297",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -119,6 +135,7 @@
         "flag": "🇦🇺",
         "code": "AU",
         "dial_code": "+61",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -126,6 +143,7 @@
         "flag": "🇦🇹",
         "code": "AT",
         "dial_code": "+43",
+        "leadMessageCost":0.5,
         "phoneLength": [
             10,
             11
@@ -136,6 +154,7 @@
         "flag": "🇦🇿",
         "code": "AZ",
         "dial_code": "+994",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -143,6 +162,7 @@
         "flag": "🇧🇸",
         "code": "BS",
         "dial_code": "+1242",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -150,6 +170,7 @@
         "flag": "🇧🇭",
         "code": "BH",
         "dial_code": "+973",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -157,6 +178,7 @@
         "flag": "🇧🇩",
         "code": "BD",
         "dial_code": "+880",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -164,6 +186,7 @@
         "flag": "🇧🇧",
         "code": "BB",
         "dial_code": "+1246",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -171,6 +194,7 @@
         "flag": "🇧🇾",
         "code": "BY",
         "dial_code": "+375",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -178,6 +202,7 @@
         "flag": "🇧🇪",
         "code": "BE",
         "dial_code": "+32",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -185,6 +210,7 @@
         "flag": "🇧🇿",
         "code": "BZ",
         "dial_code": "+501",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -192,6 +218,7 @@
         "flag": "🇧🇯",
         "code": "BJ",
         "dial_code": "+229",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -199,6 +226,7 @@
         "flag": "🇧🇲",
         "code": "BM",
         "dial_code": "+1441",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -206,6 +234,7 @@
         "flag": "🇧🇹",
         "code": "BT",
         "dial_code": "+975",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -213,6 +242,7 @@
         "flag": "🇧🇴",
         "code": "BO",
         "dial_code": "+591",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -220,6 +250,7 @@
         "flag": "🇧🇦",
         "code": "BA",
         "dial_code": "+387",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -227,6 +258,7 @@
         "flag": "🇧🇼",
         "code": "BW",
         "dial_code": "+267",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -234,6 +266,7 @@
         "flag": "🇧🇻",
         "code": "BV",
         "dial_code": "+47",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -241,6 +274,7 @@
         "flag": "🇧🇷",
         "code": "BR",
         "dial_code": "+55",
+        "leadMessageCost":0.5,
         "phoneLength": 11
     },
     {
@@ -248,6 +282,7 @@
         "flag": "🇮🇴",
         "code": "IO",
         "dial_code": "+246",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -255,6 +290,7 @@
         "flag": "🇧🇳",
         "code": "BN",
         "dial_code": "+673",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -262,6 +298,7 @@
         "flag": "🇧🇬",
         "code": "BG",
         "dial_code": "+359",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -269,6 +306,7 @@
         "flag": "🇧🇫",
         "code": "BF",
         "dial_code": "+226",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -276,6 +314,7 @@
         "flag": "🇧🇮",
         "code": "BI",
         "dial_code": "+257",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -283,6 +322,7 @@
         "flag": "🇰🇭",
         "code": "KH",
         "dial_code": "+855",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -290,6 +330,7 @@
         "flag": "🇨🇲",
         "code": "CM",
         "dial_code": "+237",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -297,6 +338,7 @@
         "flag": "🇨🇻",
         "code": "CV",
         "dial_code": "+238",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -304,6 +346,7 @@
         "flag": "🇰🇾",
         "code": "KY",
         "dial_code": "+345",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -311,6 +354,7 @@
         "flag": "🇨🇫",
         "code": "CF",
         "dial_code": "+236",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -318,6 +362,7 @@
         "flag": "🇹🇩",
         "code": "TD",
         "dial_code": "+235",
+        "leadMessageCost":0.5,
         "phoneLength": 6
     },
     {
@@ -325,6 +370,7 @@
         "flag": "🇨🇱",
         "code": "CL",
         "dial_code": "+56",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -332,6 +378,7 @@
         "flag": "🇨🇳",
         "code": "CN",
         "dial_code": "+86",
+        "leadMessageCost":0.5,
         "phoneLength": 11
     },
     {
@@ -339,6 +386,7 @@
         "flag": "🇨🇴",
         "code": "CO",
         "dial_code": "+57",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -346,6 +394,7 @@
         "flag": "🇰🇲",
         "code": "KM",
         "dial_code": "+269",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -353,6 +402,7 @@
         "flag": "🇨🇬",
         "code": "CG",
         "dial_code": "+242",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -360,6 +410,7 @@
         "flag": "🇨🇩",
         "code": "CD",
         "dial_code": "+243",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -367,6 +418,7 @@
         "flag": "🇨🇰",
         "code": "CK",
         "dial_code": "+682",
+        "leadMessageCost":0.5,
         "phoneLength": 5
     },
     {
@@ -374,6 +426,7 @@
         "flag": "🇨🇷",
         "code": "CR",
         "dial_code": "+506",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -381,6 +434,7 @@
         "flag": "🇨🇮",
         "code": "CI",
         "dial_code": "+225",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -388,6 +442,7 @@
         "flag": "🇭🇷",
         "code": "HR",
         "dial_code": "+385",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -395,6 +450,7 @@
         "flag": "🇨🇺",
         "code": "CU",
         "dial_code": "+53",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -402,6 +458,7 @@
         "flag": "🇨🇾",
         "code": "CY",
         "dial_code": "+357",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -409,6 +466,7 @@
         "flag": "🇨🇿",
         "code": "CZ",
         "dial_code": "+420",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -416,6 +474,7 @@
         "flag": "🇩🇰",
         "code": "DK",
         "dial_code": "+45",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -423,6 +482,7 @@
         "flag": "🇩🇯",
         "code": "DJ",
         "dial_code": "+253",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -430,6 +490,7 @@
         "flag": "🇩🇲",
         "code": "DM",
         "dial_code": "+1767",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -437,6 +498,7 @@
         "flag": "🇩🇴",
         "code": "DO",
         "dial_code": "+1849",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -444,6 +506,7 @@
         "flag": "🇪🇨",
         "code": "EC",
         "dial_code": "+593",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -451,6 +514,7 @@
         "flag": "🇪🇬",
         "code": "EG",
         "dial_code": "+20",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -458,6 +522,7 @@
         "flag": "🇸🇻",
         "code": "SV",
         "dial_code": "+503",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -465,6 +530,7 @@
         "flag": "🇬🇶",
         "code": "GQ",
         "dial_code": "+240",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -472,6 +538,7 @@
         "flag": "🇪🇷",
         "code": "ER",
         "dial_code": "+291",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -479,6 +546,7 @@
         "flag": "🇪🇪",
         "code": "EE",
         "dial_code": "+372",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -486,6 +554,7 @@
         "flag": "🇪🇹",
         "code": "ET",
         "dial_code": "+251",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -493,6 +562,7 @@
         "flag": "🇫🇰",
         "code": "FK",
         "dial_code": "+500",
+        "leadMessageCost":0.5,
         "phoneLength": 5
     },
     {
@@ -500,6 +570,7 @@
         "flag": "🇫🇴",
         "code": "FO",
         "dial_code": "+298",
+        "leadMessageCost":0.5,
         "phoneLength": 5
     },
     {
@@ -507,6 +578,7 @@
         "flag": "🇫🇯",
         "code": "FJ",
         "dial_code": "+679",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -514,6 +586,7 @@
         "flag": "🇫🇷",
         "code": "FR",
         "dial_code": "+33",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -521,6 +594,7 @@
         "flag": "🇬🇫",
         "code": "GF",
         "dial_code": "+594",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -528,6 +602,7 @@
         "flag": "🇵🇫",
         "code": "PF",
         "dial_code": "+689",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -535,6 +610,7 @@
         "flag": "🇹🇫",
         "code": "TF",
         "dial_code": "+262",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -542,6 +618,7 @@
         "flag": "🇬🇦",
         "code": "GA",
         "dial_code": "+241",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -549,6 +626,7 @@
         "flag": "🇬🇲",
         "code": "GM",
         "dial_code": "+220",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -556,6 +634,7 @@
         "flag": "🇬🇪",
         "code": "GE",
         "dial_code": "+995",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -563,6 +642,7 @@
         "flag": "🇩🇪",
         "code": "DE",
         "dial_code": "+49",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -570,6 +650,7 @@
         "flag": "🇬🇭",
         "code": "GH",
         "dial_code": "+233",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -577,6 +658,7 @@
         "flag": "🇬🇮",
         "code": "GI",
         "dial_code": "+350",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -584,6 +666,7 @@
         "flag": "🇬🇷",
         "code": "GR",
         "dial_code": "+30",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -591,6 +674,7 @@
         "flag": "🇬🇱",
         "code": "GL",
         "dial_code": "+299",
+        "leadMessageCost":0.5,
         "phoneLength": 6
     },
     {
@@ -598,6 +682,7 @@
         "flag": "🇬🇩",
         "code": "GD",
         "dial_code": "+1473",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -605,6 +690,7 @@
         "flag": "🇬🇵",
         "code": "GP",
         "dial_code": "+590",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -612,6 +698,7 @@
         "flag": "🇬🇺",
         "code": "GU",
         "dial_code": "+1671",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -619,6 +706,7 @@
         "flag": "🇬🇹",
         "code": "GT",
         "dial_code": "+502",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -626,6 +714,7 @@
         "flag": "🇬🇳",
         "code": "GN",
         "dial_code": "+224",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -633,6 +722,7 @@
         "flag": "🇬🇼",
         "code": "GW",
         "dial_code": "+245",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -640,6 +730,7 @@
         "flag": "🇬🇾",
         "code": "GY",
         "dial_code": "+592",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -647,6 +738,7 @@
         "flag": "🇭🇹",
         "code": "HT",
         "dial_code": "+509",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -654,6 +746,7 @@
         "flag": "🇻🇦",
         "code": "VA",
         "dial_code": "+379",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -661,6 +754,7 @@
         "flag": "🇭🇳",
         "code": "HN",
         "dial_code": "+504",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -668,6 +762,7 @@
         "flag": "🇭🇰",
         "code": "HK",
         "dial_code": "+852",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -675,6 +770,7 @@
         "flag": "🇭🇺",
         "code": "HU",
         "dial_code": "+36",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -682,6 +778,7 @@
         "flag": "🇮🇸",
         "code": "IS",
         "dial_code": "+354",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -689,6 +786,7 @@
         "flag": "🇮🇩",
         "code": "ID",
         "dial_code": "+62",
+        "leadMessageCost":0.5,
         "phoneLength": 11
     },
     {
@@ -696,6 +794,7 @@
         "flag": "🇮🇷",
         "code": "IR",
         "dial_code": "+98",
+        "leadMessageCost":0.5,
         "phoneLength": 11
     },
     {
@@ -703,6 +802,7 @@
         "flag": "🇮🇶",
         "code": "IQ",
         "dial_code": "+964",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -710,6 +810,7 @@
         "flag": "🇮🇪",
         "code": "IE",
         "dial_code": "+353",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -717,6 +818,7 @@
         "flag": "🇮🇱",
         "code": "IL",
         "dial_code": "+972",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -724,6 +826,7 @@
         "flag": "🇮🇹",
         "code": "IT",
         "dial_code": "+39",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -731,6 +834,7 @@
         "flag": "🇯🇲",
         "code": "JM",
         "dial_code": "+1876",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -744,6 +848,7 @@
         "flag": "🇯🇴",
         "code": "JO",
         "dial_code": "+962",
+        "leadMessageCost":0.5,
         "phoneLength": [
             8,
             9
@@ -754,6 +859,7 @@
         "flag": "🇰🇿",
         "code": "KZ",
         "dial_code": "+7",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -761,6 +867,7 @@
         "flag": "🇰🇪",
         "code": "KE",
         "dial_code": "+254",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -768,6 +875,7 @@
         "flag": "🇰🇮",
         "code": "KI",
         "dial_code": "+686",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -775,6 +883,7 @@
         "flag": "🇰🇵",
         "code": "KP",
         "dial_code": "+850",
+        "leadMessageCost":0.5,
         "phoneLength": [
             4,
             6,
@@ -787,6 +896,7 @@
         "flag": "🇰🇷",
         "code": "KR",
         "dial_code": "+82",
+        "leadMessageCost":0.5,
         "phoneLength": [
             7,
             8
@@ -797,6 +907,7 @@
         "flag": "🇽🇰",
         "code": "XK",
         "dial_code": "+383",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -804,6 +915,7 @@
         "flag": "🇰🇼",
         "code": "KW",
         "dial_code": "+965",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -811,6 +923,7 @@
         "flag": "🇰🇬",
         "code": "KG",
         "dial_code": "+996",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -818,6 +931,7 @@
         "flag": "🇱🇦",
         "code": "LA",
         "dial_code": "+856",
+        "leadMessageCost":0.5,
         "phoneLength": [
             8,
             9
@@ -828,6 +942,7 @@
         "flag": "🇱🇻",
         "code": "LV",
         "dial_code": "+371",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -835,6 +950,7 @@
         "flag": "🇱🇧",
         "code": "LB",
         "dial_code": "+961",
+        "leadMessageCost":0.5,
         "phoneLength": [
             7,
             8
@@ -845,6 +961,7 @@
         "flag": "🇱🇸",
         "code": "LS",
         "dial_code": "+266",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -852,6 +969,7 @@
         "flag": "🇱🇷",
         "code": "LR",
         "dial_code": "+231",
+        "leadMessageCost":0.5,
         "phoneLength": [
             8,
             9
@@ -862,6 +980,7 @@
         "flag": "🇱🇾",
         "code": "LY",
         "dial_code": "+218",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -869,6 +988,7 @@
         "flag": "🇱🇮",
         "code": "LI",
         "dial_code": "+423",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -876,6 +996,7 @@
         "flag": "🇱🇹",
         "code": "LT",
         "dial_code": "+370",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -883,6 +1004,7 @@
         "flag": "🇱🇺",
         "code": "LU",
         "dial_code": "+352",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -890,6 +1012,7 @@
         "flag": "🇲🇴",
         "code": "MO",
         "dial_code": "+853",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -897,6 +1020,7 @@
         "flag": "🇲🇰",
         "code": "MK",
         "dial_code": "+389",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -904,6 +1028,7 @@
         "flag": "🇲🇬",
         "code": "MG",
         "dial_code": "+261",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -911,6 +1036,7 @@
         "flag": "🇲🇼",
         "code": "MW",
         "dial_code": "+265",
+        "leadMessageCost":0.5,
         "phoneLength": [
             7,
             8,
@@ -922,6 +1048,7 @@
         "flag": "🇲🇾",
         "code": "MY",
         "dial_code": "+60",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -929,6 +1056,7 @@
         "flag": "🇲🇻",
         "code": "MV",
         "dial_code": "+960",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -936,6 +1064,7 @@
         "flag": "🇲🇱",
         "code": "ML",
         "dial_code": "+223",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -943,6 +1072,7 @@
         "flag": "🇲🇹",
         "code": "MT",
         "dial_code": "+356",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -950,6 +1080,7 @@
         "flag": "🇲🇭",
         "code": "MH",
         "dial_code": "+692",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -957,6 +1088,7 @@
         "flag": "🇲🇶",
         "code": "MQ",
         "dial_code": "+596",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -964,6 +1096,7 @@
         "flag": "🇲🇷",
         "code": "MR",
         "dial_code": "+222",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -971,6 +1104,7 @@
         "flag": "🇲🇺",
         "code": "MU",
         "dial_code": "+230",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -978,6 +1112,7 @@
         "flag": "🇲🇽",
         "code": "MX",
         "dial_code": "+52",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -985,6 +1120,7 @@
         "flag": "🇫🇲",
         "code": "FM",
         "dial_code": "+691",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -992,6 +1128,7 @@
         "flag": "🇲🇩",
         "code": "MD",
         "dial_code": "+373",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -999,6 +1136,7 @@
         "flag": "🇲🇨",
         "code": "MC",
         "dial_code": "+377",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1006,6 +1144,7 @@
         "flag": "🇲🇳",
         "code": "MN",
         "dial_code": "+976",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1013,6 +1152,7 @@
         "flag": "🇲🇪",
         "code": "ME",
         "dial_code": "+382",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1020,6 +1160,7 @@
         "flag": "🇲🇸",
         "code": "MS",
         "dial_code": "+1664",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -1027,6 +1168,7 @@
         "flag": "🇲🇦",
         "code": "MA",
         "dial_code": "+212",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1034,6 +1176,7 @@
         "flag": "🇲🇿",
         "code": "MZ",
         "dial_code": "+258",
+        "leadMessageCost":0.5,
         "phoneLength": 12
     },
     {
@@ -1047,6 +1190,7 @@
         "flag": "🇳🇦",
         "code": "NA",
         "dial_code": "+264",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1054,6 +1198,7 @@
         "flag": "🇳🇷",
         "code": "NR",
         "dial_code": "+674",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1061,6 +1206,7 @@
         "flag": "🇳🇵",
         "code": "NP",
         "dial_code": "+977",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -1068,6 +1214,7 @@
         "flag": "🇳🇱",
         "code": "NL",
         "dial_code": "+31",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1081,6 +1228,7 @@
         "flag": "🇳🇨",
         "code": "NC",
         "dial_code": "+687",
+        "leadMessageCost":0.5,
         "phoneLength": 6
     },
     {
@@ -1088,6 +1236,7 @@
         "flag": "🇳🇿",
         "code": "NZ",
         "dial_code": "+64",
+        "leadMessageCost":0.5,
         "phoneLength": [
             8,
             9
@@ -1098,6 +1247,7 @@
         "flag": "🇳🇮",
         "code": "NI",
         "dial_code": "+505",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1105,6 +1255,7 @@
         "flag": "🇳🇪",
         "code": "NE",
         "dial_code": "+227",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1112,6 +1263,7 @@
         "flag": "🇳🇬",
         "code": "NG",
         "dial_code": "+234",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1119,6 +1271,7 @@
         "flag": "🇳🇺",
         "code": "NU",
         "dial_code": "+683",
+        "leadMessageCost":0.5,
         "phoneLength": 4
     },
     {
@@ -1126,6 +1279,7 @@
         "flag": "🇲🇵",
         "code": "MP",
         "dial_code": "+1670",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1133,6 +1287,7 @@
         "flag": "🇴🇲",
         "code": "OM",
         "dial_code": "+968",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1140,6 +1295,7 @@
         "flag": "🇵🇰",
         "code": "PK",
         "dial_code": "+92",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -1147,6 +1303,7 @@
         "flag": "🇵🇼",
         "code": "PW",
         "dial_code": "+680",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1154,6 +1311,7 @@
         "flag": "🇵🇸",
         "code": "PS",
         "dial_code": "+970",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1161,6 +1319,7 @@
         "flag": "🇵🇦",
         "code": "PA",
         "dial_code": "+507",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1168,6 +1327,7 @@
         "flag": "🇵🇬",
         "code": "PG",
         "dial_code": "+675",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1175,6 +1335,7 @@
         "flag": "🇵🇾",
         "code": "PY",
         "dial_code": "+595",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1182,6 +1343,7 @@
         "flag": "🇵🇪",
         "code": "PE",
         "dial_code": "+51",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1189,6 +1351,7 @@
         "flag": "🇵🇭",
         "code": "PH",
         "dial_code": "+63",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -1196,6 +1359,7 @@
         "flag": "🇵🇱",
         "code": "PL",
         "dial_code": "+48",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1203,6 +1367,7 @@
         "flag": "🇵🇹",
         "code": "PT",
         "dial_code": "+351",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1210,6 +1375,7 @@
         "flag": "🇵🇷",
         "code": "PR",
         "dial_code": "+1939",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -1217,6 +1383,7 @@
         "flag": "🇶🇦",
         "code": "QA",
         "dial_code": "+974",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1224,6 +1391,7 @@
         "flag": "🇷🇴",
         "code": "RO",
         "dial_code": "+40",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -1231,6 +1399,7 @@
         "flag": "🇷🇼",
         "code": "RW",
         "dial_code": "+250",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1238,6 +1407,7 @@
         "flag": "🇸🇭",
         "code": "SH",
         "dial_code": "+290",
+        "leadMessageCost":0.5,
         "phoneLength": 4
     },
     {
@@ -1245,6 +1415,7 @@
         "flag": "🇰🇳",
         "code": "KN",
         "dial_code": "+1869",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -1252,6 +1423,7 @@
         "flag": "🇱🇨",
         "code": "LC",
         "dial_code": "+1758",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1259,6 +1431,7 @@
         "flag": "🇵🇲",
         "code": "PM",
         "dial_code": "+508",
+        "leadMessageCost":0.5,
         "phoneLength": 6
     },
     {
@@ -1266,6 +1439,7 @@
         "flag": "🇻🇨",
         "code": "VC",
         "dial_code": "+1784",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1273,6 +1447,7 @@
         "flag": "🇼🇸",
         "code": "WS",
         "dial_code": "+685",
+        "leadMessageCost":0.5,
         "phoneLength": [
             5,
             6,
@@ -1284,6 +1459,7 @@
         "flag": "🇸🇲",
         "code": "SM",
         "dial_code": "+378",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -1291,6 +1467,7 @@
         "flag": "🇸🇹",
         "code": "ST",
         "dial_code": "+239",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1298,6 +1475,7 @@
         "flag": "🇸🇦",
         "code": "SA",
         "dial_code": "+966",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1305,6 +1483,7 @@
         "flag": "🇸🇳",
         "code": "SN",
         "dial_code": "+221",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1312,6 +1491,7 @@
         "flag": "🇷🇸",
         "code": "RS",
         "dial_code": "+381",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1319,6 +1499,7 @@
         "flag": "🇸🇨",
         "code": "SC",
         "dial_code": "+248",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1326,6 +1507,7 @@
         "flag": "🇸🇱",
         "code": "SL",
         "dial_code": "+232",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1333,6 +1515,7 @@
         "flag": "🇸🇬",
         "code": "SG",
         "dial_code": "+65",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1340,6 +1523,7 @@
         "flag": "🇸🇰",
         "code": "SK",
         "dial_code": "+421",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1347,6 +1531,7 @@
         "flag": "🇸🇮",
         "code": "SI",
         "dial_code": "+386",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1354,6 +1539,7 @@
         "flag": "🇸🇧",
         "code": "SB",
         "dial_code": "+677",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1361,6 +1547,7 @@
         "flag": "🇸🇴",
         "code": "SO",
         "dial_code": "+252",
+        "leadMessageCost":0.5,
         "phoneLength": [
             8,
             9
@@ -1371,6 +1558,7 @@
         "flag": "🇿🇦",
         "code": "ZA",
         "dial_code": "+27",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1378,6 +1566,7 @@
         "flag": "🇸🇸",
         "code": "SS",
         "dial_code": "+211",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1385,6 +1574,7 @@
         "flag": "🇪🇸",
         "code": "ES",
         "dial_code": "+34",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1392,6 +1582,7 @@
         "flag": "🇱🇰",
         "code": "LK",
         "dial_code": "+94",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1399,6 +1590,7 @@
         "flag": "🇸🇩",
         "code": "SD",
         "dial_code": "+249",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1406,6 +1598,7 @@
         "flag": "🇸🇷",
         "code": "SR",
         "dial_code": "+597",
+        "leadMessageCost":0.5,
         "phoneLength": [
             6,
             7
@@ -1416,6 +1609,7 @@
         "flag": "🇸🇿",
         "code": "SZ",
         "dial_code": "+268",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1423,6 +1617,7 @@
         "flag": "🇸🇪",
         "code": "SE",
         "dial_code": "+46",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1430,6 +1625,7 @@
         "flag": "🇨🇭",
         "code": "CH",
         "dial_code": "+41",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1437,6 +1633,7 @@
         "flag": "🇸🇾",
         "code": "SY",
         "dial_code": "+963",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1444,6 +1641,7 @@
         "flag": "🇹🇼",
         "code": "TW",
         "dial_code": "+886",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1451,6 +1649,7 @@
         "flag": "🇹🇯",
         "code": "TJ",
         "dial_code": "+992",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1458,6 +1657,7 @@
         "flag": "🇹🇿",
         "code": "TZ",
         "dial_code": "+255",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1465,6 +1665,7 @@
         "flag": "🇹🇭",
         "code": "TH",
         "dial_code": "+66",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1472,6 +1673,7 @@
         "flag": "🇹🇱",
         "code": "TL",
         "dial_code": "+670",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1479,6 +1681,7 @@
         "flag": "🇹🇬",
         "code": "TG",
         "dial_code": "+228",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1486,6 +1689,7 @@
         "flag": "🇹🇰",
         "code": "TK",
         "dial_code": "+690",
+        "leadMessageCost":0.5,
         "phoneLength": 5
     },
     {
@@ -1493,6 +1697,7 @@
         "flag": "🇹🇴",
         "code": "TO",
         "dial_code": "+676",
+        "leadMessageCost":0.5,
         "phoneLength": 5
     },
     {
@@ -1500,6 +1705,7 @@
         "flag": "🇹🇹",
         "code": "TT",
         "dial_code": "+1868",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1507,6 +1713,7 @@
         "flag": "🇹🇳",
         "code": "TN",
         "dial_code": "+216",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1514,6 +1721,7 @@
         "flag": "🇹🇷",
         "code": "TR",
         "dial_code": "+90",
+        "leadMessageCost":0.5,
         "phoneLength": 11
     },
     {
@@ -1521,6 +1729,7 @@
         "flag": "🇹🇲",
         "code": "TM",
         "dial_code": "+993",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1528,6 +1737,7 @@
         "flag": "🇹🇨",
         "code": "TC",
         "dial_code": "+1649",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -1535,6 +1745,7 @@
         "flag": "🇹🇻",
         "code": "TV",
         "dial_code": "+688",
+        "leadMessageCost":0.5,
         "phoneLength": 5
     },
     {
@@ -1542,6 +1753,7 @@
         "flag": "🇺🇬",
         "code": "UG",
         "dial_code": "+256",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1549,6 +1761,7 @@
         "flag": "🇺🇦",
         "code": "UA",
         "dial_code": "+380",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1556,6 +1769,7 @@
         "flag": "🇦🇪",
         "code": "AE",
         "dial_code": "+971",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1563,6 +1777,7 @@
         "flag": "🇺🇾",
         "code": "UY",
         "dial_code": "+598",
+        "leadMessageCost":0.5,
         "phoneLength": 8
     },
     {
@@ -1570,6 +1785,7 @@
         "flag": "🇺🇿",
         "code": "UZ",
         "dial_code": "+998",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1577,6 +1793,7 @@
         "flag": "🇻🇺",
         "code": "VU",
         "dial_code": "+678",
+        "leadMessageCost":0.5,
         "phoneLength": 5
     },
     {
@@ -1584,6 +1801,7 @@
         "flag": "🇻🇪",
         "code": "VE",
         "dial_code": "+58",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1591,6 +1809,7 @@
         "flag": "🇻🇳",
         "code": "VN",
         "dial_code": "+84",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1598,6 +1817,7 @@
         "flag": "🇻🇬",
         "code": "VG",
         "dial_code": "+1284",
+        "leadMessageCost":0.5,
         "phoneLength": 7
     },
     {
@@ -1605,6 +1825,7 @@
         "flag": "🇻🇮",
         "code": "VI",
         "dial_code": "+1340",
+        "leadMessageCost":0.5,
         "phoneLength": 10
     },
     {
@@ -1612,6 +1833,7 @@
         "flag": "🇼🇫",
         "code": "WF",
         "dial_code": "+681",
+        "leadMessageCost":0.5,
         "phoneLength": 6
     },
     {
@@ -1619,6 +1841,7 @@
         "flag": "🇾🇪",
         "code": "YE",
         "dial_code": "+967",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1626,6 +1849,7 @@
         "flag": "🇿🇲",
         "code": "ZM",
         "dial_code": "+260",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     },
     {
@@ -1633,6 +1857,7 @@
         "flag": "🇿🇼",
         "code": "ZW",
         "dial_code": "+263",
+        "leadMessageCost":0.5,
         "phoneLength": 9
     }
 ]
