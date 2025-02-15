@@ -50,6 +50,12 @@ export function useDataList() {
       helperText: "Configure the email settings for your bot",
       routeName: "bot-management-chat-bot-id-email-editor",
     },
+    {
+      _id: 9,
+      bot: "Tools",
+      helperText: "Manage and configure tools for your bot",
+      routeName: "bot-management-chat-bot-id-tools",
+    },
   ]);
 
   return { dataList };
