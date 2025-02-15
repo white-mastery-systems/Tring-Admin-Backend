@@ -284,13 +284,19 @@ export const getUserDetail = async () => {
   const userDetails = await $fetch<User>("/api/user");
   return userDetails;
 };
-
-export const getIntegratedProviderNumberList = async (providerId: string) => {
-  const numberList = await $fetch<any>(
-    `/api/org/integrations/number-integration/${providerId}/incomingPhoneNumbers`,
-  );
-  return numberList;
+export const getIntegratedProviderNumberList = async (
+  providerId: string
+): Promise<PhoneNumber[] | null> => {
+  try {
+    return await $fetch<PhoneNumber[]>(
+      `/api/org/integrations/number-integration/${providerId}/incomingPhoneNumbers`
+    );
+  } catch (error) {
+    toast.error(error?.statusMessage);
+    return []; // Or handle it differently
+  }
 };
+
 
 export const getPreRecordedAudioDetails = async (botId: string, organizationId: string,config: any) => {
   try {
