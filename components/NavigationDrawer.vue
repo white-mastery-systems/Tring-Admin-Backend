@@ -28,7 +28,7 @@
                 class="text-md border border-none bg-[#F0F6FF] py-4 pl-12 font-bold" :class="[
                   route.path?.includes(path + item.path) && 'text-[#424bd1]',
                   index === children.length - 1 ? 'rounded-b-lg' : '',
-                ]">
+                ]" @click="handleNavigation">
                 <NuxtLink :to="path + item.path">
                   {{ item.name }}
                 </NuxtLink>
@@ -104,9 +104,10 @@
       <UiDropdownMenuContent class="min-w-52 mb-[10px] ml-[9px]" :side="(isMobile) ? 'top' : 'right'">
         <!-- <UiDropdownMenuLabel>My Account</UiDropdownMenuLabel>
           <UiDropdownMenuSeparator /> -->
-        <UiDropdownMenuGroup class="font-medium text-[16px] py-2">
-          <UiDropdownMenuItem v-for="item in dropdownMenuItems" :key="item.path" class="py-[10px]">
-            <NuxtLink :to="item.path" class="flex items-center w-full">
+        <UiDropdownMenuGroup class="font-medium text-[16px] px-2 py-1">
+          <UiDropdownMenuItem v-for="item in dropdownMenuItems" :key="item.path" class="py-[10px]"
+            @click.prevent="navigateToSamePage(item.path)">
+            <NuxtLink :to="item.path" @click.prevent="navigateToSamePage(item.path)" class="flex items-center w-full">
               <DropdownMenuShortcut class="pr-2">
                 <!-- {{ item.icon }} -->
                 <component :is="item.icon" size="18"></component>
@@ -114,7 +115,7 @@
               {{ item.label }}
             </NuxtLink>
           </UiDropdownMenuItem>
-          <UiDropdownMenuItem class="flex items-center w-full">
+          <UiDropdownMenuItem class="flex items-center w-full py-[10px]">
             <div @click="handleLogout"
               class="flex items-center font-medium hover:bg-gray-300/30 hover:brightness-110 w-full gap-[8px] text-[#ef4444]">
               <Icon name="ic:round-logout" class="h-[18px] w-[18px]" />
@@ -129,18 +130,22 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRoute } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useOrgDetailsStore } from "~/store/orgDetailsStore";
 import { useSubscriptionCheck } from '~/composables/billing/useSubscriptionCheck';
 import { useNavigationAndAccordion } from '~/composables/navigation/useNavigationAndAccordion';
 import { useScreenSize } from '~/composables/navigation/useScreenSize'
 import { ChevronRight } from 'lucide-vue-next';
+import { useAuth } from '~/composables/useAuth'
+import { useUser } from '~/composables/auth'
 
 const { isAnyPlanFree, checkSubscription } = useSubscriptionCheck()
 const { navigationModules, dropdownMenuItems } = useNavigationAndAccordion()
 const { isMobile } = useScreenSize()
 const isDropdownOpen = ref(false);
 const dropdownMenu = ref(null);
+const { session, error, loading, getSession } = useAuth()
+const router = useRouter();
 
 const { user, clearUser } = await useUser();
 const userInfo = computed(() => {
@@ -159,15 +164,29 @@ watch(OrgDetails,
     avatarValue.value = newOrgDetails?.values?.logo
   },
 );
+
 onMounted(async () => {
+  await getSession()
   const { orgDetails } = await $fetch('/api/org')
   localStorage.setItem("orgDetails", JSON.stringify(orgDetails));
 })
 
 const handleNavigation = async () => {
   // if (isAnyPlanFree.value) 
+  await getSession()
   await checkSubscription()
+  if (!session.value.status) {
+    clearUser()
+    navigateTo("/auth/sign-in")
+  }
+
   emit("closeSheet");
+};
+const navigateToSamePage = (path: any) => {
+  if (route.path === path.path) {
+    // If already on the same page, update the query
+    router.replace(path);
+  }
 };
 const redirectToBilling = () => {
   // router.push('/billing')

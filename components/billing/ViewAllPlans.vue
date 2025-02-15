@@ -105,14 +105,13 @@ const { orgBilling, organization, isPageLoading } = useBillingComposable();
 import { watch, watchEffect } from 'vue';
 
 watch(
-  () => userDetails, // Only watching userDetails.value
-  async (user) => {
+  () => [userDetails.value, route.query.type], // Watching both userDetails and queryType
+  async ([user]) => {
     if (!user) {
       fetchUser();
       return; // Exit if user details are not available
     }
-
-    const { billingVariation, pending } = await useBillingVariation(user.value);
+    const { billingVariation, pending } = await useBillingVariation(user);
 
     billingVariationDetails.value = billingVariation.value;
     BillingVariationPending.value = pending.value;

@@ -9,7 +9,7 @@
     <ConfirmationModal v-model:open="cancelModalState" title="Are you sure to cancel your subscription"
       description="This action is irreversible" @confirm="handleConfirmPaymentCancellation">
     </ConfirmationModal>
-    <UiTabs :default-value="route.query.type ?? 'chat'" class="w-full self-start">
+    <UiTabs v-model="selectedTab" :default-value="route.query.type ?? 'chat'" class="w-full self-start">
       <UiTabsList class="grid w-full grid-cols-2">
         <!-- @click="selectedChannel('Chat')" -->
         <UiTabsTrigger value="chat" @click="navigateToTab('chat')">
@@ -49,6 +49,7 @@ useHead({
 
 const route = useRoute();
 const router = useRouter();
+const selectedTab = ref(route.query.type || 'chat')
 const {
   cancelModalState,
   filters,
@@ -60,9 +61,14 @@ const {
   navigateToTab,
 } = useBillingComposable();
 
+watch(() => route.query.type,(newType) => {
+  console.log(newType)
+  selectedTab.value = newType
+}, {immediate: true})
 onMounted(() => {
   if (!route.query.type) { // If `type` is not present in the query
     router.push({ query: { type: 'chat' } });
   }
 });
+
 </script>
