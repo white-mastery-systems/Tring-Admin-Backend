@@ -106,15 +106,15 @@
         <!-- <UiDropdownMenuLabel>My Account</UiDropdownMenuLabel>
           <UiDropdownMenuSeparator /> -->
         <UiDropdownMenuGroup class="font-medium text-[16px] pl-2 pr-0 py-1">
-          <UiDropdownMenuItem v-for="item in dropdownMenuItems" :key="item.path" class="py-[10px] pr-0"
+          <UiDropdownMenuItem v-for="item in dropdownMenuItems" :key="item.path" class="pr-0 py-0"
             @click.prevent="navigateToSamePage(item.path)">
             <NuxtLink
               :to="(!subcribed && (item.path.path === '/billing/view-wallet')) ? '/billing/view-all' : item.path"
-              @click.prevent="navigateToSamePage(item.path)" class="flex items-center w-full">
-              <DropdownMenuShortcut class="pr-2">
+              @click.prevent="navigateToSamePage(item.path)" class="flex items-center w-full min-h-[40px]">
+              <DropdownMenuShortcut class="flex items-center gap-2 w-full">
                 <component :is="item.icon" size="18"></component>
+                {{ item.label }}
               </DropdownMenuShortcut>
-              {{ item.label }}
             </NuxtLink>
           </UiDropdownMenuItem>
           <UiDropdownMenuItem class="flex items-center w-full py-[10px]">

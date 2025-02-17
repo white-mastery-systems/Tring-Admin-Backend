@@ -8,7 +8,7 @@
         'grid gap-4 px-2.5 py-0',
         route.query.type === 'voice'
           ? 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3'
-          : 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-4',
+          : (props.onBoardingAccount) ? 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3' : 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-4',
       ]">
       <div :class="[
           'main_card_align field_shadow relative flex flex-col justify-between rounded-[13px] border-2 bg-[#ffffff] p-5 hover:border-yellow-500',
@@ -66,7 +66,7 @@
       class="sticky right-[72px] bottom-0 cursor-pointer text-[#8080809c] pt-4 pr-3">
       <div @click="proceedLogin()" class="flex items-center justify-end gap-2">
         <span class="flex items-center">
-          Skip
+          Continue with the free plan
         </span>
         <ArrowRight class="w-5 h-5" />
       </div>
@@ -109,11 +109,14 @@ watch(
   async ([user]) => {
     if (!user) {
       fetchUser();
-      return; // Exit if user details are not available
+      // return; // Exit if user details are not available
     }
     const { billingVariation, pending } = await useBillingVariation(user);
-
-    billingVariationDetails.value = billingVariation.value;
+    if (props.onBoardingAccount) {
+      billingVariationDetails.value = billingVariation.value.slice(1)
+    } else {
+      billingVariationDetails.value = billingVariation.value;
+    }
     BillingVariationPending.value = pending.value;
   },
   { immediate: true } // Runs immediately on component mount
