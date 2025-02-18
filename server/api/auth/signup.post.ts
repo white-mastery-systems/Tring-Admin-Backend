@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
   debugger;
 
-  const isUserExists = await ifUserAlreadyExists("", body.data.email);
+  const isUserExists = await ifUserAlreadyExists(body.data.email);
   if (isUserExists)
     return sendError(
       event,
