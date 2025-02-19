@@ -49,7 +49,29 @@ export const updatePassword = async (userId: string, userDetails: any) => {
   )[0];
 };
 
+export const updateUserDetailById = async(id: string ,user: any) => {
+  return db.update(authUserSchema)
+  .set({
+    ...user,
+    updatedAt: new Date()
+  })
+  .where(eq(authUserSchema.id, id))
+}
 
+export const getUserByUserId = async (userId: string) => {
+  return await db.query.authUserSchema.findFirst({
+    where: eq(authUserSchema.id, userId)
+  })
+}
+
+export const getZohoBillingContactPersons = async (organizationId: string) => {
+  return await db.query.authUserSchema.findMany({
+    where: and(
+      eq(authUserSchema.organizationId, organizationId),
+      isNotNull(authUserSchema.contactPersonId),
+    ),
+  });
+}
 // Users
 export const createOrgUser = async (user: any) => {
   const hashedPassword = await new Argon2id().hash(user?.password);

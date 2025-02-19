@@ -70,7 +70,7 @@ const walletDetails = [
 ]
 const handleConnect = handleSubmit(async (values: any) => {
   const hostedPageResponse = await $fetch(
-    `/api/billing/addon?type=chat`,
+    `/api/v2/billing/wallet?type=chat`,
     {
       method: "POST",
       body: {
