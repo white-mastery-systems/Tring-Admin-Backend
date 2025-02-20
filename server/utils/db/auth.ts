@@ -13,12 +13,9 @@ export const createUser = async (user: InsertUser) => {
   return newUser[0];
 };
 
-export const ifUserAlreadyExists = async (username: string, email: string) => {
+export const ifUserAlreadyExists = async (email: string) => {
   const isUserExists = await db.query.authUserSchema.findFirst({
-    where: or(
-      eq(authUserSchema.username, username),
-      eq(authUserSchema.email, email),
-    ),
+    where: eq(authUserSchema.email, email)
   });
 
   return !!isUserExists;

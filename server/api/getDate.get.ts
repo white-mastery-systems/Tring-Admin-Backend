@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
       2. Extraction Guidelines:
       - If the text does not contain a date, return "Not provided" for the Date field.
       - If the text does not contain a time, return "Not provided" for the Time field. 
-      - Do not assume or generate a date and time based on the current date and time.  
+      - Do not assume or generate a date and time based on the current date and time.
       - If multiple dates and times are mentioned, always extract the **last mentioned date and time** in the text.
       - Do not include any additional text, explanations, or formatting beyond what is specified above.
 
