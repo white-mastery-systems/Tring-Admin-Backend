@@ -4,13 +4,15 @@
       <UiInput v-model="props.filters.q" @input="props.filters.page = '1'"
         class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
         placeholder=" Search Leads..." />
-      <BotFilter @input="onBotChange" />
-      <DateRangeFilter @change="onDateChange" />
+      <BotFilter v-model="filters.botId" />
+      <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to" />
+      <UiButton @click="emitClearFilters"
+        class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">Clear Filters</UiButton>
     </div>
     <DataTable @pagination="Pagination" @limit="($event) => {
-  (props.filters.page = '1'), (props.filters.limit = $event);
+      (props.filters.page = '1'), (props.filters.limit = $event);
     }
-      " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="leads"
+    " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="leads"
       :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="17" height-unit="vh" />
   </div>
 </template>
@@ -20,41 +22,13 @@ import { createColumnHelper } from "@tanstack/vue-table";
 import { format } from "date-fns";
 import { useRoute, useRouter } from "vue-router";
 
-
-const props = withDefaults(
-  defineProps<{
-    filters?: {
-      botId: string;
-      q?: string;
-      from?: string;
-      to?: string;
-      period: string;
-      status: string;
-      channel: string;
-      action: string;
-      page: string;
-      limit: string;
-      country: string;
-      type: string;
-    };
-  }>(),
-  {
-    filters: {
-      botId: "",
-      q: undefined,
-      from: undefined,
-      to: undefined,
-      period: "",
-      status: "",
-      channel: "all",
-      action: "",
-      page: "1",
-      limit: "10",
-      country: "all",
-      type: "voice",
-    },
-  }
-);
+const props = defineProps({
+  filters: {
+    type: Object,
+    required: true,
+  },
+});
+const emit = defineEmits(['clear-filters']);
 
 watchEffect(() => {
   if (props.filters.botId === "all") props.filters.botId = "";
@@ -81,7 +55,8 @@ let {
     totalPageCount.value = leads.totalPageCount;
     totalCount.value = leads.totalCount;
     return leads.data
-}})
+  }
+})
 
 const Pagination = async ($evnt) => {
   props.filters.page = $evnt;
@@ -90,7 +65,7 @@ const Pagination = async ($evnt) => {
 
 const isDataLoading = computed(() => status.value === "pending");
 
-const columnHelper = createColumnHelper < (typeof leads.value)[0] > ();
+const columnHelper = createColumnHelper<(typeof leads.value)[0]>();
 const columns = [
   columnHelper.accessor("name", {
     header: "Name",
@@ -99,7 +74,7 @@ const columns = [
     header: "Location",
     cell: (info) => info.getValue() || "--"
   }),
-  
+
   columnHelper.accessor("phone", {
     header: "Phone",
   }),
@@ -110,7 +85,7 @@ const columns = [
     header: "Scheduled Date",
     cell: (info) => info.getValue() || "--"
   }),
-  columnHelper.accessor("notes", {  
+  columnHelper.accessor("notes", {
     header: "Notes",
     cell: (info) => info.getValue() || "--"
   }),
@@ -137,4 +112,22 @@ const onBotChange = (value: any) => {
     props.filters.page = '1'
   }
 };
+const emitClearFilters = () => {
+  Object.assign(props.filters, {
+    botId: "",
+    q: undefined,
+    from: undefined,
+    to: undefined,
+    period: "all-time",
+    status: "",
+    channel: "all",
+    action: "",
+    page: "1",
+    limit: "10",
+    country: "all",
+    type: "chat",
+  });
+  emit('clear-filters')
+};
+
 </script>

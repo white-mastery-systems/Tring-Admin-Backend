@@ -16,11 +16,21 @@
 </template>
 <script setup lang="ts">
 import { botTypes } from '~/composables/botManagement/chatBot/useBotType'
-const emit = defineEmits(['change'])
-const selectedCategory = ref('all')
+  const props = defineProps({
+    modelValue: {
+      type: String,
+      default: "all",
+    },
+  });
+const emit = defineEmits(["update:modelValue"]);
+const selectedCategory = ref(props.modelValue)
 const categories = ref(botTypes)
 
+
+watchEffect(() => {
+  selectedCategory.value = props.modelValue;
+})
 watch(selectedCategory ,(newValue) => {
-  emit('change', newValue)
+  emit("update:modelValue", newValue);
 });
 </script>

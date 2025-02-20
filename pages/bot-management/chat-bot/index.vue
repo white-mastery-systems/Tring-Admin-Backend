@@ -12,12 +12,14 @@
         </UiButton>
       </div>
     </template>
-    <div class="flex items-center gap-2 pb-2">
+    <div class="flex items-center gap-2 pb-2 overflow-x-scroll">
       <UiInput v-model="filters.q" @input="filters.page = '1'"
-        class="min-w-[100px] max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
+        class="w-[150px] sm:w-[150px] md:w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
         placeholder="Search bot..." />
-      <BotStatusFilter @change="onChangeStatus" />
-      <BotCategoryFilter @change="onChangeCategory" />
+      <BotStatusFilter v-model="filters.active" />
+      <BotCategoryFilter v-model="filters.type" />
+      <UiButton @click="handleClearFilters"
+        class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">Clear Filters</UiButton>
     </div>
     <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
@@ -46,25 +48,17 @@ definePageMeta({
 useHead({
   title: "Bot Management | Chat Bot",
 });
-const currentPage = useState("counter", () => '1');
 const router = useRouter()
 
 const searchBot = ref("");
 const agentModalState = ref({ open: false, id: null });
-
-const filters = reactive<{
-  q: string;
-  page: string;
-  limit: string;
-  active: string;
-  type: string;
-}>({
+const filters = useState("chatBotFilters", () => ({
   q: "",
   active: "",
-  page: currentPage.value,
+  page: "1",
   limit: "10",
   type: ""
-});
+}));
 
 let page = ref(0);
 let totalPageCount = ref(0);
@@ -97,12 +91,6 @@ const {
   },
 });
 const isDataLoading = computed(() => status.value === "pending");
-watch(
-  () => filters.page,
-  (newPage) => {
-    currentPage.value = newPage; // Save page number globally
-  }
-);
 
 const statusComponent = (status: boolean) =>
   status
@@ -136,28 +124,37 @@ const resetPageForChatBot = () => {
   const backPath = router.options.history.state.back || "";
 
   if (!backPath?.startsWith("/bot-management/chat-bot/")) {
-    currentPage.value = '1'; // Reset page number when revisiting
-    filters.page = '1';
+    filters.value.page = '1';
   }
 };
 const Pagination = async ($evnt) => {
-  filters.page = $evnt;
+  filters.value.page = $evnt;
 
   getAllChatBot();
 };
 const onChangeCategory = (value: any) => {
   if (value) {
-    filters.type = value;
-    filters.page = "1";
+    filters.value.type = value;
+    filters.value.page = "1";
   }
 }
 const onChangeStatus = (value: any) => {
   if (value) {
-    filters.active = value;
-    filters.page = "1";
+    filters.value.active = value;
+    filters.value.page = "1";
   }
 }
 const handleRowClick = async (row: any) => {
   await navigateTo(`/bot-management/chat-bot/${row.original.id}`);
 }
+
+const handleClearFilters = () => {
+  Object.assign(filters.value, {  // Update properties directly
+    q: "",
+    active: "",
+    page: "1",
+    limit: "10",
+    type: ""
+  });
+};
 </script>

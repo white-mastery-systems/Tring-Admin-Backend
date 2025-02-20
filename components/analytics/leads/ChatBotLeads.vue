@@ -4,13 +4,14 @@
       <UiInput v-model="filters.q" @input="filters.page = '1'"
         class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
         placeholder=" Search Leads..." />
-      <BotFilter @input="onBotChange" />
-      <StatusFilter @change="onStatusChange" />
+      <BotFilter v-model="filters.botId" />
+      <StatusFilter v-model="filters.status" />
 
-      <!-- <ActionFilter @changeAction="onActionChange" /> -->
-      <DateRangeFilter @change="onDateChange" />
-      <!-- <ChannelFilter @changeAction="onChannel" /> -->
-      <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
+      <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
+        @change="onDateChange" />
+      <CountryFilter v-model="filters.country" />
+      <UiButton @click="emitClearFilters"
+        class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]"> Clear Filters</UiButton>
     </div>
     <!-- <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton> -->
   </div>
@@ -70,42 +71,23 @@ definePageMeta({
 useHead({
   title: "Analytics | Leads",
 });
-const props = withDefaults(
-  defineProps<{
-    filters?: {
-      botId: string;
-      q?: string;
-      from?: string;
-      to?: string;
-      period: string;
-      status: string;
-      channel: string;
-      action: string;
-      page: string;
-      limit: string;
-      country: string;
-      type: string;
-    };
-  }>(),
-  {
-    filters: {
-      botId: "",
-      q: undefined,
-      from: undefined,
-      to: undefined,
-      period: "",
-      status: "",
-      channel: "all",
-      action: "",
-      page: "1",
-      limit: "10",
-      country: "all",
-      type: "chat",
-    },
-  }
-);
+const props = defineProps({
+  filters: {
+    type: Object,
+    required: true,
+  },
+});
 
-
+const emit = defineEmits(['clear-filters']);
+// Computed query object
+const computedQuery = computed(() => {
+  const { period, from, to, ...rest } = props.filters;
+  return {
+    ...rest,
+    period,
+    ...(period === "custom" ? { from, to } : {}), // Include `from` and `to` only if period is "custom"
+  };
+});
 watchEffect(() => {
   if (props.filters.botId === "all") props.filters.botId = "";
 });
@@ -113,14 +95,13 @@ watchEffect(() => {
 let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
-
 let {
   status,
   data: leads,
   refresh: getAllLeads,
 } = await useLazyFetch("/api/org/leads", {
   server: false,
-  query: props.filters,
+  query: computedQuery,
   headers: {
     "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
   },
@@ -141,10 +122,29 @@ let {
       createdAt: lead.createdAt,
       chatId: lead.chatId,
       status: lead.status,
-    }))
-      ;
+    }));
   },
 });
+const emitClearFilters = () => {
+  console.log("Clearing Filters");
+
+  Object.assign(props.filters, {
+    botId: "",
+    q: undefined,
+    from: undefined,
+    to: undefined,
+    period: "all-time",
+    status: "",
+    channel: "all",
+    action: "",
+    page: "1",
+    limit: "10",
+    country: "all",
+    type: "chat",
+  });
+  emit('clear-filters')
+};
+
 const Pagination = async ($evnt) => {
   props.filters.page = $evnt;
   getAllLeads();
@@ -160,29 +160,11 @@ const viewLead = async (chatId: any) => {
 };
 
 const onDateChange = (value: any) => {
-  if (value.from && value.to) {
-    props.filters.from = value.from;
-    props.filters.to = value.to;
-  } else {
+  if (value != "custom") {
     delete props.filters.from;
     delete props.filters.to;
-    props.filters.period = value;
   }
   props.filters.page = "1";
-};
-const onBotChange = (value: any) => {
-  if (value) {
-    props.filters.botId = value
-    props.filters.page = '1'
-    // props.filters.status = value;
-    // props.filters.page = "1";
-  }
-};
-const onStatusChange = (value: any) => {
-  if (value) {
-    props.filters.status = value;
-    props.filters.page = "1";
-  }
 };
 
 const columnHelper = createColumnHelper<(typeof leads.value)[0]>();
@@ -256,11 +238,5 @@ const selectedChannel = (value: any) => {
     props.filters.channel = value;
   }
   props.filters.page = "1";
-};
-
-const onCountryChange = ($event) => {
-  if ($event) {
-    props.filters.country = $event;
-  }
 };
 </script>
