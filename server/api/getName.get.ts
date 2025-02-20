@@ -3,7 +3,7 @@ import OpenAI from "openai";
 const config = useRuntimeConfig()
 interface UserInfo {
   name: string | null; // Name can be a string or null if not provided
-  email: string;       // Email is a required string
+  email: string | null; // Email can be a string or null if not provided
 }
 
 
@@ -65,9 +65,13 @@ function extractUserInfo(input: string): UserInfo {
   const nameMatch = input.match(/Name:\s*(.*?)\s*Email:/);
   const emailMatch = input.match(/Email:\s*([^\\\s]+)/); // Match without trailing backslashes and whitespace
 
+  const disallowedValues = ["not", "not provided", "Not", "Not Provided", "Not provided"];
   const name = nameMatch ? nameMatch[1].replace(/\\n/g, '').replace(/^\"|\"$/g, '').trim() : null; // Remove \n and surrounding "
-  const email = emailMatch ? emailMatch[1].replace(/\"$/, '').trim() : ''; // Remove trailing "
+  const email = emailMatch ? emailMatch[1].replace(/\"$/, '').trim() : null; // Remove trailing "
 
-  return { name, email };
+  const validatedName = name && disallowedValues.includes(name) ? null : name;
+  const validatedEmail = email && disallowedValues.includes(email) ? null : email;
+
+  return { name: validatedName, email: validatedEmail };
 }
 

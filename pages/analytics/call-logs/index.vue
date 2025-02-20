@@ -5,9 +5,11 @@
       <!-- @pagination="Pagination"  -->
       <div class="flex items-center gap-2 overflow-x-scroll pb-2">
         <UiInput v-model="filters.q" @input="filters.page = '1'"
-          class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+          class="w-[150px] sm:w-[150px] md:w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder="Search Bot Name..." />
-        <DateRangeFilter @change="onDateChange" />
+        <DateRangeFilter v-model="filters.period" />
+        <UiButton @click="handleClearFilters"
+          class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">Clear Filters</UiButton>
       </div>
       <DataTable @row-click="handleRowClick" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
@@ -29,35 +31,24 @@ import { useRouter } from "vue-router";
     middleware: "admin-only",
   });
 
-const currentPage = useState("counter", () => '1');
 let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
-const router = useRouter();
+const router = useRouter(); 
 
-const filters = reactive<{
-  q?: string;
-  from?: string;
-  to?: string;
-  period: string;
-  status: string;
-  channel: any;
-  action: string;
-  page: string;
-  limit: string;
-  country: string;
-}>({
+const filters = useState("callLogsFilters", () => ({
   q: undefined,
   from: undefined,
   to: undefined,
-  period: "",
+  period: "all-time",
   status: "",
   channel: "all",
   action: "",
-  page: currentPage.value,
+  page: "1",
   limit: "10",
   country: 'all',
-});
+}));
+
 const {
   status,
   data: callLogData,
@@ -85,13 +76,6 @@ const {
   },
 });
 const isDataLoading = computed(() => status.value === "pending");
-
-watch(
-  () => filters.page,
-  (newPage) => {
-    currentPage.value = newPage; // Save page number globally
-  }
-);
 
 const columnHelper = createColumnHelper<typeof callLogData.value>();
   const columns = [
@@ -133,20 +117,20 @@ onMounted(() => {
 });
 
 const Pagination = async ($evnt: any) => {
-  filters.page = $evnt;
+  filters.value.page = $evnt;
   getAllBotCallLogs();
 };
 
 const onDateChange = (value: any) => {
   if (value.from && value.to) {
-    filters.from = value.from;
-    filters.to = value.to;
+    filters.value.from = value.from;
+    filters.value.to = value.to;
   } else {
-    delete filters.from;
-    delete filters.to;
-    filters.period = value;
+    delete filters.value.from;
+    delete filters.value.to;
+    filters.value.period = value;
   }
-  filters.page = "1";
+  filters.value.page = "1";
 };
 const handleRowClick = async (row: any) => {
   await navigateTo({
@@ -160,9 +144,23 @@ const resetPageIfNeeded = () => {
 
   if (!historyState.forward) {
     if (!backPath?.startsWith("/analytics/call-logs/")) {
-      currentPage.value = '1'; // Reset page number when revisiting
-      filters.page = '1';
+      // currentPage.value = '1'; // Reset page number when revisiting
+      filters.value.page = '1';
     }
   }
+};
+const handleClearFilters = () => {
+  Object.assign(filters.value, {
+    q: undefined,
+    from: undefined,
+    to: undefined,
+    period: "all-time",
+    status: "",
+    channel: "all",
+    action: "",
+    page: "1",
+    limit: "10",
+    country: 'all',
+  });
 };
 </script>
