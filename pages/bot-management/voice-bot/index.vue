@@ -7,19 +7,13 @@
         </UiButton>
       </div>
     </template>
-    <div class="flex items-center gap-2 pb-2">
-      <UiInput v-model="filters.q" @input="filters.page = '1'"
-        class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search bot..." />
-      <UiSelect v-model="activeStatus">
-        <UiSelectTrigger class="max-w-[200px]">
-          <UiSelectValue placeholder="Filter status" />
-        </UiSelectTrigger>
-        <UiSelectContent>
-          <UiSelectItem value="true">Active</UiSelectItem>
-          <UiSelectItem value="false">In active</UiSelectItem>
-          <UiSelectItem value="all">All</UiSelectItem>
-        </UiSelectContent>
-      </UiSelect>
+    <div class="flex items-center gap-2 pb-2 overflow-x-scroll">
+      <UiInput v-model="filters.q"
+        class="w-[150px] sm:w-[150px] md:w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
+        placeholder="Search bot..." />
+      <BotStatusFilter v-model="filters.active" />
+      <UiButton @click="handleClearFilters"
+        class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">Clear Filters</UiButton>
     </div>
     <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
@@ -52,31 +46,17 @@ useHead({
 //   }),
 // );
 
-const currentPage = useState("counter", () => '1');
 const campaignModalState = ref({ open: false, id: null });
 // const searchBotDebounce = refDebounced(searchBot, 500);
 const router = useRouter();
 const route = useRoute();
 const agentModalState = ref({ open: false, id: route.params.id });
-const activeStatus = ref("");
-
-
-watch(activeStatus, async (newStatus, previousStatus) => {
-  filters.active = newStatus;
-  filters.page = "1";
-});
-
-const filters = reactive<{
-  q: string;
-  page: string;
-  limit: string;
-  active: string;
-}>({
+const filters = useState("chatBotFilters", () => ({
   q: "",
   active: "",
-  page: currentPage.value,
+  page: '1',
   limit: "10",
-});
+}));
 
 let page = ref(0);
 let totalPageCount = ref(0);
@@ -106,12 +86,6 @@ const {
 });
 const isDataLoading = computed(() => status.value === "pending");
 
-watch(
-  () => filters.page,
-  (newPage) => {
-    currentPage.value = newPage; // Save page number globally
-  }
-);
 onMounted(() => {
   resetPageForVoiceBot()
 });
@@ -120,8 +94,7 @@ const resetPageForVoiceBot = () => {
   const backPath = router.options.history.state.back || "";
 
   if (!backPath?.startsWith("/bot-management/voice-bot/")) {
-    currentPage.value = '1'; // Reset page number when revisiting
-    filters.page = '1';
+    filters.value.page = '1';
   }
 };
 
@@ -169,7 +142,7 @@ const columns = [
 ];
 
 const Pagination = async ($evnt) => {
-  filters.page = $evnt;
+  filters.value.page = $evnt;
 
   getAllvoiceBot();
 };
@@ -179,4 +152,12 @@ const handleRowClick = async (row: any) => {
     params: { id: row.original.id },
   }); // Ensure it's pushing a new entry
 }
+const handleClearFilters = () => {
+  Object.assign(filters.value, {  // Update properties directly
+    q: "",
+    active: "",
+    page: '1',
+    limit: "10",
+  });
+};
 </script>

@@ -27,7 +27,7 @@
             </UiSelect>
           </span>
         </span>
-        <DateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
+        <CustomDateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
       </div>
     </template>
     <div>
@@ -386,7 +386,8 @@
       analyticsData.value = data
       responseFormat(JSON.parse(JSON.stringify(data)))
     } catch (e) {
-      authHandlers.logout();
+      toast.error(e?.statusMessage);
+      // authHandlers.logout();
     }
     if (analyticsData.value) loading.value = false;
     // analyticsData.value.bots = 0;

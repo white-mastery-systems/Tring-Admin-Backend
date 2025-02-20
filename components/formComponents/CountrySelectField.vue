@@ -37,7 +37,7 @@
                                             :value="country.data" @select="() => {
                                                 handleChange(country.data);
                                             }
-                                                " style="height: 32px">
+                                            " style="height: 32px">
                                             <Check :class="cn(
                                                 'mr-2 h-4 w-4',
                                                 country.data === fieldValue
@@ -64,8 +64,9 @@
 <script setup lang="ts">
 import { Check } from 'lucide-vue-next';
 import { ChevronDown } from "lucide-vue-next";
-
 import countryData from "~/assets/country-codes.json";
+import { useCountryData } from '~/composables/useCountryMatchData';
+
 const searchField = ref('')
 const popoverRef = ref(null)
 const props = defineProps({
@@ -103,11 +104,17 @@ const {
     itemHeight: 32,
 });
 const { value: fieldValue, errorMessage, meta, handleChange } = useField(() => props.name);
-const country = ref(fieldValue.value);
+// const country = ref(fieldValue.value);
+const { country } = useCountryData(fieldValue);
 
+watch(() => countryDetails.value, (newValue) => {
+    console.log(newValue, "newValue watch")
+    fieldValue.value = newValue;
+}, { deep: true, immediate: true });
 watch(country, (newValue) => {
     fieldValue.value = newValue;
 });
+// , { deep: true, immediate: true }
 const handleSearchCountries = (e: string) => {
     searchField.value = e.toLowerCase()
 }

@@ -12,22 +12,22 @@
       <UiTabsList class="grid w-full grid-cols-2">
         <UiTabsTrigger value="chat" @click="() => {
           filters.type = 'chat'
-          filters.period = 'all'
         }">
+          <!-- filters.period = 'all' -->
           Chat
         </UiTabsTrigger>
         <UiTabsTrigger value="voice" @click="() => {
           filters.type = 'voice'
-          filters.period = 'all'
         }">
+          <!-- filters.period = 'all' -->
           Voice
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="chat">
-        <ChatBotLeads :filters="filters" />
+        <ChatBotLeads :filters="filters" @clear-filters="handleClearFilters" />
       </UiTabsContent>
       <UiTabsContent value="voice">
-        <VoiceBotLeads :filters="filters" />
+        <VoiceBotLeads :filters="filters" @clear-filters="handleClearFilters"  />
       </UiTabsContent>
     </UiTabs>
   </Page>
@@ -48,47 +48,36 @@ useHead({
 const exportDataHandler = ref({ status: false, type: "csv" });
 const currentPage = useState("counter", () => '1');
 const router = useRouter();
-
-const filters = reactive<{
-  botId: string;
-  q?: string;
-  from?: string;
-  to?: string;
-  period: string;
-  status: string;
-  channel: any;
-  action: string;
-  page: string;
-  limit: string;
-  country: string;
-  type: string;
-}>({
+const filters = useState("leadsFilters", () => ({
   botId: "",
   q: undefined,
   from: undefined,
   to: undefined,
-  period: "",
+  period: "all-time",
   status: "",
   channel: "all",
   action: "",
-  page: currentPage.value,
+  page: "1",
   limit: "10",
   country: "all",
   type: "chat",
-});
+}));
 
 watchEffect(() => {
-  if (filters.botId === "all") filters.botId = "";
+  if (filters.value.period !== "custom") {
+    delete filters.value.from;
+    delete filters.value.to;
+  }
+  if (filters.value.botId === "all") filters.value.botId = "";
 });
 
 watch(
-  () => filters.page,
+  () => filters.value.page,
   (newPage) => {
     currentPage.value = newPage; // Save page number globally
-  }
-);
+});
 const exportFilters = computed(() => {
-  const { page, limit, ...restFilters } = filters; // Destructure to exclude 'page' and 'limit'
+  const { page, limit, ...restFilters } = filters.value; // Destructure to exclude 'page' and 'limit'
   return restFilters;
 });
 
@@ -134,7 +123,7 @@ const resetPageForLeads = () => {
   if (!historyState.forward) {
     if (!backPath?.startsWith("/analytics/leads/")) {
       currentPage.value = '1'; // Reset page number when revisiting
-      filters.page = '1';
+      filters.value.page = '1';
     }
   }
 };
@@ -151,7 +140,7 @@ const exportData = async () => {
 
     const exportReadObject = (exportLeads ?? []).map((lead: any) => {
       let mergedObject = {}
-      if (filters.type === "chat") {
+      if (filters.value.type === "chat") {
         mergedObject = {
           name: lead.botUser.name ?? "---",
           email: lead.botUser.email ?? "---",
@@ -183,4 +172,21 @@ const exportData = async () => {
     exportReadyRows.value = exportReadObject;
   } catch (err) { }
 };
+const handleClearFilters = () => {
+  Object.assign(filters.value, {  // Update properties directly
+    botId: "",
+    q: undefined,
+    from: undefined,
+    to: undefined,
+    period: "all-time",
+    status: "",
+    channel: "all",
+    action: "",
+    page: "1",
+    limit: "10",
+    country: "all",
+    type: "chat",
+  });
+};
+
 </script>

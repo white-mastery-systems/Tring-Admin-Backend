@@ -12,9 +12,9 @@ const addressSchema = z.object({
     .string({ required_error: "Country Name is required" })
     .min(2, "Country Name is required"),
   zipCode: z
-    .string({ required_error: "zipCode is required" })
-    .min(1, "zipCode is required")
-    .regex(/^\d+$/, "zipCode must be numeric"),
+    .string({ required_error: "Zip Code Is Required" })
+    .min(1, "Zip Code Is Required")
+    .regex(/^\d+$/, "Zip Code Must Be Numeric"),
   // zipCode: z
   //   .string({ required_error: "zipCode is required" })
   //   .min(1, "zipCode is required"),

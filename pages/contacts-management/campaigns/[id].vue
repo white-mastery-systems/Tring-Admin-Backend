@@ -11,7 +11,7 @@
   ]" -->
   <Page title="Campaigns Details" :disable-back-button="false">
     <div class="flex items-center gap-2 mb-2">
-      <DateRangeFilter @change="onDateChange" />
+      <DateRangeFilter v-model="filters.period" />
     </div>
     <DataTable @pagination="Pagination" @row-click="(row: any) => {
       navigateTo(`/analytics/call-logs/${row.original.id}?campaign=campaign`);
