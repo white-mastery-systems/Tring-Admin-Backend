@@ -58,20 +58,26 @@ export default defineEventHandler(async (event) => {
         subscriptionStatus: "active"
       }
     ]),
-    createOrgSubscription([
-      {
-        organizationId: org.id,
-        botType: "chat",
-        planCode: "chat_free",
-        status: "active",
-      },
-      {
-        organizationId: org.id,
-        botType: "voice",
-        planCode: "voice_free",
-        status: "active",
-      },
-    ]),
+    createSubscriptionPlanUsage({
+      organizationId: org.id,
+      serviceType: "chat",
+      pricingPlanCode: "chat_free",
+      subscriptionStatus: "active"
+    }),
+    // createOrgSubscription([
+    //   {
+    //     organizationId: org.id,
+    //     botType: "chat",
+    //     planCode: "chat_free",
+    //     status: "active",
+    //   },
+    //   {
+    //     organizationId: org.id,
+    //     botType: "voice",
+    //     planCode: "voice_free",
+    //     status: "active",
+    //   },
+    // ]),
   ]);
 
     sendEmail(

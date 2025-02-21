@@ -15,6 +15,12 @@ export const getAdminByOrgId = async (orgId: string) => {
   });
 };
 
+export const getuserDetailByEmail = async(email: string) => {
+  return await db.query.authUserSchema.findFirst({
+    where: eq(authUserSchema.email, email)
+  })
+}
+
 export const requestResetPassword = (userDetails: any) => {
   try {
     const token = jwt.sign({ userId: userDetails?.id }, config.secretKey, {

@@ -2,7 +2,7 @@ import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response";
 import { updateUserDetailById } from "~/server/utils/db/user";
 import { getZohoBillingHostedPageDetails } from "~/server/utils/v2/billing/module";
-import { createSubscriptionPlanUsage } from "~/server/utils/v2/db/planUsage";
+import { createSubscriptionPlanUsage, getOrgPlanUsage, updateSubscriptionPlanUsage } from "~/server/utils/v2/db/planUsage";
 import { createOrgZohoSubscription, isOrgZohoSubscriptionExists, updateOrgZohoSubscription } from "~/server/utils/v2/db/zohoSubscription";
 
 const zodSubscriptionVerifyPayment = z.object({
@@ -42,7 +42,12 @@ export default defineEventHandler(async (event)=>{
       : { voicePlanCode : orgSubscription.pricingPlanCode }
      
     const orgZohoSubscription = await isOrgZohoSubscriptionExists(orgId, botType)
-
+    const planUsage = await getOrgPlanUsage(orgId, botType)
+    
+    if(planUsage) {
+      await updateSubscriptionPlanUsage(planUsage.id, { subscriptionStatus: "inactive" })
+    }
+  
     await Promise.all([
       orgZohoSubscription
         ? updateOrgZohoSubscription(orgId, botType, orgSubscription)

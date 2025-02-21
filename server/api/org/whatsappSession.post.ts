@@ -8,31 +8,47 @@ export default defineEventHandler(async (event) => {
     countryCode: z.string(),
     integrationId: z.string()
   }))
-  const orgSubscriptionDetail = await getOrgSubscriptionStatus(body.organizationId, "chat")
-  let whatsappWalletBalance = orgSubscriptionDetail?.whatsappWallet || 0
+  const { organizationId } = body
+  
+  const [orgZohoSubscription, orgDetail, orgPlanUsage] = await Promise.all([
+     getOrgZohoSubscription(organizationId, "chat"),
+     getOrganizationById(organizationId),
+     getOrgPlanUsage(organizationId, "chat")
+  ])
+  
+  let whatsappWalletBalance = orgDetail?.wallet || 0
+
+  if(orgZohoSubscription?.subscriptionStatus !== "active" && whatsappWalletBalance <= 0) {
+    return
+  }
+ 
   const whatsappSessionPrice = parseFloat((1 * 1.5).toFixed(2))
   whatsappWalletBalance = Math.max(0, parseFloat((whatsappWalletBalance - whatsappSessionPrice).toFixed(2)));
 
-  const whatsappSessionExist = await getOrgWhatsappSessions(body.organizationId, body.pid, body.mobile)
+  const whatsappSessionExist = await getOrgWhatsappSessions(organizationId, body.pid, body.mobile)
 
   if (whatsappSessionExist) {
     const createdAt = new Date(whatsappSessionExist.createdAt);
     const now = new Date();
     const hoursDifference = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60); // hours
-    // const minutesDifference = (now.getTime() - createdAt.getTime()) / (1000 * 60)
-    // console.log({current: now.getTime(), createdAt: now.getTime(), difference: hoursDifference })
   
     if (hoursDifference > 2) {
-      // Handle the case where the session is older than 24 hours
       const data = await createOrgWhatsappSession(body)
-      await updateOrgWhatsappSessions(body.organizationId, whatsappWalletBalance)
+      await updateOrganization(organizationId, { wallet: whatsappWalletBalance })
+      await updateSubscriptionPlanUsage(
+        organizationId,
+        { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 }
+      )
       return data
     }
     return whatsappSessionExist
   } else {
-    // Handle the case where the session does not exist
     const data = await createOrgWhatsappSession(body)
-    await updateOrgWhatsappSessions(body.organizationId, whatsappWalletBalance)
+    await updateOrganization(organizationId, { wallet: whatsappWalletBalance })
+    await updateSubscriptionPlanUsage(
+        organizationId,
+        { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 }
+      )
     return data
   }
 })

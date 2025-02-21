@@ -1,3 +1,5 @@
+import { InsertAdminSubscription } from "~/server/schema/admin"
+
 const db = useDrizzle()
 
 export const createOrgZohoSubscription = async (subscriptionData: any) => {
@@ -13,6 +15,18 @@ export const getOrgZohoSubscription = async (organizationId: string, serviceType
   })
 }
 
+export const getSubscriptionByOrganizationId = async (organizationId: string) => {
+  return await db.query.adminSubscriptionSchema.findMany({
+    where: eq(adminSubscriptionSchema.organizationId, organizationId)
+  })
+}
+
+export const getOrgSubscriptionBySubscriptionId = async(subscriptionId: string) => {
+  return await db.query.adminSubscriptionSchema.findFirst({
+    where: eq(adminSubscriptionSchema.subscriptionId, subscriptionId)
+  })
+}
+
 export const isOrgZohoSubscriptionExists = async (orgId: string, serviceType: string) => {
   return await db.query.adminSubscriptionSchema.findFirst({
     where: and(
@@ -22,7 +36,7 @@ export const isOrgZohoSubscriptionExists = async (orgId: string, serviceType: st
   })
 }
 
-export const updateOrgZohoSubscription = async (organizationId: string, serviceType: string ,orgSubsctiption: any) => {
+export const updateOrgZohoSubscription = async (organizationId: string, serviceType: string ,orgSubsctiption: Partial<InsertAdminSubscription>) => {
   return await db.update(adminSubscriptionSchema)
   .set(orgSubsctiption)
   .where( 

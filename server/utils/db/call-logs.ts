@@ -33,7 +33,7 @@ export const getCallLogsList = async (organizationId: string, query: any, timeZo
     where: and(
       eq(callLogSchema.organizationId, organizationId),
       query?.period && fromDate && toDate
-        ? between(callLogSchema.date, fromDate, toDate)
+        ? between(callLogSchema.callerDate, fromDate, toDate)
         : undefined,
     ),
     with: {
@@ -44,11 +44,12 @@ export const getCallLogsList = async (organizationId: string, query: any, timeZo
         }
       }
     },
-     orderBy: [desc(callLogSchema.date)],
+     orderBy: [desc(callLogSchema.callerDate)],
   })
+
   data = data.map((i: any) => ({
     ...i,
-    date: momentTz(i.date).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    date: momentTz(i.callerDate).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
 
   if(query?.q) {
@@ -81,7 +82,7 @@ export const getCallLogById = async (id: string, timeZone: string, query?: any) 
   return data
 }
 
-export const updateCallLogById = async (callLogId: string, callLogs: InsertCallLogSchema) => {
+export const updateCallLogById = async (callLogId: string, callLogs: any) => {
   return (
     await db.update(callLogSchema)
     .set({
