@@ -7,7 +7,8 @@
         <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="w-[150px] sm:w-[150px] md:w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder="Search Bot Name..." />
-        <DateRangeFilter v-model="filters.period" />
+        <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
+          @change="onDateChange" />
         <UiButton @click="handleClearFilters"
           class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">Clear Filters</UiButton>
       </div>
@@ -49,6 +50,12 @@ const filters = useState("callLogsFilters", () => ({
   country: 'all',
 }));
 
+watch(() => filters, (newValue) => {
+  if (newValue.value.period != "custom") {
+    delete filters.value.from;
+    delete filters.value.to;
+  }
+}, { deep: true, immediate: true });
 const {
   status,
   data: callLogData,
@@ -122,13 +129,9 @@ const Pagination = async ($evnt: any) => {
 };
 
 const onDateChange = (value: any) => {
-  if (value.from && value.to) {
-    filters.value.from = value.from;
-    filters.value.to = value.to;
-  } else {
+  if (value != "custom") {
     delete filters.value.from;
     delete filters.value.to;
-    filters.value.period = value;
   }
   filters.value.page = "1";
 };

@@ -15,10 +15,12 @@
           placeholder="Search User..." />
         <BotFilter v-model="filters.botId" />
         <LivePreviewFilter v-model="filters.botUserName" />
-        <DateRangeFilter v-model="filters.period" />
+        <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
+          @change="onDateChange" />
         <ChannelFilter v-model="filters.channel" />
         <CountryFilter v-model="filters.country" />
-        <UiButton @click="handleClearFilters" class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">Clear Filters</UiButton>
+        <UiButton @click="handleClearFilters"
+          class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">Clear Filters</UiButton>
       </div>
     </div>
     <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="($event) => {
@@ -93,7 +95,12 @@ const {
     }));
   },
 });
-
+watch(() => filters, (newValue) => {
+  if (newValue.value.period != "custom") {
+    delete filters.value.from;
+    delete filters.value.to;
+  }
+}, { deep: true, immediate: true });
 const exportFilters = computed(() => {
   const { page, limit, ...restFilters } = filters.value; // Destructure to exclude 'page' and 'limit'
   return restFilters;
@@ -186,6 +193,13 @@ const resetPageForChats = () => {
 const Pagination = async ($evnt: any) => {
   filters.value.page = $evnt;
   getAllChats();
+};
+const onDateChange = (value: any) => {
+  if (value != "custom") {
+    delete filters.value.from;
+    delete filters.value.to;
+  }
+  filters.value.page = "1";
 };
 // const onDateChange = (value: any) => {
 //   if (value.from && value.to) {

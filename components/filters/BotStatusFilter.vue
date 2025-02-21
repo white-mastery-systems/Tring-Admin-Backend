@@ -2,7 +2,7 @@
   <div>
     <UiSelect v-model="selectedStatus">
       <UiSelectTrigger class="w-[150px]">
-        <UiSelectValue placeholder="Select category" />
+        <UiSelectValue placeholder="Select Status" />
       </UiSelectTrigger>
       <UiSelectContent>
         <UiSelectItem value="all">All</UiSelectItem>
