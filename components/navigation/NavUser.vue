@@ -1,0 +1,136 @@
+<script setup lang="ts">
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@/components/ui/avatar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from '@/components/ui/sidebar'
+import {
+  BadgeCheck,
+  Bell,
+  ChevronsUpDown,
+  CreditCard,
+  LogOut,
+  Sparkles,
+} from 'lucide-vue-next'
+import { useNavigationAndAccordion } from '~/composables/navigation/useNavigationAndAccordion';
+import { useRouter, useRoute } from "vue-router";
+import { useSubscriptionCheck } from '~/composables/billing/useSubscriptionCheck';
+import { useOrgDetailsStore } from "~/store/orgDetailsStore";
+import { useUser } from '~/composables/auth'
+
+const { navigationModules, dropdownMenuItems } = useNavigationAndAccordion()
+const { isAnyPlanFree, subcribed, checkSubscription } = useSubscriptionCheck()
+const logoutModal = ref(false);
+const OrgDetails = useOrgDetailsStore();
+const { user, clearUser } = await useUser();
+
+
+const userInfo = computed(() => {
+  return user.value;
+});
+
+const avatarValue = ref(OrgDetails.values?.logo || userInfo.value?.profile_image)
+
+// const props = defineProps<{
+//   user: {
+//     name: string
+//     email: string
+//     avatar: string
+//   }
+// }>()
+const route = useRoute();
+const router = useRouter();
+const { isMobile } = useSidebar()
+
+const handleLogout = async () => {
+  localStorage.clear();
+  authHandlers.logout();
+  logoutModal.value = false;
+  navigateTo({ name: "auth-sign-in" });
+};
+const navigateToSamePage = (path: any) => {
+  if (route.path === path.path) {
+    // If already on the same page, update the query
+    router.replace(path);
+  }
+  if ((path.path === '/billing/view-wallet') && !subcribed.value) {
+    toast.error("Please upgrade your plan to access this feature")
+  }
+};
+</script>
+<template>
+  <SidebarMenu>
+    <SidebarMenuItem>
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <SidebarMenuButton size="lg"
+            class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+            <Avatar class="h-8 w-8 rounded-lg">
+              <AvatarImage :src="avatarValue" :alt="userInfo?.username" />
+              <AvatarFallback class="rounded-lg">
+                {{ userInfo?.username?.toUpperCase()?.charAt(0) }}
+              </AvatarFallback>
+            </Avatar>
+            <div class="grid flex-1 text-left text-sm leading-tight">
+              <span class="truncate font-semibold">{{ userInfo?.username }}</span>
+              <span class="truncate text-xs">{{ userInfo?.email }}</span>
+            </div>
+            <ChevronsUpDown class="ml-auto size-4" />
+          </SidebarMenuButton>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent class="w-[--reka-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+          :side="isMobile ? 'bottom' : 'right'" align="end" :side-offset="4">
+          <DropdownMenuLabel class="p-0 font-normal">
+            <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+              <Avatar class="h-8 w-8 rounded-lg">
+                <AvatarImage :src="avatarValue" :alt="userInfo?.username" />
+                <AvatarFallback class="rounded-lg">
+                  {{ userInfo?.username?.toUpperCase()?.charAt(0) }}
+                </AvatarFallback>
+              </Avatar>
+              <div class="grid flex-1 text-left text-sm leading-tight">
+                <span class="truncate font-semibold">{{ userInfo?.username }}</span>
+                <span class="truncate text-xs">{{ userInfo?.email }}</span>
+              </div>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuGroup class="font-medium text-[16px] pl-2 pr-0 py-1">
+            <DropdownMenuItem v-for="item in dropdownMenuItems" :key="item.path" class="pr-0 py-0"
+              @click.prevent="navigateToSamePage(item.path)">
+              <NuxtLink
+                :to="(!subcribed && (item.path.path === '/billing/view-wallet')) ? '/billing/view-all' : item.path"
+                @click.prevent="navigateToSamePage(item.path)" class="flex items-center w-full min-h-[40px]">
+                <DropdownMenuShortcut class="flex items-center gap-2 w-full">
+                  <component :is="item.icon" size="18"></component>
+                  {{ item.label }}
+                </DropdownMenuShortcut>
+              </NuxtLink>
+            </DropdownMenuItem>
+            <DropdownMenuItem class="flex items-center w-full py-[10px] cursor-pointer">
+              <div @click="handleLogout" class="flex items-center font-medium w-full gap-[8px] text-[#ef4444]">
+                <Icon name="ic:round-logout" class="h-[18px] w-[18px]" />
+                <p class="text-sm font-medium">Logout</p>
+              </div>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+        <DropdownMenuSeparator />
+      </DropdownMenu>
+    </SidebarMenuItem>
+  </SidebarMenu>
+</template>

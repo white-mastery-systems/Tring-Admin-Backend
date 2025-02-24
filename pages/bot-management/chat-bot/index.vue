@@ -1,37 +1,7 @@
 <template>
   <Page title="Chat Bot" :disable-back-button="true">
-    <template #actionButtons>
-      <div class="flex gap-4">
-        <UiButton class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95"
-          @click="() => {
-              agentModalState.open = true;
-              agentModalState.id = null;
-            }
-            ">
-          Add Chat Bot
-        </UiButton>
-      </div>
-    </template>
-    <div class="flex items-center gap-2 pb-2 overflow-x-scroll">
-      <UiInput v-model="filters.q" @input="filters.page = '1'"
-        class="w-[150px] sm:w-[150px] md:w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
-        placeholder="Search bot..." />
-      <BotStatusFilter v-model="filters.active" />
-      <BotCategoryFilter v-model="filters.type" />
-      <UiButton @click="handleClearFilters"
-        class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">Clear Filters</UiButton>
-    </div>
-    <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="($event) => {
-        (filters.page = '1'), (filters.limit = $event);
-      }
-      " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="bots"
-      :page-size="20" :is-loading="isDataLoading" :height="20" height-unit="vh" />
+    <CreateBot />
   </Page>
-  <AddChatBotModal v-model="agentModalState" @confirm="() => {
-      agentModalState.open = false;
-      getAllChatBot();
-    }
-    "></AddChatBotModal>
 </template>
 
 <script setup lang="ts">

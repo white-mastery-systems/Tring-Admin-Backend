@@ -1,5 +1,12 @@
 <template>
-  <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true">
+  <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true"
+    class="flex flex-col items-center gap-4">
+    <QuickLinks :navigavtionList="navigavtionList" />
+    <h6 class="font-bold text-[24px]">Start creating your bots</h6>
+    <CreateBotLinks :navigavtionList="createBotNavList" />
+    <StatsCard :revenusList="revenusList" />
+  </Page>
+  <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true" v-if="false">
     <template #actionButtons>
       <div class="flex gap-2">
         <span class="field_shadow flex items-center rounded-lg text-[15px]" style="color: rgba(138, 138, 138, 1)">
@@ -82,10 +89,10 @@
     Title,
     Tooltip,
   } from "chart.js";
-  import { MinusIcon, PlusIcon } from "lucide-vue-next";
+import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIcon } from "lucide-vue-next";
   import { Line } from "vue-chartjs";
   import ChatSession from "~/components/icons/ChatSession.vue";
-
+  
   useHead({
     title: "Dashboard",
   });
@@ -100,6 +107,61 @@
     CategoryScale,
   );
 
+  const navigavtionList = ref([
+    {
+      title: "Billing",
+      subtitle: "Manage your plans here",
+      url: "/",
+    }, {
+      title: "Integrations",
+      subtitle: "Manage all your integrations here",
+      url: "/",
+    }, {
+      title: "Analytics",
+      subtitle: "View your stats here",
+      url: "/",
+    }, {
+      title: "Campaign",
+      subtitle: "Manage your campaigns here",
+      url: "/",
+    },
+  ]);
+
+const createBotNavList = ref([
+  {
+    title: "Create a Chatbot",
+    subtitle: "Click here to deploy your new chatbot",
+    url: "/",
+  }, {
+    title: "Create a Voicebot",
+    subtitle: "Click here to deploy your new voicebot",
+    url: "/",
+  }
+]);
+
+const revenusList = ref([
+  {
+    title: "Total Revenue",
+    revenus: "$45,231.89",
+    previousRevenus: "+20.1% from last month",
+    icon: DollarSign,
+  }, {
+    title: "Subscriptions",
+    revenus: "+2350",
+    previousRevenus: "+180.1% from last month",
+    icon: UsersIcon,
+  }, {
+    title: "Sales",
+    revenus: "+12,234",
+    previousRevenus: "+19% from last month",
+    icon: CreditCardIcon,
+  }, {
+    title: "Active Now",
+    revenus: "+573",
+    previousRevenus: "+201 since last host",
+    icon: ActivityIcon,
+  },
+])
   const selectedValue: any = ref("last-30-days");
   const analyticsData = ref();
   const analyticsChartData = ref()
