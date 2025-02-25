@@ -144,21 +144,22 @@ const selectedPeriod = ref(props.period);
 const df = new DateFormatter("en-US", {
   dateStyle: "medium",
 });
-const value = ref({
+const dateFormat = ref({
   start: props.from ? parseDate(new Date(props.from).toISOString().split('T')[0]) : null,
   end: props.to ? parseDate(new Date(props.to).toISOString().split('T')[0]) : null,
 }) as Ref<DateRange>;
 
-const debouncedValue = debouncedRef(value, 800);
+const debouncedValue = debouncedRef(dateFormat, 800);
 
 watchEffect(() => {
   selectedPeriod.value = props.period;
-  value.value.start = props.from;
-  value.value.end = props.to;
+  // dateFormat.value.start = props.from;
+  // dateFormat.value.end = props.to;
 });
 // Watch for changes in the date range (custom period)
 watch(debouncedValue, (newValue) => {
   if (newValue.start && newValue.end && selectedPeriod.value === "custom") {
+    console.log(newValue, "newValue")
     emit("update:from", newValue.start.toDate(getLocalTimeZone()).toISOString());
     emit("update:to", newValue.end.toDate(getLocalTimeZone()).toISOString());
   }
@@ -200,21 +201,21 @@ const isDateDisabled = (date: CalendarDate) => {
       <UiPopoverTrigger as-child>
         <UiButton variant="outline" class="w-[240px] justify-start text-left font-normal truncate">
           <CalendarIcon class="mr-2 h-4 w-4" />
-          <template v-if="value.start">
-            <template v-if="value.end">
-              {{ df.format(value.start.toDate(getLocalTimeZone())) }} -
-              {{ df.format(value.end.toDate(getLocalTimeZone())) }}
+          <template v-if="dateFormat.start">
+            <template v-if="dateFormat.end">
+              {{ df.format(dateFormat.start.toDate(getLocalTimeZone())) }} -
+              {{ df.format(dateFormat.end.toDate(getLocalTimeZone())) }}
             </template>
             <template v-else>
-              {{ df.format(value.start.toDate(getLocalTimeZone())) }}
+              {{ df.format(dateFormat.start.toDate(getLocalTimeZone())) }}
             </template>
           </template>
           <template v-else> Pick a date </template>
         </UiButton>
       </UiPopoverTrigger>
       <UiPopoverContent class="w-auto p-0">
-        <UiRangeCalendar v-model="value" initial-focus :is-date-disabled="isDateDisabled" :number-of-months="2"
-          @update:start-value="(startDate) => (value.start = startDate)" />
+        <UiRangeCalendar v-model="dateFormat" initial-focus :is-date-disabled="isDateDisabled" :number-of-months="2"
+          @update:start-value="(startDate) => (dateFormat.start = startDate)" />
       </UiPopoverContent>
     </UiPopover>
   </div>
