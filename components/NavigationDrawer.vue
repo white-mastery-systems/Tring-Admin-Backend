@@ -117,7 +117,7 @@
               </DropdownMenuShortcut>
             </NuxtLink>
           </UiDropdownMenuItem>
-          <UiDropdownMenuItem class="flex items-center w-full py-[10px]">
+          <UiDropdownMenuItem class="flex items-center w-full py-[10px] cursor-pointer">
             <div @click="handleLogout" class="flex items-center font-medium w-full gap-[8px] text-[#ef4444]">
               <Icon name="ic:round-logout" class="h-[18px] w-[18px]" />
               <p class="text-sm font-medium">Logout</p>

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { type Ref, ref } from "vue";
 import {
   CalendarDate,
@@ -9,6 +9,7 @@ import {
 
 import { Calendar as CalendarIcon } from "lucide-vue-next";
 import type { DateRange } from "radix-vue";
+import { useDateOptions } from "~/composables/filters/useDateOptions";
 
 const selectDate = defineModel<{ selectedValue: any }>({
   default: {
@@ -23,43 +24,11 @@ const props = withDefaults(
     selectDateField: true,
   },
 );
+const { dateOptions } = useDateOptions();
 
 const df = new DateFormatter("en-US", {
   dateStyle: "medium",
 });
-const dateFilters = reactive([
-  {
-    content: "Today",
-    value: "today",
-  }, {
-    content: "Yesterday",
-    value: "yesterday",
-  }, {
-    content: "Last 7 days",
-    value: "last-7-days",
-  }, {
-    content: "Last 30 days",
-    value: "last-30-days",
-  }, {
-    content: "Current month",
-    value: "current-month",
-  }, {
-    content: "Last month",
-    value: "last-month",
-  }, {
-    content: "Current year",
-    value: "current-year",
-  }, {
-    content: "Last year",
-    value: "last-year",
-  }, {
-    content: "Current financial year",
-    value: "current-financial-year",
-  }, {
-    content: "Last financial year",
-    value: "last-financial-year",
-  }
-]);
 const selectedDate: any = ref('')
 
 
@@ -102,11 +71,11 @@ const isDateDisabled = (date: CalendarDate) => {
 
 <template>
   <UiSelect v-if="props.selectDateField" v-model="selectedDate">
-    <UiSelectTrigger class="w-[110px] sm:w-[110px] md:w-[250px] lg:w-[250px] xl:w-[250px]">
+    <UiSelectTrigger class="w-[110px] sm:w-[110px] md:w-[188px] lg:w-[188px] xl:w-[188px]">
       <UiSelectValue placeholder="Select a Date" />
     </UiSelectTrigger>
     <UiSelectContent>
-      <UiSelectItem v-for="(rangeDate, index) in dateFilters" :key="index" :value="rangeDate.value">
+      <UiSelectItem v-for="(rangeDate, index) in dateOptions" :key="index" :value="rangeDate.value">
         {{ rangeDate.content }}
       </UiSelectItem>
       <UiSelectItem value="all-time">All time</UiSelectItem>
@@ -135,11 +104,118 @@ const isDateDisabled = (date: CalendarDate) => {
       </UiButton>
     </UiPopoverTrigger>
     <UiPopoverContent class="w-auto p-0">
-      <!-- <div class="px-8 py-2">
-        <DateRangePresetSelect @change="(newValue) => (value = newValue)" />
-      </div> -->
       <UiRangeCalendar v-model="value" initial-focus :is-date-disabled="isDateDisabled" :number-of-months="2"
         @update:start-value="(startDate) => (value.start = startDate)" />
     </UiPopoverContent>
   </UiPopover>
+</template> -->
+<script setup lang="ts">
+import { ref, watch } from "vue";
+import { useDateOptions } from "~/composables/filters/useDateOptions";
+import {
+  CalendarDate,
+  DateFormatter,
+  getLocalTimeZone,
+  today, parseDate,
+} from "@internationalized/date";
+import type { DateRange } from "radix-vue";
+
+const props = defineProps({
+  period: {
+    type: String,
+    default: "all-time",
+  },
+  from: {
+    type: String,
+    default: null,
+  },
+  to: {
+    type: String,
+    default: null,
+  },
+});
+
+const emit = defineEmits(["update:period", "update:from", "update:to","change"]);
+
+const { dateOptions } = useDateOptions();
+
+const selectedPeriod = ref(props.period);
+
+const df = new DateFormatter("en-US", {
+  dateStyle: "medium",
+});
+const value = ref({
+  start: props.from ? parseDate(new Date(props.from).toISOString().split('T')[0]) : null,
+  end: props.to ? parseDate(new Date(props.to).toISOString().split('T')[0]) : null,
+}) as Ref<DateRange>;
+
+const debouncedValue = debouncedRef(value, 800);
+
+watchEffect(() => {
+  selectedPeriod.value = props.period;
+  value.value.start = props.from;
+  value.value.end = props.to;
+});
+// Watch for changes in the date range (custom period)
+watch(debouncedValue, (newValue) => {
+  if (newValue.start && newValue.end && selectedPeriod.value === "custom") {
+    emit("update:from", newValue.start.toDate(getLocalTimeZone()).toISOString());
+    emit("update:to", newValue.end.toDate(getLocalTimeZone()).toISOString());
+  }
+});
+
+// Watch for changes in the selected period
+watch(selectedPeriod, (newValue) => {
+  emit("update:period", newValue);
+  emit("change", newValue);
+
+  if (newValue !== "custom") {
+    // Reset 'from' and 'to' when a non-custom period is selected
+    emit("update:from", null);
+    emit("update:to", null);
+  }
+});
+
+const isDateDisabled = (date: CalendarDate) => {
+  return date > today(getLocalTimeZone());
+};
+</script>
+
+<template>
+  <div class="flex items-center gap-2">
+    <UiSelect v-model="selectedPeriod">
+      <UiSelectTrigger class="w-[110px] sm:w-[110px] md:w-[188px] lg:w-[188px] xl:w-[188px]">
+        <UiSelectValue placeholder="Select a Date" />
+      </UiSelectTrigger>
+      <UiSelectContent>
+        <UiSelectItem v-for="(rangeDate, index) in dateOptions" :key="index" :value="rangeDate.value">
+          {{ rangeDate.content }}
+        </UiSelectItem>
+        <UiSelectItem value="all-time">All time</UiSelectItem>
+        <UiSelectItem value="custom">Custom</UiSelectItem>
+      </UiSelectContent>
+    </UiSelect>
+
+    <UiPopover v-if="selectedPeriod === 'custom'">
+      <UiPopoverTrigger as-child>
+        <UiButton variant="outline" class="w-[240px] justify-start text-left font-normal truncate">
+          <CalendarIcon class="mr-2 h-4 w-4" />
+          <template v-if="value.start">
+            <template v-if="value.end">
+              {{ df.format(value.start.toDate(getLocalTimeZone())) }} -
+              {{ df.format(value.end.toDate(getLocalTimeZone())) }}
+            </template>
+            <template v-else>
+              {{ df.format(value.start.toDate(getLocalTimeZone())) }}
+            </template>
+          </template>
+          <template v-else> Pick a date </template>
+        </UiButton>
+      </UiPopoverTrigger>
+      <UiPopoverContent class="w-auto p-0">
+        <UiRangeCalendar v-model="value" initial-focus :is-date-disabled="isDateDisabled" :number-of-months="2"
+          @update:start-value="(startDate) => (value.start = startDate)" />
+      </UiPopoverContent>
+    </UiPopover>
+  </div>
 </template>

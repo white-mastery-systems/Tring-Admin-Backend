@@ -1,7 +1,7 @@
 <template>
   <div>
     <UiSelect v-model="selectedStatus">
-      <UiSelectTrigger class="w-[110px]">
+      <UiSelectTrigger class="w-[150px]">
         <UiSelectValue placeholder="Select category" />
       </UiSelectTrigger>
       <UiSelectContent>
@@ -13,10 +13,18 @@
   </div>
 </template>
 <script setup lang="ts">
-const emit = defineEmits(['change'])
-const selectedStatus = ref('all')
-
+  const props = defineProps({
+    modelValue: {
+      type: String,
+      default: "all",
+    },
+  });
+const emit = defineEmits(["update:modelValue"]);
+const selectedStatus = ref(props.modelValue)
+watchEffect(() => {
+  selectedStatus.value = props.modelValue;
+})
 watch(selectedStatus, (newValue) => {
-  emit('change', newValue)
+  emit("update:modelValue", newValue);
 });
 </script>

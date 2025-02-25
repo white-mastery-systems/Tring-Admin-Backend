@@ -6,6 +6,7 @@ export const addToolschema = toTypedSchema(
     genderIdentification: z.boolean(),
     clientFormControl: z.boolean(),
     propertieFormControl: z.boolean(),
+
     clientTools: z.array(
       z.object({
         name: z.string().optional(),
@@ -109,6 +110,8 @@ export const addToolChatBotschema = toTypedSchema(
     schedule_call: z.boolean(),
     clientFormControl: z.boolean(),
     propertieFormControl: z.boolean(),
+    schedule_call_with_voice: z.boolean(),
+    voice_bot: z.string().optional(),
     customTools: z.array(
       z.object({
         name: z.string().optional(),
@@ -130,6 +133,18 @@ export const addToolChatBotschema = toTypedSchema(
     )
   })
     .superRefine((data, ctx) => {
+      console.log(data, "data --- data")
+
+      if (data.schedule_call_with_voice && data.schedule_call) {
+        console.log('inside --- outside')
+        if (!data.voice_bot || data.voice_bot.trim() === "") {
+          console.log('inside --- inside')
+          ctx.addIssue({
+            path: ["voice_bot"],
+            message: "Please select a voice bot",
+          })
+        }
+      }
       if (data.clientFormControl) {
         data.customTools.forEach((clientTool, index) => {
           // Validate each clientTool

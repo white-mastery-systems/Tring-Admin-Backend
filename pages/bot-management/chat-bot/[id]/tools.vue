@@ -16,12 +16,12 @@
       to: `/bot-management/chat-bot/${botDetails.id}/tools`,
     },
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
-    <form @submit.prevent="dynamicToolsForm" class="space-y-6">
+    <form @submit.prevent="dynamicToolsForm" class="space-y-6 pt-2 sm:pt-2 md:pt-0">
       <!-- Default Tools Section -->
       <div class="mb-6">
         <div class="flex flex-wrap gap-4">
           <UiFormField v-slot="{ value, handleChange }" name="date_time">
-            <UiFormItem class="w-[49%]">
+            <UiFormItem class="w-full sm:w-full md:w-[49%]">
               <div class="flex justify-between">
                 <UiLabel class="text-[14px] font-medium">Current Date & Time</UiLabel>
                 <UiFormControl>
@@ -35,7 +35,7 @@
           </UiFormField>
 
           <UiFormField v-slot="{ value, handleChange }" name="schedule_appointment">
-            <UiFormItem class="w-[49%]">
+            <UiFormItem class="w-full sm:w-full md:w-[49%]">
               <div class="flex justify-between">
                 <UiLabel class="text-[14px] font-medium">Schedule Appointment</UiLabel>
                 <UiFormControl>
@@ -49,7 +49,7 @@
           </UiFormField>
 
           <UiFormField v-slot="{ value, handleChange }" name="site_visit">
-            <UiFormItem class="w-[49%]">
+            <UiFormItem class="w-full sm:w-full md:w-[49%]">
               <div class="flex justify-between">
                 <UiLabel class="text-[14px] font-medium">Schedule Site Visit</UiLabel>
                 <UiFormControl>
@@ -62,7 +62,7 @@
             </UiFormItem>
           </UiFormField>
           <UiFormField v-slot="{ value, handleChange }" name="schedule_call">
-            <UiFormItem class="w-[49%]">
+            <UiFormItem class="w-full sm:w-full md:w-[49%]">
               <div class="flex justify-between">
                 <UiLabel class="text-[14px] font-medium"> Schedule Call </UiLabel>
                 <UiFormControl>
@@ -74,30 +74,32 @@
               </div>
             </UiFormItem>
           </UiFormField>
-          <!-- <div class="flex items-center w-full">
-            <UiFormField v-slot="{ value, handleChange }" name="schedule_call pr-4">
-              <UiFormItem class="w-[50%]">
+          <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 items-center gap-3 w-full">
+            <UiFormField v-slot="{ value, handleChange }" name="schedule_call_with_voice">
+              <UiFormItem class="w-full pr-0 sm:pr-0 md:pr-[6px]">
                 <div class="flex justify-between">
-                  <UiLabel class="text-[14px] font-medium"> Scheduled call from Voice. </UiLabel>
+                  <UiLabel class="text-[14px] font-medium"> Schedule a Call with Voice Bot </UiLabel>
                   <UiFormControl>
-                    <UiSwitch id="schedule_call" :checked="value" @update:checked="(checked) => {
+                    <UiSwitch id="schedule_call_with_voice" :checked="value" @update:checked="(checked) => {
                       handleChange(checked);
-                    }" :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
+                    }" :style="{ background: value ? '#424BD1' : '#8A8A8A' }" :disabled="!values.schedule_call" />
                   </UiFormControl>
                   <UiFormMessage />
                 </div>
               </UiFormItem>
             </UiFormField>
-          <span class="w-[50%]">
+          <span class="w-full">
             <SelectField
-             name="industry"
-             label="Industry"
-             placeholder="Select Role"
+             name="voice_bot"
+             label="Voice Bots"
+             placeholder="Select Bot"
              :options="voiceBotDetails.map((bot) => ({ label: bot.name, value: bot.id }))"
              :required="true"
+             :disabled="!values.schedule_call_with_voice"
+             :closeIcon="true"
            />
           </span>
-          </div> -->
+          </div>
         </div>
       </div>
       <div class="mb-4">
@@ -275,10 +277,26 @@ onMounted(() => {
   setFieldValue('schedule_appointment', formattedToolsDetails?.schedule_appointment ?? false);
   setFieldValue('site_visit', formattedToolsDetails.site_visit ?? false);
   setFieldValue('schedule_call', formattedToolsDetails?.schedule_call ?? false);
+  setFieldValue('schedule_call_with_voice', formattedToolsDetails?.schedule_call_with_voice ?? false);
+  setFieldValue('voice_bot', formattedToolsDetails?.voice_bot ?? '');
   setFieldValue('clientFormControl', formattedToolsDetails.clientFormControl ?? false);
   setFieldValue('propertieFormControl', formattedToolsDetails.propertieFormControl ?? false);
   setFieldValue('customTools', formattedToolsDetails.customTools ?? []);
 
+})
+
+watch(() => values.schedule_call, (newValues)=> {
+  console.log(newValues, "newValues")
+  if (!newValues) {
+    setFieldValue('schedule_call_with_voice', false)
+  } 
+})
+
+watch(() => values.schedule_call_with_voice, (newValues)=> {
+  console.log(newValues, "newValues")
+  if (!newValues) {
+    setFieldValue('voice_bot', "")
+  } 
 })
 // const dynamicToolsForm = handleSubmit(async (values: any) => {
 //   isLoading.value = true;
@@ -357,6 +375,7 @@ const dynamicToolsForm = handleSubmit(async (values: any) => {
   if (values.schedule_appointment) defaultTools.push('schedule_appointment');
   if (values.site_visit) defaultTools.push('site_visit');
   if (values.schedule_call) defaultTools.push('schedule_call');
+  if (values.schedule_call_with_voice) defaultTools.push('schedule_call_with_voice');
 
   const customTools = values.customTools.map(tool => ({
     type: "function",
@@ -388,7 +407,8 @@ const dynamicToolsForm = handleSubmit(async (values: any) => {
     tools: {
       defaultTools,
       customTools,
-      toolEndpoints
+      toolEndpoints,
+      voiceBotId: values.voice_bot,
     },
     metadata: {
       ...botDetails.metadata,

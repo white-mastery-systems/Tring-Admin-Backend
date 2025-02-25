@@ -13,13 +13,12 @@
         <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder="Search User..." />
-        <BotFilter @input="onBotChange" />
-        <!-- <BotUserFilter @changeAction="onActionChange" /> -->
-        <LivePreviewFilter @changeAction="onActionChange" />
-        <DateRangeFilter @change="onDateChange" />
-        <ChannelFilter @changeAction="onChannelChange" />
-
-        <CountryFilter @changeCountry="onCountryChange"></CountryFilter>
+        <BotFilter v-model="filters.botId" />
+        <LivePreviewFilter v-model="filters.botUserName" />
+        <DateRangeFilter v-model="filters.period" />
+        <ChannelFilter v-model="filters.channel" />
+        <CountryFilter v-model="filters.country" />
+        <UiButton @click="handleClearFilters" class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">Clear Filters</UiButton>
       </div>
     </div>
     <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="($event) => {
@@ -42,36 +41,22 @@ definePageMeta({
 useHead({
   title: "Analytics | Chats",
 });
-const currentPage = useState("counter", () => '1');
 const router = useRouter();
 const route = useRoute();
 // const searchBotDebounce = refDebounced(searchBot, 500);
 
-const activeStatus = ref("");
-
-const filters = reactive<{
-  botId: string;
-  q?: string;
-  from?: string;
-  to?: string;
-  botUserName: string;
-  period: string;
-  page: string;
-  limit: string;
-  channel: any;
-  country: string;
-}>({
+const filters = useState("chatsFilters", () => ({
   botId: "",
   q: undefined,
   from: undefined,
   to: undefined,
   botUserName: "all",
   period: "all-time",
-  page: currentPage.value,
+  page: "1",
   limit: "10",
   channel: "all",
   country: "all",
-});
+}));
 const exportDataHandler = ref({ status: false, type: "csv" });
 
 let page = ref(0);
@@ -110,16 +95,10 @@ const {
 });
 
 const exportFilters = computed(() => {
-  const { page, limit, ...restFilters } = filters; // Destructure to exclude 'page' and 'limit'
+  const { page, limit, ...restFilters } = filters.value; // Destructure to exclude 'page' and 'limit'
   return restFilters;
 });
 const exportReadyRows = ref<any>([]);
-watch(
-  () => filters.page,
-  (newPage) => {
-    currentPage.value = newPage; // Save page number globally
-  }
-);
 const exportReadyColumns = computed(() => {
   return [
     "Name",
@@ -196,47 +175,46 @@ const resetPageForChats = () => {
 
   if (!historyState.forward) {
     if (!backPath?.startsWith("/analytics/chats/")) {
-      currentPage.value = '1'; // Reset page number when revisiting
-      filters.page = '1';
+      filters.value.page = '1';
     }
   }
 };
-const onActionChange = (value: any) => {
-  filters.botUserName = value;
-  filters.page = "1";
-};
+// const onActionChange = (value: any) => {
+//   filters.value.botUserName = value;
+//   filters.value.page = "1";
+// };
 const Pagination = async ($evnt: any) => {
-  filters.page = $evnt;
+  filters.value.page = $evnt;
   getAllChats();
 };
-const onDateChange = (value: any) => {
-  if (value.from && value.to) {
-    filters.from = value.from;
-    filters.to = value.to;
-  } else {
-    delete filters.from;
-    delete filters.to;
-    filters.period = value;
-  }
-  filters.page = "1";
-};
+// const onDateChange = (value: any) => {
+//   if (value.from && value.to) {
+//     filters.value.from = value.from;
+//     filters.value.to = value.to;
+//   } else {
+//     delete filters.value.from;
+//     delete filters.value.to;
+//     filters.value.period = value;
+//   }
+//   filters.value.page = "1";
+// };
 
-const onBotChange = (value: any) => {
-  if (value) {
-    filters.botId = value
-    filters.page = '1'
-  }
-};
-const onChannelChange = ($event) => {
-  if ($event) {
-    filters.channel = $event;
-  }
-};
-const onCountryChange = ($event) => {
-  if ($event) {
-    filters.country = $event;
-  }
-};
+// const onBotChange = (value: any) => {
+//   if (value) {
+//     filters.value.botId = value
+//     filters.value.page = '1'
+//   }
+// };
+// const onChannelChange = ($event) => {
+//   if ($event) {
+//     filters.value.channel = $event;
+//   }
+// };
+// const onCountryChange = ($event) => {
+//   if ($event) {
+//     filters.value.country = $event;
+//   }
+// };
 const handleRowClick = async (row: any) => {
   await navigateTo({
     name: "analytics-chats-id",
@@ -276,4 +254,18 @@ const exportData = async () => {
     exportReadyRows.value = exportReadObject;
   } catch (err) { }
 };
+const handleClearFilters = () => {
+  Object.assign(filters.value, {
+    botId: "",
+    q: undefined,
+    from: undefined,
+    to: undefined,
+    botUserName: "all",
+    period: "all-time",
+    page: "1",
+    limit: "10",
+    channel: "all",
+    country: "all",
+  });
+}
 </script>
