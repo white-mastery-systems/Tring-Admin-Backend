@@ -57,7 +57,41 @@
   font-style: normal;
   font-display: swap;
 }
-
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/Inter-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/Inter-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/Inter-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/Inter-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/Inter-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -215,6 +249,9 @@
 .field_shadow {
   box-shadow: 0px 2px 24px 0px #00000014 !important;
 }
+.inside_card_shadow {
+  box-shadow: 0px 3px 10px 0px #0000001A !important;
+}
 .box_shadow {
   box-shadow: 0px 3px 10px 0px #0000001A !important;
 }
@@ -247,5 +284,6 @@
   margin-block: 1rem !important;
 }
 * {
-  font-family: "HeyWow";
+  font-family: 'Inter', sans-serif;
+  /* font-family: "HeyWow"; */
 }

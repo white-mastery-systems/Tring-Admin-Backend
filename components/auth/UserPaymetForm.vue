@@ -82,10 +82,10 @@ const onSubmit = handleSubmit(async (value) => {
           <UiInput id="country" v-model="country" v-bind="countryAttrs" placeholder="Country" type="text"
             :disabled="isLoading" />
           <CountrySelectField name="country" label="country" helperText="Enter your country" required />
-            <!-- <p v-if="errors.country" class="text-red-500 text-sm">{{ errors.country }}</p> -->
+          <!-- <p v-if="errors.country" class="text-red-500 text-sm">{{ errors.country }}</p> -->
         </div>
 
-        <UiButton :disabled="isLoading">
+        <UiButton :disabled="isLoading" :loading="isLoading">
           <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
           Continue to Payment
         </UiButton>

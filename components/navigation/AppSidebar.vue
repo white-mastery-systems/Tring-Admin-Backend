@@ -160,7 +160,6 @@ const props = withDefaults(defineProps<SidebarProps>(), {
     </SidebarHeader>
     <SidebarContent class="bg-[#fafafa]">
       <NavMain />
-      <!-- <NavProjects :projects="data.projects" /> -->
     </SidebarContent>
     <SidebarFooter class="bg-[#fafafa]">
       <NavUser />

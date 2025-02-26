@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ActivityIcon } from "lucide-vue-next"
 import { Button as UiButton } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,33 +19,43 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const props = withDefaults(
-  defineProps<{
-    revenusList: Array<{ title: string; revenus: string; previousRevenus: string; icon: string }>;
-  }>(),
-  {
-    revenusList: () => [],
-  }
-);
+// const props = withDefaults(
+//   defineProps<{
+//     revenusList: Array<{ title: string; revenus: string; previousRevenus: string; icon: string }>;
+//   }>(),
+//   {
+//     revenusList: () => [],
+//   }
+// );
+const props = withDefaults(defineProps<{
+  title: string;
+  count: string;
+  icon: any;
+  loading: boolean;
+}>(), {
+  loading: true,  // default value for loading
+});
 </script>
 
 <template>
-  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5 px-2">
-    <Card v-for="(item, index) in props.revenusList" :key="index" class="box_shadow">
+  <div class="flex gap-5 px-0 box_shadow rounded-lg">
+    <!-- v-for="(item, index) in props.revenusList" :key="index" -->
+    <Card class="w-full">
       <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle class="text-sm font-medium">
-          {{ item.title }}
+        <CardTitle class="text-[14px] font-medium">
+          {{ props.title }}
         </CardTitle>
-        <component :is="item.icon" class="h-4 w-4 text-[#71717A]"></component>
-        <!-- <img :src="item.icon" width="50" class="rounded-lg" /> -->
+        <!-- <component :is="props.icon" class="h-4 w-4 text-[#71717A]"></component> -->
+        <!-- <img src="ActivityIcon" width="50" class="rounded-lg" /> -->
+        <ActivityIcon class="h-4 w-4 text-[#71717A]" />
       </CardHeader>
       <CardContent>
-        <div class="text-2xl font-bold">
-          {{ item.revenus }}
+        <div class="text-[24px] font-bold">
+          {{ props.count }}
         </div>
-        <p class="text-xs text-muted-foreground">
+        <!-- <p class="text-xs text-muted-foreground">
           {{ item.previousRevenus }}
-        </p>
+        </p> -->
       </CardContent>
     </Card>
     <!-- <Card> 

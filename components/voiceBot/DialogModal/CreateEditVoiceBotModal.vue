@@ -77,7 +77,7 @@ const addVoiceBot = handleSubmit(async (value: any) => {
       });
       toast.success("Created successfully");
       return navigateTo({
-        name: "bot-management-voice-bot-id",
+        name: "voice-bot-id",
         params: { id: bot.id },
       });
     }

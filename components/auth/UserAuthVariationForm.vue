@@ -51,8 +51,8 @@ const onSubmit = handleSubmit(async (value) => {
       <div class="grid gap-3">
         <div class="grid gap-1">
           <Label class="sr-only" for="name">Name</Label>
-          <UiInput id="name" v-model="name" v-bind="nameAttrs" placeholder="Name" type="text"
-            auto-capitalize="words" auto-complete="name" auto-correct="off" :disabled="isLoading" />
+          <UiInput id="name" v-model="name" v-bind="nameAttrs" placeholder="Name" type="text" auto-capitalize="words"
+            auto-complete="name" auto-correct="off" :disabled="isLoading" />
           <p v-if="errors.name" class="text-red-500 text-sm">{{ errors.name }}</p>
         </div>
 
@@ -72,7 +72,7 @@ const onSubmit = handleSubmit(async (value) => {
           </p>
         </div>
 
-        <UiButton :disabled="isLoading">
+        <UiButton :disabled="isLoading" :loading="isLoading">
           <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
           Sign In with Email
         </UiButton>

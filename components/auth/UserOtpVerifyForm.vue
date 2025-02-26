@@ -264,7 +264,7 @@ const onSubmit = handleSubmit((value: any) => {
                 @paste="handlePaste" />
             </template>
           </div>
-          <p v-if="errors.otp" class="text-red-500 text-sm text-center mt-2">{{ errors.otp }}</p>
+          <p v-if="errors.otp" class="text-[#ef4444] text-[13px] text-center">{{ errors.otp }}</p>
         </div>
 
         <div class="flex justify-between gap-2 text-center text-[11px] text-gray-500">
@@ -277,8 +277,8 @@ const onSubmit = handleSubmit((value: any) => {
           </button>
         </div>
 
-        <UiButton :disabled="isLoading">
-          <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
+        <UiButton :disabled="isLoading" :loading="isLoading">
+          <!-- <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" /> -->
           Continue
         </UiButton>
       </div>

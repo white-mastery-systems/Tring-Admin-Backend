@@ -1,10 +1,31 @@
 <template>
   <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true"
-    class="flex flex-col items-center gap-4">
+    class="flex flex-col items-center">
     <QuickLinks :navigavtionList="navigavtionList" />
-    <h6 class="font-bold text-[24px]">Start creating your bots</h6>
-    <CreateBotLinks :navigavtionList="createBotNavList" />
-    <StatsCard :revenusList="revenusList" />
+    <div class="flex flex-col gap-2 mt-2">
+      <h6 class="font-bold text-[20px]">Start creating your bots</h6>
+      <CreateBotLinks :navigavtionList="createBotNavList" />
+    </div>
+    <!-- v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
+    :count="statistics.value" :loading="loading" -->
+    <div v-if="analyticsData?.statistics?.length"
+    class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4 w-full mt-4">
+    <template v-for="statistics in analyticsData?.statistics?.filter(
+      (stat: any) =>
+      stat?.apiName !== 'images' && stat?.apiName !== 'brochures',
+    )">
+    <StatsCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
+      :count="statistics.value" :loading="loading" />
+        <!-- <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
+          :count="statistics.value" :loading="loading" /> -->
+      </template>
+    </div>
+    <div v-if="loading && !analyticsData?.statistics?.length"
+      class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <template v-for="n in 8" :key="n">
+        <StatusCountCard :icon="ChatSession" :title="'Loading...'" :count="0" :loading="loading" />
+      </template>
+    </div>
   </Page>
   <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true" v-if="false">
     <template #actionButtons>
@@ -111,11 +132,11 @@ import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIco
     {
       title: "Billing",
       subtitle: "Manage your plans here",
-      url: "/",
+      url: "billing?type=chat",
     }, {
       title: "Integrations",
       subtitle: "Manage all your integrations here",
-      url: "/",
+      url: "/integration",
     }, {
       title: "Analytics",
       subtitle: "View your stats here",
@@ -123,7 +144,7 @@ import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIco
     }, {
       title: "Campaign",
       subtitle: "Manage your campaigns here",
-      url: "/",
+      url: "/contacts-management/campaigns",
     },
   ]);
 
@@ -131,11 +152,11 @@ const createBotNavList = ref([
   {
     title: "Create a Chatbot",
     subtitle: "Click here to deploy your new chatbot",
-    url: "/",
+    url: "/chat-bot",
   }, {
     title: "Create a Voicebot",
     subtitle: "Click here to deploy your new voicebot",
-    url: "/",
+    url: "/voice-bot",
   }
 ]);
 

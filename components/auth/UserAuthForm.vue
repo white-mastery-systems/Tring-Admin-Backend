@@ -52,16 +52,16 @@ const onSubmit = handleSubmit( async(value) => {
       <div class="grid gap-3">
         <div class="grid gap-1">
           <Label class="sr-only" for="email">Email</Label>
-          <UiInput id="email" v-model="email" v-bind="emailAttrs" placeholder="name@example.com" type="email"
+          <UiInput id="email" v-model="email" v-bind="emailAttrs" placeholder="Enter Your Email" type="email"
             auto-capitalize="none" auto-complete="email" auto-correct="off" :disabled="isLoading" />
-          <p v-if="errors.email" class="text-red-500 text-sm">{{ errors.email }}</p>
+          <p v-if="errors.email" class="text-[#ef4444] text-[13px]">{{ errors.email }}</p>
         </div>
 
         <div class="grid gap-1">
           <Label class="sr-only" for="password">Password</Label>
           <UiInput id="password" v-model="password" v-bind="passwordAttrs" placeholder="Enter your password"
             type="password" auto-complete="new-password" :disabled="isLoading" />
-          <p v-if="errors.password" class="text-red-500 text-sm">
+          <p v-if="errors.password" class="text-[#ef4444] text-[13px]">
             {{ errors.password }}
           </p>
         </div>
@@ -75,9 +75,9 @@ const onSubmit = handleSubmit( async(value) => {
           </p>
         </div> -->
 
-        <UiButton :disabled="isLoading">
-          <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
-          Sign In with Email
+        <UiButton :disabled="isLoading" :loading="isLoading">
+          <!-- <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" /> -->
+          Sign up with Email
         </UiButton>
       </div>
     </form>

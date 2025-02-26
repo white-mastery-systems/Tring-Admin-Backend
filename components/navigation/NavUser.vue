@@ -20,6 +20,9 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import {
+  Separator
+} from '@/components/ui/separator'
+import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
@@ -93,10 +96,11 @@ const navigateToSamePage = (path: any) => {
             <ChevronsUpDown class="ml-auto size-4" />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
-        <DropdownMenuContent class="w-[--reka-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+        <DropdownMenuContent class="w-[--reka-dropdown-menu-trigger-width] min-w-56 rounded-lg px-0 text-[#334155]"
           :side="isMobile ? 'bottom' : 'right'" align="end" :side-offset="4">
-          <DropdownMenuLabel class="p-0 font-normal">
-            <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+          <DropdownMenuLabel class="font-medium text-[16px] pl-[16.5px] pr-0 py-1">
+            <span>My Account</span>
+            <!-- <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <Avatar class="h-8 w-8 rounded-lg">
                 <AvatarImage :src="avatarValue" :alt="userInfo?.username" />
                 <AvatarFallback class="rounded-lg">
@@ -107,10 +111,11 @@ const navigateToSamePage = (path: any) => {
                 <span class="truncate font-semibold">{{ userInfo?.username }}</span>
                 <span class="truncate text-xs">{{ userInfo?.email }}</span>
               </div>
-            </div>
+            </div> -->
           </DropdownMenuLabel>
-          <DropdownMenuGroup class="font-medium text-[16px] pl-2 pr-0 py-1">
-            <DropdownMenuItem v-for="item in dropdownMenuItems" :key="item.path" class="pr-0 py-0"
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup class="font-medium text-[16px] p-0">
+            <DropdownMenuItem v-for="item in dropdownMenuItems" :key="item.path" class="pr-0 py-0 pl-4"
               @click.prevent="navigateToSamePage(item.path)">
               <NuxtLink
                 :to="(!subcribed && (item.path.path === '/billing/view-wallet')) ? '/billing/view-all' : item.path"
@@ -121,13 +126,15 @@ const navigateToSamePage = (path: any) => {
                 </DropdownMenuShortcut>
               </NuxtLink>
             </DropdownMenuItem>
-            <DropdownMenuItem class="flex items-center w-full py-[10px] cursor-pointer">
-              <div @click="handleLogout" class="flex items-center font-medium w-full gap-[8px] text-[#ef4444]">
-                <Icon name="ic:round-logout" class="h-[18px] w-[18px]" />
-                <p class="text-sm font-medium">Logout</p>
-              </div>
-            </DropdownMenuItem>
           </DropdownMenuGroup>
+          <!-- <Separator /> -->
+          <DropdownMenuSeparator />
+          <DropdownMenuItem class="flex items-center w-full py-[10px] cursor-pointer pl-[15px]">
+            <div @click="handleLogout" class="flex items-center font-medium w-full gap-[8px]">
+              <Icon name="ic:round-logout" class="h-[18px] w-[18px]" />
+              <p class="text-sm font-medium">Logout</p>
+            </div>
+          </DropdownMenuItem>
         </DropdownMenuContent>
         <DropdownMenuSeparator />
       </DropdownMenu>

@@ -38,7 +38,7 @@ const modalState = defineModel<{ open: boolean; id: string | null }>({
   default: { open: false, id: null },
   required: true,
 });
-const route = useRoute("bot-management-chat-bot-id");
+const route = useRoute("chat-bot-id");
 const channels = [
   {
     label: "Whatsapp",

@@ -52,7 +52,7 @@
   import { useForm } from "vee-validate";
   import { ref } from "vue";
   import { createEditIntentValidation } from "~/validationSchema/createEditIntentValidation";
-  const route = useRoute("bot-management-chat-bot-id-intent-management");
+  const route = useRoute("chat-bot-id-intent-management");
   const intents = [
     {
       label: "Location",

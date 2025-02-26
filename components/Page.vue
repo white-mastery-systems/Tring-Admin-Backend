@@ -8,7 +8,7 @@
         : 'px-3 py-2 sm:px-3 md:px-4 md:pt-4 lg:px-4 lg:pt-4 xl:px-4'
     ),
   ]" -->
-  <div class="w-full" v-if="breadCrumbs?.length > 0">
+  <div class="w-full pl-5 pt-2" v-if="breadCrumbs?.length > 0">
     <UiBreadcrumb>
       <UiBreadcrumbList>
         <UiBreadcrumbItem v-for="({ label, to }, index) in breadCrumbs" :key="index"
@@ -20,10 +20,10 @@
       </UiBreadcrumbList>
     </UiBreadcrumb>
   </div>
-  <div class="h-[calc(100dvh-4rem)] overflow-y-auto" :class="[
+  <div class="overflow-y-auto" :class="[(route.path === '/auth/onboarding/billing') ? 'h-[100dvh]' : 'h-[calc(100dvh-4rem)]',
     props.disablePadding 
       ? '' 
-    : `${(leadPage === 'leads') ? (browserClass === 'brave-browser') ? 'pt-[10px] sm:pt-[10px]' : 'pt-[10px] sm:pt-[10px]' : 'pb-2 sm:pb-2'} px-2 sm:px-2 md:px-4 lg:px-4 xl:px-4 md:pt-0 lg:pt-0 xl:pt-0`,
+    : `${(leadPage === 'leads') ? (browserClass === 'brave-browser') ? 'pt-[10px] sm:pt-[10px]' : 'pt-[10px] sm:pt-[10px]' : 'pb-2 sm:pb-2'} px-2 sm:px-2 md:px-6 lg:px-6 xl:px-6 md:pt-0 lg:pt-0 xl:pt-0`,
     'pb-2'
   ]">
     <div class="mb-2 pt-2 flex items-center justify-between gap-2">
@@ -62,6 +62,7 @@
 </template>
 <script setup lang="ts">
 import { ChevronLeft } from "lucide-vue-next";
+import { useRoute } from "vue-router";
 
 const props = withDefaults(
   defineProps<{
@@ -92,6 +93,7 @@ const props = withDefaults(
   },
 );
 const router = useRouter();
+const route = useRoute();
 const handleBackButtonClick = () => {
   if (props.customBackRouter) {
     navigateTo(props.customBackRouter);

@@ -15,7 +15,7 @@
     </div>
     <!-- <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton> -->
   </div>
-  <UiTabs default-value="all" class="w-full self-start">
+  <UiTabs default-value="all" class="pr-6">
     <UiTabsList class="grid w-full sm:w-full md:w-[30%] lg:w-[30%] xl:w-[30%] grid-cols-3">
       <UiTabsTrigger value="all" @click="selectedChannel('all')">
         All
@@ -28,6 +28,7 @@
       </UiTabsTrigger>
     </UiTabsList>
     <UiTabsContent value="all">
+      <div>
       <DataTable @pagination="Pagination" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
       }
@@ -36,6 +37,7 @@
           navigateTo(`/analytics/leads/${row.original.chatId}`);
         }
           " />
+      </div>
     </UiTabsContent>
     <UiTabsContent value="whatsapp">
       <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {

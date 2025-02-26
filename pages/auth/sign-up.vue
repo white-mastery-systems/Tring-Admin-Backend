@@ -1,138 +1,71 @@
 <script setup lang="ts">
-  import { formSchema } from '~/validationSchema/authValidation/signUpValidation';
-  import { useGtag } from 'vue-gtag-next'
-
-  const { event } = useGtag()
-
-  useHead({
-    title: 'Sign Up | Conversational AI for Businesses | Tring AI',
-    meta: [
-      { name: 'Description', content: 'Sign up with Tring AI to unlock innovative AI-powered solutions for enhancing your business efficiency and growth. Tring AI provides conversational AI chatbot and voice bot solutions for businesses to drive sales, optimize marketing, enhance customer support and boost lead generation. Join the league of AI-powered businesses today.' }
-    ]
-  })
-
-
-  definePageMeta({
-    layout: "auth",
-    middleware: "guest-only",
-  });
-
-  const isLoading = ref(false)
-  // const formSchema = toTypedSchema(
-  //     z
-  //       .object({
-  //         username: z.string().min(2, "Invalid email address."),
-  //         password: z
-  //           .string(),
-
-  //         confirmPassword: z.string().min(2, "Role must be provided."),
-  //       })
-  //   )
-
-
-  const {
-    setFieldValue,
-    handleSubmit,
-    errors,
-    values,
-    defineField,
-    resetForm,
-  } = useForm({
-    validationSchema: formSchema,
-    initialValues: {
-      // name: "",
-    },
-  });
-  const animationProps = {
-    duration: 500,
-  };
-  const passwordVisible = ref(false);
-  const confirmPasswordVisible = ref(false);
-
-  const togglePasswordVisibility = () => {
-    passwordVisible.value = !passwordVisible.value;
-  };
-  const toggleConfirmPasswordVisibility = () => {
-    confirmPasswordVisible.value = !confirmPasswordVisible.value;
-  };
-  // const togglePasswordVisibility = () => {
-  //   passwordVisible.value = !passwordVisible.value;
-  // };
-  // const toggleConfirmPasswordVisibility = () => {
-  //   confirmPasswordVisible.value = !confirmPasswordVisible.value;
-  // };
-
-  const onSubmit = handleSubmit( async(value: any) => {
-    isLoading.value = true
-    event('button_click', { event_category: 'engagement', event_label: 'sign_up' })
-    await authHandlers.signup(value);
-    isLoading.value = false
-  });
+// import { buttonVariants } from '@/lib/registry/new-york/ui/button'
+// import { cn } from '@/lib/utils'
+// import UserAuthForm from './components/UserAuthFor'
+definePageMeta({
+  layout: "auth",
+  middleware: "guest-only",
+});
 </script>
+
 <template>
-  <div class="flex h-full w-full flex-col items-center justify-center">
-    <div class="w-full text-[24px] sm:text-[24px] md:text-[28px] lg:text-[28px] xl:text-[28px] px-0 pb-[20px] font-bold text-[#3d3d3d] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
-      <span> Complete Your Profile </span>
-    </div>
-    <div class="w-full px-0 pb-[20px] text-[20px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
-      <span> Let’s Get Started </span>
-    </div>
-    <div class="flex w-full flex-col px-0 md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
-      <!-- <div> -->
-      <form class="space-y-2" @submit="onSubmit">
-        <!-- copy paste the class  below-->
-        <!-- class="h-[50px] rounded-lg bg-[#f6f6f6] font-medium" -->
+  <div class="md:flex">
+    <VPImage alt="Authentication" width="1280" height="1214" class="block" :image="{
+      dark: '/examples/authentication-dark.png',
+      light: '/examples/authentication-light.png',
+    }" />
+  </div>
 
-        <div class="grid  gap-4">
-          <TextField type="email" name="email" label="E-mail" placeholder="Enter Your Email" required />
-          <div class="relative">
-            <TextField :type="passwordVisible ? 'text' : 'password'" name="password" label="Password"
-              placeholder="Password" required>
-              <template #endIcon>
-                <div class="w-[30px] cursor-pointer absolute right-0 top-[5px]" @click="togglePasswordVisibility"
-                  type="button">
-                  <OpenEye v-if="passwordVisible" />
-                  <CloseEyeIcon v-else />
-                </div>
-              </template>
-            </TextField>
-          </div>
-          <div class="relative">
-            <TextField :type="confirmPasswordVisible ? 'text' : 'password'" name="confirmPassword"
-              label="Confirm Password" placeholder="Confirm Your Password" required>
-              <template #endIcon>
-                <div class="w-[30px] cursor-pointer absolute right-0 top-[5px]"
-                  @click="toggleConfirmPasswordVisibility" type="button">
-                  <OpenEye v-if="confirmPasswordVisible" />
-                  <CloseEyeIcon v-else />
-                </div>
-              </template>
-            </TextField>
-          </div>
-
-          <UiButton type="submit" class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
-            :loading="isLoading">Sign Up
-          </UiButton>
-        </div>
-      </form>
-      <!-- <div class="content-align">
-        <span class="border-align"></span> <span>Or login with</span>
-        <span class="border-align"></span>
-      </div> -->
-      <div class="mt-4 flex items-center justify-center gap-1 font-medium">
-        <span>Already have an account?</span>
-        <NuxtLink to="/auth/sign-in" class="cursor-pointer text-[#424bd1] underline underline-offset-2">Log in
-        </NuxtLink>
+  <div
+    class="container pb-5 sm:pb-5 md:pb-0 relative h-[800px] flex flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+    <a href="/auth/sign-in" class="absolute right-4 top-4 md:right-8 md:top-8">
+      Login
+    </a>
+    <div class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
+      <div class="absolute inset-0 bg-zinc-900" />
+      <div class="relative z-20 flex items-center text-lg font-medium">
+        <img class="self-center" src="assets\icons\Tring-Ai-Logo-with-text-new.png" width="190" height="190" />
       </div>
-      <!-- </div> -->
+      <div class="relative z-20 mt-auto">
+        <blockquote class="space-y-2">
+          <p class="text-lg">
+            <!-- &ldquo; -->
+            AI-powered Chat and Voice Agents.
+            <!-- &rdquo; -->
+          </p>
+          <!-- <footer class="text-sm">
+            Sofia Davis
+          </footer> -->
+        </blockquote>
+      </div>
     </div>
-    <div class="absolute bottom-[30px] flex items-center gap-1">
-      <span class="text-[12px] text-[#8a8a8a]">
-        By Signing up, I Agree to Tring AI
-      </span>
-      <a target="_blank" href="https://tringlabs.ai/terms-conditions" class="term-align text-[12px] underline">
-        Terms & Conditions
-      </a>
+    <div class="lg:p-8">
+      <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <div class="flex flex-col space-y-2 text-center">
+          <h1 class="text-2xl font-semibold tracking-tight">
+            Create an account
+          </h1>
+          <p class="text-sm text-muted-foreground">
+            Enter your email below to create your account
+          </p>
+        </div>
+        <UserAuthForm />
+        <p class="px-8 text-center text-sm text-muted-foreground">
+          By Signing up, I Agree to Tring AI
+          <!-- <a href="/terms" class="underline underline-offset-4 hover:text-primary">
+            Terms of Service
+          </a>
+          and
+          <a href="/privacy" class="underline underline-offset-4 hover:text-primary">
+            Privacy Policy
+          </a> -->
+          <a target="_blank" href="https://tringlabs.ai/terms-conditions"
+            class="underline underline-offset-4 hover:text-primary">
+            Terms & Conditions
+          </a>
+          .
+        </p>
+      </div>
     </div>
   </div>
 </template>

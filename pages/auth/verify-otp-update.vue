@@ -53,7 +53,7 @@ definePageMeta({
         </div>
         <UserOtpVerifyForm />
         <p class="px-8 text-center text-sm text-muted-foreground">
-          By Signing up, I Agree to Tring AI
+          By clicking continue, you agree to our
           <!-- <a href="/terms" class="underline underline-offset-4 hover:text-primary">
             Terms of Service
           </a>

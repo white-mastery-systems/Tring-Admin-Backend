@@ -3,7 +3,7 @@
   import { createColumnHelper } from "@tanstack/vue-table";
   import { useCount } from '@/composables/useRefresh';
   import { Icon, UiBadge, UiButton } from "#components";
-  import NumberModal from "~/pages/settings/integration/NumberModal.vue";
+  import NumberModal from "~/pages/integration/NumberModal.vue";
   definePageMeta({
     middleware: "admin-only",
   });

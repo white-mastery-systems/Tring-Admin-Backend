@@ -10,6 +10,8 @@ import {
   CreditCardIcon,
   ReceiptIcon,
   CircleUserIcon,
+  AudioLines,
+  BotIcon
 } from "lucide-vue-next";
 
 export const useNavigationAndAccordion = () => {
@@ -22,7 +24,7 @@ export const useNavigationAndAccordion = () => {
       children: [],
     },
     {
-      name: "Analytics",
+      name: "Customer Engagement",
       icon: ChartNoAxesColumnIncreasing,
       path: "/analytics",
       children: [
@@ -31,13 +33,13 @@ export const useNavigationAndAccordion = () => {
           path: "/leads",
         },
         {
-          name: "Chats",
+          name: "Chat",
           icon: MessageCircle,
           children: [],
           path: "/chats",
         },
         {
-          name: "Call Logs",
+          name: "Call",
           icon: MessageCircle,
           children: [],
           path: "/call-logs",
@@ -45,7 +47,7 @@ export const useNavigationAndAccordion = () => {
       ],
     },
     {
-      name: "Contacts",
+      name: "Marketing & Outreach",
       icon: UserIcon,
       path: "/contacts-management",
       children: [
@@ -54,7 +56,7 @@ export const useNavigationAndAccordion = () => {
           path: "/contacts",
         },
         {
-          name: "Buckets",
+          name: "Segments ",
           path: "/buckets",
         },
         {
@@ -64,48 +66,66 @@ export const useNavigationAndAccordion = () => {
       ],
     },
     {
-      name: "Bot Management",
-      icon: Bot,
-      path: "/bot-management",
-      children: [
-        {
-          name: "Voice Bot",
-          path: "/voice-bot",
-        },
-        {
-          name: "Chat Bot",
-          path: "/chat-bot",
-        },
-      ],
-    },
-    {
-      name: "Whatsapp Bot",
-      icon: "",
-      path: "/whatsapp-bot",
+      name: "Chatbots",
+      icon: BotIcon,
+      path: "/chat-bot",
       children: [],
     },
     {
-      name: "Settings",
-      icon: SettingsIcon,
-      path: "/settings",
-      children: [
-        {
-          name: "Integrations",
-          icon: SettingsIcon,
-          path: "/integration",
-        },
-        // {
-        //   name: "User Management",
-        //   icon: SettingsIcon,
-        //   path: "/user-management",
-        // },
-        {
-          name: "Whatsapp Template",
-          icon: SettingsIcon,
-          path: "/whatsapp-template",
-        },
-      ],
+      name: "Voicebots",
+      icon: AudioLines,
+      path: "/voice-bot",
+      children: [],
     },
+    // {
+    //   name: "Bot Management",
+    //   icon: Bot,
+    //   path: "/bot-management",
+    //   children: [
+    //     {
+    //       name: "Voice Bot",
+    //       path: "/voice-bot",
+    //     },
+    //     {
+    //       name: "Chat Bot",
+    //       path: "/chat-bot",
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: "Whatsapp Bot",
+    //   icon: "",
+    //   path: "/whatsapp-bot",
+    //   children: [],
+    // },
+    {
+      name: "Integrations",
+      icon: SettingsIcon,
+      path: "/integration",
+      children: [],
+    },
+    // {
+    //   name: "Settings",
+    //   icon: SettingsIcon,
+    //   path: "/settings",
+    //   children: [
+    //     {
+    //       name: "Integrations",
+    //       icon: SettingsIcon,
+    //       path: "/integration",
+    //     },
+    //     // {
+    //     //   name: "User Management",
+    //     //   icon: SettingsIcon,
+    //     //   path: "/user-management",
+    //     // },
+    //     {
+    //       name: "Whatsapp Template",
+    //       icon: SettingsIcon,
+    //       path: "/whatsapp-template",
+    //     },
+    //   ],
+    // },
     // {
     //   name: "Billing",
     //   icon: WalletIcon,
