@@ -155,8 +155,8 @@ export default defineEventHandler(async (event) => {
       );
     } else if (botIntegration?.integration?.crm === "slack") {
       if (botIntegration?.metadata?.channelId) {
-        // console.log(body?.botUser);
         const payload = {
+          intent: "Lead",
           name: body?.botUser?.name,
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
@@ -164,6 +164,10 @@ export default defineEventHandler(async (event) => {
           chatLink: `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
+        if (body?.note){
+          const keywords = ["Appointment", "Call Scheduled", "Site Visit"];
+          payload.intent = keywords.find((keyword) => body?.note.includes(keyword)) || "Lead";
+        }
         const data = await createSlackMessage(
           botIntegration?.integration?.metadata,
           botIntegration?.metadata?.channelId,
@@ -266,16 +270,15 @@ export default defineEventHandler(async (event) => {
     } else if (botIntegration?.integration?.crm === "zoho-cliq") {
       if (botIntegration?.metadata?.channelId) {
         const payload = {
-          "First Name": body?.botUser?.name,
-          Email: body?.botUser?.email,
-          Mobile: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
-          "Bot Name": botDetails?.name,
-          "Chat Link": `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`,
-          "Whatsapp Link": `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
+          intent: "Lead",
+          name: body?.botUser?.name,
+          email: body?.botUser?.email,
+          phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
+          botName: botDetails?.name,
+          chatLink: `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`,
+          whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
-        let textContent = Object.entries(payload)
-          .map(([key, value]) => `${key}: ${value}`)
-          .join("\n");
+        const textContent = `${body?.note ?? "Lead Received"} \nA new ${payload.intent ?? "Lead"} inquiry was received for your business through Tring AI. \n👤 ${payload.name} | 📞 ${payload.phone}\n📩Email: ${payload.email}\n🆔 Bot Name: ${payload.botName}\n🔗 Conversation History: ${payload.chatLink}\n🔗 Contact user on whatsapp : ${payload.whatsappLink}\n\nThis message is intended for business use to help you follow up with the lead.`;
         await generateLeadsInZohoCliq(
           botIntegration?.integration?.metadata,
           botIntegration?.metadata?.channelId,
