@@ -1,4 +1,5 @@
 import { findIntegrationDetails } from "~/server/utils/db/integrations";
+import { newGetAllPipelinesFromZohoBigin } from "~/server/utils/v2/integrations/crm/zoho/zoho-bigin";
 import { getAllPipelinesFromZohoBigin } from "~/server/utils/zoho/modules";
 
 export default defineEventHandler(async (event) => {
@@ -10,9 +11,7 @@ export default defineEventHandler(async (event) => {
     organizationId,
     query.id,
   );
-  const data = await getAllPipelinesFromZohoBigin({
-    token: integrationData?.metadata?.access_token,
-    refreshToken: integrationData?.metadata?.refresh_token,
+  const data = await newGetAllPipelinesFromZohoBigin({
     integrationData: integrationData,
   });
 

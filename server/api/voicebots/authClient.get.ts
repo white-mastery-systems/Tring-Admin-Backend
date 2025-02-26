@@ -18,10 +18,11 @@ export default defineEventHandler(async (event) => {
   const organizationId = voiceBotDetail?.organizationId
 
   // check the plan-code of the orgaination
-  const [voicebotPlan, voicePlanUsage, orgDetail] = await Promise.all([
+  const [voicebotPlan, voicePlanUsage, orgDetail, adminDetail ] = await Promise.all([
     getOrgZohoSubscription(organizationId, "voice"),
     getOrgPlanUsage(organizationId, "voice"),
-    getOrganizationById(organizationId)
+    getOrganizationById(organizationId),
+    getAdminByOrgId(organizationId)
   ]) 
 
   // console.log({ voicebotPlan })
@@ -39,7 +40,8 @@ export default defineEventHandler(async (event) => {
   const currentMonthEndDate = momentTz(voicebotPlan?.endDate).utc().toDate()
 
   // get actual voicebot pricing information
-  const voicePricingInformation = await getPricingInformation(voicebotPlan?.pricingPlanCode)
+  const adminCountry = adminDetail?.address?.country!
+  const voicePricingInformation = await getSubcriptionPlanDetailByPlanCode(voicebotPlan?.pricingPlanCode, adminCountry)
 
   const usedCallMinutes = voicePlanUsage?.interactionsUsed || 0 
   const maxCallMinutes = voicePricingInformation?.sessions || 0
@@ -48,7 +50,7 @@ export default defineEventHandler(async (event) => {
 
   if(currentDate > currentMonthEndDate) {
     await updateOrgZohoSubscription(organizationId, "voice", { subscriptionStatus: "inactive" })
-    return errorResponse(event, 500, "Subscription plan is expired")
+    return errorResponse(event, 500, "Subscription plan has expired")
   }
 
   if(usedCallMinutes >= maxCallMinutes) {
@@ -64,12 +66,12 @@ export default defineEventHandler(async (event) => {
         await updateOrganization(organizationId, { wallet: currentWallet })
         if(currentWallet <= 0) {
           await updateOrgZohoSubscription(organizationId, "voice", { subscriptionStatus: "inactive" })
-          return errorResponse(event, 500, "Exceeded the allowed call minutes.")
+          return errorResponse(event, 500, "Wallet Balance Exhausted")
         } 
       }
     } else {
       await updateOrgZohoSubscription(organizationId, "voice", { subscriptionStatus: "inactive" })
-      return errorResponse(event, 500, "Exceeded the allowed call minutes.")
+      return errorResponse(event, 500, "Exceeded the allowed call minutes")
     }
   }
   

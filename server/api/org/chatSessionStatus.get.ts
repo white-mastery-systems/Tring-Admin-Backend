@@ -1,18 +1,16 @@
-import { getOrgSubscriptionStatus } from "~/server/utils/db/organization"
-
 export default defineEventHandler(async (event) => {
   const query = await isValidQueryHandler(event, z.object({
     orgId: z.string()
   }))
 
-  const orgSubscriptionStatus = await getOrgSubscriptionStatus(query.orgId, "chat")
+  const orgChatSubscription = await getOrgZohoSubscription(query?.orgId, "chat")
 
-  const organizationDetail = await getOrganizationById(orgSubscriptionStatus?.organizationId!)
+  const organizationDetail = await getOrganizationById(query?.orgId)
 
   return {
-    organizationId: orgSubscriptionStatus?.id,
+    organizationId: orgChatSubscription?.id,
     organizationName: organizationDetail?.name,
-    whatsappWalletBalance: orgSubscriptionStatus?.whatsappWallet,
-    status: orgSubscriptionStatus?.status
+    whatsappWalletBalance: organizationDetail?.wallet,
+    status: orgChatSubscription?.subscriptionStatus
   }
 }) 

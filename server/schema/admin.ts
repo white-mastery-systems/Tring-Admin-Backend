@@ -437,7 +437,7 @@ export const subscriptionStatusEnum = pgEnum("subscriptionStatus", [
 
 export const adminSubscriptionSchema = adminSchema.table("admin_subscriptions", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  organizationId: uuid("organizationId").notNull().references(() => organizationSchema.id),
+  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id),
   serviceType: serviceTypesEnum("service_type").notNull(),
   subscriptionId: varchar("subscription_id"),
   pricingPlanCode: varchar("pricing_plan_code").notNull(),
@@ -450,7 +450,7 @@ export const adminSubscriptionSchema = adminSchema.table("admin_subscriptions", 
 
 export const adminPlanUsageSchema = adminSchema.table("admin_plan_usages", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  organizationId: uuid("organizationId").notNull().references(() => organizationSchema.id),
+  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id),
   serviceType: serviceTypesEnum("service_type").notNull(),
   pricingPlanCode: varchar("pricing_plan_code").notNull(),
   subscriptionId: varchar("subscription_id"),

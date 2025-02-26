@@ -1,5 +1,7 @@
 import { findIntegrationDetails } from "~/server/utils/db/integrations";
-import { getAllLayoutsFromZohoCRM } from "~/server/utils/zoho/modules";
+import { newGetAllLayoutsFromZohoCRM } from "~/server/utils/v2/integrations/crm/zoho/zoho-crm";
+// import { getAllLayoutsFromZohoCRM } from "~/server/utils/zoho/modules";
+
 
 export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
@@ -8,9 +10,7 @@ export default defineEventHandler(async (event) => {
     organizationId,
     query.id,
   );
-  return await getAllLayoutsFromZohoCRM({
-    token: integrationData?.metadata?.access_token,
-    refreshToken: integrationData?.metadata?.refresh_token,
+  return await newGetAllLayoutsFromZohoCRM({
     integrationData: integrationData,
   });
 });

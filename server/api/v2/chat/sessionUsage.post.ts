@@ -3,7 +3,7 @@ import { errorResponse } from "~/server/response/error.response"
 import momentTz from "moment-timezone"
 
 const zodPlanUsageUpdateValidation = z.object({
-   organizationId: z.string()
+   botId: z.string()
 })
 
 const findUTCDate = (orgZohoSubscription: any) => {
@@ -15,20 +15,24 @@ const findUTCDate = (orgZohoSubscription: any) => {
 
 export default defineEventHandler(async (event) => {
   try {
+    console.log("inside chat session update API")
     const query = await isValidQueryHandler(event, zodPlanUsageUpdateValidation)
-    const organizationId = query?.organizationId
+    const botDetail = await getBotDetails(query?.botId)
+    const organizationId = botDetail?.organizationId!
     
-    const [orgDetail, orgZohoSubscription, orgPlanUsage] = await Promise.all([
+    const [orgDetail, orgZohoSubscription, orgPlanUsage, adminDetails] = await Promise.all([
       getOrganizationById(organizationId),
       getOrgZohoSubscription(organizationId, "chat"),
-      getOrgPlanUsage(organizationId, "chat")
+      getOrgPlanUsage(organizationId, "chat"),
+      getAdminByOrgId(organizationId)
     ])
 
     if(!orgPlanUsage || orgZohoSubscription?.subscriptionStatus !== "active") {
       return false // subscription status is not active
     }
 
-    const planPricingDetail = await getSubcriptionPlanDetailByPlanCode(orgZohoSubscription?.pricingPlanCode!)
+    const adminCountry = adminDetails?.address.country!
+    const planPricingDetail = await getSubcriptionPlanDetailByPlanCode(orgZohoSubscription?.pricingPlanCode!, adminCountry)
 
     let usedSessions = orgPlanUsage?.interactionsUsed || 0
     const maxSessions = planPricingDetail?.sessions || 0
@@ -41,11 +45,12 @@ export default defineEventHandler(async (event) => {
       if(wallet > 0) {
         const updatedInteractions = await updateSubscriptionPlanUsage(
           orgPlanUsage.id,
-          { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 }
+          { interactionsUsed: (usedSessions || 0) + 1 }
         )
         usedSessions = updatedInteractions?.interactionsUsed || 0
         const extraSession = Math.max(usedSessions - maxSessions, 0)
         const actualExtraSessions = Math.max(extraSession - orgPlanUsage.extraInteractionsUsed!, 0)
+        console.log({ actualExtraSessions, cost: planPricingDetail?.extraSessionCost! })
         if(actualExtraSessions > 0) {
           const extraSessionCost = actualExtraSessions * planPricingDetail?.extraSessionCost!
           const currentWallet = Math.max(0, parseFloat((wallet - extraSessionCost).toFixed(2)))
@@ -55,25 +60,25 @@ export default defineEventHandler(async (event) => {
           await updateOrganization(organizationId, { wallet: currentWallet })
           if(currentWallet <= 0) {
             await updateOrgZohoSubscription(organizationId, "chat", { subscriptionStatus: "inactive"})
-            return false
           }
-          return true
-        } 
+          return { status: true }
+        }
+        return { status: true }
       } else {
         await updateOrgZohoSubscription(organizationId, "chat", { subscriptionStatus: "inactive"})
         // await updateChatbotStatus(organizationId)
-        return false
+        return { status: false }
       }
     }
 
     const updatedInteractions = await updateSubscriptionPlanUsage(
       orgPlanUsage.id!,
-      { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 }
+      { interactionsUsed: (usedSessions || 0) + 1 }
     )
-    if(updatedInteractions?.interactionsUsed === maxSessions) {
+    if(updatedInteractions?.interactionsUsed === maxSessions && wallet <= 0) {
       await updateOrgZohoSubscription(organizationId, "chat", { subscriptionStatus: "inactive"})
     }
-    return true
+    return { status: true }
   } catch (error: any) {
     logger.error(`Chat session usage update API Error: ${JSON.stringify(error.message)}`)
     return errorResponse(event, 500, "Unable to update the chat plan usages")

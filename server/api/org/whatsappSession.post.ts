@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
   let whatsappWalletBalance = orgDetail?.wallet || 0
 
   if(orgZohoSubscription?.subscriptionStatus !== "active" && whatsappWalletBalance <= 0) {
-    return
+    return{ status: false, whatsappWalletBalance, organizationName: orgDetail?.name }
   }
  
   const whatsappSessionPrice = parseFloat((1 * 1.5).toFixed(2))
@@ -33,22 +33,22 @@ export default defineEventHandler(async (event) => {
     const hoursDifference = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60); // hours
   
     if (hoursDifference > 2) {
-      const data = await createOrgWhatsappSession(body)
+      await createOrgWhatsappSession(body)
       await updateOrganization(organizationId, { wallet: whatsappWalletBalance })
       await updateSubscriptionPlanUsage(
         organizationId,
         { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 }
       )
-      return data
+      return { status: true, whatsappWalletBalance, organizationName: orgDetail?.name }
     }
-    return whatsappSessionExist
+    return { status: true, whatsappWalletBalance, organizationName: orgDetail?.name }
   } else {
-    const data = await createOrgWhatsappSession(body)
+    await createOrgWhatsappSession(body)
     await updateOrganization(organizationId, { wallet: whatsappWalletBalance })
     await updateSubscriptionPlanUsage(
-        organizationId,
-        { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 }
-      )
-    return data
+      organizationId,
+      { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 }
+    )
+    return { status: true, whatsappWalletBalance, organizationName: orgDetail?.name }
   }
 })
