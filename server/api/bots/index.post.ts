@@ -4,68 +4,63 @@ const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
-  // name: (schema) =>
-  //   schema.name.min(3, "Name Too Short").max(64, "Name Too Long"),
-  const zodInsertChatBot = z
-    .object({
-      name: z
-        .string({ required_error: "name is required" })
-        .min(3, "Name Too Short")
-        .max(64, "Name Too Long"),
-      type: z.string({ required_error: "Type is required" }),
-      integrationId: z.string().optional(),
-    })
-    .refine(
-      (data) => {
-        if (data.type === "ecommerce" && !data?.integrationId) {
-          return false;
-        }
-        return true;
-      },
-      {
-        message: "Other role must be provided",
-        path: ["otherRole"],
-      },
-    )
-    .refine(
-      async (data) => {
-        const isBotExisting = await db.query.chatBotSchema.findFirst({
-          where: and(
-            eq(chatBotSchema.organizationId, organizationId),
-            ilike(chatBotSchema.name, data.name),
-          ),
-        });
-        if (isBotExisting) {
-          return false;
-        }
-        return true;
-      },
-      {
-        message: "Bot name already exists",
-      },
-    );
+  const body: any = await readBody(event)
+
+  const orgDetails = await getOrganizationById(organizationId)
+
+  // const zodInsertChatBot = z
+  //   .object({
+  //     name: z
+  //       .string()
+  //       .optional(),
+  //     type: z.string().optional(),
+  //     integrationId: z.string().optional(),
+  //   })
+    // .refine(
+    //   (data) => {
+    //     if (data.type === "ecommerce" && !data?.integrationId) {
+    //       return false;
+    //     }
+    //     return true;
+    //   },
+    //   {
+    //     message: "Other role must be provided",
+    //     path: ["otherRole"],
+    //   },
+    // )
+    // .refine(
+    //   async (data) => {
+    //     const isBotExisting = await db.query.chatBotSchema.findFirst({
+    //       where: and(
+    //         eq(chatBotSchema.organizationId, organizationId),
+    //         ilike(chatBotSchema.name, data?.name),
+    //       ),
+    //     });
+    //     if (isBotExisting) {
+    //       return false;
+    //     }
+    //     return true;
+    //   },
+    //   {
+    //     message: "Bot name already exists",
+    //   },
+    // );
 
   // Validate Body
-  const body = await isValidBodyHandler(event, zodInsertChatBot);
-
-  // const body = await readValidatedBody(
-  //   event,
-  //   zodInsertChatBot.omit({ organizationId: true }).safeParse,
-  // );
-  // if (!body.success)
-  //   return sendError(
-  //     event,
-  //     createError({
-  //       statusCode: 400,
-  //       statusMessage: "Invalid body",
-  //       data: body.error.format(),
-  //     }),
-  //   );
+  // const body = await isValidBodyHandler(event, zodInsertChatBot);
+  const randomBotName = generateRandomBotName(orgDetails?.name!)
 
   const bot = await createBot({
-    ...body,
+    name: body?.name ?? randomBotName,
+    type: body?.type ?? "others",
     organizationId,
   });
 
   return bot;
 });
+
+
+const generateRandomBotName = (orgName: string) => {
+  const defaultName = `${orgName} - chat bot - ${Math.floor(100 + Math.random() * 900)}`;
+  return defaultName
+}

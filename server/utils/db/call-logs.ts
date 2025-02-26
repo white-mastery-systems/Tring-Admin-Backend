@@ -81,7 +81,7 @@ export const getCallLogById = async (id: string, timeZone: string, query?: any) 
   return data
 }
 
-export const updateCallLogById = async (callLogId: string, callLogs: InsertCallLogSchema) => {
+export const updateCallLogById = async (callLogId: string, callLogs: any) => {
   return (
     await db.update(callLogSchema)
     .set({

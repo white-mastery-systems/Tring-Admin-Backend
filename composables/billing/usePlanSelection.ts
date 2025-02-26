@@ -38,7 +38,7 @@ export function usePlanSelection(userDetails: any, orgBilling: any, organization
       const billingType = route?.type ?? 'chat'
       try {
         const hostedPageUrl = await $fetch<{ hostedpage: { url: string } }>(
-          `/api/billing/subscription?type=${billingType}`,
+          `/api/v2/billing/subscriptions?type=${billingType}`,
           {
             method: "POST",
             body: {

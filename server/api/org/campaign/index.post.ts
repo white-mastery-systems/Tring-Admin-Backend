@@ -71,14 +71,12 @@ export default defineEventHandler(async (event) => {
     const chatbotContactList = await getContactsByChatbotBucketId(
       data?.bucketId,
     );
-    const orgSubscription = await getOrgSubscriptionStatus(organizationId, "chat");
+                                                                                                                                                         
+    const orgPlanUsage = await getOrgPlanUsage(organizationId, "chat")
+    const pricingInformation = await getPricingInformation(orgPlanUsage?.pricingPlanCode!)
 
-    const { startDate, endDate } = calculateDateRange(orgSubscription, timeZone);
-    const interactedSessions = await getInteractedSessions(organizationId, startDate, endDate)
-    const pricingInformation = await getPricingInformation(orgSubscription?.planCode!)
-      
-    const usedSessions = (interactedSessions?.length || 0) + (orgSubscription?.whatsappUsedSessions || 0);
-    const maxSessions = pricingInformation?.sessions || 0;
+    const usedSessions = orgPlanUsage?.interactionsUsed || 0
+    const maxSessions = pricingInformation?.sessions || 0
     const availableSessions = Math.max(maxSessions - usedSessions, 0)
 
     if (chatbotContactList.length > availableSessions) {

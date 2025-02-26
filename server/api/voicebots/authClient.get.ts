@@ -1,95 +1,77 @@
 import momentTz from "moment-timezone"
-import { error } from "winston";
 import { errorResponse } from "~/server/response/error.response";
-import { getCurrentMonthCallLogList } from "~/server/utils/db/call-logs";
-import { updateOrgSubscriptionStatus, updateOrgWallet } from "~/server/utils/db/organization";
-import { orgVoicebotSubscription } from "~/server/utils/db/voicebots";
-
-const db = useDrizzle();
+import { getVoicebotDetailByPhoneNumber, orgVoicebotSubscription } from "~/server/utils/db/voicebots";
 
 export default defineEventHandler(async (event) => {
-  const timeZoneHeader = event.node?.req?.headers["time-zone"];
-  const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
   const query = await isValidQueryHandler(event, z.object({
     phoneNumber: z.any()
   }))
   
   const incomingPhoneNumber = (`+${query.phoneNumber}`).replace(/\s+/g, "")
 
-  const voiceBotDetail: any = await db.query.voicebotSchema.findFirst({
-    where: eq(voicebotSchema.incomingPhoneNumber, incomingPhoneNumber)
-  })
+  const voiceBotDetail: any = await getVoicebotDetailByPhoneNumber(incomingPhoneNumber)
 
   if (!voiceBotDetail) return errorResponse(event, 400, "Mobile number does not exist")
-
+  
+  if (!voiceBotDetail.active) return errorResponse(event, 400, "Bot is not active")
+      
   const organizationId = voiceBotDetail?.organizationId
 
-  if (!voiceBotDetail.active) return errorResponse(event, 400, "Bot is not active")
-
   // check the plan-code of the orgaination
-  let voicebotPlan: any = await orgVoicebotSubscription(organizationId)
-  
-  const voicebotFreePlan = {
-    organizationId,
-    botType: "voice",
-    planCode: "voice_free",
-    status: "active"
-  }
-
-  if(!voicebotPlan) {
-    voicebotPlan = (await db.insert(orgSubscriptionSchema).values(voicebotFreePlan).returning())[0]
-  }
+  const [voicebotPlan, voicePlanUsage, orgDetail, adminDetail ] = await Promise.all([
+    getOrgZohoSubscription(organizationId, "voice"),
+    getOrgPlanUsage(organizationId, "voice"),
+    getOrganizationById(organizationId),
+    getAdminByOrgId(organizationId)
+  ]) 
 
   // console.log({ voicebotPlan })
-  if (voicebotPlan?.planCode === "voice_free") {
+  if (voicebotPlan?.pricingPlanCode === "voice_free") {
     return errorResponse(event, 500, "This user was a free plan")
   }
 
-  if(voicebotPlan.status === "cancelled" || voicebotPlan.status === "inactive") {
+  if(voicebotPlan?.subscriptionStatus !== "active") {
     return errorResponse(event, 500, "Subscription status is inactive")
   }
   //TODO - add extra and normal quota validation
   
   // calculate total minutes for current month
-  const currentDate = momentTz().tz(timeZone).toDate()
-  const currentMonthStartDate = momentTz(voicebotPlan?.subscriptionCreatedDate).tz(timeZone).toDate()
-  const currentMonthEndDate = momentTz(voicebotPlan?.expiryDate).tz(timeZone).toDate()
-  
-  const voicebotCallLogs = await getCurrentMonthCallLogList(organizationId, currentMonthStartDate, currentMonthEndDate)
-  // return { voicebotCallLogs }
+  const currentDate = momentTz().utc().toDate()
+  const currentMonthEndDate = momentTz(voicebotPlan?.endDate).utc().toDate()
 
   // get actual voicebot pricing information
-  const voicePricingInformation = await getPricingInformation(voicebotPlan?.planCode)
+  const adminCountry = adminDetail?.address?.country!
+  const voicePricingInformation = await getSubcriptionPlanDetailByPlanCode(voicebotPlan?.pricingPlanCode, adminCountry)
 
-  const totalMinutes = voicebotCallLogs.reduce((acc, item) => acc + Math.round(item?.duration / 60), 0);
-
-  // Convert total seconds to minutes
-  const usedCallMinutes = totalMinutes 
+  const usedCallMinutes = voicePlanUsage?.interactionsUsed || 0 
   const maxCallMinutes = voicePricingInformation?.sessions || 0
   let extraMinutes = 0
-  const orgWalletMinutes = voicebotPlan.walletSessions || 0
+  const orgWalletMinutes = orgDetail?.wallet || 0
 
-  if(currentDate > voicebotPlan.expiryDate) {
-    await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
-    return errorResponse(event, 500, "Subscription plan is expired")
+  if(currentDate > currentMonthEndDate) {
+    await updateOrgZohoSubscription(organizationId, "voice", { subscriptionStatus: "inactive" })
+    return errorResponse(event, 500, "Subscription plan has expired")
   }
 
   if(usedCallMinutes >= maxCallMinutes) {
     if(orgWalletMinutes > 0) {
       extraMinutes = Math.max(usedCallMinutes - maxCallMinutes, 0)
-      const dbExtraMinutes = Math.max(extraMinutes - voicebotPlan.extraSessions, 0)
-      if(dbExtraMinutes > 0) {
-        // const extraMinutesAmount = dbExtraMinutes * voicePricingInformation?.extraSessionCost!;
-        const currentWallet = Math.max(orgWalletMinutes - dbExtraMinutes, 0)
-        await updateOrgWallet(organizationId, "voice", currentWallet, extraMinutes)
+      const actualExtraMinutes = Math.max(extraMinutes - voicePlanUsage?.extraInteractionsUsed!, 0)
+      if(actualExtraMinutes > 0) {
+        const extraMinutesAmount = actualExtraMinutes * voicePricingInformation?.extraSessionCost!;
+        const currentWallet =  Math.max(0, parseFloat((orgWalletMinutes - extraMinutesAmount).toFixed(2)))
+        await updateSubscriptionPlanUsage(voicePlanUsage?.id!, {
+          extraInteractionsUsed: extraMinutes
+        })
+        await updateOrganization(organizationId, { wallet: currentWallet })
         if(currentWallet <= 0) {
-          await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
-          return errorResponse(event, 500, "Exceeded the allowed call minutes.")
+          await updateOrgZohoSubscription(organizationId, "voice", { subscriptionStatus: "inactive" })
+          return errorResponse(event, 500, "Wallet Balance Exhausted")
         } 
       }
     } else {
-      await updateOrgSubscriptionStatus(organizationId, "inactive", "voice")
-      return errorResponse(event, 500, "Exceeded the allowed call minutes.")
+      await updateOrgZohoSubscription(organizationId, "voice", { subscriptionStatus: "inactive" })
+      return errorResponse(event, 500, "Exceeded the allowed call minutes")
     }
   }
   

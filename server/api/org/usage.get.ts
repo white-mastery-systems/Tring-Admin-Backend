@@ -1,3 +1,4 @@
+import { orgUsage } from "~/server/utils/v2/db/orgPlanUsage";
 import { getOrgUsage } from "../../utils/org-usage";
 
 export default defineEventHandler(async (event) => {
@@ -9,7 +10,7 @@ export default defineEventHandler(async (event) => {
   const query = await isValidQueryHandler(event, z.object({
     type: z.string()
   }))
-  const usage = await getOrgUsage(organizationId, timeZone, query);
+  const usage = await orgUsage(organizationId, timeZone, query.type);
 
   return usage;
 });
