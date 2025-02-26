@@ -26,8 +26,29 @@ const props = withDefaults(
     navigavtionList: () => [],
   }
 );
-</script>
 
+const createNewBots = async (url: any) => {
+  console.log("createNewBots", url);
+  if (url === "/voice-bot")  {
+    navigateTo(url);
+  } else {
+    try {
+     const getSingleBotDetails = await $fetch("/api/bots", {
+        method: "POST",
+        body: {},
+      });
+      console.log("getSingleBotDetails", getSingleBotDetails.id);
+      if (getSingleBotDetails?.id) {
+        navigateTo(`chat-bot/${getSingleBotDetails.id}`);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+    // const getBotDetails = await listApiBots();
+    toast.success("Created successfully");
+  }
+}
+</script>
 <template>
   <div v-if="props.navigavtionList.length > 0"
     class="flex gap-5 flex-wrap justify-between w-full px-0 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
@@ -46,9 +67,9 @@ const props = withDefaults(
         </div>
       </CardHeader>
       <CardFooter class="flex items-cnter p-0">
-        <NuxtLink :to="item.url">
-          <UiButton> Create </UiButton>
-        </NuxtLink>
+        <!-- <NuxtLink :to="item.url"> -->
+          <UiButton @click="createNewBots(item.url)"> Create </UiButton>
+        <!-- </NuxtLink> -->
       </CardFooter>
     </Card>
   </div>

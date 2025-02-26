@@ -34,7 +34,7 @@
           <!-- <span class="flex -items-center py-2 pl-2"></span> -->
           <span class="font-bold text-black">
             <UiSelect v-model="selectedValue" class="outline-none">
-              <UiSelectTrigger
+              <UiSelectTrigger 
                 class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[230px] md:text-[14px] lg:w-[230px] lg:text-[14px] xl:w-[230px] xl:text-[14px]">
                 <span class="min-w-[70px] font-thin text-gray-400">
                   Summary

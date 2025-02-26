@@ -5,12 +5,15 @@
       <WebScrapingForm />
     </div>
     <div>
-      <CreateBotFields />
+      <CreateBotFields ref="childRef" @confirm="handleAddEditBot" />
     </div>
     <div class="font-bold text-[20px]">
       2 Steps to create your chatbot
     </div>
-    <CreateBot />
+    <c />
+    <div class="flex justify-center">
+      <UiButton @click="triggerChildSubmit">Create bot</UiButton>
+    </div>
     <div v-if="false">
       <div class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]">
         <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
@@ -193,6 +196,7 @@ const router = useRouter();
 const route = useRoute("chat-bot-id");
 const emit = defineEmits<{ (e: "confirm"): void }>();
 const paramId: any = route;
+const queryId = ref(route.params?.id);
 const agentModalState = ref({ open: false, id: paramId.params.id });
 const botDetails = ref(await getBotDetails(paramId.params.id));
 const deleteModalState = ref(false);
@@ -205,6 +209,8 @@ const channelModalState = ref<{ open: boolean; id: string | null }>({
   id: null,
 });
 const { dataList } = useDataList()
+const scrapedData = ref(null);
+const childRef = ref(null);
 
 watch(
   () => botDetails.value?.name,
@@ -297,6 +303,35 @@ const handleDelete = () => {
 const handleDeleteBot = () => {
   deleteModalState.value = false;
   deleteBot(route.params.id);
+};
+
+// const handleScrapedData = (data: any) => {
+//   scrapedData.value = data;
+//   console.log("Received in parent:", data);
+// }
+
+const handleAddEditBot = async (values: any) => {
+  try {
+    // if (agentModalState.value.id) {
+    const bot = await $fetch(`/api/bots/${queryId.value}`, {
+      method: "PUT",
+      body: values,
+    });
+    toast.success("Updated successfully");
+    // }
+    // if (agentModalState.value.id) {
+    //   emit("editConfirm");
+    // } else {
+    //   emit("confirm");
+    // }
+  } catch (err: any) {
+    toast.error(err.data.data[0].message);
+  }
+}
+const triggerChildSubmit = () => {
+  if (childRef.value) {
+    childRef.value.handleAddEditBot();
+  }
 };
 
 const handleActivateBot = async () => {

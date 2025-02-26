@@ -42,7 +42,6 @@ import { useState } from "#app";
 import { useRouter } from "vue-router";
 import { useBotType } from "~/composables/botManagement/chatBot/useBotType";
 
-
 definePageMeta({
   middleware: "user",
 });

@@ -24,7 +24,7 @@ export const useNavigationAndAccordion = () => {
       children: [],
     },
     {
-      name: "Customer Engagement",
+      name: "Customer Logs",
       icon: ChartNoAxesColumnIncreasing,
       path: "/analytics",
       children: [

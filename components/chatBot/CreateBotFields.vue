@@ -26,6 +26,9 @@ import { botTypes } from '~/composables/botManagement/chatBot/useBotType'
 definePageMeta({
   middleware: "admin-only",
 });
+
+const emit = defineEmits<{ (e: "confirm", values: any): void }>();
+
 // const agentModalState = defineModel<{ open: boolean; id: any }>({
 //   default: {
 //     open: false,
@@ -80,25 +83,10 @@ const { handleSubmit, setFieldValue, resetForm, values, errors } = useForm({
 
 const handleAddEditBot = handleSubmit(async (values) => {
   isLoading.value = true;
-  try {
-    // if (agentModalState.value.id) {
-    const bot = await $fetch(`/api/bots/${queryId.value}`, {
-        method: "PUT",
-        body: values,
-      });
-      toast.success("Updated successfully");
-    // }
-    // if (agentModalState.value.id) {
-    //   emit("editConfirm");
-    // } else {
-    //   emit("confirm");
-    // }
-  } catch (err: any) {
-    isLoading.value = false;
-    toast.error(err.data.data[0].message);
-  }
+  emit("confirm", values);
   isLoading.value = false;
 });
+defineExpose({ handleAddEditBot });
 const {
   status: integrationLoadingStatus,
   data: integrationsData,

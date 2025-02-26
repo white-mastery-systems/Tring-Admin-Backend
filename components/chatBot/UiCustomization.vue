@@ -1,7 +1,7 @@
 <template>
   <div>
     <form @submit.prevent="uiUpdate" class="space-y-6">
-      <div class="flex w-full flex-col gap-[13px] py-4 overflow-scroll">
+       <div class="flex w-full flex-col gap-[13px] py-4 overflow-scroll">
 
         <!-- File Upload for Logo -->
         <!-- <div class="w-[20%]">
@@ -190,7 +190,7 @@
 
         <!-- Submit Button -->
         <div class="my-auto flex w-full justify-end py-2">
-          <UiButton type="submit" color="primary" size="lg" :loading="isLoading">Submit</UiButton>
+          <UiButton type="submit" size="lg" :loading="isLoading">Submit</UiButton>
         </div>
       </div>
     </form>
@@ -201,12 +201,16 @@
 import { FieldArray } from "vee-validate";
 import { ref, watch } from "vue";
 import { useRoute, useRouter } from "nuxt/app";
+// import { useBotStore } from '~/store/botStore';
+import { botStore } from '~/store/botStore';
 
 const isLoading = ref(false);
 const colorInput: any = ref();
 const secondarycolorInput: any = ref();
 const logoData: any = ref("");
 const route = useRoute();
+const useStoreBotDetails = botStore();
+// const { scrapedData } = useBotStore();
 
 const logoAsString = z.string().min(1, "Logo is required");
 const logoAsObject = z.object({
@@ -237,7 +241,6 @@ const {
 
 const paramId = route.params.id;
 const botDetails = await getBotDetails(paramId);
-
 setFieldValue("logo", botDetails.metadata.ui.logo ?? {});
 setFieldValue("color", hslToHex(botDetails.metadata.ui.color ?? "236, 61%, 54%, 1"));
 setFieldValue("secondaryColor", hslToHex(botDetails.metadata.ui.secondaryColor ?? "236, 61%, 74%"));
@@ -246,6 +249,14 @@ setFieldValue("widgetPosition", botDetails.metadata.ui.widgetPosition ?? "Left")
 setFieldValue("fontFamily", botDetails.metadata.ui.fontFamily ?? "Kanit");
 setFieldValue("emailRecipients", botDetails.emailRecipients ?? []);
 
+
+watch(() => useStoreBotDetails, (newValue) => {
+  const extractHSLValues = (hslString: string) => hslString.replace(/hsl\(|\)/g, "");
+  setFieldValue("logo", { url: newValue.scrapedData?.brand?.logo_url } ?? {});
+  setFieldValue("color", hslToHex(extractHSLValues(newValue.scrapedData?.chatbot?.primary_color) ?? "236, 61%, 54%, 1"));
+  setFieldValue("secondaryColor", hslToHex(extractHSLValues(newValue.scrapedData?.chatbot?.secondary_color) ??"236, 61%, 74%"));
+  console.log(newValue.scrapedData, "scrapData -- scrapData");
+}, { deep: true });
 const handleLogoChange = async (event: any) => {
   logoData.value = event[0];
   const reader = new FileReader();

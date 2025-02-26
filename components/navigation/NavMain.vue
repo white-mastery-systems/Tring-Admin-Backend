@@ -135,6 +135,9 @@ const mobileSidebarControl = (value: any) => {
             <SidebarMenuButton :tooltip="item.name" :class="[activeItems[item.name] ? 'bg-[#0F172A] text-white' : '']">
               <template v-if="item.children.length">
                 <WhatsappIcon v-if="item.path === '/whatsapp-bot'"></WhatsappIcon>
+                <!-- <span class="material-symbols-rounded">
+                  home
+                </span> -->
                 <component v-if="item.icon" :is="item.icon" size="18" />
                 <span>{{ item.name }}</span>
               </template>
@@ -142,7 +145,7 @@ const mobileSidebarControl = (value: any) => {
                 <NuxtLink :to="item.path" class="flex items-center space-x-2" @click="mobileSidebarControl(item)">
                   <WhatsappIcon v-if=" item.path==='/whatsapp-bot'"></WhatsappIcon>
                   <component v-if=" item.icon" :is="item.icon" size="18" />
-                <span>{{ item.name }}</span>
+                  <span>{{ item.name }}</span>
                 </NuxtLink>
               </template>
               <!-- <component :is="item.icon" v-if="item.icon" />
@@ -155,7 +158,8 @@ const mobileSidebarControl = (value: any) => {
             <SidebarMenuSub>
               <SidebarMenuSubItem v-for="subItem in item.children" :key="subItem.name">
                 <SidebarMenuSubButton as-child>
-                  <NuxtLink @click="mobileSidebarControl(item)" :to="item.path + subItem.path" class="flex items-center space-x-2">
+                  <NuxtLink @click="mobileSidebarControl(item)" :to="item.path + subItem.path"
+                    class="flex items-center space-x-2">
                     <span :class="(route.path.includes(item.path + subItem.path)) ? 'text-gray-500' : ''">{{
                       subItem.name }}</span>
                   </NuxtLink>

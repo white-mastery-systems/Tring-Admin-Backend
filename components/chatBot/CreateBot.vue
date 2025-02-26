@@ -2,8 +2,13 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { ChevronDownIcon, Subtitles } from "lucide-vue-next"; // Import Lucide icons
 import UiCustomization from '@/components/chatBot/UiCustomization.vue';
+import BotConfiguration from '@/components/chatBot/BotConfiguration.vue';
+import CrmConfiguration from '@/components/chatBot/CrmConfiguration.vue';
+
 const stepComponents: Record<string, any> = {
   uiCustomization: UiCustomization,
+  botConfiguration: BotConfiguration,
+  crmIntegrations: CrmConfiguration,
   // item2: Step2,
   // item3: Step3,
 }
@@ -19,7 +24,6 @@ const accordionItems = [
   { value: "Advanced Setup", title: "Advanced Setup", content: "Click here to deploy your new chatbot", icon: "Settings", subtitle: "Click here to deploy your new chatbot" },
 ];
 </script>
-
 <template>
   <Accordion type="single" class="w-full" collapsible :default-value="defaultValue">
     <AccordionItem v-for="item in accordionItems" :key="item.value" :value="item.value"

@@ -1,6 +1,20 @@
 <template>
   <div v-if="fileType === 'image'" class="flex gap-3 w-full grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2">
     <div class="flex w-full gap-4">
+      <div v-if="url?.length"
+        class="flex items-center justify-center h-24 rounded-lg min-w-[30%] sm:min-w-[30%] md:min-w-[20%] max-w-[30%] sm:max-w-[30%] md:max-w-[20%] border-[1px] border-gray-300">
+        <label for="imageView pa-2 min-w-full">
+          <img :class="class" :src="url" alt="" class="rounded-lg min-w-full" />
+          <!-- <span class="text-[10px] text-gray-500" v-if="props?.helperText?.length">
+            {{ props.helperText }}
+          </span> -->
+          <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept"
+            id="imageView" />
+        </label>
+        <!-- <span class="text-[0.75rem] text-[#ef4444] font-medium" v-if="errorMessage">
+          {{ errorMessage }}
+        </span> -->
+      </div>
       <div class="w-[64%] sm:w-[64%] md:w-[76%]">
         <label
           class="dark:hover:bg-bray-800 flex h-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
@@ -11,18 +25,6 @@
             </span>
           </span>
           <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept" />
-        </label>
-      </div>
-      <div v-if="url?.length"
-        class="flex items-center justify-center h-24 rounded-lg min-w-[30%] sm:min-w-[30%] md:min-w-[20%] max-w-[30%] sm:max-w-[30%] md:max-w-[20%]"
-        :class="[(url) ? 'border-0' : 'border-[1px] border-gray-300']">
-        <label for="imageView pa-2 min-w-full">
-          <img :class="class" :src="url" alt="" class="rounded-lg min-w-full" />
-          <!-- <span class="text-[10px] text-gray-500" v-if="props?.helperText?.length">
-            {{ props.helperText }}
-          </span> -->
-          <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept"
-            id="imageView" />
         </label>
         <span class="text-[0.75rem] text-[#ef4444] font-medium" v-if="errorMessage">
           {{ errorMessage }}

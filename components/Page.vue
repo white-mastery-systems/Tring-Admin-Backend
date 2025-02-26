@@ -26,7 +26,7 @@
     : `${(leadPage === 'leads') ? (browserClass === 'brave-browser') ? 'pt-[10px] sm:pt-[10px]' : 'pt-[10px] sm:pt-[10px]' : 'pb-2 sm:pb-2'} px-2 sm:px-2 md:px-6 lg:px-6 xl:px-6 md:pt-0 lg:pt-0 xl:pt-0`,
     'pb-2'
   ]">
-    <div class="mb-2 pt-2 flex items-center justify-between gap-2">
+    <div :class="[(props.title) ? 'justify-between' : 'justify-end' ]" class="mb-2 pt-2 flex items-center  gap-2">
       <div v-if="props.title"
         :class="['flex gap-4 px-0', (!props.disableBackButton) ? 'items-center' : 'items-center']">
         <!-- <UiButton v-if="!props.disableBackButton" variant="outline" size="icon" @click="handleBackButtonClick">
