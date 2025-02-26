@@ -16,7 +16,7 @@ if (!hostedpageId) {
   }, 1000);
 }
 
-await $fetch(`/api/billing/verify-payment/addon`, {
+await $fetch(`/api/v2/billing/wallet/verify-payment`, {
   method: "POST",
   query: {
     type: "whatsapp",

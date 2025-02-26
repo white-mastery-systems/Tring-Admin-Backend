@@ -1,4 +1,5 @@
 import { createOrgSubscription } from "~/server/utils/db/organization";
+import { createOrgZohoSubscription } from "~/server/utils/v2/db/zohoSubscription";
 import { createZohoCustomer } from "~/server/utils/zoho/customer";
 
 const db = useDrizzle();
@@ -43,20 +44,40 @@ export default defineEventHandler(async (event) => {
       organizationId: org.id,
       isDefault: true,
     }),
-    createOrgSubscription([
+    createOrgZohoSubscription([
       {
         organizationId: org.id,
-        botType: "chat",
-        planCode: "chat_free",
-        status: "active",
+        serviceType: "chat",
+        pricingPlanCode: "chat_free",
+        subscriptionStatus: "active"
       },
       {
         organizationId: org.id,
-        botType: "voice",
-        planCode: "voice_free",
-        status: "active",
-      },
+        serviceType: "voice",
+        pricingPlanCode: "voice_free",
+        subscriptionStatus: "active"
+      }
     ]),
+    createSubscriptionPlanUsage({
+      organizationId: org.id,
+      serviceType: "chat",
+      pricingPlanCode: "chat_free",
+      subscriptionStatus: "active"
+    }),
+    // createOrgSubscription([
+    //   {
+    //     organizationId: org.id,
+    //     botType: "chat",
+    //     planCode: "chat_free",
+    //     status: "active",
+    //   },
+    //   {
+    //     organizationId: org.id,
+    //     botType: "voice",
+    //     planCode: "voice_free",
+    //     status: "active",
+    //   },
+    // ]),
   ]);
 
     sendEmail(

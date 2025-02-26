@@ -62,7 +62,7 @@ export const useBillingComposable = () => {
   };
 
   const handleConfirmPaymentCancellation = async () => {
-    await $fetch("/api/billing/subscription", {
+    await $fetch("/api/v2/billing/subscriptions", {
       method: "DELETE",
       params: filters.value,
     });

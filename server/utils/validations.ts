@@ -1,6 +1,17 @@
 import type { H3Event } from "h3";
 import { z, ZodType } from "zod";
 
+export enum BotType {
+  chat = 'chat',
+  voice = 'voice',
+}
+
+export const zodBotTypeQuery = z.object({
+  type: z.nativeEnum(BotType),
+})
+
+const config = useRuntimeConfig()
+
 export const checkPayloadId = <T extends string>(key: T) =>
   z.object({
     [key]: z.string().uuid(),

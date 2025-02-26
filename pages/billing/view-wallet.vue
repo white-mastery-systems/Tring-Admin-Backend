@@ -157,7 +157,7 @@ onMounted(() => {
 });
   const handlePurchaseWallet = async (plan: string) => {
     const hostedPageResponse = await $fetch(
-      `/api/billing/addon?type=${filters.value.type ?? 'chat'}`,
+      `/api/v2/billing/wallet?type=${filters.value.type ?? 'chat'}`,
       {
         method: "POST",
         body: {

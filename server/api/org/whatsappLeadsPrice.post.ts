@@ -9,9 +9,10 @@ export default defineEventHandler(async (event) => {
     }),
   );
   const reduceAmount = countriesData.find((item)=> item.dial_code == body.countryCode)?.leadMessageCost || 0.4
-  const orgSubscriptionDetail = await getOrgSubscriptionStatus(body.organizationId,"chat");
+
+  const orgDetail = await getOrganizationById(body.organizationId)
   
-  let whatsappWalletBalance = orgSubscriptionDetail?.whatsappWallet || 0;
+  let whatsappWalletBalance = orgDetail?.wallet || 0;
   if (whatsappWalletBalance < reduceAmount) {
     return { status: false };
   } else {
@@ -20,7 +21,7 @@ export default defineEventHandler(async (event) => {
       0,
       parseFloat((whatsappWalletBalance - whatsappLeadPrice).toFixed(2)),
     );
-    await updateOrgWhatsappSessions(body.organizationId, whatsappWalletBalance);
+    updateOrganization(body?.organizationId, { wallet: whatsappWalletBalance })
     return { status: true };
   }
 });

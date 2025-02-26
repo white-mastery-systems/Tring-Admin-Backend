@@ -1,4 +1,9 @@
-export const errorResponse = (event: any, statusCode: number, statusMessage: string, data?: any) =>
+export const errorResponse = (
+  event: any,
+  statusCode: number = 500,
+  statusMessage: string = "Internal Server Error",
+  data?: any
+) =>
   sendError(
     event,
     createError({
@@ -6,4 +11,4 @@ export const errorResponse = (event: any, statusCode: number, statusMessage: str
       statusMessage,
       data,
     })
-);
+  );
