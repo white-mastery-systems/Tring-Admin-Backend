@@ -11,7 +11,8 @@
   ]" -->
   <Page title="Campaigns Details" :disable-back-button="false">
     <div class="flex items-center gap-2 mb-2">
-      <DateRangeFilter v-model="filters.period" />
+      <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
+        @change="onDateChange" />
     </div>
     <DataTable @pagination="Pagination" @row-click="(row: any) => {
       navigateTo(`/analytics/call-logs/${row.original.id}?campaign=campaign`);
@@ -31,21 +32,16 @@
 import { useRoute, useRouter } from "vue-router";
 import { createColumnHelper } from "@tanstack/vue-table";
 import { Icon, UiBadge, UiButton } from "#components";
-const filters = reactive < {
-  q: string;
-  page: string;
-  limit: string;
-  period: string;
-  from?: string;
-  to?: string;
-} > ({
+import { useState } from "#app";
+
+const filters = useState("campaignsFilters", () => ({
   q: "",
   page: "1",
   limit: "10",
   period: "",
   from: undefined,
   to: undefined,
-});
+}));
 const route = useRoute();
 let page = ref(0);
 let totalPageCount = ref(0);
@@ -71,7 +67,7 @@ const {
 
 const isDataLoading = computed(() => status.value === "pending");
 const Pagination = async ($evnt: any) => {
-  filters.page = $evnt;
+  filters.value.page = $evnt;
 };
 
 const viewLead = async (callSid: any) => {
@@ -136,16 +132,11 @@ const columns = [
     },
   }),
 ];
-
 const onDateChange = (value: any) => {
-  if (value.from && value.to) {
-    filters.from = value.from;
-    filters.to = value.to;
-  } else {
-    delete filters.from;
-    delete filters.to;
-    filters.period = value;
+  if (value != "custom") {
+    delete filters.value.from;
+    delete filters.value.to;
   }
-  filters.page = "1";
+  filters.value.page = "1";
 };
 </script>

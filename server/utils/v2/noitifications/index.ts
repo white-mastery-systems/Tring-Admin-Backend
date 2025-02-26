@@ -1,3 +1,3 @@
-export * from "./intentsEmailTemplate";
-export * from "./otpEmailTemplate";
-export * from "./resetPasswordEmailTemplate";
+// export * from "./intentsEmailTemplate";
+// export * from "./otpEmailTemplate";
+// export * from "./resetPasswordEmailTemplate";

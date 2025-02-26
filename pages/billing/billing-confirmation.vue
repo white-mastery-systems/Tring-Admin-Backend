@@ -16,7 +16,7 @@
     }, 1000);
   }
 
-  await $fetch(`/api/billing/verify-payment`, {
+  await $fetch(`/api/v2/billing/subscriptions/verify-payment`, {
     method: "POST",
     body: {
       hostedpageId,

@@ -6,9 +6,11 @@ import { createSlackMessage } from "~/server/utils/slack/modules";
 import { createWhatsAppMessage } from "~/server/utils/whatsapp/module";
 import {
   generateContactInZohoBigin,
-  generateLeadInZohoCRM,
   updateNotesInZohoBigin,
 } from "~/server/utils/zoho/modules";
+
+import { newGenerateLeadInZohoCRM, newUpdateNotesInZohoCRM } from "../../../utils/v2/integrations/crm/zoho/zoho-crm"
+import { newGenerateContactInZohoBigin, newGenerateLeadInZohoBigin, newUpdateNotesInZohoBigin } from "~/server/utils/v2/integrations/crm/zoho/zoho-bigin";
 
 const config = useRuntimeConfig()
 
@@ -58,7 +60,7 @@ export default defineEventHandler(async (event) => {
           token: botIntegration?.integration?.metadata?.access_token,
           refreshToken: botIntegration?.integration?.metadata?.refresh_token,
         });
-        const generatedContact: any = await generateContactInZohoBigin({
+        const generatedContact: any = await newGenerateContactInZohoBigin({
           body: {
             First_Name: firstName,
             Last_Name: lastName ?? firstName,
@@ -67,14 +69,12 @@ export default defineEventHandler(async (event) => {
             Title: body?.botUser?.name,
           },
           integrationData: botIntegration?.integration,
-          token: botIntegration?.integration?.metadata?.access_token,
-          refreshToken: botIntegration?.integration?.metadata?.refresh_token,
         });
         const pipelineObj = botIntegration?.metadata?.pipelineObj;
 
-        const generatedLead: any = await generateLeadInZohoBigin({
-          token: botIntegration?.integration?.metadata?.access_token,
-          refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+        const generatedLead: any = await newGenerateLeadInZohoBigin({
+          // token: botIntegration?.integration?.metadata?.access_token,
+          // refreshToken: botIntegration?.integration?.metadata?.refresh_token,
           body: {
             Deal_Name: body?.botUser?.name,
             Sub_Pipeline: pipelineObj?.Sub_Pipeline ?? pipelineObj?.Pipeline,
@@ -92,12 +92,13 @@ export default defineEventHandler(async (event) => {
           zohoBiginLeadId: generatedLead?.data[0]?.details?.id,
         });
       } else {
-        const updateLeadWithNotes = await updateNotesInZohoBigin({
+        await newUpdateNotesInZohoBigin({
           zohoBiginLeadId: body.botUser?.metaData?.zohoBiginLeadId,
-          integrationData: botIntegration?.integration,
-          token: botIntegration?.integration?.metadata?.access_token,
-          refreshToken: botIntegration?.integration?.metadata?.refresh_token,
           body: body?.note,
+          integrationData: botIntegration?.integration,
+          // token: botIntegration?.integration?.metadata?.access_token,
+          // refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+          
         });
       }
     } else if (botIntegration?.integration?.crm === "zoho-crm") {
@@ -110,9 +111,9 @@ export default defineEventHandler(async (event) => {
         }
   
         const layoutObj = botIntegration?.metadata?.layoutObj;
-        const generatedCrmLead: any = await generateLeadInZohoCRM({
-          token: botIntegration?.integration?.metadata?.access_token,
-          refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+        const generatedCrmLead: any = await newGenerateLeadInZohoCRM({
+          // token: botIntegration?.integration?.metadata?.access_token,
+          // refreshToken: botIntegration?.integration?.metadata?.refresh_token,
           body: {
             Layout: {
               id: layoutObj?.id,
@@ -132,11 +133,11 @@ export default defineEventHandler(async (event) => {
             zohoCrmLeadId: generatedCrmLead?.data[0]?.details?.id,
           });
       } else {
-      await updateNotesInZohoCRM({
+        await newUpdateNotesInZohoCRM({
           zohoCrmLeadId: body.botUser?.metaData?.zohoCrmLeadId,
           integrationData: botIntegration?.integration,
-          token: botIntegration?.integration?.metadata?.access_token,
-          refreshToken: botIntegration?.integration?.metadata?.refresh_token,
+          // token: botIntegration?.integration?.metadata?.access_token,
+          // refreshToken: botIntegration?.integration?.metadata?.refresh_token,
           body: body?.note,
         });
       }
@@ -155,8 +156,8 @@ export default defineEventHandler(async (event) => {
       );
     } else if (botIntegration?.integration?.crm === "slack") {
       if (botIntegration?.metadata?.channelId) {
-        // console.log(body?.botUser);
         const payload = {
+          intent: "Lead",
           name: body?.botUser?.name,
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
@@ -164,6 +165,10 @@ export default defineEventHandler(async (event) => {
           chatLink: `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
+        if (body?.note){
+          const keywords = ["Appointment", "Call Scheduled", "Site Visit"];
+          payload.intent = keywords.find((keyword) => body?.note.includes(keyword)) || "Lead";
+        }
         const data = await createSlackMessage(
           botIntegration?.integration?.metadata,
           botIntegration?.metadata?.channelId,
@@ -266,16 +271,15 @@ export default defineEventHandler(async (event) => {
     } else if (botIntegration?.integration?.crm === "zoho-cliq") {
       if (botIntegration?.metadata?.channelId) {
         const payload = {
-          "First Name": body?.botUser?.name,
-          Email: body?.botUser?.email,
-          Mobile: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
-          "Bot Name": botDetails?.name,
-          "Chat Link": `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`,
-          "Whatsapp Link": `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
+          intent: "Lead",
+          name: body?.botUser?.name,
+          email: body?.botUser?.email,
+          phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
+          botName: botDetails?.name,
+          chatLink: `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`,
+          whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
-        let textContent = Object.entries(payload)
-          .map(([key, value]) => `${key}: ${value}`)
-          .join("\n");
+        const textContent = `${body?.note ?? "Lead Received"} \nA new ${payload.intent ?? "Lead"} inquiry was received for your business through Tring AI. \n👤 ${payload.name} | 📞 ${payload.phone}\n📩Email: ${payload.email}\n🆔 Bot Name: ${payload.botName}\n🔗 Conversation History: ${payload.chatLink}\n🔗 Contact user on whatsapp : ${payload.whatsappLink}\n\nThis message is intended for business use to help you follow up with the lead.`;
         await generateLeadsInZohoCliq(
           botIntegration?.integration?.metadata,
           botIntegration?.metadata?.channelId,

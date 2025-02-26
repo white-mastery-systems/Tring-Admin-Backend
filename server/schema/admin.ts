@@ -32,6 +32,7 @@ export const organizationSchema = adminSchema.table("organization", {
   voicePlanCode: varchar("voice_plan_code").notNull().default("voice_free"),
   logo: jsonb("logo").default({}),
   isOnboarded: boolean("is_onboarded").default(false).notNull(),
+  wallet: doublePrecision("wallet").default(0.00),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -420,3 +421,51 @@ export const zodInsertOrganization = createInsertSchema(organizationSchema, {
 export const zodInsertPlaygroundDocument = createInsertSchema(
   playgroundDocumentSchema,
 );
+
+// new schemas
+
+export const serviceTypesEnum = pgEnum("serviceTypes", [
+  "chat",
+  "voice"
+]);
+
+export const subscriptionStatusEnum = pgEnum("subscriptionStatus", [
+  "active",
+  "inactive",
+  "cancelled"
+])
+
+export const adminSubscriptionSchema = adminSchema.table("admin_subscriptions", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id),
+  serviceType: serviceTypesEnum("service_type").notNull(),
+  subscriptionId: varchar("subscription_id"),
+  pricingPlanCode: varchar("pricing_plan_code").notNull(),
+  subscriptionStatus: subscriptionStatusEnum("subscription_status").notNull().default("active"),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow()
+})
+
+export const adminPlanUsageSchema = adminSchema.table("admin_plan_usages", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id),
+  serviceType: serviceTypesEnum("service_type").notNull(),
+  pricingPlanCode: varchar("pricing_plan_code").notNull(),
+  subscriptionId: varchar("subscription_id"),
+  interactionsUsed: integer("interactions_used").default(0),
+  extraInteractionsUsed: integer("extra_interaction_used").default(0),
+  whatsappSessionsUsed: integer("whatsapp_sessions_used").default(0),
+  subscriptionStatus: subscriptionStatusEnum("status").notNull().default("active"),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow()
+})
+
+export type SelectAdminSubscription = InferSelectModel<typeof adminSubscriptionSchema>;
+export type InsertAdminSubscription = InferInsertModel<typeof adminSubscriptionSchema>;
+
+export type SelectAdminPlanUsage = InferSelectModel<typeof adminPlanUsageSchema>;
+export type InsertAdminPlanUsage = InferInsertModel<typeof adminPlanUsageSchema>;

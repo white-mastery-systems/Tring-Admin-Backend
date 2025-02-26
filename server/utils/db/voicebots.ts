@@ -84,6 +84,12 @@ export const getVoicebotById = async (
   return data;
 };
 
+export const getVoicebotDetailByPhoneNumber = async(phonenumber: string) => {
+  return await db.query.voicebotSchema.findFirst({
+    where: eq(voicebotSchema.incomingPhoneNumber, phonenumber)
+  })
+}
+
 export const updateVoiceBot = async (
   voicebotId: string,
   voicebot: InsertVoiceBot,
