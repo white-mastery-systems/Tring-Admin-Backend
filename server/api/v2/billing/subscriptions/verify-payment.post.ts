@@ -26,14 +26,17 @@ export default defineEventHandler(async (event)=>{
   
     const getBotType = await getPricingInformation(hostedPageData?.data.subscription.plan.plan_code)
     botType = getBotType?.type === "chatbot" ? "chat" : "voice"
-    
+
+    const subscriptionStartDate = new Date(hostedPageData?.data?.subscription?.current_term_starts_at) || new Date(hostedPageData?.data?.subscription?.updated_time)
+    const subscriptionEndDate = new Date(hostedPageData?.data?.subscription?.current_term_ends_at) || new Date(hostedPageData?.data?.subscription?.expires_at)
+
     const orgSubscription = {
       organizationId: orgId!,
       serviceType: botType,
       subscriptionId: hostedPageData?.data?.subscription?.subscription_id,
       pricingPlanCode: hostedPageData?.data?.subscription?.plan.plan_code,
-      startDate: new Date(hostedPageData?.data?.subscription?.updated_time),
-      endDate: new Date(hostedPageData?.data?.subscription?.next_billing_at),
+      startDate: subscriptionStartDate,
+      endDate: subscriptionEndDate,
       subscriptionStatus: "active" as "active"
     }
     

@@ -105,13 +105,16 @@ export const voicePlanUsages = async (orgZohoSubscription: any, orgDetail: any, 
 
 export const orgUsage = async (organizationId: string, timezone: string, serviceType: string) => {
   try {
-    const [orgDetail, orgZohoSubscription] = await Promise.all([
+    const [orgDetail, orgZohoSubscription, adminDetail] = await Promise.all([
       getOrganizationById(organizationId),
-      getOrgZohoSubscription(organizationId, serviceType)
+      getOrgZohoSubscription(organizationId, serviceType),
+      getAdminByOrgId(organizationId)
     ])
     
     const { startDate, endDate } = findUTCDate(orgZohoSubscription)
-    const planPricingDetail = await getSubcriptionPlanDetailByPlanCode(orgZohoSubscription?.pricingPlanCode!)
+    const adminCountry = adminDetail?.address?.country!
+
+    const planPricingDetail = await getSubcriptionPlanDetailByPlanCode(orgZohoSubscription?.pricingPlanCode!, adminCountry)
 
     if(serviceType === "chat") {
       return chatPlanUsages(
