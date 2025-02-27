@@ -10,7 +10,7 @@
     <div class="font-bold text-[20px]">
       2 Steps to create your chatbot
     </div>
-    <c />
+    <CreateBot />
     <div class="flex justify-center">
       <UiButton @click="triggerChildSubmit">Create bot</UiButton>
     </div>
