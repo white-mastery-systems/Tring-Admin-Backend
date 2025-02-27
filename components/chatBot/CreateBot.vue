@@ -4,14 +4,18 @@ import { ChevronDownIcon, Subtitles } from "lucide-vue-next"; // Import Lucide i
 import UiCustomization from '@/components/chatBot/UiCustomization.vue';
 import BotConfiguration from '@/components/chatBot/BotConfiguration.vue';
 import CrmConfiguration from '@/components/chatBot/CrmConfiguration.vue';
+import DynamicForm from '@/components/chatBot/DynamicForm.vue';
 import { nextTick } from "vue";
+import { useRoute } from 'vue-router';
 
 const stepComponents: Record<string, any> = {
   uiCustomization: UiCustomization,
   botConfiguration: BotConfiguration,
   crmIntegrations: CrmConfiguration,
+  AdvancedSetup: DynamicForm,
 }
 const emit = defineEmits(["cofirm"]);
+const route = useRoute();
 // const defaultValue = 'uiCustomization'
 const openValues = ref(["uiCustomization", "botConfiguration"]);
 
@@ -20,17 +24,20 @@ const accordionItems = ref([
   { value: "uiCustomization", title: "UI Customization", content: "Setup the way your chat looks", icon: "Home", subtitle: "Setup the way your chat looks", status: "Incomplete" },
   { value: "botConfiguration", title: "Bot Configuration", content: "Setup the way you bot works", icon: "Settings", subtitle: "Setup the way you bot works", status: "Incomplete" },
   { value: "crmIntegrations", title: "CRM Integrations", content: "Click here to deploy your new chatbot", icon: "Settings", subtitle: "Click here to deploy your new chatbot",},
-  { value: "Advanced Setup", title: "Advanced Setup", content: "Click here to deploy your new chatbot", icon: "Settings", subtitle: "Click here to deploy your new chatbot" },
+  { value: "AdvancedSetup", title: "Advanced Setup", content: "Click here to deploy your new chatbot", icon: "Settings", subtitle: "Click here to deploy your new chatbot" },
 ]);
 
 const updateStepStatus = async (step: string, status: string) => {
   await nextTick(); // Ensures Vue updates the DOM first
   emit('cofirm', { step, status });
   const stepIndex = accordionItems.value.findIndex(item => item.value === step);
+  const documentsList = await listDocumentsByBotId(route.params.id)
+  const list = await getDocumentsList(route.params.id)
+  // console.log(list, "list")
   if (stepIndex !== -1) {
     accordionItems.value[stepIndex] = {
       ...accordionItems.value[stepIndex],
-      status: status === "completed" ? "Completed" : "Incomplete",
+      status: status === "completed" ? (stepIndex === 1) ? ((documentsList.documents.length > 0) && (list.length > 0)) ? "Completed" : "Incomplete" : "Completed" : "Incomplete",
     };
     accordionItems.value = [...accordionItems.value]; // Force reactivity
   }

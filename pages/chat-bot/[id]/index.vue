@@ -309,8 +309,10 @@ const handleDeleteBot = () => {
 // const handleScrapedData = (data: any) => {
 //   scrapedData.value = data;
 //   console.log("Received in parent:", data);
-// }
-
+// }handleFieldsChanges
+const handleFieldsChanges = () => {
+  console.log("Fields changed");
+}
 const handleAddEditBot = async (values: any) => {
   const documentsList = await listDocumentsByBotId(paramId.params.id)
   const list = await getDocumentsList(paramId.params.id)

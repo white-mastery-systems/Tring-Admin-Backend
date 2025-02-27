@@ -6,7 +6,7 @@
       to: `/bot-management/chat-bot/${botDetails?.id}/intent-management`,
     },
   ]"  -->
-  <Page title="Add tools" :bread-crumbs="[
+  <!-- <Page title="Add tools" :bread-crumbs="[
     {
       label: `${botDetails.name}`,
       to: `/bot-management/chat-bot/${botDetails.id}`,
@@ -15,7 +15,8 @@
       label: 'Add tools',
       to: `/bot-management/chat-bot/${botDetails.id}/tools`,
     },
-  ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
+  ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false"> -->
+  <div class="pt-8">
     <form @submit.prevent="dynamicToolsForm" class="space-y-6 pt-2 sm:pt-2 md:pt-0">
       <!-- Default Tools Section -->
       <div class="mb-6">
@@ -88,17 +89,11 @@
                 </div>
               </UiFormItem>
             </UiFormField>
-          <span class="w-full">
-            <SelectField
-             name="voice_bot"
-             label="Voice Bots"
-             placeholder="Select Bot"
-             :options="voiceBotDetails.map((bot) => ({ label: bot.name, value: bot.id }))"
-             :required="true"
-             :disabled="!values.schedule_call_with_voice"
-             :closeIcon="true"
-           />
-          </span>
+            <span class="w-full">
+              <SelectField name="voice_bot" label="Voice Bots" placeholder="Select Bot"
+                :options="voiceBotDetails.map((bot) => ({ label: bot.name, value: bot.id }))" :required="true"
+                :disabled="!values.schedule_call_with_voice" :closeIcon="true" />
+            </span>
           </div>
         </div>
       </div>
@@ -173,7 +168,7 @@
 
                     <!-- Add Parameter Button -->
                     <div class="flex items-center w-full justify-end gap-2">
-                      <UiButton v-if="values.clientFormControl" color="primary" type="button" @click="() => {
+                      <UiButton v-if="values.clientFormControl" type="button" @click="() => {
                         if (!values.propertieFormControl) {
                           setFieldValue('propertieFormControl', true)
                           // return
@@ -182,7 +177,7 @@
                       }">
                         Add Parameter
                       </UiButton>
-                      <UiButton color="primary" type="button" @click="remove(toolIdx)">
+                      <UiButton type="button" @click="remove(toolIdx)">
                         Remove Client Tool
                       </UiButton>
                     </div>
@@ -193,7 +188,7 @@
 
             <!-- Add Client Tool Button -->
             <div class="flex w-full justify-end gap-2">
-              <UiButton class="mt-2" color="primary" type="button" @click="() => {
+              <UiButton class="mt-2" type="button" @click="() => {
                 if (!values.clientFormControl) {
                   setFieldValue('clientFormControl', true)
                   // return
@@ -209,12 +204,13 @@
       </div>
 
       <div class="flex w-full justify-end gap-2">
-        <UiButton color="primary" type="submit" size="lg" :loading="isLoading">
+        <UiButton type="submit" size="lg" :loading="isLoading">
           Submit
         </UiButton>
       </div>
     </form>
-  </Page>
+  </div>
+  <!-- </Page> -->
 </template>
 
 <script setup lang="ts">
@@ -285,16 +281,16 @@ onMounted(() => {
 
 })
 
-watch(() => values.schedule_call, (newValues)=> {
+watch(() => values.schedule_call, (newValues) => {
   if (!newValues) {
     setFieldValue('schedule_call_with_voice', false)
-  } 
+  }
 })
 
-watch(() => values.schedule_call_with_voice, (newValues)=> {
+watch(() => values.schedule_call_with_voice, (newValues) => {
   if (!newValues) {
     setFieldValue('voice_bot', "")
-  } 
+  }
 })
 // const dynamicToolsForm = handleSubmit(async (values: any) => {
 //   isLoading.value = true;
@@ -411,7 +407,7 @@ const dynamicToolsForm = handleSubmit(async (values: any) => {
     metadata: {
       ...botDetails.metadata,
     },
-};
+  };
 
 
   console.log(payload, "payload -- formatted payload");

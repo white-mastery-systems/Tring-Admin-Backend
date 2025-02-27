@@ -99,7 +99,9 @@ const avatarValue = ref(OrgDetails.values?.logo || userInfo.value?.profile_image
     <AppSidebar />
     <main class="w-full">
       <div class="flex items-center justify-between h-16 bg-[#F0F6FF] shadow-sm px-4">
-        <UiSidebarTrigger />
+        <div class="flex sm:flex md:hidden">
+          <UiSidebarTrigger />
+        </div>
         <div class="flex items-center gap-5">
           <!-- <span class="flex items-center gap-4">
             <MailIcon class="w-4 h-4 text-gray-700" />

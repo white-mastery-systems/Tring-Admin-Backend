@@ -1,5 +1,5 @@
 <template>
-  <Page title="Dynamic Form" :bread-crumbs="[
+  <!-- <Page title="Dynamic Form" :bread-crumbs="[
     {
       label: `${botDetails.name}`,
       to: `/bot-management/chat-bot/${botDetails.id}`,
@@ -8,7 +8,8 @@
       label: 'Dynamic Form',
       to: `/bot-management/chat-bot/${botDetails.id}/dynamic-form`,
     },
-  ]" :description="true" :disabeSelector="false" :disable-back-button="false">
+  ]" :description="true" :disableSelector="false" :disable-back-button="false"> -->
+  <div class="pt-3">
     <form @submit.prevent="dynamicForm" class="space-y-4">
       <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3 px-2">
         <SelectField name="fields[0].type" label="Type" :options="typeList" required />
@@ -27,9 +28,9 @@
       </div>
       <div class="flex w-full justify-end gap-2">
         <div>
-          <UiButton color="primary" type="button" size="lg" @click="addField()"> Add Field</UiButton>
+          <UiButton type="button" size="lg" @click="addField()"> Add Field</UiButton>
         </div>
-        <UiButton color="primary" type="submit" size="lg" :loading="isLoading">Submit</UiButton>
+        <UiButton type="submit" size="lg" :loading="isLoading">Submit</UiButton>
       </div>
     </form>
     <!-- Preview Section -->
@@ -38,7 +39,7 @@
       <form class="space-y-4">
         <div v-for="(field, index) in formattedValue" :key="index" class="space-y-3 flex items-end gap-2">
           <!-- Type Field in Preview -->
-           <!-- {{ field.placeholder }} -->
+          <!-- {{ field.placeholder }} -->
           <div v-if="field.type === 'date'" class="w-full">
             <DatePickerField :name="field.model" :label="field.label" :placeholder="field.placeholder" required
               disabled />
@@ -62,7 +63,11 @@
       </form>
     </div>
 
-  </Page>
+    <CommunicationChannelConfig />
+    <AddTools />
+  </div>
+
+  <!-- </Page> -->
 </template>
 
 <script setup lang="ts">
@@ -148,24 +153,24 @@ const dynamicForm = handleSubmit(async (values: any) => {
       model: toCamelCase(field.label)  // Convert label to camelCase for each field
     }))
   };
-  await dynamicaFormDetails(route.params.id, { formStructure: formattedData})
+  await dynamicaFormDetails(route.params.id, { formStructure: formattedData })
 });
 
 const addField = () => {
   const isValid = values.fields?.every((field) => {
-      if (field.type === "Text") {
-        // For type 'Text', check all fields
-        return field.label && field.type && field.errorMessage &&
-          field.minLength !== undefined && field.maxLength !== undefined && field.placeholder;
-      } else {
-        // For other types, only check label, placeholder, and errorMessage
-        return field.label && field.placeholder && field.errorMessage;
-      }
-    });
-    if (!isValid) {
-      toast.error("Please fill in all required fields before adding.");
-      return;
+    if (field.type === "Text") {
+      // For type 'Text', check all fields
+      return field.label && field.type && field.errorMessage &&
+        field.minLength !== undefined && field.maxLength !== undefined && field.placeholder;
+    } else {
+      // For other types, only check label, placeholder, and errorMessage
+      return field.label && field.placeholder && field.errorMessage;
     }
+  });
+  if (!isValid) {
+    toast.error("Please fill in all required fields before adding.");
+    return;
+  }
 
   values.fields?.forEach((items: any) => {
     formattedValue.value.push({ ...items, required: true, model: toCamelCase(items.label) })
