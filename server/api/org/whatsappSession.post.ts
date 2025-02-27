@@ -36,17 +36,17 @@ export default defineEventHandler(async (event) => {
       await createOrgWhatsappSession(body)
       await updateOrganization(organizationId, { wallet: whatsappWalletBalance })
       await updateSubscriptionPlanUsage(
-        organizationId,
+        orgPlanUsage?.id!,
         { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 }
       )
       return { status: true, whatsappWalletBalance, organizationName: orgDetail?.name }
     }
-    return { status: true, whatsappWalletBalance, organizationName: orgDetail?.name }
+      return { status: true, whatsappWalletBalance, organizationName: orgDetail?.name }
   } else {
     await createOrgWhatsappSession(body)
     await updateOrganization(organizationId, { wallet: whatsappWalletBalance })
     await updateSubscriptionPlanUsage(
-      organizationId,
+      orgPlanUsage?.id!,
       { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 }
     )
     return { status: true, whatsappWalletBalance, organizationName: orgDetail?.name }
