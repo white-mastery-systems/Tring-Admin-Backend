@@ -9,18 +9,20 @@
   to: `/bot-management/chat-bot/${botDetails.id}/crm-config`,
   },
   ]" -->
-  <Page title="" :disableSelector="true">
+  <div class="py-3">
     <!-- v-if="integrations.length === 0" -->
-    <template #actionButtons>
+    <!-- <template #actionButtons> -->
+    <div class="mb-4 flex items-center justify-end">
       <UiButton @click="
         () => {
           crmConfigModalState.open = true;
           crmConfigModalState.id = null;
         }
-      " >
+      ">
         Link CRM
       </UiButton>
-    </template>
+    </div>
+    <!-- </template> -->
     <DataTable :columns="columns" :data="integrations" :page-size="8" :is-loading="false" :height="20" height-unit="vh"
       :totalCount="totalCount" :totalPageCount="totalPageCount" :page="page" />
     <CreateEditCrmConfigModal v-model="crmConfigModalState" :id="crmConfigModalState?.id" @success="handleSuccess" />
@@ -40,7 +42,7 @@
           }
         }
       " />
-    </Page>
+  </div>
 </template>
 <script setup lang="ts">
 import { Icon, UiButton } from "#components";

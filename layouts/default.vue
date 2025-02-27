@@ -101,16 +101,15 @@ const avatarValue = ref(OrgDetails.values?.logo || userInfo.value?.profile_image
       <div class="flex items-center justify-between h-16 bg-[#F0F6FF] shadow-sm px-4">
         <UiSidebarTrigger />
         <div class="flex items-center gap-5">
-          <span class="flex items-center gap-4">
+          <!-- <span class="flex items-center gap-4">
             <MailIcon class="w-4 h-4 text-gray-700" />
             <Bell class="w-4 h-4 text-gray-700" />
-          </span>
-          <Avatar class="h-10 w-10 rounded-circel bg-[#000000]">
-            <!-- <AvatarImage :src="avatarValue" :alt="userInfo?.username" /> -->
+          </span> -->
+          <!-- <Avatar class="h-10 w-10 rounded-circel bg-[#000000]">
             <AvatarFallback class="rounded-lg text-white">
               <UserIcon class="w-4 h-4" />
             </AvatarFallback>
-          </Avatar>
+          </Avatar> -->
         </div>
       </div>
       <slot />

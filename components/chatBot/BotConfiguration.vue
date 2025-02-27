@@ -41,7 +41,8 @@
         </UiButton>
       </div>
     </form>
-    <DocumentManagement></DocumentManagement>
+    <DocumentManagement />
+    <IntentManagement />
   </div>
 </template>
 <script setup lang="ts">
@@ -59,6 +60,7 @@ const animationProps = {
 };
 const router = useRouter();
 const route = useRoute("chat-bot-id-config");
+const emit = defineEmits(["statusUpdated"]);
 
 const botDetails: any = await getBotDetails(route.params.id);
 const defaultFormValues = botDetails.metadata.prompt;
@@ -106,6 +108,31 @@ watchEffect(() => {
   }
 });
 
+const checkStatus = () => {
+  const requiredFields = ["NAME", "COMPANY", "ROLE", "GOAL", "LANGUAGE"];
+
+  const isCompleted = requiredFields.every(field => {
+    const value = values[field];
+    return value !== "" && value !== null && value !== undefined;
+  });
+
+  emit("statusUpdated", "botConfiguration", isCompleted ? "completed" : "incomplete");
+};
+
+watch(
+  () => ({
+    NAME: values.NAME,
+    COMPANY: values.COMPANY,
+    ROLE: values.ROLE,
+    GOAL: values.GOAL,
+    LANGUAGE: values.LANGUAGE,
+  }),
+  () => {
+    checkStatus();
+  },
+  { deep: true, immediate: true } // Trigger on mount & changes
+);
+
 const handleUpdateBotConfig = handleSubmit(async (values: any) => {
   isLoading.value = true
   const payload: any = {
@@ -118,10 +145,11 @@ const handleUpdateBotConfig = handleSubmit(async (values: any) => {
     },
   };
   await updateBotDetails(payload);
+  // emit('formSubmitted');
   isLoading.value = false
-  return navigateTo({
-    name: "chat-bot-id",
-    params: { id: botDetails.id },
-  });
+  // return navigateTo({
+  //   name: "chat-bot-id",
+  //   params: { id: botDetails.id },
+  // });
 });
 </script>

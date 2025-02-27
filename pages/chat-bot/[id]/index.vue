@@ -1,8 +1,8 @@
 <template>
   <page :title="''" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
     custom-back-router="/chat-bot">
-    <div class="border-[1px] border-solid border-[#E4E4E7] rounded-lg p-2">
-      <WebScrapingForm />
+    <div ref="scrollTarget" class="border-[1px] border-solid border-[#E4E4E7] rounded-lg p-2">
+      <WebScrapingForm :scrollTarget="scrollTarget" />
     </div>
     <div>
       <CreateBotFields ref="childRef" @confirm="handleAddEditBot" />
@@ -10,7 +10,7 @@
     <div class="font-bold text-[20px]">
       2 Steps to create your chatbot
     </div>
-    <CreateBot />
+    <CreateBot @cofirm="handleFieldsChanges" />
     <div class="flex justify-center">
       <UiButton @click="triggerChildSubmit">Create bot</UiButton>
     </div>
@@ -211,6 +211,7 @@ const channelModalState = ref<{ open: boolean; id: string | null }>({
 const { dataList } = useDataList()
 const scrapedData = ref(null);
 const childRef = ref(null);
+const scrollTarget = ref(null);
 
 watch(
   () => botDetails.value?.name,
@@ -311,6 +312,15 @@ const handleDeleteBot = () => {
 // }
 
 const handleAddEditBot = async (values: any) => {
+  const documentsList = await listDocumentsByBotId(paramId.params.id)
+  const list = await getDocumentsList(paramId.params.id)
+  if (!documentsList.documents.length) {
+    toast.error("Please add at least one document to deploy bot");
+    return;
+  } else if (!list.length) {
+    toast.error("Please add at least one document to deploy bot");
+  }
+  // console.log("documentsList", documentsList.documents.length);
   try {
     // if (agentModalState.value.id) {
     const bot = await $fetch(`/api/bots/${queryId.value}`, {
@@ -328,7 +338,11 @@ const handleAddEditBot = async (values: any) => {
     toast.error(err.data.data[0].message);
   }
 }
+
 const triggerChildSubmit = () => {
+  // if (scrollTarget.value) {
+  //   scrollTarget.value.scrollIntoView({ behavior: "smooth" });
+  // }
   if (childRef.value) {
     childRef.value.handleAddEditBot();
   }

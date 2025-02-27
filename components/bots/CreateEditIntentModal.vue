@@ -39,7 +39,7 @@
         </div> -->
       </div>
       <div class="flex justify-end">
-        <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
+        <UiButton type="submit" class="mt-2" :loading="isLoading">
           Save changes
         </UiButton>
       </div>

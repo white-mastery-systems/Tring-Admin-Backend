@@ -80,3 +80,7 @@ export const uploadLogo = async (botId: string, logo: File) => {
   }
 };
 
+export const getDocumentsList = async (routeId: any) => {
+  const response = await $fetch(`/api/bots/${routeId}/intents`);
+  return response;
+}

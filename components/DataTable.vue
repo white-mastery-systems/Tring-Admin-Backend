@@ -136,23 +136,24 @@
             " />
           <span class="text-sm text-gray-500">of {{ totalCount }} records</span>
         </div>
-        <UiButton size="icon" @click="emits('pagination', 1)" :disabled="page === 1"
-          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
+        <!-- class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90" -->
+        <UiButton size="icon" @click="emits('pagination', 1)" :disabled="page === 1">
           <Icon name="lucide:chevrons-left" class="h-6 w-6" />
         </UiButton>
-        <UiButton size="icon" class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90"
-          :disabled="page === 1" @click="emits('pagination', page - 1)">
+        <!-- class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90" -->
+        <UiButton size="icon" :disabled="page === 1" @click="emits('pagination', page - 1)">
           <Icon name="lucide:chevron-left" class="h-6 w-6" />
         </UiButton>
+        <!-- class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90" -->
         <UiButton size="icon" :disabled="totalPageCount === page" @click="
             () => {
               emits('pagination', page + 1);
             }
-          " class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
+          ">
           <Icon name="lucide:chevron-right" class="h-6 w-6" />
         </UiButton>
-        <UiButton size="icon" @click="emits('pagination', totalPageCount)" :disabled="totalPageCount === page"
-          class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90">
+        <!-- class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90" -->
+        <UiButton size="icon" @click="emits('pagination', totalPageCount)" :disabled="totalPageCount === page">
           <Icon name="lucide:chevrons-right" class="h-6 w-6" />
         </UiButton>
       </div>

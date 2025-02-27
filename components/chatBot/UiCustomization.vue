@@ -210,6 +210,7 @@ const secondarycolorInput: any = ref();
 const logoData: any = ref("");
 const route = useRoute();
 const useStoreBotDetails = botStore();
+const emit = defineEmits(["statusUpdated"]);
 // const { scrapedData } = useBotStore();
 
 const logoAsString = z.string().min(1, "Logo is required");
@@ -221,10 +222,10 @@ const uiCustomizationValidation = toTypedSchema(
     logo: z.union([logoAsString, logoAsObject]),
     color: z.string().min(1, "Primary color is required"),
     secondaryColor: z.string().min(1, "Secondary color is required"),
-    widgetSound: z.string({ required_error: "Widget sound must be selected" }).min(1, "Widget sound must be selected"),
     widgetPosition: z.string({ required_error: "Widget position must be selected" }).min(1, "Widget position must be selected"),
     fontFamily: z.string({ required_error: "Font family is required" }).min(1, "Font family is required"),
     emailRecipients: z.array(z.string().email()),
+    widgetSound: z.boolean({ required_error: "Widget sound is required" }),
     defaultSelect: z.boolean().optional(),
     generateLead: z.boolean().optional(),
     onlineStatus: z.boolean().optional(),
@@ -244,10 +245,14 @@ const botDetails = await getBotDetails(paramId);
 setFieldValue("logo", botDetails.metadata.ui.logo ?? {});
 setFieldValue("color", hslToHex(botDetails.metadata.ui.color ?? "236, 61%, 54%, 1"));
 setFieldValue("secondaryColor", hslToHex(botDetails.metadata.ui.secondaryColor ?? "236, 61%, 74%"));
-setFieldValue("widgetSound", botDetails.metadata.ui.widgetSound ?? "Yes");
+setFieldValue("widgetSound", botDetails.metadata.ui.widgetSound ?? (botDetails.metadata.ui.widgetSound === 'yes') ? true : false);
 setFieldValue("widgetPosition", botDetails.metadata.ui.widgetPosition ?? "Left");
 setFieldValue("fontFamily", botDetails.metadata.ui.fontFamily ?? "Kanit");
 setFieldValue("emailRecipients", botDetails.emailRecipients ?? []);
+setFieldValue("defaultSelect", (botDetails.metadata.ui.defaultSelect ?? true))
+setFieldValue("onlineStatus", (botDetails.metadata.ui.onlineStatus ?? true))
+setFieldValue("generateLead", (botDetails.metadata.ui.generateLead ?? true))
+setFieldValue("defaultRibbon", (botDetails.metadata.ui.defaultRibbon ?? true))
 
 
 watch(() => useStoreBotDetails, (newValue) => {
@@ -257,6 +262,23 @@ watch(() => useStoreBotDetails, (newValue) => {
   setFieldValue("secondaryColor", hslToHex(extractHSLValues(newValue.scrapedData?.chatbot?.secondary_color) ??"236, 61%, 74%"));
   console.log(newValue.scrapedData, "scrapData -- scrapData");
 }, { deep: true });
+
+watch(
+  () => ({
+    logo: values.logo,
+    color: values.color,
+    secondaryColor: values.secondaryColor,
+    widgetSound: values.widgetSound,
+    widgetPosition: values.widgetPosition,
+    fontFamily: values.fontFamily,
+  }),
+  (newValues) => {
+    const isCompleted = Object.values(newValues).every(value => value !== "" && value !== null && value !== undefined);
+    emit("statusUpdated", 'uiCustomization',isCompleted ? "completed" : "incomplete");
+  },
+  { deep: true, immediate: true }
+);
+
 const handleLogoChange = async (event: any) => {
   logoData.value = event[0];
   const reader = new FileReader();
@@ -280,13 +302,18 @@ const uiUpdate = handleSubmit(async (value) => {
         logo: uploadedDetails?.metadata?.ui?.logo ?? botDetails.metadata.ui.logo,
         color: hexToHSL(value.color),
         secondaryColor: hexToHSL(value.secondaryColor),
+        defaultSelect: value.defaultSelect,
         widgetPosition: value.widgetPosition,
-        widgetSound: value.widgetSound,
+        widgetSound: value.widgetSound ? 'yes' : 'no',
         fontFamily: value.fontFamily,
+        generateLead: value.generateLead,
+        defaultRibbon: value.defaultRibbon,
+        onlineStatus: value.onlineStatus,
       },
     },
   };
   await updateBotDetails(payload);
+  // emit('formSubmitted');
   isLoading.value = false;
 });
 
