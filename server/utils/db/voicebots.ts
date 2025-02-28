@@ -69,17 +69,13 @@ export const getVoicebot = async (voicebotId: string) => {
 }
 
 export const getVoicebotById = async (
-  organizationId: string,
   voicebotId: string,
 ) => {
   const data = await db.query.voicebotSchema.findFirst({
     with: {
       ivrConfigDetail: true,
     },
-    where: and(
-      eq(voicebotSchema.organizationId, organizationId),
-      eq(voicebotSchema.id, voicebotId),
-    ),
+    where: eq(voicebotSchema.id, voicebotId)
   });
   return data;
 };
