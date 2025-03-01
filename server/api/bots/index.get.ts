@@ -12,6 +12,6 @@ export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   // const query = getQuery(event);
   const query = await isValidQueryHandler(event, zodQueryValidator)
-  console.log({ queryValues: query })
+
   return await listBots(organizationId, query, timeZone);
 });
