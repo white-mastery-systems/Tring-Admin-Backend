@@ -103,6 +103,8 @@ export default defineEventHandler(async (event) => {
       return {
         campaignId: data?.id,
         countryCode: i?.contacts.countryCode,
+        firstName: i?.contacts.firstName,
+        lastName: i?.contacts?.lastName,
         phone: i?.contacts.phone,
         organizationId,
       } 
