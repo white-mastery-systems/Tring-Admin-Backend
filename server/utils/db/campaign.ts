@@ -1,5 +1,5 @@
 import momentTz from "moment-timezone";
-import { campaignSchema, InsertCampaign } from "~/server/schema/admin";
+import { campaignSchema, campaignWhatsappContactSchema, InsertCampaign } from "~/server/schema/admin";
 
 const db = useDrizzle();
 
@@ -120,3 +120,89 @@ export const deleteCampaign = async (campaignId: string) => {
       .returning()
   )[0];
 };
+
+export const creatCampaignWhatsappContacts = async (data: any) => {
+  return (await db.insert(campaignWhatsappContactSchema).values(data).returning())[0]
+}
+
+export const getWhatsappContactsByCampaignId = async (campaignId: string, query: any, timeZone: string) => {
+   let page,
+    offset,
+    limit = 0;
+
+  if (query?.page && query?.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
+    offset = (page - 1) * limit;
+  }
+  let data: any = await db.query.campaignWhatsappContactSchema.findMany({
+    where: eq(campaignWhatsappContactSchema.campaignId, campaignId),
+    orderBy: [desc(campaignWhatsappContactSchema.createdAt)],
+  });
+  data = data.map((i: any) => ({
+    ...i,
+    createdAt: momentTz(i?.createdAt)
+      .tz(timeZone)
+      .format("DD MMM YYYY hh:mm A"),
+    ...(i.sentAt && 
+      {
+        sentAt: momentTz(i?.sentAt)
+                .tz(timeZone)
+                .format("DD MMM YYYY hh:mm A")
+      }
+    ),
+    ...(i.deliveredAt && 
+      {
+        deliveredAt: momentTz(i?.deliveredAt)
+                .tz(timeZone)
+                .format("DD MMM YYYY hh:mm A")
+      }
+    ),
+    ...(i.readAt && 
+      {
+        readAt: momentTz(i?.readAt)
+                .tz(timeZone)
+                .format("DD MMM YYYY hh:mm A")
+      }
+    )
+  }));
+
+  if (query?.page && query?.limit) {
+    const paginatedCampaign = data.slice(offset, offset + limit);
+    return {
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length / limit) || 1,
+      totalCount: data.length,
+      data: paginatedCampaign,
+    };
+  } else {
+    return data;
+  } 
+}
+
+export const updateWhatsappMessageStatus = async (campaignId: string, phoneNumber: string, messageId: string, pid: string, status: string) => {
+  return await db.update(campaignWhatsappContactSchema).set({
+    messageId,
+    pid,
+    messageStatus: status,
+    sentAt: new Date(),
+    updatedAt: new Date()
+  }).where(and(
+    eq(campaignWhatsappContactSchema.campaignId, campaignId),
+    eq(campaignWhatsappContactSchema.phone, phoneNumber)
+  ))
+}
+
+export const updateWhatsappMessageStatusByMessageId = async (messageId: string, data: any) => {
+  return  await db.update(campaignWhatsappContactSchema).set({
+    ...data,
+    ...(data?.messageStatus === "delivered" 
+      ? { deliveredAt: new Date() }
+      : { readAt: new Date()}
+    ),
+    updatedAt: new Date()
+  }).where(
+    eq(campaignWhatsappContactSchema.messageId, messageId)
+  )
+}
