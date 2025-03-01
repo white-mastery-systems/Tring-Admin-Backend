@@ -35,8 +35,8 @@ export const getAllVoiceCampaigns = async () => {
 
 export const campaignList = async (
   organizationId: string,
-  query?: any,
   timeZone: string,
+  query?: any,
 ) => {
   let page,
     offset,
@@ -48,11 +48,12 @@ export const campaignList = async (
     offset = (page - 1) * limit;
   }
 
-  const [data, campaignTotalContactList, campaignReadMsgContactList] = await Promise.all([
-    db.query.campaignSchema.findMany({
+  let data: any = await db.query.campaignSchema.findMany({
       where: eq(campaignSchema.organizationId, organizationId),
       orderBy: [desc(campaignSchema.createdAt)],
-    }),
+    })
+
+  const [campaignTotalContactList, campaignReadMsgContactList, voicebotContactList, dialedContactList] = await Promise.all([
     db.query.campaignWhatsappContactSchema.findMany({
       where: 
         eq(campaignWhatsappContactSchema.organizationId, organizationId)
@@ -63,19 +64,35 @@ export const campaignList = async (
         eq(campaignWhatsappContactSchema.organizationId, organizationId),
         eq(campaignWhatsappContactSchema.messageStatus, "read")
       )
+    }),
+    db.query.voicebotSchedularSchema.findMany({
+       where: 
+        eq(voicebotSchedularSchema.organizationId, organizationId)
+    }),
+    db.query.voicebotSchedularSchema.findMany({
+       where: and(
+          eq(voicebotSchedularSchema.organizationId, organizationId),
+          eq(voicebotSchedularSchema.callStatus, "dialed")
+       )    
     })
   ]);
 
-  data = data.map((i) => {
-    let readCount, totalCount = 0
+  data = data.map((i: any) => {
+    let interactionCount, totalCount = 0
     if(i.contactMethod === "whatsapp") {
       totalCount = campaignTotalContactList?.filter((j)=> j.campaignId === i.id).length || 0
-      readCount = campaignReadMsgContactList?.filter((j)=> j.campaignId === i.id).length || 0
+      interactionCount = campaignReadMsgContactList?.filter((j)=> j.campaignId === i.id).length || 0
+    } 
+
+    if(i.contactMethod === "voice") {
+      totalCount = voicebotContactList?.filter((j)=> j.campaignId === i.id).length || 0
+      interactionCount = dialedContactList?.filter((j)=> j.campaignId === i.id).length || 0
     }
+
      return {
         ...i,
        totalCount,
-       readCount,
+       interactionCount,
        createdAt: momentTz(i?.createdAt)
       .tz(timeZone)
       .format("DD MMM YYYY hh:mm A"),
