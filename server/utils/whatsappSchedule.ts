@@ -6,8 +6,10 @@ import {
   sendWhatsappTemplateMessage,
 } from "./template";
 import { fetchFileFromUrl } from "./whatsappMedia";
+import { updateWhatsappMessageStatus } from "./db/campaign";
 
 export const scheduleWhatsAppCampaign = async (
+  campaignId: string,
   date: any,
   time: any,
   contactList: any,
@@ -148,7 +150,7 @@ export const scheduleWhatsAppCampaign = async (
             }
             // console.log({ Component: JSON.stringify(templateComponents)})
 
-            const data = await sendWhatsappTemplateMessage(
+            const data: any = await sendWhatsappTemplateMessage(
               phoneId,
               accessToken,
               phoneNumber,
@@ -157,6 +159,7 @@ export const scheduleWhatsAppCampaign = async (
               templateLanguageCode,
             );
             logger.info(`whatsapp response: ${JSON.stringify(data)}`);
+            await updateWhatsappMessageStatus(campaignId, contact.phone, data?.messages[0]?.id, phoneId, "sent")
           },
         );
       },
