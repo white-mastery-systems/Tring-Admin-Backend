@@ -47,16 +47,40 @@ export const campaignList = async (
     limit = parseInt(query.limit);
     offset = (page - 1) * limit;
   }
-  let data: any = await db.query.campaignSchema.findMany({
-    where: eq(campaignSchema.organizationId, organizationId),
-    orderBy: [desc(campaignSchema.createdAt)],
-  });
-  data = data.map((i: any) => ({
-    ...i,
-    createdAt: momentTz(i?.createdAt)
+
+  const [data, campaignTotalContactList, campaignReadMsgContactList] = await Promise.all([
+    db.query.campaignSchema.findMany({
+      where: eq(campaignSchema.organizationId, organizationId),
+      orderBy: [desc(campaignSchema.createdAt)],
+    }),
+    db.query.campaignWhatsappContactSchema.findMany({
+      where: 
+        eq(campaignWhatsappContactSchema.organizationId, organizationId)
+      
+    }),
+    db.query.campaignWhatsappContactSchema.findMany({
+      where: and(
+        eq(campaignWhatsappContactSchema.organizationId, organizationId),
+        eq(campaignWhatsappContactSchema.messageStatus, "read")
+      )
+    })
+  ]);
+
+  data = data.map((i) => {
+    let readCount, totalCount = 0
+    if(i.contactMethod === "whatsapp") {
+      totalCount = campaignTotalContactList?.filter((j)=> j.campaignId === i.id).length || 0
+      readCount = campaignReadMsgContactList?.filter((j)=> j.campaignId === i.id).length || 0
+    }
+     return {
+        ...i,
+       totalCount,
+       readCount,
+       createdAt: momentTz(i?.createdAt)
       .tz(timeZone)
       .format("DD MMM YYYY hh:mm A"),
-  }));
+    };
+  })
 
   if (query?.page && query?.limit) {
     const paginatedCampaign = data.slice(offset, offset + limit);
