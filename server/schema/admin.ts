@@ -322,6 +322,8 @@ export const campaignWhatsappContactSchema = adminSchema.table("campaign_whatsap
   campaignId: uuid("campaign_id").notNull().references(() => campaignSchema.id, { onDelete: "cascade" }),
   organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id, { onDelete: "cascade" }),
   chatId: uuid("chat_id"),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
   countryCode: varchar("country_code").notNull(),
   phone: varchar("phone").notNull(),
   pid: varchar("pid"),
