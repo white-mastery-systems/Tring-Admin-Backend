@@ -197,12 +197,21 @@ export const updateWhatsappMessageStatus = async (campaignId: string, phoneNumbe
 export const updateWhatsappMessageStatusByMessageId = async (messageId: string, data: any) => {
   return  await db.update(campaignWhatsappContactSchema).set({
     ...data,
-    ...(data?.messageStatus === "delivered" 
-      ? { deliveredAt: new Date() }
-      : { readAt: new Date()}
+    ...(data?.messageStatus === "read" 
+      ? { deliveredAt: new Date(), readAt: new Date() }
+      : { deliveredAt: new Date()}
     ),
     updatedAt: new Date()
   }).where(
-    eq(campaignWhatsappContactSchema.messageId, messageId)
+    and(
+      eq(campaignWhatsappContactSchema.messageId, messageId),
+      ne(campaignWhatsappContactSchema.messageStatus, "read")
+    )
   )
+}
+
+export const getWhatsappCampaignByMessageId = async (messageId: string) => {
+  return await db.query.campaignWhatsappContactSchema.findFirst({
+    where: eq(campaignWhatsappContactSchema.messageId, messageId)
+  })
 }
