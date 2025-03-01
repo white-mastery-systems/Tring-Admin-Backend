@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
           type: 'HEADER',
           format: metadata?.header,
           example: {
-            header_handle: [metadata?.mediaSession],
+            header_handle: [metadata?.mediaSession?.h || metadata?.mediaSession],
           },
         };
         components.push(headerFileComponent);
