@@ -14,13 +14,14 @@ export async function regenearateTokenWithRefreshTokenForZohoIntegration({
 }) {
   try {
     const clientLocation = integrationData?.metadata?.location
+    const existingMetadata = integrationData?.metadata
     const apiUrl = `${zohoAuthApiBaseUrls[clientLocation]}/oauth/v2/token?client_id=${newClientInfo.clientId}&grant_type=refresh_token&client_secret=${newClientInfo.clientSecret}&refresh_token=${integrationData.metadata.refresh_token}`;
 
-    const response = await $fetch(apiUrl, {
+    const response: any = await $fetch(apiUrl, {
       method: "POST",
     });
 
-    const metadata = { ...integrationData.metadata, response }
+    const metadata = { ...existingMetadata,  ...response }
   
     const updatedIntegrationData = await updateIntegrationById(integrationData.id, {
       metadata: metadata

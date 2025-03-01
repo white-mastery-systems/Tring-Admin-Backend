@@ -317,6 +317,23 @@ export const whatsappSessionSchema = adminSchema.table("whatsapp_sessions", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
+export const campaignWhatsappContactSchema = adminSchema.table("campaign_whatsapp_contacts", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  campaignId: uuid("campaign_id").notNull().references(() => campaignSchema.id, { onDelete: "cascade" }),
+  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id, { onDelete: "cascade" }),
+  chatId: uuid("chat_id"),
+  countryCode: varchar("country_code").notNull(),
+  phone: varchar("phone").notNull(),
+  pid: varchar("pid"),
+  messageId: varchar("message_id"),
+  messageStatus: varchar("message_status").default("pending"),
+  sentAt: timestamp("sent_at"),
+  deliveredAt: timestamp("delivered_at"),
+  readAt: timestamp("read_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 // Relations
 export const organizationRelations = relations(
   organizationSchema,

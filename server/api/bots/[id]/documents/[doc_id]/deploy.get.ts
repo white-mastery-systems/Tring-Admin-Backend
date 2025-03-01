@@ -9,17 +9,11 @@ const routeParamValidator = z.object({
 });
 export default defineEventHandler(async (event) => {
   try {
- const organizationId = (await isOrganizationAdminHandler(event) as string)
+  const organizationId = (await isOrganizationAdminHandler(event) as string)
 
-  const getOrgCurrentActivePlan = await db.query.orgSubscriptionSchema.findFirst({
-      where: and(
-        eq(orgSubscriptionSchema.organizationId, organizationId),
-        eq(orgSubscriptionSchema.botType, "chat"),
-        eq(orgSubscriptionSchema.status, "active")
-      )
-  })
+  const orgChatSubscription = await getOrgZohoSubscription(organizationId, "chat")
 
-  if (!getOrgCurrentActivePlan) {
+  if (!orgChatSubscription) {
     return sendError(
       event,
       createError({
