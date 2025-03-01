@@ -11,7 +11,6 @@ export const newGetAllPipelinesFromZohoBigin: any = async ({ integrationData }: 
         Authorization: `Zoho-oauthtoken ${metadata?.access_token}`,
       },
     })
-    console.log("newGetAllPipelinesFromZohoBigin" ,{newGetAllPipelinesFromZohoBigin })
     return data
   } catch (error: any) {
     logger.error(`newGetAllPipelinesFromZohoBigin Error: ${JSON.stringify(error.message)}`)
@@ -34,8 +33,6 @@ export const newGetAllSubPipelinesFromZohoBigin: any = async ({ integrationData 
      },
     );
     logger.debug(`Get Sub Pipelines: ${JSON.stringify(data)}`);
-    console.log( "newGetub Pipelines", { data })
-
     return data.fields.find((field: any) => field.api_name === "Sub_Pipeline")
       ?.pick_list_values;
 
@@ -84,6 +81,8 @@ export const newGenerateContactInZohoBigin: any = async ({body, integrationData}
 export const newGenerateLeadInZohoBigin: any = async ({ body, integrationData }: { body: any, integrationData: any }) => {
   try { 
     const metadata = integrationData?.metadata
+
+    console.log("newGenerateLeadInZohoBigin body", { data: [body] })
     const generatedPipeline = await $fetch(
       `${zohoIntegrationApiBaseUrls[metadata?.location]}/bigin/v2/Pipelines`,
       {
@@ -97,6 +96,7 @@ export const newGenerateLeadInZohoBigin: any = async ({ body, integrationData }:
     logger.debug(`Generated Pipeline: ${JSON.stringify(generatedPipeline)}`);
     return generatedPipeline;
   } catch (error: any) {
+    console.log("newGenerateLeadInZohoBigin",{ error })
     logger.error(`newGenerateLeadInZohoBigin Error: ${JSON.stringify(error.message)}`)
     if(error.status === 401) {
       const regenerateAccessToken = await regenearateTokenWithRefreshTokenForZohoIntegration({ integrationData })
