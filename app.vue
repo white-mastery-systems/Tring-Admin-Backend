@@ -40,12 +40,25 @@ useHead({
 const config = useRuntimeConfig();
 
 useHead({
-  link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.png" }],
+  link: [
+    { rel: "icon", type: "image/x-icon", href: "/favicon.png" },
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded",
+      media: "print",
+      onload: "this.onload=null;this.removeAttribute('media');",
+    },
+  ],
   script: [
     {
       src: `https://www.googletagmanager.com/gtag/js?id=${config.public.googleAnalyticsId}`,
       async: true,
     },
+    {
+      src: "https://checkout.razorpay.com/v1/checkout.js",
+      async: true,
+    },
   ],
 });
+
 </script>

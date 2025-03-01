@@ -1,7 +1,7 @@
 <template>
   <div>
     <form @submit.prevent="uiUpdate" class="space-y-6">
-       <div class="flex w-full flex-col gap-[13px] py-4 overflow-scroll">
+      <div class="flex w-full flex-col gap-[13px] py-4 overflow-scroll">
 
         <!-- File Upload for Logo -->
         <!-- <div class="w-[20%]">
@@ -62,26 +62,27 @@
           </UiFormField>
         </div>
         <!-- Widget Sound and Position -->
-        <div class="flex w-full items-center gap-3">
+        <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5 items-center w-full">
           <!-- <SelectField name="widgetSound" label="Widget Sound" placeholder="Select Widget Sound" :options="[
             { value: 'Yes', label: 'Yes' },
             { value: 'No', label: 'No' },
           ]" required /> -->
 
-          <SelectField name="widgetPosition" label="Widget Position" placeholder="Select Widget Position" :options="[
+          <SelectField name="widgetPosition" label="Widget Position" placeholder="Select Widget Position" class="w-full"
+            :options="[
             { value: 'Left', label: 'Left' },
             { value: 'Right', label: 'Right' },
           ]" required />
-        </div>
-
-        <!-- Font Family -->
-        <SelectField name="fontFamily" label="Font Family" placeholder="Select Font" :options="[
+          <SelectField name="fontFamily" label="Font Family" class="w-full" placeholder="Select Font" :options="[
           { value: 'Kanit', label: 'Kanit' },
           { value: 'Gilroy', label: 'Gilroy' },
           { value: 'Jost', label: 'Jost' },
           { value: 'Lexend Deca', label: 'Lexend Deca' },
           { value: 'Museo', label: 'Museo' }
         ]" required />
+        </div>
+
+        <!-- Font Family -->
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 w-full items-center gap-5">
           <UiFormField v-slot="{ value, handleChange }" name="generateLead">
             <UiFormItem class="flex justify-between w-full border-[1px] border-solid border-[#E4E4E7] p-4 rounded-lg">
@@ -203,6 +204,7 @@ import { ref, watch } from "vue";
 import { useRoute, useRouter } from "nuxt/app";
 // import { useBotStore } from '~/store/botStore';
 import { botStore } from '~/store/botStore';
+import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
 
 const isLoading = ref(false);
 const colorInput: any = ref();
@@ -241,18 +243,21 @@ const {
 } = useForm({ validationSchema: uiCustomizationValidation });
 
 const paramId = route.params.id;
-const botDetails = await getBotDetails(paramId);
-setFieldValue("logo", botDetails.metadata.ui.logo ?? {});
-setFieldValue("color", hslToHex(botDetails.metadata.ui.color ?? "236, 61%, 54%, 1"));
-setFieldValue("secondaryColor", hslToHex(botDetails.metadata.ui.secondaryColor ?? "236, 61%, 74%"));
-setFieldValue("widgetSound", botDetails.metadata.ui.widgetSound ?? (botDetails.metadata.ui.widgetSound === 'yes') ? true : false);
-setFieldValue("widgetPosition", botDetails.metadata.ui.widgetPosition ?? "Left");
-setFieldValue("fontFamily", botDetails.metadata.ui.fontFamily ?? "Kanit");
-setFieldValue("emailRecipients", botDetails.emailRecipients ?? []);
-setFieldValue("defaultSelect", (botDetails.metadata.ui.defaultSelect ?? true))
-setFieldValue("onlineStatus", (botDetails.metadata.ui.onlineStatus ?? true))
-setFieldValue("generateLead", (botDetails.metadata.ui.generateLead ?? true))
-setFieldValue("defaultRibbon", (botDetails.metadata.ui.defaultRibbon ?? true))
+// const botDetails = await getBotDetails(paramId);
+const { botDetails, loading, error, refreshBot } = useBotDetails(paramId);
+watch(botDetails, (newValues) => {
+  setFieldValue("logo", newValues.metadata.ui.logo ?? {});
+  setFieldValue("color", hslToHex(newValues.metadata.ui.color ?? "236, 61%, 54%, 1"));
+  setFieldValue("secondaryColor", hslToHex(newValues.metadata.ui.secondaryColor ?? "236, 61%, 74%"));
+  setFieldValue("widgetSound", newValues.metadata.ui.widgetSound ?? (newValues.metadata.ui.widgetSound === 'yes') ? true : false);
+  setFieldValue("widgetPosition", newValues.metadata.ui.widgetPosition ?? "Left");
+  setFieldValue("fontFamily", newValues.metadata.ui.fontFamily ?? "Kanit");
+  setFieldValue("emailRecipients", newValues.emailRecipients ?? []);
+  setFieldValue("defaultSelect", (newValues.metadata.ui.defaultSelect ?? true))
+  setFieldValue("onlineStatus", (newValues.metadata.ui.onlineStatus ?? true))
+  setFieldValue("generateLead", (newValues.metadata.ui.generateLead ?? true))
+  setFieldValue("defaultRibbon", (newValues.metadata.ui.defaultRibbon ?? true))
+})
 
 
 watch(() => useStoreBotDetails, (newValue) => {
@@ -289,17 +294,17 @@ const handleLogoChange = async (event: any) => {
 const uiUpdate = handleSubmit(async (value) => {
   let uploadedDetails = null;
   if (typeof logoData.value === "object") {
-    uploadedDetails = await uploadLogo(botDetails.id, logoData.value);
+    uploadedDetails = await uploadLogo(botDetails.value.id, logoData.value);
   }
 
   isLoading.value = true;
   const payload = {
-    id: botDetails.id,
+    id: botDetails.value.id,
     emailRecipients: value.emailRecipients,
     metadata: {
-      ...botDetails.metadata,
+      ...botDetails.value.metadata,
       ui: {
-        logo: uploadedDetails?.metadata?.ui?.logo ?? botDetails.metadata.ui.logo,
+        logo: uploadedDetails?.metadata?.ui?.logo ?? botDetails.value.metadata.ui.logo,
         color: hexToHSL(value.color),
         secondaryColor: hexToHSL(value.secondaryColor),
         defaultSelect: value.defaultSelect,
@@ -313,6 +318,7 @@ const uiUpdate = handleSubmit(async (value) => {
     },
   };
   await updateBotDetails(payload);
+  await refreshBot()
   // emit('formSubmitted');
   isLoading.value = false;
 });

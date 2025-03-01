@@ -1,6 +1,7 @@
 export const formSchema = toTypedSchema(
   z
     .object({
+      fullName: z.string({ required_error: "Name is required" }).min(6, "Name is required"),
       email: z
         .string({ required_error: "Email is required" })
         .email("Invalid email address.")

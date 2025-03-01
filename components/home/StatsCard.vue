@@ -38,7 +38,7 @@ const props = withDefaults(defineProps<{
 </script>
 
 <template>
-  <div class="flex gap-5 px-0 box_shadow rounded-lg">
+  <div class="flex gap-5 px-0 rounded-lg">
     <!-- v-for="(item, index) in props.revenusList" :key="index" -->
     <Card class="w-full">
       <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">

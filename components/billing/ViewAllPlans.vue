@@ -10,14 +10,14 @@
           ? 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3'
           : (props.onBoardingAccount) ? 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3' : 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-4',
       ]">
-      <div :class="[
-          'main_card_align field_shadow relative flex flex-col justify-between rounded-[13px] border-2 bg-[#ffffff] p-5 hover:border-yellow-500',
+      <div class="bg-[#18181b] text-[#ffffff]" :class="[
+          'main_card_align field_shadow relative flex flex-col justify-between rounded-[13px] border-2  p-5 hover:border-cyan-400',
           orgBilling?.plan_code === list.plan_code
-            ? 'border-2 border-yellow-500'
+            ? 'border-2 border-gray-600'
             : '',
           'w-full',
         ]" v-for="(list, index) in billingVariationDetails" :key="index">
-        <div class="mb-[30px] text-[23px] font-bold text-[#424bd1]">
+        <div class="mb-[30px] text-[23px] font-bold text-[#ffffff]">
           {{ list.types }}
         </div>
 
@@ -25,14 +25,14 @@
           <div class="amount-align text-[30px] font-black">
             {{ list.amount }}
           </div>
-          <div class="px-0 py-[2px] text-[15px] text-[#848199]">
+          <div class="px-0 py-[2px] text-[15px]">
             {{ list.status }}
           </div>
         </div>
         <!-- <div class="text-[30px] font-bold">
           {{ list.types }}
         </div> -->
-        <div class="text-[15px] text-[#848199]">
+        <div class="text-[15px]">
           {{ list.benefitContent }}
         </div>
         <div class="flex min-h-[310px] flex-col items-start justify-start">
@@ -43,18 +43,19 @@
               <!-- <img v-if="!list.listBenefit" src="assets\icons\check-circle.svg" width="15" />
               <img v-else src="assets\icons\checked-circle.svg" width="15" /> -->
             </span>
-            <span class="min-h-[26px] px-0 py-[2px] text-[15px] text-[#848199]">
+            <span class="min-h-[26px] px-0 py-[2px] text-[15px]">
               {{ advancedList.content }}
             </span>
           </div>
         </div>
         <UiButton variant="outline"
-          class="rounded-lg border border-indigo-700 px-4 py-2 font-semibold text-indigo-800 hover:border-transparent hover:bg-indigo-700 hover:text-white"
+          class="rounded-lg border border-indigo-700 px-4 py-2 font-semibold text-[#18181b] hover:border-transparent hover:opacity-50"
           :class="[
             orgBilling?.plan_code === list.plan_code
-              ? 'bg-indigo-700 text-white'
+              ? 'text-[#18181b]'
               : '',
           ]" @click="choosePlan(list.plan_code)" :disabled="list.plan_code?.includes('chat_free')">
+          <!-- bg-indigo-700 -->
           {{
           orgBilling?.plan_code === list.plan_code ? (orgBilling?.plan_code === 'chat_free') ? "Current Plan" :
           "Subscribed" : findPlanLevel({ list, current: orgBilling?.plan_code })

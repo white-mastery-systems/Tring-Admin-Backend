@@ -32,19 +32,22 @@ const props = withDefaults(
   <div v-if="props.navigavtionList.length > 0"
     class="flex gap-5 flex-wrap justify-between w-full px-0 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
     <Card v-for="(item, index) in props.navigavtionList" :key="index"
-      class="w-full flex flex-col items-center box_shadow py-2 gap-5">
+      class="w-full flex flex-col items-center  pb-3 pt-7 gap-5">
       <CardHeader class="flex flex-col items-center gap-5 py-0">
         <!-- <div> -->
-          <img src="/assets/icons/Chat_Bubble.svg" width="50" class="rounded-lg" />
+        <span class="material-symbols-rounded" style="font-size: 30px;">
+          {{ item.icon }}
+        </span>
+        <!-- <img src="/assets/icons/Chat_Bubble.svg" width="50" class="rounded-lg" /> -->
         <!-- </div> -->
-        <div class="flex flex-col items-center gap-3">
-          <CardTitle class="text-center font-bold">{{ item.title }}</CardTitle>
+        <div class="flex flex-col items-center gap-1">
+          <CardTitle class="text-center font-bold text-[22px]">{{ item.title }}</CardTitle>
           <CardDescription class="text-center text-[13px] text-[#71717A]">
             {{ item.subtitle }}
           </CardDescription>
         </div>
       </CardHeader>
-      <CardFooter class="flex px-6 pb-2">
+      <CardFooter class="flex px-6 py-2">
         <NuxtLink :to="item.url">
           <UiButton> View </UiButton>
         </NuxtLink>

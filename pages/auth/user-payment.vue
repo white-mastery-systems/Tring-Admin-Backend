@@ -18,13 +18,13 @@ definePageMeta({
 
   <div
     class="container pb-5 sm:pb-5 md:pb-0 relative h-[800px] flex flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-    <a href="/auth/sign-in" class="absolute right-4 top-4 md:right-8 md:top-8">
+    <!-- <a href="/auth/sign-in" class="absolute right-4 top-4 md:right-8 md:top-8">
       Login
-    </a>
+    </a> -->
     <div class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
       <div class="absolute inset-0 bg-zinc-900" />
       <div class="relative z-20 flex items-center text-lg font-medium">
-        <img class="self-center" src="assets\icons\Tring-Ai-Logo-with-black-text.png" width="190" height="190" />
+        <img class="self-center" src="assets\icons\Tring-Ai-Logo-with-text-new.png" width="190" height="190" />
       </div>
       <div class="relative z-20 mt-auto">
         <blockquote class="space-y-2">
@@ -39,20 +39,21 @@ definePageMeta({
         </blockquote>
       </div>
     </div>
-    <div class="lg:p-8">
+    <div class="lg:p-2">
       <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
         <div class="flex flex-col space-y-2 text-center">
           <h1 class="text-2xl font-semibold tracking-tight">
             Payment Details
           </h1>
-          <p class="text-sm text-muted-foreground">
-            This is to verify your account
-          </p>
+          <div>
+            <span class="text-sm text-muted-foreground"> This is to verify your account. </span>
+            <span class="font-medium">You can choose between a paid or free plan</span>
+          </div>
         </div>
         <UserPaymetForm />
-        <p class="px-8 text-center text-sm text-muted-foreground">
-          By Signing up, I Agree to Tring AI
-          <!-- <a href="/terms" class="underline underline-offset-4 hover:text-primary">
+        <p class="px-2 text-center text-[13px] text-muted-foreground">
+          By clicking continue, you agree to our
+          <!-- <a href="/terms" class="underline underline-By Signing up, I Agree to Tring AIoffset-4 hover:text-primary">
             Terms of Service
           </a>
           and
@@ -61,7 +62,7 @@ definePageMeta({
           </a> -->
           <a target="_blank" href="https://tringlabs.ai/terms-conditions"
             class="underline underline-offset-4 hover:text-primary">
-            Terms & Conditions
+            Terms of Use
           </a>
           .
         </p>

@@ -86,7 +86,7 @@ const handleAddEditBot = handleSubmit(async (values) => {
   emit("confirm", values);
   isLoading.value = false;
 });
-defineExpose({ handleAddEditBot });
+defineExpose({ handleAddEditBot, values, errors });
 const {
   status: integrationLoadingStatus,
   data: integrationsData,

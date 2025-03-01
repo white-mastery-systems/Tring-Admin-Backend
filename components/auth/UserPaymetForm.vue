@@ -1,25 +1,10 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate';
-import { useGtag } from 'vue-gtag-next';
 import { formSchemaPayment } from '~/validationSchema/authValidation/paymentValidation';
-
-const { event } = useGtag();
-
-useHead({
-  title: 'Payment Details | Tring AI',
-  meta: [
-    { name: 'Description', content: 'Enter your payment details securely to complete your transaction with Tring AI.' }
-  ]
-});
 
 const isLoading = ref(false);
 
-const {
-  defineField,
-  handleSubmit,
-  errors,
-  values,
-} = useForm({
+const { defineField, handleSubmit, values, errors } = useForm({
   validationSchema: formSchemaPayment,
   initialValues: {
     cardHolderName: '',
@@ -30,64 +15,92 @@ const {
   },
 });
 
-const [cardHolderName, cardHolderNameAttrs] = defineField('cardHolderName');
 const [cardNumber, cardNumberAttrs] = defineField('cardNumber');
-const [expiry, expiryAttrs] = defineField('expiry');
 const [cvv, cvvAttrs] = defineField('cvv');
-const [country, countryAttrs] = defineField('country');
+const [expiry, expiryAttrs] = defineField('expiry');
 
-const onSubmit = handleSubmit(async (value) => {
+const formatExpiry = (value: string): string => {
+  let formattedValue = value.replace(/\D/g, ''); // Remove non-numeric characters
+
+  // If first digit is between 2-9, prefix with '0'
+  if (formattedValue.length === 1 && formattedValue[0] >= '2' && formattedValue[0] <= '9') {
+    formattedValue = '0' + formattedValue;
+  }
+
+  // Ensure month is between 01-12
+  if (formattedValue.length >= 2) {
+    let month = parseInt(formattedValue.slice(0, 2), 10);
+    if (month > 12) {
+      formattedValue = '12';
+    }
+  }
+
+  // Apply MM/YY format
+  if (formattedValue.length > 2) {
+    formattedValue = formattedValue.slice(0, 2) + '/' + formattedValue.slice(2, 4);
+  }
+
+  return formattedValue.slice(0, 5); // Restrict to MM/YY format (5 characters)
+};
+
+// ✅ Watch expiry & apply formatting correctly
+watch(expiry, async (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    expiry.value = formatExpiry(newValue);
+  }
+});
+
+const formatCVV = (value: string) => value.replace(/\D/g, '').slice(0, 4);
+const formatCardNumber = (value: string) => value.replace(/\D/g, '').slice(0, 16);
+
+const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true;
-  event('payment_submit', { event_category: 'transaction', event_label: 'payment_form' });
-  await paymentHandler.processPayment(value);
+  console.log('Form Submitted:', values);
   isLoading.value = false;
 });
 </script>
 
 <template>
-  <div :class="cn('grid gap-6', $attrs.class ?? '')">
+  <div class="grid gap-6">
     <form @submit="onSubmit">
       <div class="grid gap-3">
-        <div class="grid gap-1">
-          <Label class="sr-only" for="cardHolderName">Card Holder Full Name</Label>
-          <UiInput id="cardHolderName" v-model="cardHolderName" v-bind="cardHolderNameAttrs" placeholder="Full Name"
-            type="text" :disabled="isLoading" />
-          <p v-if="errors.cardHolderName" class="text-red-500 text-sm">{{ errors.cardHolderName }}</p>
-        </div>
+        <TextField type="text" name="cardHolderName" placeholder="Card Holder Name" />
 
-        <div class="grid gap-1">
-          <Label class="sr-only" for="cardNumber">Card Number</Label>
-          <UiInput id="cardNumber" v-model="cardNumber" v-bind="cardNumberAttrs" placeholder="1234 5678 9012 3456"
-            type="text" :disabled="isLoading" />
-          <p v-if="errors.cardNumber" class="text-red-500 text-sm">{{ errors.cardNumber }}</p>
-        </div>
+        <TextField type="text" name="cardNumber" v-model="cardNumber"
+          @input="cardNumber = formatCardNumber($event.target.value)" placeholder="Card Number" maxlength="16"
+          v-bind="cardNumberAttrs" />
+        <!-- <p v-if="errors.cardNumber" class="text-red-500 text-[13px] font-medium">
+          {{ errors.cardNumber }}
+        </p> -->
 
         <div class="grid grid-cols-2 gap-2">
           <div class="grid gap-1">
             <Label class="sr-only" for="expiry">MM/YY</Label>
-            <UiInput id="expiry" v-model="expiry" v-bind="expiryAttrs" placeholder="MM/YY" type="text"
-              :disabled="isLoading" />
-            <p v-if="errors.expiry" class="text-red-500 text-sm">{{ errors.expiry }}</p>
+            <UiInput id="expiry" v-model="expiry" @input="expiry = formatExpiry($event.target.value)"
+              placeholder="MM/YY"
+              :class="(errors.expiry !== null && errors.expiry !== undefined) ? 'border-red-500' : 'border-input'"
+              type="text" :disabled="isLoading" maxlength="5" />
+            <p v-if="errors.expiry" class="text-red-500 text-[13px] font-medium">
+              {{ errors.expiry }}
+            </p>
           </div>
-
           <div class="grid gap-1">
             <Label class="sr-only" for="cvv">CVV</Label>
-            <UiInput id="cvv" v-model="cvv" v-bind="cvvAttrs" placeholder="CVV" type="password" :disabled="isLoading" />
-            <p v-if="errors.cvv" class="text-red-500 text-sm">{{ errors.cvv }}</p>
+            <UiInput id="cvv" name="cvv" v-model="cvv" placeholder="CVV" type="password" :disabled="isLoading"
+              v-bind="cvvAttrs" @input="cvv = formatCVV($event.target.value)"
+              :class="(errors.cvv !== null && errors.cvv !== undefined) ? 'border-red-500' : 'border-input'"
+              maxlength="4" />
+            <p v-if="errors.cvv" class="text-red-500 text-[13px] font-medium">
+              {{ errors.cvv }}
+            </p>
           </div>
         </div>
 
-        <div class="grid gap-1">
-          <Label class="sr-only" for="country">Country</Label>
-          <UiInput id="country" v-model="country" v-bind="countryAttrs" placeholder="Country" type="text"
-            :disabled="isLoading" />
-          <CountrySelectField name="country" label="country" helperText="Enter your country" required />
-          <!-- <p v-if="errors.country" class="text-red-500 text-sm">{{ errors.country }}</p> -->
-        </div>
+        <CountrySelectField name="country" :labelVisible="false" helperText="Enter your country" required />
+        <p v-if="errors.country" class="text-red-500 text-sm">{{ errors.country }}</p>
 
-        <UiButton :disabled="isLoading" :loading="isLoading">
-          <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
-          Continue to Payment
+        <UiButton :disabled="isLoading" :loading="isLoading" class="mt-3">
+          Choose your plan
         </UiButton>
       </div>
     </form>

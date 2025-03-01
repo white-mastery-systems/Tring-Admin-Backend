@@ -10,7 +10,7 @@
     <div class="font-bold text-[20px]">
       2 Steps to create your chatbot
     </div>
-    <CreateBot @cofirm="handleFieldsChanges" />
+    <CreateBot />
     <div class="flex justify-center">
       <UiButton @click="triggerChildSubmit">Create bot</UiButton>
     </div>
@@ -191,6 +191,8 @@ import { ref } from "vue";
 import { toast } from "vue-sonner";
 import CreateBot from "~/components/chatBot/CreateBot.vue";
 import { useDataList } from "~/composables/botManagement/chatBot/useDataList";
+import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
+import { useDocumentsList } from '~/composables/botManagement/chatBot/useDocumentsList';
 
 const router = useRouter();
 const route = useRoute("chat-bot-id");
@@ -198,7 +200,9 @@ const emit = defineEmits<{ (e: "confirm"): void }>();
 const paramId: any = route;
 const queryId = ref(route.params?.id);
 const agentModalState = ref({ open: false, id: paramId.params.id });
-const botDetails = ref(await getBotDetails(paramId.params.id));
+// const botDetails = ref(await getBotDetails(paramId.params.id));
+const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
+const { documentsList, refreshDocuments } = useDocumentsList(route.params.id)
 const deleteModalState = ref(false);
 const modalOpen = ref(false);
 const isDocumentListOpen = ref(false);
@@ -230,7 +234,7 @@ const handleSuccess = () => {
 };
 onMounted(async () => {
   getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
-  botDetails.value = await getBotDetails(paramId.params.id);
+  // botDetails.value = await getBotDetails(paramId.params.id);
 });
 const handleGoBack = () => {
   return navigateTo({
@@ -238,7 +242,7 @@ const handleGoBack = () => {
   });
 };
 const dateFormate = computed(() => {
-  if (botDetails && botDetails.value.createdAt) {
+  if (botDetails.value && botDetails.value.createdAt) {
     return formatDateStringToDate(botDetails.value.createdAt);
   }
   return null;
@@ -276,7 +280,8 @@ const deactivateBot = async () => {
 
 const deactivateBotDialog = async () => {
   await disableBot(paramId.params.id);
-  botDetails.value = await getBotDetails(paramId.params.id)
+  refreshBot() // new function refreshBot added
+  // botDetails.value = await getBotDetails(paramId.params.id)
   modalOpen.value = false;
 };
 
@@ -294,7 +299,8 @@ const copyScript = async () => {
 
 const singleDocumentDeploy = async (list: any) => {
   await deployDocument(paramId.params.id, list.id);
-  botDetails.value = await getBotDetails(paramId.params.id);
+  refreshBot() // new function refreshBot added
+  // botDetails.value = await getBotDetails(paramId.params.id);
 };
 
 const handleDelete = () => {
@@ -314,13 +320,20 @@ const handleFieldsChanges = () => {
   console.log("Fields changed");
 }
 const handleAddEditBot = async (values: any) => {
-  const documentsList = await listDocumentsByBotId(paramId.params.id)
-  const list = await getDocumentsList(paramId.params.id)
-  if (!documentsList.documents.length) {
+  // const documentsList = await listDocumentsByBotId(paramId.params.id)
+  // const list = await getDocumentsList(paramId.params.id)
+  if (!botDetails.value.documents.length) {
     toast.error("Please add at least one document to deploy bot");
+    if (scrollTarget.value) {
+      scrollTarget.value?.scrollIntoView({ behavior: "smooth" });
+    }
     return;
-  } else if (!list.length) {
+  } else if (!documentsList.value.length) {
     toast.error("Please add at least one document to deploy bot");
+    if (scrollTarget?.value) {
+      scrollTarget.value.scrollIntoView({ behavior: "smooth" });
+    }
+    return
   }
   // console.log("documentsList", documentsList.documents.length);
   try {
@@ -342,9 +355,11 @@ const handleAddEditBot = async (values: any) => {
 }
 
 const triggerChildSubmit = () => {
-  // if (scrollTarget.value) {
-  //   scrollTarget.value.scrollIntoView({ behavior: "smooth" });
-  // }
+  if (!childRef.value.values.name && !childRef.value.values.type) {
+    if (scrollTarget.value) {
+      scrollTarget.value.scrollIntoView({ behavior: "smooth" });
+    }
+  }
   if (childRef.value) {
     childRef.value.handleAddEditBot();
   }

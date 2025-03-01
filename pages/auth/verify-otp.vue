@@ -26,7 +26,7 @@ definePageMeta({
     <div class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
       <div class="absolute inset-0 bg-zinc-900" />
       <div class="relative z-20 flex items-center text-lg font-medium">
-        <img class="self-center" src="assets\icons\Tring-Ai-Logo-with-black-text.png" width="190" height="190" />
+        <img class="self-center" src="assets\icons\Tring-Ai-Logo-with-text-new.png" width="190" height="190" />
       </div>
       <div class="relative z-20 mt-auto">
         <blockquote class="space-y-2">
@@ -52,7 +52,7 @@ definePageMeta({
           </p>
         </div>
         <UserOtpVerifyForm />
-        <p class="px-8 text-center text-sm text-muted-foreground">
+        <p class="px-8 text-center text-[13px] text-muted-foreground">
           By clicking continue, you agree to our
           <!-- <a href="/terms" class="underline underline-offset-4 hover:text-primary">
             Terms of Service

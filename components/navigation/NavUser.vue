@@ -96,8 +96,9 @@ const navigateToSamePage = (path: any) => {
             <ChevronsUpDown class="ml-auto size-4" />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
-        <DropdownMenuContent class="w-[--reka-dropdown-menu-trigger-width] min-w-56 rounded-lg px-0 text-[#334155]"
-          :side="isMobile ? 'bottom' : 'right'" align="end" :side-offset="4">
+        <DropdownMenuContent
+          class="w-[--reka-dropdown-menu-trigger-width] min-w-56 rounded-lg px-0 text-[#334155] left-5"
+          :side="isMobile ? 'bottom' : 'right'" align="end" :side-offset="4" :style="{ top: '50px', left: '150px' }">
           <DropdownMenuLabel class="font-medium text-[16px] pl-[16.5px] pr-0 py-1">
             <span>My Account</span>
             <!-- <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">

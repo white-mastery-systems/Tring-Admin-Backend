@@ -48,12 +48,14 @@ const onSubmit = handleSubmit(async (values) => {
 </script>
 
 <template>
-  <div class="flex h-full w-full flex-col items-center justify-center">
+  <!-- class="flex h-full w-full flex-col items-center justify-center" -->
+  <div :class="cn('grid gap-6', $attrs.class ?? '')">
     <!-- <div class="w-[90%] px-6 pb-4 font-bold text-primary md:w-[80%] lg:w-[90%] xl:w-[80%]">
       <span>Forgot Password</span>
     </div> -->
-    <div class="w-full">
-      <form class="space-y-3" @submit="onSubmit">
+    <!-- <div class="w-full"> -->
+    <form @submit="onSubmit">
+      <div class="grid gap-2">
         <div v-if="route.query.token" class="grid gap-3">
           <UiInput id="email" v-model="email" v-bind="emailAttrs" placeholder="Enter your email" type="email"
             required />
@@ -73,11 +75,11 @@ const onSubmit = handleSubmit(async (values) => {
             <p v-if="errors.confirmPassword" class="text-red-500 text-sm">{{ errors.confirmPassword }}</p>
           </div>
         </div>
-        <UiButton type="submit" class="flex h-[45px] w-full justify-center"
-          :loading="isLoading">
+        <UiButton type="submit" class="flex h-[45px] w-full justify-center text-[16px] mt-2" :loading="isLoading">
           Submit
         </UiButton>
-      </form>
-    </div>
+        </div>
+    </form>
+    <!-- </div> -->
   </div>
 </template>

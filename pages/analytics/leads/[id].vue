@@ -180,10 +180,12 @@
 </template>
 
 <script setup lang="ts">
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 definePageMeta({
   middleware: "admin-only",
 });
 
+const breadcrumbStore = useBreadcrumbStore();
 const { user, refreshUser }: { user: any; refreshUser: any } =
   await useUser();
 const BotId = ref(null);
@@ -211,6 +213,16 @@ const { data: whatsappLead, execute: fetchName } = useLazyFetch(`/api/getName?id
 // const isPageLoading = computed(() => status.value === "pending");
 watchEffect(() => {
   if (leadData.value) {
+    breadcrumbStore.setBreadcrumbs([
+      {
+        label: "Leads", // Dynamic name
+        to: `/analytics/leads`,
+      },
+      {
+        label: leadData.value?.botUser?.name,
+        to: `/analytics/leads/${route.params.id}`,
+      },
+    ]);
     const userName = leadData.value?.botUser?.name ?? "Unknown User";
     useHead({
       title: `Leads | ${userName}`,

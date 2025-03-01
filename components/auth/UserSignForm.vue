@@ -49,24 +49,27 @@ const onSubmit = handleSubmit(async (value: any) => {
 <template>
   <div :class="cn('grid gap-6', $attrs.class ?? '')">
     <form @submit="onSubmit">
-      <div class="grid gap-3">
-        <div class="grid gap-1">
+      <div class="grid gap-0">
+        <TextField type="text" name="email" placeholder="Email" />
+        <!-- <div class="grid gap-1">
           <Label class="sr-only" for="email">Email</Label>
-          <UiInput id="email" v-model="email" v-bind="emailAttrs" placeholder="Enter Your Email" type="email"
-            auto-capitalize="none" auto-complete="email" auto-correct="off" :disabled="isLoading" />
-          <p v-if="errors.email" class="text-[#ef4444] text-[13px]">{{ errors.email }}</p>
-        </div>
-
+          <UiInput class="text-[14px]" id="email" v-model="email" v-bind="emailAttrs" placeholder="Enter Your Email"
+            type="email" auto-capitalize="none" auto-complete="email" auto-correct="off" :disabled="isLoading" />
+          <p v-if="errors.email" class="text-[#ef4444] text-[11px]">{{ errors.email }}</p>
+        </div> -->
+        <TextField type="password" name="password" placeholder="Password" />
+        <!-- 
         <div class="grid gap-1">
           <Label class="sr-only" for="password">Password</Label>
           <UiInput id="password" v-model="password" v-bind="passwordAttrs" placeholder="Enter your password"
-            type="password" auto-complete="new-password" :disabled="isLoading" />
-          <p v-if="errors.password" class="text-[#ef4444] text-[13px]">
+            type="password" auto-complete="new-password" :disabled="isLoading" autocomplete="off"
+            class="focus:bg-transparent focus:ring-0 focus:outline-none text-[14px]" />
+          <p v-if="errors.password" class="text-[#ef4444] text-[11px]">
             {{ errors.password }}
           </p>
-        </div>
-        <div class="text-right text-sm text-primary cursor-pointer">
-          <NuxtLink to="/auth/forgot-password">
+        </div> -->
+        <div class="text-right text-sm text-[#000000] cursor-pointer">
+          <NuxtLink to="/auth/forgot-password" class="text-[11px] underline">
             Forgot Password?
           </NuxtLink>
           <!-- Forgot Password? -->
@@ -80,9 +83,9 @@ const onSubmit = handleSubmit(async (value: any) => {
           </p>
         </div> -->
 
-        <UiButton :disabled="isLoading" :loading="isLoading">
+        <UiButton :disabled="isLoading" :loading="isLoading" class="text-[16px] mt-5">
           <!-- <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" /> -->
-          Sign In with Email
+          Login In
         </UiButton>
       </div>
     </form>

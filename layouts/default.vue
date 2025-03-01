@@ -84,6 +84,8 @@ import {
   AvatarImage,
 } from '@/components/ui/avatar'
 import { UserIcon } from 'lucide-vue-next';
+import { useBreadcrumbStore } from "~/store/breadcrumbs";
+import { storeToRefs } from "pinia";
 
 const { user, clearUser } = await useUser();
 const userInfo = computed(() => {
@@ -91,6 +93,11 @@ const userInfo = computed(() => {
 });
 const OrgDetails = useOrgDetailsStore();
 const avatarValue = ref(OrgDetails.values?.logo || userInfo.value?.profile_image)
+
+
+const breadcrumbStore = useBreadcrumbStore();
+const { breadcrumbs } = storeToRefs(breadcrumbStore);
+
 </script>
 
 <template>
@@ -98,10 +105,14 @@ const avatarValue = ref(OrgDetails.values?.logo || userInfo.value?.profile_image
   <SidebarProvider>
     <AppSidebar />
     <main class="w-full">
-      <div class="flex items-center justify-between h-16 bg-[#F0F6FF] shadow-sm px-4">
-        <div class="flex sm:flex md:hidden">
-          <UiSidebarTrigger />
+      <div class="flex items-center h-16 shadow-sm px-4 gap-2 border-b-2 border-[#E4E4E7] py-5">
+        <!-- class="flex sm:flex md:hidden" -->
+        <div class="flex items-center">
+          <UiSidebarTrigger class="text-[#334155]" />
         </div>
+        <UiSeparator orientation="vertical" class="py-2 bg-[#E2E8F0] w-[1.5px]" />
+        <!-- {{ breadcrumbs }} -->
+        <BreadCrumbs :bread-crumbs="breadcrumbs" />
         <div class="flex items-center gap-5">
           <!-- <span class="flex items-center gap-4">
             <MailIcon class="w-4 h-4 text-gray-700" />

@@ -19,13 +19,13 @@ export const useNavigationAndAccordion = () => {
   const navigationModules = ref([
     {
       name: "Home",
-      icon: HomeIcon,
+      icon: 'home',
       path: "/",
       children: [],
     },
     {
       name: "Customer Logs",
-      icon: ChartNoAxesColumnIncreasing,
+      icon: 'perm_phone_msg',
       path: "/analytics",
       children: [
         {
@@ -48,7 +48,7 @@ export const useNavigationAndAccordion = () => {
     },
     {
       name: "Marketing & Outreach",
-      icon: UserIcon,
+      icon: 'campaign',
       path: "/contacts-management",
       children: [
         {
@@ -67,13 +67,13 @@ export const useNavigationAndAccordion = () => {
     },
     {
       name: "Chatbots",
-      icon: BotIcon,
+      icon: 'sms',
       path: "/chat-bot",
       children: [],
     },
     {
       name: "Voicebots",
-      icon: AudioLines,
+      icon: 'call',
       path: "/voice-bot",
       children: [],
     },
@@ -100,7 +100,7 @@ export const useNavigationAndAccordion = () => {
     // },
     {
       name: "Integrations",
-      icon: SettingsIcon,
+      icon: 'integration_instructions',
       path: "/integration",
       children: [],
     },

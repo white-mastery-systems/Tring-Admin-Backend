@@ -41,6 +41,8 @@
 import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import CreateEditIntentModal from "~/components/bots/CreateEditIntentModal.vue";
+import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
+import { useStepStatus } from "@/composables/botManagement/chatBot/useStepStatus";
 
 const intentDialogState = ref({ open: false, id: null });
 const selectedActions = ref("location");
@@ -52,7 +54,7 @@ const route = useRoute("chat-bot-id-intent-management");
 let page = ref(1);
 let totalPageCount = ref(1);
 let totalCount = ref(1);
-
+const { accordionItems, updateStepStatus, documentsList, refreshDocuments } = useStepStatus(route);
 const {
   status: intentLoadingStatus,
   refresh: intentRefresh,
@@ -73,11 +75,13 @@ const isIntentLoading = computed(
   () => intentLoadingStatus.value === "pending",
 );
 
-const botDetails: any = await getBotDetails(route.params.id);
-const defaultFormValues = botDetails.metadata.prompt;
+// const botDetails: any = await getBotDetails(route.params.id);
+const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
+// const { documentsList, refreshDocuments } = useDocumentsList(route.params.id);
+// const defaultFormValues = botDetails.value.metadata.prompt;
 
 watch(
-  () => botDetails?.name, // Watching only the 'name' property
+  () => botDetails.value?.name, // Watching only the 'name' property
   (newName) => {
     const userName = newName ?? "Unknown Bot Name";
     useHead({
@@ -87,37 +91,59 @@ watch(
   { immediate: true } // Runs immediately on mount
 );
 
+watch(intentData, (newValue) => {
 
-const addIntents = async (values: any) => {
-  const intentDetails: any = {
-    id: botDetails.id,
-    ...values,
-  };
-  await createBotIntents({
-    intentDetails,
-    onSuccess: () => {
-      intentDialogState.value.open = false;
-      toast.success("Intent added successfully");
-    },
-  });
-  intentRefresh();
-};
-const handleSubmit = async (values: any) => {
-  const payload: any = {
-    id: botDetails.id,
-    metadata: {
-      ...botDetails.metadata,
-      prompt: {
-        ...values,
-      },
-    },
-  };
-  await updateBotDetails(payload);
-  return navigateTo({
-    name: "chat-bot-id",
-    params: { id: botDetails.id },
-  });
-};
+  if (newValue && typeof newValue === "object") {
+    const length = Object.keys(newValue).length;
+
+    refreshDocuments()
+    if (length <= 1 ) {
+      updateStepStatus("botConfiguration", "completed");
+    }
+  }
+});
+
+
+const handleIntentDataListChecking = (newValue: any) => {
+  if (newValue && typeof newValue === "object") {
+    const length = Object.keys(newValue).length;
+
+    if (length <= 1) {
+      updateStepStatus("botConfiguration", "completed");
+    }
+  }
+}
+
+// const addIntents = async (values: any) => {
+//   const intentDetails: any = {
+//     id: botDetails.value.id,
+//     ...values,
+//   };
+//   await createBotIntents({
+//     intentDetails,
+//     onSuccess: () => {
+//       intentDialogState.value.open = false;
+//       toast.success("Intent added successfully");
+//     },
+//   });
+//   intentRefresh();
+// };
+// const handleSubmit = async (values: any) => {
+//   const payload: any = {
+//     id: botDetails.value.id,
+//     metadata: {
+//       ...botDetails.value.metadata,
+//       prompt: {
+//         ...values,
+//       },
+//     },
+//   };
+//   await updateBotDetails(payload);
+//   return navigateTo({
+//     name: "chat-bot-id",
+//     params: { id: botDetails.value.id },
+//   });
+// };
 const deleteIntentDialogState: any = ref({
   open: false,
   id: "",
@@ -181,7 +207,7 @@ const columns = [
   }),
 ];
 const addNewIntents = () => {
-  if (botDetails.metadata.ui.generateLead) {
+  if (botDetails.value.metadata.ui.generateLead) {
     intentDialogState.value.open = true;
     intentDialogState.value.id = null;
   } else {

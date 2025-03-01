@@ -9,6 +9,13 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: "Roboto-medium";
+  src: url("../fonts/Roboto-Italic.ttf") format("truetype");
+  font-weight: medium;
+  font-style: italic;
+  font-display: swap;
+}
 
 @font-face {
   font-family: "HeyWow";
@@ -211,6 +218,16 @@
   }
 }
 
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  src: url('/assets/icons/MaterialSymbolsOutlined.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined', sans-serif;
+  font-size: 24px;
+}
 
 ::-webkit-scrollbar {
   display: none;
@@ -282,6 +299,11 @@
 .textarea-resize-scroll::-webkit-scrollbar-track {
   max-height: 8px !important;
   margin-block: 1rem !important;
+}
+input:-webkit-autofill {
+  background-color: transparent !important;
+  box-shadow: 0 0 0px 1000px white inset !important;
+  color: #000 !important;
 }
 * {
   font-family: 'Inter', sans-serif;

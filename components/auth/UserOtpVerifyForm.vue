@@ -255,7 +255,7 @@ const onSubmit = handleSubmit((value: any) => {
           <div class="flex justify-center">
             <template v-for="i in 4" :key="i">
               <input :ref="el => inputRefs[i - 1] = el" v-model="otpDigits[i - 1]" type="text" inputmode="numeric"
-                maxlength="1" :class="[
+                maxlength="1" class="text-[14px]" :class="[
                   'w-10 h-10 border-2 text-center text-base font-semibold focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none disabled:opacity-50',
                   i === 1 ? 'rounded-l-md border-r-0' : '',
                   i === 4 ? 'rounded-r-md border-l-[1px]' : '',
@@ -264,7 +264,7 @@ const onSubmit = handleSubmit((value: any) => {
                 @paste="handlePaste" />
             </template>
           </div>
-          <p v-if="errors.otp" class="text-[#ef4444] text-[13px] text-center">{{ errors.otp }}</p>
+          <p v-if="errors.otp" class="text-[#ef4444] text-[11px] text-center">{{ errors.otp }}</p>
         </div>
 
         <div class="flex justify-between gap-2 text-center text-[11px] text-gray-500">
@@ -277,7 +277,7 @@ const onSubmit = handleSubmit((value: any) => {
           </button>
         </div>
 
-        <UiButton :disabled="isLoading" :loading="isLoading">
+        <UiButton :disabled="isLoading" :loading="isLoading" class="text-[16px] mt-2">
           <!-- <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" /> -->
           Continue
         </UiButton>

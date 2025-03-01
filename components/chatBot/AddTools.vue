@@ -219,6 +219,8 @@ import CloseIcon from "~/components/icons/CloseIcon.vue";
 import { FieldArray } from "vee-validate";
 import { addToolChatBotschema } from "~/validationSchema/botManagement/voiceBot/addToolsValidation";
 import { useTransformApiResponse } from "~/composables/botManagement/voiceBot/useTransformApiResponse";
+import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
+
 definePageMeta({
   middleware: "admin-only",
 });
@@ -227,7 +229,8 @@ const isLoading = ref(false);
 const route = useRoute("chat-bot-id-tools");
 const paramId: any = route;
 const config = useRuntimeConfig()
-const botDetails: any = await getBotDetails(paramId.params.id);
+// const botDetails: any = await getBotDetails(paramId.params.id);
+// const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
 const voiceBotDetails = await getVoiceBotList()
 const { transformApiResponse } = useTransformApiResponse();
 // const uploadedAudio = ref();
@@ -267,7 +270,7 @@ const { handleSubmit, values, resetForm, errors, setFieldValue } = useForm({
 // setFieldValue(`propertieFormControl`, botDetails?.tools?.propertieFormControl ?? false)
 
 onMounted(() => {
-  const formattedToolsDetails = transformApiResponse(botDetails)
+  const formattedToolsDetails = transformApiResponse(botDetails.value)
   console.log(formattedToolsDetails)
   setFieldValue('date_time', formattedToolsDetails?.date_time ?? true);
   setFieldValue('schedule_appointment', formattedToolsDetails?.schedule_appointment ?? false);
@@ -397,7 +400,7 @@ const dynamicToolsForm = handleSubmit(async (values: any) => {
   }));
 
   const payload: any = {
-    id: botDetails.id,
+    id: botDetails.value.id,
     tools: {
       defaultTools,
       customTools,
@@ -405,7 +408,7 @@ const dynamicToolsForm = handleSubmit(async (values: any) => {
       voiceBotId: values.voice_bot,
     },
     metadata: {
-      ...botDetails.metadata,
+      ...botDetails.value.metadata,
     },
   };
 

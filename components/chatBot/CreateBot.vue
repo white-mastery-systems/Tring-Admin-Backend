@@ -3,45 +3,54 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { ChevronDownIcon, Subtitles } from "lucide-vue-next"; // Import Lucide icons
 import UiCustomization from '@/components/chatBot/UiCustomization.vue';
 import BotConfiguration from '@/components/chatBot/BotConfiguration.vue';
-import CrmConfiguration from '@/components/chatBot/CrmConfiguration.vue';
+// import CrmConfiguration from '@/components/chatBot/CrmConfiguration.vue';
 import DynamicForm from '@/components/chatBot/DynamicForm.vue';
 import { nextTick } from "vue";
 import { useRoute } from 'vue-router';
+import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
+import { useDocumentsList } from '~/composables/botManagement/chatBot/useDocumentsList';
+import { useStepStatus } from "@/composables/botManagement/chatBot/useStepStatus";
 
+// const { updateStepStatus, accordionItems, botDetails, documentsList } = useStepStatus();
+const route = useRoute();
+const { accordionItems, updateStepStatus, documentsList, refreshDocuments, botDetails, loading, error, refreshBot } = useStepStatus(route);
 const stepComponents: Record<string, any> = {
   uiCustomization: UiCustomization,
   botConfiguration: BotConfiguration,
-  crmIntegrations: CrmConfiguration,
+  // crmIntegrations: CrmConfiguration,
   AdvancedSetup: DynamicForm,
 }
 const emit = defineEmits(["cofirm"]);
-const route = useRoute();
+// const route = useRoute();
+// const { documentsList, refreshDocuments } = useDocumentsList(route.params.id)
 // const defaultValue = 'uiCustomization'
 const openValues = ref(["uiCustomization", "botConfiguration"]);
-
+// updateStepStatus()
 // const defaultValue = "item1";
-const accordionItems = ref([
-  { value: "uiCustomization", title: "UI Customization", content: "Setup the way your chat looks", icon: "Home", subtitle: "Setup the way your chat looks", status: "Incomplete" },
-  { value: "botConfiguration", title: "Bot Configuration", content: "Setup the way you bot works", icon: "Settings", subtitle: "Setup the way you bot works", status: "Incomplete" },
-  { value: "crmIntegrations", title: "CRM Integrations", content: "Click here to deploy your new chatbot", icon: "Settings", subtitle: "Click here to deploy your new chatbot",},
-  { value: "AdvancedSetup", title: "Advanced Setup", content: "Click here to deploy your new chatbot", icon: "Settings", subtitle: "Click here to deploy your new chatbot" },
-]);
+// const accordionItems = ref([
+//   { value: "uiCustomization", title: "UI Customization", content: "Setup the way your chat looks", icon: "Home", subtitle: "Setup the way your chat looks", status: "Incomplete" },
+//   { value: "botConfiguration", title: "Bot Configuration", content: "Setup the way you bot works", icon: "Settings", subtitle: "Setup the way you bot works", status: "Incomplete" },
+//   { value: "crmIntegrations", title: "CRM Integrations", content: "Click here to deploy your new chatbot", icon: "Settings", subtitle: "Click here to deploy your new chatbot",},
+//   { value: "AdvancedSetup", title: "Advanced Setup", content: "Click here to deploy your new chatbot", icon: "Settings", subtitle: "Click here to deploy your new chatbot" },
+// ]);
 
-const updateStepStatus = async (step: string, status: string) => {
-  await nextTick(); // Ensures Vue updates the DOM first
-  emit('cofirm', { step, status });
-  const stepIndex = accordionItems.value.findIndex(item => item.value === step);
-  const documentsList = await listDocumentsByBotId(route.params.id)
-  const list = await getDocumentsList(route.params.id)
-  // console.log(list, "list")
-  if (stepIndex !== -1) {
-    accordionItems.value[stepIndex] = {
-      ...accordionItems.value[stepIndex],
-      status: status === "completed" ? (stepIndex === 1) ? ((documentsList.documents.length > 0) && (list.length > 0)) ? "Completed" : "Incomplete" : "Completed" : "Incomplete",
-    };
-    accordionItems.value = [...accordionItems.value]; // Force reactivity
-  }
-};
+// const updateStepStatus = async (step: string, status: string) => {
+//   await nextTick(); // Ensures Vue updates the DOM first
+//   emit('cofirm', { step, status });
+//   const stepIndex = accordionItems.value.findIndex(item => item.value === step);
+//   // const documentsList = await listDocumentsByBotId(route.params.id)
+//   // const list = await getDocumentsList(route.params.id)
+//   // console.log(list, "list")
+//   console.log(documentsList.value, "documentsList.value")
+//   console.log(documentsList.value, "documentsList.value ")
+//   if (stepIndex !== -1) {
+//     accordionItems.value[stepIndex] = {
+//       ...accordionItems.value[stepIndex],
+//       status: status === "completed" ? (stepIndex === 1) ? ((botDetails.value.documents.length > 0) && (documentsList.value.length > 0)) ? "Completed" : "Incomplete" : "Completed" : "Incomplete",
+//     };
+//     accordionItems.value = [...accordionItems.value]; // Force reactivity
+//   }
+// };
 
 // Call `updateStepStatus` on mount to ensure status updates after refresh
 onMounted(() => {
@@ -81,9 +90,10 @@ onMounted(() => {
         </div>
       </AccordionTrigger>
       <AccordionContent class="text-gray-700 text-sm">
+        <UiSeparator class="mt-4"></UiSeparator>
         <!-- {{ item.content }} -->
         <!-- <component :is="stepComponents[item.value]" /> -->
-        <component :is="stepComponents[item.value]" @statusUpdated="updateStepStatus" />
+        <component :is="stepComponents[item.value]" @statusUpdated="updateStepStatus" class="mt-2" />
       </AccordionContent>
     </AccordionItem>
   </Accordion>

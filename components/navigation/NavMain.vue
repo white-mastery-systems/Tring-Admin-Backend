@@ -79,6 +79,12 @@ import { ChevronRight, type LucideIcon } from 'lucide-vue-next'
 import { useRouter, useRoute } from "vue-router";
 import { SIDEBAR_WIDTH_MOBILE, useSidebar } from '@/components/ui/sidebar/utils'
 
+useHead({
+  link: [
+    { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:wght@100..700" }
+  ]
+})
+
 const router = useRouter();
 const route = useRoute();
 const { navigationModules, dropdownMenuItems } = useNavigationAndAccordion()
@@ -138,12 +144,20 @@ const mobileSidebarControl = (value: any) => {
                 <!-- <span class="material-symbols-rounded">
                   home
                 </span> -->
-                <component v-if="item.icon" :is="item.icon" size="18" />
+                <span class="material-symbols-rounded" style="font-size: 20px;">
+                  {{ item.icon }}
+                </span>
                 <span>{{ item.name }}</span>
               </template>
               <template v-else>
-                <NuxtLink :to="item.path" class="flex items-center space-x-2" @click="mobileSidebarControl(item)">
-                  <WhatsappIcon v-if=" item.path==='/whatsapp-bot'"></WhatsappIcon>
+                <NuxtLink :to="item.path" class="flex items-center space-x-1" @click="mobileSidebarControl(item)">
+                  <!-- <WhatsappIcon v-if=" item.path==='/whatsapp-bot'"></WhatsappIcon> -->
+                  <span class="material-symbols-rounded" style="font-size: 20px;">
+                    {{ item.icon }}
+                  </span>
+                  <!-- <span class="material-symbols-rounded">
+                    perm_phone_msg
+                  </span> -->
                   <component v-if=" item.icon" :is="item.icon" size="18" />
                   <span>{{ item.name }}</span>
                 </NuxtLink>
@@ -159,8 +173,9 @@ const mobileSidebarControl = (value: any) => {
               <SidebarMenuSubItem v-for="subItem in item.children" :key="subItem.name">
                 <SidebarMenuSubButton as-child>
                   <NuxtLink @click="mobileSidebarControl(item)" :to="item.path + subItem.path"
-                    class="flex items-center space-x-2">
-                    <span :class="(route.path.includes(item.path + subItem.path)) ? 'text-gray-500' : ''">{{
+                    class="flex items-center space-x-2 hover:bg-[#f4f4f5]">
+                    <span
+                      :class="(route.path.includes(item.path + subItem.path)) ? 'text-gray-500' : ''">{{
                       subItem.name }}</span>
                   </NuxtLink>
                 </SidebarMenuSubButton>

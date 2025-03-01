@@ -8,14 +8,15 @@
     </div>
     <!-- v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
     :count="statistics.value" :loading="loading" -->
+    <h6 class="font-bold text-[20px] mt-4">Analytics</h6>
     <div v-if="analyticsData?.statistics?.length"
-    class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4 w-full mt-4">
-    <template v-for="statistics in analyticsData?.statistics?.filter(
+      class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4 w-full">
+      <template v-for="statistics in analyticsData?.statistics?.filter(
       (stat: any) =>
       stat?.apiName !== 'images' && stat?.apiName !== 'brochures',
     )">
-    <StatsCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
-      :count="statistics.value" :loading="loading" />
+        <StatsCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
+          :count="statistics.value" :loading="loading" />
         <!-- <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
           :count="statistics.value" :loading="loading" /> -->
       </template>
@@ -34,7 +35,7 @@
           <!-- <span class="flex -items-center py-2 pl-2"></span> -->
           <span class="font-bold text-black">
             <UiSelect v-model="selectedValue" class="outline-none">
-              <UiSelectTrigger 
+              <UiSelectTrigger
                 class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[230px] md:text-[14px] lg:w-[230px] lg:text-[14px] xl:w-[230px] xl:text-[14px]">
                 <span class="min-w-[70px] font-thin text-gray-400">
                   Summary
@@ -110,9 +111,10 @@
     Title,
     Tooltip,
   } from "chart.js";
-import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIcon } from "lucide-vue-next";
+  import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIcon } from "lucide-vue-next";
   import { Line } from "vue-chartjs";
   import ChatSession from "~/components/icons/ChatSession.vue";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
   
   useHead({
     title: "Dashboard",
@@ -128,23 +130,34 @@ import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIco
     CategoryScale,
   );
 
+const breadcrumbStore = useBreadcrumbStore();
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Home", // Dynamic name
+    to: `/`,
+  }
+]);
   const navigavtionList = ref([
     {
       title: "Billing",
       subtitle: "Manage your plans here",
       url: "billing?type=chat",
+      icon: 'payments',
     }, {
       title: "Integrations",
       subtitle: "Manage all your integrations here",
       url: "/integration",
+      icon: 'integration_instructions',
     }, {
       title: "Analytics",
       subtitle: "View your stats here",
       url: "/",
+      icon: 'monitoring',
     }, {
       title: "Campaign",
       subtitle: "Manage your campaigns here",
       url: "/contacts-management/campaigns",
+      icon: 'campaign',
     },
   ]);
 

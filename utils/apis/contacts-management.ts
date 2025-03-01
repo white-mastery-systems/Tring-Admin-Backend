@@ -61,3 +61,11 @@ export const getWhatsappTemplateList = async (integrationId: string) => {
   // api / templates ? q = 8a43f116 - a52f - 470f - b49c - ed8bd90687e0 & status=approved
   return getTemplateDetails;
 };
+
+
+export const getSingleCampaingsDetails = async (id: string) => {
+  const getBucketDetails = await $fetch<SelectChatBot & { documents: SelectDocument[] }>(
+    `/api/org/campaign/` + id,
+  );
+  return getBucketDetails;
+};

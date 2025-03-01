@@ -61,16 +61,16 @@ const onSubmit = handleSubmit(async (values: any) => {
       <div class="grid gap-3">
         <div class="grid gap-1">
           <Label class="sr-only" for="name">Name</Label>
-          <UiInput id="name" v-model="name" v-bind="nameAttrs" placeholder="Your Full Name" type="text"
-            :disabled="isLoading" />
-          <p v-if="errors.name" class="text-[#ef4444] text-[13px]">{{ errors.name }}</p>
+          <UiInput class="text-[14px]" id="name" v-model="name" v-bind="nameAttrs" placeholder="Your Full Name"
+            type="text" :disabled="isLoading" />
+          <p v-if="errors.name" class="text-[#ef4444] text-[11px]">{{ errors.name }}</p>
         </div>
 
         <div class="grid gap-1">
           <Label class="sr-only" for="companyName">Company Name</Label>
-          <UiInput id="companyName" v-model="companyName" v-bind="companyNameAttrs" placeholder="Company Name"
-            type="text" :disabled="isLoading" />
-          <p v-if="errors.companyName" class="text-[#ef4444] text-[13px]">{{ errors.companyName }}</p>
+          <UiInput class="text-[14px]" id="companyName" v-model="companyName" v-bind="companyNameAttrs"
+            placeholder="Company Name" type="text" :disabled="isLoading" />
+          <p v-if="errors.companyName" class="text-[#ef4444] text-[11px]">{{ errors.companyName }}</p>
         </div>
         <div class="flex flex-col gap-1">
           <div class="flex gap-2">
@@ -80,21 +80,21 @@ const onSubmit = handleSubmit(async (values: any) => {
                 :disabled="isLoading" /> -->
               <!-- <CountryCodeField v-model="countryCode" v-bind="countryCodeAttrs" :disabled="isLoading" /> -->
               <!-- <p v-if="errors.countryCode" class="text-red-500 text-sm">{{ errors.countryCode }}</p> -->
-              <CountryCodeField class="max-w-[120px]" name="countryCode" label="Country Code"
+              <CountryCodeField class="max-w-[120px] text-[14px]" name="countryCode" label="Country Code"
                 helperText="Enter your country code" :fieldHeader="true" required />
             </div>
-  
+
             <div class="grid gap-1 w-full">
               <Label class="sr-only" for="mobile">Phone Number</Label>
-              <UiInput id="mobile" v-model="mobile" v-bind="mobileAttrs" placeholder="Phone Number" type="tel"
-                :disabled="isLoading" />
+              <UiInput class="text-[14px]" id="mobile" v-model="mobile" v-bind="mobileAttrs" placeholder="Phone Number"
+                type="tel" :disabled="isLoading" />
             </div>
 
           </div>
-            <p v-if="errors.mobile" class="text-[#ef4444] text-[13px]">{{ errors.mobile }}</p>
+          <p v-if="errors.mobile" class="text-[#ef4444] text-[11px]">{{ errors.mobile }}</p>
         </div>
 
-        <UiButton :disabled="isLoading" :loading="isLoading">
+        <UiButton :disabled="isLoading" :loading="isLoading" class="text-[16px] mt-2">
           <!-- <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" /> -->
           Proceed
         </UiButton>

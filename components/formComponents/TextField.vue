@@ -46,7 +46,7 @@
           cn(
             'mt-2',
             props.class,
-            errorMessage ? 'border-red-500' : 'border-input',
+            errorMessage !== null && errorMessage !== undefined ? 'border-red-500' : 'border-input',
           )
         " @paste="
           (e: any) => {

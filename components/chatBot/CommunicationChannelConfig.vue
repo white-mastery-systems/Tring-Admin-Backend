@@ -12,7 +12,7 @@
   <!-- v-if="integrations.length === 0" -->
   <div class="pt-5 py-4">
     <!-- <template #actionButtons> -->
-    <div>
+    <div class="flex justify-end">
     <UiButton class="mb-4 flex items-center justify-end" @click="
         () => {
           communicationChannelModalState.open = true;
