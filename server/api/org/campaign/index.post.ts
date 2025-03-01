@@ -1,4 +1,4 @@
-import { checkCampaignNameExist } from "~/server/utils/db/campaign";
+import { checkCampaignNameExist, creatCampaignWhatsappContacts } from "~/server/utils/db/campaign";
 import { errorResponse } from "~/server/response/error.response";
 import { createVoicebotSchedular } from "~/server/utils/db/voicebots";
 import { getContactsByChatbotBucketId } from "~/server/utils/db/contact-list";
@@ -90,6 +90,7 @@ export default defineEventHandler(async (event) => {
 
     // schedule whatsapp campaign
     await scheduleWhatsAppCampaign(
+      data?.id,
       data?.botConfig?.date,
       data?.botConfig?.scheduleTime,
       chatbotContactList,
@@ -97,6 +98,21 @@ export default defineEventHandler(async (event) => {
       integrationData,
       timeZone,
     );
+
+    const campaignContactList = chatbotContactList.map((i) => {
+      return {
+        campaignId: data?.id,
+        countryCode: i?.contacts.countryCode,
+        firstName: i?.contacts.firstName,
+        lastName: i?.contacts?.lastName,
+        phone: i?.contacts.phone,
+        organizationId,
+      } 
+    })
+
+    // console.log({ campaignContactList })
+
+    await creatCampaignWhatsappContacts(campaignContactList)
 
     logger.info(`WhatsApp campaign created successfully, organizationId: ${organizationId}`);
   }
