@@ -92,14 +92,14 @@ const {
 
     // Transform each row to format message status with new lines
     return campaign.data.map((row: any) => {
-      const sentAt = row.sentAt ?? "N/A"; // Default to "N/A" if missing
-      const deliveredAt = row.deliveredAt ?? "N/A";
-      const readAt = row.readAt ?? "N/A";
+      const sentAt = row?.sentAt ?? "N/A"; // Default to "N/A" if missing
+      const deliveredAt = row?.deliveredAt ?? "N/A";
+      const readAt = row?.readAt ?? "N/A";
 
       return {
         ...row, // Preserve existing data
-        name: `${row.firstName} ${row.lastName}`,
-        phone: `${row.countryCode} ${row.phone}`,
+        name: `${row?.firstName} ${row?.lastName}`,
+        phone: `${row?.countryCode} ${row?.phone}`,
         formattedMessageStatus: `sent - ${sentAt}\ndelivered - ${deliveredAt}\nread - ${readAt}`, // New lines using \n
       };
     });
@@ -170,16 +170,16 @@ const columns = [
     header: "Action",
     cell: ({ row }) => {
       // if (!row.original.chatId) return null; // Hide if chatId is null or undefined
-      return actionsComponent(row.original.chatId);
+      return actionsComponent(row.original?.chatId);
     },
   }),
 
 ];
-const onDateChange = (value: any) => {
-  if (value != "custom") {
-    delete filters.value.from;
-    delete filters.value.to;
-  }
-  filters.value.page = "1";
-};
+// const onDateChange = (value: any) => {
+//   if (value != "custom") {
+//     delete filters.value.from;
+//     delete filters.value.to;
+//   }
+//   filters.value.page = "1";
+// };
 </script>
