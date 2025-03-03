@@ -1,5 +1,6 @@
 import { errorResponse } from "~/server/response/error.response";
 import { getWhatsappCampaignCanactsByMsgStatus } from "~/server/utils/db/campaign";
+import { whatsappReSendCampaign } from "~/server/utils/whatsappReSendCapaign";
 
 export default defineEventHandler(async (event) => {
     try {
@@ -27,11 +28,14 @@ export default defineEventHandler(async (event) => {
             "createdAt": "2025-03-03T05:32:23.060Z",
             "updatedAt": "2025-03-03T05:32:23.060Z"
         }*/
-       
-        // const teplateName = campaignData.botConfig.templateName;
-        // const integrationData = await getIntegrationById(campaignData.organizationId, campaignData.botConfig.integrationId);
-        // const data = await res
-        return campaignData;
+
+        // const templateName = campaignData.botConfig.templateName;
+        // const [integrationData, contactList] = await Promise.all([
+        //     getIntegrationById(campaignData.organizationId, campaignData.botConfig.integrationId),
+        //     getContactsByChatbotBucketId(campaignData?.bucketId),
+        // ]);
+        // await whatsappReSendCampaign(campaignId, templateName, contactList, integrationData?.metadata);
+        return { status: true, camapignId: campaignId, message: "Campaign re-sent successfully" };
     } catch (error:any) {
         return errorResponse(event, 404, error.message || "No failed campaigns found");
     }
