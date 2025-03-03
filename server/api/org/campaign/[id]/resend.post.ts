@@ -1,5 +1,6 @@
 import { errorResponse } from "~/server/response/error.response";
 import { getWhatsappCampaignCanactsByMsgStatus } from "~/server/utils/db/campaign";
+import { getContactsByBucketIdAndPhone } from "~/server/utils/db/contact-list";
 import { whatsappReSendCampaign } from "~/server/utils/whatsappReSendCapaign";
 
 export default defineEventHandler(async (event) => {
@@ -13,6 +14,7 @@ export default defineEventHandler(async (event) => {
         if (!campaignData || !failedCampaigns || !failedCampaigns.length) {
             return errorResponse(event, 404, "No failed campaigns found")
         }
+        const phoneNumbers = failedCampaigns.map((contact) => contact.phone)
         /*{
             "id": "aaef1bf7-7d57-42bf-a7fd-d022872124b1",
             "campaignName": "whatsapp campaign 2",
@@ -29,12 +31,12 @@ export default defineEventHandler(async (event) => {
             "updatedAt": "2025-03-03T05:32:23.060Z"
         }*/
 
-        // const templateName = campaignData.botConfig.templateName;
-        // const [integrationData, contactList] = await Promise.all([
-        //     getIntegrationById(campaignData.organizationId, campaignData.botConfig.integrationId),
-        //     getContactsByChatbotBucketId(campaignData?.bucketId),
-        // ]);
-        // await whatsappReSendCampaign(campaignId, templateName, contactList, integrationData?.metadata);
+        const templateName = campaignData.botConfig.templateName;
+        const [integrationData, contactList] = await Promise.all([
+            getIntegrationById(campaignData.organizationId, campaignData.botConfig.integrationId),
+            getContactsByBucketIdAndPhone(campaignData.bucketId, phoneNumbers),
+        ]);
+        await whatsappReSendCampaign(campaignId, templateName, contactList, integrationData?.metadata);
         return { status: true, camapignId: campaignId, message: "Campaign re-sent successfully" };
     } catch (error:any) {
         return errorResponse(event, 404, error.message || "No failed campaigns found");
