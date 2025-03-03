@@ -67,7 +67,7 @@ import html2canvas from "html2canvas";
 
 const text = ref("");
 
-const generatePDF = async () => {
+const generatePDFAndUpload = async () => {
   const pdf = new jsPDF();
 
   // Create a temporary div to render text properly
@@ -86,12 +86,31 @@ const generatePDF = async () => {
   // Add image to PDF
   pdf.addImage(imgData, "PNG", 10, 10, 180, 0);
 
-  // Cleanup
+  // Cleanup temporary div
   document.body.removeChild(tempDiv);
 
-  // Save the PDF
-  pdf.save("document.pdf");
+  // Convert PDF to Blob
+  const pdfBlob = pdf.output("blob");
+
+  // Convert Blob to File (Required for API)
+  const pdfFile = new File([pdfBlob], "document.pdf", { type: "application/pdf" });
+
+  // Prepare Payload
+  const payload = {
+    botId: 'b75338b4-9163-4ad7-8a0f-a7cc11834b11',
+    document: {
+      name: pdfFile.name,
+      files: pdfFile, // Send generated PDF
+    },
+  };
+
+  // Upload to API
+  await createDocument(payload.botId, payload.document);
+
+  // Update documents list
+  // documents.value = await listDocumentsByBotId(paramId.params.id);
 };
+
 </script>
 
 <template>
@@ -101,8 +120,24 @@ const generatePDF = async () => {
       placeholder="Enter text..."
       class="border p-2 h-40"
     ></UiTextarea>
-    <UiButton @click="generatePDF" class="flex mt-2 text-white px-4 py-2 rounded">
+    <UiButton @click="generatePDFAndUpload" class="flex mt-2 text-white px-4 py-2 rounded">
       Download PDF
     </UiButton>
   </div>
 </template>
+
+
+<!-- we can use like this 
+
+  const { text, generatePDFAndUpload } = usePdfUploader();
+  const uploadPDF = async () => {
+  const botId = "b75338b4-9163-4ad7-8a0f-a7cc11834b11"; // Replace dynamically if needed
+  await generatePDFAndUpload(botId, createDocument);
+  };
+
+<div class="p-4 w-full">
+  <UiTextarea v-model="text" placeholder="Enter text..." class="border p-2 h-40"></UiTextarea>
+  <UiButton @click="uploadPDF" class="flex mt-2 text-white px-4 py-2 rounded">
+    Download PDF
+  </UiButton>
+</div> -->
