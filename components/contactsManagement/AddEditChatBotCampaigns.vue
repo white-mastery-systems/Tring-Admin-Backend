@@ -22,7 +22,7 @@
       (filters.page = '1'), (filters.limit = $event);
     }
     " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
-      :data="getSingleCampaignList" :is-loading="isDataLoading" :page-size="20" :height="20" height-unit="vh" />
+      :data="getSingleCampaignList" :is-loading="isDataLoading" :page-size="20" :height="21" height-unit="vh" />
     <CreateEditCampaignModal v-model="campaignModalState" @confirm="() => {
       campaignModalState.open = false;
       getSingleCampaign()
@@ -92,15 +92,15 @@ const {
 
     // Transform each row to format message status with new lines
     return campaign.data.map((row: any) => {
-      const sentAt = row?.sentAt ?? "N/A"; // Default to "N/A" if missing
-      const deliveredAt = row?.deliveredAt ?? "N/A";
-      const readAt = row?.readAt ?? "N/A";
+      const sentAt = row?.sentAt ?? "NA"; // Default to "N/A" if missing
+      const deliveredAt = row?.deliveredAt ?? "NA";
+      const readAt = row?.readAt ?? "NA";
 
       return {
         ...row, // Preserve existing data
         name: `${row?.firstName} ${row?.lastName}`,
         phone: `${row?.countryCode} ${row?.phone}`,
-        formattedMessageStatus: `sent - ${sentAt}\ndelivered - ${deliveredAt}\nread - ${readAt}`, // New lines using \n
+        formattedMessageStatus: `Sent - ${sentAt}\nDelivered - ${deliveredAt}\nRead - ${readAt}`, // New lines using \n
       };
     });
   },
@@ -164,7 +164,11 @@ const columns = [
       ),
   }),
   columnHelper.accessor("messageStatus", {
-    header: "Deliver Status",
+    header: "Delivery status",
+    cell: ({ row }) => {
+      // return row.original.messageStatus
+      return capitalizeFirstLetter(row.original.messageStatus);
+    }
   }),
   columnHelper.accessor("chatId", {
     header: "Action",
@@ -175,6 +179,9 @@ const columns = [
   }),
 
 ];
+const capitalizeFirstLetter = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
 // const onDateChange = (value: any) => {
 //   if (value != "custom") {
 //     delete filters.value.from;
