@@ -17,6 +17,12 @@ export default defineEventHandler(async (event) => {
     }
     
     const subscriptionData = hostedPageData?.data?.subscription
+
+    const zohoCustomerDetail = subscriptionData?.customer
+    const userDetails = await getuserDetailByEmail(zohoCustomerDetail?.email)
+    if(userDetails) {
+      return errorResponse(event, 500, "user already exists")
+    }
     const pricingInfo = await getPricingInformation(subscriptionData.plan.plan_code)
     botType = pricingInfo?.type === "chatbot" ? "chat" : "voice"
 
@@ -24,8 +30,6 @@ export default defineEventHandler(async (event) => {
     const planCode = ( botType === "chat" )
       ? { planCode: pricingInfo?.planCode}
       : { voicePlanCode : pricingInfo?.planCode }
-
-    const zohoCustomerDetail = subscriptionData?.customer
 
     const org = await createOrganization({ 
       ...planCode,
