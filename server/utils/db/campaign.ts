@@ -113,18 +113,10 @@ export const campaignList = async (
   }
 };
 
-export const getCampaignById = async (campaignId: string, timeZone: string) => {
+export const getCampaignById = async (campaignId: string) => {
   const data: any = await db.query.campaignSchema.findFirst({
     where: eq(campaignSchema.id, campaignId),
   });
-  // if (data) {
-  //   data.createdAt = momentTz(data?.createdAt)
-  //     .tz(timeZone)
-  //     .format("DD MMM YYYY hh:mm A");
-  //   data.campaignTime = momentTz(data?.campaignTime)
-  //     .tz(timeZone)
-  //     .format("DD MMM YYYY HH:mm");
-  // }
   return data;
 };
 
@@ -268,4 +260,13 @@ export const getWhatsappCampaignByMessageId = async (messageId: string) => {
   return await db.query.campaignWhatsappContactSchema.findFirst({
     where: eq(campaignWhatsappContactSchema.messageId, messageId)
   })
+}
+
+export const getWhatsappCampaignCanactsByMsgStatus = async (campaignId:string, msgStatus?:string) => {
+  msgStatus = msgStatus ?? "sent"
+  const data = await db.query.campaignWhatsappContactSchema.findMany({
+    where: and(eq(campaignWhatsappContactSchema.campaignId, campaignId), eq(campaignWhatsappContactSchema.messageStatus, msgStatus))
+  })
+
+  return (data.length) ? data: null
 }
