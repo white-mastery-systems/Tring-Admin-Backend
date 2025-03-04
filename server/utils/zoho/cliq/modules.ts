@@ -4,7 +4,7 @@ const db = useDrizzle()
 
 export const generateLeadsInZohoCliq: any = async(metaData: any, channelId: string, textContent: any, integrationId: string, notes: string) => {
   try {
-    console.log("generateLeadsInZohoCliq",{ metaData, channelId, textContent  })
+    // console.log("generateLeadsInZohoCliq",{ metaData, channelId, textContent  })
      const data = await $fetch(`https://cliq.zoho.in/api/v2/channels/${channelId}/message`, {
       method: "POST",
       headers: { 
@@ -14,7 +14,6 @@ export const generateLeadsInZohoCliq: any = async(metaData: any, channelId: stri
         text: `${textContent}`
       }
     })
-    console.log({ success: data })
     return data
 
   } catch (error) {

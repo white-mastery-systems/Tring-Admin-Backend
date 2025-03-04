@@ -3,6 +3,7 @@ const zodUpdateCallLogValidator = z.object({
   exophone: z.string().optional(),
   from: z.string().optional(),
   date: z.string().optional(),
+  callStatus: z.string().optional(),
   duration: z.string().optional(),
   direction: z.string().optional(),
   callerName: z.string().optional(),
