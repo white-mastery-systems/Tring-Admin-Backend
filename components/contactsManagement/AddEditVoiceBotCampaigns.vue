@@ -31,10 +31,10 @@
   <!-- </Page> -->
 </template>
 <script setup lang="ts">
-import { useRoute, useRouter } from "vue-router";
-import { createColumnHelper } from "@tanstack/vue-table";
-import { Icon, UiBadge, UiButton } from "#components";
 import { useState } from "#app";
+import { Icon, UiButton } from "#components";
+import { createColumnHelper } from "@tanstack/vue-table";
+import { useRoute } from "vue-router";
 
 const filters = useState("campaignsFilters", () => ({
   q: "",
