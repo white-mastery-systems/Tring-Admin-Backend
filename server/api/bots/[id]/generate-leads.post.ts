@@ -48,18 +48,7 @@ export default defineEventHandler(async (event) => {
           firstName = name[0];
           lastName = name[1];
         }
-        JSON.stringify({
-          body: {
-            First_Name: firstName,
-            Last_Name: lastName ?? firstName,
-            Email: body?.botUser?.email,
-            Mobile: body?.botUser?.mobile,
-            Title: body?.botUser?.name,
-          },
-          integrationData: botIntegration?.integration,
-          token: botIntegration?.integration?.metadata?.access_token,
-          refreshToken: botIntegration?.integration?.metadata?.refresh_token,
-        });
+
         const generatedContact: any = await newGenerateContactInZohoBigin({
           body: {
             First_Name: firstName,

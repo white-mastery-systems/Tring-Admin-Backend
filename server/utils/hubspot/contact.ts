@@ -1,3 +1,4 @@
+import { logger } from "~/server/logger";
 import { generateHubspotAccessTokenWithRefreshToken } from "./auth";
 
 export async function createContactInHubspot({

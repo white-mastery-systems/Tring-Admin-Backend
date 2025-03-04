@@ -1,10 +1,13 @@
 import { errorResponse } from "~/server/response/error.response";
 import { createVoiceBotLead, getVoicebot } from "~/server/utils/db/voicebots";
 import momentTz from "moment-timezone"
+import { generateVoicebotLeads } from "~/server/utils/v2/generateLeads/voicebot";
 
 const zodVoicebotLead = z.object({
   name: z.string(),
   phone: z.string(),
+  countryCode: z.string(),
+  callLogId: z.string(),
   location: z.string().optional(),
   notes: z.string().optional(),
   scheduledDate: z.string().optional(),
@@ -42,5 +45,15 @@ export default defineEventHandler(async (event) => {
   if(!data) {
     return errorResponse(event, 500, "Failed to generate voicebot leads")
   }
+  generateVoicebotLeads({
+    botUser: {
+      name: body?.name,
+      mobile: body?.phone,
+      countryCode: body?.countryCode
+    },
+    callLogId: body?.callLogId,
+    notes: body?.notes,
+    voicebotDetail
+  })
   return "Voicebot leads are created";
 });
