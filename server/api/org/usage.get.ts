@@ -8,9 +8,13 @@ export default defineEventHandler(async (event) => {
     : timeZoneHeader || "Asia/Kolkata";
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const query = await isValidQueryHandler(event, z.object({
-    type: z.string()
+    type: z.string(),
+    country: z.string().optional()
   }))
-  const usage = await orgUsage(organizationId, timeZone, query.type);
+
+  const userCountry = query.country || "India"
+  
+  const usage = await orgUsage(organizationId, timeZone, query.type, userCountry);
 
   return usage;
 });

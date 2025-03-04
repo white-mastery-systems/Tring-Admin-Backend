@@ -48,6 +48,7 @@ export const authUserSchema = adminSchema.table("user", {
   customerId: varchar("customer_id"),
   contactPersonId: varchar("contact_person_id"),
   roleId: uuid("role_id").references(() => authUserRoleSchema.id),
+  isCreatedByZohoBilling: boolean("is_created_by_zoho_billing").default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

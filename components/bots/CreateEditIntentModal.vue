@@ -16,7 +16,7 @@
           <label
             class="dark:hover:bg-bray-800 flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
             Upload file
-            <input class="hidden" type="file" @change="handleFileChange" :accept="
+            <input class="hidden" type="file" multiple @change="handleFileChange" :accept="
                 (() => {
                   if (values.intent === 'images') {
                     return 'image/*';
@@ -30,9 +30,32 @@
             {{ errors.file }}
           </span>
         </div>
-        <p v-if="selectedFileName" class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
+        <!-- <p v-if="selectedFileName" class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
           {{ selectedFileName }}
+        </p> -->
+        <!-- {{ selectedFileName }} || asda -->
+        <p v-if="selectedFileName.length"
+          class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
+          <span v-for="(fileName, index) in selectedFileName" :key="index" class="block">
+            {{ fileName }}
+          </span>
         </p>
+
+        <!-- <p v-if="selectedFileName?.length"
+          class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
+          <span v-for="(fileName, index) in selectedFileName" :key="index" class="block">
+            {{ fileName }}
+          </span>
+        </p> -->
+        <!-- <div>
+          <p v-if="selectedFileName.length"
+            class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
+            <span v-for="(fileName, index) in selectedFileName" :key="index" class="block">
+              {{ fileName }}
+            </span>
+          </p>
+        </div> -->
+
         <!-- <div class="mt-3">
           <TextField name="fileName" label="Intent Name" helperText="Enter a unique name to identify the intent"
             placeholder="Eg:Amenties" />
@@ -111,8 +134,8 @@
     () => modalState.value,
     async (value) => {
       handleReset();
-      fileRef.value = null;
-      selectedFileName.value = null;
+      fileRef.value = [];
+      selectedFileName.value = [];
       if (!value.id) return;
       const intentDetails: any = await $fetch<{
         intent: string;
@@ -120,24 +143,62 @@
       }>(`/api/bots/${botDetails.id}/intents/${value.id}`);
       setFieldValue("intent", intentDetails.intent);
       if (intentDetails?.link) setFieldValue("link", intentDetails?.link);
-      fileRef.value =
-        intentDetails?.uploads?.map(
-          (file: any) =>
-            new File([file.content], file.name, { type: file.type }),
-        ) || [];
-      selectedFileName.value = intentDetails?.uploads
-        ?.map((file: any) => file.name)
-        .join(",");
+      // fileRef.value =
+      //   intentDetails?.uploads?.map(
+      //     (file: any) =>
+      //       new File([file.content], file.name, { type: file.type }),
+      //   ) || [];
+       fileRef.value =
+      intentDetails?.uploads?.map(
+        (file) => new File([file.content], file.name, { type: file.type })) || [];
+      // selectedFileName.value = intentDetails?.uploads
+      //   ?.map((file: any) => file.name)
+      //   .join(",");
+      selectedFileName.value =
+          intentDetails?.uploads?.map((file) => file.name) || [];
       // setFieldValue("fileName", intentDetails.fileName); // need fileName value from api response
     },
     { deep: true },
   );
 
-  const [intentField, intentFieldAttrs] = defineField("intent");
-  const [linkField, linkFieldAttrs] = defineField("link");
-  const [fileName, fileNameAttrs] = defineField("fileName");
+// Watch modalState changes
+// watch(
+//   () => modalState.value,
+//   async (value) => {
+//     handleReset();
+//     fileRef.value = [];
+//     selectedFileName.value = [];
+//     console.log("value top -- top", value);
+//     if (!value.id) return;
+//     console.log("value top -- bottom", value);
+//     console.log(name, content, type, "name, content, type -- name, content, type")
+//     const intentDetails: any = await $fetch<{
+//       intent: string;
+//       link?: string;
+//       uploads?: { name: string; content: Blob; type: string }[];
+//     }>(`/api/bots/${botDetails.value.id}/intents/${value.id}`);
+//     console.log(intentDetails, 'intentDetails -- intentDetails')
+//     setFieldValue("intent", intentDetails.intent);
+//     if (intentDetails?.link) setFieldValue("link", intentDetails?.link);
+
+//     // Assign files
+//     fileRef.value =
+//       intentDetails?.uploads?.map(
+//         (file) => new File([file.content], file.name, { type: file.type })
+//       ) || [];
+//     console.log(intentDetails?.uploads, "intentDetails?.uploads -- intentDetails?.uploads")
+//     // Assign filenames as an array
+//     selectedFileName.value =
+//       intentDetails?.uploads?.map((file) => file.name) || [];
+//     console.log(selectedFileName.value, "selectedFileName.value")
+//   },
+//   { deep: true, immediate: true },
+// );
+  // const [intentField, intentFieldAttrs] = defineField("intent");
+  // const [linkField, linkFieldAttrs] = defineField("link");
+  // const [fileName, fileNameAttrs] = defineField("fileName");
   const fileRef = ref<FileList | null>(null);
-  const selectedFileName = ref<string | null>(null);
+  const selectedFileName = ref();
 
   const handleFileChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
@@ -158,11 +219,12 @@
 
       }
       fileRef.value = target.files;
-      selectedFileName.value = files?.map((file) => file.name).join(",");
+      // selectedFileName.value = files?.map((file) => file.name).join(",");
+      selectedFileName.value = files?.map((file) => file.name) || [];
       // setFieldValue("file", Array.from(target.files));
     } else {
       fileRef.value = null;
-      selectedFileName.value = null;
+      selectedFileName.value = [];
       setFieldValue("file", "");
     }
   };

@@ -10,7 +10,7 @@
       </div>
       <slot />
     </div>
-    <div v-if="(route.name === 'auth-sign-in') || (route.name === 'auth-sign-up')"
+    <div v-if="(route.name === 'auth-sign-in') || (route.name === 'auth-sign-up') || (route.name === 'auth-password-updates')"
       class="right-card-align-signup relative w-[50%] h-full overflow-hidden rounded-[10px] hidden sm:flex md:hidden lg:flex items-center justify-center">
       <img src="assets/icons/signupImages.png" class="w-auto h-auto max-w-full max-h-full object-contain z-0"
         alt="Signup Image" />
