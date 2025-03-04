@@ -220,7 +220,9 @@ export const updateWhatsappMessageStatus = async (campaignId: string, phoneNumbe
     pid,
     messageStatus: status,
     sentAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
+    deliveredAt: null,
+    readAt: null
   }).where(and(
     eq(campaignWhatsappContactSchema.campaignId, campaignId),
     eq(campaignWhatsappContactSchema.phone, phoneNumber)

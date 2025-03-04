@@ -4,12 +4,7 @@ import { fetchFileFromUrl } from "./whatsappMedia";
 import { updateWhatsappMessageStatus } from "./db/campaign";
 import { uploadMedia } from "./whatsappMedia";
 
-export const whatsappReSendCampaign = async (
-  campaignId: string,
-  templateName: any,
-  contactList: any,
-  metadata: any,
-) => {
+export const whatsappReSendCampaign = async (campaignId: string, templateName: any, contactList: any, metadata: any ) => {
   try {
     let templateLanguageCode = "en";
     const phoneId = metadata?.pid;
