@@ -70,17 +70,17 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
         });
         logger.info(`Voice bot - generate ZohoCrm lead, ${JSON.stringify(generatedCrmLead)}`);
       } else if (voiceBot?.integration.crm === "sell-do") {
-        const { campaignId, projectId } = voiceBot?.integration?.metadata;
-        const apiKey = voiceBot?.integration.metadata.apiKey;
-        const data = await createLeadInSellDo(
-          notes,
-          botUser,
-          {},
-          apiKey,
-          projectId,
-          campaignId
-        );
-        logger.info(`Voice bot - generate Sell-do lead, ${JSON.stringify(data)}`);
+        // const { campaignId, projectId } = voiceBot?.integration?.metadata;
+        // const apiKey = voiceBot?.integration.metadata.apiKey;
+        // const data = await createLeadInSellDo(
+        //   notes,
+        //   botUser,
+        //   {},
+        //   apiKey,
+        //   projectId,
+        //   campaignId
+        // );
+        // logger.info(`Voice bot - generate Sell-do lead, ${JSON.stringify(data)}`);
       } else if (voiceBot?.integration.crm === "hubspot") {
         const data = await createContactInHubspot({
           token: voiceBot?.integration?.metadata?.access_token,
