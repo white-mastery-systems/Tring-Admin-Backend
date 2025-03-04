@@ -15,13 +15,13 @@ export default defineEventHandler(async (event) => {
             return errorResponse(event, 404, "No failed campaigns found")
         }
         const phoneNumbers = failedCampaigns.map((contact) => contact.phone)
-        const templateName = campaignData.botConfig.templateName;
+        const templateName = campaignData?.botConfig?.templateName;
         const [integrationData, contactList] = await Promise.all([
-            getIntegrationById(campaignData.organizationId, campaignData.botConfig.integrationId),
-            getContactsByBucketIdAndPhone(campaignData.bucketId, phoneNumbers),
+            getIntegrationById(campaignData?.organizationId, campaignData?.botConfig?.integrationId),
+            getContactsByBucketIdAndPhone(campaignData?.bucketId, phoneNumbers),
         ]);
         await whatsappReSendCampaign(campaignId, templateName, contactList, integrationData?.metadata);
-        return { status: true, camapignId: campaignId, message: "Campaign re-sent successfully" };
+        return { status: true, campaignId: campaignId, message: "Campaign re-sent successfully" };
     } catch (error:any) {
         return errorResponse(event, 404, error.message || "No failed campaigns found");
     }
