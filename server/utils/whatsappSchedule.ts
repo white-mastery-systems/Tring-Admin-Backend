@@ -57,41 +57,6 @@ export const scheduleWhatsAppCampaign = async (
     
     const headerParameter:any = []
     const headerComponent:any = []
-    // templateInformation.components.forEach(async(component: any) => {
-    //     if (
-    //       component.type === 'HEADER' &&
-    //       component.format === 'IMAGE'
-    //     ) {
-    //       const image = await fetchFileFromUrl(
-    //         component.example.header_handle[0],
-    //         templateName
-    //       );
-    //       const imageMedia = await uploadMedia(phoneId, accessToken, image, `${image.type}`);
-    //       headerParameter.push({
-    //         type: "image",
-    //         image: { id: imageMedia.id },
-    //       });
-    //     } else if (
-    //       component.type === 'HEADER' &&
-    //       component.format === 'DOCUMENT'
-    //     ) {
-    //       const document = await fetchFileFromUrl(
-    //         component.example.header_handle[0],
-    //         templateName,
-    //       );
-    //       const docMedia = await uploadMedia(
-    //         phoneId,
-    //         accessToken,
-    //         document,
-    //         `${document.type}`,
-    //       );
-    //       headerParameter.push({
-    //         type: "document",
-    //         document: { id: docMedia.id },
-    //       });
-    //     }
-    // });
-
     const headerTasks = templateInformation.components
       .filter((component: any) => component.type === "HEADER" && ["IMAGE", "DOCUMENT"].includes(component.format))
       .map(async (component: any) => {
@@ -203,3 +168,17 @@ export const scheduleWhatsAppCampaign = async (
     return { status: false };
   }
 };
+
+/* TO DO
+templateInformation.components.forEach(async(component: any) => {
+  if ( component.type === 'HEADER' && component.format === 'IMAGE') {
+    const image = await fetchFileFromUrl(component.example.header_handle[0],templateName);
+    const imageMedia = await uploadMedia(phoneId, accessToken, image, `${image.type}`);
+    headerParameter.push({type: "image", image: { id: imageMedia.id }});
+  } else if (component.type === 'HEADER' && component.format === 'DOCUMENT') {
+    const document = await fetchFileFromUrl(component.example.header_handle[0], templateName);
+    const docMedia = await uploadMedia(phoneId, accessToken, document, `${document.type}`);
+    headerParameter.push({ type: "document", document: { id: docMedia.id }});
+  }
+});
+*/

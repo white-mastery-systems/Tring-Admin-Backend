@@ -215,16 +215,18 @@ export const getWhatsappContactsByCampaignId = async (campaignId: string, query:
 }
 
 export const updateWhatsappMessageStatus = async (campaignId: string, phoneNumber: string, messageId: string, pid: string, status: string) => {
-  return await db.update(campaignWhatsappContactSchema).set({
+  return (await db.update(campaignWhatsappContactSchema).set({
     messageId,
     pid,
     messageStatus: status,
     sentAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
+    deliveredAt: null,
+    readAt: null
   }).where(and(
     eq(campaignWhatsappContactSchema.campaignId, campaignId),
     eq(campaignWhatsappContactSchema.phone, phoneNumber)
-  ))
+  )).returning())[0]
 }
 
 export const updateWhatsappMessageStatusByMessageId = async (messageId: string, data: any) => {
