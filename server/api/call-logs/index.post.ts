@@ -5,6 +5,7 @@ const zodInsertCallLogsValidator = z.object({
   exophone: z.string(),
   from: z.string(),
   date: z.string(),
+  callStatus: z.string().optional(),
   duration: z.string(),
   direction: z.string(),
   callerName: z.string(),
@@ -17,12 +18,18 @@ const zodInsertCallLogsValidator = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-
   const body = await isValidBodyHandler(event, zodInsertCallLogsValidator)
 
   const data = await createCallLogs({
     ...body,
   })
+
+  const voicePlanUsage = await getOrgPlanUsage(body?.organizationId, "voice")
+  const callDuration = Math.round(Number(body?.duration) / 60)
+  
+  const totalMinutes = (voicePlanUsage?.interactionsUsed || 0) + callDuration
+
+  await updateSubscriptionPlanUsage(voicePlanUsage?.id!, { interactionsUsed: totalMinutes })
 
   return isValidReturnType(event, data)
 })
