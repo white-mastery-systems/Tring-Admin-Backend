@@ -6,24 +6,13 @@ const config = useRuntimeConfig();
 const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
-  const body = await readValidatedBody(event, (body: any) =>
-    zodSignUpSchema.safeParse({ ...body, role: "user" }),
-  );
+  const body = await isValidBodyHandler(event, z.object({
+    username: z.string(),
+    email: z.string(),
+    password: z.string()
+  }))
 
-  if (body.success === false)
-    return sendError(
-      event,
-      createError({
-        statusCode: 400,
-        message:
-          "Invalid User Data: The submitted user data is incorrect or incomplete.",
-        data: body.error.format(),
-      }),
-    );
-
-  debugger;
-
-  const isUserExists = await ifUserAlreadyExists(body.data.email);
+  const isUserExists = await ifUserAlreadyExists(body.email);
   if (isUserExists)
     return sendError(
       event,
@@ -35,26 +24,12 @@ export default defineEventHandler(async (event) => {
     );
 
   const user = await createUser({
-    email: body.data.email,
-    password: body.data.password,
+    username: body?.username,
+    email: body.email,
+    password: body.password,
     role: "admin",
   });
 
-  // console.log({ user: user.id })
-
-  // const accessToken = jwt.sign({ id: user.id }, config.secretKey, { expiresIn: "1h"})
-  // const refreshToken = jwt.sign({ id: user.id }, config.secretKey, { expiresIn: "1d"})
-
-  // console.log({ accessToken, refreshToken })
-
-  // setCookie(event, 'refreshToken', refreshToken, {
-  //   httpOnly: true,
-  //   sameSite: 'strict',
-  // });
-
-  // appendHeaders(event, {
-  //   Authorization: accessToken
-  // });
   const session = await lucia.createSession(user.id, {});
   appendHeader(
     event,
