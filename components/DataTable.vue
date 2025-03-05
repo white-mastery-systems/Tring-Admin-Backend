@@ -10,7 +10,8 @@
 
   import { ArrowUpNarrowWide } from "lucide-vue-next";
 
-  const props = defineProps<{
+const props = withDefaults(
+  defineProps<{
     data: T[];
     columns: ColumnDef<T, any>[];
     footer?: boolean;
@@ -22,6 +23,7 @@
     totalPageCount: number;
     height?: number;
     heightUnit?: string;
+    paginationControl: boolean;
   }>();
 
   const emits = defineEmits(["pagination", "limit"]);
@@ -120,7 +122,7 @@
         </UiTableFooter>
       </UiTable>
     </div>
-    <div
+    <div v-if="paginationControl"
       class="flex w-full flex-col pb-2 sm:pb-2 items-center justify-center space-y-2 overflow-x-scroll sm:flex-row sm:justify-between sm:space-y-0 md:pb-4 lg:pb-0 xl:pb-0">
       <span class="hidden w-[10%] text-xs text-gray-500 sm:hidden md:flex lg:flex xl:flex">Page {{ page }} of {{
         totalPageCount }}</span>

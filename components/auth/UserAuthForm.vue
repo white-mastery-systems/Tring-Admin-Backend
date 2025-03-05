@@ -27,7 +27,7 @@ const {
 } = useForm({
   validationSchema: formSchema,
   initialValues: {
-    fullName: "",
+    username: "",
     email: "",
     password: "",
   },
@@ -47,7 +47,7 @@ const onSubmit = handleSubmit(async (value) => {
   <div :class="cn('grid gap-6', $attrs.class ?? '')">
     <form @submit="onSubmit">
       <div class="grid gap-0">
-        <TextField type="text" name="fullName" placeholder="Full Name" />
+        <TextField type="text" name="username" placeholder="Full Name" />
         <TextField type="text" name="email" placeholder="Email" />
         <!-- Password Field -->
         <TextField type="password" name="password" placeholder="Password" />

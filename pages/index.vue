@@ -116,6 +116,7 @@
   import { Line } from "vue-chartjs";
   import ChatSession from "~/components/icons/ChatSession.vue";
   import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+  import { botStore } from '~/store/botStore';
   
   useHead({
     title: "Dashboard",
@@ -130,6 +131,7 @@
     CategoryScale,
   );
 
+const scrapData = botStore();
 const breadcrumbStore = useBreadcrumbStore();
 breadcrumbStore.setBreadcrumbs([
   {
@@ -165,7 +167,7 @@ const createBotNavList = ref([
   {
     title: "Create a Chatbot",
     subtitle: "Click here to deploy your new chatbot",
-    url: "/chat-bot",
+    url: "/chat-bot/create-bot",
   }, {
     title: "Create a Voicebot",
     subtitle: "Click here to deploy your new voicebot",

@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { botStore } from '~/store/botStore';
 
 const props = withDefaults(
   defineProps<{
@@ -39,7 +40,8 @@ const createNewBots = async (url: any) => {
       });
       console.log("getSingleBotDetails", getSingleBotDetails.id);
       if (getSingleBotDetails?.id) {
-        navigateTo(`chat-bot/${getSingleBotDetails.id}`);
+        // ${ getSingleBotDetails.id }
+        navigateTo(`chat-bot/create-bot/${getSingleBotDetails?.id}`);
       }
     } catch (error) {
       console.log("error", error);

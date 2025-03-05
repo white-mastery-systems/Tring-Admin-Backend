@@ -1,8 +1,11 @@
 <template>
   <page :title="''" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
     custom-back-router="/chat-bot">
+    <!-- <div>
+      <CreateBotForm />
+    </div> -->
     <div ref="scrollTarget" class="border-[1px] border-solid border-[#E4E4E7] rounded-lg p-2">
-      <WebScrapingForm :scrollTarget="scrollTarget" />
+      <WebScrapingForm />
     </div>
     <div>
       <CreateBotFields ref="childRef" @confirm="handleAddEditBot" />

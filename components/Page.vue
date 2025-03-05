@@ -20,7 +20,7 @@
       </UiBreadcrumbList>
     </UiBreadcrumb>
   </div>
-  <div class="overflow-y-auto" :class="[(route.path === '/auth/onboarding/billing') ? 'h-[100dvh]' : 'h-[calc(100dvh-4rem)]',
+  <div class="overflow-y-auto" :class="[(route.path === '/auth/onboarding/billing') ? 'h-[100dvh]' : 'h-[calc(100dvh-2.5rem)]',
     props.disablePadding 
       ? '' 
     : `${(leadPage === 'leads') ? (browserClass === 'brave-browser') ? 'pt-[10px] sm:pt-[10px]' : 'pt-[10px] sm:pt-[10px]' : 'pb-2 sm:pb-2'} px-2 sm:px-2 md:px-6 lg:px-6 xl:px-6 md:pt-0 lg:pt-0 xl:pt-0`,

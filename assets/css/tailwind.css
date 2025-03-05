@@ -306,6 +306,6 @@ input:-webkit-autofill {
   color: #000 !important;
 }
 * {
-  font-family: 'Inter', sans-serif;
-  /* font-family: "HeyWow"; */
+  /* font-family: 'Inter', sans-serif; */
+  font-family: "HeyWow";
 }

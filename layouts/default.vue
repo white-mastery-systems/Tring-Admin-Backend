@@ -105,12 +105,12 @@ const { breadcrumbs } = storeToRefs(breadcrumbStore);
   <SidebarProvider>
     <AppSidebar />
     <main class="w-full">
-      <div class="flex items-center h-16 shadow-sm px-4 gap-2 border-b-2 border-[#E4E4E7] py-5">
+      <div class="flex items-center h-10 shadow-sm px-4 gap-2 border-b-[1px] border-[#E4E4E7] py-2">
         <!-- class="flex sm:flex md:hidden" -->
-        <div class="flex items-center">
-          <UiSidebarTrigger class="text-[#334155]" />
+        <div class="flex items-center text-[12px]">
+          <UiSidebarTrigger class="text-[#334155] py-2" />
         </div>
-        <UiSeparator orientation="vertical" class="py-2 bg-[#E2E8F0] w-[1.5px]" />
+        <UiSeparator orientation="vertical" class="bg-[#E2E8F0]" />
         <!-- {{ breadcrumbs }} -->
         <BreadCrumbs :bread-crumbs="breadcrumbs" />
         <div class="flex items-center gap-5">

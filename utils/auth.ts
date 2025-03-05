@@ -116,7 +116,13 @@ const OtpVerification = async (values: Record<string, any>) => {
       body: values,
     });
     toast.success("OTP verified successfully!");
-    return navigateTo("/auth/onboarding");
+    await $fetch('/api/auth/onboarding', {
+      method: 'POST',
+      body: {
+        companyName: 'Self'
+      },
+    });
+    return navigateTo("/auth/onboarding/billing");
   } catch (error: any) {
     toast.error(error?.statusMessage || "Invalid OTP");
   }

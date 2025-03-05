@@ -41,6 +41,7 @@ import { createColumnHelper } from "@tanstack/vue-table";
 import { useState } from "#app";
 import { useRouter } from "vue-router";
 import { useBotType } from "~/composables/botManagement/chatBot/useBotType";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
 definePageMeta({
   middleware: "user",
@@ -49,6 +50,14 @@ useHead({
   title: "Bot Management | Chat Bot",
 });
 const router = useRouter()
+const breadcrumbStore = useBreadcrumbStore();
+
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "CreateBot", // Dynamic name
+    to: `/chat-bot`,
+  },
+]);
 
 const searchBot = ref("");
 const agentModalState = ref({ open: false, id: null });

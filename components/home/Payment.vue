@@ -61,13 +61,15 @@ const verifyPayment = async (response) => {
   </button>
 </template> -->
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 
 const text = ref("");
 
 const generatePDFAndUpload = async () => {
+  if (!text.value.trim()) return; // Prevent calling API with empty text
+
   const pdf = new jsPDF();
 
   // Create a temporary div to render text properly
@@ -111,20 +113,23 @@ const generatePDFAndUpload = async () => {
   // documents.value = await listDocumentsByBotId(paramId.params.id);
 };
 
+// **Watch for text changes and call API automatically**
+watch(text, async (newText) => {
+  if (newText.trim()) {
+    await generatePDFAndUpload();
+  }
+});
 </script>
 
 <template>
   <div class="p-4 w-full">
-    <UiTextarea
-      v-model="text"
-      placeholder="Enter text..."
-      class="border p-2 h-40"
-    ></UiTextarea>
+    <UiTextarea v-model="text" placeholder="Enter text..." class="border p-2 h-40" :readonly="true"></UiTextarea>
     <UiButton @click="generatePDFAndUpload" class="flex mt-2 text-white px-4 py-2 rounded">
       Download PDF
     </UiButton>
   </div>
 </template>
+
 
 
 <!-- we can use like this 
