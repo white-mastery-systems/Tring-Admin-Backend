@@ -181,7 +181,7 @@ export default defineEventHandler(async (event) => {
         // `${body?.botUser?.countryCode.split("+")[1]}` +
         //   botIntegration?.integration?.metadata?.phoneNumber,
         if (body?.note){
-          const keywords = ["Appointment", "Call Scheduled", "Site Visit"];
+          const keywords = ["Appointment", "Call Scheduled", "Site Visit", "Campaign Lead Interacted"];
           whatsappPayload.intent = keywords.find((keyword) => body?.note.includes(keyword)) || "Lead";
         }
         const data = await createWhatsAppMessage(

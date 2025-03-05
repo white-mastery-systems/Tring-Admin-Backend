@@ -30,7 +30,7 @@ export const voicebotDialer = async () => {
         logger.error("No call list available to dial call")
         return
       }
-      logger.info(`voiceScheduleContactList: ${voiceScheduleContactList.length}`)
+      logger.info(`voiceScheduleContactList: ${JSON.stringify(voiceScheduleContactList)}`)
 
       const botInfo: any = activeVoicebots.find((bot) =>  bot.id === campaign.botConfig.botId)
       const ivrConfig = exophoneList.find((exophone) => exophone.id === botInfo?.ivrConfig)
@@ -73,17 +73,18 @@ export const voicebotDialer = async () => {
               body: data
             })
             if(dialVoiceCall) {
-              await updateVoiceCallStatus(schedular.id, { callSid: dialVoiceCall, callStatus: "dialed" })
+              // await updateVoiceCallStatus(schedular.id, { callSid: dialVoiceCall, callStatus: "dialed" })
+              logger.info(`Call initiated successfully. Updating status to "dialed" for ID: ${schedular.id}`);
+              const updatedVoiceCall = await updateVoiceCallStatus(schedular.id, { callSid: dialVoiceCall, callStatus: "dialed" });
+              logger.info(`Call status updated successfully for ID: ${updatedVoiceCall.id}`);
             }
           } catch (error: any) {
             logger.error(`voice Dial API Error: ${error.message}`)
            await updateVoiceCallStatus(schedular.id, { callStatus: "failed" })
           }    
        }
-
     })
   )
-
 } catch (error: any) {
     logger.error(`voicebot - Dialer schedular Error:,${JSON.stringify(error.message)}`)
     throw new Error(error)
