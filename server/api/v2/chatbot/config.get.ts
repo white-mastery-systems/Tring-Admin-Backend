@@ -1,13 +1,15 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-import { chatbotConfiguration } from "~/server/utils/chatbotConfig"
+import { chatbotConfigs } from "~/server/utils/chatbotConfigs"
+
 
 export default defineEventHandler(async (event) => {
   try {
     const query = await isValidQueryHandler(event, z.object({
       type: z.string()
     }))
-    const data = chatbotConfiguration.find((i)=> i.type === query?.type)
+    const data = chatbotConfigs[query?.type?.toLowerCase()];
+  
     return data
   } catch (error: any) {
     logger.error(`Get chatbot configuration by type API Error: ${JSON.stringify(error.message)}`)
