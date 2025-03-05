@@ -296,12 +296,13 @@ export const getNotDialedVoiceCallList = async() => {
 }
 
 export const updateVoiceCallStatus = async(id: string, body: any) => {
-  return await db.update(voicebotSchedularSchema)
+  return (await db.update(voicebotSchedularSchema)
     .set({ 
       ...body,
       updatedAt: new Date()
     })
     .where(eq(voicebotSchedularSchema.id, id))
+    .returning())[0]
 }
 
 // get organization voicebot plan
