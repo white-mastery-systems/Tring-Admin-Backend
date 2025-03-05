@@ -10,12 +10,11 @@ const config = useRuntimeConfig()
 
 export const voicebotDialer = async () => {
   try {
-    const [activeVoicebots, exophoneList, campaignList, voiceContactList, notDialedScheduledVoiceCallList, orgVoiceSubscription] = await Promise.all([
+    const [activeVoicebots, exophoneList, campaignList, voiceContactList, orgVoiceSubscription] = await Promise.all([
       getAllActiveVoicebots(),
       getAllExoPhones(),
       getAllVoiceCampaigns(),
       getAllVoicebotContacts(),
-      getNotDialedVoiceCallList(),
       getAllOrgVoiceSubscription()
     ])
 
@@ -24,11 +23,14 @@ export const voicebotDialer = async () => {
     campaignList.map(async (campaign: any) => {
       const noOfCallsPerTrigger = parseInt(campaign?.botConfig?.callsPerTrigger) || 1
 
+      const notDialedScheduledVoiceCallList = await getNotDialedVoiceCallList()
+
       const voiceScheduleContactList = notDialedScheduledVoiceCallList.filter((schedular) => schedular.campaignId === campaign.id).slice(0, noOfCallsPerTrigger)
       if(!voiceScheduleContactList.length) {
         logger.error("No call list available to dial call")
         return
-      } 
+      }
+      logger.info(`voiceScheduleContactList: ${voiceScheduleContactList.length}`)
 
       const botInfo: any = activeVoicebots.find((bot) =>  bot.id === campaign.botConfig.botId)
       const ivrConfig = exophoneList.find((exophone) => exophone.id === botInfo?.ivrConfig)
