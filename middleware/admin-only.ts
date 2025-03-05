@@ -12,10 +12,8 @@ export default defineNuxtRouteMiddleware(async (_to) => {
     }
      else return navigateTo("/auth/sign-in");
   }
-
   // if (!user.value) return navigateTo("/auth/sign-in");
-
-  if (user.value.role !== AuthRoles.Admin) {
-    return authHandlers.redirectToRoleHome(user.value.role as AuthRoles);
-  }
+  // if (user.value.role !== AuthRoles.Admin) {
+  //   return authHandlers.redirectToRoleHome(user.value.role as AuthRoles);
+  // }
 });

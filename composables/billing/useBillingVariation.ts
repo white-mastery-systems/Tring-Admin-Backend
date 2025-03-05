@@ -1,7 +1,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 
-export function useBillingVariation(userDetails: any) {
+export function useBillingVariation(userDetails: any, queryType: any) {
   const userLocationDetails = ref(null);
   const pending = ref(true);
   const error = ref(null);
@@ -316,7 +316,8 @@ export function useBillingVariation(userDetails: any) {
     },
   ]);
   const billingVariation = computed(() => {
-    return route?.query?.type === "voice" ? voiceBillingVariation.value : chatBillingVariation.value;
+    console.log("route.query -- route.query", queryType)
+    return queryType === "voice" ? voiceBillingVariation.value : chatBillingVariation.value;
   });
 
   return { billingVariation, pending, userLocationDetails, error };

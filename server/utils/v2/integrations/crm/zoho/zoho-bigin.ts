@@ -82,7 +82,7 @@ export const newGenerateLeadInZohoBigin: any = async ({ body, integrationData }:
   try { 
     const metadata = integrationData?.metadata
 
-    console.log("newGenerateLeadInZohoBigin body", { data: [body] })
+    // console.log("newGenerateLeadInZohoBigin body", { data: [body] })
     const generatedPipeline = await $fetch(
       `${zohoIntegrationApiBaseUrls[metadata?.location]}/bigin/v2/Pipelines`,
       {

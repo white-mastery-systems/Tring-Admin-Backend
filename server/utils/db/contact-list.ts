@@ -1,3 +1,5 @@
+import { inArray } from "drizzle-orm";
+
 const db = useDrizzle();
 
 // chat contacts bucket
@@ -173,6 +175,15 @@ export const getContactsByChatbotBucketId = async (contactListId: string) => {
   return await db.query.contactListContactsSchema.findMany({
     with: {
       contacts: true,
+    },
+    where: eq(contactListContactsSchema.contactListId, contactListId),
+  });
+};
+
+export const getContactsByBucketIdAndPhone = async (contactListId: string, phoneNumbers:any) => {
+  return await db.query.contactListContactsSchema.findMany({
+    with: {
+      contacts:{ where: inArray(contactSchema.phone, phoneNumbers) },
     },
     where: eq(contactListContactsSchema.contactListId, contactListId),
   });

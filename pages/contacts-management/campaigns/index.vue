@@ -104,8 +104,13 @@ const {
     page.value = campaign.page;
     totalPageCount.value = campaign.totalPageCount;
     totalCount.value = campaign.totalCount;
-    return campaign.data;
-  },
+
+    return campaign.data.map((item: any) => ({
+      ...item, // Spread each object inside the array
+      totalCount: `${item.interactionCount} / ${item.totalCount}`, // Ensure double backslash
+    }));
+  }
+
 });
 
 const deleteCampaigntate = ref({ open: false, id: null });
@@ -196,6 +201,9 @@ const columns = [
   }),
   columnHelper.accessor("createdAt", {
     header: "Created At",
+  }),
+  columnHelper.accessor("totalCount", {
+    header: "Interaction / Total",
   }),
   columnHelper.accessor("id", {
     header: "Action",

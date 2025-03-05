@@ -54,55 +54,40 @@ export const scheduleWhatsAppCampaign = async (
     const templateInformation = templateDetailList?.find(
       (i: any) => i.name === templateName,
     );
-
-    templateInformation.components.forEach(async(component: any) => {
-        if (
-          component.type === 'HEADER' &&
-          component.format === 'IMAGE'
-        ) {
-          const image = await fetchFileFromUrl(
-            component.example.header_handle[0],
-            templateName
-          );
-          const imageMedia = await uploadMedia(phoneId, accessToken, image, `${image.type}`);
-          let parameters: any = [];
-          parameters.push({
-            type: 'image',
-            image: {
-              id: imageMedia.id,
-            },
-          });
-          templateComponents.push({
-            type: component.type,
-            parameters,
-          });
-        } else if (
-          component.type === 'HEADER' &&
-          component.format === 'DOCUMENT'
-        ) {
-          const document = await fetchFileFromUrl(
+    
+    const headerParameter:any = []
+    const headerComponent:any = []
+    const headerTasks = templateInformation.components
+      .filter((component: any) => component.type === "HEADER" && ["IMAGE", "DOCUMENT"].includes(component.format))
+      .map(async (component: any) => {
+        try {
+          const media = await fetchFileFromUrl(
             component.example.header_handle[0],
             templateName,
           );
-          const docMedia = await uploadMedia(
+          const uploadedMedia = await uploadMedia(
             phoneId,
             accessToken,
-            document,
-            `${document.type}`,
+            media,
+            media.type,
           );
-          let parameters: any = [];
-          parameters.push({
-            type: 'document',
-            document: {
-              id: docMedia.id,
-            },
+
+          headerParameter.push({
+            type: component.format.toLowerCase(),
+            [component.format.toLowerCase()]: { id: uploadedMedia.id },
           });
-          templateComponents.push({
-            type: component.type,
-            parameters,
-          });
+        } catch (error:any) {
+          logger.error("Error processing media:", error.message);
         }
-    });
+      });
+
+    await Promise.all(headerTasks);
+    if (headerParameter.length) {
+      headerComponent.push({
+        type: "header",
+        parameters: headerParameter,
+      });
+    }
 
     const event = schedule.scheduleJob(
       { year, month, date: day, hour: hours, minute: minutes, tz: "UTC" },
@@ -110,56 +95,60 @@ export const scheduleWhatsAppCampaign = async (
         logger.info("Inside scheduling...");
         contactList.forEach(
           async ({ contacts: contact }: { contacts: any }) => {
-            const phoneNumber =
-              `${contact.countryCode}${contact.phone}`.replace("+", "");
+            const bodyComponents:any = [];
+            const bodyParameters:any = [];
+            const phoneNumber =`${contact.countryCode}${contact.phone}`.replace("+", "");
             
             if (templateInformation) {
               templateLanguageCode = templateInformation.language;
               templateInformation.components.forEach((component: any) => {
-               if (
-                  component.type === "BODY" &&
-                  component.example?.body_text
-                ) {
-                  let parameters: any = [];
+               if (component.type === "BODY" && component.example?.body_text) {
                   component.example.body_text[0].map((variable: string) => {
-                    if (variable === "firstName") {
-                      parameters.push({
-                        type: "text",
-                        text: contact.firstName,
-                      });
-                    } else if (variable === "lastName") {
-                      parameters.push({
-                        type: "text",
-                        text: contact.lastName,
-                      });
-                    } else if (variable === "fullName") {
-                      parameters.push({
-                        type: "text",
-                        text: `${contact.firstName} ${contact.lastName}`,
-                      });
-                    } else if (variable === "mobile") {
-                      parameters.push({ type: "text", text: phoneNumber });
+                    if (variable === "firstName" && contact.firstName) {
+                      bodyParameters.push({ type: "text", text: contact.firstName })
+                    } else if (variable === "lastName" && contact.lastName) {
+                      bodyParameters.push({ type: "text", text: contact.lastName })
+                    } else if (variable === "fullName" ) {
+                      bodyParameters.push({ type: "text", text: `${contact.firstName} ${contact.lastName}`, })
+                    } else if (variable === "email" ) {
+                      bodyParameters.push({ type: "text", text: contact.email })
+                    } else if (variable === "mobile" && contact.phone) {
+                      bodyParameters.push({ type: "text", text: `+${contact.countryCode} ${contact.phone}` })
                     }
                   });
-                  templateComponents.push({
-                    type: component.type,
-                    parameters,
-                  });
+                } else if (component.type === "BODY" && component.text && component.text.match(/{{\d+}}/g)) {
+                  if(component.includes("{{1}}") && contact.firstName) {
+                    bodyParameters.push({ type: "text", text: contact.firstName })
+                  }
+                  if(component.includes("{{2}}") && contact.lastName) {
+                    bodyParameters.push({ type: "text", text: contact.lastName });
+                  }
+                  if(component.includes("{{3}}") && contact.email) {
+                    bodyParameters.push({ type: "text", text: contact.email });
+                  }
+                  if(component.includes("{{4}}") && contact.phone) {
+                    bodyParameters.push({ type: "text", text: `+${contact.countryCode} ${contact.phone}` });
+                  }
                 }
               });
             }
-            // console.log({ Component: JSON.stringify(templateComponents)})
+
+            if(bodyParameters.length) {
+              bodyComponents.push({ type: "body", parameters: bodyParameters });
+            }
 
             const data: any = await sendWhatsappTemplateMessage(
               phoneId,
               accessToken,
               phoneNumber,
               templateName,
-              templateComponents,
+              [...headerComponent, ...bodyComponents],
               templateLanguageCode,
             );
             logger.info(`whatsapp response: ${JSON.stringify(data)}`);
-            await updateWhatsappMessageStatus(campaignId, contact.phone, data?.messages[0]?.id, phoneId, "sent")
+            if(data?.messages[0]?.id) {
+              await updateWhatsappMessageStatus(campaignId, contact.phone, data?.messages[0]?.id, phoneId, "sent")
+            }
           },
         );
       },
@@ -179,3 +168,17 @@ export const scheduleWhatsAppCampaign = async (
     return { status: false };
   }
 };
+
+/* TO DO
+templateInformation.components.forEach(async(component: any) => {
+  if ( component.type === 'HEADER' && component.format === 'IMAGE') {
+    const image = await fetchFileFromUrl(component.example.header_handle[0],templateName);
+    const imageMedia = await uploadMedia(phoneId, accessToken, image, `${image.type}`);
+    headerParameter.push({type: "image", image: { id: imageMedia.id }});
+  } else if (component.type === 'HEADER' && component.format === 'DOCUMENT') {
+    const document = await fetchFileFromUrl(component.example.header_handle[0], templateName);
+    const docMedia = await uploadMedia(phoneId, accessToken, document, `${document.type}`);
+    headerParameter.push({ type: "document", document: { id: docMedia.id }});
+  }
+});
+*/

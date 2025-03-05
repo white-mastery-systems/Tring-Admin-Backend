@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
 
   const query = await isValidQueryHandler(event, zodQueryvalidator)
   
-  const data = await campaignList(organizationId, query, timeZone)
+  const data = await campaignList(organizationId, timeZone, query)
 
   return data
 })

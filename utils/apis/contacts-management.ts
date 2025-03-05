@@ -62,10 +62,9 @@ export const getWhatsappTemplateList = async (integrationId: string) => {
   return getTemplateDetails;
 };
 
-
 export const getSingleCampaingsDetails = async (id: string) => {
-  const getBucketDetails = await $fetch<SelectChatBot & { documents: SelectDocument[] }>(
+  const getCampaingsDetails = await $fetch<SelectChatBot & { documents: SelectDocument[] }>(
     `/api/org/campaign/` + id,
   );
-  return getBucketDetails;
+  return getCampaingsDetails;
 };

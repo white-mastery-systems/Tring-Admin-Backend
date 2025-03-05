@@ -35,8 +35,8 @@ export const getAllVoiceCampaigns = async () => {
 
 export const campaignList = async (
   organizationId: string,
-  query?: any,
   timeZone: string,
+  query?: any,
 ) => {
   let page,
     offset,
@@ -47,16 +47,57 @@ export const campaignList = async (
     limit = parseInt(query.limit);
     offset = (page - 1) * limit;
   }
+
   let data: any = await db.query.campaignSchema.findMany({
-    where: eq(campaignSchema.organizationId, organizationId),
-    orderBy: [desc(campaignSchema.createdAt)],
-  });
-  data = data.map((i: any) => ({
-    ...i,
-    createdAt: momentTz(i?.createdAt)
+      where: eq(campaignSchema.organizationId, organizationId),
+      orderBy: [desc(campaignSchema.createdAt)],
+    })
+
+  const [campaignTotalContactList, campaignReadMsgContactList, voicebotContactList, dialedContactList] = await Promise.all([
+    db.query.campaignWhatsappContactSchema.findMany({
+      where: 
+        eq(campaignWhatsappContactSchema.organizationId, organizationId)
+      
+    }),
+    db.query.campaignWhatsappContactSchema.findMany({
+      where: and(
+        eq(campaignWhatsappContactSchema.organizationId, organizationId),
+        eq(campaignWhatsappContactSchema.messageStatus, "read")
+      )
+    }),
+    db.query.voicebotSchedularSchema.findMany({
+       where: 
+        eq(voicebotSchedularSchema.organizationId, organizationId)
+    }),
+    db.query.voicebotSchedularSchema.findMany({
+       where: and(
+          eq(voicebotSchedularSchema.organizationId, organizationId),
+          eq(voicebotSchedularSchema.callStatus, "dialed")
+       )    
+    })
+  ]);
+
+  data = data.map((i: any) => {
+    let interactionCount, totalCount = 0
+    if(i.contactMethod === "whatsapp") {
+      totalCount = campaignTotalContactList?.filter((j)=> j.campaignId === i.id).length || 0
+      interactionCount = campaignReadMsgContactList?.filter((j)=> j.campaignId === i.id).length || 0
+    } 
+
+    if(i.contactMethod === "voice") {
+      totalCount = voicebotContactList?.filter((j)=> j.campaignId === i.id).length || 0
+      interactionCount = dialedContactList?.filter((j)=> j.campaignId === i.id).length || 0
+    }
+
+     return {
+        ...i,
+       totalCount,
+       interactionCount,
+       createdAt: momentTz(i?.createdAt)
       .tz(timeZone)
       .format("DD MMM YYYY hh:mm A"),
-  }));
+    };
+  })
 
   if (query?.page && query?.limit) {
     const paginatedCampaign = data.slice(offset, offset + limit);
@@ -72,18 +113,10 @@ export const campaignList = async (
   }
 };
 
-export const getCampaignById = async (campaignId: string, timeZone: string) => {
+export const getCampaignById = async (campaignId: string) => {
   const data: any = await db.query.campaignSchema.findFirst({
     where: eq(campaignSchema.id, campaignId),
   });
-  // if (data) {
-  //   data.createdAt = momentTz(data?.createdAt)
-  //     .tz(timeZone)
-  //     .format("DD MMM YYYY hh:mm A");
-  //   data.campaignTime = momentTz(data?.campaignTime)
-  //     .tz(timeZone)
-  //     .format("DD MMM YYYY HH:mm");
-  // }
   return data;
 };
 
@@ -182,25 +215,40 @@ export const getWhatsappContactsByCampaignId = async (campaignId: string, query:
 }
 
 export const updateWhatsappMessageStatus = async (campaignId: string, phoneNumber: string, messageId: string, pid: string, status: string) => {
-  return await db.update(campaignWhatsappContactSchema).set({
+  return (await db.update(campaignWhatsappContactSchema).set({
     messageId,
     pid,
     messageStatus: status,
     sentAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
+    deliveredAt: null,
+    readAt: null
   }).where(and(
     eq(campaignWhatsappContactSchema.campaignId, campaignId),
     eq(campaignWhatsappContactSchema.phone, phoneNumber)
-  ))
+  )).returning())[0]
 }
 
 export const updateWhatsappMessageStatusByMessageId = async (messageId: string, data: any) => {
+  const previousCampaignWhatspp = await db.query.campaignWhatsappContactSchema.findFirst({
+    where: eq(campaignWhatsappContactSchema.messageId, messageId)
+  })
+
+  const payload: any = {
+    ...data
+  }
+ 
+  if(data?.messageStatus === "delivered") {
+    payload.deliveredAt = new Date()
+  } else if(data?.messageStatus === "read") {
+    payload.readAt = new Date()
+    if(previousCampaignWhatspp?.messageStatus !== "delivered" && data?.messageStatus === "read") {
+      payload.deliveredAt = new Date()
+    }
+  }
+
   return  await db.update(campaignWhatsappContactSchema).set({
-    ...data,
-    ...(data?.messageStatus === "read" 
-      ? { deliveredAt: new Date(), readAt: new Date() }
-      : { deliveredAt: new Date()}
-    ),
+    ...payload,
     updatedAt: new Date()
   }).where(
     and(
@@ -214,4 +262,13 @@ export const getWhatsappCampaignByMessageId = async (messageId: string) => {
   return await db.query.campaignWhatsappContactSchema.findFirst({
     where: eq(campaignWhatsappContactSchema.messageId, messageId)
   })
+}
+
+export const getWhatsappCampaignCanactsByMsgStatus = async (campaignId:string, msgStatus?:string) => {
+  msgStatus = msgStatus ?? "sent"
+  const data = await db.query.campaignWhatsappContactSchema.findMany({
+    where: and(eq(campaignWhatsappContactSchema.campaignId, campaignId), eq(campaignWhatsappContactSchema.messageStatus, msgStatus))
+  })
+
+  return (data.length) ? data: null
 }
