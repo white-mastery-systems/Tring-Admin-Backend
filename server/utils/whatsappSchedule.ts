@@ -51,9 +51,7 @@ export const scheduleWhatsAppCampaign = async (
       accessToken,
       templateName,
     );
-    const templateInformation = templateDetailList?.find(
-      (i: any) => i.name === templateName,
-    );
+    const templateInformation = templateDetailList?.find((i: any) => i.name === templateName);
     
     const headerParameter:any = []
     const headerComponent:any = []
@@ -104,16 +102,16 @@ export const scheduleWhatsAppCampaign = async (
               templateInformation.components.forEach((component: any) => {
                if (component.type === "BODY" && component.example?.body_text) {
                   component.example.body_text[0].map((variable: string) => {
-                    if (variable === "firstName" && contact.firstName) {
+                    if (["firstname", "first name"].includes(variable.toLocaleLowerCase()) && contact.firstName) {
                       bodyParameters.push({ type: "text", text: contact.firstName })
-                    } else if (variable === "lastName" && contact.lastName) {
+                    } else if (["lastname","last name"].includes(variable.toLocaleLowerCase())&& contact.lastName) {
                       bodyParameters.push({ type: "text", text: contact.lastName })
-                    } else if (variable === "fullName" ) {
+                    } else if (["fullname", "full name", "user name", "username","name"].includes(variable.toLocaleLowerCase())) {
                       bodyParameters.push({ type: "text", text: `${contact.firstName} ${contact.lastName}`, })
-                    } else if (variable === "email" ) {
+                    } else if (variable.toLocaleLowerCase() === "email" ) {
                       bodyParameters.push({ type: "text", text: contact.email })
-                    } else if (variable === "mobile" && contact.phone) {
-                      bodyParameters.push({ type: "text", text: `+${contact.countryCode} ${contact.phone}` })
+                    } else if (["mobile","phone", "phone no", "mobile no"].includes(variable.toLocaleLowerCase()) && contact.phone) {
+                      bodyParameters.push({ type: "text", text: `+${phoneNumber}` })
                     }
                   });
                 } else if (component.type === "BODY" && component.text && component.text.match(/{{\d+}}/g)) {
@@ -127,7 +125,7 @@ export const scheduleWhatsAppCampaign = async (
                     bodyParameters.push({ type: "text", text: contact.email });
                   }
                   if(component.includes("{{4}}") && contact.phone) {
-                    bodyParameters.push({ type: "text", text: `+${contact.countryCode} ${contact.phone}` });
+                    bodyParameters.push({ type: "text", text: `+${phoneNumber}` });
                   }
                 }
               });
