@@ -7,7 +7,7 @@ const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
   const body = await isValidBodyHandler(event, z.object({
-    username: z.string(),
+    username: z.string().optional(),
     email: z.string(),
     password: z.string()
   }))
