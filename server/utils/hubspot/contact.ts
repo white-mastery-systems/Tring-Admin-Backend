@@ -1,3 +1,4 @@
+import { logger } from "~/server/logger";
 import { generateHubspotAccessTokenWithRefreshToken } from "./auth";
 
 export async function createContactInHubspot({
@@ -11,7 +12,9 @@ export async function createContactInHubspot({
   token: string;
   refreshToken: string;
   body: any;
-  integrationData: any;
+  firstName: string,
+  lastName: string,
+  botIntegration: any;
 }) {
   try {
     const data = await $fetch(
@@ -26,7 +29,7 @@ export async function createContactInHubspot({
             phone: `${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
             company: "HubSpot",
             website: "hubspot.com",
-            lifecyclestage: "marketingqualifiedlead",
+            lifecyclestage: "marketingqualifiedlead"
           },
         },
         headers: {
@@ -64,6 +67,7 @@ export async function createContactInHubspot({
           body: body,
           firstName,
           lastName,
+          botIntegration,
         });
     }
   }
