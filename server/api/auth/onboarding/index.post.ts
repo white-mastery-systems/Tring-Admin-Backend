@@ -6,10 +6,10 @@ const db = useDrizzle();
 const config = useRuntimeConfig()
 
 const bodyValidationSchema = z.object({
-  name: z.string().min(1),
+  // name: z.string().min(1),
   companyName: z.string().min(1),
-  mobile: z.string(),
-  countryCode: z.string(),
+  // mobile: z.string(),
+  // countryCode: z.string(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -31,10 +31,7 @@ export default defineEventHandler(async (event) => {
   });
 
   const updatedUser = await updateUser(userId, {
-    username: body.name,
-    organizationId: org.id,
-    countryCode: body?.countryCode,
-    mobile: body?.mobile,
+    organizationId: org.id
   });
 
   // create default buckets and free-plan subscription
@@ -91,7 +88,6 @@ export default defineEventHandler(async (event) => {
             <p><strong>User Details:</strong></p>
             <p>Name: ${updatedUser.username}</p>
             <p>Email: ${updatedUser.email}</p>
-            <p>Mobile: ${updatedUser.countryCode} ${updatedUser.mobile}</p>
           </div>
         <p>Best,<br>support@tringlabs.ai</p>
       </div>`,

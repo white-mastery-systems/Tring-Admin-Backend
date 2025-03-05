@@ -73,3 +73,17 @@ export const getOrgTotalCallsInMins = async (organizationId: string, fromDate: D
   const totalMinutes = data.reduce((acc: any, item: any) => acc + Math.round(item?.duration / 60), 0)
   return totalMinutes
 }
+
+export const getCallLogsByCallStatus = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined, callStatus: string) => {
+  return await db.select({ createdAt: callLogSchema.createdAt })
+  .from(callLogSchema)
+  .where(
+    and(
+      ...(fromDate && toDate ? [
+         between(callLogSchema.createdAt, fromDate, toDate)
+      ] : []),
+      eq(callLogSchema.organizationId, organizationId),
+      eq(callLogSchema.callStatus, callStatus)
+    )
+  )
+}
