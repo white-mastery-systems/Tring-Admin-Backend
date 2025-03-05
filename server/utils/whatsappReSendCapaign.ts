@@ -91,7 +91,6 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
         );
         logger.info(`whatsapp response: ${JSON.stringify(data)}`);
         if(data?.messages[0]?.id) {
-          console.log("2222222222222222222222222222");
           await updateWhatsappMessageStatus(campaignId, contact?.phone, data?.messages[0]?.id, phoneId, "sent")
           console.log("3333333333333333333333333333");
         }
@@ -106,16 +105,16 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
       for (const component of templateInformation.components) {
         if (component.type === "BODY" && component.example?.body_text) {
           component.example.body_text[0].forEach((variable: string) => {
-            if (variable === "firstName" && contact?.firstName) {
+            if (["firstname", "first name"].includes(variable.toLocaleLowerCase()) && contact?.firstName) {
               bodyParameters.push({ type: "text", text: contact.firstName });
-            } else if (variable === "lastName" && contact?.lastName) {
+            } else if (["lastname","last name"].includes(variable.toLocaleLowerCase()) && contact?.lastName) {
               bodyParameters.push({ type: "text", text: contact.lastName });
-            } else if (variable === "fullName") {
-              bodyParameters.push({ type: "text", text: `${contact?.firstName} ${contact?.lastName}` });
-            } else if (variable === "email") {
+            } else if (["fullname", "full name", "user name", "username","name"].includes(variable.toLocaleLowerCase())) {
+              bodyParameters.push({ type: "text", text: `${contact?.firstName} ${contact?.lastName ?? ""}` });
+            } else if (variable.toLocaleLowerCase() === "email") {
               bodyParameters.push({ type: "text", text: contact.email });
-            } else if (variable === "mobile" && contact?.phone) {
-              bodyParameters.push({ type: "text", text: `+${contact?.countryCode} ${contact?.phone}` });
+            } else if (["mobile","phone","phone no", "mobile no"].includes(variable.toLocaleLowerCase()) && contact?.phone) {
+              bodyParameters.push({ type: "text", text: `+${phoneNumber}` });
             }
           });
         } else if (component.type === "BODY" && component.text?.match(/{{\d+}}/g)) {
@@ -129,7 +128,7 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
             bodyParameters.push({ type: "text", text: contact.email });
           }
           if (component.text.includes("{{4}}") && contact?.phone) {
-            bodyParameters.push({ type: "text", text: `+${contact?.countryCode} ${contact?.phone}` });
+            bodyParameters.push({ type: "text", text: `+${phoneNumber}` });
           }
         }
       }
