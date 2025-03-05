@@ -3,7 +3,7 @@ import { getOrgLeadsForAnalytics } from "./leads";
 import { getOrgChatsForAnalytics, getOrgInteractedChatsForAnalytics } from "./chats";
 import { getUniqueVisitorsForAnalytics } from "./uniqueVisitors";
 import { getOrgChatBotsByFilterForAnalytics, getOrgTotalChatBotsForAnalytics } from "./chatbot";
-import { getOrgTotalCalls, getOrgTotalCallsInMins, getOrgTotalVoicebots, getOrgVoicebotsByFilter, getOrgVoiceLeads } from "./voicebot";
+import { getCallLogsByCallStatus, getOrgTotalCalls, getOrgTotalCallsInMins, getOrgTotalVoicebots, getOrgVoicebotsByFilter, getOrgVoiceLeads } from "./voicebot";
 
 const db = useDrizzle()
 
@@ -68,6 +68,9 @@ export const getOrgAnalytics = async (
     const callDuration = await getOrgTotalCallsInMins(organizationId, fromDate, toDate)
 
     // TODO -> voice - answered_calls, unAnswered_calls, rejected_calls
+    const answeredCalls = await getCallLogsByCallStatus(organizationId, fromDate, toDate, "answered")
+    const unAnswerdCalls = await getCallLogsByCallStatus(organizationId, fromDate, toDate, "unanswered")
+    const rejectedCalls = await getCallLogsByCallStatus(organizationId, fromDate, toDate, "rejected")
 
     return { 
       chatLeads: leads.length,
@@ -84,7 +87,10 @@ export const getOrgAnalytics = async (
       inboundCalls: inboundCalls.length,
       outboundCalls: outboundCalls.length,
       voiceLeads: voiceLeads.length,
-      callDuration
+      callDuration,
+      answeredCalls: answeredCalls.length,
+      unAnswerdCalls: unAnswerdCalls.length,
+      rejectedCalls: rejectedCalls.length
     }
     
   } catch (error: any) {
