@@ -4,7 +4,7 @@ import { getAllExoPhones } from "./number-integration"
 import momentTz from "moment-timezone"
 import { getAllVoicebotContacts } from "./contacts"
 import { getAllVoiceCampaigns } from "./campaign"
-import { getAllOrgVoiceSubscription } from "./organization"
+import { getAllOrgVoiceZohoSubscription } from "./organization"
 
 const config = useRuntimeConfig()
 
@@ -15,7 +15,7 @@ export const voicebotDialer = async () => {
       getAllExoPhones(),
       getAllVoiceCampaigns(),
       getAllVoicebotContacts(),
-      getAllOrgVoiceSubscription()
+      getAllOrgVoiceZohoSubscription()
     ])
 
     // Create an array of promises for concurrent processing
@@ -54,7 +54,7 @@ export const voicebotDialer = async () => {
           }
     
           const orgSubscription = orgVoiceSubscription.find((subscription: any) => subscription.organizationId === campaign.organizationId)   
-          if(orgSubscription?.status !== "active") {
+          if(orgSubscription?.subscriptionStatus !== "active") {
             logger.error("Organization voice subscription plan status is not active")
             return 
           }

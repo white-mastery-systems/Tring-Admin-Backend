@@ -1,5 +1,5 @@
 export const realEstateConfigs = {
-    "type": "realEstate",
+    "type": "real-estate",
     "roles": [
         {
             "name": "Customer Support Executive",

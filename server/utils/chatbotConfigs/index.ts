@@ -7,15 +7,19 @@ import { financeAndBankingConfigs } from "./finance&Banking.config";
 import { telecommunicationConfigs } from "./telecommunication.config";
 import { energyAndUtilitiesConfigs } from "./energy&Utilities.config";
 import { travelAndHospitalityConfigs } from "./travel&Hospitality.config";
+import { educationAndTrainingConfig } from "./education&training.config";
+import { itServiceConfig } from "./it-service.config";
 
 export const chatbotConfigs: Record<string, any> = {
-  realEstate: realEstateConfigs,
-  governmentSector: governmentSectorConfigs,
-  financeAndBanking: financeAndBankingConfigs,
-  healthcare: healthCareConfigs,
-  ecommerce: ecommerceConfigs,
-  energyAndUtilities: energyAndUtilitiesConfigs,
-  telecommunications: telecommunicationConfigs,
-  travelAndHospitality: travelAndHospitalityConfigs,
-  logistics: logisticsConfigs
+  "real-estate": realEstateConfigs,
+  "government-sectors": governmentSectorConfigs,
+  "finance-banking": financeAndBankingConfigs,
+  "healthcare": healthCareConfigs,
+  "ecommerce": ecommerceConfigs,
+  "energy-utilities": energyAndUtilitiesConfigs,
+  "telecommunications": telecommunicationConfigs,
+  "travel-hospitality": travelAndHospitalityConfigs,
+  "logistics": logisticsConfigs,
+  "education-training": educationAndTrainingConfig,
+  "it-service": itServiceConfig
 };

@@ -143,6 +143,12 @@ export const getAllOrgVoiceSubscription = async() => {
   })
 }
 
+export const getAllOrgVoiceZohoSubscription = async () => {
+  return await db.query.adminSubscriptionSchema.findMany({
+    where: eq(adminSubscriptionSchema.serviceType, "voice")
+  })
+}
+
 export const updateOrgSubscriptionStatus = async(organizationId: string, status: string, type: string) => {
   await db
   .update(orgSubscriptionSchema)
