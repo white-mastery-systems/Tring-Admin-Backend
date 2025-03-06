@@ -1,5 +1,5 @@
 export const travelAndHospitalityConfigs = {
-    "type": "travel_&_hospitality",
+    "type": "travelAndHospitality",
     "roles": [
         {
             "name": "Travel Consultant",

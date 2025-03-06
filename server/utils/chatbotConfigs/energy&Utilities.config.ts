@@ -1,5 +1,5 @@
 export const energyAndUtilitiesConfigs = {
-    "type": "energy_&_utilities",
+    "type": "energyAndUtilities",
     "roles": [
         {
             "name": "Customer Support Executive",

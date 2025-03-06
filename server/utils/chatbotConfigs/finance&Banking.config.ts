@@ -1,5 +1,5 @@
 export const financeAndBankingConfigs = {
-    "type": "finance_&_banking",
+    "type": "financeAndBanking",
     "roles": [
         {
             "name": "Customer Support Executive",

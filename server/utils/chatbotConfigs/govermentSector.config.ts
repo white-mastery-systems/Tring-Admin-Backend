@@ -1,5 +1,5 @@
 export const governmentSectorConfigs = {
-    "type": "government_sector",
+    "type": "governmentSector",
     "roles": [
         {
             "name": "Citizen Support Executive",

@@ -1,21 +1,21 @@
 import { realEstateConfigs } from "./realEstate.config";
-import { governmentSectorConfigs } from "./govermentSector.config";
+import { healthCareConfigs } from "./healthCare.config";
 import { logisticsConfigs } from "./logistics.config";
-import { travelAndHospitalityConfigs } from "./travel&Hospitality.config";
+import { ecommerceConfigs } from "./ecommerce.config";
+import { governmentSectorConfigs } from "./govermentSector.config";
+import { financeAndBankingConfigs } from "./finance&Banking.config";
 import { telecommunicationConfigs } from "./telecommunication.config";
 import { energyAndUtilitiesConfigs } from "./energy&Utilities.config";
-import { ecommerceConfigs } from "./ecommerce.config";
-import { healthCareConfigs } from "./healthCare.config";
-import { financeAndBankingConfigs } from "./finance&Banking.config";
+import { travelAndHospitalityConfigs } from "./travel&Hospitality.config";
 
 export const chatbotConfigs: Record<string, any> = {
-  real_estate: realEstateConfigs,
-  government_sector: governmentSectorConfigs,
-  finance_banking: financeAndBankingConfigs,
+  realEstate: realEstateConfigs,
+  governmentSector: governmentSectorConfigs,
+  financeAndBanking: financeAndBankingConfigs,
   healthcare: healthCareConfigs,
   ecommerce: ecommerceConfigs,
-  energy_utilities: energyAndUtilitiesConfigs,
+  energyAndUtilities: energyAndUtilitiesConfigs,
   telecommunications: telecommunicationConfigs,
-  travel_hospitality: travelAndHospitalityConfigs,
+  travelAndHospitality: travelAndHospitalityConfigs,
   logistics: logisticsConfigs
 };
