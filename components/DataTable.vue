@@ -24,7 +24,16 @@ const props = withDefaults(
     height?: number;
     heightUnit?: string;
     paginationControl: boolean;
-  }>();
+  }>(),
+  {
+    footer: false,
+    pageSize: 10,
+    isLoading: false,
+    height: 500,
+    heightUnit: "px",
+    paginationControl: true,
+  }
+);
 
   const emits = defineEmits(["pagination", "limit"]);
 
