@@ -181,12 +181,13 @@ export const getContactsByChatbotBucketId = async (contactListId: string) => {
 };
 
 export const getContactsByBucketIdAndPhone = async (contactListId: string, phoneNumbers:any) => {
-  return await db.query.contactListContactsSchema.findMany({
+  const list =  await db.query.contactListContactsSchema.findMany({
     with: {
       contacts:{ where: inArray(contactSchema.phone, phoneNumbers) },
     },
     where: eq(contactListContactsSchema.contactListId, contactListId),
   });
+  return list.filter((i:any)=> i.contacts !== null)
 };
 
 // delete contact link with bucket
