@@ -4,19 +4,18 @@ import { getAllExoPhones } from "./number-integration"
 import momentTz from "moment-timezone"
 import { getAllVoicebotContacts } from "./contacts"
 import { getAllVoiceCampaigns } from "./campaign"
-import { getAllOrgVoiceSubscription } from "./organization"
+import { getAllOrgVoiceZohoSubscription } from "./organization"
 
 const config = useRuntimeConfig()
 
 export const voicebotDialer = async () => {
   try {
-    const [activeVoicebots, exophoneList, campaignList, voiceContactList, notDialedScheduledVoiceCallList, orgVoiceSubscription] = await Promise.all([
+    const [activeVoicebots, exophoneList, campaignList, voiceContactList, orgVoiceSubscription] = await Promise.all([
       getAllActiveVoicebots(),
       getAllExoPhones(),
       getAllVoiceCampaigns(),
       getAllVoicebotContacts(),
-      getNotDialedVoiceCallList(),
-      getAllOrgVoiceSubscription()
+      getAllOrgVoiceZohoSubscription()
     ])
 
     // Create an array of promises for concurrent processing
@@ -24,11 +23,14 @@ export const voicebotDialer = async () => {
     campaignList.map(async (campaign: any) => {
       const noOfCallsPerTrigger = parseInt(campaign?.botConfig?.callsPerTrigger) || 1
 
+      const notDialedScheduledVoiceCallList = await getNotDialedVoiceCallList()
+
       const voiceScheduleContactList = notDialedScheduledVoiceCallList.filter((schedular) => schedular.campaignId === campaign.id).slice(0, noOfCallsPerTrigger)
       if(!voiceScheduleContactList.length) {
         logger.error("No call list available to dial call")
         return
-      } 
+      }
+      logger.info(`voiceScheduleContactList: ${JSON.stringify(voiceScheduleContactList)}`)
 
       const botInfo: any = activeVoicebots.find((bot) =>  bot.id === campaign.botConfig.botId)
       const ivrConfig = exophoneList.find((exophone) => exophone.id === botInfo?.ivrConfig)
@@ -52,7 +54,7 @@ export const voicebotDialer = async () => {
           }
     
           const orgSubscription = orgVoiceSubscription.find((subscription: any) => subscription.organizationId === campaign.organizationId)   
-          if(orgSubscription?.status !== "active") {
+          if(orgSubscription?.subscriptionStatus !== "active") {
             logger.error("Organization voice subscription plan status is not active")
             return 
           }
@@ -71,17 +73,18 @@ export const voicebotDialer = async () => {
               body: data
             })
             if(dialVoiceCall) {
-              await updateVoiceCallStatus(schedular.id, { callSid: dialVoiceCall, callStatus: "dialed" })
+              // await updateVoiceCallStatus(schedular.id, { callSid: dialVoiceCall, callStatus: "dialed" })
+              logger.info(`Call initiated successfully. Updating status to "dialed" for ID: ${schedular.id}`);
+              const updatedVoiceCall = await updateVoiceCallStatus(schedular.id, { callSid: dialVoiceCall, callStatus: "dialed" });
+              logger.info(`Call status updated successfully for ID: ${updatedVoiceCall.id}`);
             }
           } catch (error: any) {
             logger.error(`voice Dial API Error: ${error.message}`)
            await updateVoiceCallStatus(schedular.id, { callStatus: "failed" })
           }    
        }
-
     })
   )
-
 } catch (error: any) {
     logger.error(`voicebot - Dialer schedular Error:,${JSON.stringify(error.message)}`)
     throw new Error(error)
