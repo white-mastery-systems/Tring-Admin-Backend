@@ -4,10 +4,12 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { botStore } from "~/store/botStore";
 import { useRoute } from "vue-router";
+import { useBotDocuments } from '~/composables/botManagement/chatBot/useBotDocuments';
 
 const scrapData = botStore();
 const text = ref(scrapData.scrapedData?.knowledge_base?.document_content || "");
 const route = useRoute();
+const { status, documents, refresh } = useBotDocuments(route.params.id);
 // Watch for changes in scrapData
 watch(
   () => scrapData.scrapedData?.knowledge_base?.document_content,
@@ -17,6 +19,12 @@ watch(
     }
   }
 );
+const clearTextField = () => {
+  text.value = "";
+};
+
+// Expose method for parent access
+defineExpose({ clearTextField });
 
 const generatePDFAndUpload = async () => {
   if (!text.value.trim()) return;
@@ -53,6 +61,7 @@ const generatePDFAndUpload = async () => {
 
   // Upload to API
   await createDocument(payload.botId, payload.document);
+  await refresh()
 };
 
 // Auto-generate PDF when text updates
@@ -66,7 +75,8 @@ watch(text, async (newText) => {
 
 <template>
   <div class="w-full">
-    <UiTextarea v-model="text" placeholder="Enter text..." class="border p-2 h-40" :readonly="true"></UiTextarea>
+    <UiTextarea v-model="text" placeholder="" class="border p-2 h-40" :readonly="true">
+    </UiTextarea>
     <!-- <UiButton @click="generatePDFAndUpload" class="flex mt-2 text-white px-4 py-2 rounded">
       Download PDF
     </UiButton> -->

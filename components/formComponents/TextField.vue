@@ -159,6 +159,12 @@
       textFieldMaxLength: null,
     },
   );
+  // const clearValue = () => {
+  //   emit("update:modelValue", ""); // Clears the textarea content
+  // };
+
+  // Expose clear function to parent components
+  // defineExpose({ clearValue });
 
   const isResendDisabled = ref(false)
   const userDetails = ref()

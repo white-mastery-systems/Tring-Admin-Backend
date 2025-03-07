@@ -9,14 +9,14 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(["update:values"]);
-const { value: selectedRole } = useField<string>('ROLE');
+const { value: selectedGoal } = useField<string>('GOAL');
 const { value: type } = useField("type");
 const { value: otherRole, errorMessage: otherRoleError } = useField("otherRole");
 const { value: otherGoal, errorMessage: otherGoalError } = useField("otherGoal");
 const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
 
 // Watch for role selection changes
-watch(selectedRole, (newValue) => {
+watch(selectedGoal, (newValue) => {
   if (newValue !== "custom") {
     // Clear otherRole and otherGoal when a non-custom option is selected
     otherRole.value = "";
@@ -32,7 +32,7 @@ watch(selectedRole, (newValue) => {
 
 // Watch for otherRole and otherGoal changes
 watch([otherRole, otherGoal], ([newRole, newGoal]) => {
-  if (selectedRole.value === "custom") {
+  if (selectedGoal.value === "custom") {
     emit("update:values", {
       ...props.values,
       otherRole: newRole,
@@ -52,14 +52,14 @@ watch(() => props.values.type, (newType) => {
     <CardHeader>
       <div class="flex items-center justify-between gap-4 px-4 pt-4">
         <div class="flex flex-col gap-[6px]">
-          <CardTitle class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B]">Define your Chatbot's Role
+          <CardTitle class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B]">Define your Chatbot's Goal
             in your Company?
           </CardTitle>
           <CardDescription class="font-normal text-[12px] sm:text-[12px] md:text-[14px] text-[#71717A]">Import your
             Select what you would like your bot to help you with</CardDescription>
         </div>
         <CardDescription class="text-[14px] font-medium">
-          <span class="text-[#09090B]">Step 3</span><span class="text-[#64748B]">/4</span>
+          <span class="text-[#09090B]">Step 4</span><span class="text-[#64748B]">/4</span>
         </CardDescription>
       </div>
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-3" />
@@ -68,24 +68,23 @@ watch(() => props.values.type, (newType) => {
     <!-- <div class="mt-4">
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full h-[0.5px]" />
     </div> -->
-<!-- {{ intentOptions }} || assdad -->
     <CardContent class="grid gap-6 p-4">
-      <UiRadioGroup v-model="selectedRole" orientation="vertical"
+      <UiRadioGroup v-model="selectedGoal" orientation="vertical"
         class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5">
-        <div v-for="option in intentOptions.roles" :key="option.value"
+        <div v-for="option in intentOptions.goals" :key="option.value"
           class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]"
-          @click="selectedRole = option.value">
+          @click="selectedGoal = option.value">
           <div class="flex gap-4">
             <UiRadioGroupItem :id="option.value" :value="option.value" class="h-4 w-4 sm:h-4 sm:w-4 md:h-6 md:w-6" />
             <div class="flex flex-col gap-1">
               <Label :for="option.value" class="font-medium text-[12px] sm:text-[12px] md:text-[14px]">{{ option.name
-                }}</Label>
+              }}</Label>
               <span class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[12px]">{{ option.description }}</span>
             </div>
           </div>
         </div>
         <div class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]"
-          @click="selectedRole = 'custom'">
+          @click="selectedGoal = 'custom'">
           <div class="flex gap-4">
             <UiRadioGroupItem id="custom" value="custom" class="h-4 w-4 sm:h-4 sm:w-4 md:h-6 md:w-6" />
             <div class="flex flex-col gap-1">
@@ -99,17 +98,18 @@ watch(() => props.values.type, (newType) => {
 
       <!-- Show input field only if "Custom" is selected -->
       <div class="flex items-center gap-5 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 w-full"
-        v-if="selectedRole === 'custom'">
-        <div class="py-6 px-0 min-h-[50px]">
-          <p class="text-left text-[14px] py-1 text-[#000000]">Tell us your Chatbot’s Role in the Company</p>
-          <UiTextarea v-model="otherRole" name="otherRole" class="h-[95px]" :resizable="false"
-            placeholder="e.g., 'Sales Assistant" label="Tell us about your company">
-          </UiTextarea>
-        </div>
-        <!-- <div v-if="selectedRole === ' custom'" class="mt-4 flex items-center gap-4 p-4 rounded-lg">
+        v-if="selectedGoal === 'custom'">
+        <!-- <div v-if="selectedGoal === ' custom'" class="mt-4 flex items-center gap-4 p-4 rounded-lg">
             <input v-model="customInput" type="text" placeholder="Enter custom intent"
               class="border px-4 py-2 w-full rounded-lg text-[14px] sm:text-[14px] md:text-[16px] h-20" />
         </div> -->
+        <div>
+          <p class="text-left text-[14px] py-1 text-[#000000]">Tell us your Chatbot’s Role in the Company</p>
+          <UiTextarea v-model="otherGoal" name="otherGoal" class="h-[95px]" :resizable="false"
+            placeholder="e.g., 'Rental Management Assistant – Help users find and manage rental properties easily.'"
+            label="Tell us about your company">
+          </UiTextarea>
+        </div>
       </div>
     </CardContent>
   </Card>

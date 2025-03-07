@@ -47,7 +47,7 @@ const createNewBots = async (url: any) => {
       console.log("error", error);
     }
     // const getBotDetails = await listApiBots();
-    toast.success("Created successfully");
+    // toast.success("Created successfully");
   }
 }
 </script>

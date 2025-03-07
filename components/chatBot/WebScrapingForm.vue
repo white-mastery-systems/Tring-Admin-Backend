@@ -5,7 +5,7 @@
       <!-- <span class="font-semibold w-[210px] text-[10px] sm:text-[10px] md:text-[16px] ">Import from Website</span> -->
       <TextField name="url" placeholder="URL" label="Import from Website Link" required>
       </TextField>
-      <UiButton type="submit" :loading="isLoading" class="px-6 mb-">
+      <UiButton type="submit" :loading="isLoading" class="px-6 mb-1">
         Import
       </UiButton>
     </div>
@@ -72,6 +72,10 @@ const { handleSubmit, setFieldValue, resetForm, values, errors } = useForm({
 //     }
 //   },
 // );
+const clearTextField = () => {
+  setFieldValue("url", "");
+};
+defineExpose({ clearTextField });
 
 const handleAddEditBot = handleSubmit(async (values) => {
   // console.log(values, "values -- values");

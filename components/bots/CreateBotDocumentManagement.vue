@@ -21,6 +21,7 @@
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";
 import { h } from 'vue';
+import { useBotDocuments } from '~/composables/botManagement/chatBot/useBotDocuments';
 
 definePageMeta({
   middleware: "admin-only",
@@ -39,10 +40,11 @@ const filters = reactive<{
   page: "1",
   limit: "10",
 });
-// const route = useRoute("chat-bot-create-bot-id-documents");
-// const paramId: any = route;
+const route = useRoute("chat-bot-create-bot-id");
+const paramId: any = route;
 const selectedFile = ref();
 const myPopover: any = ref(null);
+const { refresh } = useBotDocuments(route.params.id);
 // const botDetails: any = await getBotDetails(paramId.params.id);
 // const documents = ref();
 const documentFetchInterval = ref<NodeJS.Timeout>();
@@ -58,7 +60,7 @@ const {
   status,
   refresh: documentsRefresh,
   data: documents,
-} = await useLazyFetch(() => '/api/bots/b6ffc509-f3cd-4f5b-8d3a-22bb74b69b48/documents', {
+} = await useLazyFetch(() => `/api/bots/${paramId.params.id}/documents`, {
   server: false,
   /**
    * Transform the API response to format the createdAt date of each document
@@ -154,6 +156,10 @@ const columns = [
   }),
 ];
 
+watch(() => documents.value, (newDocuments) => {
+  if (!newDocuments.documents.length) return;
+  refresh()
+})
 onMounted(async () => {
   const eventSource = new EventSource("/api/sse");
   eventSource.onmessage = async (event) => {
