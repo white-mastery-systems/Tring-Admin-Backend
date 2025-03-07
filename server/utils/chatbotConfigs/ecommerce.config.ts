@@ -1,5 +1,5 @@
 export const ecommerceConfigs = {
-    "type": "ecommerce",
+    "type": "e-commerce",
     "roles": [
         {
             "name": "Customer Support Executive",
