@@ -15,7 +15,7 @@ export const chatbotConfigs: Record<string, any> = {
   "government-sectors": governmentSectorConfigs,
   "finance-banking": financeAndBankingConfigs,
   "healthcare": healthCareConfigs,
-  "ecommerce": ecommerceConfigs,
+  "e-commerce": ecommerceConfigs,
   "energy-utilities": energyAndUtilitiesConfigs,
   "telecommunications": telecommunicationConfigs,
   "travel-hospitality": travelAndHospitalityConfigs,
