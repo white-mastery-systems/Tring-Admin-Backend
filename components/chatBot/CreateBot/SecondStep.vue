@@ -132,7 +132,8 @@ const handleLogoChange = (event: any) => {
           <!-- {{ props }}
           {{ logo }} || asdsad -->
           <!-- {{ logo }} || asdsadas -->
-          <UiFileUpload @change="handleLogoChange" name="logo" label="Upload your logo here Browse files"
+          <UiFileUpload @change="handleLogoChange" name="logo"
+            :label="(logo?.url) ? 'Change your logo here, browse files' : 'Upload your logo here, Browse files'"
             :required="true" :accept="'image/*'" :url="logo?.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
             :helperText="'Only files up to 5MB can be uploaded.'" :showFilename="false" />
         </div>
@@ -148,13 +149,15 @@ const handleLogoChange = (event: any) => {
                       <label class="text-[16px] font-medium"> Primary Color</label>
                       <div class="text-[#71717A] text-[12px]">Colors for widget & chat button</div>
                     </div>
-                    <div class="h-9 w-9 border border-[#E4E4E7]">
-                      <!-- <UiInput ref="colorInput" v-bind="componentField" type="color"
-                        class="h-full w-full p-0 border-none cursor-pointer" /> -->
-                      <!-- {{ color }} -->
+                    <!-- <div class="h-9 w-9 border border-[#E4E4E7]"
+                      :class="[props.values.color ? `bg-${props.values.color}` : '']">
                       <UiInput ref="colorInput" v-bind="componentField" type="color"
                         class="h-full w-full p-0 border-none cursor-pointer" />
-
+                    </div> -->
+                    <div class="h-9 w-9 border border-[#E4E4E7] relative overflow-hidden rounded-lg"
+                      :style="{ backgroundColor: props.values.color }">
+                      <UiInput ref="colorInput" v-bind="componentField" type="color"
+                        class="absolute inset-0 opacity-0 cursor-pointer" />
                     </div>
                   </div>
                 </div>
@@ -173,9 +176,14 @@ const handleLogoChange = (event: any) => {
                       <div class="text-[#71717A] text-[12px]">Colors for messages</div>
                     </div>
                     <!-- {{ secondaryColor }} -->
-                    <div class="h-9 w-9 border border-[#E4E4E7]">
+                    <!-- <div class="h-9 w-9 border border-[#E4E4E7]">
                       <UiInput ref="secondarycolorInput" v-bind="componentField" type="color"
                         class="h-full w-full p-0 border-none cursor-pointer" />
+                    </div> -->
+                    <div class="h-9 w-9 border border-[#E4E4E7] relative overflow-hidden rounded-lg"
+                      :style="{ backgroundColor: props.values.secondaryColor }">
+                      <UiInput ref="secondarycolorInput" v-bind="componentField" type="color"
+                        class="absolute inset-0 opacity-0 cursor-pointer" />
                     </div>
                   </div>
                 </div>

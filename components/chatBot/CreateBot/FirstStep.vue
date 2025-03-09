@@ -7,7 +7,8 @@ import { Home, ShoppingCart, Settings, Info, Plane, HandPlatter, PhoneCall, Ambu
 defineProps<{
   errors: Record<string, any>;
 }>();
-
+const uploadDocumentRef = ref(null);
+defineExpose({ uploadDocumentRef })
 const { value: selectedType } = useField("selectedType")
 // const emit = defineEmits(['update:selectedType']);
 // Track which option is selected
@@ -168,9 +169,10 @@ const changeKnowledge = () => {
           </div>
           <div class="py-6 px-0 w-[50%] min-h-[300px]">
             <p class="text-left text-[14px] py-1 text-[#000000]">Tell us about your company</p>
-            <UiTextarea calss="text-[#71717A]" v-model="companyDetails" class="h-[200px]" :resizable="false"
+            <TextDocumentUpload ref="uploadDocumentRef" />
+            <!-- <UiTextarea calss="text-[#71717A]" v-model="companyDetails" class="h-[200px]" :resizable="false"
               placeholder="Enter text..." label="Tell us about your company">
-            </UiTextarea>
+            </UiTextarea> -->
           </div>
         </div>
       </div>

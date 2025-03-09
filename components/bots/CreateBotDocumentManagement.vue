@@ -134,26 +134,30 @@ const columns = [
     header: "Status",
     cell: ({ row }) => statusComponent(row.original.status),
   }),
-  columnHelper.accessor("id", {
+   columnHelper.accessor("id", {
     header: "Actions",
     cell: ({ row }) => {
-      const BotDocumentMenu = defineAsyncComponent(() => import('@/components/bots/BotDocumentMenu.vue'));
+      const id = row.original.id;
 
-      return h(BotDocumentMenu, {
-        row: row.original, // Pass the row data to the component
-        documents: documentItems.value,
-        // Handle the download and delete actions
-        onDownload: (id: any) => {
-          // Call your existing method for handling download
-          singleDocumentDownload(id);
+      return h(
+        "button",
+        {
+          class: "px-3 py-1 bg-[#FFBC42] text-white rounded hover:bg-blue-600",
+          onClick: () => singleDocumentDownload(id),
         },
-        onDelete: (list: any) => {
-          // Call your existing method for handling delete
-          singleDocumentDelete(list);
-        },
-      });
+        "Download"
+      );
     },
   }),
+    // return h(BotDocumentMenu, {
+    //   row: row.original, // Pass the row data to the component
+    //   documents: documentItems.value,
+    //   // Handle the download and delete actions
+    //   onDelete: (list: any) => {
+    //     // Call your existing method for handling delete
+    //     singleDocumentDelete(list);
+    //   },
+    
 ];
 
 watch(() => documents.value, (newDocuments) => {
@@ -238,7 +242,7 @@ const singleDocumentDelete = async (list: any) => {
   documents.value = await listDocumentsByBotId(paramId.params.id);
 };
 const singleDocumentDownload = async (list: any) => {
-  viewDocument(paramId.params.id, list.id);
+  viewDocument(paramId.params.id, list);
 };
 const Pagination = async ($event: any) => {
   filters.page = $event

@@ -1,22 +1,167 @@
 <template>
-  <page :title="''" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
+  <page :title="botDetails.name" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
     custom-back-router="/chat-bot">
+    <template #actionButtons>
+      <!-- <div class="flex justify-end"> -->
+      <!-- <UiButton class="flex items-center justify-end border-none">
+        Link channel
+      </UiButton> -->
+      <div class="flex w-full items-center">
+        <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
+          <div class="items-cetner flex gap-4">
+            <div v-if="botDetails.documentId" class="flex items-center gap-[5px] text-[#1abb00]">
+              <div class="flex h-[6px] w-[6px] items-center rounded-full bg-[#1abb00]"></div>
+              <span class="text-[15px] sm:text-[15px] md:text-[17px] lg:text-[16px] xl:text-[16px]">Active</span>
+            </div>
+            <!-- v-else -->
+            <div v-else class="flex items-center gap-[5px] pl-2 font-medium text-[#ff0000]">
+              <div class="flex h-[6px] w-[6px] items-center rounded-full bg-[#ff0000]"></div>
+              <span class="md:text-[14px] lg:text-[16px]">Inactive</span>
+            </div>
+          </div>
+          <div
+            class="flex flex-col items-start justify-center gap-4 sm:flex-row sm:items-center lg:items-center xl:items-center">
+            <div
+              class="items-top sm:items-top md:items-top mt-3 flex gap-3 sm:mt-3 md:mt-0 lg:mt-0 lg:items-center xl:mt-0 xl:items-center">
+              <div class="flex flex-col items-center gap-1">
+                <UiButton color="primary" class="p-2" @click="() => {
+                  channelModalState.open = true;
+                  channelModalState.id = botDetails.id;
+                }
+                ">
+                  <span class="hidden lg:inline"> Configure channel </span>
+                  <span class="flex flex-col items-center justify-center lg:hidden">
+                    <component :is="Settings" :size="20"></component>
+                  </span>
+                </UiButton>
+                <div class="block text-[4px] lg:hidden">Configure channel</div>
+              </div>
+              <div class="flex flex-col items-center gap-1" v-if="!botDetails.documentId">
+                <UiButton class="bg-[#424bd1] text-[14px] p-2 hover:bg-[#424bd1]/90 disabled:opacity-50"
+                  @click="handleActivateBot" :disabled="isSubmitting">
+                  <span class="hidden lg:inline"> Activate Bot </span>
+                  <span class="flex flex-col items-center justify-center lg:hidden">
+                    <component :is="Bot"></component>
+                  </span>
+                </UiButton>
+                <div class="block text-[4px] lg:hidden">Activate Bot</div>
+              </div>
+              <span v-if="botDetails.documentId" class="flex items-center gap-4">
+                <div class="flex flex-col items-center gap-1">
+                  <UiButton
+                    class="rounded-[8px] bg-[#ff0000] p-2 text-[14px] font-medium text-white hover:bg-[#ff0000] hover:brightness-90"
+                    @click="deactivateBot">
+                    <!-- Deactivate Bot -->
+                    <span class="hidden lg:inline"> Deactivate Bot </span>
+                    <!-- Icon for small screens -->
+                    <span class="flex flex-col items-center justify-center lg:hidden">
+                      <Icon name="bx:block" class="h-5 w-5" />
+                    </span>
+                  </UiButton>
+                  <div class="block text-[4px] lg:hidden">Deactivate Bot</div>
+                </div>
+
+                <ConfirmationModal v-model:open="modalOpen" title="Confirm Deactivation"
+                  description="Are you sure you want to deactivate bot ?" @confirm="deactivateBotDialog" />
+                <div class="flex flex-col items-center gap-1">
+                  <UiButton as="a" :href="previewUrl" target="_blank" variant="outline"
+                    class="p-2 text-[14px] font-medium text-[#000000] gap-2 border-[#000000]">
+                    <Eye class="w-5 h-5" />
+                    <span class="hidden lg:inline"> Preview Bot </span>
+                    <!-- <span class="flex items-center justify-center lg:hidden">
+                      <Icon name="entypo:controller-play" class="h-5 w-5" />
+                    </span> -->
+                  </UiButton>
+                  <div class="block text-[4px] lg:hidden">Preview Bot</div>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                  <UiButton class="gap-2 p-2 text-white bg-[#000000]" @click="copyScript">
+                    <FileCode class="w-5 h-5" />
+                    <span class="hidden lg:inline"> Copy Script </span>
+                    <!-- <span class="flex items-center justify-center lg:hidden">
+                      <Icon name="mdi:content-copy" class="h-4 w-4 px-1 text-white" />
+                    </span> -->
+                  </UiButton>
+                  <div class="block text-[4px] lg:hidden">Copy Script</div>
+                </div>
+              </span>
+              <div class="flex flex-col items-center gap-1">
+                <UiButton variant="destructive" @click="handleDelete"
+                  class="flex items-center justify-center bg-[#ff0000] p-3 hover:bg-[#ff0000]/90 hover:brightness-90">
+                  <Icon name="lucide:trash-2" class="h-4 w-4" />
+                </UiButton>
+                <div class="block text-[4px] lg:hidden">Delete</div>
+              </div>
+              <!-- <div class="flex flex-col items-center gap-1" @click="agentModalState.open = true">
+                <UiButton variant="destructive"
+                  class="flex items-center justify-center bg-[#424bd1] p-3 hover:bg-[#424bd1]/90 hover:brightness-90">
+                  <Icon name="lucide:pen" class="h-4 w-4" />
+                </UiButton>
+                <div class="block text-[4px] lg:hidden">Edit</div>
+              </div> -->
+              <CreateEditChannelModal v-model="channelModalState" @success="handleSuccess" />
+              <ConfirmationModal v-model:open="deleteModalState" title="Are you sure?"
+                description="Are you sure you want to delete bot ?" @confirm="handleDeleteBot" />
+              <AddChatBotModal v-model="agentModalState" @editConfirm="() => {
+                agentModalState.open = false;
+                navigateTo({ name: 'chat-bot' });
+                // getAllChatBot()
+              }
+              "></AddChatBotModal>
+            </div>
+          </div>
+
+          <!-- <span class="font-semibold content-align">Date Created</span>
+          <span class="font-semibold content-align">Status</span> -->
+        </div>
+      </div>
+      <LazyUiDialog v-if="!botDetails.documentId" v-model:open="isDocumentListOpen">
+        <UiDialogTrigger class=""> </UiDialogTrigger>
+        <UiDialogContent align="end" class="sm:max-w-md">
+          <UiDialogHeader>
+            <UiDialogTitle>Launch Bot</UiDialogTitle>
+            <UiDialogDescription>
+              Choose a document to deploy your bot
+            </UiDialogDescription>
+          </UiDialogHeader>
+          <UiButton
+            class="bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42] min-w-[90%] max-w-[100%]"
+            v-for="list in getDocumentList.documents.filter(
+              (item: any) => item.status === 'ready',
+            )" :key="list.id" @click="async () => {
+              isSubmitting = true;
+              isDocumentListOpen = false;
+              await singleDocumentDeploy(list);
+            }
+            ">
+            <span class="w-[95%] truncate">
+              {{ list.name }}
+            </span>
+          </UiButton>
+        </UiDialogContent>
+      </LazyUiDialog>
+      <!-- </div> -->
+      <!-- Communication -->
+    </template>
     <!-- <div>
       <CreateBotForm />
     </div> -->
-    <div ref="scrollTarget" class="border-[1px] border-solid border-[#E4E4E7] rounded-lg p-2">
+    <!-- <div ref="scrollTarget" class="border-[1px] border-solid border-[#E4E4E7] rounded-lg p-2">
       <WebScrapingForm />
-    </div>
-    <div>
+    </div> -->
+    <!-- <div>
       <CreateBotFields ref="childRef" @confirm="handleAddEditBot" />
-    </div>
-    <div class="font-bold text-[20px]">
-      2 Steps to create your chatbot
+    </div> -->
+    <div class="font-bold text-[20px] mt-3">
+      View and Edit your Chatbots features
     </div>
     <CreateBot />
-    <div class="flex justify-center">
+    <!-- <div class="flex justify-center">
       <UiButton @click="triggerChildSubmit">Create bot</UiButton>
-    </div>
+    </div> -->
+    <ChatBotSuccessfulMessageModal v-model="createBotsuccessfulState" @success="() => {
+      console.log('on success')
+    }" />
     <div v-if="false">
       <div class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]">
         <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
@@ -33,14 +178,6 @@
           </div>
           <div
             class="flex flex-col items-start justify-center gap-4 sm:flex-row sm:items-center lg:items-center xl:items-center">
-            <!-- <span
-              class="text-[15px] font-bold text-black sm:text-[15px] md:text-[17px] lg:text-[17px] xl:text-[17px]"
-              >Date Created:
-              <span
-                class="font-medium text-black md:text-[17px] lg:text-[15px]"
-                >{{ dateFormate }}</span
-              >
-            </span> -->
             <div
               class="items-top sm:items-top md:items-top mt-3 flex gap-3 sm:mt-3 md:mt-0 lg:mt-0 lg:items-center xl:mt-0 xl:items-center">
               <div class="flex flex-col items-center gap-1">
@@ -189,10 +326,10 @@ definePageMeta({
 });
 
 import { useClipboard } from "@vueuse/core";
-import { Bot, Settings } from "lucide-vue-next";
+import { Bot, Settings, Eye, FileCode } from "lucide-vue-next";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
-import CreateBot from "~/components/chatBot/CreateBot.vue";
+// import CreateBot from "~/components/chatBot/CreateBot";
 import { useDataList } from "~/composables/botManagement/chatBot/useDataList";
 import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
 import { useDocumentsList } from '~/composables/botManagement/chatBot/useDocumentsList';
@@ -217,8 +354,12 @@ const channelModalState = ref<{ open: boolean; id: string | null }>({
 });
 const { dataList } = useDataList()
 const scrapedData = ref(null);
-const childRef = ref(null);
+// const childRef = ref(null);
 const scrollTarget = ref(null);
+
+const createBotsuccessfulState = ref({
+  open: false,
+});
 
 watch(
   () => botDetails.value?.name,
@@ -237,6 +378,13 @@ const handleSuccess = () => {
 };
 onMounted(async () => {
   getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
+  if (!botDetails.value.documentId) {
+    await handleActivateBot()
+    setTimeout(() => {
+      createBotsuccessfulState.value.open = true;
+    }, 0);
+  }
+  
   // botDetails.value = await getBotDetails(paramId.params.id);
 });
 const handleGoBack = () => {
@@ -301,6 +449,7 @@ const copyScript = async () => {
 };
 
 const singleDocumentDeploy = async (list: any) => {
+  console.log('singleDocumentDeploy', list)
   await deployDocument(paramId.params.id, list.id);
   refreshBot() // new function refreshBot added
   // botDetails.value = await getBotDetails(paramId.params.id);
@@ -357,46 +506,48 @@ const handleAddEditBot = async (values: any) => {
   }
 }
 
-const triggerChildSubmit = () => {
-  if (!childRef.value.values.name && !childRef.value.values.type) {
-    if (scrollTarget.value) {
-      scrollTarget.value.scrollIntoView({ behavior: "smooth" });
-    }
-  }
-  if (childRef.value) {
-    childRef.value.handleAddEditBot();
-  }
-};
+// const triggerChildSubmit = () => {
+//   if (!childRef.value.values.name && !childRef.value.values.type) {
+//     if (scrollTarget.value) {
+//       scrollTarget.value.scrollIntoView({ behavior: "smooth" });
+//     }
+//   }
+//   if (childRef.value) {
+//     childRef.value.handleAddEditBot();
+//   }
+// };
 
 const handleActivateBot = async () => {
+  console.log('active', botDetails.value)
   isSubmitting.value = true;
   const activeDocuments = botDetails.value.documents.filter(
     (d) => d.status === "ready",
   );
-
+console.log('activeDocuments', activeDocuments)
   if (activeDocuments.length === 0) {
     toast.error("Please add document to activate bot");
     return navigateTo({
-      name: "chat-bot-id-documents",
+      name: "chat-bot-id",
       params: { id: paramId.params.id },
     });
   } else if (!botDetails.value.metadata?.prompt?.NAME) {
     toast.error("Please add bot configuration to activate bot");
     return navigateTo({
-      name: "chat-bot-id-config",
+      name: "chat-bot-id",
       params: { id: paramId.params.id },
     });
   } else if (!botDetails.value.metadata.ui?.logo) {
     toast.error("Please update bot user interface to activate bot");
     return navigateTo({
-      name: "chat-bot-id-ui-customization",
+      name: "chat-bot-id",
       params: { id: paramId.params.id },
     });
   }
-
+  console.log('last --last', activeDocuments.length)
   if (activeDocuments.length === 1) {
     try {
       await singleDocumentDeploy(activeDocuments[0]);
+      console.log('singleDocumentDeploy',)
     } catch (err) {
       isSubmitting.value = false;
       toast.error("Failed to active the bot, try again");

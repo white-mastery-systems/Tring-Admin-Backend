@@ -10,6 +10,7 @@ import { useRoute } from 'vue-router';
 import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
 import { useDocumentsList } from '~/composables/botManagement/chatBot/useDocumentsList';
 import { useStepStatus } from "@/composables/botManagement/chatBot/useStepStatus";
+import EmailConfiguration from './EmailConfiguration.vue';
 
 // const { updateStepStatus, accordionItems, botDetails, documentsList } = useStepStatus();
 const route = useRoute();
@@ -17,7 +18,7 @@ const { accordionItems, updateStepStatus, documentsList, refreshDocuments, botDe
 const stepComponents: Record<string, any> = {
   uiCustomization: UiCustomization,
   botConfiguration: BotConfiguration,
-  // crmIntegrations: CrmConfiguration,
+  emailnotifications: EmailConfiguration,
   AdvancedSetup: DynamicForm,
 }
 const emit = defineEmits(["cofirm"]);
@@ -79,14 +80,14 @@ onMounted(() => {
               </span>
             </div>
           </div>
-          <div v-if="item.status" class="flex items-center gap-1 pr-4">
+          <!-- <div v-if="item.status" class="flex items-center gap-1 pr-4">
             <div class="w-[7px] h-[7px] bg-[#000000] rounded-full">
 
             </div>
             <span class="font-medium text-[10px] sm:text-[10px] md:text-[14px]">
               {{ item.status }}
             </span>
-          </div>
+          </div> -->
         </div>
       </AccordionTrigger>
       <AccordionContent class="text-gray-700 text-sm">

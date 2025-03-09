@@ -14,30 +14,17 @@
         <div class="flex items-center gap-3 mt-2">
           <!-- Copy Script Button -->
           <UiButton @click="copyScript"
-            :class="showForm ? 'border-black text-black' : 'bg-black text-white border-black'" variant="outline"
+            :class="copyAndPreviewBot ? 'border-black text-black' : 'bg-black text-white border-black'" variant="outline"
             class="flex items-center gap-2">
             <FileCode class="w-5 h-5" /> Copy Script
           </UiButton>
 
           <!-- Send Script Button -->
           <UiButton as="a" :href="previewUrl" target="_blank" variant="outline"
-            class="flex items-center cursor-pointer gap-2 border-[#000000] text-[#000000]">
+            class="flex items-center cursor-pointer gap-2 border-[#000000]"
+            :class="copyAndPreviewBot ? 'bg-black text-white' : 'text-black border-black'">
             <Eye class="w-5 h-5" /> Preview Bot
           </UiButton>
-        </div>
-        {{ showForm }}
-        <div v-if="showForm">
-          <form class="space-y-4" @submit.prevent="onSubmit">
-            <TextField v-model="values.email" type="text" name="email" label="Send a Mail to"
-              placeholder="Enter email (comma-separated for multiple)" />
-
-            <TextField v-model="values.drafMessage" label="Draft Message" id="description" name="drafMessage" isTextarea
-              placeholder="Enter your message" />
-
-            <div class="flex justify-end w-full">
-              <UiButton type="submit">Send</UiButton>
-            </div>
-          </form>
         </div>
 
         <!-- Separator -->
@@ -55,6 +42,19 @@
             variant="outline" class="flex items-center gap-2">
             <Mail class="w-5 h-5" /> Send Script
           </UiButton>
+        </div>
+        <div v-if="showForm" class="border-[1px] border-gray-300 rounded-lg p-4">
+          <form class="space-y-4" @submit.prevent="onSubmit">
+            <TextField v-model="values.email" type="text" name="email" label="Send a Mail to"
+              placeholder="Enter email (comma-separated for multiple)" />
+
+            <TextField v-model="values.drafMessage" label="Draft Message" id="description" name="drafMessage" isTextarea
+              placeholder="Enter your message" />
+
+            <div class="flex justify-end w-full">
+              <UiButton type="submit">Send</UiButton>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -78,13 +78,14 @@ const ChatBotSuccessfulMessageModalState = defineModel<{ open: boolean; id: any 
     open: false,
   },
 });
+const copyAndPreviewBot = ref(false)
 // const scriptCode = ref("");
 const showForm = ref(false);
 // const queryId = ref(route.params?.id);
 
 const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
 const toggleForm = () => {
-    showForm.value = true;
+  showForm.value = !showForm.value;
 };
 const botScript =
   "<" +
@@ -94,7 +95,7 @@ const botScript =
 
 const { copy } = useClipboard({ source: botScript });
 const copyScript = async () => {
-  showForm.value = false
+  copyAndPreviewBot.value = false
   copy(botScript);
   toast.success("Copied to clipboard");
 };
