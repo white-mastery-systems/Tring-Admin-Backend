@@ -1,5 +1,6 @@
 import momentTz from "moment-timezone";
 import { campaignSchema, campaignWhatsappContactSchema, InsertCampaign } from "~/server/schema/admin";
+import {whatsappErrorCodes} from "~/assets/error-codes.json"
 
 const db = useDrizzle();
 
@@ -247,6 +248,12 @@ export const updateWhatsappMessageStatusByMessageId = async (messageId: string, 
     if(previousCampaignWhatspp?.messageStatus !== "delivered" && data?.messageStatus === "read") {
       payload.deliveredAt = new Date()
     }
+  } else if (data?.messageStatus === "failed" && data?.errorCode) {
+    payload.errorCode = data?.errorCode;
+    // @ts-ignore
+    payload.errorMessage = whatsappErrorCodes[payload.errorCode].message;
+    // @ts-ignore
+    payload.errorSolution = whatsappErrorCodes[payload.errorCode].solution;
   }
 
   return  await db.update(campaignWhatsappContactSchema).set({
