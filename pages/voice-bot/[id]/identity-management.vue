@@ -6,16 +6,8 @@
       to: `/bot-management/chat-bot/${botDetailsList.id}/intent-management`,
     },
   ]"  -->
-  <Page title="Bot Details" :bread-crumbs="[
-      {
-        label: `${botDetailsList.name}`,
-        to: `/bot-management/voice-bot/${botDetailsList.id}`,
-      },
-      {
-        label: 'Bot Details',
-        to: `/bot-management/voice-bot/${botDetailsList.id}/identity-management`,
-      },
-    ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
+  <Page title="Bot Details" :bread-crumbs="[]" :disableSelector="true" :disable-back-button="false"
+    :disableElevation="false">
     <div class="pb-2 sm:pb-0">
       <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3">
@@ -57,100 +49,113 @@
 <script setup lang="ts">
 import { useVoiceLanguageList } from '~/composables/voiceBotLanguageList';
 import { useTImeList } from '~/composables/timeZones';
- const config=useRuntimeConfig()
-  definePageMeta({
-    middleware: "admin-only",
-  });
-  const route = useRoute("voice-bot-id-identity-management");
-  const botDetailsList: any = await getVoiceBotDetails(route.params.id);
-  const welcomeFilesData = ref([]);
-  const concludeFilesData = ref([]);
-  const deleteFileBucket = ref([ ]);
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+const config = useRuntimeConfig()
+definePageMeta({
+  middleware: "admin-only",
+});
+const route = useRoute("voice-bot-id-identity-management");
+const botDetailsList: any = await getVoiceBotDetails(route.params.id);
+const welcomeFilesData = ref([]);
+const concludeFilesData = ref([]);
+const deleteFileBucket = ref([]);
+const breadcrumbStore = useBreadcrumbStore();
 
 
-  const roles = [
-    {
-      value: "Customer Support",
-      label: "Customer Support",
-      helperText: "Assist customers with their questions and issues.",
-    },
-    {
-      value: "Receptionist",
-      label: "Receptionist",
-      helperText: "Handles visitor interactions and phone calls.",
-    },
-  ];
+const roles = [
+  {
+    value: "Customer Support",
+    label: "Customer Support",
+    helperText: "Assist customers with their questions and issues.",
+  },
+  {
+    value: "Receptionist",
+    label: "Receptionist",
+    helperText: "Handles visitor interactions and phone calls.",
+  },
+];
 
-  const { languageList } = useVoiceLanguageList();
-  const { formattedTimeZones } = useTImeList();
-  const isLoading = ref(false);
-  const botSchema = toTypedSchema(
-    z.object({
-      agentName: z
-        .string({ required_error: "Agent Name is required" })
-        .min(1, { message: "Agent Name is required" }),
-      agentLanguage: z
-        .string({ required_error: "Agent Language is required" })
-        .min(1, { message: "Agent Language is required" }),
-      region: z
-        .string({ required_error: "Country is required" })
-        .min(1, "Country is required"),
-      timezone: z
-        .string({ required_error: "Time zone is required" })
-        .min(1, "Time zone is required"),
-      // backgroundSoundControler: z.boolean().optional(),
-      // backgroundSounds: z
-      //   .string().optional()
-    })
-  );
-  const {
-    setFieldValue,
-    handleSubmit,
-    errors,
-    defineField,
-    resetForm,
-    values,
-  } = useForm({
-    validationSchema: botSchema,
-    initialValues: {
-      // name: "",
-    },
-  });
+const { languageList } = useVoiceLanguageList();
+const { formattedTimeZones } = useTImeList();
+const isLoading = ref(false);
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: `${botDetailsList.name}`,
+    to: `/voice-bot/${botDetailsList.id}`,
+  },
+  {
+    label: 'Bot Details',
+    to: `/voice-bot/${botDetailsList.id}/identity-management`,
+  },
+]);
+
+const botSchema = toTypedSchema(
+  z.object({
+    agentName: z
+      .string({ required_error: "Agent Name is required" })
+      .min(1, { message: "Agent Name is required" }),
+    agentLanguage: z
+      .string({ required_error: "Agent Language is required" })
+      .min(1, { message: "Agent Language is required" }),
+    region: z
+      .string({ required_error: "Country is required" })
+      .min(1, "Country is required"),
+    timezone: z
+      .string({ required_error: "Time zone is required" })
+      .min(1, "Time zone is required"),
+    // backgroundSoundControler: z.boolean().optional(),
+    // backgroundSounds: z
+    //   .string().optional()
+  })
+);
+const {
+  setFieldValue,
+  handleSubmit,
+  errors,
+  defineField,
+  resetForm,
+  values,
+} = useForm({
+  validationSchema: botSchema,
+  initialValues: {
+    // name: "",
+  },
+});
 
 Object.entries(botDetailsList.botDetails ?? {}).forEach(([key, value]: any) => {
   if (values.hasOwnProperty(key)) {
     setFieldValue(key, value);
   }
 });
-  watchEffect(() => {
-    if (botDetailsList) {
-      const userName = botDetailsList?.name ?? "Unknown Bot Name";
-      useHead({
-        title: `Voice Bot | ${userName} - Identity Management`,
-      });
-    }
-  });
-
-  const onSubmit = handleSubmit(async (value: any) => {
-    // updateLLMConfig()
-    isLoading.value = true;
-    const modifiedData = {
-      agentName: value.agentName,
-      agentLanguage: value.agentLanguage,
-      region: value.region,
-      timezone: value.timezone,
-    }
-    let payload = {
-      botDetails: modifiedData,
-    };
-
-    await updateLLMConfig(payload, botDetailsList.id, "Bot information added successfully.");
-    isLoading.value = false;
-
-    return navigateTo({
-      name: "voice-bot-id",
-      params: { id: botDetailsList.id },
+watchEffect(() => {
+  if (botDetailsList) {
+    const userName = botDetailsList?.name ?? "Unknown Bot Name";
+    useHead({
+      title: `Voice Bot | ${userName} - Identity Management`,
     });
+  }
+});
+
+const onSubmit = handleSubmit(async (value: any) => {
+  // updateLLMConfig()
+  isLoading.value = true;
+  const modifiedData = {
+    agentName: value.agentName,
+    agentLanguage: value.agentLanguage,
+    region: value.region,
+    timezone: value.timezone,
+  }
+  let payload = {
+    botDetails: modifiedData,
+  };
+
+  await updateLLMConfig(payload, botDetailsList.id, "Bot information added successfully.");
+  isLoading.value = false;
+
+  return navigateTo({
+    name: "voice-bot-id",
+    params: { id: botDetailsList.id },
   });
+});
 
 </script>

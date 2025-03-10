@@ -12,7 +12,7 @@
   <div class="py-3">
     <!-- <template #actionButtons> -->
       <div class="mb-4 flex items-center justify-end">
-        <UiButton type="button" @click="addNewIntents">Add Intents
+        <UiButton @click="addNewIntents">Add Intents
         </UiButton>
       </div>
     <!-- </template> -->
@@ -20,7 +20,7 @@
 
     <DataTable :columns="columns" :data="intentData" :totalPageCount="totalPageCount" :page="page"
       :totalCount="totalCount" :page-size="8" :is-loading="isIntentLoading" :height="20" height-unit="vh" />
-    <ConfirmationModal v-model:open="deleteIntentDialogState.open" title="Confirm Delete"
+    <!-- <ConfirmationModal v-model:open="deleteIntentDialogState.open" title="Confirm Delete"
       description="Are you sure you want to delete this intent ?" @confirm="
         async () => {
           await deleteIntent({
@@ -34,15 +34,14 @@
             },
           });
         }
-      " />
+      " /> -->
   </div>
 </template>
 <script setup lang="ts">
 import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import CreateEditIntentModal from "~/components/bots/CreateEditIntentModal.vue";
-import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
-import { useStepStatus } from "@/composables/botManagement/chatBot/useStepStatus";
+import { useRoute, useRouter } from "vue-router";
 
 const intentDialogState = ref({ open: false, id: null });
 const selectedActions = ref("location");
@@ -50,69 +49,71 @@ const animationProps = {
   duration: 0,
 };
 const router = useRouter();
-const route = useRoute("chat-bot-id-intent-management");
+const route = useRoute();
 let page = ref(1);
 let totalPageCount = ref(1);
 let totalCount = ref(1);
-const { accordionItems, updateStepStatus, documentsList, refreshDocuments } = useStepStatus(route);
 const {
+  data: intentData,
   status: intentLoadingStatus,
   refresh: intentRefresh,
-  data: intentData,
-} = await useLazyFetch(() => `/api/bots/${route.params.id}/intents`, {
+} = useLazyFetch(() => `/api/bots/${route.params?.id}/intents`, {
   server: false,
   default: () => [],
-  transform: (intents) =>
-    intents.map((intent) => ({
+  transform: (intents) => {
+    return intents.map((intent) => ({
       id: intent.id,
       link: intent.link,
       intent: intent.intent,
-      createdAt: formatDate(new Date(intent.createdAt), "dd.MM.yyyy"),
-    })),
+      createdAt: formatDate(new Date(intent?.createdAt), "dd.MM.yyyy"),
+    })) ?? [];
+  }
 });
+const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
+// const { accordionItems, updateStepStatus } = useStepStatus(route);
 
 const isIntentLoading = computed(
   () => intentLoadingStatus.value === "pending",
 );
 
 // const botDetails: any = await getBotDetails(route.params.id);
-const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
+// const { botDetails, loading, error, refreshBot } = useBotDetails(route.params?.id);
 // const { documentsList, refreshDocuments } = useDocumentsList(route.params.id);
 // const defaultFormValues = botDetails.value.metadata.prompt;
 
-watch(
-  () => botDetails.value?.name, // Watching only the 'name' property
-  (newName) => {
-    const userName = newName ?? "Unknown Bot Name";
-    useHead({
-      title: `Chat Bot | ${userName} - Intent Management`,
-    });
-  },
-  { immediate: true } // Runs immediately on mount
-);
+// watch(
+//   () => botDetails.value?.name, // Watching only the 'name' property
+//   (newName) => {
+//     const userName = newName ?? "Unknown Bot Name";
+//     useHead({
+//       title: `Chat Bot | ${userName} - Intent Management`,
+//     });
+//   },
+//   { immediate: true } // Runs immediately on mount
+// );
 
-watch(intentData, (newValue) => {
+// watch(intentData, (newValue) => {
 
-  if (newValue && typeof newValue === "object") {
-    const length = Object.keys(newValue).length;
+//   if (newValue && typeof newValue === "object") {
+//     const length = Object.keys(newValue).length;
 
-    refreshDocuments()
-    if (length <= 1 ) {
-      updateStepStatus("botConfiguration", "completed");
-    }
-  }
-});
+//     refreshDocuments()
+//     if (length <= 1 ) {
+//       updateStepStatus("botConfiguration", "completed");
+//     }
+//   }
+// });
 
 
-const handleIntentDataListChecking = (newValue: any) => {
-  if (newValue && typeof newValue === "object") {
-    const length = Object.keys(newValue).length;
+// const handleIntentDataListChecking = (newValue: any) => {
+//   if (newValue && typeof newValue === "object") {
+//     const length = Object.keys(newValue).length;
 
-    if (length <= 1) {
-      updateStepStatus("botConfiguration", "completed");
-    }
-  }
-}
+//     if (length <= 1) {
+//       updateStepStatus("botConfiguration", "completed");
+//     }
+//   }
+// }
 
 // const addIntents = async (values: any) => {
 //   const intentDetails: any = {
@@ -207,7 +208,7 @@ const columns = [
   }),
 ];
 const addNewIntents = () => {
-  if (botDetails.value.metadata.ui.generateLead) {
+  if (props.botDetails?.metadata?.ui?.generateLead) {
     intentDialogState.value.open = true;
     intentDialogState.value.id = null;
   } else {

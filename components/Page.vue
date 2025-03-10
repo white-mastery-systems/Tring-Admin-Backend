@@ -26,7 +26,8 @@
     : `${(leadPage === 'leads') ? (browserClass === 'brave-browser') ? 'pt-[10px] sm:pt-[10px]' : 'pt-[10px] sm:pt-[10px]' : 'pb-2 sm:pb-2'} px-2 sm:px-2 md:px-6 lg:px-6 xl:px-6 md:pt-0 lg:pt-0 xl:pt-0`,
     'pb-2'
   ]">
-    <div :class="[(props.title) ? 'justify-between' : 'justify-end' ]" class="mb-2 py-4 flex items-center  gap-2">
+    <div :class="[(props.title) ? 'justify-between' : 'justify-end', (!props.disableSelector) ? 'py-4' : 'py-4' ]"
+      class="flex items-center  gap-2">
       <div v-if="props.title"
         :class="['flex gap-4 px-0', (!props.disableBackButton) ? 'items-center' : 'items-center']">
         <!-- <UiButton v-if="!props.disableBackButton" variant="outline" size="icon" @click="handleBackButtonClick">
@@ -51,9 +52,10 @@
 
       <slot name="actionButtons"></slot>
     </div>
-    <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full" />
-    <LazyUiSelectSeparator v-if="!props.disableSelector" class="mb-4" />
+    <!-- <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full" /> -->
+    <!-- <LazyUiSelectSeparator v-if="!props.disableSelector" class="mb-4 bg-[#E2E8F0]" /> -->
 
+    <!-- mt-4 -->
     <div class="flex flex-col justify-center sm:justify-center md:justify-start gap-4" :class="[
       props.disableElevation
         ? ''

@@ -21,7 +21,6 @@
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";
 import { h } from 'vue';
-import { useBotDocuments } from '~/composables/botManagement/chatBot/useBotDocuments';
 
 definePageMeta({
   middleware: "admin-only",
@@ -44,7 +43,9 @@ const route = useRoute("chat-bot-create-bot-id");
 const paramId: any = route;
 const selectedFile = ref();
 const myPopover: any = ref(null);
-const { refresh } = useBotDocuments(route.params.id);
+const props = defineProps<{
+  refresh: () => void
+}>();
 // const botDetails: any = await getBotDetails(paramId.params.id);
 // const documents = ref();
 const documentFetchInterval = ref<NodeJS.Timeout>();
@@ -162,7 +163,7 @@ const columns = [
 
 watch(() => documents.value, (newDocuments) => {
   if (!newDocuments.documents.length) return;
-  refresh()
+  props.refresh()
 })
 onMounted(async () => {
   const eventSource = new EventSource("/api/sse");

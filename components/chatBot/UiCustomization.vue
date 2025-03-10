@@ -9,13 +9,13 @@
             :url="values?.logo.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
             :helperText="'Only files up to 5MB can be uploaded.'" />
         </div> -->
-
         <!-- Primary and Secondary Color Pickers -->
         <!-- <div class="flex grid grid-cols-3 items-center gap-4 w-full gap-5"> -->
-        <div class="w-full rounded-lg">
-          <UiFileUpload @change="handleLogoChange" name="logo" label="Upload your logo here" :required="true"
-            :accept="'image/*'" :url="values?.logo.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
-            :helperText="'Only files up to 5MB can be uploaded.'" />
+        <div class="w-full sm:w-full md:w-[50%] rounded-lg pr-0 sm:pr-0 md:pr-[10px]">
+          <UiFileUpload @change="handleLogoChange" name="logo"
+            :label="(values?.logo.url) ? 'Change your logo here, browse files' : 'Upload your logo here, Browse files'"
+            :required="true" :accept="'image/*'" :url="values?.logo.url" :fileType="'image'"
+            :class="'h-24 cursor-pointer'" :helperText="'Only files up to 5MB can be uploaded.'" />
         </div>
         <!-- </div> -->
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 items-center gap-4 w-full gap-5">
@@ -204,15 +204,18 @@ import { ref, watch } from "vue";
 import { useRoute, useRouter } from "nuxt/app";
 // import { useBotStore } from '~/store/botStore';
 import { botStore } from '~/store/botStore';
-import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
+// import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
 
+
+
+const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void }>();
 const isLoading = ref(false);
 const colorInput: any = ref();
 const secondarycolorInput: any = ref();
 const logoData: any = ref("");
 const route = useRoute();
 const useStoreBotDetails = botStore();
-const emit = defineEmits(["statusUpdated"]);
+const emit = defineEmits(["statusUpdated"])
 // const { scrapedData } = useBotStore();
 
 const logoAsString = z.string().min(1, "Logo is required");
@@ -244,8 +247,14 @@ const {
 
 const paramId = route.params.id;
 // const botDetails = await getBotDetails(paramId);
-const { botDetails, loading, error, refreshBot } = useBotDetails(paramId);
-watch(botDetails, (newValues) => {
+// const { botDetails, loading, error, refreshBot } = useBotDetails(paramId);
+watch(() => useStoreBotDetails, (newValue) => {
+  const extractHSLValues = (hslString: string) => hslString.replace(/hsl\(|\)/g, "");
+  setFieldValue("logo", { url: newValue.scrapedData?.brand?.logo_url } ?? {});
+  setFieldValue("color", hslToHex(extractHSLValues(newValue.scrapedData?.chatbot?.primary_color) ?? "236, 61%, 54%, 1"));
+  setFieldValue("secondaryColor", hslToHex(extractHSLValues(newValue.scrapedData?.chatbot?.secondary_color) ??"236, 61%, 74%"));
+},{deep: true, immediate: true});
+watch(props.botDetails, (newValues) => {
   setFieldValue("logo", newValues.metadata.ui.logo ?? {});
   setFieldValue("color", hslToHex(newValues.metadata.ui.color ?? "236, 61%, 54%, 1"));
   setFieldValue("secondaryColor", hslToHex(newValues.metadata.ui.secondaryColor ?? "236, 61%, 74%"));
@@ -257,32 +266,25 @@ watch(botDetails, (newValues) => {
   setFieldValue("onlineStatus", (newValues.metadata.ui.onlineStatus ?? true))
   setFieldValue("generateLead", (newValues.metadata.ui.generateLead ?? true))
   setFieldValue("defaultRibbon", (newValues.metadata.ui.defaultRibbon ?? true))
-})
+},{deep: true, immediate: true})
 
 
-watch(() => useStoreBotDetails, (newValue) => {
-  const extractHSLValues = (hslString: string) => hslString.replace(/hsl\(|\)/g, "");
-  setFieldValue("logo", { url: newValue.scrapedData?.brand?.logo_url } ?? {});
-  setFieldValue("color", hslToHex(extractHSLValues(newValue.scrapedData?.chatbot?.primary_color) ?? "236, 61%, 54%, 1"));
-  setFieldValue("secondaryColor", hslToHex(extractHSLValues(newValue.scrapedData?.chatbot?.secondary_color) ??"236, 61%, 74%"));
-  console.log(newValue.scrapedData, "scrapData -- scrapData");
-}, { deep: true });
 
-watch(
-  () => ({
-    logo: values.logo,
-    color: values.color,
-    secondaryColor: values.secondaryColor,
-    widgetSound: values.widgetSound,
-    widgetPosition: values.widgetPosition,
-    fontFamily: values.fontFamily,
-  }),
-  (newValues) => {
-    const isCompleted = Object.values(newValues).every(value => value !== "" && value !== null && value !== undefined);
-    emit("statusUpdated", 'uiCustomization',isCompleted ? "completed" : "incomplete");
-  },
-  { deep: true, immediate: true }
-);
+// watch(
+//   () => ({
+//     logo: values.logo,
+//     color: values.color,
+//     secondaryColor: values.secondaryColor,
+//     widgetSound: values.widgetSound,
+//     widgetPosition: values.widgetPosition,
+//     fontFamily: values.fontFamily,
+//   }),
+//   (newValues) => {
+//     const isCompleted = Object.values(newValues).every(value => value !== "" && value !== null && value !== undefined);
+//     emit("statusUpdated", 'uiCustomization',isCompleted ? "completed" : "incomplete");
+//   },
+//   { deep: true, immediate: true }
+// );
 
 const handleLogoChange = async (event: any) => {
   logoData.value = event[0];
@@ -294,17 +296,17 @@ const handleLogoChange = async (event: any) => {
 const uiUpdate = handleSubmit(async (value) => {
   let uploadedDetails = null;
   if (typeof logoData.value === "object") {
-    uploadedDetails = await uploadLogo(botDetails.value.id, logoData.value);
+    uploadedDetails = await uploadLogo(props.botDetails.id, logoData.value);
   }
 
   isLoading.value = true;
   const payload = {
-    id: botDetails.value.id,
+    id: props.botDetails.id,
     emailRecipients: value.emailRecipients,
     metadata: {
-      ...botDetails.value.metadata,
+      ...props.botDetails.metadata,
       ui: {
-        logo: uploadedDetails?.metadata?.ui?.logo ?? botDetails.value.metadata.ui.logo,
+        logo: uploadedDetails?.metadata?.ui?.logo ?? props.botDetails.metadata.ui.logo,
         color: hexToHSL(value.color),
         secondaryColor: hexToHSL(value.secondaryColor),
         defaultSelect: value.defaultSelect,
@@ -318,7 +320,7 @@ const uiUpdate = handleSubmit(async (value) => {
     },
   };
   await updateBotDetails(payload);
-  await refreshBot()
+  await props.refreshBot()
   // emit('formSubmitted');
   isLoading.value = false;
 });

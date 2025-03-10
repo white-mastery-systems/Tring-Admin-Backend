@@ -6,16 +6,6 @@ export const useSubscriptionCheck = () => {
   // const route = useRoute();
   const isAnyPlanFree = ref(false);
   const subcribed = ref(false);
-
-  // const checkSubscription = async () => {
-  //   try {
-  //     const orgBilling = await $fetch("/api/org/subscriptionPlans");
-  //     console.log("Subscription Plans:", orgBilling.subscriptionStatus)
-  //     isAnyPlanFree.value = orgBilling.every((plan: any) => plan.planCode.includes("_free"));
-  //   } catch (error) {
-  //     console.error("Failed to fetch subscription details:", error);
-  //   }
-  // };
   const checkSubscription = async () => {
     try {
       const orgBilling = await $fetch("/api/org/subscriptionPlans");
@@ -26,7 +16,6 @@ export const useSubscriptionCheck = () => {
       } else {
         subcribed.value = true;
       }
-      // console.log(allFreePlan, "allFreePlan -- allFreePlan")
       // Check if ALL plans are either inactive or cancelled
       const allPlansInactiveOrCancelled = orgBilling.every(plan =>
         plan.subscriptionStatus === "inactive" ||

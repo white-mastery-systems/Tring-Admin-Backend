@@ -4,7 +4,7 @@
   </div> -->
   <!-- v-else -->
   <!-- leadData?.botUser?.name ??  -->
-  <Page :title="callLogs?.callerName ?? 'No Name'" :bread-crumbs="breadCrum" :disable-back-button="!user" :disable-elevation="true">
+  <Page :title="callLogs?.callerName ?? 'No Name'" :bread-crumbs="[]" :disable-back-button="!user" :disable-elevation="true">
     <div class="items-top gap-[25px flex items-center justify-center px-3">
       <div class="items-top xs:grid-cols-2 flex grid w-full grid-cols-1 gap-[25px] lg:grid-cols-2">
         <div class="justify-aro und flex w-full gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]">
@@ -70,6 +70,7 @@
 </template>
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
+import { useBreadcrumbStore } from "~/store/breadcrumbs";
 
 definePageMeta({
   middleware: "admin-only",
@@ -83,6 +84,7 @@ const audioSrc = ref()
 const audioElement: any = ref(null)
 const isAudioLoading = ref(true)
 const config = useRuntimeConfig()
+const breadcrumbStore = useBreadcrumbStore();
 
 const isBackRouteMatches = computed(() => {
   const backRoute = router.options.history.state.back; // Assuming `router` is available
@@ -110,23 +112,23 @@ watch(() => isDataLoading.value,(newValue) => {
   }
 })
 
-const breadCrum = computed(() => {
-  if (user.value) {
-    return [
-      {
-        label: `${callLogs.value?.callerName ?? 'No Name'}`,
-        to: `/analytics/call-logs`,
-      },
-      {
-        label: 'Call Logs',
-        to: `/analytics/call-logs/${callLogs.value?.id}`,
-      },
-    ]
+// const breadCrum = computed(() => {
+//   if (user.value) {
+//     return [
+//       {
+//         label: `${callLogs.value?.callerName ?? 'No Name'}`,
+//         to: `/analytics/call-logs`,
+//       },
+//       {
+//         label: 'Call Logs',
+//         to: `/analytics/call-logs/${callLogs.value?.id}`,
+//       },
+//     ]
 
-  } else {
-    []
-  }
-})
+//   } else {
+//     []
+//   }
+// })
 
 const formattedCallData = computed(() => {
   if (!callLogs.value) return null; // Handle the case where callLogs might be undefined

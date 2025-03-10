@@ -29,7 +29,6 @@ const props = withDefaults(
 );
 
 const createNewBots = async (url: any) => {
-  console.log("createNewBots", url);
   if (url === "/voice-bot")  {
     navigateTo(url);
   } else {
@@ -38,7 +37,6 @@ const createNewBots = async (url: any) => {
         method: "POST",
         body: {},
       });
-      console.log("getSingleBotDetails", getSingleBotDetails.id);
       if (getSingleBotDetails?.id) {
         // ${ getSingleBotDetails.id }
         navigateTo(`chat-bot/create-bot/${getSingleBotDetails?.id}`);
@@ -60,7 +58,7 @@ const createNewBots = async (url: any) => {
         <div class="flex items-center gap-5">
           <img src="/assets/icons/create_bot_link.svg" width="40" class="rounded-lg" />
           <div class="flex flex-col gap-1">
-            <CardTitle class="text-left text-[14px] text-[#18181B] font-semibold">{{ item.title }}</CardTitle>
+            <CardTitle class="text-left text-[20px] text-[#18181B] font-semibold">{{ item.title }}</CardTitle>
             <CardDescription class="text-let text-[13px] text-[#71717A]">
               {{ item.subtitle }}
             </CardDescription>

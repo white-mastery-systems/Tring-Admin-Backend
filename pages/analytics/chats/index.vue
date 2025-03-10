@@ -36,6 +36,7 @@ import { format } from "date-fns";
 import { Icon, UiButton } from "#components";
 import { useState } from "#app";
 import { useRoute, useRouter } from "vue-router";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
 definePageMeta({
   middleware: "user",
@@ -45,6 +46,7 @@ useHead({
 });
 const router = useRouter();
 const route = useRoute();
+const breadcrumbStore = useBreadcrumbStore();
 // const searchBotDebounce = refDebounced(searchBot, 500);
 
 const filters = useState("chatsFilters", () => ({
@@ -65,6 +67,12 @@ let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
 const fetchExportData = ref(false);
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Chat", // Dynamic name
+    to: `/analytics/chats`,
+  }
+])
 const {
   status,
   data: chats,

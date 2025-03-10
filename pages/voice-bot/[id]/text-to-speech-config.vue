@@ -1,13 +1,6 @@
 <template>
   <Page title="Text To Speech Configurations" :bread-crumbs="[
-    {
-      label: `${botDetails.name}`,
-      to: `/bot-management/voice-bot/${botDetails.id}`,
-    },
-    {
-      label: 'Text To Speech Configurations',
-      to: `/bot-management/voice-bot/${botDetails.id}/text-to-speech-config`,
-    },
+    
   ]">
     <div class="pb-2 sm:pb-0">
       <form @submit.prevent="onSubmit" class="space-y-10">
@@ -157,8 +150,11 @@
 import { useForm } from "vee-validate";
 import { textToSpeechValidation } from "~/validationSchema/textToSpeechValidation";
 import { LanguageList } from '~/composables/useLanguageList';
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+
 
 const route = useRoute("voice-bot-id-text-to-speech-config");
+const breadcrumbStore = useBreadcrumbStore();
 
 
 const { data: botData, status: botLoadingStatus } = await useLazyFetch<{
@@ -318,6 +314,16 @@ const voices = [
 ];
 const botDetails = ref(await getVoiceBotDetails(route.params.id));
 
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: 'Text To Speech Configurations',
+    to: `/voice-bot/${botDetails.value?.id}`,
+  },
+  {
+    label: `${botDetails.value?.name}`,
+    to: `/voice-bot/${botDetails.value?.id}/text-to-speech-config`,
+  },
+]);
 const { handleSubmit, setFieldValue, values, resetForm, errors } = useForm({
   validationSchema: toTypedSchema(textToSpeechValidation),
   initialValues: {},

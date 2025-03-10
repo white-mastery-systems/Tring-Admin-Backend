@@ -159,7 +159,6 @@ watchEffect(() => {
 // Watch for changes in the date range (custom period)
 watch(debouncedValue, (newValue) => {
   if (newValue.start && newValue.end && selectedPeriod.value === "custom") {
-    console.log(newValue, "newValue")
     emit("update:from", newValue.start.toDate(getLocalTimeZone()).toISOString());
     emit("update:to", newValue.end.toDate(getLocalTimeZone()).toISOString());
   }

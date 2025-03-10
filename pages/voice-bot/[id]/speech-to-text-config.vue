@@ -3,14 +3,6 @@
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
   <Page v-else title="Speech To Text Configurations" :bread-crumbs="[
-    {
-      label: `${botDetails.name}`,
-      to: `/bot-management/voice-bot/${botDetails.id}`,
-    },
-    {
-      label: 'Speech To Text Configurations',
-      to: `/bot-management/voice-bot/${botDetails.id}/speech-to-text-config`,
-    },
   ]">
     <div class="pb-2 sm:pb-0">
       <form @submit.prevent="createEditSpeecToTextConfig" class="space-y-3">
@@ -34,10 +26,10 @@
           <div :class="['flex flex-col gap-2', (values.provider === 'deepgram') ? 'my-5' : 'mt-5']">
             <RangeSlider :step="0.05" :name="parseFloat(values.amplificationFactor)" label="Amplification Factor"
               @update="
-              ($event) => {
-                setFieldValue('amplificationFactor', $event);
-              }
-            " required placeholder="Enter speaking Rate" min="0" max="4" />
+                ($event) => {
+                  setFieldValue('amplificationFactor', $event);
+                }
+              " required placeholder="Enter speaking Rate" min="0" max="4" />
           </div>
 
           <TextField v-if="values.provider === 'deepgram'" label="Utterance End Ms" name="utteranceEndMs" required
@@ -65,7 +57,7 @@
                 <TextField :label="`boost value ${idx + 1}`" :id="`value_${idx}`" :name="`keywords[${idx}].boostValue`"
                   placeholder="Enter Boost value" disableCharacters />
                 <div
-                  :class="['flex', (field.value?.value && (field.value?.boostValue)) ? 'items-end' : (errors[`keywords[${idx}].value`]) ? 'items-center' : 'items-end' ]">
+                  :class="['flex', (field.value?.value && (field.value?.boostValue)) ? 'items-end' : (errors[`keywords[${idx}].value`]) ? 'items-center' : 'items-end']">
                   <UiButton variant="outline" type="button" @click="remove(idx)">
                     <CloseIcon class="w-4 h-4" />
                   </UiButton>
@@ -156,163 +148,158 @@
 </template>
 
 <script setup lang="ts">
-  import { FieldArray } from "vee-validate";
-  import CloseIcon from "~/components/icons/CloseIcon.vue";
-  import { speechToTextValidation } from "~/validationSchema/speechToTextValidation";
-  // import { useLanguageList } from '~/composables/useLanguageList';
+import { FieldArray } from "vee-validate";
+import CloseIcon from "~/components/icons/CloseIcon.vue";
+import { speechToTextValidation } from "~/validationSchema/speechToTextValidation";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
-  // const languages = [
-  //   {
-  //     label: "En-US",
-  //     value: "en-US",
-  //   },
-  //   {
-  //     label: "En-IN",
-  //     value: "en-in",
-  //   },
-  //   {
-  //     label: "Hindi",
-  //     value: "hindi",
-  //   },
-  //   {
-  //     label: "Tamil",
-  //     value: "tamil",
-  //   },
-  // ];
-  // const { languageList } = useLanguageList();
-  const providers = ref([
-    {
-      label: "Google",
-      value: "google",
-    },
-    {
-      label: "Azure",
-      value: "azure",
-    },
-    {
-      label: "Deepgram",
-      value: "deepgram",
-    },
-    {
-      label: "Assembly Ai",
-      value: "assemblyai",
-    },
-  ]);
-  const adaptations = [
-    {
-      label: "Yes",
-      value: true,
-    },
-    {
-      label: "No",
-      value: false,
-    },
-  ];
-  const models = ref([
-    {
-      label: "Long",
-      value: "long",
-    },
-    {
-      label: "Short",
-      value: "short",
-    },
-  ]);
-  const route = useRoute("voice-bot-id-speech-to-text-config");
-  const isLoading = ref(false);
+// import { useLanguageList } from '~/composables/useLanguageList';
 
-  const { data: botData, status: botLoadingStatus } = await useLazyFetch<{
-    speechToTextConfig: Record<string, string>;
-  }>(`/api/voicebots/${route.params.id}`);
+// const { languageList } = useLanguageList();
+const breadcrumbStore = useBreadcrumbStore();
+const providers = ref([
+  {
+    label: "Google",
+    value: "google",
+  },
+  {
+    label: "Azure",
+    value: "azure",
+  },
+  {
+    label: "Deepgram",
+    value: "deepgram",
+  },
+  {
+    label: "Assembly Ai",
+    value: "assemblyai",
+  },
+]);
+const adaptations = [
+  {
+    label: "Yes",
+    value: true,
+  },
+  {
+    label: "No",
+    value: false,
+  },
+];
+const models = ref([
+  {
+    label: "Long",
+    value: "long",
+  },
+  {
+    label: "Short",
+    value: "short",
+  },
+]);
+const route = useRoute("voice-bot-id-speech-to-text-config");
+const isLoading = ref(false);
 
-  const {
-    handleSubmit,
-    defineField,
-    errors,
-    setFieldValue,
-    values,
-    handleReset,
-    resetForm,
-  } = useForm({
-    validationSchema: toTypedSchema(speechToTextValidation),
-    initialValues: {
-      // phraseSets: [],
-      // keywords: [],
-    },
-  });
+const { data: botData, status: botLoadingStatus } = await useLazyFetch<{
+  speechToTextConfig: Record<string, string>;
+}>(`/api/voicebots/${route.params.id}`);
+
+const {
+  handleSubmit,
+  defineField,
+  errors,
+  setFieldValue,
+  values,
+  handleReset,
+  resetForm,
+} = useForm({
+  validationSchema: toTypedSchema(speechToTextValidation),
+  initialValues: {
+    // phraseSets: [],
+    // keywords: [],
+  },
+});
 
 
-  const botDetails: any = ref(await getVoiceBotDetails(route.params.id));
+const botDetails   = ref(await getVoiceBotDetails(route.params.id));
 
-  const isPageLoading = computed(() => botLoadingStatus.value === "pending");
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: 'Speech To Text Configurations',
+    to: `/voice-bot/${botDetails.value?.id}`,
+  },
+  {
+    label: `${botDetails.value?.name}`,
+    to: `/voice-bot/${botDetails.value?.id}/speech-to-text-config`,
+  },
+]);
+const isPageLoading = computed(() => botLoadingStatus.value === "pending");
 
 
 const phraseArrayName = computed(() => {
   return values.provider === 'azure' ? 'phraseLists' : 'phraseSets';
 });
 
-  watchEffect(() => {
-    if (botDetails.value) {
-      const userName = botDetails.value?.name ?? "Unknown Bot Name";
-      useHead({
-        title: `Voice Bot | ${userName} - Speech To Text Config`,
-      });
-    }
-  });
+watchEffect(() => {
+  if (botDetails.value) {
+    const userName = botDetails.value?.name ?? "Unknown Bot Name";
+    useHead({
+      title: `Voice Bot | ${userName} - Speech To Text Config`,
+    });
+  }
+});
 
-  watch(botData, (newValue) => {
-    resetForm();
-    // setFieldValue("language", botData.value?.speechToTextConfig.language);
-    setFieldValue("provider", botData.value?.speechToTextConfig.provider);
-    const phraseList = botData.value?.speechToTextConfig.azure?.phrase_list || [];
-    const formattedPhraseList = phraseList.map((item: any) => ({ value: item }));
-    setFieldValue("phraseLists", formattedPhraseList)
-    const phraseSetList = botData.value?.speechToTextConfig.google?.phrase_sets || [];
-    const formattedPhrasSeteList = phraseSetList?.map((item: any) => ({ value: item }));
-    setFieldValue("phraseSets", formattedPhrasSeteList)
+watch(botData, (newValue) => {
+  resetForm();
+  // setFieldValue("language", botData.value?.speechToTextConfig.language);
+  setFieldValue("provider", botData.value?.speechToTextConfig.provider);
+  const phraseList = botData.value?.speechToTextConfig.azure?.phrase_list || [];
+  const formattedPhraseList = phraseList.map((item: any) => ({ value: item }));
+  setFieldValue("phraseLists", formattedPhraseList)
+  const phraseSetList = botData.value?.speechToTextConfig.google?.phrase_sets || [];
+  const formattedPhrasSeteList = phraseSetList?.map((item: any) => ({ value: item }));
+  setFieldValue("phraseSets", formattedPhrasSeteList)
+  setFieldValue(
+    "assemblyaiamplificationFactor",
+    botData.value?.speechToTextConfig.deepgram.amplification_factor,
+  );
+  setFieldValue(
+    "amplificationFactor",
+    botData.value?.speechToTextConfig.azure.amplification_factor,
+  );
+  setFieldValue("endpointing", botData.value?.speechToTextConfig.deepgram.endpointing);
+  setFieldValue("adaptation", botData.value?.speechToTextConfig?.google?.adaptation)
+  setFieldValue("recognizer", botData.value?.speechToTextConfig.google?.recognizer || '')
+  setFieldValue("endutterancesilencethreshold", botData.value?.speechToTextConfig.assemblyai?.end_utterance_silence_threshold)
+  const word_boost_key = botData.value?.speechToTextConfig.assemblyai?.word_boost || [];
+  const formatted_boost_key = word_boost_key.map((keyword: any) => {
+    const [value, boostValue] = keyword.split(":");
+    return { value, boostValue };
+  })
+  setFieldValue("wordboost", formatted_boost_key)
+  setFieldValue(
+    "utteranceEndMs",
+    botData.value?.speechToTextConfig.deepgram.utterance_end_ms,
+  );
+  if (values.provider === "deepgram") {
     setFieldValue(
-      "assemblyaiamplificationFactor",
-      botData.value?.speechToTextConfig.deepgram.amplification_factor,
+      "model",
+      botData.value?.speechToTextConfig.deepgram.model
     );
+  } else if (values.provider === "google") {
     setFieldValue(
-      "amplificationFactor",
-      botData.value?.speechToTextConfig.azure.amplification_factor,
+      "googlemodel",
+      botData.value?.speechToTextConfig.google.model
     );
-    setFieldValue("endpointing", botData.value?.speechToTextConfig.deepgram.endpointing);
-    setFieldValue("adaptation", botData.value?.speechToTextConfig?.google?.adaptation)
-    setFieldValue("recognizer", botData.value?.speechToTextConfig.google?.recognizer || '')
-    setFieldValue("endutterancesilencethreshold", botData.value?.speechToTextConfig.assemblyai?.end_utterance_silence_threshold)
-    const word_boost_key = botData.value?.speechToTextConfig.assemblyai?.word_boost || [];
-    const formatted_boost_key = word_boost_key.map((keyword: any) => {
-      const [value, boostValue] = keyword.split(":");
-      return { value, boostValue };
-    })
-    setFieldValue("wordboost", formatted_boost_key)
-      setFieldValue(
-        "utteranceEndMs",
-        botData.value?.speechToTextConfig.deepgram.utterance_end_ms,
-      );
-      if (values.provider === "deepgram") {
-        setFieldValue(
-          "model",
-          botData.value?.speechToTextConfig.deepgram.model
-        );
-      } else if (values.provider === "google") {
-        setFieldValue(
-          "googlemodel",
-          botData.value?.speechToTextConfig.google.model
-        );
-      }
-      const keywords = botData.value?.speechToTextConfig.deepgram?.keywords || [];
-      const formattedKeywords = keywords.map(keyword => {
-        const [value, boostValue] = keyword.split(":");
-        return {value, boostValue };
-      })
-      setFieldValue(
-        "keywords",
-        formattedKeywords.length ? formattedKeywords : []
-      );
-  });
+  }
+  const keywords = botData.value?.speechToTextConfig.deepgram?.keywords || [];
+  const formattedKeywords = keywords.map(keyword => {
+    const [value, boostValue] = keyword.split(":");
+    return { value, boostValue };
+  })
+  setFieldValue(
+    "keywords",
+    formattedKeywords.length ? formattedKeywords : []
+  );
+});
 watch(
   () => toRaw(values.provider),
   (newValue) => {
@@ -321,9 +308,9 @@ watch(
     const phraseList = botData.value?.speechToTextConfig.azure?.phrase_list || [];
     const formattedPhraseList = phraseList?.map((item: any) => ({ value: item }));
     const phraseSetList = botData.value?.speechToTextConfig.google?.phrase_sets || [];
-    const formattedPhrasSeteList = phraseSetList?.map((item: any) => ({ 
+    const formattedPhrasSeteList = phraseSetList?.map((item: any) => ({
       value: item
-     }));
+    }));
     setFieldValue("phraseSets", formattedPhrasSeteList);
     // setFieldValue(
     //   "amplificationFactor",
@@ -347,31 +334,31 @@ watch(
       return { value, boostValue };
     })
     setFieldValue("wordboost", formatted_boost_key)
-      setFieldValue(
-        "utteranceEndMs",
-        botData.value?.speechToTextConfig.deepgram.utterance_end_ms,
-      );
-      // if (values.provider === "deepgram") {
-        setFieldValue(
-          "model",
-          botData.value?.speechToTextConfig.deepgram.model
-        );
-      // } else if (values.provider === "google") {
-        setFieldValue(
-          "googlemodel",
-          botData.value?.speechToTextConfig.google.model
-        );
-      // }
+    setFieldValue(
+      "utteranceEndMs",
+      botData.value?.speechToTextConfig.deepgram.utterance_end_ms,
+    );
+    // if (values.provider === "deepgram") {
+    setFieldValue(
+      "model",
+      botData.value?.speechToTextConfig.deepgram.model
+    );
+    // } else if (values.provider === "google") {
+    setFieldValue(
+      "googlemodel",
+      botData.value?.speechToTextConfig.google.model
+    );
+    // }
     const keywords = botData.value?.speechToTextConfig.deepgram?.keywords || [];
-      const formattedKeywords = keywords?.map((keyword: any) => {
-        const [value, boostValue] = keyword?.split(":");
-        return { value, boostValue };
-      })
-      setFieldValue(
-        "keywords",
-        formattedKeywords.length ? formattedKeywords : []
-      );
-    }
+    const formattedKeywords = keywords?.map((keyword: any) => {
+      const [value, boostValue] = keyword?.split(":");
+      return { value, boostValue };
+    })
+    setFieldValue(
+      "keywords",
+      formattedKeywords.length ? formattedKeywords : []
+    );
+  }
 );
 
 const inputChanges = ($event: any) => {
@@ -411,7 +398,7 @@ const createEditSpeecToTextConfig = handleSubmit(async (value) => {
     updatedConfig.deepgram = {
       model: value.model || 'nova-2',
       keywords: value.keywords?.map((keywordObj: any) => `${keywordObj.value}:${keywordObj.boostValue}`) || [],
-        
+
       endpointing: value.endpointing || 300,
       utterance_end_ms: String(value.utteranceEndMs) || '1000',
       amplification_factor: value.amplificationFactor || 2,
@@ -464,5 +451,5 @@ watch(values, (newValues) => {
   }
 });
 
-  watch(errors, (newError) => {});
+watch(errors, (newError) => { });
 </script>

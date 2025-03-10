@@ -19,7 +19,7 @@ import CreateEditEmailConfigModal from "~/components/bots/CreateEditEmailConfigM
 // const columnHelper = createColumnHelper<any>();
 const route = useRoute("chat-bot-id-config");
 const paramId: any = route;
-const botDetails = ref(await getBotDetails(paramId.params.id));
+// const botDetails = ref(await getBotDetails(paramId.params.id));
 const selectedRows = ref<string[]>([]); // Track selected rows
 
 const filters = reactive<{

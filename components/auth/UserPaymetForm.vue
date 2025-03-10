@@ -55,7 +55,6 @@ const formatCardNumber = (value: string) => value.replace(/\D/g, '').slice(0, 16
 
 const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true;
-  console.log('Form Submitted:', values);
   isLoading.value = false;
 });
 </script>

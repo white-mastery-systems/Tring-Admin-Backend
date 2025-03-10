@@ -62,7 +62,7 @@ const route = useRoute("chat-bot-id-documents");
 const paramId: any = route;
 const selectedFile = ref();
 const myPopover: any = ref(null);
-const botDetails: any = await getBotDetails(paramId.params.id);
+// const botDetails: any = await getBotDetails(paramId.params.id);
 // const documents = ref();
 const documentFetchInterval = ref<NodeJS.Timeout>();
 
@@ -73,34 +73,38 @@ let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
 
-const {
-  status,
-  refresh: documentsRefresh,
-  data: documents,
-} = await useLazyFetch(() => `/api/bots/${route.params.id}/documents`, {
-  server: false,
-  /**
-   * Transform the API response to format the createdAt date of each document
-   * @param {object} docs - The API response
-   * @returns {object} The transformed response
-   */
-  transform: (docs: any) => {
-    page.value = docs.page;
-    totalPageCount.value = docs.totalPageCount;
-    totalCount.value = docs.totalCount;
+const props = defineProps<{
+  documents: any;
+  refresh: () => void
+}>();
+// const {
+//   status,
+//   refresh: documentsRefresh,
+//   data: documents,
+// } = await useLazyFetch(() => `/api/bots/${route.params.id}/documents`, {
+//   server: false,
+//   /**
+//    * Transform the API response to format the createdAt date of each document
+//    * @param {object} docs - The API response
+//    * @returns {object} The transformed response
+//    */
+//   transform: (docs: any) => {
+//     page.value = docs.page;
+//     totalPageCount.value = docs.totalPageCount;
+//     totalCount.value = docs.totalCount;
 
-    return {
-      ...docs,
-      documents: docs.documents.map((d: any) => ({
-        ...d,
-        createdAt: formatDate(new Date(d.createdAt), "dd.MM.yyyy"),
-      }))
-    };
-  },
-});
+//     return {
+//       ...docs,
+//       documents: docs.documents.map((d: any) => ({
+//         ...d,
+//         createdAt: formatDate(new Date(d.createdAt), "dd.MM.yyyy"),
+//       }))
+//     };
+//   },
+// });
 
-const documentItems = computed(() => documents.value?.documents || []);
-const activeDocument = computed(() => documents.value?.documentId)
+const documentItems = computed(() => props.documents?.documents || []);
+const activeDocument = computed(() => props.documents?.documentId)
 
 const isDataLoading = computed(() => status.value === "pending");
 const columnHelper = createColumnHelper<(typeof documentItems.value)[0]>();
@@ -189,14 +193,14 @@ onMounted(async () => {
 });
 const isPageLoading = computed(() => status.value === "pending");
 
-watchEffect(() => {
-  if (botDetails) {
-    const userName = botDetails?.name ?? "Unknown Bot Name";
-    useHead({
-      title: `Chat Bot | ${userName} - Document Management`,
-    });
-  }
-});
+// watchEffect(() => {
+//   if (botDetails) {
+//     const userName = botDetails?.name ?? "Unknown Bot Name";
+//     useHead({
+//       title: `Chat Bot | ${userName} - Document Management`,
+//     });
+//   }
+// });
 
 const fileUpload = async () => {
   // selectedFile.value[0].name;
@@ -216,12 +220,15 @@ const fileUpload = async () => {
       },
     };
     await createDocument(payload.botId, payload.document);
-    documents.value = await listDocumentsByBotId(paramId.params.id);
+    
+    // documents.value = await listDocumentsByBotId(paramId.params.id);
+    await props.refresh()
     selectedFile.value = null;
   } else {
     selectedFile.value = null;
   }
   // documentFetchInterval.value = setInterval(async () => {
+  await props.refresh()
   //   documents.value = await listDocumentsByBotId(paramId.params.id);
   // }, 1000);
 };
@@ -247,8 +254,8 @@ onUnmounted(() => {
 
 const singleDocumentDelete = async (list: any) => {
   await deleteDocument(paramId.params.id, list.id);
-
-  documents.value = await listDocumentsByBotId(paramId.params.id);
+  await props.refresh()
+  // documents.value = await listDocumentsByBotId(paramId.params.id);
 };
 const singleDocumentDownload = async (list: any) => {
   viewDocument(paramId.params.id, list.id);

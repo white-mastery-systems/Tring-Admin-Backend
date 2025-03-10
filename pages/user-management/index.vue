@@ -38,6 +38,8 @@
   </Page>
 </template>
 <script setup lang="ts">
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+
 definePageMeta({
   middleware: "user",
 });
@@ -48,6 +50,7 @@ useHead({
 const channel =  ref("user")
 const  rolePopupState =  ref(false)
 const  userPopupState =  ref(false)
+const breadcrumbStore = useBreadcrumbStore();
 
 
 const selectedChannel = (value:any)=> {
@@ -55,4 +58,12 @@ const selectedChannel = (value:any)=> {
   if(rolePopupState.value) rolePopupState.value  = false
   if(userPopupState.value) userPopupState.value  = false
 }
+watchEffect(() => {
+  breadcrumbStore.setBreadcrumbs([
+    {
+      label: channel.value === 'user' ? 'User Details' : 'Role Details', // Dynamic name
+      to: `/user-management`,
+    }
+  ]);
+})
 </script>

@@ -4,7 +4,7 @@
     <template #actionButtons>
       <!-- <div class="flex justify-end"> -->
       <!-- <UiButton class="flex items-center justify-end border-none">
-        Link channel
+        Link channe
       </UiButton> -->
       <div class="flex w-full items-center">
         <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
@@ -115,37 +115,39 @@
           <span class="font-semibold content-align">Status</span> -->
         </div>
       </div>
-      <LazyUiDialog v-if="!botDetails.documentId" v-model:open="isDocumentListOpen">
-        <UiDialogTrigger class=""> </UiDialogTrigger>
-        <UiDialogContent align="end" class="sm:max-w-md">
-          <UiDialogHeader>
-            <UiDialogTitle>Launch Bot</UiDialogTitle>
-            <UiDialogDescription>
-              Choose a document to deploy your bot
-            </UiDialogDescription>
-          </UiDialogHeader>
-          <UiButton
-            class="bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42] min-w-[90%] max-w-[100%]"
-            v-for="list in getDocumentList.documents.filter(
-              (item: any) => item.status === 'ready',
-            )" :key="list.id" @click="async () => {
-              isSubmitting = true;
-              isDocumentListOpen = false;
-              await singleDocumentDeploy(list);
-            }
-            ">
-            <span class="w-[95%] truncate">
-              {{ list.name }}
-            </span>
-          </UiButton>
-        </UiDialogContent>
-      </LazyUiDialog>
       <!-- </div> -->
       <!-- Communication -->
     </template>
     <!-- <div>
-      <CreateBotForm />
-    </div> -->
+    <CreateBotForm />
+  </div> -->
+    <LazyUiDialog v-if="!botDetails.documentId" v-model:open="isDocumentListOpen">
+      <UiDialogTrigger class=""> </UiDialogTrigger>
+      <UiDialogContent align="end" class="sm:max-w-md">
+        <UiDialogHeader>
+          <UiDialogTitle>Launch Bot</UiDialogTitle>
+          <UiDialogDescription>
+            Choose a document to deploy your bot
+          </UiDialogDescription>
+        </UiDialogHeader>
+        <UiButton
+          class="bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42] min-w-[90%] max-w-[100%]"
+          v-for="list in documents.documents.filter(
+          (item: any) => item.status === 'ready',
+        )" :key="list.id" @click="async () => {
+          isSubmitting = true;
+          isDocumentListOpen = false;
+          await singleDocumentDeploy(list);
+          createBotsuccessfulState.open = true;
+        }
+        ">
+
+          <span class="w-[95%] truncate">
+            {{ list.name }}
+          </span>
+        </UiButton>
+      </UiDialogContent>
+    </LazyUiDialog>
     <!-- <div ref="scrollTarget" class="border-[1px] border-solid border-[#E4E4E7] rounded-lg p-2">
       <WebScrapingForm />
     </div> -->
@@ -155,11 +157,23 @@
     <div class="font-bold text-[20px] mt-3">
       View and Edit your Chatbots features
     </div>
-    <CreateBot />
+    <div>
+      <LoadingOverlay :loading="pageLoading" class="w-[80%]" />
+    </div>
+    <!-- <div v-if="pageLoading"
+      class="fixed inset-y-0 right-0 w-[83%] flex items-center justify-center bg-black bg-opacity-0 backdrop-blur-md z-50">
+      <div class="grid h-full items-center justify-center text-[#424BD1]">
+        <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+      </div>
+    </div> -->
+
+    <CreateBot :botDetails="botDetails" :documents="documents" :refresh="refresh" :refreshBot="refreshBot"
+      :loading="loading" />
     <!-- <div class="flex justify-center">
       <UiButton @click="triggerChildSubmit">Create bot</UiButton>
     </div> -->
-    <ChatBotSuccessfulMessageModal v-model="createBotsuccessfulState" @success="() => {
+    <ChatBotSuccessfulMessageModal v-model="createBotsuccessfulState" :botDetails="botDetails" :refreshBot="refreshBot"
+      @success="() => {
       console.log('on success')
     }" />
     <div v-if="false">
@@ -281,12 +295,13 @@
           </UiDialogHeader>
           <UiButton
             class="bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42] min-w-[90%] max-w-[100%]"
-            v-for="list in getDocumentList.documents.filter(
+            v-for="list in documents.documents.filter(
               (item: any) => item.status === 'ready',
             )" :key="list.id" @click="async () => {
                 isSubmitting = true;
                 isDocumentListOpen = false;
                 await singleDocumentDeploy(list);
+                createBotsuccessfulState.open = true;
               }
               ">
             <span class="w-[95%] truncate">
@@ -333,21 +348,24 @@ import { toast } from "vue-sonner";
 import { useDataList } from "~/composables/botManagement/chatBot/useDataList";
 import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
 import { useDocumentsList } from '~/composables/botManagement/chatBot/useDocumentsList';
-
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+import { useBotDocuments } from '~/composables/botManagement/chatBot/useBotDocuments';
 const router = useRouter();
 const route = useRoute("chat-bot-id");
 const emit = defineEmits<{ (e: "confirm"): void }>();
 const paramId: any = route;
 const queryId = ref(route.params?.id);
 const agentModalState = ref({ open: false, id: paramId.params.id });
+const { status, documents, refresh } = useBotDocuments(route.params.id);
+
 // const botDetails = ref(await getBotDetails(paramId.params.id));
 const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
-const { documentsList, refreshDocuments } = useDocumentsList(route.params.id)
+// const { documentsList, refreshDocuments } = useDocumentsList(route.params.id)
 const deleteModalState = ref(false);
 const modalOpen = ref(false);
 const isDocumentListOpen = ref(false);
 const isSubmitting = ref(false);
-const getDocumentList: any = ref();
+// const getDocumentList: any = ref();
 const channelModalState = ref<{ open: boolean; id: string | null }>({
   open: false,
   id: null,
@@ -356,37 +374,61 @@ const { dataList } = useDataList()
 const scrapedData = ref(null);
 // const childRef = ref(null);
 const scrollTarget = ref(null);
-
+const breadcrumbStore = useBreadcrumbStore();
+const isDataLoading = computed(() => status.value === "pending");
 const createBotsuccessfulState = ref({
   open: false,
 });
+const pageLoading = ref(true);
 
 watch(
   () => botDetails.value?.name,
   (newName) => {
     const userName = newName ?? "Unknown Bot Name";
+    breadcrumbStore.setBreadcrumbs([
+      {
+        label: "CreateBot", // Dynamic name
+        to: `/chat-bot`,
+      },
+      {
+        label: `${userName}`, // Dynamic name
+        to: `/chat-bot/${queryId.value}`,
+      },
+    ]);
     useHead({
       title: `Chat Bot | ${userName}`,
     });
   },
+  { deep: true, immediate: true }
+);
+
+watch(
+  () => status.value,
+  (newStatus) => {
+    if (newStatus === "success") {
+      checkDocumentStatus(); // Start polling for document status
+    }
+  },
   { immediate: true }
 );
+
 
 const handleSuccess = () => {
   channelModalState.value.open = false;
   toast.success("Channel Created successfully");
 };
-onMounted(async () => {
-  getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
-  if (!botDetails.value.documentId) {
-    await handleActivateBot()
-    setTimeout(() => {
-      createBotsuccessfulState.value.open = true;
-    }, 0);
-  }
+// onMounted(async () => {
+//   // getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
+//   if (!documents.value.documentId) {
+//     await handleActivateBot()
+//   } else {
+//     setTimeout(() => {
+//       createBotsuccessfulState.value.open = true;
+//     }, 0);
+//   }
   
-  // botDetails.value = await getBotDetails(paramId.params.id);
-});
+//   // botDetails.value = await getBotDetails(paramId.params.id);
+// });
 const handleGoBack = () => {
   return navigateTo({
     name: "bots",
@@ -449,7 +491,6 @@ const copyScript = async () => {
 };
 
 const singleDocumentDeploy = async (list: any) => {
-  console.log('singleDocumentDeploy', list)
   await deployDocument(paramId.params.id, list.id);
   refreshBot() // new function refreshBot added
   // botDetails.value = await getBotDetails(paramId.params.id);
@@ -471,6 +512,78 @@ const handleDeleteBot = () => {
 const handleFieldsChanges = () => {
   console.log("Fields changed");
 }
+
+const checkDocumentStatus = async () => {
+  if (status.value !== "success") return;
+
+  pageLoading.value = true; // Ensure loading starts
+  toast.success("Your bot is being deployed. Please wait...");
+
+  let toastInterval = 0; // Counter to track every 16 seconds
+
+  const interval = setInterval(async () => {
+    await refreshBot(); // Fetch the latest document status
+    const documentStatus = botDetails.value?.documents?.[0]?.status;
+
+    // Show toast every 16 seconds (i.e., every second iteration of 8-sec polling)
+    toastInterval += 8;
+    if (toastInterval % 12 === 0) {
+      toast.success("Your bot is still being deployed. Please wait...");
+    }
+
+    if (documentStatus === "ready") {
+      clearInterval(interval); // Stop polling
+      pageLoading.value = false;
+
+      if (!documents.value?.documentId) {
+        try {
+          await handleActivateBot();
+          if (botDetails.value?.documents.length === 1) {
+            createBotsuccessfulState.value.open = true;
+          }
+        } catch (error) {
+          console.error("handleActivateBot failed:", error);
+        } finally {
+          pageLoading.value = false; // Stop loading after activation
+        }
+      }
+    }
+  }, 8000); // Poll every 8 seconds
+};
+
+// const checkDocumentStatus = async () => {
+//   if (status.value !== "success") return;
+
+//   pageLoading.value = true; // Ensure loading starts
+//   toast.success("Your bot is being deployed. Please wait...");
+
+//   const interval = setInterval(async () => {
+
+//     // Fetch the latest document status
+//     await refreshBot()
+
+//     const documentStatus = botDetails.value?.documents?.[0]?.status;
+
+//     if (documentStatus === "ready") {
+//       pageLoading.value = false
+//       clearInterval(interval); // Stop polling
+      
+//       if (!documents.value?.documentId) {
+//         try {
+//           await handleActivateBot();
+//           if (botDetails.value?.documents.length === 1) {
+//             createBotsuccessfulState.value.open = true;
+//           }
+//         } catch (error) {
+//           console.error("handleActivateBot failed:", error);
+//         } finally {
+//           pageLoading.value = false; // Stop loading after activation
+//         }
+//       }
+//     }
+//   }, 8000); // Poll every 2 seconds
+// };
+
 const handleAddEditBot = async (values: any) => {
   // const documentsList = await listDocumentsByBotId(paramId.params.id)
   // const list = await getDocumentsList(paramId.params.id)
@@ -518,12 +631,10 @@ const handleAddEditBot = async (values: any) => {
 // };
 
 const handleActivateBot = async () => {
-  console.log('active', botDetails.value)
   isSubmitting.value = true;
   const activeDocuments = botDetails.value.documents.filter(
     (d) => d.status === "ready",
   );
-console.log('activeDocuments', activeDocuments)
   if (activeDocuments.length === 0) {
     toast.error("Please add document to activate bot");
     return navigateTo({
@@ -543,18 +654,15 @@ console.log('activeDocuments', activeDocuments)
       params: { id: paramId.params.id },
     });
   }
-  console.log('last --last', activeDocuments.length)
   if (activeDocuments.length === 1) {
     try {
       await singleDocumentDeploy(activeDocuments[0]);
-      console.log('singleDocumentDeploy',)
     } catch (err) {
       isSubmitting.value = false;
       toast.error("Failed to active the bot, try again");
       return;
     }
   }
-
   isSubmitting.value = false;
   isDocumentListOpen.value = true;
 };

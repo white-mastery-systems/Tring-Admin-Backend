@@ -7,14 +7,6 @@
     },
   ]"  -->
   <Page title="Add tools" :bread-crumbs="[
-    {
-      label: `${botDetailsList.name}`,
-      to: `/bot-management/voice-bot/${botDetailsList.id}`,
-    },
-    {
-      label: 'Add tools',
-      to: `/bot-management/voice-bot/${botDetailsList.id}/tools`,
-    },
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <form @submit.prevent="dynamicToolsForm" class="space-y-6">
       <!-- Default Tools Section -->
@@ -233,6 +225,8 @@ import CloseIcon from "~/components/icons/CloseIcon.vue";
 import * as z from 'zod';
 import { FieldArray } from "vee-validate";
 import { addToolschema } from "~/validationSchema/botManagement/voiceBot/addToolsValidation";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+
 
 definePageMeta({
   middleware: "admin-only",
@@ -245,6 +239,18 @@ const paramId: any = route;
 const botDetailsList: any = await getVoiceBotDetails(route.params.id);
 const config = useRuntimeConfig()
 const formattedUploadAudioFile = ref({})
+const breadcrumbStore = useBreadcrumbStore();
+
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: 'Add tools',
+    to: `/voice-bot/${botDetailsList.id}`,
+  },
+  {
+    label: `${botDetailsList.name}`,
+    to: `/voice-bot/${botDetailsList.id}/tools`,
+  },
+]);
 // const uploadedAudio = ref();
 const deleteFileBucket = ref([]);
 const {

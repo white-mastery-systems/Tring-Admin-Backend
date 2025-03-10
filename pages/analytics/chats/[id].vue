@@ -2,7 +2,7 @@
   <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="breadCrum" leadPage="leads"
+  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="[]" leadPage="leads"
     :disable-back-button="!user" :disable-elevation="true">
     <div class="items-top gap-[25px flex items-center justify-center px-3">
       <div class="items-top xs:grid-cols-2 flex grid w-full grid-cols-1 gap-[25px] lg:grid-cols-2">
@@ -142,6 +142,10 @@
   </Page>
 </template>
 <script setup lang="ts">
+import { useBreadcrumbStore } from "~/store/breadcrumbs";
+
+const breadcrumbStore = useBreadcrumbStore();
+
 const { user, refreshUser }: { user: any; refreshUser: any } =
   await useUser();
   const chatScreenRef = ref(null);
@@ -152,7 +156,7 @@ const { user, refreshUser }: { user: any; refreshUser: any } =
         chatScreenRef.value.scrollTop = chatScreenRef?.value?.scrollHeight;
     }, 1000);
   };
-
+  
   onMounted(() => {
     {
       scrollChatBox();
@@ -188,7 +192,17 @@ const { user, refreshUser }: { user: any; refreshUser: any } =
       server: false,
     },
   );
-
+  breadcrumbStore.setBreadcrumbs([
+    {
+      label: "Leads", // Dynamic name
+      to: `/analytics/leads`,
+    },
+    {
+      label: (leadData.value?.botUser?.name) ?? 'No Name',
+      to: `/analytics/leads/${route.params?.id}`,
+    },
+  ])
+  
   watchEffect(() => {
     if (leadData.value) {
       const userName = leadData.value?.botUser?.name ?? "Unknown User";
@@ -203,23 +217,6 @@ const formatLabel = (key: any) => {
   return key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z])/g, ' $1').trim();
 }
 
-const breadCrum = computed(() => {
-  if (user.value) {
-    return [
-      {
-        label: `${leadData.value?.botUser?.name ?? 'No Name'}`,
-        to: `/analytics/chats`,
-      },
-      {
-        label: 'Chats',
-        to: `/analytics/chats`,
-      },
-    ]
-    
-  } else {
-    []
-  }
-})
 
   const isPageLoading = computed(() => status.value === "pending");
 

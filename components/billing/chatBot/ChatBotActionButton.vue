@@ -110,7 +110,6 @@ const cancelSubscription = computed(() => {
   // Compare dates (ignoring time)
   const isExpired = (currentDate.setHours(0, 0, 0, 0) <= expirationDate.setHours(0, 0, 0, 0));
 
-  // console.log(usage.expiry_date, 'usage.expiry_date');
   return isExpired;
 });
 </script>

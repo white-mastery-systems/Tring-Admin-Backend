@@ -1,13 +1,6 @@
 <template>
   <Page title="Pre Recorded Audio" :bread-crumbs="[
-    {
-      label: `${botDetails.name}`,
-      to: `/bot-management/voice-bot/${botDetails.id}`,
-    },
-    {
-      label: 'Pre Recorded Audio',
-      to: `/bot-management/voice-bot/${botDetails.id}/pre-recorded-audio`,
-    },
+    
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <div class="pb-2 sm:pb-0">
       <!-- {{ audioResponseData }} -->
@@ -185,12 +178,28 @@
 </template>
 
 <script setup lang="ts">
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+
 definePageMeta({
   middleware: "admin-only",
 });
 const route = useRoute("voice-bot-id-identity-management");
 const paramId: any = route;
+
+const breadcrumbStore = useBreadcrumbStore();
 const botDetails: any = await getVoiceBotDetails(route.params.id);
+
+
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: `${botDetails?.name}`,
+    to: `/voice-bot/${botDetails?.id}`,
+  },
+  {
+    label: 'Pre Recorded Audio',
+    to: `/voice-bot/${botDetails?.id}/pre-recorded-audio`,
+  },
+]);
 const welcomeFilesData = ref([]);
 const concludeFilesData = ref([]);
 const fillerFilesData = ref([]);

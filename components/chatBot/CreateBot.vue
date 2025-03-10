@@ -12,9 +12,11 @@ import { useDocumentsList } from '~/composables/botManagement/chatBot/useDocumen
 import { useStepStatus } from "@/composables/botManagement/chatBot/useStepStatus";
 import EmailConfiguration from './EmailConfiguration.vue';
 
+const props = defineProps<{ botDetails: any; loading: boolean; documents: any; refreshBot: () => void; refresh: () => void }>();
 // const { updateStepStatus, accordionItems, botDetails, documentsList } = useStepStatus();
 const route = useRoute();
-const { accordionItems, updateStepStatus, documentsList, refreshDocuments, botDetails, loading, error, refreshBot } = useStepStatus(route);
+// const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
+const { accordionItems, updateStepStatus } = useStepStatus(route);
 const stepComponents: Record<string, any> = {
   uiCustomization: UiCustomization,
   botConfiguration: BotConfiguration,
@@ -22,46 +24,16 @@ const stepComponents: Record<string, any> = {
   AdvancedSetup: DynamicForm,
 }
 const emit = defineEmits(["cofirm"]);
-// const route = useRoute();
-// const { documentsList, refreshDocuments } = useDocumentsList(route.params.id)
-// const defaultValue = 'uiCustomization'
 const openValues = ref(["uiCustomization", "botConfiguration"]);
-// updateStepStatus()
-// const defaultValue = "item1";
-// const accordionItems = ref([
-//   { value: "uiCustomization", title: "UI Customization", content: "Setup the way your chat looks", icon: "Home", subtitle: "Setup the way your chat looks", status: "Incomplete" },
-//   { value: "botConfiguration", title: "Bot Configuration", content: "Setup the way you bot works", icon: "Settings", subtitle: "Setup the way you bot works", status: "Incomplete" },
-//   { value: "crmIntegrations", title: "CRM Integrations", content: "Click here to deploy your new chatbot", icon: "Settings", subtitle: "Click here to deploy your new chatbot",},
-//   { value: "AdvancedSetup", title: "Advanced Setup", content: "Click here to deploy your new chatbot", icon: "Settings", subtitle: "Click here to deploy your new chatbot" },
-// ]);
-
-// const updateStepStatus = async (step: string, status: string) => {
-//   await nextTick(); // Ensures Vue updates the DOM first
-//   emit('cofirm', { step, status });
-//   const stepIndex = accordionItems.value.findIndex(item => item.value === step);
-//   // const documentsList = await listDocumentsByBotId(route.params.id)
-//   // const list = await getDocumentsList(route.params.id)
-//   // console.log(list, "list")
-//   console.log(documentsList.value, "documentsList.value")
-//   console.log(documentsList.value, "documentsList.value ")
-//   if (stepIndex !== -1) {
-//     accordionItems.value[stepIndex] = {
-//       ...accordionItems.value[stepIndex],
-//       status: status === "completed" ? (stepIndex === 1) ? ((botDetails.value.documents.length > 0) && (documentsList.value.length > 0)) ? "Completed" : "Incomplete" : "Completed" : "Incomplete",
-//     };
-//     accordionItems.value = [...accordionItems.value]; // Force reactivity
-//   }
-// };
-
 // Call `updateStepStatus` on mount to ensure status updates after refresh
 onMounted(() => {
-  updateStepStatus("uiCustomization", "incomplete"); // Default value (will update later)
+  updateStepStatus("uiCustomization"); // Default value (will update later)
 });
 
 
 </script>
 <template>
-  <Accordion type="multiple" v-model="openValues" class="w-full" collapsible >
+  <Accordion type="multiple" v-model="openValues" class="w-full" collapsible>
     <AccordionItem v-for="item in accordionItems" :key="item.value" :value="item.value"
       class="mb-3 border-none p-6 rounded-lg box_shadow">
       <AccordionTrigger
@@ -94,7 +66,9 @@ onMounted(() => {
         <UiSeparator class="mt-4"></UiSeparator>
         <!-- {{ item.content }} -->
         <!-- <component :is="stepComponents[item.value]" /> -->
-        <component :is="stepComponents[item.value]" @statusUpdated="updateStepStatus" class="mt-2" />
+        <component :is="stepComponents[item.value]" :botDetails="props.botDetails" :refreshBot="props.refreshBot"
+          :documents="props.documents" :refresh="props.refresh" :loading="props.loading" @statusUpdated="updateStepStatus"
+          class="mt-2" />
       </AccordionContent>
     </AccordionItem>
   </Accordion>

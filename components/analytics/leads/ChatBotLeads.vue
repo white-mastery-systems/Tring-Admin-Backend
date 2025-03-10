@@ -128,8 +128,6 @@ let {
   },
 });
 const emitClearFilters = () => {
-  console.log("Clearing Filters");
-
   Object.assign(props.filters, {
     botId: "",
     q: undefined,
@@ -218,10 +216,10 @@ const columns = [
     header: "Country",
     cell: (info) => info.getValue() || "-",
   }),
-  columnHelper.accessor("createdAt", {
-    header: "Date Created",
-    // cell: ({ row }) => `${row.original.createdAt}`,
-  }),
+  // columnHelper.accessor("createdAt", {
+  //   header: "Date Created",
+  //   // cell: ({ row }) => `${row.original.createdAt}`,
+  // }),
   columnHelper.accessor("chatId", {
     header: "Action",
     cell: ({ row }) =>

@@ -51,7 +51,6 @@ const intentTypes = [
 const logoData = ref()
 // ✅ Function to update industry selection
 const selectIndustry = (value: any) => {
-  console.log(selectedType, "selectedType -- selectedType")
   selectedType.value = value;
   fetchConfig(value);
 };

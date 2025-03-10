@@ -4,9 +4,11 @@ import { Home, ShoppingCart, Settings, Info, Plane, HandPlatter, PhoneCall, Ambu
 // import { Button } from "@/components/ui/button";
 // import { Home, Settings, Info } from "lucide-vue-next";
 
-defineProps<{
+const props = defineProps<{
   errors: Record<string, any>;
+  refresh: () => void
 }>();
+// const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
 const uploadDocumentRef = ref(null);
 defineExpose({ uploadDocumentRef })
 const { value: selectedType } = useField("selectedType")
@@ -116,7 +118,7 @@ const changeKnowledge = () => {
             </div>
             <div>
               <!-- {{ scrapData.scrapedData.knowledge_base.document_content }} -->
-              <ScrapDateDocumentUpload />
+              <ScrapDateDocumentUpload :refresh="props.refresh" />
             </div>
             <!-- <TextField name="scrapData" label="Website generated details and goals" :isTextarea="true">
                 </TextField> -->
@@ -143,7 +145,7 @@ const changeKnowledge = () => {
           </div>
           <div class="flex justify-center w-full mt-8">
             <div class="w-full">
-              <CreateBotDocumentManagement />
+              <CreateBotDocumentManagement :refresh="props.refresh" />
             </div>
           </div>
         </div>
@@ -169,7 +171,7 @@ const changeKnowledge = () => {
           </div>
           <div class="py-6 px-0 w-[50%] min-h-[300px]">
             <p class="text-left text-[14px] py-1 text-[#000000]">Tell us about your company</p>
-            <TextDocumentUpload ref="uploadDocumentRef" />
+            <TextDocumentUpload ref="uploadDocumentRef" :refresh="props.refresh" />
             <!-- <UiTextarea calss="text-[#71717A]" v-model="companyDetails" class="h-[200px]" :resizable="false"
               placeholder="Enter text..." label="Tell us about your company">
             </UiTextarea> -->

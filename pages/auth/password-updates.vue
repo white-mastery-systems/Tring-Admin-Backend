@@ -86,8 +86,6 @@ const togglePasswordVisibility = () => {
 };
 
 onMounted(async () => {
-  console.log('password update');
-
   try {
     const response = await $fetch(`/api/v2/onboarding/hostedPage?hostedpageId=${hostedPageId}`);
     userId.value = response?.userId

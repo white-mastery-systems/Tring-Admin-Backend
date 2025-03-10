@@ -1,13 +1,6 @@
 <template>
   <Page title="CRM Configuration" :bread-crumbs="[
-    {
-      label: `${botDetails.name}`,
-      to: `/bot-management/voice-bot/${botDetails.id}`,
-    },
-    {
-      label: 'CRM Configuration',
-      to: `/bot-management/voice-bot/${botDetails.id}/crm-config`,
-    },
+    
   ]" :disableSelector="true">
     <!-- v-if="integrations.length === 0" -->
     <template #actionButtons>
@@ -45,7 +38,11 @@
 <script setup lang="ts">
 import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+
+
 const router = useRouter();
+const breadcrumbStore = useBreadcrumbStore();
 const columnHelper = createColumnHelper<any>();
 const route = useRoute("chat-bot-id-crm-config");
 const paramId: any = route;
@@ -85,6 +82,16 @@ let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
 
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: 'CRM Configuration',
+    to: `/voice-bot/${botDetails.value.id}`,
+  },
+  {
+    label: `${botDetails.value.name}`,
+    to: `/voice-bot/${botDetails.value.id}/crm-config`,
+  },
+]);
 watchEffect(() => {
   if (botDetails.value) {
     const userName = botDetails.value?.name ?? "Unknown Bot Name";

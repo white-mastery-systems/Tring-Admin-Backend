@@ -78,11 +78,6 @@ const clearTextField = () => {
 defineExpose({ clearTextField });
 
 const handleAddEditBot = handleSubmit(async (values) => {
-  // console.log(values, "values -- values");
-  // if (!values.url) {
-  //   toast.error("URL is required");
-  //   return;
-  // }
   isLoading.value = true;
   try {
     
@@ -92,8 +87,6 @@ const handleAddEditBot = handleSubmit(async (values) => {
     });
     const parsedData = cleanAndParseJson(scrapedData);
     scrapData.scrapedData = parsedData;
-    // console.log(parsedData, "parsedData -- parsedData")
-    // emit("scrapedData", parsedData); 
     toast.success("Updated successfully");
     // }
     // if (agentModalState.value.id) {

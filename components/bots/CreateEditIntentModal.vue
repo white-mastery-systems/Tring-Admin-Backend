@@ -161,42 +161,6 @@
     { deep: true },
   );
 
-// Watch modalState changes
-// watch(
-//   () => modalState.value,
-//   async (value) => {
-//     handleReset();
-//     fileRef.value = [];
-//     selectedFileName.value = [];
-//     console.log("value top -- top", value);
-//     if (!value.id) return;
-//     console.log("value top -- bottom", value);
-//     console.log(name, content, type, "name, content, type -- name, content, type")
-//     const intentDetails: any = await $fetch<{
-//       intent: string;
-//       link?: string;
-//       uploads?: { name: string; content: Blob; type: string }[];
-//     }>(`/api/bots/${botDetails.value.id}/intents/${value.id}`);
-//     console.log(intentDetails, 'intentDetails -- intentDetails')
-//     setFieldValue("intent", intentDetails.intent);
-//     if (intentDetails?.link) setFieldValue("link", intentDetails?.link);
-
-//     // Assign files
-//     fileRef.value =
-//       intentDetails?.uploads?.map(
-//         (file) => new File([file.content], file.name, { type: file.type })
-//       ) || [];
-//     console.log(intentDetails?.uploads, "intentDetails?.uploads -- intentDetails?.uploads")
-//     // Assign filenames as an array
-//     selectedFileName.value =
-//       intentDetails?.uploads?.map((file) => file.name) || [];
-//     console.log(selectedFileName.value, "selectedFileName.value")
-//   },
-//   { deep: true, immediate: true },
-// );
-  // const [intentField, intentFieldAttrs] = defineField("intent");
-  // const [linkField, linkFieldAttrs] = defineField("link");
-  // const [fileName, fileNameAttrs] = defineField("fileName");
   const fileRef = ref<FileList | null>(null);
   const selectedFileName = ref();
 

@@ -1,16 +1,17 @@
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from "vue";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { botStore } from "~/store/botStore";
 import { useRoute } from "vue-router";
-import { useBotDocuments } from '~/composables/botManagement/chatBot/useBotDocuments';
 
 const scrapData = botStore();
 const text = ref('')
 // const text = ref(scrapData.scrapedData?.knowledge_base?.document_content || "");
 const route = useRoute();
-const { status, documents, refresh } = useBotDocuments(route.params.id);
+const props = defineProps<{
+  refresh: () => void
+}>();
 // Watch for changes in scrapData
 // watch(
 //   () => scrapData.scrapedData?.knowledge_base?.document_content,
@@ -26,12 +27,10 @@ const clearTextField = () => {
 
 // Expose method for parent access
 const generatePDFAndUpload = async () => {
-  console.log("Generating PDF and uploading...",text.value);
   if (!text.value.trim()) {
     // toast.error("Please enter some text before generating the PDF.");
     return;
   }
-// console.log('buttom')
   const pdf = new jsPDF();
 
   // Create a temporary div
@@ -64,7 +63,7 @@ const generatePDFAndUpload = async () => {
 
   // Upload to API
   await createDocument(payload.botId, payload.document);
-  await refresh()
+  await props.refresh()
 };
 
 defineExpose({ clearTextField, generatePDFAndUpload });

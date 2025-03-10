@@ -125,7 +125,6 @@ watch(() => countryData, (newValue) => {
 }, { deep: true, immediate: true });
 
 watch(() => countryDetails.value, (newValue) => {
-    console.log(newValue, "newValue watch")
     fieldValue.value = newValue;
 }, { deep: true, immediate: true });
 watch(country, (newValue) => {

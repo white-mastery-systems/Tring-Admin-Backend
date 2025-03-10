@@ -7,14 +7,7 @@
     },
   ]"  -->
   <Page title="LLM Caching" :bread-crumbs="[
-    {
-      label: `${botDetailsList.name}`,
-      to: `/bot-management/voice-bot/${botDetailsList.id}`,
-    },
-    {
-      label: 'LLM Caching',
-      to: `/bot-management/voice-bot/${botDetailsList.id}/llm-caching`,
-    },
+    
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <div class="pb-2 sm:pb-0">
       <form @submit.prevent="onSubmit" class="flex flex-col gap-2 space-y-8">
@@ -75,13 +68,25 @@
 
 <script setup lang="ts">
 import { LanguageList } from '~/composables/useLanguageList';
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+
 const config = useRuntimeConfig()
 definePageMeta({
   middleware: "admin-only",
 });
 const route = useRoute("voice-bot-id-identity-management");
 const botDetailsList: any = await getVoiceBotDetails(route.params.id);
-
+const breadcrumbStore = useBreadcrumbStore();
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: 'LLM Caching',
+    to: `/voice-bot/${botDetailsList?.id}`,
+  },
+  {
+    label: `${botDetailsList?.name}`,
+    to: `/voice-bot/${botDetailsList?.id}/llm-caching`,
+  },
+]);
 
 const { languageList } = LanguageList();
 const isLoading = ref(false);

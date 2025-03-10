@@ -1,16 +1,10 @@
 <template>
   <Page title="LLM Configuration" :bread-crumbs="[
-      {
-        label: `${botDetails.name}`,
-        to: `/bot-management/voice-bot/${botDetails.id}`,
-      },
-      {
-        label: 'LLM Configuration',
-        to: `/bot-management/voice-bot/${botDetails.id}/llm-config`,
-      },
-    ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="false">
+
+  ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="false">
     <div class="shadow-md mx-5 rounded-lg ">
-      <form @submit.prevent="handleLLMConfigSubmit" class="space-y-6 sm:space-y-6 md:space-y-4 lg:space-y-4 xl:space-y-4">
+      <form @submit.prevent="handleLLMConfigSubmit"
+        class="space-y-6 sm:space-y-6 md:space-y-4 lg:space-y-4 xl:space-y-4">
         <div class="grid w-full grid-cols-2 gap-2">
           <!-- <SelectField name="provider" label="Provider" placeholder="Select Provider" :options="provider" required />
 
@@ -21,10 +15,10 @@
 
           <div class="mt-5 flex flex-col gap-2">
             <RangeSlider :step="0.05" :name="values.temperature" label="Temperature" @update="
-                ($event) => {
-                  setFieldValue('temperature', $event);
-                }
-              " required placeholder="Enter speaking Rate" min="0" max="2" />
+              ($event) => {
+                setFieldValue('temperature', $event);
+              }
+            " required placeholder="Enter speaking Rate" min="0" max="2" />
           </div>
         </div>
         <div class="spcace-y-2 grid w-full grid-cols-2 gap-2">
@@ -55,103 +49,116 @@
   </Page>
 </template>
 <script setup lang="ts">
-  import { llmConfigurationValidation } from "~/validationSchema/botManagement/LLmConfigurationValidation";
-  
-  const router = useRouter();
-  const route = useRoute("voice-bot-id-llm-config");
-  const isLoading = ref(false)
-  // import { lLmConfigurationValidation } from "~/validationSchema/botManagement/llmConfigurationValidation";
+import { llmConfigurationValidation } from "~/validationSchema/botManagement/LLmConfigurationValidation";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
-  const provider = [
-    {
-      value: "openai",
-      label: "OpenAI",
-    },
-    {
-      value: "google",
-      label: "Gemini",
-    },
-  ];
 
-  const models = [
-    {
-      value: "gpt-4o-mini",
-      label: "gpt-4o-mini",
-    },
-    {
-      value: "gemini-1.5-flash",
-      label: "gemini-1.5-flash",
-    },
-  ];
+const router = useRouter();
+const route = useRoute("voice-bot-id-llm-config");
+const isLoading = ref(false)
+const breadcrumbStore = useBreadcrumbStore();
+// import { lLmConfigurationValidation } from "~/validationSchema/botManagement/llmConfigurationValidation";
 
-  const roles = [
-    {
-      label: "Customer Support",
-      value: "Assist customers with their questions and issues.",
-    },
-    {
-      label: "Receptionist",
-      value:
-        "Assist customers queries about room bookings and hotel information",
-    },
-    {
-      label: "Perform other custom tasks as needed.",
-      value: "Other",
-    },
-  ];
+const provider = [
+  {
+    value: "openai",
+    label: "OpenAI",
+  },
+  {
+    value: "google",
+    label: "Gemini",
+  },
+];
 
-  const tokens = ["8192", "1024", "2048", "4096"];
+const models = [
+  {
+    value: "gpt-4o-mini",
+    label: "gpt-4o-mini",
+  },
+  {
+    value: "gemini-1.5-flash",
+    label: "gemini-1.5-flash",
+  },
+];
 
-  const botDetails: any = await getVoiceBotDetails(route.params.id);
-  
-  watchEffect(() => {
-    if (botDetails) {
-      const userName = botDetails?.name ?? "Unknown Bot Name";
-      useHead({
-        title: `Voice Bot | ${userName} - LLM Config`,
-      });
-    }
-  });
+const roles = [
+  {
+    label: "Customer Support",
+    value: "Assist customers with their questions and issues.",
+  },
+  {
+    label: "Receptionist",
+    value:
+      "Assist customers queries about room bookings and hotel information",
+  },
+  {
+    label: "Perform other custom tasks as needed.",
+    value: "Other",
+  },
+];
 
-  const {
-    setFieldValue,
-    handleSubmit,
-    errors,
-    values,
-    defineField,
-    resetForm,
-  } = useForm({
-    validationSchema: llmConfigurationValidation,
-  });
-  Object.entries(botDetails.llmConfig).forEach(([key, value]: any) => {
-    if (values.hasOwnProperty(key)) {
-      setFieldValue(key, value);
-    }
-  });
+const tokens = ["8192", "1024", "2048", "4096"];
 
-  const handleLLMConfigSubmit = handleSubmit(async (value: any) => {
-    isLoading.value = true
-    await updateLLMConfig({ llmConfig: value }, botDetails.id, "The LLM configuration has been added successfully.");
-    isLoading.value = false
-    return navigateTo({
-      name: "voice-bot-id",
-      params: { id: botDetails.id },
+const botDetails: any = await getVoiceBotDetails(route.params.id);
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: 'LLM Configuration',
+    to: `/voice-bot/${botDetails?.id}`,
+  },
+  {
+    label: `${botDetails?.name}`,
+    to: `/voice-bot/${botDetails?.id}/llm-config`,
+  },
+]);
+
+watchEffect(() => {
+  if (botDetails) {
+    const userName = botDetails?.name ?? "Unknown Bot Name";
+    useHead({
+      title: `Voice Bot | ${userName} - LLM Config`,
     });
+  }
+});
+
+const {
+  setFieldValue,
+  handleSubmit,
+  errors,
+  values,
+  defineField,
+  resetForm,
+} = useForm({
+  validationSchema: llmConfigurationValidation,
+});
+Object.entries(botDetails.llmConfig).forEach(([key, value]: any) => {
+  if (values.hasOwnProperty(key)) {
+    setFieldValue(key, value);
+  }
+});
+
+const handleLLMConfigSubmit = handleSubmit(async (value: any) => {
+  isLoading.value = true
+  await updateLLMConfig({ llmConfig: value }, botDetails.id, "The LLM configuration has been added successfully.");
+  isLoading.value = false
+  return navigateTo({
+    name: "voice-bot-id",
+    params: { id: botDetails.id },
   });
+});
 
-  // const handleLLMConfig = async (values: any) => {
-  //   const payload: any = {
-  //     provider: values.provider,
-  //     model: values.model,
-  //     tokens: values.tokens,
-  //     temperature: values.temperature,
-  //     documentId: values.documentId,
-  //     role: values.role,
-  //     guide: values.guide,
-  //     instruction: values.instruction,
-  //     notes: values.notes,
-  //     domainRules: values.domainRules,
-  //   };
+// const handleLLMConfig = async (values: any) => {
+//   const payload: any = {
+//     provider: values.provider,
+//     model: values.model,
+//     tokens: values.tokens,
+//     temperature: values.temperature,
+//     documentId: values.documentId,
+//     role: values.role,
+//     guide: values.guide,
+//     instruction: values.instruction,
+//     notes: values.notes,
+//     domainRules: values.domainRules,
+//   };
 
-  // };
+// };
 </script>

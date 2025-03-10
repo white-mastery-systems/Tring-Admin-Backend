@@ -267,16 +267,6 @@ const exportData = async () => {
           verificationId: contacts.verificationId ?? "",
         }
       }
-      // const mergedObject = {
-      // }
-      // const mergedObject = {
-      //   name: contacts.contacts.name ?? "",
-      //   metadata: contacts.contacts.metadata ?? "",
-      //   verificationId: contacts.contacts.verificationId ?? "",
-      //   countryCode: contacts.contacts.countryCode ?? "+91",
-      //   phone: contacts.contacts.phone ?? "",
-      // }
-      // return mergedObject;
     })
     exportDataHandler.value.status = true;
     exportReadyRows.value = exportReadObject

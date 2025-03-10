@@ -41,6 +41,8 @@
   </Page>
 </template>
 <script setup lang="ts">
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+
 definePageMeta({
   middleware: "user",
 });
@@ -48,41 +50,48 @@ useHead({
   title: "Account",
 });
 
-  const logoutModal = ref(false);
-  const route = useRoute();
-  const router = useRouter();
-  const tabValue = ref("personal-details");
+const breadcrumbStore = useBreadcrumbStore();
+const logoutModal = ref(false);
+const route = useRoute();
+const router = useRouter();
+const tabValue = ref("personal-details");
 
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "My Account", // Dynamic name
+    to: `/account?tab=personal-details`,
+  }
+]);
 
-  watch(() => route?.query?.tab,(newTab) => {
-    tabValue.value = newTab
-  })
-  // const confirmModel = () => {
-  //   logoutModal.value = true;
-  //   localStorage.clear();
-  // };
+watch(() => route?.query?.tab, (newTab) => {
+  tabValue.value = newTab
+})
+// const confirmModel = () => {
+//   logoutModal.value = true;
+//   localStorage.clear();
+// };
 
-  // const handleLogout = async () => {
-  //   authHandlers.logout();
-  //   logoutModal.value = false;
-  //   navigateTo({ name: "auth-sign-in" });
-  // };
+// const handleLogout = async () => {
+//   authHandlers.logout();
+//   logoutModal.value = false;
+//   navigateTo({ name: "auth-sign-in" });
+// };
 
-  const isUpdating = ref(false);
+const isUpdating = ref(false);
 
-  const tab = ref("personal-details");
-  companyDetails();
-  const selectedChannel = (value: any) => {
-    tab.value = value;
-    let queryValue ;
-    // if (value === "companyDetails") {
-    //   queryValue = "company-details";
-    // } else 
-    if (value === "security") {
-      queryValue = "security";         
-    }else if (value === "personal-details") {
-      queryValue = "personal-details";
-    }
-    router.push({ query: { tab: queryValue } });
-  };
+const tab = ref("personal-details");
+companyDetails();
+const selectedChannel = (value: any) => {
+  tab.value = value;
+  let queryValue;
+  // if (value === "companyDetails") {
+  //   queryValue = "company-details";
+  // } else 
+  if (value === "security") {
+    queryValue = "security";
+  } else if (value === "personal-details") {
+    queryValue = "personal-details";
+  }
+  router.push({ query: { tab: queryValue } });
+};
 </script>

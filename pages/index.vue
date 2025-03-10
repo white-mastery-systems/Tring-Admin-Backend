@@ -2,14 +2,15 @@
   <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true"
     class="flex flex-col items-center">
     <!-- <Payment /> -->
+    <!-- <IntentManagement /> -->
     <QuickLinks :navigavtionList="navigavtionList" />
-    <h6 class="font-bold text-[20px] mt-3">Start creating your bots</h6>
+    <!-- <h6 class="font-bold text-[20px] mt-3">Start creating your bots</h6> -->
     <div class="flex flex-col gap-2">
       <CreateBotLinks :navigavtionList="createBotNavList" />
     </div>
     <!-- v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
     :count="statistics.value" :loading="loading" -->
-    <h6 class="font-bold text-[20px] mt-3">Analytics</h6>
+    <!-- <h6 class="font-bold text-[20px] mt-3">Analytics</h6> -->
     <div v-if="analyticsData?.statistics?.length"
       class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4 w-full">
       <template v-for="statistics in analyticsData?.statistics?.filter(

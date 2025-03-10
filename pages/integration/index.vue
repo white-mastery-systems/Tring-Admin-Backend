@@ -118,9 +118,10 @@ import { createColumnHelper } from "@tanstack/vue-table";
 import { useRoute, useRouter } from "vue-router";
 import Page from "~/components/Page.vue";
 import IntegrationTable from "~/components/settings/integrations/IntegrationTable.vue";
-import CreateEditIntegrationModal from "../../../components/integrations/CreateEditIntegrationModal.vue";
 import ChannelModal from "./ChannelModal.vue";
 import NumberModal from "./NumberModal.vue";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+
 
 definePageMeta({
   middleware: "user",
@@ -129,6 +130,7 @@ definePageMeta({
 useHead({
   title: "Settings | Integrations",
 });
+const breadcrumbStore = useBreadcrumbStore();
 
 const router = useRouter();
 const route = useRoute();
@@ -169,6 +171,12 @@ const filters = computed(() => ({
   limit: limit.value,
 }));
 
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Integration", // Dynamic name
+    to: `/integration`,
+  }
+]);
 const actionsComponent = (id: any) =>
   h(
     "div",

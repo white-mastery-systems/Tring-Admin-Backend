@@ -70,6 +70,7 @@ import { z } from 'zod';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useClipboard } from "@vueuse/core";
 
+const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
 const emit = defineEmits(["success"]);
 const route = useRoute();
 const paramId = ref(route.params?.id);
@@ -83,7 +84,7 @@ const copyAndPreviewBot = ref(false)
 const showForm = ref(false);
 // const queryId = ref(route.params?.id);
 
-const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
+// const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
 const toggleForm = () => {
   showForm.value = !showForm.value;
 };
@@ -122,7 +123,7 @@ validationSchema: sentMailSchema,
 });
 
 const previewUrl = computed(() => {
-  let col = botDetails.value.metadata.ui.color as string;
+  let col = props.botDetails.metadata.ui.color as string;
   col = col
     ?.split(" ")
     .map((element) => {
@@ -130,7 +131,7 @@ const previewUrl = computed(() => {
       else return element;
     })
     .join(" ");
-  let secondaryColor = botDetails.value.metadata.ui.secondaryColor as string;
+  let secondaryColor = props.botDetails.metadata.ui.secondaryColor as string;
   secondaryColor = secondaryColor
     ?.split(" ")
     .map((element) => {
@@ -141,7 +142,6 @@ const previewUrl = computed(() => {
   return `${window.location.origin}/preview.html?orgname=WMS&chatbotid=${route.params.id}&mode=preview`;
 });
 const onSubmit = handleSubmit(async (values) => {
-  console.log(values, 'values');
   try {
     const response = await $fetch(`/api/bots/${route.params.id}/sendScript`, {
       method: "POST",

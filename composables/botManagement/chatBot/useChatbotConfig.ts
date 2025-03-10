@@ -15,7 +15,6 @@ export function useChatbotConfig() {
           default: () => ({}),
         }
       );
-      console.log(data.value);
       intentOptions.value = data.value;
       status.value = fetchStatus.value;
 

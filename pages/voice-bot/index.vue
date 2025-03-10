@@ -32,7 +32,7 @@
 import { createColumnHelper } from "@tanstack/vue-table";
 import { useRoute, useRouter } from "vue-router";
 import { useState } from "#app";
-
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 definePageMeta({
   middleware: "user",
 });
@@ -61,6 +61,14 @@ const filters = useState("chatBotFilters", () => ({
 let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
+const breadcrumbStore = useBreadcrumbStore();
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Voice Bot", // Dynamic name
+    to: `/voice-bot`,
+  }
+]);
+
 const {
   status,
   data: voiceBot,

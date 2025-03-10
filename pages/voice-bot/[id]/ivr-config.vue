@@ -1,10 +1,6 @@
 <template>
   <Page title="IVR Configuration" :bread-crumbs="[
-    { label: `${botDetails.name}`, to: `/bot-management/voice-bot/${botDetails.id}` },
-    {
-      label: 'IVR Configuration',
-      to: `/bot-management/voice-bot/${botDetails.id}/ivr-config`,
-    },
+
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false">
     <div>
       <form @submit.prevent="onSubmit" class="space-y-4">
@@ -25,6 +21,8 @@
   </Page>
 </template>
 <script setup lang="ts">
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+
 definePageMeta({
   middleware: "admin-only",
 });
@@ -32,6 +30,17 @@ definePageMeta({
 const route = useRoute("voice-bot-id-ivr-config");
 const botDetails: any = await getVoiceBotDetails(route.params.id);
 const numberList = ref([])
+const breadcrumbStore = useBreadcrumbStore();
+
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: 'IVR Configuration',
+    to: `/voice-bot/${botDetails.id}` 
+  },
+  { label: `${botDetails.name}`, 
+    to: `/voice-bot/${botDetails.id}/ivr-config`,
+  },
+]);
 // const { data: botData, status: botLoadingStatus } = await useLazyFetch(`/api/voicebots/${route.params.id}`);
 
 const {

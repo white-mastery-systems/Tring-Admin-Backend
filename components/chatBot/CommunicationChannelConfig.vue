@@ -50,18 +50,21 @@
 <script setup lang="ts">
 import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
+
+const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
+
 const router = useRouter();
 const columnHelper = createColumnHelper<any>();
 const route = useRoute("chat-bot-id-crm-config");
 const paramId: any = route;
-const botDetails = ref(await getBotDetails(paramId.params.id));
+// const botDetails = ref(await getBotDetails(paramId.params.id));
 
 let deleteIntegrationState: { open: boolean; id?: string } = reactive({
   open: false,
 });
 
 watch(
-  () => botDetails.value?.name, // Watching only the 'name' property
+  () => props.botDetails?.name, // Watching only the 'name' property
   (newName) => {
     const userName = newName ?? "Unknown Bot Name";
     useHead({

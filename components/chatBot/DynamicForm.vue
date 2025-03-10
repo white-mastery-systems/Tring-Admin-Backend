@@ -38,10 +38,10 @@
         </div>
       </form>
       <!-- Preview Section -->
-      <div class="mt-8" v-if="formattedValue.length">
+      <div class="mt-8" v-if="botDetails.length">
         <h2 class="text-xl font-semibold">Form Preview</h2>
         <form class="space-y-4">
-          <div v-for="(field, index) in formattedValue" :key="index" class="space-y-3 flex items-end gap-2">
+          <div v-for="(field, index) in botDetails" :key="index" class="space-y-3 flex items-end gap-2">
             <!-- Type Field in Preview -->
             <!-- {{ field.placeholder }} -->
             <div v-if="field.type === 'date'" class="w-full">
@@ -67,12 +67,13 @@
         </form>
       </div>
       <div class="text-[18px] font-bold mt-4"> Channel Configuration </div>
-      <CommunicationChannelConfig />
+      <CommunicationChannelConfig :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
       <div class="text-[18px] font-bold mt-4"> Add tools </div>
-      <AddTools />
+      <AddTools :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
+      <IntentManagement />
     </div>
   </div>
-    <!-- </Page> -->
+  <!-- </Page> -->
 </template>
 
 <script setup lang="ts">
@@ -83,6 +84,7 @@ import CloseIcon from "~/components/icons/CloseIcon.vue";
 import { useToCamelCase } from "~/composables/botManagement/chatBot/useToCamelCase";
 import { dynamicFormSchema } from "~/validationSchema/botManagement/chatBot/dynamicFormValidation";
 
+const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
 const isLoading = ref(false);
 const route: any = useRoute("chat-bot-id-dynamic-form");
 const botDetails: any = await getBotDetails(route.params.id);
@@ -102,36 +104,36 @@ const typeList = reactive([
   // { label: "Textarea", value: "textarea" },
 ]);
 
-const formattedToolsConfig = computed(() => {
-  // Format the getAddTools data for better readability
-  return {
-    defaultTools: getAddTools.value.defaultTools,
-    clientTools: getAddTools.value.clientTools.map((tool) => ({
-      name: tool.name,
-      description: tool.description,
-      endpoint: tool.endpoint,
-      parameters: tool.parameters.properties.map((param) => ({
-        name: param.name,
-        type: param.type,
-        description: param.description,
-        required: param.required ? "Yes" : "No",
-      })),
-    })),
-  };
-});
+// const formattedToolsConfig = computed(() => {
+//   // Format the getAddTools data for better readability
+//   return {
+//     defaultTools: getAddTools.value.defaultTools,
+//     clientTools: getAddTools.value.clientTools.map((tool) => ({
+//       name: tool.name,
+//       description: tool.description,
+//       endpoint: tool.endpoint,
+//       parameters: tool.parameters.properties.map((param) => ({
+//         name: param.name,
+//         type: param.type,
+//         description: param.description,
+//         required: param.required ? "Yes" : "No",
+//       })),
+//     })),
+//   };
+// });
 
 
-const {
-  data: formattedValue,
-  status,
-  refresh: integrationRefresh,
-} = await useLazyFetch(`/api/bots/${botDetails.id}`, {
-  server: false,
-  default: () => [],
-  transform: (integrations: any) => {
-    return integrations.formStructure?.fields ?? []
-  }
-});
+// const {
+//   data: botDetails,
+//   status,
+//   refresh: integrationRefresh,
+// } = await useLazyFetch(`/api/bots/${botDetails.id}`, {
+//   server: false,
+//   default: () => [],
+//   transform: (integrations: any) => {
+//     return integrations.formStructure?.fields ?? []
+//   }
+// });
 
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 
@@ -152,7 +154,7 @@ const { handleSubmit, values, errors, setFieldValue, resetForm } = useForm({
 const dynamicForm = handleSubmit(async (values: any) => {
   // title: values.title,
   const formattedData: any = {
-    fields: formattedValue.value.length > 0 ? formattedValue.value : values.fields.map((field: any) => ({
+    fields: props.botDetails.length > 0 ? props.botDetails : values.fields.map((field: any) => ({
       ...field,
       required: true,
       model: toCamelCase(field.label)  // Convert label to camelCase for each field
@@ -178,15 +180,15 @@ const addField = () => {
   }
 
   values.fields?.forEach((items: any) => {
-    formattedValue.value.push({ ...items, required: true, model: toCamelCase(items.label) })
+    props.botDetails.push({ ...items, required: true, model: toCamelCase(items.label) })
   })
-  toast.success(`Field added successfully ${formattedValue.value.length}`);
+  toast.success(`Field added successfully ${props.botDetails.length}`);
 };
 
 const removeField = async (index: number) => {
-  formattedValue.value?.splice(index, 1);
+  props.botDetails?.splice(index, 1);
   await deleteDynamicForm({
-    payload: { fields: formattedValue.value },
+    payload: { fields: props.botDetails },
     botId: route.params.id,
   });
 };

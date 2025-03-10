@@ -42,7 +42,6 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
 });
 
 watch(() => props.values.type, (newType) => {
-  console.log("Type changed:", newType);
   fetchConfig(newType);
 }, { deep: true, immediate: true });
 </script>

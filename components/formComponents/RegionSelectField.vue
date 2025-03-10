@@ -91,12 +91,8 @@ const props = defineProps({
 
 
 });
-// watch(country, (newCountry) => {
-//     console.log({ newCountry })
-// })
 
 const statesList: any = computed(() => {
-    // console.log({ stateData })
     return stateData
         ?.filter(({ country_name }) => {
             return country_name === country.value

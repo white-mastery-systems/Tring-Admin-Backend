@@ -1,14 +1,5 @@
 <template>
-  <page :title="botDetails.name ?? ''" :bread-crumbs="[
-    {
-      label: `${botDetails.name}`,
-      to: `/voice-bot`,
-    },
-    {
-      label: 'Voice Bot',
-      to: `/voice-bot`,
-    },
-  ]" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
+  <page :title="botDetails.name ?? ''" :bread-crumbs="[]" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
     custom-back-router="/voice-bot">
     <div class="">
       <div class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]">
@@ -158,21 +149,33 @@
   </page>
 </template>
 <script setup lang="ts">
-definePageMeta({
-  middleware: "admin-only",
-});
 import { useClipboard } from "@vueuse/core";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 import { Bot } from "lucide-vue-next";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+definePageMeta({
+  middleware: "admin-only",
+});
 const router = useRouter();
 // const selectedValue = ref("Today");
 const route = useRoute("voice-bot-id");
 const paramId: any = route;
+const breadcrumbStore = useBreadcrumbStore();
 // const botDetails = ref(await getVoiceBotDetails(paramId.params.id));
 const { data: botDetails, status: botLoadingStatus, refresh: integrationRefresh } = await useLazyFetch(`/api/voicebots/${route.params.id}`);
 const agentModalState = ref({ open: false, id: paramId.params.id });
 
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: 'Voice Bot',
+    to: `/voice-bot`,
+  },
+  {
+    label: `${botDetails.value?.name}`,
+    to: `/voice-bot`,
+  },
+]);
 const deleteModalState = ref(false);
 const modalOpen = ref(false);
 const isDocumentListOpen = ref(false);

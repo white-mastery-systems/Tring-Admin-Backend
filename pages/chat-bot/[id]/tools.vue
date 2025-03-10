@@ -272,7 +272,6 @@ const { handleSubmit, values, resetForm, errors, setFieldValue } = useForm({
 
 onMounted(() => {
   const formattedToolsDetails = transformApiResponse(botDetails)
-  console.log(formattedToolsDetails)
   setFieldValue('date_time', formattedToolsDetails?.date_time ?? true);
   setFieldValue('schedule_appointment', formattedToolsDetails?.schedule_appointment ?? false);
   setFieldValue('site_visit', formattedToolsDetails.site_visit ?? false);
@@ -296,78 +295,8 @@ watch(() => values.schedule_call_with_voice, (newValues)=> {
     setFieldValue('voice_bot', "")
   } 
 })
-// const dynamicToolsForm = handleSubmit(async (values: any) => {
-//   isLoading.value = true;
-//   isLoading.value = false;
-//   const defaultTools = [];
-//   if (values.date_time) defaultTools.push('date_time');
-//   if (values.schedule_appointment) defaultTools.push('schedule_appointment');
-//   if (values.site_visit) defaultTools.push('site_visit');
-//   if (values.schedule_call) defaultTools.push('schedule_call');
-
-//   const payload = {
-//     tools: {
-//       defaultTools,
-//       clientFormControl: values.clientFormControl,
-//       propertieFormControl: values.propertieFormControl,
-//       customTools: values.customTools,
-//     }
-//   };
-//   console.log(payload, "payload -- payload")
-//   // await updateLLMConfig(payload, botDetails?.id, "Tools added successfully.")
-// });
-
-// const transformApiResponse = (apiResponse: any) => {
-//   console.log(apiResponse, "apiResponse -- apiResponse")
-//   const tools = apiResponse.tools || {};
-//   console.log(tools, "tools -- tools")
-//   // Convert defaultTools back to individual flags
-//   const defaultToolsSet = new Set(tools.defaultTools || []);
-//   const transformedData: any = {
-//     date_time: defaultToolsSet.has("date_time"),
-//     schedule_appointment: defaultToolsSet.has("schedule_appointment"),
-//     site_visit: defaultToolsSet.has("site_visit"),
-//     schedule_call: defaultToolsSet.has("schedule_call"),
-//     clientFormControl: true,
-//     propertieFormControl: true,
-//     customTools: [],
-//   };
-
-//   // Convert toolEndpoints into a key-value map
-//   const toolEndpoints = tools.toolEndpoints.reduce((acc, obj) => {
-//     return { ...acc, ...obj };
-//   }, {});
-
-//   // Convert customTools back to original format
-//   transformedData.customTools = tools.customTools.map((tool) => {
-//     const functionData = tool.function;
-//     return {
-//       name: functionData.name,
-//       description: functionData.description,
-//       endpoint: toolEndpoints[functionData.name] || "",
-//       parameters: {
-//         type: "object",
-//         properties: Object.entries(functionData.parameters.properties).map(
-//           ([key, value]: any) => ({
-//             name: key
-//               .replace(/_/g, " ")
-//               .replace(/\b\w/g, (char) => char.toUpperCase()), // Convert to Title Case
-//             type: value.type,
-//             description: value.description,
-//             required: functionData.parameters.required.includes(key),
-//           })
-//         ),
-//       },
-//     };
-//   });
-//   console.log(transformedData, "transformedData")
-//   return transformedData;
-// };
-// Convert response
-
 const dynamicToolsForm = handleSubmit(async (values: any) => {
   isLoading.value = true;
-  console.log(values, "values -- values")
   const defaultTools = [];
   if (values.date_time) defaultTools.push('date_time');
   if (values.schedule_appointment) defaultTools.push('schedule_appointment');
@@ -414,7 +343,6 @@ const dynamicToolsForm = handleSubmit(async (values: any) => {
 };
 
 
-  console.log(payload, "payload -- formatted payload");
   await updateBotDetails(payload)
 
   isLoading.value = false;

@@ -1,14 +1,4 @@
 <template>
-  <!-- title="CRM Configuration" :bread-crumbs="[
-  {
-  label: `${botDetails.name}`,
-  to: `/bot-management/chat-bot/${botDetails.id}`,
-  },
-  {
-  label: 'CRM Configuration',
-  to: `/bot-management/chat-bot/${botDetails.id}/crm-config`,
-  },
-  ]" -->
   <div class="py-3">
     <!-- v-if="integrations.length === 0" -->
     <!-- <template #actionButtons> -->
@@ -51,8 +41,6 @@ const router = useRouter();
 const columnHelper = createColumnHelper<any>();
 const route = useRoute("chat-bot-id-crm-config");
 const paramId: any = route;
-const botDetails = ref(await getBotDetails(paramId.params.id));
-
 const filters = reactive<{
   botId: string;
   q?: string;
@@ -102,14 +90,6 @@ const {
   }
 });
 
-watchEffect(() => {
-  if (botDetails.value) {
-    const userName = botDetails.value?.name ?? 'Unknown Bot Name';
-    useHead({
-      title: `Chat Bot | ${userName} - CRM Config`,
-    });
-  }
-});
 const actionsComponent = (id: string) => [
   h(
     "div",

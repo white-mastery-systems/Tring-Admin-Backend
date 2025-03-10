@@ -28,9 +28,6 @@ const { errors, values, handleSubmit, validateField, validate, setFieldValue } =
 const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
 const showNextButton = computed(() => step.value < 4 && values.value.selectedType);
 // ✅ Watch errors for debugging (optional)
-watch(errors, (newErrors) => {
-  console.log(newErrors, "Validation Errors");
-});
 watch(() => scrapData, (newscrapData) => {
   if (!newscrapData) return;
   const extractHSLValues = (hslString) => hslString.replace(/hsl\(|\)/g, "");
@@ -45,7 +42,7 @@ watch(() => scrapData, (newscrapData) => {
   setFieldValue("otherGoal", newscrapData.scrapedData.chatbot.goal || "");
 }, { deep: true, immediate: true });
 
-
+const isDataLoading = computed(() => status.value === "pending");
 // watch(() => scrapData.scrapedData?.knowledge_base?.document_content,(newValue) => {
 //   refresh()
 // },{deep: true, immediate: true})
@@ -59,7 +56,6 @@ const stepFields = {
 
 
 const nextStep = async () => {
-  console.log(documents.value.documents.length, "documents.value - -documents.value")
   const fieldsToValidate = stepFields[step.value] || [];
   let isValid = true;
 
@@ -70,7 +66,6 @@ const nextStep = async () => {
       isValid = false;
     }
   }
-  console.log(documents.value, "documents -- documents -  ")
   // if ((step.value === 1) && values.selectedType === 'Text') {
   //   if (uploadDocumentRef.value) {
   //     uploadDocumentRef.value.generatePDFAndUpload();
@@ -103,12 +98,6 @@ const nextStep = async () => {
       return;
     }
   }
-
-  // console.log(values, "values")
-  // if ((step.value === 1) && (values.intent.length === 0)) {
-  //   toast.error("Please select at least one intent");
-  //   return
-  // }
   if (isValid) {
     step.value++; // Move to next step
   } else {
@@ -123,7 +112,6 @@ const prevStep = () => {
 const backRoute = () => {
   navigateTo("/chat-bot");
 }
-
 const firstStepBack = () => {
   setFieldValue('selectedType', '')
 }
@@ -149,11 +137,6 @@ const submitForm = handleSubmit(async (values) => {
       toast.error("Please provide a custom value for Goal");
       return
     }
-
-    // console.log(values, "values");
-    // console.log(botDetails.value, "botDetails.value -- botDetails.value")
-    // console.log(botDetails.value.id, "botDetails.value.id -- botDetails.value.id")
-
     const payload = {
       id: botDetails.value.id,
       metadata: {
@@ -204,17 +187,16 @@ const submitForm = handleSubmit(async (values) => {
       <!-- <TextDocumentUpload ref="uploadDocumentRef" v-show="false" /> -->
       <form class="border border-gray-300 rounded-lg flex flex-col justify-between h-full flex-1 overflow-auto">
         <!-- @update:values="(newValues) => values = newValues" -->
-        <FirstStep ref="stepOneRef" v-show="step === 1" v-model:values="values" :errors="errors" />
+        <FirstStep ref="stepOneRef" v-show="step === 1" v-model:values="values" :errors="errors" :refresh="refresh" />
         <SecondStep v-show="step === 2" v-model:values="values" :errors="errors" />
         <ThirdStep v-show="step === 3" v-model:values="values" :errors="errors" />
         <FourthStep v-show="step === 4" v-model:values="values" :errors="errors" />
         <!-- {{ step === 2 && (values.intent.length === 0) }} -->
         <div class="flex justify-end w-full gap-[12px] p-4">
           <UiButton v-if="(step > 1)" type="button" @click="prevStep" class="px-8" variant="outline">Back</UiButton>
-          <UiButton v-if="(step === 1) && values.selectedType" type="button" @click="firstStepBack" class="px-8"
-            variant="outline">Back
+          <UiButton v-if="(step === 1)" type="button" @click="firstStepBack" class="px-8" variant="outline">Back
           </UiButton>
-          <UiButton v-if="(step < 4) && values.selectedType" type="button" @click="nextStep" class="px-8">Next
+          <UiButton v-if="(step < 4)" type="button" @click="nextStep" class="px-8" :loading="isDataLoading">Next
           </UiButton>
           <UiButton type="button" v-if="step === 4" @click="submitForm" class="px-8" :loading="isLoading">
             Create Bot
