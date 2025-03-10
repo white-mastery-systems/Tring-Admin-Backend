@@ -1,5 +1,6 @@
 import momentTz from "moment-timezone";
 import { campaignSchema, campaignWhatsappContactSchema, InsertCampaign } from "~/server/schema/admin";
+import {whatsappErrorCodes} from "~/assets/error-codes.json"
 
 const db = useDrizzle();
 
@@ -53,17 +54,10 @@ export const campaignList = async (
       orderBy: [desc(campaignSchema.createdAt)],
     })
 
-  const [campaignTotalContactList, campaignReadMsgContactList, voicebotContactList, dialedContactList] = await Promise.all([
+  const [campaignTotalContactList, voicebotContactList, dialedContactList] = await Promise.all([
     db.query.campaignWhatsappContactSchema.findMany({
       where: 
         eq(campaignWhatsappContactSchema.organizationId, organizationId)
-      
-    }),
-    db.query.campaignWhatsappContactSchema.findMany({
-      where: and(
-        eq(campaignWhatsappContactSchema.organizationId, organizationId),
-        eq(campaignWhatsappContactSchema.messageStatus, "read")
-      )
     }),
     db.query.voicebotSchedularSchema.findMany({
        where: 
@@ -79,9 +73,19 @@ export const campaignList = async (
 
   data = data.map((i: any) => {
     let interactionCount, totalCount = 0
+    let whatsappTotalCount = 0; let sent = 0; let delivered = 0; let read = 0; let failed = 0;
     if(i.contactMethod === "whatsapp") {
-      totalCount = campaignTotalContactList?.filter((j)=> j.campaignId === i.id).length || 0
-      interactionCount = campaignReadMsgContactList?.filter((j)=> j.campaignId === i.id).length || 0
+      for (const contact of campaignTotalContactList) {
+        if (contact.campaignId === i.id) {
+          whatsappTotalCount++;
+          if (contact.messageStatus === "sent") sent++;
+          else if (contact.messageStatus === "delivered") delivered++;
+          else if (contact.messageStatus === "read") read++;
+          else if (contact.messageStatus === "failed") failed++;
+        }
+      }
+      totalCount = whatsappTotalCount;
+      interactionCount = read;
     } 
 
     if(i.contactMethod === "voice") {
@@ -90,12 +94,11 @@ export const campaignList = async (
     }
 
      return {
-        ...i,
+       ...i,
+       ...(i.contactMethod === "whatsapp" && {whatsappTotalCount, sent, delivered, read, failed}),
        totalCount,
        interactionCount,
-       createdAt: momentTz(i?.createdAt)
-      .tz(timeZone)
-      .format("DD MMM YYYY hh:mm A"),
+       createdAt: momentTz(i?.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
     };
   })
 
@@ -245,6 +248,12 @@ export const updateWhatsappMessageStatusByMessageId = async (messageId: string, 
     if(previousCampaignWhatspp?.messageStatus !== "delivered" && data?.messageStatus === "read") {
       payload.deliveredAt = new Date()
     }
+  } else if (data?.messageStatus === "failed" && data?.errorCode) {
+    payload.errorCode = data?.errorCode;
+    // @ts-ignore
+    payload.errorMessage = whatsappErrorCodes[payload.errorCode].message;
+    // @ts-ignore
+    payload.errorSolution = whatsappErrorCodes[payload.errorCode].solution;
   }
 
   return  await db.update(campaignWhatsappContactSchema).set({
