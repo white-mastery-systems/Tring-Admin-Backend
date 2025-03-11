@@ -1,7 +1,7 @@
 <template>
     <UiFormField v-model="country" :name="props.name" class="mt-1">
         <UiFormItem class="mt-1 flex flex-col gap-1 ">
-            <UiFormLabel>Country
+            <UiFormLabel v-if="labelVisible">Country
                 <span class="text-sm text-red-500">*</span>
             </UiFormLabel>
             <UiPopover ref="popoverRef">
@@ -12,14 +12,20 @@
                             !fieldValue && 'text-muted-foreground',
                         )
                             ">
-                            {{
+                            <div class="flex items-center gap-1">
+                                <!-- {{ selectedCountry }} -->
+                                <img v-if="selectedCountry" class="h-[20px] w-[20px]"
+                                    :src="`https://country-code-au6g.vercel.app/${selectedCountry.code}.svg`"
+                                    :alt="selectedCountry.name" />
+                                {{
                                 fieldValue
-                                    ? allCountryNames.find(
-                                        (country: any) =>
-                                            country === fieldValue,
-                                    )
-                                    : "Country Name"
-                            }}
+                                ? allCountryNames.find(
+                                (country: any) =>
+                                country === fieldValue,
+                                )
+                                : "Country Name"
+                                }}
+                            </div>
                             <component :is="ChevronDown" class="ml-2 h-4 w-4 shrink-0 opacity-50">
                             </component>
                         </UiButton>
@@ -89,7 +95,10 @@ const props = defineProps({
     helperText: {
         type: String
     },
-
+    labelVisible: {
+        type: Boolean,
+        default: true
+    }
 });
 
 const allCountryNames = computed(() =>
@@ -107,8 +116,15 @@ const { value: fieldValue, errorMessage, meta, handleChange } = useField(() => p
 // const country = ref(fieldValue.value);
 const { country } = useCountryData(fieldValue);
 
+const selectedCountry = computed(() =>
+    countryData.find((country: any) => country.name === fieldValue.value)
+);
+
+watch(() => countryData, (newValue) => {
+    const selectedCountry = newValue.find((country: any) => country.name)
+}, { deep: true, immediate: true });
+
 watch(() => countryDetails.value, (newValue) => {
-    console.log(newValue, "newValue watch")
     fieldValue.value = newValue;
 }, { deep: true, immediate: true });
 watch(country, (newValue) => {

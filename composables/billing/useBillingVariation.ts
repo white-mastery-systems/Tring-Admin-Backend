@@ -316,7 +316,6 @@ export function useBillingVariation(userDetails: any, queryType: any) {
     },
   ]);
   const billingVariation = computed(() => {
-    console.log("route.query -- route.query", queryType)
     return queryType === "voice" ? voiceBillingVariation.value : chatBillingVariation.value;
   });
 

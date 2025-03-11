@@ -1,128 +1,73 @@
-<template>
-  <div class="flex h-full w-full flex-col items-center justify-center">
-    <!-- :initial-values="defaultFormValues" -->
-    <!-- @submit="handleSubmit" -->
-    <div
-      class="w-full px-0 pb-[20px] text-[22px] sm:text-[22px] md:text-[24px] lg:text-[28px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
-      Complete your profile!
-    </div>
-    <div class="flex w-full flex-col px-0 md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
-      <!-- <div> -->
-      <form class="space-y-4" @submit="onSubmit">
-        <!-- grid grid-cols-2 -->
-        <div class="gap-3 p-1 space-y-4">
-          <TextField type="text" name="name" label="Full Name" placeholder="Your Name" :required="true" />
-          <TextField type="text" name="companyName" label="Company Name" placeholder="Company Name" :required="true" />
-          <!-- <TextField type="text" name="businessName" label="Business Name" placeholder="Enter Your Business Name"
-            :required="true" /> -->
-          <!-- <TextField type="text" name="country" label="Country" placeholder="Enter Your Country" :required="true" /> -->
-          <!-- <CountryCodeField class="w-[100px]" name="country" label="Country" helperText="Enter your country" required /> -->
-          <div class="flex gap-3">
-            <CountryCodeField name="countryCode" label="Country Code" helperText="your country code" required />
-
-            <TextField :disableCharacters="true" name="mobile" label="Mobile number" helperText="" required
-              placeholder="Mobile Number" />
-          </div>
-        </div>
-        <UiButton type="submit" class="flex tex-[16px] h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
-          :loading="isLoading">Proceed
-        </UiButton>
-      </form>
-
-      <!-- </div> -->
-    </div>
-    <div class="absolute bottom-[30px] flex items-center gap-1">
-      <span class="text-[12px] text-[#8a8a8a]">
-        By Signing up, I Agree to Tring AI
-      </span>
-      <a target="_blank" href="https://tringlabs.ai/terms-conditions" class="text-[12px] underline">
-        Terms & Conditions
-      </a>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
+import UserProfileForm from '~/components/auth/UserProfileForm.vue';
+
+// import { buttonVariants } from '@/lib/registry/new-york/ui/button'
+// import { cn } from '@/lib/utils'
+// import UserAuthForm from './components/UserAuthFor'
 definePageMeta({
   layout: "auth",
   middleware: "guest-only",
 });
-
-import { ref } from 'vue';
-import { defineEmits, defineProps } from 'vue';
-import { completeProfileSchema } from '~/validationSchema/authValidation/onBoarding/1Validation';
-// const props = defineProps(['formData', 'setFieldValue', 'personalCompanyDetail', 'errors']);
-const emit = defineEmits(['next']);
-const isLoading = ref(false)
-
-const {
-  setFieldValue,
-  handleSubmit,
-  resetForm,
-  values,
-  errors,
-} = useForm({
-  validationSchema: completeProfileSchema,
-  initialValues: {},
-});
-
-// setFieldValue('name', '')
-// setFieldValue("planToBuild", formData?.planToBuild)
-// // setFieldValue("referralSource", formData?.referralSource)
-// setFieldValue("estimatedMonthlyBudget", formData?.estimatedMonthlyBudget)
-// setFieldValue("discoverySource", formData?.discoverySource)
-// // setFieldValue("businessName", formData?.businessName)
-// setFieldValue("country", formData?.country)
-// setFieldValue('role', formData?.role)
-// setFieldValue('otherRole', formData?.otherRole)
-// setFieldValue('otherPlan', formData?.otherPlan)
-// setFieldValue('otherReferralSource', formData?.otherReferralSource)
-// setFieldValue('otherDiscoverySource', formData?.otherDiscoverySource)
-// setFieldValue('mobile', formData?.mobile)
-// setFieldValue('countryCode', formData?.countryCode)
-
-
-// const estimatedMonthlyBudgetList = computed(() => {
-//   if (props.personalCompanyDetail.country === undefined) {
-//     return [];
-//   }
-//   else if ((props.personalCompanyDetail.country !== 'India')) {
-//     return [
-//       'Less than $60',
-//       '$60 - $240',
-//       '$240 - $600',
-//       '$600 - $1,200',
-//       'More than $1,200'
-//     ]
-//   } else {
-//     // console.log(props.personalCompanyDetail.country, "props.personalCompanyDetail.country -- props.personalCompanyDetail.country")
-//     return [
-//       'Less than ₹5,000',
-//       '₹5,000 - ₹20,000',
-//       '₹20,000 - ₹50,000',
-//       '₹50,000 - ₹1,00,000',
-//       'More than ₹1,00,000',
-//     ]
-//   }
-// });
-// watch(() => props.personalCompanyDetail.country, (newValue, oldValue) => {
-//   if (props.personalCompanyDetail.estimatedMonthlyBudget) props.setFieldValue("estimatedMonthlyBudget", '')
-// })
-
-const onSubmit = handleSubmit(async (values: any) => {
-  isLoading.value = true
-  try {
-    await $fetch('/api/auth/onboarding', {
-      method: 'POST',
-      body: values,
-    });
-  
-    // Navigate to success page
-    navigateTo("/auth/onboarding/billing");
-  } catch (error) {
-    toast.error(error?.statusMessage);
-  } finally {
-    isLoading.value = false
-  }
-});
 </script>
+
+<template>
+  <div class="md:flex">
+    <VPImage alt="Authentication" width="1280" height="1214" class="block" :image="{
+      dark: '/examples/authentication-dark.png',
+      light: '/examples/authentication-light.png',
+    }" />
+  </div>
+
+  <div
+    class="container pb-5 sm:pb-5 md:pb-0 relative h-[800px] flex flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+    <!-- <a href="/auth/sign-in" class="absolute right-4 top-4 md:right-8 md:top-8">
+      Login
+    </a> -->
+    <div class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
+      <div class="absolute inset-0 bg-zinc-900" />
+      <div class="relative z-20 flex items-center text-lg font-medium">
+        <img class="self-center" src="assets\icons\Tring-Ai-Logo-with-black-text.png" width="190" height="190" />
+      </div>
+      <div class="relative z-20 mt-auto">
+        <blockquote class="space-y-2">
+          <p class="text-lg">
+            <!-- &ldquo; -->
+            AI-powered Chat and Voice Agents.
+            <!-- &rdquo; -->
+          </p>
+          <!-- <footer class="text-sm">
+            Sofia Davis
+          </footer> -->
+        </blockquote>
+      </div>
+    </div>
+    <div class="lg:p-8">
+      <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <div class="flex flex-col space-y-2 text-center">
+          <h1 class="text-2xl font-semibold tracking-tight">
+            Complete your profile!
+          </h1>
+          <!-- <p class="text-sm text-muted-foreground">
+            Enter your email below to create your account
+          </p> -->
+        </div>
+        <UserProfileForm />
+        <p class="px-8 text-center text-sm text-muted-foreground" v-if="false">
+          By Signing up, I Agree to Tring AI
+          <!-- <a href="/terms" class="underline underline-offset-4 hover:text-primary">
+            Terms of Service
+          </a>
+          and
+          <a href="/privacy" class="underline underline-offset-4 hover:text-primary">
+            Privacy Policy
+          </a> -->
+          <a target="_blank" href="https://tringlabs.ai/terms-conditions"
+            class="underline underline-offset-4 hover:text-primary">
+            Terms & Conditions
+          </a>
+          .
+        </p>
+      </div>
+    </div>
+  </div>
+</template>

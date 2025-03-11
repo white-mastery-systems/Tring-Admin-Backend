@@ -10,7 +10,7 @@
       description="This action is irreversible" @confirm="handleConfirmPaymentCancellation">
     </ConfirmationModal>
     <UiTabs v-model="selectedTab" :default-value="route.query.type ?? 'chat'" class="w-full self-start">
-      <UiTabsList class="grid w-full grid-cols-2">
+      <UiTabsList class="grid w-[30%] grid-cols-2">
         <!-- @click="selectedChannel('Chat')" -->
         <UiTabsTrigger value="chat" @click="navigateToTab('chat')">
           Chat
@@ -38,6 +38,7 @@
 <script setup lang="ts">
 import { useBillingComposable } from '~/composables/billing/useBillingComposable';
 import { useRoute, useRouter } from 'vue-router';
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
 definePageMeta({
   middleware: 'user',
@@ -47,6 +48,7 @@ useHead({
   title: 'Billing',
 });
 
+const breadcrumbStore = useBreadcrumbStore();
 const route = useRoute();
 const router = useRouter();
 const selectedTab = ref(route.query.type || 'chat')
@@ -61,8 +63,13 @@ const {
   navigateToTab,
 } = useBillingComposable();
 
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Billing", // Dynamic name
+    to: `/billing?type=chat`,
+  }
+]);
 watch(() => route.query.type,(newType) => {
-  console.log(newType)
   selectedTab.value = newType
 }, {immediate: true})
 onMounted(() => {

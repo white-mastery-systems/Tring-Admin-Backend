@@ -43,6 +43,17 @@ export default defineNuxtConfig({
     ],
   },
 
+  app: {
+    head: {
+      link: [
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
+        },
+      ],
+    },
+  },
+
   imports: {
     dirs: ["stores/**", "composables/**", "utils/**"],
     presets: [...autoImports.nuxt],

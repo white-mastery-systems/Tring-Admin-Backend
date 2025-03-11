@@ -54,6 +54,7 @@ import { Icon, UiBadge, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import { useRouter, useRoute } from "vue-router";
 import { useState } from "#app";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
 const rowList = reactive([
   "name",
@@ -73,6 +74,7 @@ useHead({
 
 const router = useRouter();
 const currentPage = useState("counter", () => '1');
+const breadcrumbStore = useBreadcrumbStore();
 
 const filters = reactive<{
   q: string;
@@ -115,6 +117,13 @@ const {
 
 const deleteCampaigntate = ref({ open: false, id: null });
 const campaignModalState = ref({ open: false, id: null });
+
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Campaigns", // Dynamic name
+    to: `/contacts-management/campaigns`,
+  }
+]);
 const isDataLoading = computed(() => status.value === "pending");
 
 const columnHelper = createColumnHelper<(typeof campaignDataList.value)[0]>();

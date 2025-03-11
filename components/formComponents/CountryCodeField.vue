@@ -1,15 +1,15 @@
 <template>
   <div :class="cn('w-full', props?.class)">
     <UiFormField v-model="countryCode" :name="props.name" class="mt-1">
-      <UiFormItem class="mt-0 mt-1 flex flex-col">
-        <UiFormLabel class="mb-1">Country Code<span class="text-sm text-red-500">*</span>
+      <UiFormItem :class="[(!fieldHeader) ? 'mt-1' : 'mt-0', 'flex flex-col']">
+        <UiFormLabel v-if="!fieldHeader" class="mb-1">Country Code<span class="text-sm text-red-500">*</span>
         </UiFormLabel>
         <UiPopover class="mt-0">
           <UiPopoverTrigger as-child class="mt-0">
             <UiFormControl class="mt-0">
               <UiButton variant="outline" class="font-normal text-sm" role="combobox" :class="
                   cn(
-                    'mt-0 min-w-[140px] w-full justify-between overflow-hidden px-3',
+                    'mt-0 min-w-[110px] w-full justify-between overflow-hidden px-3',
                     !fieldValue && 'text-muted-foreground',
                     'mt-0 space-y-0',
                   )
@@ -103,6 +103,10 @@
     class: {
       type: String,
     },
+    fieldHeader: {
+      type: Boolean,
+      required: false,
+    }
   });
   const searchField = ref("");
   const { fetchLocation, countryDetails } = useCountryData()

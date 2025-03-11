@@ -1,16 +1,16 @@
 <!-- layouts\auth.vue -->
 <template>
-  <div class="flex p-[40px] justify-center h-[100vh] w-full overflow-hidden">
-    <div class="flex flex-col justify-center items-center lg:w-[50%] md:w-full w-full">
-      <div class="absolute top-[20px] left-[30px]">
+  <div class="flex justify-center h-[100vh] w-full overflow-hidden">
+    <div class="flex flex-col justify-center items-center w-full">
+      <!-- <div class="absolute top-[20px] left-[30px]">
         <img class="hidden sm:hidden md:hidden lg:hidden xl:block" src="assets\icons\tring_AI_logo.svg" width="80"
           height="80">
         <div class="flex items-center font-bold text-[15px] gap-2">
         </div>
-      </div>
+      </div> -->
       <slot />
     </div>
-    <div v-if="(route.name === 'auth-sign-in') || (route.name === 'auth-sign-up') || (route.name === 'auth-password-updates')"
+    <!-- <div v-if="(route.name === 'auth-sign-in') || (route.name === 'auth-sign-up')"
       class="right-card-align-signup relative w-[50%] h-full overflow-hidden rounded-[10px] hidden sm:flex md:hidden lg:flex items-center justify-center">
       <img src="assets/icons/signupImages.png" class="w-auto h-auto max-w-full max-h-full object-contain z-0"
         alt="Signup Image" />
@@ -35,7 +35,7 @@
         responses & solutions that meet individual needs, creating meaningful <span
           class="font-medium text-[16px]">Human like interactions</span>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup lang="ts">

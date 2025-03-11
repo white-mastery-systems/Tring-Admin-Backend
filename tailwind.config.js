@@ -70,6 +70,7 @@ module.exports = {
         "screen-minus-21": "calc(100vh - 11rem)",
         "screen-minus-22": "calc(100vh - 10rem)",
         "screen-minus-23": "calc(100vh - 21rem)",
+        "screen-minus-35": "calc(100vh - 35rem)",
       },
 
       borderRadius: {

@@ -91,23 +91,6 @@
     { label: "djj", value: "djj" },
     { label: "asdf", value: "asdf" },
   ];
-  //   const filteredCodes = computed(() => {
-  //     const data = [
-  //       { label: "hi", value: "hi" },
-  //       { label: "djj", value: "djj" },
-  //       { label: "asdf", value: "asdf" },
-  //     ].filter((code) =>
-  //       code.value.toLowerCase().includes(searchCode.value.toLowerCase()),
-  //     );
-  //     return data;
-  //   });
-  //   watch(
-  //     () => filteredCodes,
-  //     (newCodes) => {
-  //       console.log(newCodes);
-  //     },
-  //     { deep: true },
-  //   );
   const selectCode = (code) => {
     // selectedCode.value = code;
   };

@@ -129,34 +129,6 @@
     sdkScript.crossorigin = "anonymous";
     document.body.appendChild(sdkScript);
   });
-
-  // const handleSubmssion = async () => {
-  //   console.log(values, "values")
-  //   const payload = {
-  //     name: values.name,
-  //     crm: values.channel,
-  //     metadata: {
-  //       pid: values.pid,
-  //       code: values.code,
-  //       wabaId: values.wabaId
-  //     },
-  //   };
-  //   try {
-  //     if (channelModalState.value.id) {
-  //       await $fetch(`/api/org/integrations/${channelModalState.value.id}`, { method: "PUT", body: payload });
-  //       toast.success("Integration update successfully");
-  //     }
-
-  //     else {
-
-  //       await $fetch("/api/org/integrations", { method: "POST", body: payload });
-  //       toast.success("Integration added successfully");
-  //     }
-  //     emit("success");
-  //   } catch (error: any) {
-  //     toast.error(error?.data?.data[0].message);
-  //   }
-  // }
   const fbVerified = ref(false);
   const fbLoginCallback = (response: any) => {
     if (response.authResponse) {
