@@ -6,7 +6,6 @@ import { uploadMedia } from "./whatsappMedia";
 
 export const whatsappReSendCampaign = async (campaignId: string, templateName: any, contactList: any, metadata: any ) => {
   try {
-    let templateLanguageCode = "en";
     const phoneId = metadata?.pid;
     const accessToken = metadata?.access_token;
     const wabaId = metadata?.wabaId;
@@ -14,7 +13,8 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
     const templateDetailList = await getTemplateDetailsByName(wabaId, accessToken, templateName);
     const templateInformation = templateDetailList?.find((i: any) => i.name === templateName);
     const isPositional = templateInformation?.parameter_format === "POSITIONAL";
-
+    const templateLanguageCode = templateInformation.language ?? "en";
+    
     let headerParameter: any = [];
     let headerComponent: any = [];
     const headerTasks = templateInformation.components
