@@ -36,14 +36,22 @@
 import { format } from "date-fns";
 import { useState } from "#app";
 import { useRouter } from "vue-router";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
 definePageMeta({
   middleware: "user",
 });
+const breadcrumbStore = useBreadcrumbStore();
 
 useHead({
   title: "Analytics | Leads",
 });
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Leads", // Dynamic name
+    to: `/analytics/leads`,
+  }
+]);
 
 const exportDataHandler = ref({ status: false, type: "csv" });
 const currentPage = useState("counter", () => '1');

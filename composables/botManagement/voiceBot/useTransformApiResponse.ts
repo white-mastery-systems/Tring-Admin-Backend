@@ -4,7 +4,6 @@ export const useTransformApiResponse = () => {
 
     // Convert defaultTools back to individual flags
     const defaultToolsSet = new Set(tools.defaultTools || []);
-    console.log(tools.voiceBotId, 'tools')
     const transformedData: any = {
       date_time: defaultToolsSet.has("date_time"),
       schedule_appointment: defaultToolsSet.has("schedule_appointment"),

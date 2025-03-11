@@ -15,7 +15,7 @@ export const deployDocument = async (botId: string, documentId: string) => {
     await $fetch(`/api/bots/${botId}/documents/${documentId}/deploy`);
     toast.success("Document deployed successfully");
     await navigateTo({
-      name: "bot-management-chat-bot-id",
+      name: "chat-bot-id",
       params: { id: botId },
     });
   } catch (error) { 
@@ -80,3 +80,7 @@ export const uploadLogo = async (botId: string, logo: File) => {
   }
 };
 
+export const getDocumentsList = async (routeId: any) => {
+  const response = await $fetch(`/api/bots/${routeId}/intents`);
+  return response;
+}

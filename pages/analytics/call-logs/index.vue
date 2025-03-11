@@ -27,6 +27,7 @@ import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import { useState } from "#app";
 import { useRouter } from "vue-router";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
   definePageMeta({
     middleware: "admin-only",
@@ -36,6 +37,13 @@ let page = ref(0);
 let totalPageCount = ref(0);
 let totalCount = ref(0);
 const router = useRouter(); 
+const breadcrumbStore = useBreadcrumbStore();
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Call", // Dynamic name
+    to: `/analytics/leads`,
+  }
+]);
 
 const filters = useState("callLogsFilters", () => ({
   q: undefined,

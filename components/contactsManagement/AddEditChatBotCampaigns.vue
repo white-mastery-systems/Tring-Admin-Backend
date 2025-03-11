@@ -77,60 +77,6 @@
     totalCount,
     failedCampaigns,
   } = useSingleCampaign(route.params.id, filters);
-  // const {
-  //   status,
-  //   data: getSingleCampaignList,
-  //   refresh: getSingleCampaign,
-  // } = await useLazyFetch(`/api/org/campaign/${route.params.id}/whatsappContacts`, {
-  //   server: false,
-  //   default: () => [],
-  //   query: filters,
-  //   transform: (campaign: any) => {
-  //     console.log("campaign", campaign);
-  //     page.value = campaign.page;
-  //     totalPageCount.value = campaign.totalPageCount;
-  //     totalCount.value = campaign.totalCount;
-  //     // console.log("campaign", campaign.data);
-  //     return campaign.data;
-  //   },
-  // });
-
-  // const {
-  //   status,
-  //   data: getSingleCampaignList,
-  //   refresh: getSingleCampaign,
-  // } = await useLazyFetch(`/api/org/campaign/${route.params.id}/whatsappContacts`, {
-  //   server: false,
-  //   default: () => [],
-  //   query: filters,
-  //   transform: (campaign: any) => {
-  //     console.log("campaign", campaign);
-
-  //     // Ensure campaign object is valid
-  //     if (!campaign || !campaign.data) {
-  //       return [];
-  //     }
-
-  //     // Update pagination values
-  //     page.value = campaign.page ?? 1;
-  //     totalPageCount.value = campaign.totalPageCount ?? 1;
-  //     totalCount.value = campaign.totalCount ?? 0;
-
-  //     // Transform each row to format message status with new lines
-  //     return campaign.data.map((row: any) => {
-  //       const sentAt = row?.sentAt ?? "NA"; // Default to "N/A" if missing
-  //       const deliveredAt = row?.deliveredAt ?? "NA";
-  //       const readAt = row?.readAt ?? "NA";
-
-  //       return {
-  //         ...row, // Preserve existing data
-  //         name: `${row?.firstName} ${row?.lastName}`,
-  //         phone: `${row?.countryCode} ${row?.phone}`,
-  //         formattedMessageStatus: `Sent - ${sentAt}\nDelivered - ${deliveredAt}\nRead - ${readAt}`, // New lines using \n
-  //       };
-  //     });
-  //   },
-  // });
 
   const isDataLoading = computed(() => status.value === "pending");
   const Pagination = async ($evnt: any) => {

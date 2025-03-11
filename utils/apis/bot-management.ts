@@ -32,7 +32,7 @@ export const updateBotDetails = async (botDetails: SelectChatBot) => {
   });
   toast.success("Bot updated successfully");
   await navigateTo({
-    name: "bot-management-chat-bot-id",
+    name: "chat-bot-id",
     params: { id: botDetails.id },
   });
   return updatedBot;
@@ -52,7 +52,7 @@ export const deleteBot = async (botId: string) => {
       method: "DELETE",
     });
     toast.success("Bot deleted successfully");
-    return navigateTo({ name: "bot-management-chat-bot" });
+    return navigateTo({ name: "chat-bot" });
   } catch (error) {
     toast.error("Cannot delete: bot has generated leads");
   }
@@ -136,7 +136,7 @@ export const dynamicaFormDetails = async (botDetails: any, formDetails:any) => {
   });
   toast.success("Form added successfully");
   await navigateTo({
-    name: "bot-management-chat-bot-id",
+    name: "chat-bot-id",
     params: { id: botDetails.id },
   });
   return updatedBot;
@@ -176,7 +176,7 @@ export const deleteVoiceBot = async (botId: string) => {
       method: "DELETE",
     });
     toast.success("Voice Bot deleted successfully");
-    return navigateTo({ name: "bot-management-voice-bot" });
+    return navigateTo({ name: "voice-bot" });
   } catch (error) {
     toast.error("Cannot delete: voice bot has generated leads");
   }
@@ -189,7 +189,7 @@ export const updateLLMConfig = async (payload: any, botId: string, message: stri
   });
   toast.success(message);
   await navigateTo({
-    name: "bot-management-voice-bot-id",
+    name: "voice-bot-id",
     params: { id: botId },
   });
   return updateLLM;

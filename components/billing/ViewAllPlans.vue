@@ -2,15 +2,28 @@
   <!-- <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div> -->
-  <Page title="Billings" :description="true" :disableSelector="true" :customBackRouter="correctedUrl"
+  <Page title="Choose a Plan" :description="true" :disableSelector="true" :customBackRouter="correctedUrl"
     :disable-back-button="(currentRoute === 'onboarding/billing')" class="relative">
     <UiTabs v-model="selectedTab" :default-value="route.query.type ?? 'chat'" class="w-full self-start">
-      <UiTabsList class="grid w-full grid-cols-2">
+      <!-- <UiTabsList class="grid w-[30%] grid-cols-2">
         <UiTabsTrigger value="chat" @click="navigateToTab('chat')">
           Chat
         </UiTabsTrigger>
         <UiTabsTrigger value="voice" @click="navigateToTab('voice')">
           Voice
+        </UiTabsTrigger>
+      </UiTabsList> -->
+      <UiTabsList class="flex flex-col grid w-[15%] grid-cols-2 gap-5 p-2 rounded-lg bg-white border-0">
+        <UiTabsTrigger value="chat" @click="navigateToTab('chat')"
+          class="flex flex-col items-center justify-center p-3 border rounded-lg data-[state=active]:border-primary">
+          <CircleDollarSign class="w-6 h-6" />
+          <span class="mt-1 text-sm">Chat</span>
+        </UiTabsTrigger>
+
+        <UiTabsTrigger value="voice" @click="navigateToTab('voice')"
+          class="flex flex-col items-center justify-center p-3 border rounded-lg data-[state=active]:border-primary">
+          <CircleDollarSign class="w-6 h-6" />
+          <span class="mt-1 text-sm">Voice</span>
         </UiTabsTrigger>
       </UiTabsList>
       <!-- <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
@@ -33,14 +46,23 @@ definePageMeta({
 });
 
 import { useRoute, useRouter } from 'vue-router';
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+import { Receipt, CircleDollarSign } from "lucide-vue-next";
 
 const props = withDefaults(defineProps<{ onBoardingAccount?: boolean }>(), {
   onBoardingAccount: false, // Default value for accept
 });
+const breadcrumbStore = useBreadcrumbStore();
 const correctedUrl = ref('');
 const router = useRouter();
 const route = useRoute();
 
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Choose a Plan", // Dynamic name
+    to: `/view-all?type=chat`,
+  }
+]);
 // Reactive computed property for plan selection
 const currentRoute = computed(() => {
   const fullPath = router.options.history.state.current

@@ -37,6 +37,7 @@
 </template>
 <script setup lang="ts">
 import { Icon, UiBadge, UiButton } from "#components";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
 definePageMeta({
   middleware: "user",
@@ -47,6 +48,15 @@ useHead({
 const chatPopupState = ref(false)
 const voicePopupState = ref(false)
 const botChannel = ref("chat")
+const breadcrumbStore = useBreadcrumbStore();
+
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Contacts", // Dynamic name
+    to: `/contacts-management/contacts`,
+  }
+]);
+
 
 const selectedChannel = (value: any) => {
   botChannel.value = value

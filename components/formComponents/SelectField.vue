@@ -42,11 +42,6 @@
 import { useField } from 'vee-validate';
 import { computed, ref, watch } from 'vue';
 import CloseIcon from "~/components/icons/CloseIcon.vue";
-// const options = defineModel('options')
-// watch(options, (opt) => {
-//   console.log({ opt })
-// })
-
 const props = withDefaults(defineProps<{
   name: string,
   label?: string,
@@ -77,7 +72,6 @@ watch(selectedValue, (newValue) => {
 
 const hasError = computed(() => meta.touched && errorMessage.value);
 // const data = computed(() => errors.value)
-// console.log(data.value, "VALUE")
 
 const clearSelectedValue = () => {
   selectedValue.value = props.multiple ? [] : ""; // Clear based on multiple or single select

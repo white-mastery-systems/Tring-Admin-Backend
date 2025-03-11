@@ -1,0 +1,122 @@
+<script setup lang="ts">
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ActivityIcon } from "lucide-vue-next"
+import { Button as UiButton } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+// const props = withDefaults(
+//   defineProps<{
+//     revenusList: Array<{ title: string; revenus: string; previousRevenus: string; icon: string }>;
+//   }>(),
+//   {
+//     revenusList: () => [],
+//   }
+// );
+const props = withDefaults(defineProps<{
+  title: string;
+  count: string;
+  icon: any;
+  loading: boolean;
+}>(), {
+  loading: true,  // default value for loading
+});
+</script>
+
+<template>
+  <div class="flex gap-5 px-0 rounded-lg">
+    <!-- v-for="(item, index) in props.revenusList" :key="index" -->
+    <Card class="w-full">
+      <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle class="text-[14px] font-medium">
+          {{ props.title }}
+        </CardTitle>
+        <!-- <component :is="props.icon" class="h-4 w-4 text-[#71717A]"></component> -->
+        <!-- <img src="ActivityIcon" width="50" class="rounded-lg" /> -->
+        <ActivityIcon class="h-4 w-4 text-[#71717A]" />
+      </CardHeader>
+      <CardContent>
+        <div class="text-[24px] font-bold">
+          {{ props.count }}
+        </div>
+        <!-- <p class="text-xs text-muted-foreground">
+          {{ item.previousRevenus }}
+        </p> -->
+      </CardContent>
+    </Card>
+    <!-- <Card> 
+      <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle class="text-sm font-medium">
+          Subscriptions
+        </CardTitle>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" class="h-4 w-4 text-muted-foreground">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      </CardHeader>
+      <CardContent>
+        <div class="text-2xl font-bold">
+          +2350
+        </div>
+        <p class="text-xs text-muted-foreground">
+          +180.1% from last month
+        </p>
+      </CardContent>
+    </Card>
+    <Card>
+      <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle class="text-sm font-medium">
+          Sales
+        </CardTitle>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" class="h-4 w-4 text-muted-foreground">
+          <rect width="20" height="14" x="2" y="5" rx="2" />
+          <path d="M2 10h20" />
+        </svg>
+      </CardHeader>
+      <CardContent>
+        <div class="text-2xl font-bold">
+          +12,234
+        </div>
+        <p class="text-xs text-muted-foreground">
+          +19% from last month
+        </p>
+      </CardContent>
+    </Card>
+    <Card>
+      <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle class="text-sm font-medium">
+          Active Now
+        </CardTitle>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" class="h-4 w-4 text-muted-foreground">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+      </CardHeader>
+      <CardContent>
+        <div class="text-2xl font-bold">
+          +573
+        </div>
+        <p class="text-xs text-muted-foreground">
+          +201 since last hour
+        </p>
+      </CardContent>
+    </Card> -->
+  </div>
+</template>

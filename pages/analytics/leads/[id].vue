@@ -2,7 +2,7 @@
   <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="breadCrum" leadPage="leads" :disable-back-button="!user" :disable-elevation="true">
+  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="[]" leadPage="leads" :disable-back-button="!user" :disable-elevation="true">
     <template #actionButtons v-if="user">
       <div class="flex items-center gap-3">
         <UiButton v-if="leadData?.lead?.status === 'default'" variant="destructive"
@@ -180,10 +180,12 @@
 </template>
 
 <script setup lang="ts">
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 definePageMeta({
   middleware: "admin-only",
 });
 
+const breadcrumbStore = useBreadcrumbStore();
 const { user, refreshUser }: { user: any; refreshUser: any } =
   await useUser();
 const BotId = ref(null);
@@ -211,6 +213,16 @@ const { data: whatsappLead, execute: fetchName } = useLazyFetch(`/api/getName?id
 // const isPageLoading = computed(() => status.value === "pending");
 watchEffect(() => {
   if (leadData.value) {
+    breadcrumbStore.setBreadcrumbs([
+      {
+        label: "Leads", // Dynamic name
+        to: `/analytics/leads`,
+      },
+      {
+        label: leadData.value?.botUser?.name,
+        to: `/analytics/leads/${route.params?.id}`,
+      },
+    ]);
     const userName = leadData.value?.botUser?.name ?? "Unknown User";
     useHead({
       title: `Leads | ${userName}`,
@@ -221,24 +233,6 @@ watchEffect(() => {
 onMounted( async() => {
   await fetchData();
 });
-
-const breadCrum  = computed(() => {
- if (user.value) {
-   return [
-     {
-       label: `${leadData.value?.botUser?.name ?? 'No Name'}`,
-       to: `/analytics/leads`,
-     },
-     {
-       label: 'Leads',
-       to: `/analytics/leads`,
-     },
-   ]
- } else {
-  []
- }
-})
-
 const details = computed(() => {
   if (!leadData.value) return [];
   const { params, ...rest } =

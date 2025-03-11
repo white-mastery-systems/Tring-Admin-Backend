@@ -113,20 +113,7 @@ const actionsComponent = (id: any) => h(
     },
     [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Delete"]
   ),
-    // h(
-    //   UiButton,
-    //   {
-    //     onClick: () => {
-    //       addBucketModalState.value.open = true
-    //       addBucketModalState.value.id = id
-    //       console.log("addBucketModalState")
-    //     }, // Add delete functionality
-    //     class: "bg-[#424bd1] hover:bg-[#424bd1] font-bold", // Different color for delete
-    //   },
-    //   [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Add"]
-    // )
-]
-)
+])
 
 const columns = [
   columnHelper.accessor("name", {

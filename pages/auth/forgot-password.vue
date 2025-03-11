@@ -1,120 +1,71 @@
-<template>
-  <div class="flex h-full w-full flex-col items-center justify-center">
-    <div class="w-[90%] px-0 pb-[20px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
-      <span> Forgot Password </span>
-    </div>
-    <div class="flex w-[90%] flex-col px-0 md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
-      <!-- <div> -->
-      <!-- @submit="authHandlers.login" -->
-      <form class="space-y-2" @submit="onSubmit">
-        <div v-if="route?.query?.token?.length" class="flex flex-col gap-2">
-          <div class="relative">
-            <TextField :type="passwordVisible ? 'text' : 'password'" name="newPassword" label="Password"
-              placeholder="Password" required>
-              <template #endIcon>
-                <div class="w-[30px] cursor-pointer" @click="togglePasswordVisibility" type="button">
-                  <OpenEye v-if="passwordVisible" />
-                  <CloseEyeIcon v-else />
-                </div>
-              </template>
-            </TextField>
-          </div>
-          <div class="relative">
-            <TextField :type="confirmPasswordVisible ? 'text' : 'password'" name="confirmPassword"
-              label="Confirm Password" placeholder="Confirm Your Password" required>
-              <template #endIcon>
-                <div class="w-[30px] cursor-pointer" @click="toggleConfirmPasswordVisibility" type="button">
-                  <OpenEye v-if="confirmPasswordVisible" />
-                  <CloseEyeIcon v-else />
-                </div>
-              </template>
-            </TextField>
-          </div>
-        </div>
+<script setup lang="ts">
+// import { buttonVariants } from '@/lib/registry/new-york/ui/button'
+// import { cn } from '@/lib/utils'
+// import UserAuthForm from './components/UserAuthFor'
+definePageMeta({
+  layout: "auth",
+  middleware: "guest-only",
+});
+</script>
 
-        <div v-else>
-          <TextField type="email" name="email" label="E-mail" placeholder="Enter Your Email" required />
+<template>
+  <div class="md:flex">
+    <VPImage alt="Authentication" width="1280" height="1214" class="block" :image="{
+      dark: '/examples/authentication-dark.png',
+      light: '/examples/authentication-light.png',
+    }" />
+  </div>
+
+  <div
+    class="container pb-5 sm:pb-5 md:pb-0 relative h-[800px] flex flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+    <!-- <a href="/auth/sign-up" class="absolute right-4 top-4 md:right-8 md:top-8">
+      SignUp
+    </a> -->
+    <div class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
+      <div class="absolute inset-0 bg-zinc-900" />
+      <div class="relative z-20 flex items-center text-lg font-medium">
+        <img class="self-center" src="assets\icons\Tring-Ai-Logo-with-text-new.png" width="190" height="190" />
+      </div>
+      <div class="relative z-20 mt-auto">
+        <blockquote class="space-y-2">
+          <p class="text-lg">
+            <!-- &ldquo; -->
+            AI-powered Chat and Voice Agents.
+            <!-- &rdquo; -->
+          </p>
+          <!-- <footer class="text-sm">
+            Sofia Davis
+          </footer> -->
+        </blockquote>
+      </div>
+    </div>
+    <div class="lg:p-8">
+      <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <div class="flex flex-col space-y-2 text-center">
+          <h1 class="text-2xl font-semibold tracking-tight">
+            Forgot Password
+          </h1>
+          <p class="text-sm text-muted-foreground">
+            Enter your email below to reset your password
+          </p>
         </div>
-        <UiButton type="submit" class="flex h-[45px] w-full justify-center bg-[#424bd1] hover:bg-[#424bd1]"
-          :loading="isLoading">
-          Submit
-        </UiButton>
-      </form>
+        <ForgotPasswordForm />
+        <p v-if="false" class="px-8 text-center text-sm text-muted-foreground">
+          By Signing up, I Agree to Tring AI
+          <!-- <a href="/terms" class="underline underline-offset-4 hover:text-primary">
+            Terms of Service
+          </a>
+          and
+          <a href="/privacy" class="underline underline-offset-4 hover:text-primary">
+            Privacy Policy
+          </a> -->
+          <a target="_blank" href="https://tringlabs.ai/terms-conditions"
+            class="underline underline-offset-4 hover:text-primary">
+            Terms & Conditions
+          </a>
+          .
+        </p>
+      </div>
     </div>
   </div>
 </template>
-<script setup lang="ts">
-  definePageMeta({
-    layout: "auth",
-    middleware: "guest-only",
-  });
-  import { useRoute } from "vue-router";
-
-  const formSchema = toTypedSchema(
-    z.object({
-      email: z
-        .string({ required_error: "Invalid email address." })
-        .email("Invalid email address."),
-    }),
-  );
-
-  const restPasswordSchema = toTypedSchema(
-    z
-      .object({
-        // username: z.string().email("Invalid email address."),
-        newPassword: z
-          .string({ required_error: "Password is required" })
-          .min(6, "Password must be at least 6 characters long."),
-        confirmPassword: z
-          .string({ required_error: "Confirm is required" })
-          .min(6, "Confirm Password must be at least 6 characters long."),
-      })
-      .refine((data) => data.newPassword === data.confirmPassword, {
-        message: "Passwords do not match.",
-        path: ["confirmPassword"], // Point to the field that has the issue
-      }),
-  );
-
-  const schema = ref(formSchema);
-  const animationProps = {
-    duration: 500,
-  };
-  const route = useRoute();
-  const isLoading = ref(false);
-  if (route.query.token) {
-    schema.value = restPasswordSchema;
-  }
-  const {
-    setFieldValue,
-    handleSubmit,
-    errors,
-    values,
-    defineField,
-    resetForm,
-  } = useForm({
-    validationSchema: schema.value,
-    initialValues: {
-      // name: "",
-    },
-  });
-
-  const onSubmit = handleSubmit(async (value: any) => {
-    isLoading.value = true;
-    if (route.query?.token?.length) {
-      authHandlers.resetPassword(value, route.query?.token);
-    } else {
-      authHandlers.forgotPassword(value);
-    }
-    isLoading.value = false;
-  });
-
-  const passwordVisible = ref(false);
-  const confirmPasswordVisible = ref(false);
-
-  const togglePasswordVisibility = () => {
-    passwordVisible.value = !passwordVisible.value;
-  };
-  const toggleConfirmPasswordVisibility = () => {
-    confirmPasswordVisible.value = !confirmPasswordVisible.value;
-  };
-</script>

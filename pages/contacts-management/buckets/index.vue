@@ -1,5 +1,5 @@
 <template>
-  <Page title="Buckets" :disable-back-button="true">
+  <Page title="Segments" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-4">
         <div class="flex gap-2">
@@ -61,6 +61,7 @@ import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import { useRouter } from "vue-router";
 import { useState } from "#app";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
 definePageMeta({
   middleware: "user",
@@ -68,6 +69,7 @@ definePageMeta({
 useHead({
   title: "Contacts Management | Contacts",
 });
+const breadcrumbStore = useBreadcrumbStore();
 
 const deleteBucketState = ref({ open: false, id: null });
 const currentPage = useState("counter", () => '1');
@@ -102,6 +104,13 @@ const {
   },
 });
 const router = useRouter();
+
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Segments", // Dynamic name
+    to: `/contacts-management/buckets`,
+  }
+]);
 
 const isDataLoading = computed(() => status.value === "pending");
 

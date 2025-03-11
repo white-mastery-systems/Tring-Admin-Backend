@@ -64,6 +64,46 @@ export function hexToHSL(hex) {
   // Return the HSL values as a string
   return `${h} ${s}% ${l}%`;
 }
+export const convertToHsl = (color: string) => {
+  // If it's already an HSL(A) format, return it as is
+  if (color.includes("hsl") || color.includes("%")) {
+    return color;
+  }
+
+  // If it's a HEX value, convert it to HSL
+  let r = 0, g = 0, b = 0;
+  if (color.startsWith("#") && (color.length === 7 || color.length === 4)) {
+    if (color.length === 7) { // #RRGGBB
+      r = parseInt(color.substring(1, 3), 16);
+      g = parseInt(color.substring(3, 5), 16);
+      b = parseInt(color.substring(5, 7), 16);
+    } else if (color.length === 4) { // #RGB (short-hand)
+      r = parseInt(color[1] + color[1], 16);
+      g = parseInt(color[2] + color[2], 16);
+      b = parseInt(color[3] + color[3], 16);
+    }
+  } else {
+    return "Invalid color format"; // Return error if it's not HEX or HSL
+  }
+
+  // Convert RGB to HSL
+  r /= 255, g /= 255, b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s = 0, l = (max + min) / 2;
+
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+    h /= 6;
+  }
+
+  return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+};
 
 export function hslToHex(hslString) {
   // Parse the HSL string
