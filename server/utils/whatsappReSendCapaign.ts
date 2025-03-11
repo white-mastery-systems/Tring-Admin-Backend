@@ -1,21 +1,22 @@
 import { logger } from "~/server/logger";
 import { getTemplateDetailsByName, sendWhatsappTemplateMessage } from "./template";
 import { fetchFileFromUrl } from "./whatsappMedia";
-import { updateWhatsappMessageStatus } from "./db/campaign";
+import { updateWhatsappMessageStatus, variablePrameterObj } from "./db/campaign";
 import { uploadMedia } from "./whatsappMedia";
 
 export const whatsappReSendCampaign = async (campaignId: string, templateName: any, contactList: any, metadata: any ) => {
   try {
-    let templateLanguageCode = "en";
     const phoneId = metadata?.pid;
     const accessToken = metadata?.access_token;
     const wabaId = metadata?.wabaId;
 
     const templateDetailList = await getTemplateDetailsByName(wabaId, accessToken, templateName);
     const templateInformation = templateDetailList?.find((i: any) => i.name === templateName);
-
-    const headerParameter: any = [];
-    const headerComponent: any = [];
+    const isPositional = templateInformation?.parameter_format === "POSITIONAL";
+    const templateLanguageCode = templateInformation.language ?? "en";
+    
+    let headerParameter: any = [];
+    let headerComponent: any = [];
     const headerTasks = templateInformation.components
       .filter((component: any) => component.type === "HEADER" && ["IMAGE", "DOCUMENT"].includes(component.format))
       .map(async (component: any) => {
@@ -33,104 +34,92 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
       });
 
     await Promise.all(headerTasks);
-    if (headerParameter.length) {
-      headerComponent.push({ type: "header", parameters: headerParameter});
-    }
-
-    /*
-      contactList.forEach(async ({ contacts: contact }: { contacts: any }) => {
-        const bodyComponents:any = [];
-        const bodyParameters:any = [];
-        const phoneNumber =`${contact?.countryCode}${contact?.phone}`.replace("+", "");
-        
-        if (templateInformation) {
-          templateLanguageCode = templateInformation.language;
-          templateInformation.components.forEach((component: any) => {
-            if (component.type === "BODY" && component.example?.body_text) {
-              component.example.body_text[0].map((variable: string) => {
-                if (variable === "firstName" && contact?.firstName) {
-                  bodyParameters.push({ type: "text", text: contact?.firstName })
-                } else if (variable === "lastName" && contact?.lastName) {
-                  bodyParameters.push({ type: "text", text: contact?.lastName })
-                } else if (variable === "fullName" ) {
-                  bodyParameters.push({ type: "text", text: `${contact?.firstName} ${contact?.lastName}`, })
-                } else if (variable === "email" ) {
-                  bodyParameters.push({ type: "text", text: contact?.email })
-                } else if (variable === "mobile" && contact?.phone) {
-                  bodyParameters.push({ type: "text", text: `+${contact?.countryCode} ${contact?.phone}` })
-                }
-              });
-            } else if (component.type === "BODY" && component.text && component.text.match(/{{\d+}}/g)) {
-              if(component.includes("{{1}}") && contact?.firstName) {
-                bodyParameters.push({ type: "text", text: contact?.firstName })
-              }
-              if(component.includes("{{2}}") && contact?.lastName) {
-                bodyParameters.push({ type: "text", text: contact?.lastName });
-              }
-              if(component.includes("{{3}}") && contact?.email) {
-                bodyParameters.push({ type: "text", text: contact?.email });
-              }
-              if(component.includes("{{4}}") && contact?.phone) {
-                bodyParameters.push({ type: "text", text: `+${contact?.countryCode} ${contact?.phone}` });
-              }
-            }
-          });
-        }
-        
-        if(bodyParameters.length) {
-          bodyComponents.push({ type: "body", parameters: bodyParameters });
-        }
-
-        const data: any = await sendWhatsappTemplateMessage(
-          phoneId,
-          accessToken,
-          phoneNumber,
-          templateName,
-          [...headerComponent, ...bodyComponents],
-          templateLanguageCode,
-        );
-        logger.info(`whatsapp response: ${JSON.stringify(data)}`);
-        if(data?.messages[0]?.id) {
-          await updateWhatsappMessageStatus(campaignId, contact?.phone, data?.messages[0]?.id, phoneId, "sent")
-          console.log("3333333333333333333333333333");
-        }
-      });
-    */
 
     for (const { contacts: contact } of contactList) {
-      const bodyComponents: any = [];
-      const bodyParameters: any = [];
+      const bodyComponents:any = []; const bodyParameters:any = [];
+      const buttonsComponents:any = [];
       const phoneNumber = `${contact?.countryCode}${contact?.phone}`.replace("+", "");
 
       for (const component of templateInformation.components) {
-        if (component.type === "BODY" && component.example?.body_text) {
-          component.example.body_text[0].forEach((variable: string) => {
-            if (["firstname", "first name"].includes(variable.toLocaleLowerCase()) && contact?.firstName) {
-              bodyParameters.push({ type: "text", text: contact.firstName });
-            } else if (["lastname","last name"].includes(variable.toLocaleLowerCase()) && contact?.lastName) {
-              bodyParameters.push({ type: "text", text: contact.lastName });
-            } else if (["fullname", "full name", "user name", "username","name"].includes(variable.toLocaleLowerCase())) {
-              bodyParameters.push({ type: "text", text: `${contact?.firstName} ${contact?.lastName ?? ""}` });
-            } else if (variable.toLocaleLowerCase() === "email") {
-              bodyParameters.push({ type: "text", text: contact.email });
-            } else if (["mobile","phone","phone no", "mobile no"].includes(variable.toLocaleLowerCase()) && contact?.phone) {
-              bodyParameters.push({ type: "text", text: `+${phoneNumber}` });
+        if(component.type === "HEADER" && component.example) {
+          headerComponent=[]; headerParameter=[];
+          const headerVariables = getTemplateHeaderVariables(component.example);
+          headerVariables.map((variable: string) => {
+            let obj:any = {}
+            if(!isPositional){
+              obj.parameter_name = variable;
             }
+            headerParameter.push({ ...obj, ...variablePrameterObj(variable, contact)})
+          });
+        }
+        if (component.type === "BODY" && component.example) {
+          const bodyVariables = getTemplateBodyVariables(component.example)
+          bodyVariables.map((variable: any) => {
+            let obj: any = {};
+            if (!isPositional) {
+              obj.parameter_name = variable;
+            }
+            bodyParameters.push({ ...obj, ...variablePrameterObj(variable, contact)});
           });
         } else if (component.type === "BODY" && component.text?.match(/{{\d+}}/g)) {
           if (component.text.includes("{{1}}") && contact?.firstName) {
-            bodyParameters.push({ type: "text", text: contact.firstName });
+            bodyParameters.push({ type: "text", text: contact?.firstName });
           }
           if (component.text.includes("{{2}}") && contact?.lastName) {
-            bodyParameters.push({ type: "text", text: contact.lastName });
+            bodyParameters.push({ type: "text", text: contact?.lastName });
           }
           if (component.text.includes("{{3}}") && contact?.email) {
-            bodyParameters.push({ type: "text", text: contact.email });
+            bodyParameters.push({ type: "text", text: contact?.email });
           }
           if (component.text.includes("{{4}}") && contact?.phone) {
             bodyParameters.push({ type: "text", text: `+${phoneNumber}` });
           }
         }
+
+        if(component.type === "BUTTONS"){
+          component.buttons.forEach((button:any, index:number)=>{
+            console.log("index", { index });
+            const buttonInd = `${index ?? 0}`
+            if(button.type ==="FLOW"){
+              const { flow_id, flow_action, navigate_screen } = button;
+              buttonsComponents.push({
+                type: "button", sub_type: "flow", index: buttonInd,
+                parameters: [{
+                  type: "action",
+                    action: {
+                      flow_token: "unused",
+                      flow_action_data: { flow_id, flow_action, navigate_screen },
+                    },
+                  },
+                ],
+              });
+            } else if (button.type === "URL") {
+              const { url, example } = button;
+              let varName = url.split("{{1}}")
+              varName = example[0].split(varName[0])
+              varName = varName[1] ?? varName[0];
+              const buttonsParametersObj = variablePrameterObj(varName, contact, phoneNumber)
+              buttonsComponents.push({ 
+                type: "button", sub_type: "url", index: buttonInd, 
+                parameters: [buttonsParametersObj] 
+              });
+            } else if (button.type == "QUICK_REPLY") {
+              buttonsComponents.push({
+                type: "button",  sub_type: "quick_reply", index: buttonInd,
+                parameters: [{ type: "payload", payload: "PAYLOAD" }],
+              });
+            } else if (button.type == "COPY_CODE") {
+              buttonsComponents.push({
+                type: "button", sub_type: "COPY_CODE", index: buttonInd,
+                parameters: [{ type: "coupon_code", coupon_code: (button.example) ?? "CODEWELCOME200" }],
+              });
+            }
+          }) 
+        }
+      }
+
+      if (headerParameter.length) {
+        headerComponent.push({ type: "header", parameters: headerParameter });
       }
 
       if (bodyParameters.length) {
@@ -143,8 +132,8 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
           accessToken,
           phoneNumber,
           templateName,
-          [...headerComponent, ...bodyComponents],
-          templateLanguageCode
+          [...headerComponent, ...bodyComponents, ...buttonsComponents],
+          templateLanguageCode,
         );
 
         logger.info(`WhatsApp response: ${JSON.stringify(data)}`);
@@ -162,3 +151,63 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
     return { status: false };
   }
 };
+
+/*
+  contactList.forEach(async ({ contacts: contact }: { contacts: any }) => {
+    const bodyComponents:any = [];
+    const bodyParameters:any = [];
+    const phoneNumber =`${contact?.countryCode}${contact?.phone}`.replace("+", "");
+    
+    if (templateInformation) {
+      templateLanguageCode = templateInformation.language;
+      templateInformation.components.forEach((component: any) => {
+        if (component.type === "BODY" && component.example?.body_text) {
+          component.example.body_text[0].map((variable: string) => {
+            if (variable === "firstName" && contact?.firstName) {
+              bodyParameters.push({ type: "text", text: contact?.firstName })
+            } else if (variable === "lastName" && contact?.lastName) {
+              bodyParameters.push({ type: "text", text: contact?.lastName })
+            } else if (variable === "fullName" ) {
+              bodyParameters.push({ type: "text", text: `${contact?.firstName} ${contact?.lastName}`, })
+            } else if (variable === "email" ) {
+              bodyParameters.push({ type: "text", text: contact?.email })
+            } else if (variable === "mobile" && contact?.phone) {
+              bodyParameters.push({ type: "text", text: `+${contact?.countryCode} ${contact?.phone}` })
+            }
+          });
+        } else if (component.type === "BODY" && component.text && component.text.match(/{{\d+}}/g)) {
+          if(component.includes("{{1}}") && contact?.firstName) {
+            bodyParameters.push({ type: "text", text: contact?.firstName })
+          }
+          if(component.includes("{{2}}") && contact?.lastName) {
+            bodyParameters.push({ type: "text", text: contact?.lastName });
+          }
+          if(component.includes("{{3}}") && contact?.email) {
+            bodyParameters.push({ type: "text", text: contact?.email });
+          }
+          if(component.includes("{{4}}") && contact?.phone) {
+            bodyParameters.push({ type: "text", text: `+${contact?.countryCode} ${contact?.phone}` });
+          }
+        }
+      });
+    }
+    
+    if(bodyParameters.length) {
+      bodyComponents.push({ type: "body", parameters: bodyParameters });
+    }
+
+    const data: any = await sendWhatsappTemplateMessage(
+      phoneId,
+      accessToken,
+      phoneNumber,
+      templateName,
+      [...headerComponent, ...bodyComponents],
+      templateLanguageCode,
+    );
+    logger.info(`whatsapp response: ${JSON.stringify(data)}`);
+    if(data?.messages[0]?.id) {
+      await updateWhatsappMessageStatus(campaignId, contact?.phone, data?.messages[0]?.id, phoneId, "sent")
+      console.log("3333333333333333333333333333");
+    }
+  });
+*/

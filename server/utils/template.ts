@@ -215,7 +215,7 @@ export const sendWhatsappTemplateMessage = async (
     );
     logger.info("WhatsApp template message sent successfully");
     return sendMessageTemplateApiResponse;
-  } catch (error) {
+  } catch (error:any) {
     logger.error({
       message: "Error occurred while sending WhatsApp template message",
       error: JSON.stringify(error),

@@ -3,8 +3,9 @@ import { updateWhatsappMessageStatusByMessageId } from "~/server/utils/db/campai
 const zodUpdateWhatsappMessageBody = z.object({
   messageId: z.string(),
   chatId: z.string(),
-  messageStatus: z.string()
-})
+  messageStatus: z.string(),
+  errorCode: z.any().optional()
+});
 
 export default defineEventHandler(async (event) => {
   const body = await isValidBodyHandler(event, zodUpdateWhatsappMessageBody)
