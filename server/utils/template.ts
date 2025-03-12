@@ -215,7 +215,7 @@ export const sendWhatsappTemplateMessage = async (
     );
     logger.info("WhatsApp template message sent successfully");
     return sendMessageTemplateApiResponse;
-  } catch (error:any) {
+  } catch (error: any) {
     logger.error({
       message: "Error occurred while sending WhatsApp template message",
       error: JSON.stringify(error),
@@ -224,3 +224,122 @@ export const sendWhatsappTemplateMessage = async (
     throw new Error("Failed to send WhatsApp template message");
   }
 };
+
+export const deStructureVariables = (inputData: any) => {
+  const Obj = {
+    bodyVariables: [],
+    headerVariables: [],
+    buttonVariables: [],
+    headerText: inputData?.headerText || null,
+    bodyText: inputData?.bodyText || null,
+    footerText: inputData?.footerText || null,
+  };
+
+  const variableList = (inputData?.templateVariables?.length)? [...inputData?.templateVariables]: [];
+  if (variableList.length) {
+    const categorized = variableList.reduce((acc: any, item: any) => {
+      const key = `${item.placed}Variables`; // Ensure correct key
+      acc[key] = acc[key] || [];
+      acc[key].push(item);
+      return acc;
+    }, {});
+
+    // Reassign sequential positions
+    Object.keys(categorized).forEach((key) => {
+      categorized[key] = categorized[key].map((item: any, index: number) => ({
+        ...item,
+        position: (index + 1).toString(),
+      }));
+    });
+
+    const positionMap: any = {};
+    Object.values(categorized).flat().forEach((item: any, index) => {
+      console.log({item, index});
+      
+      positionMap[item.position] = (index + 1).toString();
+    });
+
+    // Function to dynamically replace positions in text
+    const updateTextPositions = (text: string | null) => {
+      return (typeof text === "string") ? text.replace(/\{\{(\d+)\}\}/g, (_: any, pos: any, index:number) => {
+        console.log({ _, pos, index });
+        
+        return `{{${positionMap[pos] || pos}}}`}): text;
+    }
+
+    Obj.headerText = updateTextPositions(Obj.headerText);
+    Obj.bodyText = updateTextPositions(Obj.bodyText);
+    Obj.footerText = updateTextPositions(Obj.footerText);
+
+    return { ...Obj, ...categorized, positionMap };
+  }
+  return Obj;
+};
+
+export const deStructureVariables2 = (inputData: any) =>{
+  const obj = {
+    bodyVariables: [],
+    headerVariables: [],
+    buttonVariables: [],
+    headerText: inputData?.headerText || null,
+    bodyText: inputData?.bodyText || null,
+    footerText: inputData?.footerText || null,
+  };
+  const variableList = (inputData?.templateVariables?.length)? [...inputData?.templateVariables]: [];
+  if(variableList.length){
+    const headerVariables = variableList.filter((item: any) => item.placed === "header");
+    const bodyVariables = variableList.filter((item: any) => item.placed === "body");
+    const buttonVariables = variableList.filter((item: any) => item.placed === "button");
+    return {...obj, headerVariables, bodyVariables, buttonVariables}
+  }
+  return obj
+}
+
+const data ={
+    "bodyVariables": [
+        {
+            "position": "1",
+            "placed": "body",
+            "example": "name"
+        },
+        {
+            "position": "2",
+            "placed": "body",
+            "example": "email"
+        },
+        {
+            "position": "3",
+            "placed": "body",
+            "example": "phone"
+        },
+        {
+            "position": "4",
+            "placed": "body",
+            "example": "last name"
+        }
+    ],
+    "headerVariables": [
+        {
+            "position": "1",
+            "placed": "header",
+            "example": "fullName"
+        },
+        {
+            "position": "2",
+            "placed": "header",
+            "example": "firstName"
+        }
+    ],
+    "buttonVariables": [
+        {
+            "position": "1",
+            "placed": "button",
+            "example": "phone"
+        }
+    ],
+    "headerText": "Hi *{{1}}* - {{2}}",
+    "bodyText": "Here are the details of the generated lead \nName: {{2}} \n Email: {{2}} \nPhone: {{4}} \nBot Name: {{3}} \nUseful Links: Chat:  https://example.com/chat/123  \nWhatsApp: https://wa.me/123456789",
+    "footerText": "Tabs.ai",
+}
+
+// export const updateTextPositions = (text: string | null, categorized)
