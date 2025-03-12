@@ -54,6 +54,7 @@ const schema = {
   //new schemas
   adminSubscriptionSchema,
   adminPlanUsageSchema,
+  chatbotScheduledCallSchema,
   // Relations
   organizationRelations,
   chatBotRelations,
