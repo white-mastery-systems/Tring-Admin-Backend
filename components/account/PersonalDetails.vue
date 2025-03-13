@@ -16,7 +16,8 @@
         <TextField type="email" name="email" label="Email address" helperText="" required
           placeholder="Enter your email address" />
       </div>
-      <div v-show="props.personalControl"
+      <!-- v-show="props.personalControl" -->
+      <div
         class="grid grid-cols-1 gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
         <TextField type="text" name="metadata.businessName" label="Business Name" placeholder="Enter Your Business Name"
           :required="true" />
