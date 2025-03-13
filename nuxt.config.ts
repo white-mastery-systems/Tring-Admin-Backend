@@ -40,6 +40,7 @@ export default defineNuxtConfig({
       "~/server/plugin/yaml-watcher.ts",
       "~/server/plugin/schedule-voicebotDialer.ts",
       "~/server/plugin/whatsapp-analytics.ts",
+      "~/server/plugin/schedule-chatbotCall.ts",
     ],
   },
 
