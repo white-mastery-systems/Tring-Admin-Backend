@@ -15,8 +15,7 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
     const isPositional = templateInformation?.parameter_format === "POSITIONAL";
     const templateLanguageCode = templateInformation.language ?? "en";
     
-    let headerParameter: any = [];
-    let headerComponent: any = [];
+    const headerMediaParameter: any = []; const headerMediaComponent:any = []
     const headerTasks = templateInformation.components
       .filter((component: any) => component.type === "HEADER" && ["IMAGE", "DOCUMENT"].includes(component.format))
       .map(async (component: any) => {
@@ -24,7 +23,7 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
           const media = await fetchFileFromUrl(component.example.header_handle[0], templateName);
           const uploadedMedia = await uploadMedia(phoneId, accessToken, media, media.type);
 
-          headerParameter.push({
+          headerMediaParameter.push({
             type: component.format.toLowerCase(),
             [component.format.toLowerCase()]: { id: uploadedMedia.id },
           });
@@ -32,17 +31,20 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
           logger.error(`Error processing media for ${templateName}:`, error);
         }
       });
-
-    await Promise.all(headerTasks);
+      
+      await Promise.all(headerTasks);
+      if (headerMediaParameter.length) {
+        headerMediaComponent.push({ type: "header", parameters: headerMediaParameter });
+      }
 
     for (const { contacts: contact } of contactList) {
+      const headerParameter:any =[]; const headerComponent: any = [];
       const bodyComponents:any = []; const bodyParameters:any = [];
       const buttonsComponents:any = [];
       const phoneNumber = `${contact?.countryCode}${contact?.phone}`.replace("+", "");
 
       for (const component of templateInformation.components) {
-        if(component.type === "HEADER" && component.example) {
-          headerComponent=[]; headerParameter=[];
+        if(component.type === "HEADER" && component.example && !["IMAGE", "DOCUMENT"].includes(component.format)) {
           const headerVariables = getTemplateHeaderVariables(component.example);
           headerVariables.map((variable: string) => {
             let obj:any = {}
@@ -78,7 +80,6 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
 
         if(component.type === "BUTTONS"){
           component.buttons.forEach((button:any, index:number)=>{
-            console.log("index", { index });
             const buttonInd = `${index ?? 0}`
             if(button.type ==="FLOW"){
               const { flow_id, flow_action, navigate_screen } = button;
@@ -98,7 +99,7 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
               let varName = url.split("{{1}}")
               varName = example[0].split(varName[0])
               varName = varName[1] ?? varName[0];
-              const buttonsParametersObj = variablePrameterObj(varName, contact, phoneNumber)
+              const buttonsParametersObj = variablePrameterObj(varName, contact)
               buttonsComponents.push({ 
                 type: "button", sub_type: "url", index: buttonInd, 
                 parameters: [buttonsParametersObj] 
@@ -111,7 +112,7 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
             } else if (button.type == "COPY_CODE") {
               buttonsComponents.push({
                 type: "button", sub_type: "COPY_CODE", index: buttonInd,
-                parameters: [{ type: "coupon_code", coupon_code: (button.example) ?? "CODEWELCOME200" }],
+                parameters: [{ type: "coupon_code", coupon_code: (Array.isArray(button.example)) ? button.example[0] : (button.example) ? button.example :"CODEWELCOME200" }],
               });
             }
           }) 
@@ -132,7 +133,7 @@ export const whatsappReSendCampaign = async (campaignId: string, templateName: a
           accessToken,
           phoneNumber,
           templateName,
-          [...headerComponent, ...bodyComponents, ...buttonsComponents],
+          [...headerMediaComponent, ...headerComponent, ...bodyComponents, ...buttonsComponents],
           templateLanguageCode,
         );
 
