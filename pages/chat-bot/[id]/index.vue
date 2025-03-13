@@ -92,13 +92,13 @@
                 </UiButton>
                 <div class="block text-[4px] lg:hidden">Delete</div>
               </div>
-              <!-- <div class="flex flex-col items-center gap-1" @click="agentModalState.open = true">
+              <div class="flex flex-col items-center gap-1" @click="agentModalState.open = true">
                 <UiButton variant="destructive"
                   class="flex items-center justify-center bg-[#424bd1] p-3 hover:bg-[#424bd1]/90 hover:brightness-90">
                   <Icon name="lucide:pen" class="h-4 w-4" />
                 </UiButton>
                 <div class="block text-[4px] lg:hidden">Edit</div>
-              </div> -->
+              </div>
               <CreateEditChannelModal v-model="channelModalState" @success="handleSuccess" />
               <ConfirmationModal v-model:open="deleteModalState" title="Are you sure?"
                 description="Are you sure you want to delete bot ?" @confirm="handleDeleteBot" />
@@ -118,6 +118,9 @@
       <!-- </div> -->
       <!-- Communication -->
     </template>
+    <!-- <div class="-ml-6 -mr-10">
+      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full" />
+    </div> -->
     <!-- <div>
     <CreateBotForm />
   </div> -->
@@ -157,15 +160,6 @@
     <div class="font-bold text-[20px] mt-3">
       View and Edit your Chatbots features
     </div>
-    <div>
-      <LoadingOverlay :loading="pageLoading" class="w-[80%]" />
-    </div>
-    <!-- <div v-if="pageLoading"
-      class="fixed inset-y-0 right-0 w-[83%] flex items-center justify-center bg-black bg-opacity-0 backdrop-blur-md z-50">
-      <div class="grid h-full items-center justify-center text-[#424BD1]">
-        <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
-      </div>
-    </div> -->
 
     <CreateBot :botDetails="botDetails" :documents="documents" :refresh="refresh" :refreshBot="refreshBot"
       :loading="loading" />
@@ -350,6 +344,8 @@ import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails
 import { useDocumentsList } from '~/composables/botManagement/chatBot/useDocumentsList';
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 import { useBotDocuments } from '~/composables/botManagement/chatBot/useBotDocuments';
+import { useBotList } from "~/composables/botManagement/chatBot/useBotList";
+
 const router = useRouter();
 const route = useRoute("chat-bot-id");
 const emit = defineEmits<{ (e: "confirm"): void }>();
@@ -375,11 +371,12 @@ const scrapedData = ref(null);
 // const childRef = ref(null);
 const scrollTarget = ref(null);
 const breadcrumbStore = useBreadcrumbStore();
+const { botListStatus, bots } = useBotList();
 const isDataLoading = computed(() => status.value === "pending");
 const createBotsuccessfulState = ref({
   open: false,
 });
-const pageLoading = ref(true);
+// const pageLoading = ref(false);
 
 watch(
   () => botDetails.value?.name,
@@ -401,22 +398,22 @@ watch(
   },
   { deep: true, immediate: true }
 );
-
-watch(
-  () => status.value,
-  (newStatus) => {
-    if (newStatus === "success") {
-      checkDocumentStatus(); // Start polling for document status
-    }
-  },
-  { immediate: true }
-);
-
+watch(() => botDetails.value?.documentId, (newId) => {
+  if (newId) {
+    createBotsuccessfulState.value.open = true
+  }
+})
 
 const handleSuccess = () => {
   channelModalState.value.open = false;
   toast.success("Channel Created successfully");
 };
+// onMounted(() => {
+//   console.log(botDetails.value?.documentId, 'botDetails.value?.documentId onMounted')
+//   if (botDetails.value?.documentId) {
+//     createBotsuccessfulState.value.open = true;
+//   }
+// })
 // onMounted(async () => {
 //   // getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
 //   if (!documents.value.documentId) {
@@ -513,43 +510,43 @@ const handleFieldsChanges = () => {
   console.log("Fields changed");
 }
 
-const checkDocumentStatus = async () => {
-  if (status.value !== "success") return;
+// const checkDocumentStatus = async () => {
+//   if (status.value !== "success") return;
 
-  pageLoading.value = true; // Ensure loading starts
-  toast.success("Your bot is being deployed. Please wait...");
+//   pageLoading.value = true; // Ensure loading starts
+//   toast.success("Your bot is being deployed. Please wait...");
 
-  let toastInterval = 0; // Counter to track every 16 seconds
+//   let toastInterval = 0; // Counter to track every 16 seconds
 
-  const interval = setInterval(async () => {
-    await refreshBot(); // Fetch the latest document status
-    const documentStatus = botDetails.value?.documents?.[0]?.status;
+//   const interval = setInterval(async () => {
+//     await refreshBot(); // Fetch the latest document status
+//     const documentStatus = botDetails.value?.documents?.[0]?.status;
 
-    // Show toast every 16 seconds (i.e., every second iteration of 8-sec polling)
-    toastInterval += 8;
-    if (toastInterval % 12 === 0) {
-      toast.success("Your bot is still being deployed. Please wait...");
-    }
+//     // Show toast every 16 seconds (i.e., every second iteration of 8-sec polling)
+//     toastInterval += 8;
+//     if (toastInterval % 12 === 0) {
+//       toast.success("Your bot is still being deployed. Please wait...");
+//     }
 
-    if (documentStatus === "ready") {
-      clearInterval(interval); // Stop polling
-      pageLoading.value = false;
+//     if (documentStatus === "ready") {
+//       clearInterval(interval); // Stop polling
+//       pageLoading.value = false;
 
-      if (!documents.value?.documentId) {
-        try {
-          await handleActivateBot();
-          if (botDetails.value?.documents.length === 1) {
-            createBotsuccessfulState.value.open = true;
-          }
-        } catch (error) {
-          console.error("handleActivateBot failed:", error);
-        } finally {
-          pageLoading.value = false; // Stop loading after activation
-        }
-      }
-    }
-  }, 8000); // Poll every 8 seconds
-};
+//       if (!documents.value?.documentId) {
+//         try {
+//           await handleActivateBot();
+//           if (botDetails.value?.documents.length === 1) {
+//             createBotsuccessfulState.value.open = true;
+//           }
+//         } catch (error) {
+//           console.error("handleActivateBot failed:", error);
+//         } finally {
+//           pageLoading.value = false; // Stop loading after activation
+//         }
+//       }
+//     }
+//   }, 8000); // Poll every 8 seconds
+// };
 
 // const checkDocumentStatus = async () => {
 //   if (status.value !== "success") return;

@@ -8,13 +8,16 @@ export function useChatbotConfig() {
   // Define fetchConfig so that you pass the type as an argument
   const fetchConfig = async (type: string) => {
     try {
-      const { data, status: fetchStatus, error: fetchError } = await useLazyFetch(
+      const { data, status: fetchStatus, error: fetchError, execute } = useLazyFetch(
         `/api/v2/chatbot/config?type=${type}`,
         {
           server: false,
           default: () => ({}),
         }
       );
+      // Trigger the request manually
+      await execute();
+
       intentOptions.value = data.value;
       status.value = fetchStatus.value;
 
@@ -25,6 +28,7 @@ export function useChatbotConfig() {
       error.value = err.message || "Failed to fetch configuration";
     }
   };
+
 
   // Optionally, you can call fetchConfig on mount with a default type
   onMounted(() => {

@@ -11,10 +11,6 @@ export default defineEventHandler(async (event) => {
   const orgDetails = await getOrganizationById(organizationId)
 
   const randomBotName = generateRandomBotName(orgDetails?.name!)
-  
-  const intents = body?.metadata?.prompt.INTENTS && body?.metadata?.prompt.INTENTS.length 
-   ? body?.metadata?.prompt.INTENTS.map((intent: any) => `-${intent}`).join("\n")
-   : undefined 
 
   const payload = {
     name: body?.name ?? randomBotName,
@@ -23,10 +19,7 @@ export default defineEventHandler(async (event) => {
       metaData: {
         ...body.metadata,
         prompt: {
-          ...body?.metadata?.prompt,
-          ...(intents && {
-            "INTENTS": intents
-          })
+          ...body?.metadata?.prompt
         },
       }
     }),

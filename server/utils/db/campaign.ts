@@ -303,7 +303,7 @@ export const getTemplateBodyVariables = (example: any): any[] => {
   return [];
 };
 
-export const variablePrameterObj = (variableName: any, contact: any, phoneNumber?: any) => {
+export const variablePrameterObj = (variableName: any, contact: any) => {
   const varName = `${variableName}`.toLowerCase()
   if (["firstname", "first name"].includes(varName) && contact?.firstName) {
     return { type: "text", text: contact?.firstName }
@@ -316,6 +316,6 @@ export const variablePrameterObj = (variableName: any, contact: any, phoneNumber
   } else if (["mobile", "phone", "phone no", "mobile no"].includes(varName) && contact?.phone) {
     return { type: "text", text: `${contact.countryCode || "+91"}${contact.phone}` }
   } else { 
-    return (phoneNumber) ?  {type: "text", text: `+${phoneNumber}`}:{type:"text", text:contact?.firstName || "N/A"}
+    return {type:"text", text:variableName}
   }
 };

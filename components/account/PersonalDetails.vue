@@ -7,10 +7,11 @@
           :url="values.logo.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
           :helperText="'Only files up to 5MB can be uploaded.'" />
       </div>
-      <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight" v-show="props.personalControl">
+      <!-- v-show="props.personalControl" -->
+      <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
         Personal Information
       </h3>
-      <div class="grid grid-cols-2 gap-2" v-show="props.personalControl">
+      <div class="grid grid-cols-2 gap-2">
         <TextField name="username" label="Full Name" required placeholder="Enter your full name" />
         <TextField type="email" name="email" label="Email address" helperText="" required
           placeholder="Enter your email address" />
@@ -49,8 +50,8 @@
         </div>
         <SelectField name="gstType" label="GST Type" placeholder="Select GST Type" :options="gstTypes" :required="true"
           helperText="Choose the GST type applicable to your business." />
-        <TextField v-if="values.gstType === 'business_gst'" type="text" name="gst" label="GST" helperText="Enter your 15-digit GSTIN"
-          placeholder="Enter Your Gst" required />
+        <TextField v-if="values.gstType === 'business_gst'" type="text" name="gst" label="GST"
+          helperText="Enter your 15-digit GSTIN" placeholder="Enter Your Gst" required />
         <!-- <div class="flex gap-2 mt-2">
         </div> -->
       </div>
@@ -164,7 +165,7 @@ const { orgDetails } = await $fetch('/api/org')
 setFieldValue("countryCode", user?.value?.countryCode ?? "+91");
 setFieldValue("username", user?.value?.username ?? "");
 setFieldValue("email", user?.value?.email ?? "");
-setFieldValue("mobile", user?.value?.mobile ?? "");
+// setFieldValue("mobile", user?.value?.mobile ?? "");
 setFieldValue("address.street", user?.value?.address?.street ?? "");
 setFieldValue("address.city", user?.value?.address?.city ?? "");
 setFieldValue("address.state", user?.value?.address?.state ?? "");

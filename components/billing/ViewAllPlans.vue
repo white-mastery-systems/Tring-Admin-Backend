@@ -2,27 +2,25 @@
   <!-- <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div> -->
+  <!-- {{ currentRoute }} -->
+  <!-- {{ route.query.type }} -->
+  <!-- {{ `onboarding/billing?type=${route.query.type}` }} -->
+  <!-- (currentRoute === `onboarding/billing?type=${route.query.type}`) ? '' : -->
   <Page title="Choose a Plan" :description="true" :disableSelector="true" :customBackRouter="correctedUrl"
-    :disable-back-button="(currentRoute === 'onboarding/billing')" class="relative">
-    <UiTabs v-model="selectedTab" :default-value="route.query.type ?? 'chat'" class="w-full self-start">
-      <!-- <UiTabsList class="grid w-[30%] grid-cols-2">
-        <UiTabsTrigger value="chat" @click="navigateToTab('chat')">
-          Chat
-        </UiTabsTrigger>
-        <UiTabsTrigger value="voice" @click="navigateToTab('voice')">
-          Voice
-        </UiTabsTrigger>
-      </UiTabsList> -->
-      <UiTabsList class="flex flex-col grid w-[15%] grid-cols-2 gap-5 p-2 rounded-lg bg-white border-0">
+    :disable-back-button="(currentRoute === `onboarding/billing?type=${route.query.type}`)" class="relative">
+    <UiTabs v-model="selectedTab" :default-value="route.query.type ?? 'chat'"
+      class="w-full sm-w-full md:min-w-[900px]">
+      <UiTabsList
+        class="flex flex-col grid w-full sm:w-full md:w-[300px] grid-cols-2 gap-5 px-2 pb-2 pt-0 rounded-lg bg-white border-0">
         <UiTabsTrigger value="chat" @click="navigateToTab('chat')"
-          class="flex flex-col items-center justify-center p-3 border rounded-lg data-[state=active]:border-primary">
-          <CircleDollarSign class="w-6 h-6" />
+          class="flex flex-col items-center gap-1 justify-center border rounded-lg data-[state=active]:border-primary min-h-[91px] min-w-[85px]">
+          <MessageSquare class="w-6 h-6" />
           <span class="mt-1 text-sm">Chat</span>
         </UiTabsTrigger>
 
         <UiTabsTrigger value="voice" @click="navigateToTab('voice')"
-          class="flex flex-col items-center justify-center p-3 border rounded-lg data-[state=active]:border-primary">
-          <CircleDollarSign class="w-6 h-6" />
+          class="flex flex-col items-center gap-1 justify-center border rounded-lg data-[state=active]:border-primary min-h-[91px] min-w-[85px]">
+          <PhoneCall class="w-6 h-6" />
           <span class="mt-1 text-sm">Voice</span>
         </UiTabsTrigger>
       </UiTabsList>
@@ -30,7 +28,7 @@
         <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
       </div> -->
       <div>
-        <UiTabsContent value="chat">
+        <UiTabsContent value="chat" class="w-full">
           <ChatAndVoiceBillingPlan :onBoardingAccount="onBoardingAccount" />
         </UiTabsContent>
         <UiTabsContent value="voice">
@@ -47,7 +45,7 @@ definePageMeta({
 
 import { useRoute, useRouter } from 'vue-router';
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
-import { Receipt, CircleDollarSign } from "lucide-vue-next";
+import { Receipt, CircleDollarSign, MessageSquare, PhoneCall } from "lucide-vue-next";
 
 const props = withDefaults(defineProps<{ onBoardingAccount?: boolean }>(), {
   onBoardingAccount: false, // Default value for accept
@@ -57,18 +55,30 @@ const correctedUrl = ref('');
 const router = useRouter();
 const route = useRoute();
 
-breadcrumbStore.setBreadcrumbs([
-  {
-    label: "Choose a Plan", // Dynamic name
-    to: `/view-all?type=chat`,
-  }
-]);
-// Reactive computed property for plan selection
+// // Reactive computed property for plan selection
+// const currentRoute = computed(() => {
+//   const fullPath = router.options.history.state.current
+//   if (!fullPath) return '';
+//   return fullPath.split('/auth/')[1] || '';
+// });
 const currentRoute = computed(() => {
-  const fullPath = router.options.history.state.current
-  if (!fullPath) return '';
-  return fullPath.split('/auth/')[1] || '';
+  const fullPath = router.currentRoute.value.fullPath; // Access current route
+  return fullPath.includes('/auth/') ? fullPath.split('/auth/')[1] : '';
 });
+const callType = computed(() => (route.query.type === 'chat' ? 'Chat' : 'Voice'));
+
+watch(() => route.query.type, (newType) => {
+  breadcrumbStore.setBreadcrumbs([
+    {
+      label: 'Billing',
+      to: `/billing?type=${newType}`, // Ensure a valid query parameter
+    },
+    {
+      label: callType.value, // Ensure `.value` is used inside watchEffect
+      to: `/billing/view-all?type=${newType}`, // Ensure correct query format
+    },
+  ]);
+},{deep: true, immediate: true});
 
 onMounted(() => {
   // if ((route.name !== 'auth-onboarding-billing')) {

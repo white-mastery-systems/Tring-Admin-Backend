@@ -152,9 +152,11 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 </script>
 <template>
   <Sidebar v-bind="props" class="bg-[#fafafa]">
-    <SidebarHeader class="bg-[#fafafa]">
-      <!-- <div class="pt-3 py-6 flex justify-center"> -->
-      <img src="assets/icons/Tring-Ai-Logo-with-black-text.png" width="160" height="160" />
+    <SidebarHeader class="bg-[#fafafa] pt-3 pl-3">
+      <NuxtLink to="/" class="flex w-full">
+        <!-- <div class="pt-3 py-6 flex justify-center"> -->
+        <img src="assets/icons/Tring-Ai-Logo-with-black-text.png" width="160" height="160" />
+      </NuxtLink>
       <!-- </div> -->
       <!-- <TeamSwitcher :teams="data.teams" /> -->
     </SidebarHeader>

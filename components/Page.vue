@@ -56,10 +56,12 @@
     <!-- <LazyUiSelectSeparator v-if="!props.disableSelector" class="mb-4 bg-[#E2E8F0]" /> -->
 
     <!-- mt-4 -->
+    <!-- shadow-3xl -->
+    <!-- mt-4 -->
     <div class="flex flex-col justify-center sm:justify-center md:justify-start gap-4" :class="[
       props.disableElevation
         ? ''
-    : 'shadow-3xl p-1 lg:p-4 xl:p-4 sm:p-1 pb-[14px] mt-4 mb-[95px] sm:mb-[90px] md:mb-0 lg:mb-0 xl:mb-0 overflow-scroll rounded-md bg-white p-1', // sm:p-1  lg:p-6 xl:p-6
+    : 'p-1 lg:p-0 xl:p-0 sm:p-1 pb-[14px] mb-[95px] sm:mb-[90px] md:mb-0 lg:mb-0 xl:mb-0 overflow-scroll rounded-md bg-white p-1', // sm:p-1  lg:p-6 xl:p-6
     ]">
       <slot></slot>
     </div>

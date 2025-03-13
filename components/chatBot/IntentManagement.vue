@@ -20,7 +20,7 @@
 
     <DataTable :columns="columns" :data="intentData" :totalPageCount="totalPageCount" :page="page"
       :totalCount="totalCount" :page-size="8" :is-loading="isIntentLoading" :height="20" height-unit="vh" />
-    <!-- <ConfirmationModal v-model:open="deleteIntentDialogState.open" title="Confirm Delete"
+    <ConfirmationModal v-model:open="deleteIntentDialogState.open" title="Confirm Delete"
       description="Are you sure you want to delete this intent ?" @confirm="
         async () => {
           await deleteIntent({
@@ -34,7 +34,7 @@
             },
           });
         }
-      " /> -->
+      " />
   </div>
 </template>
 <script setup lang="ts">

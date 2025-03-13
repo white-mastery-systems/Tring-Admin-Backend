@@ -1,6 +1,6 @@
 <template>
   <Page title="Chat Bot" :disable-back-button="true">
-    <template #actionButtons>
+    <!-- <template #actionButtons>
       <div class="flex gap-4">
         <UiButton class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95"
           @click="() => {
@@ -11,7 +11,7 @@
           Add Chat Bot
         </UiButton>
       </div>
-    </template>
+    </template> -->
     <div class="flex items-center gap-2 pb-2 overflow-x-scroll">
       <UiInput v-model="filters.q" @input="filters.page = '1'"
         class="w-[150px] sm:w-[150px] md:w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -30,7 +30,7 @@
   </Page>
   <AddChatBotModal v-model="agentModalState" @confirm="() => {
     agentModalState.open = false;
-    getAllChatBot();
+  refresh();
   }
   "></AddChatBotModal>
 </template>
@@ -42,6 +42,8 @@ import { useState } from "#app";
 import { useRouter } from "vue-router";
 import { useBotType } from "~/composables/botManagement/chatBot/useBotType";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+import { useBotList } from "~/composables/botManagement/chatBot/useBotList";
+import { useBotFilters } from "~/composables/botManagement/chatBot/useBotFilters";
 
 definePageMeta({
   middleware: "user",
@@ -61,45 +63,21 @@ breadcrumbStore.setBreadcrumbs([
 
 const searchBot = ref("");
 const agentModalState = ref({ open: false, id: null });
-const filters = useState("chatBotFilters", () => ({
-  q: "",
-  active: "",
-  page: "1",
-  limit: "10",
-  type: ""
-}));
+const { filters } = useBotFilters();
+// const filters = useState("chatBotFilters", () => ({
+//   q: "",
+//   active: "",
+//   page: "1",
+//   limit: "10",
+//   type: ""
+// }));
 
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+// let page = ref(0);
+// let totalPageCount = ref(0);
+// let totalCount = ref(0);
+const { botListStatus, bots, refresh, page, totalPageCount, totalCount } = useBotList();
 
-const {
-  status,
-  data: bots,
-  refresh: getAllChatBot,
-} = await useLazyFetch("/api/bots", {
-  server: false,
-  default: () => [],
-  query: filters,
-  headers: {
-    "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-  },
-  transform: (bots) => {
-    page.value = bots.page;
-    totalPageCount.value = bots.totalPageCount;
-    totalCount.value = bots.totalCount;
-    return bots.data.map((bot) => {
-      return {
-        id: bot.id,
-        name: bot.name,
-        status: bot.documentId ? true : false,
-        createdAt: `${bot.createdAt}`,
-        type: useBotType(bot.type as BotType),
-      };
-    });
-  },
-});
-const isDataLoading = computed(() => status.value === "pending");
+const isDataLoading = computed(() => botListStatus.value === "pending");
 
 const statusComponent = (status: boolean) =>
   status
@@ -139,7 +117,7 @@ const resetPageForChatBot = () => {
 const Pagination = async ($evnt) => {
   filters.value.page = $evnt;
 
-  getAllChatBot();
+  refresh();
 };
 const onChangeCategory = (value: any) => {
   if (value) {

@@ -71,7 +71,11 @@ watch(text, async (newText) => {
     await generatePDFAndUpload();
   }
 });
-
+onMounted(() => {
+  if (text.value.trim()) {
+    text.value = ''
+  }
+})
 </script>
 
 <template>

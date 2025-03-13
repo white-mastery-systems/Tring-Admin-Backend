@@ -28,6 +28,7 @@ const { value: color } = useField("color");
 const { value: secondaryColor, } = useField("secondaryColor");
 const { value: selectedType } = useField("type");
 const { value: logo } = useField("logo");
+const { value: BotName } = useField("BotName");
 const colorInput = ref();
 const secondarycolorInput = ref();
 
@@ -113,7 +114,9 @@ const handleLogoChange = (event: any) => {
         <TextField label="Company Name" name="COMPANY" class="text-[14px]" placeholder="Enter Your Company Name"
           v-model="NAME" />
 
-        <TextField label="Chatbot Name" name="NAME" class="text-[14px]" placeholder="Enter Your Chatbot Name"
+        <TextField label="Chatbot Name" name="BotName" class="text-[14px]" placeholder="Enter Your Chatbot Name"
+          v-model="BotName" />
+        <TextField label="Chat Agent Name" name="NAME" class="text-[14px]" placeholder="Enter Your Chat Agent Name"
           v-model="COMPANY" />
       </div>
 

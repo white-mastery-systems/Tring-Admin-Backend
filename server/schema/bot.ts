@@ -14,6 +14,7 @@ import {
 import { createInsertSchema } from "drizzle-zod";
 import { chatbotSchema } from ".";
 import { integrationSchema, organizationSchema } from "./admin";
+import { voicebotSchema } from "./voicebot"
 
 // Tables
 export const chatBotSchema = chatbotSchema.table("bot", {
@@ -49,6 +50,8 @@ export const chatBotSchema = chatbotSchema.table("bot", {
     customTools : [],
     defaultTools: []
   }),
+  scheduleCallWithVoice: boolean("schedule_call_with_voice").default(false),
+  voiceBotId: uuid("voice_bot_id").references(() => voicebotSchema.id),
   status: varchar("status").default("inactive"),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })
@@ -231,6 +234,23 @@ export const analyticsSchema = chatbotSchema.table("analytics", {
   botId: uuid("bot_id").references(() => chatBotSchema.id, { onDelete: "cascade" }),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const chatbotScheduledCallSchema = chatbotSchema.table("chatbot_scheduled_calls", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").references(()=> organizationSchema.id, { onDelete: "cascade" }),
+  name: varchar("name"),
+  email: varchar("email"),
+  phone: varchar("phone"),
+  countryCode: varchar("country_code"),
+  scheduledDateTime: timestamp("scheduled_date_time"),
+  callSid: varchar("call_sid"),
+  callStatus: varchar("call_status").default("not dialed"),
+  voicebotId: uuid("voicebot_id").references(() => voicebotSchema.id, { onDelete: "cascade" }),
+  chatbotId: uuid("chatbot_id").references(() => chatBotSchema.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 // Relations
 export const chatBotRelations = relations(chatBotSchema, ({ one, many }) => ({
   organization: one(organizationSchema, {
@@ -344,6 +364,9 @@ export type InsertLead = InferInsertModel<typeof leadSchema>;
 
 export type SelectIntent = InferSelectModel<typeof botIntentSchema>;
 export type InsertIntent = InferInsertModel<typeof botIntentSchema>;
+
+export type SelectChatbotScheduledCall = InferSelectModel<typeof chatbotScheduledCallSchema>;
+export type InsertChatbotScheduledCall = InferInsertModel<typeof chatbotScheduledCallSchema>;
 
 export type SelectBotIntegration = InferSelectModel<
   typeof botIntegrationSchema

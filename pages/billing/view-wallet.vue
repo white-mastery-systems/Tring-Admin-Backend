@@ -53,12 +53,6 @@ const correctedUrl = ref('');
 const filters = computed(() => ({
   type: route?.query?.type ?? 'chat',
 }));
-breadcrumbStore.setBreadcrumbs([
-  {
-    label: "Wallet", // Dynamic name
-    to: `/view-all/view-wallet?type=${route?.query?.type ?? 'chat'}`,
-  }
-]);
 const { data } = await useLazyFetch("/api/org", {
   server: false,
   query: filters,
@@ -86,26 +80,26 @@ const chatBillingVariation = ref([
   },
 ]);
 // const voiceBillingVariation = ref([
-//   {
+  //   {
 //     _id: 1,
 //     title: "Basic",
 //     plan_code: "voice_basic",
 //     amount: "5000",
 //   },
 //   {
-//     _id: 2,
-//     title: "Pro",
-//     plan_code: "voice_pro",
-//     amount: "10000",
-//   },
-//   {
-//     _id: 3,
-//     title: "Max",
-//     plan_code: "voice_max",
-//     amount: "15000",
-//   },
-// ]);
-const voiceBillingVariation = ref([
+  //     _id: 2,
+  //     title: "Pro",
+  //     plan_code: "voice_pro",
+  //     amount: "10000",
+  //   },
+  //   {
+    //     _id: 3,
+    //     title: "Max",
+    //     plan_code: "voice_max",
+    //     amount: "15000",
+    //   },
+    // ]);
+    const voiceBillingVariation = ref([
   {
     _id: 1,
     title: "Basic",
@@ -137,6 +131,22 @@ const voiceBillingVariation = ref([
     amount: 50000
   }
 ])
+
+
+watch(() => route.query.type, (newType) => {
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Billing", // Dynamic name
+    to: `/billing?type=${newType ?? 'chat'}`,
+  },
+  {
+    label: newType, // Dynamic name
+    to: `/billing/view-wallet?type=${newType ?? 'chat'}`,
+  }
+]);
+}, { deep: true, immediate: true })
+
+
 const billingVariation = computed(() => {
   if (route.query.type === "voice") {
     return voiceBillingVariation.value;
