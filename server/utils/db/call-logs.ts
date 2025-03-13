@@ -103,7 +103,7 @@ export const deleteCallLogById = async (callLogId: string) => {
 
 // get current month call-logs duration
 export const getCurrentMonthCallLogList = async (organizationId: string, startDate: Date, endDate: Date) => {
-  return db.query.callLogSchema.findMany({
+  return await db.query.callLogSchema.findMany({
     columns: { 
        duration: true,
        date: true,
@@ -113,5 +113,11 @@ export const getCurrentMonthCallLogList = async (organizationId: string, startDa
       gte(callLogSchema.date, startDate),
       lte(callLogSchema.date, endDate)
     )
+  })
+}
+
+export const getCallLogByCallSid = async (callSid: string) => {
+  return await db.query.callLogSchema.findFirst({
+    where: eq(callLogSchema.callSid, callSid)
   })
 }

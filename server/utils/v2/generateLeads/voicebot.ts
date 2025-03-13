@@ -1,10 +1,11 @@
 import { logger } from "~/server/logger";
+import { getCallLogByCallSid } from "../../db/call-logs";
 
 const config = useRuntimeConfig()
 
-export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebotDetail }: {
+export const generateVoicebotLeads = async ({ botUser, callSid, notes, voicebotDetail }: {
   botUser: any,
-  callLogId: string,
+  callSid: string,
   notes: string,
   voicebotDetail: any
 }) => {
@@ -12,7 +13,10 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
     const organizationId = voicebotDetail?.organizationId
     const adminDetail = await getAdminByOrgId(organizationId)
     const voiceBotIntegrationList: any = await listVoiceBotIntegrations(organizationId, voicebotDetail?.id)
-    
+
+    const callLogDetail = await getCallLogByCallSid(callSid)
+    const callLogId = callLogDetail?.id
+ 
     let firstName = botUser?.name;
     let lastName = "";
     if (firstName?.includes(" ")) {
@@ -166,6 +170,43 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
         logger.info(`Voice bot - generate whatsapp lead, ${JSON.stringify(data)}`);
       }
     }
+
+    const emailRecipients: any = voicebotDetail?.emailRecipients && voicebotDetail?.emailRecipients.length
+      ? [...voicebotDetail?.emailRecipients, adminDetail?.email]
+      : [adminDetail?.email];
+      
+    sendEmail(
+      emailRecipients,
+      "Head's Up, New Lead Notification from Your Voicebot",
+      `<div>
+          <p>Dear ${adminDetail?.username},</p>
+          
+          <p>We are excited to let you know that a new lead has been generated through your voicebot!</p>
+          
+          <div>
+            <p><strong>Lead Details:</strong></p>
+            <p>Name: ${botUser?.name}</p>
+            <p>Phone Number: ${botUser?.countryCode}${botUser?.mobile}</p>
+            <p>Bot's Name: ${voicebotDetail?.name}</p>
+            <p>
+          Conversation History: 
+          <a href="${config.public.adminBaseUrl}/analytics/call-logs/${callLogId}">
+            ${config.public.adminBaseUrl}/analytics/call-logs/${callLogId}
+          </a>
+          </p>
+          <p>
+            Contact user on whatsapp: 
+            <a href="https://wa.me/${botUser?.countryCode}${botUser?.mobile}">
+              https://wa.me/${botUser?.countryCode}${botUser?.mobile}
+            </a>
+          </p>
+          </div>
+          
+          <p>You can follow up with the lead at your earliest convenience to ensure timely engagement.</p>
+          
+          <p>Best regards,<br/>Tring AI</p>
+      </div>`,
+    );
     return true
     
   } catch (error: any) {

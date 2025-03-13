@@ -8,9 +8,10 @@ export default defineEventHandler(async (event) => {
     const query = await isValidQueryHandler(event, z.object({
       type: z.string()
     }))
+
     const data = chatbotConfigs[query?.type?.toLowerCase()];
-  
-    return data
+
+    return data ?? {}
   } catch (error: any) {
     logger.error(`Get chatbot configuration by type API Error: ${JSON.stringify(error.message)}`)
     return errorResponse(event, 500, "Unable to fetch chatbot congiguration")
