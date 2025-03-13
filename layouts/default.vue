@@ -86,8 +86,10 @@ import {
 import { UserIcon } from 'lucide-vue-next';
 import { useBreadcrumbStore } from "~/store/breadcrumbs";
 import { storeToRefs } from "pinia";
+import { botStore } from "~/store/botStore"; // Import Pinia store
 
 const { user, clearUser } = await useUser();
+const slideBarStore = botStore();
 const userInfo = computed(() => {
   return user.value;
 });
@@ -98,6 +100,9 @@ const avatarValue = ref(OrgDetails.values?.logo || userInfo.value?.profile_image
 const breadcrumbStore = useBreadcrumbStore();
 const { breadcrumbs } = storeToRefs(breadcrumbStore);
 
+const sliderBarControl = () => {
+  slideBarStore.siderBarslider = !slideBarStore.siderBarslider
+}
 </script>
 
 <template>
@@ -108,7 +113,7 @@ const { breadcrumbs } = storeToRefs(breadcrumbStore);
       <div class="flex items-center h-10 shadow-sm px-4 gap-2 border-b-[1px] border-[#E4E4E7] py-2">
         <!-- class="flex sm:flex md:hidden" -->
         <div class="flex items-center text-[12px]">
-          <UiSidebarTrigger class="text-[#334155] py-2" />
+          <UiSidebarTrigger @click="sliderBarControl()" class="text-[#334155] py-2" />
         </div>
         <UiSeparator orientation="vertical" class="bg-[#E2E8F0]" />
         <!-- {{ breadcrumbs }} -->
@@ -124,6 +129,8 @@ const { breadcrumbs } = storeToRefs(breadcrumbStore);
             </AvatarFallback>
           </Avatar> -->
         </div>
+      </div>
+      <div>
       </div>
       <slot />
     </main>

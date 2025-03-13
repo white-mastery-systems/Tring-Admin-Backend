@@ -9,7 +9,7 @@
       to: `/bot-management/chat-bot/${botDetails.id}/dynamic-form`,
     },
   ]" :description="true" :disableSelector="false" :disable-back-button="false"> -->
-  <div class="mx-5 gap-3 py-2">
+  <div class="mx-0 gap-3 py-2">
     <div class="text-[18px] font-bold mt-4"> CRM Integrations </div>
     <CrmConfiguration />
     <div class="pt-3">
@@ -70,7 +70,8 @@
       <CommunicationChannelConfig :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
       <div class="text-[18px] font-bold mt-4"> Add tools </div>
       <AddTools :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
-      <IntentManagement />
+      <div class="text-[18px] font-bold mt-4"> Add Intents </div>
+      <IntentManagement :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
     </div>
   </div>
   <!-- </Page> -->

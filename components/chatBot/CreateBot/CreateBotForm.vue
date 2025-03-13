@@ -10,10 +10,14 @@ import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails
 
 const step = ref(1);
 const route = useRoute();
+const paramId: any = route;
 const { status, documents, refresh } = useBotDocuments(route.params.id);
 const scrapData = botStore();
 const isLoading = ref(false)
 const stepOneRef = ref(null);
+const pageLoading = ref(false)
+const isSubmitting = ref(false)
+const isDocumentListOpen = ref(false);
 // const uploadDocumentRef = ref(null);
 // const selectedType = ref('')
 // ✅ Define a single form
@@ -41,7 +45,25 @@ watch(() => scrapData, (newscrapData) => {
   setFieldValue('logo', { url: newscrapData.scrapedData.brand?.logo_url } ?? {});
   setFieldValue("otherGoal", newscrapData.scrapedData.chatbot.goal || "");
 }, { deep: true, immediate: true });
+watch(() => botDetails.value, (newDetails) => {
+  if (newDetails) { // Ensure newDetails is not null
+    setFieldValue('BotName', newDetails?.name ?? '');
+  }
+}, { deep: true, immediate: true });
 
+watch(
+  () => status.value,
+  (newStatus) => {
+    if (((step.value === 1) && values.selectedType === 'Text')) {
+      if (newStatus === "success") {
+        isLoading.value = false;
+        step.value++;
+      }
+    }
+  },
+  { deep: true, immediate: true }
+);
+// setFieldValue('NAME', botDetails.value.name ?? '');
 const isDataLoading = computed(() => status.value === "pending");
 // watch(() => scrapData.scrapedData?.knowledge_base?.document_content,(newValue) => {
 //   refresh()
@@ -50,11 +72,16 @@ const isDataLoading = computed(() => status.value === "pending");
 // ✅ Fields to validate per step
 const stepFields = {
   1: [""], // Assuming validation for step 1 is based on document length
-  2: ["NAME", "COMPANY", "color", "secondaryColor", "logo", "type"], // Step 2 fields
+  2: ["BotName", "NAME", "COMPANY", "color", "secondaryColor", "logo", "type"], // Step 2 fields
   3: ["ROLE", "otherRole", "otherGoal"] // Include otherRole and otherGoal for step 3
 };
 
 
+onMounted(() => {
+  if (botDetails.value) {
+    console.log(botDetails.value, "botDetails.value -- botDetails.value")
+  }
+})
 const nextStep = async () => {
   const fieldsToValidate = stepFields[step.value] || [];
   let isValid = true;
@@ -73,14 +100,21 @@ const nextStep = async () => {
   // }
   if ((step.value === 1) && values.selectedType === 'Text') {
     if (stepOneRef.value?.uploadDocumentRef?.generatePDFAndUpload) {
-      stepOneRef.value.uploadDocumentRef.generatePDFAndUpload(); // Call function from TextDocumentUpload
-  } else {
-    console.log("Function not found!");
+      // setTimeout(() => {
+      if (!documents.value.documents.length) {
+        stepOneRef.value.uploadDocumentRef.generatePDFAndUpload(); // Call function from TextDocumentUpload
+      }
+      // }, 0);
+    }
   }
-}
   if ((step.value === 1) && !documents.value.documents.length) {
-    toast.error("Please provide at least one document");
-    return
+    if (values.selectedType !== 'Text') {
+      toast.error("Please provide at least one document");
+      return;
+    } else {
+      isLoading.value = true;
+      return;
+    }
   }
 
   if ((step.value === 2) && !values.type) {
@@ -99,12 +133,26 @@ const nextStep = async () => {
     }
   }
   if (isValid) {
+    // if ((step.value === 1) && values.selectedType === 'Text') {
+    //   // setTimeout(() => {
+    //     step.value++;
+    //   // }, 0);
+    // } else {
     step.value++; // Move to next step
+    // }
   } else {
     console.log("Validation failed! Fix errors before proceeding.");
   }
 };
-
+watch(
+  () => botDetails,
+  (newValue, oldValue) => {
+    if (step.value === 1 && values.selectedType === 'Text') {
+      step.value++;
+    }
+  },
+  { deep: true, immediate: true }
+);
 
 const prevStep = () => {
   if (step.value > 1) step.value--;
@@ -127,27 +175,32 @@ const submitForm = handleSubmit(async (values) => {
   try {
     if (!values.COMPANY || !values.NAME || !values.ROLE || !values.color) {
       toast.error("Please fill in all required fields.");
+      isLoading.value = false
       return;
     }
     if (!values.GOAL) {
       toast.error("Please provide a value for Goal");
+      isLoading.value = false
       return
-    } 
+    }
     if (values.GOAL === 'custom' && !values.otherGoal) {
       toast.error("Please provide a custom value for Goal");
+      isLoading.value = false
       return
     }
     const payload = {
-      id: botDetails.value.id,
+      id: botDetails.value?.id,
+      type: values.type,
+      name: values.BotName,
       metadata: {
         ui: {
-          ...botDetails.value.metadata.ui,
+          ...botDetails.value?.metadata.ui,
           logo: values.logo,
           color: hexToHSL(values.color),
           secondaryColor: hexToHSL(values.secondaryColor),
         },
         prompt: {
-          ...botDetails.value.metadata.prompt,
+          ...botDetails.value?.metadata.prompt,
           COMPANY: values.COMPANY,
           NAME: values.NAME,
           ROLE: values.ROLE,
@@ -155,11 +208,21 @@ const submitForm = handleSubmit(async (values) => {
           otherRole: values.otherRole,
           otherGoal: values.otherGoal,
         },
+        tools: {
+          customTools: [],
+          defaultTools: [
+            'date_time'
+          ],
+        },
       },
     };
 
     await updateBotDetails(payload);
-
+    await checkDocumentStatus()
+    // await navigateTo({
+    //   name: "chat-bot-id",
+    //   params: { id: botDetails.id },
+    // });
     toast.success("Bot details updated successfully!");
   } catch (error) {
     console.error("Error updating bot details:", error);
@@ -168,10 +231,101 @@ const submitForm = handleSubmit(async (values) => {
   // isLoading.value = false
 });
 
+const checkDocumentStatus = async () => {
+  if (status.value !== "success") return;
+
+  pageLoading.value = true; // Ensure loading starts
+  toast.success("Your bot is being deployed. Please wait...");
+
+  let toastInterval = 0; // Counter to track every 16 seconds
+
+  const interval = setInterval(async () => {
+    await refreshBot(); // Fetch the latest document status
+    const documentStatus = botDetails.value?.documents?.[0]?.status;
+
+    // Show toast every 16 seconds (i.e., every second iteration of 8-sec polling)
+    toastInterval += 8;
+    if (toastInterval % 12 === 0) {
+      toast.success("Your bot is still being deployed. Please wait...");
+    }
+
+    if (documentStatus === "ready") {
+      clearInterval(interval); // Stop polling
+      // await navigateTo({
+      //   name: "chat-bot-id",
+      //   params: { id: botDetails.id },
+      // });
+      pageLoading.value = false;
+
+      if (!documents.value?.documentId) {
+        try {
+          await handleActivateBot();
+          if (botDetails.value?.documents.length === 1) {
+            // createBotsuccessfulState.value.open = true;
+          }
+        } catch (error) {
+          console.error("handleActivateBot failed:", error);
+        } finally {
+          pageLoading.value = false; // Stop loading after activation
+        }
+      }
+    }
+  }, 8000); // Poll every 8 seconds
+};
+
+const handleActivateBot = async () => {
+  isSubmitting.value = true;
+  console.log("handleActivateBot the top", botDetails.value);
+  const activeDocuments = botDetails.value.documents.filter(
+    (d) => d.status === "ready",
+  );
+  if (activeDocuments.length === 0) {
+    toast.error("Please add document to activate bot");
+    return navigateTo({
+      name: "chat-bot-id",
+      params: { id: paramId.params.id },
+    });
+  } else if (!botDetails.value.metadata?.prompt?.NAME) {
+    toast.error("Please add bot configuration to activate bot");
+    return navigateTo({
+      name: "chat-bot-id",
+      params: { id: paramId.params.id },
+    });
+  } else if (!botDetails.value.metadata.ui?.logo) {
+    toast.error("Please update bot user interface to activate bot");
+    return navigateTo({
+      name: "chat-bot-id",
+      params: { id: paramId.params.id },
+    });
+  }
+  if (activeDocuments.length === 1) {
+    console.log(activeDocuments[0], "activeDocuments[0] -- activeDocuments[0]")
+    try {
+      await singleDocumentDeploy(activeDocuments[0]);
+    } catch (err) {
+      isSubmitting.value = false;
+      toast.error("Failed to active the bot, try again");
+      return;
+    }
+  }
+  console.log("handleActivateBot the bottom");
+  isSubmitting.value = false;
+  isDocumentListOpen.value = true;
+};
+const singleDocumentDeploy = async (list: any) => {
+  console.log('adAC AdaDAd singleDocumentDeploy')
+  await deployDocument(paramId.params.id, list.id);
+  await refreshBot() // new function refreshBot added
+  // botDetails.value = await getBotDetails(paramId.params.id);
+};
+
 </script>
 
 <template>
   <div class="h-[calc(100dvh-2.5rem)] overflow-y-auto">
+    <!-- <div>
+      <LoadingOverlay :loading="pageLoading" class="w-[80%]" />
+    </div> -->
     <div class="flex items-center gap-2 font-bold py-3 px-5">
       <div class="flex items-center gap-2 cursor-pointer" @click="backRoute()">
         <span class="cursor-pointer">
@@ -196,7 +350,8 @@ const submitForm = handleSubmit(async (values) => {
           <UiButton v-if="(step > 1)" type="button" @click="prevStep" class="px-8" variant="outline">Back</UiButton>
           <UiButton v-if="(step === 1)" type="button" @click="firstStepBack" class="px-8" variant="outline">Back
           </UiButton>
-          <UiButton v-if="(step < 4)" type="button" @click="nextStep" class="px-8" :loading="isDataLoading">Next
+          <UiButton v-if="(step < 4)" type="button" @click="nextStep" class="px-8"
+            :loading="isDataLoading && isLoading">Next
           </UiButton>
           <UiButton type="button" v-if="step === 4" @click="submitForm" class="px-8" :loading="isLoading">
             Create Bot
@@ -204,5 +359,31 @@ const submitForm = handleSubmit(async (values) => {
         </div>
       </form>
     </div>
+    <LazyUiDialog v-if="!botDetails.documentId" v-model:open="isDocumentListOpen">
+      <UiDialogTrigger class=""> </UiDialogTrigger>
+      <UiDialogContent align="end" class="sm:max-w-md">
+        <UiDialogHeader>
+          <UiDialogTitle>Launch Bot</UiDialogTitle>
+          <UiDialogDescription>
+            Choose a document to deploy your bot
+          </UiDialogDescription>
+        </UiDialogHeader>
+        <UiButton
+          class="bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42] min-w-[90%] max-w-[100%]"
+          v-for="list in documents.documents.filter(
+            (item: any) => item.status === 'ready',
+          )" :key="list.id" @click="async () => {
+            isSubmitting = true;
+            isDocumentListOpen = false;
+            await singleDocumentDeploy(list);
+            // createBotsuccessfulState.open = true;
+          }
+          ">
+          <span class="w-[95%] truncate">
+            {{ list.name }}
+          </span>
+        </UiButton>
+      </UiDialogContent>
+    </LazyUiDialog>
   </div>
 </template>

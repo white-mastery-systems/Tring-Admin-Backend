@@ -194,7 +194,7 @@ const { user, refreshUser }: { user: any; refreshUser: any } =
   );
   breadcrumbStore.setBreadcrumbs([
     {
-      label: "Leads", // Dynamic name
+      label: "Chat", // Dynamic name
       to: `/analytics/leads`,
     },
     {

@@ -30,9 +30,14 @@
                       <label class="text-[16px] font-medium"> Primary Color</label>
                       <div class="text-[#71717A] text-[12px]">Colors for widget & chat button</div>
                     </div>
-                    <div class="h-9 w-9 overflow-hidden rounded-full">
+                    <!-- <div class="h-9 w-9 overflow-hidden rounded-full">
                       <UiInput ref="colorInput" v-bind="componentField" type="color"
                         class="h-20 w-20 -translate-x-1/3 -translate-y-1/3" />
+                    </div> -->
+                    <div class="h-9 w-9 border border-[#E4E4E7] relative overflow-hidden rounded-lg"
+                      :style="{ backgroundColor: values.color }">
+                      <UiInput ref="colorInput" v-bind="componentField" type="color"
+                        class="absolute inset-0 opacity-0 cursor-pointer" />
                     </div>
                   </div>
                 </div>
@@ -51,9 +56,14 @@
                       <label class="text-[16px] font-medium">Secondary Color</label>
                       <div class="text-[#71717A] text-[12px]">Colors for messages</div>
                     </div>
-                    <div class="h-9 w-9 overflow-hidden rounded-full">
+                    <!-- <div class="h-9 w-9 overflow-hidden rounded-full">
                       <UiInput ref="secondarycolorInput" v-bind="componentField" type="color"
                         class="h-20 w-20 -translate-x-1/3 -translate-y-1/3" />
+                    </div> -->
+                    <div class="h-9 w-9 border border-[#E4E4E7] relative overflow-hidden rounded-lg"
+                      :style="{ backgroundColor: values.secondaryColor }">
+                      <UiInput ref="secondarycolorInput" v-bind="componentField" type="color"
+                        class="absolute inset-0 opacity-0 cursor-pointer" />
                     </div>
                   </div>
                 </div>

@@ -5,8 +5,9 @@ const logoAsObject = z.object({
 
 export const botCreateSchema = toTypedSchema(
   z.object({
-    NAME: z.string({ required_error: "Bot name is required" })
-      .min(2, "Name must be at least 2 characters.").min(2, "Name must be at least 2 characters."),
+    BotName: z.string({ required_error: "Bot name is required" }).min(2, "Bot name must be at least 2 characters."),
+    NAME: z.string({ required_error: "Agent name is required" })
+      .min(2, "Agent name be at least 2 characters."),
     COMPANY: z.string({ required_error: "Company name is required" }).min(2, "Company name must be at least 2 characters."),
     color: z.string({ required_error: "Primary color is required"}).min(1, "Primary color is required"),
     selectedType: z.string().optional(),

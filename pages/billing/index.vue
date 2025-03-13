@@ -62,15 +62,14 @@ const {
   handleConfirmPaymentCancellation,
   navigateToTab,
 } = useBillingComposable();
-
-breadcrumbStore.setBreadcrumbs([
-  {
-    label: "Billing", // Dynamic name
-    to: `/billing?type=chat`,
-  }
-]);
 watch(() => route.query.type,(newType) => {
   selectedTab.value = newType
+  breadcrumbStore.setBreadcrumbs([
+    {
+      label: "Billing", // Dynamic name
+      to: `/billing?type=${newType}`,
+    }
+  ]);
 }, {immediate: true})
 onMounted(() => {
   if (!route.query.type) { // If `type` is not present in the query

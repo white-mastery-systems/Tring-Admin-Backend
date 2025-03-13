@@ -72,6 +72,9 @@ const { handleSubmit, setFieldValue, resetForm, values, errors } = useForm({
 //     }
 //   },
 // );
+onMounted(() => {
+  setFieldValue("url", '')
+})
 const clearTextField = () => {
   setFieldValue("url", "");
 };

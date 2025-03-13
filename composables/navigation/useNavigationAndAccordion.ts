@@ -2,7 +2,9 @@ import { ref } from 'vue';
 import {
   Bot,
   ChartNoAxesColumnIncreasing,
-  HomeIcon,
+  Home,
+  MessageSquare,
+  PhoneCall,
   MessageCircle,
   SettingsIcon,
   WalletIcon,
@@ -11,7 +13,11 @@ import {
   ReceiptIcon,
   CircleUserIcon,
   AudioLines,
-  BotIcon
+  BotIcon,
+  CirclePercent,
+  Code,
+  User,
+  BookUser
 } from "lucide-vue-next";
 
 export const useNavigationAndAccordion = () => {
@@ -19,13 +25,13 @@ export const useNavigationAndAccordion = () => {
   const navigationModules = ref([
     {
       name: "Home",
-      icon: 'home',
+      icon: Home,
       path: "/",
       children: [],
     },
     {
       name: "Customer Logs",
-      icon: 'perm_phone_msg',
+      icon: BookUser,
       path: "/analytics",
       children: [
         {
@@ -48,7 +54,7 @@ export const useNavigationAndAccordion = () => {
     },
     {
       name: "Marketing & Outreach",
-      icon: 'campaign',
+      icon: CirclePercent,
       path: "/contacts-management",
       children: [
         {
@@ -67,13 +73,13 @@ export const useNavigationAndAccordion = () => {
     },
     {
       name: "Chatbots",
-      icon: 'sms',
+      icon: MessageSquare,
       path: "/chat-bot",
       children: [],
     },
     {
       name: "Voicebots",
-      icon: 'call',
+      icon: PhoneCall,
       path: "/voice-bot",
       children: [],
     },
@@ -100,7 +106,7 @@ export const useNavigationAndAccordion = () => {
     // },
     {
       name: "Integrations",
-      icon: 'integration_instructions',
+      icon: Code,
       path: "/integration",
       children: [],
     },
