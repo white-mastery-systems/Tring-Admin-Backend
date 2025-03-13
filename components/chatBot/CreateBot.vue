@@ -35,7 +35,7 @@ onMounted(() => {
 <template>
   <Accordion type="multiple" v-model="openValues" class="w-full" collapsible>
     <AccordionItem v-for="item in accordionItems" :key="item.value" :value="item.value"
-      class="mb-3 border-none p-6 rounded-lg box_shadow">
+      class="mb-3 border-[1px]  p-6 rounded-lg">
       <AccordionTrigger
         class="flex items-center gap-2 font-medium no-underline decoration-transparent hover:no-underline py-0">
         <!-- Left Icon -->
@@ -63,7 +63,7 @@ onMounted(() => {
         </div>
       </AccordionTrigger>
       <AccordionContent class="text-gray-700 text-sm">
-        <UiSeparator class="mt-4"></UiSeparator>
+        <UiSeparator class="mt-4 h-[0.7px]"></UiSeparator>
         <!-- {{ item.content }} -->
         <!-- <component :is="stepComponents[item.value]" /> -->
         <component :is="stepComponents[item.value]" :botDetails="props.botDetails" :refreshBot="props.refreshBot"

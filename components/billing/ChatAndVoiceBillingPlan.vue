@@ -1,18 +1,25 @@
-  <template>
+<template>
+  <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1] w-full sm-w-full md:min-w-[900px]">
+    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div>
+  <div v-else class="relative">
     <div :class="[
-      'grid gap-4 px-2.5 py-0',
+      'grid gap-4 px-2.5 py-0 w-full sm-w-full md:min-w-[900px]',
       route.query.type === 'voice'
         ? 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3'
         : (props.onBoardingAccount) ? 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3' : 'xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-4',
     ]">
+      <!-- bg-[#18181b] -->
+      <!-- (orgBilling?.plan_code === list.plan_code ? strokeWhiteColor : strokeBlackColor) -->
       <div :class="[
-        'main_card_align field_shadow relative flex flex-col justify-between rounded-[13px] border-2 bg-[#ffffff] p-5 hover:border-yellow-500',
+        'main_card_align field_shadow relative flex flex-col justify-between rounded-[13px] border-2  p-5 hover:border-yellow-500',
         orgBilling?.plan_code === list.plan_code
-          ? 'border-2 border-yellow-500'
-          : '',
+          ? 'border-2 border-gray-600 bg-[#18181b] text-[#ffffff]'
+          : 'bg-[#ffffff] text-[#18181b]',
         'w-full',
       ]" v-for="(list, index) in billingVariationDetails" :key="index">
-        <div class="mb-[30px] text-[23px] font-bold text-[#424bd1]">
+        <div class="mb-[20px] text-[23px] font-bold"
+          :class="(orgBilling?.plan_code === list.plan_code) ? 'text-[#ffffff]' : 'text-[#18181b]'">
           {{ list.types }}
         </div>
 
@@ -20,39 +27,40 @@
           <div class="amount-align text-[30px] font-black">
             {{ list.amount }}
           </div>
-          <div class="px-0 py-[2px] text-[15px] text-[#848199]">
+          <div class="px-0 py-[2px] text-[15px]">
             {{ list.status }}
           </div>
         </div>
         <!-- <div class="text-[30px] font-bold">
           {{ list.types }}
         </div> -->
-        <div class="text-[15px] text-[#848199]">
+        <div class="text-[15px]">
           {{ list.benefitContent }}
         </div>
-        <div class="flex min-h-[310px] flex-col items-start justify-start">
+        <div class="flex min-h-[245px] flex-col items-start justify-start gap-1">
           <div class="flex items-center gap-2" v-for="(advancedList, ListIndex) in list.benefitList" :key="ListIndex">
             <span class="flex items-start">
-              <TicIcon v-if="advancedList.availableInPlan" />
+              <TicIcon :strokeColor="(orgBilling?.plan_code === list.plan_code ? strokeWhiteColor : strokeBlackColor)"
+                v-if="advancedList.availableInPlan" />
               <CloseIcon v-else />
               <!-- <img v-if="!list.listBenefit" src="assets\icons\check-circle.svg" width="15" />
               <img v-else src="assets\icons\checked-circle.svg" width="15" /> -->
             </span>
-            <span class="min-h-[26px] px-0 py-[2px] text-[15px] text-[#848199]">
+            <span class="min-h-[26px] px-0 py-[2px] text-[15px]">
               {{ advancedList.content }}
             </span>
           </div>
         </div>
-        <UiButton variant="outline"
-          class="rounded-lg border border-indigo-700 px-4 py-2 font-semibold text-indigo-800 hover:border-transparent hover:bg-indigo-700 hover:text-white"
-          :class="[
+        <UiButton variant="outline" class="rounded-lg border border-[#18181b] px-4 py-2 font-semibold text-[#18181b]
+          hover:border-transparent hover:opacity-50" :class="[
             orgBilling?.plan_code === list.plan_code
-              ? 'bg-indigo-700 text-white'
+              ? 'text-[#18181b]'
               : '',
           ]" @click="choosePlan(list.plan_code)" :disabled="list.plan_code?.includes('chat_free')">
+          <!-- bg-indigo-700 -->
           {{
-            orgBilling?.plan_code === list.plan_code ? (orgBilling?.plan_code === 'chat_free') ? "Current Plan" :
-              "Subscribed" : findPlanLevel({ list, current: orgBilling?.plan_code })
+          orgBilling?.plan_code === list.plan_code ? (orgBilling?.plan_code === 'chat_free') ? "Current Plan" :
+          "Subscribed" : findPlanLevel({ list, current: orgBilling?.plan_code })
           }}
         </UiButton>
       </div>
@@ -66,7 +74,7 @@
         <ArrowRight class="w-5 h-5" />
       </div>
     </div>
-  <!-- </Page> -->
+  </div>
 </template>
 <script setup lang="ts">
 definePageMeta({
@@ -92,7 +100,8 @@ const freeTrialPopup = useFreeTrial()
 const { userDetails, fetchUser } = useUserDetailsComposable()
 fetchUser()
 
-
+const strokeBlackColor = ref("#18181b");
+const strokeWhiteColor = ref("#ffffff");
 const billingVariationDetails = ref()
 const BillingVariationPending = ref(false);
 const { orgBilling, organization, isPageLoading } = useBillingComposable();

@@ -1,14 +1,5 @@
 <template>
-  <Page title="Bucket Contacts" :bread-crumbs="[
-    {
-    label: `${getBucketDetails?.name}`,
-       to: `/contacts-management/buckets`,
-    },
-    {
-      label: 'Buckets',
-      to: `/contacts-management/buckets`,
-    },
-  ]" :disable-back-button="false">
+  <Page title="Bucket Contacts" :bread-crumbs="[]" :disable-back-button="false">
     <template #actionButtons>
       <div class="flex gap-4">
         <div class="flex gap-2">
@@ -35,6 +26,7 @@
 <script setup lang="ts">
 import { Icon, UiBadge, UiButton } from "#components";
 import { useRoute, useRouter } from "vue-router";
+import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
 definePageMeta({
   middleware: "user",
@@ -56,16 +48,31 @@ const filters = reactive<{
 const chatPopupState = ref(false)
 const voicePopupState = ref(false)
 const route = useRoute();
+const breadcrumbStore = useBreadcrumbStore();
 
 // const {
-//   status,
-//   data: contactsList,
-//   refresh: contactsRefresh,
-// } = await useLazyFetch("/api/org/contact-list", {
-//   server: false,
-//   query: filters,
-//   default: () => [],
-// });
+  //   status,
+  //   data: contactsList,
+  //   refresh: contactsRefresh,
+  // } = await useLazyFetch("/api/org/contact-list", {
+    //   server: false,
+    //   query: filters,
+    //   default: () => [],
+    // });
+    
+const getBucketDetails = ref([])
+onMounted(async () => {
+  getBucketDetails.value = await getBucketContactsDetails(route.params.id);
 
-const getBucketDetails = await getBucketContactsDetails(route.params.id)
+  breadcrumbStore.setBreadcrumbs([
+    {
+      label: 'Segments',
+      to: `/contacts-management/buckets`,
+    },
+    {
+      label: `${getBucketDetails.value?.name} ??`,
+      to: `/contacts-management/buckets/${route.params.id}`,
+    },
+  ]);
+});
 </script>

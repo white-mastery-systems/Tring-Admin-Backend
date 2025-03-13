@@ -78,6 +78,7 @@ import {
 import { ChevronRight, type LucideIcon } from 'lucide-vue-next'
 import { useRouter, useRoute } from "vue-router";
 import { SIDEBAR_WIDTH_MOBILE, useSidebar } from '@/components/ui/sidebar/utils'
+import { botStore } from "~/store/botStore"; // Import Pinia store
 
 useHead({
   link: [
@@ -89,7 +90,7 @@ const router = useRouter();
 const route = useRoute();
 const { navigationModules, dropdownMenuItems } = useNavigationAndAccordion()
 const { isMobile,toggleSidebar } = useSidebar()
-
+const slideBarStore = botStore();
 // Computed property to determine if the collapsible should be open
 const activeRoutes = computed(() => {
   const activeMap:any = {};
@@ -132,38 +133,26 @@ const mobileSidebarControl = (value: any) => {
 </script>
 <template>
   <SidebarGroup>
-    <SidebarGroupLabel>Platform</SidebarGroupLabel>
     <SidebarMenu>
-      <Collapsible v-for="item in navigationModules" :key="item.name" as-child :default-open="activeRoutes[item.name]"
+      <UiCollapsible v-for="item in navigationModules" :key="item.name" as-child :default-open="activeRoutes[item.name]"
         class="group/collapsible">
         <SidebarMenuItem>
           <CollapsibleTrigger as-child>
             <SidebarMenuButton :tooltip="item.name" :class="[activeItems[item.name] ? 'bg-[#0F172A] text-white' : '']">
               <template v-if="item.children.length">
-                <WhatsappIcon v-if="item.path === '/whatsapp-bot'"></WhatsappIcon>
-                <!-- <span class="material-symbols-rounded">
-                  home
-                </span> -->
-                <span class="material-symbols-rounded" style="font-size: 20px;">
-                  {{ item.icon }}
-                </span>
-                <span>{{ item.name }}</span>
+                <NuxtLink :to="item.path + item.children[0].path" class="flex items-center gap-2"
+                  :class="(slideBarStore.siderBarslider) ? '' : 'w-full'">
+                  <component :is="item.icon" :stroke-width="1.5" :size="18"></component>
+                  <span v-if="!(slideBarStore.siderBarslider)">{{ item.name }}</span>
+                </NuxtLink>
               </template>
               <template v-else>
-                <NuxtLink :to="item.path" class="flex items-center space-x-1" @click="mobileSidebarControl(item)">
-                  <!-- <WhatsappIcon v-if=" item.path==='/whatsapp-bot'"></WhatsappIcon> -->
-                  <span class="material-symbols-rounded" style="font-size: 20px;">
-                    {{ item.icon }}
-                  </span>
-                  <!-- <span class="material-symbols-rounded">
-                    perm_phone_msg
-                  </span> -->
-                  <component v-if=" item.icon" :is="item.icon" size="18" />
+                <NuxtLink :to="item.path" class="flex items-center space-x-2"
+                  :class="(slideBarStore.siderBarslider) ? '' : 'w-full'" @click="mobileSidebarControl(item)">
+                  <component :is="item.icon" :stroke-width="1.5" :size="18"></component>
                   <span>{{ item.name }}</span>
                 </NuxtLink>
               </template>
-              <!-- <component :is="item.icon" v-if="item.icon" />
-              <span>{{ item.name }}</span> -->
               <ChevronRight v-if="item.children.length"
                 class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
             </SidebarMenuButton>
@@ -174,8 +163,7 @@ const mobileSidebarControl = (value: any) => {
                 <SidebarMenuSubButton as-child>
                   <NuxtLink @click="mobileSidebarControl(item)" :to="item.path + subItem.path"
                     class="flex items-center space-x-2 hover:bg-[#f4f4f5]">
-                    <span
-                      :class="(route.path.includes(item.path + subItem.path)) ? 'text-gray-500' : ''">{{
+                    <span :class="(route.path.includes(item.path + subItem.path)) ? 'text-gray-500' : ''">{{
                       subItem.name }}</span>
                   </NuxtLink>
                 </SidebarMenuSubButton>
@@ -183,7 +171,7 @@ const mobileSidebarControl = (value: any) => {
             </SidebarMenuSub>
           </CollapsibleContent>
         </SidebarMenuItem>
-      </Collapsible>
+      </UiCollapsible>
     </SidebarMenu>
   </SidebarGroup>
 </template>
