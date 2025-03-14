@@ -51,6 +51,7 @@ const schema = {
   voicebotLeadSchema,
   whatsappSessionSchema,
   campaignWhatsappContactSchema,
+  ttsIntegrationSchema,
   //new schemas
   adminSubscriptionSchema,
   adminPlanUsageSchema,
