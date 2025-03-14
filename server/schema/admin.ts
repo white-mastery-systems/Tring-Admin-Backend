@@ -339,6 +339,16 @@ export const campaignWhatsappContactSchema = adminSchema.table("campaign_whatsap
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
+export const ttsIntegrationSchema = adminSchema.table("tts_integration",  {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id, { onDelete: "cascade" }),
+  ttsIntegrationName: varchar("tts_integration_name"),
+  provider: varchar("provider"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 // Relations
 export const organizationRelations = relations(
   organizationSchema,
@@ -433,6 +443,9 @@ export type InsertPlaygroundDocument = InferInsertModel<
 
 export type SelectTemplates = InferSelectModel<typeof templateSchema>;
 export type InsertTemplates = InferInsertModel<typeof templateSchema>;
+
+export type SelectTtsIntegration = InferSelectModel<typeof ttsIntegrationSchema>;
+export type InsertTtsIntegration = InferInsertModel<typeof ttsIntegrationSchema>;
 
 // Validation
 export const zodInsertOrganization = createInsertSchema(organizationSchema, {

@@ -18,6 +18,7 @@ export const newGetAllPipelinesFromZohoBigin: any = async ({ integrationData }: 
       const regenerateAccessToken = await regenearateTokenWithRefreshTokenForZohoIntegration({ integrationData })
       return newGetAllPipelinesFromZohoBigin({integrationData: regenerateAccessToken})
     }
+    throw new Error(error)
   }
 }
 
@@ -42,6 +43,7 @@ export const newGetAllSubPipelinesFromZohoBigin: any = async ({ integrationData 
       const regenerateAccessToken = await regenearateTokenWithRefreshTokenForZohoIntegration({ integrationData })
       return newGetAllSubPipelinesFromZohoBigin({ integrationData: regenerateAccessToken})
     }
+    throw new Error(error)
   }
 }
 
