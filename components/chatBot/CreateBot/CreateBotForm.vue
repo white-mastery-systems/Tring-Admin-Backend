@@ -205,6 +205,7 @@ const submitForm = handleSubmit(async (values) => {
           NAME: values.NAME,
           ROLE: values.ROLE,
           GOAL: values.GOAL,
+          INTENTS: "-details\n-other",
           otherRole: values.otherRole,
           otherGoal: values.otherGoal,
         },
