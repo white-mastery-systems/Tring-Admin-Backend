@@ -33,7 +33,6 @@
           }
           " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="contactsList"
         :is-loading="isDataLoading" :columns="columns" :page-size="20" :height="20" height-unit="vh" />
-
       <ConfirmationModal v-model:open="deleteBucketState.open" title="Confirm Delete"
         description="Are you sure you want to delete ?" @confirm="() => {
             if (deleteBucketState?.id) {

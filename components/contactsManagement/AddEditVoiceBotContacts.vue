@@ -8,11 +8,11 @@
           placeholder=" Search Contacts..." />
       </div>
       <div class="flex items-center gap-2">
-        <SampleImport :rows="sampleRowsDate" :columns="exportReadyColumns" />
+        <!-- <SampleImport :rows="sampleRowsDate" :columns="exportReadyColumns" />
         <ImportNumberFile accept=".csv, .xls, .xlsx" v-model="selectedFile" @uploadDocument="fileUpload"
           :isLoading="isLoading" />
         <ExportButton v-model="exportDataHandler" :rows="exportReadyRows" :columns="exportReadyColumns"
-          @export="exportData" buttonContent="Export Contacts" />
+          @export="exportData" buttonContent="Export Contacts" /> -->
       </div>
     </div>
     <DataTable :data="contactsList" @pagination="Pagination" @limit="($event) => {

@@ -120,9 +120,10 @@ const activeItems = computed(() => {
 });
 
 const mobileSidebarControl = (value: any) => {
-
+  // console.log(isMobile.value, "isMobile.value -- isMobile.value")
   if (isMobile.value) {
     toggleSidebar();
+    // slideBarStore.siderBarslider = false
   }
   // if (!value.children.length && isMobile.value) {
   //   toggleSidebar()
@@ -143,7 +144,7 @@ const mobileSidebarControl = (value: any) => {
                 <NuxtLink :to="item.path + item.children[0].path" class="flex items-center gap-2"
                   :class="(slideBarStore.siderBarslider) ? '' : 'w-full'">
                   <component :is="item.icon" :stroke-width="1.5" :size="18"></component>
-                  <span v-if="!(slideBarStore.siderBarslider)">{{ item.name }}</span>
+                  <span v-if="(isMobile) ? isMobile : !(slideBarStore.siderBarslider)">{{ item.name }}</span>
                 </NuxtLink>
               </template>
               <template v-else>

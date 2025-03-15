@@ -2,7 +2,7 @@
   <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true"
     class="flex flex-col items-center">
     <template #actionButtons>
-      <div class="flex gap-2">
+      <div class="flex overflow-x-scroll gap-2 w-full justify-end">
         <span class="field_shadow flex items-center rounded-lg text-[15px]" style="color: rgba(138, 138, 138, 1)">
           <!-- <span class="flex -items-center py-2 pl-2"></span> -->
           <span class="font-bold text-black">
@@ -68,7 +68,7 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIcon } from "lucide-vue-next";
+import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIcon, ChartNoAxesCombined, Code, Wallet } from "lucide-vue-next";
 import { Line } from "vue-chartjs";
 import ChatSession from "~/components/icons/ChatSession.vue";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
@@ -100,22 +100,22 @@ const navigavtionList = ref([
     title: "Billing",
     subtitle: "Manage your plans here",
     url: "billing?type=chat",
-    icon: 'payments',
+    icon: Wallet,
   }, {
     title: "Integrations",
     subtitle: "Manage all your integrations here",
     url: "/integration",
-    icon: 'integration_instructions',
+    icon: Code,
   }, {
     title: "Analytics",
     subtitle: "View your stats here",
     url: "/analytics/leads",
-    icon: 'monitoring',
+    icon: ChartNoAxesCombined,
   }, {
     title: "Campaign",
     subtitle: "Manage your campaigns here",
     url: "/contacts-management/campaigns",
-    icon: 'campaign',
+    icon: '',
   },
 ]);
 

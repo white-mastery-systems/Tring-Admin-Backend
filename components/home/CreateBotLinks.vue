@@ -58,8 +58,10 @@ const createNewBots = async (url: any) => {
         <div class="flex items-center gap-5">
           <img src="/assets/icons/create_bot_link.svg" width="40" class="rounded-lg" />
           <div class="flex flex-col gap-1">
-            <CardTitle class="text-left text-[20px] text-[#18181B] font-semibold">{{ item.title }}</CardTitle>
-            <CardDescription class="text-let text-[13px] text-[#71717A]">
+            <CardTitle class="text-left text-[16px] sm:text-[16px] md:text-[20px] text-[#18181B] font-semibold">{{
+              item.title }}
+            </CardTitle>
+            <CardDescription class="text-let text-[8px] sm:text-[8px] md:text-[13px] text-[#71717A]">
               {{ item.subtitle }}
             </CardDescription>
 
@@ -68,7 +70,7 @@ const createNewBots = async (url: any) => {
       </CardHeader>
       <CardFooter class="flex items-cnter p-0">
         <!-- <NuxtLink :to="item.url"> -->
-          <UiButton @click="createNewBots(item.url)"> Create </UiButton>
+        <UiButton @click="createNewBots(item.url)" class="text-[12px] sm:text-[12px] md:text-[16]"> Create </UiButton>
         <!-- </NuxtLink> -->
       </CardFooter>
     </Card>

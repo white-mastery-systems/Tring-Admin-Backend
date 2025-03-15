@@ -1,8 +1,8 @@
 <template>
   <div class="flex items-center justify-between gap-2 overflow-x-scroll pb-4">
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 w-full overflow-x-scroll">
       <UiInput v-model="filters.q" @input="filters.page = '1'"
-        class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+        class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
         placeholder=" Search Leads..." />
       <BotFilter v-model="filters.botId" />
       <StatusFilter v-model="filters.status" />
@@ -15,7 +15,8 @@
     </div>
     <!-- <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton> -->
   </div>
-  <UiTabs default-value="all" class="pr-6">
+  <!-- class="pr-6" -->
+  <UiTabs default-value="all">
     <UiTabsList class="grid w-full sm:w-full md:w-[30%] lg:w-[30%] xl:w-[30%] grid-cols-3">
       <UiTabsTrigger value="all" @click="selectedChannel('all')">
         All
@@ -28,7 +29,7 @@
       </UiTabsTrigger>
     </UiTabsList>
     <UiTabsContent value="all">
-      <div>
+      <!-- <div> -->
       <DataTable @pagination="Pagination" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
       }
@@ -37,7 +38,7 @@
           navigateTo(`/analytics/leads/${row.original.chatId}`);
         }
           " />
-      </div>
+      <!-- </div> -->
     </UiTabsContent>
     <UiTabsContent value="whatsapp">
       <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {

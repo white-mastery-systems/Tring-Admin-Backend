@@ -10,7 +10,7 @@
       description="This action is irreversible" @confirm="handleConfirmPaymentCancellation">
     </ConfirmationModal>
     <UiTabs v-model="selectedTab" :default-value="route.query.type ?? 'chat'" class="w-full self-start">
-      <UiTabsList class="grid w-[30%] grid-cols-2">
+      <UiTabsList class="grid w-full sm:w-full md:w-[30%] grid-cols-2">
         <!-- @click="selectedChannel('Chat')" -->
         <UiTabsTrigger value="chat" @click="navigateToTab('chat')">
           Chat

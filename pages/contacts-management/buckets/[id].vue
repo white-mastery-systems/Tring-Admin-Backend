@@ -10,6 +10,9 @@
             ">
             {{ (getBucketDetails?.type === 'voice') ? 'Add Voice Contact' : 'Add Chat Contact' }}
           </UiButton>
+          {{voicePopupState}} || asdad
+          {{chatPopupState}}
+          {{ getBucketDetails?.type }} || ---- asiu
         </div>
       </div>
     </template>
@@ -18,6 +21,7 @@
         <AddEditChatBotContacts typeOfAddContacts="insideBucket" :popupState="chatPopupState" @PopupState="chatPopupState = $event" />
       </UiTabsContent>
       <UiTabsContent value="voice">
+        asdsadas
         <AddEditVoiceBotContacts typeOfAddContacts="insideBucket" :popupState="voicePopupState" @PopupState="voicePopupState = $event" />
       </UiTabsContent>
     </UiTabs>
@@ -70,7 +74,7 @@ onMounted(async () => {
       to: `/contacts-management/buckets`,
     },
     {
-      label: `${getBucketDetails.value?.name} ??`,
+      label: `${getBucketDetails.value?.name} ?? 'No Name'`,
       to: `/contacts-management/buckets/${route.params.id}`,
     },
   ]);
