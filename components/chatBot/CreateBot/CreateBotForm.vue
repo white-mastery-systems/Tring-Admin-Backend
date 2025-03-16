@@ -18,6 +18,7 @@ const stepOneRef = ref(null);
 const pageLoading = ref(false)
 const isSubmitting = ref(false)
 const isDocumentListOpen = ref(false);
+const intervalId = ref<any>(null); // Store the interval ID
 // const uploadDocumentRef = ref(null);
 // const selectedType = ref('')
 // ✅ Define a single form
@@ -30,7 +31,9 @@ const { errors, values, handleSubmit, validateField, validate, setFieldValue } =
   },
 });
 const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
-const showNextButton = computed(() => step.value < 4 && values.value.selectedType);
+const showNextButton = computed(() => (step.value < 4) && !!values?.selectedType);
+const showBackButton = computed(() => (step.value === 1) && values?.selectedType)
+
 // ✅ Watch errors for debugging (optional)
 watch(() => scrapData, (newscrapData) => {
   if (!newscrapData) return;
@@ -240,7 +243,7 @@ const checkDocumentStatus = async () => {
 
   let toastInterval = 0; // Counter to track every 16 seconds
 
-  const interval = setInterval(async () => {
+  intervalId.value = setInterval(async () => {
     await refreshBot(); // Fetch the latest document status
     const documentStatus = botDetails.value?.documents?.[0]?.status;
 
@@ -251,7 +254,7 @@ const checkDocumentStatus = async () => {
     }
 
     if (documentStatus === "ready") {
-      clearInterval(interval); // Stop polling
+      clearInterval(intervalId.value); // Stop polling
       // await navigateTo({
       //   name: "chat-bot-id",
       //   params: { id: botDetails.id },
@@ -319,7 +322,13 @@ const singleDocumentDeploy = async (list: any) => {
   await refreshBot() // new function refreshBot added
   // botDetails.value = await getBotDetails(paramId.params.id);
 };
-
+// ✅ Clear interval when the component is unmounted
+onUnmounted(() => {
+  if (intervalId.value !== null) {
+    clearInterval(intervalId.value);
+    intervalId.value = null;
+  }
+});
 </script>
 
 <template>
@@ -338,7 +347,7 @@ const singleDocumentDeploy = async (list: any) => {
     <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full" />
     <!-- <div class="px-6 py-6 pb-0 flex-1 overflow-hidden min-h-[400px] md:min-h-[500px] max-h-[80vh]"> -->
     <!-- <div class="px-6 py-6 pb-0 flex-1 overflow-hidden min-h-[585px] md:min-h-[585px] max-h-[95vh]"> -->
-    <div class="px-6 py-6 pb-0 flex-1 overflow-hidden h-[585px] md:h-[585px] max-h-[95vh] flex">
+    <div class="px-6 py-6 pb-0 flex-1 overflow-auto min-h-[400px] md:min-h-[500px] h-[calc(100vh-8rem)] max-h-[95vh] flex">
       <!-- <TextDocumentUpload ref="uploadDocumentRef" v-show="false" /> -->
       <form class="border border-gray-300 rounded-lg flex flex-col justify-between h-full flex-1 overflow-auto">
         <!-- @update:values="(newValues) => values = newValues" -->
@@ -349,9 +358,9 @@ const singleDocumentDeploy = async (list: any) => {
         <!-- {{ step === 2 && (values.intent.length === 0) }} -->
         <div class="flex justify-end w-full gap-[12px] p-4">
           <UiButton v-if="(step > 1)" type="button" @click="prevStep" class="px-8" variant="outline">Back</UiButton>
-          <UiButton v-if="(step === 1)" type="button" @click="firstStepBack" class="px-8" variant="outline">Back
+          <UiButton v-if="showBackButton" type="button" @click="firstStepBack" class="px-8" variant="outline">Back
           </UiButton>
-          <UiButton v-if="(step < 4)" type="button" @click="nextStep" class="px-8"
+          <UiButton v-if="showNextButton" type="button" @click="nextStep" class="px-8"
             :loading="isDataLoading && isLoading">Next
           </UiButton>
           <UiButton type="button" v-if="step === 4" @click="submitForm" class="px-8" :loading="isLoading">

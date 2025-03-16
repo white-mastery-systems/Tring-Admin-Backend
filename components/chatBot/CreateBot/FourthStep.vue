@@ -67,7 +67,7 @@ watch(() => props.values.type, (newType) => {
     <!-- <div class="mt-4">
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full h-[0.5px]" />
     </div> -->
-    <CardContent class="grid gap-6 p-4">
+    <CardContent class="grid gap-3 sm:gap-3 md:gap-6 p-4">
       <UiRadioGroup v-model="selectedGoal" orientation="vertical"
         class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5">
         <div v-for="option in intentOptions.goals" :key="option.value"
@@ -103,8 +103,8 @@ watch(() => props.values.type, (newType) => {
               class="border px-4 py-2 w-full rounded-lg text-[14px] sm:text-[14px] md:text-[16px] h-20" />
         </div> -->
         <div>
-          <p class="text-left text-[14px] py-1 text-[#000000]">Tell us your Chatbot’s Goal in the Company</p>
-          <UiTextarea v-model="otherGoal" name="otherGoal" class="h-[95px]" :resizable="false"
+          <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-1 text-[#000000]">Tell us your Chatbot’s Goal in the Company</p>
+          <UiTextarea v-model="otherGoal" name="otherGoal" class="h-[95px] text-[12px] sm:text-[12px] md:text-[14px]" :resizable="false"
             placeholder="e.g., 'Rental Management Assistant – Help users find and manage rental properties easily.'"
             label="Tell us about your company">
           </UiTextarea>

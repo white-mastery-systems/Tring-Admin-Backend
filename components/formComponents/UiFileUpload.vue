@@ -12,9 +12,9 @@
             id="imageView1" />
         </label>
       </div>
-      <div class="flex-1">
+      <div class="flex-1 w-full">
         <label
-          class="dark:hover:bg-bray-800 flex h-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+          class="dark:hover:bg-bray-800 flex h-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600 w-full">
           <span class="whitespace-nowrap flex flex-col items-center texr-[12px] italic text-[#000000]">
             {{ props.label || "Upload File" }}
             <span class="text-[10px] text-gray-500" v-if="props?.helperText?.length">

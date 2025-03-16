@@ -20,7 +20,7 @@ const companyDetails = ref('')
 const selectType = (type: string) => {
   // emit('update:selectedType', type);
   selectedType.value = type;
-  // emit("update:values", { ...props.values, type });
+  // emit("update:values", { ...props.values type });
 };
 
 const buttons = [
@@ -52,7 +52,7 @@ const changeKnowledge = () => {
 </script>
 
 <template>
-  <Card class="border-0 flex flex-col justify-between h-[95%]">
+  <Card class="border-0 flex flex-col justify-between" :class="(!!selectedType) ? '' : 'h-[95%]'">
     <CardHeader>
       <div class="flex items-center justify-between gap-4 px-4 pt-4">
         <div class="flex flex-col gap-[6px]">
@@ -71,8 +71,8 @@ const changeKnowledge = () => {
     <div class="flex flex-col items-center text-center px-4 h-full w-full"
       :class="[(selectedType) ? 'justify-start' : 'justify-center']">
       <div v-if="!selectedType" class="flex flex-col items-center justify-center gap-3 space-y-3">
-        <div class="space-y-1 flex flex-col items-center">
-          <div class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B]">
+        <div class="space-y-1 flex flex-col">
+          <div class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B] pt-3 sm:pt-3">
             Select Your Bot’s Knowledge Source
           </div>
           <div class="font-normal text-[12px] sm:text-[12px] md:text-[14px] text-[#71717A] w-[85%]">
@@ -82,27 +82,32 @@ const changeKnowledge = () => {
             </span>
           </div>
         </div>
-        <div class="flex justify-center gap-3 w-[80%]">
-          <UiButton type="button" variant="outline" v-for="(btn, index) in buttons" :key="index"
-            class="w-full py-2 border-[#000000] text-[#000000] hover:text-[#ffffff] hover:bg-[#000000] font-regular"
-            @click="selectType(btn.label)">
-            <component :is="btn.icon" class="mr-2 w-5 h-5" />
-            {{ btn.label }}
-          </UiButton>
-        </div>
+        <div class="flex flex-wrap justify-center gap-3 w-full sm:w-full md:w-[80%] md:flex-nowrap">
+        <UiButton
+          type="button"
+          variant="outline"
+          v-for="(btn, index) in buttons"
+          :key="index"
+          class="border-[#000000] text-[#000000] hover:text-[#ffffff] hover:bg-[#000000] font-regular w-full sm:w-full md:flex-1"
+          @click="selectType(btn.label)"
+        >
+          <component :is="btn.icon" class="mr-2 w-5 h-5" />
+          {{ btn.label }}
+        </UiButton>
+      </div>
       </div>
       <div v-else class="w-full">
         <div v-if="selectedType === 'Website'" class="w-full py-4 space-y-4">
           <div class="flex items-center justify-between w-full px-0">
-            <span class="font-bold text-[20px] text-[#09090B]">
+            <span class="font-bold text-[18px] sm:text-[18px] md:text-[20px] text-[#09090B]">
               Website
             </span>
             <span>
-              <UiButton type="button" class="bg-[#000000] px-4 py-0" @click="changeKnowledge()">Change Knowledge
+              <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] sm:text-[12px] md:text-[14px]" @click="changeKnowledge()">Change Knowledge
                 Source</UiButton>
             </span>
           </div>
-          <div class="bg-[#E2E8F0] rounded-lg text-left p-4 text-[14px]">
+          <div class="bg-[#E2E8F0] rounded-lg text-left p-4 text-[12px] sm:text-[12px] md:text-[14px]">
             <div class="font-medium">
               Note:
             </div>
@@ -112,11 +117,12 @@ const changeKnowledge = () => {
             </div>
           </div>
           <!-- <UiSeparator orientation="horizontal" class="bg-[#E2E8F0]" /> -->
-          <div class="flex flex-col gap-5 w-full sm:w-full md:w-[70%]">
-            <div class="mt-2">
+          <div class="flex flex-col gap-3 w-full">
+            <div class="">
               <WebScrapingForm />
             </div>
             <div>
+              <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-1 text-[#000000] font-medium">Website generated details and goals</p>
               <!-- {{ scrapData.scrapedData.knowledge_base.document_content }} -->
               <ScrapDateDocumentUpload :refresh="props.refresh" />
             </div>
@@ -126,15 +132,15 @@ const changeKnowledge = () => {
         </div>
         <div v-else-if="selectedType === 'Document'" class="w-full py-4">
           <div class="flex items-center justify-between w-full px-0">
-            <span class="font-bold text-[20px] text-[#09090B]">
-              Website
+            <span class="font-bold text-[18px] sm:text-[18px] md:text-[20px] text-[#09090B]">
+              Document
             </span>
             <span>
-              <UiButton type="button" class="bg-[#000000] px-4 py-0" @click="changeKnowledge()">Change Knowledge
+              <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] sm:text-[12px] md:text-[14px]" @click="changeKnowledge()">Change Knowledge
                 Source</UiButton>
             </span>
           </div>
-          <div class="bg-[#E2E8F0] rounded-lg text-left p-4 text-[14px] my-3">
+          <div class="bg-[#E2E8F0] rounded-lg text-left p-4 text-[12px] sm:text-[12px] md:text-[14px] my-4">
             <div class="font-medium">
               Note:
             </div>
@@ -150,17 +156,17 @@ const changeKnowledge = () => {
           </div>
         </div>
 
-        <div v-else-if="selectedType === 'Text'" class="w-full py-4 space-y-3">
+        <div v-else-if="selectedType === 'Text'" class="w-full py-4 space-y-4">
           <div class="flex items-center justify-between w-full px-0">
-            <span class="font-bold text-[20px] text-[#09090B]">
-              Website
+            <span class="font-bold text-[18px] sm:text-[18px] md:text-[20px] text-[#09090B]">
+              Text
             </span>
             <span>
-              <UiButton type="button" class="bg-[#000000] px-4 py-0" @click="changeKnowledge()">Change Knowledge
+              <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] sm:text-[12px] md:text-[14px]" @click="changeKnowledge()">Change Knowledge
                 Source</UiButton>
             </span>
           </div>
-          <div class="bg-[#E2E8F0] rounded-lg text-left p-4 text-[14px] my-3">
+          <div class="bg-[#E2E8F0] rounded-lg text-left p-4 text-[12px] sm:text-[12px] md:text-[14px] my-4">
             <div class="font-medium">
               Note:
             </div>
@@ -169,8 +175,8 @@ const changeKnowledge = () => {
               process
             </div>
           </div>
-          <div class="py-6 px-0 w-[50%] min-h-[300px]">
-            <p class="text-left text-[14px] py-1 text-[#000000]">Tell us about your company</p>
+          <div class="px-0 w-full">
+            <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-1 text-[#000000] font-medium">Tell us about your company</p>
             <TextDocumentUpload ref="uploadDocumentRef" :refresh="props.refresh" />
             <!-- <UiTextarea calss="text-[#71717A]" v-model="companyDetails" class="h-[200px]" :resizable="false"
               placeholder="Enter text..." label="Tell us about your company">

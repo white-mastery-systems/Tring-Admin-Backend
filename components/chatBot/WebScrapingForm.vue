@@ -1,9 +1,9 @@
 <template>
   <!-- <DialogWrapper v-model="agentModalState" :title="agentModalState.id ? 'Modify Chat Bot' : 'Add a New Chat Bot'"> -->
   <form @submit.prevent="handleAddEditBot" class="flex items-center px-0">
-    <div class="flex items-end w-full gap-2 sm:gap-2 md:gap-6">
+    <div class="flex items-end w-full sm:w-full md:w-[60%] gap-2 sm:gap-2 md:gap-3">
       <!-- <span class="font-semibold w-[210px] text-[10px] sm:text-[10px] md:text-[16px] ">Import from Website</span> -->
-      <TextField name="url" placeholder="URL" label="Import from Website Link" required>
+      <TextField name="url" placeholder="URL" label="Import from Website Link">
       </TextField>
       <UiButton type="submit" :loading="isLoading" class="px-6 mb-1">
         Import
@@ -81,6 +81,10 @@ const clearTextField = () => {
 defineExpose({ clearTextField });
 
 const handleAddEditBot = handleSubmit(async (values) => {
+  if (!values.url) {
+    toast.error('Please enter a valid URL before importing.')
+    return
+  }
   isLoading.value = true;
   try {
     

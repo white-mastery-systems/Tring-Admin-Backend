@@ -129,11 +129,8 @@ const handleLogoChange = (event: any) => {
         </CardDescription>
       </div>
 
-      <div class="flex w-full rounded-lg gap-4">
+      <div class="flex grid grid-1 sm:grid-1 md:grid-2 w-full rounded-lg gap-4">
         <div class="flex w-full">
-          <!-- {{ props }}
-          {{ logo }} || asdsad -->
-          <!-- {{ logo }} || asdsadas -->
           <UiFileUpload @change="handleLogoChange" name="logo"
             :label="(logo?.url) ? 'Change your logo here, browse files' : 'Upload your logo here, Browse files'"
             :required="true" :accept="'image/*'" :url="logo?.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
@@ -144,12 +141,12 @@ const handleLogoChange = (event: any) => {
             <UiFormItem class="w-full">
               <UiFormControl>
                 <div
-                  class="flex items-center gap-8 rounded-lg bg-white p-[26px] border-[1px] border-solid border-[#E4E4E7]"
+                  class="flex items-center gap-8 rounded-lg bg-white py-[26px] px-[16px] border-[1px] border-solid border-[#E4E4E7]"
                   @click="openPrimaryColorPicker">
                   <div class="flex items-center w-full justify-between">
                     <div>
                       <label class="text-[16px] font-medium"> Primary Color</label>
-                      <div class="text-[#71717A] text-[12px]">Colors for widget & chat button</div>
+                      <div class="text-[#71717A] text-[10px]">Colors for widget & chat button</div>
                     </div>
                     <!-- <div class="h-9 w-9 border border-[#E4E4E7]"
                       :class="[props.values.color ? `bg-${props.values.color}` : '']">
@@ -170,12 +167,12 @@ const handleLogoChange = (event: any) => {
             <UiFormItem class="w-full">
               <UiFormControl>
                 <div
-                  class="flex items-center gap-8 rounded-lg bg-white p-[26px] border-[1px] border-solid border-[#E4E4E7]"
+                  class="flex items-center gap-8 rounded-lg bg-white py-[26px] px-[16px] border-[1px] border-solid border-[#E4E4E7]"
                   @click="openSecondaryColorPicker">
                   <div class="flex items-center w-full justify-between">
                     <div>
                       <label class="text-[16px] font-medium">Secondary Color</label>
-                      <div class="text-[#71717A] text-[12px]">Colors for messages</div>
+                      <div class="text-[#71717A] text-[10px]">Colors for messages</div>
                     </div>
                     <!-- {{ secondaryColor }} -->
                     <!-- <div class="h-9 w-9 border border-[#E4E4E7]">
