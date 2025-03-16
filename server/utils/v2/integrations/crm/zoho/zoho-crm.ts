@@ -25,6 +25,7 @@ export const newGetAllLayoutsFromZohoCRM: any = async ({
       const regenerateAccessToken = await regenearateTokenWithRefreshTokenForZohoIntegration({ integrationData })
       return newGetAllLayoutsFromZohoCRM({ integrationData: regenerateAccessToken })
     }
+    throw new Error(error)
   }
 }
 

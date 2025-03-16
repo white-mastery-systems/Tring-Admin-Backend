@@ -54,8 +54,7 @@ export const scheduleWhatsAppCampaign = async (
     const templateInformation = templateDetailList?.find((i: any) => i.name === templateName);
     const isPositional = templateInformation?.parameter_format === "POSITIONAL";
 
-    let headerParameter:any = []
-    let headerComponent:any = []
+    const headerMediaParameter: any = []; const headerMediaComponent: any = [];
     const headerTasks = templateInformation.components
       .filter((component: any) => component.type === "HEADER" && ["IMAGE", "DOCUMENT"].includes(component.format))
       .map(async (component: any) => {
@@ -71,7 +70,7 @@ export const scheduleWhatsAppCampaign = async (
             media.type,
           );
           const format = component.format?.toLowerCase();
-          headerParameter.push({
+          headerMediaParameter.push({
             type: format,
             [format]: { id: uploadedMedia.id },
           });
@@ -81,6 +80,9 @@ export const scheduleWhatsAppCampaign = async (
       });
   
     await Promise.all(headerTasks);
+    if (headerMediaParameter.length) {
+      headerMediaComponent.push({ type: "header", parameters: headerMediaParameter });
+    }
 
     const event = schedule.scheduleJob(
       { year, month, date: day, hour: hours, minute: minutes, tz: "UTC" },
@@ -88,6 +90,7 @@ export const scheduleWhatsAppCampaign = async (
         logger.info("Inside scheduling...");
         contactList.forEach(
           async ({ contacts: contact }: { contacts: any }) => {
+            const headerComponent: any = []; const headerParameter: any = [];
             const bodyComponents:any = []; const bodyParameters:any = []; 
             const buttonsComponents:any = [];
             const phoneNumber =`${contact.countryCode}${contact.phone}`.replace("+", "");
@@ -95,8 +98,7 @@ export const scheduleWhatsAppCampaign = async (
             if (templateInformation) {
               templateLanguageCode = templateInformation.language;
               templateInformation.components.forEach((component: any) => {
-                if(component.type === "HEADER" && component.example) {
-                  headerComponent=[]; headerParameter=[];
+                if(component.type === "HEADER" && component.example && !["IMAGE", "DOCUMENT"].includes(component.format)) {
                   const headerVariables = getTemplateHeaderVariables(component.example);
                   headerVariables.map((variable: string) => {
                     let obj:any = {}
@@ -151,7 +153,7 @@ export const scheduleWhatsAppCampaign = async (
                       let varName = url.split("{{1}}")
                       varName = example[0].split(varName[0])
                       varName = varName[1] ?? varName[0];
-                      const buttonsParametersObj = variablePrameterObj(varName, contact, phoneNumber)
+                      const buttonsParametersObj = variablePrameterObj(varName, contact)
                       buttonsComponents.push({ type: "button", sub_type: "url", index: buttonInd, parameters: [buttonsParametersObj] });
                     } else if (button.type == "QUICK_REPLY") {
                       buttonsComponents.push({
@@ -161,7 +163,7 @@ export const scheduleWhatsAppCampaign = async (
                     } else if (button.type == "COPY_CODE") {
                       buttonsComponents.push({
                         type: "button", sub_type: "COPY_CODE", index: buttonInd,
-                        parameters: [{ type: "coupon_code", coupon_code: (button.example) ?? "CODEWELCOME200" }],
+                        parameters: [{ type: "coupon_code", coupon_code: (Array.isArray(button.example)) ? button.example[0] : (button.example) ? button.example : "CODEWELCOME200" }],
                       });
                     }
                   }) 
@@ -181,7 +183,7 @@ export const scheduleWhatsAppCampaign = async (
               accessToken,
               phoneNumber,
               templateName,
-              [...headerComponent, ...bodyComponents, ...buttonsComponents],
+              [...headerMediaComponent,...headerComponent, ...bodyComponents, ...buttonsComponents],
               templateLanguageCode,
             );
             logger.info(`whatsapp response: ${JSON.stringify(data)}`);

@@ -20,7 +20,7 @@ export const getTemplatesByWabaId = async (
     logger.info("Templates fetched successfully");
 
     return templateListApiEndpoint?.data;
-  } catch (error) {
+  } catch (error:any) {
     logger.error({
       message: "Error occurred while fetching templates",
       error: JSON.stringify(error),
@@ -47,7 +47,7 @@ export const deleteTemplateById = async (
     });
     logger.info("Template deleted successfully");
     return templateDeleteApiResponse;
-  } catch (error) {
+  } catch (error:any) {
     logger.error({
       message: "Error occurred while deleting template",
       error: JSON.stringify(error),
@@ -77,7 +77,7 @@ export const editTemplateById = async (
     });
     logger.info("Template edited successfully");
     return templateEditApiResponse;
-  } catch (error) {
+  } catch (error:any) {
     logger.error({
       message: "Error occurred while editing template",
       error: JSON.stringify(error),
@@ -105,7 +105,7 @@ export const listAllApprovedTemplates = async (
     );
     logger.info("Approved templates fetched successfully");
     return approvedTemplatesApiResponse?.data;
-  } catch (error) {
+  } catch (error:any) {
     logger.error({
       message: "Error occurred while fetching approved templates",
       error: JSON.stringify(error),
@@ -134,7 +134,7 @@ export const getTemplateDetailsByName = async (
     );
     logger.info("Template details fetched successfully");
     return templateDetailsApiResponse?.data;
-  } catch (error) {
+  } catch (error:any) {
     logger.error({
       message: "Error occurred while fetching template details",
       error: JSON.stringify(error),
@@ -150,6 +150,7 @@ export const createWhatsappMessageTemplate = async (
   templateName: string,
   languageCode: string,
   templateComponents: any,
+  category?:string
 ): Promise<any> => {
   const createTemplateApiEndpoint = `https://graph.facebook.com/v21.0/${wabaId}/message_templates`;
 
@@ -164,14 +165,14 @@ export const createWhatsappMessageTemplate = async (
         body: {
           name: templateName,
           language: languageCode,
-          category: "MARKETING",
+          category: category || "MARKETING",
           components: templateComponents,
         },
       },
     );
     logger.info("Template created successfully");
     return templateCreationApiResponse;
-  } catch (error) {
+  } catch (error:any) {
     logger.error({
       message: "Error occurred while creating template",
       error: JSON.stringify(error),
@@ -215,7 +216,7 @@ export const sendWhatsappTemplateMessage = async (
     );
     logger.info("WhatsApp template message sent successfully");
     return sendMessageTemplateApiResponse;
-  } catch (error:any) {
+  } catch (error: any) {
     logger.error({
       message: "Error occurred while sending WhatsApp template message",
       error: JSON.stringify(error),
@@ -224,3 +225,72 @@ export const sendWhatsappTemplateMessage = async (
     throw new Error("Failed to send WhatsApp template message");
   }
 };
+
+export const deStructureVariables = (inputData: any) =>{
+  const obj = {
+    bodyVariables: [],
+    headerVariables: [],
+    buttonVariables: [],
+    filteredVarList: [],
+    headerText: inputData?.headerText?.trim() || null,
+    bodyText: inputData?.bodyText?.trim() || null,
+    footerText: inputData?.footerText?.trim() || null,
+    buttonText: inputData?.buttonText?.trim() || null,
+  };
+  if (!inputData?.templateVariables?.length) {return obj};
+
+  let uniqueHeader = false; let uniqueButton = false;
+  const filteredVarList = inputData?.templateVariables?.filter((item: any) => {
+    if (item.placed === "header") {
+      if (!uniqueHeader) {
+        uniqueHeader = true;
+        return true;
+      }
+      return false;
+    }
+    if (item.placed === "button") {
+      if (!uniqueButton) {
+        uniqueButton = true;
+        return true;
+      }
+      return false;
+    }
+    return true;
+  });
+  
+  const headerVariables = positioningVaribles(filteredVarList.filter((item: any) => item.placed === "header"), extractPositions(obj.headerText));
+  const bodyVariables = positioningVaribles(filteredVarList.filter((item: any) => item.placed === "body"), extractPositions(obj.bodyText));
+  const buttonVariables = positioningVaribles(filteredVarList.filter((item: any) => item.placed === "button"), extractPositions(obj.buttonText));
+  obj.headerText = positioningText(obj.headerText, headerVariables.length);
+  obj.bodyText = positioningText(obj.bodyText, bodyVariables.length);
+  
+  return {...obj, headerVariables, bodyVariables, buttonVariables, filteredVarList}
+}
+
+export const positioningText = (text: string | null, maxLength: number)=>{
+  if (!text) {return text};
+  // Extract all unique placeholders in order
+  const matches = [...new Set(text.match(/\{\{(\d+)\}\}/g))]; // Unique placeholders
+  const positionMap: Record<string, string> = {};
+
+  // Assign new sequential numbers
+  matches.slice(0, maxLength).forEach((match, index) => {
+    positionMap[match] = `{{${index + 1}}}`;
+  });
+
+  // Replace placeholders with new sequential ones
+  return text.replace(/\{\{\d+\}\}/g, match => positionMap[match] || "");
+}
+
+export const extractPositions = (text: string | null) => {
+  return text ? [...text.matchAll(/\{\{(\d+)\}\}/g)].map((match) => match[1]) : [];
+};
+
+export const positioningVaribles = (variables:any[], positionOrder:any[]) =>{
+  variables.sort((a, b) => positionOrder.indexOf(a.position) - positionOrder.indexOf(b.position))
+  return repositionVariables(variables)
+}
+
+export const repositionVariables = (variables:any[]) =>{
+  return variables.map((item, index) => ({ ...item, position: (index + 1).toString() }));
+}

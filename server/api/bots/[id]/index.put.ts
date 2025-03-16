@@ -22,10 +22,6 @@ WHERE channels->>'whatsapp' = ${body?.channels?.whatsapp};
     body.emailRecipients = [...new Set(body?.emailRecipients)]
   }
   
-  const intents = body?.metadata?.prompt.INTENTS && body?.metadata?.prompt.INTENTS.length 
-   ? body?.metadata?.prompt.INTENTS.map((intent: any) => `-${intent}`).join("\n")
-   : undefined 
-
   let botDetails: any = await getBotDetails(botId);
   let metaData: any = botDetails?.metadata;
   metaData = {
@@ -33,10 +29,7 @@ WHERE channels->>'whatsapp' = ${body?.channels?.whatsapp};
     ...body.metadata,
     prompt: {
       ...metaData.prompt,
-      ...body?.metadata?.prompt,
-      ...(intents && {
-        "INTENTS": intents
-      })
+      ...body?.metadata?.prompt
     },
   };
   const bot = await updateBotDetails(botId, {

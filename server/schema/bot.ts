@@ -50,6 +50,8 @@ export const chatBotSchema = chatbotSchema.table("bot", {
     customTools : [],
     defaultTools: []
   }),
+  scheduleCallWithVoice: boolean("schedule_call_with_voice").default(false),
+  voiceBotId: uuid("voice_bot_id").references(() => voicebotSchema.id),
   status: varchar("status").default("inactive"),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })
