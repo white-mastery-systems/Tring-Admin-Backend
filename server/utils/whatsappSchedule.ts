@@ -153,6 +153,9 @@ export const scheduleWhatsAppCampaign = async (
                       let varName = url.split("{{1}}")
                       varName = example[0].split(varName[0])
                       varName = varName[1] ?? varName[0];
+                      if (varName.includes("{{") || varName.includes("}}")) {
+                        varName.replace(/{{|}}/g, "");
+                      }
                       const buttonsParametersObj = variablePrameterObj(varName, contact)
                       buttonsComponents.push({ type: "button", sub_type: "url", index: buttonInd, parameters: [buttonsParametersObj] });
                     } else if (button.type == "QUICK_REPLY") {
