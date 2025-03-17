@@ -11,7 +11,8 @@
   ]" :disableSelector="true" :disable-back-button="false" -->
   <div class="py-3">
     <!-- <template #actionButtons> -->
-      <div class="mb-4 flex items-center justify-end">
+      <div class="mb-4 flex items-center justify-between">
+        <div class="text-[18px] font-bold"> Intent Management </div>
         <UiButton @click="addNewIntents">Add Intents
         </UiButton>
       </div>

@@ -10,7 +10,7 @@
     },
   ]" :description="true" :disableSelector="false" :disable-back-button="false"> -->
   <div class="mx-0 gap-3 py-2">
-    <div class="text-[18px] font-bold mt-4"> CRM Integrations </div>
+    <!-- <div class="text-[18px] font-bold mt-4"> CRM Integrations </div> -->
     <CrmConfiguration />
     <div class="pt-3">
       <div class="text-[18px] font-bold mt-3 mb-5"> Dynamic Form </div>
@@ -66,11 +66,11 @@
           </div>
         </form>
       </div>
-      <div class="text-[18px] font-bold mt-4"> Channel Configuration </div>
+      <!-- <div class="text-[18px] font-bold mt-4"> Channel Configuration </div> -->
       <CommunicationChannelConfig :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
       <div class="text-[18px] font-bold mt-4"> Add tools </div>
       <AddTools :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
-      <div class="text-[18px] font-bold mt-4"> Add Intents </div>
+      <!-- <div class="text-[18px] font-bold mt-4"> Add Intents </div> -->
       <IntentManagement :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
     </div>
   </div>

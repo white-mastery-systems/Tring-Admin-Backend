@@ -423,7 +423,7 @@ const audioUpload = async (formData: any) => {
   if (botDetails.botDetails && botDetails.botDetails?.agentLanguage) {
     try {
       await fetch(
-        `${config.public.voiceBotBaseUrl}/prerecordedAudio/`,
+        `${config.public.voiceBotBaseUrl}/prerecordedAudio`,
         {
           method: "POST",
           body: formData,
@@ -470,7 +470,7 @@ const ambientNoiseAudioUpload = async () => {
 
   try {
     await $fetch(
-      `${config.public.voiceBotBaseUrl}/prerecordedAudio/`,
+      `${config.public.voiceBotBaseUrl}/prerecordedAudio`,
       {
         method: "PUT",
         headers: {
@@ -500,7 +500,7 @@ const audioDelete = async (data: any) => {
     formData.append('intent', values.intent);
 
 
-    await fetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio/`, {
+    await fetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio`, {
       method: "DELETE",
       body: formData,
     });

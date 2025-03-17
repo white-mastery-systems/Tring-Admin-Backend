@@ -133,7 +133,11 @@ const onChangeStatus = (value: any) => {
 }
 const handleRowClick = async (row: any) => {
   console.log('chat click',row.original.id)
-  await navigateTo(`/chat-bot/${row.original.id}`);
+  // await navigateTo(`/chat-bot/${row.original.id}`);
+  await navigateTo({
+    name: "chat-bot-id",
+    params: { id: row.original.id },
+  });
 }
 
 const handleClearFilters = () => {

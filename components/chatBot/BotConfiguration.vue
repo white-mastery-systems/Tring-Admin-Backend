@@ -4,7 +4,7 @@
     <BotConfig :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
     <div class="text-[18px] font-bold mb-3 mt-1"> Document </div>
     <DocumentManagement :documents="props.documents" />
-    <div class="text-[18px] font-bold mb-3 mt-1"> Intent Management </div>
+    <!-- <div class="text-[18px] font-bold mb-3 mt-1"> Intent Management </div> -->
     <IntentManagement :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
   </div>
 </template>

@@ -129,13 +129,13 @@ const handleLogoChange = (event: any) => {
         </CardDescription>
       </div>
 
-      <div class="flex grid grid-1 sm:grid-1 md:grid-2 w-full rounded-lg gap-4">
-        <div class="flex w-full">
+      <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 w-full rounded-lg gap-4">
+        <!-- <div class="flex"> -->
           <UiFileUpload @change="handleLogoChange" name="logo"
             :label="(logo?.url) ? 'Change your logo here, browse files' : 'Upload your logo here, Browse files'"
             :required="true" :accept="'image/*'" :url="logo?.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
             :helperText="'Only files up to 5MB can be uploaded.'" :showFilename="false" />
-        </div>
+        <!-- </div> -->
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 w-full gap-5">
           <UiFormField v-slot="{ componentField }" name="color">
             <UiFormItem class="w-full">

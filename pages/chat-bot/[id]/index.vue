@@ -157,7 +157,7 @@
     <!-- <div>
       <CreateBotFields ref="childRef" @confirm="handleAddEditBot" />
     </div> -->
-    <div class="font-bold text-[20px] mt-3">
+    <div class="font-bold text-[20px]">
       View and Edit your Chatbots features
     </div>
 
@@ -170,8 +170,8 @@
       @success="() => {
       console.log('on success')
     }" />
-    <div v-if="false">
-      <div class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]">
+    <div>
+      <div v-if="false" class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]">
         <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
           <div class="items-cetner flex gap-4">
             <div v-if="botDetails.documentId" class="flex items-center gap-[5px] text-[#1abb00]">

@@ -2,7 +2,8 @@
   <div class="py-3">
     <!-- v-if="integrations.length === 0" -->
     <!-- <template #actionButtons> -->
-    <div class="mb-4 flex items-center justify-end">
+    <div class="mb-4 flex items-center justify-between">
+      <div class="text-[18px] font-bold"> CRM Integrations </div>
       <UiButton @click="
         () => {
           crmConfigModalState.open = true;

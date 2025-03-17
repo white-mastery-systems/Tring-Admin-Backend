@@ -34,9 +34,9 @@
 
     <QuickLinks :navigavtionList="navigavtionList" />
     <!-- <h6 class="font-bold text-[20px] mt-3">Start creating your bots</h6> -->
-    <div class="flex flex-col gap-2">
+    <!-- <div class="flex flex-col gap-2"> -->
       <CreateBotLinks :navigavtionList="createBotNavList" />
-    </div>
+    <!-- </div> -->
     <!-- v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
     :count="statistics.value" :loading="loading" -->
     <!-- <h6 class="font-bold text-[20px] mt-3">Analytics</h6> -->

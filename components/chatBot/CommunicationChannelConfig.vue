@@ -12,15 +12,16 @@
   <!-- v-if="integrations.length === 0" -->
   <div class="pt-5 py-4">
     <!-- <template #actionButtons> -->
-    <div class="flex justify-end">
+    <div class="flex justify-between">
+      <div class="text-[18px] font-bold"> Channel Configuration </div>
     <UiButton class="mb-4 flex items-center justify-end" @click="
         () => {
           communicationChannelModalState.open = true;
           communicationChannelModalState.id = null;
         }
       ">
-      Link channel
-      </UiButton>
+       Link channel
+    </UiButton>
       <!-- Communication -->
 <!-- </template> -->
     </div>
