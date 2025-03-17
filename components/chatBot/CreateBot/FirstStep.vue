@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useField } from "vee-validate";
 import { Home, ShoppingCart, Settings, Info, Plane, HandPlatter, PhoneCall, Ambulance, Globe, FileText, FileDown } from 'lucide-vue-next';
+import { useContentSuggestions } from "~/composables/botManagement/chatBot/useContentSuggestions";
 // import { Button } from "@/components/ui/button";
 // import { Home, Settings, Info } from "lucide-vue-next";
 
@@ -12,9 +13,12 @@ const props = defineProps<{
 const uploadDocumentRef = ref(null);
 defineExpose({ uploadDocumentRef })
 const { value: selectedType } = useField("selectedType")
+const { value: type } = useField("type");
 // const emit = defineEmits(['update:selectedType']);
 // Track which option is selected
 // const selectedType = ref<string | null>(null);
+const { contentSuggestions, loading, error, refreshSuggestions } = useContentSuggestions(type ?? 'real-estate');
+
 const companyDetails = ref('')
 // Function to handle button click
 const selectType = (type: string) => {
@@ -33,15 +37,24 @@ const buttons = [
 // const { value: chatbotName } = useField("name");
 // const { value: selectedIndustry } = useField("industry");
 
-const intentTypes = [
-  { id: 1, value: "real-estate", content: "Real Estate", icon: Home },
-  { id: 2, value: "e-commerce", content: "E-commerce", icon: ShoppingCart },
-  { id: 3, value: "travel", content: "Travel", icon: Plane },
-  { id: 4, value: "hospitality", content: "Hospitality", icon: HandPlatter },
-  { id: 5, value: "telecommunications", content: "Telecommunications", icon: PhoneCall },
-  { id: 6, value: "finance-bank", content: "Finance Bank", icon: Ambulance },
-];
+const intentTypes = ref([
+  { label: "Real Estate", value: "real-estate" },
+  { label: "Government Sectors", value: "government-sectors" },
+  { label: "Finance & Banking", value: "finance-banking"},
+  { label: "Healthcare", value: "healthcare" },
+  { label: "E-commerce", value: "e-commerce"},
+  { label: "Energy & Utilities", value: "energy-utilities" },
+  { label: "Telecommunications", value: "telecommunications" },
+  { label: "Travel & Hospitality", value: "travel-hospitality" },
+  { label: "Logistics", value: "logistics" },
+  { label: "Education & Training", value: "education-training" },
+  { label: "IT Service", value: "it-service" },
+]);
 
+watch(type, () => {
+  console.log('insied watch')
+  refreshSuggestions(); // Call refresh when type changes
+});
 // ✅ Function to update industry selection
 const selectIndustry = (value: string) => {
   selectedType.value = value;
@@ -52,22 +65,22 @@ const changeKnowledge = () => {
 </script>
 
 <template>
-  <Card class="border-0 flex flex-col justify-between" :class="(!!selectedType) ? '' : 'h-[95%]'">
-    <CardHeader>
+  <UiCard class="border-0 flex flex-col justify-between" :class="(!!selectedType) ? '' : 'h-[95%]'">
+    <UiCardHeader class="p-0">
       <div class="flex items-center justify-between gap-4 px-4 pt-4">
         <div class="flex flex-col gap-[6px]">
-          <CardTitle class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B]">Build Your Bot’s Knowledge
-          </CardTitle>
-          <CardDescription class="font-normal text-[12px] sm:text-[12px] md:text-[14px] text-[#71717A]">Import your
+          <UiCardTitle class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B]">Build Your Bot’s Knowledge
+          </UiCardTitle>
+          <UiCardDescription class="font-normal text-[12px] sm:text-[12px] md:text-[14px] text-[#71717A]">Import your
             company details and goals through
-            your website link, by document upload, or by text input (Can select either one)</CardDescription>
+            your website link, by document upload, or by text input (Can select either one)</UiCardDescription>
         </div>
-        <CardDescription class="text-[14px] font-medium">
+        <UiCardDescription class="text-[14px] font-medium">
           <span class="text-[#09090B]">Step 1</span><span class="text-[#64748B]">/4</span>
-        </CardDescription>
+        </UiCardDescription>
       </div>
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-3" />
-    </CardHeader>
+    </UiCardHeader>
     <div class="flex flex-col items-center text-center px-4 h-full w-full"
       :class="[(selectedType) ? 'justify-start' : 'justify-center']">
       <div v-if="!selectedType" class="flex flex-col items-center justify-center gap-3 space-y-3">
@@ -175,15 +188,21 @@ const changeKnowledge = () => {
               process
             </div>
           </div>
-          <div class="px-0 w-full">
-            <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-1 text-[#000000] font-medium">Tell us about your company</p>
-            <TextDocumentUpload ref="uploadDocumentRef" :refresh="props.refresh" />
+          <div>
+            <div class="w-[50%] text-left">
+              <!-- industry.map((role) => ({ label: role, value: role })) -->
+              <SelectField name="type" label="Industry" v-model="type" placeholder="Select Industry" :options="intentTypes.map((industry) => ({ label: industry.label, value: industry.value }))" required></SelectField>
+            </div>
+            <div class="px-0 w-full">
+            <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-3 text-[#000000] font-medium">Tell us about your company</p>
+            <TextDocumentUpload ref="uploadDocumentRef" :refresh="props.refresh" :contentSuggestions="contentSuggestions" />
             <!-- <UiTextarea calss="text-[#71717A]" v-model="companyDetails" class="h-[200px]" :resizable="false"
               placeholder="Enter text..." label="Tell us about your company">
             </UiTextarea> -->
           </div>
+          </div>
         </div>
       </div>
     </div>
-  </Card>
+  </UiCard>
 </template>

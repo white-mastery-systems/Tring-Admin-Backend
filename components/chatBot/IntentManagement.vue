@@ -9,7 +9,7 @@
   to: `/bot-management/chat-bot/${botDetails.id}/intent-management`,
   },
   ]" :disableSelector="true" :disable-back-button="false" -->
-  <div class="py-3">
+  <div>
     <!-- <template #actionButtons> -->
       <div class="mb-4 flex items-center justify-between">
         <div class="text-[18px] font-bold"> Intent Management </div>

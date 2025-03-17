@@ -7,6 +7,7 @@ import { useBotDocuments } from '~/composables/botManagement/chatBot/useBotDocum
 import { useRoute } from 'vue-router'
 import { botStore } from "~/store/botStore";
 import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
+import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 const step = ref(1);
 const route = useRoute();
@@ -19,13 +20,13 @@ const pageLoading = ref(false)
 const isSubmitting = ref(false)
 const isDocumentListOpen = ref(false);
 const intervalId = ref<any>(null); // Store the interval ID
+  const { intentOptions, fetchConfig } = useChatbotConfig();
 // const uploadDocumentRef = ref(null);
 // const selectedType = ref('')
 // ✅ Define a single form
 const { errors, values, handleSubmit, validateField, validate, setFieldValue } = useForm({
   validationSchema: botCreateSchema,
   initialValues: {
-    type: 'real-estate',
     color: hslToHex('236, 61%, 54%, 1'),
     secondaryColor: hslToHex('236, 61%, 74%'),
   },
@@ -96,11 +97,6 @@ const nextStep = async () => {
       isValid = false;
     }
   }
-  // if ((step.value === 1) && values.selectedType === 'Text') {
-  //   if (uploadDocumentRef.value) {
-  //     uploadDocumentRef.value.generatePDFAndUpload();
-  //   }
-  // }
   if ((step.value === 1) && values.selectedType === 'Text') {
     if (stepOneRef.value?.uploadDocumentRef?.generatePDFAndUpload) {
       // setTimeout(() => {
@@ -198,9 +194,18 @@ const submitForm = handleSubmit(async (values) => {
       metadata: {
         ui: {
           ...botDetails.value?.metadata.ui,
-          logo: values.logo,
+          logo: (scrapData.scrapedData && Object.keys(scrapData.scrapedData).length > 0) 
+            ? (values.logo?.size ? values.logo : values.logo?.url) // Use optional chaining
+            : values.logo,
           color: hexToHSL(values.color),
           secondaryColor: hexToHSL(values.secondaryColor),
+          fontFamily: "Kanit",
+          widgetSound: "yes",
+          generateLead: true,
+          onlineStatus: true,
+          defaultRibbon: true,
+          defaultSelect: true,
+          widgetPosition: 'Right'
         },
         prompt: {
           ...botDetails.value?.metadata.prompt,
@@ -208,15 +213,17 @@ const submitForm = handleSubmit(async (values) => {
           NAME: values.NAME,
           ROLE: values.ROLE,
           GOAL: values.GOAL,
+          NOTES: "",
           INTENTS: "-details\n-other",
+          LANGUAGE: "English - en",
           otherRole: values.otherRole,
           otherGoal: values.otherGoal,
+          DESCRIPTION: "",
+          errorMessage: "Uh-oh, Can you try reloading the page and try chatting with me? It seems like our system is facing an issue. Thank you for your understanding",
         },
         tools: {
           customTools: [],
-          defaultTools: [
-            'date_time'
-          ],
+          defaultTools: ['date_time'],
         },
       },
     };
@@ -255,6 +262,7 @@ const checkDocumentStatus = async () => {
 
     if (documentStatus === "ready") {
       clearInterval(intervalId.value); // Stop polling
+      // scrapData.scrapedData = []
       // await navigateTo({
       //   name: "chat-bot-id",
       //   params: { id: botDetails.id },
@@ -312,16 +320,17 @@ const handleActivateBot = async () => {
       return;
     }
   }
-  console.log("handleActivateBot the bottom");
   isSubmitting.value = false;
   isDocumentListOpen.value = true;
 };
 const singleDocumentDeploy = async (list: any) => {
-  console.log('adAC AdaDAd singleDocumentDeploy')
   await deployDocument(paramId.params.id, list.id);
   await refreshBot() // new function refreshBot added
   // botDetails.value = await getBotDetails(paramId.params.id);
 };
+watch(() => values.type, (newType) => {
+  fetchConfig(newType);
+}, { deep: true, immediate: true });
 // ✅ Clear interval when the component is unmounted
 onUnmounted(() => {
   if (intervalId.value !== null) {
@@ -353,11 +362,11 @@ onUnmounted(() => {
         <!-- @update:values="(newValues) => values = newValues" -->
         <FirstStep ref="stepOneRef" v-show="step === 1" v-model:values="values" :errors="errors" :refresh="refresh" />
         <SecondStep v-show="step === 2" v-model:values="values" :errors="errors" />
-        <ThirdStep v-show="step === 3" v-model:values="values" :errors="errors" />
-        <FourthStep v-show="step === 4" v-model:values="values" :errors="errors" />
+        <ThirdStep v-show="step === 3" v-model:values="values" :errors="errors" :intentOptions="intentOptions" />
+        <FourthStep v-show="step === 4" v-model:values="values" :errors="errors" :disabled="isLoading" :intentOptions="intentOptions" />
         <!-- {{ step === 2 && (values.intent.length === 0) }} -->
         <div class="flex justify-end w-full gap-[12px] p-4">
-          <UiButton v-if="(step > 1)" type="button" @click="prevStep" class="px-8" variant="outline">Back</UiButton>
+          <UiButton v-if="(step > 1)" :disabled="isLoading" type="button" @click="prevStep" class="px-8" variant="outline">Back</UiButton>
           <UiButton v-if="showBackButton" type="button" @click="firstStepBack" class="px-8" variant="outline">Back
           </UiButton>
           <UiButton v-if="showNextButton" type="button" @click="nextStep" class="px-8"

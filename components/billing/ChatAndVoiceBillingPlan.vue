@@ -1,8 +1,11 @@
 <template>
-  <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1] w-full sm-w-full md:min-w-[900px]">
+  <!-- <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1] w-full sm-w-full md:min-w-[900px]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+  </div> -->
+  <div class="relative">
+    <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1] w-full sm-w-full md:min-w-[900px] absolute top-0 left-0 right-0 z-50">
+      <Icon name="svg-spinners:90-ring-with-bg" class="h-10 w-10" />
   </div>
-  <div v-else class="relative">
     <div :class="[
       'grid gap-4 px-2.5 py-0 w-full sm-w-full md:min-w-[900px]',
       route.query.type === 'voice'

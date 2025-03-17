@@ -158,7 +158,7 @@ const mobileSidebarControl = (value: any) => {
                 class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
             </SidebarMenuButton>
           </CollapsibleTrigger>
-          <CollapsibleContent>
+          <CollapsibleContent v-if="item.children.length">
             <SidebarMenuSub>
               <SidebarMenuSubItem v-for="subItem in item.children" :key="subItem.name">
                 <SidebarMenuSubButton as-child>

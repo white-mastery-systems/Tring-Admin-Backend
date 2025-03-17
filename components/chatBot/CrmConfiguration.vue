@@ -1,8 +1,8 @@
 <template>
-  <div class="py-3">
+  <div class="pb-7">
     <!-- v-if="integrations.length === 0" -->
     <!-- <template #actionButtons> -->
-    <div class="mb-4 flex items-center justify-between">
+    <div class="my-5 flex items-center justify-between">
       <div class="text-[18px] font-bold"> CRM Integrations </div>
       <UiButton @click="
         () => {

@@ -1,9 +1,13 @@
 <template>
-  <div class="mx-0 gap-3 py-2">
+  <div class="mx-0 gap-3 py-1">
     <div class="text-[18px] font-bold mb-3 mt-1">Basic Configurations</div>
     <BotConfig :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
-    <div class="text-[18px] font-bold mb-3 mt-1"> Document </div>
+    <UiSeparator class="my-6"></UiSeparator>
+    <!-- <div class="text-[18px] font-bold mb-0 mt-1"> Document </div> -->
     <DocumentManagement :documents="props.documents" />
+    <div class="mb-6 mt-1">
+      <UiSeparator></UiSeparator>
+    </div>
     <!-- <div class="text-[18px] font-bold mb-3 mt-1"> Intent Management </div> -->
     <IntentManagement :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
   </div>

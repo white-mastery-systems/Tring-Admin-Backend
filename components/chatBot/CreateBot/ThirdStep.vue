@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from 'vue';
 import { useField } from 'vee-validate';
-import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
+// import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 const props = defineProps<{
   values: Record<string, any>;
   errors: Record<string, any>;
+  intentOptions: Record<string, any>;
 }>();
 
 const emit = defineEmits(["update:values"]);
@@ -13,7 +14,7 @@ const { value: selectedRole } = useField<string>('ROLE');
 const { value: type } = useField("type");
 const { value: otherRole, errorMessage: otherRoleError } = useField("otherRole");
 const { value: otherGoal, errorMessage: otherGoalError } = useField("otherGoal");
-const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
+// const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
 
 // Watch for role selection changes
 watch(selectedRole, (newValue) => {
@@ -41,37 +42,37 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
   }
 });
 
-watch(() => props.values.type, (newType) => {
-  fetchConfig(newType);
-}, { deep: true, immediate: true });
+// watch(() => props.values.type, (newType) => {
+//   props.fetchConfig(newType);
+// }, { deep: true, immediate: true });
 </script>
 
 <template>
-  <Card class="border-0 ma-0">
-    <CardHeader>
+  <UiCard class="border-0 ma-0">
+    <UiCardHeader class="p-0">
       <div class="flex items-center justify-between gap-4 px-4 pt-4">
         <div class="flex flex-col gap-[6px]">
-          <CardTitle class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B]">Define your Chatbot's Role
+          <UiCardTitle class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B]">Define your Chatbot's Role
             in your Company?
-          </CardTitle>
-          <CardDescription class="font-normal text-[12px] sm:text-[12px] md:text-[14px] text-[#71717A]">Import your
-            Select what you would like your bot to help you with</CardDescription>
+          </UiCardTitle>
+          <UiCardDescription class="font-normal text-[12px] sm:text-[12px] md:text-[14px] text-[#71717A]">Import your
+            Select what you would like your bot to help you with</UiCardDescription>
         </div>
-        <CardDescription class="text-[14px] font-medium">
+        <UiCardDescription class="text-[14px] font-medium">
           <span class="text-[#09090B]">Step 3</span><span class="text-[#64748B]">/4</span>
-        </CardDescription>
+        </UiCardDescription>
       </div>
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-3" />
-    </CardHeader>
+    </UiCardHeader>
 
     <!-- <div class="mt-4">
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full h-[0.5px]" />
     </div> -->
 <!-- {{ intentOptions }} || assdad -->
-    <CardContent class="grid gap-3 sm:gap-3 md:gap-6 p-4">
+    <UiCardContent class="grid gap-3 sm:gap-3 md:gap-6 p-4">
       <UiRadioGroup v-model="selectedRole" orientation="vertical"
         class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5">
-        <div v-for="option in intentOptions.roles" :key="option.value"
+        <div v-for="option in props.intentOptions.roles" :key="option.value"
           class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]"
           @click="selectedRole = option.value">
           <div class="flex gap-4">
@@ -110,6 +111,6 @@ watch(() => props.values.type, (newType) => {
               class="border px-4 py-2 w-full rounded-lg text-[14px] sm:text-[14px] md:text-[16px] h-20" />
         </div> -->
       </div>
-    </CardContent>
-  </Card>
+    </UiCardContent>
+  </UiCard>
 </template>

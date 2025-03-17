@@ -1,7 +1,7 @@
 <template>
   <!-- <DialogWrapper v-model="agentModalState" :title="agentModalState.id ? 'Modify Chat Bot' : 'Add a New Chat Bot'"> -->
   <form @submit.prevent="handleAddEditBot" class="flex items-center px-0">
-    <div class="flex items-end w-full sm:w-full md:w-[60%] gap-2 sm:gap-2 md:gap-3">
+    <div class="flex w-full sm:w-full md:w-[60%] gap-2 sm:gap-2 md:gap-3" :class="(errors.url) ? 'items-center' :'items-end'">
       <!-- <span class="font-semibold w-[210px] text-[10px] sm:text-[10px] md:text-[16px] ">Import from Website</span> -->
       <TextField name="url" placeholder="URL" label="Import from Website Link">
       </TextField>
@@ -48,9 +48,12 @@ const isLoading = ref(false);
 
 const formSchema = toTypedSchema(
   z.object({
-    url: z.string().optional(),
+    url: z.string({ required_error: 'URL must start with https://'}).min(1, "URL is required").refine((val) => val.startsWith("https://"), {
+      message: "URL must start with https://",
+    }),
   })
 );
+
 
 const { handleSubmit, setFieldValue, resetForm, values, errors } = useForm({
   validationSchema: formSchema,
@@ -72,9 +75,9 @@ const { handleSubmit, setFieldValue, resetForm, values, errors } = useForm({
 //     }
 //   },
 // );
-onMounted(() => {
-  setFieldValue("url", '')
-})
+// onMounted(() => {
+//   setFieldValue("url", '')
+// })
 const clearTextField = () => {
   setFieldValue("url", "");
 };

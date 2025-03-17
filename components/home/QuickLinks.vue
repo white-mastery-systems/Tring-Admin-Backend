@@ -27,7 +27,6 @@ const props = withDefaults(
   }
 );
 </script>
-
 <template>
   <div v-if="props.navigavtionList.length > 0"
     class="flex gap-5 flex-wrap justify-between w-full px-0 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">

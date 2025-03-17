@@ -140,8 +140,12 @@
         )" :key="list.id" @click="async () => {
           isSubmitting = true;
           isDocumentListOpen = false;
-          await singleDocumentDeploy(list);
-          createBotsuccessfulState.open = true;
+          try {
+            await singleDocumentDeploy(list);
+            createBotsuccessfulState.open = false;
+          } catch (err) {
+            createBotsuccessfulState.open = false;
+          }
         }
         ">
 
@@ -294,8 +298,12 @@
             )" :key="list.id" @click="async () => {
                 isSubmitting = true;
                 isDocumentListOpen = false;
-                await singleDocumentDeploy(list);
-                createBotsuccessfulState.open = true;
+                try {
+                  await singleDocumentDeploy(list);
+                  createBotsuccessfulState.open = false;
+                } catch (err) {
+                  createBotsuccessfulState.open = false;
+                }
               }
               ">
             <span class="w-[95%] truncate">
@@ -655,6 +663,7 @@ const handleActivateBot = async () => {
     try {
       await singleDocumentDeploy(activeDocuments[0]);
     } catch (err) {
+      createBotsuccessfulState.value.open = false
       isSubmitting.value = false;
       toast.error("Failed to active the bot, try again");
       return;

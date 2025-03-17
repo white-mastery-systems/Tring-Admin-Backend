@@ -31,12 +31,12 @@
         <CustomDateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
       </div>
     </template>
-
-    <QuickLinks :navigavtionList="navigavtionList" />
+    <div class="flex flex-col gap-5 p-4 sm:p-4 md:p-0">
+      <QuickLinks :navigavtionList="navigavtionList" />
     <!-- <h6 class="font-bold text-[20px] mt-3">Start creating your bots</h6> -->
     <!-- <div class="flex flex-col gap-2"> -->
-      <CreateBotLinks :navigavtionList="createBotNavList" />
-    <!-- </div> -->
+    <CreateBotLinks :navigavtionList="createBotNavList" />
+     <!-- </div> -->
     <!-- v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
     :count="statistics.value" :loading="loading" -->
     <!-- <h6 class="font-bold text-[20px] mt-3">Analytics</h6> -->
@@ -55,6 +55,7 @@
         <StatusCountCard :icon="ChatSession" :title="'Loading...'" :count="0" :loading="loading" />
       </template>
     </div>
+    </div>
   </Page>
 </template>
 <script setup lang="ts">
@@ -68,7 +69,7 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIcon, ChartNoAxesCombined, Code, Wallet } from "lucide-vue-next";
+import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIcon, ChartNoAxesCombined, Code, Wallet,MessageSquare,PhoneCall } from "lucide-vue-next";
 import { Line } from "vue-chartjs";
 import ChatSession from "~/components/icons/ChatSession.vue";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
@@ -115,7 +116,7 @@ const navigavtionList = ref([
     title: "Campaign",
     subtitle: "Manage your campaigns here",
     url: "/contacts-management/campaigns",
-    icon: '',
+    icon: Code,
   },
 ]);
 
@@ -124,10 +125,12 @@ const createBotNavList = ref([
     title: "Create a Chatbot",
     subtitle: "Click here to deploy your new chatbot",
     url: "/chat-bot/create-bot",
+    icon: MessageSquare,
   }, {
     title: "Create a Voicebot",
     subtitle: "Click here to deploy your new voicebot",
     url: "/voice-bot",
+    icon: PhoneCall,
   }
 ]);
 

@@ -205,11 +205,11 @@ const columns = [
       row.original?.channel.charAt(0).toUpperCase() +
       row.original?.channel.slice(1),
   }),
-  columnHelper.accessor("mobile", {
-    header: "Lead Phone",
-    cell: ({ row }) =>
-      row.original?.mobile?.countryCode + row.original?.mobile?.mobile,
-  }),
+  // columnHelper.accessor("mobile", {
+  //   header: "Lead Phone",
+  //   cell: ({ row }) =>
+  //     row.original?.mobile?.countryCode + row.original?.mobile?.mobile,
+  // }),
   columnHelper.accessor("name", {
     header: "Bot Name",
   }),
