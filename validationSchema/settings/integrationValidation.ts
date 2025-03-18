@@ -7,6 +7,8 @@ const sellDoSchema = z.object({
 
 const zohoCRMSchema = z.object({ crm: z.literal("zoho-crm") });
 
+const zohoDeskSchema = z.object({ crm: z.literal("zoho-desk") });
+
 const zohoBiginSchema = z.object({ crm: z.literal("zoho-bigin") });
 
 const hubSpotSchema = z.object({ crm: z.literal("hubspot") });
@@ -48,6 +50,7 @@ export const integrationSchema = toTypedSchema(
       crm: z.enum([
         "sell-do",
         "zoho-crm",
+        "zoho-desk",
         "zoho-bigin",
         "hubspot",
         "slack",
@@ -61,6 +64,7 @@ export const integrationSchema = toTypedSchema(
       z.discriminatedUnion("crm", [
         sellDoSchema,
         zohoCRMSchema,
+        zohoDeskSchema,
         zohoBiginSchema,
         hubSpotSchema,
         slackSchema,
