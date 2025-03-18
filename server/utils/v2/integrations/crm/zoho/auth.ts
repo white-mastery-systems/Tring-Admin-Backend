@@ -29,5 +29,6 @@ export async function regenearateTokenWithRefreshTokenForZohoIntegration({
     return updatedIntegrationData
   } catch (error: any) {
     logger.error(`regenearateTokenWithRefreshToken Error: ${JSON.stringify(error.message)}`)
+    throw new Error(error)
   }
 }
