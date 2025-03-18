@@ -169,13 +169,11 @@ export default defineEventHandler(async (event) => {
       }
     } else if (botIntegration?.integration?.crm === "whatsapp") {
       if (botIntegration?.integration?.metadata) {
-        if(body?.event && body?.event === "Whatsapp Lead Details"){
-          if (!validateName(body?.botUser?.name)) {
-            body.botUser.name = "Not Provided"
-          }
-          if (!body?.botUser?.email) {
-            body.botUser.email = "Not Provided";
-          }
+        if (!validateName(body?.botUser?.name)) {
+          body.botUser.name = "Not Provided"
+        }
+        if (!body?.botUser?.email) {
+          body.botUser.email = "Not Provided";
         }
         const whatsappPayload = {
           intent: "Lead",
