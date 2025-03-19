@@ -19,6 +19,7 @@ enum CRMType {
   shopify = "shopify",
   zohoCliq = "zoho-cliq",
   reserveGo = "reserve-go",
+  zohoDesk = "zoho-desk"
 }
 const db = useDrizzle();
 
@@ -72,9 +73,9 @@ export default defineEventHandler(async (event) => {
     });
 
     generatedAuthResponse = data;
-  } else if (body.crm === "zoho-bigin" || body.crm === "zoho-crm") {
+  } else if (body.crm === "zoho-bigin" || body.crm === "zoho-crm" || body.crm === "zoho-desk") {
     const zohoUrl = zohoAuthApiBaseUrls[body?.metadata?.location]
-    generatedAuthResponse = await $fetch(    
+    generatedAuthResponse = await $fetch(
       `${zohoUrl}/oauth/v2/token?client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&grant_type=authorization_code&client_secret=922f18d9e0d820fbebb9d93fee5cc8201e58fbda8c&redirect_uri=${config.redirectionUrl}/${body.crm}&code=${body.metadata.code}`,
       { method: "POST" },
     );
