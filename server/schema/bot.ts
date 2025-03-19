@@ -126,6 +126,8 @@ export const chatSchema = chatbotSchema.table(
     interacted: boolean("interacted").default(false),
     visitedCount: integer("visited_count").default(1),
     visitedHistory: jsonb("visited_history").array(),
+    chatExpiredAt: timestamp("chat_expired_at"),
+    chatSummary: jsonb("chat_summary").default({}),
     botUserId: uuid("bot_user_id").references(() => botUserSchema.id, {
       onDelete: "cascade",
     }),
