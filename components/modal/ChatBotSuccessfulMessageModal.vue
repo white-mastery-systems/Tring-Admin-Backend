@@ -2,33 +2,33 @@
   <DialogWrapperVersionTwo v-model="ChatBotSuccessfulMessageModalState"
     title="Your Chatbot has been created successfully"
     description="Copy & send script to get started with your bot or preview your bot" class="p-5 w-full">
-    <div class="p-0 space-y-4 bg-white rounded-lg shadow-md mt-4">
+    <div class="p-0 space-y-4 bg-white rounded-lg shadow-md">
       <div class="px-4 space-y-3">
         <div>
           <h3 class="text-[16px] font-semibold text-[#09090B]">Copy Script and paste on your website</h3>
           <p class="text-[#71717A] text-[14px]">Copy the script code below</p>
         </div>
-        <UiInput v-model="botScript" class="w-full" readonly />
+        <UiInput v-model="botScript" class="w-full" readonly @focus="(e) => e.target.blur()" />
       </div>
       <div class="flex flex-col gap-2 mt-4 px-5">
         <div class="flex items-center gap-3 mt-2">
           <!-- Copy Script Button -->
           <UiButton @click="copyScript"
-            :class="copyAndPreviewBot ? 'border-black text-black' : 'bg-black text-white border-black'" variant="outline"
-            class="flex items-center gap-2">
+            :class="copyBot ? 'bg-black text-white' : 'border-black text-black'" variant="outline"
+            class="flex items-center gap-2 cursor-pointer hover:bg-black hover:text-white focus:outline-none focus:ring-0 focus:border-black">
             <FileCode class="w-5 h-5" /> Copy Script
           </UiButton>
 
           <!-- Send Script Button -->
-          <UiButton as="a" :href="previewUrl" target="_blank" variant="outline"
-            class="flex items-center cursor-pointer gap-2 border-[#000000]"
-            :class="copyAndPreviewBot ? 'bg-black text-white' : 'text-black border-black'">
+          <UiButton @click="() => previewBot = true" as="a" :href="previewUrl" target="_blank" variant="outline"
+            class="flex items-center cursor-pointer gap-2 border-[#000000] hover:bg-black hover:text-white"
+            :class="previewBot ? 'bg-black text-white' : 'text-black border-black'">
             <Eye class="w-5 h-5" /> Preview Bot
           </UiButton>
         </div>
 
         <!-- Separator -->
-        <div class="border-b border-gray-300 my-4"></div>
+        <div class="border-b border-gray-300 mt-4 mb-3"></div>
 
         <!-- Preview Section -->
         <div>
@@ -37,7 +37,7 @@
             You can copy the script above to embed your chatbot on your website, or send it via email.
           </p>
         </div>
-        <div class="mt-4 flex w-full">
+        <div class="mt-2 flex w-full">
           <UiButton @click="toggleForm" :class="showForm ? 'bg-black text-white' : 'text-black border-black'"
             variant="outline" class="flex items-center gap-2">
             <Mail class="w-5 h-5" /> Send Script
@@ -52,7 +52,7 @@
               placeholder="Enter your message" />
 
             <div class="flex justify-end w-full">
-              <UiButton type="submit">Send</UiButton>
+              <UiButton type="submit" class="px-6">Send</UiButton>
             </div>
           </form>
         </div>
@@ -79,7 +79,8 @@ const ChatBotSuccessfulMessageModalState = defineModel<{ open: boolean; id: any 
     open: false,
   },
 });
-const copyAndPreviewBot = ref(false)
+const copyBot = ref(false)
+const previewBot = ref(false)
 // const scriptCode = ref("");
 const showForm = ref(false);
 // const queryId = ref(route.params?.id);
@@ -96,7 +97,7 @@ const botScript =
 
 const { copy } = useClipboard({ source: botScript });
 const copyScript = async () => {
-  copyAndPreviewBot.value = false
+  copyBot.value = true
   copy(botScript);
   toast.success("Copied to clipboard");
 };
@@ -122,6 +123,11 @@ const { errors,
 validationSchema: sentMailSchema,
 });
 
+onMounted(() => {
+  setTimeout(() => {
+    document.activeElement?.blur(); // Remove focus after modal opens
+  }, 100); // Small delay to prevent focus from jumping
+});
 const previewUrl = computed(() => {
   let col = props.botDetails.metadata.ui.color as string;
   col = col

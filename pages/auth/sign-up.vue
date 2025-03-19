@@ -47,7 +47,7 @@ definePageMeta({
             Create an account
           </h1>
           <p class="text-sm text-muted-foreground">
-            Enter your email below to create your account
+            Get started by creating your account
           </p>
         </div>
         <UserAuthForm />

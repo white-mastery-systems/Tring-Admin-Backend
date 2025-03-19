@@ -8,7 +8,7 @@
       <span v-if="required" class="text-lg text-red-500">* </span>
     </UiLabel>
     <div v-if="isTextarea" class="flex flex-col gap-1">
-      <UiTextarea class="mt-2 textarea-resize-scroll" @paste="
+      <UiTextarea class="mt-2 textarea-resize-scroll focus:outline-none focus:ring-0 focus:border-transparent" @paste="
           (e: any) => {
             if (disableCharacters) {
               if (isNaN(Number(e.clipboardData.getData('text/plain')))) {

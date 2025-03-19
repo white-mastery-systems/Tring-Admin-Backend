@@ -33,9 +33,9 @@ onMounted(() => {
 
 </script>
 <template>
-  <Accordion type="multiple" v-model="openValues" class="w-full" collapsible>
+  <Accordion type="multiple" v-model="openValues" class="w-full flex flex-col gap-5" collapsible>
     <AccordionItem v-for="item in accordionItems" :key="item.value" :value="item.value"
-      class="mb-3 border-[1px]  p-6 rounded-lg">
+      class="mb-0 border-[1px]  p-6 rounded-lg">
       <AccordionTrigger
         class="flex items-center gap-2 font-medium no-underline decoration-transparent hover:no-underline py-0">
         <!-- Left Icon -->

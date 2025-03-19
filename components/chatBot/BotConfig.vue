@@ -1,7 +1,7 @@
 <template>
-  <div class="mx-0 gap-3 py-2">
+  <div class="mx-0 gap-3">
     <!-- <div class="text-[18px] font-bold mb-3 mt-1">Basic Configurations</div> -->
-    <form @submit.prevent="handleUpdateBotConfig" class="space-y-3">
+    <form @submit.prevent="handleUpdateBotConfig" class="space-y-5">
       <div class="flex gap-4">
         <TextField name="NAME" label="Bot Name" placeholder="Eg. Noah,Bob,Chris,Ted" required>
         </TextField>
@@ -44,7 +44,7 @@
         </SelectField>
       </div>
       <!-- helperText="Enter a error mesage that will be shown a error when bot failed" -->
-      <TextField isTextarea="true" name="errorMessage" placeholder="enter error message" required />
+      <!-- <TextField isTextarea="true" name="errorMessage" placeholder="enter error message" required /> -->
       <!-- helperText="Here you can have additional instructions for your bot." -->
       <TextField name="NOTES" label="Notes" :isTextarea="true">
       </TextField>

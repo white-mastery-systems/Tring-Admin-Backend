@@ -2,7 +2,7 @@
   <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true"
     class="flex flex-col items-center">
     <template #actionButtons>
-      <div class="flex gap-2">
+      <div class="flex overflow-x-scroll gap-2 w-full justify-end">
         <span class="field_shadow flex items-center rounded-lg text-[15px]" style="color: rgba(138, 138, 138, 1)">
           <!-- <span class="flex -items-center py-2 pl-2"></span> -->
           <span class="font-bold text-black">
@@ -31,12 +31,12 @@
         <CustomDateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
       </div>
     </template>
-
-    <QuickLinks :navigavtionList="navigavtionList" />
+    <div class="flex flex-col gap-5 p-4 sm:p-4 md:p-0">
+      <QuickLinks :navigavtionList="navigavtionList" />
     <!-- <h6 class="font-bold text-[20px] mt-3">Start creating your bots</h6> -->
-    <div class="flex flex-col gap-2">
-      <CreateBotLinks :navigavtionList="createBotNavList" />
-    </div>
+    <!-- <div class="flex flex-col gap-2"> -->
+    <CreateBotLinks :navigavtionList="createBotNavList" />
+     <!-- </div> -->
     <!-- v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
     :count="statistics.value" :loading="loading" -->
     <!-- <h6 class="font-bold text-[20px] mt-3">Analytics</h6> -->
@@ -55,6 +55,7 @@
         <StatusCountCard :icon="ChatSession" :title="'Loading...'" :count="0" :loading="loading" />
       </template>
     </div>
+    </div>
   </Page>
 </template>
 <script setup lang="ts">
@@ -68,7 +69,7 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIcon } from "lucide-vue-next";
+import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIcon, ChartNoAxesCombined, Code, Wallet,MessageSquare,PhoneCall,CirclePercent } from "lucide-vue-next";
 import { Line } from "vue-chartjs";
 import ChatSession from "~/components/icons/ChatSession.vue";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
@@ -100,22 +101,22 @@ const navigavtionList = ref([
     title: "Billing",
     subtitle: "Manage your plans here",
     url: "billing?type=chat",
-    icon: 'payments',
+    icon: Wallet,
   }, {
     title: "Integrations",
     subtitle: "Manage all your integrations here",
     url: "/integration",
-    icon: 'integration_instructions',
+    icon: Code,
   }, {
     title: "Analytics",
     subtitle: "View your stats here",
     url: "/analytics/leads",
-    icon: 'monitoring',
+    icon: ChartNoAxesCombined,
   }, {
     title: "Campaign",
     subtitle: "Manage your campaigns here",
     url: "/contacts-management/campaigns",
-    icon: 'campaign',
+    icon: CirclePercent,
   },
 ]);
 
@@ -124,10 +125,12 @@ const createBotNavList = ref([
     title: "Create a Chatbot",
     subtitle: "Click here to deploy your new chatbot",
     url: "/chat-bot/create-bot",
+    icon: MessageSquare,
   }, {
     title: "Create a Voicebot",
     subtitle: "Click here to deploy your new voicebot",
     url: "/voice-bot",
+    icon: PhoneCall,
   }
 ]);
 

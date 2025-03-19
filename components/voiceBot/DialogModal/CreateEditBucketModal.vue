@@ -1,5 +1,5 @@
 <template>
-  <DialogWrapper v-model="addBucketNameModalState" :title="addBucketNameModalState.id ? 'Modify Bucket' : 'Add Bucket'"
+  <DialogWrapper v-model="addBucketNameModalState" :title="addBucketNameModalState?.id ? 'Modify Bucket' : 'Add Bucket'"
     class="rounded-lg">
     <form @submit="handleConnect" class="space-y-4">
       <TextField name="name" label="Name" placeholder="Enter name" required>

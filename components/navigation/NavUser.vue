@@ -58,7 +58,7 @@ const avatarValue = ref(OrgDetails.values?.logo || userInfo.value?.profile_image
 // }>()
 const route = useRoute();
 const router = useRouter();
-const { isMobile } = useSidebar()
+const { isMobile, toggleSidebar } = useSidebar()
 
 const handleLogout = async () => {
   localStorage.clear();
@@ -74,7 +74,20 @@ const navigateToSamePage = (path: any) => {
   if ((path.path === '/billing/view-wallet') && !subcribed.value) {
     toast.error("Please upgrade your plan to access this feature")
   }
+    if (isMobile.value) {
+      console.log('inside --- ismobile')
+    toggleSidebar();
+    // slideBarStore.siderBarslider = false
+  }
 };
+
+const mobileSidebarControl = () => {
+  // console.log(isMobile.value, "isMobile.value -- isMobile.value")
+  if (isMobile.value) {
+    toggleSidebar();
+    // slideBarStore.siderBarslider = false
+  }
+}
 </script>
 <template>
   <SidebarMenu>
@@ -118,9 +131,9 @@ const navigateToSamePage = (path: any) => {
           <DropdownMenuGroup class="font-medium text-[16px] p-0">
             <DropdownMenuItem v-for="item in dropdownMenuItems" :key="item.path" class="pr-0 py-0 pl-4"
               @click.prevent="navigateToSamePage(item.path)">
+              <!-- @click.prevent="navigateToSamePage(item.path)" -->
               <NuxtLink
-                :to="(!subcribed && (item.path.path === '/billing/view-wallet')) ? '/billing/view-all' : item.path"
-                @click.prevent="navigateToSamePage(item.path)" class="flex items-center w-full min-h-[40px]">
+                :to="(!subcribed && (item.path.path === '/billing/view-wallet')) ? '/billing/view-all' : item.path" class="flex items-center w-full min-h-[40px]">
                 <DropdownMenuShortcut class="flex items-center gap-2 w-full">
                   <component :is="item.icon" size="18"></component>
                   {{ item.label }}
