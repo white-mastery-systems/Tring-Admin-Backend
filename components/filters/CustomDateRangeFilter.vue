@@ -71,7 +71,7 @@ const isDateDisabled = (date: CalendarDate) => {
 
 <template>
   <UiSelect v-if="props.selectDateField" v-model="selectedDate">
-    <UiSelectTrigger class="w-[110px] sm:w-[110px] md:w-[188px] lg:w-[188px] xl:w-[188px]">
+    <UiSelectTrigger class="min:w-[188px] w-[110px] sm:w-[110px] md:w-[188px] lg:w-[188px] xl:w-[188px]">
       <UiSelectValue placeholder="Select a Date" />
     </UiSelectTrigger>
     <UiSelectContent>

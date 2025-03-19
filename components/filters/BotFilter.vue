@@ -45,7 +45,7 @@
 <template>
   <div>
     <UiSelect v-model="bot">
-      <UiSelectTrigger class="w-[110px] sm:w-[110px] md:w-[250px] lg:w-[250px] xl:w-[250px]">
+      <UiSelectTrigger class="w-[110px] sm:w-[110px] md:w-[180px] lg:w-[180px] xl:w-[180px]">
         <UiSelectValue placeholder="Select a Bot" />
       </UiSelectTrigger>
       <UiSelectContent>

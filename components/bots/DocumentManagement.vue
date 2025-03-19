@@ -10,15 +10,17 @@
   },
   ]" -->
   <!-- <Page :disableSelector="true" :disable-back-button="false" :disable-elevation="true"> -->
-    <div class="mb-[50px] sm:mb-[50px] md:mb-4 lg:mb-4 xl:mb-4">
-      <div class="document-align flex items-center">
+    <div class="mb-[50px] sm:mb-[50px] md:mb-7">
+      <div class="document-align flex flex-col mt-0">
+        <div class="text-[18px] font-bold mb-6"> Document Management </div>
         <span class="flex flex-row">
           <!-- @click="uploadfile" -->
-          <DocumentUpload accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" />
+          <!-- <DocumentUpload accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" /> -->
+          <DocumentUploadV2 accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" />
           <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
         </span>
       </div>
-      <p class="pt-2 pb-6 text-sm text-gray-400">only PDF</p>
+      <p class="pt-2 pb-5 text-sm text-gray-400">only PDF</p>
       <DataTable @pagination="Pagination" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
       }
@@ -266,8 +268,8 @@ const Pagination = async ($event: any) => {
 }
 </script>
 
-<style scoped>
+<!-- <style scoped>
 .document-align {
   margin-top: 40px;
 }
-</style>
+</style> -->

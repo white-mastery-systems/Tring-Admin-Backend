@@ -32,13 +32,13 @@ const fileNames = computed(() => {
         <div class="flex flex-col items-center justify-center">
           <div v-if="!file" class="px-4 text-center">
             <!-- Drag & Drop files here, or -->
-            <div>
-              click
+              <div>
+                Upload file
+              </div>
+              <div class="text-[#64748B] text-[14px]">
+                Supported file types: .pdf
+              </div>
             </div>
-            <div class="text-[#64748B] text-[14px]">
-              Supported file types: .pdf
-            </div>
-          </div>
           <!-- <svg class="h-8 w-8 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
             fill="none" viewBox="0 0 20 16" v-if="!file">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

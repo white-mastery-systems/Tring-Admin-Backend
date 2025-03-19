@@ -85,6 +85,9 @@ onMounted(() => {
     if (!route.query.type) { // If `type` is not present in the query
       router.push({ query: { type: 'chat' } });
     }
+    if (route.query.type) {
+      correctedUrl.value = `/billing?type=${route.query.type}`;
+    }
     // const currentUrl = router.options.history.state.back || 'billing/view-all';
     // if (!currentUrl.includes('?type=chat') && !currentUrl.includes('?type=voice')) {
     //   correctedUrl.value = `/billing?type=chat`;

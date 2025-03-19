@@ -9,11 +9,12 @@
       to: `/bot-management/chat-bot/${botDetails.id}/dynamic-form`,
     },
   ]" :description="true" :disableSelector="false" :disable-back-button="false"> -->
-  <div class="mx-0 gap-3 py-2">
-    <div class="text-[18px] font-bold mt-4"> CRM Integrations </div>
+  <div class="mx-0 gap-3 py-0">
+    <!-- <div class="text-[18px] font-bold mt-4"> CRM Integrations </div> -->
     <CrmConfiguration />
-    <div class="pt-3">
-      <div class="text-[18px] font-bold mt-3 mb-5"> Dynamic Form </div>
+    <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full mb-5" />
+    <div>
+      <div class="text-[18px] font-bold mb-5"> Dynamic Form </div>
       <form @submit.prevent="dynamicForm" class="space-y-4">
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3 px-2">
           <SelectField name="fields[0].type" label="Type" :options="typeList" required />
@@ -38,10 +39,11 @@
         </div>
       </form>
       <!-- Preview Section -->
-      <div class="mt-8" v-if="botDetails.length">
+       <!-- {{formFields}} -->
+      <div class="mt-8" v-if="formFields.length">
         <h2 class="text-xl font-semibold">Form Preview</h2>
         <form class="space-y-4">
-          <div v-for="(field, index) in botDetails" :key="index" class="space-y-3 flex items-end gap-2">
+          <div v-for="(field, index) in formFields" :key="index" class="space-y-3 flex items-end gap-2">
             <!-- Type Field in Preview -->
             <!-- {{ field.placeholder }} -->
             <div v-if="field.type === 'date'" class="w-full">
@@ -60,18 +62,23 @@
               <TextField :name="field.model" :label="field.label" :placeholder="field.placeholder" :type="field.type"
                 required disabled />
             </div>
-            <UiButton variant="outline" type="button" @click="removeField(index)">
+            <div class="mt-0">
+              <UiButton variant="outline" type="button" @click="removeField(index)">
               <CloseIcon class="w-4 h-4" />
             </UiButton>
+            </div>
           </div>
         </form>
       </div>
-      <div class="text-[18px] font-bold mt-4"> Channel Configuration </div>
-      <CommunicationChannelConfig :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
-      <div class="text-[18px] font-bold mt-4"> Add tools </div>
-      <AddTools :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
-      <div class="text-[18px] font-bold mt-4"> Add Intents </div>
-      <IntentManagement :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
+      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full mt-5" />
+      <!-- <div class="text-[18px] font-bold mt-4"> Channel Configuration </div> -->
+      <CommunicationChannelConfig :botDetails="formFields" :refreshBot="props.refreshBot" />
+      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full mt-7 mb-6" />
+      <div class="text-[18px] font-bold"> Add tools </div>
+      <AddTools :botDetails="formFields" :refreshBot="props.refreshBot" />
+      <!-- <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full my-8" /> -->
+      <!-- <div class="text-[18px] font-bold mt-4"> Add Intents </div> -->
+      <!-- <IntentManagement :botDetails="props.botDetails" :refreshBot="props.refreshBot" /> -->
     </div>
   </div>
   <!-- </Page> -->
@@ -90,7 +97,8 @@ const isLoading = ref(false);
 const route: any = useRoute("chat-bot-id-dynamic-form");
 const botDetails: any = await getBotDetails(route.params.id);
 const { toCamelCase } = useToCamelCase();
-
+// const formFields = computed(() => props.botDetails.formStructure?.fields ?? []);
+const formFields = ref(props.botDetails.formStructure?.fields ?? []);
 const requiredList = reactive([
   { label: "Yes", value: true },
   { label: "No", value: false },
@@ -155,7 +163,7 @@ const { handleSubmit, values, errors, setFieldValue, resetForm } = useForm({
 const dynamicForm = handleSubmit(async (values: any) => {
   // title: values.title,
   const formattedData: any = {
-    fields: props.botDetails.length > 0 ? props.botDetails : values.fields.map((field: any) => ({
+    fields: formFields.value.length > 0 ? formFields.value : values.fields.map((field: any) => ({
       ...field,
       required: true,
       model: toCamelCase(field.label)  // Convert label to camelCase for each field
@@ -179,17 +187,16 @@ const addField = () => {
     toast.error("Please fill in all required fields before adding.");
     return;
   }
-
   values.fields?.forEach((items: any) => {
-    props.botDetails.push({ ...items, required: true, model: toCamelCase(items.label) })
+    formFields.value.push({ ...items, required: true, model: toCamelCase(items.label) })
   })
-  toast.success(`Field added successfully ${props.botDetails.length}`);
+  toast.success(`Field added successfully ${formFields.value.length}`);
 };
 
 const removeField = async (index: number) => {
-  props.botDetails?.splice(index, 1);
+  formFields.value?.splice(index, 1);
   await deleteDynamicForm({
-    payload: { fields: props.botDetails },
+    payload: { fields: formFields.value },
     botId: route.params.id,
   });
 };
