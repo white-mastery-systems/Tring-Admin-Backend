@@ -99,6 +99,7 @@ export default defineNuxtConfig({
     secretKey: "",
     envType: "",
     openaiApiKey: "",
+    geminiApiKey: "",
     public: {
       adminBaseUrl: "",
       chatBotBaseUrl: "",

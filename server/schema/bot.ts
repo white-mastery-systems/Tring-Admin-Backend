@@ -93,7 +93,8 @@ export const botUserSchema = chatbotSchema.table(
     email: varchar("email", { length: 128 }),
     mobile: varchar("mobile", { length: 16 }),
     countryCode: varchar("country_code"),
-    isNameVerified: boolean("is_name_verified").default(true),
+    isNameVerified: boolean("is_name_verified").default(false),
+    leadGenerated: boolean("lead_generated").default(false),
     secondaryEmail: varchar("secondary_email", { length: 128 }).array(),
     secondaryMobile: varchar("secondary_mobile", { length: 16 }).array(),
     metaData: jsonb("metadata"),
@@ -125,6 +126,8 @@ export const chatSchema = chatbotSchema.table(
     interacted: boolean("interacted").default(false),
     visitedCount: integer("visited_count").default(1),
     visitedHistory: jsonb("visited_history").array(),
+    chatExpiredAt: timestamp("chat_expired_at"),
+    chatSummary: jsonb("chat_summary").default({}),
     botUserId: uuid("bot_user_id").references(() => botUserSchema.id, {
       onDelete: "cascade",
     }),

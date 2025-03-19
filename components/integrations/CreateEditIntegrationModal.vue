@@ -41,10 +41,14 @@
                 ? integrationModalState.numberModalState?.id
                   ? "Update changes"
                   : "Connect Zoho CRM"
-                : values.crm === "zoho-bigin"
+                : (values.crm === "zoho-bigin")
                   ? integrationModalState.numberModalState?.id
                     ? "Update changes"
                     : "Connect Zoho Bigin"
+                : (values.crm === "zoho-desk")
+                  ? integrationModalState.numberModalState?.id
+                    ? "Update changes"
+                    : "Connect Zoho Desk"
                   : integrationModalState.numberModalState?.id
                     ? "Update changes"
                     : "Save changes"
@@ -104,6 +108,7 @@ watch(
       | "sell-do"
       | "zoho-crm"
       | "zoho-bigin"
+      | "zoho-desk"
       | "hubspot"
       | "slack"
       | "shopify"
@@ -147,7 +152,7 @@ onMounted(() => {
 const handleConnect = handleSubmit(async (values: any) => {
   isLoading.value = true;
 
-  let url = `${window.location.origin}/settings/integration/${values.crm}`;
+  let url = `${window.location.origin}/integration/${values.crm}`;
   // let url = "https://app.tringlabs.ai/settings";
   let scope = "";
   if (values.crm === "zoho-crm") {
@@ -158,6 +163,8 @@ const handleConnect = handleSubmit(async (values: any) => {
     scope =
       "ZohoCliq.Channels.CREATE,ZohoCliq.Channels.READ,ZohoCliq.Channels.UPDATE,ZohoCliq.Webhooks.CREATE";
     // scope = "https://accounts.zoho.in/oauth/v2/auth?scope=&client_id=1000.K0KXY300LK9C1SEEXNQG4P5I37YG4I&response_type=code&redirect_uri=https://tring-admin.pripod.com/settings/integration/zoho-cliq&access_type=offline";
+  } else if (values.crm === "zoho-desk") {
+    scope = "Desk.tickets.ALL,Desk.tasks.ALL,Desk.settings.ALL";
   }
 
   const payload: any = {
@@ -203,7 +210,7 @@ const handleConnect = handleSubmit(async (values: any) => {
     await createIntegration({
       integrationDetails: payload,
       onSuccess: () => {
-        if (values.crm === "zoho-bigin" || values.crm === "zoho-crm") {
+        if (values.crm === "zoho-bigin" || values.crm === "zoho-crm" || values.crm === "zoho-desk") {
           window.open(
             `https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=${scope}&redirect_uri=${url}&prompt=consent&access_type=offline`,
             "_blank",
@@ -254,6 +261,7 @@ const updateIntegrationTypes = (queryParam: any) => {
     integrationTypes.value = [
       { value: "sell-do", label: "Sell Do" },
       { value: "zoho-crm", label: "Zoho CRM" },
+      { value: "zoho-desk", label: "Zoho Desk" },
       { value: "zoho-bigin", label: "Zoho Bigin" },
       { value: "hubspot", label: "Hubspot" },
       { value: "reserve-go", label: "Reserve Go" },
@@ -270,6 +278,7 @@ const updateIntegrationTypes = (queryParam: any) => {
     integrationTypes.value = [
       { value: "sell-do", label: "Sell Do" },
       { value: "zoho-crm", label: "Zoho CRM" },
+      { value: "zoho-desk", label: "Zoho Desk" },
       { value: "zoho-bigin", label: "Zoho Bigin" },
       { value: "hubspot", label: "Hubspot" },
       { value: "reserve-go", label: "Reserve Go" },
