@@ -51,10 +51,10 @@ const intentTypes = [
 ];
 const logoData = ref()
 // ✅ Function to update industry selection
-const selectIndustry = (value: any) => {
-  selectedType.value = value;
-  // props.fetchConfig(value);
-};
+// const selectIndustry = (value: any) => {
+//   selectedType.value = value;
+//   // props.fetchConfig(value);
+// };
 const openPrimaryColorPicker = () => colorInput.value.$el.click();
 const openSecondaryColorPicker = () => secondarycolorInput.value.$el.click();
 const handleLogoChange = (event: any) => {
@@ -95,7 +95,7 @@ const handleLogoChange = (event: any) => {
     <UiCardContent class="grid gap-6 my-6 px-4">
       <!-- {{ intentTypes }} || intentTypes -->
       <!-- ✅ Industry selection - FIXED: Using selectedType directly in the class binding -->
-      <RadioGroup v-model="selectedType" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden">
+      <!-- <RadioGroup v-model="selectedType" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden">
         <div v-for="intent in intentTypes" :key="intent.value"
           class="min-w-[100px] max-w-[100px] min-h-[100px] max-h-[100px] md:min-w-[135px] md:max-w-[135px] md:min-h-[135px] md:max-h-[135px]"
           @click.stop="selectIndustry(intent.value)">
@@ -107,7 +107,7 @@ const handleLogoChange = (event: any) => {
           </Label>
           <div class="text-[12px] md:text-[12px] font-medium mt-2 text-center">{{ intent.label }}</div>
         </div>
-      </RadioGroup>
+      </RadioGroup> -->
       <!-- {{ props }} || asdad -->
       <!-- ✅ Company Name & Chatbot Name fields -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -141,7 +141,7 @@ const handleLogoChange = (event: any) => {
             <UiFormItem class="w-full">
               <UiFormControl>
                 <div
-                  class="flex items-center gap-8 rounded-lg bg-white py-[26px] px-[16px] border-[1px] border-solid border-[#E4E4E7]"
+                  class="flex items-center gap-8 rounded-lg bg-white py-[28px] px-[16px] border-[1px] border-solid border-[#E4E4E7]"
                   @click="openPrimaryColorPicker">
                   <div class="flex items-center w-full justify-between">
                     <div>
@@ -167,7 +167,7 @@ const handleLogoChange = (event: any) => {
             <UiFormItem class="w-full">
               <UiFormControl>
                 <div
-                  class="flex items-center gap-8 rounded-lg bg-white py-[26px] px-[16px] border-[1px] border-solid border-[#E4E4E7]"
+                  class="flex items-center gap-8 rounded-lg bg-white py-[28px] px-[16px] border-[1px] border-solid border-[#E4E4E7]"
                   @click="openSecondaryColorPicker">
                   <div class="flex items-center w-full justify-between">
                     <div>

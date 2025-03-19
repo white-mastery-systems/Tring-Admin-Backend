@@ -69,33 +69,44 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
     <!-- <div class="mt-4">
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full h-[0.5px]" />
     </div> -->
-    <UiCardContent class="grid gap-3 sm:gap-3 md:gap-6 p-4">
-      <UiRadioGroup v-model="selectedGoal" orientation="vertical"
-        class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5" :disabled="props.disabled">
-        <div v-for="option in props.intentOptions.goals" :key="option.value"
-          class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]"
-          @click="selectedGoal = option.value">
-          <div class="flex gap-4">
-            <UiRadioGroupItem :id="option.value" :value="option.value" class="h-4 w-4 sm:h-4 sm:w-4 md:h-6 md:w-6" />
-            <div class="flex flex-col gap-1">
-              <Label :for="option.value" class="font-medium text-[12px] sm:text-[12px] md:text-[14px]">{{ option.name
-              }}</Label>
-              <span class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[12px]">{{ option.description }}</span>
-            </div>
-          </div>
+    <UiCardContent class="grid gap-3 sm:gap-3 md:gap-4 p-4">
+  <UiRadioGroup v-model="selectedGoal" orientation="vertical"
+    class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5" :class="props.disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''">
+    <div v-for="option in props.intentOptions.goals" :key="option.value"
+      class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]"
+      @click="selectedGoal = option.value">
+      <div class="flex gap-4">
+        <!-- Custom radio circle matching the design -->
+        <div class="relative flex items-center justify-center h-5 w-5 flex-shrink-0">
+          <div class="h-full w-full rounded-full border border-gray-400" 
+               :class="{ 'border-black': selectedGoal === option.value }"></div>
+          <div v-if="selectedGoal === option.value" 
+               class="absolute inset-0 m-auto h-3 w-3 rounded-full bg-black"></div>
         </div>
-        <div class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]"
-          @click="selectedGoal = 'custom'">
-          <div class="flex gap-4">
-            <UiRadioGroupItem id="custom" value="custom" class="h-4 w-4 sm:h-4 sm:w-4 md:h-6 md:w-6" />
-            <div class="flex flex-col gap-1">
-              <Label for="custom" class="font-medium text-[12px] sm:text-[12px] md:text-[14px]">Custom</Label>
-              <span class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[12px]">"e.g., 'Rental Management Assistant
-                – Help users find and manage rental properties easily.'"</span>
-            </div>
-          </div>
+        <div class="flex flex-col gap-1">
+          <Label :for="option.value" class="font-medium text-[12px] sm:text-[12px] md:text-[14px]">{{ option.name }}</Label>
+          <span class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[12px]">{{ option.description }}</span>
         </div>
-      </UiRadioGroup>
+      </div>
+    </div>
+    <div class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]"
+      @click="selectedGoal = 'custom'">
+      <div class="flex gap-4">
+        <!-- Custom radio for the "custom" option -->
+        <div class="relative flex items-center justify-center h-5 w-5 flex-shrink-0">
+          <div class="h-full w-full rounded-full border border-gray-400"
+               :class="{ 'border-black': selectedGoal === 'custom' }"></div>
+          <div v-if="selectedGoal === 'custom'" 
+               class="absolute inset-0 m-auto h-3 w-3 rounded-full bg-black"></div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <Label for="custom" class="font-medium text-[12px] sm:text-[12px] md:text-[14px]">Custom</Label>
+          <span class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[12px]">"e.g., 'Rental Management Assistant
+            – Help users find and manage rental properties easily.'"</span>
+        </div>
+      </div>
+    </div>
+  </UiRadioGroup>
 
       <!-- Show input field only if "Custom" is selected -->
       <div class="flex items-center gap-5 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 w-full"

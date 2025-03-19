@@ -142,14 +142,14 @@ const mobileSidebarControl = (value: any) => {
             <SidebarMenuButton :tooltip="item.name" :class="[activeItems[item.name] ? 'bg-[#0F172A] text-white' : '']">
               <template v-if="item.children.length">
                 <NuxtLink :to="item.path + item.children[0].path" class="flex items-center gap-2"
-                  :class="(slideBarStore.siderBarslider) ? '' : 'w-full'">
+                  :class="(!slideBarStore.siderBarslider) ? '' : 'w-full'">
                   <component :is="item.icon" :stroke-width="1.5" :size="18"></component>
-                  <span v-if="(isMobile) ? isMobile : !(slideBarStore.siderBarslider)">{{ item.name }}</span>
+                  <span v-if="(isMobile) ? isMobile : (slideBarStore.siderBarslider)">{{ item.name }}</span>
                 </NuxtLink>
               </template>
               <template v-else>
                 <NuxtLink :to="item.path" class="flex items-center space-x-2"
-                  :class="(slideBarStore.siderBarslider) ? '' : 'w-full'" @click="mobileSidebarControl(item)">
+                  :class="(!slideBarStore.siderBarslider) ? '' : 'w-full'" @click="mobileSidebarControl(item)">
                   <component :is="item.icon" :stroke-width="1.5" :size="18"></component>
                   <span>{{ item.name }}</span>
                 </NuxtLink>

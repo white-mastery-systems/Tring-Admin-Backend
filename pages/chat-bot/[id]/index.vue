@@ -636,7 +636,32 @@ const handleAddEditBot = async (values: any) => {
 // };
 
 const handleActivateBot = async () => {
+  await refreshBot()
   isSubmitting.value = true;
+  const hasLogoInUI = botDetails.value?.metadata?.ui?.logo;
+  
+  // If no logo in UI, check if organization has a logo
+  const hasOrgLogo = botDetails.value?.organization?.logo?.url;
+  
+  if (!hasLogoInUI && !hasOrgLogo) {
+    toast.error("Please fill all required in Customize Your Chatbot's Look");
+    isSubmitting.value = false;
+    return;
+  }
+  
+  // Check required fields in prompt metadata
+  const promptMetadata = botDetails.value?.metadata?.prompt;
+  const hasName = promptMetadata.NAME;
+  const hasRole = promptMetadata?.ROLE;
+  const hasCompanyName = promptMetadata?.COMPANY;
+  const hasGoal = promptMetadata?.GOAL;
+  const hasLanguage = promptMetadata?.LANGUAGE;
+
+  if (!hasName || !hasRole || !hasCompanyName || !hasGoal || !hasLanguage) {
+    toast.error("Please fill all required fields in bot setup");
+    isSubmitting.value = false;
+    return;
+  }
   const activeDocuments = botDetails.value.documents.filter(
     (d) => d.status === "ready",
   );
@@ -647,7 +672,7 @@ const handleActivateBot = async () => {
       params: { id: paramId.params.id },
     });
   } else if (!botDetails.value.metadata?.prompt?.NAME) {
-    toast.error("Please add bot configuration to activate bot");
+    toast.error("Please add bot setup to activate bot");
     return navigateTo({
       name: "chat-bot-id",
       params: { id: paramId.params.id },

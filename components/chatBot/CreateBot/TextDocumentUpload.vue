@@ -1,29 +1,30 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { botStore } from "~/store/botStore";
 import { useRoute } from "vue-router";
+import { useDocumentUpload } from "~/composables/botManagement/chatBot/useDocumentUpload"; // Import the composable
 
 const scrapData = botStore();
-const text = ref('')
-// const text = ref(scrapData.scrapedData?.knowledge_base?.document_content || "");
+const text = ref('');
+const selectedIndex = ref(0); // Set default index to 0
 const route = useRoute();
 const props = defineProps<{
   contentSuggestions: any; // Adjust type based on actual response structure
   refresh: () => void;
 }>();
-// Watch for changes in scrapData
-// watch(
-//   () => scrapData.scrapedData?.knowledge_base?.document_content,
-//   (newValue) => {
-//     if (newValue) {
-//       text.value = newValue;
-//     }
-//   }
-// );
+const { createDocuments, uploadStatus, isUploading, uploadError } = useDocumentUpload();
+// Set default text to first suggestion if available
+onMounted(() => {
+  if (props.contentSuggestions?.suggestions?.length > 0) {
+    text.value = props.contentSuggestions.suggestions[0].content;
+  }
+});
+
 const clearTextField = () => {
   text.value = "";
+  selectedIndex.value = null; // Clear selection when text is cleared
 };
 
 // Expose method for parent access
@@ -61,38 +62,37 @@ const generatePDFAndUpload = async () => {
       files: pdfFile,
     },
   };
-
+console.log("generatePDFAndUpload -- generatePDFAndUpload",isUploading)
   // Upload to API
-  await createDocument(payload.botId, payload.document);
-  await props.refresh()
+  await createDocuments(payload.botId, payload.document);
+  await props.refresh();
+};
+
+const selectCard = (content: any, index: any) => {
+  text.value = content;
+  selectedIndex.value = index;
 };
 
 defineExpose({ clearTextField, generatePDFAndUpload });
-// Auto-generate PDF when text updates
-// watch(text, async (newText) => {
-//   if (newText.trim()) {
-//     await generatePDFAndUpload();
-//   }
-// });
-
 </script>
 
 <template>
   <div class="w-full border rounded-lg p-4">
     <UiTextarea v-model="text" placeholder="" class="border-none p-2 h-40">
     </UiTextarea>
-    <div class="grid grid-cols-3 gap-4 mt-4" v-if="false">
-      <div v-for="(card, index) in 3" :key="index" class="p-4 border rounded-lg shadow bg-white">
-        <!-- <h3 class="font-semibold text-gray-800">Lorem Ipsum is simply dummy text of the printing</h3> -->
-        <p class="text-sm text-gray-600">
-          Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown...
+    <div class="grid grid-cols-3 gap-4 mt-4">
+      <div
+        v-for="(card, index) in props.contentSuggestions.suggestions"
+        :key="index"
+        class="p-4 border rounded-lg shadow cursor-pointer max-h-[80px] overflow-y-auto"
+        :class="selectedIndex === index ? 'bg-blue-50 border-blue-300' : 'bg-white'"
+        @click="selectCard(card.content, index)"
+      >
+        <h3 class="font-medium text-gray-800 text-[14px]">{{card.title}}</h3>
+        <p class="text-sm text-gray-600 text-[12px]">
+          {{card.content}}
         </p>
       </div>
     </div>
-    <!-- <div class="flex justify-end mt-2">
-      <UiButton type="button" @click="generatePDFAndUpload" class="flex mt-2 text-white px-4 py-2 rounded">
-        Upload Document
-      </UiButton>
-    </div> -->
   </div>
 </template>

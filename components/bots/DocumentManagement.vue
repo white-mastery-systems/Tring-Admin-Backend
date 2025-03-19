@@ -15,7 +15,8 @@
         <div class="text-[18px] font-bold mb-6"> Document Management </div>
         <span class="flex flex-row">
           <!-- @click="uploadfile" -->
-          <DocumentUpload accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" />
+          <!-- <DocumentUpload accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" /> -->
+          <DocumentUploadV2 accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" />
           <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
         </span>
       </div>

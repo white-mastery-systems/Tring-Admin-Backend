@@ -4,7 +4,7 @@
     <BotConfig :botDetails="props.botDetails" :refreshBot="props.refreshBot" />
     <UiSeparator class="my-6"></UiSeparator>
     <!-- <div class="text-[18px] font-bold mb-0 mt-1"> Document </div> -->
-    <DocumentManagement :documents="props.documents" />
+    <DocumentManagement :documents="props.documents" :refresh="props.refreshBot" />
     <div class="mb-6 mt-1">
       <UiSeparator></UiSeparator>
     </div>

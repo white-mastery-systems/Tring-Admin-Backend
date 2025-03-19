@@ -8,6 +8,8 @@ import { useRoute } from 'vue-router'
 import { botStore } from "~/store/botStore";
 import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
 import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
+import { useContentSuggestions } from "~/composables/botManagement/chatBot/useContentSuggestions";
+import { useDocumentUpload } from "~/composables/botManagement/chatBot/useDocumentUpload"; // Import the composable
 
 const step = ref(1);
 const route = useRoute();
@@ -20,7 +22,8 @@ const pageLoading = ref(false)
 const isSubmitting = ref(false)
 const isDocumentListOpen = ref(false);
 const intervalId = ref<any>(null); // Store the interval ID
-  const { intentOptions, fetchConfig } = useChatbotConfig();
+const { intentOptions, fetchConfig } = useChatbotConfig();
+const { createDocuments, uploadStatus, isUploading, uploadError } = useDocumentUpload();
 // const uploadDocumentRef = ref(null);
 // const selectedType = ref('')
 // ✅ Define a single form
@@ -31,16 +34,23 @@ const { errors, values, handleSubmit, validateField, validate, setFieldValue } =
     secondaryColor: hslToHex('236, 61%, 74%'),
   },
 });
+const { contentSuggestions, suggestionLoading, suggestionError, fetchSuggestions } = useContentSuggestions();
 const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
 const showNextButton = computed(() => (step.value < 4) && !!values?.selectedType);
 const showBackButton = computed(() => (step.value === 1) && values?.selectedType)
 
 // ✅ Watch errors for debugging (optional)
+watch(() => values.type, (newType) => {
+  if (newType) {
+    fetchSuggestions(newType);
+  }
+});
 watch(() => scrapData, (newscrapData) => {
   if (!newscrapData) return;
   const extractHSLValues = (hslString) => hslString.replace(/hsl\(|\)/g, "");
   setFieldValue('NAME', newscrapData.scrapedData.chatbot.name ?? '');
   setFieldValue('COMPANY', newscrapData.scrapedData.brand?.name ?? '');
+  setFieldValue('type', newscrapData.scrapedData.brand?.industry ?? '');
   setFieldValue('color', hslToHex(extractHSLValues(newscrapData.scrapedData.chatbot.primary_color)) ?? "236, 61%, 54%, 1");
   setFieldValue('secondaryColor', hslToHex(extractHSLValues(newscrapData.scrapedData.chatbot.secondary_color)) ?? "236, 61%, 74%");
   setFieldValue('ROLE', 'custom');
@@ -49,9 +59,10 @@ watch(() => scrapData, (newscrapData) => {
   setFieldValue('logo', { url: newscrapData.scrapedData.brand?.logo_url } ?? {});
   setFieldValue("otherGoal", newscrapData.scrapedData.chatbot.goal || "");
 }, { deep: true, immediate: true });
+
 watch(() => botDetails.value, (newDetails) => {
   if (newDetails) { // Ensure newDetails is not null
-    setFieldValue('BotName', newDetails?.name ?? '');
+    // setFieldValue('BotName', newDetails?.name ?? '');
   }
 }, { deep: true, immediate: true });
 
@@ -75,8 +86,8 @@ const isDataLoading = computed(() => status.value === "pending");
 
 // ✅ Fields to validate per step
 const stepFields = {
-  1: [""], // Assuming validation for step 1 is based on document length
-  2: ["BotName", "NAME", "COMPANY", "color", "secondaryColor", "logo", "type"], // Step 2 fields
+  1: ["","type"], // Assuming validation for step 1 is based on document length
+  2: ["BotName", "NAME", "COMPANY", "color", "secondaryColor", "logo"], // Step 2 fields
   3: ["ROLE", "otherRole", "otherGoal"] // Include otherRole and otherGoal for step 3
 };
 
@@ -234,7 +245,7 @@ const submitForm = handleSubmit(async (values) => {
     //   name: "chat-bot-id",
     //   params: { id: botDetails.id },
     // });
-    toast.success("Bot details updated successfully!");
+    // toast.success("Bot details updated successfully!");
   } catch (error) {
     console.error("Error updating bot details:", error);
     toast.error("Something went wrong. Please try again.");
@@ -246,7 +257,9 @@ const checkDocumentStatus = async () => {
   if (status.value !== "success") return;
 
   pageLoading.value = true; // Ensure loading starts
-  toast.success("Your bot is being deployed. Please wait...");
+  setTimeout(() => {
+    toast.success("Your bot is being deployed. Please wait...");
+  }, 1000);
 
   let toastInterval = 0; // Counter to track every 16 seconds
 
@@ -360,7 +373,7 @@ onUnmounted(() => {
       <!-- <TextDocumentUpload ref="uploadDocumentRef" v-show="false" /> -->
       <form class="border border-gray-300 rounded-lg flex flex-col justify-between h-full flex-1 overflow-auto">
         <!-- @update:values="(newValues) => values = newValues" -->
-        <FirstStep ref="stepOneRef" v-show="step === 1" v-model:values="values" :errors="errors" :refresh="refresh" />
+        <FirstStep ref="stepOneRef" v-show="step === 1" v-model:values="values" :errors="errors" :refresh="refresh" :suggestionsContent="contentSuggestions" :refreshSuggestions="fetchSuggestions" :loading="suggestionLoading" />
         <SecondStep v-show="step === 2" v-model:values="values" :errors="errors" />
         <ThirdStep v-show="step === 3" v-model:values="values" :errors="errors" :intentOptions="intentOptions" />
         <FourthStep v-show="step === 4" v-model:values="values" :errors="errors" :disabled="isLoading" :intentOptions="intentOptions" />
@@ -370,7 +383,7 @@ onUnmounted(() => {
           <UiButton v-if="showBackButton" type="button" @click="firstStepBack" class="px-8" variant="outline">Back
           </UiButton>
           <UiButton v-if="showNextButton" type="button" @click="nextStep" class="px-8"
-            :loading="isDataLoading && isLoading">Next
+            :loading="isDataLoading || isLoading || isUploading">Next
           </UiButton>
           <UiButton type="button" v-if="step === 4" @click="submitForm" class="px-8" :loading="isLoading">
             Create Bot

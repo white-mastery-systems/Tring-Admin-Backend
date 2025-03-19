@@ -44,7 +44,7 @@
         </SelectField>
       </div>
       <!-- helperText="Enter a error mesage that will be shown a error when bot failed" -->
-      <TextField isTextarea="true" name="errorMessage" placeholder="enter error message" required />
+      <!-- <TextField isTextarea="true" name="errorMessage" placeholder="enter error message" required /> -->
       <!-- helperText="Here you can have additional instructions for your bot." -->
       <TextField name="NOTES" label="Notes" :isTextarea="true">
       </TextField>

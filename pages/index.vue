@@ -69,7 +69,7 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIcon, ChartNoAxesCombined, Code, Wallet,MessageSquare,PhoneCall } from "lucide-vue-next";
+import { MinusIcon, PlusIcon, DollarSign, UsersIcon, CreditCardIcon, ActivityIcon, ChartNoAxesCombined, Code, Wallet,MessageSquare,PhoneCall,CirclePercent } from "lucide-vue-next";
 import { Line } from "vue-chartjs";
 import ChatSession from "~/components/icons/ChatSession.vue";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
@@ -116,7 +116,7 @@ const navigavtionList = ref([
     title: "Campaign",
     subtitle: "Manage your campaigns here",
     url: "/contacts-management/campaigns",
-    icon: Code,
+    icon: CirclePercent,
   },
 ]);
 

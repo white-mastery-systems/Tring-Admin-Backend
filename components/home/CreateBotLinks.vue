@@ -31,6 +31,14 @@ const props = withDefaults(
 const createNewBots = async (url: any) => {
   if (url === "/voice-bot")  {
     navigateTo(url);
+    // const { data: botDetails, status: botLoadingStatus, refresh: integrationRefresh } = await useLazyFetch(`/api/voicebots/${route.params.id}`);
+    const getSingleVoiceBotDetails = await $fetch(`/api/voicebots`, {
+        method: "POST",
+        body: {},
+      });
+      if (getSingleVoiceBotDetails.id) {
+        navigateTo(`voice-bot/create-voice-bot/${getSingleVoiceBotDetails?.id}`);
+      }
   } else {
     try {
      const getSingleBotDetails = await $fetch("/api/bots", {
