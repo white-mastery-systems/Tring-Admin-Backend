@@ -37,7 +37,7 @@ export default defineEventHandler(async (event)=>{
       pricingPlanCode: hostedPageData?.data?.subscription?.plan.plan_code,
       startDate: subscriptionStartDate,
       endDate: subscriptionEndDate,
-      subscriptionStatus: "active" as "active"
+      subscriptionStatus: hostedPageData?.data?.subscription?.status === "trial" ? "trail" : "active" as "active"
     }
     
     const planCode = ( botType === "chat" )
@@ -48,7 +48,7 @@ export default defineEventHandler(async (event)=>{
     const planUsage = await getOrgPlanUsage(orgId, botType)
     
     if(planUsage) {
-      await updateSubscriptionPlanUsage(planUsage.id, { subscriptionStatus: "inactive" })
+      await updateSubscriptionPlanUsage(orgId, botType, { subscriptionStatus: "inactive" })
     }
   
     await Promise.all([

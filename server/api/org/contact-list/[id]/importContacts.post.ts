@@ -1,10 +1,12 @@
+import { logger } from "~/server/logger";
 import { errorResponse } from "~/server/response/error.response";
 import { getVoiceBucketCampaignId } from "~/server/utils/db/campaign";
 import { createChatContactBucketLink, createVoiceContactBucketLink, findExistingChatContactsLink, findExistingVoiceContactsLink } from "~/server/utils/db/contact-list";
 import { parseContactsFormDataFile } from "~/server/utils/db/contacts";
 
 export default defineEventHandler(async (event) => {
-  const organizationId = (await isOrganizationAdminHandler(event)) as string
+try {
+ const organizationId = (await isOrganizationAdminHandler(event)) as string
 
   const { id: bucketId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
@@ -93,4 +95,8 @@ export default defineEventHandler(async (event) => {
     }
   }
   return true
+  } catch (error: any) {
+    logger.error(`Import contacts inside the buckets Error: ${JSON.stringify(error.message)}`)
+    return errorResponse(event, 500, "Unable to import the file")
+  }
 })
