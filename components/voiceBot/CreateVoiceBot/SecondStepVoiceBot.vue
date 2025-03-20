@@ -59,45 +59,11 @@ const handleLogoChange = (event: any) => {
 </script>
 
 <template>
-  <UiCard class="border-0">
-    <UiCardHeader class="p-0">
-      <div class="flex items-center justify-between gap-4 px-4 pt-4">
-        <div class="flex flex-col gap-[6px]">
-          <UiCardTitle class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B]">Basic bot details
-          </UiCardTitle>
-          <UiCardDescription class="font-normal text-[12px] sm:text-[12px] md:text-[14px] text-[#71717A]">
-            Enter your basic bot details
-          </UiCardDescription>
-        </div>
-        <UiCardDescription class="text-[14px] font-medium">
-          <span class="text-[#09090B]">Step 2</span><span class="text-[#64748B]">/6</span>
-        </UiCardDescription>
-      </div>
-    </UiCardHeader>
-
-    <div class="mt-4">
-      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full h-[0.5px]" />
-    </div>
-
-
-    <UiCardContent class="grid gap-6 my-6 px-4">
-      <!-- {{ intentTypes }} || intentTypes -->
-      <!-- ✅ Industry selection - FIXED: Using selectedType directly in the class binding -->
-      <!-- <RadioGroup v-model="selectedType" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden">
-        <div v-for="intent in intentTypes" :key="intent.value"
-          class="min-w-[100px] max-w-[100px] min-h-[100px] max-h-[100px] md:min-w-[135px] md:max-w-[135px] md:min-h-[135px] md:max-h-[135px]"
-          @click.stop="selectIndustry(intent.value)">
-          <RadioGroupItem :id="intent.value" :value="intent.value" class="peer hidden" />
-          <Label :for="intent.value"
-            class="w-full h-full flex items-center justify-center p-4 rounded-lg bg-[#F2F2F2] transition-all duration-300"
-            :class="[selectedType === intent.value ? 'border-2 border-[#09090b]' : 'border-transparent']">
-            <component :is="intent.icon" class="w-[50px] h-[50px]" :stroke-width="0.75" />
-          </Label>
-          <div class="text-[12px] md:text-[12px] font-medium mt-2 text-center">{{ intent.label }}</div>
-        </div>
-      </RadioGroup> -->
-      <!-- {{ props }} || asdad -->
-      <!-- ✅ Company Name & Chatbot Name fields -->
+      <BotSetupCard 
+        title="Basic bot details" 
+        description="Enter your basic bot details" 
+        currentStep="2" 
+        totalSteps="6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <TextField name="newBotName" label="Voicebot Name" class="text-[14px]" placeholder="Enter your bot name"
           v-model="newBotName" />
@@ -118,6 +84,5 @@ const handleLogoChange = (event: any) => {
         <TextField label="Chat Agent Name" name="NAME" class="text-[14px]" placeholder="Enter Your Chat Agent Name"
           v-model="COMPANY" /> -->
       </div>
-    </UiCardContent>
-  </UiCard>
+    </BotSetupCard>
 </template>

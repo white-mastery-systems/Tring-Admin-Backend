@@ -72,25 +72,11 @@ const changeKnowledge = () => {
 </script>
 
 <template>
-  <UiCard class="border-0 flex flex-col shadow-none h-full">
-    <!-- Header Section -->
-    <UiCardHeader class="p-0">
-      <div class="flex items-center justify-between gap-4 px-4 pb-2 pt-2">
-        <div class="flex flex-col gap-[3px]">
-          <UiCardTitle class="font-bold text-[18px] md:text-[20px] text-[#09090B]">
-            Build Your Bot's Knowledge
-          </UiCardTitle>
-          <UiCardDescription class="font-normal text-[14px] text-[#71717A]">
-            Enter your industry type and other details
-          </UiCardDescription>
-        </div>
-        <UiCardDescription class="text-[14px] font-medium">
-          <span class="text-[#09090B]">Step 1</span><span class="text-[#64748B]">/6</span>
-        </UiCardDescription>
-      </div>
-      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0]" />
-    </UiCardHeader>
-    
+    <BotSetupCard 
+      title="Build Your Bot's Knowledge" 
+      description="Enter your industry type and other details" 
+      currentStep="1" 
+      totalSteps="6">
     <!-- Main Content Area -->
     <div class="flex flex-col items-center px-4 pb-4 pt-2 flex-grow">
       <!-- Initial Selection Screen -->
@@ -229,5 +215,5 @@ const changeKnowledge = () => {
         </div>
       </div>
     </div>
-  </UiCard>
+  </BotSetupCard>
 </template>
