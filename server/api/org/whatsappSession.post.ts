@@ -1,5 +1,6 @@
 import { logger } from "~/server/logger";
 import { createOrgWhatsappSession, getOrgWhatsappSessions } from "~/server/utils/db/whatsappSessions";
+import { updateSubscriptionPlanUsageById } from "~/server/utils/v2/db/planUsage";
 
 export default defineEventHandler(async (event) => {
   const body = await isValidBodyHandler(event, z.object({
@@ -38,7 +39,7 @@ export default defineEventHandler(async (event) => {
         await Promise.all([
           createOrgWhatsappSession(body),
           updateOrganization(organizationId, { wallet: whatsappWalletBalance }),
-          updateSubscriptionPlanUsage(orgPlanUsage?.id!, { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 })
+          updateSubscriptionPlanUsageById(orgPlanUsage?.id!, { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 })
         ])
         return { status: true, whatsappWalletBalance, organizationName: orgDetail?.name, revisited: true }
       }
@@ -47,7 +48,7 @@ export default defineEventHandler(async (event) => {
       await Promise.all([
         createOrgWhatsappSession(body),
         updateOrganization(organizationId, { wallet: whatsappWalletBalance }),
-        updateSubscriptionPlanUsage(orgPlanUsage?.id!, { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 })
+        updateSubscriptionPlanUsageById(orgPlanUsage?.id!, { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 })
       ])
       return { status: true, whatsappWalletBalance, organizationName: orgDetail?.name, revisited: false }
     }
