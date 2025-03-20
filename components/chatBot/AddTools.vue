@@ -1,4 +1,5 @@
 <template>
+  
   <!-- :bread-crumbs="[
     { label: `${botDetails?.name}`, to: `/bot-management/chat-bot/${botDetails?.id}` },
     {
@@ -16,7 +17,7 @@
       to: `/bot-management/chat-bot/${botDetails.id}/tools`,
     },
   ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false"> -->
-  <div class="pt-8">
+  <div class="pt-4">
     <form @submit.prevent="dynamicToolsForm" class="space-y-6 pt-2 sm:pt-2 md:pt-0">
       <!-- Default Tools Section -->
       <div class="mb-6">

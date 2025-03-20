@@ -8,10 +8,10 @@
         </div>
       </div>
     </template>
-    <div class="flex items-center gap-2 overflow-x-scroll pb-2">
+    <div class="flex items-center gap-2 overflow-auto pb-2 w-full">
       <div class="flex items-center gap-2">
         <UiInput v-model="filters.q" @input="filters.page = '1'"
-          class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+          class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[170px] lg:max-w-[170px] xl:max-w-[170px]"
           placeholder="Search User..." />
         <BotFilter v-model="filters.botId" />
         <LivePreviewFilter v-model="filters.botUserName" />
@@ -23,11 +23,13 @@
           class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">Clear Filters</UiButton>
       </div>
     </div>
-    <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="($event) => {
+    <!-- <div> -->
+      <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
       }
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="chats"
-      :page-size="20" :is-loading="isDataLoading" :height="13" height-unit="vh" />
+      :page-size="20" :is-loading="isDataLoading" :height="16" height-unit="vh" />
+    <!-- </div> -->
   </Page>
 </template>
 <script setup lang="ts">
@@ -163,9 +165,9 @@ const columns = [
     header: "Country",
     cell: (info) => info.getValue() || "-",
   }),
-  columnHelper.accessor("updatedAt", {
-    header: "Updated At",
-  }),
+  // columnHelper.accessor("updatedAt", {
+  //   header: "Updated At",
+  // }),
   columnHelper.accessor("id", {
     header: "Action",
     cell: ({ row }) =>

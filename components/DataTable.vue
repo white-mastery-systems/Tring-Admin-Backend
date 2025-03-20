@@ -74,10 +74,10 @@ const props = withDefaults(
   <div class="space-y-4">
     <div :class="[
         'relative overflow-auto rounded-lg border table-scroll',
-        props.height ? `h-screen-minus-${props.height}` : '',
+        props.height ? (table.getRowModel().rows?.length >= 10) ? `h-screen-minus-${props.height}` : 'h-auto' : '',
       ]">
       <UiTable class="text-left text-gray-500">
-        <UiTableHeader class="sticky top-0 bg-gray-50 text-xs uppercase">
+        <UiTableHeader class="sticky top-0 bg-gray-50 text-xs capitalize">
           <UiTableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <UiTableHead v-for="(header, index) in headerGroup.headers" :key="header.id"
               class="text-md text-nowrap px-6 py-2 font-extrabold text-gray-700" scope="col">
@@ -114,10 +114,15 @@ const props = withDefaults(
             </UiTableRow>
           </template>
           <template v-else>
-            <UiTableRow>
-              <UiTableCell col-span="{columns.length}" class="h-24 text-center">
+            <UiTableRow class="w-full">
+            <UiTableCell
+              :colspan="columns.length"
+              class="h-24 text-center w-full table-cell"
+            >
+              <div class="flex justify-center items-center w-full">
                 No results.
-              </UiTableCell>
+              </div>
+            </UiTableCell>
             </UiTableRow>
           </template>
         </UiTableBody>
@@ -131,7 +136,8 @@ const props = withDefaults(
         </UiTableFooter>
       </UiTable>
     </div>
-    <div v-if="paginationControl"
+    <!-- {{ table.getRowModel().rows?.length }} -->
+    <div v-if="paginationControl && (table.getRowModel().rows?.length >= 10)"
       class="flex w-full flex-col pb-2 sm:pb-2 items-center justify-center space-y-2 overflow-x-scroll sm:flex-row sm:justify-between sm:space-y-0 md:pb-4 lg:pb-0 xl:pb-0">
       <span class="hidden w-[10%] text-xs text-gray-500 sm:hidden md:flex lg:flex xl:flex">Page {{ page }} of {{
         totalPageCount }}</span>

@@ -10,17 +10,18 @@
     },
   ]" :disableSelector="true"> -->
   <!-- v-if="integrations.length === 0" -->
-  <div class="pt-5 py-4">
+  <div class="pt-5">
     <!-- <template #actionButtons> -->
-    <div class="flex justify-end">
-    <UiButton class="mb-4 flex items-center justify-end" @click="
+    <div class="flex items-center justify-between mb-5">
+      <div class="text-[18px] font-bold"> Channel Configuration </div>
+    <UiButton class="flex items-center justify-end" @click="
         () => {
           communicationChannelModalState.open = true;
           communicationChannelModalState.id = null;
         }
       ">
-      Link channel
-      </UiButton>
+       Link channel
+    </UiButton>
       <!-- Communication -->
 <!-- </template> -->
     </div>

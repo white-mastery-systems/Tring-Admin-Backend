@@ -19,7 +19,7 @@
       (filters.page = '1'), (filters.limit = $event);
     }
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :is-loading="isDataLoading"
-      :columns="columns" :page-size="20" :height="17" height-unit="vh" />
+      :columns="columns" :page-size="20" :height="14" height-unit="vh" />
 
     <CreateEditBucketNumberModal :typeOfAddContacts='addChatBotContacts' v-model="addBucketModalState" botType="chat"
       @confirm="() => {

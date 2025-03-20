@@ -3,7 +3,7 @@
     { label: `${botDetails.name}`, to: `/bot-management/chat-bot/${botDetails.id}` },
     { label: 'Email Configuration', to: `/bot-management/chat-bot/${botDetails.id}/config` }
   ]"> -->
-    <div>
+    <div class="mt-6">
       <DataTable :columns="columns" :data="intentData" :page-size="8" :is-loading="false" :height="20" height-unit="vh"
         :totalCount="totalCount" :totalPageCount="totalPageCount" :page="page" />
       <CreateEditEmailConfigModal v-model="emailConfigModalState" :id="emailConfigModalState?.id"

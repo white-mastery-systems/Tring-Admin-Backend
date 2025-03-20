@@ -55,7 +55,7 @@ const onSubmit = handleSubmit(async (value: any) => {
 
         <UiButton :disabled="isLoading" :loading="isLoading" class="text-[16px] mt-5">
           <!-- <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" /> -->
-          Login In
+          Login
         </UiButton>
       </div>
     </form>

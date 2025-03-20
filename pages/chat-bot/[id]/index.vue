@@ -140,8 +140,12 @@
         )" :key="list.id" @click="async () => {
           isSubmitting = true;
           isDocumentListOpen = false;
-          await singleDocumentDeploy(list);
-          createBotsuccessfulState.open = true;
+          try {
+            await singleDocumentDeploy(list);
+            createBotsuccessfulState.open = false;
+          } catch (err) {
+            createBotsuccessfulState.open = false;
+          }
         }
         ">
 
@@ -157,7 +161,7 @@
     <!-- <div>
       <CreateBotFields ref="childRef" @confirm="handleAddEditBot" />
     </div> -->
-    <div class="font-bold text-[20px] mt-3">
+    <div class="font-bold text-[20px]">
       View and Edit your Chatbots features
     </div>
 
@@ -170,8 +174,8 @@
       @success="() => {
       console.log('on success')
     }" />
-    <div v-if="false">
-      <div class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]">
+    <div>
+      <div v-if="false" class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]">
         <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
           <div class="items-cetner flex gap-4">
             <div v-if="botDetails.documentId" class="flex items-center gap-[5px] text-[#1abb00]">
@@ -294,8 +298,12 @@
             )" :key="list.id" @click="async () => {
                 isSubmitting = true;
                 isDocumentListOpen = false;
-                await singleDocumentDeploy(list);
-                createBotsuccessfulState.open = true;
+                try {
+                  await singleDocumentDeploy(list);
+                  createBotsuccessfulState.open = false;
+                } catch (err) {
+                  createBotsuccessfulState.open = false;
+                }
               }
               ">
             <span class="w-[95%] truncate">
@@ -628,7 +636,32 @@ const handleAddEditBot = async (values: any) => {
 // };
 
 const handleActivateBot = async () => {
+  await refreshBot()
   isSubmitting.value = true;
+  const hasLogoInUI = botDetails.value?.metadata?.ui?.logo;
+  
+  // If no logo in UI, check if organization has a logo
+  const hasOrgLogo = botDetails.value?.organization?.logo?.url;
+  
+  if (!hasLogoInUI && !hasOrgLogo) {
+    toast.error("Please fill all required in Customize Your Chatbot's Look");
+    isSubmitting.value = false;
+    return;
+  }
+  
+  // Check required fields in prompt metadata
+  const promptMetadata = botDetails.value?.metadata?.prompt;
+  const hasName = promptMetadata.NAME;
+  const hasRole = promptMetadata?.ROLE;
+  const hasCompanyName = promptMetadata?.COMPANY;
+  const hasGoal = promptMetadata?.GOAL;
+  const hasLanguage = promptMetadata?.LANGUAGE;
+
+  if (!hasName || !hasRole || !hasCompanyName || !hasGoal || !hasLanguage) {
+    toast.error("Please fill all required fields in bot setup");
+    isSubmitting.value = false;
+    return;
+  }
   const activeDocuments = botDetails.value.documents.filter(
     (d) => d.status === "ready",
   );
@@ -639,7 +672,7 @@ const handleActivateBot = async () => {
       params: { id: paramId.params.id },
     });
   } else if (!botDetails.value.metadata?.prompt?.NAME) {
-    toast.error("Please add bot configuration to activate bot");
+    toast.error("Please add bot setup to activate bot");
     return navigateTo({
       name: "chat-bot-id",
       params: { id: paramId.params.id },
@@ -655,6 +688,7 @@ const handleActivateBot = async () => {
     try {
       await singleDocumentDeploy(activeDocuments[0]);
     } catch (err) {
+      createBotsuccessfulState.value.open = false
       isSubmitting.value = false;
       toast.error("Failed to active the bot, try again");
       return;

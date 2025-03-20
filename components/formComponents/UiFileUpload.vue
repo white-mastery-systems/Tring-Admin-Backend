@@ -1,34 +1,38 @@
 <template>
-  <div v-if="fileType === 'image'" class="w-full">
-    <div class="flex w-full gap-4">
-      <div class="flex items-center justify-center h-24 w-[96px] rounded-lg border-[1px] border-gray-300">
-        <label for="imageView1">
-          <img v-if="url?.length" :class="class" :src="url" alt="" class="rounded-lg w-full" />
-          <div v-else class="flex flex-col items-center">
-            <img :class="class" src="assets/icons/image_preview.svg" alt="" class="w-[40px] h-[40px]" />
-            <span class="text-[#71717A] text-[14px]">Preview</span>
-          </div>
-          <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept"
-            id="imageView1" />
-        </label>
-      </div>
-      <div class="flex-1">
-        <label
-          class="dark:hover:bg-bray-800 flex h-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-          <span class="whitespace-nowrap flex flex-col items-center texr-[12px] italic text-[#000000]">
-            {{ props.label || "Upload File" }}
-            <span class="text-[10px] text-gray-500" v-if="props?.helperText?.length">
-              {{ props.helperText }}
-            </span>
+<div v-if="fileType === 'image'" class="w-full">
+  <div class="flex w-full gap-4">
+    <!-- Preview area - fixed size -->
+    <div class="flex-shrink-0 flex items-center justify-center h-24 w-24 rounded-lg border border-gray-300 overflow-hidden">
+      <label for="imageView1" class="w-full h-full cursor-pointer">
+        <div v-if="url?.length" class="w-full h-full flex items-center justify-center">
+          <img :class="class" :src="url" alt="" class="object-cover w-full h-full rounded-lg" />
+        </div>
+        <div v-else class="w-full h-full flex flex-col items-center justify-center">
+          <img :class="class" src="assets/icons/image_preview.svg" alt="" class="w-10 h-10" />
+          <span class="text-[#71717A] text-xs mt-1">Preview</span>
+        </div>
+        <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept" id="imageView1" />
+      </label>
+    </div>
+    
+    <!-- Upload area - flexible width -->
+    <div class="flex-1">
+      <label
+        class="dark:hover:bg-bray-800 flex h-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600 w-full">
+        <span class="whitespace-nowrap flex flex-col items-center text-[8px] sm:text-[8px] md:text-[12px] italic text-[#000000]">
+          {{ props.label || "Upload File" }}
+          <span class="text-[6px] sm:text-[6px] md:text-[10px] text-gray-500" v-if="props?.helperText?.length">
+            {{ props.helperText }}
           </span>
-          <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept" />
-        </label>
-        <span class="text-[0.75rem] text-[#ef4444] font-medium" v-if="errorMessage">
-          {{ errorMessage }}
         </span>
-      </div>
+        <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept" />
+      </label>
+      <span class="text-[14px] font-medium text-red-500" v-if="errorMessage">
+        {{ errorMessage }}
+      </span>
     </div>
   </div>
+</div>
 
   <div v-else-if="fileType === 'file'">
     <div>

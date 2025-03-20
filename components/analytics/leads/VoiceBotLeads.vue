@@ -13,7 +13,7 @@
       (props.filters.page = '1'), (props.filters.limit = $event);
     }
     " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="leads"
-      :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="17" height-unit="vh" />
+      :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="36" height-unit="vh" />
   </div>
 </template>
 <script setup lang="ts">

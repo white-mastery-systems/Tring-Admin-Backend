@@ -26,7 +26,7 @@
       (filters.page = '1'), (filters.limit = $event);
     }
     " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="bots"
-      :page-size="20" :is-loading="isDataLoading" :height="20" height-unit="vh" />
+      :page-size="20" :is-loading="isDataLoading" :height="16" height-unit="vh" />
   </Page>
   <AddChatBotModal v-model="agentModalState" @confirm="() => {
     agentModalState.open = false;
@@ -56,7 +56,7 @@ const breadcrumbStore = useBreadcrumbStore();
 
 breadcrumbStore.setBreadcrumbs([
   {
-    label: "CreateBot", // Dynamic name
+    label: "Chat Bot", // Dynamic name
     to: `/chat-bot`,
   },
 ]);
@@ -132,7 +132,12 @@ const onChangeStatus = (value: any) => {
   }
 }
 const handleRowClick = async (row: any) => {
-  await navigateTo(`/chat-bot/${row.original.id}`);
+  console.log('chat click',row.original.id)
+  // await navigateTo(`/chat-bot/${row.original.id}`);
+  await navigateTo({
+    name: "chat-bot-id",
+    params: { id: row.original.id },
+  });
 }
 
 const handleClearFilters = () => {

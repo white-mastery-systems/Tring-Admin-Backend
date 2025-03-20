@@ -35,7 +35,8 @@ const { loading } = toRefs(props);
     " :disabled="loading || false">
     <template v-if="loading">
       <Icon name="svg-spinners:90-ring-with-bg"
-        class="h-6 w-6 animate-spin text-white"
+        class="h-6 w-6 animate-spin"
+        :class="(variant === 'outline' ? 'text-gray-500' : 'text-white')"
         />
     </template>
     <slot v-else />

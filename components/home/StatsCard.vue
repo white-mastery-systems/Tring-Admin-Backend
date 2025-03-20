@@ -43,7 +43,8 @@ const props = withDefaults(defineProps<{
     <Card class="w-full">
       <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle class="text-[14px] font-medium">
-          {{ props.title }}
+          <!-- {{ props.title }} -->
+          {{ props.title.charAt(0).toUpperCase() + props.title.slice(1) }}
         </CardTitle>
         <!-- <component :is="props.icon" class="h-4 w-4 text-[#71717A]"></component> -->
         <!-- <img src="ActivityIcon" width="50" class="rounded-lg" /> -->

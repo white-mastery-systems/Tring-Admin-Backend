@@ -1,7 +1,7 @@
 <template>
   <div>
     <form @submit.prevent="uiUpdate" class="space-y-6">
-      <div class="flex w-full flex-col gap-[13px] py-4 overflow-scroll">
+      <div class="flex w-full flex-col gap-[13px] pt-4 overflow-scroll">
 
         <!-- File Upload for Logo -->
         <!-- <div class="w-[20%]">
@@ -200,7 +200,7 @@
         </FieldArray> -->
 
         <!-- Submit Button -->
-        <div class="my-auto flex w-full justify-end py-2">
+        <div class="my-auto flex w-full justify-end py-0">
           <UiButton type="submit" size="lg" :loading="isLoading">Submit</UiButton>
         </div>
       </div>
