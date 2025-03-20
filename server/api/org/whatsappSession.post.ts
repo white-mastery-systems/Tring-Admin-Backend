@@ -1,4 +1,5 @@
 import { createOrgWhatsappSession, getOrgWhatsappSessions } from "~/server/utils/db/whatsappSessions";
+import { updateSubscriptionPlanUsageById } from "~/server/utils/v2/db/planUsage";
 
 export default defineEventHandler(async (event) => {
   const body = await isValidBodyHandler(event, z.object({
@@ -35,7 +36,7 @@ export default defineEventHandler(async (event) => {
     if (hoursDifference > 2) {
       await createOrgWhatsappSession(body)
       await updateOrganization(organizationId, { wallet: whatsappWalletBalance })
-      await updateSubscriptionPlanUsage(
+      await updateSubscriptionPlanUsageById(
         orgPlanUsage?.id!,
         { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 }
       )
@@ -45,7 +46,7 @@ export default defineEventHandler(async (event) => {
   } else {
     await createOrgWhatsappSession(body)
     await updateOrganization(organizationId, { wallet: whatsappWalletBalance })
-    await updateSubscriptionPlanUsage(
+    await updateSubscriptionPlanUsageById(
       orgPlanUsage?.id!,
       { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 }
     )
