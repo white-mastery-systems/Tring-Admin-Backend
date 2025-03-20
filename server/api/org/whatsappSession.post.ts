@@ -1,4 +1,5 @@
 import { logger } from "~/server/logger";
+import countriesData from "~/assets/country-codes.json";
 import { createOrgWhatsappSession, getOrgWhatsappSessions } from "~/server/utils/db/whatsappSessions";
 import { updateSubscriptionPlanUsageById } from "~/server/utils/v2/db/planUsage";
 
@@ -21,11 +22,12 @@ export default defineEventHandler(async (event) => {
     
     let whatsappWalletBalance = orgDetail?.wallet || 0
   
-    if(orgZohoSubscription?.subscriptionStatus !== "active" && whatsappWalletBalance < 1.5) {
+    const reduceAmount = countriesData.find((item)=> item.dial_code == body.countryCode)?.WhatsappSessionCost || 1.5
+    if(orgZohoSubscription?.subscriptionStatus !== "active" && whatsappWalletBalance < reduceAmount) {
       return { status: false, whatsappWalletBalance, organizationName: orgDetail?.name, revisited: false }
     }
    
-    const whatsappSessionPrice = parseFloat((1 * 1.5).toFixed(2))
+    const whatsappSessionPrice = parseFloat((1 * reduceAmount).toFixed(2));
     whatsappWalletBalance = Math.max(0, parseFloat((whatsappWalletBalance - whatsappSessionPrice).toFixed(2)));
   
     const whatsappSessionExist = await getOrgWhatsappSessions(organizationId, pid, mobile)
