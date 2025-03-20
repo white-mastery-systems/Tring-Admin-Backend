@@ -2,7 +2,7 @@ import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response";
 import { updateUserDetailById } from "~/server/utils/db/user";
 import { getZohoBillingHostedPageDetails } from "~/server/utils/v2/billing/module";
-import { createSubscriptionPlanUsage, getOrgPlanUsage, updateSubscriptionPlanUsage } from "~/server/utils/v2/db/planUsage";
+import { createSubscriptionPlanUsage, getOrgPlanUsage, updateSubscriptionPlanUsageByOrgId } from "~/server/utils/v2/db/planUsage";
 import { createOrgZohoSubscription, isOrgZohoSubscriptionExists, updateOrgZohoSubscription } from "~/server/utils/v2/db/zohoSubscription";
 
 const zodSubscriptionVerifyPayment = z.object({
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event)=>{
       pricingPlanCode: hostedPageData?.data?.subscription?.plan.plan_code,
       startDate: subscriptionStartDate,
       endDate: subscriptionEndDate,
-      subscriptionStatus: "active" as "active"
+      subscriptionStatus: hostedPageData?.data?.subscription?.status === "trial" ? "trail" : "active" as "active"
     }
     
     const planCode = ( botType === "chat" )
@@ -48,7 +48,7 @@ export default defineEventHandler(async (event)=>{
     const planUsage = await getOrgPlanUsage(orgId, botType)
     
     if(planUsage) {
-      await updateSubscriptionPlanUsage(planUsage.id, { subscriptionStatus: "inactive" })
+      await updateSubscriptionPlanUsageByOrgId(orgId, botType, { subscriptionStatus: "inactive" })
     }
   
     await Promise.all([

@@ -1,4 +1,5 @@
 import { createCallLogs } from "~/server/utils/db/call-logs"
+import { updateSubscriptionPlanUsageById } from "~/server/utils/v2/db/planUsage"
 
 const zodInsertCallLogsValidator = z.object({
   callSid: z.string(),
@@ -29,7 +30,7 @@ export default defineEventHandler(async (event) => {
   
   const totalMinutes = (voicePlanUsage?.interactionsUsed || 0) + callDuration
 
-  await updateSubscriptionPlanUsage(voicePlanUsage?.id!, { interactionsUsed: totalMinutes })
+  await updateSubscriptionPlanUsageById(voicePlanUsage?.id!, { interactionsUsed: totalMinutes })
 
   return isValidReturnType(event, data)
 })

@@ -48,6 +48,6 @@ export default defineEventHandler(async(event) => {
     return { status: true }
   } catch(error: any) {
     logger.error(`Contacts import error: ${JSON.stringify(error?.message)}`);
-    return errorResponse(event, 500, error.message);
+    return errorResponse(event, 500, "Unable to import the file");
   }
 })
