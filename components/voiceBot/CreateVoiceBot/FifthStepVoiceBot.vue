@@ -14,6 +14,9 @@ const emit = defineEmits(["update:values"]);
 const { value: selectedGoal } = useField<string>('GOAL');
 const { value: type } = useField("type");
 const { value: temperature } = useField("temperature")
+const { value: provider_stt } = useField("provider_stt")
+const { value: provider_tts } = useField("provider_tts")
+const { value: max_output_token } = useField("max_output_token")
 const { value: otherRole, errorMessage: otherRoleError } = useField("otherRole");
 const { value: otherGoal, errorMessage: otherGoalError } = useField("otherGoal");
 // const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
@@ -55,6 +58,16 @@ const providersTSS = [
   },
 ];
 const tokens = ["8192", "1024", "2048", "4096"];
+const models = ref([
+  {
+    label: "Long",
+    value: "long",
+  },
+  {
+    label: "Short",
+    value: "short",
+  },
+]);
 // Watch for role selection changes
 watch(selectedGoal, (newValue) => {
   if (newValue !== "custom") {
@@ -107,34 +120,31 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
     <UiCardContent class="grid gap-3 sm:gap-3 md:gap-4 p-4">
         <div>
             <span class="font-bold">Speech-To-Text (STT) Setup</span>
-            <SelectField name="provider_stt" :options="providers" label="Provider" placeholder="Select provider"
-            helperText="Select your provider." required>
-          </SelectField>
-        </div>
-        <div>
-            <span class="font-bold">Text-To-Speech (TTS) Setup</span>
-            <SelectField name="provider_tts" label="Provider" placeholder="Select provider"
-              helperText="Select your provider." :options="providersTSS" required />
-        </div>
-        <div>
-            <span class="font-bold">Large Language Model (LLM) Setup</span>
             <div class="grid grid-cols-2 gap-4">
-            <SelectField name="max_output_token" label="Max Tokens" placeholder="Max Tokens"
-            :options="tokens.map((token) => ({ label: token, value: token }))" :required="true" />
-            <div class="mt-5 flex flex-col gap-2">
-                <RangeSlider 
-                format="percentage" 
-                :customControl="false" 
-                :step="1" 
-                :name="values.temperature" 
-                label="Temperature" 
-                @update="($event) => { temperature = $event; }" 
-                required 
-                placeholder="Enter speaking Rate" 
-                min="0" 
-                max="100" 
-                />
+              <SelectField v-model="provider_stt" name="provider_stt" :options="providers" label="Provider" placeholder="Select provider"
+              helperText="Select your provider." required></SelectField>
+              <SelectField v-if="provider_stt === 'deepgram'" name="model" :options="models" label="Model"
+              placeholder="Select Model" helperText="Select your model.">
+            </SelectField>
             </div>
+        </div>
+        <div>
+          <span class="font-bold">Text-To-Speech (TTS) Setup</span>
+          <div class="grid grid-cols-2 gap-4">
+            <SelectField v-model="provider_tts" name="provider_tts" label="Provider" placeholder="Select provider"
+              helperText="Select your provider." :options="providersTSS" required />
+            <TextField v-if="provider_tts === 'google'" type="text" label="Name" name="name" required
+            placeholder="Name" />
+          </div>
+        </div>
+        <div>
+        <span class="font-bold">Large Language Model (LLM) Setup</span>
+        <div class="grid grid-cols-2 gap-4">
+        <SelectField v-model="max_output_token" name="max_output_token" label="Max Tokens" placeholder="Max Tokens"
+        :options="tokens.map((token) => ({ label: token, value: token }))" :required="true" />
+        <div class="mt-5 flex flex-col gap-2">
+          <RangeSlider :step="0.05" :name="temperature" label="Temperature" @update="($event) => { temperature = $event; }"  required placeholder="Enter speaking Rate" min="0" max="2" />
+        </div>
           </div>
         </div>
     </UiCardContent>

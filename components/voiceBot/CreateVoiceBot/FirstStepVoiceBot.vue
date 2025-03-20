@@ -92,7 +92,7 @@ const changeKnowledge = () => {
     </UiCardHeader>
     
     <!-- Main Content Area -->
-    <div class="flex flex-col items-center px-4 pb-4 pt-2 flex-grow overflow-auto">
+    <div class="flex flex-col items-center px-4 pb-4 pt-2 flex-grow">
       <!-- Initial Selection Screen -->
       <div v-if="!selectedType" class="flex flex-col w-full h-full">
         <UiCardContent class="grid p-0 gap-2 mb-4">
@@ -222,7 +222,7 @@ const changeKnowledge = () => {
             <TextDocumentUpload 
               ref="uploadDocumentRef" 
               :refresh="props.refresh" 
-              :contentSuggestions="props.suggestionsContent" 
+              :contentSuggestions="[]" 
               class="flex-grow" 
             />
           </div>

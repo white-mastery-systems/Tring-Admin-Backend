@@ -190,7 +190,7 @@ const submitForm = handleSubmit(async (values) => {
         <ThirdStep v-show="step === 3" v-model:values="values" :errors="errors" :intentOptions="intentOptions" />
         <FourthStep v-show="step === 4" v-model:values="values" :errors="errors" :disabled="isLoading" :intentOptions="intentOptions" /> -->
         <!-- {{ step === 2 && (values.intent.length === 0) }} -->
-        <div class="flex justify-end w-full gap-[12px] p-4">
+        <div class="flex justify-end w-full gap-[12px] p-4 mt-3">
           <UiButton v-if="(step > 1)" :disabled="isLoading" type="button" @click="prevStep" class="px-8" variant="outline">Back</UiButton>
           <UiButton v-if="showBackButton" type="button" @click="firstStepBack" class="px-8" variant="outline">Back
           </UiButton>
