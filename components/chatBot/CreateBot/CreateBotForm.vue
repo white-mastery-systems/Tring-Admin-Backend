@@ -22,6 +22,7 @@ const pageLoading = ref(false)
 const isSubmitting = ref(false)
 const isDocumentListOpen = ref(false);
 const intervalId = ref<any>(null); // Store the interval ID
+const logoData = ref()
 const { intentOptions, fetchConfig } = useChatbotConfig();
 const { createDocuments, uploadStatus, isUploading, uploadError } = useDocumentUpload();
 // const uploadDocumentRef = ref(null);
@@ -173,7 +174,9 @@ const backRoute = () => {
 const firstStepBack = () => {
   setFieldValue('selectedType', '')
 }
-
+const getLogoChange = (file: any, logo: any) => {
+  logoData.value = file
+};
 // const triggerPDFUpload = () => {
 //   if (uploadDocumentRef.value) {
 //     uploadDocumentRef.value.generatePDFAndUpload();
@@ -181,6 +184,10 @@ const firstStepBack = () => {
 // };
 // ✅ Final form submission
 const submitForm = handleSubmit(async (values) => {
+  let uploadedDetails = null;
+  if (typeof logoData.value === "object") {
+    uploadedDetails = await uploadLogo(botDetails.value.id, logoData.value);
+  }
   isLoading.value = true;
   try {
     if (!values.COMPANY || !values.NAME || !values.ROLE || !values.color) {
@@ -198,6 +205,7 @@ const submitForm = handleSubmit(async (values) => {
       isLoading.value = false
       return
     }
+    // uploadedDetails?.metadata?.ui?.logo ?? props.botDetails.metadata.ui.logo,
     const payload = {
       id: botDetails.value?.id,
       type: values.type,
@@ -206,8 +214,8 @@ const submitForm = handleSubmit(async (values) => {
         ui: {
           ...botDetails.value?.metadata.ui,
           logo: (scrapData.scrapedData && Object.keys(scrapData.scrapedData).length > 0) 
-            ? (values.logo?.size ? values.logo : values.logo?.url) // Use optional chaining
-            : values.logo,
+            ? (values.logo?.size ? uploadedDetails?.metadata?.ui?.logo ?? botDetails.metadata.ui.logo : values.logo?.url) // Use optional chaining
+            : uploadedDetails?.metadata?.ui?.logo ?? botDetails.metadata.ui.logo,
           color: hexToHSL(values.color),
           secondaryColor: hexToHSL(values.secondaryColor),
           fontFamily: "Kanit",
@@ -280,6 +288,7 @@ const checkDocumentStatus = async () => {
       //   name: "chat-bot-id",
       //   params: { id: botDetails.id },
       // });
+      scrapData.scrapedData = []
       pageLoading.value = false;
 
       if (!documents.value?.documentId) {
@@ -324,7 +333,6 @@ const handleActivateBot = async () => {
     });
   }
   if (activeDocuments.length === 1) {
-    console.log(activeDocuments[0], "activeDocuments[0] -- activeDocuments[0]")
     try {
       await singleDocumentDeploy(activeDocuments[0]);
     } catch (err) {
@@ -333,12 +341,17 @@ const handleActivateBot = async () => {
       return;
     }
   }
+  
   isSubmitting.value = false;
+  isLoading.value = false
   isDocumentListOpen.value = true;
+  
 };
 const singleDocumentDeploy = async (list: any) => {
   await deployDocument(paramId.params.id, list.id);
   await refreshBot() // new function refreshBot added
+  await checkDocumentStatus()
+  
   // botDetails.value = await getBotDetails(paramId.params.id);
 };
 watch(() => values.type, (newType) => {
@@ -374,7 +387,7 @@ onUnmounted(() => {
       <form class="border border-gray-300 rounded-lg flex flex-col justify-between h-full flex-1 overflow-auto">
         <!-- @update:values="(newValues) => values = newValues" -->
         <FirstStep ref="stepOneRef" v-show="step === 1" v-model:values="values" :errors="errors" :refresh="refresh" :suggestionsContent="contentSuggestions" :refreshSuggestions="fetchSuggestions" :loading="suggestionLoading" />
-        <SecondStep v-show="step === 2" v-model:values="values" :errors="errors" />
+        <SecondStep v-show="step === 2" v-model:values="values" :errors="errors" @changeLogo="getLogoChange" />
         <ThirdStep v-show="step === 3" v-model:values="values" :errors="errors" :intentOptions="intentOptions" />
         <FourthStep v-show="step === 4" v-model:values="values" :errors="errors" :disabled="isLoading" :intentOptions="intentOptions" />
         <!-- {{ step === 2 && (values.intent.length === 0) }} -->
@@ -383,7 +396,7 @@ onUnmounted(() => {
           <UiButton v-if="showBackButton" type="button" @click="firstStepBack" class="px-8" variant="outline">Back
           </UiButton>
           <UiButton v-if="showNextButton" type="button" @click="nextStep" class="px-8"
-            :loading="isDataLoading || isLoading || isUploading">Next
+            :loading="isUploading || isDataLoading || isLoading">Next
           </UiButton>
           <UiButton type="button" v-if="step === 4" @click="submitForm" class="px-8" :loading="isLoading">
             Create Bot

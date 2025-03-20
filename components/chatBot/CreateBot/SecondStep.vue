@@ -20,7 +20,7 @@ const props = defineProps<{
   errors: Record<string, any>;
   values: Record<string, any>;
 }>();
-
+const emit = defineEmits(['changeLogo']);
 // ✅ Use `useField()` from vee-validate
 const { value: COMPANY } = useField("COMPANY");
 const { value: NAME } = useField("NAME");
@@ -58,14 +58,24 @@ const logoData = ref()
 const openPrimaryColorPicker = () => colorInput.value.$el.click();
 const openSecondaryColorPicker = () => secondarycolorInput.value.$el.click();
 const handleLogoChange = (event: any) => {
-  // Assuming event returns an array of files, take the first one
+  // Get the file from the event
   logoData.value = event[0];
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    // Update the field value with the data URL
-    logo.value = { url: e.target.result };
-  };
-  reader.readAsDataURL(logoData.value);
+  
+  if (logoData.value) {
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      // Update the field value with the data URL
+      logo.value = { url: e.target.result };
+      // Emit the changeLogo event to the parent component
+      emit('changeLogo', { 
+        file: logoData.value, 
+        url: e.target.result 
+      });
+    };
+    
+    reader.readAsDataURL(logoData.value);
+  }
 };
 </script>
 

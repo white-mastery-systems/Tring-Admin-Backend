@@ -158,8 +158,8 @@ const slideBarStore = botStore();
     <SidebarHeader class="bg-[#fafafa] pt-3 pl-3">
       <NuxtLink to="/" class="flex w-full">
         <!-- <div class="pt-3 py-6 flex justify-center"> -->
-        <img v-show="slideBarStore.siderBarslider" src="assets/icons/Tring-AI-update-Logo.png" width="40" height="40" />
-        <img v-show="!slideBarStore.siderBarslider" src="assets/icons/Tring-Ai-Logo-with-black-text.png" width="160"
+        <img v-show="!slideBarStore.siderBarslider" src="assets/icons/Tring-AI-update-Logo.png" width="40" height="40" />
+        <img v-show="slideBarStore.siderBarslider" src="assets/icons/Tring-Ai-Logo-with-black-text.png" width="160"
           height="160" />
       </NuxtLink>
       <!-- {{ slideBarStore.siderBarslider }} || asdsad -->

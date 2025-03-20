@@ -141,6 +141,7 @@
           </NuxtLink>
         </div>
       </div>
+      <VoiceBotSuccessFulMessageModal v-model="createBotVoicesuccessfulState" />
       <CreateEditVoiceBotModal v-model="agentModalState" @editConfirm="() => {
           agentModalState.open = false;
           integrationRefresh()
@@ -158,6 +159,9 @@ definePageMeta({
   middleware: "admin-only",
 });
 const router = useRouter();
+const createBotVoicesuccessfulState = ref({
+  open: false,
+});
 // const selectedValue = ref("Today");
 const route = useRoute("voice-bot-id");
 const paramId: any = route;
