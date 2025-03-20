@@ -1,5 +1,6 @@
 import momentTz from "moment-timezone";
 import { getDateRangeForFilters } from "./leads";
+import { logger } from "~/server/logger";
 
 const db = useDrizzle();
 
@@ -20,16 +21,18 @@ export const getChatDetails = async (chatId: string) => {
   });
 };
 
-export const getMessages = async (chatId: string, botUserId: string, query: any, timeZone: string) => {
-  const startDateTime = momentTz().tz(timeZone).subtract(1, "hour").toDate()
-  const endDateTime = momentTz().tz(timeZone).toDate()
-  
+export const getMessages = async (
+  chatId: string,
+  botUserId: string,
+  query: any,
+  timeZone: string,
+) => {
+  const startDateTime = momentTz().tz(timeZone).subtract(1, "hour").toDate();
+  const endDateTime = momentTz().tz(timeZone).toDate();
+
   let list: any = await db.query.chatSchema.findMany({
     where: botUserId
-      ? or(
-        eq(chatSchema.botUserId, botUserId),
-        eq(chatSchema.id, chatId)
-      )
+      ? or(eq(chatSchema.botUserId, botUserId), eq(chatSchema.id, chatId))
       : eq(chatSchema.id, chatId),
     with: {
       botUser: true,
@@ -40,7 +43,9 @@ export const getMessages = async (chatId: string, botUserId: string, query: any,
       messages: {
         where: and(
           eq(messageSchema.status, true),
-          query.siteVisit === "true" ? between(messageSchema.createdAt, startDateTime, endDateTime) : undefined,
+          query.siteVisit === "true"
+            ? between(messageSchema.createdAt, startDateTime, endDateTime)
+            : undefined,
         ),
         orderBy: asc(messageSchema.createdAt),
       },
@@ -85,18 +90,17 @@ export const listChats = async (
   let chats = await db.query.chatSchema.findMany({
     where: and(
       eq(chatSchema.organizationId, organisationId),
-      query?.channel && query?.channel !== "all" ? eq(chatSchema.channel, query?.channel) : undefined,
+      query?.channel && query?.channel !== "all"
+        ? eq(chatSchema.channel, query?.channel)
+        : undefined,
       query?.botId && query?.botId !== "all"
         ? eq(chatSchema.botId, query.botId)
-        : undefined,  
+        : undefined,
       query?.period && fromDate && toDate
         ? between(chatSchema.createdAt, fromDate, toDate)
         : undefined,
       query?.botUserName === "interacted"
-        ? and(
-          eq(chatSchema.interacted, true),
-          eq(chatSchema.mode, "live")
-        )
+        ? and(eq(chatSchema.interacted, true), eq(chatSchema.mode, "live"))
         : undefined,
       query?.botUserName === "live" ? eq(chatSchema.mode, "live") : undefined,
       query?.botUserName === "preview"
@@ -127,7 +131,7 @@ export const listChats = async (
   chats = chats.map((i: any) => ({
     ...i,
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
-    updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
+    updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
 
   if (query?.q || query?.botUserName === "with_name") {
@@ -138,7 +142,7 @@ export const listChats = async (
     chats = chats.filter((i) => i.botUser === null);
   }
 
-  if(query?.country && query?.country !== "all") {
+  if (query?.country && query?.country !== "all") {
     chats = chats.filter((i) => i.metadata?.country === query?.country);
   }
 
@@ -156,7 +160,11 @@ export const listChats = async (
   }
 };
 
-export const getInteractedSessions = async (organizationId: string, startDate: Date, endDate: Date) => {
+export const getInteractedSessions = async (
+  organizationId: string,
+  startDate: Date,
+  endDate: Date,
+) => {
   const interactedSessions = await db.query.chatSchema.findMany({
     where: and(
       gte(chatSchema.createdAt, startDate),
@@ -165,6 +173,46 @@ export const getInteractedSessions = async (organizationId: string, startDate: D
       eq(chatSchema.mode, "live"),
       eq(chatSchema.organizationId, organizationId),
     ),
-  })
-  return interactedSessions 
-}
+  });
+  return interactedSessions;
+};
+
+export const updateChatSummary = async (
+  chatId: string,
+  summaryResponse: string,
+) => {
+  try {
+    await db
+      .update(chatSchema)
+      .set({
+        chatSummary: summaryResponse,
+        updatedAt: new Date(),
+      })
+      .where(eq(chatSchema.id, chatId));
+
+    logger.info(`Chat summary updated for chatId: ${chatId}`);
+  } catch (error) {
+    logger.error(`Failed to update chat summary for chatId: ${chatId}`, error);
+    throw error;
+  }
+};
+
+import { and, lte, gte } from "drizzle-orm";
+
+export const findExpiredChatsToday = async () => {
+  const now = new Date();
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  return await db
+    .select({
+      id: chatSchema.id,
+    })
+    .from(chatSchema)
+    .where(
+      and(
+        lte(chatSchema.chatExpiredAt, now),
+        gte(chatSchema.chatExpiredAt, startOfToday),
+      ),
+    );
+};
