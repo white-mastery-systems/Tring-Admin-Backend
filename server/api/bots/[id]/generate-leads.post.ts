@@ -172,7 +172,7 @@ export default defineEventHandler(async (event) => {
         if (!body?.botUser?.name) {
           body.botUser.name = "Not Provided"
         } else if(body?.botUser?.name && validateName(body?.botUser?.name)){
-          body.botUser.name =`${body?.botUser?.name} (Whatsapp profile)`
+          body.botUser.name =`${body?.botUser?.name} (From Whatsapp Profile)`
         }
         if (!body?.botUser?.email) {
           body.botUser.email = "Not Provided";
