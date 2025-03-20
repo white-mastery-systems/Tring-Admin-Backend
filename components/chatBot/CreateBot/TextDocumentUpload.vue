@@ -80,7 +80,7 @@ defineExpose({ clearTextField, generatePDFAndUpload });
   <div class="w-full border rounded-lg p-4">
     <UiTextarea v-model="text" placeholder="" class="border-none p-2 h-40">
     </UiTextarea>
-    <div class="grid grid-cols-3 gap-4 mt-4">
+    <div class="grid grid-cols-3 gap-4 mt-4" v-if="props.contentSuggestions">
       <div
         v-for="(card, index) in props.contentSuggestions.suggestions"
         :key="index"
