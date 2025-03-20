@@ -22,6 +22,7 @@ export default defineEventHandler(async (event) => {
     chatId: z.string().uuid(),
     botSource: z.string().optional(),
     botSubSource: z.string().optional(),
+    event: z.string().optional(),
   });
   const generateLeadsValidationParams = z.object({
     id: z.string(),
@@ -168,6 +169,12 @@ export default defineEventHandler(async (event) => {
       }
     } else if (botIntegration?.integration?.crm === "whatsapp") {
       if (botIntegration?.integration?.metadata) {
+        if (!body?.botUser?.name && !validateName(body?.botUser?.name)) {
+          body.botUser.name = "Not Provided"
+        }
+        if (!body?.botUser?.email) {
+          body.botUser.email = "Not Provided";
+        }
         const whatsappPayload = {
           intent: "Lead",
           name: `*${body?.botUser?.name}*`,
@@ -330,3 +337,13 @@ export default defineEventHandler(async (event) => {
   }
   return adminUser;
 });
+
+const validateName = (name: any) => {
+  // Create a regular expression for special characters
+  const specialCharRegex = /[0-9!@#$%^&*(),.?":{}|<>]/;
+  // Check if the string contains special characters and is shorter than 3
+  if (specialCharRegex.test(name) || name.length < 3) {
+    return false; // Invalid
+  }
+  return true; // Valid
+};
