@@ -169,7 +169,7 @@ export default defineEventHandler(async (event) => {
       }
     } else if (botIntegration?.integration?.crm === "whatsapp") {
       if (botIntegration?.integration?.metadata) {
-        if (!validateName(body?.botUser?.name)) {
+        if (!body?.botUser?.name && !validateName(body?.botUser?.name)) {
           body.botUser.name = "Not Provided"
         }
         if (!body?.botUser?.email) {
