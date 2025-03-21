@@ -11,8 +11,6 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(["update:values"]);
-const { value: selectedGoal } = useField<string>('GOAL');
-const { value: type } = useField("type");
 const { value: temperature } = useField("temperature")
 const { value: provider_stt } = useField("provider_stt")
 const { value: provider_tts } = useField("provider_tts")
@@ -24,6 +22,9 @@ const { value: voice } = useField("voice")
 const { value: name } = useField("name")
 const { value: apikey } = useField("apikey")
 const { value: model_stt } = useField("model_stt")
+const { value: apikey_stt } = useField("apikey_stt")
+const { value: model_tts } = useField("model_tts")
+const { value: apikey_tts } = useField("apikey_tts")
 const { value: otherRole, errorMessage: otherRoleError } = useField("otherRole");
 const { value: otherGoal, errorMessage: otherGoalError } = useField("otherGoal");
 // const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
@@ -154,32 +155,48 @@ const modalList = [
     value: "eleven_monolingual_v1",
     label: "Eleven English v1"
   }
-]
-// Watch for role selection changes
-watch(selectedGoal, (newValue) => {
-  if (newValue !== "custom") {
-    // Clear otherRole and otherGoal when a non-custom option is selected
-    otherRole.value = "";
-    otherGoal.value = "";
-  }
+];
+
+// Watch for all form field changes
+watch([
+  temperature, 
+  provider_stt, 
+  provider_tts, 
+  max_output_token, 
+  googlemodel, 
+  model, 
+  elevenlabsvoice, 
+  voice, 
+  name, 
+  apikey, 
+  model_stt,
+  apikey_stt,
+  model_tts,
+  apikey_tts
+], () => {
   emit("update:values", {
     ...props.values,
-    ROLE: newValue,
-    otherRole: otherRole.value,
-    otherGoal: otherGoal.value
+    provider_stt: provider_stt.value,
+    provider_tts: provider_tts.value,
+    max_output_token: max_output_token.value,
+    temperature: temperature.value,
+    googlemodel: googlemodel.value,
+    model: model.value,
+    elevenlabsvoice: elevenlabsvoice.value,
+    voice: voice.value,
+    name: name.value,
+    apikey: apikey.value,
+    model_stt: model_stt.value,
+    apikey_stt: apikey_stt.value,
+    model_tts: model_tts.value,
+    apikey_tts: apikey_tts.value,
+    // ROLE: newValue,
+    // otherRole: otherRole.value,
+    // otherGoal: otherGoal.value
   });
 });
 
-// Watch for otherRole and otherGoal changes
-watch([otherRole, otherGoal], ([newRole, newGoal]) => {
-  if (selectedGoal.value === "custom") {
-    emit("update:values", {
-      ...props.values,
-      otherRole: newRole,
-      otherGoal: newGoal
-    });
-  }
-});
+// Watch for otherRole and otherGoal change
 
 // watch(() => props.values.type, (newType) => {
 //   props.fetchConfig(newType);
@@ -199,6 +216,7 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
           placeholder="Select Model"></SelectField>
           <SelectField v-if="provider_stt === 'google'" v-model="googlemodel" name="googlemodel" :options="models" label="Model"
             placeholder="Select Model"></SelectField>
+          <TextField v-if="provider_stt" v-model="apikey_stt" type="text" label="API Key" name="apikey_stt" placeholder="API Key" />
         </div>
         </div>
         <div>
@@ -213,6 +231,8 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
                <TextField v-if="provider_tts === 'elevenlabs'" v-model="elevenlabsvoice" type="text" label="voice" name="elevenlabsvoice"
                placeholder="voice" />
                <SelectField v-if="provider_tts === 'deepgram'" v-model="voice" name="voice" label="Voice" placeholder="Select voice" :options="voices" />
+               <TextField v-if="provider_tts && provider_tts !== 'elevenlabs'" v-model="apikey_tts" type="text" label="API Key" name="apikey_tts" placeholder="API Key" />
+               <SelectField v-if="provider_tts && provider_tts !== 'elevenlabs'" v-model="model_tts" name="model_tts" :options="models" label="Model" placeholder="Select Model" />
                <div class="flex flex-col gap-4 pt-1">
                  <TextField class="mt-4" v-if="provider_tts === 'google'" v-model="name" type="text" label="Name" name="name"
                  placeholder="Name" />

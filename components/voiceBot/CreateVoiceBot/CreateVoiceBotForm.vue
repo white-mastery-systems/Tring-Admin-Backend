@@ -38,15 +38,20 @@ watch(() => values.type, (newType) => {
     fetchSuggestions(newType);
   }
 });
+watch(errors, (newErrors) => {
+  console.log(newErrors, 'newErrors');
+})
 // ✅ Fields to validate per step
 const stepFields = {
   1: [""], // Assuming validation for step 1 is based on document length
   2: ["newBotName","agentName","agentLanguage","region","timezone"], // Step 2 fields
   3: [""], // Include otherRole and otherGoal for step 3
   4: [""],
-  5: ["provider_stt","provider_tts","max_output_token", "temperature", 'apikey'],
+  5: ["provider_stt","provider_tts","max_output_token", "temperature"],
+  6: ["",""]
 };
 const nextStep = async () => {
+  console.log(values.boundDirection, "boundDirection -- boundDirection")
   const fieldsToValidate = stepFields[step.value] || [];
   let isValid = true;
   
@@ -126,9 +131,22 @@ const nextStep = async () => {
 
   console.log(isValid, 'isValid -- isValid');
   if (isValid) {
+    nextTick(() => {
+      if (values.boundDirection) {
+        setFieldValue('boundDirection', values.boundDirection);
+      }
+    });
+    // Preserve boundDirection explicitly when moving to next step
     step.value++; // Move to next step
   }
 };
+// watch(values, (newValues) => {
+//   console.log('Form values updated:', JSON.stringify({
+//     boundDirection: newValues.boundDirection,
+//     type: newValues.type,
+//     selectedType: newValues.selectedType
+//   }));
+// }, { deep: true });
 const prevStep = () => {
   if (step.value > 1) step.value--;
 };
@@ -136,15 +154,23 @@ const backRoute = () => {
   navigateTo("/voice-bot");
 }
 const firstStepBack = () => {
-  setFieldValue('selectedType', '')
+  const currentBoundDirection = values.boundDirection; // Store current value
+  setFieldValue('selectedType', '');
+  setFieldValue('boundDirection', currentBoundDirection); // Restore value
 }
 const submitForm = handleSubmit(async (values) => {
-
+  console.log(values, 'values');
+  if (!values.provideraccountname) {
+    toast.error("Please provide a value for Role");
+  } else {
+    toast.error("Please provide account name ");
+  }
 })
 </script>
 
 <template>
   <div class="h-[calc(100dvh-2.5rem)] overflow-y-auto">
+    <!-- {{values}} || sadsa -->
     <div class="flex items-center gap-2 font-bold py-3 px-5">
       <div class="flex items-center gap-2 cursor-pointer" @click="backRoute()">
         <span class="cursor-pointer">

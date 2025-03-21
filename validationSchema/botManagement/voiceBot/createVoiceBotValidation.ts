@@ -2,7 +2,7 @@ export const voiceBotCreateSchema = toTypedSchema(
   z.object({
     boundDirection: z
       .string({ required_error: "Bound direction is required" })
-      .min(3, { message: "Bound direction must be at least 3 characters long" }),
+      .min(1, { message: "Bound direction must be at least 3 characters long" }),
     newBotName: z
       .string({ required_error: "Bot Name is required" })
       .min(3, { message: "Bot Name is required" }),
@@ -15,6 +15,8 @@ export const voiceBotCreateSchema = toTypedSchema(
     agentLanguage: z
       .string({ required_error: "Agent Language is required" })
       .min(1, { message: "Agent Language is required" }),
+    provideraccountname: z.string().optional(),
+    incomingPhoneNumber: z.string().optional(),
     region: z
       .string({ required_error: "Country is required" })
       .min(1, "Country is required"),
