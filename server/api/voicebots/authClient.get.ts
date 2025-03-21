@@ -1,6 +1,7 @@
 import momentTz from "moment-timezone"
 import { errorResponse } from "~/server/response/error.response";
 import { getVoicebotDetailByPhoneNumber, orgVoicebotSubscription } from "~/server/utils/db/voicebots";
+import { updateSubscriptionPlanUsageById } from "~/server/utils/v2/db/planUsage";
 
 export default defineEventHandler(async (event) => {
   const query = await isValidQueryHandler(event, z.object({
@@ -60,7 +61,7 @@ export default defineEventHandler(async (event) => {
       if(actualExtraMinutes > 0) {
         const extraMinutesAmount = actualExtraMinutes * voicePricingInformation?.extraSessionCost!;
         const currentWallet =  Math.max(0, parseFloat((orgWalletMinutes - extraMinutesAmount).toFixed(2)))
-        await updateSubscriptionPlanUsage(voicePlanUsage?.id!, {
+        await updateSubscriptionPlanUsageById(voicePlanUsage?.id!, {
           extraInteractionsUsed: extraMinutes
         })
         await updateOrganization(organizationId, { wallet: currentWallet })

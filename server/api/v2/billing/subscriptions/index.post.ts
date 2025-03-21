@@ -28,15 +28,17 @@ export default defineEventHandler(async (event) => {
     
     const getOrgCurrentPlan = await getOrgZohoSubscription(organizationId, query.type)
     
-    if(getOrgCurrentPlan?.pricingPlanCode !== "chat_free" && getOrgCurrentPlan?.subscriptionStatus !== "cancelled") {
-      const expiryDate = momentTz(getOrgCurrentPlan?.endDate)
-        .tz(timeZone)
-        .toDate();
-      const currentDate = momentTz().tz(timeZone).toDate();
-      if (currentDate < expiryDate) {
-        return errorResponse(event, 400, "Plan change not allowed. You can only subscribe to a new plan after the current plan expires.")
+    /*----Commented out these lines to disable the 'Plan change not allowed'-----
+      if(getOrgCurrentPlan?.pricingPlanCode !== "chat_free" && getOrgCurrentPlan?.subscriptionStatus !== "cancelled") {
+        const expiryDate = momentTz(getOrgCurrentPlan?.endDate)
+          .tz(timeZone)
+          .toDate();
+        const currentDate = momentTz().tz(timeZone).toDate();
+        if (currentDate < expiryDate) {
+          return errorResponse(event, 400, "Plan change not allowed. You can only subscribe to a new plan after the current plan expires.")
+        }
       }
-    }
+    */
     const adminZohoConfig = await getAdminConfig()
     const userDetails = await getUserByUserId(event?.context?.user?.id!)
     const orgDetails = await getOrganizationById(organizationId)

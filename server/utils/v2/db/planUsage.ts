@@ -6,7 +6,20 @@ export const createSubscriptionPlanUsage = async (planUsage: InsertAdminPlanUsag
   return (await db.insert(adminPlanUsageSchema).values(planUsage).returning())[0]
 }
 
-export const updateSubscriptionPlanUsage = async (id: string, planUsage: Partial<InsertAdminPlanUsage>) => {
+export const updateSubscriptionPlanUsageByOrgId = async (orgId: string, serviceType: string , planUsage: Partial<InsertAdminPlanUsage>) => {
+  return( await db.update(adminPlanUsageSchema).set({
+    ...planUsage,
+    updatedAt: new Date()
+  }).where(
+    and(
+      eq(adminPlanUsageSchema.organizationId, orgId),
+      eq(adminPlanUsageSchema.serviceType, serviceType),
+      eq(adminPlanUsageSchema.subscriptionStatus, "active")
+    )
+  ).returning())[0]
+}
+
+export const updateSubscriptionPlanUsageById= async (id: string, planUsage: Partial<InsertAdminPlanUsage>) => {
   return( await db.update(adminPlanUsageSchema).set({
     ...planUsage,
     updatedAt: new Date()

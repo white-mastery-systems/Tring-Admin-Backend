@@ -467,7 +467,8 @@ export const serviceTypesEnum = pgEnum("serviceTypes", [
 export const subscriptionStatusEnum = pgEnum("subscriptionStatus", [
   "active",
   "inactive",
-  "cancelled"
+  "cancelled",
+  "trail"
 ])
 
 export const adminSubscriptionSchema = adminSchema.table("admin_subscriptions", {
