@@ -108,7 +108,7 @@ const changeKnowledge = () => {
     <!-- Main Content Area -->
     <div class="flex flex-col items-center p-0 flex-grow">
       <!-- Initial Selection Screen -->
-      <div v-if="!selectedType" class="flex flex-col w-full h-full">
+      <div v-show="!selectedType" class="flex flex-col w-full h-full">
         <UiCardContent class="grid p-0 gap-2 mb-4">
           <div class="flex items-center grid grid-cols-2 gap-3 text-left">
             <span class="font-medium text-left text-[16px] md:text-[18px]">Select your Call Type</span>
@@ -186,7 +186,7 @@ const changeKnowledge = () => {
       </div>
 
       <!-- Knowledge Type Sections -->
-      <div v-else class="w-full h-full">
+      <div v-show="selectedType" class="w-full h-full">
         <!-- Website Section -->
         <div v-if="selectedType === 'Website'" class="w-full py-4 space-y-4 h-full flex flex-col">
           <div class="flex items-center justify-between w-full">

@@ -3,6 +3,7 @@
     
   ]">
     <div class="pb-2 sm:pb-0">
+      <!-- {{integrationsData[0].metadata.apikey}}   || asdsad -->
       <form @submit.prevent="onSubmit" class="space-y-10">
         <div class="flex flex-col gap-2">
           <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">
@@ -14,10 +15,10 @@
             helperText="Select your voiceType." :options="voiceTypes" required /> -->
             <TextField v-if="values.provider === 'google'" type="text" label="Name" name="name" required
               placeholder="Name" />
-            <TextField v-if="(values.provider === 'tring') || (values.provider === 'elevenlabs')" type="text"
+            <TextField v-if="(values.provider === 'tring')" type="text"
               label="API Key" name="apikey" required placeholder="API Key" @input="apikeyunmasking($event)" />
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">
+          <!-- </div>
+          <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2"> -->
             <TextField v-if="(values.provider === 'tring')" type="text" label="Speaker" name="speaker" required
               placeholder="Speaker" />
             <!-- <TextField v-if="values.provider === 'tring'" type="number" label="Sample Rate" name="sampleRate" required
@@ -26,7 +27,7 @@
               placeholder="Model" /> -->
             <SelectField v-if="values.provider === 'elevenlabs'" name="model" label="Model" placeholder="Model"
               helperText="Select your model." :options="modalList" required />
-            <TextField v-if="values.provider === 'elevenlabs'" type="text" label="voice" name="elevenlabsvoice" required
+            <SelectField v-if="values.provider === 'elevenlabs'" label="voice" name="elevenlabsvoice" :options="formattedElevenlabsVoiceList" required
               placeholder="voice" />
             <SelectField v-if="values.provider === 'elevenlabs'" name="useSpeakerBoost" :options="useSpeakerBooster"
               label="Use Speaker Boost" placeholder="Use Speaker Boost" required>
@@ -152,7 +153,7 @@ import { textToSpeechValidation } from "~/validationSchema/textToSpeechValidatio
 import { LanguageList } from '~/composables/useLanguageList';
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 import { useIntegrations } from '@/composables/botManagement/voiceBot/useTtsIntegrations';
-
+import { useElevenLabsVoices } from '@/composables/botManagement/voiceBot/useElevenLabsTTSIntegration';
 const route = useRoute("voice-bot-id-text-to-speech-config");
 const breadcrumbStore = useBreadcrumbStore();
 
@@ -160,6 +161,7 @@ const breadcrumbStore = useBreadcrumbStore();
 const { data: botData, status: botLoadingStatus } = await useLazyFetch<{
   textToSpeechConfig: Record<string, string>;
 }>(`/api/voicebots/${route.params.id}`);
+
 const { 
   integrationsData, 
   status, 
@@ -168,9 +170,22 @@ const {
   totalPageCount,
   totalCount
 } = useIntegrations({});
+const formattedElevenlabsVoiceList = ref([]);
+// const { elevenlabsVoiceList, loading, error, refreshVoices } = useElevenLabsVoices(integrationsData.value[0]?.metadata?.apikey);
 // const botData = await $fetch(`/api/voicebots/` + route.params.id);
 // const { data: botData, status: botLoadingStatus } = await useLazyFetch <{ speechToTextConfig: Record < string, string>}> (`/api/voicebots/${route.params.id}`)
-
+watch(integrationsData, (newIntegrationsData) => {
+  if (newIntegrationsData && newIntegrationsData[0]?.metadata?.apikey) {
+    // Now we can safely call the second hook
+    const { elevenlabsVoiceList, loading, error, refreshVoices } = useElevenLabsVoices(newIntegrationsData[0].metadata.apikey);
+    
+    // Update our refs with the values
+    formattedElevenlabsVoiceList.value = elevenlabsVoiceList.value;
+    loading.value = elevenLabsResult.loading;
+    error.value = elevenLabsResult.error;
+    refreshVoices.value = elevenLabsResult.refreshVoices;
+  }
+}, { immediate: true });
 
 const isLoading = ref(false);
 
@@ -316,6 +331,7 @@ const voices = [
     value: "aura-zeus-en",
   },
 ];
+// const elevenlabsVoiceList = ref([])
 const botDetails = ref(await getVoiceBotDetails(route.params.id));
 
 
