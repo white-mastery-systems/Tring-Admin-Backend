@@ -27,8 +27,12 @@ const showBackButton = computed(() => (step.value === 1) && values?.selectedType
 const { errors, values, handleSubmit, validateField, validate, setFieldValue } = useForm({
   validationSchema: voiceBotCreateSchema,
   initialValues: {
+    provider_stt: 'deepgram',
+    provider_tts: 'deepgram',
     selectedType: '',
     boundDirection: 'inbound',
+    max_output_token: '8192',
+    temperature: 0.5,
   },
 });
 
@@ -170,7 +174,6 @@ const submitForm = handleSubmit(async (values) => {
 
 <template>
   <div class="h-[calc(100dvh-2.5rem)] overflow-y-auto">
-    <!-- {{values}} || sadsa -->
     <div class="flex items-center gap-2 font-bold py-3 px-5">
       <div class="flex items-center gap-2 cursor-pointer" @click="backRoute()">
         <span class="cursor-pointer">

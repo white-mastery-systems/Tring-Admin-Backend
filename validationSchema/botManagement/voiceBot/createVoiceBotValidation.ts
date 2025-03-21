@@ -31,8 +31,9 @@ export const voiceBotCreateSchema = toTypedSchema(
       .min(1, "Text-to-speech provider cannot be empty"),
     name: z.string().optional(),
     model: z.string().optional(),
-    model_stt: z.string().optional(),
+    // model_stt: z.string().optional(),
     googlemodel: z.string().optional(),
+    deepmodel: z.string().optional(),
     apikey: z.string().optional(),
     elevenlabsvoice: z.string().optional(),
     voice: z.string().optional(),
@@ -65,13 +66,13 @@ export const voiceBotCreateSchema = toTypedSchema(
     }
     
     // Specific STT provider model validation
-    if (data.provider_stt === 'deepgram' && (!data.model_stt || data.model_stt.length === 0)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Model is required when using Deepgram STT provider",
-        path: ["model_stt"]
-      });
-    }
+    // if (data.provider_stt === 'deepgram' && (!data.model_stt || data.model_stt.length === 0)) {
+    //   ctx.addIssue({
+    //     code: z.ZodIssueCode.custom,
+    //     message: "Model is required when using Deepgram STT provider",
+    //     path: ["model_stt"]
+    //   });
+    // }
 
     if (data.provider_stt === 'google' && (!data.googlemodel || data.googlemodel.length === 0)) {
       ctx.addIssue({
@@ -108,13 +109,13 @@ export const voiceBotCreateSchema = toTypedSchema(
         });
       }
       
-      if (!data.elevenlabsvoice || data.elevenlabsvoice.length === 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Voice is required when using ElevenLabs TTS provider",
-          path: ["elevenlabsvoice"]
-        });
-      }
+      // if (!data.elevenlabsvoice || data.elevenlabsvoice.length === 0) {
+      //   ctx.addIssue({
+      //     code: z.ZodIssueCode.custom,
+      //     message: "Voice is required when using ElevenLabs TTS provider",
+      //     path: ["elevenlabsvoice"]
+      //   });
+      // }
       
       if (!data.model || data.model.length === 0) {
         ctx.addIssue({
@@ -125,13 +126,13 @@ export const voiceBotCreateSchema = toTypedSchema(
       }
     }
 
-    if (data.provider_tts === 'deepgram' && (!data.voice || data.voice.length === 0)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Voice is required when using Deepgram TTS provider",
-        path: ["voice"]
-      });
-    }
+    // if (data.provider_tts === 'deepgram' && (!data.voice || data.voice.length === 0)) {
+    //   ctx.addIssue({
+    //     code: z.ZodIssueCode.custom,
+    //     message: "Voice is required when using Deepgram TTS provider",
+    //     path: ["voice"]
+    //   });
+    // }
 
     // Max output token validation
     if (!data.max_output_token || data.max_output_token.length === 0) {

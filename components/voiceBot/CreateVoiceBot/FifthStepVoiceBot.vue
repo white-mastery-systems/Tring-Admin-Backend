@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from 'vue';
 import { useField } from 'vee-validate';
+import { useIntegrations } from '@/composables/botManagement/voiceBot/useTtsIntegrations';
 // import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 const props = defineProps<{
@@ -17,16 +18,22 @@ const { value: provider_tts } = useField("provider_tts")
 const { value: max_output_token } = useField("max_output_token")
 const { value: googlemodel } = useField("googlemodel")
 const { value: model } = useField("model")
-const { value: elevenlabsvoice } = useField("elevenlabsvoice")
 const { value: voice } = useField("voice")
 const { value: name } = useField("name")
 const { value: apikey } = useField("apikey")
-const { value: model_stt } = useField("model_stt")
 const { value: apikey_stt } = useField("apikey_stt")
-const { value: model_tts } = useField("model_tts")
-const { value: apikey_tts } = useField("apikey_tts")
+const { value: deepmodel } = useField("deepmodel")
 const { value: otherRole, errorMessage: otherRoleError } = useField("otherRole");
 const { value: otherGoal, errorMessage: otherGoalError } = useField("otherGoal");
+
+const { 
+  integrationsData, 
+  status, 
+  integrationRefresh,
+  page,
+  totalPageCount,
+  totalCount
+} = useIntegrations({});
 // const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
 
 const providers = ref([
@@ -47,7 +54,7 @@ const providers = ref([
     value: "assemblyai",
   },
 ]);
-const providersTSS = [
+const defaultProvidersTTS = [
   {
     label: "tring",
     value: "tring",
@@ -55,10 +62,6 @@ const providersTSS = [
   {
     label: "google",
     value: "google",
-  },
-  {
-    label: "elevenlabs",
-    value: "elevenlabs",
   },
   {
     label: "deepgram",
@@ -76,6 +79,12 @@ const models = ref([
     value: "short",
   },
 ]);
+const deepModal = ref([
+  { label: "Nova-2", value: "nova-2" },
+  { label: "Nova", value: "nova" },
+  { label: "Enhanced", value: "enhanced" },
+  { label: "Base", value: "base" },
+])
 const voices = [
   {
     label: "Asteria English(US)",
@@ -156,7 +165,7 @@ const modalList = [
     label: "Eleven English v1"
   }
 ];
-
+const providersTTS = ref([...defaultProvidersTTS])
 // Watch for all form field changes
 watch([
   temperature, 
@@ -164,15 +173,12 @@ watch([
   provider_tts, 
   max_output_token, 
   googlemodel, 
+  deepmodel,
   model, 
-  elevenlabsvoice, 
   voice, 
   name, 
   apikey, 
-  model_stt,
   apikey_stt,
-  model_tts,
-  apikey_tts
 ], () => {
   emit("update:values", {
     ...props.values,
@@ -182,20 +188,52 @@ watch([
     temperature: temperature.value,
     googlemodel: googlemodel.value,
     model: model.value,
-    elevenlabsvoice: elevenlabsvoice.value,
     voice: voice.value,
     name: name.value,
     apikey: apikey.value,
-    model_stt: model_stt.value,
     apikey_stt: apikey_stt.value,
-    model_tts: model_tts.value,
-    apikey_tts: apikey_tts.value,
     // ROLE: newValue,
     // otherRole: otherRole.value,
     // otherGoal: otherGoal.value
   });
 });
 
+watch([status, integrationsData], ([newStatus, newData]) => {
+  // Only proceed if we have successful data
+  if (newStatus === 'success' && Array.isArray(newData)) {
+    try {
+      // Find ElevenLabs integration if it exists
+      const elevenLabsIntegration = newData.find(
+        integration => integration.provider === 'elevenlabs'
+      );
+      
+      // If we found an ElevenLabs integration, add it to providers
+      if (elevenLabsIntegration) {
+        // Make a copy of the current providers
+        const updatedProviders = [...defaultProvidersTTS];
+        
+        // Add ElevenLabs with the proper name from the integration
+        updatedProviders.push({
+          label: elevenLabsIntegration.ttsIntegrationName || 'ElevenLabs',
+          value: 'elevenlabs'
+        });
+        
+        // Update the providers ref
+        providersTTS.value = updatedProviders;
+      } else {
+        // If no ElevenLabs integration, just use default providers
+        providersTTS.value = [...defaultProvidersTTS];
+      }
+    } catch (error) {
+      // On error, revert to default providers
+      providersTTS.value = [...defaultProvidersTTS];
+    }
+  }
+}, { immediate: true });
+const apikeyunmasking = ($event: Event) => {
+  const input = $event.target as HTMLInputElement;
+  const newInput = input.value.replace(/\*/g, '');
+}
 // Watch for otherRole and otherGoal change
 
 // watch(() => props.values.type, (newType) => {
@@ -212,27 +250,27 @@ watch([
         <span class="font-bold">Speech-To-Text (STT) Setup</span>
         <div class="grid grid-cols-2 gap-4">
           <SelectField v-model="provider_stt" name="provider_stt" :options="providers" label="Provider" placeholder="Select provider"></SelectField>
-          <SelectField v-model="model_stt" v-if="provider_stt === 'deepgram'" name="model_stt" :options="models" label="Model"
-          placeholder="Select Model"></SelectField>
           <SelectField v-if="provider_stt === 'google'" v-model="googlemodel" name="googlemodel" :options="models" label="Model"
             placeholder="Select Model"></SelectField>
-          <TextField v-if="provider_stt" v-model="apikey_stt" type="text" label="API Key" name="apikey_stt" placeholder="API Key" />
+            <SelectField v-if="provider_stt === 'deepgram'" v-model="deepmodel" name="deepmodel" :options="deepModal" label="Model"
+            placeholder="Select Model"></SelectField>
+          <!-- <TextField v-if="provider_stt" v-model="apikey_stt" type="text" label="API Key" name="apikey_stt" placeholder="API Key" /> -->
         </div>
         </div>
         <div>
           <span class="font-bold">Text-To-Speech (TTS) Setup</span>
           <div class="flex items-center grid grid-cols-2 gap-4">
             <SelectField v-model="provider_tts" name="provider_tts" label="Provider" placeholder="Select provider"
-               :options="providersTSS" />
+               :options="providersTTS" />
+               <!-- {{provider_tts}} -->
+               <div v-if="(provider_tts !== 'tring') && (provider_tts !== 'deepgram') && (provider_tts !== 'google')" class="flex flex-col gap-0 pt-3">
+               <TextField v-model="apikey" type="text"
+               label="API Key" name="apikey" placeholder="API Key" @input="apikeyunmasking($event)" />
+               </div>
                <SelectField v-if="provider_tts === 'elevenlabs'" v-model="model" name="model" label="Model" placeholder="Model"
                :options="modalList" />
-               <TextField v-if="(provider_tts === 'elevenlabs')" v-model="apikey" type="text"
-               label="API Key" name="apikey" placeholder="API Key" @input="apikeyunmasking($event)" />
-               <TextField v-if="provider_tts === 'elevenlabs'" v-model="elevenlabsvoice" type="text" label="voice" name="elevenlabsvoice"
-               placeholder="voice" />
                <SelectField v-if="provider_tts === 'deepgram'" v-model="voice" name="voice" label="Voice" placeholder="Select voice" :options="voices" />
-               <TextField v-if="provider_tts && provider_tts !== 'elevenlabs'" v-model="apikey_tts" type="text" label="API Key" name="apikey_tts" placeholder="API Key" />
-               <SelectField v-if="provider_tts && provider_tts !== 'elevenlabs'" v-model="model_tts" name="model_tts" :options="models" label="Model" placeholder="Select Model" />
+               <SelectField v-if="(provider_tts !== 'tring') && (provider_tts !== 'deepgram') && (provider_tts !== 'google')" v-model="voice" name="voice" label="Voice" placeholder="Select voice" :options="[]" />
                <div class="flex flex-col gap-4 pt-1">
                  <TextField class="mt-4" v-if="provider_tts === 'google'" v-model="name" type="text" label="Name" name="name"
                  placeholder="Name" />
@@ -241,11 +279,11 @@ watch([
         </div>
         <div>
         <span class="font-bold">Large Language Model (LLM) Setup</span>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-2">
         <SelectField v-model="max_output_token" name="max_output_token" label="Max Tokens" placeholder="Max Tokens"
-        :options="tokens.map((token) => ({ label: token, value: token }))" :required="true" />
-        <div class="mt-5 flex flex-col gap-2">
-          <RangeSlider :step="0.05" :name="temperature" label="Temperature" @update="($event) => { temperature = $event; }"  required placeholder="Enter speaking Rate" min="0" max="2" />
+        :options="tokens.map((token) => ({ label: token, value: token }))"  />
+        <div class="mt-5 flex flex-col gap-2 pl-3">
+          <RangeSlider :step="0.05" :name="temperature" label="AI Response Flexibility" @update="($event) => { temperature = $event; }"  required placeholder="Enter speaking Rate" min="0" max="2" />
         </div>
           </div>
         </div>
