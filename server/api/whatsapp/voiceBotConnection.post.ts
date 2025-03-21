@@ -11,10 +11,11 @@ export default defineEventHandler(async (event) => {
       message: 'messageType must be either "text" or "template"',
     }),
     integrationId: z.string().optional(),
+    templateName: z.string().optional(),
     provider: z.string().optional(),
   }))
   try {
-    const { organizationId, phone, countryCode, integrationId, provider, messageType, message} = body
+    const { organizationId, phone, countryCode, integrationId, messageType, message, templateName} = body
 
     const integrationDetails = await getIntegrationByOrgId(organizationId, integrationId);
 
@@ -22,10 +23,14 @@ export default defineEventHandler(async (event) => {
       const metaToken = integrationDetails?.metadata?.access_token;
       const pid = integrationDetails?.metadata?.pid
       const userPhone = `${countryCode}${phone}`.replace("+", "").replaceAll(" ", "")
-  
-      const data = await sendWhatsappMessage(metaToken, pid, userPhone, message);
 
-      return { status: true, message: "Whatsapp message sent successfully", chatHistory:[], data };
+      if(messageType == "template" && templateName){
+        const data = await sendWhatsappTemplateMessage(pid, metaToken, userPhone, templateName, [], "en")
+        return { status: true, message: "Whatsapp template sent successfully", chatHistory:[], data };
+      } else {
+        const data = await sendWhatsappMessage(metaToken, pid, userPhone, message);
+        return { status: true, message: "Whatsapp message sent successfully", chatHistory:[], data };
+      }
     }
 
     return { status: false, message: "There is no whatsapp connection in your organaization", chatHistory:[]}
