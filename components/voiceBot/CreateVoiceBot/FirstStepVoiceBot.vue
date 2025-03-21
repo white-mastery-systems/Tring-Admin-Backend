@@ -9,6 +9,7 @@ import { FileText, Globe,Home, ShoppingCart, Plane, PhoneCall, FileDown, Landmar
   Server } from 'lucide-vue-next';
 
 const props = defineProps<{
+  values: Record<string, any>;
   errors: Record<string, any>;
   suggestionsContent: Array<any>;
   loading: boolean;
@@ -19,7 +20,8 @@ const uploadDocumentRef = ref(null);
 defineExpose({ uploadDocumentRef })
 const { value: selectedType } = useField("selectedType")
 const { value: type } = useField("type");
-
+const { value: boundDirection } = useField("boundDirection");
+const emit = defineEmits(["update:values"]);
 const intentTypes = [
   { label: "Real Estate", value: "real-estate", icon: Home },
   { label: "Government Sectors", value: "government-sectors", icon: Landmark },
@@ -47,13 +49,31 @@ const boundList = ref([
     value: 'outbound',
   }
 ])
+watch(boundDirection, () => {
+  emit("update:values", {
+    ...props.values,
+    boundDirection: boundDirection.value,
+  })
+})
 // Function to handle button click
 const selectType = (types: string) => {
+  console.log(boundDirection.value, "boundDirection -- boundDirection")
+  
   if (!type.value && (types != 'Website')) {
     toast.error('Please select an industry before proceeding.');
-    return
+    return;
   }
+  
+  // Update the selectedType
   selectedType.value = types;
+  
+  // IMPORTANT: Emit a complete update with ALL values
+  emit("update:values", {
+    ...props.values,
+    selectedType: types,
+    boundDirection: boundDirection.value,
+    type: type.value
+  });
 };
 
 const buttons = [
@@ -61,8 +81,16 @@ const buttons = [
   { label: "Text", icon: FileText },
 ];
 const selectIndustry = (value: string) => {
-  // selectedType.value = value;
-  type.value = value
+  // Update the type
+  type.value = value;
+  
+  // IMPORTANT: Emit a complete update with ALL values
+  emit("update:values", {
+    ...props.values,
+    type: value,
+    boundDirection: boundDirection.value,
+    selectedType: selectedType.value
+  });
 };
 
 
@@ -72,33 +100,20 @@ const changeKnowledge = () => {
 </script>
 
 <template>
-  <UiCard class="border-0 flex flex-col shadow-none h-full">
-    <!-- Header Section -->
-    <UiCardHeader class="p-0">
-      <div class="flex items-center justify-between gap-4 px-4 pb-2 pt-2">
-        <div class="flex flex-col gap-[3px]">
-          <UiCardTitle class="font-bold text-[18px] md:text-[20px] text-[#09090B]">
-            Build Your Bot's Knowledge
-          </UiCardTitle>
-          <UiCardDescription class="font-normal text-[14px] text-[#71717A]">
-            Enter your industry type and other details
-          </UiCardDescription>
-        </div>
-        <UiCardDescription class="text-[14px] font-medium">
-          <span class="text-[#09090B]">Step 1</span><span class="text-[#64748B]">/6</span>
-        </UiCardDescription>
-      </div>
-      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0]" />
-    </UiCardHeader>
-    
+    <BotSetupCard 
+      title="Build Your Bot's Knowledge" 
+      description="Enter your industry type and other details" 
+      currentStep="1" 
+      totalSteps="6">
     <!-- Main Content Area -->
-    <div class="flex flex-col items-center px-4 pb-4 pt-2 flex-grow">
+    <div class="flex flex-col items-center p-0 flex-grow">
       <!-- Initial Selection Screen -->
       <div v-if="!selectedType" class="flex flex-col w-full h-full">
         <UiCardContent class="grid p-0 gap-2 mb-4">
           <div class="flex items-center grid grid-cols-2 gap-3 text-left">
             <span class="font-medium text-left text-[16px] md:text-[18px]">Select your Call Type</span>
             <SelectField 
+              v-model="boundDirection"
               name="boundDirection" 
               :options="boundList" 
               placeholder="Select a direction" 
@@ -202,7 +217,7 @@ const changeKnowledge = () => {
         </div>
 
         <!-- Text Section -->
-        <div v-else-if="selectedType === 'Text'" class="w-full py-4 h-full flex flex-col">
+        <div v-else-if="selectedType === 'Text'" class="w-full h-full flex flex-col">
           <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Text</span>
             <UiButton 
@@ -229,5 +244,5 @@ const changeKnowledge = () => {
         </div>
       </div>
     </div>
-  </UiCard>
+  </BotSetupCard>
 </template>

@@ -48,28 +48,11 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
 </script>
 
 <template>
-  <UiCard class="border-0 ma-0">
-    <UiCardHeader class="p-0">
-      <div class="flex items-center justify-between gap-4 px-4 pt-4">
-        <div class="flex flex-col gap-[6px]">
-          <UiCardTitle class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B]">Define your Chatbot's Role
-            in your Company?
-          </UiCardTitle>
-          <UiCardDescription class="font-normal text-[12px] sm:text-[12px] md:text-[14px] text-[#71717A]">Import your
-            Select what you would like your bot to help you with</UiCardDescription>
-        </div>
-        <UiCardDescription class="text-[14px] font-medium">
-          <span class="text-[#09090B]">Step 3</span><span class="text-[#64748B]">/6</span>
-        </UiCardDescription>
-      </div>
-      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-3" />
-    </UiCardHeader>
-
-    <!-- <div class="mt-4">
-      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full h-[0.5px]" />
-    </div> -->
-<!-- {{ intentOptions }} || assdad -->
-<UiCardContent class="grid gap-3 sm:gap-3 md:gap-6 p-4">
+  <BotSetupCard 
+    title="Define your Chatbot's Role in your Company?" 
+    description="Select what you would like your bot to help you with" 
+    currentStep="3" 
+    totalSteps="6">
   <UiRadioGroup v-model="selectedRole" orientation="vertical"
     class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5">
     <div v-for="option in props.intentOptions.roles" :key="option.value"
@@ -122,6 +105,5 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
               class="border px-4 py-2 w-full rounded-lg text-[14px] sm:text-[14px] md:text-[16px] h-20" />
         </div> -->
       </div>
-    </UiCardContent>
-  </UiCard>
+    </BotSetupCard>
 </template>

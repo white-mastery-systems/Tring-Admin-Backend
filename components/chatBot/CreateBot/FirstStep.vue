@@ -82,23 +82,11 @@ const changeKnowledge = () => {
 </script>
 
 <template>
-  <UiCard class="border-0 flex flex-col justify-between" :class="!!selectedType ? '' : 'h-[95%]'">
-    <UiCardHeader class="p-0">
-      <div class="flex items-center justify-between gap-4 px-4 pt-4">
-        <div class="flex flex-col gap-[6px]">
-          <UiCardTitle class="font-bold text-[16px] md:text-[20px] text-[#09090B]">
-            Build Your Bot’s Knowledge
-          </UiCardTitle>
-          <UiCardDescription class="font-normal text-[12px] md:text-[14px] text-[#71717A]">
-            Import your company details and goals through your website link, by document upload, or by text input (Can select either one)
-          </UiCardDescription>
-        </div>
-        <UiCardDescription class="text-[14px] font-medium">
-          <span class="text-[#09090B]">Step 1</span><span class="text-[#64748B]">/4</span>
-        </UiCardDescription>
-      </div>
-      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-3" />
-    </UiCardHeader>
+    <BotSetupCard 
+      title="Build Your Bot’s Knowledge" 
+      description="Import your company details and goals through your website link, by document upload, or by text input (Can select either one)" 
+      currentStep="1" 
+      totalSteps="4">
     <div class="flex flex-col items-center text-center px-4 h-full w-full" :class="selectedType ? 'justify-start' : 'justify-center'">
       <div v-if="!selectedType" class="gap-3 space-y-3 w-full overflow-x-hidden">
         <!-- Scrollable Radio Group -->
@@ -209,5 +197,5 @@ const changeKnowledge = () => {
         </div>
       </div>
     </div>
-  </UiCard>
+  </BotSetupCard>
 </template>

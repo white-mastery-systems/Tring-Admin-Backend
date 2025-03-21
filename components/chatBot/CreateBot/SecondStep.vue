@@ -80,29 +80,11 @@ const handleLogoChange = (event: any) => {
 </script>
 
 <template>
-  <UiCard class="border-0">
-    <UiCardHeader class="p-0">
-      <div class="flex items-center justify-between gap-4 px-4 pt-4">
-        <div class="flex flex-col gap-[6px]">
-          <UiCardTitle class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B]">What kind of Business do
-            you own?
-          </UiCardTitle>
-          <UiCardDescription class="font-normal text-[12px] sm:text-[12px] md:text-[14px] text-[#71717A]">
-            Select your industry type and other details
-          </UiCardDescription>
-        </div>
-        <UiCardDescription class="text-[14px] font-medium">
-          <span class="text-[#09090B]">Step 2</span><span class="text-[#64748B]">/4</span>
-        </UiCardDescription>
-      </div>
-    </UiCardHeader>
-
-    <div class="mt-4">
-      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full h-[0.5px]" />
-    </div>
-
-
-    <UiCardContent class="grid gap-6 my-6 px-4">
+  <BotSetupCard 
+    title="What kind of Business do you own?" 
+    description="Select your industry type and other details" 
+    currentStep="2" 
+    totalSteps="4">
       <!-- {{ intentTypes }} || intentTypes -->
       <!-- ✅ Industry selection - FIXED: Using selectedType directly in the class binding -->
       <!-- <RadioGroup v-model="selectedType" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden">
@@ -201,6 +183,5 @@ const handleLogoChange = (event: any) => {
           </UiFormField>
         </div>
       </div>
-    </UiCardContent>
-  </UiCard>
+    </BotSetupCard>
 </template>

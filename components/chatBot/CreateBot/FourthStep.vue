@@ -49,27 +49,11 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
 </script>
 
 <template>
-  <UiCard class="border-0 ma-0">
-    <UiCardHeader class="p-0">
-      <div class="flex items-center justify-between gap-4 px-4 pt-4">
-        <div class="flex flex-col gap-[6px]">
-          <UiCardTitle class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B]">Define your Chatbot's Goal
-            in your Company?
-          </UiCardTitle>
-          <UiCardDescription class="font-normal text-[12px] sm:text-[12px] md:text-[14px] text-[#71717A]">Import your
-            Select what you would like your bot to help you with</UiCardDescription>
-        </div>
-        <UiCardDescription class="text-[14px] font-medium">
-          <span class="text-[#09090B]">Step 4</span><span class="text-[#64748B]">/4</span>
-        </UiCardDescription>
-      </div>
-      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-3" />
-    </UiCardHeader>
-
-    <!-- <div class="mt-4">
-      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full h-[0.5px]" />
-    </div> -->
-    <UiCardContent class="grid gap-3 sm:gap-3 md:gap-4 p-4">
+  <BotSetupCard 
+    title="Define your Chatbot's Goal in your Company?" 
+    description="Select what you would like your bot to help you with" 
+    currentStep="4" 
+    totalSteps="4">
   <UiRadioGroup v-model="selectedGoal" orientation="vertical"
     class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5" :class="props.disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''">
     <div v-for="option in props.intentOptions.goals" :key="option.value"
@@ -123,6 +107,5 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
           </UiTextarea>
         </div>
       </div>
-    </UiCardContent>
-  </UiCard>
+    </BotSetupCard>
 </template>

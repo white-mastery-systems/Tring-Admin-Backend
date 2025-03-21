@@ -151,7 +151,7 @@ import { useForm } from "vee-validate";
 import { textToSpeechValidation } from "~/validationSchema/textToSpeechValidation";
 import { LanguageList } from '~/composables/useLanguageList';
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
-
+import { useIntegrations } from '@/composables/botManagement/voiceBot/useTtsIntegrations';
 
 const route = useRoute("voice-bot-id-text-to-speech-config");
 const breadcrumbStore = useBreadcrumbStore();
@@ -160,13 +160,21 @@ const breadcrumbStore = useBreadcrumbStore();
 const { data: botData, status: botLoadingStatus } = await useLazyFetch<{
   textToSpeechConfig: Record<string, string>;
 }>(`/api/voicebots/${route.params.id}`);
+const { 
+  integrationsData, 
+  status, 
+  integrationRefresh,
+  page,
+  totalPageCount,
+  totalCount
+} = useIntegrations({});
 // const botData = await $fetch(`/api/voicebots/` + route.params.id);
 // const { data: botData, status: botLoadingStatus } = await useLazyFetch <{ speechToTextConfig: Record < string, string>}> (`/api/voicebots/${route.params.id}`)
 
 
 const isLoading = ref(false);
 
-const providers = [
+const defaultProviders = [
   {
     label: "tring",
     value: "tring",
@@ -174,10 +182,6 @@ const providers = [
   {
     label: "google",
     value: "google",
-  },
-  {
-    label: "elevenlabs",
-    value: "elevenlabs",
   },
   {
     label: "deepgram",
@@ -314,6 +318,44 @@ const voices = [
 ];
 const botDetails = ref(await getVoiceBotDetails(route.params.id));
 
+
+const providers = ref([...defaultProviders]);
+
+// Watch for changes in integration data
+watch([status, integrationsData], ([newStatus, newData]) => {
+  // Only proceed if we have successful data
+  if (newStatus === 'success' && Array.isArray(newData)) {
+    try {
+      console.log(newData, "newData - -newData")
+      // Find ElevenLabs integration if it exists
+      const elevenLabsIntegration = newData.find(
+        integration => integration.provider === 'elevenlabs'
+      );
+      
+      // If we found an ElevenLabs integration, add it to providers
+      if (elevenLabsIntegration) {
+        // Make a copy of the current providers
+        const updatedProviders = [...defaultProviders];
+        
+        // Add ElevenLabs with the proper name from the integration
+        updatedProviders.push({
+          label: elevenLabsIntegration.ttsIntegrationName || 'ElevenLabs',
+          value: 'elevenlabs'
+        });
+        
+        // Update the providers ref
+        providers.value = updatedProviders;
+      } else {
+        // If no ElevenLabs integration, just use default providers
+        providers.value = [...defaultProviders];
+      }
+    } catch (error) {
+      console.error("Error processing integration data:", error);
+      // On error, revert to default providers
+      providers.value = [...defaultProviders];
+    }
+  }
+}, { immediate: true });
 breadcrumbStore.setBreadcrumbs([
   {
     label: 'Text To Speech Configurations',
