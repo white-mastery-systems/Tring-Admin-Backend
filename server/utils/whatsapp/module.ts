@@ -143,3 +143,29 @@ export async function createWhatsAppMessage(
     return false
   }
 }
+
+export const sendWhatsappMessage = async (
+  metaToken: string,
+  phoneId: string,
+  userPhone: string,
+  message: string,
+) => {
+  const data = await $fetch(`https://graph.facebook.com/v20.0/${phoneId}/messages`,{
+    ignoreResponseError: true,
+    method: "post",
+    headers: {
+      Authorization: `Bearer ${metaToken}`,
+    },
+    body: {
+      messaging_product: "whatsapp",
+      to: userPhone,
+      type: "text",
+      text: {
+        preview_url: true,
+        body: message,
+      },
+    },
+  });
+
+  return data
+}; 
