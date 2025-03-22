@@ -98,3 +98,22 @@ export const getExophoneByProvider = async(providerName: string, organizationId:
     ) 
   })
 }
+
+export const getIvrIntegrationByName = async(ivrIntegrationName: string, organizationId: string) => {
+   return await db.query.numberIntegrationSchema.findFirst({
+    where: and(
+      ilike(numberIntegrationSchema.ivrIntegrationName, ivrIntegrationName),
+      eq(numberIntegrationSchema.organizationId, organizationId)
+    ) 
+  })
+}
+
+export const isIvrIntegrationNameAlreadyExistsForUpdate = async(id: string, ivrIntegrationName: string, organizationId: string) => {
+   return await db.query.numberIntegrationSchema.findFirst({
+    where: and(
+      ilike(numberIntegrationSchema.ivrIntegrationName, ivrIntegrationName),
+      eq(numberIntegrationSchema.organizationId, organizationId),
+      ne(numberIntegrationSchema.id, id)
+    ) 
+  })
+}

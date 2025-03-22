@@ -101,6 +101,8 @@ export default defineNuxtConfig({
     envType: "",
     openaiApiKey: "",
     geminiApiKey: "",
+    tringPlivoAuthId: "",
+    tringPlivoAuthToken: "",
     public: {
       adminBaseUrl: "",
       chatBotBaseUrl: "",

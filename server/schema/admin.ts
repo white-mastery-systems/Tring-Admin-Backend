@@ -162,6 +162,7 @@ export const adminPricingSchema = adminSchema.table("admin_pricing", {
 
 export const numberIntegrationSchema = adminSchema.table("number_integration", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
+  ivrIntegrationName: varchar("ivr_integration_name"),
   provider: varchar("provider"),
   exoPhone: varchar("exo_phone"),
   metadata: jsonb("metadata"),

@@ -1,6 +1,7 @@
-import { createNumberIntegration, getExophoneByProvider } from "~/server/utils/db/number-integration"
+import { createNumberIntegration, getExophoneByProvider, getIvrIntegrationByName } from "~/server/utils/db/number-integration"
 
 const zodInsertNumberIntegration = z.object({
+   ivrIntegrationName: z.string(),
    provider: z.string(),
    metadata: z.object({
      authId: z.string().optional(),
@@ -21,7 +22,7 @@ export default defineEventHandler(async (event) => {
   
    const body = await isValidBodyHandler(event, zodInsertNumberIntegration)
 
-   const isAlreadyExists = await getExophoneByProvider(body.provider, organizationId)
+   const isAlreadyExists = await getIvrIntegrationByName(body.ivrIntegrationName, organizationId)
 
    if (isAlreadyExists) {
      return sendError(
@@ -29,7 +30,7 @@ export default defineEventHandler(async (event) => {
        createError({
          statusCode: 400,
          statusMessage:
-           "Provider Already Exists: A provider with the same details already exists. Please check and use a different provider or modify the current one.",
+           "Ivr-integration Name Already Exists",
        }),
      );
    }
