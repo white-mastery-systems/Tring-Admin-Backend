@@ -1,5 +1,5 @@
 import { logger } from "~/server/logger";
-import { getIntegrationByOrgId } from "./module";
+import { getIntegrationByOrgId, sendWhatsappCommand } from "./module";
 
 export default defineEventHandler(async (event) => {
   const body = await isValidBodyHandler(event, z.object({
@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     phone: z.string(),
     countryCode: z.string(),
     message: z.string(),
-    messageType: z.string().default("text").refine((val) => ["text", "template"].includes(val), {
+    messageType: z.string().default("text").refine((val) => ["text", "template", "command"].includes(val), {
       message: 'messageType must be either "text" or "template"',
     }),
     integrationId: z.string().optional(),
@@ -27,6 +27,9 @@ export default defineEventHandler(async (event) => {
       if(messageType == "template" && templateName){
         const data = await sendWhatsappTemplateMessage(pid, metaToken, userPhone, templateName, [], "en")
         return { status: true, message: "Whatsapp template sent successfully", chatHistory:[], data };
+      } else if(messageType ==="command" && message){
+        const data = await sendWhatsappCommand(integrationDetails?.id, organizationId, metaToken, pid, userPhone, message);
+        return { status: true, message: "Whatsapp message sent successfully", chatHistory:[], data };
       } else {
         const data = await sendWhatsappMessage(metaToken, pid, userPhone, message);
         return { status: true, message: "Whatsapp message sent successfully", chatHistory:[], data };
