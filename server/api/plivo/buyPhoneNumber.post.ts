@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     const createSubAccount: any = await createSubAccountInPlivo({
       name: adminDetails?.email!
     })
-    if(!createSubAccount?.authId && !createSubAccount.authToken) {
+    if(!createSubAccount?.auth_id && !createSubAccount.auth_token) {
       logger.error(`Unable to create a sub-account in plivo for organizationId - ${organizationId}`)
       return errorResponse(event, 500, "Unable to create a sub-account in plivo")
     }
@@ -21,16 +21,16 @@ export default defineEventHandler(async (event) => {
       ivrIntegrationName: adminDetails?.email!,
       provider: "plivo",
       metadata: {
-        authId: createSubAccount?.authId,
-        authToken: createSubAccount.authToken
+        authId: createSubAccount?.auth_id,
+        authToken: createSubAccount.auth_token
       },
       organizationId
     })
 
     // Get the plivo sub-account PhoneNumbers List
     const plivoSubAccountPhoneNumberList = await listPlivoSubAccountPhoneNumbers({
-      subAccountAuthId: createSubAccount.authId,
-      subAccountAuthToken: createSubAccount.authToken,
+      subAccountAuthId: createSubAccount.auth_id,
+      subAccountAuthToken: createSubAccount.auth_token,
       country: "US",
       page: "1",
       limit: "1"
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
 
     // Buy a phoneNumber for sub-account in plivo 
     const data: any = await buyPhoneNumberForPlivoSubAccount({ 
-      subAccountAuthId: createSubAccount.authId, 
+      subAccountAuthId: createSubAccount.auth_id,
       phoneNumber: plivoSubAccountPhoneNumberList[0]
     })
     if(!data.numbers) {
