@@ -10,11 +10,12 @@ export default defineEventHandler(async (event) => {
     }))
 
     let data: any = await getElevenlabsVoices(query?.apiKey)
-    if(!data) {
-      return { status: false, data: [] }
-    }
 
-    return { status: true, data }
+    data = data?.voices.map((i: any) => ({
+      voice_id: i.voice_id,
+      name: i.name
+    }))
+    return data
   } catch (error: any) {
     logger.error(`TTS-integration Elevenlabs get voices API Error: ${JSON.stringify(error.message)}`)
     return errorResponse(event, 500, "Unable to get elevenlabs voices")
