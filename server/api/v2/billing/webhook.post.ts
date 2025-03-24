@@ -1,6 +1,7 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
 import { getuserDetailByEmail } from "~/server/utils/db/user"
+import { updateSubscriptionPlanUsageById } from "~/server/utils/v2/db/planUsage"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -72,7 +73,7 @@ export default defineEventHandler(async (event) => {
       
       const planUsage = await getOrgPlanUsage(orgId, botType)
       if(planUsage) {
-         await updateSubscriptionPlanUsage(planUsage.id, { subscriptionStatus: "inactive" })
+         await updateSubscriptionPlanUsageById(planUsage.id, { subscriptionStatus: "inactive" })
       }
        
       await Promise.all([

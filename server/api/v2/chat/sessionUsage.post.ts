@@ -1,6 +1,7 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
 import momentTz from "moment-timezone"
+import { updateSubscriptionPlanUsageById } from "~/server/utils/v2/db/planUsage"
 
 const zodPlanUsageUpdateValidation = z.object({
    botId: z.string()
@@ -43,7 +44,7 @@ export default defineEventHandler(async (event) => {
     //TODO
     if(usedSessions >= maxSessions) {
       if(wallet > 0) {
-        const updatedInteractions = await updateSubscriptionPlanUsage(
+        const updatedInteractions = await updateSubscriptionPlanUsageById(
           orgPlanUsage.id,
           { interactionsUsed: (usedSessions || 0) + 1 }
         )
@@ -54,7 +55,7 @@ export default defineEventHandler(async (event) => {
         if(actualExtraSessions > 0) {
           const extraSessionCost = actualExtraSessions * planPricingDetail?.extraSessionCost!
           const currentWallet = Math.max(0, parseFloat((wallet - extraSessionCost).toFixed(2)))
-          await updateSubscriptionPlanUsage(orgPlanUsage?.id!, {
+          await updateSubscriptionPlanUsageById(orgPlanUsage?.id!, {
             extraInteractionsUsed: extraSession
           })
           await updateOrganization(organizationId, { wallet: currentWallet })
@@ -71,7 +72,7 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    const updatedInteractions = await updateSubscriptionPlanUsage(
+    const updatedInteractions = await updateSubscriptionPlanUsageById(
       orgPlanUsage.id!,
       { interactionsUsed: (usedSessions || 0) + 1 }
     )

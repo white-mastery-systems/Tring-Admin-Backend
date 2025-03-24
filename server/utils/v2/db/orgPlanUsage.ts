@@ -39,7 +39,7 @@ export const chatPlanUsages = async (orgZohoSubscription: any, orgDetail: any, p
     const maxSessions = planPricingDetail?.sessions || 0
     const availableSessions = Math.max(maxSessions - usedSessions, 0)
 
-    const resObj = constructPlanUsageResponse({
+    const resObj: any = constructPlanUsageResponse({
       usedQuota: usedSessions,
       maxQuota: maxSessions,
       planCode: orgZohoSubscription.pricingPlanCode,
@@ -51,6 +51,12 @@ export const chatPlanUsages = async (orgZohoSubscription: any, orgDetail: any, p
       orgZohoSubscription,
       whatsappSession: whatsappTotalSessions || 0
     });
+    if(orgZohoSubscription.subscriptionStatus === "trail") {
+      const trialEndDate = momentTz(orgZohoSubscription.endDate, "YYYY-MM-DD").startOf("day");
+      const currentDate = momentTz().startOf('day');
+      const daysRemaining = trialEndDate.diff(currentDate, "days");
+      resObj.remainingDaysForTrailEnd = daysRemaining
+    }
 
     return resObj
   } catch (error: any) {

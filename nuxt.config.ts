@@ -41,6 +41,7 @@ export default defineNuxtConfig({
       "~/server/plugin/schedule-voicebotDialer.ts",
       "~/server/plugin/whatsapp-analytics.ts",
       "~/server/plugin/schedule-chatbotCall.ts",
+      "~/server/plugin/schedule-chatExpiry.ts",
     ],
   },
 
@@ -100,6 +101,8 @@ export default defineNuxtConfig({
     envType: "",
     openaiApiKey: "",
     geminiApiKey: "",
+    tringPlivoAuthId: "",
+    tringPlivoAuthToken: "",
     public: {
       adminBaseUrl: "",
       chatBotBaseUrl: "",
