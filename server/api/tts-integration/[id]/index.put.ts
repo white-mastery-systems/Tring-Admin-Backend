@@ -14,6 +14,14 @@ export default defineEventHandler(async (event) => {
 
   const body: any = await isValidBodyHandler(event, zodUpdateTtsIntegration)
 
+  if(body.provider === "elevenlabs") {
+    try {
+      await getElevenlabsModels(body?.metadata?.apiKey)
+    } catch (error: any) {
+      return errorResponse(event, 400, "Invalid elevenlabs API-Key")
+    }
+  }
+
   const isAlreadyExists = await isTtsNameAlreadyExists(body?.ttsIntegrationName, ttsIntegrationId)
   if(isAlreadyExists) {
     return errorResponse(event, 400, "TTS integration name already exists")
