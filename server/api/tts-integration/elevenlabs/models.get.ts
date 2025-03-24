@@ -14,10 +14,12 @@ export default defineEventHandler(async (event) => {
     if(query?.language) {
       data = data.filter((i: any) => i.languages.some((j: any)=> j.name === query?.language))
     }
-    if(!data) {
-      return { status: false, data: [] }
-    }
-    return { status: true , data }
+
+    data = data.map((i: any)=> ({
+      model_id: i.model_id,
+      name: i.name
+    }))
+    return data
   } catch (error: any) {
     logger.error(`TTS-integration - elevenlabs get models API Error: ${JSON.stringify(error.message)}`)
     return errorResponse(event, 500, "Unable to get elevenlabs models")
