@@ -313,3 +313,9 @@ export const addDynamicFormValues = async (formValues: any) => {
     await db.insert(botDynamicFormSchema).values(formValues).returning()
   )[0]
 }
+
+export const getWhatsappBotAndIntgrationId = async (integrationId:any) => {
+  return await db.query.chatBotSchema.findFirst({
+    where: eq(sql`channels->>'whatsapp'`, integrationId),
+  });
+}
