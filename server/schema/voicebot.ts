@@ -25,6 +25,8 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     top_k: "40",
     max_output_token: "8192",
     prompt: "",
+    inboundPrompt: {},
+    outboundPrompt: {}
   }),
   textToSpeechConfig: jsonb("text_to_speech_config").default({
     "provider": "google",
