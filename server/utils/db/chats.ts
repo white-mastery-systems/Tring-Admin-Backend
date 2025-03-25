@@ -1,8 +1,20 @@
+import { and, lte, gte } from "drizzle-orm";
 import momentTz from "moment-timezone";
 import { getDateRangeForFilters } from "./leads";
 import { logger } from "~/server/logger";
 
 const db = useDrizzle();
+
+export const createChat = async (chat: InsertChat) => (await db.insert(chatSchema).values(chat).returning())[0];
+
+export const createChatMessage = async (message: InsertMessage) => (await db.insert(messageSchema).values(message).returning())[0];
+
+export const getChatMessagesById = async (chatId: string) =>{
+  return await db.query.chatSchema.findFirst({
+      where: eq(chatSchema.id, chatId),
+      with: { messages: { orderBy: asc(messageSchema.createdAt) } },
+    });
+}
 
 export const getChatDetails = async (chatId: string) => {
   return await db.query.chatSchema.findFirst({
@@ -197,8 +209,6 @@ export const updateChatSummary = async (
   }
 };
 
-import { and, lte, gte } from "drizzle-orm";
-
 export const findExpiredChatsToday = async () => {
   const now = new Date();
   const startOfToday = new Date();
@@ -215,4 +225,28 @@ export const findExpiredChatsToday = async () => {
         gte(chatSchema.chatExpiredAt, startOfToday),
       ),
     );
+};
+
+export const fetchWhatsappChatOrCreate = async (userId: string, botId: string, orgId: string) => {
+  const chat = await db.query.chatSchema.findFirst({
+    where: and(
+      eq(chatSchema.botUserId, userId),
+      eq(chatSchema.botId, botId),
+      eq(chatSchema.channel, "whatsapp"),
+    ),
+    orderBy: desc(chatSchema.createdAt),
+  });
+
+  if (chat) {
+    return chat;
+  }
+
+  const newChat = await createChat({
+    botUserId: userId,
+    botId,
+    organizationId: orgId,
+    channel: "whatsapp",
+  });
+
+  return newChat;
 };

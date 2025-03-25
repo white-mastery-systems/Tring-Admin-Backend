@@ -1,6 +1,9 @@
+import { getIvrIntegrationByName, isIvrIntegrationNameAlreadyExistsForUpdate } from "~/server/utils/db/number-integration"
+
 const db = useDrizzle()
 
 const zodUpdateNumberIntegration = z.object({
+  ivrIntegrationName: z.string().optional(),
   provider: z.string().optional(),
   metadata: z.object({
    authId: z.string().optional(),
@@ -21,27 +24,20 @@ export default defineEventHandler(async (event) => {
 
   const { id: numberIntegrationId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
-  const body = await isValidBodyHandler(event, zodUpdateNumberIntegration)
+  const body: any = await isValidBodyHandler(event, zodUpdateNumberIntegration)
 
-  const isAlreadyExists = await db.query.numberIntegrationSchema.findFirst({
-    where: and(
-      eq(numberIntegrationSchema.organizationId, organizationId),
-      eq(numberIntegrationSchema.provider, body?.provider),
-      ne(numberIntegrationSchema.id, numberIntegrationId)
-    )
-  })
-
+  const isAlreadyExists = await isIvrIntegrationNameAlreadyExistsForUpdate(numberIntegrationId, body?.ivrIntegrationName!, organizationId)
   if (isAlreadyExists) {
     return sendError(
       event,
       createError({
         statusCode: 400,
         statusMessage:
-          "Provider Already Exists: The specified provider is already registered. Please use a different provider or check for duplicates.",
+          "Ivr-integration Name Already Exists",
       }),
     );
   }
-
+  
   const update = await updateNumberIntegration(numberIntegrationId, body)
 
   return update

@@ -4,6 +4,7 @@ import {
   index,
   integer,
   jsonb,
+  pgEnum,
   text,
   timestamp,
   unique,
@@ -85,9 +86,11 @@ export const documentSchema = chatbotSchema.table("document", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const botUserBotTypeEnum = pgEnum("userType", ["chatbot", "whatsapp", "voicebot"]);
+
 export const botUserSchema = chatbotSchema.table(
   "bot_user",
-  {
+ {
     id: uuid("id").notNull().primaryKey().defaultRandom(),
     name: varchar("name", { length: 64 }).notNull(),
     email: varchar("email", { length: 128 }),
@@ -99,6 +102,7 @@ export const botUserSchema = chatbotSchema.table(
     secondaryMobile: varchar("secondary_mobile", { length: 16 }).array(),
     metaData: jsonb("metadata"),
     visitedCount: integer("visited_count").default(1),
+    userType: botUserBotTypeEnum("user_type").default("chatbot"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     organizationId: uuid("organization_id")
       .references(() => organizationSchema.id, { onDelete: "cascade" })
