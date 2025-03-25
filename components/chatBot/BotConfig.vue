@@ -161,7 +161,7 @@ const handleUpdateBotConfig = handleSubmit(async (values: any) => {
       },
     },
   };
-  await updateBotDetails(payload);
+  await updateBotDetails(payload,true);
   // emit('formSubmitted');
   isLoading.value = false
   // return navigateTo({

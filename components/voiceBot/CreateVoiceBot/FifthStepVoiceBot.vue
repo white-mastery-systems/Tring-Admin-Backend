@@ -20,8 +20,6 @@ const { value: googlemodel } = useField("googlemodel")
 const { value: model } = useField("model")
 const { value: voice } = useField("voice")
 const { value: name } = useField("name")
-const { value: apikey } = useField("apikey")
-const { value: apikey_stt } = useField("apikey_stt")
 const { value: deepmodel } = useField("deepmodel")
 const { value: otherRole, errorMessage: otherRoleError } = useField("otherRole");
 const { value: otherGoal, errorMessage: otherGoalError } = useField("otherGoal");
@@ -177,8 +175,6 @@ watch([
   model, 
   voice, 
   name, 
-  apikey, 
-  apikey_stt,
 ], () => {
   emit("update:values", {
     ...props.values,
@@ -190,8 +186,6 @@ watch([
     model: model.value,
     voice: voice.value,
     name: name.value,
-    apikey: apikey.value,
-    apikey_stt: apikey_stt.value,
     // ROLE: newValue,
     // otherRole: otherRole.value,
     // otherGoal: otherGoal.value
@@ -263,10 +257,10 @@ const apikeyunmasking = ($event: Event) => {
             <SelectField v-model="provider_tts" name="provider_tts" label="Provider" placeholder="Select provider"
                :options="providersTTS" />
                <!-- {{provider_tts}} -->
-               <div v-if="(provider_tts !== 'tring') && (provider_tts !== 'deepgram') && (provider_tts !== 'google')" class="flex flex-col gap-0 pt-3">
+               <!-- <div v-if="(provider_tts !== 'tring') && (provider_tts !== 'deepgram') && (provider_tts !== 'google')" class="flex flex-col gap-0 pt-3">
                <TextField v-model="apikey" type="text"
                label="API Key" name="apikey" placeholder="API Key" @input="apikeyunmasking($event)" />
-               </div>
+               </div> -->
                <SelectField v-if="provider_tts === 'elevenlabs'" v-model="model" name="model" label="Model" placeholder="Model"
                :options="modalList" />
                <SelectField v-if="provider_tts === 'deepgram'" v-model="voice" name="voice" label="Voice" placeholder="Select voice" :options="voices" />

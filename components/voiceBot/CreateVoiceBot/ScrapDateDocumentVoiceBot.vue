@@ -7,7 +7,7 @@ import { useRoute } from "vue-router";
 import { useDocumentUpload } from "~/composables/botManagement/chatBot/useDocumentUpload"; // Import the composable
 
 const scrapData = botStore();
-const text = ref(scrapData.scrapedData?.knowledge_base?.document_content || "");
+const text = ref(scrapData.voiceBotScrapedData?.document_content || "");
 const route = useRoute();
 const props = defineProps<{
   refresh: () => void
@@ -15,9 +15,10 @@ const props = defineProps<{
 const { createDocuments ,uploadStatus, isUploading, uploadError } = useDocumentUpload();
 // Watch for changes in scrapData
 watch(
-  () => scrapData.scrapedData?.knowledge_base?.document_content,
+  () => scrapData.voiceBotScrapedData?.document_content,
   (newValue) => {
     if (newValue) {
+      // console.log("Scraped data changed:", newValue);
       text.value = newValue;
     }
   }
@@ -63,8 +64,8 @@ const generatePDFAndUpload = async () => {
   };
 
   // Upload to API
-  await createDocuments(payload.botId, payload.document);
-  await props.refresh()
+  // await createDocuments(payload.botId, payload.document);
+  // await props.refresh()
 };
 
 // Auto-generate PDF when text updates
@@ -82,6 +83,7 @@ onMounted(() => {
 
 <template>
   <div class="w-full">
+    <!-- {{ scrapData.voiceBotScrapedData.document_content }} || asdsad -->
     <UiTextarea v-model="text" placeholder="" class="border p-2 h-40" :readonly="true">
     </UiTextarea>
     <!-- <UiButton @click="generatePDFAndUpload" class="flex mt-2 text-white px-4 py-2 rounded">

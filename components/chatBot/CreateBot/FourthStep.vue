@@ -101,7 +101,7 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
         </div> -->
         <div>
           <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-1 text-[#000000]">Tell us your Chatbot’s Goal in the Company</p>
-          <UiTextarea v-model="otherGoal" name="otherGoal" :disabled="props.disabled" class="h-[95px] text-[12px] sm:text-[12px] md:text-[14px]" :resizable="false"
+          <UiTextarea v-model="otherGoal" name="otherGoal" :disabled="props.disabled" class="h-[70px] text-[12px] sm:text-[12px] md:text-[14px]" :resizable="false"
             placeholder="e.g., 'Rental Management Assistant – Help users find and manage rental properties easily.'"
             label="Tell us about your company">
           </UiTextarea>

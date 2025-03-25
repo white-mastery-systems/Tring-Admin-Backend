@@ -161,10 +161,9 @@
     <!-- <div>
       <CreateBotFields ref="childRef" @confirm="handleAddEditBot" />
     </div> -->
-    <div class="font-bold text-[20px]">
+    <div class="font-bold text-[20px] leading-none">
       View and Edit your Chatbots features
     </div>
-
     <CreateBot :botDetails="botDetails" :documents="documents" :refresh="refresh" :refreshBot="refreshBot"
       :loading="loading" />
     <!-- <div class="flex justify-center">
@@ -353,6 +352,8 @@ import { useDocumentsList } from '~/composables/botManagement/chatBot/useDocumen
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 import { useBotDocuments } from '~/composables/botManagement/chatBot/useBotDocuments';
 import { useBotList } from "~/composables/botManagement/chatBot/useBotList";
+import { botStore } from '~/store/botStore';
+
 
 const router = useRouter();
 const route = useRoute("chat-bot-id");
@@ -361,7 +362,8 @@ const paramId: any = route;
 const queryId = ref(route.params?.id);
 const agentModalState = ref({ open: false, id: paramId.params.id });
 const { status, documents, refresh } = useBotDocuments(route.params.id);
-
+const store = botStore();
+const unregisterGuard = ref()
 // const botDetails = ref(await getBotDetails(paramId.params.id));
 const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
 // const { documentsList, refreshDocuments } = useDocumentsList(route.params.id)
@@ -406,7 +408,15 @@ watch(
   },
   { deep: true, immediate: true }
 );
+
+// router.beforeEach((to, from) => {
+//   store.lastVisitedRoute = from.path
+// })
+
 watch(() => botDetails.value?.documentId, (newId) => {
+  console.log(newId, 'newId',store.lastVisitedRoute)
+  store.scrapedData = []
+  // && store.lastVisitedRoute.includes('/chat-bot/create-bot')
   if (newId) {
     createBotsuccessfulState.value.open = true
   }
@@ -466,12 +476,12 @@ const previewUrl = computed(() => {
   return `${window.location.origin}/preview.html?orgname=WMS&chatbotid=${paramId.params.id}&mode=preview`;
 });
 
-const botManagementDetails = async (list: any, index: any) => {
-  await navigateTo({
-    name: list.routeName,
-    params: { id: paramId.params.id },
-  });
-};
+// const botManagementDetails = async (list: any, index: any) => {
+//   await navigateTo({
+//     name: list.routeName,
+//     params: { id: paramId.params.id },
+//   });
+// };
 const deactivateBot = async () => {
   modalOpen.value = true;
 };
@@ -693,10 +703,29 @@ const handleActivateBot = async () => {
       toast.error("Failed to active the bot, try again");
       return;
     }
+  } else {
+    isDocumentListOpen.value = true;
   }
   isSubmitting.value = false;
-  isDocumentListOpen.value = true;
 };
+onMounted(() => {
+  // This will add the guard after the component mounts
+  unregisterGuard.value = router.beforeEach((to, from) => {
+    console.log(from.path, 'from.path')
+    store.lastVisitedRoute = from.path
+    return true
+  })
+  
+  // Test the guard with a navigation
+  setTimeout(() => {
+    router.push(router.currentRoute.value)
+  }, 1000)
+})
+onUnmounted(() => {
+  if (unregisterGuard.value) {
+    unregisterGuard.value() // Remove the guard
+  }
+})
 </script>
 
 <style scoped>

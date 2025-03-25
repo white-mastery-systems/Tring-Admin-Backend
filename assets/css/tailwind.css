@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .border-border {
+    border-color: your-color-value;
+  }
+}
 @font-face {
   font-family: "HeyWow";
   src: url("../fonts/HeyWowBold.ttf") format("truetype");
@@ -206,9 +211,6 @@
     overflow-y: hidden;
   }
 }
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 @layer utilities {
   @media (min-width: 768px) and (max-width: 1023px) {

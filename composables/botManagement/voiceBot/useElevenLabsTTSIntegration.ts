@@ -1,6 +1,6 @@
 export const useElevenLabsVoices = (apiKey: Ref<string> | string) => {
     const { data, status, error, refresh } = useLazyFetch<ElevenLabsVoice[]>(
-      () => `/tts-integration/elevenlabs/voices?apiKey=${encodeURIComponent(unref(apiKey))}`,
+      () => `/api/tts-integration/elevenlabs/voices?apiKey=${encodeURIComponent(unref(apiKey))}`,
       { 
         watch: false, // Ensures it doesn't auto-refresh unless triggered manually
         headers: {

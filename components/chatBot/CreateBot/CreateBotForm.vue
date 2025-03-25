@@ -24,7 +24,8 @@ const isDocumentListOpen = ref(false);
 const intervalId = ref<any>(null); // Store the interval ID
 const logoData = ref()
 const { intentOptions, fetchConfig } = useChatbotConfig();
-const { createDocuments, uploadStatus, isUploading, uploadError } = useDocumentUpload();
+// const uploadComposable = useDocumentUpload();
+const { uploadStatus, isUploading, uploadError, createDocuments, resetUploadStatus } = useDocumentUpload();
 // const uploadDocumentRef = ref(null);
 // const selectedType = ref('')
 // ✅ Define a single form
@@ -184,6 +185,7 @@ const getLogoChange = (file: any, logo: any) => {
 // };
 // ✅ Final form submission
 const submitForm = handleSubmit(async (values) => {
+  await refreshBot()
   let uploadedDetails = null;
   if (typeof logoData.value === "object") {
     uploadedDetails = await uploadLogo(botDetails.value.id, logoData.value);
@@ -247,8 +249,13 @@ const submitForm = handleSubmit(async (values) => {
       },
     };
 
-    await updateBotDetails(payload);
-    await checkDocumentStatus()
+    await updateBotDetails(payload,false);
+    if (botDetails.value?.documents.length === 1) {
+      await checkDocumentStatus(botDetails.value?.documents[0]);
+    } else {
+      isDocumentListOpen.value = true
+      isLoading.value = false
+    }
     // await navigateTo({
     //   name: "chat-bot-id",
     //   params: { id: botDetails.id },
@@ -261,10 +268,36 @@ const submitForm = handleSubmit(async (values) => {
   // isLoading.value = false
 });
 
-const checkDocumentStatus = async () => {
+const checkDocumentStatus = async (selectedDocumentStatus: any) => {
   if (status.value !== "success") return;
 
-  pageLoading.value = true; // Ensure loading starts
+  // First check if the document is already ready before showing loading state and toast
+  await refreshBot(); // Fetch the latest document status
+  const selectedDocument = botDetails.value?.documents.find(
+    document => document.id === selectedDocumentStatus.id
+  );
+  
+  // If the document is already ready, don't show the deployment toast or start interval
+  if (selectedDocument && selectedDocument.status === "ready") {
+    isLoading.value = false;
+    
+    if (!documents.value?.documentId) {
+      try {
+        await handleActivateBot();
+        if (botDetails.value?.documents.length === 1) {
+          // createBotsuccessfulState.value.open = true;
+        }
+      } catch (error) {
+        console.error("handleActivateBot failed:", error);
+      } finally {
+        isLoading.value = false; // Stop loading after activation
+      }
+    }
+    return; // Exit early if already ready
+  }
+
+  // Continue with regular deployment flow if document is not ready
+  isLoading.value = true; // Ensure loading starts
   setTimeout(() => {
     toast.success("Your bot is being deployed. Please wait...");
   }, 1000);
@@ -273,11 +306,16 @@ const checkDocumentStatus = async () => {
 
   intervalId.value = setInterval(async () => {
     await refreshBot(); // Fetch the latest document status
-    const documentStatus = botDetails.value?.documents?.[0]?.status;
-
+    const selectedDocument = botDetails.value?.documents.find(
+      document => document.id === selectedDocumentStatus.id
+    );
+    
+    // Check if the document exists before accessing its status
+    const documentStatus = selectedDocument ? selectedDocument.status : null;
+    
     // Show toast every 16 seconds (i.e., every second iteration of 8-sec polling)
     toastInterval += 8;
-    if (toastInterval % 12 === 0) {
+    if (toastInterval % 12 === 0 && documentStatus !== "ready") {
       toast.success("Your bot is still being deployed. Please wait...");
     }
 
@@ -288,8 +326,7 @@ const checkDocumentStatus = async () => {
       //   name: "chat-bot-id",
       //   params: { id: botDetails.id },
       // });
-      scrapData.scrapedData = []
-      pageLoading.value = false;
+      isLoading.value = false;
 
       if (!documents.value?.documentId) {
         try {
@@ -300,7 +337,7 @@ const checkDocumentStatus = async () => {
         } catch (error) {
           console.error("handleActivateBot failed:", error);
         } finally {
-          pageLoading.value = false; // Stop loading after activation
+          isLoading.value = false; // Stop loading after activation
         }
       }
     }
@@ -309,29 +346,16 @@ const checkDocumentStatus = async () => {
 
 const handleActivateBot = async () => {
   isSubmitting.value = true;
-  console.log("handleActivateBot the top", botDetails.value);
-  const activeDocuments = botDetails.value.documents.filter(
+  const activeDocuments = botDetails.value?.documents.filter(
     (d) => d.status === "ready",
   );
-  if (activeDocuments.length === 0) {
-    toast.error("Please add document to activate bot");
-    return navigateTo({
-      name: "chat-bot-id",
-      params: { id: paramId.params.id },
-    });
-  } else if (!botDetails.value.metadata?.prompt?.NAME) {
-    toast.error("Please add bot configuration to activate bot");
-    return navigateTo({
-      name: "chat-bot-id",
-      params: { id: paramId.params.id },
-    });
-  } else if (!botDetails.value.metadata.ui?.logo) {
-    toast.error("Please update bot user interface to activate bot");
-    return navigateTo({
-      name: "chat-bot-id",
-      params: { id: paramId.params.id },
-    });
-  }
+  // if (activeDocuments.length === 0) {
+  //   toast.error("Please add document to activate bot");
+  //   return navigateTo({
+  //     name: "chat-bot-id",
+  //     params: { id: paramId.params.id },
+  //   });
+  // }
   if (activeDocuments.length === 1) {
     try {
       await singleDocumentDeploy(activeDocuments[0]);
@@ -350,7 +374,7 @@ const handleActivateBot = async () => {
 const singleDocumentDeploy = async (list: any) => {
   await deployDocument(paramId.params.id, list.id);
   await refreshBot() // new function refreshBot added
-  await checkDocumentStatus()
+  await checkDocumentStatus(list);
   
   // botDetails.value = await getBotDetails(paramId.params.id);
 };
@@ -369,7 +393,7 @@ onUnmounted(() => {
 <template>
   <div class="h-[calc(100dvh-2.5rem)] overflow-y-auto">
     <!-- <div>
-      <LoadingOverlay :loading="pageLoading" class="w-[80%]" />
+      <LoadingOverlay :loading="isLoading" class="w-[80%]" />
     </div> -->
     <div class="flex items-center gap-2 font-bold py-3 px-5">
       <div class="flex items-center gap-2 cursor-pointer" @click="backRoute()">
@@ -413,15 +437,15 @@ onUnmounted(() => {
             Choose a document to deploy your bot
           </UiDialogDescription>
         </UiDialogHeader>
+        <!-- .filter(
+            (item: any) => item.status === 'ready',
+          ) -->
         <UiButton
           class="bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42] min-w-[90%] max-w-[100%]"
-          v-for="list in documents.documents.filter(
-            (item: any) => item.status === 'ready',
-          )" :key="list.id" @click="async () => {
+          v-for="list in documents.documents" :key="list.id" @click="async () => {
             isSubmitting = true;
             isDocumentListOpen = false;
             await singleDocumentDeploy(list);
-            // createBotsuccessfulState.open = true;
           }
           ">
           <span class="w-[95%] truncate">

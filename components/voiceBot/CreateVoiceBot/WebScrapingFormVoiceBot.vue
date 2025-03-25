@@ -28,12 +28,6 @@ import { botStore } from '~/store/botStore';
 definePageMeta({
   middleware: "admin-only",
 });
-
-const props = defineProps<{
-  botType: string;
-}>();
-
-
 const scrapData = botStore();
 const { cleanAndParseJson } = useCleanJson();
 // const emit = defineEmits(["scrapedData"]);
@@ -96,17 +90,12 @@ const handleAddEditBot = handleSubmit(async (values) => {
   }
   isLoading.value = true;
   try {
-    
-    const scrapedData: any = await $fetch(`/api/org/webScrape?type=${props.botType}`, {
+    const scrapedData: any = await $fetch("/api/org/webScrape", {
       method: "POST",
       body: values,
     });
     const parsedData = cleanAndParseJson(scrapedData);
-    if (props.botType === 'voice') {
-      scrapData.voiceBotScrapedData = parsedData;
-    } else {
-      scrapData.scrapedData = parsedData;
-    }
+    scrapData.scrapedData = parsedData;
     toast.success("Updated successfully");
     // }
     // if (agentModalState.value.id) {

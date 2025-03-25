@@ -34,7 +34,6 @@ export const voiceBotCreateSchema = toTypedSchema(
     // model_stt: z.string().optional(),
     googlemodel: z.string().optional(),
     deepmodel: z.string().optional(),
-    apikey: z.string().optional(),
     elevenlabsvoice: z.string().optional(),
     voice: z.string().optional(),
     temperature: z
@@ -101,13 +100,13 @@ export const voiceBotCreateSchema = toTypedSchema(
     }
 
     if (data.provider_tts === 'elevenlabs') {
-      if (!data.apikey || data.apikey.length === 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "API Key is required when using ElevenLabs TTS provider",
-          path: ["apikey"]
-        });
-      }
+      // if (!data.apikey || data.apikey.length === 0) {
+      //   ctx.addIssue({
+      //     code: z.ZodIssueCode.custom,
+      //     message: "API Key is required when using ElevenLabs TTS provider",
+      //     path: ["apikey"]
+      //   });
+      // }
       
       // if (!data.elevenlabsvoice || data.elevenlabsvoice.length === 0) {
       //   ctx.addIssue({

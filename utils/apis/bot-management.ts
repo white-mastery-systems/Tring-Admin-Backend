@@ -25,12 +25,14 @@ export const getBotDetails = async (botId: string) => {
   return bot;
 };
 
-export const updateBotDetails = async (botDetails: SelectChatBot) => {
+export const updateBotDetails = async (botDetails: SelectChatBot,toastStatus: any) => {
   const updatedBot = await $fetch<SelectChatBot>(`/api/bots/${botDetails.id}`, {
     method: "PUT",
     body: botDetails,
   });
-  toast.success("Bot details updated successfully!");
+  if (toastStatus) {
+    toast.success("Bot details updated successfully!");
+  }
   // await navigateTo({
   //   name: "chat-bot-id",
   //   params: { id: botDetails.id },

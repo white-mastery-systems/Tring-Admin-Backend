@@ -142,7 +142,7 @@ const handleConnect = handleSubmit(async (values: any) => {
 
 <template>
   <BotSetupCard
-    title="IVR Setup"
+    title="Telephone Setup"
     description="Set up your IVR system to handle calls automatically and direct callers to the right place"
     currentStep="6"
     totalSteps="6">

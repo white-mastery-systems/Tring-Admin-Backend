@@ -100,11 +100,8 @@ const changeKnowledge = () => {
 </script>
 
 <template>
-    <BotSetupCard 
-      title="Build Your Bot's Knowledge" 
-      description="Enter your industry type and other details" 
-      currentStep="1" 
-      totalSteps="6">
+  <BotSetupCard title="Build Your Bot's Knowledge" description="Enter your industry type and other details"
+    currentStep="1" totalSteps="6">
     <!-- Main Content Area -->
     <div class="flex flex-col items-center p-0 flex-grow">
       <!-- Initial Selection Screen -->
@@ -112,44 +109,32 @@ const changeKnowledge = () => {
         <UiCardContent class="grid p-0 gap-2 mb-4">
           <div class="flex items-center grid grid-cols-2 gap-3 text-left">
             <span class="font-medium text-left text-[16px] md:text-[18px]">Select your Call Type</span>
-            <SelectField 
-              v-model="boundDirection"
-              name="boundDirection" 
-              :options="boundList" 
-              placeholder="Select a direction" 
-            />
+            <SelectField v-model="boundDirection" name="boundDirection" :options="boundList"
+              placeholder="Select a direction" />
           </div>
           <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-2" />
           <span class="font-medium text-left text-[16px] md:text-[18px]">
             Industries
           </span>
-          
-          <RadioGroup 
-            v-model="type" 
-            class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden" 
-            :class="props.loading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''" 
-            :disabled="true"
-          >
-            <div
-              v-for="intent in intentTypes"
-              :key="intent.value"
+
+          <RadioGroup v-model="type" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden"
+            :class="props.loading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''" :disabled="true">
+            <div v-for="intent in intentTypes" :key="intent.value"
               class="min-w-[100px] max-w-[100px] min-h-[100px] max-h-[100px] md:min-w-[135px] md:max-w-[135px] md:min-h-[135px] md:max-h-[135px]"
-              @click.stop="selectIndustry(intent.value)"
-            >
+              @click.stop="selectIndustry(intent.value)">
               <RadioGroupItem :id="intent.value" :value="intent.value" class="peer hidden" />
-              <Label
-                :for="intent.value"
+              <Label :for="intent.value"
                 class="w-full h-full flex items-center justify-center p-4 rounded-lg bg-[#F2F2F2] transition-all duration-300"
-                :class="[type === intent.value ? 'border-2 border-[#09090b]' : 'border-transparent']"
-              >
+                :class="[type === intent.value ? 'border-2 border-[#09090b]' : 'border-transparent']">
                 <component :is="intent.icon" class="w-[50px] h-[50px]" :stroke-width="0.75" />
               </Label>
               <div class="text-[12px] font-medium mt-2 text-center">{{ intent.label }}</div>
             </div>
           </RadioGroup>
         </UiCardContent>
-        
-        <div class="flex flex-col items-center justify-center w-full gap-5 bg-[#FCFCFC] border border-1 rounded-lg p-4 flex-grow">
+
+        <div
+          class="flex flex-col items-center justify-center w-full gap-5 bg-[#FCFCFC] border border-1 rounded-lg p-4 flex-grow">
           <div class="space-y-1 flex flex-col text-center">
             <div class="font-bold text-[18px] md:text-[20px] text-[#09090B]">
               Select Your Bot's Knowledge Source
@@ -159,25 +144,16 @@ const changeKnowledge = () => {
               <span class="text-[#18181B]">website link or by text input</span>
             </div>
           </div>
-          
+
           <div class="flex justify-center gap-3 w-full md:w-[40%] lg:w-[30%] mt-4">
-            <UiButton
-              type="button"
-              variant="default"
-              class="bg-[#000000] text-[#ffffff] font-regular flex-1"
-              @click="selectType('Website')"
-            >
+            <UiButton type="button" variant="default" class="bg-[#000000] text-[#ffffff] font-regular flex-1"
+              @click="selectType('Website')">
               <component :is="buttons[0].icon" class="mr-2 w-5 h-5" />
               {{ buttons[0].label }}
             </UiButton>
-            <UiButton
-              type="button"
-              variant="outline"
+            <UiButton type="button" variant="outline"
               class="border-[#000000] text-[#000000] hover:text-[#ffffff] hover:bg-[#000000] font-regular flex-1"
-              @click="selectType('Text')"
-              :loading="props.loading && 'Text'"
-              :disabled="props.loading && 'Text'"
-            >
+              @click="selectType('Text')" :loading="props.loading && 'Text'" :disabled="props.loading && 'Text'">
               <component :is="buttons[1].icon" class="mr-2 w-5 h-5" />
               {{ buttons[1].label }}
             </UiButton>
@@ -191,27 +167,25 @@ const changeKnowledge = () => {
         <div v-if="selectedType === 'Website'" class="w-full py-4 space-y-4 h-full flex flex-col">
           <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Website</span>
-            <UiButton 
-              type="button" 
-              class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" 
-              @click="changeKnowledge()"
-            >
+            <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]"
+              @click="changeKnowledge()">
               Change Knowledge Source
             </UiButton>
           </div>
           <div class="bg-[#E2E8F0] rounded-lg p-4 text-[12px] md:text-[14px] text-left">
             <div class="font-medium">Note:</div>
             <div>
-              All your company's branding elements, including key information, will be automatically imported from the website link you provide, ensuring a seamless and accurate representation of your brand.
+              All your company's branding elements, including key information, will be automatically imported from the
+              website link you provide, ensuring a seamless and accurate representation of your brand.
             </div>
           </div>
           <div class="flex flex-col gap-3 w-full flex-grow">
-            <WebScrapingForm />
+            <WebScrapingForm botType="voice" />
             <div class="flex flex-col gap-2 text-[14px] text-left font-medium">
               <span>
                 Website generated details (Knowledge Base)
               </span>
-              <ScrapDateDocumentUpload :refresh="props.refresh" />
+              <ScrapDateDocumentVoiceBot :refresh="props.refresh" />
             </div>
           </div>
         </div>
@@ -220,26 +194,20 @@ const changeKnowledge = () => {
         <div v-else-if="selectedType === 'Text'" class="w-full h-full flex flex-col">
           <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Text</span>
-            <UiButton 
-              type="button" 
-              class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" 
-              @click="changeKnowledge()"
-            >
+            <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]"
+              @click="changeKnowledge()">
               Change Knowledge Source
             </UiButton>
           </div>
           <div class="bg-[#E2E8F0] rounded-lg p-4 text-[12px] md:text-[14px] my-4 text-left">
             <div class="font-medium">Note:</div>
-            <div>A sample text for the industry has been provided below. You can edit the necessary fields to complete the process.</div>
+            <div>A sample text for the industry has been provided below. You can edit the necessary fields to complete
+              the process.</div>
           </div>
           <div class="text-left flex flex-col gap-2 flex-grow">
             <span class="text-[14px] font-medium">Tell us about your company</span>
-            <TextDocumentUpload 
-              ref="uploadDocumentRef" 
-              :refresh="props.refresh" 
-              :contentSuggestions="[]" 
-              class="flex-grow" 
-            />
+            <TextDocumentUpload ref="uploadDocumentRef" :refresh="props.refresh" :contentSuggestions="[]"
+              class="flex-grow" />
           </div>
         </div>
       </div>

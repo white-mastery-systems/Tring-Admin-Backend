@@ -94,9 +94,9 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
       <!-- Show input field only if "Custom" is selected -->
       <div class="flex items-center gap-5 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 w-full"
         v-if="selectedRole === 'custom'">
-        <div class="py-0 sm:py-0 md:py-6 px-0 min-h-[50px]">
+        <div class="p-0 min-h-[50px]">
           <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-1 text-[#000000] font-medium">Tell us your Chatbot’s Role in the Company</p>
-          <UiTextarea v-model="otherRole" name="otherRole" class="h-[95px] text-[12px] sm:text-[12px] md:text-[14px]" :resizable="false"
+          <UiTextarea v-model="otherRole" name="otherRole" class="h-[70px] text-[12px] sm:text-[12px] md:text-[14px]" :resizable="false"
             placeholder="e.g., 'Sales Assistant" label="Tell us about your company">
           </UiTextarea>
         </div>

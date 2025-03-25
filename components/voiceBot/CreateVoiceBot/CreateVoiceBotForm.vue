@@ -42,6 +42,11 @@ watch(() => values.type, (newType) => {
     fetchSuggestions(newType);
   }
 });
+watch(() => scrapData, (newScrapData) => {
+  if (!newScrapData) return;
+  setFieldValue('type', newScrapData.voiceBotScrapedData?.industry);
+}, { deep: true, immediate: true })
+
 watch(errors, (newErrors) => {
   console.log(newErrors, 'newErrors');
 })
@@ -55,7 +60,6 @@ const stepFields = {
   6: ["",""]
 };
 const nextStep = async () => {
-  console.log(values.boundDirection, "boundDirection -- boundDirection")
   const fieldsToValidate = stepFields[step.value] || [];
   let isValid = true;
   

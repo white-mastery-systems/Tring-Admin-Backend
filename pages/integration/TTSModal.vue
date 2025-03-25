@@ -1,6 +1,6 @@
 <template>
     <DialogWrapper v-model="props.ttsModalState"
-      :title="(ttsModalState?.id) ? 'Edit Cloud Telephony' : 'Add New TTS'">
+      :title="(ttsModalState?.id) ? 'Edit TTS Integration' : 'Add New TTS Integration'">
       <Form @submit="handleConnect" class="space-y-3">
         <SelectField name="provider" placeholder="Select a provider" :options="providerList">
         </SelectField>
@@ -83,10 +83,11 @@ const apikeyunmasking = ($event: Event) => {
     isLoading.value = true
     // const { provider, ...metadata } = values
     const payload = {
-      ...values,
       metadata: {
-        apikey: values.apikey
-      }
+        apiKey: values.apikey
+      },
+      provider: values.provider,
+      ttsIntegrationName: values.ttsIntegrationName
     }
     try {
       if (props.ttsModalState.id) {

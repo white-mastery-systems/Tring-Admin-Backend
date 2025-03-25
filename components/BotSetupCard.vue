@@ -1,6 +1,6 @@
 // BotSetupCard.vue
 <template>
-  <UiCard class="border-0 ma-0">
+  <UiCard class="border-0 ma-0 shadow-none">
     <UiCardHeader class="p-0">
       <div class="flex items-center justify-between gap-4 px-4 pt-4">
         <div class="flex flex-col gap-[6px]">
@@ -17,7 +17,7 @@
       </div>
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-3" />
     </UiCardHeader>
-    <UiCardContent class="grid gap-3 sm:gap-3 md:gap-6 p-4">
+    <UiCardContent class="grid gap-3 p-4">
       <slot></slot>
     </UiCardContent>
   </UiCard>
