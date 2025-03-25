@@ -162,3 +162,20 @@ export const deleteBucket = async ({
     toast.error(err.data.statusMessage);
   }
 };
+
+export const verifySalesHandyIntegration = async (apiKey:string)=>{
+  try {
+    const veifySalesHandy = await $fetch(`https://leo-open-api-gateway.saleshandy.com/v1/clients?pageSize=25&page=1&sort=DESC&sortBy=createdDate`, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "x-api-key": apiKey
+      }
+    });
+    console.log("veifySalesHandy------", veifySalesHandy)
+    return {status: true}
+  } catch (error: any) {
+    toast.error("Invalid API Key");
+    return { status: false }
+  }
+}
