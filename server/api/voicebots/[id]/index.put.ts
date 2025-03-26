@@ -2,6 +2,7 @@ import { updateVoiceBot } from "~/server/utils/db/voicebots";
 import {
   defaultSpeechToTextConfig,
   defaultTextToSpeechConfig,
+  getInboundPromptByIndustryType,
   updateVoicebotConfig,
 } from "~/server/utils/voicebot";
 
@@ -15,12 +16,19 @@ const zodUpdateVoiceBotSchema = z.object({
   metaData: z.record(z.any()).optional(), // Assuming metaData is a JSON object with any structure
   llmConfig: z.record(z.any()).optional(),
   identityManagement: z.record(z.any()).optional(),
+  knowledgeBase: z.string().optional(),
   botDetails: z
     .object({
       agentName: z.string().optional(),
       agentLanguage: z.string().optional(),
       region: z.string().optional(),
       timezone: z.string().optional(),
+      callType: z.string().optional(),
+      industryType: z.string().optional(),
+      role: z.string().optional(),
+      goal: z.string().optional(),
+      otherRole: z.string().optional(),
+      otherGoal: z.string().optional()
     })
     .optional(),
   preRecordedAudios: z
@@ -57,6 +65,8 @@ export default defineEventHandler(async (event) => {
 
   const body: any = await isValidBodyHandler(event, zodUpdateVoiceBotSchema);
 
+  const orgDetails = await getOrganizationById(organizationId)
+
   if (body?.ivrConfig) {
     const voiceBot = await db.query.voicebotSchema.findFirst({
       where: and(
@@ -91,6 +101,33 @@ export default defineEventHandler(async (event) => {
       body.textToSpeechConfig,
     );
     body.textToSpeechConfig = data;
+  }
+  
+  const botDetails = body?.botDetails
+  const callType = botDetails?.callType
+  const industryType = botDetails?.industryType
+
+  let voiceInboundPrompt, voiceOuboundPrompt
+
+  if(callType && industryType) {
+    const voicebotPrompts = getInboundPromptByIndustryType({ 
+      industryType, 
+      name: botDetails?.agentName, 
+      role: botDetails?.role === "custom" ? botDetails?.otherRole : botDetails?.role, 
+      goal: botDetails?.goal === "custom" ? botDetails?.otherGoal : botDetails?.goal, 
+      companyName: orgDetails?.name!, 
+      knowledgeBase: body?.knowledgeBase 
+    })
+    if(callType === "inbound") {
+      voiceInboundPrompt = voicebotPrompts.inboundPrompt
+    } else if (callType === "outbound") {
+      voiceOuboundPrompt = voicebotPrompts.outboundPrompt
+    } else if (callType === "both") {
+      voiceInboundPrompt = voicebotPrompts.inboundPrompt
+      voiceOuboundPrompt = voicebotPrompts.outboundPrompt
+    }
+    body.llmConfig.inboundPrompt = voiceInboundPrompt || {}
+    body.llmConfig.outboundPrompt = voiceOuboundPrompt || {}
   }
 
   if (body.ivrConfig === null) {
