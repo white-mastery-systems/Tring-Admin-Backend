@@ -1,3 +1,26 @@
+import { ecommerceVoiceInputPrompt } from "./voicebot-prompt-templates/e-commerce/inbound";
+import { ecommerceVoiceOutboundPrompt } from "./voicebot-prompt-templates/e-commerce/outbound";
+import { energyAndUtilitiesVoiceInboundPrompt } from "./voicebot-prompt-templates/energy-utilities/inbound";
+import { energyAndUtilitiesVoiceOutboundPrompt } from "./voicebot-prompt-templates/energy-utilities/outbound";
+import { financeBankingVoiceInboundPrompt } from "./voicebot-prompt-templates/finance-banking/inbound";
+import { financeBankingVoiceOutboundPrompt } from "./voicebot-prompt-templates/finance-banking/outbound";
+import { governmentSectorsVoiceInboundPrompt } from "./voicebot-prompt-templates/government-sectors/inbound";
+import { governmentSectorsVoiceOutboundPrompt } from "./voicebot-prompt-templates/government-sectors/outbound";
+import { healthcareVoiceInboundPrompt } from "./voicebot-prompt-templates/healthcare/inbound";
+import { healthcareVoiceOutboundPrompt } from "./voicebot-prompt-templates/healthcare/outbound";
+import { hospitalityVoiceInboundPrompt } from "./voicebot-prompt-templates/hospitality/inbound";
+import { hospitalityVoiceOutboundPrompt } from "./voicebot-prompt-templates/hospitality/outbound";
+import { insuranceVoiceInboundPrompt } from "./voicebot-prompt-templates/insurance/inbound";
+import { insuranceVoiceOutboundPrompt } from "./voicebot-prompt-templates/insurance/outbound";
+import { logisticsVoiceInboundPrompt } from "./voicebot-prompt-templates/logistics/inbound";
+import { logisticsVoiceOutboundPrompt } from "./voicebot-prompt-templates/logistics/outbound";
+import { realEstateVoiceInboundPrompt } from "./voicebot-prompt-templates/real-estate/inbound";
+import { realEstateVoiceOutboundPrompt } from "./voicebot-prompt-templates/real-estate/outbound";
+import { telecommunicationsVoiceInboundPrompt } from "./voicebot-prompt-templates/telecommunications/inbound";
+import { telecommunicationsVoiceOutboundPrompt } from "./voicebot-prompt-templates/telecommunications/outbound";
+import { travelVoiceInboundPrompt } from "./voicebot-prompt-templates/travel/inbound";
+import { travelVoiceOutboundPrompt } from "./voicebot-prompt-templates/travel/outbound";
+
 export let defaultSpeechToTextConfig = {     
     "provider": "deepgram",
     "google": {
@@ -72,4 +95,76 @@ export const updateVoicebotConfig = (config: any, newConfig: any) => {
     return defaultData;
 }
 
+export const getInboundPromptByIndustryType = ({ industryType, name, role, goal, companyName, knowledgeBase }: {
+  industryType: string,
+  name: string,
+  role: string,
+  goal: string,
+  companyName: string,
+  knowledgeBase: string
+}) => {
+    let inboundPrompt
+    let outboundPrompt
+    switch(industryType) {
+      case "real-estate": 
+        inboundPrompt = realEstateVoiceInboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = realEstateVoiceOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        break
+
+      case "e-commerce":
+        inboundPrompt = ecommerceVoiceInputPrompt({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = ecommerceVoiceOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        break
+      
+      case "finance-banking":
+        inboundPrompt = financeBankingVoiceInboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = financeBankingVoiceOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        break
+      
+      case "healthcare":
+        inboundPrompt = healthcareVoiceInboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = healthcareVoiceOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        break
+
+      case "hospitality":
+        inboundPrompt = hospitalityVoiceInboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = hospitalityVoiceOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        break
+    
+      case "telecommunications":
+        inboundPrompt = telecommunicationsVoiceInboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = telecommunicationsVoiceOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        break
+
+      case "travel":
+        inboundPrompt = travelVoiceInboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = travelVoiceOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        break
+
+      case "energy-utilities":
+        inboundPrompt = energyAndUtilitiesVoiceInboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = energyAndUtilitiesVoiceOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        break
+
+      case "government-sectors":
+        inboundPrompt = governmentSectorsVoiceInboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = governmentSectorsVoiceOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        break
+      
+      case "logistics":
+        inboundPrompt = logisticsVoiceInboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = logisticsVoiceOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        break
+
+      case "education-training":
+        inboundPrompt = educationAndTrainingInboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = educationAndTrainingOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        break
+    }
+
+    return {
+      inboundPrompt,
+      outboundPrompt
+    }
+}
 
