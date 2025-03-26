@@ -44,6 +44,15 @@
               }))
             " />
         </div>
+        <div v-if="integrationsData.find((integration:any) => integration.id === values.integrationId)?.crm === 'sales-handy'">
+          <SelectField name="sequenceId" :multiple="false" :required="true" label="Select Layout"
+            placeholder="Select Sequence" :options="
+              sequences.map((sequence:any) => ({
+                value: sequence.id,
+                label: sequence.name,
+              }))
+            " />
+        </div>
 
         <div class="flex flex-col gap-3" v-if="
             integrationsData.find(
@@ -98,6 +107,7 @@
 
   const emit = defineEmits(["success"]);
   let pipelines = ref<any>([]);
+  let sequences = ref<any>([]);
   let layouts = ref([]);
   const stages = ref<any>([]);
   const subPipelines = ref<any>([]);
@@ -148,6 +158,12 @@ watchEffect(async () => {
       await handleCrmChange(newValue);
     },
   );
+  watch(
+    () => values.sequenceId,
+    async (newValue) => {
+      await handleCrmChange(newValue);
+    },
+  );
 
   watch(
     () => modalState.value,
@@ -190,6 +206,8 @@ watchEffect(async () => {
               setFieldValue("stage", crmConfigData?.metadata?.stage);
             } else if (selectedCrm?.crm === "reserve-go") {
               setFieldValue("restaurantId", crmConfigData?.metadata?.restaurantId);
+            } else if (selectedCrm?.crm === "sales-handy") {
+              setFieldValue("sequenceId", crmConfigData?.metadata?.sequenceObj?.id);
             }
           }
         } catch (error) {
@@ -237,6 +255,9 @@ watchEffect(async () => {
         `/api/org/integrations/zoho-crm/layouts?id=${matchedCRM.id}`,
       );
       layouts.value = data?.layouts;
+    } else if(matchedCRM.crm === "sales-handy") {
+      const data: any = await $fetch(`/api/org/integrations/sales-handy/sequences?id=${matchedCRM.id}`);
+      sequences.value = data?.sequences;
     }
   };
   const {
@@ -255,6 +276,7 @@ watchEffect(async () => {
     isLoading.value = true;
     let pipelineObj: any = {};
     let layoutObj: any = {};
+    let sequenceObj: any = {};
 
     if (value?.pipelineId) {
       let pipelineData = pipelines.value.find(
@@ -282,6 +304,8 @@ watchEffect(async () => {
         (pipeline: any) => pipeline.id === value.layoutId,
       );
       layoutObj = { name: layoutData.name, id: layoutData.id };
+    } else if (value?.sequenceId) {
+      sequenceObj = sequences.value.find((sequence: any) => sequence.id === value.sequenceId);
     }
     if (modalProps.id) {
       updateBotIntegrationById({
@@ -291,6 +315,7 @@ watchEffect(async () => {
           botIntegrationId: modalProps.id,
           ...(pipelineObj && { pipelineObj }),
           ...(layoutObj && { layoutObj }),
+          ...(sequenceObj && { sequenceObj }),
         },
         onSuccess: () => {
           emit("success");
@@ -305,6 +330,7 @@ watchEffect(async () => {
           botId: route.params.id,
           ...(pipelineObj && { pipelineObj }),
           ...(layoutObj && { layoutObj }),
+          ...(sequenceObj && { sequenceObj }),
         },
         onSuccess: () => {
           emit("success");
