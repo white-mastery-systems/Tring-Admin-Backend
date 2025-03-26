@@ -51,7 +51,7 @@ export const chatPlanUsages = async (orgZohoSubscription: any, orgDetail: any, p
       orgZohoSubscription,
       whatsappSession: whatsappTotalSessions || 0
     });
-    if(orgZohoSubscription.subscriptionStatus === "trail") {
+    if(orgZohoSubscription.subscriptionStatus ===  "trial") {
       const trialEndDate = momentTz(orgZohoSubscription.endDate, "YYYY-MM-DD").startOf("day");
       const currentDate = momentTz().startOf('day');
       const daysRemaining = trialEndDate.diff(currentDate, "days");
@@ -69,7 +69,7 @@ export const voicePlanUsages = async (orgZohoSubscription: any, orgDetail: any, 
   try {
     const wallet = orgDetail?.wallet
     const gst = orgDetail?.metadata?.gst
-    if(orgZohoSubscription?.pricingPlanCode === "voice_free" || orgZohoSubscription?.subscriptionStatus === "cancelled") {
+    if(orgZohoSubscription?.subscriptionStatus === "cancelled") {
       const resObj = constructPlanUsageResponse({
         usedQuota: 0,
         maxQuota: 0,
@@ -90,7 +90,7 @@ export const voicePlanUsages = async (orgZohoSubscription: any, orgDetail: any, 
     const maxCallMinutes = planPricingDetail.sessions
     const availableMinutes = Math.max(maxCallMinutes - usedCallMinutes, 0)
     
-    const resObj = constructPlanUsageResponse({
+    const resObj: any = constructPlanUsageResponse({
       usedQuota: usedCallMinutes,
       maxQuota: maxCallMinutes,
       planCode: orgZohoSubscription.pricingPlanCode,
@@ -102,6 +102,12 @@ export const voicePlanUsages = async (orgZohoSubscription: any, orgDetail: any, 
       orgZohoSubscription,
       subscriptionStatus: orgZohoSubscription.subscriptionStatus
     })
+    if(orgZohoSubscription.subscriptionStatus ===  "trial") {
+      const trialEndDate = momentTz(orgZohoSubscription.endDate, "YYYY-MM-DD").startOf("day");
+      const currentDate = momentTz().startOf('day');
+      const daysRemaining = trialEndDate.diff(currentDate, "days");
+      resObj.remainingDaysForTrailEnd = daysRemaining
+    }
     return resObj
   } catch (error: any) {
     logger.error(`Voice plan usage Error: ${JSON.stringify(error.message)}`)
@@ -120,7 +126,17 @@ export const orgUsage = async (organizationId: string, timezone: string, service
     const { startDate, endDate } = findUTCDate(orgZohoSubscription)
     const adminCountry = adminDetail?.address?.country! || country
 
-    const planPricingDetail = await getSubcriptionPlanDetailByPlanCode(orgZohoSubscription?.pricingPlanCode!, adminCountry)
+    let planPricingDetail
+    
+    if(
+      orgZohoSubscription?.subscriptionStatus ===  "trial" || 
+      orgZohoSubscription?.pricingPlanCode === "chat_free" || 
+      orgZohoSubscription?.pricingPlanCode === "voice_free"
+    ) {
+      planPricingDetail = await getPricingInformation(serviceType === "chat" ? "chat_free" : "voice_free")
+    } else {
+      planPricingDetail = await getSubcriptionPlanDetailByPlanCode(orgZohoSubscription?.pricingPlanCode!, adminCountry)
+    }
 
     if(serviceType === "chat") {
       return chatPlanUsages(
