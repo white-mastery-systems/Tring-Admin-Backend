@@ -21,6 +21,6 @@ export default defineEventHandler(async (event) => {
     return response
   } catch(error: any) {
     logger.error(`Web scraping API Error: ${JSON.stringify(error.message)}`)
-    return errorResponse(event, 500)
+    return errorResponse(event, 500, "Unable to scrape this url")
   }
 })
