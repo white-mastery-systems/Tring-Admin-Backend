@@ -156,9 +156,9 @@ export const getInboundPromptByIndustryType = ({ industryType, name, role, goal,
         outboundPrompt = logisticsVoiceOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
         break
 
-      case "insurance":
-        inboundPrompt = insuranceVoiceInboundPrompt({ name, role, goal, companyName, knowledgeBase })
-        outboundPrompt = insuranceVoiceOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
+      case "education-training":
+        inboundPrompt = educationAndTrainingInboundPrompt({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = educationAndTrainingOutboundPrompt({ name, role, goal, companyName, knowledgeBase })
         break
     }
 
