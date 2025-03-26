@@ -149,6 +149,8 @@ watch(integrationsData, (newIntegrations: any) => {
         ? `${item?.metadata?.pipelineObj?.Pipeline?.name}`
         : item.integration?.crm === "zoho-crm"
           ? `${item?.metadata?.layoutObj?.name}`
+        : item.integration?.crm === "sales-handy"
+          ? `${item?.metadata?.sequenceObj?.name}`
           : item.integration?.crm === "hubspot" ? `${item?.metadata?.stage}` : item.integration?.crm === "reserve-go" ? `${item?.metadata?.restaurantId}` : (item.metadata?.projectId ?? "N/A"),
     id: item.id,
   }));

@@ -11,6 +11,7 @@ export const zodInsertBotIntegration = z.object({
   pipelineObj: z.any().optional(),
   channelId: z.string().optional(),
   layoutObj: z.any().optional(),
+  sequenceObj: z.any().optional(),
   stage: z.string().optional(),
   restaurantId: z.string().optional(),
   departments: z.array(z.any()).optional()
