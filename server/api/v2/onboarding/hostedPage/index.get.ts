@@ -82,7 +82,7 @@ export default defineEventHandler(async (event) => {
     const subscriptionStartDate = new Date(subscriptionData?.current_term_starts_at) || new Date(subscriptionData?.updated_time)
     const subscriptionEndDate = new Date(subscriptionData?.current_term_ends_at) || new Date(subscriptionData?.expires_at)
 
-    const subscription = [{
+    const subscription: any = [{
         organizationId: org.id,  
         serviceType: botType,
         subscriptionId: subscriptionData?.subscription_id,
@@ -105,15 +105,7 @@ export default defineEventHandler(async (event) => {
         isDefault: true,
       }),
       createOrgZohoSubscription(subscription),
-      createSubscriptionPlanUsage({
-        organizationId: org.id,
-        serviceType: botType,
-        subscriptionId: subscriptionData?.subscription_id,
-        pricingPlanCode: pricingInfo?.planCode!,
-        startDate: subscriptionStartDate,
-        endDate: subscriptionEndDate,
-        subscriptionStatus: subscriptionData?.status === "trial" ?  "trial"  : "active" as "active"
-      })
+      createSubscriptionPlanUsage(subscription)
     ])
     if(!org) {
       return errorResponse(event, 500, "Failed to store client data. Please contact support.")
