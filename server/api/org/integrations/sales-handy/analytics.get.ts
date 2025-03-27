@@ -13,11 +13,11 @@ export default defineEventHandler(async (event) => {
     const integrationData = botIntegrationData?.integration;
 
     if (!metadata?.sequenceObj?.id) {
-      return { status: true, sequences: [] };
+      return { status: true, data: {} };
     }
 
-    // const { status, data } = await getSalesHandyAnalytics(`${integrationData?.metadata?.apiKey}`, metadata?.sequenceObj?.id);
-    const { status, data } = await getSalesHandyMultipleAnalytics(`${integrationData?.metadata?.apiKey}`, [metadata?.sequenceObj?.id]);
+    const { status, data } = await getSalesHandyAnalytics(`${integrationData?.metadata?.apiKey}`, metadata?.sequenceObj?.id);
+    // const { status, data } = await getSalesHandyMultipleAnalytics(`${integrationData?.metadata?.apiKey}`, [metadata?.sequenceObj?.id]);
 
     return {status, data};
   } catch (error:any) {
