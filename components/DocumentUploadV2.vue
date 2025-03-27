@@ -27,7 +27,7 @@ const fileNames = computed(() => {
 <template>
   <div class="flex w-full items-center justify-center">
     <label for="dropzone-file"
-      class="dark:hover:bg-bray-800 flex h-24 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+      class="flex h-24 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 dark:hover:border-gray-500">
       <div class="flex flex-col items-center justify-center">
         <div class="flex flex-col items-center justify-center">
           <div v-if="!file" class="px-4 text-center">

@@ -1,8 +1,8 @@
 <template>
   <UiFormField v-model="country" :name="props.name" class="mt-1">
     <UiFormItem class="mt-1 flex flex-col gap-1 ">
-      <UiFormLabel>Region
-        <span class="text-sm text-red-500">*</span>
+      <UiFormLabel>Country
+        <span v-if="required" class="text-sm text-red-500">*</span>
       </UiFormLabel>
       <UiPopover>
         <UiPopoverTrigger as-child>
@@ -22,7 +22,8 @@
               }} -->
               <!-- {{ allCoutryNames }} -->
               <!-- {{ allCoutryNames.find((country: any) => country === fieldValue)}} -->
-              {{ fieldValue ? fieldValue : "Region name" }}
+                <!-- Region name -->
+              {{ fieldValue ? fieldValue : "Select Country" }}
               <component :is="ChevronDown" class="ml-2 h-4 w-4 shrink-0 opacity-50"></component>
             </UiButton>
           </UiFormControl>

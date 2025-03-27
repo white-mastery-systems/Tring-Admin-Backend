@@ -1,5 +1,6 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
+import { v4 as uuid } from "uuid";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -19,10 +20,6 @@ export default defineEventHandler(async (event) => {
     const subscriptionData = hostedPageData?.data?.subscription
 
     const zohoCustomerDetail = subscriptionData?.customer
-    const userDetails = await getuserDetailByEmail(zohoCustomerDetail?.email)
-    if(userDetails) {
-      return errorResponse(event, 500, "user already exists")
-    }
     const pricingInfo = await getPricingInformation(subscriptionData.plan.plan_code)
     botType = pricingInfo?.type === "chatbot" ? "chat" : "voice"
 
@@ -36,50 +33,69 @@ export default defineEventHandler(async (event) => {
       name: zohoCustomerDetail?.company_name || ""
     })
 
-    // User creation
     const contactPersonDetail = subscriptionData?.contactpersons.find((i: any) => i.email === zohoCustomerDetail?.email)
     const billingAddress = zohoCustomerDetail?.billing_address
     const userCountry = phoneLength.find((i) => i.label === zohoCustomerDetail?.billing_address?.country)
-    const userDetail = {
-      role: "admin" as const,
-      username: zohoCustomerDetail?.first_name,
-      mobile: contactPersonDetail?.mobile,
-      countryCode: `+${userCountry?.phone}`,
-      email: zohoCustomerDetail?.email,
-      address: {
-        country: billingAddress?.country,
-        city: billingAddress?.city,
-        state: billingAddress?.state,
-        street: billingAddress?.state,
-        zipCode: billingAddress?.zip
-      },
-      customerId: zohoCustomerDetail?.customer_id,
-      organizationId: org.id,
-      isVerified: true,
-      password: "123456",
-      isCreatedByZohoBilling: true,
+
+    let userDetails = await getuserDetailByEmail(zohoCustomerDetail?.email)
+    if(!userDetails) {
+      // User creation
+      const userDetail = {
+        role: "admin" as const,
+        username: zohoCustomerDetail?.first_name,
+        mobile: contactPersonDetail?.mobile,
+        countryCode: `+${userCountry?.phone}`,
+        email: zohoCustomerDetail?.email,
+        address: {
+          country: billingAddress?.country,
+          city: billingAddress?.city,
+          state: billingAddress?.state,
+          street: billingAddress?.state,
+          zipCode: billingAddress?.zip
+        },
+        customerId: zohoCustomerDetail?.customer_id,
+        organizationId: org.id,
+        isVerified: true,
+        password: "123456",
+        isCreatedByZohoBilling: true,
+      }
+      userDetails = await createUser(userDetail)
+    } else {
+      userDetails = await updateUserDetailById(userDetails?.id, 
+      {
+        mobile: contactPersonDetail?.mobile,
+        countryCode: `+${userCountry?.phone}`,
+        address: {
+          country: billingAddress?.country,
+          city: billingAddress?.city,
+          state: billingAddress?.state,
+          street: billingAddress?.state,
+          zipCode: billingAddress?.zip
+        },
+        organizationId: org.id,
+        isVerified: true,
+        customerId: subscriptionData?.customerId
+      })
     }
 
     // subscription creation
     const subscriptionStartDate = new Date(subscriptionData?.current_term_starts_at) || new Date(subscriptionData?.updated_time)
     const subscriptionEndDate = new Date(subscriptionData?.current_term_ends_at) || new Date(subscriptionData?.expires_at)
 
-      const subscription = [{
+    const subscription = [{
         organizationId: org.id,  
         serviceType: botType,
         subscriptionId: subscriptionData?.subscription_id,
         pricingPlanCode: pricingInfo?.planCode,
         startDate: subscriptionStartDate,
         endDate: subscriptionEndDate,
-        subscriptionStatus: "active" as "active"
+        subscriptionStatus: subscriptionData?.status === "trial" ?  "trial"  : "active" as "active"
       }, {
         organizationId: org.id,
         serviceType: botType === "chat" ? "voice" : "chat",
         pricingPlanCode: botType === "chat" ? "voice_free" : "chat_free",
         subscriptionStatus: "active"
-      }]
-
-    const userCreation = await createUser(userDetail)
+    }]
 
     // Subscription creation
     await Promise.all([
@@ -96,14 +112,26 @@ export default defineEventHandler(async (event) => {
         pricingPlanCode: pricingInfo?.planCode!,
         startDate: subscriptionStartDate,
         endDate: subscriptionEndDate,
-        subscriptionStatus: "active"
+        subscriptionStatus: subscriptionData?.status === "trial" ?  "trial"  : "active" as "active"
       })
     ])
-    if(!userCreation) {
+    if(!org) {
       return errorResponse(event, 500, "Failed to store client data. Please contact support.")
     }
+    // User session creation
+    const session = await lucia.createSession(
+      userDetails.id,
+      { email: userDetails.email },
+      { sessionId: uuid() },
+    );
+    
+    appendHeader(
+      event,
+      "Set-Cookie",
+      lucia.createSessionCookie(session.id).serialize(),
+    );
     logger.info(`Client onboarding successful via hosted page: OrganizationId: ${org.id}`)
-    return { userId: userCreation?.id }
+    return { org: org?.id }
   } catch (error: any) {
     logger.error(`Client onboaring via hostedPage id API Error: ${JSON.stringify(error.message)}`)
     return errorResponse(event, 500, "Onboarding via hostedpage id is failed")

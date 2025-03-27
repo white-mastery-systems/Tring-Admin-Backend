@@ -28,6 +28,12 @@ import { botStore } from '~/store/botStore';
 definePageMeta({
   middleware: "admin-only",
 });
+
+const props = defineProps<{
+  botType: string;
+}>();
+
+
 const scrapData = botStore();
 const { cleanAndParseJson } = useCleanJson();
 // const emit = defineEmits(["scrapedData"]);
@@ -91,12 +97,16 @@ const handleAddEditBot = handleSubmit(async (values) => {
   isLoading.value = true;
   try {
     
-    const scrapedData: any = await $fetch("/api/org/webScrape", {
+    const scrapedData: any = await $fetch(`/api/org/webScrape?type=${props.botType}`, {
       method: "POST",
       body: values,
     });
     const parsedData = cleanAndParseJson(scrapedData);
-    scrapData.scrapedData = parsedData;
+    if (props.botType === 'voice') {
+      scrapData.voiceBotScrapedData = parsedData;
+    } else {
+      scrapData.scrapedData = parsedData;
+    }
     toast.success("Updated successfully");
     // }
     // if (agentModalState.value.id) {
@@ -106,19 +116,19 @@ const handleAddEditBot = handleSubmit(async (values) => {
     // }
   } catch (err: any) {
     isLoading.value = false;
-    toast.error(err.data.data[0].message);
+    toast.error(err?.statusMessage || "Failed to import data.");
   }
   isLoading.value = false;
 });
-const {
-  status: integrationLoadingStatus,
-  data: integrationsData,
-  refresh: integrationRefresh,
-} = await useLazyFetch("/api/org/integrations", {
-  server: false,
-  query: {
-    q: "ecommerce",
-  },
-  default: () => [],
-});
+// const {
+//   status: integrationLoadingStatus,
+//   data: integrationsData,
+//   refresh: integrationRefresh,
+// } = await useLazyFetch("/api/org/integrations", {
+//   server: false,
+//   query: {
+//     q: "ecommerce",
+//   },
+//   default: () => [],
+// });
 </script>

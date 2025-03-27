@@ -258,25 +258,36 @@ const {
 const paramId = route.params.id;
 // const botDetails = await getBotDetails(paramId);
 // const { botDetails, loading, error, refreshBot } = useBotDetails(paramId);
-watch(() => useStoreBotDetails, (newValue) => {
-  const extractHSLValues = (hslString: string) => hslString.replace(/hsl\(|\)/g, "");
-  setFieldValue("logo", { url: newValue.scrapedData?.brand?.logo_url } ?? {});
-  setFieldValue("color", hslToHex(extractHSLValues(newValue.scrapedData?.chatbot?.primary_color) ?? "236, 61%, 54%, 1"));
-  setFieldValue("secondaryColor", hslToHex(extractHSLValues(newValue.scrapedData?.chatbot?.secondary_color) ??"236, 61%, 74%"));
-},{deep: true, immediate: true});
+// watch(() => props.botDetails, (newValue) => {
+//   const extractHSLValues = (hslString: string) => hslString.replace(/hsl\(|\)/g, "");
+//   setFieldValue("logo", { url: newValue.metadata.Ui } ?? {});
+//   setFieldValue("color", hslToHex(extractHSLValues(newValue.scrapedData?.chatbot?.primary_color) ?? "236, 61%, 54%, 1"));
+//   setFieldValue("secondaryColor", hslToHex(extractHSLValues(newValue.scrapedData?.chatbot?.secondary_color) ??"236, 61%, 74%"));
+// },{deep: true, immediate: true});
 watch(props.botDetails, (newValues) => {
-  setFieldValue("logo", newValues.metadata.ui.logo ?? {});
-  setFieldValue("color", hslToHex(newValues.metadata.ui.color ?? "236, 61%, 54%, 1"));
+  // Handle logo - either use object or create object with url
+  setFieldValue("logo", (typeof newValues.metadata.ui.logo === "object" ? 
+    newValues.metadata.ui.logo : 
+    {url: newValues.metadata.ui.logo}) ?? {});
+
+  // Convert colors from HSL to Hex
+  setFieldValue("color", hslToHex(newValues.metadata.ui.color ?? "236, 61%, 54%"));
   setFieldValue("secondaryColor", hslToHex(newValues.metadata.ui.secondaryColor ?? "236, 61%, 74%"));
-  setFieldValue("widgetSound", newValues.metadata.ui.widgetSound ?? (newValues.metadata.ui.widgetSound === 'yes') ? true : false);
+  
+  // Set other UI preferences
+  setFieldValue("widgetSound", newValues.metadata.ui.widgetSound ?? "Yes");
   setFieldValue("widgetPosition", newValues.metadata.ui.widgetPosition ?? "Left");
-  setFieldValue("fontFamily", newValues.metadata.ui.fontFamily ?? "Kanit");
+  setFieldValue("fontFamily", newValues.metadata?.ui.fontFamily ?? "Kanit");
+  
+  // Set boolean values with appropriate defaults
+  setFieldValue("defaultSelect", newValues.metadata.ui.defaultSelect ?? true);
+  setFieldValue("onlineStatus", newValues.metadata.ui.onlineStatus ?? true);
+  setFieldValue("generateLead", newValues.metadata.ui.generateLead ?? true);
+  setFieldValue("defaultRibbon", newValues.metadata.ui.defaultRibbon ?? true);
+  
+  // Set email recipients
   setFieldValue("emailRecipients", newValues.emailRecipients ?? []);
-  setFieldValue("defaultSelect", (newValues.metadata.ui.defaultSelect ?? true))
-  setFieldValue("onlineStatus", (newValues.metadata.ui.onlineStatus ?? true))
-  setFieldValue("generateLead", (newValues.metadata.ui.generateLead ?? true))
-  setFieldValue("defaultRibbon", (newValues.metadata.ui.defaultRibbon ?? true))
-},{deep: true, immediate: true})
+}, { deep: true, immediate: true });
 
 
 
@@ -329,7 +340,7 @@ const uiUpdate = handleSubmit(async (value) => {
       },
     },
   };
-  await updateBotDetails(payload);
+  await updateBotDetails(payload,true);
   await props.refreshBot()
   // emit('formSubmitted');
   isLoading.value = false;

@@ -26,10 +26,9 @@ export default defineEventHandler(async (event) => {
     getAdminByOrgId(organizationId)
   ]) 
 
-  // console.log({ voicebotPlan })
-  if (voicebotPlan?.pricingPlanCode === "voice_free") {
-    return errorResponse(event, 500, "This user was a free plan")
-  }
+  // if (voicebotPlan?.pricingPlanCode === "voice_free") {
+  //   return errorResponse(event, 500, "This user was a free plan")
+  // }
 
   if(voicebotPlan?.subscriptionStatus !== "active") {
     return errorResponse(event, 500, "Subscription status is inactive")
@@ -42,20 +41,31 @@ export default defineEventHandler(async (event) => {
 
   // get actual voicebot pricing information
   const adminCountry = adminDetail?.address?.country!
+
+  let planPricingDetail
+
   const voicePricingInformation = await getSubcriptionPlanDetailByPlanCode(voicebotPlan?.pricingPlanCode, adminCountry)
+  if(
+      voicebotPlan?.subscriptionStatus === "trail" || 
+      voicebotPlan?.pricingPlanCode === "voice_free"
+    ) {
+      planPricingDetail = await getPricingInformation("voice_free")
+    } else {
+      planPricingDetail = await getSubcriptionPlanDetailByPlanCode(voicebotPlan?.pricingPlanCode!, adminCountry)
+    }
 
   const usedCallMinutes = voicePlanUsage?.interactionsUsed || 0 
   const maxCallMinutes = voicePricingInformation?.sessions || 0
   let extraMinutes = 0
   const orgWalletMinutes = orgDetail?.wallet || 0
 
-  if(currentDate > currentMonthEndDate) {
+  if(currentDate > currentMonthEndDate && voicebotPlan?.pricingPlanCode !== "voice_free") {
     await updateOrgZohoSubscription(organizationId, "voice", { subscriptionStatus: "inactive" })
     return errorResponse(event, 500, "Subscription plan has expired")
   }
 
   if(usedCallMinutes >= maxCallMinutes) {
-    if(orgWalletMinutes > 0) {
+    if(orgWalletMinutes > 0 && voicebotPlan?.pricingPlanCode !== "voice_free" && voicebotPlan?.subscriptionStatus !== "trial") {
       extraMinutes = Math.max(usedCallMinutes - maxCallMinutes, 0)
       const actualExtraMinutes = Math.max(extraMinutes - voicePlanUsage?.extraInteractionsUsed!, 0)
       if(actualExtraMinutes > 0) {
