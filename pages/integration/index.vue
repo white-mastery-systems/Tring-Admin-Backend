@@ -8,6 +8,10 @@
                 numberModalState = true;
                 // numberModalState.id = null;
                 return;
+              } if (route.query.q === 'TTS') {
+                ttsModalState = true;
+                // numberModalState.id = null;
+                return;
               }
               integrationModalState = true;
               // integrationModalState.id = null;
@@ -17,7 +21,10 @@
           Add
           {{
             (() => {
-              if (route.query.q === "number") {
+              if (route.query.q === "TTS") {
+                return "TTS Integration";
+              }
+              else if (route.query.q === "number") {
                 return "Cloud Telephony";
               } else if (route.query.q === "crm") {
                 return "CRM";
@@ -36,7 +43,7 @@
     </template>
     <UiTabs :default-value="route?.query?.q ?? 'crm'" class="w-full self-start">
       <UiTabsList
-        class="grid w-[100%] grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 sm:w-[100%] md:w-[70%] lg:w-[60%] xl:w-[50%] h-[10%]">
+        class="grid w-[100%] grid-cols-2 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5 sm:w-[100%] md:w-[80%] lg:w-[70%] xl:w-[60%] h-[10%]">
         <UiTabsTrigger value="crm" @click="navigateToTab('crm')">
 
           CRM
@@ -50,6 +57,9 @@
 
         <UiTabsTrigger value="number" @click="navigateToTab('number')">
           Cloud Telephony
+        </UiTabsTrigger>
+        <UiTabsTrigger value="TTS" @click="navigateToTab('TTS')">
+          TTS Integration
         </UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="crm">
@@ -72,10 +82,16 @@
         <NumberIntegration :integrationModalState="numberModalState"
           :findTitleForIntegrationModal="findTitleForIntegrationModal()" @stateControl="numberModalState = $event" />
       </UiTabsContent>
+      <UiTabsContent value="TTS">
+        <TTSIntegration :integrationModalState="ttsModalState"
+          :findTitleForIntegrationModal="findTitleForIntegrationModal()" @stateControl="ttsModalState = $event" />
+      </UiTabsContent>
     </UiTabs>
     <ChannelModal v-model="channelModalState" @success="() => {
       console.log('on success')
     }" />
+    <!-- <TTSModal 
+    :ttsModalState="ttsModalState" -->
     <!-- <Numberodal v-model="numberModalState" @success="onSuccess()" /> -->
     <!-- <CreateEditIntegrationModal :title="findTitleForIntegrationModal()" v-model="integrationModalState"
       :id="integrationModalState?.id" @success="onSuccess()" /> -->
@@ -121,6 +137,7 @@ import IntegrationTable from "~/components/settings/integrations/IntegrationTabl
 import ChannelModal from "./ChannelModal.vue";
 import NumberModal from "./NumberModal.vue";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+import TTSModal from "./TTSModal.vue";
 
 
 definePageMeta({
@@ -131,12 +148,13 @@ useHead({
   title: "Settings | Integrations",
 });
 const breadcrumbStore = useBreadcrumbStore();
-
 const router = useRouter();
 const route = useRoute();
 function findTitleForIntegrationModal() {
-  if (route.query.q === "number") {
-    return "Cloud Telephony";
+  if (route.query.q === "TTS") {
+    return "TTS Integration";
+  } if (route.query.q === "number") {
+      return "Cloud Telephony";
   } else if (route.query.q === "crm") {
     return "CRM";
   } else if (route.query.q === "communication") {
@@ -148,6 +166,11 @@ function findTitleForIntegrationModal() {
 const integrationModalState = ref(false)
 const channelModalState = ref({ open: false, id: null });
 const numberModalState: any = ref(false);
+const ttsModalState = ref(false);
+// const ttsModalState = reactive({ 
+//   open: true, 
+//   id: null 
+// });
 // const integrations = ref([]);
 
 let deleteIntegrationState = ref({

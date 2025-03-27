@@ -2,7 +2,7 @@
   <UiFormField v-model="country" :name="props.name" class="mt-1">
     <UiFormItem class="mt-1 flex flex-col gap-1 ">
       <UiFormLabel>Time Zones
-        <span class="text-sm text-red-500">*</span>
+        <span v-if="required" class="text-sm text-red-500">*</span>
       </UiFormLabel>
       <UiPopover>
         <UiPopoverTrigger as-child>

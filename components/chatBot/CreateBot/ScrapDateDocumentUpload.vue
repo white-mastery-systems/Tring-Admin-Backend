@@ -4,6 +4,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { botStore } from "~/store/botStore";
 import { useRoute } from "vue-router";
+import { useDocumentUpload } from "~/composables/botManagement/chatBot/useDocumentUpload"; // Import the composable
 
 const scrapData = botStore();
 const text = ref(scrapData.scrapedData?.knowledge_base?.document_content || "");
@@ -11,6 +12,7 @@ const route = useRoute();
 const props = defineProps<{
   refresh: () => void
 }>();
+const { createDocuments ,uploadStatus, isUploading, uploadError } = useDocumentUpload();
 // Watch for changes in scrapData
 watch(
   () => scrapData.scrapedData?.knowledge_base?.document_content,
@@ -61,7 +63,7 @@ const generatePDFAndUpload = async () => {
   };
 
   // Upload to API
-  await createDocument(payload.botId, payload.document);
+  await createDocuments(payload.botId, payload.document);
   await props.refresh()
 };
 

@@ -21,7 +21,7 @@
           crm: route?.params?.id,
         },
         onSuccess: async () => {
-          await navigateTo("/settings/integration");
+          await navigateTo("/integration");
         },
       });
     else if (route?.query?.code) {
@@ -34,12 +34,12 @@
           crm: route?.params?.id,
         },
         onSuccess: async () => {
-          await navigateTo("/settings/integration");
+          await navigateTo("/integration");
         },
       });
     } else {
       toast.error("Verification failed");
-      await navigateTo("/settings/integration");
+      await navigateTo("/integration");
     }
   });
 </script>

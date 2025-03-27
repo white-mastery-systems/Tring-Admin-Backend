@@ -9,6 +9,8 @@ import { energyAndUtilitiesConfigs } from "./energy&Utilities.config";
 import { travelAndHospitalityConfigs } from "./travel&Hospitality.config";
 import { educationAndTrainingConfig } from "./education&training.config";
 import { itServiceConfig } from "./it-service.config";
+import { travelConfigs } from "./travel.config";
+import { hospitalityConfigs } from "./hospitality";
 
 export const chatbotConfigs: Record<string, any> = {
   "real-estate": realEstateConfigs,
@@ -18,7 +20,8 @@ export const chatbotConfigs: Record<string, any> = {
   "e-commerce": ecommerceConfigs,
   "energy-utilities": energyAndUtilitiesConfigs,
   "telecommunications": telecommunicationConfigs,
-  "travel-hospitality": travelAndHospitalityConfigs,
+  "travel": travelConfigs,
+  "hospitality": hospitalityConfigs,
   "logistics": logisticsConfigs,
   "education-training": educationAndTrainingConfig,
   "it-service": itServiceConfig

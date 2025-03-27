@@ -32,7 +32,7 @@ export const deployDocument = async (botId: string, documentId: string) => {
 
 export const viewDocument = async (botId: string, documentId: string) => {
   navigateTo(`/api/bots/${botId}/documents/${documentId}`, {
-    external: true,
+    external: false,
     open: {
       target: "_blank",
     },

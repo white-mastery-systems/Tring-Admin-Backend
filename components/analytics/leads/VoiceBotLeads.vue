@@ -34,12 +34,12 @@ watchEffect(() => {
   if (props.filters.botId === "all") props.filters.botId = "";
 });
 
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 
 
-let {
+const {
   status,
   data: leads,
   refresh: getAllLeads,

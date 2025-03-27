@@ -1,8 +1,8 @@
 <template>
-  <page :title="botDetails.name ?? ''" :bread-crumbs="[]" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
-    custom-back-router="/voice-bot">
-    <div class="">
-      <div class="flex w-full items-center border-b border-[#b5b5b5] pb-[10px] pl-[7px] pr-[0px]">
+  <page :title="botDetails.name ?? ''" :bread-crumbs="[]" :disableSelector="true" :disable-back-button="false"
+    :disable-elevation="true" custom-back-router="/voice-bot">
+    <template #actionButtons>
+      <div class="flex w-full items-center pl-[7px] pr-[0px]">
         <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
           <div class="items-cetner flex gap-4">
             <div v-if="botDetails.active" class="flex items-center gap-[5px] text-[#1abb00]">
@@ -91,12 +91,22 @@
                 description="Are you sure you want to delete voice bot ?" @confirm="handleDeleteBot" />
             </div>
           </div>
-
           <!-- <span class="font-semibold content-align">Date Created</span>
           <span class="font-semibold content-align">Status</span> -->
         </div>
       </div>
-      <LazyUiDialog v-if="!botDetails.documentId" v-model:open="isDocumentListOpen">
+    </template>
+    <div class="font-bold text-[20px] leading-none mb-2">
+      View and Edit your Voicebot features
+    </div>
+    <EditVoiceBot :botDetails="botDetails" :refresh="refreshBot" :loading="loading" />
+    <VoiceBotSuccessFulMessageModal v-model="createBotVoicesuccessfulState" @success="() => {
+      console.log('success');
+      createBotVoicesuccessfulState.open = false;
+      // refreshBot();
+    }" />
+    <div class="" v-if=false>
+      <LazyUiDialog v-if=" !botDetails.documentId" v-model:open="isDocumentListOpen">
         <UiDialogTrigger class=""> </UiDialogTrigger>
         <UiDialogContent align="end" class="sm:max-w-md">
           <UiDialogHeader>
@@ -143,7 +153,7 @@
       </div>
       <CreateEditVoiceBotModal v-model="agentModalState" @editConfirm="() => {
           agentModalState.open = false;
-          integrationRefresh()
+          refreshBot()
         }" />
     </div>
   </page>
@@ -154,16 +164,22 @@ import { ref } from "vue";
 import { toast } from "vue-sonner";
 import { Bot } from "lucide-vue-next";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
+import { useVoiceBotDetails } from "~/composables/botManagement/voiceBot/useVoiceBotDetails ";
+
 definePageMeta({
   middleware: "admin-only",
 });
 const router = useRouter();
+const createBotVoicesuccessfulState = ref({
+  open: false,
+});
 // const selectedValue = ref("Today");
 const route = useRoute("voice-bot-id");
 const paramId: any = route;
 const breadcrumbStore = useBreadcrumbStore();
 // const botDetails = ref(await getVoiceBotDetails(paramId.params.id));
-const { data: botDetails, status: botLoadingStatus, refresh: integrationRefresh } = await useLazyFetch(`/api/voicebots/${route.params.id}`);
+// const { data: botDetails, status: botLoadingStatus, refresh: integrationRefresh } = await useLazyFetch(`/api/voicebots/${route.params.id}`);
+const { botDetails, loading, error, refreshBot } = useVoiceBotDetails(paramId.params.id)
 const agentModalState = ref({ open: false, id: paramId.params.id });
 
 breadcrumbStore.setBreadcrumbs([
@@ -196,7 +212,7 @@ watchEffect(() => {
 
 onMounted(async () => {
   getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
-  botDetails.value = await getVoiceBotDetails(paramId.params.id);
+  // botDetails.value = await getVoiceBotDetails(paramId.params.id);
   audioResponseData.value = await getPreRecordedAudioDetails(paramId.params.id, botDetails.value?.organizationId, config)
 });
 const handleGoBack = () => {
@@ -301,22 +317,22 @@ const handleDeleteBot = () => {
 const handleActivateBot = async () => {
   if (botDetails.value.ivrConfig === null) {
     toast.error("Please configure IVR first");
-    return navigateTo({
-      name: "voice-bot-id-ivr-config",
-      params: { id: paramId.params.id },
-    })
+    // return navigateTo({
+    //   name: "voice-bot-id-ivr-config",
+    //   params: { id: paramId.params.id },
+    // })
   } else if (botDetails.value.botDetails === null) {
     toast.error("Please configure Bot Details first");
-    return navigateTo({
-      name: "voice-bot-id-identity-management",
-      params: { id: paramId.params.id },
-    })
+    // return navigateTo({
+    //   name: "voice-bot-id-identity-management",
+    //   params: { id: paramId.params.id },
+    // })
   } else if (!audioResponseData.value.welcome.length || !audioResponseData.value.conclude.length) {
     toast.error("Please configure welcome and conclude Audio Response first");
-    return navigateTo({
-      name: "voice-bot-id-pre-recorded-audio",
-      params: { id: paramId.params.id },
-    })
+    // return navigateTo({
+    //   name: "voice-bot-id-pre-recorded-audio",
+    //   params: { id: paramId.params.id },
+    // })
   } else {
     let getActive = botDetails.value.active
     getActive = !getActive
@@ -326,7 +342,7 @@ const handleActivateBot = async () => {
           active: getActive,
         },
       });
-      integrationRefresh()
+      refreshBot()
       if (voiceBotDetails.active) {
         toast.success("Activated successfully");
       } else {

@@ -2,7 +2,7 @@ import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
 
 const zodVoiceDialBody = z.object({
-  name: z.string(),
+  name: z.string().optional(),
   countryCode: z.string(),
   phone: z.string()
 })
@@ -27,8 +27,8 @@ export default defineEventHandler(async (event) => {
       method: "POST",
       body: dialPayload
     })
-
-    return dialVoiceCall
+    return { status: dialVoiceCall ? true : false }
+    
   } catch (error: any) {
     logger.error(`Voicebot Dial API Error: ${JSON.stringify(error.message)}`)
     return errorResponse(event, 500, "Unable to dial voice call")

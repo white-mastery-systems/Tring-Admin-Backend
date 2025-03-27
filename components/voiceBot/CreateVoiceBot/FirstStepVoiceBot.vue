@@ -1,204 +1,219 @@
 <script setup lang="ts">
 import { useField } from "vee-validate";
-import { Home, ShoppingCart, Settings, Info, Plane, HandPlatter, PhoneCall, Ambulance, Globe, FileText, FileDown } from 'lucide-vue-next';
-import { useContentSuggestions } from "~/composables/botManagement/chatBot/useContentSuggestions";
-// import { Button } from "@/components/ui/button";
-// import { Home, Settings, Info } from "lucide-vue-next";
+import { FileText, Globe,Home, ShoppingCart, Plane, PhoneCall, FileDown, Landmark,
+  Banknote,
+  Stethoscope,
+  Lightbulb,
+  Truck,
+  GraduationCap,
+  Server } from 'lucide-vue-next';
+import { botStore } from "~/store/botStore";
 
 const props = defineProps<{
+  values: Record<string, any>;
   errors: Record<string, any>;
-  refresh: () => void
+  suggestionsContent: Array<any>;
+  loading: boolean;
+  refreshSuggestions: () => void;
 }>();
-// const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
+
+const scrapData = botStore();
 const uploadDocumentRef = ref(null);
 defineExpose({ uploadDocumentRef })
 const { value: selectedType } = useField("selectedType")
 const { value: type } = useField("type");
-// const emit = defineEmits(['update:selectedType']);
-// Track which option is selected
-// const selectedType = ref<string | null>(null);
-const { contentSuggestions, loading, error, refreshSuggestions } = useContentSuggestions(type ?? 'real-estate');
-
+const { value: boundDirection } = useField("boundDirection");
+const emit = defineEmits(["update:values"]);
+const intentTypes = [
+  { label: "Real Estate", value: "real-estate", icon: Home },
+  { label: "Government Sectors", value: "government-sectors", icon: Landmark },
+  { label: "Finance & Banking", value: "finance-banking", icon: Banknote },
+  { label: "Healthcare", value: "healthcare", icon: Stethoscope },
+  { label: "E-commerce", value: "e-commerce", icon: ShoppingCart },
+  { label: "Energy & Utilities", value: "energy-utilities", icon: Lightbulb },
+  { label: "Telecommunications", value: "telecommunications", icon: PhoneCall },
+  { label: "Travel & Hospitality", value: "travel-hospitality", icon: Plane },
+  { label: "Logistics", value: "logistics", icon: Truck },
+  { label: "Education & Training", value: "education-training", icon: GraduationCap },
+  { label: "IT Service", value: "it-service", icon: Server },
+];
 const companyDetails = ref('')
+const boundList = ref([
+  {
+    label: 'Both',
+    value: 'both',
+  },
+  {
+    label: 'Inbound',
+    value: 'inbound'
+  }, {
+    label: 'Outbound',
+    value: 'outbound',
+  }
+])
+watch(boundDirection, () => {
+  emit("update:values", {
+    ...props.values,
+    boundDirection: boundDirection.value,
+  })
+})
 // Function to handle button click
-const selectType = (type: string) => {
-  // emit('update:selectedType', type);
-  selectedType.value = type;
-  // emit("update:values", { ...props.values type });
+const selectType = (types: string) => {
+  console.log(boundDirection.value, "boundDirection -- boundDirection")
+  
+  if (!type.value && (types != 'Website')) {
+    toast.error('Please select an industry before proceeding.');
+    return;
+  }
+  
+  // Update the selectedType
+  selectedType.value = types;
+  
+  // IMPORTANT: Emit a complete update with ALL values
+  emit("update:values", {
+    ...props.values,
+    selectedType: types,
+    boundDirection: boundDirection.value,
+    type: type.value
+  });
 };
 
 const buttons = [
   { label: "Website", icon: Globe },
-  // { label: "Document", icon: FileText },
-  { label: "Text", icon: FileDown },
+  { label: "Text", icon: FileText },
 ];
-// // ✅ Use `useField()` from vee-validate
-// const { value: companyName } = useField("companyName");
-// const { value: chatbotName } = useField("name");
-// const { value: selectedIndustry } = useField("industry");
-
-const intentTypes = ref([
-  { label: "Real Estate", value: "real-estate" },
-  { label: "Government Sectors", value: "government-sectors" },
-  { label: "Finance & Banking", value: "finance-banking"},
-  { label: "Healthcare", value: "healthcare" },
-  { label: "E-commerce", value: "e-commerce"},
-  { label: "Energy & Utilities", value: "energy-utilities" },
-  { label: "Telecommunications", value: "telecommunications" },
-  { label: "Travel & Hospitality", value: "travel-hospitality" },
-  { label: "Logistics", value: "logistics" },
-  { label: "Education & Training", value: "education-training" },
-  { label: "IT Service", value: "it-service" },
-]);
-
-watch(type, () => {
-  console.log('insied watch')
-  refreshSuggestions(); // Call refresh when type changes
-});
-// ✅ Function to update industry selection
 const selectIndustry = (value: string) => {
-  selectedType.value = value;
+  // Update the type
+  type.value = value;
+  
+  // IMPORTANT: Emit a complete update with ALL values
+  emit("update:values", {
+    ...props.values,
+    type: value,
+    boundDirection: boundDirection.value,
+    selectedType: selectedType.value
+  });
 };
+
+
 const changeKnowledge = () => {
   selectedType.value = ''
 }
 </script>
 
 <template>
-  <UiCard class="border-0 flex flex-col justify-between" :class="(!!selectedType) ? '' : 'h-[95%]'">
-    <UiCardHeader class="p-0">
-      <div class="flex items-center justify-between gap-4 px-4 pt-4">
-        <div class="flex flex-col gap-[6px]">
-          <UiCardTitle class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B]">Build Your Bot’s Knowledge
-          </UiCardTitle>
-          <UiCardDescription class="font-normal text-[12px] sm:text-[12px] md:text-[14px] text-[#71717A]">Select your industry type and other details</UiCardDescription>
-        </div>
-        <UiCardDescription class="text-[14px] font-medium">
-          <span class="text-[#09090B]">Step 1</span><span class="text-[#64748B]">/4</span>
-        </UiCardDescription>
-      </div>
-      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-3" />
-    </UiCardHeader>
-    <div class="flex flex-col items-center text-center px-4 h-full w-full"
-      :class="[(selectedType) ? 'justify-start' : 'justify-center']">
-      <div v-if="!selectedType" class="flex flex-col items-center justify-center gap-3 space-y-3">
-        <div class="space-y-1 flex flex-col">
-          <div class="font-bold text-[16px] text-[16px] md:text-[20px] text-[#09090B] pt-3 sm:pt-3">
-            Select Your Bot’s Prompt & Knowledge Source
+  <BotSetupCard title="Build Your Bot's Knowledge" description="Enter your industry type and other details"
+    currentStep="1" totalSteps="6">
+    <!-- Main Content Area -->
+    <div class="flex flex-col items-center p-0 flex-grow">
+      <!-- Initial Selection Screen -->
+      <div v-show="!selectedType" class="flex flex-col w-full h-full">
+        <UiCardContent class="grid p-0 gap-2 mb-4">
+          <div class="flex items-center grid grid-cols-2 gap-3 text-left">
+            <span class="font-medium text-left text-[16px] md:text-[18px]">Select your Call Type</span>
+            <SelectField v-model="boundDirection" name="boundDirection" :options="boundList"
+              placeholder="Select a direction" />
           </div>
-          <div class="font-normal text-[12px] sm:text-[12px] md:text-[14px] text-[#71717A] w-[85%]">
-            Import your company details and goals through your <span class="text-[#18181B]">
-              website link or by text input
-            </span>
-          </div>
-        </div>
-        <div class="flex flex-wrap justify-center gap-3 w-full sm:w-full md:w-[80%] md:flex-nowrap">
-        <UiButton
-          type="button"
-          variant="outline"
-          v-for="(btn, index) in buttons"
-          :key="index"
-          class="border-[#000000] text-[#000000] hover:text-[#ffffff] hover:bg-[#000000] font-regular w-full sm:w-full md:flex-1"
-          @click="selectType(btn.label)"
-        >
-          <component :is="btn.icon" class="mr-2 w-5 h-5" />
-          {{ btn.label }}
-        </UiButton>
-      </div>
-      </div>
-      <div v-else class="w-full">
-        <div v-if="selectedType === 'Website'" class="w-full py-4 space-y-4">
-          <div class="flex items-center justify-between w-full px-0">
-            <span class="font-bold text-[18px] sm:text-[18px] md:text-[20px] text-[#09090B]">
-              Website
-            </span>
-            <span>
-              <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] sm:text-[12px] md:text-[14px]" @click="changeKnowledge()">Change Knowledge
-                Source</UiButton>
-            </span>
-          </div>
-          <div class="bg-[#E2E8F0] rounded-lg text-left p-4 text-[12px] sm:text-[12px] md:text-[14px]">
-            <div class="font-medium">
-              Note:
+          <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-2 h-[0.5px]" />
+          <span class="font-medium text-left text-[16px] md:text-[18px]">
+            Industries
+          </span>
+
+          <RadioGroup v-model="type" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden"
+            :class="props.loading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''">
+            <div v-for="intent in intentTypes" :key="intent.value"
+              class="min-w-[100px] max-w-[100px] min-h-[100px] max-h-[100px] md:min-w-[135px] md:max-w-[135px] md:min-h-[135px] md:max-h-[135px]"
+              @click.stop="selectIndustry(intent.value)">
+              <RadioGroupItem :id="intent.value" :value="intent.value" class="peer hidden" />
+              <Label :for="intent.value"
+                class="w-full h-full flex items-center justify-center p-4 rounded-lg bg-[#F2F2F2] transition-all duration-300"
+                :class="[type === intent.value ? 'border-2 border-[#09090b]' : 'border-transparent']">
+                <component :is="intent.icon" class="w-[50px] h-[50px]" :stroke-width="0.75" />
+              </Label>
+              <div class="text-[12px] font-medium mt-2 text-center">{{ intent.label }}</div>
             </div>
-            <div>
-              All your company's branding and key information, will be automatically imported from the website link you provide, ensuring a seamless and accurate representation of your brand
+          </RadioGroup>
+        </UiCardContent>
+
+        <div
+          class="flex flex-col items-center justify-center w-full gap-5 bg-[#FCFCFC] border border-1 rounded-lg p-8 flex-grow">
+          <div class="space-y-1 flex flex-col text-center">
+            <div class="font-bold text-[18px] md:text-[20px] text-[#09090B] leading-none">
+              Select Your Bot's Knowledge Source
+            </div>
+            <div class="font-normal text-[14px] text-[#71717A] mt-2">
+              Import your company details and goals through your <br>
+              <span class="text-[#18181B]">website link or by text input</span>
             </div>
           </div>
-          <!-- <UiSeparator orientation="horizontal" class="bg-[#E2E8F0]" /> -->
-          <div class="flex flex-col gap-3 w-full">
-            <div class="">
-              <WebScrapingForm />
-            </div>
-            <div>
-              <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-1 text-[#000000] font-medium">Website generated details (Prompt & Knowledge Base)</p>
-              <!-- {{ scrapData.scrapedData.knowledge_base.document_content }} -->
-              <ScrapDateDocumentUpload :refresh="props.refresh" />
-            </div>
-            <!-- <TextField name="scrapData" label="Website generated details and goals" :isTextarea="true">
-                </TextField> -->
+
+          <div class="flex justify-center gap-3 w-full md:w-[40%] lg:w-[30%] mt-4">
+            <UiButton type="button" variant="default" class="bg-[#000000] text-[#ffffff] font-regular flex-1"
+              @click="selectType('Website')">
+              <component :is="buttons[0].icon" class="mr-2 w-5 h-5" />
+              {{ buttons[0].label }}
+            </UiButton>
+            <UiButton type="button" variant="outline"
+              class="border-[#000000] text-[#000000] hover:text-[#ffffff] hover:bg-[#000000] font-regular flex-1"
+              @click="selectType('Text')" :loading="props.loading && 'Text'" :disabled="props.loading && 'Text'">
+              <component :is="buttons[1].icon" class="mr-2 w-5 h-5" />
+              {{ buttons[1].label }}
+            </UiButton>
           </div>
         </div>
-        <div v-else-if="selectedType === 'Document'" class="w-full py-4">
-          <div class="flex items-center justify-between w-full px-0">
-            <span class="font-bold text-[18px] sm:text-[18px] md:text-[20px] text-[#09090B]">
-              Document
-            </span>
-            <span>
-              <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] sm:text-[12px] md:text-[14px]" @click="changeKnowledge()">Change Knowledge
-                Source</UiButton>
-            </span>
+      </div>
+
+      <!-- Knowledge Type Sections -->
+      <div v-show="selectedType" class="w-full h-full">
+        <!-- Website Section -->
+        <div v-show="selectedType === 'Website'" class="w-full py-4 space-y-4 h-full flex flex-col">
+          <div class="flex items-center justify-between w-full">
+            <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Website</span>
+            <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]"
+              @click="changeKnowledge()">
+              Change Knowledge Source
+            </UiButton>
           </div>
-          <div class="bg-[#E2E8F0] rounded-lg text-left p-4 text-[12px] sm:text-[12px] md:text-[14px] my-4">
-            <div class="font-medium">
-              Note:
-            </div>
+          <div class="bg-[#E2E8F0] rounded-lg p-4 text-[12px] md:text-[14px] text-left">
+            <div class="font-medium">Note:</div>
             <div>
-              A Sample document for the industry has been provided below. You can download and edit the necessary fields
-              of this document and upload it
+              All your company's branding elements, including key information, will be automatically imported from the
+              website link you provide, ensuring a seamless and accurate representation of your brand.
             </div>
           </div>
-          <div class="flex justify-center w-full mt-8">
-            <div class="w-full">
-              <CreateBotDocumentManagement :refresh="props.refresh" />
+          <div class="flex flex-col gap-3 w-full flex-grow">
+            <WebScrapingForm botType="voice" />
+            <div class="flex flex-col gap-2 text-[14px] text-left font-medium">
+              <span>
+                Website generated details (Knowledge Base)
+              </span>
+              <ScrapDateDocumentVoiceBot :refresh="props.refresh" />
             </div>
           </div>
         </div>
 
-        <div v-else-if="selectedType === 'Text'" class="w-full py-4 space-y-4">
-          <div class="flex items-center justify-between w-full px-0">
-            <span class="font-bold text-[18px] sm:text-[18px] md:text-[20px] text-[#09090B]">
-              Text
+        <!-- Text Section -->
+        <div v-show="selectedType === 'Text'" class="w-full h-full flex flex-col">
+          <div class="flex items-center justify-between w-full">
+            <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Text</span>
+            <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]"
+              @click="changeKnowledge()">
+              Change Knowledge Source
+            </UiButton>
+          </div>
+          <div class="bg-[#E2E8F0] rounded-lg p-4 text-[12px] md:text-[14px] my-4 text-left">
+            <div class="font-medium">Note:</div>
+            <div>A sample text for the industry has been provided below. You can edit the necessary fields to complete
+              the process.</div>
+          </div>
+          <div class="text-left flex flex-col gap-2 flex-grow">
+            <span class="text-[14px] font-medium">Knowledge Base Details (Edit details based on your requirements)
             </span>
-            <span>
-              <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] sm:text-[12px] md:text-[14px]" @click="changeKnowledge()">Change Knowledge
-                Source</UiButton>
-            </span>
-          </div>
-          <div class="bg-[#E2E8F0] rounded-lg text-left p-4 text-[12px] sm:text-[12px] md:text-[14px] my-4">
-            <div class="font-medium">
-              Note:
-          </div>~
-            <div>
-              A Sample Text for the industry has been provided below. You can edit the necessary fields to complete the
-              process
-            </div>
-          </div>
-          <div>
-            <div class="w-[50%] text-left">
-              <!-- industry.map((role) => ({ label: role, value: role })) -->
-              <SelectField name="type" label="Industry" v-model="type" placeholder="Select Industry" :options="intentTypes.map((industry) => ({ label: industry.label, value: industry.value }))" required></SelectField>
-            </div>
-            <div class="px-0 w-full">
-            <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-3 text-[#000000] font-medium">Tell us about your company</p>
-            <TextDocumentUpload ref="uploadDocumentRef" :refresh="props.refresh" :contentSuggestions="contentSuggestions" />
-            <!-- <UiTextarea calss="text-[#71717A]" v-model="companyDetails" class="h-[200px]" :resizable="false"
-              placeholder="Enter text..." label="Tell us about your company">
-            </UiTextarea> -->
-          </div>
+            <CreateVoiceBotText ref="uploadDocumentRef" :refresh="props.refresh"
+              :contentSuggestions="props.suggestionsContent" class="flex-grow" />
           </div>
         </div>
       </div>
     </div>
-  </UiCard>
+  </BotSetupCard>
 </template>

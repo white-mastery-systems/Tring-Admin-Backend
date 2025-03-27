@@ -8,8 +8,8 @@
           <img :class="class" :src="url" alt="" class="object-cover w-full h-full rounded-lg" />
         </div>
         <div v-else class="w-full h-full flex flex-col items-center justify-center">
-          <img :class="class" src="assets/icons/image_preview.svg" alt="" class="w-10 h-10" />
-          <span class="text-[#71717A] text-xs mt-1">Preview</span>
+          <img :class="class" src="assets/icons/image_preview.svg" alt="" class="w-10 h-8" />
+          <span class="text-[#71717A] text-xs">Preview</span>
         </div>
         <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept" id="imageView1" />
       </label>
@@ -18,8 +18,8 @@
     <!-- Upload area - flexible width -->
     <div class="flex-1">
       <label
-        class="dark:hover:bg-bray-800 flex h-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600 w-full">
-        <span class="whitespace-nowrap flex flex-col items-center text-[8px] sm:text-[8px] md:text-[12px] italic text-[#000000]">
+        class="flex h-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-contain bg-center bg-no-repeat text-center dark:border-gray-600 dark:hover:border-gray-500 w-full">
+        <span class="whitespace-nowrap flex flex-col items-center text-[8px] sm:text-[8px] md:text-[14px] italic text-[#000000]">
           {{ props.label || "Upload File" }}
           <span class="text-[6px] sm:text-[6px] md:text-[10px] text-gray-500" v-if="props?.helperText?.length">
             {{ props.helperText }}
@@ -37,7 +37,7 @@
   <div v-else-if="fileType === 'file'">
     <div>
       <label
-        class="dark:hover:bg-bray-800 flex h-24 max-w-[130px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+        class="flex h-24 max-w-[130px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-contain bg-center bg-no-repeat text-center dark:border-gray-600 dark:hover:border-gray-500">
         <span class="whitespace-nowrap">
           {{ props.label || "Upload File" }}
         </span>
@@ -54,7 +54,7 @@
   <div v-else-if="fileType === 'video'">
     <div v-if="!url?.length">
       <label
-        class="dark:hover:bg-bray-800 flex h-24 max-w-[130px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+        class="dark:hover:bg-bray-800 flex h-24 max-w-[130px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-contain bg-center bg-no-repeat text-center dark:border-gray-600 dark:hover:border-gray-500">
         <span class="whitespace-nowrap">
           {{ props.label || "Upload File" }}
         </span>

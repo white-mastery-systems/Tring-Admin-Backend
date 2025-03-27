@@ -5,9 +5,14 @@
       <SelectField name="provider" placeholder="Select a provider" :options="providerList">
       </SelectField>
       <div class='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-2 lg:grid-cols-2 xl:grid-cols-2'>
-        <TextField v-if="values.provider === 'plivo'" name="authId" label="Auth ID" required placeholder="Enter auth ID" />
-          
-        <TextField v-if="values.provider === 'plivo'" name="authToken" label="Auth Token" required placeholder="Enter auth token" />
+        <TextField v-if="values.provider" name="ivrIntegrationName" placeholder="Enter Integration Name" required
+          label="Cloud Telephone Provider">
+        </TextField>
+        <TextField v-if="values.provider === 'plivo'" name="authId" label="Auth ID" required
+          placeholder="Enter auth ID" />
+
+        <TextField v-if="values.provider === 'plivo'" name="authToken" label="Auth Token" required
+          placeholder="Enter auth token" />
 
         <TextField v-if="values.provider === 'twilio' || values.provider === 'exotel'" name="accountSid"
           label="Account SID" required placeholder="Enter account SID" />
@@ -100,6 +105,7 @@ watch(() => props.numberModalState.open, async () => {
   if (props.numberModalState.id) {
     const getSingleDetails:any =  await $fetch(`/api/org/integrations/number-integration/${props.numberModalState.id}`)
     setFieldValue("provider", getSingleDetails.provider)
+    setFieldValue("ivrIntegrationName", getSingleDetails.ivrIntegrationName)
     if (getSingleDetails.metadata) {
       // setTimeout(() => {
       await nextTick()
@@ -122,6 +128,7 @@ const handleConnect = handleSubmit(async (values: any) => {
   const payload = {
     provider,
     metadata,
+    ivrIntegrationName: values.ivrIntegrationName,
   }
   try {
     if (props.numberModalState.id) {

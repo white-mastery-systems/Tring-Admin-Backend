@@ -9,7 +9,7 @@ export function useChatbotConfig() {
   const fetchConfig = async (type: string) => {
     try {
       const { data, status: fetchStatus, error: fetchError, execute } = useLazyFetch(
-        `/api/v2/chatbot/config?type=${type}`,
+        `/api/v2/bot/config?type=${type}`,
         {
           server: false,
           default: () => ({}),

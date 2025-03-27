@@ -2,7 +2,7 @@
   <DialogWrapperVersionTwo v-model="ChatBotSuccessfulMessageModalState"
     title="Your Chatbot has been created successfully"
     description="Copy & send script to get started with your bot or preview your bot" class="p-5 w-full">
-    <div class="p-0 space-y-4 bg-white rounded-lg shadow-md">
+    <div class="p-0 space-y-4 bg-white rounded-lg shadow-none">
       <div class="px-4 space-y-3">
         <div>
           <h3 class="text-[16px] font-semibold text-[#09090B]">Copy Script and paste on your website</h3>
