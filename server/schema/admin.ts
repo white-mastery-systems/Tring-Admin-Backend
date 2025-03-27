@@ -469,7 +469,7 @@ export const subscriptionStatusEnum = pgEnum("subscriptionStatus", [
   "active",
   "inactive",
   "cancelled",
-  "trail"
+  "trial"
 ])
 
 export const adminSubscriptionSchema = adminSchema.table("admin_subscriptions", {

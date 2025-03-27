@@ -56,12 +56,14 @@ export const updatePassword = async (userId: string, userDetails: any) => {
 };
 
 export const updateUserDetailById = async(id: string ,user: any) => {
-  return db.update(authUserSchema)
+  return (await db.update(authUserSchema)
   .set({
     ...user,
     updatedAt: new Date()
   })
   .where(eq(authUserSchema.id, id))
+  .returning()
+  )[0]
 }
 
 export const getUserByUserId = async (userId: string) => {
