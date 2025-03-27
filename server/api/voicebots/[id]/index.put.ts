@@ -106,15 +106,16 @@ export default defineEventHandler(async (event) => {
   const botDetails = body?.botDetails
   const callType = botDetails?.callType
   const industryType = botDetails?.industryType
+  const llmConfig = body?.llmConfig
 
   let voiceInboundPrompt, voiceOuboundPrompt
 
-  if(callType && industryType) {
+  if(callType && industryType && !llmConfig?.inboundPrompt && !llmConfig?.outboundPrompt) {
     const voicebotPrompts = getInboundPromptByIndustryType({ 
       industryType, 
       name: botDetails?.agentName, 
       role: botDetails?.role === "custom" ? botDetails?.otherRole : botDetails?.role, 
-      goal: botDetails?.goal === "custom" ? botDetails?.otherGoal : botDetails?.goal, 
+      goal: botDetails?.goal === "custom" ? botDetails?.otherGoal : botDetails?.goal,
       companyName: orgDetails?.name!, 
       knowledgeBase: body?.knowledgeBase 
     })
