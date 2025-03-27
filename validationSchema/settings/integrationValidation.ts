@@ -40,6 +40,12 @@ const reserveGoSchema = z.object({
     apiKey: z.string().min(1, { message: "API key is required" }),
   }),
 });
+const salesHandySchema = z.object({
+  crm: z.literal("sales-handy"),
+  metadata: z.object({
+    apiKey: z.string().min(1, { message: "API key is required" }),
+  }),
+});
 
 export const integrationSchema = toTypedSchema(
   z
@@ -57,6 +63,7 @@ export const integrationSchema = toTypedSchema(
         "shopify",
         "zoho-cliq",
         "whatsapp",
+        "sales-handy",
         "reserve-go",
       ]),
     })
@@ -71,6 +78,7 @@ export const integrationSchema = toTypedSchema(
         shopifySchema,
         zohoCliqSchema,
         reserveGoSchema,
+        salesHandySchema,
         whatsappSchema,
       ])
     )

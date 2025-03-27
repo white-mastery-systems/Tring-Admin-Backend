@@ -171,7 +171,7 @@ export default defineEventHandler(async (event) => {
       if (botIntegration?.integration?.metadata) {
         if (!body?.botUser?.name) {
           body.botUser.name = "Not Provided"
-        } else if(body?.botUser?.name && validateName(body?.botUser?.name)){
+        } else if(body?.botUser?.name && !validateName(body?.botUser?.name)){
           body.botUser.name =`${body?.botUser?.name} (From Whatsapp Profile)`
         }
         if (!body?.botUser?.email) {

@@ -29,10 +29,16 @@
         </div>
 
         <TextField
-          v-if="(values.crm === 'sell-do' || values.crm === 'reserve-go') && !(integrationModalState.numberModalState?.id)"
+          v-if="['sell-do', 'reserve-go', 'sales-handy'].includes(`${values.crm}`) && !(integrationModalState.numberModalState?.id)"
           name="metadata.apiKey" label="Api key" helperText="Enter your API key here" placeholder="Eg: api-key-here"
           required />
+          <!-- (values.crm === 'sell-do' || values.crm === 'reserve-go') to ["",""].incluedes(values.crm)  -->
         <!-- {{values.metadata}} -->
+
+        <TextField
+          v-if="['reserve-go', 'sales-handy'].includes(`${values.crm}`) && integrationModalState.numberModalState?.id"
+          name="metadata.apiKey" label="Api key" helperText="Enter your API key here" placeholder="Eg: api-key-here"
+          required />
 
         <div class="flex w-full justify-end">
           <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
@@ -114,7 +120,8 @@ watch(
       | "shopify"
       | "zoho-cliq"
       | "whatsapp"
-      | "reserve-go";
+      | "reserve-go"
+      | "sales-handy";
       metadata?: { apiKey: string };
     }>(`/api/org/integrations/${integrationModalState.numberModalState.id}`); // integrationModalState
     setFieldValue("name", integrationDetails?.name);
@@ -125,6 +132,10 @@ watch(
         apiKey: integrationDetails?.metadata?.apiKey,
       });
     } else if (integrationDetails?.crm === "reserve-go") {
+      setFieldValue("metadata", {
+        apiKey: integrationDetails?.metadata?.apiKey,
+      });
+    } else if (integrationDetails?.crm === "sales-handy") {
       setFieldValue("metadata", {
         apiKey: integrationDetails?.metadata?.apiKey,
       });
@@ -172,7 +183,7 @@ const handleConnect = handleSubmit(async (values: any) => {
     scope,
     url,
     type: route.query.q ?? "crm",
-    ...(values.crm !== "sell-do" && values.crm !== "reserve-go" && values.crm !== "whatsapp"
+    ...(values.crm !== "sell-do" && values.crm !== "reserve-go" && values.crm !== "whatsapp" && values.crm !== "sales-handy"
       ? {
         metadata: { status: "Pending" },
       }
@@ -186,6 +197,11 @@ const handleConnect = handleSubmit(async (values: any) => {
   };
 
   if (integrationModalState.numberModalState?.id) {
+    if(values.crm === "sales-handy" && values.metadata.apiKey){
+      const verifySalesHandy = await verifySalesHandyIntegration(values.metadata.apiKey);
+      if(verifySalesHandy.status){ values.metadata.status = "Verified" }
+      else { values.metadata.status = "pending" }
+    }
     await updateIntegrationById({
       id: integrationModalState.numberModalState.id,
       integrationDetails: {
@@ -207,6 +223,10 @@ const handleConnect = handleSubmit(async (values: any) => {
 
     // emit("success");
   } else {
+    if(values.crm === "sales-handy" && values.metadata.apiKey){
+      const verifySalesHandy = await verifySalesHandyIntegration(values.metadata.apiKey);
+      if(!verifySalesHandy.status){ payload.metadata.status = "pending" }
+    }
     await createIntegration({
       integrationDetails: payload,
       onSuccess: () => {
@@ -265,6 +285,7 @@ const updateIntegrationTypes = (queryParam: any) => {
       { value: "zoho-bigin", label: "Zoho Bigin" },
       { value: "hubspot", label: "Hubspot" },
       { value: "reserve-go", label: "Reserve Go" },
+      { value: "sales-handy", label: "Sales Handy" },
     ];
   } else if (queryParam === "communication") {
     integrationTypes.value = [
@@ -282,6 +303,7 @@ const updateIntegrationTypes = (queryParam: any) => {
       { value: "zoho-bigin", label: "Zoho Bigin" },
       { value: "hubspot", label: "Hubspot" },
       { value: "reserve-go", label: "Reserve Go" },
+      { value: "sales-handy", label: "Sales Handy" },
     ];
   }
 };
