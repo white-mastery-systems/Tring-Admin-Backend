@@ -128,12 +128,12 @@ export const orgUsage = async (organizationId: string, timezone: string, service
 
     let planPricingDetail
     
-    if(
-      orgZohoSubscription?.subscriptionStatus ===  "trial" || 
-      orgZohoSubscription?.pricingPlanCode === "chat_free" || 
-      orgZohoSubscription?.pricingPlanCode === "voice_free"
-    ) {
+    if(orgZohoSubscription?.pricingPlanCode === "chat_free" || orgZohoSubscription?.pricingPlanCode === "voice_free") {
       planPricingDetail = await getPricingInformation(serviceType === "chat" ? "chat_free" : "voice_free")
+    } else if (orgZohoSubscription?.subscriptionStatus ===  "trial") {
+      planPricingDetail = serviceType === "chat" 
+          ? await getSubcriptionPlanDetailByPlanCode("chat_intelligence", adminCountry)
+          : await getPricingInformation("voice_free")
     } else {
       planPricingDetail = await getSubcriptionPlanDetailByPlanCode(orgZohoSubscription?.pricingPlanCode!, adminCountry)
     }

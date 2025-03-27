@@ -38,26 +38,26 @@ export default defineEventHandler(async (event) => {
   );
   setResponseStatus(event, 201);
 
-  const otpNumber = Math.floor(1000 + Math.random() * 9000);
+  // const otpNumber = Math.floor(1000 + Math.random() * 9000);
 
-  await db.insert(userOTPSchema).values({
-    userId: user?.id,
-    otp: {
-      otpNumber: otpNumber.toString(),
-      timestamp: new Date(),
-      status: "pending",
-    },
-  });
+  // await db.insert(userOTPSchema).values({
+  //   userId: user?.id,
+  //   otp: {
+  //     otpNumber: otpNumber.toString(),
+  //     timestamp: new Date(),
+  //     status: "pending",
+  //   },
+  // });
 
-  const emailTemplate = otpEmailTemplate(otpNumber);
+  // const emailTemplate = otpEmailTemplate(otpNumber);
 
-  sendEmail(
-    user?.email,
-    "Verify Your Tringlabs Account with OTP",
-    emailTemplate,
-  );
+  // sendEmail(
+  //   user?.email,
+  //   "Verify Your Tringlabs Account with OTP",
+  //   emailTemplate,
+  // );
 
   if (user.organizationId) return "/";
   // return "/auth/onboarding/1";
-  return { status: true, message: "OTP sent to your email!", data: user,  token: lucia.createSessionCookie(session.id).serialize() };
+  return { status: true, data: user,  token: lucia.createSessionCookie(session.id).serialize() };
 });
