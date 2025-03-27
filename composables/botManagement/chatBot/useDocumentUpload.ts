@@ -2,14 +2,15 @@
 import { ref } from 'vue';
 
 // Define a type for possible upload statuses
-type UploadStatus = 'idle' | 'loading' | 'success' | 'error';
+type UploadStatus = 'idle' | 'pending' | 'success' | 'error';
+
+// Create a single shared state across all instances
+const uploadStatus = ref<UploadStatus>('idle');
+const uploadError = ref<string | null>(null);
+const isUploading = ref(false);
 
 export function useDocumentUpload() {
-  const uploadStatus = ref<UploadStatus>('idle');
-  const uploadError = ref<string | null>(null);
-  const isUploading = ref(false); // Simple boolean flag for convenience
-
-  const createDocuments = async (botId: string, document: { name: string; files: File }) => {
+  const createDocuments = async (botId: string, document: { name: string; files: File | File[] }) => {
     if (!botId || !document) {
       uploadError.value = "Missing required parameters";
       uploadStatus.value = 'error';
@@ -19,21 +20,28 @@ export function useDocumentUpload() {
 
     try {
       // Set loading state
-      uploadStatus.value = 'loading';
+      uploadStatus.value = 'pending';
       isUploading.value = true;
       uploadError.value = null;
-      
       // Create FormData for file upload
       const form = new FormData();
       form.append("name", document.name);
-      form.append("files", document.files);
-      
-      // Use $fetch as in your original code
+
+      // Handle both single file and multiple files
+      if (Array.isArray(document.files)) {
+        document.files.forEach(file => {
+          form.append("files", file);
+        });
+      } else {
+        form.append("files", document.files);
+      }
+
+      // Use $fetch for API request
       await $fetch(`/api/bots/${botId}/documents`, {
         method: "POST",
         body: form,
       });
-      
+
       toast.success("Document added successfully");
       uploadStatus.value = 'success';
       isUploading.value = false;
@@ -58,7 +66,7 @@ export function useDocumentUpload() {
   return {
     uploadStatus,
     uploadError,
-    isUploading, // Convenient boolean flag
+    isUploading,
     createDocuments,
     resetUploadStatus
   };

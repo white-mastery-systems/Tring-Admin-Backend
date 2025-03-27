@@ -141,13 +141,17 @@ const columns = [
       const id = row.original.id;
 
       return h(
-        "button",
-        {
-          class: "px-3 py-1 bg-[#FFBC42] text-white rounded hover:bg-blue-600",
-          onClick: () => singleDocumentDownload(id),
+      "button",
+      {
+        class: "px-3 py-1 bg-[#FFBC42] text-white rounded hover:bg-blue-600",
+        onClick: (event) => {
+          event.preventDefault();  // Prevent default form submission behavior
+          event.stopPropagation(); // Stop event bubbling
+          singleDocumentDownload(id);
         },
-        "Download"
-      );
+      },
+      "Download"
+    );
     },
   }),
     // return h(BotDocumentMenu, {
@@ -245,6 +249,50 @@ const singleDocumentDelete = async (list: any) => {
 const singleDocumentDownload = async (list: any) => {
   viewDocument(paramId.params.id, list);
 };
+// const singleDocumentDownload = (documentId) => {
+//   window.open(`/api/bots/${paramId.params.id}/documents/${documentId}`, '_blank');
+// };
+// const singleDocumentDownload = async (documentId) => {
+//   try {
+//     // Create the URL to fetch the document
+//     const url = `/api/bots/${paramId.params.id}/documents/${documentId}`;
+    
+//     // Fetch the document as a blob
+//     const response = await fetch(url);
+//     const blob = await response.blob();
+    
+//     // Create a download link
+//     const downloadUrl = window.URL.createObjectURL(blob);
+//     const a = document.createElement('a');
+    
+//     // Get the filename from headers or use a default
+//     const contentDisposition = response.headers.get('content-disposition');
+//     let filename = 'document.pdf';
+    
+//     if (contentDisposition) {
+//       const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+//       if (filenameMatch && filenameMatch[1]) {
+//         filename = filenameMatch[1];
+//       }
+//     }
+    
+//     // Set up the download link
+//     a.href = downloadUrl;
+//     a.download = filename;
+//     document.body.appendChild(a);
+    
+//     // Trigger the download
+//     a.click();
+    
+//     // Clean up
+//     window.URL.revokeObjectURL(downloadUrl);
+//     document.body.removeChild(a);
+    
+//   } catch (error) {
+//     console.error('Error downloading document:', error);
+//     toast.error('Failed to download document');
+//   }
+// };
 const Pagination = async ($event: any) => {
   filters.page = $event
   documentsRefresh()

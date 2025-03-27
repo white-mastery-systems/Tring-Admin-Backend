@@ -12,6 +12,7 @@ export function useCleanJson() {
       // Parse the JSON string into an object
       return JSON.parse(cleanedJson);
     } catch (error) {
+      toast.error("Error parsing JSON:", error);
       console.error("Error parsing JSON:", error);
       return null;
     }

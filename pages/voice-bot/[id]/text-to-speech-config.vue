@@ -3,32 +3,39 @@
     
   ]">
     <div class="pb-2 sm:pb-0">
+      <!-- {{integrationsData[0].metadata.apikey}}   || asdsad -->
       <form @submit.prevent="onSubmit" class="space-y-10">
         <div class="flex flex-col gap-2">
           <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">
             <SelectField name="provider" label="Provider" placeholder="Select provider"
               helperText="Select your provider." :options="providers" required />
+              <!-- {{providers}} -->
             <!-- <SelectField v-if="values.provider === 'google'" name="language" label="Language"
             placeholder="Select language" helperText="Select your language." :options="languageList" required /> -->
             <!-- <SelectField name="voiceType" label="Voice Type" placeholder="Select Voice Type"
             helperText="Select your voiceType." :options="voiceTypes" required /> -->
+            <!-- {{values}} || asdad -->
             <TextField v-if="values.provider === 'google'" type="text" label="Name" name="name" required
               placeholder="Name" />
-            <TextField v-if="(values.provider === 'tring') || (values.provider === 'elevenlabs')" type="text"
+            <TextField v-if="(values.provider === 'tring')" type="text"
               label="API Key" name="apikey" required placeholder="API Key" @input="apikeyunmasking($event)" />
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">
+          <!-- </div>
+          <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2"> -->
             <TextField v-if="(values.provider === 'tring')" type="text" label="Speaker" name="speaker" required
               placeholder="Speaker" />
             <!-- <TextField v-if="values.provider === 'tring'" type="number" label="Sample Rate" name="sampleRate" required
               placeholder="Sample Rate" disableCharacters /> -->
             <!-- <TextField v-if="values.provider === 'elevenlabs'" type="text" label="Model" name="model" required
               placeholder="Model" /> -->
-            <SelectField v-if="values.provider === 'elevenlabs'" name="model" label="Model" placeholder="Model"
-              helperText="Select your model." :options="modalList" required />
-            <TextField v-if="values.provider === 'elevenlabs'" type="text" label="voice" name="elevenlabsvoice" required
+              <!-- {{formattedElevenlabsVoiceList}} || formattedElevenlabsVoiceList -->
+               <!-- {{formattedElevenlabsVoiceList}} || formattedElevenlabsVoiceList -->
+                <!-- {{formattedElevenlabsVoiceList}} || formattedElevenlabsVoiceList -->
+            <SelectField v-if="values.provider != 'tring' && values.provider != 'google' && values.provider != 'deepgram'" name="model" label="Model" placeholder="Model"
+              helperText="Select your model." :options="formattedElevenlabsModelList" required />
+              
+            <SelectField v-if="values.provider != 'tring' && values.provider != 'google' && values.provider != 'deepgram'" label="voice" name="elevenlabsvoice" :options="formattedElevenlabsVoiceList" required
               placeholder="voice" />
-            <SelectField v-if="values.provider === 'elevenlabs'" name="useSpeakerBoost" :options="useSpeakerBooster"
+            <SelectField v-if="(values.provider != 'tring' && values.provider != 'google' && values.provider != 'deepgram') && values.model === ('eleven_multilingual_v2')" name="useSpeakerBoost" :options="useSpeakerBooster"
               label="Use Speaker Boost" placeholder="Use Speaker Boost" required>
             </SelectField>
           </div>
@@ -36,13 +43,13 @@
             label="Speaking Rate" @update="($event) => {
               setFieldValue('speakingRate', $event);
             }
-              " required placeholder="Enter speaking speed" min="0" max="4" />
+              " required placeholder="Enter speaking rate" min="0" max="4" />
           <!-- <TextField type="rangeSlider" label="Speaking Speed" name="speakingSpeed" @input="($event) => {
               const numericValue = Number($event.target.value)
               setFieldValue('speakingSpeed', numericValue)
             }" required disableCharacters /> -->
           <!-- <div class="flex gap-2 grid grid-cols-2"> -->
-          <RangeSlider v-if="values.provider === 'tring'" :step="0.05" :name="parseFloat(values.speakingSpeed)"
+          <RangeSlider v-if="values.provider === 'tring' || ((values.provider != 'google' && values.provider != 'deepgram'))" :step="0.05" :name="parseFloat(values.speakingSpeed)"
             label="Speaking Speed" @update="($event) => {
                 setFieldValue('speakingSpeed', $event);
               }
@@ -75,18 +82,18 @@
             disableCharacters
           /> -->
 
-          <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.stability)"
+          <RangeSlider v-if="values.provider != 'tring' && values.provider != 'google' && values.provider != 'deepgram'" :step="0.05" :name="parseFloat(values.stability)"
             label="Stability" @update="($event) => {
               setFieldValue('stability', $event);
             }
               " required min="0" max="1" />
 
-          <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.similarityBoost)"
+          <RangeSlider v-if="values.provider != 'tring' && values.provider != 'google' && values.provider != 'deepgram'" :step="0.05" :name="parseFloat(values.similarityBoost)"
             label="Similarity Boost" @update="($event) => {
               setFieldValue('similarityBoost', $event);
             }
               " required min="0" max="1" />
-          <RangeSlider v-if="values.provider === 'elevenlabs'" :step="0.05" :name="parseFloat(values.style)"
+          <RangeSlider v-if="(values.provider != 'tring' && values.provider != 'google' && values.provider != 'deepgram') && values.model === ('eleven_multilingual_v2')" :step="0.05" :name="parseFloat(values.style)"
             label="Style" @update="($event) => {
               setFieldValue('style', $event);
             }
@@ -151,8 +158,9 @@ import { useForm } from "vee-validate";
 import { textToSpeechValidation } from "~/validationSchema/textToSpeechValidation";
 import { LanguageList } from '~/composables/useLanguageList';
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
-
-
+import { useIntegrations } from '@/composables/botManagement/voiceBot/useTtsIntegrations';
+import { useElevenLabsVoices } from '@/composables/botManagement/voiceBot/useElevenLabsTTSIntegration';
+import { useElevenLabsModels } from '@/composables/botManagement/voiceBot/useElevenLabsModelsComposable';
 const route = useRoute("voice-bot-id-text-to-speech-config");
 const breadcrumbStore = useBreadcrumbStore();
 
@@ -160,13 +168,155 @@ const breadcrumbStore = useBreadcrumbStore();
 const { data: botData, status: botLoadingStatus } = await useLazyFetch<{
   textToSpeechConfig: Record<string, string>;
 }>(`/api/voicebots/${route.params.id}`);
-// const botData = await $fetch(`/api/voicebots/` + route.params.id);
-// const { data: botData, status: botLoadingStatus } = await useLazyFetch <{ speechToTextConfig: Record < string, string>}> (`/api/voicebots/${route.params.id}`)
 
+const { 
+  integrationsData, 
+  status, 
+  integrationRefresh,
+  page,
+  totalPageCount,
+  totalCount
+} = useIntegrations({});
+const formattedElevenlabsVoiceList = ref();
+const formattedElevenlabsModelList = ref();
 
 const isLoading = ref(false);
+const refreshModelsFn = ref();
+const refreshVoicesFn = ref();
+// const { elevenlabsVoiceList, loading, error, refreshVoices } = useElevenLabsVoices(integrationsData.value[0]?.metadata?.apikey);
+// const botData = await $fetch(`/api/voicebots/` + route.params.id);
+// const { data: botData, status: botLoadingStatus } = await useLazyFetch <{ speechToTextConfig: Record < string, string>}> (`/api/voicebots/${route.params.id}`)
+// Correct implementation for watching integration data
+// watch(integrationsData, (newIntegrationsData) => {
+//   console.log(newIntegrationsData, "newIntegrationsData -- newIntegrationsData")
+//   if (newIntegrationsData && newIntegrationsData[0]?.metadata?.apikey) {
+//     const apiKey = newIntegrationsData[0].metadata.apikey;
+    
+//     // Initialize the composables with the current API key
+//     const { elevenlabsVoiceList, loading: voicesLoading, error: voicesError, refreshVoices } = useElevenLabsVoices(apiKey);
+    
+//     // Make sure to destructure the model results properly
+//     const { elevenlabsModelList, loading: modelsLoading, error: modelsError, refreshModels } = useElevenLabsModels(apiKey);
+    
+//     // Store refresh functions
+//     refreshVoicesFn.value = refreshVoices;
+//     refreshModelsFn.value = refreshModels;
 
-const providers = [
+//     // Watch for voices
+//     watch(() => elevenlabsVoiceList.value, (newVoiceList) => {
+//       if (newVoiceList && newVoiceList?.voices) {
+//         formattedElevenlabsVoiceList.value = newVoiceList?.voices.map((voice: any) => ({
+//           label: voice.name,
+//           value: voice.voice_id,
+//         }));
+//       } else {
+//         console.log("Voice data not yet loaded");
+//       }
+//     }, {immediate: true});
+    
+//     // Watch for models with improved logging
+//     watch(() => elevenlabsModelList.value, (newModelList) => {
+//       // Add checks to see what structure you're working with
+//       if (newModelList) {
+//         // Try to determine the correct property path
+//         if (Array.isArray(newModelList)) {
+//           formattedElevenlabsModelList.value = newModelList.map((model) => ({
+//             label: model.name,
+//             value: model.model_id,
+//           }));
+//         } else if (newModelList.models) {
+//           formattedElevenlabsModelList.value = newModelList.models.map((model) => ({
+//             label: model.name,
+//             value: model.model_id,
+//           }));
+//         } else {
+//           console.log("Unknown model list structure:", newModelList);
+//         }
+//       } else {
+//         console.log("Model data not yet loaded");
+//       }
+//     }, {immediate: true});
+//   }
+// }, { deep: true, immediate: true });
+
+// First, set up a reactive reference to store the currently selected provider
+const selectedProvider = ref(null);
+const { handleSubmit, setFieldValue, values, resetForm, errors } = useForm({
+  validationSchema: toTypedSchema(textToSpeechValidation),
+  initialValues: {},
+});
+// Keep track of the current API key to avoid redundant reinitializations
+const currentApiKey = ref(null);
+
+// Listen for changes in the selected provider and fetch the appropriate API key
+watch([() => values.provider, integrationsData], ([newSelectedProvider, newIntegrationsData]) => {
+  if (newSelectedProvider && Array.isArray(newIntegrationsData)) {
+    // Find the integration that matches the selected provider
+    const selectedIntegration = newIntegrationsData.find(
+      integration => integration.ttsIntegrationName === newSelectedProvider || 
+                     integration.provider === newSelectedProvider
+    );
+    if (selectedIntegration?.metadata?.apiKey) {
+      const apiKey = selectedIntegration.metadata?.apiKey;
+      // Only reinitialize if the API key changed
+      if (currentApiKey.value !== apiKey) {
+        currentApiKey.value = apiKey;
+        
+        // Initialize the composables with the selected API key - same as your original code
+        const { elevenlabsVoiceList, loading: voicesLoading, error: voicesError, refreshVoices } = useElevenLabsVoices(apiKey);
+        const { elevenlabsModelList, loading: modelsLoading, error: modelsError, refreshModels } = useElevenLabsModels(apiKey);
+        
+        // Store refresh functions
+        refreshVoicesFn.value = refreshVoices;
+        refreshModelsFn.value = refreshModels;
+        
+        // Set up watches for voices and models as in your original code
+        watch(() => elevenlabsVoiceList.value, (newVoiceList) => {
+          if (newVoiceList) {
+            formattedElevenlabsVoiceList.value = newVoiceList?.map((voice) => ({
+              label: voice.name,
+              value: voice.voice_id,
+            }));
+          } else {
+            console.log("Voice data not yet loaded");
+          }
+        }, {immediate: true});
+        
+        watch(() => elevenlabsModelList.value, (newModelList) => {
+          if (newModelList) {
+            if (Array.isArray(newModelList)) {
+              formattedElevenlabsModelList.value = newModelList?.map((model) => ({
+                label: model.name,
+                value: model.model_id,
+              }));
+            } else if (newModelList.models) {
+              formattedElevenlabsModelList.value = newModelList.models.map((model) => ({
+                label: model.name,
+                value: model.model_id,
+              }));
+            } else {
+              console.log("Unknown model list structure:", newModelList);
+            }
+          } else {
+            console.log("Model data not yet loaded");
+          }
+        }, {immediate: true});
+      }
+    } else {
+      console.log("No API key found for provider:", newSelectedProvider);
+      // Reset lists when no API key is available
+      formattedElevenlabsVoiceList.value = [];
+      formattedElevenlabsModelList.value = [];
+    }
+  }
+}, { deep: true, immediate: true });
+
+// You need to update selectedProvider.value when the user selects a provider
+const onProviderChange = (provider) => {
+  selectedProvider.value = provider;
+};
+
+const defaultProviders = [
   {
     label: "tring",
     value: "tring",
@@ -176,48 +326,10 @@ const providers = [
     value: "google",
   },
   {
-    label: "elevenlabs",
-    value: "elevenlabs",
-  },
-  {
     label: "deepgram",
     value: "deepgram",
   },
 ];
-const modalList = [
-  {
-    value: "eleven_multilingual_v2",
-    label: "Eleven Multilingual v2"
-  },
-  {
-    value: "eleven_turbo_v2_5",
-    label: "Eleven Turbo v2.5"
-  },
-  {
-    value: "eleven_turbo_v2",
-    label: "Eleven Turbo v2"
-  },
-  {
-    value: "eleven_multilingual_sts_v2",
-    label: "Eleven Multilingual v2"
-  },
-  {
-    value: "eleven_flash_v2",
-    label: "Eleven Flash v2"
-  },
-  {
-    value: "eleven_multilingual_v1",
-    label: "Eleven Multilingual v1"
-  },
-  {
-    value: "eleven_flash_v2_5",
-    label: "Eleven Flash v2.5"
-  },
-  {
-    value: "eleven_monolingual_v1",
-    label: "Eleven English v1"
-  }
-]
 
 const useSpeakerBooster = [
   {
@@ -312,8 +424,54 @@ const voices = [
     value: "aura-zeus-en",
   },
 ];
+// const elevenlabsVoiceList = ref([])
 const botDetails = ref(await getVoiceBotDetails(route.params.id));
 
+
+const providers = ref([...defaultProviders]);
+
+// Watch for changes in integration data
+watch([status, integrationsData], ([newStatus, newData]) => {
+
+  console.log(newData, "newData -- newData -- newData")
+  // Only proceed if we have successful data
+  if (newStatus === 'success' && Array.isArray(newData)) {
+    try {
+      console.log(newData, "newData - -newData")
+      // Find ElevenLabs integration if it exists
+      // const elevenLabsIntegration = newData.find(
+      //   integration => integration.provider === 'elevenlabs'
+      // );
+      const elevenLabsIntegrations = newData.filter(
+        integration => integration.provider === 'elevenlabs'
+      );
+      
+      // If we found any ElevenLabs integrations
+      if (elevenLabsIntegrations.length > 0) {
+        // Make a copy of the current providers
+        const updatedProviders = [...defaultProviders];
+        
+        // Add each ElevenLabs integration to the providers
+        elevenLabsIntegrations.forEach(integration => {
+          updatedProviders.push({
+            label: integration?.ttsIntegrationName || 'ElevenLabs',
+            value: integration?.ttsIntegrationName || 'elevenlabs',
+          });
+        });
+        
+        // Update the providers ref
+        providers.value = updatedProviders;
+      } else {
+        // If no ElevenLabs integrations, just use default providers
+        providers.value = [...defaultProviders];
+      }
+    } catch (error) {
+      console.error("Error processing integration data:", error);
+      // On error, revert to default providers
+      providers.value = [...defaultProviders];
+    }
+  }
+}, { immediate: true });
 breadcrumbStore.setBreadcrumbs([
   {
     label: 'Text To Speech Configurations',
@@ -324,10 +482,6 @@ breadcrumbStore.setBreadcrumbs([
     to: `/voice-bot/${botDetails.value?.id}/text-to-speech-config`,
   },
 ]);
-const { handleSubmit, setFieldValue, values, resetForm, errors } = useForm({
-  validationSchema: toTypedSchema(textToSpeechValidation),
-  initialValues: {},
-});
 
 watch(botData, () => {
   // setFieldValue("language", botData.value.speechToTextConfig.language);
@@ -420,19 +574,43 @@ const onSubmit = handleSubmit(async (values) => {
             volume_gain_db: values.volumeGainDb || 0.5,
       }
   }
-  else if (values.provider === 'elevenlabs') {
+  else if (values.provider !== 'tring' && values.provider !== 'google' && values.provider !== 'deepgram') {
     // ElevenLabs config
-    updatedConfig.elevenlabs = {
-      // ...botData.value?.textToSpeechConfig.elevenlabs, // Keep existing Elevenlabs config
-      api_key: botData.value?.textToSpeechConfig.elevenlabs.api_key || "", // Consider secure handling of API keys
-        voice: values.elevenlabsvoice || "",
-          model: values.model || "eleven_turbo_v2",
-            stability: values.stability || 0.5,
-            similarity_boost: values.similarityBoost || 1,
-            style: values.style || 0.5,
-            use_speaker_boost: values.useSpeakerBoost || false,
-            api_key: values.apikey || "",
-   }
+  //   updatedConfig.elevenlabs = {
+  //     // ...botData.value?.textToSpeechConfig.elevenlabs, // Keep existing Elevenlabs config
+  //     api_key: botData.value?.textToSpeechConfig.elevenlabs.api_key || "", // Consider secure handling of API keys
+  //       voice: values.elevenlabsvoice || "",
+  //         model: values.model || "eleven_turbo_v2",
+  //           stability: values.stability || 0.5,
+  //           similarity_boost: values.similarityBoost || 1,
+  //           style: values.style || 0.5,
+  //           use_speaker_boost: values.useSpeakerBoost || false,
+  //           // api_key: values.apikey || "",
+  //  }
+  // ElevenLabs config
+  const elevenlabsConfig = {
+    // Base required fields
+    // api_key: botData.value?.textToSpeechConfig.elevenlabs?.api_key || "",
+    voice: values.elevenlabsvoice || "",
+    model: values.model || "eleven_turbo_v2",
+  };
+  
+  // Always include these parameters regardless of model
+  elevenlabsConfig.stability = values.stability || 0.5;
+  elevenlabsConfig.similarity_boost = values.similarityBoost || 1;
+  
+  // Only include style and use_speaker_boost if the model is eleven_multilingual_v2
+  if (values.model === 'eleven_multilingual_v2') {
+    elevenlabsConfig.style = values.style || 0.5;
+    elevenlabsConfig.use_speaker_boost = values.useSpeakerBoost || false;
+  }
+  
+  // Set the API key if provided
+  // if (values.apikey) {
+  //   elevenlabsConfig.api_key = values.apikey;
+  // }
+  
+  updatedConfig.elevenlabs = elevenlabsConfig;
 
   }
   else if (values.provider === "deepgram") {

@@ -19,9 +19,9 @@
     page: "1",
     limit: "10",
   });
-  let page = ref(0);
-  let totalPageCount = ref(0);
-  let totalCount = ref(0);
+  const page = ref(0);
+  const totalPageCount = ref(0);
+  const totalCount = ref(0);
   // const props = withDefaults(defineProps<Props>(), {
   //   title: "",
   //   description: "",
@@ -126,8 +126,8 @@
     columnHelper.accessor("provider", {
       header: "Provider",
     }),
-    columnHelper.accessor("exoPhone", {
-      header: "Number",
+    columnHelper.accessor("ivrIntegrationName", {
+      header: "Provider Account",
     }),
     columnHelper.accessor("id", {
       header: "Action",

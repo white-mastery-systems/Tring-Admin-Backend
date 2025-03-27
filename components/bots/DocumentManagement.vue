@@ -21,10 +21,9 @@
         </span>
       </div>
       <p class="pt-2 pb-5 text-sm text-gray-400">only PDF</p>
-      <DataTable @pagination="Pagination" @limit="($event) => {
+      <DataTable @pagination="Pagination" @limit="(v$event) => {
         (filters.page = '1'), (filters.limit = $event);
-      }
-      " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="documentItems"
+      }" :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="documentItems"
         :is-loading="isDataLoading" :page-size="20" :height="23" height-unit="vh" />
     </div>
     <!-- <BotDocumentMenu></BotDocumentMenu> -->
@@ -60,7 +59,7 @@ const filters = reactive<{
   page: "1",
   limit: "10",
 });
-const route = useRoute("chat-bot-id-documents");
+const route = useRoute();
 const paramId: any = route;
 const selectedFile = ref();
 const myPopover: any = ref(null);
@@ -71,12 +70,13 @@ const documentFetchInterval = ref<NodeJS.Timeout>();
 const deleteDocumentModelOpen: any = reactive({});
 const isSheetOpen = ref(false);
 const position = ref("bottom");
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 
 const props = defineProps<{
   documents: any;
+  refreshBot: () => void;
   refresh: () => void
 }>();
 // const {
@@ -104,7 +104,6 @@ const props = defineProps<{
 //     };
 //   },
 // });
-
 const documentItems = computed(() => props.documents?.documents || []);
 const activeDocument = computed(() => props.documents?.documentId)
 
@@ -186,7 +185,7 @@ onMounted(async () => {
 
     if (data.event === "Document is ready") {
       if (data?.data?.botId === paramId.params.id) {
-        documentsRefresh();
+        await props.refresh();
       }
     }
 
@@ -264,7 +263,7 @@ const singleDocumentDownload = async (list: any) => {
 };
 const Pagination = async ($event: any) => {
   filters.page = $event
-  documentsRefresh()
+  await props.refresh()
 }
 </script>
 

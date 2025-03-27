@@ -137,7 +137,7 @@ const props = withDefaults(
       </UiTable>
     </div>
     <!-- {{ table.getRowModel().rows?.length }} -->
-    <div v-if="paginationControl && (table.getRowModel().rows?.length >= 10)"
+    <div v-if="paginationControl && (page > 1 || table.getRowModel().rows?.length >= 10)"
       class="flex w-full flex-col pb-2 sm:pb-2 items-center justify-center space-y-2 overflow-x-scroll sm:flex-row sm:justify-between sm:space-y-0 md:pb-4 lg:pb-0 xl:pb-0">
       <span class="hidden w-[10%] text-xs text-gray-500 sm:hidden md:flex lg:flex xl:flex">Page {{ page }} of {{
         totalPageCount }}</span>

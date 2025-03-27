@@ -25,12 +25,14 @@ export const getBotDetails = async (botId: string) => {
   return bot;
 };
 
-export const updateBotDetails = async (botDetails: SelectChatBot) => {
+export const updateBotDetails = async (botDetails: SelectChatBot,toastStatus: any) => {
   const updatedBot = await $fetch<SelectChatBot>(`/api/bots/${botDetails.id}`, {
     method: "PUT",
     body: botDetails,
   });
-  toast.success("Bot details updated successfully!");
+  if (toastStatus) {
+    toast.success("Bot details updated successfully!");
+  }
   // await navigateTo({
   //   name: "chat-bot-id",
   //   params: { id: botDetails.id },
@@ -183,16 +185,24 @@ export const deleteVoiceBot = async (botId: string) => {
 };
 
 export const updateLLMConfig = async (payload: any, botId: string, message: string) => {
-  const updateLLM = await $fetch(`/api/voicebots/${botId}`, {
-    method: "PUT",
-    body: payload,
-  });
-  toast.success(message);
-  await navigateTo({
-    name: "voice-bot-id",
-    params: { id: botId },
-  });
-  return updateLLM;
+  try {
+    const updateLLM = await $fetch(`/api/voicebots/${botId}`, {
+      method: "PUT",
+      body: payload,
+    });
+
+    toast.success(message);
+
+    if (message === "The voice bot has been integraded successfully.") {
+      await navigateTo({
+        name: "voice-bot-id",
+        params: { id: botId },
+      });
+    }
+    return updateLLM;
+  } catch (error) {
+    toast.error(error?.statusMessage);
+  }
 };
 
 export const updateVoiceBotIntegrationById = async ({

@@ -331,7 +331,7 @@ const dynamicToolsForm = handleSubmit(async (values: any) => {
   };
 
 
-  await updateBotDetails(payload)
+  await updateBotDetails(payload, true)
 
   isLoading.value = false;
   // await updateLLMConfig(payload, botDetails?.id, "Tools added successfully.");

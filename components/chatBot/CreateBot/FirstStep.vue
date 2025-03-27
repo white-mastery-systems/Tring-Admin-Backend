@@ -82,27 +82,16 @@ const changeKnowledge = () => {
 </script>
 
 <template>
-  <UiCard class="border-0 flex flex-col justify-between" :class="!!selectedType ? '' : 'h-[95%]'">
-    <UiCardHeader class="p-0">
-      <div class="flex items-center justify-between gap-4 px-4 pt-4">
-        <div class="flex flex-col gap-[6px]">
-          <UiCardTitle class="font-bold text-[16px] md:text-[20px] text-[#09090B]">
-            Build Your Bot’s Knowledge
-          </UiCardTitle>
-          <UiCardDescription class="font-normal text-[12px] md:text-[14px] text-[#71717A]">
-            Import your company details and goals through your website link, by document upload, or by text input (Can select either one)
-          </UiCardDescription>
-        </div>
-        <UiCardDescription class="text-[14px] font-medium">
-          <span class="text-[#09090B]">Step 1</span><span class="text-[#64748B]">/4</span>
-        </UiCardDescription>
-      </div>
-      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-3" />
-    </UiCardHeader>
-    <div class="flex flex-col items-center text-center px-4 h-full w-full" :class="selectedType ? 'justify-start' : 'justify-center'">
+    <BotSetupCard 
+      title="Build Your Bot’s Knowledge" 
+      description="Import your company details and goals through your website link, by document upload, or by text input (Can select either one)" 
+      currentStep="1" 
+      totalSteps="4">
+    <div class="flex flex-col items-center text-center h-full w-full" :class="selectedType ? 'justify-start' : 'justify-center'">
       <div v-if="!selectedType" class="gap-3 space-y-3 w-full overflow-x-hidden">
         <!-- Scrollable Radio Group -->
-        <UiCardContent class="grid gap-6 p-0">
+        <UiCardContent class="grid gap-3 p-0 mb-6">
+          <span class="font-medium text-left text-[16px] md:text-[18px] leading-none">Industries</span>
           <!-- Use identical RadioGroup structure to Step 2 -->
           <RadioGroup v-model="type" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden" :class="props.loading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''" :disabled="true">
             <div
@@ -124,9 +113,9 @@ const changeKnowledge = () => {
             </div>
           </RadioGroup>
         </UiCardContent>
-        <div class="flex flex-col items-center justify-center w-full gap-5">
+        <div class="flex flex-col items-center justify-center w-full gap-5 bg-[#FCFCFC] border border-1 rounded-lg p-8 flex-grow">
           <div class="space-y-1 flex flex-col w-[55%]">
-            <div class="font-bold text-[16px] md:text-[20px] text-[#09090B] pt-3">
+            <div class="font-bold text-[16px] md:text-[20px] text-[#09090B] leading-none">
               Select Your Bot's Knowledge Source
             </div>
             <div class="font-normal text-[12px] md:text-[14px] text-[#71717A]">
@@ -156,7 +145,7 @@ const changeKnowledge = () => {
 
       <!-- Knowledge Type Sections -->
       <div v-else class="w-full">
-        <div v-if="selectedType === 'Website'" class="w-full py-4 space-y-4">
+        <div v-if="selectedType === 'Website'" class="w-full space-y-4">
           <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Website</span>
             <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" @click="changeKnowledge()">
@@ -170,7 +159,7 @@ const changeKnowledge = () => {
             </div>
           </div>
           <div class="flex flex-col gap-3 w-full">
-            <WebScrapingForm />
+            <WebScrapingForm botType="chat" />
             <ScrapDateDocumentUpload :refresh="props.refresh" />
           </div>
         </div>
@@ -190,7 +179,7 @@ const changeKnowledge = () => {
           </div>
           <CreateBotDocumentManagement :refresh="props.refresh" />
         </div>
-        <div v-else-if="selectedType === 'Text'" class="w-full py-4 space-y-4">
+        <div v-else-if="selectedType === 'Text'" class="w-full space-y-4">
           <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Text</span>
             <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" @click="changeKnowledge()">
@@ -209,5 +198,5 @@ const changeKnowledge = () => {
         </div>
       </div>
     </div>
-  </UiCard>
+  </BotSetupCard>
 </template>

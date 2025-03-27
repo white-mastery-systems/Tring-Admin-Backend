@@ -111,7 +111,7 @@ watch(
         },
       },
     };
-    await updateBotDetails(payload);
+    await updateBotDetails(payload, true);
     return navigateTo({
       name: "chat-bot-id",
       params: { id: botDetails.id },

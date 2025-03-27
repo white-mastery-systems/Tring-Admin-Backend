@@ -137,6 +137,25 @@ export const deleteSingleExoPhone = async ({
     toast.error(err.data.statusMessage);
   }
 }
+
+export const deleteSingleTTSIntegration = async ({
+  id,
+  onSuccess,
+}:DeleteExoPhone) => {
+  try {
+    const deleteIntegration = await $fetch<DeleteExoPhone>(
+      `/api/tts-integration/${id}`,
+      {
+        method: "DELETE",
+      },
+    );
+    onSuccess();
+    toast.success("Removed successfully");
+    return deleteIntegration;
+  } catch (err: any) {
+    toast.error(err.data.statusMessage);
+  }
+}
 export const insideBucketNumber = async ({
   queryId,
   id,

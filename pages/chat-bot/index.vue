@@ -1,17 +1,15 @@
 <template>
   <Page title="Chat Bot" :disable-back-button="true">
-    <!-- <template #actionButtons>
+    <template #actionButtons>
       <div class="flex gap-4">
-        <UiButton class="button-align bg-[#424bd1] text-[14px] font-medium hover:bg-[#424bd1] hover:brightness-95"
-          @click="() => {
-            agentModalState.open = true;
-            agentModalState.id = null;
-          }
-          ">
+        <UiButton class="text-[14px] font-medium"
+          @click="addNewChatBot()">
           Add Chat Bot
         </UiButton>
       </div>
-    </template> -->
+    </template>
+    <!-- agentModalState.open = true;
+    agentModalState.id = null; -->
     <div class="flex items-center gap-2 pb-2 overflow-x-scroll">
       <UiInput v-model="filters.q" @input="filters.page = '1'"
         class="w-[150px] sm:w-[150px] md:w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -19,7 +17,7 @@
       <BotStatusFilter v-model="filters.active" />
       <BotCategoryFilter v-model="filters.type" />
       <UiButton @click="handleClearFilters"
-        class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">
+        class="ml-2 text-[#ffffff]">
         Clear Filters</UiButton>
     </div>
     <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="($event) => {
@@ -149,4 +147,14 @@ const handleClearFilters = () => {
     type: ""
   });
 };
+const addNewChatBot = async () => {
+  const getSingleBotDetails = await $fetch("/api/bots", {
+        method: "POST",
+        body: {},
+      });
+    if (getSingleBotDetails?.id) {
+      // ${ getSingleBotDetails.id }
+      navigateTo(`chat-bot/create-bot/${getSingleBotDetails?.id}`);
+    }
+} 
 </script>

@@ -349,7 +349,7 @@ const uiUpdate = handleSubmit(async (value: any) => {
       },
     },
   };
-  await updateBotDetails(payload);
+  await updateBotDetails(payload,true);
   isLoading.value = false
   return navigateTo({
     name: "chat-bot-id",
