@@ -20,6 +20,7 @@ export const createEditCRMConfigValidation = z
     projectId: z.string().optional(),
     pipelineId: z.string().optional(),
     layoutId: z.string().optional(),
+    sequenceId: z.string().optional(),
     stageId: z.string().optional(),
     subPipeline: z.string().optional(),
     stage: z.string().optional(),

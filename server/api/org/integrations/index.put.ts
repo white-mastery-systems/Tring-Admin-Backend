@@ -19,7 +19,8 @@ enum CRMType {
   shopify = "shopify",
   zohoCliq = "zoho-cliq",
   reserveGo = "reserve-go",
-  zohoDesk = "zoho-desk"
+  zohoDesk = "zoho-desk",
+  SalesHandy = "sales-handy"
 }
 const db = useDrizzle();
 
