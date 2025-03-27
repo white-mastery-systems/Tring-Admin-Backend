@@ -116,7 +116,7 @@ const handleAddEditBot = handleSubmit(async (values) => {
     // }
   } catch (err: any) {
     isLoading.value = false;
-    toast.error(err.data.data[0].message);
+    toast.error(err?.statusMessage || "Failed to import data.");
   }
   isLoading.value = false;
 });

@@ -161,7 +161,8 @@
     <!-- <div>
       <CreateBotFields ref="childRef" @confirm="handleAddEditBot" />
     </div> -->
-    <div class="font-bold text-[20px] leading-none">
+    <!-- leading-none -->
+    <div class="font-bold text-[20px] mt-4">
       View and Edit your Chatbots features
     </div>
     <CreateBot :botDetails="botDetails" :documents="documents" :refresh="refresh" :refreshBot="refreshBot"

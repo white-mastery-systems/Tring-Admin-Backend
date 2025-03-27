@@ -21,13 +21,13 @@ const { value: otherGoal, errorMessage: otherGoalError } = useField("otherGoal")
 watch(selectedGoal, (newValue) => {
   if (newValue !== "custom") {
     // Clear otherRole and otherGoal when a non-custom option is selected
-    otherRole.value = "";
+    // otherRole.value = "";
     otherGoal.value = "";
   }
   emit("update:values", {
     ...props.values,
-    ROLE: newValue,
-    otherRole: otherRole.value,
+    GOAL: newValue,
+    // otherRole: otherRole.value,
     otherGoal: otherGoal.value
   });
 });

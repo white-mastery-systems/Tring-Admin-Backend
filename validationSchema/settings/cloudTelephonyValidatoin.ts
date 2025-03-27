@@ -1,7 +1,12 @@
 export const cloudTelephonySchema = toTypedSchema(
   z.object({
-    provider: z.string({ required_error: 'Provider is required.' }).nonempty({ message: 'Provider is required.' }),
-    providername: z.string().optional(),
+    provider: z.string({ required_error: 'Provider is required.' }).min(1,{ message: 'Provider is required.' }),
+    ivrIntegrationName: z.string({
+      required_error: 'IVR Integration Name is required.'
+    }).min(3, {
+      message: 'IVR Integration Name must be at least 3 characters long.'
+    }),
+    // providername: z.string().optional(),
     accountSid: z.string().optional(),
     apiSecret: z.string().optional(),
     // authToken: z.string().optional(),
@@ -22,10 +27,10 @@ export const cloudTelephonySchema = toTypedSchema(
         });
       }
       if (data.provider) {
-        if (!data.providername) {
+        if (!data.ivrIntegrationName) {
           ctx.addIssue({
-            path: ['providername'],
-            message: 'Provider account name is required for Twilio.',
+            path: ['ivrIntegrationName'],
+            message: 'Integration name is required for Twilio.',
           });
         }
       }

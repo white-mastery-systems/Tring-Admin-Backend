@@ -1,23 +1,23 @@
 <template>
-    <DialogWrapper v-model="props.ttsModalState"
-      :title="(ttsModalState?.id) ? 'Edit TTS Integration' : 'Add New TTS Integration'">
-      <Form @submit="handleConnect" class="space-y-3">
-        <SelectField name="provider" placeholder="Select a provider" :options="providerList">
-        </SelectField>
-        <div class='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-2 lg:grid-cols-2 xl:grid-cols-2'>
-          <TextField v-if="(values.provider === 'elevenlabs')" type="text"
-          label="Integration Name" name="ttsIntegrationName" required placeholder="API Key" />
-          <TextField v-if="(values.provider === 'elevenlabs')" type="text"
-          label="API Key" name="apikey" required placeholder="API Key" @input="apikeyunmasking($event)" />
-        </div>
-        <div class="flex justify-end w-full">
-          <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
-            Submit
-          </UiButton>
-        </div>
-      </Form>
-    </DialogWrapper>
-  </template>
+  <DialogWrapper v-model="props.ttsModalState"
+    :title="(ttsModalState?.id) ? 'Edit TTS Integration' : 'Add New TTS Integration'">
+    <Form @submit="handleConnect" class="space-y-3">
+      <SelectField name="provider" placeholder="Select a provider" :options="providerList">
+      </SelectField>
+      <div class='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-2 lg:grid-cols-2 xl:grid-cols-2'>
+        <TextField v-if="(values.provider === 'elevenlabs')" type="text" label="Integration Name"
+          name="ttsIntegrationName" required placeholder="Enter integration name" />
+        <TextField v-if="(values.provider === 'elevenlabs')" type="text" label="API Key" name="apikey" required
+          placeholder="API Key" @input="apikeyunmasking($event)" />
+      </div>
+      <div class="flex justify-end w-full">
+        <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
+          Submit
+        </UiButton>
+      </div>
+    </Form>
+  </DialogWrapper>
+</template>
   <script setup lang="ts">
   import { ttsIntegrationSchema } from '~/validationSchema/ttsIntegrationValidation';
   

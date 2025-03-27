@@ -10,12 +10,20 @@
           <p class="text-[#71717A] text-sm">You will get a call from the bot to the entered number</p>
         </div>
         <form class="space-y-4" @submit.prevent="onSubmit">
-          <TextField v-model="values.phoneNumber" type="text" name="phoneNumber" label=""
-            placeholder="Enter phone number" />
+          <div class="flex items-center gap-3 grid grid-cols-2 ">
+            <TextField name="name" type="text" label=""
+              placeholder="Enter name" />
+              <div class="flex items-center gap-2 w-full">
+                <CountryCodeField class="w-[150px]" name="countryCode"
+                  helperText="Enter your country code" :fieldHeader="true" />
+                <TextField :disableCharacters="true" name="phone" helperText=""
+                  placeholder="Enter your mobile number" />
+              </div>
+          </div>
           
           <!-- Call bot button -->
           <UiButton type="submit" variant="default"
-            class="bg-black text-white w-full sm:w-auto flex items-center justify-center gap-2 py-3 px-4 font-regular">
+            class="bg-black text-white w-full sm:w-auto flex items-center justify-center gap-2 py-3 px-6 font-regular">
             <PhoneCall class="w-4 h-4" /> Call Bot
           </UiButton>
         </form>
@@ -44,16 +52,28 @@ const VoiceBotSuccessfulMessageModalState = defineModel<{ open: boolean; id: any
 
 const phoneSchema = toTypedSchema(
   z.object({
-    phoneNumber: z.string()
-      .regex(/^\+?[0-9\s-]{10,15}$/, "Please enter a valid phone number")
-      .min(10, "Phone number must be at least 10 digits"),
+    name: z.string({ required_error: "Name is required" }).min(3, "Name must be at least 3 characters"),
+    countryCode: z
+            .string({ required_error: "Country Code is required" })
+            .min(1, "Country Code is required"),
+    phone: z.string({ required_error: "Number is required" }),
+  }).superRefine((data, ctx) => {
+   const lengthRequirement = getCountryLengthRequirement(data.countryCode);
+      // Validate mobile number length dynamically
+      if (data.phone.length !== lengthRequirement) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Number must be exactly ${lengthRequirement} characters long.`,
+          path: ["phone"], // Field with the issue
+        });
+      }
   })
 );
 
 const { handleSubmit, errors, values } = useForm({
   validationSchema: phoneSchema,
   initialValues: {
-    phoneNumber: "",
+    countryCode: "+91",
   }
 });
 
@@ -63,17 +83,14 @@ const closeModal = () => {
 
 const onSubmit = handleSubmit(async (values) => {
   try {
-    // const response = await $fetch(`/api/voicebots/${route.params.id}/call`, {
-    //   method: "POST",
-    //   body: {
-    //     phoneNumber: values.phoneNumber,
-    //   },
-    // });
-    
+    const response = await $fetch(`/api/voicebots/${route.params.id}/dial`, {
+      method: "POST",
+      body: values,
+    });
     toast.success("Call initiated successfully!");
+    emit("success");
   } catch (error) {
-    console.error("Failed to initiate call:", error);
-    toast.error("Failed to initiate call. Please try again.");
+    toast.error(error?.statusMessage);
   }
 });
 

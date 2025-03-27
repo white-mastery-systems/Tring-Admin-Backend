@@ -1,7 +1,7 @@
 <template>
     <UiDialog v-model:open="modalState.open">
       <UiDialogContent :class="cn(
-        'min-h-[50vh] max-h-[90vh] min-w-[700px] overflow-y-auto rounded-lg pt-0 px-0 sm:px-0 md:px-0 lg:px-0 xl:px-0',
+        'min-h-[45vh] max-h-[90vh] min-w-[700px] overflow-y-auto rounded-lg pt-0 px-0 sm:px-0 md:px-0 lg:px-0 xl:px-0',
         props.class,
       )
         ">
@@ -9,7 +9,7 @@
           <UiDialogTitle class="text-[#09090B] font-bold text-[26px]">{{ props?.title }}</UiDialogTitle>
           <DialogDescription class="text-[#71717A] text-[14px]">{{ props.description }}</DialogDescription>
         </UiDialogHeader>
-        <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full" />
+        <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full h-[1px]" />
         <slot></slot>
       </UiDialogContent>
     </UiDialog>

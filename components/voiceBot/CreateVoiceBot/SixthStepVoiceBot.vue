@@ -2,16 +2,20 @@
 import { defineProps, defineEmits, ref, watch } from 'vue';
 import { useField } from 'vee-validate';
 import { cloudTelephonySchema } from '~/validationSchema/settings/cloudTelephonyValidatoin';
+import { useForm } from 'vee-validate';
+import { useCount } from '@/composables/useRefresh';
+
 const props = defineProps<{
   values: Record<string, any>;
   errors: Record<string, any>;
   disabled: Record<boolean, any>;
   intentOptions: Record<string, any>;
 }>();
-
+const isLoading = ref(false);
 const emit = defineEmits(["update:values"]);
 const { value: provideraccountname } = useField("provideraccountname");
 const { value: incomingPhoneNumber } = useField("incomingPhoneNumber");
+const { status, integrationsData,refresh,} = useCount();
 // const { value: provider_stt } = useField("provider_stt");
 // const { value: provider_tts } = useField("provider_tts");
 // const { value: max_output_token } = useField("max_output_token");
@@ -41,7 +45,7 @@ const providerList = ref([
     value: 'plivo',
     label: 'Plivo',
   }
-])
+]);
 
 const {
   errors,
@@ -62,6 +66,10 @@ watch([provideraccountname, incomingPhoneNumber], () => {
     incomingPhoneNumber: incomingPhoneNumber.value
   })
 });
+
+watch(errors,(newErrors) => {
+  console.log(newErrors, 'newErrors -- newErrors')
+})
 /**
  * A function that will be called whenever a provider is selected in the ivrConfig dropdown.
  * It will call the getNumberListApiCall function to get the integrated numbers associated with the selected provider.
@@ -72,28 +80,18 @@ const onSelectProvider = async (value: any) => {
   await getNumberListApiCall(value);
 };
 
-const getNumberListApiCall = async (value: any) => {
-  // Assuming getIntegratedProviderNumberList is defined elsewhere
-  const getNumberList: any = await getIntegratedProviderNumberList(value);
-  // Create array with "New Account" always as an option
-  numberList.value = [
-    { label: "New Account", value: "New Account" },
-    ...getNumberList.map((item: any) => ({
-      label: item,
-      value: item
-    }))
-  ];
-};
-
 // Handle account selection
-const onSelectAccount = (value: any) => {
-  selectedAccount.value = value;
-  showAuthFields.value = value === 'New Account';
-  
-  // If New Account is selected, clear auth fields
+const onSelectAccount = async (value: any) => {
+  console.log(value, 'value -- value')
   if (value === 'New Account') {
-    
+    selectedAccount.value = value;
+    showAuthFields.value = value === 'New Account';
+  } else {
+    selectedAccount.value = '';
+    showAuthFields.value = false;
+    await getNumberListApiCall(value);
   }
+  
   
   emit("update:values", {
     ...props.values,
@@ -101,6 +99,17 @@ const onSelectAccount = (value: any) => {
     showAuthFields: showAuthFields.value
   });
 };
+const getNumberListApiCall = async (value: any) => {
+  // Assuming getIntegratedProviderNumberList is defined elsewhere
+  // const getNumberList: any = await getIntegratedProviderNumberList(value);
+  // Create array with "New Account" always as an option
+  const getNumberList: any = await getIntegratedProviderNumberList(value)
+  numberList.value = getNumberList.map((item: any) => ({
+    label: item,
+    value: item
+  }))
+};
+
 
 // Handle auth information update
 const onUpdateAuth = () => {
@@ -125,6 +134,7 @@ const handleConnect = handleSubmit(async (values: any) => {
   isLoading.value = true
   const { provider, ...metadata } = values
   const payload = {
+    ivrIntegrationName: values.ivrIntegrationName,
     provider,
     metadata,
   }
@@ -136,6 +146,7 @@ const handleConnect = handleSubmit(async (values: any) => {
     toast.error(error.data.statusMessage)
   }
   isLoading.value = false
+  await refresh()
 });
 
 </script>
@@ -147,13 +158,22 @@ const handleConnect = handleSubmit(async (values: any) => {
     currentStep="6"
     totalSteps="6">
     <div>
+      <!-- {{integrationsData}} -->
       <div class="grid grid-cols-2 gap-4">
         <SelectField 
           v-model="provideraccountname"
           name="provideraccountname" 
           label="Select Account Name" 
           :closeIcon="false" 
-          :options="numberList" 
+            :options="[
+              { label: 'New Account', value: 'New Account' },
+              ...integrationsData.map((item: any) => {
+                return {
+                  label: `${item.ivrIntegrationName}`,
+                  value: item.id,
+                }
+              })
+            ]"
           placeholder="Select Account"
           @input="onSelectAccount($event)"
         />
@@ -162,10 +182,9 @@ const handleConnect = handleSubmit(async (values: any) => {
           name="incomingPhoneNumber" 
           label="Integration Number" 
           :closeIcon="true"
-          @input="onSelectProvider($event)" 
-          :options="integrationsData"
+          :options="numberList"
           placeholder="Select Number"
-          :disabled="numberList.length === 1" 
+          :disabled="numberList.length === 0 && numberList[0].value != 'New Number'" 
         />
         <!-- <SelectField 
           name="ivrConfig" 
@@ -197,7 +216,7 @@ const handleConnect = handleSubmit(async (values: any) => {
         </SelectField>
         <div class="flex flex-col gap-2 pt-[10px]">
           <TextField
-              name="providername" label="Provider Account Name" placeholder="Enter provider account name" />
+              name="ivrIntegrationName" label="Provider Account Name" placeholder="Enter provider account name" />
         </div>
         <!-- <div class="flex flex-col gap-2 pt-[10px]"> -->
           <TextField v-if="values.provider === 'plivo'" name="authId" label="Auth ID" placeholder="Enter auth ID" />

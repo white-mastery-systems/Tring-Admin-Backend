@@ -7,6 +7,7 @@ import { FileText, Globe,Home, ShoppingCart, Plane, PhoneCall, FileDown, Landmar
   Truck,
   GraduationCap,
   Server } from 'lucide-vue-next';
+import { botStore } from "~/store/botStore";
 
 const props = defineProps<{
   values: Record<string, any>;
@@ -16,6 +17,7 @@ const props = defineProps<{
   refreshSuggestions: () => void;
 }>();
 
+const scrapData = botStore();
 const uploadDocumentRef = ref(null);
 defineExpose({ uploadDocumentRef })
 const { value: selectedType } = useField("selectedType")
@@ -112,13 +114,13 @@ const changeKnowledge = () => {
             <SelectField v-model="boundDirection" name="boundDirection" :options="boundList"
               placeholder="Select a direction" />
           </div>
-          <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-2" />
+          <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-2 h-[0.5px]" />
           <span class="font-medium text-left text-[16px] md:text-[18px]">
             Industries
           </span>
 
           <RadioGroup v-model="type" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden"
-            :class="props.loading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''" :disabled="true">
+            :class="props.loading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''">
             <div v-for="intent in intentTypes" :key="intent.value"
               class="min-w-[100px] max-w-[100px] min-h-[100px] max-h-[100px] md:min-w-[135px] md:max-w-[135px] md:min-h-[135px] md:max-h-[135px]"
               @click.stop="selectIndustry(intent.value)">
@@ -134,9 +136,9 @@ const changeKnowledge = () => {
         </UiCardContent>
 
         <div
-          class="flex flex-col items-center justify-center w-full gap-5 bg-[#FCFCFC] border border-1 rounded-lg p-4 flex-grow">
+          class="flex flex-col items-center justify-center w-full gap-5 bg-[#FCFCFC] border border-1 rounded-lg p-8 flex-grow">
           <div class="space-y-1 flex flex-col text-center">
-            <div class="font-bold text-[18px] md:text-[20px] text-[#09090B]">
+            <div class="font-bold text-[18px] md:text-[20px] text-[#09090B] leading-none">
               Select Your Bot's Knowledge Source
             </div>
             <div class="font-normal text-[14px] text-[#71717A] mt-2">
@@ -164,7 +166,7 @@ const changeKnowledge = () => {
       <!-- Knowledge Type Sections -->
       <div v-show="selectedType" class="w-full h-full">
         <!-- Website Section -->
-        <div v-if="selectedType === 'Website'" class="w-full py-4 space-y-4 h-full flex flex-col">
+        <div v-show="selectedType === 'Website'" class="w-full py-4 space-y-4 h-full flex flex-col">
           <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Website</span>
             <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]"
@@ -191,7 +193,7 @@ const changeKnowledge = () => {
         </div>
 
         <!-- Text Section -->
-        <div v-else-if="selectedType === 'Text'" class="w-full h-full flex flex-col">
+        <div v-show="selectedType === 'Text'" class="w-full h-full flex flex-col">
           <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Text</span>
             <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]"
@@ -205,9 +207,10 @@ const changeKnowledge = () => {
               the process.</div>
           </div>
           <div class="text-left flex flex-col gap-2 flex-grow">
-            <span class="text-[14px] font-medium">Tell us about your company</span>
-            <TextDocumentUpload ref="uploadDocumentRef" :refresh="props.refresh" :contentSuggestions="[]"
-              class="flex-grow" />
+            <span class="text-[14px] font-medium">Knowledge Base Details (Edit details based on your requirements)
+            </span>
+            <CreateVoiceBotText ref="uploadDocumentRef" :refresh="props.refresh"
+              :contentSuggestions="props.suggestionsContent" class="flex-grow" />
           </div>
         </div>
       </div>

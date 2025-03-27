@@ -386,6 +386,7 @@ onUnmounted(() => {
   if (intervalId.value !== null) {
     clearInterval(intervalId.value);
     intervalId.value = null;
+    scrapData.scrapedData = []
   }
 });
 </script>

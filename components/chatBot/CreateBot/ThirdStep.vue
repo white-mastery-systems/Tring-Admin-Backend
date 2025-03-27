@@ -21,13 +21,18 @@ watch(selectedRole, (newValue) => {
   if (newValue !== "custom") {
     // Clear otherRole and otherGoal when a non-custom option is selected
     otherRole.value = "";
-    otherGoal.value = "";
+    emit("update:values", {
+      ...props.values,
+      otherRole: '',
+      // otherGoal: otherGoal.value
+    });
+    // otherGoal.value = "";
   }
   emit("update:values", {
     ...props.values,
     ROLE: newValue,
     otherRole: otherRole.value,
-    otherGoal: otherGoal.value
+    // otherGoal: otherGoal.value
   });
 });
 

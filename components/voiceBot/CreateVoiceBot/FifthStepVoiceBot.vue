@@ -11,6 +11,9 @@ const props = defineProps<{
   intentOptions: Record<string, any>;
 }>();
 
+const formattedElevenlabsVoiceList = ref();
+const formattedElevenlabsModelList = ref();
+
 const emit = defineEmits(["update:values"]);
 const { value: temperature } = useField("temperature")
 const { value: provider_stt } = useField("provider_stt")
@@ -21,6 +24,7 @@ const { value: model } = useField("model")
 const { value: voice } = useField("voice")
 const { value: name } = useField("name")
 const { value: deepmodel } = useField("deepmodel")
+const { value: deepgramvoice } = useField("deepgramvoice")
 const { value: otherRole, errorMessage: otherRoleError } = useField("otherRole");
 const { value: otherGoal, errorMessage: otherGoalError } = useField("otherGoal");
 
@@ -209,7 +213,7 @@ watch([status, integrationsData], ([newStatus, newData]) => {
         // Add ElevenLabs with the proper name from the integration
         updatedProviders.push({
           label: elevenLabsIntegration.ttsIntegrationName || 'ElevenLabs',
-          value: 'elevenlabs'
+          value: elevenLabsIntegration.ttsIntegrationName || 'elevenlabs'
         });
         
         // Update the providers ref
@@ -224,6 +228,67 @@ watch([status, integrationsData], ([newStatus, newData]) => {
     }
   }
 }, { immediate: true });
+const currentApiKey = ref(null);
+watch([() => provider_tts.value, integrationsData], ([newSelectedProvider, newIntegrationsData]) => {
+  if (newSelectedProvider && Array.isArray(newIntegrationsData)) {
+    // Find the integration that matches the selected provider
+    const selectedIntegration = newIntegrationsData.find(
+      integration => integration.ttsIntegrationName === newSelectedProvider ||
+        integration.provider === newSelectedProvider
+    );
+    if (selectedIntegration?.metadata?.apiKey) {
+      const apiKey = selectedIntegration.metadata?.apiKey;
+      // Only reinitialize if the API key changed
+      if (currentApiKey.value !== apiKey) {
+        currentApiKey.value = apiKey;
+
+        // Initialize the composables with the selected API key - same as your original code
+        const { elevenlabsVoiceList, loading: voicesLoading, error: voicesError, refreshVoices } = useElevenLabsVoices(apiKey);
+        const { elevenlabsModelList, loading: modelsLoading, error: modelsError, refreshModels } = useElevenLabsModels(apiKey);
+
+        // Store refresh functions
+
+        // Set up watches for voices and models as in your original code
+        watch(() => elevenlabsVoiceList.value, (newVoiceList) => {
+          if (newVoiceList) {
+            formattedElevenlabsVoiceList.value = newVoiceList?.map((voice) => ({
+              label: voice.name,
+              value: voice.voice_id,
+            }));
+          } else {
+            console.log("Voice data not yet loaded");
+          }
+        }, { immediate: true });
+
+        watch(() => elevenlabsModelList.value, (newModelList) => {
+          if (newModelList) {
+            if (Array.isArray(newModelList)) {
+              formattedElevenlabsModelList.value = newModelList?.map((model) => ({
+                label: model.name,
+                value: model.model_id,
+              }));
+            } else if (newModelList.models) {
+              formattedElevenlabsModelList.value = newModelList.models.map((model) => ({
+                label: model.name,
+                value: model.model_id,
+              }));
+            } else {
+              console.log("Unknown model list structure:", newModelList);
+            }
+          } else {
+            console.log("Model data not yet loaded");
+          }
+        }, { immediate: true });
+      }
+    } else {
+      console.log("No API key found for provider:", newSelectedProvider);
+      // Reset lists when no API key is available
+      formattedElevenlabsVoiceList.value = [];
+      formattedElevenlabsModelList.value = [];
+    }
+  }
+}, { deep: true, immediate: true });
+
 const apikeyunmasking = ($event: Event) => {
   const input = $event.target as HTMLInputElement;
   const newInput = input.value.replace(/\*/g, '');
@@ -235,51 +300,57 @@ const apikeyunmasking = ($event: Event) => {
 // }, { deep: true, immediate: true });
 </script>
 <template>
-   <BotSetupCard 
-      title="Bot Details" 
-      description="Configure your bot's basic information" 
-      currentStep="5" 
-      totalSteps="6">
-      <div>
-        <span class="font-bold">Speech-To-Text (STT) Setup</span>
-        <div class="grid grid-cols-2 gap-4">
-          <SelectField v-model="provider_stt" name="provider_stt" :options="providers" label="Provider" placeholder="Select provider"></SelectField>
-          <SelectField v-if="provider_stt === 'google'" v-model="googlemodel" name="googlemodel" :options="models" label="Model"
-            placeholder="Select Model"></SelectField>
-            <SelectField v-if="provider_stt === 'deepgram'" v-model="deepmodel" name="deepmodel" :options="deepModal" label="Model"
-            placeholder="Select Model"></SelectField>
-          <!-- <TextField v-if="provider_stt" v-model="apikey_stt" type="text" label="API Key" name="apikey_stt" placeholder="API Key" /> -->
-        </div>
-        </div>
-        <div>
-          <span class="font-bold">Text-To-Speech (TTS) Setup</span>
-          <div class="flex items-center grid grid-cols-2 gap-4">
-            <SelectField v-model="provider_tts" name="provider_tts" label="Provider" placeholder="Select provider"
-               :options="providersTTS" />
-               <!-- {{provider_tts}} -->
-               <!-- <div v-if="(provider_tts !== 'tring') && (provider_tts !== 'deepgram') && (provider_tts !== 'google')" class="flex flex-col gap-0 pt-3">
+  <BotSetupCard title="Bot Details" description="Configure your bot's basic information" currentStep="5" totalSteps="6">
+    <div>
+      <span class="font-bold">Speech-To-Text (STT) Setup</span>
+      <div class="grid grid-cols-2 gap-4">
+        <SelectField v-model="provider_stt" name="provider_stt" :options="providers" label="Provider"
+          placeholder="Select provider"></SelectField>
+        <SelectField v-if="provider_stt === 'google'" v-model="googlemodel" name="googlemodel" :options="models"
+          label="Model" placeholder="Select Model"></SelectField>
+        <SelectField v-if="provider_stt === 'deepgram'" v-model="deepmodel" name="deepmodel" :options="deepModal"
+          label="Model" placeholder="Select Model"></SelectField>
+      </div>
+    </div>
+    <div>
+      <span class="font-bold">Text-To-Speech (TTS) Setup</span>
+      <div class="flex items-center grid grid-cols-2 gap-4">
+        <SelectField v-model="provider_tts" name="provider_tts" label="Provider" placeholder="Select provider"
+          :options="providersTTS" />
+        <!-- {{provider_tts}} -->
+        <!-- <div v-if="(provider_tts !== 'tring') && (provider_tts !== 'deepgram') && (provider_tts !== 'google')" class="flex flex-col gap-0 pt-3">
                <TextField v-model="apikey" type="text"
                label="API Key" name="apikey" placeholder="API Key" @input="apikeyunmasking($event)" />
                </div> -->
-               <SelectField v-if="provider_tts === 'elevenlabs'" v-model="model" name="model" label="Model" placeholder="Model"
-               :options="modalList" />
-               <SelectField v-if="provider_tts === 'deepgram'" v-model="voice" name="voice" label="Voice" placeholder="Select voice" :options="voices" />
-               <SelectField v-if="(provider_tts !== 'tring') && (provider_tts !== 'deepgram') && (provider_tts !== 'google')" v-model="voice" name="voice" label="Voice" placeholder="Select voice" :options="[]" />
-               <div class="flex flex-col gap-4 pt-1">
-                 <TextField class="mt-4" v-if="provider_tts === 'google'" v-model="name" type="text" label="Name" name="name"
-                 placeholder="Name" />
-               </div>
-          </div>
+        <!-- <SelectField v-if="provider_tts === 'elevenlabs'" v-model="model" name="model" label="Model" placeholder="Model"
+          :options="modalList" /> -->
+        <SelectField v-if="provider_tts === 'deepgram'" v-model="deepgramvoice" name="deepgramvoice" label="Voice"
+          placeholder="Select voice" :options="voices" />
+        <!-- <SelectField v-if="(provider_tts !== 'tring') && (provider_tts !== 'deepgram') && (provider_tts !== 'google')"
+          v-model="voice" name="voice" label="Voice" placeholder="Select voice" :options="[]" /> -->
+        <SelectField v-if="provider_tts != 'tring' && provider_tts != 'google' && provider_tts != 'deepgram'"
+          name="model" label="Model" placeholder="Model"
+          :options="formattedElevenlabsModelList" />
+
+        <SelectField v-if="provider_tts != 'tring' && provider_tts != 'google' && provider_tts != 'deepgram'"
+          label="voice" name="voice" :options="formattedElevenlabsVoiceList" placeholder="voice" />
+        <div class="flex flex-col gap-4 pt-1">
+          <TextField class="mt-4" v-if="provider_tts === 'google'" v-model="name" type="text" label="Name" name="name"
+            placeholder="Name" />
         </div>
-        <div>
-        <span class="font-bold">Large Language Model (LLM) Setup</span>
-        <div class="grid grid-cols-2 gap-2">
+      </div>
+    </div>
+    <div>
+      <span class="font-bold">Large Language Model (LLM) Setup</span>
+      <div class="grid grid-cols-2 gap-2">
         <SelectField v-model="max_output_token" name="max_output_token" label="Max Tokens" placeholder="Max Tokens"
-        :options="tokens.map((token) => ({ label: token, value: token }))"  />
+          :options="tokens.map((token) => ({ label: token, value: token }))" />
         <div class="mt-5 flex flex-col gap-2 pl-3">
-          <RangeSlider :step="0.05" :name="temperature" label="AI Response Flexibility" @update="($event) => { temperature = $event; }"  required placeholder="Enter speaking Rate" min="0" max="2" />
+          <RangeSlider :step="0.05" :name="temperature" label="AI Response Flexibility"
+            @update="($event) => { temperature = $event; }" required placeholder="Enter speaking Rate" min="0"
+            max="2" />
         </div>
-          </div>
-        </div>
-    </BotSetupCard>
+      </div>
+    </div>
+  </BotSetupCard>
 </template>

@@ -11,7 +11,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(["update:values"]);
-const { value: selectedGoal } = useField<string>('GOAL');
+const { value: selectedGoal } = useField<string>('goal');
 const { value: type } = useField("type");
 const { value: otherRole, errorMessage: otherRoleError } = useField("otherRole");
 const { value: otherGoal, errorMessage: otherGoalError } = useField("otherGoal");
@@ -26,7 +26,7 @@ watch(selectedGoal, (newValue) => {
   }
   emit("update:values", {
     ...props.values,
-    ROLE: newValue,
+    goal: newValue,
     otherRole: otherRole.value,
     otherGoal: otherGoal.value
   });

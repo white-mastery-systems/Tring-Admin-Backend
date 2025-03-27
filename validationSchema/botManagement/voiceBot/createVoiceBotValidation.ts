@@ -10,8 +10,8 @@ export const voiceBotCreateSchema = toTypedSchema(
       .string({ required_error: "Agent Name is required" })
       .min(3, { message: "Agent Name is required" }),
     type: z
-      .string({ required_error: "Type is required" })
-      .min(2, "Type is required."),
+      .string({ required_error: "Industry type is required" })
+      .min(2, "Industry type is required."),
     agentLanguage: z
       .string({ required_error: "Agent Language is required" })
       .min(1, { message: "Agent Language is required" }),
@@ -36,6 +36,7 @@ export const voiceBotCreateSchema = toTypedSchema(
     deepmodel: z.string().optional(),
     elevenlabsvoice: z.string().optional(),
     voice: z.string().optional(),
+    deepgramvoice: z.string().optional(),
     temperature: z
       .number({ required_error: "Temperature is required" })
       .min(0, "Temperature minimum value should be zero")
@@ -43,18 +44,16 @@ export const voiceBotCreateSchema = toTypedSchema(
     max_output_token: z
       .string({ required_error: "Max output token is required" })
       .min(1, { message: "Max output token cannot be empty" }),
-    ROLE: z
+    role: z
       .string()
       .min(2, "Role is required"),
-    GOAL: z
+    goal: z
       .string()
       .optional(),
     otherRole: z.string().optional(),
     otherGoal: z.string().optional(),
     selectedType: z.string().optional(),
   }).superRefine((data, ctx) => {
-    // Fifth step validation (provider_stt, provider_tts, max_output_token, temperature)
-    
     // Speech-to-Text provider validation
     if (!data.provider_stt || data.provider_stt.length === 0) {
       ctx.addIssue({
@@ -103,7 +102,7 @@ export const voiceBotCreateSchema = toTypedSchema(
       // if (!data.apikey || data.apikey.length === 0) {
       //   ctx.addIssue({
       //     code: z.ZodIssueCode.custom,
-      //     message: "API Key is required when using ElevenLabs TTS provider",
+      //     messagePlease select a voice for new api key used Integration TTS providerz: "API Key is required when using ElevenLabs TTS provider",
       //     path: ["apikey"]
       //   });
       // }
@@ -166,7 +165,7 @@ export const voiceBotCreateSchema = toTypedSchema(
     // Previous steps validation for completeness
     
     // Step 3 validation (ROLE)
-    if (data.ROLE === 'custom' && (!data.otherRole || data.otherRole.length < 2)) {
+    if (data.role === 'custom' && (!data.otherRole || data.otherRole.length < 2)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Custom role is required when 'custom' role is selected",
@@ -175,7 +174,7 @@ export const voiceBotCreateSchema = toTypedSchema(
     }
     
     // Step 4 validation (GOAL)
-    if (data.GOAL === 'custom' && (!data.otherGoal || data.otherGoal.length < 2)) {
+    if (data.goal === 'custom' && (!data.otherGoal || data.otherGoal.length < 2)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Custom goal is required when 'custom' goal is selected",
