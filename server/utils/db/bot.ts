@@ -319,3 +319,12 @@ export const getWhatsappBotAndIntgrationId = async (integrationId:any) => {
     where: eq(sql`channels->>'whatsapp'`, integrationId),
   });
 }
+
+export const getIntegrationByBotIntegrationId = async (id:string) => {
+  return await db.query.botIntegrationSchema.findFirst({
+    where: and(
+      eq(botIntegrationSchema.id, id),
+    ),
+    with: { integration: true },
+  });
+}
