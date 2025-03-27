@@ -221,7 +221,7 @@ const submitForm = handleSubmit(async (values) => {
           color: hexToHSL(values.color),
           secondaryColor: hexToHSL(values.secondaryColor),
           fontFamily: "Kanit",
-          widgetSound: "yes",
+          widgetSound: true,
           generateLead: true,
           onlineStatus: true,
           defaultRibbon: true,
