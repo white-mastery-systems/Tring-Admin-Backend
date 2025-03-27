@@ -22,8 +22,10 @@ export default defineEventHandler(async (event) => {
     let planDetail
 
     // const planDetail = await getSubcriptionPlanDetailByPlanCode(orgZohoSubscription?.pricingPlanCode!, adminCountry)
-    if(orgZohoSubscription?.subscriptionStatus === "trial" || orgZohoSubscription?.pricingPlanCode === "chat_free") {
+    if (orgZohoSubscription?.pricingPlanCode === "chat_free") {
       planDetail = await getPricingInformation("chat_free")
+    } else if (orgZohoSubscription?.subscriptionStatus === "trial") {
+      planDetail = await getSubcriptionPlanDetailByPlanCode("chat_intelligence", adminCountry)
     } else {
       planDetail = await getSubcriptionPlanDetailByPlanCode(orgZohoSubscription?.pricingPlanCode!, adminCountry)
     }
