@@ -108,9 +108,9 @@
             <TextField name="llm.top_k" label="Top K" placeholder="Enter Top K" />
             <TextField name="llm.top_p" label="Top P" placeholder="Enter Top P" />
           </div>
-          <div class="spcace-y-2 grid w-full grid-cols-1 gap-2">
+          <!-- <div class="spcace-y-2 grid w-full grid-cols-1 gap-2">
             <TextField label="System Prompt" name="llm.prompt" placeholder="Enter prompt" :isTextarea="true" />
-          </div>
+          </div> -->
         </div>
         <div>
           <UiSeparator orientation="horizontal" class="bg-[#E2E8F0]" />
@@ -159,7 +159,7 @@
                     :class="['flex', (field.value?.value && (field.value?.boostValue)) ? 'items-end' : (errors[`stt.keywords[${idx}].value`]) ? 'items-center' : 'items-end']">
                     <UiButton variant="outline" type="button" @click="remove(idx)">
                       <CloseIcon class="w-4 h-4" />
-                    </UiButton>
+                    </UiButton> 
                   </div>
                 </div>
               </fieldset>

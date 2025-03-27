@@ -224,6 +224,12 @@ const firstStepBack = () => {
 }
 const submitForm = handleSubmit(async (values) => {
   // STT config
+  if (!values.provideraccountname) {
+    return toast.error('Please select a provider account name');
+  } 
+  if (!values.incomingPhoneNumber) {
+    return toast.error('Please enter an incoming phone number');
+  }
 
   const updatedConfig: any = {
     // language: value.language || botData.value?.speechToTextConfig.language || "en-IN",
@@ -358,8 +364,33 @@ const submitForm = handleSubmit(async (values) => {
 
   }
 
-  console.log('Payload:', payload);
-  await updateLLMConfig(payload, paramId.params.id, "The voice bot has been integraded successfully.");
+  const getDetails = await updateLLMConfig(payload, paramId.params.id, "The voice bot has been integraded successfully.");
+  console.log('getDetails:', getDetails.ivrConfig);
+  // await refreshBot()
+  if (!getDetails.ivrConfig) {
+    return
+  }
+  let getActive = getDetails.active
+  getActive = !getActive
+  try {
+    const voiceBotDetails = await $fetch(`/api/voicebots/${paramId.params.id}/deploy`, {
+      method: "PUT", body: {
+        active: getActive,
+      },
+    });
+    // await refreshBot()
+    if (voiceBotDetails.active) {
+        await navigateTo({
+          name: "voice-bot-id",
+          params: { id: paramId.params.id },
+        });
+      toast.success("Activated successfully");
+    } else {
+      toast.error("Deactivated successfully")
+    }
+  } catch (error) {
+    toast.error(error.statusMessage);
+  }
   // if (!values.provideraccountname) {
   //   toast.error("Please provide a value for Role");
   // } else {

@@ -268,7 +268,7 @@ export const llmValidation = z.object({
   top_p: z.string({ required_error: "Top P is required" }).min(1, "Top P is required"),
   max_output_token: z.string({ required_error: "tokens is required" }).min(1, "tokens is required"),
   temperature: z.number({ required_error: "number is required" }).min(0, "Temperature minumum value should be zero"),
-  prompt: z.string({ required_error: "System prompt is required" }).min(1, "System prompt is required"),
+  // prompt: z.string({ required_error: "System prompt is required" }).min(1, "System prompt is required"),
 });
 
 // Combined Validation Schema
