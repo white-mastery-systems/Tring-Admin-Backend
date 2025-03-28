@@ -275,7 +275,7 @@ watch(props.botDetails, (newValues) => {
   setFieldValue("secondaryColor", hslToHex(newValues.metadata.ui.secondaryColor ?? "236, 61%, 74%"));
   
   // Set other UI preferences
-  setFieldValue("widgetSound", newValues.metadata.ui.widgetSound ?? "Yes");
+  setFieldValue("widgetSound", newValues.metadata.ui.widgetSound ?? true);
   setFieldValue("widgetPosition", newValues.metadata.ui.widgetPosition ?? "Left");
   setFieldValue("fontFamily", newValues.metadata?.ui.fontFamily ?? "Kanit");
   

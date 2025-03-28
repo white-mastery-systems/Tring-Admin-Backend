@@ -193,12 +193,12 @@ export const updateLLMConfig = async (payload: any, botId: string, message: stri
 
     toast.success(message);
 
-    if (message === "The voice bot has been integraded successfully.") {
-      await navigateTo({
-        name: "voice-bot-id",
-        params: { id: botId },
-      });
-    }
+    // if (message === "The voice bot has been integraded successfully.") {
+    //   await navigateTo({
+    //     name: "voice-bot-id",
+    //     params: { id: botId },
+    //   });
+    // }
     return updateLLM;
   } catch (error) {
     toast.error(error?.statusMessage);
