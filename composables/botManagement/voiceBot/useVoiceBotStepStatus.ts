@@ -6,6 +6,7 @@ import {
   Bot,
   Cog,
   BrainCircuit,
+  IdCard,
 } from "lucide-vue-next";
 export const useStepStatus = (route) => {
   const botStore = useBotStore();
@@ -15,10 +16,11 @@ export const useStepStatus = (route) => {
   
   const accordionItems = ref([
     { value: "botdetails", icon: NotepadText, title: "Basic Bot Details", content: "Choose name, region, language and timezone for your bot", subtitle: "Choose name, region, language and timezone for your bot", status: "Incomplete" },
+    { value: "botidentity", icon: IdCard, title: "Bot Identity", content: "Set your bot’s call type, industry, role & goal", subtitle: "Set your bot’s call type, industry, role & goal", status: "Incomplete" },
     { value: "botSetup", icon: Bot, title: "Bot Setup", content: "Set up your bot’s features, responses, and preferences", subtitle: "Set up your bot’s features, responses, and preferences", status: "Incomplete" },
-    { value: "", title: "Bot Knowledge", content: "Company details and goals imported", icon: BrainCircuit, subtitle: "Company details and goals imported" },
+    { value: "incomplete", title: "Bot Knowledge", content: "Company details and goals imported", icon: BrainCircuit, subtitle: "Company details and goals imported" },
     { value: "telephoneSetup", icon: Phone, title: "Telephone Setup", content: "Set up your Telephone system to handle calls automatically and direct callers to the right place", subtitle: "Set up your Telephone system to handle calls automatically and direct callers to the right place" },
-    { value: "", icon: Cog, title: "Advanced Setup", content: "Fine-tune your bot with advanced settings and custom options", subtitle: "Fine-tune your bot with advanced settings and custom options" }
+    { value: "Complete", icon: Cog, title: "Advanced Setup", content: "Fine-tune your bot with advanced settings and custom options", subtitle: "Fine-tune your bot with advanced settings and custom options" }
   ]);
 
   const updateStepStatus = async (step: any) => {

@@ -307,6 +307,20 @@ input:-webkit-autofill {
   box-shadow: 0 0 0px 1000px white inset !important;
   color: #000 !important;
 }
+.button_shadow {
+  box-shadow: 3.81px 3.81px 0.95px 0px #FFBC4280 !important;
+
+}
+input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: inherit !important;
+}
+textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: inherit !important;
+}
 * {
   /* font-family: 'Inter', sans-serif; */
   font-family: "HeyWow";

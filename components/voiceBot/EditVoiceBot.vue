@@ -21,7 +21,7 @@ const stepComponents: Record<string, any> = {
   // AdvancedSetup: DynamicForm,
 }
 const emit = defineEmits(["cofirm"]);
-const openValues = ref(["botSetup"]);
+const openValues = ref([""]);
 // Call `updateStepStatus` on mount to ensure status updates after refresh
 onMounted(() => {
   updateStepStatus("botdetails"); // Default value (will update later)

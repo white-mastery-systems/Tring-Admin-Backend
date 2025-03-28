@@ -18,26 +18,15 @@ definePageMeta({
 
   <div
     class="container pb-5 sm:pb-5 md:pb-0 relative h-[800px] flex flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-    <!-- <a href="/auth/sign-in"
-      class="absolute right-4 top-4 md:right-8 md:top-8 text-[14px] px-3 py-2 rounded-md transition-colors hover:bg-[#f4f4f5]">
-      Sign in
-    </a> -->
     <div class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-      <div class="absolute inset-0 bg-zinc-900" />
-      <div class="relative z-20 flex items-center text-lg font-medium">
-        <img class="self-center" src="assets\icons\Tring-Ai-Logo-with-text-new.png" width="190" height="190" />
+      <div class="absolute inset-0 bg-gradient-to-br from-yellow-100 via-pink-100 to-blue-100" />
+      <div class="relative z-20 flex items-center text-lg font-medium pt-6">
+        <img class="self-center" src="assets\icons\Tring-Ai-Logo-with-black-text.png" width="150" height="150" />
       </div>
-      <div class="relative z-20 mt-auto">
-        <blockquote class="space-y-2">
-          <p class="text-lg">
-            <!-- &ldquo; -->
-            AI-powered Chat and Voice Agents.
-            <!-- &rdquo; -->
-          </p>
-          <!-- <footer class="text-sm">
-            Sofia Davis
-          </footer> -->
-        </blockquote>
+      <!-- D:\Sathish\admin-panel\tring-admin\assets\icons\Tring-Ai-Logo-with-black-text.png -->
+      <div class="relative z-20 flex items-center justify-center text-lg font-medium mt-11">
+        <img class="self-center w-[500px]" src="assets\logo\new-sign-up-logo.png" />
+        <!-- AI - powered Chat and voice Agents -->
       </div>
     </div>
     <div class="lg:p-2">
@@ -47,12 +36,13 @@ definePageMeta({
             Create an account
           </h1>
           <p class="text-sm text-muted-foreground">
-            Get started by creating your account
+            Get started with your own Chatbot & Voicebot
           </p>
         </div>
         <UserAuthForm />
-        <p class="px-0 sm:px-0 md:px-4 text-center text-muted-foreground text-[13px]">
-          By clicking continue, you agree to our Terms of Use
+        <p class="flex px-0 sm:px-0 md:px-4 text-center text-muted-foreground text-[13px] gap-2">
+          By clicking continue, you agree to our
+          <!-- By clicking continue, you agree to our Terms of Use -->
           <!-- <a href="/terms" class="underline underline-offset-4 hover:text-primary">
             Terms of Service
           </a>
@@ -61,16 +51,16 @@ definePageMeta({
             Privacy Policy
           </a> -->
           <a target="_blank" href="https://tringlabs.ai/terms-conditions"
-            class="underline underline-offset-4 hover:text-primary">
+            class="underline decoration-[1px] underline-offset-2 hover:text-primary text-muted-foreground transition-all duration-200">
             Terms of Use
           </a>
           .
         </p>
         <div class="flex items-center justify-center gap-2">
-          <span class="font-bold text-[#948e8a] text-[14px]">
-            Do you have an account?
+          <span class="font-bold text-[#3D3D3D] text-[14px]">
+            Already have an account?
           </span>
-          <NuxtLink to="/auth/sign-in" class="font-bold text-[14px]">Sign in</NuxtLink>
+          <NuxtLink to="/auth/sign-in" class="font-bold text-[14px] text-[#424BD1]">Sign in</NuxtLink>
 
           <!-- <span class="font-bold text-[14px]">Sign in</span> -->
         </div>

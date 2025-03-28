@@ -24,21 +24,13 @@ definePageMeta({
       Login
     </a> -->
     <div class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-      <div class="absolute inset-0 bg-zinc-900" />
-      <div class="relative z-20 flex items-center text-lg font-medium">
-        <img class="self-center" src="assets\icons\Tring-Ai-Logo-with-text-new.png" width="190" height="190" />
+      <div class="absolute inset-0 bg-gradient-to-br from-yellow-100 via-pink-100 to-blue-100" />
+      <div class="relative z-20 flex items-center text-lg font-medium pt-6">
+        <img class="self-center" src="assets\icons\Tring-Ai-Logo-with-black-text.png" width="150" height="150" />
       </div>
-      <div class="relative z-20 mt-auto">
-        <blockquote class="space-y-2">
-          <p class="text-lg">
-            <!-- &ldquo; -->
-            AI-powered Chat and Voice Agents.
-            <!-- &rdquo; -->
-          </p>
-          <!-- <footer class="text-sm">
-            Sofia Davis
-          </footer> -->
-        </blockquote>
+      <div class="relative z-20 flex items-center justify-center text-lg font-medium mt-12">
+        <img class="self-center w-[500px]" src="assets\logo\new-sign-up-logo.png" />
+        <!-- AI - powered Chat and voice Agents -->
       </div>
     </div>
     <div class="lg:p-8">

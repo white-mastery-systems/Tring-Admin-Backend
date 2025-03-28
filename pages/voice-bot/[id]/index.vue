@@ -75,7 +75,7 @@
               </span>
               <div class="flex flex-col items-center gap-1">
                 <UiButton variant="destructive" @click="handleDelete"
-                  class="bg-[#ff0000] p-2 hover:bg-[#ff0000]/90 hover:brightness-90">
+                  class="bg-[#ff0000] p-3 hover:bg-[#ff0000]/90 hover:brightness-90">
                   <Icon name="lucide:trash-2" class="h-4 w-4" />
                 </UiButton>
                 <div class="block text-[4px] lg:hidden">Delete</div>
@@ -209,16 +209,21 @@ watchEffect(() => {
     });
   }
 });
+watch(() => botDetails.value.active,(newActive) => {
+  if (newActive) {
+    createBotVoicesuccessfulState.value.open = true;
+  }
+})
 
 onMounted(async () => {
   getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
-  // botDetails.value = await getVoiceBotDetails(paramId.params.id);
-  audioResponseData.value = await getPreRecordedAudioDetails(paramId.params.id, botDetails.value?.organizationId, config)
+  // 27-03-2025 -- Commented below code as we are for now not using this API
+  // audioResponseData.value = await getPreRecordedAudioDetails(paramId.params.id, botDetails.value?.organizationId, config)
 });
 const handleGoBack = () => {
   return navigateTo({
     name: "voice-bot",
-  });
+  }); 
 };
 const dataList = ref([
   {
