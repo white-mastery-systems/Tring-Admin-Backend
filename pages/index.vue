@@ -1,6 +1,6 @@
 <template>
   <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true"
-    class="flex flex-col items-center">
+    class="flex flex-col items-center h-full">
     <template #actionButtons>
       <div class="flex overflow-x-scroll gap-2 w-full justify-end">
         <span class="field_shadow flex items-center rounded-lg text-[15px]" style="color: rgba(138, 138, 138, 1)">

@@ -49,7 +49,8 @@ const signup = async (values: Record<string, any>) => {
     });
     localStorage.setItem("userDetails", JSON.stringify(data?.data))
     // @ts-expect-error
-    return navigateTo("/auth/verify-otp");
+    return navigateTo("/auth/onboarding/select-bot-power");
+    // return navigateTo("/auth/verify-otp");
     // return navigateTo(data);
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
@@ -135,6 +136,7 @@ const resendOtpVerification = async (values: Record<string, any>) => {
       body: values,
     });
     toast.success("OTP resent successfully!");
+    return navigateTo({ name: "auth-forgot-password" });
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
   }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { formSchema } from '~/validationSchema/authValidation/signInValidation'
 import { useGtag } from 'vue-gtag-next'
+import { Eye, EyeOff } from 'lucide-vue-next' // Import Lucide icons
 
 definePageMeta({
   layout: "auth",
@@ -15,6 +16,7 @@ useHead({
   ]
 })
 const isLoading = ref(false)
+const showPassword = ref(false) // Add this for password visibility toggle
 
 const {
   setFieldValue,
@@ -32,6 +34,11 @@ const {
   },
 });
 
+// Add toggle password visibility function
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
+};
+
 const onSubmit = handleSubmit(async (value: any) => {
   isLoading.value = true
   event('button_click', { event_category: 'engagement', event_label: 'sign_in' })
@@ -45,16 +52,25 @@ const onSubmit = handleSubmit(async (value: any) => {
     <form @submit="onSubmit">
       <div class="grid gap-0">
         <TextField type="text" name="email" placeholder="Email" />
-        <TextField type="password" name="password" placeholder="Password" />
-        <div class="text-right text-sm text-[#000000] cursor-pointer">
-          <NuxtLink to="/auth/forgot-password" class="text-[11px] underline">
-            Forgot Password?
-          </NuxtLink>
-          <!-- Forgot Password? -->
+
+        <!-- Password field with eye icon -->
+        <div class="relative">
+          <TextField :type="showPassword ? 'text' : 'password'" name="password" placeholder="Password" />
+          <div
+            class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer"
+            @click="togglePasswordVisibility" role="button" tabindex="0" aria-label="Toggle password visibility">
+            <EyeOff v-if="showPassword" size="20" class="mt-1" />
+            <Eye v-else size="20" class="mt-1" />
+          </div>
         </div>
 
-        <UiButton :disabled="isLoading" :loading="isLoading" class="text-[16px] mt-5">
-          <!-- <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" /> -->
+        <div class="text-right text-sm text-[#000000] cursor-pointer">
+          <NuxtLink to="/auth/forgot-password" class="text-[11px] underline text-[#424BD1]">
+            Forgot Password?
+          </NuxtLink>
+        </div>
+        <UiButton :disabled="isLoading" :loading="isLoading"
+          class="text-[16px] mt-5 bg-[#FFBC42] button_shadow transition-all duration-300 hover:bg-[#ffce6b] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:bg-[#f0b03c] active:shadow-md">
           Login
         </UiButton>
       </div>

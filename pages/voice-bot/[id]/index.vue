@@ -75,7 +75,7 @@
               </span>
               <div class="flex flex-col items-center gap-1">
                 <UiButton variant="destructive" @click="handleDelete"
-                  class="bg-[#ff0000] p-2 hover:bg-[#ff0000]/90 hover:brightness-90">
+                  class="bg-[#ff0000] p-3 hover:bg-[#ff0000]/90 hover:brightness-90">
                   <Icon name="lucide:trash-2" class="h-4 w-4" />
                 </UiButton>
                 <div class="block text-[4px] lg:hidden">Delete</div>

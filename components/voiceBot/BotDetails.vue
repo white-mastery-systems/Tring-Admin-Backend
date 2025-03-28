@@ -11,7 +11,7 @@
     <div class="pb-2 sm:pb-0">
       <!-- {{props.botDetails}} -->
       <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
-        <span class="font-medium text-left text-[16px] md:text-[18px]">
+        <!-- <span class="font-medium text-left text-[16px] md:text-[18px]">
           Industries
         </span>
         <div class="flex flex-col w-full h-full overflow-x-auto">
@@ -19,7 +19,6 @@
             <UiCardContent class="grid p-0 gap-2 mb-4">
               <RadioGroup v-model="values.type" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden"
                 :class="!props.loading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''">
-                <!-- :class="[(errors.type && !values.type) ? 'border-2 border-[#ff0000] rounded-lg' : 'border-transparent']" -->
                 <div v-for="intent in intentTypes" :key="intent.value"
                   class="min-w-[100px] max-w-[100px] min-h-[100px] max-h-[100px] md:min-w-[135px] md:max-w-[135px] md:min-h-[135px] md:max-h-[135px]"
                   @click.stop="selectIndustry(intent.value)">
@@ -34,12 +33,12 @@
               </RadioGroup>
           </UiCardContent>
           </UiCard>
-          </div>
+          </div> -->
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
           <TextField name="newBotName" label="Voicebot Name" placeholder="Enter bot name" />
           <TextField name="agentName" label="Voicebot Agent Name" placeholder="Enter agent name" />
-          <SelectField name="boundDirection" label="Call Type" :options="boundList"
-              placeholder="Select a direction" />
+          <!-- <SelectField name="boundDirection" label="Call Type" :options="boundList"
+              placeholder="Select a direction" /> -->
           <!-- helperText="Select your language." -->
           <SelectField name="agentLanguage" :options="languageList" label="Language" placeholder="Agent Language"
             ></SelectField>
@@ -99,7 +98,7 @@ const welcomeFilesData = ref([]);
 const concludeFilesData = ref([]);
 const deleteFileBucket = ref([]);
 const breadcrumbStore = useBreadcrumbStore();
-const { value: type } = useField("type");
+// const { value: type } = useField("type");
 const boundList = ref([
   {
     label: 'Both',
@@ -127,19 +126,19 @@ const roles = [
   },
 ];
 
-const intentTypes = [
-  { label: "Real Estate", value: "real-estate", icon: Home },
-  { label: "Government Sectors", value: "government-sectors", icon: Landmark },
-  { label: "Finance & Banking", value: "finance-banking", icon: Banknote },
-  { label: "Healthcare", value: "healthcare", icon: Stethoscope },
-  { label: "E-commerce", value: "e-commerce", icon: ShoppingCart },
-  { label: "Energy & Utilities", value: "energy-utilities", icon: Lightbulb },
-  { label: "Telecommunications", value: "telecommunications", icon: PhoneCall },
-  { label: "Travel & Hospitality", value: "travel-hospitality", icon: Plane },
-  { label: "Logistics", value: "logistics", icon: Truck },
-  { label: "Education & Training", value: "education-training", icon: GraduationCap },
-  { label: "IT Service", value: "it-service", icon: Server },
-];
+// const intentTypes = [
+//   { label: "Real Estate", value: "real-estate", icon: Home },
+//   { label: "Government Sectors", value: "government-sectors", icon: Landmark },
+//   { label: "Finance & Banking", value: "finance-banking", icon: Banknote },
+//   { label: "Healthcare", value: "healthcare", icon: Stethoscope },
+//   { label: "E-commerce", value: "e-commerce", icon: ShoppingCart },
+//   { label: "Energy & Utilities", value: "energy-utilities", icon: Lightbulb },
+//   { label: "Telecommunications", value: "telecommunications", icon: PhoneCall },
+//   { label: "Travel & Hospitality", value: "travel-hospitality", icon: Plane },
+//   { label: "Logistics", value: "logistics", icon: Truck },
+//   { label: "Education & Training", value: "education-training", icon: GraduationCap },
+//   { label: "IT Service", value: "it-service", icon: Server },
+// ];
 const { languageList } = useVoiceLanguageList();
 const { formattedTimeZones } = useTImeList();
 const isLoading = ref(false);
@@ -156,11 +155,11 @@ breadcrumbStore.setBreadcrumbs([
 
 const botSchema = toTypedSchema(
   z.object({
-    type: z
-    .string({ required_error: "Industry type is required" })
-    .min(2, "Industry type is required."),
+    // type: z
+    // .string({ required_error: "Industry type is required" })
+    // .min(2, "Industry type is required."),
     newBotName: z.string({ required_error: "Bot Name is required" }).min(1, { message: "Bot Name is required" }),
-    boundDirection: z.string({ required_error: "Bound Direction is required" }).min(1, { message: "Bound Direction is required" }),
+    // boundDirection: z.string({ required_error: "Bound Direction is required" }).min(1, { message: "Bound Direction is required" }),
     agentName: z
       .string({ required_error: "Agent Name is required" })
       .min(1, { message: "Agent Name is required" }),
@@ -197,8 +196,8 @@ Object.entries(props.botDetails?.botDetails ?? {}).forEach(([key, value]: any) =
   }
 });
 setFieldValue("newBotName", props.botDetails?.name ?? "");
-setFieldValue("type", props.botDetails?.botDetails?.industryType ?? "");
-setFieldValue("boundDirection", props.botDetails?.botDetails?.callType ?? "");
+// setFieldValue("type", props.botDetails?.botDetails?.industryType ?? "");
+// setFieldValue("boundDirection", props.botDetails?.botDetails?.callType ?? "");
 watchEffect(() => {
   if (props.botDetails) {
     const userName = props.botDetails?.name ?? "Unknown Bot Name";
@@ -208,20 +207,20 @@ watchEffect(() => {
   }
 });
 
-watch(() => values.type,(newType) => {
-    if (newType === "") {
-    toast.error("Please select an industry before proceeding.");
-    return;
-  }
-})
+// watch(() => values.type,(newType) => {
+//     if (newType === "") {
+//     toast.error("Please select an industry before proceeding.");
+//     return;
+//   }
+// })
 
 const onSubmit = handleSubmit(async (value: any) => {
   // updateLLMConfig()
+  // boundDirection: value.boundDirection,
+  // industry: value.industry,
   isLoading.value = true;
   const modifiedData = {
     newBotName: value.newBotName,
-    boundDirection: value.boundDirection,
-    industry: value.industry,
     agentName: value.agentName,
     agentLanguage: value.agentLanguage,
     region: value.region,

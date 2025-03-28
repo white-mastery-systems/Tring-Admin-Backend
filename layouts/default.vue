@@ -109,7 +109,7 @@ const sliderBarControl = () => {
   <!-- style="--sidebar-width: 20rem; --sidebar-width-mobile: 20rem;" -->
   <SidebarProvider>
     <AppSidebar />
-    <main class="w-full">
+    <main class="w-full h-full">
       <div class="flex items-center h-10 shadow-none px-4 gap-2 border-b-[1px] border-[#E4E4E7] py-2">
         <!-- class="flex sm:flex md:hidden" -->
         <div class="flex items-center text-[12px]">
