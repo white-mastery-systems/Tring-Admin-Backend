@@ -7,6 +7,10 @@ import { useStepStatus } from "@/composables/botManagement/voiceBot/useVoiceBotS
 import BotDetails from '@/components/voiceBot/BotDetails.vue';
 import TelephoneSetup from '@/components/voiceBot/TelephoneSetup.vue';
 import BotSetup from '@/components/voiceBot/BotSetup.vue';
+import BotIdentity from '@/components/voiceBot/BotIdentity.vue';
+import BotKnowledge from '@/components/voiceBot/BotKnowledge.vue';
+import AdvancedSetup from '@/components/voiceBot/AdvancedSetup.vue';
+
 const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void; refresh: () => void }>();
 // const { updateStepStatus, accordionItems, botDetails, documentsList } = useStepStatus();
 const route = useRoute();
@@ -16,12 +20,15 @@ const stepComponents: Record<string, any> = {
   botdetails: BotDetails,
   telephoneSetup: TelephoneSetup,
   botSetup: BotSetup,
+  botidentity: BotIdentity,
+  botKnowledge: BotKnowledge,
+  advancedSetup: AdvancedSetup,
   // botConfiguration: BotConfiguration,
   // emailnotifications: EmailConfiguration,
   // AdvancedSetup: DynamicForm,
 }
 const emit = defineEmits(["cofirm"]);
-const openValues = ref([""]);
+const openValues = ref(["advancedSetup"]);
 // Call `updateStepStatus` on mount to ensure status updates after refresh
 onMounted(() => {
   updateStepStatus("botdetails"); // Default value (will update later)
@@ -38,7 +45,7 @@ onMounted(() => {
         <!-- Left Icon -->
         <div class="flex items-center justify-between gap-2 w-full">
           <div class="flex items-center gap-2">
-            <div class="flex items-center justify-center min-w-10 min-h-10 bg-[#18181B] rounded-full">
+            <div class="flex items-center justify-center min-w-11 min-h-11 bg-[#18181B] rounded-full">
               <component :is="item.icon" :stroke-width="1.5" :size="18" class="text-white"></component>
             </div>
             <!-- <img src="/assets/icons/create_bot_link.svg" width="35" class="rounded-lg" /> -->

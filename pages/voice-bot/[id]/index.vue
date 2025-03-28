@@ -182,16 +182,6 @@ const breadcrumbStore = useBreadcrumbStore();
 const { botDetails, loading, error, refreshBot } = useVoiceBotDetails(paramId.params.id)
 const agentModalState = ref({ open: false, id: paramId.params.id });
 
-breadcrumbStore.setBreadcrumbs([
-  {
-    label: 'Voice Bot',
-    to: `/voice-bot`,
-  },
-  {
-    label: `${botDetails.value?.name}`,
-    to: `/voice-bot`,
-  },
-]);
 const deleteModalState = ref(false);
 const modalOpen = ref(false);
 const isDocumentListOpen = ref(false);
@@ -207,11 +197,21 @@ watchEffect(() => {
     useHead({
       title: `Voice Bot | ${userName}`,
     });
+    breadcrumbStore.setBreadcrumbs([
+      {
+        label: 'Voice Bot',
+        to: `/voice-bot`,
+      },
+      {
+        label: `${userName}` ?? 'No Name',
+        to: `/voice-bot`,
+      },
+    ]);
   }
 });
 watch(() => botDetails.value.active,(newActive) => {
   if (newActive) {
-    createBotVoicesuccessfulState.value.open = true;
+    createBotVoicesuccessfulState.value.open = false;
   }
 })
 

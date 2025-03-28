@@ -215,9 +215,9 @@ const submitForm = handleSubmit(async (values) => {
       metadata: {
         ui: {
           ...botDetails.value?.metadata.ui,
-          logo: (scrapData.scrapedData && Object.keys(scrapData.scrapedData).length > 0) 
-            ? (values.logo?.size ? uploadedDetails?.metadata?.ui?.logo ?? botDetails.metadata.ui.logo : values.logo?.url) // Use optional chaining
-            : uploadedDetails?.metadata?.ui?.logo ?? botDetails.metadata.ui.logo,
+          logo: (scrapData.scrapedData && Object.keys(scrapData.scrapedData).length > 0)
+            ? (values.logo ? values.logo.url : uploadedDetails?.metadata?.ui?.logo ?? botDetails?.metadata?.ui?.logo)
+            : uploadedDetails?.metadata?.ui?.logo ?? botDetails?.metadata?.ui?.logo,
           color: hexToHSL(values.color),
           secondaryColor: hexToHSL(values.secondaryColor),
           fontFamily: "Kanit",

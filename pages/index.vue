@@ -126,11 +126,13 @@ const createBotNavList = ref([
     subtitle: "Click here to deploy your new chatbot",
     url: "/chat-bot/create-bot",
     icon: MessageSquare,
+    type: "chat",
   }, {
     title: "Create a Voicebot",
     subtitle: "Click here to deploy your new voicebot",
     url: "/voice-bot",
     icon: PhoneCall,
+    type: "voice",
   }
 ]);
 

@@ -280,8 +280,6 @@ const chooseFreeTrialPlan = async (plan: string) => {
   console.log(config.public.zohoIndianChatSubscription, "config.public -- config.public", userDetails.value, "userDetails.value  --- userDetails.value")
   const encodedName = encodeURIComponent(userDetails.value.username);
   const encodedEmail = encodeURIComponent(userDetails.value.email);
-  console.log('tummy --- -asdsa')
-console.log(encodedName, "encodedName -- encodedName")
   // Get URLs from runtime config
   // const urls = {
   //   indian: {
