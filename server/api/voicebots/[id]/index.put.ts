@@ -110,7 +110,7 @@ export default defineEventHandler(async (event) => {
 
   let voiceInboundPrompt, voiceOuboundPrompt
 
-  if(callType && industryType && !llmConfig?.inboundPrompt && !llmConfig?.outboundPrompt) {
+  if(callType && industryType && llmConfig && !llmConfig?.inboundPrompt && !llmConfig?.outboundPrompt) {
     const voicebotPrompts = getInboundPromptByIndustryType({ 
       industryType, 
       name: botDetails?.agentName, 
