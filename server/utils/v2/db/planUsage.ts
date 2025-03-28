@@ -1,3 +1,4 @@
+import { inArray } from "drizzle-orm"
 import { InsertAdminPlanUsage } from "~/server/schema/admin"
 
 const db = useDrizzle()
@@ -14,7 +15,7 @@ export const updateSubscriptionPlanUsageByOrgId = async (orgId: string, serviceT
     and(
       eq(adminPlanUsageSchema.organizationId, orgId),
       eq(adminPlanUsageSchema.serviceType, serviceType),
-      eq(adminPlanUsageSchema.subscriptionStatus, "active")
+      inArray(adminPlanUsageSchema.subscriptionStatus, ["active", "trial"])
     )
   ).returning())[0]
 }
@@ -26,7 +27,7 @@ export const updateSubscriptionPlanUsageById= async (id: string, planUsage: Part
   }).where(
     and(
       eq(adminPlanUsageSchema.id, id),
-      eq(adminPlanUsageSchema.subscriptionStatus, "active")
+      inArray(adminPlanUsageSchema.subscriptionStatus, ["active", "trial"])
     )
   ).returning())[0]
 }
@@ -36,7 +37,7 @@ export const getOrgPlanUsage = async (organizationId: string, serviceType: strin
     where: and(
       eq(adminPlanUsageSchema.organizationId, organizationId),  
       eq(adminPlanUsageSchema.serviceType, serviceType),
-      eq(adminPlanUsageSchema.subscriptionStatus, "active")
+      inArray(adminPlanUsageSchema.subscriptionStatus, ["active", "trial"])
     )
   })
 }

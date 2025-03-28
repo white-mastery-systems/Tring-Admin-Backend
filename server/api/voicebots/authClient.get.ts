@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
   //   return errorResponse(event, 500, "This user was a free plan")
   // }
 
-  if(voicebotPlan?.subscriptionStatus !== "active") {
+  if(!["active", "trial"].includes(voicebotPlan?.subscriptionStatus)) {
     return errorResponse(event, 500, "Subscription status is inactive")
   }
   //TODO - add extra and normal quota validation
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
 
   let planPricingDetail
 
-  const voicePricingInformation = await getSubcriptionPlanDetailByPlanCode(voicebotPlan?.pricingPlanCode, adminCountry)
+  const voicePricingInformation = await getSubcriptionPlanDetailByPlanCode(voicebotPlan?.pricingPlanCode!, adminCountry)
   if(
       voicebotPlan?.subscriptionStatus === "trail" || 
       voicebotPlan?.pricingPlanCode === "voice_free"
