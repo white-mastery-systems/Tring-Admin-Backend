@@ -45,7 +45,7 @@
             " />
         </div>
         <div v-if="integrationsData.find((integration:any) => integration.id === values.integrationId)?.crm === 'sales-handy'">
-          <SelectField name="sequenceId" :multiple="false" :required="true" label="Select Layout"
+          <SelectField name="sequenceId" :multiple="false" :required="true" label="Select Sequence"
             placeholder="Select Sequence" :options="
               sequences.map((sequence:any) => ({
                 value: sequence.id,

@@ -321,10 +321,15 @@ export const getWhatsappBotAndIntgrationId = async (integrationId:any) => {
 }
 
 export const getIntegrationByBotIntegrationId = async (id:string) => {
-  return await db.query.botIntegrationSchema.findFirst({
-    where: and(
-      eq(botIntegrationSchema.id, id),
-    ),
+  const data = await db.query.botIntegrationSchema.findFirst({
+    where: and(eq(botIntegrationSchema.id, id)),
     with: { integration: true },
   });
+  if(!data) {
+    return await db.query.voicebotIntegrationSchema.findFirst({
+      where: and(eq(voicebotIntegrationSchema.id, id)),
+      with: { integration: true },
+    });
+  }
+  return data;
 }

@@ -13,13 +13,13 @@ export default defineEventHandler(async (event) => {
       return {status: true, sequences: []};
     }
 
-    const { status, data } = await getSalesHandySequences(integrationData?.metadata?.apiKey);
+    const { status, data = [] } = await getSalesHandySequences(integrationData?.metadata?.apiKey);
 
     if (!status || !data?.length) {
       return { status: true, sequences: [] };
     }
 
-    return {status: true, sequences: data?.map((sequence:any) => ({id: sequence.id, name: sequence.title, progress: sequence.progress}))};
+    return {status: true, sequences: data?.map(({ id, title, progress, steps }:any) => ({id, name:title, progress, steps: steps?.length || 1}))};
   } catch (error:any) {
     return errorResponse(event, 500, `Unable to get Sales handy sequences ${error.message}`);
   }
