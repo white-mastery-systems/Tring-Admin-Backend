@@ -1,6 +1,6 @@
 import { logger } from "../logger"
 import * as schedule from "node-schedule"
-import { getAllSalesHandyvoiceBotIntegrations } from "../utils/db/bot"
+import { fetchOrCreateSalesHandyContact, getAllSalesHandyvoiceBotIntegrations, updateSalesHandyContact } from "../utils/db/voicebots"
 
 export default defineNitroPlugin(async (event) => {
   try {
@@ -12,31 +12,35 @@ export default defineNitroPlugin(async (event) => {
             const metadata:any = botIntegrationData?.metadata;
             const integrationData = botIntegrationData?.integration;
       
-            if (!metadata?.sequenceObj?.id) {
-              return { status: true, data: {}, message: "No sequence found" };
-            }
-      
-            const contactList = await getUnRepliedSalesHandyUsersPhones(`${integrationData?.metadata?.apiKey}`, metadata?.sequenceObj?.id, metadata?.sequenceObj?.name);
+            if (metadata?.sequenceObj?.id) {
+              const contactList = await getUnRepliedSalesHandyUsersPhones(`${integrationData?.metadata?.apiKey}`, metadata?.sequenceObj?.id, metadata?.sequenceObj?.name);
+  
+              if (contactList.length){
+                await Promise.all(contactList.map(async (contact) => {
+                  if(contact.count){
+                    // @ts-ignore
+                    const salesHandyContact = await fetchOrCreateSalesHandyContact(botIntegrationData?.botId, botIntegrationData.id, metadata?.sequenceObj?.id, contact.phone, contact.email)
 
-            if (contactList.length){
-              await Promise.all(contactList.map(async (contact) => {
-                if(contact.count > 2){
-                  // const dialVoiceCall = await $fetch(`${config.public.voiceBotBaseUrl}/dial`, {
-                  const dialVoiceCall = await $fetch(`/api/voicebots/${botIntegrationData?.botId}/dial`,{
-                      method: "POST",
-                      body: {
-                        ...contact,
-                        id: botIntegrationData?.botId,
-                      },
-                    },
-                  );
-                  if(!dialVoiceCall) {
-                    logger.error(`Failed to initiate call to the SalesHandy user with unreplied mail: ${contact?.countryCode}${contact?.phone}`);
-                  } else{
-                    logger.info(`Call successfully initiated to the SalesHandy user with unreplied mail: ${contact?.countryCode}${contact?.phone}`);
+                    if (salesHandyContact.callStatus === "not dialed") {
+                      // const dialVoiceCall = await $fetch(`${config.public.voiceBotBaseUrl}/dial`, {
+                      const dialVoiceCall = await $fetch(`/api/voicebots/${botIntegrationData?.botId}/dial`,{
+                          method: "POST",
+                          body: {
+                            ...contact,
+                            id: botIntegrationData?.botId,
+                          },
+                        },
+                      );
+                      if(!dialVoiceCall) {
+                        logger.error(`Failed to initiate call to the SalesHandy user with unreplied mail: ${contact?.countryCode}${contact?.phone}`);
+                      } else{
+                        await updateSalesHandyContact(salesHandyContact.id, {...contact, ...salesHandyContact, callStatus:"dialed"})
+                        logger.info(`Call successfully initiated to the SalesHandy user with unreplied mail: ${contact?.countryCode}${contact?.phone}`);
+                      }
+                    }
                   }
-                }
-              }))
+                }))
+              }
             }
           }))
         }

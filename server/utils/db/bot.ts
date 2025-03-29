@@ -333,10 +333,3 @@ export const getIntegrationByBotIntegrationId = async (id:string) => {
   }
   return data;
 }
-
-export const getAllSalesHandyvoiceBotIntegrations = async () => {
-  return await db.query.voicebotIntegrationSchema.findMany({
-    where: sql`${voicebotIntegrationSchema.metadata}->'sequenceObj'->>'id' IS NOT NULL`,
-    with: { integration: true },
-  });
-}
