@@ -1,4 +1,5 @@
 import { inArray } from "drizzle-orm"
+import { logger } from "~/server/logger"
 
 const db = useDrizzle()
 
@@ -88,7 +89,54 @@ export const totalSessionDuration = async (organizationId: string, fromDate: Dat
   const totalConversations = interactedChats.length;
 
   // Calculate average session duration
-  const averageSessionDuration = totalConversations ? totalDuration / totalConversations : 0;
+  const averageSessionDuration = totalConversations ? Math.round(totalDuration / totalConversations) : 0;
 
-  return averageSessionDuration.toFixed(2)
+  return averageSessionDuration
+}
+
+export const getAnalyticsGraph = async ({ totalConversation, period, fromDate, toDate, timeZone } : {
+  totalConversation: any[],
+  period: string,
+  fromDate: Date | undefined,
+  toDate: Date | undefined,
+  timeZone: string,
+}) => {
+  try {
+    //Graph values
+    const { dates, difference } = getAllDatesInRange(
+      period!,
+      fromDate!,
+      toDate!,
+      timeZone,
+    );
+         
+    let interactedChatsMap = null;
+    const interactedChatsResult = groupAndMapData({
+      module: totalConversation,
+      period: period,
+      difference,
+      timeZone,
+    });
+    interactedChatsMap = new Map(
+      interactedChatsResult.map((item) => [item.date, item.count]),
+    );
+
+    const maps = {
+      interacted_chats: interactedChatsMap,
+    }
+    const groupedCounts = (mapData: any) =>
+      dates.map((date) => ({
+        date,
+        count: mapData.get(date) || 0,
+      }));
+    const safeGroupedCounts = (map: any) => (map ? groupedCounts(map) : {});
+    const totalConversationGraph = Object.entries(maps).reduce((acc: any, [key, map]) => {
+        acc[key] = safeGroupedCounts(map);
+      return acc;
+    }, {});
+    return totalConversationGraph.interacted_chats;
+  } catch (error: any) { 
+    logger.error(`Dashboard - Analytics API Error: ${JSON.stringify(error)}`)
+    return []
+  }
 }
