@@ -214,6 +214,19 @@ export const voicebotSchedularSchema = voiceBotSchema.table("voicebot_schedular"
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
+export const salesHandyContactsSchema = voiceBotSchema.table("sales_handy_contacts", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  botId: uuid("bot_id").references(() => voicebotSchema.id, { onDelete: "cascade" }).notNull(),
+  botIntegrationId: uuid("bot_integration_id").references(() => voicebotIntegrationSchema.id, { onDelete: "cascade" }).notNull(),
+  sequenceId: varchar("sequence_id").notNull(),
+  phone: varchar("phone").notNull(),
+  email: varchar("email"),
+  callSid: varchar("call_sid"),
+  callStatus: varchar("call_status").default("not dialed"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 // Relations
 export const callLogsRelations = relations(callLogSchema, ({one}) => ({
    bot: one(voicebotSchema, {
