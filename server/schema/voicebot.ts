@@ -152,6 +152,7 @@ export const callLogSchema = voiceBotSchema.table("call_logs", {
   callStatus: varchar("call_status"),
   duration: varchar("duration").notNull(),
   direction: varchar("direction").notNull(),
+  metrics: jsonb("metrics"),
   callerName: varchar("caller_name").notNull(),
   callerDate: timestamp("caller_date"),
   callTranscription: jsonb("call_transcription").array(),
