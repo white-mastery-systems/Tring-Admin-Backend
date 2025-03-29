@@ -13,8 +13,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4">
               <SelectField name="tts.provider" label="Provider" placeholder="Select provider" :options="ttsProviders" />
               <div v-if="values.tts?.provider === 'google'" class="flex flex-col gap-4 pt-[6px]">
-                <TextField type="text" label="Name" name="tts.name"
-                  placeholder="Name" />
+                <TextField type="text" label="Name" name="tts.name" placeholder="Name" />
               </div>
               <TextField v-if="values.tts?.provider === 'tring'" type="text" label="API Key" name="tts.apikey"
                 placeholder="API Key" @input="apikeyunmasking($event)" />
@@ -86,7 +85,7 @@
           </div>
         </div>
         <div class="mt-6">
-          <UiSeparator orientation="horizontal" class="bg-[#E2E8F0]" />
+          <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] h-[0.5px]" />
         </div>
         <!-- LLM Configuration Section -->
         <!-- class="space-y-6 sm:space-y-6 md:space-y-4 lg:space-y-4 xl:space-y-4" -->
@@ -159,7 +158,7 @@
                     :class="['flex', (field.value?.value && (field.value?.boostValue)) ? 'items-end' : (errors[`stt.keywords[${idx}].value`]) ? 'items-center' : 'items-end']">
                     <UiButton variant="outline" type="button" @click="remove(idx)">
                       <CloseIcon class="w-4 h-4" />
-                    </UiButton> 
+                    </UiButton>
                   </div>
                 </div>
               </fieldset>

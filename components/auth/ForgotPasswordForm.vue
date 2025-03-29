@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useRoute } from 'vue-router';
 import { useForm } from 'vee-validate';
+import { Eye, EyeOff } from 'lucide-vue-next'; // Import Lucide icons
 
 definePageMeta({
   layout: "auth",
@@ -15,12 +16,12 @@ const passwordVisible = ref(false);
 const confirmPasswordVisible = ref(false);
 
 const forgotPasswordSchema = toTypedSchema(z.object({
-  email: z.string({ required_error: "Email is required."}).email("Invalid email address."),
+  email: z.string({ required_error: "Email is required." }).email("Invalid email address."),
 }));
 
 const resetPasswordSchema = toTypedSchema(z.object({
-  newPassword: z.string({ required_error: "Password is required."}).min(6, "Password must be at least 6 characters long."),
-  confirmPassword: z.string({ required_error: "Confirm Password is required."}).min(6, "Confirm Password must be at least 6 characters long."),
+  newPassword: z.string({ required_error: "Password is required." }).min(6, "Password must be at least 6 characters long."),
+  confirmPassword: z.string({ required_error: "Confirm Password is required." }).min(6, "Confirm Password must be at least 6 characters long."),
 }).refine((data) => data.newPassword === data.confirmPassword, {
   message: "Passwords do not match.",
   path: ["confirmPassword"],
@@ -36,6 +37,15 @@ const [email, emailAttrs] = defineField("email");
 const [newPassword, newPasswordAttrs] = defineField("newPassword");
 const [confirmPassword, confirmPasswordAttrs] = defineField("confirmPassword");
 
+// Toggle password visibility functions
+const togglePasswordVisibility = () => {
+  passwordVisible.value = !passwordVisible.value;
+};
+
+const toggleConfirmPasswordVisibility = () => {
+  confirmPasswordVisible.value = !confirmPasswordVisible.value;
+};
+
 const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true;
   if (route.query.token) {
@@ -48,38 +58,43 @@ const onSubmit = handleSubmit(async (values) => {
 </script>
 
 <template>
-  <!-- class="flex h-full w-full flex-col items-center justify-center" -->
   <div :class="cn('grid gap-6', $attrs.class ?? '')">
-    <!-- <div class="w-[90%] px-6 pb-4 font-bold text-primary md:w-[80%] lg:w-[90%] xl:w-[80%]">
-      <span>Forgot Password</span>
-    </div> -->
-    <!-- <div class="w-full"> -->
     <form @submit="onSubmit">
       <div class="grid gap-2">
-        <div v-if="route.query.token" class="grid gap-3">
-          <UiInput id="email" v-model="email" v-bind="emailAttrs" placeholder="Enter your email" type="email"
-            required />
-          <p v-if="errors.email" class="text-red-500 text-sm">{{ errors.email }}</p>
+        <div v-if="!route.query.token" class="grid gap-3">
+          <TextField type="text" name="email" placeholder="Enter your email" />
         </div>
         <div v-else class="grid gap-3">
-          <div>
-            <UiInput id="newPassword" v-model="newPassword" v-bind="newPasswordAttrs"
-              :type="passwordVisible ? 'text' : 'password'" placeholder="New Password" required />
-            <!-- <button type="button" @click="passwordVisible = !passwordVisible">Toggle</button> -->
-            <p v-if="errors.newPassword" class="text-red-500 text-sm">{{ errors.newPassword }}</p>
+          <!-- New Password field with eye icon -->
+          <div class="relative">
+            <TextField :type="passwordVisible ? 'text' : 'password'" name="newPassword" placeholder="New Password" />
+            <div
+              class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer"
+              @click="togglePasswordVisibility" role="button" tabindex="0" aria-label="Toggle password visibility">
+              <EyeOff v-if="passwordVisible" size="20" class="mt-1" />
+              <Eye v-else size="20" class="mt-1" />
+            </div>
           </div>
-          <div>
-            <UiInput id="confirmPassword" v-model="confirmPassword" v-bind="confirmPasswordAttrs"
-              :type="confirmPasswordVisible ? 'text' : 'password'" placeholder="Confirm Password" required />
-            <!-- <button type="button" @click="confirmPasswordVisible = !confirmPasswordVisible">Toggle</button> -->
-            <p v-if="errors.confirmPassword" class="text-red-500 text-sm">{{ errors.confirmPassword }}</p>
+
+          <!-- Confirm Password field with eye icon -->
+          <div class="relative">
+            <TextField :type="confirmPasswordVisible ? 'text' : 'password'" name="confirmPassword"
+              placeholder="Confirm Password" />
+            <div
+              class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer"
+              @click="toggleConfirmPasswordVisibility" role="button" tabindex="0"
+              aria-label="Toggle confirm password visibility">
+              <EyeOff v-if="confirmPasswordVisible" size="20" class="mt-1" />
+              <Eye v-else size="20" class="mt-1" />
+            </div>
           </div>
         </div>
-        <UiButton type="submit" class="flex h-[45px] w-full justify-center text-[16px] mt-2" :loading="isLoading">
+        <UiButton type="submit"
+          class="text-[16px] mt-5 bg-[#FFBC42] button_shadow transition-all duration-300 hover:bg-[#ffce6b] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:bg-[#f0b03c] active:shadow-md"
+          :loading="isLoading">
           Submit
         </UiButton>
-        </div>
+      </div>
     </form>
-    <!-- </div> -->
   </div>
 </template>

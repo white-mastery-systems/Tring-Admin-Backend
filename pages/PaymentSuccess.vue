@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-center items-center h-[100%] relative">
+  <div class="flex flex-col justify-center items-center h-[100%] relative w-full">
     <div class="absolute top-[20px] left-[30px]">
       <img src="assets\icons\tring_AI_logo.svg" width="80" height="80">
     </div>
@@ -15,12 +15,43 @@
         Your payment is Successful
       </div>
       <p class="text-center text-[#8A8A8A] text-[14px] py-6 w-[40%]">
-        You will be redirected to the Dashboard
-        Please click continue
+        You will be redirected to the Dashboard automatically...
       </p>
-      <UiButton class="bg-[#FFBC42] text-[#FFFFFF] px-5">
-        Continue
-      </UiButton>
+      <!-- Button removed -->
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useRoute, useRouter } from 'vue-router';
+
+definePageMeta({
+  layout: "billing-account",
+  middleware: "user",
+});
+
+const route = useRoute();
+const router = useRouter();
+const hostedPageId = route.query?.hostedpage_id;
+const userId = ref(null);
+const isLoading = ref(true);
+
+onMounted(async () => {
+  console.log(hostedPageId, 'hostedPageId');
+  try {
+    const response = await $fetch(`/api/v2/onboarding/hostedPage?hostedpageId=${hostedPageId}`);
+    userId.value = response?.org;
+    
+    // Add a small delay to allow the success message to be shown briefly
+    setTimeout(() => {
+      if (userId.value) {
+        navigateTo("/");
+      }
+    }, 2000); // 2 second delay before redirect
+    
+  } catch (error) {
+    console.error("Error fetching hosted page details:", error);
+    isLoading.value = false;
+  }
+});
+</script>
