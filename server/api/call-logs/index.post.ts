@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
 
   const voicePlanUsage = await getOrgPlanUsage(body?.organizationId, "voice")
   
-  const roundedDuration = Math.round(Number(body?.duration) / 60) * 60;
+  const roundedDuration = Math.ceil(Number(body?.duration) / 60) * 60;
   const durationInMinutes = roundedDuration / 60;
   
   const totalMinutes = (voicePlanUsage?.interactionsUsed || 0) + durationInMinutes
