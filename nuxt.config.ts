@@ -45,7 +45,7 @@ export default defineNuxtConfig({
     plugins: [
       "~/server/plugin/yaml-watcher.ts",
       "~/server/plugin/schedule-voicebotDialer.ts",
-      "~/server/plugin/whatsapp-analytics.ts",
+      "~/server/plugin/saleshandy-analytics.ts",
       "~/server/plugin/schedule-chatbotCall.ts",
       "~/server/plugin/schedule-chatExpiry.ts",
     ],
