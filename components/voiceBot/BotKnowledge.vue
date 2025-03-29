@@ -22,13 +22,11 @@
                   class="flex items-start grid grid-cols-2 gap-6 w-full">
                   <!-- Dynamic sections based on inboundPrompt structure -->
                   <div v-for="(value, key) in inboundPrompt" :key="key" class="space-y-0">
-                    <div>
-                      <h2 class="text-lg text-[#000000] font-bold capitalize my-2">{{ formatSectionTitle(key) }}</h2>
-                      <div class="gap-4">
-                        <textarea v-model="inboundPrompt[key]"
-                          class="w-full min-h-32 resize-y outline-none border rounded border-[#CBD5E1] p-2"
-                          :placeholder="`Enter content here...`"></textarea>
-                      </div>
+                    <h2 class="text-lg text-[#000000] font-bold capitalize my-2">{{ formatSectionTitle(key) }}</h2>
+                    <div class="gap-4">
+                      <textarea v-model="inboundPrompt[key]"
+                        class="w-full min-h-32 resize-y outline-none border rounded border-[#CBD5E1] p-2"
+                        :placeholder="`Enter content here...`"></textarea>
                     </div>
                   </div>
                 </div>
@@ -38,15 +36,16 @@
               </UiTabsContent>
 
               <UiTabsContent value="outbound">
-                <div v-if="Object.keys(outboundPrompt).length > 0" class="space-y-6">
+                <div v-if="Object.keys(outboundPrompt).length > 0"
+                  class="flex items-start grid grid-cols-2 gap-6 w-full">
                   <div v-for="(value, key) in outboundPrompt" :key="key" class="space-y-0">
                     <h2 class="text-lg font-bold capitalize">{{ formatSectionTitle(key) }}</h2>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="gap-4">
                       <textarea v-model="outboundPrompt[key]"
                         class="w-full min-h-32 resize-y outline-none border rounded p-2"
                         :placeholder="`Enter content here...`"></textarea>
-                      <textarea class="w-full min-h-32 resize-y outline-none border rounded p-2"
-                        :placeholder="`Enter additional content here...`"></textarea>
+                      <!-- <textarea class="w-full min-h-32 resize-y outline-none border rounded p-2"
+                        :placeholder="`Enter additional content here...`"></textarea> -->
                     </div>
                   </div>
                 </div>
@@ -83,7 +82,6 @@ const props = defineProps<{
   loading: boolean;
   refreshBot: () => void
 }>();
-
 // Removed activeTab ref as it's now managed by UiTabs
 const isLoading = ref(false);
 const { value: type } = useField("type");
@@ -150,10 +148,11 @@ const onSubmit = handleSubmit(async (value: any) => {
 
     console.log("Submitting payload:", payload);
 
-    // await updateLLMConfig(payload, props.botDetails.id, "Bot information and prompts updated successfully.");
-
-    if (props.refreshBot) {
+    await updateLLMConfig(payload, props.botDetails.id, "Bot information and prompts updated successfully.");
+    if (typeof props.refreshBot === 'function') {
       props.refreshBot();
+    } else {
+      console.error("refreshBot is not a function", props.refreshBot);
     }
   } catch (error) {
     console.error("Error updating bot configuration:", error);

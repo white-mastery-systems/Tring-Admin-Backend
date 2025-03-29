@@ -248,18 +248,6 @@ const boundList = ref([
   }
 ])
 
-const roles = [
-  {
-    value: "Customer Support",
-    label: "Customer Support",
-    helperText: "Assist customers with their questions and issues.",
-  },
-  {
-    value: "Receptionist",
-    label: "Receptionist",
-    helperText: "Handles visitor interactions and phone calls.",
-  },
-];
 
 const { intentOptions, fetchConfig } = useChatbotConfig();
 
@@ -276,8 +264,8 @@ const intentTypes = [
   { label: "Education & Training", value: "education-training", icon: GraduationCap },
   { label: "IT Service", value: "it-service", icon: Server },
 ];
-const { languageList } = useVoiceLanguageList();
-const { formattedTimeZones } = useTImeList();
+// const { languageList } = useVoiceLanguageList();
+// const { formattedTimeZones } = useTImeList();
 const isLoading = ref(false);
 
 // breadcrumbStore.setBreadcrumbs([
@@ -374,8 +362,8 @@ watch(() => values.type, (newType) => {
 })
 
 const onSubmit = handleSubmit(async (value: any) => {
-  // updateLLMConfig()
   isLoading.value = true;
+
   const modifiedData = {
     ...props.botDetails.botDetails,
     boundDirection: value.boundDirection,
@@ -384,18 +372,26 @@ const onSubmit = handleSubmit(async (value: any) => {
     goal: values.goal,
     otherRole: values?.otherRole ?? '',
     otherGoal: values?.otherGoal ?? '',
-  }
+  };
+
   const payload = {
     botDetails: modifiedData,
   };
-  console.log("payload", payload, props.botDetails);
+    const llmConfig = {
+      ...props.botDetails.llmConfig,
+      inboundPrompt: {},
+      outboundPrompt: {},
+    }
+    payload.llmConfig = llmConfig;
   await updateLLMConfig(payload, props.botDetails.id, "Bot information added successfully.");
-  isLoading.value = false;
 
-  // return navigateTo({
-  //   name: "voice-bot-id",
-  //   params: { id: botDetailsList.id },
-  // });
+  if (typeof props.refreshBot === 'function') {
+    props.refreshBot();
+  } else {
+    console.error("refresh function is not available", props.refreshBot);
+  }
+
+  isLoading.value = false;
 });
 const selectIndustry = (value: string) => {
   // Update the type

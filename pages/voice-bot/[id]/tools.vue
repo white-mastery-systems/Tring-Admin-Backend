@@ -253,18 +253,18 @@ breadcrumbStore.setBreadcrumbs([
 ]);
 // const uploadedAudio = ref();
 const deleteFileBucket = ref([]);
-const {
-  data: integrationsData,
-  status,
-  refresh: audioDataRefresh,
-} = await useLazyFetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio/metaData`, {
-  server: false,
-  params: {
-    bot_id: route.params.id,
-    organization_id: botDetailsList.organizationId
-  },
-  default: () => [],
-});
+// const {
+//   data: integrationsData,
+//   status,
+//   refresh: audioDataRefresh,
+// } = await useLazyFetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio/metaData`, {
+//   server: false,
+//   params: {
+//     bot_id: route.params.id,
+//     organization_id: botDetailsList.organizationId
+//   },
+//   default: () => [],
+// });
 
 watch(botDetailsList.value, () => {
   if (botDetailsList.value) {

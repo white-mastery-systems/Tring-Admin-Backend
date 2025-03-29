@@ -152,16 +152,15 @@
 <script setup lang="ts">
 import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
-
+import { useRoute  } from "vue-router";
 definePageMeta({
   middleware: "admin-only",
 });
-const route = useRoute("voice-bot-id-identity-management");
-const paramId: any = route;
 const config = useRuntimeConfig();
-
+const route = useRoute();
 // Bot details and breadcrumbs
-const botDetails = ref(await getVoiceBotDetails(route.params.id));
+// const botDetails = ref(await getVoiceBotDetails(route.params.id));
+const props = defineProps < { botDetails: any; loading: boolean; audioResponseData: any; audioDataRefresh: () => void; refreshBot: () => void }>();
 
 // State variables
 const welcomeFilesData = ref([]);
@@ -192,19 +191,23 @@ const intentList = ref([
   },
 ]);
 
-// Fetch audio data
-const {
-  data: audioResponseData,
-  status,
-  refresh: audioDataRefresh,
-} = await useLazyFetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio/metaData`, {
-  server: false,
-  params: {
-    bot_id: route.params.id,
-    organization_id: botDetails.value.organizationId
-  },
-  default: () => [],
-});
+// const { audioResponseData, loading, error, audioDataRefresh } = usePrerecordedAudioMetadata(
+//   route.params.id,
+//   props.botDetails.organizationId
+// );
+// // Fetch audio data
+// const {
+//   data: audioResponseData,
+//   status,
+//   refresh: audioDataRefresh,
+// } = await useLazyFetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio/metaData`, {
+//   server: false,
+//   params: {
+//     bot_id: route.params.id,
+//     organization_id: props.botDetails.organizationId
+//   },
+//   default: () => [],
+// });
 
 // Form validation schema
 const botSchema = toTypedSchema(
@@ -220,7 +223,7 @@ const botSchema = toTypedSchema(
       // Conditional validation for 'welcome' intent
       if (
         data.intent === "welcome" &&
-        (!data.welcomeAudio && (!audioResponseData.value?.welcome || !audioResponseData.value?.welcome.length))
+        (!data.welcomeAudio && (!props.audioResponseData?.welcome || !props.audioResponseData?.welcome.length))
       ) {
         ctx.addIssue({
           path: ["welcomeAudio"],
@@ -231,7 +234,7 @@ const botSchema = toTypedSchema(
       // Conditional validation for 'conclude' intent
       if (
         data.intent === "conclude" &&
-        (!data.concludeAudio && (!audioResponseData.value?.conclude || !audioResponseData.value?.conclude.length))
+        (!data.concludeAudio && (!props.audioResponseData?.conclude || !props.audioResponseData?.conclude.length))
       ) {
         ctx.addIssue({
           path: ["concludeAudio"],
@@ -240,7 +243,7 @@ const botSchema = toTypedSchema(
       }
       if (
         data.intent === "filler" &&
-        (!data.fillerAudio && (!audioResponseData.value?.filler || !audioResponseData.value?.filler.length))
+        (!data.fillerAudio && (!props.audioResponseData?.filler || !props.audioResponseData?.filler.length))
       ) {
         ctx.addIssue({
           path: ["fillerAudio"],
@@ -249,7 +252,7 @@ const botSchema = toTypedSchema(
       }
       if (
         data.intent === "ambientNoise" &&
-        ((!data.ambientNoiseAudio) && (!audioResponseData.value?.ambientNoise || !audioResponseData.value.ambientNoise.length))
+        ((!data.ambientNoiseAudio) && (!props.audioResponseData?.ambientNoise || !props.audioResponseData.ambientNoise.length))
       ) {
         ctx.addIssue({
           path: ["ambientNoiseAudio"],
@@ -258,7 +261,7 @@ const botSchema = toTypedSchema(
       }
       if (
         data.intent === "forwardCall" &&
-        (!data.forwardCallAudio && (!audioResponseData.value?.forwardCall || !audioResponseData.value?.forwardCall.length))
+        (!data.forwardCallAudio && (!props.audioResponseData?.forwardCall || !props.audioResponseData?.forwardCall.length))
       ) {
         ctx.addIssue({
           path: ["forwardCallAudio"],
@@ -284,15 +287,15 @@ const {
 });
 
 // Set initial intent value
-if (botDetails.value?.intent) setFieldValue("intent", botDetails.value?.intent)
+if (props.botDetails?.intent) setFieldValue("intent", props.botDetails?.intent)
 else {
   setFieldValue("intent", 'welcome')
 }
 
 // Update page title
 watchEffect(async () => {
-  if (botDetails.value) {
-    const userName = botDetails.value?.name ?? "Unknown Bot Name";
+  if (props.botDetails) {
+    const userName = props.botDetails?.name ?? "Unknown Bot Name";
     useHead({
       title: `Voice Bot | ${userName} - Pre Recorded Audio`,
     });
@@ -357,13 +360,13 @@ const uploadFile = (
   }
 
   let formData = new FormData();
-  if (botDetails.value.id) {
-    formData.append("bot_id", botDetails.value.id);
+  if (props.botDetails.id) {
+    formData.append("bot_id", props.botDetails.id);
   }
-  if (botDetails.value.organizationId) {
-    formData.append("organization_id", botDetails.value.organizationId);
+  if (props.botDetails.organizationId) {
+    formData.append("organization_id", props.botDetails.organizationId);
   }
-  formData.append("language", botDetails.value.botDetails?.agentLanguage ?? "");
+  formData.append("language", props.botDetails.botDetails?.agentLanguage ?? "");
 
   // Append intent
   if (values.intent) {
@@ -385,15 +388,15 @@ const deleteFile = async (data, files, index) => {
   files.splice(index, 1);
   if (data?.audio) {
     deleteFileBucket.value.push(data?.audio);
-    await audioDelete(botDetails.value);
-    await audioDataRefresh();
+    await audioDelete(props.botDetails);
+    await props.audioDataRefresh();
   }
 };
 
 // Audio upload handler
 const audioUpload = async (formData: any) => {
   isLoading.value = true;
-  if (botDetails.value.botDetails && botDetails.value.botDetails?.agentLanguage) {
+  if (props.botDetails.botDetails && props.botDetails.botDetails?.agentLanguage) {
     try {
       await fetch(
         `${config.public.voiceBotBaseUrl}/prerecordedAudio`,
@@ -402,7 +405,7 @@ const audioUpload = async (formData: any) => {
           body: formData,
         },
       );
-      audioDataRefresh();
+      await props.audioDataRefresh();
       toast.success("Audio uploaded successfully. Please submit the form.");
     } catch (error) {
       isLoading.value = false;
@@ -417,17 +420,13 @@ const audioUpload = async (formData: any) => {
   } else {
     isLoading.value = false;
     toast.error("Please Fill Bot Details.");
-    await navigateTo({
-      name: "voice-bot-id-identity-management",
-      params: { id: paramId.params.id },
-    });
   }
 };
 
 // Ambient noise audio upload
 const ambientNoiseAudioUpload = async () => {
   // Ensure we're not modifying the original array directly if not needed
-  const modifiedFilesData = audioResponseData.value?.ambientNoise?.map((item: any) => {
+  const modifiedFilesData = props.audioResponseData?.ambientNoise?.map((item: any) => {
     return {
       filename: `${item.audio}.wav`,
       volume: item.volume,
@@ -436,8 +435,8 @@ const ambientNoiseAudioUpload = async () => {
 
   const payload = {
     items: modifiedFilesData,
-    botId: botDetails.value.id,
-    organizationId: botDetails.value.organizationId,
+    botId: props.botDetails.id,
+    organizationId: props.botDetails.organizationId,
   };
 
   try {
@@ -485,8 +484,8 @@ const audioDelete = async (data: any) => {
 
 // Update ambient sound volume
 const updateAmbientSound = (index, newVolume) => {
-  if (audioResponseData.value?.ambientNoise?.length) {
-    audioResponseData.value.ambientNoise[index].volume = newVolume;
+  if (props.audioResponseData?.ambientNoise?.length) {
+    props.audioResponseData.ambientNoise[index].volume = newVolume;
   }
   if (index >= 0 && index < ambientNoiseFilesData.value.length) {
     ambientNoiseFilesData.value[index].volume = newVolume;
@@ -502,12 +501,17 @@ const onSubmit = handleSubmit(async (value: any) => {
   let payload = {
     intent: values.intent,
   };
-  await updateLLMConfig(payload, botDetails.value.id, "Pre-recorded audio files updated successfully.");
+  await updateLLMConfig(payload, props.botDetails.id, "Pre-recorded audio files updated successfully.");
+  if (typeof props.refreshBot === 'function') {
+    props.refreshBot();
+  } else {
+    console.error("refresh function is not available", props.refreshBot);
+  }
   isLoading.value = false;
 
-  return navigateTo({
-    name: "voice-bot-id",
-    params: { id: botDetails.value.id },
-  });
+  // return navigateTo({
+  //   name: "voice-bot-id",
+  //   params: { id: props.botDetails.id },
+  // });
 });
 </script>

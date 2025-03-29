@@ -111,7 +111,7 @@
 
                   <div v-if="values.clientTools[toolIdx]?.name">
                     <div
-                      v-for="(concludeFile, concludeFileIndex) in integrationsData[values?.clientTools[toolIdx]?.name]"
+                      v-for="(concludeFile, concludeFileIndex) in props.audioResponseData[values?.clientTools[toolIdx]?.name]"
                       class="grid gap-2">
                       <div class="flex gap-3">
                         <span>
@@ -242,40 +242,52 @@ const isLoading = ref(false);
 const formattedToolsConfig = ref(null);
 const route = useRoute("voice-bot-id-tools");
 const paramId: any = route;
-const botDetailsList = ref(await getVoiceBotDetails(route.params.id));
+const props = defineProps<{ botDetails: any; loading: boolean; audioResponseData: any; audioDataRefresh: () => void; refreshBot: () => void }>();
+
+// const props.botDetails(await getVoiceBotDetails(route.params.id));
 const config = useRuntimeConfig();
 const formattedUploadAudioFile = ref({});
 const deleteFileBucket = ref([]);
 
+// Using an alias for audioResponseData
+// const {
+//   audioResponseData: integrationsData,
+//   loading,
+//   error,
+//   audioDataRefresh
+// } = usePrerecordedAudioMetadata(
+//   route.params.id,
+//   props.botDetails.organizationId
+// );
 // Fetch audio data
-const {
-  data: integrationsData,
-  status,
-  refresh: audioDataRefresh,
-} = await useLazyFetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio/metaData`, {
-  server: false,
-  params: {
-    bot_id: route.params.id,
-    organization_id: botDetailsList.value.organizationId
-  },
-  default: () => [],
-});
+// const {
+//   data: integrationsData,
+//   status,
+//   refresh: audioDataRefresh,
+// } = await useLazyFetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio/metaData`, {
+//   server: false,
+//   params: {
+//     bot_id: route.params.id,
+//     organization_id: props.botDetails.organizationId
+//   },
+//   default: () => [],
+// });
 
 // Update page title
 watchEffect(() => {
-  if (botDetailsList.value) {
-    const userName = botDetailsList.value?.name ?? "Unknown Bot Name";
+  if (props.botDetails) {
+    const userName = props.botDetails?.name ?? "Unknown Bot Name";
     useHead({
       title: `Voice Bot | ${userName} - Add Tools`,
     });
   }
 });
 
-// Watch botDetailsList.value.tools.clientTools
-watch(() => botDetailsList.value?.tools.clientTools, () => {
-  if (Array.isArray(botDetailsList.value?.tools.clientTools)) {
+// Watch props.botDetails.tools.clientTools
+watch(() => props.botDetails?.tools.clientTools, () => {
+  if (Array.isArray(props.botDetails?.tools.clientTools)) {
     formattedUploadAudioFile.value = {}; // Reset object
-    botDetailsList.value.tools.clientTools.forEach((item) => {
+    props.botDetails.tools.clientTools.forEach((item) => {
       formattedUploadAudioFile.value[item.name] = item.audio; // Add key-value pairs
     });
   }
@@ -304,13 +316,13 @@ const { handleSubmit, values, resetForm, errors, setFieldValue } = useForm({
 });
 
 // Set initial values
-setFieldValue('currentDate', botDetailsList.value?.tools?.defaultTools?.includes('currentDate') ?? true);
-setFieldValue('concludeCall', botDetailsList.value?.tools?.defaultTools?.includes('concludeCall') ?? true);
-setFieldValue('forwardCall', botDetailsList.value?.tools?.defaultTools?.includes('forwardCall') ?? false);
-setFieldValue('genderIdentification', botDetailsList.value?.tools?.defaultTools?.includes('genderIdentification') ?? true);
-setFieldValue('clientTools', botDetailsList.value?.tools?.clientTools ?? []);
-setFieldValue('clientFormControl', botDetailsList.value?.tools?.clientFormControl ?? false);
-setFieldValue('propertieFormControl', botDetailsList.value?.tools?.propertieFormControl ?? false);
+setFieldValue('currentDate', props.botDetails?.tools?.defaultTools?.includes('currentDate') ?? true);
+setFieldValue('concludeCall', props.botDetails?.tools?.defaultTools?.includes('concludeCall') ?? true);
+setFieldValue('forwardCall', props.botDetails?.tools?.defaultTools?.includes('forwardCall') ?? false);
+setFieldValue('genderIdentification', props.botDetails?.tools?.defaultTools?.includes('genderIdentification') ?? true);
+setFieldValue('clientTools', props.botDetails?.tools?.clientTools ?? []);
+setFieldValue('clientFormControl', props.botDetails?.tools?.clientFormControl ?? false);
+setFieldValue('propertieFormControl', props.botDetails?.tools?.propertieFormControl ?? false);
 
 // Upload audio file handler
 const uploadAudioFile = (event: Event, toolIdx: number) => {
@@ -330,13 +342,13 @@ const uploadAudioFile = (event: Event, toolIdx: number) => {
   }
 
   let formData = new FormData();
-  if (botDetailsList.value.id) {
-    formData.append("bot_id", botDetailsList.value.id);
+  if (props.botDetails.id) {
+    formData.append("bot_id", props.botDetails.id);
   }
-  if (botDetailsList.value.organizationId) {
-    formData.append("organization_id", botDetailsList.value.organizationId);
+  if (props.botDetails.organizationId) {
+    formData.append("organization_id", props.botDetails.organizationId);
   }
-  formData.append("language", botDetailsList.value.speechToTextConfig?.language ?? "en-US");
+  formData.append("language", props.botDetails.speechToTextConfig?.language ?? "en-US");
 
   // Append intent
   if (values?.clientTools[toolIdx].name) {
@@ -360,7 +372,7 @@ const uploadAudioFile = (event: Event, toolIdx: number) => {
 // Audio upload handler
 const audioUpload = async (formData: any, index: any) => {
   isLoading.value = true;
-  if (botDetailsList.value.botDetails && botDetailsList.value.botDetails?.agentLanguage) {
+  if (props.botDetails.botDetails && props.botDetails.botDetails?.agentLanguage) {
     try {
       const response = await fetch(
         `${config.public.voiceBotBaseUrl}/prerecordedAudio`,
@@ -432,9 +444,9 @@ const audioDelete = async (toolName: any, toolIdx: any, index: any) => {
     deleteFileBucket.value.forEach((item) => {
       formData.append('files', item);
     });
-    formData.append('bot_id', botDetailsList.value.id);
-    formData.append('language', botDetailsList.value.speechToTextConfig?.language ?? "en-US");
-    formData.append('organization_id', botDetailsList.value.organizationId);
+    formData.append('bot_id', props.botDetails.id);
+    formData.append('language', props.botDetails.speechToTextConfig?.language ?? "en-US");
+    formData.append('organization_id', props.botDetails.organizationId);
     formData.append('intent', toolName);
 
     const deleteResponse = await fetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio`, {
@@ -478,7 +490,12 @@ const dynamicToolsForm = handleSubmit(async (values: any) => {
     }
   };
 
-  await updateLLMConfig(payload, botDetailsList.value.id, "Tools added successfully.");
+  await updateLLMConfig(payload, props.botDetails.id, "Tools added successfully.");
+  if (typeof props.refreshBot === 'function') {
+    props.refreshBot();
+  } else {
+    console.error("refresh function is not available", props.refreshBot);
+  }
   isLoading.value = false;
 });
 </script>

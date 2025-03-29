@@ -11,7 +11,11 @@ import BotIdentity from '@/components/voiceBot/BotIdentity.vue';
 import BotKnowledge from '@/components/voiceBot/BotKnowledge.vue';
 import AdvancedSetup from '@/components/voiceBot/AdvancedSetup.vue';
 
-const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void; refresh: () => void }>();
+const props = defineProps<{
+  botDetails: any;
+  loading: boolean;
+  refreshBot: () => void
+}>();
 // const { updateStepStatus, accordionItems, botDetails, documentsList } = useStepStatus();
 const route = useRoute();
 // const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
@@ -75,7 +79,7 @@ onMounted(() => {
         <!-- <component :is="stepComponents[item.value]" /> -->
         <component :is="stepComponents[item.value]"
          :botDetails="props.botDetails" :refreshBot="props.refreshBot" 
-         :refresh="props.refresh" :loading="props.loading" @statusUpdated="updateStepStatus" class="mt-2" />
+          :loading="props.loading" @statusUpdated="updateStepStatus" class="mt-2" />
       </AccordionContent>
     </AccordionItem>
   </Accordion>

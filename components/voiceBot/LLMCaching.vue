@@ -77,7 +77,8 @@ definePageMeta({
   middleware: "admin-only",
 });
 const route = useRoute("voice-bot-id-identity-management");
-const botDetailsList = ref(await getVoiceBotDetails(route.params.id));
+// const botDetails(await getVoiceBotDetails(route.params.id));
+const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void }>();
 const config = useRuntimeConfig();
 
 // Language and loading state
@@ -109,14 +110,14 @@ const {
 });
 
 // Set initial values from bot details
-setFieldValue("distance", botDetailsList.value.clientConfig.distance);
-setFieldValue("llmCaching", botDetailsList.value.clientConfig.llmCaching);
-setFieldValue("dynamicCaching", botDetailsList.value.clientConfig.dynamicCaching);
+setFieldValue("distance", props.botDetails.clientConfig.distance);
+setFieldValue("llmCaching", props.botDetails.clientConfig.llmCaching);
+setFieldValue("dynamicCaching", props.botDetails.clientConfig.dynamicCaching);
 
 // Update page title
 watchEffect(() => {
-  if (botDetailsList.value) {
-    const userName = botDetailsList.value?.name ?? "Unknown Bot Name";
+  if (props.botDetails) {
+    const userName = props.botDetails?.name ?? "Unknown Bot Name";
     useHead({
       title: `Voice Bot | ${userName} - LLM Caching`,
     });
@@ -130,12 +131,17 @@ const onSubmit = handleSubmit(async (value: any) => {
     clientConfig: value
   };
 
-  await updateLLMConfig(payload, botDetailsList.value.id, "LLM Caching Updated Successfully.");
+  await updateLLMConfig(payload, props.botDetails.id, "LLM Caching Updated Successfully.");
+  if (typeof props.refreshBot === 'function') {
+    props.refreshBot();
+  } else {
+    console.error("refresh function is not available", props.refreshBot);
+  }
   isLoading.value = false;
 
   return navigateTo({
     name: "voice-bot-id",
-    params: { id: botDetailsList.value.id },
+    params: { id: props.botDetails.id },
   });
 });
 </script>

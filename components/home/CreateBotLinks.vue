@@ -82,7 +82,7 @@ const createNewBots = async (url: any) => {
       <CardFooter class="flex items-cnter p-0">
         <!-- <NuxtLink :to="item.url"> -->
         <UiButton @click="createNewBots(item.url)"
-          class="text-[12px] sm:text-[12px] md:text-[14px] bg-[#FFBC42] px-6 rounded-xl button_shadow">
+          class="text-[12px] sm:text-[12px] md:text-[14px] bg-[#FFBC42] hover:bg-[#E6A93C]-500 hover:brightness-90 px-6 rounded-xl button_shadow">
           Create </UiButton>
         <!-- </NuxtLink> -->
       </CardFooter>

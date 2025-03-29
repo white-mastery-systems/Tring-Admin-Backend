@@ -139,7 +139,7 @@ const mobileSidebarControl = (value: any) => {
         class="group/collapsible">
         <SidebarMenuItem>
           <CollapsibleTrigger as-child>
-            <SidebarMenuButton :tooltip="item.name" :class="[activeItems[item.name] ? 'bg-[#0F172A] text-white' : '']">
+            <SidebarMenuButton :tooltip="item.name" :class="[activeItems[item.name] ? 'bg-[#FFF8EB] text-[#3D3D3D]' : '']">
               <template v-if="item.children.length">
                 <NuxtLink :to="item.path + item.children[0].path" class="flex items-center gap-2"
                   :class="(!slideBarStore.siderBarslider) ? '' : 'w-full'">
@@ -163,8 +163,8 @@ const mobileSidebarControl = (value: any) => {
               <SidebarMenuSubItem v-for="subItem in item.children" :key="subItem.name">
                 <SidebarMenuSubButton as-child>
                   <NuxtLink @click="mobileSidebarControl(item)" :to="item.path + subItem.path"
-                    class="flex items-center space-x-2 hover:bg-[#f4f4f5]">
-                    <span :class="(route.path.includes(item.path + subItem.path)) ? 'text-gray-500' : ''">{{
+                    class="flex items-center space-x-2 hover:bg-[#f4f4f5] text-gray-500">
+                    <span :class="(route.path.includes(item.path + subItem.path)) ? 'text-[#3D3D3D]' : ''">{{
                       subItem.name }}</span>
                   </NuxtLink>
                 </SidebarMenuSubButton>
