@@ -28,11 +28,10 @@ export default defineEventHandler(async (event) => {
       getAdminByOrgId(organizationId)
     ])
 
-    if(!orgPlanUsage || orgZohoSubscription?.subscriptionStatus !== "active") {
-      return false // subscription status is not active
+    if (!orgPlanUsage || !["active", "trial"].includes(orgZohoSubscription?.subscriptionStatus)) {
+      return false; // Subscription status is not active or trial
     }
-
-    const adminCountry = adminDetails?.address.country!
+    const adminCountry = adminDetails?.address?.country!
 
     let planPricingDetail
         
