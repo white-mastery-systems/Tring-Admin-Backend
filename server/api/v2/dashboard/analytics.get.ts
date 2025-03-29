@@ -3,6 +3,7 @@ import { errorResponse } from "~/server/response/error.response"
 
 const queryValidator = z.object({
   period: z.string(),
+  type: z.enum(["chat", "voice"]),
   from: z
     .string()
     .datetime({ offset: true })
