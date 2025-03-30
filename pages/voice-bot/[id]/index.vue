@@ -224,7 +224,8 @@ onBeforeMount(() => {
 
 
 watch(() => botDetails.value.active,(newActive) => {
-  if (newActive && store.lastVisitedRoute && store.lastVisitedRoute.includes('/voice-bot/create-voice-bot')) {
+  // && store.lastVisitedRoute && store.lastVisitedRoute.includes('/voice-bot/create-voice-bot')
+  if (newActive) {
     createBotVoicesuccessfulState.value.open = true;
   }
 })
