@@ -1,4 +1,4 @@
-export const governmentSectorsForm = {
+export const governmentSectorsDynamicForm = {
     "fields": [
         {
             "type": "text",

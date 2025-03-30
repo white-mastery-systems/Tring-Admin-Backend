@@ -1,4 +1,4 @@
-export const financeBankingForm = {
+export const financeBankingDynamicForm = {
     "fields": [
         {
             "type": "text",

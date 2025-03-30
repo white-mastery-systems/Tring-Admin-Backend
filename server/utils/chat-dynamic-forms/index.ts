@@ -1,6 +1,8 @@
 import { ecommerceDynamicForm } from "./ecommerce.form";
 import { educationTrainingDynamicForm } from "./education-training.form";
 import { energyUtilitiesDynamicForm } from "./energy-utilities.form";
+import { financeBankingDynamicForm } from "./finance-banking.form";
+import { governmentSectorsDynamicForm } from "./government-sectors.form";
 import { healthCareDynamicForm } from "./healthcare.form";
 import { hospitalityDynamicForm } from "./hospitality.form";
 import { itServiceDynamicForm } from "./it-service.form";
@@ -11,8 +13,8 @@ import { travelDynamicForm } from "./travel.form";
 
 export const chatDynamicFormValues: Record<string, any> = {
   "real-estate": realEstateDynamicForm,
-  // "government-sectors": ,
-  // "finance-banking": ,
+  "government-sectors": governmentSectorsDynamicForm,
+  "finance-banking": financeBankingDynamicForm,
   "healthcare": healthCareDynamicForm,
   "e-commerce": ecommerceDynamicForm,
   "energy-utilities": energyUtilitiesDynamicForm,
