@@ -1,7 +1,7 @@
 const db = useDrizzle()
 
 export const getOrgLeadsForAnalytics = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
-  return await db
+  const data = await db
     .select({ createdAt: leadSchema.createdAt })
     .from(leadSchema)
     .where(
@@ -13,6 +13,7 @@ export const getOrgLeadsForAnalytics = async (organizationId: string, fromDate: 
         eq(leadSchema.organizationId, organizationId),
     ),
   )
+  return data.length
 }
 
 export const getOrgQualifiedLeads = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined, highPotential?: boolean) => {
@@ -81,4 +82,32 @@ export const getLeadComposition = async (organizationId: string, fromDate: Date 
   { warmLeads: 0, hotLeads: 0, coldLeads: 0, junkLeads: 0 });
 
   return leadCounts
+}
+
+export const getDropOffConversation = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => { 
+  let data: any = await db
+    .select({ createdAt: leadSchema.createdAt }) 
+    .from(leadSchema)
+    .where(
+      and(
+        ...(fromDate && toDate ? [
+          gte(leadSchema.createdAt, fromDate),
+          lte(leadSchema.createdAt, toDate),
+        ] : []),
+        eq(leadSchema.organizationId, organizationId),
+        isNotNull(leadSchema.metadata),
+      ),  
+  )
+
+  data = data.filter((lead: any) => { 
+    const metadata: any = lead.metadata || {};
+    const metrics = metadata.metrics || {};
+    const buyerSignals = metadata.buyerSignals || [];
+
+    return (
+      metrics.dropOffRate === true
+    );
+   })
+
+   return data.length
 }
