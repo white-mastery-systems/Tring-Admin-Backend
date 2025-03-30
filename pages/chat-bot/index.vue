@@ -2,22 +2,20 @@
   <Page title="Chat Bot" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-4">
-        <UiButton class="text-[14px] font-medium"
-          @click="addNewChatBot()">
+        <UiButton color="primary" class="text-[14px] font-medium" @click="addNewChatBot()">
           Add Chat Bot
         </UiButton>
       </div>
     </template>
     <!-- agentModalState.open = true;
     agentModalState.id = null; -->
-    <div class="flex items-center gap-2 pb-2 overflow-x-scroll">
+    <div class="flex items-center gap-2 overflow-x-scroll mt-2">
       <UiInput v-model="filters.q" @input="filters.page = '1'"
-        class="w-[150px] sm:w-[150px] md:w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
+        class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0"
         placeholder="Search bot..." />
       <BotStatusFilter v-model="filters.active" />
       <BotCategoryFilter v-model="filters.type" />
-      <UiButton @click="handleClearFilters"
-        class="ml-2 text-[#ffffff]">
+      <UiButton color="primary" @click="handleClearFilters" class="ml-2 text-[#ffffff]">
         Clear Filters</UiButton>
     </div>
     <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="($event) => {

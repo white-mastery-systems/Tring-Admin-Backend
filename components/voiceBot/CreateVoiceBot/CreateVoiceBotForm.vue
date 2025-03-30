@@ -44,6 +44,7 @@ watch(() => values.type, async (newType) => {
   if (newType) {
     await fetchConfig(newType)
     await fetchKnowledgeBase(newType)
+    scrapData.voiceBotScrapedData = []
     // fetchSuggestions(newType)
   }
 });
@@ -84,7 +85,7 @@ const nextStep = async () => {
 
   // Special handling for step 1 (Knowledge Details)
   if (step.value === 1) {
-    if (scrapData.voiceBotScrapedData?.document_content?.length === 0 || !scrapData.voiceBotScrapedData?.document_content) {
+    if (!stepOneRef.value.uploadDocumentRef.text) {
       toast.error("Please provide Knowledge Details.");
       isValid = false;
     }
@@ -345,7 +346,7 @@ const submitForm = handleSubmit(async (values) => {
     },
     textToSpeechConfig: updatedTTSConfig,
     speechToTextConfig: updatedConfig,
-    knowledgeBase: scrapData.voiceBotScrapedData?.document_content,
+    knowledgeBase: scrapData.voiceBotScrapedData?.document_content ?? stepOneRef.value.uploadDocumentRef.text,
     llmConfig: {
       top_k: "40",
       top_p: "0.95",
@@ -416,14 +417,14 @@ onUnmounted(() => {
         <FifthStepVoiceBot v-show="step === 5" v-model:values="values" :errors="errors" :intentOptions="intentOptions" />
         <SixthStepVoiceBot v-show="step === 6" v-model:values="values" :errors="errors" :intentOptions="intentOptions" />
         <div class="flex justify-end w-full gap-[12px] p-4 mt-3">
-          <UiButton v-if="(step > 1)" :disabled="isLoading" type="button" @click="prevStep" class="px-8" variant="outline">Back</UiButton>
-          <UiButton v-if="showBackButton" type="button" @click="firstStepBack" class="px-8" variant="outline">Back
+          <UiButton v-if="(step > 1)" :disabled="isLoading" type="button" @click="prevStep" class="px-8 button_shadow border border-[#FFBC42] text-[#FFBC42] hover:text-[#FFBC42] rounded-lg" variant="outline">Back</UiButton>
+          <UiButton v-if="showBackButton" type="button" @click="firstStepBack" class="px-8 button_shadow border border-[#FFBC42] text-[#FFBC42] hover:text-[#FFBC42] rounded-lg" variant="outline">Back
           </UiButton>
-          <UiButton v-if="showNextButton" type="button" @click="nextStep" class="px-8"
+          <UiButton v-if="showNextButton" type="button" @click="nextStep" color="primary" class="px-8 button_shadow rounded-lg"
             :loading="isLoading">Next
           </UiButton>
           <!-- isDataLoading || isUploading -->
-          <UiButton type="button" v-if="step === 6" @click="submitForm" class="px-8" :loading="isLoading">
+          <UiButton color="primary" type="button" v-if="step === 6" @click="submitForm" class="px-8 button_shadow rounded-lg" :loading="isLoading">
             Create Bot
           </UiButton>
         </div>

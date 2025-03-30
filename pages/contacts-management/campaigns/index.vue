@@ -11,7 +11,7 @@
         </UiButton>
       </div>
     </template>
-    <div>
+    <div class="p-2">
       <!-- <div class="flex items-center gap-2 pb-2">
         <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search campaign..." />

@@ -6,7 +6,7 @@
       <!-- <UiButton class="flex items-center justify-end border-none">
         Link channe
       </UiButton> -->
-      <div class="flex w-full items-center">
+      <div class="flex flex-col w-full items-center overflow-x-scroll sm:flex-row">
         <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
           <div class="items-cetner flex gap-4">
             <div v-if="botDetails.documentId" class="flex items-center gap-[5px] text-[#1abb00]">
@@ -24,7 +24,7 @@
             <div
               class="items-top sm:items-top md:items-top mt-3 flex gap-3 sm:mt-3 md:mt-0 lg:mt-0 lg:items-center xl:mt-0 xl:items-center">
               <div class="flex flex-col items-center gap-1">
-                <UiButton color="primary" class="p-2" @click="() => {
+                <UiButton color="primary" class="p-3" @click="() => {
                   channelModalState.open = true;
                   channelModalState.id = botDetails.id;
                 }
@@ -75,7 +75,7 @@
                   <div class="block text-[4px] lg:hidden">Preview Bot</div>
                 </div>
                 <div class="flex flex-col items-center gap-1">
-                  <UiButton class="gap-2 p-2 text-white bg-[#000000]" @click="copyScript">
+                  <UiButton color="primary" class="gap-2 p-2 button_shadow" @click="copyScript">
                     <FileCode class="w-5 h-5" />
                     <span class="hidden lg:inline"> Copy Script </span>
                     <!-- <span class="flex items-center justify-center lg:hidden">
@@ -161,9 +161,10 @@
       <CreateBotFields ref="childRef" @confirm="handleAddEditBot" />
     </div> -->
     <!-- leading-none -->
-    <div class="font-bold text-[20px] mt-4">
+    <div class="font-bold text-[18px] sm:text-[18px] md:text-[20px] mt-4 px-4 sm:px-4 md:px-0">
       View and Edit your Chatbots features
     </div>
+
     <CreateBot :botDetails="botDetails" :documents="documents" :refresh="refresh" :refreshBot="refreshBot"
       :loading="loading" />
     <!-- <div class="flex justify-center">
@@ -278,7 +279,7 @@ const breadcrumbStore = useBreadcrumbStore();
 const { botListStatus, bots } = useBotList();
 const isDataLoading = computed(() => status.value === "pending");
 const createBotsuccessfulState = ref({
-  open: false,
+  open: true,
 });
 // const pageLoading = ref(false);
 
@@ -321,8 +322,7 @@ onBeforeMount(() => {
 watch(() => botDetails.value?.documentId, (newId) => {
   console.log(newId, 'newId', store.lastVisitedRoute);
   store.scrapedData = [];
-  // && store.lastVisitedRoute && store.lastVisitedRoute.includes('/chat-bot/create-bot')
-  if (newId) {
+  if (newId && store.lastVisitedRoute && store.lastVisitedRoute.includes('/chat-bot/create-bot')) {
     createBotsuccessfulState.value.open = true;
   }
 });
@@ -405,7 +405,7 @@ const deactivateBot = async () => {
 
 const deactivateBotDialog = async () => {
   await disableBot(paramId.params.id);
-  refreshBot() // new function refreshBot added
+  await refreshBot() // new function refreshBot added
   // botDetails.value = await getBotDetails(paramId.params.id)
   modalOpen.value = false;
 };

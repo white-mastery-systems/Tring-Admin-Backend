@@ -22,7 +22,7 @@
                 <UiFormControl>
                   <UiSwitch id="currentDate" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
-                  }" :style="{ background: value ? '#171717e6' : '#8A8A8A' }" />
+                  }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
                 </UiFormControl>
                 <UiFormMessage />
               </div>
@@ -36,7 +36,7 @@
                 <UiFormControl>
                   <UiSwitch id="concludeCall" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
-                  }" :style="{ background: value ? '#171717e6' : '#8A8A8A' }" />
+                  }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
                 </UiFormControl>
                 <UiFormMessage />
               </div>
@@ -50,7 +50,7 @@
                 <UiFormControl>
                   <UiSwitch id="forwardCall" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
-                  }" :style="{ background: value ? '#171717e6' : '#8A8A8A' }" />
+                  }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
                 </UiFormControl>
                 <UiFormMessage />
               </div>
@@ -64,7 +64,7 @@
                 <UiFormControl>
                   <UiSwitch id="genderIdentification" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
-                  }" :style="{ background: value ? '#171717e6' : '#8A8A8A' }" />
+                  }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
                 </UiFormControl>
                 <UiFormMessage />
               </div>
@@ -163,7 +163,7 @@
                                     <UiSwitch :label="`Required`" :id="`param_required_${toolIdx}_${paramIdx}`"
                                       :checked="value" @update:checked="(checked) => {
                                         handleChange(checked);
-                                      }" :style="{ background: value ? '#171717e6' : '#8A8A8A' }" />
+                                      }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
                                   </UiFormControl>
                                   <UiFormMessage />
                                 </div>
@@ -202,7 +202,7 @@
 
             <!-- Add Client Tool Button -->
             <div class="flex w-full justify-end gap-2">
-              <UiButton class="mt-2" type="button" @click="() => {
+              <UiButton class="mt-2 bg-[#DEDEDE] hover:bg-[#DEDEDE]" type="button" @click="() => {
                 if (!values.clientFormControl) {
                   setFieldValue('clientFormControl', true)
                   // return
@@ -218,7 +218,7 @@
       </div>
 
       <div class="flex w-full justify-end gap-2">
-        <UiButton type="submit" size="lg" :loading="isLoading">
+        <UiButton class="bg-[#DEDEDE] hover:bg-[#DEDEDE]" type="submit" size="lg" :loading="isLoading">
           Submit
         </UiButton>
       </div>

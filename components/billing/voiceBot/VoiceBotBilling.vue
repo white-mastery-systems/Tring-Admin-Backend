@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mt-4 mb-[120px] sm:mb-[120px] md:mb-0 lg:mb-0 xl:mb-0 w-full self-center rounded-lg bg-[#fffff] shadow-3xl">
+    class="px-2 sm:px-2 md:px-0 mt-4 mb-[120px] sm:mb-[120px] md:mb-0 lg:mb-0 xl:mb-0 w-full self-center rounded-lg bg-[#fffff] shadow-3xl">
     <div
       class="flex items-center justify-between rounded-t-xl border-b-[1px] border-[#80808036] px-[5px] py-5 text-[18px] font-bold sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
       <span> Subscription Details </span>

@@ -6,7 +6,7 @@
     <!-- <div class="text-[18px] font-bold mb-0 mt-1"> Document </div> -->
     <DocumentManagement :botDetails="props.botDetails" :documents="props.documents" :refreshBot="props.refreshBot" :refresh="props.refresh" />
     <div class="mb-6 mt-1">
-      <UiSeparator></UiSeparator>
+      <UiSeparator class="h-[0.5px]"></UiSeparator>
     </div>
     <!-- <div class="text-[18px] font-bold mb-3 mt-1"> Intent Management </div> -->
     <IntentManagement :botDetails="props.botDetails" :refreshBot="props.refreshBot" />

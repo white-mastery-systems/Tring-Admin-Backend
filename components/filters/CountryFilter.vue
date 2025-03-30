@@ -1,6 +1,6 @@
 <template>
   <!-- Country selection using UiSelect -->
-  <div class="w-[180px] truncate">
+  <div class="min-w-[130px] max-w-[130px] truncate">
     <UiPopover>
       <UiPopoverTrigger as-child class="w-full py-[8px] rounded-[6px]">
         <div class="flex items-center justify-between text-[14px] w-full" :class="cn(
@@ -9,9 +9,9 @@
         )">
           <span class="w-[80%] truncate">
             {{
-              selectedCountry.name ? selectedCountry.name : selectedCountry
-                ? selectedCountry.name ? selectedCountry.name : selectedCountry
-                : "Select Country"
+            selectedCountry.name ? selectedCountry.name : selectedCountry
+            ? selectedCountry.name ? selectedCountry.name : selectedCountry
+            : "Select Country"
             }}
           </span>
           <component :is="ChevronDown" class="ml-2 h-4 w-4 shrink-0 opacity-50" />

@@ -72,12 +72,12 @@ const props = withDefaults(defineProps<{
         'averageSessionDuration'" -->
         <!-- props.title === 'reEngagementRate' || props.title === 'dropOffRate' || props.title ===
         'leadQualificationAccuracy'" -->
-        <CircleDollarSign v-if="props.title === 'conversionRate'" class="h-4 w-4 text-[#FFBC42]" />
-        <Users v-if="props.title === 'uniqueVisitors'" class="h-4 w-4 text-[#FFBC42]" />
-        <Hourglass v-if="props.title === 'averageSessionDuration'" class="h-4 w-4 text-[#FFBC42]" />
-        <RefreshCcw v-if="props.title === 'reEngagementRate'" class="h-4 w-4 text-[#FFBC42]" />
-        <UserRoundX v-if="props.title === 'dropOffRate'" class="h-4 w-4 text-[#FFBC42]" />
-        <ArrowBigDown v-if="props.title === 'leadQualificationAccuracy'" class="h-4 w-4 text-[#FFBC42]" />
+        <CircleDollarSign v-if="props.title === 'conversionRate'" class="h-5 w-5 text-[#FFBC42]" />
+        <Users v-if="props.title === 'uniqueVisitors'" class="h-5 w-5 text-[#FFBC52]" />
+        <Hourglass v-if="props.title === 'averageSessionDuration'" class="h-5 w-5 text-[#FFBC52]" />
+        <RefreshCcw v-if="props.title === 'reEngagementRate'" class="h-5 w-5 text-[#FFBC52]" />
+        <UserRoundX v-if="props.title === 'dropOffRate'" class="h-5 w-5 text-[#FFBC52]" />
+        <ArrowBigDown v-if="props.title === 'leadQualificationAccuracy'" class="h-5 w-5 text-[#FFBC42]" />
 
         <!-- <ActivityIcon class="h-4 w-4 text-[#71717A]" /> -->
       </CardHeader>

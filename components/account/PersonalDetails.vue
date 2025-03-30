@@ -166,7 +166,7 @@ const { orgDetails } = await $fetch('/api/org')
 setFieldValue("countryCode", user?.value?.countryCode ?? "+91");
 setFieldValue("username", user?.value?.username ?? "");
 setFieldValue("email", user?.value?.email ?? "");
-// setFieldValue("mobile", user?.value?.mobile ?? "");
+setFieldValue("mobile", user?.value?.mobile ?? "");
 setFieldValue("address.street", user?.value?.address?.street ?? "");
 setFieldValue("address.city", user?.value?.address?.city ?? "");
 setFieldValue("address.state", user?.value?.address?.state ?? "");

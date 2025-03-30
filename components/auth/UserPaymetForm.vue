@@ -98,7 +98,7 @@ const onSubmit = handleSubmit(async (values) => {
         <CountrySelectField name="country" :labelVisible="false" helperText="Enter your country" required />
         <p v-if="errors.country" class="text-red-500 text-sm">{{ errors.country }}</p>
 
-        <UiButton :disabled="isLoading" :loading="isLoading" class="mt-3">
+        <UiButton color="primary" :disabled="isLoading" :loading="isLoading" class="mt-3">
           Choose your plan
         </UiButton>
       </div>

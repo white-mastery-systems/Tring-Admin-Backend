@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class="flex items-center gap-2 mb-2">
+    <div class="flex items-center gap-2 w-full overflow-x-scroll my-3 ">
       <UiInput v-model="props.filters.q" @input="props.filters.page = '1'"
-        class="max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+        class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
         placeholder=" Search Leads..." />
       <BotFilter v-model="filters.botId" />
       <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to" />
-      <UiButton @click="emitClearFilters"
-        class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">Clear Filters</UiButton>
+      <UiButton color="primary" @click="emitClearFilters"
+        class="ml-2">Clear Filters</UiButton>
     </div>
     <DataTable @pagination="Pagination" @limit="($event) => {
       (props.filters.page = '1'), (props.filters.limit = $event);

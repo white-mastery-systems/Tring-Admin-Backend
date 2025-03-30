@@ -169,7 +169,7 @@ const onSubmit = handleSubmit((value: any) => {
           </button>
         </div>
 
-        <UiButton :disabled="isLoading" :loading="isLoading" class="text-[16px] mt-2">
+        <UiButton color="primary" :disabled="isLoading" :loading="isLoading" class="text-[16px] mt-2">
           <!-- <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" /> -->
           Continue
         </UiButton>

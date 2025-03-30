@@ -8,7 +8,7 @@
         <!-- Text-to-Speech Configuration Section -->
         <!-- class="space-y-10" -->
         <div>
-          <div class="text-[18px] font-semibold text-[#09090B] pb-6 pt-2">Text-To-Speech (TTS) Setup</div>
+          <div class="text-[14px] sm:text-[14px] md:text-[18px] font-semibold text-[#09090B] pb-6 pt-2">Text-To-Speech (TTS) Setup</div>
           <div class="flex flex-col gap-2">
             <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4">
               <SelectField name="tts.provider" label="Provider" placeholder="Select provider" :options="ttsProviders" />
@@ -90,7 +90,7 @@
         <!-- LLM Configuration Section -->
         <!-- class="space-y-6 sm:space-y-6 md:space-y-4 lg:space-y-4 xl:space-y-4" -->
         <div class="space-y-6">
-          <div class="text-[18px] font-semibold text-[#09090B]">Large Language Model (LLM) Setup</div>
+          <div class="text-[14px] sm:text-[14px] md:text-[18px] font-semibold text-[#09090B]">Large Language Model (LLM) Setup</div>
           <div class="grid w-full grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
             <SelectField name="llm.max_output_token" label="Max Tokens" placeholder="Max Tokens"
               :options="tokens.map((token) => ({ label: token, value: token }))" />
@@ -117,7 +117,7 @@
         <!-- Speech-to-Text Configuration Section -->
         <!-- class="space-y-3" -->
         <div class="space-y-6">
-          <div class="text-[18px] font-semibold text-[#09090B]">Speech-To-Text (STT) Setup</div>
+          <div class="text-[14px] sm:text-[14px] md:text-[18px] font-semibold text-[#09090B]">Speech-To-Text (STT) Setup</div>
           <div class='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 w-full'>
             <SelectField name="stt.provider" :options="sttProviders" label="Provider" placeholder="Select provider">
             </SelectField>
@@ -235,7 +235,7 @@
           </div>
         </div>
         <div class="flex items-center justify-end gap-2">
-          <UiButton type="submit" class="px-9">
+          <UiButton type="submit" class="px-9 bg-[#DEDEDE] hover:bg-[#DEDEDE]">
             Submit
           </UiButton>
         </div>

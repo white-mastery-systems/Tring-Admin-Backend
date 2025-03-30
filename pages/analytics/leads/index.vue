@@ -8,7 +8,7 @@
         </div>
       </div>
     </template>
-    <UiTabs default-value="chat" class="w-full self-start">
+    <UiTabs default-value="chat" class="w-full self-start mt-2">
       <UiTabsList class="grid w-full grid-cols-2">
         <UiTabsTrigger value="chat" @click="() => {
           filters.type = 'chat'
@@ -23,7 +23,7 @@
           Voice
         </UiTabsTrigger>
       </UiTabsList>
-      <UiTabsContent value="chat">
+      <UiTabsContent value="chat" class="">
         <ChatBotLeads :filters="filters" @clear-filters="handleClearFilters" />
       </UiTabsContent>
       <UiTabsContent value="voice">

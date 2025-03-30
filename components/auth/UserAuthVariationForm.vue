@@ -72,7 +72,7 @@ const onSubmit = handleSubmit(async (value) => {
           </p>
         </div>
 
-        <UiButton :disabled="isLoading" :loading="isLoading">
+        <UiButton color="primary" :disabled="isLoading" :loading="isLoading">
           <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
           Sign In with Email
         </UiButton>

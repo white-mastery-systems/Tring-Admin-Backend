@@ -21,7 +21,7 @@
       </div>
     </template>
     <div
-      class="items-top flex grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-[25px]">
+      class="items-top flex grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-[25px] p-4">
       <div class="flex w-full justify-around gap-8 sm:w-full md:w-[90%] lg:w-[90%] xl:w-[90%]">
         <UiTabs default-value="client" class="w-full self-start">
           <UiTabsList class="grid w-[100%] sm:w-[100%] md:w-[90%] lg:w-[90%] xl:w-[90%] grid-cols-3">
@@ -90,7 +90,7 @@
                     <div class="p-5 rounded-lg gap-4 field_shadow">
                       <TextField label="Date" :placeholder="`${dynamicForm.content} - ${dynamicForm.date}`"
                         :required="false" :disabled="true" class="mb-2" />
-                      <TextField label="Time" :validation="false" :required="false" :placeholder="`${dynamicForm.time}`"
+                      <TextField label="Time" :required="false" :placeholder="`${dynamicForm.time}`"
                         :disabled="true" />
                     </div>
                   </div>

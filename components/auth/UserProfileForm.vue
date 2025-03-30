@@ -94,7 +94,7 @@ const onSubmit = handleSubmit(async (values: any) => {
           <p v-if="errors.mobile" class="text-[#ef4444] text-[11px]">{{ errors.mobile }}</p>
         </div>
 
-        <UiButton :disabled="isLoading" :loading="isLoading" class="text-[16px] mt-2">
+        <UiButton color="primary" :disabled="isLoading" :loading="isLoading" class="text-[16px] mt-2">
           <!-- <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" /> -->
           Proceed
         </UiButton>

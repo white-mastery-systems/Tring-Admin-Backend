@@ -26,7 +26,7 @@
                       values.dynamicCaching = false; // Reset dependent fields
                       values.distance = null;
                     }
-                  }" :style="{ background: value ? '#171717e6' : '#8A8A8A' }" />
+                  }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
                 </UiFormControl>
                 <UiFormMessage />
               </div>
@@ -44,7 +44,7 @@
                     if (!checked) {
                       values.distance = null; // Reset dependent fields
                     }
-                  }" :style="{ background: value ? '#171717e6' : '#8A8A8A' }" />
+                  }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
                 </UiFormControl>
                 <UiFormMessage />
               </div>
@@ -58,7 +58,7 @@
         </div>
 
         <div class="flex w-full justify-end">
-          <UiButton type="submit" class="w-[120px] self-end"
+          <UiButton type="submit" class="w-[120px] self-end bg-[#DEDEDE] hover:bg-[#DEDEDE]"
             size="lg" :loading="isLoading">
             Submit
           </UiButton>

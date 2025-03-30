@@ -40,22 +40,14 @@ definePageMeta({
           </p>
         </div>
         <UserAuthForm />
-        <p class="flex px-0 sm:px-0 md:px-4 text-center text-muted-foreground text-[13px] gap-2">
-          By clicking continue, you agree to our
-          <!-- By clicking continue, you agree to our Terms of Use -->
-          <!-- <a href="/terms" class="underline underline-offset-4 hover:text-primary">
-            Terms of Service
-          </a>
-          and
-          <a href="/privacy" class="underline underline-offset-4 hover:text-primary">
-            Privacy Policy
-          </a> -->
-          <a target="_blank" href="https://tringlabs.ai/terms-conditions"
-            class="underline decoration-[1px] underline-offset-2 hover:text-primary text-muted-foreground transition-all duration-200">
-            Terms of Use
-          </a>
-          .
-        </p>
+        <p class="px-0 sm:px-0 md:px-4 text-center text-[13px] text-muted-foreground">
+            By clicking continue, you agree to our
+            <a target="_blank" href="https://tringlabs.ai/terms-conditions"
+              class="underline underline-offset-4 hover:text-primary mx-[2px]">
+              Terms of Use
+            </a>
+            .
+          </p>
         <div class="flex items-center justify-center gap-2">
           <span class="font-bold text-[#3D3D3D] text-[14px]">
             Already have an account?

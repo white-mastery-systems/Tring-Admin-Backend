@@ -59,30 +59,29 @@ const handleLogoChange = (event: any) => {
 </script>
 
 <template>
-      <BotSetupCard 
-        title="Basic bot details" 
-        description="Enter your basic bot details" 
-        currentStep="2" 
-        totalSteps="6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <TextField name="newBotName" label="Voicebot Name" class="text-[14px]" placeholder="Enter your bot name"
-          v-model="newBotName" />
-          <TextField name="agentName" label="Voicebot Agent Name" class="text-[14px]" placeholder="Enter your voicebot agent name"
-          v-model="agentName" />
-          <!-- <SelectField
+  <BotSetupCard title="Basic bot details" description="Enter your basic bot details" currentStep="2" totalSteps="6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <TextField name="newBotName" label="Voicebot Name" class="text-[12px] sm:text-[12px] md:text-[14px]"
+        placeholder="Enter your bot name" v-model="newBotName" />
+      <TextField name="agentName" label="Voicebot Agent Name" class="text-[12px] sm:text-[12px] md:text-[14px]"
+        placeholder="Enter your voicebot agent name" v-model="agentName" />
+      <!-- <SelectField
             name="industry"
             label="Industry"
             placeholder="Select Role"
             :options="[]"
             :required="true"
             /> -->
-            <SelectField name="agentLanguage" :options="languageList" label="Agent Language" placeholder="Agent Language" />
-            <RegionISOCodeSelect name="region" label="Region" helperText="Enter your region" />
-            <CountryTimeZones name="timezone" label="Time Zones" helperText="Enter your time zones" />
-        <!-- <TextField label="Chatbot Name" name="BotName" class="text-[14px]" placeholder="Enter Your Chatbot Name"
+      <SelectField name="agentLanguage" :options="languageList" label="Agent Language"
+         placeholder="Agent Language" />
+      <RegionISOCodeSelect name="region" label="Region" helperText="Enter your region"
+        class="text-[12px] sm:text-[12px] md:text-[14px]" />
+      <CountryTimeZones name="timezone" label="Time Zones" helperText="Enter your time zones"
+        class="text-[12px] sm:text-[12px] md:text-[14px]" />
+      <!-- <TextField label="Chatbot Name" name="BotName" class="text-[12px] sm:text-[12px] md:text-[14px]" placeholder="Enter Your Chatbot Name"
           v-model="BotName" />
-        <TextField label="Chat Agent Name" name="NAME" class="text-[14px]" placeholder="Enter Your Chat Agent Name"
+        <TextField label="Chat Agent Name" name="NAME" class="text-[12px] sm:text-[12px] md:text-[14px]" placeholder="Enter Your Chat Agent Name"
           v-model="COMPANY" /> -->
-      </div>
-    </BotSetupCard>
+    </div>
+  </BotSetupCard>
 </template>
