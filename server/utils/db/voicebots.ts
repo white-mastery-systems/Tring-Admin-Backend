@@ -432,3 +432,9 @@ export const fetchOrCreateSalesHandyContact = async (botId:string, botIntegratio
   }
   return data
 }
+
+export const getNotDialSalesHandyContactList = async () => {
+  return await db.query.salesHandyContactsSchema.findMany({
+    where: eq(salesHandyContactsSchema.callStatus, "not dialed")
+  })
+}
