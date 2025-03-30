@@ -231,6 +231,11 @@ const onSubmit = handleSubmit(async (value: any) => {
   };
   console.log("payload", payload,props.botDetails);
   await updateLLMConfig(payload, props.botDetails.id, "Bot information added successfully.");
+  if (typeof props.refreshBot === 'function') {
+    props.refreshBot();
+  } else {
+    console.error("refreshBot is not a function", props.refreshBot);
+  }
   isLoading.value = false;
 
   // return navigateTo({

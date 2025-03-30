@@ -227,19 +227,28 @@ const intentList = ref([
 const isLoading = ref(false);
 const config = useRuntimeConfig()
 
-
-const {
-  data: audioResponseData,
-  status,
-  refresh: audioDataRefresh,
-} = await useLazyFetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio/metaData`, {
-  server: false,
-  params: {
-    bot_id: route.params.id,
-    organization_id: botDetails.organizationId
-  },
-  default: () => [],
-});
+// Using an alias for audioResponseData
+const { 
+  audioResponseData, 
+  loading, 
+  error, 
+  audioDataRefresh 
+} = usePrerecordedAudioMetadata(
+  route.params.id,
+  botDetails.organizationId
+);
+// const {
+//   data: audioResponseData,
+//   status,
+//   refresh: audioDataRefresh,
+// } = await useLazyFetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio/metaData`, {
+//   server: false,
+//   params: {
+//     bot_id: route.params.id,
+//     organization_id: botDetails.organizationId
+//   },
+//   default: () => [],
+// });
 const botSchema = toTypedSchema(
   z.object({
     intent: z.string({ required_error: "Intent is required" }).min(1, "Intent is required"),

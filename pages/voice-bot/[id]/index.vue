@@ -99,12 +99,16 @@
     <div class="font-bold text-[20px] leading-none mb-2">
       View and Edit your Voicebot features
     </div>
-    <EditVoiceBot :botDetails="botDetails" :refresh="refreshBot" :loading="loading" />
+    <EditVoiceBot :botDetails="botDetails" :refreshBot="refreshBot" :loading="loading" />
     <VoiceBotSuccessFulMessageModal v-model="createBotVoicesuccessfulState" @success="() => {
       console.log('success');
       createBotVoicesuccessfulState.open = false;
       // refreshBot();
     }" />
+    <CreateEditVoiceBotModal v-model="agentModalState" @editConfirm="() => {
+        agentModalState.open = false;
+        refreshBot()
+      }" />
     <div class="" v-if=false>
       <LazyUiDialog v-if=" !botDetails.documentId" v-model:open="isDocumentListOpen">
         <UiDialogTrigger class=""> </UiDialogTrigger>
@@ -151,10 +155,6 @@
           </NuxtLink>
         </div>
       </div>
-      <CreateEditVoiceBotModal v-model="agentModalState" @editConfirm="() => {
-          agentModalState.open = false;
-          refreshBot()
-        }" />
     </div>
   </page>
 </template>
@@ -165,6 +165,7 @@ import { toast } from "vue-sonner";
 import { Bot } from "lucide-vue-next";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 import { useVoiceBotDetails } from "~/composables/botManagement/voiceBot/useVoiceBotDetails ";
+import { botStore } from '~/store/botStore';
 
 definePageMeta({
   middleware: "admin-only",
@@ -182,16 +183,6 @@ const breadcrumbStore = useBreadcrumbStore();
 const { botDetails, loading, error, refreshBot } = useVoiceBotDetails(paramId.params.id)
 const agentModalState = ref({ open: false, id: paramId.params.id });
 
-breadcrumbStore.setBreadcrumbs([
-  {
-    label: 'Voice Bot',
-    to: `/voice-bot`,
-  },
-  {
-    label: `${botDetails.value?.name}`,
-    to: `/voice-bot`,
-  },
-]);
 const deleteModalState = ref(false);
 const modalOpen = ref(false);
 const isDocumentListOpen = ref(false);
@@ -200,6 +191,7 @@ const getDocumentList: any = ref();
 const voiceBotActive = ref(false)
 const audioResponseData = ref([])
 const config = useRuntimeConfig()
+const store = botStore();
 
 watchEffect(() => {
   if (botDetails.value) {
@@ -207,10 +199,32 @@ watchEffect(() => {
     useHead({
       title: `Voice Bot | ${userName}`,
     });
+    breadcrumbStore.setBreadcrumbs([
+      {
+        label: 'Voice Bot',
+        to: `/voice-bot`,
+      },
+      {
+        label: `${userName}` ?? 'No Name',
+        to: `/voice-bot`,
+      },
+    ]);
   }
 });
+
+onBeforeMount(() => {
+  // Add a one-time listener to save the current route before navigation
+  router.beforeResolve((to, from) => {
+    if (from.path) {
+      store.lastVisitedRoute = from.path;
+    }
+    return true; // Always continue navigation
+  });
+});
+
+
 watch(() => botDetails.value.active,(newActive) => {
-  if (newActive) {
+  if (newActive && store.lastVisitedRoute && store.lastVisitedRoute.includes('/voice-bot/create-voice-bot')) {
     createBotVoicesuccessfulState.value.open = true;
   }
 })

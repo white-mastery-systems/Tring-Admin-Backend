@@ -309,6 +309,15 @@ input:-webkit-autofill {
 }
 .button_shadow {
   box-shadow: 3.81px 3.81px 0.95px 0px #FFBC4280 !important;
+}
+.new_bot_button_shadow {
+  box-shadow: 3.81px 3.81px 0.95px 0px #0000001A !important;
+  transition: box-shadow 0.3s ease; /* Add smooth transition */
+}
+
+.new_bot_button_shadow:hover {
+  /* box-shadow: 3.81px 3.81px 0.95px 0px  !important; */
+  box-shadow: 4px 4px 1px 0px #FFBC4280 !important;
 
 }
 input:focus {

@@ -82,14 +82,14 @@ const isDateDisabled = (date: CalendarDate) => {
       <UiSelectItem value="custom">Custom</UiSelectItem>
     </UiSelectContent>
   </UiSelect>
-  <UiPopover v-if="(selectedDate === 'custom') || (selectDate === 'custom')">
+  <UiPopover v-if="(selectedDate === 'custom') || (selectDate === 'custom')" class="text-[#3D3D3D]">
     <UiPopoverTrigger as-child>
       <UiButton variant="outline" :class="cn(
-        'w-[120px] sm:w-[120px] md:w-[260px] lg:w-[240px] xl:w-[240px] justify-start text-left font-normal truncate',
+        'w-[120px] sm:w-[120px] md:w-[260px] lg:w-[240px] xl:w-[240px] justify-start text-left font-normal truncate rounded-md',
+        'border-[#FFBC42] border-[1px] focus:ring-1 focus:ring-[#FFBC42] focus:ring-opacity-50',
         !value && 'text-muted-foreground',
-      )
-        ">
-        <CalendarIcon class="mr-0 sm:mr-0 md:mr-2 lg:mr-2 xl:mr-2 h-4 w-4" />
+      )">
+        <CalendarIcon class="mr-0 sm:mr-0 md:mr-2 lg:mr-2 xl:mr-2 h-4 w-4 text-[#FFBC42]" />
         <template v-if="value.start">
           <template v-if="value.end">
             {{ df.format(value.start.toDate(getLocalTimeZone())) }} -

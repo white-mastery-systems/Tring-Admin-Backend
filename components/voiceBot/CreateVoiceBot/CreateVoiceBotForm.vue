@@ -73,7 +73,7 @@ const stepFields = {
 const nextStep = async () => {
   const fieldsToValidate = stepFields[step.value] || [];
   let isValid = true;
-  
+
   // Basic field validation
   for (const field of fieldsToValidate) {
     const { valid } = await validateField(field);
@@ -84,10 +84,9 @@ const nextStep = async () => {
 
   // Special handling for step 1 (Knowledge Details)
   if (step.value === 1) {
-    console.log(scrapData.voiceBotScrapedData?.document_content, "scrapData.voiceBotScrapedData?.document_content -- scrapData.voiceBotScrapedData?.document_content")
     if (scrapData.voiceBotScrapedData?.document_content?.length === 0 || !scrapData.voiceBotScrapedData?.document_content) {
       toast.error("Please provide Knowledge Details.");
-      return;
+      isValid = false;
     }
   }
 
@@ -95,24 +94,21 @@ const nextStep = async () => {
   if (step.value === 3) {
     if (!values.role) {
       toast.error("Please provide a value for Role");
-      return;
-    }
-
-    if (values.role === 'custom' && !values.otherRole) {
+      isValid = false;
+    } else if (values.role === 'custom' && !values.otherRole) {
       toast.error("Please provide a custom value for Role");
-      return;
+      isValid = false;
     }
   }
-  
+
   // Special handling for step 4 (Goal)
   if (step.value === 4) {
     if (!values.goal) {
       toast.error("Please provide a value for goal");
-      return;
-    }
-    if (values.goal === 'custom' && !values.otherGoal) {
+      isValid = false;
+    } else if (values.goal === 'custom' && !values.otherGoal) {
       toast.error("Please provide a custom value for Goal");
-      return;
+      isValid = false;
     }
   }
 
@@ -121,77 +117,75 @@ const nextStep = async () => {
     // STT provider validation
     if (!values.provider_stt) {
       toast.error("Please select an STT provider");
-      return;
-    }
+      isValid = false;
+    } else {
+      // STT provider-specific fields
+      if (values.provider_stt === 'deepgram' && (!values.deepmodel || values.deepmodel.length === 0)) {
+        toast.error("Please select a model for Deepgram STT provider");
+        isValid = false;
+      }
 
-    // STT provider-specific fields
-    if (values.provider_stt === 'deepgram' && (!values.deepmodel || values.deepmodel.length === 0)) {
-      toast.error("Please select a model for Deepgram STT provider");
-      return;
-    }
-
-    if (values.provider_stt === 'google' && (!values.googlemodel || values.googlemodel.length === 0)) {
-      toast.error("Please select a model for Google STT provider");
-      return;
+      if (values.provider_stt === 'google' && (!values.googlemodel || values.googlemodel.length === 0)) {
+        toast.error("Please select a model for Google STT provider");
+        isValid = false;
+      }
     }
 
     // TTS provider validation
     if (!values.provider_tts) {
       toast.error("Please select a TTS provider");
-      return;
-    }
-
-    // TTS provider-specific fields
-    if (values.provider_tts === 'google' && (!values.name || values.name.length === 0)) {
-      toast.error("Please enter a name for Google TTS provider");
-      return;
-    }
-
-    if (values.provider_tts === 'elevenlabs') {
-      // if (!values.apikey || values.apikey.length === 0) {
-      //   toast.error("Please enter an API Key for ElevenLabs TTS provider");
-      //   return;
-      // }
-
-      if (!values.elevenlabsvoice || values.elevenlabsvoice.length === 0) {
-        toast.error("Please select a voice for ElevenLabs TTS provider");
-        return;
+      isValid = false;
+    } else {
+      // TTS provider-specific fields
+      if (values.provider_tts === 'google' && (!values.name || values.name.length === 0)) {
+        toast.error("Please enter a name for Google TTS provider");
+        isValid = false;
       }
 
-      if (!values.model || values.model.length === 0) {
-        toast.error("Please select a model for ElevenLabs TTS provider");
-        return;
+      if (values.provider_tts === 'elevenlabs') {
+        if (!values.elevenlabsvoice || values.elevenlabsvoice.length === 0) {
+          toast.error("Please select a voice for ElevenLabs TTS provider");
+          isValid = false;
+        }
+
+        if (!values.model || values.model.length === 0) {
+          toast.error("Please select a model for ElevenLabs TTS provider");
+          isValid = false;
+        }
       }
-    }
 
-    if (values.provider_tts === 'deepgram' && (!values.deepgramvoice || values.deepgramvoice.length === 0)) {
-      toast.error("Please select a voice for Deepgram TTS provider");
-      return;
-    }
+      if (values.provider_tts === 'deepgram' && (!values.deepgramvoice || values.deepgramvoice.length === 0)) {
+        toast.error("Please select a voice for Deepgram TTS provider");
+        isValid = false;
+      }
 
-    // For other providers that require voice selection
-    if (!['tring', 'deepgram', 'google'].includes(values.provider_tts) &&
-      (!values.voice || values.voice.length === 0)) {
-      toast.error(`Please select a voice for ${values.provider_tts} TTS provider`);
-      return;
+      // For other providers that require voice selection
+      if (!['tring', 'deepgram', 'google'].includes(values.provider_tts) &&
+        (!values.voice || values.voice.length === 0)) {
+        toast.error(`Please select a voice for ${values.provider_tts} TTS provider`);
+        isValid = false;
+      }
     }
 
     // LLM configuration validation
     if (!values.max_output_token) {
       toast.error("Please select the maximum output tokens");
-      return;
+      isValid = false;
     }
   }
 
-  // Update field values and move to next step
-  nextTick(() => {
-    if (values.boundDirection) {
-      setFieldValue('boundDirection', values.boundDirection);
-    }
-  });
+  // Only proceed if all validations pass
+  if (isValid) {
+    // Update field values and move to next step
+    nextTick(() => {
+      if (values.boundDirection) {
+        setFieldValue('boundDirection', values.boundDirection);
+      }
+    });
 
-  // Preserve boundDirection explicitly when moving to next step
-  step.value++; // Move to next step
+    // Preserve boundDirection explicitly when moving to next step
+    step.value++; // Move to next step only if validation passes
+  }
 }
 // watch(values, (newValues) => {
 //   console.log('Form values updated:', JSON.stringify({

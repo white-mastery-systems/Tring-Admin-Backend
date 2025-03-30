@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ActivityIcon } from "lucide-vue-next"
+import { CircleDollarSign, Users, Hourglass, RefreshCcw, ArrowBigDown,UserRoundX } from "lucide-vue-next"
 import { Button as UiButton } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,106 +18,86 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { BarChart } from '@/components/ui/chart-bar'
+import { computed } from 'vue'
+// import CustomChartTooltip from './CustomChartTooltip.vue'
 
-// const props = withDefaults(
-//   defineProps<{
-//     revenusList: Array<{ title: string; revenus: string; previousRevenus: string; icon: string }>;
-//   }>(),
-//   {
-//     revenusList: () => [],
-//   }
-// );
+// const data = [
+//   { name: 'Jan', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
+//   { name: 'Feb', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
+//   { name: 'Mar', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
+//   { name: 'Apr', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
+//   { name: 'May', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
+//   { name: 'Jun', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
+//   { name: 'Jul', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
+// ]
+
+// Updated props definition to handle array type for count
 const props = withDefaults(defineProps<{
   title: string;
-  count: string;
-  icon: any;
+  count: string | Array<{ date: string; count: number }>;
   loading: boolean;
 }>(), {
   loading: true,  // default value for loading
 });
+
+// Transform data for the chart if count is an array
+// const chartData = computed(() => {
+//   if (Array.isArray(props.count)) {
+//     return props.count.map(item => ({
+//       name: item.date,
+//       chat: item.count,
+//     }));
+//   }
+//   return data;
+// });
 </script>
 
 <template>
   <div class="flex gap-5 px-0 rounded-lg">
-    <!-- v-for="(item, index) in props.revenusList" :key="index" -->
+    <!-- {{ props }} -->
     <Card class="w-full">
+      <!-- Standard card header for non-chart cards -->
+      <!-- v-if="props.title !== 'totalConversation' && props.title !== 'leadComposition'" -->
       <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle class="text-[14px] font-medium">
-          <!-- {{ props.title }} -->
+        <!-- <CardTitle class="text-[14px] font-medium text-[#8A8A8A]">
           {{ props.title.charAt(0).toUpperCase() + props.title.slice(1) }}
+        </CardTitle> -->
+        <CardTitle class="text-[14px] font-normal text-[#8A8A8A]">
+          {{(() => { const formattedTitle = props.title.replace(/([A-Z])/g, ' $1').trim();
+          return formattedTitle.charAt(0).toUpperCase() + formattedTitle.slice(1);
+          })()}}
         </CardTitle>
-        <!-- <component :is="props.icon" class="h-4 w-4 text-[#71717A]"></component> -->
-        <!-- <img src="ActivityIcon" width="50" class="rounded-lg" /> -->
-        <ActivityIcon class="h-4 w-4 text-[#71717A]" />
+        <!-- statistics.name === 'conversionRate' || props.title === 'uniqueVisitors' || props.title ===
+        'averageSessionDuration'" -->
+        <!-- props.title === 'reEngagementRate' || props.title === 'dropOffRate' || props.title ===
+        'leadQualificationAccuracy'" -->
+        <CircleDollarSign v-if="props.title === 'conversionRate'" class="h-4 w-4 text-[#FFBC42]" />
+        <Users v-if="props.title === 'uniqueVisitors'" class="h-4 w-4 text-[#FFBC42]" />
+        <Hourglass v-if="props.title === 'averageSessionDuration'" class="h-4 w-4 text-[#FFBC42]" />
+        <RefreshCcw v-if="props.title === 'reEngagementRate'" class="h-4 w-4 text-[#FFBC42]" />
+        <UserRoundX v-if="props.title === 'dropOffRate'" class="h-4 w-4 text-[#FFBC42]" />
+        <ArrowBigDown v-if="props.title === 'leadQualificationAccuracy'" class="h-4 w-4 text-[#FFBC42]" />
+
+        <!-- <ActivityIcon class="h-4 w-4 text-[#71717A]" /> -->
       </CardHeader>
+      <!-- v-if="props.title !== 'totalConversation' && props.title !== 'leadComposition'" -->
+      <!-- Card content for standard cards -->
       <CardContent>
-        <div class="text-[24px] font-bold">
-          {{ props.count }}
+        <div class="text-[24px] font-bold text-[#3D3D3D]">
+          {{ typeof props.count === 'string' ? props.count : (props.title === 'averageSessionDuration') ? props.count +
+          ' ' + 'Mins' : props.count }}
         </div>
-        <!-- <p class="text-xs text-muted-foreground">
-          {{ item.previousRevenus }}
-        </p> -->
       </CardContent>
+
+      <!-- Bar chart for totalConversation -->
+      <!-- <div v-if="props.title === 'totalConversation'" class="w-[400px]">
+        <BarChart :data="chartData" index="name" :categories="['chat']" :y-formatter="(tick, i) => {
+            return typeof tick === 'number'
+              ? ``
+              : ''
+          }" :colors="['#FFBC42', '#36B37E']" />
+      </div> -->
     </Card>
-    <!-- <Card> 
-      <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle class="text-sm font-medium">
-          Subscriptions
-        </CardTitle>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" class="h-4 w-4 text-muted-foreground">
-          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-        </svg>
-      </CardHeader>
-      <CardContent>
-        <div class="text-2xl font-bold">
-          +2350
-        </div>
-        <p class="text-xs text-muted-foreground">
-          +180.1% from last month
-        </p>
-      </CardContent>
-    </Card>
-    <Card>
-      <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle class="text-sm font-medium">
-          Sales
-        </CardTitle>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" class="h-4 w-4 text-muted-foreground">
-          <rect width="20" height="14" x="2" y="5" rx="2" />
-          <path d="M2 10h20" />
-        </svg>
-      </CardHeader>
-      <CardContent>
-        <div class="text-2xl font-bold">
-          +12,234
-        </div>
-        <p class="text-xs text-muted-foreground">
-          +19% from last month
-        </p>
-      </CardContent>
-    </Card>
-    <Card>
-      <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle class="text-sm font-medium">
-          Active Now
-        </CardTitle>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" class="h-4 w-4 text-muted-foreground">
-          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-        </svg>
-      </CardHeader>
-      <CardContent>
-        <div class="text-2xl font-bold">
-          +573
-        </div>
-        <p class="text-xs text-muted-foreground">
-          +201 since last hour
-        </p>
-      </CardContent>
-    </Card> -->
   </div>
 </template>

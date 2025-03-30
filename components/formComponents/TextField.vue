@@ -8,8 +8,7 @@
       <span v-if="required" class="text-lg text-red-500">* </span>
     </UiLabel>
     <div v-if="isTextarea" class="flex flex-col gap-1">
-      <!-- focus-visible:outline-none focus-visible:ring-0 -->
-      <UiTextarea class="mt-2 textarea-resize-scroll focus-visible:outline-none focus-visible:ring-0" @paste="
+      <UiTextarea class="mt-2 textarea-resize-scroll focus:outline-none focus:ring-0 focus:border-transparent" @paste="
           (e: any) => {
             if (disableCharacters) {
               if (isNaN(Number(e.clipboardData.getData('text/plain')))) {
@@ -43,13 +42,12 @@
     </div>
 
     <div v-else class="flex flex-col">
-      <UiInput
-        class="focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus:ring-0 focus:border-transparent focus-within:outline-none"
-        :class="cn(
-          'mt-2',
-          props.class,
-          errorMessage !== null && errorMessage !== undefined ? 'border-red-500' : 'border-input',
-        )
+      <UiInput :class="
+          cn(
+            'mt-2',
+            props.class,
+            errorMessage !== null && errorMessage !== undefined ? 'border-red-500' : 'border-input',
+          )
         " @paste="
           (e: any) => {
             if (disableCharacters) {

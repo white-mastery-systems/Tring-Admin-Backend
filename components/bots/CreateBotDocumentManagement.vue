@@ -143,7 +143,7 @@ const columns = [
       return h(
       "button",
       {
-        class: "px-3 py-1 bg-[#FFBC42] text-white rounded hover:bg-blue-600",
+        class: "px-3 py-1 bg-[#FFBC42] text-white rounded hover:bg-[#FFBC42]-600",
         onClick: (event) => {
           event.preventDefault();  // Prevent default form submission behavior
           event.stopPropagation(); // Stop event bubbling
