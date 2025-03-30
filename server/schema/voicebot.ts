@@ -220,6 +220,7 @@ export const salesHandyContactsSchema = voiceBotSchema.table("sales_handy_contac
   botIntegrationId: uuid("bot_integration_id").references(() => voicebotIntegrationSchema.id, { onDelete: "cascade" }).notNull(),
   sequenceId: varchar("sequence_id").notNull(),
   phone: varchar("phone").notNull(),
+  countryCode: varchar("country_code"),
   email: varchar("email"),
   callSid: varchar("call_sid"),
   callStatus: varchar("call_status").default("not dialed"),

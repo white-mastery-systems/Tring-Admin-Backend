@@ -55,14 +55,14 @@ export const getOrgAnalytics = async (
       
       return {
         conversionRate,
-        leadQualificationAccuracy: accuracy,
-        resolutionRate: "Coming Soon",
-        totalConversation: totalConversationGraph ?? [],
         uniqueVisitors: uniqueVisitors.length,
-        dropOffRate: "Coming Soon",
         averageSessionDuration,
+        totalConversation: totalConversationGraph ?? [],
+        leadQualificationAccuracy: accuracy,
         reEngagementRate,
-        leadComposition
+        dropOffRate: "Coming Soon",
+        leadComposition,
+        resolutionRate: "Coming Soon",
       }
     
     }  
@@ -70,14 +70,14 @@ export const getOrgAnalytics = async (
     if(query.type === "voice") {
        return {
         conversionRate: "0%",
-        leadQualificationAccuracy: "0%",
-        resolutionRate: "Coming Soon",
-        totalConversation: [],
         uniqueVisitors: 0,
-        dropOffRate: "Coming Soon",
         averageSessionDuration: "0",
+        totalConversation: [],
+        leadQualificationAccuracy: "0%",
         reEngagementRate: "0%",
-        leadComposition: {}
+        dropOffRate: "Coming Soon",
+        leadComposition: {},
+        resolutionRate: "Coming Soon",
        }
     }
     
