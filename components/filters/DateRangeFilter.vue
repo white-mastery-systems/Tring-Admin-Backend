@@ -184,7 +184,7 @@ const isDateDisabled = (date: CalendarDate) => {
 <template>
   <div class="flex items-center gap-2">
     <UiSelect v-model="selectedPeriod">
-      <UiSelectTrigger class="w-[110px] sm:w-[110px] md:w-[188px] lg:w-[188px] xl:w-[188px]">
+      <UiSelectTrigger class="min-w-[130px] max-w-[130px]">
         <UiSelectValue placeholder="Select a Date" />
       </UiSelectTrigger>
       <UiSelectContent>

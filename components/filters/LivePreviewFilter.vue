@@ -28,7 +28,7 @@ watch(selectedAction, (newValue) => {
 
 <template>
   <UiSelect v-model="selectedAction">
-    <UiSelectTrigger class="w-[150px]">
+    <UiSelectTrigger class="min-w-[130px] max-w-[130px]">
       <UiSelectValue placeholder="Select a User" />
     </UiSelectTrigger>
     <UiSelectContent>

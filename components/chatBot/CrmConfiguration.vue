@@ -4,7 +4,7 @@
     <!-- <template #actionButtons> -->
     <div class="my-5 flex items-center justify-between">
       <div class="text-[18px] font-bold"> CRM Integrations </div>
-      <UiButton @click="
+      <UiButton color="primary" @click="
         () => {
           crmConfigModalState.open = true;
           crmConfigModalState.id = null;

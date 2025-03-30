@@ -41,29 +41,34 @@ onMounted(() => {
 
 </script>
 <template>
-  <Accordion type="multiple" v-model="openValues" class="w-full flex flex-col gap-5" collapsible>
-    <AccordionItem v-for="item in accordionItems" :key="item.value" :value="item.value"
-      class="mb-0 border-[1px]  p-6 rounded-lg">
-      <AccordionTrigger
-        class="flex items-center gap-2 font-medium no-underline decoration-transparent hover:no-underline py-0">
-        <!-- Left Icon -->
-        <div class="flex items-center justify-between gap-2 w-full">
-          <div class="flex items-center gap-2">
-            <div class="flex items-center justify-center min-w-11 min-h-11 bg-[#18181B] rounded-full">
-              <component :is="item.icon" :stroke-width="1.5" :size="18" class="text-white"></component>
+  <div class="px-4 sm:px-4 md:px-0">
+    <Accordion type="multiple" v-model="openValues" class="w-full flex flex-col gap-5" collapsible>
+      <AccordionItem v-for="item in accordionItems" :key="item.value" :value="item.value"
+        class="mb-0 border-[1px]  p-6 rounded-lg">
+        <AccordionTrigger
+          class="flex items-center gap-2 font-medium no-underline decoration-transparent hover:no-underline py-0">
+          <!-- Left Icon -->
+          <div class="flex items-center justify-between gap-2 w-full">
+            <div class="flex items-center gap-2">
+              <!-- <div class="flex items-center justify-center min-w-11 min-h-11 bg-[#FFF8EB] rounded-full">
+                <component :is="item.icon" :stroke-width="1.5" :size="18" class="text-[#FFBC42B]"></component>
+              </div> -->
+              <div
+                class="flex items-center justify-center min-w-9 min-h-9 sm:min-w-9 sm:min-h-9 md:min-w-11 md:min-h-11 bg-[#FFF8EB] rounded-full">
+                <component :is="item.icon" :stroke-width="1.5" class="text-[#FFBC42] w-4 sm:w-4 md:w-5"></component>
+              </div>
+              <!-- <img src="/assets/icons/create_bot_link.svg" width="35" class="rounded-lg" /> -->
+              <!-- <LucideIcon :name="item.icon" class="w-5 h-5 text-blue-500" /> -->
+              <div class="flex flex-col items-start gap-1 pl-4">
+                <span class="text-[12px] sm:text-[12px] md:text-[16px]">
+                  {{ item.title }}
+                </span>
+                <span class="text-[6px] sm:text-[6px] md:text-[10px] text-[#71717A]">
+                  {{ item.subtitle }}
+                </span>
+              </div>
             </div>
-            <!-- <img src="/assets/icons/create_bot_link.svg" width="35" class="rounded-lg" /> -->
-            <!-- <LucideIcon :name="item.icon" class="w-5 h-5 text-blue-500" /> -->
-            <div class="flex flex-col items-start gap-1 pl-4">
-              <span class="text-[14px] sm:text-[14px] md:text-[16px]">
-                {{ item.title }}
-              </span>
-              <span class="text-[8px] sm:text-[8px] md:text-[10px] text-[#71717A]">
-                {{ item.subtitle }}
-              </span>
-            </div>
-          </div>
-          <!-- <div v-if="item.status" class="flex items-center gap-1 pr-4">
+            <!-- <div v-if="item.status" class="flex items-center gap-1 pr-4">
             <div class="w-[7px] h-[7px] bg-[#000000] rounded-full">
 
             </div>
@@ -71,16 +76,16 @@ onMounted(() => {
               {{ item.status }}
             </span>
           </div> -->
-        </div>
-      </AccordionTrigger>
-      <AccordionContent class="text-gray-700 text-sm">
-        <UiSeparator class="mt-6 mb-5 h-[0.7px]"></UiSeparator>
-        <!-- {{ item.content }} -->
-        <!-- <component :is="stepComponents[item.value]" /> -->
-        <component :is="stepComponents[item.value]"
-         :botDetails="props.botDetails" :refreshBot="props.refreshBot" 
-          :loading="props.loading" @statusUpdated="updateStepStatus" class="mt-2" />
-      </AccordionContent>
-    </AccordionItem>
-  </Accordion>
+          </div>
+        </AccordionTrigger>
+        <AccordionContent class="text-gray-700 text-sm">
+          <UiSeparator class="mt-6 mb-5 h-[0.7px]"></UiSeparator>
+          <!-- {{ item.content }} -->
+          <!-- <component :is="stepComponents[item.value]" /> -->
+          <component :is="stepComponents[item.value]" :botDetails="props.botDetails" :refreshBot="props.refreshBot"
+            :loading="props.loading" @statusUpdated="updateStepStatus" class="mt-2" />
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  </div>
 </template>

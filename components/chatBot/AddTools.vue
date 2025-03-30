@@ -29,7 +29,7 @@
                 <UiFormControl>
                   <UiSwitch id="date_time" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
-                  }" :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
+                  }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
                 </UiFormControl>
                 <UiFormMessage />
               </div>
@@ -43,7 +43,7 @@
                 <UiFormControl>
                   <UiSwitch id="schedule_appointment" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
-                  }" :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
+                  }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
                 </UiFormControl>
                 <UiFormMessage />
               </div>
@@ -57,7 +57,7 @@
                 <UiFormControl>
                   <UiSwitch id="site_visit" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
-                  }" :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
+                  }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
                 </UiFormControl>
                 <UiFormMessage />
               </div>
@@ -70,7 +70,7 @@
                 <UiFormControl>
                   <UiSwitch id="schedule_call" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
-                  }" :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
+                  }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
                 </UiFormControl>
                 <UiFormMessage />
               </div>
@@ -84,7 +84,7 @@
                   <UiFormControl>
                     <UiSwitch id="schedule_call_with_voice" :checked="value" @update:checked="(checked) => {
                       handleChange(checked);
-                    }" :style="{ background: value ? '#424BD1' : '#8A8A8A' }" :disabled="!values.schedule_call" />
+                    }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" :disabled="!values.schedule_call" />
                   </UiFormControl>
                   <UiFormMessage />
                 </div>
@@ -150,7 +150,7 @@
                                     <UiSwitch :label="`Required`" :id="`param_required_${toolIdx}_${paramIdx}`"
                                       :checked="value" @update:checked="(checked) => {
                                         handleChange(checked);
-                                      }" :style="{ background: value ? '#424BD1' : '#8A8A8A' }" />
+                                      }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
                                   </UiFormControl>
                                   <UiFormMessage />
                                 </div>
@@ -169,7 +169,7 @@
 
                     <!-- Add Parameter Button -->
                     <div class="flex items-center w-full justify-end gap-2">
-                      <UiButton v-if="values.clientFormControl" type="button" @click="() => {
+                      <UiButton v-if="values.clientFormControl" type="button" class="bg-[#DEDEDE] hover:bg-[#DEDEDE]" @click="() => {
                         if (!values.propertieFormControl) {
                           setFieldValue('propertieFormControl', true)
                           // return
@@ -178,7 +178,7 @@
                       }">
                         Add Parameter
                       </UiButton>
-                      <UiButton type="button" @click="remove(toolIdx)">
+                      <UiButton class="bg-[#DEDEDE] hover:bg-[#DEDEDE]" type="button" @click="remove(toolIdx)">
                         Remove Client Tool
                       </UiButton>
                     </div>
@@ -189,7 +189,7 @@
 
             <!-- Add Client Tool Button -->
             <div class="flex w-full justify-end gap-2">
-              <UiButton class="mt-2" type="button" @click="() => {
+              <UiButton class="mt-2 bg-[#DEDEDE] hover:bg-[#DEDEDE]" type="button" @click="() => {
                 if (!values.clientFormControl) {
                   setFieldValue('clientFormControl', true)
                   // return
@@ -205,7 +205,7 @@
       </div>
 
       <div class="flex w-full justify-end gap-2">
-        <UiButton type="submit" size="lg" :loading="isLoading">
+        <UiButton class="bg-[#DEDEDE] hover:bg-[#DEDEDE]" type="submit" size="lg" :loading="isLoading">
           Submit
         </UiButton>
       </div>

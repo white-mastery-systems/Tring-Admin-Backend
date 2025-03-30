@@ -1,7 +1,7 @@
 <template>
   <div>
     <UiSelect v-model="selectedCategory">
-      <UiSelectTrigger class="w-[180px]">
+      <UiSelectTrigger class="min-w-[130px] max-w-[130px] text-start">
         <UiSelectValue placeholder="Select category" />
       </UiSelectTrigger>
       <UiSelectContent>

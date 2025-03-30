@@ -54,21 +54,23 @@
   });
 </script> -->
 <template>
-  <UiSelect v-model="selectedDate">
-    <UiSelectTrigger class="w-[150px]">
-      <UiSelectValue placeholder="Select a Status" />
-    </UiSelectTrigger>
-    <UiSelectContent>
-      <UiSelectItem value="all">All Leads</UiSelectItem>
-      <UiSelectItem
-        v-for="(rangeDate, index) in dateFilters"
-        :key="index"
-        :value="rangeDate.value"
-      >
-        {{ rangeDate.content }}
-      </UiSelectItem>
-    </UiSelectContent>
-  </UiSelect>
+  <div>
+    <UiSelect v-model="selectedDate">
+      <UiSelectTrigger class="min-w-[130px] max-w-[130px] text-start">
+        <UiSelectValue placeholder="Select a Status" />
+      </UiSelectTrigger>
+      <UiSelectContent>
+        <UiSelectItem value="all">All Leads</UiSelectItem>
+        <UiSelectItem
+          v-for="(rangeDate, index) in dateFilters"
+          :key="index"
+          :value="rangeDate.value"
+        >
+          {{ rangeDate.content }}
+        </UiSelectItem>
+      </UiSelectContent>
+    </UiSelect>
+  </div>
 </template>
 <script setup lang="ts">
   const props = defineProps({

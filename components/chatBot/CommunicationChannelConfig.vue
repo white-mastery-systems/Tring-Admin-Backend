@@ -14,7 +14,7 @@
     <!-- <template #actionButtons> -->
     <div class="flex items-center justify-between mb-5">
       <div class="text-[18px] font-bold"> Channel Configuration </div>
-    <UiButton class="flex items-center justify-end" @click="
+    <UiButton class="flex items-center justify-end" color="primary" @click="
         () => {
           communicationChannelModalState.open = true;
           communicationChannelModalState.id = null;

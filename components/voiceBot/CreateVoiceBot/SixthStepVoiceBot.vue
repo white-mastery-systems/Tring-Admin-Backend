@@ -238,7 +238,7 @@ const handleConnect = handleSubmit(async (values: any) => {
                 placeholder="Enter Connection Id" />
             </div>
             <div class="flex w-full">
-              <UiButton type="submit" class="mt-2" :loading="isLoading">
+              <UiButton color="primary" type="submit" class="mt-2 px-4" :loading="isLoading">
                 Submit
               </UiButton>
             </div>

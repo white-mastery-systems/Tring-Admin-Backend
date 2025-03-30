@@ -71,7 +71,7 @@ const props = withDefaults(
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="space-y-4 w-full">
     <div :class="[
         'relative overflow-auto rounded-lg border table-scroll',
         props.height ? (table.getRowModel().rows?.length >= 10) ? `h-screen-minus-${props.height}` : 'h-auto' : '',
@@ -154,15 +154,15 @@ const props = withDefaults(
           <span class="text-sm text-gray-500">of {{ totalCount }} records</span>
         </div>
         <!-- class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90" -->
-        <UiButton size="icon" @click="emits('pagination', 1)" :disabled="page === 1">
+        <UiButton color="primary" size="icon" @click="emits('pagination', 1)" :disabled="page === 1">
           <Icon name="lucide:chevrons-left" class="h-6 w-6" />
         </UiButton>
         <!-- class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90" -->
-        <UiButton size="icon" :disabled="page === 1" @click="emits('pagination', page - 1)">
+        <UiButton color="primary" size="icon" :disabled="page === 1" @click="emits('pagination', page - 1)">
           <Icon name="lucide:chevron-left" class="h-6 w-6" />
         </UiButton>
         <!-- class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90" -->
-        <UiButton size="icon" :disabled="totalPageCount === page" @click="
+        <UiButton color="primary" size="icon" :disabled="totalPageCount === page" @click="
             () => {
               emits('pagination', page + 1);
             }
@@ -170,7 +170,7 @@ const props = withDefaults(
           <Icon name="lucide:chevron-right" class="h-6 w-6" />
         </UiButton>
         <!-- class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90" -->
-        <UiButton size="icon" @click="emits('pagination', totalPageCount)" :disabled="totalPageCount === page">
+        <UiButton color="primary" size="icon" @click="emits('pagination', totalPageCount)" :disabled="totalPageCount === page">
           <Icon name="lucide:chevrons-right" class="h-6 w-6" />
         </UiButton>
       </div>

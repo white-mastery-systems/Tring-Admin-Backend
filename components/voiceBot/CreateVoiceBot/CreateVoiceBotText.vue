@@ -102,7 +102,7 @@ defineExpose({ clearTextField, generatePDFAndUpload });
 <template>
   <div class="w-full border rounded-lg p-4">
     <!-- Removed debugging text output -->
-    <UiTextarea v-model="text" placeholder="" class="border-none p-2 h-40">
+    <UiTextarea v-model="text" placeholder="" class="border-none p-2 h-40 text-[10px] sm:text-[10px] md:text-[12px]">
     </UiTextarea>
     <!-- Suggestion cards section (uncommented for reference) -->
     <!-- <div class="grid grid-cols-3 gap-4 mt-4" v-if="props.contentSuggestions">

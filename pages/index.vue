@@ -1,36 +1,6 @@
 <template>
   <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true"
     class="flex flex-col items-center h-full">
-    <template #actionButtons v-if="false">
-      <div class="flex overflow-x-scroll gap-2 w-full justify-end">
-        <span class="field_shadow flex items-center rounded-lg text-[15px]" style="color: rgba(138, 138, 138, 1)">
-          <!-- <span class="flex -items-center py-2 pl-2"></span> -->
-          <span class="font-bold text-black">
-            <UiSelect v-model="selectedValue" class="outline-none">
-              <UiSelectTrigger
-                class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[230px] md:text-[14px] lg:w-[230px] lg:text-[14px] xl:w-[230px] xl:text-[14px]">
-                <span class="min-w-[70px] font-thin text-gray-400">
-                  Summary
-                </span>
-                <UiSelectValue />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectGroup>
-                  <UiSelectItem v-for="(list, index) in dateFilters" :key="index" class="content_align pr-2"
-                    :value="list.value">
-                    <div class="text-left">
-                      {{ list.content }}
-                    </div>
-                  </UiSelectItem>
-                  <UiSelectItem value="custom">Custom</UiSelectItem>
-                </UiSelectGroup>
-              </UiSelectContent>
-            </UiSelect>
-          </span>
-        </span>
-        <CustomDateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
-      </div>
-    </template>
     <div class="flex flex-col gap-5 p-4 sm:p-4 md:p-0">
       <QuickLinks :navigavtionList="navigavtionList" />
       <!-- <h6 class="font-bold text-[20px] mt-3">Start creating your bots</h6> -->
@@ -48,7 +18,7 @@
             Voice
           </UiTabsTrigger>
         </UiTabsList>
-        <div class="flex overflow-x-scroll gap-2 w-full justify-end">
+        <div class="flex overflow-x-scroll gap-2 w-full justify-end mt-3">
           <span class="flex items-center rounded-lg text-[15px] border border-1 border-[#FFBC42]"
             style="color: rgba(138, 138, 138, 1)">
             <!-- <span class="flex -items-center py-2 pl-2"></span> -->
@@ -78,10 +48,10 @@
           <CustomDateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
         </div>
         <UiTabsContent value="chat">
-          <div class="pt-4">
+          <div class="pt-1 sm:pt-1 md:pt-4">
             <!-- {{ analyticsData. }} -->
             <div v-if="analyticsData?.length">
-              <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-3 w-full">
+              <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xs:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                 <template v-for="statistics in analyticsData">
                   <StatsCard
                     v-if="statistics.name === 'conversionRate' || statistics.name === 'uniqueVisitors' || statistics.name === 'averageSessionDuration'"
@@ -101,7 +71,7 @@
                   </chartCard>
                 </template> -->
               </div>
-              <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-3 w-full">
+              <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xs:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                 <template v-for="statistics in analyticsData">
                   <!-- v-if="statistics.name === 'reEngagementRate' || statistics.name === 'dropOffRate' || statistics.name === 'leadQualificationAccuracy'" -->
                   <StatsCard
@@ -124,7 +94,7 @@
           <div>
             <!-- {{ analyticsData. }} -->
             <div v-if="analyticsData?.length">
-              <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-3 w-full">
+              <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xs:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                 <template v-for="statistics in analyticsData">
                   <StatsCard
                     v-if="statistics.name === 'conversionRate' || statistics.name === 'uniqueVisitors' || statistics.name === 'averageSessionDuration'"
@@ -133,7 +103,7 @@
                   :count="statistics.value" :loading="loading" /> -->
                 </template>
               </div>
-              <div class="gap-6 w-full flex  my-6">
+              <div class="gap-6 w-full flex flex-col md:flex-row my-6">
                 <template v-for="statistics in analyticsData">
                   <chartCard v-if="statistics" :title="statistics.name" :count="statistics.value" :loading="loading">
                   </chartCard>
@@ -143,7 +113,7 @@
                   </chartCard>
                 </template> -->
               </div>
-              <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-3 w-full">
+              <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xs:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                 <template v-for="statistics in analyticsData">
                   <!-- v-if="statistics.name === 'reEngagementRate' || statistics.name === 'dropOffRate' || statistics.name === 'leadQualificationAccuracy'" -->
                   <StatsCard

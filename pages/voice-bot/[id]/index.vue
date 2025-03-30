@@ -2,7 +2,7 @@
   <page :title="botDetails.name ?? ''" :bread-crumbs="[]" :disableSelector="true" :disable-back-button="false"
     :disable-elevation="true" custom-back-router="/voice-bot">
     <template #actionButtons>
-      <div class="flex w-full items-center pl-[7px] pr-[0px]">
+      <div class="flex w-full items-center pl-[7px] pr-[0px] overflow-x-scroll">
         <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
           <div class="items-cetner flex gap-4">
             <div v-if="botDetails.active" class="flex items-center gap-[5px] text-[#1abb00]">
@@ -40,7 +40,7 @@
                 <div class="flex flex-col items-center gap-1">
                   <UiButton
                     class="rounded-[8px] bg-[#ff0000] p-2 p-2.5 text-[14px] font-medium text-white hover:bg-[#ff0000] hover:brightness-90"
-                    @click="handleActivateBot" :disabled="!botDetails.active">
+                    @click="deactivateBot" :disabled="!botDetails.active">
                     <!-- Deactivate Bot -->
                     <span class="hidden lg:inline"> Deactivate Bot </span>
                     <!-- Icon for small screens -->
@@ -51,8 +51,6 @@
                   <div class="block text-[4px] lg:hidden">Deactivate Bot</div>
                 </div>
 
-                <ConfirmationModal v-model:open="modalOpen" title="Confirm Deactivation"
-                  description="Are you sure you want to deactivate bot ?" @confirm="deactivateBotDialog" />
                 <!-- <div class="flex flex-col items-center gap-1">
                   <UiButton as="a" :href="previewUrl" target="_blank"
                     class="bg-[#474df9] p-2 text-[14px] font-medium text-white hover:bg-[#474df9] hover:brightness-90">
@@ -89,6 +87,8 @@
               </div>
               <ConfirmationModal v-model:open="deleteModalState" title="Are you sure?"
                 description="Are you sure you want to delete voice bot ?" @confirm="handleDeleteBot" />
+              <ConfirmationModal v-model:open="modalOpen" title="Confirm Deactivation"
+                description="Are you sure you want to deactivate bot ?" @confirm="deactivateBotDialog" />
             </div>
           </div>
           <!-- <span class="font-semibold content-align">Date Created</span>
@@ -96,7 +96,8 @@
         </div>
       </div>
     </template>
-    <div class="font-bold text-[20px] leading-none mb-2">
+    <div
+      class="font-bold text-[18px] sm:text-[18px] md:text-[20px] leading-none px-4 sm:px-4 md:px-0 mb-2 my-5 sm:my-5 md:my-0">
       View and Edit your Voicebot features
     </div>
     <EditVoiceBot :botDetails="botDetails" :refreshBot="refreshBot" :loading="loading" />
@@ -306,9 +307,13 @@ const dataList = ref([
   },
 ]);
 
+const deactivateBot = async () => {
+  modalOpen.value = true;
+};
 
 const deactivateBotDialog = async () => {
   await disableBot(paramId.params.id);
+  await refreshBot()
   modalOpen.value = false;
 };
 

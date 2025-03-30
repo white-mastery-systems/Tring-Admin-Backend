@@ -72,7 +72,7 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
         </div>
       </div>
     </div>
-    <div class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]"
+    <div class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[100px]"
       @click="selectedRole = 'custom'">
       <div class="flex gap-4">
         <!-- Custom radio for the "custom" option -->

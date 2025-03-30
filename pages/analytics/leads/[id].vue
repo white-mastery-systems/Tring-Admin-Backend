@@ -21,7 +21,7 @@
       </div>
     </template>
     <div
-      class="items-top flex grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-[25px]">
+      class="items-top flex grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-[25px] p-4">
       <div class="flex w-full justify-around gap-8 sm:w-full md:w-[90%] lg:w-[90%] xl:w-[90%]">
         <UiTabs default-value="client" class="w-full self-start">
           <UiTabsList class="grid w-[100%] sm:w-[100%] md:w-[90%] lg:w-[90%] xl:w-[90%] grid-cols-3">

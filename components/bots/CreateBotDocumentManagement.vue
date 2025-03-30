@@ -8,7 +8,7 @@
       </span>
     </div>
     <!-- <p class="pt-2 pb-6 text-sm text-gray-400">only PDF</p> -->
-    <div class="w-full overflow-x-auto">
+    <div class="flex max-w-[300px] sm:max-w-[300px] md:max-w-full">
       <DataTable @pagination="Pagination" @limit="($event) => {
          (filters.page = '1'), (filters.limit = $event);
        }
@@ -50,12 +50,10 @@ const props = defineProps<{
 // const documents = ref();
 const documentFetchInterval = ref<NodeJS.Timeout>();
 
-const deleteDocumentModelOpen: any = reactive({});
 const isSheetOpen = ref(false);
-const position = ref("bottom");
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 
 const {
   status,

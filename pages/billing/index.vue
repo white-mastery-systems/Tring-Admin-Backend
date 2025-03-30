@@ -9,30 +9,32 @@
     <ConfirmationModal v-model:open="cancelModalState" title="Are you sure to cancel your subscription"
       description="This action is irreversible" @confirm="handleConfirmPaymentCancellation">
     </ConfirmationModal>
-    <UiTabs v-model="selectedTab" :default-value="route.query.type ?? 'chat'" class="w-full self-start">
-      <UiTabsList class="grid w-full sm:w-full md:w-[30%] grid-cols-2">
-        <!-- @click="selectedChannel('Chat')" -->
-        <UiTabsTrigger value="chat" @click="navigateToTab('chat')">
-          Chat
-        </UiTabsTrigger>
-        <UiTabsTrigger value="voice" @click="navigateToTab('voice')">
-          Voice
-        </UiTabsTrigger>
-      </UiTabsList>
-      <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
-        <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
-      </div>
-      <div v-else>
-        <UiTabsContent value="chat">
-          <ChatBotBIlling :usageDetails="usageDetails" :usage="orgBilling">
-          </ChatBotBIlling>
-        </UiTabsContent>
-        <UiTabsContent value="voice">
-          <VoiceBotBilling :usage="orgBilling">
-          </VoiceBotBilling>
-        </UiTabsContent>
-      </div>
-    </UiTabs>
+    <div class="p-4 sm:p-4 md:p-0">
+      <UiTabs v-model="selectedTab" :default-value="route.query.type ?? 'chat'" class="w-full self-start">
+        <UiTabsList class="grid w-full sm:w-full md:w-[30%] grid-cols-2">
+          <!-- @click="selectedChannel('Chat')" -->
+          <UiTabsTrigger value="chat" @click="navigateToTab('chat')">
+            Chat
+          </UiTabsTrigger>
+          <UiTabsTrigger value="voice" @click="navigateToTab('voice')">
+            Voice
+          </UiTabsTrigger>
+        </UiTabsList>
+        <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
+          <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
+        </div>
+        <div v-else>
+          <UiTabsContent value="chat">
+            <ChatBotBIlling :usageDetails="usageDetails" :usage="orgBilling">
+            </ChatBotBIlling>
+          </UiTabsContent>
+          <UiTabsContent value="voice">
+            <VoiceBotBilling :usage="orgBilling">
+            </VoiceBotBilling>
+          </UiTabsContent>
+        </div>
+      </UiTabs>
+    </div>
   </page>
 </template>
 <script setup lang="ts">

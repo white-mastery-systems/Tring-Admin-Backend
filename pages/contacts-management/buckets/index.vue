@@ -21,9 +21,10 @@
       </div>
     </template>
     <div>
-      <div class="flex items-center gap-2 pb-2">
+      <div class="flex items-center gap-2 mb-3 mt-1">
         <UiInput v-model="filters.q" @input="filters.page = '1'"
-          class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search bucket..." />
+          class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0"
+          placeholder="Search bucket..." />
       </div>
       <DataTable @row-click="(row: any) => {
        navigateTo(`/contacts-management/buckets/${row.original.id}`);

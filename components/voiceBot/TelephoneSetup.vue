@@ -52,7 +52,7 @@
         </TextField>
       </div>
       <div class="flex justify-end w-full">
-        <UiButton type="submit" size="lg" :loading="isLoading">
+        <UiButton type="submit" size="lg" class="bg-[#DEDEDE] hover:bg-[#DEDEDE]" :loading="isLoading">
           Submit
         </UiButton>
       </div>

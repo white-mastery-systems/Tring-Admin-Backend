@@ -21,19 +21,17 @@
   });
 </script>
 
-<template >
-  <UiSelect v-model="selectedAction" >
-    <UiSelectTrigger class="w-[135px]">
-      <UiSelectValue placeholder="Select a Channel" />
-    </UiSelectTrigger>
-    <UiSelectContent>
-      <UiSelectItem
-        v-for="(list, index) in actionFilters"
-        :key="index"
-        :value="list.value"
-      >
-        {{ list.content }}
-      </UiSelectItem>
-    </UiSelectContent>
-  </UiSelect>
+<template>
+  <div>
+    <UiSelect v-model="selectedAction">
+      <UiSelectTrigger class="min-w-[130px] max-w-[130px]">
+        <UiSelectValue placeholder="Select a Channel" />
+      </UiSelectTrigger>
+      <UiSelectContent>
+        <UiSelectItem v-for="(list, index) in actionFilters" :key="index" :value="list.value">
+          {{ list.content }}
+        </UiSelectItem>
+      </UiSelectContent>
+    </UiSelect>
+  </div>
 </template>
