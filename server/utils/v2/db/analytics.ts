@@ -52,6 +52,12 @@ export const getOrgAnalytics = async (
       
       //--- Lead Composition
       const leadComposition = await getLeadComposition(organizationId, fromDate, toDate)
+
+      //--- Drop off rate
+      const dropOffConversation = await getDropOffConversation(organizationId, fromDate, toDate)
+      const totalLeads = await getOrgLeadsForAnalytics(organizationId, fromDate, toDate)
+
+      const dropOffRate = totalLeads > 0 ? `${Math.round((dropOffConversation / totalLeads) *100)}%` : 0
       
       return {
         conversionRate,
@@ -60,7 +66,7 @@ export const getOrgAnalytics = async (
         totalConversation: totalConversationGraph ?? [],
         leadQualificationAccuracy: accuracy,
         reEngagementRate,
-        dropOffRate: "Coming Soon",
+        dropOffRate: dropOffRate,
         leadComposition,
         resolutionRate: "Coming Soon",
       }
@@ -68,11 +74,26 @@ export const getOrgAnalytics = async (
     }  
     
     if(query.type === "voice") {
+      //--Total calls 
+      const totalCallLogs = await getOrgTotalCalls(organizationId, fromDate, toDate)
+
+      const callDuration = totalCallLogs.map((i) => Number(i.duration) || 0)
+
+      const totalDuration = callDuration.reduce((acc, curr) => acc + curr, 0)
+
+      const averageSessionDuration = totalCallLogs.length
+      ? Math.round (totalDuration / totalCallLogs.length)
+      : 0;
+
+      const averageSessionDurationInMinutes = averageSessionDuration > 0 ? Math.round(averageSessionDuration / 60) : 0
+
+      const totalConversationGraph = await getAnalyticsGraph({ totalConversation: totalCallLogs, period: query?.period, fromDate, toDate, timeZone})
+
        return {
         conversionRate: "0%",
         uniqueVisitors: 0,
-        averageSessionDuration: "0",
-        totalConversation: [],
+        averageSessionDuration: averageSessionDurationInMinutes,
+        totalConversation: totalConversationGraph,
         leadQualificationAccuracy: "0%",
         reEngagementRate: "0%",
         dropOffRate: "Coming Soon",

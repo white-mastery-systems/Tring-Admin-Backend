@@ -16,19 +16,17 @@ export const getOrgTotalVoicebots = async(organizationId: string, fromDate: Date
 
 export const getOrgTotalCalls = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined, direction?: string) => {
   return await db
-    .select({ createdAt: callLogSchema.createdAt })
+    .select({ createdAt: callLogSchema.createdAt, duration: callLogSchema.duration })
     .from(callLogSchema)
     .where( and(
         ...(fromDate && toDate ? [
-         between(callLogSchema.createdAt, fromDate, toDate)
+        gte(callLogSchema.createdAt, fromDate),
+        lte(callLogSchema.createdAt, toDate),
         ] : []),
         eq(callLogSchema.organizationId, organizationId),
         ...(direction ? [eq(callLogSchema.direction, direction)] : [])
       )
     )
-  //   console.log({ data: data.length })
-  // const totalMinutes = data.reduce((acc: any, item: any) => acc + Math.round(item?.duration / 60), 0)
-  // return totalMinutes
 }
 
 export const getOrgVoiceLeads = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
