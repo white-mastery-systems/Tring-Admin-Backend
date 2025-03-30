@@ -419,12 +419,12 @@ onUnmounted(() => {
         <!-- {{ step === 2 && (values.intent.length === 0) }} -->
         <div class="flex justify-end w-full gap-[12px] p-4">
           <UiButton v-if="(step > 1)" :disabled="isLoading" type="button" @click="prevStep" class="px-8" variant="outline">Back</UiButton>
-          <UiButton v-if="showBackButton" type="button" @click="firstStepBack" class="px-8" variant="outline">Back
+          <UiButton v-if="showBackButton" type="button" @click="firstStepBack" class="px-8 button_shadow border border-[#FFBC42] text-[#FFBC42] hover:text-[#FFBC42]" variant="outline">Back
           </UiButton>
-          <UiButton v-if="showNextButton" type="button" @click="nextStep" class="px-8"
+          <UiButton v-if="showNextButton" type="button" @click="nextStep" color="primary" class="px-8 button_shadow"
             :loading="isUploading || isDataLoading || isLoading">Next
           </UiButton>
-          <UiButton type="button" v-if="step === 4" @click="submitForm" class="px-8" :loading="isLoading">
+          <UiButton color="primary" type="button" v-if="step === 4" @click="submitForm" class="px-8 button_shadow" :loading="isLoading">
             Create Bot
           </UiButton>
         </div>

@@ -1,7 +1,7 @@
 <template>
   <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true"
     class="flex flex-col items-center h-full">
-    <template #actionButtons>
+    <template #actionButtons v-if="false">
       <div class="flex overflow-x-scroll gap-2 w-full justify-end">
         <span class="field_shadow flex items-center rounded-lg text-[15px]" style="color: rgba(138, 138, 138, 1)">
           <!-- <span class="flex -items-center py-2 pl-2"></span> -->
@@ -52,7 +52,7 @@
           <span class="flex items-center rounded-lg text-[15px] border border-1 border-[#FFBC42]"
             style="color: rgba(138, 138, 138, 1)">
             <!-- <span class="flex -items-center py-2 pl-2"></span> -->
-            <span class="font-bold text-black" v-if="false">
+            <span class="font-bold text-black">
               <UiSelect v-model="selectedValue" class="outline-none">
                 <UiSelectTrigger
                   class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[230px] md:text-[14px] lg:w-[230px] lg:text-[14px] xl:w-[230px] xl:text-[14px]">

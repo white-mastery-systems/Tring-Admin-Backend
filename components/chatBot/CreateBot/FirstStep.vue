@@ -62,7 +62,7 @@ const intentTypes = [
   { label: "Travel & Hospitality", value: "travel-hospitality", icon: Plane },
   { label: "Logistics", value: "logistics", icon: Truck },
   { label: "Education & Training", value: "education-training", icon: GraduationCap },
-  { label: "IT Service", value: "it-service", icon: Server },
+  // { label: "IT Service", value: "it-service", icon: Server },
 ];
 
 
@@ -104,10 +104,10 @@ const changeKnowledge = () => {
               <RadioGroupItem :id="intent.value" :value="intent.value" class="peer hidden" />
               <Label
                 :for="intent.value"
-                class="w-full h-full flex items-center justify-center p-4 rounded-lg bg-[#F2F2F2] transition-all duration-300"
-                :class="[type === intent.value ? 'border-2 border-[#09090b]' : 'border-transparent']"
+                class="w-full h-full border flex items-center justify-center p-4 rounded-lg bg-[#fffff] transition-all duration-300"
+                :class="[type === intent.value ? 'border-3 border-[#FFBC42] bg-[#FFF8EB]' : 'border-1 border-[#FFBC42]']"
               >
-                <component :is="intent.icon" class="w-[50px] h-[50px]" :stroke-width="0.75" />
+                <component :is="intent.icon" class="w-[50px] h-[50px] text-[#FFBC42]" :stroke-width="0.75" />
               </Label>
               <div class="text-[12px] md:text-[12px] font-medium mt-2 text-center">{{ intent.label }}</div>
             </div>
@@ -130,7 +130,7 @@ const changeKnowledge = () => {
               variant="outline"
               v-for="(btn, index) in buttons"
               :key="index"
-              class="border-[#000000] text-[#000000] hover:text-[#ffffff] hover:bg-[#000000] font-regular w-full md:flex-1"
+              class="border-[#DCDCDC] text-[#000000] hover:text-[#ffffff] hover:bg-[#FFBC42] hover:border-[#FFBC42] font-regular w-full md:flex-1 new_bot_button_shadow"
               @click="selectType(btn.label)"
               :loading="props.loading && (btn.label === 'Text')"
               :disabled="props.loading && (btn.label === 'Text')"
@@ -146,12 +146,12 @@ const changeKnowledge = () => {
       <!-- Knowledge Type Sections -->
       <div v-else class="w-full">
         <div v-if="selectedType === 'Website'" class="w-full space-y-4">
-          <div class="flex items-center justify-between w-full">
+          <!-- <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Website</span>
-            <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" @click="changeKnowledge()">
+            <UiButton type="primary" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" @click="changeKnowledge()">
               Change Knowledge Source
             </UiButton>
-          </div>
+          </div> -->
           <div class="bg-[#E2E8F0] rounded-lg p-4 text-[12px] md:text-[14px] text-left">
             <div class="font-medium">Note:</div>
             <div>
@@ -165,12 +165,12 @@ const changeKnowledge = () => {
         </div>
 
         <div v-else-if="selectedType === 'Document'" class="w-full py-4">
-          <div class="flex items-center justify-between w-full">
+          <!-- <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Document</span>
             <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" @click="changeKnowledge()">
               Change Knowledge Source
             </UiButton>
-          </div>
+          </div> -->
           <div class="bg-[#E2E8F0] rounded-lg p-4 text-[12px] md:text-[14px] my-4 text-left">
             <div class="font-medium">Note:</div>
             <div>
@@ -180,12 +180,12 @@ const changeKnowledge = () => {
           <CreateBotDocumentManagement :refresh="props.refresh" />
         </div>
         <div v-else-if="selectedType === 'Text'" class="w-full space-y-4">
-          <div class="flex items-center justify-between w-full">
+          <!-- <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Text</span>
             <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" @click="changeKnowledge()">
               Change Knowledge Source
             </UiButton>
-          </div>
+          </div> -->
           <div class="bg-[#E2E8F0] rounded-lg p-4 text-[12px] md:text-[14px] my-4 text-left">
             <div class="font-medium">Note:</div>
             <div>A sample text for the industry has been provided below. You can edit the necessary fields to complete the process.</div>

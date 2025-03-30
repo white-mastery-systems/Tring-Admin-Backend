@@ -18,7 +18,7 @@
   });
   function styleHandler(type: string | undefined): string {
     if (type === "primary") {
-      return "bg-[#424bd1] hover:bg-[#424bd1] text-white hover:text-white hover:brightness-110";
+      return "bg-[#FFBC42] hover:bg-[#FFBC42] text-white hover:text-white hover:brightness-110";
     }
     return "";
   }
