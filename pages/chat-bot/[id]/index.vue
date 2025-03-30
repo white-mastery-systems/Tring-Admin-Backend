@@ -321,8 +321,8 @@ onBeforeMount(() => {
 watch(() => botDetails.value?.documentId, (newId) => {
   console.log(newId, 'newId', store.lastVisitedRoute);
   store.scrapedData = [];
-
-  if (newId && store.lastVisitedRoute && store.lastVisitedRoute.includes('/chat-bot/create-bot')) {
+  // && store.lastVisitedRoute && store.lastVisitedRoute.includes('/chat-bot/create-bot')
+  if (newId) {
     createBotsuccessfulState.value.open = true;
   }
 });
