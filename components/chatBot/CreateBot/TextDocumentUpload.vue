@@ -78,18 +78,15 @@ defineExpose({ clearTextField, generatePDFAndUpload });
 
 <template>
   <div class="w-full border rounded-lg p-4">
-    <UiTextarea v-model="text" placeholder="" class="border-none p-2 h-40">
+    <UiTextarea v-model="text" placeholder="" class="border-none p-2 h-40 text-[12px] sm:text-[12px] md:text-[14px]">
     </UiTextarea>
-    <div class="grid grid-cols-3 gap-4 mt-4" v-if="props.contentSuggestions">
-      <div
-        v-for="(card, index) in props.contentSuggestions.suggestions"
-        :key="index"
+    <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-4 mt-4" v-if="props.contentSuggestions">
+      <div v-for="(card, index) in props.contentSuggestions.suggestions" :key="index"
         class="p-4 border rounded-lg shadow cursor-pointer max-h-[80px] overflow-y-auto"
         :class="selectedIndex === index ? 'bg-blue-50 border-blue-300' : 'bg-white'"
-        @click="selectCard(card.content, index)"
-      >
-        <h3 class="font-medium text-gray-800 text-[14px]">{{card.title}}</h3>
-        <p class="text-sm text-gray-600 text-[12px]">
+        @click="selectCard(card.content, index)">
+        <h3 class="font-medium text-gray-800 text-[12px] sm:text-[12px] md:text-[14px]">{{card.title}}</h3>
+        <p class="text-gray-600 text-[10px] sm:text-[10px] md:text-[12px]">
           {{card.content}}
         </p>
       </div>

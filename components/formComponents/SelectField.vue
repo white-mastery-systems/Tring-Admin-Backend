@@ -10,7 +10,7 @@
           v-bind="$attrs" :disabled="props.disabled">
           <div class="relative flex items-center">
             <UiSelectTrigger :class="[hasError ? 'border-[#ef4444]' : '']" class="text-start">
-              <UiSelectValue :placeholder="placeholder" />
+              <UiSelectValue class="text-[12px] sm:text-[12px] md:text-[14px]" :placeholder="placeholder" />
             </UiSelectTrigger>
             <CloseIcon v-if="selectedValue && closeIcon" class="absolute right-10 w-4 h-4 cursor-pointer"
               @click="clearSelectedValue" />
@@ -24,7 +24,8 @@
               <UiSelectItem :value="option.value" class="flex justify-start">
                 {{ option.label }}
               </UiSelectItem>
-              <span v-if="option?.helperText" class="mx-2 text-xs italic text-gray-500 py-0">{{ option?.helperText }}</span>
+              <span v-if="option?.helperText" class="mx-2 text-xs italic text-gray-500 py-0">{{ option?.helperText
+                }}</span>
 
             </template>
           </UiSelectContent>

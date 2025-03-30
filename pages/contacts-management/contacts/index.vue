@@ -14,7 +14,7 @@
         </div>
       </div>
     </template>
-    <UiTabs default-value="chat" class="w-full self-start">
+    <UiTabs default-value="chat" class="w-full self-start mt-1">
       <UiTabsList class="grid w-full grid-cols-2">
         <UiTabsTrigger value="chat" @click="selectedChannel('chat')">
           Chat Bot

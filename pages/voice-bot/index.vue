@@ -2,18 +2,17 @@
   <Page title="Voice Bot" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-4 overflow-auto">
-        <UiButton color="primary" @click="agentModalState.open = true">
+        <UiButton color="primary" @click="createNewVoiceBot()">
           Add Voice Bot
         </UiButton>
       </div>
     </template>
-    <div class="flex items-center gap-2 pb-2 overflow-x-scroll">
+    <div class="flex items-center gap-2 mt-2 overflow-x-scroll">
       <UiInput v-model="filters.q"
-        class="w-[150px] sm:w-[150px] md:w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0"
-        placeholder="Search bot..." />
+        class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 truncate"
+        placeholder="Search bot" />
       <BotStatusFilter v-model="filters.active" />
-      <UiButton @click="handleClearFilters"
-        class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">Clear Filters</UiButton>
+      <UiButton @click="handleClearFilters" class="ml-2" color="primary">Clear Filters</UiButton>
     </div>
     <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
@@ -58,9 +57,9 @@ const filters = useState("chatBotFilters", () => ({
   limit: "10",
 }));
 
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 const breadcrumbStore = useBreadcrumbStore();
 breadcrumbStore.setBreadcrumbs([
   {
@@ -149,6 +148,19 @@ const columns = [
   }),
 ];
 
+const createNewVoiceBot = async() => {
+  try {
+    const getSingleVoiceBotDetails = await $fetch(`/api/voicebots`, {
+        method: "POST",
+        body: {},
+      });
+      if (getSingleVoiceBotDetails.id) {
+        navigateTo(`voice-bot/create-voice-bot/${getSingleVoiceBotDetails?.id}`);
+      }
+  } catch (error) {
+    toast.error(error.statusMessage);
+  }
+}
 const Pagination = async ($evnt) => {
   filters.value.page = $evnt;
 

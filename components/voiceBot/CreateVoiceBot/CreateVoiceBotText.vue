@@ -31,18 +31,17 @@ const clearTextField = () => {
   selectedIndex.value = null; // Clear selection when text is cleared
 };
 
-watch(
-  () => text.value,
-  (newText) => {
-    if (scrapData.voiceBotScrapedData) {
-      console.log("scrapData.voiceBotScrapedData", scrapData.voiceBotScrapedData);
-      scrapData.voiceBotScrapedData = { document_content: newText };
-    }
-  }
-);
+// watch(
+//   () => text.value,
+//   (newText) => {
+//     if (scrapData.voiceBotScrapedData) {
+//       scrapData.voiceBotScrapedData = { document_content: newText };
+//     }
+//   }
+// );
 
 watch(() => props.contentSuggestions.knowledgeBase, (newObject) => {
-  console.log('newObject', newObject);
+  // console.log('newObject', newObject);
   if (newObject) {
     text.value = newObject;
   }
@@ -96,13 +95,13 @@ const selectCard = (content: any, index: number) => {
   selectedIndex.value = index;
 };
 
-defineExpose({ clearTextField, generatePDFAndUpload });
+defineExpose({ clearTextField, generatePDFAndUpload,text });
 </script>
 
 <template>
   <div class="w-full border rounded-lg p-4">
     <!-- Removed debugging text output -->
-    <UiTextarea v-model="text" placeholder="" class="border-none p-2 h-40">
+    <UiTextarea v-model="text" placeholder="" class="border-none p-2 h-40 text-[10px] sm:text-[10px] md:text-[14px]">
     </UiTextarea>
     <!-- Suggestion cards section (uncommented for reference) -->
     <!-- <div class="grid grid-cols-3 gap-4 mt-4" v-if="props.contentSuggestions">

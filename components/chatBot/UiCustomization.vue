@@ -105,7 +105,7 @@
               </div>
               <UiFormControl>
                 <UiSwitch id="generateLead" :checked="value" @update:checked="handleChange"
-                  :style="{ background: value ? '#0F172A' : '#8A8A8A' }" />
+                  :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
               </UiFormControl>
             </UiFormItem>
           </UiFormField>
@@ -123,7 +123,7 @@
                 <UiFormMessage />
               </div>
               <UiSwitch id="defaultSelect" :checked="value" @update:checked="handleChange"
-                :style="{ background: value ? '#0F172A' : '#8A8A8A' }" />
+                :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
             </UiFormItem>
           </UiFormField>
 
@@ -141,7 +141,7 @@
               </div>
               <UiFormControl>
                 <UiSwitch id="defaultRibbon" :checked="value" @update:checked="handleChange"
-                  :style="{ background: value ? '#0F172A' : '#8A8A8A' }" />
+                  :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
               </UiFormControl>
             </UiFormItem>
           </UiFormField>
@@ -160,7 +160,7 @@
                 </UiFormControl>
                 <UiFormMessage />
               </div>
-              <UiSwitch id="online-status" :checked="value" :style="{ background: value ? '#0F172A' : '#8A8A8A' }"
+              <UiSwitch id="online-status" :checked="value" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }"
                 @update:checked="handleChange" />
             </UiFormItem>
           </UiFormField>
@@ -175,7 +175,7 @@
                 </UiFormControl>
                 <UiFormMessage />
               </div>
-              <UiSwitch id="online-status" :checked="value" :style="{ background: value ? '#0F172A' : '#8A8A8A' }"
+              <UiSwitch id="online-status" :checked="value" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }"
                 @update:checked="handleChange" />
             </UiFormItem>
           </UiFormField>
@@ -201,7 +201,7 @@
 
         <!-- Submit Button -->
         <div class="my-auto flex w-full justify-end py-0">
-          <UiButton type="submit" size="lg" :loading="isLoading">Submit</UiButton>
+          <UiButton class="bg-[#DEDEDE] hover:bg-[#DEDEDE]" type="submit" size="lg" :loading="isLoading">Submit</UiButton>
         </div>
       </div>
     </form>

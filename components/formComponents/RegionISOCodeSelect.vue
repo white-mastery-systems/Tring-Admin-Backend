@@ -7,7 +7,8 @@
       <UiPopover>
         <UiPopoverTrigger as-child>
           <UiFormControl>
-            <UiButton variant="outline" role="combobox" class="font-normal text-sm" :class="cn(
+            <UiButton variant="outline" role="combobox" class="font-normal text-[12px] sm:text-[12px] md:text-[14px]"
+              :class="cn(
               'w-full justify-between overflow-hidden',
               !fieldValue && 'text-muted-foreground',
             )
@@ -22,7 +23,7 @@
               }} -->
               <!-- {{ allCoutryNames }} -->
               <!-- {{ allCoutryNames.find((country: any) => country === fieldValue)}} -->
-                <!-- Region name -->
+              <!-- Region name -->
               {{ fieldValue ? fieldValue : "Select Country" }}
               <component :is="ChevronDown" class="ml-2 h-4 w-4 shrink-0 opacity-50"></component>
             </UiButton>
@@ -47,7 +48,7 @@
                           : 'opacity-0',
                       )
                         " />
-                        <!-- {{ checkboxControl }}
+                      <!-- {{ checkboxControl }}
                         {{ country.data.name}} -->
                       {{ `${country.data.name} - ${country.data.code}` }}
                     </UiCommandItem>

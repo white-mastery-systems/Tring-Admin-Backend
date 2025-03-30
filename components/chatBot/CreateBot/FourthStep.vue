@@ -57,7 +57,7 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
   <UiRadioGroup v-model="selectedGoal" orientation="vertical"
     class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5" :class="props.disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''">
     <div v-for="option in props.intentOptions.goals" :key="option.value"
-      class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]"
+      class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[100px]"
       @click="selectedGoal = option.value">
       <div class="flex gap-4">
         <!-- Custom radio circle matching the design -->
@@ -73,7 +73,7 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
         </div>
       </div>
     </div>
-    <div class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]"
+    <div class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[100px]"
       @click="selectedGoal = 'custom'">
       <div class="flex gap-4">
         <!-- Custom radio for the "custom" option -->

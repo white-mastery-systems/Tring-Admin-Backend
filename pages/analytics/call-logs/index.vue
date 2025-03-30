@@ -3,14 +3,13 @@
     <Page title="Call Logs" :disable-back-button="true">
       <!-- isDataLoading -->
       <!-- @pagination="Pagination"  -->
-      <div class="flex items-center gap-2 overflow-x-scroll pb-2">
+      <div class="flex items-center gap-2 overflow-x-scroll mt-2">
         <UiInput v-model="filters.q" @input="filters.page = '1'"
-          class="w-[150px] sm:w-[150px] md:w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+          class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
           placeholder="Search Bot Name..." />
         <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
           @change="onDateChange" />
-        <UiButton @click="handleClearFilters"
-          class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]">Clear Filters</UiButton>
+        <UiButton color="primary" @click="handleClearFilters" class="ml-2">Clear Filters</UiButton>
       </div>
       <DataTable @row-click="handleRowClick" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);

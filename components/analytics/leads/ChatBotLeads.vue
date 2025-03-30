@@ -1,6 +1,6 @@
 <template>
-  <div class="flex items-center justify-between gap-2 overflow-x-scroll pb-4">
-    <div class="flex items-center gap-2 w-full overflow-x-scroll">
+  <div>
+    <div class="flex items-center gap-2 w-full overflow-x-scroll my-3">
       <UiInput v-model="filters.q" @input="filters.page = '1'"
         class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
         placeholder=" Search Leads..." />
@@ -10,57 +10,60 @@
       <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
         @change="onDateChange" />
       <CountryFilter v-model="filters.country" />
-      <UiButton @click="emitClearFilters"
-        class="ml-2 bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-90 text-[#ffffff]"> Clear Filters</UiButton>
+      <UiButton color="primary" @click="emitClearFilters"
+        class="ml-2"> Clear Filters</UiButton>
     </div>
     <!-- <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton> -->
-  </div>
+  <!-- </div> -->
   <!-- class="pr-6" -->
-  <UiTabs default-value="all">
-    <UiTabsList class="grid w-full sm:w-full md:w-[30%] lg:w-[30%] xl:w-[30%] grid-cols-3">
-      <UiTabsTrigger value="all" @click="selectedChannel('all')">
-        All
-      </UiTabsTrigger>
-      <UiTabsTrigger value="website" @click="selectedChannel('website')">
-        Website
-      </UiTabsTrigger>
-      <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')">
-        Whatsapp
-      </UiTabsTrigger>
-    </UiTabsList>
-    <UiTabsContent value="all">
-      <!-- <div> -->
-      <DataTable @pagination="Pagination" @limit="($event) => {
-        (filters.page = '1'), (filters.limit = $event);
-      }
-        " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="leads"
-        :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="36" height-unit="vh" @row-click="(row: any) => {
-          navigateTo(`/analytics/leads/${row.original.chatId}`);
-        }
-          " />
-      <!-- </div> -->
-    </UiTabsContent>
-    <UiTabsContent value="whatsapp">
-      <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {
-        (props.filters.page = '1'), (props.filters.limit = $event);
-      }
-        " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
-        :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="(row: any) => {
-          navigateTo(`leads/${row.original.chatId}`);
-        }
-          " />
-    </UiTabsContent>
-    <UiTabsContent value="website">
-      <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {
-        (props.filters.page = '1'), (props.filters.limit = $event);
-      }
-        " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
-        :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="(row: any) => {
-          navigateTo(`leads/${row.original.chatId}`);
-        }
-          " />
-    </UiTabsContent>
-  </UiTabs>
+   <div>
+     <UiTabs default-value="all">
+       <UiTabsList class="grid w-full sm:w-full md:w-[30%] lg:w-[30%] xl:w-[30%] grid-cols-3 mb-2">
+         <UiTabsTrigger value="all" @click="selectedChannel('all')">
+           All
+         </UiTabsTrigger>
+         <UiTabsTrigger value="website" @click="selectedChannel('website')">
+           Website
+         </UiTabsTrigger>
+         <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')">
+           Whatsapp
+         </UiTabsTrigger>
+       </UiTabsList>
+       <UiTabsContent value="all">
+         <!-- <div> -->
+         <DataTable @pagination="Pagination" @limit="($event) => {
+           (filters.page = '1'), (filters.limit = $event);
+         }
+           " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="leads"
+           :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="36" height-unit="vh" @row-click="(row: any) => {
+             navigateTo(`/analytics/leads/${row.original.chatId}`);
+           }
+             " />
+         <!-- </div> -->
+       </UiTabsContent>
+       <UiTabsContent value="whatsapp">
+         <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {
+           (props.filters.page = '1'), (props.filters.limit = $event);
+         }
+           " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
+           :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="(row: any) => {
+             navigateTo(`leads/${row.original.chatId}`);
+           }
+             " />
+       </UiTabsContent>
+       <UiTabsContent value="website">
+         <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {
+           (props.filters.page = '1'), (props.filters.limit = $event);
+         }
+           " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
+           :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="(row: any) => {
+             navigateTo(`leads/${row.original.chatId}`);
+           }
+             " />
+       </UiTabsContent>
+     </UiTabs>
+   </div>
+</div>
 </template>
 <script setup lang="ts">
 import { Icon, UiBadge, UiButton } from "#components";
@@ -95,10 +98,10 @@ watchEffect(() => {
   if (props.filters.botId === "all") props.filters.botId = "";
 });
 
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
-let {
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
+const {
   status,
   data: leads,
   refresh: getAllLeads,

@@ -89,7 +89,7 @@ const onSubmit = handleSubmit(async (values) => {
             </div>
           </div>
         </div>
-        <UiButton type="submit"
+        <UiButton color="primary" type="submit"
           class="text-[16px] mt-5 bg-[#FFBC42] button_shadow transition-all duration-300 hover:bg-[#ffce6b] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:bg-[#f0b03c] active:shadow-md"
           :loading="isLoading">
           Submit

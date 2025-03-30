@@ -64,8 +64,8 @@ const onSubmit = handleSubmit(async (value) => {
             <Eye v-else size="20" class="mt-1" />
           </div>
         </div>
-        <UiButton :disabled="isLoading" :loading="isLoading"
-          class="text-[16px] mt-5 bg-[#FFBC42] button_shadow transition-all duration-300 hover:bg-[#ffce6b] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:bg-[#f0b03c] active:shadow-md">
+        <UiButton color="primary" :disabled="isLoading" :loading="isLoading"
+          class="text-[16px] mt-5 button_shadow transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-md">
           Sign up
         </UiButton>
       </div>

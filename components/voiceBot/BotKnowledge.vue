@@ -9,7 +9,7 @@
             <!-- Tabs for Inbound/Outbound -->
             <UiTabs default-value="inbound" class="w-full">
               <UiTabsList
-                class="grid w-[30%] grid-cols-2 bg-[#FFF8EB] text-[#3D3D3D] border border-[#FFBC42] rounded-[10px]">
+                class="grid w-full sm:w-full md:w-[30%] grid-cols-2 bg-[#FFF8EB] text-[#3D3D3D] border border-[#FFBC42] rounded-[10px]">
                 <UiTabsTrigger value="inbound" class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white">
                   Inbound
                 </UiTabsTrigger>
@@ -22,10 +22,10 @@
                   class="flex items-start grid grid-cols-2 gap-6 w-full">
                   <!-- Dynamic sections based on inboundPrompt structure -->
                   <div v-for="(value, key) in inboundPrompt" :key="key" class="space-y-0">
-                    <h2 class="text-lg text-[#000000] font-bold capitalize my-2">{{ formatSectionTitle(key) }}</h2>
+                    <h2 class="text-[14px] sm:text-[14px] md:text-[18px] text-[#000000] font-bold capitalize my-2">{{ formatSectionTitle(key) }}</h2>
                     <div class="gap-4">
                       <textarea v-model="inboundPrompt[key]"
-                        class="w-full min-h-32 resize-y outline-none border rounded border-[#CBD5E1] p-2"
+                        class="w-full min-h-32 resize-y outline-none border rounded border-[#CBD5E1] p-2 text-[12px] sm:text-[12px] md:text-[14px]"
                         :placeholder="`Enter content here...`"></textarea>
                     </div>
                   </div>
@@ -59,7 +59,7 @@
       </div>
 
       <div class="flex w-full justify-end">
-        <UiButton type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading">
+        <UiButton type="submit" class="w-[120px] self-end bg-[#DEDEDE] hover:bg-[#DEDEDE]" size="lg" :loading="isLoading">
           Submit
         </UiButton>
       </div>

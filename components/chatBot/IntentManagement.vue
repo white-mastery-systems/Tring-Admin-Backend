@@ -13,7 +13,7 @@
     <!-- <template #actionButtons> -->
       <div class="mb-4 flex items-center justify-between">
         <div class="text-[18px] font-bold"> Intent Management </div>
-        <UiButton @click="addNewIntents">Add Intents
+        <UiButton color="primary" @click="addNewIntents">Add Intents
         </UiButton>
       </div>
     <!-- </template> -->

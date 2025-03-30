@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<{
   loading: true,
 });
 
-const valueFormatter = (tick: number | Date) => typeof tick === 'number' ? `${new Intl.NumberFormat('us').format(tick).toString()} %` : ''
+const valueFormatter = (tick: number | Date) => typeof tick === 'number' ? `${new Intl.NumberFormat('us').format(tick).toString()}` : ''
 
 // Transform data for the chart if count is an array
 const chartData = computed(() => {
@@ -97,27 +97,6 @@ const isLeadDataEmpty = computed(() => {
         <div v-else class="h-[164px] w-[164px]"> <!-- Adjust the values as needed -->
           <DonutChart index="name" :category="'total'" :data="leadCompositionData" :value-formatter="valueFormatter"
             :colors="['#36B37E', '#FF5630', '#0052CC', '#6554C0']" />
-        </div>
-
-        <!-- Optional: Add a legend showing the lead counts -->
-        <div class="mt-4 grid grid-cols-2 gap-3"
-          v-if="!isLeadDataEmpty && props.count && typeof props.count === 'object' && !Array.isArray(props.count)">
-          <div class="flex items-center" v-if="props.count.warmLeads > 0">
-            <div class="w-3 h-3 rounded-full bg-[#36B37E] mr-2"></div>
-            <span class="text-sm">Warm Leads: {{ props.count.warmLeads }}</span>
-          </div>
-          <div class="flex items-center" v-if="props.count.hotLeads > 0">
-            <div class="w-3 h-3 rounded-full bg-[#FF5630] mr-2"></div>
-            <span class="text-sm">Hot Leads: {{ props.count.hotLeads }}</span>
-          </div>
-          <div class="flex items-center" v-if="props.count.coldLeads > 0">
-            <div class="w-3 h-3 rounded-full bg-[#0052CC] mr-2"></div>
-            <span class="text-sm">Cold Leads: {{ props.count.coldLeads }}</span>
-          </div>
-          <div class="flex items-center" v-if="props.count.junkLeads > 0">
-            <div class="w-3 h-3 rounded-full bg-[#6554C0] mr-2"></div>
-            <span class="text-sm">Junk Leads: {{ props.count.junkLeads }}</span>
-          </div>
         </div>
       </div>
     </Card>

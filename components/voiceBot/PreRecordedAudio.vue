@@ -140,7 +140,7 @@
         </div>
       </div>
       <div class="flex w-full justify-end">
-        <UiButton type="submit" class="w-[120px] self-end"
+        <UiButton type="submit" class="w-[120px] self-end bg-[#DEDEDE] hover:bg-[#DEDEDE]"
           size="lg" :loading="isLoading">
           Submit
         </UiButton>
@@ -219,56 +219,56 @@ const botSchema = toTypedSchema(
     ambientNoiseAudio: z.any().optional(),
     forwardCallAudio: z.any().optional(),
   })
-    .superRefine((data, ctx) => {
-      // Conditional validation for 'welcome' intent
-      if (
-        data.intent === "welcome" &&
-        (!data.welcomeAudio && (!props.audioResponseData?.welcome || !props.audioResponseData?.welcome.length))
-      ) {
-        ctx.addIssue({
-          path: ["welcomeAudio"],
-          message: "Welcome file is required for the 'welcome' intent.",
-        });
-      }
+    // .superRefine((data, ctx) => {
+    //   // Conditional validation for 'welcome' intent
+    //   if (
+    //     data.intent === "welcome" &&
+    //     (!data.welcomeAudio && (!props.audioResponseData?.welcome || !props.audioResponseData?.welcome.length))
+    //   ) {
+    //     ctx.addIssue({
+    //       path: ["welcomeAudio"],
+    //       message: "Welcome file is required for the 'welcome' intent.",
+    //     });
+    //   }
 
-      // Conditional validation for 'conclude' intent
-      if (
-        data.intent === "conclude" &&
-        (!data.concludeAudio && (!props.audioResponseData?.conclude || !props.audioResponseData?.conclude.length))
-      ) {
-        ctx.addIssue({
-          path: ["concludeAudio"],
-          message: "Conclude file is required for the 'conclude' intent.",
-        });
-      }
-      if (
-        data.intent === "filler" &&
-        (!data.fillerAudio && (!props.audioResponseData?.filler || !props.audioResponseData?.filler.length))
-      ) {
-        ctx.addIssue({
-          path: ["fillerAudio"],
-          message: "Filler audio file is required for the 'filler' intent.",
-        });
-      }
-      if (
-        data.intent === "ambientNoise" &&
-        ((!data.ambientNoiseAudio) && (!props.audioResponseData?.ambientNoise || !props.audioResponseData.ambientNoise.length))
-      ) {
-        ctx.addIssue({
-          path: ["ambientNoiseAudio"],
-          message: "Ambient noise audio file is required for the 'ambientNoise' intent.",
-        });
-      }
-      if (
-        data.intent === "forwardCall" &&
-        (!data.forwardCallAudio && (!props.audioResponseData?.forwardCall || !props.audioResponseData?.forwardCall.length))
-      ) {
-        ctx.addIssue({
-          path: ["forwardCallAudio"],
-          message: "Forward call audio file is required for the 'forwardCall' intent.",
-        });
-      }
-    })
+    //   // Conditional validation for 'conclude' intent
+    //   if (
+    //     data.intent === "conclude" &&
+    //     (!data.concludeAudio && (!props.audioResponseData?.conclude || !props.audioResponseData?.conclude.length))
+    //   ) {
+    //     ctx.addIssue({
+    //       path: ["concludeAudio"],
+    //       message: "Conclude file is required for the 'conclude' intent.",
+    //     });
+    //   }
+    //   if (
+    //     data.intent === "filler" &&
+    //     (!data.fillerAudio && (!props.audioResponseData?.filler || !props.audioResponseData?.filler.length))
+    //   ) {
+    //     ctx.addIssue({
+    //       path: ["fillerAudio"],
+    //       message: "Filler audio file is required for the 'filler' intent.",
+    //     });
+    //   }
+    //   if (
+    //     data.intent === "ambientNoise" &&
+    //     ((!data.ambientNoiseAudio) && (!props.audioResponseData?.ambientNoise || !props.audioResponseData.ambientNoise.length))
+    //   ) {
+    //     ctx.addIssue({
+    //       path: ["ambientNoiseAudio"],
+    //       message: "Ambient noise audio file is required for the 'ambientNoise' intent.",
+    //     });
+    //   }
+    //   if (
+    //     data.intent === "forwardCall" &&
+    //     (!data.forwardCallAudio && (!props.audioResponseData?.forwardCall || !props.audioResponseData?.forwardCall.length))
+    //   ) {
+    //     ctx.addIssue({
+    //       path: ["forwardCallAudio"],
+    //       message: "Forward call audio file is required for the 'forwardCall' intent.",
+    //     });
+    //   }
+    // })
 );
 
 // Form setup

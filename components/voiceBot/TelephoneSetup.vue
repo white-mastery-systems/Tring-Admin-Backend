@@ -52,7 +52,7 @@
         </TextField>
       </div>
       <div class="flex justify-end w-full">
-        <UiButton type="submit" size="lg" :loading="isLoading">
+        <UiButton type="submit" size="lg" class="bg-[#DEDEDE] hover:bg-[#DEDEDE]" :loading="isLoading">
           Submit
         </UiButton>
       </div>
@@ -203,7 +203,9 @@ watch(() => values.ivrConfig, () => {
 })
 
 const onSelectProvider = async (value: any) => {
- await getNumberListApiCall(value)
+  if (value) {
+    await getNumberListApiCall(value)
+  }
 }
 
 const getNumberListApiCall = async (value: any) => {

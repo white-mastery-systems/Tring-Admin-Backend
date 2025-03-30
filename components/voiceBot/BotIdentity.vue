@@ -12,14 +12,14 @@
     <!-- {{props.botDetails}} -->
     <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
       <div class="flex items-center grid grid-cols-2 gap-3 text-left">
-        <span class="font-medium text-left text-[16px] md:text-[18px]">Select your Call Type</span>
+        <span class="font-medium text-left text-[14px] sm:text-[14px] md:text-[18px]">Select your Call Type</span>
         <SelectField name="boundDirection" :options="boundList" :disabled="true" placeholder="Select a direction" />
       </div>
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] my-3 h-[0.5px]" />
       <div class="flex flex-col w-full h-full overflow-x-auto">
         <UiCard class="border-0 ma-0 shadow-none">
           <UiCardContent class="grid p-0 gap-2 mb-4 space-y-3">
-            <span class="font-medium text-left text-[16px] md:text-[18px]">
+            <span class="font-medium text-left text-[14px] sm:text-[14px] md:text-[18px]">
               Industries
             </span>
             <RadioGroup v-model="values.type" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden"
@@ -39,13 +39,13 @@
             </RadioGroup>
             <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-2 h-[0.5px]" />
             <!-- Role -->
-            <span class="font-medium text-left text-[16px] md:text-[18px]">
+            <span class="font-medium text-left text-[14px] sm:text-[14px] md:text-[18px]">
               Bot Role
             </span>
             <UiRadioGroup v-model="values.role" name="role" :options="intentOptions?.roles" :isVertical="true"
               ion="vertical" class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5">
               <div v-for="option in intentOptions?.roles" :key="option.value"
-                class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]" @click="() => {
+                class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[100px]" @click="() => {
                   setFieldValue('role', option.value)
                 }">
                 <div class="flex gap-4">
@@ -64,7 +64,7 @@
                   </div>
                 </div>
               </div>
-              <div class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]" @click="() => {
+              <div class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[100px]" @click="() => {
                 setFieldValue('role', 'custom')
               }">
                 <div class="flex gap-4">
@@ -88,7 +88,7 @@
             <!-- Show input field only if "Custom" is selected -->
             <div class="flex items-center gap-5 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 w-full"
               v-if="values.role === 'custom'">
-              <!-- <div class="py-0 sm:py-0 md:py-6 px-0 min-h-[50px]"> -->
+              <!-- <div class="py-0 sm:py-0 md:py-6 px-0 min-h-[100px]"> -->
               <!-- <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-1 text-[#000000] font-medium">Tell us
                   your Chatbot’s Role in the Company</p> -->
               <!-- <TextField :isTextarea="true">
@@ -120,14 +120,14 @@
             </div>
             <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-2 h-[0.5px]" />
             <!-- Goal -->
-            <span class="font-medium text-left text-[16px] md:text-[18px]">
+            <span class="font-medium text-left text-[14px] sm:text-[14px] md:text-[18px]">
               Bot Goal
             </span>
             <!-- :class="props.disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''" -->
             <UiRadioGroup v-model="values.goal" orientation="vertical"
               class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5">
               <div v-for="option in intentOptions?.goals" :key="option.value"
-                class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]" @click="() => {
+                class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[100px]" @click="() => {
                   setFieldValue('goal', option.value)
                 }">
                 <div class="flex gap-4">
@@ -146,7 +146,7 @@
                   </div>
                 </div>
               </div>
-              <div class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]" @click="() => {
+              <div class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[100px]" @click="() => {
                 setFieldValue('goal', 'custom')
               }">
                 <div class="flex gap-4">
@@ -197,7 +197,7 @@
         </UiCard>
       </div>
       <div class="flex w-full justify-end">
-        <UiButton type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading">
+        <UiButton type="submit" class="w-[120px] self-end bg-[#DEDEDE] hover:bg-[#DEDEDE]" size="lg" :loading="isLoading">
           Submit
         </UiButton>
       </div>

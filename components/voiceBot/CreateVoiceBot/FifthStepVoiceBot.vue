@@ -302,7 +302,7 @@ const apikeyunmasking = ($event: Event) => {
 <template>
   <BotSetupCard title="Bot Details" description="Configure your bot's basic information" currentStep="5" totalSteps="6">
     <div>
-      <span class="font-bold">Speech-To-Text (STT) Setup</span>
+      <span class="font-bold text-[12px] sm:text-[12px] md:text-[14px]">Speech-To-Text (STT) Setup</span>
       <div class="grid grid-cols-2 gap-4">
         <SelectField v-model="provider_stt" name="provider_stt" :options="providers" label="Provider"
           placeholder="Select provider"></SelectField>
@@ -313,7 +313,7 @@ const apikeyunmasking = ($event: Event) => {
       </div>
     </div>
     <div>
-      <span class="font-bold">Text-To-Speech (TTS) Setup</span>
+      <span class="font-bold text-[12px] sm:text-[12px] md:text-[14px]">Text-To-Speech (TTS) Setup</span>
       <div class="flex items-center grid grid-cols-2 gap-4">
         <SelectField v-model="provider_tts" name="provider_tts" label="Provider" placeholder="Select provider"
           :options="providersTTS" />
@@ -341,7 +341,7 @@ const apikeyunmasking = ($event: Event) => {
       </div>
     </div>
     <div>
-      <span class="font-bold">Large Language Model (LLM) Setup</span>
+      <span class="font-bold text-[12px] sm:text-[12px] md:text-[14px]">Large Language Model (LLM) Setup</span>
       <div class="grid grid-cols-2 gap-2">
         <SelectField v-model="max_output_token" name="max_output_token" label="Max Tokens" placeholder="Max Tokens"
           :options="tokens.map((token) => ({ label: token, value: token }))" />

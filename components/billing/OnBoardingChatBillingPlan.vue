@@ -13,17 +13,17 @@
       <img src="assets/icons/Line-grid-Black.png" alt="grid background" class="w-[50%] h-full object-cover opacity-5" />
     </div>
     
-    <div class="relative z-10 p-8">
+    <div class="relative z-10 p-4 sm:p-4 md:p-8">
       <!-- Title Section -->
       <div class="text-center mb-8">
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+        <h1 class="text-[18px] sm:text-[18px] md:text-[26px] font-bold text-gray-800">
           Start your <span class="text-indigo-600">14 Days Free Trial Now</span>
-          <span class="text-amber-400 inline-block relative pl-4" style="top: -10px">
-            <img src="assets/icons/Star-Yellow.svg" alt="star" class="w-8 h-8" />
+          <span class="text-amber-400 inline-block relative pl-2" style="top: -10px">
+            <img src="assets/icons/Star-Yellow.svg" alt="star" class="w-4 h-4 sm:w-4 sm:h-4 md:w-8 md:h-8 mt-4 sm:mt-4 md:mt-0" />
           </span>
         </h1>
         
-        <p class="text-[#333333] mt-2 text-[20px] font-semibold">
+        <p class="text-[#333333] mt-2 text-[12px] sm:text-[12px] md:text-[14px] font-semibold">
           No payment required, and you'll only be charged if you choose to<br>
           continue after end of trial period
         </p>

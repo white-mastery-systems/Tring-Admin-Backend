@@ -53,7 +53,7 @@
       <TextField name="DESCRIPTION" label="Company Description" :isTextarea="true">
       </TextField>
       <div class="flex w-full justify-end">
-        <UiButton type="submit" size="lg" :loading="isLoading">
+        <UiButton type="submit" size="lg" class="bg-[#DEDEDE] hover:bg-[#DEDEDE]" :loading="isLoading">
           Submit
         </UiButton>
       </div>
