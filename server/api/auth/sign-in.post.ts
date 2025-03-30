@@ -31,37 +31,37 @@ export default defineEventHandler(async (event) => {
     );
   }
 
-  if (!user.isVerified) {
-    const otpNumber = Math.floor(1000 + Math.random() * 9000);
+  // if (!user.isVerified) {
+  //   const otpNumber = Math.floor(1000 + Math.random() * 9000);
 
-    await db
-      .update(userOTPSchema)
-      .set({
-        otp: {
-          otpNumber: otpNumber.toString(),
-          timestamp: new Date(),
-          status: "pending",
-        },
-      })
-      .where(eq(userOTPSchema.userId, user?.id));
+  //   await db
+  //     .update(userOTPSchema)
+  //     .set({
+  //       otp: {
+  //         otpNumber: otpNumber.toString(),
+  //         timestamp: new Date(),
+  //         status: "pending",
+  //       },
+  //     })
+  //     .where(eq(userOTPSchema.userId, user?.id));
 
-    const emailTemplate = otpEmailTemplate(otpNumber);
+  //   const emailTemplate = otpEmailTemplate(otpNumber);
 
-    sendEmail(
-      user?.email,
-      "Verify Your Tringlabs Account with OTP",
-      emailTemplate,
-    );
-    return sendError(
-      event,
-      createError({
-        statusCode: 400,
-        statusMessage:
-          "User not verified. Please verify your account to proceed.",
-        data: user,
-      }),
-    );
-  }
+  //   sendEmail(
+  //     user?.email,
+  //     "Verify Your Tringlabs Account with OTP",
+  //     emailTemplate,
+  //   );
+  //   return sendError(
+  //     event,
+  //     createError({
+  //       statusCode: 400,
+  //       statusMessage:
+  //         "User not verified. Please verify your account to proceed.",
+  //       data: user,
+  //     }),
+  //   );
+  // }
 
   const session = await lucia.createSession(
     user.id,
