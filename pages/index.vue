@@ -1,7 +1,7 @@
 <template>
   <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true"
     class="flex flex-col items-center h-full">
-    <template #actionButtons>
+    <template #actionButtons v-if="false">
       <div class="flex overflow-x-scroll gap-2 w-full justify-end">
         <span class="field_shadow flex items-center rounded-lg text-[15px]" style="color: rgba(138, 138, 138, 1)">
           <!-- <span class="flex -items-center py-2 pl-2"></span> -->
@@ -33,28 +33,140 @@
     </template>
     <div class="flex flex-col gap-5 p-4 sm:p-4 md:p-0">
       <QuickLinks :navigavtionList="navigavtionList" />
-    <!-- <h6 class="font-bold text-[20px] mt-3">Start creating your bots</h6> -->
-    <!-- <div class="flex flex-col gap-2"> -->
-    <CreateBotLinks :navigavtionList="createBotNavList" />
-     <!-- </div> -->
-    <!-- v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
+      <!-- <h6 class="font-bold text-[20px] mt-3">Start creating your bots</h6> -->
+      <!-- <div class="flex flex-col gap-2"> -->
+      <div class="font-bold text-[14px] sm:text-[14px] md:text-[20px] text-[#3D3D3D]">Start creating your bots</div>
+      <CreateBotLinks :navigavtionList=" createBotNavList" />
+      <div class="font-bold text-[14px] sm:text-[14px] md:text-[20px] text-[#3D3D3D]">Analytics</div>
+      <UiTabs v-model="activeTab" default-value="voice" class="w-full">
+        <UiTabsList
+          class="grid w-full sm:w-full md:w-[20%] grid-cols-2 bg-[#FFF8EB] text-[#3D3D3D] border border-[#FFBC42] rounded-[10px]">
+          <UiTabsTrigger value="chat" class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white">
+            Chat
+          </UiTabsTrigger>
+          <UiTabsTrigger value="voice" class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white">
+            Voice
+          </UiTabsTrigger>
+        </UiTabsList>
+        <div class="flex overflow-x-scroll gap-2 w-full justify-end">
+          <span class="flex items-center rounded-lg text-[15px] border border-1 border-[#FFBC42]"
+            style="color: rgba(138, 138, 138, 1)">
+            <!-- <span class="flex -items-center py-2 pl-2"></span> -->
+            <span class="font-bold text-black">
+              <UiSelect v-model="selectedValue" class="outline-none">
+                <UiSelectTrigger
+                  class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[230px] md:text-[14px] lg:w-[230px] lg:text-[14px] xl:w-[230px] xl:text-[14px]">
+                  <span class="min-w-[70px] font-thin text-gray-400">
+                    Summary
+                  </span>
+                  <UiSelectValue />
+                </UiSelectTrigger>
+                <UiSelectContent>
+                  <UiSelectGroup>
+                    <UiSelectItem v-for="(list, index) in dateFilters" :key="index" class="content_align pr-2"
+                      :value="list.value">
+                      <div class="text-left text-[#3D3D3D]">
+                        {{ list.content }}
+                      </div>
+                    </UiSelectItem>
+                    <UiSelectItem value="custom">Custom</UiSelectItem>
+                  </UiSelectGroup>
+                </UiSelectContent>
+              </UiSelect>
+            </span>
+          </span>
+          <CustomDateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
+        </div>
+        <UiTabsContent value="chat">
+          <div class="pt-4">
+            <!-- {{ analyticsData. }} -->
+            <div v-if="analyticsData?.length">
+              <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-3 w-full">
+                <template v-for="statistics in analyticsData">
+                  <StatsCard
+                    v-if="statistics.name === 'conversionRate' || statistics.name === 'uniqueVisitors' || statistics.name === 'averageSessionDuration'"
+                    :icon="ChatSession" :title="statistics.name" :count="statistics.value" :loading="loading" />
+                  <!-- <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
+                  :count="statistics.value" :loading="loading" /> -->
+                </template>
+              </div>
+              <div class="gap-6 w-full flex flex-col md:flex-row my-6">
+                <template v-for="statistics in analyticsData">
+                  <chartCard v-if="statistics" :icon="ChatSession" :title="statistics.name" :count="statistics.value"
+                    :loading="loading">
+                  </chartCard>
+                </template>
+                <!-- <template>
+                  <chartCard :analyticsData="analyticsData" :icon="ChatSession" :loading="loading">
+                  </chartCard>
+                </template> -->
+              </div>
+              <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-3 w-full">
+                <template v-for="statistics in analyticsData">
+                  <!-- v-if="statistics.name === 'reEngagementRate' || statistics.name === 'dropOffRate' || statistics.name === 'leadQualificationAccuracy'" -->
+                  <StatsCard
+                    v-if="statistics.name === 'reEngagementRate' || statistics.name === 'dropOffRate' || statistics.name === 'leadQualificationAccuracy'"
+                    :icon="ChatSession" :title="statistics.name" :count="statistics.value" :loading="loading" />
+                  <!-- <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
+                  :count="statistics.value" :loading="loading" /> -->
+                </template>
+              </div>
+            </div>
+            <div v-if="loading && !analyticsData?.statistics?.length"
+              class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-">
+              <template v-for="n in 8" :key="n">
+                <StatusCountCard :title="'Loading...'" :count="0" :loading="loading" />
+              </template>
+            </div>
+          </div>
+        </UiTabsContent>
+        <UiTabsContent value="voice">
+          <div>
+            <!-- {{ analyticsData. }} -->
+            <div v-if="analyticsData?.length">
+              <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-3 w-full">
+                <template v-for="statistics in analyticsData">
+                  <StatsCard
+                    v-if="statistics.name === 'conversionRate' || statistics.name === 'uniqueVisitors' || statistics.name === 'averageSessionDuration'"
+                    :title="statistics.name" :count="statistics.value" :loading="loading" />
+                  <!-- <StatusCountCard v-if="statistics" :title="statistics.name?.replace('_', ' ')"
+                  :count="statistics.value" :loading="loading" /> -->
+                </template>
+              </div>
+              <div class="gap-6 w-full flex  my-6">
+                <template v-for="statistics in analyticsData">
+                  <chartCard v-if="statistics" :title="statistics.name" :count="statistics.value" :loading="loading">
+                  </chartCard>
+                </template>
+                <!-- <template>
+                  <chartCard :analyticsData="analyticsData" :loading="loading">
+                  </chartCard>
+                </template> -->
+              </div>
+              <div class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-3 w-full">
+                <template v-for="statistics in analyticsData">
+                  <!-- v-if="statistics.name === 'reEngagementRate' || statistics.name === 'dropOffRate' || statistics.name === 'leadQualificationAccuracy'" -->
+                  <StatsCard
+                    v-if="statistics.name === 'reEngagementRate' || statistics.name === 'dropOffRate' || statistics.name === 'leadQualificationAccuracy'"
+                    :title="statistics.name" :count="statistics.value" :loading="loading" />
+                  <!-- <StatusCountCard v-if="statistics" :title="statistics.name?.replace('_', ' ')"
+                  :count="statistics.value" :loading="loading" /> -->
+                </template>
+              </div>
+            </div>
+            <div v-if="loading && !analyticsData?.statistics?.length"
+              class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-">
+              <template v-for="n in 18" :key="n">
+                <StatusCountCard :title="'Loading...'" :count="0" :loading="loading" />
+              </template>
+            </div>
+          </div>
+        </UiTabsContent>
+      </UiTabs>
+      <!-- </div> -->
+      <!-- v-if="statistics" :title="statistics.name?.replace('_', ' ')"
     :count="statistics.value" :loading="loading" -->
-    <!-- <h6 class="font-bold text-[20px] mt-3">Analytics</h6> -->
-    <div v-if="analyticsData?.length"
-      class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4 w-full">
-      <template v-for="statistics in analyticsData">
-        <StatsCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
-          :count="statistics.value" :loading="loading" />
-        <!-- <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
-          :count="statistics.value" :loading="loading" /> -->
-      </template>
-    </div>
-    <div v-if="loading && !analyticsData?.statistics?.length"
-      class="xs:grid-cols-2 grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-4">
-      <template v-for="n in 18" :key="n">
-        <StatusCountCard :icon="ChatSession" :title="'Loading...'" :count="0" :loading="loading" />
-      </template>
-    </div>
+      <!-- <h6 class="font-bold text-[20px] mt-3">Analytics</h6> -->
     </div>
   </Page>
 </template>
@@ -74,6 +186,7 @@ import { Line } from "vue-chartjs";
 import ChatSession from "~/components/icons/ChatSession.vue";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 import { botStore } from '~/store/botStore';
+import { useDateFilters } from '~/composables/useDateFilters';
 
 useHead({
   title: "Dashboard",
@@ -88,6 +201,8 @@ ChartJS.register(
   CategoryScale,
 );
 
+// Use the composable
+const { dateFilters } = useDateFilters();
 const scrapData = botStore();
 const breadcrumbStore = useBreadcrumbStore();
 breadcrumbStore.setBreadcrumbs([
@@ -126,88 +241,23 @@ const createBotNavList = ref([
     subtitle: "Click here to deploy your new chatbot",
     url: "/chat-bot/create-bot",
     icon: MessageSquare,
+    type: "chat",
   }, {
     title: "Create a Voicebot",
     subtitle: "Click here to deploy your new voicebot",
     url: "/voice-bot",
     icon: PhoneCall,
+    type: "voice",
   }
 ]);
 
-const revenusList = ref([
-  {
-    title: "Total Revenue",
-    revenus: "$45,231.89",
-    previousRevenus: "+20.1% from last month",
-    icon: DollarSign,
-  }, {
-    title: "Subscriptions",
-    revenus: "+2350",
-    previousRevenus: "+180.1% from last month",
-    icon: UsersIcon,
-  }, {
-    title: "Sales",
-    revenus: "+12,234",
-    previousRevenus: "+19% from last month",
-    icon: CreditCardIcon,
-  }, {
-    title: "Active Now",
-    revenus: "+573",
-    previousRevenus: "+201 since last host",
-    icon: ActivityIcon,
-  },
-])
+const activeTab = ref('chat');
+
 const selectedValue: any = ref("last-30-days");
 const analyticsData = ref();
 const analyticsChartData = ref()
 const loading = ref(true);
 
-const dateFilters = reactive([
-  {
-    content: "Today",
-    value: "today",
-  },
-  {
-    content: "Yesterday",
-    value: "yesterday",
-  },
-  {
-    content: "Last 7 days",
-    value: "last-7-days",
-  },
-  {
-    content: "Last 30 days",
-    value: "last-30-days",
-  },
-  {
-    content: "Current month",
-    value: "current-month",
-  },
-  {
-    content: "Last month",
-    value: "last-month",
-  },
-  {
-    content: "Current year",
-    value: "current-year",
-  },
-  {
-    content: "Last year",
-    value: "last-year",
-  },
-  {
-    content: "Current financial year",
-    value: "current-financial-year",
-  },
-  {
-    content: "Last financial year",
-    value: "last-financial-year",
-  },
-  {
-    content: "All time",
-    value: "all-time",
-  },
-]);
 const chartValues = ref(["leads", "sessions"]);
 const state = reactive<{ graphData: any[]; labels: any[] }>({
   graphData: [],
@@ -231,16 +281,19 @@ const filter = reactive<{
   from?: string;
   to?: string;
   period: string;
+  type: string;
 }>({
   from: undefined,
   to: undefined,
   period: "last-30-days",
+  type: activeTab.value,
 });
 // const getButtonName = ref("Get Started");
 
-watch([selectedValue, chartValues], async ([period, chartValues]) => {
+watch([selectedValue, chartValues, activeTab], async ([period, chartValues,type]) => {
   // filter.graphValues = chartValues?.join(",");
-
+  console.log('type',type)
+  filter.type = type;
   filter.period = period;
   if (period != "custom") {
     delete filter.from;
@@ -261,7 +314,12 @@ watch([selectedValue, chartValues], async ([period, chartValues]) => {
     loading.value = false;
   }
   // analyticsData.value = data;
-});
+},{deep: true});
+// watch(() => activeTab.value,(newType) => {
+//   console.log(newType,'sada'),
+//   filter.type = newType;
+//   // console.log(newType
+// })
 
 onMounted(async () => {
   try {

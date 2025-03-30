@@ -5,7 +5,7 @@
     <div class="space-y-4 bg-white rounded-lg shadow-md">
       <!-- Phone number input section -->
       <div class="px-6 space-y-3">
-        <div>
+        <div class="space-y-1">
           <h3 class="text-base font-semibold text-[#09090B]">Enter your Number and test the voicebot</h3>
           <p class="text-[#71717A] text-sm">You will get a call from the bot to the entered number</p>
         </div>
@@ -14,13 +14,12 @@
             <TextField name="name" type="text" label=""
               placeholder="Enter name" />
               <div class="flex items-center gap-2 w-full">
-                <CountryCodeField class="w-[150px]" name="countryCode"
+                <CountryCodeField class="w-[150px] mt-1" name="countryCode"
                   helperText="Enter your country code" :fieldHeader="true" />
                 <TextField :disableCharacters="true" name="phone" helperText=""
-                  placeholder="Enter your mobile number" />
+                  placeholder="Enter number" />
               </div>
           </div>
-          
           <!-- Call bot button -->
           <UiButton type="submit" variant="default"
             class="bg-black text-white w-full sm:w-auto flex items-center justify-center gap-2 py-3 px-6 font-regular">

@@ -253,6 +253,12 @@ import { useElevenLabsVoices } from '@/composables/botManagement/voiceBot/useEle
 import { useElevenLabsModels } from '@/composables/botManagement/voiceBot/useElevenLabsModelsComposable';
 import { combinedValidationSchema } from "~/validationSchema/botManagement/voiceBot/EditVoiceBotValidation";
 
+
+const props = defineProps<{
+  botDetails: any;
+  loading: boolean;
+  refreshBot: () => void
+}>();
 const route = useRoute("voice-bot-id");
 const breadcrumbStore = useBreadcrumbStore();
 const isLoading = ref(false);
@@ -260,17 +266,17 @@ const isPageLoading = ref(true);
 const activeTab = ref('tts'); // Default to TTS tab
 
 // Get bot details
-const botDetails = ref(await getVoiceBotDetails(route.params.id));
+// const botDetails = ref(await getVoiceBotDetails(route.params.id));
 
 // Set breadcrumbs
 breadcrumbStore.setBreadcrumbs([
   {
     label: 'Voice Bot Configuration',
-    to: `/voice-bot/${botDetails.value?.id}`,
+    to: `/voice-bot/${props.botDetails?.botDetails?.id}`,
   },
   {
-    label: `${botDetails.value?.name}`,
-    to: `/voice-bot/${botDetails.value?.id}/config`,
+    label: `${props.botDetails?.botDetails?.name}`,
+    to: `/voice-bot/${props.botDetails?.botDetails?.id}/config`,
   },
 ]);
 
@@ -618,7 +624,6 @@ function formatSttConfig(sttValues) {
   const config = {
     provider: sttValues.provider || 'deepgram'
   };
-  
   if (sttValues.provider === "google") {
     config.google = {
       model: sttValues.googlemodel || 'short',
@@ -647,14 +652,13 @@ function formatSttConfig(sttValues) {
       amplification_factor: sttValues.amplificationFactor || 2
     };
   }
-  
   return config;
 }
 
 // Update page title based on bot name
 watchEffect(() => {
-  if (botDetails.value) {
-    const userName = botDetails.value?.name ?? "Unknown Bot Name";
+  if (props.botDetails?.botDetails) {
+    const userName = props.botDetails?.botDetails?.name ?? "Unknown Bot Name";
     useHead({
       title: `Voice Bot | ${userName} - Configuration`,
     });

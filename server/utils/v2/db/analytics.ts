@@ -1,24 +1,9 @@
 import { logger } from "~/server/logger"
-import { getOrgLeadsForAnalytics } from "./leads";
-import { getOrgChatsForAnalytics, getOrgInteractedChatsForAnalytics } from "./chats";
+import { getLeadComposition } from "./leads";
+import { getAnalyticsGraph, getOrgInteractedChatsForAnalytics, totalSessionDuration } from "./chats";
 import { getUniqueVisitorsForAnalytics } from "./uniqueVisitors";
-import { getOrgChatBotsByFilterForAnalytics, getOrgTotalChatBotsForAnalytics } from "./chatbot";
-import { getCallLogsByCallStatus, getOrgTotalCalls, getOrgTotalCallsInMins, getOrgTotalVoicebots, getOrgVoicebotsByFilter, getOrgVoiceLeads } from "./voicebot";
+import { getOrgReEnagedBotUsers, getOrgTotalBotUsers } from "./bot-user";
 
-const db = useDrizzle()
-
-const validQueryValues = [
-  "leads",
-  "sessions",
-  "unique_visitors",
-  "interacted_chats",
-  "schedule_call",
-  "site_visit",
-  "location",
-  "virtual_tour",
-  "images",
-  "brochures",
-];
 
 export const getOrgAnalytics = async ( 
   organizationId: string,
@@ -26,18 +11,6 @@ export const getOrgAnalytics = async (
   timeZone: string,
 ) => {
   try {
-    const queryArray = query?.graphValues
-      ?.trim()
-      ?.split(",")
-      .map((value: any) => value.trim()) || ["leads", "sessions"];
-
-    // Validate query-values
-    const inValidQuery = queryArray.filter(
-      (i: any) => !validQueryValues.includes(i),
-    );
-    if (inValidQuery.length) {
-      throw new Error("Invalid query values");
-    }
     let fromDate: Date | undefined;
     let toDate: Date | undefined;
 
@@ -46,51 +19,66 @@ export const getOrgAnalytics = async (
       fromDate = queryDate?.from;
       toDate = queryDate?.to;
     }
+
+    if(query.type === "chat"){
+      // Performance metrics
+      //--- Conversion Rate
+      const qualifiedLeads = await getOrgQualifiedLeads(organizationId, fromDate, toDate)
+      const totalConversation = await getOrgInteractedChatsForAnalytics(organizationId, fromDate, toDate)
+      const conversionRate = totalConversation.length > 0 
+      ? `${Math.round((qualifiedLeads / totalConversation.length) * 100)}%`
+      : '0%';
+  
+      //--- Lead qaulification Accuracy
+      const totalHighPotentialLeads = await getOrgQualifiedLeads(organizationId, fromDate, toDate, true)
+      const accuracy = totalHighPotentialLeads > 0
+      ? `${Math.round((qualifiedLeads / totalHighPotentialLeads) * 100)}%` 
+      : 0
+  
+      // Engagement Metrics
+      //--- Total Conversation
+      const totalConversationGraph = await getAnalyticsGraph({ totalConversation, period: query?.period, fromDate, toDate, timeZone})
     
-    // chats
-    const leads = await getOrgLeadsForAnalytics(organizationId, fromDate, toDate)
-    const chats = await getOrgChatsForAnalytics(organizationId, fromDate, toDate)
-    const uniqueVisitors = await getUniqueVisitorsForAnalytics(organizationId, fromDate, toDate)
-    const interactedChats = await getOrgInteractedChatsForAnalytics(organizationId, fromDate, toDate)
-    const chatBots = await getOrgTotalChatBotsForAnalytics(organizationId, fromDate, toDate)
-    const activeChatBots = await getOrgChatBotsByFilterForAnalytics(organizationId, fromDate, toDate, true)
-    const deactiveChatBots = await getOrgChatBotsByFilterForAnalytics(organizationId, fromDate, toDate, false)
-    //TODO - chats - No.of triggers
-
-    // voice
-    const voiceBots = await getOrgTotalVoicebots(organizationId, fromDate, toDate)
-    const activeVoiceBots = await getOrgVoicebotsByFilter(organizationId, fromDate, toDate, true)
-    const deactiveVoiceBots = await getOrgVoicebotsByFilter(organizationId, fromDate, toDate, false)
-    const inboundCalls = await getOrgTotalCalls(organizationId, fromDate, toDate, "inbound")
-    const outboundCalls = await getOrgTotalCalls(organizationId, fromDate, toDate, "outbound")
-    const voiceLeads = await getOrgVoiceLeads(organizationId, fromDate, toDate)
-    const voiceTotalCalls = await getOrgTotalCalls(organizationId, fromDate, toDate)
-    const callDuration = await getOrgTotalCallsInMins(organizationId, fromDate, toDate)
-
-    // TODO -> voice - answered_calls, unAnswered_calls, rejected_calls
-    const answeredCalls = await getCallLogsByCallStatus(organizationId, fromDate, toDate, "answered")
-    const unAnswerdCalls = await getCallLogsByCallStatus(organizationId, fromDate, toDate, "unanswered")
-    const rejectedCalls = await getCallLogsByCallStatus(organizationId, fromDate, toDate, "rejected")
-
-    return { 
-      chatLeads: leads.length,
-      chatSessions: chats.length,
-      uniqueVisitors: uniqueVisitors.length,
-      interactedChats: interactedChats.length,
-      chatBots: chatBots.length,
-      activeChatBots: activeChatBots.length,
-      deactiveChatBots: deactiveChatBots.length,
-      voiceBots: voiceBots.length,
-      activeVoiceBots: activeVoiceBots.length,
-      deactiveVoiceBots: deactiveVoiceBots.length,
-      voiceTotalCalls: voiceTotalCalls.length,
-      inboundCalls: inboundCalls.length,
-      outboundCalls: outboundCalls.length,
-      voiceLeads: voiceLeads.length,
-      callDuration,
-      answeredCalls: answeredCalls.length,
-      unAnswerdCalls: unAnswerdCalls.length,
-      rejectedCalls: rejectedCalls.length
+      //--- Unique visitors
+      const uniqueVisitors = await getUniqueVisitorsForAnalytics(organizationId, fromDate, toDate)
+      
+      //--- Average session duration
+      const averageSessionDuration = await totalSessionDuration(organizationId, fromDate, toDate)
+      
+      //--- Re-engaement rate
+      const orgTotalBotUsers = await getOrgTotalBotUsers(organizationId, fromDate, toDate)
+      const orgReEngagedBotUsers = await getOrgReEnagedBotUsers(organizationId, fromDate, toDate)
+      const reEngagementRate = orgTotalBotUsers > 0 ? `${Math.round((orgReEngagedBotUsers / orgTotalBotUsers) * 100)}%` : '0%'
+      
+      //--- Lead Composition
+      const leadComposition = await getLeadComposition(organizationId, fromDate, toDate)
+      
+      return {
+        conversionRate,
+        uniqueVisitors: uniqueVisitors.length,
+        averageSessionDuration,
+        totalConversation: totalConversationGraph ?? [],
+        leadQualificationAccuracy: accuracy,
+        reEngagementRate,
+        dropOffRate: "Coming Soon",
+        leadComposition,
+        resolutionRate: "Coming Soon",
+      }
+    
+    }  
+    
+    if(query.type === "voice") {
+       return {
+        conversionRate: "0%",
+        uniqueVisitors: 0,
+        averageSessionDuration: "0",
+        totalConversation: [],
+        leadQualificationAccuracy: "0%",
+        reEngagementRate: "0%",
+        dropOffRate: "Coming Soon",
+        leadComposition: {},
+        resolutionRate: "Coming Soon",
+       }
     }
     
   } catch (error: any) {

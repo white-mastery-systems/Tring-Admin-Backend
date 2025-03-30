@@ -40,11 +40,13 @@ const props = withDefaults(
           </span> -->
           <!-- asdsad -->
           <!-- {{ item.icon }} -->
-          <component :is="item.icon" :size="30"></component>
+          <component :is="item.icon" :stroke-width="1" :size="30" class="text-[#FFBC42]"></component>
+          <!-- <component :is="item.icon" :stroke="'#FFBC42'" :size="30" stroke-width="0.5"></component> -->
           <!-- <img src="/assets/icons/Chat_Bubble.svg" width="50" class="rounded-lg" /> -->
           <!-- </div> -->
           <div class="flex flex-col items-center gap-1">
-            <CardTitle class="text-center font-bold text-[16px] sm:text-[16px] md:text-[22px]">{{ item.title }}
+            <CardTitle class="text-center font-bold text-[16px] sm:text-[16px] md:text-[22px] text-[#3D3D3D]">{{
+              item.title }}
             </CardTitle>
             <CardDescription class="text-center text-[8px] sm:text-[8px] md:text-[13px] text-[#71717A]">
               {{ item.subtitle }}

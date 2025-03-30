@@ -41,7 +41,9 @@ onMounted(() => {
         <!-- Left Icon -->
         <div class="flex items-center justify-between gap-2 w-full">
           <div class="flex items-center gap-2">
-            <img src="/assets/icons/create_bot_link.svg" width="35" class="rounded-lg" />
+            <div class="flex items-center justify-center min-w-11 min-h-11 bg-[#18181B] rounded-full">
+              <component :is="item.icon" :stroke-width="1.5" :size="18" class="text-white"></component>
+            </div>
             <!-- <LucideIcon :name="item.icon" class="w-5 h-5 text-blue-500" /> -->
             <div class="flex flex-col items-start gap-1 pl-4">
               <span class="text-[14px] sm:text-[14px] md:text-[16px]">
@@ -67,8 +69,8 @@ onMounted(() => {
         <!-- {{ item.content }} -->
         <!-- <component :is="stepComponents[item.value]" /> -->
         <component :is="stepComponents[item.value]" :botDetails="props.botDetails" :refreshBot="props.refreshBot"
-          :documents="props.documents" :refresh="props.refresh" :loading="props.loading" @statusUpdated="updateStepStatus"
-          class="mt-2" />
+          :documents="props.documents" :refresh="props.refresh" :loading="props.loading"
+          @statusUpdated="updateStepStatus" class="mt-2" />
       </AccordionContent>
     </AccordionItem>
   </Accordion>

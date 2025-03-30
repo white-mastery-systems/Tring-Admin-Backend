@@ -5,7 +5,7 @@
       <!-- <span class="font-semibold w-[210px] text-[10px] sm:text-[10px] md:text-[16px] ">Import from Website</span> -->
       <TextField name="url" placeholder="URL" label="Import from Website Link">
       </TextField>
-      <UiButton type="submit" :loading="isLoading" class="px-6 mb-1">
+      <UiButton type="submit" color="primary" :loading="isLoading" class="px-6 mb-1 button_shadow">
         Import
       </UiButton>
     </div>
