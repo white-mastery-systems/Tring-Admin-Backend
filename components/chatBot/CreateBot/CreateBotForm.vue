@@ -215,9 +215,9 @@ const submitForm = handleSubmit(async (values) => {
       metadata: {
         ui: {
           ...botDetails.value?.metadata.ui,
-          logo: (scrapData.scrapedData && Object.keys(scrapData.scrapedData).length > 0) 
-            ? (values.logo?.size ? uploadedDetails?.metadata?.ui?.logo ?? botDetails.metadata.ui.logo : values.logo?.url) // Use optional chaining
-            : uploadedDetails?.metadata?.ui?.logo ?? botDetails.metadata.ui.logo,
+          logo: (scrapData.scrapedData && Object.keys(scrapData.scrapedData).length > 0)
+            ? (values.logo ? values.logo.url : uploadedDetails?.metadata?.ui?.logo ?? botDetails?.metadata?.ui?.logo)
+            : uploadedDetails?.metadata?.ui?.logo ?? botDetails?.metadata?.ui?.logo,
           color: hexToHSL(values.color),
           secondaryColor: hexToHSL(values.secondaryColor),
           fontFamily: "Kanit",
@@ -372,10 +372,11 @@ const handleActivateBot = async () => {
   
 };
 const singleDocumentDeploy = async (list: any) => {
+  isLoading.value = true
   await deployDocument(paramId.params.id, list.id);
   await refreshBot() // new function refreshBot added
   await checkDocumentStatus(list);
-  
+  isLoading.value = false
   // botDetails.value = await getBotDetails(paramId.params.id);
 };
 watch(() => values.type, (newType) => {
@@ -418,12 +419,12 @@ onUnmounted(() => {
         <!-- {{ step === 2 && (values.intent.length === 0) }} -->
         <div class="flex justify-end w-full gap-[12px] p-4">
           <UiButton v-if="(step > 1)" :disabled="isLoading" type="button" @click="prevStep" class="px-8" variant="outline">Back</UiButton>
-          <UiButton v-if="showBackButton" type="button" @click="firstStepBack" class="px-8" variant="outline">Back
+          <UiButton v-if="showBackButton" type="button" @click="firstStepBack" class="px-8 button_shadow border border-[#FFBC42] text-[#FFBC42] hover:text-[#FFBC42]" variant="outline">Back
           </UiButton>
-          <UiButton v-if="showNextButton" type="button" @click="nextStep" class="px-8"
+          <UiButton v-if="showNextButton" type="button" @click="nextStep" color="primary" class="px-8 button_shadow"
             :loading="isUploading || isDataLoading || isLoading">Next
           </UiButton>
-          <UiButton type="button" v-if="step === 4" @click="submitForm" class="px-8" :loading="isLoading">
+          <UiButton color="primary" type="button" v-if="step === 4" @click="submitForm" class="px-8 button_shadow" :loading="isLoading">
             Create Bot
           </UiButton>
         </div>

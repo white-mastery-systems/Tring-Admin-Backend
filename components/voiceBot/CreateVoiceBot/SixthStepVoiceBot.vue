@@ -152,20 +152,14 @@ const handleConnect = handleSubmit(async (values: any) => {
 </script>
 
 <template>
-  <BotSetupCard
-    title="Telephone Setup"
+  <BotSetupCard title="Telephone Setup"
     description="Set up your IVR system to handle calls automatically and direct callers to the right place"
-    currentStep="6"
-    totalSteps="6">
+    currentStep="6" totalSteps="6">
     <div>
       <!-- {{integrationsData}} -->
       <div class="grid grid-cols-2 gap-4">
-        <SelectField 
-          v-model="provideraccountname"
-          name="provideraccountname" 
-          label="Select Account Name" 
-          :closeIcon="false" 
-            :options="[
+        <SelectField v-model="provideraccountname" name="provideraccountname" label="Select Account Name"
+          :closeIcon="false" :options="[
               { label: 'New Account', value: 'New Account' },
               ...integrationsData.map((item: any) => {
                 return {
@@ -173,19 +167,11 @@ const handleConnect = handleSubmit(async (values: any) => {
                   value: item.id,
                 }
               })
-            ]"
-          placeholder="Select Account"
-          @input="onSelectAccount($event)"
-        />
+            ]" placeholder="Select Account" @input="onSelectAccount($event)" />
         <!-- Integration Number -->
-        <SelectField  v-model="incomingPhoneNumber"
-          name="incomingPhoneNumber" 
-          label="Integration Number" 
-          :closeIcon="true"
-          :options="numberList"
-          placeholder="Select Number"
-          :disabled="numberList.length === 0 && numberList[0].value != 'New Number'" 
-        />
+        <SelectField v-model="incomingPhoneNumber" name="incomingPhoneNumber" label="Integration Number"
+          :closeIcon="true" :options="numberList" placeholder="Select Number"
+          :disabled="numberList.length === 0 || (provideraccountname === 'New Account')" @input="onSelectNumber($event)" />
         <!-- <SelectField 
           name="ivrConfig" 
           label="Cloud Telephone Provider" 
@@ -194,7 +180,7 @@ const handleConnect = handleSubmit(async (values: any) => {
           :options="integrationsData"
           placeholder="Assign a Cloud Telephony provider to the bot." 
         /> -->
-        
+
       </div>
       <!-- Auth fields - shown when New Account is selected -->
       <div v-if="showAuthFields" class="mt-6 ">
@@ -210,52 +196,55 @@ const handleConnect = handleSubmit(async (values: any) => {
             </div>
           </div>
           <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full" />
-      <Form @submit="handleConnect" class="space-y-3">
-        <div class='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-2 xl:grid-cols-2'>
-        <SelectField name="provider" placeholder="Select a provider" label="Cloud Telephone Provider" :options="providerList">
-        </SelectField>
-        <div class="flex flex-col gap-2 pt-[10px]">
-          <TextField
-              name="ivrIntegrationName" label="Provider Account Name" placeholder="Enter provider account name" />
-        </div>
-        <!-- <div class="flex flex-col gap-2 pt-[10px]"> -->
-          <TextField v-if="values.provider === 'plivo'" name="authId" label="Auth ID" placeholder="Enter auth ID" />
-        <!-- </div> -->
-          
-        <TextField v-if="values.provider === 'plivo'" name="authToken" label="Auth Token" placeholder="Enter auth token" />
-        <!-- <div class="flex flex-col gap-2 pt-[10px]" > -->
-        <TextField v-if="values.provider === 'twilio' || values.provider === 'exotel'" name="accountSid"
-          label="Account SID" placeholder="Enter account SID" />
-        <!-- </div> -->
-        <!-- <TextField v-if="values.provider === 'twilio'" name="authToken" label="Auth Token" required
-          placeholder="Enter auth token" /> -->
-        <TextField v-if="values.provider === 'twilio'" name="apiSecret" label="Api Secret"
-          placeholder="Enter api secret" />
+          <Form @submit="handleConnect" class="space-y-3">
+            <div class='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-2 xl:grid-cols-2'>
+              <SelectField name="provider" placeholder="Select a provider" label="Cloud Telephone Provider"
+                :options="providerList">
+              </SelectField>
+              <div class="flex flex-col gap-2 pt-[10px]">
+                <TextField name="ivrIntegrationName" label="Provider Account Name"
+                  placeholder="Enter provider account name" />
+              </div>
+              <!-- <div class="flex flex-col gap-2 pt-[10px]"> -->
+              <TextField v-if="values.provider === 'plivo'" name="authId" label="Auth ID" placeholder="Enter auth ID" />
+              <!-- </div> -->
 
-        <!-- Exotel -->
-        <TextField v-if="values.provider === 'exotel'" name="subDomain" label="Sub Domain"
-          placeholder="Enter sub domain" />
-        <!-- <div :class="[(values.provider === 'telnyx') ? 'flex flex-col gap-2 pt-[10px]' : '']"> -->
-          <TextField v-if="values.provider === 'twilio' || values.provider === 'exotel' || values.provider === 'telnyx'"
-            name="apiKey" label="Api Key" placeholder="Enter Api Key" />
-        <!-- </div> -->
-        <TextField v-if="values.provider === 'exotel'" name="apiToken" label="Api Token"
-          placeholder="Enter api token" />
-        <TextField v-if="values.provider === 'exotel'" name="flowId" label="flow Id"
-          placeholder="Enter flow Id" />
-        <TextField v-if="values.provider === 'telnyx'" name="publicKey" label="public key"
-          placeholder="Enter Public Key" />
-        <TextField v-if="values.provider === 'telnyx'" name="connectionId" label="connection Id"
-          placeholder="Enter Connection Id" />
-      </div>
-      <div class="flex w-full">
-        <UiButton type="submit" class="mt-2" :loading="isLoading">
-          Submit
-        </UiButton>
-      </div>
-    </Form>
+              <TextField v-if="values.provider === 'plivo'" name="authToken" label="Auth Token"
+                placeholder="Enter auth token" />
+              <!-- <div class="flex flex-col gap-2 pt-[10px]" > -->
+              <TextField v-if="values.provider === 'twilio' || values.provider === 'exotel'" name="accountSid"
+                label="Account SID" placeholder="Enter account SID" />
+              <!-- </div> -->
+              <!-- <TextField v-if="values.provider === 'twilio'" name="authToken" label="Auth Token" required
+          placeholder="Enter auth token" /> -->
+              <TextField v-if="values.provider === 'twilio'" name="apiSecret" label="Api Secret"
+                placeholder="Enter api secret" />
+
+              <!-- Exotel -->
+              <TextField v-if="values.provider === 'exotel'" name="subDomain" label="Sub Domain"
+                placeholder="Enter sub domain" />
+              <!-- <div :class="[(values.provider === 'telnyx') ? 'flex flex-col gap-2 pt-[10px]' : '']"> -->
+              <TextField
+                v-if="values.provider === 'twilio' || values.provider === 'exotel' || values.provider === 'telnyx'"
+                name="apiKey" label="Api Key" placeholder="Enter Api Key" />
+              <!-- </div> -->
+              <TextField v-if="values.provider === 'exotel'" name="apiToken" label="Api Token"
+                placeholder="Enter api token" />
+              <TextField v-if="values.provider === 'exotel'" name="flowId" label="flow Id"
+                placeholder="Enter flow Id" />
+              <TextField v-if="values.provider === 'telnyx'" name="publicKey" label="public key"
+                placeholder="Enter Public Key" />
+              <TextField v-if="values.provider === 'telnyx'" name="connectionId" label="connection Id"
+                placeholder="Enter Connection Id" />
+            </div>
+            <div class="flex w-full">
+              <UiButton type="submit" class="mt-2" :loading="isLoading">
+                Submit
+              </UiButton>
+            </div>
+          </Form>
+        </div>
       </div>
     </div>
-  </div>
   </BotSetupCard>
 </template>

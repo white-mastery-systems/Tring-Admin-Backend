@@ -1,26 +1,13 @@
 <script setup lang="ts">
 import { useField } from "vee-validate";
 import { ref } from "vue";
-import {
-  Landmark,
-  Banknote,
-  Home,
-  Stethoscope,
-  ShoppingCart,
-  Lightbulb,
-  PhoneCall,
-  Plane,
-  Truck,
-  GraduationCap,
-  Server
-} from "lucide-vue-next";
 // import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 const props = defineProps<{
   errors: Record<string, any>;
   values: Record<string, any>;
 }>();
-const emit = defineEmits(['changeLogo']);
+const emit = defineEmits(['update:values', 'changeLogo']);
 // ✅ Use `useField()` from vee-validate
 const { value: COMPANY } = useField("COMPANY");
 const { value: NAME } = useField("NAME");
@@ -36,19 +23,6 @@ const secondarycolorInput = ref();
 
 // Call fetchConfig when needed (e.g., on mount or on type change)
 
-const intentTypes = [
-  { label: "Real Estate", value: "real-estate", icon: Home },
-  { label: "Government Sectors", value: "government-sectors", icon: Landmark },
-  { label: "Finance & Banking", value: "finance-banking", icon: Banknote },
-  { label: "Healthcare", value: "healthcare", icon: Stethoscope },
-  { label: "E-commerce", value: "e-commerce", icon: ShoppingCart },
-  { label: "Energy & Utilities", value: "energy-utilities", icon: Lightbulb },
-  { label: "Telecommunications", value: "telecommunications", icon: PhoneCall },
-  { label: "Travel & Hospitality", value: "travel-hospitality", icon: Plane },
-  { label: "Logistics", value: "logistics", icon: Truck },
-  { label: "Education & Training", value: "education-training", icon: GraduationCap },
-  { label: "IT Service", value: "it-service", icon: Server },
-];
 const logoData = ref()
 // ✅ Function to update industry selection
 // const selectIndustry = (value: any) => {
@@ -68,9 +42,19 @@ const handleLogoChange = (event: any) => {
       // Update the field value with the data URL
       logo.value = { url: e.target.result };
       // Emit the changeLogo event to the parent component
-      emit('changeLogo', { 
+      emit('changeLogo', {
+        file: logoData.value,
+        url: e.target.result
+      });
+      emit('update:values', { 
+        NAME: NAME.value,
+        COMPANY: COMPANY.value,
+        type: selectedType.value,
         file: logoData.value, 
-        url: e.target.result 
+        logo: logo.value,
+        secondaryColor: secondaryColor.value,
+        color: color.value,
+        BotName: BotName.value,
       });
     };
     
