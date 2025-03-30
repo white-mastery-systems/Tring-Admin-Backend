@@ -19,6 +19,7 @@ const props = defineProps<{
 
 const scrapData = botStore();
 const uploadDocumentRef = ref(null);
+
 defineExpose({ uploadDocumentRef })
 const { value: selectedType } = useField("selectedType")
 const { value: type } = useField("type");
@@ -128,7 +129,7 @@ const changeKnowledge = () => {
               <Label :for="intent.value"
                 class="w-full h-full border flex items-center justify-center p-4 rounded-lg bg-[#fffff] transition-all duration-300"
                 :class="[type === intent.value ? 'border-3 border-[#FFBC42] bg-[#FFF8EB]' : 'border-1 border-[#FFBC42]']">
-                <component :is="intent.icon" class="w-[30px] sm:w-[30px] md:w-[30px] h-[30px] sm:h-[30px] md:h-[30px]"
+                <component :is="intent.icon" class="w-[30px] sm:w-[30px] md:w-[50px] h-[30px] sm:h-[30px] md:h-[50px]"
                   :class="[(type === intent.value) ? 'text-[#FFBC42]' : '']" :stroke-width="0.75" />
               </Label>
               <div class="text-[10px] sm:text-[10px] md:text-[12px] font-medium mt-2 text-center">{{ intent.label }}

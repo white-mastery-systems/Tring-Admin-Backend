@@ -61,7 +61,7 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
   <UiRadioGroup v-model="selectedRole" orientation="vertical"
     class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5">
     <div v-for="option in props.intentOptions.roles" :key="option.value"
-      class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]"
+      class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[100px]"
       @click="selectedRole = option.value">
       <div class="flex gap-4">
         <!-- Custom radio circle matching the design -->
@@ -77,7 +77,7 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
         </div>
       </div>
     </div>
-    <div class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[50px]"
+    <div class="flex items-center gap-4 border p-4 rounded-lg cursor-pointer min-h-[100px]"
       @click="selectedRole = 'custom'">
       <div class="flex gap-4">
         <!-- Custom radio for the "custom" option -->
@@ -99,7 +99,7 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
       <!-- Show input field only if "Custom" is selected -->
       <div class="flex items-center gap-5 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 w-full"
         v-if="selectedRole === 'custom'">
-        <div class="p-0 min-h-[50px]">
+        <div class="p-0 min-h-[100px]">
           <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-1 text-[#000000] font-medium">Tell us your Chatbot’s Role in the Company</p>
           <UiTextarea v-model="otherRole" name="otherRole" class="h-[70px] text-[12px] sm:text-[12px] md:text-[14px]" :resizable="false"
             placeholder="e.g., 'Sales Assistant" label="Tell us about your company">

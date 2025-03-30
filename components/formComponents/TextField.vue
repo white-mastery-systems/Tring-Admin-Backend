@@ -9,7 +9,7 @@
     </UiLabel>
     <div v-if="isTextarea" class="flex flex-col gap-1">
       <UiTextarea
-        class="mt-2  text-[10px] sm:text-[10px] md:text-[14px]textarea-resize-scroll focus:outline-none focus:ring-0 focus:border-transparent"
+        class="mt-2  text-[10px] sm:text-[10px] md:text-[14px] textarea-resize-scroll focus:outline-none focus:ring-0 focus:border-transparent"
         @paste="
           (e: any) => {
             if (disableCharacters) {
@@ -44,6 +44,8 @@
     </div>
 
     <div v-else class="flex flex-col">
+      <!-- {{props.name}}
+      {{props.validation}} -->
       <UiInput :class="
           cn(
             'mt-2',
@@ -173,9 +175,10 @@
   const countdownTime = ref(0)
 
   const replacedId = ref(props.label ?? props.name);
+  // errorMessage: ""
   const { value, errorMessage }: { value: any; errorMessage: any } =
     !props.validation
-      ? { value: props.name, errorMessage: "" }
+      ? { value: props.name }
       : useField(() => props.name);
 
   watch(errorMessage, (newErr) => {});

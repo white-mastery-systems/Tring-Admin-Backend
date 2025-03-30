@@ -104,7 +104,7 @@ const getNumberListApiCall = async (value: any) => {
   // const getNumberList: any = await getIntegratedProviderNumberList(value);
   // Create array with "New Account" always as an option
   const getNumberList: any = await getIntegratedProviderNumberList(value)
-  numberList.value = getNumberList.map((item: any) => ({
+  numberList.value = getNumberList?.map((item: any) => ({
     label: item,
     value: item
   }))
@@ -171,7 +171,7 @@ const handleConnect = handleSubmit(async (values: any) => {
         <!-- Integration Number -->
         <SelectField v-model="incomingPhoneNumber" name="incomingPhoneNumber" label="Integration Number"
           :closeIcon="true" :options="numberList" placeholder="Select Number"
-          :disabled="numberList.length === 0 || (provideraccountname === 'New Account')" @input="onSelectNumber($event)" />
+          :disabled="numberList?.length === 0 || (numberList[0]?.value === 'New Account')" @input="onSelectNumber($event)" />
         <!-- <SelectField 
           name="ivrConfig" 
           label="Cloud Telephone Provider" 

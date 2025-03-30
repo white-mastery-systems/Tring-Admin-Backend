@@ -203,7 +203,9 @@ watch(() => values.ivrConfig, () => {
 })
 
 const onSelectProvider = async (value: any) => {
- await getNumberListApiCall(value)
+  if (value) {
+    await getNumberListApiCall(value)
+  }
 }
 
 const getNumberListApiCall = async (value: any) => {

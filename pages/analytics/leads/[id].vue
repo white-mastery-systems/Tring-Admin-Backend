@@ -90,7 +90,7 @@
                     <div class="p-5 rounded-lg gap-4 field_shadow">
                       <TextField label="Date" :placeholder="`${dynamicForm.content} - ${dynamicForm.date}`"
                         :required="false" :disabled="true" class="mb-2" />
-                      <TextField label="Time" :validation="false" :required="false" :placeholder="`${dynamicForm.time}`"
+                      <TextField label="Time" :required="false" :placeholder="`${dynamicForm.time}`"
                         :disabled="true" />
                     </div>
                   </div>

@@ -44,6 +44,7 @@ watch(() => values.type, async (newType) => {
   if (newType) {
     await fetchConfig(newType)
     await fetchKnowledgeBase(newType)
+    scrapData.voiceBotScrapedData = []
     // fetchSuggestions(newType)
   }
 });
@@ -84,7 +85,7 @@ const nextStep = async () => {
 
   // Special handling for step 1 (Knowledge Details)
   if (step.value === 1) {
-    if (scrapData.voiceBotScrapedData?.document_content?.length === 0 || !scrapData.voiceBotScrapedData?.document_content) {
+    if (!stepOneRef.value.uploadDocumentRef.text) {
       toast.error("Please provide Knowledge Details.");
       isValid = false;
     }
@@ -345,7 +346,7 @@ const submitForm = handleSubmit(async (values) => {
     },
     textToSpeechConfig: updatedTTSConfig,
     speechToTextConfig: updatedConfig,
-    knowledgeBase: scrapData.voiceBotScrapedData?.document_content,
+    knowledgeBase: scrapData.voiceBotScrapedData?.document_content ?? stepOneRef.value.uploadDocumentRef.text,
     llmConfig: {
       top_k: "40",
       top_p: "0.95",

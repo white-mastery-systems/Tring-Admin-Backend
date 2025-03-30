@@ -2,7 +2,7 @@
   <Page title="Voice Bot" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-4 overflow-auto">
-        <UiButton color="primary" @click="agentModalState.open = true">
+        <UiButton color="primary" @click="createNewVoiceBot()">
           Add Voice Bot
         </UiButton>
       </div>
@@ -57,9 +57,9 @@ const filters = useState("chatBotFilters", () => ({
   limit: "10",
 }));
 
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 const breadcrumbStore = useBreadcrumbStore();
 breadcrumbStore.setBreadcrumbs([
   {
@@ -148,6 +148,19 @@ const columns = [
   }),
 ];
 
+const createNewVoiceBot = async() => {
+  try {
+    const getSingleVoiceBotDetails = await $fetch(`/api/voicebots`, {
+        method: "POST",
+        body: {},
+      });
+      if (getSingleVoiceBotDetails.id) {
+        navigateTo(`voice-bot/create-voice-bot/${getSingleVoiceBotDetails?.id}`);
+      }
+  } catch (error) {
+    toast.error(error.statusMessage);
+  }
+}
 const Pagination = async ($evnt) => {
   filters.value.page = $evnt;
 

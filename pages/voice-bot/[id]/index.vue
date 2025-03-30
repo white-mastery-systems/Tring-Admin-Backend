@@ -167,6 +167,7 @@ import { Bot } from "lucide-vue-next";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 import { useVoiceBotDetails } from "~/composables/botManagement/voiceBot/useVoiceBotDetails ";
 import { botStore } from '~/store/botStore';
+import { useRoute, useRouter } from "vue-router";
 
 definePageMeta({
   middleware: "admin-only",
@@ -213,29 +214,29 @@ watchEffect(() => {
   }
 });
 
-onBeforeMount(() => {
-  // Add a one-time listener to save the current route before navigation
-  router.beforeResolve((to, from) => {
-    if (from.path) {
-      store.lastVisitedRoute = from.path;
-    }
-    return true; // Always continue navigation
-  });
-});
+const guardRegistered = ref(false);
 
-
-watch(() => botDetails.value.active,(newActive) => {
-  // && store.lastVisitedRoute && store.lastVisitedRoute.includes('/voice-bot/create-voice-bot')
-  if (newActive) {
-    createBotVoicesuccessfulState.value.open = true;
-  }
-})
 
 onMounted(async () => {
+  if (!guardRegistered.value) {
+    guardRegistered.value = true;
+    
+    router.beforeResolve((to, from) => {
+      if (from.path) {
+        store.lastVisitedRoute = from.path;
+      }
+      return true;
+    });
+  }
   getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
   // 27-03-2025 -- Commented below code as we are for now not using this API
   // audioResponseData.value = await getPreRecordedAudioDetails(paramId.params.id, botDetails.value?.organizationId, config)
 });
+  watch(() => botDetails.value?.active,(newActive) => {
+    if (newActive && store.lastVisitedRoute && store.lastVisitedRoute.includes('/voice-bot/create-voice-bot')) {
+      createBotVoicesuccessfulState.value.open = true;
+    }
+  },{deep: true, immediate: true});
 const handleGoBack = () => {
   return navigateTo({
     name: "voice-bot",
@@ -341,21 +342,15 @@ const handleDeleteBot = () => {
 
 const handleActivateBot = async () => {
   if (botDetails.value.ivrConfig === null) {
-    toast.error("Please configure IVR first");
+    toast.error("Please configure telephone Setup first");
     // return navigateTo({
     //   name: "voice-bot-id-ivr-config",
     //   params: { id: paramId.params.id },
     // })
   } else if (botDetails.value.botDetails === null) {
-    toast.error("Please configure Bot Details first");
+    toast.error("Please configure Basic Bot Details first");
     // return navigateTo({
     //   name: "voice-bot-id-identity-management",
-    //   params: { id: paramId.params.id },
-    // })
-  } else if (!audioResponseData.value.welcome.length || !audioResponseData.value.conclude.length) {
-    toast.error("Please configure welcome and conclude Audio Response first");
-    // return navigateTo({
-    //   name: "voice-bot-id-pre-recorded-audio",
     //   params: { id: paramId.params.id },
     // })
   } else {
