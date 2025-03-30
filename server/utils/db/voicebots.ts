@@ -1,5 +1,5 @@
 import momentTz from "moment-timezone";
-import { voicebotLeadSchema, voicebotSchedularSchema } from "~/server/schema/voicebot";
+import { salesHandyContactsSchema, voicebotLeadSchema, voicebotSchedularSchema } from "~/server/schema/voicebot";
 
 const db = useDrizzle();
 interface listVoicebotQuery {
@@ -389,4 +389,52 @@ export const scheduledCampaignCallList = async (organizationId: string, campaign
     return data;
   }
 
+}
+
+export const getAllSalesHandyvoiceBotIntegrations = async () => {
+  return await db.query.voicebotIntegrationSchema.findMany({
+    where: sql`${voicebotIntegrationSchema.metadata}->'sequenceObj'->>'id' IS NOT NULL`,
+    with: { integration: true },
+  });
+}
+
+export const createSalesHandyContact = async (contact: any) => {
+  return (await db.insert(salesHandyContactsSchema).values(contact).returning())[0]
+}
+
+export const updateSalesHandyContact = async (id: string, contact: any) => {
+  return await db.update(salesHandyContactsSchema).set(contact).where(eq(salesHandyContactsSchema.id, id)).returning()
+}
+
+export const getSalesHAndyNotDialedVoiceCallList = async () => {
+  return await db.query.salesHandyContactsSchema.findMany({
+    where: eq(salesHandyContactsSchema.callStatus, "not dialed"),
+  })
+}
+
+export const fetchOrCreateSalesHandyContact = async (botId:string, botIntegrationId:string, sequenceId:string, phone:string, email?:string) => {
+  const data = await db.query.salesHandyContactsSchema.findFirst({
+    where: and(
+      eq(salesHandyContactsSchema.botId, botId),
+      eq(salesHandyContactsSchema.sequenceId, sequenceId),
+      eq(salesHandyContactsSchema.phone, phone)
+    )
+  })
+
+  if(!data){
+    const payload = {
+      botId, botIntegrationId, sequenceId,
+      phone,
+      ...((email) ? { email } : {}),
+      callStatus: "not dialed"
+    }
+    return await createSalesHandyContact(payload)
+  }
+  return data
+}
+
+export const getNotDialSalesHandyContactList = async () => {
+  return await db.query.salesHandyContactsSchema.findMany({
+    where: eq(salesHandyContactsSchema.callStatus, "not dialed")
+  })
 }
