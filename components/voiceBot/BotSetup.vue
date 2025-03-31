@@ -235,7 +235,7 @@
           </div>
         </div>
         <div class="flex items-center justify-end gap-2">
-          <UiButton type="submit" class="px-9 bg-[#DEDEDE] hover:bg-[#DEDEDE]">
+          <UiButton color="primary" type="submit" class="px-9">
             Submit
           </UiButton>
         </div>

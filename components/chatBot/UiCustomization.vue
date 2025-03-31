@@ -12,6 +12,7 @@
         <!-- Primary and Secondary Color Pickers -->
         <!-- <div class="flex grid grid-cols-3 items-center gap-4 w-full gap-5"> -->
         <div class="w-full sm:w-full md:w-[50%] rounded-lg pr-0 sm:pr-0 md:pr-[10px]">
+          <!-- {{values?.logo}} -->
           <UiFileUpload @change="handleLogoChange" name="logo"
             :label="(values?.logo.url) ? 'Change your logo here, browse files' : 'Upload your logo here, Browse files'"
             :required="true" :accept="'image/*'" :url="values?.logo.url" :fileType="'image'"
@@ -201,7 +202,7 @@
 
         <!-- Submit Button -->
         <div class="my-auto flex w-full justify-end py-0">
-          <UiButton class="bg-[#DEDEDE] hover:bg-[#DEDEDE]" type="submit" size="lg" :loading="isLoading">Submit</UiButton>
+          <UiButton color="primary" type="submit" size="lg" :loading="isLoading">Submit</UiButton>
         </div>
       </div>
     </form>
@@ -316,6 +317,7 @@ const handleLogoChange = async (event: any) => {
 
 const uiUpdate = handleSubmit(async (value) => {
   let uploadedDetails = null;
+  console.log(logoData.value, "logoData.value -- logoData.value")
   if (typeof logoData.value === "object") {
     uploadedDetails = await uploadLogo(props.botDetails.id, logoData.value);
   }

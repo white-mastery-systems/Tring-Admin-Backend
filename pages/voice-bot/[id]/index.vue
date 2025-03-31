@@ -313,8 +313,9 @@ const deactivateBot = async () => {
 };
 
 const deactivateBotDialog = async () => {
-  await disableBot(paramId.params.id);
-  await refreshBot()
+  // await disableBot(paramId.params.id);
+  await handleActivateBot()
+  // await refreshBot()
   modalOpen.value = false;
 };
 

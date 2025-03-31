@@ -64,7 +64,7 @@
           <!-- <TextField name="agentLanguage" label="Agent Language" required placeholder="Enter agent language" /> -->
         </div>
         <div class="flex w-full justify-end">
-          <UiButton type="submit" class="w-[120px] self-end bg-[#DEDEDE] hover:bg-[#DEDEDE]"
+          <UiButton color="primary" type="submit" class="w-[120px] self-end"
             size="lg" :loading="isLoading">
             Submit
           </UiButton>
