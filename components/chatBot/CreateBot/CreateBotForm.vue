@@ -188,7 +188,8 @@ const submitForm = handleSubmit(async (values) => {
   await refreshBot()
   let uploadedDetails = null;
   if (typeof logoData.value === "object") {
-    uploadedDetails = await uploadLogo(botDetails.value.id, logoData.value);
+    console.log(logoData.value, "logoData.value -- logoData.value")
+    uploadedDetails = await uploadLogo(botDetails.value.id, logoData.value.file);
   }
   isLoading.value = true;
   try {
@@ -207,6 +208,8 @@ const submitForm = handleSubmit(async (values) => {
       isLoading.value = false
       return
     }
+    console.log(values.logo.url, "values.logo.url")
+    console.log(uploadedDetails?.metadata?.ui?.logo, "uploadedDetails?.metadata?.ui?.logo -- uploadedDetails?.metadata?.ui?.logo")
     // uploadedDetails?.metadata?.ui?.logo ?? props.botDetails.metadata.ui.logo,
     const payload = {
       id: botDetails.value?.id,

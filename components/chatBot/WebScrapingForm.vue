@@ -109,7 +109,9 @@ const handleAddEditBot = handleSubmit(async (values) => {
     } else {
       scrapData.scrapedData = parsedData;
     }
-    toast.success("Updated successfully");
+    if (parsedData) {
+      toast.success("Updated successfully");
+    }
     // }
     // if (agentModalState.value.id) {
     //   emit("editConfirm");

@@ -279,7 +279,7 @@ const breadcrumbStore = useBreadcrumbStore();
 const { botListStatus, bots } = useBotList();
 const isDataLoading = computed(() => status.value === "pending");
 const createBotsuccessfulState = ref({
-  open: true,
+  open: false,
 });
 // const pageLoading = ref(false);
 
