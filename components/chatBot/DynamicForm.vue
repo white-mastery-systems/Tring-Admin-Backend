@@ -33,9 +33,9 @@
         </div>
         <div class="flex w-full justify-end gap-2">
           <div>
-            <UiButton type="button" size="lg" class="bg-[#DEDEDE] hover:bg-[#DEDEDE]" @click="addField()"> Add Field</UiButton>
+            <UiButton color="primary" type="button" size="lg" @click="addField()"> Add Field</UiButton>
           </div>
-          <UiButton type="submit" size="lg" :loading="isLoading" class="bg-[#DEDEDE] hover:bg-[#DEDEDE]">Submit</UiButton>
+          <UiButton color="primary" type="submit" size="lg" :loading="isLoading">Submit</UiButton>
         </div>
       </form>
       <!-- Preview Section -->

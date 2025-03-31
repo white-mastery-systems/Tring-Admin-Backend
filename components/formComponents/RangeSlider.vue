@@ -69,14 +69,10 @@ const { handleSubmit, setFieldValue, values, errors } = useForm({
 // Bind the slider value to the form field
 const { value, errorMessage } = useField("duration");
 
-// Create a computed property for formatting the displayed value
+// Create a computed property for displaying the value directly
 const formattedValue = computed(() => {
   const val = value.value?.[0];
   if (val === undefined || val === null) return '';
-  
-  if (props.format === 'percentage') {
-    return `${val}%`;
-  }
   
   return val;
 });

@@ -202,7 +202,7 @@
 
             <!-- Add Client Tool Button -->
             <div class="flex w-full justify-end gap-2">
-              <UiButton class="mt-2 bg-[#DEDEDE] hover:bg-[#DEDEDE]" type="button" @click="() => {
+              <UiButton color="primary" class="mt-2" type="button" @click="() => {
                 if (!values.clientFormControl) {
                   setFieldValue('clientFormControl', true)
                   // return
@@ -218,7 +218,7 @@
       </div>
 
       <div class="flex w-full justify-end gap-2">
-        <UiButton class="bg-[#DEDEDE] hover:bg-[#DEDEDE]" type="submit" size="lg" :loading="isLoading">
+        <UiButton color="primary" type="submit" size="lg" :loading="isLoading">
           Submit
         </UiButton>
       </div>

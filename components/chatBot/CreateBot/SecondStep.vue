@@ -44,7 +44,7 @@ const handleLogoChange = (event: any) => {
       // Emit the changeLogo event to the parent component
       emit('changeLogo', {
         file: logoData.value,
-        url: e.target.result
+        // url: e.target.result
       });
       emit('update:values', { 
         NAME: NAME.value,

@@ -28,6 +28,7 @@ const props = withDefaults(defineProps<{
   count: any; // This will accept the API response object structure
   icon: any;
   loading: boolean;
+  botType: string;
 }>(), {
   loading: true,
 });
@@ -67,7 +68,6 @@ const isLeadDataEmpty = computed(() => {
 <template>
   <div class="flex gap-5 px-0 rounded-lg w-full h-full"
     v-if="props.title === 'totalConversation' || props.title === 'leadComposition'">
-
     <!-- Card with width based on chart type -->
     <Card class="p-4 w-full">
       <CardHeader class="flex flex-row items-center justify-between p-0">
@@ -78,7 +78,7 @@ const isLeadDataEmpty = computed(() => {
 
       <!-- Bar chart for totalConversation -->
       <div v-if="props.title === 'totalConversation'">
-        <BarChart :data="chartData" index="name" :categories="['chat']" :y-formatter="(tick, i) => {
+        <BarChart :data="chartData" index="name" :categories="[props.botType]" :y-formatter="(tick, i) => {
           return typeof tick === 'number'
             ? ``
             : ''

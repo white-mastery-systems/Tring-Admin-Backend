@@ -62,7 +62,7 @@
               </div>
               <div class="gap-6 w-full flex flex-col md:flex-row my-6">
                 <template v-for="statistics in analyticsData">
-                  <chartCard v-if="statistics" :icon="ChatSession" :title="statistics.name" :count="statistics.value"
+                  <chartCard v-if="statistics" :icon="ChatSession" :botType="activeTab" :title="statistics.name" :count="statistics.value"
                     :loading="loading">
                   </chartCard>
                 </template>
@@ -105,7 +105,7 @@
               </div>
               <div class="gap-6 w-full flex flex-col md:flex-row my-6">
                 <template v-for="statistics in analyticsData">
-                  <chartCard v-if="statistics" :title="statistics.name" :count="statistics.value" :loading="loading">
+                  <chartCard v-if="statistics" :title="statistics.name" :botType="activeTab" :count="statistics.value" :loading="loading">
                   </chartCard>
                 </template>
                 <!-- <template>
