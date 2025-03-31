@@ -2,6 +2,8 @@ import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
 import { v4 as uuid } from "uuid";
 
+const config = useRuntimeConfig()
+
 export default defineEventHandler(async (event) => {
   try {
     const query = await isValidQueryHandler(event, z.object({
@@ -110,6 +112,7 @@ export default defineEventHandler(async (event) => {
     if(!org) {
       return errorResponse(event, 500, "Failed to store client data. Please contact support.")
     }
+
     // User session creation
     const session = await lucia.createSession(
       userDetails.id,
@@ -123,6 +126,34 @@ export default defineEventHandler(async (event) => {
       lucia.createSessionCookie(session.id).serialize(),
     );
     logger.info(`Client onboarding successful via hosted page: OrganizationId: ${org.id}`)
+    sendEmail(
+      config.envType !== "development" ? "rianozal@tringlabs.ai" : "tringdev@whitemastery.com", // to
+      `Welcome aboard: ${org.name}`, // subject
+      `<div>                             
+        <p>Hi</p> 
+        <p><strong>${userDetails.username}</strong> just started their journey with Tring AI.</p> 
+        <p>Greetings are sent, and onboarding is in progress.</p>
+          <div>
+            <p><strong>User Details:</strong></p>
+            <p>Name: ${userDetails.username}</p>
+            <p>Email: ${userDetails.email}</p>
+          </div>
+        <p>Best,<br>support@tringlabs.ai</p>
+      </div>`,
+    );
+    
+    sendEmail(
+      userDetails.email, // to
+      "Welcome To Tring AI !!", // subject
+      `<div>
+         <p>Hi <strong>${userDetails?.username}</strong>,</p>
+         <p>Welcome to Tringlabs.ai🎉</p>
+          <p>Wohoo!! We’re Excited to Have You Onboard 🎉</p>
+          <p>We're thrilled to welcome you to Tring AI - your hub for creating captivating conversational voice and chat agents, designed to help you achieve your revenue goals. Here’s to smarter customer service!</p>
+          <p>In just a few simple steps, you'll be on your way to making waves in the world of communication.</p>
+         <p>Cheers,<br>Rian Ozal</p>
+      </div>`,
+    );
     return { org: org?.id }
   } catch (error: any) {
     logger.error(`Client onboaring via hostedPage id API Error: ${JSON.stringify(error.message)}`)

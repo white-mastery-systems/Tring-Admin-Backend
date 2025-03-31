@@ -1,13 +1,20 @@
+import { logger } from "~/server/logger"
+import { errorResponse } from "~/server/response/error.response"
 import { getAvailablePhoneNumbers } from "~/server/utils/cloudTelephony"
 
 export default defineEventHandler(async (event) => {
-  const organizationId = (await isOrganizationAdminHandler(event)) as string
+  try {
+    const organizationId = (await isOrganizationAdminHandler(event)) as string
 
-  const { id: numberIntegrationId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
+    const { id: numberIntegrationId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
-  const numberIntegration = await getNumberIntegrationById(numberIntegrationId)
+    const numberIntegration = await getNumberIntegrationById(numberIntegrationId)
 
-  const availablePhoneNumbers = await getAvailablePhoneNumbers(numberIntegration?.provider!, numberIntegration?.metadata)
+    const availablePhoneNumbers = await getAvailablePhoneNumbers(numberIntegration?.provider!, numberIntegration?.metadata)
 
-  return availablePhoneNumbers
+    return availablePhoneNumbers
+  } catch (error: any) {
+    logger.error("Error in get available phone numbers", error.message)
+    return errorResponse(event, 500, "Unable to retrieve the incoming phone numbers. Please check the credentials again.")
+  }
 })
