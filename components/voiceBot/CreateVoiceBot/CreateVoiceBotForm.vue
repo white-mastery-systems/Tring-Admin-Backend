@@ -9,7 +9,7 @@ import { botStore } from "~/store/botStore";
 import { useContentSuggestions } from "~/composables/botManagement/chatBot/useContentSuggestions";
 import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 import { useVoicebotKnowledgeBase } from '~/composables/botManagement/voiceBot/useVoicebotKnowledgeBase';
-import { useVoiceBotDetails } from "~/composables/botManagement/voiceBot/useVoiceBotDetails ";
+// import { useVoiceBotDetails } from "~/composables/botManagement/voiceBot/useVoiceBotDetails ";
 
 const step = ref(1);
 const route = useRoute();
@@ -26,7 +26,7 @@ const { intentOptions, fetchConfig } = useChatbotConfig();
 const showNextButton = computed(() => (step.value < 6) && !!values?.selectedType);
 const showBackButton = computed(() => (step.value === 1) && values?.selectedType)
 const { knowledgeBaseData, status,voiceKnowLoader, error: knowledgeBaseError, fetchKnowledgeBase } = useVoicebotKnowledgeBase();
-const { botDetails,loading, error: botErrors, refreshBot } = useVoiceBotDetails(paramId.params.id);
+// const { botDetails,loading, error: botErrors, refreshBot } = useVoiceBotDetails(paramId.params.id);
 
 const { errors, values, handleSubmit, validateField, validate, setFieldValue } = useForm({
   validationSchema: voiceBotCreateSchema,
@@ -228,7 +228,7 @@ const submitForm = handleSubmit(async (values) => {
 
   const updatedConfig: any = {
     // language: value.language || botData.value?.speechToTextConfig.language || "en-IN",
-    provider: values.provider_stt || botData.value?.speechToTextConfig.provider || 'deepgram',
+    provider: values.provider_stt || 'deepgram',
   };
   // Google config
   if (values.provider_stt === "google") {
@@ -273,7 +273,7 @@ const submitForm = handleSubmit(async (values) => {
   const updatedTTSConfig = {
 
     // Use submitted provider or fallback to existing one
-    provider: values.provider_tts || botDetails.value?.textToSpeechConfig.provider || 'google', // Default to 'google'
+    provider: values.provider_tts || 'google', // Default to 'google'
   };
   // Google config
   if (values.provider_tts === 'google') {
@@ -379,11 +379,16 @@ const submitForm = handleSubmit(async (values) => {
           name: "voice-bot-id",
           params: { id: paramId.params.id },
         });
-      toast.success("Activated successfully");
+      scrapData.createBotVoiceSuccessfulState.open = true
+      scrapData.createBotVoiceSuccessfulState.handleContent = false
+      settimeout(() => {
+        toast.success("Activated successfully");
+      },2000)
     } else {
       toast.error("Deactivated successfully")
     }
   } catch (error) {
+    
     toast.error(error.statusMessage);
   }
   // if (!values.provideraccountname) {
