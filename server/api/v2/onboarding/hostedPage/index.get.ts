@@ -91,7 +91,8 @@ export default defineEventHandler(async (event) => {
         pricingPlanCode: pricingInfo?.planCode,
         startDate: subscriptionStartDate,
         endDate: subscriptionEndDate,
-        subscriptionStatus: subscriptionData?.status === "trial" ?  "trial"  : "active" as "active"
+        subscriptionStatus: subscriptionData?.status === "trial" ?  "trial"  : "active" as "active",
+        originalSubscriptionStatus: subscriptionData?.status === "trial" ?  "trial"  : "active" as "active",
       }, {
         organizationId: org.id,
         serviceType: botType === "chat" ? "voice" : "chat",
@@ -100,18 +101,18 @@ export default defineEventHandler(async (event) => {
     }]
 
     // Subscription creation
-    await Promise.all([
-      createContactList({
-        name: "leads contacts",
-        organizationId: org.id,
-        isDefault: true,
-      }),
-      createOrgZohoSubscription(subscription),
-      createSubscriptionPlanUsage(subscription)
-    ])
-    if(!org) {
-      return errorResponse(event, 500, "Failed to store client data. Please contact support.")
-    }
+      await Promise.all([
+        createContactList({
+          name: "leads contacts",
+          organizationId: org.id,
+          isDefault: true,
+        }),
+        createOrgZohoSubscription(subscription),
+        createSubscriptionPlanUsage(subscription)
+      ])
+      if(!org) {
+        return errorResponse(event, 500, "Failed to store client data. Please contact support.")
+      }
 
     // User session creation
     const session = await lucia.createSession(
@@ -135,8 +136,11 @@ export default defineEventHandler(async (event) => {
         <p>Greetings are sent, and onboarding is in progress.</p>
           <div>
             <p><strong>User Details:</strong></p>
-            <p>Name: ${userDetails.username}</p>
-            <p>Email: ${userDetails.email}</p>
+            <p>Name: ${userDetails?.username}</p>
+            <p>Email: ${userDetails?.email}</p>
+            <p>Mobile: +${userDetails?.countryCode} ${userDetails?.mobile}</p>
+            <p>City: ${userDetails?.address.city}</p>
+            <p>Country: ${userDetails?.address.country}</p>
           </div>
         <p>Best,<br>support@tringlabs.ai</p>
       </div>`,
