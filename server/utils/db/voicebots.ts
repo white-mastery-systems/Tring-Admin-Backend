@@ -412,7 +412,7 @@ export const getSalesHAndyNotDialedVoiceCallList = async () => {
   })
 }
 
-export const fetchOrCreateSalesHandyContact = async (botId:string, botIntegrationId:string, sequenceId:string, phone:string, email?:string) => {
+export const fetchOrCreateSalesHandyContact = async (botId:string, botIntegrationId:string, sequenceId:string, phone:string, email?:string, countryCode?:string) => {
   const data = await db.query.salesHandyContactsSchema.findFirst({
     where: and(
       eq(salesHandyContactsSchema.botId, botId),
@@ -426,6 +426,7 @@ export const fetchOrCreateSalesHandyContact = async (botId:string, botIntegratio
       botId, botIntegrationId, sequenceId,
       phone,
       ...((email) ? { email } : {}),
+      ...((countryCode) ? { countryCode } : {}),
       callStatus: "not dialed"
     }
     return await createSalesHandyContact(payload)
