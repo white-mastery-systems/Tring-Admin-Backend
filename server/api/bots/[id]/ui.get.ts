@@ -18,26 +18,26 @@ export default defineEventHandler(async (event) => {
     const adminCountry = adminDetails?.address?.country!
 
     const orgZohoSubscription = await getOrgZohoSubscription(bot?.organizationId, "chat")
+    const subscriptionPlanUsage = await getOrgPlanUsage(orgId, "chat")
     
     let planDetail
 
     // const planDetail = await getSubcriptionPlanDetailByPlanCode(orgZohoSubscription?.pricingPlanCode!, adminCountry)
     if (orgZohoSubscription?.pricingPlanCode === "chat_free") {
       planDetail = await getPricingInformation("chat_free")
-    } else if (orgZohoSubscription?.subscriptionStatus === "trial") {
+    } else if (orgZohoSubscription?.subscriptionStatus === "trial" || subscriptionPlanUsage?.originalSubscriptionStatus === "trial") {
       planDetail = await getSubcriptionPlanDetailByPlanCode("chat_intelligence", adminCountry)
     } else {
       planDetail = await getSubcriptionPlanDetailByPlanCode(orgZohoSubscription?.pricingPlanCode!, adminCountry)
     }
 
-    const subscriptionPlanUsage = await getOrgPlanUsage(orgId, "chat")
 
     const usedSessions = subscriptionPlanUsage?.interactionsUsed || 0
     const maxSessions = planDetail?.sessions || 0
     const wallet = orgDetail?.wallet || 0
 
     if(usedSessions >= maxSessions) {
-      if(wallet > 0 && orgZohoSubscription?.pricingPlanCode !== "chat_free" && orgZohoSubscription?.subscriptionStatus !== "trial") {
+      if(wallet > 0 && orgZohoSubscription?.pricingPlanCode !== "chat_free" && subscriptionPlanUsage?.originalSubscriptionStatus !== "trial") {
         const extraSessionCost = 1 * planDetail?.extraSessionCost!
         console.log({ extraSessionCost, wallet })
         if(extraSessionCost > wallet) {

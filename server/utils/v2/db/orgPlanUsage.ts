@@ -55,7 +55,7 @@ export const chatPlanUsages = async (orgZohoSubscription: any, orgDetail: any, p
       const trialEndDate = momentTz(orgZohoSubscription.endDate, "YYYY-MM-DD").startOf("day");
       const currentDate = momentTz().startOf('day');
       const daysRemaining = trialEndDate.diff(currentDate, "days");
-      resObj.remainingDaysForTrailEnd = daysRemaining
+      resObj.remainingDaysForTrialEnd = daysRemaining
     }
 
     return resObj
@@ -106,7 +106,7 @@ export const voicePlanUsages = async (orgZohoSubscription: any, orgDetail: any, 
       const trialEndDate = momentTz(orgZohoSubscription.endDate, "YYYY-MM-DD").startOf("day");
       const currentDate = momentTz().startOf('day');
       const daysRemaining = trialEndDate.diff(currentDate, "days");
-      resObj.remainingDaysForTrailEnd = daysRemaining
+      resObj.remainingDaysForTrialEnd = daysRemaining
     }
     return resObj
   } catch (error: any) {
@@ -117,20 +117,22 @@ export const voicePlanUsages = async (orgZohoSubscription: any, orgDetail: any, 
 
 export const orgUsage = async (organizationId: string, timezone: string, serviceType: string, country: string) => {
   try {
-    const [orgDetail, orgZohoSubscription, adminDetail] = await Promise.all([
+    const [orgDetail, orgZohoSubscription, adminDetail, orgPlanUsage] = await Promise.all([
       getOrganizationById(organizationId),
       getOrgZohoSubscription(organizationId, serviceType),
-      getAdminByOrgId(organizationId)
+      getAdminByOrgId(organizationId),
+      getOrgPlanUsage(organizationId, serviceType)
     ])
     
     const { startDate, endDate } = findUTCDate(orgZohoSubscription)
     const adminCountry = adminDetail?.address?.country! || country
+    let remainingDaysForTrialEnd = 0
 
     let planPricingDetail
     
     if(orgZohoSubscription?.pricingPlanCode === "chat_free" || orgZohoSubscription?.pricingPlanCode === "voice_free") {
       planPricingDetail = await getPricingInformation(serviceType === "chat" ? "chat_free" : "voice_free")
-    } else if (orgZohoSubscription?.subscriptionStatus ===  "trial") {
+    } else if (orgZohoSubscription?.subscriptionStatus ===  "trial" || orgPlanUsage?.originalSubscriptionStatus === "trial") {
       planPricingDetail = serviceType === "chat" 
           ? await getSubcriptionPlanDetailByPlanCode("chat_intelligence", adminCountry)
           : await getPricingInformation("voice_free")
