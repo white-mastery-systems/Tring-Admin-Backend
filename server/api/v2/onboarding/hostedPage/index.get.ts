@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
           country: billingAddress?.country,
           city: billingAddress?.city,
           state: billingAddress?.state,
-          street: billingAddress?.state,
+          street: billingAddress?.street,
           zipCode: billingAddress?.zip
         },
         customerId: zohoCustomerDetail?.customer_id,
@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
           country: billingAddress?.country,
           city: billingAddress?.city,
           state: billingAddress?.state,
-          street: billingAddress?.state,
+          street: billingAddress?.street,
           zipCode: billingAddress?.zip
         },
         organizationId: org.id,
