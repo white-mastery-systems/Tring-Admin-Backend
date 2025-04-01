@@ -60,7 +60,7 @@ const createNewBots = async (url: any) => {
 </script>
 <template>
   <div v-if="props.navigavtionList.length > 0"
-    class="flex gap-5 flex-wrap justify-between w-full px-0 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+    class="flex gap-5 flex-wrap justify-between w-full px-0 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
     <Card v-for="(item, index) in props.navigavtionList" :key="index"
       class="w-full flex items-center justify-between p-6 bg-gradient-to-br from-yellow-100 via-pink-100 to-blue-100">
       <CardHeader class="flex items-center gap-5 p-0">

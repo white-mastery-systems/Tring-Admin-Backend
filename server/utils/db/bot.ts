@@ -99,6 +99,13 @@ export const getBotDetails = async (botId: string) => {
   return bot;
 };
 
+export const getOrgChatBotCount = async (organizationId: string) => {
+  const data = await db.query.chatBotSchema.findMany({
+    where: eq(chatBotSchema.organizationId, organizationId)
+  })
+  return data?.length
+}
+
 export const updateBotDetails = async (
   botId: string,
   bot: ZodInfer<typeof zodUpdateChatBot>,

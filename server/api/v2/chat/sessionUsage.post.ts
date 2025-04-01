@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
         
     if(orgZohoSubscription?.pricingPlanCode === "chat_free") {
       planPricingDetail = await getPricingInformation("chat_free")
-    } else if(orgZohoSubscription?.subscriptionStatus === "trial") {
+    } else if(orgZohoSubscription?.subscriptionStatus === "trial" || orgPlanUsage.originalSubscriptionStatus === "trial") {
       planPricingDetail = await getSubcriptionPlanDetailByPlanCode("chat_intelligence", adminCountry)
     } {
       planPricingDetail = await getSubcriptionPlanDetailByPlanCode(orgZohoSubscription?.pricingPlanCode!, adminCountry)
@@ -58,6 +58,10 @@ export default defineEventHandler(async (event) => {
         )
         usedSessions = updatedInteractions?.interactionsUsed || 0
         const extraSession = Math.max(usedSessions - maxSessions, 0)
+        if(extraSession >= planPricingDetail?.extraSessinsLimit) {
+          await updateOrgZohoSubscription(organizationId, "chat", { subscriptionStatus: "inactive" })
+          return { status: false }
+        }
         const actualExtraSessions = Math.max(extraSession - orgPlanUsage.extraInteractionsUsed!, 0)
         console.log({ actualExtraSessions, cost: planPricingDetail?.extraSessionCost! })
         if(actualExtraSessions > 0) {

@@ -43,11 +43,10 @@ export default defineEventHandler(async (event) => {
   const adminCountry = adminDetail?.address?.country!
 
   let planPricingDetail
-
-  const voicePricingInformation = await getSubcriptionPlanDetailByPlanCode(voicebotPlan?.pricingPlanCode!, adminCountry)
+ 
   if(
-      voicebotPlan?.subscriptionStatus === "trail" || 
-      voicebotPlan?.pricingPlanCode === "voice_free"
+      voicebotPlan?.subscriptionStatus === "trial" || 
+      voicebotPlan?.pricingPlanCode === "voice_free" || voicePlanUsage?.originalSubscriptionStatus === "trial"
     ) {
       planPricingDetail = await getPricingInformation("voice_free")
     } else {
@@ -55,7 +54,7 @@ export default defineEventHandler(async (event) => {
     }
 
   const usedCallMinutes = voicePlanUsage?.interactionsUsed || 0 
-  const maxCallMinutes = voicePricingInformation?.sessions || 0
+  const maxCallMinutes = planPricingDetail?.sessions || 0
   let extraMinutes = 0
   const orgWalletMinutes = orgDetail?.wallet || 0
 
@@ -69,7 +68,7 @@ export default defineEventHandler(async (event) => {
       extraMinutes = Math.max(usedCallMinutes - maxCallMinutes, 0)
       const actualExtraMinutes = Math.max(extraMinutes - voicePlanUsage?.extraInteractionsUsed!, 0)
       if(actualExtraMinutes > 0) {
-        const extraMinutesAmount = actualExtraMinutes * voicePricingInformation?.extraSessionCost!;
+        const extraMinutesAmount = actualExtraMinutes * planPricingDetail?.extraSessionCost!;
         const currentWallet =  Math.max(0, parseFloat((orgWalletMinutes - extraMinutesAmount).toFixed(2)))
         await updateSubscriptionPlanUsageById(voicePlanUsage?.id!, {
           extraInteractionsUsed: extraMinutes

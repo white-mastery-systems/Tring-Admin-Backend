@@ -1,4 +1,5 @@
 import countriesData from "~/assets/country-codes.json";
+import { logger } from "~/server/logger";
 const salesHandyBaseUrl = "https://leo-open-api-gateway.saleshandy.com/v1";
 // const salesHandyBaseUrl = "https://open-api.saleshandy.com/v1";
 
@@ -14,6 +15,7 @@ export const getSalesHandyClients = async (apiKey: string) => {
 
     return { status: true, data: data.payload || [] };
   } catch (error:any) {
+    logger.error(`Fetch SalesHandy Clients Error: ${error.message}`);
     return { status:false, message: "Invliad API key", error: error.message, data:[] };
   }
 };
@@ -30,6 +32,7 @@ export const getSalesHandySequences = async (apiKey: string) => {
 
     return { status: true, data: data.payload || [] };
   } catch (error:any) {
+    logger.error(`Fetch SalesHandy Sequences Error: ${error.message}`)
     return { status:false, message: "Invliad API key", error: error.message, data:[] };
   }
 };
@@ -52,6 +55,7 @@ export const getSalesHandyFields = async (apiKey: string) => {
 
     return [];
   } catch (error:any) {
+    logger.error(`Fetch SalesHandy Fields Error: ${error.message}`);
     return [];
   }
 };
@@ -66,9 +70,9 @@ export const getSalesHandyAnalytics = async (apiKey: string, sequenceId: string)
       },
       body: JSON.stringify({ sequenceId }),
     });
-
-    return { status: true, data: data.payload || {} };
+    return { status: true, data: data?.payload || {} };
   } catch (error:any) {
+    logger.error(`Fetch SalesHandy Analytics Error: ${error.message}`);
     return { status:false, message: "Invliad API key", error: error.message, data:{} };
   }
 }
@@ -93,25 +97,30 @@ export const getSalesHandyMultipleAnalytics = async (apiKey: string, sequenceIds
 
     return { status: true, data: data.payload || {} };
   } catch (error:any) {
+    logger.error(`Fetch SalesHandy Consoildated Analytics Error: ${error.message}`);
     return { status:false, message: "Invliad API key", error: error.message, data:{} };
   }
 }
 
 export const getUnRepliedSalesHandyUsersPhones = async (apiKey: string, sequenceId: string, sequenceName: string) => {
   try {
-    const [sequenceList, analytics, prospectUsers, countryData] = await Promise.all([
-      getSalesHandySequences(apiKey),
+    const [matchedSequence, analytics, prospectUsers, countryData] = await Promise.all([
+      verifySequenceStatus(apiKey, sequenceId, sequenceName),
       getSalesHandyMultipleAnalytics(apiKey, [sequenceId]),
       getSalesHandyProspectUsers(apiKey),
       ipBasedDialCode(),
     ]);
 
-    const stepsCount = sequenceList.data?.find((seq: any) => seq.title === sequenceName)?.steps?.length || 0;
-
     if (!analytics.data?.data?.length || !prospectUsers.length) return [];
 
+    if (!matchedSequence) {
+      return [];
+    }
+    
+    const stepsCount = matchedSequence?.stepsCount
+
     // Group by "Recipient Email" and count "Replied: No"
-    const users = analytics.data.data.reduce((acc: any, { "Recipient Email": email, Replied }: any) => {
+    const users = analytics.data?.data?.reduce((acc: any, { "Recipient Email": email, Replied }: any) => {
       if (Replied === "No") {
         acc[email] = acc[email] || { email, replied: "No", count: 0 };
         acc[email].count += 1;
@@ -139,6 +148,7 @@ export const getUnRepliedSalesHandyUsersPhones = async (apiKey: string, sequence
         return { stepsCount, count, email, phone: prospectData["Phone Number"], countryCode: dialCode };
       });
   } catch (error: any) {
+    logger.error(`Fetch SalesHandy Un Replied User Phones Error: ${error.message}`);
     return []
   }
 };
@@ -155,6 +165,7 @@ export const getSalesHandyProspectUsers = async (apiKey: string) => {
 
     return data.payload || [];
   } catch (error:any) {
+    logger.error(`Fetch SalesHandy Prospect Users Error: ${error.message}`);
     return [];
   }
 };
@@ -172,6 +183,7 @@ export const verifySalesHandyProspectsUserEmails = async (apiKey: string, emails
 
     return data.payload || [];
   } catch (error:any) {
+    logger.error(`Verify SalesHandy Prospect User Emails  Error: ${error.message}`);
     return [];
   }
 };
@@ -181,3 +193,59 @@ export const ipBasedDialCode = async () => {
   
   return {country: data.country, dial_code:`+${data?.calling_code}`.replace("++", "+") || "+91"};
 }
+
+export const verifySequenceStatus = async (apiKey: string, sequenceId:string, sequenceName:string) => {
+  try {
+    const [sequenceList, analyticsData] = await Promise.all([
+      getSalesHandySequences(apiKey),
+      getSalesHandyAnalytics(apiKey, sequenceId),
+    ]);
+
+    const sequence = sequenceList.data?.find((item:any)=> item.id === sequenceId || item.title === sequenceName)
+    if(sequence && analyticsData.data?.prospects[0]?.total && analyticsData.data?.emails?.total){
+      const stepsCount = sequence.steps?.length || 0;
+      const emailCount = analyticsData.data?.emails?.total || 0;
+      const userCount = analyticsData.data?.prospects[0]?.total || 0;
+      const totalMailCount = stepsCount * userCount;
+      logger.info(`${JSON.stringify({ stepsCount, emailCount, userCount, totalMailCount})}`)
+      return (totalMailCount === emailCount)? { ...sequence, stepsCount, emailCount, userCount, totalMailCount }: null;
+    }
+    return null
+  } catch (error:any) {
+    logger.error(`Verify SalesHandy Sequence completed status Error: ${error.message}`);
+    return null
+  }
+}
+
+export const getAllCompletedSequences = async (apiKey: string) =>{
+  try {
+    const sequenceList = await getSalesHandySequences(apiKey)
+  
+    if(Array.isArray(sequenceList.data) && sequenceList.data.length){
+      const data = await Promise.all(sequenceList.data.map(async(item:any)=>{
+        if(item.steps?.length){
+          const analyticsData = await getSalesHandyAnalytics(apiKey, item.id)
+          const emailCount = analyticsData.data?.emails?.total || 0;
+          const userCount = analyticsData.data?.prospects[0]?.total || 0;
+          const totalMailCount = item.steps?.length * userCount;
+  
+          logger.info(`${JSON.stringify({ stepsCount: item.steps?.length, emailCount, userCount, totalMailCount})}`)
+          return (totalMailCount === emailCount)? { ...item, emailCount, userCount, totalMailCount }: null;
+        }
+        return null
+      }))
+      return data.filter(Boolean)
+    }
+    return []
+  } catch (error:any) {
+    logger.error(`Fetch SalesHandy Completed Sequences Error: ${error.message}`);
+    return []
+  }
+}
+
+export const getMailCountValidation = (stepsCount:number, notRepliedCount:number) =>{
+  return (
+    (stepsCount === 1 && notRepliedCount === 1) || // Case 1: stepsCount = 2 and notRepliedCount = 2
+    (stepsCount <= 3 && notRepliedCount >= 2) || // Case 2: stepsCount = 3 and notRepliedCount >= 2
+    (stepsCount > 3 && notRepliedCount >= 3) // Case 3: stepsCount > 3 and notRepliedCount >= 3
+  )}

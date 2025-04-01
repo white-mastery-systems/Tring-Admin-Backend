@@ -25,9 +25,9 @@ export default defineNuxtConfig({
   ],
   postcss: {
     plugins: {
-      '@tailwindcss/postcss': {},
-      autoprefixer: {}
-    }
+      "@tailwindcss/postcss": {},
+      autoprefixer: {},
+    },
   },
 
   nitro: {
@@ -113,6 +113,7 @@ export default defineNuxtConfig({
       adminBaseUrl: "",
       chatBotBaseUrl: "",
       voiceBotBaseUrl: "",
+      widgetUrl: process.env.NUXT_PUBLIC_WIDGET_URL || "",
       googleAnalyticsId: "",
       zohoIndianChatSubscription: process.env.NUXT_PUBLIC_ZOHO_INDIAN_CHAT_SUBSCRIPTION || "",
       zohoIndianVoiceFluentSubscription: process.env.NUXT_PUBLIC_ZOHO_INDIAN_VOICE_FLUENT_SUBSCRIPTION || "",

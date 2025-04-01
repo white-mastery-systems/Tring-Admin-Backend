@@ -494,6 +494,7 @@ export const adminPlanUsageSchema = adminSchema.table("admin_plan_usages", {
   interactionsUsed: integer("interactions_used").default(0),
   extraInteractionsUsed: integer("extra_interaction_used").default(0),
   whatsappSessionsUsed: integer("whatsapp_sessions_used").default(0),
+  originalSubscriptionStatus: subscriptionStatusEnum("original_subscription_status").notNull().default("active"),
   subscriptionStatus: subscriptionStatusEnum("status").notNull().default("active"),
   startDate: timestamp("start_date"),
   endDate: timestamp("end_date"),

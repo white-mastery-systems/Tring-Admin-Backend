@@ -18,7 +18,7 @@
   <!-- class="pr-6" -->
    <div>
      <UiTabs default-value="all">
-       <UiTabsList class="grid w-full sm:w-full md:w-[30%] lg:w-[30%] xl:w-[30%] grid-cols-3 mb-2">
+       <UiTabsList class="grid w-full sm:w-full md:w-[40%] lg:w-[30%] xl:w-[30%] grid-cols-3 mb-2">
          <UiTabsTrigger value="all" @click="selectedChannel('all')">
            All
          </UiTabsTrigger>

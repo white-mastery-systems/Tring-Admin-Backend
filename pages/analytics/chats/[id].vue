@@ -205,6 +205,16 @@ const { user, refreshUser }: { user: any; refreshUser: any } =
   
   watchEffect(() => {
     if (leadData.value) {
+      breadcrumbStore.setBreadcrumbs([
+      {
+        label: "chats", // Dynamic name
+        to: `/analytics/chats`,
+      },
+      {
+        label: leadData.value?.botUser?.name ?? 'No Name',
+        to: `/analytics/chats/${route.params?.id}`,
+      },
+    ]);
       const userName = leadData.value?.botUser?.name ?? "Unknown User";
       useHead({
         title: `Chats | ${userName}`,
