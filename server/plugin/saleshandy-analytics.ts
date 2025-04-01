@@ -1,6 +1,7 @@
 import { logger } from "../logger"
 import * as schedule from "node-schedule"
 import { fetchOrCreateSalesHandyContact, getAllSalesHandyvoiceBotIntegrations, updateSalesHandyContact } from "../utils/db/voicebots"
+import { getMailCountValidation, getUnRepliedSalesHandyUsersPhones } from "../utils/sales-handy/module"
 
 export default defineNitroPlugin(async (event) => {
   try {
@@ -8,7 +9,7 @@ export default defineNitroPlugin(async (event) => {
       logger.info("SalesHandy cron job started")
       const botIntegrationDataList = await getAllSalesHandyvoiceBotIntegrations();
       if (botIntegrationDataList.length){
-        await Promise.all(botIntegrationDataList.map(async (botIntegrationData) => {
+        await Promise.all(botIntegrationDataList.map(async (botIntegrationData:any) => {
           const metadata:any = botIntegrationData?.metadata;
           const integrationData = botIntegrationData?.integration;
     
@@ -16,9 +17,10 @@ export default defineNitroPlugin(async (event) => {
             const contactList = await getUnRepliedSalesHandyUsersPhones(`${integrationData?.metadata?.apiKey}`, metadata?.sequenceObj?.id, metadata?.sequenceObj?.name);
             if (contactList.length){
               await Promise.all(contactList.map(async (contact) => {
-                if(contact.count > 2){
+                const isValid = getMailCountValidation(contact.stepsCount, contact.count)
+                if(isValid){
                   // @ts-ignore
-                  await fetchOrCreateSalesHandyContact(botIntegrationData?.botId, botIntegrationData.id, metadata?.sequenceObj?.id, contact.phone, contact.email)
+                  await fetchOrCreateSalesHandyContact(botIntegrationData?.botId, botIntegrationData.id, metadata?.sequenceObj?.id, contact.phone, contact.email, contact.countryCode)
                   
                   /* Without split for trigger voice bot
                   const salesHandyContact = await fetchOrCreateSalesHandyContact(botIntegrationData?.botId, botIntegrationData.id, metadata?.sequenceObj?.id, contact.phone, contact.email)
