@@ -12,7 +12,7 @@ export function useBillingVariation(userDetails: any, queryType: any) {
     {
       _id: 1,
       amount: '$0',
-      status: "Lifetime",
+      status: "",
       types: "Free",
       listBenefit: false,
       benefitList: [
@@ -31,7 +31,7 @@ export function useBillingVariation(userDetails: any, queryType: any) {
     {
       _id: 2,
       amount: "$29",
-      status: "Per Month",
+      status: "for support automation",
       types: "Intelligence",
       listBenefit: false,
       benefitList: [
@@ -51,7 +51,7 @@ export function useBillingVariation(userDetails: any, queryType: any) {
     {
       _id: 3,
       amount: "$99",
-      status: "Per Month",
+      status: "for lead generation",
       types: "Super Intelligence",
       listBenefit: false,
       benefitList: [
@@ -71,7 +71,7 @@ export function useBillingVariation(userDetails: any, queryType: any) {
     {
       _id: 4,
       amount: "Talk to sales",
-      status: "",
+      status: "for lead generation",
       types: "Enterprise",
       plan_code: "chat_enterprise",
       listBenefit: false,
@@ -92,7 +92,7 @@ export function useBillingVariation(userDetails: any, queryType: any) {
     {
       _id: 1,
       amount: '$199',
-      status: "Per Month",
+      status: "",
       types: "Fluent",
       listBenefit: false,
       benefitList: [
@@ -112,7 +112,7 @@ export function useBillingVariation(userDetails: any, queryType: any) {
     {
       _id: 2,
       amount: "$599",
-      status: "Per Month",
+      status: "",
       types: "Lucid",
       listBenefit: false,
       benefitList: [
@@ -152,7 +152,7 @@ export function useBillingVariation(userDetails: any, queryType: any) {
 
   // Computed property to determine the correct billing variation
   const billingVariation = computed(() => {
-    return queryType === "voice" ? voiceBillingVariation.value : chatBillingVariation.value;
+    return route.query.type === "voice" ? voiceBillingVariation.value : chatBillingVariation.value;
   });
 
   const fetchUserLocation = async () => {
@@ -163,7 +163,7 @@ export function useBillingVariation(userDetails: any, queryType: any) {
       // Now that we have the location data, update the pricing
       updatePricing();
     } catch (err) {
-      toast.error('Unable to fetch location details');
+      // toast.error('Unable to fetch location details');
     } finally {
       pending.value = false;
     }

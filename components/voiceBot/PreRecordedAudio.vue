@@ -140,8 +140,7 @@
         </div>
       </div>
       <div class="flex w-full justify-end">
-        <UiButton color="primary" type="submit" class="w-[120px] self-end"
-          size="lg" :loading="isLoading">
+        <UiButton color="primary" type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading">
           Submit
         </UiButton>
       </div>
@@ -152,7 +151,7 @@
 <script setup lang="ts">
 import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
-import { useRoute  } from "vue-router";
+import { useRoute } from "vue-router";
 definePageMeta({
   middleware: "admin-only",
 });
@@ -160,7 +159,7 @@ const config = useRuntimeConfig();
 const route = useRoute();
 // Bot details and breadcrumbs
 // const botDetails = ref(await getVoiceBotDetails(route.params.id));
-const props = defineProps < { botDetails: any; loading: boolean; audioResponseData: any; audioDataRefresh: () => void; refreshBot: () => void }>();
+const props = defineProps<{ botDetails: any; loading: boolean; audioResponseData: any; audioDataRefresh: () => void; refreshBot: () => void }>();
 
 // State variables
 const welcomeFilesData = ref([]);
@@ -172,19 +171,21 @@ const deleteFileBucket = ref([]);
 const isLoading = ref(false);
 
 // Intent options
+// {
+//   label: "Forward Call",
+//     value: "forwardCall",
+//   },
+// {
+//   label: "Conclude",
+//     value: "conclude",
+//   },
 const intentList = ref([
   {
     label: "Ambient Sound",
     value: "ambientNoise",
   }, {
-    label: "Forward Call",
-    value: "forwardCall",
-  }, {
     label: "Welcome",
     value: "welcome",
-  }, {
-    label: "Conclude",
-    value: "conclude",
   }, {
     label: "Filler",
     value: "filler",
@@ -214,61 +215,9 @@ const botSchema = toTypedSchema(
   z.object({
     intent: z.string({ required_error: "Intent is required" }).min(1, "Intent is required"),
     welcomeAudio: z.any().optional(),
-    concludeAudio: z.any().optional(),
     fillerAudio: z.any().optional(),
     ambientNoiseAudio: z.any().optional(),
-    forwardCallAudio: z.any().optional(),
   })
-    // .superRefine((data, ctx) => {
-    //   // Conditional validation for 'welcome' intent
-    //   if (
-    //     data.intent === "welcome" &&
-    //     (!data.welcomeAudio && (!props.audioResponseData?.welcome || !props.audioResponseData?.welcome.length))
-    //   ) {
-    //     ctx.addIssue({
-    //       path: ["welcomeAudio"],
-    //       message: "Welcome file is required for the 'welcome' intent.",
-    //     });
-    //   }
-
-    //   // Conditional validation for 'conclude' intent
-    //   if (
-    //     data.intent === "conclude" &&
-    //     (!data.concludeAudio && (!props.audioResponseData?.conclude || !props.audioResponseData?.conclude.length))
-    //   ) {
-    //     ctx.addIssue({
-    //       path: ["concludeAudio"],
-    //       message: "Conclude file is required for the 'conclude' intent.",
-    //     });
-    //   }
-    //   if (
-    //     data.intent === "filler" &&
-    //     (!data.fillerAudio && (!props.audioResponseData?.filler || !props.audioResponseData?.filler.length))
-    //   ) {
-    //     ctx.addIssue({
-    //       path: ["fillerAudio"],
-    //       message: "Filler audio file is required for the 'filler' intent.",
-    //     });
-    //   }
-    //   if (
-    //     data.intent === "ambientNoise" &&
-    //     ((!data.ambientNoiseAudio) && (!props.audioResponseData?.ambientNoise || !props.audioResponseData.ambientNoise.length))
-    //   ) {
-    //     ctx.addIssue({
-    //       path: ["ambientNoiseAudio"],
-    //       message: "Ambient noise audio file is required for the 'ambientNoise' intent.",
-    //     });
-    //   }
-    //   if (
-    //     data.intent === "forwardCall" &&
-    //     (!data.forwardCallAudio && (!props.audioResponseData?.forwardCall || !props.audioResponseData?.forwardCall.length))
-    //   ) {
-    //     ctx.addIssue({
-    //       path: ["forwardCallAudio"],
-    //       message: "Forward call audio file is required for the 'forwardCall' intent.",
-    //     });
-    //   }
-    // })
 );
 
 // Form setup
