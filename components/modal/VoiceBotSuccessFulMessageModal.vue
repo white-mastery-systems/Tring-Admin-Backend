@@ -1,7 +1,7 @@
 <template>
   <DialogWrapperVersionVoice v-model="VoiceBotSuccessfulMessageModalState"
-    title="Your Voicebot has Been Created Successfully"
-    description="Copy & send script to get started with your bot or preview your bot" class="p-5 w-full">
+    :title="(store.createBotVoiceSuccessfulState.handleContent) ? 'Preview Your Voice Bot' : 'Your Voicebot has Been Created Successfully'"
+    description="Enter your phone number to preview your voice bot. Once submitted, you'll receive a call to experience your bot in action." class="p-5 w-full">
     <div class="space-y-4 bg-white rounded-lg shadow-md">
       <!-- Phone number input section -->
       <div class="px-0 smpx-0 md:px-6 space-y-3">
@@ -40,12 +40,14 @@ import { PhoneCall } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 import { z } from 'zod';
 import { toTypedSchema } from '@vee-validate/zod';
+import { botStore } from '~/store/botStore';
 
 const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
 const emit = defineEmits(["success"]);
 const route = useRoute();
+const store = botStore();
 
-const VoiceBotSuccessfulMessageModalState = defineModel<{ open: boolean; id: any }>({
+const VoiceBotSuccessfulMessageModalState = defineModel<{ open: boolean; }>({
   default: {
     open: false,
   },

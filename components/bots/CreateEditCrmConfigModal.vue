@@ -95,7 +95,7 @@
         </div>
       </div>
 
-      <UiButton type="submit" class="mt-2" :loading="isLoading">
+      <UiButton color="primary" type="submit" class="mt-2" :loading="isLoading">
         Save changes
       </UiButton>
     </form>

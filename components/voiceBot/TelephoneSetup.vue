@@ -231,6 +231,11 @@ const onSubmit = handleSubmit(async (value: any) => {
       name: "voice-bot-id",
       params: { id: props.botDetails.id },
     });
+    if (typeof props.refreshBot === 'function') {
+    props.refreshBot();
+  } else {
+    console.error("refreshBot is not a function", props.refreshBot);
+  }
   } catch (error: any) {
     toast.error(error.statusMessage)
     // console.error("An error occurred while updating:", error);

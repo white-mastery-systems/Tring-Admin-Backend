@@ -13,7 +13,7 @@
       <img src="assets/icons/Line-grid-Black.png" alt="grid background" class="w-[50%] h-full object-cover opacity-5" />
     </div>
     
-    <div class="relative z-10 p-4 sm:p-4 md:p-8">
+    <div class="relative z-10 p-4 sm:p-4 md:p-8 bg-gradient-to-br from-yellow-50 via-pink-50 to-blue-50 -z-10">
       <!-- Title Section -->
       <div class="text-center mb-8">
         <h1 class="text-[18px] sm:text-[18px] md:text-[26px] font-bold text-gray-800">
@@ -166,6 +166,7 @@ import { usePlanLevel } from "~/composables/billing/usePlanLevel";
 import { useBillingComposable } from '~/composables/billing/useBillingComposable';
 import { ArrowRight, Check, X } from 'lucide-vue-next';
 import { useFreeTrial } from '~/store/freeTrailStore';
+import { watch } from 'vue';
 
 const props = withDefaults(defineProps<{ onBoardingAccount?: boolean }>(), {
   onBoardingAccount: false, // Default value for accept
@@ -183,9 +184,8 @@ const BillingVariationPending = ref(false);
 const indianUser = ref(false);
 const { orgBilling, organization, isPageLoading } = useBillingComposable();
 
-import { watch, watchEffect } from 'vue';
 
-const { billingVariation, userLocationDetails, isIndianUser, pending, error } = useBillingVariation(userDetails, route.query.type);
+const { billingVariation, isIndianUser, pending, error } = useBillingVariation(userDetails, route.query.type);
 
 // 2. Then use watch to react to changes:
 watch(
@@ -301,7 +301,6 @@ const chooseFreeTrialPlan = async (plan: string) => {
     if (plan === 'chat_intelligence' || plan === 'chat_super_intelligence') {
       return navigateTo(`${config.public.zohoIndianChatSubscription}/chat_intelligence?first_name=${encodedName}&email=${encodedEmail}`, {
         external: true,
-        open: { target: '_blank' },
       });
     }
     if (plan === 'chat_enterprise') {
@@ -313,20 +312,17 @@ const chooseFreeTrialPlan = async (plan: string) => {
     if (plan === 'voice_fluent') {
       return navigateTo(`${config.public.zohoIndianVoiceFluentSubscription}/voice_fluent?first_name=${encodedName}&email=${encodedEmail}`, {
         external: true,
-        open: { target: '_blank' },
       });
     }
     if (plan === 'voice_lucid') {
       return navigateTo(`${config.public.zohoIndianVoiceLucidSubscription}/voice_lucid?first_name=${encodedName}&email=${encodedEmail}`, {
         external: true,
-        open: { target: '_blank' },
       });
     }
   } else {
     if (plan === 'chat_intelligence' || plan === 'chat_super_intelligence') {
       return navigateTo(`${config.public.zohoInternationalChatSubscription}/chat_intelligence?first_name=${encodedName}&email=${encodedEmail}`, {
         external: true,
-        open: { target: '_blank' },
       });
     }
     if (plan === 'chat_enterprise') {
@@ -338,13 +334,11 @@ const chooseFreeTrialPlan = async (plan: string) => {
     if (plan === 'voice_fluent') {
       return navigateTo(`${config.public.zohoInternationalVoiceFluentSubscription}/voice_fluent?first_name=${encodedName}&email=${encodedEmail}`, {
         external: true,
-        open: { target: '_blank' },
       });
     }
     if (plan === 'voice_lucid') {
       return navigateTo(`${config.public.zohoInternationalVoiceLucidSubscription}/voice_lucid?first_name=${encodedName}&email=${encodedEmail}`, {
         external: true,
-        open: { target: '_blank' },
       });
     }
   }

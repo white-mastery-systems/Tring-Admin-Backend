@@ -376,7 +376,7 @@ const handleActivateBot = async () => {
 };
 const singleDocumentDeploy = async (list: any) => {
   isLoading.value = true
-  await deployDocument(paramId.params.id, list.id);
+  await deployDocument(paramId.params.id, list.id, true);
   await refreshBot() // new function refreshBot added
   await checkDocumentStatus(list);
   isLoading.value = false

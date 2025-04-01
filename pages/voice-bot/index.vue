@@ -1,5 +1,5 @@
 <template>
-  <Page title="Voice Bot" :disable-back-button="true">
+  <Page title="Voicebot" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-4 overflow-auto">
         <UiButton color="primary" @click="createNewVoiceBot()">
@@ -36,7 +36,7 @@ definePageMeta({
   middleware: "user",
 });
 useHead({
-  title: "Bot Management | Voice Bot",
+  title: "Bot Management | Voicebot",
 });
 
 // const formSchema = toTypedSchema(
@@ -63,7 +63,7 @@ const totalCount = ref(0);
 const breadcrumbStore = useBreadcrumbStore();
 breadcrumbStore.setBreadcrumbs([
   {
-    label: "Voice Bot", // Dynamic name
+    label: "Voicebot", // Dynamic name
     to: `/voice-bot`,
   }
 ]);

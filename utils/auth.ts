@@ -31,11 +31,9 @@ const login = async (values: Record<string, any>) => {
     // (await useUser()).refreshUser();
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
-    if (error?.statusMessage === "User not verified. Please verify your account to proceed.") {
+    if (error?.statusMessage === "Authentication Failed: Incorrect username or password.") {
       localStorage.setItem("userDetails", JSON.stringify(error?.data.data))
       return navigateTo("/auth/onboarding/select-bot-power");
-    } else if (error?.statusMessage === "Onboarding process is incomplete. Please provide your details to proceed.") {
-      return navigateTo("/auth/onboarding");
     }
   }
 };

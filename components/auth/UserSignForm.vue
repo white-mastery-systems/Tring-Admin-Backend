@@ -57,10 +57,10 @@ const onSubmit = handleSubmit(async (value: any) => {
         <div class="relative">
           <TextField :type="showPassword ? 'text' : 'password'" name="password" placeholder="Password" />
           <div
-            class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer"
+            class="absolute inset-y-0 right-0 flex top-2 items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer h-[40px]"
             @click="togglePasswordVisibility" role="button" tabindex="0" aria-label="Toggle password visibility">
-            <EyeOff v-if="showPassword" size="20" class="mt-1" />
-            <Eye v-else size="20" class="mt-1" />
+            <EyeOff v-if="showPassword" size="20" />
+            <Eye v-else size="20" />
           </div>
         </div>
 

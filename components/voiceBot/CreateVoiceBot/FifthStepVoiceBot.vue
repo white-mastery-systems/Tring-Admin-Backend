@@ -133,40 +133,6 @@ const voices = [
     value: "aura-zeus-en",
   },
 ];
-const modalList = [
-  {
-    value: "eleven_multilingual_v2",
-    label: "Eleven Multilingual v2"
-  },
-  {
-    value: "eleven_turbo_v2_5",
-    label: "Eleven Turbo v2.5"
-  },
-  {
-    value: "eleven_turbo_v2",
-    label: "Eleven Turbo v2"
-  },
-  {
-    value: "eleven_multilingual_sts_v2",
-    label: "Eleven Multilingual v2"
-  },
-  {
-    value: "eleven_flash_v2",
-    label: "Eleven Flash v2"
-  },
-  {
-    value: "eleven_multilingual_v1",
-    label: "Eleven Multilingual v1"
-  },
-  {
-    value: "eleven_flash_v2_5",
-    label: "Eleven Flash v2.5"
-  },
-  {
-    value: "eleven_monolingual_v1",
-    label: "Eleven English v1"
-  }
-];
 const providersTTS = ref([...defaultProvidersTTS])
 // Watch for all form field changes
 watch([

@@ -1,5 +1,5 @@
 <template>
-  <Page title="Chat Bot" :disable-back-button="true">
+  <Page title="Chatbot" :disable-back-button="true">
     <template #actionButtons>
       <div class="flex gap-4">
         <UiButton color="primary" class="text-[14px] font-medium" @click="addNewChatBot()">
@@ -45,14 +45,14 @@ definePageMeta({
   middleware: "user",
 });
 useHead({
-  title: "Bot Management | Chat Bot",
+  title: "Bot Management | Chatbot",
 });
 const router = useRouter()
 const breadcrumbStore = useBreadcrumbStore();
 
 breadcrumbStore.setBreadcrumbs([
   {
-    label: "Chat Bot", // Dynamic name
+    label: "Chatbot", // Dynamic name
     to: `/chat-bot`,
   },
 ]);

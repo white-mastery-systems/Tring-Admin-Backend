@@ -142,9 +142,9 @@
           isDocumentListOpen = false;
           try {
             await singleDocumentDeploy(list);
-            createBotsuccessfulState.open = false;
+            store.createBotsuccessfulState.open = false;
           } catch (err) {
-            createBotsuccessfulState.open = false;
+            store.createBotsuccessfulState.open = false;
           }
         }">
 
@@ -170,8 +170,10 @@
     <!-- <div class="flex justify-center">
       <UiButton @click="triggerChildSubmit">Create bot</UiButton>
     </div> -->
-    <ChatBotSuccessfulMessageModal v-model="createBotsuccessfulState" :botDetails="botDetails" :refreshBot="refreshBot"
+    <ChatBotSuccessfulMessageModal v-model="store.createBotsuccessfulState" :botDetails="botDetails" :refreshBot="refreshBot"
       @success="() => {
+        store.createBotsuccessfulState.open = false;
+        refreshBot()
       console.log('on success')
     }" />
     <div>
@@ -258,7 +260,6 @@ const queryId = ref(route.params?.id);
 const agentModalState = ref({ open: false, id: paramId.params.id });
 const { status, documents, refresh } = useBotDocuments(route.params.id);
 const store = botStore();
-const unregisterGuard = ref()
 // const botDetails = ref(await getBotDetails(paramId.params.id));
 const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
 // const { documentsList, refreshDocuments } = useDocumentsList(route.params.id)
@@ -278,10 +279,15 @@ const scrollTarget = ref(null);
 const breadcrumbStore = useBreadcrumbStore();
 const { botListStatus, bots } = useBotList();
 const isDataLoading = computed(() => status.value === "pending");
-const createBotsuccessfulState = ref({
-  open: false,
-});
+// const createBotsuccessfulState = ref({
+//   open: false,
+// });
 // const pageLoading = ref(false);
+
+// Use a ref to track if guard is registered
+const guardRegistered = ref(false);
+// Use a ref to store unregister function
+const unregisterGuard = ref(null);
 
 watch(
   () => botDetails.value?.name,
@@ -303,27 +309,10 @@ watch(
   },
   { deep: true, immediate: true }
 );
-
-
-// Track route changes within this component
-onBeforeMount(() => {
-  console.log("Component onBeforeMount");
-  // Add a one-time listener to save the current route before navigation
-  router.beforeResolve((to, from) => {
-    if (from.path) {
-      store.lastVisitedRoute = from.path;
-      console.log("Saved route:", from.path);
-    }
-    return true; // Always continue navigation
-  });
-});
-
 // Watch for document ID changes
 watch(() => botDetails.value?.documentId, (newId) => {
-  console.log(newId, 'newId', store.lastVisitedRoute);
-  store.scrapedData = [];
-  if (newId && store.lastVisitedRoute && store.lastVisitedRoute.includes('/chat-bot/create-bot')) {
-    createBotsuccessfulState.value.open = true;
+  if (newId) {
+    store.scrapedData = [];
   }
 });
 // router.beforeEach((to, from) => {
@@ -361,17 +350,6 @@ const handleSuccess = () => {
   
 //   // botDetails.value = await getBotDetails(paramId.params.id);
 // });
-const handleGoBack = () => {
-  return navigateTo({
-    name: "bots",
-  });
-};
-const dateFormate = computed(() => {
-  if (botDetails.value && botDetails.value.createdAt) {
-    return formatDateStringToDate(botDetails.value.createdAt);
-  }
-  return null;
-});
 
 const previewUrl = computed(() => {
   let col = botDetails.value.metadata.ui.color as string;
@@ -423,7 +401,7 @@ const copyScript = async () => {
 };
 
 const singleDocumentDeploy = async (list: any) => {
-  await deployDocument(paramId.params.id, list.id);
+  await deployDocument(paramId.params.id, list.id,false);
   refreshBot() // new function refreshBot added
   // botDetails.value = await getBotDetails(paramId.params.id);
 };
@@ -444,77 +422,6 @@ const handleDeleteBot = () => {
 const handleFieldsChanges = () => {
   console.log("Fields changed");
 }
-
-// const checkDocumentStatus = async () => {
-//   if (status.value !== "success") return;
-
-//   pageLoading.value = true; // Ensure loading starts
-//   toast.success("Your bot is being deployed. Please wait...");
-
-//   let toastInterval = 0; // Counter to track every 16 seconds
-
-//   const interval = setInterval(async () => {
-//     await refreshBot(); // Fetch the latest document status
-//     const documentStatus = botDetails.value?.documents?.[0]?.status;
-
-//     // Show toast every 16 seconds (i.e., every second iteration of 8-sec polling)
-//     toastInterval += 8;
-//     if (toastInterval % 12 === 0) {
-//       toast.success("Your bot is still being deployed. Please wait...");
-//     }
-
-//     if (documentStatus === "ready") {
-//       clearInterval(interval); // Stop polling
-//       pageLoading.value = false;
-
-//       if (!documents.value?.documentId) {
-//         try {
-//           await handleActivateBot();
-//           if (botDetails.value?.documents.length === 1) {
-//             createBotsuccessfulState.value.open = true;
-//           }
-//         } catch (error) {
-//           console.error("handleActivateBot failed:", error);
-//         } finally {
-//           pageLoading.value = false; // Stop loading after activation
-//         }
-//       }
-//     }
-//   }, 8000); // Poll every 8 seconds
-// };
-
-// const checkDocumentStatus = async () => {
-//   if (status.value !== "success") return;
-
-//   pageLoading.value = true; // Ensure loading starts
-//   toast.success("Your bot is being deployed. Please wait...");
-
-//   const interval = setInterval(async () => {
-
-//     // Fetch the latest document status
-//     await refreshBot()
-
-//     const documentStatus = botDetails.value?.documents?.[0]?.status;
-
-//     if (documentStatus === "ready") {
-//       pageLoading.value = false
-//       clearInterval(interval); // Stop polling
-      
-//       if (!documents.value?.documentId) {
-//         try {
-//           await handleActivateBot();
-//           if (botDetails.value?.documents.length === 1) {
-//             createBotsuccessfulState.value.open = true;
-//           }
-//         } catch (error) {
-//           console.error("handleActivateBot failed:", error);
-//         } finally {
-//           pageLoading.value = false; // Stop loading after activation
-//         }
-//       }
-//     }
-//   }, 8000); // Poll every 2 seconds
-// };
 
 const handleAddEditBot = async (values: any) => {
   // const documentsList = await listDocumentsByBotId(paramId.params.id)
@@ -615,7 +522,7 @@ const handleActivateBot = async () => {
     try {
       await singleDocumentDeploy(activeDocuments[0]);
     } catch (err) {
-      createBotsuccessfulState.value.open = false
+      store.createBotsuccessfulState.open = false
       isSubmitting.value = false;
       toast.error("Failed to active the bot, try again");
       return;
@@ -625,22 +532,10 @@ const handleActivateBot = async () => {
   }
   isSubmitting.value = false;
 };
-onMounted(() => {
-  // This will add the guard after the component mounts
-  unregisterGuard.value = router.beforeEach((to, from) => {
-    console.log(from.path, 'from.path')
-    store.lastVisitedRoute = from.path
-    return true
-  })
-  
-  // Test the guard with a navigation
-  setTimeout(() => {
-    router.push(router.currentRoute.value)
-  }, 1000)
-})
 onUnmounted(() => {
   if (unregisterGuard.value) {
     unregisterGuard.value() // Remove the guard
+    guardRegistered.value = false;
   }
 })
 </script>

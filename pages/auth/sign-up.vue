@@ -40,7 +40,7 @@ definePageMeta({
           </p>
         </div>
         <UserAuthForm />
-        <p class="px-0 sm:px-0 md:px-4 text-center text-[13px] text-muted-foreground">
+        <p class="px-0 sm:px-0 md:px-4 text-center text-[12px] text-muted-foreground">
             By clicking continue, you agree to our
             <a target="_blank" href="https://tringlabs.ai/terms-conditions"
               class="underline underline-offset-4 hover:text-primary mx-[2px]">
