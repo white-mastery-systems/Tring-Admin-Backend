@@ -142,16 +142,6 @@ const roles = [
 const { languageList } = useVoiceLanguageList();
 const { formattedTimeZones } = useTImeList();
 const isLoading = ref(false);
-breadcrumbStore.setBreadcrumbs([
-  {
-    label: `${props.botDetails.name}`,
-    to: `/voice-bot/${props.botDetails.id}`,
-  },
-  {
-    label: 'Bot Details',
-    to: `/voice-bot/${props.botDetails.id}/identity-management`,
-  },
-]);
 
 const botSchema = toTypedSchema(
   z.object({

@@ -4,5 +4,12 @@ export const botStore = defineStore('bot', () => {
   const voiceBotScrapedData = ref<string[]>([])
   const siderBarslider = ref(true)
   const lastVisitedRoute = ref('')
-  return { scrapedData, siderBarslider, lastVisitedRoute, voiceBotScrapedData }
+  const createBotsuccessfulState = ref({
+    open: false,
+  })
+  const createBotVoiceSuccessfulState = ref({
+    open: false,
+    handleContent: false,
+  })
+  return { scrapedData, siderBarslider, lastVisitedRoute, voiceBotScrapedData, createBotsuccessfulState, createBotVoiceSuccessfulState }
 })

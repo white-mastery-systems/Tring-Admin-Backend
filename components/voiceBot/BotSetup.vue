@@ -268,18 +268,6 @@ const activeTab = ref('tts'); // Default to TTS tab
 // Get bot details
 // const botDetails = ref(await getVoiceBotDetails(route.params.id));
 
-// Set breadcrumbs
-breadcrumbStore.setBreadcrumbs([
-  {
-    label: 'Voice Bot Configuration',
-    to: `/voice-bot/${props.botDetails?.botDetails?.id}`,
-  },
-  {
-    label: `${props.botDetails?.botDetails?.name}`,
-    to: `/voice-bot/${props.botDetails?.botDetails?.id}/config`,
-  },
-]);
-
 // TTS related data
 const { integrationsData, status } = useIntegrations({});
 const formattedElevenlabsVoiceList = ref([]);

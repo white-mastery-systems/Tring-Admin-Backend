@@ -69,10 +69,10 @@ const onSubmit = handleSubmit(async (values) => {
           <div class="relative">
             <TextField :type="passwordVisible ? 'text' : 'password'" name="newPassword" placeholder="New Password" />
             <div
-              class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer"
+              class="absolute inset-y-0 right-0 top-2 flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer h-[40px]"
               @click="togglePasswordVisibility" role="button" tabindex="0" aria-label="Toggle password visibility">
-              <EyeOff v-if="passwordVisible" size="20" class="mt-1" />
-              <Eye v-else size="20" class="mt-1" />
+              <EyeOff v-if="passwordVisible" size="20" />
+              <Eye v-else size="20" />
             </div>
           </div>
 
@@ -81,11 +81,11 @@ const onSubmit = handleSubmit(async (values) => {
             <TextField :type="confirmPasswordVisible ? 'text' : 'password'" name="confirmPassword"
               placeholder="Confirm Password" />
             <div
-              class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer"
+              class="absolute inset-y-0 right-0 top-2 flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer h-[40px]"
               @click="toggleConfirmPasswordVisibility" role="button" tabindex="0"
               aria-label="Toggle confirm password visibility">
-              <EyeOff v-if="confirmPasswordVisible" size="20" class="mt-1" />
-              <Eye v-else size="20" class="mt-1" />
+              <EyeOff v-if="confirmPasswordVisible" size="20" />
+              <Eye v-else size="20" />
             </div>
           </div>
         </div>

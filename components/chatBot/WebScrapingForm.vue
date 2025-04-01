@@ -56,8 +56,8 @@ const isLoading = ref(false);
 
 const formSchema = toTypedSchema(
   z.object({
-    url: z.string({ required_error: 'URL must start with https://'}).min(1, "URL is required").refine((val) => val.startsWith("https://"), {
-      message: "URL must start with https://",
+    url: z.string({ required_error: 'URL must start with https'}).min(1, "URL is required").refine((val) => val.startsWith("https://"), {
+      message: "URL must start with https",
     }),
   })
 );

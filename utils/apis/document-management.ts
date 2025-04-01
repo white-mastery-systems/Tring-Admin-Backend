@@ -1,3 +1,5 @@
+import { botStore } from '~/store/botStore';
+
 export const listDocumentsByBotId = async (botId: string) => {
   const documentsList = await $fetch(`/api/bots/${botId}/documents`);
 
@@ -9,17 +11,20 @@ export const listDocumentsByBotId = async (botId: string) => {
     })),
   };
 };
-
-export const deployDocument = async (botId: string, documentId: string) => {
+export const deployDocument = async (botId: string, documentId: string, handleDialog: boolean) => {
+  const store = botStore();
   try {
     await $fetch(`/api/bots/${botId}/documents/${documentId}/deploy`);
     toast.success("Document deployed successfully");
+    if (handleDialog) {
+      store.createBotsuccessfulState.open = true; // Set the store state to true on success
+    }
     await navigateTo({
       name: "chat-bot-id",
       params: { id: botId },
     });
-  } catch (error) { 
-     if (error?.statusCode === 400) {
+  } catch (error) {
+    if (error?.statusCode === 400) {
       await navigateTo({
         name: "billing",
         query: { type: 'chat' },

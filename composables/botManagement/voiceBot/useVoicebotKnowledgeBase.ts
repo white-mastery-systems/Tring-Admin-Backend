@@ -31,7 +31,8 @@ export function useVoicebotKnowledgeBase() {
 
     } catch (err: any) {
       loading.value = false;
-      error.value = err.message || "Failed to fetch voicebot knowledge base";
+      toast.error(err.statusMessage || "Failed to fetch voicebot knowledge base");
+      error.value = err.statusMessage || "Failed to fetch voicebot knowledge base";
     }
     loading.value = false;
   };
