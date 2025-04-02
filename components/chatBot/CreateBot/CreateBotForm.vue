@@ -58,7 +58,7 @@ watch(() => scrapData, (newscrapData) => {
   setFieldValue('ROLE', 'custom');
   setFieldValue('GOAL', 'custom');
   setFieldValue('otherRole', newscrapData.scrapedData.chatbot.role);
-  setFieldValue('logo', { url: newscrapData.scrapedData.brand?.logo_url } ?? {});
+  setFieldValue('logo', { url: newscrapData.scrapedData.brand?.logo_url ?? '' });
   setFieldValue("otherGoal", newscrapData.scrapedData.chatbot.goal || "");
 }, { deep: true, immediate: true });
 

@@ -19,10 +19,19 @@
         class="flex items-center justify-between gap-3 px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span> Subscription status </span>
         <div class="flex min-w-[80px] items-center justify-start">
-          <span :class="{
+          <!-- <span :class="{
               'bg-[#3cb3714d] text-[#008026ba]': usageDetails?.subscriptionStatus === 'active',
               'bg-[#eb3930f3] text-white': usageDetails?.subscriptionStatus !== 'active'
             }" class="rounded-[11px] px-2.5 py-[3px] text-[12px] capitalize">
+            {{ usageDetails?.subscriptionStatus }}
+          </span> -->
+          <!-- #1093DE -->
+          <span :class="{
+            'bg-[#ECFDF3] text-[#027A48]': usageDetails?.subscriptionStatus === 'active',
+            'bg-[#FFF6ED] text-[#E04F16]': usageDetails?.subscriptionStatus === 'inactive',
+            'bg-[#EFF8FF] text-[#1093DE]': usageDetails?.subscriptionStatus === 'trial',
+            'bg-[#FEE4E2] text-[#D92D20]': usageDetails?.subscriptionStatus === 'cancelled'
+          }" class="rounded-[11px] px-2.5 py-[3px] text-[12px] capitalize">
             {{ usageDetails?.subscriptionStatus }}
           </span>
         </div>
