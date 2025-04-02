@@ -41,3 +41,12 @@ export const getOrgPlanUsage = async (organizationId: string, serviceType: strin
     )
   })
 }
+
+export const getOrgPlanUsageByOrgId = async (organizationId: string) => {
+  return await db.query.adminPlanUsageSchema.findMany({
+    where: and(
+      eq(adminPlanUsageSchema.organizationId, organizationId),
+      inArray(adminPlanUsageSchema.subscriptionStatus, ["active", "trial"])
+    )
+  })
+}
