@@ -64,7 +64,7 @@ export const createTicketInZohoDesk: any = async ({ integrationData, body } : { 
   } catch (error: any) {
     logger.error(`Create ticket in zoho desk function Error: ${JSON.stringify(error.message)}`)
     if (error.status === 401) {
-      const regenerateAccessToken = await regenearateTokenWithRefreshTokenForZohoIntegration({ ...integrationData })
+      const regenerateAccessToken = await regenearateTokenWithRefreshTokenForZohoIntegration({ integrationData })
       return createTicketInZohoDesk({ integrationData: regenerateAccessToken , body })
     }
     throw new Error(error)
