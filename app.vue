@@ -68,7 +68,7 @@ useHead({
         type: "text/javascript",
         defer: true,
         "data-orgname": "WMS",
-        "data-chatbotid": `${config.tringCustomerSupport}`,
+        "data-chatbotid": `${config.public.supportBotId}`,
         "data-orgid": `${organizationId}`,
       },
     ],
