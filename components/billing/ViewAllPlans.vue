@@ -8,18 +8,17 @@
   <!-- (currentRoute === `onboarding/billing?type=${route.query.type}`) ? '' : -->
   <Page title="Choose a Plan" :description="true" :disableSelector="true" :customBackRouter="correctedUrl"
     :disable-back-button="(currentRoute === `onboarding/billing?type=${route.query.type}`)" class="relative">
-    <UiTabs v-model="selectedTab" :default-value="route.query.type ?? 'chat'"
-      class="w-full mt-2">
+    <UiTabs v-model="selectedTab" :default-value="route.query.type ?? 'chat'" class="w-full mt-2">
       <UiTabsList
         class="flex flex-col grid w-full sm:w-full md:w-[300px] grid-cols-2 gap-5 px-2 pb-2 pt-0 rounded-lg bg-white border-0">
         <UiTabsTrigger value="chat" @click="navigateToTab('chat')"
-          class="flex flex-col items-center gap-1 justify-center border rounded-lg data-[state=active]:border-primary min-h-[91px] min-w-[85px]">
+          class="flex flex-col items-center gap-1 justify-center border rounded-lg data-[state=active]:border-[#FFBC42] data-[state=active]:bg-[#FFF8EB] data-[state=active]:text-[#FFBC42] min-h-[91px] min-w-[85px]">
           <MessageSquare class="w-6 h-6" />
           <span class="mt-1 text-sm">Chat</span>
         </UiTabsTrigger>
 
         <UiTabsTrigger value="voice" @click="navigateToTab('voice')"
-          class="flex flex-col items-center gap-1 justify-center border rounded-lg data-[state=active]:border-primary min-h-[91px] min-w-[85px]">
+          class="flex flex-col items-center gap-1 justify-center border rounded-lg data-[state=active]:border-[#FFBC42] data-[state=active]:bg-[#FFF8EB] data-[state=active]:text-[#FFBC42] min-h-[91px] min-w-[85px]">
           <PhoneCall class="w-6 h-6" />
           <span class="mt-1 text-sm">Voice</span>
         </UiTabsTrigger>
@@ -29,10 +28,10 @@
       </div> -->
       <div>
         <UiTabsContent value="chat" class="w-full">
-          <ChatAndVoiceBillingPlan :onBoardingAccount="onBoardingAccount" />
+          <ChatAndVoiceBillingPlan />
         </UiTabsContent>
         <UiTabsContent value="voice">
-          <ChatAndVoiceBillingPlan :onBoardingAccount="onBoardingAccount" />
+          <ChatAndVoiceBillingPlan />
         </UiTabsContent>
       </div>
     </UiTabs>

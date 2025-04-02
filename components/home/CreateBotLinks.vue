@@ -30,15 +30,9 @@ const props = withDefaults(
 
 const createNewBots = async (url: any) => {
   if (url === "/voice-bot")  {
-    navigateTo(url);
-    // const { data: botDetails, status: botLoadingStatus, refresh: integrationRefresh } = await useLazyFetch(`/api/voicebots/${route.params.id}`);
-    const getSingleVoiceBotDetails = await $fetch(`/api/voicebots`, {
-        method: "POST",
-        body: {},
-      });
-      if (getSingleVoiceBotDetails.id) {
-        navigateTo(`voice-bot/create-voice-bot/${getSingleVoiceBotDetails?.id}`);
-      }
+    navigateTo({
+      name: 'voice-bot-create-voice-bot'
+    })
   } 
   if (url === '/chat-bot/create-bot') {
     try {
@@ -48,10 +42,10 @@ const createNewBots = async (url: any) => {
       });
       if (getSingleBotDetails?.id) {
         // ${ getSingleBotDetails.id }
-        navigateTo(`chat-bot/create-bot/${getSingleBotDetails?.id}`);
+        navigateTo(`/chat-bot/create-bot/${getSingleBotDetails?.id}`);
       }
     } catch (error) {
-      console.log("error", error);
+      toast.error(error.statusMessage);
     }
     // const getBotDetails = await listApiBots();
     // toast.success("Created successfully");

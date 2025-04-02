@@ -44,6 +44,9 @@ export const createTicketInZohoDesk: any = async ({ integrationData, body } : { 
           lastName: body?.lastName
         },
         description: body?.description,
+        priority: body?.priority,
+        category: body?.category,
+        classification: body?.classification,
         status: "open"
       }
     })

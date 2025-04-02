@@ -228,7 +228,7 @@ const submitForm = handleSubmit(async (values) => {
 
   const updatedConfig: any = {
     // language: value.language || botData.value?.speechToTextConfig.language || "en-IN",
-    provider: values.provider_stt || 'deepgram',
+    provider: values.provider_stt || botData.value?.speechToTextConfig.provider || 'deepgram',
   };
   // Google config
   if (values.provider_stt === "google") {
@@ -358,39 +358,90 @@ const submitForm = handleSubmit(async (values) => {
     },
 
   }
-
-  const getDetails = await updateLLMConfig(payload, paramId.params.id, "The voice bot has been integraded successfully.");
-  console.log('getDetails:', getDetails.ivrConfig);
-  // await refreshBot()
-  if (!getDetails.ivrConfig) {
-    return
-  }
-  let getActive = getDetails.active
-  getActive = !getActive
   try {
-    const voiceBotDetails = await $fetch(`/api/voicebots/${paramId.params.id}/deploy`, {
-      method: "PUT", body: {
-        active: getActive,
-      },
+    // Create the bot
+    const newBot = await $fetch(`/api/voicebots`, {
+      method: "POST",
+      body: payload,
     });
-    // await refreshBot()
-    if (voiceBotDetails.active) {
+
+    // // Make sure we have the bot ID before proceeding
+    // if (!newBot?.id) {
+    //   return toast.error('Failed to get new bot ID');
+    // }
+
+    // Set active status for deployment
+    const activateBot = true; // or whatever logic you need to determine activation
+
+    // Deploy the bot
+    try {
+      const deployedBot = await $fetch(`/api/voicebots/${newBot.id}/deploy`, {
+        method: "PUT",
+        body: {
+          active: activateBot,
+        },
+      });
+
+      if (deployedBot.active) {
         await navigateTo({
           name: "voice-bot-id",
-          params: { id: paramId.params.id },
+          params: { id: newBot.id },
         });
-      scrapData.createBotVoiceSuccessfulState.open = true
-      scrapData.createBotVoiceSuccessfulState.handleContent = false
-      settimeout(() => {
-        toast.success("Activated successfully");
-      },2000)
-    } else {
-      toast.error("Deactivated successfully")
+        scrapData.createBotVoiceSuccessfulState.open = true;
+        scrapData.createBotVoiceSuccessfulState.handleContent = false;
+        setTimeout(() => { // Fixed typo: settimeout → setTimeout
+          toast.success("Activated successfully");
+        }, 2000);
+      } else {
+        toast.error("Deactivation failed");
+      }
+    } catch (error) {
+      toast.error(error.statusMessage || "Error deploying bot");
     }
   } catch (error) {
-    
-    toast.error(error.statusMessage);
+    toast.error(error.statusMessage || "Error creating bot");
   }
+  // try {
+  //   const getSingleVoiceBotDetails = await $fetch(`/api/voicebots`, {
+  //         method: "POST",
+  //         body: payload,
+  //       });
+  //       console.log('getSingleVoiceBotDetails --- getSingleVoiceBotDetails', getSingleVoiceBotDetails);
+  //       // await refreshBot()
+  //       if (!getDetails.ivrConfig) {
+  //         return
+  //       }
+  //       let getActive = getDetails.active
+  //       getActive = !getActive
+  //       try {
+  //         const voiceBotDetails = await $fetch(`/api/voicebots/${getSingleVoiceBotDetails?.id}/deploy`, {
+  //           method: "PUT", body: {
+  //             active: getActive,
+  //           },
+  //         });
+  //         // await refreshBot()
+  //         if (voiceBotDetails.active) {
+  //             await navigateTo({
+  //               name: "voice-bot-id",
+  //               params: { id: getSingleVoiceBotDetails?.id },
+  //             });
+  //           scrapData.createBotVoiceSuccessfulState.open = true
+  //           scrapData.createBotVoiceSuccessfulState.handleContent = false
+  //           settimeout(() => {
+  //             toast.success("Activated successfully");
+  //           },2000)
+  //         } else {
+  //           toast.error("Deactivated successfully")
+  //         }
+  //       } catch (error) {
+          
+  //         toast.error(error.statusMessage);
+  //       }
+  // } catch (error) {
+  //   toast.error(error.statusMessage);
+  // }
+
+  // const getDetails = await updateLLMConfig(payload, paramId.params.id, "The voice bot has been integraded successfully.");
   // if (!values.provideraccountname) {
   //   toast.error("Please provide a value for Role");
   // } else {
