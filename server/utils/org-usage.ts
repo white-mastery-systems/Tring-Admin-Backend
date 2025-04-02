@@ -154,7 +154,7 @@ export const getOrgUsage = async (organizationId: string, timeZone: string, quer
 
   const [org, orgSubscription] = await getOrgAndSubscription(organizationId, query);
 
-  const { startDate, endDate } = calculateDateRange(orgSubscription, timeZone);
+  const { startDate, endDate } = calculateDateRange(orgSubscription, org, timeZone);
   // console.log({ startDate, endDate })
 
   if(!org) {

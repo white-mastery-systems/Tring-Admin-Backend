@@ -16,7 +16,6 @@ const findUTCDate = (orgZohoSubscription: any) => {
 
 export default defineEventHandler(async (event) => {
   try {
-    console.log("inside chat session update API")
     const query = await isValidQueryHandler(event, zodPlanUsageUpdateValidation)
     const botDetail = await getBotDetails(query?.botId)
     const organizationId = botDetail?.organizationId!
@@ -63,7 +62,7 @@ export default defineEventHandler(async (event) => {
           return { status: false }
         }
         const actualExtraSessions = Math.max(extraSession - orgPlanUsage.extraInteractionsUsed!, 0)
-        console.log({ actualExtraSessions, cost: planPricingDetail?.extraSessionCost! })
+
         if(actualExtraSessions > 0) {
           const extraSessionCost = actualExtraSessions * planPricingDetail?.extraSessionCost!
           const currentWallet = Math.max(0, parseFloat((wallet - extraSessionCost).toFixed(2)))

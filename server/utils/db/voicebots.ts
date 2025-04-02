@@ -1,5 +1,5 @@
 import momentTz from "moment-timezone";
-import { salesHandyContactsSchema, voicebotLeadSchema, voicebotSchedularSchema } from "~/server/schema/voicebot";
+import { InsertVoiceBot, salesHandyContactsSchema, voicebotLeadSchema, voicebotSchedularSchema } from "~/server/schema/voicebot";
 
 const db = useDrizzle();
 interface listVoicebotQuery {
@@ -12,6 +12,15 @@ interface listVoicebotQuery {
 export const createVoicebot = async (voicebot: InsertVoiceBot) => {
   return (await db.insert(voicebotSchema).values(voicebot).returning())[0];
 };
+
+export const getVoicebotByIvrConfigId = async (organizationId: string, ivrConfigId: string) => {
+  return await db.query.voicebotSchema.findFirst({
+    where: and(
+      eq(voicebotSchema.organizationId, organizationId),
+      eq(voicebotSchema.ivrConfig, ivrConfigId)
+    )
+  })
+}
 
 export const listVoicebots = async (
   organizationId: string,
@@ -88,7 +97,7 @@ export const getVoicebotDetailByPhoneNumber = async(phonenumber: string) => {
 
 export const updateVoiceBot = async (
   voicebotId: string,
-  voicebot: InsertVoiceBot,
+  voicebot: Partial<InsertVoiceBot>,
 ) => {
   return (
     await db
