@@ -39,6 +39,11 @@ useHead({
 <script setup lang="ts">
   const config = useRuntimeConfig();
 
+  const organizationDetails = await $fetch("/api/org", {
+    method: "GET",
+  });
+  const organizationId = organizationDetails?.orgDetails?.id;
+
   useHead({
     link: [
       { rel: "icon", type: "image/x-icon", href: "/favicon.png" },
@@ -59,12 +64,12 @@ useHead({
         async: true,
       },
       {
-        src: "http://localhost:3001/widget.js",
+        src: `${config.public.chatBotBaseUrl}/widget.js`,
         type: "text/javascript",
         defer: true,
         "data-orgname": "WMS",
-        "data-chatbotid": "b75338b4-9163-4ad7-8a0f-a7cc11834b11",
-        "data-orgid": "b2461433-c379-4c84-a844-6ab31c39ccd9",
+        "data-chatbotid": `${config.tringCustomerSupport}`,
+        "data-orgid": `${organizationId}`,
       },
     ],
   });
