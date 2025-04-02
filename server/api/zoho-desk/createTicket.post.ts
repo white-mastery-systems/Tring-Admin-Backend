@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
       phone: `${adminDetails?.countryCode} ${adminDetails?.mobile}`
     };
 
-    const data = await createTicketInZohoDesk({ integrationData: integrationData.data, body: ticketPayload })
+    const data = await createTicketInZohoDesk({ integrationData: integrationData.data?.integrationData, body: ticketPayload })
     if(!data.status) {
       return errorResponse(event, 500, "Unable to create ticket in zoho-desk")
     }
