@@ -38,7 +38,7 @@ const { errors, values, handleSubmit, validateField, validate, setFieldValue } =
 });
 const { contentSuggestions, suggestionLoading, suggestionError, fetchSuggestions } = useContentSuggestions();
 const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
-const showNextButton = computed(() => (step.value < 4) && !!values?.selectedType);
+const showNextButton = computed(() => (step.value < 5) && !!values?.selectedType);
 const showBackButton = computed(() => (step.value === 1) && values?.selectedType)
 
 // ✅ Watch errors for debugging (optional)
@@ -90,7 +90,9 @@ const isDataLoading = computed(() => status.value === "pending");
 const stepFields = {
   1: ["","type"], // Assuming validation for step 1 is based on document length
   2: ["BotName", "NAME", "COMPANY", "color", "secondaryColor", "logo"], // Step 2 fields
-  3: ["ROLE", "otherRole", "otherGoal"] // Include otherRole and otherGoal for step 3
+  3: ["ROLE", "otherRole", "otherGoal"], // Include otherRole and otherGoal for step 3
+  4: [""],
+  5: [""],
 };
 
 
@@ -411,23 +413,33 @@ onUnmounted(() => {
     <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full" />
     <!-- <div class="px-6 py-6 pb-0 flex-1 overflow-hidden min-h-[400px] md:min-h-[500px] max-h-[80vh]"> -->
     <!-- <div class="px-6 py-6 pb-0 flex-1 overflow-hidden min-h-[585px] md:min-h-[585px] max-h-[95vh]"> -->
-    <div class="px-6 py-6 pb-0 flex-1 overflow-auto min-h-[400px] md:min-h-[500px] h-[calc(100vh-8rem)] max-h-[95vh] flex">
+    <div
+      class="px-6 py-6 pb-0 flex-1 overflow-auto min-h-[400px] md:min-h-[500px] h-[calc(100vh-8rem)] max-h-[95vh] flex">
       <!-- <TextDocumentUpload ref="uploadDocumentRef" v-show="false" /> -->
       <form class="border border-gray-300 rounded-lg flex flex-col justify-between h-full flex-1 overflow-auto">
         <!-- @update:values="(newValues) => values = newValues" -->
-        <FirstStep ref="stepOneRef" v-show="step === 1" v-model:values="values" :errors="errors" :refresh="refresh" :suggestionsContent="contentSuggestions" :refreshSuggestions="fetchSuggestions" :loading="suggestionLoading" />
+        <FirstStep ref="stepOneRef" v-show="step === 1" v-model:values="values" :errors="errors" :refresh="refresh"
+          :suggestionsContent="contentSuggestions" :refreshSuggestions="fetchSuggestions"
+          :loading="suggestionLoading" />
         <SecondStep v-show="step === 2" v-model:values="values" :errors="errors" @changeLogo="getLogoChange" />
         <ThirdStep v-show="step === 3" v-model:values="values" :errors="errors" :intentOptions="intentOptions" />
-        <FourthStep v-show="step === 4" v-model:values="values" :errors="errors" :disabled="isLoading" :intentOptions="intentOptions" />
+        <FourthStep v-show="step === 4" v-model:values="values" :errors="errors" :disabled="isLoading"
+          :intentOptions="intentOptions" />
+        <FifthStep v-show="step === 5" />
         <!-- {{ step === 2 && (values.intent.length === 0) }} -->
         <div class="flex justify-end w-full gap-[12px] p-4">
-          <UiButton v-if="(step > 1)" :disabled="isLoading" type="button" @click="prevStep" class="px-8 button_shadow border border-[#FFBC42] text-[#FFBC42] hover:text-[#FFBC42] rounded-lg" variant="outline">Back</UiButton>
-          <UiButton v-if="showBackButton" type="button" @click="firstStepBack" class="px-8 button_shadow border border-[#FFBC42] text-[#FFBC42] hover:text-[#FFBC42] rounded-lg" variant="outline">Back
+          <UiButton v-if="(step > 1)" :disabled="isLoading" type="button" @click="prevStep"
+            class="px-8 button_shadow border border-[#FFBC42] text-[#FFBC42] hover:text-[#FFBC42] rounded-lg"
+            variant="outline">Back</UiButton>
+          <UiButton v-if="showBackButton" type="button" @click="firstStepBack"
+            class="px-8 button_shadow border border-[#FFBC42] text-[#FFBC42] hover:text-[#FFBC42] rounded-lg"
+            variant="outline">Back
           </UiButton>
-          <UiButton v-if="showNextButton" type="button" @click="nextStep" color="primary" class="px-8 button_shadow rounded-lg"
-            :loading="isUploading || isDataLoading || isLoading">Next
+          <UiButton v-if="showNextButton" type="button" @click="nextStep" color="primary"
+            class="px-8 button_shadow rounded-lg" :loading="isUploading || isDataLoading || isLoading">Next
           </UiButton>
-          <UiButton color="primary" type="button" v-if="step === 4" @click="submitForm" class="px-8 button_shadow rounded-lg" :loading="isLoading">
+          <UiButton color="primary" type="button" v-if="step === 5" @click="submitForm"
+            class="px-8 button_shadow rounded-lg" :loading="isLoading">
             Create Bot
           </UiButton>
         </div>
