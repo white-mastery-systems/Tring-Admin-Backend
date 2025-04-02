@@ -57,7 +57,7 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
     title="Define your Chatbot's Role in your Company?" 
     description="Import your Select what you would like your bot to help you with" 
     currentStep="3" 
-    totalSteps="4">
+    totalSteps="5">
   <UiRadioGroup v-model="selectedRole" orientation="vertical"
     class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5">
     <div v-for="option in props.intentOptions.roles" :key="option.value"

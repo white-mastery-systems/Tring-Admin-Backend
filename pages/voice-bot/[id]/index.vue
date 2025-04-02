@@ -164,8 +164,8 @@ const handleDeleteBot = () => {
   deleteVoiceBot(route.params.id);
 };
 const previewBot = () => {
-  store.createBotVoiceSuccessfulState.handleContent = true
   store.createBotVoiceSuccessfulState.open = true
+  store.createBotVoiceSuccessfulState.handleContent = true
 }
 
 
