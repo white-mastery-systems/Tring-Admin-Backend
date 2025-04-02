@@ -89,7 +89,7 @@
         </UiButton>
       </div>
     </form>
-    <div v-if="(currentRoute === 'onboarding/account')"
+    <!-- <div v-if="(currentRoute === 'onboarding/account')"
       class="flex items-center justify-end w-full cursor-pointer text-[#8080809c] pt-3 pr-1">
       <div @click="proceedLogin()" class="flex items-center gap-2">
         <span class="flex items-center">
@@ -97,7 +97,7 @@
         </span>
         <ArrowRight class="w-5 h-5" />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

@@ -175,6 +175,8 @@ ChartJS.register(
 const { dateFilters } = useDateFilters();
 const scrapData = botStore();
 const breadcrumbStore = useBreadcrumbStore();
+const { user, refreshUser }: { user: any; refreshUser: any } =
+  await useUser();
 breadcrumbStore.setBreadcrumbs([
   {
     label: "Home", // Dynamic name
@@ -293,6 +295,7 @@ watch([selectedValue, chartValues, activeTab], async ([period, chartValues,type]
 
 onMounted(async () => {
   try {
+   await refreshUser()
     const data = await getAnalyticsData(filter);
     // Convert object to an array of objects with name and value
     analyticsData.value = Object.entries(data).map(([key, value]) => ({

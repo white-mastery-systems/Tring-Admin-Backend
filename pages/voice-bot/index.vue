@@ -149,17 +149,7 @@ const columns = [
 ];
 
 const createNewVoiceBot = async() => {
-  try {
-    const getSingleVoiceBotDetails = await $fetch(`/api/voicebots`, {
-        method: "POST",
-        body: {},
-      });
-      if (getSingleVoiceBotDetails.id) {
-        navigateTo(`voice-bot/create-voice-bot/${getSingleVoiceBotDetails?.id}`);
-      }
-  } catch (error) {
-    toast.error(error.statusMessage);
-  }
+  await navigateTo('voice-bot/create-voice-bot/')
 }
 const Pagination = async ($evnt) => {
   filters.value.page = $evnt;
