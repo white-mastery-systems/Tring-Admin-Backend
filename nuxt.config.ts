@@ -84,12 +84,12 @@ export default defineNuxtConfig({
     geminiApiKey: "",
     tringPlivoAuthId: "",
     tringPlivoAuthToken: "",
-    tringCustomerSupport: "",
     public: {
       adminBaseUrl: "",
       chatBotBaseUrl: "",
       voiceBotBaseUrl: "",
       googleAnalyticsId: "",
+      supportBotId: process.env.NUXT_PUBLIC_SUPPORT_BOT_ID || "",
       zohoIndianChatSubscription: process.env.NUXT_PUBLIC_ZOHO_INDIAN_CHAT_SUBSCRIPTION || "",
       zohoIndianVoiceFluentSubscription: process.env.NUXT_PUBLIC_ZOHO_INDIAN_VOICE_FLUENT_SUBSCRIPTION || "",
       zohoIndianVoiceLucidSubscription: process.env.NUXT_PUBLIC_ZOHO_INDIAN_VOICE_LUCID_SUBSCRIPTION || "",
