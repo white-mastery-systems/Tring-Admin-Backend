@@ -79,7 +79,7 @@ export default defineEventHandler(async(event) => {
         createError({
           statusCode: 400,
           statusMessage:
-            "Name Already Taken: The provided name already exists. Please choose a different name.",
+            "Provided bot name already exists",
         }),
       );
     }
