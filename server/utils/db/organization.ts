@@ -160,7 +160,7 @@ export const updateOrgSubscriptionStatus = async(organizationId: string, status:
   )
 }
 
-export const calculateDateRange = (orgSubscription: any, timeZone: string) => {
+export const calculateDateRange = (orgSubscription: any, org: any, timeZone: string) => {
   if (orgSubscription?.subscriptionCreatedDate && orgSubscription.expiryDate) {
     return {
       startDate: momentTz(orgSubscription?.subscriptionCreatedDate).tz(timeZone).toDate(),
@@ -168,7 +168,7 @@ export const calculateDateRange = (orgSubscription: any, timeZone: string) => {
     };
   }
   return {
-    startDate: momentTz().tz(timeZone).startOf("month").toDate(),
+    startDate: org.createdAt,
     endDate: momentTz().tz(timeZone).endOf("month").toDate(),
   };
 };
