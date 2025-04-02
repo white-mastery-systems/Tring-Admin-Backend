@@ -65,7 +65,7 @@ const handleLogoChange = (event: any) => {
 
 <template>
   <BotSetupCard title="What kind of Business do you own?" description="Select your industry type and other details"
-    currentStep="2" totalSteps="4">
+    currentStep="2" totalSteps="5">
     <!-- {{ intentTypes }} || intentTypes -->
     <!-- ✅ Industry selection - FIXED: Using selectedType directly in the class binding -->
     <!-- <RadioGroup v-model="selectedType" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden">

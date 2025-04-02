@@ -26,3 +26,9 @@ export const getSubcriptionPlanDetailByPlanCode = async (planCode: string, count
     )
   })
 }
+
+export const getAllPricing = async () => {
+   return await db.query.adminPricingSchema.findMany({
+    where: eq(adminPricingSchema.isIndiaPricing, true) 
+   })
+}

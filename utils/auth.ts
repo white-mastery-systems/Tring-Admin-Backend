@@ -31,7 +31,7 @@ const login = async (values: Record<string, any>) => {
     // (await useUser()).refreshUser();
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
-    if (error?.statusMessage === "Authentication Failed: Incorrect username or password.") {
+    if (error?.statusMessage === "Your onboarding is incomplete") {
       localStorage.setItem("userDetails", JSON.stringify(error?.data.data))
       return navigateTo("/auth/onboarding/select-bot-power");
     }

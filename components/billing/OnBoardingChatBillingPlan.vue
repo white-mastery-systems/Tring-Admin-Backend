@@ -315,9 +315,12 @@ const chooseFreeTrialPlan = async (plan: string) => {
       });
     }
     if (plan === 'voice_lucid') {
-      return navigateTo(`${config.public.zohoIndianVoiceLucidSubscription}/voice_lucid?first_name=${encodedName}&email=${encodedEmail}`, {
+      return navigateTo(`${config.public.zohoIndianVoiceFluentSubscription}/voice_fluent?first_name=${encodedName}&email=${encodedEmail}`, {
         external: true,
       });
+      // return navigateTo(`${config.public.zohoIndianVoiceLucidSubscription}/voice_lucid?first_name=${encodedName}&email=${encodedEmail}`, {
+      //   external: true,
+      // });
     }
   } else {
     if (plan === 'chat_intelligence' || plan === 'chat_super_intelligence') {
@@ -337,9 +340,12 @@ const chooseFreeTrialPlan = async (plan: string) => {
       });
     }
     if (plan === 'voice_lucid') {
-      return navigateTo(`${config.public.zohoInternationalVoiceLucidSubscription}/voice_lucid?first_name=${encodedName}&email=${encodedEmail}`, {
+      return navigateTo(`${config.public.zohoInternationalVoiceFluentSubscription}/voice_fluent?first_name=${encodedName}&email=${encodedEmail}`, {
         external: true,
       });
+      // return navigateTo(`${config.public.zohoInternationalVoiceLucidSubscription}/voice_lucid?first_name=${encodedName}&email=${encodedEmail}`, {
+      //   external: true,
+      // });
     }
   }
 

@@ -84,7 +84,7 @@ const changeKnowledge = () => {
 <template>
   <BotSetupCard title="Build Your Bot’s Knowledge"
     description="Import your company details and goals through your website link, by document upload, or by text input (Can select either one)"
-    currentStep="1" totalSteps="4">
+    currentStep="1" totalSteps="5">
     <div class="flex flex-col items-center text-center h-full w-full"
       :class="selectedType ? 'justify-start' : 'justify-center'">
       <div v-if="!selectedType" class="gap-3 space-y-3 w-full overflow-x-hidden">

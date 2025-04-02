@@ -43,7 +43,7 @@
               ? 'bg-[#424bd1] text-[#ffffff]'
               : 'bg-[#ffffff]',
           ]">
-          <WhatsappIcon v-if="path === '/whatsapp-bot'"></WhatsappIcon>
+          <NavWhatsappIcon v-if="path === '/whatsapp-bot'"></NavWhatsappIcon>
           <component :is="icon"></component>
 
           <span class="text-[16px]">{{ name }}</span>
