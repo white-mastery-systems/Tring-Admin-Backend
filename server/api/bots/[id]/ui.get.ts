@@ -47,9 +47,9 @@ export default defineEventHandler(async (event) => {
     }
 
     const currentDate = new Date()
-    const subscriptionEndDate = orgZohoSubscription?.endDate || momentTz().utc()
+    const subscriptionEndDate = orgZohoSubscription?.endDate ? new Date(orgZohoSubscription.endDate) : null;
 
-    if(currentDate > subscriptionEndDate) {
+    if(subscriptionEndDate && currentDate > subscriptionEndDate) {
       await updateOrgZohoSubscription(orgId, "chat", { subscriptionStatus: "inactive" })
       // await updateChatbotStatus(orgId)
       return errorResponse(event, 403, "Subscription Expired: Your subscription plan has expired. Please renew your subscription to continue using the service.")

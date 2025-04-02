@@ -8,13 +8,13 @@ export default defineEventHandler(async (event) => {
 
     const { id: numberIntegrationId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
-    const numberIntegration = await getNumberIntegrationById(numberIntegrationId)
+    const numberIntegration: any = await getNumberIntegrationById(numberIntegrationId)
 
     const availablePhoneNumbers = await getAvailablePhoneNumbers(numberIntegration?.provider!, numberIntegration?.metadata)
 
     return availablePhoneNumbers
   } catch (error: any) {
     logger.error("Error in get available phone numbers", error.message)
-    return errorResponse(event, 500, "Unable to retrieve the incoming phone numbers. Please check the credentials again.")
+    return errorResponse(event, 500, "Unable to retrieve the incoming phonenumbers")
   }
 })
