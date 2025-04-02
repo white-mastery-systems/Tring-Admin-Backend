@@ -19,6 +19,7 @@ import {
   User,
   BookUser
 } from "lucide-vue-next";
+import { NavWhatsappIcon } from '#components';
 
 export const useNavigationAndAccordion = () => {
   
@@ -108,6 +109,12 @@ export const useNavigationAndAccordion = () => {
       name: "Integrations",
       icon: Code,
       path: "/integration",
+      children: [],
+    },
+    {
+      name: "Whatsapp Bot",
+      icon: NavWhatsappIcon,
+      path: "/whatsapp-bot",
       children: [],
     },
     // {
