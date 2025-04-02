@@ -19,32 +19,14 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 const slideBarStore = botStore();
 const trialContent = ref([]); // Initialize as empty array
 
-// Fetch the user plan data when component is mounted
-onMounted(async () => {
+
+// Add event listener when component mounts
+onMounted(async() => {
   try {
     trialContent.value = await userPlan();
   } catch (error) {
     toast.error(error.statusMessage);
   }
-});
-// Add keyboard shortcut for Ctrl+B
-const handleKeyDown = (event) => {
-  if (event.ctrlKey && event.key === 'b') {
-    event.preventDefault();
-    slideBarStore.siderBarslider = !slideBarStore.siderBarslider;
-  }
-};
-const hasTrial = computed(() => {
-  return trialContent.value.some((sub) => sub.subscriptionStatus === 'trial');
-});
-
-// Function to toggle sidebar
-const toggleSidebar = () => {
-  slideBarStore.siderBarslider = !slideBarStore.siderBarslider;
-};
-
-// Add event listener when component mounts
-onMounted(() => {
   window.addEventListener('keydown', handleKeyDown);
   // Add click event to the sidebar rail
   const sidebarRail = document.querySelector('.sidebar-rail');
@@ -53,6 +35,23 @@ onMounted(() => {
   }
 });
 
+
+// Fetch the user plan data when component is mounted
+// Add keyboard shortcut for Ctrl+B
+const handleKeyDown = (event) => {
+  if (event.ctrlKey && event.key === 'b') {
+    event.preventDefault();
+    slideBarStore.siderBarslider = !slideBarStore.siderBarslider;
+  }
+};
+const hasTrial = computed(() => {
+  return trialContent.value.userPlanDetails.some((sub) => sub.subscriptionStatus === 'trial');
+});
+
+// Function to toggle sidebar
+const toggleSidebar = () => {
+  slideBarStore.siderBarslider = !slideBarStore.siderBarslider;
+};
 // Remove event listener when component unmounts
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyDown);
@@ -78,7 +77,6 @@ onUnmounted(() => {
       <NavMain />
     </SidebarContent>
     <SidebarFooter class="bg-[#fafafa] gap-6">
-      <!-- {{ planDetails.userPlanDetails }} -->
       <UiCard v-if="hasTrial" class="w-full border border-[#FFBC42] border-[1px] h-[170px] bg-[#FFF8EB] rounded-lg p-3">
         <div class="mb-1">
           <UiButton

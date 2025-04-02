@@ -54,7 +54,7 @@
           
           <!-- Plan Purpose -->
           <p class="text-sm mb-4" :class="(orgBilling?.plan_code === list.plan_code) ? 'text-indigo-100' : 'text-gray-600'">
-            for {{ list.status.toLowerCase() }}
+            {{ list.status.toLowerCase() }}
           </p>
           
           <!-- Price Section -->
@@ -63,17 +63,17 @@
               <span class="text-3xl font-bold" :class="(orgBilling?.plan_code === list.plan_code) ? 'text-white' : 'text-gray-900'">
                 {{ list.amount }}
               </span>
-              <span class="text-sm ml-1" :class="(orgBilling?.plan_code === list.plan_code) ? 'text-indigo-100' : 'text-gray-500'">
+              <span v-if="list.plan_code != 'chat_enterprise'" class="text-sm ml-1" :class="(orgBilling?.plan_code === list.plan_code) ? 'text-indigo-100' : 'text-gray-500'">
                 /month
               </span>
             </div>
-            <button 
+            <!-- <button 
               class="text-sm font-medium mt-1" 
               :class="(orgBilling?.plan_code === list.plan_code) ? 'text-amber-300 hover:text-amber-200' : 'text-indigo-600 hover:text-indigo-700'"
               @click="choosePlan(list.plan_code)"
             >
               Calculate your price
-            </button>
+            </button> -->
           </div>
           
           <!-- Features List with Updated Icons -->
