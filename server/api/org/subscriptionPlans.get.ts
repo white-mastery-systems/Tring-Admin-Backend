@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
     return {
       type: serviceType,
       planCode: pricingPlanCode,
-      subscriptionStatus,
+      subscriptionStatus: pricingPlanCode === "chat_free" || pricingPlanCode === "voice_free" ? "trial" : subscriptionStatus,
       maxQuota: maxPlan?.sessions ?? null,
       ...(remainingDaysForTrialEnd !== undefined && { remainingDaysForTrialEnd }) // Only include if trial is active
     };
