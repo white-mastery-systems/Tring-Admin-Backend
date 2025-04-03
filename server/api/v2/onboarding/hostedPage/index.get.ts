@@ -97,7 +97,9 @@ export default defineEventHandler(async (event) => {
         organizationId: org.id,
         serviceType: botType === "chat" ? "voice" : "chat",
         pricingPlanCode: botType === "chat" ? "voice_free" : "chat_free",
-        subscriptionStatus: "active"
+        subscriptionStatus: "active",
+        startDate: subscriptionStartDate,
+        endDate: subscriptionEndDate,
     }]
 
     // Subscription creation
@@ -138,7 +140,7 @@ export default defineEventHandler(async (event) => {
             <p><strong>User Details:</strong></p>
             <p>Name: ${userDetails?.username}</p>
             <p>Email: ${userDetails?.email}</p>
-            <p>Mobile: +${userDetails?.countryCode} ${userDetails?.mobile}</p>
+            <p>Mobile: ${userDetails?.countryCode} ${userDetails?.mobile}</p>
             <p>City: ${userDetails?.address.city}</p>
             <p>Country: ${userDetails?.address.country}</p>
           </div>
