@@ -3,7 +3,7 @@
     (page = '1'), (filters.limit = $event);
   }
     " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
-    :data="integrationsData" :page-size="8" :is-loading="false" :height="18" :heightUnit="'vh'" />
+    :data="integrationsData" :page-size="8" :is-loading="false" :height="18" :heightUnit="'vh'" :disabled="chatIntelligence" />
   <CreateEditIntegrationModal :title="findTitleForIntegrationModal" :numberModalState="integrationModal" @success="() => {
     integrationModal.open = false
     integrationRefresh()
@@ -32,10 +32,10 @@ import { createColumnHelper } from "@tanstack/vue-table";
 //   limit: string;
 //   active: string;
 // }>
-let page: any = ref(1);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
-let limit = ref('10');
+const page: any = ref(1);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
+const limit = ref('10');
 const route = useRoute();
 
 const filters = computed(() => ({
@@ -59,14 +59,14 @@ const filters = computed(() => ({
 //     limit: '10',
 //   },
 // });
-const props = defineProps<{ integrationModalState?: boolean, findTitleForIntegrationModal: any }>();
+const props = defineProps<{ integrationModalState?: boolean, findTitleForIntegrationModal: any, chatIntelligence: boolean }>();
 const emit = defineEmits<{
   (e: "action", id: any, integrationModalState: string): void;
   (e: 'stateControl', payload: any): void;
 }>();
 
 const integrationModal = reactive({ open: false, id: null });
-let deleteIntegrationState = reactive({
+const deleteIntegrationState = reactive({
   open: false,
   id: null,
 });
@@ -116,6 +116,7 @@ const actionsComponent = (id: any) =>
         {
           color: "primary",
           class: "ml-2",
+          disabled: props.chatIntelligence,
           /**
            * Opens the integration modal when the edit button is clicked.
            * @param {Event} _event - The event object from the button click.
@@ -132,6 +133,7 @@ const actionsComponent = (id: any) =>
         {
           class: "",
           variant: "destructive",
+          disabled: props.chatIntelligence,
           onClick: () => {
             deleteIntegrationState.id = id;
             deleteIntegrationState.open = true;

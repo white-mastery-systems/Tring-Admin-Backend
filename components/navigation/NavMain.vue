@@ -81,6 +81,7 @@ import { SIDEBAR_WIDTH_MOBILE, useSidebar } from '@/components/ui/sidebar/utils'
 import { botStore } from "~/store/botStore"; // Import Pinia store
 import { useAuth } from '~/composables/useAuth'
 import { useUser } from '~/composables/auth'
+import { NavWhatsappIcon } from '#components';
 
 useHead({
   link: [
@@ -165,7 +166,8 @@ const mobileSidebarControl = async (value: any) => {
         class="group/collapsible">
         <SidebarMenuItem>
           <CollapsibleTrigger as-child>
-            <SidebarMenuButton :tooltip="item.name" :class="[activeItems[item.name] ? 'bg-[#FFF8EB] text-[#3D3D3D]' : '']">
+            <SidebarMenuButton :tooltip="item.name"
+              :class="[activeItems[item.name] ? 'bg-[#FFF8EB] text-[#3D3D3D]' : '']">
               <template v-if="item.children.length">
                 <NuxtLink :to="item.path + item.children[0].path" class="flex items-center gap-2"
                   :class="(!slideBarStore.siderBarslider) ? '' : 'w-full'" @click="handleNavigation('children')">
@@ -176,6 +178,7 @@ const mobileSidebarControl = async (value: any) => {
               <template v-else>
                 <NuxtLink :to="item.path" class="flex items-center space-x-2"
                   :class="(!slideBarStore.siderBarslider) ? '' : 'w-full'" @click="mobileSidebarControl(item)">
+                  <NavWhatsappIcon v-if="item.name === 'Whatsapp Bot'" :class="(!slideBarStore.siderBarslider) ? 'w-[22px] h-[22px]' : 'w-[18px] h-[18px]'"></NavWhatsappIcon>
                   <component :is="item.icon" :stroke-width="1.5" :size="18"></component>
                   <span>{{ item.name }}</span>
                 </NuxtLink>

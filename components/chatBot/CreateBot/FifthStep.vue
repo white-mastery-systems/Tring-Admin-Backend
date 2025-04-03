@@ -188,18 +188,20 @@ const handleConnect = handleSubmit(async (values: any) => {
         <SelectField name="channel" label="Integration App" placeholder="Select an integration" helperText=""
           :options="[{ value: 'whatsapp', label: 'Whatsapp' }]" />
         <div class="flex flex-col gap-4 pt-[10px]">
-          <TextField name="name" label="Channel Name" placeholder="Enter channel name" helperText="" :disabled="!values.channel">
-          </TextField>
-          </div>
-          <TextField v-if="fbVerified" name="pin" label="2FA Pin" placeholder="Enter Your pin" helperText="">
+          <TextField name="name" label="Channel Name" placeholder="Enter channel name" helperText=""
+            :disabled="!values.channel">
           </TextField>
         </div>
+        <TextField v-if="fbVerified" name="pin" label="2FA Pin" placeholder="Enter Your pin" helperText="">
+        </TextField>
+      </div>
 
-        <div class="flex items-center justify-start">
-          <UiButton v-if="!fbVerified" color="primary" type="button" @click="launchWhatsAppSignup">Login with Facebook
-          </UiButton>
-          <UiButton v-else color="primary" type="submit" :loading="isLoading">Submit</UiButton>
-        </div>
+      <div class="flex items-center justify-start">
+        <UiButton v-if="!fbVerified && values.channel" color="primary" type="button" @click="launchWhatsAppSignup">
+          Integrate with Facebook
+        </UiButton>
+        <UiButton v-else-if="fbVerified" color="primary" type="submit" :loading="isLoading">Submit</UiButton>
+      </div>
     </form>
   </BotSetupCard>
 </template>

@@ -24,6 +24,7 @@ const props = withDefaults(
     height?: number;
     heightUnit?: string;
     paginationControl: boolean;
+    disabled?: boolean;
   }>(),
   {
     footer: false,
@@ -32,6 +33,7 @@ const props = withDefaults(
     height: 500,
     heightUnit: "px",
     paginationControl: true,
+    disabled: false,
   }
 );
 
@@ -115,14 +117,11 @@ const props = withDefaults(
           </template>
           <template v-else>
             <UiTableRow class="w-full">
-            <UiTableCell
-              :colspan="columns.length"
-              class="h-24 text-center w-full table-cell"
-            >
-              <div class="flex justify-center items-center w-full">
-                No results.
-              </div>
-            </UiTableCell>
+              <UiTableCell :colspan="columns.length" class="h-24 text-center w-full table-cell">
+                <div class="flex justify-center items-center w-full">
+                  No results.
+                </div>
+              </UiTableCell>
             </UiTableRow>
           </template>
         </UiTableBody>
@@ -154,15 +153,15 @@ const props = withDefaults(
           <span class="text-sm text-gray-500">of {{ totalCount }} records</span>
         </div>
         <!-- class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90" -->
-        <UiButton color="primary" size="icon" @click="emits('pagination', 1)" :disabled="page === 1">
+        <UiButton color="primary" size="icon" @click="emits('pagination', 1)" :disabled="page === 1 || disabled">
           <Icon name="lucide:chevrons-left" class="h-6 w-6" />
         </UiButton>
         <!-- class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90" -->
-        <UiButton color="primary" size="icon" :disabled="page === 1" @click="emits('pagination', page - 1)">
+        <UiButton color="primary" size="icon" :disabled="page === 1 || disabled" @click="emits('pagination', page - 1)">
           <Icon name="lucide:chevron-left" class="h-6 w-6" />
         </UiButton>
         <!-- class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90" -->
-        <UiButton color="primary" size="icon" :disabled="totalPageCount === page" @click="
+        <UiButton color="primary" size="icon" :disabled="totalPageCount === page || disabled" @click="
             () => {
               emits('pagination', page + 1);
             }
@@ -170,7 +169,8 @@ const props = withDefaults(
           <Icon name="lucide:chevron-right" class="h-6 w-6" />
         </UiButton>
         <!-- class="bg-[#424bd1] text-white hover:bg-[#424bd1] hover:brightness-90" -->
-        <UiButton color="primary" size="icon" @click="emits('pagination', totalPageCount)" :disabled="totalPageCount === page">
+        <UiButton color="primary" size="icon" @click="emits('pagination', totalPageCount)"
+          :disabled="totalPageCount === page || disabled">
           <Icon name="lucide:chevrons-right" class="h-6 w-6" />
         </UiButton>
       </div>
