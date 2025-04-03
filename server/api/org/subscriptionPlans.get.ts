@@ -17,6 +17,7 @@ export default defineEventHandler(async (event) => {
 
     const subscriptionPlanUsage = orgSubscriptionPlanUsages.find((usage) => usage.serviceType === serviceType);
 
+
     // Determine the correct pricing plan
     const maxPlan = pricingPlans.find((plan) => {
       if (subscriptionPlanUsage?.pricingPlanCode === "chat_free" || subscriptionPlanUsage?.pricingPlanCode === "voice_free") {
@@ -27,6 +28,9 @@ export default defineEventHandler(async (event) => {
       }
       return pricingPlanCode === plan.planCode;
     });
+    const usedQuota = subscriptionPlanUsage?.interactionsUsed || 0
+    const maxQuota = maxPlan?.sessions || 0
+    const availableQuota = Math.max(maxQuota - usedQuota, 0)
 
     // Compute remaining trial days if in trial
     let remainingDaysForTrialEnd: number | undefined;
@@ -41,7 +45,7 @@ export default defineEventHandler(async (event) => {
       type: serviceType,
       planCode: pricingPlanCode,
       subscriptionStatus: pricingPlanCode === "chat_free" || pricingPlanCode === "voice_free" ? "trial" : subscriptionStatus,
-      maxQuota: maxPlan?.sessions ?? null,
+      availableQuota,
       ...(remainingDaysForTrialEnd !== undefined && { remainingDaysForTrialEnd }) // Only include if trial is active
     };
   });
