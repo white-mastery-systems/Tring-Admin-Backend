@@ -115,9 +115,9 @@ onUnmounted(async() => {
             class="flex gap-2 bg-[#E3E4F8] hover:bg-[#E3E4F8] text-[#424BD1] px-4 py-0 rounded-full text-[10px] h-[20px] font-regular">
             <Zap class="w-3 h-3" :stroke-width="1.5" />
             <span>
-              free trial ends in 
+              free trial ends in
               <span class="font-bold">
-                {{ trialContent.userPlanDetails[0].remainingDaysForTrialEnd }} days
+                {{ trialContent.userPlanDetails[0]?.remainingDaysForTrialEnd ?? trialContent.userPlanDetails[1]?.remainingDaysForTrialEnd }} days
               </span>
             </span>
           </UiButton>

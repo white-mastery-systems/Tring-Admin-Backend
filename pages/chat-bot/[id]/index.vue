@@ -170,8 +170,8 @@
     <!-- <div class="flex justify-center">
       <UiButton @click="triggerChildSubmit">Create bot</UiButton>
     </div> -->
-    <ChatBotSuccessfulMessageModal v-model="store.createBotsuccessfulState" :botDetails="botDetails" :refreshBot="refreshBot"
-      @success="() => {
+    <ChatBotSuccessfulMessageModal v-model="store.createBotsuccessfulState" :botDetails="botDetails"
+      :refreshBot="refreshBot" @success="() => {
         store.createBotsuccessfulState.open = false;
         refreshBot()
       console.log('on success')
@@ -314,7 +314,7 @@ watch(() => botDetails.value?.documentId, (newId) => {
   if (newId) {
     store.scrapedData = [];
   }
-});
+},{deep: true, immediate: true});
 // router.beforeEach((to, from) => {
 //   store.lastVisitedRoute = from.path
 // })
