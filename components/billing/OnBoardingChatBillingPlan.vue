@@ -155,7 +155,8 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: "auth",
+  layout: "billing-account",
+  middleware: "guest-only",
 });
 
 import { useBillingVariation } from '~/composables/billing/useBillingVariation';
