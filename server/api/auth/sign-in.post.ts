@@ -32,10 +32,6 @@ export default defineEventHandler(async (event) => {
     );
   }
 
-  if(!user.isVerified){
-    return errorResponse(event, 400, "Your onboarding is incomplete")
-  }
-
   const session = await lucia.createSession(
     user.id,
     { email: user.email },
@@ -47,6 +43,10 @@ export default defineEventHandler(async (event) => {
     "Set-Cookie",
     lucia.createSessionCookie(session.id).serialize(),
   );
+
+  if(!user.isVerified){
+    return errorResponse(event, 400, "Your onboarding is incomplete")
+  }
 
   if(!user.username) {
      return sendError(event, createError({

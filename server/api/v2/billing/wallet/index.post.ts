@@ -2,6 +2,7 @@ import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
 import { addonPlanList } from "~/server/utils/v2/billing/addonList"
 import { createAddon } from "~/server/utils/v2/billing/wallet"
+import { getOrgSubscriptionId } from "~/server/utils/v2/db/zohoSubscription"
 import { zodBotTypeQuery } from "~/server/utils/validations"
 
 const zodCreateAddon = z.object({
@@ -13,9 +14,9 @@ export default defineEventHandler(async (event) => {
   try {
     const orgId = await isOrganizationAdminHandler(event)
     const body = await isValidBodyHandler(event, zodCreateAddon)
-    const query = await isValidQueryHandler(event, zodBotTypeQuery)
+    // const query = await isValidQueryHandler(event, zodBotTypeQuery)
 
-    const orgZohoSubscription = await getOrgZohoSubscription(orgId, query.type)
+    const orgZohoSubscription = await getOrgSubscriptionId(orgId)
     const adminConfig = await getAdminConfig()
 
     const addonPrice = addonPlanList?.find(({ plan }) => plan === body.plan)?.price
