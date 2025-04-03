@@ -35,13 +35,14 @@ import { useRouter, useRoute } from "vue-router";
 import { useSubscriptionCheck } from '~/composables/billing/useSubscriptionCheck';
 import { useOrgDetailsStore } from "~/store/orgDetailsStore";
 import { useUser } from '~/composables/auth'
+import { useAuth } from '~/composables/useAuth'
 
 const { navigationModules, dropdownMenuItems } = useNavigationAndAccordion()
 const { isAnyPlanFree, subcribed, checkSubscription } = useSubscriptionCheck()
 const logoutModal = ref(false);
 const OrgDetails = useOrgDetailsStore();
 const { user, clearUser } = await useUser();
-
+const { session, error, loading, getSession } = useAuth()
 
 const userInfo = computed(() => {
   return user.value;
@@ -81,6 +82,22 @@ const navigateToSamePage = (path: any) => {
   }
 };
 
+const handleNavigation = async () => {
+  try {
+    await getSession()
+
+    if (!session.value.status) {
+      clearUser()
+      console.log("Session status:", session.value.status)
+      await navigateTo("/auth/sign-in")
+      return
+    }
+  } catch (error) {
+    console.error('Session check error:', error)
+    clearUser()
+    await navigateTo("/auth/sign-in")
+  }
+}
 const mobileSidebarControl = () => {
   // console.log(isMobile.value, "isMobile.value -- isMobile.value")
   if (isMobile.value) {
@@ -133,7 +150,7 @@ const mobileSidebarControl = () => {
               @click.prevent="navigateToSamePage(item.path)">
               <!-- @click.prevent="navigateToSamePage(item.path)" -->
               <NuxtLink
-                :to="(!subcribed && (item.path.path === '/billing/view-wallet')) ? '/billing/view-all' : item.path" class="flex items-center w-full min-h-[40px]">
+                :to="(!subcribed && (item.path.path === '/billing/view-wallet')) ? '/billing/view-all' : item.path" class="flex items-center w-full min-h-[40px]" @click="handleNavigation">
                 <DropdownMenuShortcut class="flex items-center gap-2 w-full">
                   <component :is="item.icon" size="18"></component>
                   {{ item.label }}

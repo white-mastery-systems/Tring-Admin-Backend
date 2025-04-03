@@ -79,6 +79,8 @@ import { ChevronRight, type LucideIcon } from 'lucide-vue-next'
 import { useRouter, useRoute } from "vue-router";
 import { SIDEBAR_WIDTH_MOBILE, useSidebar } from '@/components/ui/sidebar/utils'
 import { botStore } from "~/store/botStore"; // Import Pinia store
+import { useAuth } from '~/composables/useAuth'
+import { useUser } from '~/composables/auth'
 
 useHead({
   link: [
@@ -91,6 +93,8 @@ const route = useRoute();
 const { navigationModules, dropdownMenuItems } = useNavigationAndAccordion()
 const { isMobile,toggleSidebar } = useSidebar()
 const slideBarStore = botStore();
+const { session, error, loading, getSession } = useAuth()
+const { user, clearUser } = await useUser();
 // Computed property to determine if the collapsible should be open
 const activeRoutes = computed(() => {
   const activeMap:any = {};
@@ -119,17 +123,33 @@ const activeItems = computed(() => {
   return activeMap;
 });
 
-const mobileSidebarControl = (value: any) => {
-  // console.log(isMobile.value, "isMobile.value -- isMobile.value")
-  if (isMobile.value) {
-    toggleSidebar();
-    // slideBarStore.siderBarslider = false
+const handleNavigation = async () => {
+  try {
+    await getSession()
+
+    if (!session.value.status) {
+      clearUser()
+      console.log("Session status:", session.value.status)
+      await navigateTo("/auth/sign-in")
+      return
+    }
+  } catch (error) {
+    console.error('Session check error:', error)
+    clearUser()
+    await navigateTo("/auth/sign-in")
   }
-  // if (!value.children.length && isMobile.value) {
-  //   toggleSidebar()
-  // } if (value.children.length && isMobile.value) {
-  //   toggleSidebar()
-  // }
+}
+
+const mobileSidebarControl = async (value: any) => {
+  try {
+    await handleNavigation()
+
+    if (isMobile.value) {
+      toggleSidebar()
+    }
+  } catch (error) {
+    console.error('Sidebar control error:', error)
+  }
 }
 </script>
 <template>
@@ -142,7 +162,7 @@ const mobileSidebarControl = (value: any) => {
             <SidebarMenuButton :tooltip="item.name" :class="[activeItems[item.name] ? 'bg-[#FFF8EB] text-[#3D3D3D]' : '']">
               <template v-if="item.children.length">
                 <NuxtLink :to="item.path + item.children[0].path" class="flex items-center gap-2"
-                  :class="(!slideBarStore.siderBarslider) ? '' : 'w-full'">
+                  :class="(!slideBarStore.siderBarslider) ? '' : 'w-full'" @click="handleNavigation">
                   <component :is="item.icon" :stroke-width="1.5" :size="18"></component>
                   <span v-if="(isMobile) ? isMobile : (slideBarStore.siderBarslider)">{{ item.name }}</span>
                 </NuxtLink>

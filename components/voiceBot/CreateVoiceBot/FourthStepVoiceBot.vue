@@ -50,7 +50,7 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
 
 <template>
   <BotSetupCard 
-    title="Define your Chatbot's Goal in your Company?" 
+    title="Define your Voicebot's Goal in your Company?" 
     description="Import your Select what you would like your bot to help you with" 
     currentStep="4" 
     totalSteps="6">

@@ -110,7 +110,7 @@ const sliderBarControl = () => {
   <SidebarProvider>
     <AppSidebar />
     <main class="w-full h-full">
-      <div class="flex items-center h-10 shadow-none px-4 gap-2 border-b-[1px] border-[#E4E4E7] py-2">
+      <div class="flex items-center h-10 shadow-none px-6 gap-2 border-b-[1px] border-[#E4E4E7] py-2">
         <!-- class="flex sm:flex md:hidden" -->
         <div class="flex items-center text-[12px]">
           <UiSidebarTrigger @click="sliderBarControl()" class="text-[#334155] py-2" />

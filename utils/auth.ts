@@ -51,7 +51,7 @@ const signup = async (values: Record<string, any>) => {
     // return navigateTo("/auth/verify-otp");
     // return navigateTo(data);
   } catch (error: any) {
-    toast.error(error?.statusMessage || "An error occurred");
+    toast.error(error?.statusMessage);
   }
 };
 const forgotPassword = async (values: Record<string, any>) => {
