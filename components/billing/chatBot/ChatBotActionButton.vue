@@ -4,18 +4,17 @@
       <!-- <Icon name="svg-spinners:90-ring-with-bg" class="h-7 w-7" /> -->
     </div>
     <div v-else>
-      <div v-if="isChatSubscription"
-        class="flex items-center justify-between gap-1 cursor-pointer" @click="creditBalanceModalState.open = true">
+      <div class="flex items-center justify-between gap-1 cursor-pointer" @click="creditBalanceModalState.open = true">
         <div class="flex flex-col items-center gap-1 max-h-[36px]" v-if="!isPageLoading">
           <UiButton
-            class="flex items-center justify-center font-regular text-center text-sm gap-1 bg-[#3ea52e33] hover:bg-[#3ea52e33] hover:brightness-100 px-2 py-2 md:py-2 lg:py-0">
-            <span>
+            class="flex items-center justify-center font-regular text-center text-sm gap-1 bg-[#E3E4F8] hover:bg-[#E3E4F8] hover:brightness-100 px-2 py-2 md:py-2 lg:py-0">
+            <!-- <span>
               <WhatsappIcon class="text-[#1ABB00] w-6 h-6 md:w-6 md:h-6 lg:w-5 lg:h-5" />
-            </span>
-            <div class="text-center text-[#000000] text-[4px] lg:text-[12px] hidden lg:flex">
+            </span> -->
+            <div class="text-center text-[#424BD1] text-[4px] lg:text-[12px] hidden lg:flex">
               <span>
                 Credits :
-                {{ usageDetails.whatsappWalletBalance ?? 0 }}
+                {{ usageDetails?.walletBalance ?? 0 }}
               </span>
             </div>
           </UiButton>
@@ -36,11 +35,11 @@
       </NuxtLink>
       <div class="text-[4px]"> Renew/Change Plan </div>
     </div>
-    <NuxtLink v-if="!usage?.plan_code?.includes('free') && (userLocationDetails.country === 'IN') && cancelSubscription"
+    <!-- <NuxtLink v-if="!usage?.plan_code?.includes('free') && (userLocationDetails.country === 'IN') && cancelSubscription"
       :to="{ path: '/billing/view-wallet', query: { type: query?.type } }"
       class="hover:brighten-50 font-regular flex items-center rounded-md bg-[#424bd1] p-2 px-2 text-sm text-[#FFFFFF] hover:bg-[#424bd1] hidden lg:flex min-w-[93px] max-h-[40px]">
       Refill Wallet
-    </NuxtLink>
+    </NuxtLink> -->
     <!-- to="/billing/view-wallet" -->
     <div v-if="!usage?.plan_code?.includes('free') && (userLocationDetails.country === 'IN') && cancelSubscription"
       class="flex flex-col items-center justify-center gap-1 lg:hidden">
@@ -87,9 +86,9 @@ const props = defineProps({
   isPageLoading: { type: Boolean, required: true },
 });
 
-const isChatSubscription = computed(() => {
-  return props.query?.type === 'chat' && !props.usage?.plan_code?.includes('free');
-});
+// const isChatSubscription = computed(() => {
+//   return props.query?.type === 'chat' && !props.usage?.plan_code?.includes('free');
+// });
 
 const whatsappBalance = computed(() => props.usageDetails?.whatsappWalletBalance ?? 0);
 

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <form @submit.prevent="uiUpdate" class="space-y-6">
-      <div class="flex w-full flex-col gap-[13px] pt-4 overflow-scroll">
+    <form @submit.prevent="uiUpdate">
+      <div class="flex w-full flex-col gap-[13px] pt-4 overflow-scroll space-y-3">
 
         <!-- File Upload for Logo -->
         <!-- <div class="w-[20%]">
@@ -16,7 +16,8 @@
           <UiFileUpload @change="handleLogoChange" name="logo"
             :label="(values?.logo.url) ? 'Change your logo here, browse files' : 'Upload your logo here, Browse files'"
             :required="true" :accept="'image/*'" :url="values?.logo.url" :fileType="'image'"
-            :class="'h-24 cursor-pointer'" :helperText="'Only files up to 5MB can be uploaded.'" />
+            :class="'h-24 cursor-pointer'" :disabled="chatIntelligence"
+            :helperText="'Only files up to 5MB can be uploaded.'" />
         </div>
         <!-- </div> -->
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 items-center gap-4 w-full gap-5">
@@ -38,7 +39,7 @@
                     <div class="h-9 w-9 border border-[#E4E4E7] relative overflow-hidden rounded-lg"
                       :style="{ backgroundColor: values.color }">
                       <UiInput ref="colorInput" v-bind="componentField" type="color"
-                        class="absolute inset-0 opacity-0 cursor-pointer" />
+                        class="absolute inset-0 opacity-0 cursor-pointer" :disabled="chatIntelligence" />
                     </div>
                   </div>
                 </div>
@@ -64,7 +65,7 @@
                     <div class="h-9 w-9 border border-[#E4E4E7] relative overflow-hidden rounded-lg"
                       :style="{ backgroundColor: values.secondaryColor }">
                       <UiInput ref="secondarycolorInput" v-bind="componentField" type="color"
-                        class="absolute inset-0 opacity-0 cursor-pointer" />
+                        class="absolute inset-0 opacity-0 cursor-pointer" :disabled="chatIntelligence" />
                     </div>
                   </div>
                 </div>
@@ -81,16 +82,16 @@
 
           <SelectField name="widgetPosition" label="Widget Position" placeholder="Select Widget Position" class="w-full"
             :options="[
-            { value: 'Left', label: 'Left' },
-            { value: 'Right', label: 'Right' },
-          ]" required />
+              { value: 'Left', label: 'Left' },
+              { value: 'Right', label: 'Right' },
+            ]" :disabled="chatIntelligence" />
           <SelectField name="fontFamily" label="Font Family" class="w-full" placeholder="Select Font" :options="[
-          { value: 'Kanit', label: 'Kanit' },
-          { value: 'Gilroy', label: 'Gilroy' },
-          { value: 'Jost', label: 'Jost' },
-          { value: 'Lexend Deca', label: 'Lexend Deca' },
-          { value: 'Museo', label: 'Museo' }
-        ]" required />
+            { value: 'Kanit', label: 'Kanit' },
+            { value: 'Gilroy', label: 'Gilroy' },
+            { value: 'Jost', label: 'Jost' },
+            { value: 'Lexend Deca', label: 'Lexend Deca' },
+            { value: 'Museo', label: 'Museo' }
+          ]" :disabled="chatIntelligence" />
         </div>
 
         <!-- Font Family -->
@@ -106,7 +107,7 @@
               </div>
               <UiFormControl>
                 <UiSwitch id="generateLead" :checked="value" @update:checked="handleChange"
-                  :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
+                  :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" :disabled="chatIntelligence" />
               </UiFormControl>
             </UiFormItem>
           </UiFormField>
@@ -124,7 +125,7 @@
                 <UiFormMessage />
               </div>
               <UiSwitch id="defaultSelect" :checked="value" @update:checked="handleChange"
-                :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
+                :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" :disabled="chatIntelligence" />
             </UiFormItem>
           </UiFormField>
 
@@ -142,7 +143,7 @@
               </div>
               <UiFormControl>
                 <UiSwitch id="defaultRibbon" :checked="value" @update:checked="handleChange"
-                  :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
+                  :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" :disabled="chatIntelligence" />
               </UiFormControl>
             </UiFormItem>
           </UiFormField>
@@ -162,7 +163,7 @@
                 <UiFormMessage />
               </div>
               <UiSwitch id="online-status" :checked="value" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }"
-                @update:checked="handleChange" />
+                @update:checked="handleChange" :disabled="chatIntelligence" />
             </UiFormItem>
           </UiFormField>
           <UiFormField v-slot="{ value, handleChange }" name="widgetSound">
@@ -177,7 +178,7 @@
                 <UiFormMessage />
               </div>
               <UiSwitch id="online-status" :checked="value" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }"
-                @update:checked="handleChange" />
+                @update:checked="handleChange" :disabled="chatIntelligence" />
             </UiFormItem>
           </UiFormField>
         </div>
@@ -202,7 +203,8 @@
 
         <!-- Submit Button -->
         <div class="my-auto flex w-full justify-end py-0">
-          <UiButton color="primary" type="submit" size="lg" :loading="isLoading">Submit</UiButton>
+          <UiButton color="primary" type="submit" size="lg" :loading="isLoading" :disabled="chatIntelligence">Submit
+          </UiButton>
         </div>
       </div>
     </form>
@@ -257,6 +259,7 @@ const {
 } = useForm({ validationSchema: uiCustomizationValidation });
 
 const paramId = route.params.id;
+const planDetails = ref([])
 // const botDetails = await getBotDetails(paramId);
 // const { botDetails, loading, error, refreshBot } = useBotDetails(paramId);
 // watch(() => props.botDetails, (newValue) => {
@@ -267,31 +270,44 @@ const paramId = route.params.id;
 // },{deep: true, immediate: true});
 watch(props.botDetails, (newValues) => {
   // Handle logo - either use object or create object with url
-  setFieldValue("logo", (typeof newValues.metadata.ui.logo === "object" ? 
-    newValues.metadata.ui.logo : 
-    {url: newValues.metadata.ui.logo}) ?? {});
+  setFieldValue("logo", (typeof newValues.metadata.ui.logo === "object" ?
+    newValues.metadata.ui.logo :
+    { url: newValues.metadata.ui.logo }) ?? {});
 
   // Convert colors from HSL to Hex
   setFieldValue("color", hslToHex(newValues.metadata.ui.color ?? "236, 61%, 54%"));
   setFieldValue("secondaryColor", hslToHex(newValues.metadata.ui.secondaryColor ?? "236, 61%, 74%"));
-  
+
   // Set other UI preferences
   setFieldValue("widgetSound", newValues.metadata.ui.widgetSound ?? true);
   setFieldValue("widgetPosition", newValues.metadata.ui.widgetPosition ?? "Left");
   setFieldValue("fontFamily", newValues.metadata?.ui.fontFamily ?? "Kanit");
-  
+
   // Set boolean values with appropriate defaults
   setFieldValue("defaultSelect", newValues.metadata.ui.defaultSelect ?? true);
   setFieldValue("onlineStatus", newValues.metadata.ui.onlineStatus ?? true);
   setFieldValue("generateLead", newValues.metadata.ui.generateLead ?? true);
   setFieldValue("defaultRibbon", newValues.metadata.ui.defaultRibbon ?? true);
-  
+
   // Set email recipients
   setFieldValue("emailRecipients", newValues.emailRecipients ?? []);
 }, { deep: true, immediate: true });
 
 
+onMounted(async () => {
+  planDetails.value = await userPlan();
+})
 
+const chatIntelligence = computed(() => {
+  return planDetails.value.userPlanDetails.some((plan: any) => {
+    return plan.type === 'chat' && plan.planCode === 'chat_intelligence'
+  });
+});
+watch(() => chatIntelligence.value, (newValue) => {
+  if (newValue) {
+    setFieldValue("generateLead", false);
+  }
+}, { immediate: true });
 // watch(
 //   () => ({
 //     logo: values.logo,
@@ -342,7 +358,7 @@ const uiUpdate = handleSubmit(async (value) => {
       },
     },
   };
-  await updateBotDetails(payload,true);
+  await updateBotDetails(payload, true);
   await props.refreshBot()
   // emit('formSubmitted');
   isLoading.value = false;
