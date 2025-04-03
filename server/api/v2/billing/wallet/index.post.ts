@@ -1,6 +1,6 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-import { chatAddonPlanList, voiceAddonPlanList } from "~/server/utils/v2/billing/addonList"
+import { addonPlanList } from "~/server/utils/v2/billing/addonList"
 import { createAddon } from "~/server/utils/v2/billing/wallet"
 import { zodBotTypeQuery } from "~/server/utils/validations"
 
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     const orgZohoSubscription = await getOrgZohoSubscription(orgId, query.type)
     const adminConfig = await getAdminConfig()
 
-    const addonPrice = query?.type === "chat" ? chatAddonPlanList?.find(({ plan }) => plan === body.plan)?.price : voiceAddonPlanList?.find(({ plan }) => plan === body.plan)?.price
+    const addonPrice = addonPlanList?.find(({ plan }) => plan === body.plan)?.price
     
     const addonPayload = {
       subscription_id: orgZohoSubscription?.subscriptionId,
