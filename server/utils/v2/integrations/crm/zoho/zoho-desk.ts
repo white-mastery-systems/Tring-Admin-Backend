@@ -42,7 +42,7 @@ export const createTicketInZohoDesk: any = async ({ integrationData, body } : { 
         classification: body?.classification,
         status: "open"
       }
-    console.log({ payload})
+
     const response = await $fetch(`https://desk.zoho.in/api/v1/tickets`, {
       method: "POST",
       headers: {
@@ -55,7 +55,6 @@ export const createTicketInZohoDesk: any = async ({ integrationData, body } : { 
     }
     return { status: true }
   } catch (error: any) {
-    console.log({ error })
     logger.error(`Create ticket in zoho desk function Error: ${JSON.stringify(error.message)}`)
     if (error.status === 401) {
       const regenerateAccessToken = await regenearateTokenWithRefreshTokenForZohoIntegration({ integrationData })
