@@ -6,7 +6,8 @@ import { getAllPricing } from "~/server/utils/db/pricing"
 export default defineEventHandler(async (event) => {
   const organizationId = await isOrganizationAdminHandler(event) as string
 
-   const [orgSubscription, orgSubscriptionPlanUsages, pricingPlans] = await Promise.all([
+   const [adminDetails, orgSubscription, orgSubscriptionPlanUsages, pricingPlans] = await Promise.all([
+    getOrganizationById(organizationId),
     getSubscriptionByOrganizationId(organizationId),
     getOrgPlanUsageByOrgId(organizationId),
     getAllPricing()
@@ -27,11 +28,14 @@ export default defineEventHandler(async (event) => {
       }
       return pricingPlanCode === plan.planCode;
     });
+    const usedQuota = subscriptionPlanUsage?.interactionsUsed || 0
+    const maxQuota = maxPlan?.sessions || 0
+    const availableQuota = Math.max(maxQuota - usedQuota, 0)
 
     // Compute remaining trial days if in trial
     let remainingDaysForTrialEnd: number | undefined;
-    if (subscriptionPlanUsage?.originalSubscriptionStatus === "trial" && endDate) {
-      const trialEndDate = momentTz(subscription.endDate, "YYYY-MM-DD").startOf("day");
+    if (subscriptionPlanUsage?.originalSubscriptionStatus === "trial" || subscriptionPlanUsage?.pricingPlanCode === "chat_free" || subscriptionPlanUsage?.pricingPlanCode === "voice_free") {
+      const trialEndDate = subscription.endDate ? momentTz(subscription.endDate, "YYYY-MM-DD").startOf("day") : momentTz(adminDetails?.createdAt).add(14, "days").startOf("day")
       const currentDate = momentTz().startOf('day');
       const daysRemaining = trialEndDate.diff(currentDate, "days");
       remainingDaysForTrialEnd = daysRemaining
@@ -41,10 +45,10 @@ export default defineEventHandler(async (event) => {
       type: serviceType,
       planCode: pricingPlanCode,
       subscriptionStatus: pricingPlanCode === "chat_free" || pricingPlanCode === "voice_free" ? "trial" : subscriptionStatus,
-      maxQuota: maxPlan?.sessions ?? null,
+      availableQuota,
       ...(remainingDaysForTrialEnd !== undefined && { remainingDaysForTrialEnd }) // Only include if trial is active
     };
-  });
+  }); 
 
   return updatedSubscriptions
 })
