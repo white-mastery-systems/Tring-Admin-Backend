@@ -48,25 +48,25 @@ const {
 
 const walletDetails = [
   {
-    value: "whatsapp_credits_super",
-    label: '₹1000'  
+    value: "wallet_credits_super",
+    label: '₹1000',
   },
   {
-    value: "whatsapp_credits_pro",
-    label: '₹5000'
+    value: "wallet_credits_pro",
+    label: '₹5000',
   },
   {
-    value: "whatsapp_credits_ultra",
+    value: "wallet_credits_ultra",
     label: '₹10000',
   },
   {
-    value: "whatsapp_credits_supreme",
+    value: "wallet_credits_supreme",
     label: '₹20000',
   },
   {
-    value: "whatsapp_credits_max",
+    value: "wallet_credits_max",
     label: '₹50000',
-  }
+  },
 ]
 const handleConnect = handleSubmit(async (values: any) => {
   const hostedPageResponse = await $fetch(
