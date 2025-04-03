@@ -95,7 +95,7 @@ const changeKnowledge = () => {
           <RadioGroup v-model="type" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden"
             :class="props.loading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''" :disabled="true">
             <div v-for="intent in intentTypes" :key="intent.value"
-              class="min-w-[100px] max-w-[100px] min-h-[100px] max-h-[100px] md:min-w-[135px] md:max-w-[135px] md:min-h-[135px] md:max-h-[135px]"
+              class="min-w-[100px] max-w-[100px] min-h-[100px] max-h-[100px] md:min-w-[138px] md:max-w-[138px] md:min-h-[135px] md:max-h-[135px]"
               @click.stop="selectIndustry(intent.value)">
               <!-- {{props.loading}} -->
               <RadioGroupItem :id="intent.value" :value="intent.value" class="peer hidden" />

@@ -4,8 +4,8 @@
     <div class="flex w-full sm:w-full md:w-[60%] gap-2 sm:gap-2 md:gap-3"
       :class="(errors.url) ? 'items-center' :'items-end'">
       <!-- <span class="font-semibold w-[210px] text-[10px] sm:text-[10px] md:text-[16px] ">Import from Website</span> -->
-      <TextField name="url" placeholder="URL" class="text-[10px] sm:text-[10px] md:text-[14px]"
-        label="Import from Website Link">
+      <TextField name="url" placeholder="e.g., https://yourwebsite.com"
+        class="text-[10px] sm:text-[10px] md:text-[14px]" label="Import from Website Link">
       </TextField>
       <UiButton type="submit" color="primary" :loading="isLoading" class="px-6 mb-1 button_shadow rounded-lg">
         Import

@@ -6,7 +6,8 @@ import { getAllPricing } from "~/server/utils/db/pricing"
 export default defineEventHandler(async (event) => {
   const organizationId = await isOrganizationAdminHandler(event) as string
 
-   const [orgSubscription, orgSubscriptionPlanUsages, pricingPlans] = await Promise.all([
+   const [adminDetails, orgSubscription, orgSubscriptionPlanUsages, pricingPlans] = await Promise.all([
+    getOrganizationById(organizationId),
     getSubscriptionByOrganizationId(organizationId),
     getOrgPlanUsageByOrgId(organizationId),
     getAllPricing()
@@ -16,7 +17,6 @@ export default defineEventHandler(async (event) => {
     const { serviceType, pricingPlanCode, subscriptionStatus, endDate } = subscription;
 
     const subscriptionPlanUsage = orgSubscriptionPlanUsages.find((usage) => usage.serviceType === serviceType);
-
 
     // Determine the correct pricing plan
     const maxPlan = pricingPlans.find((plan) => {
@@ -34,8 +34,8 @@ export default defineEventHandler(async (event) => {
 
     // Compute remaining trial days if in trial
     let remainingDaysForTrialEnd: number | undefined;
-    if (subscriptionPlanUsage?.originalSubscriptionStatus === "trial" && endDate) {
-      const trialEndDate = momentTz(subscription.endDate, "YYYY-MM-DD").startOf("day");
+    if (subscriptionPlanUsage?.originalSubscriptionStatus === "trial" || subscriptionPlanUsage?.pricingPlanCode === "chat_free" || subscriptionPlanUsage?.pricingPlanCode === "voice_free") {
+      const trialEndDate = subscription.endDate ? momentTz(subscription.endDate, "YYYY-MM-DD").startOf("day") : momentTz(adminDetails?.createdAt).add(14, "days").startOf("day")
       const currentDate = momentTz().startOf('day');
       const daysRemaining = trialEndDate.diff(currentDate, "days");
       remainingDaysForTrialEnd = daysRemaining
@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
       availableQuota,
       ...(remainingDaysForTrialEnd !== undefined && { remainingDaysForTrialEnd }) // Only include if trial is active
     };
-  });
+  }); 
 
   return updatedSubscriptions
 })

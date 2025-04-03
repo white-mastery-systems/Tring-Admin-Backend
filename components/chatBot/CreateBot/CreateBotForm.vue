@@ -440,7 +440,7 @@ onUnmounted(() => {
           </UiButton>
           <UiButton color="primary" type="button" v-if="step === 5" @click="submitForm"
             class="px-8 button_shadow rounded-lg" :loading="isLoading">
-            Create Bot
+            Skip and Create Bot
           </UiButton>
         </div>
       </form>

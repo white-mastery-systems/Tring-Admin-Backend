@@ -2,8 +2,8 @@
   <Page title="Integration" :disable-back-button="true" :disable-elevation="false">
     <template #actionButtons>
       <div class="flex gap-2">
-        <UiButton color="primary" class="text-[10.5px] sm:text-[10.5px] md:text-[14px] lg:text-[14px] xl:text-[14px]"
-          @click="() => {
+        <UiButton color="primary" :disabled="chatIntelligence"
+          class="text-[10.5px] sm:text-[10.5px] md:text-[14px] lg:text-[14px] xl:text-[14px]" @click="() => {
               if (route.query.q === 'number') {
                 numberModalState = true;
                 // numberModalState.id = null;
@@ -20,22 +20,22 @@
             ">
           Add
           {{
-            (() => {
-              if (route.query.q === "TTS") {
-                return "TTS Integration";
-              }
-              else if (route.query.q === "number") {
-                return "Cloud Telephony";
-              } else if (route.query.q === "crm") {
-                return "CRM";
-              } else if (route.query.q === "communication") {
-                return "Communication";
-              } else if (route.query.q === "ecommerce") {
-                return "E-Commerce";
-              } else {
-                return "CRM";
-              }
-            })()
+          (() => {
+          if (route.query.q === "TTS") {
+          return "TTS Integration";
+          }
+          else if (route.query.q === "number") {
+          return "Cloud Telephony";
+          } else if (route.query.q === "crm") {
+          return "CRM";
+          } else if (route.query.q === "communication") {
+          return "Communication";
+          } else if (route.query.q === "ecommerce") {
+          return "E-Commerce";
+          } else {
+          return "CRM";
+          }
+          })()
           }}
           Channel
         </UiButton>
@@ -64,26 +64,26 @@
       </UiTabsList>
       <UiTabsContent value="crm">
         <IntegrationTable :integrationModalState="integrationModalState"
-          :findTitleForIntegrationModal="findTitleForIntegrationModal()"
+          :findTitleForIntegrationModal="findTitleForIntegrationModal()" :chatIntelligence="chatIntelligence"
           @stateControl="integrationModalState = $event" />
         <!-- v-model:deleteIntegrationState="deleteIntegrationState" -->
       </UiTabsContent>
       <UiTabsContent value="communication">
-        <IntegrationTable :integrationModalState="integrationModalState"
+        <IntegrationTable :integrationModalState="integrationModalState" :chatIntelligence="chatIntelligence"
           :findTitleForIntegrationModal="findTitleForIntegrationModal()"
           @stateControl="integrationModalState = $event" />
       </UiTabsContent>
       <UiTabsContent value="ecommerce">
-        <IntegrationTable :integrationModalState="integrationModalState"
+        <IntegrationTable :integrationModalState="integrationModalState" :chatIntelligence="chatIntelligence"
           :findTitleForIntegrationModal="findTitleForIntegrationModal()"
           @stateControl="integrationModalState = $event" />
       </UiTabsContent>
       <UiTabsContent value="number">
-        <NumberIntegration :integrationModalState="numberModalState"
+        <NumberIntegration :integrationModalState="numberModalState" :chatIntelligence="chatIntelligence"
           :findTitleForIntegrationModal="findTitleForIntegrationModal()" @stateControl="numberModalState = $event" />
       </UiTabsContent>
       <UiTabsContent value="TTS">
-        <TTSIntegration :integrationModalState="ttsModalState"
+        <TTSIntegration :integrationModalState="ttsModalState" :chatIntelligence="chatIntelligence"
           :findTitleForIntegrationModal="findTitleForIntegrationModal()" @stateControl="ttsModalState = $event" />
       </UiTabsContent>
     </UiTabs>
@@ -167,25 +167,26 @@ const integrationModalState = ref(false)
 const channelModalState = ref({ open: false, id: null });
 const numberModalState: any = ref(false);
 const ttsModalState = ref(false);
+const planDetails = ref([])
 // const ttsModalState = reactive({ 
 //   open: true, 
 //   id: null 
 // });
 // const integrations = ref([]);
 
-let deleteIntegrationState = ref({
+const deleteIntegrationState = ref({
   open: false,
   id: null,
 });
-let deleteExoPhoneState = ref({
+const deleteExoPhoneState = ref({
   open: false,
   id: null,
 });
 // const integrationsData = ref()
 // const q=ref('')
-let page = ref("1");
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref("1");
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 const limit = ref("10");
 const apiPathControler: any = ref("crm")
 const filters = computed(() => ({
@@ -266,6 +267,16 @@ const columns = [
     },
   }),
 ];
+
+onMounted(async () => {
+  planDetails.value = await userPlan();
+})
+
+const chatIntelligence = computed(() => {
+  return planDetails.value.userPlanDetails.some((plan: any) => {
+    return plan.type === 'chat' && plan.planCode === 'chat_intelligence'
+  });
+});
 
 const navigateToTab = async (tab: any) => {
   page.value = "1";

@@ -1,7 +1,8 @@
 <template>
   <DialogWrapperVersionVoice v-model="VoiceBotSuccessfulMessageModalState"
     :title="(store.createBotVoiceSuccessfulState.handleContent) ? 'Preview Your Voice Bot' : 'Your Voicebot has Been Created Successfully'"
-    description="Enter your phone number to preview your voice bot. Once submitted, you'll receive a call to experience your bot in action." class="p-5 w-full">
+    description="Enter your phone number to preview your voice bot. Once submitted, you'll receive a call to experience your bot in action."
+    class="p-5 w-full">
     <div class="space-y-4 bg-white rounded-lg shadow-md">
       <!-- Phone number input section -->
       <div class="px-0 smpx-0 md:px-6 space-y-3">
@@ -15,8 +16,7 @@
           <div class="flex gap-3 grid grid-cols-1 sm:grid-cols-1  md:grid-cols-2"
             :class="(errors) ? 'items-start' : 'items-center'">
             <TextField name="name" type="text" label="" placeholder="Enter name" />
-            <div class="flex gap-2 w-full"
-              :class="(errors) ? 'items-start' : 'items-center'">
+            <div class="flex gap-2 w-full" :class="(errors) ? 'items-start' : 'items-center'">
               <CountryCodeField class="w-[150px]" :class="(errors) ? 'mt-2' : 'mt-1'" name="countryCode"
                 helperText="Enter your country code" :fieldHeader="true" />
               <TextField :disableCharacters="true" name="phone" helperText="" placeholder="Enter number" />
@@ -25,7 +25,7 @@
           <!-- Call bot button -->
           <UiButton color="primary" type="submit" variant="default"
             class="sm:w-auto flex items-center justify-center gap-2 py-3 px-6 font-regular">
-            <PhoneCall class="w-4 h-4" /> Call Bot
+            <PhoneCall class="w-4 h-4" /> Initiate Bot
           </UiButton>
         </form>
       </div>

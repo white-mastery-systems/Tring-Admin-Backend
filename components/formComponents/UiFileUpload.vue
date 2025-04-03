@@ -13,15 +13,16 @@
             <img :class="class" src="assets/icons/image_preview.svg" alt="" class="w-10 h-8" />
             <span class="text-[#71717A] text-xs">Preview</span>
           </div>
-          <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept"
-            id="imageView1" />
+          <!-- <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept"
+            id="imageView1" /> -->
         </label>
       </div>
 
       <!-- Upload area - flexible width -->
       <div class="flex-1">
         <label
-          class="flex h-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-contain bg-center bg-no-repeat text-center dark:border-gray-600 dark:hover:border-gray-500 w-full">
+          class="flex h-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-contain bg-center bg-no-repeat text-center dark:border-gray-600 dark:hover:border-gray-500 w-full"
+          :class="{ 'opacity-50 cursor-not-allowed': disabled }">
           <span
             class="whitespace-nowrap flex flex-col items-center text-[8px] sm:text-[8px] md:text-[14px] italic text-[#000000]">
             {{ props.label || "Upload File" }}
@@ -29,7 +30,8 @@
               {{ props.helperText }}
             </span>
           </span>
-          <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept" />
+          <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept"
+            :disabled="disabled" />
         </label>
         <span class="text-[14px] font-medium text-red-500" v-if="errorMessage">
           {{ errorMessage }}
@@ -96,6 +98,7 @@ const props = withDefaults(
     helperText?: string;
     placeholder?: string;
     required?: boolean;
+    disabled: boolean;
     class?: string;
     validation?: boolean;
     accept?: string;
