@@ -123,7 +123,13 @@ const activeItems = computed(() => {
   return activeMap;
 });
 
-const handleNavigation = async () => {
+const handleNavigation = async (sliderHandling:any) => {
+  if (sliderHandling === 'children') {
+    if (!slideBarStore.siderBarslider) {
+      toggleSidebar()
+      slideBarStore.siderBarslider = true
+    }
+  }
   try {
     await getSession()
 
@@ -142,7 +148,7 @@ const handleNavigation = async () => {
 
 const mobileSidebarControl = async (value: any) => {
   try {
-    await handleNavigation()
+    await handleNavigation('parent')
 
     if (isMobile.value) {
       toggleSidebar()
@@ -162,7 +168,7 @@ const mobileSidebarControl = async (value: any) => {
             <SidebarMenuButton :tooltip="item.name" :class="[activeItems[item.name] ? 'bg-[#FFF8EB] text-[#3D3D3D]' : '']">
               <template v-if="item.children.length">
                 <NuxtLink :to="item.path + item.children[0].path" class="flex items-center gap-2"
-                  :class="(!slideBarStore.siderBarslider) ? '' : 'w-full'" @click="handleNavigation">
+                  :class="(!slideBarStore.siderBarslider) ? '' : 'w-full'" @click="handleNavigation('children')">
                   <component :is="item.icon" :stroke-width="1.5" :size="18"></component>
                   <span v-if="(isMobile) ? isMobile : (slideBarStore.siderBarslider)">{{ item.name }}</span>
                 </NuxtLink>
