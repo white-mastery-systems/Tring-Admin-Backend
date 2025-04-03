@@ -39,11 +39,6 @@ useHead({
 <script setup lang="ts">
   const config = useRuntimeConfig();
 
-  const organizationDetails = await $fetch("/api/org", {
-    method: "GET",
-  });
-  const organizationId = organizationDetails?.orgDetails?.id;
-
   useHead({
     link: [
       { rel: "icon", type: "image/x-icon", href: "/favicon.png" },
@@ -62,14 +57,6 @@ useHead({
       {
         src: "https://checkout.razorpay.com/v1/checkout.js",
         async: true,
-      },
-      {
-        src: `${config.public.chatBotBaseUrl}/widget.js`,
-        type: "text/javascript",
-        defer: true,
-        "data-orgname": "WMS",
-        "data-chatbotid": `${config.public.supportBotId}`,
-        "data-orgid": `${organizationId}`,
       },
     ],
   });
