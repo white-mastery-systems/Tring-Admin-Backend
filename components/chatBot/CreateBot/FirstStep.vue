@@ -125,8 +125,7 @@ const changeKnowledge = () => {
           <div class="flex flex-wrap justify-center gap-3 w-[50%] sm:w-[50%] md:w-[40%]">
             <UiButton type="button" variant="outline" v-for="(btn, index) in buttons" :key="index"
               class="border-[#DCDCDC] text-[10px] sm:text-[10px] md:text-[14px] text-[#000000] hover:text-[#ffffff] hover:bg-[#FFBC42] hover:border-[#FFBC42] font-regular w-full md:flex-1 new_bot_button_shadow"
-              @click="selectType(btn.label)" :loading="props.loading && (btn.label === 'Text')"
-              :disabled="props.loading && (btn.label === 'Text')">
+              @click="selectType(btn.label)">
               <component :is="btn.icon" class="mr-2 w-3 h-3 sm:w-3 sm:h-3 md:w-5 md:h-5" />
               {{ btn.label }}
             </UiButton>
@@ -188,7 +187,7 @@ const changeKnowledge = () => {
           <div class="text-left flex flex-col gap-2">
             <span class="text-[14px] font-medium">Tell us about your company</span>
             <!-- <SelectField name="type" label="Industry" v-model="type" placeholder="Select Industry" :options="intentTypes.map((industry) => ({ label: industry.label, value: industry.value }))" required /> -->
-            <TextDocumentUpload ref="uploadDocumentRef" :refresh="props.refresh"
+            <TextDocumentUpload ref="uploadDocumentRef" :refresh="props.refresh" :loading="props.loading"
               :contentSuggestions="props.suggestionsContent" />
           </div>
         </div>

@@ -159,7 +159,7 @@ const changeKnowledge = () => {
             </UiButton>
             <UiButton type="button" variant="outline"
               class="border-[#DCDCDC] text-[10px] sm:text-[10px] md:text-[14px] text-[#000000] hover:text-[#ffffff] hover:bg-[#FFBC42] hover:border-[#FFBC42] font-regular w-full md:flex-1 new_bot_button_shadow"
-              @click="selectType('Text')" :loading="props.loading && 'Text'" :disabled="props.loading && 'Text'">
+              @click="selectType('Text')">
               <component :is="buttons[1].icon" class="mr-2 w-3 h-3 sm:w-3 sm:h-3 md:w-5 md:h-5" />
               {{ buttons[1].label }}
             </UiButton>
@@ -215,7 +215,7 @@ const changeKnowledge = () => {
               based on your
               requirements)
             </span>
-            <CreateVoiceBotText ref="uploadDocumentRef" :refresh="props.refresh"
+            <CreateVoiceBotText ref="uploadDocumentRef" :loading="props.loading" :refresh=" props.refresh"
               :contentSuggestions="props.suggestionsContent" class="flex-grow" />
           </div>
         </div>
