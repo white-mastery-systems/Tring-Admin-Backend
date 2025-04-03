@@ -83,7 +83,7 @@ import { MessageSquare, Phone } from 'lucide-vue-next';
 
 definePageMeta({
   layout: "billing-account",
-  // middleware: "guest-only",
+  middleware: "guest-only",
 });
 
 const selectedBot = ref(''); // Default selection
