@@ -23,5 +23,13 @@ export default defineEventHandler(async (event) => {
     role: "admin",
   });
 
-  return { status: true, data: user };
+  const session = await lucia.createSession(user.id, {});
+  appendHeader(
+    event,
+    "Set-Cookie",
+    lucia.createSessionCookie(session.id).serialize(),
+  );
+  setResponseStatus(event, 201);
+  
+  return { status: true, data: user,  token: lucia.createSessionCookie(session.id).serialize() };
 });
