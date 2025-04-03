@@ -6,6 +6,15 @@ export const createOrgZohoSubscription = async (subscriptionData: any) => {
   return (await db.insert(adminSubscriptionSchema).values(subscriptionData).returning())[0]
 }
 
+export const getOrgSubscriptionId = async (organizationId: string) => {
+  return await db.query.adminSubscriptionSchema.findFirst({
+    where: and(
+      eq(adminSubscriptionSchema.organizationId, organizationId),
+      isNotNull(adminSubscriptionSchema.subscriptionId)
+    )
+  })
+}
+
 export const getOrgZohoSubscription = async (organizationId: string, serviceType: string) => {
   return await db.query.adminSubscriptionSchema.findFirst({
     where: and(

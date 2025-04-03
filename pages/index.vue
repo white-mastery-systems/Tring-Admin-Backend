@@ -266,25 +266,25 @@
 
   const config = useRuntimeConfig();
 
-  const organizationDetails = await $fetch("/api/org", {
-    method: "GET",
-  });
-  const organizationId = organizationDetails?.orgDetails?.id;
+  // const organizationDetails = await $fetch("/api/org", {
+  //   method: "GET",
+  // });
+  // const organizationId = organizationDetails?.orgDetails?.id;
 
-  useHead({
-    title: "Dashboard",
-    script: [
-      {
-        id: "chat-widget-script",
-        src: `${config.public.chatBotBaseUrl}/widget.js`,
-        type: "text/javascript",
-        defer: true,
-        "data-orgname": "WMS",
-        "data-chatbotid": `${config.public.supportBotId}`,
-        "data-orgid": `${organizationId}`,
-      },
-    ],
-  });
+  // useHead({
+  //   title: "Dashboard",
+  //   script: [
+  //     {
+  //       id: "chat-widget-script",
+  //       src: `${config.public.chatBotBaseUrl}/widget.js`,
+  //       type: "text/javascript",
+  //       defer: true,
+  //       "data-orgname": "WMS",
+  //       "data-chatbotid": `${config.public.supportBotId}`,
+  //       "data-orgid": `${organizationId}`,
+  //     },
+  //   ],
+  // });
   ChartJS.register(
     Title,
     Tooltip,

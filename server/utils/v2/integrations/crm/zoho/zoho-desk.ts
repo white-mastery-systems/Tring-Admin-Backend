@@ -28,20 +28,13 @@ export const getZohoDeskApiKey = async ({ botId, type } : { botId: string, type:
 
 export const createTicketInZohoDesk: any = async ({ integrationData, body } : { integrationData: any, body: any }) => {
   try {
-    let firstName = body?.firstName;
-    let lastName = "";
-    if (body?.firstName?.includes(" ")) {
-      firstName = body?.firstName.split(" ")[0];
-      lastName = body?.firstName.split(" ")[1];
-    }
     const payload = {
         subject: body?.subject,
         departmentId: body?.departmentId,
         phone: body?.phone,
         email: body?.email,
         contact: {
-          firstName: firstName,
-          lastName: lastName
+          lastName: body?.firstName
         },
         description: body?.description,
         priority: body?.priority,
@@ -49,7 +42,7 @@ export const createTicketInZohoDesk: any = async ({ integrationData, body } : { 
         classification: body?.classification,
         status: "open"
       }
-   
+
     const response = await $fetch(`https://desk.zoho.in/api/v1/tickets`, {
       method: "POST",
       headers: {
