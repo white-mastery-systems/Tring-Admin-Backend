@@ -6,12 +6,12 @@ import momentTz from "moment-timezone"
 const findUTCDate = (orgZohoSubscription: any, orgDetail: any) => {
   let startDate: Date
   let endDate: Date
-  if(orgZohoSubscription.pricingPlanCode === "chat_free" || orgZohoSubscription.pricingPlanCode === "voice_free") {
+  if(!orgZohoSubscription?.startDate && (orgZohoSubscription.pricingPlanCode === "chat_free" || orgZohoSubscription.pricingPlanCode === "voice_free")) {
     startDate = orgDetail?.createdAt
     endDate = momentTz().utc().toDate()
   } else {
     startDate = orgZohoSubscription?.startDate
-    endDate = orgZohoSubscription.endDate
+    endDate = orgZohoSubscription.endDate || momentTz(orgZohoSubscription?.startDate).add(1, 'month').utc().toDate()
   }
   return {
     startDate,
@@ -198,6 +198,6 @@ const constructPlanUsageResponse = ({ usedQuota, maxQuota, planCode, walletBalan
     available_sessions: availableSessions,
     expiry_date: orgZohoSubscription?.subscriptionStatus !== "cancelled" && orgZohoSubscription?.endDate ? orgZohoSubscription?.endDate : undefined,
     whatsapp_sessions: whatsappSession ?? undefined,
-    subscription_status: planCode === "chat_free" || planCode  === "voice-free" ? "trial" : orgZohoSubscription?.subscriptionStatus
+    subscription_status: planCode === "chat_free" || planCode  === "voice_free" ? "trial" : orgZohoSubscription?.subscriptionStatus
   };
 }
