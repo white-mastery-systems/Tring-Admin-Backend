@@ -178,8 +178,8 @@ export const useNavigationAndAccordion = () => {
     { label: "Billing & Usages", path: { path: "/billing", query: { type: "chat" } }, icon: ReceiptIcon },
     { label: "Plan", path: { path: "/billing/view-all", query: { type: "chat" } }, icon: CreditCardIcon },
     { label: "User Management", path: { path: "/user-management" }, icon: SettingsIcon },
-    { label: "Wallet", path: { path: "/billing/view-wallet", query: { type: "chat" } }, icon: WalletIcon },
   ]);
+  // { label: "Wallet", path: { path: "/billing/view-wallet", query: { type: "chat" } }, icon: WalletIcon },
 
 
   return {

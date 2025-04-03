@@ -3,9 +3,9 @@
     <!-- <div class="text-[18px] font-bold mb-3 mt-1">Basic Configurations</div> -->
     <form @submit.prevent="handleUpdateBotConfig" class="space-y-5">
       <div class="flex gap-4">
-        <TextField name="NAME" label="Bot Name" placeholder="Eg. Noah,Bob,Chris,Ted" required>
+        <TextField name="NAME" label="Bot Name" placeholder="Eg. Noah,Bob,Chris,Ted">
         </TextField>
-        <TextField name="COMPANY" label="Company Name" placeholder="Eg. Google, Amazon" required>
+        <TextField name="COMPANY" label="Company Name" placeholder="Eg. Google, Amazon">
         </TextField>
       </div>
       <div class="flex gap-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
@@ -19,11 +19,11 @@
               value: role.value
             })) : []),
             { label: 'Custom', value: 'custom' }
-          ]" required />
+          ]" />
 
           <!-- helperText="enter role of your bot" -->
           <TextField v-if="values.ROLE === 'custom'" class="focus:outline-none focus:ring-0 focus:border-transparent"
-            name="otherRole" required>
+            name="otherRole">
           </TextField>
         </div>
         <div class="w-full">
@@ -34,13 +34,13 @@
               value: goal.value
             })) : []),
             { label: 'Custom', value: 'custom' }
-          ]" required />
+          ]" />
 
           <!-- helperText="enter goal of your bot" -->
-          <TextField v-if="values.GOAL === 'custom'" name="otherGoal" required>
+          <TextField v-if="values.GOAL === 'custom'" name="otherGoal">
           </TextField>
         </div>
-        <SelectField name="LANGUAGE" :options="chatBotList" label="Language" placeholder="Language" required>
+        <SelectField name="LANGUAGE" :options="chatBotList" label="Language" placeholder="Language">
         </SelectField>
       </div>
       <!-- helperText="Enter a error mesage that will be shown a error when bot failed" -->

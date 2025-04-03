@@ -12,14 +12,15 @@
     <!-- {{props.botDetails}} -->
     <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
       <div class="flex items-center grid grid-cols-2 gap-3 text-left">
-        <span class="font-medium text-left text-[14px] sm:text-[14px] md:text-[18px]">Select your Call Type</span>
+        <span class="font-medium text-left text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px]">Select your Call
+          Type</span>
         <SelectField name="boundDirection" :options="boundList" :disabled="true" placeholder="Select a direction" />
       </div>
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] my-3 h-[0.5px]" />
       <div class="flex flex-col w-full h-full overflow-x-auto">
         <UiCard class="border-0 ma-0 shadow-none">
           <UiCardContent class="grid p-0 gap-2 mb-4 space-y-3">
-            <span class="font-medium text-left text-[14px] sm:text-[14px] md:text-[18px]">
+            <span class="font-medium text-left text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px]">
               Industries
             </span>
             <RadioGroup v-model="values.type" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden"
@@ -34,12 +35,14 @@
                   :class="[(values.type === intent.value) ? 'border-2 border-[#09090b]' : 'border-transparent']">
                   <component :is="intent.icon" class="w-[50px] h-[50px]" :stroke-width="0.75" />
                 </Label>
-                <div class="text-[12px] font-medium mt-2 text-center">{{ intent.label }}</div>
+                <div class="text-[10px] sm:text-[10px] md:text-[12px] lg:text-[12px] font-medium mt-2 text-center">{{
+                  intent.label }}
+                </div>
               </div>
             </RadioGroup>
             <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-2 h-[0.5px]" />
             <!-- Role -->
-            <span class="font-medium text-left text-[14px] sm:text-[14px] md:text-[18px]">
+            <span class="font-medium text-left text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px]">
               Bot Role
             </span>
             <UiRadioGroup v-model="values.role" name="role" :options="intentOptions?.roles" :isVertical="true"
@@ -57,9 +60,11 @@
                       class="absolute inset-0 m-auto h-3 w-3 rounded-full bg-black"></div>
                   </div>
                   <div class="flex flex-col gap-1">
-                    <Label :for="option.value" class="font-medium text-[12px] sm:text-[12px] md:text-[14px]">{{
+                    <Label :for="option.value"
+                      class="font-medium text-[10px] sm:text-[10px] md:text-[12px] lg:text-[14px]">{{
                       option.name }}</Label>
-                    <span class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[12px]">{{ option.description
+                    <span class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[12px] lg:text-[12px]">{{
+                      option.description
                       }}</span>
                   </div>
                 </div>
@@ -76,8 +81,10 @@
                     </div>
                   </div>
                   <div class="flex flex-col gap-1">
-                    <Label for="custom" class="font-medium text-[12px] sm:text-[12px] md:text-[14px]">Custom</Label>
-                    <span class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[12px]">"e.g., 'Rental Management
+                    <Label for="custom"
+                      class="font-medium text-[10px] sm:text-[10px] md:text-[12px] lg:text-[14px]">Custom</Label>
+                    <span class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[12px] lg:text-[12px]">"e.g., 'Rental
+                      Management
                       Assistant
                       – Help users find and manage rental properties easily.'"</span>
                   </div>
@@ -89,7 +96,7 @@
             <div class="flex items-center gap-5 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 w-full"
               v-if="values.role === 'custom'">
               <!-- <div class="py-0 sm:py-0 md:py-6 px-0 min-h-[100px]"> -->
-              <!-- <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-1 text-[#000000] font-medium">Tell us
+              <!-- <p class="text-left text-[12px] sm:text-[12px] md:text-[16px] py-1 text-[#000000] font-medium">Tell us
                   your Chatbot’s Role in the Company</p> -->
               <!-- <TextField :isTextarea="true">
 
@@ -109,7 +116,7 @@
                   your Chatbot’s Role in the Company" placeholder="e.g., 'Sales Assistant" required>
               </TextField> -->
               <!-- </div> -->
-              <!-- <UiTextarea name="otherRole" class="h-[95px] text-[12px] sm:text-[12px] md:text-[14px]"
+              <!-- <UiTextarea name="otherRole" class="h-[95px] text-[12px] sm:text-[12px] md:text-[16px]"
                   :resizable="false" placeholder="e.g., 'Sales Assistant" label="Tell us about your company">
                 </UiTextarea> -->
               <!-- </div> -->
@@ -120,7 +127,7 @@
             </div>
             <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-2 h-[0.5px]" />
             <!-- Goal -->
-            <span class="font-medium text-left text-[14px] sm:text-[14px] md:text-[18px]">
+            <span class="font-medium text-left text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px]">
               Bot Goal
             </span>
             <!-- :class="props.disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''" -->
@@ -139,9 +146,11 @@
                       class="absolute inset-0 m-auto h-3 w-3 rounded-full bg-black"></div>
                   </div>
                   <div class="flex flex-col gap-1">
-                    <Label :for="option.value" class="font-medium text-[12px] sm:text-[12px] md:text-[14px]">{{
+                    <Label :for="option.value"
+                      class="font-medium text-[10px] sm:text-[10px] md:text-[12px] lg:text-[14px]">{{
                       option.name }}</Label>
-                    <span class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[12px]">{{ option.description
+                    <span class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[12px] lg:text-[12px]">{{
+                      option.description
                       }}</span>
                   </div>
                 </div>
@@ -158,8 +167,10 @@
                     </div>
                   </div>
                   <div class="flex flex-col gap-1">
-                    <Label for="custom" class="font-medium text-[12px] sm:text-[12px] md:text-[14px]">Custom</Label>
-                    <span class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[12px]">"e.g., 'Rental Management
+                    <Label for="custom"
+                      class="font-medium text-[10px] sm:text-[10px] md:text-[12px] lg:text-[14px]">Custom</Label>
+                    <span class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[12px] lg:text-[12px]">"e.g., 'Rental
+                      Management
                       Assistant
                       – Help users find and manage rental properties easily.'"</span>
                   </div>
@@ -175,9 +186,9 @@
               class="border px-4 py-2 w-full rounded-lg text-[14px] sm:text-[14px] md:text-[16px] h-20" />
         </div> -->
               <!-- <div>
-                <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-1 text-[#000000]">Tell us your
+                <p class="text-left text-[12px] sm:text-[12px] md:text-[16px] py-1 text-[#000000]">Tell us your
                   Chatbot’s Goal in the Company</p>
-                <UiTextarea name="otherGoal" class="h-[95px] text-[12px] sm:text-[12px] md:text-[14px]"
+                <UiTextarea name="otherGoal" class="h-[95px] text-[12px] sm:text-[12px] md:text-[16px]"
                   :resizable="false"
                   placeholder="e.g., 'Rental Management Assistant – Help users find and manage rental properties easily.'"
                   label="Tell us about your company">

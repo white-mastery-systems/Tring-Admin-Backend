@@ -11,11 +11,12 @@
   ]" :disableSelector="true" :disable-back-button="false" -->
   <div>
     <!-- <template #actionButtons> -->
-      <div class="mb-4 flex items-center justify-between">
-        <div class="text-[18px] font-bold"> Intent Management </div>
-        <UiButton color="primary" @click="addNewIntents">Add Intents
-        </UiButton>
-      </div>
+    <div class="mb-4 flex items-center justify-between">
+      <div class="text-[14px] sm:text-[14px] md:text-[16px] lg:text-[18px] font-bold"> Intent Management </div>
+      <UiButton class="text-[12px] sm:text-[12px] md:text-[14px]" color="primary" @click="addNewIntents">
+        Add Intents
+      </UiButton>
+    </div>
     <!-- </template> -->
     <CreateEditIntentModal v-model="intentDialogState" @success="intentRefresh()" />
 

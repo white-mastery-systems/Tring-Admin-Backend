@@ -7,12 +7,7 @@
       class="grid h-[80vh] place-items-center text-[#424BD1] w-full absolute top-0 left-0 right-0 z-50">
       <Icon name="svg-spinners:90-ring-with-bg" class="h-10 w-10" />
     </div>
-    <div :class="[
-      'grid gap-6 w-full',
-      route.query.type === 'voice'
-        ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-        : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
-    ]">
+    <div class="grid gap-6 w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       <!-- Card for each billing plan -->
       <div v-for="(list, index) in billingVariationDetails" :key="index" :class="[
         'relative flex flex-col rounded-xl shadow-md border-2 p-6 transition-all',

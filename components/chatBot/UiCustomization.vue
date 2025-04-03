@@ -29,7 +29,7 @@
                   @click="openPrimaryColorPicker">
                   <div class="flex items-center w-full justify-between">
                     <div>
-                      <label class="text-[16px] font-medium"> Primary Color</label>
+                      <label class="text-sm sm:text-sm md:text-[14px] font-medium"> Primary Color</label>
                       <div class="text-[#71717A] text-[12px]">Colors for widget & chat button</div>
                     </div>
                     <!-- <div class="h-9 w-9 overflow-hidden rounded-full">
@@ -55,7 +55,7 @@
                   @click="openSecondaryColorPicker">
                   <div class="flex items-center w-full justify-between">
                     <div>
-                      <label class="text-[16px] font-medium">Secondary Color</label>
+                      <label class="text-sm sm:text-sm md:text-[14px] font-medium">Secondary Color</label>
                       <div class="text-[#71717A] text-[12px]">Colors for messages</div>
                     </div>
                     <!-- <div class="h-9 w-9 overflow-hidden rounded-full">
@@ -102,7 +102,7 @@
                 <UiLabel class="text-[14px] font-medium">
                   Generate Leads</UiLabel>
                 <UiFormMessage />
-                <span class="text-[7px] sm:text-[7px] md:text-xs lg:text-xs xl:text-xs text-gray-500">Show lead
+                <span class="text-xs text-gray-500">Show lead
                   generation form</span>
               </div>
               <UiFormControl>
@@ -118,7 +118,7 @@
                 <UiLabel class="text-[14px] font-medium">Open By
                   Default</UiLabel>
                 <UiFormControl>
-                  <span class="text-[7px] sm:text-[7px] md:text-xs lg:text-xs xl:text-xs text-gray-500">Open chat
+                  <span class="text-xs text-gray-500">Open chat
                     window
                     by default</span>
                 </UiFormControl>
@@ -138,7 +138,7 @@
                 <UiLabel class="text-[14px] font-medium">Open
                   Chat Ribbon</UiLabel>
                 <UiFormMessage />
-                <span class="text-[7px] sm:text-[7px] md:text-xs lg:text-xs xl:text-xs text-gray-500">Open chat ribbon
+                <span class="text-xs text-gray-500">Open chat ribbon
                   by default</span>
               </div>
               <UiFormControl>
@@ -155,7 +155,7 @@
                 <UiLabel class="text-[14px] font-medium">Online
                   Status</UiLabel>
                 <UiFormControl>
-                  <span class="text-[7px] sm:text-[7px] md:text-xs lg:text-xs xl:text-xs text-gray-500">Live tag
+                  <span class="text-xs text-gray-500">Live tag
                     status
                     of
                     chat window</span>
@@ -172,7 +172,7 @@
               <div class="flex flex-col gap-2 w-full">
                 <UiLabel class="text-[14px] font-medium"> Widget Sound </UiLabel>
                 <UiFormControl>
-                  <span class="text-[7px] sm:text-[7px] md:text-xs lg:text-xs xl:text-xs text-gray-500">Do you want
+                  <span class="text-xs text-gray-500">Do you want
                     enable sounds for chat widget</span>
                 </UiFormControl>
                 <UiFormMessage />

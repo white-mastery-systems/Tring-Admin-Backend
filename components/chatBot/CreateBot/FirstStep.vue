@@ -122,7 +122,7 @@ const changeKnowledge = () => {
             </div>
           </div>
           <!-- {{props.loading}} || wasdsa -->
-          <div class="flex flex-wrap justify-center gap-3 w-[50%] sm:w-[50%] md:w-[40%]">
+          <div class="flex flex-wrap justify-center gap-3 w-[50%] sm:w-[50%] md:w-[60%] lg:md:w-[40%]">
             <UiButton type="button" variant="outline" v-for="(btn, index) in buttons" :key="index"
               class="border-[#DCDCDC] text-[10px] sm:text-[10px] md:text-[14px] text-[#000000] hover:text-[#ffffff] hover:bg-[#FFBC42] hover:border-[#FFBC42] font-regular w-full md:flex-1 new_bot_button_shadow"
               @click="selectType(btn.label)">

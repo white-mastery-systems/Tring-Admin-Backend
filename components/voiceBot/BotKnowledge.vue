@@ -10,10 +10,12 @@
             <UiTabs default-value="inbound" class="w-full">
               <UiTabsList
                 class="grid w-full sm:w-full md:w-[30%] grid-cols-2 bg-[#FFF8EB] text-[#3D3D3D] border border-[#FFBC42] rounded-[10px]">
-                <UiTabsTrigger value="inbound" class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white">
+                <UiTabsTrigger value="inbound"
+                  class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white text-[10px] sm:text-[10px] md:text-[14px]">
                   Inbound
                 </UiTabsTrigger>
-                <UiTabsTrigger value="outbound" class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white">
+                <UiTabsTrigger value="outbound"
+                  class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white text-[10px] sm:text-[10px] md:text-[10px] md:text-[14px]">
                   Outbound
                 </UiTabsTrigger>
               </UiTabsList>
@@ -22,15 +24,18 @@
                   class="flex items-start grid grid-cols-2 gap-6 w-full">
                   <!-- Dynamic sections based on inboundPrompt structure -->
                   <div v-for="(value, key) in inboundPrompt" :key="key" class="space-y-0">
-                    <h2 class="text-[14px] sm:text-[14px] md:text-[18px] text-[#000000] font-bold capitalize my-2">{{ formatSectionTitle(key) }}</h2>
+                    <h2 class="text-xs sm:text-xs md:text-sm lg:text-lg text-[#000000] font-bold capitalize my-2">
+                      {{
+                      formatSectionTitle(key) }}</h2>
                     <div class="gap-4">
                       <textarea v-model="inboundPrompt[key]"
-                        class="w-full min-h-32 resize-y outline-none border rounded border-[#CBD5E1] p-2 text-[12px] sm:text-[12px] md:text-[14px]"
+                        class="w-full min-h-32 resize-y outline-none border rounded border-[#CBD5E1] p-2 text-[12px] sm:text-[12px] md:text-[12px] lg:text-sm"
                         :placeholder="`Enter content here...`"></textarea>
                     </div>
                   </div>
                 </div>
-                <div v-else class="flex justify-center items-center min-h-32 border rounded-md p-6 bg-gray-50">
+                <div v-else
+                  class="flex justify-center items-center min-h-32 border rounded-md p-6 bg-gray-50 text-[12px] sm:text-[12px] md:text-[12px] lg:text-sm">
                   <p class="text-gray-500">No inbound prompt data available</p>
                 </div>
               </UiTabsContent>
@@ -39,17 +44,19 @@
                 <div v-if="Object.keys(outboundPrompt).length > 0"
                   class="flex items-start grid grid-cols-2 gap-6 w-full">
                   <div v-for="(value, key) in outboundPrompt" :key="key" class="space-y-0">
-                    <h2 class="text-lg font-bold capitalize">{{ formatSectionTitle(key) }}</h2>
+                    <h2 class="text-xs sm:text-xs md:text-sm lg:text-lg font-bold capitalize">{{
+                      formatSectionTitle(key) }}</h2>
                     <div class="gap-4">
                       <textarea v-model="outboundPrompt[key]"
-                        class="w-full min-h-32 resize-y outline-none border rounded p-2"
+                        class="w-full min-h-32 resize-y outline-none border rounded p-2 text-xs sm:text-xs md:text-xs lg:text-sm"
                         :placeholder="`Enter content here...`"></textarea>
                       <!-- <textarea class="w-full min-h-32 resize-y outline-none border rounded p-2"
                         :placeholder="`Enter additional content here...`"></textarea> -->
                     </div>
                   </div>
                 </div>
-                <div v-else class="flex justify-center items-center min-h-32 border rounded-md p-6 bg-gray-50">
+                <div v-else
+                  class="flex justify-center items-center min-h-32 border rounded-md p-6 bg-gray-50 text-xs sm:text-xs md:text-xs lg:text-sm">
                   <p class="text-gray-500">No outbound prompt data available</p>
                 </div>
               </UiTabsContent>

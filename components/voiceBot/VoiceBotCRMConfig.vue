@@ -1,8 +1,8 @@
 <template>
   <div class="pb-7">
     <div class="my-5 flex items-center justify-between">
-      <div class="text-[18px] font-bold"> CRM Integrations </div>
-      <UiButton color="primary" @click="
+      <div class="text-xs sm:text-xs md:text-sm lg:text-lg font-bold"> CRM Integrations </div>
+      <UiButton color="primary" class="text-xs sm:text-xs md:text-xs lg:text-sm" @click="
         () => {
           crmConfigModalState.open = true;
           crmConfigModalState.id = null;

@@ -1,7 +1,7 @@
 <template>
   <div class="pb-7">
     <div class="my-5 flex items-center justify-between">
-      <div class="text-[18px] font-bold">Add Tools</div>
+      <div class="text-xs sm:text-xs md:text-sm md:text-lg font-bold">Add Tools</div>
       <!-- <UiButton @click="
         () => {
           // Add action if needed
@@ -14,11 +14,11 @@
     <form @submit.prevent="dynamicToolsForm" class="space-y-6">
       <!-- Default Tools Section -->
       <div class="mb-6">
-        <div class="flex flex-wrap gap-4">
+        <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
           <UiFormField v-slot="{ value, handleChange }" name="currentDate">
-            <UiFormItem class="w-[49%]">
+            <UiFormItem>
               <div class="flex justify-between">
-                <UiLabel class="text-[14px] font-medium">Current Date</UiLabel>
+                <UiLabel class="text-xs sm:text-xs md:text-xs lg:text-sm font-medium">Current Date</UiLabel>
                 <UiFormControl>
                   <UiSwitch id="currentDate" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
@@ -30,9 +30,9 @@
           </UiFormField>
 
           <UiFormField v-slot="{ value, handleChange }" name="concludeCall">
-            <UiFormItem class="w-[49%]">
+            <UiFormItem>
               <div class="flex justify-between">
-                <UiLabel class="text-[14px] font-medium">Conclude Call</UiLabel>
+                <UiLabel class="text-xs sm:text-xs md:text-xs lg:text-sm font-medium">Conclude Call</UiLabel>
                 <UiFormControl>
                   <UiSwitch id="concludeCall" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
@@ -44,9 +44,9 @@
           </UiFormField>
 
           <UiFormField v-slot="{ value, handleChange }" name="forwardCall">
-            <UiFormItem class="w-[49%]">
+            <UiFormItem>
               <div class="flex justify-between">
-                <UiLabel class="text-[14px] font-medium">Forward Call</UiLabel>
+                <UiLabel class="text-xs sm:text-xs md:text-xs lg:text-sm font-medium">Forward Call</UiLabel>
                 <UiFormControl>
                   <UiSwitch id="forwardCall" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
@@ -58,9 +58,9 @@
           </UiFormField>
 
           <UiFormField v-slot="{ value, handleChange }" name="genderIdentification">
-            <UiFormItem class="w-[49%]">
+            <UiFormItem>
               <div class="flex justify-between">
-                <UiLabel class="text-[14px] font-medium"> Gender Identification </UiLabel>
+                <UiLabel class="text-xs sm:text-xs md:text-xs lg:text-sm font-medium"> Gender Identification </UiLabel>
                 <UiFormControl>
                   <UiSwitch id="genderIdentification" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
@@ -79,25 +79,25 @@
             <div v-if="values.clientFormControl">
               <fieldset v-for="(tool, toolIdx) in fields" :key="tool.key">
                 <div class="border p-4 mb-4 space-y-6">
-                  <h3 class="text-lg font-bold">Client Tool {{ toolIdx + 1 }}</h3>
+                  <h3 class="text-xs sm:text-xs md:text-sm lg:text-lg font-bold">Client Tool {{ toolIdx + 1 }}</h3>
                   <div class="flex gap-3">
                     <!-- Tool Name -->
                     <TextField :label="`Name`" :id="`tool_name_${toolIdx}`" :name="`clientTools[${toolIdx}].name`"
-                      placeholder="Enter tool name" required />
+                      placeholder="Enter tool name" />
                     <!-- Tool Endpoint -->
                     <TextField :label="`Endpoint`" :id="`tool_endpoint_${toolIdx}`"
-                      :name="`clientTools[${toolIdx}].endpoint`" placeholder="Enter tool endpoint" required />
+                      :name="`clientTools[${toolIdx}].endpoint`" placeholder="Enter tool endpoint" />
                   </div>
 
                   <!-- Tool Description -->
                   <TextField :label="`Description`" :id="`tool_description_${toolIdx}`"
                     :name="`clientTools[${toolIdx}].description`" :isTextarea="true"
-                    placeholder="Enter tool description" required />
+                    placeholder="Enter tool description" />
 
 
                   <UiFormField v-slot="{ handleChange, value }" :name="`clientTools[${toolIdx}].audio`">
                     <UiFormItem class="flex w-full flex-col items-start">
-                      <UiLabel class="pb-2 text-lg font-medium">Audio</UiLabel>
+                      <UiLabel class="pb-2 text-xs sm:text-xs md:text-sm lg:text-lg font-medium">Audio</UiLabel>
                       <div>
                         <imageField :isLoading="isLoading" :name="`clientTools[${toolIdx}].audio`" @change="($event) => {
                           uploadAudioFile($event, toolIdx);
@@ -116,7 +116,7 @@
                       <div class="flex gap-3">
                         <span>
                           {{
-                            `${concludeFile?.audio}.wav`
+                          `${concludeFile?.audio}.wav`
                           }}
                         </span>
                         <span>
@@ -142,21 +142,21 @@
                           <!-- Parameter Name -->
                           <TextField :label="`Parameter Name`" :id="`param_name_${toolIdx}_${paramIdx}`"
                             :name="`clientTools[${toolIdx}].parameters.properties[${paramIdx}].name`"
-                            placeholder="Enter parameter name" required />
+                            placeholder="Enter parameter name" />
 
                           <!-- Parameter Type -->
                           <SelectField :label="`Type`" :id="`param_type_${toolIdx}_${paramIdx}`"
                             :name="`clientTools[${toolIdx}].parameters.properties[${paramIdx}].type`"
-                            :options="parameterTypes" required />
+                            :options="parameterTypes" />
 
                           <!-- Parameter Description -->
                           <TextField :label="`Description`" :id="`param_desc_${toolIdx}_${paramIdx}`"
                             :name="`clientTools[${toolIdx}].parameters.properties[${paramIdx}].description`"
-                            :isTextarea="true" placeholder="Enter parameter description" required />
+                            :isTextarea="true" placeholder="Enter parameter description" />
                           <div class="flex items-center justify-around w-full">
                             <UiFormField v-slot="{ value, handleChange }"
                               :name="`clientTools[${toolIdx}].parameters.properties[${paramIdx}].required`">
-                              <UiFormItem class="w-[49%]">
+                              <UiFormItem>
                                 <div class="flex justify-between">
                                   <UiLabel class="text-[14px] font-medium">Required</UiLabel>
                                   <UiFormControl>
@@ -182,7 +182,7 @@
 
                     <!-- Add Parameter Button -->
                     <div class="flex items-center w-full justify-end gap-2">
-                      <UiButton v-if="values.clientFormControl" type="button" @click="() => {
+                      <UiButton color="primary" v-if="values.clientFormControl" type="button" @click="() => {
                         if (!values.propertieFormControl) {
                           setFieldValue('propertieFormControl', true)
                           // return
@@ -191,7 +191,7 @@
                       }">
                         Add Parameter
                       </UiButton>
-                      <UiButton type="button" @click="remove(toolIdx)">
+                      <UiButton color="primary" type="button" @click="remove(toolIdx)">
                         Remove Client Tool
                       </UiButton>
                     </div>

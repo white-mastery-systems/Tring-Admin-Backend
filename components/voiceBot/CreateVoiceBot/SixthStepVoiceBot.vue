@@ -157,7 +157,7 @@ const handleConnect = handleSubmit(async (values: any) => {
     currentStep="6" totalSteps="6">
     <div>
       <!-- {{integrationsData}} -->
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
         <SelectField v-model="provideraccountname" name="provideraccountname" label="Select Account Name"
           :closeIcon="false" :options="[
               { label: 'New Account', value: 'New Account' },
@@ -171,7 +171,8 @@ const handleConnect = handleSubmit(async (values: any) => {
         <!-- Integration Number -->
         <SelectField v-model="incomingPhoneNumber" name="incomingPhoneNumber" label="Integration Number"
           :closeIcon="true" :options="numberList" placeholder="Select Number"
-          :disabled="numberList?.length === 0 || (numberList[0]?.value === 'New Account')" @input="onSelectNumber($event)" />
+          :disabled="numberList?.length === 0 || (numberList[0]?.value === 'New Account')"
+          @input="onSelectNumber($event)" />
         <!-- <SelectField 
           name="ivrConfig" 
           label="Cloud Telephone Provider" 

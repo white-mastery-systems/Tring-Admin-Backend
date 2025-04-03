@@ -41,7 +41,7 @@
       Refill Wallet
     </NuxtLink> -->
     <!-- to="/billing/view-wallet" -->
-    <div v-if="!usage?.plan_code?.includes('free') && (userLocationDetails.country === 'IN') && cancelSubscription"
+    <!-- <div v-if="!usage?.plan_code?.includes('free') && (userLocationDetails.country === 'IN') && cancelSubscription"
       class="flex flex-col items-center justify-center gap-1 lg:hidden">
       <NuxtLink :to="{ path: '/billing/view-wallet', query: { type: query?.type } }"
         class="hover:brighten-50 font-regular grid items-center rounded-md bg-[#424bd1] p-2 px-2 text-sm text-[#FFFFFF] hover:bg-[#424bd1]">
@@ -50,7 +50,7 @@
         </div>
       </NuxtLink>
       <div class="text-[4px]"> Refill Wallet </div>
-    </div>
+    </div> -->
     <UiButton v-if="cancelSubscription" variant="destructive" @click="$emit('change')"
       class="max-h-[36px] hidden lg:inline">
       Cancel Subscription

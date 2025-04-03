@@ -2,7 +2,7 @@
 <template>
   <UiFormField v-model="selectedValue" :name="name">
     <UiFormItem class="w-full">
-      <UiFormLabel :class="{ 'text-[#ef4444]': hasError }">
+      <UiFormLabel class="text-[12px]" :class=" { 'text-[#ef4444]' : hasError }">
         {{ label }}<UiLabel v-if="required" class="text-lg text-red-500">*</UiLabel>
       </UiFormLabel>
       <UiFormControl>
@@ -10,7 +10,7 @@
           v-bind="$attrs" :disabled="props.disabled">
           <div class="relative flex items-center">
             <UiSelectTrigger :class="[hasError ? 'border-[#ef4444]' : '']" class="text-start">
-              <UiSelectValue class="text-[12px] sm:text-[12px] md:text-[14px]" :placeholder="placeholder" />
+              <UiSelectValue class="text-sm" :placeholder="placeholder" />
             </UiSelectTrigger>
             <CloseIcon v-if="selectedValue && closeIcon" class="absolute right-10 w-4 h-4 cursor-pointer"
               @click="clearSelectedValue" />
