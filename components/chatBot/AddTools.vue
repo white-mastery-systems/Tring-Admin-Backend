@@ -21,7 +21,7 @@
     <form @submit.prevent="dynamicToolsForm" class="space-y-6 pt-2 sm:pt-2 md:pt-0">
       <!-- Default Tools Section -->
       <div class="mb-6">
-        <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 space-y-1">
+        <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5 space-y-1">
           <UiFormField v-slot="{ value, handleChange }" name="date_time">
             <UiFormItem>
               <div class="flex justify-between">
@@ -77,7 +77,8 @@
             </UiFormItem>
           </UiFormField>
           <UiFormField v-slot="{ value, handleChange }" name="schedule_call_with_voice">
-            <UiFormItem class="w-full pr-0 sm:pr-0 md:pr-[6px]">
+            <!-- sm:pr-0 md:pr-[6px] -->
+            <UiFormItem class="w-full pr-0">
               <div class="flex justify-between">
                 <UiLabel class="text-[12px] sm:text-[12px] md:text-[14px] font-medium"> Schedule a Call with Voice Bot
                 </UiLabel>
@@ -109,81 +110,82 @@
                   <div class="flex gap-3">
                     <!-- Tool Name -->
                     <TextField :label="`Name`" :id="`tool_name_${toolIdx}`" :name="`customTools[${toolIdx}].name`"
-                      placeholder="Enter tool name" required />
+                      placeholder="Enter tool name" />
                     <!-- Tool Endpoint -->
                     <TextField :label="`Endpoint`" :id="`tool_endpoint_${toolIdx}`"
-                      :name="`customTools[${toolIdx}].endpoint`" placeholder="Enter tool endpoint" required />
+                      :name="`customTools[${toolIdx}].endpoint`" placeholder="Enter tool endpoint" />
                   </div>
 
                   <!-- Tool Description -->
                   <TextField :label="`Description`" :id="`tool_description_${toolIdx}`"
                     :name="`customTools[${toolIdx}].description`" :isTextarea="true"
-                    placeholder="Enter tool description" required />
+                    placeholder="Enter tool description" />
 
                   <FieldArray :name="`customTools.${toolIdx}.parameters.properties`"
                     v-slot="{ fields: paramFields, push: pushParam, remove: removeParam }">
                     <div v-if="values.propertieFormControl">
                       <div v-for="(param, paramIdx) in paramFields" :key="param.key" class="mt-4 pb-2">
-                        <h4 class="font-semibold"> Parameter {{ paramIdx + 1 }} </h4>
+                        <h4 class="font-semibold pb-4"> Parameter {{ paramIdx + 1 }} </h4>
                         <div
                           class="gap-2 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3 mb-3">
                           <!-- Parameter Name -->
-                          <TextField :label="`Parameter Name`" :id="`param_name_${toolIdx}_${paramIdx}`"
-                            :name="`customTools[${toolIdx}].parameters.properties[${paramIdx}].name`"
-                            placeholder="Enter parameter name" required />
+                          <div class="flex flex-col gap-4 mt-[6px]">
+                            <TextField :label="`Parameter Name`" :id="`param_name_${toolIdx}_${paramIdx}`"
+                              :name="`customTools[${toolIdx}].parameters.properties[${paramIdx}].name`"
+                              placeholder="Enter parameter name" />
+                            </div>
+                            <!-- Parameter Type -->
+                            <SelectField :label="`Type`" :id="`param_type_${toolIdx}_${paramIdx}`"
+                              :name="`customTools[${toolIdx}].parameters.properties[${paramIdx}].type`"
+                              :options="parameterTypes" />
 
-                          <!-- Parameter Type -->
-                          <SelectField :label="`Type`" :id="`param_type_${toolIdx}_${paramIdx}`"
-                            :name="`customTools[${toolIdx}].parameters.properties[${paramIdx}].type`"
-                            :options="parameterTypes" required />
-
-                          <!-- Parameter Description -->
-                          <TextField :label="`Description`" :id="`param_desc_${toolIdx}_${paramIdx}`"
-                            :name="`customTools[${toolIdx}].parameters.properties[${paramIdx}].description`"
-                            :isTextarea="true" placeholder="Enter parameter description" required />
-                          <div class="flex items-center justify-around w-full">
-                            <UiFormField v-slot="{ value, handleChange }"
-                              :name="`customTools[${toolIdx}].parameters.properties[${paramIdx}].required`">
-                              <UiFormItem class="w-[49%]">
-                                <div class="flex justify-between">
-                                  <UiLabel class="text-[12px] sm:text-[12px] md:text-[12px] font-medium">Required
-                                  </UiLabel>
-                                  <UiFormControl>
-                                    <UiSwitch :label="`Required`" :id="`param_required_${toolIdx}_${paramIdx}`"
-                                      :checked="value" @update:checked="(checked) => {
+                            <!-- Parameter Description -->
+                            <TextField :label="`Description`" :id="`param_desc_${toolIdx}_${paramIdx}`"
+                              :name="`customTools[${toolIdx}].parameters.properties[${paramIdx}].description`"
+                              :isTextarea="true" placeholder="Enter parameter description" />
+                            <div class="flex items-center justify-around w-full">
+                              <UiFormField v-slot="{ value, handleChange }"
+                                :name="`customTools[${toolIdx}].parameters.properties[${paramIdx}].required`">
+                                <UiFormItem class="w-[49%]">
+                                  <div class="flex justify-between">
+                                    <UiLabel class="text-[12px] sm:text-[12px] md:text-[12px] font-medium">Required
+                                    </UiLabel>
+                                    <UiFormControl>
+                                      <UiSwitch :label="`Required`" :id="`param_required_${toolIdx}_${paramIdx}`"
+                                        :checked="value" @update:checked="(checked) => {
                                         handleChange(checked);
                                       }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" />
-                                  </UiFormControl>
-                                  <UiFormMessage />
-                                </div>
-                              </UiFormItem>
-                            </UiFormField>
-                            <!-- Required -->
+                                    </UiFormControl>
+                                    <UiFormMessage />
+                                  </div>
+                                </UiFormItem>
+                              </UiFormField>
+                              <!-- Required -->
 
-                            <!-- Remove Parameter -->
-                            <UiButton variant="outline" type="button" @click="removeParam(paramIdx)">
-                              <CloseIcon class="w-4 h-4" />
-                            </UiButton>
+                              <!-- Remove Parameter -->
+                              <UiButton variant="outline" type="button" @click="removeParam(paramIdx)">
+                                <CloseIcon class="w-4 h-4" />
+                              </UiButton>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <!-- Add Parameter Button -->
-                    <div class="flex items-center w-full justify-end gap-2">
-                      <UiButton color="primary" v-if="values.clientFormControl" type="button" @click="() => {
+                      <!-- Add Parameter Button -->
+                      <div class="flex items-center w-full justify-end gap-2">
+                        <UiButton color="primary" v-if="values.clientFormControl" type="button" @click="() => {
                         if (!values.propertieFormControl) {
                           setFieldValue('propertieFormControl', true)
                           // return
                         }
                         pushParam({ name: '', type: 'string', required: true })
                       }">
-                        Add Parameter
-                      </UiButton>
-                      <UiButton color="primary" type="button" @click="remove(toolIdx)">
-                        Remove Client Tool
-                      </UiButton>
-                    </div>
+                          Add Parameter
+                        </UiButton>
+                        <UiButton color="primary" type="button" @click="remove(toolIdx)">
+                          Remove Client Tool
+                        </UiButton>
+                      </div>
                   </FieldArray>
                 </div>
               </fieldset>
@@ -226,7 +228,7 @@ import { useTransformApiResponse } from "~/composables/botManagement/voiceBot/us
 definePageMeta({
   middleware: "admin-only",
 });
-const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
+const props = defineProps < { botDetails: any; botData: any, refreshBot: () => void }>();
 const isLoading = ref(false);
 const route = useRoute("chat-bot-id-tools");
 const paramId: any = route;
@@ -318,9 +320,8 @@ const dynamicToolsForm = handleSubmit(async (values: any) => {
   const toolEndpoints = values.customTools.map(tool => ({
     [tool.name.replace(/\s+/g, "_").toLowerCase()]: tool.endpoint
   }));
-
   const payload: any = {
-    id: props.botDetails.id,
+    id: props.botData.id,
     tools: {
       defaultTools,
       customTools,

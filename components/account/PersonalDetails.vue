@@ -17,8 +17,7 @@
           placeholder="Enter your email address" />
       </div>
       <!-- v-show="props.personalControl" -->
-      <div
-        class="grid grid-cols-1 gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
         <TextField type="text" name="metadata.businessName" label="Business Name" placeholder="Enter Your Business Name"
           :required="true" />
         <div class="flex gap-2 w-full">
@@ -105,7 +104,7 @@
 import { accountSchema } from "~/validationSchema/account/accountSchema";
 import { useOrgDetailsStore } from "~/store/orgDetailsStore";
 import { ArrowRight } from 'lucide-vue-next'
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { helpers } from "handlebars";
 import { industry } from "~/composables/botManagement/chatBot/useBotType";
 
@@ -113,6 +112,7 @@ const props = withDefaults(defineProps<{ personalControl?: boolean }>(), {
   personalControl: true,
 });
 const router = useRouter();
+const route = useRoute()
 const gstTypes = [
   {
     label: "Registered Business - Regular",
@@ -186,6 +186,19 @@ setFieldValue("gst", orgDetails?.metadata?.gst ?? "");
 setFieldValue("gstType", orgDetails?.metadata?.gstType ?? "");
 // if (orgDetails?.metadata?.industry === "Other") {
 // }
+const isBilling = ref(false)
+const getType = ref('chat')
+
+onMounted(() => {
+  const fromBilling = localStorage.getItem('cameFromBilling') === 'true'
+  isBilling.value = fromBilling
+
+  // Optionally clear after reading
+  if (fromBilling) {
+    const botType = localStorage.getItem('billingType')
+    getType.value = botType
+  }
+})
 const handleLogoChange = async (event: any) => {
   logoData.value = event[0];
 
@@ -209,14 +222,18 @@ const handleAccountUpdate = handleSubmit(async (value: any) => {
       setFieldValue("logo", res);
       logoData.value = "";
     }
-    await $fetch("/api/user", { method: "PUT", body: {...value, logo: values.logo} });
+    await $fetch("/api/user", { method: "PUT", body: { ...value, logo: values.logo } });
     const { orgDetails } = await $fetch('/api/org')
     localStorage.setItem("orgDetails", JSON.stringify(orgDetails));
     useOrgDetails.updateValues();
     refreshUser();
     localStorage.setItem("user", JSON.stringify(user.value));
+    if (isBilling.value) {
+      navigateTo('/billing/view-all', { query: { type: getType.value } })
+    }
     toast.success("Account updated successfully");
   } catch (e) {
+    toast.error(e.statusMessage);
     console.log(e)
   } finally {
     isLoading.value = false;
@@ -237,9 +254,14 @@ const roles = [
   "Developer",
   "Other",
 ];
-
 const proceedLogin = async () => {
   // refreshUser();
   navigateTo("/");
 };
+
+onUnmounted(() => {
+  localStorage.removeItem('cameFromBilling');
+  localStorage.removeItem('billingType');
+});
+
 </script>

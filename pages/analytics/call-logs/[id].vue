@@ -4,7 +4,8 @@
   </div> -->
   <!-- v-else -->
   <!-- leadData?.botUser?.name ??  -->
-  <Page :title="callLogs?.callerName ?? 'No Name'" :bread-crumbs="[]" :disable-back-button="!user" :disable-elevation="true">
+  <Page :title="callLogs?.callerName ?? 'No Name'" :bread-crumbs="[]" :disable-back-button="!user"
+    :disable-elevation="true">
     <div class="items-top gap-[25px flex items-center justify-center px-3">
       <div class="items-top xs:grid-cols-2 flex grid w-full grid-cols-1 gap-[25px] lg:grid-cols-2">
         <div class="justify-aro und flex w-full gap-8 sm:w-full md:w-[70%] lg:w-[90%] xl:w-[90%]">
@@ -19,35 +20,37 @@
                 <div class="flex grid grid-cols-2 flex-col items-center gap-2 pl-4 capitalize">
                   <div v-for="(value, key) in formattedCallData" :key="key">
                     <!-- <div v-if="Array.isArray(value) && value.length === 2"> -->
-                      <UiTooltip>
-                        <UiTooltipTrigger as-child>
-                          <div class="gap-2 pl-4 capitalize max-w-full">
-                            <div class="text-gray-500 font-medium cursor-pointer">{{ key }}</div>
-                            <div :class="['font-medium cursor-pointer', (key === 'Session ID') ? 'truncate w-45' : '']">{{ value }}
-                            </div>
+                    <UiTooltip>
+                      <UiTooltipTrigger as-child>
+                        <div class="gap-2 pl-4 capitalize max-w-full">
+                          <div class="text-gray-500 font-medium cursor-pointer">{{ key }}</div>
+                          <div :class="['font-medium cursor-pointer', (key === 'Session ID') ? 'truncate w-45' : '']">{{
+                            value }}
                           </div>
-                        </UiTooltipTrigger>
-                        <UiTooltipContent class="w-auto">
-                          <p>{{ value }}</p>
-                        </UiTooltipContent>
-                      </UiTooltip>
+                        </div>
+                      </UiTooltipTrigger>
+                      <UiTooltipContent class="w-auto">
+                        <p>{{ value }}</p>
+                      </UiTooltipContent>
+                    </UiTooltip>
                     <!-- </div> -->
+                  </div>
+                </div>
+                <div class="flex justify-center mt-4">
+                  <div class="w-full relative">
+                    <div v-if="isAudioLoading && isBuffering"
+                      class="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-10">
+                      <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
+                    </div>
+                    <div class="flex justify-center">
+                      <audio controls :src="`${config.public.voiceBotBaseUrl}/callRecording?sid=${callLogs?.callSid}`"
+                        @loadeddata="onAudioLoaded" @waiting="onAudioWaiting" @playing="onAudioPlaying"
+                        @error="onAudioError" ref="audioPlayer">
+                        Your browser does not support the audio element.
+                      </audio>
                     </div>
                   </div>
-                  <div class="flex justify-center mt-4">
-                    <div class="w-[100%] relative">
-                      <div v-if="isAudioLoading"
-                        class="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-10">
-                        <Icon name="svg-spinners:90-ring-with-bg" class="h-6 w-6 animate-spin text-white" />
-                      </div>
-                      <div class="flex justify-center">
-                        <audio controls :src="`${config.public.voiceBotBaseUrl}/callRecording?sid=${callLogs?.callSid}`"
-                          @loadeddata="onAudioLoaded" @waiting="onAudioLoading" @error="onAudioError" ref="audioPlayer">
-                          Your browser does not support the audio element.
-                        </audio>
-                      </div>
-                    </div>
-                  </div>
+                </div>
               </UiTabsContent>
             </UiTooltipProvider>
             <UiTabsContent value="Campaign">
@@ -85,6 +88,7 @@ const audioElement: any = ref(null)
 const isAudioLoading = ref(true)
 const config = useRuntimeConfig()
 const breadcrumbStore = useBreadcrumbStore();
+const isBuffering = ref(false)
 
 const isBackRouteMatches = computed(() => {
   const backRoute = router.options.history.state.back; // Assuming `router` is available
@@ -176,14 +180,31 @@ const formattedCallData = computed(() => {
 onMounted(() => {
   audioElement.value = document.querySelector('audio')
 });
+onMounted(() => {
+  audioElement.value = document.querySelector('audio')
+})
+
 const onAudioLoaded = () => {
   isAudioLoading.value = false
+  isBuffering.value = false
 }
-const onAudioLoading = () => {
-  isAudioLoading.value = true
+
+const onAudioWaiting = () => {
+  // Only show loading if the audio is actually buffering
+  if (audioElement.value?.readyState < 3) {
+    isBuffering.value = true
+    isAudioLoading.value = true
+  }
 }
+
+const onAudioPlaying = () => {
+  isBuffering.value = false
+  isAudioLoading.value = false
+}
+
 const onAudioError = () => {
   isAudioLoading.value = false
-  if (callLogs.value.length) toast.error("No recording found")
+  isBuffering.value = false
+  if (callLogs.value?.length) toast.error("No recording found")
 }
 </script>

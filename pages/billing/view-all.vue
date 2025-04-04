@@ -9,7 +9,6 @@ definePageMeta({
   middleware: 'user',
 });
 
-const { isAnyPlanFree, checkSubscription } = useSubscriptionCheck()
 const breadcrumbStore = useBreadcrumbStore();
 
 breadcrumbStore.setBreadcrumbs([
@@ -22,7 +21,4 @@ breadcrumbStore.setBreadcrumbs([
     to: `/billing/view-all?type=chat`,
   },
 ])
-onMounted(async () => {
-  if (isAnyPlanFree.value) await checkSubscription()
-})
 </script>
