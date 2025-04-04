@@ -164,14 +164,14 @@ export function useBillingVariation(userDetails: any, queryType: any) {
     if (!userLocationDetails.value) return;
 
     // Update Chat Billing Variation
-    chatBillingVariation.value[0].amount = isIndianUser.value ? "₹0" : "$0";
+    // Line removed: chatBillingVariation.value[0].amount = isIndianUser.value ? "₹0" : "$0";
 
-    chatBillingVariation.value[1].amount = isIndianUser.value ? "₹1999" : "$29";
-    chatBillingVariation.value[1].benefitList[0].content =
+    chatBillingVariation.value[0].amount = isIndianUser.value ? "₹1999" : "$29";
+    chatBillingVariation.value[0].benefitList[0].content =
       `${isIndianUser.value ? '₹10' : '$0.60'} per Chat Session`;
 
-    chatBillingVariation.value[2].amount = isIndianUser.value ? "₹6999" : "$99";
-    chatBillingVariation.value[2].benefitList[0].content =
+    chatBillingVariation.value[1].amount = isIndianUser.value ? "₹6999" : "$99";
+    chatBillingVariation.value[1].benefitList[0].content =
       `${isIndianUser.value ? '₹8' : '$0.45'} Per Chat Session`;
 
     // Update Voice Billing Variation
