@@ -72,7 +72,7 @@ const isLeadDataEmpty = computed(() => {
     <Card class="p-4 w-full">
       <CardHeader class="flex flex-row items-center justify-between p-0">
         <CardTitle class="text-[14px] font-normal text-[#8A8A8A]">
-          {{ props.title.charAt(0).toUpperCase() + props.title.slice(1) }}
+          {{ (props.title === "totalConversation")? 'Total Conversations' : 'Lead Composition' }}
         </CardTitle>
       </CardHeader>
 
