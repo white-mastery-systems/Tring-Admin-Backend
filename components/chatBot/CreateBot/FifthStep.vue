@@ -182,7 +182,8 @@ const handleConnect = handleSubmit(async (values: any) => {
 
 <template>
   <BotSetupCard title="Add your Bot to an Integration (Optional)"
-    description="Set up your Integration system to handle chats from whatsapp" currentStep="5" totalSteps="5">
+    description="Set up your Integration system to handle chats from multiple channels (whatsapp)" currentStep="5"
+    totalSteps="5">
     <form @submit="handleConnect" class="space-y-2">
       <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
         <SelectField name="channel" label="Integration App" placeholder="Select an integration" helperText=""

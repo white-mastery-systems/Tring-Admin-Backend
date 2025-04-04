@@ -18,6 +18,8 @@
   </DialogWrapper>
 </template>
 <script setup lang="ts">
+import { useRoute } from "vue-router";
+
 const props = defineProps({
   usageDetails: Object, // Adjust type as needed
 });
@@ -28,6 +30,8 @@ const walletBalanceModalState = defineModel<{ open: boolean }>({
   },
 });
 const isLoading = ref(false);
+const route = useRoute();
+
 const formSchema = toTypedSchema(
   z.object({
     plan: z.string({ required_error: "Credit is required." }).min(2, "Wallet is required."),
@@ -69,21 +73,23 @@ const walletDetails = [
   },
 ]
 const handleConnect = handleSubmit(async (values: any) => {
-  const hostedPageResponse = await $fetch(
-    `/api/v2/billing/wallet?type=chat`,
-    {
-      method: "POST",
-      body: {
-        plan: values.plan,
-        redirectUrl: `${window.location.origin}/billing/wallet/whatsapp-wallet-confirmation?type=chat`,
+  try {
+    const hostedPageResponse = await $fetch(
+      `/api/v2/billing/wallet`,
+      {
+        method: "POST",
+        body: {
+          plan: values.plan,
+          redirectUrl: `${window.location.origin}/billing?type=${route.query.type ?? 'chat'}`,
+        },
       },
-    },
-  );
-  await navigateTo(hostedPageResponse?.hostedpage?.url, {
-    open: {
-      target: "_blank",
-    },
-  });
-  emit("success")
-})
+    );
+
+    await navigateTo(hostedPageResponse.hostedpage.url);
+
+    emit("success");
+  } catch (error: any) {
+    toast.error(error.statusMessage);
+  }
+});
 </script>
