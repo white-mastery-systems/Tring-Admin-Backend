@@ -201,7 +201,7 @@ watch(
     
     if (props.onBoardingAccount) {
       if (queryType === 'chat') {
-        billingVariationDetails.value = billingVariation.value.slice(1);
+        billingVariationDetails.value = billingVariation.value;
       } else {
         billingVariationDetails.value = billingVariation.value;
       }

@@ -99,7 +99,7 @@
           </div>
         </UiTabsContent>
         <UiTabsContent value="voice">
-          <div>
+          <div class="pt-1 sm:pt-1 md:pt-4">
             <!-- {{ analyticsData. }} -->
             <div v-if="analyticsData?.length">
               <div class="xs:grid-cols-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
