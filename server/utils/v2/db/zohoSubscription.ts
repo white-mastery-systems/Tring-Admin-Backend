@@ -10,7 +10,8 @@ export const getOrgSubscriptionId = async (organizationId: string) => {
   return await db.query.adminSubscriptionSchema.findFirst({
     where: and(
       eq(adminSubscriptionSchema.organizationId, organizationId),
-      isNotNull(adminSubscriptionSchema.subscriptionId)
+      isNotNull(adminSubscriptionSchema.subscriptionId),
+      eq(adminSubscriptionSchema.subscriptionStatus, "active"),
     )
   })
 }
