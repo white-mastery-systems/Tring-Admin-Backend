@@ -269,7 +269,7 @@ const apikeyunmasking = ($event: Event) => {
   <BotSetupCard title="Bot Details" description="Configure your bot's basic information" currentStep="5" totalSteps="6">
     <div>
       <span class="font-bold text-[12px] sm:text-[12px] md:text-[14px]">Speech-To-Text (STT) Setup</span>
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
         <SelectField v-model="provider_stt" name="provider_stt" :options="providers" label="Provider"
           placeholder="Select provider"></SelectField>
         <SelectField v-if="provider_stt === 'google'" v-model="googlemodel" name="googlemodel" :options="models"
@@ -280,7 +280,7 @@ const apikeyunmasking = ($event: Event) => {
     </div>
     <div>
       <span class="font-bold text-[12px] sm:text-[12px] md:text-[14px]">Text-To-Speech (TTS) Setup</span>
-      <div class="flex items-center grid grid-cols-2 gap-4">
+      <div class="flex items-center grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
         <SelectField v-model="provider_tts" name="provider_tts" label="Provider" placeholder="Select provider"
           :options="providersTTS" />
         <!-- {{provider_tts}} -->
@@ -295,8 +295,7 @@ const apikeyunmasking = ($event: Event) => {
         <!-- <SelectField v-if="(provider_tts !== 'tring') && (provider_tts !== 'deepgram') && (provider_tts !== 'google')"
           v-model="voice" name="voice" label="Voice" placeholder="Select voice" :options="[]" /> -->
         <SelectField v-if="provider_tts != 'tring' && provider_tts != 'google' && provider_tts != 'deepgram'"
-          name="model" label="Model" placeholder="Model"
-          :options="formattedElevenlabsModelList" />
+          name="model" label="Model" placeholder="Model" :options="formattedElevenlabsModelList" />
 
         <SelectField v-if="provider_tts != 'tring' && provider_tts != 'google' && provider_tts != 'deepgram'"
           label="voice" name="voice" :options="formattedElevenlabsVoiceList" placeholder="voice" />
@@ -308,7 +307,7 @@ const apikeyunmasking = ($event: Event) => {
     </div>
     <div>
       <span class="font-bold text-[12px] sm:text-[12px] md:text-[14px]">Large Language Model (LLM) Setup</span>
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-2">
         <SelectField v-model="max_output_token" name="max_output_token" label="Max Tokens" placeholder="Max Tokens"
           :options="tokens.map((token) => ({ label: token, value: token }))" />
         <div class="mt-5 flex flex-col gap-2 pl-3">

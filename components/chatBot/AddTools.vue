@@ -1,5 +1,5 @@
 <template>
-  
+
   <!-- :bread-crumbs="[
     { label: `${botDetails?.name}`, to: `/bot-management/chat-bot/${botDetails?.id}` },
     {
@@ -21,11 +21,11 @@
     <form @submit.prevent="dynamicToolsForm" class="space-y-6 pt-2 sm:pt-2 md:pt-0">
       <!-- Default Tools Section -->
       <div class="mb-6">
-        <div class="flex flex-wrap gap-4">
+        <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 space-y-1">
           <UiFormField v-slot="{ value, handleChange }" name="date_time">
-            <UiFormItem class="w-full sm:w-full md:w-[49%]">
+            <UiFormItem>
               <div class="flex justify-between">
-                <UiLabel class="text-[14px] font-medium">Current Date & Time</UiLabel>
+                <UiLabel class="text-[12px] sm:text-[12px] md:text-[14px] font-medium">Current Date & Time</UiLabel>
                 <UiFormControl>
                   <UiSwitch id="date_time" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
@@ -37,9 +37,9 @@
           </UiFormField>
 
           <UiFormField v-slot="{ value, handleChange }" name="schedule_appointment">
-            <UiFormItem class="w-full sm:w-full md:w-[49%]">
+            <UiFormItem>
               <div class="flex justify-between">
-                <UiLabel class="text-[14px] font-medium">Schedule Appointment</UiLabel>
+                <UiLabel class="text-[12px] sm:text-[12px] md:text-[14px] font-medium">Schedule Appointment</UiLabel>
                 <UiFormControl>
                   <UiSwitch id="schedule_appointment" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
@@ -51,9 +51,9 @@
           </UiFormField>
 
           <UiFormField v-slot="{ value, handleChange }" name="site_visit">
-            <UiFormItem class="w-full sm:w-full md:w-[49%]">
+            <UiFormItem>
               <div class="flex justify-between">
-                <UiLabel class="text-[14px] font-medium">Schedule Site Visit</UiLabel>
+                <UiLabel class="text-[12px] sm:text-[12px] md:text-[14px] font-medium">Schedule Site Visit</UiLabel>
                 <UiFormControl>
                   <UiSwitch id="site_visit" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
@@ -64,9 +64,9 @@
             </UiFormItem>
           </UiFormField>
           <UiFormField v-slot="{ value, handleChange }" name="schedule_call">
-            <UiFormItem class="w-full sm:w-full md:w-[49%]">
+            <UiFormItem>
               <div class="flex justify-between">
-                <UiLabel class="text-[14px] font-medium"> Schedule Call </UiLabel>
+                <UiLabel class="text-[12px] sm:text-[12px] md:text-[14px] font-medium"> Schedule Call </UiLabel>
                 <UiFormControl>
                   <UiSwitch id="schedule_call" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
@@ -76,26 +76,27 @@
               </div>
             </UiFormItem>
           </UiFormField>
-          <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 items-center gap-3 w-full">
-            <UiFormField v-slot="{ value, handleChange }" name="schedule_call_with_voice">
-              <UiFormItem class="w-full pr-0 sm:pr-0 md:pr-[6px]">
-                <div class="flex justify-between">
-                  <UiLabel class="text-[14px] font-medium"> Schedule a Call with Voice Bot </UiLabel>
-                  <UiFormControl>
-                    <UiSwitch id="schedule_call_with_voice" :checked="value" @update:checked="(checked) => {
-                      handleChange(checked);
-                    }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" :disabled="!values.schedule_call" />
-                  </UiFormControl>
-                  <UiFormMessage />
-                </div>
-              </UiFormItem>
-            </UiFormField>
-            <span class="w-full">
-              <SelectField name="voice_bot" label="Voice Bots" placeholder="Select Bot"
-                :options="voiceBotDetails.map((bot) => ({ label: bot.name, value: bot.id }))" :required="true"
-                :disabled="!values.schedule_call_with_voice" :closeIcon="true" />
-            </span>
-          </div>
+          <UiFormField v-slot="{ value, handleChange }" name="schedule_call_with_voice">
+            <UiFormItem class="w-full pr-0 sm:pr-0 md:pr-[6px]">
+              <div class="flex justify-between">
+                <UiLabel class="text-[12px] sm:text-[12px] md:text-[14px] font-medium"> Schedule a Call with Voice Bot
+                </UiLabel>
+                <UiFormControl>
+                  <UiSwitch id="schedule_call_with_voice" :checked="value" @update:checked="(checked) => {
+                    handleChange(checked);
+                  }" :style="{ background: value ? '#FFBC42' : '#8A8A8A' }" :disabled="!values.schedule_call" />
+                </UiFormControl>
+                <UiFormMessage />
+              </div>
+            </UiFormItem>
+          </UiFormField>
+          <!-- <div class="flex items-center gap-3 w-full">
+          </div> -->
+          <span class="w-full">
+            <SelectField name="voice_bot" label="Voice Bots" placeholder="Select Bot"
+              :options="voiceBotDetails.map((bot) => ({ label: bot.name, value: bot.id }))" :required="false"
+              :disabled="!values.schedule_call_with_voice" :closeIcon="true" />
+          </span>
         </div>
       </div>
       <div class="mb-4">
@@ -103,8 +104,8 @@
           <FieldArray name="customTools" v-slot="{ fields, push, remove }">
             <div v-if="values.clientFormControl">
               <fieldset v-for="(tool, toolIdx) in fields" :key="tool.key">
-                <div class="border p-4 mb-4 space-y-6">
-                  <h3 class="text-lg font-bold">Client Tool {{ toolIdx + 1 }}</h3>
+                <div class="border p-4 mb-4 space-y-6 rounded-lg">
+                  <h3 class="text-sm sm:text-sm md:text-base lg:text-lg font-bold">Client Tool {{ toolIdx + 1 }}</h3>
                   <div class="flex gap-3">
                     <!-- Tool Name -->
                     <TextField :label="`Name`" :id="`tool_name_${toolIdx}`" :name="`customTools[${toolIdx}].name`"
@@ -145,7 +146,8 @@
                               :name="`customTools[${toolIdx}].parameters.properties[${paramIdx}].required`">
                               <UiFormItem class="w-[49%]">
                                 <div class="flex justify-between">
-                                  <UiLabel class="text-[14px] font-medium">Required</UiLabel>
+                                  <UiLabel class="text-[12px] sm:text-[12px] md:text-[12px] font-medium">Required
+                                  </UiLabel>
                                   <UiFormControl>
                                     <UiSwitch :label="`Required`" :id="`param_required_${toolIdx}_${paramIdx}`"
                                       :checked="value" @update:checked="(checked) => {

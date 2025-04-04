@@ -24,9 +24,10 @@
           class="flex h-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-contain bg-center bg-no-repeat text-center dark:border-gray-600 dark:hover:border-gray-500 w-full"
           :class="{ 'opacity-50 cursor-not-allowed': disabled }">
           <span
-            class="whitespace-nowrap flex flex-col items-center text-[8px] sm:text-[8px] md:text-[14px] italic text-[#000000]">
+            class="whitespace-nowrap flex flex-col items-center text-[8px] sm:text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px] italic text-[#000000]">
             {{ props.label || "Upload File" }}
-            <span class="text-[6px] sm:text-[6px] md:text-[10px] text-gray-500" v-if="props?.helperText?.length">
+            <span class="text-[6px] sm:text-[6px] md:text-[8px] lg:md:text-[8px] xl:md:text-[10px] text-gray-500"
+              v-if="props?.helperText?.length">
               {{ props.helperText }}
             </span>
           </span>

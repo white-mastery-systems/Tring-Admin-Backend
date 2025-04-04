@@ -102,7 +102,8 @@ const handleLogoChange = (event: any) => {
       </UiCardDescription>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 w-full rounded-lg gap-4">
+    <div
+      class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:md:grid-cols-1 xl:md:grid-cols-2 w-full rounded-lg gap-4">
       <!-- <div class="flex"> -->
       <UiFileUpload @change="handleLogoChange" name="logo"
         :label="(logo?.url) ? 'Change your logo here, browse files' : 'Upload your logo here, Browse files'"

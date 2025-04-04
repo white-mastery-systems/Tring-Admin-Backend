@@ -146,13 +146,22 @@ const handleClearFilters = () => {
   });
 };
 const addNewChatBot = async () => {
-  const getSingleBotDetails = await $fetch("/api/bots", {
-        method: "POST",
-        body: {},
-      });
+  try {
+    const getSingleBotDetails = await $fetch("/api/bots", {
+      method: "POST",
+      body: {},
+    });
+
     if (getSingleBotDetails?.id) {
-      // ${ getSingleBotDetails.id }
       navigateTo(`chat-bot/create-bot/${getSingleBotDetails?.id}`);
+    } else {
+      // Handle case where no ID is returned
+      console.error("No bot ID received from the server");
+      // Optionally, show a user-friendly error message
+      // toast.error("Failed to create a new chatbot");
     }
-} 
+  } catch (error) {
+    toast.error(error.statusMessage)
+  }
+};
 </script>

@@ -1,54 +1,35 @@
 <template>
-  <Page
-    :disable-elevation="true"
-    title="Dashboard"
-    :disableSelector="true"
-    :disable-back-button="true"
-    class="flex h-full flex-col items-center"
-  >
+  <Page :disable-elevation="true" title="Dashboard" :disableSelector="true" :disable-back-button="true"
+    class="flex h-full flex-col items-center">
     <div class="flex flex-col gap-5 p-4 sm:p-4 md:p-0">
       <QuickLinks :navigavtionList="navigavtionList" />
       <!-- <h6 class="font-bold text-[20px] mt-3">Start creating your bots</h6> -->
       <!-- <div class="flex flex-col gap-2"> -->
-      <div
-        class="text-[14px] font-bold text-[#3D3D3D] sm:text-[14px] md:text-[20px]"
-      >
+      <div class="text-[14px] font-bold text-[#3D3D3D] sm:text-[14px] md:text-[20px]">
         Start creating your bots
       </div>
       <CreateBotLinks :navigavtionList="createBotNavList" />
-      <div
-        class="text-[14px] font-bold text-[#3D3D3D] sm:text-[14px] md:text-[20px]"
-      >
+      <div class="text-[14px] font-bold text-[#3D3D3D] sm:text-[14px] md:text-[20px]">
         Analytics
       </div>
       <UiTabs v-model="activeTab" default-value="voice" class="w-full">
         <UiTabsList
-          class="grid w-full grid-cols-2 rounded-[10px] border border-[#FFBC42] bg-[#FFF8EB] text-[#3D3D3D] sm:w-full md:w-[20%]"
-        >
-          <UiTabsTrigger
-            value="chat"
-            class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white"
-          >
+          class="grid w-full grid-cols-2 rounded-[10px] border border-[#FFBC42] bg-[#FFF8EB] text-[#3D3D3D] sm:w-full md:w-[30%] lg:w-[20%]">
+          <UiTabsTrigger value="chat" class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white">
             Chat
           </UiTabsTrigger>
-          <UiTabsTrigger
-            value="voice"
-            class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white"
-          >
+          <UiTabsTrigger value="voice" class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white">
             Voice
           </UiTabsTrigger>
         </UiTabsList>
         <div class="mt-3 flex w-full justify-end gap-2 overflow-x-scroll">
-          <span
-            class="border-1 flex items-center rounded-lg border border-[#FFBC42] text-[15px]"
-            style="color: rgba(138, 138, 138, 1)"
-          >
+          <span class="border-1 flex items-center rounded-lg border border-[#FFBC42] text-[15px]"
+            style="color: rgba(138, 138, 138, 1)">
             <!-- <span class="flex -items-center py-2 pl-2"></span> -->
             <span class="font-bold text-black">
               <UiSelect v-model="selectedValue" class="outline-none">
                 <UiSelectTrigger
-                  class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[230px] md:text-[14px] lg:w-[230px] lg:text-[14px] xl:w-[230px] xl:text-[14px]"
-                >
+                  class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[230px] md:text-[14px] lg:w-[230px] lg:text-[14px] xl:w-[230px] xl:text-[14px]">
                   <span class="min-w-[70px] font-thin text-gray-400">
                     Summary
                   </span>
@@ -56,12 +37,8 @@
                 </UiSelectTrigger>
                 <UiSelectContent>
                   <UiSelectGroup>
-                    <UiSelectItem
-                      v-for="(list, index) in dateFilters"
-                      :key="index"
-                      class="content_align pr-2"
-                      :value="list.value"
-                    >
+                    <UiSelectItem v-for="(list, index) in dateFilters" :key="index" class="content_align pr-2"
+                      :value="list.value">
                       <div class="text-left text-[#3D3D3D]">
                         {{ list.content }}
                       </div>
@@ -72,45 +49,27 @@
               </UiSelect>
             </span>
           </span>
-          <CustomDateRangeFilter
-            v-model="selectedValue"
-            :selectDateField="false"
-            @change="onDateChange"
-          />
+          <CustomDateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
         </div>
         <UiTabsContent value="chat">
           <div class="pt-1 sm:pt-1 md:pt-4">
             <!-- {{ analyticsData. }} -->
             <div v-if="analyticsData?.length">
-              <div
-                class="xs:grid-cols-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              >
+              <div class="xs:grid-cols-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 <template v-for="statistics in analyticsData">
-                  <StatsCard
-                    v-if="
+                  <StatsCard v-if="
                       statistics.name === 'conversionRate' ||
                       statistics.name === 'uniqueVisitors' ||
                       statistics.name === 'averageSessionDuration'
-                    "
-                    :icon="ChatSession"
-                    :title="statistics.name"
-                    :count="statistics.value"
-                    :loading="loading"
-                  />
+                    " :icon="ChatSession" :title="statistics.name" :count="statistics.value" :loading="loading" />
                   <!-- <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
                   :count="statistics.value" :loading="loading" /> -->
                 </template>
               </div>
               <div class="my-6 flex w-full flex-col gap-6 md:flex-row">
                 <template v-for="statistics in analyticsData">
-                  <chartCard
-                    v-if="statistics"
-                    :icon="ChatSession"
-                    :botType="activeTab"
-                    :title="statistics.name"
-                    :count="statistics.value"
-                    :loading="loading"
-                  >
+                  <chartCard v-if="statistics" :icon="ChatSession" :botType="activeTab" :title="statistics.name"
+                    :count="statistics.value" :loading="loading">
                   </chartCard>
                 </template>
                 <!-- <template>
@@ -118,37 +77,23 @@
                   </chartCard>
                 </template> -->
               </div>
-              <div
-                class="xs:grid-cols-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              >
+              <div class="xs:grid-cols-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 <template v-for="statistics in analyticsData">
                   <!-- v-if="statistics.name === 'reEngagementRate' || statistics.name === 'dropOffRate' || statistics.name === 'leadQualificationAccuracy'" -->
-                  <StatsCard
-                    v-if="
+                  <StatsCard v-if="
                       statistics.name === 'reEngagementRate' ||
                       statistics.name === 'dropOffRate' ||
                       statistics.name === 'leadQualificationAccuracy'
-                    "
-                    :icon="ChatSession"
-                    :title="statistics.name"
-                    :count="statistics.value"
-                    :loading="loading"
-                  />
+                    " :icon="ChatSession" :title="statistics.name" :count="statistics.value" :loading="loading" />
                   <!-- <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
                   :count="statistics.value" :loading="loading" /> -->
                 </template>
               </div>
             </div>
-            <div
-              v-if="loading && !analyticsData?.statistics?.length"
-              class="xs:grid-cols-2 lg:grid-cols- grid grid-cols-2 gap-6 md:grid-cols-2"
-            >
+            <div v-if="loading && !analyticsData?.statistics?.length"
+              class="xs:grid-cols-2 lg:grid-cols- grid grid-cols-2 gap-6 md:grid-cols-2">
               <template v-for="n in 8" :key="n">
-                <StatusCountCard
-                  :title="'Loading...'"
-                  :count="0"
-                  :loading="loading"
-                />
+                <StatusCountCard :title="'Loading...'" :count="0" :loading="loading" />
               </template>
             </div>
           </div>
@@ -157,33 +102,21 @@
           <div>
             <!-- {{ analyticsData. }} -->
             <div v-if="analyticsData?.length">
-              <div
-                class="xs:grid-cols-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              >
+              <div class="xs:grid-cols-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 <template v-for="statistics in analyticsData">
-                  <StatsCard
-                    v-if="
+                  <StatsCard v-if="
                       statistics.name === 'conversionRate' ||
                       statistics.name === 'uniqueVisitors' ||
                       statistics.name === 'averageSessionDuration'
-                    "
-                    :title="statistics.name"
-                    :count="statistics.value"
-                    :loading="loading"
-                  />
+                    " :title="statistics.name" :count="statistics.value" :loading="loading" />
                   <!-- <StatusCountCard v-if="statistics" :title="statistics.name?.replace('_', ' ')"
                   :count="statistics.value" :loading="loading" /> -->
                 </template>
               </div>
               <div class="my-6 flex w-full flex-col gap-6 md:flex-row">
                 <template v-for="statistics in analyticsData">
-                  <chartCard
-                    v-if="statistics"
-                    :title="statistics.name"
-                    :botType="activeTab"
-                    :count="statistics.value"
-                    :loading="loading"
-                  >
+                  <chartCard v-if="statistics" :title="statistics.name" :botType="activeTab" :count="statistics.value"
+                    :loading="loading">
                   </chartCard>
                 </template>
                 <!-- <template>
@@ -191,36 +124,23 @@
                   </chartCard>
                 </template> -->
               </div>
-              <div
-                class="xs:grid-cols-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              >
+              <div class="xs:grid-cols-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 <template v-for="statistics in analyticsData">
                   <!-- v-if="statistics.name === 'reEngagementRate' || statistics.name === 'dropOffRate' || statistics.name === 'leadQualificationAccuracy'" -->
-                  <StatsCard
-                    v-if="
+                  <StatsCard v-if="
                       statistics.name === 'reEngagementRate' ||
                       statistics.name === 'dropOffRate' ||
                       statistics.name === 'leadQualificationAccuracy'
-                    "
-                    :title="statistics.name"
-                    :count="statistics.value"
-                    :loading="loading"
-                  />
+                    " :title="statistics.name" :count="statistics.value" :loading="loading" />
                   <!-- <StatusCountCard v-if="statistics" :title="statistics.name?.replace('_', ' ')"
                   :count="statistics.value" :loading="loading" /> -->
                 </template>
               </div>
             </div>
-            <div
-              v-if="loading && !analyticsData?.statistics?.length"
-              class="xs:grid-cols-2 lg:grid-cols- grid grid-cols-2 gap-6 md:grid-cols-2"
-            >
+            <div v-if="loading && !analyticsData?.statistics?.length"
+              class="xs:grid-cols-2 lg:grid-cols- grid grid-cols-2 gap-6 md:grid-cols-2">
               <template v-for="n in 18" :key="n">
-                <StatusCountCard
-                  :title="'Loading...'"
-                  :count="0"
-                  :loading="loading"
-                />
+                <StatusCountCard :title="'Loading...'" :count="0" :loading="loading" />
               </template>
             </div>
           </div>

@@ -8,7 +8,8 @@
         <!-- Text-to-Speech Configuration Section -->
         <!-- class="space-y-10" -->
         <div>
-          <div class="text-[14px] sm:text-[14px] md:text-[18px] font-semibold text-[#09090B] pb-6 pt-2">Text-To-Speech (TTS) Setup</div>
+          <div class="text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px] font-semibold text-[#09090B] pb-6 pt-2">
+            Text-To-Speech (TTS) Setup</div>
           <div class="flex flex-col gap-2">
             <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4">
               <SelectField name="tts.provider" label="Provider" placeholder="Select provider" :options="ttsProviders" />
@@ -90,12 +91,13 @@
         <!-- LLM Configuration Section -->
         <!-- class="space-y-6 sm:space-y-6 md:space-y-4 lg:space-y-4 xl:space-y-4" -->
         <div class="space-y-6">
-          <div class="text-[14px] sm:text-[14px] md:text-[18px] font-semibold text-[#09090B]">Large Language Model (LLM) Setup</div>
+          <div class="text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px] font-semibold text-[#09090B]">Large
+            Language Model (LLM) Setup</div>
           <div class="grid w-full grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
             <SelectField name="llm.max_output_token" label="Max Tokens" placeholder="Max Tokens"
               :options="tokens.map((token) => ({ label: token, value: token }))" />
 
-            <div class="mt-5 flex flex-col gap-2">
+            <div class="mt-0 sm:mt-0 md:mt-5 flex flex-col gap-2 mb-5 sm:mb-5 md:mb-0">
               <RangeSlider :step="0.05" :name="parseFloat(values.llm?.temperature)" label="Temperature" @update="
                 ($event) => {
                   setFieldValue('llm.temperature', $event);
@@ -117,7 +119,8 @@
         <!-- Speech-to-Text Configuration Section -->
         <!-- class="space-y-3" -->
         <div class="space-y-6">
-          <div class="text-[14px] sm:text-[14px] md:text-[18px] font-semibold text-[#09090B]">Speech-To-Text (STT) Setup</div>
+          <div class="text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px] font-semibold text-[#09090B]">
+            Speech-To-Text (STT) Setup</div>
           <div class='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 w-full'>
             <SelectField name="stt.provider" :options="sttProviders" label="Provider" placeholder="Select provider">
             </SelectField>

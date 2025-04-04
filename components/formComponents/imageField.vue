@@ -5,7 +5,7 @@
       <div v-if="isLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
         <Icon name="svg-spinners:90-ring-with-bg" class="h-8 w-8" />
       </div>
-      <span v-else>
+      <span v-else class="text-xs sm:text-xs md:text-sm">
         Upload file
       </span>
       <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept" />

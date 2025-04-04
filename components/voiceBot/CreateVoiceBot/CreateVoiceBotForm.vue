@@ -464,23 +464,34 @@ onUnmounted(() => {
       </div>
     </div>
     <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full" />
-    <div class="px-6 py-6 pb-0 flex-1 overflow-auto min-h-[400px] md:min-h-[500px] h-[calc(100vh-8rem)] max-h-[95vh] flex">
+    <div
+      class="px-6 py-6 pb-0 flex-1 overflow-auto min-h-[400px] md:min-h-[500px] md:max-h-[80vh] h-[calc(100vh-8rem)] max-h-[95vh] flex">
       <form class="border border-gray-300 rounded-lg flex flex-col justify-between h-full flex-1 overflow-auto">
-        <FirstStepVoiceBot ref="stepOneRef" v-show="step === 1" v-model:values="values" :errors="errors" :suggestionsContent="knowledgeBaseData" :refreshSuggestions="fetchKnowledgeBase" :loading="voiceKnowLoader" />
+        <FirstStepVoiceBot ref="stepOneRef" v-show="step === 1" v-model:values="values" :errors="errors"
+          :suggestionsContent="knowledgeBaseData" :refreshSuggestions="fetchKnowledgeBase" :loading="voiceKnowLoader" />
         <SecondStepVoiceBot v-show="step === 2" v-model:values="values" :errors="errors" />
-        <ThirdStepVoiceBot v-show="step === 3" v-model:values="values" :errors="errors" :intentOptions="intentOptions" />
-        <FourthStepVoiceBot v-show="step === 4" v-model:values="values" :errors="errors" :intentOptions="intentOptions" />
-        <FifthStepVoiceBot v-show="step === 5" v-model:values="values" :errors="errors" :intentOptions="intentOptions" />
-        <SixthStepVoiceBot v-show="step === 6" v-model:values="values" :errors="errors" :intentOptions="intentOptions" />
+        <ThirdStepVoiceBot v-show="step === 3" v-model:values="values" :errors="errors"
+          :intentOptions="intentOptions" />
+        <FourthStepVoiceBot v-show="step === 4" v-model:values="values" :errors="errors"
+          :intentOptions="intentOptions" />
+        <FifthStepVoiceBot v-show="step === 5" v-model:values="values" :errors="errors"
+          :intentOptions="intentOptions" />
+        <SixthStepVoiceBot v-show="step === 6" v-model:values="values" :errors="errors"
+          :intentOptions="intentOptions" />
         <div class="flex justify-end w-full gap-[12px] p-4 mt-3">
-          <UiButton v-if="(step > 1)" :disabled="isLoading" type="button" @click="prevStep" class="px-8 button_shadow border border-[#FFBC42] text-[#FFBC42] hover:text-[#FFBC42] rounded-lg" variant="outline">Back</UiButton>
-          <UiButton v-if="showBackButton" type="button" @click="firstStepBack" class="px-8 button_shadow border border-[#FFBC42] text-[#FFBC42] hover:text-[#FFBC42] rounded-lg" variant="outline">Back
+          <UiButton v-if="(step > 1)" :disabled="isLoading" type="button" @click="prevStep"
+            class="px-8 button_shadow border border-[#FFBC42] text-[#FFBC42] hover:text-[#FFBC42] rounded-lg"
+            variant="outline">Back</UiButton>
+          <UiButton v-if="showBackButton" type="button" @click="firstStepBack"
+            class="px-8 button_shadow border border-[#FFBC42] text-[#FFBC42] hover:text-[#FFBC42] rounded-lg"
+            variant="outline">Back
           </UiButton>
-          <UiButton v-if="showNextButton" type="button" @click="nextStep" color="primary" class="px-8 button_shadow rounded-lg"
-            :loading="isLoading">Next
+          <UiButton v-if="showNextButton" type="button" @click="nextStep" color="primary"
+            class="px-8 button_shadow rounded-lg" :loading="isLoading">Next
           </UiButton>
           <!-- isDataLoading || isUploading -->
-          <UiButton color="primary" type="button" v-if="step === 6" @click="submitForm" class="px-8 button_shadow rounded-lg" :loading="isLoading">
+          <UiButton color="primary" type="button" v-if="step === 6" @click="submitForm"
+            class="px-8 button_shadow rounded-lg" :loading="isLoading">
             Create Bot
           </UiButton>
         </div>

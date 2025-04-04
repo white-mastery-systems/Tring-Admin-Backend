@@ -147,6 +147,8 @@
                 : (index === 2 ? "Contact sales" : "Start free trial")
             }}
           </button>
+          <span v-if="index != 2" class="text-xs text-gray-700 pt-4 text-center font-semibold">No upfront cost, charged only if you continue post-trial</span>
+          <span v-if="index === 2" class="p-4"></span>
         </div>
       </div>
     </div>

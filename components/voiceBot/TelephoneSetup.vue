@@ -61,7 +61,6 @@
   <!-- </Page> -->
 </template>
 <script setup lang="ts">
-import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 import { useNumberIntegration } from "@/composables/botManagement/voiceBot/useNumberIntegration"
 
 definePageMeta({
@@ -72,17 +71,6 @@ const route = useRoute("voice-bot-id-ivr-config");
 // const botDetails: any = await getVoiceBotDetails(route.params.id);
 const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void }>();
 const numberList = ref([])
-const breadcrumbStore = useBreadcrumbStore();
-
-breadcrumbStore.setBreadcrumbs([
-  {
-    label: 'IVR Configuration',
-    to: `/voice-bot/${props.botDetails.id}` 
-  },
-  { label: `${props.botDetails.name}`, 
-    to: `/voice-bot/${props.botDetails.id}/ivr-config`,
-  },
-]);
 // const { data: botData, status: botLoadingStatus } = await useLazyFetch(`/api/voicebots/${route.params.id}`);
 
 const {

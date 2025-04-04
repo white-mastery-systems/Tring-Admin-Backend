@@ -8,10 +8,10 @@
   ]"  -->
   <!-- <Page title="Bot Details" :bread-crumbs="[]" :disableSelector="true" :disable-back-button="false"
     :disableElevation="false"> -->
-    <div class="pb-2 sm:pb-0">
-      <!-- {{props.botDetails}} -->
-      <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
-        <!-- <span class="font-medium text-left text-[16px] md:text-[18px]">
+  <div class="pb-0 sm:pb-0 md:pb-2 sm:pb-0">
+    <!-- {{props.botDetails}} -->
+    <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
+      <!-- <span class="font-medium text-left text-[16px] md:text-[18px]">
           Industries
         </span>
         <div class="flex flex-col w-full h-full overflow-x-auto">
@@ -34,18 +34,18 @@
           </UiCardContent>
           </UiCard>
           </div> -->
-        <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
-          <TextField name="newBotName" label="Voicebot Name" placeholder="Enter bot name" />
-          <TextField name="agentName" label="Voicebot Agent Name" placeholder="Enter agent name" />
-          <!-- <SelectField name="boundDirection" label="Call Type" :options="boundList"
+      <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
+        <TextField name="newBotName" label="Voicebot Name" placeholder="Enter bot name" />
+        <TextField name="agentName" label="Voicebot Agent Name" placeholder="Enter agent name" />
+        <!-- <SelectField name="boundDirection" label="Call Type" :options="boundList"
               placeholder="Select a direction" /> -->
-          <!-- helperText="Select your language." -->
-          <SelectField name="agentLanguage" :options="languageList" label="Language" placeholder="Agent Language"
-            ></SelectField>
-          <RegionISOCodeSelect name="region" label="Country" helperText="Select your country" />
-          <CountryTimeZones name="timezone" label="Time Zones" helperText="Enter your time zones" />
-          <!-- {{ formattedTimeZones }} -->
-          <!-- <UiFormField v-slot="{ value, handleChange }" name="backgroundSoundControler">
+        <!-- helperText="Select your language." -->
+        <SelectField name="agentLanguage" :options="languageList" label="Language" placeholder="Agent Language">
+        </SelectField>
+        <RegionISOCodeSelect name="region" label="Country" helperText="Select your country" />
+        <CountryTimeZones name="timezone" label="Time Zones" helperText="Enter your time zones" />
+        <!-- {{ formattedTimeZones }} -->
+        <!-- <UiFormField v-slot="{ value, handleChange }" name="backgroundSoundControler">
             <UiFormItem class="w-[49%]">
               <div class="flex justify-between">
                 <UiLabel class="text-[14px] font-medium">Background Sound Controller</UiLabel>
@@ -61,16 +61,15 @@
           <SelectField name="backgroundSounds" :options="backgroundSoundList" label="Background Sounds"
             :disabled="!values.backgroundSoundControler" placeholder="Select Background Sound"
             helperText="Select your background sound." required></SelectField> -->
-          <!-- <TextField name="agentLanguage" label="Agent Language" required placeholder="Enter agent language" /> -->
-        </div>
-        <div class="flex w-full justify-end">
-          <UiButton color="primary" type="submit" class="w-[120px] self-end"
-            size="lg" :loading="isLoading">
-            Submit
-          </UiButton>
-        </div>
-      </form>
-    </div>
+        <!-- <TextField name="agentLanguage" label="Agent Language" required placeholder="Enter agent language" /> -->
+      </div>
+      <div class="flex w-full justify-end mt-4">
+        <UiButton color="primary" type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading">
+          Submit
+        </UiButton>
+      </div>
+    </form>
+  </div>
   <!-- </Page> -->
 </template>
 

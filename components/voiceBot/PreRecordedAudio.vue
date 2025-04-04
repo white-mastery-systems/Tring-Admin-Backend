@@ -1,7 +1,7 @@
 <template>
   <div class="pb-7">
     <div class="my-5 flex items-center justify-between">
-      <div class="text-[18px] font-bold">Pre Recorded Audio</div>
+      <div class="text-xs sm:text-xs md:text-sm lg:text-lg font-bold">Pre Recorded Audio</div>
       <!-- <UiButton @click="
         () => {
           // Add button action if needed
@@ -13,13 +13,12 @@
 
     <form @submit="onSubmit" class="flex flex-col gap-2 space-y-2">
       <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3">
-        <SelectField name="intent" :options="intentList" label="Intent" placeholder="Select Intent"
-          helperText="Select your intent." required></SelectField>
+        <SelectField name="intent" :options="intentList" label="Intent" placeholder="Select Intent"></SelectField>
       </div>
 
       <div class="flex">
         <div v-if="values.intent === 'welcome'" class="w-full gap-3 pt-2">
-          <div style="align-self: center">Welcome Audio</div>
+          <div style="align-self: center" class="text-xs sm:text-xs md:text-sm mb-2">Welcome Audio</div>
           <div>
             <imageField :isLoading="isLoading" name="welcomeAudio" @change="($event) => {
               uploadFile($event, 'welcome', 'welcomeFile');

@@ -10,25 +10,6 @@ export function useBillingVariation(userDetails: any, queryType: any) {
   // Pre-define the billing variations with default values
   const chatBillingVariation = ref([
     {
-      _id: 1,
-      amount: '$0',
-      status: "",
-      types: "Free",
-      listBenefit: false,
-      benefitList: [
-        { content: "Extra Chat Session", availableInPlan: false },
-        { content: "1 Chatbot", availableInPlan: true },
-        { content: "50 Free Chat Sessions", availableInPlan: true },
-        { content: "Widget Customization", availableInPlan: false },
-        { content: "Lead Gen", availableInPlan: false },
-        { content: "CRM Integration", availableInPlan: false },
-      ],
-      plan: "free_test",
-      choosePlan: "Downgrade",
-      currentPlan: "current plan",
-      plan_code: "chat_free",
-    },
-    {
       _id: 2,
       amount: "$29",
       status: "for support automation",

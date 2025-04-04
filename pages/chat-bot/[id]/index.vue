@@ -7,7 +7,7 @@
         Link channe
       </UiButton> -->
       <div class="flex flex-col w-full items-center overflow-x-scroll sm:flex-row">
-        <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
+        <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row py-1">
           <div class="items-cetner flex gap-4">
             <div v-if="botDetails.documentId" class="flex items-center gap-[5px] text-[#1abb00]">
               <div class="flex h-[6px] w-[6px] items-center rounded-full bg-[#1abb00]"></div>
@@ -49,7 +49,7 @@
               <span v-if="botDetails.documentId" class="flex items-center gap-4">
                 <div class="flex flex-col items-center gap-1">
                   <UiButton
-                    class="rounded-[8px] bg-[#ff0000] p-2 text-[14px] font-medium text-white hover:bg-[#ff0000] hover:brightness-90"
+                    class="rounded-[8px] bg-[#ff0000] py-2 px-3 text-[14px] font-medium text-white hover:bg-[#ff0000] hover:brightness-90"
                     @click="deactivateBot">
                     <!-- Deactivate Bot -->
                     <span class="hidden lg:inline"> Deactivate Bot </span>
@@ -65,7 +65,7 @@
                   description="Are you sure you want to deactivate bot ?" @confirm="deactivateBotDialog" />
                 <div class="flex flex-col items-center gap-1">
                   <UiButton as="a" :href="previewUrl" target="_blank" variant="outline"
-                    class="p-2 text-[14px] font-medium text-[#000000] gap-2 border-[#000000]">
+                    class="py-2 px-3 text-[14px] font-medium text-[#000000] gap-2 border-[#000000]">
                     <Eye class="w-5 h-5" />
                     <span class="hidden lg:inline"> Preview Bot </span>
                     <!-- <span class="flex items-center justify-center lg:hidden">
@@ -75,7 +75,7 @@
                   <div class="block text-[4px] lg:hidden">Preview Bot</div>
                 </div>
                 <div class="flex flex-col items-center gap-1">
-                  <UiButton color="primary" class="gap-2 p-2 button_shadow" @click="copyScript">
+                  <UiButton color="primary" class="gap-2 py-2 px-3 button_shadow" @click="copyScript">
                     <FileCode class="w-5 h-5" />
                     <span class="hidden lg:inline"> Copy Script </span>
                     <!-- <span class="flex items-center justify-center lg:hidden">
