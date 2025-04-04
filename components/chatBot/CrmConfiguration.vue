@@ -3,8 +3,8 @@
     <!-- v-if="integrations.length === 0" -->
     <!-- <template #actionButtons> -->
     <div class="my-5 flex items-center justify-between">
-      <div class="text-[18px] font-bold"> CRM Integrations </div>
-      <UiButton color="primary" @click="
+      <div class="text-sm sm:text-sm md:text-base lg:text-lg font-bold"> CRM Integrations </div>
+      <UiButton class="text-xs sm:text-xs md:text-sm" color="primary" @click="
         () => {
           crmConfigModalState.open = true;
           crmConfigModalState.id = null;

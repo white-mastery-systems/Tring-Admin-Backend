@@ -13,17 +13,17 @@
   <div class="pt-5">
     <!-- <template #actionButtons> -->
     <div class="flex items-center justify-between mb-5">
-      <div class="text-[18px] font-bold"> Channel Configuration </div>
-    <UiButton class="flex items-center justify-end" color="primary" @click="
+      <div class="text-sm sm:text-sm md:text-base lg:text-lg font-bold"> Channel Configuration </div>
+      <UiButton class="flex items-center justify-end text-xs sm:text-xs md:text-sm" color="primary" @click="
         () => {
           communicationChannelModalState.open = true;
           communicationChannelModalState.id = null;
         }
       ">
-       Link channel
-    </UiButton>
+        Link channel
+      </UiButton>
       <!-- Communication -->
-<!-- </template> -->
+      <!-- </template> -->
     </div>
     <DataTable :columns="columns" :data="integrations" :page-size="8" :is-loading="false" :height="20"
       height-unit="vh" />
@@ -45,7 +45,7 @@
           }
         }
       " />
-    </div>
+  </div>
   <!-- </Page> -->
 </template>
 <script setup lang="ts">

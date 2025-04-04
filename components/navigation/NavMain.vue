@@ -178,7 +178,7 @@ const mobileSidebarControl = async (value: any) => {
               <template v-else>
                 <NuxtLink :to="item.path" class="flex items-center space-x-2"
                   :class="(!slideBarStore.siderBarslider) ? '' : 'w-full'" @click="mobileSidebarControl(item)">
-                  <NavWhatsappIcon v-if="item.name === 'Whatsapp Bot'" :class="(!slideBarStore.siderBarslider) ? 'w-[22px] h-[22px]' : 'w-[18px] h-[18px]'"></NavWhatsappIcon>
+                  <NavWhatsappIcon v-if="item.name === 'Whatsapp Bot'" :class="(!slideBarStore.siderBarslider && !isMobile) ? 'w-[22px] h-[22px]' : 'w-[18px] h-[18px]'"></NavWhatsappIcon>
                   <component :is="item.icon" :stroke-width="1.5" :size="18"></component>
                   <span>{{ item.name }}</span>
                 </NuxtLink>

@@ -29,7 +29,7 @@ const props = withDefaults(
 </script>
 <template>
   <div v-if="props.navigavtionList.length > 0"
-    class="flex gap-5 flex-wrap justify-between w-full px-0 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+    class="flex gap-5 flex-wrap justify-between w-full px-0 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
     <Card v-for="(item, index) in props.navigavtionList" :key="index"
       class="w-full flex flex-col items-center  pb-7 pt-7 gap-5 cursor-pointer">
       <NuxtLink :to="item.url">

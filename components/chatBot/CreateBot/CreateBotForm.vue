@@ -414,7 +414,7 @@ onUnmounted(() => {
     <!-- <div class="px-6 py-6 pb-0 flex-1 overflow-hidden min-h-[400px] md:min-h-[500px] max-h-[80vh]"> -->
     <!-- <div class="px-6 py-6 pb-0 flex-1 overflow-hidden min-h-[585px] md:min-h-[585px] max-h-[95vh]"> -->
     <div
-      class="px-6 py-6 pb-0 flex-1 overflow-auto min-h-[400px] md:min-h-[500px] h-[calc(100vh-8rem)] max-h-[95vh] flex">
+      class="px-6 py-6 pb-0 flex-1 overflow-auto min-h-[400px] md:min-h-[500px] md:max-h-[80vh] lg:md:min-h-[500px] h-[calc(100vh-8rem)] max-h-[95vh] flex">
       <!-- <TextDocumentUpload ref="uploadDocumentRef" v-show="false" /> -->
       <form class="border border-gray-300 rounded-lg flex flex-col justify-between h-full flex-1 overflow-auto">
         <!-- @update:values="(newValues) => values = newValues" -->
@@ -440,7 +440,7 @@ onUnmounted(() => {
           </UiButton>
           <UiButton color="primary" type="button" v-if="step === 5" @click="submitForm"
             class="px-8 button_shadow rounded-lg" :loading="isLoading">
-            Skip and Create Bot
+            Create Bot
           </UiButton>
         </div>
       </form>

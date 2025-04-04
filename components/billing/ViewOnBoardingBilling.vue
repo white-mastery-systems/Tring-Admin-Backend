@@ -6,7 +6,8 @@
 </template>
 <script setup lang="ts">
 definePageMeta({
-  layout: "auth",
+  layout: "billing-account",
+  middleware: "guest-only",
 });
 
 import { useRoute, useRouter } from 'vue-router';

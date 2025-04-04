@@ -1,7 +1,7 @@
 <template>
   <div class="pb-7">
     <div class="my-5 flex items-center justify-between">
-      <div class="text-[18px] font-bold">LLM Caching</div>
+      <div class="text-xs sm:text-xs md:text-sm lg:text-lg font-bold">LLM Caching</div>
       <!-- <UiButton @click="
         () => {
           // Any additional action if needed
@@ -18,7 +18,7 @@
           <UiFormField v-slot="{ value, handleChange }" name="llmCaching">
             <UiFormItem class="w-[49%]">
               <div class="flex justify-between">
-                <UiLabel class="text-[14px] font-medium">LLM Caching</UiLabel>
+                <UiLabel class="text-xs sm:text-xs md:text-xs lg:text-sm font-medium">LLM Caching</UiLabel>
                 <UiFormControl>
                   <UiSwitch id="llmCaching" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
@@ -37,7 +37,7 @@
           <UiFormField v-if="values.llmCaching" v-slot="{ value, handleChange }" name="dynamicCaching">
             <UiFormItem class="w-[49%]">
               <div class="flex justify-between">
-                <UiLabel class="text-[14px] font-medium">Dynamic Caching</UiLabel>
+                <UiLabel class="text-xs sm:text-xs md:text-sm font-medium">Dynamic Caching</UiLabel>
                 <UiFormControl>
                   <UiSwitch id="dynamicCaching" :checked="value" @update:checked="(checked) => {
                     handleChange(checked);
@@ -58,8 +58,7 @@
         </div>
 
         <div class="flex w-full justify-end">
-          <UiButton color="primary" type="submit" class="w-[120px] self-end"
-            size="lg" :loading="isLoading">
+          <UiButton color="primary" type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading">
             Submit
           </UiButton>
         </div>

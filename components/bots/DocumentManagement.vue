@@ -10,24 +10,24 @@
   },
   ]" -->
   <!-- <Page :disableSelector="true" :disable-back-button="false" :disable-elevation="true"> -->
-    <div class="mb-[50px] sm:mb-[50px] md:mb-7">
-      <div class="document-align flex flex-col mt-0">
-        <div class="text-[18px] font-bold mb-6"> Document Management </div>
-        <span class="flex flex-row">
-          <!-- @click="uploadfile" -->
-          <!-- <DocumentUpload accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" /> -->
-          <DocumentUploadV2 accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" />
-          <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
-        </span>
-      </div>
-      <p class="pt-2 pb-5 text-sm text-gray-400">only PDF</p>
-      <DataTable @pagination="Pagination" @limit="(v$event) => {
-        (filters.page = '1'), (filters.limit = $event);
-      }" :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="documentItems"
-        :is-loading="isDataLoading" :page-size="20" :height="23" height-unit="vh" />
+  <div class="mb-[50px] sm:mb-[50px] md:mb-7">
+    <div class="document-align flex flex-col mt-0">
+      <div class="text-[14px] sm:text-[14px] md:text-[16px] lg:text-[18px] font-bold mb-6"> Document Management </div>
+      <span class="flex flex-row">
+        <!-- @click="uploadfile" -->
+        <!-- <DocumentUpload accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" /> -->
+        <DocumentUploadV2 accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" />
+        <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
+      </span>
     </div>
-    <!-- <BotDocumentMenu></BotDocumentMenu> -->
-    <!-- <ConfirmationModal v-model:open="deleteDocumentModelOpen[list.id]" title="Confirm Delete"
+    <p class="pt-2 pb-5 text-sm text-gray-400">only PDF</p>
+    <DataTable @pagination="Pagination" @limit="(v$event) => {
+        (filters.page = '1'), (filters.limit = $event);
+      }" :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
+      :data="documentItems" :is-loading="isDataLoading" :page-size="20" :height="23" height-unit="vh" />
+  </div>
+  <!-- <BotDocumentMenu></BotDocumentMenu> -->
+  <!-- <ConfirmationModal v-model:open="deleteDocumentModelOpen[list.id]" title="Confirm Delete"
       description="Are you sure you want to delete ?" @confirm="() => {
           handleAction(list, 'delete');
           deleteDocumentModelOpen[list.id] = false;

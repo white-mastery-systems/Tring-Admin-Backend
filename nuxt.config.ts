@@ -46,6 +46,7 @@ export default defineNuxtConfig({
       "~/server/plugin/yaml-watcher.ts",
       "~/server/plugin/schedule-voicebotDialer.ts",
       "~/server/plugin/saleshandy-analytics.ts",
+      "~/server/plugin/saleshandy-notDialed.ts",
       "~/server/plugin/schedule-chatbotCall.ts",
       "~/server/plugin/schedule-chatExpiry.ts",
     ],
@@ -90,12 +91,20 @@ export default defineNuxtConfig({
       voiceBotBaseUrl: "",
       googleAnalyticsId: "",
       supportBotId: process.env.NUXT_PUBLIC_SUPPORT_BOT_ID || "",
-      zohoIndianChatSubscription: process.env.NUXT_PUBLIC_ZOHO_INDIAN_CHAT_SUBSCRIPTION || "",
-      zohoIndianVoiceFluentSubscription: process.env.NUXT_PUBLIC_ZOHO_INDIAN_VOICE_FLUENT_SUBSCRIPTION || "",
-      zohoIndianVoiceLucidSubscription: process.env.NUXT_PUBLIC_ZOHO_INDIAN_VOICE_LUCID_SUBSCRIPTION || "",
-      zohoInternationalChatSubscription: process.env.NUXT_PUBLIC_ZOHO_INTERNATIONAL_CHAT_SUBSCRIPTION || "",
-      zohoInternationalVoiceFluentSubscription: process.env.NUXT_PUBLIC_ZOHO_INTERNATIONAL_VOICE_FLUENT_SUBSCRIPTION || "",
-      zohoInternationalVoiceLucidSubscription: process.env.NUXT_PUBLIC_ZOHO_INTERNATIONAL_VOICE_LUCID_SUBSCRIPTION || "",
+      zohoIndianChatSubscription:
+        process.env.NUXT_PUBLIC_ZOHO_INDIAN_CHAT_SUBSCRIPTION || "",
+      zohoIndianVoiceFluentSubscription:
+        process.env.NUXT_PUBLIC_ZOHO_INDIAN_VOICE_FLUENT_SUBSCRIPTION || "",
+      zohoIndianVoiceLucidSubscription:
+        process.env.NUXT_PUBLIC_ZOHO_INDIAN_VOICE_LUCID_SUBSCRIPTION || "",
+      zohoInternationalChatSubscription:
+        process.env.NUXT_PUBLIC_ZOHO_INTERNATIONAL_CHAT_SUBSCRIPTION || "",
+      zohoInternationalVoiceFluentSubscription:
+        process.env.NUXT_PUBLIC_ZOHO_INTERNATIONAL_VOICE_FLUENT_SUBSCRIPTION ||
+        "",
+      zohoInternationalVoiceLucidSubscription:
+        process.env.NUXT_PUBLIC_ZOHO_INTERNATIONAL_VOICE_LUCID_SUBSCRIPTION ||
+        "",
       contactUsUrl: process.env.NUXT_PUBLIC_CONTACTUSURL || "",
     },
   },
