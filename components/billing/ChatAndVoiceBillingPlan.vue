@@ -1,4 +1,4 @@
-\<template>
+<template>
   <!-- <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1] w-full sm-w-full md:min-w-[900px]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div> -->

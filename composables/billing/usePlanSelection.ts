@@ -30,6 +30,8 @@ export function usePlanSelection(userDetails: any, orgBilling: any, organization
         if (onBoardingAccount === true) {
           return navigateTo({ name: 'auth-onboarding-account' });
         } else {
+          localStorage.setItem('cameFromBilling', 'true')
+          localStorage.setItem('billingType', route?.type ?? 'chat')
           // return navigateTo({ name: 'account' });
           return navigateTo({ name: 'account', query: { tab: 'personal-details' } });
         }

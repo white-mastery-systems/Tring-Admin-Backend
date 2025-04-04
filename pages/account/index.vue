@@ -94,4 +94,9 @@ const selectedChannel = (value: any) => {
   }
   router.push({ query: { tab: queryValue } });
 };
+onUnmounted(() => {
+  localStorage.removeItem('cameFromBilling');
+  localStorage.removeItem('billingType');
+});
+
 </script>
