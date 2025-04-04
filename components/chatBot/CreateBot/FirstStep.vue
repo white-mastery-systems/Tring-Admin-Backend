@@ -82,8 +82,7 @@ const changeKnowledge = () => {
 </script>
 
 <template>
-  <BotSetupCard title="Build Your Bot’s Knowledge"
-    description="Import your company details and goals through your website link, by document upload, or by text input (Can select either one)"
+  <BotSetupCard title="Build Your Bot’s Knowledge" :description="(selectedType === 'Website') ? 'Import your company details and goals through your website link, by document upload, or by text input' : (selectedType === 'Document') ? 'Import your company details and goals through your website link, by document upload, or by text input' : (selectedType === 'Text') ? 'Import your company details and goals through your website link, by document upload, or by text input' : 'Select your industry type and source of knowledge' "
     currentStep="1" totalSteps="5">
     <div class="flex flex-col items-center text-center h-full w-full"
       :class="selectedType ? 'justify-start' : 'justify-center'">

@@ -266,7 +266,8 @@ const apikeyunmasking = ($event: Event) => {
 // }, { deep: true, immediate: true });
 </script>
 <template>
-  <BotSetupCard title="Bot Details" description="Configure your bot's basic information" currentStep="5" totalSteps="6">
+  <BotSetupCard title="Bot Details" description="Set up your bot’s features, responses, and preferences" currentStep="5"
+    totalSteps="6">
     <div>
       <span class="font-bold text-[12px] sm:text-[12px] md:text-[14px]">Speech-To-Text (STT) Setup</span>
       <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">

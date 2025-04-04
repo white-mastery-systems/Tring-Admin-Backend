@@ -62,12 +62,6 @@ watch(() => scrapData, (newscrapData) => {
   setFieldValue("otherGoal", newscrapData.scrapedData.chatbot.goal || "");
 }, { deep: true, immediate: true });
 
-watch(() => botDetails.value, (newDetails) => {
-  if (newDetails) { // Ensure newDetails is not null
-    // setFieldValue('BotName', newDetails?.name ?? '');
-  }
-}, { deep: true, immediate: true });
-
 watch(
   () => status.value,
   (newStatus) => {
@@ -96,11 +90,11 @@ const stepFields = {
 };
 
 
-onMounted(() => {
-  if (botDetails.value) {
-    console.log(botDetails.value, "botDetails.value -- botDetails.value")
-  }
-})
+// onMounted(() => {
+//   if (botDetails.value) {
+//     console.log(botDetails.value, "botDetails.value -- botDetails.value")
+//   }
+// })
 const nextStep = async () => {
   const fieldsToValidate = stepFields[step.value] || [];
   let isValid = true;

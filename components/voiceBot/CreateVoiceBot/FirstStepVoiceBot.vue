@@ -103,9 +103,10 @@ const changeKnowledge = () => {
 </script>
 
 <template>
-  <BotSetupCard title="Build Your Bot's Knowledge" description="Enter your industry type and other details"
+  <BotSetupCard title="Build Your Bot's Knowledge" :description="(selectedType === 'Website') ? 'Import your company details and goals through your website link or by text input' : (selectedType === 'Text') ? 'Import your company details and goals through your website link or by text input' : 'Select your industry type and source of knowledge'"
     currentStep="1" totalSteps="6">
     <!-- Main Content Area -->
+     <!-- {{ selectedType }} -->
     <div class="flex flex-col items-center p-0 flex-grow">
       <!-- Initial Selection Screen -->
       <div v-show="!selectedType" class="flex flex-col w-full h-full">
