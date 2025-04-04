@@ -3,6 +3,7 @@ import { getLeadComposition } from "./leads";
 import { getAnalyticsGraph, getOrgInteractedChatsForAnalytics, totalSessionDuration } from "./chats";
 import { getUniqueVisitorsForAnalytics } from "./uniqueVisitors";
 import { getOrgReEnagedBotUsers, getOrgTotalBotUsers } from "./bot-user";
+import { getUniqueCallNumbers, getVoicebotReEngagementRate } from "./voicebot";
 
 
 export const getOrgAnalytics = async ( 
@@ -74,6 +75,11 @@ export const getOrgAnalytics = async (
     }  
     
     if(query.type === "voice") {
+      // Unique Visitors
+      const uniqueCallNumbers = await getUniqueCallNumbers(organizationId, fromDate, toDate)
+
+      // Re-enagement Rate
+      const reEngagementRateForCalls = await getVoicebotReEngagementRate(organizationId, fromDate, toDate)
       //--Total calls 
       const totalCallLogs = await getOrgTotalCalls(organizationId, fromDate, toDate)
 
@@ -91,11 +97,11 @@ export const getOrgAnalytics = async (
 
        return {
         conversionRate: "0%",
-        uniqueVisitors: 0,
+        uniqueVisitors: uniqueCallNumbers,
         averageSessionDuration: averageSessionDurationInMinutes,
         totalConversation: totalConversationGraph,
         leadQualificationAccuracy: "0%",
-        reEngagementRate: "0%",
+        reEngagementRate: reEngagementRateForCalls.reEngagementRate,
         dropOffRate: "Coming Soon",
         leadComposition: {},
         resolutionRate: "Coming Soon",
