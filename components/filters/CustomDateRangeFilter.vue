@@ -71,7 +71,7 @@ const isDateDisabled = (date: CalendarDate) => {
 
 <template>
   <UiSelect v-if="props.selectDateField" v-model="selectedDate">
-    <UiSelectTrigger class="min:w-[188px] w-[110px] sm:w-[110px] md:w-[188px] lg:w-[188px] xl:w-[188px]">
+    <UiSelectTrigger class="min:w-[188px] w-full sm:w-[110px] md:w-[188px] lg:w-[188px] xl:w-[188px]">
       <UiSelectValue placeholder="Select a Date" />
     </UiSelectTrigger>
     <UiSelectContent>
@@ -85,7 +85,7 @@ const isDateDisabled = (date: CalendarDate) => {
   <UiPopover v-if="(selectedDate === 'custom') || (selectDate === 'custom')" class="text-[#3D3D3D]">
     <UiPopoverTrigger as-child>
       <UiButton variant="outline" :class="cn(
-        'w-[120px] sm:w-[120px] md:w-[260px] lg:w-[240px] xl:w-[240px] justify-start text-left font-normal truncate rounded-md',
+        'w-full sm:w-full md:w-[220px] justify-start text-left font-normal truncate rounded-lg',
         'border-[#FFBC42] border-[1px] focus:ring-1 focus:ring-[#FFBC42] focus:ring-opacity-50',
         !value && 'text-muted-foreground',
       )">

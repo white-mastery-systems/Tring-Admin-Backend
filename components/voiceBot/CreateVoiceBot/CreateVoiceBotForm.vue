@@ -4,7 +4,7 @@ import { useForm } from 'vee-validate';
 import { voiceBotCreateSchema } from '~/validationSchema/botManagement/voiceBot/createVoiceBotValidation';
 import { ArrowLeft } from 'lucide-vue-next';
 import { useBotDocuments } from '~/composables/botManagement/chatBot/useBotDocuments';
-import { useRoute } from 'vue-router'
+import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router';
 import { botStore } from "~/store/botStore";
 import { useContentSuggestions } from "~/composables/botManagement/chatBot/useContentSuggestions";
 import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
@@ -26,6 +26,11 @@ const { intentOptions, fetchConfig } = useChatbotConfig();
 const showNextButton = computed(() => (step.value < 6) && !!values?.selectedType);
 const showBackButton = computed(() => (step.value === 1) && values?.selectedType)
 const { knowledgeBaseData, status,voiceKnowLoader, error: knowledgeBaseError, fetchKnowledgeBase } = useVoicebotKnowledgeBase();
+const pendingNavigation = ref<string | null>(null);
+
+const showLeaveConfirmation = ref({
+  default: false,
+});
 // const { botDetails,loading, error: botErrors, refreshBot } = useVoiceBotDetails(paramId.params.id);
 
 const { errors, values, handleSubmit, validateField, validate, setFieldValue } = useForm({
@@ -71,6 +76,30 @@ const stepFields = {
   5: ["provider_stt","provider_tts","max_output_token", "temperature"],
   6: ["",""]
 };
+
+
+onBeforeRouteLeave((to, from, next) => {
+  // Skip confirmation if already loading/submitting
+  if (isLoading.value || isSubmitting.value) {
+    next();
+    return;
+  }
+
+  // Store the full path we want to navigate to
+  pendingNavigation.value = to.fullPath;
+  showLeaveConfirmation.value.default = true;
+  next(false);
+});
+// Clean up
+onUnmounted(() => {
+  window.removeEventListener('popstate', () => { });
+  if (intervalId.value !== null) {
+    clearInterval(intervalId.value);
+    intervalId.value = null;
+    scrapData.scrapedData = [];
+  }
+});
+
 const nextStep = async () => {
   const fieldsToValidate = stepFields[step.value] || [];
   let isValid = true;
@@ -217,6 +246,51 @@ const firstStepBack = () => {
   setFieldValue('selectedType', '');
   setFieldValue('boundDirection', currentBoundDirection); // Restore value
 }
+
+const handleLeaveConfirm = async () => {
+  try {
+    // Cleanup first
+    if (intervalId.value) {
+      clearInterval(intervalId.value);
+      intervalId.value = null;
+    }
+    if (scrapData.scrapedData) {
+      scrapData.scrapedData = [];
+    }
+
+    // Store the navigation path before cleanup
+    const path = pendingNavigation.value;
+
+    // Close dialog and clear pending navigation
+    showLeaveConfirmation.value.default = false;
+    pendingNavigation.value = null;
+
+    // Perform navigation
+    if (path) {
+      window.location.href = path;
+      // Delete bot after navigation
+    }
+  }
+  catch (error) {
+    try {
+      // Multiple fallback strategies
+      if (document.referrer) {
+        await navigateTo(document.referrer);
+      } else {
+        await navigateTo('/chat-bot');
+      }
+    } catch (fallbackError) {
+      // Absolute last resort
+      window.location.href = '/chat-bot';
+    }
+  }
+};
+// Cancel navigation
+const handleLeaveCancel = () => {
+  showLeaveConfirmation.value.default = false;
+  pendingNavigation.value = null;
+};
+
 const submitForm = handleSubmit(async (values) => {
   // STT config
   if (!values.provideraccountname) {
@@ -497,5 +571,8 @@ onUnmounted(() => {
         </div>
       </form>
     </div>
+    <CancelorNot v-model:open="showLeaveConfirmation.default" title="Exit Voicebot Creation?"
+      description="You're in the middle of creating a voicebot. If you leave now, any unsaved changes will be lost. Do you want to continue?"
+      @confirm="handleLeaveConfirm" @cancel="handleLeaveCancel" />
   </div>
 </template>
