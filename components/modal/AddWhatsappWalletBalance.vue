@@ -1,9 +1,9 @@
 <template>
-  <DialogWrapper v-model="walletBalanceModalState" title="Add WhatsApp Credit Balance">
+  <DialogWrapper v-model="walletBalanceModalState" title="Add Credit Balance">
     <div class="text-[15px] font-semibold">
       Current Credits :
       <span>
-        {{ props.usageDetails.whatsappWalletBalance }}
+        {{ props.usageDetails.walletBalance }}
       </span>
     </div>
     <form @submit="handleConnect" class="space-y-3">

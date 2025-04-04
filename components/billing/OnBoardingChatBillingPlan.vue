@@ -148,7 +148,9 @@
             }}
           </button>
           <span v-if="index != 2" class="text-xs text-gray-700 pt-4 text-center font-semibold">No upfront cost, charged only if you continue post-trial</span>
-          <span v-if="index === 2" class="p-4"></span>
+          <span v-if="index === 2" class="text-xs  pt-4 text-gray-700 text-center font-semibold">
+            Custom needs? Reach out to us.
+          </span>
         </div>
       </div>
     </div>

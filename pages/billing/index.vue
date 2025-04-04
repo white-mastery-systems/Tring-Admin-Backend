@@ -64,6 +64,7 @@ const {
   handleConfirmPaymentCancellation,
   navigateToTab,
 } = useBillingComposable();
+
 watch(() => route.query.type,(newType) => {
   selectedTab.value = newType
   breadcrumbStore.setBreadcrumbs([
@@ -73,6 +74,7 @@ watch(() => route.query.type,(newType) => {
     }
   ]);
 }, {immediate: true})
+
 onMounted(() => {
   if (!route.query.type) { // If `type` is not present in the query
     router.push({ query: { type: 'chat' } });
