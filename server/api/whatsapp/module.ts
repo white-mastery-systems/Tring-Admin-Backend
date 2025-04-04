@@ -1,6 +1,6 @@
-import { getWhatsappBotByIntgrationId } from "../../utils/db/bot";
-import { fetchUserByPhoneOrCreate } from "../../utils/db/bot-user";
 import { createChat, createChatMessage, getChatMessagesById } from "../../utils/db/chats";
+import { fetchUserByPhoneOrCreate } from "../../utils/db/bot-user";
+import { getWhatsappBotAndIntgrationId } from "../../utils/db/bot";
 
 const db = useDrizzle();
 
@@ -55,7 +55,7 @@ export const getWhatsappChatHistory = async (chatId: string) => {
 
 export const getWhatsappBotUserAndBot = async (integrationId:string, organizationId:string, userPhone: string, username?: string) => {
   const [botDetails, botUser] = await Promise.all([
-    getWhatsappBotByIntgrationId(integrationId),
+    getWhatsappBotAndIntgrationId(integrationId),
     fetchUserByPhoneOrCreate(userPhone, organizationId, "whatsapp", username || "",),
   ]);
 
