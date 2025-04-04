@@ -7,7 +7,7 @@
         Link channe
       </UiButton> -->
       <div class="flex flex-col w-full items-center overflow-x-scroll sm:flex-row">
-        <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row">
+        <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row py-1">
           <div class="items-cetner flex gap-4">
             <div v-if="botDetails.documentId" class="flex items-center gap-[5px] text-[#1abb00]">
               <div class="flex h-[6px] w-[6px] items-center rounded-full bg-[#1abb00]"></div>
