@@ -87,6 +87,7 @@ import { UserIcon } from 'lucide-vue-next';
 import { useBreadcrumbStore } from "~/store/breadcrumbs";
 import { storeToRefs } from "pinia";
 import { botStore } from "~/store/botStore"; // Import Pinia store
+import { useRouter } from "vue-router";
 
 const { user, clearUser } = await useUser();
 const slideBarStore = botStore();
@@ -100,6 +101,45 @@ const avatarValue = ref(OrgDetails.values?.logo || userInfo.value?.profile_image
 const breadcrumbStore = useBreadcrumbStore();
 const { breadcrumbs } = storeToRefs(breadcrumbStore);
 
+onMounted(async () => {
+  const eventSource = new EventSource("/api/sse");
+  eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data.event === "leads") {
+      toast.success(
+        `A new lead created generated -- ${data.data?.botUser?.name} `,
+        {
+          duration: 10000,
+          // position: "bottom-right",
+          closeButton: true,
+          description: `${data.data?.botUser?.mobile}/${data.data?.botUser?.email}`,
+          action: {
+            label: "View",
+            onClick: () => {
+              return navigateTo({
+                name: "analytics-leads-id",
+                params: { id: data.data?.chatId },
+              });
+            },
+          },
+        },
+      );
+    }
+
+    // Update your component state with the received data
+  };
+  /*************  ✨ Codeium Command ⭐  *************/
+  // Handle any errors that occur when receiving events, such as network errors
+  // or parser errors.
+  /******  5fd36ab0-c1a6-4a11-8f92-1cad8884cf1b  *******/
+  eventSource.onerror = (error) => {
+    console.error("SSE error:", error);
+  };
+
+  return () => {
+    eventSource.close(); // Close the connection when the component unmounts
+  };
+});
 const sliderBarControl = () => {
   slideBarStore.siderBarslider = !slideBarStore.siderBarslider
 }
