@@ -27,7 +27,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 definePageMeta({
   layout: "billing-account",
-  middleware: "user",
+  // middleware: "user",
 });
 
 const route = useRoute();
