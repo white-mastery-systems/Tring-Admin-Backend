@@ -1,13 +1,10 @@
-import { createChat, createChatMessage, getChatMessagesById } from "../../utils/db/chats";
+import { getWhatsappBotByIntgrationId } from "../../utils/db/bot";
 import { fetchUserByPhoneOrCreate } from "../../utils/db/bot-user";
-import { getWhatsappBotAndIntgrationId } from "../../utils/db/bot";
+import { createChat, createChatMessage, getChatMessagesById } from "../../utils/db/chats";
 
 const db = useDrizzle();
 
-export const getIntegrationByOrgId = async (
-  organizationId: string,
-  integrationId?: string | undefined,
-) => {
+export const getIntegrationByOrgId = async (organizationId: string, integrationId?: string | undefined) => {
   if (integrationId) {
     const integrationDetails = await db.query.integrationSchema.findFirst({
       where: and(
@@ -29,14 +26,7 @@ export const getIntegrationByOrgId = async (
   return integrationDetails;
 };
 
-export const sendWhatsappCommand = async (
-  integrationId:string,
-  organizationId:string,
-  metaToken: string,
-  pid: string,
-  userPhone: string,
-  message: string,
-) => {
+export const sendWhatsappCommand = async (integrationId:string, organizationId:string, metaToken: string, pid: string, userPhone: string, message: string) => {
   const { chat, } = await getWhatsappBotUserAndBot(integrationId, organizationId, userPhone);
   const [chatHistory, data] = await Promise.all([
     getWhatsappChatHistory(chat.id),
@@ -63,14 +53,9 @@ export const getWhatsappChatHistory = async (chatId: string) => {
   return messages;
 };
 
-export const getWhatsappBotUserAndBot = async (
-  integrationId:string,
-  organizationId:string,
-  userPhone: string,
-  username?: string,
-) => {
+export const getWhatsappBotUserAndBot = async (integrationId:string, organizationId:string, userPhone: string, username?: string) => {
   const [botDetails, botUser] = await Promise.all([
-    getWhatsappBotAndIntgrationId(integrationId),
+    getWhatsappBotByIntgrationId(integrationId),
     fetchUserByPhoneOrCreate(userPhone, organizationId, "whatsapp", username || "",),
   ]);
 
@@ -83,11 +68,7 @@ export const getWhatsappBotUserAndBot = async (
   return { botDetails, botUser, chat };
 };
 
-export const fetchWhatsappChatOrCreate = async (
-  userId: string,
-  botId: string,
-  orgId: string,
-) => {
+export const fetchWhatsappChatOrCreate = async (userId: string, botId: string, orgId: string) => {
   const chat = await db.query.chatSchema.findFirst({
     where: and(
       eq(chatSchema.botUserId, userId),
