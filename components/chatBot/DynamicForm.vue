@@ -75,7 +75,7 @@
       <CommunicationChannelConfig :botDetails="formFields" :refreshBot="props.refreshBot" />
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full mt-7 mb-6" />
       <div class="text-sm sm:text-sm md:text-base lg:text-lg font-bold"> Add tools </div>
-      <AddTools :botDetails="formFields" :refreshBot="props.refreshBot" />
+      <AddTools :botDetails="formFields" :botData="props.botDetails" :refreshBot="props.refreshBot" />
       <!-- <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full my-8" /> -->
       <!-- <div class="text-[18px] font-bold mt-4"> Add Intents </div> -->
       <!-- <IntentManagement :botDetails="props.botDetails" :refreshBot="props.refreshBot" /> -->
@@ -95,7 +95,6 @@ import { dynamicFormSchema } from "~/validationSchema/botManagement/chatBot/dyna
 const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
 const isLoading = ref(false);
 const route: any = useRoute("chat-bot-id-dynamic-form");
-const botDetails: any = await getBotDetails(route.params.id);
 const { toCamelCase } = useToCamelCase();
 // const formFields = computed(() => props.botDetails.formStructure?.fields ?? []);
 const formFields = ref(props.botDetails.formStructure?.fields ?? []);
