@@ -13,80 +13,82 @@
         Analytics
       </div>
       <UiTabs v-model="activeTab" default-value="voice" class="w-full">
-        <UiTabsList
-          class="grid w-full grid-cols-2 rounded-[10px] border border-[#FFBC42] bg-[#FFF8EB] text-[#3D3D3D] sm:w-full md:w-[30%] lg:w-[20%]">
-          <UiTabsTrigger value="chat" class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white">
-            Chat
-          </UiTabsTrigger>
-          <UiTabsTrigger value="voice" class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white">
-            Voice
-          </UiTabsTrigger>
-        </UiTabsList>
-        <div class="mt-3 flex w-full justify-end gap-2 overflow-x-scroll">
-          <span class="border-1 flex items-center rounded-lg border border-[#FFBC42] text-[15px]"
-            style="color: rgba(138, 138, 138, 1)">
-            <!-- <span class="flex -items-center py-2 pl-2"></span> -->
-            <span class="font-bold text-black">
-              <UiSelect v-model="selectedValue" class="outline-none">
-                <UiSelectTrigger
-                  class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none sm:w-[80px] sm:text-[10px] md:w-[230px] md:text-[14px] lg:w-[230px] lg:text-[14px] xl:w-[230px] xl:text-[14px]">
-                  <span class="min-w-[70px] font-thin text-gray-400">
-                    Summary
-                  </span>
-                  <UiSelectValue />
-                </UiSelectTrigger>
-                <UiSelectContent>
-                  <UiSelectGroup>
-                    <UiSelectItem v-for="(list, index) in dateFilters" :key="index" class="content_align pr-2"
-                      :value="list.value">
-                      <div class="text-left text-[#3D3D3D]">
-                        {{ list.content }}
-                      </div>
-                    </UiSelectItem>
-                    <UiSelectItem value="custom">Custom</UiSelectItem>
-                  </UiSelectGroup>
-                </UiSelectContent>
-              </UiSelect>
+        <!-- Modified to display tabs and filters in the same row -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <!-- Tabs Section -->
+          <UiTabsList
+            class="grid w-full grid-cols-2 rounded-[10px] border border-[#FFBC42] bg-[#FFF8EB] text-[#3D3D3D] sm:w-[30%] md:w-[30%] lg:w-[20%]">
+            <UiTabsTrigger value="chat" class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white">
+              Chat
+            </UiTabsTrigger>
+            <UiTabsTrigger value="voice" class="data-[state=active]:bg-[#FFBC42] data-[state=active]:text-white">
+              Voice
+            </UiTabsTrigger>
+          </UiTabsList>
+
+          <!-- Filters Section (moved from below to same row) -->
+          <div class="flex justify-start sm:justify-start md:justify-end gap-4 overflow-x-auto w-full">
+            <span class="border-1 flex items-center rounded-lg border border-[#FFBC42] text-[15px]"
+              style="color: rgba(138, 138, 138, 1)">
+              <span class="font-bold text-black rounded-xl">
+                <UiSelect v-model="selectedValue" class="outline-none">
+                  <UiSelectTrigger
+                    class="ui-select-trigger flex items-center gap-2 text-[10px] outline-none w-full sm:w-full sm:text-[10px] md:w-[230px] md:text-[14px] lg:w-[230px] lg:text-[14px] xl:w-[230px] xl:text-[14px] rounded-lg">
+                    <span class="min-w-[70px] font-thin text-gray-400">
+                      Summary
+                    </span>
+                    <UiSelectValue />
+                  </UiSelectTrigger>
+                  <UiSelectContent>
+                    <UiSelectGroup>
+                      <UiSelectItem v-for="(list, index) in dateFilters" :key="index" class="content_align pr-2"
+                        :value="list.value">
+                        <div class="text-left text-[#3D3D3D]">
+                          {{ list.content }}
+                        </div>
+                      </UiSelectItem>
+                      <UiSelectItem value="custom">Custom</UiSelectItem>
+                    </UiSelectGroup>
+                  </UiSelectContent>
+                </UiSelect>
+              </span>
             </span>
-          </span>
-          <CustomDateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
+            <CustomDateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
+          </div>
         </div>
+
+        <!-- Content sections remain unchanged -->
         <UiTabsContent value="chat">
           <div class="pt-1 sm:pt-1 md:pt-4">
-            <!-- {{ analyticsData. }} -->
             <div v-if="analyticsData?.length">
               <div class="xs:grid-cols-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 <template v-for="statistics in analyticsData">
                   <StatsCard v-if="
-                      statistics.name === 'conversionRate' ||
-                      statistics.name === 'uniqueVisitors' ||
-                      statistics.name === 'averageSessionDuration'
-                    " :icon="ChatSession" :title="statistics.name" :count="statistics.value" :loading="loading" />
-                  <!-- <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
-                  :count="statistics.value" :loading="loading" /> -->
+                    statistics.name === 'conversionRate' ||
+                    statistics.name === 'uniqueVisitors' ||
+                    statistics.name === 'averageSessionDuration'
+                  " :icon="ChatSession" :title="statistics.name" :count="statistics.value" :loading="loading" />
                 </template>
               </div>
-              <div class="my-6 flex w-full flex-col gap-6 md:flex-row">
+              <!-- {{ analyticsData }} -->
+              <div class="flex flex-col gap-6 md:flex-row my-6">
                 <template v-for="statistics in analyticsData">
-                  <chartCard v-if="statistics" :icon="ChatSession" :botType="activeTab" :title="statistics.name"
-                    :count="statistics.value" :loading="loading">
-                  </chartCard>
+                  <div
+                    :class="[(statistics.name === 'totalConversation') ? 'w-full sm:w-full md:w-full lg:[65%]' : 'w-full sm:w-full md:w-full lg:w-[35%]']"
+                    v-if="statistics.name === 'totalConversation' || statistics.name === 'leadComposition'">
+                    <chartCard v-if="statistics" :icon="ChatSession" :botType="activeTab" :title="statistics.name"
+                      :count="statistics.value" :loading="loading">
+                    </chartCard>
+                  </div>
                 </template>
-                <!-- <template>
-                  <chartCard :analyticsData="analyticsData" :icon="ChatSession" :loading="loading">
-                  </chartCard>
-                </template> -->
               </div>
               <div class="xs:grid-cols-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 <template v-for="statistics in analyticsData">
-                  <!-- v-if="statistics.name === 'reEngagementRate' || statistics.name === 'dropOffRate' || statistics.name === 'leadQualificationAccuracy'" -->
                   <StatsCard v-if="
-                      statistics.name === 'reEngagementRate' ||
-                      statistics.name === 'dropOffRate' ||
-                      statistics.name === 'leadQualificationAccuracy'
-                    " :icon="ChatSession" :title="statistics.name" :count="statistics.value" :loading="loading" />
-                  <!-- <StatusCountCard v-if="statistics" :icon="ChatSession" :title="statistics.name?.replace('_', ' ')"
-                  :count="statistics.value" :loading="loading" /> -->
+                    statistics.name === 'reEngagementRate' ||
+                    statistics.name === 'dropOffRate' ||
+                    statistics.name === 'leadQualificationAccuracy'
+                  " :icon="ChatSession" :title="statistics.name" :count="statistics.value" :loading="loading" />
                 </template>
               </div>
             </div>
@@ -100,40 +102,34 @@
         </UiTabsContent>
         <UiTabsContent value="voice">
           <div class="pt-1 sm:pt-1 md:pt-4">
-            <!-- {{ analyticsData. }} -->
             <div v-if="analyticsData?.length">
               <div class="xs:grid-cols-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 <template v-for="statistics in analyticsData">
                   <StatsCard v-if="
-                      statistics.name === 'conversionRate' ||
-                      statistics.name === 'uniqueVisitors' ||
-                      statistics.name === 'averageSessionDuration'
-                    " :title="statistics.name" :count="statistics.value" :loading="loading" />
-                  <!-- <StatusCountCard v-if="statistics" :title="statistics.name?.replace('_', ' ')"
-                  :count="statistics.value" :loading="loading" /> -->
+                    statistics.name === 'conversionRate' ||
+                    statistics.name === 'uniqueVisitors' ||
+                    statistics.name === 'averageSessionDuration'
+                  " :title="statistics.name" :count="statistics.value" :loading="loading" />
                 </template>
               </div>
-              <div class="my-6 flex w-full flex-col gap-6 md:flex-row">
+              <div class="flex flex-col gap-6 md:flex-row my-6">
                 <template v-for="statistics in analyticsData">
-                  <chartCard v-if="statistics" :title="statistics.name" :botType="activeTab" :count="statistics.value"
-                    :loading="loading">
-                  </chartCard>
+                  <div
+                    :class="[(statistics.name === 'totalConversation') ? 'w-full sm:w-full md:w-full lg:[65%]' : 'w-full sm:w-full md:w-full lg:w-[35%]']"
+                    v-if="statistics.name === 'totalConversation' || statistics.name === 'leadComposition'">
+                    <chartCard v-if="statistics" :icon="ChatSession" :botType="activeTab" :title="statistics.name"
+                      :count="statistics.value" :loading="loading">
+                    </chartCard>
+                  </div>
                 </template>
-                <!-- <template>
-                  <chartCard :analyticsData="analyticsData" :loading="loading">
-                  </chartCard>
-                </template> -->
               </div>
               <div class="xs:grid-cols-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 <template v-for="statistics in analyticsData">
-                  <!-- v-if="statistics.name === 'reEngagementRate' || statistics.name === 'dropOffRate' || statistics.name === 'leadQualificationAccuracy'" -->
                   <StatsCard v-if="
-                      statistics.name === 'reEngagementRate' ||
-                      statistics.name === 'dropOffRate' ||
-                      statistics.name === 'leadQualificationAccuracy'
-                    " :title="statistics.name" :count="statistics.value" :loading="loading" />
-                  <!-- <StatusCountCard v-if="statistics" :title="statistics.name?.replace('_', ' ')"
-                  :count="statistics.value" :loading="loading" /> -->
+                    statistics.name === 'reEngagementRate' ||
+                    statistics.name === 'dropOffRate' ||
+                    statistics.name === 'leadQualificationAccuracy'
+                  " :title="statistics.name" :count="statistics.value" :loading="loading" />
                 </template>
               </div>
             </div>

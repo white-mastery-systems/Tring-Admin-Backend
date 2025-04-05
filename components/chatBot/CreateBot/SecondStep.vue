@@ -64,7 +64,7 @@ const handleLogoChange = (event: any) => {
 </script>
 
 <template>
-  <BotSetupCard title="What kind of Business do you own?" description="Select your industry type and other details"
+  <BotSetupCard title="What kind of Business do you own?" description="Select your basic details and chatbot appearance"
     currentStep="2" totalSteps="5">
     <!-- {{ intentTypes }} || intentTypes -->
     <!-- ✅ Industry selection - FIXED: Using selectedType directly in the class binding -->

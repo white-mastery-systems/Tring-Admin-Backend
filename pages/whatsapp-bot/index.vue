@@ -41,6 +41,7 @@
 <script setup lang="ts">
 import { Icon, UiBadge, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
+import { useBreadcrumbStore } from "~/store/breadcrumbs";
 
 definePageMeta({
   middleware: "admin-only",
@@ -61,9 +62,9 @@ useHead({
 //   limit: "10",
 // });
 
-let page = ref(1);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(1);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 const limit = ref('10')
 
 const filters = computed(() => ({
@@ -111,6 +112,14 @@ const {
 
 const deleteChannelState = ref({ open: false, id: null });
 const channelModalState = ref({ open: false, id: null });
+
+const breadcrumbStore = useBreadcrumbStore();
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Whatsapp Bot", // Dynamic name
+    to: "/whatsapp-bot",
+  },
+]);
 // const channelModalState = defineModel<{ open: boolean; id: any }>({
 //   default: {
 //     open: false,

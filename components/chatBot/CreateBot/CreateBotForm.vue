@@ -4,7 +4,7 @@ import { useForm } from 'vee-validate';
 import { botCreateSchema } from '~/validationSchema/botManagement/chatBot/createBot';
 import { ArrowLeft, Goal } from 'lucide-vue-next';
 import { useBotDocuments } from '~/composables/botManagement/chatBot/useBotDocuments';
-import { useRoute } from 'vue-router'
+import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router';
 import { botStore } from "~/store/botStore";
 import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
 import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
@@ -13,6 +13,7 @@ import { useDocumentUpload } from "~/composables/botManagement/chatBot/useDocume
 
 const step = ref(1);
 const route = useRoute();
+const router = useRouter();
 const paramId: any = route;
 const { status, documents, refresh } = useBotDocuments(route.params.id);
 const scrapData = botStore();
@@ -24,6 +25,11 @@ const isDocumentListOpen = ref(false);
 const intervalId = ref<any>(null); // Store the interval ID
 const logoData = ref()
 const { intentOptions, fetchConfig } = useChatbotConfig();
+
+const showLeaveConfirmation = ref({
+  default: false,
+});
+const pendingNavigation = ref<string | null>(null);
 // const uploadComposable = useDocumentUpload();
 const { uploadStatus, isUploading, uploadError, createDocuments, resetUploadStatus } = useDocumentUpload();
 // const uploadDocumentRef = ref(null);
@@ -62,12 +68,6 @@ watch(() => scrapData, (newscrapData) => {
   setFieldValue("otherGoal", newscrapData.scrapedData.chatbot.goal || "");
 }, { deep: true, immediate: true });
 
-watch(() => botDetails.value, (newDetails) => {
-  if (newDetails) { // Ensure newDetails is not null
-    // setFieldValue('BotName', newDetails?.name ?? '');
-  }
-}, { deep: true, immediate: true });
-
 watch(
   () => status.value,
   (newStatus) => {
@@ -88,19 +88,34 @@ const isDataLoading = computed(() => status.value === "pending");
 
 // ✅ Fields to validate per step
 const stepFields = {
-  1: ["","type"], // Assuming validation for step 1 is based on document length
+  1: ["", "type"], // Assuming validation for step 1 is based on document length
   2: ["BotName", "NAME", "COMPANY", "color", "secondaryColor", "logo"], // Step 2 fields
   3: ["ROLE", "otherRole", "otherGoal"], // Include otherRole and otherGoal for step 3
   4: [""],
   5: [""],
 };
 
-
-onMounted(() => {
-  if (botDetails.value) {
-    console.log(botDetails.value, "botDetails.value -- botDetails.value")
+onBeforeRouteLeave((to, from, next) => {
+  // Skip confirmation if already loading/submitting
+  if (isLoading.value || isSubmitting.value) {
+    next();
+    return;
   }
-})
+
+  // Store the full path we want to navigate to
+  pendingNavigation.value = to.fullPath;
+  showLeaveConfirmation.value.default = true;
+  next(false);
+});
+// Clean up
+onUnmounted(() => {
+  window.removeEventListener('popstate', () => { });
+  if (intervalId.value !== null) {
+    clearInterval(intervalId.value);
+    intervalId.value = null;
+    scrapData.scrapedData = [];
+  }
+});
 const nextStep = async () => {
   const fieldsToValidate = stepFields[step.value] || [];
   let isValid = true;
@@ -180,17 +195,64 @@ const firstStepBack = () => {
 const getLogoChange = (file: any, logo: any) => {
   logoData.value = file
 };
-// const triggerPDFUpload = () => {
-//   if (uploadDocumentRef.value) {
-//     uploadDocumentRef.value.generatePDFAndUpload();
-//   }
-// };
+
+const handleLeaveConfirm = async () => {
+  try {
+    // Cleanup first
+    if (intervalId.value) {
+      clearInterval(intervalId.value);
+      intervalId.value = null;
+    }
+    if (scrapData.scrapedData) {
+      scrapData.scrapedData = [];
+    }
+
+    // Store the navigation path before cleanup
+    const path = pendingNavigation.value;
+
+    // Close dialog and clear pending navigation
+    showLeaveConfirmation.value.default = false;
+    pendingNavigation.value = null;
+
+    // Perform navigation
+    if (path) {
+      window.location.href = path;
+      // Delete bot after navigation
+      try {
+        await deleteBot(route.params.id);
+        // console.log('Bot deleted successfully');
+      } catch (deleteError) {
+        console.error('Error deleting bot:', deleteError);
+      }
+
+    }
+  }
+  catch (error) {
+    try {
+      // Multiple fallback strategies
+      if (document.referrer) {
+        await navigateTo(document.referrer);
+      } else {
+        await navigateTo('/chat-bot');
+      }
+    } catch (fallbackError) {
+      console.error('Fallback navigation failed:', fallbackError);
+      // Absolute last resort
+      window.location.href = '/chat-bot';
+    }
+  }
+};
+// Cancel navigation
+const handleLeaveCancel = () => {
+  showLeaveConfirmation.value.default = false;
+  pendingNavigation.value = null;
+};
+
 // ✅ Final form submission
 const submitForm = handleSubmit(async (values) => {
   await refreshBot()
   let uploadedDetails = null;
   if (typeof logoData.value === "object") {
-    console.log(logoData.value, "logoData.value -- logoData.value")
     uploadedDetails = await uploadLogo(botDetails.value.id, logoData.value.file);
   }
   isLoading.value = true;
@@ -254,7 +316,7 @@ const submitForm = handleSubmit(async (values) => {
       },
     };
 
-    await updateBotDetails(payload,false);
+    await updateBotDetails(payload, false);
     if (botDetails.value?.documents.length === 1) {
       await checkDocumentStatus(botDetails.value?.documents[0]);
     } else {
@@ -273,7 +335,7 @@ const submitForm = handleSubmit(async (values) => {
   // isLoading.value = false
 });
 
-const checkDocumentStatus = async (selectedDocumentStatus: any) => {
+const checkDocume6ntStatus = async (selectedDocumentStatus: any) => {
   if (status.value !== "success") return;
 
   // First check if the document is already ready before showing loading state and toast
@@ -281,11 +343,11 @@ const checkDocumentStatus = async (selectedDocumentStatus: any) => {
   const selectedDocument = botDetails.value?.documents.find(
     document => document.id === selectedDocumentStatus.id
   );
-  
+
   // If the document is already ready, don't show the deployment toast or start interval
   if (selectedDocument && selectedDocument.status === "ready") {
     isLoading.value = false;
-    
+
     if (!documents.value?.documentId) {
       try {
         await handleActivateBot();
@@ -314,10 +376,10 @@ const checkDocumentStatus = async (selectedDocumentStatus: any) => {
     const selectedDocument = botDetails.value?.documents.find(
       document => document.id === selectedDocumentStatus.id
     );
-    
+
     // Check if the document exists before accessing its status
     const documentStatus = selectedDocument ? selectedDocument.status : null;
-    
+
     // Show toast every 16 seconds (i.e., every second iteration of 8-sec polling)
     toastInterval += 8;
     if (toastInterval % 12 === 0 && documentStatus !== "ready") {
@@ -370,11 +432,11 @@ const handleActivateBot = async () => {
       return;
     }
   }
-  
+
   isSubmitting.value = false;
   isLoading.value = false
   isDocumentListOpen.value = true;
-  
+
 };
 const singleDocumentDeploy = async (list: any) => {
   isLoading.value = true
@@ -399,6 +461,7 @@ onUnmounted(() => {
 
 <template>
   <div class="h-[calc(100dvh-2.5rem)] overflow-y-auto">
+
     <!-- <div>
       <LoadingOverlay :loading="isLoading" class="w-[80%]" />
     </div> -->
@@ -471,5 +534,8 @@ onUnmounted(() => {
         </UiButton>
       </UiDialogContent>
     </LazyUiDialog>
+    <CancelorNot v-model:open="showLeaveConfirmation.default" title="Exit Chatbot Creation?"
+      description="You're in the middle of creating a chatbot. If you leave now, any unsaved changes will be lost. Do you want to continue?"
+      @confirm="handleLeaveConfirm" @cancel="handleLeaveCancel" />
   </div>
 </template>

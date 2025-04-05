@@ -82,8 +82,7 @@ const changeKnowledge = () => {
 </script>
 
 <template>
-  <BotSetupCard title="Build Your Bot’s Knowledge"
-    description="Import your company details and goals through your website link, by document upload, or by text input (Can select either one)"
+  <BotSetupCard title="Build Your Bot’s Knowledge" :description="(selectedType === 'Website') ? 'Import your company details and goals through your website link, by document upload, or by text input' : (selectedType === 'Document') ? 'Import your company details and goals through your website link, by document upload, or by text input' : (selectedType === 'Text') ? 'Import your company details and goals through your website link, by document upload, or by text input' : 'Select your industry type and source of knowledge' "
     currentStep="1" totalSteps="5">
     <div class="flex flex-col items-center text-center h-full w-full"
       :class="selectedType ? 'justify-start' : 'justify-center'">
@@ -101,9 +100,9 @@ const changeKnowledge = () => {
               <RadioGroupItem :id="intent.value" :value="intent.value" class="peer hidden" />
               <Label :for="intent.value"
                 class="w-full h-full border flex items-center justify-center p-4 rounded-lg bg-[#fffff] transition-all duration-300"
-                :class="[type === intent.value ? 'border-3 border-[#FFBC42] bg-[#FFF8EB]' : 'border-1 border-[#FFBC42]']">
+                :class="[type === intent.value ? 'border-3 border-[#FFBC42] bg-[#FFBC42]' : 'border-1 border-[#D9D9D9]']">
                 <component :is="intent.icon" class="w-[30px] h-[30px] sm:w-[30px] sm:h-[30px] md:w-[50px] md:h-[50px]"
-                  :class="[(type === intent.value) ? 'text-[#FFBC42]' : '']" :stroke-width="0.75" />
+                  :class="[(type === intent.value) ? 'text-[#FFFFFF]' : '']" :stroke-width="0.75" />
               </Label>
               <div class="text-[10px] sm:text-[10px] md:text-[12px] font-medium mt-2 text-center">{{ intent.label }}
               </div>

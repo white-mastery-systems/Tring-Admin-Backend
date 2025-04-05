@@ -1,3 +1,4 @@
+import { inArray } from "drizzle-orm"
 import { InsertAdminSubscription } from "~/server/schema/admin"
 
 const db = useDrizzle()
@@ -11,7 +12,7 @@ export const getOrgSubscriptionId = async (organizationId: string) => {
     where: and(
       eq(adminSubscriptionSchema.organizationId, organizationId),
       isNotNull(adminSubscriptionSchema.subscriptionId),
-      eq(adminSubscriptionSchema.subscriptionStatus, "active"),
+      inArray(adminSubscriptionSchema.subscriptionStatus, ["active", "trial"])
     )
   })
 }
