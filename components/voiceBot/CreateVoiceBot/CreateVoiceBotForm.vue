@@ -370,10 +370,19 @@ const submitForm = handleSubmit(async (values) => {
   }
   else if (!["tring", "google", "deepgram"].includes(values.provider_tts)) {
    updatedTTSConfig.provider = "elevenlabs"
-    const elevenlabsConfig = {
-      voice: values.elevenlabsvoice || "",
+    const elevenlabsConfig:any = {
+      voice: values.voice || values.elevenlabsvoice || "",
       model: values.model || "eleven_turbo_v2",
     };
+    updatedTTSConfig.provider = "elevenlabs"
+    const TTSIntegrationList:any = await $fetch("/api/tts-integration", { method: "GET"}) || {}
+    
+    const TTSIntegration = [...TTSIntegrationList].find((item: any) => item.ttsIntegrationName === values.provider_tts)
+    updatedTTSConfig.integratedTtsProvider === TTSIntegration?.ttsIntegrationName || values.provider_tts
+
+    if (TTSIntegration.metadata?.apiKey) {
+      elevenlabsConfig.api_key = TTSIntegration.metadata.apiKey
+    }
 
     // Always include these parameters regardless of model
     elevenlabsConfig.stability = 0.5;
