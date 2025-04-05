@@ -10,8 +10,6 @@ import { healthcareVoiceInboundPrompt } from "./voicebot-prompt-templates/health
 import { healthcareVoiceOutboundPrompt } from "./voicebot-prompt-templates/healthcare/outbound";
 import { hospitalityVoiceInboundPrompt } from "./voicebot-prompt-templates/hospitality/inbound";
 import { hospitalityVoiceOutboundPrompt } from "./voicebot-prompt-templates/hospitality/outbound";
-import { insuranceVoiceInboundPrompt } from "./voicebot-prompt-templates/insurance/inbound";
-import { insuranceVoiceOutboundPrompt } from "./voicebot-prompt-templates/insurance/outbound";
 import { logisticsVoiceInboundPrompt } from "./voicebot-prompt-templates/logistics/inbound";
 import { logisticsVoiceOutboundPrompt } from "./voicebot-prompt-templates/logistics/outbound";
 import { realEstateVoiceInboundPrompt } from "./voicebot-prompt-templates/real-estate/inbound";
@@ -50,6 +48,7 @@ export let defaultSpeechToTextConfig = {
 
 export let defaultTextToSpeechConfig = {
     "provider": "google",
+    "integratedTtsProvider": "google",
     "google": {
         "name": "en-IN-Neural2-A",
         "speaking_rate": 1,
