@@ -76,7 +76,7 @@ export default defineEventHandler(async (event) => {
         },
         organizationId: org.id,
         isVerified: true,
-        customerId: subscriptionData?.customerId
+        customerId: zohoCustomerDetail?.customer_id
       })
     }
 

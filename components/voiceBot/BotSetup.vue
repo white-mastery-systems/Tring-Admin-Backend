@@ -245,15 +245,15 @@
       </form>
     </div>
   </div>
-</Template>
+</template>
 <script setup lang="ts">
-import { useForm, FieldArray } from "vee-validate";
+import { useElevenLabsModels } from '@/composables/botManagement/voiceBot/useElevenLabsModelsComposable';
+import { useElevenLabsVoices } from '@/composables/botManagement/voiceBot/useElevenLabsTTSIntegration';
+import { useIntegrations } from '@/composables/botManagement/voiceBot/useTtsIntegrations';
 import { toTypedSchema } from "@vee-validate/zod";
+import { FieldArray, useForm } from "vee-validate";
 import CloseIcon from "~/components/icons/CloseIcon.vue";
 import { useBreadcrumbStore } from "~/store/breadcrumbs";
-import { useIntegrations } from '@/composables/botManagement/voiceBot/useTtsIntegrations';
-import { useElevenLabsVoices } from '@/composables/botManagement/voiceBot/useElevenLabsTTSIntegration';
-import { useElevenLabsModels } from '@/composables/botManagement/voiceBot/useElevenLabsModelsComposable';
 import { combinedValidationSchema } from "~/validationSchema/botManagement/voiceBot/EditVoiceBotValidation";
 
 
@@ -419,7 +419,7 @@ watch(botData, () => {
   if (botData.value) {
     // Load TTS configuration
     if (botData.value.textToSpeechConfig) {
-      setFieldValue("tts.provider", botData.value.textToSpeechConfig.provider);
+      setFieldValue("tts.provider", (["elevenlabs"].includes(botData.value.textToSpeechConfig.provider) ? botData.value.textToSpeechConfig.integratedTtsProvider : botData.value.textToSpeechConfig.provider));
       
       // Google specific settings
       if (botData.value.textToSpeechConfig.google) {
@@ -437,6 +437,7 @@ watch(botData, () => {
         setFieldValue("tts.similarityBoost", botData.value.textToSpeechConfig.elevenlabs.similarity_boost);
         setFieldValue("tts.style", botData.value.textToSpeechConfig.elevenlabs.style);
         setFieldValue("tts.useSpeakerBoost", botData.value.textToSpeechConfig.elevenlabs.use_speaker_boost);
+        setFieldValue("tts.apikey", botData.value.textToSpeechConfig.elevenlabs.api_key || '');
       }
       
       // Deepgram specific settings
@@ -564,7 +565,8 @@ const apikeyunmasking = ($event) => {
 // Helper function to format TTS config
 function formatTtsConfig(ttsValues) {
   const config = {
-    provider: ttsValues.provider || 'google'
+    provider: (["google","tring","deepgram"].includes(ttsValues.provider)) ? ttsValues.provider: (ttsValues.provider) ? "elevenlabs": "google",
+    integratedTtsProvider: ttsValues.provider || "google"
   };
   
   if (ttsValues.provider === 'google') {
@@ -586,7 +588,10 @@ function formatTtsConfig(ttsValues) {
     config.deepgram = {
       voice: ttsValues.voice || "aura-asteria-en"
     };
-  } else if (ttsValues.provider !== 'tring' && ttsValues.provider !== 'google' && ttsValues.provider !== 'deepgram') {
+  } else if (!["tring", "google", "deepgram"].includes(ttsValues.provider)) {
+    const customProvider:any = integrationsData.value.find((integration:any) => integration.ttsIntegrationName === ttsValues.provider);
+    config.provider = customProvider?.provider || "elevenlabs";
+
     // Handle ElevenLabs or other providers
     const elevenlabsConfig = {
       voice: ttsValues.elevenlabsvoice || "",
@@ -599,6 +604,10 @@ function formatTtsConfig(ttsValues) {
       elevenlabsConfig.style = ttsValues.style || 0.5;
       elevenlabsConfig.use_speaker_boost = ttsValues.useSpeakerBoost || false;
     }
+
+    if(customProvider.metadata?.apiKey) {
+      elevenlabsConfig.api_key = customProvider.metadata.apiKey;
+    } 
     
     if (ttsValues.apikey) {
       elevenlabsConfig.api_key = ttsValues.apikey;
@@ -686,4 +695,3 @@ watch(errors, (newErrors) => {
   console.log("Errors:", newErrors);
 })
 </script>
-
