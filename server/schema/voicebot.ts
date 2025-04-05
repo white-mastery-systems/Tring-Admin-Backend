@@ -30,6 +30,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   }),
   textToSpeechConfig: jsonb("text_to_speech_config").default({
     "provider": "google",
+    "integratedTtsProvider": "google",
     "google": {
         "name": "en-IN-Neural2-A",
         "speaking_rate": 1,

@@ -125,7 +125,7 @@ export const createSubscription: any = async ({
       const regenerateAccessTokenMetadata = await retrieveZohoBillingNewAccessToken(metaData)
       return createSubscription({ organizationId, userDetails, body, metaData: regenerateAccessTokenMetadata, orgDetails })
     } else if(error.status === 400) {
-      return 
+      throw new Error(error?.response?.message || "Unable to create subscription") 
     }
   }
 }
@@ -149,7 +149,9 @@ export const cancelZohoSubscription: any = async(subscriptionId: string, metaDat
     if(error.status === 401) {
       const regenerateAccessTokenMetadata = await retrieveZohoBillingNewAccessToken(metaData)
       return cancelZohoSubscription(subscriptionId, regenerateAccessTokenMetadata)
-    } 
+    } else if(error.status === 400) {
+      throw new Error(error?.response?.message || "Unable to cancel subscription") 
+    }
   }
 }
 
