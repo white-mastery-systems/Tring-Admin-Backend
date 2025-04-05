@@ -28,8 +28,9 @@ export default defineEventHandler(async (event) => {
         if(orgChatBotCount >= extraBotLimit) {
           return errorResponse(event, 400, `You can create only ${extraBotLimit} extra chatbots for this plan`)
         }
+      } else {
+        return errorResponse(event, 400, `You can create only ${botPlanLimit} ${botPlanLimit > 1 ? "chatbots" : "chatbot"} for this plan`)
       }
-      return errorResponse(event, 400, `You can create only ${botPlanLimit} ${botPlanLimit > 1 ? "chatbots" : "chatbot"} for this plan`)
     }
 
     const body: any = await isValidBodyHandler(event, z.object({
