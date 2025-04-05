@@ -10,6 +10,7 @@ const scrapData = botStore();
 const text = ref(scrapData.scrapedData?.knowledge_base?.document_content || "");
 const route = useRoute();
 const props = defineProps<{
+  IndustryType: string;
   refresh: () => void
 }>();
 const { createDocuments ,uploadStatus, isUploading, uploadError } = useDocumentUpload();
@@ -52,7 +53,7 @@ const generatePDFAndUpload = async () => {
 
   // Convert PDF to Blob
   const pdfBlob = pdf.output("blob");
-  const pdfFile = new File([pdfBlob], "document.pdf", { type: "application/pdf" });
+  const pdfFile = new File([pdfBlob], `${props.IndustryType}-document.pdf`, { type: "application/pdf" });
   // Prepare Payload
   const payload = {
     botId: route.params.id,

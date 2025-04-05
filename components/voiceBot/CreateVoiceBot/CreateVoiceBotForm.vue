@@ -27,7 +27,7 @@ const showNextButton = computed(() => (step.value < 6) && !!values?.selectedType
 const showBackButton = computed(() => (step.value === 1) && values?.selectedType)
 const { knowledgeBaseData, status,voiceKnowLoader, error: knowledgeBaseError, fetchKnowledgeBase } = useVoicebotKnowledgeBase();
 const pendingNavigation = ref<string | null>(null);
-
+const bypassConfirmation = ref(false);
 const showLeaveConfirmation = ref({
   default: false,
 });
@@ -47,8 +47,8 @@ const { errors, values, handleSubmit, validateField, validate, setFieldValue } =
 
 watch(() => values.type, async (newType) => {
   if (newType) {
-    await fetchConfig(newType)
-    await fetchKnowledgeBase(newType)
+    // await fetchConfig(newType)
+    // await fetchKnowledgeBase(newType)
     scrapData.voiceBotScrapedData = []
     // fetchSuggestions(newType)
   }
@@ -80,7 +80,7 @@ const stepFields = {
 
 onBeforeRouteLeave((to, from, next) => {
   // Skip confirmation if already loading/submitting
-  if (isLoading.value || isSubmitting.value) {
+  if (isLoading.value || isSubmitting.value || bypassConfirmation.value) {
     next();
     return;
   }
@@ -119,7 +119,9 @@ const nextStep = async () => {
       isValid = false;
     }
   }
-
+  if (step.value === 2) {
+    await fetchConfig(values.type)
+  }
   // Special handling for step 3 (Role)
   if (step.value === 3) {
     if (!values.role) {
@@ -292,11 +294,21 @@ const handleLeaveCancel = () => {
 };
 
 const submitForm = handleSubmit(async (values) => {
-  // STT config
+  // Set submission state to true
+  isSubmitting.value = true;
+  bypassConfirmation.value = true;
+
+  // Clear the cancel dialog if it's showing
+  handleLeaveCancel();
+
   if (!values.provideraccountname) {
+    isSubmitting.value = false;
+    bypassConfirmation.value = false;
     return toast.error('Please select a provider account name');
-  } 
+  }
   if (!values.incomingPhoneNumber) {
+    isSubmitting.value = false;
+    bypassConfirmation.value = false;
     return toast.error('Please enter an incoming phone number');
   }
 
@@ -342,10 +354,8 @@ const submitForm = handleSubmit(async (values) => {
     };
   }
 
-// TTS config
-
+  // TTS config
   const updatedTTSConfig = {
-
     // Use submitted provider or fallback to existing one
     provider: values.provider_tts || 'google', // Default to 'google'
   };
@@ -360,7 +370,7 @@ const submitForm = handleSubmit(async (values) => {
     }
   }
   else if (values.provider_tts !== 'tring' && values.provider_tts !== 'google' && values.provider_tts !== 'deepgram') {
-   
+
     const elevenlabsConfig = {
       voice: values.elevenlabsvoice || "",
       model: values.model || "eleven_turbo_v2",
@@ -376,26 +386,16 @@ const submitForm = handleSubmit(async (values) => {
       elevenlabsConfig.use_speaker_boost = false;
     }
 
-    // Set the API key if provided
-    // if (values.apikey) {
-    //   elevenlabsConfig.api_key = values.apikey;
-    // }
-
     updatedTTSConfig.elevenlabs = elevenlabsConfig;
-
   }
   else if (values.provider_tts === "deepgram") {
     // Deepgram config
     updatedTTSConfig.deepgram = {
-      // ...botData.value?.textToSpeechConfig.deepgram, // Keep existing Deepgram config
       voice: values.deepgramvoice || "aura-asteria-en",
-      // amplification_factor: values.amplificationFactor !== undefined ? values.amplificationFactor : botData.value?.textToSpeechConfig.deepgram.amplification_factor || 2,
-      // Add any other necessary Deepgram-specific fields similarly
     }
   }
   else if (values.provider_tts === "tring") {
     updatedTTSConfig.tring = {
-      // ...botData.value?.textToSpeechConfig.deepgram, // Keep existing Deepgram config
       speed: 1,
       speaker: "",
       silence_pad: 250,
@@ -430,8 +430,8 @@ const submitForm = handleSubmit(async (values) => {
       temperature: values.temperature,
       max_output_token: values.max_output_token,
     },
-
   }
+
   try {
     // Create the bot
     const newBot = await $fetch(`/api/voicebots`, {
@@ -439,13 +439,8 @@ const submitForm = handleSubmit(async (values) => {
       body: payload,
     });
 
-    // // Make sure we have the bot ID before proceeding
-    // if (!newBot?.id) {
-    //   return toast.error('Failed to get new bot ID');
-    // }
-
     // Set active status for deployment
-    const activateBot = true; // or whatever logic you need to determine activation
+    const activateBot = true;
 
     // Deploy the bot
     try {
@@ -457,70 +452,32 @@ const submitForm = handleSubmit(async (values) => {
       });
 
       if (deployedBot.active) {
+        // Direct navigation without confirmation dialog
         await navigateTo({
           name: "voice-bot-id",
           params: { id: newBot.id },
         });
+
         scrapData.createBotVoiceSuccessfulState.open = true;
         scrapData.createBotVoiceSuccessfulState.handleContent = false;
-        setTimeout(() => { // Fixed typo: settimeout → setTimeout
+        setTimeout(() => {
           toast.success("Activated successfully");
         }, 2000);
       } else {
+        isSubmitting.value = false;
+        bypassConfirmation.value = false;
         toast.error("Deactivation failed");
       }
     } catch (error) {
+      isSubmitting.value = false;
+      bypassConfirmation.value = false;
       toast.error(error.statusMessage || "Error deploying bot");
     }
   } catch (error) {
+    isSubmitting.value = false;
+    bypassConfirmation.value = false;
     toast.error(error.statusMessage || "Error creating bot");
   }
-  // try {
-  //   const getSingleVoiceBotDetails = await $fetch(`/api/voicebots`, {
-  //         method: "POST",
-  //         body: payload,
-  //       });
-  //       console.log('getSingleVoiceBotDetails --- getSingleVoiceBotDetails', getSingleVoiceBotDetails);
-  //       // await refreshBot()
-  //       if (!getDetails.ivrConfig) {
-  //         return
-  //       }
-  //       let getActive = getDetails.active
-  //       getActive = !getActive
-  //       try {
-  //         const voiceBotDetails = await $fetch(`/api/voicebots/${getSingleVoiceBotDetails?.id}/deploy`, {
-  //           method: "PUT", body: {
-  //             active: getActive,
-  //           },
-  //         });
-  //         // await refreshBot()
-  //         if (voiceBotDetails.active) {
-  //             await navigateTo({
-  //               name: "voice-bot-id",
-  //               params: { id: getSingleVoiceBotDetails?.id },
-  //             });
-  //           scrapData.createBotVoiceSuccessfulState.open = true
-  //           scrapData.createBotVoiceSuccessfulState.handleContent = false
-  //           settimeout(() => {
-  //             toast.success("Activated successfully");
-  //           },2000)
-  //         } else {
-  //           toast.error("Deactivated successfully")
-  //         }
-  //       } catch (error) {
-          
-  //         toast.error(error.statusMessage);
-  //       }
-  // } catch (error) {
-  //   toast.error(error.statusMessage);
-  // }
-
-  // const getDetails = await updateLLMConfig(payload, paramId.params.id, "The voice bot has been integraded successfully.");
-  // if (!values.provideraccountname) {
-  //   toast.error("Please provide a value for Role");
-  // } else {
-  //   toast.error("Please provide account name ");
-  // }
 })
 onUnmounted(() => {
   scrapData.voiceBotScrapedData = []
