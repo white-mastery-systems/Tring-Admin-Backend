@@ -3,7 +3,7 @@ import { getLeadComposition } from "./leads";
 import { getAnalyticsGraph, getOrgInteractedChatsForAnalytics, totalSessionDuration } from "./chats";
 import { getUniqueVisitorsForAnalytics } from "./uniqueVisitors";
 import { getOrgReEnagedBotUsers, getOrgTotalBotUsers } from "./bot-user";
-import { getUniqueCallNumbers, getVoicebotReEngagementRate } from "./voicebot";
+import { getUniqueCallNumbers, getVoicebotReEngagementRate, getVoiceCallClassificationCounts, getVoiceQualificationAccuracy } from "./voicebot";
 
 
 export const getOrgAnalytics = async ( 
@@ -59,7 +59,8 @@ export const getOrgAnalytics = async (
       const totalLeads = await getOrgLeadsForAnalytics(organizationId, fromDate, toDate)
 
       const dropOffRate = totalLeads > 0 ? `${Math.round((dropOffConversation / totalLeads) *100)}%` : 0
-      
+
+  
       return {
         conversionRate,
         uniqueVisitors: uniqueVisitors.length,
@@ -80,6 +81,7 @@ export const getOrgAnalytics = async (
 
       // Re-enagement Rate
       const reEngagementRateForCalls = await getVoicebotReEngagementRate(organizationId, fromDate, toDate)
+
       //--Total calls 
       const totalCallLogs = await getOrgTotalCalls(organizationId, fromDate, toDate)
 
@@ -93,19 +95,36 @@ export const getOrgAnalytics = async (
 
       const averageSessionDurationInMinutes = averageSessionDuration > 0 ? Math.round(averageSessionDuration / 60) : 0
 
+      // drop off rate
+      const dropOffCallConversation = await getDropOffConversation(organizationId, fromDate, toDate)
+      const dropOffCallRate = totalCallLogs.length > 0 ? `${Math.round((dropOffCallConversation / totalCallLogs.length) * 100)}%` : 0
+
+      // convsersation rate
+      const getQualifiedCallLogs = await getQualifiedCalls(organizationId, fromDate, toDate)
+      const voiceConversionRate = totalCallLogs.length > 0
+      ? `${Math.round((getQualifiedCallLogs / totalCallLogs.length) * 100)}%` : '0%'
+      
+      // Total Conversation
       const totalConversationGraph = await getAnalyticsGraph({ totalConversation: totalCallLogs, period: query?.period, fromDate, toDate, timeZone})
 
-       return {
-        conversionRate: "0%",
+      // Voice Lead qualification Accuracy
+      const getVoiceQualification = await getVoiceQualificationAccuracy(organizationId, fromDate, toDate)
+      const voiceQualificationAccuracy = getVoiceQualification.leadQualificationAccuracy
+
+      // voice lead composition
+      const voiceLeadComposition = await getVoiceCallClassificationCounts(organizationId, fromDate, toDate)      
+
+      return {
+        conversionRate: voiceConversionRate,
         uniqueVisitors: uniqueCallNumbers,
         averageSessionDuration: averageSessionDurationInMinutes,
-        totalConversation: totalConversationGraph,
-        leadQualificationAccuracy: "0%",
+        totalConversation: totalConversationGraph ?? [],
+        leadQualificationAccuracy: voiceQualificationAccuracy,
         reEngagementRate: reEngagementRateForCalls.reEngagementRate,
-        dropOffRate: "Coming Soon",
-        leadComposition: {},
+        dropOffRate: dropOffCallRate,
+        leadComposition: voiceLeadComposition,
         resolutionRate: "Coming Soon",
-       }
+      }
     }
     
   } catch (error: any) {

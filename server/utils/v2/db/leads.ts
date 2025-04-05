@@ -105,7 +105,7 @@ export const getDropOffConversation = async (organizationId: string, fromDate: D
     const buyerSignals = metadata.buyerSignals || [];
 
     return (
-      metrics.dropOffRate === true
+      metrics.dropOff === true
     );
    })
 
