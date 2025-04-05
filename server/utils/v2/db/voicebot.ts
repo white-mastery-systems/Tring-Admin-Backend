@@ -124,7 +124,7 @@ export const getVoicebotReEngagementRate = async (
 
   // 1. Total Unique Callers
   const uniqueCallers = await db
-    .select({
+    .select({ 
       count: sql<number>`COUNT(DISTINCT ${callLogSchema.from})`
     })
     .from(callLogSchema)
@@ -151,4 +151,139 @@ export const getVoicebotReEngagementRate = async (
     returningCallers: reengaged,
     reEngagementRate: `${Math.round(rate)}%`
   }
+}
+
+export const getVoiceDropoffCalls = async (
+  organizationId: string,
+  fromDate?: Date,
+  toDate?: Date
+) => {
+  const data = await db
+  .select({ metrics: callLogSchema.metrics })
+  .from(callLogSchema)
+  .where(
+    and(
+      eq(callLogSchema.organizationId, organizationId),
+      ...(fromDate && toDate
+        ? [
+            gte(callLogSchema.createdAt, fromDate),
+            lte(callLogSchema.createdAt, toDate),
+          ]
+        : []),
+      isNotNull(callLogSchema.metrics)
+    )
+  )
+  
+  const dropoffCalls = data.filter((item: any) => {
+    const metrics = item?.metrics
+    return metrics?.dropOffRate === true
+  })
+ 
+  return dropoffCalls.length || 0
+}
+
+export const getQualifiedCalls = async(organizationId: string,
+  fromDate?: Date,
+  toDate?: Date) => {
+  const data = await db
+  .select({ metrics: callLogSchema.metrics })
+  .from(callLogSchema)
+  .where(
+    and(
+      eq(callLogSchema.organizationId, organizationId),
+      ...(fromDate && toDate
+        ? [
+            gte(callLogSchema.createdAt, fromDate),
+            lte(callLogSchema.createdAt, toDate),
+          ]
+        : []),
+      isNotNull(callLogSchema.metrics)
+    )
+  )
+
+  const qualifiedCalls = data.filter((item: any) => {
+    const metrics = item?.metrics
+    return (metrics.leadClassification === "warm" || metrics.leadClassification === "hot")
+  })
+
+  return qualifiedCalls.length || 0
+}
+
+
+export const getVoiceQualificationAccuracy = async (
+  organizationId: string,
+  fromDate?: Date,
+  toDate?: Date
+) => {
+  const baseConditions = [
+    eq(callLogSchema.organizationId, organizationId),
+    ...(fromDate && toDate
+      ? [gte(callLogSchema.createdAt, fromDate), lte(callLogSchema.createdAt, toDate)]
+      : [])
+  ]
+
+  const qualifiedCondition = sql`(metrics->>'leadClassification') IN ('hot', 'warm', 'cold')`
+  const accurateCondition = sql`(metrics->>'leadClassification') IN ('hot', 'warm')`
+
+  // Qualified leads
+  const qualifiedLeads = await db
+    .select({ count: sql<number>`COUNT(*)` })
+    .from(callLogSchema)
+    .where(and(...baseConditions, qualifiedCondition))
+
+  // Accurate leads
+  const accurateLeads = await db
+    .select({ count: sql<number>`COUNT(*)` })
+    .from(callLogSchema)
+    .where(and(...baseConditions, accurateCondition))
+
+  const qualified = qualifiedLeads[0]?.count || 0
+  const accurate = accurateLeads[0]?.count || 0
+  const accuracy = qualified > 0 ? (accurate / qualified) * 100 : 0
+
+  return {
+    totalQualified: qualified,
+    accurateLeads: accurate,
+    leadQualificationAccuracy: `${Math.round(accuracy)}%`,
+  }
+}
+
+export const getVoiceCallClassificationCounts = async (
+  organizationId: string,
+  fromDate?: Date,
+  toDate?: Date
+) => {
+  const baseConditions = [
+    eq(callLogSchema.organizationId, organizationId),
+    ...(fromDate && toDate
+      ? [gte(callLogSchema.createdAt, fromDate), lte(callLogSchema.createdAt, toDate)]
+      : [])
+  ]
+
+  const results = await db
+    .select({
+      leadClassification: sql<string>`metrics->>'leadClassification'`,
+      count: sql<number>`COUNT(*)`,
+    })
+    .from(callLogSchema)
+    .where(and(...baseConditions))
+    .groupBy(sql`metrics->>'leadClassification'`)
+
+  // Initialize leadComposition with default values
+  const leadComposition = {
+    warmLeads: 0,
+    hotLeads: 0,
+    coldLeads: 0,
+    junkLeads: 0,
+  }
+
+  for (const row of results) {
+    const classification = row.leadClassification?.toLowerCase()
+    if (classification === "hot") leadComposition.hotLeads = Number(row.count)
+    else if (classification === "warm") leadComposition.warmLeads = Number(row.count)
+    else if (classification === "cold") leadComposition.coldLeads = Number(row.count)
+    else if (classification === "junk") leadComposition.junkLeads = Number(row.count)
+  }
+
+  return leadComposition
 }
