@@ -50,7 +50,12 @@ export function usePlanSelection(userDetails: any, orgBilling: any, organization
             },
           },
         );
-        navigateTo(hostedPageUrl?.hostedpage?.url, {
+        if (!response?.hostedpage?.url) {
+          toast.error("Invalid redirect URL received");
+          return;
+        }
+
+        await navigateTo(hostedPageUrl?.hostedpage?.url, {
           external: true,
           // open: {
           //   target: "_blank",

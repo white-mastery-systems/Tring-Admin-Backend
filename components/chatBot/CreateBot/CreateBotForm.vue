@@ -25,7 +25,7 @@ const isDocumentListOpen = ref(false);
 const intervalId = ref<any>(null); // Store the interval ID
 const logoData = ref()
 const { intentOptions, fetchConfig } = useChatbotConfig();
-
+const bypassConfirmation = ref(false);
 const showLeaveConfirmation = ref({
   default: false,
 });
@@ -48,11 +48,11 @@ const showNextButton = computed(() => (step.value < 5) && !!values?.selectedType
 const showBackButton = computed(() => (step.value === 1) && values?.selectedType)
 
 // ✅ Watch errors for debugging (optional)
-watch(() => values.type, (newType) => {
-  if (newType) {
-    fetchSuggestions(newType);
-  }
-});
+// watch(() => values.type, (newType) => {
+//   if (newType) {
+//     fetchSuggestions(newType);
+//   }
+// });
 watch(() => scrapData, (newscrapData) => {
   if (!newscrapData) return;
   const extractHSLValues = (hslString) => hslString.replace(/hsl\(|\)/g, "");
@@ -97,7 +97,7 @@ const stepFields = {
 
 onBeforeRouteLeave((to, from, next) => {
   // Skip confirmation if already loading/submitting
-  if (isLoading.value || isSubmitting.value) {
+  if (isLoading.value || isSubmitting.value || bypassConfirmation.value) {
     next();
     return;
   }
@@ -130,7 +130,7 @@ const nextStep = async () => {
   if ((step.value === 1) && values.selectedType === 'Text') {
     if (stepOneRef.value?.uploadDocumentRef?.generatePDFAndUpload) {
       // setTimeout(() => {
-      if (!documents.value.documents.length) {
+      if (documents.value.documents.length) {
         stepOneRef.value.uploadDocumentRef.generatePDFAndUpload(); // Call function from TextDocumentUpload
       }
       // }, 0);
@@ -145,7 +145,9 @@ const nextStep = async () => {
       return;
     }
   }
-
+  if (step.value === 2) {
+    await fetchConfig(values.type)
+  }
   if ((step.value === 2) && !values.type) {
     toast.error("Please select an industry before proceeding.");
     return
@@ -250,26 +252,38 @@ const handleLeaveCancel = () => {
 
 // ✅ Final form submission
 const submitForm = handleSubmit(async (values) => {
-  await refreshBot()
-  let uploadedDetails = null;
-  if (typeof logoData.value === "object") {
-    uploadedDetails = await uploadLogo(botDetails.value.id, logoData.value.file);
-  }
-  isLoading.value = true;
+  handleLeaveCancel()
   try {
+    await refreshBot()
+    let uploadedDetails = null;
+    if (typeof logoData.value === "object") {
+      isLoading.value = true
+      uploadedDetails = await uploadLogo(botDetails.value.id, logoData.value.file);
+    }
+    isLoading.value = true;
+    
     if (!values.COMPANY || !values.NAME || !values.ROLE || !values.color) {
       toast.error("Please fill in all required fields.");
+      // Set submission state to true
+      isSubmitting.value = false;
+      bypassConfirmation.value = false;
       isLoading.value = false
       return;
     }
     if (!values.GOAL) {
       toast.error("Please provide a value for Goal");
+      // Set submission state to true
+      isSubmitting.value = false;
+      bypassConfirmation.value = false;
       isLoading.value = false
       return
     }
     if (values.GOAL === 'custom' && !values.otherGoal) {
       toast.error("Please provide a custom value for Goal");
       isLoading.value = false
+      // Set submission state to true
+      isSubmitting.value = false;
+      bypassConfirmation.value = false;
       return
     }
     console.log(values.logo.url, "values.logo.url")
@@ -322,6 +336,9 @@ const submitForm = handleSubmit(async (values) => {
     } else {
       isDocumentListOpen.value = true
       isLoading.value = false
+      // Set submission state to true
+      isSubmitting.value = false;
+      bypassConfirmation.value = false;
     }
     // await navigateTo({
     //   name: "chat-bot-id",
@@ -329,13 +346,17 @@ const submitForm = handleSubmit(async (values) => {
     // });
     // toast.success("Bot details updated successfully!");
   } catch (error) {
-    console.error("Error updating bot details:", error);
-    toast.error("Something went wrong. Please try again.");
+    toast.error(error.statusMessage);
+    // Set submission state to true
+    isSubmitting.value = false;
+    bypassConfirmation.value = false;
+    // console.error("Error updating bot details:", error);
+    // toast.error("Something went wrong. Please try again.");
   }
-  // isLoading.value = false
+  isLoading.value = false
 });
 
-const checkDocume6ntStatus = async (selectedDocumentStatus: any) => {
+const checkDocumentStatus = async (selectedDocumentStatus: any) => {
   if (status.value !== "success") return;
 
   // First check if the document is already ready before showing loading state and toast
@@ -446,17 +467,17 @@ const singleDocumentDeploy = async (list: any) => {
   isLoading.value = false
   // botDetails.value = await getBotDetails(paramId.params.id);
 };
-watch(() => values.type, (newType) => {
-  fetchConfig(newType);
-}, { deep: true, immediate: true });
+// watch(() => values.type, (newType) => {
+//   fetchConfig(newType);
+// }, { deep: true, immediate: true });
 // ✅ Clear interval when the component is unmounted
-onUnmounted(() => {
-  if (intervalId.value !== null) {
-    clearInterval(intervalId.value);
-    intervalId.value = null;
-    scrapData.scrapedData = []
-  }
-});
+// onUnmounted(() => {
+//   if (intervalId.value !== null) {
+//     clearInterval(intervalId.value);
+//     intervalId.value = null;
+//     scrapData.scrapedData = []
+//   }
+// });
 </script>
 
 <template>

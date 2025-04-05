@@ -10,7 +10,10 @@ export default defineEventHandler(async (event) => {
 
     const orgZohoSubscription = await getOrgZohoSubscription(orgId, query.type)
     const adminConfig = await getAdminConfig()
-
+    if(!orgZohoSubscription?.subscriptionId) {
+      logger.error(`Zoho-billing cancel subscription API Error: subscriptionData ${JSON.stringify(orgZohoSubscription)}`)
+      return errorResponse(event, 500, "Unable to cancel the subscription")
+    }
     await cancelZohoSubscription(orgZohoSubscription?.subscriptionId, adminConfig?.metaData)
 
     await updateOrgZohoSubscription(orgId, query.type, { subscriptionStatus: "cancelled"})

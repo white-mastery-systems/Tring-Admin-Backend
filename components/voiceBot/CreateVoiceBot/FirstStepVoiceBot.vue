@@ -95,7 +95,11 @@ const selectIndustry = (value: string) => {
     selectedType: selectedType.value
   });
 };
-
+watch(() => selectedType.value, (newSelectedType) => {
+  if (newSelectedType === 'Text') {
+    props.refreshSuggestions(type.value); // Call refresh when type changes
+  }
+}, { deep: true, immediate: true });
 
 const changeKnowledge = () => {
   selectedType.value = ''
@@ -103,10 +107,9 @@ const changeKnowledge = () => {
 </script>
 
 <template>
-  <BotSetupCard title="Build Your Bot's Knowledge" :description="(selectedType === 'Website') ? 'Import your company details and goals through your website link or by text input' : (selectedType === 'Text') ? 'Import your company details and goals through your website link or by text input' : 'Select your industry type and source of knowledge'"
+  <BotSetupCard title="Build Your Bot's Knowledge"
+    :description="(selectedType === 'Website') ? 'Import your company details and goals through your website link or by text input' : (selectedType === 'Text') ? 'Import your company details and goals through your website link or by text input' : 'Select your industry type and source of knowledge'"
     currentStep="1" totalSteps="6">
-    <!-- Main Content Area -->
-     <!-- {{ selectedType }} -->
     <div class="flex flex-col items-center p-0 flex-grow">
       <!-- Initial Selection Screen -->
       <div v-show="!selectedType" class="flex flex-col w-full h-full">
@@ -120,9 +123,7 @@ const changeKnowledge = () => {
           <span class="font-medium text-left text-[12px] sm:text-[12px] md:text-[18px]">
             Industries
           </span>
-
-          <RadioGroup v-model="type" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden"
-            :class="props.loading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''">
+          <RadioGroup v-model="type" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden">
             <div v-for="intent in intentTypes" :key="intent.value"
               class="min-w-[100px] max-w-[100px] min-h-[100px] max-h-[100px] md:min-w-[138px] md:max-w-[138px] md:min-h-[135px] md:max-h-[135px]"
               @click.stop="selectIndustry(intent.value)">

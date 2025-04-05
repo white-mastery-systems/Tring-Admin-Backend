@@ -62,13 +62,17 @@ export const useBillingComposable = () => {
   };
 
   const handleConfirmPaymentCancellation = async () => {
-    await $fetch("/api/v2/billing/subscriptions", {
-      method: "DELETE",
-      params: filters.value,
-    });
-    await usageRefresh();
+    try {
+      await $fetch("/api/v2/billing/subscriptions", {
+        method: "DELETE",
+        params: filters.value,
+      });
+      await usageRefresh();
+      toast.success("Subscription cancelled successfully");
+    } catch (error) {
+      toast.error(error.statusMessage);
+    }
   };
-
   const navigateToTab = async (tab: string) => {
     router.push({ query: { type: tab } });
   };
