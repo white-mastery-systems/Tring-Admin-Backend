@@ -50,11 +50,10 @@ export function usePlanSelection(userDetails: any, orgBilling: any, organization
             },
           },
         );
-        if (!response?.hostedpage?.url) {
+        if (!hostedPageUrl?.hostedpage?.url) {
           toast.error("Invalid redirect URL received");
           return;
         }
-
         await navigateTo(hostedPageUrl?.hostedpage?.url, {
           external: true,
           // open: {
@@ -63,7 +62,7 @@ export function usePlanSelection(userDetails: any, orgBilling: any, organization
         });
         await checkSubscription()
       } catch (err) {
-        toast.error("ERROR: " + err.statusMessage);
+        toast.error(err.statusMessage);
         if (err.statusMessage?.includes("gst_no")) {
           navigateTo({
             name: "account",
