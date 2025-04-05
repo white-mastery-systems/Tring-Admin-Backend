@@ -151,6 +151,8 @@ export const cancelZohoSubscription: any = async(subscriptionId: string, metaDat
       return cancelZohoSubscription(subscriptionId, regenerateAccessTokenMetadata)
     } else if(error.status === 400) {
       throw new Error(error?.response?.message || "Unable to cancel subscription") 
+    } else {
+      throw new Error("Unable to cancel subscription") 
     }
   }
 }
