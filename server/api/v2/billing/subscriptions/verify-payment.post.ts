@@ -37,7 +37,8 @@ export default defineEventHandler(async (event)=>{
       pricingPlanCode: hostedPageData?.data?.subscription?.plan.plan_code,
       startDate: subscriptionStartDate,
       endDate: subscriptionEndDate,
-      subscriptionStatus: hostedPageData?.data?.subscription?.status === "trial" ?  "trial"  : "active" as "active"
+      subscriptionStatus: hostedPageData?.data?.subscription?.status === "trial" ?  "trial"  : "active" as "active",
+      originalSubscriptionStatus: hostedPageData?.data?.subscription?.status  === "trial" ?  "trial"  : "active" as "active",
     }
     
     const planCode = ( botType === "chat" )
