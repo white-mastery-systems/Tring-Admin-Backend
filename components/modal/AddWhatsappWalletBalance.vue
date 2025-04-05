@@ -80,7 +80,7 @@ const handleConnect = handleSubmit(async (values: any) => {
       method: "POST",
       body: {
         plan: values.plan,
-        redirectUrl: `${window.location.origin}/billing?type=${route.query.type ?? 'chat'}`,
+        redirectUrl: `${window.location.origin}/billing/wallet/whatsapp-wallet-confirmation?type=chat`,
       },
     },
   );
