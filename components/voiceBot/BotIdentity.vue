@@ -32,8 +32,9 @@
                 <RadioGroupItem :id="intent.value" :value="intent.value" class="peer hidden" />
                 <Label :for="intent.value"
                   class="w-full h-full flex items-center justify-center p-4 rounded-lg bg-[#F2F2F2] transition-all duration-300 "
-                  :class="[(values.type === intent.value) ? 'border-2 border-[#09090b]' : 'border-transparent']">
-                  <component :is="intent.icon" class="w-[50px] h-[50px]" :stroke-width="0.75" />
+                  :class="[(values.type === intent.value) ? 'border-2 border-[#FFBC42] bg-[#FFBC42]' : 'border-[#D9D9D9]']">
+                  <component :is="intent.icon" class="w-[50px] h-[50px]"
+                    :class="[(values.type === intent.value) ? 'text-[#FFFFFF]' : '']" :stroke-width="0.75" />
                 </Label>
                 <div class="text-[10px] sm:text-[10px] md:text-[12px] lg:text-[12px] font-medium mt-2 text-center">{{
                   intent.label }}

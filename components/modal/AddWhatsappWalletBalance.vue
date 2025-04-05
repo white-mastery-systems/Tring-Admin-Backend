@@ -72,24 +72,31 @@ const walletDetails = [
     label: '₹50000',
   },
 ]
+
 const handleConnect = handleSubmit(async (values: any) => {
-  try {
-    const hostedPageResponse = await $fetch(
-      `/api/v2/billing/wallet`,
-      {
-        method: "POST",
-        body: {
-          plan: values.plan,
-          redirectUrl: `${window.location.origin}/billing?type=${route.query.type ?? 'chat'}`,
-        },
+  const hostedPageResponse = await $fetch(
+    `/api/v2/billing/wallet`,
+    {
+      method: "POST",
+      body: {
+        plan: values.plan,
+        redirectUrl: `${window.location.origin}/billing/wallet/whatsapp-wallet-confirmation?type=chat`,
       },
-    );
+    },
+  );
 
-    await navigateTo(hostedPageResponse.hostedpage.url);
-
-    emit("success");
-  } catch (error: any) {
-    toast.error(error.statusMessage);
+  if (hostedPageResponse.status) {
+    
+    // First emit the success event
+    emit("success")
+    
+    // await navigateTo(hostedPageResponse.hostedpage.url);
+    await navigateTo(hostedPageResponse?.hostedpage?.url, {
+      external: true
+    })
+    toast.success(hostedPageResponse.message)
+  } else {
+    toast.error(hostedPageResponse.message)
   }
 });
 </script>
