@@ -35,7 +35,8 @@ export default defineEventHandler(async (event) => {
           pricingPlanCode: subscriptionBody?.plan.plan_code,
           startDate: subscriptionStartDate,
           endDate: subscriptionEndDate,
-          subscriptionStatus: "active" as "active"
+          subscriptionStatus: subscriptionBody?.status === "trial" ?  "trial"  : "active" as "active",
+          originalSubscriptionStatus: subscriptionBody?.status  === "trial" ?  "trial"  : "active" as "active",
         }
             
         const planCode = ( botType === "chat" )
@@ -64,7 +65,8 @@ export default defineEventHandler(async (event) => {
         pricingPlanCode: subscriptionBody?.plan.plan_code,
         startDate: subscriptionStartDate,
         endDate: subscriptionEndDate,
-        subscriptionStatus: "active" as "active"
+        subscriptionStatus: subscriptionBody?.status === "trial" ?  "trial"  : "active" as "active",
+        originalSubscriptionStatus: subscriptionBody?.status  === "trial" ?  "trial"  : "active" as "active",
       }
             
       const planCode = ( botType === "chat" )
