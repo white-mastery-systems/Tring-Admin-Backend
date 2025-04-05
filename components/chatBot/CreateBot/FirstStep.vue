@@ -66,23 +66,25 @@ const intentTypes = [
 ];
 
 
-watch(type, () => {
-  console.log('insied watch')
-  props.refreshSuggestions(); // Call refresh when type changes
-});
+watch(() => selectedType.value, (newSelectedType) => {
+  if (newSelectedType === 'Text') {
+    props.refreshSuggestions(type.value); // Call refresh when type changes
+  }
+}, {deep: true, immediate: true});
 // ✅ Function to update industry selection
 const selectIndustry = (value: string) => {
   // selectedType.value = value;
   type.value = value
 };
 
-const changeKnowledge = () => {
-  selectedType.value = ''
-}
+// const changeKnowledge = () => {
+//   selectedType.value = ''
+// }
 </script>
 
 <template>
-  <BotSetupCard title="Build Your Bot’s Knowledge" :description="(selectedType === 'Website') ? 'Import your company details and goals through your website link, by document upload, or by text input' : (selectedType === 'Document') ? 'Import your company details and goals through your website link, by document upload, or by text input' : (selectedType === 'Text') ? 'Import your company details and goals through your website link, by document upload, or by text input' : 'Select your industry type and source of knowledge' "
+  <BotSetupCard title="Build Your Bot’s Knowledge"
+    :description="(selectedType === 'Website') ? 'Import your company details and goals through your website link, by document upload, or by text input' : (selectedType === 'Document') ? 'Import your company details and goals through your website link, by document upload, or by text input' : (selectedType === 'Text') ? 'Import your company details and goals through your website link, by document upload, or by text input' : 'Select your industry type and source of knowledge' "
     currentStep="1" totalSteps="5">
     <div class="flex flex-col items-center text-center h-full w-full"
       :class="selectedType ? 'justify-start' : 'justify-center'">
@@ -91,8 +93,9 @@ const changeKnowledge = () => {
         <UiCardContent class="grid gap-3 p-0 mb-6">
           <span class="font-medium text-left text-[16px] md:text-[18px] leading-none">Industries</span>
           <!-- Use identical RadioGroup structure to Step 2 -->
+          <!-- :class="props.loading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''" -->
           <RadioGroup v-model="type" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden"
-            :class="props.loading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''" :disabled="true">
+            :disabled="true">
             <div v-for="intent in intentTypes" :key="intent.value"
               class="min-w-[100px] max-w-[100px] min-h-[100px] max-h-[100px] md:min-w-[138px] md:max-w-[138px] md:min-h-[135px] md:max-h-[135px]"
               @click.stop="selectIndustry(intent.value)">
@@ -151,7 +154,7 @@ const changeKnowledge = () => {
           </div>
           <div class="flex flex-col gap-3 w-full">
             <WebScrapingForm botType="chat" />
-            <ScrapDateDocumentUpload :refresh="props.refresh" />
+            <ScrapDateDocumentUpload :refresh="props.refresh" :IndustryType="type" />
           </div>
         </div>
 
@@ -186,8 +189,8 @@ const changeKnowledge = () => {
           <div class="text-left flex flex-col gap-2">
             <span class="text-[14px] font-medium">Tell us about your company</span>
             <!-- <SelectField name="type" label="Industry" v-model="type" placeholder="Select Industry" :options="intentTypes.map((industry) => ({ label: industry.label, value: industry.value }))" required /> -->
-            <TextDocumentUpload ref="uploadDocumentRef" :refresh="props.refresh" :loading="props.loading"
-              :contentSuggestions="props.suggestionsContent" />
+            <TextDocumentUpload ref="uploadDocumentRef" :refresh="props.refresh" :IndustryType="type"
+              :loading="props.loading" :contentSuggestions="props.suggestionsContent" />
           </div>
         </div>
       </div>
