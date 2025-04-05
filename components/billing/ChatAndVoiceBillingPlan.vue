@@ -1,15 +1,17 @@
 <template>
-  <!-- <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1] w-full sm-w-full md:min-w-[900px]">
-    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
-  </div> -->
   <div class="relative">
     <div v-if="isPageLoading"
       class="grid h-[80vh] place-items-center text-[#424BD1] w-full absolute top-0 left-0 right-0 z-50">
       <Icon name="svg-spinners:90-ring-with-bg" class="h-10 w-10" />
     </div>
-    <div class="grid gap-6 w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    
+    <!-- Use v-show instead of v-else to prevent complete DOM removal/rebuild -->
+    <div 
+      class="grid gap-6 w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 transition-opacity duration-1000"
+      :class="isPageLoading ? 'opacity-0' : 'opacity-100'"
+    >
       <!-- Card for each billing plan -->
-      <div v-for="(list, index) in billingVariationDetails" :key="index" :class="[
+      <div v-for="(list, index) in billingVariationDetails" :key="list.plan_code" :class="[
         'relative flex flex-col rounded-xl shadow-md border-2 p-6 transition-all',
         orgBilling?.plan_code === list.plan_code
           ? 'border-indigo-600 border-2 bg-indigo-600'
@@ -41,11 +43,6 @@
               </span>
             </span>
           </div>
-          <!-- <button class="text-sm font-medium mt-1"
-            :class="(orgBilling?.plan_code === list.plan_code) ? 'text-amber-300 hover:text-amber-200' : 'text-indigo-600 hover:text-indigo-700'"
-            @click="choosePlan(list.plan_code)">
-            Calculate your price
-          </button> -->
         </div>
 
         <!-- Features List with Updated Icons -->
@@ -104,31 +101,23 @@
             </div>
           </div>
         </div>
+        
         <UiButton class="w-full py-2 px-4 rounded-lg font-medium transition-colors button_shadow" :class="[
           orgBilling?.plan_code === list.plan_code
             ? 'bg-amber-400 text-white hover:bg-amber-500 border-2 border-amber-400'
             : (list.plan_code?.includes('chat_free') ? 'bg-white text-gray-500 border border-gray-300' : 'bg-white text-[#FFBC42] border border-[#FFBC4280] hover:bg-gray-50'),
           list.plan_code?.includes('chat_free') ? 'opacity-70 cursor-not-allowed' : ''
         ]" @click="choosePlan(list.plan_code)" :disabled="list.plan_code?.includes('chat_free')">
-          <!-- bg-indigo-700 -->
-           {{
+          {{
           orgBilling?.plan_code === list.plan_code ? (orgBilling?.plan_code === 'chat_free') ? "Current Plan" :
           "Subscribed" : findPlanLevel({ list, current: orgBilling?.plan_code })
           }}
         </UiButton>
       </div>
     </div>
-    <div v-if="(currentRoute === 'onboarding/billing') && !isPageLoading"
-      class="sticky right-[72px] bottom-0 cursor-pointer text-[#8080809c] pt-4 pr-3">
-      <div @click="proceedLogin()" class="flex items-center justify-end gap-2">
-        <span class="flex items-center">
-          Continue with the free plan
-        </span>
-        <ArrowRight class="w-5 h-5" />
-      </div>
-    </div>
   </div>
 </template>
+
 <script setup lang="ts">
 definePageMeta({
   layout: "auth",
@@ -203,25 +192,12 @@ onMounted(() => {
     if (!route.query.type) { // If `type` is not present in the query
       router.push({ query: { type: 'chat' } });
     }
-    // const currentUrl = router.options.history.state.back || 'billing/view-all';
-    // if (!currentUrl.includes('?type=chat') && !currentUrl.includes('?type=voice')) {
-    //   correctedUrl.value = `/billing?type=chat`;
-    // } else if (currentUrl.includes('?type=voice')) {
-    //   correctedUrl.value = `/billing?type=voice`;
-    // } else if (currentUrl.includes('?type=chat')) {
-    //   correctedUrl.value = `/billing?type=chat`;
-    // }
   // }
 });
-// onMounted(async() => {
-//   const orgBilling = await $fetch("/api/org/subscriptionPlans");
-//   // const isAnyPlanFree = orgBilling[1].planCode.includes("_free")
-//   const isAnyPlanFree = orgBilling.every((plan: any) => plan.planCode.includes("_free"))
-//   if (isAnyPlanFree) freeTrialPopup.planFree = true
-//   else freeTrialPopup.planFree = false
-// });
 
 const proceedLogin = async () => {
   navigateTo("/signUpSuccess");
 };
 </script>
+
+<!-- No additional styles needed as we're using Tailwind classes directly -->
