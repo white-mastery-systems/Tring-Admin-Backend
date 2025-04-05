@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useForm } from 'vee-validate';
-import { voiceBotCreateSchema } from '~/validationSchema/botManagement/voiceBot/createVoiceBotValidation';
 import { ArrowLeft } from 'lucide-vue-next';
-import { useBotDocuments } from '~/composables/botManagement/chatBot/useBotDocuments';
-import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router';
-import { botStore } from "~/store/botStore";
-import { useContentSuggestions } from "~/composables/botManagement/chatBot/useContentSuggestions";
+import { useRoute, onBeforeRouteLeave } from 'vue-router';
+import { useForm } from 'vee-validate';
+import { ref, watch } from 'vue';
 import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
+import { useContentSuggestions } from "~/composables/botManagement/chatBot/useContentSuggestions";
 import { useVoicebotKnowledgeBase } from '~/composables/botManagement/voiceBot/useVoicebotKnowledgeBase';
+import { botStore } from "~/store/botStore";
+import { voiceBotCreateSchema } from '~/validationSchema/botManagement/voiceBot/createVoiceBotValidation';
 // import { useVoiceBotDetails } from "~/composables/botManagement/voiceBot/useVoiceBotDetails ";
 
 const step = ref(1);
@@ -345,9 +344,8 @@ const submitForm = handleSubmit(async (values) => {
 // TTS config
 
   const updatedTTSConfig = {
-
-    // Use submitted provider or fallback to existing one
     provider: values.provider_tts || 'google', // Default to 'google'
+    integratedTtsProvider: values.provider_tts || 'google',
   };
   // Google config
   if (values.provider_tts === 'google') {
@@ -359,8 +357,8 @@ const submitForm = handleSubmit(async (values) => {
       volume_gain_db: 0.5,
     }
   }
-  else if (values.provider_tts !== 'tring' && values.provider_tts !== 'google' && values.provider_tts !== 'deepgram') {
-   
+  else if (!["tring", "google", "deepgram"].includes(values.provider_tts)) {
+   updatedTTSConfig.provider = "elevenlabs"
     const elevenlabsConfig = {
       voice: values.elevenlabsvoice || "",
       model: values.model || "eleven_turbo_v2",
