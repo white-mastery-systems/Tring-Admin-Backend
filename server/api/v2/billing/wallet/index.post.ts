@@ -41,9 +41,17 @@ export default defineEventHandler(async (event) => {
     }
 
     const addonresponse = await createAddon(addonPayload, adminConfig?.metaData)
-    return addonresponse
+  
+    if(!addonresponse?.hostedpage) {
+      return errorResponse(event, 500, "Unable to add the addon")
+    }
+
+    return {
+      status: true,
+      ...addonresponse
+    }
   } catch (error: any) {
     logger.error(`Zoho-billing addon creation API Error: ${JSON.stringify(error.message)}`)
-     return errorResponse(event, 500, "Unable to add the addon")
+    return errorResponse(event, 500, "Unable to add the addon")
   }
 })
