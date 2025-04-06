@@ -55,6 +55,8 @@ export default defineEventHandler(async (event) => {
 
   const usedCallMinutes = voicePlanUsage?.interactionsUsed || 0 
   const maxCallMinutes = planPricingDetail?.sessions || 0
+  const availableMinutes = Math.max(maxCallMinutes - usedCallMinutes, 0) || 0
+
   let extraMinutes = 0
   const orgWalletMinutes = orgDetail?.wallet || 0
 
@@ -85,5 +87,5 @@ export default defineEventHandler(async (event) => {
     }
   }
   
-  return voiceBotDetail
+  return { voiceBotDetail, availableMinutes }
 });
