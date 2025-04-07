@@ -6,6 +6,7 @@ import { FileText, Globe,Home, ShoppingCart, Plane, PhoneCall, FileDown, Landmar
   Lightbulb,
   Truck,
   GraduationCap,
+  Hotel,
   Server } from 'lucide-vue-next';
 import { botStore } from "~/store/botStore";
 
@@ -33,7 +34,8 @@ const intentTypes = [
   { label: "E-commerce", value: "e-commerce", icon: ShoppingCart },
   { label: "Energy & Utilities", value: "energy-utilities", icon: Lightbulb },
   { label: "Telecommunications", value: "telecommunications", icon: PhoneCall },
-  { label: "Travel & Hospitality", value: "travel-hospitality", icon: Plane },
+  { label: "Travel", value: "travel", icon: Plane },
+  { label: "Hospitality", value: "hospitality", icon: Hotel },
   { label: "Logistics", value: "logistics", icon: Truck },
   { label: "Education & Training", value: "education-training", icon: GraduationCap },
   // { label: "IT Service", value: "it-service", icon: Server },

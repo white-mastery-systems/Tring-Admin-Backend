@@ -6,6 +6,7 @@ import { Home, ShoppingCart, Plane, PhoneCall, Globe, FileText, FileDown, Landma
   Lightbulb,
   Truck,
   GraduationCap,
+  Hotel,
   Server } from 'lucide-vue-next';
 // import { useContentSuggestions } from "~/composables/botManagement/chatBot/useContentSuggestions";
 // import { Button } from "@/components/ui/button";
@@ -59,7 +60,9 @@ const intentTypes = [
   { label: "E-commerce", value: "e-commerce", icon: ShoppingCart },
   { label: "Energy & Utilities", value: "energy-utilities", icon: Lightbulb },
   { label: "Telecommunications", value: "telecommunications", icon: PhoneCall },
-  { label: "Travel & Hospitality", value: "travel-hospitality", icon: Plane },
+  // { label: "Travel & Hospitality", value: "travel-hospitality", icon: Plane },
+  { label: "Travel", value: "travel", icon: Plane },
+  { label: "Hospitality", value: "hospitality", icon: Hotel },
   { label: "Logistics", value: "logistics", icon: Truck },
   { label: "Education & Training", value: "education-training", icon: GraduationCap },
   { label: "IT Service", value: "it-service", icon: Server },
