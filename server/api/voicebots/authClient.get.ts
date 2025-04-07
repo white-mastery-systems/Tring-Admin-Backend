@@ -87,5 +87,5 @@ export default defineEventHandler(async (event) => {
     }
   }
   
-  return { voiceBotDetail: { ...voiceBotDetail, availableMinutes } }
+  return { ...voiceBotDetail, availableMinutes }
 });
