@@ -16,6 +16,10 @@ export default defineEventHandler(async (event) => {
 
     const voicebotDetail: any = await getVoicebotById(voicebotId)
 
+    if(!voicebotDetail?.active) {
+      return errorResponse(event, 400, "Voicebot is not active, Please activate your voicebot")
+    }
+
     const dialPayload = {
       ...body,
       botId: voicebotId,
