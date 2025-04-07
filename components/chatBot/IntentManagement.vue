@@ -27,7 +27,7 @@
         async () => {
           await deleteIntent({
             payload: {
-              botId: route.params.id,
+              botId: `${route.params.id}`,
               intentId: deleteIntentDialogState.id,
             },
             onSuccess: () => {
@@ -44,6 +44,7 @@ import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import CreateEditIntentModal from "~/components/bots/CreateEditIntentModal.vue";
 import { useRoute, useRouter } from "vue-router";
+import { deleteIntent } from "~/utils/apis/intent-management"
 
 const intentDialogState = ref({ open: false, id: null });
 const selectedActions = ref("location");
