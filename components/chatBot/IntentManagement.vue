@@ -27,7 +27,7 @@
         async () => {
           await deleteIntent({
             payload: {
-              botId: route.params.id,
+              botId: `${route.params.id}`,
               intentId: deleteIntentDialogState.id,
             },
             onSuccess: () => {
@@ -44,6 +44,7 @@ import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import CreateEditIntentModal from "~/components/bots/CreateEditIntentModal.vue";
 import { useRoute, useRouter } from "vue-router";
+import { deleteIntent } from "~/utils/apis/intent-management"
 
 const intentDialogState = ref({ open: false, id: null });
 const selectedActions = ref("location");
@@ -72,23 +73,25 @@ const {
   }
 });
 const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
-const intents: any[] = [];
-if(props.botDetails.metadata.prompt.INTENTS || props.botDetails.metadata.prompt.intents){
-  const splitIntents = `${props.botDetails.metadata.prompt.INTENTS || props.botDetails.metadata.prompt.intents}`.split("\n")
-  intents.push(...splitIntents.filter((intent) => `${intent.trim().toLowerCase()}` !== "other"));
-}
 
-watchEffect(() => {
-  // Set data only if API didn’t return anything and we have local fallback
-  if (!intentData.value.length && intents.length) {
-    intentData.value = intents.map((intent, index) => ({
-      id: `${index}`,
-      link: "--",
-      intent: intent,
-      createdAt: formatDate(new Date(), "dd.MM.yyyy"),
-    }));
+/* Static intents when intentData is empty
+  const intents: any[] = [];
+  if(props.botDetails.metadata.prompt.INTENTS || props.botDetails.metadata.prompt.intents){
+    const splitIntents = `${props.botDetails.metadata.prompt.INTENTS || props.botDetails.metadata.prompt.intents}`.split("\n")
+    intents.push(...splitIntents.filter((intent) => `${intent.trim().toLowerCase()}` !== "other"));
   }
-});
+  watchEffect(() => {
+    // Set data only if API didn’t return anything and we have local fallback
+    if (!intentData.value.length && intents.length) {
+      intentData.value = intents.map((intent, index) => ({
+        id: `${index}`,
+        link: "--",
+        intent: intent,
+        createdAt: formatDate(new Date(), "dd.MM.yyyy"),
+      }));
+    }
+  });
+*/
 
 // const { accordionItems, updateStepStatus } = useStepStatus(route);
 
