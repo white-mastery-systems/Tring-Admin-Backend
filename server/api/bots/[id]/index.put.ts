@@ -56,5 +56,16 @@ WHERE channels->>'whatsapp' = ${body?.channels?.whatsapp};
     ...{ metadata: metaData },
     ...defaultformStructure && { formStructure: defaultformStructure }
   });
+
+  if(defaultIntents) {
+    const splitIntents = defaultIntents?.split("\n").filter((intent) => intent !== "other")
+    const intentData: any = splitIntents?.map((intent) => ({
+      intent,
+      botId: bot.id,
+      organizationId: bot.organizationId,
+    }))
+    await createBotIntent(intentData)
+  }
+ 
   return isValidReturnType(event, bot);
 });
