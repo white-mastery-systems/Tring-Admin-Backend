@@ -23,7 +23,9 @@ export type BotType =
   | "healthcare"
   | "energy-utilities"
   | "telecommunications"
-  | "travel-hospitality"
+  // | "travel-hospitality"
+  | "travel"
+  | "hospitality"
   | "logistics"
   | "education-training"
   | "it-service";
@@ -37,7 +39,9 @@ export const botTypes = [
   { label: "E-commerce", value: "e-commerce" },
   { label: "Energy & Utilities", value: "energy-utilities" },
   { label: "Telecommunications", value: "telecommunications" },
-  { label: "Travel & Hospitality", value: "travel-hospitality" },
+  // { label: "Travel & Hospitality", value: "travel-hospitality" },
+  { label: "Travel", value: "travel" },
+  { label: "Hospitality", value: "hospitality" },
   { label: "Logistics", value: "logistics" },
   { label: "Education & Training", value: "education-training" },
   { label: "IT Service", value: "it-service" },

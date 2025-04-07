@@ -529,7 +529,7 @@ const handleIntegratedSubmit = handleSubmit(async (formValues) => {
     const sttConfig = formatSttConfig(formValues.stt);
     
     // LLM config (use directly)
-    const llmConfig = formValues.llm;
+    const llmConfig = {...botData.value?.llmConfig, ...formValues.llm};
     
     // Send all configurations in a single API call
     await $fetch(`/api/voicebots/${route.params.id}`, {

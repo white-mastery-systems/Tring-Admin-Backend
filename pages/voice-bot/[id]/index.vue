@@ -43,7 +43,7 @@
                   <div class="block text-[4px] lg:hidden">Deactivate Bot</div>
                 </div>
                 <div class="flex flex-col items-center gap-1">
-                  <UiButton color="primary" as="a" @click="previewBot()"
+                  <UiButton v-if="botDetails.active" color="primary" as="a" @click="previewBot()"
                     class="p-2 text-[14px] font-medium text-[#000000] gap-2 border-[#000000] button_shadow rounded-xl cursor-pointer">
                     <PhoneCall class="w-4 h-4" />
                     <span class="hidden lg:inline"> Preview Bot </span>
