@@ -141,12 +141,15 @@ const handleConnect = handleSubmit(async (values: any) => {
   try {
       await $fetch("/api/org/integrations/number-integration", { method: "POST", body: payload });
       toast.success("Integration added successfully");
-  } catch(error: any) {
+      setTimeout(() => {
+        resetForm()
+      }, 1000);
+    } catch(error: any) {
+      isLoading.value = false
+      toast.error(error.data.statusMessage)
+    }
     isLoading.value = false
-    toast.error(error.data.statusMessage)
-  }
-  isLoading.value = false
-  await refresh()
+    await refresh()
 });
 
 </script>
@@ -171,7 +174,7 @@ const handleConnect = handleSubmit(async (values: any) => {
         <!-- Integration Number -->
         <SelectField v-model="incomingPhoneNumber" name="incomingPhoneNumber" label="Integration Number"
           :closeIcon="true" :options="numberList" placeholder="Select Number"
-          :disabled="numberList?.length === 0 || (numberList[0]?.value === 'New Account')"
+          :disabled="numberList?.length === 0 || (numberList[0]?.value === 'New Account') || props.values.provideraccountname === 'New Account'"
           @input="onSelectNumber($event)" />
         <!-- <SelectField 
           name="ivrConfig" 

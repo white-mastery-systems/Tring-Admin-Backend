@@ -109,8 +109,8 @@ const handleAddEditBot = handleSubmit(async (values) => {
     } else {
       scrapData.scrapedData = parsedData;
     }
-    if (parsedData) {
-      toast.success("Updated successfully");
+    if (parsedData.knowledge_base.document_content) {
+      toast.success("Updated successfully.");
     }
     // }
     // if (agentModalState.value.id) {

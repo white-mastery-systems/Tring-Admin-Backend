@@ -130,7 +130,7 @@ const nextStep = async () => {
   if ((step.value === 1) && values.selectedType === 'Text') {
     if (stepOneRef.value?.uploadDocumentRef?.generatePDFAndUpload) {
       // setTimeout(() => {
-      if (documents.value.documents.length) {
+      if (!documents.value.documents.length) {
         stepOneRef.value.uploadDocumentRef.generatePDFAndUpload(); // Call function from TextDocumentUpload
       }
       // }, 0);
@@ -141,7 +141,7 @@ const nextStep = async () => {
       toast.error("Please provide at least one document");
       return;
     } else {
-      isLoading.value = true;
+      // isLoading.value = true;
       return;
     }
   }
