@@ -66,8 +66,9 @@
       </div>
 
       <div class="flex w-full justify-end">
-        <UiButton color="primary" type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading">
-          Submit
+        <UiButton color="primary" type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading"
+          :disabled="!formHasChanged">
+          {{ formHasChanged ? 'Submit' : 'No Changes' }}
         </UiButton>
       </div>
     </form>
@@ -96,6 +97,16 @@ const { value: type } = useField("type");
 // Prompt data
 const inboundPrompt = reactive(props.botDetails?.llmConfig?.inboundPrompt || {});
 const outboundPrompt = reactive(props.botDetails?.llmConfig?.outboundPrompt || {});
+
+// Add these to track original values
+const originalInboundPrompt = ref({ ...props.botDetails?.llmConfig?.inboundPrompt } || {});
+const originalOutboundPrompt = ref({ ...props.botDetails?.llmConfig?.outboundPrompt } || {});
+
+// Add computed property to check for changes
+const formHasChanged = computed(() => {
+  return JSON.stringify(inboundPrompt) !== JSON.stringify(originalInboundPrompt.value) ||
+    JSON.stringify(outboundPrompt) !== JSON.stringify(originalOutboundPrompt.value);
+});
 
 // Helper function to format section titles
 const formatSectionTitle = (key) => {
@@ -141,7 +152,6 @@ watch(errors, (newErrors) => {
   console.log(newErrors, "errors");
 });
 
-// Form submission handler
 const onSubmit = handleSubmit(async (value: any) => {
   isLoading.value = true;
 
@@ -153,13 +163,14 @@ const onSubmit = handleSubmit(async (value: any) => {
       }
     };
 
-    console.log("Submitting payload:", payload);
-
     await updateLLMConfig(payload, props.botDetails.id, "Bot information and prompts updated successfully.");
+
+    // Update original values after successful submission
+    originalInboundPrompt.value = { ...inboundPrompt };
+    originalOutboundPrompt.value = { ...outboundPrompt };
+
     if (typeof props.refreshBot === 'function') {
       props.refreshBot();
-    } else {
-      console.error("refreshBot is not a function", props.refreshBot);
     }
   } catch (error) {
     console.error("Error updating bot configuration:", error);
