@@ -4,7 +4,7 @@
     <!-- <template #actionButtons> -->
     <div class="my-5 flex items-center justify-between">
       <div class="text-sm sm:text-sm md:text-base lg:text-lg font-bold"> CRM Integrations </div>
-      <UiButton class="text-xs sm:text-xs md:text-sm" color="primary" @click="
+      <UiButton class="text-xs sm:text-xs md:text-sm" color="primary" :disabled="chatIntelligence" @click="
         () => {
           crmConfigModalState.open = true;
           crmConfigModalState.id = null;
@@ -70,7 +70,7 @@ const filters = reactive<{
 const page = ref(0);
 const totalPageCount = ref(0);
 const totalCount = ref(0);
-
+const planDetails = ref()
 
 const deleteIntegrationState: { open: boolean; id?: string } = reactive({
   open: false,
@@ -154,6 +154,16 @@ watch(integrationsData, (newIntegrations: any) => {
           : item.integration?.crm === "hubspot" ? `${item?.metadata?.stage}` : item.integration?.crm === "reserve-go" ? `${item?.metadata?.restaurantId}` : (item.metadata?.projectId ?? "N/A"),
     id: item.id,
   }));
+});
+
+onMounted(async () => {
+  planDetails.value = await userPlan();
+})
+
+const chatIntelligence = computed(() => {
+  return planDetails.value.userPlanDetails.some((plan: any) => {
+    return plan.type === 'chat' && plan.planCode === 'chat_intelligence'
+  });
 });
 const handleSuccess = () => {
   crmConfigModalState.value.open = false;

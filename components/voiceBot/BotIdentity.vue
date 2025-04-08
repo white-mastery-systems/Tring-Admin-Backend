@@ -1,15 +1,5 @@
 <template>
-  <!-- :bread-crumbs="[
-    { label: `${botDetailsList.name}`, to: `/bot-management/chat-bot/${botDetailsList.id}` },
-    {
-      label: 'Intent Management',
-      to: `/bot-management/chat-bot/${botDetailsList.id}/intent-management`,
-    },
-  ]"  -->
-  <!-- <Page title="Bot Details" :bread-crumbs="[]" :disableSelector="true" :disable-back-button="false"
-    :disableElevation="false"> -->
   <div class="pb-2 sm:pb-0">
-    <!-- {{props.botDetails}} -->
     <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
       <div class="flex items-center grid grid-cols-2 gap-3 text-left">
         <span class="font-medium text-left text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px]">Select your Call
@@ -96,35 +86,10 @@
             <!-- Show input field only if "Custom" is selected -->
             <div class="flex items-center gap-5 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 w-full"
               v-if="values.role === 'custom'">
-              <!-- <div class="py-0 sm:py-0 md:py-6 px-0 min-h-[100px]"> -->
-              <!-- <p class="text-left text-[12px] sm:text-[12px] md:text-[16px] py-1 text-[#000000] font-medium">Tell us
-                  your Chatbot’s Role in the Company</p> -->
-              <!-- <TextField :isTextarea="true">
-
-                </TextField> -->
-              <!-- <TextField name="otherRole" type="text" class="centered-placeholder h-[200px]"
-                  label="Tell us about your company" placeholder="e.g., 'Sales Assistant'" required>
-                </TextField> -->
-              <!-- <div class="min-h-[200px]"> -->
               <div class="spcace-y-2 grid w-full grid-cols-1 gap-2">
-                <!-- <TextField   label="Document Id" name="documentId" 
-          placeholder="Document Id"  /> -->
-                <!-- <SelectField name="role" label="Role" placeholder="Role is required" :options="roles" :required="true" /> -->
                 <TextField label="Tell us your Chatbot’s Role in the Company" name="otherRole" placeholder="Tell us
                   your Chatbot’s Role in the Company" :isTextarea="true" required />
               </div>
-              <!-- <TextField name="otherRole" type="text" class="h-full" label="Tell us
-                  your Chatbot’s Role in the Company" placeholder="e.g., 'Sales Assistant" required>
-              </TextField> -->
-              <!-- </div> -->
-              <!-- <UiTextarea name="otherRole" class="h-[95px] text-[12px] sm:text-[12px] md:text-[16px]"
-                  :resizable="false" placeholder="e.g., 'Sales Assistant" label="Tell us about your company">
-                </UiTextarea> -->
-              <!-- </div> -->
-              <!-- <div v-if="values.role === ' custom'" class="mt-4 flex items-center gap-4 p-4 rounded-lg">
-            <input v-model="customInput" type="text" placeholder="Enter custom intent"
-              class="border px-4 py-2 w-full rounded-lg text-[14px] sm:text-[14px] md:text-[16px] h-20" />
-        </div> -->
             </div>
             <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-2 h-[0.5px]" />
             <!-- Goal -->
@@ -182,35 +147,19 @@
             <!-- Show input field only if "Custom" is selected -->
             <div class="flex items-center gap-5 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 w-full"
               v-if="values.goal === 'custom'">
-              <!-- <div v-if="values.goal === ' custom'" class="mt-4 flex items-center gap-4 p-4 rounded-lg">
-            <input v-model="customInput" type="text" placeholder="Enter custom intent"
-              class="border px-4 py-2 w-full rounded-lg text-[14px] sm:text-[14px] md:text-[16px] h-20" />
-        </div> -->
-              <!-- <div>
-                <p class="text-left text-[12px] sm:text-[12px] md:text-[16px] py-1 text-[#000000]">Tell us your
-                  Chatbot’s Goal in the Company</p>
-                <UiTextarea name="otherGoal" class="h-[95px] text-[12px] sm:text-[12px] md:text-[16px]"
-                  :resizable="false"
-                  placeholder="e.g., 'Rental Management Assistant – Help users find and manage rental properties easily.'"
-                  label="Tell us about your company">
-                </UiTextarea>
-              </div> -->
               <div class="spcace-y-2 grid w-full grid-cols-1 gap-2">
-                <!-- <TextField   label="Document Id" name="documentId" 
-          placeholder="Document Id"  /> -->
-                <!-- <SelectField name="role" label="Role" placeholder="Role is required" :options="roles" :required="true" /> -->
                 <TextField label="Tell us your Chatbot’s Goal in the Company" name="otherGoal"
                   placeholder="e.g., 'Rental Management Assistant – Help users find and manage rental properties easily.'"
                   :isTextarea="true" required />
               </div>
             </div>
-
           </UiCardContent>
         </UiCard>
       </div>
       <div class="flex w-full justify-end">
-        <UiButton color="primary" type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading">
-          Submit
+        <UiButton color="primary" type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading"
+          :disabled="!formHasChanged">
+          {{ formHasChanged ? 'Submit' : 'No Changes' }}
         </UiButton>
       </div>
     </form>
@@ -241,11 +190,6 @@ definePageMeta({
 // const route = useRoute("voice-bot-id-identity-management");
 // const botDetailsList: any = await getVoiceBotDetails(route.params.id);
 const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void }>();
-const welcomeFilesData = ref([]);
-const concludeFilesData = ref([]);
-const deleteFileBucket = ref([]);
-const breadcrumbStore = useBreadcrumbStore();
-const { value: type } = useField("type");
 const boundList = ref([
   {
     label: 'Both',
@@ -259,6 +203,7 @@ const boundList = ref([
     value: 'outbound',
   }
 ])
+const originalValues = ref({}); // Add ref for original values
 
 
 const { intentOptions, fetchConfig } = useChatbotConfig();
@@ -276,20 +221,7 @@ const intentTypes = [
   { label: "Education & Training", value: "education-training", icon: GraduationCap },
   { label: "IT Service", value: "it-service", icon: Server },
 ];
-// const { languageList } = useVoiceLanguageList();
-// const { formattedTimeZones } = useTImeList();
 const isLoading = ref(false);
-
-// breadcrumbStore.setBreadcrumbs([
-//   {
-//     label: 'Bot Details',
-//     to: `/voice-bot/${props.botDetails.id}/identity-management`,
-//   },
-//   {
-//     label: `${props.botDetails.name}`,
-//     to: `/voice-bot/${props.botDetails.id}`,
-//   },
-// ]);
 
 const botSchema = toTypedSchema(
   z.object({
@@ -334,18 +266,37 @@ const {
   },
 });
 
-Object.entries(props.botDetails?.botDetails ?? {}).forEach(([key, value]: any) => {
-  if (values.hasOwnProperty(key)) {
-    setFieldValue(key, value);
+// Instead, add a watch function
+watch(() => props.botDetails, (newBotDetails) => {
+  if (newBotDetails) {
+    // Set form values from bot details
+    Object.entries(newBotDetails?.botDetails ?? {}).forEach(([key, value]: any) => {
+      if (values.hasOwnProperty(key)) {
+        setFieldValue(key, value);
+      }
+    });
+
+    // Set specific fields
+    setFieldValue("type", newBotDetails?.botDetails?.industryType ?? "");
+    setFieldValue("boundDirection", newBotDetails?.botDetails?.callType ?? "");
+    setFieldValue("role", newBotDetails?.botDetails?.role ?? "");
+    setFieldValue("goal", newBotDetails?.botDetails?.goal ?? "");
+    setFieldValue("otherRole", newBotDetails?.botDetails?.otherRole ?? "");
+    setFieldValue("otherGoal", newBotDetails?.botDetails?.otherGoal ?? "");
+
+    // After all field values are set, store original values
+    nextTick(() => {
+      originalValues.value = {
+        type: values.type,
+        boundDirection: values.boundDirection,
+        role: values.role,
+        goal: values.goal,
+        otherRole: values.otherRole || '',
+        otherGoal: values.otherGoal || '',
+      };
+    });
   }
-});
-// setFieldValue("newBotName", props.botDetails?.name ?? "");
-setFieldValue("type", props.botDetails?.botDetails?.industryType ?? "");
-setFieldValue("boundDirection", props.botDetails?.botDetails?.callType ?? "");
-setFieldValue("role", props.botDetails?.botDetails?.role ?? "");
-setFieldValue("goal", props.botDetails?.botDetails?.goal ?? "");
-setFieldValue("otherRole", props.botDetails?.botDetails?.otherRole ?? "");
-setFieldValue("otherGoal", props.botDetails?.botDetails?.otherGoal ?? "");
+}, { immediate: true, deep: true });
 
 watch(() => props.botDetails?.botDetails?.industryType, async (newType) => {
   if (newType) {
@@ -372,50 +323,90 @@ watch(() => values.type, (newType) => {
     return;
   }
 })
+onMounted(async () => {
+  await fetchConfig(props.botDetails?.botDetails?.industryType)
+});
+// Check if form values have changed from original values
+const hasFormChanged = () => {
+  // Skip comparison if no original values are set yet
+  if (Object.keys(originalValues.value).length === 0) {
+    console.log("Original values not set yet");
+    return false;
+  }
+
+  const fieldsToCheck = ["type", "boundDirection", "role", "goal", "otherRole", "otherGoal"];
+
+  for (const field of fieldsToCheck) {
+    const originalValue = String(originalValues.value[field] || "");
+    const currentValue = String(values[field] || "");
+
+    if (originalValue !== currentValue) {
+      console.log(`Field changed: ${field}, Original: "${originalValue}", Current: "${currentValue}"`);
+      return true;
+    }
+  }
+
+  return false;
+};
+
+// Computed property for template binding
+const formHasChanged = computed(() => {
+  return hasFormChanged();
+});
 
 const onSubmit = handleSubmit(async (value: any) => {
   isLoading.value = true;
 
-  const modifiedData = {
-    ...props.botDetails.botDetails,
-    boundDirection: value.boundDirection,
-    industry: value.industry,
-    role: values.role,
-    goal: values.goal,
-    otherRole: values?.otherRole ?? '',
-    otherGoal: values?.otherGoal ?? '',
-  };
+  // Only make API call if form has changed
+  if (hasFormChanged()) {
+    const modifiedData = {
+      ...props.botDetails.botDetails,
+      boundDirection: value.boundDirection,
+      industry: value.industry,
+      role: values.role,
+      goal: values.goal,
+      otherRole: values?.otherRole ?? '',
+      otherGoal: values?.otherGoal ?? '',
+    };
 
-  const payload = {
-    botDetails: modifiedData,
-  };
+    const payload = {
+      botDetails: modifiedData,
+    };
     const llmConfig = {
       ...props.botDetails.llmConfig,
       inboundPrompt: {},
       outboundPrompt: {},
     }
     payload.llmConfig = llmConfig;
-  await updateLLMConfig(payload, props.botDetails.id, "Bot information added successfully.");
 
-  if (typeof props.refreshBot === 'function') {
-    props.refreshBot();
+    await updateLLMConfig(payload, props.botDetails.id, "Bot information added successfully.");
+
+    if (typeof props.refreshBot === 'function') {
+      props.refreshBot();
+    } else {
+      console.error("refresh function is not available", props.refreshBot);
+    }
+
+    // Update original values after successful update
+    nextTick(() => {
+      originalValues.value = {
+        type: values.type,
+        boundDirection: values.boundDirection,
+        role: values.role,
+        goal: values.goal,
+        otherRole: values.otherRole || '',
+        otherGoal: values.otherGoal || '',
+      };
+    });
   } else {
-    console.error("refresh function is not available", props.refreshBot);
+    console.log("No changes detected, skipping API call");
   }
 
   isLoading.value = false;
 });
+
 const selectIndustry = (value: string) => {
-  // Update the type
-  // type.value = value;
   setFieldValue("type", value);
-  // IMPORTANT: Emit a complete update with ALL values
-  // emit("update:values", {
-  //   ...props.values,
-  //   type: value,
-  //   boundDirection: boundDirection.value,
-  //   selectedType: selectedType.value
-  // });
 };
 
 

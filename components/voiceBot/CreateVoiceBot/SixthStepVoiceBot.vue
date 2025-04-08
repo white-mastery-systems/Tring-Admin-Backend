@@ -143,7 +143,7 @@ const handleConnect = handleSubmit(async (values: any) => {
       toast.success("Integration added successfully");
       setTimeout(() => {
         resetForm()
-      }, 1000);
+      }, 2000);
     } catch(error: any) {
       isLoading.value = false
       toast.error(error.data.statusMessage)

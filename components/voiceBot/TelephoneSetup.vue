@@ -1,7 +1,4 @@
 <template>
-  <!-- <Page title="IVR Configuration" :bread-crumbs="[
-
-  ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false"> -->
   <div>
     <form @submit.prevent="onSubmit" class="space-y-4">
       <div class="flex grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
@@ -21,10 +18,6 @@
         <TextField v-show="values.cloudTelephoneProvider === 'plivo'" name="authToken" placeholder="" label="Auth Token"
           :disabled="true" class="bg-[#E4E4E7] text-[#71717A]">
         </TextField>
-        <!-- Twilio -->
-        <!-- <TextField v-show="values.cloudTelephoneProvider === 'plivo'" name="authToken" placeholder="" label="Auth Token"
-          :disabled="true" class="bg-[#E4E4E7] text-[#71717A]">
-        </TextField> -->
         <TextField v-show="values.cloudTelephoneProvider === 'twilio' || values.cloudTelephoneProvider === 'exotel'"
           name="accountSID" placeholder="" label="Account SID" :disabled="true" class="bg-[#E4E4E7] text-[#71717A]">
         </TextField>
@@ -36,26 +29,31 @@
           name="apiKey" placeholder="" label="Api Key" :disabled="true" class="bg-[#E4E4E7] text-[#71717A]">
         </TextField>
         <TextField v-show="values.cloudTelephoneProvider === 'exotel'" name="apiToken" placeholder="Api token"
-        label="Api Token" :disabled="true" class="bg-[#E4E4E7] text-[#71717A]">
-      </TextField>
-      <TextField v-show="values.cloudTelephoneProvider === 'exotel'" name="flowId" placeholder="Flow id"
-      label="flow Id" :disabled="true" class="bg-[#E4E4E7] text-[#71717A]">
-    </TextField>
-    <TextField v-show="values.cloudTelephoneProvider === 'telnyx'" name="publicKey" placeholder="Public key"
-    label="Public Key" :disabled="true" class="bg-[#E4E4E7] text-[#71717A]">
-  </TextField>
-  <TextField v-show="values.cloudTelephoneProvider === 'exotel'" name="subDomain" placeholder="Sub domain"
-    label="Sub Domain" :disabled="true" class="bg-[#E4E4E7] text-[#71717A]">
-  </TextField>
+          label="Api Token" :disabled="true" class="bg-[#E4E4E7] text-[#71717A]">
+        </TextField>
+        <TextField v-show="values.cloudTelephoneProvider === 'exotel'" name="flowId" placeholder="Flow id"
+          label="flow Id" :disabled="true" class="bg-[#E4E4E7] text-[#71717A]">
+        </TextField>
+        <TextField v-show="values.cloudTelephoneProvider === 'telnyx'" name="publicKey" placeholder="Public key"
+          label="Public Key" :disabled="true" class="bg-[#E4E4E7] text-[#71717A]">
+        </TextField>
+        <TextField v-show="values.cloudTelephoneProvider === 'exotel'" name="subDomain" placeholder="Sub domain"
+          label="Sub Domain" :disabled="true" class="bg-[#E4E4E7] text-[#71717A]">
+        </TextField>
         <TextField v-show="values.cloudTelephoneProvider === 'telnyx'" name="connectionId" placeholder="Connection id"
           label="Connection Id" :disabled="true" class="bg-[#E4E4E7] text-[#71717A]">
         </TextField>
       </div>
       <div class="flex justify-end w-full">
+        <UiButton color="primary" type="submit" size="lg" :loading="isLoading" :disabled="!formHasChanged">
+          {{ formHasChanged ? 'Submit' : 'No Changes' }}
+        </UiButton>
+      </div>
+      <!-- <div class="flex justify-end w-full">
         <UiButton color="primary" type="submit" size="lg" :loading="isLoading">
           Submit
         </UiButton>
-      </div>
+      </div> -->
     </form>
   </div>
   <!-- </Page> -->
@@ -71,6 +69,7 @@ const route = useRoute("voice-bot-id-ivr-config");
 // const botDetails: any = await getVoiceBotDetails(route.params.id);
 const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void }>();
 const numberList = ref([])
+const originalValues = ref({});
 // const { data: botData, status: botLoadingStatus } = await useLazyFetch(`/api/voicebots/${route.params.id}`);
 
 const {
@@ -105,11 +104,6 @@ const formSchema = toTypedSchema(
     publicKey: z.string().optional(),
     connectionId: z.string().optional(),
     subDomain: z.string().optional(),
-    // phoneNumber: z.string().optional(),
-    // phoneId: z.string().optional(),
-    // projectId: z.string().optional(),
-    // workspaceId: z.string().optional(),
-    // workspaceSid: z.string().optional(),
   })
 )
 
@@ -137,6 +131,23 @@ setFieldValue("incomingPhoneNumber", props.botDetails.incomingPhoneNumber ?? "")
 
 const isPageLoading = computed(() =>  integrationsDataStatus.value === "pending")
 
+watch(() => props.botDetails, (newBotDetails) => {
+  if (newBotDetails) {
+    // Set form values
+    setFieldValue("ivrConfig", newBotDetails.ivrConfig ?? "");
+    setFieldValue("incomingPhoneNumber", newBotDetails.incomingPhoneNumber ?? "");
+    
+    // Store original values after form is populated
+    nextTick(() => {
+      originalValues.value = {
+        ivrConfig: values.ivrConfig || "",
+        incomingPhoneNumber: values.incomingPhoneNumber || ""
+      };
+    });
+  }
+}, { deep: true, immediate: true });
+
+
 watch(() => values.ivrConfig, (selectedIvrConfig) => {
   const { status, numberIntegrationData, refresh } = useNumberIntegration(selectedIvrConfig);
   watch(() => numberIntegrationData.value, (newIntegrationsData) => {
@@ -154,15 +165,10 @@ watch(() => values.ivrConfig, (selectedIvrConfig) => {
       setFieldValue("publicKey", newIntegrationsData.metadata.publicKey ?? "")
       setFieldValue("connectionId", newIntegrationsData.metadata.connectionId ?? "")
       setFieldValue("subDomain", newIntegrationsData.metadata.subDomain ?? "")
-      // setFieldValue("phoneNumber", newIntegrationsData.metadata.phoneNumber ?? "")
-      // setFieldValue("phoneId", newIntegrationsData.metadata.phoneId ?? "")
-      // setFieldValue("projectId", newIntegrationsData.metadata.projectId ?? "")
-      // setFieldValue("workspaceId", newIntegrationsData.metadata.workspaceId ?? "")
-      // setFieldValue("workspaceSid", newIntegrationsData.metadata.workspaceSid ?? "")
     }
   })
-  // setFieldValue("cloudTelephoneProvider", numberIntegrationData.value.provider ?? "")
 })
+
 // Watch for changes in the loading status or integrationsData
 watch([isPageLoading, integrationsData], () => {
   // If the page is no longer loading and data is successfully fetched
@@ -190,6 +196,27 @@ watch(() => values.ivrConfig, () => {
   setFieldValue("incomingPhoneNumber", "")
 })
 
+const hasFormChanged = () => {
+  // Skip comparison if no original values are set yet
+  if (Object.keys(originalValues.value).length === 0) return false;
+  
+  const fieldsToCheck = ["ivrConfig", "incomingPhoneNumber"];
+  
+  for (const field of fieldsToCheck) {
+    const originalValue = String(originalValues.value[field] || "");
+    const currentValue = String(values[field] || "");
+    
+    if (originalValue !== currentValue) {
+      return true;
+    }
+  }
+  
+  return false;
+};
+
+// Computed property for template binding
+const formHasChanged = computed(() => hasFormChanged());
+
 const onSelectProvider = async (value: any) => {
   if (value) {
     await getNumberListApiCall(value)
@@ -204,32 +231,39 @@ const getNumberListApiCall = async (value: any) => {
   }))
 }
 
-
 const onSubmit = handleSubmit(async (value: any) => {
   isLoading.value = true;
-  const payload = value.ivrConfig
-    ? {
-      ivrConfig: value.ivrConfig,
-      incomingPhoneNumber: value.incomingPhoneNumber,
+  
+  // Only proceed if there are actual changes
+  if (hasFormChanged()) {
+    const payload = value.ivrConfig
+      ? {
+        ivrConfig: value.ivrConfig,
+        incomingPhoneNumber: value.incomingPhoneNumber,
+      }
+      : { ivrConfig: null, incomingPhoneNumber: null };
+    try {
+      await updateLLMConfig(payload, props.botDetails.id, "The IVR Configuration has been added successfully.");
+      
+      // Update original values after successful save
+      nextTick(() => {
+        originalValues.value = {
+          ivrConfig: values.ivrConfig || "",
+          incomingPhoneNumber: values.incomingPhoneNumber || ""
+        };
+      });
+      
+      return navigateTo({
+        name: "voice-bot-id",
+        params: { id: props.botDetails.id },
+      });
+    } catch (error: any) {
+      toast.error(error.statusMessage)
     }
-    : { ivrConfig: null, incomingPhoneNumber: null };
-  try {
-    await updateLLMConfig(payload, props.botDetails.id, "The IVR Configuration has been added successfully.");
-    return navigateTo({
-      name: "voice-bot-id",
-      params: { id: props.botDetails.id },
-    });
-    if (typeof props.refreshBot === 'function') {
-    props.refreshBot();
   } else {
-    console.error("refreshBot is not a function", props.refreshBot);
+    console.log('No changes detected, skipping API call');
   }
-  } catch (error: any) {
-    toast.error(error.statusMessage)
-    // console.error("An error occurred while updating:", error);
-  } finally {
-    isLoading.value = false;
-  }
+  
+  isLoading.value = false;
 });
-
 </script>

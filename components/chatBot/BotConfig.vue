@@ -53,8 +53,8 @@
       <TextField name="DESCRIPTION" label="Company Description" :isTextarea="true">
       </TextField>
       <div class="flex w-full justify-end">
-        <UiButton color="primary" type="submit" size="lg" :loading="isLoading">
-          Submit
+        <UiButton color="primary" type="submit" size="lg" :disabled="!formHasChanged" :loading="isLoading">
+          {{ formHasChanged ? 'Submit' : 'No Changes' }}
         </UiButton>
       </div>
     </form>
@@ -77,9 +77,10 @@ const animationProps = {
   duration: 0,
 };
 const router = useRouter();
-const route = useRoute("chat-bot-id-config");
+const route = useRoute();
 const emit = defineEmits(["statusUpdated"]);
 const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
+const originalValues = ref({}); // Add ref for original values
 // const botDetails: any = await getBotDetails(route.params.id);
 // const defaultFormValues = botDetails.value.metadata.prompt;
 const isLoading = ref(false)
@@ -108,6 +109,8 @@ watch(() => props?.botDetails?.metadata?.prompt, (defaultFormValues) => {
   setFieldValue("otherGoal", defaultFormValues.otherGoal || "");
   setFieldValue("errorMessage", defaultFormValues.errorMessage || "");
   setFieldValue("LANGUAGE", defaultFormValues.LANGUAGE ?? "English - en");
+
+  originalValues.value = { ...defaultFormValues };
 }, { deep: true, immediate: true })
 
 
@@ -150,23 +153,68 @@ onMounted(() => {
   }
 });
 
+const hasFormChanged = () => {
+  const keysToCheck = [
+    "NAME", "COMPANY", "ROLE", "GOAL", "NOTES",
+    "DESCRIPTION", "otherRole", "otherGoal", "errorMessage", "LANGUAGE"
+  ];
+
+  for (const key of keysToCheck) {
+    // Skip if not in both objects
+    if (!(key in values) || !(key in originalValues.value)) {
+      continue;
+    }
+
+    // Use string comparison for more reliable results
+    const originalVal = String(originalValues.value[key] || '');
+    const currentVal = String(values[key] || '');
+
+    if (originalVal !== currentVal) {
+      return true;
+    }
+  }
+
+  return false;
+};
+// Add this computed property to your component
+const formHasChanged = computed(() => {
+  return hasFormChanged();
+});
+
 const handleUpdateBotConfig = handleSubmit(async (values: any) => {
   isLoading.value = true
-  const payload: any = {
-    id: props?.botDetails?.id,
-    metadata: {
-      ...props?.botDetails?.metadata,
-      prompt: {
-        ...values,
+
+  // Only call the API if something has changed
+  if (hasFormChanged()) {
+    const payload: any = {
+      id: props?.botDetails?.id,
+      metadata: {
+        ...props?.botDetails?.metadata,
+        prompt: {
+          ...values,
+        },
       },
-    },
-  };
-  await updateBotDetails(payload,true);
-  // emit('formSubmitted');
+    };
+    await updateBotDetails(payload, true);
+    // Update original values after successful update
+    nextTick(() => {
+      originalValues.value = {
+        NAME: values.NAME,
+        COMPANY: values.COMPANY,
+        ROLE: values.ROLE,
+        GOAL: values.GOAL,
+        NOTES: values.NOTES,
+        DESCRIPTION: values.DESCRIPTION,
+        otherRole: values.otherRole,
+        otherGoal: values.otherGoal,
+        errorMessage: values.errorMessage,
+        LANGUAGE: values.LANGUAGE,
+      };
+    });
+  } else {
+    console.log('No changes detected, skipping API call');
+  }
+
   isLoading.value = false
-  // return navigateTo({
-  //   name: "chat-bot-id",
-  //   params: { id: botDetails.id },
-  // });
 });
 </script>

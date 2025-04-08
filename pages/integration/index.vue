@@ -2,7 +2,7 @@
   <Page title="Integration" :disable-back-button="true" :disable-elevation="false">
     <template #actionButtons>
       <div class="flex gap-2">
-        <UiButton color="primary" :disabled="chatIntelligence"
+        <UiButton color="primary" :disabled="shouldDisableButton"
           class="text-[10.5px] sm:text-[10.5px] md:text-[14px] lg:text-[14px] xl:text-[14px]" @click="() => {
               if (route.query.q === 'number') {
                 numberModalState = true;
@@ -54,7 +54,6 @@
         <UiTabsTrigger value="ecommerce" @click="navigateToTab('ecommerce')">
           E-Commerce
         </UiTabsTrigger>
-
         <UiTabsTrigger value="number" @click="navigateToTab('number')">
           Cloud Telephony
         </UiTabsTrigger>
@@ -79,11 +78,11 @@
           @stateControl="integrationModalState = $event" />
       </UiTabsContent>
       <UiTabsContent value="number">
-        <NumberIntegration :integrationModalState="numberModalState" :chatIntelligence="chatIntelligence"
+        <NumberIntegration :integrationModalState="numberModalState"
           :findTitleForIntegrationModal="findTitleForIntegrationModal()" @stateControl="numberModalState = $event" />
       </UiTabsContent>
       <UiTabsContent value="TTS">
-        <TTSIntegration :integrationModalState="ttsModalState" :chatIntelligence="chatIntelligence"
+        <TTSIntegration :integrationModalState="ttsModalState"
           :findTitleForIntegrationModal="findTitleForIntegrationModal()" @stateControl="ttsModalState = $event" />
       </UiTabsContent>
     </UiTabs>
@@ -278,6 +277,10 @@ const chatIntelligence = computed(() => {
   });
 });
 
+const shouldDisableButton = computed(() => {
+  // Only disable if it's not number or TTS AND chatIntelligence is true
+  return route.query.q !== 'number' && route.query.q !== 'TTS' && chatIntelligence.value;
+});
 const navigateToTab = async (tab: any) => {
   page.value = "1";
   limit.value = "10";
