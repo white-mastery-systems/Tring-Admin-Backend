@@ -1,12 +1,7 @@
 <template>
-  <!-- <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
-    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
-  </div> -->
   <div>
     <div class="pb-2 sm:pb-0">
       <form @submit="handleIntegratedSubmit" class="space-y-8">
-        <!-- Text-to-Speech Configuration Section -->
-        <!-- class="space-y-10" -->
         <div>
           <div class="text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px] font-semibold text-[#09090B] pb-6 pt-2">
             Text-To-Speech (TTS) Setup</div>
@@ -109,15 +104,11 @@
             <TextField name="llm.top_k" label="Top K" placeholder="Enter Top K" />
             <TextField name="llm.top_p" label="Top P" placeholder="Enter Top P" />
           </div>
-          <!-- <div class="spcace-y-2 grid w-full grid-cols-1 gap-2">
-            <TextField label="System Prompt" name="llm.prompt" placeholder="Enter prompt" :isTextarea="true" />
-          </div> -->
         </div>
         <div>
           <UiSeparator orientation="horizontal" class="bg-[#E2E8F0]" />
         </div>
         <!-- Speech-to-Text Configuration Section -->
-        <!-- class="space-y-3" -->
         <div class="space-y-6">
           <div class="text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px] font-semibold text-[#09090B]">
             Speech-To-Text (STT) Setup</div>
@@ -238,8 +229,8 @@
           </div>
         </div>
         <div class="flex items-center justify-end gap-2">
-          <UiButton color="primary" type="submit" class="px-9">
-            Submit
+          <UiButton color="primary" type="submit" class="px-9" :disabled="!formHasChanged" :loading="isLoading">
+            {{ formHasChanged ? 'Submit' : 'No Changes' }}
           </UiButton>
         </div>
       </form>
@@ -270,7 +261,7 @@ const activeTab = ref('tts'); // Default to TTS tab
 
 // Get bot details
 // const botDetails = ref(await getVoiceBotDetails(route.params.id));
-
+const originalValues = ref({});
 // TTS related data
 const { integrationsData, status } = useIntegrations({});
 const formattedElevenlabsVoiceList = ref([]);
@@ -413,7 +404,6 @@ watch(() => values.stt?.provider, (newProvider) => {
     models.value = [];
   }
 });
-
 // Load initial data when bot data is available
 watch(botData, () => {
   if (botData.value) {
@@ -507,7 +497,13 @@ watch(botData, () => {
         setFieldValue(`llm.${key}`, value);
       });
     }
-    
+    nextTick(() => {
+      originalValues.value = {
+        tts: JSON.stringify(values.tts || {}),
+        stt: JSON.stringify(values.stt || {}),
+        llm: JSON.stringify(values.llm || {})
+      };
+    });
     isPageLoading.value = false;
   }
 }, { deep: true, immediate: true });
@@ -517,43 +513,129 @@ const changeTempture = (temValue: any) => {
   console.log(temValue, 'temValue --- temValue');
   setFieldValue('stt.amplificationFactor', temValue);
 }
+
+const hasFormChanged = () => {
+  if (Object.keys(originalValues.value).length === 0) return false;
+
+  // For debugging
+  console.log("Checking for changes...");
+
+  // Compare TTS fields
+  const ttsFields = ['provider', 'name', 'pitch', 'speakingRate', 'volumeGainDb', 'elevenlabsvoice',
+    'model', 'stability', 'similarityBoost', 'style', 'useSpeakerBoost',
+    'voice', 'speaker', 'speakingSpeed', 'silence_pad', 'apikey'];
+
+  try {
+    const originalTts = JSON.parse(originalValues.value.tts || '{}');
+
+    for (const field of ttsFields) {
+      const originalValue = String(originalTts[field] || '');
+      const currentValue = String(values.tts?.[field] || '');
+
+      if (originalValue !== currentValue) {
+        return true;
+      }
+    }
+
+    // Compare STT fields
+    const sttFields = ['provider', 'model', 'adaptation', 'googlemodel', 'recognizer',
+      'amplificationFactor', 'endpointing', 'utteranceEndMs',
+      'endutterancesilencethreshold'];
+
+    const originalStt = JSON.parse(originalValues.value.stt || '{}');
+
+    for (const field of sttFields) {
+      const originalValue = String(originalStt[field] || '');
+      const currentValue = String(values.stt?.[field] || '');
+
+      if (originalValue !== currentValue) {
+        console.log(`STT change detected in ${field}: "${originalValue}" -> "${currentValue}"`);
+        return true;
+      }
+    }
+
+    // Special handling for array fields
+    if (JSON.stringify(values.stt?.keywords) !== JSON.stringify(originalStt.keywords) ||
+      JSON.stringify(values.stt?.wordboost) !== JSON.stringify(originalStt.wordboost) ||
+      JSON.stringify(values.stt?.phraseSets) !== JSON.stringify(originalStt.phraseSets) ||
+      JSON.stringify(values.stt?.phraseLists) !== JSON.stringify(originalStt.phraseLists)) {
+      console.log("STT array fields changed");
+      return true;
+    }
+
+    // Compare LLM fields
+    const llmFields = ['max_output_token', 'temperature', 'top_k', 'top_p'];
+
+    const originalLlm = JSON.parse(originalValues.value.llm || '{}');
+
+    for (const field of llmFields) {
+      const originalValue = String(originalLlm[field] || '');
+      const currentValue = String(values.llm?.[field] || '');
+
+      if (originalValue !== currentValue) {
+        return true;
+      }
+    }
+
+    return false;
+  } catch (error) {
+    // If there's an error in comparison, assume the form has changed
+    return true;
+  }
+};
+const formHasChanged = computed(() => hasFormChanged());
 // Form submission handler
 const handleIntegratedSubmit = handleSubmit(async (formValues) => {
   isLoading.value = true;
-  
-  try {
-    // Format TTS config
-    const ttsConfig = formatTtsConfig(formValues.tts);
-    
-    // Format STT config
-    const sttConfig = formatSttConfig(formValues.stt);
-    
-    // LLM config (use directly)
-    const llmConfig = {...botData.value?.llmConfig, ...formValues.llm};
-    
-    // Send all configurations in a single API call
-    await $fetch(`/api/voicebots/${route.params.id}`, {
-      method: "PUT",
-      body: {
-        textToSpeechConfig: ttsConfig,
-        speechToTextConfig: sttConfig,
-        llmConfig: llmConfig
-      }
-    });
-    
-    toast.success("All configurations updated successfully");
-    
-    // Navigate back to voice bot details page
-    navigateTo({
-      name: "voice-bot-id",
-      params: { id: route.params.id }
-    });
-  } catch (error) {
-    toast.error("Error updating configurations");
-    console.error("Error:", error);
-  } finally {
-    isLoading.value = false;
+
+  // Only proceed if there are actual changes
+  if (hasFormChanged()) {
+    try {
+      // Format TTS config
+      const ttsConfig = formatTtsConfig(formValues.tts);
+
+      // Format STT config
+      const sttConfig = formatSttConfig(formValues.stt);
+
+      // LLM config (use directly)
+      const llmConfig = { ...botData.value?.llmConfig, ...formValues.llm };
+
+      // Send all configurations in a single API call
+      await $fetch(`/api/voicebots/${route.params.id}`, {
+        method: "PUT",
+        body: {
+          textToSpeechConfig: ttsConfig,
+          speechToTextConfig: sttConfig,
+          llmConfig: llmConfig
+        }
+      });
+
+      toast.success("All configurations updated successfully");
+
+      // Update original values after successful save
+      nextTick(() => {
+        originalValues.value = {
+          tts: JSON.stringify(values.tts || {}),
+          stt: JSON.stringify(values.stt || {}),
+          llm: JSON.stringify(values.llm || {})
+        };
+      });
+
+      // Navigate back to voice bot details page
+      navigateTo({
+        name: "voice-bot-id",
+        params: { id: route.params.id }
+      });
+    } catch (error) {
+      toast.error("Error updating configurations");
+      console.error("Error:", error);
+    }
+  } else {
+    console.log('No changes detected, skipping API call');
+    toast.info("No changes were made to save");
   }
+
+  isLoading.value = false;
 });
 
 // Helper function for API key unmasking

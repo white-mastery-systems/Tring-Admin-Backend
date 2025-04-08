@@ -2,13 +2,6 @@
   <div class="pb-7">
     <div class="my-5 flex items-center justify-between">
       <div class="text-xs sm:text-xs md:text-sm lg:text-lg font-bold">LLM Caching</div>
-      <!-- <UiButton @click="
-        () => {
-          // Any additional action if needed
-        }
-      ">
-        Refresh
-      </UiButton> -->
     </div>
 
     <div class="pb-2 sm:pb-0">
@@ -56,12 +49,10 @@
             @update="($event) => setFieldValue('distance', $event)" required placeholder="Enter distance" min="0"
             max="1" />
         </div>
-
-        <div class="flex w-full justify-end">
-          <UiButton color="primary" type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading">
-            Submit
-          </UiButton>
-        </div>
+        <UiButton color="primary" type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading"
+          :disabled="!formHasChanged">
+          {{ formHasChanged ? 'Submit' : 'No Changes' }}
+        </UiButton>
       </form>
     </div>
   </div>
@@ -83,6 +74,12 @@ const config = useRuntimeConfig();
 // Language and loading state
 const { languageList } = LanguageList();
 const isLoading = ref(false);
+const originalValues = ref({
+  llmCaching: false,
+  dynamicCaching: false,
+  distance: null as number | null
+});
+
 
 // Form validation schema
 const botSchema = toTypedSchema(
@@ -123,24 +120,97 @@ watchEffect(() => {
   }
 });
 
+// Watch for bot details to set initial values
+watch(() => props.botDetails, (newBotDetails) => {
+  if (newBotDetails && newBotDetails.clientConfig) {
+    // Set form values from bot details
+    setFieldValue("llmCaching", newBotDetails.clientConfig.llmCaching ?? false);
+    setFieldValue("dynamicCaching", newBotDetails.clientConfig.dynamicCaching ?? false);
+    setFieldValue("distance", newBotDetails.clientConfig.distance ?? null);
+
+    // Store original values
+    nextTick(() => {
+      originalValues.value = {
+        llmCaching: newBotDetails.clientConfig.llmCaching ?? false,
+        dynamicCaching: newBotDetails.clientConfig.dynamicCaching ?? false,
+        distance: newBotDetails.clientConfig.distance ?? null
+      };
+    });
+  }
+}, { immediate: true, deep: true });
+
+
+const hasFormChanged = () => {
+  // Skip comparison if no original values are set yet
+  if (Object.keys(originalValues.value).length === 0) return false;
+
+  // Check LLM Caching
+  if (values.llmCaching !== originalValues.value.llmCaching) {
+    return true;
+  }
+
+  // Check Dynamic Caching
+  if (values.dynamicCaching !== originalValues.value.dynamicCaching) {
+    return true;
+  }
+
+  // Check Distance
+  // Use parseFloat to handle potential type conversions
+  const originalDistance = originalValues.value.distance;
+  const currentDistance = values.distance;
+
+  if (
+    (originalDistance === null && currentDistance !== null) ||
+    (originalDistance !== null && currentDistance === null) ||
+    (originalDistance !== null && currentDistance !== null &&
+      Math.abs(parseFloat(String(originalDistance)) - parseFloat(String(currentDistance))) > 0.001)
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+// Computed property for template binding
+const formHasChanged = computed(() => {
+  return hasFormChanged();
+});
+
+
 // Form submission handler
 const onSubmit = handleSubmit(async (value: any) => {
-  isLoading.value = true;
-  const payload = {
-    clientConfig: value
-  };
+  // Only proceed if form has changed
+  if (hasFormChanged()) {
+    isLoading.value = true;
+    const payload = {
+      clientConfig: value
+    };
 
-  await updateLLMConfig(payload, props.botDetails.id, "LLM Caching Updated Successfully.");
-  if (typeof props.refreshBot === 'function') {
-    props.refreshBot();
+    await updateLLMConfig(payload, props.botDetails.id, "LLM Caching Updated Successfully.");
+
+    if (typeof props.refreshBot === 'function') {
+      props.refreshBot();
+    } else {
+      console.error("refresh function is not available", props.refreshBot);
+    }
+
+    // Update original values after successful submission
+    nextTick(() => {
+      originalValues.value = {
+        llmCaching: value.llmCaching ?? false,
+        dynamicCaching: value.dynamicCaching ?? false,
+        distance: value.distance ?? null
+      };
+    });
+
+    isLoading.value = false;
+
+    return navigateTo({
+      name: "voice-bot-id",
+      params: { id: props.botDetails.id },
+    });
   } else {
-    console.error("refresh function is not available", props.refreshBot);
+    console.log("No changes detected, skipping API call");
   }
-  isLoading.value = false;
-
-  return navigateTo({
-    name: "voice-bot-id",
-    params: { id: props.botDetails.id },
-  });
 });
 </script>

@@ -169,6 +169,7 @@ const onSubmit = handleSubmit(async (values) => {
 
     // Handle success (e.g., show a message)
     toast.success("Script sent successfully!");
+    resetForm()
   } catch (error) {
     console.error("Failed to send script:", error);
     alert("Failed to send script. Please try again.");

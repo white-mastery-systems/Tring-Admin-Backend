@@ -56,12 +56,35 @@ const route = useRoute();
 const router = useRouter();
 const tabValue = ref("personal-details");
 
-breadcrumbStore.setBreadcrumbs([
-  {
-    label: "My Account", // Dynamic name
-    to: `/account?tab=personal-details`,
-  }
-]);
+
+
+
+// Initialize breadcrumbs on page load
+onMounted(() => {
+  // Get the current tab from query or use default
+  const currentTab = route.query.tab || "personal-details";
+
+  // Set breadcrumbs on initial load
+  breadcrumbStore.setBreadcrumbs([
+    {
+      label: "My Account",
+      to: `/account?tab=${currentTab}`,
+    }
+  ]);
+
+  // Make sure tab value matches query
+  tabValue.value = currentTab as string;
+});
+
+
+watch(() => route.query.tab, (newType) => {
+  breadcrumbStore.setBreadcrumbs([
+    {
+      label: "My Account", // Dynamic name
+      to: `/account?tab=${newType}`,
+    }
+  ]);
+}, { deep:true, immediate: true })
 
 watch(() => route?.query?.tab, (newTab) => {
   tabValue.value = newTab

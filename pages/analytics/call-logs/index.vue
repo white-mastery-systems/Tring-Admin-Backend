@@ -5,8 +5,8 @@
       <!-- @pagination="Pagination"  -->
       <div class="flex items-center gap-2 overflow-x-scroll mt-2">
         <UiInput v-model="filters.q" @input="filters.page = '1'"
-          class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
-          placeholder="Search Bot Name..." />
+          class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 truncate"
+          placeholder="Search bot name" />
         <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
           @change="onDateChange" />
         <UiButton color="primary" @click="handleClearFilters" class="ml-2">Clear Filters</UiButton>
