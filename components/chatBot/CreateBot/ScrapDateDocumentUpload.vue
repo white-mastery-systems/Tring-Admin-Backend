@@ -21,7 +21,8 @@ watch(
     if (newValue) {
       text.value = newValue;
     }
-  }
+  },
+  { deep:true, immediate: true } // This makes it run immediately on component creation, similar to onMounted
 );
 const clearTextField = () => {
   text.value = "";

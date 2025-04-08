@@ -2,7 +2,7 @@
   <div>
     <div class="flex items-center gap-2 w-full overflow-x-scroll my-3">
       <UiInput v-model="filters.q" @input="filters.page = '1'"
-        class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 sm:max-w-[130px] md:max-w-[200px] lg:max-w-[200px] xl:max-w-[200px]"
+        class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0"
         placeholder=" Search Leads..." />
       <BotFilter v-model="filters.botId" />
       <StatusFilter v-model="filters.status" />

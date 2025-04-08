@@ -38,7 +38,7 @@
               </div>
               <div class="flex flex-col items-center gap-1" v-if="!botDetails.documentId">
                 <UiButton class="bg-[#424bd1] text-[14px] p-2 hover:bg-[#424bd1]/90 disabled:opacity-50"
-                  @click="handleActivateBot" :disabled="isSubmitting">
+                  @click="handleActivateBot" :disabled="isSubmitting" :loading="isActive">
                   <span class="hidden lg:inline"> Activate Bot </span>
                   <span class="flex flex-col items-center justify-center lg:hidden">
                     <component :is="Bot"></component>
@@ -50,7 +50,7 @@
                 <div class="flex flex-col items-center gap-1">
                   <UiButton
                     class="rounded-[8px] bg-[#ff0000] py-2 px-3 text-[14px] font-medium text-white hover:bg-[#ff0000] hover:brightness-90"
-                    @click="deactivateBot">
+                    @click="deactivateBot" :loading="isActive">
                     <!-- Deactivate Bot -->
                     <span class="hidden lg:inline"> Deactivate Bot </span>
                     <!-- Icon for small screens -->
@@ -267,6 +267,7 @@ const deleteModalState = ref(false);
 const modalOpen = ref(false);
 const isDocumentListOpen = ref(false);
 const isSubmitting = ref(false);
+const isActive = ref(false);
 // const getDocumentList: any = ref();
 const channelModalState = ref<{ open: boolean; id: string | null }>({
   open: false,
@@ -382,10 +383,12 @@ const deactivateBot = async () => {
 };
 
 const deactivateBotDialog = async () => {
+  isActive.value = true
   await disableBot(paramId.params.id);
   await refreshBot() // new function refreshBot added
   // botDetails.value = await getBotDetails(paramId.params.id)
   modalOpen.value = false;
+  isActive.value = false
 };
 
 const botScript =
@@ -470,6 +473,7 @@ const handleAddEditBot = async (values: any) => {
 // };
 
 const handleActivateBot = async () => {
+  isActive.value = true;
   await refreshBot()
   isSubmitting.value = true;
   const hasLogoInUI = botDetails.value?.metadata?.ui?.logo;
@@ -480,6 +484,7 @@ const handleActivateBot = async () => {
   if (!hasLogoInUI && !hasOrgLogo) {
     toast.error("Please fill all required in Customize Your Chatbot's Look");
     isSubmitting.value = false;
+    isActive.value = false;
     return;
   }
   
@@ -494,6 +499,7 @@ const handleActivateBot = async () => {
   if (!hasName || !hasRole || !hasCompanyName || !hasGoal || !hasLanguage) {
     toast.error("Please fill all required fields in bot setup");
     isSubmitting.value = false;
+    isActive.value = false;
     return;
   }
   const activeDocuments = botDetails.value.documents.filter(
@@ -524,6 +530,7 @@ const handleActivateBot = async () => {
     } catch (err) {
       store.createBotsuccessfulState.open = false
       isSubmitting.value = false;
+      isActive.value = false;
       toast.error("Failed to active the bot, try again");
       return;
     }
@@ -531,6 +538,7 @@ const handleActivateBot = async () => {
     isDocumentListOpen.value = true;
   }
   isSubmitting.value = false;
+  isActive.value = false;
 };
 onUnmounted(() => {
   if (unregisterGuard.value) {

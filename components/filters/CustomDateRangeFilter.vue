@@ -7,7 +7,7 @@ import {
   today,
 } from "@internationalized/date";
 
-import { Calendar as CalendarIcon } from "lucide-vue-next";
+import { CalendarIcon } from "lucide-vue-next";
 import type { DateRange } from "radix-vue";
 import { useDateOptions } from "~/composables/filters/useDateOptions";
 
@@ -71,10 +71,10 @@ const isDateDisabled = (date: CalendarDate) => {
 
 <template>
   <UiSelect v-if="props.selectDateField" v-model="selectedDate">
-    <UiSelectTrigger class="min:w-[188px] w-full sm:w-[110px] md:w-[188px] lg:w-[188px] xl:w-[188px]">
+    <UiSelectTrigger class="text-[12px] min-w-[130px] max-w-[130px]">
       <UiSelectValue placeholder="Select a Date" />
     </UiSelectTrigger>
-    <UiSelectContent>
+    <UiSelectContent class="text-[12px]">
       <UiSelectItem v-for="(rangeDate, index) in dateOptions" :key="index" :value="rangeDate.value">
         {{ rangeDate.content }}
       </UiSelectItem>
@@ -85,7 +85,7 @@ const isDateDisabled = (date: CalendarDate) => {
   <UiPopover v-if="(selectedDate === 'custom') || (selectDate === 'custom')" class="text-[#3D3D3D]">
     <UiPopoverTrigger as-child>
       <UiButton variant="outline" :class="cn(
-        'w-full sm:w-full md:w-[220px] justify-start text-left font-normal truncate rounded-lg',
+        'min-w-[130px] max-w-[130px] justify-start text-left font-normal truncate rounded-lg',
         'border-[#FFBC42] border-[1px] focus:ring-1 focus:ring-[#FFBC42] focus:ring-opacity-50',
         !value && 'text-muted-foreground',
       )">

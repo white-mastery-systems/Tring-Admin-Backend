@@ -14,7 +14,7 @@
     <!-- <template #actionButtons> -->
     <div class="flex items-center justify-between mb-5">
       <div class="text-sm sm:text-sm md:text-base lg:text-lg font-bold"> Channel Configuration </div>
-      <UiButton class="flex items-center justify-end text-xs sm:text-xs md:text-sm" color="primary" @click="
+      <UiButton class="flex items-center justify-end text-xs sm:text-xs md:text-sm" :disabled="chatIntelligence" color="primary" @click="
         () => {
           communicationChannelModalState.open = true;
           communicationChannelModalState.id = null;
@@ -58,6 +58,7 @@ const router = useRouter();
 const columnHelper = createColumnHelper<any>();
 const route = useRoute("chat-bot-id-crm-config");
 const paramId: any = route;
+const planDetails = ref()
 // const botDetails = ref(await getBotDetails(paramId.params.id));
 
 let deleteIntegrationState: { open: boolean; id?: string } = reactive({
@@ -151,5 +152,15 @@ const communicationChannelModalState = ref<{
 }>({
   open: false,
   id: null,
+});
+
+onMounted(async () => {
+  planDetails.value = await userPlan();
+})
+
+const chatIntelligence = computed(() => {
+  return planDetails.value.userPlanDetails.some((plan: any) => {
+    return plan.type === 'chat' && plan.planCode === 'chat_intelligence'
+  });
 });
 </script>

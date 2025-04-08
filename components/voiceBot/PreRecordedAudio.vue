@@ -2,13 +2,6 @@
   <div class="pb-7">
     <div class="my-5 flex items-center justify-between">
       <div class="text-xs sm:text-xs md:text-sm lg:text-lg font-bold">Pre Recorded Audio</div>
-      <!-- <UiButton @click="
-        () => {
-          // Add button action if needed
-        }
-      ">
-        Add Audio
-      </UiButton> -->
     </div>
 
     <form @submit="onSubmit" class="flex flex-col gap-2 space-y-2">
@@ -61,7 +54,7 @@
         </div>
 
         <div v-if="values.intent === 'filler'" class="w-full gap-3 pt-2">
-          <div style="align-self: center">Filler Audio</div>
+          <div style="align-self: center" class="mb-2">Filler Audio</div>
           <div>
             <imageField :isLoading="isLoading" name="fillerAudio" @change="($event) => {
               uploadFile($event, 'filler', 'fillerFile');
@@ -85,7 +78,7 @@
         <div v-if="values.intent === 'ambientNoise'" class="w-full gap-3 pt-2">
           <div>
             <div>
-              <div style="align-self: center">Ambient Noise Audio</div>
+              <div style="align-self: center" class="mb-2">Ambient Noise Audio</div>
               <div>
                 <imageField :isLoading="isLoading" name="ambientNoiseAudio" @change="($event) => {
                   uploadFile($event, 'ambientNoise', 'ambientNoiseFile');
@@ -139,8 +132,9 @@
         </div>
       </div>
       <div class="flex w-full justify-end">
-        <UiButton color="primary" type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading">
-          Submit
+        <UiButton color="primary" type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading"
+          :disabled="!formHasChanged">
+          {{ formHasChanged ? 'Submit' : 'No Changes' }}
         </UiButton>
       </div>
     </form>
@@ -168,6 +162,15 @@ const ambientNoiseFilesData = ref([]);
 const forwardCallFilesData = ref([]);
 const deleteFileBucket = ref([]);
 const isLoading = ref(false);
+const originalValues = ref({
+  intent: '',
+  welcomeAudio: '',
+  concludeAudio: '',
+  fillerAudio: '',
+  ambientNoiseAudio: '',
+  forwardCallAudio: '',
+  ambientNoiseFiles: []
+});
 
 // Intent options
 // {
@@ -256,6 +259,36 @@ const concludeString = ref("");
 const fillerString = ref("");
 const ambientNoiseString = ref("");
 const forwardCallString = ref("");
+
+// Watch for bot details and audio response data to set initial values
+watch(() => props.botDetails, (newBotDetails) => {
+  if (newBotDetails) {
+    // Set initial intent
+    const initialIntent = newBotDetails?.intent || 'welcome';
+    setFieldValue("intent", initialIntent);
+  }
+}, { immediate: true });
+
+// Watch for audio response data to capture initial state
+watch(() => props.audioResponseData, (newAudioData) => {
+  if (newAudioData) {
+    nextTick(() => {
+      originalValues.value = {
+        intent: values.intent || 'welcome',
+        welcomeAudio: values.welcomeAudio || '',
+        concludeAudio: values.concludeAudio || '',
+        fillerAudio: values.fillerAudio || '',
+        ambientNoiseAudio: values.ambientNoiseAudio || '',
+        forwardCallAudio: values.forwardCallAudio || '',
+        ambientNoiseFiles: newAudioData.ambientNoise?.map(file => ({
+          audio: file.audio,
+          volume: file.volume,
+          transcription: file.transcription
+        })) || []
+      };
+    });
+  }
+}, { immediate: true, deep: true });
 
 // File upload handler
 const uploadFile = (
@@ -442,24 +475,99 @@ const updateAmbientSound = (index, newVolume) => {
   }
 };
 
-// Form submission handler
-const onSubmit = handleSubmit(async (value: any) => {
-  isLoading.value = true;
-  await ambientNoiseAudioUpload();
-  let payload = {
-    intent: values.intent,
-  };
-  await updateLLMConfig(payload, props.botDetails.id, "Pre-recorded audio files updated successfully.");
-  if (typeof props.refreshBot === 'function') {
-    props.refreshBot();
-  } else {
-    console.error("refresh function is not available", props.refreshBot);
-  }
-  isLoading.value = false;
+const hasFormChanged = () => {
+  // Skip comparison if no original values are set yet
+  if (Object.keys(originalValues.value).length === 0) return false;
 
-  // return navigateTo({
-  //   name: "voice-bot-id",
-  //   params: { id: props.botDetails.id },
-  // });
+  // Check intent
+  if (String(originalValues.value.intent) !== String(values.intent)) {
+    return true;
+  }
+
+  // Check audio file name changes
+  const audioFieldsToCheck = [
+    'welcomeAudio',
+    'concludeAudio',
+    'fillerAudio',
+    'ambientNoiseAudio',
+    'forwardCallAudio'
+  ];
+
+  for (const field of audioFieldsToCheck) {
+    if (String(originalValues.value[field] || '') !== String(values[field] || '')) {
+      return true;
+    }
+  }
+
+  // Check ambient noise files
+  const currentAmbientNoiseFiles = props.audioResponseData?.ambientNoise || [];
+  const originalAmbientNoiseFiles = originalValues.value.ambientNoiseFiles || [];
+
+  // Compare number of files
+  if (currentAmbientNoiseFiles.length !== originalAmbientNoiseFiles.length) {
+    return true;
+  }
+
+  // Compare each ambient noise file details
+  for (let i = 0; i < currentAmbientNoiseFiles.length; i++) {
+    const currentFile = currentAmbientNoiseFiles[i];
+    const originalFile = originalAmbientNoiseFiles[i];
+
+    if (!originalFile) return true;
+
+    // Compare audio filename, volume, and transcription
+    if (
+      currentFile.audio !== originalFile.audio ||
+      currentFile.volume !== originalFile.volume ||
+      (currentFile.transcription || '').trim() !== (originalFile.transcription || '').trim()
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+const formHasChanged = computed(() => {
+  return hasFormChanged();
+});
+
+const onSubmit = handleSubmit(async (value: any) => {
+  // Only proceed if form has changed
+  if (hasFormChanged()) {
+    isLoading.value = true;
+    await ambientNoiseAudioUpload();
+    let payload = {
+      intent: values.intent,
+    };
+    await updateLLMConfig(payload, props.botDetails.id, "Pre-recorded audio files updated successfully.");
+
+    if (typeof props.refreshBot === 'function') {
+      props.refreshBot();
+    } else {
+      console.error("refresh function is not available", props.refreshBot);
+    }
+
+    // Update original values after successful submission
+    nextTick(() => {
+      originalValues.value = {
+        intent: values.intent,
+        welcomeAudio: values.welcomeAudio || '',
+        concludeAudio: values.concludeAudio || '',
+        fillerAudio: values.fillerAudio || '',
+        ambientNoiseAudio: values.ambientNoiseAudio || '',
+        forwardCallAudio: values.forwardCallAudio || '',
+        ambientNoiseFiles: props.audioResponseData?.ambientNoise?.map(file => ({
+          audio: file.audio,
+          volume: file.volume,
+          transcription: file.transcription
+        })) || []
+      };
+    });
+
+    isLoading.value = false;
+  } else {
+    console.log("No changes detected, skipping API call");
+  }
 });
 </script>

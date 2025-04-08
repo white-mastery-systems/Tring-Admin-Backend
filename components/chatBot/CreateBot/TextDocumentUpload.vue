@@ -44,7 +44,7 @@ const clearTextField = () => {
 // Expose method for parent access
 const generatePDFAndUpload = async () => {
   if (!text.value.trim()) {
-    // toast.error("Please enter some text before generating the PDF.");
+    toast.error("Please enter some text before generating the document.");
     return;
   }
   const pdf = new jsPDF();

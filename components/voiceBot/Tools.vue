@@ -1,14 +1,7 @@
 <template>
   <div class="pb-7">
     <div class="my-5 flex items-center justify-between">
-      <div class="text-xs sm:text-xs md:text-sm md:text-lg font-bold">Add Tools</div>
-      <!-- <UiButton @click="
-        () => {
-          // Add action if needed
-        }
-      ">
-        Refresh
-      </UiButton> -->
+      <div class="text-xs sm:text-xs md:text-sm lg:text-lg font-bold">Add Tools</div>
     </div>
 
     <form @submit.prevent="dynamicToolsForm" class="space-y-6">
@@ -218,8 +211,8 @@
       </div>
 
       <div class="flex w-full justify-end gap-2">
-        <UiButton color="primary" type="submit" size="lg" :loading="isLoading">
-          Submit
+        <UiButton color="primary" type="submit" size="lg" :loading="isLoading" :disabled="!formHasChanged">
+          {{ formHasChanged ? 'Submit' : 'No Changes' }}
         </UiButton>
       </div>
     </form>
@@ -244,34 +237,20 @@ const route = useRoute("voice-bot-id-tools");
 const paramId: any = route;
 const props = defineProps<{ botDetails: any; loading: boolean; audioResponseData: any; audioDataRefresh: () => void; refreshBot: () => void }>();
 
-// const props.botDetails(await getVoiceBotDetails(route.params.id));
 const config = useRuntimeConfig();
 const formattedUploadAudioFile = ref({});
 const deleteFileBucket = ref([]);
+// Original values to track form changes
+const originalValues = ref({
+  currentDate: true,
+  concludeCall: true,
+  forwardCall: false,
+  genderIdentification: true,
+  clientTools: [] as any[],
+  clientFormControl: false,
+  propertieFormControl: false
+});
 
-// Using an alias for audioResponseData
-// const {
-//   audioResponseData: integrationsData,
-//   loading,
-//   error,
-//   audioDataRefresh
-// } = usePrerecordedAudioMetadata(
-//   route.params.id,
-//   props.botDetails.organizationId
-// );
-// Fetch audio data
-// const {
-//   data: integrationsData,
-//   status,
-//   refresh: audioDataRefresh,
-// } = await useLazyFetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio/metaData`, {
-//   server: false,
-//   params: {
-//     bot_id: route.params.id,
-//     organization_id: props.botDetails.organizationId
-//   },
-//   default: () => [],
-// });
 
 // Update page title
 watchEffect(() => {
@@ -323,6 +302,40 @@ setFieldValue('genderIdentification', props.botDetails?.tools?.defaultTools?.inc
 setFieldValue('clientTools', props.botDetails?.tools?.clientTools ?? []);
 setFieldValue('clientFormControl', props.botDetails?.tools?.clientFormControl ?? false);
 setFieldValue('propertieFormControl', props.botDetails?.tools?.propertieFormControl ?? false);
+
+
+// Deep clone function to handle complex objects
+const deepClone = (obj: any) => {
+  return JSON.parse(JSON.stringify(obj));
+};
+
+
+// Watch for bot details to set initial values
+watch(() => props.botDetails, (newBotDetails) => {
+  if (newBotDetails?.tools) {
+    // Set form values from bot details
+    setFieldValue('currentDate', newBotDetails.tools?.defaultTools?.includes('currentDate') ?? true);
+    setFieldValue('concludeCall', newBotDetails.tools?.defaultTools?.includes('concludeCall') ?? true);
+    setFieldValue('forwardCall', newBotDetails.tools?.defaultTools?.includes('forwardCall') ?? false);
+    setFieldValue('genderIdentification', newBotDetails.tools?.defaultTools?.includes('genderIdentification') ?? true);
+    setFieldValue('clientTools', newBotDetails.tools?.clientTools ?? []);
+    setFieldValue('clientFormControl', newBotDetails.tools?.clientFormControl ?? false);
+    setFieldValue('propertieFormControl', newBotDetails.tools?.propertieFormControl ?? false);
+
+    // Store original values
+    nextTick(() => {
+      originalValues.value = {
+        currentDate: newBotDetails.tools?.defaultTools?.includes('currentDate') ?? true,
+        concludeCall: newBotDetails.tools?.defaultTools?.includes('concludeCall') ?? true,
+        forwardCall: newBotDetails.tools?.defaultTools?.includes('forwardCall') ?? false,
+        genderIdentification: newBotDetails.tools?.defaultTools?.includes('genderIdentification') ?? true,
+        clientTools: deepClone(newBotDetails.tools?.clientTools ?? []),
+        clientFormControl: newBotDetails.tools?.clientFormControl ?? false,
+        propertieFormControl: newBotDetails.tools?.propertieFormControl ?? false
+      };
+    });
+  }
+}, { immediate: true, deep: true });
 
 // Upload audio file handler
 const uploadAudioFile = (event: Event, toolIdx: number) => {
@@ -471,31 +484,139 @@ const audioDelete = async (toolName: any, toolIdx: any, index: any) => {
   }
 };
 
-// Form submission handler
-const dynamicToolsForm = handleSubmit(async (values: any) => {
-  isLoading.value = true;
+const hasFormChanged = () => {
+  // Skip comparison if no original values are set yet
+  if (Object.keys(originalValues.value).length === 0) return false;
 
-  const defaultTools = [];
-  if (values.currentDate) defaultTools.push('currentDate');
-  if (values.concludeCall) defaultTools.push('concludeCall');
-  if (values.forwardCall) defaultTools.push('forwardCall');
-  if (values.genderIdentification) defaultTools.push('genderIdentification');
+  // Check default tools switches
+  const defaultToolsToCheck = [
+    'currentDate',
+    'concludeCall',
+    'forwardCall',
+    'genderIdentification'
+  ];
 
-  const payload = {
-    tools: {
-      defaultTools,
-      clientFormControl: values.clientFormControl,
-      propertieFormControl: values.propertieFormControl,
-      clientTools: values.clientTools,
+  for (const tool of defaultToolsToCheck) {
+    if (values[tool] !== originalValues.value[tool]) {
+      return true;
     }
-  };
-
-  await updateLLMConfig(payload, props.botDetails.id, "Tools added successfully.");
-  if (typeof props.refreshBot === 'function') {
-    props.refreshBot();
-  } else {
-    console.error("refresh function is not available", props.refreshBot);
   }
-  isLoading.value = false;
+
+  // Check client form control and properties form control
+  if (
+    values.clientFormControl !== originalValues.value.clientFormControl ||
+    values.propertieFormControl !== originalValues.value.propertieFormControl
+  ) {
+    return true;
+  }
+
+  // Compare client tools
+  const originalTools = originalValues.value.clientTools || [];
+  const currentTools = values.clientTools || [];
+
+  // Check if number of tools has changed
+  if (originalTools.length !== currentTools.length) {
+    return true;
+  }
+
+  // Deep comparison of client tools
+  for (let i = 0; i < currentTools.length; i++) {
+    const originalTool = originalTools[i];
+    const currentTool = currentTools[i];
+
+    // Compare tool basic fields
+    const basicFieldsToCheck = ['name', 'description', 'endpoint'];
+    for (const field of basicFieldsToCheck) {
+      if (
+        (originalTool?.[field] || '') !== (currentTool?.[field] || '')
+      ) {
+        return true;
+      }
+    }
+
+    // Compare audio files
+    const originalAudio = originalTool?.audio || [];
+    const currentAudio = currentTool?.audio || [];
+    if (originalAudio.length !== currentAudio.length) {
+      return true;
+    }
+
+    // Compare parameters
+    const originalParams = originalTool?.parameters?.properties || [];
+    const currentParams = currentTool?.parameters?.properties || [];
+    if (originalParams.length !== currentParams.length) {
+      return true;
+    }
+
+    // Deep comparison of parameters
+    for (let j = 0; j < currentParams.length; j++) {
+      const originalParam = originalParams[j];
+      const currentParam = currentParams[j];
+
+      const paramFieldsToCheck = ['name', 'type', 'description', 'required'];
+      for (const field of paramFieldsToCheck) {
+        if (
+          (originalParam?.[field] || '') !== (currentParam?.[field] || '')
+        ) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+};
+
+// Computed property for template binding
+const formHasChanged = computed(() => {
+  return hasFormChanged();
+});
+
+
+const dynamicToolsForm = handleSubmit(async (values: any) => {
+  // Only proceed if form has changed
+  if (hasFormChanged()) {
+    isLoading.value = true;
+
+    const defaultTools = [];
+    if (values.currentDate) defaultTools.push('currentDate');
+    if (values.concludeCall) defaultTools.push('concludeCall');
+    if (values.forwardCall) defaultTools.push('forwardCall');
+    if (values.genderIdentification) defaultTools.push('genderIdentification');
+
+    const payload = {
+      tools: {
+        defaultTools,
+        clientFormControl: values.clientFormControl,
+        propertieFormControl: values.propertieFormControl,
+        clientTools: values.clientTools,
+      }
+    };
+
+    await updateLLMConfig(payload, props.botDetails.id, "Tools added successfully.");
+
+    if (typeof props.refreshBot === 'function') {
+      props.refreshBot();
+    } else {
+      console.error("refresh function is not available", props.refreshBot);
+    }
+
+    // Update original values after successful submission
+    nextTick(() => {
+      originalValues.value = {
+        currentDate: values.currentDate,
+        concludeCall: values.concludeCall,
+        forwardCall: values.forwardCall,
+        genderIdentification: values.genderIdentification,
+        clientTools: deepClone(values.clientTools || []),
+        clientFormControl: values.clientFormControl,
+        propertieFormControl: values.propertieFormControl
+      };
+    });
+
+    isLoading.value = false;
+  } else {
+    console.log("No changes detected, skipping API call");
+  }
 });
 </script>

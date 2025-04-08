@@ -203,7 +203,8 @@
 
         <!-- Submit Button -->
         <div class="my-auto flex w-full justify-end py-0">
-          <UiButton color="primary" type="submit" size="lg" :loading="isLoading" :disabled="chatIntelligence">Submit
+          <UiButton color="primary" type="submit" size="lg" :loading="isLoading" :disabled="chatIntelligence || !formHasChanged">
+            {{ formHasChanged ? 'Submit' : 'No Changes' }}
           </UiButton>
         </div>
       </div>
@@ -230,6 +231,7 @@ const route = useRoute();
 const useStoreBotDetails = botStore();
 const emit = defineEmits(["statusUpdated"])
 // const { scrapedData } = useBotStore();
+const originalValues = ref({}); // Add ref for original values
 
 const logoAsString = z.string().min(1, "Logo is required");
 const logoAsObject = z.object({
@@ -291,6 +293,23 @@ watch(props.botDetails, (newValues) => {
 
   // Set email recipients
   setFieldValue("emailRecipients", newValues.emailRecipients ?? []);
+
+  nextTick(() => {
+    originalValues.value = {
+      logo: JSON.stringify(values.logo), // Convert to string for comparison
+      color: values.color,
+      secondaryColor: values.secondaryColor,
+      widgetSound: values.widgetSound,
+      widgetPosition: values.widgetPosition,
+      fontFamily: values.fontFamily,
+      defaultSelect: values.defaultSelect,
+      onlineStatus: values.onlineStatus,
+      generateLead: values.generateLead,
+      defaultRibbon: values.defaultRibbon,
+      emailRecipients: JSON.stringify(values.emailRecipients || []), // Convert to string for comparison
+    };
+  });
+
 }, { deep: true, immediate: true });
 
 
@@ -324,6 +343,45 @@ watch(() => chatIntelligence.value, (newValue) => {
 //   { deep: true, immediate: true }
 // );
 
+const hasFormChanged = () => {
+  // Skip comparison if no original values are set yet
+  if (Object.keys(originalValues.value).length === 0) return false;
+
+  // Prepare current values in the same format as original values
+  const currentValues = {
+    logo: JSON.stringify(values.logo),
+    color: values.color,
+    secondaryColor: values.secondaryColor,
+    widgetSound: values.widgetSound,
+    widgetPosition: values.widgetPosition,
+    fontFamily: values.fontFamily,
+    defaultSelect: values.defaultSelect,
+    onlineStatus: values.onlineStatus,
+    generateLead: values.generateLead,
+    defaultRibbon: values.defaultRibbon,
+    emailRecipients: JSON.stringify(values.emailRecipients || []),
+  };
+
+  // Compare each field
+  for (const key in originalValues.value) {
+    if (currentValues[key] !== originalValues.value[key]) {
+      return true;
+    }
+  }
+
+  // Check if logo file has been selected
+  if (logoData.value) return true;
+
+  return false;
+};
+
+// Computed property for template binding
+const formHasChanged = computed(() => {
+  return hasFormChanged();
+});
+
+
+
 const handleLogoChange = async (event: any) => {
   logoData.value = event[0];
   const reader = new FileReader();
@@ -332,35 +390,59 @@ const handleLogoChange = async (event: any) => {
 };
 
 const uiUpdate = handleSubmit(async (value) => {
-  let uploadedDetails = null;
-  console.log(logoData.value, "logoData.value -- logoData.value")
-  if (typeof logoData.value === "object") {
-    uploadedDetails = await uploadLogo(props.botDetails.id, logoData.value);
+  isLoading.value = true;
+
+  // Only proceed with the update if form has changes
+  if (hasFormChanged()) {
+    let uploadedDetails = null;
+    if (typeof logoData.value === "object") {
+      uploadedDetails = await uploadLogo(props.botDetails.id, logoData.value);
+    }
+
+    const payload = {
+      id: props.botDetails.id,
+      emailRecipients: value.emailRecipients,
+      metadata: {
+        ...props.botDetails.metadata,
+        ui: {
+          logo: uploadedDetails?.metadata?.ui?.logo ?? props.botDetails.metadata.ui.logo,
+          color: hexToHSL(value.color),
+          secondaryColor: hexToHSL(value.secondaryColor),
+          defaultSelect: value.defaultSelect,
+          widgetPosition: value.widgetPosition,
+          widgetSound: value.widgetSound ? 'yes' : 'no',
+          fontFamily: value.fontFamily,
+          generateLead: value.generateLead,
+          defaultRibbon: value.defaultRibbon,
+          onlineStatus: value.onlineStatus,
+        },
+      },
+    };
+    await updateBotDetails(payload, true);
+    await props.refreshBot();
+
+    // Update original values after successful update
+    nextTick(() => {
+      originalValues.value = {
+        logo: JSON.stringify(values.logo),
+        color: values.color,
+        secondaryColor: values.secondaryColor,
+        widgetSound: values.widgetSound,
+        widgetPosition: values.widgetPosition,
+        fontFamily: values.fontFamily,
+        defaultSelect: values.defaultSelect,
+        onlineStatus: values.onlineStatus,
+        generateLead: values.generateLead,
+        defaultRibbon: values.defaultRibbon,
+        emailRecipients: JSON.stringify(values.emailRecipients || []),
+      };
+      // Reset logo data after successful upload
+      logoData.value = "";
+    });
+  } else {
+    console.log('No changes detected, skipping API call');
   }
 
-  isLoading.value = true;
-  const payload = {
-    id: props.botDetails.id,
-    emailRecipients: value.emailRecipients,
-    metadata: {
-      ...props.botDetails.metadata,
-      ui: {
-        logo: uploadedDetails?.metadata?.ui?.logo ?? props.botDetails.metadata.ui.logo,
-        color: hexToHSL(value.color),
-        secondaryColor: hexToHSL(value.secondaryColor),
-        defaultSelect: value.defaultSelect,
-        widgetPosition: value.widgetPosition,
-        widgetSound: value.widgetSound ? 'yes' : 'no',
-        fontFamily: value.fontFamily,
-        generateLead: value.generateLead,
-        defaultRibbon: value.defaultRibbon,
-        onlineStatus: value.onlineStatus,
-      },
-    },
-  };
-  await updateBotDetails(payload, true);
-  await props.refreshBot()
-  // emit('formSubmitted');
   isLoading.value = false;
 });
 

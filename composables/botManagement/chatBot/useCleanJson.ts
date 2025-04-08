@@ -26,91 +26,103 @@ export function useCleanJson() {
         }
       }
 
-      // Step 2: Alternative approach - parse the JSON content directly
+      // Step 2: Parse the JSON content
+      return JSON.parse(jsonContent);
+
+    } catch (initialError) {
+      console.error("Initial parsing error:", initialError);
+
       try {
-        // Try direct parsing first
-        return JSON.parse(jsonContent);
-      } catch (parseError) {
-        // If that fails, try to extract the fields manually
-        const industryMatch = jsonContent.match(/"industry"\s*:\s*"([^"]*)"/);
-        const contentStartIndex = jsonContent.indexOf('"document_content"') + '"document_content"'.length;
+        // Step 3: Handle potential nested structure issues
+        // Sometimes JSON might have escaped characters or malformed sections
 
-        if (industryMatch && contentStartIndex > 0) {
-          // Find the proper end of the document_content (accounting for nested quotes)
-          let documentContent = "";
-          let inQuote = false;
-          let depth = 0;
-          let foundColon = false;
+        // First try to clean any common issues
+        const cleanedContent = jsonString
+          .replace(/```json|```/g, '') // Remove all markdown code markers
+          .trim();
 
-          // Skip whitespace and colon after "document_content"
-          let i = contentStartIndex;
-          while (i < jsonContent.length && !foundColon) {
-            if (jsonContent[i] === ':') {
-              foundColon = true;
-            }
-            i++;
-          }
+        // Try parsing again with cleaned content
+        return JSON.parse(cleanedContent);
 
-          // Skip whitespace after colon
-          while (i < jsonContent.length && /\s/.test(jsonContent[i])) {
-            i++;
-          }
+      } catch (secondaryError) {
+        console.error("Secondary parsing error:", secondaryError);
 
-          // If we found a quote, start extracting the content
-          if (jsonContent[i] === '"') {
-            i++; // Skip the opening quote
-            const startPos = i;
+        // Step 4: Advanced handling for complex cases
+        try {
+          // Try to extract the structure by handling sections separately
+          const brandMatch = /"brand"\s*:\s*\{[^}]*\}/.exec(jsonString);
+          const chatbotMatch = /"chatbot"\s*:\s*\{[^}]*\}/.exec(jsonString);
+          const knowledgeBaseStart = jsonString.indexOf('"knowledge_base"');
 
-            // Extract until we find the closing quote (not escaped)
-            while (i < jsonContent.length) {
-              if (jsonContent[i] === '\\' && i + 1 < jsonContent.length) {
-                i += 2; // Skip escaped character
-                continue;
+          if (brandMatch && chatbotMatch && knowledgeBaseStart > -1) {
+            // Manually reconstruct the JSON
+            const reconstructed = `{
+              ${brandMatch[0]},
+              ${chatbotMatch[0]},
+              "knowledge_base": {
+                "document_content": ${JSON.stringify(
+              extractDocumentContent(jsonString)
+            )}
               }
+            }`;
 
-              if (jsonContent[i] === '"' && jsonContent[i - 1] !== '\\') {
-                break; // Found the closing quote
-              }
-
-              i++;
-            }
-
-            documentContent = jsonContent.substring(startPos, i);
+            return JSON.parse(reconstructed);
           }
 
-          // Reconstruct a clean JSON object
-          const industry = industryMatch[1];
-          const cleanJson = {
-            industry: industry,
-            document_content: documentContent
-          };
-
-          return cleanJson;
-        }
-
-        // If all else fails, throw the original error
-        throw parseError;
-      }
-    } catch (error) {
-      console.error("Error in cleanAndParseJson:", error);
-
-      // Log specific character positions around the error for debugging
-      if (error instanceof SyntaxError) {
-        const message = error.message || '';
-        const posMatch = message.match(/position (\d+)/);
-
-        if (posMatch && posMatch[1]) {
-          const pos = parseInt(posMatch[1]);
-          const start = Math.max(0, pos - 20);
-          const end = Math.min(jsonString.length, pos + 20);
-
-          console.error(`Text around error position: '${jsonString.substring(start, pos)}' 💥 '${jsonString.substring(pos, end)}'`);
+          return null;
+        } catch (finalError) {
+          console.error("Final parsing attempt failed:", finalError);
+          return null;
         }
       }
-
-      toast.error("Error parsing JSON");
-      return null;
     }
+  };
+
+  /**
+   * Helper function to extract document_content from malformed JSON
+   */
+  const extractDocumentContent = (jsonString: string): string => {
+    const contentStartMarker = '"document_content"';
+    const startIndex = jsonString.indexOf(contentStartMarker);
+
+    if (startIndex === -1) return "";
+
+    // Find the colon after the marker
+    const colonIndex = jsonString.indexOf(':', startIndex);
+    if (colonIndex === -1) return "";
+
+    // Find the first non-whitespace character after the colon
+    let contentStart = colonIndex + 1;
+    while (contentStart < jsonString.length &&
+      [' ', '\n', '\t', '\r'].includes(jsonString[contentStart])) {
+      contentStart++;
+    }
+
+    // Check if content starts with a quote
+    const isQuoted = jsonString[contentStart] === '"';
+    if (isQuoted) contentStart++;
+
+    // Find the end of the content
+    let contentEnd = contentStart;
+    let depth = 1; // We're already inside the knowledge_base object
+
+    while (contentEnd < jsonString.length && depth > 0) {
+      if (jsonString[contentEnd] === '{') depth++;
+      else if (jsonString[contentEnd] === '}') depth--;
+
+      // If we're at quoted content, look for the closing quote
+      if (isQuoted && jsonString[contentEnd] === '"' &&
+        jsonString[contentEnd - 1] !== '\\') {
+        break;
+      }
+
+      contentEnd++;
+    }
+
+    // Adjust end position if needed
+    if (isQuoted) contentEnd--;
+
+    return jsonString.substring(contentStart, contentEnd);
   };
 
   return { cleanAndParseJson };

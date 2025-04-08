@@ -51,11 +51,11 @@
       </NuxtLink>
       <div class="text-[4px]"> Refill Wallet </div>
     </div> -->
-    <UiButton v-if="cancelSubscription" variant="destructive" @click="$emit('change')"
+    <UiButton v-if="cancelSubscription && !usePlanStatus" variant="destructive" @click="$emit('change')"
       class="max-h-[36px] hidden lg:inline">
       Cancel Subscription
     </UiButton>
-    <div v-if="cancelSubscription" class="flex flex-col items-center justify-center gap-1 lg:hidden">
+    <div v-if="cancelSubscription && !usePlanStatus" class="flex flex-col items-center justify-center gap-1 lg:hidden">
       <UiButton variant="destructive" @click="$emit('change')" cass="px-0"
         style="padding-left: 9px; padding-right: 9px">
         <component :is="XCircleIcon"></component>
@@ -85,12 +85,11 @@ const props = defineProps({
   query: { type: Object, required: true },
   isPageLoading: { type: Boolean, required: true },
 });
-
+const planDetails = ref();
 // const isChatSubscription = computed(() => {
 //   return props.query?.type === 'chat' && !props.usage?.plan_code?.includes('free');
 // });
 
-const whatsappBalance = computed(() => props.usageDetails?.whatsappWalletBalance ?? 0);
 
 const userLocationDetails = ref(await getLocationDetail())
 const emit = defineEmits<{ (e: "change"): void }>();
@@ -110,5 +109,15 @@ const cancelSubscription = computed(() => {
   const isExpired = (currentDate.setHours(0, 0, 0, 0) <= expirationDate.setHours(0, 0, 0, 0));
 
   return isExpired;
+});
+
+onMounted(async() => {
+  planDetails.value = await userPlan();
+});
+const usePlanStatus = computed(() => {
+  const matchingPlan = planDetails.value.userPlanDetails.find(
+    item => item.type === props.query?.type
+  );
+  return matchingPlan?.subscriptionStatus === 'trial';
 });
 </script>
