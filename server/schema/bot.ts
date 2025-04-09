@@ -57,6 +57,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
+  isDeleted: boolean("is_deleted").default(false),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 

@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
       createError({
         statusCode: 400,
         statusMessage:
-          "Conflict: A user with this email or username already exists.",
+          "Email already registered: Please sign in or use a different email address.",
       }),
     );
 

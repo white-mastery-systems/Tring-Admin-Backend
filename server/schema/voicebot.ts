@@ -106,6 +106,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
+  isDeleted: boolean("is_deleted").default(false),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
@@ -114,7 +115,7 @@ export const voicebotIntegrationSchema = voiceBotSchema.table(
   {
     id: uuid("id").notNull().primaryKey().defaultRandom(),
     botId: uuid("bot_id")
-      .references(() => voicebotSchema.id, { onDelete: "cascade"}),
+      .references(() => voicebotSchema.id),
     metadata: jsonb("metadata"),
     integrationId: uuid("integration_id").references(
       () => integrationSchema.id,{
@@ -161,10 +162,10 @@ export const callLogSchema = voiceBotSchema.table("call_logs", {
   outputCredits: varchar("output_credits").notNull(),
   summary: varchar("summary"),
   botId: uuid("bot_id")
-    .references(() => voicebotSchema.id, { onDelete: "cascade" })
+    .references(() => voicebotSchema.id)
     .notNull(),
   organizationId: uuid("organization_id")
-    .references(() => organizationSchema.id, { onDelete: "cascade" })
+    .references(() => organizationSchema.id)
     .notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -179,10 +180,10 @@ export const voicebotLeadSchema = voiceBotSchema.table("leads",{
   scheduledDate: timestamp("scheduled_date"),
   metadata: jsonb("metadata"),
   botId: uuid("bot_id")
-  .references(() => voicebotSchema.id, { onDelete: "cascade" })
+  .references(() => voicebotSchema.id)
   .notNull(),
   organizationId: uuid("organization_id")
-  .references(() => organizationSchema.id, { onDelete: "cascade" })
+  .references(() => organizationSchema.id)
   .notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
