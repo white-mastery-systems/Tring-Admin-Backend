@@ -27,7 +27,7 @@ export const listVoicebots = async (
   query: listVoicebotQuery,
   timeZone: string,
 ) => {
-  let filters: any = [eq(voicebotSchema.organizationId, organizationId)];
+  let filters: any = [eq(voicebotSchema.organizationId, organizationId), eq(voicebotSchema.isDeleted, false)];
 
   if (query?.active === "true") {
     filters.push(eq(voicebotSchema.active, true));

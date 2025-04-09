@@ -69,6 +69,7 @@ export default defineEventHandler(async(event) => {
     const isExists = await db.query.voicebotSchema.findFirst({
       where: and(
         eq(voicebotSchema.organizationId, organizationId),
+        eq(voicebotSchema.isDeleted, false),
         ilike(voicebotSchema.name, body.name)
       )
     })
