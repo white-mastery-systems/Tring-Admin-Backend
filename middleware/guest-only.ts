@@ -19,7 +19,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   // }
 
   // If user is logged in, prevent access to auth routes
-  if (user.value && userDetails?.isVerified && ["/auth/onboarding/select-bot-power", "/auth/onboarding/billing", "/auth/sign-up", "/auth/sign-in"].includes(to.path)) {
+  if (user.value && userDetails?.isVerified && ["/auth/onboarding/select-bot-power", "/auth/onboarding/billing", "/auth/sign-up", "/auth/sign-in", "/auth/forgot-password"].includes(to.path)) {
     return navigateTo("/");
   }
 

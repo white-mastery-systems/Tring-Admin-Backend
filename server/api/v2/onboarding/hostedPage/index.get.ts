@@ -153,7 +153,7 @@ export default defineEventHandler(async (event) => {
       "Welcome To Tring AI !!", // subject
       `<div>
          <p>Hi <strong>${userDetails?.username}</strong>,</p>
-         <p>Welcome to Tringlabs.ai🎉</p>
+         <p>Welcome to Tring AI🎉</p>
           <p>Wohoo!! We’re Excited to Have You Onboard 🎉</p>
           <p>We're thrilled to welcome you to Tring AI - your hub for creating captivating conversational voice and chat agents, designed to help you achieve your revenue goals. Here’s to smarter customer service!</p>
           <p>In just a few simple steps, you'll be on your way to making waves in the world of communication.</p>
