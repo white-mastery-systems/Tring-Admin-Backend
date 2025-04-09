@@ -47,12 +47,17 @@ export const listVoicebots = async (
     offset = (page - 1) * limit;
   }
 
-  let data = await db.query.voicebotSchema.findMany({
+  let data: any = await db.query.voicebotSchema.findMany({
     where: and(...filters),
     orderBy: [desc(voicebotSchema.createdAt)],
   });
   data = data.map((i: any) => ({
-    ...i,
+    id: i.id,
+    name: i.name,
+    active: i.active,
+    isDeleted: i.isDeleted,
+    botDetails: i.botDetails,
+    organizationId: i.organizationId,
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
 
