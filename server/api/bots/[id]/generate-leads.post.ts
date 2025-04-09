@@ -168,6 +168,7 @@ export default defineEventHandler(async (event) => {
         );
       }
     } else if (botIntegration?.integration?.crm === "whatsapp") {
+      logger.info(`Whatsapp Lead Generation: ${botDetails?.name} - ${body?.note ?? "Invalid note"}`);
       if (botIntegration?.integration?.metadata) {
         if (!body?.botUser?.name) {
           body.botUser.name = "Not Provided"
