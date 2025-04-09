@@ -23,7 +23,7 @@ export const listBots = async (
   query: queryInterface,
   timeZone: string,
 ) => {
-  let filters: any = [eq(chatBotSchema.organizationId, organizationId)];
+  let filters: any = [eq(chatBotSchema.organizationId, organizationId), eq(chatBotSchema.isDeleted, false)];
   if (query?.active === "true") {
     filters.push(isNotNull(chatBotSchema.documentId));
   } else if (query?.active === "false") {
@@ -56,7 +56,8 @@ export const listBots = async (
       createdAt: true,
       documentId: true,
       type: true,
-      status: true
+      status: true,
+      isDeleted: true
     },
   });
   data = data.map((i: any) => ({

@@ -71,6 +71,7 @@ export default defineEventHandler(async (event) => {
     const voiceBot = await db.query.voicebotSchema.findFirst({
       where: and(
         eq(voicebotSchema.incomingPhoneNumber, body?.incomingPhoneNumber),
+        eq(voicebotSchema.isDeleted, false),
         ne(voicebotSchema.id, voicebotId),
       ),
     });
