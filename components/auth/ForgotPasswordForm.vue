@@ -7,7 +7,7 @@ import { Eye, EyeOff } from 'lucide-vue-next'; // Import Lucide icons
 
 definePageMeta({
   layout: "auth",
-  middleware: "guest-only",
+  // middleware: "guest-only",
 });
 
 const route = useRoute();
