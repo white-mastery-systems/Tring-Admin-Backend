@@ -1,0 +1,3467 @@
+{
+	"info": {
+		"_postman_id": "2ae75a72-1848-4bc7-a582-8b4e6edb700b",
+		"name": "Tring AI 3.5",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30593992"
+	},
+	"item": [
+		{
+			"name": "Onboarding",
+			"item": [
+				{
+					"name": "sign-up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"HRD\",\r\n    \"email\": \"hfd123@yopmail.com\",\r\n    \"password\": \"asdf1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/signup",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sign-in",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"test747@yopmail.com\",\r\n    \"password\": \"asdf1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/sign-in",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"sign-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Onboarding via Zoho-Billing hosted-page API",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"test747@yopmail.com\",\r\n    \"password\": \"asdf1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v2/onboarding/hostedPage?hostedpageId=2-31b4ce6da4af65aefda952b4e74f9f7bec26fc4c821e6e31d505a6b58c8cd1cd2dd659b0bd540ed89a58602fe28bc3e9",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"onboarding",
+								"hostedPage"
+							],
+							"query": [
+								{
+									"key": "hostedpageId",
+									"value": "2-31b4ce6da4af65aefda952b4e74f9f7bec26fc4c821e6e31d505a6b58c8cd1cd2dd659b0bd540ed89a58602fe28bc3e9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request reset password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/user/requestReserPassword",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"requestReserPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"newPassword\": \"\",\r\n    \"confirmPassword\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/user/forgot-password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Analytics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v2/dashboard/analytics?period=last-30-days&type=chat",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"dashboard",
+								"analytics"
+							],
+							"query": [
+								{
+									"key": "period",
+									"value": "last-30-days"
+								},
+								{
+									"key": "type",
+									"value": "chat"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Chatbot",
+			"item": [
+				{
+					"name": "Create Chatbot",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bots",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bots"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get Chatbot List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bots?q&active&page=1&limit=10&type",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bots"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": null
+								},
+								{
+									"key": "active",
+									"value": null
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "type",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get chatbot by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bots/cee006a3-dea1-45b1-b70b-a0d4e2b60230",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bots",
+								"cee006a3-dea1-45b1-b70b-a0d4e2b60230"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Chatbot",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"ca82358b-6e02-46e8-a309-50a3e66a7db1\",\r\n    \"type\": \"real-estate\",\r\n    \"name\": \"SIS test 12\",\r\n    \"metadata\": {\r\n        \"ui\": {\r\n            \"color\": \"236 61% 54%\",\r\n            \"fontFamily\": \"Kanit\",\r\n            \"generateLead\": true,\r\n            \"secondaryColor\": \"236 61% 74%\",\r\n            \"widgetPosition\": \"Right\",\r\n            \"logo\": {\r\n                \"url\": \"/logo/3ffa3578-a52a-4fe3-b2e3-33707409fec2.png\",\r\n                \"name\": \"SIS-Logo.png\",\r\n                \"size\": 1687,\r\n                \"type\": \"image/png\"\r\n            },\r\n            \"widgetSound\": true,\r\n            \"onlineStatus\": true,\r\n            \"defaultRibbon\": true,\r\n            \"defaultSelect\": true\r\n        },\r\n        \"prompt\": {\r\n            \"errorMessage\": \"Uh-oh, Can you try reloading the page and try chatting with me? It seems like our system is facing an issue. Thank you for your understanding\",\r\n            \"COMPANY\": \"South India Shelters\",\r\n            \"NAME\": \"Alice Thompson\",\r\n            \"ROLE\": \"Customer Support Executive\",\r\n            \"GOAL\": \"Assist users with property searches, site visits, and expert consultations.\",\r\n            \"NOTES\": \"\",\r\n            \"INTENTS\": \"-details\\n-other\",\r\n            \"LANGUAGE\": \"English - en\",\r\n            \"otherRole\": \"\",\r\n            \"otherGoal\": \"\",\r\n            \"DESCRIPTION\": \"\"\r\n        },\r\n        \"tools\": {\r\n            \"customTools\": [],\r\n            \"defaultTools\": [\r\n                \"date_time\"\r\n            ]\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bots/ca82358b-6e02-46e8-a309-50a3e66a7db1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bots",
+								"ca82358b-6e02-46e8-a309-50a3e66a7db1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Chatbot",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bots/ca82358b-6e02-46e8-a309-50a3e66a7db1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bots",
+								"ca82358b-6e02-46e8-a309-50a3e66a7db1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Document Upload",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": "/C:/Users/white/Downloads/SIS Luxor Chatbot.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bots/3f05270e-4855-42d5-b17c-4c3785697f7d/documents",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bots",
+								"3f05270e-4855-42d5-b17c-4c3785697f7d",
+								"documents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get bot detail with documents",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bots/3f05270e-4855-42d5-b17c-4c3785697f7d/documents",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bots",
+								"3f05270e-4855-42d5-b17c-4c3785697f7d",
+								"documents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logo Upload",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "logo",
+									"type": "file",
+									"src": "/C:/Users/white/Downloads/SIS-Logo.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bots/3f05270e-4855-42d5-b17c-4c3785697f7d/add-logo",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bots",
+								"3f05270e-4855-42d5-b17c-4c3785697f7d",
+								"add-logo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deploy Document",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bots/3f05270e-4855-42d5-b17c-4c3785697f7d/documents/fc553cb7-f087-4b1d-9218-84153253221d/deploy",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bots",
+								"3f05270e-4855-42d5-b17c-4c3785697f7d",
+								"documents",
+								"fc553cb7-f087-4b1d-9218-84153253221d",
+								"deploy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deactivate Chatbot",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "logo",
+									"type": "file",
+									"src": "/C:/Users/white/Downloads/SIS-Logo.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bots/3f05270e-4855-42d5-b17c-4c3785697f7d/disable",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bots",
+								"3f05270e-4855-42d5-b17c-4c3785697f7d",
+								"disable"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get sample document",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/sampleDocument?type=real-estate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sampleDocument"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "real-estate"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send chatbot script",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"to\": [\"dhanamcse282@gmail.com\"],\r\n   \"script\": \"<script src=\\\"https://tring-databot.pripod.com/widget.js\\\" data-chatbotid=\\\"b75338b4-9163-4ad7-8a0f-a7cc11834b11\\\" data-orgname=\\\"WMS\\\"></script>\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/bots/b75338b4-9163-4ad7-8a0f-a7cc11834b11/sendScript",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"bots",
+								"b75338b4-9163-4ad7-8a0f-a7cc11834b11",
+								"sendScript"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Content Suggestion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"industry\": \"real-estate\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/content-suggestions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"content-suggestions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Voicebot",
+			"item": [
+				{
+					"name": "Create Voicebot",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test new voice bot\",\r\n    \"active\": true,\r\n    \"ivrConfig\": \"3bd52460-e2fc-4d18-b6e5-debf51dbf884\",\r\n    \"incomingPhoneNumber\": \"+918035737055\",\r\n    \"botDetails\": {\r\n        \"agentName\": \"test agent name\",\r\n        \"agentLanguage\": \"af-ZA\",\r\n        \"region\": \"IN\",\r\n        \"timezone\": \"Africa/Abidjan\",\r\n        \"role\": \"Customer Support Executive\",\r\n        \"goal\": \"Assist users with property searches, site visits, and expert consultations.\",\r\n        \"callType\": \"inbound\",\r\n        \"industryType\": \"real-estate\"\r\n    },\r\n    \"textToSpeechConfig\": {\r\n        \"provider\": \"deepgram\",\r\n        \"deepgram\": {\r\n            \"voice\": \"aura-asteria-en\"\r\n        }\r\n    },\r\n    \"speechToTextConfig\": {\r\n        \"provider\": \"deepgram\",\r\n        \"deepgram\": {\r\n            \"model\": \"nova-2\",\r\n            \"keywords\": [],\r\n            \"endpointing\": 300,\r\n            \"utterance_end_ms\": \"1000\",\r\n            \"amplification_factor\": 2\r\n        }\r\n    },\r\n    \"knowledgeBase\": \"COMPANY NAME: Apex Realty\\nADDRESS: 1234 Skyline Avenue, Metropolis, NY.\\nTITLE: Your Gateway to Dream Homes at Apex Realty.\\n-------\\n- We are a leading real estate agency offering residential and commercial properties in Metropolis.\\n- Our listings include apartments, houses, condos, commercial spaces, and investment properties.\\n- We provide guided property visits, detailed listing information, and support throughout the buying, selling, or renting process.\\n- Our experienced team is committed to helping you find your perfect property.\\n- Property visits are by appointment only, with options for both virtual and in-person tours.\\n-------\\nTIMINGS:\\n- Office hours: 9 AM to 7 PM, Monday to Saturday.\\n-------\\nADDITIONAL SERVICES:\\n- Mortgage advisory services.\\n- Legal consultation for property transactions.\\n- Property valuation services.\\n-------\\nCONSTRAINTS:\\n- All information is subject to change; please verify details with our official listings.\\n-------\\nNOTES:\\n- The document contains the latest details of our listings and services.\\n- For detailed pricing or legal inquiries, please transfer the call to our senior agent at +1.123.456.7890.\\n- Always conclude your conversation with \\\"Thank you for choosing Apex Realty.\\\"\",\r\n    \"llmConfig\": {\r\n        \"top_k\": \"40\",\r\n        \"top_p\": \"0.95\",\r\n        \"prompt\": \"\",\r\n        \"inboundPrompt\": {},\r\n        \"outboundPrompt\": {},\r\n        \"temperature\": 0.5,\r\n        \"max_output_token\": \"8192\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/voicebots",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"voicebots"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Voicebot",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test new voice bot\",\r\n    \"active\": true,\r\n    \"ivrConfig\": \"3bd52460-e2fc-4d18-b6e5-debf51dbf884\",\r\n    \"incomingPhoneNumber\": \"+918035737055\",\r\n    \"botDetails\": {\r\n        \"agentName\": \"test agent name\",\r\n        \"agentLanguage\": \"af-ZA\",\r\n        \"region\": \"IN\",\r\n        \"timezone\": \"Africa/Abidjan\",\r\n        \"role\": \"Customer Support Executive\",\r\n        \"goal\": \"Assist users with property searches, site visits, and expert consultations.\",\r\n        \"callType\": \"inbound\",\r\n        \"industryType\": \"real-estate\"\r\n    },\r\n    \"textToSpeechConfig\": {\r\n        \"provider\": \"deepgram\",\r\n        \"deepgram\": {\r\n            \"voice\": \"aura-asteria-en\"\r\n        }\r\n    },\r\n    \"speechToTextConfig\": {\r\n        \"provider\": \"deepgram\",\r\n        \"deepgram\": {\r\n            \"model\": \"nova-2\",\r\n            \"keywords\": [],\r\n            \"endpointing\": 300,\r\n            \"utterance_end_ms\": \"1000\",\r\n            \"amplification_factor\": 2\r\n        }\r\n    },\r\n    \"knowledgeBase\": \"COMPANY NAME: Apex Realty\\nADDRESS: 1234 Skyline Avenue, Metropolis, NY.\\nTITLE: Your Gateway to Dream Homes at Apex Realty.\\n-------\\n- We are a leading real estate agency offering residential and commercial properties in Metropolis.\\n- Our listings include apartments, houses, condos, commercial spaces, and investment properties.\\n- We provide guided property visits, detailed listing information, and support throughout the buying, selling, or renting process.\\n- Our experienced team is committed to helping you find your perfect property.\\n- Property visits are by appointment only, with options for both virtual and in-person tours.\\n-------\\nTIMINGS:\\n- Office hours: 9 AM to 7 PM, Monday to Saturday.\\n-------\\nADDITIONAL SERVICES:\\n- Mortgage advisory services.\\n- Legal consultation for property transactions.\\n- Property valuation services.\\n-------\\nCONSTRAINTS:\\n- All information is subject to change; please verify details with our official listings.\\n-------\\nNOTES:\\n- The document contains the latest details of our listings and services.\\n- For detailed pricing or legal inquiries, please transfer the call to our senior agent at +1.123.456.7890.\\n- Always conclude your conversation with \\\"Thank you for choosing Apex Realty.\\\"\",\r\n    \"llmConfig\": {\r\n        \"top_k\": \"40\",\r\n        \"top_p\": \"0.95\",\r\n        \"prompt\": \"\",\r\n        \"inboundPrompt\": {},\r\n        \"outboundPrompt\": {},\r\n        \"temperature\": 0.5,\r\n        \"max_output_token\": \"8192\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/voicebots",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"voicebots"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Voicebot",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test new voice bot\",\r\n    \"active\": true,\r\n    \"ivrConfig\": \"3bd52460-e2fc-4d18-b6e5-debf51dbf884\",\r\n    \"incomingPhoneNumber\": \"+918035737055\",\r\n    \"botDetails\": {\r\n        \"agentName\": \"test agent name\",\r\n        \"agentLanguage\": \"af-ZA\",\r\n        \"region\": \"IN\",\r\n        \"timezone\": \"Africa/Abidjan\",\r\n        \"role\": \"Customer Support Executive\",\r\n        \"goal\": \"Assist users with property searches, site visits, and expert consultations.\",\r\n        \"callType\": \"inbound\",\r\n        \"industryType\": \"real-estate\"\r\n    },\r\n    \"textToSpeechConfig\": {\r\n        \"provider\": \"deepgram\",\r\n        \"deepgram\": {\r\n            \"voice\": \"aura-asteria-en\"\r\n        }\r\n    },\r\n    \"speechToTextConfig\": {\r\n        \"provider\": \"deepgram\",\r\n        \"deepgram\": {\r\n            \"model\": \"nova-2\",\r\n            \"keywords\": [],\r\n            \"endpointing\": 300,\r\n            \"utterance_end_ms\": \"1000\",\r\n            \"amplification_factor\": 2\r\n        }\r\n    },\r\n    \"knowledgeBase\": \"COMPANY NAME: Apex Realty\\nADDRESS: 1234 Skyline Avenue, Metropolis, NY.\\nTITLE: Your Gateway to Dream Homes at Apex Realty.\\n-------\\n- We are a leading real estate agency offering residential and commercial properties in Metropolis.\\n- Our listings include apartments, houses, condos, commercial spaces, and investment properties.\\n- We provide guided property visits, detailed listing information, and support throughout the buying, selling, or renting process.\\n- Our experienced team is committed to helping you find your perfect property.\\n- Property visits are by appointment only, with options for both virtual and in-person tours.\\n-------\\nTIMINGS:\\n- Office hours: 9 AM to 7 PM, Monday to Saturday.\\n-------\\nADDITIONAL SERVICES:\\n- Mortgage advisory services.\\n- Legal consultation for property transactions.\\n- Property valuation services.\\n-------\\nCONSTRAINTS:\\n- All information is subject to change; please verify details with our official listings.\\n-------\\nNOTES:\\n- The document contains the latest details of our listings and services.\\n- For detailed pricing or legal inquiries, please transfer the call to our senior agent at +1.123.456.7890.\\n- Always conclude your conversation with \\\"Thank you for choosing Apex Realty.\\\"\",\r\n    \"llmConfig\": {\r\n        \"top_k\": \"40\",\r\n        \"top_p\": \"0.95\",\r\n        \"prompt\": \"\",\r\n        \"inboundPrompt\": {},\r\n        \"outboundPrompt\": {},\r\n        \"temperature\": 0.5,\r\n        \"max_output_token\": \"8192\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/voicebots?q&active&page=1&limit=10&type",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"voicebots"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": null
+								},
+								{
+									"key": "active",
+									"value": null
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "type",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Voicebot By id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test new voice bot\",\r\n    \"active\": true,\r\n    \"ivrConfig\": \"3bd52460-e2fc-4d18-b6e5-debf51dbf884\",\r\n    \"incomingPhoneNumber\": \"+918035737055\",\r\n    \"botDetails\": {\r\n        \"agentName\": \"test agent name\",\r\n        \"agentLanguage\": \"af-ZA\",\r\n        \"region\": \"IN\",\r\n        \"timezone\": \"Africa/Abidjan\",\r\n        \"role\": \"Customer Support Executive\",\r\n        \"goal\": \"Assist users with property searches, site visits, and expert consultations.\",\r\n        \"callType\": \"inbound\",\r\n        \"industryType\": \"real-estate\"\r\n    },\r\n    \"textToSpeechConfig\": {\r\n        \"provider\": \"deepgram\",\r\n        \"deepgram\": {\r\n            \"voice\": \"aura-asteria-en\"\r\n        }\r\n    },\r\n    \"speechToTextConfig\": {\r\n        \"provider\": \"deepgram\",\r\n        \"deepgram\": {\r\n            \"model\": \"nova-2\",\r\n            \"keywords\": [],\r\n            \"endpointing\": 300,\r\n            \"utterance_end_ms\": \"1000\",\r\n            \"amplification_factor\": 2\r\n        }\r\n    },\r\n    \"knowledgeBase\": \"COMPANY NAME: Apex Realty\\nADDRESS: 1234 Skyline Avenue, Metropolis, NY.\\nTITLE: Your Gateway to Dream Homes at Apex Realty.\\n-------\\n- We are a leading real estate agency offering residential and commercial properties in Metropolis.\\n- Our listings include apartments, houses, condos, commercial spaces, and investment properties.\\n- We provide guided property visits, detailed listing information, and support throughout the buying, selling, or renting process.\\n- Our experienced team is committed to helping you find your perfect property.\\n- Property visits are by appointment only, with options for both virtual and in-person tours.\\n-------\\nTIMINGS:\\n- Office hours: 9 AM to 7 PM, Monday to Saturday.\\n-------\\nADDITIONAL SERVICES:\\n- Mortgage advisory services.\\n- Legal consultation for property transactions.\\n- Property valuation services.\\n-------\\nCONSTRAINTS:\\n- All information is subject to change; please verify details with our official listings.\\n-------\\nNOTES:\\n- The document contains the latest details of our listings and services.\\n- For detailed pricing or legal inquiries, please transfer the call to our senior agent at +1.123.456.7890.\\n- Always conclude your conversation with \\\"Thank you for choosing Apex Realty.\\\"\",\r\n    \"llmConfig\": {\r\n        \"top_k\": \"40\",\r\n        \"top_p\": \"0.95\",\r\n        \"prompt\": \"\",\r\n        \"inboundPrompt\": {},\r\n        \"outboundPrompt\": {},\r\n        \"temperature\": 0.5,\r\n        \"max_output_token\": \"8192\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/voicebots/c54c3ac9-ada2-4e54-b2be-fbdd4d2f9466",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"voicebots",
+								"c54c3ac9-ada2-4e54-b2be-fbdd4d2f9466"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Voicebot",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test new voice bot\",\r\n    \"active\": true,\r\n    \"ivrConfig\": \"3bd52460-e2fc-4d18-b6e5-debf51dbf884\",\r\n    \"incomingPhoneNumber\": \"+918035737055\",\r\n    \"botDetails\": {\r\n        \"agentName\": \"test agent name\",\r\n        \"agentLanguage\": \"af-ZA\",\r\n        \"region\": \"IN\",\r\n        \"timezone\": \"Africa/Abidjan\",\r\n        \"role\": \"Customer Support Executive\",\r\n        \"goal\": \"Assist users with property searches, site visits, and expert consultations.\",\r\n        \"callType\": \"inbound\",\r\n        \"industryType\": \"real-estate\"\r\n    },\r\n    \"textToSpeechConfig\": {\r\n        \"provider\": \"deepgram\",\r\n        \"deepgram\": {\r\n            \"voice\": \"aura-asteria-en\"\r\n        }\r\n    },\r\n    \"speechToTextConfig\": {\r\n        \"provider\": \"deepgram\",\r\n        \"deepgram\": {\r\n            \"model\": \"nova-2\",\r\n            \"keywords\": [],\r\n            \"endpointing\": 300,\r\n            \"utterance_end_ms\": \"1000\",\r\n            \"amplification_factor\": 2\r\n        }\r\n    },\r\n    \"knowledgeBase\": \"COMPANY NAME: Apex Realty\\nADDRESS: 1234 Skyline Avenue, Metropolis, NY.\\nTITLE: Your Gateway to Dream Homes at Apex Realty.\\n-------\\n- We are a leading real estate agency offering residential and commercial properties in Metropolis.\\n- Our listings include apartments, houses, condos, commercial spaces, and investment properties.\\n- We provide guided property visits, detailed listing information, and support throughout the buying, selling, or renting process.\\n- Our experienced team is committed to helping you find your perfect property.\\n- Property visits are by appointment only, with options for both virtual and in-person tours.\\n-------\\nTIMINGS:\\n- Office hours: 9 AM to 7 PM, Monday to Saturday.\\n-------\\nADDITIONAL SERVICES:\\n- Mortgage advisory services.\\n- Legal consultation for property transactions.\\n- Property valuation services.\\n-------\\nCONSTRAINTS:\\n- All information is subject to change; please verify details with our official listings.\\n-------\\nNOTES:\\n- The document contains the latest details of our listings and services.\\n- For detailed pricing or legal inquiries, please transfer the call to our senior agent at +1.123.456.7890.\\n- Always conclude your conversation with \\\"Thank you for choosing Apex Realty.\\\"\",\r\n    \"llmConfig\": {\r\n        \"top_k\": \"40\",\r\n        \"top_p\": \"0.95\",\r\n        \"prompt\": \"\",\r\n        \"inboundPrompt\": {},\r\n        \"outboundPrompt\": {},\r\n        \"temperature\": 0.5,\r\n        \"max_output_token\": \"8192\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/voicebots/c54c3ac9-ada2-4e54-b2be-fbdd4d2f9466",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"voicebots",
+								"c54c3ac9-ada2-4e54-b2be-fbdd4d2f9466"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get knowledge-base by industry type",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test new voice bot\",\r\n    \"active\": true,\r\n    \"ivrConfig\": \"3bd52460-e2fc-4d18-b6e5-debf51dbf884\",\r\n    \"incomingPhoneNumber\": \"+918035737055\",\r\n    \"botDetails\": {\r\n        \"agentName\": \"test agent name\",\r\n        \"agentLanguage\": \"af-ZA\",\r\n        \"region\": \"IN\",\r\n        \"timezone\": \"Africa/Abidjan\",\r\n        \"role\": \"Customer Support Executive\",\r\n        \"goal\": \"Assist users with property searches, site visits, and expert consultations.\",\r\n        \"callType\": \"inbound\",\r\n        \"industryType\": \"real-estate\"\r\n    },\r\n    \"textToSpeechConfig\": {\r\n        \"provider\": \"deepgram\",\r\n        \"deepgram\": {\r\n            \"voice\": \"aura-asteria-en\"\r\n        }\r\n    },\r\n    \"speechToTextConfig\": {\r\n        \"provider\": \"deepgram\",\r\n        \"deepgram\": {\r\n            \"model\": \"nova-2\",\r\n            \"keywords\": [],\r\n            \"endpointing\": 300,\r\n            \"utterance_end_ms\": \"1000\",\r\n            \"amplification_factor\": 2\r\n        }\r\n    },\r\n    \"knowledgeBase\": \"COMPANY NAME: Apex Realty\\nADDRESS: 1234 Skyline Avenue, Metropolis, NY.\\nTITLE: Your Gateway to Dream Homes at Apex Realty.\\n-------\\n- We are a leading real estate agency offering residential and commercial properties in Metropolis.\\n- Our listings include apartments, houses, condos, commercial spaces, and investment properties.\\n- We provide guided property visits, detailed listing information, and support throughout the buying, selling, or renting process.\\n- Our experienced team is committed to helping you find your perfect property.\\n- Property visits are by appointment only, with options for both virtual and in-person tours.\\n-------\\nTIMINGS:\\n- Office hours: 9 AM to 7 PM, Monday to Saturday.\\n-------\\nADDITIONAL SERVICES:\\n- Mortgage advisory services.\\n- Legal consultation for property transactions.\\n- Property valuation services.\\n-------\\nCONSTRAINTS:\\n- All information is subject to change; please verify details with our official listings.\\n-------\\nNOTES:\\n- The document contains the latest details of our listings and services.\\n- For detailed pricing or legal inquiries, please transfer the call to our senior agent at +1.123.456.7890.\\n- Always conclude your conversation with \\\"Thank you for choosing Apex Realty.\\\"\",\r\n    \"llmConfig\": {\r\n        \"top_k\": \"40\",\r\n        \"top_p\": \"0.95\",\r\n        \"prompt\": \"\",\r\n        \"inboundPrompt\": {},\r\n        \"outboundPrompt\": {},\r\n        \"temperature\": 0.5,\r\n        \"max_output_token\": \"8192\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/voicebots/knowledgeBase?industryType=real-estate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"voicebots",
+								"knowledgeBase"
+							],
+							"query": [
+								{
+									"key": "industryType",
+									"value": "real-estate"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customer Logs",
+			"item": [
+				{
+					"name": "Leads",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/org/leads?botId&status&channel=all&action&page=1&limit=10&country=all&type=chat&period=all-time",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"leads"
+							],
+							"query": [
+								{
+									"key": "botId",
+									"value": null
+								},
+								{
+									"key": "status",
+									"value": null
+								},
+								{
+									"key": "channel",
+									"value": "all"
+								},
+								{
+									"key": "action",
+									"value": null
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "country",
+									"value": "all"
+								},
+								{
+									"key": "type",
+									"value": "chat"
+								},
+								{
+									"key": "period",
+									"value": "all-time"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Chats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/chats?page=1&limit=10&botId&botUserName=all&period=all-time&channel=all&country=all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"chats"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "botId",
+									"value": null
+								},
+								{
+									"key": "botUserName",
+									"value": "all"
+								},
+								{
+									"key": "period",
+									"value": "all-time"
+								},
+								{
+									"key": "channel",
+									"value": "all"
+								},
+								{
+									"key": "country",
+									"value": "all"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calls",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/call-logs?period=all-time&status&channel=all&action&page=1&limit=10&country=all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"call-logs"
+							],
+							"query": [
+								{
+									"key": "period",
+									"value": "all-time"
+								},
+								{
+									"key": "status",
+									"value": null
+								},
+								{
+									"key": "channel",
+									"value": "all"
+								},
+								{
+									"key": "action",
+									"value": null
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "country",
+									"value": "all"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Personal Details",
+			"item": [
+				{
+					"name": "Get user detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/user",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Admin_BA\",\r\n    \"name\": \"Admin-B Company\",\r\n    \"industry\": \"Real Estate\",\r\n    \"gstType\": \"consumer\",\r\n    \"logo\": {},\r\n    \"email\": \"adminb123@yopmail.com\",\r\n    \"mobile\": \"7682222132\",\r\n    \"password\": \"\",\r\n    \"confirmPassword\": \"\",\r\n    \"countryCode\": \"+91\",\r\n    \"address\": {\r\n        \"street\": \"Guindy street\",\r\n        \"city\": \"chennai\",\r\n        \"state\": \"Tamil Nadu\",\r\n        \"country\": \"India\",\r\n        \"zipCode\": \"600023\"\r\n    },\r\n    \"metadata\": {\r\n        \"businessName\": \"Admin-B Company\",\r\n        \"role\": \"\",\r\n        \"otherRole\": \"\"\r\n    },\r\n    \"data\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/user",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Roles & Goals",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v2/bot/config?type=real-estate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"bot",
+								"config"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "real-estate"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Web Scraping",
+			"item": [
+				{
+					"name": "Web scraping API",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"url\": \"nhgn://www.colgate.com/en-gnfgnfb\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/webScrape?type=voice",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"webScrape"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "voice"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://148.113.16.40:5010/scrape",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"urls\": [\r\n        \"https://tringlabs.ai/\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://148.113.16.40:5010/scrape",
+							"protocol": "http",
+							"host": [
+								"148",
+								"113",
+								"16",
+								"40"
+							],
+							"port": "5010",
+							"path": [
+								"scrape"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Billing",
+			"item": [
+				{
+					"name": "Subscription",
+					"item": [
+						{
+							"name": "New Subscription ( chat / voice )",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"plan\": \"\",\r\n    \"locationData\": {\r\n\r\n    },\r\n    \"redirectUrl\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v2/billing/subscriptions?type=chat",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"billing",
+										"subscriptions"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "chat"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Subscription - Verify payment API",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"hostedpageId\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v2/billing/subscriptions/verify-payment",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"billing",
+										"subscriptions",
+										"verify-payment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cancel Subscription",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{cookie}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"hostedpageId\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v2/billing/subscriptions?type=chat",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"billing",
+										"subscriptions"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "chat"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Wallet",
+					"item": [
+						{
+							"name": "Add wallet",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"plan\": \"\",\r\n    \"redirectUrl\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v2/billing/wallet",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"billing",
+										"wallet"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wallet - Verify payment API",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"hostedpageId\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v2/billing/wallet/verify-payment",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"billing",
+										"wallet",
+										"verify-payment"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Chat - plan usage update",
+					"item": [
+						{
+							"name": "Update chat usage API",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v2/chat/sessionUsage?botId=",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"chat",
+										"sessionUsage"
+									],
+									"query": [
+										{
+											"key": "botId",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Voicebot - AuthClient",
+					"item": [
+						{
+							"name": "Auth client",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/voicebots/authClient?phoneNumber=+91100075",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"voicebots",
+										"authClient"
+									],
+									"query": [
+										{
+											"key": "phoneNumber",
+											"value": "+91100075"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Zoho Billing - Access Token",
+					"item": [
+						{
+							"name": "GET",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://accounts.zoho.in/oauth/v2/token?client_id=1000.IO80PNY7SQHW30W8MYY6LNBQ1DDXOG&grant_type=refresh_token&client_secret=0a4e4038a27157eb725527ba14f44952443d5aee4b&refresh_token=1000.2b6485f52114a10a45dce0a8b4fada5c.5c711259b9a3e4054e06f4a65b3586b5",
+									"protocol": "https",
+									"host": [
+										"accounts",
+										"zoho",
+										"in"
+									],
+									"path": [
+										"oauth",
+										"v2",
+										"token"
+									],
+									"query": [
+										{
+											"key": "client_id",
+											"value": "1000.IO80PNY7SQHW30W8MYY6LNBQ1DDXOG"
+										},
+										{
+											"key": "grant_type",
+											"value": "refresh_token"
+										},
+										{
+											"key": "client_secret",
+											"value": "0a4e4038a27157eb725527ba14f44952443d5aee4b"
+										},
+										{
+											"key": "refresh_token",
+											"value": "1000.2b6485f52114a10a45dce0a8b4fada5c.5c711259b9a3e4054e06f4a65b3586b5"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get Org Billing Usage ( chat / voice )",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/org/usage?type=chat",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"usage"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "chat"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Zoho billing - Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v2/billing/webhook",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"billing",
+								"webhook"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Integration",
+			"item": [
+				{
+					"name": "Create Integration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test crm1\",\r\n    \"crm\": \"zoho-crm\",\r\n    \"scope\": \"ZohoCRM.settings.ALL,ZohoCRM.modules.ALL,ZohoCRM.org.READ\",\r\n    \"url\": \"https://tring-admin.pripod.com/integration/zoho-crm\",\r\n    \"type\": \"crm\",\r\n    \"metadata\": {\r\n        \"status\": \"Pending\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Integration list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test crm1\",\r\n    \"crm\": \"zoho-crm\",\r\n    \"scope\": \"ZohoCRM.settings.ALL,ZohoCRM.modules.ALL,ZohoCRM.org.READ\",\r\n    \"url\": \"https://tring-admin.pripod.com/integration/zoho-crm\",\r\n    \"type\": \"crm\",\r\n    \"metadata\": {\r\n        \"status\": \"Pending\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations?q=crm&page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "crm"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get single Integration",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test crm1\",\r\n    \"crm\": \"zoho-crm\",\r\n    \"scope\": \"ZohoCRM.settings.ALL,ZohoCRM.modules.ALL,ZohoCRM.org.READ\",\r\n    \"url\": \"https://tring-admin.pripod.com/integration/zoho-crm\",\r\n    \"type\": \"crm\",\r\n    \"metadata\": {\r\n        \"status\": \"Pending\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations/1e00ad0b-f22d-4cd0-8021-2203bb8b2c2f",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations",
+								"1e00ad0b-f22d-4cd0-8021-2203bb8b2c2f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Integration without id",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"metadata\": {\r\n        \"code\": \"1000.e8d3fd9a289b77d5dd50186cdddc2735.4038feaeb9312b34f4b84de977cd1f02\",\r\n        \"location\": \"in\",\r\n        \"accountsServer\": \"https://accounts.zoho.in\"\r\n    },\r\n    \"crm\": \"zoho-crm\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Integration with id",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test crmwetw\",\r\n    \"crm\": \"zoho-crm\",\r\n    \"metadata\": {\r\n        \"code\": \"1000.e8d3fd9a289b77d5dd50186cdddc2735.4038feaeb9312b34f4b84de977cd1f02\",\r\n        \"scope\": \"ZohoCRM.settings.ALL ZohoCRM.modules.ALL ZohoCRM.org.READ\",\r\n        \"location\": \"in\",\r\n        \"api_domain\": \"https://www.zohoapis.in\",\r\n        \"expires_in\": 3600,\r\n        \"token_type\": \"Bearer\",\r\n        \"access_token\": \"1000.0207895781cd7367b4316038972caa43.2238c696931026b1ce633cce3c158f6d\",\r\n        \"refresh_token\": \"1000.bf80dd9e2c09e7dfd99aee73a894e494.de055334de5f470df901f6fc7947cae4\",\r\n        \"accountsServer\": \"https://accounts.zoho.in\"\r\n    },\r\n    \"scope\": \"ZohoCRM.settings.ALL,ZohoCRM.modules.ALL,ZohoCRM.org.READ\",\r\n    \"url\": \"https://tring-admin.pripod.com/integration/zoho-crm\",\r\n    \"type\": \"crm\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations/0d8445f0-23f9-4772-b162-9c731a7d9889",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations",
+								"0d8445f0-23f9-4772-b162-9c731a7d9889"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Integration By id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test crmwetw\",\r\n    \"crm\": \"zoho-crm\",\r\n    \"metadata\": {\r\n        \"code\": \"1000.e8d3fd9a289b77d5dd50186cdddc2735.4038feaeb9312b34f4b84de977cd1f02\",\r\n        \"scope\": \"ZohoCRM.settings.ALL ZohoCRM.modules.ALL ZohoCRM.org.READ\",\r\n        \"location\": \"in\",\r\n        \"api_domain\": \"https://www.zohoapis.in\",\r\n        \"expires_in\": 3600,\r\n        \"token_type\": \"Bearer\",\r\n        \"access_token\": \"1000.0207895781cd7367b4316038972caa43.2238c696931026b1ce633cce3c158f6d\",\r\n        \"refresh_token\": \"1000.bf80dd9e2c09e7dfd99aee73a894e494.de055334de5f470df901f6fc7947cae4\",\r\n        \"accountsServer\": \"https://accounts.zoho.in\"\r\n    },\r\n    \"scope\": \"ZohoCRM.settings.ALL,ZohoCRM.modules.ALL,ZohoCRM.org.READ\",\r\n    \"url\": \"https://tring-admin.pripod.com/integration/zoho-crm\",\r\n    \"type\": \"crm\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations/f3aab0a3-6a4f-48ec-a671-8cf741862ced",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations",
+								"f3aab0a3-6a4f-48ec-a671-8cf741862ced"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cloud Telephony",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "auth_session=3723d6e4-e29f-4de5-83b3-661a0d974d35",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ivrIntegrationName\": \"testing1\",\r\n    \"provider\": \"plivo\",\r\n    \"metadata\": {\r\n       \"authId\": \"MAZJLMYMI5MDLKMGI2ZD\",\r\n       \"authToken\": \"MDg5MWU4OWM0MjQ4ZDZjZGFkOWYyNGYxNzdhNDEw\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations/number-integration",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations",
+								"number-integration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get cloud telephony",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "auth_session=3723d6e4-e29f-4de5-83b3-661a0d974d35",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations/number-integration?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations",
+								"number-integration"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "auth_session=3723d6e4-e29f-4de5-83b3-661a0d974d35",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations/number-integration/4fe810bf-446f-41e1-9148-90a357cb2235",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations",
+								"number-integration",
+								"4fe810bf-446f-41e1-9148-90a357cb2235"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "auth_session=3723d6e4-e29f-4de5-83b3-661a0d974d35",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ivrIntegrationName\": \"testin2\",\r\n    \"provider\": \"plivo\",\r\n    \"metadata\": {\r\n       \"authId\": \"MAZJLMYMI5MDLKMGI2ZD\",\r\n       \"authToken\": \"MDg5MWU4OWM0MjQ4ZDZjZGFkOWYyNGYxNzdhNDEw\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations/number-integration/4fe810bf-446f-41e1-9148-90a357cb2235",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations",
+								"number-integration",
+								"4fe810bf-446f-41e1-9148-90a357cb2235"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "auth_session=3723d6e4-e29f-4de5-83b3-661a0d974d35",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations/number-integration/4fe810bf-446f-41e1-9148-90a357cb2235",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations",
+								"number-integration",
+								"4fe810bf-446f-41e1-9148-90a357cb2235"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TTS Integration",
+			"item": [
+				{
+					"name": "Elevenlabs",
+					"item": [
+						{
+							"name": "Get Models",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/tts-integration/elevenlabs/models?apiKey=sk_9a7bf65bcf599efb0e8b5e06c8972ae4abb64e9ce1088759",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"tts-integration",
+										"elevenlabs",
+										"models"
+									],
+									"query": [
+										{
+											"key": "apiKey",
+											"value": "sk_9a7bf65bcf599efb0e8b5e06c8972ae4abb64e9ce1088759"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Voices",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/tts-integration/elevenlabs/voices?apiKey=sk_9a7bf65bcf599efb0e8b5e06c8972ae4abb64e9ce1088759",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"tts-integration",
+										"elevenlabs",
+										"voices"
+									],
+									"query": [
+										{
+											"key": "apiKey",
+											"value": "sk_9a7bf65bcf599efb0e8b5e06c8972ae4abb64e9ce1088759"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ttsIntegrationName\": \"test TTS 2\",\r\n    \"provider\": \"elevenlabs\",\r\n    \"metadata\": {\r\n        \"apiKey\": \"sk_9a7bf65bcf599efb0e8b5e06c8972ae4abb64e9ce1088759\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tts-integration",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tts-integration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get TTS Integration",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tts-integration?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tts-integration"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tts-integration/78cd9e14-cd1a-4826-ae01-1cebf98b15e8",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tts-integration",
+								"78cd9e14-cd1a-4826-ae01-1cebf98b15e8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ttsIntegrationName\": \"test TTS 3\",\r\n    \"provider\": \"elevenlabs\",\r\n    \"metadata\": {\r\n        \"apiKey\": \"sk_9a7bf65bcf599efb0e8b5e06c8972ae4abb64e9ce1088759\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tts-integration/78cd9e14-cd1a-4826-ae01-1cebf98b15e8",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tts-integration",
+								"78cd9e14-cd1a-4826-ae01-1cebf98b15e8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ttsIntegrationName\": \"test TTS 3\",\r\n    \"provider\": \"elevenlabs\",\r\n    \"metadata\": {\r\n        \"apiKey\": \"sk_9a7bf65bcf599efb0e8b5e06c8972ae4abb64e9ce1088759\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tts-integration/78cd9e14-cd1a-4826-ae01-1cebf98b15e8",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tts-integration",
+								"78cd9e14-cd1a-4826-ae01-1cebf98b15e8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Zoho Desk",
+			"item": [
+				{
+					"name": "Create ticket",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\r\n//     \"botId\": \"b75338b4-9163-4ad7-8a0f-a7cc11834b11\",\r\n//     \"type\": \"chat\",\r\n//     \"subject\": \"Chatbot - schedule call 1234\",\r\n//     \"departmentId\": \"191068000000280029\",\r\n//     \"firstName\": \"Dhanalakshmi\",\r\n//     \"lastName\": \"M\",\r\n//     \"email\": \"testzohodesk1@yopmail.com\",\r\n//     \"phone\": \"9876543210\",\r\n//     \"description\": \"I am not able to schedule a call 1234\"\r\n// }\r\n// {\r\n//     \"botId\": \"20f5e20e-2a38-4c1c-8562-9a48e2550dbb\",\r\n//     \"orgId\": \"b2461433-c379-4c84-a844-6ab31c39ccd9\",\r\n//     \"type\": \"chat\",\r\n//     \"subject\": \"Chatbot Analytics Not Showing\",\r\n//     \"description\": \"User reported that the chatbot analytics is not displaying in the dashboard. Immediate assistance is required to resolve this issue.\"\r\n// }\r\n{\r\n    \"botId\": \"20f5e20e-2a38-4c1c-8562-9a48e2550dbb\",\r\n    \"orgId\": \"71327869-e40a-4471-b2fe-3e14493b3e03\",\r\n    \"type\": \"chat\",\r\n    \"subject\": \"Unable to Schedule a Call\",\r\n    \"description\": \"User is experiencing issues while trying to schedule a call on the Tringlabs.ai platform.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/zoho-desk/createTicket",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"zoho-desk",
+								"createTicket"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Plivo",
+			"item": [
+				{
+					"name": "buy PhoneNumber API",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/plivo/buyPhoneNumber",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"plivo",
+								"buyPhoneNumber"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List SubAccount PhoneNumbers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/plivo/listSubAccountPhoneNumbers?page=1&limit=10&authId=SAMMIWZDVLNMUTMZLLYS&authToken=MGJjYTFlNmYtYzJiZS00MzM1LWJkMTktZjBjNjRm",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"plivo",
+								"listSubAccountPhoneNumbers"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "authId",
+									"value": "SAMMIWZDVLNMUTMZLLYS"
+								},
+								{
+									"key": "authToken",
+									"value": "MGJjYTFlNmYtYzJiZS00MzM1LWJkMTktZjBjNjRm"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ZOHO Integration",
+			"item": [
+				{
+					"name": "Access Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://accounts.zoho.in/oauth/v2/token?client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&grant_type=refresh_token&client_secret=922f18d9e0d820fbebb9d93fee5cc8201e58fbda8c&refresh_token=1000.30ecdec659d95952a749d3b196298669.1c6f2db0c761db4b82cd7c028083a65d",
+							"protocol": "https",
+							"host": [
+								"accounts",
+								"zoho",
+								"in"
+							],
+							"path": [
+								"oauth",
+								"v2",
+								"token"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U"
+								},
+								{
+									"key": "grant_type",
+									"value": "refresh_token"
+								},
+								{
+									"key": "client_secret",
+									"value": "922f18d9e0d820fbebb9d93fee5cc8201e58fbda8c"
+								},
+								{
+									"key": "refresh_token",
+									"value": "1000.30ecdec659d95952a749d3b196298669.1c6f2db0c761db4b82cd7c028083a65d"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Schedule call from chatbot",
+			"item": []
+		},
+		{
+			"name": "Organization",
+			"item": [
+				{
+					"name": "subscriptionPlans",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/org/subscriptionPlans",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"subscriptionPlans"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Voice - dial API",
+			"item": [
+				{
+					"name": "http://148.113.16.40:5000/dial",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Dhanalakshmi\",\r\n    \"countryCode\": \"+91\",\r\n    \"phone\": \"6369200214\",\r\n    \"botId\": \"396c4156-54ae-4510-a38d-58b1324d7d10\",\r\n    \"exophone\": \"+918035737055\",\r\n    \"provider\": \"plivo\",\r\n    \"cloudTelephonyConfig\": {\r\n        \"authId\": \"MAZJLMYMI5MDLKMGI2ZD\",\r\n        \"authToken\": \"MDg5MWU4OWM0MjQ4ZDZjZGFkOWYyNGYxNzdhNDEw\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://tring-voice.pripod.com/dial",
+							"protocol": "https",
+							"host": [
+								"tring-voice",
+								"pripod",
+								"com"
+							],
+							"path": [
+								"dial"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - dial API",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Test\",\r\n    \"countryCode\": \"+91\",\r\n    \"phone\": \"3324234332\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/voicebots/396c4156-54ae-4510-a38d-58b1324d7d10/dial",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"voicebots",
+								"396c4156-54ae-4510-a38d-58b1324d7d10",
+								"dial"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Zoho CRM",
+			"item": [
+				{
+					"name": "Get Layouts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "auth_session=3723d6e4-e29f-4de5-83b3-661a0d974d35",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations/zoho-crm/layouts?id=ce148f86-6160-4770-8268-fe9ee06fbcd9",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations",
+								"zoho-crm",
+								"layouts"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "ce148f86-6160-4770-8268-fe9ee06fbcd9"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Zoho Bigin",
+			"item": [
+				{
+					"name": "Get pipelines",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations/zoho-bigin/pipelines?id=f424408a-a7e9-4327-affa-00fe60e4fc74",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations",
+								"zoho-bigin",
+								"pipelines"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "f424408a-a7e9-4327-affa-00fe60e4fc74"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get sub-pipelines",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations/zoho-bigin/sub-pipeline?id=f424408a-a7e9-4327-affa-00fe60e4fc74",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations",
+								"zoho-bigin",
+								"sub-pipeline"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "f424408a-a7e9-4327-affa-00fe60e4fc74"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Zoho Cliq",
+			"item": [
+				{
+					"name": "Get Channels",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/org/integrations/zoho-cliq/channels?id=7c933fb9-9af6-4f94-a8a3-6a14fbbb85f0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"integrations",
+								"zoho-cliq",
+								"channels"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "7c933fb9-9af6-4f94-a8a3-6a14fbbb85f0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contacts ( Chat / Voice )",
+			"item": [
+				{
+					"name": "Create Contact",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "// chat\r\n{\r\n    \"firstName\": \"Dhanalakshmi\",\r\n    \"lastName\": \"Test\",\r\n    \"email\": \"test12345@yopmail.com\",\r\n    \"phone\": \"7564335343\",\r\n    \"countryCode\": \"+91\"\r\n}\r\n\r\n// voice\r\n// {\r\n//     \"name\": \"Test\",\r\n//     \"metadata\": \"test\",\r\n//     \"verificationId\": \"test\",\r\n//     \"phone\": \"3453453434\",\r\n//     \"countryCode\": \"+91\"\r\n// }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contacts?type=chat",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contacts"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "chat"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contacts",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contacts?type=chat",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contacts"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "chat"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get single contact",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contacts/1f027dac-810b-48ea-b73b-e82fdd394a79?type=chat",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contacts",
+								"1f027dac-810b-48ea-b73b-e82fdd394a79"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "chat"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Contact",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "// chat\r\n{\r\n    \"firstName\": \"Dhanalakshmi\",\r\n    \"lastName\": \"Test\",\r\n    \"email\": \"test12345@yopmail.com\",\r\n    \"phone\": \"7564335343\",\r\n    \"countryCode\": \"+91\"\r\n}\r\n\r\n// voice\r\n// {\r\n//     \"name\": \"Test\",\r\n//     \"metadata\": \"test\",\r\n//     \"verificationId\": \"test\",\r\n//     \"phone\": \"3453453434\",\r\n//     \"countryCode\": \"+91\"\r\n// }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contacts/1f027dac-810b-48ea-b73b-e82fdd394a79?type=chat",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contacts",
+								"1f027dac-810b-48ea-b73b-e82fdd394a79"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "chat"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Contact",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "// chat\r\n{\r\n    \"firstName\": \"Dhanalakshmi\",\r\n    \"lastName\": \"Test\",\r\n    \"email\": \"test12345@yopmail.com\",\r\n    \"phone\": \"7564335343\",\r\n    \"countryCode\": \"+91\"\r\n}\r\n\r\n// voice\r\n// {\r\n//     \"name\": \"Test\",\r\n//     \"metadata\": \"test\",\r\n//     \"verificationId\": \"test\",\r\n//     \"phone\": \"3453453434\",\r\n//     \"countryCode\": \"+91\"\r\n// }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contacts/1f027dac-810b-48ea-b73b-e82fdd394a79?type=chat",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contacts",
+								"1f027dac-810b-48ea-b73b-e82fdd394a79"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "chat"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Import",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contacts/import?type=chat",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contacts",
+								"import"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "chat"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Buckets ( Chat / Voice )",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"new bucket 1235\",\r\n    \"type\": \"chat\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contact-list",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contact-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Buckets",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"new bucket 123\",\r\n    \"type\": \"chat\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contact-list",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contact-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single bucket",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"new bucket 123\",\r\n    \"type\": \"chat\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contact-list/84924e31-2659-4975-9869-544fa833e041",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contact-list",
+								"84924e31-2659-4975-9869-544fa833e041"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update bucket by id",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"new bucket 1235\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contact-list/84924e31-2659-4975-9869-544fa833e041",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contact-list",
+								"84924e31-2659-4975-9869-544fa833e041"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Bucket by id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contact-list/84924e31-2659-4975-9869-544fa833e041",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contact-list",
+								"84924e31-2659-4975-9869-544fa833e041"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Import contacts",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/white/Downloads/chats.xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contact-list/46a47d97-c590-4fa1-9b79-bdee89e24d85/importContacts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contact-list",
+								"46a47d97-c590-4fa1-9b79-bdee89e24d85",
+								"importContacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Single Contact",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Dhanalakshmi\",\r\n    \"lastName\": \"Test\",\r\n    \"email\": \"test12345@yopmail.com\",\r\n    \"phone\": \"6757456456\",\r\n    \"countryCode\": \"+91\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contact-list/46a47d97-c590-4fa1-9b79-bdee89e24d85/contact",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contact-list",
+								"46a47d97-c590-4fa1-9b79-bdee89e24d85",
+								"contact"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Single Contact",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"contactId\": \"3ca479d6-c242-4c2b-a2d0-1d6b88973310\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/org/contact-list/46a47d97-c590-4fa1-9b79-bdee89e24d85/contact",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"org",
+								"contact-list",
+								"46a47d97-c590-4fa1-9b79-bdee89e24d85",
+								"contact"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Campaign",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"campaignName\": \"Voice campaign test 12\",\r\n    \"contactMethod\": \"voice\",\r\n    \"bucketId\": \"cfefab71-4901-447b-849e-a4dfffacb642\",\r\n    \"botConfig\": {\r\n        \"botId\": \"f8a4f0be-2571-49ab-b3f4-03f55b5b73b9\",\r\n        \"workingStartTime\": \"01:32\",\r\n        \"workingEndTime\": \"02:32\",\r\n        \"callsPerTrigger\": \"2\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://tring-admin.pripod.com/api/org/campaign",
+							"protocol": "https",
+							"host": [
+								"tring-admin",
+								"pripod",
+								"com"
+							],
+							"path": [
+								"api",
+								"org",
+								"campaign"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get campaign list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"campaignName\": \"Voice campaign test 12\",\r\n    \"contactMethod\": \"voice\",\r\n    \"bucketId\": \"cfefab71-4901-447b-849e-a4dfffacb642\",\r\n    \"botConfig\": {\r\n        \"botId\": \"f8a4f0be-2571-49ab-b3f4-03f55b5b73b9\",\r\n        \"workingStartTime\": \"01:32\",\r\n        \"workingEndTime\": \"02:32\",\r\n        \"callsPerTrigger\": \"2\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://tring-admin.pripod.com/api/org/campaign",
+							"protocol": "https",
+							"host": [
+								"tring-admin",
+								"pripod",
+								"com"
+							],
+							"path": [
+								"api",
+								"org",
+								"campaign"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get single campaign",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"campaignName\": \"Voice campaign test 12\",\r\n    \"contactMethod\": \"voice\",\r\n    \"bucketId\": \"cfefab71-4901-447b-849e-a4dfffacb642\",\r\n    \"botConfig\": {\r\n        \"botId\": \"f8a4f0be-2571-49ab-b3f4-03f55b5b73b9\",\r\n        \"workingStartTime\": \"01:32\",\r\n        \"workingEndTime\": \"02:32\",\r\n        \"callsPerTrigger\": \"2\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://tring-admin.pripod.com/api/org/campaign/55e8596b-18d6-46aa-8163-d31222266daa",
+							"protocol": "https",
+							"host": [
+								"tring-admin",
+								"pripod",
+								"com"
+							],
+							"path": [
+								"api",
+								"org",
+								"campaign",
+								"55e8596b-18d6-46aa-8163-d31222266daa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Campaign",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"campaignName\": \"Voice campaign test 12\",\r\n    \"contactMethod\": \"voice\",\r\n    \"bucketId\": \"cfefab71-4901-447b-849e-a4dfffacb642\",\r\n    \"botConfig\": {\r\n        \"botId\": \"f8a4f0be-2571-49ab-b3f4-03f55b5b73b9\",\r\n        \"workingStartTime\": \"01:32\",\r\n        \"workingEndTime\": \"02:32\",\r\n        \"callsPerTrigger\": \"2\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://tring-admin.pripod.com/api/org/campaign/28aad912-2d6e-4760-8e7b-df3787acc3d9",
+							"protocol": "https",
+							"host": [
+								"tring-admin",
+								"pripod",
+								"com"
+							],
+							"path": [
+								"api",
+								"org",
+								"campaign",
+								"28aad912-2d6e-4760-8e7b-df3787acc3d9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Campaign",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{cookie}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"campaignName\": \"Voice campaign test 12\",\r\n    \"contactMethod\": \"voice\",\r\n    \"bucketId\": \"cfefab71-4901-447b-849e-a4dfffacb642\",\r\n    \"botConfig\": {\r\n        \"botId\": \"f8a4f0be-2571-49ab-b3f4-03f55b5b73b9\",\r\n        \"workingStartTime\": \"01:32\",\r\n        \"workingEndTime\": \"02:32\",\r\n        \"callsPerTrigger\": \"2\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://tring-admin.pripod.com/api/org/campaign/28aad912-2d6e-4760-8e7b-df3787acc3d9",
+							"protocol": "https",
+							"host": [
+								"tring-admin",
+								"pripod",
+								"com"
+							],
+							"path": [
+								"api",
+								"org",
+								"campaign",
+								"28aad912-2d6e-4760-8e7b-df3787acc3d9"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "cookie",
+			"value": "auth_session=3723d6e4-e29f-4de5-83b3-661a0d974d35",
+			"type": "string"
+		}
+	]
+}
