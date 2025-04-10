@@ -110,6 +110,14 @@ export const listLeads = async (
               ? gt(botUserSchema.visitedCount, 1)
               : undefined,
           ),
+          columns: {
+            id: true,
+            name: true,
+            email: true,
+            mobile: true,
+            countryCode: true,
+            visitedCount: true,
+          }
         },
         chat: {
           where: and(
@@ -117,6 +125,16 @@ export const listLeads = async (
               ? ilike(chatSchema.channel, query?.channel)
               : undefined,
           ),
+          columns: {
+            id: true,
+            metadata: true,
+            mode: true,
+            channel: true,
+            visitedCount: true,
+            interacted: true,
+            createdAt: true,
+            updatedat: true
+          }
         },
       },
       orderBy: [desc(leadSchema.createdAt)],
