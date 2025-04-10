@@ -44,6 +44,25 @@ export const getCallLogsList = async (organizationId: string, query: any, timeZo
         }
       }
     },
+    columns: {
+      id: true,
+      callSid: true,
+      exophone: true,
+      from: true,
+      date: true,
+      callStatus: true,
+      duration: true,
+      direction: true,
+      metrics: true,
+      callerName: true,
+      callerDate: true,
+      inputCredits: true,
+      outputCredits: true,
+      botId: true,
+      organizationId: true,
+      createdAt: true,
+      updatedAt: true
+    },
      orderBy: [desc(callLogSchema.date)],
   })
   data = data.map((i: any) => ({
