@@ -24,7 +24,7 @@ export function useBotList() {
         id: bot.id,
         name: bot.name,
         status: !!bot.documentId, // Convert to boolean
-        createdAt: formatDate(new Date(bot.createdAt), "dd.MM.yyyy"),
+        createdAt: bot.createdAt, //formatDate(new Date(bot.createdAt), "dd.MM.yyyy")
         type: useBotType(bot.type as BotType),
       }));
     },

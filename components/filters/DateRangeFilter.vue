@@ -119,6 +119,7 @@ import {
   today, parseDate,
 } from "@internationalized/date";
 import type { DateRange } from "radix-vue";
+import { CalendarIcon } from "lucide-vue-next";
 
 const props = defineProps({
   period: {
@@ -185,7 +186,7 @@ const isDateDisabled = (date: CalendarDate) => {
   <div class="flex items-center gap-2">
     <UiSelect v-model="selectedPeriod">
       <UiSelectTrigger class="min-w-[130px] max-w-[130px]">
-        <UiSelectValue placeholder="Select a Date" />
+        <UiSelectValue class="text-left" placeholder="Select a Date" />
       </UiSelectTrigger>
       <UiSelectContent>
         <UiSelectItem v-for="(rangeDate, index) in dateOptions" :key="index" :value="rangeDate.value">
@@ -198,7 +199,7 @@ const isDateDisabled = (date: CalendarDate) => {
 
     <UiPopover v-if="selectedPeriod === 'custom'">
       <UiPopoverTrigger as-child>
-        <UiButton variant="outline" class="w-[240px] justify-start text-left font-normal truncate">
+        <UiButton variant="outline" class="min-w-[220px] max-w-[220px] justify-start text-left font-normal truncate">
           <CalendarIcon class="mr-2 h-4 w-4" />
           <template v-if="dateFormat.start">
             <template v-if="dateFormat.end">

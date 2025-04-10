@@ -7,7 +7,7 @@
       <TextField name="url" placeholder="e.g., https://yourwebsite.com"
         class="text-[10px] sm:text-[10px] md:text-[14px]" label="Import from Website Link">
       </TextField>
-      <UiButton type="submit" color="primary" :loading="isLoading" class="px-6 mb-1 button_shadow rounded-lg">
+      <UiButton type="submit" color="primary" :loading="isLoading" :disabled="props.isUploading" class="px-6 mb-1 button_shadow rounded-lg">
         Import
       </UiButton>
     </div>
@@ -23,6 +23,7 @@ import { useRoute } from "vue-router";
 import { any } from "zod";
 import { botTypes } from '~/composables/botManagement/chatBot/useBotType'
 import { useCleanJson } from "~/composables/botManagement/chatBot/useCleanJson";
+import { useVoiceBotCleanJson } from "~/composables/botManagement/chatBot/useVoiceBotCleanJson";
 import { botStore } from '~/store/botStore';
 
 // import { useCleanJson } from "~/composables/botManagement/chatBot/useCleanJson";
@@ -33,11 +34,13 @@ definePageMeta({
 
 const props = defineProps<{
   botType: string;
+  isUploading: boolean;
 }>();
 
 
 const scrapData = botStore();
 const { cleanAndParseJson } = useCleanJson();
+const { cleanAndParseVoiceBotJson } = useVoiceBotCleanJson();
 // const emit = defineEmits(["scrapedData"]);
 
 // const agentModalState = defineModel<{ open: boolean; id: any }>({
@@ -91,38 +94,99 @@ const clearTextField = () => {
 };
 defineExpose({ clearTextField });
 
+// const handleAddEditBot = handleSubmit(async (values) => {
+//   if (!values.url) {
+//     toast.error('Please enter a valid URL before importing.')
+//     return
+//   }
+//   isLoading.value = true;
+//   try {
+    
+//     const scrapedData: any = await $fetch(`/api/org/webScrape?type=${props.botType}`, {
+//       method: "POST",
+//       body: values,
+//     });
+//     const parsedData = cleanAndParseJson(scrapedData);
+//     const parsedVoiceBotData = cleanAndParseVoiceBotJson(scrapedData);
+//     if (props.botType === 'voice') {
+//       scrapData.voiceBotScrapedData = parsedVoiceBotData  ;
+//     } else {
+//       scrapData.scrapedData = parsedData;
+//     }
+//     if (parsedData.knowledge_base.document_content) {
+//       toast.success("Updated successfully.");
+//     }
+//     // }
+//     // if (agentModalState.value.id) {
+//     //   emit("editConfirm");
+//     // } else {
+//     //   emit("confirm");
+//     // }
+//   } catch (err: any) {
+//     isLoading.value = false;
+//     toast.error(err?.statusMessage || "Failed to import data.");
+//   }
+//   isLoading.value = false;
+// });
+
 const handleAddEditBot = handleSubmit(async (values) => {
   if (!values.url) {
     toast.error('Please enter a valid URL before importing.')
     return
   }
+
   isLoading.value = true;
+
   try {
-    
+    // Fetch the scraped data from the API
     const scrapedData: any = await $fetch(`/api/org/webScrape?type=${props.botType}`, {
       method: "POST",
       body: values,
     });
-    const parsedData = cleanAndParseJson(scrapedData);
+
+    // Use the appropriate parsing function based on the bot type
     if (props.botType === 'voice') {
-      scrapData.voiceBotScrapedData = parsedData;
-    } else {
+      const parsedVoiceBotData = cleanAndParseVoiceBotJson(scrapedData);
+      console.log("Parsed Voice Bot Data:", parsedVoiceBotData);
+
+      // Update store 
+      scrapData.voiceBotScrapedData = parsedVoiceBotData;
+
+      // Also save to localStorage as backup
+      try {
+        localStorage.setItem('voiceBotScrapedData', JSON.stringify(parsedVoiceBotData));
+        console.log("Voice bot data saved to localStorage");
+      } catch (storageErr) {
+        console.error("Failed to save to localStorage:", storageErr);
+      }
+
+      toast.success("Voice bot data imported successfully.");
+    }
+    if (props.botType === 'chat') {
+      // For regular chatbots, use the standard parser
+      const parsedData = cleanAndParseJson(scrapedData);
       scrapData.scrapedData = parsedData;
+
+      // Check if parsing was successful
+      if (parsedData && parsedData.knowledge_base && parsedData.knowledge_base.document_content) {
+        toast.success("Chatbot data imported successfully.");
+      } else {
+        toast.error("Failed to parse chatbot data.");
+      }
     }
-    if (parsedData.knowledge_base.document_content) {
-      toast.success("Updated successfully.");
-    }
-    // }
+
+    // Uncomment this if you need to re-enable the emit functionality
     // if (agentModalState.value.id) {
     //   emit("editConfirm");
     // } else {
     //   emit("confirm");
     // }
   } catch (err: any) {
-    isLoading.value = false;
+    console.error("Import error:", err);
     toast.error(err?.statusMessage || "Failed to import data.");
+  } finally {
+    isLoading.value = false;
   }
-  isLoading.value = false;
 });
 // const {
 //   status: integrationLoadingStatus,

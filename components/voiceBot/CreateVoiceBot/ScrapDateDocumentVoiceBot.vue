@@ -1,28 +1,86 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, onMounted, computed } from "vue";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { botStore } from "~/store/botStore";
 import { useRoute } from "vue-router";
-import { useDocumentUpload } from "~/composables/botManagement/chatBot/useDocumentUpload"; // Import the composable
+import { useDocumentUpload } from "~/composables/botManagement/chatBot/useDocumentUpload";
 
 const scrapData = botStore();
-const text = ref(scrapData.voiceBotScrapedData?.document_content || "");
 const route = useRoute();
 const props = defineProps<{
   refresh: () => void
 }>();
-const { createDocuments ,uploadStatus, isUploading, uploadError } = useDocumentUpload();
-// Watch for changes in scrapData
-watch(
-  () => scrapData.voiceBotScrapedData?.document_content,
-  (newValue) => {
-    if (newValue) {
-      // console.log("Scraped data changed:", newValue);
-      text.value = newValue;
+
+// Get data from store or localStorage
+const localStorageData = ref(null);
+const text = ref("");
+
+// Try to load from localStorage
+const loadFromLocalStorage = () => {
+  try {
+    const savedData = localStorage.getItem('voiceBotScrapedData');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      localStorageData.value = parsedData;
+      return parsedData;
+    }
+    return null;
+  } catch (err) {
+    console.error("Failed to get voice bot data from localStorage:", err);
+    return null;
+  }
+};
+
+// Initialize data
+onMounted(() => {
+  // Initial load attempt
+  const storeData = scrapData.voiceBotScrapedData?.document_content;
+  const localData = loadFromLocalStorage();
+
+  if (storeData) {
+    text.value = storeData;
+  } else if (localData && localData.document_content) {
+    text.value = localData.document_content;
+
+    // Update store with localStorage data
+    if (!scrapData.voiceBotScrapedData && localData) {
+      scrapData.voiceBotScrapedData = localData;
     }
   }
-);
+});
+
+// Watch for localStorage changes
+watch(localStorageData, (newValue) => {
+  if (newValue && newValue.document_content) {
+    text.value = newValue.document_content;
+  }
+}, { deep: true });
+
+// Watch for store changes (primary source)
+watch(() => scrapData.voiceBotScrapedData?.document_content, (newValue) => {
+  if (newValue) {
+    text.value = newValue;
+  } else {
+    // If store data is removed, try to fall back to localStorage
+    const localData = loadFromLocalStorage();
+    if (localData && localData.document_content) {
+      text.value = localData.document_content;
+    }
+  }
+}, { deep: true, immediate: true });
+
+// Watch for empty text and try to reload
+watch(() => text.value, (newValue) => {
+  if (!newValue || newValue.trim() === '') {
+    // Text is empty, try to load from localStorage
+    const localData = loadFromLocalStorage();
+    if (localData && localData.document_content) {
+      text.value = localData.document_content;
+    }
+  }
+}, { immediate: true });
+
 const clearTextField = () => {
   text.value = "";
 };
@@ -30,62 +88,13 @@ const clearTextField = () => {
 // Expose method for parent access
 defineExpose({ clearTextField });
 
-const generatePDFAndUpload = async () => {
-  if (!text.value.trim()) return;
-
-  const pdf = new jsPDF();
-
-  // Create a temporary div
-  const tempDiv = document.createElement("div");
-  tempDiv.style.width = "180mm";
-  tempDiv.style.padding = "10px";
-  tempDiv.style.fontFamily = "Arial, sans-serif";
-  tempDiv.style.whiteSpace = "pre-wrap";
-  tempDiv.innerText = text.value;
-  document.body.appendChild(tempDiv);
-
-  // Convert text content to image
-  const canvas = await html2canvas(tempDiv);
-  const imgData = canvas.toDataURL("image/png");
-
-  pdf.addImage(imgData, "PNG", 10, 10, 180, 0);
-  document.body.removeChild(tempDiv);
-
-  // Convert PDF to Blob
-  const pdfBlob = pdf.output("blob");
-  const pdfFile = new File([pdfBlob], "document.pdf", { type: "application/pdf" });
-  // Prepare Payload
-  const payload = {
-    botId: route.params.id,
-    document: {
-      name: pdfFile.name,
-      files: pdfFile,
-    },
-  };
-
-  // Upload to API
-  // await createDocuments(payload.botId, payload.document);
-  // await props.refresh()
-};
-
-// Auto-generate PDF when text updates
-watch(text, async (newText) => {
-  if (newText.trim()) {
-    await generatePDFAndUpload();
-  }
-});
-onMounted(() => {
-  if (text.value.trim()) {
-    text.value = ''
-  }
-})
+const { createDocuments, uploadStatus, isUploading, uploadError } = useDocumentUpload();
 </script>
 
 <template>
   <div class="w-full">
-    <!-- {{ scrapData.voiceBotScrapedData.document_content }} || asdsad -->
-    <UiTextarea v-model="text" placeholder="" class="border p-2 h-40 text-[10px] sm:text-[10px] md:text-[14px]"
-      :readonly="true">
+    <UiTextarea v-model="text" placeholder="Content will appear here"
+      class="border p-2 h-40 text-[10px] sm:text-[10px] md:text-[14px]" :readonly="true">
     </UiTextarea>
     <!-- <UiButton @click="generatePDFAndUpload" class="flex mt-2 text-white px-4 py-2 rounded">
       Download PDF

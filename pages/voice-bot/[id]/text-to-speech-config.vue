@@ -3,7 +3,6 @@
     
   ]">
     <div class="pb-2 sm:pb-0">
-      <!-- {{integrationsData[0].metadata.apikey}}   || asdsad -->
       <form @submit.prevent="onSubmit" class="space-y-10">
         <div class="flex flex-col gap-2">
           <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">

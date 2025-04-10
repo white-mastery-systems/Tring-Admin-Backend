@@ -415,7 +415,7 @@ const handleDelete = () => {
 
 const handleDeleteBot = () => {
   deleteModalState.value = false;
-  deleteBot(route.params.id);
+  deleteBot(route.params.id,false);
 };
 
 // const handleScrapedData = (data: any) => {

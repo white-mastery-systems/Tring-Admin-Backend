@@ -89,8 +89,12 @@ onBeforeRouteLeave((to, from, next) => {
   showLeaveConfirmation.value.default = true;
   next(false);
 });
+onMounted(() => {
+  localStorage.removeItem('voiceBotScrapedData');
+})
 // Clean up
 onUnmounted(() => {
+  localStorage.removeItem('voiceBotScrapedData');
   window.removeEventListener('popstate', () => { });
   if (intervalId.value !== null) {
     clearInterval(intervalId.value);
@@ -112,12 +116,59 @@ const nextStep = async () => {
   }
 
   // Special handling for step 1 (Knowledge Details)
+  // if ((step.value === 1)) {
+  //   if (values.selectedType === 'Text') {
+  //     if (!stepOneRef.value.uploadDocumentRef.text) {
+  //       toast.error("Please provide Knowledge Details.");
+  //       isValid = false;
+  //     }
+  //   }
+  //   // console.log('stepOneRef.value.uploadDocumentRef.text', stepOneRef.value.uploadDocumentRef)
+  // }
+
+  // Special handling for step 1 (Knowledge Details)
   if (step.value === 1) {
-    if (!stepOneRef.value.uploadDocumentRef.text) {
-      toast.error("Please provide Knowledge Details.");
-      isValid = false;
+    if (values.selectedType === 'Text') {
+      if (!stepOneRef.value.uploadDocumentRef.text) {
+        toast.error("Please provide Knowledge Details.");
+        isValid = false;
+      }
+    } else if (values.selectedType === 'Website') {
+      // Check if we have website data either in store or localStorage
+      let hasWebsiteData = false;
+
+      // First check store
+      if (scrapData.voiceBotScrapedData?.document_content) {
+        hasWebsiteData = true;
+      } else {
+        // Try localStorage as fallback
+        try {
+          const savedData = localStorage.getItem('voiceBotScrapedData');
+          if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            if (parsedData && parsedData.document_content) {
+              hasWebsiteData = true;
+
+              // Optionally restore to store
+              if (!scrapData.voiceBotScrapedData) {
+                scrapData.voiceBotScrapedData = parsedData;
+                console.log("Restored website data from localStorage to store");
+              }
+            }
+          }
+        } catch (err) {
+          console.error("Error checking localStorage for website data:", err);
+        }
+      }
+
+      if (!hasWebsiteData) {
+        toast.error("Please import website data first.");
+        isValid = false;
+      }
     }
   }
+
+
   if (step.value === 2) {
     await fetchConfig(values.type)
   }
@@ -264,6 +315,7 @@ const handleLeaveConfirm = async () => {
 
     // Close dialog and clear pending navigation
     showLeaveConfirmation.value.default = false;
+    localStorage.removeItem('voiceBotScrapedData');
     pendingNavigation.value = null;
 
     // Perform navigation
@@ -411,6 +463,39 @@ const submitForm = handleSubmit(async (values) => {
     }
   }
 
+  // Get knowledge base content based on selectedType
+  let knowledgeBaseContent = null;
+
+  if (values.selectedType === 'Text') {
+    // For Text type, only use the text from the component
+    knowledgeBaseContent = stepOneRef.value.uploadDocumentRef.text;
+  } else if (values.selectedType === 'Website') {
+    // For Website type, try store first, then localStorage
+    if (scrapData.voiceBotScrapedData?.document_content) {
+      knowledgeBaseContent = scrapData.voiceBotScrapedData.document_content;
+    } else {
+      // Try from localStorage as fallback for Website type
+      try {
+        const savedData = localStorage.getItem('voiceBotScrapedData');
+        if (savedData) {
+          const parsedData = JSON.parse(savedData);
+          if (parsedData && parsedData.document_content) {
+            knowledgeBaseContent = parsedData.document_content;
+          }
+        }
+      } catch (err) {
+        console.error("Error reading from localStorage:", err);
+      }
+    }
+  }
+
+  // In case knowledgeBaseContent is still null after all checks
+  if (!knowledgeBaseContent) {
+    console.warn("No knowledge base content found in any source");
+    knowledgeBaseContent = "";  // Set to empty string to avoid null errors
+  }
+
+
   // Prepare the payload
   const payload = {
     name: values.newBotName,
@@ -428,7 +513,7 @@ const submitForm = handleSubmit(async (values) => {
     },
     textToSpeechConfig: updatedTTSConfig,
     speechToTextConfig: updatedConfig,
-    knowledgeBase: scrapData.voiceBotScrapedData?.document_content ?? stepOneRef.value.uploadDocumentRef.text,
+    knowledgeBase: knowledgeBaseContent,
     llmConfig: {
       top_k: "40",
       top_p: "0.95",
@@ -470,6 +555,7 @@ const submitForm = handleSubmit(async (values) => {
         scrapData.createBotVoiceSuccessfulState.handleContent = false;
         setTimeout(() => {
           toast.success("Activated successfully");
+          localStorage.removeItem('voiceBotScrapedData');
         }, 2000);
       } else {
         isSubmitting.value = false;
