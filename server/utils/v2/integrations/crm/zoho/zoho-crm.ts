@@ -17,7 +17,7 @@ export const newGetAllLayoutsFromZohoCRM: any = async ({
       })
 
 
-    console.log("new GetAllLayoutsFromZohoCRM",{ response })
+    // console.log("new GetAllLayoutsFromZohoCRM",{ response })
     return response
   } catch (error: any) {
     logger.error(`new getAllLayoutsFromZohoCRM Error: ${JSON.stringify(error.message)}`)
@@ -47,6 +47,8 @@ export const newGetFieldMetadataFromZohoCRM: any = async ({
     if(error.status === 401) {
       const regenerateAccessToken = await regenearateTokenWithRefreshTokenForZohoIntegration({ integrationData })
       return newGetFieldMetadataFromZohoCRM({ integrationData: regenerateAccessToken })
+    } else {
+      throw new Error(error)
     }
   }
 }
@@ -79,6 +81,8 @@ export const newGenerateLeadInZohoCRM: any = async ({
     if(error.status === 401) {
       const regenerateAccessToken = await regenearateTokenWithRefreshTokenForZohoIntegration({ integrationData })
       return newGenerateLeadInZohoCRM({ body, integrationData: regenerateAccessToken })
+    } else {
+      throw new Error(error)
     }
   }
 }
@@ -114,6 +118,30 @@ export const newUpdateNotesInZohoCRM: any = async ({
     if(error.status === 401) {
       const regenerateAccessToken = await regenearateTokenWithRefreshTokenForZohoIntegration({ integrationData })
       return newUpdateNotesInZohoCRM({zohoCrmLeadId, body, integrationData: regenerateAccessToken })
+    } else {
+      throw new Error(error)
+    }
+  }
+}
+
+export const newGetLeadOrContactsFromZohoCrm: any = async ({ integrationData, module } : { integrationData: any, module: string }) => {
+  try {
+    const crmModule = module === "contacts" ? "Contacts" : "Leads"
+    const metadata = integrationData?.metadata
+    const response: any = await $fetch(`${zohoIntegrationApiBaseUrls[metadata?.location]}/crm/v2/${crmModule}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Zoho-oauthtoken ${metadata?.access_token}`,
+      },
+    })
+    return response.data
+  } catch (error: any) {
+    logger.error(`new GetLeadOrContactsFromZohoCrm Error: ${JSON.stringify(error.message)}`)
+    if(error.status === 401) {
+      const regenerateAccessToken = await regenearateTokenWithRefreshTokenForZohoIntegration({ integrationData })
+      return newGetLeadOrContactsFromZohoCrm({ integrationData: regenerateAccessToken })
+    } else {
+      throw new Error(error)
     }
   }
 }

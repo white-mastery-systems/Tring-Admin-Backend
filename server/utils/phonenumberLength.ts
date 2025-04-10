@@ -1,3 +1,19 @@
+import { logger } from "../logger"
+import parsePhoneNumber from 'libphonenumber-js'
+
+export const getCountryCodeFromMobileNumber = (mobileNumber: string) => { 
+  try {
+    const data = parsePhoneNumber(mobileNumber)
+    if(!data) {
+      return { status: false }
+    } else {
+      return { status: true, data }
+    }
+  } catch (error: any) { 
+    logger.error("Error in getCountryCodeFromMobileNumber", error)
+    return { status: false }
+  }
+}
 // Function to get valid phone length for a given country code
 export const getPhoneLengthByCountry = (countryCode: string) => {
   const countryData = phoneLength.find(item => item.phone === countryCode);
@@ -392,3 +408,5 @@ export const phoneLength = [
   { code: "ZM", label: "Zambia", phone: "260", phoneLength: 9 },
   { code: "ZW", label: "Zimbabwe", phone: "263", phoneLength: 9 },
 ];
+
+
