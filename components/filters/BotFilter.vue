@@ -46,7 +46,7 @@
   <div>
     <UiSelect v-model="bot">
       <UiSelectTrigger class="min-w-[130px] max-w-[130px]">
-        <UiSelectValue placeholder="Select a Bot" />
+        <UiSelectValue class="text-left" placeholder="Select a Bot" />
       </UiSelectTrigger>
       <UiSelectContent>
         <template v-if="status === 'pending'">

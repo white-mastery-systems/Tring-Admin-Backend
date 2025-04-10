@@ -60,9 +60,7 @@ const forgotPassword = async (values: Record<string, any>) => {
       method: "post",
       body: values,
     });
-    toast.success(
-      "Your password change request was successful. Please check your email for further details",
-    );
+    toast.success("Your password change request was successful. Please check your email for further details");
   } catch (error: any) {
     toast.error(error?.statusMessage || "An error occurred");
   }

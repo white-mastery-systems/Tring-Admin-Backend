@@ -8,23 +8,29 @@ import { Home, ShoppingCart, Plane, PhoneCall, Globe, FileText, FileDown, Landma
   GraduationCap,
   Hotel,
   Server } from 'lucide-vue-next';
-// import { useContentSuggestions } from "~/composables/botManagement/chatBot/useContentSuggestions";
-// import { Button } from "@/components/ui/button";
-// import { Home, Settings, Info } from "lucide-vue-next";
-
-const props = defineProps<{
-  errors: Record<string, any>;
-  suggestionsContent: Array<any>;
+  // import { useContentSuggestions } from "~/composables/botManagement/chatBot/useContentSuggestions";
+  // import { Button } from "@/components/ui/button";
+  // import { Home, Settings, Info } from "lucide-vue-next";
+  
+  const props = defineProps<{
+    errors: Record<string, any>;
+    suggestionsContent: Array<any>;
     loading: boolean;
-  refresh: () => void;
-  refreshSuggestions: () => void;
-}>();
+    isUploading: boolean;
+    documents: Array<any>;
+    page: any;
+    totalCount: any;
+    totalPageCount: any;
+    refresh: () => void;
+    refreshSuggestions: () => void;
+  }>();
 
 // const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
 const uploadDocumentRef = ref(null);
 defineExpose({ uploadDocumentRef })
 const { value: selectedType } = useField("selectedType")
 const { value: type } = useField("type");
+const previousType = ref(type.value);
 // const emit = defineEmits(['update:selectedType']);
 // Track which option is selected
 // const selectedType = ref<string | null>(null);
@@ -69,11 +75,32 @@ const intentTypes = [
 ];
 
 
+// watch(() => selectedType.value, (newSelectedType) => {
+//   if (newSelectedType === 'Text') {
+//     props.refreshSuggestions(type.value); // Call refresh when type changes
+//   }
+// }, {deep: true, immediate: true});
+
+// Replace the existing watch function with this one
+
 watch(() => selectedType.value, (newSelectedType) => {
   if (newSelectedType === 'Text') {
-    props.refreshSuggestions(type.value); // Call refresh when type changes
+    // Only call refreshSuggestions if type has changed
+    if (type.value !== previousType.value) {
+      props.refreshSuggestions(type.value);
+      previousType.value = type.value;
+    }
   }
-}, {deep: true, immediate: true});
+}, { deep: true, immediate: true });
+
+// Also add a separate watch for type changes
+watch(() => type.value, (newType, oldType) => {
+  if (selectedType.value === 'Text' && newType !== oldType) {
+    props.refreshSuggestions(newType);
+    previousType.value = newType;
+  }
+}, { deep: true });
+
 // ✅ Function to update industry selection
 const selectIndustry = (value: string) => {
   // selectedType.value = value;
@@ -91,7 +118,7 @@ const selectIndustry = (value: string) => {
     currentStep="1" totalSteps="5">
     <div class="flex flex-col items-center text-center h-full w-full"
       :class="selectedType ? 'justify-start' : 'justify-center'">
-      <div v-if="!selectedType" class="gap-3 space-y-3 w-full overflow-x-hidden">
+      <div v-show="!selectedType" class="gap-3 space-y-3 w-full overflow-x-hidden">
         <!-- Scrollable Radio Group -->
         <UiCardContent class="grid gap-3 p-0 mb-6">
           <span class="font-medium text-left text-[16px] md:text-[18px] leading-none">Industries</span>
@@ -140,8 +167,8 @@ const selectIndustry = (value: string) => {
       </div>
 
       <!-- Knowledge Type Sections -->
-      <div v-else class="w-full">
-        <div v-if="selectedType === 'Website'" class="w-full space-y-4">
+      <div v-show="selectedType" class="w-full">
+        <div v-show="selectedType === 'Website'" class="w-full space-y-4">
           <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[12px] sm:text-[12px] md:text-[20px] text-[#09090B]">Website</span>
             <!-- <UiButton type="primary" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" @click="changeKnowledge()">
@@ -156,12 +183,12 @@ const selectIndustry = (value: string) => {
             </div>
           </div>
           <div class="flex flex-col gap-3 w-full">
-            <WebScrapingForm botType="chat" />
+            <WebScrapingForm botType="chat" :isUploading="props.isUploading" />
             <ScrapDateDocumentUpload :refresh="props.refresh" :IndustryType="type" />
           </div>
         </div>
 
-        <div v-else-if="selectedType === 'Document'" class="w-full py-0 sm:py-0 md:py-4">
+        <div v-show="selectedType === 'Document'" class="w-full py-0 sm:py-0 md:py-4">
           <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Document</span>
             <!-- <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" @click="changeKnowledge()">
@@ -175,9 +202,10 @@ const selectIndustry = (value: string) => {
               of this document and upload it.
             </div>
           </div>
-          <CreateBotDocumentManagement :refresh="props.refresh" />
+          <CreateBotDocumentManagement :refresh="props.refresh" :documents="documents" :props="props"
+            :totalPageCount="totalPageCount" :totalCount="totalCount" :isUploading="props.isUploading" />
         </div>
-        <div v-else-if="selectedType === 'Text'" class="w-full space-y-4">
+        <div v-show="selectedType === 'Text'" class="w-full space-y-4">
           <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Text</span>
             <!-- <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" @click="changeKnowledge()">
@@ -193,7 +221,7 @@ const selectIndustry = (value: string) => {
             <span class="text-[14px] font-medium">Tell us about your company</span>
             <!-- <SelectField name="type" label="Industry" v-model="type" placeholder="Select Industry" :options="intentTypes.map((industry) => ({ label: industry.label, value: industry.value }))" required /> -->
             <TextDocumentUpload ref="uploadDocumentRef" :refresh="props.refresh" :IndustryType="type"
-              :loading="props.loading" :contentSuggestions="props.suggestionsContent" />
+              :loading="props.loading" :contentSuggestions="props.suggestionsContent" :documents="documents" />
           </div>
         </div>
       </div>

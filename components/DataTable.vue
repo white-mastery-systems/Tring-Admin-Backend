@@ -82,7 +82,7 @@ const props = withDefaults(
         <UiTableHeader class="sticky top-0 bg-gray-50 text-xs capitalize">
           <UiTableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <UiTableHead v-for="(header, index) in headerGroup.headers" :key="header.id"
-              class="text-md text-nowrap px-6 py-2 font-extrabold text-gray-700" scope="col">
+              class="text-sm text-nowrap px-6 py-2 font-extrabold text-gray-700" scope="col">
               <div v-if="index === 0">
                 <div style="display: flex; align-items: center">
                   <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header"
