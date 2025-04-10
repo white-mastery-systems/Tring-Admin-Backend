@@ -1,9 +1,9 @@
 import { z } from "zod";
  export const createEditCampaignValidation = toTypedSchema(z
   .object({
-    campaignName: z.string({ required_error: "Campaign Name is required." }).min(1),
-    contactMethod: z.string({ required_error: "Type is required." }).min(1),
-    bucketId: z.string({ required_error: "Bucket ID is required." }).min(1),
+    campaignName: z.string({ required_error: "Campaign Name is required." }).min(1,{ message: "Campaign Name is required." }),
+    contactMethod: z.string({ required_error: "Type is required." }).min(1, { message: "Type is required." }),
+    bucketId: z.string({ required_error: "Bucket ID is required." }).min(1, { message: "Bucket ID is required." }),
     integrationId: z.string().optional(),
     botId: z.string().optional(),
     date: z
@@ -20,7 +20,7 @@ import { z } from "zod";
       .string()
       .optional(),
     templateName: z.string().optional(),
-    callsPerTrigger: z.number().optional(),
+    callsPerTrigger: z.number({ required_error: "Calls per trigger is required." }).min(1, { message: "Calls per trigger is required." }),
   })
   .superRefine((data, ctx) => {
     const isWhatsApp = data.contactMethod === "whatsapp";

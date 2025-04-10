@@ -89,7 +89,7 @@ const isDateDisabled = (date: CalendarDate) => {
         'border-[#FFBC42] border-[1px] focus:ring-1 focus:ring-[#FFBC42] focus:ring-opacity-50',
         !value && 'text-muted-foreground',
       )">
-        <CalendarIcon class="mr-0 sm:mr-0 md:mr-2 lg:mr-2 xl:mr-2 h-4 w-4 text-[#FFBC42]" />
+        <CalendarIcon class="mr-2 h-4 w-4 text-[#FFBC42]" />
         <template v-if="value.start">
           <template v-if="value.end">
             {{ df.format(value.start.toDate(getLocalTimeZone())) }} -

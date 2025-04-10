@@ -31,6 +31,7 @@ const { loading } = toRefs(props);
         buttonVariants({ variant, size }),
         props.class,
         styleHandler(props?.color),
+        'focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
       )
     " :disabled="loading || false">
     <template v-if="loading">

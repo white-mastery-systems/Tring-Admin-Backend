@@ -26,7 +26,7 @@
                     <component :is="Bot"></component>
                   </span>
                 </UiButton>
-                <div class="block text-[4px] lg:hidden"> Activate Bot </div>
+                <div class="block text-[5px] lg:hidden"> Activate Bot </div>
               </div>
               <span class="flex items-center gap-4">
                 <div class="flex flex-col items-center gap-1">
@@ -40,18 +40,20 @@
                       <Icon name="bx:block" class="h-5 w-5" />
                     </span>
                   </UiButton>
-                  <div class="block text-[4px] lg:hidden">Deactivate Bot</div>
+                  <div class="block text-[5px] lg:hidden">Deactivate Bot</div>
                 </div>
                 <div class="flex flex-col items-center gap-1">
                   <UiButton v-if="botDetails.active" color="primary" as="a" @click="previewBot()"
-                    class="p-2 text-[14px] font-medium text-[#000000] gap-2 border-[#000000] button_shadow rounded-xl cursor-pointer">
-                    <PhoneCall class="w-4 h-4" />
+                    class="p-3 text-[14px] font-medium text-[#000000] gap-2 border-[#000000] button_shadow rounded-xl cursor-pointer">
                     <span class="hidden lg:inline"> Preview Bot </span>
-                    <!-- <span class="flex items-center justify-center lg:hidden">
+                    <span class="flex flex-col items-center justify-center lg:hidden">
+                      <PhoneCall class="w-4 h-4" />
+                    </span>
+                      <!-- <span class="flex items-center justify-center lg:hidden">
                       <Icon name="entypo:controller-play" class="h-5 w-5" />
                     </span> -->
                   </UiButton>
-                  <div class="block text-[4px] lg:hidden">Preview Bot</div>
+                  <div class="block text-[5px] lg:hidden">Preview Bot</div>
                 </div>
               </span>
               <div class="flex flex-col items-center gap-1">
@@ -59,14 +61,14 @@
                   class="bg-[#ff0000] p-3 hover:bg-[#ff0000]/90 hover:brightness-90">
                   <Icon name="lucide:trash-2" class="h-4 w-4" />
                 </UiButton>
-                <div class="block text-[4px] lg:hidden">Delete</div>
+                <div class="block text-[5px] lg:hidden">Delete</div>
               </div>
               <div class="flex flex-col items-center gap-1" @click="agentModalState.open = true">
                 <UiButton variant="destructive"
                   class="flex items-center justify-center bg-[#424bd1] p-3 hover:bg-[#424bd1]/90 hover:brightness-90">
                   <Icon name="lucide:pen" class="h-4 w-4" />
                 </UiButton>
-                <div class="block text-[4px] lg:hidden">Edit</div>
+                <div class="block text-[5px] lg:hidden">Edit</div>
               </div>
               <ConfirmationModal v-model:open="deleteModalState" title="Are you sure?"
                 description="Are you sure you want to delete voice bot ?" @confirm="handleDeleteBot" />

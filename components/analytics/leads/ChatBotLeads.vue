@@ -14,56 +14,55 @@
         class="ml-2"> Clear Filters</UiButton>
     </div>
     <!-- <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton> -->
-  <!-- </div> -->
-  <!-- class="pr-6" -->
-   <div>
-     <UiTabs default-value="all">
-       <UiTabsList class="grid w-full sm:w-full md:w-[40%] lg:w-[30%] xl:w-[30%] grid-cols-3 mb-2">
-         <UiTabsTrigger value="all" @click="selectedChannel('all')">
-           All
-         </UiTabsTrigger>
-         <UiTabsTrigger value="website" @click="selectedChannel('website')">
-           Website
-         </UiTabsTrigger>
-         <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')">
-           Whatsapp
-         </UiTabsTrigger>
-       </UiTabsList>
-       <UiTabsContent value="all">
-         <!-- <div> -->
-         <DataTable @pagination="Pagination" @limit="($event) => {
-           (filters.page = '1'), (filters.limit = $event);
+    <!-- </div> -->
+    <!-- class="pr-6" -->
+    <div>
+      <UiTabs default-value="all">
+        <UiTabsList class="grid w-full sm:w-full md:w-[40%] lg:w-[30%] xl:w-[30%] grid-cols-3 mb-2">
+          <UiTabsTrigger value="all" @click="selectedChannel('all')">
+            All
+          </UiTabsTrigger>
+          <UiTabsTrigger value="website" @click="selectedChannel('website')">
+            Website
+          </UiTabsTrigger>
+          <UiTabsTrigger value="whatsapp" @click="selectedChannel('whatsapp')">
+            Whatsapp
+          </UiTabsTrigger>
+        </UiTabsList>
+        <UiTabsContent value="all">
+          <DataTable @pagination="Pagination" @limit="($event) => {
+          (props.filters.page = '1'), (props.filters.limit = $event);
          }
            " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="leads"
-           :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="36" height-unit="vh" @row-click="(row: any) => {
+            :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="36" height-unit="vh" @row-click="(row: any) => {
              navigateTo(`/analytics/leads/${row.original.chatId}`);
            }
              " />
-         <!-- </div> -->
-       </UiTabsContent>
-       <UiTabsContent value="whatsapp">
-         <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {
+          <!-- </div> -->
+        </UiTabsContent>
+        <UiTabsContent value="whatsapp">
+          <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {
            (props.filters.page = '1'), (props.filters.limit = $event);
          }
            " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
-           :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="(row: any) => {
+            :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="(row: any) => {
              navigateTo(`leads/${row.original.chatId}`);
            }
              " />
-       </UiTabsContent>
-       <UiTabsContent value="website">
-         <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {
+        </UiTabsContent>
+        <UiTabsContent value="website">
+          <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {
            (props.filters.page = '1'), (props.filters.limit = $event);
          }
            " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
-           :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="(row: any) => {
+            :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="(row: any) => {
              navigateTo(`leads/${row.original.chatId}`);
            }
              " />
-       </UiTabsContent>
-     </UiTabs>
-   </div>
-</div>
+        </UiTabsContent>
+      </UiTabs>
+    </div>
+  </div>
 </template>
 <script setup lang="ts">
 import { Icon, UiBadge, UiButton } from "#components";
@@ -132,20 +131,20 @@ const {
   },
 });
 const emitClearFilters = () => {
-  Object.assign(props.filters, {
-    botId: "",
-    q: undefined,
-    from: undefined,
-    to: undefined,
-    period: "all-time",
-    status: "",
-    channel: "all",
-    action: "",
-    page: "1",
-    limit: "10",
-    country: "all",
-    type: "chat",
-  });
+  // Object?.assign(props.filters, {
+  //   botId: "",
+  //   q: undefined,
+  //   from: undefined,
+  //   to: undefined,
+  //   period: "all-time",
+  //   status: "",
+  //   channel: "all",
+  //   action: "",
+  //   page: "1",
+  //   limit: "10",
+  //   country: "all",
+  //   type: "chat",
+  // });
   emit('clear-filters')
 };
 

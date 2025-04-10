@@ -74,9 +74,7 @@
 
         <div class="flex w-full flex-col items-end" v-if="
           messageList?.role === 'comment' &&
-          messageList?.content === 'User Details Submitted' &&
-          messageList?.metadata
-        ">
+          (messageList?.content === 'User Details Submitted' || messageList?.content === `We've Received Your Submission`) && messageList?.metadata">
           <div class="flex max-w-[80%] flex-col items-end justify-center">
             <span class="text-[14px]" style="color: #8a8a8a">{{ leadDataValue?.botUser?.name }}</span>
             <div

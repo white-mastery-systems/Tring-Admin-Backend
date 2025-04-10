@@ -8,23 +8,22 @@
         </div>
       </div>
     </template>
-    <div class="flex items-center gap-2 overflow-auto w-full mt-2">
-      <div class="flex items-center gap-2">
+    <div class="relative w-full mt-2 overflow-hidden">
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
         <UiInput v-model="filters.q" @input="filters.page = '1'"
-          class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0"
+          class="min-w-[130px] max-w-[130px] flex-shrink-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           placeholder="Search User..." />
-        <BotFilter v-model="filters.botId" />
-        <LivePreviewFilter v-model="filters.botUserName" />
+        <BotFilter v-model="filters.botId" class="flex-shrink-0" />
+        <LivePreviewFilter v-model="filters.botUserName" class="flex-shrink-0" />
         <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
-          @change="onDateChange" />
-        <ChannelFilter v-model="filters.channel" />
-        <CountryFilter v-model="filters.country" />
-        <UiButton color="primary" @click="handleClearFilters"
-          class="ml-2">Clear Filters</UiButton>
+          @change="onDateChange" class="flex-shrink-0" />
+        <ChannelFilter v-model="filters.channel" class="flex-shrink-0" />
+        <CountryFilter v-model="filters.country" class="flex-shrink-0" />
+        <UiButton color="primary" @click="handleClearFilters" class="ml-2 flex-shrink-0">Clear Filters</UiButton>
       </div>
     </div>
     <!-- <div> -->
-      <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="($event) => {
+    <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
       }
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="chats"

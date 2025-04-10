@@ -11,13 +11,22 @@ const zodChatImportContacts = z.object({
   "First Name": z.string().min(1, "First Name is required"),
   "Last Name": z.string().optional(),
   "Email": z
-   .string()
+    .string()
     .optional()
-    .transform((val) => (val === "" ? null : val)) // Transform "" to null
     .nullable()
-    .refine((val) => val === null || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), {
-      message: "Invalid email format",
-    }),
+    .refine(
+      (value) => {
+        // If value is null, undefined, or empty string, consider it valid
+        if (value === null || value === undefined || value.trim() === '') {
+          return true;
+        }
+        
+        // Validate email format
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailRegex.test(value);
+      },
+      { message: "Invalid email format" }
+    ),
   "Country Code": z.union([
     z.string()
       .refine((val) => /^\d+$/.test(val), { // Validate only digits
@@ -102,6 +111,7 @@ const zodVoiceImportsContacts = z.object({
   message: "Phone number length is invalid for the given country code.",
   path: ['phoneNumber'], // Add path to which the error is related
 });
+
 
 // Define a schema for an array of contacts
 const chatContactsArraySchema = z.array(zodChatImportContacts);
@@ -349,14 +359,30 @@ export const parseContactsFormDataFile = async ({ file, fileType, queryType } : 
 
     if (!parsedData || !parsedData.length) throw new Error("The uploaded file is empty");
 
-    // Validate parsed data using Zod schema
-    const validationResult = queryType === "chat"
-      ? chatContactsArraySchema.safeParse(parsedData)
-      : voiceContactsArraySchema.safeParse(parsedData);
+    const apiResponse: any = handleBulkUpload(parsedData, queryType);
 
-    if (!validationResult.success) throw new Error("Validation errors in the imported file");
+    // Frontend/Client-side error handling example
+    if (!apiResponse.success) {
+      // Formatting errors for user display
+      let errorDetails = '';
+      const formattedErrors = apiResponse.errors?.map(rowError => {
+         errorDetails = rowError.errors.map(err => 
+          `${err.field}: ${err.message} (Current value: ${JSON.stringify(err.value)})`
+        ).join('; ');
 
-    const validContactData = validationResult.data.map((contact: any) => {
+        return `Row ${rowError.rowIndex}: ${errorDetails}`;
+      });
+      logger.error(`Validation error for imported file, ${JSON.stringify({
+        apiResponse,
+        formattedErrors,
+        errorDetails
+      })}`)
+      throw new Error("Validation errors in the imported file");
+    }
+
+    // return apiResponse;
+
+    const validContactData = apiResponse?.validData.map((contact: any) => {
       if (queryType === "chat") {
         return {
           ...contact,
@@ -375,4 +401,81 @@ export const parseContactsFormDataFile = async ({ file, fileType, queryType } : 
     logger.error(`Contacts import function error: ${JSON.stringify(error?.message)}`);
     throw new Error(error);
   }
+}
+
+// Define error response interface
+interface UserFriendlyError {
+  rowIndex: number;
+  errors: {
+    field: string;
+    message: string;
+    value: any;
+  }[];
+}
+
+function validateBulkData(data: unknown[], type: string) {
+  const validationErrors: UserFriendlyError[] = [];
+  type ValidDataType = typeof type extends "chat"
+  ? z.TypeOf<typeof zodChatImportContacts>
+  : z.TypeOf<typeof zodVoiceImportsContacts>;
+
+  const validData: ValidDataType[] = [];
+
+  data.forEach((record, index) => {
+    try {
+      // Validate each record
+      const validatedRecord = zodVoiceImportsContacts.parse(record);
+      validData.push(validatedRecord);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Format user-friendly errors
+        const rowErrors = error.errors.map(err => ({
+          field: err.path.join('.'),
+          message: err.message,
+          value: err.path.reduce((obj, key) => obj?.[key], record)
+        }));
+
+        validationErrors.push({
+          rowIndex: index,
+          errors: rowErrors
+        });
+      }
+    }
+  });
+
+  return { validData, validationErrors };
+}
+
+// API Response Type
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  validCount?: number;
+  errorCount?: number;
+  errors?: UserFriendlyError[];
+  validData?: any[];
+}
+
+// Simulate API endpoint handler
+function handleBulkUpload(uploadedData: unknown[], type: string): ApiResponse {
+  const { validData, validationErrors } = validateBulkData(uploadedData, type);
+
+  // No errors scenario
+  if (validationErrors.length === 0) {
+    return {
+      success: true,
+      message: `Successfully processed ${validData.length} records`,
+      validCount: validData.length,
+      validData
+    };
+  }
+
+  // Errors scenario
+  return {
+    success: false,
+    message: `Validation failed for ${validationErrors.length} records`,
+    validCount: validData.length,
+    errorCount: validationErrors.length,
+    errors: validationErrors
+  };
 }

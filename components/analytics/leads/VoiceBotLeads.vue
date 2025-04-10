@@ -1,19 +1,20 @@
 <template>
   <div>
     <div class="flex items-center gap-2 w-full overflow-x-scroll my-3 ">
+      <!-- {{ props.filters }} -->
       <UiInput v-model="props.filters.q" @input="props.filters.page = '1'"
         class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0"
         placeholder=" Search Leads..." />
       <BotFilter v-model="filters.botId" />
-      <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to" />
-      <UiButton color="primary" @click="emitClearFilters"
-        class="ml-2">Clear Filters</UiButton>
+      <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
+        @change="onDateChange" />
+      <UiButton color="primary" @click="emitClearFilters" class="ml-2">Clear Filters</UiButton>
     </div>
     <DataTable @pagination="Pagination" @limit="($event) => {
       (props.filters.page = '1'), (props.filters.limit = $event);
     }
-    " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="leads"
-      :is-loading="isDataLoading" :columns="columns" :page-size="8" :height="36" height-unit="vh" />
+    " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :data="leads" :is-loading="isDataLoading"
+      :columns="columns" :page-size="8" :height="36" height-unit="vh" />
   </div>
 </template>
 <script setup lang="ts">
@@ -39,13 +40,22 @@ const totalPageCount = ref(0);
 const totalCount = ref(0);
 
 
+const computedQuery = computed(() => {
+  const { period, from, to, ...rest } = props.filters;
+  return {
+    ...rest,
+    period,
+    ...(period === "custom" ? { from, to } : {}), // Include `from` and `to` only if period is "custom"
+  };
+});
+
 const {
   status,
   data: leads,
   refresh: getAllLeads,
 } = await useLazyFetch("/api/org/leads", {
   server: false,
-  query: props.filters,
+  query: computedQuery,
   headers: {
     "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
   },
@@ -96,14 +106,18 @@ const columns = [
 ];
 
 const onDateChange = (value: any) => {
-  if (value.from && value.to) {
-    props.filters.from = value.from;
-    props.filters.to = value.to;
-  } else {
+  if (value != "custom") {
     delete props.filters.from;
     delete props.filters.to;
-    props.filters.period = value;
   }
+  // if (value.from && value.to) {
+  //   props.filters.from = value.from;
+  //   props.filters.to = value.to;
+  // } else {
+  //   delete props.filters.from;
+  //   delete props.filters.to;
+  //   props.filters.period = value;
+  // }
   props.filters.page = "1";
 };
 const onBotChange = (value: any) => {
@@ -113,20 +127,20 @@ const onBotChange = (value: any) => {
   }
 };
 const emitClearFilters = () => {
-  Object.assign(props.filters, {
-    botId: "",
-    q: undefined,
-    from: undefined,
-    to: undefined,
-    period: "all-time",
-    status: "",
-    channel: "all",
-    action: "",
-    page: "1",
-    limit: "10",
-    country: "all",
-    type: "chat",
-  });
+  // Object?.assign(props.filters, {
+  //   botId: "",
+  //   q: undefined,
+  //   from: undefined,
+  //   to: undefined,
+  //   period: "all-time",
+  //   status: "",
+  //   channel: "all",
+  //   action: "",
+  //   page: "1",
+  //   limit: "10",
+  //   country: "all",
+  //   type: "voice",
+  // });
   emit('clear-filters')
 };
 

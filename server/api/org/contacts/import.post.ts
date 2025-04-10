@@ -36,7 +36,7 @@ export default defineEventHandler(async(event) => {
       ? validContactData.filter((contact: any) => !existingPhoneNumbers.has(contact["Number"]))
       : validContactData.filter((contact: any) => !existingPhoneNumbers.has(contact["Phone"]));
 
-    if (!uniqueContactsData.length) throw new Error("No unique phone numbers found to insert");
+    if (!uniqueContactsData.length) return errorResponse(event, 400, "No unique phone numbers found to insert")
     
     // Construct the contacts data
     const contactsData = constructData(uniqueContactsData, query.type, organizationId);
