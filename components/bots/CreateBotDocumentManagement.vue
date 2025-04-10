@@ -3,21 +3,18 @@
     <div class="flex justify-center items-center mb-2 w-full">
       <span class="flex flex-row w-full mb-2">
         <DocumentUploadV2 accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" />
-        <!-- <DocumentUpload accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" /> -->
-        <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
       </span>
     </div>
-    <!-- <p class="pt-2 pb-6 text-sm text-gray-400">only PDF</p> -->
     <div class="flex max-w-[300px] sm:max-w-[300px] md:max-w-full">
       <DataTable @pagination="Pagination" @limit="($event) => {
-         (filters.page = '1'), (filters.limit = $event);
-       }
-       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
+        (filters.page = '1'), (filters.limit = $event);
+      }" :totalPageCount="props.totalPageCount" :page="props.page" :totalCount="props.totalCount" :columns="columns"
         :data="documentItems" :is-loading="isDataLoading" :page-size="20" :height="35" height-unit="vh"
         :paginationControl="false" />
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";
 import { h } from 'vue';
@@ -26,7 +23,8 @@ definePageMeta({
   middleware: "admin-only",
 });
 
-import { ref } from "vue";
+import { ref, computed, reactive, watch, onMounted, onUnmounted } from "vue";
+
 const router = useRouter();
 const filters = reactive<{
   q: string;
@@ -39,53 +37,35 @@ const filters = reactive<{
   page: "1",
   limit: "10",
 });
+
 const route = useRoute("chat-bot-create-bot-id");
 const paramId: any = route;
 const selectedFile = ref();
 const myPopover: any = ref(null);
+const isSheetOpen = ref(false);
+const isLoading = ref(false);
+
+// Define props with proper types
 const props = defineProps<{
+  documents: any;
+  page: number;
+  totalCount: number;
+  totalPageCount: number;
+  isUploading: boolean;
   refresh: () => void
 }>();
-// const botDetails: any = await getBotDetails(paramId.params.id);
-// const documents = ref();
+
 const documentFetchInterval = ref<NodeJS.Timeout>();
 
-const isSheetOpen = ref(false);
-const page = ref(0);
-const totalPageCount = ref(0);
-const totalCount = ref(0);
+// Computed properties using props
+const documentItems = computed(() => props.documents || []);
+const activeDocument = computed(() => props.documents?.documentId);
+const isDataLoading = computed(() => props.isUploading);
 
-const {
-  status,
-  refresh: documentsRefresh,
-  data: documents,
-} = await useLazyFetch(() => `/api/bots/${paramId.params.id}/documents`, {
-  server: false,
-  /**
-   * Transform the API response to format the createdAt date of each document
-   * @param {object} docs - The API response
-   * @returns {object} The transformed response
-   */
-  transform: (docs: any) => {
-    page.value = docs.page;
-    totalPageCount.value = docs.totalPageCount;
-    totalCount.value = docs.totalCount;
-
-    return {
-      ...docs,
-      documents: docs.documents.map((d: any) => ({
-        ...d,
-        createdAt: formatDate(new Date(d.createdAt), "dd.MM.yyyy"),
-      }))
-    };
-  },
-});
-
-const documentItems = computed(() => documents.value?.documents || []);
-const activeDocument = computed(() => documents.value?.documentId)
-
-const isDataLoading = computed(() => status.value === "pending");
+// Column helper
 const columnHelper = createColumnHelper<(typeof documentItems.value)[0]>();
+
+// Status component
 const statusComponent = (status: any) => {
   const statusText = status === 'ready' ? 'Success'
     : status === 'processing' ? 'Processing'
@@ -109,18 +89,17 @@ const statusComponent = (status: any) => {
   );
 };
 
-
-
+// Column definitions
 const columns = [
   columnHelper.accessor("name", {
     header: "File Name",
     cell: ({ row }) => {
-      const isActive = row.original.id === activeDocument.value; // Check condition
+      const isActive = row.original.id === activeDocument.value;
       return h("div", [
         h("span", [
-          row.original.name, // Display file name
+          row.original.name,
           isActive &&
-          h("span", { class: "text-[#22c55e] ml-4 text-[13px]" }, "Active") // Append "Active" with specific styling
+          h("span", { class: "text-[#22c55e] ml-4 text-[13px]" }, "Active")
         ])
       ]);
     }
@@ -128,73 +107,50 @@ const columns = [
   columnHelper.accessor("createdAt", {
     header: "Uploaded Date",
   }),
-
   columnHelper.accessor("status", {
     header: "Status",
     cell: ({ row }) => statusComponent(row.original.status),
   }),
-   columnHelper.accessor("id", {
+  columnHelper.accessor("id", {
     header: "Actions",
     cell: ({ row }) => {
       const id = row.original.id;
-
       return h(
-      "button",
-      {
-        class: "px-3 py-1 bg-[#FFBC42] text-white rounded hover:bg-[#FFBC42]-600",
-        onClick: (event) => {
-          event.preventDefault();  // Prevent default form submission behavior
-          event.stopPropagation(); // Stop event bubbling
-          singleDocumentDownload(id);
+        "button",
+        {
+          class: "px-3 py-1 bg-[#FFBC42] text-white rounded hover:bg-[#FFBC42]-600",
+          onClick: (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            singleDocumentDownload(id);
+          },
         },
-      },
-      "Download"
-    );
+        "Download"
+      );
     },
   }),
-    // return h(BotDocumentMenu, {
-    //   row: row.original, // Pass the row data to the component
-    //   documents: documentItems.value,
-    //   // Handle the download and delete actions
-    //   onDelete: (list: any) => {
-    //     // Call your existing method for handling delete
-    //     singleDocumentDelete(list);
-    //   },
-    
 ];
 
-watch(() => documents.value, (newDocuments) => {
-  if (!newDocuments.documents.length) return;
-  props.refresh()
-})
+// Watch for document changes
+watch(() => props.documents, (newDocuments) => {
+  if (newDocuments && newDocuments.documents && newDocuments.documents.length > 0) {
+    props.refresh();
+  }
+}, { deep: true });
+
+// Setup SSE listener
 onMounted(async () => {
   const eventSource = new EventSource("/api/sse");
   eventSource.onmessage = async (event) => {
     const data = JSON.parse(event.data);
-
-    if (data.event === "Document is ready") {
-      if (data?.data?.botId === paramId.params.id) {
-        documentsRefresh();
-      }
+    if (data.event === "Document is ready" && data?.data?.botId === paramId.params.id) {
+      props.refresh();
     }
-
-    // Update your component state with the received data
   };
 });
-const isPageLoading = computed(() => status.value === "pending");
 
-// watchEffect(() => {
-//   if (botDetails) {
-//     const userName = botDetails?.name ?? "Unknown Bot Name";
-//     useHead({
-//       title: `Chat Bot | ${userName} - Document Management`,
-//     });
-//   }
-// });
-
+// File upload handler
 const fileUpload = async () => {
-  // selectedFile.value[0].name;
-  //
   if (selectedFile.value && selectedFile.value[0]) {
     const file = selectedFile.value[0];
     if (!file.type.includes("pdf")) {
@@ -202,23 +158,32 @@ const fileUpload = async () => {
       selectedFile.value = null;
       return;
     }
-    const payload: any = {
-      botId: paramId.params.id,
-      document: {
-        name: selectedFile.value[0].name,
-        files: selectedFile.value[0],
-      },
-    };
-    await createDocument(payload.botId, payload.document);
-    documents.value = await listDocumentsByBotId(paramId.params.id);
-    selectedFile.value = null;
+
+    isLoading.value = true;
+    try {
+      const payload: any = {
+        botId: paramId.params.id,
+        document: {
+          name: selectedFile.value[0].name,
+          files: selectedFile.value[0],
+        },
+      };
+
+      await createDocument(payload.botId, payload.document);
+      props.refresh(); // Call parent's refresh function
+      selectedFile.value = null;
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      toast.error("Failed to upload document");
+    } finally {
+      isLoading.value = false;
+    }
   } else {
     selectedFile.value = null;
   }
-  // documentFetchInterval.value = setInterval(async () => {
-  //   documents.value = await listDocumentsByBotId(paramId.params.id);
-  // }, 1000);
 };
+
+// Action handler
 const handleAction = (list: any, action: any) => {
   if (myPopover.value) {
     myPopover.value = false;
@@ -235,65 +200,39 @@ const handleAction = (list: any, action: any) => {
   }
 };
 
+// Cleanup on component unmount
 onUnmounted(() => {
   documentFetchInterval.value && clearInterval(documentFetchInterval.value);
 });
 
+// Document delete handler
 const singleDocumentDelete = async (list: any) => {
-  await deleteDocument(paramId.params.id, list.id);
+  isLoading.value = true;
+  try {
+    await deleteDocument(paramId.params.id, list.id);
+    props.refresh(); // Call parent's refresh function
+  } catch (error) {
+    console.error("Error deleting document:", error);
+    toast.error("Failed to delete document");
+  } finally {
+    isLoading.value = false;
+  }
+};
 
-  documents.value = await listDocumentsByBotId(paramId.params.id);
-};
+// Document download handler
 const singleDocumentDownload = async (list: any) => {
-  viewDocument(paramId.params.id, list);
+  try {
+    await viewDocument(paramId.params.id, list);
+  } catch (error) {
+    console.error("Error downloading document:", error);
+    toast.error("Failed to download document");
+  }
 };
-// const singleDocumentDownload = (documentId) => {
-//   window.open(`/api/bots/${paramId.params.id}/documents/${documentId}`, '_blank');
-// };
-// const singleDocumentDownload = async (documentId) => {
-//   try {
-//     // Create the URL to fetch the document
-//     const url = `/api/bots/${paramId.params.id}/documents/${documentId}`;
-    
-//     // Fetch the document as a blob
-//     const response = await fetch(url);
-//     const blob = await response.blob();
-    
-//     // Create a download link
-//     const downloadUrl = window.URL.createObjectURL(blob);
-//     const a = document.createElement('a');
-    
-//     // Get the filename from headers or use a default
-//     const contentDisposition = response.headers.get('content-disposition');
-//     let filename = 'document.pdf';
-    
-//     if (contentDisposition) {
-//       const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-//       if (filenameMatch && filenameMatch[1]) {
-//         filename = filenameMatch[1];
-//       }
-//     }
-    
-//     // Set up the download link
-//     a.href = downloadUrl;
-//     a.download = filename;
-//     document.body.appendChild(a);
-    
-//     // Trigger the download
-//     a.click();
-    
-//     // Clean up
-//     window.URL.revokeObjectURL(downloadUrl);
-//     document.body.removeChild(a);
-    
-//   } catch (error) {
-//     console.error('Error downloading document:', error);
-//     toast.error('Failed to download document');
-//   }
-// };
+
+// Pagination handler
 const Pagination = async ($event: any) => {
-  filters.page = $event
-  documentsRefresh()
+  filters.page = $event;
+  props.refresh(); // Call parent's refresh function
 }
 </script>
 

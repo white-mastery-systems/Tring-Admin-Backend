@@ -85,7 +85,7 @@ const isDateDisabled = (date: CalendarDate) => {
   <UiPopover v-if="(selectedDate === 'custom') || (selectDate === 'custom')" class="text-[#3D3D3D]">
     <UiPopoverTrigger as-child>
       <UiButton variant="outline" :class="cn(
-        'min-w-[130px] max-w-[130px] justify-start text-left font-normal truncate rounded-lg',
+        'min-w-[220px] max-w-[220px] justify-start text-left font-normal truncate rounded-lg',
         'border-[#FFBC42] border-[1px] focus:ring-1 focus:ring-[#FFBC42] focus:ring-opacity-50',
         !value && 'text-muted-foreground',
       )">

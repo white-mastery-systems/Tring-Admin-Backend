@@ -15,7 +15,7 @@ const step = ref(1);
 const route = useRoute();
 const router = useRouter();
 const paramId: any = route;
-const { status, documents, refresh } = useBotDocuments(route.params.id);
+const { status, documents,page,totalPageCount,totalCount, refresh } = useBotDocuments(route.params.id);
 const scrapData = botStore();
 const isLoading = ref(false)
 const stepOneRef = ref(null);
@@ -129,11 +129,7 @@ const nextStep = async () => {
   }
   if ((step.value === 1) && values.selectedType === 'Text') {
     if (stepOneRef.value?.uploadDocumentRef?.generatePDFAndUpload) {
-      // setTimeout(() => {
-      if (!documents.value.documents.length) {
         stepOneRef.value.uploadDocumentRef.generatePDFAndUpload(); // Call function from TextDocumentUpload
-      }
-      // }, 0);
     }
   }
   if ((step.value === 1) && !documents.value.documents.length) {
@@ -161,6 +157,16 @@ const nextStep = async () => {
     if (values.ROLE === 'custom' && !values.otherRole) {
       toast.error("Please provide a custom value for Role");
       return;
+    }
+  }
+  if (step.value === 4) {
+    if (!values.GOAL) {
+      toast.error("Please provide a value for Goal");
+      return
+    }
+    if (values.GOAL === 'custom' && !values.otherGoal) {
+      toast.error("Please provide a custom value for Goal");
+      return
     }
   }
   if (isValid) {
@@ -221,7 +227,8 @@ const handleLeaveConfirm = async () => {
       window.location.href = path;
       // Delete bot after navigation
       try {
-        await deleteBot(route.params.id);
+        await deleteBot(route.params.id, true);
+        console.log('Bot deleted successfully');
         // console.log('Bot deleted successfully');
       } catch (deleteError) {
         console.error('Error deleting bot:', deleteError);
@@ -262,32 +269,30 @@ const submitForm = handleSubmit(async (values) => {
     }
     isLoading.value = true;
     
-    if (!values.COMPANY || !values.NAME || !values.ROLE || !values.color) {
-      toast.error("Please fill in all required fields.");
-      // Set submission state to true
-      isSubmitting.value = false;
-      bypassConfirmation.value = false;
-      isLoading.value = false
-      return;
-    }
-    if (!values.GOAL) {
-      toast.error("Please provide a value for Goal");
-      // Set submission state to true
-      isSubmitting.value = false;
-      bypassConfirmation.value = false;
-      isLoading.value = false
-      return
-    }
-    if (values.GOAL === 'custom' && !values.otherGoal) {
-      toast.error("Please provide a custom value for Goal");
-      isLoading.value = false
-      // Set submission state to true
-      isSubmitting.value = false;
-      bypassConfirmation.value = false;
-      return
-    }
-    console.log(values.logo.url, "values.logo.url")
-    console.log(uploadedDetails?.metadata?.ui?.logo, "uploadedDetails?.metadata?.ui?.logo -- uploadedDetails?.metadata?.ui?.logo")
+    // if (!values.COMPANY || !values.NAME || !values.ROLE || !values.color) {
+    //   toast.error("Please fill in all required fields.");
+    //   // Set submission state to true
+    //   isSubmitting.value = false;
+    //   bypassConfirmation.value = false;
+    //   isLoading.value = false
+    //   return;
+    // }
+    // if (!values.GOAL) {
+    //   toast.error("Please provide a value for Goal");
+    //   // Set submission state to true
+    //   isSubmitting.value = false;
+    //   bypassConfirmation.value = false;
+    //   isLoading.value = false
+    //   return
+    // }
+    // if (values.GOAL === 'custom' && !values.otherGoal) {
+    //   toast.error("Please provide a custom value for Goal");
+    //   isLoading.value = false
+    //   // Set submission state to true
+    //   isSubmitting.value = false;
+    //   bypassConfirmation.value = false;
+    //   return
+    // }
     // uploadedDetails?.metadata?.ui?.logo ?? props.botDetails.metadata.ui.logo,
     const payload = {
       id: botDetails.value?.id,
@@ -503,8 +508,9 @@ const singleDocumentDeploy = async (list: any) => {
       <form class="border border-gray-300 rounded-lg flex flex-col justify-between h-full flex-1 overflow-auto">
         <!-- @update:values="(newValues) => values = newValues" -->
         <FirstStep ref="stepOneRef" v-show="step === 1" v-model:values="values" :errors="errors" :refresh="refresh"
-          :suggestionsContent="contentSuggestions" :refreshSuggestions="fetchSuggestions"
-          :loading="suggestionLoading" />
+          :suggestionsContent="contentSuggestions" :refreshSuggestions="fetchSuggestions" :loading="suggestionLoading"
+          :isUploading="isUploading" :documents="documents.documents" :page="page" :totalCount="totalCount"
+          :totalPageCount="totalPageCount" />
         <SecondStep v-show="step === 2" v-model:values="values" :errors="errors" @changeLogo="getLogoChange" />
         <ThirdStep v-show="step === 3" v-model:values="values" :errors="errors" :intentOptions="intentOptions" />
         <FourthStep v-show="step === 4" v-model:values="values" :errors="errors" :disabled="isLoading"

@@ -20,6 +20,7 @@ const props = defineProps<{
 
 const scrapData = botStore();
 const uploadDocumentRef = ref(null);
+const previousType = ref(null);
 
 defineExpose({ uploadDocumentRef })
 const { value: selectedType } = useField("selectedType")
@@ -62,8 +63,6 @@ watch(boundDirection, () => {
 })
 // Function to handle button click
 const selectType = (types: string) => {
-  console.log(boundDirection.value, "boundDirection -- boundDirection")
-  
   if (!type.value && (types != 'Website')) {
     toast.error('Please select an industry before proceeding.');
     return;
@@ -97,9 +96,15 @@ const selectIndustry = (value: string) => {
     selectedType: selectedType.value
   });
 };
-watch(() => selectedType.value, (newSelectedType) => {
-  if (newSelectedType === 'Text') {
-    props.refreshSuggestions(type.value); // Call refresh when type changes
+// watch(() => selectedType.value, (newSelectedType) => {
+//   if (newSelectedType === 'Text') {
+//     props.refreshSuggestions(type.value); // Call refresh when type changes
+//   }
+// }, { deep: true, immediate: true });
+watch([() => selectedType.value, () => type.value], ([newSelectedType, newType]) => {
+  if (newSelectedType === 'Text' && newType !== previousType.value && newType) {
+    props.refreshSuggestions(newType); // Call refresh with the new type value
+    previousType.value = newType; // Update the previous type
   }
 }, { deep: true, immediate: true });
 
@@ -190,7 +195,7 @@ const changeKnowledge = () => {
             </div>
           </div>
           <div class="flex flex-col gap-3 w-full flex-grow">
-            <WebScrapingForm botType="voice" />
+            <WebScrapingForm botType="voice" :isUploading="false" />
             <div class="flex flex-col gap-2 text-[14px] text-left font-medium">
               <span class="text-[12px] sm:text-[12px] md:text-[14px]">
                 Website generated details (Knowledge Base)

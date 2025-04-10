@@ -48,12 +48,15 @@ export const disableBot = async (botId: string) => {
   // return navigateTo({ name: "bot-management-chat-bot" });
 };
 
-export const deleteBot = async (botId: string) => {
+export const deleteBot = async (botId: string, hardDelete: boolean = false) => {
   try {
     await $fetch(`/api/bots/${botId}`, {
       method: "DELETE",
+      query: { hardDelete },
     });
-    toast.success("Bot deleted successfully");
+    if (!hardDelete) {
+      toast.success("Bot deleted successfully");
+    }
     return navigateTo({ name: "chat-bot" });
   } catch (error) {
     toast.error("Cannot delete: bot has generated leads");
