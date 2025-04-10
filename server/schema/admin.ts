@@ -179,6 +179,9 @@ export const contactListSchema = adminSchema.table("contact_list", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name"),
   type: varchar("type").default("chat"),
+  crmSyncEnabled: boolean("crm_sync_enabled").default(false),
+  integrationId: uuid("integration_id"),
+  module: varchar("module"),
   isDefault: boolean("is_default").default(false),
   organizationId: uuid("organizationId")
     .notNull()
