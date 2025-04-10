@@ -85,14 +85,15 @@ const onSubmit = handleSubmit(async (values) => {
     <form @submit="onSubmit">
       <div class="grid gap-2">
         <div v-if="!route.query.token" class="grid gap-3">
-          <TextField type="text" name="email" placeholder="Enter your email" />
+          <TextField type="text" name="email" label="Email" placeholder="Enter your email" />
         </div>
         <div v-else class="grid gap-3">
           <!-- New Password field with eye icon -->
           <div class="relative">
-            <TextField :type="passwordVisible ? 'text' : 'password'" name="newPassword" placeholder="New Password" />
+            <TextField :type="passwordVisible ? 'text' : 'password'" name="newPassword" label="New Password"
+              placeholder="New Password" />
             <div
-              class="absolute inset-y-0 right-0 top-2 flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer h-[40px]"
+              class="absolute inset-y-0 right-0 top-6 flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer h-[40px]"
               @click="togglePasswordVisibility" role="button" tabindex="0" aria-label="Toggle password visibility">
               <EyeOff v-if="passwordVisible" size="20" />
               <Eye v-else size="20" />
@@ -101,10 +102,10 @@ const onSubmit = handleSubmit(async (values) => {
 
           <!-- Confirm Password field with eye icon -->
           <div class="relative">
-            <TextField :type="confirmPasswordVisible ? 'text' : 'password'" name="confirmPassword"
+            <TextField :type="confirmPasswordVisible ? 'text' : 'password'" label="Confirm Password" name="confirmPassword"
               placeholder="Confirm Password" />
             <div
-              class="absolute inset-y-0 right-0 top-2 flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer h-[40px]"
+              class="absolute inset-y-0 right-0 top-6 flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer h-[40px]"
               @click="toggleConfirmPasswordVisibility" role="button" tabindex="0"
               aria-label="Toggle confirm password visibility">
               <EyeOff v-if="confirmPasswordVisible" size="20" />
@@ -115,7 +116,7 @@ const onSubmit = handleSubmit(async (values) => {
         <UiButton color="primary" type="submit"
           class="text-[16px] mt-5 bg-[#FFBC42] button_shadow transition-all duration-300 hover:bg-[#ffce6b] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:bg-[#f0b03c] active:shadow-md"
           :loading="isLoading">
-          Submit
+          {{ (!route.query.token) ? 'Send Request' : 'Reset Password' }}
         </UiButton>
       </div>
     </form>

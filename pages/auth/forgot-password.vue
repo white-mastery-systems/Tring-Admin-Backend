@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ArrowLeft } from "lucide-vue-next";
+import { useRoute } from 'vue-router';
 // import { buttonVariants } from '@/lib/registry/new-york/ui/button'
 // import { cn } from '@/lib/utils'
 // import UserAuthForm from './components/UserAuthFor'
@@ -6,6 +8,12 @@ definePageMeta({
   layout: "auth",
   middleware: "guest-only",
 });
+
+const route = useRoute();
+
+const navigateToSignIn = () => {
+  navigateTo("/auth/sign-in")
+}
 </script>
 
 <template>
@@ -31,13 +39,14 @@ definePageMeta({
       </div>
     </div>
     <div class="lg:p-8">
-      <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+      <div
+        class="mx-auto flex w-full flex-col justify-center space-y-6 w-[350px] sm:w-[350px] md:w-[350px] lg:w-[380px] box_shadow rounded-lg px-6 py-8">
         <div class="flex flex-col space-y-2 text-center">
           <h1 class="text-2xl font-semibold tracking-tight">
-            Forgot Password
+            {{ (!route.query.token) ? 'Forgot Password?' : 'Reset Your Password' }}
           </h1>
           <p class="text-sm text-muted-foreground">
-            Enter your email below to reset your password
+            {{ (!route.query.token) ? 'Enter your email & send a request' : 'Enter your new password below' }}
           </p>
         </div>
         <ForgotPasswordForm />
@@ -47,20 +56,16 @@ definePageMeta({
           </span>
           <NuxtLink to="/auth/sign-in" class="font-bold text-[14px] text-[#424BD1]">Back to Login</NuxtLink>
         </p> -->
-        <p v-if="false" class="px-8 text-center text-sm text-muted-foreground">
-          By Signing up, I Agree to Tring AI
-          <!-- <a href="/terms" class="underline underline-offset-4 hover:text-primary">
-            Terms of Service
-          </a>
-          and
-          <a href="/privacy" class="underline underline-offset-4 hover:text-primary">
-            Privacy Policy
-          </a> -->
-          <a target="_blank" href="https://tringlabs.ai/terms-conditions"
-            class="underline underline-offset-4 hover:text-primary">
-            Terms & Conditions
-          </a>
-          .
+        <div v-if="!route.query.token" class="flex w-full items-center justify-center">
+          <div class="flex items-center gap-1 text-[#FF9500]" @click="navigateToSignIn">
+            <ArrowLeft class="w-4 h-4" />
+            <span class="font-medium text-[14px] cursor-pointer">
+              Back to Login
+            </span>
+          </div>
+        </div>
+        <p v-if="!route.query.token" class="px-0 sm:px-0 md:px-8 text-center text-sm text-muted-foreground">
+          By Clicking send request a mail will be sent to reset your password.
         </p>
       </div>
     </div>
