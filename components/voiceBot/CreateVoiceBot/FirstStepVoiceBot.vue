@@ -123,8 +123,12 @@ const changeKnowledge = () => {
         <UiCardContent class="grid p-0 gap-2 mb-0 sm:mb-0 md:mb-4">
           <div class="flex items-center grid grid-cols-2 gap-3 text-left">
             <span class="font-medium text-left text-[12px] sm:text-[12px] md:text-[18px]">Select your Call Type</span>
-            <SelectField v-model="boundDirection" name="boundDirection" :options="boundList"
-              placeholder="Select a direction" />
+            <div class="flex justify-end">
+              <span class="w-full sm:w-full md:w-[70%] lg:w-[70%] xl:w-[50%]">
+                <SelectField v-model="boundDirection" name="boundDirection" :options="boundList"
+                  placeholder="Select a direction" />
+              </span>
+            </div>
           </div>
           <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] mt-2 h-[0.5px]" />
           <span class="font-medium text-left text-[12px] sm:text-[12px] md:text-[18px]">

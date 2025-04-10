@@ -7,7 +7,8 @@
         Link channe
       </UiButton> -->
       <div class="flex flex-col w-full items-center overflow-x-scroll sm:flex-row">
-        <div class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row py-1">
+        <div
+          class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row py-0 sm:py-0 md:py-0 lg:py-1 ">
           <div class="items-cetner flex gap-4">
             <div v-if="botDetails.documentId" class="flex items-center gap-[5px] text-[#1abb00]">
               <div class="flex h-[6px] w-[6px] items-center rounded-full bg-[#1abb00]"></div>
@@ -22,7 +23,7 @@
           <div
             class="flex flex-col items-start justify-center gap-4 sm:flex-row sm:items-center lg:items-center xl:items-center">
             <div
-              class="items-top sm:items-top md:items-top mt-3 flex gap-3 sm:mt-3 md:mt-0 lg:mt-0 lg:items-center xl:mt-0 xl:items-center">
+              class="items-top sm:items-top md:items-top flex gap-3 mt-0 lg:items-center xl:items-center">
               <div class="flex flex-col items-center gap-1">
                 <UiButton color="primary" class="p-3" @click="() => {
                   channelModalState.open = true;
@@ -34,7 +35,7 @@
                     <component :is="Settings" :size="20"></component>
                   </span>
                 </UiButton>
-                <div class="block text-[4px] lg:hidden">Configure channel</div>
+                <div class="block text-[5px] lg:hidden">Configure channel</div>
               </div>
               <div class="flex flex-col items-center gap-1" v-if="!botDetails.documentId">
                 <UiButton class="bg-[#424bd1] text-[14px] p-2 hover:bg-[#424bd1]/90 disabled:opacity-50"
@@ -44,7 +45,7 @@
                     <component :is="Bot"></component>
                   </span>
                 </UiButton>
-                <div class="block text-[4px] lg:hidden">Activate Bot</div>
+                <div class="block text-[5px] lg:hidden">Activate Bot</div>
               </div>
               <span v-if="botDetails.documentId" class="flex items-center gap-4">
                 <div class="flex flex-col items-center gap-1">
@@ -58,7 +59,7 @@
                       <Icon name="bx:block" class="h-5 w-5" />
                     </span>
                   </UiButton>
-                  <div class="block text-[4px] lg:hidden">Deactivate Bot</div>
+                  <div class="block text-[5px] lg:hidden">Deactivate Bot</div>
                 </div>
 
                 <ConfirmationModal v-model:open="modalOpen" title="Confirm Deactivation"
@@ -72,7 +73,7 @@
                       <Icon name="entypo:controller-play" class="h-5 w-5" />
                     </span> -->
                   </UiButton>
-                  <div class="block text-[4px] lg:hidden">Preview Bot</div>
+                  <div class="block text-[5px] lg:hidden">Preview Bot</div>
                 </div>
                 <div class="flex flex-col items-center gap-1">
                   <UiButton color="primary" class="gap-2 py-2 px-3 button_shadow" @click="copyScript">
@@ -82,7 +83,7 @@
                       <Icon name="mdi:content-copy" class="h-4 w-4 px-1 text-white" />
                     </span> -->
                   </UiButton>
-                  <div class="block text-[4px] lg:hidden">Copy Script</div>
+                  <div class="block text-[5px] lg:hidden">Copy Script</div>
                 </div>
               </span>
               <div class="flex flex-col items-center gap-1">
@@ -90,14 +91,14 @@
                   class="flex items-center justify-center bg-[#ff0000] p-3 hover:bg-[#ff0000]/90 hover:brightness-90">
                   <Icon name="lucide:trash-2" class="h-4 w-4" />
                 </UiButton>
-                <div class="block text-[4px] lg:hidden">Delete</div>
+                <div class="block text-[5px] lg:hidden">Delete</div>
               </div>
               <div class="flex flex-col items-center gap-1" @click="agentModalState.open = true">
                 <UiButton variant="destructive"
                   class="flex items-center justify-center bg-[#424bd1] p-3 hover:bg-[#424bd1]/90 hover:brightness-90">
                   <Icon name="lucide:pen" class="h-4 w-4" />
                 </UiButton>
-                <div class="block text-[4px] lg:hidden">Edit</div>
+                <div class="block text-[5px] lg:hidden">Edit</div>
               </div>
               <CreateEditChannelModal v-model="channelModalState" @success="handleSuccess" />
               <ConfirmationModal v-model:open="deleteModalState" title="Are you sure?"
