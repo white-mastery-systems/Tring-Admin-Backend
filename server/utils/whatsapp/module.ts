@@ -99,6 +99,8 @@ export async function createWhatsAppMessage(
   userPhone: string,
   notes: string,
 ) {
+  notes = notes?.trim() || "Lead Details";
+  notes = (notes.length > 60) ? notes.substring(0, 60) : notes;
   const url = "https://graph.facebook.com/v21.0/552375867948675/messages"; 
   const messageBody = {
     messaging_product: "whatsapp",
@@ -110,7 +112,7 @@ export async function createWhatsAppMessage(
       components: [
         {
           type: "header",
-          parameters: [{ type: "text", text: notes ?? "Lead Details" }],
+          parameters: [{ type: "text", text: notes }],
         },
         {
           type: "body",
