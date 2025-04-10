@@ -3,7 +3,11 @@ import type { User } from "lucia";
 
 export default defineNuxtRouteMiddleware(async (_to) => {
   if (import.meta.server) return;
-
+  
+  const userDetails = await $fetch("/api/user").catch(() => null);
+  if (userDetails && !userDetails?.isVerified) {
+    return navigateTo("/auth/onboarding/select-bot-power", { replace: true })
+  }
   const user = (await useUser()).user as Ref<User>;
   if (!user.value) {
     if (((_to.name === "analytics-leads-id") || (_to.name === "analytics-chats-id") || (_to.name === "analytics-call-logs-id")) && _to.params.id) {
@@ -11,6 +15,10 @@ export default defineNuxtRouteMiddleware(async (_to) => {
       return
     }
      else return navigateTo("/auth/sign-in");
+  }
+
+  if (!user.value && !userDetails) {
+    return navigateTo("/auth/sign-in");
   }
   // if (!user.value) return navigateTo("/auth/sign-in");
   // if (user.value.role !== AuthRoles.Admin) {
