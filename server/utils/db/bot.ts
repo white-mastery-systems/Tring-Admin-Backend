@@ -102,7 +102,10 @@ export const getBotDetails = async (botId: string) => {
 
 export const getOrgChatBotCount = async (organizationId: string) => {
   const data = await db.query.chatBotSchema.findMany({
-    where: eq(chatBotSchema.organizationId, organizationId)
+    where: and(
+      eq(chatBotSchema.organizationId, organizationId),
+      eq(chatBotSchema.isDeleted, false),
+    )
   })
   return data?.length
 }
