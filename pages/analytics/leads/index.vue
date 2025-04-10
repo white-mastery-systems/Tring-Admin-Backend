@@ -8,16 +8,18 @@
         </div>
       </div>
     </template>
-    <UiTabs default-value="chat" class="w-full self-start mt-2">
+    <UiTabs v-model="selectedTab" default-value="chat" class="w-full self-start mt-2">
       <UiTabsList class="grid w-full grid-cols-2">
         <UiTabsTrigger value="chat" @click="() => {
           filters.type = 'chat'
+          handleClearFilters()
         }">
           <!-- filters.period = 'all' -->
           Chat
         </UiTabsTrigger>
         <UiTabsTrigger value="voice" @click="() => {
           filters.type = 'voice'
+          handleClearFilters()
         }">
           <!-- filters.period = 'all' -->
           Voice
@@ -27,7 +29,7 @@
         <ChatBotLeads :filters="filters" @clear-filters="handleClearFilters" />
       </UiTabsContent>
       <UiTabsContent value="voice">
-        <VoiceBotLeads :filters="filters" @clear-filters="handleClearFilters"  />
+        <VoiceBotLeads :filters="filters" @clear-filters="handleClearFilters" />
       </UiTabsContent>
     </UiTabs>
   </Page>
@@ -56,11 +58,12 @@ breadcrumbStore.setBreadcrumbs([
 const exportDataHandler = ref({ status: false, type: "csv" });
 const currentPage = useState("counter", () => '1');
 const router = useRouter();
+const selectedTab = ref("chat"); // Default selected tab
 const filters = useState("leadsFilters", () => ({
   botId: "",
   q: undefined,
-  from: undefined,
-  to: undefined,
+  // from: undefined,
+  // to: undefined,
   period: "all-time",
   status: "",
   channel: "all",
@@ -193,7 +196,7 @@ const handleClearFilters = () => {
     page: "1",
     limit: "10",
     country: "all",
-    type: "chat",
+    type: selectedTab.value,
   });
 };
 

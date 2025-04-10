@@ -76,7 +76,6 @@ const navigateToSamePage = (path: any) => {
     toast.error("Please upgrade your plan to access this feature")
   }
     if (isMobile.value) {
-      console.log('inside --- ismobile')
     toggleSidebar();
     // slideBarStore.siderBarslider = false
   }
@@ -128,7 +127,7 @@ const mobileSidebarControl = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent
           class="w-[--reka-dropdown-menu-trigger-width] min-w-56 rounded-lg px-0 text-[#334155] left-5"
-          :side="isMobile ? 'bottom' : 'right'" align="end" :side-offset="4">
+          :side="isMobile ? 'bottom' : 'right'" align="end" :side-offset="8" :align-offset="-2">
           <DropdownMenuLabel class="font-medium text-[16px] pl-[16.5px] pr-0 py-1">
             <span>My Account</span>
             <!-- <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
@@ -150,7 +149,8 @@ const mobileSidebarControl = () => {
               @click.prevent="navigateToSamePage(item.path)">
               <!-- @click.prevent="navigateToSamePage(item.path)" -->
               <NuxtLink
-                :to="(!subcribed && (item.path.path === '/billing/view-wallet')) ? '/billing/view-all' : item.path" class="flex items-center w-full min-h-[40px]" @click="handleNavigation">
+                :to="(!subcribed && (item.path.path === '/billing/view-wallet')) ? '/billing/view-all' : item.path"
+                class="flex items-center w-full min-h-[40px]" @click="handleNavigation">
                 <DropdownMenuShortcut class="flex items-center gap-2 w-full">
                   <component :is="item.icon" size="18"></component>
                   {{ item.label }}
@@ -160,8 +160,8 @@ const mobileSidebarControl = () => {
           </DropdownMenuGroup>
           <!-- <Separator /> -->
           <DropdownMenuSeparator />
-          <DropdownMenuItem class="flex items-center w-full py-[10px] cursor-pointer pl-[15px]">
-            <div @click="handleLogout" class="flex items-center font-medium w-full gap-[8px]">
+          <DropdownMenuItem class="flex items-center w-full py-[10px] cursor-pointer pl-[15px]" @click="handleLogout">
+            <div class="flex items-center font-medium w-full gap-[8px]">
               <Icon name="ic:round-logout" class="h-[18px] w-[18px]" />
               <p class="text-sm font-medium">Logout</p>
             </div>
