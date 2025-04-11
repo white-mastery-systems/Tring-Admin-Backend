@@ -80,7 +80,7 @@ export const voicebotDialer = async () => {
             }
           } catch (error: any) {
             logger.error(`voice Dial API Error: ${error.message}`)
-           await updateVoiceCallStatus(schedular.id, { callStatus: "failed" })
+            await updateVoiceCallStatus(schedular.id, { callStatus: "failed", maxRetryCount: (schedular.maxRetryCount || 0) + 1 })
           }    
        }
     })

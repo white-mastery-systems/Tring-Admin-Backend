@@ -2,6 +2,7 @@ import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   boolean,
   index,
+  integer,
   jsonb,
   timestamp,
   unique,
@@ -212,6 +213,7 @@ export const voicebotSchedularSchema = voiceBotSchema.table("voicebot_schedular"
   organizationId: uuid("organization_id").references(() => organizationSchema.id, { onDelete: "cascade" }).notNull(),
   callSid: varchar("call_sid"),
   callStatus: varchar("call_status").default("not dialed"),
+  maxRetryCount: integer("max_retry_count").default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
