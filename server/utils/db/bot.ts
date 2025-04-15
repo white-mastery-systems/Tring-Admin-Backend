@@ -344,3 +344,17 @@ export const getIntegrationByBotIntegrationId = async (id:string) => {
   }
   return data;
 }
+
+export const getBotIntegrationByOrgId = async (orgId:string) => {
+  const data = await db.query.voicebotIntegrationSchema.findFirst({
+    where: and(eq(voicebotIntegrationSchema.organizationId, orgId)),
+    with: { integration: true },
+  });
+  if(!data) {
+    return await db.query.voicebotIntegrationSchema.findFirst({
+      where: and(eq(voicebotIntegrationSchema.organizationId, orgId)),
+      with: { integration: true },
+    });
+  }
+  return data;
+}
