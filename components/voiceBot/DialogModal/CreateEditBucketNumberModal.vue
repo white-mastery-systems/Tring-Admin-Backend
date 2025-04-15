@@ -7,7 +7,7 @@
       <div v-if="props.botType === 'chat'" class="flex gap-4">
         <TextField name="firstName" label="First Name" placeholder="Enter first name" required>
         </TextField>
-        <TextField name="lastName" label="Last Name" placeholder="Enter last name" required>
+        <TextField name="lastName" label="Last Name" placeholder="Enter last name">
         </TextField>
       </div>
       <div v-if="props.botType === 'voice'" class="flex gap-4">
@@ -23,13 +23,12 @@
       </div>
       <TextField v-if="props.botType === 'chat'" type="email" name="email" label="Email" helperText=''
         placeholder="Enter your Email" />
-    <div v-if="props.botType === 'voice'" class="flex gap-4">
-      <TextField name="metadata" label="MetaData" placeholder="Enter MetaData">
-      </TextField>
-      <TextField name="verificationId" label="Verification Id"
-        placeholder="Enter verification id">
-      </TextField>
-    </div>
+      <div v-if="props.botType === 'voice'" class="flex gap-4">
+        <TextField name="metadata" label="MetaData" placeholder="Enter MetaData">
+        </TextField>
+        <TextField name="verificationId" label="Verification Id" placeholder="Enter verification id">
+        </TextField>
+      </div>
 
       <div class="flex items-center justify-end">
         <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
@@ -97,13 +96,13 @@ const formSchema = toTypedSchema(
             path: ["firstName"],
           });
         }
-        if (!data.lastName) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Last name is required for chatBot.",
-            path: ["lastName"],
-          });
-        }
+        // if (!data.lastName) {
+        //   ctx.addIssue({
+        //     code: z.ZodIssueCode.custom,
+        //     message: "Last name is required for chatBot.",
+        //     path: ["lastName"],
+        //   });
+        // }
         // if (data.email && !data.email.includes("@")) {
         //   ctx.addIssue({
         //     code: z.ZodIssueCode.custom,
@@ -111,29 +110,29 @@ const formSchema = toTypedSchema(
         //     path: ["email"],
         //   });
         // }
-        if (data.email && data.email.length > 0) {
-          const localPart = data.email.split('@')[0];
-          if (localPart.length < 6) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: "The part before '@' must have at least 6 characters",
-              path: ["email"],
-            });
-          }
-          if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(data.email)) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: "Invalid email format",
-              path: ["email"],
-            });
-          }
-        } else {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Email is required",
-            path: ["email"],
-          });
-        }
+        // if (data.email && data.email.length > 0) {
+        //   const localPart = data.email.split('@')[0];
+        //   if (localPart.length < 6) {
+        //     ctx.addIssue({
+        //       code: z.ZodIssueCode.custom,
+        //       message: "The part before '@' must have at least 6 characters",
+        //       path: ["email"],
+        //     });
+        //   }
+        //   if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(data.email)) {
+        //     ctx.addIssue({
+        //       code: z.ZodIssueCode.custom,
+        //       message: "Invalid email format",
+        //       path: ["email"],
+        //     });
+        //   }
+        // } else {
+        //   ctx.addIssue({
+        //     code: z.ZodIssueCode.custom,
+        //     message: "Email is required",
+        //     path: ["email"],
+        //   });
+        // }
       } else if (props.botType === "voice") {
         if (!data.name) {
           ctx.addIssue({

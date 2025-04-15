@@ -69,14 +69,14 @@ export const accountSchema = toTypedSchema(
     }).superRefine((data, ctx) => {
 
       if (data.email && data.email.length > 0) {
-        const localPart = data.email.split('@')[0];
-        if (localPart.length < 6) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "The part before '@' must have at least 6 characters",
-            path: ["email"],
-          });
-        }
+        // const localPart = data.email.split('@')[0];
+        // if (localPart.length < 6) {
+        //   ctx.addIssue({
+        //     code: z.ZodIssueCode.custom,
+        //     message: "The part before '@' must have at least 6 characters",
+        //     path: ["email"],
+        //   });
+        // }
         if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(data.email)) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,

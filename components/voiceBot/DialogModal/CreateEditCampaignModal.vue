@@ -47,7 +47,6 @@
       </div>
       <TextField v-if="values.contactMethod === 'voice'" type="number" label="Calls Per Trigger" name="callsPerTrigger"
         required placeholder="Enter calls per trigger" disableCharacters />
-
       <div class="flex w-full justify-end">
         <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
           Submit
@@ -144,7 +143,7 @@ watch(
       setFieldValue("startTime", getSingleDetails?.botConfig.workingStartTime);
       setFieldValue("endTime", getSingleDetails?.botConfig.workingEndTime);
       setFieldValue("time", getSingleDetails?.botConfig.scheduleTime);
-      if (getSingleDetails?.contactMethod === "voice") setFieldValue("callsPerTrigger", Number(getSingleDetails?.botConfig?.callsPerTrigger));
+      if (getSingleDetails?.contactMethod === "voice") setFieldValue("callsPerTrigger", Number(getSingleDetails?.botConfig?.callsPerTrigger) ?? undefined);
       setFieldValue("templateName", getSingleDetails?.botConfig.templateName);
       setFieldValue("integrationId", getSingleDetails?.botConfig.integrationId);
       // const time = getSingleDetails.campaignTime.match(/\d{2}:\d{2}/)[0];

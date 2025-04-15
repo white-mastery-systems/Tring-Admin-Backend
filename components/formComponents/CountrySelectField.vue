@@ -43,7 +43,7 @@
                                             :value="country.data" @select="() => {
                                                 handleChange(country.data);
                                             }
-                                            " style="height: 32px">
+                                            " :class="getItemHeight(country.data)">
                                             <Check :class="cn(
                                                 'mr-2 h-4 w-4',
                                                 country.data === fieldValue
@@ -51,7 +51,9 @@
                                                     : 'opacity-0',
                                             )
                                                 " />
-                                            {{ country.data }}
+                                            <span class="text-left w-[80%]">
+                                                {{ country.data }}
+                                            </span>
                                         </UiCommandItem>
                                     </UiCommandGroup>
                                 </div>
@@ -101,6 +103,7 @@ const props = defineProps({
     }
 });
 
+const countryHeightMap = ref(new Map())
 const allCountryNames = computed(() =>
     countryData?.filter((country: any) => country.name.toLowerCase().includes(searchField.value) || country.code.toLowerCase().includes(searchField.value) || country.dial_code.toLowerCase().includes(searchField.value))?.map((country) => country.name),
 );
@@ -141,9 +144,66 @@ const handleClickOutside = (event: MouseEvent) => {
         searchField.value = ''; // Clear search field
     }
 };
+
+const willTextWrap = (text, maxWidth) => {
+    // Create a temporary span element to measure text width
+    const tempSpan = document.createElement('span');
+    tempSpan.style.visibility = 'hidden';
+    tempSpan.style.position = 'absolute';
+    tempSpan.style.fontSize = '14px'; // Match your text size
+    tempSpan.style.fontFamily = 'inherit';
+    tempSpan.innerText = text;
+    document.body.appendChild(tempSpan);
+
+    const width = tempSpan.offsetWidth;
+    document.body.removeChild(tempSpan);
+
+    return width > maxWidth;
+};
+const getItemHeight = (countryName) => {
+    // If we already calculated this country's height, return from cache
+    if (countryHeightMap.value.has(countryName)) {
+        return countryHeightMap.value.get(countryName);
+    }
+
+    // Default class with min-height
+    const heightClass = "min-h-8";
+
+    // Add additional classes if the name is likely to wrap
+    if (countryName.length > 20) { // Simple heuristic
+        return heightClass + " py-2";
+    }
+
+    return heightClass;
+};
+
 onMounted(() => {
     document.addEventListener('click', handleClickOutside);
+    setTimeout(() => {
+        updateCountryHeights();
+    }, 500);
 });
+
+watch(() => allCountryNames.value, () => {
+    // Allow time for DOM to update
+    nextTick(() => {
+        setTimeout(updateCountryHeights, 100);
+    });
+});
+
+const updateCountryHeights = () => {
+    const listContainer = document.querySelector('.UiCommandList') || document;
+    const availableWidth = listContainer.clientWidth - 40; // Account for padding and check icon
+
+    allCountryNames.value.forEach(countryName => {
+        const needsExtraHeight = willTextWrap(countryName, availableWidth);
+        countryHeightMap.value.set(
+            countryName,
+            needsExtraHeight ? "min-h-8 h-auto py-2" : "min-h-8"
+        );
+    });
+};
+
 onUnmounted(() => {
     document.removeEventListener('click', handleClickOutside);
 })

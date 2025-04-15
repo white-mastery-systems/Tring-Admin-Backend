@@ -11,13 +11,13 @@
       <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
         Personal Information
       </h3>
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-2 gap-4">
         <TextField name="username" label="Full Name" required placeholder="Enter your full name" />
         <TextField type="email" name="email" label="Email address" helperText="" required
           placeholder="Enter your email address" />
       </div>
       <!-- v-show="props.personalControl" -->
-      <div class="grid grid-cols-1 gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
         <!-- <TextField type="text" name="metadata.businessName" label="Business Name" placeholder="Enter Your Business Name"
           :required="true" /> -->
         <div class="flex gap-2 w-full">
@@ -28,7 +28,7 @@
             placeholder="Enter your mobile number" />
         </div>
         <!-- {{ values }} -->
-        <div class="w-full flex flex-col gap-4 pt-1">
+        <div class="w-full flex flex-col gap-4">
           <SelectField name="metadata.role" label="Role" placeholder="Select Role"
             :options="roles.map((role) => ({ label: role, value: role }))" />
 
@@ -39,7 +39,7 @@
       <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
         Company Information
       </h3>
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-2 gap-4">
         <TextField helperText="Goods Service Tax" type="text" name="name" label="Company Name"
           placeholder="Enter your Company Name" :required="true" />
 
@@ -58,7 +58,7 @@
       <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
         Address Information
       </h3>
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-2 gap-4">
         <TextField name="address.street" label="Street name" helperText="" required
           placeholder="Enter your street address" />
         <TextField name="address.city" label="city name" helperText="" required placeholder="Enter your city name" />

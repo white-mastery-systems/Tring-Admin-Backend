@@ -7,7 +7,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">
         <div class="relative">
           <TextField :type="passwordVisible ? 'text' : 'password'" name="password" label="Password"
-            placeholder="Password" required>
+            placeholder="Password" :textFieldMaxLength="30" required>
             <template #endIcon>
               <div class="w-[30px] cursor-pointer mt-[7px]" @click="togglePasswordVisibility" type="button">
                 <OpenEye v-if="passwordVisible" />
@@ -18,7 +18,7 @@
         </div>
         <div class="relative ">
           <TextField :type="confirmPasswordVisible ? 'text' : 'password'" name="confirmPassword"
-            label="Confirm Password" placeholder="Confirm Your Password" required>
+            label="Confirm Password" placeholder="Confirm Your Password" :textFieldMaxLength="30" required>
             <template #endIcon>
               <div class="w-[30px] cursor-pointer mt-[7px]" @click="toggleConfirmPasswordVisibility" type="button">
                 <OpenEye v-if="confirmPasswordVisible" />

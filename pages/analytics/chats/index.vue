@@ -64,9 +64,9 @@ const filters = useState("chatsFilters", () => ({
 }));
 const exportDataHandler = ref({ status: false, type: "csv" });
 
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 const fetchExportData = ref(false);
 breadcrumbStore.setBreadcrumbs([
   {

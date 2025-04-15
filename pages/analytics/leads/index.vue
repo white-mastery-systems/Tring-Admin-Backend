@@ -148,20 +148,19 @@ const exportData = async () => {
         "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
     });
-
     const exportReadObject = (exportLeads ?? []).map((lead: any) => {
       let mergedObject = {}
       if (filters.value.type === "chat") {
         mergedObject = {
-          name: lead.botUser.name ?? "---",
-          email: lead.botUser.email ?? "---",
+          name: lead.botUser?.name ?? "---",
+          email: lead.botUser?.email ?? "---",
           mobile: lead?.botUser?.mobile ?? "---",
           countryCode: lead?.botUser?.countryCode ?? "+91",
           visitedStatus:
             Number(lead?.botUser?.visitedCount) > 1 ? "Revisited" : (lead.status === "junk") ? "Junk" : "New",
           botName: lead.bot.name ?? "---",
           country: lead.chat?.metadata?.country ?? "---",
-          createdAt: format(lead.botUser.createdAt, "MMMM d, yyyy"),
+          createdAt: format(lead?.createdAt, "MMMM d, yyyy"), // format(lead.botUser?.createdAt, "MMMM d, yyyy")
           // ClientId: lead.botUser.id,
         };
       } else {
@@ -170,7 +169,7 @@ const exportData = async () => {
           phone: lead?.phone ?? "---",
           location: lead?.location ?? "---",
           createdAt: format(lead.createdAt, "MMMM d, yyyy"),
-          scheduledDate: format(lead.scheduledDate, "MMMM d, yyyy"),
+          scheduledDate: lead?.scheduledDate ? format(lead.scheduledDate, "MMMM d, yyyy") : "---",
           notes: lead?.notes ?? "---",
           botName: lead.bot.name ?? "---",
           // ClientId: lead.botUser.id,
@@ -178,7 +177,6 @@ const exportData = async () => {
       }
       return mergedObject;
     });
-
     exportDataHandler.value.status = true;
     exportReadyRows.value = exportReadObject;
   } catch (err) { }
