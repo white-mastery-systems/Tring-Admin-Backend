@@ -241,7 +241,9 @@ const handleConnect = handleSubmit(async (values: any) => {
             "_blank",
           );
         } else if (values.crm === "hubspot") {
-          const authUrl = `https://app.hubspot.com/oauth/authorize?client_id=ae187200-936d-44f3-8e59-5bab2f50aa3c&redirect_uri=${url}&scope=crm.objects.contacts.write%20oauth%20crm.objects.deals.read%20crm.objects.deals.write%20crm.objects.contacts.read&optional_scope=crm.schemas.deals.write%20crm.objects.owners.read`;
+          // const authUrl = `https://app.hubspot.com/oauth/authorize?client_id=ae187200-936d-44f3-8e59-5bab2f50aa3c&redirect_uri=${url}&scope=crm.objects.contacts.write%20oauth%20crm.objects.deals.read%20crm.objects.deals.write%20crm.objects.contacts.read&optional_scope=crm.schemas.deals.write%20crm.objects.owners.read`;
+          const scops ="crm.objects.contacts.write oauth crm.objects.deals.read crm.objects.deals.write crm.objects.contacts.read scheduler.meetings.meeting-link.read tickets crm.schemas.contacts.write crm.objects.users.read crm.objects.leads.read&optional_scope=crm.schemas.deals.write crm.objects.owners.read";
+          const authUrl = `https://app.hubspot.com/oauth/authorize?client_id=ae187200-936d-44f3-8e59-5bab2f50aa3c&redirect_uri=${url}&scope=${scops}`;
           window.open(authUrl, "_blank");
         } else if (values.crm === "slack") {
           window.open(

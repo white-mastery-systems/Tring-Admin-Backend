@@ -73,7 +73,7 @@ export async function createContactInHubspot({
   }
 }
 
-export async function getOwners(token) {
+export async function getOwners(token:string) {
   return $fetch("https://api.hubapi.com/crm/v3/owners", {
     method: "GET",
     headers: {
@@ -83,12 +83,12 @@ export async function getOwners(token) {
 }
 // Creating Leads or Deals IN Hubspot
 export async function createDeals(
-  token,
-  ownerId,
-  amount,
-  dealStage,
-  firstName,
-  lastName,
+  token: string,
+  ownerId: any,
+  amount: any,
+  dealStage: any,
+  firstName: string,
+  lastName: string,
 ) {
   try {
     // Logging the request body for debugging
@@ -124,8 +124,43 @@ export async function createDeals(
 
     // Logging the response
     console.log(data);
-  } catch (error) {
-    // Logging any errors
-    console.log(error);
+  } catch (error:any) {
+    console.log(error.message);
+  }
+}
+
+export const getContactByEmail = async (token:string, email:string) => {
+  try {
+    const data = await $fetch(`https://api.hubapi.com/crm/v3/objects/contacts/${email}?idProperty=email`,{
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return data;
+  } catch (error:any) {
+    console.log(error.message);
+    return {}
+  }
+}
+
+// export const createMeetingLink = async (token, body) => {}
+
+export const getMeetingLink = async (token:string) => {
+  try {
+    const data = await $fetch(`https://api.hubapi.com/scheduler/v3/meetings/meeting-links`,{
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if(data?.results?.length) {
+      const link = data?.results?.find((item:any)=> item.slug === "tring" || item.slug.includes("tring")).link
+      return (link)?? data?.results[0]?.link ?? null
+    }
+    return null;
+  } catch (error:any) {
+    console.log(error.message);
+    return null
   }
 }
