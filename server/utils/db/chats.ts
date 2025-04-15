@@ -135,6 +135,14 @@ export const listChats = async (
               )
             : undefined,
         ),
+        columns: {
+          id: true,
+          name: true,
+          mobile: true,
+          email: true,
+          visitedCount: true,
+          countryCode: true
+        }
       },
     },
     orderBy: [desc(chatSchema.updatedAt)],

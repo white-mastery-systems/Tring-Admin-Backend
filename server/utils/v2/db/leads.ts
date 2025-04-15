@@ -34,20 +34,20 @@ export const getOrgQualifiedLeads = async (organizationId: string, fromDate: Dat
   data = data.filter((lead: any) => {
     // Ensure lead and its nested properties exist before accessing
     const metadata: any = lead.metadata || {};
-    const leadClassification = metadata.leadClassification
-    const metrics = metadata.metrics || {};
-    const buyerSignals = metadata.buyerSignals || [];
-    const finalScore = metadata.finalScore || 0;
+    const leadClassification = metadata?.overallAssessment?.leadClassification
+    const interestIndicators = metadata.interestIndicators || {};
+    const buyerSignals = metadata?.qualitativeFeedback?.expressions || [];
+    const finalScore = metadata?.overallAssessment?.finalScore || 0;
     
     // High Potential Leads (only classification check)
     if(highPotential) {
-      return (leadClassification === "Warm Lead" || leadClassification === "Hot Lead") 
+      return (leadClassification === "warm" || leadClassification === "hot") 
     }
     
     // Correctly Identified Leads (stricter conditions)
     return (
-      (leadClassification === "Warm Lead" || leadClassification === "Hot Lead") &&
-      metrics.contactRequestsCount > 0 &&
+      (leadClassification === "warm" || leadClassification === "hot") &&
+      interestIndicators?.contactRequests > 0 &&
       buyerSignals.length > 0 &&
       finalScore >= 70
     );
@@ -71,10 +71,10 @@ export const getLeadComposition = async (organizationId: string, fromDate: Date 
   )
 
   const leadCounts = data.reduce( (acc: any, lead: any) => {
-    const leadClassification = lead.metadata?.leadClassification || ""
-    if (leadClassification === "Warm Lead") acc.warmLeads++;
-    else if (leadClassification === "Hot Lead") acc.hotLeads++;
-    else if (leadClassification === "Cold Lead") acc.coldLeads++;
+    const leadClassification = lead.metadata?.overallAssessment?.leadClassification || ""
+    if (leadClassification === "warm") acc.warmLeads++;
+    else if (leadClassification === "hot") acc.hotLeads++;
+    else if (leadClassification === "cold") acc.coldLeads++;
     else if (lead.status === "junk") acc.junkLeads++;
 
     return acc;
@@ -101,13 +101,11 @@ export const getDropOffConversation = async (organizationId: string, fromDate: D
 
   data = data.filter((lead: any) => { 
     const metadata: any = lead.metadata || {};
-    const metrics = metadata.metrics || {};
-    const buyerSignals = metadata.buyerSignals || [];
-
+    const behavioralMetrics = metadata.behavioralMetrics || {};
     return (
-      metrics.dropOff === true
+      behavioralMetrics.dropOffRate === true
     );
-   })
+  })
 
-   return data.length
+  return data.length
 }

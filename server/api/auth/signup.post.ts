@@ -1,9 +1,19 @@
+import { errorResponse } from "~/server/response/error.response";
+
 export default defineEventHandler(async (event) => {
   const body = await isValidBodyHandler(event, z.object({
-    username: z.string().optional(),
+    username: z.string(),
     email: z.string(),
     password: z.string()
   }))
+
+  if (body.username.length > 64) {
+    return errorResponse(event, 400, "The username is too long. Maximum allowed is 64 characters.")
+  }
+
+  if(body?.password.length > 20) {
+    return errorResponse(event, 400, "Password cannot exceed 20 characters.")
+  }
 
   const isUserExists = await ifUserAlreadyExists(body.email);
   if (isUserExists)

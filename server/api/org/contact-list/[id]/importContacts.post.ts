@@ -97,6 +97,6 @@ try {
   return true
   } catch (error: any) {
     logger.error(`Import contacts inside the buckets Error: ${JSON.stringify(error.message)}`)
-    return errorResponse(event, 500, "Unable to import the file")
+    return errorResponse(event, 500, error?.message)
   }
 })

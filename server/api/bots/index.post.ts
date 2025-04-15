@@ -24,9 +24,18 @@ export default defineEventHandler(async (event) => {
     const orgChatBotCount = await getOrgChatBotCount(organizationId)
     if(orgChatBotCount >= botPlanLimit) {
       if(orgDetail?.wallet > 0) {
+        const extraBotsUsed = orgChatBotCount - botPlanLimit;
         const extraBotLimit = Number(planPricingDetail?.extraBotLimit)
-        if(orgChatBotCount >= extraBotLimit) {
-          return errorResponse(event, 400, `You can create only ${extraBotLimit} extra chatbots for this plan`)
+        if (extraBotsUsed >= extraBotLimit) {
+          return errorResponse(event, 400, `You can create only ${extraBotLimit} extra chatbots for this plan`);
+        }
+        
+        const extraOneBotCost = 1 * (planPricingDetail?.extraBotCost || 0)
+        if(orgDetail?.wallet >= extraOneBotCost) {
+          const remainingAmountInWallet = Math.max(orgDetail?.wallet - extraOneBotCost, 0)
+          await updateOrganization(organizationId, { wallet: remainingAmountInWallet })
+        } else {
+          return errorResponse(event, 400, "Insufficient wallet balance to create an additional chatbot.")
         }
       } else {
         return errorResponse(event, 400, `You can create only ${botPlanLimit} ${botPlanLimit > 1 ? "chatbots" : "chatbot"} for this plan`)
