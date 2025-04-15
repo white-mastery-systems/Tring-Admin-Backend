@@ -102,6 +102,7 @@ export const botUserSchema = chatbotSchema.table(
     secondaryEmail: varchar("secondary_email", { length: 128 }).array(),
     secondaryMobile: varchar("secondary_mobile", { length: 16 }).array(),
     metaData: jsonb("metadata"),
+    companyName: varchar("company_name", { length: 128 }),
     visitedCount: integer("visited_count").default(1),
     userType: botUserBotTypeEnum("user_type").default("chatbot"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
