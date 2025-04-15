@@ -359,28 +359,45 @@ export const parseContactsFormDataFile = async ({ file, fileType, queryType } : 
 
     if (!parsedData || !parsedData.length) throw new Error("The uploaded file is empty");
 
+    const requiredFields = queryType === "chat" ? ["First Name", "Country Code", "Number"] : ["Name", "Country Code", "Phone"]
+
+    checkMissingColumnsFromData(parsedData, queryType);
+
+    for (let i = 0; i < parsedData.length; i++) {
+      const row = parsedData[i];
+      for (const field of requiredFields) {
+        if (!row[field] || String(row[field]).trim() === "") {
+          throw new Error(`Row ${i + 2} is missing required field: ${field}` // +2 to account for header + 0-index
+          );
+        }
+      }
+
+      // Remove extra fields
+      for (const key in row) {
+        if (!requiredFields.includes(key)) {
+          delete row[key];
+        }
+      }
+    }
+   
     const apiResponse: any = handleBulkUpload(parsedData, queryType);
 
-    // Frontend/Client-side error handling example
     if (!apiResponse.success) {
       // Formatting errors for user display
       let errorDetails = '';
-      const formattedErrors = apiResponse.errors?.map(rowError => {
-         errorDetails = rowError.errors.map(err => 
-          `${err.field}: ${err.message} (Current value: ${JSON.stringify(err.value)})`
+      const formattedErrors = apiResponse.errors?.map((rowError: any) => {
+         errorDetails = rowError.errors.map((err: any) => 
+          `${err.message}`
         ).join('; ');
 
-        return `Row ${rowError.rowIndex}: ${errorDetails}`;
+        throw new Error(`Row ${rowError.rowIndex + 2}: ${errorDetails}`);
       });
       logger.error(`Validation error for imported file, ${JSON.stringify({
         apiResponse,
         formattedErrors,
         errorDetails
       })}`)
-      throw new Error("Validation errors in the imported file");
     }
-
-    // return apiResponse;
 
     const validContactData = apiResponse?.validData.map((contact: any) => {
       if (queryType === "chat") {
@@ -415,16 +432,13 @@ interface UserFriendlyError {
 
 function validateBulkData(data: unknown[], type: string) {
   const validationErrors: UserFriendlyError[] = [];
-  type ValidDataType = typeof type extends "chat"
-  ? z.TypeOf<typeof zodChatImportContacts>
-  : z.TypeOf<typeof zodVoiceImportsContacts>;
-
-  const validData: ValidDataType[] = [];
+  const schema = type === "chat" ? zodChatImportContacts : zodVoiceImportsContacts;
+  const validData: any = [];
 
   data.forEach((record, index) => {
     try {
       // Validate each record
-      const validatedRecord = zodVoiceImportsContacts.parse(record);
+      const validatedRecord = schema.parse(record);
       validData.push(validatedRecord);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -432,7 +446,7 @@ function validateBulkData(data: unknown[], type: string) {
         const rowErrors = error.errors.map(err => ({
           field: err.path.join('.'),
           message: err.message,
-          value: err.path.reduce((obj, key) => obj?.[key], record)
+          value: err.path.reduce((obj: any, key) => obj?.[key], record)
         }));
 
         validationErrors.push({
@@ -478,4 +492,29 @@ function handleBulkUpload(uploadedData: unknown[], type: string): ApiResponse {
     errorCount: validationErrors.length,
     errors: validationErrors
   };
+}
+
+export function checkMissingColumnsFromData(
+  data: Record<string, any>[],
+  queryType: string
+): void {
+  const requiredFields =
+    queryType === 'chat'
+      ? ['First Name', 'Country Code', 'Number']
+      : ['Name', 'Country Code', 'Phone'];
+
+  if (!Array.isArray(data) || data.length === 0) {
+    throw new Error('Uploaded file is empty or invalid');
+  }
+
+  // Get keys from the first row and normalize
+  const actualColumns = Object.keys(data[0]).map(key => key.trim());
+
+  const missingColumns = requiredFields.filter(
+    field => !actualColumns.includes(field)
+  );
+
+  if (missingColumns.length > 0) {
+    throw new Error(`Missing required columns: ${missingColumns.join(', ')}`);
+  }
 }
