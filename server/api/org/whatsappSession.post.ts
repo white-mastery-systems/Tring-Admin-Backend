@@ -20,8 +20,8 @@ export default defineEventHandler(async (event) => {
        getOrgPlanUsage(organizationId, "chat"),
        getAdminByOrgId(organizationId)
     ])
-    const adminCountry = adminDetail?.address?.country || "India"
-    const planPricingDetail = await getSubcriptionPlanDetailByPlanCode(organizationId, adminCountry)
+    const adminCountry = adminDetail?.address?.country || "India" 
+    const planPricingDetail = await getSubcriptionPlanDetailByPlanCode(orgPlanUsage?.pricingPlanCode!, adminCountry)
     
     let whatsappWalletBalance = orgDetail?.wallet || 0
     
