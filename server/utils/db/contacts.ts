@@ -37,7 +37,7 @@ const zodChatImportContacts = z.object({
         message: "Invalid country code format",
       })
   ]),
-  "Number": z.union([
+  "Phone": z.union([
     z.string().refine((val) => /^\+?\d+$/.test(val.trim()), {
       message: "Invalid phone number format",
     }),
@@ -52,9 +52,9 @@ const zodChatImportContacts = z.object({
     return false; // If country code is not found
   }
 
-  const phoneNumber = typeof data["Number"] === "string" 
-        ? data["Number"] 
-        : data["Number"].toString();
+  const phoneNumber = typeof data["Phone"] === "string" 
+        ? data["Phone"] 
+        : data["Phone"].toString();
 
   const cleanedPhone = phoneNumber.replace(/[^\d]/g, "").length;
   
@@ -329,7 +329,7 @@ export const constructData = (uniqueContactsData: any, type: string, organizatio
         lastName: i["Last Name"],
         email: i["Email"],
         countryCode: `+${i["Country Code"]}`,
-        phone: i["Number"],
+        phone: i["Phone"],
         organizationId
       } 
     : 
@@ -344,24 +344,26 @@ export const constructData = (uniqueContactsData: any, type: string, organizatio
     })
 }
 
+
 export const parseContactsFormDataFile = async ({ file, fileType, queryType } : {
     file: any,
     fileType: string,
     queryType: string
   }) => {
   try {
+    const requiredFields = queryType === "chat" ? ["First Name", "Country Code", "Phone"] : ["Name", "Country Code", "Phone"]
+   
     let parsedData;
     if (fileType === "csv") {
-      parsedData = await parseCSV(file.toString());
+      parsedData = await parseCSV(file.toString(), requiredFields);
     } else if (fileType === "xlsx" || fileType === "xls") {
-      parsedData = parseExcelBuffer(file);
+      parsedData = parseExcelBuffer(file, requiredFields);
     } else {
       throw new Error("Unsupported file format");
     }
 
     if (!parsedData || !parsedData.length) throw new Error("The uploaded file is empty");
-
-    const requiredFields = queryType === "chat" ? ["First Name", "Country Code", "Number"] : ["Name", "Country Code", "Phone"]
+    // return parsedData
 
     checkMissingColumnsFromData(parsedData, queryType);
 
@@ -370,14 +372,7 @@ export const parseContactsFormDataFile = async ({ file, fileType, queryType } : 
       for (const field of requiredFields) {
         if (!row[field] || String(row[field]).trim() === "") {
           throw new Error(`Row ${i + 2} is missing required field: ${field}` // +2 to account for header + 0-index
-          );
-        }
-      }
-
-      // Remove extra fields
-      for (const key in row) {
-        if (!requiredFields.includes(key)) {
-          delete row[key];
+          );  
         }
       }
     }
@@ -402,18 +397,12 @@ export const parseContactsFormDataFile = async ({ file, fileType, queryType } : 
     }
 
     const validContactData = apiResponse?.validData.map((contact: any) => {
-      if (queryType === "chat") {
-        return {
-          ...contact,
-          Number: contact.Number ? String(contact.Number) : null, // Convert Number to string
-        };
-      } else {
-        return {
-          ...contact,
-          Phone: contact.Phone ? String(contact.Phone) : null, // Convert Phone to string
-        };
-      }
+      return {
+        ...contact,
+        Phone: contact.Phone ? String(contact.Phone) : null, // Convert Phone to string
+      };
     });
+    
 
     return validContactData;
   } catch (error: any) {
@@ -502,7 +491,7 @@ export function checkMissingColumnsFromData(
 ): void {
   const requiredFields =
     queryType === 'chat'
-      ? ['First Name', 'Country Code', 'Number']
+      ? ['First Name', 'Country Code', 'Phone']
       : ['Name', 'Country Code', 'Phone'];
 
   if (!Array.isArray(data) || data.length === 0) {
