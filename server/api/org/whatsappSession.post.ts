@@ -14,22 +14,40 @@ export default defineEventHandler(async (event) => {
   try {
     const { organizationId, pid, mobile } = body
     
-    const [orgZohoSubscription, orgDetail, orgPlanUsage] = await Promise.all([
+    const [orgZohoSubscription, orgDetail, orgPlanUsage, adminDetail] = await Promise.all([
        getOrgZohoSubscription(organizationId, "chat"),
        getOrganizationById(organizationId),
-       getOrgPlanUsage(organizationId, "chat")
+       getOrgPlanUsage(organizationId, "chat"),
+       getAdminByOrgId(organizationId)
     ])
+    const adminCountry = adminDetail?.address?.country || "India" 
+    const planPricingDetail = await getSubcriptionPlanDetailByPlanCode(orgPlanUsage?.pricingPlanCode!, adminCountry)
     
     let whatsappWalletBalance = orgDetail?.wallet || 0
-  
+    
     const reduceAmount = countriesData.find((item)=> item.dial_code == body.countryCode)?.WhatsappSessionCost || 1.5
+   
     if(orgZohoSubscription?.subscriptionStatus !== "active" && whatsappWalletBalance < reduceAmount) {
       return { status: false, whatsappWalletBalance, organizationName: orgDetail?.name, revisited: false }
     }
    
     const whatsappSessionPrice = parseFloat((1 * reduceAmount).toFixed(2));
     whatsappWalletBalance = Math.max(0, parseFloat((whatsappWalletBalance - whatsappSessionPrice).toFixed(2)));
-  
+    
+    const usedSessions = (orgPlanUsage?.interactionsUsed || 0) + 1 
+    const maxSessions = planPricingDetail?.sessions || 0
+    
+    let totalExtraSessions = orgPlanUsage?.extraInteractionsUsed || 0
+    
+    if(usedSessions > maxSessions) {
+      const extraWhatsappSessionPrice =  (1 * planPricingDetail?.extraSessionCost!) + reduceAmount
+      if(extraWhatsappSessionPrice > whatsappWalletBalance) {
+        return { status: false, whatsappWalletBalance, organizationName: orgDetail?.name, revisited: false }
+      } else {
+        totalExtraSessions = totalExtraSessions + 1
+        whatsappWalletBalance = Math.max(0, parseFloat((whatsappWalletBalance - extraWhatsappSessionPrice).toFixed(2)));
+      }
+    }
     const whatsappSessionExist = await getOrgWhatsappSessions(organizationId, pid, mobile)
   
     if (whatsappSessionExist) {
@@ -41,7 +59,10 @@ export default defineEventHandler(async (event) => {
         await Promise.all([
           createOrgWhatsappSession(body),
           updateOrganization(organizationId, { wallet: whatsappWalletBalance }),
-          updateSubscriptionPlanUsageById(orgPlanUsage?.id!, { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 })
+          updateSubscriptionPlanUsageById(orgPlanUsage?.id!, {
+            interactionsUsed: usedSessions,
+            extraInteractionsUsed: totalExtraSessions
+          })
         ])
         return { status: true, whatsappWalletBalance, organizationName: orgDetail?.name, revisited: true }
       }
@@ -50,7 +71,10 @@ export default defineEventHandler(async (event) => {
       await Promise.all([
         createOrgWhatsappSession(body),
         updateOrganization(organizationId, { wallet: whatsappWalletBalance }),
-        updateSubscriptionPlanUsageById(orgPlanUsage?.id!, { interactionsUsed: (orgPlanUsage?.interactionsUsed || 0) + 1 })
+        updateSubscriptionPlanUsageById(orgPlanUsage?.id!, { 
+          interactionsUsed: usedSessions,
+          extraInteractionsUsed: totalExtraSessions
+        })
       ])
       return { status: true, whatsappWalletBalance, organizationName: orgDetail?.name, revisited: false }
     }

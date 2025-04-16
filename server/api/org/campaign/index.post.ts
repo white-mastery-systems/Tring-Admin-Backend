@@ -33,6 +33,14 @@ export default defineEventHandler(async (event) => {
 
   const body = await isValidBodyHandler(event, zodInsertCampaign);
 
+  const type = body?.contactMethod === "whatsapp" ? "chat" : "voice"
+
+  const orgSubscription = await getOrgZohoSubscription(organizationId, type)
+
+  if (orgSubscription?.subscriptionStatus !== "active") {
+    return errorResponse(event, 400, "Subscription is not active");
+  }
+
   const isAlreadyExist = await checkCampaignNameExist(
     organizationId,
     body?.campaignName,
@@ -72,17 +80,6 @@ export default defineEventHandler(async (event) => {
       data?.bucketId,
     );
                                                                                                                                                          
-    const orgPlanUsage = await getOrgPlanUsage(organizationId, "chat")
-    const pricingInformation = await getPricingInformation(orgPlanUsage?.pricingPlanCode!)
-
-    const usedSessions = orgPlanUsage?.interactionsUsed || 0
-    const maxSessions = pricingInformation?.sessions || 0
-    const availableSessions = Math.max(maxSessions - usedSessions, 0)
-
-    if (chatbotContactList.length > availableSessions) {
-      return errorResponse(event, 400, "Insufficient sessions to schedule campaign");
-    }
-
     const integrationData = await getIntegrationById(
       organizationId,
       data?.botConfig?.integrationId,
