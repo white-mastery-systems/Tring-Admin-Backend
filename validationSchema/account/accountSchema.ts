@@ -15,9 +15,6 @@ const addressSchema = z.object({
     .string({ required_error: "Zip Code Is Required" })
     .min(1, "Zip Code Is Required")
     .regex(/^\d+$/, "Zip Code Must Be Numeric"),
-  // zipCode: z
-  //   .string({ required_error: "zipCode is required" })
-  //   .min(1, "zipCode is required"),
 });
 
 export const accountSchema = toTypedSchema(
@@ -38,9 +35,6 @@ export const accountSchema = toTypedSchema(
         .max(15, "GST number must be 15 characters")
         .min(15, "GST number must be 15 characters")
         .optional(),
-        // .refine((val) => (val?.length > 0 ? val?.length === 15 : false), {
-        //   message: "GST number must be exactly 15 characters if provided",
-        // }),
       logo: z.object({}).optional(),
       email: z
         .string({ required_error: "Email is required" })
@@ -69,14 +63,6 @@ export const accountSchema = toTypedSchema(
     }).superRefine((data, ctx) => {
 
       if (data.email && data.email.length > 0) {
-        // const localPart = data.email.split('@')[0];
-        // if (localPart.length < 6) {
-        //   ctx.addIssue({
-        //     code: z.ZodIssueCode.custom,
-        //     message: "The part before '@' must have at least 6 characters",
-        //     path: ["email"],
-        //   });
-        // }
         if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(data.email)) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
@@ -118,7 +104,6 @@ export const accountSchema = toTypedSchema(
           path: ["metadata", "otherRole"], // Field with the issue
         });
       }
-      // console.log(data.gstType === "business_gst", "validation")
       // Conditionally require GST if GST Type is provided
       if ((data.gstType === "business_gst") && data.gstType.length > 0 && (!data.gst || data.gst.length !== 15)) {
           ctx.addIssue({
@@ -128,20 +113,4 @@ export const accountSchema = toTypedSchema(
           });
         }
     }),
-    // .refine((data) => data.password === data.confirmPassword, {
-    //   message: "Passwords do not match.",
-    //   path: ["confirmPassword"], // Point to the field that has the issue
-    // })
-    // .refine(
-    //   (data) => {
-    //     if (data.metadata.role.toLowerCase() === "other") {
-    //       return data.metadata.otherRole && data.metadata.otherRole.length >= 1;
-    //     }
-    //     return true;
-    //   },
-    //   {
-    //     message: "Other role must be provided",
-    //     path: ["metadata", "otherRole"], // Path where error will be shown
-    //   },
-    // ),
 );
