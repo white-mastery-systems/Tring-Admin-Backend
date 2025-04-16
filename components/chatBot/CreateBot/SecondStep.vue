@@ -61,6 +61,12 @@ const handleLogoChange = (event: any) => {
     reader.readAsDataURL(logoData.value);
   }
 };
+const inputFieldEnterPrevent = (event: any) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+}
 </script>
 
 <template>
@@ -84,13 +90,13 @@ const handleLogoChange = (event: any) => {
     <!-- {{ props }} || asdad -->
     <!-- ✅ Company Name & Chatbot Name fields -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <TextField label="Company Name" name="COMPANY" class="text-[10px] sm:text-[10px] md:text-[14px]"
-        placeholder="Enter Your Company Name" v-model="NAME" />
+      <TextField @keydown="inputFieldEnterPrevent($event)" label="Company Name" name="COMPANY"
+        class="text-[10px] sm:text-[10px] md:text-[14px]" placeholder="Enter Your Company Name" v-model="NAME" />
 
-      <TextField label="Chatbot Name" name="BotName" class="text-[10px] sm:text-[10px] md:text-[14px]"
-        placeholder="Enter Your Chatbot Name" v-model="BotName" />
-      <TextField label="Chat Agent Name" name="NAME" class="text-[10px] sm:text-[10px] md:text-[14px]"
-        placeholder="Enter Your Chat Agent Name" v-model="COMPANY" />
+      <TextField @keydown="inputFieldEnterPrevent($event)" label="Chatbot Name" name="BotName"
+        class="text-[10px] sm:text-[10px] md:text-[14px]" placeholder="Enter Your Chatbot Name" v-model="BotName" />
+      <TextField @keydown="inputFieldEnterPrevent($event)" label="Chat Agent Name" name="NAME"
+        class="text-[10px] sm:text-[10px] md:text-[14px]" placeholder="Enter Your Chat Agent Name" v-model="COMPANY" />
     </div>
 
     <div class="flex flex-col gap-[6px]">

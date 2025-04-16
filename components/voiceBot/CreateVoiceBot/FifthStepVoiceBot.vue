@@ -281,7 +281,7 @@ const apikeyunmasking = ($event: Event) => {
     </div>
     <div>
       <span class="font-bold text-[12px] sm:text-[12px] md:text-[14px]">Text-To-Speech (TTS) Setup</span>
-      <div class="flex items-center grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
         <SelectField v-model="provider_tts" name="provider_tts" label="Provider" placeholder="Select provider"
           :options="providersTTS" />
         <!-- {{provider_tts}} -->
@@ -300,10 +300,8 @@ const apikeyunmasking = ($event: Event) => {
 
         <SelectField v-if="provider_tts != 'tring' && provider_tts != 'google' && provider_tts != 'deepgram'"
           label="voice" name="voice" :options="formattedElevenlabsVoiceList" placeholder="voice" />
-        <div class="flex flex-col gap-4 pt-1">
-          <TextField class="mt-4" v-if="provider_tts === 'google'" v-model="name" type="text" label="Name" name="name"
+          <TextField v-if="provider_tts === 'google'" v-model="name" type="text" label="Name" name="name"
             placeholder="Name" />
-        </div>
       </div>
     </div>
     <div>

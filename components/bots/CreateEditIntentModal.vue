@@ -3,9 +3,6 @@
     <form @submit="handleCreateEditIntent" class="space-y-3">
       <SelectField name="intent" :multiple="false" :required="true" label="Actions"
         helperText="Please choose an action before proceeding." placeholder="Select Intent" :options="intents" />
-      <!-- <UiSelectItem v-for="intent in intents" :value="intent.value">{{
-        intent.label
-      }}</UiSelectItem> -->
       <div v-if="values.intent === 'location' || values.intent === 'virtual_tour'">
         <TextField name="link" label="Add Link" helperText="Enter intent link"
           placeholder="Eg: enter your preferred value" />
@@ -30,36 +27,12 @@
             {{ errors.file }}
           </span>
         </div>
-        <!-- <p v-if="selectedFileName" class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
-          {{ selectedFileName }}
-        </p> -->
-        <!-- {{ selectedFileName }} || asda -->
         <p v-if="selectedFileName.length"
           class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
           <span v-for="(fileName, index) in selectedFileName" :key="index" class="block">
             {{ fileName }}
           </span>
         </p>
-
-        <!-- <p v-if="selectedFileName?.length"
-          class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
-          <span v-for="(fileName, index) in selectedFileName" :key="index" class="block">
-            {{ fileName }}
-          </span>
-        </p> -->
-        <!-- <div>
-          <p v-if="selectedFileName.length"
-            class="mt-2 max-w-[100%] text-wrap break-words break-all text-sm text-gray-600">
-            <span v-for="(fileName, index) in selectedFileName" :key="index" class="block">
-              {{ fileName }}
-            </span>
-          </p>
-        </div> -->
-
-        <!-- <div class="mt-3">
-          <TextField name="fileName" label="Intent Name" helperText="Enter a unique name to identify the intent"
-            placeholder="Eg:Amenties" />
-        </div> -->
       </div>
       <div class="flex justify-end">
         <UiButton color="primary" type="submit" class="mt-2" :loading="isLoading">
@@ -75,7 +48,7 @@
   import { useForm } from "vee-validate";
   import { ref } from "vue";
   import { createEditIntentValidation } from "~/validationSchema/createEditIntentValidation";
-  const route = useRoute("chat-bot-id-intent-management");
+  const route = useRoute();
   const intents = [
     {
       label: "Location",
@@ -143,20 +116,11 @@
       }>(`/api/bots/${botDetails.id}/intents/${value.id}`);
       setFieldValue("intent", intentDetails.intent);
       if (intentDetails?.link) setFieldValue("link", intentDetails?.link);
-      // fileRef.value =
-      //   intentDetails?.uploads?.map(
-      //     (file: any) =>
-      //       new File([file.content], file.name, { type: file.type }),
-      //   ) || [];
        fileRef.value =
       intentDetails?.uploads?.map(
         (file) => new File([file.content], file.name, { type: file.type })) || [];
-      // selectedFileName.value = intentDetails?.uploads
-      //   ?.map((file: any) => file.name)
-      //   .join(",");
       selectedFileName.value =
           intentDetails?.uploads?.map((file) => file.name) || [];
-      // setFieldValue("fileName", intentDetails.fileName); // need fileName value from api response
     },
     { deep: true },
   );

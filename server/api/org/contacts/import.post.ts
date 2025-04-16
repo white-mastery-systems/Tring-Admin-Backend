@@ -18,11 +18,10 @@ export default defineEventHandler(async(event) => {
     const ext = filename?.split(".").pop().toLowerCase();
 
     const validContactData = await parseContactsFormDataFile({ file: data, fileType: ext, queryType: query.type })
+    // return validContactData
 
     // Extract phone numbers
-    const phoneNumbers = query.type === "chat"
-      ? validContactData.map((i: any) => i["Number"]).filter(Boolean)
-      : validContactData.map((i: any) => i["Phone"]).filter(Boolean);
+    const phoneNumbers = validContactData.map((i: any) => i["Phone"]).filter(Boolean);
 
     // Query the database to find existing phone numbers
     const existingContacts = query.type === "chat"
@@ -32,9 +31,7 @@ export default defineEventHandler(async(event) => {
     const existingPhoneNumbers = new Set(existingContacts.map((contact: any) => contact.phone));
 
     // Filter unique contacts not in the database
-    const uniqueContactsData = query.type === "chat"
-      ? validContactData.filter((contact: any) => !existingPhoneNumbers.has(contact["Number"]))
-      : validContactData.filter((contact: any) => !existingPhoneNumbers.has(contact["Phone"]));
+    const uniqueContactsData = validContactData.filter((contact: any) => !existingPhoneNumbers.has(contact["Phone"]));
 
     if (!uniqueContactsData.length) return errorResponse(event, 400, "No unique phone numbers found to insert")
     

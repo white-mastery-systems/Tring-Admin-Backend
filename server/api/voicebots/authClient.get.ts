@@ -11,7 +11,6 @@ export default defineEventHandler(async (event) => {
   const incomingPhoneNumber = (`+${query.phoneNumber}`).replace(/\s+/g, "")
 
   const voiceBotDetail: any = await getVoicebotDetailByPhoneNumber(incomingPhoneNumber)
-
   if (!voiceBotDetail) return errorResponse(event, 400, "Mobile number does not exist")
   
   if (!voiceBotDetail.active) return errorResponse(event, 400, "Bot is not active")
@@ -60,7 +59,7 @@ export default defineEventHandler(async (event) => {
   let extraMinutes = 0
   const orgWalletMinutes = orgDetail?.wallet || 0
 
-  if(currentDate > currentMonthEndDate && voicebotPlan?.pricingPlanCode !== "voice_free") {
+  if(currentDate > currentMonthEndDate) {
     await updateOrgZohoSubscription(organizationId, "voice", { subscriptionStatus: "inactive" })
     return errorResponse(event, 500, "Subscription plan has expired")
   }

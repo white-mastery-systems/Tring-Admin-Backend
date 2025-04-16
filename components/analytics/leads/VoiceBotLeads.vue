@@ -5,7 +5,7 @@
       <UiInput v-model="props.filters.q" @input="props.filters.page = '1'"
         class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0"
         placeholder=" Search Leads..." />
-      <BotFilter v-model="filters.botId" />
+      <BotFilter v-model="filters.botId" :botType="'voice'" />
       <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
         @change="onDateChange" />
       <UiButton color="primary" @click="emitClearFilters" class="ml-2">Clear Filters</UiButton>

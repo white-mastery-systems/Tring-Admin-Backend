@@ -20,7 +20,27 @@ import { z } from "zod";
       .string()
       .optional(),
     templateName: z.string().optional(),
-    callsPerTrigger: z.number({ required_error: "Calls per trigger is required." }).min(1, { message: "Calls per trigger is required." }),
+    // callsPerTrigger: z.number({ required_error: "Calls per trigger is required." }).min(1, { message: "Calls per trigger is required." }),
+    // callsPerTrigger: z
+    //       .union([
+    //         z.string().transform((val) => {
+    //           const parsed = parseInt(val);
+    //           return isNaN(parsed) ? undefined : parsed;
+    //         }),
+    //         z.number({ required_error: "Calls per trigger is required." }).min(1, { message: "Calls per trigger is required." })
+    //       ])
+    //       .optional()
+    //       .refine((val) => val === undefined || val >= 1, { 
+    //         message: "Calls per trigger is required and must be at least 1." 
+    //       }),
+    callsPerTrigger: z
+      .union([
+        z.string({ required_error: "Calls per trigger is required." }).transform((val) => {
+          const parsed = parseInt(val);
+          return isNaN(parsed) ? undefined : parsed;
+        }),
+        z.number({ required_error: "Calls per trigger is required." }).min(1, { message: "Calls per trigger is required." })
+      ]),
   })
   .superRefine((data, ctx) => {
     const isWhatsApp = data.contactMethod === "whatsapp";

@@ -71,6 +71,10 @@ const props = defineProps({
     type: String,
     default: "all",
   },
+  botType: {
+    type: String,
+    default: "chat",
+  }
 });
 const emit = defineEmits(["update:modelValue"]);
 interface Bot {
@@ -79,7 +83,7 @@ interface Bot {
 }
 const bot = ref(props.modelValue);
 
-const { status, data: bots } = await useLazyFetch<Bot[]>("/api/bots", {
+const { status, data: bots, refresh: botDetailsRefresh } = await useLazyFetch<Bot[]>((props.botType === "chat") ? "/api/bots" : "/api/voicebots", {
   server: false,
   default: () => [],
   transform: (bots) => bots.map((bot) => ({ value: bot.id, content: bot.name })),
@@ -88,7 +92,6 @@ const { status, data: bots } = await useLazyFetch<Bot[]>("/api/bots", {
 watchEffect(() => {
   bot.value = props.modelValue;
 });
-
 // Watch for changes in bot and emit the updated value to the parent
 watch(bot, (newValue) => {
   emit("update:modelValue", newValue);

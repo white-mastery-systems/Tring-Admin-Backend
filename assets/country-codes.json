@@ -1,2088 +1,2358 @@
 [
-    {
-        "name": "India",
-        "flag": "🇮🇳",
-        "code": "IN",
-        "dial_code": "+91",
-        "leadMessageCost":0.4,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "United States",
-        "flag": "🇺🇸",
-        "code": "US",
-        "dial_code": "+1",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "United Kingdom",
-        "flag": "🇬🇧",
-        "code": "GB",
-        "dial_code": "+44",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Afghanistan",
-        "flag": "🇦🇫",
-        "code": "AF",
-        "dial_code": "+93",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Åland Islands",
-        "flag": "🇦🇽",
-        "code": "AX",
-        "dial_code": "+358",
-        "leadMessageCost": 0.5,
-        "WhatsappSessionCost": 1.5
-    },
-    {
-        "name": "Albania",
-        "flag": "🇦🇱",
-        "code": "AL",
-        "dial_code": "+355",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Algeria",
-        "flag": "🇩🇿",
-        "code": "DZ",
-        "dial_code": "+213",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "American Samoa",
-        "flag": "🇦🇸",
-        "code": "AS",
-        "dial_code": "+1684",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Andorra",
-        "flag": "🇦🇩",
-        "code": "AD",
-        "dial_code": "+376",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 6
-    },
-    {
-        "name": "Angola",
-        "flag": "🇦🇴",
-        "code": "AO",
-        "dial_code": "+244",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Anguilla",
-        "flag": "🇦🇮",
-        "code": "AI",
-        "dial_code": "+1264",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Antarctica",
-        "flag": "🇦🇶",
-        "code": "AQ",
-        "dial_code": "+672",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 6
-    },
-    {
-        "name": "Antigua and Barbuda",
-        "flag": "🇦🇬",
-        "code": "AG",
-        "dial_code": "+1268",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Argentina",
-        "flag": "🇦🇷",
-        "code": "AR",
-        "dial_code": "+54",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": [
-            6,
-            7,
-            8
-        ]
-    },
-    {
-        "name": "Armenia",
-        "flag": "🇦🇲",
-        "code": "AM",
-        "dial_code": "+374",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 6
-    },
-    {
-        "name": "Aruba",
-        "flag": "🇦🇼",
-        "code": "AW",
-        "dial_code": "+297",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Australia",
-        "flag": "🇦🇺",
-        "code": "AU",
-        "dial_code": "+61",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Austria",
-        "flag": "🇦🇹",
-        "code": "AT",
-        "dial_code": "+43",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": [
-            10,
-            11
-        ]
-    },
-    {
-        "name": "Azerbaijan",
-        "flag": "🇦🇿",
-        "code": "AZ",
-        "dial_code": "+994",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Bahamas",
-        "flag": "🇧🇸",
-        "code": "BS",
-        "dial_code": "+1242",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Bahrain",
-        "flag": "🇧🇭",
-        "code": "BH",
-        "dial_code": "+973",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Bangladesh",
-        "flag": "🇧🇩",
-        "code": "BD",
-        "dial_code": "+880",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Barbados",
-        "flag": "🇧🇧",
-        "code": "BB",
-        "dial_code": "+1246",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Belarus",
-        "flag": "🇧🇾",
-        "code": "BY",
-        "dial_code": "+375",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Belgium",
-        "flag": "🇧🇪",
-        "code": "BE",
-        "dial_code": "+32",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Belize",
-        "flag": "🇧🇿",
-        "code": "BZ",
-        "dial_code": "+501",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Benin",
-        "flag": "🇧🇯",
-        "code": "BJ",
-        "dial_code": "+229",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Bermuda",
-        "flag": "🇧🇲",
-        "code": "BM",
-        "dial_code": "+1441",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Bhutan",
-        "flag": "🇧🇹",
-        "code": "BT",
-        "dial_code": "+975",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Bolivia, Plurinational State of bolivia",
-        "flag": "🇧🇴",
-        "code": "BO",
-        "dial_code": "+591",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Bosnia and Herzegovina",
-        "flag": "🇧🇦",
-        "code": "BA",
-        "dial_code": "+387",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Botswana",
-        "flag": "🇧🇼",
-        "code": "BW",
-        "dial_code": "+267",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Bouvet Island",
-        "flag": "🇧🇻",
-        "code": "BV",
-        "dial_code": "+47",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Brazil",
-        "flag": "🇧🇷",
-        "code": "BR",
-        "dial_code": "+55",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 11
-    },
-    {
-        "name": "British Indian Ocean Territory",
-        "flag": "🇮🇴",
-        "code": "IO",
-        "dial_code": "+246",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Brunei Darussalam",
-        "flag": "🇧🇳",
-        "code": "BN",
-        "dial_code": "+673",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Bulgaria",
-        "flag": "🇧🇬",
-        "code": "BG",
-        "dial_code": "+359",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Burkina Faso",
-        "flag": "🇧🇫",
-        "code": "BF",
-        "dial_code": "+226",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Burundi",
-        "flag": "🇧🇮",
-        "code": "BI",
-        "dial_code": "+257",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Cambodia",
-        "flag": "🇰🇭",
-        "code": "KH",
-        "dial_code": "+855",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Cameroon",
-        "flag": "🇨🇲",
-        "code": "CM",
-        "dial_code": "+237",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Cape Verde",
-        "flag": "🇨🇻",
-        "code": "CV",
-        "dial_code": "+238",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Cayman Islands",
-        "flag": "🇰🇾",
-        "code": "KY",
-        "dial_code": "+345",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Central African Republic",
-        "flag": "🇨🇫",
-        "code": "CF",
-        "dial_code": "+236",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Chad",
-        "flag": "🇹🇩",
-        "code": "TD",
-        "dial_code": "+235",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 6
-    },
-    {
-        "name": "Chile",
-        "flag": "🇨🇱",
-        "code": "CL",
-        "dial_code": "+56",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "China",
-        "flag": "🇨🇳",
-        "code": "CN",
-        "dial_code": "+86",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 11
-    },
-    {
-        "name": "Colombia",
-        "flag": "🇨🇴",
-        "code": "CO",
-        "dial_code": "+57",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Comoros",
-        "flag": "🇰🇲",
-        "code": "KM",
-        "dial_code": "+269",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Congo",
-        "flag": "🇨🇬",
-        "code": "CG",
-        "dial_code": "+242",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Congo, The Democratic Republic of the Congo",
-        "flag": "🇨🇩",
-        "code": "CD",
-        "dial_code": "+243",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Cook Islands",
-        "flag": "🇨🇰",
-        "code": "CK",
-        "dial_code": "+682",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 5
-    },
-    {
-        "name": "Costa Rica",
-        "flag": "🇨🇷",
-        "code": "CR",
-        "dial_code": "+506",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Cote d'Ivoire",
-        "flag": "🇨🇮",
-        "code": "CI",
-        "dial_code": "+225",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Croatia",
-        "flag": "🇭🇷",
-        "code": "HR",
-        "dial_code": "+385",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Cuba",
-        "flag": "🇨🇺",
-        "code": "CU",
-        "dial_code": "+53",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Cyprus",
-        "flag": "🇨🇾",
-        "code": "CY",
-        "dial_code": "+357",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Czech Republic",
-        "flag": "🇨🇿",
-        "code": "CZ",
-        "dial_code": "+420",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Denmark",
-        "flag": "🇩🇰",
-        "code": "DK",
-        "dial_code": "+45",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Djibouti",
-        "flag": "🇩🇯",
-        "code": "DJ",
-        "dial_code": "+253",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Dominica",
-        "flag": "🇩🇲",
-        "code": "DM",
-        "dial_code": "+1767",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Dominican Republic",
-        "flag": "🇩🇴",
-        "code": "DO",
-        "dial_code": "+1849",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Ecuador",
-        "flag": "🇪🇨",
-        "code": "EC",
-        "dial_code": "+593",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Egypt",
-        "flag": "🇪🇬",
-        "code": "EG",
-        "dial_code": "+20",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "El Salvador",
-        "flag": "🇸🇻",
-        "code": "SV",
-        "dial_code": "+503",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Equatorial Guinea",
-        "flag": "🇬🇶",
-        "code": "GQ",
-        "dial_code": "+240",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Eritrea",
-        "flag": "🇪🇷",
-        "code": "ER",
-        "dial_code": "+291",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Estonia",
-        "flag": "🇪🇪",
-        "code": "EE",
-        "dial_code": "+372",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Ethiopia",
-        "flag": "🇪🇹",
-        "code": "ET",
-        "dial_code": "+251",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Falkland Islands (Malvinas)",
-        "flag": "🇫🇰",
-        "code": "FK",
-        "dial_code": "+500",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 5
-    },
-    {
-        "name": "Faroe Islands",
-        "flag": "🇫🇴",
-        "code": "FO",
-        "dial_code": "+298",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 5
-    },
-    {
-        "name": "Fiji",
-        "flag": "🇫🇯",
-        "code": "FJ",
-        "dial_code": "+679",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "France",
-        "flag": "🇫🇷",
-        "code": "FR",
-        "dial_code": "+33",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "French Guiana",
-        "flag": "🇬🇫",
-        "code": "GF",
-        "dial_code": "+594",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "French Polynesia",
-        "flag": "🇵🇫",
-        "code": "PF",
-        "dial_code": "+689",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "French Southern Territories",
-        "flag": "🇹🇫",
-        "code": "TF",
-        "dial_code": "+262",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Gabon",
-        "flag": "🇬🇦",
-        "code": "GA",
-        "dial_code": "+241",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Gambia",
-        "flag": "🇬🇲",
-        "code": "GM",
-        "dial_code": "+220",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Georgia",
-        "flag": "🇬🇪",
-        "code": "GE",
-        "dial_code": "+995",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Germany",
-        "flag": "🇩🇪",
-        "code": "DE",
-        "dial_code": "+49",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Ghana",
-        "flag": "🇬🇭",
-        "code": "GH",
-        "dial_code": "+233",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Gibraltar",
-        "flag": "🇬🇮",
-        "code": "GI",
-        "dial_code": "+350",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Greece",
-        "flag": "🇬🇷",
-        "code": "GR",
-        "dial_code": "+30",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Greenland",
-        "flag": "🇬🇱",
-        "code": "GL",
-        "dial_code": "+299",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 6
-    },
-    {
-        "name": "Grenada",
-        "flag": "🇬🇩",
-        "code": "GD",
-        "dial_code": "+1473",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Guadeloupe",
-        "flag": "🇬🇵",
-        "code": "GP",
-        "dial_code": "+590",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Guam",
-        "flag": "🇬🇺",
-        "code": "GU",
-        "dial_code": "+1671",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Guatemala",
-        "flag": "🇬🇹",
-        "code": "GT",
-        "dial_code": "+502",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Guinea",
-        "flag": "🇬🇳",
-        "code": "GN",
-        "dial_code": "+224",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Guinea-Bissau",
-        "flag": "🇬🇼",
-        "code": "GW",
-        "dial_code": "+245",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Guyana",
-        "flag": "🇬🇾",
-        "code": "GY",
-        "dial_code": "+592",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Haiti",
-        "flag": "🇭🇹",
-        "code": "HT",
-        "dial_code": "+509",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Holy See (Vatican City State)",
-        "flag": "🇻🇦",
-        "code": "VA",
-        "dial_code": "+379",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Honduras",
-        "flag": "🇭🇳",
-        "code": "HN",
-        "dial_code": "+504",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Hong Kong",
-        "flag": "🇭🇰",
-        "code": "HK",
-        "dial_code": "+852",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Hungary",
-        "flag": "🇭🇺",
-        "code": "HU",
-        "dial_code": "+36",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Iceland",
-        "flag": "🇮🇸",
-        "code": "IS",
-        "dial_code": "+354",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Indonesia",
-        "flag": "🇮🇩",
-        "code": "ID",
-        "dial_code": "+62",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 11
-    },
-    {
-        "name": "Iran, Islamic Republic of Persian Gulf",
-        "flag": "🇮🇷",
-        "code": "IR",
-        "dial_code": "+98",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 11
-    },
-    {
-        "name": "Iraq",
-        "flag": "🇮🇶",
-        "code": "IQ",
-        "dial_code": "+964",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Ireland",
-        "flag": "🇮🇪",
-        "code": "IE",
-        "dial_code": "+353",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Israel",
-        "flag": "🇮🇱",
-        "code": "IL",
-        "dial_code": "+972",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Italy",
-        "flag": "🇮🇹",
-        "code": "IT",
-        "dial_code": "+39",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Jamaica",
-        "flag": "🇯🇲",
-        "code": "JM",
-        "dial_code": "+1876",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Japan",
-        "flag": "🇯🇵",
-        "code": "JP",
-        "dial_code": "+81"
-    },
-    {
-        "name": "Jordan",
-        "flag": "🇯🇴",
-        "code": "JO",
-        "dial_code": "+962",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": [
-            8,
-            9
-        ]
-    },
-    {
-        "name": "Kazakhstan",
-        "flag": "🇰🇿",
-        "code": "KZ",
-        "dial_code": "+7",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Kenya",
-        "flag": "🇰🇪",
-        "code": "KE",
-        "dial_code": "+254",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Kiribati",
-        "flag": "🇰🇮",
-        "code": "KI",
-        "dial_code": "+686",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Korea, Democratic People's Republic of Korea",
-        "flag": "🇰🇵",
-        "code": "KP",
-        "dial_code": "+850",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": [
-            4,
-            6,
-            7,
-            13
-        ]
-    },
-    {
-        "name": "Korea, Republic of South Korea",
-        "flag": "🇰🇷",
-        "code": "KR",
-        "dial_code": "+82",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": [
-            7,
-            8
-        ]
-    },
-    {
-        "name": "Kosovo",
-        "flag": "🇽🇰",
-        "code": "XK",
-        "dial_code": "+383",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Kuwait",
-        "flag": "🇰🇼",
-        "code": "KW",
-        "dial_code": "+965",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Kyrgyzstan",
-        "flag": "🇰🇬",
-        "code": "KG",
-        "dial_code": "+996",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Laos",
-        "flag": "🇱🇦",
-        "code": "LA",
-        "dial_code": "+856",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": [
-            8,
-            9
-        ]
-    },
-    {
-        "name": "Latvia",
-        "flag": "🇱🇻",
-        "code": "LV",
-        "dial_code": "+371",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Lebanon",
-        "flag": "🇱🇧",
-        "code": "LB",
-        "dial_code": "+961",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": [
-            7,
-            8
-        ]
-    },
-    {
-        "name": "Lesotho",
-        "flag": "🇱🇸",
-        "code": "LS",
-        "dial_code": "+266",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Liberia",
-        "flag": "🇱🇷",
-        "code": "LR",
-        "dial_code": "+231",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": [
-            8,
-            9
-        ]
-    },
-    {
-        "name": "Libyan Arab Jamahiriya",
-        "flag": "🇱🇾",
-        "code": "LY",
-        "dial_code": "+218",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Liechtenstein",
-        "flag": "🇱🇮",
-        "code": "LI",
-        "dial_code": "+423",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Lithuania",
-        "flag": "🇱🇹",
-        "code": "LT",
-        "dial_code": "+370",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Luxembourg",
-        "flag": "🇱🇺",
-        "code": "LU",
-        "dial_code": "+352",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Macao",
-        "flag": "🇲🇴",
-        "code": "MO",
-        "dial_code": "+853",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Macedonia",
-        "flag": "🇲🇰",
-        "code": "MK",
-        "dial_code": "+389",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Madagascar",
-        "flag": "🇲🇬",
-        "code": "MG",
-        "dial_code": "+261",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Malawi",
-        "flag": "🇲🇼",
-        "code": "MW",
-        "dial_code": "+265",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": [
-            7,
-            8,
-            9
-        ]
-    },
-    {
-        "name": "Malaysia",
-        "flag": "🇲🇾",
-        "code": "MY",
-        "dial_code": "+60",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Maldives",
-        "flag": "🇲🇻",
-        "code": "MV",
-        "dial_code": "+960",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Mali",
-        "flag": "🇲🇱",
-        "code": "ML",
-        "dial_code": "+223",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Malta",
-        "flag": "🇲🇹",
-        "code": "MT",
-        "dial_code": "+356",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Marshall Islands",
-        "flag": "🇲🇭",
-        "code": "MH",
-        "dial_code": "+692",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Martinique",
-        "flag": "🇲🇶",
-        "code": "MQ",
-        "dial_code": "+596",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Mauritania",
-        "flag": "🇲🇷",
-        "code": "MR",
-        "dial_code": "+222",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Mauritius",
-        "flag": "🇲🇺",
-        "code": "MU",
-        "dial_code": "+230",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Mexico",
-        "flag": "🇲🇽",
-        "code": "MX",
-        "dial_code": "+52",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Micronesia, Federated States of Micronesia",
-        "flag": "🇫🇲",
-        "code": "FM",
-        "dial_code": "+691",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Moldova",
-        "flag": "🇲🇩",
-        "code": "MD",
-        "dial_code": "+373",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Monaco",
-        "flag": "🇲🇨",
-        "code": "MC",
-        "dial_code": "+377",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Mongolia",
-        "flag": "🇲🇳",
-        "code": "MN",
-        "dial_code": "+976",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Montenegro",
-        "flag": "🇲🇪",
-        "code": "ME",
-        "dial_code": "+382",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Montserrat",
-        "flag": "🇲🇸",
-        "code": "MS",
-        "dial_code": "+1664",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Morocco",
-        "flag": "🇲🇦",
-        "code": "MA",
-        "dial_code": "+212",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Mozambique",
-        "flag": "🇲🇿",
-        "code": "MZ",
-        "dial_code": "+258",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 12
-    },
-    {
-        "name": "Myanmar",
-        "flag": "🇲🇲",
-        "code": "MM",
-        "dial_code": "+95"
-    },
-    {
-        "name": "Namibia",
-        "flag": "🇳🇦",
-        "code": "NA",
-        "dial_code": "+264",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Nauru",
-        "flag": "🇳🇷",
-        "code": "NR",
-        "dial_code": "+674",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Nepal",
-        "flag": "🇳🇵",
-        "code": "NP",
-        "dial_code": "+977",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Netherlands",
-        "flag": "🇳🇱",
-        "code": "NL",
-        "dial_code": "+31",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Netherlands Antilles",
-        "flag": "",
-        "code": "AN",
-        "dial_code": "+599"
-    },
-    {
-        "name": "New Caledonia",
-        "flag": "🇳🇨",
-        "code": "NC",
-        "dial_code": "+687",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 6
-    },
-    {
-        "name": "New Zealand",
-        "flag": "🇳🇿",
-        "code": "NZ",
-        "dial_code": "+64",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": [
-            8,
-            9
-        ]
-    },
-    {
-        "name": "Nicaragua",
-        "flag": "🇳🇮",
-        "code": "NI",
-        "dial_code": "+505",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Niger",
-        "flag": "🇳🇪",
-        "code": "NE",
-        "dial_code": "+227",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Nigeria",
-        "flag": "🇳🇬",
-        "code": "NG",
-        "dial_code": "+234",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Niue",
-        "flag": "🇳🇺",
-        "code": "NU",
-        "dial_code": "+683",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 4
-    },
-    {
-        "name": "Northern Mariana Islands",
-        "flag": "🇲🇵",
-        "code": "MP",
-        "dial_code": "+1670",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Oman",
-        "flag": "🇴🇲",
-        "code": "OM",
-        "dial_code": "+968",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Pakistan",
-        "flag": "🇵🇰",
-        "code": "PK",
-        "dial_code": "+92",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Palau",
-        "flag": "🇵🇼",
-        "code": "PW",
-        "dial_code": "+680",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Palestinian Territory, Occupied",
-        "flag": "🇵🇸",
-        "code": "PS",
-        "dial_code": "+970",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Panama",
-        "flag": "🇵🇦",
-        "code": "PA",
-        "dial_code": "+507",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Papua New Guinea",
-        "flag": "🇵🇬",
-        "code": "PG",
-        "dial_code": "+675",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Paraguay",
-        "flag": "🇵🇾",
-        "code": "PY",
-        "dial_code": "+595",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Peru",
-        "flag": "🇵🇪",
-        "code": "PE",
-        "dial_code": "+51",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Philippines",
-        "flag": "🇵🇭",
-        "code": "PH",
-        "dial_code": "+63",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Poland",
-        "flag": "🇵🇱",
-        "code": "PL",
-        "dial_code": "+48",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Portugal",
-        "flag": "🇵🇹",
-        "code": "PT",
-        "dial_code": "+351",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Puerto Rico",
-        "flag": "🇵🇷",
-        "code": "PR",
-        "dial_code": "+1939",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Qatar",
-        "flag": "🇶🇦",
-        "code": "QA",
-        "dial_code": "+974",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Romania",
-        "flag": "🇷🇴",
-        "code": "RO",
-        "dial_code": "+40",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Rwanda",
-        "flag": "🇷🇼",
-        "code": "RW",
-        "dial_code": "+250",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Saint Helena, Ascension and Tristan Da Cunha",
-        "flag": "🇸🇭",
-        "code": "SH",
-        "dial_code": "+290",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 4
-    },
-    {
-        "name": "Saint Kitts and Nevis",
-        "flag": "🇰🇳",
-        "code": "KN",
-        "dial_code": "+1869",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Saint Lucia",
-        "flag": "🇱🇨",
-        "code": "LC",
-        "dial_code": "+1758",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Saint Pierre and Miquelon",
-        "flag": "🇵🇲",
-        "code": "PM",
-        "dial_code": "+508",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 6
-    },
-    {
-        "name": "Saint Vincent and the Grenadines",
-        "flag": "🇻🇨",
-        "code": "VC",
-        "dial_code": "+1784",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Samoa",
-        "flag": "🇼🇸",
-        "code": "WS",
-        "dial_code": "+685",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": [
-            5,
-            6,
-            7
-        ]
-    },
-    {
-        "name": "San Marino",
-        "flag": "🇸🇲",
-        "code": "SM",
-        "dial_code": "+378",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Sao Tome and Principe",
-        "flag": "🇸🇹",
-        "code": "ST",
-        "dial_code": "+239",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Saudi Arabia",
-        "flag": "🇸🇦",
-        "code": "SA",
-        "dial_code": "+966",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Senegal",
-        "flag": "🇸🇳",
-        "code": "SN",
-        "dial_code": "+221",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Serbia",
-        "flag": "🇷🇸",
-        "code": "RS",
-        "dial_code": "+381",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Seychelles",
-        "flag": "🇸🇨",
-        "code": "SC",
-        "dial_code": "+248",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Sierra Leone",
-        "flag": "🇸🇱",
-        "code": "SL",
-        "dial_code": "+232",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Singapore",
-        "flag": "🇸🇬",
-        "code": "SG",
-        "dial_code": "+65",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Slovakia",
-        "flag": "🇸🇰",
-        "code": "SK",
-        "dial_code": "+421",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Slovenia",
-        "flag": "🇸🇮",
-        "code": "SI",
-        "dial_code": "+386",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Solomon Islands",
-        "flag": "🇸🇧",
-        "code": "SB",
-        "dial_code": "+677",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Somalia",
-        "flag": "🇸🇴",
-        "code": "SO",
-        "dial_code": "+252",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": [
-            8,
-            9
-        ]
-    },
-    {
-        "name": "South Africa",
-        "flag": "🇿🇦",
-        "code": "ZA",
-        "dial_code": "+27",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "South Sudan",
-        "flag": "🇸🇸",
-        "code": "SS",
-        "dial_code": "+211",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Spain",
-        "flag": "🇪🇸",
-        "code": "ES",
-        "dial_code": "+34",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Sri Lanka",
-        "flag": "🇱🇰",
-        "code": "LK",
-        "dial_code": "+94",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Sudan",
-        "flag": "🇸🇩",
-        "code": "SD",
-        "dial_code": "+249",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Suriname",
-        "flag": "🇸🇷",
-        "code": "SR",
-        "dial_code": "+597",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": [
-            6,
-            7
-        ]
-    },
-    {
-        "name": "Eswatini",
-        "flag": "🇸🇿",
-        "code": "SZ",
-        "dial_code": "+268",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Sweden",
-        "flag": "🇸🇪",
-        "code": "SE",
-        "dial_code": "+46",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Switzerland",
-        "flag": "🇨🇭",
-        "code": "CH",
-        "dial_code": "+41",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Syrian Arab Republic",
-        "flag": "🇸🇾",
-        "code": "SY",
-        "dial_code": "+963",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Taiwan",
-        "flag": "🇹🇼",
-        "code": "TW",
-        "dial_code": "+886",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Tajikistan",
-        "flag": "🇹🇯",
-        "code": "TJ",
-        "dial_code": "+992",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Tanzania, United Republic of Tanzania",
-        "flag": "🇹🇿",
-        "code": "TZ",
-        "dial_code": "+255",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Thailand",
-        "flag": "🇹🇭",
-        "code": "TH",
-        "dial_code": "+66",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Timor-Leste",
-        "flag": "🇹🇱",
-        "code": "TL",
-        "dial_code": "+670",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Togo",
-        "flag": "🇹🇬",
-        "code": "TG",
-        "dial_code": "+228",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Tokelau",
-        "flag": "🇹🇰",
-        "code": "TK",
-        "dial_code": "+690",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 5
-    },
-    {
-        "name": "Tonga",
-        "flag": "🇹🇴",
-        "code": "TO",
-        "dial_code": "+676",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 5
-    },
-    {
-        "name": "Trinidad and Tobago",
-        "flag": "🇹🇹",
-        "code": "TT",
-        "dial_code": "+1868",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Tunisia",
-        "flag": "🇹🇳",
-        "code": "TN",
-        "dial_code": "+216",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Turkey",
-        "flag": "🇹🇷",
-        "code": "TR",
-        "dial_code": "+90",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 11
-    },
-    {
-        "name": "Turkmenistan",
-        "flag": "🇹🇲",
-        "code": "TM",
-        "dial_code": "+993",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Turks and Caicos Islands",
-        "flag": "🇹🇨",
-        "code": "TC",
-        "dial_code": "+1649",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Tuvalu",
-        "flag": "🇹🇻",
-        "code": "TV",
-        "dial_code": "+688",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 5
-    },
-    {
-        "name": "Uganda",
-        "flag": "🇺🇬",
-        "code": "UG",
-        "dial_code": "+256",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Ukraine",
-        "flag": "🇺🇦",
-        "code": "UA",
-        "dial_code": "+380",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "United Arab Emirates",
-        "flag": "🇦🇪",
-        "code": "AE",
-        "dial_code": "+971",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Uruguay",
-        "flag": "🇺🇾",
-        "code": "UY",
-        "dial_code": "+598",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 8
-    },
-    {
-        "name": "Uzbekistan",
-        "flag": "🇺🇿",
-        "code": "UZ",
-        "dial_code": "+998",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Vanuatu",
-        "flag": "🇻🇺",
-        "code": "VU",
-        "dial_code": "+678",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 5
-    },
-    {
-        "name": "Venezuela, Bolivarian Republic of Venezuela",
-        "flag": "🇻🇪",
-        "code": "VE",
-        "dial_code": "+58",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Vietnam",
-        "flag": "🇻🇳",
-        "code": "VN",
-        "dial_code": "+84",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Virgin Islands, British",
-        "flag": "🇻🇬",
-        "code": "VG",
-        "dial_code": "+1284",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 7
-    },
-    {
-        "name": "Virgin Islands, U.S.",
-        "flag": "🇻🇮",
-        "code": "VI",
-        "dial_code": "+1340",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 10
-    },
-    {
-        "name": "Wallis and Futuna",
-        "flag": "🇼🇫",
-        "code": "WF",
-        "dial_code": "+681",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 6
-    },
-    {
-        "name": "Yemen",
-        "flag": "🇾🇪",
-        "code": "YE",
-        "dial_code": "+967",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Zambia",
-        "flag": "🇿🇲",
-        "code": "ZM",
-        "dial_code": "+260",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
-    },
-    {
-        "name": "Zimbabwe",
-        "flag": "🇿🇼",
-        "code": "ZW",
-        "dial_code": "+263",
-        "leadMessageCost":0.5,
-        "WhatsappSessionCost": 1.5,
-        "phoneLength": 9
+  {
+    "name": "India",
+    "flag": "🇮🇳",
+    "code": "IN",
+    "dial_code": "+91",
+    "leadMessageCost": 0.4,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "U.S.A",
+    "flag": "🇺🇸",
+    "code": "US",
+    "dial_code": "+1",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "United Kingdom",
+    "flag": "🇬🇧",
+    "code": "GB",
+    "dial_code": "+44",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Afghanistan",
+    "flag": "🇦🇫",
+    "code": "AF",
+    "dial_code": "+93",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Aland Islands",
+    "flag": "🇦🇽",
+    "code": "AX",
+    "dial_code": "+358",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5
+  },
+  {
+    "name": "Albania",
+    "flag": "🇦🇱",
+    "code": "AL",
+    "dial_code": "+355",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Algeria",
+    "flag": "🇩🇿",
+    "code": "DZ",
+    "dial_code": "+213",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "American Samoa",
+    "flag": "🇦🇸",
+    "code": "AS",
+    "dial_code": "+1684",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Andorra",
+    "flag": "🇦🇩",
+    "code": "AD",
+    "dial_code": "+376",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 6
+  },
+  {
+    "name": "Angola",
+    "flag": "🇦🇴",
+    "code": "AO",
+    "dial_code": "+244",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Anguilla",
+    "flag": "🇦🇮",
+    "code": "AI",
+    "dial_code": "+1264",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Antarctica",
+    "flag": "🇦🇶",
+    "code": "AQ",
+    "dial_code": "+672",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 6
+  },
+  {
+    "name": "Antigua and Barbuda",
+    "flag": "🇦🇬",
+    "code": "AG",
+    "dial_code": "+1268",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Argentina",
+    "flag": "🇦🇷",
+    "code": "AR",
+    "dial_code": "+54",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": [
+      6,
+      7,
+      8
+    ]
+  },
+  {
+    "name": "Armenia",
+    "flag": "🇦🇲",
+    "code": "AM",
+    "dial_code": "+374",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 6
+  },
+  {
+    "name": "Aruba",
+    "flag": "🇦🇼",
+    "code": "AW",
+    "dial_code": "+297",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Australia",
+    "flag": "🇦🇺",
+    "code": "AU",
+    "dial_code": "+61",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Austria",
+    "flag": "🇦🇹",
+    "code": "AT",
+    "dial_code": "+43",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": [
+      10,
+      11
+    ]
+  },
+  {
+    "name": "Azerbaijan",
+    "flag": "🇦🇿",
+    "code": "AZ",
+    "dial_code": "+994",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Bahamas",
+    "flag": "🇧🇸",
+    "code": "BS",
+    "dial_code": "+1242",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Bahrain",
+    "flag": "🇧🇭",
+    "code": "BH",
+    "dial_code": "+973",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Bangladesh",
+    "flag": "🇧🇩",
+    "code": "BD",
+    "dial_code": "+880",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Barbados",
+    "flag": "🇧🇧",
+    "code": "BB",
+    "dial_code": "+1246",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Belarus",
+    "flag": "🇧🇾",
+    "code": "BY",
+    "dial_code": "+375",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Belgium",
+    "flag": "🇧🇪",
+    "code": "BE",
+    "dial_code": "+32",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Belize",
+    "flag": "🇧🇿",
+    "code": "BZ",
+    "dial_code": "+501",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Benin",
+    "flag": "🇧🇯",
+    "code": "BJ",
+    "dial_code": "+229",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Bermuda",
+    "flag": "🇧🇲",
+    "code": "BM",
+    "dial_code": "+1441",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Bhutan",
+    "flag": "🇧🇹",
+    "code": "BT",
+    "dial_code": "+975",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Bolivia",
+    "flag": "🇧🇴",
+    "code": "BO",
+    "dial_code": "+591",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Bosnia",
+    "flag": "🇧🇦",
+    "code": "BA",
+    "dial_code": "+387",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Botswana",
+    "flag": "🇧🇼",
+    "code": "BW",
+    "dial_code": "+267",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Bouvet Island",
+    "flag": "🇧🇻",
+    "code": "BV",
+    "dial_code": "+47",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Brazil",
+    "flag": "🇧🇷",
+    "code": "BR",
+    "dial_code": "+55",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 11
+  },
+  {
+    "name": "British Indian Ocean Territory",
+    "flag": "🇮🇴",
+    "code": "IO",
+    "dial_code": "+246",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Brunei",
+    "flag": "🇧🇳",
+    "code": "BN",
+    "dial_code": "+673",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Bulgaria",
+    "flag": "🇧🇬",
+    "code": "BG",
+    "dial_code": "+359",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Burkina Faso",
+    "flag": "🇧🇫",
+    "code": "BF",
+    "dial_code": "+226",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Burundi",
+    "flag": "🇧🇮",
+    "code": "BI",
+    "dial_code": "+257",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Cambodia",
+    "flag": "🇰🇭",
+    "code": "KH",
+    "dial_code": "+855",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Cameroon",
+    "flag": "🇨🇲",
+    "code": "CM",
+    "dial_code": "+237",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Cape Verde",
+    "flag": "🇨🇻",
+    "code": "CV",
+    "dial_code": "+238",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Cayman Islands",
+    "flag": "🇰🇾",
+    "code": "KY",
+    "dial_code": "+345",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Central African Republic",
+    "flag": "🇨🇫",
+    "code": "CF",
+    "dial_code": "+236",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Chad",
+    "flag": "🇹🇩",
+    "code": "TD",
+    "dial_code": "+235",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 6
+  },
+  {
+    "name": "Chile",
+    "flag": "🇨🇱",
+    "code": "CL",
+    "dial_code": "+56",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "China",
+    "flag": "🇨🇳",
+    "code": "CN",
+    "dial_code": "+86",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 11
+  },
+  {
+    "name": "Colombia",
+    "flag": "🇨🇴",
+    "code": "CO",
+    "dial_code": "+57",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Comoros",
+    "flag": "🇰🇲",
+    "code": "KM",
+    "dial_code": "+269",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Congo",
+    "flag": "🇨🇬",
+    "code": "CG",
+    "dial_code": "+242",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "DR Congo",
+    "flag": "🇨🇩",
+    "code": "CD",
+    "dial_code": "+243",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Cook Islands",
+    "flag": "🇨🇰",
+    "code": "CK",
+    "dial_code": "+682",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 5
+  },
+  {
+    "name": "Costa Rica",
+    "flag": "🇨🇷",
+    "code": "CR",
+    "dial_code": "+506",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Côte d'Ivoire",
+    "flag": "🇨🇮",
+    "code": "CI",
+    "dial_code": "+225",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Croatia",
+    "flag": "🇭🇷",
+    "code": "HR",
+    "dial_code": "+385",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Cuba",
+    "flag": "🇨🇺",
+    "code": "CU",
+    "dial_code": "+53",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Cyprus",
+    "flag": "🇨🇾",
+    "code": "CY",
+    "dial_code": "+357",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Czech Republic",
+    "flag": "🇨🇿",
+    "code": "CZ",
+    "dial_code": "+420",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Denmark",
+    "flag": "🇩🇰",
+    "code": "DK",
+    "dial_code": "+45",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Djibouti",
+    "flag": "🇩🇯",
+    "code": "DJ",
+    "dial_code": "+253",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Dominica",
+    "flag": "🇩🇲",
+    "code": "DM",
+    "dial_code": "+1767",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Dominican Republic",
+    "flag": "🇩🇴",
+    "code": "DO",
+    "dial_code": "+1849",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Ecuador",
+    "flag": "🇪🇨",
+    "code": "EC",
+    "dial_code": "+593",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Egypt",
+    "flag": "🇪🇬",
+    "code": "EG",
+    "dial_code": "+20",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "El Salvador",
+    "flag": "🇸🇻",
+    "code": "SV",
+    "dial_code": "+503",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Equatorial Guinea",
+    "flag": "🇬🇶",
+    "code": "GQ",
+    "dial_code": "+240",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Eritrea",
+    "flag": "🇪🇷",
+    "code": "ER",
+    "dial_code": "+291",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Estonia",
+    "flag": "🇪🇪",
+    "code": "EE",
+    "dial_code": "+372",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Ethiopia",
+    "flag": "🇪🇹",
+    "code": "ET",
+    "dial_code": "+251",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Falkland Islands",
+    "flag": "🇫🇰",
+    "code": "FK",
+    "dial_code": "+500",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 5
+  },
+  {
+    "name": "Faroe Islands",
+    "flag": "🇫🇴",
+    "code": "FO",
+    "dial_code": "+298",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 5
+  },
+  {
+    "name": "Fiji",
+    "flag": "🇫🇯",
+    "code": "FJ",
+    "dial_code": "+679",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "France",
+    "flag": "🇫🇷",
+    "code": "FR",
+    "dial_code": "+33",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "French Guiana",
+    "flag": "🇬🇫",
+    "code": "GF",
+    "dial_code": "+594",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "French Polynesia",
+    "flag": "🇵🇫",
+    "code": "PF",
+    "dial_code": "+689",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "French Southern Territories",
+    "flag": "🇹🇫",
+    "code": "TF",
+    "dial_code": "+262",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Gabon",
+    "flag": "🇬🇦",
+    "code": "GA",
+    "dial_code": "+241",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Gambia",
+    "flag": "🇬🇲",
+    "code": "GM",
+    "dial_code": "+220",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Georgia",
+    "flag": "🇬🇪",
+    "code": "GE",
+    "dial_code": "+995",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Germany",
+    "flag": "🇩🇪",
+    "code": "DE",
+    "dial_code": "+49",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Ghana",
+    "flag": "🇬🇭",
+    "code": "GH",
+    "dial_code": "+233",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Gibraltar",
+    "flag": "🇬🇮",
+    "code": "GI",
+    "dial_code": "+350",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Greece",
+    "flag": "🇬🇷",
+    "code": "GR",
+    "dial_code": "+30",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Greenland",
+    "flag": "🇬🇱",
+    "code": "GL",
+    "dial_code": "+299",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 6
+  },
+  {
+    "name": "Grenada",
+    "flag": "🇬🇩",
+    "code": "GD",
+    "dial_code": "+1473",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Guadeloupe",
+    "flag": "🇬🇵",
+    "code": "GP",
+    "dial_code": "+590",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Guam",
+    "flag": "🇬🇺",
+    "code": "GU",
+    "dial_code": "+1671",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Guatemala",
+    "flag": "🇬🇹",
+    "code": "GT",
+    "dial_code": "+502",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Guinea",
+    "flag": "🇬🇳",
+    "code": "GN",
+    "dial_code": "+224",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Guinea-Bissau",
+    "flag": "🇬🇼",
+    "code": "GW",
+    "dial_code": "+245",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Guyana",
+    "flag": "🇬🇾",
+    "code": "GY",
+    "dial_code": "+592",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Haiti",
+    "flag": "🇭🇹",
+    "code": "HT",
+    "dial_code": "+509",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Vatican City",
+    "flag": "🇻🇦",
+    "code": "VA",
+    "dial_code": "+379",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Honduras",
+    "flag": "🇭🇳",
+    "code": "HN",
+    "dial_code": "+504",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Hong Kong",
+    "flag": "🇭🇰",
+    "code": "HK",
+    "dial_code": "+852",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Hungary",
+    "flag": "🇭🇺",
+    "code": "HU",
+    "dial_code": "+36",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Iceland",
+    "flag": "🇮🇸",
+    "code": "IS",
+    "dial_code": "+354",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Indonesia",
+    "flag": "🇮🇩",
+    "code": "ID",
+    "dial_code": "+62",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 11
+  },
+  {
+    "name": "Iran",
+    "flag": "🇮🇷",
+    "code": "IR",
+    "dial_code": "+98",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 11
+  },
+  {
+    "name": "Iraq",
+    "flag": "🇮🇶",
+    "code": "IQ",
+    "dial_code": "+964",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Ireland",
+    "flag": "🇮🇪",
+    "code": "IE",
+    "dial_code": "+353",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Israel",
+    "flag": "🇮🇱",
+    "code": "IL",
+    "dial_code": "+972",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Italy",
+    "flag": "🇮🇹",
+    "code": "IT",
+    "dial_code": "+39",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Jamaica",
+    "flag": "🇯🇲",
+    "code": "JM",
+    "dial_code": "+1876",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Japan",
+    "flag": "🇯🇵",
+    "code": "JP",
+    "dial_code": "+81"
+  },
+  {
+    "name": "Jordan",
+    "flag": "🇯🇴",
+    "code": "JO",
+    "dial_code": "+962",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": [
+      8,
+      9
+    ]
+  },
+  {
+    "name": "Kazakhstan",
+    "flag": "🇰🇿",
+    "code": "KZ",
+    "dial_code": "+7",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Kenya",
+    "flag": "🇰🇪",
+    "code": "KE",
+    "dial_code": "+254",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Kiribati",
+    "flag": "🇰🇮",
+    "code": "KI",
+    "dial_code": "+686",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "North Korea",
+    "flag": "🇰🇵",
+    "code": "KP",
+    "dial_code": "+850",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": [
+      4,
+      6,
+      7,
+      13
+    ]
+  },
+  {
+    "name": "South Korea",
+    "flag": "🇰🇷",
+    "code": "KR",
+    "dial_code": "+82",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": [
+      7,
+      8
+    ]
+  },
+  {
+    "name": "Kosovo",
+    "flag": "🇽🇰",
+    "code": "XK",
+    "dial_code": "+383",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Kuwait",
+    "flag": "🇰🇼",
+    "code": "KW",
+    "dial_code": "+965",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Kyrgyzstan",
+    "flag": "🇰🇬",
+    "code": "KG",
+    "dial_code": "+996",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Laos",
+    "flag": "🇱🇦",
+    "code": "LA",
+    "dial_code": "+856",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": [
+      8,
+      9
+    ]
+  },
+  {
+    "name": "Latvia",
+    "flag": "🇱🇻",
+    "code": "LV",
+    "dial_code": "+371",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Lebanon",
+    "flag": "🇱🇧",
+    "code": "LB",
+    "dial_code": "+961",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": [
+      7,
+      8
+    ]
+  },
+  {
+    "name": "Lesotho",
+    "flag": "🇱🇸",
+    "code": "LS",
+    "dial_code": "+266",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Liberia",
+    "flag": "🇱🇷",
+    "code": "LR",
+    "dial_code": "+231",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": [
+      8,
+      9
+    ]
+  },
+  {
+    "name": "Libya",
+    "flag": "🇱🇾",
+    "code": "LY",
+    "dial_code": "+218",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Liechtenstein",
+    "flag": "🇱🇮",
+    "code": "LI",
+    "dial_code": "+423",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Lithuania",
+    "flag": "🇱🇹",
+    "code": "LT",
+    "dial_code": "+370",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Luxembourg",
+    "flag": "🇱🇺",
+    "code": "LU",
+    "dial_code": "+352",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Macau",
+    "flag": "🇲🇴",
+    "code": "MO",
+    "dial_code": "+853",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "North Macedonia",
+    "flag": "🇲🇰",
+    "code": "MK",
+    "dial_code": "+389",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Madagascar",
+    "flag": "🇲🇬",
+    "code": "MG",
+    "dial_code": "+261",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Malawi",
+    "flag": "🇲🇼",
+    "code": "MW",
+    "dial_code": "+265",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": [
+      7,
+      8,
+      9
+    ]
+  },
+  {
+    "name": "Malaysia",
+    "flag": "🇲🇾",
+    "code": "MY",
+    "dial_code": "+60",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Maldives",
+    "flag": "🇲🇻",
+    "code": "MV",
+    "dial_code": "+960",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Mali",
+    "flag": "🇲🇱",
+    "code": "ML",
+    "dial_code": "+223",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Malta",
+    "flag": "🇲🇹",
+    "code": "MT",
+    "dial_code": "+356",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Marshall Islands",
+    "flag": "🇲🇭",
+    "code": "MH",
+    "dial_code": "+692",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Martinique",
+    "flag": "🇲🇶",
+    "code": "MQ",
+    "dial_code": "+596",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Mauritania",
+    "flag": "🇲🇷",
+    "code": "MR",
+    "dial_code": "+222",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Mauritius",
+    "flag": "🇲🇺",
+    "code": "MU",
+    "dial_code": "+230",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Mexico",
+    "flag": "🇲🇽",
+    "code": "MX",
+    "dial_code": "+52",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Micronesia",
+    "flag": "🇫🇲",
+    "code": "FM",
+    "dial_code": "+691",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Moldova",
+    "flag": "🇲🇩",
+    "code": "MD",
+    "dial_code": "+373",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Monaco",
+    "flag": "🇲🇨",
+    "code": "MC",
+    "dial_code": "+377",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Mongolia",
+    "flag": "🇲🇳",
+    "code": "MN",
+    "dial_code": "+976",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Montenegro",
+    "flag": "🇲🇪",
+    "code": "ME",
+    "dial_code": "+382",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Montserrat",
+    "flag": "🇲🇸",
+    "code": "MS",
+    "dial_code": "+1664",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Morocco",
+    "flag": "🇲🇦",
+    "code": "MA",
+    "dial_code": "+212",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Mozambique",
+    "flag": "🇲🇿",
+    "code": "MZ",
+    "dial_code": "+258",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 12
+  },
+  {
+    "name": "Myanmar",
+    "flag": "🇲🇲",
+    "code": "MM",
+    "dial_code": "+95"
+  },
+  {
+    "name": "Namibia",
+    "flag": "🇳🇦",
+    "code": "NA",
+    "dial_code": "+264",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Nauru",
+    "flag": "🇳🇷",
+    "code": "NR",
+    "dial_code": "+674",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Nepal",
+    "flag": "🇳🇵",
+    "code": "NP",
+    "dial_code": "+977",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Netherlands",
+    "flag": "🇳🇱",
+    "code": "NL",
+    "dial_code": "+31",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Netherlands Antilles",
+    "flag": "",
+    "code": "AN",
+    "dial_code": "+599"
+  },
+  {
+    "name": "New Caledonia",
+    "flag": "🇳🇨",
+    "code": "NC",
+    "dial_code": "+687",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 6
+  },
+  {
+    "name": "New Zealand",
+    "flag": "🇳🇿",
+    "code": "NZ",
+    "dial_code": "+64",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": [
+      8,
+      9
+    ]
+  },
+  {
+    "name": "Nicaragua",
+    "flag": "🇳🇮",
+    "code": "NI",
+    "dial_code": "+505",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Niger",
+    "flag": "🇳🇪",
+    "code": "NE",
+    "dial_code": "+227",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Nigeria",
+    "flag": "🇳🇬",
+    "code": "NG",
+    "dial_code": "+234",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Niue",
+    "flag": "🇳🇺",
+    "code": "NU",
+    "dial_code": "+683",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 4
+  },
+  {
+    "name": "Northern Mariana Islands",
+    "flag": "🇲🇵",
+    "code": "MP",
+    "dial_code": "+1670",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Oman",
+    "flag": "🇴🇲",
+    "code": "OM",
+    "dial_code": "+968",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Pakistan",
+    "flag": "🇵🇰",
+    "code": "PK",
+    "dial_code": "+92",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Palau",
+    "flag": "🇵🇼",
+    "code": "PW",
+    "dial_code": "+680",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Palestine",
+    "flag": "🇵🇸",
+    "code": "PS",
+    "dial_code": "+970",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Panama",
+    "flag": "🇵🇦",
+    "code": "PA",
+    "dial_code": "+507",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Papua New Guinea",
+    "flag": "🇵🇬",
+    "code": "PG",
+    "dial_code": "+675",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Paraguay",
+    "flag": "🇵🇾",
+    "code": "PY",
+    "dial_code": "+595",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Peru",
+    "flag": "🇵🇪",
+    "code": "PE",
+    "dial_code": "+51",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Philippines",
+    "flag": "🇵🇭",
+    "code": "PH",
+    "dial_code": "+63",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Poland",
+    "flag": "🇵🇱",
+    "code": "PL",
+    "dial_code": "+48",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Portugal",
+    "flag": "🇵🇹",
+    "code": "PT",
+    "dial_code": "+351",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Puerto Rico",
+    "flag": "🇵🇷",
+    "code": "PR",
+    "dial_code": "+1939",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Qatar",
+    "flag": "🇶🇦",
+    "code": "QA",
+    "dial_code": "+974",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Romania",
+    "flag": "🇷🇴",
+    "code": "RO",
+    "dial_code": "+40",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Rwanda",
+    "flag": "🇷🇼",
+    "code": "RW",
+    "dial_code": "+250",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Saint Helena",
+    "flag": "🇸🇭",
+    "code": "SH",
+    "dial_code": "+290",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 4
+  },
+  {
+    "name": "Saint Kitts and Nevis",
+    "flag": "🇰🇳",
+    "code": "KN",
+    "dial_code": "+1869",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Saint Lucia",
+    "flag": "🇱🇨",
+    "code": "LC",
+    "dial_code": "+1758",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Saint Pierre and Miquelon",
+    "flag": "🇵🇲",
+    "code": "PM",
+    "dial_code": "+508",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 6
+  },
+  {
+    "name": "Saint Vincent and the Grenadines",
+    "flag": "🇻🇨",
+    "code": "VC",
+    "dial_code": "+1784",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Samoa",
+    "flag": "🇼🇸",
+    "code": "WS",
+    "dial_code": "+685",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": [
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "name": "San Marino",
+    "flag": "🇸🇲",
+    "code": "SM",
+    "dial_code": "+378",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Sao Tome and Principe",
+    "flag": "🇸🇹",
+    "code": "ST",
+    "dial_code": "+239",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Saudi Arabia",
+    "flag": "🇸🇦",
+    "code": "SA",
+    "dial_code": "+966",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Senegal",
+    "flag": "🇸🇳",
+    "code": "SN",
+    "dial_code": "+221",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Serbia",
+    "flag": "🇷🇸",
+    "code": "RS",
+    "dial_code": "+381",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Seychelles",
+    "flag": "🇸🇨",
+    "code": "SC",
+    "dial_code": "+248",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Sierra Leone",
+    "flag": "🇸🇱",
+    "code": "SL",
+    "dial_code": "+232",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Singapore",
+    "flag": "🇸🇬",
+    "code": "SG",
+    "dial_code": "+65",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Slovakia",
+    "flag": "🇸🇰",
+    "code": "SK",
+    "dial_code": "+421",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Slovenia",
+    "flag": "🇸🇮",
+    "code": "SI",
+    "dial_code": "+386",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Solomon Islands",
+    "flag": "🇸🇧",
+    "code": "SB",
+    "dial_code": "+677",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Somalia",
+    "flag": "🇸🇴",
+    "code": "SO",
+    "dial_code": "+252",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": [
+      8,
+      9
+    ]
+  },
+  {
+    "name": "South Africa",
+    "flag": "🇿🇦",
+    "code": "ZA",
+    "dial_code": "+27",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "South Sudan",
+    "flag": "🇸🇸",
+    "code": "SS",
+    "dial_code": "+211",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Spain",
+    "flag": "🇪🇸",
+    "code": "ES",
+    "dial_code": "+34",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Sri Lanka",
+    "flag": "🇱🇰",
+    "code": "LK",
+    "dial_code": "+94",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Suda",
+    "flag": "🇸🇩",
+    "code": "SD",
+    "dial_code": "+249",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Suriname",
+    "flag": "🇸🇷",
+    "code": "SR",
+    "dial_code": "+597",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": [
+      6,
+      7
+    ]
+  },
+  {
+    "name": "Swaziland",
+    "flag": "🇸🇿",
+    "code": "SZ",
+    "dial_code": "+268",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Sweden",
+    "flag": "🇸🇪",
+    "code": "SE",
+    "dial_code": "+46",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Switzerland",
+    "flag": "🇨🇭",
+    "code": "CH",
+    "dial_code": "+41",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Syria",
+    "flag": "🇸🇾",
+    "code": "SY",
+    "dial_code": "+963",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Taiwan",
+    "flag": "🇹🇼",
+    "code": "TW",
+    "dial_code": "+886",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Tajikistan",
+    "flag": "🇹🇯",
+    "code": "TJ",
+    "dial_code": "+992",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Tanzania",
+    "flag": "🇹🇿",
+    "code": "TZ",
+    "dial_code": "+255",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Thailand",
+    "flag": "🇹🇭",
+    "code": "TH",
+    "dial_code": "+66",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Timor Leste",
+    "flag": "🇹🇱",
+    "code": "TL",
+    "dial_code": "+670",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Togo",
+    "flag": "🇹🇬",
+    "code": "TG",
+    "dial_code": "+228",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Tokelau",
+    "flag": "🇹🇰",
+    "code": "TK",
+    "dial_code": "+690",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 5
+  },
+  {
+    "name": "Tonga",
+    "flag": "🇹🇴",
+    "code": "TO",
+    "dial_code": "+676",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 5
+  },
+  {
+    "name": "Trinidad and Tobago",
+    "flag": "🇹🇹",
+    "code": "TT",
+    "dial_code": "+1868",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Tunisia",
+    "flag": "🇹🇳",
+    "code": "TN",
+    "dial_code": "+216",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Turkey",
+    "flag": "🇹🇷",
+    "code": "TR",
+    "dial_code": "+90",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 11
+  },
+  {
+    "name": "Turkmenistan",
+    "flag": "🇹🇲",
+    "code": "TM",
+    "dial_code": "+993",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Turks and Caicos Islands",
+    "flag": "🇹🇨",
+    "code": "TC",
+    "dial_code": "+1649",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Tuvalu",
+    "flag": "🇹🇻",
+    "code": "TV",
+    "dial_code": "+688",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 5
+  },
+  {
+    "name": "Uganda",
+    "flag": "🇺🇬",
+    "code": "UG",
+    "dial_code": "+256",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Ukraine",
+    "flag": "🇺🇦",
+    "code": "UA",
+    "dial_code": "+380",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "United Arab Emirates",
+    "flag": "🇦🇪",
+    "code": "AE",
+    "dial_code": "+971",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Uruguay",
+    "flag": "🇺🇾",
+    "code": "UY",
+    "dial_code": "+598",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 8
+  },
+  {
+    "name": "Uzbekistan",
+    "flag": "🇺🇿",
+    "code": "UZ",
+    "dial_code": "+998",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Vanuatu",
+    "flag": "🇻🇺",
+    "code": "VU",
+    "dial_code": "+678",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 5
+  },
+  {
+    "name": "Venezuela",
+    "flag": "🇻🇪",
+    "code": "VE",
+    "dial_code": "+58",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Vietnam",
+    "flag": "🇻🇳",
+    "code": "VN",
+    "dial_code": "+84",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Virgin Islands British",
+    "flag": "🇻🇬",
+    "code": "VG",
+    "dial_code": "+1284",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 7
+  },
+  {
+    "name": "Virgin Islands U.S.",
+    "flag": "🇻🇮",
+    "code": "VI",
+    "dial_code": "+1340",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 10
+  },
+  {
+    "name": "Wallis and Futuna",
+    "flag": "🇼🇫",
+    "code": "WF",
+    "dial_code": "+681",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 6
+  },
+  {
+    "name": "Yemen",
+    "flag": "🇾🇪",
+    "code": "YE",
+    "dial_code": "+967",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Zambia",
+    "flag": "🇿🇲",
+    "code": "ZM",
+    "dial_code": "+260",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+  {
+    "name": "Zimbabwe",
+    "flag": "🇿🇼",
+    "code": "ZW",
+    "dial_code": "+263",
+    "leadMessageCost": 0.5,
+    "WhatsappSessionCost": 1.5,
+    "phoneLength": 9
+  },
+     { 
+      "name": "Ashmore and Cartier Islands", 
+      "code": "AC",
+      "flag": "🇦🇨", 
+      "dial_code": "+247", 
+      "phoneLength": 4,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Bonaire Sint Eustatius and Saba", 
+      "code": "BQ",
+      "flag": "🇧🇶", 
+      "dial_code": "+599", 
+      "phoneLength": 7,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Bosnia and Herzegovina", 
+      "code": "BIH",
+      "flag": "🇧🇦", 
+      "dial_code": "+387", 
+      "phoneLength": 8,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Canada", 
+      "code": "CA",
+      "flag": "🇨🇦", 
+      "dial_code": "+1", 
+      "phoneLength": 10,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Christmas Island", 
+      "code": "CX",
+      "flag": "🇨🇽", 
+      "dial_code": "+61", 
+      "phoneLength": 9,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Clipperton Island", 
+      "code": "CP",
+      "flag": "🏴", 
+      "dial_code": "", 
+      "phoneLength": 0,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Cocos Islands", 
+      "code": "CC",
+      "flag": "🇨🇨", 
+      "dial_code": "+61", 
+      "phoneLength": 9,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Coral Sea Islands", 
+      "code": "IC",
+      "flag": "🏴", 
+      "dial_code": "", 
+      "phoneLength": 0,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Curacao", 
+      "code": "CW",
+      "flag": "🇨🇼", 
+      "dial_code": "+599", 
+      "phoneLength": 7,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Finland", 
+      "code": "FI",
+      "flag": "🇫🇮", 
+      "dial_code": "+358", 
+      "phoneLength": 9,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Guernsey", 
+      "code": "GG",
+      "flag": "🇬🇬", 
+      "dial_code": "+44", 
+      "phoneLength": 10,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Heard Island and McDonald Islands", 
+      "code": "HM",
+      "flag": "🇭🇲", 
+      "dial_code": "+672", 
+      "phoneLength": 5,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "High Seas", 
+      "code": "XX",
+      "flag": "🏴", 
+      "dial_code": "", 
+      "phoneLength": 0,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Isle of Man", 
+      "code": "IM",
+      "flag": "🇮🇲", 
+      "dial_code": "+44", 
+      "phoneLength": 10,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Jersey", 
+      "code": "JE",
+      "flag": "🇯🇪", 
+      "dial_code": "+44", 
+      "phoneLength": 10,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Mayotte", 
+      "code": "YT",
+      "flag": "🇾🇹", 
+      "dial_code": "+262", 
+      "phoneLength": 9,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Norfolk Island", 
+      "code": "NF",
+      "flag": "🇳🇫", 
+      "dial_code": "+672", 
+      "phoneLength": 5,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Norway", 
+      "code": "NO",
+      "flag": "🇳🇴", 
+      "dial_code": "+47", 
+      "phoneLength": 8,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Pitcairn", 
+      "code": "PN",
+      "flag": "🇵🇳", 
+      "dial_code": "+64", 
+      "phoneLength": 4,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Reunion", 
+      "code": "RE",
+      "flag": "🇷🇪", 
+      "dial_code": "+262", 
+      "phoneLength": 9,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Russia", 
+      "code": "RU",
+      "flag": "🇷🇺", 
+      "dial_code": "+7", 
+      "phoneLength": 10,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Saint Barthelemy", 
+      "code": "BL",
+      "flag": "🇧🇱", 
+      "dial_code": "+590", 
+      "phoneLength": 9,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Saint Martin", 
+      "code": "MF",
+      "flag": "🇲🇫", 
+      "dial_code": "+590", 
+      "phoneLength": 9,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Serbia and Montenegro", 
+      "code": "CS",
+      "flag": "🇷🇸", 
+      "dial_code": "+381", 
+      "phoneLength": 9,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Sint Maarten", 
+      "code": "SX",
+      "flag": "🇸🇽", 
+      "dial_code": "+1", 
+      "phoneLength": 10,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Somaliland", 
+      "code": "SOM",
+      "flag": "🇸🇴", 
+      "dial_code": "+252", 
+      "phoneLength": 8,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "South Georgia and the South Sandwich Islands", 
+      "code": "GS",
+      "flag": "🇬🇸", 
+      "dial_code": "+500", 
+      "phoneLength": 5,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Svalbard and Jan Mayen", 
+      "code": "SJ",
+      "flag": "🇳🇴", 
+      "dial_code": "+47", 
+      "phoneLength": 8,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "United States Minor Outlying Islands", 
+      "code": "UM",
+      "flag": "🇺🇸", 
+      "dial_code": "+1", 
+      "phoneLength": 10,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
+    },
+    { 
+      "name": "Western Sahara", 
+      "code": "EH",
+      "flag": "🇪🇭", 
+      "dial_code": "+212", 
+      "phoneLength": 9,
+      "leadMessageCost": 0.5,
+      "WhatsappSessionCost": 1.5
     }
 ]

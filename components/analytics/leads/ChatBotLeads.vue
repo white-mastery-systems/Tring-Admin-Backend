@@ -4,7 +4,7 @@
       <UiInput v-model="filters.q" @input="filters.page = '1'"
         class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0"
         placeholder=" Search Leads..." />
-      <BotFilter v-model="filters.botId" />
+      <BotFilter v-model="filters.botId" :botType="'chat'" />
       <StatusFilter v-model="filters.status" />
 
       <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"

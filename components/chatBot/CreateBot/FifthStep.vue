@@ -188,11 +188,9 @@ const handleConnect = handleSubmit(async (values: any) => {
       <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
         <SelectField name="channel" label="Integration App" placeholder="Select an integration" helperText=""
           :options="[{ value: 'whatsapp', label: 'Whatsapp' }]" />
-        <div class="flex flex-col gap-4 pt-[10px]">
           <TextField name="name" label="Channel Name" placeholder="Enter channel name" helperText=""
             :disabled="!values.channel">
           </TextField>
-        </div>
         <TextField v-if="fbVerified" name="pin" label="2FA Pin" placeholder="Enter Your pin" helperText="">
         </TextField>
       </div>

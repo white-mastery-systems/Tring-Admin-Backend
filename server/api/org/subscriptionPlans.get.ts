@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     getAllPricing()
   ]);
   
-  const updatedSubscriptions = orgSubscription.map((subscription: any) => {
+  const updatedSubscriptions = await Promise.all(orgSubscription.map(async (subscription: any) => {
     const { serviceType, pricingPlanCode, subscriptionStatus, endDate } = subscription;
 
     const subscriptionPlanUsage = orgSubscriptionPlanUsages.find((usage) => usage.serviceType === serviceType);
@@ -40,15 +40,25 @@ export default defineEventHandler(async (event) => {
       const daysRemaining = trialEndDate.diff(currentDate, "days");
       remainingDaysForTrialEnd = daysRemaining
     }
+    
+    let computedStatus = (pricingPlanCode === "chat_free" || pricingPlanCode === "voice_free")
+      ? "trial"
+      : subscriptionStatus;
+
+    if(remainingDaysForTrialEnd !== undefined && remainingDaysForTrialEnd <=0) {
+      remainingDaysForTrialEnd = 0
+      computedStatus = "inactive"
+      await updateOrgZohoSubscription(organizationId, serviceType, { subscriptionStatus: "inactive" })
+    }
 
     return {
       type: serviceType,
       planCode: pricingPlanCode,
-      subscriptionStatus: pricingPlanCode === "chat_free" || pricingPlanCode === "voice_free" ? "trial" : subscriptionStatus,
+      subscriptionStatus: computedStatus,
       availableQuota,
-      ...(remainingDaysForTrialEnd !== undefined && { remainingDaysForTrialEnd }) // Only include if trial is active
+      ...(remainingDaysForTrialEnd !== undefined && remainingDaysForTrialEnd !== 0 && { remainingDaysForTrialEnd }) // Only include if trial is active
     };
-  }); 
+  }))
 
   return updatedSubscriptions
 })
