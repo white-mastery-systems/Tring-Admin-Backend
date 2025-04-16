@@ -188,10 +188,11 @@ export const deleteContacts = async (id: string) => {
   )[0];
 };
 
-export const isChatContactsAlreadyExists = async(contactId: string, phone: string) => {
+export const isChatContactsAlreadyExists = async(organizationId: string, contactId: string, phone: string) => {
   return await db.query.contactSchema.findFirst({
     where: and(
       ne(contactSchema.id, contactId),
+      eq(contactSchema.organizationId, organizationId),
       eq(contactSchema.phone, phone)
     )
   })
@@ -299,10 +300,11 @@ export const deleteVoicebotContacts = async (id: string) => {
   )[0];
 };
 
-export const isVoicebotContactsAlreadyExists = async(contactId: string, phone: string) => {
+export const isVoicebotContactsAlreadyExists = async(organizationId: string,contactId: string, phone: string) => {
   return await db.query.voicebotContactSchema.findFirst({
     where: and(
       ne(voicebotContactSchema.id, contactId),
+      eq(voicebotContactSchema.organizationId, organizationId),
       eq(voicebotContactSchema.phone, phone)
     )
   })
