@@ -1,7 +1,7 @@
 <template>
   <UiFormField v-model="country" :name="props.name" class="mt-1">
-    <UiFormItem class="mt-1 flex flex-col gap-1 ">
-      <UiFormLabel>Country
+    <UiFormItem class="mt-0 flex flex-col gap-0">
+      <UiFormLabel class="flex items-center h-7">Country
         <span v-if="required" class="text-sm text-red-500">*</span>
       </UiFormLabel>
       <UiPopover>

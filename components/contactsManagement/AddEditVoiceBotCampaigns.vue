@@ -45,9 +45,9 @@ const filters = useState("campaignsFilters", () => ({
   to: undefined,
 }));
 const route = useRoute();
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 const campaignModalState = ref({ open: false, id: null });
 
 const {

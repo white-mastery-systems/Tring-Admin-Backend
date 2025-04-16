@@ -2,9 +2,11 @@
 <template>
   <UiFormField v-model="selectedValue" :name="name">
     <UiFormItem class="w-full">
-      <UiFormLabel class="text-[12px]" :class=" { 'text-[#ef4444]' : hasError }">
-        {{ label }}<UiLabel v-if="required" class="text-lg text-red-500">*</UiLabel>
-      </UiFormLabel>
+      <div class="flex items-center min-h-7">
+        <UiFormLabel class="text-[12px]" :class=" { 'text-[#ef4444]' : hasError }">
+          {{ label }}<UiLabel v-if="required" class="text-lg text-red-500">*</UiLabel>
+        </UiFormLabel>
+      </div>
       <UiFormControl>
         <UiSelect :class="cn(props.class)" :multiple="multiple" class="mt-2 focus-visible:ring" v-model="selectedValue"
           v-bind="$attrs" :disabled="props.disabled">

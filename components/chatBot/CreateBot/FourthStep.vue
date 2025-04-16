@@ -62,10 +62,9 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
       <div class="flex gap-4">
         <!-- Custom radio circle matching the design -->
         <div class="relative flex items-center justify-center h-5 w-5 flex-shrink-0">
-          <div class="h-full w-full rounded-full border border-gray-400" 
-               :class="{ 'border-black': selectedGoal === option.value }"></div>
+          <div :class="['h-full w-full rounded-full border', (selectedGoal === option.value) ? 'border-[#FFBC42]' : 'border-gray-400' ]"></div>
           <div v-if="selectedGoal === option.value" 
-               class="absolute inset-0 m-auto h-3 w-3 rounded-full bg-black"></div>
+               class="absolute inset-0 m-auto h-3 w-3 rounded-full bg-[#FFBC42]"></div>
         </div>
         <div class="flex flex-col gap-1">
           <Label :for="option.value" class="font-medium text-[12px] sm:text-[12px] md:text-[14px]">{{ option.name }}</Label>
@@ -78,10 +77,10 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
       <div class="flex gap-4">
         <!-- Custom radio for the "custom" option -->
         <div class="relative flex items-center justify-center h-5 w-5 flex-shrink-0">
-          <div class="h-full w-full rounded-full border border-gray-400"
-               :class="{ 'border-black': selectedGoal === 'custom' }"></div>
+          <div class="h-full w-full rounded-full border "
+               :class="[selectedGoal === 'custom' ? 'border-[#FFBC42]' : 'border-gray-400']"></div>
           <div v-if="selectedGoal === 'custom'" 
-               class="absolute inset-0 m-auto h-3 w-3 rounded-full bg-black"></div>
+               class="absolute inset-0 m-auto h-3 w-3 rounded-full bg-[#FFBC42]"></div>
         </div>
         <div class="flex flex-col gap-1">
           <Label for="custom" class="font-medium text-[12px] sm:text-[12px] md:text-[14px]">Custom</Label>

@@ -4,6 +4,7 @@ export const formSchema = toTypedSchema(
       username: z.string({ required_error: "Name is required" }).min(2, "Name is required"),
       email: z
         .string({ required_error: "Email is required" })
+        .min(1, "Email is required")
         .email("Invalid email address.")
         .regex(
           /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/,
@@ -13,6 +14,7 @@ export const formSchema = toTypedSchema(
       password: z
         .string({ required_error: "Password is required" })
         .min(6, "Password must be at least 6 characters long.")
+        .max(24, "Password must not exceed 24 characters.")
         .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
         .regex(/[a-z]/, "Password must contain at least one lowercase letter")
         .regex(/[0-9]/, "Password must contain at least one number")

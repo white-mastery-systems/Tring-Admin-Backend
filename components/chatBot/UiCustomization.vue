@@ -181,29 +181,14 @@
                 @update:checked="handleChange" :disabled="chatIntelligence" />
             </UiFormItem>
           </UiFormField>
-        </div>
-        <div class="flex w-full items-center gap-5">
-
-        </div>
-        <!-- Email Recipients -->
-        <!-- <FieldArray name="emailRecipients" v-slot="{ fields, push, remove }">
-          <div v-if="fields.length" class="space-y-2">
-            <fieldset v-for="(email, index) in fields" :key="email.key">
-              <div class="flex gap-2">
-                <TextField :label="'Email'" :id="`email_config_${index}`" :name="`emailRecipients[${index}]`"
-                  placeholder="Enter Email." required />
-                <UiButton variant="outline" type="button" @click="remove(index)">
-                  <CloseIcon class="w-4 h-4" />
-                </UiButton>
-              </div>
-            </fieldset>
+          <div class="flex flex-col gap-4">
+            <TextField :disableCharacters="true" name="defaultDelay" label="Default Delay" type="number"
+              placeholder="Enter your delay seconds" @input="handleDelayChanges($event)" />
           </div>
-          <UiButton type="button" @click="push('')">Add Email</UiButton>
-        </FieldArray> -->
-
-        <!-- Submit Button -->
+        </div>
         <div class="my-auto flex w-full justify-end py-0">
-          <UiButton color="primary" type="submit" size="lg" :loading="isLoading" :disabled="chatIntelligence || !formHasChanged">
+          <UiButton color="primary" type="submit" size="lg" :loading="isLoading"
+            :disabled="chatIntelligence || !formHasChanged">
             {{ formHasChanged ? 'Submit' : 'No Changes' }}
           </UiButton>
         </div>
@@ -246,6 +231,13 @@ const uiCustomizationValidation = toTypedSchema(
     fontFamily: z.string({ required_error: "Font family is required" }).min(1, "Font family is required"),
     emailRecipients: z.array(z.string().email()),
     widgetSound: z.boolean({ required_error: "Widget sound is required" }),
+    defaultDelay: z
+      .number({
+        required_error: "Default Delay is required",
+        invalid_type_error: "Default Delay must be a number"
+      })
+      .min(3, { message: "Minimum value is 3" })
+      .max(50, { message: "Maximum value is 50" }), 
     defaultSelect: z.boolean().optional(),
     generateLead: z.boolean().optional(),
     onlineStatus: z.boolean().optional(),
@@ -290,6 +282,7 @@ watch(props.botDetails, (newValues) => {
   setFieldValue("onlineStatus", newValues.metadata.ui.onlineStatus ?? true);
   setFieldValue("generateLead", newValues.metadata.ui.generateLead ?? true);
   setFieldValue("defaultRibbon", newValues.metadata.ui.defaultRibbon ?? true);
+  setFieldValue("defaultDelay", newValues.metadata?.ui?.defaultDelay ?? 3);
 
   // Set email recipients
   setFieldValue("emailRecipients", newValues.emailRecipients ?? []);
@@ -307,11 +300,11 @@ watch(props.botDetails, (newValues) => {
       generateLead: values.generateLead,
       defaultRibbon: values.defaultRibbon,
       emailRecipients: JSON.stringify(values.emailRecipients || []), // Convert to string for comparison
+      defaultDelay: values.defaultDelay,
     };
   });
 
 }, { deep: true, immediate: true });
-
 
 onMounted(async () => {
   planDetails.value = await userPlan();
@@ -360,6 +353,7 @@ const hasFormChanged = () => {
     generateLead: values.generateLead,
     defaultRibbon: values.defaultRibbon,
     emailRecipients: JSON.stringify(values.emailRecipients || []),
+    defaultDelay: values.defaultDelay,
   };
 
   // Compare each field
@@ -415,6 +409,7 @@ const uiUpdate = handleSubmit(async (value) => {
           generateLead: value.generateLead,
           defaultRibbon: value.defaultRibbon,
           onlineStatus: value.onlineStatus,
+          defaultDelay: values.defaultDelay,
         },
       },
     };
@@ -435,6 +430,7 @@ const uiUpdate = handleSubmit(async (value) => {
         generateLead: values.generateLead,
         defaultRibbon: values.defaultRibbon,
         emailRecipients: JSON.stringify(values.emailRecipients || []),
+        defaultDelay: values.defaultDelay,
       };
       // Reset logo data after successful upload
       logoData.value = "";
@@ -446,6 +442,24 @@ const uiUpdate = handleSubmit(async (value) => {
   isLoading.value = false;
 });
 
+const handleDelayChanges = (event: any) => {
+  let value = parseInt(event.target.value);
+  // If not a number, reset to minimum
+  if (isNaN(value)) {
+    setFieldValue('defaultDelay', 3);
+    return;
+  }
+  // Enforce min value
+  if (value < 3) {
+    setFieldValue('defaultDelay', 3);
+    return;
+  }
+  // Enforce max value
+  if (value > 50) {
+    setFieldValue('defaultDelay', 50);
+    return;
+  }
+}
 const openPrimaryColorPicker = () => colorInput.value.$el.click();
 const openSecondaryColorPicker = () => secondarycolorInput.value.$el.click();
 </script>

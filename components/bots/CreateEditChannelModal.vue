@@ -5,12 +5,6 @@
         placeholder="Select your integration"
         :options="integrationsData?.map((integration: any) => ({ label: integration.name, value: integration.id }))"
         :closeIcon="true" />
-      <!-- <SelectField v-if="values.integrationId" label="template" helperText="Select your template" name="templateId"
-        placeholder="Select your template"
-        :options="templates?.map((template: string) => ({ label: template, value: template }))" />
-
-      <SelectField v-if="values.integrationId" label="phone" helperText="Select your phone" name="phoneId"
-        placeholder="Select your phone" :options="phoneNumbers" /> -->
       <div class="flex items-center space-x-2 my-4">
         <UiSwitch :checked="showButtons" id="show-button" @update:checked="handleShowButton" />
         <UiLabel for="show-button">Show Buttons</UiLabel>

@@ -87,9 +87,9 @@ const filters = reactive<{
   page: "1",
   limit: "10",
 });
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 const route = useRoute("contacts-management-buckets-id");
 // const searchContacts = ref("");
 const queryId = ref(route.params.id)
@@ -136,7 +136,7 @@ const exportReadyColumns = computed(() => {
     "Last Name",
     "Email",
     "Country Code",
-    "Number",
+    "Phone",
   ]
 })
 const exportSampleRows = computed(() => {
@@ -145,7 +145,7 @@ const exportSampleRows = computed(() => {
       lastName: 'Flux',
       email: 'admin@tykerflux.com',
       countryCode: '91',
-      number: 9876543210,
+      phone: 9876543210,
     }]
 })
 
@@ -222,7 +222,7 @@ const columns = [
     }
   }),
   columnHelper.accessor("phone", {
-    header: "Number",
+    header: "Phone",
     cell: ({ row }) => `${row.original?.countryCode || ''} ${row.original?.phone || ''}`.trim(),
   }),
   columnHelper.accessor("id", {
@@ -256,7 +256,7 @@ const exportData = async () => {
           lastName: contacts?.contacts?.lastName ?? "",
           email: contacts?.contacts?.email ?? "",
           countryCode: contacts?.contacts?.countryCode?.replace('+', '') ?? "91",
-          number: contacts?.contacts?.phone ?? "",
+          phone: contacts?.contacts?.phone ?? "",
         };
       } else {
         // Default Chat Object
@@ -265,7 +265,7 @@ const exportData = async () => {
           lastName: contacts.lastName ?? "",
           email: contacts.email ?? "",
           countryCode: contacts.countryCode?.replace('+', '') ?? "91",
-          number: contacts.phone ?? "",
+          phone: contacts.phone ?? "",
         };
       }
     })

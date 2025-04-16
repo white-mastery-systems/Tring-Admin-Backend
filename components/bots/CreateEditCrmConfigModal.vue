@@ -106,9 +106,9 @@
   import { createEditCRMConfigValidation } from "~/validationSchema/createEditCrmConfigvalidation";
 
   const emit = defineEmits(["success"]);
-  let pipelines = ref<any>([]);
-  let sequences = ref<any>([]);
-  let layouts = ref([]);
+  const pipelines = ref<any>([]);
+  const sequences = ref<any>([]);
+  const layouts = ref([]);
   const stages = ref<any>([]);
   const subPipelines = ref<any>([]);
   const isLoading = ref(false);
