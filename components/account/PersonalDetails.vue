@@ -24,7 +24,7 @@
           <CountryCodeField class="w-[150px]" name="countryCode" label="Country Code"
             helperText="Enter your country code" required />
 
-          <TextField :disableCharacters="true" name="mobile" label="Mobile number" helperText="" required
+          <TextField :disableCharacters="true" name="mobile" label="Mobile number" required
             placeholder="Enter your mobile number" />
         </div>
         <!-- {{ values }} -->

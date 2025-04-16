@@ -1,42 +1,16 @@
 <template>
-  <!-- title="Document Management" :bread-crumbs="[
-  {
-  label: `${botDetails.name}`,
-  to: `/bot-management/chat-bot/${botDetails.id}`,
-  },
-  {
-  label: 'Document Management',
-  to: `/bot-management/chat-bot/${botDetails.id}/documents`,
-  },
-  ]" -->
-  <!-- <Page :disableSelector="true" :disable-back-button="false" :disable-elevation="true"> -->
   <div class="mb-[50px] sm:mb-[50px] md:mb-7">
-    <div class="document-align flex flex-col mt-0">
+    <div class="document-align flex flex-col mt-0 mb-6">
       <div class="text-[14px] sm:text-[14px] md:text-[16px] lg:text-[18px] font-bold mb-6"> Document Management </div>
       <span class="flex flex-row">
-        <!-- @click="uploadfile" -->
-        <!-- <DocumentUpload accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" /> -->
         <DocumentUploadV2 accept="application/pdf" v-model="selectedFile" @upload-document="fileUpload()" />
-        <!-- <img src="assets\icons\upload _document.svg" width="100" /> -->
       </span>
     </div>
-    <p class="pt-2 pb-5 text-sm text-gray-400">only PDF</p>
     <DataTable @pagination="Pagination" @limit="(v$event) => {
         (filters.page = '1'), (filters.limit = $event);
       }" :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns"
       :data="documentItems" :is-loading="isDataLoading" :page-size="20" :height="23" height-unit="vh" />
   </div>
-  <!-- <BotDocumentMenu></BotDocumentMenu> -->
-  <!-- <ConfirmationModal v-model:open="deleteDocumentModelOpen[list.id]" title="Confirm Delete"
-      description="Are you sure you want to delete ?" @confirm="() => {
-          handleAction(list, 'delete');
-          deleteDocumentModelOpen[list.id] = false;
-        }
-        " /> -->
-  <!-- </Page> -->
-  <!-- <div v-if="isPageLoading" class="grid h-[80vh] place-items-center text-[#424BD1]">
-    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
-  </div> -->
 </template>
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";
@@ -79,31 +53,6 @@ const props = defineProps<{
   refreshBot: () => void;
   refresh: () => void
 }>();
-// const {
-//   status,
-//   refresh: documentsRefresh,
-//   data: documents,
-// } = await useLazyFetch(() => `/api/bots/${route.params.id}/documents`, {
-//   server: false,
-//   /**
-//    * Transform the API response to format the createdAt date of each document
-//    * @param {object} docs - The API response
-//    * @returns {object} The transformed response
-//    */
-//   transform: (docs: any) => {
-//     page.value = docs.page;
-//     totalPageCount.value = docs.totalPageCount;
-//     totalCount.value = docs.totalCount;
-
-//     return {
-//       ...docs,
-//       documents: docs.documents.map((d: any) => ({
-//         ...d,
-//         createdAt: formatDate(new Date(d.createdAt), "dd.MM.yyyy"),
-//       }))
-//     };
-//   },
-// });
 const documentItems = computed(() => props.documents?.documents || []);
 const activeDocument = computed(() => props.documents?.documentId)
 
@@ -194,18 +143,7 @@ onMounted(async () => {
 });
 const isPageLoading = computed(() => status.value === "pending");
 
-// watchEffect(() => {
-//   if (botDetails) {
-//     const userName = botDetails?.name ?? "Unknown Bot Name";
-//     useHead({
-//       title: `Chat Bot | ${userName} - Document Management`,
-//     });
-//   }
-// });
-
 const fileUpload = async () => {
-  // selectedFile.value[0].name;
-  //
   if (selectedFile.value && selectedFile.value[0]) {
     const file = selectedFile.value[0];
     if (!file.type.includes("pdf")) {
@@ -222,16 +160,12 @@ const fileUpload = async () => {
     };
     await createDocument(payload.botId, payload.document);
     
-    // documents.value = await listDocumentsByBotId(paramId.params.id);
     await props.refresh()
     selectedFile.value = null;
   } else {
     selectedFile.value = null;
   }
-  // documentFetchInterval.value = setInterval(async () => {
   await props.refresh()
-  //   documents.value = await listDocumentsByBotId(paramId.params.id);
-  // }, 1000);
 };
 const handleAction = (list: any, action: any) => {
   if (myPopover.value) {
@@ -266,9 +200,3 @@ const Pagination = async ($event: any) => {
   await props.refresh()
 }
 </script>
-
-<!-- <style scoped>
-.document-align {
-  margin-top: 40px;
-}
-</style> -->
