@@ -254,10 +254,6 @@ const roles = [
   "Developer",
   "Other",
 ];
-const proceedLogin = async () => {
-  // refreshUser();
-  navigateTo("/");
-};
 
 onUnmounted(() => {
   localStorage.removeItem('cameFromBilling');

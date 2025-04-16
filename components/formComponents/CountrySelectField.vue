@@ -43,7 +43,7 @@
                                             :value="country.data" @select="() => {
                                                 handleChange(country.data);
                                             }
-                                            " :class="getItemHeight(country.data)">
+                                            " class="text-left" :class="getItemHeight(country.data)">
                                             <Check :class="cn(
                                                 'mr-2 h-4 w-4',
                                                 country.data === fieldValue
@@ -63,7 +63,7 @@
                 </UiPopoverContent>
             </UiPopover>
             <UiFormMessage class="text-xs text-red-500 " />
-            <span v-if="errorMessage" class="mt-0 text-sm text-red-700">
+            <span v-if="errorMessage" class="mt-0 text-[11px] sm:text-[11px] md:text-[13px] text-red-500">
                 {{ errorMessage }}
             </span>
         </UiFormItem>

@@ -84,7 +84,7 @@
           }
         " :disabled="disabled" :placeholder="placeholder" :id="replacedId" v-model="value" :type="type || 'text'"
         :accept="accept || ''" @input="emit('input', $event)" :maxlength="textFieldMaxLength" />
-      <span v-if="textFieldMaxLength && (type != 'password')" class="mt-2 text-right text-xs text-gray-400">
+      <span v-if="textFieldMaxLength && (type != 'password') && !passwordMaxLength" class="mt-2 text-right text-xs text-gray-400">
         {{ value.length }}/{{ textFieldMaxLength }}
       </span>
     </div>
@@ -145,6 +145,7 @@
       accept?: string;
       textAreaMaxLength: number | null;
       textFieldMaxLength: number | null;
+      passwordMaxLength: boolean | null;
     }>(),
     {
       label: "",
@@ -161,6 +162,7 @@
       accept: "",
       textAreaMaxLength: null,
       textFieldMaxLength: null,
+      passwordMaxLength: false,
     },
   );
   // const clearValue = () => {
