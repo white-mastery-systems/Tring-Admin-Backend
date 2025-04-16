@@ -18,7 +18,7 @@ const zodVoiceUpdateContacts = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-  await isOrganizationAdminHandler(event)
+  const organizationId = await isOrganizationAdminHandler(event)
 
   const query = await isValidQueryHandler(event, z.object({
     type: z.string()
@@ -31,8 +31,8 @@ export default defineEventHandler(async (event) => {
    : await isValidBodyHandler(event, zodVoiceUpdateContacts)
 
   const isAlreadyExists = query.type === "chat"
-  ? await isChatContactsAlreadyExists(contactId, body?.phone)
-  : await isVoicebotContactsAlreadyExists(contactId, body?.phone)
+  ? await isChatContactsAlreadyExists(organizationId, contactId, body?.phone)
+  : await isVoicebotContactsAlreadyExists(organizationId, contactId, body?.phone)
   
   if (isAlreadyExists) {
     return sendError(
