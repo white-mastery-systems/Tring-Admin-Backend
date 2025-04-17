@@ -273,6 +273,7 @@ export const whatsappEnrichmentSchema = chatbotSchema.table("whatsapp_enrichment
   status: varchar("status", {
     enum: ["new", "meeting_link_sent", "meeting_booked", "meeting_cancelled", "meeting_rescheduled", "completed"],
   }),
+  integrationId: uuid("integration_id").references(() => integrationSchema.id, { onDelete: "cascade" }).notNull(),
   leadStatus: boolean("lead_status").default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
