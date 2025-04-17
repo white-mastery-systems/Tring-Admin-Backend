@@ -174,8 +174,11 @@ watch(selectedPeriod, (newValue) => {
     // Reset 'from' and 'to' when a non-custom period is selected
     emit("update:from", null);
     emit("update:to", null);
+    dateFormat.value.start = null;
+    dateFormat.value.end = null;
   }
-});
+  console.log(newValue, "inside --- newValue");
+},{deep: true});
 
 const isDateDisabled = (date: CalendarDate) => {
   return date > today(getLocalTimeZone());

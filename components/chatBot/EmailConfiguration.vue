@@ -1,25 +1,18 @@
 <template>
-  <!-- <Page title="Email Configuration" :bread-crumbs="[
-    { label: `${botDetails.name}`, to: `/bot-management/chat-bot/${botDetails.id}` },
-    { label: 'Email Configuration', to: `/bot-management/chat-bot/${botDetails.id}/config` }
-  ]"> -->
-    <div class="mt-6">
-      <DataTable :columns="columns" :data="intentData" :page-size="8" :is-loading="false" :height="20" height-unit="vh"
-        :totalCount="totalCount" :totalPageCount="totalPageCount" :page="page" />
-      <CreateEditEmailConfigModal v-model="emailConfigModalState" :id="emailConfigModalState?.id"
-        :resObject:="emailConfigModalState?.resObject" @success="handleSuccess" />
-    </div>
-  <!-- </Page> -->
+  <div class="mt-6">
+    <DataTable :columns="columns" :data="intentData" :page-size="8" :is-loading="false" :height="20" height-unit="vh"
+      :totalCount="totalCount" :totalPageCount="totalPageCount" :page="page" />
+    <CreateEditEmailConfigModal v-model="emailConfigModalState" :id="emailConfigModalState?.id"
+      :resObject:="emailConfigModalState?.resObject" @success="handleSuccess" />
+  </div>
 </template>
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";
 import { Icon, UiButton, UiSwitch } from "#components";
 import CreateEditEmailConfigModal from "~/components/bots/CreateEditEmailConfigModal.vue";
 
-// const columnHelper = createColumnHelper<any>();
 const route = useRoute("chat-bot-id-config");
 const paramId: any = route;
-// const botDetails = ref(await getBotDetails(paramId.params.id));
 const selectedRows = ref<string[]>([]); // Track selected rows
 
 const filters = reactive<{
@@ -47,10 +40,10 @@ const filters = reactive<{
   limit: "10",
   country: "all",
 });
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
-let emailConfigModalState = ref<{ open: boolean; resObject?: object | {} }>({
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
+const emailConfigModalState = ref<{ open: boolean; resObject?: object | {} }>({
   open: false,
   resObject: {},
 });

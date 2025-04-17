@@ -1,17 +1,5 @@
 <template>
-  <!-- <Page title="Channel Configuration" :bread-crumbs="[
-    {
-      label: `${botDetails.name}`,
-      to: `/bot-management/chat-bot/${botDetails.id}`,
-    },
-    {
-      label: 'Channel Configuration',
-      to: `/bot-management/chat-bot/${botDetails.id}/communication-channel-config`,
-    },
-  ]" :disableSelector="true"> -->
-  <!-- v-if="integrations.length === 0" -->
   <div class="pt-5">
-    <!-- <template #actionButtons> -->
     <div class="flex items-center justify-between mb-5">
       <div class="text-sm sm:text-sm md:text-base lg:text-lg font-bold"> Channel Configuration </div>
       <UiButton class="flex items-center justify-end text-xs sm:text-xs md:text-sm" :disabled="chatIntelligence" color="primary" @click="
@@ -22,8 +10,6 @@
       ">
         Link channel
       </UiButton>
-      <!-- Communication -->
-      <!-- </template> -->
     </div>
     <DataTable :columns="columns" :data="integrations" :page-size="8" :is-loading="false" :height="20"
       height-unit="vh" />
@@ -59,7 +45,6 @@ const columnHelper = createColumnHelper<any>();
 const route = useRoute("chat-bot-id-crm-config");
 const paramId: any = route;
 const planDetails = ref()
-// const botDetails = ref(await getBotDetails(paramId.params.id));
 
 let deleteIntegrationState: { open: boolean; id?: string } = reactive({
   open: false,

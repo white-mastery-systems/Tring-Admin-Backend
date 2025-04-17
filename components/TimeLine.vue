@@ -62,7 +62,6 @@ defineProps({
               <span>
                 <LinkIcon />
               </span>
-              <!-- @click="emits('timeLine', data.chatId)" -->
               <NuxtLink v-if="data?.metadata?.website" :to="data?.metadata?.website" target="_blank"
                 class="text-indigo-600 cursor-pointer">
                 {{ data?.metadata?.website }}
@@ -76,10 +75,11 @@ defineProps({
           <p class="mt-2 text-[14px] font-normal text-gray-600">
 
             {{ data.createdAt }}
-            <NuxtLink v-if="!['User visited the website','User re visited the website'].includes(data.metadata?.text)" class="text-indigo-600 cursor-pointer px-2 font-semibold" @click="emits('timeLine', {
-                chatId:data.chatId,
-                chatIndex:data.chatIndex
-                })">
+            <NuxtLink v-if="!['User visited the website', 'User re visited the website'].includes(data.metadata?.text)"
+              class="text-indigo-600 cursor-pointer px-2 font-semibold" @click="emits('timeLine', {
+                chatId: data.chatId,
+                chatIndex: data.chatIndex
+              })">
               Click To View
             </NuxtLink>
             <!-- {{ format(new Date(data.createdAt), "dd MMM yyyy hh:mm aa") }} -->

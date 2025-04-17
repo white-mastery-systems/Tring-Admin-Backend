@@ -49,11 +49,6 @@
           {{ formHasChanged ? 'Submit' : 'No Changes' }}
         </UiButton>
       </div>
-      <!-- <div class="flex justify-end w-full">
-        <UiButton color="primary" type="submit" size="lg" :loading="isLoading">
-          Submit
-        </UiButton>
-      </div> -->
     </form>
   </div>
   <!-- </Page> -->
@@ -66,11 +61,9 @@ definePageMeta({
 });
 
 const route = useRoute("voice-bot-id-ivr-config");
-// const botDetails: any = await getVoiceBotDetails(route.params.id);
 const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void }>();
 const numberList = ref([])
 const originalValues = ref({});
-// const { data: botData, status: botLoadingStatus } = await useLazyFetch(`/api/voicebots/${route.params.id}`);
 
 const {
   data: integrationsData,

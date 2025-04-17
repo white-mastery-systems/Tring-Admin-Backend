@@ -38,7 +38,7 @@
                             </div>
                           </div>
                         </UiTooltipTrigger>
-                        <UiTooltipContent class="w-auto">
+                        <UiTooltipContent class="max-w-[300px] overflow-hidden text-wrap break-words">
                           <p>{{ entry[1] }}</p>
                         </UiTooltipContent>
                       </UiTooltip>

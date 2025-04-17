@@ -2,7 +2,6 @@
 import { defineProps, defineEmits, ref, watch } from 'vue';
 import { useField } from 'vee-validate';
 import { useIntegrations } from '@/composables/botManagement/voiceBot/useTtsIntegrations';
-// import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 const props = defineProps<{
   values: Record<string, any>;
@@ -25,18 +24,8 @@ const { value: voice } = useField("voice")
 const { value: name } = useField("name")
 const { value: deepmodel } = useField("deepmodel")
 const { value: deepgramvoice } = useField("deepgramvoice")
-const { value: otherRole, errorMessage: otherRoleError } = useField("otherRole");
-const { value: otherGoal, errorMessage: otherGoalError } = useField("otherGoal");
 
-const { 
-  integrationsData, 
-  status, 
-  integrationRefresh,
-  page,
-  totalPageCount,
-  totalCount
-} = useIntegrations({});
-// const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
+const { integrationsData, status} = useIntegrations({});
 
 const providers = ref([
   {
@@ -156,9 +145,6 @@ watch([
     model: model.value,
     voice: voice.value,
     name: name.value,
-    // ROLE: newValue,
-    // otherRole: otherRole.value,
-    // otherGoal: otherGoal.value
   });
 });
 
@@ -254,16 +240,6 @@ watch([() => provider_tts.value, integrationsData], ([newSelectedProvider, newIn
     }
   }
 }, { deep: true, immediate: true });
-
-const apikeyunmasking = ($event: Event) => {
-  const input = $event.target as HTMLInputElement;
-  const newInput = input.value.replace(/\*/g, '');
-}
-// Watch for otherRole and otherGoal change
-
-// watch(() => props.values.type, (newType) => {
-//   props.fetchConfig(newType);
-// }, { deep: true, immediate: true });
 </script>
 <template>
   <BotSetupCard title="Bot Details" description="Set up your bot’s features, responses, and preferences" currentStep="5"
@@ -284,17 +260,8 @@ const apikeyunmasking = ($event: Event) => {
       <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
         <SelectField v-model="provider_tts" name="provider_tts" label="Provider" placeholder="Select provider"
           :options="providersTTS" />
-        <!-- {{provider_tts}} -->
-        <!-- <div v-if="(provider_tts !== 'tring') && (provider_tts !== 'deepgram') && (provider_tts !== 'google')" class="flex flex-col gap-0 pt-3">
-               <TextField v-model="apikey" type="text"
-               label="API Key" name="apikey" placeholder="API Key" @input="apikeyunmasking($event)" />
-               </div> -->
-        <!-- <SelectField v-if="provider_tts === 'elevenlabs'" v-model="model" name="model" label="Model" placeholder="Model"
-          :options="modalList" /> -->
         <SelectField v-if="provider_tts === 'deepgram'" v-model="deepgramvoice" name="deepgramvoice" label="Voice"
           placeholder="Select voice" :options="voices" />
-        <!-- <SelectField v-if="(provider_tts !== 'tring') && (provider_tts !== 'deepgram') && (provider_tts !== 'google')"
-          v-model="voice" name="voice" label="Voice" placeholder="Select voice" :options="[]" /> -->
         <SelectField v-if="provider_tts != 'tring' && provider_tts != 'google' && provider_tts != 'deepgram'"
           name="model" label="Model" placeholder="Model" :options="formattedElevenlabsModelList" />
 

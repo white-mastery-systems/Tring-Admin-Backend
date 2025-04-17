@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from 'vue';
 import { useField } from 'vee-validate';
-// import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 const isLoading = ref(false);
 const { value: type } = useField("type");
@@ -70,7 +69,6 @@ const fbLoginCallback = (response: any) => {
 
     // Send code to your backend for further processing.
   }
-  // document.getElementById("sdk-response").textContent = JSON.stringify(response, null, 2);
 };
 
 const launchWhatsAppSignup = () => {
@@ -100,7 +98,6 @@ window.addEventListener("message", (event) => {
 
         setFieldValue("pid", phone_number_id);
         setFieldValue("wabaId", waba_id);
-        // setFieldValue("token", channelSingleDetail.metadata?.token);
       } else if (data.event === "CANCEL") {
         const { current_step } = data.data;
         console.warn("Cancel at:", current_step);
@@ -109,7 +106,6 @@ window.addEventListener("message", (event) => {
         console.error("Error:", error_message);
       }
     }
-    // document.getElementById("session-info-response").textContent = JSON.stringify(data, null, 2);
   } catch { }
 });
 
@@ -142,42 +138,6 @@ const handleConnect = handleSubmit(async (values: any) => {
   }
   isLoading.value = false;
 });
-// const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
-
-// Watch for role selection changes
-// watch(selectedRole, (newValue) => {
-//   if (newValue !== "custom") {
-//     // Clear otherRole and otherGoal when a non-custom option is selected
-//     otherRole.value = "";
-//     emit("update:values", {
-//       ...props.values,
-//       otherRole: '',
-//       // otherGoal: otherGoal.value
-//     });
-//     // otherGoal.value = "";
-//   }
-//   emit("update:values", {
-//     ...props.values,
-//     ROLE: newValue,
-//     otherRole: otherRole.value,
-//     // otherGoal: otherGoal.value
-//   });
-// });
-
-// Watch for otherRole and otherGoal changes
-// watch([otherRole, otherGoal], ([newRole, newGoal]) => {
-//   if (selectedRole.value === "custom") {
-//     emit("update:values", {
-//       ...props.values,
-//       otherRole: newRole,
-//       otherGoal: newGoal
-//     });
-//   }
-// });
-
-// watch(() => props.values.type, (newType) => {
-//   props.fetchConfig(newType);
-// }, { deep: true, immediate: true });
 </script>
 
 <template>

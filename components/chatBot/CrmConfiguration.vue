@@ -1,7 +1,5 @@
 <template>
   <div class="pb-7">
-    <!-- v-if="integrations.length === 0" -->
-    <!-- <template #actionButtons> -->
     <div class="my-5 flex items-center justify-between">
       <div class="text-sm sm:text-sm md:text-base lg:text-lg font-bold"> CRM Integrations </div>
       <UiButton class="text-xs sm:text-xs md:text-sm" color="primary" :disabled="chatIntelligence" @click="
@@ -13,7 +11,6 @@
         Link CRM
       </UiButton>
     </div>
-    <!-- </template> -->
     <DataTable :columns="columns" :data="integrations" :page-size="8" :is-loading="false" :height="20" height-unit="vh"
       :totalCount="totalCount" :totalPageCount="totalPageCount" :page="page" />
     <CreateEditCrmConfigModal v-model="crmConfigModalState" :id="crmConfigModalState?.id" @success="handleSuccess" />

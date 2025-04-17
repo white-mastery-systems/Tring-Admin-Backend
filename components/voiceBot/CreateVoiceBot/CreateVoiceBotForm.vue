@@ -8,7 +8,6 @@ import { useContentSuggestions } from "~/composables/botManagement/chatBot/useCo
 import { useVoicebotKnowledgeBase } from '~/composables/botManagement/voiceBot/useVoicebotKnowledgeBase';
 import { botStore } from "~/store/botStore";
 import { voiceBotCreateSchema } from '~/validationSchema/botManagement/voiceBot/createVoiceBotValidation';
-// import { useVoiceBotDetails } from "~/composables/botManagement/voiceBot/useVoiceBotDetails ";
 
 const step = ref(1);
 const route = useRoute();
@@ -30,7 +29,6 @@ const bypassConfirmation = ref(false);
 const showLeaveConfirmation = ref({
   default: false,
 });
-// const { botDetails,loading, error: botErrors, refreshBot } = useVoiceBotDetails(paramId.params.id);
 
 const { errors, values, handleSubmit, validateField, validate, setFieldValue } = useForm({
   validationSchema: voiceBotCreateSchema,
@@ -46,10 +44,7 @@ const { errors, values, handleSubmit, validateField, validate, setFieldValue } =
 
 watch(() => values.type, async (newType) => {
   if (newType) {
-    // await fetchConfig(newType)
-    // await fetchKnowledgeBase(newType)
     scrapData.voiceBotScrapedData = []
-    // fetchSuggestions(newType)
   }
 });
 watch(() => scrapData, (newScrapData) => {
@@ -60,12 +55,6 @@ watch(() => scrapData, (newScrapData) => {
 watch(errors, (newErrors) => {
   console.log(newErrors, 'newErrors');
 })
-// watch(() => values.selectedType, (newSelectedType) => {
-//   console.log(newSelectedType, 'newSelectedType');
-//   if (newSelectedType) {
-//     setFieldValue('type', newSelectedType);
-//   }
-// });
 // ✅ Fields to validate per step
 const stepFields = {
   1: [""], // Assuming validation for step 1 is based on document length
@@ -114,17 +103,6 @@ const nextStep = async () => {
       isValid = false;
     }
   }
-
-  // Special handling for step 1 (Knowledge Details)
-  // if ((step.value === 1)) {
-  //   if (values.selectedType === 'Text') {
-  //     if (!stepOneRef.value.uploadDocumentRef.text) {
-  //       toast.error("Please provide Knowledge Details.");
-  //       isValid = false;
-  //     }
-  //   }
-  //   // console.log('stepOneRef.value.uploadDocumentRef.text', stepOneRef.value.uploadDocumentRef)
-  // }
 
   // Special handling for step 1 (Knowledge Details)
   if (step.value === 1) {
@@ -269,13 +247,7 @@ const nextStep = async () => {
     step.value++; // Move to next step only if validation passes
   }
 }
-// watch(values, (newValues) => {
-//   console.log('Form values updated:', JSON.stringify({
-//     boundDirection: newValues.boundDirection,
-//     type: newValues.type,
-//     selectedType: newValues.selectedType
-//   }));
-// }, { deep: true });
+
 const prevStep = () => {
   if (step.value > 1) step.value--;
 };
@@ -364,7 +336,6 @@ const submitForm = handleSubmit(async (values) => {
   }
 
   const updatedConfig: any = {
-    // language: value.language || botData.value?.speechToTextConfig.language || "en-IN",
     provider: values.provider_stt || botData.value?.speechToTextConfig.provider || 'deepgram',
   };
   // Google config
@@ -413,7 +384,6 @@ const submitForm = handleSubmit(async (values) => {
   // Google config
   if (values.provider_tts === 'google') {
     updatedTTSConfig.google = {
-      // ...botData.value?.textToSpeechConfig.google, // Keep existing Google config
       name: values.name || "en-IN-Neural2-A",
       speaking_rate: 1,
       pitch: 1,

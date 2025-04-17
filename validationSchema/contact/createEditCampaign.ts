@@ -3,7 +3,7 @@ import { z } from "zod";
   .object({
     campaignName: z.string({ required_error: "Campaign Name is required." }).min(1,{ message: "Campaign Name is required." }),
     contactMethod: z.string({ required_error: "Type is required." }).min(1, { message: "Type is required." }),
-    bucketId: z.string({ required_error: "Bucket ID is required." }).min(1, { message: "Bucket ID is required." }),
+    bucketId: z.string({ required_error: "Bucket is required." }).min(1, { message: "Bucket is required." }),
     integrationId: z.string().optional(),
     botId: z.string().optional(),
     date: z
@@ -41,8 +41,7 @@ import { z } from "zod";
         }),
         z.number({ required_error: "Calls per trigger is required." }).min(1, { message: "Calls per trigger is required." })
       ]),
-  })
-  .superRefine((data, ctx) => {
+  }).superRefine((data, ctx) => {
     const isWhatsApp = data.contactMethod === "whatsapp";
     const isVoice = data.contactMethod === "voice";
 
@@ -88,7 +87,7 @@ import { z } from "zod";
       if (!data.botId) {
         ctx.addIssue({
           path: ["botId"],
-          message: "Bot ID is required for Voice campaigns.",
+          message: "Bot is required for Voice campaigns.",
           code: z.ZodIssueCode.custom,
         });
       }

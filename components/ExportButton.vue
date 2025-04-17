@@ -10,17 +10,20 @@
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
-  const props = defineProps<{
-    rows: any[];
-    columns: any[];
-    buttonContent:string;
-  }>();
-  const modalvalue = defineModel<{ status: boolean; type: string }>({
-    default: {
-      status: false,
-      type: "csv",
-    },
-  });
+const props = withDefaults(defineProps<{
+  rows: any[];
+  columns: any[];
+  buttonContent: string;
+  isDisabled?: boolean;
+}>(), {
+  isDisabled: false
+});
+const modalvalue = defineModel<{ status: boolean; type: string }>({
+  default: {
+    status: false,
+    type: "csv",
+  },
+});
   watch(
     () => modalvalue.value,
     (exportStatus: any) => {
@@ -94,16 +97,13 @@
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
-      <UiButton color="primary">
+      <UiButton color="primary" :disabled="isDisabled">
         <Upload class="mr-2 h-4 w-4" />
         {{ props.buttonContent }}
       </UiButton>
     </DropdownMenuTrigger>
     <DropdownMenuContent class="w-full">
       <DropdownMenuGroup>
-        <!-- <DropdownMenuItem @click="exportAsCSV">
-          <span>Export as CSV</span>
-        </DropdownMenuItem> -->
         <DropdownMenuItem @click="exportToExcel">
           <span>Export as XLSX</span>
         </DropdownMenuItem>

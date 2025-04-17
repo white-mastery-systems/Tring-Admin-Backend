@@ -2,7 +2,8 @@
   <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="[]" leadPage="leads" :disable-back-button="!user" :disable-elevation="true">
+  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="[]" leadPage="leads"
+    :disable-back-button="!user" :disable-elevation="true">
     <template #actionButtons v-if="user">
       <div class="flex items-center gap-3">
         <UiButton v-if="leadData?.lead?.status === 'default'" variant="destructive"
@@ -49,10 +50,10 @@
                           <a v-else-if="key === 'Email'"
                             href="mailto:{{ (leadData.channel === 'whatsapp') ? whatsappLead.email : value }}"
                             class="block truncate lowercase text-[#424bd1]">
-                            {{ leadData.channel === 'whatsapp' ? whatsappLead.email : value }}
+                            {{ leadData.channel === 'whatsapp' ? whatsappLead?.email : value }}
                           </a>
                           <div v-else-if="key === 'Name'" class="truncate">
-                            {{ leadData.channel === 'whatsapp' ? whatsappLead.name : value }}
+                            {{ leadData.channel === 'whatsapp' ? whatsappLead?.name : value }}
                           </div>
                           <div v-else class="truncate">
                             {{ value }}
@@ -60,7 +61,7 @@
                         </div>
                       </div>
                     </UiTooltipTrigger>
-                    <UiTooltipContent class="w-auto">
+                    <UiTooltipContent class="max-w-[300px] overflow-hidden text-wrap break-words">
                       <p>{{ value }}</p> <!-- Show the full value or any additional info -->
                     </UiTooltipContent>
                   </UiTooltip>
@@ -90,8 +91,7 @@
                     <div class="p-5 rounded-lg gap-4 field_shadow">
                       <TextField label="Date" :placeholder="`${dynamicForm.content} - ${dynamicForm.date}`"
                         :required="false" :disabled="true" class="mb-2" />
-                      <TextField label="Time" :required="false" :placeholder="`${dynamicForm.time}`"
-                        :disabled="true" />
+                      <TextField label="Time" :required="false" :placeholder="`${dynamicForm.time}`" :disabled="true" />
                     </div>
                   </div>
                 </div>
@@ -133,7 +133,7 @@
                         </div>
                       </div>
                     </UiTooltipTrigger>
-                    <UiTooltipContent class="w-full">
+                    <UiTooltipContent class="max-w-[300px] overflow-hidden text-wrap break-words">
                       <p>{{ value }}</p>
                     </UiTooltipContent>
                   </UiTooltip>
@@ -379,7 +379,8 @@ const formattedScheduels = computed(() => {
     const formattedMessages = filteredMessages.map((message: any) => {
       // Extract content before the date
       const contentMatch = message.content.match(/^(.*?) on /);
-      const dateMatch = message.content.match(/on\s+([A-Za-z]+ \d{1,2}, \d{4})/); // old /on ([A-Za-z]+ \d{1,2}, \d{4})/
+      // const dateMatch = message.content.match(/on\s+([A-Za-z]+ \d{1,2}, \d{4})/); // old /on ([A-Za-z]+ \d{1,2}, \d{4})/
+      const dateMatch = message.content.match(/on\s+((?:\d{2}\/\d{2}\/\d{2})|(?:[A-Za-z]+ \d{1,2}, \d{4}))/);
       const timeMatch = message.content.match(/- ([\d:]+ [APM]+)/);
 
       return {

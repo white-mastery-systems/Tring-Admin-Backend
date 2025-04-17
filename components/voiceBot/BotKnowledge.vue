@@ -4,8 +4,6 @@
       <div class="flex flex-col w-full h-full overflow-x-auto">
         <UiCard class="border-0 ma-0 shadow-none">
           <UiCardContent class="p-0 gap-2 mb-4 space-y-5">
-            <!-- Prompt Configuration section title -->
-
             <!-- Tabs for Inbound/Outbound -->
             <UiTabs default-value="inbound" class="w-full">
               <UiTabsList
@@ -50,8 +48,6 @@
                       <textarea v-model="outboundPrompt[key]"
                         class="w-full min-h-32 resize-y outline-none border rounded p-2 text-xs sm:text-xs md:text-xs lg:text-sm"
                         :placeholder="`Enter content here...`"></textarea>
-                      <!-- <textarea class="w-full min-h-32 resize-y outline-none border rounded p-2"
-                        :placeholder="`Enter additional content here...`"></textarea> -->
                     </div>
                   </div>
                 </div>
@@ -78,10 +74,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch, watchEffect } from 'vue';
 import { useField, useForm } from "vee-validate";
-import {
-  Home, ShoppingCart, Plane, PhoneCall, Landmark,
-  Banknote, Stethoscope, Lightbulb, Truck, GraduationCap, Server
-} from 'lucide-vue-next';
+import { Home, ShoppingCart, Plane, PhoneCall, Landmark } from 'lucide-vue-next';
 import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 // Props definition

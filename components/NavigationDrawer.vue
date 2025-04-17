@@ -1,6 +1,5 @@
 <template>
   <div class="flex h-[100vh] w-[250px] flex-col items-center gap-5 overflow-y-scroll bg-[#ffffff] relative">
-    <!-- style="box-shadow: 0px 0px 24px 0px #00000000 !important;" -->
     <NuxtLink to="/" class="flex w-full justify-center">
       <img class="self-center pt-[50px] sm:pt-[50px] md:pt-[50px] lg:pt-[26px] xl:pt-[26px]"
         src="assets\icons\Tring-Ai-Logo-with-black-text.png" width="190" height="190" />
@@ -8,8 +7,6 @@
     <div
       class="flex w-full flex-col items-center gap-4 overflow-scroll pb-[5px] pt-3 min-h-[64%] sm:min-h-[64%] md:min-h-[69%] max-h-[64%] sm:max-h-[64%] md:max-h-[69%]">
       <template v-for="{ name, icon, path, children } in navigationModules" :key="path">
-        <!-- {{ openAccordions }}  - sdfdsf
-      {{ path}} -->
         <UiAccordion v-if="children?.length > 0" type="single" class="w-[90%]" v-model="openAccordions.path"
           collapsible>
           <UiAccordionItem :value="path" class="shadow-md border-0 bg-white">
@@ -59,8 +56,6 @@
           <span class="text-[16px]">{{ name }}</span>
         </NuxtLink>
       </template>
-      <!-- <div class="absolute bottom-0 w-full"> -->
-      <!-- </div> -->
     </div>
     <UiDropdownMenu class="mb-5 sticky bottom-0 left-0" ref="dropdownMenu">
       <UiDropdownMenuTrigger asChild>
@@ -85,9 +80,6 @@
           </div>
           <div v-if="isAnyPlanFree" @click.stop
             class="flex flex-col justify-center items-center gap-4 absolute bottom-[-35px] left-[0px] rounded-lg bg-[#424bd1] field_shadow payment-popup">
-            <!-- <div class="min-h-[40px] min-w-[40px] max-w-[40px] bg-[#424bd1] rounded-full">
-    
-              </div> -->
             <div class="text-[#FFFFFF] text-sm font-normal py-2 px-0 rounded-lg">You’re on the<span
                 class="font-medium text-[16px]"> Free Plan! </span>
               Unlock the full potential of <span class="font-medium text-[16px]"> Tring AI, upgrade</span> and
@@ -96,15 +88,12 @@
             <UiButton @click.prevent.stop="redirectToBilling"
               class="flex justify-center gap-3 text-[14px] bg-[#FFFFFF] font-bold text-[424bd1] rounded-lg hover:bg-[#FFFFFF] hover:brightness-90 w-[90%] text-[#424bd1]">
               <img src="assets\icons\freeTrailUpgrade.svg"></img>
-              <!-- <component :is="LucideArrowUpRight" class="text-[12px]"></component> -->
               Upgrade
             </UiButton>
           </div>
         </Button>
       </UiDropdownMenuTrigger>
       <UiDropdownMenuContent class="min-w-52 mb-[10px] ml-[9px]" :side="(isMobile) ? 'top' : 'right'">
-        <!-- <UiDropdownMenuLabel>My Account</UiDropdownMenuLabel>
-          <UiDropdownMenuSeparator /> -->
         <UiDropdownMenuGroup class="font-medium text-[16px] pl-2 pr-0 py-1">
           <UiDropdownMenuItem v-for="item in dropdownMenuItems" :key="item.path" class="pr-0 py-0"
             @click.prevent="navigateToSamePage(item.path)">
@@ -126,8 +115,6 @@
         </UiDropdownMenuGroup>
       </UiDropdownMenuContent>
     </UiDropdownMenu>
-
-    <!-- </div> -->
   </div>
 </template>
 <script setup lang="ts">
@@ -193,7 +180,6 @@ const navigateToSamePage = (path: any) => {
   }
 };
 const redirectToBilling = () => {
-  // router.push('/billing')
   navigateTo({ name: 'billing-view-all', query: { type: 'chat' } })
 }
 

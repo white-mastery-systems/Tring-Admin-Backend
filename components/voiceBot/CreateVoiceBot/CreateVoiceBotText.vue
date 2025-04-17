@@ -4,7 +4,6 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { botStore } from "~/store/botStore";
 import { useRoute } from "vue-router";
-import { useDocumentUpload } from "~/composables/botManagement/chatBot/useDocumentUpload";
 
 const scrapData = botStore();
 const text = ref('');
@@ -16,9 +15,6 @@ const props = defineProps<{
   loading: boolean;
   refresh: () => void;
 }>();
-
-// Uncomment if you need document upload functionality
-// const { createDocuments, uploadStatus, isUploading, uploadError } = useDocumentUpload();
 
 // Set default text to first suggestion if available
 onMounted(() => {
@@ -41,7 +37,6 @@ watch(() => props.contentSuggestions.knowledgeBase, (newObject) => {
 // Expose method for parent access
 const generatePDFAndUpload = async () => {
   if (!text.value.trim()) {
-    // toast.error("Please enter some text before generating the PDF.");
     return;
   }
 
@@ -76,8 +71,6 @@ const generatePDFAndUpload = async () => {
     },
   };
 
-  // Uncomment if you need to use document upload functionality
-  // await createDocuments(payload.botId, payload.document);
   await props.refresh();
 };
 

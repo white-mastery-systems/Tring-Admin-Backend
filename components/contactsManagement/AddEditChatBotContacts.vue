@@ -12,7 +12,7 @@
         <ImportNumberFile accept=".csv, .xls, .xlsx" v-model="selectedFile" @uploadDocument="fileUpload"
           :isLoading="isLoading" />
         <ExportButton v-model="exportDataHandler" :rows="exportReadyRows" :columns="exportReadyColumns"
-          @export="exportData" buttonContent="Export Contacts" />
+          @export="exportData" buttonContent="Export Contacts" :isDisabled="!contactsList.length" />
       </div>
     </div>
     <DataTable :data="contactsList" @pagination="Pagination" @limit="($event) => {
@@ -90,7 +90,7 @@ const filters = reactive<{
 const page = ref(0);
 const totalPageCount = ref(0);
 const totalCount = ref(0);
-const route = useRoute("contacts-management-buckets-id");
+const route = useRoute();
 // const searchContacts = ref("");
 const queryId = ref(route.params.id)
 const addChatBotContacts = ref()
@@ -244,8 +244,10 @@ const exportData = async () => {
       headers: {
         "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
+
       params: {
-        type: "chat"
+        type: "chat",
+        q: filters.q,
       }
     });
     const exportReadObject = ((props.typeOfAddContacts === "insideBucket") ? exportContacts.contacts : exportContacts ?? []).map((contacts: any) => {

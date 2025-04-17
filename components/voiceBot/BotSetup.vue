@@ -260,7 +260,6 @@ const isPageLoading = ref(true);
 const activeTab = ref('tts'); // Default to TTS tab
 
 // Get bot details
-// const botDetails = ref(await getVoiceBotDetails(route.params.id));
 const originalValues = ref({});
 // TTS related data
 const { integrationsData, status } = useIntegrations({});

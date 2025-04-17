@@ -29,7 +29,7 @@
                           </div>
                         </div>
                       </UiTooltipTrigger>
-                      <UiTooltipContent class="w-auto">
+                      <UiTooltipContent class="max-w-[300px] overflow-hidden text-wrap break-words">
                         <p>{{ value }}</p>
                       </UiTooltipContent>
                     </UiTooltip>

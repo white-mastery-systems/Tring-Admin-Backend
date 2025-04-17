@@ -89,18 +89,6 @@ const actionsComponent = (id: any) => h(
   {
     class: "flex items-center gap-2",
   }, [
-  // h(
-  //   UiButton,
-  //   {
-  //     onClick: (e: Event) => {
-  //       e.stopPropagation();
-  //       addBucketNameModalState.value.open = true;
-  //       addBucketNameModalState.value.id = id
-  //     },
-  //     class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
-  //   },
-  //   [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "Configure"],
-  // ),
   h(
     UiButton,
     {

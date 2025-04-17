@@ -26,7 +26,6 @@
       <UiTabsContent value="chat">
         <AddEditChatBotContacts typeOfAddContacts="insideContact" :popupState="chatPopupState"
           @PopupState="chatPopupState = $event" />
-
       </UiTabsContent>
       <UiTabsContent value="voice">
         <AddEditVoiceBotContacts typeOfAddContacts="insideContact" :popupState="voicePopupState"

@@ -1,22 +1,4 @@
 <template>
-
-  <!-- :bread-crumbs="[
-    { label: `${botDetails?.name}`, to: `/bot-management/chat-bot/${botDetails?.id}` },
-    {
-      label: 'Intent Management',
-      to: `/bot-management/chat-bot/${botDetails?.id}/intent-management`,
-    },
-  ]"  -->
-  <!-- <Page title="Add tools" :bread-crumbs="[
-    {
-      label: `${botDetails.name}`,
-      to: `/bot-management/chat-bot/${botDetails.id}`,
-    },
-    {
-      label: 'Add tools',
-      to: `/bot-management/chat-bot/${botDetails.id}/tools`,
-    },
-  ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false"> -->
   <div class="pt-4">
     <form @submit.prevent="dynamicToolsForm" class="space-y-6 pt-2 sm:pt-2 md:pt-0">
       <!-- Default Tools Section -->
@@ -233,11 +215,8 @@ const isLoading = ref(false);
 const route = useRoute("chat-bot-id-tools");
 const paramId: any = route;
 const config = useRuntimeConfig()
-// const botDetails: any = await getBotDetails(paramId.params.id);
-// const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
 const voiceBotDetails = await getVoiceBotList()
 const { transformApiResponse } = useTransformApiResponse();
-// const uploadedAudio = ref();
 
 
 const parameterTypes = reactive([
@@ -337,7 +316,6 @@ const dynamicToolsForm = handleSubmit(async (values: any) => {
   await updateBotDetails(payload, true)
 
   isLoading.value = false;
-  // await updateLLMConfig(payload, botDetails?.id, "Tools added successfully.");
 });
 
 </script>

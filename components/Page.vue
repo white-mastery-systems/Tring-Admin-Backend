@@ -1,13 +1,4 @@
 <template>
-  <!-- :class="[
-    props.disablePadding ? '' : (
-      leadPage === 'leads'
-        ? (browserClass === 'brave-browser'
-          ? 'px-3 pb-2 pt-[100px] sm:px-3 md:px-4 md:pt-4 lg:px-4 lg:pt-4 xl:px-4'
-          : 'px-3 pb-2 pt-[60px] sm:px-3 md:px-4 md:pt-4 lg:px-4 lg:pt-4 xl:px-4')
-        : 'px-3 py-2 sm:px-3 md:px-4 md:pt-4 lg:px-4 lg:pt-4 xl:px-4'
-    ),
-  ]" -->
   <div class="w-full pl-5 pt-2" v-if="breadCrumbs?.length > 0">
     <UiBreadcrumb>
       <UiBreadcrumbList>
@@ -20,7 +11,6 @@
       </UiBreadcrumbList>
     </UiBreadcrumb>
   </div>
- <!-- px-2 sm:px-2 md:px-6 lg:px-6 xl:px-6 -->
   <div class="overflow-y-auto" :class="[(route.path === '/auth/onboarding/billing') ? 'h-[100dvh] min-w-[80%]' : 'h-[calc(100dvh-2.5rem)]',
     props.disablePadding 
       ? '' 
@@ -31,15 +21,9 @@
       class="flex items-center gap-2 px-2 sm:px-2 md:px-6 lg:px-6 xl:px-6">
       <div v-if="props.title"
         :class="['flex gap-4 px-0', (!props.disableBackButton) ? 'items-center' : 'items-center']">
-        <!-- <UiButton v-if="!props.disableBackButton" variant="outline" size="icon" @click="handleBackButtonClick">
-          <component :is="ArrowLeft"></component>
-        </UiButton> -->
         <span v-if="!props.disableBackButton" @click="handleBackButtonClick">
           <component :is="ArrowLeft"></component>
         </span>
-        <!-- <div v-else class="block sm:block md:block lg:hidden xl:hidden">
-          <navigationSheet />
-        </div> -->
         <div>
           <h3
             className="max-w-[120px] sm:max-w-[120px] md:max-w-[400px] text-[15px] sm:text-[15px] md:text-[26px] lg:text-[26px] xl:text-[26px] font-bold tracking-tight truncate">
@@ -54,11 +38,6 @@
       <slot name="actionButtons"></slot>
     </div>
     <UiSeparator v-if="!(route.path === '/auth/onboarding/billing')" orientation="horizontal" class="bg-[#E2E8F0] w-full" />
-    <!-- <LazyUiSelectSeparator v-if="!props.disableSelector" class="mb-4 bg-[#E2E8F0]" /> -->
-
-    <!-- mt-4 -->
-    <!-- shadow-3xl -->
-    <!-- mt-4 -->
     <div class="flex flex-col justify-center sm:justify-center md:justify-start gap-4" :class="[
       props.disableElevation
         ? ''

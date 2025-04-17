@@ -6,6 +6,16 @@
       ]" v-if="label" :for="replacedId">
       {{ label }}
       <span v-if="required" class="text-lg text-red-500">* </span>
+      <UiTooltip v-if="helperText">
+        <UiTooltipTrigger as-child>
+      <span class="pl-2">
+        <Info class="h-4 w-4 text-[#FFBC42]" />
+      </span>
+      </UiTooltipTrigger>
+      <UiTooltipContent class="w-auto">
+          <p>{{ helperText}}</p>
+        </UiTooltipContent>
+      </UiTooltip>
     </UiLabel>
     <div v-if="isTextarea" class="flex flex-col gap-1">
       <UiTextarea
@@ -112,7 +122,7 @@
       <span :class="[
           'text-[11px] md:text-[13px]  text-gray-500',
           errorMessage ? 'font-medium text-red-500' : '',
-        ]">{{ errorMessage ?? helperText }}</span>
+        ]">{{ errorMessage }}</span>
       <div v-if="name === 'otp'" class=" text-[#FFBC42] text-[11px] md:text-[13px] underline self-end cursor-pointer"
         :class="{ 'cursor-not-allowed': isResendDisabled }" @click="resendOTP" :disabled="isResendDisabled">
         <span v-if="!isResendDisabled">Resend OTP</span>
@@ -124,7 +134,9 @@
 </template>
 
 <script setup lang="ts">
-  import { useField } from "vee-validate";
+import { useField } from "vee-validate";
+import { Info } from 'lucide-vue-next'
+
   const emit = defineEmits(["input"]);
   const props = withDefaults(
     defineProps<{

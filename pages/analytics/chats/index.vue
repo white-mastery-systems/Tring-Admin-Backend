@@ -17,6 +17,7 @@
         <LivePreviewFilter v-model="filters.botUserName" class="flex-shrink-0" />
         <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
           @change="onDateChange" class="flex-shrink-0" />
+          <!-- {{filters}} -->
         <ChannelFilter v-model="filters.channel" class="flex-shrink-0" />
         <CountryFilter v-model="filters.country" class="flex-shrink-0" />
         <UiButton color="primary" @click="handleClearFilters" class="ml-2 flex-shrink-0">Clear Filters</UiButton>

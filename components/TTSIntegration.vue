@@ -39,8 +39,7 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
 import { createColumnHelper } from "@tanstack/vue-table";
-import { useCount } from '@/composables/useRefresh';
-import { Icon, UiBadge, UiButton } from "#components";
+import { Icon, UiButton } from "#components";
 import TTSModal from "~/pages/integration/TTSModal.vue";
 import { useIntegrations } from '@/composables/botManagement/voiceBot/useTtsIntegrations';
 // import TTSModal from "~/pages/integration/TTSModal.vue";
@@ -61,10 +60,6 @@ const filters = reactive<{
   limit: "10",
 });
 
-// let page = ref(0);
-// let totalPageCount = ref(0);
-// let totalCount = ref(0);
-
 const router = useRouter();
 const route = useRoute();
 
@@ -77,7 +72,7 @@ const ttsModalState = reactive({
   id: null 
 });
 
-let deleteExoPhoneState = reactive({
+const deleteExoPhoneState = reactive({
   open: false,
   id: null,
 });
@@ -97,23 +92,6 @@ const {
   totalPageCount,
   totalCount
 } = useIntegrations(filters);
-// Fetch integrations data
-// const {
-//   data: integrationsData,
-//   status,
-//   refresh: integrationRefresh,
-// } = await useLazyFetch("/api/tts-integration", {
-//   server: false,
-//   default: () => [],
-//   query: filters,
-//   transform: (integrations: any) => {
-//     console.log(integrations, "integrations");
-//     page.value = integrations.page;
-//     totalPageCount.value = integrations.totalPageCount;
-//     totalCount.value = integrations.totalCount;
-//     return integrations.data;
-//   },
-// });
 
 // Watch for integrationModalState changes to update ttsModalState
 watch(() => props.integrationModalState, (newValue: any) => {
@@ -191,16 +169,4 @@ const onSuccess = () => {
   ttsModalState.open = false;
   integrationRefresh();
 };
-
-// Function to delete exophone
-// const deleteSingleExoPhone = async ({ id, onSuccess }: { id: number, onSuccess: () => void }) => {
-//   try {
-//     await $fetch(`/api/org/integrations/number-integration/${id}`, {
-//       method: 'DELETE'
-//     });
-//     onSuccess();
-//   } catch (error) {
-//     console.error('Error deleting exophone:', error);
-//   }
-// };
 </script>

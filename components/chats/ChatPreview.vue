@@ -37,13 +37,6 @@
               class="mt-2.5 flex flex-col items-end justify-center gap-5 rounded-l-xl rounded-br-xl bg-[#ffffff] p-2.5 text-black">
               <div class="pb-2 pt-2">
                 <span>
-                  <!-- {{
-                    (messageList.content.includes('Rescheduled Site') || messageList.content.includes('Site VisitScheduled') || messageList.content.includes('Appointment Scheduled'))
-                      ? (messageList.content.includes('Rescheduled Site') ? 'Rescheduled Site Visit' :
-                        messageList.content.includes('Site Visit Scheduled') ? 'Site Visit Scheduled' :
-                        messageList.content.includes('Appointment Scheduled') ? 'Appointment Scheduled' : 'Rescheduled Appointment')
-                      : (messageList.content.includes('Rescheduled Call') ? 'Rescheduled Call' : 'Call Scheduled')
-                  }} -->
                   {{
                     (messageList.content.includes('Rescheduled Site') ||
                       messageList.content.includes('Site Visit Scheduled') ||
@@ -305,7 +298,7 @@ watch(
 
 onMounted(() => {
   setTimeout(() => {
-    scrollToMessage({ chatIndex: props.chatValue.length });
+    scrollToMessage({ chatIndex: props?.chatValue?.length });
   }, 100);
 });
 
