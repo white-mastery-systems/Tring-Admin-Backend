@@ -260,6 +260,25 @@ export const chatbotScheduledCallSchema = chatbotSchema.table("chatbot_scheduled
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
+// Whatsapp Enrichments
+export const whatsappEnrichmentSchema = chatbotSchema.table("whatsapp_enrichment", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").references(() => organizationSchema.id, { onDelete: "cascade" }).notNull(),
+  botUserId: uuid("bot_user_id").references(() => botUserSchema.id, { onDelete: "cascade" }).notNull(),
+  name: varchar("name"),
+  email: varchar("email"),
+  phone: varchar("phone").notNull(),
+  countryCode: varchar("country_code").notNull(),
+  metadata: jsonb("metadata").default({}),
+  status: varchar("status", {
+    enum: ["new", "meeting_link_sent", "meeting_booked", "meeting_cancelled", "meeting_rescheduled", "completed"],
+  }),
+  integrationId: uuid("integration_id").references(() => integrationSchema.id, { onDelete: "cascade" }).notNull(),
+  leadStatus: boolean("lead_status").default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 // Relations
 export const chatBotRelations = relations(chatBotSchema, ({ one, many }) => ({
   organization: one(organizationSchema, {
