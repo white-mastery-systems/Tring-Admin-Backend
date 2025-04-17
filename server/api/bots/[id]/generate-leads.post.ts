@@ -194,20 +194,23 @@ export default defineEventHandler(async (event) => {
           const keywords = ["Appointment", "Call Scheduled", "Site Visit", "Campaign Lead Interacted"];
           whatsappPayload.intent = keywords.find((keyword) => body?.note.includes(keyword)) || "Lead";
         }
-        const data = await createWhatsAppMessage(
-          whatsappPayload,
-          `${botIntegration?.integration?.metadata?.countryCode.split("+")[1]}` +
-            botIntegration?.integration?.metadata?.phoneNumber,
-          body?.note,
-        );
-        if(data){
-          await $fetch("/api/org/whatsappLeadsPrice", {
-            method: "POST",
-            body: {
-              organizationId: botDetails?.organizationId,
-              countryCode: botIntegration?.integration?.metadata?.countryCode,
-            },
-          });
+        const phoneNumber = `${botIntegration?.integration?.metadata?.countryCode?.replace("+", "") || ""}${botIntegration?.integration?.metadata?.phoneNumber || ""}`.trim();
+        if (phoneNumber) {
+          const data = await createWhatsAppMessage(
+            whatsappPayload,
+            `${botIntegration?.integration?.metadata?.countryCode.split("+")[1]}` +
+              botIntegration?.integration?.metadata?.phoneNumber,
+            body?.note,
+          );
+          if(data){
+            await $fetch("/api/org/whatsappLeadsPrice", {
+              method: "POST",
+              body: {
+                organizationId: botDetails?.organizationId,
+                countryCode: botIntegration?.integration?.metadata?.countryCode,
+              },
+            });
+          }
         }
       }
     } else if (botIntegration?.integration?.crm === "hubspot") {

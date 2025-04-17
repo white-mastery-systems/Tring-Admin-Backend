@@ -40,7 +40,7 @@ import { z } from "zod";
           return isNaN(parsed) ? undefined : parsed;
         }),
         z.number({ required_error: "Calls per trigger is required." }).min(1, { message: "Calls per trigger is required." })
-      ]),
+      ]).optional(),
   }).superRefine((data, ctx) => {
     const isWhatsApp = data.contactMethod === "whatsapp";
     const isVoice = data.contactMethod === "voice";

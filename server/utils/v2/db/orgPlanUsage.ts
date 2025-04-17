@@ -111,12 +111,14 @@ export const voicePlanUsages = async (orgZohoSubscription: any, orgDetail: any, 
       orgZohoSubscription,
       subscriptionStatus: orgZohoSubscription.subscriptionStatus
     })
+    
     if(orgZohoSubscription.subscriptionStatus ===  "trial") {
       const trialEndDate = momentTz(orgZohoSubscription.endDate, "YYYY-MM-DD").startOf("day");
       const currentDate = momentTz().startOf('day');
       const daysRemaining = trialEndDate.diff(currentDate, "days");
       resObj.remainingDaysForTrialEnd = daysRemaining
     }
+
     return resObj
   } catch (error: any) {
     logger.error(`Voice plan usage Error: ${JSON.stringify(error.message)}`)
@@ -187,6 +189,16 @@ const constructPlanUsageResponse = ({ usedQuota, maxQuota, planCode, walletBalan
   whatsappSession?: number,
   subscriptionStatus?: string
 }) => {
+  let orgSubscriptionStatus
+  if(planCode === "chat_free" || planCode  === "voice_free")  {
+    if(orgZohoSubscription?.subscriptionStatus === "inactive") {
+      orgSubscriptionStatus = "trial expired"
+    } else {
+      orgSubscriptionStatus = "trial"
+    }
+  } else {
+    orgSubscriptionStatus = orgZohoSubscription?.subscriptionStatus
+  }
   return {
     used_quota: usedQuota,
     max_quota: maxQuota,
@@ -198,6 +210,6 @@ const constructPlanUsageResponse = ({ usedQuota, maxQuota, planCode, walletBalan
     available_sessions: availableSessions,
     expiry_date: orgZohoSubscription?.subscriptionStatus !== "cancelled" && orgZohoSubscription?.endDate ? orgZohoSubscription?.endDate : undefined,
     whatsapp_sessions: whatsappSession ?? undefined,
-    subscription_status: planCode === "chat_free" || planCode  === "voice_free" ? "trial" : orgZohoSubscription?.subscriptionStatus
+    subscription_status: orgSubscriptionStatus
   };
 }

@@ -20,8 +20,8 @@ export default defineEventHandler(async (event) => {
        getOrgPlanUsage(organizationId, "chat"),
        getAdminByOrgId(organizationId)
     ])
-    const adminCountry = adminDetail?.address?.country || "India" 
-    const planPricingDetail = await getSubcriptionPlanDetailByPlanCode(orgPlanUsage?.pricingPlanCode!, adminCountry)
+    const adminCountry = adminDetail?.address?.country || "India"
+    const planPricingDetail = await getSubcriptionPlanDetailByPlanCode(orgZohoSubscription?.pricingPlanCode!, adminCountry)
     
     let whatsappWalletBalance = orgDetail?.wallet || 0
     
@@ -38,14 +38,13 @@ export default defineEventHandler(async (event) => {
     const maxSessions = planPricingDetail?.sessions || 0
     
     let totalExtraSessions = orgPlanUsage?.extraInteractionsUsed || 0
-    
     if(usedSessions > maxSessions) {
       const extraWhatsappSessionPrice =  (1 * planPricingDetail?.extraSessionCost!) + reduceAmount
       if(extraWhatsappSessionPrice > whatsappWalletBalance) {
         return { status: false, whatsappWalletBalance, organizationName: orgDetail?.name, revisited: false }
       } else {
         totalExtraSessions = totalExtraSessions + 1
-        whatsappWalletBalance = Math.max(0, parseFloat((whatsappWalletBalance - extraWhatsappSessionPrice).toFixed(2)));
+        whatsappWalletBalance = Math.max(0, parseFloat(((orgDetail?.wallet || 0)- extraWhatsappSessionPrice).toFixed(2)));
       }
     }
     const whatsappSessionExist = await getOrgWhatsappSessions(organizationId, pid, mobile)
