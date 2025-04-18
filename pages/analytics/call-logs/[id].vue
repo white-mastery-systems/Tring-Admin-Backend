@@ -95,16 +95,19 @@ const { status, data: callLogs } = await useLazyFetch(
   },
 );
 
-breadcrumbStore.setBreadcrumbs([
-  {
-    label: "Call", // Dynamic name
-    to: `/analytics/call-logs`,
-  },
-  {
-    label: callLogs.value?.callerName ?? 'No Name',
-    to: `/analytics/call-logs/${route.params?.id}`,
-  },
-])
+watch(() => callLogs.value,(newValue) => {
+  breadcrumbStore.setBreadcrumbs([
+    {
+      label: "Call", // Dynamic name
+      to: `/analytics/call-logs`,
+    },
+    {
+      label: newValue?.callerName ?? 'No Name',
+      to: `/analytics/call-logs/${route.params?.id}`,
+    },
+  ])
+}, { deep:true, immediate: true })
+
 const isDataLoading = computed(() => status.value === "pending");
 watch(() => isDataLoading.value,(newValue) => {
   if (!newValue) {

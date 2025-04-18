@@ -84,7 +84,7 @@ const breadcrumbStore = useBreadcrumbStore();
 breadcrumbStore.setBreadcrumbs([
   {
     label: "Whatsapp Bot", // Dynamic name
-    to: "/whatsapp-bot",
+    to: "/whatsapp/whatsapp-bot",
   },
 ]);
 

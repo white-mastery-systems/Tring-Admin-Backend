@@ -148,16 +148,16 @@ watch(() => values.ivrConfig, (selectedIvrConfig) => {
     if (newIntegrationsData) {
       console.log(newIntegrationsData, "newIntegrationsData -- newIntegrationsData")
       setFieldValue("cloudTelephoneProvider", newIntegrationsData?.provider ?? "")
-      setFieldValue("authId", newIntegrationsData.metadata.authId ?? "")
-      setFieldValue("authToken", newIntegrationsData.metadata.authToken ?? "")
-      setFieldValue("accountSID", newIntegrationsData.metadata.accountSid ?? "")
-      setFieldValue("apiSecret", newIntegrationsData.metadata.apiSecret ?? "")
-      setFieldValue("apiKey", newIntegrationsData.metadata.apiKey ?? "")
-      setFieldValue("apiToken", newIntegrationsData.metadata.apiToken ?? "")
-      setFieldValue("flowId", newIntegrationsData.metadata.flowId ?? "")
-      setFieldValue("publicKey", newIntegrationsData.metadata.publicKey ?? "")
-      setFieldValue("connectionId", newIntegrationsData.metadata.connectionId ?? "")
-      setFieldValue("subDomain", newIntegrationsData.metadata.subDomain ?? "")
+      setFieldValue("authId", newIntegrationsData?.metadata?.authId ?? "")
+      setFieldValue("authToken", newIntegrationsData.metadata?.authToken ?? "")
+      setFieldValue("accountSID", newIntegrationsData.metadata?.accountSid ?? "")
+      setFieldValue("apiSecret", newIntegrationsData.metadata?.apiSecret ?? "")
+      setFieldValue("apiKey", newIntegrationsData.metadata?.apiKey ?? "")
+      setFieldValue("apiToken", newIntegrationsData.metadata?.apiToken ?? "")
+      setFieldValue("flowId", newIntegrationsData.metadata?.flowId ?? "")
+      setFieldValue("publicKey", newIntegrationsData.metadata?.publicKey ?? "")
+      setFieldValue("connectionId", newIntegrationsData.metadata?.connectionId ?? "")
+      setFieldValue("subDomain", newIntegrationsData.metadata?.subDomain ?? "")
     }
   })
 })
@@ -246,17 +246,19 @@ const onSubmit = handleSubmit(async (value: any) => {
         };
       });
       
+      isLoading.value = false;
       return navigateTo({
         name: "voice-bot-id",
         params: { id: props.botDetails.id },
       });
     } catch (error: any) {
       toast.error(error.statusMessage)
+      isLoading.value = false;
     }
   } else {
     console.log('No changes detected, skipping API call');
+    isLoading.value = false;
   }
-  
   isLoading.value = false;
 });
 </script>
