@@ -27,15 +27,17 @@ export default defineEventHandler(async (event) => {
       2. If the **user's name** appears anywhere in the chat, extract it and use it **within the summary** (e.g., "Alex asked about...").  
         If no name is found, use **"USER"** as the default in the summary.
       ---
-      ### ✅ TASK 2: Identify Unanswered Segments
-      Find all instances where the **assistant fails to properly respond to a user question**.
-      A response is considered a **failure** if it is:
-      - Incomplete  
-      - Irrelevant  
-      - Evasive  
-      - Off-topic  
-      - Too vague or generic  
-      - A repetition of previous information without answering the actual question
+      ### ✅ TASK 2: Identify Inadequate Responses
+      Objective: Identify all instances where the assistant's response fails to properly address the user's question.
+      Failure Criteria:
+        A response is considered a failure if it is:
+        - Incomplete: The answer does not fully respond to the user's query.
+        - Irrelevant: The answer does not align with the user's question.
+        - Evasive: The assistant avoids directly answering the question or provides vague responses.
+        - Off-topic: The answer drifts away from the user's original question or context.
+        - Too vague or generic: The response is overly general and doesn't provide a specific, useful answer.
+        - Repetitive: The response repeats previously provided information without directly answering the user's question.
+      Task: Classify and return all messages where the assistant's response does not meet the above criteria. Provide these instances in a list format for further review.
       ---
       ### 📌 RULES for Identifying Failures
       Only include user - assistant message pairs where:
@@ -57,7 +59,7 @@ export default defineEventHandler(async (event) => {
       Return your final result in this JSON structure:
       {
         "chatSummary": "string",
-        "unansweredSegments": [ 
+        "inadequateMessages": [ 
           { "role": "user", "content": "..." },
           { "role": "assistant", "content": "..." }
         ]
@@ -65,7 +67,7 @@ export default defineEventHandler(async (event) => {
       If no unanswered segments are found, return:
       {
         "chatSummary": "string",
-        "unansweredSegments": []
+        "inadequateMessages": []
       }
     `;
 
