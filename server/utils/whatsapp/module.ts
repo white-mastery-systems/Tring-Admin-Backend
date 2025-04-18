@@ -1,5 +1,10 @@
 import { logger } from "~/server/logger";
 
+export interface CannedWhatsappMessage {
+  response: string;
+  options: { id: string; title: string; description: string }[];
+}
+
 export async function getSharedWhatsappDetails({
   code,
   id,
@@ -18,6 +23,7 @@ export async function getSharedWhatsappDetails({
   logger.info(`sharedWhatsappDetails ${JSON.stringify(sharedWhatsappDetails)}`);
   return sharedWhatsappDetails;
 }
+
 export async function fetchPhoneNumbers({
   code,
   id,
@@ -36,6 +42,7 @@ export async function fetchPhoneNumbers({
   logger.info(`phoneNumbers ${JSON.stringify(phoneNumbers)}`);
   return phoneNumbers;
 }
+
 export async function fetchMessageTemplates({
   code,
   id,
@@ -170,4 +177,51 @@ export const sendWhatsappMessage = async (
   });
 
   return data
-}; 
+};
+
+export const sendWhatsappButtonMessage = async (
+  metaToken: string,
+  pid: string,
+  to: string,
+  message: CannedWhatsappMessage,
+  // replyId?: string,
+) => {
+  const buttons = message.options.filter((option) => option.title.length <= 20).map((option, index) => ({
+      type: "reply",
+      reply: {
+        id: option.id || `${index}`,
+        title: option.title,
+      },
+    }));
+
+  // if (buttons.length < 1 || buttons.length > 3) {
+  //   return sendWhatsappMessage(metaToken, pid, to, message.response);
+  // }
+
+  try {
+    const data = await $fetch(`https://graph.facebook.com/v20.0/${pid}/messages`, {
+        ignoreResponseError: true,
+        method: "post",
+        headers: {
+          Authorization: `Bearer ${metaToken}`,
+        },
+        // context: replyId ? { message_id: replyId } : undefined,
+        body: {
+          messaging_product: "whatsapp",
+          recipient_type: "individual",
+          to,
+          type: "interactive",
+          interactive: {
+            type: "button",
+            body: { text: message.response },
+            action: { buttons },
+          },
+        },
+      },
+    );
+    return data;
+  } catch (error:any) {
+    logger.error(`Error sending whatsapp button message ${error?.message}`);
+    return null
+  }
+};

@@ -1,3 +1,5 @@
+import parsePhoneNumber from "libphonenumber-js";
+
 const db = useDrizzle();
 
 export const getBotUserById = async (id: string, orgId: string) =>
@@ -87,9 +89,12 @@ export const fetchUserByPhoneOrCreate = async (
   orgId: string,
   userType: "voicebot" | "chatbot" | "whatsapp" = "chatbot",
   name?: string,
+  email?: string,
 ) => {
-  let countryCode = phone?.substring(0, 2);
-  phone = phone.slice(2);
+  // let countryCode = phone?.substring(0, 2);
+  // phone = phone.slice(2);
+  const { countryCode, phone: parsedPhone } = splitPhoneNumber(phone);
+  phone = parsedPhone;
   const user = await getBotUserByPhone(phone, countryCode, orgId, userType);
   if (user) {
     return user;
@@ -99,8 +104,18 @@ export const fetchUserByPhoneOrCreate = async (
     mobile: phone,
     countryCode: `+${countryCode}`,
     name: name || "",
+    ...(email ? { email } : {}),
     organizationId: orgId,
     userType,
     isNameVerified: false,
   });
+};
+
+// Split phone number into country code and phone number
+export const splitPhoneNumber = (phoneNumber: string) => {
+  const parsedPhone = parsePhoneNumber(`+${phoneNumber}`);
+  const countryCode =
+    parsedPhone?.countryCallingCode || phoneNumber?.substring(0, 2);
+  const phone = parsedPhone?.nationalNumber || phoneNumber.slice(2);
+  return { countryCode, phone };
 };
