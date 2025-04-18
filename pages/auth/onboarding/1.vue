@@ -1,13 +1,9 @@
 <template>
   <div class="flex h-full w-full flex-col items-center justify-center">
-    <!-- :initial-values="defaultFormValues" -->
-    <!-- @submit="handleSubmit" -->
     <div class="w-[90%] px-0 pb-[20px] font-bold text-[#424bd1] md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
       Personal Details
     </div>
     <div class="flex w-[90%] flex-col px-0 md:w-[80%] lg:w-[90%] lg:px-6 xl:w-[80%]">
-      <!-- <div> -->
-
       <form class="space-y-2" @submit="onSubmit">
         <div class="flex flex-col gap-3">
           <TextField type="text" name="name" label="Full Name" placeholder="Enter Your Name" :required="true" />
@@ -20,8 +16,6 @@
           </UiButton>
         </div>
       </form>
-
-      <!-- </div> -->
     </div>
     <div class="absolute bottom-[30px] flex items-center gap-1">
       <span class="text-[12px] text-[#8a8a8a]">
@@ -55,12 +49,7 @@ import { personalDetailFormValidation } from '~/validationSchema/authValidation/
     resetForm,
   } = useForm({
     validationSchema: personalDetailFormValidation,
-    initialValues: {
-      // firstName: "",
-      // lastName: "",
-      // phone: "",
-      // countryCode: "",
-    },
+    initialValues: {},
   });
 
 
@@ -85,15 +74,6 @@ import { personalDetailFormValidation } from '~/validationSchema/authValidation/
       setFieldValue("otherRole", otherRole);
     }
   });
-
-  // const handleRoleChange = (selectItem: any) => {
-  //   if (loginData.role === 'Other') {
-  //     showCustomRoleInput.value = true
-  //   }
-  // }
-  // const handleChange = () => {
-  //   loginData.customRole = loginData.customRole
-  // }
   const onSubmit = handleSubmit(async (value: any) => {
     isLoading.value = true
     localStorage.setItem(

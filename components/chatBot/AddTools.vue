@@ -59,7 +59,6 @@
             </UiFormItem>
           </UiFormField>
           <UiFormField v-slot="{ value, handleChange }" name="schedule_call_with_voice">
-            <!-- sm:pr-0 md:pr-[6px] -->
             <UiFormItem class="w-full pr-0">
               <div class="flex justify-between">
                 <UiLabel class="text-[12px] sm:text-[12px] md:text-[14px] font-medium"> Schedule a Call with Voice Bot
@@ -73,8 +72,6 @@
               </div>
             </UiFormItem>
           </UiFormField>
-          <!-- <div class="flex items-center gap-3 w-full">
-          </div> -->
           <span class="w-full">
             <SelectField name="voice_bot" label="Voice Bots" placeholder="Select Bot"
               :options="voiceBotDetails.map((bot) => ({ label: bot.name, value: bot.id }))" :required="false"
@@ -212,9 +209,6 @@ definePageMeta({
 });
 const props = defineProps < { botDetails: any; botData: any, refreshBot: () => void }>();
 const isLoading = ref(false);
-const route = useRoute("chat-bot-id-tools");
-const paramId: any = route;
-const config = useRuntimeConfig()
 const voiceBotDetails = await getVoiceBotList()
 const { transformApiResponse } = useTransformApiResponse();
 

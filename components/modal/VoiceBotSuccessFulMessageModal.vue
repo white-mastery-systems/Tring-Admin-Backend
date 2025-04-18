@@ -15,7 +15,7 @@
         <form class="space-y-4" @submit.prevent="onSubmit">
           <div class="flex gap-3 grid grid-cols-1 sm:grid-cols-1  md:grid-cols-2"
             :class="(errors) ? 'items-start' : 'items-center'">
-            <TextField name="name" type="text" label="" placeholder="Enter name" />
+            <TextField name="name" type="text" label="" placeholder="Enter name" :disableSpecialCharacters="true" />
             <div class="flex gap-2 w-full" :class="(errors) ? 'items-start' : 'items-center'">
               <CountryCodeField class="w-[150px]" :class="(errors) ? 'mt-2' : 'mt-1'" name="countryCode"
                 helperText="Enter your country code" :fieldHeader="true" />

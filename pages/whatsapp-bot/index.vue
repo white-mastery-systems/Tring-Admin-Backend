@@ -26,9 +26,6 @@
               integrationId: deleteChannelState.id,
               onSuccess: () => {
                 integrationRefresh()
-
-                // getAllCampaign(
-                // refresh();
               },
             });
             deleteChannelState.open = false;
@@ -50,18 +47,6 @@ useHead({
   title: 'Whatsapp Bot',
 })
 
-// const filters = reactive<{
-//   q: string;
-//   page: string;
-//   limit: string;
-//   active: string;
-// }>({
-//   q: "",
-//   active: "",
-//   page: "1",
-//   limit: "10",
-// });
-
 const page = ref(1);
 const totalPageCount = ref(0);
 const totalCount = ref(0);
@@ -72,24 +57,6 @@ const filters = computed(() => ({
   page: page.value,
   limit: limit.value,
 }));
-// const {
-//   status,
-//   data: campaignDataList,
-//   refresh: getAllCampaign,
-// } = await useLazyFetch("/api/org/campaign", {
-//   server: false,
-//   default: () => [],
-//   query: filters,
-//   headers: {
-//     "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-//   },
-//   transform: (campaign: any) => {
-//     page.value = campaign.page;
-//     totalPageCount.value = campaign.totalPageCount;
-//     totalCount.value = campaign.totalCount;
-//     return campaign.data;
-//   },
-// });
 
 const {
   status: integrationLoadingStatus,
@@ -120,20 +87,6 @@ breadcrumbStore.setBreadcrumbs([
     to: "/whatsapp-bot",
   },
 ]);
-// const channelModalState = defineModel<{ open: boolean; id: any }>({
-//   default: {
-//     open: false,
-//     id: null,
-//   },
-// });
-// watchEffect(() => {
-//   if (filters.botId === "all") filters.botId = "";
-// });
-// const { status, data: campaignsList,refresh: integrationRefresh, } = await useLazyFetch("/api/org/campaign", {
-//   server: false,
-//   default: () => [],
-// });
-const isDataLoading = computed(() => integrationLoadingStatus.value === "pending");
 
 const columnHelper = createColumnHelper<any>();
 

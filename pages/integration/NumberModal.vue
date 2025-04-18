@@ -16,8 +16,6 @@
 
         <TextField v-if="values.provider === 'twilio' || values.provider === 'exotel'" name="accountSid"
           label="Account SID" required placeholder="Enter account SID" />
-        <!-- <TextField v-if="values.provider === 'twilio'" name="authToken" label="Auth Token" required
-          placeholder="Enter auth token" /> -->
         <TextField v-if="values.provider === 'twilio'" name="apiSecret" label="Api Secret" required
           placeholder="Enter api secret" />
 
@@ -62,12 +60,6 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(["success"]);
 const { refresh } = useCount();
-// const numberModalState: any = defineModel<{ open: boolean, id: any }>({
-//   default: {
-//     open: false,
-//     id: null,
-//   },
-// });
 const isLoading = ref(false)
 const providerList = ref([
   {
@@ -118,9 +110,6 @@ watch(() => props.numberModalState.open, async () => {
     }
   }
 })
-// onMounted(async () => {
-//   loadCountries()
-// });
 
 const handleConnect = handleSubmit(async (values: any) => {
   isLoading.value = true
@@ -146,5 +135,3 @@ const handleConnect = handleSubmit(async (values: any) => {
   isLoading.value = false
 });
 </script>
-
-<!-- https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=ZohoBigin.settings.ALL,ZohoBigin.modules.ALL&redirect_uri=https://tring-admin.pripod.com/settings/integration/zoho-bigin&prompt=consent&access_type=offline -->

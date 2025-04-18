@@ -7,8 +7,6 @@
         </UiButton>
       </div>
     </template>
-    <!-- agentModalState.open = true;
-    agentModalState.id = null; -->
     <div class="flex items-center gap-2 overflow-x-scroll mt-2">
       <UiInput v-model="filters.q" @input="filters.page = '1'"
         class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -60,17 +58,6 @@ breadcrumbStore.setBreadcrumbs([
 const searchBot = ref("");
 const agentModalState = ref({ open: false, id: null });
 const { filters } = useBotFilters();
-// const filters = useState("chatBotFilters", () => ({
-//   q: "",
-//   active: "",
-//   page: "1",
-//   limit: "10",
-//   type: ""
-// }));
-
-// let page = ref(0);
-// let totalPageCount = ref(0);
-// let totalCount = ref(0);
 const { botListStatus, bots, refresh, page, totalPageCount, totalCount } = useBotList();
 
 const isDataLoading = computed(() => botListStatus.value === "pending");
@@ -158,7 +145,6 @@ const addNewChatBot = async () => {
       // Handle case where no ID is returned
       console.error("No bot ID received from the server");
       // Optionally, show a user-friendly error message
-      // toast.error("Failed to create a new chatbot");
     }
   } catch (error) {
     toast.error(error.statusMessage)

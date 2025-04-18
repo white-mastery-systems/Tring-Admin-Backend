@@ -1,6 +1,5 @@
 <template>
   <Page title="Contacts" :disable-back-button="true">
-    <!-- {{ getSingleDetails }} -->
     <template #actionButtons>
       <div class="flex gap-4">
         <div class="flex gap-2">

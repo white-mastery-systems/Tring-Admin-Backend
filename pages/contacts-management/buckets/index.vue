@@ -10,13 +10,6 @@
             ">
             Add Bucket
           </UiButton>
-
-          <!-- <UiButton color="primary">
-            Import
-          </UiButton>
-          <UiButton color="primary">
-            Export
-          </UiButton> -->
         </div>
       </div>
     </template>
@@ -85,9 +78,9 @@ const filters = reactive<{
 });
 const addBucketNameModalState = ref({ open: false, id: null });
 
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 const {
   status,
   data: contactsList,

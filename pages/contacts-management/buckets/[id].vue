@@ -50,20 +50,8 @@ const voicePopupState = ref(false)
 const route = useRoute();
 const breadcrumbStore = useBreadcrumbStore();
 const { bucketDetails, loading, error, refreshBucket } = useBucketContacts(route.params.id);
-// const {
-  //   status,
-  //   data: contactsList,
-  //   refresh: contactsRefresh,
-  // } = await useLazyFetch("/api/org/contact-list", {
-    //   server: false,
-    //   query: filters,
-    //   default: () => [],
-    // });
-    
-// const getBucketDetails = ref([])/
-onMounted(async () => {
-  // getBucketDetails.value = await getBucketContactsDetails(route.params.id);
 
+onMounted(async () => {
   breadcrumbStore.setBreadcrumbs([
     {
       label: 'Segments',

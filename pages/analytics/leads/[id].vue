@@ -40,9 +40,6 @@
                         <div class="text-gray-500">{{ key }}</div>
                         <div class="w-[90%]">
                           <template v-if="key === 'Mobile'">
-                            <!-- <a href="tel:{{ value }}" class="truncate text-[#424bd1]">
-                              {{ value }}
-                            </a> -->
                             <a :href="getTelLink(value)" class="truncate text-[#424bd1]">
                               {{ value }}
                             </a>
@@ -98,7 +95,6 @@
                 <div v-if="formattedChats.length" class="flex justify-center font-medium mt-2">Dynamic Forms</div>
                 <div v-if="formattedChats.length" class="p-5">
                   <div v-for="(value, key) in formattedChats" :key="key">
-                    <!-- {{ value.metadata }} -->
                     <div class="text-[#424bd1] font-medium pb-2">
                       {{ `Form ${key + 1}` }}
                     </div>
@@ -113,10 +109,6 @@
                   </div>
                 </div>
               </div>
-
-
-
-              <!-- {{ chats[0].messages.map((item:any) => item) }} || safddsf -->
             </UiTabsContent>
           </UiTooltipProvider>
 
@@ -204,13 +196,6 @@ const leadData: any = ref();
 const { data: whatsappLead, execute: fetchName } = useLazyFetch(`/api/getName?id=${route.params.id}`, {
   method: 'GET',
 });
-// const { status, data: leadData } = await useLazyFetch(
-//   () => `/api/org/chat/${route.params.id}`,
-//   {
-//     server: false,
-//   },
-// );
-// const isPageLoading = computed(() => status.value === "pending");
 watchEffect(() => {
   if (leadData.value) {
     breadcrumbStore.setBreadcrumbs([
@@ -264,29 +249,6 @@ const details = computed(() => {
   }
 });
 
-// const getTelLink = computed(() => {
-//   const result = {};
-//   Object.entries(props.details[0]).forEach(([key, value]) => {
-//     if (key === 'Mobile') {
-//       const sanitizedValue = value.replace(/\D/g, '');
-//       result[key] =
-//         sanitizedValue.startsWith('91') || sanitizedValue.startsWith('+91')
-//           ? `tel:+${sanitizedValue}`
-//           : `tel:${sanitizedValue}`;
-//     } else {
-//       result[key] = value;
-//     }
-//   });
-//   return result;
-// });
-
-// it will work
-// const getTelLink = (value) => {
-//   const sanitizedValue = value.replace(/\D/g, '');
-//   return sanitizedValue.startsWith('91') || sanitizedValue.startsWith('+91')
-//     ? `tel:+${sanitizedValue}`
-//     : `tel:${sanitizedValue}`;
-// };
 const getTelLink = (value: any) => {
   // Remove all non-digit characters
   const sanitizedValue = value.replace(/\D/g, '');
@@ -321,9 +283,6 @@ const fetchData = async () => {
     method: "GET",
   });
   chatData.value = leadData?.value?.messages?.slice(-1);
-  // // Ensure you're using `ref` to store the reactive data
-  // status.value = status.value;
-  // leadData.value = leadData.value;
 };
 const chatData = ref([]);
 const chats = await $fetch(`/api/org/chat/${route.params.id}/messages`, {
@@ -393,23 +352,6 @@ const formattedScheduels = computed(() => {
     return formattedMessages;
   }).flat(); // Flatten the array if there are multiple messages per chat
 });
-// const formattedScheduels = computed(() => {
-//   return chats.map((chat: any) => {
-//     // Filter messages that have role 'comment' and content 'Booking Details Submitted'
-//     const filteredMessages = chat.messages.filter((message: any) =>
-//       message.role === 'comment' && (message.content.includes('Rescheduled Site') || message.content.includes('Site Visit Scheduled') || (message.content.includes('Rescheduled Site') || message.content.includes('Rescheduled Call'))
-//     ));
-
-//     // For each message, format the metadata and createdAt date
-//     const formattedMessages = filteredMessages.map((message: any) => {
-//       return {
-//         content: message.content,
-//       };
-//     });
-
-//     return formattedMessages;
-//   }).flat();  // Flatten the array if there are multiple messages per chat
-// });
 const formatLabel = (key: any) => {
   // Convert camelCase or PascalCase to words with spaces
   return key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z])/g, ' $1').trim();

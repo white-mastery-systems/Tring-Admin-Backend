@@ -1,10 +1,5 @@
 <template>
   <div class="relative h-full">
-    <!-- Loading spinner -->
-    <!-- <div v-if="isPageLoading" class="grid place-items-center text-[#424BD1] w-full sm-w-full md:min-w-[900px] absolute top-0 left-0 right-0 z-50">
-      <Icon name="svg-spinners:90-ring-with-bg" class="h-10 w-10" />
-    </div> -->
-    
     <!-- Main content with gradient background -->
     <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 via-pink-50 to-blue-50 -z-10"></div>
     
@@ -67,13 +62,6 @@
                 /month
               </span>
             </div>
-            <!-- <button 
-              class="text-sm font-medium mt-1" 
-              :class="(orgBilling?.plan_code === list.plan_code) ? 'text-amber-300 hover:text-amber-200' : 'text-indigo-600 hover:text-indigo-700'"
-              @click="choosePlan(list.plan_code)"
-            >
-              Calculate your price
-            </button> -->
           </div>
           
           <!-- Features List with Updated Icons -->
@@ -165,29 +153,22 @@ definePageMeta({
 
 import { useBillingVariation } from '~/composables/billing/useBillingVariation';
 import { useUserDetailsComposable } from '~/composables/billing/useDetails';
-import { usePlanSelection } from '~/composables/billing/usePlanSelection';
 import { useRoute, useRouter } from 'vue-router';
-import { usePlanLevel } from "~/composables/billing/usePlanLevel";
 import { useBillingComposable } from '~/composables/billing/useBillingComposable';
-import { ArrowRight, Check, X } from 'lucide-vue-next';
-import { useFreeTrial } from '~/store/freeTrailStore';
+import { Check, X } from 'lucide-vue-next';
 import { watch } from 'vue';
 
 const props = withDefaults(defineProps<{ onBoardingAccount?: boolean }>(), {
   onBoardingAccount: false, // Default value for accept
 });
-const correctedUrl = ref('');
 const router = useRouter();
 const route = useRoute();
-const freeTrialPopup = useFreeTrial();
 const { userDetails, fetchUser } = useUserDetailsComposable();
 const config = useRuntimeConfig();
-const strokeBlackColor = ref("#18181b");
-const strokeWhiteColor = ref("#ffffff");
 const billingVariationDetails = ref();
 const BillingVariationPending = ref(false);
 const indianUser = ref(false);
-const { orgBilling, organization, isPageLoading } = useBillingComposable();
+const { orgBilling, organization } = useBillingComposable();
 
 
 const { billingVariation, isIndianUser, pending, error } = useBillingVariation(userDetails, route.query.type);
@@ -195,11 +176,10 @@ const { billingVariation, isIndianUser, pending, error } = useBillingVariation(u
 // 2. Then use watch to react to changes:
 watch(
   () => [userDetails.value, route.query.type, isIndianUser.value],
-  ([user, queryType, isIndian]) => {
+  ([queryType, isIndian]) => {
     if (!userDetails.value) {
       fetchUser();
     }
-    console.log(isIndian, "isIndianUser -- isIndianUser", userDetails.value, "userDetails.value -- userDetails.value");
     indianUser.value = isIndian;
     
     if (props.onBoardingAccount) {
@@ -216,64 +196,12 @@ watch(
   },
   { deep: true, immediate: true }
 );
-
-// watch(
-//   () => [userDetails.value, route.query.type], // Watching both userDetails and queryType
-//   async ([user]) => {
-//     if (!user) {
-//       fetchUser();
-//       // return; // Exit if user details are not available
-//     }
-//     const { billingVariation, userLocationDetails,isIndianUser, pending } = await useBillingVariation(user, route.query.type);
-//     console.log(isIndianUser.value, "isIndianUser -- isIndianUser")
-//     indianUser.value = isIndianUser.value;
-//     if (props.onBoardingAccount) {
-//       if (route.query.type === 'chat') { 
-//         billingVariationDetails.value = billingVariation.value.slice(1);
-//       } else {
-//         billingVariationDetails.value = billingVariation.value;
-//       }
-//     } else {
-//       billingVariationDetails.value = billingVariation.value;
-//     }
-//     BillingVariationPending.value = pending.value;
-//   },
-//   { deep: true, immediate: true } // Runs immediately on component mount
-// );
-
-// Reactive computed property for plan selection
-const currentRoute = computed(() => {
-  const route = router.currentRoute.value;
-  const fullPath = route.path; // Get only the path (excluding query params)
-  if (!fullPath) return '';
-
-  return fullPath.split('/auth/')[1] || '';
-});
-
-// Access additional composable methods
-// Dynamically compute `usePlanSelection` based on updated values
-const planSelection = computed(() => {
-  return usePlanSelection((userDetails.value || {}), (orgBilling.value || {}), (organization.value || {}), (route?.query || {}), (props.onBoardingAccount || {}));
-});
-
-// Access choosePlan reactively
-const choosePlan = computed(() => planSelection.value?.choosePlan || (() => { }));
-const { findPlanLevel } = usePlanLevel();
-
 onMounted(async() => {
   await fetchUser();
   if (!route.query.type) { // If `type` is not present in the query
     router.push({ query: { type: 'chat' } });
   }
 });
-
-const proceedLogin = async () => {
-  navigateTo("/signUpSuccess");
-};
-// userDetails.value
-// const isIndianUser = computed(() => {
-//     return userDetails.value?.countryCode === "+91" && userLocationDetails.value?.country === "IN";
-//   });
 
 // const config = useRuntimeConfig();
 
@@ -285,24 +213,8 @@ const chooseFreeTrialPlan = async (plan: string) => {
   console.log(config.public.zohoIndianChatSubscription, "config.public -- config.public", userDetails.value, "userDetails.value  --- userDetails.value")
   const encodedName = encodeURIComponent(userDetails.value.username);
   const encodedEmail = encodeURIComponent(userDetails.value.email);
-  // Get URLs from runtime config
-  // const urls = {
-  //   indian: {
-  //     chat: config.public.zohoIndianChatSubscription,
-  //     voiceFluent: config.public.zohoIndianVoiceFluentSubscription,
-  //     voiceLucid: config.public.zohoIndianVoiceLucidSubscription,
-  //     contactUs: config.public.contactUsUrl
-  //   },
-  //   international: {
-  //     chat: config.public.zohoInternationalChatSubscription,
-  //     voiceFluent: config.public.zohoInternationalVoiceFluentSubscription,
-  //     voiceLucid: config.public.zohoInternationalVoiceLucidSubscription,
-  //     contactUs: config.public.contactUsUrl
-  //   }
-  // };
-  // console.log(urls, 'urls -- urls', isIndianUser.value, "isIndianUser.value -- isIndianUser.value");
+
   if (isIndianUser.value) {
-    console.log("isIndianUser.value -- isIndianUser.value inside --- inside");
     if (plan === 'chat_intelligence' || plan === 'chat_super_intelligence') {
       return navigateTo(`${config.public.zohoIndianChatSubscription}/chat_intelligence?first_name=${encodedName}&email=${encodedEmail}`, {
         external: true,
@@ -323,9 +235,6 @@ const chooseFreeTrialPlan = async (plan: string) => {
       return navigateTo(`${config.public.zohoIndianVoiceFluentSubscription}/voice_fluent?first_name=${encodedName}&email=${encodedEmail}`, {
         external: true,
       });
-      // return navigateTo(`${config.public.zohoIndianVoiceLucidSubscription}/voice_lucid?first_name=${encodedName}&email=${encodedEmail}`, {
-      //   external: true,
-      // });
     }
   } else {
     if (plan === 'chat_intelligence' || plan === 'chat_super_intelligence') {
@@ -348,9 +257,6 @@ const chooseFreeTrialPlan = async (plan: string) => {
       return navigateTo(`${config.public.zohoInternationalVoiceFluentSubscription}/voice_fluent?first_name=${encodedName}&email=${encodedEmail}`, {
         external: true,
       });
-      // return navigateTo(`${config.public.zohoInternationalVoiceLucidSubscription}/voice_lucid?first_name=${encodedName}&email=${encodedEmail}`, {
-      //   external: true,
-      // });
     }
   }
 

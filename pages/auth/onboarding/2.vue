@@ -124,22 +124,13 @@ const showCustomRoleInput = ref(false);
     resetForm,
   } = useForm({
     validationSchema: formSchema,
-    initialValues: {
-      // firstName: "",
-      // lastName: "",
-      // phone: "",
-      // countryCode: "",
-    },
+    initialValues: {},
   });
   setFieldValue("industry", "Real Estate");
   setFieldValue("avgTraffic", "Less than 100 visits");
   setFieldValue("employeeCount", "Less than 10 employees");
 
   const onSubmit = handleSubmit(async (value: any) => {
-    // if (loginData.name.length < 1) {
-    //   toast.error("Please enter valid details");
-    //   return;
-    // }
     isLoading.value = true;
     try {
       await $fetch("/api/auth/onboarding/2", {

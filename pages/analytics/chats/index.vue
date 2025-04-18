@@ -17,19 +17,16 @@
         <LivePreviewFilter v-model="filters.botUserName" class="flex-shrink-0" />
         <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
           @change="onDateChange" class="flex-shrink-0" />
-          <!-- {{filters}} -->
         <ChannelFilter v-model="filters.channel" class="flex-shrink-0" />
         <CountryFilter v-model="filters.country" class="flex-shrink-0" />
         <UiButton color="primary" @click="handleClearFilters" class="ml-2 flex-shrink-0">Clear Filters</UiButton>
       </div>
     </div>
-    <!-- <div> -->
     <DataTable @row-click="handleRowClick" @pagination="Pagination" @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
       }
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="chats"
       :page-size="20" :is-loading="isDataLoading" :height="16" height-unit="vh" />
-    <!-- </div> -->
   </Page>
 </template>
 <script setup lang="ts">
@@ -49,7 +46,6 @@ useHead({
 const router = useRouter();
 const route = useRoute();
 const breadcrumbStore = useBreadcrumbStore();
-// const searchBotDebounce = refDebounced(searchBot, 500);
 
 const filters = useState("chatsFilters", () => ({
   botId: "",
@@ -196,10 +192,6 @@ const resetPageForChats = () => {
     }
   }
 };
-// const onActionChange = (value: any) => {
-//   filters.value.botUserName = value;
-//   filters.value.page = "1";
-// };
 const Pagination = async ($evnt: any) => {
   filters.value.page = $evnt;
   getAllChats();
@@ -211,34 +203,6 @@ const onDateChange = (value: any) => {
   }
   filters.value.page = "1";
 };
-// const onDateChange = (value: any) => {
-//   if (value.from && value.to) {
-//     filters.value.from = value.from;
-//     filters.value.to = value.to;
-//   } else {
-//     delete filters.value.from;
-//     delete filters.value.to;
-//     filters.value.period = value;
-//   }
-//   filters.value.page = "1";
-// };
-
-// const onBotChange = (value: any) => {
-//   if (value) {
-//     filters.value.botId = value
-//     filters.value.page = '1'
-//   }
-// };
-// const onChannelChange = ($event) => {
-//   if ($event) {
-//     filters.value.channel = $event;
-//   }
-// };
-// const onCountryChange = ($event) => {
-//   if ($event) {
-//     filters.value.country = $event;
-//   }
-// };
 const handleRowClick = async (row: any) => {
   await navigateTo({
     name: "analytics-chats-id",

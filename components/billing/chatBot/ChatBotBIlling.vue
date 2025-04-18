@@ -19,13 +19,6 @@
         class="flex items-center justify-between gap-3 px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span> Subscription status </span>
         <div class="flex min-w-[80px] items-center justify-start">
-          <!-- <span :class="{
-              'bg-[#3cb3714d] text-[#008026ba]': usageDetails?.subscriptionStatus === 'active',
-              'bg-[#eb3930f3] text-white': usageDetails?.subscriptionStatus !== 'active'
-            }" class="rounded-[11px] px-2.5 py-[3px] text-[12px] capitalize">
-            {{ usageDetails?.subscriptionStatus }}
-          </span> -->
-          <!-- #1093DE -->
           <span :class="{
             'bg-[#ECFDF3] text-[#027A48]': usageDetails?.subscriptionStatus === 'active',
             'bg-[#FFF6ED] text-[#E04F16]': usageDetails?.subscriptionStatus === 'inactive',
@@ -72,45 +65,11 @@
         class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <div class="flex items-center gap-3">
           <span> WhatsApp sessions used </span>
-          <!-- <UiTooltipProvider>
-            <UiTooltip class="flex justify-center w-[20%]">
-              <UiTooltipTrigger as-child>
-                <Info class="w-5 h-5 cursor-pointer" />
-              </UiTooltipTrigger>
-              <UiTooltipContent class="max-w-[300px]">
-                <p>Conversation count updates every 24 hours at 12 AM UTC. The
-                  displayed count includes conversations
-                  until the last update, but recent conversations from the past 24 hours won't be reflected until the
-                  next update.</p>
-              </UiTooltipContent>
-            </UiTooltip>
-          </UiTooltipProvider> -->
         </div>
         <span class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]">
           {{ usageDetails?.whatsappSessions }}
         </span>
       </div>
-      <!-- <div
-          class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]"
-        >
-          <span> Extra chat sessions billing </span>
-          <span
-            class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]"
-          >
-            Rs. {{ usageDetails?.extraChatsCost }}
-          </span>
-        </div> -->
-      <!-- <div
-        class="flex items-center justify-between gap-3 px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
-        <span>Chat sessions available in wallet</span>
-        <div class="flex min-w-[80px] items-center justify-start">
-          <span class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]">
-            {{
-            usageDetails?.walletBalance || 0
-            }}
-          </span>
-        </div>
-      </div> -->
       <div v-if="usageDetails?.expiryDate"
         class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span> Billing Expiry Date </span>
@@ -124,11 +83,4 @@
 
 <script setup lang="ts">
 import { format } from "date-fns";
-import { Info } from 'lucide-vue-next';
-
-  const props = defineProps({
-    usageDetails: Object,
-    subscriptionData: Object,
-    usage: Object,
-  });
 </script>

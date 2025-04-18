@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { ArrowLeft } from "lucide-vue-next";
 import { useRoute } from 'vue-router';
-// import { buttonVariants } from '@/lib/registry/new-york/ui/button'
-// import { cn } from '@/lib/utils'
-// import UserAuthForm from './components/UserAuthFor'
 definePageMeta({
   layout: "auth",
   middleware: "guest-only",
@@ -26,16 +23,12 @@ const navigateToSignIn = () => {
 
   <div
     class="container pb-5 sm:pb-5 md:pb-0 relative h-[800px] flex flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-    <!-- <a href="/auth/sign-up" class="absolute right-4 top-4 md:right-8 md:top-8">
-      SignUp
-    </a> -->
     <div class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
       <div class="relative z-20 flex items-center text-lg font-medium pt-6">
         <img class="self-center" src="assets\icons\Tring-Ai-Logo-with-black-text.png" width="150" height="150" />
       </div>
       <div class="relative z-20 flex items-center justify-center text-lg font-medium mt-11">
         <img class="self-center w-[500px]" src="assets\logo\new-sign-up-logo.png" />
-        <!-- AI - powered Chat and voice Agents -->
       </div>
     </div>
     <div class="lg:p-8">
@@ -50,12 +43,6 @@ const navigateToSignIn = () => {
           </p>
         </div>
         <ForgotPasswordForm />
-        <!-- <p class="flex items-center justify-center gap-2 mt-7">
-          <span class="font-bold text-[#3D3D3D] text-[14px]">
-            Remember your password?
-          </span>
-          <NuxtLink to="/auth/sign-in" class="font-bold text-[14px] text-[#424BD1]">Back to Login</NuxtLink>
-        </p> -->
         <div v-if="!route.query.token" class="flex w-full items-center justify-center">
           <div class="flex items-center gap-1 text-[#FF9500]" @click="navigateToSignIn">
             <ArrowLeft class="w-4 h-4" />

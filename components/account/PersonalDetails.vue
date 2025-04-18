@@ -1,5 +1,4 @@
 <template>
-  <!-- flex items-center -->
   <div :class="[((currentRoute === 'onboarding/account')) ? 'min-h[85vh]' : 'min-h-screen' ,'overflow-auto']">
     <form @submit="handleAccountUpdate" class="flex flex-col gap-2 p-1">
       <div v-show="props.personalControl" class="w-[49%] sm:w-[49%] md:w-[15%] lg:w-[15%] xl:w-[15%]">
@@ -7,7 +6,6 @@
           :url="values.logo.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
           :helperText="'Only files up to 5MB can be uploaded.'" />
       </div>
-      <!-- v-show="props.personalControl" -->
       <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
         Personal Information
       </h3>
@@ -16,10 +14,7 @@
         <TextField type="email" name="email" label="Email address" helperText="" required
           placeholder="Enter your email address" />
       </div>
-      <!-- v-show="props.personalControl" -->
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-        <!-- <TextField type="text" name="metadata.businessName" label="Business Name" placeholder="Enter Your Business Name"
-          :required="true" /> -->
         <div class="flex gap-2 w-full">
           <CountryCodeField class="w-[150px]" name="countryCode" label="Country Code"
             helperText="Enter your country code" required />
@@ -27,7 +22,6 @@
           <TextField :disableCharacters="true" name="mobile" label="Mobile number" required
             placeholder="Enter your mobile number" />
         </div>
-        <!-- {{ values }} -->
         <div class="w-full flex flex-col gap-4">
           <SelectField name="metadata.role" label="Role" placeholder="Select Role"
             :options="roles.map((role) => ({ label: role, value: role }))" />
@@ -40,7 +34,7 @@
         Company Information
       </h3>
       <div class="grid grid-cols-2 gap-4">
-        <TextField helperText="Goods Service Tax" type="text" name="name" label="Company Name"
+        <TextField type="text" name="name" label="Company Name"
           placeholder="Enter your Company Name" :required="true" />
 
         <SelectField name="industry" label="Industry" placeholder="Select Role"
@@ -52,8 +46,6 @@
           helperText="Choose the GST type applicable to your business." />
         <TextField v-if="values.gstType === 'business_gst'" type="text" name="gst" label="GST"
           helperText="Enter your 15-digit GSTIN" placeholder="Enter Your Gst" required />
-        <!-- <div class="flex gap-2 mt-2">
-        </div> -->
       </div>
       <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">
         Address Information
@@ -68,18 +60,6 @@
           :country="values?.address?.country" />
         <TextField name="address.zipCode" label="zip code" helperText="" required placeholder="Enter your zip code"
           :disableCharacters="true" />
-        <!-- <ComboBoxField
-          name="data"
-          label="data"
-          helperText="enter your data"
-          required
-          placeholder="Enter your data"
-          :allCodes="[
-            { label: 'hi', value: 'hi' },
-            { label: 'djj', value: 'djj' },
-            { label: 'asdf', value: 'asdf' },
-          ]"
-        /> -->
       </div>
 
       <div class="flex w-full justify-end">
@@ -88,31 +68,19 @@
         </UiButton>
       </div>
     </form>
-    <!-- <div v-if="(currentRoute === 'onboarding/account')"
-      class="flex items-center justify-end w-full cursor-pointer text-[#8080809c] pt-3 pr-1">
-      <div @click="proceedLogin()" class="flex items-center gap-2">
-        <span class="flex items-center">
-          Continue with the free plan
-        </span>
-        <ArrowRight class="w-5 h-5" />
-      </div>
-    </div> -->
   </div>
 </template>
 
 <script setup lang="ts">
 import { accountSchema } from "~/validationSchema/account/accountSchema";
 import { useOrgDetailsStore } from "~/store/orgDetailsStore";
-import { ArrowRight } from 'lucide-vue-next'
-import { useRouter, useRoute } from 'vue-router';
-import { helpers } from "handlebars";
+import { useRouter } from 'vue-router';
 import { industry } from "~/composables/botManagement/chatBot/useBotType";
 
 const props = withDefaults(defineProps<{ personalControl?: boolean }>(), {
   personalControl: true,
 });
 const router = useRouter();
-const route = useRoute()
 const gstTypes = [
   {
     label: "Registered Business - Regular",
@@ -159,9 +127,6 @@ const { user, refreshUser }: { user: any; refreshUser: any } =
 if (!user.value) {
   user.value = await getUserDetail();
 }
-// const { orgDetails } = await fetch("/api/org", {
-//   method: "GET",
-// });
 const { orgDetails } = await $fetch('/api/org')
 setFieldValue("countryCode", user?.value?.countryCode ?? "+91");
 setFieldValue("username", user?.value?.username ?? "");

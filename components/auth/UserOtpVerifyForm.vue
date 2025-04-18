@@ -10,8 +10,6 @@ const isLoading = ref(false)
 const userDetails = ref()
 const isResendDisabled = ref(false)
 const countdownTime = ref(0)
-// const inputRefs = ref([])
-// const otpDigits = ref(['', '', '', ''])
 const { otpDigits, inputRefs, handleInput, handleKeydown, handlePaste } = useOtpInput(4)
 
 const otpVerifySchema = toTypedSchema(

@@ -8,7 +8,6 @@
   import { useRoute } from 'vue-router'
   
   const route = useRoute();
-  // const queryId = ref(route.params.id);
   const breadcrumbStore = useBreadcrumbStore();
   breadcrumbStore.setBreadcrumbs([
     {

@@ -13,9 +13,6 @@
       <UiButton color="primary" @click="emitClearFilters"
         class="ml-2"> Clear Filters</UiButton>
     </div>
-    <!-- <UiButton @click="exportToCSV" color="primary"> Export As CSV </UiButton> -->
-    <!-- </div> -->
-    <!-- class="pr-6" -->
     <div>
       <UiTabs default-value="all">
         <UiTabsList class="grid w-full sm:w-full md:w-[40%] lg:w-[30%] xl:w-[30%] grid-cols-3 mb-2">
@@ -38,7 +35,6 @@
              navigateTo(`/analytics/leads/${row.original.chatId}`);
            }
              " />
-          <!-- </div> -->
         </UiTabsContent>
         <UiTabsContent value="whatsapp">
           <DataTable :data="leads" @pagination="Pagination" @limit="($event) => {
@@ -131,20 +127,6 @@ const {
   },
 });
 const emitClearFilters = () => {
-  // Object?.assign(props.filters, {
-  //   botId: "",
-  //   q: undefined,
-  //   from: undefined,
-  //   to: undefined,
-  //   period: "all-time",
-  //   status: "",
-  //   channel: "all",
-  //   action: "",
-  //   page: "1",
-  //   limit: "10",
-  //   country: "all",
-  //   type: "chat",
-  // });
   emit('clear-filters')
 };
 
@@ -207,11 +189,6 @@ const columns = [
       row.original?.channel.charAt(0).toUpperCase() +
       row.original?.channel.slice(1),
   }),
-  // columnHelper.accessor("mobile", {
-  //   header: "Lead Phone",
-  //   cell: ({ row }) =>
-  //     row.original?.mobile?.countryCode + row.original?.mobile?.mobile,
-  // }),
   columnHelper.accessor("name", {
     header: "Bot Name",
   }),
@@ -219,10 +196,6 @@ const columns = [
     header: "Country",
     cell: (info) => info.getValue() || "-",
   }),
-  // columnHelper.accessor("createdAt", {
-  //   header: "Date Created",
-  //   // cell: ({ row }) => `${row.original.createdAt}`,
-  // }),
   columnHelper.accessor("chatId", {
     header: "Action",
     cell: ({ row }) =>

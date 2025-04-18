@@ -72,8 +72,7 @@
   import { createEditCRMConfigValidation } from "~/validationSchema/createEditCommunicationChannel";
 
   const emit = defineEmits(["success"]);
-  let channels = ref<any>([]);
-  let layouts = ref([]);
+  const channels = ref<any>([]);
   const isLoading = ref(false);
 
   const modalState = defineModel<{ open: boolean }>({
@@ -130,15 +129,6 @@
       );
 
       channels.value = data.channels;
-      //   const data: any = await $fetch(
-      //     `/api/org/integrations/zoho-bigin/pipelines?id=${matchedCRM.id}`,
-      //   );
-      //   pipelines.value = data.layouts;
-
-      //   const subPipelineData = await $fetch(
-      //     `/api/org/integrations/zoho-bigin/sub-pipeline?id=${matchedCRM.id}`,
-      //   );
-      //   subPipelines.value = subPipelineData;
     }
     else if(matchedCRM.crm === "zoho-cliq"){
             const data: any = await $fetch(
