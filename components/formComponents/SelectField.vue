@@ -17,10 +17,6 @@
             <CloseIcon v-if="selectedValue && closeIcon" class="absolute right-10 w-4 h-4 cursor-pointer"
               @click="clearSelectedValue" />
           </div>
-          <!-- <UiSelectTrigger :class="[hasError ? 'border-[#ef4444]' : '']">
-            <UiSelectValue :placeholder="placeholder" />
-            <CloseIcon class="w-4 h-4" @click.stop="clearSelectedValue" />
-          </UiSelectTrigger> -->
           <UiSelectContent>
             <template v-for="option in options" :key="option.value">
               <UiSelectItem :value="option.value" class="flex justify-start">
@@ -74,7 +70,6 @@ watch(selectedValue, (newValue) => {
 });
 
 const hasError = computed(() => meta.touched && errorMessage.value);
-// const data = computed(() => errors.value)
 
 const clearSelectedValue = () => {
   selectedValue.value = props.multiple ? [] : ""; // Clear based on multiple or single select

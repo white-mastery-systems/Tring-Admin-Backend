@@ -13,7 +13,6 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from "vue-router";
 import { useCleanJson } from "~/composables/botManagement/chatBot/useCleanJson";
 import { useVoiceBotCleanJson } from "~/composables/botManagement/chatBot/useVoiceBotCleanJson";
 import { botStore } from '~/store/botStore';
@@ -31,7 +30,6 @@ const props = defineProps<{
 const scrapData = botStore();
 const { cleanAndParseJson } = useCleanJson();
 const { cleanAndParseVoiceBotJson } = useVoiceBotCleanJson();
-const route = useRoute();
 const isLoading = ref(false);
 
 const formSchema = toTypedSchema(

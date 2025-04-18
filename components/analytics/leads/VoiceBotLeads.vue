@@ -17,10 +17,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Icon, UiBadge, UiButton } from "#components";
+import { UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
-import { format } from "date-fns";
-import { useRoute, useRouter } from "vue-router";
 
 const props = defineProps({
   filters: {

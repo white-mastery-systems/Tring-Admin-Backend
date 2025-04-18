@@ -92,14 +92,13 @@
   </page>
 </template>
 <script setup lang="ts">
-import { useClipboard } from "@vueuse/core";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 import { Bot, PhoneCall } from "lucide-vue-next";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 import { useVoiceBotDetails } from "~/composables/botManagement/voiceBot/useVoiceBotDetails ";
 import { botStore } from '~/store/botStore';
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
 definePageMeta({
   middleware: "admin-only",

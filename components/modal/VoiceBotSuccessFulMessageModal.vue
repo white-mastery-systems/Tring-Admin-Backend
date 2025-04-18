@@ -42,7 +42,6 @@ import { z } from 'zod';
 import { toTypedSchema } from '@vee-validate/zod';
 import { botStore } from '~/store/botStore';
 
-const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
 const emit = defineEmits(["success"]);
 const route = useRoute();
 const store = botStore();

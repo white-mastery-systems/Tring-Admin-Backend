@@ -90,11 +90,8 @@ const ChatBotSuccessfulMessageModalState = defineModel<{ open: boolean; id: any 
 });
 const copyBot = ref(false)
 const previewBot = ref(false)
-// const scriptCode = ref("");
 const showForm = ref(false);
-// const queryId = ref(route.params?.id);
 
-// const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
 const toggleForm = () => {
   showForm.value = !showForm.value;
 };

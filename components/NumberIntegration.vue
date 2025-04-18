@@ -24,7 +24,6 @@
   const totalCount = ref(0);
   const router = useRouter();
   const route = useRoute();
-  // const filters = reactive
   const props = defineProps<{ integrationModalState?: boolean }>();
   const numberModalState = reactive({ open: false, id: null })
   let deleteExoPhoneState = reactive({

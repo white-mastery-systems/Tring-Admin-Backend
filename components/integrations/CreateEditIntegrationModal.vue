@@ -32,9 +32,6 @@
           v-if="['sell-do', 'reserve-go', 'sales-handy'].includes(`${values.crm}`) && !(integrationModalState.numberModalState?.id)"
           name="metadata.apiKey" label="Api key" helperText="Enter your API key here" placeholder="Eg: api-key-here"
           required />
-          <!-- (values.crm === 'sell-do' || values.crm === 'reserve-go') to ["",""].incluedes(values.crm)  -->
-        <!-- {{values.metadata}} -->
-
         <TextField
           v-if="['reserve-go', 'sales-handy'].includes(`${values.crm}`) && integrationModalState.numberModalState?.id"
           name="metadata.apiKey" label="Api key" helperText="Enter your API key here" placeholder="Eg: api-key-here"
@@ -221,7 +218,6 @@ const handleConnect = handleSubmit(async (values: any) => {
     });
     isLoading.value = false;
 
-    // emit("success");
   } else {
     if(values.crm === "sales-handy" && values.metadata.apiKey){
       const verifySalesHandy = await verifySalesHandyIntegration(values.metadata.apiKey);

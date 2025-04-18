@@ -19,18 +19,10 @@
     value.value = Object.entries(selectedValues.value).map(([key, value]) => {
       return key;
     });
-    // if (selectedValues?.value) {
-    //   if (maxCount) {
-    //     if (Object.keys(selectedValues.value).length >= maxCount) {
-    //       return;
-    //     }
-    //   }
-    // }
   };
   const displayLabels = ref<string[]>([]);
   const value = defineModel<any>("value");
   if (value.value) {
-    const initialValues: any = {};
     value.value?.map((val: any) => {
       const findedOption = options?.find(
         ({ value }: { value: string }) => value === val,

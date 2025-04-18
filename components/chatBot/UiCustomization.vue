@@ -176,7 +176,6 @@
 </template>
 
 <script setup lang="ts">
-import { FieldArray } from "vee-validate";
 import { ref, watch } from "vue";
 import { useRoute, useRouter } from "nuxt/app";
 import { botStore } from '~/store/botStore';
@@ -189,7 +188,6 @@ const colorInput: any = ref();
 const secondarycolorInput: any = ref();
 const logoData: any = ref("");
 const route = useRoute();
-const useStoreBotDetails = botStore();
 const emit = defineEmits(["statusUpdated"])
 const originalValues = ref({}); // Add ref for original values
 
@@ -227,7 +225,6 @@ const {
   values,
 } = useForm({ validationSchema: uiCustomizationValidation });
 
-const paramId = route.params.id;
 const planDetails = ref([])
 
 watch(props.botDetails, (newValues) => {

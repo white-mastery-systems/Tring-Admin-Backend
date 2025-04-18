@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col justify-start items-center gap-[2px] font-medium w-full space-y-2 pt-[4px]">
-    <!-- text-gray-700 -->
     <label :for="name" class="w-full text-sm" :class="(errorMessage) ? 'text-red-500' : ''">
       {{ label }} <span v-if="required" class="pb-2 text-red-500 font-medium text-[18px]">*</span>
     </label>

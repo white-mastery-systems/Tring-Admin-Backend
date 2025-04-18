@@ -1,5 +1,4 @@
 <template>
-  <!-- <Page title="Contacts" :disable-back-button="true"> -->
   <div>
     <div class="flex items-center justify-between gap-2 overflow-x-scroll my-3">
       <div>
@@ -54,7 +53,6 @@
       }
         " />
   </div>
-  <!-- </Page> -->
 </template>
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";
@@ -72,7 +70,6 @@ const emit = defineEmits<{ (e: "popupState", payload: any): void }>();
 const addBucketModalState: any = ref({ open: false, id: null });
 const deleteIntegrateNumber = ref({ open: false, id: null });
 const exportDataHandler = ref({ status: false, type: "csv" });
-const activeStatus = ref("");
 const exportReadyRows = ref<any>([]);
 const selectedFile = ref();
 const isLoading = ref(false)
@@ -91,7 +88,6 @@ const page = ref(0);
 const totalPageCount = ref(0);
 const totalCount = ref(0);
 const route = useRoute();
-// const searchContacts = ref("");
 const queryId = ref(route.params.id)
 const addChatBotContacts = ref()
 

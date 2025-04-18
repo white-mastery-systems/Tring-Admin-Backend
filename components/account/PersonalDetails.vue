@@ -149,8 +149,7 @@ if (orgDetails?.metadata?.industry === "Other") {
 if (orgDetails?.metadata?.gst)
 setFieldValue("gst", orgDetails?.metadata?.gst ?? "");
 setFieldValue("gstType", orgDetails?.metadata?.gstType ?? "");
-// if (orgDetails?.metadata?.industry === "Other") {
-// }
+
 const isBilling = ref(false)
 const getType = ref('chat')
 

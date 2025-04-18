@@ -155,12 +155,6 @@
     Tooltip,
   } from "chart.js";
   import {
-    MinusIcon,
-    PlusIcon,
-    DollarSign,
-    UsersIcon,
-    CreditCardIcon,
-    ActivityIcon,
     ChartNoAxesCombined,
     Code,
     Wallet,
@@ -168,13 +162,10 @@
     PhoneCall,
     CirclePercent,
   } from "lucide-vue-next";
-  import { Line } from "vue-chartjs";
   import ChatSession from "~/components/icons/ChatSession.vue";
   import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
   import { botStore } from "~/store/botStore";
   import { useDateFilters } from "~/composables/useDateFilters";
-
-  const config = useRuntimeConfig();
 
   ChartJS.register(
     Title,
@@ -188,7 +179,6 @@
 
   // Use the composable
   const { dateFilters } = useDateFilters();
-  const scrapData = botStore();
   const breadcrumbStore = useBreadcrumbStore();
   const { user, refreshUser }: { user: any; refreshUser: any } =
     await useUser();
@@ -246,7 +236,6 @@
 
   const selectedValue: any = ref("last-30-days");
   const analyticsData = ref();
-  const analyticsChartData = ref();
   const loading = ref(true);
 
   const chartValues = ref(["leads", "sessions"]);

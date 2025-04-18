@@ -1,17 +1,15 @@
 <template>
-
-
-    <div  class="mt-4">
-      <audio ref="audio" :src="audioSrc" @loadedmetadata="setDuration" />
-      <div class="controls mt-2">
-        <button @click="playAudio" :disabled="isPlaying">Play</button>
-        <button @click="pauseAudio" :disabled="!isPlaying">Pause</button>
-        <button @click="stopAudio">Stop</button>
-      </div>
-      <p class="mt-2">
-        {{ formattedCurrentTime }} / {{ formattedDuration }}
-      </p>
+  <div class="mt-4">
+    <audio ref="audio" :src="audioSrc" @loadedmetadata="setDuration" />
+    <div class="controls mt-2">
+      <button @click="playAudio" :disabled="isPlaying">Play</button>
+      <button @click="pauseAudio" :disabled="!isPlaying">Pause</button>
+      <button @click="stopAudio">Stop</button>
     </div>
+    <p class="mt-2">
+      {{ formattedCurrentTime }} / {{ formattedDuration }}
+    </p>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -37,16 +35,6 @@ const isPlaying = ref(false);
 
 const { value, errorMessage }: { value: any; errorMessage: any } =
   props.validation ? useField(() => props.name) : { value: '', errorMessage: '' };
-
-// Update audio file name on file selection
-const handleFileChange = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  if (target.files && target.files.length > 0) {
-    const file = target.files[0];
-    audioSrc.value = URL.createObjectURL(file);
-    value.value = file;
-  }
-};
 
 const playAudio = () => {
   const audioElement = $refs.audio as HTMLAudioElement;

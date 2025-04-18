@@ -37,12 +37,10 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from "vue-router";
 import { createColumnHelper } from "@tanstack/vue-table";
 import { Icon, UiButton } from "#components";
 import TTSModal from "~/pages/integration/TTSModal.vue";
 import { useIntegrations } from '@/composables/botManagement/voiceBot/useTtsIntegrations';
-// import TTSModal from "~/pages/integration/TTSModal.vue";
 
 definePageMeta({
   middleware: "admin-only",
@@ -59,9 +57,6 @@ const filters = reactive<{
   page: "1",
   limit: "10",
 });
-
-const router = useRouter();
-const route = useRoute();
 
 // Define props
 const props = defineProps<{ integrationModalState?: boolean }>();

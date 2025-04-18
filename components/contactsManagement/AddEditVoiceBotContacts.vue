@@ -1,5 +1,4 @@
 <template>
-  <!-- <Page title="Contacts" :disable-back-button="true"> -->
   <div>
     <div class="flex items-center justify-between gap-2 overflow-x-scroll my-3">
       <div>
@@ -54,7 +53,6 @@
       }
         " />
   </div>
-  <!-- </Page> -->
 </template>
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";

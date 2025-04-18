@@ -203,8 +203,6 @@ onMounted(async() => {
   }
 });
 
-// const config = useRuntimeConfig();
-
 const chooseFreeTrialPlan = async (plan: string) => {
   if (!userDetails.value) {
     await fetchUser();

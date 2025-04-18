@@ -54,8 +54,6 @@
     </div>
 
     <div v-else class="flex flex-col">
-      <!-- {{props.name}}
-      {{props.validation}} -->
       <UiInput :class="
           cn(
             'mt-2',
@@ -98,8 +96,6 @@
         {{ value.length }}/{{ textFieldMaxLength }}
       </span>
     </div>
-
-    <!-- :maxlength="props?.type === 'phone' ? 10 : ''" -->
     <div :class="
         cn(
           props?.endIcon
@@ -177,13 +173,6 @@ import { Info } from 'lucide-vue-next'
       passwordMaxLength: false,
     },
   );
-  // const clearValue = () => {
-  //   emit("update:modelValue", ""); // Clears the textarea content
-  // };
-
-  // Expose clear function to parent components
-  // defineExpose({ clearValue });
-
   const isResendDisabled = ref(false)
   const userDetails = ref()
   const countdownTime = ref(0)
@@ -206,13 +195,9 @@ import { Info } from 'lucide-vue-next'
     if (value.value.trim() === "") {
       value.value = "";
     }
-    // if (props.name === 'apikey') {
-    //   value.value = value.value.replace(/.(?=.{4})/g, "*")
-    // }
   });
 onMounted(() => {
   const storedDetails = localStorage.getItem('userDetails');
-  // userDetails.value = null
   if (storedDetails) {
     try {
       userDetails.value = JSON.parse(storedDetails); // Parse string into object

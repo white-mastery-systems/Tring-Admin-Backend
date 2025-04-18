@@ -82,7 +82,6 @@ defineProps({
               })">
               Click To View
             </NuxtLink>
-            <!-- {{ format(new Date(data.createdAt), "dd MMM yyyy hh:mm aa") }} -->
           </p>
         </div>
         <span

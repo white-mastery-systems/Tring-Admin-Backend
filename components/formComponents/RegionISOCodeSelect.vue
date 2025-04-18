@@ -13,17 +13,6 @@
               !fieldValue && 'text-muted-foreground',
             )
               ">
-              <!-- {{
-                fieldValue
-                  ? allCoutryNames.find(
-                    (country: any) =>
-                      country === fieldValue,
-                  )
-                  : "Country name"
-              }} -->
-              <!-- {{ allCoutryNames }} -->
-              <!-- {{ allCoutryNames.find((country: any) => country === fieldValue)}} -->
-              <!-- Region name -->
               {{ fieldValue ? fieldValue : "Select Country" }}
               <component :is="ChevronDown" class="ml-2 h-4 w-4 shrink-0 opacity-50"></component>
             </UiButton>
