@@ -20,74 +20,63 @@ export default defineEventHandler(async (event) => {
     }
 
     const analysisPrompt = `
-      You are given a structured multi-turn conversation between a USER and an ASSISTANT. Each message contains:
-      - "chatId" — a unique ID for the message  
-      - "role" — either "user" or "assistant"  
-      - "content" — the message text
-      The messages are ordered chronologically.
-      ---
-      ### YOUR TASK
-      You MUST identify every instance where the ASSISTANT **fails to properly respond to a USER question**.
-      An assistant response is considered a **failure** if it is:
-      - Incomplete  
-      - Irrelevant  
-      - Evasive  
-      - Off-topic  
-      - Too vague or generic  
-      - A repetition of previous information without answering the actual question
-      ---
-      ### INSTRUCTIONS (FOLLOW STRICTLY)
-      #### 1. **Filter Messages**
-      Only include USER messages where the following conditions are true:
-      - The USER is asking a question or making a clear request
-      - The IMMEDIATE next message is from the ASSISTANT
-      - The ASSISTANT's reply does NOT fully or correctly address the user's message
-      #### 2. **Group by Intent**
-      Group all filtered USER messages by shared **intent** — what the user is trying to accomplish (not just similar wording).
-      #### 3. **Format Output**
-      For each group, return an object with this exact structure:
-      {
-        "title": "Short title describing the shared user intent",
-        "instances": [
-          {
+        You are given a list of inadequate message pairs from a USER and an ASSISTANT. Each message includes:
+        - "chatId": a unique identifier for the message
+        - "role": either "user" or "assistant"
+        - "content": the message text
+        Messages are in chronological order and have already been filtered to include only assistant responses that fail to properly answer the user's question or request.
+        ---
+        ### 🎯 YOUR TASK
+        Group the given user-assistant message pairs by **precise user intent** — what the user is specifically trying to accomplish.
+        🧠 Be highly specific when determining intent:
+        - Different goals or actions (e.g., “navigate to a page” vs. “open a modal”) should be separate groups
+        - Slightly different requests (e.g., “change button text dynamically” vs. “change button action dynamically”) should be separate
+        - If user intent is unclear, group conservatively — prefer smaller, distinct clusters over broad groups
+        - Extract only the plain text inside the "response" field from the given JSON. Do not include any other keys or formatting. generate just the clean response string.
+        - Remove all instances of "||" from the given text and return the cleaned-up response as plain text.
+        Then return a JSON array where each group has:
+        - A **descriptive title** summarizing the shared specific intent
+        - A list of **message pairs** in this format:
+        {
             "chatId": "chatId of the USER message",
             "question": "Exact content of the USER message",
             "response": "Exact content of the failed ASSISTANT reply"
-          }
-          // More instances...
-        ],
-        "suggestions": [
-          "Improved full assistant response #1",
-          "Improved full assistant response #2 (different tone or level of detail)",
-          "Improved full assistant response #3 (alternative approach or added value)"
-        ]
-      }
-      You MUST return an array of these objects:
-      [
-        {
-          "title": "...",
-          "instances": [...],
-          "suggestions": [...]
-        },
-        ...
-      ]
-      ---
-      ### STRICT RULES (DO NOT VIOLATE)
-      - ✅ **Include only USER questions with failed ASSISTANT replies**
-      - ✅ **Preserve the exact 'chatId', question text, and response text from input**
-      - ✅ **Group by intent, not by how the question is worded**
-      - ✅ **Provide 3 unique, helpful, complete response suggestions per group**
-      - ❌ **Do NOT include correctly answered questions**
-      - ❌ **Do NOT rewrite user questions or bot replies in 'instances'**
-      - ❌ **Do NOT include any text outside the JSON array**
-      ---
-      ### FINAL REQUIREMENT
-      Return **only** a valid, properly structured JSON array as described above.  
-      **No markdown. No explanations. No commentary. No headers.**
-      If you break any formatting or rules, the output will be considered invalid.
-      ---
-      ### CONVERSATIONS DATA
-      ${JSON.stringify(requestBody.conversations)}
+        }
+        - A list of **3 improved full assistant responses**, each one complete, helpful, and distinct in tone, depth, or perspective
+        ---
+        ### 📤 OUTPUT FORMAT
+        Return a JSON array like this:
+        [{
+            "title": "Short, specific title describing the shared user intent",
+            "instances": [
+            {
+                "chatId": "chatId",
+                "question": "Exact USER message content",
+                "response": "Exact failed ASSISTANT reply"
+            }
+            // More instances...
+            ],
+            "suggestions": [
+            "Improved assistant response #1 (complete and helpful)",
+            "Improved assistant response #2 (different tone or level of detail)",
+            "Improved assistant response #3 (alternative approach or added value)"
+            ]
+        }]
+        ---
+        ### ❗ STRICT RULES
+        - ✅ Use **only the provided message pairs** — do NOT include others
+        - ✅ Preserve the exact "chatId", "question", and "response" values
+        - ✅ Group by **specific user intent**, not just general themes or similar wording
+        - ✅ Split into **smaller, focused groups** if there is any variation in what the user is trying to achieve
+        - ✅ Provide 3 **unique, high-quality** assistant responses per group
+        - ❌ Do NOT rewrite or paraphrase original messages inside 'instances'
+        - ❌ Do NOT return any text outside the JSON array
+        - ❌ Do NOT add headers, markdown, or explanations
+        ---
+        ### 🔄 INPUT FORMAT
+        All inadequate messages will be passed in this format:
+        ${JSON.stringify(requestBody.conversations)}
+        Process only this data and return a **valid structured JSON array**.
     `;
 
     const googleGenAI = new GoogleGenerativeAI(geminiApiKey);
