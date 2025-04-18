@@ -76,6 +76,7 @@ const schema = {
   voicebotLeadRelations,
   voicebotScheduledCallsRelations,
   salesHandyContactsSchema,
+  whatsappEnrichmentSchema,
   templateRelations
 };
 
