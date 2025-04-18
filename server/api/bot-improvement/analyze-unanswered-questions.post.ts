@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     if (!requestBody.conversations) {
       throw createError({
         statusCode: 400,
-        message: "Chat history is required",
+        message: "Conversations is required",
       });
     }
 
@@ -20,44 +20,98 @@ export default defineEventHandler(async (event) => {
     }
 
     const analysisPrompt = `
-      Analyze the following conversation between a USER and an ASSISTANT (bot):
+      You are given a structured multi-turn conversation between a USER and an ASSISTANT. Each message contains:
 
-      ${requestBody.conversations}
+      - "chatId" — a unique ID for the message  
+      - "role" — either "user" or "assistant"  
+      - "content" — the message text
 
-      1. Group all similar user questions together (questions with the same intent or asking for the same information in different ways)
-      2. For each group of similar questions:
-        - Create a descriptive title that summarizes the topic/intent
-        - Include all instances of the question and corresponding bot responses
-        - Generate 3 improved response suggestions that would better address the user's needs
+      The messages are ordered chronologically.
 
-      Return your analysis as a JSON array where each element is an object with the structure:
+      ---
+
+      ### YOUR TASK
+
+      You MUST identify every instance where the ASSISTANT **fails to properly respond to a USER question**.
+
+      An assistant response is considered a **failure** if it is:
+
+      - Incomplete  
+      - Irrelevant  
+      - Evasive  
+      - Off-topic  
+      - Too vague or generic  
+      - A repetition of previous information without answering the actual question
+
+      ---
+
+      ### INSTRUCTIONS (FOLLOW STRICTLY)
+
+      #### 1. **Filter Messages**
+      Only include USER messages where the following conditions are true:
+      - The USER is asking a question or making a clear request
+      - The IMMEDIATE next message is from the ASSISTANT
+      - The ASSISTANT's reply does NOT fully or correctly address the user's message
+
+      #### 2. **Group by Intent**
+      Group all filtered USER messages by shared **intent** — what the user is trying to accomplish (not just similar wording).
+
+      #### 3. **Format Output**
+      For each group, return an object with this exact structure:
+
+      {
+        "title": "Short title describing the shared user intent",
+        "instances": [
+          {
+            "chatId": "chatId of the USER message",
+            "question": "Exact content of the USER message",
+            "response": "Exact content of the failed ASSISTANT reply"
+          }
+          // More instances...
+        ],
+        "suggestions": [
+          "Improved full assistant response #1",
+          "Improved full assistant response #2 (different tone or level of detail)",
+          "Improved full assistant response #3 (alternative approach or added value)"
+        ]
+      }
+
+      You MUST return an array of these objects:
+
       [
         {
-          "title": "Descriptive title summarizing the question intent",
-          "instances": [
-            {
-              "user_question": "The exact user question text",
-              "bot_response": "The exact bot response text"
-            },
-            // more instances of similar questions...
-          ],
-          "suggestions": [
-            "First improved response suggestion",
-            "Second improved response suggestion", 
-            "Third improved response suggestion"
-          ]
+          "title": "...",
+          "instances": [...],
+          "suggestions": [...]
         },
-        // more question groups...
+        ...
       ]
 
-      IMPORTANT GUIDELINES:
-      - Group questions by intent, not just by similar wording
-      - All instances should include the exact user question and bot response text
-      - Each suggestion should be complete, specific, and directly address the user's request
-      - Suggestions should be significantly better than the original bot responses
-      - Provide varied response options with different approaches or information
-      - If the bot's responses are already excellent, suggest further improvements
-      - Return ONLY the JSON response, no additional text or explanation
+      ---
+
+      ### STRICT RULES (DO NOT VIOLATE)
+
+      - ✅ **Include only USER questions with failed ASSISTANT replies**
+      - ✅ **Preserve the exact 'chatId', question text, and response text from input**
+      - ✅ **Group by intent, not by how the question is worded**
+      - ✅ **Provide 3 unique, helpful, complete response suggestions per group**
+      - ❌ **Do NOT include correctly answered questions**
+      - ❌ **Do NOT rewrite user questions or bot replies in 'instances'**
+      - ❌ **Do NOT include any text outside the JSON array**
+
+      ---
+
+      ### FINAL REQUIREMENT
+
+      Return **only** a valid, properly structured JSON array as described above.  
+      **No markdown. No explanations. No commentary. No headers.**
+
+      If you break any formatting or rules, the output will be considered invalid.
+
+      ---
+
+      ### CONVERSATIONS DATA
+      ${JSON.stringify(requestBody.conversations)}
     `;
 
     const googleGenAI = new GoogleGenerativeAI(geminiApiKey);
