@@ -144,6 +144,7 @@ export const chatSchema = chatbotSchema.table(
       () => organizationSchema.id,
       { onDelete: "cascade" },
     ),
+    isProcessed: boolean("is_processed").default(false),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
   (table) => ({
@@ -275,6 +276,21 @@ export const whatsappEnrichmentSchema = chatbotSchema.table("whatsapp_enrichment
   }).default("new").notNull(),
   integrationId: uuid("integration_id").references(() => integrationSchema.id, { onDelete: "cascade" }).notNull(),
   leadStatus: boolean("lead_status").default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
+export const chatResponseImprovementSchema = chatbotSchema.table("chat_response_improvement", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").references(() => organizationSchema.id, { onDelete: "cascade" }).notNull(),
+  botId: uuid("bot_id").references(() => chatBotSchema.id, { onDelete: "cascade" }).notNull(),
+  title: text("title"),
+  instances: jsonb("instances").array(),
+  suggestions: text("suggestions").array(),
+  answer: text("answer"),
+  status: varchar("status", {
+    enum: ["trained", "not_trained"],
+  }).default("not_trained").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
