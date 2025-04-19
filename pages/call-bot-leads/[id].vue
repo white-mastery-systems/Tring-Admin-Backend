@@ -1,9 +1,4 @@
 <template>
-  <!-- <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
-    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
-  </div> -->
-  <!-- v-else -->
-   <!-- leadData?.botUser?.name ??  -->
   <Page :title="'No Name'" :disable-back-button="false" :disable-elevation="true">
     <div class="items-top gap-[25px flex items-center justify-center px-3">
       <div class="items-top xs:grid-cols-2 flex grid w-full grid-cols-1 gap-[25px] lg:grid-cols-2">
@@ -42,7 +37,6 @@
             </UiTabsContent>
             <UiTabsContent value="Campaign">
             </UiTabsContent>
-            <!-- </div> -->
           </UiTabs>
         </div>
         <div v-if="false"
@@ -54,7 +48,6 @@
                 : `background:hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`
               ">
             <div class="flex items-center gap-2">
-              <!-- {{ leadData?.channel}} -->
               <WhatsappIcon v-if="leadData?.channel === 'whatsapp'" class="align-middle"></WhatsappIcon>
 
               <span class="text-[14px] capitalize">{{
@@ -62,78 +55,13 @@
                 }}</span>
             </div>
           </div>
-
-          <!-- <ChatPreview v-if="computed(() => chats?.length && !!leadData)" :leadDataValue="leadData" :chatValue="chats"
-            :scrollChatBox="BotId" @chatId="BotId = null" /> -->
         </div>
       </div>
     </div>
-    <!-- <input type="text" value="hii" ref="chatScreenRef" /> -->
   </Page>
 </template>
 <script setup lang="ts">
-
-// const scrollChatBox = () => {
-//   setTimeout(() => {
-//     if (chatScreenRef.value)
-//       chatScreenRef.value.scrollTop = chatScreenRef?.value?.scrollHeight;
-//   }, 1000);
-// };
-
 definePageMeta({
   middleware: "admin-only",
 });
-
-
-// const { status, data: leadData } = await useLazyFetch(
-//   () => `/api/org/chat/${route.params.id}`,
-//   {
-//     server: false,
-//   },
-// );
-
-// watchEffect(() => {
-//   if (leadData.value) {
-//     const userName = leadData.value?.botUser?.name ?? "Unknown User";
-//     useHead({
-//       title: `Chats | ${userName}`,
-//     });
-//   }
-// });
-// const isPageLoading = computed(() => status.value === "pending");
-
-// const details = computed(() => {
-//   if (!leadData.value) return [undefined, undefined];
-//   const { params, ...rest } =
-//     leadData.value?.metadata ?? ({ params: null } as Record<string, any>);
-//   const { name } = leadData.value.bot;
-//   let metaData: any = Object.entries(rest || {}).map(([key, value]) => {
-//     if (key === "os") {
-//       return ["OS", value];
-//     } else if (key === "ipAddress") {
-//       return ["IP Address", value];
-//     }
-//     return [key, value];
-//   });
-//   const botUserDetails = [];
-//   if (leadData?.value.botUser) {
-//     botUserDetails.push(
-//       ["Name", leadData?.value?.botUser?.name],
-//       ["Email", leadData?.value?.botUser?.email],
-//       [
-//         "Mobile",
-//         leadData?.value?.botUser?.countryCode +
-//         leadData?.value?.botUser?.mobile,
-//       ],
-//       ["Bot Name", name],
-//     );
-//   }
-//   let paramsData = null;
-//   if (params) {
-//     paramsData = Object.entries(params);
-//   }
-//   if (paramsData) {
-//     return [...metaData, ...paramsData, ...botUserDetails];
-//   } else return [...metaData, ...botUserDetails];
-// });
 </script>

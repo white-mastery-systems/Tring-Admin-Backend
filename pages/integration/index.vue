@@ -6,16 +6,12 @@
           class="text-[10.5px] sm:text-[10.5px] md:text-[14px] lg:text-[14px] xl:text-[14px]" @click="() => {
               if (route.query.q === 'number') {
                 numberModalState = true;
-                // numberModalState.id = null;
                 return;
               } if (route.query.q === 'TTS') {
                 ttsModalState = true;
-                // numberModalState.id = null;
                 return;
               }
               integrationModalState = true;
-              // integrationModalState.id = null;
-
             }
             ">
           Add
@@ -65,7 +61,6 @@
         <IntegrationTable :integrationModalState="integrationModalState"
           :findTitleForIntegrationModal="findTitleForIntegrationModal()" :chatIntelligence="chatIntelligence"
           @stateControl="integrationModalState = $event" />
-        <!-- v-model:deleteIntegrationState="deleteIntegrationState" -->
       </UiTabsContent>
       <UiTabsContent value="communication">
         <IntegrationTable :integrationModalState="integrationModalState" :chatIntelligence="chatIntelligence"
@@ -89,43 +84,7 @@
     <ChannelModal v-model="channelModalState" @success="() => {
       console.log('on success')
     }" />
-    <!-- <TTSModal 
-    :ttsModalState="ttsModalState" -->
-    <!-- <Numberodal v-model="numberModalState" @success="onSuccess()" /> -->
-    <!-- <CreateEditIntegrationModal :title="findTitleForIntegrationModal()" v-model="integrationModalState"
-      :id="integrationModalState?.id" @success="onSuccess()" /> -->
   </Page>
-  <!-- <ConfirmationModal v-model:open="deleteIntegrationState.open" title="Confirm Delete"
-    description="Are you sure you want to delete ?" @confirm="
-      () => {
-
-        if (deleteIntegrationState?.id) {
-          deleteIntegration({
-            integrationId: deleteIntegrationState.id,
-            onSuccess: () => {
-              integrationRefresh();
-            },
-          });
-          deleteIntegrationState.open = false;
-        }
-      }
-    " /> -->
-  <!-- <ConfirmationModal v-model:open="deleteExoPhoneState.open" title="Confirm Delete"
-    description="Are you certain you want to delete the Exophone integration? Please note that doing so will also remove all bots associated with this number?"
-    @confirm="
-      () => {
-        // if (numberModalState) {
-        //   deleteSingleExoPhone({
-        //     // id: numberModalState.id,
-        //     onSuccess: () => {
-        //       integrationRefresh();
-        //       console.log('main --- main')
-        //     },
-        //   });
-        //   deleteExoPhoneState.open = false;
-        // }
-      }
-    " /> -->
 </template>
 <script lang="ts" setup>
 import { Icon, UiBadge, UiButton } from "#components";
@@ -167,11 +126,6 @@ const channelModalState = ref({ open: false, id: null });
 const numberModalState: any = ref(false);
 const ttsModalState = ref(false);
 const planDetails = ref([])
-// const ttsModalState = reactive({ 
-//   open: true, 
-//   id: null 
-// });
-// const integrations = ref([]);
 
 const deleteIntegrationState = ref({
   open: false,
@@ -181,18 +135,8 @@ const deleteExoPhoneState = ref({
   open: false,
   id: null,
 });
-// const integrationsData = ref()
-// const q=ref('')
 const page = ref("1");
-const totalPageCount = ref(0);
-const totalCount = ref(0);
 const limit = ref("10");
-const apiPathControler: any = ref("crm")
-const filters = computed(() => ({
-  q: route.query?.q ?? "crm",
-  page: page.value,
-  limit: limit.value,
-}));
 
 breadcrumbStore.setBreadcrumbs([
   {
@@ -214,7 +158,6 @@ const actionsComponent = (id: any) =>
           class: "ml-2",
           onClick: () => {
             integrationModalState.open = true;
-            // integrationModalState.value.id = id;
           },
         },
         h(Icon, { name: "lucide:pen" }),
@@ -246,26 +189,6 @@ const statusComponent = (status: string) => {
   );
 };
 const columnHelper = createColumnHelper<any>();
-const columns = [
-  columnHelper.accessor("name", {
-    header: "Integration Name",
-  }),
-  columnHelper.accessor("crm", {
-    header: "CRM",
-  }),
-  columnHelper.accessor("status", {
-    header: "Status",
-    cell: ({ row }) => {
-      return statusComponent(row.original?.status);
-    },
-  }),
-  columnHelper.accessor("actions", {
-    header: "Actions",
-    cell: ({ row }) => {
-      return actionsComponent(row.original?.id);
-    },
-  }),
-];
 
 onMounted(async () => {
   planDetails.value = await userPlan();

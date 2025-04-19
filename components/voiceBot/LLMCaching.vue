@@ -67,7 +67,6 @@ definePageMeta({
   middleware: "admin-only",
 });
 const route = useRoute("voice-bot-id-identity-management");
-// const botDetails(await getVoiceBotDetails(route.params.id));
 const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void }>();
 const config = useRuntimeConfig();
 

@@ -1,8 +1,6 @@
 <template>
   <div class="bot-manage-main-container">
     <Page title="Call Bot Leads" :disable-back-button="true">
-      <!-- isDataLoading -->
-      <!-- @pagination="Pagination"  -->
       <DataTable @limit="($event) => {
         (filters.page = '1'), (filters.limit = $event);
       }
@@ -11,7 +9,6 @@
         navigateTo(`/call-bot-leads-id/${row.original.chatId}`);
         }
           " />
-      <!-- <DataTable :data="leads" :is-loading="false" :columns="columns" :page-size="8" :height="80" height-unit="vh" /> -->
     </Page>
   </div>
 </template>
@@ -23,9 +20,9 @@
     middleware: "user",
   });
 
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 
 const filters = reactive<{
   q?: string;

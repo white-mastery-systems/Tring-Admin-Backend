@@ -88,8 +88,5 @@ onMounted(() => {
     <UiTextarea v-model="text" placeholder="" class="border p-2 h-40 text-[10px] sm:text-[10px] md:text-[14px]"
       :readonly="true">
     </UiTextarea>
-    <!-- <UiButton @click="generatePDFAndUpload" class="flex mt-2 text-white px-4 py-2 rounded">
-      Download PDF
-    </UiButton> -->
   </div>
 </template>

@@ -106,11 +106,7 @@
 
       setFieldValue("code", code);
       fbVerified.value = true;
-      // handleSubmssion()
-
-      // Send code to your backend for further processing.
     }
-    // document.getElementById("sdk-response").textContent = JSON.stringify(response, null, 2);
   };
 
   const launchWhatsAppSignup = () => {

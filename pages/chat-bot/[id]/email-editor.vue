@@ -15,8 +15,7 @@ import { createColumnHelper } from "@tanstack/vue-table";
 import { Icon, UiButton, UiSwitch } from "#components";
 import CreateEditEmailConfigModal from "~/components/bots/CreateEditEmailConfigModal.vue";
 
-// const columnHelper = createColumnHelper<any>();
-const route = useRoute("chat-bot-id-config");
+const route = useRoute();
 const paramId: any = route;
 const botDetails = ref(await getBotDetails(paramId.params.id));
 const selectedRows = ref<string[]>([]); // Track selected rows
@@ -46,10 +45,10 @@ const filters = reactive<{
   limit: "10",
   country: "all",
 });
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
-let emailConfigModalState = ref<{ open: boolean; resObject?: object | {} }>({
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
+const emailConfigModalState = ref<{ open: boolean; resObject?: object | {} }>({
   open: false,
   resObject: {},
 });

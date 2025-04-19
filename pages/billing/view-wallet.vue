@@ -1,8 +1,6 @@
 <template>
   <page title="Wallet" :description="true" :disableSelector="true" :customBackRouter="correctedUrl">
     <div class="xs:grid-cols-2 grid gap-4 px-2.5 py-0 md:grid-cols-2 lg:grid-cols-3">
-      <!-- @mouseover="planCard(index); previusIndex = index"
-                @mouseout="planCardUnHover(index); previusIndex = index" -->
       <div :class="[
         'main_card_align field_shadow relative flex flex-col justify-between rounded-[13px] border-2 bg-[#ffffff] p-5 hover:border-yellow-500',
 
@@ -79,27 +77,8 @@ const chatBillingVariation = ref([
     amount: "1000",
   },
 ]);
-// const voiceBillingVariation = ref([
-  //   {
-//     _id: 1,
-//     title: "Basic",
-//     plan_code: "voice_basic",
-//     amount: "5000",
-//   },
-//   {
-  //     _id: 2,
-  //     title: "Pro",
-  //     plan_code: "voice_pro",
-  //     amount: "10000",
-  //   },
-  //   {
-    //     _id: 3,
-    //     title: "Max",
-    //     plan_code: "voice_max",
-    //     amount: "15000",
-    //   },
-    // ]);
-    const voiceBillingVariation = ref([
+
+const voiceBillingVariation = ref([
   {
     _id: 1,
     title: "Basic",

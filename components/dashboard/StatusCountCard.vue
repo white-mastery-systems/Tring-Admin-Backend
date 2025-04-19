@@ -4,7 +4,6 @@
     class="field_shadow flex items-center gap-6 rounded-[10px] bg-white px-2 py-3"
   >
     <div class="rounded-md bg-[#ffbc42] p-2">
-      <!-- <ChatSession /> -->
       <component :is="props.icon"></component>
     </div>
     <div>

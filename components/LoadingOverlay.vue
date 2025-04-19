@@ -9,7 +9,7 @@
   </Transition>
 </template>
 
-<script setup>
+<script setup lang="ts">
 defineProps({
   loading: Boolean
 });

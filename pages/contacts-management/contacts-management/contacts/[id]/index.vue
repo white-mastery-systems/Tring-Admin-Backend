@@ -1,6 +1,5 @@
 <template>
   <Page :title="getSingleDetails?.name" :disableSelector="true" :disable-elevation="true" :disable-back-button="false">
-    <!-- {{ getSingleDetails }} -->
     <template #actionButtons>
       <div class="flex gap-4">
         <div class="flex gap-2">
@@ -43,26 +42,17 @@
 </template>
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";
-import { format } from "date-fns";
-import { any } from "zod";
-import { useRoute, useRouter } from "vue-router";
-import { Icon, UiBadge, UiButton } from "#components";
+import { useRoute } from "vue-router";
+import { Icon, UiButton } from "#components";
 
 definePageMeta({
   middleware: "admin-only",
 });
 
-const formSchema = toTypedSchema(
-  z.object({
-    newBotName: z.string().min(2, "Bot Name is requird."),
-  }),
-);
 const addBucketModalState: any = ref({ open: false, id: null });
 const deleteIntegrateNumber = ref({ open: false, id: null });
 
 const searchBot = ref("");
-const searchBotDebounce = refDebounced(searchBot, 500);
-const router = useRouter();
 const route = useRoute();
 const queryId = ref(route.params.id);
 const { data: getSingleDetails } = await useLazyFetch(
@@ -79,10 +69,9 @@ const filters = reactive<{
   page: "1",
   limit: "10",
 });
-const selectedValue = ref("Today");
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 const {
   status,
   data: contactsList,
@@ -98,27 +87,6 @@ const {
     return contacts.data;
   },
 });
-// const newBotName = ref("");
-// const botList = await listApiBots();
-
-// const { status, data: voiceBot } = await useLazyFetch("/api/voicebots", {
-//   server: false,
-//   default: () => [],
-//   query: {
-//     active: activeStatus,
-//     q: searchBotDebounce,
-//   },
-//   headers: {
-//     "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-//   },
-//   transform: (voiceBot) =>
-//     voiceBot.map((bot) => ({
-//       id: bot.id,
-//       name: bot.name,
-//       status: bot.active,
-//       createdAt: `${bot.createdAt}`,
-//     })),
-// });
 const isDataLoading = computed(() => status.value === "pending");
 const columnHelper = createColumnHelper<(typeof contactsList.value)[0]>();
 
@@ -133,9 +101,6 @@ const actionsComponent = (id: any) =>
         UiButton,
         {
           onClick: (e: Event) => {
-            // e.stopPropagation();
-            // addBucketNameModalState.value.open = true;
-            // addBucketNameModalState.value.id = id
             addBucketModalState.value.open = true;
             addBucketModalState.value.id = id;
           },
@@ -155,18 +120,6 @@ const actionsComponent = (id: any) =>
         },
         h(Icon, { name: "lucide:trash-2" }),
       ),
-      // h(
-      //   UiButton,
-      //   {
-      //     onClick: () => {
-      //       addBucketModalState.value.open = true
-      //       addBucketModalState.value.id = id
-      //       console.log("addBucketModalState")
-      //     }, // Add delete functionality
-      //     class: "bg-[#424bd1] hover:bg-[#424bd1] font-bold", // Different color for delete
-      //   },
-      //   [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Add"]
-      // )
     ],
   );
 const columns = [
@@ -186,27 +139,4 @@ const columns = [
     },
   }),
 ];
-
-// const bucketNumber = as(id: any) => {
-//   try {
-//     const deleteIntegration = await $fetch<SelectChatBot>(
-//       `/api/org/integrations/${integrationId}`,
-//       {
-//         method: "DELETE",
-//       },
-//     );
-
-//     onSuccess();
-//     toast.success("Integration removed successfully");
-
-//     return deleteIntegration;
-//   } catch (err: any) {
-//     if (err.status === 500) {
-//       toast.error("Cannot delete: Integration has connected bots");
-//     }
-//     toast.error(err.data.data[0].message);
-//   }
-// }
 </script>
-
-<style scoped></style>

@@ -83,27 +83,6 @@ export const useNavigationAndAccordion = () => {
       path: "/voice-bot",
       children: [],
     },
-    // {
-    //   name: "Bot Management",
-    //   icon: Bot,
-    //   path: "/bot-management",
-    //   children: [
-    //     {
-    //       name: "Voice Bot",
-    //       path: "/voice-bot",
-    //     },
-    //     {
-    //       name: "Chat Bot",
-    //       path: "/chat-bot",
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: "Whatsapp Bot",
-    //   icon: "",
-    //   path: "/whatsapp-bot",
-    //   children: [],
-    // },
     {
       name: "Integrations",
       icon: Code,
@@ -111,39 +90,20 @@ export const useNavigationAndAccordion = () => {
       children: [],
     },
     {
-      name: "Whatsapp Bot",
+      name: "Whatsapp",
       icon: '',
-      path: "/whatsapp-bot",
-      children: [],
+      path: "/whatsapp",
+      children: [
+        {
+          name: "Whatsapp Bot",
+          path: "/whatsapp-bot",
+        },
+        {
+          name: "Whatsapp Template",
+          path: "/whatsapp-template",
+        },
+      ],
     },
-    // {
-    //   name: "Settings",
-    //   icon: SettingsIcon,
-    //   path: "/settings",
-    //   children: [
-    //     {
-    //       name: "Integrations",
-    //       icon: SettingsIcon,
-    //       path: "/integration",
-    //     },
-    //     // {
-    //     //   name: "User Management",
-    //     //   icon: SettingsIcon,
-    //     //   path: "/user-management",
-    //     // },
-    //     {
-    //       name: "Whatsapp Template",
-    //       icon: SettingsIcon,
-    //       path: "/whatsapp-template",
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: "Billing",
-    //   icon: WalletIcon,
-    //   path: "/billing",
-    //   children: [],
-    // },
   ]);
 
   const accordionItems = ref([

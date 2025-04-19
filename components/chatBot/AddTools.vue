@@ -1,22 +1,4 @@
 <template>
-
-  <!-- :bread-crumbs="[
-    { label: `${botDetails?.name}`, to: `/bot-management/chat-bot/${botDetails?.id}` },
-    {
-      label: 'Intent Management',
-      to: `/bot-management/chat-bot/${botDetails?.id}/intent-management`,
-    },
-  ]"  -->
-  <!-- <Page title="Add tools" :bread-crumbs="[
-    {
-      label: `${botDetails.name}`,
-      to: `/bot-management/chat-bot/${botDetails.id}`,
-    },
-    {
-      label: 'Add tools',
-      to: `/bot-management/chat-bot/${botDetails.id}/tools`,
-    },
-  ]" :disableSelector="true" :disable-back-button="false" :disableElevation="false"> -->
   <div class="pt-4">
     <form @submit.prevent="dynamicToolsForm" class="space-y-6 pt-2 sm:pt-2 md:pt-0">
       <!-- Default Tools Section -->
@@ -77,7 +59,6 @@
             </UiFormItem>
           </UiFormField>
           <UiFormField v-slot="{ value, handleChange }" name="schedule_call_with_voice">
-            <!-- sm:pr-0 md:pr-[6px] -->
             <UiFormItem class="w-full pr-0">
               <div class="flex justify-between">
                 <UiLabel class="text-[12px] sm:text-[12px] md:text-[14px] font-medium"> Schedule a Call with Voice Bot
@@ -91,8 +72,6 @@
               </div>
             </UiFormItem>
           </UiFormField>
-          <!-- <div class="flex items-center gap-3 w-full">
-          </div> -->
           <span class="w-full">
             <SelectField name="voice_bot" label="Voice Bots" placeholder="Select Bot"
               :options="voiceBotDetails.map((bot) => ({ label: bot.name, value: bot.id }))" :required="false"
@@ -230,14 +209,8 @@ definePageMeta({
 });
 const props = defineProps < { botDetails: any; botData: any, refreshBot: () => void }>();
 const isLoading = ref(false);
-const route = useRoute("chat-bot-id-tools");
-const paramId: any = route;
-const config = useRuntimeConfig()
-// const botDetails: any = await getBotDetails(paramId.params.id);
-// const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
 const voiceBotDetails = await getVoiceBotList()
 const { transformApiResponse } = useTransformApiResponse();
-// const uploadedAudio = ref();
 
 
 const parameterTypes = reactive([
@@ -337,7 +310,6 @@ const dynamicToolsForm = handleSubmit(async (values: any) => {
   await updateBotDetails(payload, true)
 
   isLoading.value = false;
-  // await updateLLMConfig(payload, botDetails?.id, "Tools added successfully.");
 });
 
 </script>

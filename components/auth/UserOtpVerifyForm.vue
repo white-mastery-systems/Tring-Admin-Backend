@@ -10,8 +10,6 @@ const isLoading = ref(false)
 const userDetails = ref()
 const isResendDisabled = ref(false)
 const countdownTime = ref(0)
-// const inputRefs = ref([])
-// const otpDigits = ref(['', '', '', ''])
 const { otpDigits, inputRefs, handleInput, handleKeydown, handlePaste } = useOtpInput(4)
 
 const otpVerifySchema = toTypedSchema(
@@ -51,48 +49,6 @@ onMounted(() => {
     }
   }
 })
-
-// const handleInput = (event: Event, index: number) => {
-//   const input = event.target as HTMLInputElement
-//   const value = input.value.replace(/[^0-9]/g, '')
-//   otpDigits.value[index] = value
-
-//   // Move to next input if value is entered
-//   if (value && index < 3) {
-//     inputRefs.value[index + 1].focus()
-//   }
-// }
-
-// const handleKeydown = (event: KeyboardEvent, index: number) => {
-//   if (event.key === 'Backspace') {
-//     if (!otpDigits.value[index] && index > 0) {
-//       // Move to previous input on backspace if current input is empty
-//       inputRefs.value[index - 1].focus()
-//       otpDigits.value[index - 1] = ''
-//     } else {
-//       otpDigits.value[index] = ''
-//     }
-//   } else if (event.key === 'ArrowLeft' && index > 0) {
-//     inputRefs.value[index - 1].focus()
-//   } else if (event.key === 'ArrowRight' && index < 3) {
-//     inputRefs.value[index + 1].focus()
-//   }
-// }
-
-// const handlePaste = (event: ClipboardEvent) => {
-//   event.preventDefault()
-//   const pastedData = event.clipboardData?.getData('text')
-//   if (!pastedData) return
-
-//   const numbers = pastedData.replace(/[^0-9]/g, '').split('').slice(0, 4)
-//   otpDigits.value = [...numbers, ...Array(4 - numbers.length).fill('')]
-
-//   // Focus last input or first empty input
-//   const lastFilledIndex = otpDigits.value.findLastIndex(digit => digit !== '')
-//   if (lastFilledIndex < 3) {
-//     inputRefs.value[lastFilledIndex + 1].focus()
-//   }
-// }
 
 const resendOTP = () => {
   if (isResendDisabled.value) return
@@ -170,7 +126,6 @@ const onSubmit = handleSubmit((value: any) => {
         </div>
 
         <UiButton color="primary" :disabled="isLoading" :loading="isLoading" class="text-[16px] mt-2">
-          <!-- <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" /> -->
           Continue
         </UiButton>
       </div>

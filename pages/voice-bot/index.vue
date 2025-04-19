@@ -19,7 +19,6 @@
       }
       " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="columns" :data="voiceBot"
       :page-size="20" :is-loading="isDataLoading" :height="20" height-unit="vh" />
-    <!-- <ChannelModal /> -->
     <CreateEditVoiceBotModal v-model="agentModalState" />
     <CreateEditCampaignModal v-model="campaignModalState" @confirm="() => {
         campaignModalState.open = false;
@@ -39,14 +38,7 @@ useHead({
   title: "Bot Management | Voicebot",
 });
 
-// const formSchema = toTypedSchema(
-//   z.object({
-//     newBotName: z.string().min(2, "Bot Name is requird."),
-//   }),
-// );
-
 const campaignModalState = ref({ open: false, id: null });
-// const searchBotDebounce = refDebounced(searchBot, 500);
 const router = useRouter();
 const route = useRoute();
 const agentModalState = ref({ open: false, id: route.params.id });
@@ -104,28 +96,6 @@ const resetPageForVoiceBot = () => {
     filters.value.page = '1';
   }
 };
-
-// const addVoiceBot = async (value: any) => {
-//   try {
-//     const bot = await $fetch("/api/voicebots", {
-//       method: "POST",
-//       body: { name: value.newBotName },
-//     });
-//     return navigateTo({
-//       name: "bot-management-voice-bot-id",
-//       params: { id: bot.id },
-//     });
-//   } catch (err: any) {
-//     toast.error(err.data.data[0].message);
-//   }
-// };
-
-// const botManagementDetails = async (list: any) => {
-//   return navigateTo({
-//     name: "bot-management-voice-bot-id",
-//     params: { id: list.id },
-//   });
-// };
 
 const statusComponent = (status: boolean) =>
   status

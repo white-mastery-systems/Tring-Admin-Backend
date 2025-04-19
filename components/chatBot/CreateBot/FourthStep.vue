@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from 'vue';
 import { useField } from 'vee-validate';
-// import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 const props = defineProps<{
   values: Record<string, any>;
@@ -15,13 +14,11 @@ const { value: selectedGoal } = useField<string>('GOAL');
 const { value: type } = useField("type");
 const { value: otherRole, errorMessage: otherRoleError } = useField("otherRole");
 const { value: otherGoal, errorMessage: otherGoalError } = useField("otherGoal");
-// const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
 
 // Watch for role selection changes
 watch(selectedGoal, (newValue) => {
   if (newValue !== "custom") {
     // Clear otherRole and otherGoal when a non-custom option is selected
-    // otherRole.value = "";
     otherGoal.value = "";
   }
   emit("update:values", {
@@ -42,10 +39,6 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
     });
   }
 });
-
-// watch(() => props.values.type, (newType) => {
-//   props.fetchConfig(newType);
-// }, { deep: true, immediate: true });
 </script>
 
 <template>
@@ -94,10 +87,6 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
       <!-- Show input field only if "Custom" is selected -->
       <div class="flex items-center gap-5 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 w-full"
         v-if="selectedGoal === 'custom'">
-        <!-- <div v-if="selectedGoal === ' custom'" class="mt-4 flex items-center gap-4 p-4 rounded-lg">
-            <input v-model="customInput" type="text" placeholder="Enter custom intent"
-              class="border px-4 py-2 w-full rounded-lg text-[14px] sm:text-[14px] md:text-[16px] h-20" />
-        </div> -->
         <div>
           <p class="text-left text-[12px] sm:text-[12px] md:text-[14px] py-1 text-[#000000]">Tell us your Chatbot’s Goal in the Company</p>
           <UiTextarea v-model="otherGoal" name="otherGoal" :disabled="props.disabled" class="h-[70px] text-[12px] sm:text-[12px] md:text-[14px]" :resizable="false"

@@ -18,94 +18,75 @@
     </Form>
   </DialogWrapper>
 </template>
-  <script setup lang="ts">
-  import { ttsIntegrationSchema } from '~/validationSchema/ttsIntegrationValidation';
-  
-  // interface TSSModalState {
-  //   open: string;
-  //   id: string;
-  //   // add other properties here
-  // }
-  const props = defineProps<{
-    ttsModalState: {
-      open: boolean,
-      id: number | null
-    }
-  }>();
-  const emit = defineEmits(["success"]);
-  // const ttsModalState: any = defineModel<{ open: boolean, id: any }>({
-  //   default: {
-  //     open: false,
-  //     id: null,
-  //   },
-  // });
-  const isLoading = ref(false)
-  const providerList = ref([
-        {
-            label: "elevenlabs",
-            value: "elevenlabs",
-        },
-  ])
-  
-  const {
-    errors,
-    setErrors,
-    setFieldValue,
-    handleSubmit,
-    defineField,
-    values,
-    resetForm,
-  } = useForm({
-    validationSchema: ttsIntegrationSchema,
-  });
-  
-  watch(() => props.ttsModalState.open, async () => {
-    resetForm()
-    if (props.ttsModalState.id) {
-      const getSingleDetails:any =  await $fetch(`/api/tts-integration/${props.ttsModalState.id}`)
-      console.log(getSingleDetails, "getSingleDetails -- getSingleDetails")
-      console.log(getSingleDetails.metadata.apiKey, "getSingleDetails metadata -- getSingleDetails")
-      setFieldValue("provider", getSingleDetails.provider);
-      setFieldValue("apikey", getSingleDetails.metadata?.apiKey || getSingleDetails.metadata?.apikey);
-      setFieldValue("ttsIntegrationName", getSingleDetails.ttsIntegrationName);
-    }
-  })
+<script setup lang="ts">
+import { ttsIntegrationSchema } from '~/validationSchema/ttsIntegrationValidation';
+const props = defineProps<{
+  ttsModalState: {
+    open: boolean,
+    id: number | null
+  }
+}>();
+const emit = defineEmits(["success"]);
+const isLoading = ref(false)
+const providerList = ref([
+  {
+    label: "elevenlabs",
+    value: "elevenlabs",
+  },
+])
+
+const {
+  errors,
+  setErrors,
+  setFieldValue,
+  handleSubmit,
+  defineField,
+  values,
+  resetForm,
+} = useForm({
+  validationSchema: ttsIntegrationSchema,
+});
+
+watch(() => props.ttsModalState.open, async () => {
+  resetForm()
+  if (props.ttsModalState.id) {
+    const getSingleDetails: any = await $fetch(`/api/tts-integration/${props.ttsModalState.id}`)
+    console.log(getSingleDetails, "getSingleDetails -- getSingleDetails")
+    console.log(getSingleDetails.metadata.apiKey, "getSingleDetails metadata -- getSingleDetails")
+    setFieldValue("provider", getSingleDetails.provider);
+    setFieldValue("apikey", getSingleDetails.metadata?.apiKey || getSingleDetails.metadata?.apikey);
+    setFieldValue("ttsIntegrationName", getSingleDetails.ttsIntegrationName);
+  }
+})
 
 const apikeyunmasking = ($event: Event) => {
   const input = $event.target as HTMLInputElement;
   const newInput = input.value.replace(/\*/g, '');
 }
-//   // onMounted(async () => {
-//   //   loadCountries()
-//   // });
-  
-  const handleConnect = handleSubmit(async (values: any) => {
-    isLoading.value = true
-    // const { provider, ...metadata } = values
-    const payload = {
-      metadata: {
-        apiKey: values.apikey
-      },
-      provider: values.provider,
-      ttsIntegrationName: values.ttsIntegrationName
+
+const handleConnect = handleSubmit(async (values: any) => {
+  isLoading.value = true
+  const payload = {
+    metadata: {
+      apiKey: values.apikey
+    },
+    provider: values.provider,
+    ttsIntegrationName: values.ttsIntegrationName
+  }
+  try {
+    if (props.ttsModalState.id) {
+      await $fetch(`/api/tts-integration/${props.ttsModalState.id}`, { method: "PUT", body: payload });
+      toast.success("Integration updated successfully");
+    } else {
+      await $fetch("/api/tts-integration",
+        { method: "POST", body: payload });
+      toast.success("Integration added successfully");
     }
-    try {
-      if (props.ttsModalState.id) {
-        await $fetch(`/api/tts-integration/${props.ttsModalState.id}`, { method: "PUT", body: payload });
-        toast.success("Integration updated successfully");
-      } else {
-        await $fetch("/api/tts-integration",
-          { method: "POST", body: payload });
-        toast.success("Integration added successfully");
-      }
-      emit('success')
-    } catch(error: any) {
-      isLoading.value = false
-      toast.error(error.data.statusMessage)
-    }
+    emit('success')
+  } catch (error: any) {
     isLoading.value = false
-  });
-  </script>
-  
-  <!-- https://accounts.zoho.in/oauth/v2/auth?response_type=code&client_id=1000.7ZU032OIFSMR5YX325O4W3BNSQXS1U&scope=ZohoBigin.settings.ALL,ZohoBigin.modules.ALL&redirect_uri=https://tring-admin.pripod.com/settings/integration/zoho-bigin&prompt=consent&access_type=offline -->
-  
+    toast.error(error.data.statusMessage)
+  }
+  isLoading.value = false
+});
+</script>

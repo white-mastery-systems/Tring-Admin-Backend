@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useField } from "vee-validate";
 import { ref } from "vue";
-// import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 const props = defineProps<{
   errors: Record<string, any>;
@@ -18,46 +17,38 @@ const { value: logo } = useField("logo");
 const { value: BotName } = useField("BotName");
 const colorInput = ref();
 const secondarycolorInput = ref();
-
-// const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
-
-// Call fetchConfig when needed (e.g., on mount or on type change)
-
 const logoData = ref()
-// ✅ Function to update industry selection
-// const selectIndustry = (value: any) => {
-//   selectedType.value = value;
-//   // props.fetchConfig(value);
-// };
+
+
 const openPrimaryColorPicker = () => colorInput.value.$el.click();
 const openSecondaryColorPicker = () => secondarycolorInput.value.$el.click();
+
 const handleLogoChange = (event: any) => {
   // Get the file from the event
   logoData.value = event[0];
-  
+
   if (logoData.value) {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       // Update the field value with the data URL
       logo.value = { url: e.target.result };
       // Emit the changeLogo event to the parent component
       emit('changeLogo', {
         file: logoData.value,
-        // url: e.target.result
       });
-      emit('update:values', { 
+      emit('update:values', {
         NAME: NAME.value,
         COMPANY: COMPANY.value,
         type: selectedType.value,
-        file: logoData.value, 
+        file: logoData.value,
         logo: logo.value,
         secondaryColor: secondaryColor.value,
         color: color.value,
         BotName: BotName.value,
       });
     };
-    
+
     reader.readAsDataURL(logoData.value);
   }
 };
@@ -72,23 +63,6 @@ const inputFieldEnterPrevent = (event: any) => {
 <template>
   <BotSetupCard title="What kind of Business do you own?" description="Select your basic details and chatbot appearance"
     currentStep="2" totalSteps="5">
-    <!-- {{ intentTypes }} || intentTypes -->
-    <!-- ✅ Industry selection - FIXED: Using selectedType directly in the class binding -->
-    <!-- <RadioGroup v-model="selectedType" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden">
-        <div v-for="intent in intentTypes" :key="intent.value"
-          class="min-w-[100px] max-w-[100px] min-h-[100px] max-h-[100px] md:min-w-[135px] md:max-w-[135px] md:min-h-[135px] md:max-h-[135px]"
-          @click.stop="selectIndustry(intent.value)">
-          <RadioGroupItem :id="intent.value" :value="intent.value" class="peer hidden" />
-          <Label :for="intent.value"
-            class="w-full h-full flex items-center justify-center p-4 rounded-lg bg-[#F2F2F2] transition-all duration-300"
-            :class="[selectedType === intent.value ? 'border-2 border-[#09090b]' : 'border-transparent']">
-            <component :is="intent.icon" class="w-[50px] h-[50px]" :stroke-width="0.75" />
-          </Label>
-          <div class="text-[12px] md:text-[12px] font-medium mt-2 text-center">{{ intent.label }}</div>
-        </div>
-      </RadioGroup> -->
-    <!-- {{ props }} || asdad -->
-    <!-- ✅ Company Name & Chatbot Name fields -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <TextField @keydown="inputFieldEnterPrevent($event)" label="Company Name" name="COMPANY"
         class="text-[10px] sm:text-[10px] md:text-[14px]" placeholder="Enter Your Company Name" v-model="NAME" />
@@ -110,7 +84,6 @@ const inputFieldEnterPrevent = (event: any) => {
 
     <div
       class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:md:grid-cols-1 xl:md:grid-cols-2 w-full rounded-lg gap-4">
-      <!-- <div class="flex"> -->
       <UiFileUpload @change="handleLogoChange" name="logo"
         :label="(logo?.url) ? 'Change your logo here, browse files' : 'Upload your logo here, Browse files'"
         :required="true" :accept="'image/*'" :url="logo?.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
@@ -129,11 +102,6 @@ const inputFieldEnterPrevent = (event: any) => {
                     <div class="text-[#71717A] text-[8px] sm:text-[8px] md:text-[10px]">Colors for widget & chat button
                     </div>
                   </div>
-                  <!-- <div class="h-9 w-9 border border-[#E4E4E7]"
-                      :class="[props.values.color ? `bg-${props.values.color}` : '']">
-                      <UiInput ref="colorInput" v-bind="componentField" type="color"
-                        class="h-full w-full p-0 border-none cursor-pointer" />
-                    </div> -->
                   <div class="h-9 w-9 border border-[#E4E4E7] relative overflow-hidden rounded-lg"
                     :style="{ backgroundColor: props.values.color }">
                     <UiInput ref="colorInput" v-bind="componentField" type="color"
@@ -155,11 +123,6 @@ const inputFieldEnterPrevent = (event: any) => {
                     <label class="text-[12px] sm:text-[12px] md:text-[16px] font-medium">Secondary Color</label>
                     <div class="text-[#71717A] text-[8px] sm:text-[8px] md:text-[10px]">Colors for messages</div>
                   </div>
-                  <!-- {{ secondaryColor }} -->
-                  <!-- <div class="h-9 w-9 border border-[#E4E4E7]">
-                      <UiInput ref="secondarycolorInput" v-bind="componentField" type="color"
-                        class="h-full w-full p-0 border-none cursor-pointer" />
-                    </div> -->
                   <div class="h-9 w-9 border border-[#E4E4E7] relative overflow-hidden rounded-lg"
                     :style="{ backgroundColor: props.values.secondaryColor }">
                     <UiInput ref="secondarycolorInput" v-bind="componentField" type="color"

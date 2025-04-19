@@ -1,6 +1,5 @@
 <template>
   <Page title="Contacts" :disable-back-button="true">
-    <!-- {{ getSingleDetails }} -->
     <template #actionButtons>
       <div class="flex gap-4">
         <div class="flex gap-2">
@@ -26,7 +25,6 @@
       <UiTabsContent value="chat">
         <AddEditChatBotContacts typeOfAddContacts="insideContact" :popupState="chatPopupState"
           @PopupState="chatPopupState = $event" />
-
       </UiTabsContent>
       <UiTabsContent value="voice">
         <AddEditVoiceBotContacts typeOfAddContacts="insideContact" :popupState="voicePopupState"

@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="flex items-center gap-2 w-full overflow-x-scroll my-3 ">
-      <!-- {{ props.filters }} -->
       <UiInput v-model="props.filters.q" @input="props.filters.page = '1'"
         class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0"
         placeholder=" Search Leads..." />
@@ -18,10 +17,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Icon, UiBadge, UiButton } from "#components";
+import { UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
-import { format } from "date-fns";
-import { useRoute, useRouter } from "vue-router";
 
 const props = defineProps({
   filters: {
@@ -110,14 +107,6 @@ const onDateChange = (value: any) => {
     delete props.filters.from;
     delete props.filters.to;
   }
-  // if (value.from && value.to) {
-  //   props.filters.from = value.from;
-  //   props.filters.to = value.to;
-  // } else {
-  //   delete props.filters.from;
-  //   delete props.filters.to;
-  //   props.filters.period = value;
-  // }
   props.filters.page = "1";
 };
 const onBotChange = (value: any) => {
@@ -127,20 +116,6 @@ const onBotChange = (value: any) => {
   }
 };
 const emitClearFilters = () => {
-  // Object?.assign(props.filters, {
-  //   botId: "",
-  //   q: undefined,
-  //   from: undefined,
-  //   to: undefined,
-  //   period: "all-time",
-  //   status: "",
-  //   channel: "all",
-  //   action: "",
-  //   page: "1",
-  //   limit: "10",
-  //   country: "all",
-  //   type: "voice",
-  // });
   emit('clear-filters')
 };
 

@@ -151,7 +151,6 @@ definePageMeta({
 const config = useRuntimeConfig();
 const route = useRoute();
 // Bot details and breadcrumbs
-// const botDetails = ref(await getVoiceBotDetails(route.params.id));
 const props = defineProps<{ botDetails: any; loading: boolean; audioResponseData: any; audioDataRefresh: () => void; refreshBot: () => void }>();
 
 // State variables
@@ -172,15 +171,6 @@ const originalValues = ref({
   ambientNoiseFiles: []
 });
 
-// Intent options
-// {
-//   label: "Forward Call",
-//     value: "forwardCall",
-//   },
-// {
-//   label: "Conclude",
-//     value: "conclude",
-//   },
 const intentList = ref([
   {
     label: "Ambient Sound",
@@ -193,24 +183,6 @@ const intentList = ref([
     value: "filler",
   },
 ]);
-
-// const { audioResponseData, loading, error, audioDataRefresh } = usePrerecordedAudioMetadata(
-//   route.params.id,
-//   props.botDetails.organizationId
-// );
-// // Fetch audio data
-// const {
-//   data: audioResponseData,
-//   status,
-//   refresh: audioDataRefresh,
-// } = await useLazyFetch(`${config.public.voiceBotBaseUrl}/prerecordedAudio/metaData`, {
-//   server: false,
-//   params: {
-//     bot_id: route.params.id,
-//     organization_id: props.botDetails.organizationId
-//   },
-//   default: () => [],
-// });
 
 // Form validation schema
 const botSchema = toTypedSchema(

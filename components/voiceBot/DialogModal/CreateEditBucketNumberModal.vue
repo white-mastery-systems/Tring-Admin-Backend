@@ -2,7 +2,6 @@
   <DialogWrapper v-model="bucketModalState"
     :title="(bucketModalState.id) ? `Modify ${props.botType} Contact` : `Add ${props.botType} Contact`"
     class="capitalize">
-    <!-- :validation-schema="formSchema" -->
     <form @submit="handleConnect" class="space-y-3">
       <div v-if="props.botType === 'chat'" class="flex gap-4">
         <TextField name="firstName" label="First Name" placeholder="Enter first name" required>
@@ -14,7 +13,6 @@
         <TextField name="name" label="Name" placeholder="Enter name" required>
         </TextField>
       </div>
-      <!-- {{ countryList }} || sdf -->
       <div class='flex gap-2'>
         <CountryCodeField class='w-[150px]' name="countryCode" label="Country Code" helperText="Enter your country code"
           required />

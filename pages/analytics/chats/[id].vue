@@ -38,7 +38,7 @@
                             </div>
                           </div>
                         </UiTooltipTrigger>
-                        <UiTooltipContent class="w-auto">
+                        <UiTooltipContent class="max-w-[300px] overflow-hidden text-wrap break-words">
                           <p>{{ entry[1] }}</p>
                         </UiTooltipContent>
                       </UiTooltip>
@@ -63,7 +63,6 @@
                   <div v-if="formattedChats.length" class="flex justify-center font-medium mt-2">Dynamic Forms</div>
                   <div v-if="formattedChats.length" class="p-5">
                     <div v-for="(value, key) in formattedChats" :key="key">
-                      <!-- {{ value.metadata }} -->
                       <div class="text-[#424bd1] font-medium pb-2">
                         {{ `Form ${key + 1}` }}
                       </div>
@@ -78,58 +77,37 @@
                     </div>
                   </div>
                 </div>
-                <!-- <div v-if="formattedChats.length" class="flex justify-center font-medium my-4">Dynamic Forms</div>
-                
-                <div v-if="formattedChats.length"
-                  class="overflow-scroll h-[40vh] gap-2 scrollable-container field_shadow p-5 rounded-lg">
-                  <div v-for="(value, key) in formattedChats" :key="key">
-                    <div class="text-[#424bd1] font-medium py-4">
-                      {{ `Form ${key + 1}` }}
-                    </div>
-                    <div class="flex grid grid-cols-2 gap-2 font-regular">
-                      <div v-for="(dynamicForm, keys) in value?.metadata" :key="keys">
-                        <div class="w-full pb-3">
-                          <TextField :label="formatLabel(keys)" :disabled="true" :disableCharacters="true"
-                            :placeholder="dynamicForm" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div> -->
               </UiTabsContent>
             </UiTooltipProvider>
 
             <UiTabsContent value="Timeline">
               <div class="flex h-screen-minus-12 flex-col justify-start gap-6 overflow-y-scroll pb-[1rem  pt-[1rem]">
                 <TimeLine v-for="(step, index) in timeLineData" :key="index" :index="index" @timeLine="
-                    ($event) => {
-                      BotId = $event;
-                      setTimeout(() => {
-                        BotId = null;
-                      });
-                    }
-                  " :data="step" :totalSteps="timeLineData.length" :height="200" />
+                  ($event) => {
+                    BotId = $event;
+                    setTimeout(() => {
+                      BotId = null;
+                    });
+                  }
+                " :data="step" :totalSteps="timeLineData.length" :height="200" />
               </div>
             </UiTabsContent>
-            <!-- </div> -->
           </UiTabs>
         </div>
         <div
           class="field_shadow h-screen-minus-11 w-full overflow-hidden rounded-lg bg-[#ffffff] sm:w-full md:w-full lg:w-[100%] xl:w-[100%]">
           <div :class="[
-              'flex h-[70px] w-full items-center justify-between px-2.5 font-medium text-[#ffffff]',
-            ]" :style="
-              leadData?.channel === 'whatsapp'
+            'flex h-[70px] w-full items-center justify-between px-2.5 font-medium text-[#ffffff]',
+          ]" :style="leadData?.channel === 'whatsapp'
                 ? 'background:#128C7E'
                 : `background:hsl(${leadData?.bot.metadata.ui?.color?.replaceAll(' ', ',')})`
-            ">
+              ">
             <div class="flex items-center gap-2">
-              <!-- {{ leadData?.channel}} -->
               <WhatsappIcon v-if="leadData?.channel === 'whatsapp'" class="align-middle"></WhatsappIcon>
 
               <span class="text-[14px] capitalize">{{
                 leadData?.bot?.name
-                }}</span>
+              }}</span>
             </div>
           </div>
 
@@ -138,7 +116,6 @@
         </div>
       </div>
     </div>
-    <!-- <input type="text" value="hii" ref="chatScreenRef" /> -->
   </Page>
 </template>
 <script setup lang="ts">
@@ -148,64 +125,64 @@ const breadcrumbStore = useBreadcrumbStore();
 
 const { user, refreshUser }: { user: any; refreshUser: any } =
   await useUser();
-  const chatScreenRef = ref(null);
-  const BotId = ref(null);
-  const scrollChatBox = () => {
-    setTimeout(() => {
-      if (chatScreenRef.value)
-        chatScreenRef.value.scrollTop = chatScreenRef?.value?.scrollHeight;
-    }, 1000);
-  };
-  
-  onMounted(() => {
-    {
-      scrollChatBox();
-    }
-  });
-  definePageMeta({
-    middleware: "admin-only",
-  });
+const chatScreenRef = ref(null);
+const BotId = ref(null);
+const scrollChatBox = () => {
+  setTimeout(() => {
+    if (chatScreenRef.value)
+      chatScreenRef.value.scrollTop = chatScreenRef?.value?.scrollHeight;
+  }, 1000);
+};
 
-  const route = useRoute("analytics-chats-id");
+onMounted(() => {
+  {
+    scrollChatBox();
+  }
+});
+definePageMeta({
+  middleware: "admin-only",
+});
 
-  const chats = await $fetch(`/api/org/chat/${route.params.id}/messages`, {
-    method: "GET",
+const route = useRoute("analytics-chats-id");
+
+const chats = await $fetch(`/api/org/chat/${route.params.id}/messages`, {
+  method: "GET",
+  server: false,
+});
+
+const { data: timeLineData } = await useLazyFetch(
+  `/api/timeline/chat/${route.params.id}`,
+  {
+    transform: (data: any) => {
+      const allChat = chats.map((chat) => chat.chatId);
+      return data.map((item: any, index: number) => {
+        const chatIndex = allChat.findIndex((chat) => chat === item.chatId);
+        return { ...item, chatIndex: chatIndex + 1 };
+      });
+    },
+  },
+);
+
+const { status, data: leadData } = await useLazyFetch(
+  () => `/api/org/chat/${route.params.id}`,
+  {
     server: false,
-  });
+  },
+);
+breadcrumbStore.setBreadcrumbs([
+  {
+    label: "Chat", // Dynamic name
+    to: `/analytics/leads`,
+  },
+  {
+    label: (leadData.value?.botUser?.name) ?? 'No Name',
+    to: `/analytics/leads/${route.params?.id}`,
+  },
+])
 
-  const { data: timeLineData } = await useLazyFetch(
-    `/api/timeline/chat/${route.params.id}`,
-    {
-      transform: (data: any) => {
-        const allChat = chats.map((chat) => chat.chatId);
-        return data.map((item: any, index: number) => {
-          const chatIndex = allChat.findIndex((chat) => chat === item.chatId);
-          return { ...item, chatIndex: chatIndex + 1 };
-        });
-      },
-    },
-  );
-
-  const { status, data: leadData } = await useLazyFetch(
-    () => `/api/org/chat/${route.params.id}`,
-    {
-      server: false,
-    },
-  );
-  breadcrumbStore.setBreadcrumbs([
-    {
-      label: "Chat", // Dynamic name
-      to: `/analytics/leads`,
-    },
-    {
-      label: (leadData.value?.botUser?.name) ?? 'No Name',
-      to: `/analytics/leads/${route.params?.id}`,
-    },
-  ])
-  
-  watchEffect(() => {
-    if (leadData.value) {
-      breadcrumbStore.setBreadcrumbs([
+watchEffect(() => {
+  if (leadData.value) {
+    breadcrumbStore.setBreadcrumbs([
       {
         label: "chats", // Dynamic name
         to: `/analytics/chats`,
@@ -215,12 +192,12 @@ const { user, refreshUser }: { user: any; refreshUser: any } =
         to: `/analytics/chats/${route.params?.id}`,
       },
     ]);
-      const userName = leadData.value?.botUser?.name ?? "Unknown User";
-      useHead({
-        title: `Chats | ${userName}`,
-      });
-    }
-  });
+    const userName = leadData.value?.botUser?.name ?? "Unknown User";
+    useHead({
+      title: `Chats | ${userName}`,
+    });
+  }
+});
 
 const formatLabel = (key: any) => {
   // Convert camelCase or PascalCase to words with spaces
@@ -228,42 +205,42 @@ const formatLabel = (key: any) => {
 }
 
 
-  const isPageLoading = computed(() => status.value === "pending");
+const isPageLoading = computed(() => status.value === "pending");
 
-  const details = computed(() => {
-    if (!leadData.value) return [undefined, undefined];
-    const { params, ...rest } =
-      leadData.value?.metadata ?? ({ params: null } as Record<string, any>);
-    const { name } = leadData.value.bot;
-    let metaData: any = Object.entries(rest || {}).map(([key, value]) => {
-      if (key === "os") {
-        return ["OS", value];
-      } else if (key === "ipAddress") {
-        return ["IP Address", value];
-      }
-      return [key, value];
-    });
-    const botUserDetails = [];
-    if (leadData?.value.botUser) {
-      botUserDetails.push(
-        ["Name", leadData?.value?.botUser?.name],
-        ["Email", leadData?.value?.botUser?.email],
-        [
-          "Mobile",
-          leadData?.value?.botUser?.countryCode +
-            leadData?.value?.botUser?.mobile,
-        ],
-        ["Bot Name", name],
-      );
+const details = computed(() => {
+  if (!leadData.value) return [undefined, undefined];
+  const { params, ...rest } =
+    leadData.value?.metadata ?? ({ params: null } as Record<string, any>);
+  const { name } = leadData.value.bot;
+  let metaData: any = Object.entries(rest || {}).map(([key, value]) => {
+    if (key === "os") {
+      return ["OS", value];
+    } else if (key === "ipAddress") {
+      return ["IP Address", value];
     }
-    let paramsData = null;
-    if (params) {
-      paramsData = Object.entries(params);
-    }
-    if (paramsData) {
-      return [...metaData, ...paramsData, ...botUserDetails];
-    } else return [...metaData, ...botUserDetails];
+    return [key, value];
   });
+  const botUserDetails = [];
+  if (leadData?.value.botUser) {
+    botUserDetails.push(
+      ["Name", leadData?.value?.botUser?.name],
+      ["Email", leadData?.value?.botUser?.email],
+      [
+        "Mobile",
+        leadData?.value?.botUser?.countryCode +
+        leadData?.value?.botUser?.mobile,
+      ],
+      ["Bot Name", name],
+    );
+  }
+  let paramsData = null;
+  if (params) {
+    paramsData = Object.entries(params);
+  }
+  if (paramsData) {
+    return [...metaData, ...paramsData, ...botUserDetails];
+  } else return [...metaData, ...botUserDetails];
+});
 
 const formattedChats = computed(() => {
   return chats.map((chat: any) => {

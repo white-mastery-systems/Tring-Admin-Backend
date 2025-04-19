@@ -1,16 +1,5 @@
 <template>
-  <!-- <Page title="Dynamic Form" :bread-crumbs="[
-    {
-      label: `${botDetails.name}`,
-      to: `/bot-management/chat-bot/${botDetails.id}`,
-    },
-    {
-      label: 'Dynamic Form',
-      to: `/bot-management/chat-bot/${botDetails.id}/dynamic-form`,
-    },
-  ]" :description="true" :disableSelector="false" :disable-back-button="false"> -->
   <div class="mx-0 gap-3 py-0">
-    <!-- <div class="text-[18px] font-bold mt-4"> CRM Integrations </div> -->
     <CrmConfiguration />
     <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full mb-5" />
     <div>
@@ -19,13 +8,8 @@
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3 px-2">
           <SelectField name="fields[0].type" label="Type" :options="typeList" />
           <TextField name="fields[0].label" label="Label" placeholder="Label" />
-          <!-- <SelectField name="fields[0].required" label="Required" :options="requiredList" required /> -->
           <TextField name="fields[0].placeholder" label="Placeholder" placeholder="Placeholder" />
           <TextField name="fields[0].errorMessage" label="Error Message" placeholder="Enter error message" />
-          <!-- <TextField v-if="values.fields[0].type === 'text'" name="fields[0].minLength" label="Minimum Length"
-          type="number" placeholder="Minimum length" /> -->
-          <!-- <TextField v-if="values.fields[0].type === 'text'" name="fields[0].maxLength" label="Maximum Length"
-          type="number" placeholder="Maximum length" /> -->
           <TextField v-if="values.fields[0].type === 'text'" :disableCharacters="true" name="fields[0].minLength"
             label="Minimum Length" helperText="" placeholder="Minimum length" />
           <TextField v-if="values.fields[0].type === 'text'" :disableCharacters="true" name="fields[0].maxLength"
@@ -38,14 +22,10 @@
           <UiButton color="primary" type="submit" size="lg" :loading="isLoading">Submit</UiButton>
         </div>
       </form>
-      <!-- Preview Section -->
-      <!-- {{formFields}} -->
       <div class="mt-8" v-if="formFields.length">
         <h2 class="text-sm sm:text-sm md:text-base lg:text-lg font-semibold pb-2">Form Preview</h2>
         <form class="space-y-4">
           <div v-for="(field, index) in formFields" :key="index" class="space-y-3 flex items-end gap-2">
-            <!-- Type Field in Preview -->
-            <!-- {{ field.placeholder }} -->
             <div v-if="field.type === 'date'" class="w-full">
               <DatePickerField :name="field.model" :label="field.label" :placeholder="field.placeholder" 
                 disabled />
@@ -54,9 +34,6 @@
               <TimePickerField :name="field.model" :label="field.label" :placeholder="field.placeholder" 
                 disabled>
               </TimePickerField>
-              <!-- <UiButton variant="outline" type="button" @click="removeField(index)">
-                <CloseIcon class="w-4 h-4" />
-              </UiButton> -->
             </div>
             <div v-else class="w-full">
               <TextField :name="field.model" :label="field.label" :placeholder="field.placeholder" :type="field.type"
@@ -71,14 +48,10 @@
         </form>
       </div>
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full mt-5" />
-      <!-- <div class="text-[18px] font-bold mt-4"> Channel Configuration </div> -->
       <CommunicationChannelConfig :botDetails="formFields" :refreshBot="props.refreshBot" />
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full mt-7 mb-6" />
       <div class="text-sm sm:text-sm md:text-base lg:text-lg font-bold"> Add tools </div>
       <AddTools :botDetails="formFields" :botData="props.botDetails" :refreshBot="props.refreshBot" />
-      <!-- <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full my-8" /> -->
-      <!-- <div class="text-[18px] font-bold mt-4"> Add Intents </div> -->
-      <!-- <IntentManagement :botDetails="props.botDetails" :refreshBot="props.refreshBot" /> -->
     </div>
   </div>
   <!-- </Page> -->
@@ -96,7 +69,6 @@ const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
 const isLoading = ref(false);
 const route: any = useRoute("chat-bot-id-dynamic-form");
 const { toCamelCase } = useToCamelCase();
-// const formFields = computed(() => props.botDetails.formStructure?.fields ?? []);
 const formFields = ref(props.botDetails.formStructure?.fields ?? []);
 const requiredList = reactive([
   { label: "Yes", value: true },
@@ -109,39 +81,7 @@ const typeList = reactive([
   { label: "Phone", value: "phone" },
   { label: "Date", value: "date" },
   { label: "Time", value: "time" },
-  // { label: "Textarea", value: "textarea" },
 ]);
-
-// const formattedToolsConfig = computed(() => {
-//   // Format the getAddTools data for better readability
-//   return {
-//     defaultTools: getAddTools.value.defaultTools,
-//     clientTools: getAddTools.value.clientTools.map((tool) => ({
-//       name: tool.name,
-//       description: tool.description,
-//       endpoint: tool.endpoint,
-//       parameters: tool.parameters.properties.map((param) => ({
-//         name: param.name,
-//         type: param.type,
-//         description: param.description,
-//         required: param.required ? "Yes" : "No",
-//       })),
-//     })),
-//   };
-// });
-
-
-// const {
-//   data: botDetails,
-//   status,
-//   refresh: integrationRefresh,
-// } = await useLazyFetch(`/api/bots/${botDetails.id}`, {
-//   server: false,
-//   default: () => [],
-//   transform: (integrations: any) => {
-//     return integrations.formStructure?.fields ?? []
-//   }
-// });
 
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 
@@ -160,7 +100,6 @@ const { handleSubmit, values, errors, setFieldValue, resetForm } = useForm({
 });
 
 const dynamicForm = handleSubmit(async (values: any) => {
-  // title: values.title,
   const formattedData: any = {
     fields: formFields.value.length > 0 ? formFields.value : values.fields.map((field: any) => ({
       ...field,

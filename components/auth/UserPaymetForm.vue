@@ -68,10 +68,6 @@ const onSubmit = handleSubmit(async (values) => {
         <TextField type="text" name="cardNumber" v-model="cardNumber"
           @input="cardNumber = formatCardNumber($event.target.value)" placeholder="Card Number" maxlength="16"
           v-bind="cardNumberAttrs" />
-        <!-- <p v-if="errors.cardNumber" class="text-red-500 text-[13px] font-medium">
-          {{ errors.cardNumber }}
-        </p> -->
-
         <div class="grid grid-cols-2 gap-2">
           <div class="grid gap-1">
             <Label class="sr-only" for="expiry">MM/YY</Label>

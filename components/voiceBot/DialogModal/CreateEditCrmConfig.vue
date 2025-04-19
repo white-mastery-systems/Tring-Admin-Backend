@@ -18,40 +18,6 @@
           }))
         "
       />
-      <!-- <UiFormField
-        v-if="
-          integrationsData.find(
-            (integration) => integration.id === values.integrationId,
-          )?.crm === 'zoho-bigin'
-        "
-        v-model="subPipelineField"
-        v-bind="subPipelineFieldAttrs"
-        name="subPipeline"
-      >
-        <UiFormItem class="w-full">
-          <UiFormLabel
-            >Select Sub Pipeline<UiLabel class="text-lg text-red-500"
-              >*</UiLabel
-            >
-          </UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-model="subPipelineField" v-bind="subPipelineFieldAttrs">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select sub pipeline" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectItem
-                  v-for="(subPipelineData, index) in subPipelines"
-                  :value="subPipelineData.reference_value"
-                  >{{ subPipelineData.display_value }}</UiSelectItem
-                >
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <span class="text-sm text-red-500">{{ errors?.subPipeline }}</span>
-          <span class="text-xs text-gray-500">Select your sub pipeline.</span>
-        </UiFormItem>
-      </UiFormField> -->
       <div
         v-if="
           integrationsData.find(

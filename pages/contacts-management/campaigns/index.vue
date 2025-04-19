@@ -12,13 +12,6 @@
       </div>
     </template>
     <div class="p-2">
-      <!-- <div class="flex items-center gap-2 pb-2">
-        <UiInput v-model="filters.q" @input="filters.page = '1'"
-          class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search campaign..." />
-      </div> -->
-      <!-- @row-click="(row: any) => {
-      navigateTo(`/contacts-management/campaigns/${row.original.id}`);
-      }" -->
       <DataTable @pagination="Pagination" @row-click="(row: any) => {
         navigateTo(`/contacts-management/campaigns/${row.original.id}`);
       }" @limit="($event) => {
@@ -37,9 +30,6 @@
               id: deleteCampaigntate.id,
               onSuccess: () => {
                  getAllCampaign()
-
-                // getAllCampaign(
-                // refresh();
               },
             });
             deleteCampaigntate.open = false;
@@ -88,9 +78,9 @@ const filters = reactive<{
   limit: "10",
 });
 
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 const {
   status,
   data: campaignDataList,
@@ -141,31 +131,7 @@ const actionsComponent = (id: any) =>
     {
       class: "flex items-center gap-2",
     },
-    [
-      // h(
-      //   UiButton,
-      //   {
-      //     onClick: () => {
-
-      //     },
-      //     class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
-      //   },
-      //   [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
-      // ),
-      // h(
-      //   UiButton,
-      //   {
-      //     color: "primary",
-      //     onClick: (event: MouseEvent) => {
-      //       event.stopPropagation(); 
-      //       campaignModalState.value.open = true;
-      //       campaignModalState.value.id = id;
-      //     }, // Add delete functionality
-      //     class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
-      //   },
-      //   h(Icon, { name: "lucide:pen" }),
-      // ),
-      h(
+    [h(
         UiButton,
         {
           variant: "destructive",
@@ -198,11 +164,6 @@ const columns = [
   columnHelper.accessor("campaignName", {
     header: "Campaign Name",
   }),
-  // columnHelper.accessor("campaignTime", {
-  //   header: "Campaign Name",
-  //   cell: ({ row }) =>
-  //     formatDate(new Date(row.original.campaignTime), "dd MMM yyyy HH:MM "),
-  // }),
 
   columnHelper.accessor("contactMethod", {
     header: "Contact Method",

@@ -1,13 +1,11 @@
 <template>
   <div class="flex h-full w-full flex-col items-center justify-center">
     <div class="w-full px-0 pb-[20px] text-[20px] font-bold text-[#424bd1] lg:w-[80%] lg:px-6">
-      <!-- <span> Log in to your account </span> -->
     </div>
     <div class="flex w-full flex-col px-0 lg:w-[80%] lg:px-6">
 
       <form class="space-y-2" @submit="onSubmit">
         <div class="flex flex-col gap-2">
-          <!-- <TextField type="email" name="email" label="E-mail" placeholder="Enter Your Email" required /> -->
           <div class="relative">
             <TextField :type="passwordVisible ? 'text' : 'password'" name="password" label="Update Your Password"
               placeholder="Password" required>
@@ -25,15 +23,12 @@
           </UiButton>
         </div>
       </form>
-
-      <!-- </div> -->
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { useGtag } from 'vue-gtag-next';
 import { useRoute } from 'vue-router';
-// import { formSchema } from '~/validationSchema/authValidation/signInValidation';
 
 const { event } = useGtag()
 

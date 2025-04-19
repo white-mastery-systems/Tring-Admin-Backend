@@ -186,9 +186,6 @@ const generatePDFAndUpload = async () => {
     } else {
       console.log("Text is empty, skipping API call");
     }
-    // // Upload to API
-    // await createDocuments(payload.botId, payload.document);
-    // await props.refresh();
 
     // Update original text to current text since we've uploaded it
     originalText.value = text.value;
@@ -198,13 +195,10 @@ const generatePDFAndUpload = async () => {
   } else {
     // Optionally notify the user that no changes were detected
     console.log("No changes detected, skipping upload");
-    // If you want to show a notification:
-    // toast.info("No changes detected, skipping upload");
   }
 };
 const selectCard = (content: any, index: any) => {
   const processedContent = processJsonContent(content);
-  // || content
   text.value = processedContent;
   originalText.value = text.value; // Update original text when card is selected
   selectedIndex.value = index;

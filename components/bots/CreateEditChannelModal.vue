@@ -33,12 +33,6 @@ const modalState = defineModel<{ open: boolean; id: string | null }>({
   required: true,
 });
 const route = useRoute("chat-bot-id");
-const channels = [
-  {
-    label: "Whatsapp",
-    value: "whatsapp",
-  },
-];
 const formSchema = toTypedSchema(
   z.object({
     integrationId: z.string().optional(),
@@ -64,7 +58,6 @@ watch(
     if (botDetails?.metadata) {
       showButtons.value = !!botDetails?.metadata?.showButtons
     }
-    // setFieldValue("link", intentDetails?.link);
   },
   { deep: true },
 );

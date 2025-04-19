@@ -21,7 +21,6 @@ definePageMeta({
 });
 
 import { ref } from "vue";
-const router = useRouter();
 const filters = reactive<{
   q: string;
   page: string;
@@ -36,14 +35,8 @@ const filters = reactive<{
 const route = useRoute();
 const paramId: any = route;
 const selectedFile = ref();
-const myPopover: any = ref(null);
-// const botDetails: any = await getBotDetails(paramId.params.id);
-// const documents = ref();
 const documentFetchInterval = ref<NodeJS.Timeout>();
 
-const deleteDocumentModelOpen: any = reactive({});
-const isSheetOpen = ref(false);
-const position = ref("bottom");
 const page = ref(0);
 const totalPageCount = ref(0);
 const totalCount = ref(0);
@@ -81,8 +74,6 @@ const statusComponent = (status: any) => {
   );
 };
 
-
-
 const columns = [
   columnHelper.accessor("name", {
     header: "File Name",
@@ -97,6 +88,7 @@ const columns = [
       ]);
     }
   }),
+  
   columnHelper.accessor("createdAt", {
     header: "Uploaded Date",
   }),
@@ -137,11 +129,9 @@ onMounted(async () => {
         await props.refresh();
       }
     }
-
     // Update your component state with the received data
   };
 });
-const isPageLoading = computed(() => status.value === "pending");
 
 const fileUpload = async () => {
   if (selectedFile.value && selectedFile.value[0]) {
@@ -167,21 +157,6 @@ const fileUpload = async () => {
   }
   await props.refresh()
 };
-const handleAction = (list: any, action: any) => {
-  if (myPopover.value) {
-    myPopover.value = false;
-  }
-  isSheetOpen.value = false;
-
-  switch (action) {
-    case "download":
-      singleDocumentDownload(list);
-      break;
-    case "delete":
-      singleDocumentDelete(list);
-      break;
-  }
-};
 
 onUnmounted(() => {
   documentFetchInterval.value && clearInterval(documentFetchInterval.value);
@@ -190,7 +165,6 @@ onUnmounted(() => {
 const singleDocumentDelete = async (list: any) => {
   await deleteDocument(paramId.params.id, list.id);
   await props.refresh()
-  // documents.value = await listDocumentsByBotId(paramId.params.id);
 };
 const singleDocumentDownload = async (list: any) => {
   viewDocument(paramId.params.id, list.id);
