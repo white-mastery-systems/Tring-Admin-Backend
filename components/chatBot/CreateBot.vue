@@ -47,7 +47,7 @@ onMounted(() => {
                 <span class="text-[12px] sm:text-[12px] md:text-[16px]">
                   {{ item.title }}
                 </span>
-                <span class="text-[6px] sm:text-[6px] md:text-[10px] text-[#71717A]">
+                <span class="text-[6px] sm:text-[6px] md:text-[12px] text-[#71717A]">
                   {{ item.subtitle }}
                 </span>
               </div>

@@ -2,7 +2,7 @@
   <div :class="cn('w-full', props?.class)">
     <UiFormField v-model="countryCode" :name="props.name" class="mt-1">
       <UiFormItem :class="[(!fieldHeader) ? 'mt-1' : 'mt-0', 'flex flex-col']">
-        <UiFormLabel v-if="!fieldHeader" class="mb-1">Country Code<span class="text-sm text-red-500">*</span>
+        <UiFormLabel v-if="!fieldHeader" class="flex items-center mb-0">Country Code<span class="text-lg text-red-500">*</span>
         </UiFormLabel>
         <UiPopover class="mt-0">
           <UiPopoverTrigger as-child class="mt-0">
