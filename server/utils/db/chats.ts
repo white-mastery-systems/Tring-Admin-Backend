@@ -258,3 +258,34 @@ export const fetchWhatsappChatOrCreate = async (userId: string, botId: string, o
 
   return newChat;
 };
+
+// Get all messages by bot-id
+export const getAllMessagesByBotId = async ({ organizationId, botId }: {
+  organizationId: string,
+  botId: string
+}) => {
+  try {
+    const data = await db.query.chatSchema.findMany({
+      where: and(
+        eq(chatSchema.organizationId, organizationId),
+        eq(chatSchema.botId, botId)
+      ),
+
+      columns: {
+        id: true,
+        chatSummary: true
+      }
+    })
+    // return data
+
+    const result = data.map((i: any) => ({
+      [i.id]: i.inadequateMessages 
+    }))
+
+    return result
+    
+  } catch (error: any) {
+    logger.error(`Get All messages by botId function Error: ${JSON.stringify(error.message)}`)
+    throw new Error(error)
+  }
+}
