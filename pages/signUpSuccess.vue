@@ -46,9 +46,6 @@ const proceedLogin = async () => {
         <!-- Your account has been created successfully. You can log in with your login credentials. -->
         You can create a chatbot which consists of 50 free chat sessions on your current plan
       </div>
-      <!-- <span>
-        Go to my dashboard
-      </span> -->
       <UiButton class="bg-[#ffbc42] hover:bg-[#ffbc42] font-semibold text-[12px] sm:text-[12px] md:text-[16px]"
         @click="proceedLogin()">
         Proceed to Dashboard

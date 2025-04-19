@@ -1,4 +1,3 @@
-// BotSetupCard.vue
 <template>
   <UiCard class="border-0 ma-0 shadow-none">
     <UiCardHeader class="p-0">

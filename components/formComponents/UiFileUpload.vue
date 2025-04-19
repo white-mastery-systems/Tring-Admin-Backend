@@ -13,8 +13,6 @@
             <img :class="class" src="assets/icons/image_preview.svg" alt="" class="w-10 h-8" />
             <span class="text-[#71717A] text-xs">Preview</span>
           </div>
-          <!-- <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept"
-            id="imageView1" /> -->
         </label>
       </div>
 

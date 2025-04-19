@@ -65,6 +65,9 @@ export const chatPlanUsages = async (orgZohoSubscription: any, orgDetail: any, p
       const currentDate = momentTz().startOf('day');
       const daysRemaining = trialEndDate.diff(currentDate, "days");
       resObj.remainingDaysForTrialEnd = daysRemaining
+      if(daysRemaining <=0 || availableSessions === 0) {
+        resObj.subscription_status = "Trial Expired"
+      }
     }
 
     return resObj
@@ -117,6 +120,9 @@ export const voicePlanUsages = async (orgZohoSubscription: any, orgDetail: any, 
       const currentDate = momentTz().startOf('day');
       const daysRemaining = trialEndDate.diff(currentDate, "days");
       resObj.remainingDaysForTrialEnd = daysRemaining
+      if(daysRemaining <=0 || availableMinutes === 0) {
+        resObj.subscription_status = "Trial Expired"
+      }
     }
 
     return resObj

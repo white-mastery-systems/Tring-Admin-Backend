@@ -1,8 +1,6 @@
 <template>
   <div class="bot-manage-main-container">
     <Page title="Call Logs" :disable-back-button="true">
-      <!-- isDataLoading -->
-      <!-- @pagination="Pagination"  -->
       <div class="flex items-center gap-2 overflow-x-scroll mt-2">
         <UiInput v-model="filters.q" @input="filters.page = '1'"
           class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0 truncate"
@@ -17,7 +15,6 @@
         " @pagination="Pagination" :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount"
         :data="callLogData" :columns="columns" :is-loading="isDataLoading" :page-size="20" :height="16"
         height-unit="vh" />
-      <!-- <DataTable :data="leads" :is-loading="false" :columns="columns" :page-size="8" :height="80" height-unit="vh" /> -->
     </Page>
   </div>
 </template>
@@ -32,9 +29,9 @@ import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
     middleware: "admin-only",
   });
 
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 const router = useRouter(); 
 const breadcrumbStore = useBreadcrumbStore();
 breadcrumbStore.setBreadcrumbs([

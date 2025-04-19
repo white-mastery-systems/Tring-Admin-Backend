@@ -5,7 +5,6 @@
       class="flex items-center justify-between rounded-t-xl border-b-[1px] border-[#80808036] px-[5px] py-5 text-[18px] font-bold sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
       <span> Subscription Details </span>
     </div>
-    <!-- class="overflow-y-scroll h-screen-minus-15" -->
     <div>
       <div
         class="flex items-center justify-between gap-3 px-[5px] py-5 sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
@@ -20,12 +19,6 @@
         class="flex items-center justify-between gap-3 px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span> Subscription status </span>
         <div class="flex min-w-[80px] items-center justify-start">
-          <!-- <span :class="{
-            'bg-[#3cb3714d] text-[#008026ba]': usage?.subscription_status === 'active',
-            'bg-[#eb3930f3] text-white': usage?.subscription_status !== 'active'
-          }" class="rounded-[11px] px-2.5 py-[3px] text-[12px] capitalize">
-            {{ usage?.subscription_status }}
-          </span> -->
           <span :class="{
             'bg-[#ECFDF3] text-[#027A48]': usage?.subscription_status === 'active',
             'bg-[#FFF6ED] text-[#E04F16]': usage?.subscription_status === 'inactive',
@@ -68,13 +61,6 @@
           </span>
         </div>
       </div>
-      <!-- <div
-        class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
-        <span> Available wallet balance </span>
-        <span class="flex min-w-[80px] items-center justify-start rounded-xl text-[15px]">
-          {{ usage?.wallet_balance }}
-        </span>
-      </div> -->
       <div v-if="usage?.expiry_date"
         class="flex items-center justify-between gap-3 rounded-b-lg px-[5px] py-5 font-medium sm:px-[5px] md:px-[30px] lg:px-[30px] xl:px-[30px]">
         <span> Billing Expiry Date </span>

@@ -1,5 +1,4 @@
 <template>
-  <!-- <Page title="Contacts" :disable-back-button="true"> -->
   <div>
     <div class="flex items-center justify-between gap-2 overflow-x-scroll my-3">
       <div>
@@ -12,7 +11,7 @@
         <ImportNumberFile accept=".csv, .xls, .xlsx" v-model="selectedFile" @uploadDocument="fileUpload"
           :isLoading="isLoading" />
         <ExportButton v-model="exportDataHandler" :rows="exportReadyRows" :columns="exportReadyColumns"
-          @export="exportData" buttonContent="Export Contacts" />
+          @export="exportData" buttonContent="Export Contacts" :isDisabled="!contactsList.length" />
       </div>
     </div>
     <DataTable :data="contactsList" @pagination="Pagination" @limit="($event) => {
@@ -54,7 +53,6 @@
       }
         " />
   </div>
-  <!-- </Page> -->
 </template>
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";
@@ -88,9 +86,9 @@ const filters = reactive<{
   page: "1",
   limit: "10",
 });
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 const route = useRoute();
 const queryId = ref(route.params.id)
 const addVoiceBotContacts = ref()
@@ -247,6 +245,7 @@ const exportData = async () => {
       },
       params: {
         type: "voice",
+        q: filters.q,
       }
     });
     const exportReadObject = ((props.typeOfAddContacts === "insideBucket") ? exportContacts.contacts : exportContacts ?? []).map((contacts: any) => {

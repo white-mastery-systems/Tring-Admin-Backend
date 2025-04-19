@@ -2,10 +2,6 @@
   <page :title="botDetails.name" :disableSelector="true" :disable-back-button="false" :disable-elevation="true"
     custom-back-router="/chat-bot">
     <template #actionButtons>
-      <!-- <div class="flex justify-end"> -->
-      <!-- <UiButton class="flex items-center justify-end border-none">
-        Link channe
-      </UiButton> -->
       <div class="flex flex-col w-full items-center overflow-x-scroll sm:flex-row">
         <div
           class="flex w-full items-center justify-between gap-2 overflow-x-scroll sm:flex-row py-0 sm:py-0 md:py-0 lg:py-1 ">
@@ -14,7 +10,6 @@
               <div class="flex h-[6px] w-[6px] items-center rounded-full bg-[#1abb00]"></div>
               <span class="text-[15px] sm:text-[15px] md:text-[17px] lg:text-[16px] xl:text-[16px]">Active</span>
             </div>
-            <!-- v-else -->
             <div v-else class="flex items-center gap-[5px] pl-2 font-medium text-[#ff0000]">
               <div class="flex h-[6px] w-[6px] items-center rounded-full bg-[#ff0000]"></div>
               <span class="md:text-[14px] lg:text-[16px]">Inactive</span>
@@ -69,9 +64,6 @@
                     class="py-2 px-3 text-[14px] font-medium text-[#000000] gap-2 border-[#000000]">
                     <Eye class="w-5 h-5" />
                     <span class="hidden lg:inline"> Preview Bot </span>
-                    <!-- <span class="flex items-center justify-center lg:hidden">
-                      <Icon name="entypo:controller-play" class="h-5 w-5" />
-                    </span> -->
                   </UiButton>
                   <div class="block text-[5px] lg:hidden">Preview Bot</div>
                 </div>
@@ -79,9 +71,6 @@
                   <UiButton color="primary" class="gap-2 py-2 px-3 button_shadow" @click="copyScript">
                     <FileCode class="w-5 h-5" />
                     <span class="hidden lg:inline"> Copy Script </span>
-                    <!-- <span class="flex items-center justify-center lg:hidden">
-                      <Icon name="mdi:content-copy" class="h-4 w-4 px-1 text-white" />
-                    </span> -->
                   </UiButton>
                   <div class="block text-[5px] lg:hidden">Copy Script</div>
                 </div>
@@ -106,25 +95,13 @@
               <AddChatBotModal v-model="agentModalState" @editConfirm="() => {
                 agentModalState.open = false;
                 navigateTo({ name: 'chat-bot' });
-                // getAllChatBot()
               }
               "></AddChatBotModal>
             </div>
           </div>
-
-          <!-- <span class="font-semibold content-align">Date Created</span>
-          <span class="font-semibold content-align">Status</span> -->
         </div>
       </div>
-      <!-- </div> -->
-      <!-- Communication -->
     </template>
-    <!-- <div class="-ml-6 -mr-10">
-      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full" />
-    </div> -->
-    <!-- <div>
-    <CreateBotForm />
-  </div> -->
     <LazyUiDialog v-if="!botDetails.documentId" v-model:open="isDocumentListOpen">
       <UiDialogTrigger class=""> </UiDialogTrigger>
       <UiDialogContent align="end" class="sm:max-w-md">
@@ -155,82 +132,18 @@
         </UiButton>
       </UiDialogContent>
     </LazyUiDialog>
-    <!-- <div ref="scrollTarget" class="border-[1px] border-solid border-[#E4E4E7] rounded-lg p-2">
-      <WebScrapingForm />
-    </div> -->
-    <!-- <div>
-      <CreateBotFields ref="childRef" @confirm="handleAddEditBot" />
-    </div> -->
-    <!-- leading-none -->
     <div class="font-bold text-[18px] sm:text-[18px] md:text-[20px] mt-4 px-4 sm:px-4 md:px-0">
       View and Edit your Chatbots features
     </div>
 
     <CreateBot :botDetails="botDetails" :documents="documents" :refresh="refresh" :refreshBot="refreshBot"
       :loading="loading" />
-    <!-- <div class="flex justify-center">
-      <UiButton @click="triggerChildSubmit">Create bot</UiButton>
-    </div> -->
     <ChatBotSuccessfulMessageModal v-model="store.createBotsuccessfulState" :botDetails="botDetails"
       :refreshBot="refreshBot" @success="() => {
         store.createBotsuccessfulState.open = false;
         refreshBot()
       console.log('on success')
     }" />
-    <div>
-      <!-- <LazyUiDialog v-if="!botDetails.documentId" v-model:open="isDocumentListOpen">
-        <UiDialogTrigger class=""> </UiDialogTrigger>
-        <UiDialogContent align="end" class="sm:max-w-md">
-          <UiDialogHeader>
-            <UiDialogTitle>Launch Bot</UiDialogTitle>
-            <UiDialogDescription>
-              Choose a document to deploy your bot
-            </UiDialogDescription>
-          </UiDialogHeader>
-          <UiButton
-            class="bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42] min-w-[90%] max-w-[100%]"
-            v-for="list in documents.documents.filter(
-              (item: any) => item.status === 'ready',
-            )" :key="list.id" @click="async () => {
-                isSubmitting = true;
-                isDocumentListOpen = false;
-                try {
-                  await singleDocumentDeploy(list);
-                  createBotsuccessfulState.open = false;
-                } catch (err) {
-                  createBotsuccessfulState.open = false;
-                }
-              }
-              ">
-            <span class="w-[95%] truncate">
-              {{ list.name }}
-            </span>
-          </UiButton>
-        </UiDialogContent>
-      </LazyUiDialog> -->
-      <!-- <div class="mb-[120px]">
-        <div v-for="(list, index) in dataList" :key="index">
-          <NuxtLink :to="{ name: list.routeName, params: { id: paramId.params.id } }"
-            class="field_shadow mx-0 my-[17px] flex w-full cursor-pointer items-center justify-between rounded-[10px] bg-[#ffffff] px-[30px] py-[20px] text-[14px] hover:bg-[#fff8eb] hover:text-[#ffbc42]">
-            <div class="flex w-full items-center gap-4 rounded-[10px]">
-              <div class="flex flex-col space-y-2">
-                <div class="flex flex-row gap-3">
-                  <span class="bot_name_align font-medium">{{ list.bot }}</span>
-                </div>
-                <span class="text-xs text-gray-500">{{ list.helperText }}</span>
-              </div>
-              <Icon v-if="
-                list.bot === 'Document Management' &&
-                botDetails.documents.length === 0
-              " class="h-6 w-6 text-red-500" name="nonicons:error-16" />
-            </div>
-            <div>
-              <LeftArrowIcon class="w-[30px] hover:text-[#ffbc42]" />
-            </div>
-          </NuxtLink>
-        </div>
-      </div> -->
-    </div>
   </page>
 </template>
 <script setup lang="ts">
@@ -261,30 +174,22 @@ const queryId = ref(route.params?.id);
 const agentModalState = ref({ open: false, id: paramId.params.id });
 const { status, documents, refresh } = useBotDocuments(route.params.id);
 const store = botStore();
-// const botDetails = ref(await getBotDetails(paramId.params.id));
 const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
-// const { documentsList, refreshDocuments } = useDocumentsList(route.params.id)
 const deleteModalState = ref(false);
 const modalOpen = ref(false);
 const isDocumentListOpen = ref(false);
 const isSubmitting = ref(false);
 const isActive = ref(false);
-// const getDocumentList: any = ref();
 const channelModalState = ref<{ open: boolean; id: string | null }>({
   open: false,
   id: null,
 });
 const { dataList } = useDataList()
 const scrapedData = ref(null);
-// const childRef = ref(null);
 const scrollTarget = ref(null);
 const breadcrumbStore = useBreadcrumbStore();
 const { botListStatus, bots } = useBotList();
 const isDataLoading = computed(() => status.value === "pending");
-// const createBotsuccessfulState = ref({
-//   open: false,
-// });
-// const pageLoading = ref(false);
 
 // Use a ref to track if guard is registered
 const guardRegistered = ref(false);
@@ -317,41 +222,11 @@ watch(() => botDetails.value?.documentId, (newId) => {
     store.scrapedData = [];
   }
 },{deep: true, immediate: true});
-// router.beforeEach((to, from) => {
-//   store.lastVisitedRoute = from.path
-// })
-
-// watch(() => botDetails.value?.documentId, (newId) => {
-//   console.log(newId, 'newId',store.lastVisitedRoute)
-//   store.scrapedData = []
-//   // && store.lastVisitedRoute.includes('/chat-bot/create-bot')
-//   if (newId) {
-//     createBotsuccessfulState.value.open = true
-//   }
-// })
 
 const handleSuccess = () => {
   channelModalState.value.open = false;
   toast.success("Channel Created successfully");
 };
-// onMounted(() => {
-//   console.log(botDetails.value?.documentId, 'botDetails.value?.documentId onMounted')
-//   if (botDetails.value?.documentId) {
-//     createBotsuccessfulState.value.open = true;
-//   }
-// })
-// onMounted(async () => {
-//   // getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
-//   if (!documents.value.documentId) {
-//     await handleActivateBot()
-//   } else {
-//     setTimeout(() => {
-//       createBotsuccessfulState.value.open = true;
-//     }, 0);
-//   }
-  
-//   // botDetails.value = await getBotDetails(paramId.params.id);
-// });
 
 const previewUrl = computed(() => {
   let col = botDetails.value.metadata.ui.color as string;
@@ -373,12 +248,6 @@ const previewUrl = computed(() => {
   return `${window.location.origin}/preview.html?orgname=WMS&chatbotid=${paramId.params.id}&mode=preview`;
 });
 
-// const botManagementDetails = async (list: any, index: any) => {
-//   await navigateTo({
-//     name: list.routeName,
-//     params: { id: paramId.params.id },
-//   });
-// };
 const deactivateBot = async () => {
   modalOpen.value = true;
 };
@@ -387,7 +256,6 @@ const deactivateBotDialog = async () => {
   isActive.value = true
   await disableBot(paramId.params.id);
   await refreshBot() // new function refreshBot added
-  // botDetails.value = await getBotDetails(paramId.params.id)
   modalOpen.value = false;
   isActive.value = false
 };
@@ -407,7 +275,6 @@ const copyScript = async () => {
 const singleDocumentDeploy = async (list: any) => {
   await deployDocument(paramId.params.id, list.id,false);
   refreshBot() // new function refreshBot added
-  // botDetails.value = await getBotDetails(paramId.params.id);
 };
 
 const handleDelete = () => {
@@ -419,17 +286,11 @@ const handleDeleteBot = () => {
   deleteBot(route.params.id,false);
 };
 
-// const handleScrapedData = (data: any) => {
-//   scrapedData.value = data;
-//   console.log("Received in parent:", data);
-// }handleFieldsChanges
 const handleFieldsChanges = () => {
   console.log("Fields changed");
 }
 
 const handleAddEditBot = async (values: any) => {
-  // const documentsList = await listDocumentsByBotId(paramId.params.id)
-  // const list = await getDocumentsList(paramId.params.id)
   if (!botDetails.value.documents.length) {
     toast.error("Please add at least one document to deploy bot");
     if (scrollTarget.value) {
@@ -443,35 +304,16 @@ const handleAddEditBot = async (values: any) => {
     }
     return
   }
-  // console.log("documentsList", documentsList.documents.length);
   try {
-    // if (agentModalState.value.id) {
     const bot = await $fetch(`/api/bots/${queryId.value}`, {
       method: "PUT",
       body: values,
     });
     toast.success("Updated successfully");
-    // }
-    // if (agentModalState.value.id) {
-    //   emit("editConfirm");
-    // } else {
-    //   emit("confirm");
-    // }
   } catch (err: any) {
     toast.error(err.data.data[0].message);
   }
 }
-
-// const triggerChildSubmit = () => {
-//   if (!childRef.value.values.name && !childRef.value.values.type) {
-//     if (scrollTarget.value) {
-//       scrollTarget.value.scrollIntoView({ behavior: "smooth" });
-//     }
-//   }
-//   if (childRef.value) {
-//     childRef.value.handleAddEditBot();
-//   }
-// };
 
 const handleActivateBot = async () => {
   isActive.value = true;

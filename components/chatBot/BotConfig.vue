@@ -1,6 +1,5 @@
 <template>
   <div class="mx-0 gap-3">
-    <!-- <div class="text-[18px] font-bold mb-3 mt-1">Basic Configurations</div> -->
     <form @submit.prevent="handleUpdateBotConfig" class="space-y-5">
       <div class="flex gap-4">
         <TextField name="NAME" label="Bot Name" placeholder="Eg. Noah,Bob,Chris,Ted">
@@ -9,10 +8,7 @@
         </TextField>
       </div>
       <div class="flex gap-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-        <!-- {{ intentOptions }} || asdad -->
         <div class="w-full">
-          <!-- :options="intentOptions.goals.map((role) => ({ label: role.name, value: role.value }))" -->
-          <!-- helperText="This will determine the role of the bot and behavior." -->
           <SelectField name="ROLE" label="Bot's Role" placeholder="Select Role" :options="[
             ...(Array.isArray(intentOptions?.roles) ? intentOptions.roles.map((role: any) => ({
               label: role.name,
@@ -43,13 +39,8 @@
         <SelectField name="LANGUAGE" :options="chatBotList" label="Language" placeholder="Language">
         </SelectField>
       </div>
-      <!-- helperText="Enter a error mesage that will be shown a error when bot failed" -->
-      <!-- <TextField isTextarea="true" name="errorMessage" placeholder="enter error message" required /> -->
-      <!-- helperText="Here you can have additional instructions for your bot." -->
       <TextField name="NOTES" label="Notes" :isTextarea="true">
       </TextField>
-      <!-- helperText="Here you can give the bot additional details about your
-      company." -->
       <TextField name="DESCRIPTION" label="Company Description" :isTextarea="true">
       </TextField>
       <div class="flex w-full justify-end">
@@ -81,8 +72,6 @@ const route = useRoute();
 const emit = defineEmits(["statusUpdated"]);
 const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
 const originalValues = ref({}); // Add ref for original values
-// const botDetails: any = await getBotDetails(route.params.id);
-// const defaultFormValues = botDetails.value.metadata.prompt;
 const isLoading = ref(false)
 
 const { handleSubmit, values, setFieldValue } = useForm({

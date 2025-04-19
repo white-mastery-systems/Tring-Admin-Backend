@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import MarkdownIt from "markdown-it";
 
-// const chatStore = useChatsStore();
 const props = defineProps<{
   content: string;
 }>();

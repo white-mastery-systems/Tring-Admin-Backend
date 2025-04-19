@@ -17,23 +17,15 @@
         </UiPopoverTrigger>
         <UiPopoverContent class="w-[200px] p-0">
           <UiCommand>
-            <UiCommandInput
-              :placeholder="searchPlaceholder"
-              v-model="searchCode"
-            />
+            <UiCommandInput :placeholder="searchPlaceholder" v-model="searchCode" />
             <UiCommandEmpty>{{ emptyMessage }}</UiCommandEmpty>
             <UiCommandList>
               <UiCommandGroup>
-                <UiCommandItem
-                  v-for="code in filteredCodes"
-                  :key="code.value"
-                  :value="code.value"
-                  @select="
-                    () => {
-                      handleChange(code.value);
-                    }
-                  "
-                >
+                <UiCommandItem v-for="code in filteredCodes" :key="code.value" :value="code.value" @select="
+                  () => {
+                    handleChange(code.value);
+                  }
+                ">
                   <UiCheck :class="checkClass(code.value)" />
                   {{ code.label }}
                 </UiCommandItem>
@@ -49,55 +41,51 @@
   </UiFormField>
 </template>
 
-<script setup>
-  import { ChevronsUpDown } from "lucide-vue-next";
-  import { ref } from "vue";
+<script setup lang="ts">
+import { ChevronsUpDown } from "lucide-vue-next";
+import { ref } from "vue";
 
-  const props = defineProps({
-    modelValue: String,
-    name: String,
-    label: String,
-    required: Boolean,
-    fieldProps: Object,
-    fieldClass: String,
-    itemClass: String,
-    buttonClass: String,
-    allCodes: Array,
-    containerProps: Object,
-    wrapperProps: Object,
-    error: String,
-    searchPlaceholder: {
-      type: String,
-      default: "Search code...",
-    },
-    emptyMessage: {
-      type: String,
-      default: "No codes found.",
-    },
-  });
-  const {
-    value: fieldValue,
-    errorMessage,
-    meta,
-    errors,
-    handleChange,
-  } = useField(() => props.name);
+const props = defineProps({
+  modelValue: String,
+  name: String,
+  label: String,
+  required: Boolean,
+  fieldProps: Object,
+  fieldClass: String,
+  itemClass: String,
+  buttonClass: String,
+  allCodes: Array,
+  containerProps: Object,
+  wrapperProps: Object,
+  error: String,
+  searchPlaceholder: {
+    type: String,
+    default: "Search code...",
+  },
+  emptyMessage: {
+    type: String,
+    default: "No codes found.",
+  },
+});
+const {
+  value: fieldValue,
+  errorMessage,
+  meta,
+  errors,
+  handleChange,
+} = useField(() => props.name);
 
-  const selectedValue = ref < any > fieldValue.value;
+const selectedValue = ref < any > fieldValue.value;
 
-  const searchCode = ref("");
-  const filteredCodes = [
-    { label: "hi", value: "hi" },
-    { label: "djj", value: "djj" },
-    { label: "asdf", value: "asdf" },
-  ];
-  const selectCode = (code) => {
-    // selectedCode.value = code;
+const searchCode = ref("");
+const filteredCodes = [
+  { label: "hi", value: "hi" },
+  { label: "djj", value: "djj" },
+  { label: "asdf", value: "asdf" },
+];
+const checkClass = (code) => {
+  return {
+    "mr-2 h-4 w-4": true,
   };
-
-  const checkClass = (code) => {
-    return {
-      "mr-2 h-4 w-4": true,
-    };
-  };
+};
 </script>

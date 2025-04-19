@@ -10,9 +10,6 @@
         <CountryTimeZones name="timezone" label="Time Zones" helperText="Enter your time zones" />
       </div>
       <div class="flex w-full justify-end mt-4">
-        <!-- <UiButton color="primary" type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading">
-          Submit
-        </UiButton> -->
         <UiButton color="primary" type="submit" class="w-[120px] self-end" size="lg" :loading="isLoading"
           :disabled="!formHasChanged">
           {{ formHasChanged ? 'Submit' : 'No Changes' }}
@@ -24,23 +21,10 @@
 
 <script setup lang="ts">
 import { useVoiceLanguageList } from '~/composables/voiceBotLanguageList';
-import { useTImeList } from '~/composables/timeZones';
-import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
-import { useField } from "vee-validate";
-import { FileText, Globe,Home, ShoppingCart, Plane, PhoneCall, FileDown, Landmark,
-  Banknote,
-  Stethoscope,
-  Lightbulb,
-  Truck,
-  GraduationCap,
-  Server } from 'lucide-vue-next';
 
-const config = useRuntimeConfig()
 definePageMeta({
   middleware: "admin-only",
 });
-// const route = useRoute("voice-bot-id-identity-management");
-// const botDetailsList: any = await getVoiceBotDetails(route.params.id);
 const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void }>();
 const originalValues = ref({}); // Add ref for original values
 

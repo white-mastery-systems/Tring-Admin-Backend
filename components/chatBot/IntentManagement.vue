@@ -1,23 +1,11 @@
 <template>
-  <!-- title="Intent Mangement" :bread-crumbs="[
-  {
-  label: `${botDetails.name}`,
-  to: `/bot-management/chat-bot/${botDetails.id}`,
-  },
-  {
-  label: 'Intent Management',
-  to: `/bot-management/chat-bot/${botDetails.id}/intent-management`,
-  },
-  ]" :disableSelector="true" :disable-back-button="false" -->
   <div>
-    <!-- <template #actionButtons> -->
     <div class="mb-4 flex items-center justify-between">
       <div class="text-[14px] sm:text-[14px] md:text-[16px] lg:text-[18px] font-bold"> Intent Management </div>
       <UiButton class="text-[12px] sm:text-[12px] md:text-[14px]" color="primary" @click="addNewIntents">
         Add Intents
       </UiButton>
     </div>
-    <!-- </template> -->
     <CreateEditIntentModal v-model="intentDialogState" @success="intentRefresh()" />
 
     <DataTable :columns="columns" :data="intentData" :totalPageCount="totalPageCount" :page="page"
@@ -53,9 +41,9 @@ const animationProps = {
 };
 const router = useRouter();
 const route = useRoute();
-let page = ref(1);
-let totalPageCount = ref(1);
-let totalCount = ref(1);
+const page = ref(1);
+const totalPageCount = ref(1);
+const totalCount = ref(1);
 const {
   data: intentData,
   status: intentLoadingStatus,
@@ -74,100 +62,10 @@ const {
 });
 const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
 
-/* Static intents when intentData is empty
-  const intents: any[] = [];
-  if(props.botDetails.metadata.prompt.INTENTS || props.botDetails.metadata.prompt.intents){
-    const splitIntents = `${props.botDetails.metadata.prompt.INTENTS || props.botDetails.metadata.prompt.intents}`.split("\n")
-    intents.push(...splitIntents.filter((intent) => `${intent.trim().toLowerCase()}` !== "other"));
-  }
-  watchEffect(() => {
-    // Set data only if API didn’t return anything and we have local fallback
-    if (!intentData.value.length && intents.length) {
-      intentData.value = intents.map((intent, index) => ({
-        id: `${index}`,
-        link: "--",
-        intent: intent,
-        createdAt: formatDate(new Date(), "dd.MM.yyyy"),
-      }));
-    }
-  });
-*/
-
-// const { accordionItems, updateStepStatus } = useStepStatus(route);
-
 const isIntentLoading = computed(
   () => intentLoadingStatus.value === "pending",
 );
 
-// const botDetails: any = await getBotDetails(route.params.id);
-// const { botDetails, loading, error, refreshBot } = useBotDetails(route.params?.id);
-// const { documentsList, refreshDocuments } = useDocumentsList(route.params.id);
-// const defaultFormValues = botDetails.value.metadata.prompt;
-
-// watch(
-//   () => botDetails.value?.name, // Watching only the 'name' property
-//   (newName) => {
-//     const userName = newName ?? "Unknown Bot Name";
-//     useHead({
-//       title: `Chat Bot | ${userName} - Intent Management`,
-//     });
-//   },
-//   { immediate: true } // Runs immediately on mount
-// );
-
-// watch(intentData, (newValue) => {
-
-//   if (newValue && typeof newValue === "object") {
-//     const length = Object.keys(newValue).length;
-
-//     refreshDocuments()
-//     if (length <= 1 ) {
-//       updateStepStatus("botConfiguration", "completed");
-//     }
-//   }
-// });
-
-
-// const handleIntentDataListChecking = (newValue: any) => {
-//   if (newValue && typeof newValue === "object") {
-//     const length = Object.keys(newValue).length;
-
-//     if (length <= 1) {
-//       updateStepStatus("botConfiguration", "completed");
-//     }
-//   }
-// }
-
-// const addIntents = async (values: any) => {
-//   const intentDetails: any = {
-//     id: botDetails.value.id,
-//     ...values,
-//   };
-//   await createBotIntents({
-//     intentDetails,
-//     onSuccess: () => {
-//       intentDialogState.value.open = false;
-//       toast.success("Intent added successfully");
-//     },
-//   });
-//   intentRefresh();
-// };
-// const handleSubmit = async (values: any) => {
-//   const payload: any = {
-//     id: botDetails.value.id,
-//     metadata: {
-//       ...botDetails.value.metadata,
-//       prompt: {
-//         ...values,
-//       },
-//     },
-//   };
-//   await updateBotDetails(payload);
-//   return navigateTo({
-//     name: "chat-bot-id",
-//     params: { id: botDetails.value.id },
-//   });
-// };
 const deleteIntentDialogState: any = ref({
   open: false,
   id: "",
@@ -236,9 +134,6 @@ const addNewIntents = () => {
     intentDialogState.value.id = null;
   } else {
     toast.error("Please enable lead generation in UI customization");
-    // setTimeout(() => {
-    //   navigateTo(`/bot-management/chat-bot/${botDetails.id}/ui-customization`);
-    // }, 2000); // 2 seconds delay
   }
 };
 

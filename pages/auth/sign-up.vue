@@ -1,7 +1,4 @@
 <script setup lang="ts">
-// import { buttonVariants } from '@/lib/registry/new-york/ui/button'
-// import { cn } from '@/lib/utils'
-// import UserAuthForm from './components/UserAuthFor'
 definePageMeta({
   layout: "auth",
   middleware: "guest-only",
@@ -23,10 +20,8 @@ definePageMeta({
       <div class="relative z-20 flex items-center text-lg font-medium pt-6">
         <img class="self-center" src="assets\icons\Tring-Ai-Logo-with-black-text.png" width="150" height="150" />
       </div>
-      <!-- D:\Sathish\admin-panel\tring-admin\assets\icons\Tring-Ai-Logo-with-black-text.png -->
       <div class="relative z-20 flex items-center justify-center text-lg font-medium mt-11">
         <img class="self-center w-[500px]" src="assets\logo\new-sign-up-logo.png" />
-        <!-- AI - powered Chat and voice Agents -->
       </div>
     </div>
     <div class="lg:p-2">
@@ -53,8 +48,6 @@ definePageMeta({
             Already have an account?
           </span>
           <NuxtLink to="/auth/sign-in" class="font-bold text-[14px] text-[#424BD1]">Sign in</NuxtLink>
-
-          <!-- <span class="font-bold text-[14px]">Sign in</span> -->
         </div>
       </div>
     </div>

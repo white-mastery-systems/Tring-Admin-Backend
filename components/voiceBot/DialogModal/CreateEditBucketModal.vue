@@ -14,7 +14,6 @@
             label: 'Voice',
           },
         ]" required />
-      <!-- <MultiSelect v-model="selectedOptions" :options="options"  /> -->
       <div class="flex items-center justify-end">
         <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
           Submit
@@ -59,7 +58,6 @@ const filteredContactsList = computed(() => {
   return contactsList.value; // Return contactsList or any filtered version of it
 });
 
-// watch(addBucketNameModalState, (newValue) => {});
 const bucketSchema = toTypedSchema(
   z.object({
     name: z
@@ -82,22 +80,11 @@ watch(
   async (newState) => {
     if (newState) { // Only perform fetch when opening
       resetForm()
-      // selectedContacts.value = []
       if (addBucketNameModalState.value.id) {
         getSingleDetails.value = await $fetch(
           `/api/org/contact-list/${addBucketNameModalState.value.id}`
         );
         setFieldValue("name", getSingleDetails.value.name);
-        // setFieldValue("type", getSingleDetails.value[0].bucket.type);
-
-        // const formattedContactIds = getSingleDetails.value.map((item: any) => {
-        //   return {
-        //     value: item.contactId, // The ID for the MultiSelect
-        //     name: `${item.contacts.countryCode} ${item.contacts.phone}`, // Format name as country code and phone number
-        //     };
-        // })
-        // setFieldValue("contactIds", formattedContactIds);
-        // selectedContacts.value = formattedContactIds
       }
     }
   }

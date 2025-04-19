@@ -1,5 +1,4 @@
 <template>
-  <!-- <Page title="Contacts" :disable-back-button="true"> -->
   <div>
     <div class="flex items-center justify-between gap-2 overflow-x-scroll my-3">
       <div>
@@ -12,7 +11,7 @@
         <ImportNumberFile accept=".csv, .xls, .xlsx" v-model="selectedFile" @uploadDocument="fileUpload"
           :isLoading="isLoading" />
         <ExportButton v-model="exportDataHandler" :rows="exportReadyRows" :columns="exportReadyColumns"
-          @export="exportData" buttonContent="Export Contacts" />
+          @export="exportData" buttonContent="Export Contacts" :isDisabled="!contactsList.length" />
       </div>
     </div>
     <DataTable :data="contactsList" @pagination="Pagination" @limit="($event) => {
@@ -54,7 +53,6 @@
       }
         " />
   </div>
-  <!-- </Page> -->
 </template>
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";
@@ -72,7 +70,6 @@ const emit = defineEmits<{ (e: "popupState", payload: any): void }>();
 const addBucketModalState: any = ref({ open: false, id: null });
 const deleteIntegrateNumber = ref({ open: false, id: null });
 const exportDataHandler = ref({ status: false, type: "csv" });
-const activeStatus = ref("");
 const exportReadyRows = ref<any>([]);
 const selectedFile = ref();
 const isLoading = ref(false)
@@ -90,8 +87,7 @@ const filters = reactive<{
 const page = ref(0);
 const totalPageCount = ref(0);
 const totalCount = ref(0);
-const route = useRoute("contacts-management-buckets-id");
-// const searchContacts = ref("");
+const route = useRoute();
 const queryId = ref(route.params.id)
 const addChatBotContacts = ref()
 
@@ -244,8 +240,10 @@ const exportData = async () => {
       headers: {
         "time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
+
       params: {
-        type: "chat"
+        type: "chat",
+        q: filters.q,
       }
     });
     const exportReadObject = ((props.typeOfAddContacts === "insideBucket") ? exportContacts.contacts : exportContacts ?? []).map((contacts: any) => {

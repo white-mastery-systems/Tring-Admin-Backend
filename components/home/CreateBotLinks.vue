@@ -8,16 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button as UiButton } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { botStore } from '~/store/botStore';
+
 const isLoading = ref(false);
 
 const props = withDefaults(
@@ -43,7 +34,6 @@ const createNewBots = async (url: any) => {
         body: {},
       });
       if (getSingleBotDetails?.id) {
-        // ${ getSingleBotDetails.id }
         navigateTo(`/chat-bot/create-bot/${getSingleBotDetails?.id}`);
       }
     } catch (error) {
@@ -51,8 +41,6 @@ const createNewBots = async (url: any) => {
       toast.error(error.statusMessage);
     }
     isLoading.value = false;
-    // const getBotDetails = await listApiBots();
-    // toast.success("Created successfully");
   }
 }
 </script>
@@ -78,12 +66,10 @@ const createNewBots = async (url: any) => {
         </div>
       </CardHeader>
       <CardFooter class="flex items-cnter p-0">
-        <!-- <NuxtLink :to="item.url"> -->
         <UiButton @click="createNewBots(item.url)"
           class="text-[12px] sm:text-[12px] md:text-[14px] bg-[#FFBC42] hover:bg-[#E6A93C]-500 hover:brightness-90 px-6 rounded-xl button_shadow"
           :disabled="isLoading && (item.type === 'chat')">
           Create </UiButton>
-        <!-- </NuxtLink> -->
       </CardFooter>
     </Card>
   </div>

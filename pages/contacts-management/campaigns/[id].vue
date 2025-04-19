@@ -1,14 +1,4 @@
 <template>
-  <!-- :bread-crumbs="[
-  {
-  label: ``,
-  to: `/contacts-management/campaigns`,
-  },
-  {
-  label: 'Campaigns',
-  to: `/contacts-management/campaigns`,
-  },
-  ]" -->
   <Page title="Campaigns Details" :disable-back-button="false">
     <template #actionButtons v-if="failedCampaigns">
       <UiButton color="primary" @click="RetryFailedDeliveries()" :loading="isLoading">
@@ -44,7 +34,6 @@ const isLoading = ref(false);
 const { id } = route.params;
 const getCampaignsDetails = ref([]);
 const breadcrumbStore = useBreadcrumbStore();
-// const failedCampaigns = ref(false); // ✅ Declare first
 const {
   status,
   campaignDataList,
@@ -54,21 +43,6 @@ const {
   totalCount,
   failedCampaigns,
 } = useSingleCampaign(id, filters);
-
-// const {
-//   status,
-//   data: getSingleCampaignList,
-//   refresh: getSingleCampaign,
-// } = await useLazyFetch(`/api/org/campaign/${id}/whatsappContacts`, {
-//   server: false,
-//   query: filters,
-//   default: () => ({ data: [], failedCampaigns: false }), // Ensure structure matches API response
-//   transform: (campaignResponse: any) => {
-//     // Extracting data and failedCampaigns correctly
-//     const { data, failedCampaigns } = campaignResponse;
-//     return { data, failedCampaigns }; // Ensure both are returned
-//   },
-// });
 
 // Now, you can use `getSingleCampaignList.failedCampaigns` in your component
 onMounted(async() => {

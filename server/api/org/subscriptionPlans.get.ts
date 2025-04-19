@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
 
     // Compute remaining trial days if in trial
     let remainingDaysForTrialEnd: number | undefined;
-    if (subscriptionPlanUsage?.originalSubscriptionStatus === "trial" || subscriptionPlanUsage?.pricingPlanCode === "chat_free" || subscriptionPlanUsage?.pricingPlanCode === "voice_free") {
+    if ((subscriptionPlanUsage?.originalSubscriptionStatus === "trial" || subscriptionPlanUsage?.pricingPlanCode === "chat_free" || subscriptionPlanUsage?.pricingPlanCode === "voice_free") && (subscriptionStatus === "active" || subscriptionStatus === "trial")) {
       const trialEndDate = subscription.endDate ? momentTz(subscription.endDate, "YYYY-MM-DD").startOf("day") : momentTz(adminDetails?.createdAt).add(14, "days").startOf("day")
       const currentDate = momentTz().startOf('day');
       const daysRemaining = trialEndDate.diff(currentDate, "days");
@@ -44,6 +44,10 @@ export default defineEventHandler(async (event) => {
     let computedStatus = (pricingPlanCode === "chat_free" || pricingPlanCode === "voice_free")
       ? "trial"
       : subscriptionStatus;
+
+    if(subscriptionPlanUsage?.subscriptionStatus !== "active" && subscriptionPlanUsage?.subscriptionStatus !== "trial") {
+      computedStatus = "inactive"
+    }
 
     if(remainingDaysForTrialEnd !== undefined && remainingDaysForTrialEnd <=0) {
       remainingDaysForTrialEnd = 0

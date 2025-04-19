@@ -8,9 +8,6 @@ import { Home, ShoppingCart, Plane, PhoneCall, Globe, FileText, FileDown, Landma
   GraduationCap,
   Hotel,
   Server } from 'lucide-vue-next';
-  // import { useContentSuggestions } from "~/composables/botManagement/chatBot/useContentSuggestions";
-  // import { Button } from "@/components/ui/button";
-  // import { Home, Settings, Info } from "lucide-vue-next";
   
   const props = defineProps<{
     errors: Record<string, any>;
@@ -25,27 +22,20 @@ import { Home, ShoppingCart, Plane, PhoneCall, Globe, FileText, FileDown, Landma
     refreshSuggestions: () => void;
   }>();
 
-// const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
 const uploadDocumentRef = ref(null);
 defineExpose({ uploadDocumentRef })
 const { value: selectedType } = useField("selectedType")
 const { value: type } = useField("type");
 const previousType = ref(type.value);
-// const emit = defineEmits(['update:selectedType']);
-// Track which option is selected
-// const selectedType = ref<string | null>(null);
-// const { contentSuggestions, loading, error, refreshSuggestions } = useContentSuggestions(type ?? 'real-estate');
 
 const companyDetails = ref('')
 // Function to handle button click
 const selectType = (types: string) => {
-  // emit('update:selectedType', type);
   if (!type.value && (types != 'Website')) {
     toast.error('Please select an industry before proceeding.');
     return
   }
   selectedType.value = types;
-  // emit("update:values", { ...props.values type });
 };
 
 const buttons = [
@@ -53,10 +43,6 @@ const buttons = [
   { label: "Document", icon: FileText },
   { label: "Text", icon: FileDown },
 ];
-// // ✅ Use `useField()` from vee-validate
-// const { value: companyName } = useField("companyName");
-// const { value: chatbotName } = useField("name");
-// const { value: selectedIndustry } = useField("industry");
 
 const intentTypes = [
   { label: "Real Estate", value: "real-estate", icon: Home },
@@ -74,15 +60,7 @@ const intentTypes = [
   { label: "IT Service", value: "it-service", icon: Server },
 ];
 
-
-// watch(() => selectedType.value, (newSelectedType) => {
-//   if (newSelectedType === 'Text') {
-//     props.refreshSuggestions(type.value); // Call refresh when type changes
-//   }
-// }, {deep: true, immediate: true});
-
 // Replace the existing watch function with this one
-
 watch(() => selectedType.value, (newSelectedType) => {
   if (newSelectedType === 'Text') {
     // Only call refreshSuggestions if type has changed
@@ -106,10 +84,6 @@ const selectIndustry = (value: string) => {
   // selectedType.value = value;
   type.value = value
 };
-
-// const changeKnowledge = () => {
-//   selectedType.value = ''
-// }
 </script>
 
 <template>
@@ -122,14 +96,11 @@ const selectIndustry = (value: string) => {
         <!-- Scrollable Radio Group -->
         <UiCardContent class="grid gap-3 p-0 mb-6">
           <span class="font-medium text-left text-[16px] md:text-[18px] leading-none">Industries</span>
-          <!-- Use identical RadioGroup structure to Step 2 -->
-          <!-- :class="props.loading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''" -->
           <RadioGroup v-model="type" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden"
             :disabled="true">
             <div v-for="intent in intentTypes" :key="intent.value"
               class="min-w-[100px] max-w-[100px] min-h-[100px] max-h-[100px] md:min-w-[138px] md:max-w-[138px] md:min-h-[135px] md:max-h-[135px]"
               @click.stop="selectIndustry(intent.value)">
-              <!-- {{props.loading}} -->
               <RadioGroupItem :id="intent.value" :value="intent.value" class="peer hidden" />
               <Label :for="intent.value"
                 class="w-full h-full border flex items-center justify-center p-4 rounded-lg bg-[#fffff] transition-all duration-300"
@@ -171,9 +142,6 @@ const selectIndustry = (value: string) => {
         <div v-show="selectedType === 'Website'" class="w-full space-y-4">
           <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[12px] sm:text-[12px] md:text-[20px] text-[#09090B]">Website</span>
-            <!-- <UiButton type="primary" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" @click="changeKnowledge()">
-              Change Knowledge Source
-            </UiButton> -->
           </div>
           <div class="bg-[#E2E8F0] rounded-lg p-4 text-[10px] sm:text-[10px] md:text-[14px] text-left">
             <div class="font-medium">Note:</div>
@@ -191,9 +159,6 @@ const selectIndustry = (value: string) => {
         <div v-show="selectedType === 'Document'" class="w-full py-0 sm:py-0 md:py-4">
           <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Document</span>
-            <!-- <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" @click="changeKnowledge()">
-              Change Knowledge Source
-            </UiButton> -->
           </div>
           <div class="bg-[#E2E8F0] rounded-lg p-4 text-[12px] md:text-[14px] my-4 text-left">
             <div class="font-medium">Note:</div>
@@ -208,9 +173,6 @@ const selectIndustry = (value: string) => {
         <div v-show="selectedType === 'Text'" class="w-full space-y-4">
           <div class="flex items-center justify-between w-full">
             <span class="font-bold text-[18px] md:text-[20px] text-[#09090B]">Text</span>
-            <!-- <UiButton type="button" class="bg-[#000000] px-4 py-0 text-[12px] md:text-[14px]" @click="changeKnowledge()">
-              Change Knowledge Source
-            </UiButton> -->
           </div>
           <div class="bg-[#E2E8F0] rounded-lg p-4 text-[12px] md:text-[14px] my-4 text-left">
             <div class="font-medium">Note:</div>
@@ -219,7 +181,6 @@ const selectIndustry = (value: string) => {
           </div>
           <div class="text-left flex flex-col gap-2">
             <span class="text-[14px] font-medium">Tell us about your company</span>
-            <!-- <SelectField name="type" label="Industry" v-model="type" placeholder="Select Industry" :options="intentTypes.map((industry) => ({ label: industry.label, value: industry.value }))" required /> -->
             <TextDocumentUpload ref="uploadDocumentRef" :refresh="props.refresh" :IndustryType="type"
               :loading="props.loading" :contentSuggestions="props.suggestionsContent" :documents="documents" />
           </div>

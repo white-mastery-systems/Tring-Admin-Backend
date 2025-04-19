@@ -1,15 +1,4 @@
 <template>
-  <!-- :bread-crumbs="[
-  {
-  label: ``,
-  to: `/contacts-management/campaigns`,
-  },
-  {
-  label: 'Campaigns',
-  to: `/contacts-management/campaigns`,
-  },
-  ]" -->
-  <!-- <Page title="Campaigns Details" :disable-back-button="false"> -->
   <div>
     <div class="flex items-center gap-2 mb-2">
       <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
@@ -87,23 +76,6 @@ const actionsComponent = (id: any) =>
       class: "flex items-center gap-2",
     },
     [
-      h(
-        UiButton,
-        {
-          color: "primary",
-          class: "ml-2",
-          /**
-           * Opens the integration modal when the edit button is clicked.
-           * @param {Event} _event - The event object from the button click.
-           */
-          onClick: (e: any) => {
-            e.stopPropagation();
-            campaignModalState.value.open = true;
-            // campaignModalState.value.id = id;
-          },
-        },
-        h(Icon, { name: "lucide:pen" }),
-      ),
       h(
         UiButton,
         {

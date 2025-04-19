@@ -25,7 +25,6 @@ definePageMeta({
 
 import { ref, computed, reactive, watch, onMounted, onUnmounted } from "vue";
 
-const router = useRouter();
 const filters = reactive<{
   q: string;
   page: string;

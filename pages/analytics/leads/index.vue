@@ -161,7 +161,6 @@ const exportData = async () => {
           botName: lead.bot.name ?? "---",
           country: lead.chat?.metadata?.country ?? "---",
           createdAt: format(lead?.createdAt, "MMMM d, yyyy"), // format(lead.botUser?.createdAt, "MMMM d, yyyy")
-          // ClientId: lead.botUser.id,
         };
       } else {
         mergedObject = {
@@ -172,7 +171,6 @@ const exportData = async () => {
           scheduledDate: lead?.scheduledDate ? format(lead.scheduledDate, "MMMM d, yyyy") : "---",
           notes: lead?.notes ?? "---",
           botName: lead.bot.name ?? "---",
-          // ClientId: lead.botUser.id,
         };
       }
       return mergedObject;

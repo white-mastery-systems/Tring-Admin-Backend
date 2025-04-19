@@ -30,10 +30,7 @@ const showLeaveConfirmation = ref({
   default: false,
 });
 const pendingNavigation = ref<string | null>(null);
-// const uploadComposable = useDocumentUpload();
 const { uploadStatus, isUploading, uploadError, createDocuments, resetUploadStatus } = useDocumentUpload();
-// const uploadDocumentRef = ref(null);
-// const selectedType = ref('')
 // ✅ Define a single form
 const { errors, values, handleSubmit, validateField, validate, setFieldValue } = useForm({
   validationSchema: botCreateSchema,
@@ -47,12 +44,6 @@ const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id
 const showNextButton = computed(() => (step.value < 5) && !!values?.selectedType);
 const showBackButton = computed(() => (step.value === 1) && values?.selectedType)
 
-// ✅ Watch errors for debugging (optional)
-// watch(() => values.type, (newType) => {
-//   if (newType) {
-//     fetchSuggestions(newType);
-//   }
-// });
 watch(() => scrapData, (newscrapData) => {
   if (!newscrapData) return;
   const extractHSLValues = (hslString) => hslString.replace(/hsl\(|\)/g, "");
@@ -80,11 +71,7 @@ watch(
   },
   { deep: true, immediate: true }
 );
-// setFieldValue('NAME', botDetails.value.name ?? '');
 const isDataLoading = computed(() => status.value === "pending");
-// watch(() => scrapData.scrapedData?.knowledge_base?.document_content,(newValue) => {
-//   refresh()
-// },{deep: true, immediate: true})
 
 // ✅ Fields to validate per step
 const stepFields = {
@@ -170,13 +157,7 @@ const nextStep = async () => {
     }
   }
   if (isValid) {
-    // if ((step.value === 1) && values.selectedType === 'Text') {
-    //   // setTimeout(() => {
-    //     step.value++;
-    //   // }, 0);
-    // } else {
     step.value++; // Move to next step
-    // }
   } else {
     console.log("Validation failed! Fix errors before proceeding.");
   }
@@ -229,7 +210,6 @@ const handleLeaveConfirm = async () => {
       try {
         await deleteBot(route.params.id, true);
         console.log('Bot deleted successfully');
-        // console.log('Bot deleted successfully');
       } catch (deleteError) {
         console.error('Error deleting bot:', deleteError);
       }
@@ -269,31 +249,6 @@ const submitForm = handleSubmit(async (values) => {
     }
     isLoading.value = true;
     
-    // if (!values.COMPANY || !values.NAME || !values.ROLE || !values.color) {
-    //   toast.error("Please fill in all required fields.");
-    //   // Set submission state to true
-    //   isSubmitting.value = false;
-    //   bypassConfirmation.value = false;
-    //   isLoading.value = false
-    //   return;
-    // }
-    // if (!values.GOAL) {
-    //   toast.error("Please provide a value for Goal");
-    //   // Set submission state to true
-    //   isSubmitting.value = false;
-    //   bypassConfirmation.value = false;
-    //   isLoading.value = false
-    //   return
-    // }
-    // if (values.GOAL === 'custom' && !values.otherGoal) {
-    //   toast.error("Please provide a custom value for Goal");
-    //   isLoading.value = false
-    //   // Set submission state to true
-    //   isSubmitting.value = false;
-    //   bypassConfirmation.value = false;
-    //   return
-    // }
-    // uploadedDetails?.metadata?.ui?.logo ?? props.botDetails.metadata.ui.logo,
     const payload = {
       id: botDetails.value?.id,
       type: values.type,
@@ -345,18 +300,11 @@ const submitForm = handleSubmit(async (values) => {
       isSubmitting.value = false;
       bypassConfirmation.value = false;
     }
-    // await navigateTo({
-    //   name: "chat-bot-id",
-    //   params: { id: botDetails.id },
-    // });
-    // toast.success("Bot details updated successfully!");
   } catch (error) {
     toast.error(error.statusMessage);
     // Set submission state to true
     isSubmitting.value = false;
     bypassConfirmation.value = false;
-    // console.error("Error updating bot details:", error);
-    // toast.error("Something went wrong. Please try again.");
   }
   isLoading.value = false
 });
@@ -378,7 +326,6 @@ const checkDocumentStatus = async (selectedDocumentStatus: any) => {
       try {
         await handleActivateBot();
         if (botDetails.value?.documents.length === 1) {
-          // createBotsuccessfulState.value.open = true;
         }
       } catch (error) {
         console.error("handleActivateBot failed:", error);
@@ -414,11 +361,6 @@ const checkDocumentStatus = async (selectedDocumentStatus: any) => {
 
     if (documentStatus === "ready") {
       clearInterval(intervalId.value); // Stop polling
-      // scrapData.scrapedData = []
-      // await navigateTo({
-      //   name: "chat-bot-id",
-      //   params: { id: botDetails.id },
-      // });
       isLoading.value = false;
 
       if (!documents.value?.documentId) {
@@ -442,13 +384,6 @@ const handleActivateBot = async () => {
   const activeDocuments = botDetails.value?.documents.filter(
     (d) => d.status === "ready",
   );
-  // if (activeDocuments.length === 0) {
-  //   toast.error("Please add document to activate bot");
-  //   return navigateTo({
-  //     name: "chat-bot-id",
-  //     params: { id: paramId.params.id },
-  //   });
-  // }
   if (activeDocuments.length === 1) {
     try {
       await singleDocumentDeploy(activeDocuments[0]);
@@ -470,27 +405,11 @@ const singleDocumentDeploy = async (list: any) => {
   await refreshBot() // new function refreshBot added
   await checkDocumentStatus(list);
   isLoading.value = false
-  // botDetails.value = await getBotDetails(paramId.params.id);
 };
-// watch(() => values.type, (newType) => {
-//   fetchConfig(newType);
-// }, { deep: true, immediate: true });
-// ✅ Clear interval when the component is unmounted
-// onUnmounted(() => {
-//   if (intervalId.value !== null) {
-//     clearInterval(intervalId.value);
-//     intervalId.value = null;
-//     scrapData.scrapedData = []
-//   }
-// });
 </script>
 
 <template>
   <div class="h-[calc(100dvh-2.5rem)] overflow-y-auto">
-
-    <!-- <div>
-      <LoadingOverlay :loading="isLoading" class="w-[80%]" />
-    </div> -->
     <div class="flex items-center gap-2 font-bold py-3 px-5">
       <div class="flex items-center gap-2 cursor-pointer" @click="backRoute()">
         <span class="cursor-pointer">
@@ -500,13 +419,9 @@ const singleDocumentDeploy = async (list: any) => {
       </div>
     </div>
     <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full" />
-    <!-- <div class="px-6 py-6 pb-0 flex-1 overflow-hidden min-h-[400px] md:min-h-[500px] max-h-[80vh]"> -->
-    <!-- <div class="px-6 py-6 pb-0 flex-1 overflow-hidden min-h-[585px] md:min-h-[585px] max-h-[95vh]"> -->
     <div
       class="px-6 py-6 pb-0 flex-1 overflow-auto min-h-[400px] md:min-h-[500px] md:max-h-[80vh] lg:md:min-h-[500px] h-[calc(100vh-8rem)] max-h-[95vh] flex">
-      <!-- <TextDocumentUpload ref="uploadDocumentRef" v-show="false" /> -->
       <form class="border border-gray-300 rounded-lg flex flex-col justify-between h-full flex-1 overflow-auto">
-        <!-- @update:values="(newValues) => values = newValues" -->
         <FirstStep ref="stepOneRef" v-show="step === 1" v-model:values="values" :errors="errors" :refresh="refresh"
           :suggestionsContent="contentSuggestions" :refreshSuggestions="fetchSuggestions" :loading="suggestionLoading"
           :isUploading="isUploading" :documents="documents.documents" :page="page" :totalCount="totalCount"
@@ -516,7 +431,6 @@ const singleDocumentDeploy = async (list: any) => {
         <FourthStep v-show="step === 4" v-model:values="values" :errors="errors" :disabled="isLoading"
           :intentOptions="intentOptions" />
         <FifthStep v-show="step === 5" />
-        <!-- {{ step === 2 && (values.intent.length === 0) }} -->
         <div class="flex justify-end w-full gap-[12px] p-4">
           <UiButton v-if="(step > 1)" :disabled="isLoading" type="button" @click="prevStep"
             class="px-8 button_shadow border border-[#FFBC42] text-[#FFBC42] hover:text-[#FFBC42] rounded-lg"
@@ -544,9 +458,6 @@ const singleDocumentDeploy = async (list: any) => {
             Choose a document to deploy your bot
           </UiDialogDescription>
         </UiDialogHeader>
-        <!-- .filter(
-            (item: any) => item.status === 'ready',
-          ) -->
         <UiButton
           class="bg-white text-[15px] text-black shadow-3xl hover:bg-[#fff8eb] hover:text-[#ffbc42] min-w-[90%] max-w-[100%]"
           v-for="list in documents.documents" :key="list.id" @click="async () => {

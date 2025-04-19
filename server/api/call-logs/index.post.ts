@@ -26,12 +26,40 @@ export default defineEventHandler(async (event) => {
     ...body,
   })
 
-  const voicePlanUsage = await getOrgPlanUsage(body?.organizationId, "voice")
+  const organizationId = body?.organizationId
+
+  const [voicePlan, voicePlanUsage, orgDetail, adminDetail ] = await Promise.all([
+    getOrgZohoSubscription(organizationId, "voice"),
+    getOrgPlanUsage(organizationId, "voice"),
+    getOrganizationById(organizationId),
+    getAdminByOrgId(organizationId)
+  ]) 
+  
   
   const roundedDuration = Math.ceil(Number(body?.duration) / 60) * 60;
   const durationInMinutes = roundedDuration / 60;
+
+  const adminCountry = adminDetail?.address?.country
+
+  let planPricingDetail
+  if(
+    voicePlan?.subscriptionStatus === "trial" || 
+    voicePlan?.pricingPlanCode === "voice_free" || voicePlanUsage?.originalSubscriptionStatus === "trial"
+  ) {
+    planPricingDetail = await getPricingInformation("voice_free")
+  } else {
+    planPricingDetail = await getSubcriptionPlanDetailByPlanCode(voicePlan?.pricingPlanCode!, adminCountry)
+  }
   
   const totalMinutes = (voicePlanUsage?.interactionsUsed || 0) + durationInMinutes
+  const maxCallMinutes = planPricingDetail?.sessions || 0
+  const wallet = orgDetail?.wallet || 0
+  
+  if(totalMinutes >= maxCallMinutes) {
+    if(wallet <=0) {
+      await updateOrgZohoSubscription(organizationId, "voice", { subscriptionStatus: "inactive" })
+    }
+  }
 
   await updateSubscriptionPlanUsageById(voicePlanUsage?.id!, { interactionsUsed: totalMinutes })
 

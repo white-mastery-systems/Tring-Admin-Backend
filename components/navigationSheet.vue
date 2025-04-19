@@ -2,7 +2,6 @@
   <div v-if="!(route.path === '/auth/onboarding/billing')">
     <MenuIcon :size="32" @click="isSheetOpen = !isSheetOpen" />
   </div>
-  <!-- </UiButton> -->
   <UiSheet v-model:open="isSheetOpen">
     <UiSheetContent side="left" class="px-0 flex items-center self-center w-[250px]">
       <div

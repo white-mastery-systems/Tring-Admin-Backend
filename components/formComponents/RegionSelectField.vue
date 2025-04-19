@@ -13,11 +13,11 @@
                         )
                             ">
                             {{
-                            fieldValue
-                            ? statesList.find((state: any) =>
-                            state === fieldValue,
-                            )
-                            : "State name"
+                                fieldValue
+                                    ? statesList.find((state: any) =>
+                                        state === fieldValue,
+                                    )
+                                    : "State name"
                             }}
                             <component :is="ChevronDown" class="absolute right-3 ml-2 h-4 w-4 shrink-0 opacity-50">
                             </component>
@@ -36,7 +36,7 @@
                                             :value="state.data" @select="() => {
                                                 handleChange(state.data);
                                             }
-                                                " class="text-left" :class="getItemHeight(state.data)">
+                                            " class="text-left" :class="getItemHeight(state.data)">
                                             <Check :class="cn(
                                                 'mr-2 h-4 w-4',
                                                 state.data === fieldValue
@@ -186,7 +186,7 @@ watch(() => country.value, (newCountry) => {
     nextTick(() => {
         setTimeout(updateStateHeights, 100);
     });
-},{deep: true})
+}, { deep: true })
 
 watch(() => statesList.value, () => {
     // Allow time for DOM to update
