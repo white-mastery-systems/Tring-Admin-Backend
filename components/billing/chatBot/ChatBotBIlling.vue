@@ -83,4 +83,10 @@
 
 <script setup lang="ts">
 import { format } from "date-fns";
+
+const props = defineProps({
+  usageDetails: Object,
+  subscriptionData: Object,
+  usage: Object,
+});
 </script>
