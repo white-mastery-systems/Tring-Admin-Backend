@@ -23,7 +23,6 @@
     },
   });
   toast.success("Payment Confirmed");
-  // navigateTo({ name: "billing-view-all" });
   navigateTo({
     name: "billing-view-all",
     query: { type: route.query?.type },

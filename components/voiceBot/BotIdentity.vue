@@ -15,7 +15,6 @@
             </span>
             <RadioGroup v-model="values.type" class="flex gap-4 w-full overflow-x-auto min-h-[165px] overflow-y-hidden"
               :class="true ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''">
-              <!-- :class="[(errors.type && !values.type) ? 'border-2 border-[#ff0000] rounded-lg' : 'border-transparent']" -->
               <div v-for="intent in intentTypes" :key="intent.value"
                 class="min-w-[100px] max-w-[100px] min-h-[100px] max-h-[100px] md:min-w-[135px] md:max-w-[135px] md:min-h-[135px] md:max-h-[135px]"
                 @click.stop="selectIndustry(intent.value)">
@@ -82,7 +81,6 @@
                 </div>
               </div>
             </UiRadioGroup>
-            <!-- {{ values }} -->
             <!-- Show input field only if "Custom" is selected -->
             <div class="flex items-center gap-5 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 w-full"
               v-if="values.role === 'custom'">
@@ -96,7 +94,6 @@
             <span class="font-medium text-left text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px]">
               Bot Goal
             </span>
-            <!-- :class="props.disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''" -->
             <UiRadioGroup v-model="values.goal" orientation="vertical"
               class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5">
               <div v-for="option in intentOptions?.goals" :key="option.value"
@@ -164,16 +161,10 @@
       </div>
     </form>
   </div>
-  <!-- </Page> -->
 </template>
 
 <script setup lang="ts">
-import { useVoiceLanguageList } from '~/composables/voiceBotLanguageList';
-import { useTImeList } from '~/composables/timeZones';
-import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
-import { useField } from "vee-validate";
-import {
-  FileText, Globe, Home, ShoppingCart, Plane, PhoneCall, FileDown, Landmark,
+import { Home, ShoppingCart, Plane, PhoneCall, Landmark,
   Banknote,
   Stethoscope,
   Lightbulb,
@@ -183,12 +174,10 @@ import {
 } from 'lucide-vue-next';
 import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
-const config = useRuntimeConfig()
 definePageMeta({
   middleware: "admin-only",
 });
-// const route = useRoute("voice-bot-id-identity-management");
-// const botDetailsList: any = await getVoiceBotDetails(route.params.id);
+
 const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void }>();
 const boundList = ref([
   {
@@ -301,8 +290,6 @@ watch(() => props.botDetails, (newBotDetails) => {
 watch(() => props.botDetails?.botDetails?.industryType, async (newType) => {
   if (newType) {
     await fetchConfig(newType)
-    // await fetchKnowledgeBase(newType)
-    // fetchSuggestions(newType)
   }
 }, { deep: true, immediate: true });
 watchEffect(() => {

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from 'vue';
 import { useField } from 'vee-validate';
-// import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 const props = defineProps<{
   values: Record<string, any>;
@@ -14,7 +13,6 @@ const { value: selectedRole } = useField<string>('ROLE');
 const { value: type } = useField("type");
 const { value: otherRole, errorMessage: otherRoleError } = useField("otherRole");
 const { value: otherGoal, errorMessage: otherGoalError } = useField("otherGoal");
-// const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
 
 // Watch for role selection changes
 watch(selectedRole, (newValue) => {
@@ -26,13 +24,11 @@ watch(selectedRole, (newValue) => {
       otherRole: '',
       // otherGoal: otherGoal.value
     });
-    // otherGoal.value = "";
   }
   emit("update:values", {
     ...props.values,
     ROLE: newValue,
     otherRole: otherRole.value,
-    // otherGoal: otherGoal.value
   });
 });
 
@@ -46,10 +42,6 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
     });
   }
 });
-
-// watch(() => props.values.type, (newType) => {
-//   props.fetchConfig(newType);
-// }, { deep: true, immediate: true });
 </script>
 
 <template>
@@ -103,10 +95,6 @@ watch([otherRole, otherGoal], ([newRole, newGoal]) => {
           :resizable="false" placeholder="e.g., 'Sales Assistant" label="Tell us about your company">
         </UiTextarea>
       </div>
-      <!-- <div v-if="selectedRole === ' custom'" class="mt-4 flex items-center gap-4 p-4 rounded-lg">
-            <input v-model="customInput" type="text" placeholder="Enter custom intent"
-              class="border px-4 py-2 w-full rounded-lg text-[14px] sm:text-[14px] md:text-[16px] h-20" />
-        </div> -->
     </div>
   </BotSetupCard>
 </template>

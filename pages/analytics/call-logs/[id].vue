@@ -1,9 +1,4 @@
 <template>
-  <!-- <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
-    <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
-  </div> -->
-  <!-- v-else -->
-  <!-- leadData?.botUser?.name ??  -->
   <Page :title="callLogs?.callerName ?? 'No Name'" :bread-crumbs="[]" :disable-back-button="!user"
     :disable-elevation="true">
     <div class="items-top gap-[25px flex items-center justify-center px-3">
@@ -12,14 +7,11 @@
           <UiTabs default-value="Client" class="w-full self-start">
             <UiTabsList class="grid w-full grid-cols-1">
               <UiTabsTrigger value="Client"> Client Info </UiTabsTrigger>
-              <!-- <UiTabsTrigger value="Campaign"> Campaign info</UiTabsTrigger> -->
             </UiTabsList>
             <UiTooltipProvider>
               <UiTabsContent value="Client">
-                <!-- {{formattedCallData}} || asfa -->
                 <div class="flex grid grid-cols-2 flex-col items-center gap-2 pl-4 capitalize">
                   <div v-for="(value, key) in formattedCallData" :key="key">
-                    <!-- <div v-if="Array.isArray(value) && value.length === 2"> -->
                     <UiTooltip>
                       <UiTooltipTrigger as-child>
                         <div class="gap-2 pl-4 capitalize max-w-full">
@@ -29,11 +21,10 @@
                           </div>
                         </div>
                       </UiTooltipTrigger>
-                      <UiTooltipContent class="w-auto">
+                      <UiTooltipContent class="max-w-[300px] overflow-hidden text-wrap break-words">
                         <p>{{ value }}</p>
                       </UiTooltipContent>
                     </UiTooltip>
-                    <!-- </div> -->
                   </div>
                 </div>
                 <div class="flex justify-center mt-4">
@@ -68,7 +59,6 @@
         </div>
       </div>
     </div>
-    <!-- <input type="text" value="hii" ref="chatScreenRef" /> -->
   </Page>
 </template>
 <script setup lang="ts">
@@ -105,16 +95,19 @@ const { status, data: callLogs } = await useLazyFetch(
   },
 );
 
-breadcrumbStore.setBreadcrumbs([
-  {
-    label: "Call", // Dynamic name
-    to: `/analytics/call-logs`,
-  },
-  {
-    label: callLogs.value?.callerName ?? 'No Name',
-    to: `/analytics/call-logs/${route.params?.id}`,
-  },
-])
+watch(() => callLogs.value,(newValue) => {
+  breadcrumbStore.setBreadcrumbs([
+    {
+      label: "Call", // Dynamic name
+      to: `/analytics/call-logs`,
+    },
+    {
+      label: newValue?.callerName ?? 'No Name',
+      to: `/analytics/call-logs/${route.params?.id}`,
+    },
+  ])
+}, { deep:true, immediate: true })
+
 const isDataLoading = computed(() => status.value === "pending");
 watch(() => isDataLoading.value,(newValue) => {
   if (!newValue) {
@@ -126,24 +119,6 @@ watch(() => isDataLoading.value,(newValue) => {
     }
   }
 })
-
-// const breadCrum = computed(() => {
-//   if (user.value) {
-//     return [
-//       {
-//         label: `${callLogs.value?.callerName ?? 'No Name'}`,
-//         to: `/analytics/call-logs`,
-//       },
-//       {
-//         label: 'Call Logs',
-//         to: `/analytics/call-logs/${callLogs.value?.id}`,
-//       },
-//     ]
-
-//   } else {
-//     []
-//   }
-// })
 
 const formattedCallData = computed(() => {
   if (!callLogs.value) return null; // Handle the case where callLogs might be undefined
@@ -171,9 +146,6 @@ const formattedCallData = computed(() => {
     "Session ID": callData.callSid,
     "Called At": formattedDate,
     "summary": callData.summary,
-    // "Country Name": "",  // Static values
-    // "State Prov": "", // Static values
-    // "City": "", // Static values
   };
 });
 

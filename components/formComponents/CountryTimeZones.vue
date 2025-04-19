@@ -10,19 +10,9 @@
             <UiButton variant="outline" role="combobox" class="font-normal text-[12px] sm:text-[12px] md:text-[14px]"
               :class="cn(
               'w-full justify-between overflow-hidden',
-  !fieldValue && 'font-normal text-[12px] sm:text-[12px] md:text-[14px]',
+              !fieldValue && 'font-normal text-[12px] sm:text-[12px] md:text-[14px]',
             )
               ">
-              <!-- {{
-                fieldValue
-                  ? allCoutryNames.find(
-                    (country: any) =>
-                      country === fieldValue,
-                  )
-                  : "Country name"
-              }} -->
-              <!-- {{ allCoutryNames }} -->
-              <!-- {{ allCoutryNames.find((country: any) => country === fieldValue)}} -->
               {{ fieldValue ? fieldValue : "Select time zones" }}
               <component :is="ChevronDown" class="ml-2 h-4 w-4 shrink-0 opacity-50"></component>
             </UiButton>
@@ -67,7 +57,6 @@
 import { Check } from 'lucide-vue-next';
 import { ChevronDown } from "lucide-vue-next";
 import { useTImeList } from '~/composables/timeZones';
-// import countryData from "~/assets/country-codes.json";
 
 const searchField = ref('')
 const { formattedTimeZones } = useTImeList();

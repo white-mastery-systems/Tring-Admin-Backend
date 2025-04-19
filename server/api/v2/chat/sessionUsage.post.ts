@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
 
     //TODO
     if(usedSessions >= maxSessions) {
-      if(wallet > 0 && orgZohoSubscription?.pricingPlanCode === "chat_free" && orgZohoSubscription.subscriptionStatus !== "trial") {
+      if(wallet > 0 && orgZohoSubscription?.pricingPlanCode !== "chat_free" && orgZohoSubscription?.subscriptionStatus !== "trial") {
         const updatedInteractions = await updateSubscriptionPlanUsageById(
           orgPlanUsage.id,
           { interactionsUsed: (usedSessions || 0) + 1 }

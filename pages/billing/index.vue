@@ -12,7 +12,6 @@
     <div class="p-4 sm:p-4 md:p-0">
       <UiTabs v-model="selectedTab" :default-value="route.query.type ?? 'chat'" class="w-full self-start">
         <UiTabsList class="grid w-full sm:w-full md:w-[30%] grid-cols-2">
-          <!-- @click="selectedChannel('Chat')" -->
           <UiTabsTrigger value="chat" @click="navigateToTab('chat')">
             Chat
           </UiTabsTrigger>

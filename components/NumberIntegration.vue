@@ -22,37 +22,14 @@
   const page = ref(0);
   const totalPageCount = ref(0);
   const totalCount = ref(0);
-  // const props = withDefaults(defineProps<Props>(), {
-  //   title: "",
-  //   description: "",
-  // });
-  // const props: any = withDefaults(defineProps<{
-  //   integrateResponse: Array<any>; // Define the type according to your data structure
-  //   totalPageCount: number;
-  //   totalCount: number;
-  //   filters: {
-  //     page: any;
-  //     limit: string;
-  //   };
-  // }>(), {
-  //   totalPageCount: 0,
-  //   totalCount: 0,
-  //   filters: {
-  //     page: '1',
-  //     limit: '10',
-  //   },
-  // });
-
   const router = useRouter();
   const route = useRoute();
-  // const filters = reactive
   const props = defineProps<{ integrationModalState?: boolean }>();
   const numberModalState = reactive({ open: false, id: null })
   let deleteExoPhoneState = reactive({
     open: false,
     id: null,
   });
-  // const numberModalState: any = defineModel<{ integrationModalState:boolean,findTitleForIntegrationModal: any }>();
   const emit = defineEmits<{
     (e: "action", id: any, modelControl: string): void;
     (e: 'pagenation', page: number): void;
@@ -76,10 +53,7 @@
       return integrations.data;
     },
   });
-  // const message = inject('message')
-  // provide('message', 'testing')
   watch(route, (newValue) => { });
-  // const q=ref('')
   watch(() => props.integrationModalState, (newValue: any) => {
     numberModalState.open = newValue
     numberModalState.id = null
@@ -156,15 +130,15 @@
     <ConfirmationModal v-model:open="deleteExoPhoneState.open" title="Confirm Delete"
       description="Are you certain you want to delete the Exophone integration? Please note that doing so will also remove all bots associated with this number?"
       @confirm="() => {
-          if (numberModalState) {
-            deleteSingleExoPhone({
-              id: deleteExoPhoneState.id,
-              onSuccess: () => {
-                integrationRefresh();
-              },
-            });
-            deleteExoPhoneState.open = false;
-          }
+        if (numberModalState) {
+          deleteSingleExoPhone({
+            id: deleteExoPhoneState.id,
+            onSuccess: () => {
+              integrationRefresh();
+            },
+          });
+          deleteExoPhoneState.open = false;
         }
-        " />
+      }
+      " />
   </template>

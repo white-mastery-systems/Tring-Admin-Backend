@@ -2,24 +2,13 @@
   <div>
     <form @submit.prevent="uiUpdate">
       <div class="flex w-full flex-col gap-[13px] pt-4 overflow-scroll space-y-3">
-
-        <!-- File Upload for Logo -->
-        <!-- <div class="w-[20%]">
-          <FileUpload @change="handleLogoChange" name="logo" label="Upload Logo" :required="true" :accept="'image/*'"
-            :url="values?.logo.url" :fileType="'image'" :class="'h-24 cursor-pointer'"
-            :helperText="'Only files up to 5MB can be uploaded.'" />
-        </div> -->
-        <!-- Primary and Secondary Color Pickers -->
-        <!-- <div class="flex grid grid-cols-3 items-center gap-4 w-full gap-5"> -->
         <div class="w-full sm:w-full md:w-[50%] rounded-lg pr-0 sm:pr-0 md:pr-[10px]">
-          <!-- {{values?.logo}} -->
           <UiFileUpload @change="handleLogoChange" name="logo"
             :label="(values?.logo.url) ? 'Change your logo here, browse files' : 'Upload your logo here, Browse files'"
             :required="true" :accept="'image/*'" :url="values?.logo.url" :fileType="'image'"
             :class="'h-24 cursor-pointer'" :disabled="chatIntelligence"
             :helperText="'Only files up to 5MB can be uploaded.'" />
         </div>
-        <!-- </div> -->
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 items-center gap-4 w-full gap-5">
           <UiFormField v-slot="{ componentField }" name="color">
             <UiFormItem>
@@ -32,10 +21,6 @@
                       <label class="text-sm sm:text-sm md:text-[14px] font-medium"> Primary Color</label>
                       <div class="text-[#71717A] text-[12px]">Colors for widget & chat button</div>
                     </div>
-                    <!-- <div class="h-9 w-9 overflow-hidden rounded-full">
-                      <UiInput ref="colorInput" v-bind="componentField" type="color"
-                        class="h-20 w-20 -translate-x-1/3 -translate-y-1/3" />
-                    </div> -->
                     <div class="h-9 w-9 border border-[#E4E4E7] relative overflow-hidden rounded-lg"
                       :style="{ backgroundColor: values.color }">
                       <UiInput ref="colorInput" v-bind="componentField" type="color"
@@ -58,10 +43,6 @@
                       <label class="text-sm sm:text-sm md:text-[14px] font-medium">Secondary Color</label>
                       <div class="text-[#71717A] text-[12px]">Colors for messages</div>
                     </div>
-                    <!-- <div class="h-9 w-9 overflow-hidden rounded-full">
-                      <UiInput ref="secondarycolorInput" v-bind="componentField" type="color"
-                        class="h-20 w-20 -translate-x-1/3 -translate-y-1/3" />
-                    </div> -->
                     <div class="h-9 w-9 border border-[#E4E4E7] relative overflow-hidden rounded-lg"
                       :style="{ backgroundColor: values.secondaryColor }">
                       <UiInput ref="secondarycolorInput" v-bind="componentField" type="color"
@@ -75,11 +56,6 @@
         </div>
         <!-- Widget Sound and Position -->
         <div class="flex grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-5 items-center w-full">
-          <!-- <SelectField name="widgetSound" label="Widget Sound" placeholder="Select Widget Sound" :options="[
-            { value: 'Yes', label: 'Yes' },
-            { value: 'No', label: 'No' },
-          ]" required /> -->
-
           <SelectField name="widgetPosition" label="Widget Position" placeholder="Select Widget Position" class="w-full"
             :options="[
               { value: 'Left', label: 'Left' },
@@ -183,7 +159,9 @@
           </UiFormField>
           <div class="flex flex-col gap-4">
             <TextField :disableCharacters="true" name="defaultDelay" label="Default Delay" type="number"
-              placeholder="Enter your delay seconds" @input="handleDelayChanges($event)" />
+              placeholder="Enter your delay seconds"
+              helperText="Specify the delay in seconds before the chat widget appears"
+              @input="handleDelayChanges($event)" />
           </div>
         </div>
         <div class="my-auto flex w-full justify-end py-0">
@@ -198,12 +176,9 @@
 </template>
 
 <script setup lang="ts">
-import { FieldArray } from "vee-validate";
 import { ref, watch } from "vue";
 import { useRoute, useRouter } from "nuxt/app";
-// import { useBotStore } from '~/store/botStore';
 import { botStore } from '~/store/botStore';
-// import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
 
 
 
@@ -213,9 +188,7 @@ const colorInput: any = ref();
 const secondarycolorInput: any = ref();
 const logoData: any = ref("");
 const route = useRoute();
-const useStoreBotDetails = botStore();
 const emit = defineEmits(["statusUpdated"])
-// const { scrapedData } = useBotStore();
 const originalValues = ref({}); // Add ref for original values
 
 const logoAsString = z.string().min(1, "Logo is required");
@@ -252,16 +225,8 @@ const {
   values,
 } = useForm({ validationSchema: uiCustomizationValidation });
 
-const paramId = route.params.id;
 const planDetails = ref([])
-// const botDetails = await getBotDetails(paramId);
-// const { botDetails, loading, error, refreshBot } = useBotDetails(paramId);
-// watch(() => props.botDetails, (newValue) => {
-//   const extractHSLValues = (hslString: string) => hslString.replace(/hsl\(|\)/g, "");
-//   setFieldValue("logo", { url: newValue.metadata.Ui } ?? {});
-//   setFieldValue("color", hslToHex(extractHSLValues(newValue.scrapedData?.chatbot?.primary_color) ?? "236, 61%, 54%, 1"));
-//   setFieldValue("secondaryColor", hslToHex(extractHSLValues(newValue.scrapedData?.chatbot?.secondary_color) ??"236, 61%, 74%"));
-// },{deep: true, immediate: true});
+
 watch(props.botDetails, (newValues) => {
   // Handle logo - either use object or create object with url
   setFieldValue("logo", (typeof newValues.metadata.ui.logo === "object" ?
@@ -320,21 +285,6 @@ watch(() => chatIntelligence.value, (newValue) => {
     setFieldValue("generateLead", false);
   }
 }, { immediate: true });
-// watch(
-//   () => ({
-//     logo: values.logo,
-//     color: values.color,
-//     secondaryColor: values.secondaryColor,
-//     widgetSound: values.widgetSound,
-//     widgetPosition: values.widgetPosition,
-//     fontFamily: values.fontFamily,
-//   }),
-//   (newValues) => {
-//     const isCompleted = Object.values(newValues).every(value => value !== "" && value !== null && value !== undefined);
-//     emit("statusUpdated", 'uiCustomization',isCompleted ? "completed" : "incomplete");
-//   },
-//   { deep: true, immediate: true }
-// );
 
 const hasFormChanged = () => {
   // Skip comparison if no original values are set yet

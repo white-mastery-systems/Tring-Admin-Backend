@@ -76,10 +76,6 @@ const onSubmit = handleSubmit(async (values: any) => {
           <div class="flex gap-2">
             <div class="grid gap-1">
               <Label class="sr-only" for="countryCode">Country Code</Label>
-              <!-- <UiInput id="countryCode" v-model="countryCode" v-bind="countryCodeAttrs" placeholder="+1" type="text"
-                :disabled="isLoading" /> -->
-              <!-- <CountryCodeField v-model="countryCode" v-bind="countryCodeAttrs" :disabled="isLoading" /> -->
-              <!-- <p v-if="errors.countryCode" class="text-red-500 text-sm">{{ errors.countryCode }}</p> -->
               <CountryCodeField class="max-w-[120px] text-[14px]" name="countryCode" label="Country Code"
                 helperText="Enter your country code" :fieldHeader="true" required />
             </div>
@@ -95,7 +91,6 @@ const onSubmit = handleSubmit(async (values: any) => {
         </div>
 
         <UiButton color="primary" :disabled="isLoading" :loading="isLoading" class="text-[16px] mt-2">
-          <!-- <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" /> -->
           Proceed
         </UiButton>
       </div>

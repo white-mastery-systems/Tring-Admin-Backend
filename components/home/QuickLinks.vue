@@ -7,16 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button as UiButton } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const props = withDefaults(
   defineProps<{
@@ -34,16 +24,7 @@ const props = withDefaults(
       class="w-full flex flex-col items-center  pb-7 pt-7 gap-5 cursor-pointer">
       <NuxtLink :to="item.url">
         <CardHeader class="flex flex-col items-center gap-5 py-0">
-          <!-- <div> -->
-          <!-- <span class="material-symbols-rounded" style="font-size: 30px;">
-            {{ item.icon }}
-          </span> -->
-          <!-- asdsad -->
-          <!-- {{ item.icon }} -->
           <component :is="item.icon" :stroke-width="1" :size="30" class="text-[#FFBC42]"></component>
-          <!-- <component :is="item.icon" :stroke="'#FFBC42'" :size="30" stroke-width="0.5"></component> -->
-          <!-- <img src="/assets/icons/Chat_Bubble.svg" width="50" class="rounded-lg" /> -->
-          <!-- </div> -->
           <div class="flex flex-col items-center gap-1">
             <CardTitle class="text-center font-bold text-[16px] sm:text-[16px] md:text-[22px] text-[#3D3D3D]">{{
               item.title }}
@@ -54,11 +35,6 @@ const props = withDefaults(
           </div>
         </CardHeader>
       </NuxtLink>
-      <!-- <CardFooter class="flex px-6 py-2">
-        <NuxtLink :to="item.url">
-          <UiButton> View </UiButton>
-        </NuxtLink>
-      </CardFooter> -->
     </Card>
   </div>
 </template>

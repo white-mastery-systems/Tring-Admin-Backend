@@ -147,9 +147,7 @@
 
       }
       fileRef.value = target.files;
-      // selectedFileName.value = files?.map((file) => file.name).join(",");
       selectedFileName.value = files?.map((file) => file.name) || [];
-      // setFieldValue("file", Array.from(target.files));
     } else {
       fileRef.value = null;
       selectedFileName.value = [];

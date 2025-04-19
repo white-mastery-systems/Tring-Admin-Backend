@@ -3,8 +3,6 @@
     class="flex h-full flex-col items-center">
     <div class="flex flex-col gap-5 p-4 sm:p-4 md:p-0">
       <QuickLinks :navigavtionList="navigavtionList" />
-      <!-- <h6 class="font-bold text-[20px] mt-3">Start creating your bots</h6> -->
-      <!-- <div class="flex flex-col gap-2"> -->
       <div class="text-[14px] font-bold text-[#3D3D3D] sm:text-[14px] md:text-[20px]">
         Start creating your bots
       </div>
@@ -142,10 +140,6 @@
           </div>
         </UiTabsContent>
       </UiTabs>
-      <!-- </div> -->
-      <!-- v-if="statistics" :title="statistics.name?.replace('_', ' ')"
-    :count="statistics.value" :loading="loading" -->
-      <!-- <h6 class="font-bold text-[20px] mt-3">Analytics</h6> -->
     </div>
   </Page>
 </template>
@@ -161,12 +155,6 @@
     Tooltip,
   } from "chart.js";
   import {
-    MinusIcon,
-    PlusIcon,
-    DollarSign,
-    UsersIcon,
-    CreditCardIcon,
-    ActivityIcon,
     ChartNoAxesCombined,
     Code,
     Wallet,
@@ -174,33 +162,11 @@
     PhoneCall,
     CirclePercent,
   } from "lucide-vue-next";
-  import { Line } from "vue-chartjs";
   import ChatSession from "~/components/icons/ChatSession.vue";
   import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
   import { botStore } from "~/store/botStore";
   import { useDateFilters } from "~/composables/useDateFilters";
 
-  const config = useRuntimeConfig();
-
-  // const organizationDetails = await $fetch("/api/org", {
-  //   method: "GET",
-  // });
-  // const organizationId = organizationDetails?.orgDetails?.id;
-
-  // useHead({
-  //   title: "Dashboard",
-  //   script: [
-  //     {
-  //       id: "chat-widget-script",
-  //       src: `${config.public.chatBotBaseUrl}/widget.js`,
-  //       type: "text/javascript",
-  //       defer: true,
-  //       "data-orgname": "WMS",
-  //       "data-chatbotid": `${config.public.supportBotId}`,
-  //       "data-orgid": `${organizationId}`,
-  //     },
-  //   ],
-  // });
   ChartJS.register(
     Title,
     Tooltip,
@@ -213,7 +179,6 @@
 
   // Use the composable
   const { dateFilters } = useDateFilters();
-  const scrapData = botStore();
   const breadcrumbStore = useBreadcrumbStore();
   const { user, refreshUser }: { user: any; refreshUser: any } =
     await useUser();
@@ -271,7 +236,6 @@
 
   const selectedValue: any = ref("last-30-days");
   const analyticsData = ref();
-  const analyticsChartData = ref();
   const loading = ref(true);
 
   const chartValues = ref(["leads", "sessions"]);
@@ -304,13 +268,10 @@
     period: "last-30-days",
     type: activeTab.value,
   });
-  // const getButtonName = ref("Get Started");
 
   watch(
     [selectedValue, chartValues, activeTab],
     async ([period, chartValues, type]) => {
-      // filter.graphValues = chartValues?.join(",");
-      console.log("type", type);
       filter.type = type;
       filter.period = period;
       if (period != "custom") {
@@ -325,21 +286,14 @@
           name: key,
           value: value,
         }));
-        // responseFormat(JSON.parse(JSON.stringify(data)))
       } catch (error) {
         console.error("Failed to fetch analytics data:", error);
       } finally {
         loading.value = false;
       }
-      // analyticsData.value = data;
     },
     { deep: true },
   );
-  // watch(() => activeTab.value,(newType) => {
-  //   console.log(newType,'sada'),
-  //   filter.type = newType;
-  //   // console.log(newType
-  // })
 
   onMounted(async () => {
     try {
@@ -352,7 +306,6 @@
       }));
     } catch (e) {
       toast.error(e?.statusMessage);
-      // authHandlers.logout();
     }
     if (analyticsData.value) loading.value = false;
   });

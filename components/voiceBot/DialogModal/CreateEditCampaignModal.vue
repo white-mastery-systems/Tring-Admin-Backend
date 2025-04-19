@@ -1,7 +1,6 @@
 <template>
   <DialogWrapper v-model="campaignModalState" :title="campaignModalState.id ? 'Modify Campaign' : 'Add Campaign'">
     <form @submit.prevent="handleConnect" class="space-y-2">
-      <!-- w-[70%] sm:w-[70%] md:w-[70%] lg:w-[75%] xl:w-[75%] -->
       <span class="flex gap-2 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
         <TextField name="campaignName" label="Campaign Name" placeholder="Enter campaign name" required>
         </TextField>
@@ -124,8 +123,6 @@ const {
 
 const isLoading = ref(false);
 
-// const [timeField, timeFieldAttrs] = defineField("startTime");
-
 watch(
   () => campaignModalState.value.open,
   async (newState) => {
@@ -146,8 +143,6 @@ watch(
       if (getSingleDetails?.contactMethod === "voice") setFieldValue("callsPerTrigger", Number(getSingleDetails?.botConfig?.callsPerTrigger) ?? undefined);
       setFieldValue("templateName", getSingleDetails?.botConfig.templateName);
       setFieldValue("integrationId", getSingleDetails?.botConfig.integrationId);
-      // const time = getSingleDetails.campaignTime.match(/\d{2}:\d{2}/)[0];
-      // setFieldValue("startTime", time);
     }
   },
 );

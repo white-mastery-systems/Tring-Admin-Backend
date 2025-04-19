@@ -87,8 +87,10 @@ export default defineEventHandler(async(event) => {
   }
    if (body?.ivrConfig) {
       const voiceBot = await db.query.voicebotSchema.findFirst({
-        where:
+        where: and(
           eq(voicebotSchema.incomingPhoneNumber, body?.incomingPhoneNumber),
+          eq(voicebotSchema.isDeleted, false)
+        )  
       });
   
       if (voiceBot) {

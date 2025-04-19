@@ -129,25 +129,20 @@ import { usePlanSelection } from '~/composables/billing/usePlanSelection';
 import { useRoute, useRouter } from 'vue-router';
 import { usePlanLevel } from "~/composables/billing/usePlanLevel";
 import { useBillingComposable } from '~/composables/billing/useBillingComposable';
-import { ArrowRight, Check, X } from 'lucide-vue-next'
-import { useFreeTrial } from '~/store/freeTrailStore'
-import { watch, watchEffect } from 'vue';
+import { Check, X } from 'lucide-vue-next'
+import { watch } from 'vue';
 
 const props = withDefaults(defineProps<{ onBoardingAccount?: boolean }>(), {
   onBoardingAccount: false, // Default value for accept
 });
-const correctedUrl = ref('');
 const router = useRouter();
 const route = useRoute();
-const freeTrialPopup = useFreeTrial()
 const { userDetails, fetchUser } = useUserDetailsComposable()
 fetchUser()
-const strokeBlackColor = ref("#18181b");
-const strokeWhiteColor = ref("#ffffff");
+
 const billingVariationDetails = ref()
 const BillingVariationPending = ref(false);
 const { orgBilling, organization, isPageLoading } = useBillingComposable();
-// const IndianUser = ref(false);
 const { billingVariation, pending, isIndianUser } = await useBillingVariation(userDetails, route.query.type);
 const showLoader = ref(true);
 
@@ -184,16 +179,6 @@ watch(
   { deep: true, immediate: true }
 );
 
-// Reactive computed property for plan selection
-const currentRoute = computed(() => {
-  const route = router.currentRoute.value;
-  const fullPath = route.path; // Get only the path (excluding query params)
-  if (!fullPath) return '';
-
-  return fullPath.split('/auth/')[1] || '';
-});
-
-
 // Access additional composable methods
 // Dynamically compute `usePlanSelection` based on updated values
 const planSelection = computed(() => {
@@ -205,12 +190,8 @@ const choosePlan = computed(() => planSelection.value?.choosePlan || (() => { })
 const { findPlanLevel } = usePlanLevel();
 
 onMounted(() => {
-  // if ((route.name !== 'auth-onboarding-billing')) {
     if (!route.query.type) { // If `type` is not present in the query
       router.push({ query: { type: 'chat' } });
     }
-  // }
 });
 </script>
-
-<!-- No additional styles needed as we're using Tailwind classes directly -->

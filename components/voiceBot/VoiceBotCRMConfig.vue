@@ -74,9 +74,9 @@ const filters = reactive<{
 });
 
 // Reactive state variables
-let page = ref(0);
-let totalPageCount = ref(0);
-let totalCount = ref(0);
+const page = ref(0);
+const totalPageCount = ref(0);
+const totalCount = ref(0);
 const integrations: any = ref([]);
 const loading = ref(false);
 
@@ -86,7 +86,7 @@ const crmConfigModalState = ref<{ open: boolean; id?: string | null }>({
   id: null,
 });
 
-let deleteIntegrationState: { open: boolean; id?: string } = reactive({
+const deleteIntegrationState: { open: boolean; id?: string } = reactive({
   open: false,
 });
 

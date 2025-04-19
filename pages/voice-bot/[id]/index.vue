@@ -9,7 +9,6 @@
               <div class="flex h-[6px] w-[6px] items-center rounded-full bg-[#1abb00]"></div>
               <span class="text-[15px] sm:text-[15px] md:text-[17px] lg:text-[16px] xl:text-[16px]">Active</span>
             </div>
-            <!-- v-else -->
             <div v-else class="flex items-center gap-[5px] pl-2 font-medium text-[#ff0000]">
               <div class="flex h-[6px] w-[6px] items-center rounded-full bg-[#ff0000]"></div>
               <span class="md:text-[14px] lg:text-[16px]">Inactive</span>
@@ -49,9 +48,6 @@
                     <span class="flex flex-col items-center justify-center lg:hidden">
                       <PhoneCall class="w-4 h-4" />
                     </span>
-                      <!-- <span class="flex items-center justify-center lg:hidden">
-                      <Icon name="entypo:controller-play" class="h-5 w-5" />
-                    </span> -->
                   </UiButton>
                   <div class="block text-[5px] lg:hidden">Preview Bot</div>
                 </div>
@@ -96,14 +92,13 @@
   </page>
 </template>
 <script setup lang="ts">
-import { useClipboard } from "@vueuse/core";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 import { Bot, PhoneCall } from "lucide-vue-next";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 import { useVoiceBotDetails } from "~/composables/botManagement/voiceBot/useVoiceBotDetails ";
 import { botStore } from '~/store/botStore';
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
 definePageMeta({
   middleware: "admin-only",
@@ -116,7 +111,6 @@ const agentModalState = ref({ open: false, id: paramId.params.id });
 
 const deleteModalState = ref(false);
 const modalOpen = ref(false);
-// const getDocumentList: any = ref();
 const store = botStore();
 
 watchEffect(() => {
@@ -138,16 +132,11 @@ watchEffect(() => {
   }
 });
 
-// onMounted(async () => {
-//   getDocumentList.value = await listDocumentsByBotId(paramId.params.id);
-// });
 const deactivateBot = async () => {
   modalOpen.value = true;
 };
 const deactivateBotDialog = async () => {
-  // await disableBot(paramId.params.id);
   await handleActivateBot()
-  // await refreshBot()
   modalOpen.value = false;
 };
 

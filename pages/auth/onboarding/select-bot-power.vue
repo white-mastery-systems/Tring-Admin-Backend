@@ -32,7 +32,6 @@
               stroke-linecap="round"
               stroke-linejoin="round"
             ></component>
-            <!-- <MessageSquare class="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" :class="selectedBot === 'chatbot' ? 'text-white' : 'text-[#FFBC42]'" /> -->
           </div>
           <h2 class="text-[18px] sm:text-[18px] md:text-[22px] font-bold mb-1 sm:mb-2" :class="selectedBot === 'chat' ? 'text-amber-400' : 'text-gray-800'">Chatbot</h2>
           <p class="text-xs sm:text-sm md:text-base text-center mb-3 sm:mb-4 md:mb-6" :class="selectedBot === 'chat' ? 'text-white' : 'text-gray-600'">Turn chats into conversions</p>
@@ -60,7 +59,6 @@
               stroke-linecap="round"
               stroke-linejoin="round"
             ></component>
-            <!-- <Phone class="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" :stroke :class="selectedBot === 'voicebot' ? 'text-white' : 'text-[#FFBC42]'" /> -->
           </div>
           <h2 class="text-lg sm:text-xl md:text-2xl font-bold mb-1 sm:mb-2" :class="selectedBot === 'voice' ? 'text-amber-400' : 'text-gray-800'">Voicebot</h2>
           <p class="text-xs sm:text-sm md:text-base text-center mb-3 sm:mb-4 md:mb-6" :class="selectedBot === 'voice' ? 'text-white' : 'text-gray-600'">Your real human AI 24/7</p>
@@ -92,9 +90,4 @@ const selectBot = (bot) => {
   selectedBot.value = bot;
   return navigateTo(`/auth/onboarding/billing?type=${bot}`);
 };
-// const selectedBotType = (type: string) => {
-//   console.log(type);
-//   selectedBot.value = type;
-//   return navigateTo(`/auth/onboarding/billing?type=${type}`);
-// }
 </script>

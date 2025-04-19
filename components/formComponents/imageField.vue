@@ -89,31 +89,4 @@
     }
       emit("change", target.files);
   };
-
-
-// const handleFileChange = (e: Event) => {
-//   const target = e.target as HTMLInputElement;
-//   if (target.files && target.files.length > 0) {
-//     const files = Array.from(target.files);
-
-//     // Validate files to ensure they are .wav files
-//     const invalidFiles = files.filter(file => file.type !== "audio/wav");
-
-//     if (invalidFiles.length > 0) {
-//       // Show an error message if invalid files are uploaded
-//       errorMessage.value = "Only .wav files are allowed.";
-//       return;
-//     }
-
-//     selectedFileName.value = files.map((file) => file.name).join(",");
-//     value.value = target.files;
-//     errorMessage.value = ""; // Reset error message if the file is valid
-//   } else {
-//     selectedFileName.value = "";
-//     value.value = target.files;
-//     errorMessage.value = "";
-//   }
-
-//   emit("change", target.files);
-// };
 </script>

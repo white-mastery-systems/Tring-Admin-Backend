@@ -23,8 +23,6 @@ export function useIntegrations(filters = {}) {
         query: filters || {} // Ensure we pass at least an empty object
       });
       
-      console.log("API response:", response);
-      
       // Force reactivity update with explicit assignments
       if (response) {
         // Update page information

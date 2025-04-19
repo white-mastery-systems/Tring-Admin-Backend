@@ -2,7 +2,8 @@
   <div v-if="isPageLoading" class="grid h-[90vh] place-items-center text-[#424BD1]">
     <Icon name="svg-spinners:90-ring-with-bg" class="h-20 w-20" />
   </div>
-  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="[]" leadPage="leads" :disable-back-button="!user" :disable-elevation="true">
+  <Page v-else :title="leadData?.botUser?.name ?? 'No Name'" :bread-crumbs="[]" leadPage="leads"
+    :disable-back-button="!user" :disable-elevation="true">
     <template #actionButtons v-if="user">
       <div class="flex items-center gap-3">
         <UiButton v-if="leadData?.lead?.status === 'default'" variant="destructive"
@@ -39,9 +40,6 @@
                         <div class="text-gray-500">{{ key }}</div>
                         <div class="w-[90%]">
                           <template v-if="key === 'Mobile'">
-                            <!-- <a href="tel:{{ value }}" class="truncate text-[#424bd1]">
-                              {{ value }}
-                            </a> -->
                             <a :href="getTelLink(value)" class="truncate text-[#424bd1]">
                               {{ value }}
                             </a>
@@ -49,10 +47,10 @@
                           <a v-else-if="key === 'Email'"
                             href="mailto:{{ (leadData.channel === 'whatsapp') ? whatsappLead.email : value }}"
                             class="block truncate lowercase text-[#424bd1]">
-                            {{ leadData.channel === 'whatsapp' ? whatsappLead.email : value }}
+                            {{ leadData.channel === 'whatsapp' ? whatsappLead?.email : value }}
                           </a>
                           <div v-else-if="key === 'Name'" class="truncate">
-                            {{ leadData.channel === 'whatsapp' ? whatsappLead.name : value }}
+                            {{ leadData.channel === 'whatsapp' ? whatsappLead?.name : value }}
                           </div>
                           <div v-else class="truncate">
                             {{ value }}
@@ -60,7 +58,7 @@
                         </div>
                       </div>
                     </UiTooltipTrigger>
-                    <UiTooltipContent class="w-auto">
+                    <UiTooltipContent class="max-w-[300px] overflow-hidden text-wrap break-words">
                       <p>{{ value }}</p> <!-- Show the full value or any additional info -->
                     </UiTooltipContent>
                   </UiTooltip>
@@ -90,15 +88,13 @@
                     <div class="p-5 rounded-lg gap-4 field_shadow">
                       <TextField label="Date" :placeholder="`${dynamicForm.content} - ${dynamicForm.date}`"
                         :required="false" :disabled="true" class="mb-2" />
-                      <TextField label="Time" :required="false" :placeholder="`${dynamicForm.time}`"
-                        :disabled="true" />
+                      <TextField label="Time" :required="false" :placeholder="`${dynamicForm.time}`" :disabled="true" />
                     </div>
                   </div>
                 </div>
                 <div v-if="formattedChats.length" class="flex justify-center font-medium mt-2">Dynamic Forms</div>
                 <div v-if="formattedChats.length" class="p-5">
                   <div v-for="(value, key) in formattedChats" :key="key">
-                    <!-- {{ value.metadata }} -->
                     <div class="text-[#424bd1] font-medium pb-2">
                       {{ `Form ${key + 1}` }}
                     </div>
@@ -113,10 +109,6 @@
                   </div>
                 </div>
               </div>
-
-
-
-              <!-- {{ chats[0].messages.map((item:any) => item) }} || safddsf -->
             </UiTabsContent>
           </UiTooltipProvider>
 
@@ -133,7 +125,7 @@
                         </div>
                       </div>
                     </UiTooltipTrigger>
-                    <UiTooltipContent class="w-full">
+                    <UiTooltipContent class="max-w-[300px] overflow-hidden text-wrap break-words">
                       <p>{{ value }}</p>
                     </UiTooltipContent>
                   </UiTooltip>
@@ -204,13 +196,6 @@ const leadData: any = ref();
 const { data: whatsappLead, execute: fetchName } = useLazyFetch(`/api/getName?id=${route.params.id}`, {
   method: 'GET',
 });
-// const { status, data: leadData } = await useLazyFetch(
-//   () => `/api/org/chat/${route.params.id}`,
-//   {
-//     server: false,
-//   },
-// );
-// const isPageLoading = computed(() => status.value === "pending");
 watchEffect(() => {
   if (leadData.value) {
     breadcrumbStore.setBreadcrumbs([
@@ -264,29 +249,6 @@ const details = computed(() => {
   }
 });
 
-// const getTelLink = computed(() => {
-//   const result = {};
-//   Object.entries(props.details[0]).forEach(([key, value]) => {
-//     if (key === 'Mobile') {
-//       const sanitizedValue = value.replace(/\D/g, '');
-//       result[key] =
-//         sanitizedValue.startsWith('91') || sanitizedValue.startsWith('+91')
-//           ? `tel:+${sanitizedValue}`
-//           : `tel:${sanitizedValue}`;
-//     } else {
-//       result[key] = value;
-//     }
-//   });
-//   return result;
-// });
-
-// it will work
-// const getTelLink = (value) => {
-//   const sanitizedValue = value.replace(/\D/g, '');
-//   return sanitizedValue.startsWith('91') || sanitizedValue.startsWith('+91')
-//     ? `tel:+${sanitizedValue}`
-//     : `tel:${sanitizedValue}`;
-// };
 const getTelLink = (value: any) => {
   // Remove all non-digit characters
   const sanitizedValue = value.replace(/\D/g, '');
@@ -321,9 +283,6 @@ const fetchData = async () => {
     method: "GET",
   });
   chatData.value = leadData?.value?.messages?.slice(-1);
-  // // Ensure you're using `ref` to store the reactive data
-  // status.value = status.value;
-  // leadData.value = leadData.value;
 };
 const chatData = ref([]);
 const chats = await $fetch(`/api/org/chat/${route.params.id}/messages`, {
@@ -379,7 +338,8 @@ const formattedScheduels = computed(() => {
     const formattedMessages = filteredMessages.map((message: any) => {
       // Extract content before the date
       const contentMatch = message.content.match(/^(.*?) on /);
-      const dateMatch = message.content.match(/on\s+([A-Za-z]+ \d{1,2}, \d{4})/); // old /on ([A-Za-z]+ \d{1,2}, \d{4})/
+      // const dateMatch = message.content.match(/on\s+([A-Za-z]+ \d{1,2}, \d{4})/); // old /on ([A-Za-z]+ \d{1,2}, \d{4})/
+      const dateMatch = message.content.match(/on\s+((?:\d{2}\/\d{2}\/\d{2})|(?:[A-Za-z]+ \d{1,2}, \d{4}))/);
       const timeMatch = message.content.match(/- ([\d:]+ [APM]+)/);
 
       return {
@@ -392,23 +352,6 @@ const formattedScheduels = computed(() => {
     return formattedMessages;
   }).flat(); // Flatten the array if there are multiple messages per chat
 });
-// const formattedScheduels = computed(() => {
-//   return chats.map((chat: any) => {
-//     // Filter messages that have role 'comment' and content 'Booking Details Submitted'
-//     const filteredMessages = chat.messages.filter((message: any) =>
-//       message.role === 'comment' && (message.content.includes('Rescheduled Site') || message.content.includes('Site Visit Scheduled') || (message.content.includes('Rescheduled Site') || message.content.includes('Rescheduled Call'))
-//     ));
-
-//     // For each message, format the metadata and createdAt date
-//     const formattedMessages = filteredMessages.map((message: any) => {
-//       return {
-//         content: message.content,
-//       };
-//     });
-
-//     return formattedMessages;
-//   }).flat();  // Flatten the array if there are multiple messages per chat
-// });
 const formatLabel = (key: any) => {
   // Convert camelCase or PascalCase to words with spaces
   return key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z])/g, ' $1').trim();

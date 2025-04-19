@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from "vue";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
@@ -48,7 +48,6 @@ const generatePDFAndUpload = async () => {
   await createDocument(payload.botId, payload.document);
 
   // Update documents list
-  // documents.value = await listDocumentsByBotId(paramId.params.id);
 };
 
 // **Watch for text changes and call API automatically**
@@ -67,20 +66,3 @@ watch(text, async (newText) => {
     </UiButton>
   </div>
 </template>
-
-
-
-<!-- we can use like this 
-
-  const { text, generatePDFAndUpload } = usePdfUploader();
-  const uploadPDF = async () => {
-  const botId = "b75338b4-9163-4ad7-8a0f-a7cc11834b11"; // Replace dynamically if needed
-  await generatePDFAndUpload(botId, createDocument);
-  };
-
-<div class="p-4 w-full">
-  <UiTextarea v-model="text" placeholder="Enter text..." class="border p-2 h-40"></UiTextarea>
-  <UiButton @click="uploadPDF" class="flex mt-2 text-white px-4 py-2 rounded">
-    Download PDF
-  </UiButton>
-</div> -->

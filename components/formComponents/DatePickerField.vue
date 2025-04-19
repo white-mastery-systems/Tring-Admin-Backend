@@ -14,7 +14,6 @@
               hasError ? 'border-[#ef4444]' : ''
             )">
               <span>{{ value ? df.format(toDate(value)) : placeholder }}</span>
-              <!-- <span>{{ selectedDate ? selectedDate : placeholder }}</span> -->
               <UiCalendarIcon class="ms-auto h-4 w-4 opacity-50" />
             </UiButton>
             <input hidden>
@@ -71,11 +70,6 @@ const value = computed({
 
 // Check if the field has errors
 const hasError = computed(() => meta.touched && errorMessage.value);
-
-// Function to format the date for display
-// const formatDate = (date: string | Date) => {
-//   return format(date, "MMMM d, yyyy");
-// };
 
 // Function to handle date update
 const updateDate = (date: CalendarDate) => {

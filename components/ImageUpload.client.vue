@@ -36,7 +36,6 @@
         } else {
           toast.error("unsupported file type");
         }
-        // _.value = URL.createObjectURL(file.value[0]);
       } catch (err) {}
     } else {
       _.value = file.value;
@@ -44,7 +43,6 @@
   });
 </script>
 <template>
-  <!-- <pre>{{ file[0]?.name }}</pre> -->
   <div class="flex w-full items-center justify-center">
     <label
       for="dropzone-file"

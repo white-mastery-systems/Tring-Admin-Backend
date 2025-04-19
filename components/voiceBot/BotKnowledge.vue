@@ -4,8 +4,6 @@
       <div class="flex flex-col w-full h-full overflow-x-auto">
         <UiCard class="border-0 ma-0 shadow-none">
           <UiCardContent class="p-0 gap-2 mb-4 space-y-5">
-            <!-- Prompt Configuration section title -->
-
             <!-- Tabs for Inbound/Outbound -->
             <UiTabs default-value="inbound" class="w-full">
               <UiTabsList
@@ -29,8 +27,8 @@
                       formatSectionTitle(key) }}</h2>
                     <div class="gap-4">
                       <textarea v-model="inboundPrompt[key]"
-                        class="w-full min-h-32 resize-y outline-none border rounded border-[#CBD5E1] p-2 text-[12px] sm:text-[12px] md:text-[12px] lg:text-sm"
-                        :placeholder="`Enter content here...`"></textarea>
+                        class="scrollable-container w-full min-h-32 resize-y outline-none border rounded border-[#CBD5E1] p-2 text-[12px] sm:text-[12px] md:text-[12px] lg:text-sm"
+                        :placeholder="`Enter content here...`" :resizable="false"></textarea>
                     </div>
                   </div>
                 </div>
@@ -48,10 +46,8 @@
                       formatSectionTitle(key) }}</h2>
                     <div class="gap-4">
                       <textarea v-model="outboundPrompt[key]"
-                        class="w-full min-h-32 resize-y outline-none border rounded p-2 text-xs sm:text-xs md:text-xs lg:text-sm"
-                        :placeholder="`Enter content here...`"></textarea>
-                      <!-- <textarea class="w-full min-h-32 resize-y outline-none border rounded p-2"
-                        :placeholder="`Enter additional content here...`"></textarea> -->
+                        class="w-full min-h-32 resize-y outline-none border rounded p-2 text-xs sm:text-xs md:text-xs lg:text-sm scrollable-container"
+                        :placeholder="`Enter content here...`" :resizable="false"></textarea>
                     </div>
                   </div>
                 </div>
@@ -78,10 +74,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch, watchEffect } from 'vue';
 import { useField, useForm } from "vee-validate";
-import {
-  Home, ShoppingCart, Plane, PhoneCall, Landmark,
-  Banknote, Stethoscope, Lightbulb, Truck, GraduationCap, Server
-} from 'lucide-vue-next';
+import { Home, ShoppingCart, Plane, PhoneCall, Landmark } from 'lucide-vue-next';
 import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 // Props definition
@@ -184,5 +177,20 @@ const onSubmit = handleSubmit(async (value: any) => {
 textarea {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.5;
+}
+.scrollable-container::-webkit-scrollbar {
+  display: block;
+  width: 6px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+  background: #353535;
+  border-radius: 10px;
+  cursor: default;
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+  max-height: 8px !important;
+  margin-block: 1rem !important;
 }
 </style>

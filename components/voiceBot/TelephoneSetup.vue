@@ -49,11 +49,6 @@
           {{ formHasChanged ? 'Submit' : 'No Changes' }}
         </UiButton>
       </div>
-      <!-- <div class="flex justify-end w-full">
-        <UiButton color="primary" type="submit" size="lg" :loading="isLoading">
-          Submit
-        </UiButton>
-      </div> -->
     </form>
   </div>
   <!-- </Page> -->
@@ -66,11 +61,9 @@ definePageMeta({
 });
 
 const route = useRoute("voice-bot-id-ivr-config");
-// const botDetails: any = await getVoiceBotDetails(route.params.id);
 const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void }>();
 const numberList = ref([])
 const originalValues = ref({});
-// const { data: botData, status: botLoadingStatus } = await useLazyFetch(`/api/voicebots/${route.params.id}`);
 
 const {
   data: integrationsData,
@@ -155,16 +148,16 @@ watch(() => values.ivrConfig, (selectedIvrConfig) => {
     if (newIntegrationsData) {
       console.log(newIntegrationsData, "newIntegrationsData -- newIntegrationsData")
       setFieldValue("cloudTelephoneProvider", newIntegrationsData?.provider ?? "")
-      setFieldValue("authId", newIntegrationsData.metadata.authId ?? "")
-      setFieldValue("authToken", newIntegrationsData.metadata.authToken ?? "")
-      setFieldValue("accountSID", newIntegrationsData.metadata.accountSid ?? "")
-      setFieldValue("apiSecret", newIntegrationsData.metadata.apiSecret ?? "")
-      setFieldValue("apiKey", newIntegrationsData.metadata.apiKey ?? "")
-      setFieldValue("apiToken", newIntegrationsData.metadata.apiToken ?? "")
-      setFieldValue("flowId", newIntegrationsData.metadata.flowId ?? "")
-      setFieldValue("publicKey", newIntegrationsData.metadata.publicKey ?? "")
-      setFieldValue("connectionId", newIntegrationsData.metadata.connectionId ?? "")
-      setFieldValue("subDomain", newIntegrationsData.metadata.subDomain ?? "")
+      setFieldValue("authId", newIntegrationsData?.metadata?.authId ?? "")
+      setFieldValue("authToken", newIntegrationsData.metadata?.authToken ?? "")
+      setFieldValue("accountSID", newIntegrationsData.metadata?.accountSid ?? "")
+      setFieldValue("apiSecret", newIntegrationsData.metadata?.apiSecret ?? "")
+      setFieldValue("apiKey", newIntegrationsData.metadata?.apiKey ?? "")
+      setFieldValue("apiToken", newIntegrationsData.metadata?.apiToken ?? "")
+      setFieldValue("flowId", newIntegrationsData.metadata?.flowId ?? "")
+      setFieldValue("publicKey", newIntegrationsData.metadata?.publicKey ?? "")
+      setFieldValue("connectionId", newIntegrationsData.metadata?.connectionId ?? "")
+      setFieldValue("subDomain", newIntegrationsData.metadata?.subDomain ?? "")
     }
   })
 })
@@ -253,17 +246,19 @@ const onSubmit = handleSubmit(async (value: any) => {
         };
       });
       
+      isLoading.value = false;
       return navigateTo({
         name: "voice-bot-id",
         params: { id: props.botDetails.id },
       });
     } catch (error: any) {
       toast.error(error.statusMessage)
+      isLoading.value = false;
     }
   } else {
     console.log('No changes detected, skipping API call');
+    isLoading.value = false;
   }
-  
   isLoading.value = false;
 });
 </script>

@@ -130,9 +130,8 @@
     validationSchema: toTypedSchema(createEditCRMConfigValidation),
     initialValues: {},
   });
-  // const [subPipelineField, subPipelineFieldAttrs] = defineField("subPipeline");
 
-  // subPipelineField
+// subPipelineField
 watchEffect(async () => {
   if (values.pipelineId) {
     await handlePipelineChange(values.pipelineId)
@@ -190,10 +189,6 @@ watchEffect(async () => {
                 crmConfigData?.metadata?.pipelineObj?.id,
               );
 
-              // setFieldValue(
-              //   "subPipeline",
-              //   crmConfigData?.metadata?.pipelineObj?.Sub_Pipeline,
-              // );
               await handleCrmChange(crmConfigData.integrationId);
               await handlePipelineChange(crmConfigData.pipelineId);
             } else if (selectedCrm?.crm === "zoho-crm") {
@@ -242,10 +237,6 @@ watchEffect(async () => {
       if (data) {
         pipelines.value = data.layouts;
       }
-      // else {
-      //   toast.error('Pipeline field is empty')
-      // }
-
       const subPipelineData = await $fetch(
         `/api/org/integrations/zoho-bigin/sub-pipeline?id=${matchedCRM.id}`,
       );

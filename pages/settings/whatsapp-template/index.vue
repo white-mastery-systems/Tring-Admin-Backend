@@ -13,20 +13,11 @@
             ">
             Add Template
           </UiButton>
-
-          <!-- <UiButton color="primary">
-            Import
-          </UiButton>
-          <UiButton color="primary">
-            Export
-          </UiButton> -->
         </div>
       </div>
     </template>
     <div>
       <div class="flex items-center gap-2 pb-2">
-        <!-- <UiInput v-model="filters.q" @input="filters.page = '1'"
-          class="max-w-[200px] focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search Template..." /> -->
         <WhatsappBotFilter @change="onTemplateChange" />
       </div>
       <DataTable @pagination="Pagination" @limit="
@@ -63,7 +54,6 @@
 <script setup lang="ts">
   import { Icon, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
-  import { useRoute, useRouter } from "vue-router";
   import { useTemplateStore } from "~/store/whatsAppTemplateStore";
   const templateStore = useTemplateStore();
 
@@ -74,13 +64,7 @@
     title: "Contacts Management | Contacts",
   });
 
-  const formSchema = toTypedSchema(
-    z.object({
-      newBotName: z.string().min(2, "Bot Name is requird."),
-    }),
-  );
   const searchBucket = ref("");
-  const searchBotDebounce = refDebounced(searchBucket, 500);
   const deleteTemplateState = ref({ open: false, obj: {} });
 
   const filters = reactive<{
@@ -92,17 +76,11 @@
     page: "1",
     limit: "10",
   });
-  // const campaignModalState = ref({ open: false });
   const addWhatsappTemplateModalState = ref({ open: false, id: null });
 
-  watch(
-    () => addWhatsappTemplateModalState,
-    (newValue) => {},
-  );
-
-  let page = ref(0);
-  let totalPageCount = ref(0);
-  let totalCount = ref(0);
+  const page = ref(0);
+  const totalPageCount = ref(0);
+  const totalCount = ref(0);
   const {
     status,
     data: whatsappTemplateList,
@@ -121,20 +99,6 @@
       }));
     },
   });
-  // const addWhatappTemplateModalState = defineModel<{ open: boolean, id: string }>({
-  //   default: {
-  //     open: false,
-  //     id: "",
-  //   },
-  // });
-  const viewCampaignStatusModalState = ref({ open: false });
-
-  const router = useRouter();
-  const route = useRoute();
-  const activeStatus = ref("");
-  watch(activeStatus, async (newStatus, previousStatus) => {});
-  const selectedValue = ref("Today");
-  // const newBotName = ref("");
 
   const isDataLoading = computed(() => status.value === "pending");
   const columnHelper = createColumnHelper<(typeof whatsappTemplateList.value)[0]>();
@@ -146,18 +110,6 @@
         class: "flex items-center gap-2",
       },
       [
-        // h(
-        //   UiButton,
-        //   {
-        //     onClick: (e: Event) => {
-        //       e.stopPropagation();
-        //       addWhatappTemplateModalState.value.open = true;
-        //       addWhatappTemplateModalState.value.id = templateObj.id;
-        //     },
-        //     color: "primary",
-        //   },
-        //   h(Icon, { name: "lucide:pen" }),
-        // ),
         h(
           UiButton,
           {
@@ -169,20 +121,7 @@
             class: "bg-[#f44336] hover:bg-[#f44336] font-bold", // Different color for delete
           },
           h(Icon, { name: "lucide:trash-2" }),
-        ),
-        // h(
-        //   UiButton,
-        //   {
-        //     onClick: () => {
-        //       addBucketModalState.value.open = true
-        //       addBucketModalState.value.id = id
-        //       console.log("addBucketModalState")
-        //     }, // Add delete functionality
-        //     class: "bg-[#424bd1] hover:bg-[#424bd1] font-bold", // Different color for delete
-        //   },
-        //   [h({ name: "ph:trash-light", class: "h-4 w-4 mr-2" }), "Add"]
-        // )
-      ],
+        ),],
     );
 
   const columns = [

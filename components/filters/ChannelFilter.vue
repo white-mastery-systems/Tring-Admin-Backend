@@ -1,6 +1,14 @@
 <script setup lang="ts">
-  const emit = defineEmits(["changeAction"]);
-  const selectedAction: any = ref("all");
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: "all",
+  },
+});
+
+  const emit = defineEmits(["update:modelValue"]);
+  const selectedAction: any = ref(props.modelValue);
+
   const actionFilters = reactive([
     {
       content: "All",
@@ -16,9 +24,13 @@
     },
   ]);
 
+watchEffect(() => {
+  selectedAction.value = props.modelValue;
+});
+
   watch(selectedAction, (newValue) => {
-    emit("changeAction", newValue);
-  });
+    emit("update:modelValue", newValue);
+  },{deep: true, immediate: true});
 </script>
 
 <template>

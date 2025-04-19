@@ -7,7 +7,6 @@ import { Eye, EyeOff } from 'lucide-vue-next'; // Import Lucide icons
 
 definePageMeta({
   layout: "auth",
-  // middleware: "guest-only",
 });
 
 const route = useRoute();
@@ -55,10 +54,6 @@ const schema = ref(route.query.token ? resetPasswordSchema : forgotPasswordSchem
 const { handleSubmit, defineField, errors } = useForm({
   validationSchema: schema.value,
 });
-
-const [email, emailAttrs] = defineField("email");
-const [newPassword, newPasswordAttrs] = defineField("newPassword");
-const [confirmPassword, confirmPasswordAttrs] = defineField("confirmPassword");
 
 // Toggle password visibility functions
 const togglePasswordVisibility = () => {
