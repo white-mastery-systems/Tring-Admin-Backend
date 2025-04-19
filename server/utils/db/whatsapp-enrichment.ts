@@ -25,3 +25,11 @@ return createWhatsappEnrichment({
     countryCode: botUser.countryCode,
 })
 }
+
+export const getEnrichByEmail = async (email:any) => {
+  // botUserId integrationId
+  return await db.query.whatsappEnrichmentSchema.findFirst({
+    where: eq(whatsappEnrichmentSchema.email, email),
+    with: { integration: true, botUser: true },
+  });
+}
