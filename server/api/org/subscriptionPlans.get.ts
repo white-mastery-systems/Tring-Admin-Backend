@@ -45,6 +45,10 @@ export default defineEventHandler(async (event) => {
       ? "trial"
       : subscriptionStatus;
 
+    if(subscriptionPlanUsage?.subscriptionStatus !== "active") {
+      computedStatus = "inactive"
+    }
+
     if(remainingDaysForTrialEnd !== undefined && remainingDaysForTrialEnd <=0) {
       remainingDaysForTrialEnd = 0
       computedStatus = "inactive"
