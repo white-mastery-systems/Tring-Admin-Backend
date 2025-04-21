@@ -1,3 +1,4 @@
+import { logger } from "~/server/logger";
 import { errorResponse } from "~/server/response/error.response";
 import { getOrgChatBotCount } from "~/server/utils/db/bot";
 
@@ -71,8 +72,9 @@ export default defineEventHandler(async (event) => {
     const bot = await createBot(payload);
   
     return bot;
-  } catch (error) {
-
+  } catch (error: any) {
+    logger.error(`Create chatbot API Error: ${JSON.stringify(error.message)}`)
+    return errorResponse(event, 500, "Unable to create chatbot")
   }
 });
 
