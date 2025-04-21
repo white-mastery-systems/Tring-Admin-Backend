@@ -304,7 +304,7 @@ export const storeImprovedBotResponses = async (data: any) => {
   await db.insert(chatResponseImprovementSchema).values(data)
 }
 
-export const getNotTrainedBotResponse = async(botId: string) => {
+export const getBotUnansweredQueries = async(botId: string) => {
   return await db.query.chatResponseImprovementSchema.findMany({
     where: and(
       eq(chatResponseImprovementSchema.botId, botId),
@@ -313,3 +313,25 @@ export const getNotTrainedBotResponse = async(botId: string) => {
   })
 }
 
+export const updateBotQueriesById = async (id: string, data: any) => {
+  await db.update(chatResponseImprovementSchema).set({
+    ...data,
+    updatedAt: new Date()
+  })
+  .where(eq(chatResponseImprovementSchema.id, id))
+}
+
+export const getBotQueriesById = async(id: string) => {
+  return await db.query.chatResponseImprovementSchema.findFirst({
+    where: eq(chatResponseImprovementSchema.id, id)
+  })
+}
+
+export const getBotCompletedQueries = async(botId: string) => {
+  return await db.query.chatResponseImprovementSchema.findMany({
+    where: and(
+      eq(chatResponseImprovementSchema.botId, botId),
+      eq(chatResponseImprovementSchema.status, "trained")
+    )
+  })
+}

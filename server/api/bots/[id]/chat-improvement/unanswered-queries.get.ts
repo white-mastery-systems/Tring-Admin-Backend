@@ -1,6 +1,6 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-import { getInadequateMessagesByBotId, getNotTrainedBotResponse, storeImprovedBotResponses, updateChatStatus } from "~/server/utils/db/chats"
+import { getInadequateMessagesByBotId, getBotUnansweredQueries, storeImprovedBotResponses, updateChatStatus } from "~/server/utils/db/chats"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -34,11 +34,11 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    const notTrainedBotResponses = await getNotTrainedBotResponse(botId)
+    const botUnansweredQueries = await getBotUnansweredQueries(botId)
 
-    return notTrainedBotResponses
+    return botUnansweredQueries
   } catch (error: any) {
-    logger.error(`Chat response improvement API Error: ${JSON.stringify(error.message)}`)
-    return errorResponse(event, 500, "Failed to improve chat response")
+    logger.error(`Get chatbot unanswered-queries API Error: ${JSON.stringify(error.message)}`)
+    return errorResponse(event, 500, "Unable to unanswered queries")
   }
 })
