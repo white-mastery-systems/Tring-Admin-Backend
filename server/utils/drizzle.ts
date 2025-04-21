@@ -3,7 +3,7 @@ import pg from "pg";
 import { adminSubscriptionSchema, campaignWhatsappContactSchema, contactListAndContactsRelations, contactListContactsSchema, orgSubscriptionSchema, playgroundDocumentSchema, templateRelations, voicebotContactSchema, voiceBucketContactsRelations, voiceContactLinkSchema, whatsappSessionSchema } from "../schema/admin";
 import { userOTPSchema } from "../schema/auth";
 import { callLogsRelations, outboundCallSchema, salesHandyContactsSchema, voicebotIntegrationRelations, voicebotLeadRelations, voicebotLeadSchema, voicebotRelations, voicebotSchedularSchema, voicebotScheduledCallsRelations } from "../schema/voicebot";
-import { botDynamicFormSchema } from "../schema/bot";
+import { botDynamicFormSchema, chatResponseImprovementSchema } from "../schema/bot";
 
 const config = useRuntimeConfig()
 
@@ -56,6 +56,7 @@ const schema = {
   adminSubscriptionSchema,
   adminPlanUsageSchema,
   chatbotScheduledCallSchema,
+  chatResponseImprovementSchema,
   // Relations
   organizationRelations,
   chatBotRelations,
