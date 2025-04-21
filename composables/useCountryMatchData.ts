@@ -34,7 +34,7 @@ import { useFetch } from "#app"; // Ensure correct import for Nuxt
 // }
 
 
-export function useCountryData(fieldValue: Ref<string>) {
+export function useCountryMatchData(fieldValue: Ref<string>) {
   const locationData = ref();
   const selectedCountry = ref('');
 

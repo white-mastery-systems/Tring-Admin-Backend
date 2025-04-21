@@ -73,7 +73,7 @@
 import { Check } from 'lucide-vue-next';
 import { ChevronDown } from "lucide-vue-next";
 import countryData from "~/assets/country-codes.json";
-import { useCountryData } from '~/composables/useCountryMatchData';
+import { useCountryMatchData } from '~/composables/useCountryMatchData';
 
 const searchField = ref('')
 const popoverRef = ref(null)
@@ -117,7 +117,7 @@ const {
 });
 const { value: fieldValue, errorMessage, meta, handleChange } = useField(() => props.name);
 // const country = ref(fieldValue.value);
-const { country } = useCountryData(fieldValue);
+const { country } = useCountryMatchData(fieldValue);
 
 const selectedCountry = computed(() =>
     countryData.find((country: any) => country.name === fieldValue.value)
