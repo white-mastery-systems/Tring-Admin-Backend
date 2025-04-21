@@ -55,7 +55,7 @@ const onSubmit = handleSubmit(async (value: any) => {
         <!-- Password field with eye icon -->
         <div class="relative">
           <TextField :type="showPassword ? 'text' : 'password'" name="password" placeholder="Password"
-            :textFieldMaxLength="30" />
+            :textFieldMaxLength="30" :passwordMaxLength="true" />
           <div
             class="absolute inset-y-0 right-0 flex top-2 items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer h-[40px]"
             @click="togglePasswordVisibility" role="button" tabindex="0" aria-label="Toggle password visibility">

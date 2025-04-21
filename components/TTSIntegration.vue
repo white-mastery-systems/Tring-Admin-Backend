@@ -11,7 +11,7 @@
     :data="integrationsData" 
     :page-size="8" 
     :is-loading="false" 
-    :height="20" 
+    :height="18" 
     :heightUnit="'vh'" 
   />
   <!-- Pass the ttsModalState to the TTSModal component with v-model binding -->

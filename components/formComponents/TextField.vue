@@ -5,7 +5,7 @@
         errorMessage ? 'text-red-500' : '',
       ]" v-if="label" :for="replacedId">
       {{ label }}
-      <span v-if="required" class="text-lg text-red-500">* </span>
+      <span v-if="required" class="text-lg text-red-500">*</span>
       <UiTooltip v-if="helperText">
         <UiTooltipTrigger as-child>
       <span class="pl-2">
@@ -80,7 +80,7 @@
             }
   
             if (disableSpecialCharacters) {
-              const regex = /^[a-zA-Z0-9]$/;
+              const regex = /^[a-zA-Z]$/;
   
               if (e.key === ' ') {
                 return;

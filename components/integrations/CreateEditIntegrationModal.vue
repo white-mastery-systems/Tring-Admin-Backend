@@ -6,8 +6,9 @@
     <form @submit="handleConnect" class="space-y-2">
       <div class="flex flex-col gap-2">
         <TextField name="name" label="Integration Name" placeholder="Enter integration name"
-          helperText="Enter a unique identification for CRM integration"
           placeHolder="Eg: CRM-your company,CRM-your company" required />
+        
+
         <SelectField v-if="!(integrationModalState.numberModalState?.id)" name="crm" :label="findIntegrationTypeLabel()"
           :placeholder="findIntegrationTypeLabel()" helperText="Select your channel" :options="integrationTypes"
           required />
@@ -40,21 +41,21 @@
         <div class="flex w-full justify-end">
           <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
             {{
-              values.crm === "zoho-crm"
-                ? integrationModalState.numberModalState?.id
-                  ? "Update changes"
-                  : "Connect Zoho CRM"
-                : (values.crm === "zoho-bigin")
-                  ? integrationModalState.numberModalState?.id
-                    ? "Update changes"
-                    : "Connect Zoho Bigin"
-                : (values.crm === "zoho-desk")
-                  ? integrationModalState.numberModalState?.id
-                    ? "Update changes"
-                    : "Connect Zoho Desk"
-                  : integrationModalState.numberModalState?.id
-                    ? "Update changes"
-                    : "Save changes"
+            values.crm === "zoho-crm"
+            ? integrationModalState.numberModalState?.id
+            ? "Update changes"
+            : "Connect Zoho CRM"
+            : (values.crm === "zoho-bigin")
+            ? integrationModalState.numberModalState?.id
+            ? "Update changes"
+            : "Connect Zoho Bigin"
+            : (values.crm === "zoho-desk")
+            ? integrationModalState.numberModalState?.id
+            ? "Update changes"
+            : "Connect Zoho Desk"
+            : integrationModalState.numberModalState?.id
+            ? "Update changes"
+            : "Save changes"
             }}
           </UiButton>
         </div>

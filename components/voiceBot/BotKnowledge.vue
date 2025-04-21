@@ -72,9 +72,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch, watchEffect } from 'vue';
+import { ref, reactive, watch, watchEffect } from 'vue';
 import { useField, useForm } from "vee-validate";
-import { Home, ShoppingCart, Plane, PhoneCall, Landmark } from 'lucide-vue-next';
 import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 // Props definition

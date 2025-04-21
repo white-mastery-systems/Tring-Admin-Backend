@@ -85,13 +85,12 @@
       <TextField @input="updateBody($event)" :isTextarea="true" type="text" name="body" label="Body"
         placeholder="Enter Value" :textAreaMaxLength='1024' required>
       </TextField>
-
       <FieldArray name="templateVariables" v-slot="{ fields, push, remove }">
         <fieldset class="InputGroup" v-for="(field, idx) in fields" :key="field.key">
-          <div :class="['flex gap-2', field.value ? 'items-end' : 'items-center']">
+          <div :class="['flex gap-2', field.value ? 'items-end' : (!templateVariableErrors(idx)) ? 'items-end' : 'items-center']">
             <SelectField :options="variableOptions" :label="'Variable' + ' ' + varaibleLabelName(idx)"
               :id="`name_${idx}`" :name="`templateVariables[${idx}]`" />
-            <UiButton variant="outline" type="button" class="mt-2" @click="removeTemplateVariable(idx, remove, fields)">
+            <UiButton variant="outline" type="button" class="mt-3" @click="removeTemplateVariable(idx, remove, fields)">
               <CloseIcon class="h-4 w-4" />
             </UiButton>
           </div>
@@ -191,15 +190,21 @@ watchEffect(async () => {
 });
 
 const {
-  errors,
   setErrors,
   setFieldValue,
   handleSubmit,
   defineField,
+  errors,
   values,
   resetForm,
 } = useForm({
   validationSchema: whatsAppTemplateSchema,
+});
+
+const templateVariableErrors = computed(() => {
+  return (index) => {
+    return errors.value[`templateVariables[${index}]`] || null;
+  };
 });
 
 watch(() => values.name, (newValue) => {

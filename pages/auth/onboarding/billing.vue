@@ -1,5 +1,5 @@
 <template>
-  <ViewOnBoardingBilling :onBoardingAccount="true" />
+  <ViewOnBoardingBilling />
 </template>
 <script setup lang="ts">
 definePageMeta({

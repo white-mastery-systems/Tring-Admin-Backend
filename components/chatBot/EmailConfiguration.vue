@@ -11,7 +11,7 @@ import { createColumnHelper } from "@tanstack/vue-table";
 import { Icon, UiButton, UiSwitch } from "#components";
 import CreateEditEmailConfigModal from "~/components/bots/CreateEditEmailConfigModal.vue";
 
-const route = useRoute("chat-bot-id-config");
+const route = useRoute();
 const paramId: any = route;
 const selectedRows = ref<string[]>([]); // Track selected rows
 

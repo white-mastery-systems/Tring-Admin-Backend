@@ -177,17 +177,12 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { useRoute, useRouter } from "nuxt/app";
-import { botStore } from '~/store/botStore';
-
-
 
 const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void }>();
 const isLoading = ref(false);
 const colorInput: any = ref();
 const secondarycolorInput: any = ref();
 const logoData: any = ref("");
-const route = useRoute();
 const emit = defineEmits(["statusUpdated"])
 const originalValues = ref({}); // Add ref for original values
 

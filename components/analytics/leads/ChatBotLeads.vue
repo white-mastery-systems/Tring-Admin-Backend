@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="flex items-center gap-2 w-full overflow-x-scroll my-3">
-      <UiInput v-model="filters.q" @input="filters.page = '1'"
+      <UiInput v-model="props.filters.q" @input="props.filters.page = '1'"
         class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0"
         placeholder=" Search Leads..." />
-      <BotFilter v-model="filters.botId" :botType="'chat'" />
-      <StatusFilter v-model="filters.status" />
+      <BotFilter v-model="props.filters.botId" :botType="'chat'" />
+      <StatusFilter v-model="props.filters.status" />
 
-      <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
+      <DateRangeFilter v-model:period="props.filters.period" v-model:from="props.filters.from" v-model:to="props.filters.to"
         @change="onDateChange" />
-      <CountryFilter v-model="filters.country" />
+      <CountryFilter v-model="props.filters.country" />
       <UiButton color="primary" @click="emitClearFilters"
         class="ml-2"> Clear Filters</UiButton>
     </div>
@@ -41,7 +41,7 @@
            (props.filters.page = '1'), (props.filters.limit = $event);
          }
            " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
-            :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="(row: any) => {
+            :totalCount="totalCount" :page-size="8" :height="36" height-unit="vh" @row-click="(row: any) => {
              navigateTo(`leads/${row.original.chatId}`);
            }
              " />
@@ -51,7 +51,7 @@
            (props.filters.page = '1'), (props.filters.limit = $event);
          }
            " :is-loading="isDataLoading" :columns="columns" :totalPageCount="totalPageCount" :page="page"
-            :totalCount="totalCount" :page-size="8" :height="17" height-unit="vh" @row-click="(row: any) => {
+            :totalCount="totalCount" :page-size="8" :height="36" height-unit="vh" @row-click="(row: any) => {
              navigateTo(`leads/${row.original.chatId}`);
            }
              " />

@@ -4,7 +4,7 @@
     <UiFormItem class="w-full">
       <div class="flex items-center min-h-7">
         <UiFormLabel class="text-[12px]" :class=" { 'text-[#ef4444]' : hasError }">
-          {{ label }}<UiLabel v-if="required" class="text-lg text-red-500">*</UiLabel>
+          {{ label }}<span v-if="required" class="text-lg text-red-500">*</span>
         </UiFormLabel>
       </div>
       <UiFormControl>

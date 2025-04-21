@@ -56,7 +56,6 @@ import { botTypes } from '~/composables/botManagement/chatBot/useBotType'
     },
   });
   const route = useRoute();
-  const queryId = ref(route.params.id);
   const emit = defineEmits<{
     (e: "confirm"): void;
     (e: "editConfirm"): void;

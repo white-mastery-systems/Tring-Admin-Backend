@@ -13,13 +13,11 @@ import { useDocumentUpload } from "~/composables/botManagement/chatBot/useDocume
 
 const step = ref(1);
 const route = useRoute();
-const router = useRouter();
 const paramId: any = route;
 const { status, documents,page,totalPageCount,totalCount, refresh } = useBotDocuments(route.params.id);
 const scrapData = botStore();
 const isLoading = ref(false)
 const stepOneRef = ref(null);
-const pageLoading = ref(false)
 const isSubmitting = ref(false)
 const isDocumentListOpen = ref(false);
 const intervalId = ref<any>(null); // Store the interval ID

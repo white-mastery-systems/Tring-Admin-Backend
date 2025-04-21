@@ -10,7 +10,6 @@ const props = defineProps<{
 
 const emit = defineEmits(["update:values"]);
 const { value: selectedRole } = useField<string>('ROLE');
-const { value: type } = useField("type");
 const { value: otherRole, errorMessage: otherRoleError } = useField("otherRole");
 const { value: otherGoal, errorMessage: otherGoalError } = useField("otherGoal");
 

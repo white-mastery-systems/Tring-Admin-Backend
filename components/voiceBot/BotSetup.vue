@@ -143,13 +143,13 @@
             <FieldArray v-if="values.stt?.provider === 'deepgram'" name="stt.keywords"
               v-slot="{ fields, push, remove }">
               <fieldset v-for="(field, idx) in fields" :key="field.key">
-                <div class='flex items-end gap-2 mt-2'>
+                <div class='flex gap-2 mt-2'>
                   <TextField :label="`keyword ${idx + 1}`" :id="`value_${idx}`" :name="`stt.keywords[${idx}].value`"
                     placeholder="Enter keyword" />
                   <TextField :label="`boost value ${idx + 1}`" :id="`value_${idx}`"
                     :name="`stt.keywords[${idx}].boostValue`" placeholder="Enter Boost value" disableCharacters />
                   <div
-                    :class="['flex', (field.value?.value && (field.value?.boostValue)) ? 'items-end' : (errors[`stt.keywords[${idx}].value`]) ? 'items-center' : 'items-end']">
+                    :class="['flex', (field.value?.value && (field.value?.boostValue)) ? 'items-end mb-1' : (keywordErrors(idx).value || keywordErrors(idx).boostValue) ? 'items-center mt-3' : 'items-end mb-1']">
                     <UiButton variant="outline" type="button" @click="remove(idx)">
                       <CloseIcon class="w-4 h-4" />
                     </UiButton>
@@ -323,6 +323,15 @@ const {
     stt: {},
     llm: {}
   }
+});
+
+const keywordErrors = computed(() => {
+  return (idx) => {
+    return {
+      value: errors.value[`stt.keywords[${idx}].value`] || null,
+      boostValue: errors.value[`stt.keywords[${idx}].boostValue`] || null
+    };
+  };
 });
 
 // Fetch existing configuration data

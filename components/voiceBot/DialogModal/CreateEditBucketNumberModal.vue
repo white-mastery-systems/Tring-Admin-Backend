@@ -13,7 +13,7 @@
         <TextField name="name" label="Name" placeholder="Enter name" required>
         </TextField>
       </div>
-      <div class='flex gap-2'>
+      <div class='flex gap-4'>
         <CountryCodeField class='w-[150px]' name="countryCode" label="Country Code" helperText="Enter your country code"
           required />
         <TextField :disableCharacters="true" name="phone" label="Mobile number" helperText='' required
@@ -90,7 +90,7 @@ const formSchema = toTypedSchema(
         if (!data.firstName) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: "First name is required for chatBot.",
+            message: "First name is required.",
             path: ["firstName"],
           });
         }
