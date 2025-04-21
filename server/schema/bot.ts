@@ -368,6 +368,18 @@ export const analyticsRelations = relations(
     }),
   }),
 );
+
+export const whatsappEnrichmentRelations = relations(whatsappEnrichmentSchema, ({one, many}) => ({
+  integration: one(integrationSchema, { 
+    fields: [whatsappEnrichmentSchema.integrationId],
+    references: [integrationSchema.id]
+  }),
+  botUser: one(botUserSchema, {
+    fields: [whatsappEnrichmentSchema.botUserId],
+    references: [botUserSchema.id]
+  })
+}))
+
 // Types
 export type SelectChatBot = Omit<
   InferSelectModel<typeof chatBotSchema>,

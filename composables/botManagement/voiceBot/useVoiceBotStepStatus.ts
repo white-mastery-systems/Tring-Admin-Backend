@@ -8,7 +8,7 @@ import {
   BrainCircuit,
   IdCard,
 } from "lucide-vue-next";
-export const useStepStatus = (route) => {
+export const useVoiceBotStepStatus = (route:any) => {
   const botStore = useBotStore();
   // const { documentsList, refreshDocuments } = useDocumentsList(route.params.id);
   // const { botDetails, loading, error, refreshBot } = useBotDetails(route.params.id);
