@@ -505,8 +505,20 @@ export const adminPlanUsageSchema = adminSchema.table("admin_plan_usages", {
   updatedAt: timestamp("updated_at").notNull().defaultNow()
 })
 
+export const industriesSchema = adminSchema.table("industries", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").references(() => organizationSchema.id),
+  industryName: varchar("industry_name"),
+  isDefault: boolean("is_default").default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow()
+})
+
 export type SelectAdminSubscription = InferSelectModel<typeof adminSubscriptionSchema>;
 export type InsertAdminSubscription = InferInsertModel<typeof adminSubscriptionSchema>;
 
 export type SelectAdminPlanUsage = InferSelectModel<typeof adminPlanUsageSchema>;
 export type InsertAdminPlanUsage = InferInsertModel<typeof adminPlanUsageSchema>;
+
+export type SelectIndustries = InferSelectModel<typeof industriesSchema>;
+export type InsertIndustries = InferInsertModel<typeof industriesSchema>;

@@ -85,6 +85,7 @@ export const getBotDetailsNoCache = async (botId: string) => {
     with: {
       documents: true,
       organization: true,
+      industry: true
     },
   });
   return bot;
