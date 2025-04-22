@@ -51,7 +51,6 @@ const onSubmit = handleSubmit(async (value: any) => {
     <form @submit="onSubmit">
       <div class="grid gap-0">
         <TextField type="text" name="email" placeholder="Email" />
-
         <!-- Password field with eye icon -->
         <div class="relative">
           <TextField :type="showPassword ? 'text' : 'password'" name="password" placeholder="Password"

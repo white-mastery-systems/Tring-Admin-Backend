@@ -7,7 +7,6 @@
       <div class="flex flex-col gap-2">
         <TextField name="name" label="Integration Name" placeholder="Enter integration name"
           placeHolder="Eg: CRM-your company,CRM-your company" required />
-        
 
         <SelectField v-if="!(integrationModalState.numberModalState?.id)" name="crm" :label="findIntegrationTypeLabel()"
           :placeholder="findIntegrationTypeLabel()" helperText="Select your channel" :options="integrationTypes"

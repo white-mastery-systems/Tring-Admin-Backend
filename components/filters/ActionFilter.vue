@@ -24,7 +24,6 @@
     emit("changeAction", newValue);
   });
 </script>
-
 <template>
   <UiSelect v-model="selectedAction">
     <UiSelectTrigger class="w-[200px]">

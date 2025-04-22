@@ -32,7 +32,6 @@
         }
       " />
   </div>
-  <!-- </Page> -->
 </template>
 <script setup lang="ts">
 import { Icon, UiButton } from "#components";

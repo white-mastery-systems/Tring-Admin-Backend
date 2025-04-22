@@ -56,9 +56,6 @@ watch([provideraccountname, incomingPhoneNumber], () => {
   })
 });
 
-// watch(errors,(newErrors) => {
-//   console.log(newErrors, 'newErrors -- newErrors')
-// })
 /**
  * A function that will be called whenever a provider is selected in the ivrConfig dropdown.
  * It will call the getNumberListApiCall function to get the integrated numbers associated with the selected provider.
@@ -96,26 +93,6 @@ const getNumberListApiCall = async (value: any) => {
   }))
 };
 
-
-// Handle auth information update
-const onUpdateAuth = () => {
-  emit("update:values", {
-    ...props.values,
-    // authId: authId.value,
-    // authToken: authToken.value
-  });
-};
-
-// Handle form submission
-// const handleSubmit = () => {
-//   // Emit updated values
-//   emit("update:values", {
-//     ...props.values,
-//     authId: authId.value,
-//     authToken: authToken.value,
-//     provideraccountname: selectedAccount.value
-//   });
-// };
 const handleConnect = handleSubmit(async (values: any) => {
   isLoading.value = true
   const { provider, ...metadata } = values

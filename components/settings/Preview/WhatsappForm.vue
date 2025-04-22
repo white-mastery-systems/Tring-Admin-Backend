@@ -13,7 +13,6 @@
         </TextField>
         <SelectField name="languageCode" :options="languageList" label="Select language"
           placeholder="Select your language" required />
-        <!-- helperText="template will be created with this language" -->
       </div>
       <div>
         <div class="pt-4">
@@ -41,19 +40,6 @@
         <UiTooltipProvider>
           <UiTooltip>
             <UiTooltipTrigger as-child>
-              <!-- <UiButton type="button" class="mt-2 max-w-[130px]" color="primary" :disabled="fields.length >= 1" @click="
-                  () => {
-                    push('');
-                    setFieldValue(
-                      'headerText',
-                      (values.headerText || '') + `{{${fields.length}}}`,
-                    );
-
-                    dispatchTemplateState();
-                  }
-                ">
-                Add Variable
-              </UiButton> -->
             </UiTooltipTrigger>
             <UiTooltipContent>
               <p>Variables are limited to maximum of 1</p>
@@ -67,7 +53,6 @@
         <FileUpload @change="uploadFile" label="Upload Image" name="headerFile" :url="values?.headerFile?.url"
           :required="true" accept="image/png,image/jpeg" :fileType="'image'" :class="'h-24 cursor-pointer'"
           :helperText="'Accept Only JPG and PNG'" />
-        <!-- <TextField type='file' name="headerImage" accept="image/png, image/jpeg"/> -->
       </div>
       <div v-else-if="values.header === 'document'">
         <span class="semibold pt-4 text-sm"> Header Content </span>

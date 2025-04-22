@@ -24,6 +24,4 @@
   });
 
   import { ref } from "vue";
-  const router = useRouter();
-  const route = useRoute("chat-bot-id-assets");
 </script>

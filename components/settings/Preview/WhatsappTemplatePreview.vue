@@ -3,9 +3,7 @@
     <div class="'flex ', h-[50px] w-full items-center justify-between px-2.5 font-medium text-[#ffffff]"
       style="background: #128c7e">
       <div class="flex items-center gap-2" style="position: relative; top: 14px">
-        <!-- {{ leadData?.channel}} -->
         <WhatsappIcon class="align-middle"></WhatsappIcon>
-
         <span class="text-[14px] capitalize">preview</span>
       </div>
     </div>

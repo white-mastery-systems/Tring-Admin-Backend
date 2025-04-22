@@ -60,12 +60,6 @@
   definePageMeta({
     middleware: "user",
   });
-
-  const formSchema = toTypedSchema(
-    z.object({
-      newBotName: z.string().min(2, "Bot Name is requird."),
-    }),
-  );
   const deleteBucketState = ref({ open: false, id: null });
 
   const filters = reactive<{

@@ -53,9 +53,7 @@
 </template>
 <script setup lang="ts">
 import { useLanguageList } from '~/composables/chatBotLanguageList';
-import { useConfig } from '~/composables/botManagement/chatBot/useConfig';
 import { botConfigSchema } from '~/validationSchema/botManagement/chatBot/botConfigurationValidation';
-import { botStore } from '~/store/botStore';
 import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 

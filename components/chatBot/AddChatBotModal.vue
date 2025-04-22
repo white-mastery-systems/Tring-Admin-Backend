@@ -99,7 +99,6 @@ import { botTypes } from '~/composables/botManagement/chatBot/useBotType'
       }
     },
   );
-
   const handleAddEditBot = handleSubmit(async (values) => {
     isLoading.value = true;
     try {

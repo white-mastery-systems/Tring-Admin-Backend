@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 definePageMeta({
   layout: "billing-account",
@@ -31,7 +31,6 @@ definePageMeta({
 });
 
 const route = useRoute();
-const router = useRouter();
 const hostedPageId = route.query?.hostedpage_id;
 const userId = ref(null);
 const isLoading = ref(true);

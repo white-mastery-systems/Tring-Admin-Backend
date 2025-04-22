@@ -24,7 +24,6 @@ onMounted(() => {
   updateStepStatus("uiCustomization"); // Default value (will update later)
 });
 
-
 </script>
 <template>
   <div class="px-4 sm:px-4 md:px-0">

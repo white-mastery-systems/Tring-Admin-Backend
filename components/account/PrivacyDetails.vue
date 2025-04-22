@@ -39,49 +39,49 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { privacySchema } from "~/validationSchema/account/privacySchema";
+import { privacySchema } from "~/validationSchema/account/privacySchema";
 
-  const {
-    errors,
-    setErrors,
-    setFieldValue,
-    handleSubmit,
-    defineField,
-    values,
-    resetForm,
-  } = useForm({
-    validationSchema: privacySchema,
-    initialValues: {
-    },
-  });
+const {
+  errors,
+  setErrors,
+  setFieldValue,
+  handleSubmit,
+  defineField,
+  values,
+  resetForm,
+} = useForm({
+  validationSchema: privacySchema,
+  initialValues: {
+  },
+});
 
-  const passwordVisible = ref(false);
-  const confirmPasswordVisible = ref(false);
-  const isLoading = ref(false)
+const passwordVisible = ref(false);
+const confirmPasswordVisible = ref(false);
+const isLoading = ref(false)
 
 
-  const togglePasswordVisibility = () => {
-    if (values.password) {
-      passwordVisible.value = !passwordVisible.value;
-    }
-  };
-  const toggleConfirmPasswordVisibility = () => {
-    if (values.confirmPassword) {
-      confirmPasswordVisible.value = !confirmPasswordVisible.value;
-    }
-  };
+const togglePasswordVisibility = () => {
+  if (values.password) {
+    passwordVisible.value = !passwordVisible.value;
+  }
+};
+const toggleConfirmPasswordVisibility = () => {
+  if (values.confirmPassword) {
+    confirmPasswordVisible.value = !confirmPasswordVisible.value;
+  }
+};
 
-  const handleAccountUpdate = handleSubmit(async () => {
-    isLoading.value = true
-    try {
-      await $fetch("/api/user", { method: "PUT", body: values });
-      toast.success("Password updated successfully");
-      resetForm()
-    } catch (e) {
-      console.error(e);
-      toast.error("Failed to update Password, please try again");
-      isLoading.value = false
-    }
+const handleAccountUpdate = handleSubmit(async () => {
+  isLoading.value = true
+  try {
+    await $fetch("/api/user", { method: "PUT", body: values });
+    toast.success("Password updated successfully");
+    resetForm()
+  } catch (e) {
+    console.error(e);
+    toast.error("Failed to update Password, please try again");
     isLoading.value = false
-  });
+  }
+  isLoading.value = false
+});
 </script>

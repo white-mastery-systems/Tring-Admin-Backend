@@ -45,9 +45,6 @@
               id: deleteUserState.id,
               onSuccess: () => {
                 getAllUser();
-
-                // getAllUser(
-                // refresh();
               },
             });
             deleteUserState.open = false;
@@ -58,26 +55,12 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { Icon, UiBadge, UiButton } from "#components";
+  import { Icon, UiButton } from "#components";
   import { createColumnHelper } from "@tanstack/vue-table";
-  import { useRouter, useRoute } from "vue-router";
-  import { campaignData } from "@/composables/useRefresh";
-
-  const rowList = reactive([
-    "name",
-    "email",
-    "visitedCount",
-    "mobile",
-    "createdAt",
-  ]);
 
   definePageMeta({
     middleware: "admin-only",
   });
-
-  const router = useRouter();
-  const route = useRoute();
-  const searchCampaign = ref("");
 
   const filters = reactive<{
     q: string;
@@ -91,9 +74,9 @@
     limit: "10",
   });
 
-  let page = ref(0);
-  let totalPageCount = ref(0);
-  let totalCount = ref(0);
+  const page = ref(0);
+  const totalPageCount = ref(0);
+  const totalCount = ref(0);
   const {
     status,
     data: userDataList,
@@ -117,19 +100,6 @@
 
   const deleteUserState = ref({ open: false, id: null, });
   const userModalState = ref({ open: false, id: null,roles:[] });
-  // const userModalState = defineModel<{ open: boolean; id: any }>({
-  //   default: {
-  //     open: false,
-  //     id: null,
-  //   },
-  // });
-  // watchEffect(() => {
-  //   if (filters.botId === "all") filters.botId = "";
-  // });
-  // const { status, data: campaignsList,refresh: integrationRefresh, } = await useLazyFetch("/api/org/campaign", {
-  //   server: false,
-  //   default: () => [],
-  // });
   const isDataLoading = computed(() => status.value === "pending");
 
   const columnHelper = createColumnHelper<(typeof userDataList.value)[0]>();
@@ -141,16 +111,6 @@
         class: "flex items-center gap-2",
       },
       [
-        // h(
-        //   UiButton,
-        //   {
-        //     onClick: () => {
-
-        //     },
-        //     class: "bg-[#ffbc42] hover:bg-[#ffbc42] font-bold",
-        //   },
-        //   [h(Icon, { name: "ph:eye-light", class: "h-4 w-4 mr-2" }), "View"],
-        // ),
         h(
           UiButton,
           {

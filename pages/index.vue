@@ -54,7 +54,6 @@
             <CustomDateRangeFilter v-model="selectedValue" :selectDateField="false" @change="onDateChange" />
           </div>
         </div>
-
         <!-- Content sections remain unchanged -->
         <UiTabsContent value="chat">
           <div class="pt-1 sm:pt-1 md:pt-4">
@@ -164,7 +163,6 @@
   } from "lucide-vue-next";
   import ChatSession from "~/components/icons/ChatSession.vue";
   import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
-  import { botStore } from "~/store/botStore";
   import { useDateFilters } from "~/composables/useDateFilters";
 
   ChartJS.register(

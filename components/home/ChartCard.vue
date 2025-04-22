@@ -1,23 +1,9 @@
 <script setup lang="ts">
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ActivityIcon } from "lucide-vue-next"
-import { Button as UiButton } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { BarChart } from '@/components/ui/chart-bar'
 import { computed } from 'vue'
 import { DonutChart } from '@/components/ui/chart-donut'
@@ -92,7 +78,6 @@ const isLeadDataEmpty = computed(() => {
           style="background-color: #FFF8EB;">
           <p class="text-sm text-gray-500">No lead data</p>
         </div>
-
         <!-- Chart when data exists -->
         <div v-else class="h-[164px] w-[164px]"> <!-- Adjust the values as needed -->
           <DonutChart index="name" :category="'total'" :data="leadCompositionData" :value-formatter="valueFormatter"

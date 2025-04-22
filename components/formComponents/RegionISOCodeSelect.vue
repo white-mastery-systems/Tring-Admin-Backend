@@ -84,15 +84,6 @@ const props = defineProps({
 
 });
 
-// const allCountryNames = computed(() =>
-//   countryData
-//     ?.filter((country: any) =>
-//       country.name.toLowerCase().includes(searchField.value.toLowerCase()) ||
-//       country.code.toLowerCase().includes(searchField.value.toLowerCase()) ||
-//       country.dial_code.toLowerCase().includes(searchField.value.toLowerCase())
-//     )
-//     ?.map((country) => `${country.name} ${country.code}`)
-// );
 const allCountryNames = computed(() =>
   countryData
     ?.filter((country: any) =>

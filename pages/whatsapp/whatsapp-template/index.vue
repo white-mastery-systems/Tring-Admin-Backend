@@ -154,6 +154,7 @@ const Pagination = async ($evnt) => {
   filters.page = $evnt;
   integrationRefresh();
 };
+
 const onTemplateChange = (value: any) => {
   filters.q = value
 };

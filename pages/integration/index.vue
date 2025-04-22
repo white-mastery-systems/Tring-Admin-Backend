@@ -86,15 +86,12 @@
   </Page>
 </template>
 <script lang="ts" setup>
-import { Icon, UiBadge, UiButton } from "#components";
-import { createColumnHelper } from "@tanstack/vue-table";
+import { UiButton } from "#components";
 import { useRoute, useRouter } from "vue-router";
 import Page from "~/components/Page.vue";
 import IntegrationTable from "~/components/settings/integrations/IntegrationTable.vue";
 import ChannelModal from "./ChannelModal.vue";
-import NumberModal from "./NumberModal.vue";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
-import TTSModal from "./TTSModal.vue";
 
 
 definePageMeta({
@@ -125,15 +122,6 @@ const channelModalState = ref({ open: false, id: null });
 const numberModalState: any = ref(false);
 const ttsModalState = ref(false);
 const planDetails = ref([])
-
-const deleteIntegrationState = ref({
-  open: false,
-  id: null,
-});
-const deleteExoPhoneState = ref({
-  open: false,
-  id: null,
-});
 const page = ref("1");
 const limit = ref("10");
 
@@ -143,51 +131,6 @@ breadcrumbStore.setBreadcrumbs([
     to: `/integration`,
   }
 ]);
-const actionsComponent = (id: any) =>
-  h(
-    "div",
-    {
-      class: "flex items-center gap-2",
-    },
-    [
-      h(
-        UiButton,
-        {
-          color: "primary",
-          class: "ml-2",
-          onClick: () => {
-            integrationModalState.open = true;
-          },
-        },
-        h(Icon, { name: "lucide:pen" }),
-      ),
-      h(
-        UiButton,
-        {
-          class: "",
-          variant: "destructive",
-          onClick: () => {
-            deleteIntegrationState.value.id = id;
-            deleteIntegrationState.value.open = true;
-          },
-        },
-        h(Icon, { name: "lucide:trash-2" }),
-      ),
-    ],
-  );
-
-const statusComponent = (status: string) => {
-  return h(
-    UiBadge,
-    {
-      ...(status === "pending"
-        ? { variant: "destructive" }
-        : { class: "bg-green-200 text-green-500 hover:bg-green-300" }),
-    },
-    status,
-  );
-};
-const columnHelper = createColumnHelper<any>();
 
 onMounted(async () => {
   planDetails.value = await userPlan();

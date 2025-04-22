@@ -109,12 +109,6 @@ const onDateChange = (value: any) => {
   }
   props.filters.page = "1";
 };
-const onBotChange = (value: any) => {
-  if (value) {
-    props.filters.botId = value
-    props.filters.page = '1'
-  }
-};
 const emitClearFilters = () => {
   emit('clear-filters')
 };
