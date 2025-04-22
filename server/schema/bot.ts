@@ -14,7 +14,7 @@ import {
 
 import { createInsertSchema } from "drizzle-zod";
 import { chatbotSchema } from ".";
-import { integrationSchema, organizationSchema } from "./admin";
+import { integrationSchema, organizationSchema, industriesSchema } from "./admin";
 import { voicebotSchema } from "./voicebot"
 
 // Tables
@@ -23,6 +23,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
   name: varchar("name", { length: 64 }).notNull(),
   documentId: uuid("document_id"),
   integrationId: uuid("integration_id").references(() => integrationSchema.id),
+  industryId: uuid("industry_id").references(() =>  industriesSchema.id),
   type: varchar("type", { length: 64 }).default("real-estate"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   metadata: jsonb("metadata").default({
@@ -32,6 +33,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
       widgetPosition: "Right",
       fontFamily: "Kanit",
       generateLead: true,
+      openDelay: 3000,
     },
     prompt: {
       errorMessage:
@@ -300,6 +302,10 @@ export const chatBotRelations = relations(chatBotSchema, ({ one, many }) => ({
   organization: one(organizationSchema, {
     fields: [chatBotSchema.organizationId],
     references: [organizationSchema.id],
+  }),
+  industry: one(industriesSchema, {
+    fields: [chatBotSchema.industryId],
+    references: [industriesSchema.id],
   }),
   documents: many(documentSchema),
   chats: many(chatSchema),
