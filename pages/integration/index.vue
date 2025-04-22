@@ -41,7 +41,6 @@
       <UiTabsList
         class="grid w-[100%] grid-cols-2 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5 sm:w-[100%] md:w-[80%] lg:w-[70%] xl:w-[60%] h-[10%]">
         <UiTabsTrigger value="crm" @click="navigateToTab('crm')">
-
           CRM
         </UiTabsTrigger>
         <UiTabsTrigger value="communication" @click="navigateToTab('communication')">

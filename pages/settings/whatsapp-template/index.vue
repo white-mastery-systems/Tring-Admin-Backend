@@ -64,7 +64,6 @@
     title: "Contacts Management | Contacts",
   });
 
-  const searchBucket = ref("");
   const deleteTemplateState = ref({ open: false, obj: {} });
 
   const filters = reactive<{

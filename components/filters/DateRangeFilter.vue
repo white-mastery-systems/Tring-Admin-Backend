@@ -64,7 +64,6 @@ watch(selectedPeriod, (newValue) => {
     dateFormat.value.start = null;
     dateFormat.value.end = null;
   }
-  console.log(newValue, "inside --- newValue");
 },{deep: true});
 
 const isDateDisabled = (date: CalendarDate) => {

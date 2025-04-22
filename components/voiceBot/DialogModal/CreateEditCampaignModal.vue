@@ -1,7 +1,7 @@
 <template>
   <DialogWrapper v-model="campaignModalState" :title="campaignModalState.id ? 'Modify Campaign' : 'Add Campaign'">
     <form @submit.prevent="handleConnect" class="space-y-2">
-      <span class="flex gap-2 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+      <span class="flex gap-2 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2">
         <TextField name="campaignName" label="Campaign Name" placeholder="Enter campaign name" required>
         </TextField>
         <SelectField name="contactMethod" label="Contact Method" placeholder="Select type" class="w-full"
@@ -81,21 +81,6 @@ const {
 } = await useLazyFetch("/api/org/contact-list", {
   server: false,
   default: () => [],
-});
-
-const campaignListWithLabels = computed(() => {
-  if (campaignDataList) {
-    return campaignDataList.value?.map((item: any) => {
-      return {
-        value: item.id,
-        label: item.id ? item.name : "", // Change label based on id value
-      };
-    });
-  }
-});
-
-const df = new DateFormatter("en-US", {
-  dateStyle: "long",
 });
 
 const {

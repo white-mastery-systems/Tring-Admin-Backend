@@ -16,12 +16,11 @@
 <script setup lang="ts">
 import { useState } from "#app";
 import { UiButton } from "#components";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useSingleCampaign } from "~/composables/useSingleCampaign";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
 const route = useRoute();
-const router = useRouter();
 const filters = useState("campaignsFilters", () => ({
   q: "",
   page: "1",
@@ -59,8 +58,6 @@ onMounted(async() => {
     },
   ]);
 });
-const isDataLoading = computed(() => status.value === "pending");
-
 const RetryFailedDeliveries = async () => {
   isLoading.value = true;
   try {

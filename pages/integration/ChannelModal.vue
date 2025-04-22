@@ -136,7 +136,6 @@
 
           setFieldValue("pid", phone_number_id);
           setFieldValue("wabaId", waba_id);
-          // setFieldValue("token", channelSingleDetail.metadata?.token);
         } else if (data.event === "CANCEL") {
           const { current_step } = data.data;
           console.warn("Cancel at:", current_step);
@@ -145,7 +144,6 @@
           console.error("Error:", error_message);
         }
       }
-      // document.getElementById("session-info-response").textContent = JSON.stringify(data, null, 2);
     } catch {}
   });
 

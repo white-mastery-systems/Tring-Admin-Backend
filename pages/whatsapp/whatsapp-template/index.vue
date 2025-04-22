@@ -82,6 +82,7 @@ const breadcrumbStore = useBreadcrumbStore();
 const page = ref(0);
 const totalPageCount = ref(0);
 const totalCount = ref(0);
+
 const {
   status,
   data: whatsappTemplateList,

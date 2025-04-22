@@ -4,7 +4,7 @@
     <Form @submit="handleConnect" class="space-y-3">
       <SelectField name="provider" placeholder="Select a provider" :options="providerList">
       </SelectField>
-      <div class='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-2 lg:grid-cols-2 xl:grid-cols-2'>
+      <div class='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-3 lg:grid-cols-2 xl:grid-cols-2'>
         <TextField v-if="values.provider" name="ivrIntegrationName" placeholder="Enter Integration Name" required
           label="Cloud Telephone Provider">
         </TextField>
