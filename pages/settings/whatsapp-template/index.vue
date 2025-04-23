@@ -55,6 +55,7 @@
 import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import { useTemplateStore } from "~/store/whatsAppTemplateStore";
+
 const templateStore = useTemplateStore();
 
 definePageMeta({

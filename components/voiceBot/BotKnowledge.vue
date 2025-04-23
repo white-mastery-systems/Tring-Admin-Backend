@@ -23,8 +23,7 @@
                   <!-- Dynamic sections based on inboundPrompt structure -->
                   <div v-for="(value, key) in inboundPrompt" :key="key" class="space-y-0">
                     <h2 class="text-xs sm:text-xs md:text-sm lg:text-lg text-[#000000] font-bold capitalize my-2">
-                      {{
-                      formatSectionTitle(key) }}</h2>
+                      {{ formatSectionTitle(key) }}</h2>
                     <div class="gap-4">
                       <textarea v-model="inboundPrompt[key]"
                         class="scrollable-container w-full min-h-32 resize-y outline-none border rounded border-[#CBD5E1] p-2 text-[12px] sm:text-[12px] md:text-[12px] lg:text-sm"
@@ -37,7 +36,6 @@
                   <p class="text-gray-500">No inbound prompt data available</p>
                 </div>
               </UiTabsContent>
-
               <UiTabsContent value="outbound">
                 <div v-if="Object.keys(outboundPrompt).length > 0"
                   class="flex items-start grid grid-cols-2 gap-6 w-full">
@@ -84,7 +82,6 @@ const props = defineProps<{
 }>();
 // Removed activeTab ref as it's now managed by UiTabs
 const isLoading = ref(false);
-const { value: type } = useField("type");
 
 // Prompt data
 const inboundPrompt = reactive(props.botDetails?.llmConfig?.inboundPrompt || {});
@@ -107,13 +104,6 @@ const formatSectionTitle = (key) => {
     .replace(/([A-Z])/g, ' $1')
     .replace(/^./, (str) => str.toUpperCase());
 };
-
-// Dropdown options
-const boundList = ref([
-  { label: 'Both', value: 'both' },
-  { label: 'Inbound', value: 'inbound' },
-  { label: 'Outbound', value: 'outbound' }
-]);
 
 // Get configuration
 const { intentOptions, fetchConfig } = useChatbotConfig();
@@ -177,6 +167,7 @@ textarea {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.5;
 }
+
 .scrollable-container::-webkit-scrollbar {
   display: block;
   width: 6px;

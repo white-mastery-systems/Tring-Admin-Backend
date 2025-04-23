@@ -43,7 +43,6 @@
 </template>
 <script setup lang="ts">
 import { useCount } from '@/composables/useRefresh';
-import type { AnyFn } from '@vueuse/core';
 import { nextTick } from 'vue';
 import { cloudTelephonySchema } from '~/validationSchema/settings/cloudTelephonyValidatoin';
 

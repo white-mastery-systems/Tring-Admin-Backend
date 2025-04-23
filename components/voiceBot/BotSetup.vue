@@ -687,7 +687,8 @@ function formatTtsConfig(ttsValues) {
       voice: ttsValues.elevenlabsvoice || "",
       model: ttsValues.model || "eleven_turbo_v2",
       stability: ttsValues.stability || 0.5,
-      similarity_boost: ttsValues.similarityBoost || 1
+      similarity_boost: ttsValues.similarityBoost || 1,
+      speed: ttsValues.speakingSpeed || 1,
     };
     
     if (ttsValues.model === 'eleven_multilingual_v2') {
