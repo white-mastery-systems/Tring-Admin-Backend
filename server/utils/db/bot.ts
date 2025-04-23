@@ -241,6 +241,20 @@ export const listBotIntegrations = async (botId: string, query?: any) => {
   }
 };
 
+export const listActiveBotIntegration = async(botId: string) => {
+  const data = await db.query.botIntegrationSchema.findMany({
+    where: and(
+      eq(botIntegrationSchema.botId, botId),
+      eq(botIntegrationSchema.status, "active")
+    ),
+    orderBy: [desc(botIntegrationSchema.createdAt)],
+    with: {
+      integration: true
+    }
+  });
+  return data
+}
+
 export const getBotIntegrationById = async (
   botId: string,
   botIntegrationId: string,
