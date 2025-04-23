@@ -84,6 +84,12 @@ export const upsertBotUser = async (
   )[0];
 };
 
+export const getBotUserByOnlyPhone = async (phone:string) => {
+  return await db.query.botUserSchema.findFirst({
+    where: eq(botUserSchema.mobile, phone)
+  });
+}
+
 export const fetchUserByPhoneOrCreate = async (
   phone: string,
   orgId: string,

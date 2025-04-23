@@ -57,7 +57,7 @@ export default defineNitroPlugin(async (event) => {
                 const isPassed = now > startTimeUTC;
 
                 if (userDetails && ["meeting_booked", "meeting_rescheduled"].includes(userDetails.status) && isPassed) {
-                  updateWhatsappEnrichStatusById(userDetails.id, "completed", {...(userDetails.metadata || {}), inviteeId, bookedMessage: true });
+                  await updateWhatsappEnrichStatusById(userDetails.id, "completed", {...(userDetails.metadata || {}), inviteeId, bookedMessage: true });
                 }
               }
             }));
@@ -72,17 +72,15 @@ export default defineNitroPlugin(async (event) => {
 
       const bookedEnrichList = await bookedWhatsappEnrichList();
       if (bookedEnrichList.length) {
-        await Promise.all(
-          bookedEnrichList.map(async (userDetails: any) => {
-            if (userDetails && ["meeting_booked", "meeting_rescheduled"].includes(userDetails.status)) {
-              const userPhone =`${userDetails.botUser.countryCode}${userDetails.botUser.mobile}`.replace("+", "");
-              const metadata = userDetails.integration.metadata;
-              const message = (userDetails.metadata?.link)? `Your meeting slot is confirmed \n\nClick meeting link below: \nLink: ${userDetails.metadata?.link}`:"Reminder you have meeting";
+        await Promise.all(bookedEnrichList.map(async (userDetails: any) => {
+          if (userDetails && ["meeting_booked", "meeting_rescheduled"].includes(userDetails.status)) {
+            const userPhone =`${userDetails.botUser.countryCode}${userDetails.botUser.mobile}`.replace("+", "");
+            const metadata = userDetails.integration.metadata;
+            const message = (userDetails.metadata?.link)? `Your meeting slot is confirmed \n\nClick meeting link below: \nLink: ${userDetails.metadata?.link}`:"Reminder you have meeting";
 
-              await sendWhatsappMessage(metadata?.access_token, metadata?.pid, userPhone, message);
-            }
-          }),
-        );
+            await sendWhatsappMessage(metadata?.access_token, metadata?.pid, userPhone, message);
+          }
+        }));
       }
     });
   } catch (error: any) {

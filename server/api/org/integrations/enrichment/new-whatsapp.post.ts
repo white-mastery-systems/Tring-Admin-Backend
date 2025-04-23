@@ -66,7 +66,7 @@ export default defineEventHandler(async (event) => {
     ]);
 
     const { access_token, pid } = integrationData.metadata;
-    const message = `${body?.name ? `*Hey ${body.name},*👋\n` : ""} Thanks for showing interest in ${body?.company || "our product"}!\nWe’re excited to help you explore how we can bring value to your business.\n\nLet us know how you'd like to proceed 👇`;
+    const message = `${body?.name ? `Hi *${body.name},* Welcome to YourStore.io!\n` : `*Welcome to YourStore.io!*\n`}\nWe’re excited to have you onboard. We’ll use this chat to send you exclusive updates, offers, and the latest trends from our store.\n\nReady to explore? Visit\n [https://yourstore.io/] or If you have any questions, feel free to message me here!.`;
     const data:any = await sendWhatsappMessage(`${access_token}`, `${pid}`, userPhone, message)
 
     if(data?.messages[0]?.id){
