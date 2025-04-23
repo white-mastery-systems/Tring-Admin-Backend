@@ -45,6 +45,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
         "style": 0.5,
         "use_speaker_boost": false,
         "voice": "",
+        "speed": 1,
         "model": ""
     },
     "deepgram": {
