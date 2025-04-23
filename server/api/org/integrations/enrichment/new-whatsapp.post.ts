@@ -42,30 +42,29 @@ export default defineEventHandler(async (event) => {
     const botId = "3858e7d4-3151-4608-85fc-17b1e323fff6";
     const bot = await getBotDetails(botId);
     if (!bot || !bot.channels?.whatsapp) {
-      return {status:false, error: "Bot details not found"};
+      return {status:1, message: "Bot details not found"};
     }
 
-    if(!body.countryCode && body.country){
-      body.country = body.country?.toLowerCase();
-      const countryData = countriesData.find((item) => item.name.toLowerCase() === body.country || item.flag.toLowerCase() === body.country || item.code.toLowerCase() === body.country);
-      body.countryCode = countryData?.dial_code || "+91";
-    }
-    const userPhone = normalizePhoneNumber(`${body?.countryCode}`, body.phone);
+    const { countryCode, phoneLength } = getNormalizedPhoneDetails(body);
+
+    const userPhone = normalizePhoneNumber(`${countryCode}`, body.phone, phoneLength);
     const [integrationData, botuser] = await Promise.all([
       getIntegrationDetails(bot.channels?.whatsapp),
       fetchUserByPhoneOrCreate(userPhone, bot.organizationId, "whatsapp", body?.name, body?.email)
     ])
 
-    if(!integrationData){
-      return { status: false, error: "Integration data not found" };
+    const integrationDetail = integrationData || (await getOrgWhatsappIntegration(bot.organizationId)).at(0)
+
+    if(!integrationDetail){
+      return { status: 0, message: "Whatsapp integration data not found", data: null}
     }
     
     const [chat, enrichData] = await Promise.all([
-      fetchWhatsappChatOrCreate(botuser.id, bot.id, integrationData?.org_id),
-      fetchEnrichByPhoneOrCreate(botuser, integrationData.id || ""),
+      fetchWhatsappChatOrCreate(botuser.id, bot.id, integrationDetail?.org_id),
+      fetchEnrichByPhoneOrCreate(botuser, integrationDetail?.id),
     ]);
 
-    const { access_token, pid } = integrationData.metadata;
+    const { access_token, pid } = integrationDetail?.metadata;
     const message = `${body?.name ? `Hi *${body.name},* Welcome to YourStore.io!\n` : `*Welcome to YourStore.io!*\n`}\nWe’re excited to have you onboard. We’ll use this chat to send you exclusive updates, offers, and the latest trends from our store.\n\nReady to explore? Visit\n [https://yourstore.io/] or If you have any questions, feel free to message me here!.`;
     const data:any = await sendWhatsappMessage(`${access_token}`, `${pid}`, userPhone, message)
 
@@ -80,21 +79,41 @@ export default defineEventHandler(async (event) => {
         updateWhatsappEnrichmentById(enrichData.id, {...enrichData, metadata:{...(enrichData?.metadata || {}), messageId: data?.messages[0]?.id}})
       ]);
     }
-    return { status: true, message: "success", data };
+    return { status: 1, message: "success", data: enrichData };
   } catch(error:any) {
     logger.error(JSON.stringify({ error: JSON.stringify(error), msg: error.message }));
-    return {status:false, error: error.message};
+    return { status: 0, message: error.message, data: null };
   }
 });
 
-const normalizePhoneNumber = (countryCode: string, phone: string): string => {
+const normalizePhoneNumber = (countryCode: string, phone: string, phoneLength:number): string => {
   const cleanedCountryCode = countryCode.replace(/\D/g, ""); // Remove non-digits
   const cleanedPhone = phone.replace(/\D/g, ""); // Remove non-digits
 
   // If phone already starts with the country code, return as-is
-  if (cleanedPhone.startsWith(cleanedCountryCode)) {
+  if (cleanedPhone.startsWith(cleanedCountryCode) && phoneLength < cleanedPhone.length) {
     return cleanedPhone;
   }
 
   return cleanedCountryCode + cleanedPhone;
+};
+
+
+const getNormalizedPhoneDetails = (body: any) => {
+  let phoneLength = 10;
+  let countryCode = body?.countryCode ?? null;
+
+  if (countryCode) {
+    countryCode = "+" + countryCode.replace(/\+/g, "").trim();
+    const data = countriesData.find((item) => item.dial_code === countryCode);
+    phoneLength = Array.isArray(data?.phoneLength) ? data.phoneLength[0] : data?.phoneLength ?? phoneLength;
+  } else if (body?.country) {
+    const country = body?.country.toLowerCase();
+    const data = countriesData.find((item) => item.name.toLowerCase() === country || item.code.toLowerCase() === country || item.flag.toLowerCase() === country);
+    countryCode = data?.dial_code || "+91";
+    phoneLength = Array.isArray(data?.phoneLength) ? data.phoneLength[0] : data?.phoneLength ?? phoneLength;
+  } else {
+    countryCode = "+91"
+  }
+  return { countryCode, phoneLength };
 };

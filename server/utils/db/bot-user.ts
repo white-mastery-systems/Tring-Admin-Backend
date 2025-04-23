@@ -18,6 +18,10 @@ export const updateBotUser = async ( id: string, integrationData: any) => {
   }).where (eq(botUserSchema.id, id))
 }
 
+export const updateBotUserById = async (id: string, data:any) => {
+  return (await db.update(botUserSchema).set({...data, updatedAt: new Date()}).where(eq(botUserSchema.id, id)).returning())[0]
+}
+
 export const getBotUserByPhone = async (
   phone: string,
   countryCode: string,
@@ -96,6 +100,7 @@ export const fetchUserByPhoneOrCreate = async (
   userType: "voicebot" | "chatbot" | "whatsapp" = "chatbot",
   name?: string,
   email?: string,
+  enrichStatus?:string,
 ) => {
   // let countryCode = phone?.substring(0, 2);
   // phone = phone.slice(2);
@@ -111,6 +116,7 @@ export const fetchUserByPhoneOrCreate = async (
     countryCode: `+${countryCode}`,
     name: name || "",
     ...(email ? { email } : {}),
+    ...(enrichStatus ? { whatsappEnrichStatus: enrichStatus } : {}),
     organizationId: orgId,
     userType,
     isNameVerified: false,
@@ -125,3 +131,12 @@ export const splitPhoneNumber = (phoneNumber: string) => {
   const phone = parsedPhone?.nationalNumber || phoneNumber.slice(2);
   return { countryCode, phone };
 };
+
+export const getBotUserByEmailOrPhone = async (email:string, phone?:string) => {
+  const conditions = [eq(botUserSchema.email, email)];
+
+  if (phone) {
+    conditions.push(eq(botUserSchema.mobile, phone));
+  }
+  return await db.query.botUserSchema.findFirst({where: or(...conditions)});
+}
