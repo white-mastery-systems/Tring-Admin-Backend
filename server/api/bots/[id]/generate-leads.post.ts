@@ -12,6 +12,7 @@ import {
 import { newGenerateLeadInZohoCRM, newUpdateNotesInZohoCRM } from "../../../utils/v2/integrations/crm/zoho/zoho-crm"
 import { newGenerateContactInZohoBigin, newGenerateLeadInZohoBigin, newUpdateNotesInZohoBigin } from "~/server/utils/v2/integrations/crm/zoho/zoho-bigin";
 import { generateLeadsInClay } from "~/server/utils/clay/webhook";
+import { listActiveBotIntegration } from "~/server/utils/db/bot";
 
 const config = useRuntimeConfig()
 
@@ -34,8 +35,6 @@ export default defineEventHandler(async (event) => {
     generateLeadsValidationParams,
   );
 
-  console.log("bot user", { botUser: body.botUser })
-
   const botDetails: any = await getBotDetails(botId);
 
   if(botId === "dc32db7b-71e6-4248-8337-2c81cba74095" && !body?.note) {
@@ -50,7 +49,8 @@ export default defineEventHandler(async (event) => {
   }
 
   const adminUser: any = await getAdminByOrgId(botDetails?.organizationId);
-  let botIntegratsions: any = await listBotIntegrations(botId);
+  let botIntegratsions: any = await listActiveBotIntegration(botId);
+
   botIntegratsions?.map(async (botIntegration: any) => {
     if (botIntegration?.integration?.crm === "zoho-bigin") {
       if (!body.botUser?.metaData?.zohoBiginLeadId) {

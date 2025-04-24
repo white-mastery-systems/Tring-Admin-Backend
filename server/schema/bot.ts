@@ -228,6 +228,7 @@ export const botIntegrationSchema = chatbotSchema.table("bot_integrations", {
   integrationId: uuid("integration_id").references(() => integrationSchema.id, {
     onDelete: "cascade",
   }),
+  status: varchar("status", { enum: ["active", "inactive"]}).default("active"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)
