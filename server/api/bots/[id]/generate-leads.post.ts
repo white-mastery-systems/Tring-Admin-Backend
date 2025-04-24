@@ -37,6 +37,7 @@ export default defineEventHandler(async (event) => {
 
   const botDetails: any = await getBotDetails(botId);
 
+  // demo
   if(botId === "dc32db7b-71e6-4248-8337-2c81cba74095" && !body?.note) {
     try {
       await insertRecordsInClay({

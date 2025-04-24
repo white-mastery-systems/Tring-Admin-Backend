@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
   const data = await createCallLogs({
     ...body,
   })
-
+  // demo
   if(body?.botId === "5261422b-57cb-432a-bf9f-904eca5d3cf0") {
     try {
       insertRecordsInClay({ body: data })
