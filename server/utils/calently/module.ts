@@ -5,7 +5,8 @@ import { logger } from "~/server/logger";
 const calendlyToken = "eyJraWQiOiIxY2UxZTEzNjE3ZGNmNzY2YjNjZWJjY2Y4ZGM1YmFmYThhNjVlNjg0MDIzZjdjMzJiZTgzNDliMjM4MDEzNWI0IiwidHlwIjoiUEFUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJodHRwczovL2F1dGguY2FsZW5kbHkuY29tIiwiaWF0IjoxNzQ0OTUwMzY3LCJqdGkiOiI1ZDlhMGIxMC0zNmI0LTQ5YzUtYjE1NC1jZjVjMjE5NTRjNjIiLCJ1c2VyX3V1aWQiOiJkMWMyOTE2YS04ZGQ4LTRlM2QtYTM5My0xNWE1NDA3N2FlNzIifQ.GBnz00xkUT1rD3WAIo8iQQgGgc3KoJdijMuK245PNR46MmiFNjJK8oQWKiXg0FlEpBUTuHSPBIxAiSGesZImoA"
 export const getAllScheduledEvents = async (access_token?: string, userUri?:string) => {
   try {
-    const userurl = userUri ?? "https://api.calendly.com/users/d1c2916a-8dd8-4e3d-a393-15a54077ae72"
+    // const userurl = userUri ?? "https://api.calendly.com/users/d1c2916a-8dd8-4e3d-a393-15a54077ae72"
+    const userurl = userUri ?? "https://api.calendly.com/users/62b056c5-775e-4b3e-804a-52d9f9dee9fe"
     const url = `https://api.calendly.com/scheduled_events?user=${userurl}&status=active&count=100`;
 
     const list:any = await $fetch(url, {
@@ -22,7 +23,8 @@ export const getAllScheduledEvents = async (access_token?: string, userUri?:stri
 
 export const getAllCancelledScheduledEvents = async (access_token?: string, userUri?:string) => {
   try {
-    const userurl = userUri ?? "https://api.calendly.com/users/d1c2916a-8dd8-4e3d-a393-15a54077ae72"
+    // const userurl = userUri ?? "https://api.calendly.com/users/d1c2916a-8dd8-4e3d-a393-15a54077ae72"
+    const userurl = userUri ?? "https://api.calendly.com/users/62b056c5-775e-4b3e-804a-52d9f9dee9fe"
     const url = `https://api.calendly.com/scheduled_events?user=${userurl}&status=canceled&count=100`;
 
     const list:any = await $fetch(url, {
@@ -42,7 +44,8 @@ export const getAllCalendlyScheduledEvents = async (access_token?: string, userU
     status = status || "active"
     const now = new Date();
     const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0)
-    const userurl = userUri ?? "https://api.calendly.com/users/d1c2916a-8dd8-4e3d-a393-15a54077ae72";
+    // const userurl = userUri ?? "https://api.calendly.com/users/d1c2916a-8dd8-4e3d-a393-15a54077ae72"
+    const userurl = userUri ?? "https://api.calendly.com/users/62b056c5-775e-4b3e-804a-52d9f9dee9fe"
     const baseUrl = `https://api.calendly.com/scheduled_events?user=${userurl}&status=${status}&count=100&sort=start_time:desc&min_start_time=${start}`;
     let page:any = null
     let hasMore = true;
@@ -97,7 +100,8 @@ export const getTimeBasedCalendlyScheduledEvents = async (access_token?: string,
     const end = (endTime) ? new Date(endTime) : new Date(start.getTime() - 30 * 60 * 1000);
     status = status || "active"
     
-    const userurl = userUri ?? "https://api.calendly.com/users/d1c2916a-8dd8-4e3d-a393-15a54077ae72";
+    // const userurl = userUri ?? "https://api.calendly.com/users/d1c2916a-8dd8-4e3d-a393-15a54077ae72"
+    const userurl = userUri ?? "https://api.calendly.com/users/62b056c5-775e-4b3e-804a-52d9f9dee9fe"
     const baseUrl = `https://api.calendly.com/scheduled_events?user=${userurl}&status=${status}&count=100&sort=start_time:desc&min_start_time=${start}&max_start_time=${end}`;
     let page:any = null
     let hasMore = true;
