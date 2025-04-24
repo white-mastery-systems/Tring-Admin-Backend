@@ -68,15 +68,12 @@ const handleAddEditBot = handleSubmit(async (values) => {
     // Use the appropriate parsing function based on the bot type
     if (props.botType === 'voice') {
       const parsedVoiceBotData = cleanAndParseVoiceBotJson(scrapedData);
-      console.log("Parsed Voice Bot Data:", parsedVoiceBotData);
-
       // Update store 
       scrapData.voiceBotScrapedData = parsedVoiceBotData;
 
       // Also save to localStorage as backup
       try {
         localStorage.setItem('voiceBotScrapedData', JSON.stringify(parsedVoiceBotData));
-        console.log("Voice bot data saved to localStorage");
       } catch (storageErr) {
         console.error("Failed to save to localStorage:", storageErr);
       }
@@ -96,7 +93,6 @@ const handleAddEditBot = handleSubmit(async (values) => {
       }
     }
   } catch (err: any) {
-    console.error("Import error:", err);
     toast.error(err?.statusMessage || "Failed to import data.");
   } finally {
     isLoading.value = false;

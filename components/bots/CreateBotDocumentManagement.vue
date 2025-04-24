@@ -172,7 +172,6 @@ const fileUpload = async () => {
       props.refresh(); // Call parent's refresh function
       selectedFile.value = null;
     } catch (error) {
-      console.error("Error uploading file:", error);
       toast.error("Failed to upload document");
     } finally {
       isLoading.value = false;

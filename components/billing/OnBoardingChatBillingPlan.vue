@@ -205,8 +205,6 @@ const chooseFreeTrialPlan = async (plan: string) => {
   if (!userDetails.value) {
     await fetchUser();
   }
-  console.log(plan, "plan -- plan", indianUser.value, 'isIndianUser.value -- isIndianUser.value', isIndianUser.value);
-  console.log(config.public.zohoIndianChatSubscription, "config.public -- config.public", userDetails.value, "userDetails.value  --- userDetails.value")
   const encodedName = encodeURIComponent(userDetails.value.username);
   const encodedEmail = encodeURIComponent(userDetails.value.email);
 

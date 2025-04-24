@@ -68,7 +68,6 @@ const { handleSubmit, values, setFieldValue } = useForm({
   validationSchema: botConfigSchema,
 });
 watch(() => props?.botDetails?.metadata?.prompt, (defaultFormValues) => {
-  console.log('defaultFormValues.ROLE', defaultFormValues.ROLE)
   setFieldValue("NAME", defaultFormValues?.NAME || "");
   setFieldValue("COMPANY", defaultFormValues.COMPANY || "");
   setFieldValue("ROLE", defaultFormValues.ROLE || "");

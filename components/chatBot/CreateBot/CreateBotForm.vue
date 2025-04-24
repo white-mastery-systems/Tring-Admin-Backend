@@ -207,7 +207,6 @@ const handleLeaveConfirm = async () => {
       // Delete bot after navigation
       try {
         await deleteBot(route.params.id, true);
-        console.log('Bot deleted successfully');
       } catch (deleteError) {
         console.error('Error deleting bot:', deleteError);
       }

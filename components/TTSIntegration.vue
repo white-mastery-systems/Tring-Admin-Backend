@@ -90,7 +90,6 @@ const {
 
 // Watch for integrationModalState changes to update ttsModalState
 watch(() => props.integrationModalState, (newValue: any) => {
-  console.log(newValue, "newValue TTS Integration");
   if (newValue !== undefined) {
     ttsModalState.open = Boolean(newValue);
     ttsModalState.id = null;
@@ -99,7 +98,6 @@ watch(() => props.integrationModalState, (newValue: any) => {
 
 // Watch for ttsModalState.open changes to emit stateControl
 watch(() => ttsModalState.open, (newValue) => {
-  console.log("TTS Modal open changed to:", newValue);
   if (newValue === false) {
     emit("stateControl", false);
   }
@@ -114,7 +112,6 @@ const actionsComponent = (id: any) => h(
   h(UiButton, {
     color: "primary",
     onClick: () => {
-      console.log("Edit TTS Integration", id);
       ttsModalState.open = true;
       ttsModalState.id = id;
       emit("action", id, 'edit');

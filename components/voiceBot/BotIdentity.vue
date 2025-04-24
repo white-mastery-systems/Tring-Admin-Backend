@@ -2,8 +2,7 @@
   <div class="pb-2 sm:pb-0">
     <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
       <div class="flex items-center grid grid-cols-2 gap-3 text-left">
-        <span class="font-medium text-left text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px]">Select your Call
-          Type</span>
+        <span class="font-medium text-left text-[12px] sm:text-[12px] md:text-[16px] lg:text-[18px]">Select your Call Type</span>
         <SelectField name="boundDirection" :options="boundList" :disabled="true" placeholder="Select a direction" />
       </div>
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] my-3 h-[0.5px]" />
