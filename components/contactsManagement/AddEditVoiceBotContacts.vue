@@ -56,8 +56,8 @@
 </template>
 <script setup lang="ts">
 import { createColumnHelper } from "@tanstack/vue-table";
-import { Icon, UiBadge, UiButton } from "#components";
-import { useRoute, useRouter } from "vue-router";
+import { Icon, UiButton } from "#components";
+import { useRoute } from "vue-router";
 
 definePageMeta({
   middleware: "user",
@@ -71,7 +71,6 @@ const emit = defineEmits<{ (e: "popupState", payload: any): void }>();
 const addBucketModalState: any = ref({ open: false, id: null });
 const deleteIntegrateNumber = ref({ open: false, id: null });
 const exportDataHandler = ref({ status: false, type: "csv" });
-const activeStatus = ref("");
 const exportReadyRows = ref<any>([]);
 const selectedFile = ref();
 const isLoading = ref(false)
@@ -201,10 +200,6 @@ const actionsComponent = (id: any) => {
     ]
   );
 };
-
-
-
-
 const columns = [
   columnHelper.accessor("name", {
     header: "Name",
@@ -255,7 +250,6 @@ const exportData = async () => {
           metadata: contacts.contacts.metadata ?? "",
           countryCode: contacts.contacts.countryCode?.replace('+', '') ?? "91",
           phone: contacts.contacts.phone ?? "",
-          // phone: ((contacts.contacts.countryCode ?? "+91") + contacts.contacts.phone) ?? "",
           verificationId: contacts.contacts.verificationId ?? "",
         }
       } else {

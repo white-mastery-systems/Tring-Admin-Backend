@@ -7,12 +7,6 @@
   });
   const emit = defineEmits<{ (e: "confirm"): void }>();
   const getApiStatus = ref(true);
-
-  watch(addWhatsappTemplateModalState, (newValue) => {
-    // if (!newValue.open) {
-    //   emit("confirm");
-    // }
-  });
 </script>
 <template>
   <DialogWrapper

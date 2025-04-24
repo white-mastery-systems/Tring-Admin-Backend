@@ -53,22 +53,12 @@
 </template>
 <script setup lang="ts">
 import { useLanguageList } from '~/composables/chatBotLanguageList';
-import { useConfig } from '~/composables/botManagement/chatBot/useConfig';
 import { botConfigSchema } from '~/validationSchema/botManagement/chatBot/botConfigurationValidation';
-import { botStore } from '~/store/botStore';
 import { useChatbotConfig } from '~/composables/botManagement/chatBot/useChatbotConfig';
 
 
 const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
-const showIntentDialog = ref(false);
 const { chatBotList } = useLanguageList();
-const { roles, goals } = useConfig();
-const useStoreBotDetails = botStore();
-const animationProps = {
-  duration: 0,
-};
-const router = useRouter();
-const route = useRoute();
 const emit = defineEmits(["statusUpdated"]);
 const { intentOptions, status, error, fetchConfig } = useChatbotConfig();
 const originalValues = ref({}); // Add ref for original values

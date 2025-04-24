@@ -233,7 +233,7 @@ definePageMeta({
 
 const isLoading = ref(false);
 const formattedToolsConfig = ref(null);
-const route = useRoute("voice-bot-id-tools");
+const route = useRoute();
 const paramId: any = route;
 const props = defineProps<{ botDetails: any; loading: boolean; audioResponseData: any; audioDataRefresh: () => void; refreshBot: () => void }>();
 

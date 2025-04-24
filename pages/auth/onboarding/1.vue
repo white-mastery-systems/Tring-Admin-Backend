@@ -30,14 +30,10 @@
 <script setup lang="ts">
 import { personalDetailFormValidation } from '~/validationSchema/authValidation/onBoarding/1Validation';
 
-  const showCustomRoleInput = ref(false);
   definePageMeta({
     layout: "auth",
   });
   const isLoading = ref(false)
-  const animationProps = {
-    duration: 500,
-  };
 
   const {
     errors,
@@ -51,8 +47,6 @@ import { personalDetailFormValidation } from '~/validationSchema/authValidation/
     validationSchema: personalDetailFormValidation,
     initialValues: {},
   });
-
-
 
   const roles = [
     "Chief Executive Officer",

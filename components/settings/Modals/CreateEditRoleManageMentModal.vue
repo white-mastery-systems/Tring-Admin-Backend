@@ -13,24 +13,6 @@
     },
   });
   const isLoading = ref(false);
-
-  const campaignListWithLabels = computed(() => {
-    if (roleModalState) {
-      return userDataList.value?.map((item: any) => {
-        return {
-          value: item.id,
-          label: item.id ? item.name : "", // Change label based on id value
-        };
-      });
-    }
-  });
-
-  const df = new DateFormatter("en-US", {
-    dateStyle: "long",
-  });
-  const placeholder = ref();
-  const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/;
-
   const {
     errors,
     setErrors,

@@ -1,17 +1,9 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from "vue";
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 import { botStore } from "~/store/botStore";
-import { useRoute } from "vue-router";
 import { useDocumentUpload } from "~/composables/botManagement/chatBot/useDocumentUpload";
 
 const scrapData = botStore();
-const route = useRoute();
-const props = defineProps<{
-  refresh: () => void
-}>();
-
 // Get data from store or localStorage
 const localStorageData = ref(null);
 const text = ref("");

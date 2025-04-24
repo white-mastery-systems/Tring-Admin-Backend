@@ -125,7 +125,6 @@ const props = withDefaults(
 
 const selectedFileName = ref("");
 
-const replacedId = ref(props.label ?? props.name);
 let { value, errorMessage }: { value: any; errorMessage: any } =
   !props.validation
     ? { value: props?.name, errorMessage: "" }

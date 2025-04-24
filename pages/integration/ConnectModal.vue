@@ -30,7 +30,6 @@
   const props = defineProps<{
     integrationName: string;
   }>();
-
   function copy(id: string) {
     navigator.clipboard.writeText(id);
   }

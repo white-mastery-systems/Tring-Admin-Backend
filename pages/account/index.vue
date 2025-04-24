@@ -34,9 +34,6 @@ const route = useRoute();
 const router = useRouter();
 const tabValue = ref("personal-details");
 
-
-
-
 // Initialize breadcrumbs on page load
 onMounted(() => {
   // Get the current tab from query or use default
@@ -54,7 +51,6 @@ onMounted(() => {
   tabValue.value = currentTab as string;
 });
 
-
 watch(() => route.query.tab, (newType) => {
   breadcrumbStore.setBreadcrumbs([
     {
@@ -67,10 +63,8 @@ watch(() => route.query.tab, (newType) => {
 watch(() => route?.query?.tab, (newTab) => {
   tabValue.value = newTab
 })
-
-const isUpdating = ref(false);
-
 const tab = ref("personal-details");
+
 companyDetails();
 const selectedChannel = (value: any) => {
   tab.value = value;

@@ -142,14 +142,12 @@
 </template>
 
 <script setup lang="ts">
-import { Icon, UiButton } from "#components";
-import { createColumnHelper } from "@tanstack/vue-table";
+import { UiButton } from "#components";
 import { useRoute } from "vue-router";
 definePageMeta({
   middleware: "admin-only",
 });
 const config = useRuntimeConfig();
-const route = useRoute();
 // Bot details and breadcrumbs
 const props = defineProps<{ botDetails: any; loading: boolean; audioResponseData: any; audioDataRefresh: () => void; refreshBot: () => void }>();
 

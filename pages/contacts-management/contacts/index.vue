@@ -34,7 +34,7 @@
   </Page>
 </template>
 <script setup lang="ts">
-import { Icon, UiBadge, UiButton } from "#components";
+import { UiButton } from "#components";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
 definePageMeta({

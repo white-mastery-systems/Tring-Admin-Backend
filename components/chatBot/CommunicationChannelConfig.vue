@@ -32,7 +32,6 @@
         }
       " />
   </div>
-  <!-- </Page> -->
 </template>
 <script setup lang="ts">
 import { Icon, UiButton } from "#components";
@@ -40,10 +39,8 @@ import { createColumnHelper } from "@tanstack/vue-table";
 
 const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
 
-const router = useRouter();
 const columnHelper = createColumnHelper<any>();
-const route = useRoute("chat-bot-id-crm-config");
-const paramId: any = route;
+const route = useRoute();
 const planDetails = ref()
 
 let deleteIntegrationState: { open: boolean; id?: string } = reactive({

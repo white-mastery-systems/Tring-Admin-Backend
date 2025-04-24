@@ -1,7 +1,8 @@
-import { and, lte, gte } from "drizzle-orm";
+import { and, lte, gte, inArray } from "drizzle-orm";
 import momentTz from "moment-timezone";
 import { getDateRangeForFilters } from "./leads";
 import { logger } from "~/server/logger";
+import { chatResponseImprovementSchema } from "~/server/schema/bot";
 
 const db = useDrizzle();
 
@@ -260,7 +261,7 @@ export const fetchWhatsappChatOrCreate = async (userId: string, botId: string, o
 };
 
 // Get all messages by bot-id
-export const getAllMessagesByBotId = async ({ organizationId, botId }: {
+export const getInadequateMessagesByBotId = async ({ organizationId, botId }: {
   organizationId: string,
   botId: string
 }) => {
@@ -268,24 +269,69 @@ export const getAllMessagesByBotId = async ({ organizationId, botId }: {
     const data = await db.query.chatSchema.findMany({
       where: and(
         eq(chatSchema.organizationId, organizationId),
-        eq(chatSchema.botId, botId)
+        eq(chatSchema.botId, botId),
+        eq(chatSchema.isProcessed, false),
+        ne(chatSchema.chatSummary, {})
       ),
-
       columns: {
         id: true,
         chatSummary: true
       }
     })
-    // return data
 
-    const result = data.map((i: any) => ({
-      [i.id]: i.inadequateMessages 
+    const filteredData = data.filter((i: any) => i.chatSummary.inadequateMessages && i.chatSummary.inadequateMessages.length)
+
+    const result = filteredData.map((i: any) => ({
+      [i.id]: i.chatSummary.inadequateMessages
     }))
 
     return result
-    
   } catch (error: any) {
     logger.error(`Get All messages by botId function Error: ${JSON.stringify(error.message)}`)
     throw new Error(error)
   }
+}
+
+export const updateChatStatus = async (chatIds: string[], status: boolean) => {
+  await db.update(chatSchema).set({
+    isProcessed: status
+   }).where(
+    inArray(chatSchema.id, chatIds)
+   )
+}
+
+export const storeImprovedBotResponses = async (data: any) => {
+  await db.insert(chatResponseImprovementSchema).values(data)
+}
+
+export const getBotUnansweredQueries = async(botId: string) => {
+  return await db.query.chatResponseImprovementSchema.findMany({
+    where: and(
+      eq(chatResponseImprovementSchema.botId, botId),
+      eq(chatResponseImprovementSchema.status, "not_trained")
+    )
+  })
+}
+
+export const updateBotQueriesById = async (id: string, data: any) => {
+  await db.update(chatResponseImprovementSchema).set({
+    ...data,
+    updatedAt: new Date()
+  })
+  .where(eq(chatResponseImprovementSchema.id, id))
+}
+
+export const getBotQueriesById = async(id: string) => {
+  return await db.query.chatResponseImprovementSchema.findFirst({
+    where: eq(chatResponseImprovementSchema.id, id)
+  })
+}
+
+export const getBotCompletedQueries = async(botId: string) => {
+  return await db.query.chatResponseImprovementSchema.findMany({
+    where: and(
+      eq(chatResponseImprovementSchema.botId, botId),
+      eq(chatResponseImprovementSchema.status, "trained")
+    )
+  })
 }

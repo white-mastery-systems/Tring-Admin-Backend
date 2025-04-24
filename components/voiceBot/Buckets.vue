@@ -24,31 +24,15 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Icon, UiBadge, UiButton } from "#components";
+import { UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
-import { useRouter, useRoute } from "vue-router";
-
-const rowList = reactive(['name', 'email', 'visitedCount', 'mobile', 'createdAt'])
-// const addBucketNameModalState = ref({ open: false, id: null });
-const addBucketModalState: any = ref({ open: false, id: null})
 
 definePageMeta({
   middleware: "admin-only",
 });
 
-const addBucketNameModalState = defineModel<{ open: boolean, id: any }>({
-  default: {
-    open: false,
-    id: "",
-  },
-});
-const router = useRouter();
-const route = useRoute();
 const searchBucket = ref("");
 let deleteBucketState: { open: boolean; id?: string } = reactive({
-  open: false,
-});
-const bucketsModalState = ref<{ open: boolean; id?: string | null }>({
   open: false,
 });
 

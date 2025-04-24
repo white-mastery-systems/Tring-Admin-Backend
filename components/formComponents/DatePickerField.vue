@@ -12,7 +12,7 @@
               'ps-3 text-start font-normal',
                 !value && 'text-muted-foreground',
               hasError ? 'border-[#ef4444]' : ''
-            )">
+            )" :disabled="disabled">
               <span>{{ value ? df.format(toDate(value)) : placeholder }}</span>
               <UiCalendarIcon class="ms-auto h-4 w-4 opacity-50" />
             </UiButton>
@@ -26,7 +26,7 @@
       </UiPopover>
       <UiFormMessage class="text-xs text-red-500" />
       <span v-if="hasError" class="mt-0 text-xs text-[#ef4444]">{{ errorMessage }}</span>
-      <span v-else class="mt-0 text-xs text-gray-500">{{ helperText }}</span>
+      <span v-else-if="helperText" class="mt-0 text-xs text-gray-500">{{ helperText }}</span>
     </UiFormItem>
   </UiFormField>
 </template>
@@ -44,9 +44,11 @@ const props = withDefaults(defineProps<{
   placeholder?: string,
   required?: boolean,
   helperText?: string,
-  validation:boolean
+  validation:boolean,
+  disabled?: boolean,
 }>(),{
-  validation:true
+  validation:true,
+  disabled: false
 });
 
 // Use vee-validate to handle form field and validation

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { useRoute } from 'vue-router';
-import { useStepStatus } from "@/composables/botManagement/voiceBot/useVoiceBotStepStatus";
+import { useVoiceBotStepStatus } from "@/composables/botManagement/voiceBot/useVoiceBotStepStatus";
 import BotDetails from '@/components/voiceBot/BotDetails.vue';
 import TelephoneSetup from '@/components/voiceBot/TelephoneSetup.vue';
 import BotSetup from '@/components/voiceBot/BotSetup.vue';
@@ -15,7 +15,7 @@ const props = defineProps<{
   refreshBot: () => void
 }>();
 const route = useRoute();
-const { accordionItems, updateStepStatus } = useStepStatus(route);
+const { accordionItems, updateStepStatus } = useVoiceBotStepStatus(route);
 const stepComponents: Record<string, any> = {
   botdetails: BotDetails,
   telephoneSetup: TelephoneSetup,
@@ -51,7 +51,7 @@ onMounted(() => {
                 <span class="text-[12px] sm:text-[12px] md:text-[16px]">
                   {{ item.title }}
                 </span>
-                <span class="text-[8px] sm:text-[8px] md:text-[10px] text-[#71717A] text-start">
+                <span class="text-[8px] sm:text-[8px] md:text-[12px] text-[#71717A] text-start">
                   {{ item.subtitle }}
                 </span>
               </div>

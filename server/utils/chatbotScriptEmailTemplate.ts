@@ -3,7 +3,6 @@ export const chatbotScriptEmailTemplate = (adminName: string, chatbotName: strin
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 
-    console.log({ formattedScript })
   return `<!DOCTYPE html>
     <html>
        <body>

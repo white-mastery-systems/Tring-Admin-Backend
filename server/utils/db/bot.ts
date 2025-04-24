@@ -85,6 +85,7 @@ export const getBotDetailsNoCache = async (botId: string) => {
     with: {
       documents: true,
       organization: true,
+      industry: true
     },
   });
   return bot;
@@ -239,6 +240,20 @@ export const listBotIntegrations = async (botId: string, query?: any) => {
     return data;
   }
 };
+
+export const listActiveBotIntegration = async(botId: string) => {
+  const data = await db.query.botIntegrationSchema.findMany({
+    where: and(
+      eq(botIntegrationSchema.botId, botId),
+      eq(botIntegrationSchema.status, "active")
+    ),
+    orderBy: [desc(botIntegrationSchema.createdAt)],
+    with: {
+      integration: true
+    }
+  });
+  return data
+}
 
 export const getBotIntegrationById = async (
   botId: string,

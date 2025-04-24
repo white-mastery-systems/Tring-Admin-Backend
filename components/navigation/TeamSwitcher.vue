@@ -1,13 +1,4 @@
 <script setup lang="ts">
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuShortcut,
-//   DropdownMenuTrigger,
-// } from '@/registry/new-york/ui/dropdown-menu'
 import {
   SidebarMenu,
   SidebarMenuButton,

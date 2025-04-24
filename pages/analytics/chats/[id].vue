@@ -79,7 +79,6 @@
                 </div>
               </UiTabsContent>
             </UiTooltipProvider>
-
             <UiTabsContent value="Timeline">
               <div class="flex h-screen-minus-12 flex-col justify-start gap-6 overflow-y-scroll pb-[1rem  pt-[1rem]">
                 <TimeLine v-for="(step, index) in timeLineData" :key="index" :index="index" @timeLine="
@@ -110,7 +109,6 @@
               }}</span>
             </div>
           </div>
-
           <ChatPreview v-if="computed(() => chats?.length && !!leadData)" :leadDataValue="leadData" :chatValue="chats"
             :scrollChatBox="BotId" @chatId="BotId = null" />
         </div>

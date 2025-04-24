@@ -182,23 +182,6 @@ const fileUpload = async () => {
   }
 };
 
-// Action handler
-const handleAction = (list: any, action: any) => {
-  if (myPopover.value) {
-    myPopover.value = false;
-  }
-  isSheetOpen.value = false;
-
-  switch (action) {
-    case "download":
-      singleDocumentDownload(list);
-      break;
-    case "delete":
-      singleDocumentDelete(list);
-      break;
-  }
-};
-
 // Cleanup on component unmount
 onUnmounted(() => {
   documentFetchInterval.value && clearInterval(documentFetchInterval.value);

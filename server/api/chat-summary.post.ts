@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
           { "role": "assistant", "content": "..." }
         ]
       }
-      If no unanswered segments are found, return:
+      If no inadequate Messages are found, return:
       {
         "chatSummary": "string",
         "inadequateMessages": []

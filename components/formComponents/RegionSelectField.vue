@@ -95,14 +95,6 @@ const props = defineProps({
 });
 const stateHeightMap = ref(new Map());
 
-// const statesList: any = computed(() => {
-//     return stateData
-//         ?.filter(({ country_name }) => {
-//             return country_name === country.value
-//         })?.filter(({ name }) => name.toLowerCase().includes(searchField.value))
-//         .map((item) => item.name);
-// });
-
 const statesList = computed(() => {
     // First, find the country object and its code based on country.value (which is the country name)
     const countryObject = countryData.find(c => c.name === country.value);

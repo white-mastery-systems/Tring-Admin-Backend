@@ -86,9 +86,9 @@ const onSubmit = handleSubmit(async (values) => {
           <!-- New Password field with eye icon -->
           <div class="relative">
             <TextField :type="passwordVisible ? 'text' : 'password'" name="newPassword" label="New Password"
-              placeholder="New Password" />
+              placeholder="New Password" :textFieldMaxLength="30" :passwordMaxLength="true" />
             <div
-              class="absolute inset-y-0 right-0 top-5 sm:top-5 md:top-[22px] flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer h-[40px]"
+              class="absolute inset-y-0 right-0 top-[36px] sm:top-[36px] md:top-[36px] flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer h-[40px]"
               @click="togglePasswordVisibility" role="button" tabindex="0" aria-label="Toggle password visibility">
               <EyeOff v-if="passwordVisible" size="20" />
               <Eye v-else size="20" />
@@ -98,9 +98,10 @@ const onSubmit = handleSubmit(async (values) => {
           <!-- Confirm Password field with eye icon -->
           <div class="relative">
             <TextField :type="confirmPasswordVisible ? 'text' : 'password'" label="Confirm Password"
-              name="confirmPassword" placeholder="Confirm Password" />
+              name="confirmPassword" placeholder="Confirm Password" :textFieldMaxLength="30"
+              :passwordMaxLength="true" />
             <div
-              class="absolute inset-y-0 right-0 top-5 sm:top-5 md:top-[22px] flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer h-[40px]"
+              class="absolute inset-y-0 right-0 top-[36px] sm:top-[36px] md:top-[36px] flex items-center px-3 text-gray-500 hover:text-gray-700 cursor-pointer h-[40px]"
               @click="toggleConfirmPasswordVisibility" role="button" tabindex="0"
               aria-label="Toggle confirm password visibility">
               <EyeOff v-if="confirmPasswordVisible" size="20" />

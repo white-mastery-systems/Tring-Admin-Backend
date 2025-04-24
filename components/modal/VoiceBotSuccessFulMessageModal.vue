@@ -79,10 +79,6 @@ const { handleSubmit, errors, values } = useForm({
   }
 });
 
-const closeModal = () => {
-  VoiceBotSuccessfulMessageModalState.value.open = false;
-};
-
 const onSubmit = handleSubmit(async (values) => {
   try {
     const response = await $fetch(`/api/voicebots/${route.params.id}/dial`, {

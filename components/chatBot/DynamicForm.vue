@@ -1,7 +1,7 @@
 <template>
   <div class="mx-0 gap-3 py-0">
     <CrmConfiguration />
-    <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full mb-5" />
+    <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full mb-5 h-[0.5px]" />
     <div>
       <div class="text-sm sm:text-sm md:text-base lg:text-lg font-bold mb-5"> Dynamic Form </div>
       <form @submit.prevent="dynamicForm" class="space-y-4">
@@ -25,10 +25,10 @@
       <div class="mt-8" v-if="formFields.length">
         <h2 class="text-sm sm:text-sm md:text-base lg:text-lg font-semibold pb-2">Form Preview</h2>
         <form class="space-y-4">
-          <div v-for="(field, index) in formFields" :key="index" class="space-y-3 flex items-end gap-2">
+          <div v-for="(field, index) in formFields" :key="index" class="space-y-3 flex gap-2">
             <div v-if="field.type === 'date'" class="w-full">
               <DatePickerField :name="field.model" :label="field.label" :placeholder="field.placeholder" 
-                disabled />
+                :disabled="true" />
             </div>
             <div v-else-if="field.type === 'time'" class="w-full">
               <TimePickerField :name="field.model" :label="field.label" :placeholder="field.placeholder" 
@@ -39,7 +39,7 @@
               <TextField :name="field.model" :label="field.label" :placeholder="field.placeholder" :type="field.type"
                  disabled />
             </div>
-            <div class="mt-0">
+            <div :class="['mt-0 flex items-end', (field.type === 'date') ? 'pb-0' : 'pb-1']">
               <UiButton variant="outline" type="button" @click="removeField(index)">
                 <CloseIcon class="w-4 h-4" />
               </UiButton>
@@ -47,7 +47,7 @@
           </div>
         </form>
       </div>
-      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full mt-5" />
+      <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full mt-5 h-[0.5px]" />
       <CommunicationChannelConfig :botDetails="formFields" :refreshBot="props.refreshBot" />
       <UiSeparator orientation="horizontal" class="bg-[#E2E8F0] w-full mt-7 mb-6" />
       <div class="text-sm sm:text-sm md:text-base lg:text-lg font-bold"> Add tools </div>
@@ -60,20 +60,15 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 import { useForm } from 'vee-validate'; // assuming you're using vee-validate
-import * as z from 'zod'; // assuming you're using zod for validation
 import CloseIcon from "~/components/icons/CloseIcon.vue";
 import { useToCamelCase } from "~/composables/botManagement/chatBot/useToCamelCase";
 import { dynamicFormSchema } from "~/validationSchema/botManagement/chatBot/dynamicFormValidation";
 
 const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
 const isLoading = ref(false);
-const route: any = useRoute("chat-bot-id-dynamic-form");
+const route = useRoute();
 const { toCamelCase } = useToCamelCase();
 const formFields = ref(props.botDetails.formStructure?.fields ?? []);
-const requiredList = reactive([
-  { label: "Yes", value: true },
-  { label: "No", value: false },
-]);
 const typeList = reactive([
   { label: "Text", value: "text" },
   { label: "Email", value: "email" },
@@ -82,8 +77,6 @@ const typeList = reactive([
   { label: "Date", value: "date" },
   { label: "Time", value: "time" },
 ]);
-
-const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/
 
 const { handleSubmit, values, errors, setFieldValue, resetForm } = useForm({
   validationSchema: dynamicFormSchema,

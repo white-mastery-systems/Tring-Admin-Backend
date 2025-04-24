@@ -31,15 +31,10 @@
 import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 import CreateEditIntentModal from "~/components/bots/CreateEditIntentModal.vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { deleteIntent } from "~/utils/apis/intent-management"
 
 const intentDialogState = ref({ open: false, id: null });
-const selectedActions = ref("location");
-const animationProps = {
-  duration: 0,
-};
-const router = useRouter();
 const route = useRoute();
 const page = ref(1);
 const totalPageCount = ref(1);

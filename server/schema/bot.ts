@@ -14,7 +14,7 @@ import {
 
 import { createInsertSchema } from "drizzle-zod";
 import { chatbotSchema } from ".";
-import { integrationSchema, organizationSchema } from "./admin";
+import { integrationSchema, organizationSchema, industriesSchema } from "./admin";
 import { voicebotSchema } from "./voicebot"
 
 // Tables
@@ -23,6 +23,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
   name: varchar("name", { length: 64 }).notNull(),
   documentId: uuid("document_id"),
   integrationId: uuid("integration_id").references(() => integrationSchema.id),
+  industryId: uuid("industry_id").references(() =>  industriesSchema.id),
   type: varchar("type", { length: 64 }).default("real-estate"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   metadata: jsonb("metadata").default({
@@ -32,6 +33,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
       widgetPosition: "Right",
       fontFamily: "Kanit",
       generateLead: true,
+      openDelay: 3000,
     },
     prompt: {
       errorMessage:
@@ -144,6 +146,7 @@ export const chatSchema = chatbotSchema.table(
       () => organizationSchema.id,
       { onDelete: "cascade" },
     ),
+    isProcessed: boolean("is_processed").default(false),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
   (table) => ({
@@ -225,6 +228,7 @@ export const botIntegrationSchema = chatbotSchema.table("bot_integrations", {
   integrationId: uuid("integration_id").references(() => integrationSchema.id, {
     onDelete: "cascade",
   }),
+  status: varchar("status", { enum: ["active", "inactive"]}).default("active"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)
@@ -279,11 +283,30 @@ export const whatsappEnrichmentSchema = chatbotSchema.table("whatsapp_enrichment
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
+export const chatResponseImprovementSchema = chatbotSchema.table("chat_response_improvement", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").references(() => organizationSchema.id, { onDelete: "cascade" }).notNull(),
+  botId: uuid("bot_id").references(() => chatBotSchema.id, { onDelete: "cascade" }).notNull(),
+  title: text("title"),
+  instances: jsonb("instances").array(),
+  suggestions: text("suggestions").array(),
+  answer: text("answer"),
+  status: varchar("status", {
+    enum: ["trained", "not_trained"],
+  }).default("not_trained").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 // Relations
 export const chatBotRelations = relations(chatBotSchema, ({ one, many }) => ({
   organization: one(organizationSchema, {
     fields: [chatBotSchema.organizationId],
     references: [organizationSchema.id],
+  }),
+  industry: one(industriesSchema, {
+    fields: [chatBotSchema.industryId],
+    references: [industriesSchema.id],
   }),
   documents: many(documentSchema),
   chats: many(chatSchema),
@@ -368,6 +391,18 @@ export const analyticsRelations = relations(
     }),
   }),
 );
+
+export const whatsappEnrichmentRelations = relations(whatsappEnrichmentSchema, ({one, many}) => ({
+  integration: one(integrationSchema, { 
+    fields: [whatsappEnrichmentSchema.integrationId],
+    references: [integrationSchema.id]
+  }),
+  botUser: one(botUserSchema, {
+    fields: [whatsappEnrichmentSchema.botUserId],
+    references: [botUserSchema.id]
+  })
+}))
+
 // Types
 export type SelectChatBot = Omit<
   InferSelectModel<typeof chatBotSchema>,

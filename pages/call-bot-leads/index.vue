@@ -47,15 +47,7 @@ const filters = reactive<{
   limit: "10",
   country: 'all',
 });
-  // const ListLeads = ref()
-  const leads:any = ref([
-    {
-      name: "lead name test",
-      bot_name: "bot name test",
-      createdAt: "18.08.2024",
-      id: 1,
-    }, 
-  ]);
+
 const {
   status,
   data: callLogData,

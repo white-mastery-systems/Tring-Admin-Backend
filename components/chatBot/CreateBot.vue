@@ -4,10 +4,7 @@ import { ChevronDownIcon, Subtitles } from "lucide-vue-next"; // Import Lucide i
 import UiCustomization from '@/components/chatBot/UiCustomization.vue';
 import BotConfiguration from '@/components/chatBot/BotConfiguration.vue';
 import DynamicForm from '@/components/chatBot/DynamicForm.vue';
-import { nextTick } from "vue";
 import { useRoute } from 'vue-router';
-import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
-import { useDocumentsList } from '~/composables/botManagement/chatBot/useDocumentsList';
 import { useStepStatus } from "@/composables/botManagement/chatBot/useStepStatus";
 import EmailConfiguration from './EmailConfiguration.vue';
 
@@ -26,7 +23,6 @@ const openValues = ref([""]);
 onMounted(() => {
   updateStepStatus("uiCustomization"); // Default value (will update later)
 });
-
 
 </script>
 <template>
@@ -47,7 +43,7 @@ onMounted(() => {
                 <span class="text-[12px] sm:text-[12px] md:text-[16px]">
                   {{ item.title }}
                 </span>
-                <span class="text-[6px] sm:text-[6px] md:text-[10px] text-[#71717A]">
+                <span class="text-[6px] sm:text-[6px] md:text-[12px] text-[#71717A]">
                   {{ item.subtitle }}
                 </span>
               </div>

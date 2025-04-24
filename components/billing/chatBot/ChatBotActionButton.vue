@@ -5,7 +5,8 @@
     </div>
     <div v-else>
       <div class="flex items-center justify-between gap-1 cursor-pointer" @click="creditBalanceModalState.open = true">
-        <div class="flex flex-col items-center gap-1 max-h-[36px]" v-if="!isPageLoading">
+        <div class="flex flex-col items-center gap-1 max-h-[50px] sm:max-h-[50px] md:max-h-[50px] lg:max-h-[36px]"
+          v-if="!isPageLoading">
           <UiButton
             class="flex items-center justify-center font-regular text-center text-sm gap-1 bg-[#E3E4F8] hover:bg-[#E3E4F8] hover:brightness-100 px-2 py-2 md:py-2 lg:py-0">
             <div class="text-center text-[#424BD1] text-[4px] lg:text-[12px] hidden lg:flex">
@@ -14,9 +15,10 @@
                 {{ usageDetails?.walletBalance ?? 0 }}
               </span>
             </div>
+            <span class="flex sm:flex md:flex lg:hidden text-[#424BD1]">{{ usageDetails?.walletBalance ?? 0 }}</span>
           </UiButton>
           <span class="text-[4px] lg:text-[12px] flex sm:flex lg:hidden">
-            WhatsApp Credits
+            Credits
           </span>
         </div>
       </div>

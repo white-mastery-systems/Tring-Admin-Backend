@@ -43,7 +43,7 @@ import { createColumnHelper } from "@tanstack/vue-table";
 
 const router = useRouter();
 const columnHelper = createColumnHelper<any>();
-const route = useRoute("chat-bot-id-crm-config");
+const route = useRoute();
 const paramId: any = route;
 
 // Filter configuration

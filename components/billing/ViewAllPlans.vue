@@ -1,7 +1,7 @@
 <template>
   <Page title="Choose a Plan" :description="true" :disableSelector="true" :customBackRouter="correctedUrl"
     :disable-back-button="(currentRoute === `onboarding/billing?type=${route.query.type}`)" class="relative">
-    <UiTabs v-model="selectedTab" :default-value="route.query.type ?? 'chat'" class="w-full mt-2">
+    <UiTabs :default-value="route.query.type ?? 'chat'" class="w-full mt-2">
       <UiTabsList
         class="flex flex-col grid w-full sm:w-full md:w-[300px] grid-cols-2 gap-5 px-2 pb-2 pt-0 rounded-lg bg-white border-0">
         <UiTabsTrigger value="chat" @click="navigateToTab('chat')"
@@ -36,9 +36,6 @@ import { useRoute, useRouter } from 'vue-router';
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 import { MessageSquare, PhoneCall } from "lucide-vue-next";
 
-const props = withDefaults(defineProps<{ onBoardingAccount?: boolean }>(), {
-  onBoardingAccount: false, // Default value for accept
-});
 const breadcrumbStore = useBreadcrumbStore();
 const correctedUrl = ref('');
 const router = useRouter();

@@ -19,11 +19,6 @@
       <Icon name="ri:more-fill" class="h-5 w-5" />
     </UiPopoverTrigger>
     <UiPopoverContent align="center" class="w-full space-y-2">
-      <!-- <UiButton
-        class="w-full bg-[#424bd1] hover:bg-[#424bd1] hover:brightness-110"
-        @click="$emit('edit', id)"
-        >Edit</UiButton
-      > -->
       <UiButton
         variant="destructive"
         class="w-full"

@@ -105,21 +105,6 @@ const [nameField, nameFieldProps] = defineField("name");
 
 const handleConnect = handleSubmit(async (values: any) => {
   isLoading.value = true;
-
-  // // let removedContacts: any = []
-  // const formattedContact = values.contactIds.map((contact: { value: string }) => contact.value)
-  
-  // // Find removed contacts using filter
-  // const removedContacts = getSingleDetails.value
-  //   .filter((item: any) => !formattedContact.includes(item.contactId))
-  //   .map((items: any) => items.contactId)
-
-  // const transformedValues = {
-  //   ...values,
-  //   contactIds: values.contactIds.map((contact: { value: string }) => contact.value),
-  //   removedContactIds: removedContacts,
-  // };
-
   try {
     if (addBucketNameModalState.value.id) {
       $fetch("/api/org/contact-list/" + addBucketNameModalState.value.id, {

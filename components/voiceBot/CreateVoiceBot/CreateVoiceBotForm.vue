@@ -11,13 +11,10 @@ import { voiceBotCreateSchema } from '~/validationSchema/botManagement/voiceBot/
 
 const step = ref(1);
 const route = useRoute();
-const paramId: any = route;
 const scrapData = botStore();
 const isLoading = ref(false)
 const stepOneRef = ref(null);
-const pageLoading = ref(false)
 const isSubmitting = ref(false)
-const isDocumentListOpen = ref(false);
 const intervalId = ref<any>(null); // Store the interval ID
 const { contentSuggestions, suggestionLoading, suggestionError, fetchSuggestions } = useContentSuggestions();
 const { intentOptions, fetchConfig } = useChatbotConfig();

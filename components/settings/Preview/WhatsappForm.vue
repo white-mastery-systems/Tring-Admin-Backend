@@ -13,7 +13,6 @@
         </TextField>
         <SelectField name="languageCode" :options="languageList" label="Select language"
           placeholder="Select your language" required />
-        <!-- helperText="template will be created with this language" -->
       </div>
       <div>
         <div class="pt-4">
@@ -41,19 +40,6 @@
         <UiTooltipProvider>
           <UiTooltip>
             <UiTooltipTrigger as-child>
-              <!-- <UiButton type="button" class="mt-2 max-w-[130px]" color="primary" :disabled="fields.length >= 1" @click="
-                  () => {
-                    push('');
-                    setFieldValue(
-                      'headerText',
-                      (values.headerText || '') + `{{${fields.length}}}`,
-                    );
-
-                    dispatchTemplateState();
-                  }
-                ">
-                Add Variable
-              </UiButton> -->
             </UiTooltipTrigger>
             <UiTooltipContent>
               <p>Variables are limited to maximum of 1</p>
@@ -67,7 +53,6 @@
         <FileUpload @change="uploadFile" label="Upload Image" name="headerFile" :url="values?.headerFile?.url"
           :required="true" accept="image/png,image/jpeg" :fileType="'image'" :class="'h-24 cursor-pointer'"
           :helperText="'Accept Only JPG and PNG'" />
-        <!-- <TextField type='file' name="headerImage" accept="image/png, image/jpeg"/> -->
       </div>
       <div v-else-if="values.header === 'document'">
         <span class="semibold pt-4 text-sm"> Header Content </span>
@@ -85,13 +70,12 @@
       <TextField @input="updateBody($event)" :isTextarea="true" type="text" name="body" label="Body"
         placeholder="Enter Value" :textAreaMaxLength='1024' required>
       </TextField>
-
       <FieldArray name="templateVariables" v-slot="{ fields, push, remove }">
         <fieldset class="InputGroup" v-for="(field, idx) in fields" :key="field.key">
-          <div :class="['flex gap-2', field.value ? 'items-end' : 'items-center']">
+          <div :class="['flex gap-2', field.value ? 'items-end' : (!templateVariableErrors(idx)) ? 'items-end' : 'items-center']">
             <SelectField :options="variableOptions" :label="'Variable' + ' ' + varaibleLabelName(idx)"
               :id="`name_${idx}`" :name="`templateVariables[${idx}]`" />
-            <UiButton variant="outline" type="button" class="mt-2" @click="removeTemplateVariable(idx, remove, fields)">
+            <UiButton variant="outline" type="button" class="mt-3" @click="removeTemplateVariable(idx, remove, fields)">
               <CloseIcon class="h-4 w-4" />
             </UiButton>
           </div>
@@ -191,15 +175,21 @@ watchEffect(async () => {
 });
 
 const {
-  errors,
   setErrors,
   setFieldValue,
   handleSubmit,
   defineField,
+  errors,
   values,
   resetForm,
 } = useForm({
   validationSchema: whatsAppTemplateSchema,
+});
+
+const templateVariableErrors = computed(() => {
+  return (index) => {
+    return errors.value[`templateVariables[${index}]`] || null;
+  };
 });
 
 watch(() => values.name, (newValue) => {

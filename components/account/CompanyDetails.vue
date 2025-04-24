@@ -89,8 +89,8 @@
   import { useOrgDetailsStore } from "~/store/orgDetailsStore";
   import { companyDetailsSchema } from "~/validationSchema/account/companyDetails";
   import { industry } from "~/composables/botManagement/chatBot/useBotType";
-  const useOrgDetails = useOrgDetailsStore();
 
+  const useOrgDetails = useOrgDetailsStore();
   const avgTraffic = [
     "Less than 100 visits",
     "100-500 visits",
