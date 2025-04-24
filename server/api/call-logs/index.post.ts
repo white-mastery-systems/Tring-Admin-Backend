@@ -30,11 +30,7 @@ export default defineEventHandler(async (event) => {
 
   if(body?.botId === "5261422b-57cb-432a-bf9f-904eca5d3cf0") {
     try {
-      insertRecordsInClay({ body: {
-        callSid: data?.callSid,
-        callStatus: data?.callStatus,
-        summary: data?.summary
-      }})
+      insertRecordsInClay({ body: data })
     } catch (error: any) {
       logger.error(`Insert call-logs in Clay Error: ${JSON.stringify(error.message)}`)
     }
