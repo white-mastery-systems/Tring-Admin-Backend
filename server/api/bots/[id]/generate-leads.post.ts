@@ -11,8 +11,8 @@ import {
 
 import { newGenerateLeadInZohoCRM, newUpdateNotesInZohoCRM } from "../../../utils/v2/integrations/crm/zoho/zoho-crm"
 import { newGenerateContactInZohoBigin, newGenerateLeadInZohoBigin, newUpdateNotesInZohoBigin } from "~/server/utils/v2/integrations/crm/zoho/zoho-bigin";
-import { generateLeadsInClay } from "~/server/utils/clay/webhook";
 import { listActiveBotIntegration } from "~/server/utils/db/bot";
+import { insertRecordsInClay } from "~/server/utils/clay/webhook";
 
 const config = useRuntimeConfig()
 
@@ -38,14 +38,18 @@ export default defineEventHandler(async (event) => {
   const botDetails: any = await getBotDetails(botId);
 
   if(botId === "dc32db7b-71e6-4248-8337-2c81cba74095" && !body?.note) {
-    await generateLeadsInClay({
-      body: {
-        name: body?.botUser?.name,
-        email: body?.botUser?.email,
-        phone: body?.botUser?.mobile,
-        countryCode: body?.botUser?.countryCode
-      }
-    })
+    try {
+      await insertRecordsInClay({
+        body: {
+          name: body?.botUser?.name,
+          email: body?.botUser?.email,
+          phone: body?.botUser?.mobile,
+          countryCode: body?.botUser?.countryCode
+        }
+      })
+    } catch (error: any) {
+      logger.error(`Insert Chat-leads In Clay Error: ${JSON.stringify(error.message)}`)
+    }
   }
 
   const adminUser: any = await getAdminByOrgId(botDetails?.organizationId);

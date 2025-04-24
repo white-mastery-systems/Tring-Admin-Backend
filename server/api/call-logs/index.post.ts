@@ -1,3 +1,5 @@
+import { logger } from "~/server/logger"
+import { insertRecordsInClay } from "~/server/utils/clay/webhook"
 import { createCallLogs } from "~/server/utils/db/call-logs"
 import { updateSubscriptionPlanUsageById } from "~/server/utils/v2/db/planUsage"
 
@@ -26,6 +28,18 @@ export default defineEventHandler(async (event) => {
     ...body,
   })
 
+  if(body?.botId === "5261422b-57cb-432a-bf9f-904eca5d3cf0") {
+    try {
+      insertRecordsInClay({ body: {
+        callSid: data?.callSid,
+        callStatus: data?.callStatus,
+        summary: data?.summary
+      }})
+    } catch (error: any) {
+      logger.error(`Insert call-logs in Clay Error: ${JSON.stringify(error.message)}`)
+    }
+  }
+  
   const organizationId = body?.organizationId
 
   const [voicePlan, voicePlanUsage, orgDetail, adminDetail ] = await Promise.all([
