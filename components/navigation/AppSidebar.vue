@@ -18,7 +18,6 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 })
 const { session, error, loading, getSession } = useAuth()
 const { user, clearUser } = await useUser();
-// const trialContent = ref([])
 const slideBarStore = botStore();
 const trialContent = ref([]); // Initialize as empty array
 const { isMobile } = useSidebar()

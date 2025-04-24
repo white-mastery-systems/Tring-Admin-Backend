@@ -155,20 +155,14 @@ import { useClipboard } from "@vueuse/core";
 import { Bot, Settings, Eye, FileCode } from "lucide-vue-next";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
-// import CreateBot from "~/components/chatBot/CreateBot";
-import { useDataList } from "~/composables/botManagement/chatBot/useDataList";
 import { useBotDetails } from '~/composables/botManagement/chatBot/useBotDetails';
-import { useDocumentsList } from '~/composables/botManagement/chatBot/useDocumentsList';
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 import { useBotDocuments } from '~/composables/botManagement/chatBot/useBotDocuments';
-import { useBotList } from "~/composables/botManagement/chatBot/useBotList";
 import { botStore } from '~/store/botStore';
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
 
-const router = useRouter();
-const route = useRoute("chat-bot-id");
-const emit = defineEmits<{ (e: "confirm"): void }>();
+const route = useRoute();
 const paramId: any = route;
 const queryId = ref(route.params?.id);
 const agentModalState = ref({ open: false, id: paramId.params.id });
@@ -184,12 +178,8 @@ const channelModalState = ref<{ open: boolean; id: string | null }>({
   open: false,
   id: null,
 });
-const { dataList } = useDataList()
-const scrapedData = ref(null);
 const scrollTarget = ref(null);
 const breadcrumbStore = useBreadcrumbStore();
-const { botListStatus, bots } = useBotList();
-const isDataLoading = computed(() => status.value === "pending");
 
 // Use a ref to track if guard is registered
 const guardRegistered = ref(false);

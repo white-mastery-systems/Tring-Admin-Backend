@@ -37,7 +37,6 @@ const props = withDefaults(defineProps<{
   class: '',
   validation: true
 });
-const replacedId = ref(props.label ?? props.name)
 const { value, errorMessage }: { value: any, errorMessage: any } = !props.validation ? { value: props.name, errorMessage: '' } : useField(() => props.name);
 
 const handleFocus = (event: Event) => {

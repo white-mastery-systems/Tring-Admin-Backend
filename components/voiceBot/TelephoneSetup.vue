@@ -60,7 +60,6 @@ definePageMeta({
   middleware: "admin-only",
 });
 
-const route = useRoute("voice-bot-id-ivr-config");
 const props = defineProps<{ botDetails: any; loading: boolean; refreshBot: () => void }>();
 const numberList = ref([])
 const originalValues = ref({});

@@ -31,7 +31,7 @@
     <div>
       <label
         class="dark:hover:bg-bray-800 flex h-24 max-w-[130px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 bg-contain bg-center bg-no-repeat text-center hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-        <span class="whitespace-nowrap">
+        <span class="whitespace-nowrap text-sm">
           {{ props.label || "Upload File" }}
         </span>
         <input class="hidden" type="file" @change="handleFileChange" :multiple="multiple" :accept="accept" />

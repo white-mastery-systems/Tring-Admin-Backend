@@ -4,8 +4,8 @@
       <UiInput v-model="props.filters.q" @input="props.filters.page = '1'"
         class="min-w-[130px] max-w-[130px] focus-visible:ring-0 focus-visible:ring-offset-0"
         placeholder=" Search Leads..." />
-      <BotFilter v-model="filters.botId" :botType="'voice'" />
-      <DateRangeFilter v-model:period="filters.period" v-model:from="filters.from" v-model:to="filters.to"
+      <BotFilter v-model="props.filters.botId" :botType="'voice'" />
+      <DateRangeFilter v-model:period="props.filters.period" v-model:from="props.filters.from" v-model:to="props.filters.to"
         @change="onDateChange" />
       <UiButton color="primary" @click="emitClearFilters" class="ml-2">Clear Filters</UiButton>
     </div>
@@ -108,12 +108,6 @@ const onDateChange = (value: any) => {
     delete props.filters.to;
   }
   props.filters.page = "1";
-};
-const onBotChange = (value: any) => {
-  if (value) {
-    props.filters.botId = value
-    props.filters.page = '1'
-  }
 };
 const emitClearFilters = () => {
   emit('clear-filters')

@@ -1,14 +1,5 @@
 <script setup lang="ts">
-  const file = defineModel<HTMLInputElement["files"]>();
-
-  const props = defineProps<{ accept?: string }>();
-
-  const fileLen = computed(() => file.value?.length || 0);
-  const fileIcon = computed(() =>
-    fileLen.value > 1
-      ? "ph:files-fill"
-      : "material-symbols:upload-file-rounded",
-  );
+  const file = defineModel<HTMLInputElement["files"]>();  
   const fileNames = computed(() => {
     if (!file.value) {
       return "";

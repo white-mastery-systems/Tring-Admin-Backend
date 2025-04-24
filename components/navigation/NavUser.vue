@@ -49,14 +49,6 @@ const userInfo = computed(() => {
 });
 
 const avatarValue = ref(OrgDetails.values?.logo || userInfo.value?.profile_image)
-
-// const props = defineProps<{
-//   user: {
-//     name: string
-//     email: string
-//     avatar: string
-//   }
-// }>()
 const route = useRoute();
 const router = useRouter();
 const { isMobile, toggleSidebar } = useSidebar()
@@ -77,7 +69,6 @@ const navigateToSamePage = (path: any) => {
   }
     if (isMobile.value) {
     toggleSidebar();
-    // slideBarStore.siderBarslider = false
   }
 };
 
@@ -98,10 +89,8 @@ const handleNavigation = async () => {
   }
 }
 const mobileSidebarControl = () => {
-  // console.log(isMobile.value, "isMobile.value -- isMobile.value")
   if (isMobile.value) {
     toggleSidebar();
-    // slideBarStore.siderBarslider = false
   }
 }
 </script>
@@ -130,24 +119,11 @@ const mobileSidebarControl = () => {
           :side="isMobile ? 'bottom' : 'right'" align="end" :side-offset="8" :align-offset="-2">
           <DropdownMenuLabel class="font-medium text-[16px] pl-[16.5px] pr-0 py-1">
             <span>My Account</span>
-            <!-- <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-              <Avatar class="h-8 w-8 rounded-lg">
-                <AvatarImage :src="avatarValue" :alt="userInfo?.username" />
-                <AvatarFallback class="rounded-lg">
-                  {{ userInfo?.username?.toUpperCase()?.charAt(0) }}
-                </AvatarFallback>
-              </Avatar>
-              <div class="grid flex-1 text-left text-sm leading-tight">
-                <span class="truncate font-semibold">{{ userInfo?.username }}</span>
-                <span class="truncate text-xs">{{ userInfo?.email }}</span>
-              </div>
-            </div> -->
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup class="font-medium text-[16px] p-0">
             <DropdownMenuItem v-for="item in dropdownMenuItems" :key="item.path" class="pr-0 py-0 pl-4"
               @click.prevent="navigateToSamePage(item.path)">
-              <!-- @click.prevent="navigateToSamePage(item.path)" -->
               <NuxtLink
                 :to="(!subcribed && (item.path.path === '/billing/view-wallet')) ? '/billing/view-all' : item.path"
                 class="flex items-center w-full min-h-[40px]" @click="handleNavigation">
@@ -158,7 +134,6 @@ const mobileSidebarControl = () => {
               </NuxtLink>
             </DropdownMenuItem>
           </DropdownMenuGroup>
-          <!-- <Separator /> -->
           <DropdownMenuSeparator />
           <DropdownMenuItem class="flex items-center w-full py-[10px] cursor-pointer pl-[15px]" @click="handleLogout">
             <div class="flex items-center font-medium w-full gap-[8px]">

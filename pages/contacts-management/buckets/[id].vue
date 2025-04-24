@@ -24,8 +24,8 @@
   </Page>
 </template>
 <script setup lang="ts">
-import { Icon, UiBadge, UiButton } from "#components";
-import { useRoute, useRouter } from "vue-router";
+import { UiButton } from "#components";
+import { useRoute } from "vue-router";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 import { useBucketContacts } from "~/composables/useBucketContacts"; // I
 definePageMeta({
@@ -34,16 +34,6 @@ definePageMeta({
 useHead({
   title: "Contacts"
 });
-const filters = reactive<{
-  q: string;
-  page: string;
-  limit: string;
-}>({
-  q: "",
-  page: "1",
-  limit: "10",
-});
-
 
 const chatPopupState = ref(false)
 const voicePopupState = ref(false)

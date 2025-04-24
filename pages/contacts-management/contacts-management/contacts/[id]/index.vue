@@ -52,14 +52,11 @@ definePageMeta({
 const addBucketModalState: any = ref({ open: false, id: null });
 const deleteIntegrateNumber = ref({ open: false, id: null });
 
-const searchBot = ref("");
 const route = useRoute();
 const queryId = ref(route.params.id);
 const { data: getSingleDetails } = await useLazyFetch(
   `/api/org/contact-list/${route.params.id}`,
 );
-const activeStatus = ref("");
-watch(activeStatus, async (newStatus, previousStatus) => { });
 const filters = reactive<{
   q: string;
   page: string;

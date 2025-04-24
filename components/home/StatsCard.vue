@@ -2,8 +2,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -22,7 +20,6 @@ const props = withDefaults(defineProps<{
 
 <template>
   <div class="flex gap-5 px-0 rounded-lg">
-    <!-- {{ props }} -->
     <Card class="w-full">
       <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle class="text-[14px] font-normal text-[#8A8A8A]">

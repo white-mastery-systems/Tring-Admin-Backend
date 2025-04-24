@@ -41,7 +41,6 @@ const intentTypes = [
   { label: "Education & Training", value: "education-training", icon: GraduationCap },
   // { label: "IT Service", value: "it-service", icon: Server },
 ];
-const companyDetails = ref('')
 const boundList = ref([
   {
     label: 'Both',

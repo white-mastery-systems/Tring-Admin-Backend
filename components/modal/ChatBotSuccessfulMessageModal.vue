@@ -5,9 +5,9 @@
     <div class="p-0 space-y-4 bg-white rounded-lg shadow-none">
       <div class="px-0 sm:px-0 md:px-4 space-y-3">
         <div>
-          <h3 class="text-[12px] sm:text-[12px] md:text-[16px] font-semibold text-[#09090B]">Copy Script and paste on
-            your
-            website</h3>
+          <h3 class="text-[12px] sm:text-[12px] md:text-[16px] font-semibold text-[#09090B]">
+            Copy Script and paste on your website
+          </h3>
           <p class="text-[#71717A] text-[10px] sm:text-[10px] md:text-[14px]">Copy the script code below</p>
         </div>
         <UiInput v-model="botScript" class="w-full" readonly @focus="(e) => e.target.blur()" />
@@ -51,7 +51,7 @@
             <Mail class="w-4 sm:w-4 md:w-5 h-4 sm:h-4 md:h-5" /> Send Script
           </UiButton>
         </div>
-        <div v-if="showForm" class="border-[1px] border-gray-300 rounded-lg p-4 mt-2">
+        <div v-show="showForm" class="border-[1px] border-gray-300 rounded-lg p-4 mt-2">
           <form class="space-y-4" @submit.prevent="onSubmit">
             <TextField v-model="values.email" type="text" name="email" class="text-[10px] sm:text-[10px] md:text-[14px]"
               label="Send a Mail to" placeholder="Enter email (comma-separated for multiple)" />
@@ -82,7 +82,6 @@ import { useClipboard } from "@vueuse/core";
 const props = defineProps<{ botDetails: any; refreshBot: () => void }>();
 const emit = defineEmits(["success"]);
 const route = useRoute();
-const paramId = ref(route.params?.id);
 const ChatBotSuccessfulMessageModalState = defineModel<{ open: boolean; id: any }>({
   default: {
     open: false,
@@ -95,17 +94,19 @@ const showForm = ref(false);
 const toggleForm = () => {
   showForm.value = !showForm.value;
 };
-const botScript =
-  "<" +
-  `script src="${window?.location?.href?.includes("app.tringlabs.ai") ? "https://chat.tringlabs.ai" : "https://tring-databot.pripod.com"}/widget.js" data-chatbotid="${route.params.id}" data-orgname="WMS">` +
-  "</" +
-  "script>";
 
-const { copy } = useClipboard({ source: botScript });
+// Generate the bot script
+const botScript = computed(() => {
+  return "<" +
+    `script src="${window?.location?.href?.includes("app.tringlabs.ai") ? "https://chat.tringlabs.ai" : "https://tring-databot.pripod.com"}/widget.js" data-chatbotid="${route.params.id}" data-orgname="WMS">` +
+    "</" +
+    "script>";
+});
+const { copy } = useClipboard({ source: botScript.value });
 const copyScript = async () => {
   copyBot.value = true
   previewBot.value = false
-  copy(botScript);
+  copy(botScript.value);
   toast.success("Copied to clipboard");
 };
 
@@ -127,7 +128,10 @@ const { errors,
   defineField,
   values,
   resetForm, } = useForm({
-validationSchema: sentMailSchema,
+  validationSchema: sentMailSchema,
+  initialValues: {
+    drafMessage: botScript.value
+  }
 });
 
 onMounted(() => {
@@ -154,6 +158,8 @@ const previewUrl = computed(() => {
     .join(" ");
   return `${window.location.origin}/preview.html?orgname=WMS&chatbotid=${route.params.id}&mode=preview`;
 });
+
+
 const onSubmit = handleSubmit(async (values) => {
   try {
     const response = await $fetch(`/api/bots/${route.params.id}/sendScript`, {
@@ -163,7 +169,6 @@ const onSubmit = handleSubmit(async (values) => {
         script: values.drafMessage,
       },
     });
-
     // Handle success (e.g., show a message)
     toast.success("Script sent successfully!");
     resetForm()
@@ -172,5 +177,4 @@ const onSubmit = handleSubmit(async (values) => {
     alert("Failed to send script. Please try again.");
   }
 });
-
 </script>

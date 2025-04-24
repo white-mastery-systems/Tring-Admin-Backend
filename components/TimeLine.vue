@@ -23,7 +23,6 @@ defineProps({
 });
 
 </script>
-
 <template>
   <div orientation="vertical" class="mx-auto flex w-full flex-col justify-start gap-10 bg-[#FFFFFF]">
     <div class="relative flex w-full items-start gap-6">
@@ -35,7 +34,6 @@ defineProps({
           <div v-if="!(index === (totalSteps - 1))"
             class="bg-[#8A8A8A] w-[2px] absolute left-[9px] top-[60%] z-0 rounded-xl"
             :class="[(height) ? `h-[${height}px]` : '']">
-
           </div>
         </div>
       </div>
@@ -51,9 +49,6 @@ defineProps({
               Chat {{ data.chatIndex }}
             </h4>
           </div>
-
-
-
           <div class="max-w-[600px] overflow-y-auto" v-if="data.metadata?.website">
             <span v-if="data.metadata?.title" class="min-w-[90px] text-[16px] font-semibold">
               {{ data.metadata?.title }}
@@ -66,14 +61,9 @@ defineProps({
                 class="text-indigo-600 cursor-pointer">
                 {{ data?.metadata?.website }}
               </NuxtLink>
-
-
             </div>
-
           </div>
-
           <p class="mt-2 text-[14px] font-normal text-gray-600">
-
             {{ data.createdAt }}
             <NuxtLink v-if="!['User visited the website', 'User re visited the website'].includes(data.metadata?.text)"
               class="text-indigo-600 cursor-pointer px-2 font-semibold" @click="emits('timeLine', {

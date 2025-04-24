@@ -1,8 +1,7 @@
 <template>
-  <ViewAllPlans :onBoardingAccount="false" />
+  <ViewAllPlans />
 </template>
 <script setup lang="ts">
-import { useSubscriptionCheck } from '~/composables/billing/useSubscriptionCheck';
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 
 definePageMeta({

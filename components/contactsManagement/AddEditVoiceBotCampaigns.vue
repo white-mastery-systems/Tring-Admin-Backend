@@ -17,7 +17,6 @@
     }
     " />
   </div>
-  <!-- </Page> -->
 </template>
 <script setup lang="ts">
 import { useState } from "#app";
@@ -67,6 +66,7 @@ const viewLead = async (callSid: any) => {
     params: { id: callSid },
   });
 };
+
 const columnHelper = createColumnHelper<(typeof getSingleCampaignList.value)[0]>();
 
 const actionsComponent = (id: any) =>

@@ -26,12 +26,6 @@
 import { Icon, UiBadge, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
 
-// const filters = reactive<{
-//   q: string;
-//   page: string;
-//   limit: string;
-//   active: string;
-// }>
 const page: any = ref(1);
 const totalPageCount = ref(0);
 const totalCount = ref(0);
@@ -43,22 +37,6 @@ const filters = computed(() => ({
   page: page.value,
   limit: limit.value,
 }));
-// const props: any = withDefaults(defineProps<{
-//   integrateResponse: Array<any>; // Define the type according to your data structure
-//   totalPageCount: number;
-//   totalCount: number;
-//   filters: {
-//     page: any;
-//     limit: string;
-//   };
-// }>(), {
-//   totalPageCount: 0,
-//   totalCount: 0,
-//   filters: {
-//     page: '1',
-//     limit: '10',
-//   },
-// });
 const props = defineProps<{ integrationModalState?: boolean, findTitleForIntegrationModal: any, chatIntelligence: boolean }>();
 const emit = defineEmits<{
   (e: "action", id: any, integrationModalState: string): void;
@@ -82,8 +60,6 @@ watch(() => integrationModal.open,
       emit("stateControl", integrationModal.open);
     }
   })
-
-// const deleteIntegrationState = defineModel<any>("deleteIntegrationState");
 
 const {
   status: integrationLoadingStatus,

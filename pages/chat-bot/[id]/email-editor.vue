@@ -128,10 +128,6 @@ const columns = [
     },
   }),
 ];
-const toggleAllRows = (checked: boolean, allRowIds: string[]) => {
-  selectedRows.value = checked ? allRowIds : [];
-};
-
 const handleSuccess = () => {
   emailConfigModalState.value.open = false;
   intentRefresh()

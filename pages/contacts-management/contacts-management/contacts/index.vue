@@ -55,23 +55,11 @@
 </template>
 <script setup lang="ts">
   import { createColumnHelper } from "@tanstack/vue-table";
-  import { format } from "date-fns";
-  import { any } from "zod";
-  import { useRoute, useRouter } from "vue-router";
-  import AddBucketNameModal from "~/components/voiceBot/DialogModal/CreateEditBucketModal.vue";
-  import { Icon, UiBadge, UiButton } from "#components";
+  import { Icon, UiButton } from "#components";
 
   definePageMeta({
     middleware: "user",
   });
-
-  const formSchema = toTypedSchema(
-    z.object({
-      newBotName: z.string().min(2, "Bot Name is requird."),
-    }),
-  );
-  const searchBucket = ref("");
-  const searchBotDebounce = refDebounced(searchBucket, 500);
   const deleteBucketState = ref({ open: false, id: null });
 
   const filters = reactive<{
@@ -104,18 +92,6 @@
       return buckets.data;
     },
   });
-  // const addBucketNameModalState = defineModel<{ open: boolean, id: string }>({
-  //   default: {
-  //     open: false,
-  //     id: "",
-  //   },
-  // });
-  const router = useRouter();
-  const route = useRoute();
-  const activeStatus = ref("");
-  watch(activeStatus, async (newStatus, previousStatus) => {});
-  const selectedValue = ref("Today");
-  // const newBotName = ref("");
 
   const isDataLoading = computed(() => status.value === "pending");
 

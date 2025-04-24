@@ -1,8 +1,7 @@
 <template>
     <div class="w-full h-full">
-        <OnBoardingChatBillingPlan :onBoardingAccount="onBoardingAccount" />
+        <OnBoardingChatBillingPlan />
     </div>
-  <!-- </Page> -->
 </template>
 <script setup lang="ts">
 definePageMeta({

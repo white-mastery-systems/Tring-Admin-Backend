@@ -35,10 +35,8 @@
 <script setup lang="ts">
 import { Icon, UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
-const router = useRouter();
 const columnHelper = createColumnHelper<any>();
-const route = useRoute("chat-bot-id-crm-config");
-const paramId: any = route;
+const route = useRoute();
 const filters = reactive<{
   botId: string;
   q?: string;

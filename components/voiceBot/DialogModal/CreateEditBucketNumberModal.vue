@@ -51,8 +51,6 @@ const props = withDefaults(defineProps<Props>(), {
   botType: "chat",
   typeOfAddContacts: "",
 });
-
-
 const route = useRoute();
 const queryId = ref(route.params.id)
 const bucketModalState = defineModel<{ open: boolean, id: any }>({

@@ -111,7 +111,6 @@ const voiceBillingVariation = ref([
   }
 ])
 
-
 watch(() => route.query.type, (newType) => {
 breadcrumbStore.setBreadcrumbs([
   {
@@ -124,7 +123,6 @@ breadcrumbStore.setBreadcrumbs([
   }
 ]);
 }, { deep: true, immediate: true })
-
 
 const billingVariation = computed(() => {
   if (route.query.type === "voice") {

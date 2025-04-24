@@ -8,7 +8,7 @@
         <TextField v-if="(values.provider === 'elevenlabs')" type="text" label="Integration Name"
           name="ttsIntegrationName" required placeholder="Enter integration name" />
         <TextField v-if="(values.provider === 'elevenlabs')" type="text" label="API Key" name="apikey" required
-          placeholder="API Key" @input="apikeyunmasking($event)" />
+          placeholder="API Key" />
       </div>
       <div class="flex justify-end w-full">
         <UiButton type="submit" class="mt-2" color="primary" :loading="isLoading">
@@ -58,11 +58,6 @@ watch(() => props.ttsModalState.open, async () => {
     setFieldValue("ttsIntegrationName", getSingleDetails.ttsIntegrationName);
   }
 })
-
-const apikeyunmasking = ($event: Event) => {
-  const input = $event.target as HTMLInputElement;
-  const newInput = input.value.replace(/\*/g, '');
-}
 
 const handleConnect = handleSubmit(async (values: any) => {
   isLoading.value = true

@@ -6,31 +6,31 @@ const props = defineProps({
   },
 });
 
-  const emit = defineEmits(["update:modelValue"]);
-  const selectedAction: any = ref(props.modelValue);
+const emit = defineEmits(["update:modelValue"]);
+const selectedAction: any = ref(props.modelValue);
 
-  const actionFilters = reactive([
-    {
-      content: "All",
-      value: "all",
-    },
-    {
-      content: "Whats App",
-      value: "whatsapp",
-    },
-    {
-      content: "Website",
-      value: "website",
-    },
-  ]);
+const actionFilters = reactive([
+  {
+    content: "All",
+    value: "all",
+  },
+  {
+    content: "Whats App",
+    value: "whatsapp",
+  },
+  {
+    content: "Website",
+    value: "website",
+  },
+]);
 
 watchEffect(() => {
   selectedAction.value = props.modelValue;
 });
 
-  watch(selectedAction, (newValue) => {
-    emit("update:modelValue", newValue);
-  },{deep: true, immediate: true});
+watch(selectedAction, (newValue) => {
+  emit("update:modelValue", newValue);
+}, { deep: true, immediate: true });
 </script>
 
 <template>

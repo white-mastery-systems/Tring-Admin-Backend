@@ -29,7 +29,7 @@
         'grid gap-6 w-full max-w-6xl mx-auto',
         route.query.type === 'voice'
           ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-          : (props.onBoardingAccount) ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-3',
+          : 'grid-cols-1 md:grid-cols-3',
       ]">
         <!-- Card for each billing plan -->
         <div 
@@ -158,9 +158,6 @@ import { useBillingComposable } from '~/composables/billing/useBillingComposable
 import { Check, X } from 'lucide-vue-next';
 import { watch } from 'vue';
 
-const props = withDefaults(defineProps<{ onBoardingAccount?: boolean }>(), {
-  onBoardingAccount: false, // Default value for accept
-});
 const router = useRouter();
 const route = useRoute();
 const { userDetails, fetchUser } = useUserDetailsComposable();
@@ -182,15 +179,16 @@ watch(
     }
     indianUser.value = isIndian;
     
-    if (props.onBoardingAccount) {
+    // if (props.onBoardingAccount) {
       if (queryType === 'chat') {
         billingVariationDetails.value = billingVariation.value;
       } else {
         billingVariationDetails.value = billingVariation.value;
       }
-    } else {
-      billingVariationDetails.value = billingVariation.value;
-    }
+    // } 
+    // else {
+    //   billingVariationDetails.value = billingVariation.value;
+    // }
     
     BillingVariationPending.value = pending.value;
   },

@@ -1,7 +1,5 @@
 	<script setup lang="ts">
-  import { useRoute, useRouter } from "vue-router";
   import { createColumnHelper } from "@tanstack/vue-table";
-  import { useCount } from '@/composables/useRefresh';
   import { Icon, UiBadge, UiButton } from "#components";
   import NumberModal from "~/pages/integration/NumberModal.vue";
   definePageMeta({
@@ -22,11 +20,9 @@
   const page = ref(0);
   const totalPageCount = ref(0);
   const totalCount = ref(0);
-  const router = useRouter();
-  const route = useRoute();
   const props = defineProps<{ integrationModalState?: boolean }>();
   const numberModalState = reactive({ open: false, id: null })
-  let deleteExoPhoneState = reactive({
+  const deleteExoPhoneState = reactive({
     open: false,
     id: null,
   });
@@ -53,7 +49,6 @@
       return integrations.data;
     },
   });
-  watch(route, (newValue) => { });
   watch(() => props.integrationModalState, (newValue: any) => {
     numberModalState.open = newValue
     numberModalState.id = null
@@ -125,7 +120,7 @@
       (filters.page = '1'), (filters.limit = $event);
     }
     " :totalPageCount="totalPageCount" :page="page" :totalCount="totalCount" :columns="NumberColumns"
-      :data="integrationsData" :page-size="8" :is-loading="false" :height="20" :heightUnit="'vh'" />
+      :data="integrationsData" :page-size="8" :is-loading="false" :height="18" :heightUnit="'vh'" />
     <NumberModal :numberModalState="numberModalState" @success="onSuccess()" />
     <ConfirmationModal v-model:open="deleteExoPhoneState.open" title="Confirm Delete"
       description="Are you certain you want to delete the Exophone integration? Please note that doing so will also remove all bots associated with this number?"

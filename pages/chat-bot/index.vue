@@ -30,11 +30,9 @@
 </template>
 
 <script setup lang="ts">
-import { Icon, UiButton } from "#components";
+import { UiButton } from "#components";
 import { createColumnHelper } from "@tanstack/vue-table";
-import { useState } from "#app";
 import { useRouter } from "vue-router";
-import { useBotType } from "~/composables/botManagement/chatBot/useBotType";
 import { useBreadcrumbStore } from "~/store/breadcrumbs"; // Import the store
 import { useBotList } from "~/composables/botManagement/chatBot/useBotList";
 import { useBotFilters } from "~/composables/botManagement/chatBot/useBotFilters";
@@ -55,7 +53,6 @@ breadcrumbStore.setBreadcrumbs([
   },
 ]);
 
-const searchBot = ref("");
 const agentModalState = ref({ open: false, id: null });
 const { filters } = useBotFilters();
 const { botListStatus, bots, refresh, page, totalPageCount, totalCount } = useBotList();
@@ -102,18 +99,6 @@ const Pagination = async ($evnt) => {
 
   refresh();
 };
-const onChangeCategory = (value: any) => {
-  if (value) {
-    filters.value.type = value;
-    filters.value.page = "1";
-  }
-}
-const onChangeStatus = (value: any) => {
-  if (value) {
-    filters.value.active = value;
-    filters.value.page = "1";
-  }
-}
 const handleRowClick = async (row: any) => {
   console.log('chat click',row.original.id)
   // await navigateTo(`/chat-bot/${row.original.id}`);
