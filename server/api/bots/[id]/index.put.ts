@@ -35,9 +35,9 @@ export default defineEventHandler(async (event) => {
   const industryName = industryDetail?.industryName;
   
   let defaultIntents: string | undefined, defaultNotes: string | undefined;
-  let defaultformStructure : any
+  let defaultformStructure
   
-  if(!body?.formStructure) {
+  if(!body?.customForms) {
     defaultformStructure = chatDynamicFormValues[industryName as keyof typeof chatDynamicFormValues];
     const defaultFormIntentName = Object.keys(defaultformStructure)[0]
     defaultIntents = `other\nsite_visit\nschedule_call\nschedule_appointment\n${defaultFormIntentName}`
