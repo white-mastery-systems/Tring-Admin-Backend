@@ -49,6 +49,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
     }>()
     .default({}),
   formStructure: jsonb("form_structure").default({}),
+  customForms: jsonb("custom_forms").default({}),
   tools: jsonb("tools").default({
     customTools : [],
     defaultTools: []
@@ -108,6 +109,9 @@ export const botUserSchema = chatbotSchema.table(
     visitedCount: integer("visited_count").default(1),
     userType: botUserBotTypeEnum("user_type").default("chatbot"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
+    whatsappEnrichStatus: varchar("whatsapp_enrich_status", {
+      enum : ["new", "pending", "responded", "meeting_link_sent", "meeting_booked", "meeting_cancelled", "meeting_rescheduled", "completed"]
+    }).default("pending"),
     organizationId: uuid("organization_id")
       .references(() => organizationSchema.id, { onDelete: "cascade" })
       .notNull(),
@@ -210,10 +214,16 @@ export const botIntentSchema = chatbotSchema.table("intents", {
     .references(() => chatBotSchema.id, { onDelete: "cascade"})
     .notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  type: varchar("type"),
   intent: varchar("intent", { length: 64 }).notNull(),
+  description: text("description"),
   uploads: jsonb("uploads").array(),
   emailRecipients: varchar("email_recipients").array(),
   isEmailEnabled: boolean("is_email_enabled").default(false),
+  metadata: jsonb("metadata"),
+  status: varchar("status", {
+    enum: ["active", "inactive"]
+  }).default("active"),
   link: varchar("link"),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)
