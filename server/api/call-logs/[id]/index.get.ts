@@ -11,5 +11,5 @@ export default defineEventHandler(async (event) => {
 
   const data = await getCallLogById(callLogId, timeZone, query)
 
-  return data
+  return isValidReturnType(event, data)
 })
