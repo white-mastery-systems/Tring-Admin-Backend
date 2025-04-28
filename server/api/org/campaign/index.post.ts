@@ -2,10 +2,8 @@ import { checkCampaignNameExist, creatCampaignWhatsappContacts } from "~/server/
 import { errorResponse } from "~/server/response/error.response";
 import { createVoicebotSchedular } from "~/server/utils/db/voicebots";
 import { getContactsByChatbotBucketId } from "~/server/utils/db/contact-list";
-import { scheduleWhatsAppCampaign } from "~/server/utils/whatsappSchedule";
+import { scheduleWhatsAppCampaign } from "~/server/utils/whatsapp/whatsappSchedule";
 import { logger } from "~/server/logger";
-import { getInteractedSessions } from "~/server/utils/db/chats";
-import { calculateDateRange } from "~/server/utils/db/organization";
 
 const zodInsertCampaign = z.object({
   campaignName: z.string(),
@@ -106,8 +104,6 @@ export default defineEventHandler(async (event) => {
         organizationId,
       } 
     })
-
-    // console.log({ campaignContactList })
 
     await creatCampaignWhatsappContacts(campaignContactList)
 

@@ -33,11 +33,17 @@ export default defineNitroPlugin(async (event) => {
                         const inviteeId = invitee?.uri.split("/invitees/")[1];
                         const inviteeDetails = invitee;
                         if (inviteeDetails && inviteeDetails?.email) {
-                            const userDetails = await getEnrichByEmailOrPhone(inviteeDetails?.email);
+                            let enrichUser = await getEnrichByEmailOrPhone(inviteeDetails?.email)
+                            if (inviteeDetails?.questions_and_answers[0]?.answer) {
+                            const { phone } = getParsedPhoneNumber(inviteeDetails?.questions_and_answers[0]?.answer);
+                            enrichUser = await getEnrichByEmailOrPhone(inviteeDetails?.email, phone);
+                            }
+                            const userDetails = enrichUser;
                             if (userDetails && !["meeting_cancelled", "meeting_rescheduled"].includes(userDetails.status)) {
                                 const userPhone = `${userDetails.botUser.countryCode}${userDetails.botUser.mobile}`.replace("+", "")
                                 const metadata = userDetails.integration.metadata; const message = `Your meeting slot is cancelled`;
                                 
+                                // @ts-ignore
                                 if(userDetails.metadata && !userDetails.metadata?.cancelMessage){
                                     await Promise.all([
                                         // @ts-ignore
@@ -51,7 +57,6 @@ export default defineNitroPlugin(async (event) => {
                         }
                     }))
                 }
-        
             }))
         }
     })
