@@ -152,11 +152,6 @@ export const listBotIntents = async (
     orderBy: [desc(chatBotSchema.createdAt)],
     columns: {
       organizationId: false,
-      botId: false,
-      emailRecipients: false,
-      isEmailEnabled: false,
-      updatedAt: false,
-      createdAt: false
     },
   });
   
