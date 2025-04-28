@@ -45,8 +45,7 @@ const zodChatImportContacts = z.object({
       message: "Invalid phone number format",
     }),
   ]),
-}).passthrough()
-.refine(data => {
+}).refine(data => {
   const validPhoneLength = getPhoneLengthByCountry(data["Country Code"].toString())
 
   if (!validPhoneLength) {
@@ -91,8 +90,7 @@ const zodVoiceImportsContacts = z.object({
   ]),
   "Metadata": z.string().optional(),
   "Verification Id": z.string().optional(),
-}).passthrough()
-.refine(data => {
+}).refine(data => {
   const validPhoneLength = getPhoneLengthByCountry(data["Country Code"].toString())
   if (!validPhoneLength) {
     return false; // If country code is not found
@@ -380,7 +378,6 @@ export const parseContactsFormDataFile = async ({ file, fileType, queryType } : 
     }
    
     const apiResponse: any = handleBulkUpload(parsedData, queryType);
-    // return apiResponse
 
     if (!apiResponse.success) {
       // Formatting errors for user display
@@ -405,25 +402,6 @@ export const parseContactsFormDataFile = async ({ file, fileType, queryType } : 
         Phone: contact.Phone ? String(contact.Phone) : null, // Convert Phone to string
       };
     });
-
-    
-    if(queryType === "voice") {
-      const transformedContacts = validContactData.map((contact: any) => {
-      const { Name, ["Country Code"]: countryCode, Phone, ...rest } = contact;
-
-      const metadata = Object.entries(rest)
-      .filter(([key]) => key.startsWith("Metadata_"))
-      .map(([_, value]) => value)
-      .join(", "); // Only values
-
-      return {
-        ...contact,
-        Metadata: JSON.stringify(metadata)
-      };
-    });
-    return transformedContacts
-    }
-
     
 
     return validContactData;

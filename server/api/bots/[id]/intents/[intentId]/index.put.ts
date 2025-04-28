@@ -6,8 +6,6 @@ const zodIntentUpdate = z.object({
   intent: z.string().optional(),
   emailRecipients: z.array(z.string()).optional(),
   isEmailEnabled: z.boolean().optional(),
-  metadata: z.record(z.any()).optional(),
-  status: z.string().optional(),
   link: z.string().url().min(5, "Link too short").optional(),
   uploads: z.array(z.any()).optional(),
 }).refine((data) => {
