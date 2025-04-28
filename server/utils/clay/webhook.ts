@@ -17,7 +17,7 @@ export const insertRecordsInClay = async ({ body } : { body: any }) => {
 
 export const insertCallLogsInClay = async ({ body } : { body: any }) => {
   try {
-    const data = await $fetch(`https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-c5a30595-0f9c-4824-ad7a-b028fe0b383f`,
+    const data = await $fetch(`https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-9aa1e131-60e6-4d71-b98f-c65f719c94c2`,
     {
       method: "POST",
       body
