@@ -11,6 +11,8 @@ const zodInsertWhatsappEntrichment = z.object({
   // userId: z.string(),
   // integrationId: z.string(), (After POC we can use this for find bot integration)
   company: z.string().optional(),
+  companyUrl: z.string().optional(),
+  url: z.string().optional(),
   name: z.string().optional(),
   email: z.string().optional(),
   phone: z.string(),
@@ -58,7 +60,16 @@ export default defineEventHandler(async (event) => {
     if(!integrationDetail){
       return { status: 0, message: "Whatsapp integration data not found", data: null}
     }
-    
+
+    if(body.company){
+      // @ts-ignore
+      botuser.company = body.company;
+    }
+    if(body.url || body.companyUrl){
+      // @ts-ignore
+      botuser.companyUrl = (body.url) ?? body.companyUrl;
+    }
+ 
     const [chat, enrichData] = await Promise.all([
       fetchWhatsappChatOrCreate(botuser.id, bot.id, integrationDetail?.org_id),
       fetchEnrichByPhoneOrCreate(botuser, integrationDetail?.id),

@@ -1,4 +1,5 @@
 import { getAllScheduledEventInvitees, getAllCalendlyScheduledEvents } from "~/server/utils/calently/module";
+import { getEnrichByCompanyUrl } from "~/server/utils/db/whatsapp-enrichment";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -18,7 +19,16 @@ export default defineEventHandler(async (event) => {
     }))
     const emailIds = scheduledEventInvitess.flat().filter(Boolean);
     if(emailIds.includes(body.email)){
-      return {id:1, message: "Booked" }
+      return { id:1, message: "Booked" }
+    }
+
+    const companyUrl = body.url ?? body.companyUrl ?? body.company ?? null
+    if(companyUrl){
+      const enrich = await getEnrichByCompanyUrl(companyUrl);
+      if(enrich){
+        updateWhatsappEnrichStatusById(enrich.id, "meeting_booked", enrich.metadata);
+        return { id:1, message: "Booked"}
+      }
     }
     return { id: 0, message: "Not Booked"}
     // return emailIds
