@@ -108,6 +108,7 @@ export default defineNuxtConfig({
         process.env.NUXT_PUBLIC_ZOHO_INTERNATIONAL_VOICE_LUCID_SUBSCRIPTION ||
         "",
       contactUsUrl: process.env.NUXT_PUBLIC_CONTACTUSURL || "",
+      calendlyToken: "",
     },
   },
 
