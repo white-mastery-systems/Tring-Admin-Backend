@@ -48,5 +48,4 @@ export const bookedWhatsappEnrichList = async () => {
     id: whatsappEnrichmentSchema.id, phone: whatsappEnrichmentSchema.phone
   })
   .from(whatsappEnrichmentSchema).where(inArray(whatsappEnrichmentSchema.status, ["meeting_rescheduled","meeting_booked"]))
-
 }
