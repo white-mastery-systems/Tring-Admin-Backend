@@ -27,12 +27,6 @@ return createWhatsappEnrichment({
 })
 }
 
-export const getWhatsappEnrichById = async (id: string) => {
-  return await db.select({
-    id: whatsappEnrichmentSchema.id, phone: whatsappEnrichmentSchema.phone
-  }).from(whatsappEnrichmentSchema).where(eq(whatsappEnrichmentSchema.id, id))
-}
-
 export const getEnrichByEmailOrPhone = async (email:string, phone?:string) => {
   const conditions = [eq(whatsappEnrichmentSchema.email, email)];
 
@@ -54,10 +48,4 @@ export const bookedWhatsappEnrichList = async () => {
     id: whatsappEnrichmentSchema.id, phone: whatsappEnrichmentSchema.phone
   })
   .from(whatsappEnrichmentSchema).where(inArray(whatsappEnrichmentSchema.status, ["meeting_rescheduled","meeting_booked"]))
-}
-
-export const getWhatsappEnrichByStatus = async (status: "new" | "meeting_link_sent" | "meeting_booked" | "meeting_cancelled" | "meeting_rescheduled" | "completed") => {
-  return await db.select({
-    id: whatsappEnrichmentSchema.id, phone: whatsappEnrichmentSchema.phone
-  }).from(whatsappEnrichmentSchema).where(eq(whatsappEnrichmentSchema.status, status))
 }
