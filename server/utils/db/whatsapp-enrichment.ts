@@ -21,8 +21,8 @@ export const fetchEnrichByPhoneOrCreate = async (botUser:any, integrationId:stri
         ...enrich, 
         ...((!enrich.name && botUser.name) && {name: botUser.name}),
         ...((!enrich.email && botUser.email) && {email: botUser.email}),
-        ...(botUser.company && { company: botUser.company }),
-        ...(botUser.companyUrl && { companyUrl: botUser.companyUrl }),
+        ...((!enrich.company && botUser.company) && { company: botUser.company }),
+        ...((!enrich.companyUrl && botUser.companyUrl) && { companyUrl: botUser.companyUrl }),
       }
       const data = await updateWhatsappEnrichmentById(enrich.id, payload)
       return data
