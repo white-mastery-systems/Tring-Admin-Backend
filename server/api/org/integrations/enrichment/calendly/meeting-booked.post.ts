@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
       return { id:1, message: "Booked" }
     }
 
-    const companyUrl = body.url ?? body.companyUrl ?? body.company ?? null
+    const companyUrl = extractCompanyUrl(body)
     if(companyUrl){
       const enrich = await getEnrichByCompanyUrl(companyUrl);
       if(enrich){
@@ -36,3 +36,7 @@ export default defineEventHandler(async (event) => {
     return { id: 0, message: "Not Booked"}
   }
 });
+
+const extractCompanyUrl = (body: any): string | null => {
+  return body?.url ?? body?.companyUrl ?? body?.company ?? null;
+};
