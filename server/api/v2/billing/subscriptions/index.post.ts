@@ -3,7 +3,7 @@ import { logger } from "~/server/logger";
 import { errorResponse } from "~/server/response/error.response";
 import { getAdminConfig } from "~/server/utils/db/adminConfig";
 import { getUserByUserId } from "~/server/utils/db/user";
-import { updateSubscription } from "~/server/utils/v2/billing/subscription";
+import { upsertSubscription } from "~/server/utils/v2/billing/subscription";
 import { getOrgZohoSubscription } from "~/server/utils/v2/db/zohoSubscription";
 import { BotType, zodBotTypeQuery } from "~/server/utils/validations";
 
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
     const orgDetails = await getOrganizationById(organizationId)
     const orgZohoSubscription = await getOrgZohoSubscription(organizationId, query.type)
 
-    const data = await updateSubscription({
+    const data = await upsertSubscription({
       organizationId,
       userDetails,
       body: {
