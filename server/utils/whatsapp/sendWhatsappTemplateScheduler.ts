@@ -6,20 +6,22 @@ import { getTemplateDetailsByName, sendWhatsappTemplateMessage } from "../templa
 import { fetchFileFromUrl } from "./whatsappMedia";
 
 export const sendWhatsAppTemplateScheduler = async (
-  date: any,
-  time: any,
+  dateTime: any,
   contactList: any,
   templateName: any,
   integrationData: any,
-  timeZone: string,
+  timeZone?: string,
 ) => {
   try {
     const phoneId = integrationData?.metadata?.pid;
     const accessToken = integrationData?.metadata?.access_token;
     const wabaId = integrationData.metadata?.wabaId;
 
-    const assigned_date = momentTz(date);
-    const localTime = momentTz.tz(time, "HH:mm", timeZone);
+    const timezone = (timeZone) ?? momentTz.tz.guess();
+    const scheduledMoment = momentTz.utc(dateTime).tz(timezone);
+    const assigned_date = scheduledMoment.clone();
+    const time = scheduledMoment.format("HH:mm");
+    const localTime = momentTz.tz(time, "HH:mm", timezone);
     const utcTime = localTime.clone().utc(); // Convert to UTC
 
     const year = assigned_date.get("year");

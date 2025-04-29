@@ -3,6 +3,7 @@ import { logger } from "../logger"
 import * as schedule from "node-schedule"
 import { getAllScheduledEventInvitees, getAllCalendlyScheduledEvents, getParsedPhoneNumber, getTimeBasedCalendlyScheduledEvents } from "~/server/utils/calently/module";
 import { getEnrichByEmailOrPhone, updateWhatsappEnrichStatusById, bookedWhatsappEnrichList } from "~/server/utils/db/whatsapp-enrichment";
+import { sendWhatsAppNotificationScheduler } from "../utils/whatsapp/whatsappNotificationScheduler";
 
 export default defineNitroPlugin(async (event) => {
   try {
@@ -101,10 +102,9 @@ export default defineNitroPlugin(async (event) => {
                     const metadata = userDetails.integration.metadata;
                     const meetingTime = format(new Date(schEvents.start_time), "hh:mm a"); // optional formatting
                     const message = `Hi *${userDetails.name || inviteeDetails?.name || ""}*! 👋\n\nJust a reminder that you have a meeting scheduled *today at ${meetingTime}*.\n\nClick the link below to join:\n🔗 ${schEvents?.location?.join_url}\n\nLooking forward to connecting!`;
-                    console.log("message", message, { link:schEvents?.location?.join_url, userPhone, token:metadata?.access_token, pid:metadata?.pid});
+          
                     await Promise.all([
-                      // @ts-ignore
-                      sendWhatsappMessage(metadata?.access_token, metadata?.pid, userPhone, message),
+                      sendWhatsAppNotificationScheduler(schEvents?.start_time, metadata, userPhone, message),
                       updateWhatsappEnrichStatusById(userDetails.id, enrichStatus, { ...(userDetails.metadata || {}), inviteeId, bookedMessage: true, link: schEvents?.location?.join_url}),
                     ]);
                   } else {
