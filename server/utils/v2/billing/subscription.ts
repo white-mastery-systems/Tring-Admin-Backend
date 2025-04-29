@@ -4,10 +4,7 @@ import { getZohoBillingContactPersons } from "../../db/user";
 
 const config = useRuntimeConfig()
 
-const newsubscriptionPayload = (
-  firstName: string, 
-  lastName: string,
-  currencyCode: string,
+const subscriptionPayload = (
   userDetails: any,
   orgDetails: any,
   contactPersonIdList: any,
@@ -15,64 +12,28 @@ const newsubscriptionPayload = (
   body: any
 ) => {
   return {
-      ...(userDetails?.customerId
-      ? {
-          customer_id: userDetails?.customerId,
-        }
-      : {
-          customer: {
-            display_name: userDetails?.username,
-            salutation: "Mr.",
-            first_name: firstName,
-            last_name: lastName,
-            email: userDetails?.email,
-            mobile: `${userDetails?.countryCode ?? "+91"} ${userDetails.mobile}`,
-            currency_code: currencyCode,
-            billing_address: {
-              attention: userDetails?.username,
-              street: userDetails?.address?.street,
-              city: userDetails?.address?.city,
-              state: userDetails?.address?.state,
-              country: userDetails?.address?.country,
-              zip: userDetails?.address?.zipCode,
-            },
-            shipping_address: {
-              attention: userDetails?.username,
-              street: userDetails?.address?.street,
-              city: userDetails?.address?.city,
-              state: userDetails?.address?.state,
-              country: userDetails?.address?.country,
-              zip: userDetails?.address?.zipCode,
-            },
-             ...(config.envType !== "development" && {
-              gst_no: orgDetails?.metadata?.gst,
-              gst_treatment: orgDetails?.metadata?.gstType || "business_gst",
-            })
-          },
-        }),
-        ...(config.envType !== "development" && {
-          gst_no: orgDetails?.metadata?.gst,
-          gst_treatment: orgDetails?.metadata?.gstType || "business_gst",
-          place_of_supply: getStateCode(userDetails?.address?.state),
-        }),
-        contactpersons: contactPersonIdList,
-        pricebook_id: customerPricebookId,
-        plan: {
-          plan_code: body.plan,
-        },
-        redirect_url: body?.redirectUrl,
-        payment_gateways: [
-          {
-            payment_gateway:
-              userDetails?.address?.country === "India"
-                ? "razorpay"
-                : "razorpay",
-          },
-        ],
+    subscription_id: body.subscriptionId,
+    ...(config.envType !== "development" && {
+      gst_no: orgDetails?.metadata?.gst,
+      gst_treatment: orgDetails?.metadata?.gstType || "business_gst",
+      place_of_supply: getStateCode(userDetails?.address?.state),
+    }),
+    contactpersons: contactPersonIdList,
+    pricebook_id: customerPricebookId,
+    plan: {
+      plan_code: body.plan,
+      exclude_trial: true,
+    },
+    redirect_url: body?.redirectUrl,
+    payment_gateways: [
+      {
+        payment_gateway: "razorpay",
+      },
+    ],
   }
 }
 
-export const createSubscription: any = async ({
+export const updateSubscription: any = async ({
   organizationId,
   userDetails,
   body,
@@ -86,13 +47,6 @@ export const createSubscription: any = async ({
   orgDetails: any,
 }) => {
   try {
-    let firstName = userDetails?.username;
-    let lastName = "";
-    if (firstName?.includes(" ")) {
-      firstName = userDetails?.username?.split(" ")[0];
-      lastName = userDetails?.username?.split(" ")[1];
-    }
-
     const contactPersonInformations = await getZohoBillingContactPersons(organizationId);
     const contactPersonIdList = contactPersonInformations?.map((i) => ({
       contactperson_id: i.contactPersonId,
@@ -102,11 +56,11 @@ export const createSubscription: any = async ({
     const currencyCode = (userDetails.address.country === "India" && body.locationData.country === "IN")? "INR" : "USD";
     const customerPricebookId = priceList.pricebooks.find((i: any) => i.currency_code === currencyCode).pricebook_id;
 
-    const subscriptionPayload = newsubscriptionPayload(firstName, lastName, currencyCode, userDetails, orgDetails, contactPersonIdList, customerPricebookId, body)
-    logger.info(`Create subscription Request body: ${JSON.stringify(subscriptionPayload)}`);
+    const payload = subscriptionPayload(userDetails, orgDetails, contactPersonIdList, customerPricebookId, body)
+    logger.info(`updateSubscription Request body: ${JSON.stringify(payload)}`);
 
-    const createNewSubscription = await $fetch(
-      "https://www.zohoapis.in/billing/v1/hostedpages/newsubscription",
+    const updateSubscription = await $fetch(
+      "https://www.zohoapis.in/billing/v1/hostedpages/updatesubscription",
       {
         method: "POST",
         headers: {
@@ -114,18 +68,18 @@ export const createSubscription: any = async ({
           Authorization: `Zoho-oauthtoken ${metaData?.access_token}`,
           "content-type": "application/json",
         },
-        body: subscriptionPayload,
+        body: payload,
       })
 
-    return createNewSubscription
+    return updateSubscription
   } catch (error: any) {
     console.log({ error })
-    logger.error(`Zoho-billing - createSubscription function Error: ${JSON.stringify(error.message)}`)
+    logger.error(`Zoho-billing - updateSubscription function Error: ${JSON.stringify(error.message)}`)
     if(error.status === 401) {
       const regenerateAccessTokenMetadata = await retrieveZohoBillingNewAccessToken(metaData)
-      return createSubscription({ organizationId, userDetails, body, metaData: regenerateAccessTokenMetadata, orgDetails })
+      return updateSubscription({ organizationId, userDetails, body, metaData: regenerateAccessTokenMetadata, orgDetails })
     } else if(error.status === 400) {
-      throw new Error(error?.response?.message || "Unable to create subscription") 
+      throw new Error(error?.response?.message || "Unable to update subscription") 
     }
   }
 }

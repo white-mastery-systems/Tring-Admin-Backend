@@ -6,6 +6,8 @@ export default defineEventHandler(async(event) => {
   );
 
   const voiceBotDelete = await updateVoiceBot(voicebotId, {
+    ivrConfig: null,
+    incomingPhoneNumber: null,
     isDeleted: true,
   })
 

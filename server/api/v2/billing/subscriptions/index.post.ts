@@ -3,7 +3,7 @@ import { logger } from "~/server/logger";
 import { errorResponse } from "~/server/response/error.response";
 import { getAdminConfig } from "~/server/utils/db/adminConfig";
 import { getUserByUserId } from "~/server/utils/db/user";
-import { createSubscription } from "~/server/utils/v2/billing/subscription";
+import { updateSubscription } from "~/server/utils/v2/billing/subscription";
 import { getOrgZohoSubscription } from "~/server/utils/v2/db/zohoSubscription";
 import { BotType, zodBotTypeQuery } from "~/server/utils/validations";
 
@@ -42,18 +42,22 @@ export default defineEventHandler(async (event) => {
     const adminZohoConfig = await getAdminConfig()
     const userDetails = await getUserByUserId(event?.context?.user?.id!)
     const orgDetails = await getOrganizationById(organizationId)
+    const orgZohoSubscription = await getOrgZohoSubscription(organizationId, query.type)
 
-    const data = await createSubscription({
+    const data = await updateSubscription({
       organizationId,
       userDetails,
-      body,
+      body: {
+        ...body,
+        subscriptionId: orgZohoSubscription?.subscriptionId,
+      },
       metaData: adminZohoConfig?.metaData,
       orgDetails
     })
    
     return data
   } catch (error: any) {
-    logger.error(`Zoho-billing - create subscription API Error: ${JSON.stringify(error.message)}`)
+    logger.error(`Zoho-billing - update subscription API Error: ${JSON.stringify(error.message)}`)
     return errorResponse(event, 500, "Unable to subscribe the plan")
   }
 });
