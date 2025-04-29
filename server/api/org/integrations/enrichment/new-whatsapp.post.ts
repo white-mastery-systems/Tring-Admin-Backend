@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
     const botId = "3858e7d4-3151-4608-85fc-17b1e323fff6";
     const bot = await getBotDetails(botId);
     if (!bot || !bot.channels?.whatsapp) {
-      return {status:1, message: "Bot details not found"};
+      return {status:0, message: "Bot details not found"};
     }
 
     const { countryCode, phoneLength } = getNormalizedPhoneDetails(body);

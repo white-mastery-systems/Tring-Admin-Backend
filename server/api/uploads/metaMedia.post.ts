@@ -1,5 +1,5 @@
 import { errorResponse } from "~/server/response/error.response";
-import { createWhatsappMediaSession, uploadWhatsappMediaSession } from "~/server/utils/whatsappMedia";
+import { createWhatsappMediaSession, uploadWhatsappMediaSession } from "~/server/utils/whatsapp/whatsappMedia";
 
 export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string

@@ -1,4 +1,4 @@
-import { logger } from "../logger";
+import { logger } from "../../logger";
 
 export const uploadMedia = async (
   phoneId: string,
@@ -8,13 +8,13 @@ export const uploadMedia = async (
 ): Promise<any> => {
   const uploadMediaApiEndpoint = `https://graph.facebook.com/v21.0/${phoneId}/media`;
 
-  const { data, filename, ...rest } = media
+  const { data, filename, ...rest } = media;
   const file = new File([data], filename!, rest);
-  
+
   const form = new FormData();
-  form.append('file', file);
-  form.append('type', mediaType);
-  form.append('messaging_product', 'whatsapp');
+  form.append("file", file);
+  form.append("type", mediaType);
+  form.append("messaging_product", "whatsapp");
 
   try {
     const uploadMediaApiResponse = await $fetch(uploadMediaApiEndpoint, {
@@ -26,7 +26,7 @@ export const uploadMedia = async (
     });
     logger.info("Media uploaded successfully");
     return uploadMediaApiResponse;
-  } catch (error) {
+  } catch (error: any) {
     logger.error({
       message: "Error occurred while uploading media",
       error: JSON.stringify(error),
@@ -54,7 +54,7 @@ export const retrieveMediaUrl = async (
     );
     logger.info("Media URL retrieved successfully");
     return retrieveMediaUrlApiResponse;
-  } catch (error) {
+  } catch (error: any) {
     logger.error({
       message: "Error occurred while retrieving media URL",
       error: JSON.stringify(error),
@@ -64,31 +64,42 @@ export const retrieveMediaUrl = async (
   }
 };
 
-export const createWhatsappMediaSession = async (accessToken: string, fileLength: string, fileType: string) => {
-  try { 
-    const createWhatsappMediaSessionApiUrl = `https://graph.facebook.com/v21.0/3404499776522072/uploads?file_length=${fileLength}&file_type=${fileType}`
+export const createWhatsappMediaSession = async (
+  accessToken: string,
+  fileLength: string,
+  fileType: string,
+) => {
+  try {
+    const createWhatsappMediaSessionApiUrl = `https://graph.facebook.com/v21.0/3404499776522072/uploads?file_length=${fileLength}&file_type=${fileType}`;
 
-    const createWhatsappMediaSessionResponse = await $fetch(createWhatsappMediaSessionApiUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      }
-    })
+    const createWhatsappMediaSessionResponse = await $fetch(
+      createWhatsappMediaSessionApiUrl,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
     logger.info("Whatsapp media session created successfully");
-    return createWhatsappMediaSessionResponse
-  } catch(error) {
+    return createWhatsappMediaSessionResponse;
+  } catch (error: any) {
     logger.error({
       message: "Error occurred while creating whatsapp media session",
       error: JSON.stringify(error),
       errorData: error?.data,
-    })
+    });
     throw new Error("Failed to create whatsapp media session");
   }
-}
+};
 
-export const uploadWhatsappMediaSession = async (accessToken: string, file: any, mediaSessionId: string) => {
+export const uploadWhatsappMediaSession = async (
+  accessToken: string,
+  file: any,
+  mediaSessionId: string,
+) => {
   try {
-    const uploadWhatsappMediaSessionApiUrl = `https://graph.facebook.com/v21.0/${mediaSessionId}`
+    const uploadWhatsappMediaSessionApiUrl = `https://graph.facebook.com/v21.0/${mediaSessionId}`;
 
     const response = await $fetch(uploadWhatsappMediaSessionApiUrl, {
       method: "POST",
@@ -96,40 +107,40 @@ export const uploadWhatsappMediaSession = async (accessToken: string, file: any,
         Authorization: `OAuth ${accessToken}`,
         // 'Content-Type': 'application/octet-stream',
       },
-      body: file
-    })
+      body: file,
+    });
     logger.info("Whatsapp media session file uploaded successfully");
-    return response
-  } catch (error) {
-     logger.error({
+    return response;
+  } catch (error: any) {
+    logger.error({
       message: "Error occurred while upload whatsapp media session file",
       error: JSON.stringify(error),
       errorData: error?.data,
     });
     throw new Error("Failed to upload whatsapp media session file");
   }
-}
+};
 
 export const fetchFileFromUrl = async (fileUrl: string, fileName: string) => {
   try {
     const response: any = await $fetch(fileUrl, {
-      method: 'GET',
-      responseType: 'blob', // Ensures the response is treated as a binary file
+      method: "GET",
+      responseType: "blob", // Ensures the response is treated as a binary file
     });
 
     // Create a File object from the Blob
     const file = {
       data: response, // Blob or Buffer
-      filename: fileName || 'default-filename',
+      filename: fileName || "default-filename",
       type: response.type, // MIME type
     };
     return file;
-  } catch (error) {
+  } catch (error: any) {
     logger.error({
       message: "Error fetching file",
       error: JSON.stringify(error),
       errorData: error?.data,
     });
-    throw new Error('Failed to fetch file from URL');
+    throw new Error("Failed to fetch file from URL");
   }
 };
