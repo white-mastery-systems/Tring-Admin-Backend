@@ -61,7 +61,6 @@ export default defineEventHandler(async (event) => {
 
     return { date: extractDate(formattedResult), time: extractTime(formattedResult) };
   } catch (error:any) {
-    console.log("Get Date Error: ", error?.message)
     throw createError({ statusCode: 500, statusMessage: "Internal Server Error: Unable to process the message with OpenAI. Please try again later.",});
   }
 });

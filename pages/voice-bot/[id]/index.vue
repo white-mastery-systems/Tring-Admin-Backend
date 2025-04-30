@@ -81,7 +81,6 @@
     </div>
     <EditVoiceBot :botDetails="botDetails" :refreshBot="refreshBot" :loading="loading" />
     <VoiceBotSuccessFulMessageModal v-model="store.createBotVoiceSuccessfulState" @success="() => {
-      console.log('success');
       store.createBotVoiceSuccessfulState.open = false;
       // refreshBot();
     }" />

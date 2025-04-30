@@ -51,8 +51,6 @@ watch(() => props.ttsModalState.open, async () => {
   resetForm()
   if (props.ttsModalState.id) {
     const getSingleDetails: any = await $fetch(`/api/tts-integration/${props.ttsModalState.id}`)
-    console.log(getSingleDetails, "getSingleDetails -- getSingleDetails")
-    console.log(getSingleDetails.metadata.apiKey, "getSingleDetails metadata -- getSingleDetails")
     setFieldValue("provider", getSingleDetails.provider);
     setFieldValue("apikey", getSingleDetails.metadata?.apiKey || getSingleDetails.metadata?.apikey);
     setFieldValue("ttsIntegrationName", getSingleDetails.ttsIntegrationName);
