@@ -12,7 +12,11 @@ const subscriptionPayload = (
   body: any
 ) => {
   return {
-    subscription_id: body.subscriptionId,
+    ...(body.subscriptionId ? { 
+      subscription_id: body.subscriptionId 
+    } : {
+        customer_id: userDetails?.customerId,
+    }),
     ...(config.envType !== "development" && {
       gst_no: orgDetails?.metadata?.gst,
       gst_treatment: orgDetails?.metadata?.gstType || "business_gst",
@@ -33,7 +37,7 @@ const subscriptionPayload = (
   }
 }
 
-export const updateSubscription: any = async ({
+export const upsertSubscription: any = async ({
   organizationId,
   userDetails,
   body,
@@ -57,10 +61,10 @@ export const updateSubscription: any = async ({
     const customerPricebookId = priceList.pricebooks.find((i: any) => i.currency_code === currencyCode).pricebook_id;
 
     const payload = subscriptionPayload(userDetails, orgDetails, contactPersonIdList, customerPricebookId, body)
-    logger.info(`updateSubscription Request body: ${JSON.stringify(payload)}`);
+    logger.info(`upsertSubscription Request body: ${JSON.stringify(payload)}`);
 
-    const updateSubscription = await $fetch(
-      "https://www.zohoapis.in/billing/v1/hostedpages/updatesubscription",
+    const upsertSubscription = await $fetch(
+      `https://www.zohoapis.in/billing/v1/hostedpages/${body.subscriptionId ? "updatesubscription" : "newsubscription"}`,
       {
         method: "POST",
         headers: {
@@ -71,13 +75,13 @@ export const updateSubscription: any = async ({
         body: payload,
       })
 
-    return updateSubscription
+    return upsertSubscription
   } catch (error: any) {
     console.log({ error })
-    logger.error(`Zoho-billing - updateSubscription function Error: ${JSON.stringify(error.message)}`)
+    logger.error(`Zoho-billing - upsertSubscription function Error: ${JSON.stringify(error.message)}`)
     if(error.status === 401) {
       const regenerateAccessTokenMetadata = await retrieveZohoBillingNewAccessToken(metaData)
-      return updateSubscription({ organizationId, userDetails, body, metaData: regenerateAccessTokenMetadata, orgDetails })
+      return upsertSubscription({ organizationId, userDetails, body, metaData: regenerateAccessTokenMetadata, orgDetails })
     } else if(error.status === 400) {
       throw new Error(error?.response?.message || "Unable to update subscription") 
     }
