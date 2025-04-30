@@ -50,11 +50,11 @@ export default defineEventHandler(async (event) => {
     return {
       type,
       intents,
-      status: intents.length === 0
-        ? "inactive"
-        : intents.some((i: any) => i.status === "active")
-          ? "active"
-          : "inactive",
+      isActive: intents.length === 0
+        ? false
+        : intents.some((i: any) => i.isActive === true)
+          ? true
+          : false,
     };
   });
   

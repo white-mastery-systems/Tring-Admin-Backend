@@ -4,7 +4,7 @@ import { errorResponse } from "~/server/response/error.response"
 const zodUpdateCustomTool = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
-  status: z.boolean().optional(),
+  isActive: z.boolean().optional(),
   toolParameters: z.array(z.object({
     key: z.string(), 
     type: z.enum(["string", "number", "boolean"]),

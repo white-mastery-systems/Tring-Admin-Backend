@@ -48,21 +48,22 @@ export default defineEventHandler(async (event) => {
     
     const botDetails = await getBotDetails(botId)
 
-    customTool = {
+    const bodyCustomTool = {
       ...customTool,
+      isActive: true,
       id: uuid()
     }
 
     // return customTool
 
-    const botCustomTools = botDetails?.customTools ? [...botDetails?.customTools, customTool] : [customTool]
+    const botCustomTools = botDetails?.customTools ? [...botDetails?.customTools, bodyCustomTool] : [bodyCustomTool]
 
     // return botCustomTools
 
     const updatedChatbot = await updateBotDetails(botId, {
       customTools: botCustomTools
     })
-    
+      
     return updatedChatbot
 
   } catch (error: any) {

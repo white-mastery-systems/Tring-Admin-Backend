@@ -187,6 +187,18 @@ export const updateBotIntent = async (
   )[0];
 };
 
+export const updateIntentsActiveStatus = async(botId: string, type: string, status: boolean) => {
+  await db.update(botIntentSchema).set({
+    isActive: status,
+    updatedAt: new Date()
+  }).where(
+    and(
+      eq(botIntentSchema.botId, botId),
+      eq(botIntentSchema.type, type),
+    )
+  )
+}
+
 export const getIntentByName = async(organizationId: string, botId: string, intent: string) => {
   return await db.query.botIntentSchema.findFirst({
       where: and(

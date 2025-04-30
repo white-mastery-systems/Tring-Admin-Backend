@@ -3,7 +3,14 @@ import { createBotIntent } from "~/server/utils/db/bot";
 const db = useDrizzle()
 
 export const zodInsertChatBotIntent = z.object({
-  type: z.string(),
+  type: z.enum([
+    "schedule_form", 
+    "location",
+    "virtual_tour",
+    "images",
+    "brochures",
+    "custom"
+  ]),
   intent: z.string().min(2, "Intent too short"),
   description: z.string(),
   link: z.string().url().min(5, "Link too short").optional(),
