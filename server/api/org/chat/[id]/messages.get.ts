@@ -20,5 +20,6 @@ export default defineEventHandler(async (event) => {
 
    const data = await getMessages(chatId, botUser?.botUserId, query, timeZone)
 
+  return [{ messages: data.map((item: any) => item.messages).flat() }];
    return data
 })
