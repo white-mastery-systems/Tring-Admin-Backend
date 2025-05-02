@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
     ...body,
   })
   // demo
-  if(body?.botId === "5261422b-57cb-432a-bf9f-904eca5d3cf0") {
+  if(body?.botId === "dcdaa79f-e01b-4e30-975e-38ceb34d8db6") {
     try {
       insertCallLogsInClay({ body: data })
     } catch (error: any) {
