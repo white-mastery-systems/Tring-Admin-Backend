@@ -85,10 +85,10 @@ export const documentSchema = chatbotSchema.table("document", {
     .default("processing")
     .notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-
+  organizationId: uuid("organization_id")
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
   botId: uuid("bot_id")
-    .references(() => chatBotSchema.id, { onDelete: "cascade" })
-    .notNull(),
+    .references(() => chatBotSchema.id, { onDelete: "cascade" }),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
@@ -454,10 +454,7 @@ export type zodInsertBotIntegration = InferInsertModel<
 >;
 
 // Validations
-export const zodInsertChatBot = createInsertSchema(chatBotSchema, {
-  name: (schema) =>
-    schema.name.min(3, "Name Too Short").max(64, "Name Too Long"),
-});
+export const zodInsertChatBot = createInsertSchema(chatBotSchema)
 
 // export const zodInsertChatBotIntent = createInsertSchema(botIntentSchema, {
 //   intent: (schema) => schema.intent.min(2, "Intent too short"),
@@ -470,7 +467,7 @@ export const zodUpdateChatBot = zodInsertChatBot
     organizationId: true,
     createdAt: true,
   })
-  .partial();
+  .partial().passthrough();
 
 export const zodInsertDocument = createInsertSchema(documentSchema);
 
