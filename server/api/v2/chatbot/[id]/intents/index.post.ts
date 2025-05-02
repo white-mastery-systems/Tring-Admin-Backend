@@ -1,4 +1,6 @@
-import { createBotIntent } from "~/server/utils/db/bot";
+import { logger } from "~/server/logger";
+import { errorResponse } from "~/server/response/error.response";
+import { createBotIntent, getIntentByBotIdAndType } from "~/server/utils/db/bot";
 
 const db = useDrizzle()
 
@@ -11,7 +13,7 @@ export const zodInsertChatBotIntent = z.object({
     "brochures",
     "custom"
   ]),
-  intent: z.string().min(2, "Intent too short"),
+  intent: z.string().min(2, "Intent too short").optional(),
   description: z.string(),
   link: z.string().url().min(5, "Link too short").optional(),
   metadata: z.record(z.any()).optional(),
@@ -28,7 +30,8 @@ export const zodInsertChatBotIntent = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  const organizationId = (await isOrganizationAdminHandler(event)) as string;
+  try {
+   const organizationId = (await isOrganizationAdminHandler(event)) as string;
 
   const { id: botId } = await isValidRouteParamHandler(
     event,
@@ -36,25 +39,25 @@ export default defineEventHandler(async (event) => {
   );
   const body = await isValidBodyHandler(event, zodInsertChatBotIntent);
 
-  const isAlreadyExists = await db.query.botIntentSchema.findFirst({
-    where: and(
-      eq(botIntentSchema.botId, botId),
-      ilike(botIntentSchema.intent, body.intent)
-    )
-  })
+  if(body?.intent) {
+    const isAlreadyExists = await db.query.botIntentSchema.findFirst({
+      where: and(
+        eq(botIntentSchema.botId, botId),
+        ilike(botIntentSchema.intent, body?.intent)
+      )
+    })  
   
-  if (isAlreadyExists) {
-    return sendError(
-      event,
-      createError({
-        statusCode: 400,
-        statusMessage:
-          "Intent Name Already Exists: The specified intent name is already in use. Please choose a different name or verify that the intent does not already exist.",
-      }),
-    );
+    if (isAlreadyExists) {
+      return sendError(
+        event,
+        createError({
+          statusCode: 400,
+          statusMessage:
+            "Intent Name Already Exists: The specified intent name is already in use. Please choose a different name or verify that the intent does not already exist.",
+        }),
+      );
+    }
   }
-  
-  const intentName = body?.intent.toLowerCase().replace(/\s+/g, "_")
 
   let customFields = body?.metadata
 
@@ -67,9 +70,17 @@ export default defineEventHandler(async (event) => {
       errorMessage: `Invalid ${i.label}`
     }))
   }
+  
+  const existingIntentsOfType = await getIntentByBotIdAndType(botId, body.type)
+    
+  // Calculate next index
+  const index = existingIntentsOfType.length + 1;
 
-  const bot = await createBotIntent({
+  const intentName = body?.intent ?? `${body.type}_${index}`;
+ 
+  const botIntent = await createBotIntent({
     ...body,
+    intent: intentName,
     ...(body.type === "custom" && { metadata: {
       fields: customFields
     }}),
@@ -77,27 +88,9 @@ export default defineEventHandler(async (event) => {
     organizationId,
   });
 
-  let botDetails: any = await getBotDetails(botId);
-  
-  // return botDetails
-  
-  let metaData: any = botDetails?.metadata;
-  metaData = {
-    ...metaData,
-    prompt: {
-      ...metaData.prompt,
-      INTENTS: `${botDetails?.metadata.prompt.INTENTS}\n${intentName}`,
-    },
-  };
-
-  await updateBotDetails(botId, {
-    metadata: metaData,
-    ...(body.type === "custom" && {
-      customForms: {
-        ...botDetails.customForms,
-        [intentName]: customFields
-      }
-    })
-  });
-  return bot;
+  return isValidReturnType(event, botIntent)
+  } catch (error: any) {
+    logger.error(`Chatbot Intent Creation Error: ${JSON.stringify(error.message)}`);
+    return errorResponse(event, 500, "Unable to create intent");
+  }
 });

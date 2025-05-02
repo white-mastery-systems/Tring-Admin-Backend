@@ -149,7 +149,7 @@ export const listBotIntents = async (
 
   let data = await db.query.botIntentSchema.findMany({
     where: and(...filters),
-    orderBy: [desc(chatBotSchema.createdAt)],
+    orderBy: [asc(chatBotSchema.createdAt)],
     columns: {
       organizationId: false,
       botId: false,
@@ -324,28 +324,20 @@ export const getIntent = async (intentId: string) =>
     where: eq(botIntentSchema.id, intentId),
   });
 
+export const getIntentByBotIdAndType = async (botId: string, type: string) => {
+  return await db.query.botIntentSchema.findMany({
+    where: and(
+      eq(botIntentSchema.botId, botId),
+      eq(botIntentSchema.type, type)
+    ),
+    orderBy: [desc(botIntentSchema.createdAt)],
+  });
+}
+
 export const deleteBotIntent = async (botId: string, intentId: string) => {
-  const intent = await db.query.botIntentSchema.findFirst({
-    where: eq(botIntentSchema.id, intentId),
-  });
-  const bot = await db.query.chatBotSchema.findFirst({
-    where: eq(chatBotSchema.id, botId),
-  });
-
-  if (!(intent && bot)) return null;
-
-  let metadata = bot.metadata as Record<string, any>;
-  let prevIntents = metadata?.prompt?.INTENTS as string;
-  let currentIntents = prevIntents.replace(`\n-${intent.intent}`, "");
-
-  metadata.prompt.INTENTS = currentIntents;
-
-  await updateBotDetails(botId, {
-    metadata,
-  });
-  const deletedIntent = await db
+  const deletedIntent = (await db
     .delete(botIntentSchema)
-    .where(eq(botIntentSchema.id, intentId));
+    .where(eq(botIntentSchema.id, intentId)).returning())[0]
 
   return deletedIntent;
 };
