@@ -1,4 +1,4 @@
-import { getAllScheduledEventInvitees, getAllCalendlyScheduledEvents } from "~/server/utils/calently/module";
+import { getAllScheduledEventInvitees, getAllCalendlyScheduledEvents } from "~/server/utils/calendly/module";
 import { getEnrichByCompanyUrl } from "~/server/utils/db/whatsapp-enrichment";
 
 export default defineEventHandler(async (event) => {
