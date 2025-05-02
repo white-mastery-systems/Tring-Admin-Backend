@@ -1,4 +1,3 @@
-
 // import { isNotNull, ne } from "drizzle-orm";
 
 import { isNotNull, isNull } from "drizzle-orm";
@@ -26,10 +25,7 @@ export const listBots = async (
 ) => {
   let filters: any = [eq(chatBotSchema.organizationId, organizationId), eq(chatBotSchema.isDeleted, false)];
   if (query?.active === "true") {
-    filters.push(or(
-      isNotNull(chatBotSchema.documentId),
-      eq(chatBotSchema.status, "active"),
-    ));
+    filters.push(isNotNull(chatBotSchema.documentId));
   } else if (query?.active === "false") {
     filters.push(isNull(chatBotSchema.documentId));
   }
@@ -85,10 +81,7 @@ export const listBots = async (
 
 export const getBotDetailsNoCache = async (botId: string) => {
   const bot = await db.query.chatBotSchema.findFirst({
-    where: and(
-      eq(chatBotSchema.id, botId),
-      eq(chatBotSchema.isDeleted, false),
-    ),
+    where: eq(chatBotSchema.id, botId),
     with: {
       documents: true,
       organization: true,
