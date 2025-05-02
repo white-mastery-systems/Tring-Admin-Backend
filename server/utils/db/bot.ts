@@ -1,3 +1,4 @@
+
 // import { isNotNull, ne } from "drizzle-orm";
 
 import { isNotNull, isNull } from "drizzle-orm";
@@ -25,7 +26,10 @@ export const listBots = async (
 ) => {
   let filters: any = [eq(chatBotSchema.organizationId, organizationId), eq(chatBotSchema.isDeleted, false)];
   if (query?.active === "true") {
-    filters.push(isNotNull(chatBotSchema.documentId));
+    filters.push(or(
+      isNotNull(chatBotSchema.documentId),
+      eq(chatBotSchema.status, "active"),
+    ));
   } else if (query?.active === "false") {
     filters.push(isNull(chatBotSchema.documentId));
   }
@@ -81,7 +85,10 @@ export const listBots = async (
 
 export const getBotDetailsNoCache = async (botId: string) => {
   const bot = await db.query.chatBotSchema.findFirst({
-    where: eq(chatBotSchema.id, botId),
+    where: and(
+      eq(chatBotSchema.id, botId),
+      eq(chatBotSchema.isDeleted, false),
+    ),
     with: {
       documents: true,
       organization: true,
@@ -152,6 +159,11 @@ export const listBotIntents = async (
     orderBy: [desc(chatBotSchema.createdAt)],
     columns: {
       organizationId: false,
+      botId: false,
+      emailRecipients: false,
+      isEmailEnabled: false,
+      updatedAt: false,
+      createdAt: false
     },
   });
   
@@ -181,6 +193,18 @@ export const updateBotIntent = async (
       .returning()
   )[0];
 };
+
+export const updateIntentsActiveStatus = async(botId: string, type: string, status: boolean) => {
+  await db.update(botIntentSchema).set({
+    isActive: status,
+    updatedAt: new Date()
+  }).where(
+    and(
+      eq(botIntentSchema.botId, botId),
+      eq(botIntentSchema.type, type),
+    )
+  )
+}
 
 export const getIntentByName = async(organizationId: string, botId: string, intent: string) => {
   return await db.query.botIntentSchema.findFirst({
