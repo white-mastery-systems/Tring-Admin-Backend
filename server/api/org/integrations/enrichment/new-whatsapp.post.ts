@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
 
     const { countryCode, phoneLength } = getNormalizedPhoneDetails(body);
 
-    const userPhone = normalizePhoneNumber(`${countryCode}`, body.phone, phoneLength);
+    const userPhone = normalizedPhoneNumber(`${countryCode}`, body.phone, phoneLength);
     const [integrationData, botuser] = await Promise.all([
       getIntegrationDetails(bot.channels?.whatsapp),
       fetchUserByPhoneOrCreate(userPhone, bot.organizationId, "whatsapp", body?.name, body?.email)
@@ -97,7 +97,7 @@ export default defineEventHandler(async (event) => {
   }
 });
 
-const normalizePhoneNumber = (countryCode: string, phone: string, phoneLength:number): string => {
+const normalizedPhoneNumber = (countryCode: string, phone: string, phoneLength:number): string => {
   const cleanedCountryCode = countryCode.replace(/\D/g, ""); // Remove non-digits
   const cleanedPhone = phone.replace(/\D/g, ""); // Remove non-digits
 
