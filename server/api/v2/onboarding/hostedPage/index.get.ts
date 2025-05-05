@@ -97,6 +97,7 @@ export default defineEventHandler(async (event) => {
         organizationId: org.id,
         serviceType: botType === "chat" ? "voice" : "chat",
         pricingPlanCode: botType === "chat" ? "voice_free" : "chat_free",
+        originalSubscriptionStatus: "trial",
         subscriptionStatus: "trial",
         startDate: subscriptionStartDate,
         endDate: subscriptionEndDate,
