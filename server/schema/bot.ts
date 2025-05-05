@@ -223,9 +223,7 @@ export const botIntentSchema = chatbotSchema.table("intents", {
   emailRecipients: varchar("email_recipients").array(),
   isEmailEnabled: boolean("is_email_enabled").default(false),
   metadata: jsonb("metadata"),
-  status: varchar("status", {
-    enum: ["active", "inactive"]
-  }).default("active"),
+  isActive: boolean("is_active").default(true),
   link: varchar("link"),
   organizationId: uuid("organization_id")
     .references(() => organizationSchema.id)
