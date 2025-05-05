@@ -1,11 +1,13 @@
+import { errorResponse } from "~/server/response/error.response";
 import { chatIndustryDefaultNotes } from "~/server/utils/chat-default-notes";
 import { chatDynamicFormValues } from "~/server/utils/chat-dynamic-forms";
+import { getBotDetailsByName } from "~/server/utils/db/bot";
 import { getIndustryDetail } from "~/server/utils/db/industries";
 
 const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
-  await isOrganizationAdminHandler(event);
+  const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const { id: botId } = await isValidRouteParamHandler(
     event,
     checkPayloadId("id"),
@@ -13,6 +15,11 @@ export default defineEventHandler(async (event) => {
 
   const body: any = await isValidBodyHandler(event, zodUpdateChatBot);
 
+  const alreadyExistingBot = await getBotDetailsByName(organizationId, body?.name, "update", botId);
+  if(alreadyExistingBot) {
+    return errorResponse(event, 400, "Chatbot name already exists.")
+  }
+  
   if (body?.channels?.whatsapp) {
     const data = await db.execute(
       sql`UPDATE ${chatBotSchema}
@@ -20,7 +27,6 @@ export default defineEventHandler(async (event) => {
       WHERE channels->>'whatsapp' = ${body?.channels?.whatsapp};
       `,
     );
-    console.log({ data });
   }
   
   if(body?.emailRecipients) {

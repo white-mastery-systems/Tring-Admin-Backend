@@ -1,6 +1,7 @@
 import { logger } from "~/server/logger"
 import { updateDocument } from "~/server/utils/db/document"
 import { errorResponse } from "~/server/response/error.response"
+import { getBotDetailsByName } from "~/server/utils/db/bot"
 
 const config = useRuntimeConfig()
 
@@ -54,6 +55,11 @@ export default defineEventHandler(async (event) => {
     }
     
     const body: any = await isValidBodyHandler(event, zodCreateChatbot)
+
+    const alreadyExistingBot = await getBotDetailsByName(organizationId, body?.name, "insert")
+    if(alreadyExistingBot) {
+      return errorResponse(event, 400, "Chatbot name already exists.")
+    }
 
     const industryDetail = await getIndustryDetail({ industryId: body?.industryId });
     const industryName = industryDetail?.industryName;
