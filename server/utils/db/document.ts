@@ -38,6 +38,16 @@ export const getDocumentById = async (docId: string) =>
     where: eq(documentSchema.id, docId),
   });
 
+export const updateDocument = async (docId: string, data: any) => {
+  await db
+    .update(documentSchema)
+    .set({
+      ...data,
+      updatedAt: new Date(),
+    })
+    .where(eq(documentSchema.id, docId))
+}
+
 
 // Playground Document
 
