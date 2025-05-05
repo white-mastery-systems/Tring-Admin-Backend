@@ -83,6 +83,12 @@ const props = defineProps<{
 // Removed activeTab ref as it's now managed by UiTabs
 const isLoading = ref(false);
 
+if(props.botDetails?.id){
+  const updateLLMConfig:any = await getVoiceBotDetails(props.botDetails?.id); 
+  if(updateLLMConfig?.llmConfig){
+    props.botDetails.llmConfig = updateLLMConfig?.llmConfig;
+  }
+}
 // Prompt data
 const inboundPrompt = reactive(props.botDetails?.llmConfig?.inboundPrompt || {});
 const outboundPrompt = reactive(props.botDetails?.llmConfig?.outboundPrompt || {});
@@ -140,6 +146,7 @@ const onSubmit = handleSubmit(async (value: any) => {
   try {
     const payload = {
       llmConfig: {
+        ...props.botDetails?.llmConfig,
         inboundPrompt: { ...inboundPrompt },
         outboundPrompt: { ...outboundPrompt }
       }
