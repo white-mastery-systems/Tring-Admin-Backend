@@ -1,6 +1,6 @@
 export default defineEventHandler((event) => {
   handleCors(event, {
+    origin: "*",
     methods: "*",
   });
 });
-//https://github.com/radix-vue/radix-vue/discussions/435
