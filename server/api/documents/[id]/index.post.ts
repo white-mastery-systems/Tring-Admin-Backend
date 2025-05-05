@@ -1,6 +1,7 @@
 const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
+  const organizationId = await isOrganizationAdminHandler(event) as string;
   const { id: documentId } = await isValidRouteParamHandler(
     event,
     checkPayloadId("id"),
@@ -14,11 +15,7 @@ export default defineEventHandler(async (event) => {
     .where(eq(documentSchema.id, documentId))
     .returning())[0]
 
-  const botDetails = await db.query.chatBotSchema.findFirst({
-    where: (eq(chatBotSchema.id, document?.botId))
-  })
-
-  const adminUser: any = await getAdminByOrgId(botDetails?.organizationId);
+  const adminUser: any = await getAdminByOrgId(organizationId);
 
   if (adminUser?.id) {
     const connections = global.userConnections?.get(adminUser?.id) || [];
