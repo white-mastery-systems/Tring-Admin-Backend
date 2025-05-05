@@ -8,6 +8,7 @@ export default defineEventHandler(async (event) => {
     const { id: botId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
     const body = await isValidBodyHandler(event, z.object({
+      senderName: z.string().optional(),
       to: z.array(z.string()),
       script: z.string()
     }))
@@ -17,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
     const adminDetails = await getAdminByOrgId(organizationId)
     
-    const emailTemplate: any = chatbotScriptEmailTemplate(adminDetails?.username!, botName, body?.script)
+    const emailTemplate: any = chatbotScriptEmailTemplate(body?.senderName ?? adminDetails?.username!, botName, body?.script)
 
     sendEmail(body?.to, `Integrate ${botName} into Your Website – Easy Setup Instructions`, emailTemplate)
 
