@@ -1,8 +1,8 @@
 import { format } from "date-fns";
 import { logger } from "../logger"
 import * as schedule from "node-schedule"
-import { getAllScheduledEventInvitees, getAllCalendlyScheduledEvents, getParsedPhoneNumber, getTimeBasedCalendlyScheduledEvents } from "~/server/utils/calently/module";
-import { getEnrichByEmailOrPhone, updateWhatsappEnrichStatusById, bookedWhatsappEnrichList } from "~/server/utils/db/whatsapp-enrichment";
+import { getAllScheduledEventInvitees, getAllCalendlyScheduledEvents, getParsedPhoneNumber, getTimeBasedCalendlyScheduledEvents } from "~/server/utils/calendly/module";
+import { getEnrichByEmailOrPhone, updateWhatsappEnrichStatusById } from "~/server/utils/db/whatsapp-enrichment";
 import { sendWhatsAppNotificationScheduler } from "../utils/whatsapp/whatsappNotificationScheduler";
 
 export default defineNitroPlugin(async (event) => {
