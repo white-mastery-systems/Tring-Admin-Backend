@@ -1,5 +1,5 @@
 import { errorResponse } from "~/server/response/error.response";
-import { getWhatsappCampaignCanactsByMsgStatus } from "~/server/utils/db/campaign";
+import { getWhatsappCampaignContactsByMsgStatus } from "~/server/utils/db/campaign";
 import { getContactsByBucketIdAndPhone } from "~/server/utils/db/contact-list";
 import { whatsappReSendCampaign } from "~/server/utils/whatsapp/whatsappReSendCapaign";
 
@@ -8,9 +8,9 @@ export default defineEventHandler(async (event) => {
     const { id: campaignId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
     const [failedCampaigns, campaignData] = await Promise.all([
-      getWhatsappCampaignCanactsByMsgStatus(campaignId, "failed"),
-      getCampaignById(campaignId)
-    ])
+      getWhatsappCampaignContactsByMsgStatus(campaignId, "failed"),
+      getCampaignById(campaignId),
+    ]);
     if (!campaignData || !failedCampaigns || !failedCampaigns.length) {
       return errorResponse(event, 404, "No failed campaigns found")
     }

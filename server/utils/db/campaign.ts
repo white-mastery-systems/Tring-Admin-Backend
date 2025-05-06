@@ -279,7 +279,7 @@ export const getWhatsappCampaignByMessageId = async (messageId: string) => {
   })
 }
 
-export const getWhatsappCampaignCanactsByMsgStatus = async (campaignId:string, msgStatus?:string) => {
+export const getWhatsappCampaignContactsByMsgStatus = async (campaignId:string, msgStatus?:string) => {
   msgStatus = msgStatus ?? "sent"
   const data = await db.query.campaignWhatsappContactSchema.findMany({
     where: and(eq(campaignWhatsappContactSchema.campaignId, campaignId), eq(campaignWhatsappContactSchema.messageStatus, msgStatus))
