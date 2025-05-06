@@ -7,5 +7,5 @@ export default defineEventHandler(async (event) => {
 
   const data = await getWhatsappCampaignByMessageId(query?.messageId)
 
-  return (data) ? data : false;
+  return (data) ?? null
 })

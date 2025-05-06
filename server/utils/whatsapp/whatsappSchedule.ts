@@ -185,7 +185,7 @@ export const scheduleWhatsAppCampaign = async (
         );
         logger.info(`whatsapp response: ${JSON.stringify(data)}`);
         if (data?.messages[0]?.id) {
-          await updateWhatsappMessageStatus( campaignId, contact.phone, data?.messages[0]?.id, phoneId, "sent" );
+          await updateWhatsappMessageStatus(campaignId, contact.phone, data?.messages[0]?.id, phoneId, "sent");
         }
       });
     });
