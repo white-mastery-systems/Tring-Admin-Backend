@@ -39,8 +39,6 @@ export const chatBotSchema = chatbotSchema.table("bot", {
       errorMessage:
         "Uh-oh, Can you try reloading the page and try chatting with me? It seems like our system is facing an issue. Thank you for your understanding",
     },
-    crm: {},
-    channel: {},
   }),
   emailRecipients: varchar("email_recipients").array(),
   channels: jsonb("channels")
@@ -170,6 +168,9 @@ export const messageSchema = chatbotSchema.table("messages", {
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   status: boolean("status").default(true),
+  interactionStatus: varchar("interaction_status", { enum: 
+    ["Booked", "Engaged", "Failed", "Follow Up", "Invalid Number", "New Lead", "Not Interested", "No Response"]
+  }).default("No Response"),
   chatId: uuid("chat_id")
     .references(() => chatSchema.id, {
       onDelete: "cascade",
