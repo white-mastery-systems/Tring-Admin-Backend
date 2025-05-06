@@ -3,6 +3,7 @@ import { campaignSchema, campaignWhatsappContactSchema, InsertCampaign } from "~
 import {whatsappErrorCodes} from "~/assets/error-codes.json"
 
 const db = useDrizzle();
+type InteractionStatus = "Booked" | "Engaged" | "Failed" | "Follow Up" | "Invalid Number" | "New Lead" | "Not Interested" | "No Response";
 
 export const createCampaign = async (campaign: InsertCampaign) => {
   return (await db.insert(campaignSchema).values(campaign).returning())[0];
@@ -265,6 +266,11 @@ export const updateWhatsappMessageStatusByMessageId = async (messageId: string, 
       ne(campaignWhatsappContactSchema.messageStatus, "read")
     )
   )
+}
+
+export const updateWhatsappCampaignIntractStatusContact = async (campaignId: string, organizationId:string, phone: string, interactionStatus:InteractionStatus) => {
+  const condition = and(eq(campaignWhatsappContactSchema.campaignId, campaignId), eq(campaignWhatsappContactSchema.organizationId, organizationId), eq(campaignWhatsappContactSchema.phone, phone))
+  return (await db.update(campaignWhatsappContactSchema).set({interactionStatus}).where(condition).returning())[0] || null
 }
 
 export const getWhatsappCampaignByMessageId = async (messageId: string) => {
