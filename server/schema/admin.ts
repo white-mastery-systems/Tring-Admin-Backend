@@ -199,7 +199,7 @@ export const contactSourceEnum = pgEnum("source", [
 ]);
 
 // new contacts schema
-export const contacts = adminSchema.table("contacts", {
+export const contactProfileSchema = adminSchema.table("contact_profiles", {
   id: uuid("id").primaryKey().defaultRandom(),
   organizationId: uuid("organization_id")
     .notNull()
@@ -212,8 +212,12 @@ export const contacts = adminSchema.table("contacts", {
   verificationId: varchar("verification_id", { length: 255 }),
   source: contactSourceEnum("source").notNull(),
   externalId: varchar("external_id", { length: 255 }),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const contactSchema = adminSchema.table("contacts", {
