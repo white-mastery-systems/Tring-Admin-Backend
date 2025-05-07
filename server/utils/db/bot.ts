@@ -127,6 +127,17 @@ export const updateBotDetails = async (
   )[0];
 };
 
+export const getBotDetailsByName = async(organizationId: string, botName: string, mode: string, id?: string) => {
+  return await db.query.chatBotSchema.findFirst({
+    where: and(
+      eq(chatBotSchema.organizationId, organizationId),
+      eq(chatBotSchema.isDeleted, false),
+      ilike(chatBotSchema.name, botName),
+      (mode === "update" ? ne(chatBotSchema.id, id) : undefined),
+    )
+  });
+}
+
 export const deleteBot = async (botId: string) => {
   return (
     await db

@@ -333,6 +333,9 @@ export const campaignWhatsappContactSchema = adminSchema.table("campaign_whatsap
   pid: varchar("pid"),
   messageId: varchar("message_id"),
   messageStatus: varchar("message_status").default("pending"),
+  interactionStatus: varchar("interaction_status", { enum: 
+    ["Booked", "Engaged", "Failed", "Follow Up", "Invalid Number", "New Lead", "Not Interested", "No Response"]
+  }).default("No Response"),
   errorCode: varchar("error_code"),
   errorMessage: varchar("error_message"),
   errorSolution: varchar("error_solution"),

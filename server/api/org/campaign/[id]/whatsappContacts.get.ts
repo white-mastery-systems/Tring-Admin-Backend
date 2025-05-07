@@ -1,6 +1,6 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-import { getWhatsappContactsByCampaignId, getWhatsappCampaignCanactsByMsgStatus } from "~/server/utils/db/campaign";
+import { getWhatsappContactsByCampaignId, getWhatsappCampaignContactsByMsgStatus } from "~/server/utils/db/campaign";
 
 const zodQueryvalidator = z.object({
   q: z.string().optional(),
@@ -19,8 +19,8 @@ export default defineEventHandler(async (event) => {
 
     const [data, failedCampaigns] = await Promise.all([
       getWhatsappContactsByCampaignId(campaignId, query, timeZone),
-      getWhatsappCampaignCanactsByMsgStatus(campaignId, "failed")
-    ])
+      getWhatsappCampaignContactsByMsgStatus(campaignId, "failed"),
+    ]);
     data.failedCampaigns = false
     if(failedCampaigns && failedCampaigns.length) { data.failedCampaigns = true }
 
