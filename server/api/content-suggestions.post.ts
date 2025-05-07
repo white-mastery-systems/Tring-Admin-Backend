@@ -81,6 +81,7 @@ async function generateContentSuggestions(industry: string) {
 
 export default defineEventHandler(async (event) => {
   try {
+    await isOrganizationAdminHandler(event);
     const body = await readBody(event);
 
     if (!body.industry) {
