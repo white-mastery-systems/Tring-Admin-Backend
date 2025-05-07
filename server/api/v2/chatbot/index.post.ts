@@ -5,13 +5,47 @@ import { getBotDetailsByName } from "~/server/utils/db/bot"
 
 const config = useRuntimeConfig()
 
-const zodCreateChatbot = z.object({
-  name: z.string(),
-  industryId: z.string(),
-  documentId: z.string(),
-  logo:  z.record(z.any()),
-  prompt: z.record(z.any()),
-})
+export const zodCreateChatbot = z
+  .object({
+    name: z.string(),
+    industryId: z.string(),
+    knowledgeSource: z.enum(["website", "document", "text"]),
+    websiteLink: z.string().optional(),
+    websiteContent: z.string().optional(),
+    textContent: z.string().optional(),
+    documentId: z.string(),
+    logo: z.record(z.any()),
+    prompt: z.record(z.any()),
+  })
+  .superRefine((data, ctx) => {
+    const source = data.knowledgeSource;
+
+    if (source === "website") {
+      if (!data.websiteLink) {
+        ctx.addIssue({
+          path: ["websiteLink"],
+          code: z.ZodIssueCode.custom,
+          message: "websiteLink is required when knowledgeSource is 'website'",
+        });
+      }
+      if (!data.websiteContent) {
+        ctx.addIssue({
+          path: ["websiteContent"],
+          code: z.ZodIssueCode.custom,
+          message: "websiteContent is required when knowledgeSource is 'website'",
+        });
+      }
+    }
+
+    if (source === "text" && !data.textContent) {
+      ctx.addIssue({
+        path: ["textContent"],
+        code: z.ZodIssueCode.custom,
+        message: "textContent is required when knowledgeSource is 'text'",
+      });
+    }
+});
+
 
 export default defineEventHandler(async (event) => { 
   try {
@@ -83,14 +117,17 @@ export default defineEventHandler(async (event) => {
     if(!bot) {
       return errorResponse(event, 400, "Unable to create chatbot")  
     }
-
+   
     const botId = bot?.id
     const doc_id = body?.documentId;
 
     let document;
     document = await getDocumentById(doc_id);
     document = document?.status !== "ready" ? null : document;
-    document = await isValidReturnType(event, document);
+    if(!document) {
+      await deleteBot(bot?.id)
+      return errorResponse(event, 400, "The provided document is still being processed. Please try again later.")
+    }
 
     let INITIAL_MESSAGE = null;
     let max_retries = 5;
@@ -111,12 +148,14 @@ export default defineEventHandler(async (event) => {
         break;
       } catch (e) {
         max_retries -= 1;
-
         continue;
       }
     }
 
-    if (max_retries === 0) return sendError(event, createError({ statusCode: 500 }));
+    if (max_retries === 0) {
+      await deleteBot(bot?.id)
+      return errorResponse(event, 500, "Bot Deployment failed: could not retrieve initial message from the server.")
+    }
   
     const updatedChatbot = await updateBotDetails(bot.id, {
       metadata: {

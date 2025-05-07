@@ -50,6 +50,19 @@ export default defineEventHandler(async (event) => {
     defaultNotes = chatIndustryDefaultNotes[industryName as keyof typeof chatIndustryDefaultNotes]?.note;
   }
   
+  if(body && botDetails?.knowledgeSource !== body?.knowledgeSource) {
+    if(body?.knowledgeSource === "website") {
+      body.textContent = null
+    } else if(body?.knowledgeSource === "text") {
+      body.websiteLink = null
+      body.websiteContent = null
+    } else if(body?.knowledgeSource === "document") {
+      body.textContent = null
+      body.websiteLink = null
+      body.websiteContent = null
+    }
+  }
+
   const bot = await updateBotDetails(botId, {
     ...body,
     ...{ metadata: {
