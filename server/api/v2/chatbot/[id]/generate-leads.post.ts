@@ -11,7 +11,7 @@ import {
 import { newGenerateLeadInZohoCRM, newUpdateNotesInZohoCRM } from "~/server/utils/v2/integrations/crm/zoho/zoho-crm";
 import { newGenerateContactInZohoBigin, newGenerateLeadInZohoBigin, newUpdateNotesInZohoBigin } from "~/server/utils/v2/integrations/crm/zoho/zoho-bigin";
 import { listActiveBotIntegration } from "~/server/utils/db/bot";
-import { insertRecordsInClay } from "~/server/utils/clay/webhook";
+import { pushChatLeadsToClay } from "~/server/utils/clay/webhook";
 
 const config = useRuntimeConfig()
 
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
   // demo
   if(botId === "dc32db7b-71e6-4248-8337-2c81cba74095" && !body?.note) {
     try {
-      await insertRecordsInClay({
+      await pushChatLeadsToClay({
         body: {
           name: body?.botUser?.name,
           email: body?.botUser?.email,

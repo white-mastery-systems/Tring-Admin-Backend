@@ -1,5 +1,5 @@
 import { logger } from "~/server/logger"
-import { insertCallLogsInClay } from "~/server/utils/clay/webhook"
+import { pushCallLogsToAkkuClay, pushCallLogsToYourstoreClay } from "~/server/utils/clay/webhook"
 import { createCallLogs } from "~/server/utils/db/call-logs"
 import { updateSubscriptionPlanUsageById } from "~/server/utils/v2/db/planUsage"
 
@@ -27,12 +27,19 @@ export default defineEventHandler(async (event) => {
   const data = await createCallLogs({
     ...body,
   })
-  // demo
-  if(body?.botId === "dcdaa79f-e01b-4e30-975e-38ceb34d8db6") {
+  // demo purpose
+  const callLogHandlers: Record<string, (args: { body: any }) => void> = {
+    "dcdaa79f-e01b-4e30-975e-38ceb34d8db6": pushCallLogsToYourstoreClay,
+    "5558c8c9-a3b9-460d-a6e4-81e830df4293": pushCallLogsToAkkuClay,
+  };
+
+  const handler = callLogHandlers[body?.botId];
+
+  if (handler) {
     try {
-      insertCallLogsInClay({ body: data })
+      handler({ body: data });
     } catch (error: any) {
-      logger.error(`Insert call-logs in Clay Error: ${JSON.stringify(error.message)}`)
+      logger.error(`Push CallLogs to Clay Error (botId: ${body?.botId}): ${JSON.stringify(error.message)}`);
     }
   }
   
