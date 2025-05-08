@@ -459,6 +459,9 @@ export type InsertNumberIntegration = InferInsertModel<
   typeof numberIntegrationSchema
 >;
 
+export type SelectContactProfile = InferSelectModel<typeof contactProfileSchema>;
+export type InsertContactProfile = InferInsertModel<typeof contactProfileSchema>;
+
 export type SelectContactList = InferSelectModel<typeof contactListSchema>;
 export type InsertContactList = InferInsertModel<typeof contactListSchema>;
 
