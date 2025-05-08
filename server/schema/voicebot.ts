@@ -4,19 +4,27 @@ import {
   index,
   integer,
   jsonb,
+  text,
   timestamp,
   unique,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { voiceBotSchema } from ".";
-import { integrationSchema, organizationSchema, numberIntegrationSchema, campaignSchema, contactListSchema, voicebotContactSchema } from "./admin";
+import { integrationSchema, organizationSchema, numberIntegrationSchema, campaignSchema, contactListSchema, voicebotContactSchema, industriesSchema } from "./admin";
+import { createInsertSchema } from "drizzle-zod";
 
 export const voicebotSchema = voiceBotSchema.table("bot", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name").notNull(),
   role: varchar("role"),
   domain: varchar("domain").array(),
+  industryId: uuid("industry_id").references(() =>  industriesSchema.id),
+  knowledgeSource: varchar("knowledge_source", { enum: ["website", "document", "text"]}),
+  websiteLink: varchar("website_link"),
+  websiteContent: text("website_content"),
+  textContent: text("text_content"),
+  documentId: uuid("document_id"),
   active: boolean("active").default(false),
   metaData: jsonb("metadata"),
   audioFiles: jsonb("audio_files"),
@@ -26,6 +34,8 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     top_k: "40",
     max_output_token: "8192",
     prompt: "",
+    inboundPromptText: "",
+    outboundPromptText: "",
     inboundPrompt: {},
     outboundPrompt: {}
   }),
@@ -233,6 +243,21 @@ export const salesHandyContactsSchema = voiceBotSchema.table("sales_handy_contac
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const voicebotDocumentSchema = voiceBotSchema.table("voicebot_documents", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").references(() => organizationSchema.id, { onDelete: "cascade" }).notNull(),
+  voicebotId: uuid("voicebot_id").references(() => voicebotSchema.id, { onDelete: "cascade" }),
+  documentName: varchar("document_name").notNull(),
+  documentContent: text("document_content"),
+  status: varchar("status", {
+    enum: ["processing", "success", "failed"],
+  }).default("processing"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
+export const zodInsertVoiceBotDocument = createInsertSchema(voicebotDocumentSchema);
+
 // Relations
 export const callLogsRelations = relations(callLogSchema, ({one}) => ({
    bot: one(voicebotSchema, {
@@ -292,6 +317,9 @@ export type InsertVoicebotIntegration = InferInsertModel<
 
 export type SelectCallLogSchema = InferSelectModel<typeof callLogSchema>;
 export type InsertCallLogSchema = InferInsertModel<typeof callLogSchema>;
+
+export type SelectVoicebotDocument = InferSelectModel<typeof voicebotDocumentSchema>;
+export type InsertVoicebotDocument = InferInsertModel<typeof voicebotDocumentSchema>;
 
 export type SelectVoicebotSchedular = InferSelectModel<typeof voicebotSchedularSchema>;
 export type InsertVoicebotSchedular = InferInsertModel<typeof voicebotSchedularSchema>;

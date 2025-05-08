@@ -190,6 +190,36 @@ export const contactListSchema = adminSchema.table("contact_list", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// contacts source enum
+export const contactSourceEnum = pgEnum("source", [
+  "manual",
+  "excel",
+  "google",
+  "crm",
+]);
+ 
+// new contacts schema
+export const contactProfileSchema = adminSchema.table("contact_profiles", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+  name: varchar("name", { length: 255 }).notNull(),
+  countryCode: varchar("country_code", { length: 5 }).notNull(),
+  phoneNumber: varchar("phone_number", { length: 20 }).notNull(),
+  email: varchar("email", { length: 255 }),
+  metadata: jsonb("metadata"),
+  verificationId: varchar("verification_id", { length: 255 }),
+  source: contactSourceEnum("source").notNull(),
+  externalId: varchar("external_id", { length: 255 }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
 export const contactSchema = adminSchema.table("contacts", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   firstName: varchar("first_name"),

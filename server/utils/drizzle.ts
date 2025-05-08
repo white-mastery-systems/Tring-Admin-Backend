@@ -58,6 +58,7 @@ const schema = {
   chatbotScheduledCallSchema,
   chatResponseImprovementSchema,
   industriesSchema,
+  voicebotDocumentSchema,
   // Relations
   organizationRelations,
   chatBotRelations,
