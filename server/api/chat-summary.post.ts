@@ -2,7 +2,6 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default defineEventHandler(async (event) => {
   try {
-    await isOrganizationAdminHandler(event);
     const body = await readBody(event);
     
     if (!body.chatHistory) {
