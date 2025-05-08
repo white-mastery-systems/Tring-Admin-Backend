@@ -16,9 +16,9 @@ export const contactInfoSchema = z.object({
 });
 
 export const contactQuerySchema = z.object({
-  page: z.number().min(1).default(1),
-  limit: z.number().min(1).max(100).default(10),
-  offset: z.number().optional(),
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(10),
+  offset: z.coerce.number().optional(),
 });
 
 export const addContact = async (
@@ -67,14 +67,16 @@ export const getAllContacts = async (
       offset: calculatedOffset,
     });
 
-    logger.debug(
-      `Retrieved ${contacts.length} contacts, orgId: ${organizationId}`,
+    logger.info(
+      `Retrieved ${contacts.length} contacts for orgId: ${organizationId} (limit=${parsedQuery.limit}, offset=${calculatedOffset})`,
     );
 
     return contacts;
   } catch (error) {
     logger.error(
-      `Failed to fetch contacts: ${error instanceof Error ? error.message : String(error)}`,
+      `Failed to fetch contacts: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
     );
     throw error;
   }
@@ -93,7 +95,7 @@ export const getContactInformationById = async (
     });
 
     if (!contact) {
-      logger.debug(`Contact not found: ${contactId}`);
+      logger.info(`Contact not found: ${contactId}`);
     }
 
     return contact;
@@ -126,7 +128,7 @@ export const updateContactById = async (
       .returning();
 
     if (result.length === 0) {
-      logger.debug(`No contact found to update: ${contactId}`);
+      logger.info(`No contact found to update: ${contactId}`);
     }
 
     return result;
