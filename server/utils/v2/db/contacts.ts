@@ -37,7 +37,7 @@ export const addContact = async (
       .returning();
 
     logger.info(
-      `Contact added: ${JSON.stringify(result)}, org: ${organizationId}`,
+      `Contact added: ${JSON.stringify(result)}, orgId: ${organizationId}`,
     );
     return result;
   } catch (error) {
@@ -68,7 +68,7 @@ export const getAllContacts = async (
     });
 
     logger.debug(
-      `Retrieved ${contacts.length} contacts, org: ${organizationId}`,
+      `Retrieved ${contacts.length} contacts, orgId: ${organizationId}`,
     );
 
     return contacts;
@@ -154,7 +154,7 @@ export const deleteContactById = async (
       .returning();
 
     if (result.length > 0) {
-      logger.info(`Contact deleted: ${contactId}, org: ${organizationId}`);
+      logger.info(`Contact deleted: ${contactId}, orgId: ${organizationId}`);
     }
 
     return result;
