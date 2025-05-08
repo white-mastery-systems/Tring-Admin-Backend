@@ -2,6 +2,7 @@ import { logger } from "~/server/logger";
 import {
   addContact,
   checkIfContactExists,
+  ContactSource,
 } from "~/server/utils/v2/db/contacts";
 
 export default defineEventHandler(async (event) => {
@@ -29,7 +30,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const newContact = await addContact(organizationId, contactInfoPayload);
+    const newContact = await addContact(organizationId, contactInfoPayload, ContactSource.MANUAL);
     logger.info(`Contact created: ${JSON.stringify(newContact[0])}`);
 
     return {
