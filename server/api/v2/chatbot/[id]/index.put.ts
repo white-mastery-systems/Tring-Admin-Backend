@@ -1,13 +1,14 @@
+import { logger } from "~/server/logger";
 import { errorResponse } from "~/server/response/error.response";
-import { chatIndustryDefaultNotes } from "~/server/utils/chat-default-notes";
-import { chatDynamicFormValues } from "~/server/utils/chat-dynamic-forms";
 import { getBotDetailsByName } from "~/server/utils/db/bot";
 import { getIndustryDetail } from "~/server/utils/db/industries";
+import { getChatBotDefaultConfigs } from "~/server/utils/v2/db/chatbot";
 
 const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
-  const organizationId = (await isOrganizationAdminHandler(event)) as string;
+  try {
+     const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const { id: botId } = await isValidRouteParamHandler(
     event,
     checkPayloadId("id"),
@@ -29,25 +30,18 @@ export default defineEventHandler(async (event) => {
     );
   }
   
-  if(body?.emailRecipients) {
-    body.emailRecipients = [...new Set(body?.emailRecipients)]
-  }
-  
   let botDetails: any = await getBotDetails(botId);
   let metaData: any = botDetails?.metadata;
   
   const industryDetail = await getIndustryDetail({ industryId: body?.industryId });
 
-  const industryName = industryDetail?.industryName;
-  
-  let defaultIntents: string | undefined, defaultNotes: string | undefined;
-  let defaultformStructure : any
+  let defaultIntents: string = "", defaultNotes: string = "", defaultformStructure: any;
   
   if(body?.industryId && body?.industryId !== botDetails?.industryId) {
-    defaultformStructure = chatDynamicFormValues[industryName as keyof typeof chatDynamicFormValues];
-    const defaultFormIntentName = Object.keys(defaultformStructure)[0]
-    defaultIntents = `other\nsite_visit\nschedule_call\nschedule_appointment\n${defaultFormIntentName}`
-    defaultNotes = chatIndustryDefaultNotes[industryName as keyof typeof chatIndustryDefaultNotes]?.note;
+    const chatBotDefaultConfigs = await getChatBotDefaultConfigs(industryDetail)
+    defaultIntents = chatBotDefaultConfigs?.defaultIntents
+    defaultNotes = chatBotDefaultConfigs?.defaultNotes || ""
+    defaultformStructure = chatBotDefaultConfigs?.defaultformStructure
   }
   
   if(body && botDetails?.knowledgeSource !== body?.knowledgeSource) {
@@ -86,4 +80,8 @@ export default defineEventHandler(async (event) => {
   });
  
   return isValidReturnType(event, bot);
+  } catch (error: any) {
+    logger.error(`Chatbot Update API Error: ${JSON.stringify(error.message)}`)
+    return errorResponse(event, 500, "Unable to update chatbot")
+  }
 });

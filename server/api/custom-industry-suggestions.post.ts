@@ -65,24 +65,27 @@ export default defineEventHandler(async (event) => {
             "value": "Goal Description"
           }, ...
         ],
-        "your_custom_form_name": [
-          {
-            "type": "text | number | email | phone | date | time",
-            "label": "Field Label",
-            "model": "fieldModel",
-            "required": true,
-            "placeholder": "Enter value",
-            "errorMessage": "Validation error"
-          },
-          {
-            "type": "text | number | email | phone | date | time",
-            "label": "Field Label",
-            "model": "fieldModel",
-            "required": true,
-            "placeholder": "Enter value",
-            "errorMessage": "Validation error"
-          },...
-        ]
+       "custom": {
+          "your_custom_form_name": [
+            {
+              "type": "text | number | email | phone | date | time",
+              "label": "Field Label",
+              "model": "fieldModel",
+              "required": true,
+              "placeholder": "Enter value",
+              "errorMessage": "Validation error"
+            },
+            {
+              "type": "text | number | email | phone | date | time",
+              "label": "Field Label",
+              "model": "fieldModel",
+              "required": true,
+              "placeholder": "Enter value",
+              "errorMessage": "Validation error"
+            },...
+          ]
+        }
+
       }
 
       **Do not** include any extra comments or explanations outside of the required JSON structure.

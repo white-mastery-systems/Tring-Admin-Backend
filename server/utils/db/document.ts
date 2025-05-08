@@ -123,6 +123,12 @@ export const createVoicebotDocument = async (document: InsertVoicebotDocument) =
   )[0]
 }
 
+export const getVoicebotDocumentById = async (docId: string) => {
+  return await db.query.voicebotDocumentSchema.findFirst({
+    where: eq(voicebotDocumentSchema.id, docId)
+  })
+}
+
 export const updateVoicebotDocument = async (docId: string, data: any) => {
   await db.update(voicebotDocumentSchema)
   .set({
