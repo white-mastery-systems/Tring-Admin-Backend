@@ -80,7 +80,7 @@ export default defineEventHandler(async (event) => {
 
     const body = await isValidBodyHandler(event, zodNewVoicebotSchema)
 
-    const isAlreadyExistPhonenumber = await getVoicebotByIncomingPhoneNumber(body?.incomingPhoneNumber)
+    const isAlreadyExistPhonenumber = await getVoicebotByIncomingPhoneNumber(body?.incomingPhoneNumber, "insert")
     if (isAlreadyExistPhonenumber) {
       return errorResponse(event, 400,  "This phone number is already linked to another bot. Please use a different number.")
     }

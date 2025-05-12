@@ -13,11 +13,12 @@ export const createVoicebot = async (voicebot: InsertVoiceBot) => {
   return (await db.insert(voicebotSchema).values(voicebot).returning())[0];
 };
 
-export const getVoicebotByIncomingPhoneNumber = async (incomingPhoneNumber: string) => {
+export const getVoicebotByIncomingPhoneNumber = async (incomingPhoneNumber: string, mode: string, voicebotId?: string) => {
   return await db.query.voicebotSchema.findFirst({
     where: and(
       eq(voicebotSchema.incomingPhoneNumber, incomingPhoneNumber),
-      eq(voicebotSchema.isDeleted, false)
+      eq(voicebotSchema.isDeleted, false),
+      (mode === "update" ? ne(voicebotSchema.id, voicebotId) : undefined)
     )  
   });
 }
