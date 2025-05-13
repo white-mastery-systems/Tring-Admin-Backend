@@ -1,6 +1,7 @@
 import { logger } from "~/server/logger"
 import { pushCallLogsToAkkuClay, pushCallLogsToYourstoreClay } from "~/server/utils/clay/webhook"
 import { createCallLogs } from "~/server/utils/db/call-logs"
+import { updateVoiceScheduledContacts } from "~/server/utils/db/voicebots"
 import { updateSubscriptionPlanUsageById } from "~/server/utils/v2/db/planUsage"
 
 const zodInsertCallLogsValidator = z.object({
@@ -41,6 +42,10 @@ export default defineEventHandler(async (event) => {
     } catch (error: any) {
       logger.error(`Push CallLogs to Clay Error (botId: ${body?.botId}): ${JSON.stringify(error.message)}`);
     }
+  }
+
+  if(body?.direction === "outbound" && body?.metrics?.callOutcome) {
+    await updateVoiceScheduledContacts(body?.callSid, { callStatus: body?.metrics?.callOutcome })
   }
   
   const organizationId = body?.organizationId
