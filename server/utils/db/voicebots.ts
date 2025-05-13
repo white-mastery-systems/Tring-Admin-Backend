@@ -358,6 +358,13 @@ export const createVoicebotSchedular = async (voicebotSchedular: any) => {
   return await db.insert(voicebotSchedularSchema).values(voicebotSchedular).returning()
 }
 
+export const updateVoiceScheduledContacts = async (callSid: string, data: any) => {
+  await db.update(voicebotSchedularSchema).set({
+    ...data,
+    updatedAt: new Date()
+  }).where(eq(voicebotSchedularSchema.callSid, callSid))
+}
+
 export const scheduledCampaignCallList = async (organizationId: string, campaignId: string, timeZone: string, query?: any ) => {
   let filters: any = [eq(voicebotSchedularSchema.organizationId, organizationId), eq(voicebotSchedularSchema.campaignId, campaignId)];
   let page, offset, limit = 0;
