@@ -1,3 +1,25 @@
+import { ecommerceVoiceInputPromptText } from "./voicebot-prompt-templates-texts/e-commerce/inbound";
+import { ecommerceVoiceOutboundPromptText } from "./voicebot-prompt-templates-texts/e-commerce/outbound";
+import { educationAndTrainingInboundPromptText } from "./voicebot-prompt-templates-texts/education-training/inbound";
+import { educationAndTrainingOutboundPromptText } from "./voicebot-prompt-templates-texts/education-training/outbound";
+import { energyAndUtilitiesVoiceInboundPromptText } from "./voicebot-prompt-templates-texts/energy-utilities/inbound";
+import { energyAndUtilitiesVoiceOutboundPromptText } from "./voicebot-prompt-templates-texts/energy-utilities/outbound";
+import { financeBankingVoiceInboundPromptText } from "./voicebot-prompt-templates-texts/finance-banking/inbound";
+import { financeBankingVoiceOutboundPromptText } from "./voicebot-prompt-templates-texts/finance-banking/outbound";
+import { governmentSectorsVoiceInboundPromptText } from "./voicebot-prompt-templates-texts/government-sectors/inbound";
+import { governmentSectorsVoiceOutboundPromptText } from "./voicebot-prompt-templates-texts/government-sectors/outbound";
+import { healthcareVoiceInboundPromptText } from "./voicebot-prompt-templates-texts/healthcare/inbound";
+import { healthcareVoiceOutboundPromptText } from "./voicebot-prompt-templates-texts/healthcare/outbound";
+import { hospitalityVoiceInboundPromptText } from "./voicebot-prompt-templates-texts/hospitality/inbound";
+import { hospitalityVoiceOutboundPromptText } from "./voicebot-prompt-templates-texts/hospitality/outbound";
+import { logisticsVoiceInboundPromptText } from "./voicebot-prompt-templates-texts/logistics/inbound";
+import { logisticsVoiceOutboundPromptText } from "./voicebot-prompt-templates-texts/logistics/outbound";
+import { realEstateVoiceInboundPromptText } from "./voicebot-prompt-templates-texts/real-estate/inbound";
+import { realEstateVoiceOutboundPromptText } from "./voicebot-prompt-templates-texts/real-estate/outbound";
+import { telecommunicationsVoiceInboundPromptText } from "./voicebot-prompt-templates-texts/telecommunications/inbound";
+import { telecommunicationsVoiceOutboundPromptText } from "./voicebot-prompt-templates-texts/telecommunications/outbound";
+import { travelVoiceInboundPromptText } from "./voicebot-prompt-templates-texts/travel/inbound";
+import { travelVoiceOutboundPromptText } from "./voicebot-prompt-templates-texts/travel/outbound";
 import { ecommerceVoiceInputPrompt } from "./voicebot-prompt-templates/e-commerce/inbound";
 import { ecommerceVoiceOutboundPrompt } from "./voicebot-prompt-templates/e-commerce/outbound";
 import { energyAndUtilitiesVoiceInboundPrompt } from "./voicebot-prompt-templates/energy-utilities/inbound";
@@ -168,3 +190,75 @@ export const getInboundPromptByIndustryType = ({ industryType, name, role, goal,
     }
 }
 
+export const getVoicebotPromptTextByIndustryType = ({ industryType, name, role, goal, companyName, knowledgeBase }: {
+  industryType: string,
+  name: string,
+  role: string,
+  goal: string,
+  companyName: string,
+  knowledgeBase: string
+}) => {
+    let inboundPrompt = ""
+    let outboundPrompt = ""
+    switch(industryType) {
+      case "real-estate": 
+        inboundPrompt = realEstateVoiceInboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = realEstateVoiceOutboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        break
+
+      case "e-commerce":
+        inboundPrompt = ecommerceVoiceInputPromptText({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = ecommerceVoiceOutboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        break
+      
+      case "finance-banking":
+        inboundPrompt = financeBankingVoiceInboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = financeBankingVoiceOutboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        break
+      
+      case "healthcare":
+        inboundPrompt = healthcareVoiceInboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = healthcareVoiceOutboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        break
+
+      case "hospitality":
+        inboundPrompt = hospitalityVoiceInboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = hospitalityVoiceOutboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        break
+    
+      case "telecommunications":
+        inboundPrompt = telecommunicationsVoiceInboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = telecommunicationsVoiceOutboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        break
+
+      case "travel":
+        inboundPrompt = travelVoiceInboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = travelVoiceOutboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        break
+
+      case "energy-utilities":
+        inboundPrompt = energyAndUtilitiesVoiceInboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = energyAndUtilitiesVoiceOutboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        break
+
+      case "government-sectors":
+        inboundPrompt = governmentSectorsVoiceInboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = governmentSectorsVoiceOutboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        break
+      
+      case "logistics":
+        inboundPrompt = logisticsVoiceInboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = logisticsVoiceOutboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        break
+
+      case "education-training":
+        inboundPrompt = educationAndTrainingInboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        outboundPrompt = educationAndTrainingOutboundPromptText({ name, role, goal, companyName, knowledgeBase })
+        break
+    }
+
+    return {
+      inboundPrompt,
+      outboundPrompt
+    }
+}

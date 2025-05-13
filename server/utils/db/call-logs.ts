@@ -45,29 +45,20 @@ export const getCallLogsList = async (organizationId: string, query: any, timeZo
       }
     },
     columns: {
-      id: true,
-      callSid: true,
-      exophone: true,
-      from: true,
-      date: true,
-      callStatus: true,
-      duration: true,
-      direction: true,
-      metrics: true,
-      callerName: true,
-      callerDate: true,
-      inputCredits: true,
-      outputCredits: true,
-      botId: true,
-      organizationId: true,
-      createdAt: true,
-      updatedAt: true
+      callTranscription: false,
+      summary: false
     },
      orderBy: [desc(callLogSchema.date)],
   })
   data = data.map((i: any) => ({
     ...i,
     date: momentTz(i.date).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    ...(i.direction === "outbound" &&
+      {
+        from: i.exophone,
+        exophone: i.from
+      }
+    ),
   }));
 
   if(query?.q) {
@@ -94,10 +85,18 @@ export const getCallLogById = async (id: string, timeZone: string, query?: any) 
      ? eq(callLogSchema.callSid, id)
      : eq(callLogSchema.id, id)
   })
-  if(data?.date) {
-    data.date =  momentTz(data.date).tz(timeZone).format("DD MMM YYYY hh:mm A")
-  }  
-  return data
+
+  // Format date
+  if (data.date) {
+    data.date = momentTz(data.date).tz(timeZone).format("DD MMM YYYY hh:mm A");
+  }
+
+  // Swap from and exophone based on direction
+  if (data.direction === "outbound") {
+    [data.from, data.exophone] = [data.exophone, data.from];
+  }
+
+  return data;
 }
 
 export const updateCallLogById = async (callLogId: string, callLogs: any) => {
