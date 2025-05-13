@@ -1,7 +1,6 @@
 import { logger } from "~/server/logger";
 import { errorResponse } from "~/server/response/error.response";
 import {
-  addMultipleContacts,
   ContactSource,
   filterContactsByPhoneNumber,
   mapUniqueContacts,
@@ -56,11 +55,13 @@ export default defineEventHandler(async (event) => {
     // Construct the contacts data
     const contactsData = mapUniqueContacts(uniqueContactsData, organizationId);
 
-    await addMultipleContacts(
+    const mapContactsWithSource  = contactsData.map((contact: any) => ({
+      ...contact,
       organizationId,
-      contactsData,
-      ContactSource.EXCEL,
-    );
+      source: ContactSource.EXCEL,
+    }))
+
+    await addContact(mapContactsWithSource)
 
     return { status: true };
   } catch (error: any) {

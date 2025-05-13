@@ -208,7 +208,7 @@ export const contactProfileSchema = adminSchema.table("contact_profiles", {
   countryCode: varchar("country_code", { length: 5 }).notNull(),
   phoneNumber: varchar("phone_number", { length: 20 }).notNull(),
   email: varchar("email", { length: 255 }),
-  metadata: jsonb("metadata"),
+  metadata: text("metadata"),
   verificationId: varchar("verification_id", { length: 255 }),
   source: contactSourceEnum("source").notNull(),
   externalId: varchar("external_id", { length: 255 }),

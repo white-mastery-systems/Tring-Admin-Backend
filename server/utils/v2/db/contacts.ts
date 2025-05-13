@@ -1,6 +1,7 @@
 import { inArray } from "drizzle-orm";
 import { z } from "zod";
 import { logger } from "~/server/logger";
+import { InsertContactProfile } from "~/server/schema/admin";
 
 type SourceType = "crm" | "google" | "manual" | "excel";
 
@@ -33,8 +34,8 @@ const db = useDrizzle();
 
 export const importContactSchema = z
   .object({
-    Name: z.string().min(1, "Name is required"),
-    Email: z
+    "Name": z.string().min(1, "Name is required"),
+    "Email": z
       .string()
       .optional()
       .nullable()
@@ -65,7 +66,7 @@ export const importContactSchema = z
         message: "Invalid phone number format",
       }),
     ]),
-    Metadata: z.string().optional(),
+    "Metadata": z.string().optional(),
     "Verification Id": z.string().optional(),
   })
   .passthrough()
@@ -104,7 +105,7 @@ export const contactInfoSchema = z.object({
   countryCode: z.string().min(1).max(5),
   phoneNumber: z.string().min(5).max(20),
   email: z.string().email().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.string().optional(),
   verificationId: z.string().optional(),
   source: z.enum(["manual", "excel", "google", "crm"]),
   externalId: z.string().nullable().optional(),
@@ -117,25 +118,14 @@ export const contactQuerySchema = z.object({
 });
 
 export const addContact = async (
-  organizationId: string,
-  contact: z.infer<typeof contactInfoSchema>,
-  source: string,
+  contacts: InsertContactProfile,
 ) => {
   try {
     const result = await db
       .insert(contactProfileSchema)
-      .values({
-        ...contact,
-        organizationId,
-        source: source as SourceType,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
+      .values(contacts)
       .returning();
 
-    logger.info(
-      `Contact added: ${JSON.stringify(result)}, orgId: ${organizationId}`,
-    );
     return result;
   } catch (error) {
     logger.error(
@@ -144,37 +134,6 @@ export const addContact = async (
     throw error;
   }
 };
-
-export const addMultipleContacts = async (
-  organizationId: string,
-  contacts: z.infer<typeof contactInfoSchema>[],
-  source: string,
-) => {
-  try {
-    const result = await db
-      .insert(contactProfileSchema)
-      .values(
-        contacts.map((contact) => ({
-          ...contact,
-          organizationId,
-          source: source as SourceType,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        })),
-      )
-      .returning();
-
-    logger.info(
-      `Multiple contacts added: ${JSON.stringify(result)}, orgId: ${organizationId}`,
-    );
-    return result;
-  } catch (error) {
-    logger.error(
-      `Failed to add multiple contacts: ${error instanceof Error ? error.message : String(error)}`,
-    );
-    throw error;
-  }
-}
 
 export const getAllContacts = async (
   organizationId: string,
@@ -343,7 +302,7 @@ export const filterContactsByPhoneNumber = async (
   return await db
     .select({
       id: contactProfileSchema.id,
-      phone: contactProfileSchema.phoneNumber,
+      phoneNumber: contactProfileSchema.phoneNumber,
     })
     .from(contactProfileSchema)
     .where(
@@ -424,12 +383,12 @@ export const parseContactImportFile = async (file: any, fileType: string) => {
       (contact: any) => {
         return {
           ...contact,
-          Phone: contact.Phone ? String(contact.Phone) : null,
+          "Phone Number": String(contact["Phone Number"]),
         };
       },
     );
 
-    return validContactData;
+    return validContactData
   } catch (error: any) {
     logger.error(
       `Contacts import function error: ${JSON.stringify(error?.message)}`,

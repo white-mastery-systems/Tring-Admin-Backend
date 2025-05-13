@@ -30,7 +30,11 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const newContact = await addContact(organizationId, contactInfoPayload, ContactSource.MANUAL);
+    const newContact = await addContact({ 
+      ...contactInfoPayload,
+      organizationId, 
+      source: ContactSource.MANUAL
+    });
     logger.info(`Contact created: ${JSON.stringify(newContact[0])}`);
 
     return {
