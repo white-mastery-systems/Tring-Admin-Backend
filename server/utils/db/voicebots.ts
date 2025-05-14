@@ -13,11 +13,12 @@ export const createVoicebot = async (voicebot: InsertVoiceBot) => {
   return (await db.insert(voicebotSchema).values(voicebot).returning())[0];
 };
 
-export const getVoicebotByIncomingPhoneNumber = async (incomingPhoneNumber: string) => {
+export const getVoicebotByIncomingPhoneNumber = async (incomingPhoneNumber: string, mode: string, voicebotId?: string) => {
   return await db.query.voicebotSchema.findFirst({
     where: and(
       eq(voicebotSchema.incomingPhoneNumber, incomingPhoneNumber),
-      eq(voicebotSchema.isDeleted, false)
+      eq(voicebotSchema.isDeleted, false),
+      (mode === "update" ? ne(voicebotSchema.id, voicebotId) : undefined)
     )  
   });
 }
@@ -355,6 +356,13 @@ export const orgVoicebotSubscription = async (organizationId: string) => {
 // voicebot schedular
 export const createVoicebotSchedular = async (voicebotSchedular: any) => {
   return await db.insert(voicebotSchedularSchema).values(voicebotSchedular).returning()
+}
+
+export const updateVoiceScheduledContacts = async (callSid: string, data: any) => {
+  await db.update(voicebotSchedularSchema).set({
+    ...data,
+    updatedAt: new Date()
+  }).where(eq(voicebotSchedularSchema.callSid, callSid))
 }
 
 export const scheduledCampaignCallList = async (organizationId: string, campaignId: string, timeZone: string, query?: any ) => {
