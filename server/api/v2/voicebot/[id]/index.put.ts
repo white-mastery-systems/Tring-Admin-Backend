@@ -164,8 +164,8 @@ export default defineEventHandler(async (event) => {
     if(body?.llmConfig) {
       body.llmConfig = {
         ...voicebotDetail?.llmConfig,
-        inboundPrompt: voicebotDetail?.llmConfig?.voiceInboundPrompt,
-        outboundPromptText: voicebotDetail?.llmConfig?.voiceOuboundPrompt
+        inboundPromptText: voicebotDetail?.llmConfig?.inboundPromptText,
+        outboundPromptText: voicebotDetail?.llmConfig?.outboundPromptText
       }
     }
 
