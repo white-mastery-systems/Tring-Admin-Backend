@@ -2,6 +2,7 @@
 const zodQueryValidator = z.object({
   active: z.string().optional(),
   q: z.string().optional(),
+  industry: z.string().optional(),
   page: z.string().optional(),
   limit: z.string().optional(),
   type: z.string().optional()
