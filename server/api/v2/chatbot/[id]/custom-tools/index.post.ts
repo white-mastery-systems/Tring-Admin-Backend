@@ -67,6 +67,6 @@ export default defineEventHandler(async (event) => {
 
   } catch (error: any) {
     logger.error(`Chatbot custom tools API Error, ${JSON.stringify(error)}`)
-    return errorResponse(event, 500, error.message || "Internal Server Error")
+    return errorResponse(event, 500, "Unable to create chatbot custom tools")
   }
 })

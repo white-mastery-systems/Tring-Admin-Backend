@@ -14,19 +14,29 @@ export default defineEventHandler(async (event) => {
     const formData = await readMultipartFormData(event);
     if (!formData) return errorResponse(event, 500, "Invalid Data");
 
-    const fileField = formData.find((item) => item.name === "file");
-    if (!fileField) return errorResponse(event, 500, "No file uploaded");
+    const fileFields = formData.filter((item) => item.name === "file");
+    if (!fileFields.length) return errorResponse(event, 500, "No files uploaded");
 
-    const { filename, data: contactFormData }: any = fileField;
-    const fileExtension = filename?.split(".").pop().toLowerCase();
+    // return fileFields
 
-    const validContactData = await parseContactImportFile(
-      contactFormData,
-      fileExtension,
-    );
+    let allValidContacts: any[] = [];
+
+    for (const fileField of fileFields) {
+      const { filename, data: contactFormData }: any = fileField;
+      const fileExtension = filename?.split(".").pop().toLowerCase();
+
+      const validContactData = await parseContactImportFile(
+        filename,
+        contactFormData,
+        fileExtension,
+      );
+
+      allValidContacts.push(...validContactData);
+    }
+    // return allValidContacts
 
     // Extract phone numbers
-    const phoneNumbers = validContactData
+    const phoneNumbers = allValidContacts
       .map((contact: any) => contact["Phone Number"])
       .filter(Boolean);
 
@@ -41,10 +51,10 @@ export default defineEventHandler(async (event) => {
     );
 
     // Filter unique contacts not in the database
-    const uniqueContactsData = validContactData.filter(
+    const uniqueContactsData = allValidContacts.filter(
       (contact: any) => !existingPhoneNumbers.has(contact["Phone Number"]),
     );
-
+    // return uniqueContactsData
     if (!uniqueContactsData.length)
       return errorResponse(
         event,

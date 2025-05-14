@@ -328,7 +328,7 @@ export const mapUniqueContacts = (
   });
 };
 
-export const parseContactImportFile = async (file: any, fileType: string) => {
+export const parseContactImportFile = async (fileName: string, file: any, fileType: string) => {
   try {
     const requiredFields = ["Name", "Country Code", "Phone Number"];
 
@@ -352,7 +352,7 @@ export const parseContactImportFile = async (file: any, fileType: string) => {
           !currentContact[field] ||
           String(currentContact[field]).trim() === ""
         ) {
-          throw new Error(`Row ${i + 2} is missing required field: ${field}`);
+          throw new Error(`File name: ${fileName} - Row ${i + 2} is missing required field: ${field}`);
         }
       }
     }
@@ -367,7 +367,7 @@ export const parseContactImportFile = async (file: any, fileType: string) => {
             .map((err: any) => `${err.message}`)
             .join("; ");
 
-          throw new Error(`Row ${rowError.rowIndex + 2}: ${errorDetails}`);
+          throw new Error(`File name: ${fileName} - Row ${rowError.rowIndex + 2}: ${errorDetails}`);
         },
       );
       logger.error(
