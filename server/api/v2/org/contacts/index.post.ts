@@ -18,6 +18,7 @@ export default defineEventHandler(async (event) => {
     const existingContact = await checkIfContactExists(
       organizationId,
       contactInfoPayload.phoneNumber,
+      "insert"
     );
 
     if (existingContact) {

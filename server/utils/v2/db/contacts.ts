@@ -258,12 +258,15 @@ export const deleteContactById = async (
 export const checkIfContactExists = async (
   organizationId: string,
   phoneNumber: string,
+  mode: string,
+  contactId?: string
 ) => {
   try {
     const existingContact = await db.query.contactProfileSchema.findFirst({
       where: and(
         eq(contactProfileSchema.phoneNumber, phoneNumber),
         eq(contactProfileSchema.organizationId, organizationId),
+        (mode === "update" ? ne(contactProfileSchema.id, contactId) : undefined)
       ),
     });
 
@@ -324,6 +327,8 @@ export const mapUniqueContacts = (
       countryCode: `+${contactInfo["Country Code"]}`,
       phoneNumber: contactInfo["Phone Number"],
       organizationId,
+      metadata: contactInfo["Metadata"],
+      verificationId:  contactInfo["Verification Id"]
     };
   });
 };

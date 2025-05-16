@@ -220,6 +220,31 @@ export const contactProfileSchema = adminSchema.table("contact_profiles", {
     .defaultNow(),
 });
 
+// new buckets schema
+export const contactGroupSchema = adminSchema.table("contact_groups", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  groupName: varchar("group_name"),
+  crmId: uuid("crm_id").references(() => integrationSchema.id),
+  isDefault: boolean("is_default").default(false),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
+// new contact_group links Schema
+export const contactGroupLinkSchema = adminSchema.table("contact_group_links", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  contactId: uuid("contact_id").references(() => contactProfileSchema.id, { onDelete: 'cascade' }),
+  contactGroupId: uuid("contact_group_id").references(() => contactGroupSchema.id, { onDelete: 'cascade' }),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 export const contactSchema = adminSchema.table("contacts", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   firstName: varchar("first_name"),
@@ -461,6 +486,12 @@ export type InsertNumberIntegration = InferInsertModel<
 
 export type SelectContactProfile = InferSelectModel<typeof contactProfileSchema>;
 export type InsertContactProfile = InferInsertModel<typeof contactProfileSchema>;
+
+export type SelectContactGroup = InferSelectModel<typeof contactGroupSchema>;
+export type InsertContactGroup = InferInsertModel<typeof contactGroupSchema>;
+
+export type SelectContactGroupLink = InferSelectModel<typeof contactGroupLinkSchema>;
+export type InsertContactGroupLink = InferInsertModel<typeof contactGroupLinkSchema>;
 
 export type SelectContactList = InferSelectModel<typeof contactListSchema>;
 export type InsertContactList = InferInsertModel<typeof contactListSchema>;
