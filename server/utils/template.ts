@@ -226,7 +226,8 @@ export const sendWhatsappTemplateMessage = async (
   }
 };
 
-export const deStructureVariables = (inputData: any) =>{
+export const deStructureVariables = (inputData: any, variableType?:string) =>{
+  variableType = (variableType) ?? "NAMED";
   const obj = {
     bodyVariables: [],
     headerVariables: [],
@@ -237,34 +238,57 @@ export const deStructureVariables = (inputData: any) =>{
     footerText: inputData?.footerText?.trim() || null,
     buttonText: inputData?.buttonText?.trim() || null,
   };
-  if (!inputData?.templateVariables?.length) {return obj};
 
-  let uniqueHeader = false; let uniqueButton = false;
-  const filteredVarList = inputData?.templateVariables?.filter((item: any) => {
-    if (item.placed === "header") {
-      if (!uniqueHeader) {
-        uniqueHeader = true;
-        return true;
+  const variables: any[] = (inputData?.variables) ?? (inputData?.templateVariables || []);
+ if (variableType === "POSITIONAL" && variables.length) {
+    let uniqueHeader = false; let uniqueButton = false;
+    const filteredVarList = variables.filter((item: any) => {
+      if (item.placed === "header") {
+        if (!uniqueHeader) {
+          uniqueHeader = true;
+          return true;
+        }
+        return false;
       }
-      return false;
-    }
-    if (item.placed === "button") {
-      if (!uniqueButton) {
-        uniqueButton = true;
-        return true;
+      if (item.placed === "button") {
+        if (!uniqueButton) {
+          uniqueButton = true;
+          return true;
+        }
+        return false;
       }
-      return false;
-    }
-    return true;
-  });
+      return true;
+    });
   
-  const headerVariables = positioningVaribles(filteredVarList.filter((item: any) => item.placed === "header"), extractPositions(obj.headerText));
-  const bodyVariables = positioningVaribles(filteredVarList.filter((item: any) => item.placed === "body"), extractPositions(obj.bodyText));
-  const buttonVariables = positioningVaribles(filteredVarList.filter((item: any) => item.placed === "button"), extractPositions(obj.buttonText));
-  obj.headerText = positioningText(obj.headerText, headerVariables.length);
-  obj.bodyText = positioningText(obj.bodyText, bodyVariables.length);
+    const headerVariables = positioningVariables(filteredVarList.filter((item: any) => item.placed === "header"), extractPositions(obj.headerText));
+    const bodyVariables = positioningVariables(filteredVarList.filter((item: any) => item.placed === "body"), extractPositions(obj.bodyText));
+    const buttonVariables = positioningVariables(filteredVarList.filter((item: any) => item.placed === "button"), extractPositions(obj.buttonText));
+    obj.headerText = positioningText(obj.headerText, headerVariables.length);
+    obj.bodyText = positioningText(obj.bodyText, bodyVariables.length);
   
   return {...obj, headerVariables, bodyVariables, buttonVariables, filteredVarList}
+  } else {
+    if(obj.headerText){
+      const { text:headerText, variables:headerVariables } = replaceNamedVariables(obj.headerText, "header");
+      obj.headerText = headerText;
+      // @ts-ignore
+      obj.headerVariables = headerVariables;
+    }
+    if(obj.bodyText){
+      const { text:bodyText, variables:bodyVariables } = replaceNamedVariables(obj.bodyText, "body");
+      obj.bodyText = bodyText;
+      // @ts-ignore
+      obj.bodyVariables = bodyVariables;
+    }
+    if(obj.buttonText){
+      const { text:buttonText, variables: buttonVariables } = replaceNamedVariables(obj.buttonText, "button");
+      obj.buttonText = buttonText;
+      // @ts-ignore
+      obj.buttonVariables = buttonVariables;
+    }
+
+    return {...obj}
+  }
 }
 
 export const positioningText = (text: string | null, maxLength: number)=>{
@@ -286,11 +310,64 @@ export const extractPositions = (text: string | null) => {
   return text ? [...text.matchAll(/\{\{(\d+)\}\}/g)].map((match) => match[1]) : [];
 };
 
-export const positioningVaribles = (variables:any[], positionOrder:any[]) =>{
+export const positioningVariables = (variables:any[], positionOrder:any[]) =>{
   variables.sort((a, b) => positionOrder.indexOf(a.position) - positionOrder.indexOf(b.position))
   return repositionVariables(variables)
 }
 
 export const repositionVariables = (variables:any[]) =>{
-  return variables.map((item, index) => ({ ...item, position: (index + 1).toString() }));
+  return variables.map((item, index) => ({ ...item, position: (index + 1).toString(), example: (item.example) ?? item.name }));
 }
+
+export const positioningNamedVariables = (variables: any[]) => {
+  if (variables.length) {
+    const list = variables.map((item:any) => {
+      const name = item?.name ?? item?.example ?? item?.text ?? null;
+      if(name) return { param_name: name, example: name };
+    })
+    return list.filter(Boolean)
+  }
+  return [];
+};
+
+export const replaceNamedVariables = (text:string, placed: string) => {
+  const matches = [...text.matchAll(/\{\{([^}]+)\}\}/g)];
+  
+  if (!matches.length) return { text, variables: [] };
+  
+  const seen = new Set();
+  const examples: any[] = [];
+  let resultText = text;
+
+  if (["header","button"].includes(placed)) {
+    const firstMatch = matches[0];
+    const fullMatch = firstMatch[0]; // e.g. "{{company}}"
+    const varName = firstMatch[1]; // e.g. "company"
+
+    resultText = resultText.replace(fullMatch, "{{1}}"); // Replace only first
+    examples.push({ example: varName });
+
+    // Remove remaining variables
+    for (let i = 1; i < matches.length; i++) {
+      const toRemove = matches[i][0];
+      resultText = resultText.replace(toRemove, "");
+    }
+    // Enforce 60 character limit for header
+    if (placed === "header" && resultText.length > 60) resultText = resultText.slice(0, 60);
+  } else {
+    matches.forEach((match, index) => {
+      const fullMatch = match[0]; // e.g. "{{name}}"
+      const varName = match[1];   // e.g. "name"
+      
+      // If this variable hasn't been processed yet
+      if (!seen.has(fullMatch)) {
+        seen.add(fullMatch);
+        examples.push({ example: varName });
+        // Use a RegExp to replace all occurrences of this exact variable
+        resultText = resultText.replace(new RegExp(`\\{\\{${varName}\\}\\}`, "g"), `{{${examples.length}}}`);
+      }
+    });
+  }
+
+  return { text: resultText, variables:examples };
+};
