@@ -48,15 +48,7 @@ export default defineEventHandler(async (event) => {
     const components: any[] = [];
  
     const { bodyVariables, headerVariables, buttonVariables, headerText, bodyText, footerText } = deStructureVariables(metadata, metadata.variableType);
-    if (["document", "image", "video"].includes(metadata?.headerType) && metadata?.mediaSession) {
-      components.push({
-        type: "HEADER",
-        format: `${metadata?.headerType}`.toUpperCase(),
-        example: {
-          header_handle: [metadata?.mediaSession?.h || metadata?.mediaSession],
-        },
-      });
-    } else if (headerText && headerText !== "none" && metadata?.headerType === "text") {
+    if (headerText && headerText !== "none" && metadata?.headerType === "text") {
       components.push({
         type: "HEADER",
         format: "TEXT",
@@ -81,6 +73,18 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    if (["document", "image", "video"].includes(metadata.headerType) && metadata?.mediaSession) {
+      components.push({
+        type: "HEADER",
+        format: `${metadata.headerType}`.toUpperCase(),
+        example: {
+          header_handle: [
+            metadata?.mediaSession?.h || metadata?.mediaSession,
+          ],
+        },
+      });
+    }
+    
     if (footerText) {
       components.push({ type: "FOOTER", text: footerText });
     }
@@ -114,7 +118,7 @@ export default defineEventHandler(async (event) => {
       components.push({ type: "BUTTONS", buttons: buttonComponents });
     }
 
-    const integrationDetails: any = await db.query.integrationSchema.findFirst({
+    const integrationDetails:any = await db.query.integrationSchema.findFirst({
       where: and(eq(integrationSchema.id, integrationId)),
     });
 
