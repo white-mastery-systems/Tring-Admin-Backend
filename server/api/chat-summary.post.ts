@@ -3,18 +3,18 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
-    
+
     if (!body.chatHistory) {
       throw createError({
         statusCode: 400,
-        message: 'Chat history is required'
+        message: "Chat history is required",
       });
     }
     const GEMINI_API_KEY = useRuntimeConfig().geminiApiKey;
     if (!GEMINI_API_KEY) {
       throw createError({
         statusCode: 500,
-        message: 'API key is not configured'
+        message: "API key is not configured",
       });
     }
 
@@ -39,6 +39,14 @@ export default defineEventHandler(async (event) => {
         - Repetitive: The response repeats previously provided information without directly answering the user's question.
       Task: Classify and return all messages where the assistant's response does not meet the above criteria. Provide these instances in a list format for further review.
       ---
+      ### ✅ TASK 3: Classify the Chat Outcome
+      Analyze the conversation to determine the user's engagement level.
+      Classify the outcome into one of the following categories:
+      - "Engaged": User is actively participating, asking follow-up questions, or implementing suggestions.
+      - "Not Interested": User shows minimal engagement, doesn't respond to suggestions, or explicitly states lack of interest.
+      - "Follow Up": Conversation ended with open questions or the user indicated they'll return later for more assistance.
+      Base your classification on user's response patterns, explicit statements, and overall conversation flow.
+      ---
       ### 📌 RULES for Identifying Failures
       Only include user - assistant message pairs where:
       1. The **user is asking a question** or making a **clear request**  
@@ -59,6 +67,7 @@ export default defineEventHandler(async (event) => {
       Return your final result in this JSON structure:
       {
         "chatSummary": "string",
+        "chatOutcome": "string",
         "inadequateMessages": [ 
           { "role": "user", "content": "..." },
           { "role": "assistant", "content": "..." }
@@ -67,6 +76,7 @@ export default defineEventHandler(async (event) => {
       If no inadequate Messages are found, return:
       {
         "chatSummary": "string",
+        "chatOutcome": "string",
         "inadequateMessages": []
       }
     `;
@@ -82,12 +92,24 @@ export default defineEventHandler(async (event) => {
     });
 
     const result = await model.generateContent(prompt);
-    return JSON.parse(result.response.text());
+    const parsedResponse = JSON.parse(result.response.text());
 
+    // const payload = {
+    //   chatOutcome: parsedResponse.chatOutcome,
+    // };
+
+    // await $fetch(
+    //   `${useRuntimeConfig().public.chatBotBaseUrl}/api/chat/${chatId}`,
+    //   {
+    //     method: "PUT",
+    //     body: payload,
+    //   }
+    // );
+    return parsedResponse;
   } catch (error: any) {
     throw createError({
       statusCode: 500,
-      message: error.message
+      message: error.message,
     });
   }
 });
