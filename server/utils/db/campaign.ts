@@ -1,6 +1,7 @@
 import momentTz from "moment-timezone";
 import { campaignSchema, campaignWhatsappContactSchema, InsertCampaign } from "~/server/schema/admin";
 import {whatsappErrorCodes} from "~/assets/error-codes.json"
+import { notInArray } from "drizzle-orm";
 
 const db = useDrizzle();
 type InteractionStatus = "Booked" | "Engaged" | "Failed" | "Follow Up" | "Invalid Number" | "New Lead" | "Not Interested" | "No Response";
@@ -67,7 +68,7 @@ export const campaignList = async (
     db.query.voicebotSchedularSchema.findMany({
        where: and(
           eq(voicebotSchedularSchema.organizationId, organizationId),
-          eq(voicebotSchedularSchema.callStatus, "dialed")
+          notInArray(voicebotSchedularSchema.callStatus, ["not dialed", "failed", "Failed", "No Response", "Invalid Number"])
        )    
     })
   ]);

@@ -190,6 +190,8 @@ export const voicebotLeadSchema = voiceBotSchema.table("leads",{
   phone: varchar("phone"),
   notes: varchar("notes"),
   scheduledDate: timestamp("scheduled_date"),
+  callSid: varchar("call_sid"),
+  callOutcome: varchar("call_outcome"),
   metadata: jsonb("metadata"),
   botId: uuid("bot_id")
   .references(() => voicebotSchema.id)
