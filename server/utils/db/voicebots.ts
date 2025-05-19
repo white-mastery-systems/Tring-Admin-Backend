@@ -317,7 +317,10 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
 // Get all voicebot
 export const getAllActiveVoicebots = async() => {
   return await db.query.voicebotSchema.findMany({
-    where: eq(voicebotSchema.active, true)
+    where:  and(
+      eq(voicebotSchema.active, true),
+      eq(voicebotSchema.isDeleted, false)
+    )
   })
 }
 

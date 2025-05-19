@@ -317,6 +317,21 @@ export const campaignSchema = adminSchema.table("campaign", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const newCampaignSchema = adminSchema.table("new_campaigns", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  campaignName: varchar("campaign_name"),
+  contactMethod: varchar("contact_method"),
+  instantAction: boolean("instant_action"),
+  bucketIds: uuid("bucket_ids").array(),
+  botConfig: jsonb("bot_config"),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id
+  ),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 export const playgroundDocumentSchema = adminSchema.table(
   "playground_document",
   {
@@ -504,6 +519,9 @@ export type InsertVoicebotContacts = InferInsertModel<typeof voicebotContactSche
 
 export type SelectCampaign = InferSelectModel<typeof campaignSchema>;
 export type InsertCampaign = InferInsertModel<typeof campaignSchema>;
+
+export type SelectNewCampaign = InferSelectModel<typeof newCampaignSchema>;
+export type InsertNewCampaign = InferInsertModel<typeof newCampaignSchema>;
 
 export type SelectPlaygroundDocument = InferSelectModel<
   typeof playgroundDocumentSchema

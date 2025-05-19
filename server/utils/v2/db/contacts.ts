@@ -470,3 +470,7 @@ export const processBulkContacts = (uploadedData: any): BulkUploadResponse => {
     errors: validationErrors,
   };
 };
+
+export const getAllContactProfiles = async() => {
+  return await db.query.contactProfileSchema.findMany({})
+}

@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import { adminSubscriptionSchema, campaignWhatsappContactSchema, contactGroupLinkSchema, contactGroupSchema, contactListAndContactsRelations, contactListContactsSchema, industriesSchema, orgSubscriptionSchema, playgroundDocumentSchema, templateRelations, voicebotContactSchema, voiceBucketContactsRelations, voiceContactLinkSchema, whatsappSessionSchema } from "../schema/admin";
 import { userOTPSchema } from "../schema/auth";
-import { callLogsRelations, outboundCallSchema, salesHandyContactsSchema, voicebotIntegrationRelations, voicebotLeadRelations, voicebotLeadSchema, voicebotRelations, voicebotSchedularSchema, voicebotScheduledCallsRelations } from "../schema/voicebot";
+import { callLogsRelations, outboundCallSchema, salesHandyContactsSchema, voicebotCallRelations, voicebotIntegrationRelations, voicebotLeadRelations, voicebotLeadSchema, voicebotRelations, voicebotSchedularSchema, voicebotScheduledCallsRelations } from "../schema/voicebot";
 import { botDynamicFormSchema, chatResponseImprovementSchema } from "../schema/bot";
 
 const config = useRuntimeConfig()
@@ -62,6 +62,8 @@ const schema = {
   voicebotDocumentSchema,
   contactGroupSchema,
   contactGroupLinkSchema,
+  newCampaignSchema,
+  voicebotCallScheduleSchema,
   // Relations
   organizationRelations,
   chatBotRelations,
@@ -84,7 +86,8 @@ const schema = {
   salesHandyContactsSchema,
   whatsappEnrichmentSchema,
   whatsappEnrichmentRelations,
-  templateRelations
+  templateRelations,
+  voicebotCallRelations
 };
 
 const db = drizzle(queryClient, { schema });
