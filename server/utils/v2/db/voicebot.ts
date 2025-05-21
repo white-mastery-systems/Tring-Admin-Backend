@@ -303,8 +303,16 @@ export const getNotDialedCallListByCampaignId = async(campaignId: string) => {
   return await db.query.voicebotCallScheduleSchema.findMany({
     where: and(
       eq(voicebotCallScheduleSchema.campaignId, campaignId),
-      inArray(voicebotCallScheduleSchema.callStatus, ["Not Dialed", "Failed"]),
-      lt(voicebotCallScheduleSchema.maxRetryCount, 5)
+      eq(voicebotCallScheduleSchema.callStatus, "Not Dialed")
+    )
+  })
+}
+
+export const getAllFailedCallList = async () => {
+  return await db.query.voicebotCallScheduleSchema.findMany({
+    where: and(
+      inArray(voicebotCallScheduleSchema.callStatus, ["Failed", "No Response"]),
+      eq(voicebotCallScheduleSchema.isRetryExpired, false)
     )
   })
 }

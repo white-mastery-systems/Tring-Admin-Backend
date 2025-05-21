@@ -242,8 +242,10 @@ export const voicebotCallScheduleSchema = voiceBotSchema.table("voicebot_call_sc
   organizationId: uuid("organization_id").references(() => organizationSchema.id, { onDelete: "cascade" }).notNull(),
   callSid: varchar("call_sid"),
   callStatus: varchar("call_status", {
-    enum: ["Not Dialed", "Engaged", "Booked", "Follow Up", "New Lead", "Not Interested", "No Response", "Failed", "Invalid Number"]
+    enum: ["Ongoing", "Not Dialed", "Engaged", "Booked", "Follow Up", "New Lead", "Not Interested", "No Response", "Failed", "Invalid Number"]
   }).default("Not Dialed"),
+  retryAttemptTimestamps: jsonb("retry_attempt_timestamps").array(),
+  isRetryExpired: boolean("is_retry_expired").default(false),
   maxRetryCount: integer("max_retry_count").default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

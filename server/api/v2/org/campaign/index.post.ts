@@ -26,6 +26,11 @@ const zodCreateCampaignSchema = z.object({
     templateName: z.string().optional(),
     region: z.string().optional(),
   }),
+  retryAttempt: z.object({
+    duration: z.number(),
+    frequencyPerDay: z.number(),
+    timeSlots: z.string().array()
+  }).optional()
 }).superRefine((data, ctx) => {
   const { contactMethod, instantAction, botConfig } = data;
 
@@ -101,6 +106,13 @@ export default defineEventHandler(async (event) => {
     const data: any = await createNewCampaign({
       ...body,
       organizationId,
+      ...body.contactMethod === "voice" && !body.retryAttempt && {
+        retryAttempt: {
+          duration: 1,
+          frequencyPerDay: 1,
+          timeSlots: ["10.00"]
+        }
+      }
     });
     
     if(data.contactMethod === "voice") {

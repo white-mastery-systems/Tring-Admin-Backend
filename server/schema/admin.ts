@@ -324,6 +324,7 @@ export const newCampaignSchema = adminSchema.table("new_campaigns", {
   instantAction: boolean("instant_action"),
   bucketIds: uuid("bucket_ids").array(),
   botConfig: jsonb("bot_config"),
+  retryAttempt: jsonb("retry_attempt"),
   organizationId: uuid("organization_id")
     .notNull()
     .references(() => organizationSchema.id

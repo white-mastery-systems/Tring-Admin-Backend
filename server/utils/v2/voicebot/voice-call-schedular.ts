@@ -28,7 +28,7 @@ export const voicebotCallSchedular = async () => {
       if(!campaign.instantAction) {
         const campaignDate = momentTz(campaign?.botConfig?.date).tz(timeZone).startOf("day");
         if (campaignDate.isAfter(currentDate)) {
-          logger.error(`Campaign scheduling skipped: Scheduled date is future date: (${campaignDate.format("YYYY-MM-DD")}), Current date: ${currentDate.format("YYYY-MM-DD")}`);
+          logger.error(`Campaign scheduling skipped: campaignId: ${campaign?.id}, Scheduled date is future date: (${campaignDate.format("YYYY-MM-DD")}), Current date: ${currentDate.format("YYYY-MM-DD")}`);
           return;
         }
         [startHour, startMinute] = campaign?.botConfig?.workingStartTime.split(":").map(Number);
@@ -43,7 +43,7 @@ export const voicebotCallSchedular = async () => {
 
       const voiceScheduleContactList = notDialedScheduledVoiceCallList.slice(0, noOfCallsPerTrigger)
       if(!voiceScheduleContactList.length) {
-        logger.error("No call list available to dial call")
+        logger.error(`No call list available to dial call for campaignId - ${campaign.id}`)
         return
       }
   
@@ -55,7 +55,7 @@ export const voicebotCallSchedular = async () => {
             const workingEndTime = momentTz().tz(timeZone).hour(endHour).minute(endMinute).second(0)
         
             if(!currentTime.isBetween(workingStartTime, workingEndTime)) {
-              logger.error(`The current time is outside of working hours - Date: ${campaign?.botConfig?.date} workingStartTime: ${workingStartTime}, WorkingEndTime: ${workingEndTime}, currentTime: ${currentTime}`)
+              logger.error(`The current time is outside of working hours - campaignId: ${campaign?.id} - Date: ${campaign?.botConfig?.date}, workingStartTime: ${workingStartTime}, WorkingEndTime: ${workingEndTime}, currentTime: ${currentTime}`)
               return 
             }
           }
@@ -81,8 +81,8 @@ export const voicebotCallSchedular = async () => {
               body: data
             })
             if(dialVoiceCall) {
-              logger.info(`Call initiated successfully. Updating status to "dialed" for ID: ${schedular.id}`);
-              const updatedVoiceCall = await updateVoiceScheduledCall(schedular.id, { callSid: dialVoiceCall, callStatus: "Booked" });
+              logger.info(`Call initiated successfully. Updating call status to "Ongoing" for ID: ${schedular.id}`);
+              const updatedVoiceCall = await updateVoiceScheduledCall(schedular.id, { callSid: dialVoiceCall, callStatus: "Ongoing" });
               logger.info(`Call status updated successfully for ID: ${updatedVoiceCall.id}`);
             }
           } catch (error: any) {
@@ -97,7 +97,6 @@ export const voicebotCallSchedular = async () => {
     throw new Error(error)
   }
 }
-
 
 const getCallTriggerCountForVoiceProviders = (provider: string) => {
   let callPerTrigger = 1

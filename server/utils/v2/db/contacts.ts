@@ -255,6 +255,12 @@ export const deleteContactById = async (
   }
 };
 
+export const deleteBulkContactsByIds = async (contactIds: string[]) =>{
+  await db.delete(contactProfileSchema).where(
+    inArray(contactProfileSchema.id, contactIds)
+  )
+}
+
 export const checkIfContactExists = async (
   organizationId: string,
   phoneNumber: string,
