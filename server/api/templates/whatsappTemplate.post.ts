@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
   try {
     const organizationId = (await isOrganizationAdminHandler(event)) as string;
     const {templateName, language, metadata, integrationId, category:TempalteCategory} = await isValidBodyHandler(event, zodInsertTemplates);
-    metadata.headerType = metadata?.headerType ?? "none"
+    metadata.headerType = metadata?.headerType ?? "none";
     metadata.variableType = metadata?.variableType ?? "NAMED";
     const category = (TempalteCategory) ?? "MARKETING";
     const components: any[] = [];
