@@ -6,18 +6,16 @@ import { getTemplateDetailsByName } from "../../template";
 
 export const scheduleWhatsAppCampaignV2 = async (
   campaignId: string,
-  date: any,
-  time: any,
+  date: string,
+  time: string,
   contactList: any,
-  templateName: any,
+  templateName: string,
   integrationData: any,
   timeZone: string,
 ) => {
   try {
-    const accessToken = integrationData?.metadata?.access_token;
-    const wabaId = integrationData.metadata?.wabaId;
 
-    const assigned_date = momentTz(date);
+    const assigned_date = momentTz(date).tz(timeZone);
     const localTime = momentTz.tz(time, "HH:mm", timeZone);
     const utcTime = localTime.clone().utc(); // Convert to UTC
 
@@ -28,14 +26,10 @@ export const scheduleWhatsAppCampaignV2 = async (
     const minutes = utcTime.get("minute");
 
     logger.info(`scheduled time: ${JSON.stringify({ year, month, date: day, hour: hours, minute: minutes, tz: "UTC" })}`);
-    const templateDetailList = await getTemplateDetailsByName(wabaId, accessToken, templateName);
-    const templateInformation = templateDetailList?.find((i: any) => i.name === templateName);
-    
     const event = schedule.scheduleJob({ year, month, date: day, hour: hours, minute: minutes, tz: "UTC" }, async () => {
-      await sendWhatsappCampaignWithTemplate({ templateInformation, campaignId, metadata:integrationData.metadata, contactList });
+      await sendWhatsappCampaignWithTemplate({ templateName, campaignId, metadata:integrationData.metadata, contactList });
     });
 
-    logger.info({ event });
     if (!event) {
       logger.error(`whatsapp campaign event is not scheduled`);
       return { status: false };

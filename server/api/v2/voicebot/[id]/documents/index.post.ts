@@ -5,6 +5,8 @@ import {  uploadVoicebotDocument } from "~/server/utils/db/document";
 export default defineEventHandler(async (event) => {
   try {
     const organizationId = (await isOrganizationAdminHandler(event)) as string
+
+    const { id: voicebotId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
     
     // Data Validation
     const formData = await readMultipartFormData(event)
@@ -19,7 +21,7 @@ export default defineEventHandler(async (event) => {
       return errorResponse(event, 400, "Invalid Document Data (files): The 'files' field is missing or invalid. Please ensure a valid file is provided.")
     }
     
-    const documentParsing = await uploadVoicebotDocument(organizationId, fileData, fileName)
+    const documentParsing = await uploadVoicebotDocument(organizationId, fileData, fileName, voicebotId)
 
     return documentParsing
     

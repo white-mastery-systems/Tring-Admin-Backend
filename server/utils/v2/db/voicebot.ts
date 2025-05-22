@@ -1,3 +1,7 @@
+import { InsertVoicebotCallSchedule, voicebotCallScheduleSchema } from "~/server/schema/voicebot"
+import momentTz from "moment-timezone"
+import { inArray } from "drizzle-orm"
+
 const db = useDrizzle()
 
 export const getOrgTotalVoicebots = async(organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
@@ -286,4 +290,119 @@ export const getVoiceCallClassificationCounts = async (
   }
 
   return leadComposition
+}
+
+
+// Voice call schedule 
+export const createVoiceCallSchdeuling = async (data: InsertVoicebotCallSchedule) => {
+  return await db.insert(voicebotCallScheduleSchema).values(data)
+}
+
+// outbound calls
+export const getNotDialedCallListByCampaignId = async(campaignId: string) => {
+  return await db.query.voicebotCallScheduleSchema.findMany({
+    where: and(
+      eq(voicebotCallScheduleSchema.campaignId, campaignId),
+      eq(voicebotCallScheduleSchema.callStatus, "Not Dialed")
+    )
+  })
+}
+
+export const getAllFailedCallList = async () => {
+  return await db.query.voicebotCallScheduleSchema.findMany({
+    where: and(
+      inArray(voicebotCallScheduleSchema.callStatus, ["Failed", "No Response"]),
+      eq(voicebotCallScheduleSchema.isRetryExpired, false)
+    )
+  })
+}
+
+export const getVoiceScheduledContactsByCampaignId = async (campaignId: string, timeZone: string, query?: any) => {
+  let filters: any = [eq(voicebotCallScheduleSchema.campaignId, campaignId)];
+  let page, offset, limit = 0;
+
+  if (query?.page && query?.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
+    offset = (page - 1) * limit;
+  }
+
+  if (query?.period) {
+    let fromDate: Date | undefined;
+    let toDate: Date | undefined;
+
+    const queryDate = getDateRangeForFilters(query, timeZone);
+    fromDate = queryDate?.from;
+    toDate = queryDate?.to;
+    if (fromDate && toDate) {
+      filters.push(between(voicebotCallScheduleSchema.createdAt, fromDate, toDate));
+    }
+  }
+
+  if(query?.status) {
+    filters.push(eq(voicebotCallScheduleSchema.callStatus, query?.status))
+  }
+
+  let data: any = await db.query.voicebotCallScheduleSchema.findMany({
+    with: {
+      bot: { columns: { name: true } },
+      contactGroup: { columns: { groupName: true } },
+      campaign: { columns: {
+         contactMethod: true,
+         campaignName: true,
+      }},
+      contact: {
+        where:
+          query?.q ? or(
+            ilike(contactProfileSchema.name, `%${query?.q}%`),
+            ilike(contactProfileSchema.phoneNumber, `%${query?.q}%`),
+          ) : undefined,
+        columns: {
+          name: true,
+          countryCode: true,
+          phoneNumber: true,
+          source: true,
+          metadata: true,
+          verificationId: true
+        }
+      }
+    },
+    where: and(...filters),
+    orderBy: [desc(voicebotCallScheduleSchema.createdAt)],
+  })
+  
+  data = data.map((i: any) => ({
+    ...i,
+    contactGroup: i.contactGroup.groupName,
+    bot: i.bot.name,
+    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+  }))
+
+  if(query?.q) {
+    data = data.filter((i: any) => i.contact !== null )
+  }
+
+  if (query?.page && query?.limit) {
+    const paginatedCallList = data.slice(offset, offset + limit);
+    return {
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length / limit) || 1,
+      totalCount: data.length,
+      data: paginatedCallList,
+    };
+  } else {
+    return data;
+  }
+}
+
+export const updateVoiceScheduledCall = async(id: string, body: any) => {
+  return (await db.update(voicebotCallScheduleSchema)
+    .set({ 
+      ...body,
+      updatedAt: new Date()
+    })
+    .where(eq(voicebotCallScheduleSchema.id, id))
+    .returning())[0]
 }

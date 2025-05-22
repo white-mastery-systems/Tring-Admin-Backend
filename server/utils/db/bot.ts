@@ -27,16 +27,12 @@ export const listBots = async (
   let filters: any = [eq(chatBotSchema.organizationId, organizationId), eq(chatBotSchema.isDeleted, false)];
   if (query?.active === "true") {
     filters.push(
-      or(
-        isNotNull(chatBotSchema.documentId),
-        eq(chatBotSchema.status, "active")
-      ));
+      isNotNull(chatBotSchema.documentId),
+    )
   } else if (query?.active === "false") {
     filters.push(
-      or(
-        isNull(chatBotSchema.documentId),
-        eq(chatBotSchema.status, "inactive")
-      ));
+      isNull(chatBotSchema.documentId),
+    )
   }
   if (query?.q) {
     filters.push(ilike(chatBotSchema.name, `%${query.q}%`));
