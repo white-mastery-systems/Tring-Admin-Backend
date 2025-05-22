@@ -72,6 +72,7 @@ export const listBots = async (
   });
   data = data.map((i: any) => ({
     ...i,
+    status: i.documentId ? "active" : "inActive",
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
 
@@ -351,7 +352,7 @@ export const getIntentByBotIdAndType = async (botId: string, type: string) => {
       eq(botIntentSchema.botId, botId),
       eq(botIntentSchema.type, type)
     ),
-    orderBy: [desc(botIntentSchema.createdAt)],
+    orderBy: [asc(botIntentSchema.createdAt)],
   });
 }
 
