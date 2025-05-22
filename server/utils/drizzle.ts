@@ -87,7 +87,8 @@ const schema = {
   whatsappEnrichmentSchema,
   whatsappEnrichmentRelations,
   templateRelations,
-  voicebotCallRelations
+  voicebotCallRelations,
+  contactGroupLinkRelations
 };
 
 const db = drizzle(queryClient, { schema });

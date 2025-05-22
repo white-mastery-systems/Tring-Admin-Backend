@@ -485,6 +485,18 @@ export const templateRelations = relations(templateSchema, ({ one }) => ({
   }),
 }))
 
+export const contactGroupLinkRelations = relations(contactGroupLinkSchema,
+  ({ one }) => ({
+    contact: one(contactProfileSchema, {
+       fields: [contactGroupLinkSchema.contactId],
+       references: [contactProfileSchema.id],
+    }),
+    contactGroup: one(contactGroupSchema, {
+       fields: [contactGroupLinkSchema.contactGroupId],
+       references: [contactGroupSchema.id],
+    }),
+  }),)
+
 // Types
 export type SelectOrganization = InferSelectModel<typeof organizationSchema>;
 export type InsertOrganization = InferInsertModel<typeof organizationSchema>;

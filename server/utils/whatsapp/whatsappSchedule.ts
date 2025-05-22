@@ -20,7 +20,7 @@ export const scheduleWhatsAppCampaign = async (
     const accessToken = integrationData?.metadata?.access_token;
     const wabaId = integrationData.metadata?.wabaId;
 
-    const assigned_date = momentTz(date);
+    const assigned_date = momentTz(date).tz(timeZone);
     const localTime = momentTz.tz(time, "HH:mm", timeZone);
     const utcTime = localTime.clone().utc(); // Convert to UTC
 
@@ -190,7 +190,7 @@ export const scheduleWhatsAppCampaign = async (
       });
     });
 
-    logger.info({ event });
+    // logger.info({ event });
     if (!event) {
       logger.error(`whatsapp campaign event is not scheduled`);
       return { status: false };

@@ -1,13 +1,16 @@
 import { logger } from "~/server/logger";
 
-
 export const sendWhatsappCampaignWithTemplate = async (data:any) => {
   try {
-    const { campaignId, templateInformation, contactList, metadata } = data;
-    const { phoneId, accessToken, wabaId } = metadata
+    const { campaignId, templateName, contactList, metadata } = data;
+    const { pid: phoneId, access_token: accessToken, wabaId } = metadata;
+
+    const templateDetailList = await getTemplateDetailsByName(wabaId, accessToken, templateName);
+    const templateInformation = templateDetailList?.find((i: any) => i.name === templateName);
+  
     let templateLanguageCode = "en";
-    const templateName = templateInformation?.name
     const isPositional = templateInformation?.parameter_format === "POSITIONAL";
+
     const headerMediaParameter: any = []; const headerMediaComponent: any = [];
     const headerTasks = templateInformation?.components
       .filter((component: any) => component.type === "HEADER" && ["IMAGE", "DOCUMENT"].includes(component.format))
@@ -23,17 +26,20 @@ export const sendWhatsappCampaignWithTemplate = async (data:any) => {
       });
     
     await Promise.all(headerTasks);
+
     if (headerMediaParameter.length) {
       headerMediaComponent.push({ type: "header", parameters: headerMediaParameter });
     }
+
     if(contactList.length){
-      contactList.forEach(async ({ contacts: contact }: { contacts: any }) => {
+      contactList.forEach(async ({ contact: contact }: { contact: any }) => {
         const headerComponent: any = [];
         const headerParameter: any = [];
         const bodyComponents: any = [];
         const bodyParameters: any = [];
         const buttonsComponents: any = [];
-        const phoneNumber = `${contact.countryCode}${contact.phone}`.replace("+", "");
+    
+        const phoneNumber = `${contact.countryCode}${contact.phoneNumber}`.replace("+", "");
       
         if (templateInformation) {
           templateLanguageCode = templateInformation.language;
@@ -73,7 +79,7 @@ export const sendWhatsappCampaignWithTemplate = async (data:any) => {
               if (component.text?.includes("{{3}}") && contact.email) {
                 bodyParameters.push({ type: "text", text: contact.email });
               }
-              if (component.text?.includes("{{4}}") && contact.phone) {
+              if (component.text?.includes("{{4}}") && contact.phoneNumber) {
                 bodyParameters.push({ type: "text", text: `+${phoneNumber}` });
               }
             }
@@ -153,7 +159,7 @@ export const sendWhatsappCampaignWithTemplate = async (data:any) => {
         );
         logger.info(`whatsapp response: ${JSON.stringify(data)}`);
         if (data?.messages[0]?.id) {
-          await updateWhatsappMessageStatus(campaignId, contact.phone, data?.messages[0]?.id, phoneId, "sent");
+          await updateWhatsappMessageStatus(campaignId, contact.phoneNumber, data?.messages[0]?.id, phoneId, "sent");
         }
       });
     }
