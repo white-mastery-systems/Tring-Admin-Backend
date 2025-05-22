@@ -197,7 +197,7 @@ export const contactSourceEnum = pgEnum("source", [
   "google",
   "crm",
 ]);
- 
+
 // new contacts schema
 export const contactProfileSchema = adminSchema.table("contact_profiles", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -208,7 +208,7 @@ export const contactProfileSchema = adminSchema.table("contact_profiles", {
   countryCode: varchar("country_code", { length: 5 }).notNull(),
   phoneNumber: varchar("phone_number", { length: 20 }).notNull(),
   email: varchar("email", { length: 255 }),
-  metadata: jsonb("metadata"),
+  metadata: text("metadata"),
   verificationId: varchar("verification_id", { length: 255 }),
   source: contactSourceEnum("source").notNull(),
   externalId: varchar("external_id", { length: 255 }),
@@ -219,6 +219,31 @@ export const contactProfileSchema = adminSchema.table("contact_profiles", {
     .notNull()
     .defaultNow(),
 });
+
+// new buckets schema
+export const contactGroupSchema = adminSchema.table("contact_groups", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  groupName: varchar("group_name"),
+  crmId: uuid("crm_id").references(() => integrationSchema.id),
+  isDefault: boolean("is_default").default(false),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
+// new contact_group links Schema
+export const contactGroupLinkSchema = adminSchema.table("contact_group_links", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  contactId: uuid("contact_id").references(() => contactProfileSchema.id, { onDelete: 'cascade' }),
+  contactGroupId: uuid("contact_group_id").references(() => contactGroupSchema.id, { onDelete: 'cascade' }),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
 
 export const contactSchema = adminSchema.table("contacts", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -291,6 +316,22 @@ export const campaignSchema = adminSchema.table("campaign", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const newCampaignSchema = adminSchema.table("new_campaigns", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  campaignName: varchar("campaign_name"),
+  contactMethod: varchar("contact_method"),
+  instantAction: boolean("instant_action"),
+  bucketIds: uuid("bucket_ids").array(),
+  botConfig: jsonb("bot_config"),
+  retryAttempt: jsonb("retry_attempt"),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizationSchema.id
+  ),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
 
 export const playgroundDocumentSchema = adminSchema.table(
   "playground_document",
@@ -444,6 +485,18 @@ export const templateRelations = relations(templateSchema, ({ one }) => ({
   }),
 }))
 
+export const contactGroupLinkRelations = relations(contactGroupLinkSchema,
+  ({ one }) => ({
+    contact: one(contactProfileSchema, {
+       fields: [contactGroupLinkSchema.contactId],
+       references: [contactProfileSchema.id],
+    }),
+    contactGroup: one(contactGroupSchema, {
+       fields: [contactGroupLinkSchema.contactGroupId],
+       references: [contactGroupSchema.id],
+    }),
+  }),)
+
 // Types
 export type SelectOrganization = InferSelectModel<typeof organizationSchema>;
 export type InsertOrganization = InferInsertModel<typeof organizationSchema>;
@@ -459,6 +512,15 @@ export type InsertNumberIntegration = InferInsertModel<
   typeof numberIntegrationSchema
 >;
 
+export type SelectContactProfile = InferSelectModel<typeof contactProfileSchema>;
+export type InsertContactProfile = InferInsertModel<typeof contactProfileSchema>;
+
+export type SelectContactGroup = InferSelectModel<typeof contactGroupSchema>;
+export type InsertContactGroup = InferInsertModel<typeof contactGroupSchema>;
+
+export type SelectContactGroupLink = InferSelectModel<typeof contactGroupLinkSchema>;
+export type InsertContactGroupLink = InferInsertModel<typeof contactGroupLinkSchema>;
+
 export type SelectContactList = InferSelectModel<typeof contactListSchema>;
 export type InsertContactList = InferInsertModel<typeof contactListSchema>;
 
@@ -470,6 +532,9 @@ export type InsertVoicebotContacts = InferInsertModel<typeof voicebotContactSche
 
 export type SelectCampaign = InferSelectModel<typeof campaignSchema>;
 export type InsertCampaign = InferInsertModel<typeof campaignSchema>;
+
+export type SelectNewCampaign = InferSelectModel<typeof newCampaignSchema>;
+export type InsertNewCampaign = InferInsertModel<typeof newCampaignSchema>;
 
 export type SelectPlaygroundDocument = InferSelectModel<
   typeof playgroundDocumentSchema

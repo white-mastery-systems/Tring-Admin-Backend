@@ -8,13 +8,27 @@ export default defineEventHandler(async (event) => {
     : timeZoneHeader || "Asia/Kolkata";
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const query = await isValidQueryHandler(event, z.object({
-    type: z.string(),
+    type: z.string().optional(),
     country: z.string().optional()
   }))
 
   const userCountry = query.country || "India"
-  
-  const usage = await orgUsage(organizationId, timeZone, query.type, userCountry);
 
-  return usage;
+  if(query.type) {
+    const data = await orgUsage(organizationId, timeZone, query?.type, userCountry)
+
+    return data
+  }
+
+  const [ chat, voice ] = await Promise.all([
+    orgUsage(organizationId, timeZone, "chat", userCountry),
+    orgUsage(organizationId, timeZone, "voice", userCountry)
+  ])
+
+  return { 
+    billingUsages: {
+      chat,
+      voice
+    }
+  }
 });

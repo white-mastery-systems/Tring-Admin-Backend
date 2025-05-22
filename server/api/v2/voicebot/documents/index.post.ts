@@ -1,8 +1,6 @@
-import { writeFile } from "node:fs/promises";
 import { errorResponse } from "~/server/response/error.response"
-import { zodInsertVoiceBotDocument } from "~/server/schema/voicebot"
 import { logger } from "~/server/logger"
-import { createVoicebotDocument, updateVoicebotDocument, uploadVoicebotDocument, voicebotDocumentParsing } from "~/server/utils/db/document";
+import {  uploadVoicebotDocument } from "~/server/utils/db/document";
 
 export default defineEventHandler(async (event) => {
   try {

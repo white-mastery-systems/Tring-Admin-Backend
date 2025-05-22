@@ -13,7 +13,7 @@ import { travelSampleKnowledgeBase } from "~/server/utils/sampleKnowledgeBase/tr
 
 export default defineEventHandler(async (event) => {
   try {
-    isOrganizationAdminHandler(event)
+    await isOrganizationAdminHandler(event)
     const query = await isValidQueryHandler(event, z.object({
       industryType:  z.enum([  
         "real-estate",

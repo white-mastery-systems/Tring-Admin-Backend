@@ -31,3 +31,5 @@ assets/docs/*.pdf
 !public/whatsapp.png
 docker-compose.yml
 docker-compose.prod.yml
+
+.vscode

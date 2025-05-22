@@ -144,6 +144,10 @@ export const chatSchema = chatbotSchema.table(
     visitedHistory: jsonb("visited_history").array(),
     chatExpiredAt: timestamp("chat_expired_at"),
     chatSummary: jsonb("chat_summary").default({}),
+    chatOutcome: varchar("chat_outcome", {
+      enum: ["Engaged", "Booked", "Follow Up", "New Lead", "Not Interested", "No Response", "Failed", "Invalid Number"]
+    }).default("No Response"),
+    chatOutcomeTimeline: jsonb("chat_outcome_timeline").array(),
     botUserId: uuid("bot_user_id").references(() => botUserSchema.id, {
       onDelete: "cascade",
     }),

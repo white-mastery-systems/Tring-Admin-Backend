@@ -1,27 +1,53 @@
 import { logger } from "~/server/logger";
 import { errorResponse } from "~/server/response/error.response";
 import { createTemplate } from "~/server/utils/db/templates";
-import { createWhatsappMessageTemplate, deStructureVariables, positioningText } from "~/server/utils/template";
-
-const zodInsertTemplates = z.object({
-  templateName: z.string(),
-  languageCode: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
-  integrationId: z.string({ required_error: "integrationId is required" }),
-  category: z.string().optional(),
-});
+import { createWhatsappMessageTemplate, deStructureVariables, positioningText, replaceNamedVariables } from "~/server/utils/template";
 
 const db = useDrizzle();
 
+const zodInsertTemplates = z.object({
+  templateName: z.string(),
+  language: z.string().optional(),
+  metadata: z.object({
+    variableType: z.string().optional(),
+    variables: z.array(z.object({
+      placed: z.string(),
+      name: z.string().optional(),
+      position: z.string().optional(),
+      example: z.string().optional(),
+    })).optional(),
+    templateVariables: z.array(z.object({
+      placed: z.string(),
+      name: z.string().optional(),
+      position: z.string().optional(),
+      example: z.string().optional(),
+    })).optional(),
+    headerType: z.enum(["text", "document", "image", "video", "none"]).optional(),
+    headerText: z.string().optional(),
+    bodyText: z.string(),
+    footerText: z.string().optional(),
+    mediaSession: z.any().optional(),
+    buttons: z.array(z.object({
+      type: z.enum(["URL", "PHONE_NUMBER", "COPY_CODE"]),
+      url: z.string().optional(),
+      phone_number: z.string().optional(),
+      buttonText: z.string().optional(),
+      example: z.string().optional(),
+    })).optional()
+  }),
+  integrationId: z.string({ required_error: "integrationId is required" }),
+  category: z.string().optional(),
+});
 export default defineEventHandler(async (event) => {
   try {
     const organizationId = (await isOrganizationAdminHandler(event)) as string;
-    const {templateName, languageCode, metadata, integrationId, category:TempalteCategory} = await isValidBodyHandler(event, zodInsertTemplates);
+    const {templateName, language, metadata, integrationId, category:TempalteCategory} = await isValidBodyHandler(event, zodInsertTemplates);
+    metadata.headerType = metadata?.headerType ?? "none";
+    metadata.variableType = metadata?.variableType ?? "NAMED";
     const category = (TempalteCategory) ?? "MARKETING";
     const components: any[] = [];
-
-    const { bodyVariables, headerVariables, buttonVariables, headerText, bodyText, footerText } = deStructureVariables(metadata);
-    
+ 
+    const { bodyVariables, headerVariables, buttonVariables, headerText, bodyText, footerText } = deStructureVariables(metadata, metadata.variableType);
     if (["document", "image", "video"].includes(metadata?.headerType) && metadata?.mediaSession) {
       components.push({
         type: "HEADER",
@@ -66,13 +92,21 @@ export default defineEventHandler(async (event) => {
           if (item.type !== "COPY_CODE") item.text = `${item.buttonText}`;
           delete item.buttonText;
         }
-        if (item.type === "URL" && buttonVariables.length) {
-          item.url = positioningText(item.url, 1);
-          item.example = `${item.url}`.replace("{{1}}", `${buttonVariables[buttonIndex].example}`);
+        if (item.type === "URL") {
+          if(buttonVariables.length){
+            item.url = positioningText(item.url, 1);
+            item.example = `${item.url}`.replace("{{1}}",`${buttonVariables[buttonIndex].example}`);
+          } else {
+            const {text:url, variables:buttonVariable} = replaceNamedVariables(item.url, "button")
+            item.url = url;
+            if(buttonVariable.length){
+              item.example = `${item.url}`.replace("{{1}}",`${buttonVariable[0].example}`);
+            } 
+          }
         }
         if (item.type === "PHONE_NUMBER" && buttonVariables.length) {
           item.phone_number = `${buttonVariables[buttonIndex].example}`;
-          delete item.example
+          delete item.example;
         }
         buttonIndex++;
         return item;
@@ -84,15 +118,7 @@ export default defineEventHandler(async (event) => {
       where: and(eq(integrationSchema.id, integrationId)),
     });
 
-    const resp: any = await createWhatsappMessageTemplate(
-      integrationDetails?.metadata?.wabaId,
-      integrationDetails?.metadata?.access_token,
-      templateName,
-      languageCode || "en",
-      components,
-      category
-    );
-
+    const resp: any = await createWhatsappMessageTemplate(integrationDetails?.metadata?.wabaId, integrationDetails?.metadata?.access_token, templateName, language || "en", components, category);
     logger.info(`Whatsapp Template creation : ${JSON.stringify({ res: resp })}`);
 
     const data = await createTemplate({

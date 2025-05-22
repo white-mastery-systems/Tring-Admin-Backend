@@ -16,6 +16,7 @@ interface queryInterface {
   limit?: string;
   active?: string;
   q?: string;
+  industry?: string,
   type?: string;
 }
 export const listBots = async (
@@ -25,9 +26,13 @@ export const listBots = async (
 ) => {
   let filters: any = [eq(chatBotSchema.organizationId, organizationId), eq(chatBotSchema.isDeleted, false)];
   if (query?.active === "true") {
-    filters.push(isNotNull(chatBotSchema.documentId));
+    filters.push(
+      isNotNull(chatBotSchema.documentId),
+    )
   } else if (query?.active === "false") {
-    filters.push(isNull(chatBotSchema.documentId));
+    filters.push(
+      isNull(chatBotSchema.documentId),
+    )
   }
   if (query?.q) {
     filters.push(ilike(chatBotSchema.name, `%${query.q}%`));
@@ -35,6 +40,10 @@ export const listBots = async (
 
   if(query?.type && query.type !== "all") {
     filters.push(eq(chatBotSchema.type, query?.type));
+  }
+  
+  if(query?.industry && query.industry !== "all") {
+    filters.push(eq(chatBotSchema.industryId, query?.industry));
   }
 
   let page,
@@ -57,7 +66,8 @@ export const listBots = async (
       documentId: true,
       type: true,
       status: true,
-      isDeleted: true
+      isDeleted: true,
+      industryId: true
     },
   });
   data = data.map((i: any) => ({

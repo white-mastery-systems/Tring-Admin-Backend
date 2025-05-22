@@ -1,3 +1,4 @@
+import { inArray } from "drizzle-orm";
 import momentTz from "moment-timezone";
 import { InsertVoiceBot, salesHandyContactsSchema, voicebotLeadSchema, voicebotSchedularSchema } from "~/server/schema/voicebot";
 
@@ -316,7 +317,10 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
 // Get all voicebot
 export const getAllActiveVoicebots = async() => {
   return await db.query.voicebotSchema.findMany({
-    where: eq(voicebotSchema.active, true)
+    where:  and(
+      eq(voicebotSchema.active, true),
+      eq(voicebotSchema.isDeleted, false)
+    )
   })
 }
 
@@ -326,7 +330,7 @@ export const getNotDialedVoiceCallList = async() => {
     where: and(
       or(
         eq(voicebotSchedularSchema.callStatus, "not dialed"),
-        eq(voicebotSchedularSchema.callStatus, "failed")
+        inArray(voicebotSchedularSchema.callStatus, ["failed", "Failed"])
       ),
       lt(voicebotSchedularSchema.maxRetryCount, 5)
     )
