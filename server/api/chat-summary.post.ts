@@ -94,18 +94,19 @@ export default defineEventHandler(async (event) => {
     const result = await model.generateContent(prompt);
     const parsedResponse = JSON.parse(result.response.text());
 
-    // const payload = {
-    //   chatOutcome: parsedResponse.chatOutcome,
-    // };
+    const payload = {
+      chatOutcome: parsedResponse.chatOutcome as string,
+    };
 
-    // await $fetch(
-    //   `${useRuntimeConfig().public.chatBotBaseUrl}/api/chat/${chatId}`,
-    //   {
-    //     method: "PUT",
-    //     body: payload,
-    //   }
-    // );
-    return parsedResponse;
+    await $fetch(
+      `${useRuntimeConfig().public.chatBotBaseUrl}/api/chat/${chatId}`,
+      {
+        method: "PUT",
+        body: payload as any,
+      },
+    );
+
+   return parsedResponse;
   } catch (error: any) {
     throw createError({
       statusCode: 500,
