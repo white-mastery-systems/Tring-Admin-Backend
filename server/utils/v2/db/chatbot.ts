@@ -137,3 +137,20 @@ export const getOrgChatBotsByFilterForAnalytics = async (organizationId: string,
     ),
   )
 }
+
+
+export const getWhatsappIntegratedChatbots = async (organizationId: string) => {
+  return await db.query.chatBotSchema.findMany({
+    where: and(
+      eq(chatBotSchema.organizationId, organizationId),
+      eq(chatBotSchema.status, "active"),
+      isNotNull(chatBotSchema.documentId),  
+      sql`channels ->> 'whatsapp' IS NOT NULL AND channels ->> 'whatsapp' != '' AND jsonb_typeof(channels -> 'whatsapp') = 'string'`
+    ),
+    columns: {
+      id: true,
+      name: true,
+      channels: true
+    }
+  })
+}

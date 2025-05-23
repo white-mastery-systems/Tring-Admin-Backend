@@ -144,6 +144,9 @@ export default defineEventHandler(async (event) => {
       active: true,
       ...body,
     })
+
+    // Update the voicebotId in document table
+    await updateVoicebotDocument(voiceBot.documentId!, { voicebotId: voiceBot.id })
     return isValidReturnType(event, voiceBot);
   } catch (error: any) {
     logger.error(`Voicebot creation API Error: ${JSON.stringify(error.message)}`)

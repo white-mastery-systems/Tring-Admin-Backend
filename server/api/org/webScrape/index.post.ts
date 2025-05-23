@@ -3,6 +3,7 @@ import { errorResponse } from "~/server/response/error.response"
 
 export default defineEventHandler(async (event) => {
   try {
+    await isOrganizationAdminHandler(event)
     const query = await isValidQueryHandler(event, z.object({
       type: z.enum(["chat", "voice"])
     }))

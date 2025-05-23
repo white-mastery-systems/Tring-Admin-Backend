@@ -11,7 +11,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { voiceBotSchema } from ".";
-import { integrationSchema, organizationSchema, numberIntegrationSchema, campaignSchema, contactListSchema, voicebotContactSchema, industriesSchema } from "./admin";
+import { integrationSchema, organizationSchema, numberIntegrationSchema, campaignSchema, contactListSchema, voicebotContactSchema, industriesSchema, contactGroupSchema, contactProfileSchema, newCampaignSchema } from "./admin";
 import { createInsertSchema } from "drizzle-zod";
 
 export const voicebotSchema = voiceBotSchema.table("bot", {
@@ -29,10 +29,10 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   metaData: jsonb("metadata"),
   audioFiles: jsonb("audio_files"),
   llmConfig: jsonb("llm_config").default({
-    temperature: 1,
+    temperature: 0.6,
     top_p: "0.95",
     top_k: "40",
-    max_output_token: "8192",
+    max_output_token: "250",
     prompt: "",
     inboundPromptText: "",
     outboundPromptText: "",
@@ -191,7 +191,9 @@ export const voicebotLeadSchema = voiceBotSchema.table("leads",{
   notes: varchar("notes"),
   scheduledDate: timestamp("scheduled_date"),
   callSid: varchar("call_sid"),
-  callOutcome: varchar("call_outcome"),
+  callOutcome: varchar("call_outcome",{
+    enum: ["Not Dialed", "Engaged", "Booked", "Follow Up", "New Lead", "Not Interested", "No Response", "Failed", "Invalid Number"]
+  }).default("Not Dialed"),
   metadata: jsonb("metadata"),
   botId: uuid("bot_id")
   .references(() => voicebotSchema.id)
@@ -230,6 +232,25 @@ export const voicebotSchedularSchema = voiceBotSchema.table("voicebot_schedular"
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
+
+export const voicebotCallScheduleSchema = voiceBotSchema.table("voicebot_call_schedule", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  botId: uuid("bot_id").references(() => voicebotSchema.id, { onDelete: "cascade" }).notNull(),
+  campaignId: uuid("campaign_id").references(() => newCampaignSchema.id, { onDelete: "cascade" }).notNull(),
+  contactGroupId: uuid("contact_group_id").references(() => contactGroupSchema.id, { onDelete: "cascade" }).notNull(),
+  contactId: uuid("contact_id").references(() => contactProfileSchema.id, { onDelete: "cascade" }).notNull(),
+  organizationId: uuid("organization_id").references(() => organizationSchema.id, { onDelete: "cascade" }).notNull(),
+  callSid: varchar("call_sid"),
+  callStatus: varchar("call_status", {
+    enum: ["Ongoing", "Not Dialed", "Engaged", "Booked", "Follow Up", "New Lead", "Not Interested", "No Response", "Failed", "Invalid Number"]
+  }).default("Not Dialed"),
+  retryAttemptTimestamps: jsonb("retry_attempt_timestamps").array(),
+  isRetryExpired: boolean("is_retry_expired").default(false),
+  maxRetryCount: integer("max_retry_count").default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 
 export const salesHandyContactsSchema = voiceBotSchema.table("sales_handy_contacts", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -307,6 +328,26 @@ export const voicebotScheduledCallsRelations = relations(voicebotSchedularSchema
   })
 }))
 
+
+export const voicebotCallRelations = relations(voicebotCallScheduleSchema, ({ one }) => ({
+  contactGroup: one(contactGroupSchema, {
+    fields: [voicebotCallScheduleSchema.contactGroupId],
+    references: [contactGroupSchema.id],
+  }),
+  contact: one(contactProfileSchema, {
+    fields: [voicebotCallScheduleSchema.contactId],
+    references: [contactProfileSchema.id],
+  }),
+  bot: one(voicebotSchema, {
+    fields: [voicebotCallScheduleSchema.botId],
+    references: [voicebotSchema.id],
+  }),
+  campaign: one(newCampaignSchema, {
+    fields: [voicebotCallScheduleSchema.campaignId],
+    references: [newCampaignSchema.id],
+  })
+}))
+
 export type SelectVoiceBot = InferSelectModel<typeof voicebotSchema>;
 export type InsertVoiceBot = InferInsertModel<typeof voicebotSchema>;
 
@@ -325,6 +366,9 @@ export type InsertVoicebotDocument = InferInsertModel<typeof voicebotDocumentSch
 
 export type SelectVoicebotSchedular = InferSelectModel<typeof voicebotSchedularSchema>;
 export type InsertVoicebotSchedular = InferInsertModel<typeof voicebotSchedularSchema>;
+
+export type SelectVoicebotCallSchedule = InferSelectModel<typeof voicebotCallScheduleSchema>;
+export type InsertVoicebotCallSchedule = InferInsertModel<typeof voicebotCallScheduleSchema>;
 
 export type SelectVoiceBotLead = InferSelectModel<typeof voicebotLeadSchema>;
 export type InsertVoiceBotLead = InferInsertModel<typeof voicebotLeadSchema>;
