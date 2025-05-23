@@ -112,9 +112,9 @@ export const contactInfoSchema = z.object({
 });
 
 export const contactQuerySchema = z.object({
-  page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(100).default(10),
-  offset: z.coerce.number().optional(),
+  page: z.string().optional(),
+  limit: z.string().optional(),
+  q: z.string().optional()
 });
 
 export const addContact = async (
@@ -140,25 +140,42 @@ export const getAllContacts = async (
   contactQueryParams: z.infer<typeof contactQuerySchema>,
 ) => {
   try {
-    const parsedQuery = contactQuerySchema.parse(contactQueryParams);
+    let page, offset, limit = 0;
 
-    const calculatedOffset =
-      typeof parsedQuery.offset === "number"
-        ? parsedQuery.offset
-        : (parsedQuery.page - 1) * parsedQuery.limit;
-
+    if (contactQueryParams?.page && contactQueryParams?.limit) {
+      page = parseInt(contactQueryParams.page);
+      limit = parseInt(contactQueryParams.limit);
+      offset = (page - 1) * limit;
+    }
+   
     const contacts = await db.query.contactProfileSchema.findMany({
-      where: eq(contactProfileSchema.organizationId, organizationId),
-      orderBy: [desc(contactProfileSchema.createdAt)],
-      limit: parsedQuery.limit,
-      offset: calculatedOffset,
+      where: and(
+        eq(contactProfileSchema.organizationId, organizationId),
+        contactQueryParams?.q ?
+           or(
+            ilike(contactProfileSchema.name, `%${contactQueryParams.q}%`),
+            ilike(contactProfileSchema.phoneNumber, `%${contactQueryParams.q}%`)
+           )
+          : undefined,
+      ),
+      orderBy: [desc(contactProfileSchema.createdAt)]
     });
 
     logger.info(
-      `Retrieved ${contacts.length} contacts for orgId: ${organizationId} (limit=${parsedQuery.limit}, offset=${calculatedOffset})`,
+      `Retrieved ${contacts.length} contacts for orgId: ${organizationId}`,
     );
-
-    return contacts;
+    if (contactQueryParams?.page && contactQueryParams?.limit) {
+      const paginatedContacts = contacts.slice(offset, offset + limit);
+      return {
+        page: page,
+        limit: limit,
+        totalPageCount: Math.ceil(contacts.length / limit) || 1,
+        totalCount: contacts.length,
+        data: paginatedContacts,
+      };
+    } else {
+      return contacts;
+    }
   } catch (error) {
     logger.error(
       `Failed to fetch contacts: ${

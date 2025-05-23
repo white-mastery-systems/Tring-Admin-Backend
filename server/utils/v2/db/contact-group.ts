@@ -8,13 +8,6 @@ export const createContactGroup = async (data: InsertContactGroup) => {
 }
 
 export const getContactGroupList = async (organizationId: string, query: any) => {
-  let page, offset, limit = 0;
-
-  if (query?.page && query?.limit) {
-    page = parseInt(query.page);
-    limit = parseInt(query.limit);
-    offset = (page - 1) * limit;
-  }
   const data = await db.query.contactGroupSchema.findMany({
     where: and(
       eq(contactGroupSchema.organizationId, organizationId),
@@ -24,18 +17,7 @@ export const getContactGroupList = async (organizationId: string, query: any) =>
     ),
     orderBy: [desc(contactGroupSchema.createdAt)],
   });
-  if (query?.page && query?.limit) {
-    const paginatedContactGroups = data.slice(offset, offset + limit);
-    return {
-      page: page,
-      limit: limit,
-      totalPageCount: Math.ceil(data.length / limit) || 1,
-      totalCount: data.length,
-      data: paginatedContactGroups,
-    };
-  } else {
-    return data;
-  }
+  return data
 }
 
 export const getContactGroupByName = async (groupName: string, organizationId: string, mode: string, contactGroupId?: string) => {

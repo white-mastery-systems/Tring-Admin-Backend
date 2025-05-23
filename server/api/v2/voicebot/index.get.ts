@@ -5,7 +5,9 @@ const zodQueryValidator = z.object({
   active: z.string().optional(),
   q: z.string().optional(),
   page: z.string().optional(),
-  limit: z.string().optional()
+  limit: z.string().optional(),
+  industryId: z.string().optional(),
+  callType: z.string().optional()
 })
 
 export default defineEventHandler(async (event) => {
