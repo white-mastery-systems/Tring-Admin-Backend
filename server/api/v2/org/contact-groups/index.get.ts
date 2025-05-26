@@ -11,6 +11,13 @@ export default defineEventHandler(async (event) => {
       limit: z.string().optional(),
       type: z.string().optional()
     }))
+
+    let page, offset, limit = 0
+    if(query.page && query.limit) {
+      page = parseInt(query.page) 
+      limit = parseInt(query.limit)
+      offset = (page - 1) * limit;
+    }
     
     const [contactGroupList, contactGroupLinkList] = await Promise.all([
       getContactGroupList(organizationId, query),
@@ -21,13 +28,24 @@ export default defineEventHandler(async (event) => {
       acc[link.contactGroupId] = (acc[link.contactGroupId] || 0) + 1;
       return acc;
     }, {});    
-
-    const data = contactGroupList.map((group: any) => ({
+  
+    const contactGroups = contactGroupList.map((group: any) => ({
       ...group,
       numberOfContacts: groupIdToCountMap[group.id] || 0
     }));
 
-    return data
+    if(query?.page && query?.limit) {
+      const paginatedContactGroups = contactGroups.slice(offset, offset + limit); 
+      return {
+        page: page,
+        limit: limit,
+        totalPageCount: Math.ceil(contactGroups.length/ limit) || 1,
+        totalCount: contactGroups.length,
+        data: paginatedContactGroups
+      }
+    } else {
+        return contactGroups
+    }
   } catch (error: any) {
     logger.error(`Get Contact groups API Error: ${JSON.stringify(error.message)}`)
     return errorResponse(event, 500, "Unable to fetch contact groups")

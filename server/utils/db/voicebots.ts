@@ -8,6 +8,8 @@ interface listVoicebotQuery {
   q?: string;
   page?: string;
   limit?: string;
+  industryId?: string,
+  callType?: string,
 }
 
 export const createVoicebot = async (voicebot: InsertVoiceBot) => {
@@ -59,7 +61,12 @@ export const listVoicebots = async (
   if (query?.q) {
     filters.push(ilike(voicebotSchema.name, `%${query.q}%`));
   }
-  let page,
+
+  if(query?.industryId){
+    filters.push(eq(voicebotSchema.industryId, query.industryId));
+  }
+
+   let page,
     offset,
     limit = 0;
 
@@ -77,11 +84,16 @@ export const listVoicebots = async (
     id: i.id,
     name: i.name,
     active: i.active,
+    industryId: i.industryId,
     isDeleted: i.isDeleted,
     botDetails: i.botDetails,
     organizationId: i.organizationId,
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
+
+  if(query?.callType && query?.callType !== "all") {
+    data = data.filter((i: any)=> i.botDetails?.callType === query?.callType)
+  }
 
   if (query?.page && query?.limit) {
     const paginatedVoiceBots = data.slice(offset, offset + limit);
