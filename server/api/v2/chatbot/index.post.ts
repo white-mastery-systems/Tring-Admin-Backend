@@ -85,6 +85,8 @@ export default defineEventHandler(async (event) => {
 
     let document;
     document = await getDocumentById(doc_id);
+    if(!document) return errorResponse(event, 404, "Document not found");
+
     document = document?.status !== "ready" ? null : document;
     if(!document) {
       await deleteBot(bot?.id)
