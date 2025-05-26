@@ -60,7 +60,7 @@ export const uploadChatbotDocument = async (organizationId: string, formData: an
       body: form,
     });
   
-    return [document];
+    return document
   } catch (error: any) {
     logger.error(`Chatbot upload Document error: ${JSON.stringify(error.message)}`)
     throw new Error(error)

@@ -427,6 +427,15 @@ export const ttsIntegrationSchema = adminSchema.table("tts_integration",  {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
+export const zohoBillingCreditSchema = adminSchema.table("zoho_billing_credits", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id, { onDelete: "cascade" }),
+  creditName: varchar("credit_name"),
+  price: integer("price"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 // Relations
 export const organizationRelations = relations(
   organizationSchema,
