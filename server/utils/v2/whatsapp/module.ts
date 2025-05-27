@@ -165,6 +165,7 @@ export const sendWhatsappCampaignWithTemplate = async (data:any) => {
     }
     return { status: true };
   } catch (error:any) {
-    return { status: false };
+    console.log(`Error in sendWhatsappCampaignWithTemplate: ${error}`);
+    throw new Error(`Error in sendWhatsappCampaignWithTemplate: ${error.message}`);
   }
 }

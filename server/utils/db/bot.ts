@@ -112,9 +112,11 @@ export const getBotDetails = async (botId: string) => {
   return bot;
 };
 
-export const getOrgChatBotCount = async (organizationId: string) => {
+export const getOrgChatBotCount = async (organizationId: string, startDate: Date, endDate: Date) => {
   const data = await db.query.chatBotSchema.findMany({
     where: and(
+      gte(chatBotSchema.createdAt, startDate),
+      lte(chatBotSchema.createdAt, endDate),
       eq(chatBotSchema.organizationId, organizationId),
       eq(chatBotSchema.isDeleted, false),
     )

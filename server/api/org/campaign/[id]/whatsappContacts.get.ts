@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     const query = await isValidQueryHandler(event, zodQueryvalidator)
 
     const [data, failedCampaigns] = await Promise.all([
-      getWhatsappContactsByCampaignId(campaignId, query, timeZone),
+      getWhatsappContactsByCampaignId(campaignId, timeZone, query),
       getWhatsappCampaignContactsByMsgStatus(campaignId, "failed"),
     ]);
     data.failedCampaigns = false

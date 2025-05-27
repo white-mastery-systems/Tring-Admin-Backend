@@ -163,7 +163,7 @@ export const creatCampaignWhatsappContacts = async (data: any) => {
   return (await db.insert(campaignWhatsappContactSchema).values(data).returning())[0]
 }
 
-export const getWhatsappContactsByCampaignId = async (campaignId: string, query: any, timeZone: string) => {
+export const getWhatsappContactsByCampaignId = async (campaignId: string, timeZone: string, query?: any) => {
    let page,
     offset,
     limit = 0;

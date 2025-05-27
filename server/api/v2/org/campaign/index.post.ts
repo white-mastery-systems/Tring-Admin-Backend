@@ -1,6 +1,5 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-
 import { z } from "zod";
 import { getContactListByContactGroupIds } from "~/server/utils/v2/db/contact-group";
 import { createNewCampaign, getNewCampaignByName } from "~/server/utils/v2/db/campaign";
@@ -86,11 +85,9 @@ export default defineEventHandler(async (event) => {
     const organizationId = (await isOrganizationAdminHandler(event)) as string
 
     const body = await isValidBodyHandler(event, zodCreateCampaignSchema)
-
     const type = body?.contactMethod === "whatsapp" ? "chat" : "voice"
 
-    const orgSubscription = await getOrgZohoSubscription(organizationId, type)
-    
+    const orgSubscription = await getOrgZohoSubscription(organizationId, type)  
     if (orgSubscription?.subscriptionStatus !== "active") {
       return errorResponse(event, 400, "Subscription is not active");
     }
@@ -100,7 +97,6 @@ export default defineEventHandler(async (event) => {
       body?.campaignName,
       "insert"
     );
-  
     if (isAlreadyExist) return errorResponse(event, 400, "Campaign name already exists");
 
     const data: any = await createNewCampaign({
@@ -114,19 +110,14 @@ export default defineEventHandler(async (event) => {
         }
       }
     });
+
+     // fetch voice contact of bucket
+     const contactGroupContactLinks = await getContactListByContactGroupIds(data.bucketIds)
+
+     // return contactGroupContactLinks
     
     if(data.contactMethod === "voice") {
-       // fetch voice contact of bucket
-      const contactGroupContactLinks = await getContactListByContactGroupIds(data.bucketIds)
-
-      // return contactGroupContactLinks
-  
-      const totalContacts = contactGroupContactLinks.map((i) => ({
-        contactId: i.contactId,
-        contactGroupId: i.contactGroupId
-      }));
-  
-      const mapVoiceContactWithSchedular = totalContacts.map((contactGroupLink) => {
+      const mapVoiceContactWithSchedular: any = contactGroupContactLinks.map((contactGroupLink) => {
         return {
           campaignId: data.id,
           contactGroupId: contactGroupLink.contactGroupId,
@@ -140,10 +131,49 @@ export default defineEventHandler(async (event) => {
       await createVoiceCallSchdeuling(mapVoiceContactWithSchedular);
     }
     
+    if(data.contactMethod === "whatsapp") {
+      const integrationData: any = await getIntegrationById(
+        organizationId,
+        data?.botConfig?.integrationId,
+      );
+      if(!data.instantAction) {
+          logger.info(`Schedule whatsapp campaign`)
+          // schedule whatsapp campaign
+          await scheduleWhatsAppCampaignV2(
+            data.id,
+            data.botConfig.date,
+            data.botConfig.scheduleTime,
+            contactGroupContactLinks,
+            data.botConfig.templateName,
+            integrationData,
+            data.botConfig.region,
+          )
+      } else {
+          logger.info(`trigger whatsapp template immediately - campaignId: ${data.id}`)
+          // trigger whatsapp template immediately
+          await sendWhatsappCampaignWithTemplate({
+             templateName: data.botConfig.templateName,
+             campaignId: data.id, 
+             metadata: integrationData.metadata!,
+             contactList: contactGroupContactLinks
+          })
+      }
+      const campaignContactList = contactGroupContactLinks.map((i: any) => {
+        return {
+          campaignId: data?.id,
+          countryCode: i?.contact.countryCode,
+          firstName: i?.contact.name,
+          phone: i?.contact.phoneNumber,
+          organizationId,
+        } 
+      })
+      await creatCampaignWhatsappContacts(campaignContactList)
+    }
+
     return data
     
   } catch(error: any) {
     logger.error(`Create Campaign API Error: ${JSON.stringify(error.message)}`)
-    return errorResponse(event, 500, "Unable to creata campaign")
+    return errorResponse(event, 500, "Unable to create campaign")
   }
 })

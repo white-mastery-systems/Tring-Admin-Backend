@@ -58,7 +58,8 @@ export default defineEventHandler(async (event) => {
     const planPricingDetail = await getChatSubscriptionPlanCode(orgChatSubscription)
 
     const botPlanLimit = Number(planPricingDetail?.botsAllowed)
-    const orgChatBotCount = await getOrgChatBotCount(organizationId)
+    const orgChatBotCount = await getOrgChatBotCount(organizationId, orgChatSubscription?.startDate!, orgChatSubscription?.endDate!);
+    
     if(orgChatBotCount >= botPlanLimit) {
       await handleChatBotLimitExceeded(orgDetail, planPricingDetail, orgChatBotCount, botPlanLimit, event);
     }

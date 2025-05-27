@@ -31,16 +31,19 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
     orderBy: [desc(newCampaignSchema.createdAt)],
   })
    
-  const [ voiceScheduledContactList ] = await Promise.all([
+  const [ voiceScheduledContactList, whatsappScheduledContactList ] = await Promise.all([
     db.query.voicebotCallScheduleSchema.findMany({
       where: eq(voicebotCallScheduleSchema.organizationId, organizationId)
-    })
+    }),
+    db.query.campaignWhatsappContactSchema.findMany({
+      where: eq(campaignWhatsappContactSchema.organizationId, organizationId)
+    }),
   ])
   
   data = data.map((i: any) => {
     let totalCount = 0 ; let interactionCount = 0;
 
-    let voiceTotalCount = 0; let voiceInteractedCount = 0;
+    let voiceTotalCount = 0; let voiceInteractedCount = 0; let whatsappTotalCount = 0; let whatsappInteractedCount = 0;
    
     if(i.contactMethod === "voice") {
       for (const contact of voiceScheduledContactList) {
@@ -53,6 +56,17 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
       }
       totalCount = voiceTotalCount
       interactionCount = voiceInteractedCount
+    } else {
+      for (const contact of whatsappScheduledContactList) {
+        if(contact.campaignId === i.id) {
+          whatsappTotalCount++
+          if(!["Failed", "No Response", "Invalid Number"].includes(contact?.interactionStatus)){
+            whatsappInteractedCount++
+          }
+        }
+      }
+      totalCount = whatsappTotalCount
+      interactionCount = whatsappInteractedCount
     }
 
      return {

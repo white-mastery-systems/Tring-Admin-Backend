@@ -4,6 +4,8 @@ import { integrationSchema } from "#imports";
 
 interface listIntegrationQuery {
   q?: string;
+  crm?: string;
+  type?: string;
   page?: string;
   limit?: string;
 }
@@ -28,6 +30,14 @@ export const listIntegrations = async (
     } else {
       filters.push(eq(integrationSchema.type, query?.q))
     }
+  }
+
+  if (query?.crm) {
+    filters.push(eq(integrationSchema.crm, query?.crm));
+  }
+  
+  if (query?.type) {
+    filters.push(eq(integrationSchema.type, query?.type));
   }
 
   let page, offset, limit = 0;
