@@ -36,6 +36,7 @@ export const authUserSchema = adminSchema.table("user", {
     length: 10,
     enum: ["admin", "user"],
   }).notNull(),
+  roleName: text("role_name"),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
   metadata: jsonb("metadata"),
