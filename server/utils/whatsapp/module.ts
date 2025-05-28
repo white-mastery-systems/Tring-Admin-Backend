@@ -251,6 +251,8 @@ export const variablePrameterObj = (variableName: any, contact: any) => {
   const varName = `${variableName}`.toLowerCase()
   if (["firstname", "first name"].includes(varName) && contact?.firstName) {
     return { type: "text", text: contact?.firstName }
+  } else if (["Name", "name", "fullname", "Fullname", "Full Name", "full name"].includes(varName)) {
+    return { type: "text", text: `${(contact?.name) ?? `${contact?.firstName || ""} ${contact?.lastName || ""}`}` }
   } else if (["lastname", "last name"].includes(varName) && contact?.lastName) {
     return { type: "text", text: contact?.lastName }
   } else if (["fullname", "full name", "user name", "username", "name"].includes(varName)) {

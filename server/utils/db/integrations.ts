@@ -8,6 +8,7 @@ interface listIntegrationQuery {
   type?: string;
   page?: string;
   limit?: string;
+  integrationName?: string
 }
 
 const db = useDrizzle();
@@ -30,6 +31,10 @@ export const listIntegrations = async (
     } else {
       filters.push(eq(integrationSchema.type, query?.q))
     }
+  }
+
+  if(query?.integrationName) {
+    filters.push(ilike(integrationSchema.name, `%${query.integrationName}%`));
   }
 
   if (query?.crm) {
