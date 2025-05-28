@@ -53,9 +53,9 @@ export default defineEventHandler(async (event) => {
   }
 
   const adminUser: any = await getAdminByOrgId(botDetails?.organizationId);
-  let botIntegratsions: any = await listActiveBotIntegration(botId);
+  let botIntegrations: any = await listActiveBotIntegration(botId);
 
-  botIntegratsions?.map(async (botIntegration: any) => {
+  botIntegrations?.map(async (botIntegration: any) => {
     if (botIntegration?.integration?.crm === "zoho-bigin") {
       if (!body.botUser?.metaData?.zohoBiginLeadId) {
         const name = body?.botUser?.name?.split(" ");
@@ -79,8 +79,6 @@ export default defineEventHandler(async (event) => {
         const pipelineObj = botIntegration?.metadata?.pipelineObj;
 
         const generatedLead: any = await newGenerateLeadInZohoBigin({
-          // token: botIntegration?.integration?.metadata?.access_token,
-          // refreshToken: botIntegration?.integration?.metadata?.refresh_token,
           body: {
             Deal_Name: body?.botUser?.name,
             Sub_Pipeline: pipelineObj?.Sub_Pipeline ?? pipelineObj?.Pipeline,
@@ -102,9 +100,6 @@ export default defineEventHandler(async (event) => {
           zohoBiginLeadId: body.botUser?.metaData?.zohoBiginLeadId,
           body: body?.note,
           integrationData: botIntegration?.integration,
-          // token: botIntegration?.integration?.metadata?.access_token,
-          // refreshToken: botIntegration?.integration?.metadata?.refresh_token,
-          
         });
       }
     } else if (botIntegration?.integration?.crm === "zoho-crm") {
@@ -118,8 +113,6 @@ export default defineEventHandler(async (event) => {
   
         const layoutObj = botIntegration?.metadata?.layoutObj;
         const generatedCrmLead: any = await newGenerateLeadInZohoCRM({
-          // token: botIntegration?.integration?.metadata?.access_token,
-          // refreshToken: botIntegration?.integration?.metadata?.refresh_token,
           body: {
             Layout: {
               id: layoutObj?.id,
@@ -142,8 +135,6 @@ export default defineEventHandler(async (event) => {
         await newUpdateNotesInZohoCRM({
           zohoCrmLeadId: body.botUser?.metaData?.zohoCrmLeadId,
           integrationData: botIntegration?.integration,
-          // token: botIntegration?.integration?.metadata?.access_token,
-          // refreshToken: botIntegration?.integration?.metadata?.refresh_token,
           body: body?.note,
         });
       }

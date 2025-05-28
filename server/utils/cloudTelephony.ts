@@ -99,7 +99,7 @@ export const plivoIncomingPhoneNumbers = async ({ authId, authToken } : { authId
         Authorization: `Basic ${credentials}`,
       },
     })
-    const phoneNumbers = data?.objects?.map((i: any) => `+${i?.number}`)
+    const phoneNumbers = data?.objects?.map((i: any)=>  `+${i?.number} - ${i?.alias}`)
     return phoneNumbers
   } catch (error: any) {
     logger.error(`plivoIncomingPhoneNumbers Error: ${JSON.stringify(error.message)}`)

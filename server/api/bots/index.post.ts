@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const botPlanLimit = Number(planPricingDetail?.botsAllowed)
-    const orgChatBotCount = await getOrgChatBotCount(organizationId)
+    const orgChatBotCount = await getOrgChatBotCount(organizationId, orgChatSubscription?.startDate!, orgChatSubscription?.endDate!);
     if(orgChatBotCount >= botPlanLimit) {
       if(orgDetail?.wallet > 0) {
         const extraBotsUsed = orgChatBotCount - botPlanLimit;

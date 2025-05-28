@@ -3,7 +3,7 @@ import { errorResponse } from "~/server/response/error.response"
 
 export default defineEventHandler(async (event) => {
   try {
-    isOrganizationAdminHandler(event)
+    await isOrganizationAdminHandler(event)
     const body = await isValidBodyHandler(event, z.object({
       name: z.string()
     }))

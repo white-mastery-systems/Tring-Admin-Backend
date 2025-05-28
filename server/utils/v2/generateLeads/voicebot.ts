@@ -3,9 +3,9 @@ import { getCallLogByCallSid } from "../../db/call-logs";
 
 const config = useRuntimeConfig()
 
-export const generateVoicebotLeads = async ({ botUser, callSid, notes, voicebotDetail }: {
+export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebotDetail }: {
   botUser: any,
-  callSid: string,
+  callLogId: string,
   notes: string,
   voicebotDetail: any
 }) => {
@@ -14,8 +14,8 @@ export const generateVoicebotLeads = async ({ botUser, callSid, notes, voicebotD
     const adminDetail = await getAdminByOrgId(organizationId)
     const voiceBotIntegrationList: any = await listVoiceBotIntegrations(organizationId, voicebotDetail?.id)
 
-    const callLogDetail = await getCallLogByCallSid(callSid)
-    const callLogId = callLogDetail?.id
+    // const callLogDetail = await getCallLogByCallSid(callSid)
+    // const callLogId = callLogDetail?.id
  
     let firstName = botUser?.name;
     let lastName = "";
@@ -32,7 +32,7 @@ export const generateVoicebotLeads = async ({ botUser, callSid, notes, voicebotD
           body: {
             First_Name: firstName,
             Last_Name: lastName ?? firstName,
-            Mobile: botUser?.mobile,
+            Mobile: `${botUser?.countryCode} ${botUser?.mobile}`,
             Title: botUser?.name,
           },
           integrationData: voiceBot?.integration,
@@ -186,7 +186,7 @@ export const generateVoicebotLeads = async ({ botUser, callSid, notes, voicebotD
           <div>
             <p><strong>Lead Details:</strong></p>
             <p>Name: ${botUser?.name}</p>
-            <p>Phone Number: ${botUser?.countryCode}${botUser?.mobile}</p>
+            <p>Phone Number: ${botUser?.countryCode} ${botUser?.mobile}</p>
             <p>Bot's Name: ${voicebotDetail?.name}</p>
             <p>
           Conversation History: 

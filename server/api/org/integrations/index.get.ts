@@ -2,8 +2,11 @@ import { listIntegrations } from "~/server/utils/db/integrations";
 
 const zodListIntegration = z.object({
   q: z.string().optional(),
+  crm: z.string().optional(),
+  type: z.string().optional(),
   page: z.string().optional(),
   limit: z.string().optional(),
+  integrationName: z.string().optional(),
 })
 
 export default defineEventHandler(async (event) => {
