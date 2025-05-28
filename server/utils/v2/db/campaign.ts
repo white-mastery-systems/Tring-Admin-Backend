@@ -31,34 +31,62 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
     orderBy: [desc(newCampaignSchema.createdAt)],
   })
    
-  const [ voiceScheduledContactList ] = await Promise.all([
+  const [ voiceScheduledContactList, whatsappScheduledContactList ] = await Promise.all([
     db.query.voicebotCallScheduleSchema.findMany({
       where: eq(voicebotCallScheduleSchema.organizationId, organizationId)
-    })
+    }),
+    db.query.campaignWhatsappContactSchema.findMany({
+      where: eq(campaignWhatsappContactSchema.organizationId, organizationId)
+    }),
   ])
   
   data = data.map((i: any) => {
     let totalCount = 0 ; let interactionCount = 0;
 
-    let voiceTotalCount = 0; let voiceInteractedCount = 0;
+    let voiceTotalCount = 0; let voiceInteractedCount = 0; 
+    
+    let whatsappTotalCount = 0; let whatsappInteractedCount = 0;
+
+    let recipientCount =0; let sendCount = 0; let pickupCount = 0; let successFullCount = 0
    
-    if(i.contactMethod === "voice") {
+    if (i.contactMethod === "voice") {
       for (const contact of voiceScheduledContactList) {
         if(contact.campaignId === i.id) {
-          voiceTotalCount++
-          if(!["Not Dialed", "Failed", "No Response", "Invalid Number"].includes(contact?.callStatus)){
-            voiceInteractedCount++
+          recipientCount++
+          if(!["Not Dialed"].includes(contact?.callStatus)){
+            sendCount++
+          }
+          if(["Engaged", "Booked", "Follow Up", "New Lead", "Not Interested"].includes(contact?.callStatus)){
+            pickupCount++
+          }
+          if(["Booked", "Follow Up"].includes(contact?.callStatus)){
+            successFullCount++
           }
         }
       }
-      totalCount = voiceTotalCount
-      interactionCount = voiceInteractedCount
+    } 
+   
+    if (i.contactMethod === "whatsapp") {
+      for (const contact of whatsappScheduledContactList) {
+        if(contact.campaignId === i.id) {
+          recipientCount++
+          sendCount++
+          if(["Engaged", "Booked", "Follow Up", "New Lead", "Not Interested"].includes(contact?.interactionStatus)){
+            pickupCount++
+          }
+          if(["Booked", "Follow Up"].includes(contact?.interactionStatus)){
+            successFullCount++
+          }
+        }
+      }
     }
 
      return {
        ...i,
-       totalCount,
-       interactionCount,
+       recipientCount,
+       sendCount,
+       pickupCount,
+       successFullCount,
        createdAt: momentTz(i?.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
     };
   })

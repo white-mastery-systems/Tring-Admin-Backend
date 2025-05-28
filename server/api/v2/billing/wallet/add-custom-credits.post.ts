@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     const organizationDetail = await getOrganizationById(organizationId)
     
     const body = await isValidBodyHandler(event, z.object({
-      price: z.number().max(10000)
+      price: z.number().min(500)
     }))
 
     const adminConfig = await getAdminConfig()

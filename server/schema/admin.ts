@@ -394,7 +394,7 @@ export const whatsappSessionSchema = adminSchema.table("whatsapp_sessions", {
 
 export const campaignWhatsappContactSchema = adminSchema.table("campaign_whatsapp_contacts", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  campaignId: uuid("campaign_id").notNull().references(() => campaignSchema.id, { onDelete: "cascade" }),
+  campaignId: uuid("campaign_id").notNull().references(() => newCampaignSchema.id, { onDelete: "cascade" }),
   organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id, { onDelete: "cascade" }),
   chatId: uuid("chat_id"),
   firstName: varchar("first_name"),

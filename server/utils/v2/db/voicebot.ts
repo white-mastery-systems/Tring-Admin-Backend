@@ -344,6 +344,7 @@ export const getVoiceScheduledContactsByCampaignId = async (campaignId: string, 
   }
 
   let data: any = await db.query.voicebotCallScheduleSchema.findMany({
+    where: and(...filters),
     with: {
       bot: { columns: { name: true } },
       contactGroup: { columns: { groupName: true } },
@@ -367,7 +368,6 @@ export const getVoiceScheduledContactsByCampaignId = async (campaignId: string, 
         }
       }
     },
-    where: and(...filters),
     orderBy: [desc(voicebotCallScheduleSchema.createdAt)],
   })
   

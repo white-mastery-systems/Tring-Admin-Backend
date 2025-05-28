@@ -3,8 +3,7 @@ export default defineEventHandler(async (event) => {
   const orgId = event.context.user?.organizationId;
   if (orgId) {
     const orgDetails: any = await getOrganizationById(orgId);
-    const planDetails = await getPricingInformation(orgDetails?.planCode);
-    return { orgDetails, planDetails };
+    return { orgDetails };
   }
   return null;
 });
