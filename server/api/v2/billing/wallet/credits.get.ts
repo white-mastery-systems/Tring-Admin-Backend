@@ -3,23 +3,23 @@ import { errorResponse } from "~/server/response/error.response"
 
 const defaultCredits = [
   {
-    plan: "credits_super",
+    plan: "wallet_credits_super",
     price: 1000
   },
-  {
-    plan: "credits_pro",
+    {
+    plan: "wallet_credits_pro",
     price: 5000,
   },
   {
-    plan: "credits_ultra",
+    plan: "wallet_credits_ultra",
     price: 10000,
   },
   {
-    plan: "credits_supreme",
+    plan: "wallet_credits_supreme",
     price: 20000,
   },
   {
-    plan: "credits_max",
+    plan: "wallet_credits_max",
     price: 50000,
   },
 ];
