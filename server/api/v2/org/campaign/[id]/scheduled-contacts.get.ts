@@ -24,20 +24,30 @@ export default defineEventHandler(async (event) => {
     if(!campaignDetail) {
       return errorResponse(event, 404, "Campaign not found")
     }
+    
+    let data, campaignTotalContacts = []
 
-    const voiceCampaignTotalContacts = await getVoiceScheduledContactsByCampaignId(campaignId, timeZone)
+    console.log({ contactmethod : campaignDetail.contactMethod, campaignId })
+    const contactMethod = campaignDetail.contactMethod
 
-    const deliveredContacts = voiceCampaignTotalContacts.filter((i: any)=> !["Not Dialed", "Failed", "No Response"].includes(i.callStatus))
-    const failedContacts = voiceCampaignTotalContacts.filter((j: any) => ["Failed", "Invalid Number"].includes(j.callStatus))
-    const notResponsedContacts = voiceCampaignTotalContacts.filter((j: any) => j.callStatus === "No Response")
+    if(contactMethod === "voice") {
+      campaignTotalContacts = await getVoiceScheduledContactsByCampaignId(campaignId, timeZone)
+      data = await getVoiceScheduledContactsByCampaignId(campaignId, timeZone, query)
+    } else { // contact method is whatsapp
+      console.log("Fetching WhatsApp contacts for campaign")
+      campaignTotalContacts  = await getWhatsappContactsByCampaignId(campaignId, timeZone)
+      data = await getWhatsappContactsByCampaignId(campaignId, timeZone, query)
+    }
 
-    const data = await getVoiceScheduledContactsByCampaignId(campaignId, timeZone, query)
+    const deliveredContacts = campaignTotalContacts.filter((i: any)=> !["Not Dialed", "Failed", "No Response"].includes(contactMethod === "voice" ? i.callStatus : i.interactionStatus))
+    const failedContacts = campaignTotalContacts.filter((j: any) => ["Failed", "Invalid Number"].includes(contactMethod === "voice" ? j.callStatus : j.interactionStatus))
+    const notResponsedContacts = campaignTotalContacts.filter((j: any) => contactMethod === "voice" ? j.callStatus === "No Response" : j.interactionStatus === "No Response")
 
     return {
       campaignName: campaignDetail?.campaignName,
       contactMethod: campaignDetail?.contactMethod,
       createdAt: momentTz(campaignDetail?.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
-      totalContacts: voiceCampaignTotalContacts.length,  
+      totalContacts: campaignTotalContacts.length,  
       deliveredContacts: deliveredContacts.length,
       failedContacts: failedContacts.length,
       notResponsedContacts: notResponsedContacts.length,
