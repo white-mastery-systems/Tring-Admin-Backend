@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     for (let i = 0; i < botAllIntentsByType.length; i++) {
       const newName = `${botAllIntentsByType[i].type}_${i + 1}`;
       await db.update(botIntentSchema)
-        .set({ intent: newName })
+        .set({ intent: newName, updatedAt: new Date() })
         .where(eq(botIntentSchema.id, botAllIntentsByType[i].id));
     }
   }

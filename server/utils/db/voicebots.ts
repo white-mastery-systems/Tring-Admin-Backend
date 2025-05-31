@@ -309,7 +309,12 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
         }
       }
     },
-    where: and(...filters),
+    where: and(
+      ...filters,
+      query?.outcome && query?.outcome !== "all"
+        ? eq(voicebotLeadSchema.callOutcome, query?.outcome)
+        : undefined,
+    ),
     orderBy: [desc(voicebotLeadSchema.createdAt)]
   })
 

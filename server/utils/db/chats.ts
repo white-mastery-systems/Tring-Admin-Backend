@@ -119,6 +119,10 @@ export const listChats = async (
       query?.botUserName === "preview"
         ? eq(chatSchema.mode, "preview")
         : undefined,
+      query?.outcome && query?.outcome !== "all"
+        ? eq(chatSchema.chatOutcome, query?.outcome) : undefined,
+      query?.mode && query?.mode !== "all"
+        ? eq(chatSchema.mode, query?.mode) : undefined,
     ),
     with: {
       bot: {
@@ -294,7 +298,8 @@ export const getInadequateMessagesByBotId = async ({ organizationId, botId }: {
 
 export const updateChatStatus = async (chatIds: string[], status: boolean) => {
   await db.update(chatSchema).set({
-    isProcessed: status
+    isProcessed: status,
+    updatedAt: new Date()
    }).where(
     inArray(chatSchema.id, chatIds)
    )

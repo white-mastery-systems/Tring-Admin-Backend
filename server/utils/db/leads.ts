@@ -15,6 +15,7 @@ interface QueryInterface {
   to?: Date | null;
   page?: string;
   limit?: string;
+  outcome?: string;
 }
 export const listLeads = async (
   organizationId: string,
@@ -123,6 +124,9 @@ export const listLeads = async (
           where: and(
             query?.channel && query.channel !== "all"
               ? ilike(chatSchema.channel, query?.channel)
+              : undefined,
+            query?.outcome && query?.outcome !== "all"
+              ? eq(chatSchema.chatOutcome, query?.outcome)
               : undefined,
           ),
           columns: {

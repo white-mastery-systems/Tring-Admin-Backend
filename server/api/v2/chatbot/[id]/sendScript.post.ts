@@ -17,8 +17,9 @@ export default defineEventHandler(async (event) => {
     const botName = botDetails?.name!
 
     const adminDetails = await getAdminByOrgId(organizationId)
+    const orgDetails = await getOrganizationById(organizationId)
     
-    const emailTemplate: any = chatbotScriptEmailTemplate(body?.senderName ?? adminDetails?.username!, botName, body?.script)
+    const emailTemplate: any = chatbotScriptEmailTemplate(adminDetails, orgDetails, botName, body?.script)
 
     sendEmail(body?.to, `Integrate ${botName} into Your Website – Easy Setup Instructions`, emailTemplate)
 
