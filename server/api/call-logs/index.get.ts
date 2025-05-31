@@ -2,6 +2,8 @@ const zodQueryValidator = z.object({
   page: z.string().optional(),
   limit: z.string().optional(),
   period: z.string().optional(),
+  voicebotId: z.string().optional(),
+  direction: z.enum(["inbound", "outbound"]).optional(),
   q: z.string().optional(),
   from: z
       .string()

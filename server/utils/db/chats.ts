@@ -119,6 +119,10 @@ export const listChats = async (
       query?.botUserName === "preview"
         ? eq(chatSchema.mode, "preview")
         : undefined,
+      query?.outcome && query?.outcome !== "all"
+        ? eq(chatSchema.chatOutcome, query?.outcome) : undefined,
+      query?.mode && query?.mode !== "all"
+        ? eq(chatSchema.mode, query?.mode) : undefined,
     ),
     with: {
       bot: {
