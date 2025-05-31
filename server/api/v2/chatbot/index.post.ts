@@ -126,6 +126,7 @@ export default defineEventHandler(async (event) => {
       metadata: {
         ui: {
           ...bot?.metadata.ui,
+          ...body?.metadata?.ui,
           logo: body?.logo,
         },
         prompt: {
