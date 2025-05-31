@@ -13,6 +13,8 @@ export const zodCreateChatbot = z
     websiteLink: z.string().optional(),
     websiteContent: z.string().optional(),
     textContent: z.string().optional(),
+    color: z.string().optional(),
+    onlineStatus: z.boolean().optional(),
     documentId: z.string(),
     logo: z.record(z.any()),
     prompt: z.record(z.any()),
@@ -121,12 +123,13 @@ export default defineEventHandler(async (event) => {
       await deleteBot(bot?.id)
       return errorResponse(event, 500, "Bot Deployment failed: could not retrieve initial message from the server.")
     }
-  
+
     const updatedChatbot = await updateBotDetails(bot.id, {
       metadata: {
         ui: {
           ...bot?.metadata.ui,
-          ...body?.metadata?.ui,
+          ...body?.color && { color: body?.color },
+          ...body?.onlineStatus && { onlineStatus: body?.onlineStatus },
           logo: body?.logo,
         },
         prompt: {
