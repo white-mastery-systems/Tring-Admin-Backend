@@ -298,7 +298,8 @@ export const getInadequateMessagesByBotId = async ({ organizationId, botId }: {
 
 export const updateChatStatus = async (chatIds: string[], status: boolean) => {
   await db.update(chatSchema).set({
-    isProcessed: status
+    isProcessed: status,
+    updatedAt: new Date()
    }).where(
     inArray(chatSchema.id, chatIds)
    )
