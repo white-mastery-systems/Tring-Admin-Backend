@@ -59,6 +59,7 @@ export default defineEventHandler(async (event) => {
             .set({
               ...update,
               intent: intentName,
+              updatedAt: new Date(),
             })
             .where(eq(botIntentSchema.id, existingItem.id));
         }

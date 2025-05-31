@@ -10,6 +10,12 @@ export const zodBotTypeQuery = z.object({
   type: z.nativeEnum(BotType),
 })
 
+export const zodListQuery = z.object({
+  page: z.string().optional(),
+  limit: z.string().optional(),
+  q: z.string().optional(),
+})
+
 const config = useRuntimeConfig()
 
 export const checkPayloadId = <T extends string>(key: T) =>

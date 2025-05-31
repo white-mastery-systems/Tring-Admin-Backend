@@ -151,6 +151,7 @@ export const updateOrgUserById = async (orgUserId: string, user: any) => {
     .set({
       ...user,
       password: hashedPassword,
+      updatedAt: new Date()
     })
     .where(eq(authUserSchema.id, orgUserId))
     .returning()

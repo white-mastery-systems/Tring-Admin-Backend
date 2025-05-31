@@ -49,7 +49,10 @@ export const isOrgZohoSubscriptionExists = async (orgId: string, serviceType: st
 
 export const updateOrgZohoSubscription = async (organizationId: string, serviceType: string ,orgSubsctiption: Partial<InsertAdminSubscription>) => {
   return await db.update(adminSubscriptionSchema)
-  .set(orgSubsctiption)
+  .set({
+    ...orgSubsctiption,
+    updatedAt: new Date()
+  })
   .where( 
     and(
       eq(adminSubscriptionSchema.organizationId, organizationId), 
