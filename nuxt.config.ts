@@ -88,6 +88,7 @@ export default defineNuxtConfig({
     geminiApiKey: "",
     tringPlivoAuthId: "",
     tringPlivoAuthToken: "",
+    newFrontendUrl: "",
     public: {
       adminBaseUrl: "",
       chatBotBaseUrl: "",
