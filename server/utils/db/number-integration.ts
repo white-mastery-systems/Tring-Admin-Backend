@@ -35,7 +35,10 @@ export const listNumberIntegration = async (
     offset = (page - 1) * limit;
   }
   const data = await db.query.numberIntegrationSchema.findMany({
-    where: eq(numberIntegrationSchema.organizationId, organizationId),
+    where: and(
+      eq(numberIntegrationSchema.organizationId, organizationId),
+      query?.integrationName ? ilike(numberIntegrationSchema.ivrIntegrationName, `%${query.integrationName}%`) : undefined
+    ),
     orderBy: [desc(numberIntegrationSchema.createdAt)],
   });
 
