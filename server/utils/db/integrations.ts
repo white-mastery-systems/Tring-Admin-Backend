@@ -53,10 +53,20 @@ export const listIntegrations = async (
     offset = (page - 1) * limit;
   }
 
-  const data = await db.query.integrationSchema.findMany({
+  let data = await db.query.integrationSchema.findMany({
     where: and(...filters),
     orderBy: [desc(integrationSchema.createdAt)],
   });
+
+  data = data.map((integration) => ({
+    ...integration,
+    ...(integration.metadata.access_token && {
+      metadata: {
+        ...integration.metadata,
+        status: "verified",
+      }
+    })
+  }))
 
   if (query?.page && query?.limit) {
     const paginatedIntegrations = data.slice(offset, offset + limit);
