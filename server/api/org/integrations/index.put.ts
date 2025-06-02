@@ -97,8 +97,8 @@ export default defineEventHandler(async (event) => {
     metadata: {
       ...body.metadata,
       ...generatedAuthResponse,
-    },
-    status: "verified",
+      status: "verified",
+    }
   });
   // const blabla = await createContactInHubspot({
   //   token: generatedAuthResponse.access_token,
