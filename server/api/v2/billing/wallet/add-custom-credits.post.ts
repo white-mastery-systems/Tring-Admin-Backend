@@ -13,6 +13,14 @@ export default defineEventHandler(async (event) => {
       price: z.number().min(500)
     }))
 
+    if(body?.price < 500) {
+      return errorResponse(event, 400, "Price must be at least 500")
+    }
+
+    if(body?.price > 100000) { 
+      return errorResponse(event, 400, "Price must not exceed 100000")
+    }
+
     const adminConfig = await getAdminConfig()
 
     const existingOrgCustomCredits = await getAllOrgCustomCredits(organizationId)

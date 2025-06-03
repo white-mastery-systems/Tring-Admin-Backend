@@ -1,41 +1,18 @@
+import { count } from "drizzle-orm";
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
+import { inrCreditPriceList, usdCreditPriceList } from "~/server/utils/v2/billing/addonList";
 
-const defaultCredits = [
-  {
-    plan: "wallet_credits_super",
-    price: 1000
-  },
-    {
-    plan: "wallet_credits_pro",
-    price: 5000,
-  },
-  {
-    plan: "wallet_credits_ultra",
-    price: 10000,
-  },
-  {
-    plan: "wallet_credits_supreme",
-    price: 20000,
-  },
-  {
-    plan: "wallet_credits_max",
-    price: 50000,
-  },
-];
 
 export default defineEventHandler(async (event) => {
   try {
     const organizationId = (await isOrganizationAdminHandler(event)) as string
 
-    const orgZohoBillingCredits = await getAllOrgCustomCredits(organizationId)
-    
-    const customCredits = orgZohoBillingCredits.map((i: any) => ({
-      plan: i.creditName,
-      price: i.price
+    const query = await isValidQueryHandler(event, z.object({
+      countryCode: z.string().default("IN"),
     }))
 
-    const allCredits = [...defaultCredits, ...customCredits]
+    const allCredits = query.countryCode === "IN" ? inrCreditPriceList : usdCreditPriceList
     
     return allCredits
   } catch (error: any) {
