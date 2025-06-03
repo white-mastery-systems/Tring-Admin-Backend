@@ -16,12 +16,12 @@ export default defineEventHandler(async (event) => {
 
   const body: any = await isValidBodyHandler(event, zodUpdateChatBot);
 
-  if(body?.name) {
-    const alreadyExistingBot = await getBotDetailsByName(organizationId, body?.name, "update", botId);
-    if(alreadyExistingBot) {
-      return errorResponse(event, 400, "Chatbot name already exists.")
-    }
-  }
+  // if(body?.name) {
+  //   const alreadyExistingBot = await getBotDetailsByName(organizationId, body?.name, "update", botId);
+  //   if(alreadyExistingBot) {
+  //     return errorResponse(event, 400, "Chatbot name already exists.")
+  //   }
+  // }
 
   
   if (body?.channels?.whatsapp) {
