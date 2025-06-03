@@ -621,6 +621,17 @@ export const industriesSchema = adminSchema.table("industries", {
   updatedAt: timestamp("updated_at").notNull().defaultNow()
 })
 
+export const blockedNumbersSchema = adminSchema.table("blocked_numbers", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),   
+  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id, { onDelete: "cascade" }),
+  phoneNumber: varchar("phone_number").notNull(),
+  countryCode: varchar("country_code").notNull(),
+  source: varchar("source").notNull(),
+  reason: text("reason"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 export type SelectAdminSubscription = InferSelectModel<typeof adminSubscriptionSchema>;
 export type InsertAdminSubscription = InferInsertModel<typeof adminSubscriptionSchema>;
 
