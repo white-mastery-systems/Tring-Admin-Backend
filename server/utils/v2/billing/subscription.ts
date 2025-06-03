@@ -58,7 +58,7 @@ export const upsertSubscription: any = async ({
     }));
 
     const priceList = await getPriceList(metaData);
-    const currencyCode = (userDetails.address.country === "India" && body.locationData.country === "IN")? "INR" : "USD";
+    const currencyCode = body.locationData.country === "IN" ? "INR" : "USD";
     const customerPricebookId = priceList.pricebooks.find((i: any) => i.currency_code === currencyCode).pricebook_id;
 
     const payload = subscriptionPayload(userDetails, orgDetails, contactPersonIdList, customerPricebookId, body, currencyCode)
