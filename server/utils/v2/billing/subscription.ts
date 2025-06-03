@@ -9,7 +9,8 @@ const subscriptionPayload = (
   orgDetails: any,
   contactPersonIdList: any,
   customerPricebookId: string,
-  body: any
+  body: any,
+  currencyCode: string
 ) => {
   return {
     ...(body.subscriptionId ? { 
@@ -31,7 +32,7 @@ const subscriptionPayload = (
     redirect_url: body?.redirectUrl,
     payment_gateways: [
       {
-        payment_gateway: "razorpay",
+        payment_gateway: currencyCode === "INR" ? "razorpay" : "stripe",
       },
     ],
   }
@@ -60,7 +61,7 @@ export const upsertSubscription: any = async ({
     const currencyCode = (userDetails.address.country === "India" && body.locationData.country === "IN")? "INR" : "USD";
     const customerPricebookId = priceList.pricebooks.find((i: any) => i.currency_code === currencyCode).pricebook_id;
 
-    const payload = subscriptionPayload(userDetails, orgDetails, contactPersonIdList, customerPricebookId, body)
+    const payload = subscriptionPayload(userDetails, orgDetails, contactPersonIdList, customerPricebookId, body, currencyCode)
     logger.info(`upsertSubscription Request body: ${JSON.stringify(payload)}`);
 
     const upsertSubscription = await $fetch(

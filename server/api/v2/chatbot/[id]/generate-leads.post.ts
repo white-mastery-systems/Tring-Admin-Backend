@@ -3,11 +3,6 @@ import { updateBotUser } from "~/server/utils/db/bot-user";
 import { getAdminByOrgId } from "~/server/utils/db/user";
 import { createSlackMessage } from "~/server/utils/slack/modules";
 import { createWhatsAppMessage } from "~/server/utils/whatsapp/module";
-import {
-  generateContactInZohoBigin,
-  updateNotesInZohoBigin,
-} from "~/server/utils/zoho/modules";
-
 import { newGenerateLeadInZohoCRM, newUpdateNotesInZohoCRM } from "~/server/utils/v2/integrations/crm/zoho/zoho-crm";
 import { newGenerateContactInZohoBigin, newGenerateLeadInZohoBigin, newUpdateNotesInZohoBigin } from "~/server/utils/v2/integrations/crm/zoho/zoho-bigin";
 import { listActiveBotIntegration } from "~/server/utils/db/bot";
