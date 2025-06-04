@@ -7,7 +7,9 @@ const db = useDrizzle()
 const intentItemSchema = z.object({
   description: z.string().min(2, "Description too short"),
   link: z.string().url("Invalid URL").min(5, "Link too short").optional(),
-  uploads: z.array(z.any()).optional()
+  uploads: z.array(z.any()).optional(),
+  metadata: z.any().optional(),
+  isActive: z.boolean().optional(),
 });
 
 export const zodInsertChatBotIntent = z.object({
@@ -94,8 +96,8 @@ export default defineEventHandler(async (event) => {
           description: item.description,
           link: item.link,
           intent: intentName,
-          metadata: body.metadata,
-          uploads: body.uploads,
+          metadata: item.metadata,
+          uploads: item.uploads,
           botId,
           organizationId
         });
