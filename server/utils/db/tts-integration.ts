@@ -20,7 +20,7 @@ export const getTtsIntegrationList = async (organizationId: string, query: any, 
   let data = await db.query.ttsIntegrationSchema.findMany({
     where: and(
       eq(ttsIntegrationSchema.organizationId, organizationId),
-      query?.q ? ilike(ttsIntegrationSchema.ttsIntegrationName, `%${query.q}%`) : undefined
+      query?.integrationName ? ilike(ttsIntegrationSchema.ttsIntegrationName, `%${query.integrationName}%`) : undefined
     ),
     orderBy: [desc(ttsIntegrationSchema.createdAt)]
   })

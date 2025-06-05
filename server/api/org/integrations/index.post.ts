@@ -38,7 +38,12 @@ export default defineEventHandler(async (event) => {
         status: z.string().optional(),
         pid: z.string().optional(),
         code: z.string().optional(),
+        access_token: z.string().optional(),
         wabaId: z.string().optional(),
+        wabaName: z.string().optional(),
+        pidPhoneNumber: z.string().optional(),
+        businessName: z.string().optional(),
+        businessId: z.string().optional(),
         pin: z.string().optional(),
         stage: z.string().optional(),
         channelId: z.string().optional(),
@@ -66,7 +71,7 @@ export default defineEventHandler(async (event) => {
 
   //TODO :add this
   let response: Record<string, any> = {};
-  if (body.crm === "whatsapp") {
+  if (body.crm === "whatsapp" && body.metadata?.code && !body.metadata?.access_token) {
     try {
       response = await $fetch(
         "https://graph.facebook.com/v21.0/oauth/access_token",
@@ -84,30 +89,16 @@ export default defineEventHandler(async (event) => {
       logger.info(`Response: ${JSON.stringify(response)}`);
       try {
         if (body?.metadata?.wabaId && response?.access_token) {
-          await getSharedWhatsappDetails({
+          await subscribeApp({
             code: response?.access_token,
-            id: body.metadata.wabaId,
-          });
-          await fetchPhoneNumbers({
-            code: response?.access_token,
-            id: body.metadata.wabaId,
-          });
-          if (body.metadata?.wabaId) {
-            await subscribeApp({
-              code: response?.access_token,
-              wabaId: body.metadata?.wabaId,
-            });
-          }
-          await fetchSubscribedApps({
-            code: response?.access_token,
-            id: body.metadata.wabaId,
+            wabaId: body.metadata?.wabaId,
           });
           try {
             logger.info(
               `Registered Phone: pid ${body.metadata.pid}, access_token ${response?.access_token}, pin ${body.metadata?.pin}, metadata ${JSON.stringify(body.metadata)}`,
             );
             const registerPhone = await $fetch(
-              `https://graph.facebook.com/v21.0/${body.metadata.pid}/register`,
+              `https://graph.facebook.com/v23.0/${body.metadata.pid}/register`,
               {
                 method: "POST",
                 headers: { Authorization: `Bearer ${response?.access_token}` },
@@ -138,31 +129,6 @@ export default defineEventHandler(async (event) => {
       }
     } catch (err: any) {}
   }
-  //
-
-  // const url =
-  //   `https://graph.facebook.com/v20.0/${body.metadata.wabaId}` +
-  //   "?fields=id,name,currency,owner_business_info" +
-  //   `&access_token=${body.metadata.code}`;
-  // const sharedBuisnessResponse: Record<string, any> = await $fetch(url, {
-  //   method: "GET",
-  //   headers: { "Content-Type": "application/json" },
-  // });
-
-  //
-  // const subscribeResponse = await fetch(
-  //   `https://graph.facebook.com/v20.0/${body.metadata.wabaId}/subscribed_apps`,
-  //   {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //       access_token: body.metadata.access_token,
-  //     }),
-  //     headers: { "Content-Type": "application/json" },
-  //   },
-  // );
-  //
-
-  // const data = await response.json();
 
   const integration = await createIntegration({
     ...body,

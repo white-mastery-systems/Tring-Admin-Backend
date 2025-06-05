@@ -10,8 +10,16 @@ export default defineEventHandler(async (event) => {
     const organizationDetail = await getOrganizationById(organizationId)
     
     const body = await isValidBodyHandler(event, z.object({
-      price: z.number().max(10000)
+      price: z.number().min(500)
     }))
+
+    if(body?.price < 500) {
+      return errorResponse(event, 400, "Price must be at least 500")
+    }
+
+    if(body?.price > 100000) { 
+      return errorResponse(event, 400, "Price must not exceed 100000")
+    }
 
     const adminConfig = await getAdminConfig()
 

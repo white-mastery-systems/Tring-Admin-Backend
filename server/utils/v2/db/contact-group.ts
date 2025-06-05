@@ -76,11 +76,21 @@ export const getContactGroupLinksByOrgId = async (organizationId: string) => {
     where: eq(contactGroupLinkSchema.organizationId, organizationId)
   })
 }
+
 export const getContactListByContactGroupIds = async (contactGroupIds: string[]) => {
   return await db.query.contactGroupLinkSchema.findMany({
     with: {
       contact: true
     },
     where: inArray(contactGroupLinkSchema.contactGroupId, contactGroupIds)
+  })
+}
+
+export const getContactGroupContacts = async( contactGroupId: string ) => {
+  return await db.query.contactGroupLinkSchema.findMany({
+    with: {
+      contact: true
+    },
+    where: eq(contactGroupLinkSchema.contactGroupId, contactGroupId)
   })
 }

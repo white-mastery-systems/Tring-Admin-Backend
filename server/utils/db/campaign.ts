@@ -163,18 +163,30 @@ export const creatCampaignWhatsappContacts = async (data: any) => {
   return (await db.insert(campaignWhatsappContactSchema).values(data).returning())[0]
 }
 
-export const getWhatsappContactsByCampaignId = async (campaignId: string, query: any, timeZone: string) => {
-   let page,
-    offset,
-    limit = 0;
+export const getWhatsappContactsByCampaignId = async (campaignId: string, timeZone: string, query?: any) => {
+  let filters: any = [eq(campaignWhatsappContactSchema.campaignId, campaignId)];
+  let page, offset, limit = 0;
 
   if (query?.page && query?.limit) {
     page = parseInt(query.page);
     limit = parseInt(query.limit);
     offset = (page - 1) * limit;
   }
+
+  // Period-based filtering
+  if (query?.period) {
+    let fromDate: Date | undefined;
+    let toDate: Date | undefined;
+    const queryDate = getDateRangeForFilters(query, timeZone);
+    fromDate = queryDate?.from;
+    toDate = queryDate?.to;
+    if (fromDate && toDate) {
+      filters.push(between(campaignWhatsappContactSchema.createdAt, fromDate, toDate));
+    }
+  }
+
   let data: any = await db.query.campaignWhatsappContactSchema.findMany({
-    where: eq(campaignWhatsappContactSchema.campaignId, campaignId),
+    where: and(...filters),
     orderBy: [desc(campaignWhatsappContactSchema.createdAt)],
   });
   data = data.map((i: any) => ({

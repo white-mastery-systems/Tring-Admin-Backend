@@ -7,7 +7,7 @@ const bodyValidator = z
   .object({
     username: z.string().min(2, "Name must be at least 2 characters.").optional(),
     email: z.string().email().default("").optional(),
-    password: z.string().optional().default(""),
+    password: z.string().optional(),
     address: z.record(z.any()).optional(),
     mobile: z.string().optional(),
     countryCode: z.string().optional(),
@@ -16,7 +16,8 @@ const bodyValidator = z
     logo: z.record(z.any()).optional(),
     gst: z.string().optional(),
     otherRole: z.string().optional(),
-    gstType: z.string().optional()
+    gstType: z.string().optional(),
+    roleName: z.string().optional(),
   })
   .passthrough();
 
@@ -62,10 +63,10 @@ export default defineEventHandler(async (event) => {
     ? await new Argon2id().hash(body.password)
     : undefined;
 
-
   const updatedUser = {
     username: body.username,
     email: body.email,
+    roleName: body.roleName,
     ...(newPassword && { password: newPassword }),
     metadata: body.metadata,
     address: body.address,

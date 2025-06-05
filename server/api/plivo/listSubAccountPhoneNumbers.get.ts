@@ -4,7 +4,7 @@ import { listPlivoSubAccountPhoneNumbers } from "~/server/utils/plivo"
 
 export default defineEventHandler(async (event) => {
   try {
-    isOrganizationAdminHandler(event)
+    await isOrganizationAdminHandler(event)
     const query = await isValidQueryHandler(event, z.object({
       authId: z.string(),
       authToken: z.string(),

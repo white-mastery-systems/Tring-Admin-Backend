@@ -185,15 +185,22 @@ export const listVoiceBotIntegrations = async (
     limit = parseInt(query.limit);
     offset = (page - 1) * limit;
   }
-  const data = await db.query.voicebotIntegrationSchema.findMany({
+  let data = await db.query.voicebotIntegrationSchema.findMany({
     with: {
-      integration: true
+      integration: {
+        where: query?.type ? eq(integrationSchema.type, query?.type) : undefined,
+      }
     },
     where: and(
       eq(voicebotIntegrationSchema.organizationId, organizationId),
       eq(voicebotIntegrationSchema.botId, voicebotId),
     ),
   });
+
+  
+  if(query?.type) {
+     data = data.filter((i: any) => i.integration !== null)
+  }
 
   if (query?.page && query?.limit) {
     const paginatedVoiceBotIntegrations = data.slice(offset, offset + limit);
@@ -302,7 +309,12 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
         }
       }
     },
-    where: and(...filters),
+    where: and(
+      ...filters,
+      query?.outcome && query?.outcome !== "all"
+        ? eq(voicebotLeadSchema.callOutcome, query?.outcome)
+        : undefined,
+    ),
     orderBy: [desc(voicebotLeadSchema.createdAt)]
   })
 

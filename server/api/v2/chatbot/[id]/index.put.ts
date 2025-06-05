@@ -8,7 +8,7 @@ const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
   try {
-     const organizationId = (await isOrganizationAdminHandler(event)) as string;
+  const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const { id: botId } = await isValidRouteParamHandler(
     event,
     checkPayloadId("id"),
@@ -16,10 +16,13 @@ export default defineEventHandler(async (event) => {
 
   const body: any = await isValidBodyHandler(event, zodUpdateChatBot);
 
-  const alreadyExistingBot = await getBotDetailsByName(organizationId, body?.name, "update", botId);
-  if(alreadyExistingBot) {
-    return errorResponse(event, 400, "Chatbot name already exists.")
-  }
+  // if(body?.name) {
+  //   const alreadyExistingBot = await getBotDetailsByName(organizationId, body?.name, "update", botId);
+  //   if(alreadyExistingBot) {
+  //     return errorResponse(event, 400, "Chatbot name already exists.")
+  //   }
+  // }
+
   
   if (body?.channels?.whatsapp) {
     const data = await db.execute(
@@ -33,11 +36,10 @@ export default defineEventHandler(async (event) => {
   let botDetails: any = await getBotDetails(botId);
   let metaData: any = botDetails?.metadata;
   
-  const industryDetail = await getIndustryDetail({ industryId: body?.industryId });
-
   let defaultIntents: string = "", defaultNotes: string = "", defaultformStructure: any;
   
   if(body?.industryId && body?.industryId !== botDetails?.industryId) {
+    const industryDetail = await getIndustryDetail({ industryId: body?.industryId });
     const chatBotDefaultConfigs = await getChatBotDefaultConfigs(industryDetail)
     defaultIntents = chatBotDefaultConfigs?.defaultIntents
     defaultNotes = chatBotDefaultConfigs?.defaultNotes || ""

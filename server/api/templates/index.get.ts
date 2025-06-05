@@ -3,7 +3,7 @@ import { getTemplatesByWabaId, listAllApprovedTemplates } from "~/server/utils/t
 const zodQueryValidator = z.object({
   page: z.string().optional(),
   limit: z.string().optional(),
-  q: z.string().optional(),
+  q: z.string(),
   status: z.string().optional()
 });
 

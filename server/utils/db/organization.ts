@@ -76,7 +76,8 @@ export const createOrgSubscription = async(data: any) => {
 export const updateOrgWhatsappSessions = async(organizationId: string, whatsappWalletBalance: number) => {
   return await db.update(orgSubscriptionSchema)
   .set({ 
-    whatsappWallet: whatsappWalletBalance
+    whatsappWallet: whatsappWalletBalance,
+    updatedAt: new Date()
    })
   .where(
     and(

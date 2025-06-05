@@ -4,8 +4,11 @@ import { integrationSchema } from "#imports";
 
 interface listIntegrationQuery {
   q?: string;
+  crm?: string;
+  type?: string;
   page?: string;
   limit?: string;
+  integrationName?: string
 }
 
 const db = useDrizzle();
@@ -30,6 +33,18 @@ export const listIntegrations = async (
     }
   }
 
+  if(query?.integrationName) {
+    filters.push(ilike(integrationSchema.name, `%${query.integrationName}%`));
+  }
+
+  if (query?.crm) {
+    filters.push(eq(integrationSchema.crm, query?.crm));
+  }
+  
+  if (query?.type) {
+    filters.push(eq(integrationSchema.type, query?.type));
+  }
+
   let page, offset, limit = 0;
 
   if (query?.page && query?.limit) {
@@ -38,10 +53,20 @@ export const listIntegrations = async (
     offset = (page - 1) * limit;
   }
 
-  const data = await db.query.integrationSchema.findMany({
+  let data = await db.query.integrationSchema.findMany({
     where: and(...filters),
     orderBy: [desc(integrationSchema.createdAt)],
   });
+
+  data = data.map((integration) => ({
+    ...integration,
+    ...(integration.metadata.access_token && {
+      metadata: {
+        ...integration.metadata,
+        status: "verified",
+      }
+    })
+  }))
 
   if (query?.page && query?.limit) {
     const paginatedIntegrations = data.slice(offset, offset + limit);

@@ -394,7 +394,7 @@ export const whatsappSessionSchema = adminSchema.table("whatsapp_sessions", {
 
 export const campaignWhatsappContactSchema = adminSchema.table("campaign_whatsapp_contacts", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  campaignId: uuid("campaign_id").notNull().references(() => campaignSchema.id, { onDelete: "cascade" }),
+  campaignId: uuid("campaign_id").notNull().references(() => newCampaignSchema.id, { onDelete: "cascade" }),
   organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id, { onDelete: "cascade" }),
   chatId: uuid("chat_id"),
   firstName: varchar("first_name"),
@@ -620,6 +620,17 @@ export const industriesSchema = adminSchema.table("industries", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow()
 })
+
+export const blockedNumbersSchema = adminSchema.table("blocked_numbers", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),   
+  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id, { onDelete: "cascade" }),
+  phoneNumber: varchar("phone_number").notNull(),
+  countryCode: varchar("country_code").notNull(),
+  source: varchar("source").notNull(),
+  reason: text("reason"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
 
 export type SelectAdminSubscription = InferSelectModel<typeof adminSubscriptionSchema>;
 export type InsertAdminSubscription = InferInsertModel<typeof adminSubscriptionSchema>;

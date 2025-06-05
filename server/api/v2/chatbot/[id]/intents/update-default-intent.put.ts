@@ -5,8 +5,8 @@ import { errorResponse } from "~/server/response/error.response";
 const db = useDrizzle()
 
 const intentItemSchema = z.object({
-  intent: z.string(),
-  description: z.string().min(2, "Description too short"),
+  intent: z.string().optional(),
+  description: z.string().min(2, "Description too short").optional(),
   link: z.string().url("Invalid URL").min(5, "Link too short").optional(),
   uploads: z.array(z.any()).optional(),
   metadata: z.any().optional(),
@@ -59,6 +59,7 @@ export default defineEventHandler(async (event) => {
             .set({
               ...update,
               intent: intentName,
+              updatedAt: new Date(),
             })
             .where(eq(botIntentSchema.id, existingItem.id));
         }

@@ -35,6 +35,9 @@ export const getCallLogsList = async (organizationId: string, query: any, timeZo
       query?.period && fromDate && toDate
         ? between(callLogSchema.date, fromDate, toDate)
         : undefined,
+      query?.voicebotId && query?.voicebotId !== "all"
+        ? eq(callLogSchema.botId, query.voicebotId): undefined,
+      query?.direction ? eq(callLogSchema.direction, query.direction) : undefined,
     ),
     with: {
       bot: {
