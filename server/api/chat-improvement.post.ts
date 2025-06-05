@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default defineEventHandler(async (event) => {
   try {
-    await isOrganizationAdminHandler(event);
+    // await isOrganizationAdminHandler(event);
     const requestBody = await readBody(event);
 
     if (!requestBody.conversations) {
