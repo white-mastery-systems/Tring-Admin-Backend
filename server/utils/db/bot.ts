@@ -70,9 +70,10 @@ export const listBots = async (
       industryId: true
     },
   });
+  
   data = data.map((i: any) => ({
     ...i,
-    status: i.documentId && i.status === "active" ? "active" : "inActive",
+    status: i.status,
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
 
