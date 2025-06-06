@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
       return errorResponse(event, 400, "Invalid Document Data: No form data was provided. Please ensure all required fields are included in the request.")
     }
 
-    const fileData = formData.find(({ name }) => name === "file")
+    const fileData = formData.find(({ name }) => name === "files")
     const fileName = formData[0].filename!
 
     if (!fileData?.data) { 
