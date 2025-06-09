@@ -7,6 +7,8 @@ export const zodVoicebotUpdateSchema = z.object({
   industryId: z.string().optional(),
   documentId: z.string().optional(),
   llmConfig: z.object({
+    top_p: z.string().optional(),
+    top_k: z.string().optional(),
     temperature: z.number(),
     max_output_token: z.string(),
     inboundPromptText: z.string(),
@@ -48,7 +50,7 @@ export const zodVoicebotUpdateSchema = z.object({
   }).optional(),
   audioFiles: z.record(z.any()).optional(),
   tools: z.object({
-    clientTools: z.record(z.any()).optional(),
+    clientTools: z.array(z.any()).optional(),
     defaultTools: z.array(z.string()).optional(),
   }).optional(),
   intent: z.string().optional(),
@@ -181,8 +183,7 @@ export default defineEventHandler(async (event) => {
     if(body?.llmConfig) {
       body.llmConfig = {
         ...voicebotDetail?.llmConfig,
-        inboundPromptText: voicebotDetail?.llmConfig?.inboundPromptText,
-        outboundPromptText: voicebotDetail?.llmConfig?.outboundPromptText
+        ...body.llmConfig,
       }
     }
 
