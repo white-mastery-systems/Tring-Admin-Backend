@@ -34,9 +34,26 @@ export const zodVoicebotUpdateSchema = z.object({
   speechToTextConfig: z.record(z.any()).optional(),
   ivrConfig: z.string().optional(),
   incomingPhoneNumber: z.string().optional(),
+  preRecordedAudios: z.object({
+    welcomeAudio: z.array(z.any()).optional(),
+    concludeAudio: z.array(z.any()).optional(),
+    fillerAudio: z.array(z.any()).optional(),
+    ambientNoiseAudio: z.array(z.any()).optional(),
+    forwardCallAudio: z.array(z.any()).optional(),
+  }).optional(),
+  clientConfig: z.object({
+    llmCaching: z.boolean().optional(),
+    dynamicCaching: z.boolean().optional(),
+    distance: z.number().optional(),
+  }).optional(),
+  audioFiles: z.record(z.any()).optional(),
+  tools: z.object({
+    clientTools: z.record(z.any()).optional(),
+    defaultTools: z.array(z.string()).optional(),
+  }).optional(),
+  intent: z.string().optional(),
 }).superRefine((data, ctx) => {
     const source = data.knowledgeSource;
-
     if (source === "website") {
       if (!data.websiteLink) {
         ctx.addIssue({
