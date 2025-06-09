@@ -30,16 +30,17 @@ export default defineEventHandler(async (event) => {
       ? { planCode: pricingInfo?.planCode}
       : { voicePlanCode : pricingInfo?.planCode }
 
-    const org = await createOrganization({ 
-      ...planCode,
-      name: zohoCustomerDetail?.company_name || ""
-    })
-
     const contactPersonDetail = subscriptionData?.contactpersons.find((i: any) => i.email === zohoCustomerDetail?.email)
     const billingAddress = zohoCustomerDetail?.billing_address
     const userCountry = phoneLength.find((i) => i.label === zohoCustomerDetail?.billing_address?.country)
 
     let userDetails = await getuserDetailByEmail(zohoCustomerDetail?.email)
+
+    const org = await createOrganization({ 
+      ...planCode,
+      name: zohoCustomerDetail?.company_name || `${userDetails?.email}'s - Org`,
+    })
+
     if(!userDetails) {
       // User creation
       const userDetail = {

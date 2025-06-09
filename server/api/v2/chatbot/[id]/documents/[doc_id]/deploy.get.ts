@@ -1,3 +1,5 @@
+import { logger } from "~/server/logger";
+import { errorResponse } from "~/server/response/error.response";
 import { getDocumentById } from "~/server/utils/db/document";
 
 const db = useDrizzle()
@@ -72,9 +74,10 @@ export default defineEventHandler(async (event) => {
         INITIAL_MESSAGE,
       },
     },
+    status: "active",
   });
-  } catch(error) {
-    console.log(error)
+  } catch(error: any) {
+    logger.error(`Chatbot Deploy API Error: ${JSON.stringify(error.message)}`);
+    return errorResponse(event, 500, "Unable to deploy chatbot")
   }
- 
 });
