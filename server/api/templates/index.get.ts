@@ -25,8 +25,8 @@ export default defineEventHandler(async (event) => {
   : await getTemplatesByWabaId(integration?.metadata?.wabaId, integration?.metadata?.access_token, query?.limit);
 
   const result = {
-    integrationId: query?.q,
-    templates: templateList,
+    integrationId: query?.id ?? query?.q,
+    templates: templateList || [],
   };
 
   return result;
