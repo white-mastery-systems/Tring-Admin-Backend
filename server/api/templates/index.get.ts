@@ -18,14 +18,7 @@ export default defineEventHandler(async (event) => {
 
   const query: any = await isValidQueryHandler(event, zodQueryValidator);
 
-  if(query?.id && query?.q){
-    return {
-      integrationId: "",
-      templates: [],
-    };
-  }
-
-  const integration: any = await getIntegrationById(organizationId, query?.id ?? query?.q);
+  const integration: any = await getIntegrationById(organizationId, query?.q || query?.id);
 
   let templateList = query?.status === "approved" 
   ? await listAllApprovedTemplates(integration?.metadata?.wabaId, integration?.metadata?.access_token)
