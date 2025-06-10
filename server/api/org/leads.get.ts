@@ -22,6 +22,7 @@ const queryValidator = z
     period: z.string().optional(),
     page: z.string().optional(),
     limit: z.string().optional(),
+    outcome: z.string().optional(),
   })
   .refine(
     (data) => {
