@@ -42,6 +42,7 @@ export default defineEventHandler(async (event) => {
         wabaId: z.string().optional(),
         wabaName: z.string().optional(),
         pidPhoneNumber: z.string().optional(),
+        pidName: z.string().optional(),
         businessName: z.string().optional(),
         businessId: z.string().optional(),
         pin: z.string().optional(),
