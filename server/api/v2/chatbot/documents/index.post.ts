@@ -14,11 +14,12 @@ export default defineEventHandler(async (event) => {
     }
     
     const fileData = formData.find(({ name }) => name === "files");
+    const fileName = formData[0].filename!
     if (!fileData?.data) {
       return errorResponse(event, 400, "Invalid Document Data (files): The 'files' field is missing or invalid. Please ensure a valid file is provided.")
     }
     
-    const document = await uploadChatbotDocument(organizationId, formData, fileData)
+    const document = await uploadChatbotDocument(organizationId, fileData, fileName)
 
     return document
    
