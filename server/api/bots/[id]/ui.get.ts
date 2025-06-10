@@ -8,6 +8,11 @@ export default defineEventHandler(async (event) => {
   try {
     const { id } = await isValidRouteParamHandler(event, checkPayloadId("id"));
     let bot = await getBotDetailsNoCache(id);
+
+    if(bot?.isDeleted) {
+      return errorResponse(event, 403, "Bot not available");
+    }
+    
     bot = await isValidReturnType(event, bot);
 
     const orgId = bot?.organizationId

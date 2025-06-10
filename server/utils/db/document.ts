@@ -17,10 +17,10 @@ export const getDocumentPath = (docId: string) => `./assets/docs/${docId}.pdf`;
 export const createDocument = async (document: InsertDocument) =>
   (await db.insert(documentSchema).values(document).returning())[0];
 
-export const uploadChatbotDocument = async (organizationId: string, formData: any, fileData: any, botId?: string) => {
+export const uploadChatbotDocument = async (organizationId: string, fileData: any, fileName: string, botId?: string) => {
   try {
     const body = zodInsertDocument.safeParse({
-      name: formData.find(({ name }) => name === "name")?.data.toString()!,
+      name: fileName,
       organizationId,
       ...botId && { botId }
     })
