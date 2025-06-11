@@ -235,7 +235,7 @@ export const getIntentByName = async(organizationId: string, botId: string, inte
 }
 
 export const createBotIntegration = async (
-  integration: InsertBotIntegration,
+  integration: any,
 ) => {
   return (
     await db.insert(botIntegrationSchema).values(integration).returning()
