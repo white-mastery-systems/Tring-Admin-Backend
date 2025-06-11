@@ -135,6 +135,7 @@ export const listLeads = async (
             mode: true,
             channel: true,
             visitedCount: true,
+            chatOutcome: true,
             interacted: true,
             createdAt: true,
             updatedat: true

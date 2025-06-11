@@ -13,7 +13,7 @@ export default defineEventHandler(async(event) => {
     return isValidReturnType(event, data)
 
   } catch (error: any) {
-    logger.error(`Dlete Contact group by id API Error: ${JSON.stringify(error.message)}`)
+    logger.error(`Delete Contact group by id API Error: ${JSON.stringify(error.message)}`)
     return errorResponse(event, 500, "Unable to delete contact group")
   }
 })
