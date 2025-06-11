@@ -114,7 +114,8 @@ export const contactInfoSchema = z.object({
 export const contactQuerySchema = z.object({
   page: z.string().optional(),
   limit: z.string().optional(),
-  q: z.string().optional()
+  q: z.string().optional(),
+  source: z.enum(["manual", "excel", "google", "crm"]).optional(),
 });
 
 export const addContact = async (
@@ -151,6 +152,9 @@ export const getAllContacts = async (
     const contacts = await db.query.contactProfileSchema.findMany({
       where: and(
         eq(contactProfileSchema.organizationId, organizationId),
+        contactQueryParams?.source ?
+          eq(contactProfileSchema.source, contactQueryParams.source as ContactSource)
+          : undefined,
         contactQueryParams?.q ?
            or(
             ilike(contactProfileSchema.name, `%${contactQueryParams.q}%`),
