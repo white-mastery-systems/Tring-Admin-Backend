@@ -29,13 +29,13 @@ export default defineEventHandler(async (event) => {
   );
   const body = await isValidBodyHandler(event, zodInsertBotIntegration);
 
-  // ✅ Step 1: Normalize input integration IDs
+  // Step 1: Normalize input integration IDs
   const allIntegrationIds = [
     ...(body?.whatsappIntegrationIds || []),
     ...(body?.integrationId ? [body.integrationId] : [])
   ];
 
-  // ✅ Step 2: Find already integrated ones
+  // Step 2: Find already integrated ones
   const existingIntegrations = await db.query.botIntegrationSchema.findMany({
     where: and(
       eq(botIntegrationSchema.botId, botId),
@@ -44,24 +44,22 @@ export default defineEventHandler(async (event) => {
   });
   const alreadyIntegratedIds = existingIntegrations.map(i => i.integrationId);
 
-  // return alreadyIntegratedIds
-
-  // ✅ Step 3: Validate which exist in the integration table
+  // Step 3: Validate which exist in the integration table
   const allIntegrationRecords = await db.query.integrationSchema.findMany({
     where: inArray(integrationSchema.id, allIntegrationIds)
   });
   const validIntegrationIds = allIntegrationRecords.map(i => i.id);
 
-  // ✅ Step 4: Final IDs to insert = valid AND not already integrated
+  // Step 4: Final IDs to insert = valid AND not already integrated
   const newIntegrationIds = validIntegrationIds.filter(id => !alreadyIntegratedIds.includes(id));
 
-  // ✅ Step 5: Skip if nothing to add
+  // Step 5: Skip if nothing to add
   if (newIntegrationIds.length === 0) {
     return errorResponse(event, 400, "Integration ids are either already added or invalid.")
   }
   
   delete body?.whatsappIntegrationIds
-  // ✅ Step 6: Prepare records to insert
+  // Step 6: Prepare records to insert
   const integrationsToCreate = newIntegrationIds.map((integrationId: string) => ({
     integrationId,
     botId,
@@ -72,7 +70,7 @@ export default defineEventHandler(async (event) => {
     }
   }));
 
-  // ✅ Step 7: (Optional) join Slack if needed
+  // Step 7: (Optional) join Slack if needed
   for (const id of newIntegrationIds) {
     const integration = allIntegrationRecords.find(i => i.id === id);
     if (body?.channelId && integration?.crm === "slack") {
@@ -86,7 +84,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // ✅ Step 8: Create new bot integrations
+  // Step 8: Create new bot integrations
   const bot = await createBotIntegration(integrationsToCreate);
   return bot;
 });
