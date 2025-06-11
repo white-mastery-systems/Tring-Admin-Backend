@@ -260,12 +260,12 @@ export const listBotIntegrations = async (botId: string, query?: any) => {
     orderBy: [desc(botIntegrationSchema.createdAt)],
     with: {
       integration: {
-        where: query?.q ? eq(integrationSchema.type, query?.q) : undefined,
+        where: query?.type ? eq(integrationSchema.type, query?.type) : undefined,
       },
     },
   });
 
-  if(query?.q) {
+  if(query?.type) {
      data = data.filter((i: any) => i.integration !== null)
   }
 
