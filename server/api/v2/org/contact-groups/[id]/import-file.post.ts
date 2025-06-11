@@ -45,17 +45,24 @@ export default defineEventHandler(async (event) => {
     const newContactNumbers = uniqueFileContacts.filter((k) => !existingContactNumbers.has(k["Phone Number"]))
 
     if(newContactNumbers.length) {
-      const newContactData: any = newContactNumbers.map((newContact) => ({
-        name: newContact["Name"],
-        email: newContact["Email"] || null,
-        countryCode: `+${newContact["Country Code"]}`,
-        phoneNumber: newContact["Phone Number"],
-        metadata: newContact["Metadata"] || null,
-        verificationId: newContact["Verification Id"] || null,
-        organizationId,       
-        source: "excel"
-      }))
-
+      const newContactData: any = newContactNumbers.map((newContact) => {
+        const rawCountryCode = newContact["Country Code"]?.toString().trim() || "";
+        const formattedCountryCode = rawCountryCode.startsWith("+")
+          ? rawCountryCode
+          : `+${rawCountryCode}`;
+      
+        return {
+          name: newContact["Name"],
+          email: newContact["Email"] || null,
+          countryCode: formattedCountryCode,
+          phoneNumber: newContact["Phone Number"],
+          metadata: newContact["Metadata"] || null,
+          verificationId: newContact["Verification Id"] || null,
+          organizationId,
+          source: "excel",
+        };
+      });
+      
       const newContacts = await addContact(newContactData)
       contactList.push(...newContacts.map((i) => i.id))
     }
@@ -82,6 +89,6 @@ export default defineEventHandler(async (event) => {
     
   } catch(error: any) {
     logger.error(`Contact-group import file API Error: ${JSON.stringify(error.message)}`)
-    return errorResponse(event, 500, "Unable to import contact file")
+    return errorResponse(event, 500, error?.message);
   }
 })

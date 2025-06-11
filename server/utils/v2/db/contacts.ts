@@ -51,7 +51,7 @@ export const importContactSchema = z
         { message: "Invalid email format" },
       ),
     "Country Code": z.union([
-      z.string().refine((val) => /^\d+$/.test(val), {
+      z.string().refine((val) => /^\+?\d+$/.test(val), {
         message: "Invalid country code format",
       }),
       z.number().refine((val) => /^\d+$/.test(val.toString()), {
@@ -72,32 +72,31 @@ export const importContactSchema = z
   .passthrough()
   .refine(
     (data) => {
-      const validPhoneLength = getPhoneLengthByCountry(
-        data["Country Code"].toString(),
-      );
+      const rawCode = data["Country Code"].toString().replace(/^\+/, ""); // remove '+' if present
+      const validPhoneLength = getPhoneLengthByCountry(rawCode);
 
       if (!validPhoneLength) {
         return false;
       }
-
-      const phoneNumber =
-        typeof data["Phone Number"] === "string"
-          ? data["Phone Number"]
-          : data["Phone Number"].toString();
-
+  
+      const phoneNumber = typeof data["Phone Number"] === "string"
+        ? data["Phone Number"]
+        : data["Phone Number"].toString();
+  
       const cleanedPhone = phoneNumber.replace(/[^\d]/g, "").length;
-
+  
       if (Array.isArray(validPhoneLength)) {
         return validPhoneLength.includes(cleanedPhone);
       }
-
+  
       return cleanedPhone === validPhoneLength;
     },
     {
-      message: "Phone number length is invalid for the given country code.",
-      path: ["phoneNumber"],
-    },
-  );
+      message: "The Phonenumber length doesn't match the country code.",
+      path: ["Phone Number"], // make sure the key matches your schema
+    }
+  )
+  
 
 // Define the contact schema
 export const contactInfoSchema = z.object({
@@ -348,10 +347,14 @@ export const mapUniqueContacts = (
   organizationId: string,
 ) => {
   return uniqueContactsData.map((contactInfo: any) => {
+    const rawCountryCode = contactInfo["Country Code"]?.toString().trim() || "";
+    const formattedCountryCode = rawCountryCode.startsWith("+")
+      ? rawCountryCode
+      : `+${rawCountryCode}`;
     return {
       name: contactInfo["Name"],
       email: contactInfo["Email"],
-      countryCode: `+${contactInfo["Country Code"]}`,
+      countryCode: formattedCountryCode,
       phoneNumber: contactInfo["Phone Number"],
       organizationId,
       metadata: contactInfo["Metadata"],
@@ -384,7 +387,7 @@ export const parseContactImportFile = async (fileName: string, file: any, fileTy
           !currentContact[field] ||
           String(currentContact[field]).trim() === ""
         ) {
-          throw new Error(`File name: ${fileName} - Row ${i + 2} is missing required field: ${field}`);
+          throw new Error(`File name: ${fileName} - Row ${i + 1} is missing required field: ${field}`);
         }
       }
     }
