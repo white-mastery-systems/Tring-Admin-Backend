@@ -327,15 +327,15 @@ export const getVoiceScheduledContactsByCampaignId = async (organizationId: stri
     offset = (page - 1) * limit;
   }
 
-  if (query?.period) {
-    let fromDate: Date | undefined;
-    let toDate: Date | undefined;
+  if (query?.fromDate && query?.toDate) {
+    let fromDate = momentTz(query?.fromDate).tz(timeZone).startOf("day").toDate() 
+    let toDate= momentTz(query?.toDate).tz(timeZone).endOf("day").toDate()
 
-    const queryDate = getDateRangeForFilters(query, timeZone);
-    fromDate = queryDate?.from;
-    toDate = queryDate?.to;
     if (fromDate && toDate) {
-      filters.push(between(voicebotCallScheduleSchema.createdAt, fromDate, toDate));
+      filters.push(
+        gte(voicebotCallScheduleSchema.createdAt, fromDate),
+        lte(voicebotCallScheduleSchema.createdAt, toDate),
+      )
     }
   }
 

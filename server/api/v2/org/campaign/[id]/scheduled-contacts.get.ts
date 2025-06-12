@@ -17,7 +17,9 @@ export default defineEventHandler(async (event) => {
       page: z.string().optional(),
       limit: z.string().optional(),
       status: z.string().optional(),
-      period: z.string().optional()
+      period: z.string().optional(),
+      fromDate: z.string().optional(),
+      toDate: z.string().optional(),
     }))
   
     const campaignDetail = await getNewCampaignById(campaignId)
