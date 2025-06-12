@@ -191,6 +191,7 @@ export const getWhatsappContactsByCampaignId = async (campaignId: string, timeZo
   });
   data = data.map((i: any) => ({
     ...i,
+    link: i.chatId ? `https://tring-admin.pripod.com/analytics/chats/${i.chatId}` : null,
     createdAt: momentTz(i?.createdAt)
       .tz(timeZone)
       .format("DD MMM YYYY hh:mm A"),
