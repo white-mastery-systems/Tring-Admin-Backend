@@ -91,7 +91,18 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
     };
   })
   
-  return data
+  if (query?.page && query?.limit) {
+    const paginatedCampaigns = data.slice(offset, offset + limit);
+    return {
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length / limit) || 1,
+      totalCount: data.length,
+      data: paginatedCampaigns,
+    };
+  } else {
+    return data;
+  }
 }
 
 export const getNewCampaignById = async (campaignId: string) => {
