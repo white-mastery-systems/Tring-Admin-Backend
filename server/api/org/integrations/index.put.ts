@@ -48,13 +48,14 @@ export default defineEventHandler(async (event) => {
     organizationId,
     body.crm,
   );
+  console.log("integration",{ integration })
   let generatedAuthResponse: any = null;
   if (body.crm === "hubspot") {
     const data = await getHubspotAccessToken({
       redirectUri: `${config.redirectionUrl}/hubspot`,
       authCode: body.metadata.code,
     });
-
+    console.log("Hubspot data",{ data })
     generatedAuthResponse = data.response;
   } else if (body.crm === "slack" && body.metadata.code) {
     // code=1234 -F client_id=3336676.569200954261 -F client_secret=ABCDEFGH https://slack.com/api/oauth.v2.access
@@ -100,6 +101,7 @@ export default defineEventHandler(async (event) => {
       status: "verified",
     }
   });
+  console.log("updatedIntegration",{ updatedIntegration})
   // const blabla = await createContactInHubspot({
   //   token: generatedAuthResponse.access_token,
   //   refreshToken: generatedAuthResponse.refresh_token,
