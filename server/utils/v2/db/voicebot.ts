@@ -317,7 +317,7 @@ export const getAllFailedCallList = async () => {
   })
 }
 
-export const getVoiceScheduledContactsByCampaignId = async (campaignId: string, timeZone: string, query?: any) => {
+export const getVoiceScheduledContactsByCampaignId = async (organizationId: string, campaignId: string, timeZone: string, query?: any) => {
   let filters: any = [eq(voicebotCallScheduleSchema.campaignId, campaignId)];
   let page, offset, limit = 0;
 
@@ -370,14 +370,20 @@ export const getVoiceScheduledContactsByCampaignId = async (campaignId: string, 
     },
     orderBy: [desc(voicebotCallScheduleSchema.createdAt)],
   })
+
+  const callLogsList = await getCallLogsList(organizationId, timeZone)
   
-  data = data.map((i: any) => ({
-    ...i,
-    contactGroup: i.contactGroup.groupName,
-    bot: i.bot.name,
-    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
-    updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
-  }))
+  data = data.map((i: any) => {
+    const callLogDetail = callLogsList.find((log: any) => log.callSid === i.callSid)
+    return {
+      ...i,
+      link: i?.callSid ? `https://tring-admin.pripod.com/analytics/call-logs/${callLogDetail}` : null,
+      contactGroup: i.contactGroup.groupName,
+      bot: i.bot.name,
+      createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+      updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    }
+  })
 
   if(query?.q) {
     data = data.filter((i: any) => i.contact !== null )

@@ -11,7 +11,7 @@ export const createCallLogs = async (callLog: InsertCallLogSchema) => {
   )[0]
 }
 
-export const getCallLogsList = async (organizationId: string, query: any, timeZone: string) => {
+export const getCallLogsList = async (organizationId: string, timeZone?: string,  query?: any) => {
   // Period-based filtering
   let fromDate: Date | undefined;
   let toDate: Date | undefined;
@@ -23,7 +23,7 @@ export const getCallLogsList = async (organizationId: string, query: any, timeZo
 
   let page, offset, limit = 0;
 
-  if (query.page && query.limit) {
+  if (query?.page && query?.limit) {
     page = parseInt(query.page);
     limit = parseInt(query.limit);
     offset = (page - 1) * limit;
