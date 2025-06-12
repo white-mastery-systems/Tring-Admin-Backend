@@ -254,8 +254,8 @@ export const getDateRangeForFilters = (query: any, timeZone: string) => {
       };
     case "custom":
       return {
-        from: momentTz(query?.from).tz(timeZone).toDate() || undefined,
-        to: momentTz(query?.to).tz(timeZone).toDate() || undefined,
+        from: momentTz(query?.from).tz(timeZone).startOf("day").toDate() || undefined,
+        to: momentTz(query?.to).tz(timeZone).endOf("day").toDate() || undefined,
       };
     case "all-time":
       return {
