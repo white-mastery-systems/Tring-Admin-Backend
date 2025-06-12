@@ -27,30 +27,34 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
   }
   
   let data: any = await db.query.newCampaignSchema.findMany({
-    where: eq(newCampaignSchema.organizationId, organizationId),
+    where: and(
+      eq(newCampaignSchema.organizationId, organizationId),
+      query?.q ? ilike(newCampaignSchema.campaignName, `%${query?.q}%`) : undefined,
+    ),
     orderBy: [desc(newCampaignSchema.createdAt)],
   })
    
-  const [ voiceScheduledContactList, whatsappScheduledContactList ] = await Promise.all([
+  const [ voiceScheduledContactList, whatsappScheduledContactList, chatbotList ] = await Promise.all([
     db.query.voicebotCallScheduleSchema.findMany({
-      where: eq(voicebotCallScheduleSchema.organizationId, organizationId)
+      where: eq(voicebotCallScheduleSchema.organizationId, organizationId),
+      with: {
+        bot: true
+      }
     }),
     db.query.campaignWhatsappContactSchema.findMany({
       where: eq(campaignWhatsappContactSchema.organizationId, organizationId)
     }),
+    db.query.chatBotSchema.findMany({
+      where: eq(chatBotSchema.organizationId, organizationId)
+    })
   ])
   
   data = data.map((i: any) => {
-    let totalCount = 0 ; let interactionCount = 0;
-
-    let voiceTotalCount = 0; let voiceInteractedCount = 0; 
-    
-    let whatsappTotalCount = 0; let whatsappInteractedCount = 0;
-
     let recipientCount =0; let sendCount = 0; let pickupCount = 0; let successFullCount = 0
-   
+    let botName
     if (i.contactMethod === "voice") {
       for (const contact of voiceScheduledContactList) {
+        botName = contact?.bot?.name
         if(contact.campaignId === i.id) {
           recipientCount++
           if(!["Not Dialed"].includes(contact?.callStatus)){
@@ -67,6 +71,8 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
     } 
    
     if (i.contactMethod === "whatsapp") {
+      const chatbotDetail = chatbotList.find((chatbot: any) => chatbot.id === i.botConfig.botId)
+      botName = chatbotDetail?.name
       for (const contact of whatsappScheduledContactList) {
         if(contact.campaignId === i.id) {
           recipientCount++
@@ -80,9 +86,11 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
         }
       }
     }
+    
 
      return {
        ...i,
+       botName,
        recipientCount,
        sendCount,
        pickupCount,

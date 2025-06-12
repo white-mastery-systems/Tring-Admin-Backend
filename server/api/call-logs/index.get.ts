@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
   const query = await isValidQueryHandler(event, zodQueryValidator)
 
-  const data = await getCallLogsList(organizationId, query, timeZone)
+  const data = await getCallLogsList(organizationId, timeZone,  query)
 
   return data
 })
