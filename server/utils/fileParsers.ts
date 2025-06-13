@@ -13,14 +13,10 @@ export const parseCSV = async (csvString: string, requiredFields: string[]) => {
       .pipe(
         csvParser({
           separator: ",",
-          mapHeaders: ({ header, index }) => {
-            if (!headers.includes(header)) {
-              headers.push(header);
-              return header;
-            } else {
-              headers.push(header); // Still store to detect duplicates
-              return header; // Keep it to show parser behavior (optional)
-            }
+          mapHeaders: ({ header }) => {
+            const trimmedHeader = String(header).trim();
+            headers.push(trimmedHeader);
+            return trimmedHeader; // This ensures keys in 'data' are clean too
           },
         })
       )
@@ -38,29 +34,40 @@ export const parseCSV = async (csvString: string, requiredFields: string[]) => {
   });
 };
 
-
 export const parseExcelBuffer = (buffer: any, requiredFields: string[]) => {
   const workbook = xlsx.read(buffer, { type: "buffer" });
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
 
-  const headersRow = xlsx.utils.sheet_to_json(sheet, { header: 1 })[0];
+  // Read the header row (first row)
+  const rawHeadersRow = xlsx.utils.sheet_to_json(sheet, { header: 1 })[0] as string[];
+
+  // Trim headers
+  const headersRow = rawHeadersRow.map((header) => String(header).trim());
+
+  // Check for duplicates using trimmed headers
   const duplicates = getDuplicateHeaders(headersRow, requiredFields);
 
   if (duplicates.length > 0) {
     throw new Error(`Duplicate headers found in Excel: ${duplicates.join(", ")}`);
   }
 
-  return xlsx.utils.sheet_to_json(sheet);
+  // Parse full sheet using trimmed headers
+  const data = xlsx.utils.sheet_to_json(sheet, {
+    header: headersRow, // Use trimmed headers explicitly
+    range: 1, // Skip the original header row
+  });
+
+  return data;
 };
 
-
 function getDuplicateHeaders(headers: string[], requiredFields: string[]) {
-  const seen = new Set();
-  const duplicates = new Set();
+  const seen = new Set<string>();
+  const duplicates = new Set<string>();
+  const normalizedRequired = requiredFields.map((h) => h.trim());
 
-  for (let header of headers.map(h => String(h).trim())) {  
-    if (requiredFields.includes(header)) {
+  for (const header of headers) {
+    if (normalizedRequired.includes(header)) {
       if (seen.has(header)) {
         duplicates.add(header);
       } else {
