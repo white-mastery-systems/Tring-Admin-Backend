@@ -70,9 +70,10 @@ export const listBots = async (
       industryId: true
     },
   });
+  
   data = data.map((i: any) => ({
     ...i,
-    status: i.documentId && i.status === "active" ? "active" : "inActive",
+    status: i.status,
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
 
@@ -234,7 +235,7 @@ export const getIntentByName = async(organizationId: string, botId: string, inte
 }
 
 export const createBotIntegration = async (
-  integration: InsertBotIntegration,
+  integration: any,
 ) => {
   return (
     await db.insert(botIntegrationSchema).values(integration).returning()
@@ -259,12 +260,15 @@ export const listBotIntegrations = async (botId: string, query?: any) => {
     orderBy: [desc(botIntegrationSchema.createdAt)],
     with: {
       integration: {
-        where: query?.q ? eq(integrationSchema.type, query?.q) : undefined,
+        where: and(
+          query?.type ? eq(integrationSchema.type, query?.type) : undefined,
+          query?.crm ? eq(integrationSchema.crm, query?.crm) : undefined,
+        )
       },
     },
   });
 
-  if(query?.q) {
+  if(query?.type || query?.crm) {
      data = data.filter((i: any) => i.integration !== null)
   }
 

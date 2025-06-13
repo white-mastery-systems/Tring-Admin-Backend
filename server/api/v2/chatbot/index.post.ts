@@ -78,6 +78,7 @@ export default defineEventHandler(async (event) => {
    
     const payload = {
       ...body,
+      type: industryDetail?.industryName,
       ...defaultformStructure && { customForms: defaultformStructure },
       organizationId
     }

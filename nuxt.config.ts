@@ -89,6 +89,7 @@ export default defineNuxtConfig({
     tringPlivoAuthId: "",
     tringPlivoAuthToken: "",
     newFrontendUrl: "",
+    deepgramTtsApiKey: "",
     public: {
       adminBaseUrl: "",
       chatBotBaseUrl: "",

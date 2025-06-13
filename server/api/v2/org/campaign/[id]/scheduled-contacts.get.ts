@@ -6,7 +6,7 @@ import momentTz from "moment-timezone"
 
 export default defineEventHandler(async (event) => {
   try {
-    await isOrganizationAdminHandler(event)
+    const organizationId = (await isOrganizationAdminHandler(event)) as string
     
     const timeZoneHeader = event.node?.req?.headers["time-zone"];
     const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
@@ -17,7 +17,9 @@ export default defineEventHandler(async (event) => {
       page: z.string().optional(),
       limit: z.string().optional(),
       status: z.string().optional(),
-      period: z.string().optional()
+      period: z.string().optional(),
+      fromDate: z.string().optional(),
+      toDate: z.string().optional(),
     }))
   
     const campaignDetail = await getNewCampaignById(campaignId)
@@ -27,12 +29,12 @@ export default defineEventHandler(async (event) => {
     
     let data, campaignTotalContacts = []
 
-    console.log({ contactmethod : campaignDetail.contactMethod, campaignId })
+
     const contactMethod = campaignDetail.contactMethod
 
     if(contactMethod === "voice") {
-      campaignTotalContacts = await getVoiceScheduledContactsByCampaignId(campaignId, timeZone)
-      data = await getVoiceScheduledContactsByCampaignId(campaignId, timeZone, query)
+      campaignTotalContacts = await getVoiceScheduledContactsByCampaignId(organizationId, campaignId, timeZone)
+      data = await getVoiceScheduledContactsByCampaignId(organizationId, campaignId, timeZone, query)
     } else { // contact method is whatsapp
       console.log("Fetching WhatsApp contacts for campaign")
       campaignTotalContacts  = await getWhatsappContactsByCampaignId(campaignId, timeZone)

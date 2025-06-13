@@ -71,6 +71,15 @@ export const getContactLinksByContactGroupId = async (contactGroupId: string, co
   })
 }
 
+export const checkIfContactGroupLinkExists = async (contactGroupId: string, contactId: string) => {
+  return await db.query.contactGroupLinkSchema.findFirst({
+    where: and(
+      eq(contactGroupLinkSchema.contactGroupId, contactGroupId),
+      eq(contactGroupLinkSchema.contactId, contactId)
+    )
+  })
+}
+
 export const getContactGroupLinksByOrgId = async (organizationId: string) => {
   return await db.query.contactGroupLinkSchema.findMany({
     where: eq(contactGroupLinkSchema.organizationId, organizationId)
@@ -93,4 +102,18 @@ export const getContactGroupContacts = async( contactGroupId: string ) => {
     },
     where: eq(contactGroupLinkSchema.contactGroupId, contactGroupId)
   })
+}
+
+export const deleteContactFromContactGroup = async (contactGroupId: string, contactId: string) => { 
+  return (
+    await db
+      .delete(contactGroupLinkSchema)
+      .where(
+        and(
+          eq(contactGroupLinkSchema.contactGroupId, contactGroupId),
+          eq(contactGroupLinkSchema.contactId, contactId)
+        ),
+      )
+      .returning()
+  )[0]
 }

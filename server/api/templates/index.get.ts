@@ -3,7 +3,8 @@ import { getTemplatesByWabaId, listAllApprovedTemplates } from "~/server/utils/t
 const zodQueryValidator = z.object({
   page: z.string().optional(),
   limit: z.string().optional(),
-  q: z.string(),
+  q: z.string().optional(),
+  id: z.string().optional(),
   status: z.string().optional()
 });
 
@@ -17,15 +18,15 @@ export default defineEventHandler(async (event) => {
 
   const query: any = await isValidQueryHandler(event, zodQueryValidator);
 
-  const integration: any = await getIntegrationById(organizationId, query?.q);
+  const integration: any = await getIntegrationById(organizationId, query?.q || query?.id);
 
   let templateList = query?.status === "approved" 
   ? await listAllApprovedTemplates(integration?.metadata?.wabaId, integration?.metadata?.access_token)
   : await getTemplatesByWabaId(integration?.metadata?.wabaId, integration?.metadata?.access_token, query?.limit);
 
   const result = {
-    integrationId: query?.q,
-    templates: templateList,
+    integrationId: query?.id ?? query?.q,
+    templates: templateList || [],
   };
 
   return result;

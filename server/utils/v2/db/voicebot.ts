@@ -317,7 +317,7 @@ export const getAllFailedCallList = async () => {
   })
 }
 
-export const getVoiceScheduledContactsByCampaignId = async (campaignId: string, timeZone: string, query?: any) => {
+export const getVoiceScheduledContactsByCampaignId = async (organizationId: string, campaignId: string, timeZone: string, query?: any) => {
   let filters: any = [eq(voicebotCallScheduleSchema.campaignId, campaignId)];
   let page, offset, limit = 0;
 
@@ -327,15 +327,15 @@ export const getVoiceScheduledContactsByCampaignId = async (campaignId: string, 
     offset = (page - 1) * limit;
   }
 
-  if (query?.period) {
-    let fromDate: Date | undefined;
-    let toDate: Date | undefined;
+  if (query?.fromDate && query?.toDate) {
+    let fromDate = momentTz(query?.fromDate).tz(timeZone).startOf("day").toDate() 
+    let toDate= momentTz(query?.toDate).tz(timeZone).endOf("day").toDate()
 
-    const queryDate = getDateRangeForFilters(query, timeZone);
-    fromDate = queryDate?.from;
-    toDate = queryDate?.to;
     if (fromDate && toDate) {
-      filters.push(between(voicebotCallScheduleSchema.createdAt, fromDate, toDate));
+      filters.push(
+        gte(voicebotCallScheduleSchema.createdAt, fromDate),
+        lte(voicebotCallScheduleSchema.createdAt, toDate),
+      )
     }
   }
 
@@ -370,14 +370,20 @@ export const getVoiceScheduledContactsByCampaignId = async (campaignId: string, 
     },
     orderBy: [desc(voicebotCallScheduleSchema.createdAt)],
   })
+
+  const callLogsList = await getCallLogsList(organizationId, timeZone)
   
-  data = data.map((i: any) => ({
-    ...i,
-    contactGroup: i.contactGroup.groupName,
-    bot: i.bot.name,
-    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
-    updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
-  }))
+  data = data.map((i: any) => {
+    const callLogDetail = callLogsList.find((log: any) => log.callSid === i.callSid)
+    return {
+      ...i,
+      link: i?.callSid ? `https://tring-admin.pripod.com/analytics/call-logs/${callLogDetail}` : null,
+      contactGroup: i.contactGroup.groupName,
+      bot: i.bot.name,
+      createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+      updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    }
+  })
 
   if(query?.q) {
     data = data.filter((i: any) => i.contact !== null )

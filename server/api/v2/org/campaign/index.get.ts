@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     const timeZoneHeader = event.node?.req?.headers["time-zone"];
     const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
 
-    const query = isValidQueryHandler(event, zodCampaignQueryValidator)
+    const query = await isValidQueryHandler(event, zodCampaignQueryValidator)
 
     const data = await getNewCampaignList(organizationId, query, timeZone)
     

@@ -7,6 +7,8 @@ export const zodVoicebotUpdateSchema = z.object({
   industryId: z.string().optional(),
   documentId: z.string().optional(),
   llmConfig: z.object({
+    top_p: z.string().optional(),
+    top_k: z.string().optional(),
     temperature: z.number(),
     max_output_token: z.string(),
     inboundPromptText: z.string(),
@@ -34,9 +36,26 @@ export const zodVoicebotUpdateSchema = z.object({
   speechToTextConfig: z.record(z.any()).optional(),
   ivrConfig: z.string().optional(),
   incomingPhoneNumber: z.string().optional(),
+  preRecordedAudios: z.object({
+    welcomeAudio: z.array(z.any()).optional(),
+    concludeAudio: z.array(z.any()).optional(),
+    fillerAudio: z.array(z.any()).optional(),
+    ambientNoiseAudio: z.array(z.any()).optional(),
+    forwardCallAudio: z.array(z.any()).optional(),
+  }).optional(),
+  clientConfig: z.object({
+    llmCaching: z.boolean().optional(),
+    dynamicCaching: z.boolean().optional(),
+    distance: z.number().optional(),
+  }).optional(),
+  audioFiles: z.record(z.any()).optional(),
+  tools: z.object({
+    clientTools: z.array(z.any()).optional(),
+    defaultTools: z.array(z.string()).optional(),
+  }).optional(),
+  intent: z.string().optional(),
 }).superRefine((data, ctx) => {
     const source = data.knowledgeSource;
-
     if (source === "website") {
       if (!data.websiteLink) {
         ctx.addIssue({
@@ -164,8 +183,7 @@ export default defineEventHandler(async (event) => {
     if(body?.llmConfig) {
       body.llmConfig = {
         ...voicebotDetail?.llmConfig,
-        inboundPromptText: voicebotDetail?.llmConfig?.inboundPromptText,
-        outboundPromptText: voicebotDetail?.llmConfig?.outboundPromptText
+        ...body.llmConfig,
       }
     }
 
