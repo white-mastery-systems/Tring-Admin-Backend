@@ -68,6 +68,12 @@ export const listIntegrations = async (
     })
   }))
 
+  if(query?.isVerified === "true") {
+    data = data.filter((integration) => {
+      return integration.metadata?.status === "verified" || "Verified";
+    });
+  }
+
   if (query?.page && query?.limit) {
     const paginatedIntegrations = data.slice(offset, offset + limit);
     return {
