@@ -143,3 +143,12 @@ export const getAllVoiceNewCampaigns = async () => {
     where: eq(newCampaignSchema.contactMethod, "voice")
   })
 }
+
+export const getCampaignByContactGroupId = async(bucketId: string) => {
+  return await db.query.newCampaignSchema.findMany({
+    where: and(
+      sql`${bucketId} = ANY(${newCampaignSchema.bucketIds})`,
+      eq(newCampaignSchema.contactMethod, "voice")
+    )
+  });
+}

@@ -377,7 +377,7 @@ export const getVoiceScheduledContactsByCampaignId = async (organizationId: stri
     const callLogDetail = callLogsList.find((log: any) => log.callSid === i.callSid)
     return {
       ...i,
-      link: i?.callSid ? `https://tring-admin.pripod.com/analytics/call-logs/${callLogDetail}` : null,
+      link: i?.callSid ? `https://tring-admin.pripod.com/analytics/call-logs/${callLogDetail?.id}` : null,
       contactGroup: i.contactGroup.groupName,
       bot: i.bot.name,
       createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
