@@ -89,7 +89,7 @@ const getNumberListApiCall = async (value: any) => {
   const getNumberList: any = await getIntegratedProviderNumberList(value)
   numberList.value = getNumberList?.map((item: any) => ({
     label: item,
-    value: item
+    value: item.split(" - ")[0]
   }))
 };
 
