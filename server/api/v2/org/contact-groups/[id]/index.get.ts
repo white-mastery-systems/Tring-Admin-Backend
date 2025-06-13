@@ -8,14 +8,16 @@ export default defineEventHandler(async(event) => {
 
     const query = await isValidQueryHandler(event, z.object({
       page: z.string().optional(),
-      limit: z.string().optional()
+      limit: z.string().optional(),
+      q: z.string().optional()
     }))
 
     const { id: contactGroupId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
     const data = await getContactGroupById(contactGroupId)
 
-    const contactGroupLink = await getContactGroupContacts(contactGroupId)
+
+    const contactGroupLink = await getContactGroupContacts(contactGroupId, query)
 
     let page, offset, limit = 0
     
