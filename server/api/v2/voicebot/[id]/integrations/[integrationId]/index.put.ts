@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     voiceBotIntegrationId,
      { 
       metadata: voiceBotIntegration, 
-      integrationId: voiceBotIntegration.integrationId ,
+      integrationId: voiceBotIntegration.integrationId,
       status: voiceBotIntegration.status
     });
   
