@@ -10,7 +10,8 @@ const zodUpdateBotIntegration = z.object({
   layoutObj: z.any().optional(),
   sequenceObj: z.any().optional(),
   stage: z.string().optional(),
-  restaurantId: z.string().optional()
+  restaurantId: z.string().optional(),
+  status: z.string().optional()
 });
 
 export default defineEventHandler(async (event) => {
@@ -34,8 +35,9 @@ export default defineEventHandler(async (event) => {
     botIntegrationId,
     { 
       metadata: botIntegration, 
-      integrationId: botIntegration.integrationId 
-    },
+      integrationId: botIntegration.integrationId,
+      status: botIntegration?.status
+    }
   );
 
   return updateIntegration;
