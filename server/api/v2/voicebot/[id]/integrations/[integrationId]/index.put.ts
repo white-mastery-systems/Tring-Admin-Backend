@@ -9,7 +9,8 @@ const zodUpdateVoiceBotIntegration = z.object({
   channelId: z.string().optional(),
   layoutObj: z.any().optional(),
   stage: z.string().optional(),
-  restaurantId: z.string().optional()
+  restaurantId: z.string().optional(),
+  status: z.string().optional()
 });
 
 export default defineEventHandler(async (event) => {
@@ -25,7 +26,8 @@ export default defineEventHandler(async (event) => {
     voiceBotIntegrationId,
      { 
       metadata: voiceBotIntegration, 
-      integrationId: voiceBotIntegration.integrationId 
+      integrationId: voiceBotIntegration.integrationId,
+      status: voiceBotIntegration.status
     });
   
   return isValidReturnType(event, update);
