@@ -372,13 +372,13 @@ export const getVoiceScheduledContactsByCampaignId = async (organizationId: stri
     orderBy: [desc(voicebotCallScheduleSchema.createdAt)],
   })
 
-  const callLogsList = await getCallLogsList(organizationId, timeZone)
+  const callLogsList: any = await getCallLogsList(organizationId, timeZone)
   
   data = data.map((i: any) => {
     const callLogDetail = callLogsList.find((log: any) => log.callSid === i.callSid)
     return {
       ...i,
-      link: i?.callSid ? `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogDetail?.id}` : null,
+      link: i?.callSid && callLogDetail ? `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogDetail?.id}` : null,
       contactGroup: i.contactGroup.groupName,
       bot: i.bot.name,
       createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
