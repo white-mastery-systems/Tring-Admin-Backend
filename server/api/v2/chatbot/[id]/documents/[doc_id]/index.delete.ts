@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
   
   const botDetails = await getBotDetailsNoCache(botId)
   if(botDetails?.documentId === doc_id) {
-    updateBotDetails(botId, { documentId: null })
+    updateBotDetails(botId, { documentId: null, status: "inactive" })
   }
   
   try {

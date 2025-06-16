@@ -30,11 +30,11 @@ export const getOrgAnalytics = async (
       ? `${Math.round((qualifiedLeads / totalConversation.length) * 100)}%`
       : '0%';
   
-      //--- Lead qaulification Accuracy
+      //--- Lead qualification Accuracy
       const totalHighPotentialLeads = await getOrgQualifiedLeads(organizationId, fromDate, toDate, true)
       const accuracy = totalHighPotentialLeads > 0
       ? `${Math.round((qualifiedLeads / totalHighPotentialLeads) * 100)}%` 
-      : 0
+      : '0%';
   
       // Engagement Metrics
       //--- Total Conversation
@@ -58,7 +58,7 @@ export const getOrgAnalytics = async (
       const dropOffConversation = await getDropOffConversation(organizationId, fromDate, toDate)
       const totalLeads = await getOrgLeadsForAnalytics(organizationId, fromDate, toDate)
 
-      const dropOffRate = totalLeads > 0 ? `${Math.round((dropOffConversation / totalLeads) *100)}%` : 0
+      const dropOffRate = totalLeads > 0 ? `${Math.round((dropOffConversation / totalLeads) *100)}%` : '0%';
 
   
       return {
@@ -97,7 +97,7 @@ export const getOrgAnalytics = async (
 
       // drop off rate
       const dropOffCallConversation = await getDropOffConversation(organizationId, fromDate, toDate)
-      const dropOffCallRate = totalCallLogs.length > 0 ? `${Math.round((dropOffCallConversation / totalCallLogs.length) * 100)}%` : 0
+      const dropOffCallRate = totalCallLogs.length > 0 ? `${Math.round((dropOffCallConversation / totalCallLogs.length) * 100)}%` : '0%';
 
       // convsersation rate
       const getQualifiedCallLogs = await getQualifiedCalls(organizationId, fromDate, toDate)
