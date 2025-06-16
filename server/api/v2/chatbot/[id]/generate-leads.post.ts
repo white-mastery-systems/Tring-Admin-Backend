@@ -7,11 +7,12 @@ import { newGenerateLeadInZohoCRM, newUpdateNotesInZohoCRM } from "~/server/util
 import { newGenerateContactInZohoBigin, newGenerateLeadInZohoBigin, newUpdateNotesInZohoBigin } from "~/server/utils/v2/integrations/crm/zoho/zoho-bigin";
 import { listActiveBotIntegration } from "~/server/utils/db/bot";
 import { pushChatLeadsToClay } from "~/server/utils/clay/webhook";
+import { errorResponse } from "~/server/response/error.response";
 
 const config = useRuntimeConfig()
 
 export default defineEventHandler(async (event) => {
-  // const userId = event.context.user?.id as string;
+ try {
   const generateLeadsValidation = z.object({
     botUser: z.any(),
     note: z.any(),
@@ -344,6 +345,10 @@ export default defineEventHandler(async (event) => {
   );
   }
   return adminUser;
+ } catch (error: any) {
+   logger.error(`Chatbot Lead generation API Error: ${JSON.stringify(error.message)}`)
+   return errorResponse(event, 500, "Failed to generate leads in chatbot")
+ }
 });
 
 const validateName = (name: any) => {

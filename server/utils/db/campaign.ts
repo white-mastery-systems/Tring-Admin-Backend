@@ -4,6 +4,8 @@ import {whatsappErrorCodes} from "~/assets/error-codes.json"
 import { notInArray } from "drizzle-orm";
 
 const db = useDrizzle();
+const config = useRuntimeConfig()
+
 type InteractionStatus = "Booked" | "Engaged" | "Failed" | "Follow Up" | "Invalid Number" | "New Lead" | "Not Interested" | "No Response";
 
 export const createCampaign = async (campaign: InsertCampaign) => {
@@ -191,7 +193,7 @@ export const getWhatsappContactsByCampaignId = async (campaignId: string, timeZo
   });
   data = data.map((i: any) => ({
     ...i,
-    link: i.chatId ? `https://tring-admin.pripod.com/analytics/chats/${i.chatId}` : null,
+    link: i.chatId ? `${config.newFrontendUrl}/dashboard/customer-logs/chats/${i.chatId}` : null,
     createdAt: momentTz(i?.createdAt)
       .tz(timeZone)
       .format("DD MMM YYYY hh:mm A"),
