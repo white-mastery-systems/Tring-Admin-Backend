@@ -3,6 +3,7 @@ import momentTz from "moment-timezone"
 import { inArray } from "drizzle-orm"
 
 const db = useDrizzle()
+const config = useRuntimeConfig()
 
 export const getOrgTotalVoicebots = async(organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
   return await db
@@ -377,7 +378,7 @@ export const getVoiceScheduledContactsByCampaignId = async (organizationId: stri
     const callLogDetail = callLogsList.find((log: any) => log.callSid === i.callSid)
     return {
       ...i,
-      link: i?.callSid ? `https://tring-admin.pripod.com/analytics/call-logs/${callLogDetail?.id}` : null,
+      link: i?.callSid ? `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogDetail?.id}` : null,
       contactGroup: i.contactGroup.groupName,
       bot: i.bot.name,
       createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
@@ -411,4 +412,13 @@ export const updateVoiceScheduledCall = async(id: string, body: any) => {
     })
     .where(eq(voicebotCallScheduleSchema.id, id))
     .returning())[0]
+}
+
+export const updateVoiceScheduledCallByCallSid = async (callSid: string, status: string) => {
+  return (await db.update(voicebotCallScheduleSchema)
+  .set({
+    callStatus: status,
+    updatedAt: new Date()
+  }).where(eq(voicebotCallScheduleSchema.callSid, callSid))
+  .returning())[0]
 }
