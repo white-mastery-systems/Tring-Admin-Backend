@@ -17,9 +17,12 @@ export default defineEventHandler(async (event) => {
 
     const deepgramTtsVoices = deepgramTts
       .filter((i: any) => i.architecture === query.model)
-      .map((voice: any) => (
-        `${voice.name.charAt(0).toUpperCase() + voice.name.slice(1)} ${voice.metadata.accent} (${voice.metadata.tags[0]})`
-      ))
+      .map((voice: any) => {
+        return {
+          displayName: `${voice.name.charAt(0).toUpperCase() + voice.name.slice(1)} ${voice.metadata.accent} (${voice.metadata.tags[0]})`,
+          voiceName: voice.canonical_name
+        }
+      })
 
     return deepgramTtsVoices
   } catch (error: any) {
