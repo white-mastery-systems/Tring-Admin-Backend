@@ -412,3 +412,12 @@ export const updateVoiceScheduledCall = async(id: string, body: any) => {
     .where(eq(voicebotCallScheduleSchema.id, id))
     .returning())[0]
 }
+
+export const updateVoiceScheduledCallByCallSid = async (callSid: string, status: string) => {
+  return (await db.update(voicebotCallScheduleSchema)
+  .set({
+    callStatus: status,
+    updatedAt: new Date()
+  }).where(eq(voicebotCallScheduleSchema.callSid, callSid))
+  .returning())[0]
+}
