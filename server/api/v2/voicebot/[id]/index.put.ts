@@ -26,6 +26,7 @@ export const zodVoicebotUpdateSchema = z.object({
       region: z.string(),
       timezone: z.string(),
       callType: z.string(),
+      version: z.string(),
       industryType: z.string().optional(),
       role: z.string(),
       goal: z.string(),

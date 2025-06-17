@@ -1,4 +1,5 @@
 import { logger } from "~/server/logger";
+import { errorResponse } from "~/server/response/error.response";
 import { getContactInformationById } from "~/server/utils/v2/db/contacts";
 
 export default defineEventHandler(async (event) => {
@@ -15,10 +16,7 @@ export default defineEventHandler(async (event) => {
 
     if (!retrievedContactData) {
       logger.info(`Contact not found: ${id}`);
-      throw createError({
-        statusCode: 404,
-        message: "Contact not found",
-      });
+      return errorResponse(event, 404, "Contact not found")
     }
 
     logger.info(
@@ -30,11 +28,6 @@ export default defineEventHandler(async (event) => {
     logger.error(
       `Failed to fetch contact: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
-
-    throw createError({
-      statusCode: 400,
-      message:
-        error instanceof Error ? error.message : "Failed to fetch contact",
-    });
+    return errorResponse(event, 500, "Failed to fetch contact")
   }
 });
