@@ -18,7 +18,11 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const message = await $fetch(`/api/org/chat/${chatId}/messages`);
+  const message: any = await $fetch(`/api/org/chat/${chatId}/messages`);
+
+  if(message[0]?.messages?.length){
+    message[0].messages = message[0]?.messages?.filter((item:any)=> item.role !== "assistant");
+  }
 
   const client = new OpenAI({
     apiKey: config.openaiApiKey,
