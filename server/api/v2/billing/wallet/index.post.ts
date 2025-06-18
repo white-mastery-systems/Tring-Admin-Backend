@@ -1,8 +1,8 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-import { createAddon } from "~/server/utils/v2/billing/wallet"
 import { getOrgSubscriptionId } from "~/server/utils/v2/db/zohoSubscription"
 import { inrCreditPriceList, usdCreditPriceList } from "~/server/utils/v2/billing/addonList";
+import { createPaymentLinkInRazorpay } from "~/server/utils/v2/billing/wallet";
 
 const zodCreateAddon = z.object({
   plan: z.string(),
@@ -11,49 +11,58 @@ const zodCreateAddon = z.object({
 
 export default defineEventHandler(async (event) => {
   try {
-    const orgId = await isOrganizationAdminHandler(event)
+    const organizationId = (await isOrganizationAdminHandler(event)) as string
+     
     const body = await isValidBodyHandler(event, zodCreateAddon)
 
     const query = await isValidQueryHandler(event, z.object({
       countryCode: z.string().default("IN"),
     }))
 
-    const orgZohoSubscription = await getOrgSubscriptionId(orgId)
-    const adminConfig = await getAdminConfig()
-
     const credits = query.countryCode === "IN" ? inrCreditPriceList : usdCreditPriceList
-    const addonPrice = credits?.find(({ plan }) => plan === body.plan)?.price
+    const creditsDetail: any = credits?.find(({ plan }) => plan === body.plan)
+
+    const razorpayPrice = creditsDetail.razorpayPrice
+    const displayPrice = creditsDetail.price
+
+    const currency = query.countryCode === "IN" ? "INR" : "USD"
     
-    const addonPayload = {
-      subscription_id: orgZohoSubscription?.subscriptionId,
-      addons: [
-        {
-          addon_code: body.plan,
-          quantity: 1,
-          price: addonPrice,
-          tax_id: null,
-        },
-      ],
-      redirect_url: body?.redirectUrl,
-      payment_gateways: [
-        {
-          payment_gateway: query.countryCode === "IN" ? "razorpay" : "stripe",
-        },
-      ],
+    const orgZohoSubscription = await getOrgSubscriptionId(organizationId)
+
+    if(!orgZohoSubscription) {
+      return errorResponse(event, 400, "Subscription is not active")
     }
 
-    const addonresponse = await createAddon(addonPayload, adminConfig?.metaData)
-  
-    if(!addonresponse?.hostedpage) {
-      return errorResponse(event, 500, "Unable to add the addon")
+    const adminDetail = await getAdminByOrgId(organizationId)
+    const payload = {
+      amount: razorpayPrice,
+      currency,
+      description: `Adding ${displayPrice} ${currency === "INR" ? "Rupees" : "Dollars" } as credits to Tring AI wallet`,
+      customer: {
+        name: adminDetail?.username,
+        contact: `${adminDetail?.countryCode}${adminDetail?.mobile}`,
+        email: adminDetail?.email
+      },
+      notify: {
+        sms: true,
+        email: true
+      },
+      callback_url: body?.redirectUrl,
+      callback_method: "get"
+    }
+
+    const data = await createPaymentLinkInRazorpay(payload)
+    if(!data) {
+      return errorResponse(event, 500, "Failed to add credits")
     }
 
     return {
       status: true,
-      ...addonresponse
+      ...data
     }
+
   } catch (error: any) {
-    logger.error(`Zoho-billing addon creation API Error: ${JSON.stringify(error.message)}`)
-    return errorResponse(event, 500, "Unable to add the addon")
+    logger.error(`Add credits API Error: ${JSON.stringify(error.message)}`)
+    return errorResponse(event, 500, "Failed to add credits")
   }
 })

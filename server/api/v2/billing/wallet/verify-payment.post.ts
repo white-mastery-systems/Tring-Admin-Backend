@@ -1,34 +1,31 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-
-const zodAddonCreation = z.object({
-  hostedpageId: z.string(),
-})
+import { getRazorpayPaymentDetailByPaymentId } from "~/server/utils/v2/billing/wallet"
 
 export default defineEventHandler(async (event) => {
   try {
-    const orgId = (await isOrganizationAdminHandler(event)) as string
-    const userId = event.context.user?.id
-    if (!userId) {
-      return errorResponse(event, 400, "User Not Found: The specified user could not be found. Please check the user ID.")
-    }
+    const organizationId = (await isOrganizationAdminHandler(event)) as string
 
-    const body = await isValidBodyHandler(event, zodAddonCreation)
-    const query = await isValidQueryHandler(event, z.object({
-      type: z.string().optional()
+    const body = await isValidBodyHandler(event, z.object({
+      paymentId: z.string()
     }))
+  
+    const data: any = await getRazorpayPaymentDetailByPaymentId(body?.paymentId)
 
-    const adminConfig = await getAdminConfig()
+    if(data?.status !== "captured") {
+      return errorResponse(event, 500, "Payment Verification Failed")
+    }
+    const creditAmount = data?.amount / 100
 
-    const hostedPageData = await getZohoBillingHostedPageDetails(body.hostedpageId, adminConfig?.metaData)
-    let addons =  hostedPageData.data.invoice.sub_total
-   
-    const existingAddon = await getOrganizationById(orgId)
-    updateOrganization(orgId, { wallet: existingAddon?.wallet + addons })
+    const organizationDetail = await getOrganizationById(organizationId)
 
-    return { status: "Addon payment Successful" }
+    const existingCreditsAmount = organizationDetail?.wallet || 0
+
+    await updateOrganization(organizationId, { wallet: existingCreditsAmount + creditAmount })
+
+    return { status: "Credits payment verification Successful" }
   } catch (error: any) {
-    logger.error(`Addon verify payent API Error: ${JSON.stringify(error.message)}`)
-    return errorResponse(event, 500, "Unable to verify the addon payment")
+    logger.error(`Credits verify payment API Error: ${JSON.stringify(error.message)}`)
+    return errorResponse(event, 500, "Unable to verify the credits payment")
   }
 })
