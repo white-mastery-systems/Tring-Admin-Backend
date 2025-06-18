@@ -1,3 +1,5 @@
+import { errorResponse } from "~/server/response/error.response";
+
 const db = useDrizzle()
 
 const zodUpdateVoicebotValidation = z.object({
@@ -20,14 +22,7 @@ export default defineEventHandler(async (event) => {
       )
     })
     if (!voiceBotIvr) {
-      return sendError(
-        event,
-        createError({
-          statusCode: 400,
-          statusMessage:
-            "IVR Configuration Missing: Please add an IVR configuration to the active bot before proceeding.",
-        }),
-      );
+      return errorResponse(event, 400, "IVR Configuration Missing: Please add an IVR configuration to the active bot before proceeding.")
     }
   }
   

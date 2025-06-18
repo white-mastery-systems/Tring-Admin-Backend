@@ -5,6 +5,166 @@ import { inArray } from "drizzle-orm"
 const db = useDrizzle()
 const config = useRuntimeConfig()
 
+export const zodCreateNewVoicebotSchema = z.object({
+  name: z.string(),
+  active: z.boolean().optional(),
+  industryId: z.string(),
+  documentId: z.string().optional(),
+  llmConfig: z.object({
+    top_k: z.string(),
+    top_p: z.string(),
+    temperature: z.number(),
+    max_output_token: z.string(),
+  }),
+  knowledgeSource: z.enum(["website", "document", "text"]),
+  websiteLink: z.string().optional(),
+  websiteContent: z.string().optional(),
+  textContent: z.string().optional(),
+  documentContent: z.string().optional(),
+  botDetails: z
+    .object({
+      agentName: z.string(),
+      agentLanguage: z.string(),
+      region: z.string(),
+      timezone: z.string(),
+      callType: z.string(),
+      version: z.string(),
+      industryType: z.string().optional(),
+      role: z.string(),
+      goal: z.string(),
+      otherRole: z.string().optional(),
+      otherGoal: z.string().optional()
+    }),
+  textToSpeechConfig: z.record(z.any()),
+  speechToTextConfig: z.record(z.any()),
+  ivrConfig: z.string(),
+  incomingPhoneNumber: z.string(),
+}).superRefine((data, ctx) => {
+    const source = data.knowledgeSource;
+    if (source === "website") {
+      if (!data.websiteLink) {
+        ctx.addIssue({
+          path: ["websiteLink"],
+          code: z.ZodIssueCode.custom,
+          message: "websiteLink is required when knowledgeSource is 'website'",
+        });
+      }
+      if (!data.websiteContent) {
+        ctx.addIssue({
+          path: ["websiteContent"],
+          code: z.ZodIssueCode.custom,
+          message: "websiteContent is required when knowledgeSource is 'website'",
+        });
+      }
+    }
+
+    if (source === "text" && !data.textContent) {
+      ctx.addIssue({
+        path: ["textContent"],
+        code: z.ZodIssueCode.custom,
+        message: "textContent is required when knowledgeSource is 'text'",
+      });
+    }
+
+    if (source === "document" && !data.documentId) {
+      ctx.addIssue({
+        path: ["documentId"],
+        code: z.ZodIssueCode.custom,
+        message: "documentId is required when knowledgeSource is 'document'",
+      });
+    }
+});
+
+export const zodUpdateNewVoicebotSchema = z.object({
+  name: z.string().optional(),
+  active: z.boolean().optional(),
+  industryId: z.string().optional(),
+  documentId: z.string().optional(),
+  llmConfig: z.object({
+    top_p: z.string().optional(),
+    top_k: z.string().optional(),
+    temperature: z.number(),
+    max_output_token: z.string(),
+    inboundPromptText: z.string(),
+    outboundPromptText: z.string()
+  }).optional(),
+  knowledgeSource: z.enum(["website", "document", "text"]).optional(),
+  websiteLink: z.string().optional(),
+  websiteContent: z.string().optional(),
+  textContent: z.string().optional(),
+  documentContent: z.string().optional(),
+  botDetails: z
+    .object({
+      agentName: z.string(),
+      agentLanguage: z.string(),
+      region: z.string(),
+      timezone: z.string(),
+      callType: z.string(),
+      version: z.string(),
+      industryType: z.string().optional(),
+      role: z.string(),
+      goal: z.string(),
+      otherRole: z.string().optional(),
+      otherGoal: z.string().optional()
+  }).optional(),
+  textToSpeechConfig: z.record(z.any()).optional(),
+  speechToTextConfig: z.record(z.any()).optional(),
+  ivrConfig: z.any().optional(),
+  incomingPhoneNumber: z.any().optional(),
+  preRecordedAudios: z.object({
+    welcomeAudio: z.array(z.any()).optional(),
+    concludeAudio: z.array(z.any()).optional(),
+    fillerAudio: z.array(z.any()).optional(),
+    ambientNoiseAudio: z.array(z.any()).optional(),
+    forwardCallAudio: z.array(z.any()).optional(),
+  }).optional(),
+  clientConfig: z.object({
+    llmCaching: z.boolean().optional(),
+    dynamicCaching: z.boolean().optional(),
+    distance: z.number().optional(),
+  }).optional(),
+  audioFiles: z.record(z.any()).optional(),
+  tools: z.object({
+    clientTools: z.array(z.any()).optional(),
+    defaultTools: z.array(z.string()).optional(),
+  }).optional(),
+  intent: z.string().optional(),
+}).superRefine((data, ctx) => {
+    const source = data.knowledgeSource;
+    if (source === "website") {
+      if (!data.websiteLink) {
+        ctx.addIssue({
+          path: ["websiteLink"],
+          code: z.ZodIssueCode.custom,
+          message: "websiteLink is required when knowledgeSource is 'website'",
+        });
+      }
+      if (!data.websiteContent) {
+        ctx.addIssue({
+          path: ["websiteContent"],
+          code: z.ZodIssueCode.custom,
+          message: "websiteContent is required when knowledgeSource is 'website'",
+        });
+      }
+    }
+
+    if (source === "text" && !data.textContent) {
+      ctx.addIssue({
+        path: ["textContent"],
+        code: z.ZodIssueCode.custom,
+        message: "textContent is required when knowledgeSource is 'text'",
+      });
+    }
+
+     if (source === "document" && !data.documentId) {
+      ctx.addIssue({
+        path: ["documentId"],
+        code: z.ZodIssueCode.custom,
+        message: "documentId is required when knowledgeSource is 'document'",
+      });
+    }
+});
+
 export const getOrgTotalVoicebots = async(organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
   return await db
   .select({ createdAt: voicebotSchema.createdAt })
