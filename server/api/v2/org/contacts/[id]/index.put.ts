@@ -1,4 +1,5 @@
 import { logger } from "~/server/logger";
+import { errorResponse } from "~/server/response/error.response";
 import { updateContactById } from "~/server/utils/v2/db/contacts";
 
 export default defineEventHandler(async (event) => {
@@ -24,10 +25,7 @@ export default defineEventHandler(async (event) => {
       logger.info(
         `Duplicate phone: ${contactInfoPayload.phoneNumber} for contact creation`,
       );
-      throw createError({
-        statusCode: 409,
-        message: "Contact already exists with this phone number",
-      });
+      return errorResponse(event, 409, "Contact already exists with this phone number")
     }
 
     const updatedContact = await updateContactById(
@@ -38,10 +36,7 @@ export default defineEventHandler(async (event) => {
 
     if (!updatedContact) {
       logger.info(`Contact not found for update: ${id}`);
-      throw createError({
-        statusCode: 404,
-        message: "Contact not found",
-      });
+      return errorResponse(event, 404, "Contact not found")
     }
 
     logger.info(`Contact updated: ${id}`);
@@ -50,11 +45,6 @@ export default defineEventHandler(async (event) => {
     logger.error(
       `Update contact error: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
-
-    throw createError({
-      statusCode: 400,
-      message:
-        error instanceof Error ? error.message : "Failed to update contact",
-    });
+    return errorResponse(event, 500, "Failed to update contact")
   }
 });
