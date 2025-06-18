@@ -90,6 +90,8 @@ export default defineNuxtConfig({
     tringPlivoAuthToken: "",
     newFrontendUrl: "",
     deepgramTtsApiKey: "",
+    razorpayApiKey: "",
+    razorpayApiSecret: "",
     public: {
       adminBaseUrl: "",
       chatBotBaseUrl: "",
