@@ -1,4 +1,5 @@
 import { logger } from "~/server/logger";
+import { errorResponse } from "~/server/response/error.response";
 import {
   addContact,
   checkIfContactExists,
@@ -9,10 +10,11 @@ export default defineEventHandler(async (event) => {
   try {
     const contactInfoPayload = await isValidBodyHandler(
       event,
-      contactInfoSchema,
+      contactInfoSchema
     );
+    console.log({ payload: contactInfoPayload })
 
-    const organizationId = await isOrganizationAdminHandler(event);
+    const organizationId = event?.context?.user?.organizationId ?? contactInfoPayload.organizationId
     logger.info(`Processing contact creation for org: ${organizationId}`);
 
     const existingContact = await checkIfContactExists(
@@ -25,16 +27,13 @@ export default defineEventHandler(async (event) => {
       logger.info(
         `Duplicate phone: ${contactInfoPayload.phoneNumber} for contact creation`,
       );
-      throw createError({
-        statusCode: 409,
-        message: "Contact already exists with this phone number",
-      });
+      return errorResponse(event, 409, "Contact already exists with this phone number")
     }
 
     const newContact = await addContact({ 
       ...contactInfoPayload,
       organizationId, 
-      source: ContactSource.MANUAL
+      source: contactInfoPayload?.source ?? ContactSource.MANUAL
     });
     logger.info(`Contact created: ${JSON.stringify(newContact[0])}`);
 
@@ -46,11 +45,6 @@ export default defineEventHandler(async (event) => {
     logger.error(
       `Contact creation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
-
-    throw createError({
-      statusCode: 400,
-      message:
-        error instanceof Error ? error.message : "Failed to create contact",
-    });
+    return errorResponse(event, 409, "Failed to create contact")
   }
 });
