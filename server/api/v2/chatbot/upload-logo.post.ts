@@ -20,9 +20,6 @@ export default defineEventHandler(async (event) => {
     const fileData = formData.find(({ name }) => name === "logo");
     if (!fileData?.data) return errorResponse(event, 400, "Invalid Document Data: The document data is missing or corrupted. Please upload a valid document.")
     
-      if (fileData.type !== "image/png" && fileData.type !== "image/jpeg" && fileData.type !== "image/jpg" && fileData.type !== "image/webp" && fileData.type !== "image/gif" && fileData.type !== "image/svg+xml") {
-      return errorResponse(event, 400, "Invalid Image Type. Please upload valid image file.")
-    }
     const uploadDir = join(process.cwd(), 'assets', 'logo');
   
     if (!existsSync(uploadDir)) {
