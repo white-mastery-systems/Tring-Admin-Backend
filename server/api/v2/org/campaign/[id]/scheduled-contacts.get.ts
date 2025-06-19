@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
       return errorResponse(event, 404, "Campaign not found")
     }
     
-    let data, campaignTotalContacts = []
+    let data = []; let campaignTotalContacts = []; let deliveredContacts = []; let failedContacts = []
 
 
     const contactMethod = campaignDetail.contactMethod
@@ -35,15 +35,14 @@ export default defineEventHandler(async (event) => {
     if(contactMethod === "voice") {
       campaignTotalContacts = await getVoiceScheduledContactsByCampaignId(organizationId, campaignId, timeZone)
       data = await getVoiceScheduledContactsByCampaignId(organizationId, campaignId, timeZone, query)
+      deliveredContacts = campaignTotalContacts.filter((i: any)=> !["Not Dialed", "Failed", "No Response", "Invalid Number"].includes(i.callStatus))
+      failedContacts = campaignTotalContacts.filter((j: any) => ["Failed"].includes(j.callStatus))
     } else { // contact method is whatsapp
-      console.log("Fetching WhatsApp contacts for campaign")
       campaignTotalContacts  = await getWhatsappContactsByCampaignId(campaignId, timeZone)
       data = await getWhatsappContactsByCampaignId(campaignId, timeZone, query)
+      deliveredContacts = campaignTotalContacts.filter((i: any)=> ["delivered", "sent", "read"].includes(i.messageStatus.toLowerCase()))
+      failedContacts = campaignTotalContacts.filter((j: any) => ["failed"].includes(j.messageStatus.toLowerCase()))  
     }
-
-    const deliveredContacts = campaignTotalContacts.filter((i: any)=> !["Not Dialed", "Failed", "No Response"].includes(contactMethod === "voice" ? i.callStatus : i.interactionStatus))
-    const failedContacts = campaignTotalContacts.filter((j: any) => ["Failed", "Invalid Number"].includes(contactMethod === "voice" ? j.callStatus : j.interactionStatus))
-    const notResponsedContacts = campaignTotalContacts.filter((j: any) => contactMethod === "voice" ? j.callStatus === "No Response" : j.interactionStatus === "No Response")
 
     return {
       campaignName: campaignDetail?.campaignName,
@@ -52,7 +51,6 @@ export default defineEventHandler(async (event) => {
       totalContacts: campaignTotalContacts.length,  
       deliveredContacts: deliveredContacts.length,
       failedContacts: failedContacts.length,
-      notResponsedContacts: notResponsedContacts.length,
       scheduledContacts: data
     }
   } catch(error: any) {
