@@ -34,7 +34,7 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
     orderBy: [desc(newCampaignSchema.createdAt)],
   })
    
-  const [ voiceScheduledContactList, whatsappScheduledContactList, chatbotList ] = await Promise.all([
+  const [ voiceScheduledContactList, whatsappScheduledContactList, chatbotList, voicebotList ] = await Promise.all([
     db.query.voicebotCallScheduleSchema.findMany({
       where: eq(voicebotCallScheduleSchema.organizationId, organizationId),
       with: {
@@ -46,13 +46,19 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
     }),
     db.query.chatBotSchema.findMany({
       where: eq(chatBotSchema.organizationId, organizationId)
+    }),
+    db.query.voicebotSchema.findMany({
+      where: eq(voicebotSchema.organizationId, organizationId)
     })
   ])
   
   data = data.map((i: any) => {
     let recipientCount =0; let sendCount = 0; let pickupCount = 0; let successFullCount = 0
     let botName
+    
     if (i.contactMethod === "voice") {
+      const voicebotDetail = voicebotList.find((voicebot: any) => voicebot.id === i.botConfig.botId)
+      botName = voicebotDetail?.name
       for (const contact of voiceScheduledContactList) {
         botName = contact?.bot?.name
         if(contact.campaignId === i.id) {
@@ -142,4 +148,13 @@ export const getAllVoiceNewCampaigns = async () => {
   return await db.query.newCampaignSchema.findMany({
     where: eq(newCampaignSchema.contactMethod, "voice")
   })
+}
+
+export const getCampaignByContactGroupId = async(bucketId: string) => {
+  return await db.query.newCampaignSchema.findMany({
+    where: and(
+      sql`${bucketId} = ANY(${newCampaignSchema.bucketIds})`,
+      eq(newCampaignSchema.contactMethod, "voice")
+    )
+  });
 }

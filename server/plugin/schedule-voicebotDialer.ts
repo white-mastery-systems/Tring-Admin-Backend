@@ -7,7 +7,7 @@ export default defineNitroPlugin(async (event) => {
   try {
     schedule.scheduleJob("*/5 * * * *", async () => {  
       logger.info("voicebot - Every 5 mins cron is running for outbound schdeuling...")
-       await voicebotDialer()
+       await voicebotCallSchedular()
     })
   } catch (error: any) {
     logger.error(`Schedule-voicebotDialer Error: ${JSON.stringify(error.message)}`)

@@ -1,5 +1,7 @@
 import { logger } from "~/server/logger"
 
+const config = useRuntimeConfig()
+
 export const createAddon: any = async (addonData: any, metaData: any) => {
   try {
      const data = await $fetch(
@@ -64,6 +66,42 @@ export const getZohoBillingCredits: any = async (metaData: any) => {
       const updatedIntegrationMetaData: any = await retrieveZohoBillingNewAccessToken(metaData)
       return getZohoBillingCredits(updatedIntegrationMetaData)
     }
+    throw new Error(error)
+  }
+}
+
+export const createPaymentLinkInRazorpay = async (payload: any) => {
+  try {
+    const credentials = btoa(`${config.razorpayApiKey}:${config.razorpayApiSecret}`);
+    const data = await $fetch(`https://api.razorpay.com/v1/payment_links/`, {
+      method: "POST",
+      body: payload,
+      headers: {
+        Authorization: `Basic ${credentials}`
+      }
+    })
+
+    return data
+
+  } catch (error: any) {
+    logger.error(`Create Payment link in Razorpay API Error: ${JSON.stringify(error.message)}`)
+    throw new Error(error)
+  }
+}
+
+export const getRazorpayPaymentDetailByPaymentId = async (paymentId: string) => {
+  try {
+    const credentials = btoa(`${config.razorpayApiKey}:${config.razorpayApiSecret}`);
+    const data = await $fetch(`https://api.razorpay.com/v1/payments/${paymentId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Basic ${credentials}`
+      }
+    })
+
+    return data
+  } catch (error: any) {
+    logger.error(`Get Payment Details By Razorpay payment-id API Error: ${JSON.stringify(error.message)}`)
     throw new Error(error)
   }
 }

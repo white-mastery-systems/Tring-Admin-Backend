@@ -1,94 +1,6 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-
-export const zodVoicebotUpdateSchema = z.object({
-  name: z.string().optional(),
-  active: z.boolean().optional(),
-  industryId: z.string().optional(),
-  documentId: z.string().optional(),
-  llmConfig: z.object({
-    top_p: z.string().optional(),
-    top_k: z.string().optional(),
-    temperature: z.number(),
-    max_output_token: z.string(),
-    inboundPromptText: z.string(),
-    outboundPromptText: z.string()
-  }).optional(),
-  knowledgeSource: z.enum(["website", "document", "text"]).optional(),
-  websiteLink: z.string().optional(),
-  websiteContent: z.string().optional(),
-  textContent: z.string().optional(),
-  documentContent: z.string().optional(),
-  botDetails: z
-    .object({
-      agentName: z.string(),
-      agentLanguage: z.string(),
-      region: z.string(),
-      timezone: z.string(),
-      callType: z.string(),
-      industryType: z.string().optional(),
-      role: z.string(),
-      goal: z.string(),
-      otherRole: z.string().optional(),
-      otherGoal: z.string().optional()
-  }).optional(),
-  textToSpeechConfig: z.record(z.any()).optional(),
-  speechToTextConfig: z.record(z.any()).optional(),
-  ivrConfig: z.string().optional(),
-  incomingPhoneNumber: z.string().optional(),
-  preRecordedAudios: z.object({
-    welcomeAudio: z.array(z.any()).optional(),
-    concludeAudio: z.array(z.any()).optional(),
-    fillerAudio: z.array(z.any()).optional(),
-    ambientNoiseAudio: z.array(z.any()).optional(),
-    forwardCallAudio: z.array(z.any()).optional(),
-  }).optional(),
-  clientConfig: z.object({
-    llmCaching: z.boolean().optional(),
-    dynamicCaching: z.boolean().optional(),
-    distance: z.number().optional(),
-  }).optional(),
-  audioFiles: z.record(z.any()).optional(),
-  tools: z.object({
-    clientTools: z.array(z.any()).optional(),
-    defaultTools: z.array(z.string()).optional(),
-  }).optional(),
-  intent: z.string().optional(),
-}).superRefine((data, ctx) => {
-    const source = data.knowledgeSource;
-    if (source === "website") {
-      if (!data.websiteLink) {
-        ctx.addIssue({
-          path: ["websiteLink"],
-          code: z.ZodIssueCode.custom,
-          message: "websiteLink is required when knowledgeSource is 'website'",
-        });
-      }
-      if (!data.websiteContent) {
-        ctx.addIssue({
-          path: ["websiteContent"],
-          code: z.ZodIssueCode.custom,
-          message: "websiteContent is required when knowledgeSource is 'website'",
-        });
-      }
-    }
-
-    if (source === "text" && !data.textContent) {
-      ctx.addIssue({
-        path: ["textContent"],
-        code: z.ZodIssueCode.custom,
-        message: "textContent is required when knowledgeSource is 'text'",
-      });
-    }
-
-     if (source === "document" && !data.documentId) {
-      ctx.addIssue({
-        path: ["documentId"],
-        code: z.ZodIssueCode.custom,
-        message: "documentId is required when knowledgeSource is 'document'",
-      });
-    }
-});
+import { zodUpdateNewVoicebotSchema } from "~/server/utils/v2/db/voicebot"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -96,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
     const { id: voicebotId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
-    const body = await isValidBodyHandler(event, zodVoicebotUpdateSchema)
+    const body = await isValidBodyHandler(event, zodUpdateNewVoicebotSchema)
 
     const voicebotDetail: any = await getVoicebotById(voicebotId)
     
@@ -109,11 +21,8 @@ export default defineEventHandler(async (event) => {
  
     if(body?.botDetails) {
       const botDetails = body?.botDetails
-      const callType = body?.botDetails?.callType
-      
-      if(voicebotDetail.botDetails?.callType !== callType || voicebotDetail?.industryId !== body?.industryId) {
-        let voiceInboundPrompt = ""
-        let voiceOuboundPrompt = ""
+            
+      if(voicebotDetail?.industryId !== body?.industryId) {
         let knowledgeBase: string = ""
         const industryDetail: any = await getIndustryDetail({ industryId: body?.industryId ?? voicebotDetail?.industryId });
         const industryName = industryDetail.industryName!;
@@ -137,17 +46,9 @@ export default defineEventHandler(async (event) => {
           knowledgeBase,
         })
     
-        if(callType === "inbound") {
-          voiceInboundPrompt = voicebotPrompts.inboundPrompt
-        } else if (callType === "outbound") {
-          voiceOuboundPrompt = voicebotPrompts.outboundPrompt
-        } else if (callType === "both") {
-          voiceInboundPrompt = voicebotPrompts.inboundPrompt
-          voiceOuboundPrompt = voicebotPrompts.outboundPrompt
-        }
         body.llmConfig = voicebotDetail?.llmConfig
-        body.llmConfig.inboundPromptText = voiceInboundPrompt
-        body.llmConfig.outboundPromptText = voiceOuboundPrompt
+        body.llmConfig.inboundPromptText = voicebotPrompts.inboundPrompt
+        body.llmConfig.outboundPromptText = voicebotPrompts.outboundPrompt
       }
     }
      

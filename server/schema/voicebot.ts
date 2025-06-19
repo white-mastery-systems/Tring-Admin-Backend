@@ -129,6 +129,7 @@ export const voicebotIntegrationSchema = voiceBotSchema.table(
     botId: uuid("bot_id")
       .references(() => voicebotSchema.id),
     metadata: jsonb("metadata"),
+    status: varchar("status", { enum: ["active", "inactive"]}).default("active"),
     integrationId: uuid("integration_id").references(
       () => integrationSchema.id,{
       onDelete: "cascade",
@@ -198,6 +199,7 @@ export const voicebotLeadSchema = voiceBotSchema.table("leads",{
   botId: uuid("bot_id")
   .references(() => voicebotSchema.id)
   .notNull(),
+  callLogId: uuid("call_log_id").references(() => callLogSchema.id, { onDelete: "cascade" }),
   organizationId: uuid("organization_id")
   .references(() => organizationSchema.id)
   .notNull(),

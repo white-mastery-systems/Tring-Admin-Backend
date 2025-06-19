@@ -196,6 +196,8 @@ export const contactSourceEnum = pgEnum("source", [
   "excel",
   "google",
   "crm",
+  "chatbot",
+  "voicebot"
 ]);
 
 // new contacts schema

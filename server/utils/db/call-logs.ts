@@ -68,6 +68,10 @@ export const getCallLogsList = async (organizationId: string, timeZone?: string,
     data = data.filter((i: any) => i.bot !== null);
   }
 
+  if(query?.outcome && query?.outcome !== "all") {
+    data = data.filter((i: any) => i.metrics.callOutcome === query?.outcome)
+  }
+
   if (query?.page && query?.limit) {
     const paginatedCallLogs = data.slice(offset, offset + limit);
     return {

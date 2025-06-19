@@ -95,13 +95,24 @@ export const getContactListByContactGroupIds = async (contactGroupIds: string[])
   })
 }
 
-export const getContactGroupContacts = async( contactGroupId: string ) => {
-  return await db.query.contactGroupLinkSchema.findMany({
+export const getContactGroupContacts = async(contactGroupId: string, query: any) => {
+  let data = await db.query.contactGroupLinkSchema.findMany({
     with: {
-      contact: true
+      contact: {
+        where: query?.q ? or(
+          ilike(contactProfileSchema.name, `%${query.q}%`),
+          ilike(contactProfileSchema.email, `%${query.q}%`),
+          ilike(contactProfileSchema.phoneNumber, `%${query.q}%`)
+        ) : undefined
+      }
     },
     where: eq(contactGroupLinkSchema.contactGroupId, contactGroupId)
   })
+
+  if(query?.q) {
+    data = data.filter((item) => item.contact !== null)
+  }
+  return data
 }
 
 export const deleteContactFromContactGroup = async (contactGroupId: string, contactId: string) => { 

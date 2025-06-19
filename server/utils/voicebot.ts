@@ -55,9 +55,9 @@ export let defaultSpeechToTextConfig = {
         "amplification_factor": 3,
     },
     "deepgram": {
-        "model": "nova-2",
+        "model": "nova-3",
         "utterance_end_ms": "1000",
-        "endpointing": 250,
+        "endpointing": 300,
         "keywords": [],
         "amplification_factor": 2,
     },
@@ -88,7 +88,8 @@ export let defaultTextToSpeechConfig = {
         "model": ""
     },
     "deepgram": {
-        "voice": "aura-asteria-en"
+        "voice": "aura-asteria-en",
+        "model": "aura"
     },
     "tring": {
         "api_key": "",

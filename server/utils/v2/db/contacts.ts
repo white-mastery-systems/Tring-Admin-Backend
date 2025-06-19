@@ -10,6 +10,8 @@ export enum ContactSource {
   EXCEL = "excel",
   GOOGLE = "google",
   CRM = "crm",
+  CHATBOT = "chatbot",
+  VOICEBOT = "voicebot"
 }
 
 interface FriendlyValidationError {
@@ -106,8 +108,9 @@ export const contactInfoSchema = z.object({
   email: z.string().email().optional(),
   metadata: z.string().optional(),
   verificationId: z.string().optional(),
-  source: z.enum(["manual", "excel", "google", "crm"]),
+  source: z.enum(["manual", "excel", "google", "crm", "chatbot", "voicebot"]),
   externalId: z.string().nullable().optional(),
+  organizationId: z.string().optional()
 });
 
 export const contactQuerySchema = z.object({

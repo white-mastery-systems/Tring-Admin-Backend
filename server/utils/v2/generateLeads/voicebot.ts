@@ -6,7 +6,7 @@ const config = useRuntimeConfig()
 export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebotDetail }: {
   botUser: any,
   callLogId: string,
-  notes: string,
+  notes?: string,
   voicebotDetail: any
 }) => {
   try{
