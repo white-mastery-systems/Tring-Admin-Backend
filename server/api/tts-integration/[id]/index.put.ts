@@ -1,9 +1,10 @@
 import { errorResponse } from "~/server/response/error.response"
 import { isTtsNameAlreadyExists } from "~/server/utils/db/tts-integration"
+import { providerConfigMap } from "../index.post"
 
 const zodUpdateTtsIntegration = z.object({
   ttsIntegrationName: z.string().optional(),
-  provider: z.string().optional(),
+  provider: z.enum(["elevenlabs", "cartesia", "rime", "neuphonic", "smallest-ai"]),
   metadata: z.record(z.any()).optional()
 })
 
@@ -14,11 +15,12 @@ export default defineEventHandler(async (event) => {
 
   const body: any = await isValidBodyHandler(event, zodUpdateTtsIntegration)
 
-  if(body.provider === "elevenlabs") {
+  const config = providerConfigMap[body?.provider];
+  if (config) {
     try {
-      await getElevenlabsModels(body?.metadata?.apiKey)
-    } catch (error: any) {
-      return errorResponse(event, 400, "Invalid elevenlabs API-Key")
+      await config.validate(body?.metadata?.apiKey || "");
+    } catch {
+      return errorResponse(event, 400, config.errorMessage);
     }
   }
 
