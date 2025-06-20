@@ -21,19 +21,28 @@ export default defineEventHandler(async (event) => {
 
     let allValidContacts: any[] = [];
 
+    const seenPhoneNumbers = new Set<string>();
+
     for (const fileField of fileFields) {
       const { filename, data: contactFormData }: any = fileField;
       const fileExtension = filename?.split(".").pop().toLowerCase();
-
+    
       const validContactData = await parseContactImportFile(
         filename,
         contactFormData,
-        fileExtension,
+        fileExtension
       );
-
-      allValidContacts.push(...validContactData);
+    
+      // ✅ Filter out duplicates by phone number
+      const uniqueContacts = validContactData.filter((contact: any) => {
+        const phone = contact["Phone Number"]?.toString().trim();
+        if (!phone || seenPhoneNumbers.has(phone)) return false;
+        seenPhoneNumbers.add(phone);
+        return true;
+      });
+    
+      allValidContacts.push(...uniqueContacts);
     }
-    // return allValidContacts
 
     // Extract phone numbers
     const phoneNumbers = allValidContacts
