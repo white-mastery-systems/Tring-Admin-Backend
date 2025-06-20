@@ -7,6 +7,6 @@ export const zodDeleteSchema = z.object({
 export default defineEventHandler(async (event) => {
   const body = await isValidRouteParamHandler(event, zodDeleteSchema);
 
-  const integration = await deleteIntegration(body.id);
+  const integration = await updateIntegrationById(body.id, { isDeleted: false });
   return integration;
 });
