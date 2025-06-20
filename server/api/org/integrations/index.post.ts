@@ -1,7 +1,7 @@
 import { ilike } from "drizzle-orm";
 import { toast } from "vue-sonner";
 import { logger } from "~/server/logger";
-import { createIntegration } from "~/server/utils/db/integrations";
+import { checkIntegrationNameAlreadyExists, createIntegration } from "~/server/utils/db/integrations";
 import {
   fetchPhoneNumbers,
   fetchSubscribedApps,
@@ -52,13 +52,8 @@ export default defineEventHandler(async (event) => {
     })
     .refine(
       async (data) => {
-        const isBotExisting = await db.query.integrationSchema.findFirst({
-          where: and(
-            eq(integrationSchema.org_id, organizationId),
-            ilike(integrationSchema.name, data.name),
-          ),
-        });
-        if (isBotExisting) {
+        const existing = await checkIntegrationNameAlreadyExists(organizationId, data.name, "insert")
+        if (existing) {
           return false;
         }
         return true;

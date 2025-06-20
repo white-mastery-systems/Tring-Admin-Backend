@@ -3,7 +3,7 @@ import { errorResponse } from "~/server/response/error.response";
 
 const db = useDrizzle();
 
-const intentDescriptions: Record<string, string> = {
+export const intentDescriptions: Record<string, string> = {
   schedule_call: "Asks about scheduling a call, expresses interest in setting up a phone call, or indicates a desire to communicate via call.",
   site_visit: "Inquires about or expresses interest in visiting a physical site, mentions a site visit, or wants to arrange a visit to the location.",
   schedule_appointment: "Wants to book, schedule, or inquire about setting up an appointment for a service, meeting, or consultation."
@@ -118,6 +118,7 @@ export const getOrgTotalChatBotsForAnalytics = async (organizationId: string, fr
       ] : []),
       (active ? active === true ? isNotNull(chatBotSchema.documentId) : isNull(chatBotSchema.documentId): undefined),
       eq(chatBotSchema.organizationId, organizationId),
+      eq(chatBotSchema.isDeleted, false)
     ),
   )
 }
@@ -134,6 +135,7 @@ export const getOrgChatBotsByFilterForAnalytics = async (organizationId: string,
       ] : []),
       (active === true ? isNotNull(chatBotSchema.documentId) : isNull(chatBotSchema.documentId)),
       eq(chatBotSchema.organizationId, organizationId),
+      eq(chatBotSchema.isDeleted, false)
     ),
   )
 }
@@ -144,6 +146,7 @@ export const getWhatsappIntegratedChatbots = async (organizationId: string) => {
     where: and(
       eq(chatBotSchema.organizationId, organizationId),
       eq(chatBotSchema.status, "active"),
+      eq(chatBotSchema.isDeleted, false),
       isNotNull(chatBotSchema.documentId),  
       sql`channels ->> 'whatsapp' IS NOT NULL AND channels ->> 'whatsapp' != '' AND jsonb_typeof(channels -> 'whatsapp') = 'string'`
     ),

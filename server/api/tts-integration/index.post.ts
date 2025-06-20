@@ -25,6 +25,12 @@ export const providerConfigMap: Record<string, ProviderConfig> = {
       await getCartesiaTtsVoiceList(apiKey)
     },
     errorMessage: "Invalid cartesia API-Key",
+  },
+  neuphonic: {
+    validate: async (apiKey: string) => {
+      await getNeuphonicTtsVoiceList(apiKey)
+    },
+    errorMessage: "Invalid neuphonic API-Key",
   }
 };
 
