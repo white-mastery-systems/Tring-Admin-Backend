@@ -88,6 +88,13 @@ export const getCallLogsList = async (organizationId: string, timeZone?: string,
 
 export const getCallLogById = async (id: string, timeZone: string, query?: any) => {
   let data: any = await db.query.callLogSchema.findFirst({
+    with: {
+      bot: {
+        columns: {
+          name: true
+        }
+      }
+    },
     where: query.callSid === "true"
      ? eq(callLogSchema.callSid, id)
      : eq(callLogSchema.id, id)
