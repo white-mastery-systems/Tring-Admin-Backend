@@ -381,7 +381,7 @@ export const parseContactImportFile = async (fileName: string, file: any, fileTy
 
     if (!parsedContacts?.length) throw new Error("The uploaded file is empty");
 
-    checkRequiredColumnsPresence(parsedContacts);
+    checkRequiredColumnsPresence(fileName ,parsedContacts);
 
     for (let i = 0; i < parsedContacts.length; i++) {
       const currentContact = parsedContacts[i];
@@ -436,6 +436,7 @@ export const parseContactImportFile = async (fileName: string, file: any, fileTy
 };
 
 export const checkRequiredColumnsPresence = (
+  filename: string,
   contactRecords: Record<string, any>[],
 ) => {
   const requiredFields = ["Name", "Country Code", "Phone Number"];
@@ -451,7 +452,7 @@ export const checkRequiredColumnsPresence = (
   );
 
   if (missingColumns.length > 0) {
-    throw new Error(`Missing required columns: ${missingColumns.join(", ")}`);
+    throw new Error(`File name: ${filename} - Missing required columns: ${missingColumns.join(", ")}`);
   }
 };
 
