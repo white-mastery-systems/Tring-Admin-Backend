@@ -4,6 +4,7 @@ export const sendWhatsappCampaignWithTemplate = async (data:any) => {
   try {
     const { campaignId, templateName, contactList, metadata } = data;
     const { pid: phoneId, access_token: accessToken, wabaId } = metadata;
+    logger.info(`Whatsapp template campaign: ${JSON.stringify(data)}`)
 
     const templateDetailList = await getTemplateDetailsByName(wabaId, accessToken, templateName);
     const templateInformation = templateDetailList?.find((i: any) => i.name === templateName);

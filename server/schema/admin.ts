@@ -116,6 +116,7 @@ export const integrationSchema = adminSchema.table("integration", {
     }>()
     .default({})
     .notNull(),
+  isDeleted: boolean("is_deleted").default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

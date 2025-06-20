@@ -172,7 +172,8 @@ export const getOrgTotalVoicebots = async(organizationId: string, fromDate: Date
         gte(voicebotSchema.createdAt, fromDate),
         lte(voicebotSchema.createdAt, toDate),
       ] : []),
-    eq(voicebotSchema.organizationId, organizationId)
+    eq(voicebotSchema.organizationId, organizationId),
+    eq(voicebotSchema.isDeleted, false)
     )
   )
 }
@@ -215,7 +216,8 @@ export const getOrgVoicebotsByFilter = async (organizationId: string, fromDate: 
         lte(voicebotSchema.createdAt, toDate),
       ] : []),
     eq(voicebotSchema.active, active),
-    eq(voicebotSchema.organizationId, organizationId)
+    eq(voicebotSchema.organizationId, organizationId),
+    eq(voicebotSchema.isDeleted, false)
     )
   )
 }

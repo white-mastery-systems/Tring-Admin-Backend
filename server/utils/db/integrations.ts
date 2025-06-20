@@ -23,7 +23,7 @@ export const listIntegrations = async (
   organizationId: string,
   query: listIntegrationQuery,
 ) => {
-  let filters: any = [eq(integrationSchema.org_id, organizationId)];
+  let filters: any = [eq(integrationSchema.org_id, organizationId), eq(integrationSchema.isDeleted, false)];
 
   if (query?.q) {
     if (query?.q === "channel") {
@@ -96,6 +96,7 @@ export const getIntegrationById = async (
     where: and(
       eq(integrationSchema.org_id, organizationId),
       eq(integrationSchema.id, integrationId),
+      eq(integrationSchema.isDeleted, false)
     ),
   });
   return data;
@@ -106,7 +107,10 @@ export const findIntegrationDetails = async (
   id: string,
 ) => {
   const data = await db.query.integrationSchema.findFirst({
-    where: eq(integrationSchema.id, id),
+    where: and(
+      eq(integrationSchema.id, id),
+      eq(integrationSchema.isDeleted, false)
+    )
   });
   return data;
 };
@@ -118,6 +122,7 @@ export const listLastCreatedIntegrationByCRM = async (
     and(
       eq(integrationSchema.org_id, organizationId),
       eq(integrationSchema.crm, crm),
+      eq(integrationSchema.isDeleted, false)
     ),
   ];
 
@@ -155,6 +160,7 @@ export const getAllWhatsappIntegration = async() => {
     where: and(
       eq(integrationSchema.crm, "whatsapp"),
       eq(integrationSchema.type, "whatsapp"),
+      eq(integrationSchema.isDeleted, false)
     )
   })
 }
@@ -164,14 +170,29 @@ export const getOrgWhatsappIntegration = async (orgId: string) => {
     where: and(
       eq(integrationSchema.type, "whatsapp"),
       eq(integrationSchema.crm, "whatsapp"),
-      eq(integrationSchema.org_id, orgId)
+      eq(integrationSchema.org_id, orgId),
+      eq(integrationSchema.isDeleted, false)
     )
   })
 }
 
 export const getIntegrationDetails = async (integrationId: string) => {
   const data = await db.query.integrationSchema.findFirst({
-    where: eq(integrationSchema.id, integrationId),
+    where: and(
+      eq(integrationSchema.id, integrationId),
+      eq(integrationSchema.isDeleted, false)
+    )
   });
   return data;
+}
+
+export const checkIntegrationNameAlreadyExists = async (organizationId: string, integrationName: string, mode: string, id?: string) => {
+  return await db.query.integrationSchema.findFirst({
+    where: and(
+      eq(integrationSchema.org_id, organizationId),
+      ilike(integrationSchema.name, integrationName),
+      eq(integrationSchema.isDeleted, false),
+      (mode === "update" ? ne(integrationSchema.id, id) : undefined),
+    )
+  })
 }

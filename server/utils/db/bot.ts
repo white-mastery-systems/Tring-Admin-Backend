@@ -93,7 +93,10 @@ export const listBots = async (
 
 export const getBotDetailsNoCache = async (botId: string) => {
   const bot = await db.query.chatBotSchema.findFirst({
-    where: eq(chatBotSchema.id, botId),
+    where: and(
+      eq(chatBotSchema.id, botId),
+      eq(chatBotSchema.isDeleted, false)
+    ),
     with: {
       documents: true,
       organization: true,
@@ -105,7 +108,10 @@ export const getBotDetailsNoCache = async (botId: string) => {
 
 export const getBotDetails = async (botId: string) => {
   const bot = await db.query.chatBotSchema.findFirst({
-    where: eq(chatBotSchema.id, botId),
+    where: and(
+      eq(chatBotSchema.id, botId),
+      eq(chatBotSchema.isDeleted, false)
+    ),
     with: {
       documents: true,
     },
