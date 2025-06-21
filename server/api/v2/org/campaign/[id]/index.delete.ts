@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
     await isOrganizationAdminHandler(event)
     const { id: campaignId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
     
-    const data = await deleteNewCampaignById(campaignId)
+    const data = await updateNewCampaignById(campaignId, { isDeleted: true })
     logger.info(`Campaign Deleted Successfully - campaignId: ${campaignId}`)
     return data
   } catch (error: any) {
