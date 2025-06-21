@@ -18,8 +18,13 @@ export default defineEventHandler(async (event) => {
     data = data[query?.model]
 
     const formattedData = Object.entries(data).flatMap(([lang, names]) =>
-      names.map(name => `${name.charAt(0).toUpperCase() + name.slice(1)} - ${lang.toUpperCase()}`)
-    );
+      names.map((name: any) => {
+        return {
+          displayName: `${name.charAt(0).toUpperCase() + name.slice(1)} - ${lang.toUpperCase()}`,
+          voiceName: name
+        }
+      }
+    ))
 
     return formattedData
   } catch (error: any) {
