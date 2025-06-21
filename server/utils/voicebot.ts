@@ -88,8 +88,8 @@ export let defaultTextToSpeechConfig = {
         "model": ""
     },
     "deepgram": {
-        "voice": "aura-asteria-en",
-        "model": "aura"
+        "voice": "aura-2-asteria-en",
+        "model": "aura-2"
     },
     "tring": {
         "api_key": "",
