@@ -12,6 +12,7 @@ export const getNewCampaignByName = async (organizationId: string, campaignName:
     where: and(
       eq(newCampaignSchema.organizationId, organizationId),
       eq(newCampaignSchema.campaignName, campaignName),
+      eq(newCampaignSchema.isDeleted, false),
       (mode === "update") ? ne(newCampaignSchema.id, campaignId) : undefined
     )
   })
@@ -29,6 +30,7 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
   let data: any = await db.query.newCampaignSchema.findMany({
     where: and(
       eq(newCampaignSchema.organizationId, organizationId),
+      eq(newCampaignSchema.isDeleted, false),
       query?.q ? ilike(newCampaignSchema.campaignName, `%${query?.q}%`) : undefined,
     ),
     orderBy: [desc(newCampaignSchema.createdAt)],
@@ -121,7 +123,10 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
 
 export const getNewCampaignById = async (campaignId: string) => {
   return await db.query.newCampaignSchema.findFirst({
-    where: eq(newCampaignSchema.id, campaignId)
+    where: and(
+      eq(newCampaignSchema.id, campaignId),
+      eq(newCampaignSchema.isDeleted, false)
+    )
   })
 }
 
@@ -146,7 +151,10 @@ export const deleteNewCampaignById = async (campaignId: string) => {
 
 export const getAllVoiceNewCampaigns = async () => {
   return await db.query.newCampaignSchema.findMany({
-    where: eq(newCampaignSchema.contactMethod, "voice")
+    where: and(
+      eq(newCampaignSchema.contactMethod, "voice"),
+      eq(newCampaignSchema.isDeleted, false)
+    )
   })
 }
 
@@ -154,7 +162,8 @@ export const getCampaignByContactGroupId = async(bucketId: string) => {
   return await db.query.newCampaignSchema.findMany({
     where: and(
       sql`${bucketId} = ANY(${newCampaignSchema.bucketIds})`,
-      eq(newCampaignSchema.contactMethod, "voice")
+      eq(newCampaignSchema.contactMethod, "voice"),
+      eq(newCampaignSchema.isDeleted, false)
     )
   });
 }
