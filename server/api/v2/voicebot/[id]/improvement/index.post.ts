@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
       organizationId: voicebotDetail?.organizationId!,
     }
 
-    if(voicebotResponseImprovement.id) {
+    if(voicebotResponseImprovement?.id) {
       const updatedQueries = await updateVoicebotImprovementQueries(voicebotResponseImprovement.id, voicebotResponseImprovement)
       return updatedQueries
     }
