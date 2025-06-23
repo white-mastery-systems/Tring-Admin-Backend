@@ -52,7 +52,7 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
         });
         await newUpdateNotesInZohoBigin({
           zohoBiginLeadId: generatedLead?.data[0]?.details?.id,
-          body: `${config.public.adminBaseUrl}/analytics/call-logs/${callLogId}`,
+          body: `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogId}`,
           integrationData: voiceBot?.integration,
         });
         logger.info(`Voice bot - generate ZohoBigin lead, ${JSON.stringify(generatedLead)}`);
@@ -68,7 +68,7 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
             Last_Name: lastName !== "" ? lastName : botUser?.name,
             First_Name: firstName,
             Mobile: `${botUser?.countryCode} ${botUser?.mobile}`,
-            Notes: `${config.public.adminBaseUrl}/analytics/call-logs/${callLogId}`
+            Notes: `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogId}`
           },
           integrationData: voiceBot?.integration,
         });
@@ -107,7 +107,7 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
           name: botUser?.name,
           phone: `${botUser?.countryCode} ${botUser?.mobile}`,
           botName: voicebotDetail?.name,
-          callHistory: `${config.public.adminBaseUrl}/analytics/call-logs/${callLogId}`,
+          callHistory: `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogId}`,
           whatsappLink: `https://wa.me/${botUser?.countryCode}${botUser?.mobile}`,
         };
         
@@ -126,7 +126,7 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
           name: botUser?.name,
           phone: `${botUser?.countryCode} ${botUser?.mobile}`,
           botName: voicebotDetail?.name,
-          callHistory: `${config.public.adminBaseUrl}/analytics/call-logs/${callLogId}`,
+          callHistory: `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogId}`,
           whatsappLink: `https://wa.me/${botUser?.countryCode}${botUser?.mobile}`,
         };
         const textContent = `${notes ?? "Lead Received"} \nA new ${payload.intent ?? "Lead"} inquiry was received for your business through Tring AI. \n👤 ${payload.name} | 📞 ${payload.phone}\n🆔 Bot Name: ${payload.botName}\n🔗 Conversation History: ${payload.callHistory}\n🔗 Contact user on whatsapp : ${payload.whatsappLink}\n\nThis message is intended for business use to help you follow up with the lead.`;
@@ -145,7 +145,7 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
           email: "N/A",
           phone: `${botUser?.countryCode} ${botUser?.mobile}`,
           botName: `${voicebotDetail?.name}`,
-          callHistory: `${config.public.adminBaseUrl}/analytics/call-logs/${callLogId}`,
+          callHistory: `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogId}`,
           whatsappLink: `https://wa.me/${botUser?.countryCode}${botUser?.mobile}`,
         };
         if (notes){
@@ -190,8 +190,8 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
             <p>Bot's Name: ${voicebotDetail?.name}</p>
             <p>
           Conversation History: 
-          <a href="${config.public.adminBaseUrl}/analytics/call-logs/${callLogId}">
-            ${config.public.adminBaseUrl}/analytics/call-logs/${callLogId}
+          <a href="${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogId}">
+            ${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogId}
           </a>
           </p>
           <p>

@@ -60,8 +60,6 @@ export const runHostedPageApi: any = async ({ accessToken, user, organizationId,
 
     const customerPricebook = priceList.pricebooks.find((i: any) => i.currency_code === currencyCode)
 
-    // console.log({ customerPricebook })
-
     const reqObj = {
       ...(billingInformation?.customerId
       ? {
@@ -150,7 +148,6 @@ export const runHostedPageApi: any = async ({ accessToken, user, organizationId,
       // return generatedHostedPage();
       return runHostedPageApi({ accessToken: response.access_token, user, organizationId, userDetails, orgDetails, body, metaData, zohoData });
     } else if (err.status === 400) {
-      console.log(err.data);
       return createError({
         statusCode: 400,
         statusMessage: err.data.message,

@@ -9,8 +9,7 @@ export default defineEventHandler(async (event) => {
       event,
       checkPayloadId("id"),
     );
-    console.log({ docId: doc_id })
-  
+    
     return serveStatic(event, {
       getContents: (id) => readFile(getVoicebotDocumentPath(doc_id)),
       getMeta: async (id) => {

@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
  
    return data?.smart_collections;
   } catch(error: any) {
-    console.log({ error })
+
     logger.error(`get shopify collection: error, ${JSON.stringify(error)}`)
     if (error.response?.status === 401) {
       throw createError({

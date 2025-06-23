@@ -86,16 +86,12 @@ export default defineEventHandler(async (event) => {
 
     // schedule_form
     if (body.type === "schedule_form") {
-      console.log("inside")
       const scheduleForms = await getIntentByBotIdAndType(botId, body.type);
 
       for (let i = 0; i < scheduleForms.length; i++) {
        const existingItem = scheduleForms[i];
-       console.log({ existingItem, intents: body.intents })
        const update = body.intents.find((i: any) => i.id === existingItem.id);
-       console.log({
-        update
-       })
+    
        if (update) {
          await db.update(botIntentSchema)
           .set({

@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
     if(usedSessions >= maxSessions) {
       if(wallet > 0 && orgZohoSubscription?.pricingPlanCode !== "chat_free" && subscriptionPlanUsage?.originalSubscriptionStatus !== "trial") {
         const extraSessionCost = 1 * planDetail?.extraSessionCost!
-        console.log({ extraSessionCost, wallet })
+
         if(extraSessionCost > wallet) {
           return errorResponse(event, 403, "Wallet Balance Exhausted: Your wallet balance is exhausted. Please add more funds to your wallet to continue.")
         }
