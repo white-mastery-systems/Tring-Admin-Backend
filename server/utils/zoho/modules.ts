@@ -380,7 +380,6 @@ export function getAllLayoutsFromZohoCRM({
   refreshToken: String;
   integrationData: any;
 }) {
-   console.log({ token, refreshToken, integrationData })
   return $fetch(
     `${zohoIntegrationApiBaseUrls[integrationData?.metadata?.location]}/crm/v6/settings/layouts?module=Leads`,
     {
@@ -854,7 +853,6 @@ export const getAddonPriceList : any = async (integrationData: any, pricebookId:
 
       return priceList
   } catch (error: any) {
-    console.log({ error })
      logger.error(
       `getPriceList: integrationData: ${JSON.stringify(integrationData)}, error: ${JSON.stringify(error.data)}`,
     );

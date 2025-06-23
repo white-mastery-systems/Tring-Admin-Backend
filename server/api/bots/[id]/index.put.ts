@@ -18,7 +18,6 @@ SET channels = jsonb_set(channels, '{whatsapp}', '""'::jsonb)
 WHERE channels->>'whatsapp' = ${body?.channels?.whatsapp};
 `,
     );
-    console.log({ data });
   }
   
   if(body?.emailRecipients) {
