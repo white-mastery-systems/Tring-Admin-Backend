@@ -66,6 +66,7 @@ const schema = {
   voicebotCallScheduleSchema,
   zohoBillingCreditSchema,
   blockedNumbersSchema,
+  voiceResponseImprovementSchema,
   // Relations
   organizationRelations,
   chatBotRelations,

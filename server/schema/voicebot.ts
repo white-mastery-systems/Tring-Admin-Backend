@@ -174,6 +174,7 @@ export const callLogSchema = voiceBotSchema.table("call_logs", {
   inputCredits: varchar("input_credits").notNull(),
   outputCredits: varchar("output_credits").notNull(),
   summary: varchar("summary"),
+  inadequateResponses: jsonb("inadequate_responses").array(),
   botId: uuid("bot_id")
     .references(() => voicebotSchema.id)
     .notNull(),
@@ -281,6 +282,21 @@ export const voicebotDocumentSchema = voiceBotSchema.table("voicebot_documents",
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
+export const voiceResponseImprovementSchema = voiceBotSchema.table("voice_response_improvement", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").references(() => organizationSchema.id, { onDelete: "cascade" }).notNull(),
+  botId: uuid("bot_id").references(() => voicebotSchema.id, { onDelete: "cascade" }).notNull(),
+  title: text("title"),
+  instances: jsonb("instances").array(),
+  suggestions: text("suggestions").array(),
+  answer: text("answer"),
+  status: varchar("status", {
+    enum: ["trained", "not_trained"],
+  }).default("not_trained").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 export const zodInsertVoiceBotDocument = createInsertSchema(voicebotDocumentSchema);
 
 // Relations
@@ -374,3 +390,6 @@ export type InsertVoicebotCallSchedule = InferInsertModel<typeof voicebotCallSch
 
 export type SelectVoiceBotLead = InferSelectModel<typeof voicebotLeadSchema>;
 export type InsertVoiceBotLead = InferInsertModel<typeof voicebotLeadSchema>;
+
+export type SelectVoiceResponseImprovement = InferSelectModel<typeof voiceResponseImprovementSchema>;
+export type InsertVoiceResponseImprovement = InferInsertModel<typeof voiceResponseImprovementSchema>;

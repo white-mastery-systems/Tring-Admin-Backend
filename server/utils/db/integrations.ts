@@ -8,7 +8,8 @@ interface listIntegrationQuery {
   type?: string;
   page?: string;
   limit?: string;
-  integrationName?: string
+  integrationName?: string,
+  isVerified: string
 }
 
 const db = useDrizzle();
@@ -60,17 +61,24 @@ export const listIntegrations = async (
 
   data = data.map((integration) => ({
     ...integration,
-    ...(integration.metadata.access_token && {
-      metadata: {
-        ...integration.metadata,
-        status: "verified",
-      }
-    })
+    ...(integration.metadata.access_token 
+      ? {
+        metadata: {
+          ...integration.metadata,
+          status: "verified",
+        } 
+      } : {
+        metadata: {
+          ...integration.metadata,
+          status: "failed",
+        }
+      })
   }))
 
-  if(query?.isVerified === "true") {
+  if (query?.isVerified === "true") {
     data = data.filter((integration) => {
-      return integration.metadata?.status === "verified" || "Verified";
+      const status = integration?.metadata?.status;
+      return typeof status === "string" && status.toLowerCase() === "verified";
     });
   }
 
