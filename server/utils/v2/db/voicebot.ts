@@ -1,4 +1,4 @@
-import { InsertVoicebotCallSchedule, voicebotCallScheduleSchema } from "~/server/schema/voicebot"
+import { InsertVoicebotCallSchedule, InsertVoiceResponseImprovement, voicebotCallScheduleSchema } from "~/server/schema/voicebot"
 import momentTz from "moment-timezone"
 import { inArray } from "drizzle-orm"
 
@@ -581,4 +581,29 @@ export const updateVoiceScheduledCallByCallSid = async (callSid: string, status:
     updatedAt: new Date()
   }).where(eq(voicebotCallScheduleSchema.callSid, callSid))
   .returning())[0]
+}
+
+// Improvements
+export const getVoicebotUnansweredQueries = async (voicebotId: string) => {
+  return await db.query.voiceResponseImprovementSchema.findMany({
+    where: and(
+      eq(voiceResponseImprovementSchema.botId, voicebotId),
+      eq(voiceResponseImprovementSchema.status, "not_trained")
+    )
+  })
+}
+
+export const createVoicebotImprovementQueries = async (data: InsertVoiceResponseImprovement) => {
+  return (await db.insert(voiceResponseImprovementSchema).values(data).returning())[0]
+}
+
+export const updateVoicebotImprovementQueries = async (id: string, data: Partial<InsertVoiceResponseImprovement>) => {
+  return (
+    await db.update(voiceResponseImprovementSchema).set({
+      ...data,
+      updatedAt: new Date()
+    }).where(
+      eq(voiceResponseImprovementSchema.id, id)
+    ).returning()
+  )[0]
 }
