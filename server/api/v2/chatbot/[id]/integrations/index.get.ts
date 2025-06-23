@@ -17,5 +17,25 @@ export default defineEventHandler(async (event) => {
   );
   const query = await isValidQueryHandler(event, zodQueryValidator)
 
-  return await listBotIntegrations(botId, query);
+  const botDetail = await getBotDetails(botId)
+
+  let data = await listBotIntegrations(botId, query);
+
+  if(botDetail?.emailRecipients && Array.isArray(botDetail?.emailRecipients) && query.type === "communication") {
+    botDetail.emailRecipients.map((email) => {
+      data.push({
+        integration: {
+          name: "N/A",
+          crm: "email",
+          type: "communication",
+          metadata: {
+            status: "verified",
+            email
+          }
+        }
+      })
+    })
+  }
+
+  return data
 });
