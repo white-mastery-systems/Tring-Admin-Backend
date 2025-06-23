@@ -61,12 +61,18 @@ export const listIntegrations = async (
 
   data = data.map((integration) => ({
     ...integration,
-    ...(integration.metadata.access_token && {
-      metadata: {
-        ...integration.metadata,
-        status: "verified",
-      }
-    })
+    ...(integration.metadata.access_token 
+      ? {
+        metadata: {
+          ...integration.metadata,
+          status: "verified",
+        } 
+      } : {
+        metadata: {
+          ...integration.metadata,
+          status: "failed",
+        }
+      })
   }))
 
   if (query?.isVerified === "true") {
