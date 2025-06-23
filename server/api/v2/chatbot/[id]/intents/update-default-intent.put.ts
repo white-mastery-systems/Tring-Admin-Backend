@@ -5,6 +5,7 @@ import { errorResponse } from "~/server/response/error.response";
 const db = useDrizzle()
 
 const intentItemSchema = z.object({
+  id: z.string().optional(),
   intent: z.string().optional(),
   description: z.string().min(2, "Description too short").optional(),
   link: z.string().url("Invalid URL").min(5, "Link too short").optional(),
@@ -26,7 +27,7 @@ export default defineEventHandler(async (event) => {
     const body: any = await isValidBodyHandler(event, zodIntentUpdate);
 
     // ===== Early exit if empty array for non-custom types =====
-    if (body.type !== "custom" && Array.isArray(body.intents) && body.intents.length === 0) {
+    if (body.type !== "custom" && body?.type !== "schedule_form" && Array.isArray(body.intents) && body.intents.length === 0) {
       const existing = await getIntentByBotIdAndType(botId, body.type);
       for (const item of existing) {
         await db.delete(botIntentSchema).where(eq(botIntentSchema.id, item.id));
@@ -35,7 +36,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // ===== Handle regular intent updates (for non-custom types) =====
-    if (body.type !== "custom" && Array.isArray(body.intents)) {
+    if (body.type !== "custom" && Array.isArray(body.intents) && body?.type !== "schedule_form") {
       const existing = await getIntentByBotIdAndType(botId, body.type);
 
       const incomingIds = new Set(body.intents.filter((i: any) => i.id).map((i: any) => i.id));
@@ -80,24 +81,42 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-
-      if (body.type === "schedule_form") {
-        const botDetails = await getBotDetails(botId);
-        const currentTools = new Set(botDetails?.defaultTools || []);
-
-        for (const intent of body.intents) {
-          const { naturalConversation } = intent.metadata || {};
-          if (naturalConversation) {
-            currentTools.add(intent.intent);
-          } else {
-            currentTools.delete(intent.intent);
-          }
-        }
-  
-        await updateBotDetails(botId, { defaultTools: Array.from(currentTools) });
-      }
       return true;
     }
+
+    // schedule_form
+    if (body.type === "schedule_form") {
+      const scheduleForms = await getIntentByBotIdAndType(botId, body.type);
+
+      for (let i = 0; i < scheduleForms.length; i++) {
+       const existingItem = scheduleForms[i];
+       const update = body.intents.find((i: any) => i.id === existingItem.id);
+    
+       if (update) {
+         await db.update(botIntentSchema)
+          .set({
+            ...update,
+            updatedAt: new Date(),
+          })
+          .where(eq(botIntentSchema.id, existingItem.id));
+       }
+      }
+       
+      const botDetails = await getBotDetails(botId);
+      const currentTools = new Set(botDetails?.defaultTools || []);
+       for (const intent of body.intents) {
+         const { naturalConversation } = intent.metadata || {};
+         if (naturalConversation) {
+           currentTools.add(intent.intent);
+         } else {
+           currentTools.delete(intent.intent);
+         }
+       }
+
+       await updateBotDetails(botId, { defaultTools: Array.from(currentTools) });
+       return true
+    }
+    
 
   } catch (error: any) {
     logger.error(`Chatbot update intents API Error: ${JSON.stringify(error.message)}`);

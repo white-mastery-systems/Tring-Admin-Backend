@@ -41,7 +41,8 @@ export const getVoicebotByIvrConfigId = async (organizationId: string, ivrConfig
   return await db.query.voicebotSchema.findFirst({
     where: and(
       eq(voicebotSchema.organizationId, organizationId),
-      eq(voicebotSchema.ivrConfig, ivrConfigId)
+      eq(voicebotSchema.ivrConfig, ivrConfigId),
+      eq(voicebotSchema.isDeleted, false)
     )
   })
 }
@@ -111,7 +112,10 @@ export const listVoicebots = async (
 
 export const getVoicebot = async (voicebotId: string) => {
  const data = await db.query.voicebotSchema.findFirst({
-    where: eq(voicebotSchema.id, voicebotId),
+    where: and(
+      eq(voicebotSchema.id, voicebotId),
+      eq(voicebotSchema.isDeleted, false)
+    )
   });
   return data;
 }
@@ -123,14 +127,20 @@ export const getVoicebotById = async (
     with: {
       ivrConfigDetail: true,
     },
-    where: eq(voicebotSchema.id, voicebotId)
+    where: and(
+      eq(voicebotSchema.id, voicebotId),
+      eq(voicebotSchema.isDeleted, false)
+    )
   });
   return data;
 };
 
 export const getVoicebotDetailByPhoneNumber = async(phonenumber: string) => {
   return await db.query.voicebotSchema.findFirst({
-    where: eq(voicebotSchema.incomingPhoneNumber, phonenumber)
+    where: and(
+      eq(voicebotSchema.isDeleted, false),
+      eq(voicebotSchema.incomingPhoneNumber, phonenumber)
+    )
   })
 }
 

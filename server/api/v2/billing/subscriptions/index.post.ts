@@ -14,7 +14,6 @@ const zodCreateSubscriptionBody = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-  console.log("inside")
   try {
     const organizationId = (await isOrganizationAdminHandler(event)) as string;
 
