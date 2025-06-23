@@ -52,7 +52,7 @@ const generateAndStoreChatSummary = async (chatId: string) => {
     // Generate chat summary
     const summaryResponse = await $fetch("/api/chat-summary", {
       method: "POST",
-      body: { chatHistory },
+      body: { chatHistory, chatId },
     });
 
     // Update the chat record with the summary
