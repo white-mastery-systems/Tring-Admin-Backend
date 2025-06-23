@@ -66,8 +66,8 @@ const onSubmit = handleSubmit(async (value: any) => {
         <!-- <div class="text-right text-sm text-[#000000] cursor-pointer">
           <NuxtLink to="/auth/forgot-password" class="text-[11px] underline text-[#424BD1]">
             Forgot Password?
-          </NuxtLink> -->
-        </div>
+          </NuxtLink>
+        </div> -->
         <UiButton :disabled="isLoading" :loading="isLoading"
           class="text-[16px] mt-5 bg-[#FFBC42] button_shadow transition-all duration-300 hover:bg-[#ffce6b] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:bg-[#f0b03c] active:shadow-md">
           Login
