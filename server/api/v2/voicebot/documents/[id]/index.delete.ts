@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     event,
     checkPayloadId("id"),
   );
-  console.log({ id })
+
   const doc = await deleteVoicebotDocument(id);
   
   try {

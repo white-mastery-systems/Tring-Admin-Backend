@@ -29,8 +29,6 @@ export const chatbotScheduleCall = async () => {
       
       const differenceInMinutes = Math.abs(currentDateTime.diff(scheduledDateTime, "minutes"));
 
-      console.log(`Difference in minutes (UTC): ${differenceInMinutes}`);
-
       if(differenceInMinutes <= 5) {
         const dialPayload = {
           name: scheduledCall?.name,

@@ -12,7 +12,6 @@ export default defineEventHandler(async (event) => {
       event,
       contactInfoSchema
     );
-    console.log({ payload: contactInfoPayload })
 
     const organizationId = event?.context?.user?.organizationId ?? contactInfoPayload.organizationId
     logger.info(`Processing contact creation for org: ${organizationId}`);

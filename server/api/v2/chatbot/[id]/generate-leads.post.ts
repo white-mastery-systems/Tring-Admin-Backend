@@ -119,7 +119,7 @@ export default defineEventHandler(async (event) => {
             First_Name: firstName,
             Email: body?.botUser?.email,
             Mobile: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
-            Notes: `${config.public.adminBaseUrl}/analytics/leads/${body?.chatId}`
+            Notes: `${config.newFrontendUrl}/dashboard/customer-logs/leads/${body?.chatId}`
           },
           integrationData: botIntegration?.integration,
         });
@@ -155,7 +155,7 @@ export default defineEventHandler(async (event) => {
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: `${botDetails?.name}`,
-          chatLink: `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`,
+          chatLink: `${config.newFrontendUrl}/dashboard/customer-logs/leads/${body.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
         if (body?.note){
@@ -187,7 +187,7 @@ export default defineEventHandler(async (event) => {
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: `${botDetails?.name}`,
-          chatLink: `${config.public.adminBaseUrl}/analytics/leads/${body?.chatId}`,
+          chatLink: `${config.newFrontendUrl}/dashboard/customer-logs/leads/${body?.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
         // TODO: Add country code to the phone number
@@ -281,7 +281,7 @@ export default defineEventHandler(async (event) => {
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: botDetails?.name,
-          chatLink: `${config.public.adminBaseUrl}/analytics/leads/${body.chatId}`,
+          chatLink: `${config.newFrontendUrl}/dashboard/customer-logs/leads/${body.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
         const textContent = `${body?.note ?? "Lead Received"} \nA new ${payload.intent ?? "Lead"} inquiry was received for your business through Tring AI. \n👤 ${payload.name} | 📞 ${payload.phone}\n📩Email: ${payload.email}\n🆔 Bot Name: ${payload.botName}\n🔗 Conversation History: ${payload.chatLink}\n🔗 Contact user on whatsapp : ${payload.whatsappLink}\n\nThis message is intended for business use to help you follow up with the lead.`;
@@ -325,8 +325,8 @@ export default defineEventHandler(async (event) => {
     ${botDetails?.metadata?.country ? `<p>Location: ${botDetails?.metadata?.country} </p>` : ""} 
     <p>
   Chat Link: 
-  <a href="${config.public.adminBaseUrl}/analytics/leads/${body.chatId}">
-    ${config.public.adminBaseUrl}/analytics/leads/${body.chatId}
+  <a href="${config.newFrontendUrl}/dashboard/customer-logs/leads/${body.chatId}">
+    ${config.newFrontendUrl}/dashboard/customer-logs/leads/${body.chatId}
   </a>
 </p>
 <p>

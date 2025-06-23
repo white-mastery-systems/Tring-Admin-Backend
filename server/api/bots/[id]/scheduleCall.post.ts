@@ -65,7 +65,6 @@ export default defineEventHandler(async (event) => {
     
     return data
   } catch (error: any) {
-    console.log({ error })
     logger.error(`Voicebot Dial API Error: ${JSON.stringify(error.message)}`)
     return errorResponse(event, 500, "Unable to dial voice call")
   }

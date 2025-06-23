@@ -5,7 +5,6 @@ export default defineEventHandler(async (event) => {
   try {
     const query = getQuery(event);
     const body = await readBody(event)
-    // console.log({ body })
     const shopifyIntegrationId = query.shopifyIntegrationId as string;
     if (!shopifyIntegrationId) {
       throw createError({
@@ -29,7 +28,6 @@ export default defineEventHandler(async (event) => {
     return data?.draft_order
 
   } catch (error: any) {
-    console.log({ error })
     logger.error(`draft orders: error, ${JSON.stringify(error)}`)
     if (error.response?.status === 401) {
       throw createError({

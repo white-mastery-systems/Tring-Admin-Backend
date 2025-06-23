@@ -17,7 +17,6 @@ export const createSubAccountInPlivo = async ({ name }: { name: string }) => {
     })
     return data
   } catch (error: any) {
-    console.log({ error })
     logger.error(`CreateSubAccountInPlivo function Error: ${JSON.stringify(error.message)}`)
     throw new Error(error)
   }
