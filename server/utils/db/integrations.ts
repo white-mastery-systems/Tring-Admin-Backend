@@ -59,22 +59,6 @@ export const listIntegrations = async (
     orderBy: [desc(integrationSchema.createdAt)],
   });
 
-  data = data.map((integration) => ({
-    ...integration,
-    ...(integration.metadata.access_token 
-      ? {
-        metadata: {
-          ...integration.metadata,
-          status: "verified",
-        } 
-      } : {
-        metadata: {
-          ...integration.metadata,
-          status: "failed",
-        }
-      })
-  }))
-
   if (query?.isVerified === "true") {
     data = data.filter((integration) => {
       const status = integration?.metadata?.status;
