@@ -10,6 +10,7 @@ interface listVoicebotQuery {
   limit?: string;
   industryId?: string,
   callType?: string,
+  language?: string
 }
 
 export const createVoicebot = async (voicebot: InsertVoiceBot) => {
@@ -94,6 +95,10 @@ export const listVoicebots = async (
 
   if(query?.callType && query?.callType !== "all") {
     data = data.filter((i: any)=> i.botDetails?.callType === query?.callType)
+  }
+
+  if(query?.language && query?.language !== "all") {
+    data = data.filter((i: any) =>  i.botDetails?.agentLanguage === query?.language)
   }
 
   if (query?.page && query?.limit) {
