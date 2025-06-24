@@ -1,12 +1,12 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-import { getVoicebotUnansweredQueries } from "~/server/utils/v2/db/voicebot"
+import { getVoicebotQueriesByStatus } from "~/server/utils/v2/db/voicebot"
 
 export default defineEventHandler(async (event) => {
   try {
     const { id: voicebotId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
-    const unansweredQueries = await getVoicebotUnansweredQueries(voicebotId)
+    const unansweredQueries = await getVoicebotQueriesByStatus(voicebotId, "not_trained")
 
     return unansweredQueries
     
