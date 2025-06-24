@@ -584,17 +584,23 @@ export const updateVoiceScheduledCallByCallSid = async (callSid: string, status:
 }
 
 // Improvements
-export const getVoicebotUnansweredQueries = async (voicebotId: string) => {
+export const createVoicebotImprovementQueries = async (data: InsertVoiceResponseImprovement) => {
+  return (await db.insert(voiceResponseImprovementSchema).values(data).returning())[0]
+}
+
+export const getVoicebotQueriesByStatus = async (voicebotId: string, status: "trained" | "not_trained") => {
   return await db.query.voiceResponseImprovementSchema.findMany({
     where: and(
       eq(voiceResponseImprovementSchema.botId, voicebotId),
-      eq(voiceResponseImprovementSchema.status, "not_trained")
+      eq(voiceResponseImprovementSchema.status, status)
     )
   })
 }
 
-export const createVoicebotImprovementQueries = async (data: InsertVoiceResponseImprovement) => {
-  return (await db.insert(voiceResponseImprovementSchema).values(data).returning())[0]
+export const getVoicebotQueryById = async (queryId: string) => {
+  return await db.query.voiceResponseImprovementSchema.findFirst({
+    where: eq(voiceResponseImprovementSchema.id, queryId)
+  })
 }
 
 export const updateVoicebotImprovementQueries = async (id: string, data: Partial<InsertVoiceResponseImprovement>) => {
