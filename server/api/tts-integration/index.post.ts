@@ -4,7 +4,7 @@ import { z } from "zod"
 
 const zodTtsIntegrationBody = z.object({
   ttsIntegrationName: z.string(),
-  provider: z.enum(["elevenlabs", "cartesia", "rime", "neuphonic", "smallest-ai"]),
+  provider: z.enum(["elevenlabs", "cartesia", "rime", "neuphonic", "smallestai"]),
   metadata: z.record(z.any()).optional(),
 });
 

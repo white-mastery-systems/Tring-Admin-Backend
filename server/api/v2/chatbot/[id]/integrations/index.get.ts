@@ -19,23 +19,7 @@ export default defineEventHandler(async (event) => {
 
   const botDetail = await getBotDetails(botId)
 
-  let data = await listBotIntegrations(botId, query);
-
-  if(botDetail?.emailRecipients && Array.isArray(botDetail?.emailRecipients) && query.type === "communication") {
-    botDetail.emailRecipients.map((email) => {
-      data.push({
-        integration: {
-          name: "N/A",
-          crm: "email",
-          type: "communication",
-          metadata: {
-            status: "verified",
-            email
-          }
-        }
-      })
-    })
-  }
+  const data = await listBotIntegrations(botId, query);
 
   return data
 });
