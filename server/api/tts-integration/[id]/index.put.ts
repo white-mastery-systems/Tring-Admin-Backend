@@ -4,7 +4,7 @@ import { providerConfigMap } from "../index.post"
 
 const zodUpdateTtsIntegration = z.object({
   ttsIntegrationName: z.string().optional(),
-  provider: z.enum(["elevenlabs", "cartesia", "rime", "neuphonic", "smallest-ai"]),
+  provider: z.enum(["elevenlabs", "cartesia", "rime", "neuphonic", "smallestai"]),
   metadata: z.record(z.any()).optional()
 })
 
