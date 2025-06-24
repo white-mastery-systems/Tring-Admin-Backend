@@ -19,7 +19,19 @@ export default defineEventHandler(async (event) => {
 
   const botDetail = await getBotDetails(botId)
 
-  const data = await listBotIntegrations(botId, query);
+  let data = await listBotIntegrations(botId, query);
+
+  if(botDetail?.emailRecipients && Array.isArray(botDetail?.emailRecipients) && query.type === "communication") {
+    data.push({
+      integration: {
+        name: "-",
+        crm: "email",
+        type: "communication",
+        emails: botDetail?.emailRecipients,
+        status: "active"
+      }
+    })
+  }
 
   return data
 });
