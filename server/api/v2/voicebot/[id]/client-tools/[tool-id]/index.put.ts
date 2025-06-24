@@ -16,14 +16,14 @@ const zodUpdateCustomTool = z.object({
       key: z.string(),
       value: z.string(),
       type: z.string(),
-      required: z.string(),
+      required: z.boolean(),
       description: z.string()
     })).optional(),
     responseVariables: z.array(z.object({
       key: z.string(),
       value: z.string(),
       type: z.string(),
-      required: z.string(),
+      required: z.boolean(),
       description: z.string()
     })).optional()
   })
