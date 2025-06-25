@@ -43,8 +43,8 @@ export default defineEventHandler(async (event) => {
   const alreadyIntegratedIds = existingIntegrations.map(i => i.integrationId);
 
   // Step 3: Validate which exist in the integration table
-  const allIntegrationRecords = await db.query.voicebotIntegrationSchema.findMany({
-    where: inArray(voicebotIntegrationSchema.id, allIntegrationIds)
+  const allIntegrationRecords = await db.query.integrationSchema.findMany({
+    where: inArray(integrationSchema.id, allIntegrationIds)
   });
 
   const validIntegrationIds = allIntegrationRecords.map(i => i.id);
