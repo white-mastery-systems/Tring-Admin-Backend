@@ -50,21 +50,12 @@ export let defaultSpeechToTextConfig = {
         "recognizer": "",
         "amplification_factor": 2
     },
-    "azure": {
-        "phrase_list": [],
-        "amplification_factor": 3,
-    },
     "deepgram": {
         "model": "nova-3",
         "utterance_end_ms": "1000",
         "endpointing": 300,
         "keywords": [],
         "amplification_factor": 2,
-    },
-    "assemblyai": {
-        "word_boost": [],
-        "end_utterance_silence_threshold": 300,
-        "amplification_factor": 2
     }
 };
 
@@ -72,33 +63,64 @@ export let defaultTextToSpeechConfig = {
     "provider": "google",
     "integratedTtsProvider": "google",
     "google": {
-        "name": "en-IN-Neural2-A",
-        "speaking_rate": 1,
-        "pitch": 1,
-        "volume_gain_db": 0.5
+      "name": "en-IN-Neural2-A",
+      "speaking_rate": 1,
+      "pitch": 1,
+      "volume_gain_db": 0.5
     },
     "elevenlabs": {
-        "api_key": "",
-        "stability": 0.5,
-        "similarity_boost": 1,
-        "style": 0.5,
-        "use_speaker_boost": false,
-        "voice": "",
-        "speed": 1,
-        "model": ""
+      "api_key": "",
+      "stability": 0.5,
+      "similarity_boost": 1,
+      "style": 0.5,
+      "use_speaker_boost": false,
+      "voice": "",
+      "speed": 1,
+      "model": ""
     },
     "deepgram": {
-        "voice": "aura-2-asteria-en",
-        "model": "aura-2"
+      "voice": "aura-2-asteria-en",
+      "model": "aura-2"
     },
     "tring": {
-        "api_key": "",
-        "speaker": "", 
-        "speed": 1, 
-        "silence_pad":  250
+      "api_key": "",
+      "speaker": "", 
+      "speed": 1, 
+      "silence_pad":  250
+    },
+    "cartesia": {
+      "model": "",
+      "speed": "fast",
+      "voice": "",
+      "api_key": "",
+      "version": "2024-06-10"
+    },
+    "neuphonic": {
+      "voice": "",
+      "speed": 1.0,
+      "api_key": ""
+    },
+    "rime": {
+      "model": "",
+      "voice" : "",
+      "api_key": "",
+      "speed_alpha": 1.0,
+      "reduce_latency": false,
+      "repetition_penalty": 1.5,
+      "temperature": 0.5,
+      "top_p": 0.5,
+      "max_tokens": 1200
+    },
+    "smallestai": {
+      "model": "",
+      "voice": "",
+      "api_key": "",
+      "speed": 1.0,
+      "consistency": 0.5,
+      "similarity": 0.1,
+      "enhancement": 1.0
     }
 }
-
 
 export const updateVoicebotConfig = (config: any, newConfig: any) => {
    // Deep copy the default configuration
