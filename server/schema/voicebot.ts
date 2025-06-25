@@ -66,6 +66,38 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
         "speaker": "",
         "speed": 1,
         "silence_pad":  250
+    },
+    "cartesia": {
+      "model": "",
+      "speed": "fast",
+      "voice": "",
+      "api_key": "",
+      "version": "2024-06-10"
+    },
+    "neuphonic": {
+      "voice": "",
+      "speed": 1.0,
+      "api_key": ""
+    },
+    "rime": {
+      "model": "",
+      "voice" : "",
+      "api_key": "",
+      "speed_alpha": 1.0,
+      "reduce_latency": false,
+      "repetition_penalty": 1.5,
+      "temperature": 0.5,
+      "top_p": 0.5,
+      "max_tokens": 1200
+    },
+    "smallestai": {
+      "model": "",
+      "voice": "",
+      "api_key": "",
+      "speed": 1.0,
+      "consistency": 0.5,
+      "similarity": 0.1,
+      "enhancement": 1.0
     }
   }),
   speechToTextConfig: jsonb("speech_to_text_config").default({     
@@ -77,21 +109,12 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
         "recognizer": "",
         "amplification_factor": 2
     },
-    "azure": {
-        "phrase_list": [],
-        "amplification_factor": 3,
-    },
     "deepgram": {
         "model": "nova-2",
         "utterance_end_ms": "1000",
         "endpointing": 250,
         "keywords": [],
         "amplification_factor": 2,
-    },
-    "assemblyai" : {
-        "word_boost": [],
-        "end_utterance_silence_threshold": 300,
-        "amplification_factor": 2
     }
   }),
   botDetails: jsonb("bot_details"),
@@ -253,7 +276,6 @@ export const voicebotCallScheduleSchema = voiceBotSchema.table("voicebot_call_sc
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
-
 
 export const salesHandyContactsSchema = voiceBotSchema.table("sales_handy_contacts", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
