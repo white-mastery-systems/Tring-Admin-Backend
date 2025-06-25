@@ -321,6 +321,11 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
         columns: {
           name: true
         }
+      },
+      callLog: {
+        columns: {
+          direction: true
+        }
       }
     },
     where: and(
@@ -337,6 +342,10 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
     scheduledDate: i.scheduledDate && momentTz(i.scheduledDate).tz(timeZone).format("DD MMM YYYY hh:mm A"),
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
+
+  if(query?.direction && query?.direction !== "all") {
+    voicebotLeads = voicebotLeads.filter((i) => i.callLog.direction === query?.direction)
+  }
   
   if (query?.page && query?.limit) {
     const paginatedvoicebotLeads = voicebotLeads.slice(offset, offset + limit);

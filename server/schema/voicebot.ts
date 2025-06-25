@@ -351,7 +351,11 @@ export const voicebotLeadRelations = relations(voicebotLeadSchema, ({ one }) => 
   bot: one(voicebotSchema, {
     fields: [voicebotLeadSchema.botId],
     references: [voicebotSchema.id],
-  })
+  }),
+  callLog: one(callLogSchema, {
+    fields: [voicebotLeadSchema.callLogId],
+    references: [callLogSchema.id],
+  }),
 }))
 
 export const voicebotScheduledCallsRelations = relations(voicebotSchedularSchema, ({ one }) => ({

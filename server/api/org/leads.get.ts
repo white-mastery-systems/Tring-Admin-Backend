@@ -23,6 +23,7 @@ const queryValidator = z
     page: z.string().optional(),
     limit: z.string().optional(),
     outcome: z.string().optional(),
+    direction: z.string().optional()
   })
   .refine(
     (data) => {
