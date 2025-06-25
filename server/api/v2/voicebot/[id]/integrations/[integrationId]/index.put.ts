@@ -8,9 +8,11 @@ const zodUpdateVoiceBotIntegration = z.object({
   pipelineObj: z.any().optional(),
   channelId: z.string().optional(),
   layoutObj: z.any().optional(),
+  sequenceObj: z.any().optional(),
   stage: z.string().optional(),
   restaurantId: z.string().optional(),
-  status: z.string().optional()
+  departments: z.array(z.any()).optional(),
+  whatsappIntegrationIds: z.array(z.string()).optional(),
 });
 
 export default defineEventHandler(async (event) => {

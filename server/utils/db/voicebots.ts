@@ -176,7 +176,7 @@ export const deleteVoiceBot = async (voicebotId: string) => {
 
 // voiceBot integrations
 export const createVoiceBotIntegration = async (
-  voicebotIntegration: InsertVoicebotIntegration,
+  voicebotIntegration: any,
 ) => {
   return (
     await db
@@ -211,7 +211,6 @@ export const listVoiceBotIntegrations = async (
       eq(voicebotIntegrationSchema.botId, voicebotId),
     ),
   });
-
   
   if(query?.type) {
      data = data.filter((i: any) => i.integration !== null)

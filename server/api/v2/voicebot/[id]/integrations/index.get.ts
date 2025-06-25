@@ -12,7 +12,21 @@ export default defineEventHandler(async (event) => {
 
   const query = await isValidQueryHandler(event, zodQueryValidator)
 
+  const voicebotDetail = await getVoicebotById(voicebotId)
+
   const voiceBotIntegrationList = await listVoiceBotIntegrations(organization_id, voicebotId, query)
+
+  if(voicebotDetail?.emailRecipients && Array.isArray(voicebotDetail?.emailRecipients) && query.type === "communication") {
+    voiceBotIntegrationList.push({
+      integration: {
+        name: "-",
+        crm: "email",
+        type: "communication",
+        emails: voicebotDetail?.emailRecipients,
+        status: "active"
+      }
+    })
+  }
 
   return voiceBotIntegrationList
 })
