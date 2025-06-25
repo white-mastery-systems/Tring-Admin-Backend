@@ -133,6 +133,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     distance: 0,
   }),
   intent: varchar("intent"),
+  emailRecipients: varchar("email_recipients").array(),
   ivrConfig: uuid("ivr_config")
     .references(() => numberIntegrationSchema.id),
   incomingPhoneNumber: varchar("incoming_phone_number"),
