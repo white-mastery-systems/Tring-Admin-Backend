@@ -81,32 +81,9 @@ export default defineEventHandler(async (event) => {
       return errorResponse(event, 500, "Exceeded the allowed call minutes")
     }
   }
-
-  const newClientTools = voiceBotDetail.tools.clientTools.filter((i: any) => i.id)
-  const existingTools = voiceBotDetail.tools.clientTools.filter((i: any) => !i.id)
-
-  const restructuredClientTools = newClientTools.map((tool: any) => {
-    return {
-      name: tool.name?.toLowerCase().replace(/\s+/g, "_"),
-      endpoint: tool.toolApiDetails?.url || "",
-      description: tool.description || "",
-      parameters: {
-        type: "object",
-        properties: tool.toolParameters?.map((param: any) => ({
-          name: param.key.toLowerCase().replace(/\s+/g, "_"),
-          type: param.type,
-          required: param.required,
-          description: param.description
-        })) || []
-      }
-    }
-  })
+ 
   return { 
     ...voiceBotDetail,
-    tools: {
-      ...voiceBotDetail.tools,
-      clientTools: [...existingTools, ...restructuredClientTools ]
-    },
     availableMinutes 
   }
 });
