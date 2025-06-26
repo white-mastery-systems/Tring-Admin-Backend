@@ -28,7 +28,7 @@ const zodInsertTemplates = z.object({
     footerText: z.string().optional(),
     mediaSession: z.any().optional(),
     buttons: z.array(z.object({
-      type: z.enum(["URL", "PHONE_NUMBER", "COPY_CODE"]),
+      type: z.enum(["QUICK_REPLY", "URL", "PHONE_NUMBER", "COPY_CODE"]),
       url: z.string().optional(),
       phone_number: z.string().optional(),
       buttonText: z.string().optional(),
@@ -97,15 +97,10 @@ export default defineEventHandler(async (event) => {
           delete item.buttonText;
         }
         if (item.type === "URL") {
-          if(buttonVariables.length){
-            item.url = positioningText(item.url, 1);
-            item.example = `${item.url}`.replace("{{1}}",`${buttonVariables[buttonIndex].example}`);
-          } else {
-            const {text:url, variables:buttonVariable} = replaceNamedVariables(item.url, "button")
-            item.url = url;
-            if(buttonVariable.length){
-              item.example = `${item.url}`.replace("{{1}}",`${buttonVariable[0].example}`);
-            } 
+          const {text:url, variables:buttonVariable} = replaceNamedVariables(item.url, "button")
+          item.url = url;
+          if(buttonVariable.length){
+            item.example = `${item.url}`.replace("{{1}}",`${buttonVariable[0].example}`);
           }
         }
         if (item.type === "PHONE_NUMBER" && buttonVariables.length) {

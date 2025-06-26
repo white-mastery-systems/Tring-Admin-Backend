@@ -228,7 +228,16 @@ export const sendWhatsappTemplateMessage = async (
 
 export const deStructureVariables = (inputData: any, variableType?:string) =>{
   variableType = (variableType) ?? "NAMED";
-  const obj = {
+  const obj: {
+    bodyVariables: any[],
+    headerVariables: any[],
+    buttonVariables: any[],
+    filteredVarList: any[],
+    headerText: string | null,
+    bodyText: string | null,
+    footerText: string | null,
+    buttonText: string | null,
+  } = {
     bodyVariables: [],
     headerVariables: [],
     buttonVariables: [],
@@ -241,7 +250,7 @@ export const deStructureVariables = (inputData: any, variableType?:string) =>{
 
   const variables: any[] = (inputData?.variables) ?? (inputData?.templateVariables || []);
  if (variableType === "POSITIONAL" && variables.length) {
-    let uniqueHeader = false; let uniqueButton = false;
+    let uniqueHeader = false; let buttonCount = 0;
     const filteredVarList = variables.filter((item: any) => {
       if (item.placed === "header") {
         if (!uniqueHeader) {
@@ -251,10 +260,8 @@ export const deStructureVariables = (inputData: any, variableType?:string) =>{
         return false;
       }
       if (item.placed === "button") {
-        if (!uniqueButton) {
-          uniqueButton = true;
-          return true;
-        }
+        if (buttonCount <= 3) { return true; }
+        buttonCount++;
         return false;
       }
       return true;
@@ -280,12 +287,8 @@ export const deStructureVariables = (inputData: any, variableType?:string) =>{
       // @ts-ignore
       obj.bodyVariables = bodyVariables;
     }
-    if(obj.buttonText){
-      const { text:buttonText, variables: buttonVariables } = replaceNamedVariables(obj.buttonText, "button");
-      obj.buttonText = buttonText;
-      // @ts-ignore
-      obj.buttonVariables = buttonVariables;
-    }
+    const buttonVariables = positioningVariables(variables.filter((item: any) => item.placed === "button"), extractPositions(obj.buttonText));
+    obj.buttonVariables = buttonVariables;
 
     return {...obj}
   }
