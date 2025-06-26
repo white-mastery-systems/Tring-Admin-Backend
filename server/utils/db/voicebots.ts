@@ -334,6 +334,13 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
         ? eq(voicebotLeadSchema.callOutcome, query?.outcome)
         : undefined,
     ),
+    columns: {
+      notes: false,
+      metadata: false,
+      botId: false,
+      organizationId: false,
+      updatedAt: false
+    },
     orderBy: [desc(voicebotLeadSchema.createdAt)]
   })
 

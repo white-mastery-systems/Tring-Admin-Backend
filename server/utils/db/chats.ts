@@ -88,11 +88,7 @@ export const listChats = async (
     fromDate = queryDate?.from;
     toDate = queryDate?.to;
   }
-  // console.log({ query, fromDate, toDate })
-
-  let page,
-    offset,
-    limit = 0;
+  let page, offset, limit = 0;
 
   if (query.page && query.limit) {
     page = parseInt(query.page);
@@ -112,13 +108,6 @@ export const listChats = async (
       query?.period && fromDate && toDate
         ? between(chatSchema.createdAt, fromDate, toDate)
         : undefined,
-      query?.botUserName === "interacted"
-        ? and(eq(chatSchema.interacted, true), eq(chatSchema.mode, "live"))
-        : undefined,
-      query?.botUserName === "live" ? eq(chatSchema.mode, "live") : undefined,
-      query?.botUserName === "preview"
-        ? eq(chatSchema.mode, "preview")
-        : undefined,
       query?.outcome && query?.outcome !== "all"
         ? eq(chatSchema.chatOutcome, query?.outcome) : undefined,
       query?.mode && query?.mode !== "all"
@@ -133,22 +122,23 @@ export const listChats = async (
       botUser: {
         where: or(
           query?.q
-            ? or(
-                ilike(botUserSchema.name, `%${query.q}%`),
-                ilike(botUserSchema.email, `%${query.q}%`),
-                ilike(botUserSchema.mobile, `%${query.q}%`),
-              )
+            ? ilike(botUserSchema.name, `%${query.q}%`)
             : undefined,
         ),
         columns: {
           id: true,
           name: true,
-          mobile: true,
-          email: true,
-          visitedCount: true,
-          countryCode: true
+          visitedCount: true
         }
       },
+    },
+    columns: {
+      id: true,
+      metadata: true,
+      channel: true,
+      createdAt: true,
+      visitedCount: true,
+      chatOutcome: true
     },
     orderBy: [desc(chatSchema.updatedAt)],
   });
@@ -159,12 +149,8 @@ export const listChats = async (
     updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
 
-  if (query?.q || query?.botUserName === "with_name") {
+  if (query?.q) {
     chats = chats.filter((i) => i.botUser !== null);
-  }
-
-  if (query?.botUserName === "without_name") {
-    chats = chats.filter((i) => i.botUser === null);
   }
 
   if (query?.country && query?.country !== "all") {

@@ -48,8 +48,16 @@ export const getCallLogsList = async (organizationId: string, timeZone?: string,
       }
     },
     columns: {
-      callTranscription: false,
-      summary: false
+      id: true,
+      callerName: true,
+      from: true,
+      exophone: true,
+      date: true,
+      callerDate: true,
+      duration: true,
+      direction: true,
+      metrics: true,
+      callStatus: true
     },
      orderBy: [desc(callLogSchema.date)],
   })

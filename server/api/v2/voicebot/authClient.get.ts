@@ -81,9 +81,20 @@ export default defineEventHandler(async (event) => {
       return errorResponse(event, 500, "Exceeded the allowed call minutes")
     }
   }
- 
+
+  let botTrainedQueries: any = await getVoicebotQueriesByStatus(voiceBotDetail?.id, "trained") 
+
+  botTrainedQueries = botTrainedQueries.map((i: any) => ({
+    topic: i.title,
+    answer: i.answer
+  }))
+  
   return { 
     ...voiceBotDetail,
+    llmConfig: {
+      ...voiceBotDetail?.llmConfig,
+      suggestedResponses: botTrainedQueries
+    },
     availableMinutes 
   }
 });
