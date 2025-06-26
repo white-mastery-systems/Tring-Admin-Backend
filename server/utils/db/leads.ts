@@ -23,7 +23,6 @@ export const listLeads = async (
   timeZone: string,
 ) => {
   try {
-    // console.log({ query })
     let filters: any = [eq(leadSchema.organizationId, organizationId)];
 
     if (query?.botId && query?.botId !== "all") {
@@ -115,8 +114,6 @@ export const listLeads = async (
             id: true,
             name: true,
             email: true,
-            mobile: true,
-            countryCode: true,
             visitedCount: true,
           }
         },
@@ -135,12 +132,14 @@ export const listLeads = async (
             mode: true,
             channel: true,
             visitedCount: true,
-            chatOutcome: true,
-            interacted: true,
-            createdAt: true,
-            updatedat: true
+            chatOutcome: true
           }
         },
+      },
+      columns: {
+        id: true,
+        chatId: true,
+        status: true
       },
       orderBy: [desc(leadSchema.createdAt)],
     });
