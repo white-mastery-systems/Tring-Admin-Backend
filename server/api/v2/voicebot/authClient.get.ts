@@ -82,30 +82,18 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  const newClientTools = voiceBotDetail.tools.clientTools.filter((i: any) => i.id)
-  const existingTools = voiceBotDetail.tools.clientTools.filter((i: any) => !i.id)
+  let botTrainedQueries: any = await getVoicebotQueriesByStatus(voiceBotDetail?.id, "trained") 
 
-  const restructuredClientTools = newClientTools.map((tool: any) => {
-    return {
-      name: tool.name?.toLowerCase().replace(/\s+/g, "_"),
-      endpoint: tool.toolApiDetails?.url || "",
-      description: tool.description || "",
-      parameters: {
-        type: "object",
-        properties: tool.toolParameters?.map((param: any) => ({
-          name: param.key.toLowerCase().replace(/\s+/g, "_"),
-          type: param.type,
-          required: param.required,
-          description: param.description
-        })) || []
-      }
-    }
-  })
+  botTrainedQueries = botTrainedQueries.map((i: any) => ({
+    topic: i.title,
+    answer: i.answer
+  }))
+  
   return { 
     ...voiceBotDetail,
-    tools: {
-      ...voiceBotDetail.tools,
-      clientTools: [...existingTools, ...restructuredClientTools ]
+    llmConfig: {
+      ...voiceBotDetail?.llmConfig,
+      suggestedResponses: botTrainedQueries
     },
     availableMinutes 
   }
