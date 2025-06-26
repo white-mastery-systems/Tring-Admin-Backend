@@ -86,7 +86,7 @@ export default defineEventHandler(async (event) => {
 
   botTrainedQueries = botTrainedQueries.map((i: any) => ({
     topic: i.title,
-    answer: i.answer
+    response: i.answer
   }))
   
   return { 
