@@ -134,6 +134,7 @@ export const listChats = async (
     },
     columns: {
       id: true,
+      mode: true,
       metadata: true,
       channel: true,
       createdAt: true,
