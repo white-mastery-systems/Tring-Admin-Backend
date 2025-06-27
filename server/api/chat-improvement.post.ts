@@ -14,6 +14,8 @@ export default defineEventHandler(async (event) => {
     }
 
     const { geminiApiKey } = useRuntimeConfig();
+    logger.info(`GEMINI_API_KEY: ${geminiApiKey}`)
+    
     if (!geminiApiKey) {
       throw createError({
         statusCode: 500,
