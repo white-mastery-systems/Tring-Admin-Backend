@@ -4,7 +4,7 @@ import {
   GoogleGenerativeAI,
   SchemaType,
 } from "@google/generative-ai";
-import { logger } from "../logger";
+import { logger } from "~/server/logger"
 
 const getGenAI = () => {
   return new GoogleGenerativeAI(useRuntimeConfig().geminiApiKey);
@@ -37,7 +37,7 @@ async function generateContentSuggestions(industry: string) {
 
   // Get the generative model with schema configuration
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.0-flash-001",
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: schema,

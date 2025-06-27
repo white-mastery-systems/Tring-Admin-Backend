@@ -16,6 +16,19 @@ export default defineEventHandler(async (event) => {
 
     const voicebotDetail: any = await getVoicebotById(voicebotId)
 
+    const [ voicePlan, voicePlanUsage ] = await Promise.all([
+      getOrgZohoSubscription(voicebotDetail?.organizationId, "voice"),
+      getOrgPlanUsage(voicebotDetail?.organizationId, "voice")
+    ]) 
+
+    if(voicePlanUsage?.originalSubscriptionStatus === "trial" && voicePlan?.subscriptionStatus === "inactive") {
+      return errorResponse(event, 500, "Voice subscription trial ended. Please subscribe to continue voice calls.")
+    }
+
+    if(!["active", "trial"].includes(voicePlan?.subscriptionStatus)) {
+      return errorResponse(event, 500, "Voice Subscription status is inactive")
+    }
+
     if(!voicebotDetail?.active) {
       return errorResponse(event, 400, "Voicebot is not active, Please activate your voicebot")
     }
