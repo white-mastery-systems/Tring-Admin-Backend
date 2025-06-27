@@ -4,6 +4,7 @@ import {
   GoogleGenerativeAI,
   SchemaType,
 } from "@google/generative-ai";
+import { logger } from "../logger";
 
 const getGenAI = () => {
   return new GoogleGenerativeAI(useRuntimeConfig().geminiApiKey);
@@ -98,8 +99,8 @@ export default defineEventHandler(async (event) => {
       industry: body.industry,
       suggestions: contentSuggestions,
     };
-  } catch (error) {
-    console.error("API error:", error);
+  } catch (error: any) {
+    logger.error("Generate content suggestions API error:", error);
     return {
       statusCode: 500,
       body: { error: "Failed to generate content suggestions" },

@@ -51,13 +51,20 @@ export default defineEventHandler(async (event) => {
     }
     
     try {
-      await addContact({
-        name: body?.name,
-        phoneNumber: body?.phone,
-        countryCode: body?.countryCode,
-        organizationId: voicebotDetail.organizationId,
-        source: "voicebot"
-      })
+      const existingContact = await checkIfContactExists(
+        voicebotDetail.organizationId,
+        body?.phone,
+        "insert"
+      );
+      if(!existingContact) {
+        await addContact({
+          name: body?.name,
+          phoneNumber: body?.phone,
+          countryCode: body?.countryCode,
+          organizationId: voicebotDetail.organizationId,
+          source: "voicebot"
+        })
+      }
     } catch (error: any) {
       logger.error(`Create voicebot lead in contacts table Error: ${JSON.stringify(error.message)}`)
     }
