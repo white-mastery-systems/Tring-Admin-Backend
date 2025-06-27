@@ -22,11 +22,11 @@ export default defineEventHandler(async (event) => {
     ]) 
 
     if(voicePlanUsage?.originalSubscriptionStatus === "trial" && voicePlan?.subscriptionStatus === "inactive") {
-      return errorResponse(event, 500, "Voice subscription trial ended. Please subscribe to continue voice calls.")
+      return errorResponse(event, 500, "Voice subscription trial ended. Please subscribe to continue voice calls")
     }
 
     if(!["active", "trial"].includes(voicePlan?.subscriptionStatus)) {
-      return errorResponse(event, 500, "Voice Subscription status is inactive")
+      return errorResponse(event, 500, "Voice Subscription status is inactive. Please subscribe to cotinue voice calls")
     }
 
     if(!voicebotDetail?.active) {
