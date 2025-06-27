@@ -12,7 +12,6 @@ export default defineEventHandler(async (event) => {
       });
     }
     const GEMINI_API_KEY = useRuntimeConfig().geminiApiKey;
-    logger.info(`GEMINI_API_KEY: ${GEMINI_API_KEY}`)
     
     if (!GEMINI_API_KEY) {
       throw createError({
