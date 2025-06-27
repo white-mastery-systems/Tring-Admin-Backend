@@ -1,4 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { logger } from "~/server/logger"
+
 
 export default defineEventHandler(async (event) => {
   try {
@@ -81,7 +83,7 @@ export default defineEventHandler(async (event) => {
 
     const googleGenAI = new GoogleGenerativeAI(geminiApiKey);
     const generativeModel = googleGenAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.0-flash-001",
       generationConfig: {
         responseMimeType: "application/json",
         temperature: 1,
@@ -91,6 +93,7 @@ export default defineEventHandler(async (event) => {
     const aiResponse = await generativeModel.generateContent(analysisPrompt);
     return JSON.parse(aiResponse.response.text());
   } catch (error: any) {
+    logger.error(`Chat Improvement API Error: ${JSON.stringify(error.message)}`)
     throw createError({
       statusCode: 500,
       message: error.message,
