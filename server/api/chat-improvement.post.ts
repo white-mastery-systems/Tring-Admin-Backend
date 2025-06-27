@@ -81,7 +81,7 @@ export default defineEventHandler(async (event) => {
 
     const googleGenAI = new GoogleGenerativeAI(geminiApiKey);
     const generativeModel = googleGenAI.getGenerativeModel({
-      model: "gemini-2.0-flash-001",
+      model: "gemini-2.0-flash",
       generationConfig: {
         responseMimeType: "application/json",
         temperature: 1,
