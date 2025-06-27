@@ -37,7 +37,7 @@ async function generateContentSuggestions(industry: string) {
 
   // Get the generative model with schema configuration
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash-001",
+    model: "gemini-2.0-flash",
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: schema,
