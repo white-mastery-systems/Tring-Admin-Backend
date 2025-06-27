@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
 
   const integrationsToCreate = newIntegrationIds.map((integrationId: string) => ({
     integrationId,
-    voicebotId,
+    botId: voicebotId,
     organizationId,
     metadata: {
       ...body,
