@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { logger } from "~/server/logger"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -140,7 +141,7 @@ export default defineEventHandler(async (event) => {
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.0-flash-001",
       generationConfig: {
         responseMimeType: "application/json",
         temperature: 1,
@@ -150,6 +151,7 @@ export default defineEventHandler(async (event) => {
     const result = await model.generateContent(prompt);
     return JSON.parse(result.response.text());
   } catch (error: any) {
+    logger.error("Custom industry suggestions API error:", error);
     throw createError({
       statusCode: 500,
       message: error.message,
