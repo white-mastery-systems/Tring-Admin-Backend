@@ -33,7 +33,11 @@ export const sendWhatsappCampaignWithTemplate = async (data:any) => {
     }
 
     if(contactList.length){
+      logger.info("Inside scheduling...");
+      logger.info(`whatsapp campaign contact count: ${contactList.length}`);
+      logger.info(`sample whatsapp campaign contact: ${JSON.stringify(contactList?.[0]?.contact || {})}`);
       contactList.forEach(async ({ contact: contact }: { contact: any }) => {
+        logger.info(`whatsapp campaign contact: ${contact.phoneNumber}`);
         const headerComponent: any = [];
         const headerParameter: any = [];
         const bodyComponents: any = [];
@@ -44,7 +48,9 @@ export const sendWhatsappCampaignWithTemplate = async (data:any) => {
       
         if (templateInformation) {
           templateLanguageCode = templateInformation.language;
+          logger.info(`whatsapp campaign template components: ${JSON.stringify(templateInformation.components)}`);
           templateInformation.components.forEach((component: any) => {
+            logger.info(`whatsapp campaign component: ${JSON.stringify(component)}`);
             if (component.type === "HEADER" && component.example && !["IMAGE", "DOCUMENT"].includes(component.format) ) {
               const headerVariables = getTemplateHeaderVariables(component.example);
               headerVariables.map((variable: string) => {
@@ -86,7 +92,9 @@ export const sendWhatsappCampaignWithTemplate = async (data:any) => {
             }
 
             if (component.type === "BUTTONS") {
+              logger.info(`whatsapp campaign buttons: ${JSON.stringify(component.buttons)}`);
               component.buttons.forEach((button: any, index: number) => {
+                logger.info(`whatsapp campaign button: ${JSON.stringify(button)}`);
                 const buttonInd = `${index ?? 0}`;
                 if (button.type === "FLOW") {
                   const { flow_id, flow_action, navigate_screen } = button;
@@ -104,14 +112,23 @@ export const sendWhatsappCampaignWithTemplate = async (data:any) => {
                   });
                 } else if (button.type === "URL") {
                   const { url, example } = button;
-                  let varName = url.split("{{1}}");
-                  varName = example[0].split(varName[0]);
-                  varName = varName[1] ?? varName[0];
-                  if (varName.includes("{{") || varName.includes("}}")) {
-                    varName.replace(/{{|}}/g, "");
+
+                  if (url.includes("{{1}}") && example && Array.isArray(example) && example.length > 0) {
+                    // If URL contains a template variable
+                    let parts = url.split("{{1}}");
+                    let varName = example[0].split(parts[0])[1] ?? example[0];
+
+                    // Clean up {{ }} if still present
+                    if (varName.includes("{{") || varName.includes("}}")) {
+                      varName = varName.replace(/{{|}}/g, "");
+                    }
+
+                    const buttonsParametersObj = variablePrameterObj(varName, contact);
+                    buttonsComponents.push({ type: "button", sub_type: "url", index: buttonInd, parameters: [buttonsParametersObj] });
+                  } else {
+                    // If URL does NOT contain a template variable
+                    buttonsComponents.push({ type: "button", sub_type: "url", index: buttonInd, parameters: [{ type: "text", text: url }] });
                   }
-                  const buttonsParametersObj = variablePrameterObj(varName, contact);
-                  buttonsComponents.push({ type: "button", sub_type: "url", index: buttonInd, parameters: [buttonsParametersObj] });
                 } else if (button.type == "QUICK_REPLY") {
                   buttonsComponents.push({
                     type: "button",
