@@ -59,7 +59,7 @@ export const scheduleWhatsAppCampaign = async (
 
     const event = schedule.scheduleJob({ year, month, date: day, hour: hours, minute: minutes, tz: "UTC" }, () => {
       logger.info("Inside scheduling...");
-      [...contactList].forEach(async ({ contacts: contact }: { contacts: any }) => {
+      contactList.forEach(async ({ contacts: contact }: { contacts: any }) => {
         logger.info(`whatsapp campaign contact: ${contact.phone}`);
         const headerComponent: any = [];
         const headerParameter: any = [];
@@ -70,106 +70,104 @@ export const scheduleWhatsAppCampaign = async (
 
         if (templateInformation) {
           templateLanguageCode = templateInformation.language;
-          [...templateInformation.components]?.forEach((component: any) => {
-            logger.info(`whatsapp campaign component: ${JSON.stringify(component)}`);
-            if (component.type === "HEADER" && component.example && !["IMAGE", "DOCUMENT"].includes(component.format) ) {
-              const headerVariables = getTemplateHeaderVariables(component.example);
-              headerVariables.map((variable: string) => {
-                let obj: any = {};
-                if (!isPositional) {
-                  obj.parameter_name = variable;
-                }
-                headerParameter.push({
-                  ...obj,
-                  ...variablePrameterObj(variable, contact),
-                });
-              });
-            }
-            if (component.type === "BODY" && component.example) {
-              const bodyVariables = getTemplateBodyVariables(component.example);
-              bodyVariables.map((variable: any) => {
-                let obj: any = {};
-                if (!isPositional) {
-                  obj.parameter_name = variable;
-                }
-                bodyParameters.push({
-                  ...obj,
-                  ...variablePrameterObj(variable, contact),
-                });
-              });
-            } else if (component.type === "BODY" && component.text && component.text?.match(/{{\d+}}/g)) {
-              if (component.text?.includes("{{1}}") && contact.firstName) {
-                bodyParameters.push({ type: "text",  text: contact.firstName });
-              }
-              if (component.text?.includes("{{2}}") && contact.lastName) {
-                bodyParameters.push({ type: "text", text: contact.lastName });
-              }
-              if (component.text?.includes("{{3}}") && contact.email) {
-                bodyParameters.push({ type: "text", text: contact.email });
-              }
-              if (component.text?.includes("{{4}}") && contact.phone) {
-                bodyParameters.push({ type: "text", text: `+${phoneNumber}` });
-              }
-            }
-
-            if (component.type === "BUTTONS") {
-              [...component.buttons]?.forEach((button: any, index: number) => {
-                logger.info(`whatsapp campaign button: ${JSON.stringify(button)}`);
-                const buttonInd = `${index ?? 0}`;
-                if (button.type === "FLOW") {
-                  const { flow_id, flow_action, navigate_screen } = button;
-                  buttonsComponents.push({
-                    type: "button",
-                    sub_type: "flow",
-                    index: buttonInd,
-                    parameters: [{
-                      type: "action",
-                      action: {
-                        flow_token: "unused",
-                        flow_action_data: { flow_id, flow_action, navigate_screen },
-                      },
-                    }],
-                  });
-                } else if (button.type === "URL") {
-                  const { url, example } = button;
-
-                  if (url.includes("{{1}}") && example && Array.isArray(example) && example.length > 0) {
-                    // If URL contains a template variable
-                    let parts = url.split("{{1}}");
-                    let varName = example[0].split(parts[0])[1] ?? example[0];
-
-                    // Clean up {{ }} if still present
-                    if (varName.includes("{{") || varName.includes("}}")) {
-                      varName = varName.replace(/{{|}}/g, "");
-                    }
-
-                    const buttonsParametersObj = variablePrameterObj(varName, contact);
-                    buttonsComponents.push({ type: "button", sub_type: "url", index: buttonInd, parameters: [buttonsParametersObj] });
-                  } else {
-                    // If URL does NOT contain a template variable
-                    buttonsComponents.push({ type: "button", sub_type: "url", index: buttonInd, parameters: [{ type: "text", text: url }] });
+          if(templateInformation.components && Array.isArray(templateInformation.components) && templateInformation.components.length > 0) {
+            templateInformation.components.forEach((component: any) => {
+              if (component.type === "HEADER" && component.example && !["IMAGE", "DOCUMENT"].includes(component.format) ) {
+                const headerVariables = getTemplateHeaderVariables(component.example);
+                headerVariables.map((variable: string) => {
+                  let obj: any = {};
+                  if (!isPositional) {
+                    obj.parameter_name = variable;
                   }
-                } else if (button.type == "QUICK_REPLY") {
-                  buttonsComponents.push({
-                    type: "button",
-                    sub_type: "quick_reply",
-                    index: buttonInd,
-                    parameters: [{ type: "payload", payload: "PAYLOAD" }],
+                  headerParameter.push({
+                    ...obj,
+                    ...variablePrameterObj(variable, contact),
                   });
-                } else if (button.type == "COPY_CODE") {
-                  buttonsComponents.push({
-                    type: "button",
-                    sub_type: "COPY_CODE",
-                    index: buttonInd,
-                    parameters: [{
-                      type: "coupon_code",
-                      coupon_code: (Array.isArray(button.example)) ? button.example[0]: (button.example) ? button.example: "CODEWELCOME200",
-                    }],
+                });
+              }
+              if (component.type === "BODY" && component.example) {
+                const bodyVariables = getTemplateBodyVariables(component.example);
+                bodyVariables.map((variable: any) => {
+                  let obj: any = {};
+                  if (!isPositional) {
+                    obj.parameter_name = variable;
+                  }
+                  bodyParameters.push({
+                    ...obj,
+                    ...variablePrameterObj(variable, contact),
                   });
+                });
+              } else if (component.type === "BODY" && component.text && component.text?.match(/{{\d+}}/g)) {
+                if (component.text?.includes("{{1}}") && contact.firstName) {
+                  bodyParameters.push({ type: "text",  text: contact.firstName });
                 }
-              });
-            }
-          });
+                if (component.text?.includes("{{2}}") && contact.lastName) {
+                  bodyParameters.push({ type: "text", text: contact.lastName });
+                }
+                if (component.text?.includes("{{3}}") && contact.email) {
+                  bodyParameters.push({ type: "text", text: contact.email });
+                }
+                if (component.text?.includes("{{4}}") && contact.phone) {
+                  bodyParameters.push({ type: "text", text: `+${phoneNumber}` });
+                }
+              }
+  
+              if (component.type === "BUTTONS" && component.buttons && Array.isArray(component.buttons) && component.buttons.length > 0) {
+                component.buttons.forEach((button: any, index: number) => {
+                  logger.info(`whatsapp campaign button: ${JSON.stringify(button)}`);
+                  const buttonInd = `${index ?? 0}`;
+                  if (button.type === "FLOW") {
+                    const { flow_id, flow_action, navigate_screen } = button;
+                    buttonsComponents.push({
+                      type: "button",
+                      sub_type: "flow",
+                      index: buttonInd,
+                      parameters: [{
+                        type: "action",
+                        action: {
+                          flow_token: "unused",
+                          flow_action_data: { flow_id, flow_action, navigate_screen },
+                        },
+                      }],
+                    });
+                  } else if (button.type === "URL") {
+                    const { url, example } = button;
+  
+                    if (url.includes("{{1}}") && example && Array.isArray(example) && example.length > 0) {
+                      // If URL contains a template variable
+                      let parts = url.split("{{1}}");
+                      let varName = example[0].split(parts[0])[1] ?? example[0];
+  
+                      // Clean up {{ }} if still present
+                      if (varName.includes("{{") || varName.includes("}}")) {
+                        varName = varName.replace(/{{|}}/g, "");
+                      }
+  
+                      const buttonsParametersObj = variablePrameterObj(varName, contact);
+                      buttonsComponents.push({ type: "button", sub_type: "url", index: buttonInd, parameters: [buttonsParametersObj] });
+                    }
+                  } else if (button.type == "QUICK_REPLY") {
+                    buttonsComponents.push({
+                      type: "button",
+                      sub_type: "quick_reply",
+                      index: buttonInd,
+                      parameters: [{ type: "payload", payload: "PAYLOAD" }],
+                    });
+                  } else if (button.type == "COPY_CODE") {
+                    buttonsComponents.push({
+                      type: "button",
+                      sub_type: "COPY_CODE",
+                      index: buttonInd,
+                      parameters: [{
+                        type: "coupon_code",
+                        coupon_code: (Array.isArray(button.example)) ? button.example[0]: (button.example) ? button.example: "CODEWELCOME200",
+                      }],
+                    });
+                  }
+                });
+              }
+            });
+          }
         }
 
         if (headerParameter.length) {
