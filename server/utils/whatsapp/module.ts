@@ -249,18 +249,14 @@ export const getTemplateBodyVariables = (example: any): any[] => {
 
 export const variablePrameterObj = (variableName: any, contact: any) => {
   const varName = `${variableName}`.toLowerCase()
-  if (["firstname", "first name"].includes(varName) && contact?.firstName) {
-    return { type: "text", text: contact?.firstName }
-  } else if (["Name", "name", "fullname", "Fullname", "Full Name", "full name"].includes(varName)) {
-    return { type: "text", text: `${(contact?.name) ?? `${contact?.firstName || ""} ${contact?.lastName || ""}`}` }
-  } else if (["lastname", "last name"].includes(varName) && contact?.lastName) {
-    return { type: "text", text: contact?.lastName }
-  } else if (["fullname", "full name", "user name", "username", "name"].includes(varName)) {
-    return {type: "text", text: `${contact?.firstName} ${(contact?.lastName) ?? ""}`}
+  if (["Name", "fullname", "full name", "user name", "username", "name"].includes(varName)) {
+    return { type: "text", text: `${(contact?.name) ?? variableName}` }
   } else if (varName === "email") {
-    return { type: "text", text: contact?.email }
-  } else if (["mobile", "phone", "phone no", "mobile no"].includes(varName) && contact?.phone) {
-    return { type: "text", text: `${contact.countryCode || "+91"}${contact.phone}` }
+    return { type: "text", text: contact?.email || variableName }
+  } else if (["mobile", "phone", "phone no", "mobile no"].includes(varName) && contact?.phoneNumber) {
+    return { type: "text", text: `${contact?.countryCode || "+91"}${contact?.phoneNumber || variableName}` }
+  } else if (["Countrycode", "CountryCode", "countryCode", "Country Code", "country code", "country_code", "country-code", "Country_Code", "Country-Code"].includes(varName) && contact?.countryCode) {
+    return { type: "text", text: `${contact?.countryCode || "+91"}` }
   } else { 
     return {type:"text", text:variableName}
   }

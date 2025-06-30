@@ -139,7 +139,8 @@ export const listLeads = async (
       columns: {
         id: true,
         chatId: true,
-        status: true
+        status: true,
+        createdAt: true,
       },
       orderBy: [desc(leadSchema.createdAt)],
     });
@@ -150,13 +151,14 @@ export const listLeads = async (
         .tz(timeZone)
         .format("DD MMM YYYY hh:mm A"),
     }));
+    
+    leads = leads.filter((lead: any) => {
+      return lead.chat !== null;
+    })
+
     if (query?.q || query?.status === "new" || query?.status === "revisited")
       leads = leads.filter((lead: any) => {
         return lead.botUser !== null;
-      });
-    if (query?.channel)
-      leads = leads.filter((lead: any) => {
-        return lead.chat !== null;
       });
     
     if(query?.country && query?.country !== "all") {

@@ -190,7 +190,7 @@ export const sendWhatsappTemplateMessage = async (
   templateComponents: Record<string, any>,
   languageCode?: string,
 ) => {
-  const sendMessageTemplateApiEndpoint = `https://graph.facebook.com/v21.0/${phoneId}/messages`;
+  const sendMessageTemplateApiEndpoint = `https://graph.facebook.com/v23.0/${phoneId}/messages`;
 
   try {
     const sendMessageTemplateApiResponse = await $fetch(
@@ -217,11 +217,7 @@ export const sendWhatsappTemplateMessage = async (
     logger.info("WhatsApp template message sent successfully");
     return sendMessageTemplateApiResponse;
   } catch (error: any) {
-    logger.error({
-      message: "Error occurred while sending WhatsApp template message",
-      error: JSON.stringify(error),
-      errorData: error?.data,
-    });
+    logger.error(`Error occurred while sending WhatsApp template: ${JSON.stringify(error.message)}`);
     throw new Error("Failed to send WhatsApp template message");
   }
 };
