@@ -33,7 +33,11 @@ export const sendWhatsappCampaignWithTemplate = async (data:any) => {
     }
 
     if(contactList.length){
+      logger.info("Inside scheduling...");
+      logger.info(`whatsapp campaign contact count: ${contactList.length}`);
+      logger.info(`whatsapp campaign contact count: ${JSON.stringify(contactList?.[0]?.contact || {})}`);
       contactList.forEach(async ({ contact: contact }: { contact: any }) => {
+        logger.info(`whatsapp campaign contact: ${contact.phone}`);
         const headerComponent: any = [];
         const headerParameter: any = [];
         const bodyComponents: any = [];
@@ -44,7 +48,9 @@ export const sendWhatsappCampaignWithTemplate = async (data:any) => {
       
         if (templateInformation) {
           templateLanguageCode = templateInformation.language;
+          logger.info(`whatsapp campaign template components: ${JSON.stringify(templateInformation.components)}`);
           templateInformation.components.forEach((component: any) => {
+            logger.info(`whatsapp campaign component: ${JSON.stringify(component)}`);
             if (component.type === "HEADER" && component.example && !["IMAGE", "DOCUMENT"].includes(component.format) ) {
               const headerVariables = getTemplateHeaderVariables(component.example);
               headerVariables.map((variable: string) => {
@@ -86,7 +92,9 @@ export const sendWhatsappCampaignWithTemplate = async (data:any) => {
             }
 
             if (component.type === "BUTTONS") {
+              logger.info(`whatsapp campaign buttons: ${JSON.stringify(component.buttons)}`);
               component.buttons.forEach((button: any, index: number) => {
+                logger.info(`whatsapp campaign button: ${JSON.stringify(button)}`);
                 const buttonInd = `${index ?? 0}`;
                 if (button.type === "FLOW") {
                   const { flow_id, flow_action, navigate_screen } = button;
