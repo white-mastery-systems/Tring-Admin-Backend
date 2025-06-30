@@ -124,9 +124,6 @@ export const whatsappReSendCampaign = async (
 
                 const buttonsParametersObj = variablePrameterObj(varName, contact);
                 buttonsComponents.push({ type: "button", sub_type: "url", index: buttonInd, parameters: [buttonsParametersObj] });
-              } else {
-                // If URL does NOT contain a template variable
-                buttonsComponents.push({ type: "button", sub_type: "url", index: buttonInd, parameters: [{ type: "text", text: url }] });
               }
             } else if (button.type == "QUICK_REPLY") {
               buttonsComponents.push({
