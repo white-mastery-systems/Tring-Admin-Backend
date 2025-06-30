@@ -59,7 +59,8 @@ export const scheduleWhatsAppCampaign = async (
 
     const event = schedule.scheduleJob({ year, month, date: day, hour: hours, minute: minutes, tz: "UTC" }, () => {
       logger.info("Inside scheduling...");
-      contactList.forEach(async ({ contacts: contact }: { contacts: any }) => {
+      [...contactList].forEach(async ({ contacts: contact }: { contacts: any }) => {
+        logger.info(`whatsapp campaign contact: ${contact.phone}`);
         const headerComponent: any = [];
         const headerParameter: any = [];
         const bodyComponents: any = [];
@@ -69,7 +70,8 @@ export const scheduleWhatsAppCampaign = async (
 
         if (templateInformation) {
           templateLanguageCode = templateInformation.language;
-          templateInformation.components.forEach((component: any) => {
+          [...templateInformation.components]?.forEach((component: any) => {
+            logger.info(`whatsapp campaign component: ${JSON.stringify(component)}`);
             if (component.type === "HEADER" && component.example && !["IMAGE", "DOCUMENT"].includes(component.format) ) {
               const headerVariables = getTemplateHeaderVariables(component.example);
               headerVariables.map((variable: string) => {
@@ -111,7 +113,8 @@ export const scheduleWhatsAppCampaign = async (
             }
 
             if (component.type === "BUTTONS") {
-              component.buttons.forEach((button: any, index: number) => {
+              [...component.buttons]?.forEach((button: any, index: number) => {
+                logger.info(`whatsapp campaign button: ${JSON.stringify(button)}`);
                 const buttonInd = `${index ?? 0}`;
                 if (button.type === "FLOW") {
                   const { flow_id, flow_action, navigate_screen } = button;

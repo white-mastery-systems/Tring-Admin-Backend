@@ -93,7 +93,8 @@ export const whatsappReSendCampaign = async (
         }
 
         if (component.type === "BUTTONS") {
-          component.buttons.forEach((button: any, index: number) => {
+          [...component.buttons]?.forEach((button: any, index: number) => {
+            logger.info(`whatsapp campaign button: ${JSON.stringify(button)}`);
             const buttonInd = `${index ?? 0}`;
             if (button.type === "FLOW") {
               const { flow_id, flow_action, navigate_screen } = button;
