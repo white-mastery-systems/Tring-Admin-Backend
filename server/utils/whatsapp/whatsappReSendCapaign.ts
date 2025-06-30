@@ -93,8 +93,7 @@ export const whatsappReSendCampaign = async (
         }
 
         if (component.type === "BUTTONS") {
-          [...component.buttons]?.forEach((button: any, index: number) => {
-            logger.info(`whatsapp campaign button: ${JSON.stringify(button)}`);
+          component.buttons.forEach((button: any, index: number) => {
             const buttonInd = `${index ?? 0}`;
             if (button.type === "FLOW") {
               const { flow_id, flow_action, navigate_screen } = button;
@@ -112,11 +111,23 @@ export const whatsappReSendCampaign = async (
               });
             } else if (button.type === "URL") {
               const { url, example } = button;
-              let varName = url.split("{{1}}");
-              varName = example[0].split(varName[0]);
-              varName = varName[1] ?? varName[0];
-              const buttonsParametersObj = variablePrameterObj(varName, contact);
-              buttonsComponents.push({ type: "button", sub_type: "url", index: buttonInd, parameters: [buttonsParametersObj] });
+
+              if (url.includes("{{1}}") && example && Array.isArray(example) && example.length > 0) {
+                // If URL contains a template variable
+                let parts = url.split("{{1}}");
+                let varName = example[0].split(parts[0])[1] ?? example[0];
+
+                // Clean up {{ }} if still present
+                if (varName.includes("{{") || varName.includes("}}")) {
+                  varName = varName.replace(/{{|}}/g, "");
+                }
+
+                const buttonsParametersObj = variablePrameterObj(varName, contact);
+                buttonsComponents.push({ type: "button", sub_type: "url", index: buttonInd, parameters: [buttonsParametersObj] });
+              } else {
+                // If URL does NOT contain a template variable
+                buttonsComponents.push({ type: "button", sub_type: "url", index: buttonInd, parameters: [{ type: "text", text: url }] });
+              }
             } else if (button.type == "QUICK_REPLY") {
               buttonsComponents.push({
                 type: "button",
