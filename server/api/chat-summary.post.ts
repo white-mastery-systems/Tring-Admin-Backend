@@ -101,7 +101,7 @@ export default defineEventHandler(async (event) => {
     };
 
     await $fetch(
-      `${useRuntimeConfig().public.chatBotBaseUrl}/api/chat/${chatId}`,
+      `${useRuntimeConfig().public.chatBotBaseUrl}/api/chat/${body?.chatId}`,
       {
         method: "PUT",
         body: payload as any,
