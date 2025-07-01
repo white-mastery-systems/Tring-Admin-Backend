@@ -109,6 +109,7 @@ export const zodUpdateNewVoicebotSchema = z.object({
   speechToTextConfig: z.record(z.any()).optional(),
   ivrConfig: z.any().optional(),
   incomingPhoneNumber: z.any().optional(),
+  emailRecipients: z.array(z.string()).optional(),
   preRecordedAudios: z.object({
     welcomeAudio: z.array(z.any()).optional(),
     concludeAudio: z.array(z.any()).optional(),
