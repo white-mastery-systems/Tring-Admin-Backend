@@ -5,6 +5,25 @@ import { inArray } from "drizzle-orm"
 const db = useDrizzle()
 const config = useRuntimeConfig()
 
+export const voicebotKnowledgeSource = async (knowledgeSource: string, websiteContent: string, textContent: string, documentId: string) => {
+  let knowledgeBase: string = "";
+  switch (knowledgeSource) {
+    case "website":
+      knowledgeBase = websiteContent ?? "";
+      break;
+    case "text":
+      knowledgeBase = textContent ?? "";
+      break;
+    case "document":
+      if (documentId) {
+        const document = await getVoicebotDocumentById(documentId);
+        knowledgeBase = document?.documentContent ?? "";
+      }
+      break;
+  }
+  return knowledgeBase
+}
+
 export const zodCreateNewVoicebotSchema = z.object({
   name: z.string(),
   active: z.boolean().optional(),

@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
     const orgChatBotCount = await getOrgChatBotCount(organizationId, orgChatSubscription?.startDate!, orgChatSubscription?.endDate!);
     
     if(orgChatBotCount >= botPlanLimit) {
-      await handleChatBotLimitExceeded(orgDetail, planPricingDetail, orgChatBotCount, botPlanLimit, event);
+      await handleChatBotLimitExceeded(orgDetail, planPricingDetail, orgChatBotCount, botPlanLimit, 1, event);
     }
     
     const body: any = await isValidBodyHandler(event, zodCreateChatbot)

@@ -23,25 +23,47 @@ export const getChatSubscriptionPlanCode = async (orgChatSubscription: any) =>{
   return planPricingDetail
 }
 
-export const handleChatBotLimitExceeded = async (orgDetail: any, pricing: any, count: number, limit: number, event: any) => {
-  if (orgDetail?.wallet > 0) {
-    const extraUsed = count - limit;
-    const extraAllowed = Number(pricing?.extraBotLimit);
-    if (extraUsed >= extraAllowed) {
-      throw errorResponse(event, 400, `You can create only ${extraAllowed} extra chatbots for this plan`);
-    }
+export const handleChatBotLimitExceeded = async (
+  orgDetail: any,
+  pricing: any,
+  currentBotCount: number,
+  planBotLimit: number,
+  botsToBeCreatedNow: number,
+  event: any
+) => {
+  const extraAllowed = parseInt(pricing?.extraBotLimit ?? '0', 10);
+  const costPerBot = parseFloat(pricing?.extraBotCost ?? '0');
+  const walletBalance = parseFloat(orgDetail?.wallet ?? '0');
 
-    const cost = pricing?.extraBotCost || 0;
-    if (orgDetail?.wallet >= cost) {
-      const remaining = Math.max(0, parseFloat(((orgDetail.wallet || 0) - cost).toFixed(2)));
-      await updateOrganization(orgDetail.id, { wallet: remaining });
-    } else {
-      throw errorResponse(event, 400, "Insufficient wallet balance to create an additional chatbot.");
-    }
-  } else {
-    throw errorResponse(event, 400, `You can create only ${limit} ${limit > 1 ? "chatbots" : "chatbot"} for this plan`);
+  if (isNaN(extraAllowed) || isNaN(costPerBot)) {
+    throw errorResponse(event, 400, "Invalid plan pricing configuration.");
   }
-}
+
+  const totalBotsAfterCreate = currentBotCount + botsToBeCreatedNow;
+  const totalExtraUsed = totalBotsAfterCreate - planBotLimit;
+
+  if (totalExtraUsed > extraAllowed) {
+    throw errorResponse(
+      event,
+      400,
+      `You can create only ${extraAllowed} extra chatbot${extraAllowed === 1 ? '' : 's'} for this plan.`
+    );
+  }
+
+  const totalExtraCost = costPerBot * botsToBeCreatedNow;
+
+  if (walletBalance >= totalExtraCost) {
+    const newBalance = parseFloat((walletBalance - totalExtraCost).toFixed(2));
+    await updateOrganization(orgDetail.id, { wallet: newBalance });
+  } else {
+    throw errorResponse(
+      event,
+      400,
+      `Insufficient wallet balance. You need ₹${totalExtraCost.toFixed(2)} to create ${botsToBeCreatedNow} chatbot${botsToBeCreatedNow > 1 ? 's' : ''}.`
+    );
+  }
+};
+
 
 export const getChatBotDefaultConfigs = async (industryDetail: any) => {
   let defaultIntents: string, defaultNotes: string = "";
