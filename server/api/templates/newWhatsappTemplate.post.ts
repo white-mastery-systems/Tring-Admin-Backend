@@ -103,8 +103,8 @@ export default defineEventHandler(async (event) => {
             item.example = `${item.url}`.replace("{{1}}",`${buttonVariable[0].example}`);
           }
         }
-        if (item.type === "PHONE_NUMBER" && buttonVariables.length) {
-          item.phone_number = `${buttonVariables[buttonIndex].example}`;
+        if (item.type === "PHONE_NUMBER" && item.example) {
+          item.phone_number = `${item.example}`;
           delete item.example;
         }
         buttonIndex++;

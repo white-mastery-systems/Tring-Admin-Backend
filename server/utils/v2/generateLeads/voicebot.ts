@@ -145,7 +145,7 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
           email: "N/A",
           phone: `${botUser?.countryCode} ${botUser?.mobile}`,
           botName: `${voicebotDetail?.name}`,
-          callHistory: `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogId}`,
+          conversationHistory: `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogId}`,
           whatsappLink: `https://wa.me/${botUser?.countryCode}${botUser?.mobile}`,
         };
         if (notes){

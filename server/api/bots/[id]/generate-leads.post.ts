@@ -201,7 +201,7 @@ export default defineEventHandler(async (event) => {
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: `${botDetails?.name}`,
-          chatLink: `${config.public.adminBaseUrl}/analytics/leads/${body?.chatId}`,
+          conversationHistory: `${config.public.adminBaseUrl}/analytics/leads/${body?.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,
         };
         // TODO: Add country code to the phone number
