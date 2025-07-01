@@ -57,7 +57,7 @@ export default defineEventHandler(async (event) => {
       const subscriptionEndDate = new Date(subscriptionBody?.current_term_ends_at) || new Date(subscriptionBody?.next_billing_at)
 
       const orgZohoSubscription = await isOrgZohoSubscriptionExists(orgId, botType)
-      const orgSubscription = {
+      const orgSubscription: any = {
         organizationId: orgId,
         serviceType: botType,
         subscriptionId: subscriptionBody?.subscription_id,
@@ -85,18 +85,28 @@ export default defineEventHandler(async (event) => {
         updateUserDetailById(userDetails?.id, { customerId: subscriptionBody?.customerId }),
         createSubscriptionPlanUsage(orgSubscription)
       ]) 
-    } else if (body.event_type === "subscription_cancelled" || body.event_type === "subscription_expired" || body?.event_type === "subscription_deleted") {
+    } else if (body.event_type === "subscription_cancelled" || body.event_type === "subscription_expired") {
         body.event_type === "subscription_cancelled" 
           ? await updateOrgZohoSubscription(orgId, botType, { subscriptionStatus: "cancelled" })
           : await updateOrgZohoSubscription(orgId, botType, { subscriptionStatus: "inactive" })
 
     } else if (body.event_type === "billing_date_changed") {
-      const subscriptionEndDate = new Date(subscriptionBody?.current_term_ends_at) || new Date(subscriptionBody?.next_billing_at)
+      const subscriptionEndDate = new Date(subscriptionBody?.next_billing_at)
 
       const planUsage: any = await getOrgPlanUsage(orgId, botType)
       await Promise.all([
         updateOrgZohoSubscription(orgId, botType, { endDate: subscriptionEndDate }),
         updateSubscriptionPlanUsageById(planUsage?.id, { endDate: subscriptionEndDate }),
+      ])
+    } else if (body?.event_type === "subscription_deleted") {
+      const planUsage: any = await getOrgPlanUsage(orgId, botType)
+      const subscriptionData: any = { 
+        subscriptionStatus: "inactive",
+        subscriptionId: null
+      }
+      await Promise.all([
+        updateOrgZohoSubscription(orgId, botType, subscriptionData),
+        updateSubscriptionPlanUsageById(planUsage?.id, subscriptionData),
       ])
     }
     logger.info(`Zoho-billing ${body.event_type} from zoho billing webhook`)
