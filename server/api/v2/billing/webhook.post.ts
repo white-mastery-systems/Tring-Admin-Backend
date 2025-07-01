@@ -52,7 +52,6 @@ export default defineEventHandler(async (event) => {
           createSubscriptionPlanUsage(orgSubscription)
         ])
 
-        logger.info(`Zoho-billing ${body.event_type} from zoho billing webhook`)
       }
     } else if(body.event_type === "subscription_reactivated" || body.event_type === "subscription_renewed") {
       const subscriptionEndDate = new Date(subscriptionBody?.current_term_ends_at) || new Date(subscriptionBody?.next_billing_at)
@@ -70,7 +69,7 @@ export default defineEventHandler(async (event) => {
       }
             
       const planCode = ( botType === "chat" )
-        ? { planCode: orgSubscription.pricingPlanCode}
+        ? { planCode: orgSubscription.pricingPlanCode }
         : { voicePlanCode : orgSubscription.pricingPlanCode }
       
       const planUsage = await getOrgPlanUsage(orgId, botType)
@@ -85,16 +84,22 @@ export default defineEventHandler(async (event) => {
         updateOrganization(orgId, { ...planCode }),
         updateUserDetailById(userDetails?.id, { customerId: subscriptionBody?.customerId }),
         createSubscriptionPlanUsage(orgSubscription)
-      ])  
-      logger.info(`Zoho-billing ${body.event_type} from zoho billing webhook`)
-    } else if (body.event_type === "subscription_cancelled" || body.event_type === "subscription_expired") {
+      ]) 
+    } else if (body.event_type === "subscription_cancelled" || body.event_type === "subscription_expired" || body?.event_type === "subscription_deleted") {
         body.event_type === "subscription_cancelled" 
           ? await updateOrgZohoSubscription(orgId, botType, { subscriptionStatus: "cancelled" })
           : await updateOrgZohoSubscription(orgId, botType, { subscriptionStatus: "inactive" })
-        // updateChatbotStatus(orgId)
 
-        logger.info(`Zoho-billing ${body.event_type} from zoho billing webhook`)
+    } else if (body.event_type === "billing_date_changed") {
+      const subscriptionEndDate = new Date(subscriptionBody?.current_term_ends_at) || new Date(subscriptionBody?.next_billing_at)
+
+      const planUsage: any = await getOrgPlanUsage(orgId, botType)
+      await Promise.all([
+        updateOrgZohoSubscription(orgId, botType, { endDate: subscriptionEndDate }),
+        updateSubscriptionPlanUsageById(planUsage?.id, { endDate: subscriptionEndDate }),
+      ])
     }
+    logger.info(`Zoho-billing ${body.event_type} from zoho billing webhook`)
     return true
   } catch(error: any) {
     logger.error(`Zoho-billing webhook API Error: ${JSON.stringify(error.message)}`)
