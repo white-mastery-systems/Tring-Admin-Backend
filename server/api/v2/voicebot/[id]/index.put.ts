@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
       const knowledgeBase = await voicebotKnowledgeSource(knowledgeSource, websiteContent, textContent, documentId);
 
       // Update industry if changed
-      let industryName = voicebotDetail?.industryType;
+      let industryName = botDetails?.industryType;
       if (voicebotDetail?.industryId !== body?.industryId) {
         const industryDetail = await getIndustryDetail({
           industryId: body?.industryId ?? voicebotDetail?.industryId,
