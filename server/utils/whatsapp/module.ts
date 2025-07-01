@@ -129,7 +129,7 @@ export async function createWhatsAppMessage(
             { type: "text", text: payload.phone },
             { type: "text", text: payload.email },
             { type: "text", text: payload.botName },
-            { type: "text", text: payload.chatLink },
+            { type: "text", text: payload.conversationHistory },
             { type: "text", text: payload.whatsappLink },
           ],
         },
