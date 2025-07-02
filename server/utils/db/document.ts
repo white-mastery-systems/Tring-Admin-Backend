@@ -3,6 +3,7 @@ import { logger } from "~/server/logger";
 import { writeFile } from "node:fs/promises";
 import { InsertVoicebotDocument, voicebotDocumentSchema } from "~/server/schema/voicebot";
 import { InsertPlaygroundDocument, playgroundDocumentSchema } from "~/server/schema/admin";
+import momentTz from "moment-timezone"
 
 const config = useRuntimeConfig()
 
@@ -123,10 +124,17 @@ export const createVoicebotDocument = async (document: InsertVoicebotDocument) =
   )[0]
 }
 
-export const listVoicebotDocument = async (voicebotId: string) => {
-  return await db.query.voicebotDocumentSchema.findMany({
+export const listVoicebotDocument = async (voicebotId: string, timeZone: string) => {
+  let data: any = await db.query.voicebotDocumentSchema.findMany({
     where: eq(voicebotDocumentSchema.voicebotId, voicebotId)
   })
+
+  data = data.map((doc: any) =>({
+    ...doc,
+    createdAt: momentTz(doc.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A")
+  }))
+
+  return data
 }
 
 export const getVoicebotDocumentById = async (docId: string) => {
@@ -159,6 +167,7 @@ export const voicebotDocumentParsing = async (documentId: string, form: any) => 
     const jsonDocument = JSON.parse(parsedDoc)
     updateVoicebotDocument(documentId, { documentContent: jsonDocument.document_content, status: "success" });
   } catch (error: any) {
+    logger.error(`Voicebot document parsing error: ${JSON.stringify(error.message)}`);
     updateVoicebotDocument(documentId, { status: "failed" });
   }
 }

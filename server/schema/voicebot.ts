@@ -213,6 +213,7 @@ export const voicebotLeadSchema = voiceBotSchema.table("leads",{
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name"),
   location: varchar("location"),
+  countryCode: varchar("country_code"),
   phone: varchar("phone"),
   notes: varchar("notes"),
   scheduledDate: timestamp("scheduled_date"),

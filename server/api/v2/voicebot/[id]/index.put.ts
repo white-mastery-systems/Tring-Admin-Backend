@@ -1,6 +1,6 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-import { voicebotKnowledgeSource, zodUpdateNewVoicebotSchema } from "~/server/utils/v2/db/voicebot"
+import { zodUpdateNewVoicebotSchema } from "~/server/utils/v2/db/voicebot"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -10,8 +10,7 @@ export default defineEventHandler(async (event) => {
     const body: any = await isValidBodyHandler(event, zodUpdateNewVoicebotSchema);
 
     const voicebotDetail = await getVoicebotById(voicebotId);
-    const { knowledgeSource, websiteContent, textContent, documentId } = body;
-
+    
     // Check phone number conflict
     if (body?.incomingPhoneNumber) {
       const conflict = await getVoicebotByIncomingPhoneNumber(body.incomingPhoneNumber, "update", voicebotId);
@@ -24,7 +23,6 @@ export default defineEventHandler(async (event) => {
     if (body?.botDetails) {
       const { botDetails } = body;
       const orgDetails = await getOrganizationById(organizationId);
-      const knowledgeBase = await voicebotKnowledgeSource(knowledgeSource, websiteContent, textContent, documentId);
 
       // Update industry if changed
       let industryName = botDetails?.industryType;
@@ -44,7 +42,7 @@ export default defineEventHandler(async (event) => {
         role,
         goal,
         companyName: orgDetails?.name ?? "",
-        knowledgeBase,
+        knowledgeBase: ""
       });
 
       body.llmConfig = {
@@ -55,7 +53,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Clear fields if knowledge source changed
-    if (body?.knowledgeSource && body.knowledgeSource !== knowledgeSource) {
+    if (body?.knowledgeSource && body.knowledgeSource !== voicebotDetail?.knowledgeSource) {
       const resetMap: Record<string, (keyof typeof body)[]> = {
         website: ["textContent"],
         text: ["websiteLink", "websiteContent"],
