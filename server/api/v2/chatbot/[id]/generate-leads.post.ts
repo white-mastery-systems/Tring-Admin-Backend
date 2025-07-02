@@ -289,8 +289,7 @@ export default defineEventHandler(async (event) => {
           botIntegration?.integration?.metadata,
           botIntegration?.metadata?.channelId,
           textContent,
-          botIntegration?.integration?.id,
-          body?.note,
+          botIntegration?.integration?.id
         );
       }
     }

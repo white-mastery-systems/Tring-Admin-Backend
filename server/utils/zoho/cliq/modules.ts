@@ -2,7 +2,7 @@ import { logger } from "~/server/logger";
 
 const db = useDrizzle()
 
-export const generateLeadsInZohoCliq: any = async(metaData: any, channelId: string, textContent: any, integrationId: string, notes: string) => {
+export const generateLeadsInZohoCliq: any = async(metaData: any, channelId: string, textContent: any, integrationId: string) => {
   try {
      const data = await $fetch(`https://cliq.zoho.in/api/v2/channels/${channelId}/message`, {
       method: "POST",

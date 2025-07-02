@@ -215,6 +215,7 @@ export const voicebotLeadSchema = voiceBotSchema.table("leads",{
   location: varchar("location"),
   countryCode: varchar("country_code"),
   phone: varchar("phone"),
+  country: varchar("country"),
   notes: varchar("notes"),
   scheduledDate: timestamp("scheduled_date"),
   callSid: varchar("call_sid"),

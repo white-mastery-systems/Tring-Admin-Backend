@@ -13,9 +13,6 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
     const organizationId = voicebotDetail?.organizationId
     const adminDetail = await getAdminByOrgId(organizationId)
     const voiceBotIntegrationList: any = await listVoiceBotIntegrations(organizationId, voicebotDetail?.id)
-
-    // const callLogDetail = await getCallLogByCallSid(callSid)
-    // const callLogId = callLogDetail?.id
  
     let firstName = botUser?.name;
     let lastName = "";
@@ -116,7 +113,7 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
           voiceBot?.metadata?.channelId,
           payload,
           voiceBot?.integration?.id,
-          notes,
+          "",
           "voice"
         )
         logger.info(`Voice bot - generate slack lead, ${JSON.stringify(data)}`);
@@ -129,13 +126,12 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
           callHistory: `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogId}`,
           whatsappLink: `https://wa.me/${botUser?.countryCode}${botUser?.mobile}`,
         };
-        const textContent = `${notes ?? "Lead Received"} \nA new ${payload.intent ?? "Lead"} inquiry was received for your business through Tring AI. \n👤 ${payload.name} | 📞 ${payload.phone}\n🆔 Bot Name: ${payload.botName}\n🔗 Conversation History: ${payload.callHistory}\n🔗 Contact user on whatsapp : ${payload.whatsappLink}\n\nThis message is intended for business use to help you follow up with the lead.`;
+        const textContent = `Lead Received \nA new ${payload.intent ?? "Lead"} inquiry was received for your business through Tring AI. \n👤 ${payload.name} | 📞 ${payload.phone}\n🆔 Bot Name: ${payload.botName}\n🔗 Conversation History: ${payload.callHistory}\n🔗 Contact user on whatsapp : ${payload.whatsappLink}\n\nThis message is intended for business use to help you follow up with the lead.`;
         const data = await generateLeadsInZohoCliq(
           voiceBot?.integration?.metadata,
           voiceBot?.metadata?.channelId,
           textContent,
-          voiceBot?.integration?.id,
-          notes,
+          voiceBot?.integration?.id
         );
         logger.info(`Voice bot - generate zoho_cliq lead, ${JSON.stringify(data)}`);
       } else if (voiceBot?.integration.crm === "whatsapp") {
@@ -148,15 +144,12 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
           conversationHistory: `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogId}`,
           whatsappLink: `https://wa.me/${botUser?.countryCode}${botUser?.mobile}`,
         };
-        if (notes){
-          const keywords = ["Appointment", "Call Scheduled", "Site Visit"];
-          whatsappPayload.intent = keywords.find((keyword) => notes.includes(keyword)) || "Lead";
-        }
+       
         const data = await createWhatsAppMessage(
           whatsappPayload,
           `${voiceBot?.integration?.metadata?.countryCode.split("+")[1]}` +
             voiceBot?.integration?.metadata?.phoneNumber,
-          notes
+          "Lead Details",
         );
         if(data){
           await $fetch("/api/org/whatsappLeadsPrice", {
