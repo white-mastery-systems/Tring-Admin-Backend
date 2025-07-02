@@ -33,10 +33,6 @@ export default defineEventHandler(async (event) => {
     const industryName = industryDetail?.industryName ?? "";
 
     // Prepare prompts
-    const { knowledgeSource, websiteContent, textContent, documentId } = body;
-
-    const knowledgeBase = await voicebotKnowledgeSource(knowledgeSource, websiteContent, textContent, documentId);
-
     const { botDetails } = body;
     const role = botDetails.role === "custom" ? botDetails.otherRole : botDetails.role;
     const goal = botDetails.goal === "custom" ? botDetails.otherGoal : botDetails.goal;
@@ -47,7 +43,7 @@ export default defineEventHandler(async (event) => {
       role,
       goal,
       companyName: orgDetails?.name!, 
-      knowledgeBase,
+      knowledgeBase: "",
     })
 
     body.llmConfig = {

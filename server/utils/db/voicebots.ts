@@ -324,7 +324,8 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
       },
       callLog: {
         columns: {
-          direction: true
+          direction: true,
+          from: true
         }
       }
     },
@@ -346,6 +347,7 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
 
   voicebotLeads = voicebotLeads.map((i: any) => ({
     ...i,
+    phone: i.callLog?.from || i.phone,
     scheduledDate: i.scheduledDate && momentTz(i.scheduledDate).tz(timeZone).format("DD MMM YYYY hh:mm A"),
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
