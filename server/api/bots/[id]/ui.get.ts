@@ -12,6 +12,10 @@ export default defineEventHandler(async (event) => {
     if(bot?.isDeleted) {
       return errorResponse(event, 403, "Bot not available");
     }
+
+    if(bot?.status !== "active") {
+      return errorResponse(event, 403, "Bot is not active");
+    }
     
     bot = await isValidReturnType(event, bot);
 
