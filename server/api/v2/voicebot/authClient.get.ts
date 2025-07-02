@@ -11,9 +11,12 @@ export default defineEventHandler(async (event) => {
   const incomingPhoneNumber = (`+${query.phoneNumber}`).replace(/\s+/g, "")
 
   const voiceBotDetail: any = await getVoicebotDetailByPhoneNumber(incomingPhoneNumber)
+
   if (!voiceBotDetail) return errorResponse(event, 400, "Mobile number does not exist")
-  
+    
   if (!voiceBotDetail.active) return errorResponse(event, 400, "Bot is not active")
+
+  const { knowledgeSource, websiteContent, textContent, documentId } = voiceBotDetail
       
   const organizationId = voiceBotDetail?.organizationId
 
@@ -28,7 +31,6 @@ export default defineEventHandler(async (event) => {
   if(!["active", "trial"].includes(voicebotPlan?.subscriptionStatus)) {
     return errorResponse(event, 500, "Subscription status is inactive")
   }
-  //TODO - add extra and normal quota validation
   
   // calculate total minutes for current month
   const currentDate = momentTz().utc().toDate()
@@ -82,17 +84,28 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  let botTrainedQueries: any = await getVoicebotQueriesByStatus(voiceBotDetail?.id, "trained") 
+  let [botTrainedQueries, knowledgeBase] = await Promise.all([
+    getVoicebotQueriesByStatus(voiceBotDetail?.id, "trained"),
+    voicebotKnowledgeSource(knowledgeSource, websiteContent, textContent, documentId)
+  ])
 
   botTrainedQueries = botTrainedQueries.map((i: any) => ({
     topic: i.title,
     response: i.answer
   }))
-  
+
+  const inboundPrompt = voiceBotDetail?.llmConfig.inboundPromptText;
+  const outboundPrompt = voiceBotDetail?.llmConfig.outboundPromptText;
+
+  const updatedInboundPrompt = `${inboundPrompt} ${knowledgeBase ? `DOCUMENT: ${knowledgeBase}` : "" }`
+  const updatedOutboundPrompt = `${outboundPrompt} ${knowledgeBase ? `DOCUMENT: ${knowledgeBase}` : "" }`
+
   return { 
     ...voiceBotDetail,
     llmConfig: {
       ...voiceBotDetail?.llmConfig,
+      inboundPromptText: updatedInboundPrompt,
+      outboundPromptText: updatedOutboundPrompt,
       suggestedResponses: botTrainedQueries
     },
     availableMinutes 
