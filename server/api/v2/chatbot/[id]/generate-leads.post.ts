@@ -83,6 +83,7 @@ export default defineEventHandler(async (event) => {
             Contact_Name: {
               id: generatedContact?.data[0]?.details?.id,
             },
+            Notes: `${config.newFrontendUrl}/dashboard/customer-logs/leads/${body?.chatId}`,
           },
           integrationData: botIntegration?.integration,
         });
@@ -235,44 +236,6 @@ export default defineEventHandler(async (event) => {
           botIntegration,
         })) || {};
 
-      // const ownerIds = await getOwners(token);
-
-      // if (ownerIds.length) {
-      //   let [{ id: hubspotOwnerId }] = ownerIds[0]?.id;
-      //   await createDeals(
-      //     token,
-      //     hubspotOwnerId,
-      //     botIntegration?.integration?.metadata?.amount,
-      //     botIntegration?.integration?.metadata?.stage,
-      //     firstName,
-      //     lastName,
-      //   );
-      // } else {
-      //   logger.error({ level: "error", message: "No owner found" });
-      // }
-
-      // console.log(JSON.stringify(data));
-      // const properties = await $fetch(
-      //   "https://api.hubapi.com/crm/v3/properties/leads",
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${botIntegration?.integration?.metadata?.access_token}`,
-      //     },
-      //   },
-      // );
-      // const finalPayloadToSubmit: any = {};
-      // properties?.results.map((result) => {
-      //   if (result.hidden) {
-      //     return;
-      //   }
-      //   if (result.fieldType === "checkbox") {
-      //     finalPayloadToSubmit[result.name] = true;
-      //   } else if (result.fieldType === "select") {
-      //     finalPayloadToSubmit[result.name] = {
-      //       value: result.options[0]?.value,
-      //     };
-      //   }
-      // });
     } else if (botIntegration?.integration?.crm === "zoho-cliq") {
       if (botIntegration?.metadata?.channelId) {
         const payload = {
