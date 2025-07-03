@@ -82,9 +82,13 @@ export default defineEventHandler(async (event) => {
             Pipeline: pipelineObj?.Pipeline,
             Contact_Name: {
               id: generatedContact?.data[0]?.details?.id,
-            },
-            Notes: `${config.newFrontendUrl}/dashboard/customer-logs/leads/${body?.chatId}`,
+            }
           },
+          integrationData: botIntegration?.integration,
+        });
+        await newUpdateNotesInZohoBigin({
+          zohoBiginLeadId: generatedLead?.data[0]?.details?.id,
+          body: `${config.newFrontendUrl}/dashboard/customer-logs/leads/${body?.chatId}`,
           integrationData: botIntegration?.integration,
         });
 
@@ -269,6 +273,7 @@ export default defineEventHandler(async (event) => {
     botDetails?.emailRecipients && botDetails?.emailRecipients.length
       ? [...botDetails?.emailRecipients, adminUser?.email]
       : [adminUser?.email];
+      
   if(!body?.note) {
       sendEmail(
     emailRecipients,
