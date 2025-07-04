@@ -9,7 +9,17 @@ global.userConnections = globalThis.userConnections || new Map();
 
 export default defineEventHandler(async (event) => {
   const { req, res } = event.node;
-  const userId = event.context.user?.id as string;
+
+  const sessionId = getCookie(event, lucia.sessionCookieName) ?? getHeader(event, "Token") ?? null;
+ 
+  if (!sessionId) {
+    sendError(event, createError({ statusCode: 401, statusMessage: "Unauthorized" }));
+    return;
+  }
+
+  const user: any = await lucia.validateSession(sessionId);
+
+  const userId = event.context.user?.id || user.id!
 
   // Ensure global.userConnections is initialized
   if (!global.userConnections) {
