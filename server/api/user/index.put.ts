@@ -11,7 +11,7 @@ const bodyValidator = z
     address: z.record(z.any()).optional(),
     mobile: z.string().optional(),
     countryCode: z.string().optional(),
-    name: z.string().min(1).optional(),
+    businessName: z.string().min(1).optional(),
     industry: z.string().min(1).optional(),
     logo: z.record(z.any()).optional(),
     gst: z.string().optional(),
@@ -75,7 +75,7 @@ export default defineEventHandler(async (event) => {
   };
 
   const updateOrg = {
-    name: body?.name,
+    name: body?.businessName,
     logo: body?.logo,
     metadata: {
       industry: body?.industry,
