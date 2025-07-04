@@ -57,7 +57,8 @@ export const getCallLogsList = async (organizationId: string, timeZone?: string,
       duration: true,
       direction: true,
       metrics: true,
-      callStatus: true
+      callStatus: true,
+      callSid: true,
     },
      orderBy: [desc(callLogSchema.date)],
   })
