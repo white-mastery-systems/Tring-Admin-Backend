@@ -45,13 +45,14 @@ export default defineNuxtConfig({
     plugins: [
       "~/server/plugin/yaml-watcher.ts",
       "~/server/plugin/schedule-voicebotDialer.ts",
+      "~/server/plugin/schedule-chat-improvements.ts",
+      "~/server/plugin/schedule-chatbotCall.ts",
+      "~/server/plugin/schedule-chatExpiry.ts",
+      "~/server/plugin/schedule-voice-call-retry-attempt",
       // "~/server/plugin/calendly-scheduled-events.ts",   // AKKU demo
       // "~/server/plugin/saleshandy-analytics.ts",
       // "~/server/plugin/calendly-cancelled-events.ts",
       // "~/server/plugin/saleshandy-notDialed.ts",
-      "~/server/plugin/schedule-chatbotCall.ts",
-      "~/server/plugin/schedule-chatExpiry.ts",
-      "~/server/plugin/schedule-voice-call-retry-attempt"
     ],
   },
 
