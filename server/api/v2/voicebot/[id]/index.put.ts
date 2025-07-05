@@ -25,31 +25,34 @@ export default defineEventHandler(async (event) => {
       const orgDetails = await getOrganizationById(organizationId);
 
       // Update industry if changed
-      let industryName = botDetails?.industryType;
-      if (voicebotDetail?.industryId !== body?.industryId) {
-        const industryDetail = await getIndustryDetail({
-          industryId: body?.industryId ?? voicebotDetail?.industryId,
+
+      if (voicebotDetail?.industryId !== body?.industryId || voicebotDetail?.botDetails.agentName !== botDetails?.agentName) {
+        let industryName = botDetails?.industryType;
+        if(voicebotDetail?.industryId !== body?.industryId) {
+          const industryDetail = await getIndustryDetail({
+            industryId: body?.industryId ?? voicebotDetail?.industryId,
+          });
+          industryName = industryDetail?.industryName ?? industryName;
+        }
+        
+        const role = botDetails.role === "custom" ? botDetails.otherRole : botDetails.role;
+        const goal = botDetails.goal === "custom" ? botDetails.otherGoal : botDetails.goal;
+
+        const prompts = getVoicebotPromptTextByIndustryType({
+          industryType: industryName,
+          name: botDetails.agentName,
+          role,
+          goal,
+          companyName: orgDetails?.name ?? "",
+          knowledgeBase: ""
         });
-        industryName = industryDetail?.industryName ?? industryName;
+
+        body.llmConfig = {
+          ...voicebotDetail?.llmConfig,
+          inboundPromptText: prompts.inboundPrompt,
+          outboundPromptText: prompts.outboundPrompt,
+        };
       }
-
-      const role = botDetails.role === "custom" ? botDetails.otherRole : botDetails.role;
-      const goal = botDetails.goal === "custom" ? botDetails.otherGoal : botDetails.goal;
-
-      const prompts = getVoicebotPromptTextByIndustryType({
-        industryType: industryName,
-        name: botDetails.agentName,
-        role,
-        goal,
-        companyName: orgDetails?.name ?? "",
-        knowledgeBase: ""
-      });
-
-      body.llmConfig = {
-        ...voicebotDetail?.llmConfig,
-        inboundPromptText: prompts.inboundPrompt,
-        outboundPromptText: prompts.outboundPrompt,
-      };
     }
 
     // Clear fields if knowledge source changed
