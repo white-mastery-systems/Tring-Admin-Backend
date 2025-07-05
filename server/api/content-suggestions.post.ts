@@ -41,7 +41,7 @@ async function generateContentSuggestions(industry: string) {
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: schema,
-      temperature: 1,
+      temperature: 0.5,
     },
   });
 

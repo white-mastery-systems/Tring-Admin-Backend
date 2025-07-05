@@ -142,7 +142,7 @@ export default defineEventHandler(async (event) => {
       model: "gemini-2.0-flash-001",
       generationConfig: {
         responseMimeType: "application/json",
-        temperature: 1,
+        temperature: 0.5,
       },
     });
 
