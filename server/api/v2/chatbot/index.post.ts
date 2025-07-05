@@ -136,6 +136,7 @@ export default defineEventHandler(async (event) => {
         prompt: {
           ...bot?.metadata.prompt,
           ...body?.prompt,
+          INDUSTRY: industryDetail?.industryName,
           INITIAL_MESSAGE,
           ...defaultIntents && { 
             INTENTS: defaultIntents
