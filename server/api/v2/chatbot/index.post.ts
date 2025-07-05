@@ -122,7 +122,7 @@ export default defineEventHandler(async (event) => {
 
     if (max_retries === 0) {
       await deleteBot(bot?.id)
-      return errorResponse(event, 500, "Bot Deployment failed: could not retrieve initial message from the server.")
+      return errorResponse(event, 500, "Bot Deployment failed: could not retrieve initial message from chatbot server")
     }
 
     const updatedChatbot = await updateBotDetails(bot.id, {

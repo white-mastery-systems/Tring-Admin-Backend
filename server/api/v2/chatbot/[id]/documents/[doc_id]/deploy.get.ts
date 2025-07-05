@@ -67,7 +67,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (max_retries === 0) {
-    return errorResponse(event, 500, "Bot Deployment failed: could not retrieve initial message from the server.")
+    return errorResponse(event, 500, "Bot Deployment failed: could not retrieve initial message from chatbot server")
   }
 
   return await updateBotDetails(botId, {
