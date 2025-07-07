@@ -141,7 +141,7 @@ export const listChats = async (
       visitedCount: true,
       chatOutcome: true
     },
-    orderBy: [desc(chatSchema.updatedAt)],
+    orderBy: [desc(chatSchema.createdAt)],
   });
 
   chats = chats.map((i: any) => ({
