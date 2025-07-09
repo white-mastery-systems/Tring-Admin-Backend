@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   const botIntegration = await getChatVoiceIntegrationByIntegrationId(params.id)
 
   if(botIntegration && query.confirmDelete === "false") {
-    return errorResponse(event, 400, "Integration linked to a bot, please confirm deletion by passing confirmDelete=true in query params");
+    return errorResponse(event, 400, "Integration is linked to a bot. Please confirm deletion to proceed");
   }
 
   const integration = await deleteIntegration(params.id);
