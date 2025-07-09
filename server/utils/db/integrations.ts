@@ -188,3 +188,17 @@ export const checkIntegrationNameAlreadyExists = async (organizationId: string, 
     )
   })
 }
+
+export const getChatVoiceIntegrationByIntegrationId = async (integrationId: string) => {
+  const data = await db.query.botIntegrationSchema.findFirst({
+    where: and(eq(botIntegrationSchema.integrationId, integrationId)),
+    with: { integration: true },
+  });
+  if(!data) {
+    return await db.query.voicebotIntegrationSchema.findFirst({
+      where: and(eq(voicebotIntegrationSchema.integrationId, integrationId)),
+      with: { integration: true },
+    });
+  }
+  return data;
+}
