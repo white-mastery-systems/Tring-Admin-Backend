@@ -257,7 +257,8 @@ export const getAllInadequateMessages= async () => {
     const data = await db.query.chatSchema.findMany({
       where: and(
         eq(chatSchema.isProcessed, false),
-        ne(chatSchema.chatSummary, {})
+        ne(chatSchema.chatSummary, {}),
+        eq(chatSchema.interacted, true)
       ),
       columns: {
         id: true,
