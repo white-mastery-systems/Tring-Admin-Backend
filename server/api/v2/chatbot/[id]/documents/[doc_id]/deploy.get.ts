@@ -36,6 +36,10 @@ export default defineEventHandler(async (event) => {
   let document;
   document = await getDocumentById(doc_id);
   document = document?.status !== "ready" ? null : document;
+  if(!document) {
+    return errorResponse(event, 400, "The provided document is still being processed. Please try again later.")
+  }
+  
   document = await isValidReturnType(event, document);
 
   let INITIAL_MESSAGE = null;
@@ -62,8 +66,9 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  if (max_retries === 0)
-    return sendError(event, createError({ statusCode: 500 }));
+  if (max_retries === 0) {
+    return errorResponse(event, 500, "Bot Deployment failed: could not retrieve initial message from chatbot server")
+  }
 
   return await updateBotDetails(botId, {
     documentId: document.id,

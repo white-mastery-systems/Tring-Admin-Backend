@@ -91,18 +91,6 @@ export async function createDeals(
   lastName: string,
 ) {
   try {
-    // Logging the request body for debugging
-    console.log({
-      properties: {
-        amount: amount || "0", // Ensure the correct amount is passed
-        closedate: new Date().toISOString(),
-        dealname: firstName + " " + lastName || "New Deal", // Fallback in parentheses
-        pipeline: "default",
-        dealstage: dealStage,
-        hubspot_owner_id: ownerId,
-      },
-    });
-
     // Making the POST request
     const data = await $fetch("https://api.hubapi.com/crm/v3/objects/deals", {
       method: "POST",
@@ -121,11 +109,10 @@ export async function createDeals(
         },
       }),
     });
-
-    // Logging the response
-    console.log(data);
+    return data
   } catch (error:any) {
-    console.log(error.message);
+    logger.error(`Hubspot Create Deal Error: ${error.message}`);
+    throw new Error(error.message);
   }
 }
 
@@ -137,14 +124,14 @@ export const getContactByEmail = async (token:string, email:string) => {
         Authorization: `Bearer ${token}`,
       },
     });
+
     return data;
   } catch (error:any) {
-    console.log(error.message);
+    logger.error(`Hubspot Get Contact By Email Error: ${error.message}`)
     return {}
   }
 }
 
-// export const createMeetingLink = async (token, body) => {}
 
 export const getMeetingLink = async (token:string) => {
   try {

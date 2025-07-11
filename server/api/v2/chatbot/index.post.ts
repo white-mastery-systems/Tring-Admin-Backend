@@ -51,7 +51,21 @@ export const zodCreateChatbot = z
 export default defineEventHandler(async (event) => { 
   try {
     const organizationId = await isOrganizationAdminHandler(event) as string
+    
+    const body: any = await isValidBodyHandler(event, zodCreateChatbot)
 
+    const doc_id = body?.documentId;
+    let document;
+
+    document = await getDocumentById(doc_id);
+    if(!document) return errorResponse(event, 404, "Document not found");
+
+    document = document?.status !== "ready" ? null : document;
+    if(!document) {
+      return errorResponse(event, 400, "The provided document is still being processed. Please try again later.")
+    }
+
+    // Bot limit check
     const [orgChatSubscription, orgDetail] = await Promise.all([
       getOrgZohoSubscription(organizationId, "chat"),
       getOrganizationById(organizationId)
@@ -65,8 +79,6 @@ export default defineEventHandler(async (event) => {
     if(orgChatBotCount >= botPlanLimit) {
       await handleChatBotLimitExceeded(orgDetail, planPricingDetail, orgChatBotCount, botPlanLimit, 1, event);
     }
-    
-    const body: any = await isValidBodyHandler(event, zodCreateChatbot)
 
     const industryDetail = await getIndustryDetail({ industryId: body?.industryId });
 
@@ -85,18 +97,7 @@ export default defineEventHandler(async (event) => {
 
     const bot: any = await createBot(payload);
     const botId = bot?.id
-    const doc_id = body?.documentId;
 
-    let document;
-    document = await getDocumentById(doc_id);
-    if(!document) return errorResponse(event, 404, "Document not found");
-
-    document = document?.status !== "ready" ? null : document;
-    if(!document) {
-      await deleteBot(bot?.id)
-      return errorResponse(event, 400, "The provided document is still being processed. Please try again later.")
-    }
-    
     // Chatbot Deployment
     let INITIAL_MESSAGE = null;
     let max_retries = 5;
@@ -122,7 +123,7 @@ export default defineEventHandler(async (event) => {
 
     if (max_retries === 0) {
       await deleteBot(bot?.id)
-      return errorResponse(event, 500, "Bot Deployment failed: could not retrieve initial message from the server.")
+      return errorResponse(event, 500, "Bot Deployment failed: could not retrieve initial message from chatbot server")
     }
 
     const updatedChatbot = await updateBotDetails(bot.id, {
@@ -136,6 +137,7 @@ export default defineEventHandler(async (event) => {
         prompt: {
           ...bot?.metadata.prompt,
           ...body?.prompt,
+          INDUSTRY: industryDetail?.industryName,
           INITIAL_MESSAGE,
           ...defaultIntents && { 
             INTENTS: defaultIntents

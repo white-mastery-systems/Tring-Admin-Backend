@@ -13,6 +13,7 @@ const zodUpdateVoiceBotIntegration = z.object({
   restaurantId: z.string().optional(),
   departments: z.array(z.any()).optional(),
   whatsappIntegrationIds: z.array(z.string()).optional(),
+  status: z.string().optional()
 });
 
 export default defineEventHandler(async (event) => {

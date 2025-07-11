@@ -141,7 +141,7 @@ export const listChats = async (
       visitedCount: true,
       chatOutcome: true
     },
-    orderBy: [desc(chatSchema.updatedAt)],
+    orderBy: [desc(chatSchema.createdAt)],
   });
 
   chats = chats.map((i: any) => ({
@@ -251,30 +251,34 @@ export const fetchWhatsappChatOrCreate = async (userId: string, botId: string, o
   return newChat;
 };
 
-// Get all messages by bot-id
-export const getInadequateMessagesByBotId = async ({ organizationId, botId }: {
-  organizationId: string,
-  botId: string
-}) => {
+// Get all messages for chatbot improvement
+export const getAllInadequateMessages= async () => {
   try {
     const data = await db.query.chatSchema.findMany({
       where: and(
-        eq(chatSchema.organizationId, organizationId),
-        eq(chatSchema.botId, botId),
         eq(chatSchema.isProcessed, false),
-        ne(chatSchema.chatSummary, {})
+        ne(chatSchema.chatSummary, {}),
+        eq(chatSchema.interacted, true)
       ),
       columns: {
         id: true,
+        botId: true,
+        organizationId: true,
         chatSummary: true
       }
     })
 
-    const filteredData = data.filter((i: any) => i.chatSummary.inadequateMessages && i.chatSummary.inadequateMessages.length)
-
-    const result = filteredData.map((i: any) => ({
-      [i.id]: i.chatSummary.inadequateMessages
-    }))
+    const result = data
+    .filter((item: any) => Array.isArray(item.chatSummary.inadequateMessages) && item.chatSummary.inadequateMessages.length)
+    .map((item: any) => ({
+      botId: item.botId,
+      organizationId: item.organizationId,
+      inadequateMessages: [
+        {
+          [item.id]: item.chatSummary.inadequateMessages,
+        },
+      ],
+    }));
 
     return result
   } catch (error: any) {

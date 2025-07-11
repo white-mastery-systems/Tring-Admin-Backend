@@ -26,14 +26,11 @@ export const listBots = async (
 ) => {
   let filters: any = [eq(chatBotSchema.organizationId, organizationId), eq(chatBotSchema.isDeleted, false)];
   if (query?.active === "true") {
-    filters.push(
-      isNotNull(chatBotSchema.documentId),
-    )
+    filters.push(eq(chatBotSchema.status, "active"))
   } else if (query?.active === "false") {
-    filters.push(
-      isNull(chatBotSchema.documentId),
-    )
+    filters.push(eq(chatBotSchema.status, "inactive"))
   }
+  
   if (query?.q) {
     filters.push(ilike(chatBotSchema.name, `%${query.q}%`));
   }
