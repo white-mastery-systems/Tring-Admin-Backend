@@ -34,6 +34,16 @@ export const getChatDetails = async (chatId: string) => {
   });
 };
 
+export const getChatOutcome = async (chatId: string) => {
+  const chat = await db.query.chatSchema.findFirst({  
+    where: eq(chatSchema.id, chatId),
+    columns: { 
+      chatOutcome: true
+    },
+  }); 
+  return chat?.chatOutcome || "";
+};
+
 export const getMessages = async (
   chatId: string,
   botUserId: string,
@@ -300,13 +310,47 @@ export const storeImprovedBotResponses = async (data: any) => {
   await db.insert(chatResponseImprovementSchema).values(data)
 }
 
-export const getBotUnansweredQueries = async(botId: string) => {
-  return await db.query.chatResponseImprovementSchema.findMany({
+export const getChatbotQueriesByStatus = async(botId: string, status: "trained" | "not_trained", timeZone: string, query: any) => {
+  let page, offset, limit = 0;
+
+  if (query.page && query.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
+    offset = (page - 1) * limit;
+  }
+
+  let data = await db.query.chatResponseImprovementSchema.findMany({
     where: and(
       eq(chatResponseImprovementSchema.botId, botId),
-      eq(chatResponseImprovementSchema.status, "not_trained")
-    )
+      eq(chatResponseImprovementSchema.status, status),
+      sql`cardinality(${chatResponseImprovementSchema.instances}) > 0`,
+      query?.q
+        ? ilike(chatResponseImprovementSchema.title, `%${query.q}%`)  
+        : undefined,
+    ),
+    orderBy: [
+      desc(chatResponseImprovementSchema.createdAt),
+      sql`cardinality(${chatResponseImprovementSchema.instances}) DESC`,
+    ]
   })
+
+  data = data.map((item: any) => ({
+    ...item,
+    createdAt: momentTz(item.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+  }))
+ 
+  if (query?.page && query?.limit) {
+    const paginatedChatbotQueries = data.slice(offset, offset + limit);
+    return {
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length / limit) || 1,
+      totalCount: data.length,
+      data: paginatedChatbotQueries,
+    };
+  } else {
+    return data
+  }
 }
 
 export const updateBotQueriesById = async (id: string, data: any) => {

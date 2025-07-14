@@ -6,7 +6,9 @@ export default defineEventHandler(async (event) => {
   try {
     const { id: voicebotId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
-    const unansweredQueries = await getVoicebotQueriesByStatus(voicebotId, "not_trained")
+    const query = await isValidQueryHandler(event, zodListQuery)
+    
+    const unansweredQueries = await getVoicebotQueriesByStatus(voicebotId, "not_trained", query)
 
     return unansweredQueries
     

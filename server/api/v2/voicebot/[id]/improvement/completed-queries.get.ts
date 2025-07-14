@@ -4,11 +4,13 @@ import { getVoicebotQueriesByStatus } from "~/server/utils/v2/db/voicebot"
 
 export default defineEventHandler(async (event) => {
   try {
-    const organizationId = await isOrganizationAdminHandler(event) as string
+    await isOrganizationAdminHandler(event) as string
     
     const { id: voicebotId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
-    const completedQueries = await getVoicebotQueriesByStatus(voicebotId, "trained")
+    const query = await isValidQueryHandler(event, zodListQuery)
+
+    const completedQueries = await getVoicebotQueriesByStatus(voicebotId, "trained", query)
 
     return completedQueries
   } catch (error: any) {
