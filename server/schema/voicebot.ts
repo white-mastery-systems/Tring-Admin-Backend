@@ -333,6 +333,10 @@ export const callLogsRelations = relations(callLogSchema, ({one}) => ({
 }))
 
 export const voicebotRelations =relations(voicebotSchema, ({one}) => ({
+   organization: one(organizationSchema, {
+      fields: [voicebotSchema.organizationId],  
+      references: [organizationSchema.id],
+    }),
    ivrConfigDetail: one(numberIntegrationSchema, {
       fields: [voicebotSchema.ivrConfig],
       references: [numberIntegrationSchema.id],

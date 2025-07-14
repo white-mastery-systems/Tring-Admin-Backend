@@ -165,3 +165,7 @@ export const deleteOrgUserById = async (orgUserId: string) => {
     .returning()
   )[0]
 }
+
+export const getAllUsers = async () => {
+  return await db.query.authUserSchema.findMany()
+}
