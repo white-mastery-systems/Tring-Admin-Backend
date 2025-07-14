@@ -380,6 +380,33 @@ export const getAllActiveVoicebots = async() => {
   })
 }
 
+export const getAllVoicebots = async() => {
+  return await db.query.voicebotSchema.findMany({
+    where: and(
+      eq(voicebotSchema.isDeleted, false),
+      isNotNull(voicebotSchema.incomingPhoneNumber),
+      isNotNull(voicebotSchema.ivrConfig)
+    ),
+    with: {
+      organization: {
+        columns: {
+          name: true,
+          id: true
+        }
+      },
+      ivrConfigDetail: {
+        columns: {
+          ivrIntegrationName: true,
+          provider: true,
+          metadata: true
+        }
+      }
+    },
+    orderBy: [desc(voicebotSchema.createdAt)]
+  })
+}
+
+
 // outbound calls
 export const getNotDialedVoiceCallList = async() => {
   return await db.query.voicebotSchedularSchema.findMany({
