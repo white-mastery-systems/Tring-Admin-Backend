@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { logger } from "~/server/logger"
+import { getChatOutcome } from "../utils/db/chats";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -100,14 +101,18 @@ export default defineEventHandler(async (event) => {
       chatOutcome: parsedResponse.chatOutcome as string,
     };
 
-    await $fetch(
-      `${useRuntimeConfig().public.chatBotBaseUrl}/api/chat/${body?.chatId}`,
-      {
-        method: "PUT",
-        body: payload as any,
-      },
-    );
+    const chatOutcome = await getChatOutcome(body?.chatId);
 
+    if(chatOutcome !== "Booked") {
+      await $fetch(
+        `${useRuntimeConfig().public.chatBotBaseUrl}/api/chat/${body?.chatId}`,
+        {
+          method: "PUT",
+          body: payload as any,
+        },
+      );
+    }
+    
    return parsedResponse;
   } catch (error: any) {
     logger.error(`Chat Summary API Error: ${JSON.stringify(error.message)}`)
