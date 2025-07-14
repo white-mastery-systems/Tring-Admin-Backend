@@ -608,13 +608,42 @@ export const createVoicebotImprovementQueries = async (data: InsertVoiceResponse
   return (await db.insert(voiceResponseImprovementSchema).values(data).returning())[0]
 }
 
-export const getVoicebotQueriesByStatus = async (voicebotId: string, status: "trained" | "not_trained") => {
-  return await db.query.voiceResponseImprovementSchema.findMany({
+export const getVoicebotQueriesByStatus = async (voicebotId: string, status: "trained" | "not_trained", query: any) => {
+  let page, offset, limit = 0;
+
+  if (query.page && query.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
+    offset = (page - 1) * limit;
+  }
+  
+  let data = await db.query.voiceResponseImprovementSchema.findMany({
     where: and(
       eq(voiceResponseImprovementSchema.botId, voicebotId),
-      eq(voiceResponseImprovementSchema.status, status)
-    )
+      eq(voiceResponseImprovementSchema.status, status),
+      sql`cardinality(${voiceResponseImprovementSchema.instances}) > 0`,
+      query?.q
+        ? ilike(voiceResponseImprovementSchema.title, `%${query.q}%`)  
+        : undefined,
+    ),
+    orderBy: [
+      desc(voiceResponseImprovementSchema.createdAt),
+      sql`cardinality(${voiceResponseImprovementSchema.instances}) DESC`,
+    ]
   })
+
+  if (query?.page && query?.limit) {
+    const paginatedVoicebotQueries = data.slice(offset, offset + limit);
+    return {
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length / limit) || 1,
+      totalCount: data.length,
+      data: paginatedVoicebotQueries,
+    };
+  } else {
+    return data
+  }
 }
 
 export const getVoicebotQueryById = async (queryId: string) => {

@@ -1,13 +1,19 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-import { getBotUnansweredQueries, storeImprovedBotResponses, updateChatStatus } from "~/server/utils/db/chats"
+import { getChatbotQueriesByStatus } from "~/server/utils/db/chats"
 
 export default defineEventHandler(async (event) => {
-  try {
+  try {  
     await isOrganizationAdminHandler(event)
+
+    const timeZoneHeader = event.node?.req?.headers["time-zone"];
+    const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
+
     const { id: botId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
-    const botUnansweredQueries = await getBotUnansweredQueries(botId)
+    const query = await isValidQueryHandler(event, zodListQuery)
+
+    const botUnansweredQueries = await getChatbotQueriesByStatus(botId, "not_trained", timeZone, query)
 
     return botUnansweredQueries
   } catch (error: any) {
