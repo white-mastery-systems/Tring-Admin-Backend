@@ -7,12 +7,13 @@ export default defineEventHandler(async (event) => {
     const { ["query-id"]: queryId } = await isValidRouteParamHandler(event, checkPayloadId("query-id"))
 
     const body = await isValidBodyHandler(event, z.object({
-      answer: z.string()
+      answer: z.string().optional(),
+      status: z.enum(["ignored"]).optional()
     }))
     
     const data = await updateVoicebotImprovementQueries(queryId, {
-      answer: body.answer,
-      status: "trained"
+      ...body,
+      status: body?.answer ? "trained" : body?.status
     })
     
     return data
