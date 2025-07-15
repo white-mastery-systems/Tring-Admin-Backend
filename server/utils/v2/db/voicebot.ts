@@ -608,7 +608,7 @@ export const createVoicebotImprovementQueries = async (data: InsertVoiceResponse
   return (await db.insert(voiceResponseImprovementSchema).values(data).returning())[0]
 }
 
-export const getVoicebotQueriesByStatus = async (voicebotId: string, status: "trained" | "not_trained", query: any) => {
+export const getVoicebotQueriesByStatus = async (voicebotId: string, status: "trained" | "not_trained", query?: any) => {
   let page, offset, limit = 0;
 
   if (query.page && query.limit) {
