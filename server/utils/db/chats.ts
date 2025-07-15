@@ -100,7 +100,7 @@ export const listChats = async (
   }
   let page, offset, limit = 0;
 
-  if (query.page && query.limit) {
+  if (query?.page && query?.limit) {
     page = parseInt(query.page);
     limit = parseInt(query.limit);
     offset = (page - 1) * limit;
@@ -313,7 +313,7 @@ export const storeImprovedBotResponses = async (data: any) => {
 export const getChatbotQueriesByStatus = async(botId: string, status: "trained" | "not_trained" | "ignored", timeZone: string, query: any) => {
   let page, offset, limit = 0;
 
-  if (query.page && query.limit) {
+  if (query?.page && query?.limit) {
     page = parseInt(query.page);
     limit = parseInt(query.limit);
     offset = (page - 1) * limit;
