@@ -146,6 +146,11 @@ export const zodUpdateNewVoicebotSchema = z.object({
     clientTools: z.array(z.any()).optional(),
     defaultTools: z.array(z.string()).optional(),
   }).optional(),
+  voicemailConfig: z.object({
+    hangup: z.boolean().optional(),
+    leaveMessage: z.boolean().optional(),
+    message: z.string().optional()
+  }).optional(),
   intent: z.string().optional(),
 }).superRefine((data, ctx) => {
     const source = data.knowledgeSource;
@@ -608,13 +613,42 @@ export const createVoicebotImprovementQueries = async (data: InsertVoiceResponse
   return (await db.insert(voiceResponseImprovementSchema).values(data).returning())[0]
 }
 
-export const getVoicebotQueriesByStatus = async (voicebotId: string, status: "trained" | "not_trained") => {
-  return await db.query.voiceResponseImprovementSchema.findMany({
+export const getVoicebotQueriesByStatus = async (voicebotId: string, status: "trained" | "not_trained" | "ignored", query?: any) => {
+  let page, offset, limit = 0;
+
+  if (query?.page && query?.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
+    offset = (page - 1) * limit;
+  }
+  
+  let data = await db.query.voiceResponseImprovementSchema.findMany({
     where: and(
       eq(voiceResponseImprovementSchema.botId, voicebotId),
-      eq(voiceResponseImprovementSchema.status, status)
-    )
+      eq(voiceResponseImprovementSchema.status, status),
+      sql`cardinality(${voiceResponseImprovementSchema.instances}) > 0`,
+      query?.q
+        ? ilike(voiceResponseImprovementSchema.title, `%${query.q}%`)  
+        : undefined,
+    ),
+    orderBy: [
+      desc(voiceResponseImprovementSchema.createdAt),
+      sql`cardinality(${voiceResponseImprovementSchema.instances}) DESC`,
+    ]
   })
+
+  if (query?.page && query?.limit) {
+    const paginatedVoicebotQueries = data.slice(offset, offset + limit);
+    return {
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(data.length / limit) || 1,
+      totalCount: data.length,
+      data: paginatedVoicebotQueries,
+    };
+  } else {
+    return data
+  }
 }
 
 export const getVoicebotQueryById = async (queryId: string) => {
@@ -630,6 +664,14 @@ export const updateVoicebotImprovementQueries = async (id: string, data: Partial
       updatedAt: new Date()
     }).where(
       eq(voiceResponseImprovementSchema.id, id)
+    ).returning()
+  )[0]
+}
+
+export const deleteVoiceImprovementById = async (id: string) => {
+  return (
+    await db.delete(voiceResponseImprovementSchema).where(
+    eq(voiceResponseImprovementSchema.id, id)
     ).returning()
   )[0]
 }

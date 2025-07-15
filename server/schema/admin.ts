@@ -227,7 +227,7 @@ export const contactProfileSchema = adminSchema.table("contact_profiles", {
 export const contactGroupSchema = adminSchema.table("contact_groups", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   groupName: varchar("group_name"),
-  crmId: uuid("crm_id").references(() => integrationSchema.id),
+  crmId: uuid("crm_id").references(() => integrationSchema.id, { onDelete: "cascade" }),
   isDefault: boolean("is_default").default(false),
   organizationId: uuid("organization_id")
     .notNull()
@@ -369,7 +369,7 @@ export const templateSchema = adminSchema.table("templates", {
   verificationStatus: varchar("verification_status", { length: 64 }).default(
     "pending",
   ),
-  integrationId: uuid("integration_id").references(() => integrationSchema.id),
+  integrationId: uuid("integration_id").references(() => integrationSchema.id, { onDelete: "cascade" }),
   whatsappTemplateId: varchar("whatsapp_template_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -388,7 +388,7 @@ export const orgVisitorSchema =  adminSchema.table("org_visitors", {
 export const whatsappSessionSchema = adminSchema.table("whatsapp_sessions", { 
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id),
-  integrationId: uuid("integration_id").notNull().references(() => integrationSchema.id),
+  integrationId: uuid("integration_id").notNull().references(() => integrationSchema.id, { onDelete: "cascade" }),
   pid: varchar("pid").notNull(),
   // countryCode: varchar("country_code"),
   mobile: varchar("mobile").notNull(),

@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     }))
 
     let page, offset, limit = 0
-    if(query.page && query.limit) {
+    if(query?.page && query?.limit) {
       page = parseInt(query.page) 
       limit = parseInt(query.limit)
       offset = (page - 1) * limit;
