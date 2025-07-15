@@ -132,6 +132,11 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
     dynamicCaching: false,
     distance: 0,
   }),
+  voicemailConfig: jsonb("voicemail_config").default({
+    hangup: true,
+    leaveMessage: false,
+    message: ""
+  }),
   intent: varchar("intent"),
   emailRecipients: varchar("email_recipients").array(),
   ivrConfig: uuid("ivr_config")
@@ -316,7 +321,7 @@ export const voiceResponseImprovementSchema = voiceBotSchema.table("voice_respon
   suggestions: text("suggestions").array(),
   answer: text("answer"),
   status: varchar("status", {
-    enum: ["trained", "not_trained"],
+    enum: ["trained", "not_trained", "ignored"],
   }).default("not_trained").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

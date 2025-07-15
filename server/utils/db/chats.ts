@@ -310,7 +310,7 @@ export const storeImprovedBotResponses = async (data: any) => {
   await db.insert(chatResponseImprovementSchema).values(data)
 }
 
-export const getChatbotQueriesByStatus = async(botId: string, status: "trained" | "not_trained", timeZone: string, query: any) => {
+export const getChatbotQueriesByStatus = async(botId: string, status: "trained" | "not_trained" | "ignored", timeZone: string, query: any) => {
   let page, offset, limit = 0;
 
   if (query.page && query.limit) {
@@ -374,4 +374,12 @@ export const getBotCompletedQueries = async(botId: string) => {
       eq(chatResponseImprovementSchema.status, "trained")
     )
   })
+}
+
+export const deleteChatImprovementById = async (id: string) => {
+  return (
+    await db.delete(chatResponseImprovementSchema)
+    .where(eq(chatResponseImprovementSchema.id, id))
+    .returning()
+  )[0]
 }

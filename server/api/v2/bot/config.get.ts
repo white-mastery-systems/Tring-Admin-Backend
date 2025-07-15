@@ -14,6 +14,6 @@ export default defineEventHandler(async (event) => {
     return data ?? {}
   } catch (error: any) {
     logger.error(`Get chatbot configuration by type API Error: ${JSON.stringify(error.message)}`)
-    return errorResponse(event, 500, "Unable to fetch chatbot congiguration")
+    return errorResponse(event, 500, "Unable to fetch chatbot configuration")
   }
 })

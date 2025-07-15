@@ -317,7 +317,7 @@ export const chatResponseImprovementSchema = chatbotSchema.table("chat_response_
   suggestions: text("suggestions").array(),
   answer: text("answer"),
   status: varchar("status", {
-    enum: ["trained", "not_trained"],
+    enum: ["trained", "not_trained", "ignored"],
   }).default("not_trained").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
