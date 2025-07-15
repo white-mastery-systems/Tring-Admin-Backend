@@ -2,6 +2,7 @@ import { and, lte, gte, inArray } from "drizzle-orm";
 import momentTz from "moment-timezone";
 import { getDateRangeForFilters } from "./leads";
 import { logger } from "~/server/logger";
+import { count } from "drizzle-orm/sql";
 import { chatResponseImprovementSchema } from "~/server/schema/bot";
 
 const db = useDrizzle();
@@ -106,53 +107,70 @@ export const listChats = async (
     offset = (page - 1) * limit;
   }
 
-  let chats = await db.query.chatSchema.findMany({
-    where: and(
-      eq(chatSchema.organizationId, organisationId),
-      query?.channel && query?.channel !== "all"
-        ? eq(chatSchema.channel, query?.channel)
-        : undefined,
-      query?.botId && query?.botId !== "all"
-        ? eq(chatSchema.botId, query.botId)
-        : undefined,
-      query?.period && fromDate && toDate
-        ? between(chatSchema.createdAt, fromDate, toDate)
-        : undefined,
-      query?.outcome && query?.outcome !== "all"
-        ? eq(chatSchema.chatOutcome, query?.outcome) : undefined,
-      query?.mode && query?.mode !== "all"
-        ? eq(chatSchema.mode, query?.mode) : undefined,
-    ),
-    with: {
-      bot: {
-        columns: {
-          name: true,
-        },
-      },
-      botUser: {
-        where: or(
-          query?.q
-            ? ilike(botUserSchema.name, `%${query.q}%`)
-            : undefined,
-        ),
-        columns: {
-          id: true,
-          name: true,
-          visitedCount: true
-        }
-      },
+  const whereClause = and(
+    eq(chatSchema.organizationId, organisationId),
+    query?.channel && query?.channel !== "all"
+      ? eq(chatSchema.channel, query?.channel)
+      : undefined,
+    query?.botId && query?.botId !== "all"
+      ? eq(chatSchema.botId, query.botId)
+      : undefined,
+    query?.period && fromDate && toDate
+      ? between(chatSchema.createdAt, fromDate, toDate)
+      : undefined,
+    query?.outcome && query?.outcome !== "all"
+      ? eq(chatSchema.chatOutcome, query?.outcome) : undefined,
+    query?.mode && query?.mode !== "all"
+      ? eq(chatSchema.mode, query?.mode) : undefined,
+    query?.country && query.country !== "all"
+    ? sql`${chatSchema.metadata} ->> 'country' = ${query.country}`
+    : undefined
+  )
+
+  const totalChatsQuery = db.select({ count: count() })
+    .from(chatSchema)
+    .leftJoin(botUserSchema, eq(chatSchema.botUserId, botUserSchema.id))
+    .where(and(
+      whereClause,
+      query?.q
+        ? ilike(botUserSchema.name, `%${query.q}%`)
+        : undefined
+    ));
+
+  const chatFilterQuery = db.select({
+    id: chatSchema.id,
+    mode: chatSchema.mode,
+    metadata: chatSchema.metadata,
+    channel: chatSchema.channel,
+    createdAt: chatSchema.createdAt,
+    visitedCount: chatSchema.visitedCount,
+    chatOutcome: chatSchema.chatOutcome,
+    bot: {
+      name: chatBotSchema.name,
     },
-    columns: {
-      id: true,
-      mode: true,
-      metadata: true,
-      channel: true,
-      createdAt: true,
-      visitedCount: true,
-      chatOutcome: true
+    botUser: {
+      id: botUserSchema.id,
+      name: botUserSchema.name,
+      visitedCount: botUserSchema.visitedCount,
     },
-    orderBy: [desc(chatSchema.createdAt)],
-  });
+  })
+  .from(chatSchema)
+  .leftJoin(chatBotSchema, eq(chatSchema.botId, chatBotSchema.id))
+  .leftJoin(botUserSchema, eq(chatSchema.botUserId, botUserSchema.id))
+  .where(and(
+    whereClause,
+    query?.q
+      ? ilike(botUserSchema.name, `%${query.q}%`)
+      : undefined
+  ))
+  .orderBy(desc(chatSchema.createdAt))
+  .limit(limit)
+  .offset(offset)
+
+  let [chats, totalChats] = await Promise.all([
+    chatFilterQuery,
+    totalChatsQuery
+  ]);
 
   chats = chats.map((i: any) => ({
     ...i,
@@ -160,22 +178,14 @@ export const listChats = async (
     updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
 
-  if (query?.q) {
-    chats = chats.filter((i) => i.botUser !== null);
-  }
-
-  if (query?.country && query?.country !== "all") {
-    chats = chats.filter((i) => i.metadata?.country === query?.country);
-  }
-
   if (query?.page && query?.limit) {
-    const paginatedChats = chats.slice(offset, offset + limit);
+    const totalOrgChats = totalChats[0].count || 0
     return {
       page: page,
       limit: limit,
-      totalPageCount: Math.ceil(chats.length / limit) || 1,
-      totalCount: chats.length,
-      data: paginatedChats,
+      totalPageCount: Math.ceil(totalOrgChats / limit) || 1,
+      totalCount: totalOrgChats,
+      data: chats,
     };
   } else {
     return chats;
