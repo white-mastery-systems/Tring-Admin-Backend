@@ -616,7 +616,7 @@ export const createVoicebotImprovementQueries = async (data: InsertVoiceResponse
 export const getVoicebotQueriesByStatus = async (voicebotId: string, status: "trained" | "not_trained" | "ignored", query?: any) => {
   let page, offset, limit = 0;
 
-  if (query.page && query.limit) {
+  if (query?.page && query?.limit) {
     page = parseInt(query.page);
     limit = parseInt(query.limit);
     offset = (page - 1) * limit;
