@@ -158,7 +158,7 @@ export const getAllVoiceNewCampaigns = async () => {
   })
 }
 
-export const getCampaignByContactGroupId = async(bucketId: string) => {
+export const getVoiceCampaignByContactGroupId = async(bucketId: string) => {
   return await db.query.newCampaignSchema.findMany({
     where: and(
       sql`${bucketId} = ANY(${newCampaignSchema.bucketIds})`,
