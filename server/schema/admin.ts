@@ -49,8 +49,8 @@ export const paymentSchema = adminSchema.table("payment", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   userId: uuid("user_id")
     .notNull()
-    .references(() => authUserSchema.id),
-  organizationId: uuid("org_id").references(() => organizationSchema.id),
+    .references(() => authUserSchema.id, { onDelete: "cascade" }),
+  organizationId: uuid("org_id").references(() => organizationSchema.id, { onDelete: "cascade" }),
   customerId: text("customer_id").notNull(),
   plan_code: varchar("plan_code", { length: 64 }),
   amount: real("amount").notNull().default(0),
@@ -70,7 +70,7 @@ export const orgSubscriptionSchema = adminSchema.table("org_subscription", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizationSchema.id),
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
   botType: varchar("bot_type"),
   subscriptionId: text("subscription_id"),
   planCode: varchar("plan_code"),
@@ -90,10 +90,10 @@ export const integrationSchema = adminSchema.table("integration", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   user_id: uuid("user_id")
     .notNull()
-    .references(() => authUserSchema.id),
+    .references(() => authUserSchema.id, { onDelete: "cascade" }),
   org_id: uuid("org_id")
     .notNull()
-    .references(() => organizationSchema.id),
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
   name: varchar("name", { length: 64 }).notNull(),
   crm: varchar("crm", { length: 64 }).notNull(),
   type: varchar("type").default("crm"),
@@ -123,10 +123,10 @@ export const integrationSchema = adminSchema.table("integration", {
 
 export const timelineSchema = adminSchema.table("timeline", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  userId: uuid("user_id").references(() => botUserSchema.id),
-  orgId: uuid("org_id").references(() => organizationSchema.id),
+  userId: uuid("user_id").references(() => botUserSchema.id, { onDelete: "cascade" }),
+  orgId: uuid("org_id").references(() => organizationSchema.id, { onDelete: "cascade" }),
   chatId: uuid("chat_id"),
-  botId: uuid("bot_id").references(() => chatBotSchema.id,{ onDelete: "cascade"}),
+  botId: uuid("bot_id").references(() => chatBotSchema.id),
   metadata: jsonb("metadata").default({}).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   event: varchar("event", { length: 64 }),
@@ -170,7 +170,7 @@ export const numberIntegrationSchema = adminSchema.table("number_integration", {
   countryCode: varchar("country_code"),
   organizationId: uuid("org_id")
     .notNull()
-    .references(() => organizationSchema.id),
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -186,7 +186,7 @@ export const contactListSchema = adminSchema.table("contact_list", {
   isDefault: boolean("is_default").default(false),
   organizationId: uuid("organizationId")
     .notNull()
-    .references(() => organizationSchema.id),
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -206,7 +206,7 @@ export const contactProfileSchema = adminSchema.table("contact_profiles", {
   id: uuid("id").primaryKey().defaultRandom(),
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizationSchema.id),
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
   name: varchar("name", { length: 255 }).notNull(),
   countryCode: varchar("country_code", { length: 5 }).notNull(),
   phoneNumber: varchar("phone_number", { length: 20 }).notNull(),
@@ -231,7 +231,7 @@ export const contactGroupSchema = adminSchema.table("contact_groups", {
   isDefault: boolean("is_default").default(false),
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizationSchema.id),
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
@@ -243,7 +243,7 @@ export const contactGroupLinkSchema = adminSchema.table("contact_group_links", {
   contactGroupId: uuid("contact_group_id").references(() => contactGroupSchema.id, { onDelete: 'cascade' }),
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizationSchema.id),
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
@@ -257,7 +257,7 @@ export const contactSchema = adminSchema.table("contacts", {
   phone: varchar("phone"),
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizationSchema.id),
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -272,7 +272,7 @@ export const contactListContactsSchema = adminSchema.table("contact_list_contact
     .references(() => contactSchema.id, { onDelete: 'cascade' }), // Foreign key to contacts
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizationSchema.id),
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
   }
 );
 
@@ -286,7 +286,7 @@ export const voiceContactLinkSchema = adminSchema.table("voice_contact_links", {
     .references(() => voicebotContactSchema.id, { onDelete: 'cascade' }), // Foreign key to contacts
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizationSchema.id),
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
   }
 );
 export const voicebotContactSchema = adminSchema.table("voicebot_contacts", {
@@ -314,7 +314,7 @@ export const campaignSchema = adminSchema.table("campaign", {
   botConfig: jsonb("bot_config"),
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizationSchema.id
+    .references(() => organizationSchema.id, { onDelete: "cascade" }
   ),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -330,7 +330,7 @@ export const newCampaignSchema = adminSchema.table("new_campaigns", {
   retryAttempt: jsonb("retry_attempt"),
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizationSchema.id
+    .references(() => organizationSchema.id, { onDelete: "cascade" }
   ),
   isDeleted: boolean("is_deleted").default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -365,7 +365,7 @@ export const templateSchema = adminSchema.table("templates", {
   metadata: jsonb("metadata").default({}),
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizationSchema.id),
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
   verificationStatus: varchar("verification_status", { length: 64 }).default(
     "pending",
   ),
@@ -380,14 +380,14 @@ export const orgVisitorSchema =  adminSchema.table("org_visitors", {
   visitorId: uuid("visitor_id").notNull(),
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizationSchema.id),
+    .references(() => organizationSchema.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
 export const whatsappSessionSchema = adminSchema.table("whatsapp_sessions", { 
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id),
+  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id, { onDelete: "cascade" }),
   integrationId: uuid("integration_id").notNull().references(() => integrationSchema.id, { onDelete: "cascade" }),
   pid: varchar("pid").notNull(),
   // countryCode: varchar("country_code"),
@@ -588,7 +588,7 @@ export const subscriptionStatusEnum = pgEnum("subscriptionStatus", [
 
 export const adminSubscriptionSchema = adminSchema.table("admin_subscriptions", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id),
+  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id, { onDelete: "cascade" }),
   serviceType: serviceTypesEnum("service_type").notNull(),
   subscriptionId: varchar("subscription_id"),
   pricingPlanCode: varchar("pricing_plan_code").notNull(),
@@ -601,7 +601,7 @@ export const adminSubscriptionSchema = adminSchema.table("admin_subscriptions", 
 
 export const adminPlanUsageSchema = adminSchema.table("admin_plan_usages", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id),
+  organizationId: uuid("organization_id").notNull().references(() => organizationSchema.id, { onDelete: "cascade" }),
   serviceType: serviceTypesEnum("service_type").notNull(),
   pricingPlanCode: varchar("pricing_plan_code").notNull(),
   subscriptionId: varchar("subscription_id"),
@@ -618,7 +618,7 @@ export const adminPlanUsageSchema = adminSchema.table("admin_plan_usages", {
 
 export const industriesSchema = adminSchema.table("industries", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  organizationId: uuid("organization_id").references(() => organizationSchema.id),
+  organizationId: uuid("organization_id").references(() => organizationSchema.id, { onDelete: "cascade" }),
   industryName: varchar("industry_name"),
   isDefault: boolean("is_default").default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
