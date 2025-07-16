@@ -1,6 +1,5 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-import { getCampaignByContactGroupId } from "~/server/utils/v2/db/campaign"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -98,23 +97,26 @@ export default defineEventHandler(async (event) => {
     
     const data = await createContactGroupLinks(contactsAndContactGroupsLink)
 
-    const campaignData: any = await getCampaignByContactGroupId(contactGroupId)
-    if (campaignData.length) {
-      const mapVoiceContactWithScheduler: any = data.map((item) => {
-        const campaignDetail = campaignData.find((campaign: any) =>
-          campaign.bucketIds.includes(item.contactGroupId)
-        );
-        return {
-          campaignId: campaignDetail.id,
-          contactGroupId: item.contactGroupId,
-          contactId: item.contactId,
-          botId: campaignDetail?.botConfig?.botId,
-          organizationId: organizationId,
-        };
-      });
-      // create campaign data in schedular table
-      await createVoiceCallSchdeuling(mapVoiceContactWithScheduler);
-    }
+    // Currently commented out — retained for reference or future reactivation.
+    
+    // map it with voice contact data, and schedule voice calls accordingly.
+    // const campaignData: any = await getVoiceCampaignByContactGroupId(contactGroupId)
+    // if (campaignData.length) {
+    //   const mapVoiceContactWithScheduler: any = data.map((item) => {
+    //     const campaignDetail = campaignData.find((campaign: any) =>
+    //       campaign.bucketIds.includes(item.contactGroupId)
+    //     );
+    //     return {
+    //       campaignId: campaignDetail.id,
+    //       contactGroupId: item.contactGroupId,
+    //       contactId: item.contactId,
+    //       botId: campaignDetail?.botConfig?.botId,
+    //       organizationId: organizationId,
+    //     };
+    //   });
+    //   // create campaign data in schedular table
+    //   await createVoiceCallSchdeuling(mapVoiceContactWithScheduler);
+    // }
   
     return data
     

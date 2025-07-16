@@ -1,6 +1,5 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-import { getCampaignByContactGroupId } from "~/server/utils/v2/db/campaign"
 import { createContactGroupLinks } from "~/server/utils/v2/db/contact-group"
 
 export default defineEventHandler(async (event) => {
@@ -28,24 +27,6 @@ export default defineEventHandler(async (event) => {
     }))
     
     const data = await createContactGroupLinks(contactsAndContactGroupsLink)
-
-    const campaignData: any = await getCampaignByContactGroupId(contactGroupId)
-    if (campaignData.length) {
-      const mapVoiceContactWithScheduler: any = data.map((item) => {
-        const campaignDetail = campaignData.find((campaign: any) =>
-          campaign.bucketIds.includes(item.contactGroupId)
-        );
-        return {
-          campaignId: campaignDetail.id,
-          contactGroupId: item.contactGroupId,
-          contactId: item.contactId,
-          botId: campaignDetail?.botConfig?.botId,
-          organizationId: organizationId,
-        };
-      });
-      // create campaign data in schedular table
-      await createVoiceCallSchdeuling(mapVoiceContactWithScheduler);
-    }
     
     return data
     

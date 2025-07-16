@@ -29,17 +29,19 @@ export default defineEventHandler(async (event) => {
     
     let data = []; let campaignTotalContacts = []; let deliveredContacts = []; let failedContacts = []
 
-
     const contactMethod = campaignDetail.contactMethod
 
     if(contactMethod === "voice") {
       campaignTotalContacts = await getVoiceScheduledContactsByCampaignId(organizationId, campaignId, timeZone)
       data = await getVoiceScheduledContactsByCampaignId(organizationId, campaignId, timeZone, query)
+
       deliveredContacts = campaignTotalContacts.filter((i: any)=> !["Not Dialed", "Failed"].includes(i.callStatus))
       failedContacts = campaignTotalContacts.filter((j: any) => ["Failed"].includes(j.callStatus))
-    } else { // contact method is whatsapp
+    } else { 
+      // contact method is whatsapp
       campaignTotalContacts  = await getWhatsappContactsByCampaignId(campaignId, timeZone)
       data = await getWhatsappContactsByCampaignId(campaignId, timeZone, query)
+
       deliveredContacts = campaignTotalContacts.filter((i: any)=> ["delivered", "sent", "read"].includes(i.messageStatus.toLowerCase()))
       failedContacts = campaignTotalContacts.filter((j: any) => ["failed"].includes(j.messageStatus.toLowerCase()))  
     }
