@@ -22,8 +22,8 @@ export const chatBotSchema = chatbotSchema.table("bot", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   name: varchar("name", { length: 64 }).notNull(),
   documentId: uuid("document_id"),
-  integrationId: uuid("integration_id").references(() => integrationSchema.id),
-  industryId: uuid("industry_id").references(() =>  industriesSchema.id),
+  integrationId: uuid("integration_id").references(() => integrationSchema.id, { onDelete: "cascade" }),
+  industryId: uuid("industry_id").references(() =>  industriesSchema.id, { onDelete: "cascade" }),
   type: varchar("type", { length: 64 }).default("real-estate"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   metadata: jsonb("metadata").default({
@@ -156,7 +156,7 @@ export const chatSchema = chatbotSchema.table(
       onDelete: "cascade",
     }),
     botId: uuid("bot_id")
-      .references(() => chatBotSchema.id, { onDelete: "cascade" })
+      .references(() => chatBotSchema.id)
       .notNull(),
     organizationId: uuid("organization_id").references(
       () => organizationSchema.id,
@@ -199,16 +199,16 @@ export const leadSchema = chatbotSchema.table(
     metadata: jsonb("metadata"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     botId: uuid("bot_id")
-      .references(() => chatBotSchema.id, { onDelete: "cascade" })
+      .references(() => chatBotSchema.id)
       .notNull(),
     botUserId: uuid("bot_user_id")
-      .references(() => botUserSchema.id)
+      .references(() => botUserSchema.id, { onDelete: "cascade" })
       .notNull(),
     chatId: uuid("chat_id")
-      .references(() => chatSchema.id)
+      .references(() => chatSchema.id, { onDelete: "cascade" })
       .notNull(),
     organizationId: uuid("organization_id")
-      .references(() => organizationSchema.id)
+      .references(() => organizationSchema.id, { onDelete: "cascade" })
       .notNull(),
     status: varchar("status").default("default").notNull(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -239,14 +239,14 @@ export const botIntentSchema = chatbotSchema.table("intents", {
   isActive: boolean("is_active").default(true),
   link: varchar("link"),
   organizationId: uuid("organization_id")
-    .references(() => organizationSchema.id)
+    .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const botIntegrationSchema = chatbotSchema.table("bot_integrations", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
-  botId: uuid("bot_id").references(() => chatBotSchema.id,{ onDelete: "cascade"}),
+  botId: uuid("bot_id").references(() => chatBotSchema.id, { onDelete: "cascade"} ),
   metadata: jsonb("metadata"),
   integrationId: uuid("integration_id").references(() => integrationSchema.id, {
     onDelete: "cascade",
@@ -254,7 +254,7 @@ export const botIntegrationSchema = chatbotSchema.table("bot_integrations", {
   status: varchar("status", { enum: ["active", "inactive"]}).default("active"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   organizationId: uuid("organization_id")
-    .references(() => organizationSchema.id)
+    .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

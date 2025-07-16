@@ -78,7 +78,8 @@ export const getCallLogsList = async (organizationId: string, timeZone?: string,
   }
 
   if(query?.outcome && query?.outcome !== "all") {
-    data = data.filter((i: any) => i.metrics.callOutcome === query?.outcome)
+    const filterData = data.filter((i: any) => i.metrics !== null)
+    data = filterData.filter((i: any) => i.metrics.callOutcome === query?.outcome)
   }
 
   if (query?.page && query?.limit) {
