@@ -35,9 +35,12 @@ export default defineEventHandler(async (event) => {
 
   let document;
   document = await getDocumentById(doc_id);
-  document = document?.status !== "ready" ? null : document;
-  if(!document) {
-    return errorResponse(event, 400, "The provided document is still being processed. Please try again later.")
+  if (!document) {
+    return errorResponse(event, 404, "Document not found");
+  }
+
+  if (document.status !== "ready") {
+    return errorResponse(event, 400, "The provided document is still being processed. Please try again later");
   }
   
   document = await isValidReturnType(event, document);
