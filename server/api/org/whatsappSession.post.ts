@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
   }));
 
   try {
-    const { organizationId, pid, mobile } = body;
+    const { organizationId, pid, mobile, countryCode } = body;
 
     const [orgZohoSubscription, orgDetail, orgPlanUsage, adminDetail] = await Promise.all([
       getOrgZohoSubscription(organizationId, "chat"),
@@ -23,60 +23,28 @@ export default defineEventHandler(async (event) => {
     ]);
 
     const adminCountry = adminDetail?.address?.country || "India";
+
     const planPricingDetail = await getSubcriptionPlanDetailByPlanCode(
       orgZohoSubscription?.pricingPlanCode!,
       adminCountry
     );
 
-    let whatsappWalletBalance = orgDetail?.wallet || 0;
-
-    const reduceAmount = countriesData.find((item) => item.dial_code === body.countryCode)?.WhatsappSessionCost || 1.5;
-
     const isSubscriptionActive = orgZohoSubscription?.subscriptionStatus === "active";
-
-    // Check subscription status
-    if (!isSubscriptionActive || whatsappWalletBalance < reduceAmount) {
-      return {
-        status: false,
-        whatsappWalletBalance,
-        organizationName: orgDetail?.name,
-        revisited: false,
-        subscriptionStatus: isSubscriptionActive
-      };
-    }
-
-    // Plan session usage
-    const usedSessions = (orgPlanUsage?.interactionsUsed || 0) + 1;
-    const maxSessions = planPricingDetail?.sessions || 0;
-    const isExtraSession = usedSessions > maxSessions;
-
-    // Determine session cost
-    let sessionCost = reduceAmount; // base WhatsApp session cost
-    if (isExtraSession) {
-      sessionCost = planPricingDetail?.extraSessionCost ?? reduceAmount;
-    }
-
-    // Check wallet balance
-    if (whatsappWalletBalance < sessionCost) {
-      return {
-        status: false,
-        whatsappWalletBalance,
-        organizationName: orgDetail?.name,
-        revisited: false,
-        subscriptionStatus: true
-      };
-    }
+    let whatsappWalletBalance = orgDetail?.wallet || 0;
+    const reduceAmount = countriesData.find(
+      (item) => item.dial_code === countryCode
+    )?.WhatsappSessionCost || 1.5;
 
     // Check if session already exists within 2 hours
-    const whatsappSessionExist = await getOrgWhatsappSessions(organizationId, pid, mobile);
+    const existingSession = await getOrgWhatsappSessions(organizationId, pid, mobile);
 
     const now = new Date();
     let shouldCreateNewSession = false;
 
-    if (whatsappSessionExist) {
-      const createdAt = new Date(whatsappSessionExist.createdAt);
-      const hoursDifference = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
-      if (hoursDifference > 2) {
+    if (existingSession) {
+      const createdAt = new Date(existingSession.createdAt);
+      const hoursDiff = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
+      if (hoursDiff > 2) {
         shouldCreateNewSession = true;
       }
     } else {
@@ -84,6 +52,35 @@ export default defineEventHandler(async (event) => {
     }
 
     if (shouldCreateNewSession) {
+      // Check subscription
+      if (!isSubscriptionActive) {
+        return {
+          status: false,
+          whatsappWalletBalance,
+          organizationName: orgDetail?.name,
+          revisited: !!existingSession,
+          subscriptionStatus: false
+        };
+      }
+
+      const usedSessions = (orgPlanUsage?.interactionsUsed || 0) + 1;
+      const maxSessions = planPricingDetail?.sessions || 0;
+      const isExtraSession = usedSessions > maxSessions;
+      const sessionCost = isExtraSession
+        ? planPricingDetail?.extraSessionCost ?? reduceAmount
+        : reduceAmount;
+
+      if (whatsappWalletBalance < sessionCost) {
+        return {
+          status: false,
+          whatsappWalletBalance,
+          organizationName: orgDetail?.name,
+          revisited: !!existingSession,
+          subscriptionStatus: true
+        };
+      }
+
+      // Deduct wallet, create session
       const totalExtraSessions = isExtraSession
         ? (orgPlanUsage?.extraInteractionsUsed || 0) + 1
         : orgPlanUsage?.extraInteractionsUsed || 0;
@@ -103,8 +100,8 @@ export default defineEventHandler(async (event) => {
         status: true,
         whatsappWalletBalance,
         organizationName: orgDetail?.name,
-        revisited: !!whatsappSessionExist,
-         subscriptionStatus: true
+        revisited: !!existingSession,
+        subscriptionStatus: true
       };
     }
 
@@ -113,7 +110,7 @@ export default defineEventHandler(async (event) => {
       status: true,
       whatsappWalletBalance,
       organizationName: orgDetail?.name,
-      revisited: false,
+      revisited: true,
       subscriptionStatus: true
     };
 
