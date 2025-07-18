@@ -2,7 +2,7 @@ import { logger } from "~/server/logger"
 import { pushCallLogsToAkkuClay, pushCallLogsToYourstoreClay } from "~/server/utils/clay/webhook"
 import { createCallLogs } from "~/server/utils/db/call-logs"
 import { updateSubscriptionPlanUsageById } from "~/server/utils/v2/db/planUsage"
-import { updateVoiceScheduledCallByCallSid } from "~/server/utils/v2/db/voicebot"
+import { createVoicebotCaching, updateVoiceScheduledCallByCallSid } from "~/server/utils/v2/db/voicebot"
 
 const zodInsertCallLogsValidator = z.object({
   callSid: z.string(),
@@ -20,6 +20,13 @@ const zodInsertCallLogsValidator = z.object({
   organizationId: z.string(),
   botId: z.string(),
   summary: z.string(),
+  cacheHit: z.array(
+    z.object({
+      text: z.string(),
+      cache: z.string(),
+      audioId: z.string()
+    })
+  ).optional(),
   inadequateResponses: z.array(
     z.object({
       userQuery: z.string(),
@@ -37,7 +44,17 @@ export default defineEventHandler(async (event) => {
   const data = await createCallLogs({
     ...body,
   })
-  // demo purpose
+
+  if(body?.cacheHit) {
+    const cacheHitList = body?.cacheHit.map((item) => ({
+      ...item,
+      botId: data?.botId,
+      callLogId: data?.id,
+      organizationId: data?.organizationId
+    }))
+    await createVoicebotCaching(cacheHitList)
+  }
+  // demo purpose start
   const callLogHandlers: Record<string, (args: { body: any }) => void> = {
     "dcdaa79f-e01b-4e30-975e-38ceb34d8db6": pushCallLogsToYourstoreClay,
     "5558c8c9-a3b9-460d-a6e4-81e830df4293": pushCallLogsToAkkuClay,
@@ -52,6 +69,7 @@ export default defineEventHandler(async (event) => {
       logger.error(`Push CallLogs to Clay Error (botId: ${body?.botId}): ${JSON.stringify(error.message)}`);
     }
   }
+  // demo purpose end
 
   if(body?.direction === "outbound" && body?.metrics?.callOutcome) {
     await updateVoiceScheduledCallByCallSid(body?.callSid, body?.metrics?.callOutcome)

@@ -164,8 +164,10 @@ export const listChats = async (
       : undefined
   ))
   .orderBy(desc(chatSchema.createdAt))
-  .limit(limit)
-  .offset(offset)
+
+  if (!query?.export) {
+    chatFilterQuery.limit(limit).offset(offset);
+  }
 
   let [chats, totalChats] = await Promise.all([
     chatFilterQuery,
@@ -178,7 +180,7 @@ export const listChats = async (
     updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
 
-  if (query?.page && query?.limit) {
+  if (!query?.export) {
     const totalOrgChats = totalChats[0].count || 0
     return {
       page: page,
