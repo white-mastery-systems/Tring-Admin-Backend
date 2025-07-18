@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import { adminSubscriptionSchema, campaignWhatsappContactSchema, contactGroupLinkSchema, contactGroupSchema, contactListAndContactsRelations, contactListContactsSchema, industriesSchema, orgSubscriptionSchema, playgroundDocumentSchema, templateRelations, voicebotContactSchema, voiceBucketContactsRelations, voiceContactLinkSchema, whatsappSessionSchema, zohoBillingCreditSchema } from "../schema/admin";
 import { userOTPSchema } from "../schema/auth";
-import { callLogsRelations, outboundCallSchema, salesHandyContactsSchema, voicebotCallRelations, voicebotIntegrationRelations, voicebotLeadRelations, voicebotLeadSchema, voicebotRelations, voicebotSchedularSchema, voicebotScheduledCallsRelations } from "../schema/voicebot";
+import { callLogsRelations, outboundCallSchema, salesHandyContactsSchema, voicebotCacheSchema, voicebotCallRelations, voicebotIntegrationRelations, voicebotLeadRelations, voicebotLeadSchema, voicebotRelations, voicebotSchedularSchema, voicebotScheduledCallsRelations } from "../schema/voicebot";
 import { botDynamicFormSchema, chatResponseImprovementSchema } from "../schema/bot";
 
 const config = useRuntimeConfig()
@@ -67,6 +67,7 @@ const schema = {
   zohoBillingCreditSchema,
   blockedNumbersSchema,
   voiceResponseImprovementSchema,
+  voicebotCacheSchema,
   // Relations
   organizationRelations,
   chatBotRelations,
