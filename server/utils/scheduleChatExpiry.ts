@@ -44,18 +44,33 @@ const findExpiredChatIds = async () => {
 
 const generateAndStoreChatSummary = async (chatId: string) => {
   try {
-    // Fetch chat history
-    const chatHistory = await $fetch(`/api/org/chat/${chatId}/messages`, {
-      method: "GET",
-    });
+    // Fetch chat history from API
+    const chatHistory = await $fetch<{ messages: any[] }[]>(
+      `/api/org/chat/${chatId}/messages`,
+      {
+        method: "GET",
+      },
+    );
 
-    // Generate chat summary
+    // Ensure chatHistory is not empty
+    if (
+      chatHistory.length === 0 ||
+      !chatHistory[0].messages ||
+      chatHistory[0].messages.length < 3
+    ) {
+      logger.info(`Chat ${chatId} has less than 3 messages. Skipping summary.`);
+      return;
+    }
+
+    // At least 3 messages exist — proceed
     const summaryResponse = await $fetch("/api/chat-summary", {
       method: "POST",
-      body: { chatHistory, chatId },
+      body: {
+        chatHistory,
+        chatId,
+      },
     });
 
-    // Update the chat record with the summary
     await updateChatSummary(chatId, summaryResponse);
 
     logger.info(`Updated summary for chat ${chatId}`);
@@ -63,3 +78,4 @@ const generateAndStoreChatSummary = async (chatId: string) => {
     logger.error(`Error generating summary for chat ${chatId}: ${error}`);
   }
 };
+
