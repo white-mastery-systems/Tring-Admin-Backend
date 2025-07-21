@@ -736,9 +736,9 @@ export const getVoicebotCacheList = async (botId: string, query: any) => {
   }
 }
 
-export const deleteVoicebotCaches = async (clearAll: string, botId: string, audioId?: string) => {
+export const deleteVoicebotCaches = async (botId: string, isClearAll: boolean, audioId: string) => {
   return await db.delete(voicebotCacheSchema).where(
-    (clearAll === "true" && botId) 
+    (isClearAll) 
     ? eq(voicebotCacheSchema.botId, botId)
     : eq(voicebotCacheSchema.audioId, audioId)
   )
