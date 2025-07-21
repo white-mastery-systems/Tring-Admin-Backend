@@ -38,6 +38,7 @@ const zodInsertTemplates = z.object({
   integrationId: z.string({ required_error: "integrationId is required" }),
   category: z.string().optional(),
 });
+
 export default defineEventHandler(async (event) => {
   try {
     const organizationId = (await isOrganizationAdminHandler(event)) as string;
@@ -131,7 +132,7 @@ export default defineEventHandler(async (event) => {
     
     return {status:true, ...data};
   } catch(error:any) {
-    logger.error(JSON.stringify({ error: JSON.stringify(error), msg: error.message }));
-    return errorResponse(event, 404, error.message || "Error Occured in whatsapp template creation");
+    logger.error(`Whatspp Template Creation API Error: ${JSON.stringify({ error: error.message })}`);
+    return errorResponse(event, 500, error.message || "Error Occured in whatsapp template creation");
   }
 });

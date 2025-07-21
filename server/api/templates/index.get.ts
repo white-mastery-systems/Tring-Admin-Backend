@@ -1,11 +1,8 @@
-import { getTemplatesByWabaId, listAllApprovedTemplates } from "~/server/utils/template";
+import { getNewTemplatesByWabaId } from "~/server/utils/template";
 
 const zodQueryValidator = z.object({
-  page: z.string().optional(),
-  limit: z.string().optional(),
-  q: z.string().optional(),
-  id: z.string().optional(),
-  status: z.string().optional()
+  integrationId: z.string(),
+  status: z.string().default("all")
 });
 
 export default defineEventHandler(async (event) => {
@@ -18,16 +15,19 @@ export default defineEventHandler(async (event) => {
 
   const query: any = await isValidQueryHandler(event, zodQueryValidator);
 
-  const integration: any = await getIntegrationById(organizationId, query?.q || query?.id);
+  const integration: any = await getIntegrationById(organizationId, query?.integrationId);
 
-  let templateList = query?.status === "approved" 
-  ? await listAllApprovedTemplates(integration?.metadata?.wabaId, integration?.metadata?.access_token)
-  : await getTemplatesByWabaId(integration?.metadata?.wabaId, integration?.metadata?.access_token, query?.limit);
+  if(integration?.metadata?.wabaId && integration?.metadata?.access_token){
+    const templateList = await getNewTemplatesByWabaId(integration?.metadata?.wabaId, integration?.metadata?.access_token, query?.status!)
+    return {
+      integrationId: query?.integrationId,
+      templates: templateList || [],
+    };
+  }
 
-  const result = {
-    integrationId: query?.id ?? query?.q,
-    templates: templateList || [],
+  return {
+    integrationId: query?.id,
+    templates: [],
   };
-
-  return result;
+ 
 });

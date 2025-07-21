@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
 
   const templateList = await getTemplateDetailsByName(integration.metadata?.wabaId, integration.metadata?.access_token, query.templateName)
 
-  const templateInformation = templateList?.data?.find(
+  const templateInformation = templateList?.find(
     (i: any) => i.name === query.templateName,
   );
 

@@ -1,5 +1,36 @@
 import { logger } from "../logger";
 
+export const getNewTemplatesByWabaId = async (
+  wabaId: string,
+  accessToken: string,
+  status: string,
+): Promise<any> => {
+  let statusFilter = "all"
+
+  if(status !== "all") {
+    statusFilter = status === "approved" ? "APPROVED" : "REJECTED"
+  }
+
+  const getTemplatesApiEndpoint = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?fields=name,status${statusFilter !== "all" ? `&status=${statusFilter}` : ""}`;
+  try {
+    const templateListApiEndpoint: { data: any } = await $fetch(
+      getTemplatesApiEndpoint,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+    logger.info("Templates fetched successfully");
+
+    return templateListApiEndpoint
+  } catch (error:any) {
+    logger.error(`Error occurred while fetching templates: ${JSON.stringify(error?.response?._data)}`)
+    throw new Error(error?.response?._data?.error?.error_user_msg || error?.response?._data?.error?.error_user_title || "Failed to fetch templates");
+  }
+};
+
 export const getTemplatesByWabaId = async (
   wabaId: string,
   accessToken: string,
@@ -48,12 +79,8 @@ export const deleteTemplateById = async (
     logger.info("Template deleted successfully");
     return templateDeleteApiResponse;
   } catch (error:any) {
-    logger.error({
-      message: "Error occurred while deleting template",
-      error: JSON.stringify(error),
-      errorData: error?.data,
-    });
-    throw new Error("Failed to delete template");
+    logger.error(`Error occurred while deleting template: ${JSON.stringify(error?.response?._data)}`)
+    throw new Error(error?.response?._data?.error?.error_user_msg || error?.response?._data?.error.error_user_title || "Failed to delete template");
   }
 };
 
@@ -78,12 +105,8 @@ export const editTemplateById = async (
     logger.info("Template edited successfully");
     return templateEditApiResponse;
   } catch (error:any) {
-    logger.error({
-      message: "Error occurred while editing template",
-      error: JSON.stringify(error),
-      errorData: error?.data,
-    });
-    throw new Error("Failed to edit template");
+    logger.error(`Error occurred while editing template: ${JSON.stringify(error?.response?._data)}`)
+    throw new Error(error?.response?._data?.error?.error_user_msg || error?.response?._data?.error?.error_user_title || "Failed to edit template");
   }
 };
 
@@ -106,12 +129,8 @@ export const listAllApprovedTemplates = async (
     logger.info("Approved templates fetched successfully");
     return approvedTemplatesApiResponse?.data;
   } catch (error:any) {
-    logger.error({
-      message: "Error occurred while fetching approved templates",
-      error: JSON.stringify(error),
-      errorData: error?.data,
-    });
-    throw new Error("Failed to fetch approved templates");
+    logger.error(`Error occurred while fetching approved templates: ${JSON.stringify(error?.response?._data)}`)
+    throw new Error(error?.response?._data?.error?.error_user_msg || error?.response?._data?.error?.error_user_title || "Failed to fetch approved templates");
   }
 };
 
@@ -135,12 +154,8 @@ export const getTemplateDetailsByName = async (
     logger.info("Template details fetched successfully");
     return templateDetailsApiResponse?.data;
   } catch (error:any) {
-    logger.error({
-      message: "Error occurred while fetching template details",
-      error: JSON.stringify(error),
-      errorData: error?.data,
-    });
-    throw new Error("Failed to fetch template details");
+    logger.error(`Error occurred while fetching template details: ${JSON.stringify(error?.response?._data)}`)
+    throw new Error(error?.response?._data?.error?.error_user_msg || error?.response?._data?.error?.error_user_title || "Failed to fetch template details");
   }
 };
 
@@ -173,12 +188,8 @@ export const createWhatsappMessageTemplate = async (
     logger.info("Template created successfully");
     return templateCreationApiResponse;
   } catch (error:any) {
-    logger.error({
-      message: "Error occurred while creating template",
-      error: JSON.stringify(error),
-      errorData: error?.data,
-    });
-    throw new Error("Failed to create template");
+    logger.error(`Error occurred while creating template: ${JSON.stringify(error?.response?._data)}`);
+    throw new Error(error?.response?._data?.error?.error_user_msg || error?.response?._data?.error?.error_user_title || "Failed to create template");
   }
 };
 
@@ -217,8 +228,8 @@ export const sendWhatsappTemplateMessage = async (
     logger.info("WhatsApp template message sent successfully");
     return sendMessageTemplateApiResponse;
   } catch (error: any) {
-    logger.error(`Error occurred while sending WhatsApp template: ${JSON.stringify(error.message)}`);
-    throw new Error("Failed to send WhatsApp template message");
+    logger.error(`Error occurred while sending WhatsApp template: ${JSON.stringify(error?.response?._data)}`)
+    throw new Error(error?.response?._data?.error?.error_user_msg || error?.response?._data?.error?.error_user_title || "Failed to send WhatsApp template message");
   }
 };
 
