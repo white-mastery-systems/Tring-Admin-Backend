@@ -7,7 +7,7 @@ const config = useRuntimeConfig()
 export default defineEventHandler(async (event) => {
   try {
     const organizationId = (await isOrganizationAdminHandler(event)) as string
-    const { id: botId } = await isValidQueryHandler(event, checkPayloadId("id"))
+    const { id: botId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
     const query = await isValidQueryHandler(event, z.object({
       audioId: z.string()
