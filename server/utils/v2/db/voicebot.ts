@@ -1,4 +1,4 @@
-import { InsertVoicebotCallSchedule, InsertVoiceResponseImprovement, voicebotCallScheduleSchema } from "~/server/schema/voicebot"
+import { InsertVoicebotCaching, InsertVoicebotCallSchedule, InsertVoiceResponseImprovement, voicebotCacheSchema, voicebotCallScheduleSchema } from "~/server/schema/voicebot"
 import momentTz from "moment-timezone"
 import { inArray } from "drizzle-orm"
 
@@ -136,9 +136,8 @@ export const zodUpdateNewVoicebotSchema = z.object({
     ambientNoiseAudio: z.array(z.any()).optional(),
     forwardCallAudio: z.array(z.any()).optional(),
   }).optional(),
-  clientConfig: z.object({
-    llmCaching: z.boolean().optional(),
-    dynamicCaching: z.boolean().optional(),
+  cacheConfig: z.object({
+    active: z.boolean().optional(),
     distance: z.number().optional(),
   }).optional(),
   audioFiles: z.record(z.any()).optional(),
@@ -674,4 +673,73 @@ export const deleteVoiceImprovementById = async (id: string) => {
     eq(voiceResponseImprovementSchema.id, id)
     ).returning()
   )[0]
+}
+
+// Voicebot Caching
+export const createVoicebotCaching = async (data: InsertVoicebotCaching[]) => {
+  return (
+    await db.insert(voicebotCacheSchema).values(data).returning()
+  )[0]
+}
+
+export const getVoicebotCacheList = async (botId: string, query: any) => {
+  let page, offset, limit = 0;
+
+  if (query?.page && query?.limit) {
+    page = parseInt(query.page);
+    limit = parseInt(query.limit);
+    offset = (page - 1) * limit;
+  }
+
+  let data: any = await db.select()
+    .from(voicebotCacheSchema)
+    .where(
+      eq(voicebotCacheSchema.botId, botId)
+    )
+    .orderBy(desc(voicebotCacheSchema.createdAt))
+
+  const grouped = data.reduce((acc: any, item: any) => {
+   const { audioId, text, cache, callLogId } = item;
+    if (!acc[audioId]) {
+      acc[audioId] = {
+        audioId,
+        cache,
+        texts: [{
+          text,
+          callLogId
+        }], // collect all text values
+        cacheHits: 1
+      };
+    } else {
+      acc[audioId].texts.push({
+        text,
+        callLogId
+      });
+      acc[audioId].cacheHits += 1;
+    }
+    return acc;
+  }, {});
+
+  // Convert to array
+  const results = Object.values(grouped);
+  if(query?.page && query?.limit) {
+    const paginatedVoicebotCache = results.slice(offset, offset + limit);
+    return { 
+      page: page,
+      limit: limit,
+      totalPageCount: Math.ceil(results.length / limit) || 1,
+      totalCount: results.length,
+      data: paginatedVoicebotCache,
+    };
+  } else {
+    return results
+  }
+}
+
+export const deleteVoicebotCaches = async (botId: string, isClearAll: boolean, audioId: string) => {
+  return await db.delete(voicebotCacheSchema).where(
+    (isClearAll) 
+    ? eq(voicebotCacheSchema.botId, botId)
+    : eq(voicebotCacheSchema.audioId, audioId)
+  )
 }

@@ -11,37 +11,43 @@ export default defineEventHandler(async (event) => {
     const { queryId } = await isValidRouteParamHandler(event, checkPayloadId("queryId"))
 
     const body = await isValidBodyHandler(event, z.object({
-      answer: z.string()
+      answer: z.string().optional(),
+      status: z.enum(["ignored"]).optional()
     }))
-
-    const botDetails = await getBotDetails(botId)
 
     await updateBotQueriesById(queryId, body)
 
-    const botQueries = await getBotQueriesById(queryId)
+    if(body?.answer) {  
+      const botDetails = await getBotDetails(botId)
+      const botQueries = await getBotQueriesById(queryId)
 
-    const onlyQuestions = botQueries?.instances!
-    .map((item: any) => item.question.trim())
-    .map((q) => (q.endsWith("?") ? q : q + "?"))
-    .join(" ");
+      const onlyQuestions = botQueries?.instances!
+      .map((item: any) => item.question.trim())
+      .map((q) => (q.endsWith("?") ? q : q + "?"))
+      .join(" ");
 
-    const updatedData = `${onlyQuestions} ${botQueries?.answer || ""}`.trim()
+      const updatedData = `${onlyQuestions} ${botQueries?.answer || ""}`.trim()
 
-    const updateDocument = await $fetch(`/rag/document/${botDetails?.documentId}`, {
-      method: "POST",
-      baseURL: config.llmBaseUrl,
-      body: {
-        content: updatedData,
-        originUrl: `https://tring-admin.pripod.com/api/chat-bot/${botId}`
+      const updateDocument = await $fetch(`/rag/document/${botDetails?.documentId}`, 
+      {
+        method: "POST",
+        baseURL: config.llmBaseUrl,
+        body: {
+          content: updatedData,
+          originUrl: `${config.public.adminBaseUrl}`
+        }
+      })
+
+      if(updateDocument) {
+        await updateBotQueriesById(queryId, { status: "trained" })
+        return true
+      } else {  
+        return errorResponse(event, 500, "Unable to create response")
       }
-    })
-
-    if(updateDocument) {
-      await updateBotQueriesById(queryId, { status: "trained" })
-      return updateDocument
-    } else {  
-      return errorResponse(event, 500, "Unable to create response")
     }
+
+    return true
+    
   } catch(error: any) {
     logger.error(`Chat improvement update API Error: ${JSON.stringify(error.message)}`)
     return errorResponse(event, 500, "Unable to create response")

@@ -48,7 +48,7 @@ export const authUserSchema = adminSchema.table("user", {
   isVerified: boolean("is_verified").default(false),
   customerId: varchar("customer_id"),
   contactPersonId: varchar("contact_person_id"),
-  roleId: uuid("role_id").references(() => authUserRoleSchema.id),
+  roleId: uuid("role_id").references(() => authUserRoleSchema.id, { onDelete: "cascade" }),
   isCreatedByZohoBilling: boolean("is_created_by_zoho_billing").default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

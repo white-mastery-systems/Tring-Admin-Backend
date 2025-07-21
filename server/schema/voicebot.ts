@@ -19,7 +19,7 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   name: varchar("name").notNull(),
   role: varchar("role"),
   domain: varchar("domain").array(),
-  industryId: uuid("industry_id").references(() =>  industriesSchema.id),
+  industryId: uuid("industry_id").references(() =>  industriesSchema.id, { onDelete: "cascade" }),
   knowledgeSource: varchar("knowledge_source", { enum: ["website", "document", "text"]}),
   websiteLink: varchar("website_link"),
   websiteContent: text("website_content"),
@@ -122,15 +122,15 @@ export const voicebotSchema = voiceBotSchema.table("bot", {
   tools: jsonb("tools").default({
     "clientTools": [],
     "defaultTools": [
-        "currentDate",
-        "concludeCall",
-        "genderIdentification"
+      "currentDate",
+      "concludeCall",
+      "genderIdentification",
+      "voicemailDetection"
     ]
   }),
-  clientConfig: jsonb("client_config").default({
-    llmCaching: false,
-    dynamicCaching: false,
-    distance: 0,
+  cacheConfig: jsonb("cache_config").default({
+    active: true,
+    distance: 0.1
   }),
   voicemailConfig: jsonb("voicemail_config").default({
     hangup: true,
@@ -156,7 +156,7 @@ export const voicebotIntegrationSchema = voiceBotSchema.table(
   {
     id: uuid("id").notNull().primaryKey().defaultRandom(),
     botId: uuid("bot_id")
-      .references(() => voicebotSchema.id),
+      .references(() => voicebotSchema.id, { onDelete: "cascade" }),
     metadata: jsonb("metadata"),
     status: varchar("status", { enum: ["active", "inactive"]}).default("active"),
     integrationId: uuid("integration_id").references(
@@ -166,7 +166,7 @@ export const voicebotIntegrationSchema = voiceBotSchema.table(
     ),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     organizationId: uuid("organization_id")
-      .references(() => organizationSchema.id)
+      .references(() => organizationSchema.id, { onDelete: "cascade" })
       .notNull(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
@@ -178,11 +178,11 @@ export const voiceBotUserSchema = voiceBotSchema.table("bot_user", {
   mobile: varchar("mobile").notNull(),
   metadata: jsonb("metadata"),
   botId: uuid("bot_id")
-    .references(() => voicebotSchema.id)
+    .references(() => voicebotSchema.id, { onDelete: "cascade" })
     .notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   organizationId: uuid("organization_id")
-    .references(() => organizationSchema.id)
+    .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -208,7 +208,7 @@ export const callLogSchema = voiceBotSchema.table("call_logs", {
     .references(() => voicebotSchema.id)
     .notNull(),
   organizationId: uuid("organization_id")
-    .references(() => organizationSchema.id)
+    .references(() => organizationSchema.id, { onDelete: "cascade" })
     .notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -233,7 +233,7 @@ export const voicebotLeadSchema = voiceBotSchema.table("leads",{
   .notNull(),
   callLogId: uuid("call_log_id").references(() => callLogSchema.id, { onDelete: "cascade" }),
   organizationId: uuid("organization_id")
-  .references(() => organizationSchema.id)
+  .references(() => organizationSchema.id, { onDelete: "cascade" })
   .notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -327,7 +327,18 @@ export const voiceResponseImprovementSchema = voiceBotSchema.table("voice_respon
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
-export const zodInsertVoiceBotDocument = createInsertSchema(voicebotDocumentSchema);
+export const voicebotCacheSchema = voiceBotSchema.table("voicebot_caches", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").references(() => organizationSchema.id, { onDelete: "cascade" }).notNull(),
+  botId: uuid("bot_id").references(() => voicebotSchema.id, { onDelete: "cascade" }).notNull(),
+  callLogId: uuid("call_log_id").references(() => callLogSchema.id, { onDelete: "cascade" }).notNull(),
+  query: text("query"),
+  text: text("text"),
+  cache: text("cache"),
+  audioId: uuid("audio_id"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
 
 // Relations
 export const callLogsRelations = relations(callLogSchema, ({one}) => ({
@@ -428,6 +439,11 @@ export type InsertVoicebotCallSchedule = InferInsertModel<typeof voicebotCallSch
 
 export type SelectVoiceBotLead = InferSelectModel<typeof voicebotLeadSchema>;
 export type InsertVoiceBotLead = InferInsertModel<typeof voicebotLeadSchema>;
+
+export const zodInsertVoiceBotDocument = createInsertSchema(voicebotDocumentSchema);
+
+export type SelectVoicebotCaching = InferSelectModel<typeof voicebotCacheSchema>;
+export type InsertVoicebotCaching = InferInsertModel<typeof voicebotCacheSchema>;
 
 export type SelectVoiceResponseImprovement = InferSelectModel<typeof voiceResponseImprovementSchema>;
 export type InsertVoiceResponseImprovement = InferInsertModel<typeof voiceResponseImprovementSchema>;
