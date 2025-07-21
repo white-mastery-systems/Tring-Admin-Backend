@@ -22,6 +22,7 @@ const zodInsertCallLogsValidator = z.object({
   summary: z.string(),
   cacheHit: z.array(
     z.object({
+      query: z.string(),
       text: z.string(),
       cache: z.string(),
       audioId: z.string()
@@ -45,7 +46,7 @@ export default defineEventHandler(async (event) => {
     ...body,
   })
 
-  if(body?.cacheHit) {
+  if(body?.cacheHit && Array.isArray(body?.cacheHit)) {
     const cacheHitList = body?.cacheHit.map((item) => ({
       ...item,
       botId: data?.botId,

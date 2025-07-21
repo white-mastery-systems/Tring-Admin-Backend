@@ -332,6 +332,7 @@ export const voicebotCacheSchema = voiceBotSchema.table("voicebot_caches", {
   organizationId: uuid("organization_id").references(() => organizationSchema.id, { onDelete: "cascade" }).notNull(),
   botId: uuid("bot_id").references(() => voicebotSchema.id, { onDelete: "cascade" }).notNull(),
   callLogId: uuid("call_log_id").references(() => callLogSchema.id, { onDelete: "cascade" }).notNull(),
+  query: text("query"),
   text: text("text"),
   cache: text("cache"),
   audioId: uuid("audio_id"),

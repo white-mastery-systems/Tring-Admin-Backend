@@ -10,12 +10,10 @@ export default defineEventHandler(async (event) => {
     const { id: botId } = await isValidQueryHandler(event, checkPayloadId("id"))
 
     const query = await isValidQueryHandler(event, z.object({
-      audioId: z.string().optional(),
-      clearAll: z.string().optional()
+      audioId: z.string()
     }))
 
-    const isClearAll = query.clearAll === "true"
-    const audioId = isClearAll ? "all" : query.audioId
+    const isClearAll = query.audioId === "all"
 
     await $fetch(`${config.public.voiceBotBaseUrl}/deleteCache`, {
       method: "DELETE",
@@ -26,7 +24,7 @@ export default defineEventHandler(async (event) => {
       }
     })
 
-    await deleteVoicebotCaches(isClearAll ? "true" : "false", botId, isClearAll ? undefined : audioId);
+    await deleteVoicebotCaches(botId, isClearAll, query.audioId);
 
     return true;
   } catch (error: any) {
