@@ -2,7 +2,8 @@ import { getNewTemplatesByWabaId } from "~/server/utils/template";
 
 const zodQueryValidator = z.object({
   integrationId: z.string(),
-  status: z.string().default("all")
+  templateName: z.string().optional(),
+  status: z.enum(["approved", "rejected", "all"]).default("all")
 });
 
 export default defineEventHandler(async (event) => {
@@ -18,7 +19,7 @@ export default defineEventHandler(async (event) => {
   const integration: any = await getIntegrationById(organizationId, query?.integrationId);
 
   if(integration?.metadata?.wabaId && integration?.metadata?.access_token){
-    const templateList = await getNewTemplatesByWabaId(integration?.metadata?.wabaId, integration?.metadata?.access_token, query?.status!)
+    const templateList = await getNewTemplatesByWabaId(integration?.metadata?.wabaId, integration?.metadata?.access_token, query)
     return {
       integrationId: query?.integrationId,
       templates: templateList || [],
