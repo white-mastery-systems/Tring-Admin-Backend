@@ -25,7 +25,7 @@ const chatQueryValidator = z
     limit: z.string().optional(),
     outcome: z.string().optional(),
     mode: z.string().optional(),
-    export: z.string().optional()
+    export: z.string().default("false")
   })
   .refine(
     (data) => {

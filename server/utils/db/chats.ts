@@ -165,7 +165,7 @@ export const listChats = async (
   ))
   .orderBy(desc(chatSchema.createdAt))
 
-  if (!query?.export) {
+  if (query?.export === "false") {
     chatFilterQuery.limit(limit).offset(offset);
   }
 
@@ -180,7 +180,7 @@ export const listChats = async (
     updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
 
-  if (!query?.export) {
+  if (query?.export === "false") {
     const totalOrgChats = totalChats[0].count || 0
     return {
       page: page,

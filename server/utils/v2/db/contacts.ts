@@ -2,6 +2,8 @@ import { inArray } from "drizzle-orm";
 import { z } from "zod";
 import { logger } from "~/server/logger";
 import { InsertContactProfile } from "~/server/schema/admin";
+import { count } from "drizzle-orm/sql";
+import momentTz from "moment-timezone";
 
 type SourceType = "crm" | "google" | "manual" | "excel";
 
@@ -109,6 +111,7 @@ export const contactInfoSchema = z.object({
   metadata: z.string().optional(),
   verificationId: z.string().optional(),
   source: z.enum(["manual", "excel", "google", "crm", "chatbot", "voicebot"]),
+  botId: z.string().optional(),
   externalId: z.string().nullable().optional(),
   organizationId: z.string().optional()
 });
@@ -118,6 +121,19 @@ export const contactQuerySchema = z.object({
   limit: z.string().optional(),
   q: z.string().optional(),
   source: z.enum(["manual", "excel", "google", "crm", "all"]).optional(),
+  botId: z.string().optional(),
+  export: z.string().default("false"),
+  period: z.string().optional(),
+  from: z
+      .string()
+      .datetime({ offset: true })
+      .nullish()
+      .transform((val) => (val ? new Date(val) : null)),
+    to: z
+      .string()
+      .datetime({ offset: true })
+      .nullish()
+      .transform((val) => (val ? new Date(val) : null)),
 });
 
 export const addContact = async (
@@ -140,9 +156,19 @@ export const addContact = async (
 
 export const getAllContacts = async (
   organizationId: string,
-  contactQueryParams: z.infer<typeof contactQuerySchema>,
+  contactQueryParams: any,
+  timeZone: string
 ) => {
   try {
+    // Period-based filtering
+    let fromDate: Date | undefined;
+    let toDate: Date | undefined;
+
+    if (contactQueryParams?.period) {
+      const queryDate = getDateRangeForFilters(contactQueryParams, timeZone);
+      fromDate = queryDate?.from;
+      toDate = queryDate?.to;
+    }
     let page, offset, limit = 0;
 
     if (contactQueryParams?.page && contactQueryParams?.limit) {
@@ -150,37 +176,100 @@ export const getAllContacts = async (
       limit = parseInt(contactQueryParams.limit);
       offset = (page - 1) * limit;
     }
-   
-    const contacts = await db.query.contactProfileSchema.findMany({
-      where: and(
-        eq(contactProfileSchema.organizationId, organizationId),
-        contactQueryParams?.source && contactQueryParams.source !== "all"
-          ? eq(contactProfileSchema.source, contactQueryParams.source as ContactSource)
-          : undefined,
-        contactQueryParams?.q ?
-           or(
-            ilike(contactProfileSchema.name, `%${contactQueryParams.q}%`),
-            ilike(contactProfileSchema.phoneNumber, `%${contactQueryParams.q}%`)
-           )
-          : undefined,
-      ),
-      orderBy: [desc(contactProfileSchema.createdAt)]
-    });
 
-    logger.info(
-      `Retrieved ${contacts.length} contacts for orgId: ${organizationId}`,
-    );
-    if (contactQueryParams?.page && contactQueryParams?.limit) {
-      const paginatedContacts = contacts.slice(offset, offset + limit);
+    const whereClause = and(
+      eq(contactProfileSchema.organizationId, organizationId),
+      contactQueryParams?.period && fromDate && toDate
+      ? between(contactProfileSchema.createdAt, fromDate, toDate)
+      : undefined,
+      contactQueryParams?.botId && contactQueryParams.botId !== "all"
+        ? eq(contactProfileSchema.botId, contactQueryParams.botId)
+        : undefined,
+      contactQueryParams?.source && contactQueryParams.source !== "all"
+        ? eq(contactProfileSchema.source, contactQueryParams.source as ContactSource)
+        : undefined,
+      contactQueryParams?.q ?
+         or(
+          ilike(contactProfileSchema.name, `%${contactQueryParams.q}%`),
+          ilike(contactProfileSchema.phoneNumber, `%${contactQueryParams.q}%`)
+         )
+        : undefined,
+    )
+
+    const totalContactsQuery = db.select({ count: count() })
+      .from(contactProfileSchema)
+      .where(whereClause)
+
+    const contactFilterQuery = db.select()
+      .from(contactProfileSchema)
+      .where(whereClause)
+      .orderBy(desc(contactProfileSchema.createdAt))
+
+    if (contactQueryParams?.export === "false") {
+      contactFilterQuery.limit(limit).offset(offset);
+    } 
+   
+    let [totalContactList,  filterContactList] = await Promise.all([
+      totalContactsQuery,
+      contactFilterQuery
+    ])
+
+    // Step 2: Group botIds by source
+    const chatbotBotIds = new Set<string>();
+    const voicebotBotIds = new Set<string>();
+    
+    for (const contact of filterContactList) {
+      if (!contact.botId) continue;
+      if (contact.source === 'chatbot') chatbotBotIds.add(contact.botId);
+      if (contact.source === 'voicebot') voicebotBotIds.add(contact.botId);
+    }
+    
+    // Step 3: Fetch bot names from respective tables
+    const [chatbots, voicebots] = await Promise.all([
+      db.query.chatBotSchema.findMany({
+        where: inArray(chatBotSchema.id, Array.from(chatbotBotIds)),
+        columns: { id: true, name: true },
+      }),
+      db.query.voicebotSchema.findMany({
+        where: inArray(voicebotSchema.id, Array.from(voicebotBotIds)),
+        columns: { id: true, name: true },
+      }),
+    ]);
+    
+    // Step 4: Build botId => name maps
+    const chatbotMap = Object.fromEntries(chatbots.map((b: any) => [b.id, b.name]));
+    const voicebotMap = Object.fromEntries(voicebots.map((b: any) => [b.id, b.name]));
+    
+    // Step 5: Attach bot name to each contact
+    const contactsWithBotNames = filterContactList.map((contact: any) => {
+      let botName: string | null = null;
+    
+      if (contact.botId) {
+        if (contact.source === 'chatbot') {
+          botName = chatbotMap[contact.botId] || null;
+        } else if (contact.source === 'voicebot') {
+          botName = voicebotMap[contact.botId] || null;
+        }
+      }
+    
+      return { 
+        ...contact,
+        createdAt: momentTz(contact.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+        botName,
+      };
+    })
+
+    if (contactQueryParams?.export === "false") {
+      const totalOrgContacts = totalContactList[0].count || 0
       return {
         page: page,
         limit: limit,
-        totalPageCount: Math.ceil(contacts.length / limit) || 1,
-        totalCount: contacts.length,
-        data: paginatedContacts,
+        totalPageCount: Math.ceil(totalOrgContacts / limit) || 1,
+        totalCount: totalOrgContacts,
+        data: contactsWithBotNames,
       };
     } else {
-      return contacts;
+      return contactsWithBotNames;
     }
   } catch (error) {
     logger.error(

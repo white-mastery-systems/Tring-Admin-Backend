@@ -214,6 +214,7 @@ export const contactProfileSchema = adminSchema.table("contact_profiles", {
   metadata: text("metadata"),
   verificationId: varchar("verification_id", { length: 255 }),
   source: contactSourceEnum("source").notNull(),
+  botId: uuid("bot_id"),
   externalId: varchar("external_id", { length: 255 }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
