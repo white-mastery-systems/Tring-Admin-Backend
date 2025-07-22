@@ -37,7 +37,8 @@ export const chatBotSchema = chatbotSchema.table("bot", {
       defaultRibbon: true,
       generateLead: true,
       openDelay: 3000,
-      chatHeaderText: "Live Support"
+      chatHeaderText: "Live Support",
+      leadWebsiteField: false
     },
     prompt: {
       errorMessage:
