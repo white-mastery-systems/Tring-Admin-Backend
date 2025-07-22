@@ -21,5 +21,10 @@ export default defineEventHandler(async (event) => {
    const data = await getMessages(chatId, botUser?.botUserId, query, timeZone)
 
   // Previously, the code was returning the entire data object. Now it fetches all messages from all or multiple chats.
-  return [{ messages: data.map((item: any) => item.messages).flat() }];
+  return [{
+    messages: data.flatMap((item: any) => {
+      const messages = item.messages || [];
+      return messages[0]?.role === "user" ? messages.slice(1) : messages;
+    })
+  }];
 })
