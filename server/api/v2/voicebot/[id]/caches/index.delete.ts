@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
       query: {
         botId,
         orgId: organizationId,
-        audioId
+        audioId: query?.audioId
       }
     })
 
