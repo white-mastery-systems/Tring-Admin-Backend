@@ -62,7 +62,8 @@ export default defineEventHandler(async (event) => {
           phoneNumber: body?.phone,
           countryCode: body?.countryCode,
           organizationId: voicebotDetail.organizationId,
-          source: "voicebot"
+          source: "voicebot",
+          botId: voicebotId,
         })
       }
     } catch (error: any) {
