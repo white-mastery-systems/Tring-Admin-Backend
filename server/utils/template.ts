@@ -3,31 +3,39 @@ import { logger } from "../logger";
 export const getNewTemplatesByWabaId = async (
   wabaId: string,
   accessToken: string,
-  status: string,
+  query: { status?: string; templateName?: string }
 ): Promise<any> => {
-  let statusFilter = "all"
-
-  if(status !== "all") {
-    statusFilter = status === "approved" ? "APPROVED" : "REJECTED"
-  }
-
-  const getTemplatesApiEndpoint = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?fields=name,status${statusFilter !== "all" ? `&status=${statusFilter}` : ""}`;
   try {
-    const templateListApiEndpoint: { data: any } = await $fetch(
-      getTemplatesApiEndpoint,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-    logger.info("Templates fetched successfully");
+    const params = new URLSearchParams({ fields: "name,status" });
 
-    return templateListApiEndpoint
-  } catch (error:any) {
-    logger.error(`Error occurred while fetching templates: ${JSON.stringify(error?.response?._data)}`)
-    throw new Error(error?.response?._data?.error?.error_user_msg || error?.response?._data?.error?.error_user_title || "Failed to fetch templates");
+    if (query?.templateName) {
+      params.append("name", query.templateName);
+    }
+
+    if (query?.status && query.status !== "all") {
+      const status = query.status === "approved" ? "APPROVED" : "REJECTED";
+      params.append("status", status);
+    }
+
+    const url = `https://graph.facebook.com/v21.0/${wabaId}/message_templates?${params.toString()}`;
+
+    const response: { data: any } = await $fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    logger.info("Templates fetched successfully");
+    return response;
+  } catch (error: any) {
+    logger.error(`Error fetching templates: ${JSON.stringify(error?.response?._data)}`);
+    throw new Error(
+      error?.response?._data?.error?.error_user_msg ||
+      error?.response?._data?.error?.error_user_title ||
+      error?.response?._data?.error?.message ||
+      "Failed to fetch templates"
+    );
   }
 };
 
