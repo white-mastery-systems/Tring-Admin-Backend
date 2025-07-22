@@ -189,7 +189,7 @@ export const createWhatsappMessageTemplate = async (
     return templateCreationApiResponse;
   } catch (error:any) {
     logger.error(`Error occurred while creating template: ${JSON.stringify(error?.response?._data)}`);
-    throw new Error(error?.response?._data?.error?.error_user_msg || error?.response?._data?.error?.error_user_title || "Failed to create template");
+    throw new Error(error?.response?._data?.error?.error_user_msg || error?.response?._data?.error?.error_user_title || error?.response?._data?.error?.message || "Failed to create template");
   }
 };
 
