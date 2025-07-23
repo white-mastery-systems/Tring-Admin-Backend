@@ -694,18 +694,23 @@ export const getVoicebotCacheList = async (botId: string, query: any) => {
   let data: any = await db.select()
     .from(voicebotCacheSchema)
     .where(
-      eq(voicebotCacheSchema.botId, botId)
+      and(
+        eq(voicebotCacheSchema.botId, botId),
+        query?.q
+        ? ilike(voicebotCacheSchema.cache, `%${query.q}%`)
+        : undefined
+      )
     )
-    .orderBy(desc(voicebotCacheSchema.createdAt))
 
   const grouped = data.reduce((acc: any, item: any) => {
-   const { audioId, text, cache, callLogId } = item;
+   const { audioId, text, cache, callLogId, query } = item;
     if (!acc[audioId]) {
       acc[audioId] = {
         audioId,
         cache,
         texts: [{
           text,
+          query,
           callLogId
         }], // collect all text values
         cacheHits: 1
@@ -713,6 +718,7 @@ export const getVoicebotCacheList = async (botId: string, query: any) => {
     } else {
       acc[audioId].texts.push({
         text,
+        query,
         callLogId
       });
       acc[audioId].cacheHits += 1;
@@ -722,6 +728,14 @@ export const getVoicebotCacheList = async (botId: string, query: any) => {
 
   // Convert to array
   const results = Object.values(grouped);
+
+  // Sort by cacheHits
+  const sortDirection = query?.sort === "asc" ? 1 : -1;
+
+  results.sort((a: any, b: any) => {
+    return sortDirection * (a.cacheHits - b.cacheHits);
+  });
+
   if(query?.page && query?.limit) {
     const paginatedVoicebotCache = results.slice(offset, offset + limit);
     return { 

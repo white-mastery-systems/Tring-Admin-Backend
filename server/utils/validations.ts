@@ -14,6 +14,7 @@ export const zodListQuery = z.object({
   page: z.string().optional(),
   limit: z.string().optional(),
   q: z.string().optional(),
+  sort: z.string().optional()
 })
 
 const config = useRuntimeConfig()
