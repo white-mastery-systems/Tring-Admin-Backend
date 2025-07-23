@@ -38,7 +38,9 @@ export const chatBotSchema = chatbotSchema.table("bot", {
       generateLead: true,
       openDelay: 3000,
       chatHeaderText: "Live Support",
-      leadWebsiteField: false
+      leadWebsiteField: false,
+      leadFormTitle: "Thanks for your time with us!",
+      leadFormDescription:  "Could you please share your contact info?"
     },
     prompt: {
       errorMessage:
