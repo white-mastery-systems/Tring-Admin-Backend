@@ -191,6 +191,7 @@ export const callLogSchema = voiceBotSchema.table("call_logs", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
   callSid: varchar("call_sid").notNull(),
   exophone: varchar("exophone").notNull(),
+  countryCode: varchar("country_code"),
   from: varchar("from").notNull(),
   date: varchar("date").notNull(),
   callStatus: varchar("call_status"),
