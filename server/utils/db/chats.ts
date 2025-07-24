@@ -143,6 +143,7 @@ export const listChats = async (
     metadata: chatSchema.metadata,
     channel: chatSchema.channel,
     createdAt: chatSchema.createdAt,
+    updatedAt: chatSchema.updatedAt,
     visitedCount: chatSchema.visitedCount,
     chatOutcome: chatSchema.chatOutcome,
     bot: {
@@ -311,8 +312,7 @@ export const getAllInadequateMessages= async () => {
 
 export const updateChatStatus = async (chatIds: string[], status: boolean) => {
   await db.update(chatSchema).set({
-    isProcessed: status,
-    updatedAt: new Date()
+    isProcessed: status
    }).where(
     inArray(chatSchema.id, chatIds)
    )

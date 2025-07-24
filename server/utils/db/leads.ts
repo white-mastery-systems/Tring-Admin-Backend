@@ -132,7 +132,9 @@ export const listLeads = async (
             mode: true,
             channel: true,
             visitedCount: true,
-            chatOutcome: true
+            chatOutcome: true,
+            createdAt: true,
+            updatedAt: true
           }
         },
       },
@@ -150,6 +152,9 @@ export const listLeads = async (
       createdAt: momentTz(i.createdAt)
         .tz(timeZone)
         .format("DD MMM YYYY hh:mm A"),
+      updatedAt: momentTz(i.chat.updatedAt)
+        .tz(timeZone)
+        .format("DD MMM YYYY hh:mm A")
     }));
     
     leads = leads.filter((lead: any) => {
