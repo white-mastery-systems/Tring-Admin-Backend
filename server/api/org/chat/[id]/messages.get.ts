@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   return [{
     messages: data.flatMap((item: any) => {
       const messages = item.messages || [];
-      return messages[0]?.role === "user" ? messages.slice(1) : messages;
+      return (messages[0]?.role === "user" && messages[0].content === "Hi") ? messages.slice(1) : messages;
     })
   }];
 })
