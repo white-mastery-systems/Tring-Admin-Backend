@@ -14,6 +14,7 @@ const zodInsertCallLogsValidator = z.object({
   direction: z.string(),
   callerName: z.string(),
   callTranscription: z.array(z.any()),
+  countryCode: z.string().optional(),
   interacted: z.boolean().optional(),
   inputCredits: z.string(),
   outputCredits: z.string(),
