@@ -164,7 +164,7 @@ export const listChats = async (
       ? ilike(botUserSchema.name, `%${query.q}%`)
       : undefined
   ))
-  .orderBy(desc(chatSchema.createdAt))
+  .orderBy(desc(chatSchema.updatedAt))
 
   if (query?.export === "false") {
     chatFilterQuery.limit(limit).offset(offset);
