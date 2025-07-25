@@ -147,19 +147,16 @@ export const listLeads = async (
       orderBy: [desc(leadSchema.createdAt)],
     });
 
-    leads = leads.map((i: any) => ({
-      ...i,
-      createdAt: momentTz(i.createdAt)
-        .tz(timeZone)
-        .format("DD MMM YYYY hh:mm A"),
-      updatedAt: momentTz(i.chat.updatedAt)
-        .tz(timeZone)
-        .format("DD MMM YYYY hh:mm A")
-    }));
-    
-    leads = leads.filter((lead: any) => {
-      return lead.chat !== null;
-    })
+    leads = leads
+      .filter((lead: any) => lead.chat !== null) // Filter out leads without chat
+      .sort((a: any, b: any) => // Sort by chat updatedAt
+        new Date(b.chat.updatedAt).getTime() - new Date(a.chat.updatedAt).getTime()
+      )
+      .map((lead: any) => ({     // Format dates
+        ...lead,
+        createdAt: momentTz(lead.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+        updatedAt: momentTz(lead.chat.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+      }));
 
     if (query?.q || query?.status === "new" || query?.status === "revisited")
       leads = leads.filter((lead: any) => {
