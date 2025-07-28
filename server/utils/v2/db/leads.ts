@@ -1,6 +1,6 @@
 const db = useDrizzle()
 
-export const getOrgLeadsForAnalytics = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
+export const getOrgChatLeadsForAnalytics = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
   const data = await db
     .select({ createdAt: leadSchema.createdAt })
     .from(leadSchema)
@@ -84,9 +84,9 @@ export const getLeadComposition = async (organizationId: string, fromDate: Date 
   return leadCounts
 }
 
-export const getDropOffConversation = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => { 
+export const getChatDropOffConversation = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => { 
   let data: any = await db
-    .select({ createdAt: leadSchema.createdAt }) 
+    .select() 
     .from(leadSchema)
     .where(
       and(

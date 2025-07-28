@@ -1,0 +1,106 @@
+import { count, inArray } from "drizzle-orm"
+
+const db = useDrizzle()
+
+export const getOrgTotalChatbotUsers = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
+  const data = await db
+    .select({ createdAt: botUserSchema.createdAt })
+    .from(botUserSchema)
+    .where(
+      and( 
+        ...(fromDate && toDate ? [
+          gte(botUserSchema.createdAt, fromDate),
+          lte(botUserSchema.createdAt, toDate),
+        ] : []),
+        eq(botUserSchema.organizationId, organizationId),
+      )
+    )
+  return data.length
+}
+
+export const getOrgReEnagedChatbotUsers = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
+  const data = await db
+    .select({ createdAt: botUserSchema.createdAt })
+    .from(botUserSchema)
+    .where(
+      and( 
+        ...(fromDate && toDate ? [
+          gte(botUserSchema.createdAt, fromDate),
+          lte(botUserSchema.createdAt, toDate),
+        ] : []),
+        gt(botUserSchema.visitedCount, 1),
+        eq(botUserSchema.organizationId, organizationId),
+      )
+    )
+  return data.length
+}
+
+// High-value Users
+const HIGH_VALUE_INTENTS = [
+  "schedule_appointment",
+  "schedule_call",
+  "site_visit",
+  "location",
+  "virtual_tour",
+  "images",
+  "brochures"
+];
+
+export const getChatbotUserBySegments = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
+  const frequentUsersQuery = db
+    .select({ count: count().as('count') })
+    .from(botUserSchema)
+    .where(
+      and(
+        eq(botUserSchema.organizationId, organizationId),   
+        ...(fromDate && toDate ? [
+          gte(botUserSchema.createdAt, fromDate),
+          lte(botUserSchema.createdAt, toDate),
+        ] : []),
+        gt(botUserSchema.visitedCount, 1)
+      )
+    );
+
+  const firstTimeUsersQuery = db
+    .select({ count: count().as('count') })
+    .from(botUserSchema)
+    .where(
+      and(
+        eq(botUserSchema.organizationId, organizationId),
+        ...(fromDate && toDate ? [
+          gte(botUserSchema.createdAt, fromDate),
+          lte(botUserSchema.createdAt, toDate),
+        ] : []),
+        eq(botUserSchema.visitedCount, 1)
+      )
+    );
+
+  const highValueUserQuery = db
+    .select({
+      userId: timelineSchema.userId
+    })
+    .from(timelineSchema)
+    .where(
+      and(
+        eq(timelineSchema.orgId, organizationId),
+        ...(fromDate && toDate ? [
+          gte(timelineSchema.createdAt, fromDate),
+          lte(timelineSchema.createdAt, toDate),
+        ] : []),
+        inArray(timelineSchema.event, HIGH_VALUE_INTENTS),
+        isNotNull(timelineSchema.userId)
+      )
+    ).groupBy(timelineSchema.userId)
+
+  const [frequentUsersResult, firstTimeUsersResult, highValueUsersResult] = await Promise.all([
+    frequentUsersQuery,
+    firstTimeUsersQuery,
+    highValueUserQuery
+  ]);
+
+  return {
+    frequentUsers: frequentUsersResult[0].count,
+    firstTimeUsers: firstTimeUsersResult[0].count,
+    highValueUsers: highValueUsersResult.length
+  }
+}

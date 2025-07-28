@@ -395,3 +395,23 @@ export const deleteChatImprovementById = async (id: string) => {
     .returning()
   )[0]
 }
+
+export const getChatImprovementsByOrgId = async (organizationId: string) => {
+  const result = await db
+    .select({
+      total: sql<number>`COUNT(*)`,
+      highPriority: sql<number>`COUNT(*) FILTER (WHERE cardinality(${chatResponseImprovementSchema.instances}) > 3)`,
+    })
+    .from(chatResponseImprovementSchema)
+    .where(
+      and(
+        eq(chatResponseImprovementSchema.organizationId, organizationId),
+        eq(chatResponseImprovementSchema.status, "not_trained")
+      )
+    );
+
+  return {
+    total: result[0].total,
+    highPriority: result[0].highPriority,
+  };
+};
