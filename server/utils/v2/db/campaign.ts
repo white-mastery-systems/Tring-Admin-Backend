@@ -1,5 +1,6 @@
 import { InsertNewCampaign } from "~/server/schema/admin"
 import momentTz from "moment-timezone"
+import { inArray } from "drizzle-orm"
 
 const db = useDrizzle()
 
@@ -35,16 +36,18 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
     ),
     orderBy: [desc(newCampaignSchema.createdAt)],
   })
+
+  const campaignIds = data.map(c => c.id);
    
   const [ voiceScheduledContactList, whatsappScheduledContactList, chatbotList, voicebotList ] = await Promise.all([
     db.query.voicebotCallScheduleSchema.findMany({
-      where: eq(voicebotCallScheduleSchema.organizationId, organizationId),
+      where: inArray(voicebotCallScheduleSchema.campaignId, campaignIds),
       with: {
         bot: true
       }
     }),
     db.query.campaignWhatsappContactSchema.findMany({
-      where: eq(campaignWhatsappContactSchema.organizationId, organizationId)
+      where: inArray(campaignWhatsappContactSchema.campaignId, campaignIds),
     }),
     db.query.chatBotSchema.findMany({
       where: eq(chatBotSchema.organizationId, organizationId)
@@ -95,7 +98,6 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
       }
     }
     
-
      return {
        ...i,
        botName,
@@ -167,3 +169,81 @@ export const getVoiceCampaignByContactGroupId = async(bucketId: string) => {
     )
   });
 }
+
+export const getOrgCampaignsWithMetrics = async (organizationId: string) => {
+  const interactionStatuses = new Set(["Engaged", "booked", "follow-up", "New Lead"]);
+  const conversionStatuses = new Set(["booked", "follow-up"]);
+
+  // Fetch all campaigns
+  const campaigns = await db
+    .select({
+      id: newCampaignSchema.id,
+      name: newCampaignSchema.campaignName,
+      type: newCampaignSchema.contactMethod,
+      isDeleted: newCampaignSchema.isDeleted
+    })
+    .from(newCampaignSchema)
+    .where(and(
+      eq(newCampaignSchema.organizationId, organizationId),
+      eq(newCampaignSchema.isDeleted, false)
+    ));
+
+    const campaignIds = campaigns.map(c => c.id);
+
+  // Fetch all contact records from both sources
+  const [whatsappContacts, voiceContacts] = await Promise.all([
+    db
+      .select({
+        campaignId: campaignWhatsappContactSchema.campaignId,
+        interactionStatus: campaignWhatsappContactSchema.interactionStatus,
+      })
+      .from(campaignWhatsappContactSchema)
+      .where(
+        inArray(campaignWhatsappContactSchema.campaignId, campaignIds)
+      ),
+    db
+      .select({
+        campaignId: voicebotCallScheduleSchema.campaignId,
+        interactionStatus: voicebotCallScheduleSchema.callStatus
+      })
+      .from(voicebotCallScheduleSchema)
+      .where(
+        inArray(voicebotCallScheduleSchema.campaignId, campaignIds)
+      )
+  ]);
+
+  // Merge contacts
+  const allContacts = [...whatsappContacts, ...voiceContacts];
+
+  // Build a campaign lookup map
+  const contactMap = new Map<string, { interactions: number; conversions: number }>();
+
+  for (const { campaignId, interactionStatus } of allContacts) {
+    if (!campaignId) continue;
+
+    const existing = contactMap.get(campaignId) ?? { interactions: 0, conversions: 0 };
+
+    if (interactionStatuses.has(interactionStatus)) {
+      existing.interactions += 1;
+    }
+    if (conversionStatuses.has(interactionStatus)) {
+      existing.conversions += 1;
+    }
+
+    contactMap.set(campaignId, existing);
+  }
+
+  // Combine campaign and contact stats
+  return campaigns.map((item) => {
+    const stats = contactMap.get(item.id) ?? { interactions: 0, conversions: 0 };
+
+    const conversionRate = stats.interactions > 0 ? `${Math.round((stats.conversions / stats.interactions) * 100)}%` : "0%";
+
+    return {
+      ...item,
+      interactionCount: stats.interactions,
+      conversionCount: stats.conversions,
+      conversionRate
+    };
+  });
+};

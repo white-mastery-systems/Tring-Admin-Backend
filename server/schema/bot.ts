@@ -40,7 +40,8 @@ export const chatBotSchema = chatbotSchema.table("bot", {
       chatHeaderText: "Live Support",
       leadWebsiteField: false,
       leadFormTitle: "Thanks for your time with us!",
-      leadFormDescription:  "Could you please share your contact info?"
+      leadFormDescription:  "Could you please share your contact info?",
+      humanMode: true
     },
     prompt: {
       errorMessage:

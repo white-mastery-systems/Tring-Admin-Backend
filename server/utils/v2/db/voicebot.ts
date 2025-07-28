@@ -1,6 +1,6 @@
 import { InsertVoicebotCaching, InsertVoicebotCallSchedule, InsertVoiceResponseImprovement, voicebotCacheSchema, voicebotCallScheduleSchema } from "~/server/schema/voicebot"
 import momentTz from "moment-timezone"
-import { inArray } from "drizzle-orm"
+import { count, inArray } from "drizzle-orm"
 
 const db = useDrizzle()
 const config = useRuntimeConfig()
@@ -275,71 +275,28 @@ export const getCallLogsByCallStatus = async (organizationId: string, fromDate: 
   )
 }
 
-export const getUniqueCallNumbers = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
-   const result = await db
-    .select({
-      count: sql<number>`COUNT(DISTINCT ${callLogSchema.from})`
-    })
-    .from(callLogSchema)
-    .where(
-      and(
-        ...(fromDate && toDate
-          ? [
-              gte(callLogSchema.createdAt, fromDate),
-              lte(callLogSchema.createdAt, toDate)
-            ]
-          : []),
-        eq(callLogSchema.organizationId, organizationId)
-      )
-    )
-
-  return result[0]?.count || 0
-}
-
-export const getVoicebotReEngagementRate = async (
+export const getOrgInteractedCalls = async (
   organizationId: string,
   fromDate?: Date,
   toDate?: Date
 ) => {
-  const baseConditions = [
-    eq(callLogSchema.organizationId, organizationId),
+  const data = await db
+  .select({ createdAt: callLogSchema.createdAt })
+  .from(callLogSchema)
+  .where(
+    and(
     ...(fromDate && toDate
       ? [
           gte(callLogSchema.createdAt, fromDate),
           lte(callLogSchema.createdAt, toDate),
         ]
-      : [])
-  ]
+      : []),
+    eq(callLogSchema.organizationId, organizationId),
+    eq(callLogSchema.interacted, true)
+    )
+  )
 
-  // 1. Total Unique Callers
-  const uniqueCallers = await db
-    .select({ 
-      count: sql<number>`COUNT(DISTINCT ${callLogSchema.from})`
-    })
-    .from(callLogSchema)
-    .where(and(...baseConditions))
-
-  const totalUnique = Number(uniqueCallers[0]?.count) || 0
-
-  // 2. Returning Callers (phone numbers with more than 1 call)
-  const returningCallers = await db
-    .select({
-      phoneNumber: callLogSchema.from
-    })
-    .from(callLogSchema)
-    .where(and(...baseConditions))
-    .groupBy(callLogSchema.from)
-    .having(sql`COUNT(*) > 1`)
-
-  const reengaged = returningCallers.length
-
-  const rate = totalUnique > 0 ? (reengaged / totalUnique) * 100 : 0
-
-  return {
-    totalUniqueCallers: totalUnique,
-    returningCallers: reengaged,
-    reEngagementRate: `${Math.round(rate)}%`
-  }
+  return data.length
 }
 
 export const getVoiceDropoffCalls = async (
@@ -397,7 +354,6 @@ export const getQualifiedCalls = async(organizationId: string,
 
   return qualifiedCalls.length || 0
 }
-
 
 export const getVoiceQualificationAccuracy = async (
   organizationId: string,
@@ -476,7 +432,6 @@ export const getVoiceCallClassificationCounts = async (
 
   return leadComposition
 }
-
 
 // Voice call schedule 
 export const createVoiceCallSchdeuling = async (data: InsertVoicebotCallSchedule) => {
@@ -675,6 +630,26 @@ export const deleteVoiceImprovementById = async (id: string) => {
   )[0]
 }
 
+export const getVoiceImprovementsByOrgId = async (organizationId: string) => {
+ const result = await db
+    .select({
+      total: sql<number>`COUNT(*)`,
+      highPriority: sql<number>`COUNT(*) FILTER (WHERE cardinality(${voiceResponseImprovementSchema.instances}) > 3)`,
+    })
+    .from(voiceResponseImprovementSchema)
+    .where(
+      and(
+        eq(voiceResponseImprovementSchema.organizationId, organizationId),
+        eq(voiceResponseImprovementSchema.status, "not_trained")
+      )
+    );
+
+  return {
+    total: result[0].total,
+    highPriority: result[0].highPriority,
+  };
+}
+ 
 // Voicebot Caching
 export const createVoicebotCaching = async (data: InsertVoicebotCaching[]) => {
   return (

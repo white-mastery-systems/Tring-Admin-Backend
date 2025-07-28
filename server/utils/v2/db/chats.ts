@@ -20,6 +20,37 @@ export const getOrgInteractedChatsForAnalytics = async(organizationId: string, f
   )
 }
 
+// Main query to count chats and leads grouped by country
+export const getChatLeadCountByCountry = async (
+  organizationId: string,
+  fromDate: Date | undefined,
+  toDate: Date | undefined
+) => {
+  const result = await db
+    .select({
+      location: sql<string>`chats.metadata->>'country'`.as("location"),
+      chats: sql<number>`COUNT(DISTINCT ${chatSchema.id})`.as("chats"),
+      leads: sql<number>`COUNT(DISTINCT ${leadSchema.id})`.as("leads"),
+    })
+    .from(chatSchema)
+    .leftJoin(leadSchema, eq(chatSchema.id, leadSchema.chatId))
+    .where(
+      and(
+        ...(fromDate && toDate ? [
+          gte(chatSchema.createdAt, fromDate),
+          lte(chatSchema.createdAt, toDate),
+        ] : []),
+        eq(chatSchema.organizationId, organizationId),
+        sql`chats.metadata->>'country' IS NOT NULL AND chats.metadata->>'country' <> ''`
+      )
+    )
+    .groupBy(sql`chats.metadata->>'country'`);
+
+  return result;
+};
+
+
+
 export const getOrgChatsForAnalytics = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
   return await db
   .select({ createdAt: chatSchema.createdAt })
@@ -30,7 +61,7 @@ export const getOrgChatsForAnalytics = async (organizationId: string, fromDate: 
         gte(chatSchema.createdAt, fromDate),
         lte(chatSchema.createdAt, toDate),
       ] : []),
-      eq(chatSchema.organizationId, organizationId),
+      eq(chatSchema.organizationId, organizationId)
     ),
   )
 }
@@ -138,5 +169,25 @@ export const getAnalyticsGraph = async ({ totalConversation, period, fromDate, t
   } catch (error: any) { 
     logger.error(`Dashboard - Analytics API Error: ${JSON.stringify(error)}`)
     return []
+  }
+}
+
+export const getChatSessionsByChannels = async (organizationId: string) => {
+  try {
+    const result = await db
+      .select({
+        source: chatSchema.channel,
+        engaged: sql<number>`COUNT(DISTINCT ${chatSchema.id})`.as("chats"),
+        leads: sql<number>`COUNT(DISTINCT ${leadSchema.id})`.as("leads"),
+      })
+      .from(chatSchema)
+      .leftJoin(leadSchema, eq(chatSchema.id, leadSchema.chatId))
+      .where(eq(chatSchema.organizationId, organizationId))
+      .groupBy(chatSchema.channel);
+
+    return result;
+  } catch (error: any) {
+    logger.error(`Error in getChatSessionsBySource: ${JSON.stringify(error.message)}`);
+    throw new Error("Unable to get chat sessions by source");
   }
 }
