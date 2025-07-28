@@ -237,10 +237,13 @@ export const getOrgCampaignsWithMetrics = async (organizationId: string) => {
   return campaigns.map((item) => {
     const stats = contactMap.get(item.id) ?? { interactions: 0, conversions: 0 };
 
+    const conversionRate = stats.interactions > 0 ? `${Math.round((stats.conversions / stats.interactions) * 100)}%` : "0%";
+
     return {
       ...item,
       interactionCount: stats.interactions,
       conversionCount: stats.conversions,
+      conversionRate
     };
   });
 };
