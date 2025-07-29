@@ -4,8 +4,6 @@ import { getDateRangeForFilters } from "./leads";
 import { logger } from "~/server/logger";
 import { count } from "drizzle-orm/sql";
 import { chatResponseImprovementSchema } from "~/server/schema/bot";
-import modelsGet from "~/server/api/playground/models.get";
-import { create } from "handlebars";
 
 const db = useDrizzle();
 
