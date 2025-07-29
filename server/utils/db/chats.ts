@@ -4,6 +4,8 @@ import { getDateRangeForFilters } from "./leads";
 import { logger } from "~/server/logger";
 import { count } from "drizzle-orm/sql";
 import { chatResponseImprovementSchema } from "~/server/schema/bot";
+import modelsGet from "~/server/api/playground/models.get";
+import { create } from "handlebars";
 
 const db = useDrizzle();
 
@@ -76,11 +78,15 @@ export const getMessages = async (
     },
     orderBy: asc(chatSchema.createdAt),
   });
+ 
 
   list = list?.map((i: any) => ({
     botId: i?.botId,
     chatId: i?.id,
-    messages: i?.messages,
+    messages: i?.messages.map((msg: any) => ({
+      ...msg,
+      createdAt: momentTz(msg.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    })),
   }));
 
   return list;
@@ -400,18 +406,26 @@ export const getChatImprovementsByOrgId = async (organizationId: string) => {
   const result = await db
     .select({
       total: sql<number>`COUNT(*)`,
-      highPriority: sql<number>`COUNT(*) FILTER (WHERE cardinality(${chatResponseImprovementSchema.instances}) > 3)`,
+      trained: sql<number>`COUNT(*) FILTER (WHERE ${chatResponseImprovementSchema.status} = 'trained')`,
+      notTrained: sql<number>`COUNT(*) FILTER (WHERE ${chatResponseImprovementSchema.status} = 'not_trained')`,
+      ignored: sql<number>`COUNT(*) FILTER (WHERE ${chatResponseImprovementSchema.status} = 'ignored')`,
+      highPriority: sql<number>`COUNT(*) FILTER (WHERE cardinality(${chatResponseImprovementSchema.instances}) > 1)`
     })
     .from(chatResponseImprovementSchema)
-    .where(
-      and(
-        eq(chatResponseImprovementSchema.organizationId, organizationId),
-        eq(chatResponseImprovementSchema.status, "not_trained")
-      )
-    );
+    .where(eq(chatResponseImprovementSchema.organizationId, organizationId));
+
+  const total = result[0].total;
+  const trained = result[0].trained;
+
+  const healthScore = total > 0
+    ? `${Math.round((trained / total) * 100)}%`
+    : "100%"; // Default to 100 if no improvements exist
 
   return {
-    total: result[0].total,
-    highPriority: result[0].highPriority,
+    totalImprovements: total,
+    trainedImprovements: trained,
+    highPriorityImprovements: result[0].highPriority,
+    healthScore
   };
 };
+
