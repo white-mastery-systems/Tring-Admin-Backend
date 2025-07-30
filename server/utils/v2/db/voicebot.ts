@@ -634,19 +634,26 @@ export const getVoiceImprovementsByOrgId = async (organizationId: string) => {
  const result = await db
     .select({
       total: sql<number>`COUNT(*)`,
-      highPriority: sql<number>`COUNT(*) FILTER (WHERE cardinality(${voiceResponseImprovementSchema.instances}) > 3)`,
+      trained: sql<number>`COUNT(*) FILTER (WHERE ${voiceResponseImprovementSchema.status} = 'trained')`,
+      notTrained: sql<number>`COUNT(*) FILTER (WHERE ${voiceResponseImprovementSchema.status} = 'not_trained')`,
+      ignored: sql<number>`COUNT(*) FILTER (WHERE ${voiceResponseImprovementSchema.status} = 'ignored')`,
+      highPriority: sql<number>`COUNT(*) FILTER (WHERE cardinality(${voiceResponseImprovementSchema.instances}) > 1)`
     })
     .from(voiceResponseImprovementSchema)
-    .where(
-      and(
-        eq(voiceResponseImprovementSchema.organizationId, organizationId),
-        eq(voiceResponseImprovementSchema.status, "not_trained")
-      )
-    );
+    .where(eq(voiceResponseImprovementSchema.organizationId, organizationId));
+
+  const total = result[0].total;
+  const trained = result[0].trained;
+
+  const healthScore = total > 0
+    ? `${Math.round((trained / total) * 100)}%`
+    : "100%"; // Default to 100 if no improvements exist
 
   return {
-    total: result[0].total,
-    highPriority: result[0].highPriority,
+    totalImprovements: total,
+    trainedImprovements: trained,
+    highPriorityImprovements: result[0].highPriority,
+    healthScore
   };
 }
  

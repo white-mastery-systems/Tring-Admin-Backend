@@ -339,8 +339,7 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
       notes: false,
       metadata: false,
       botId: false,
-      organizationId: false,
-      updatedAt: false
+      organizationId: false
     },
     orderBy: [desc(voicebotLeadSchema.createdAt)]
   })
@@ -350,6 +349,7 @@ export const voicebotLeadList = async (organizationId: string, query: any, timeZ
     phone: i.callLog?.from || i.phone,
     scheduledDate: i.scheduledDate && momentTz(i.scheduledDate).tz(timeZone).format("DD MMM YYYY hh:mm A"),
     createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
 
   if(query?.direction && query?.direction !== "all") {

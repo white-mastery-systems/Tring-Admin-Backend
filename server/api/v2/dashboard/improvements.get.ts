@@ -12,10 +12,12 @@ export default defineEventHandler(async (event) => {
     const voiceImprovements = await getVoiceImprovementsByOrgId(organizationId)
 
     return {
-      chatTotalImprovements: chatImprovements.total,
-      chatHighPriorityImprovements: chatImprovements.highPriority,
-      voiceTotalImprovements: voiceImprovements.total,
-      voiceHighPriorityImprovements: voiceImprovements.highPriority,
+      chatTotalImprovements: chatImprovements.totalImprovements,
+      chatHighPriorityImprovements: chatImprovements.highPriorityImprovements,
+      chatHealthScore: chatImprovements.healthScore,
+      voiceTotalImprovements: voiceImprovements.totalImprovements,
+      voiceHighPriorityImprovements: voiceImprovements.highPriorityImprovements,
+      voiceHealthScore: voiceImprovements.healthScore,
     }
     
 
