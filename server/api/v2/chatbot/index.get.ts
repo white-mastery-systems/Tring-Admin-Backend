@@ -1,3 +1,4 @@
+import { logger } from "~/server/logger";
 
 const zodQueryValidator = z.object({
   active: z.string().optional(),
@@ -10,6 +11,7 @@ const zodQueryValidator = z.object({
 
 export default defineEventHandler(async (event) => {
   const timeZoneHeader = event.node?.req?.headers["time-zone"];
+  logger.info(`Chatbot List API - Time-zone Header: ${JSON.stringify(timeZoneHeader)}`);
   const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   // const query = getQuery(event);
