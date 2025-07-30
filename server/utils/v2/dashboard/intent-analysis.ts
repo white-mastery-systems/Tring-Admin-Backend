@@ -1,10 +1,10 @@
 import { logger } from "~/server/logger"
 import { getChatbotIntentsByChatbot } from "../db/chat-intents"
 
-export const getIntentAnalysis = async (type: string, organizationId: string) => {
+export const getIntentAnalysis = async (type: string, organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
   try {
     if(type === "chat") {
-      const data = await getChatbotIntentsByChatbot(organizationId)
+      const data = await getChatbotIntentsByChatbot(organizationId, fromDate, toDate)
       return data
     } 
 

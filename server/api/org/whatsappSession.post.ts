@@ -51,6 +51,8 @@ export default defineEventHandler(async (event) => {
       shouldCreateNewSession = true;
     }
 
+    const isRevisited = !!existingSession && shouldCreateNewSession;
+
     if (shouldCreateNewSession) {
       // Check subscription
       if (!isSubscriptionActive) {
@@ -58,7 +60,7 @@ export default defineEventHandler(async (event) => {
           status: false,
           whatsappWalletBalance,
           organizationName: orgDetail?.name,
-          revisited: !!existingSession,
+          revisited: isRevisited,
           subscriptionStatus: false
         };
       }
@@ -75,7 +77,7 @@ export default defineEventHandler(async (event) => {
           status: false,
           whatsappWalletBalance,
           organizationName: orgDetail?.name,
-          revisited: !!existingSession,
+          revisited: isRevisited,
           subscriptionStatus: true
         };
       }
@@ -100,7 +102,7 @@ export default defineEventHandler(async (event) => {
         status: true,
         whatsappWalletBalance,
         organizationName: orgDetail?.name,
-        revisited: !!existingSession,
+        revisited: isRevisited,
         subscriptionStatus: true
       };
     }
@@ -110,7 +112,7 @@ export default defineEventHandler(async (event) => {
       status: true,
       whatsappWalletBalance,
       organizationName: orgDetail?.name,
-      revisited: true,
+      revisited: false,
       subscriptionStatus: true
     };
 

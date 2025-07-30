@@ -170,7 +170,7 @@ export const getVoiceCampaignByContactGroupId = async(bucketId: string) => {
   });
 }
 
-export const getOrgCampaignsWithMetrics = async (organizationId: string) => {
+export const getOrgCampaignsWithMetrics = async (organizationId: string, fromDate: Date | undefined, toDate: Date  | undefined) => {
   const interactionStatuses = new Set(["Engaged", "booked", "follow-up", "New Lead"]);
   const conversionStatuses = new Set(["booked", "follow-up"]);
 
@@ -185,10 +185,14 @@ export const getOrgCampaignsWithMetrics = async (organizationId: string) => {
     .from(newCampaignSchema)
     .where(and(
       eq(newCampaignSchema.organizationId, organizationId),
-      eq(newCampaignSchema.isDeleted, false)
+      eq(newCampaignSchema.isDeleted, false),
+      ...(fromDate && toDate ? [
+          gte(newCampaignSchema.createdAt, fromDate),
+          lte(newCampaignSchema.createdAt, toDate),
+        ] : []),
     ));
 
-    const campaignIds = campaigns.map(c => c.id);
+  const campaignIds = campaigns.map(c => c.id);
 
   // Fetch all contact records from both sources
   const [whatsappContacts, voiceContacts] = await Promise.all([
