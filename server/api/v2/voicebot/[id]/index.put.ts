@@ -19,41 +19,42 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Handle Bot Prompt Generation
-    if (body?.botDetails) {
-      const { botDetails } = body;
-      const orgDetails = await getOrganizationById(organizationId);
+    // Commented out for now, can be uncommented later if needed
+    // // Handle Bot Prompt Generation
+    // if (body?.botDetails) {
+    //   const { botDetails } = body;
+    //   const orgDetails = await getOrganizationById(organizationId);
 
-      // Update industry if changed
+    //   // Update industry if changed
 
-      if (voicebotDetail?.industryId !== body?.industryId || voicebotDetail?.botDetails.agentName !== botDetails?.agentName) {
-        let industryName = botDetails?.industryType;
-        if(voicebotDetail?.industryId !== body?.industryId) {
-          const industryDetail = await getIndustryDetail({
-            industryId: body?.industryId ?? voicebotDetail?.industryId,
-          });
-          industryName = industryDetail?.industryName ?? industryName;
-        }
+    //   if (voicebotDetail?.botDetails.agentName !== botDetails?.agentName) {
+    //     // let industryName = botDetails?.industryType;
+    //     // if(voicebotDetail?.industryId !== body?.industryId) {
+    //     //   const industryDetail = await getIndustryDetail({
+    //     //     industryId: body?.industryId ?? voicebotDetail?.industryId,
+    //     //   });
+    //     //   industryName = industryDetail?.industryName ?? industryName;
+    //     // }
         
-        const role = botDetails.role === "custom" ? botDetails.otherRole : botDetails.role;
-        const goal = botDetails.goal === "custom" ? botDetails.otherGoal : botDetails.goal;
+    //     const role = botDetails.role === "custom" ? botDetails.otherRole : botDetails.role;
+    //     const goal = botDetails.goal === "custom" ? botDetails.otherGoal : botDetails.goal;
 
-        const prompts = getVoicebotPromptTextByIndustryType({
-          industryType: industryName,
-          name: botDetails.agentName,
-          role,
-          goal,
-          companyName: orgDetails?.name ?? "",
-          knowledgeBase: ""
-        });
+    //     const prompts = getVoicebotPromptTextByIndustryType({
+    //       industryType: voicebotDetail?.botDetails?.industryName,
+    //       name: botDetails.agentName,
+    //       role,
+    //       goal,
+    //       companyName: orgDetails?.name ?? "",
+    //       knowledgeBase: ""
+    //     });
 
-        body.llmConfig = {
-          ...voicebotDetail?.llmConfig,
-          inboundPromptText: prompts.inboundPrompt,
-          outboundPromptText: prompts.outboundPrompt,
-        };
-      }
-    }
+    //     body.llmConfig = {
+    //       ...voicebotDetail?.llmConfig,
+    //       inboundPromptText: prompts.inboundPrompt,
+    //       outboundPromptText: prompts.outboundPrompt,
+    //     };
+    //   }
+    // }
 
     // Clear fields if knowledge source changed
     if (body?.knowledgeSource && body.knowledgeSource !== voicebotDetail?.knowledgeSource) {
