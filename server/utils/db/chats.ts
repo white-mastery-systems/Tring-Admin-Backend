@@ -225,7 +225,6 @@ export const updateChatSummary = async (
       .update(chatSchema)
       .set({
         chatSummary: summaryResponse,
-        updatedAt: new Date(),
       })
       .where(eq(chatSchema.id, chatId));
 
