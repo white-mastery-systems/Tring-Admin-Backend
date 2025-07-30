@@ -13,7 +13,7 @@ export const getChatbotIntentByName = async (botId: string, intent: string, type
   });
 }
 
-export const getChatbotIntentsByChatbot = async (organizationId: string) => {
+export const getChatbotIntentsByChatbot = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
   const excludedEvents = ['visit', 'leads_submitted'];
 
   const autoEvents = [
@@ -35,7 +35,11 @@ export const getChatbotIntentsByChatbot = async (organizationId: string) => {
     .where(
       and(
         eq(timelineSchema.orgId, organizationId),
-        notInArray(timelineSchema.event, excludedEvents)
+        notInArray(timelineSchema.event, excludedEvents),
+        ...(fromDate && toDate ? [
+          gte(timelineSchema.createdAt, fromDate),
+          lte(timelineSchema.createdAt, toDate),
+        ] : []),
       )
     )
     .groupBy(timelineSchema.event)
