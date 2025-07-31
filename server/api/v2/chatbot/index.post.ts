@@ -87,12 +87,24 @@ export default defineEventHandler(async (event) => {
     const defaultformStructure = chatBotDefaultConfigs?.defaultformStructure
     const defaultFormIntentName = chatBotDefaultConfigs?.defaultFormIntentName
     const defaultNotes = chatBotDefaultConfigs?.defaultNotes
-   
+  
     const payload = {
       ...body,
       type: industryDetail?.industryName,
       ...defaultformStructure && { customForms: defaultformStructure },
-      organizationId
+      organizationId,
+      metadata: {
+        prompt: {
+          ...body?.prompt,
+          INDUSTRY: industryDetail?.industryName,
+          ...defaultIntents && { 
+            INTENTS: defaultIntents
+          },
+          ...defaultNotes && {
+            NOTES: defaultNotes
+          }
+        }
+      }
     }
 
     const bot: any = await createBot(payload);
@@ -136,15 +148,7 @@ export default defineEventHandler(async (event) => {
         },
         prompt: {
           ...bot?.metadata.prompt,
-          ...body?.prompt,
-          INDUSTRY: industryDetail?.industryName,
           INITIAL_MESSAGE,
-          ...defaultIntents && { 
-            INTENTS: defaultIntents
-          },
-          ...defaultNotes && {
-            NOTES: defaultNotes
-          }
         },
       },
       status: "active",
