@@ -102,7 +102,8 @@ export default defineEventHandler(async (event) => {
           },
           ...defaultNotes && {
             NOTES: defaultNotes
-          }
+          },
+          errorMessage: "Uh-oh, Can you try reloading the page and try chatting with me? It seems like our system is facing an issue. Thank you for your understanding",
         }
       }
     }
