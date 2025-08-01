@@ -24,6 +24,18 @@ export const voicebotKnowledgeSource = async (knowledgeSource: string, websiteCo
   return knowledgeBase
 }
 
+export const getAllVoicebotTelephoneNumbers = async () => {
+  return await db
+    .select({ incomingPhoneNumber: voicebotSchema.incomingPhoneNumber })
+    .from(voicebotSchema)
+    .where(
+      and(
+        isNotNull(voicebotSchema.incomingPhoneNumber),
+        eq(voicebotSchema.isDeleted, false)
+      )
+    );
+}
+
 export const zodCreateNewVoicebotSchema = z.object({
   name: z.string(),
   active: z.boolean().optional(),

@@ -142,8 +142,12 @@ export const getNewAnalytics = async (organizationId: string, query: any, timeZo
       toDate = queryDate?.to;
     }
 
-    if(query?.type === "chat") {
-      const [
+    const botType = query?.botType || "both"; // default to 'both'
+
+    const result: any = {};
+
+    if(botType === "chat" || botType === "both") {
+        const [
         chatSessions, 
         uniqueVisitors, 
         chatLeads, 
@@ -160,21 +164,21 @@ export const getNewAnalytics = async (organizationId: string, query: any, timeZo
         getOrgReEnagedChatbotUsers(organizationId, fromDate, toDate),
         getChatDropOffConversation(organizationId, fromDate, toDate)
       ])
-     
-      const reEngagementRate = orgTotalChatbotUsers > 0 ? `${Math.round((orgReEngagedBotUsers / orgTotalChatbotUsers) * 100)}%` : "0%"
-      const dropOffRate = chatLeads > 0 ? `${Math.round((dropOffConversation / chatLeads) *100)}%` : "0%";
+      
+      const chatReEngagementRate = orgTotalChatbotUsers > 0 ? `${Math.round((orgReEngagedBotUsers / orgTotalChatbotUsers) * 100)}%` : "0%"
+      const dropOffChatRate = chatLeads > 0 ? `${Math.round((dropOffConversation / chatLeads) *100)}%` : "0%";
 
-      return {
+      result.chat = {
         sessions: chatSessions.length,
         uniqueVisitors: uniqueVisitors.length,
         leads: chatLeads,
         interactedChats: interactedChats.length,
-        reEngagementRate,
-        dropOffRate
+        reEngagementRate: chatReEngagementRate,
+        dropOffRate: dropOffChatRate
       }
     }
-
-    if(query?.type === "voice") {
+    
+    if(botType === "voice" || botType === "both") {
       const [
         totalCalls,
         voiceleads,
@@ -190,8 +194,8 @@ export const getNewAnalytics = async (organizationId: string, query: any, timeZo
       ])
 
       const dropOffCallRate = totalCalls.length > 0 ? `${Math.round((dropOffCallConversation / totalCalls.length) * 100)}%` : "0%";
-      
-      return {
+    
+      result.voice = {
         calls: totalCalls.length,
         uniqueVistors: orgVoicebotEngagement.totalUniqueCallers,
         leads: voiceleads.length,
@@ -200,7 +204,8 @@ export const getNewAnalytics = async (organizationId: string, query: any, timeZo
         dropOffRate: dropOffCallRate
       }
     }
-
+    return result;
+   
   } catch (error: any) {
     logger.error(`Dashboard Analytics API Error: ${JSON.stringify(error.message)}`)
     throw new Error(error.message)
