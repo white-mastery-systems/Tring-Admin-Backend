@@ -94,6 +94,25 @@ export default defineEventHandler(async (event) => {
       ...defaultformStructure && { customForms: defaultformStructure },
       organizationId,
       metadata: {
+        ui: {
+          color: "236 61% 54%",
+          secondaryColor: "236, 61%, 74%",
+          widgetPosition: "Right",
+          fontFamily: "Kanit",
+          widgetSound: true,
+          defaultSelect: true,
+          defaultRibbon: true,
+          generateLead: true,
+          openDelay: 3000,
+          chatHeaderText: "Live Support",
+          leadNameField: true,
+          leadEmailField: true,
+          leadPhoneField: true,
+          leadWebsiteField: false,
+          leadFormTitle: "Thanks for your time with us!",
+          leadFormDescription:  "Could you please share your contact info?",
+          humanMode: true
+        },
         prompt: {
           ...body?.prompt,
           INDUSTRY: industryDetail?.industryName,
