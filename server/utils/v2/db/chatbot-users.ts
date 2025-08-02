@@ -92,15 +92,40 @@ export const getChatbotUserBySegments = async (organizationId: string, fromDate:
       )
     ).groupBy(timelineSchema.userId)
 
-  const [frequentUsersResult, firstTimeUsersResult, highValueUsersResult] = await Promise.all([
+  const dropOffUserQuery = db
+    .select({ metadata: leadSchema.metadata }) 
+    .from(leadSchema)
+    .where(
+      and(
+        ...(fromDate && toDate ? [
+          gte(leadSchema.createdAt, fromDate),
+          lte(leadSchema.createdAt, toDate),
+        ] : []),
+        eq(leadSchema.organizationId, organizationId),
+        isNotNull(leadSchema.metadata),
+      ),  
+    )
+
+  const [frequentUsersResult, firstTimeUsersResult, highValueUsersResult, dropOffUserResult] = await Promise.all([
     frequentUsersQuery,
     firstTimeUsersQuery,
-    highValueUserQuery
+    highValueUserQuery,
+    dropOffUserQuery
   ]);
 
+  const dropOffUsers = dropOffUserResult.filter((lead: any) => { 
+    const metadata: any = lead.metadata || {};
+    const behavioralMetrics = metadata.behavioralMetrics || {};
+    return (
+      behavioralMetrics.dropOffRate === true
+    );
+  })
+
+  // return data.length
   return {
     frequentUsers: frequentUsersResult[0].count,
     firstTimeUsers: firstTimeUsersResult[0].count,
-    highValueUsers: highValueUsersResult.length
+    highValueUsers: highValueUsersResult.length,
+    dropOffUsers: dropOffUsers.length
   }
 }

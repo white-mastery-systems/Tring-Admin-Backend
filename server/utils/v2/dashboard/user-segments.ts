@@ -16,7 +16,7 @@ export const getUserSegments = async (organizationId: string, type: string, from
      
     // Voicebot - User Segments
     if (type === "voice") {
-      const voicebotUserSegments = await getVoicebotUsersBySegments(organizationId)
+      const voicebotUserSegments = await getVoicebotUsersBySegments(organizationId, fromDate, toDate)
 
       return {
         frequentUsers: voicebotUserSegments.frequentUsers,

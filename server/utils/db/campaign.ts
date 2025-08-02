@@ -188,9 +188,18 @@ export const getWhatsappContactsByCampaignId = async (campaignId: string, timeZo
   }
 
   let data: any = await db.query.campaignWhatsappContactSchema.findMany({
-    where: and(...filters),
+    where: and(
+     ...filters,
+     query?.q ? 
+      or(
+        ilike(campaignWhatsappContactSchema.firstName, `%${query?.q}%`),
+        ilike(campaignWhatsappContactSchema.phone, `%${query?.q}%`),
+        ) 
+      : undefined,
+    ),
     orderBy: [desc(campaignWhatsappContactSchema.createdAt)],
   });
+
   data = data.map((i: any) => ({
     ...i,
     link: i.chatId ? `${config.newFrontendUrl}/dashboard/customer-logs/chats/${i.chatId}` : null,
