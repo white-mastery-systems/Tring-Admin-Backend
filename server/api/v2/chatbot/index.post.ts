@@ -111,7 +111,8 @@ export default defineEventHandler(async (event) => {
           leadWebsiteField: false,
           leadFormTitle: "Thanks for your time with us!",
           leadFormDescription:  "Could you please share your contact info?",
-          humanMode: true
+          humanMode: true,
+          leadFormAdditionalFields: []
         },
         prompt: {
           ...body?.prompt,
