@@ -344,8 +344,8 @@ export const getChatbotQueriesByStatus = async(botId: string, status: "trained" 
         : undefined,
     ),
     orderBy: [
-      desc(chatResponseImprovementSchema.createdAt),
       sql`cardinality(${chatResponseImprovementSchema.instances}) DESC`,
+      desc(chatResponseImprovementSchema.createdAt)
     ]
   })
 
@@ -426,3 +426,79 @@ export const getChatImprovementsByOrgId = async (organizationId: string) => {
   };
 };
 
+export const getChatImprovementWeeklyHealthScore = async (organizationId: string, timezone: string) => {
+  // Week ranges
+  const currentWeekStart = momentTz.tz(timezone).startOf("isoWeek").toDate();
+  const currentWeekEnd = momentTz.tz(timezone).endOf("isoWeek").toDate();
+
+  const lastWeekStart = momentTz.tz(timezone).subtract(1, "week").startOf("isoWeek").toDate();
+  const lastWeekEnd = momentTz.tz(timezone).subtract(1, "week").endOf("isoWeek").toDate();
+
+  // Fetch improvements
+  const [currentWeekImprovements, lastWeekImprovements] = await Promise.all([
+    db.select().from(chatResponseImprovementSchema).where(
+      and(
+        eq(chatResponseImprovementSchema.organizationId, organizationId),
+        gte(chatResponseImprovementSchema.createdAt, currentWeekStart),
+        lte(chatResponseImprovementSchema.createdAt, currentWeekEnd)
+      )
+    ),
+    db.select().from(chatResponseImprovementSchema).where(
+      and(
+        eq(chatResponseImprovementSchema.organizationId, organizationId),
+        gte(chatResponseImprovementSchema.createdAt, lastWeekStart),
+        lte(chatResponseImprovementSchema.createdAt, lastWeekEnd)
+      )
+    ),
+  ]);
+
+  // Calculate current health score
+  const currentWeekTotal = currentWeekImprovements.length;
+  const currentWeekTrained = currentWeekImprovements.filter(i => i.status === "trained").length;
+  const currentWeekScore = currentWeekTotal > 0 ? Math.round((currentWeekTrained / currentWeekTotal) * 100) : 0;
+
+  // Calculate last week health score
+  const lastWeekTotal = lastWeekImprovements.length;
+  const lastWeekTrained = lastWeekImprovements.filter(i => i.status === "trained").length;
+  const lastWeekScore = lastWeekTotal > 0 ? Math.round((lastWeekTrained / lastWeekTotal) * 100) : 0;
+
+  // Calculate growth
+  const growth = currentWeekScore - lastWeekScore;
+  const trend = growth >= 0 ? `+${growth}% from last week` : `${growth}% from last week`;
+
+  return {
+    healthScore: `${currentWeekScore}%`,
+    trend,
+    currentWeek: {
+      total: currentWeekTotal,
+      trained: currentWeekTrained,
+    },
+    lastWeek: {
+      total: lastWeekTotal,
+      trained: lastWeekTrained,
+    }
+  };
+};
+
+export const getChatbotImprovementDetailsByOrgId = async (organizationId: string) => {
+return await db
+  .select({
+    instanceCount: sql`cardinality(${chatResponseImprovementSchema.instances})`,
+    id: chatResponseImprovementSchema.id, 
+    title: chatResponseImprovementSchema.title,
+    botName: chatBotSchema.name,
+  })
+  .from(chatResponseImprovementSchema)
+  .leftJoin(chatBotSchema, eq(chatResponseImprovementSchema.botId, chatBotSchema.id))
+  .where(
+    and(
+      eq(chatResponseImprovementSchema.organizationId, organizationId),
+      sql`cardinality(${chatResponseImprovementSchema.instances}) > 0`
+    )
+  )
+  .limit(4)
+  .orderBy(
+    sql`cardinality(${chatResponseImprovementSchema.instances}) DESC`,
+    desc(chatResponseImprovementSchema.createdAt)
+  );
+}

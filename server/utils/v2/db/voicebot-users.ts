@@ -70,8 +70,8 @@ export const getVoicebotEngagementMetrics = async (
   }
 }
 
-export const getVoicebotUsersBySegments = async (organizationId: string) => {
-  const groupedPhoneCounts = await db
+export const getVoicebotUsersBySegments = async (organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
+  const groupedPhoneCountsQuery = db
     .select({
       phoneNumber: callLogSchema.from,
       callCount: count(callLogSchema.id).as("callCount"),
@@ -80,15 +80,47 @@ export const getVoicebotUsersBySegments = async (organizationId: string) => {
     .where(
       and(
         eq(callLogSchema.organizationId, organizationId),
+        ...(fromDate && toDate
+          ? [
+              gte(callLogSchema.createdAt, fromDate),
+              lte(callLogSchema.createdAt, toDate),
+            ]
+          : []),
         isNotNull(callLogSchema.from)
       )
     )
     .groupBy(callLogSchema.from);
 
+  const dropOffUserQuery = db
+  .select({ metrics: callLogSchema.metrics })
+  .from(callLogSchema)
+  .where(
+    and(
+      eq(callLogSchema.organizationId, organizationId),
+      ...(fromDate && toDate
+        ? [
+            gte(callLogSchema.createdAt, fromDate),
+            lte(callLogSchema.createdAt, toDate),
+          ]
+        : []),
+      isNotNull(callLogSchema.metrics)
+    )
+  )
+
+  const [groupedPhoneCountResult, dropOffUserResult] = await Promise.all([
+    groupedPhoneCountsQuery,
+    dropOffUserQuery
+  ]);
+
+  const dropoffCalls = dropOffUserResult.filter((item: any) => {
+    const metrics = item?.metrics
+    return metrics?.dropOffRate === true
+  })
+
   let firstTimeUsers = 0;
   let frequentUsers = 0;
 
-  for (const entry of groupedPhoneCounts) {
+  for (const entry of groupedPhoneCountResult) {
     if (entry.callCount === 1) firstTimeUsers += 1;
     else frequentUsers += 1;
   }
@@ -96,6 +128,7 @@ export const getVoicebotUsersBySegments = async (organizationId: string) => {
   return {
     firstTimeUsers,
     frequentUsers,
-    totalUniqueUsers: groupedPhoneCounts.length
+    totalUniqueUsers: groupedPhoneCountResult.length,
+    dropOffUsers: dropoffCalls.length || 0
   };
 };

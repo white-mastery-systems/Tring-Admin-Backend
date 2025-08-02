@@ -598,8 +598,8 @@ export const getVoicebotQueriesByStatus = async (voicebotId: string, status: "tr
         : undefined,
     ),
     orderBy: [
-      desc(voiceResponseImprovementSchema.createdAt),
       sql`cardinality(${voiceResponseImprovementSchema.instances}) DESC`,
+      desc(voiceResponseImprovementSchema.createdAt)
     ]
   })
 
@@ -667,6 +667,83 @@ export const getVoiceImprovementsByOrgId = async (organizationId: string) => {
     highPriorityImprovements: result[0].highPriority,
     healthScore
   };
+}
+
+export const getVoiceImprovementWeeklyHealthScore = async (organizationId: string, timezone: string) => {
+  // Week ranges
+  const currentWeekStart = momentTz.tz(timezone).startOf("isoWeek").toDate();
+  const currentWeekEnd = momentTz.tz(timezone).endOf("isoWeek").toDate();
+
+  const lastWeekStart = momentTz.tz(timezone).subtract(1, "week").startOf("isoWeek").toDate();
+  const lastWeekEnd = momentTz.tz(timezone).subtract(1, "week").endOf("isoWeek").toDate();
+
+  // Fetch improvements
+  const [currentWeekImprovements, lastWeekImprovements] = await Promise.all([
+    db.select().from(voiceResponseImprovementSchema).where(
+      and(
+        eq(voiceResponseImprovementSchema.organizationId, organizationId),
+        gte(voiceResponseImprovementSchema.createdAt, currentWeekStart),
+        lte(voiceResponseImprovementSchema.createdAt, currentWeekEnd)
+      )
+    ),
+    db.select().from(voiceResponseImprovementSchema).where(
+      and(
+        eq(voiceResponseImprovementSchema.organizationId, organizationId),
+        gte(voiceResponseImprovementSchema.createdAt, lastWeekStart),
+        lte(voiceResponseImprovementSchema.createdAt, lastWeekEnd)
+      )
+    ),
+  ]);
+
+  // Calculate current health score
+  const currentWeekTotal = currentWeekImprovements.length;
+  const currentWeekTrained = currentWeekImprovements.filter(i => i.status === "trained").length;
+  const currentWeekScore = currentWeekTotal > 0 ? Math.round((currentWeekTrained / currentWeekTotal) * 100) : 0;
+
+  // Calculate last week health score
+  const lastWeekTotal = lastWeekImprovements.length;
+  const lastWeekTrained = lastWeekImprovements.filter(i => i.status === "trained").length;
+  const lastWeekScore = lastWeekTotal > 0 ? Math.round((lastWeekTrained / lastWeekTotal) * 100) : 0;
+
+  // Calculate growth
+  const growth = currentWeekScore - lastWeekScore;
+  const trend = growth >= 0 ? `+${growth}% from last week` : `${growth}% from last week`;
+
+  return {
+    healthScore: `${currentWeekScore}%`,
+    trend,
+    currentWeek: {
+      total: currentWeekTotal,
+      trained: currentWeekTrained,
+    },
+    lastWeek: {
+      total: lastWeekTotal,
+      trained: lastWeekTrained,
+    }
+  };
+}
+
+export const getVoicebotImprovementDetailsByOrgId = async (organizationId: string) => {
+  return await db
+    .select({
+      instanceCount: sql`cardinality(${voiceResponseImprovementSchema.instances})`,
+      id: voiceResponseImprovementSchema.id, 
+      title: voiceResponseImprovementSchema.title,
+      botName: voicebotSchema.name,
+    })
+    .from(voiceResponseImprovementSchema)
+    .leftJoin(voicebotSchema, eq(voiceResponseImprovementSchema.botId, voicebotSchema.id))
+    .where(
+      and(
+        eq(voiceResponseImprovementSchema.organizationId, organizationId),
+        sql`cardinality(${voiceResponseImprovementSchema.instances}) > 0`
+      )
+    )
+    .limit(4)
+    .orderBy(
+      sql`cardinality(${voiceResponseImprovementSchema.instances}) DESC`,
+      desc(voiceResponseImprovementSchema.createdAt)
+    );
 }
  
 // Voicebot Caching
