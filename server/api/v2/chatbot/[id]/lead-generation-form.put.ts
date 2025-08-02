@@ -1,4 +1,3 @@
-import uiGet from "~/server/api/bots/[id]/ui.get";
 import { logger } from "~/server/logger";
 import { errorResponse } from "~/server/response/error.response";
 
