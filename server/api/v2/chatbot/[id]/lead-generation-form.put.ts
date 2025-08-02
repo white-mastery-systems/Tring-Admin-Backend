@@ -12,6 +12,12 @@ export default defineEventHandler(async (event) => {
     );
 
     const body: any = await isValidBodyHandler(event, z.object({
+      leadFormTitle: z.string().min(1, "Lead form title is required"),
+      leadFormDescription: z.string(),
+      leadNameField: z.boolean(),
+      leadEmailField: z.boolean(),
+      leadPhoneField: z.boolean(),
+      leadWebsiteField: z.boolean(),
       leadFormAdditionalFields: z.array(z.any())
     }));
 
@@ -23,6 +29,12 @@ export default defineEventHandler(async (event) => {
         ...(bot.metadata as any),
          ui: {
           ...(bot.metadata as { ui: any }).ui,
+          leadFormTitle: body.leadFormTitle,
+          leadFormDescription: body.leadFormDescription,
+          leadNameField: body.leadNameField,
+          leadEmailField: body.leadEmailField,
+          leadPhoneField: body.leadPhoneField,
+          leadWebsiteField: body.leadWebsiteField,
           leadFormAdditionalFields: body.leadFormAdditionalFields || [],
         }
       },
