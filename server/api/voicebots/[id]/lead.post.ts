@@ -10,6 +10,7 @@ const zodVoicebotLead = z.object({
   callSid: z.string(),
   callOutcome: z.string(),
   callLogId: z.string(),
+  country: z.string().optional(),
   location: z.string().optional(),
   notes: z.string().optional(),
   scheduledDate: z.string().optional(),
