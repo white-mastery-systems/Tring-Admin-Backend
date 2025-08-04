@@ -598,8 +598,8 @@ export const getVoicebotQueriesByStatus = async (voicebotId: string, status: "tr
         : undefined,
     ),
     orderBy: [
-      sql`cardinality(${voiceResponseImprovementSchema.instances}) DESC`,
-      desc(voiceResponseImprovementSchema.createdAt)
+      desc(voiceResponseImprovementSchema.createdAt),
+      sql`cardinality(${voiceResponseImprovementSchema.instances}) DESC`
     ]
   })
 

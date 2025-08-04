@@ -344,8 +344,8 @@ export const getChatbotQueriesByStatus = async(botId: string, status: "trained" 
         : undefined,
     ),
     orderBy: [
+      desc(chatResponseImprovementSchema.createdAt),
       sql`cardinality(${chatResponseImprovementSchema.instances}) DESC`,
-      desc(chatResponseImprovementSchema.createdAt)
     ]
   })
 
