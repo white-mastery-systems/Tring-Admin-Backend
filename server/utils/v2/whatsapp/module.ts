@@ -149,6 +149,7 @@ export const sendWhatsappCampaignWithTemplate = async (data:any) => {
             parameters: headerParameter,
           });
         }
+        logger.info(`whatsapp campaign bodyParameters: ${JSON.stringify(bodyParameters)}`);
         if (bodyParameters.length) {
           bodyComponents.push({ type: "body", parameters: bodyParameters });
         }
