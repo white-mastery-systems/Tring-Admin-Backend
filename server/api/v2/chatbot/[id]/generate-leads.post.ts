@@ -8,6 +8,7 @@ import { newGenerateContactInZohoBigin, newGenerateLeadInZohoBigin, newUpdateNot
 import { listActiveBotIntegration } from "~/server/utils/db/bot";
 import { pushChatLeadsToClay } from "~/server/utils/clay/webhook";
 import { errorResponse } from "~/server/response/error.response";
+import countryCodeList from "~/assets/country-codes.json";
 
 const config = useRuntimeConfig()
 
@@ -50,6 +51,8 @@ export default defineEventHandler(async (event) => {
 
   const adminUser: any = await getAdminByOrgId(botDetails?.organizationId);
   let botIntegrations: any = await listActiveBotIntegration(botId);
+
+  const countryDetail = countryCodeList.find((country) => country.dial_code === body?.botUser?.countryCode)
 
   botIntegrations?.map(async (botIntegration: any) => {
     if (botIntegration?.integration?.crm === "zoho-bigin") {
@@ -158,6 +161,7 @@ export default defineEventHandler(async (event) => {
           intent: "Lead",
           name: body?.botUser?.name,
           email: body?.botUser?.email,
+          country: countryDetail?.name,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
           botName: `${botDetails?.name}`,
           chatLink: `${config.newFrontendUrl}/dashboard/customer-logs/leads/${body.chatId}`,
@@ -191,6 +195,7 @@ export default defineEventHandler(async (event) => {
           name: `*${body?.botUser?.name}*`,
           email: body?.botUser?.email,
           phone: `${body?.botUser?.countryCode} ${body?.botUser?.mobile}`,
+          country: countryDetail?.name,
           botName: `${botDetails?.name}`,
           conversationHistory: `${config.newFrontendUrl}/dashboard/customer-logs/leads/${body?.chatId}`,
           whatsappLink: `https://wa.me/${body?.botUser?.countryCode}${body?.botUser?.mobile}`,

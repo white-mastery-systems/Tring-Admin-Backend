@@ -114,7 +114,7 @@ export const createSlackMessage: any = async (
       body: {
         channel: channelId,
         // text: `*${notes ? notes : "Lead Received"}* ::\nName: ${payload?.name}\nEmail: ${payload?.email}\nPhone: ${payload?.phone}\nBot Name: ${payload?.botName}\nChat Link: ${payload?.chatLink}\nWhatsapp Link: ${payload?.whatsappLink}`,
-        text: `*${notes ?? "Lead Received"}* \nA new ${payload?.intent ?? "Lead"} inquiry was received for your business through Tring AI. \n👤 ${payload?.name} | 📞 ${payload?.phone}${type && payload?.email ? `\n📩 Email: ${payload?.email}` : ""}\n🆔 Bot Name: ${payload?.botName}\n🔗 Conversation History: ${ type ? payload?.callHistory : payload?.chatLink}\n🔗 Contact user on whatsapp : ${payload?.whatsappLink}\n\nThis message is intended for business use to help you follow up with the lead.`,
+        text: `*${notes ?? "Lead Received"}* \nA new ${payload?.intent ?? "Lead"} inquiry was received for your business through Tring AI. \n👤 ${payload?.name} | ${payload.country} | 📞 ${payload?.phone}${type && payload?.email ? `\n📩 Email: ${payload?.email}` : ""}\n🆔 Bot Name: ${payload?.botName}\n🔗 Conversation History: ${ type ? payload?.callHistory : payload?.chatLink}\n🔗 Contact user on whatsapp : ${payload?.whatsappLink}\n\nThis message is intended for business use to help you follow up with the lead.`,
       },
     });
     // console.log(
