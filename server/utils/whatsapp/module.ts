@@ -136,7 +136,7 @@ export async function createWhatsAppMessage(
       ],
     },
   };
-
+  logger.info(`Sending whatsapp notification message with body: ${JSON.stringify(messageBody)}`);
   try {
     const response = await $fetch(url, {
       method: "POST",
@@ -148,7 +148,7 @@ export async function createWhatsAppMessage(
     logger.info(`Whatsapp message sent ${JSON.stringify(response)}`);
     return response;
   } catch (error:any) {
-    logger.info(`Error sending whatsapp message ${error?.message}`);
+    logger.error(`Error sending whatsapp lead notification : ${JSON.stringify(error?.response?._data)}`);
     return false
   }
 }
