@@ -255,10 +255,13 @@ export const variablePrameterObj = (variableName: any, contact: any) => {
   } else if (varName === "email") {
     return { type: "text", text: contact?.email || variableName }
   } else if (["mobile", "phone", "phone no", "mobile no", "phoneNumber"].includes(varName) && contact?.phoneNumber) {
+    logger.info(`variablePrameterObj phoneNumber: ${contact?.countryCode} ${contact?.phoneNumber}, variableName: ${variableName}`);
     return { type: "text", text: `${contact?.countryCode || "+91"}${contact?.phoneNumber || variableName}` }
   } else if (["Countrycode", "CountryCode", "countryCode", "Country Code", "country code", "country_code", "country-code", "Country_Code", "Country-Code"].includes(varName) && contact?.countryCode) {
+    logger.info(`variablePrameterObj countryCode: ${contact?.countryCode}, variableName: ${variableName}`);
     return { type: "text", text: `${contact?.countryCode || "+91"}` }
   } else { 
+    logger.info(`variablePrameterObj default case: variableName: ${variableName}`);
     return { type:"text", text:variableName }
   }
 };
