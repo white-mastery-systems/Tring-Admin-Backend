@@ -114,7 +114,7 @@ export async function createWhatsAppMessage(
     to: userPhone,
     type: "template",
     template: {
-      name: "utility_notification_1",
+      name: "utility_notification_template",
       language: { code: "en" },
       components: [
         {
@@ -126,6 +126,7 @@ export async function createWhatsAppMessage(
           parameters: [
             { type: "text", text: payload.intent },
             { type: "text", text: payload.name },
+            { type: "text", text: payload.country },
             { type: "text", text: payload.phone },
             { type: "text", text: payload.email },
             { type: "text", text: payload.botName },
