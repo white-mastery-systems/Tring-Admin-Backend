@@ -248,6 +248,7 @@ export const getTemplateBodyVariables = (example: any): any[] => {
 };
 
 export const variablePrameterObj = (variableName: any, contact: any) => {
+  logger.info(`variablePrameterObj variableName: ${variableName}, contact: ${JSON.stringify(contact)}`);
   const varName = `${variableName}`.toLowerCase()
   if (["Name", "fullname", "full name", "user name", "username", "name"].includes(varName)) {
     return { type: "text", text: `${(contact?.name) ?? variableName}` }
@@ -258,6 +259,6 @@ export const variablePrameterObj = (variableName: any, contact: any) => {
   } else if (["Countrycode", "CountryCode", "countryCode", "Country Code", "country code", "country_code", "country-code", "Country_Code", "Country-Code"].includes(varName) && contact?.countryCode) {
     return { type: "text", text: `${contact?.countryCode || "+91"}` }
   } else { 
-    return {type:"text", text:variableName}
+    return { type:"text", text:variableName }
   }
 };
