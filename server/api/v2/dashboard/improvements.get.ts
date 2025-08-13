@@ -24,9 +24,9 @@ export default defineEventHandler(async (event) => {
     if (shouldFetchChat) {
       tasks.push(
         (async () => {
-          const [impr, growth, improvementDetails] = await Promise.all([
+          const [impr, improvementDetails] = await Promise.all([
             getChatImprovementsByOrgId(organizationId),
-            getChatImprovementWeeklyHealthScore(organizationId, timeZone),
+            // getChatImprovementWeeklyHealthScore(organizationId, timeZone),
             getChatbotImprovementDetailsByOrgId(organizationId)
           ]);
           chatDetails = improvementDetails;
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
             totalImprovements: impr.totalImprovements,
             highPriorityImprovements: impr.highPriorityImprovements,
             healthScore: impr.healthScore,
-            improvementHealthScoreGrowth: growth
+            // improvementHealthScoreGrowth: growth
           };
         })()
       );
@@ -43,9 +43,9 @@ export default defineEventHandler(async (event) => {
     if (shouldFetchVoice) {
       tasks.push(
         (async () => {
-          const [impr, growth, improvementDetails] = await Promise.all([
+          const [impr, improvementDetails] = await Promise.all([
             getVoiceImprovementsByOrgId(organizationId),
-            getVoiceImprovementWeeklyHealthScore(organizationId, timeZone),
+            // getVoiceImprovementWeeklyHealthScore(organizationId, timeZone),
             getVoicebotImprovementDetailsByOrgId(organizationId)
           ]);
           voiceDetails = improvementDetails;
@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
             totalImprovements: impr.totalImprovements,
             highPriorityImprovements: impr.highPriorityImprovements,
             healthScore: impr.healthScore,
-            improvementHealthScoreGrowth: growth
+            // improvementHealthScoreGrowth: growth
           };
         })()
       );

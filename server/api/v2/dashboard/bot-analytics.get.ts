@@ -12,7 +12,6 @@ export default defineEventHandler(async(event) => {
     const organizationId = await isOrganizationAdminHandler(event) as string
 
     const query = await isValidQueryHandler(event, z.object({
-      type: z.enum(["chat", "voice"]).default("chat"),
       key: z.string(),
       period: z.string(),
       from: z
@@ -27,6 +26,7 @@ export default defineEventHandler(async(event) => {
         .transform((val) => (val ? new Date(val) : null)),
     }))
 
+    const botType = await getOrgChatAndVoicebots(organizationId);
     let data: any
 
     // Period-based filtering
@@ -48,7 +48,7 @@ export default defineEventHandler(async(event) => {
         break
 
       case "intentAnalysis":
-        data = await getIntentAnalysis(query?.type, organizationId, fromDate, toDate)
+        data = await getIntentAnalysis(botType, organizationId, fromDate, toDate)
         break
     }
 

@@ -13,7 +13,6 @@ export default defineEventHandler(async(event) => {
 
     const query = await isValidQueryHandler(event, z.object({
       key: z.string(),
-      type: z.enum(["chat", "voice"]),
       period: z.string(),
       from: z
         .string()
@@ -26,6 +25,8 @@ export default defineEventHandler(async(event) => {
         .nullish()
         .transform((val) => (val ? new Date(val) : null)),
     }))
+
+    const botType = await getOrgChatAndVoicebots(organizationId);
 
     let data: any
 
@@ -40,15 +41,15 @@ export default defineEventHandler(async(event) => {
 
     switch(query?.key) {
       case "demographics":
-        data = await getDemographics(organizationId, query?.type, fromDate, toDate)
+        data = await getDemographics(organizationId, botType, fromDate, toDate)
         break
 
       case "languageData":
-        
+        // Placeholder for future language data functionality
         break
 
       case "userSegment":
-        data = await getUserSegments(organizationId, query?.type, fromDate, toDate)
+        data = await getUserSegments(organizationId, botType, fromDate, toDate)
         break
     }
 

@@ -7,7 +7,7 @@ export const getOrgChatAndVoicebots = async (organizationId: string) => {
 
   const [chatbots, voicebots] = await Promise.all([
     db.select({
-     count: count()
+      count: count()
     })
     .from(chatBotSchema)
     .where(and(
@@ -23,6 +23,14 @@ export const getOrgChatAndVoicebots = async (organizationId: string) => {
       eq(voicebotSchema.isDeleted, false)
     ))
   ])
+
+  const subscription = await db
+    .select({
+      subscriptionId: adminSubscriptionSchema.subscriptionId,
+      serviceType: adminSubscriptionSchema.serviceType,
+    })
+    .from(adminSubscriptionSchema)
+    .where((eq(adminSubscriptionSchema.organizationId, organizationId)))
  
   const chatbotCount = Number(chatbots[0].count || 0);
   const voicebotCount = Number(voicebots[0].count || 0);
@@ -34,7 +42,22 @@ export const getOrgChatAndVoicebots = async (organizationId: string) => {
   } else if (voicebotCount > 0) {
     botType = "voice";
   } else {
-    botType = "chat"; // default fallback
+    const hasPaidChat = subscription.some(
+      sub => sub.serviceType === "chat" && !!sub.subscriptionId
+    );
+    const hasPaidVoice = subscription.some(
+      sub => sub.serviceType === "voice" && !!sub.subscriptionId
+    );
+
+    if (hasPaidChat && hasPaidVoice) {
+      botType = "both";
+    } else if (hasPaidChat) {
+      botType = "chat";
+    } else if (hasPaidVoice) {
+      botType = "voice";
+    } else {
+      botType = "chat"; // fallback to chat if no bots exist and no paid subscriptions
+    }
   }
 
   return botType;
