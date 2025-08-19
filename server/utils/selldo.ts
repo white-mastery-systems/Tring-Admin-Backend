@@ -10,6 +10,7 @@ export const createLeadInSellDo = async (
   botSource: string,
   botSubSource: string,
 ) => {
+  logger.info(`Sell Do - createLeadInSellDo called with apiKey: ${apiKey}, projectId: ${projectId}, campaignId: ${campaignId}, analytics: ${JSON.stringify(analytics)}, user: ${JSON.stringify(user)}, notes: ${notes}`);
   while (true) {
     try {
       const response: any = await $fetch(
@@ -39,6 +40,8 @@ export const createLeadInSellDo = async (
           },
         },
       );
+
+      logger.info(`Sell Do response: ${JSON.stringify(response)}`);
 
       if (response.sell_do_lead_id.length > 0) return response.sell_do_lead_id;
 
