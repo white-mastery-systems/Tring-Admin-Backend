@@ -59,7 +59,7 @@ export default defineEventHandler(async (event) => {
   }
 
   req.on("close", () => {
-    logger.info(`[SSE] ❌ Client-side disconnect detected for user: ${userId}`);
+    logger.info(`[SSE] Client-side disconnect detected for user: ${userId}`);
     const connections = global.userConnections?.get(userId);
     if (connections) {
       global.userConnections?.set(
@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
   });
 
   req.on("aborted", () => {
-    logger.warn(`[SSE] ⚠️ Client aborted the connection unexpectedly for user: ${userId}`);
+    logger.warn(`[SSE] Client aborted the connection unexpectedly for user: ${userId}`);
   });
 });
 
