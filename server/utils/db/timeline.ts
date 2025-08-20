@@ -23,7 +23,7 @@ export const listTimelinesByChatId = async (
 
   data = data.map((i: any) => ({
     ...i,
-    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm:ss.SSS A"),
+    createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
   }));
 
   return data;

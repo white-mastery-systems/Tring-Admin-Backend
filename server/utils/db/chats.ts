@@ -83,7 +83,7 @@ export const getMessages = async (
     chatId: i?.id,
     messages: i?.messages.map((msg: any) => ({
       ...msg,
-      createdAt: momentTz(msg.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm:ss.SSS A"),
+      createdAt: momentTz(msg.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
     })),
   }));
 
