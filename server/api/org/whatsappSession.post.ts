@@ -15,6 +15,8 @@ export default defineEventHandler(async (event) => {
   try {
     const { organizationId, pid, mobile, countryCode } = body;
 
+    logger.info(`Creating WhatsApp session for organization: ${organizationId}, pid: ${pid}, mobile: ${mobile}, countryCode: ${countryCode}`);
+
     const [orgZohoSubscription, orgDetail, orgPlanUsage, adminDetail] = await Promise.all([
       getOrgZohoSubscription(organizationId, "chat"),
       getOrganizationById(organizationId),
@@ -89,8 +91,9 @@ export default defineEventHandler(async (event) => {
 
       whatsappWalletBalance = parseFloat((whatsappWalletBalance - sessionCost).toFixed(2));
 
+      const createNewWhatsappSession = await createOrgWhatsappSession(body)
+
       await Promise.all([
-        createOrgWhatsappSession(body),
         updateOrganization(organizationId, { wallet: whatsappWalletBalance }),
         updateSubscriptionPlanUsageById(orgPlanUsage?.id!, {
           interactionsUsed: usedSessions,
@@ -99,6 +102,8 @@ export default defineEventHandler(async (event) => {
       ]);
 
       return {
+        sessionId: createNewWhatsappSession.id,
+        leadStatus: createNewWhatsappSession?.leadStatus,
         status: true,
         whatsappWalletBalance,
         organizationName: orgDetail?.name,
@@ -109,6 +114,8 @@ export default defineEventHandler(async (event) => {
 
     // Session still valid, no wallet deduction
     return {
+      sessionId: existingSession?.id,
+      leadStatus: existingSession?.leadStatus,
       status: true,
       whatsappWalletBalance,
       organizationName: orgDetail?.name,
