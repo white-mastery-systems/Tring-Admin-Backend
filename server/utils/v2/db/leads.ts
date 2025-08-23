@@ -75,8 +75,7 @@ export const getLeadComposition = async (organizationId: string, fromDate: Date 
     if (leadClassification === "warm") acc.warmLeads++;
     else if (leadClassification === "hot") acc.hotLeads++;
     else if (leadClassification === "cold") acc.coldLeads++;
-    else if (lead.status === "junk") acc.junkLeads++;
-
+    else if (leadClassification === "junk" || lead.status === "junk") acc.junkLeads++;
     return acc;
   },
   { warmLeads: 0, hotLeads: 0, coldLeads: 0, junkLeads: 0 });
