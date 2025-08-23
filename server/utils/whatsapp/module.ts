@@ -265,3 +265,56 @@ export const variablePrameterObj = (variableName: any, contact: any) => {
     return { type:"text", text:variableName }
   }
 };
+
+export const sendYoustoreAbandonedCartNotification = async ({ 
+  payload,
+  accessToken
+}:  {
+  payload: any,
+  accessToken: string
+}) => {
+  const url = `https://graph.facebook.com/v23.0/${payload?.pid}/messages`; 
+  const messageBody = {
+    messaging_product: "whatsapp",
+    to: payload.mobile,
+    type: "template",
+    template: {
+      name: payload.templateName,
+      language: { code: "en" },
+      components: [
+        // {
+        //   type: "header",
+        //   parameters: [
+        //     {
+        //       type: "image",
+        //       image: {
+        //         link: payload.imageLink
+        //       }
+        //     }
+        //   ]
+        // },
+        {
+          type: "body",
+          parameters: [
+            { type: "text", text: payload.name }
+          ],
+        },
+      ],
+    },
+  };
+  logger.info(`Sending Youstore Abandoned Cart Notification with body: ${JSON.stringify(messageBody)}`);
+  try {
+    const response = await $fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: messageBody,
+    });
+    logger.info(`Youstore Abandoned Cart Notification - Whatsapp Response: ${JSON.stringify(response)}`);
+    return response;
+  } catch (error:any) {
+    logger.error(`Error Sending Youstore Abandoned Cart Notification : ${JSON.stringify(error?.response?._data)}`);
+    throw new Error(error?.response?._data?.error?.error_user_msg || error?.response?._data?.error?.error_user_title || error?.response?._data?.error?.message || "Failed to send template");
+  }
+}
