@@ -143,8 +143,8 @@ export default defineEventHandler(async (event) => {
             <p>Name: ${userDetails?.username}</p>
             <p>Email: ${userDetails?.email}</p>
             <p>Mobile: ${userDetails?.countryCode} ${userDetails?.mobile}</p>
-            <p>City: ${userDetails?.address.city}</p>
-            <p>Country: ${userDetails?.address.country}</p>
+            <p>City: ${userDetails?.address?.city}</p>
+            <p>Country: ${userDetails?.address?.country}</p>
           </div>
         <p>Best,<br>support@tringlabs.ai</p>
       </div>`,

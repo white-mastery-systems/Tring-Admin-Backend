@@ -104,7 +104,9 @@ export default defineEventHandler(async (event) => {
        
       const botDetails = await getBotDetails(botId);
       const currentTools = new Set(botDetails?.defaultTools || []);
-       for (const intent of body.intents) {
+      const scheduleCallIntent = body.intents.find((j: any) => j.intent === "schedule_call")
+
+      for (const intent of body.intents) {
          const { naturalConversation } = intent.metadata || {};
          if (naturalConversation) {
            currentTools.add(intent.intent);
@@ -113,7 +115,11 @@ export default defineEventHandler(async (event) => {
          }
        }
 
-       await updateBotDetails(botId, { defaultTools: Array.from(currentTools) });
+       await updateBotDetails(botId, { 
+        defaultTools: Array.from(currentTools),
+        scheduleCallWithVoice: scheduleCallIntent?.metadata?.voicebotId ? true : false,
+        voiceBotId:  scheduleCallIntent?.metadata?.voicebotId ?? null
+      });
        return true
     }
     
