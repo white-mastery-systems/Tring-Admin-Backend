@@ -9,6 +9,11 @@ export default defineEventHandler(async (event) => {
     const timeZone = Array.isArray(tzHeader) ? tzHeader[0] : tzHeader || "Asia/Kolkata";
 
     const organizationId = await isOrganizationAdminHandler(event);
+ 
+    const query = await isValidQueryHandler(event, z.object({
+      limit: z.string().optional()
+    }))
+
     const rawBotType: string = await getOrgChatAndVoicebots(organizationId);
 
     const shouldFetchChat = rawBotType === "chat" || rawBotType === "both"
@@ -27,7 +32,7 @@ export default defineEventHandler(async (event) => {
           const [impr, improvementDetails] = await Promise.all([
             getChatImprovementsByOrgId(organizationId),
             // getChatImprovementWeeklyHealthScore(organizationId, timeZone),
-            getChatbotImprovementDetailsByOrgId(organizationId)
+            getChatbotImprovementDetailsByOrgId(organizationId, query?.limit)
           ]);
           chatDetails = improvementDetails;
           result.chat = {
@@ -46,7 +51,7 @@ export default defineEventHandler(async (event) => {
           const [impr, improvementDetails] = await Promise.all([
             getVoiceImprovementsByOrgId(organizationId),
             // getVoiceImprovementWeeklyHealthScore(organizationId, timeZone),
-            getVoicebotImprovementDetailsByOrgId(organizationId)
+            getVoicebotImprovementDetailsByOrgId(organizationId, query?.limit)
           ]);
           voiceDetails = improvementDetails;
           result.voice = {
@@ -62,9 +67,9 @@ export default defineEventHandler(async (event) => {
     await Promise.all(tasks);
 
     const improvementList = [
-      ...chatDetails.map(i => ({ ...i, channel: "chat", module: "improvement" })), 
       ...voiceDetails.map(i => ({ ...i, channel: "voice", module: "improvement" })),
-    ];
+      ...chatDetails.map(i => ({ ...i, channel: "chat", module: "improvement" })), 
+    ].sort((a,b) => b.instanceCount - a.instanceCount)
 
     return { result, improvementList };
   } catch (error: any) {

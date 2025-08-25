@@ -1,6 +1,6 @@
 import { logger } from "~/server/logger"
 import { errorResponse } from "~/server/response/error.response"
-import { createChatbotScheduledCall } from "~/server/utils/v2/db/chatScheduledCall"
+import { createChatbotScheduledCall, getChatbotScheduledCallList, updateChatScheduledCall } from "~/server/utils/v2/db/chatScheduledCall"
 
 const config = useRuntimeConfig()
 
@@ -23,13 +23,22 @@ export default defineEventHandler(async (event) => {
     const { id: chatbotId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
     const chatbotDetail: any = await getBotDetails(chatbotId)
 
-    const data = await createChatbotScheduledCall({
+    const payload = {
       ...body,
       phone: body?.mobile,
       chatbotId,
       voicebotId: body.voicebotId,
       organizationId: chatbotDetail?.organizationId,
-    })
+    }
+
+    const alreadyScheduled = await getChatbotScheduledCallList(chatbotDetail?.organizationId, body?.mobile, chatbotId)
+
+    if(alreadyScheduled && body?.scheduledDateTime && !body.instantCallRequest) {
+      await updateChatScheduledCall(alreadyScheduled.id, payload)
+      return
+    } 
+
+    const data = await createChatbotScheduledCall(payload)
 
     if(body?.instantCallRequest) {
       const voicebotDetail: any = await getVoicebotById(body?.voicebotId!)
@@ -54,12 +63,12 @@ export default defineEventHandler(async (event) => {
         })
         if(dialVoiceCall) {
           logger.info(`Chatbot scheduled-call instantCallRequest initiated successfully. Updating status to "dialed" for ID: ${data.id}`);
-          const updatedVoiceCall = await updateChatScheduledCallStatus(data.id, { callSid: dialVoiceCall!, callStatus: "dialed" });
+          const updatedVoiceCall = await updateChatScheduledCall(data.id, { callSid: dialVoiceCall!, callStatus: "dialed" });
           logger.info(`Chatbot scheduled-call instantCallRequest status updated successfully for ID: ${updatedVoiceCall.id}`);
         }
       } catch(error: any) {
           logger.error(`chat instantCallRequest voice Dial API Error: ${error.message}`)
-          await updateChatScheduledCallStatus(data.id, { callStatus: "dialed" })
+          await updateChatScheduledCall(data.id, { callStatus: "failed" })
       }
     }
     
