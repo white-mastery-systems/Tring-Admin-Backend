@@ -480,13 +480,14 @@ export const getChatImprovementWeeklyHealthScore = async (organizationId: string
   };
 };
 
-export const getChatbotImprovementDetailsByOrgId = async (organizationId: string) => {
-return await db
+export const getChatbotImprovementDetailsByOrgId = async (organizationId: string, limit?: string) => {
+  const chatbotImprovementQuery =  db
   .select({
     instanceCount: sql`cardinality(${chatResponseImprovementSchema.instances})`,
     id: chatResponseImprovementSchema.id, 
     title: chatResponseImprovementSchema.title,
     botName: chatBotSchema.name,
+    botId: chatBotSchema.id
   })
   .from(chatResponseImprovementSchema)
   .leftJoin(chatBotSchema, eq(chatResponseImprovementSchema.botId, chatBotSchema.id))
@@ -496,9 +497,15 @@ return await db
       sql`cardinality(${chatResponseImprovementSchema.instances}) > 0`
     )
   )
-  .limit(4)
   .orderBy(
     sql`cardinality(${chatResponseImprovementSchema.instances}) DESC`,
     desc(chatResponseImprovementSchema.createdAt)
   );
+
+  if(limit) {
+    const limitNumber = parseInt(limit)
+    chatbotImprovementQuery.limit(limitNumber)
+  }
+
+  return await chatbotImprovementQuery
 }

@@ -1,5 +1,5 @@
 import { logger } from "../logger"
-import { getNotDialedChatScheduledCalls, updateChatScheduledCallStatus } from "./v2/db/chatScheduledCall"
+import { getNotDialedChatScheduledCalls, updateChatScheduledCall } from "./v2/db/chatScheduledCall"
 import momentTz from "moment-timezone"
 
 const config = useRuntimeConfig()
@@ -46,12 +46,12 @@ export const chatbotScheduleCall = async () => {
           })
           if(dialVoiceCall) {
             logger.info(`Chatbot scheduled-call initiated successfully. Updating status to "dialed" for ID: ${scheduledCall.id}`);
-            const updatedVoiceCall = await updateChatScheduledCallStatus(scheduledCall.id, { callSid: dialVoiceCall!, callStatus: "dialed" });
+            const updatedVoiceCall = await updateChatScheduledCall(scheduledCall.id, { callSid: dialVoiceCall!, callStatus: "dialed" });
             logger.info(`Chatbot scheduled-call status updated successfully for ID: ${updatedVoiceCall.id}`);
           }
         } catch(error: any) {
             logger.error(`voice Dial API Error: ${error.message}`)
-            await updateChatScheduledCallStatus(scheduledCall.id, { callStatus: "dialed" })
+            await updateChatScheduledCall(scheduledCall.id, { callStatus: "failed" })
         }
       }
     }

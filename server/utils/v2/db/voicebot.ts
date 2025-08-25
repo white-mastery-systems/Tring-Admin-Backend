@@ -723,13 +723,14 @@ export const getVoiceImprovementWeeklyHealthScore = async (organizationId: strin
   };
 }
 
-export const getVoicebotImprovementDetailsByOrgId = async (organizationId: string) => {
-  return await db
+export const getVoicebotImprovementDetailsByOrgId = async (organizationId: string, limit?: string) => {
+  const voicebotImprovementQuery =  db
     .select({
       instanceCount: sql`cardinality(${voiceResponseImprovementSchema.instances})`,
       id: voiceResponseImprovementSchema.id, 
       title: voiceResponseImprovementSchema.title,
       botName: voicebotSchema.name,
+      botId: voicebotSchema.id
     })
     .from(voiceResponseImprovementSchema)
     .leftJoin(voicebotSchema, eq(voiceResponseImprovementSchema.botId, voicebotSchema.id))
@@ -739,11 +740,15 @@ export const getVoicebotImprovementDetailsByOrgId = async (organizationId: strin
         sql`cardinality(${voiceResponseImprovementSchema.instances}) > 0`
       )
     )
-    .limit(4)
     .orderBy(
       sql`cardinality(${voiceResponseImprovementSchema.instances}) DESC`,
       desc(voiceResponseImprovementSchema.createdAt)
     );
+    if(limit) {
+      const limitNumber = parseInt(limit)
+      voicebotImprovementQuery.limit(limitNumber)
+    }
+  return await voicebotImprovementQuery
 }
  
 // Voicebot Caching
