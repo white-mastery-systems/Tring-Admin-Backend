@@ -7,7 +7,7 @@ const config = useRuntimeConfig()
 const zodVoiceDialBody = z.object({
   name: z.string(),
   countryCode: z.string(),
-  email: z.string(),
+  email: z.string().optional(),
   mobile: z.string(),
   voicebotId: z.string(),
   instantCallRequest: z.boolean(),
@@ -20,6 +20,9 @@ const zodVoiceDialBody = z.object({
 export default defineEventHandler(async (event) => {
   try {
     const body = await isValidBodyHandler(event, zodVoiceDialBody)
+
+    logger.info(`Schedual Call With Voicebot Payload: ${JSON.stringify(body)}`)
+
     const { id: chatbotId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
     const chatbotDetail: any = await getBotDetails(chatbotId)
 
@@ -67,7 +70,7 @@ export default defineEventHandler(async (event) => {
           logger.info(`Chatbot scheduled-call instantCallRequest status updated successfully for ID: ${updatedVoiceCall.id}`);
         }
       } catch(error: any) {
-          logger.error(`chat instantCallRequest voice Dial API Error: ${error.message}`)
+          logger.error(`Chat instantCallRequest voice Dial API Error: ${error.message}`)
           await updateChatScheduledCall(data.id, { callStatus: "failed" })
       }
     }
