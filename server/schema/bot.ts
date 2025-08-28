@@ -67,6 +67,7 @@ export const chatBotSchema = chatbotSchema.table("bot", {
   websiteLink: varchar("website_link"),
   websiteContent: text("website_content"),
   textContent: text("text_content"),
+  textTitle: text("text_title"),
   customTools: jsonb("custom_tools").array(),
   defaultTools: jsonb("default_tools").array(),
   scheduleCallWithVoice: boolean("schedule_call_with_voice").default(false),

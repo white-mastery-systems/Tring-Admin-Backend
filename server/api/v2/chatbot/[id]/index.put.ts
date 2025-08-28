@@ -1,6 +1,5 @@
 import { logger } from "~/server/logger";
 import { errorResponse } from "~/server/response/error.response";
-import { getBotDetailsByName } from "~/server/utils/db/bot";
 import { getIndustryDetail } from "~/server/utils/db/industries";
 import { getChatBotDefaultConfigs } from "~/server/utils/v2/db/chatbot";
 
@@ -15,14 +14,6 @@ export default defineEventHandler(async (event) => {
   );
 
   const body: any = await isValidBodyHandler(event, zodUpdateChatBot);
-
-  // if(body?.name) {
-  //   const alreadyExistingBot = await getBotDetailsByName(organizationId, body?.name, "update", botId);
-  //   if(alreadyExistingBot) {
-  //     return errorResponse(event, 400, "Chatbot name already exists.")
-  //   }
-  // }
-
   
   if (body?.channels?.whatsapp) {
     const data = await db.execute(

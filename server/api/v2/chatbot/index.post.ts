@@ -13,6 +13,7 @@ export const zodCreateChatbot = z
     websiteLink: z.string().optional(),
     websiteContent: z.string().optional(),
     textContent: z.string().optional(),
+    textTitle: z.string().optional(),
     color: z.string().optional(),
     onlineStatus: z.boolean().optional(),
     documentId: z.string(),
@@ -39,12 +40,21 @@ export const zodCreateChatbot = z
       }
     }
 
-    if (source === "text" && !data.textContent) {
-      ctx.addIssue({
-        path: ["textContent"],
-        code: z.ZodIssueCode.custom,
-        message: "textContent is required when knowledgeSource is 'text'",
-      });
+    if (source === "text") {
+      if(!data.textContent) {
+        ctx.addIssue({
+          path: ["textContent"],
+          code: z.ZodIssueCode.custom,
+          message: "textContent is required when knowledgeSource is 'text'",
+        });
+      }
+       if(!data.textTitle) {
+        ctx.addIssue({
+          path: ["textTitle"],
+          code: z.ZodIssueCode.custom,
+          message: "textTitle is required when knowledgeSource is 'text'",
+        });
+      }
     }
 });
 
