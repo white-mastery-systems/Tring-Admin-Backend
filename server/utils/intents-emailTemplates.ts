@@ -13,7 +13,7 @@ export const emailTemplates = {
     LocationInteraction: `
       <div>
         <p>Hi {{business_owner_name}},</p>
-        <p>We wanted to inform you that {{user_name}} ({{user_email}}) accessed your location link on the chatbot {{chatbot_name}}.</p>
+        <p>We wanted to inform you that {{user_name}} ({{user_phone}}) accessed your location link on the chatbot {{chatbot_name}}.</p>
         <div>
           <p><strong>Interaction Details:</strong></p>
           <p>Location Link Accessed: {{location_link}}</p>
@@ -25,7 +25,7 @@ export const emailTemplates = {
     VirtualTourInteraction: `
       <div>
         <p>Hi {{business_owner_name}},</p>
-        <p>Exciting news! {{user_name}} ({{user_email}}) just viewed the virtual tour of your property on the chatbot {{chatbot_name}}.</p>
+        <p>Exciting news! {{user_name}} ({{user_phone}}) just viewed the virtual tour of your property on the chatbot {{chatbot_name}}.</p>
         <div>
           <p><strong>Interaction Details:</strong></p>
           <p>Virtual Tour Link: {{virtual_tour_link}}</p>
@@ -37,7 +37,7 @@ export const emailTemplates = {
     ScheduleCallRequest: `
       <div>
         <p>Hi {{business_owner_name}},</p>
-        <p>{{user_name}} ({{user_email}}) {{user_phone}} has requested to schedule a call with you on the chatbot {{chatbot_name}}.</p>
+        <p>{{user_name}} ({{user_phone}}) has requested to schedule a call with you on the chatbot {{chatbot_name}}.</p>
         <div>
           <p><strong>Details Provided:</strong></p>
           <p>Preferred Date: {{preferred_date}}</p>
@@ -50,7 +50,7 @@ export const emailTemplates = {
     ScheduleSiteVisitRequest: `
       <div>
         <p>Hi {{business_owner_name}},</p>
-        <p>{{user_name}} has scheduled a site visit request and has shown interest in visiting your property on the chatbot {{chatbot_name}}.</p>
+        <p>{{user_name}} ({{user_phone}}) has scheduled a site visit request and has shown interest in visiting your property on the chatbot {{chatbot_name}}.</p>
         <div>
           <p><strong>Details Provided:</strong></p>
           <p>Preferred Date: {{preferred_date}}</p>
@@ -63,7 +63,7 @@ export const emailTemplates = {
     ScheduleAppointmentRequest: `
       <div>
         <p>Hi {{business_owner_name}},</p>
-        <p>{{user_name}} ({{user_email}}) {{user_phone}} has requested to schedule an appointment with you on the chatbot {{chatbot_name}}.</p>
+        <p>{{user_name}} ({{user_phone}}) has requested to schedule an appointment with you on the chatbot {{chatbot_name}}.</p>
         <div>
           <p><strong>Details Provided:</strong></p>
           <p>Preferred Date: {{preferred_date}}</p>
