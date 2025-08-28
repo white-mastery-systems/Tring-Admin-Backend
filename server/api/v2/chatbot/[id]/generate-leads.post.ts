@@ -279,7 +279,7 @@ export default defineEventHandler(async (event) => {
       ? [...botDetails?.emailRecipients, adminUser?.email]
       : [adminUser?.email];
       
-  if(!body?.note) {
+  if(!body?.note || body?.note === "Lead Details") {
       sendEmail(
     emailRecipients,
     "Head's Up, New Lead Notification from Your Chatbot",
@@ -291,7 +291,7 @@ export default defineEventHandler(async (event) => {
   <div>
     <p><strong>Lead Details:</strong></p>
     <p>Name: ${body?.botUser?.name}</p>
-    <p>Email: ${body?.botUser?.email}</p>
+    ${body?.botUser?.email ? `<p>Email: ${body?.botUser?.email} </p>` : ""} 
     <p>Phone Number: ${body?.botUser?.countryCode}${body?.botUser?.mobile}</p>
     <p>Bot's Name: ${botDetails?.name}</p>
     ${botDetails?.metadata?.country ? `<p>Location: ${botDetails?.metadata?.country} </p>` : ""} 

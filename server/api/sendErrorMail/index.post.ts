@@ -5,11 +5,12 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     let recipients = [
       "habeeb@whitemastery.com",
-      "purushothaman@whitemastery.com",
       "joseph@whitemastery.com",
       "dhanalakshmi@whitemastery.com",
-      "sathish@whitemastery.com",
       "naveenkumar@whitemastery.com",
+      "ramya@whitemastery.com",
+      "prakash@whitemastery.com",
+      "akashdurai@whitemastery.com"
     ];
     if(body?.envType === "production") {
       recipients.push("rianozal@gmail.com")
