@@ -5,13 +5,6 @@ import { errorResponse } from "~/server/response/error.response"
 const zodInsertCustomTool = z.object({
   name: z.string(),
   description: z.string(),
-  toolParameters: z.array(z.object({
-    key: z.string(), 
-    type: z.string(),
-    value: z.string(),
-    required: z.boolean(),
-    description: z.string(),
-  })),
   toolApiDetails: z.object({
     url: z.string(),
     method: z.string(),
@@ -21,11 +14,17 @@ const zodInsertCustomTool = z.object({
     })),
     queryParams: z.array(z.object({
       key: z.string(),
-      value: z.string()
+      value: z.string(),
+      type: z.string(),
+      required: z.boolean(),
+      description: z.string()
     })),
     responseVariables: z.array(z.object({
       key: z.string(),
-      value: z.string()
+      value: z.string(),
+      type: z.string(),
+      required: z.boolean(),
+      description: z.string()
     }))
   })
 })
