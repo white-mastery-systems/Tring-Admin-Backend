@@ -5,13 +5,6 @@ const zodUpdateCustomTool = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
   isActive: z.boolean().optional(),
-  toolParameters: z.array(z.object({
-    key: z.string(), 
-    type: z.string(),
-    value: z.string(),
-    required: z.boolean(),
-    description: z.string(),
-  })).optional(),
   toolApiDetails: z.object({
     url: z.string(),
     method: z.string(),
@@ -21,11 +14,17 @@ const zodUpdateCustomTool = z.object({
     })).optional(),
     queryParams: z.array(z.object({
       key: z.string(),
-      value: z.string()
+      value: z.string(),
+      type: z.string(),
+      required: z.boolean(),
+      description: z.string()
     })).optional(),
     responseVariables: z.array(z.object({
       key: z.string(),
-      value: z.string()
+      value: z.string(),
+      type: z.string(),
+      required: z.boolean(),
+      description: z.string()
     })).optional()
   })
 })
