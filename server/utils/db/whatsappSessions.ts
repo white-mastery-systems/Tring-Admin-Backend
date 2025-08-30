@@ -20,7 +20,17 @@ export const getOrgTotalWhatsappSessionsForMonth = async (organizationId: string
     where: and(
       eq(whatsappSessionSchema.organizationId, organizationId),
       gte(whatsappSessionSchema.createdAt, fromDate),
-      lte(whatsappSessionSchema.createdAt, toDate)
+      lte(whatsappSessionSchema.createdAt, toDate),
+      eq(whatsappSessionSchema.isPriceCharged, true)
     )
   })
+}
+
+export const updateWhatsappSessionById = async(id: string, data: any) => {
+  return (await db.update(whatsappSessionSchema)
+  .set({
+    ...data,
+    updatedAt: new Date(),
+  }).where(eq(whatsappSessionSchema.id, id))
+  .returning())[0]   
 }

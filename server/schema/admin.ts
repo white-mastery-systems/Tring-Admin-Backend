@@ -392,6 +392,7 @@ export const whatsappSessionSchema = adminSchema.table("whatsapp_sessions", {
   integrationId: uuid("integration_id").notNull().references(() => integrationSchema.id, { onDelete: "cascade" }),
   pid: varchar("pid").notNull(),
   leadStatus: boolean("lead_status").default(false),
+  isPriceCharged: boolean("is_price_charged").default(true),
   mobile: varchar("mobile").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
