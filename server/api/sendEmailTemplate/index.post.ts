@@ -73,8 +73,14 @@ export default defineEventHandler(async (event) => {
 
 const getIntentEmailTemplate = (intent: IntentType) => {
   let template, subject
-
-  switch(intent) {
+  // Extract base intent type for cases like 'location_1', 'virtual_tour_2', etc.
+  let intentType = intent;
+  if (intent.startsWith("location")) {
+    intentType = "location";
+  } else if (intent.startsWith("virtual_tour")) {
+    intentType = "virtual_tour";
+  }
+  switch(intentType) {
     case "location":
       template = emailTemplates.templates.LocationInteraction;
       subject = emailTemplates.subjects.LocationInteraction;
