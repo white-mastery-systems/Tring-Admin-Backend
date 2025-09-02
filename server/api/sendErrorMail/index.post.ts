@@ -4,7 +4,6 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
     let recipients = [
-      "habeeb@whitemastery.com",
       "joseph@whitemastery.com",
       "dhanalakshmi@whitemastery.com",
       "naveenkumar@whitemastery.com",
