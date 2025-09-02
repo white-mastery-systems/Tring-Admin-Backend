@@ -1,5 +1,5 @@
 import { logger } from "~/server/logger";
-import { getCallLogByCallSid } from "../../db/call-logs";
+import countryCodeList from "~/assets/country-codes.json";
 
 const config = useRuntimeConfig()
 
@@ -20,6 +20,8 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
       firstName = botUser?.name?.split(" ")[0];
       lastName = botUser?.name?.split(" ")[1];
     }
+
+    const countryDetail = countryCodeList.find((country) => country.dial_code === botUser?.countryCode)
     
     for(let voiceBot of voiceBotIntegrationList) {
       if (voiceBot?.integration.crm === "zoho-bigin") {
@@ -139,6 +141,7 @@ export const generateVoicebotLeads = async ({ botUser, callLogId, notes, voicebo
           intent: "Lead",
           name: `*${botUser?.name}*`,
           email: "N/A",
+          country: countryDetail?.name || "N/A",
           phone: `${botUser?.countryCode} ${botUser?.mobile}`,
           botName: `${voicebotDetail?.name}`,
           conversationHistory: `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogId}`,
