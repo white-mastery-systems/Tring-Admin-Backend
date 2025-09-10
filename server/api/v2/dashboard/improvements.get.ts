@@ -57,13 +57,13 @@ export default defineEventHandler(async (event) => {
 
     const result = {
       chat: {
-        totalImprovements: String(chatResult?.totalImprovements.count || 0),
-        highPriorityImprovements: String(chatResult?.highPriority.count || 0),
+        totalImprovements: chatResult?.totalImprovements.count,
+        highPriorityImprovements: chatResult?.highPriority.count,
         healthScore: chatResult?.healthScore.score || "0%",
       },
       voice: {
-        totalImprovements: String(voiceResult?.totalImprovements.count || 0),
-        highPriorityImprovements: String(voiceResult?.highPriority.count || 0),
+        totalImprovements: voiceResult?.totalImprovements.count,
+        highPriorityImprovements: voiceResult?.highPriority.count,
         healthScore: voiceResult?.healthScore.score || "0%",
       },
 
