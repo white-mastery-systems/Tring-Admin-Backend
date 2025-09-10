@@ -406,9 +406,15 @@ export const getChatImprovementsByOrgId = async (organizationId: string) => {
       trained: sql<number>`COUNT(*) FILTER (WHERE ${chatResponseImprovementSchema.status} = 'trained')`,
       notTrained: sql<number>`COUNT(*) FILTER (WHERE ${chatResponseImprovementSchema.status} = 'not_trained')`,
       ignored: sql<number>`COUNT(*) FILTER (WHERE ${chatResponseImprovementSchema.status} = 'ignored')`,
-      highPriority: sql<number>`COUNT(*) FILTER (WHERE cardinality(${chatResponseImprovementSchema.instances}) > 1)`
+      highPriority: sql<number>`COUNT(*) FILTER (WHERE cardinality(${chatResponseImprovementSchema.instances}) > 1)`,
+
+      // Potential impacts - using COALESCE to handle null arrays and SUM to count instances
+      totalImpact: sql<number>`SUM(COALESCE(cardinality(${chatResponseImprovementSchema.instances}), 0))`,
+      trainedImpact: sql<number>`SUM(CASE WHEN ${chatResponseImprovementSchema.status} = 'trained' THEN COALESCE(cardinality(${chatResponseImprovementSchema.instances}), 0) ELSE 0 END)`,
+      highPriorityImpact: sql<number>`SUM(CASE WHEN cardinality(${chatResponseImprovementSchema.instances}) > 1 THEN COALESCE(cardinality(${chatResponseImprovementSchema.instances}), 0) ELSE 0 END)`
     })
     .from(chatResponseImprovementSchema)
+    
     .where(eq(chatResponseImprovementSchema.organizationId, organizationId));
 
   const total = result[0].total;
@@ -416,15 +422,51 @@ export const getChatImprovementsByOrgId = async (organizationId: string) => {
 
   const healthScore = total > 0
     ? `${Math.round((trained / total) * 100)}%`
-    : "100%"; // Default to 100 if no improvements exist
+    : "100%";
 
   return {
-    totalImprovements: total,
-    trainedImprovements: trained,
-    highPriorityImprovements: result[0].highPriority,
-    healthScore
+    healthScore: {
+      score: healthScore,
+      potentialImpact: result[0].trainedImpact,
+    },
+    highPriority: {
+      count: result[0].highPriority,
+      potentialImpact: result[0].highPriorityImpact,
+    },
+    totalImprovements: {
+      count: total,
+      potentialImpact: result[0].totalImpact,
+    }
   };
 };
+
+
+// export const getChatImprovementsByOrgId = async (organizationId: string) => {
+//   const result = await db
+//     .select({
+//       total: sql<number>`COUNT(*)`,
+//       trained: sql<number>`COUNT(*) FILTER (WHERE ${chatResponseImprovementSchema.status} = 'trained')`,
+//       notTrained: sql<number>`COUNT(*) FILTER (WHERE ${chatResponseImprovementSchema.status} = 'not_trained')`,
+//       ignored: sql<number>`COUNT(*) FILTER (WHERE ${chatResponseImprovementSchema.status} = 'ignored')`,
+//       highPriority: sql<number>`COUNT(*) FILTER (WHERE cardinality(${chatResponseImprovementSchema.instances}) > 1)`
+//     })
+//     .from(chatResponseImprovementSchema)
+//     .where(eq(chatResponseImprovementSchema.organizationId, organizationId));
+
+//   const total = result[0].total;
+//   const trained = result[0].trained;
+
+//   const healthScore = total > 0
+//     ? `${Math.round((trained / total) * 100)}%`
+//     : "100%"; // Default to 100 if no improvements exist
+
+//   return {
+//     totalImprovements: total,
+//     trainedImprovements: trained,
+//     highPriorityImprovements: result[0].highPriority,
+//     healthScore
+//   };
+// };
 
 export const getChatImprovementWeeklyHealthScore = async (organizationId: string, timezone: string) => {
   // Week ranges

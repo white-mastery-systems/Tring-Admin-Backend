@@ -1,6 +1,6 @@
 import { logger } from "~/server/logger"
 import { getLeadComposition } from "./leads";
-import { getAnalyticsGraph, getOrgInteractedChatsForAnalytics, totalSessionDuration } from "./chats";
+import { chatEngagementMetrics, getAnalyticsGraph, getOrgInteractedChatsForAnalytics, totalSessionDuration } from "./chats";
 import { getUniqueVisitorsForAnalytics } from "./uniqueVisitors";
 import { getOrgInteractedCalls, getVoiceCallClassificationCounts, getVoiceQualificationAccuracy } from "./voicebot";
 
@@ -152,7 +152,8 @@ export const getNewAnalytics = async (organizationId: string, query: any, timeZo
         uniqueVisitors, 
         chatLeads, 
         interactedChats,
-        orgTotalChatbotUsers, 
+        orgTotalChatbotUsers,
+        engagementMetrics,
         orgReEngagedBotUsers,
         dropOffConversation
       ] = await Promise.all([
@@ -161,6 +162,7 @@ export const getNewAnalytics = async (organizationId: string, query: any, timeZo
         getOrgChatLeadsForAnalytics(organizationId, fromDate, toDate),
         getOrgInteractedChatsForAnalytics(organizationId, fromDate, toDate),
         getOrgTotalChatbotUsers(organizationId, fromDate, toDate),
+        chatEngagementMetrics(organizationId, fromDate, toDate),
         getOrgReEnagedChatbotUsers(organizationId, fromDate, toDate),
         getChatDropOffConversation(organizationId, fromDate, toDate)
       ])
@@ -174,6 +176,7 @@ export const getNewAnalytics = async (organizationId: string, query: any, timeZo
         leads: chatLeads,
         interactedChats: interactedChats.length,
         reEngagementRate: chatReEngagementRate,
+        engagementRate: engagementMetrics.engagementRate || "",
         dropOffRate: dropOffChatRate
       }
     }
@@ -201,6 +204,7 @@ export const getNewAnalytics = async (organizationId: string, query: any, timeZo
         leads: voiceleads.length,
         interactedCalls,
         reEngagementRate: orgVoicebotEngagement.reEngagementRate || "",
+        engagementRate: orgVoicebotEngagement.engagementRate || "",
         dropOffRate: dropOffCallRate
       }
     }

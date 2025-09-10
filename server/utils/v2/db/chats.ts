@@ -3,6 +3,59 @@ import { logger } from "~/server/logger"
 
 const db = useDrizzle()
 
+export const chatEngagementMetrics = async (
+  organizationId: string,
+  fromDate?: Date,
+  toDate?: Date
+) => {
+  const baseConditions = [
+    eq(chatSchema.organizationId, organizationId),
+    ...(fromDate && toDate
+      ? [
+          gte(chatSchema.createdAt, fromDate),
+          lte(chatSchema.createdAt, toDate),
+        ]
+      : [])
+  ];
+
+  // Total unique entities = distinct userId if available, else distinct chat row
+  const totalEntities = await db
+    .select({
+      count: sql<number>`
+        COUNT(DISTINCT COALESCE(${chatSchema.botUserId}::text, ${chatSchema.id}::text))
+      `
+    })
+    .from(chatSchema)
+    .where(and(...baseConditions));
+
+  const totalUnique = Number(totalEntities[0]?.count) || 0;
+
+  // Engaged entities (chatOutcome = 'Engaged')
+  const engagedEntities = await db
+    .select({
+      count: sql<number>`
+        COUNT(DISTINCT COALESCE(${chatSchema.botUserId}::text, ${chatSchema.id}::text))
+      `
+    })
+    .from(chatSchema)
+    .where(and(
+      ...baseConditions,
+      eq(chatSchema.chatOutcome, "Engaged")
+    ));
+
+  const engaged = Number(engagedEntities[0]?.count) || 0;
+
+  // Engagement rate
+  const engagementRate = totalUnique > 0 ? (engaged / totalUnique) * 100 : 0;
+
+  return {
+    totalUniqueEntities: totalUnique,
+    engagedEntities: engaged,
+    engagementRate: `${Math.round(engagementRate)}%`
+  };
+};
+
+
 export const getOrgInteractedChatsForAnalytics = async(organizationId: string, fromDate: Date | undefined, toDate: Date | undefined) => {
   return await db
   .select({ createdAt: chatSchema.createdAt })
