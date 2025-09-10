@@ -56,13 +56,16 @@ export default defineEventHandler(async (event) => {
     await Promise.all(tasks);
 
     const result = {
-      chatTotalImprovements: String(chatResult?.totalImprovements.count || 0),
-      chatHighPriorityImprovements: String(chatResult?.highPriority.count || 0),
-      chatHealthScore: chatResult?.healthScore.score || "0%",
-
-      voiceTotalImprovements: String(voiceResult?.totalImprovements.count || 0),
-      voiceHighPriorityImprovements: String(voiceResult?.highPriority.count || 0),
-      voiceHealthScore: voiceResult?.healthScore.score || "0%",
+      chat: {
+        totalImprovements: String(chatResult?.totalImprovements.count || 0),
+        highPriorityImprovements: String(chatResult?.highPriority.count || 0),
+        healthScore: chatResult?.healthScore.score || "0%",
+      },
+      voice: {
+        totalImprovements: String(voiceResult?.totalImprovements.count || 0),
+        highPriorityImprovements: String(voiceResult?.highPriority.count || 0),
+        healthScore: voiceResult?.healthScore.score || "0%",
+      },
 
       totalImprovementsImpactUsers:
         (chatResult?.totalImprovements.potentialImpact || 0) +
