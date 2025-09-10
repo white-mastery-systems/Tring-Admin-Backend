@@ -49,6 +49,17 @@ export const getVoicebotEngagementMetrics = async (
 
   const totalUnique = Number(uniqueCallers[0]?.count) || 0
 
+  const engagedCallers = await db
+    .select({ phoneNumber: callLogSchema.from })
+    .from(callLogSchema)
+    .where(and(
+      ...baseConditions,
+      sql`${callLogSchema.metrics}->>'callOutcome' = 'Engaged'`
+    ))
+    .groupBy(callLogSchema.from);
+
+  const engaged = engagedCallers.length;
+
   // 2. Returning Callers (phone numbers with more than 1 call)
   const returningCallers = await db
     .select({
@@ -62,11 +73,13 @@ export const getVoicebotEngagementMetrics = async (
   const reengaged = returningCallers.length
   
   const rate = totalUnique > 0 ? (reengaged / totalUnique) * 100 : 0
+  const engagementRate = totalUnique > 0 ? (engaged / totalUnique) * 100 : 0
 
   return {
     totalUniqueCallers: totalUnique,
     returningCallers: reengaged,
-    reEngagementRate: `${Math.round(rate)}%`
+    reEngagementRate: `${Math.round(rate)}%`,
+    engagementRate: `${Math.round(engagementRate)}%`
   }
 }
 
