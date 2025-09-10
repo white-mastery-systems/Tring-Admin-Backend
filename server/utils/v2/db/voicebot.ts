@@ -669,15 +669,15 @@ export const getVoiceImprovementsByOrgId = async (organizationId: string) => {
   return {
     healthScore: {
       score: healthScore,
-      potentialImpact: result[0].trainedImpact,
+      potentialImpact: Number(result[0].trainedImpact) || 0,
     },
     highPriority: {
-      count: result[0].highPriority,
-      potentialImpact: result[0].highPriorityImpact,
+      count: Number(result[0].highPriority) || 0,
+      potentialImpact: Number(result[0].highPriorityImpact) || 0,
     },
     totalImprovements: {
-      count: total,
-      potentialImpact: result[0].totalImpact,
+      count: Number(total) || 0,
+      potentialImpact: Number(result[0].totalImpact) || 0,
     }
   };
 };

@@ -414,7 +414,6 @@ export const getChatImprovementsByOrgId = async (organizationId: string) => {
       highPriorityImpact: sql<number>`SUM(CASE WHEN cardinality(${chatResponseImprovementSchema.instances}) > 1 THEN COALESCE(cardinality(${chatResponseImprovementSchema.instances}), 0) ELSE 0 END)`
     })
     .from(chatResponseImprovementSchema)
-    
     .where(eq(chatResponseImprovementSchema.organizationId, organizationId));
 
   const total = result[0].total;
@@ -427,15 +426,15 @@ export const getChatImprovementsByOrgId = async (organizationId: string) => {
   return {
     healthScore: {
       score: healthScore,
-      potentialImpact: result[0].trainedImpact,
+      potentialImpact: Number(result[0].trainedImpact),
     },
     highPriority: {
-      count: result[0].highPriority,
-      potentialImpact: result[0].highPriorityImpact,
+      count: Number(result[0].highPriority) || 0,
+      potentialImpact: Number(result[0].highPriorityImpact) || 0,
     },
     totalImprovements: {
-      count: total,
-      potentialImpact: result[0].totalImpact,
+      count: Number(total) || 0,
+      potentialImpact: Number(result[0].totalImpact) || 0,
     }
   };
 };
