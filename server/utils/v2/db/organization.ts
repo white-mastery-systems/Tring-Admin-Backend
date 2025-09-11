@@ -3,64 +3,33 @@ import { count } from "drizzle-orm"
 const db = useDrizzle()
 
 export const getOrgChatAndVoicebots = async (organizationId: string) => {
-  let botType: "chat" | "voice" | "both";
-
-  const [chatbots, voicebots] = await Promise.all([
-    db.select({
-      count: count()
-    })
-    .from(chatBotSchema)
-    .where(and(
-      eq(chatBotSchema.organizationId, organizationId),
-      eq(chatBotSchema.isDeleted, false)
-    )),
-    db.select({
-      count: count()
-    })
-    .from(voicebotSchema)
-    .where(and(
-      eq(voicebotSchema.organizationId, organizationId),
-      eq(voicebotSchema.isDeleted, false)
-    ))
-  ])
-
   const subscription = await db
-    .select({
-      subscriptionId: adminSubscriptionSchema.subscriptionId,
-      serviceType: adminSubscriptionSchema.serviceType,
-    })
-    .from(adminSubscriptionSchema)
-    .where((eq(adminSubscriptionSchema.organizationId, organizationId)))
- 
-  const chatbotCount = Number(chatbots[0].count || 0);
-  const voicebotCount = Number(voicebots[0].count || 0);
+  .select({
+    subscriptionId: adminSubscriptionSchema.subscriptionId,
+    serviceType: adminSubscriptionSchema.serviceType,
+  })
+  .from(adminSubscriptionSchema)
+  .where(eq(adminSubscriptionSchema.organizationId, organizationId));
 
-  if (chatbotCount > 0 && voicebotCount > 0) {
-    botType = "both";
-  } else if (chatbotCount > 0) {
-    botType = "chat";
-  } else if (voicebotCount > 0) {
-    botType = "voice";
+  // Transform results into a lookup object
+  const subs: any = subscription.reduce((acc: any, row: any) => {
+    acc[row.serviceType] = row.subscriptionId;
+    return acc;
+  }, {});
+  
+  // Check logic
+  let result;
+  if (subs.chat && subs.voice) {
+    result = "both";
+  } else if (subs.chat) {
+    result = "chat";
+  } else if (subs.voice) {
+    result = "voice";
   } else {
-    const hasPaidChat = subscription.some(
-      sub => sub.serviceType === "chat" && !!sub.subscriptionId
-    );
-    const hasPaidVoice = subscription.some(
-      sub => sub.serviceType === "voice" && !!sub.subscriptionId
-    );
-
-    if (hasPaidChat && hasPaidVoice) {
-      botType = "both";
-    } else if (hasPaidChat) {
-      botType = "chat";
-    } else if (hasPaidVoice) {
-      botType = "voice";
-    } else {
-      botType = "chat"; // fallback to chat if no bots exist and no paid subscriptions
-    }
+    result = "chat"; // fallback
   }
-
-  return botType;
+  
+  return result;
 }
 
 export const checkBotNameExists = async (organizationId: string, botName: string, type: "chatbot" | "voicebot", id?: string) => {
