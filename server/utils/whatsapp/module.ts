@@ -142,7 +142,7 @@ export async function createWhatsAppMessage(
     const response = await $fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer EAAwYX9ZCRR1gBO2Ag3w9gLjmhvJn0iA0LIN6JZAIyFZC8PWBiMPHaqizoW4eHuXxG3CoOZBhqrLlyruTxpLJVW7KnzmwK1guAuIMZB0XZAB2rq0oPIDfWUljoVsrCz8y7kwjToSUAMPZAeOysIuZALweNaOnVxvASZCBgg3hE883kEwIy5sShIvQPVV6P6BErJf87WwZDZD`,
+        Authorization: `Bearer EAAiDSmxCDRIBPCOTZAj7P7d1OsuoZBWtvThHlCfkPrvWdvP6cj6lbf7yVvXDCZAi2ZAHnWFcMZCgRNmmtm6zi4ksZASf9OaBBySRNDoSKxi1HqnTfjMFQ7GFlE2ojM9uNBaZBIAcZCljFbXu2N3ourf7nz7dJV1wnEfYvVK1WSs3FWenCk5PlqQOPZBvalTBnQwZDZD`,
       },
       body: messageBody,
     });
