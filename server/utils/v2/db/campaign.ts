@@ -179,8 +179,8 @@ export const getVoiceCampaignByContactGroupId = async(bucketId: string) => {
 }
 
 export const getOrgCampaignsWithMetrics = async (organizationId: string, fromDate: Date | undefined, toDate: Date  | undefined) => {
-  const interactionStatuses = new Set(["Engaged", "booked", "follow-up", "New Lead"]);
-  const conversionStatuses = new Set(["booked", "follow-up"]);
+  const interactionStatuses = new Set(["Engaged", "Booked", "Follow Up", "New Lead"]);
+  const conversionStatuses = new Set(["Booked", "Follow Up"]);
 
   // Fetch all campaigns
   const campaigns = await db
@@ -207,9 +207,13 @@ export const getOrgCampaignsWithMetrics = async (organizationId: string, fromDat
     db
       .select({
         campaignId: campaignWhatsappContactSchema.campaignId,
-        interactionStatus: campaignWhatsappContactSchema.interactionStatus,
+        interactionStatus: chatSchema.chatOutcome || campaignWhatsappContactSchema.messageStatus
       })
       .from(campaignWhatsappContactSchema)
+      .leftJoin(
+        chatSchema,
+        eq(campaignWhatsappContactSchema.chatId, chatSchema.id) // adjust key if different
+      )
       .where(
         inArray(campaignWhatsappContactSchema.campaignId, campaignIds)
       ),
@@ -227,10 +231,12 @@ export const getOrgCampaignsWithMetrics = async (organizationId: string, fromDat
   // Merge contacts
   const allContacts = [...whatsappContacts, ...voiceContacts];
 
+  // return allContacts
+
   // Build a campaign lookup map
   const contactMap = new Map<string, { interactions: number; conversions: number }>();
 
-  for (const { campaignId, interactionStatus } of allContacts) {
+  for (let { campaignId, interactionStatus } of allContacts) {
     if (!campaignId) continue;
 
     const existing = contactMap.get(campaignId) ?? { interactions: 0, conversions: 0 };
