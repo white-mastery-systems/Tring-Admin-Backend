@@ -39,10 +39,10 @@ export default defineEventHandler(async (event) => {
       failedContacts = campaignTotalContacts.filter((j: any) => ["Failed"].includes(j.callStatus))
     } else { 
       // contact method is whatsapp
-      campaignTotalContacts  = await getWhatsappContactsByCampaignId(campaignId, timeZone)
-      data = await getWhatsappContactsByCampaignId(campaignId, timeZone, query)
+      campaignTotalContacts  = await getWhatsappContactsByCampaignId(organizationId, campaignId, timeZone)
+      data = await getWhatsappContactsByCampaignId(organizationId, campaignId, timeZone, query)
 
-      deliveredContacts = campaignTotalContacts.filter((i: any)=> ["delivered", "sent", "read"].includes(i.messageStatus.toLowerCase()))
+      deliveredContacts = campaignTotalContacts.filter((i: any)=> !["failed", "Failed"].includes(i.messageStatus.toLowerCase()))
       failedContacts = campaignTotalContacts.filter((j: any) => ["failed"].includes(j.messageStatus.toLowerCase()))  
     }
 

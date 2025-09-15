@@ -10,7 +10,7 @@ const zodQueryvalidator = z.object({
 
 export default defineEventHandler(async (event) => {
   try {
-    await isOrganizationAdminHandler(event)
+    const organizationId = await isOrganizationAdminHandler(event)
     const timeZoneHeader = event.node?.req?.headers["time-zone"];
     const timeZone = Array.isArray(timeZoneHeader) ? timeZoneHeader[0] : timeZoneHeader || "Asia/Kolkata";
 
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     const query = await isValidQueryHandler(event, zodQueryvalidator)
 
     const [data, failedCampaigns] = await Promise.all([
-      getWhatsappContactsByCampaignId(campaignId, timeZone, query),
+      getWhatsappContactsByCampaignId(organizationId, campaignId, timeZone, query),
       getWhatsappCampaignContactsByMsgStatus(campaignId, "failed"),
     ]);
     data.failedCampaigns = false

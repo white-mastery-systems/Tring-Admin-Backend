@@ -39,7 +39,7 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
 
   const campaignIds = data.map(c => c.id);
    
-  const [ voiceScheduledContactList, whatsappScheduledContactList, chatbotList, voicebotList ] = await Promise.all([
+  const [ voiceScheduledContactList, whatsappScheduledContactList, chatbotList, voicebotList, chatList ] = await Promise.all([
     db.query.voicebotCallScheduleSchema.findMany({
       where: inArray(voicebotCallScheduleSchema.campaignId, campaignIds),
       with: {
@@ -54,6 +54,12 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
     }),
     db.query.voicebotSchema.findMany({
       where: eq(voicebotSchema.organizationId, organizationId)
+    }),
+    db.query.chatSchema.findMany({
+      where: and(
+        eq(chatSchema.organizationId, organizationId),
+        eq(chatSchema.channel, "whatsapp")
+      )
     })
   ])
   
@@ -83,15 +89,17 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
    
     if (i.contactMethod === "whatsapp") {
       const chatbotDetail = chatbotList.find((chatbot: any) => chatbot.id === i.botConfig.botId)
+  
       botName = chatbotDetail?.name
       for (const contact of whatsappScheduledContactList) {
+        const chatDetail = chatList.find((chat) => chat.id === contact.chatId)
         if(contact.campaignId === i.id) {
           recipientCount++
           sendCount++
-          if(["Engaged", "Booked", "Follow Up", "New Lead", "Not Interested"].includes(contact?.interactionStatus)){
+          if(["Engaged", "Booked", "Follow Up", "New Lead", "Not Interested"].includes(chatDetail?.chatOutcome)){
             pickupCount++
           }
-          if(["Booked", "Follow Up"].includes(contact?.interactionStatus)){
+          if(["Booked", "Follow Up"].includes(chatDetail?.chatOutcome)){
             successFullCount++
           }
         }
