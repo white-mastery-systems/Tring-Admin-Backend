@@ -32,10 +32,13 @@ export const getChatbotIntentsByChatbot = async (organizationId: string, fromDat
       count: sql<number>`COUNT(*)`.as("count")
     })
     .from(timelineSchema)
+    .innerJoin(
+      botIntentSchema,
+      eq(timelineSchema.event, botIntentSchema.intent) // match event with intent name
+    )
     .where(
       and(
         eq(timelineSchema.orgId, organizationId),
-        notInArray(timelineSchema.event, excludedEvents),
         ...(fromDate && toDate ? [
           gte(timelineSchema.createdAt, fromDate),
           lte(timelineSchema.createdAt, toDate),
