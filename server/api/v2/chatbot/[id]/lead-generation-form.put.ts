@@ -17,7 +17,9 @@ export default defineEventHandler(async (event) => {
       leadEmailField: z.boolean(),
       leadPhoneField: z.boolean(),
       leadWebsiteField: z.boolean(),
-      leadFormAdditionalFields: z.array(z.any())
+      leadFormAdditionalFields: z.array(z.any()),
+      leadFormThrow: z.string().default("initial_lead_form"),
+      leadFormThrowDescription: z.string().default("when the conversation start")
     }));
 
     const bot = await getBotDetails(botId);
@@ -35,6 +37,8 @@ export default defineEventHandler(async (event) => {
           leadPhoneField: body.leadPhoneField,
           leadWebsiteField: body.leadWebsiteField,
           leadFormAdditionalFields: body.leadFormAdditionalFields || [],
+          leadFormThrow: body?.leadFormThrow,
+          leadFormThrowDescription: body?.leadFormThrowDescription
         }
       },
     });

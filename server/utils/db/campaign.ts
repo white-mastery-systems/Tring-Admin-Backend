@@ -165,7 +165,7 @@ export const creatCampaignWhatsappContacts = async (data: any) => {
   return (await db.insert(campaignWhatsappContactSchema).values(data).returning())[0]
 }
 
-export const getWhatsappContactsByCampaignId = async (campaignId: string, timeZone: string, query?: any) => {
+export const getWhatsappContactsByCampaignId = async (organizationId: string, campaignId: string, timeZone: string, query?: any) => {
   let filters: any = [eq(campaignWhatsappContactSchema.campaignId, campaignId)];
   let page, offset, limit = 0;
 
@@ -200,8 +200,19 @@ export const getWhatsappContactsByCampaignId = async (campaignId: string, timeZo
     orderBy: [desc(campaignWhatsappContactSchema.createdAt)],
   });
 
-  data = data.map((i: any) => ({
+  const chatList = await db.query.chatSchema.findMany({
+    where: and(
+      eq(chatSchema.organizationId, organizationId)
+    )
+  })
+
+  data = data.map((i: any) => {
+    const chatDetail = chatList.find((j)=> j.id === i.chatId)
+    return{
     ...i,
+    messageStatus: (i.chatId && chatDetail?.chatOutcome !== "No Response" )
+      ? chatDetail?.chatOutcome
+      : i.messageStatus,
     link: i.chatId ? `${config.newFrontendUrl}/dashboard/customer-logs/chats/${i.chatId}` : null,
     createdAt: momentTz(i?.createdAt)
       .tz(timeZone)
@@ -227,7 +238,8 @@ export const getWhatsappContactsByCampaignId = async (campaignId: string, timeZo
                 .format("DD MMM YYYY hh:mm A")
       }
     )
-  }));
+  }
+  });
 
   if (query?.page && query?.limit) {
     const paginatedCampaign = data.slice(offset, offset + limit);
