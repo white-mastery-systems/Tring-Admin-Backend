@@ -87,16 +87,16 @@ export const listLeads = async (
       offset = (page - 1) * limit;
     }
 
-   let leads = await db.query.leadSchema.findMany({
-    where: and(...filters),
-    with: {
-      bot: {
-        columns: {
-          name: true,
+    let leads = await db.query.leadSchema.findMany({
+      where: and(...filters),
+      with: {
+        bot: {
+          columns: {
+            name: true,
+          },
         },
-      },
-      botUser: {
-         where: and(
+        botUser: {
+          where: and(
             query?.q ?
               or(
                 ilike(botUserSchema.name, `%${query.q}%`),
@@ -110,15 +110,15 @@ export const listLeads = async (
               ? gt(botUserSchema.visitedCount, 1)
               : undefined,
           ),
-        columns: {
-          id: true,
-          name: true,
-          email: true,
-          visitedCount: true,
+          columns: {
+            id: true,
+            name: true,
+            email: true,
+            visitedCount: true,
+          }
         },
-        with: {
-          chats: {
-             where: and(
+        chat: {
+          where: and(
             query?.channel && query.channel !== "all"
               ? ilike(chatSchema.channel, query?.channel)
               : undefined,
@@ -126,116 +126,59 @@ export const listLeads = async (
               ? eq(chatSchema.chatOutcome, query?.outcome)
               : undefined,
           ),
-            columns: {
-              id: true,
-              metadata: true,
-              mode: true,
-              channel: true,
-              visitedCount: true,
-              chatOutcome: true,
-              createdAt: true,
-              updatedAt: true,
-            },
-            // sort chats normally
-            orderBy: [desc(chatSchema.createdAt)],
-            limit: 1, // only latest chat
-            with: {
-              messages: {
-                orderBy: [desc(messageSchema.updatedAt)],
-                limit: 1, // only latest message
-              },
-            },
-          },
+          columns: {
+            id: true,
+            metadata: true,
+            mode: true,
+            channel: true,
+            visitedCount: true,
+            chatOutcome: true,
+            createdAt: true,
+            updatedAt: true
+          }
         },
       },
-    },
-    columns: {
-      id: true,
-      chatId: true,
-      status: true,
-      createdAt: true,
-    },
-    orderBy: [desc(leadSchema.createdAt)],
-  });
-
-  // return leads
-  // -------------------------
-  // Transform & paginate
-  // -------------------------
-  leads = (leads || [])
-    // keep leads that have at least one chat
-    .filter((lead: any) => Boolean(lead.botUser?.chats?.length))
-    // sort by latest message.updatedAt (fallback: chat.updatedAt, fallback: lead.createdAt)
-    .sort((a: any, b: any) => {
-      const aChat = a.botUser.chats[0];
-      const bChat = b.botUser.chats[0];
-  
-      const aMsgUpdated = aChat?.messages?.[0]?.updatedAt;
-      const bMsgUpdated = bChat?.messages?.[0]?.updatedAt;
-  
-      const aActivity = aMsgUpdated ?? aChat?.updatedAt ?? a.createdAt;
-      const bActivity = bMsgUpdated ?? bChat?.updatedAt ?? b.createdAt;
-  
-      return new Date(bActivity).getTime() - new Date(aActivity).getTime();
-    })
-    // flatten + clean result
-    .map((lead: any) => {
-      const latestChat = lead.botUser.chats[0];
-  
-      return {
-        id: lead.id,
-        chatId: lead.chatId,
-        status: lead.status,
-        createdAt: momentTz(lead.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
-        bot: {
-          name: lead.bot?.name,
-        },
-        botUser: {
-          id: lead.botUser.id,
-          name: lead.botUser.name,
-          email: lead.botUser.email,
-          visitedCount: lead.botUser.visitedCount,
-        },
-        chat: {
-          id: latestChat.id,
-          metadata: latestChat.metadata,
-          mode: latestChat.mode,
-          channel: latestChat.channel,
-          visitedCount: latestChat.visitedCount,
-          chatOutcome: latestChat.chatOutcome,
-          createdAt: latestChat.createdAt,
-          updatedAt: latestChat.updatedAt,
-        },
-        updatedAt: momentTz(
-          latestChat.messages?.[0]?.updatedAt || latestChat.updatedAt || lead.createdAt
-        )
-          .tz(timeZone)
-          .format("DD MMM YYYY hh:mm A"),
-      };
+      columns: {
+        id: true,
+        chatId: true,
+        status: true,
+        createdAt: true,
+      },
+      orderBy: [desc(leadSchema.createdAt)],
     });
 
-  
-  if (query?.q || query?.status === "new" || query?.status === "revisited") {
-    leads = leads.filter((lead: any) => lead.botUser !== null);
-  }
-  
-  if (query?.country && query?.country !== "all") {
-    leads = leads.filter((i: any) => i.chat?.metadata?.country === query.country);
-  }
-  
-  if (query?.page && query?.limit) {
-    const paginatedLeads = leads.slice(offset, offset + limit);
-    return {
-      page: page,
-      limit: limit,
-      totalPageCount: Math.ceil(leads.length / limit) || 1,
-      totalCount: leads.length,
-      data: paginatedLeads,
-    };
-  } else {
-    return leads;
-  }
-  
+    leads = leads
+      .filter((lead: any) => lead.chat !== null) // Filter out leads without chat
+      .sort((a: any, b: any) => // Sort by chat updatedAt
+        new Date(b.chat.updatedAt).getTime() - new Date(a.chat.updatedAt).getTime()
+      )
+      .map((lead: any) => ({     // Format dates
+        ...lead,
+        createdAt: momentTz(lead.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+        updatedAt: momentTz(lead.chat.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+      }));
+
+    if (query?.q || query?.status === "new" || query?.status === "revisited")
+      leads = leads.filter((lead: any) => {
+        return lead.botUser !== null;
+      });
+    
+    if(query?.country && query?.country !== "all") {
+       leads = leads.filter((i: any) => i.chat?.metadata?.country === query.country)
+     }
+
+    if (query?.page && query?.limit) {
+      const paginatedLeads = leads.slice(offset, offset + limit);
+      return {
+        page: page,
+        limit: limit,
+        totalPageCount: Math.ceil(leads.length / limit) || 1,
+        totalCount: leads.length,
+        data: paginatedLeads,
+      };
+    } else {
+      return leads;
+    }
   } catch (err) {}
 };
 
