@@ -243,7 +243,7 @@ export const getChatSessionsByChannels = async (organizationId: string) => {
       result.push({
         source: "whatsapp",
         leads: 0,
-        chats: 0
+        engaged: 0
       })
     }
     return result;
