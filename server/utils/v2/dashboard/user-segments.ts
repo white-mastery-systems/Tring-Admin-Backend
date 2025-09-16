@@ -3,8 +3,6 @@ import { getVoicebotUsersBySegments } from "../db/voicebot-users"
 
 export const getUserSegments = async (organizationId: string, type: string, fromDate: Date | undefined, toDate: Date | undefined) => {
  try {
-    console.log({ type });
-
     if (type === "chat") {
       const chatbotUserSegments = await getChatbotUserBySegments(
         organizationId,
@@ -17,6 +15,7 @@ export const getUserSegments = async (organizationId: string, type: string, from
           frequentUsers: chatbotUserSegments.frequentUsers,
           firstTimeUsers: chatbotUserSegments.firstTimeUsers,
           highValueUsers: chatbotUserSegments.highValueUsers,
+          dropOffUsers: chatbotUserSegments.dropOffUsers
         },
       };
     }
@@ -32,6 +31,7 @@ export const getUserSegments = async (organizationId: string, type: string, from
         voice: {
           frequentUsers: voicebotUserSegments.frequentUsers,
           firstTimeUsers: voicebotUserSegments.firstTimeUsers,
+          dropOffUsers: voicebotUserSegments.dropOffUsers
         },
       };
     }
@@ -51,6 +51,7 @@ export const getUserSegments = async (organizationId: string, type: string, from
         voice: {
           frequentUsers: voicebotUserSegments.frequentUsers,
           firstTimeUsers: voicebotUserSegments.firstTimeUsers,
+          dropOffUsers: voicebotUserSegments.dropOffUsers
         },
       };
     }

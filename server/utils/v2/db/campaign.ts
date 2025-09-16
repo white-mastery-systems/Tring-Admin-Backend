@@ -20,116 +20,152 @@ export const getNewCampaignByName = async (organizationId: string, campaignName:
 }
 
 export const getNewCampaignList = async (organizationId: string, query: any, timeZone: string) => {
-  let page, offset, limit = 0;
+  let page = 1, offset = 0, limit = 0;
 
   if (query?.page && query?.limit) {
     page = parseInt(query.page);
     limit = parseInt(query.limit);
     offset = (page - 1) * limit;
   }
-  
-  let data: any = await db.query.newCampaignSchema.findMany({
+
+  // 🟢 Fetch campaigns
+  const campaigns = await db.query.newCampaignSchema.findMany({
     where: and(
       eq(newCampaignSchema.organizationId, organizationId),
       eq(newCampaignSchema.isDeleted, false),
       query?.q ? ilike(newCampaignSchema.campaignName, `%${query?.q}%`) : undefined,
     ),
     orderBy: [desc(newCampaignSchema.createdAt)],
-  })
+  });
 
-  const campaignIds = data.map(c => c.id);
-   
-  const [ voiceScheduledContactList, whatsappScheduledContactList, chatbotList, voicebotList, chatList ] = await Promise.all([
-    db.query.voicebotCallScheduleSchema.findMany({
-      where: inArray(voicebotCallScheduleSchema.campaignId, campaignIds),
-      with: {
-        bot: true
-      }
-    }),
-    db.query.campaignWhatsappContactSchema.findMany({
-      where: inArray(campaignWhatsappContactSchema.campaignId, campaignIds),
-    }),
+  if (!campaigns.length) {
+    return {
+      page,
+      limit,
+      totalPageCount: 0,
+      totalCount: 0,
+      data: [],
+    };
+  }
+
+  const campaignIds = campaigns.map(c => c.id);
+
+  // 🟢 Parallel fetch with aggregations
+  const [
+    voiceContactStats,
+    whatsappContactStats,
+    chatbotList,
+    voicebotList,
+  ] = await Promise.all([
+    // Aggregate voice contacts
+    db
+      .select({
+        campaignId: voicebotCallScheduleSchema.campaignId,
+        callStatus: voicebotCallScheduleSchema.callStatus,
+        count: sql<number>`COUNT(*)`,
+      })
+      .from(voicebotCallScheduleSchema)
+      .where(inArray(voicebotCallScheduleSchema.campaignId, campaignIds))
+      .groupBy(voicebotCallScheduleSchema.campaignId, voicebotCallScheduleSchema.callStatus),
+
+    // Aggregate whatsapp contacts (join with chat to get chatOutcome)
+    db
+      .select({
+        campaignId: campaignWhatsappContactSchema.campaignId,
+        chatOutcome: chatSchema.chatOutcome,
+        count: sql<number>`COUNT(*)`,
+      })
+      .from(campaignWhatsappContactSchema)
+      .leftJoin(chatSchema, eq(chatSchema.id, campaignWhatsappContactSchema.chatId))
+      .where(inArray(campaignWhatsappContactSchema.campaignId, campaignIds))
+      .groupBy(campaignWhatsappContactSchema.campaignId, chatSchema.chatOutcome),
+
+    // Bots
     db.query.chatBotSchema.findMany({
-      where: eq(chatBotSchema.organizationId, organizationId)
+      where: eq(chatBotSchema.organizationId, organizationId),
     }),
     db.query.voicebotSchema.findMany({
-      where: eq(voicebotSchema.organizationId, organizationId)
+      where: eq(voicebotSchema.organizationId, organizationId),
     }),
-    db.query.chatSchema.findMany({
-      where: and(
-        eq(chatSchema.organizationId, organizationId),
-        eq(chatSchema.channel, "whatsapp")
-      )
-    })
-  ])
-  
-  data = data.map((i: any) => {
-    let recipientCount =0; let sendCount = 0; let pickupCount = 0; let successFullCount = 0
-    let botName
-    
-    if (i.contactMethod === "voice") {
-      const voicebotDetail = voicebotList.find((voicebot: any) => voicebot.id === i.botConfig.botId)
-      botName = voicebotDetail?.name
-      for (const contact of voiceScheduledContactList) {
-        botName = contact?.bot?.name
-        if(contact.campaignId === i.id) {
-          recipientCount++
-          if(!["Not Dialed"].includes(contact?.callStatus)){
-            sendCount++
-          }
-          if(["Engaged", "Booked", "Follow Up", "New Lead", "Not Interested"].includes(contact?.callStatus)){
-            pickupCount++
-          }
-          if(["Booked", "Follow Up"].includes(contact?.callStatus)){
-            successFullCount++
-          }
-        }
-      }
-    } 
-   
-    if (i.contactMethod === "whatsapp") {
-      const chatbotDetail = chatbotList.find((chatbot: any) => chatbot.id === i.botConfig.botId)
-  
-      botName = chatbotDetail?.name
-      for (const contact of whatsappScheduledContactList) {
-        const chatDetail = chatList.find((chat) => chat.id === contact.chatId)
-        if(contact.campaignId === i.id) {
-          recipientCount++
-          sendCount++
-          if(["Engaged", "Booked", "Follow Up", "New Lead", "Not Interested"].includes(chatDetail?.chatOutcome)){
-            pickupCount++
-          }
-          if(["Booked", "Follow Up"].includes(chatDetail?.chatOutcome)){
-            successFullCount++
-          }
-        }
+  ]);
+
+  // 🟢 Index bots for quick lookup
+  const chatbotMap = new Map(chatbotList.map(bot => [bot.id, bot]));
+  const voicebotMap = new Map(voicebotList.map(bot => [bot.id, bot]));
+
+  // 🟢 Index stats for quick lookup
+  const voiceStatsMap = new Map<string, { [status: string]: number }>();
+  for (const row of voiceContactStats) {
+    if (!voiceStatsMap.has(row.campaignId)) voiceStatsMap.set(row.campaignId, {});
+    voiceStatsMap.get(row.campaignId)![row.callStatus] = Number(row.count);
+  }
+
+  const whatsappStatsMap = new Map<string, { [outcome: string]: number }>();
+  for (const row of whatsappContactStats) {
+    if (!whatsappStatsMap.has(row.campaignId)) whatsappStatsMap.set(row.campaignId, {});
+    whatsappStatsMap.get(row.campaignId)![row.chatOutcome || "Unknown"] = Number(row.count);
+  }
+
+  // 🟢 Final mapping
+  const data = campaigns.map((c) => {
+    let recipientCount = 0,
+      sendCount = 0,
+      pickupCount = 0,
+      successFullCount = 0,
+      botName: string | undefined;
+
+    if (c.contactMethod === "voice") {
+      const stats = voiceStatsMap.get(c.id) || {};
+      const bot = voicebotMap.get(c.botConfig.botId);
+      botName = bot?.name;
+
+      for (const [status, count] of Object.entries(stats)) {
+        recipientCount += count;
+        if (status !== "Not Dialed") sendCount += count;
+        if (["Engaged", "Booked", "Follow Up", "New Lead", "Not Interested"].includes(status)) pickupCount += count;
+        if (["Booked", "Follow Up"].includes(status)) successFullCount += count;
       }
     }
-    
-     return {
-       ...i,
-       botName,
-       recipientCount,
-       sendCount,
-       pickupCount,
-       successFullCount,
-       createdAt: momentTz(i?.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
-    };
-  })
-  
-  if (query?.page && query?.limit) {
-    const paginatedCampaigns = data.slice(offset, offset + limit);
+
+    if (c.contactMethod === "whatsapp") {
+      const stats = whatsappStatsMap.get(c.id) || {};
+      const bot = chatbotMap.get(c.botConfig.botId);
+      botName = bot?.name;
+
+      for (const [outcome, count] of Object.entries(stats)) {
+        recipientCount += count;
+        sendCount += count; // all scheduled are "sent"
+        if (["Engaged", "Booked", "Follow Up", "New Lead", "Not Interested"].includes(outcome)) pickupCount += count;
+        if (["Booked", "Follow Up"].includes(outcome)) successFullCount += count;
+      }
+    }
+
     return {
-      page: page,
-      limit: limit,
+      ...c,
+      botName,
+      recipientCount,
+      sendCount,
+      pickupCount,
+      successFullCount,
+      createdAt: momentTz(c?.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    };
+  });
+
+  // 🟢 Pagination
+  if (query?.page && query?.limit) {
+    const paginated = data.slice(offset, offset + limit);
+    return {
+      page,
+      limit,
       totalPageCount: Math.ceil(data.length / limit) || 1,
       totalCount: data.length,
-      data: paginatedCampaigns,
+      data: paginated,
     };
-  } else {
-    return data;
   }
-}
+
+  return data;
+};
+
 
 export const getNewCampaignById = async (campaignId: string) => {
   return await db.query.newCampaignSchema.findFirst({
