@@ -1,7 +1,7 @@
 import momentTz from "moment-timezone";
 import { campaignSchema, campaignWhatsappContactSchema, InsertCampaign } from "~/server/schema/admin";
 import {whatsappErrorCodes} from "~/assets/error-codes.json"
-import { notInArray } from "drizzle-orm";
+import { inArray, notInArray } from "drizzle-orm";
 
 const db = useDrizzle();
 const config = useRuntimeConfig()
@@ -165,95 +165,126 @@ export const creatCampaignWhatsappContacts = async (data: any) => {
   return (await db.insert(campaignWhatsappContactSchema).values(data).returning())[0]
 }
 
-export const getWhatsappContactsByCampaignId = async (organizationId: string, campaignId: string, timeZone: string, query?: any) => {
-  let filters: any = [eq(campaignWhatsappContactSchema.campaignId, campaignId)];
-  let page, offset, limit = 0;
-
-  if (query?.page && query?.limit) {
-    page = parseInt(query.page);
-    limit = parseInt(query.limit);
-    offset = (page - 1) * limit;
-  }
+export const getWhatsappContactsByCampaignId = async (
+  organizationId: string,
+  campaignId: string,
+  timeZone: string,
+  query?: any
+) => {
+  let filters: any[] = [eq(campaignWhatsappContactSchema.campaignId, campaignId)];
 
   // Period-based filtering
   if (query?.period) {
-    let fromDate: Date | undefined;
-    let toDate: Date | undefined;
-    const queryDate = getDateRangeForFilters(query, timeZone);
-    fromDate = queryDate?.from;
-    toDate = queryDate?.to;
-    if (fromDate && toDate) {
-      filters.push(between(campaignWhatsappContactSchema.createdAt, fromDate, toDate));
+    const { from, to } = getDateRangeForFilters(query, timeZone);
+    if (from && to) {
+      filters.push(between(campaignWhatsappContactSchema.createdAt, from, to));
     }
   }
 
-  let data: any = await db.query.campaignWhatsappContactSchema.findMany({
-    where: and(
-     ...filters,
-     query?.q ? 
-      or(
-        ilike(campaignWhatsappContactSchema.firstName, `%${query?.q}%`),
-        ilike(campaignWhatsappContactSchema.phone, `%${query?.q}%`),
-        ) 
-      : undefined,
-    ),
-    orderBy: [desc(campaignWhatsappContactSchema.createdAt)],
-  });
+  // Pagination params
+  const page = query?.page ? parseInt(query.page) : 1;
+  const limit = query?.limit ? parseInt(query.limit) : 10;
+  const offset = (page - 1) * limit;
 
-  const chatList = await db.query.chatSchema.findMany({
-    where: and(
-      eq(chatSchema.organizationId, organizationId)
-    )
+  const counts = await db
+  .select({
+    outcome: sql<string>`
+      CASE 
+        WHEN ${chatSchema.chatOutcome} IS NOT NULL 
+             AND ${chatSchema.chatOutcome} != 'No Response'
+        THEN ${chatSchema.chatOutcome}
+        ELSE ${campaignWhatsappContactSchema.messageStatus}
+      END
+    `,
+    count: sql<number>`COUNT(*)`,
   })
+  .from(campaignWhatsappContactSchema)
+  .leftJoin(chatSchema, eq(chatSchema.id, campaignWhatsappContactSchema.chatId))
+  .where(and(...filters)) 
+  .groupBy(sql`
+    CASE 
+      WHEN ${chatSchema.chatOutcome} IS NOT NULL 
+           AND ${chatSchema.chatOutcome} != 'No Response'
+      THEN ${chatSchema.chatOutcome}
+      ELSE ${campaignWhatsappContactSchema.messageStatus}
+    END
+  `);
 
-  data = data.map((i: any) => {
-    const chatDetail = chatList.find((j)=> j.id === i.chatId)
-    return{
-    ...i,
-    messageStatus: (i.chatId && chatDetail?.chatOutcome !== "No Response" )
-      ? chatDetail?.chatOutcome
-      : i.messageStatus,
-    link: i.chatId ? `${config.newFrontendUrl}/dashboard/customer-logs/chats/${i.chatId}` : null,
-    createdAt: momentTz(i?.createdAt)
-      .tz(timeZone)
-      .format("DD MMM YYYY hh:mm A"),
-    ...(i.sentAt && 
-      {
-        sentAt: momentTz(i?.sentAt)
-                .tz(timeZone)
-                .format("DD MMM YYYY hh:mm A")
-      }
-    ),
-    ...(i.deliveredAt && 
-      {
-        deliveredAt: momentTz(i?.deliveredAt)
-                .tz(timeZone)
-                .format("DD MMM YYYY hh:mm A")
-      }
-    ),
-    ...(i.readAt && 
-      {
-        readAt: momentTz(i?.readAt)
-                .tz(timeZone)
-                .format("DD MMM YYYY hh:mm A")
-      }
-    )
-  }
+  const totalContacts = counts.reduce((acc, c) => acc + Number(c.count), 0);
+  
+  const deliveredContacts = counts
+    .filter((c) => c.outcome && !["failed", "Failed"].includes(c.outcome.toLowerCase()))
+    .reduce((acc, c) => acc + Number(c.count), 0);
+  
+  const failedContacts = counts
+    .filter((c) => c.outcome && ["failed"].includes(c.outcome.toLowerCase()))
+    .reduce((acc, c) => acc + Number(c.count), 0);
+
+    // Build search condition
+  const searchFilter = query?.q
+    ? or(
+        ilike(campaignWhatsappContactSchema.firstName, `%${query.q}%`),
+        ilike(campaignWhatsappContactSchema.phone, `%${query.q}%`)
+      )
+    : undefined;
+  
+  // 🟢 Fetch only the current page
+  const data = await db.query.campaignWhatsappContactSchema.findMany({
+    where: and(...filters, searchFilter),
+    orderBy: [desc(campaignWhatsappContactSchema.createdAt)],
+    limit,
+    offset,
   });
 
-  if (query?.page && query?.limit) {
-    const paginatedCampaign = data.slice(offset, offset + limit);
+  // 🟢 Preload only chatIds we need
+  const chatIds = data.map((i: any) => i.chatId).filter(Boolean);
+  const chatList = chatIds.length
+    ? await db.query.chatSchema.findMany({
+        where: and(
+          eq(chatSchema.organizationId, organizationId),
+          inArray(chatSchema.id, chatIds)
+        ),
+      })
+    : [];
+
+  // 🟢 For pagination totals
+  const totalCount = await db
+   .select({ count: sql<number>`COUNT(*)` })
+   .from(campaignWhatsappContactSchema)
+   .where(and(...filters, searchFilter))
+   .then((r) => Number(r[0]?.count) || 0);
+
+  // 🟢 Format + enrich
+  const rows = data.map((i: any) => {
+    const chatDetail = chatList.find((j) => j.id === i.chatId);
     return {
-      page: page,
-      limit: limit,
-      totalPageCount: Math.ceil(data.length / limit) || 1,
-      totalCount: data.length,
-      data: paginatedCampaign,
+      ...i,
+      messageStatus:
+        i.chatId && chatDetail?.chatOutcome !== "No Response"
+          ? chatDetail?.chatOutcome
+          : i.messageStatus,
+      link: i.chatId ? `${config.newFrontendUrl}/dashboard/customer-logs/chats/${i.chatId}` : null,
+      createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+      ...(i.sentAt && { sentAt: momentTz(i.sentAt).tz(timeZone).format("DD MMM YYYY hh:mm A") }),
+      ...(i.deliveredAt && { deliveredAt: momentTz(i.deliveredAt).tz(timeZone).format("DD MMM YYYY hh:mm A") }),
+      ...(i.readAt && { readAt: momentTz(i.readAt).tz(timeZone).format("DD MMM YYYY hh:mm A") }),
     };
-  } else {
-    return data;
-  } 
-}
+  });
+
+  return {
+    totalContacts,
+    deliveredContacts,
+    failedContacts,
+    scheduledContacts: {
+      page,
+      limit,
+      totalPageCount: Math.ceil(totalCount / limit) || 1,
+      totalCount,
+      data: rows,
+    },
+  };
+};
+
 
 export const updateWhatsappMessageStatus = async (campaignId: string, phoneNumber: string, messageId: string, pid: string, status: string) => {
   return (await db.update(campaignWhatsappContactSchema).set({

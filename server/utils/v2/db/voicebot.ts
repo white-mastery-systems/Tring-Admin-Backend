@@ -469,91 +469,146 @@ export const getAllFailedCallList = async () => {
   })
 }
 
-export const getVoiceScheduledContactsByCampaignId = async (organizationId: string, campaignId: string, timeZone: string, query?: any) => {
-  let filters: any = [eq(voicebotCallScheduleSchema.campaignId, campaignId)];
-  let page, offset, limit = 0;
+export const getVoiceScheduledContactsByCampaignId = async (
+  organizationId: string,
+  campaignId: string,
+  timeZone: string,
+  query?: any
+) => {
+  let filters: any[] = [eq(voicebotCallScheduleSchema.campaignId, campaignId)];
 
-  if (query?.page && query?.limit) {
-    page = parseInt(query.page);
-    limit = parseInt(query.limit);
-    offset = (page - 1) * limit;
-  }
-
+  // Date filter (applies everywhere)
   if (query?.fromDate && query?.toDate) {
-    let fromDate = momentTz(query?.fromDate).tz(timeZone).startOf("day").toDate() 
-    let toDate= momentTz(query?.toDate).tz(timeZone).endOf("day").toDate()
-
-    if (fromDate && toDate) {
-      filters.push(
-        gte(voicebotCallScheduleSchema.createdAt, fromDate),
-        lte(voicebotCallScheduleSchema.createdAt, toDate),
-      )
-    }
+    const fromDate = momentTz(query.fromDate).tz(timeZone).startOf("day").toDate();
+    const toDate = momentTz(query.toDate).tz(timeZone).endOf("day").toDate();
+    filters.push(
+      gte(voicebotCallScheduleSchema.createdAt, fromDate),
+      lte(voicebotCallScheduleSchema.createdAt, toDate)
+    );
   }
 
-  if(query?.status) {
-    filters.push(eq(voicebotCallScheduleSchema.callStatus, query?.status))
+  if (query?.status) {
+    filters.push(eq(voicebotCallScheduleSchema.callStatus, query.status));
   }
 
-  let data: any = await db.query.voicebotCallScheduleSchema.findMany({
-    where: and(...filters),
-    with: {
-      bot: { columns: { name: true } },
-      contactGroup: { columns: { groupName: true } },
-      campaign: { columns: {
-         contactMethod: true,
-         campaignName: true,
-      }},
-      contact: {
-        where:
-          query?.q ? or(
-            ilike(contactProfileSchema.name, `%${query?.q}%`),
-            ilike(contactProfileSchema.phoneNumber, `%${query?.q}%`),
-          ) : undefined,
-        columns: {
-          name: true,
-          countryCode: true,
-          phoneNumber: true,
-          source: true,
-          metadata: true,
-          verificationId: true
-        }
-      }
+  // Pagination params
+  const page = query?.page ? parseInt(query.page) : 1;
+  const limit = query?.limit ? parseInt(query.limit) : 10;
+  const offset = (page - 1) * limit;
+
+  // 🟢 1. Aggregate counts (ignore search `q`)
+  const counts = await db
+    .select({
+      status: voicebotCallScheduleSchema.callStatus,
+      count: sql<number>`COUNT(*)`,
+    })
+    .from(voicebotCallScheduleSchema)
+    .where(and(...filters))
+    .groupBy(voicebotCallScheduleSchema.callStatus);
+
+  const totalContacts = counts.reduce((acc, c) => acc + Number(c.count), 0);
+  const deliveredContacts = counts
+    .filter((c) => c.status && !["Not Dialed", "Failed"].includes(c.status))
+    .reduce((acc, c) => acc + Number(c.count), 0);
+  const failedContacts = counts
+    .filter((c) => c.status && ["Failed"].includes(c.status))
+    .reduce((acc, c) => acc + Number(c.count), 0);
+
+  // 🟢 2. Search filter (requires join with contactProfileSchema)
+  let searchFilter;
+  if (query?.q) {
+    searchFilter = or(
+      ilike(contactProfileSchema.name, `%${query.q}%`),
+      ilike(contactProfileSchema.phoneNumber, `%${query.q}%`)
+    );
+  }
+
+  // 🟢 3. Total count WITH search
+  const totalCountResult = await db
+    .select({ count: sql<number>`COUNT(*)` })
+    .from(voicebotCallScheduleSchema)
+    .leftJoin(contactProfileSchema, eq(contactProfileSchema.id, voicebotCallScheduleSchema.contactId))
+    .where(and(...filters, searchFilter));
+  const totalCount = Number(totalCountResult[0]?.count) || 0;
+
+ const data = await db
+  .select({
+    schedule: {
+      id: voicebotCallScheduleSchema.id,
+      callSid: voicebotCallScheduleSchema.callSid,
+      callStatus: voicebotCallScheduleSchema.callStatus,
+      createdAt: voicebotCallScheduleSchema.createdAt,
+      updatedAt: voicebotCallScheduleSchema.updatedAt,
     },
-    orderBy: [desc(voicebotCallScheduleSchema.createdAt)],
+    contact: {
+      id: contactProfileSchema.id,
+      name: contactProfileSchema.name,
+      phoneNumber: contactProfileSchema.phoneNumber,
+      countryCode: contactProfileSchema.countryCode,
+      source: contactProfileSchema.source,
+      metadata: contactProfileSchema.metadata,
+      verificationId: contactProfileSchema.verificationId,
+    },
+    contactGroup: {
+      groupName: contactGroupSchema.groupName,
+    },
+    bot: {
+      name: voicebotSchema.name,
+    },
+    campaign: {
+      campaignName: newCampaignSchema.campaignName,
+    },
   })
+  .from(voicebotCallScheduleSchema)
+  .leftJoin(contactProfileSchema, eq(contactProfileSchema.id, voicebotCallScheduleSchema.contactId))
+  .leftJoin(contactGroupSchema, eq(contactGroupSchema.id, voicebotCallScheduleSchema.contactGroupId))
+  .leftJoin(voicebotSchema, eq(voicebotSchema.id, voicebotCallScheduleSchema.botId))
+  .leftJoin(newCampaignSchema, eq(newCampaignSchema.id, voicebotCallScheduleSchema.campaignId))
+  .where(and(...filters, searchFilter))
+  .orderBy(desc(voicebotCallScheduleSchema.createdAt))
+  .limit(limit)
+  .offset(offset);
 
-  const callLogsList: any = await getCallLogsList(organizationId, timeZone)
-  
-  data = data.map((i: any) => {
-    const callLogDetail = callLogsList.find((log: any) => log.callSid === i.callSid)
-    return {
-      ...i,
-      link: i?.callSid && callLogDetail ? `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogDetail?.id}` : null,
-      contactGroup: i.contactGroup.groupName,
-      bot: i.bot.name,
-      createdAt: momentTz(i.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
-      updatedAt: momentTz(i.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
-    }
-  })
+ // 4️⃣ Preload call logs only for fetched callSids
+  const callSids = data.map((row) => row.schedule.callSid).filter(Boolean);
+  const callLogsList = callSids.length
+    ? await getCallLogsList(organizationId, timeZone, callSids)
+    : [];
 
-  if(query?.q) {
-    data = data.filter((i: any) => i.contact !== null )
-  }
+ const rows = data.map((row) => {
+  const { schedule, contact, contactGroup, bot, campaign } = row;
+  const callLogDetail = callLogsList.find((log: any) => log.callSid === schedule.callSid);
 
-  if (query?.page && query?.limit) {
-    const paginatedCallList = data.slice(offset, offset + limit);
-    return {
-      page: page,
-      limit: limit,
-      totalPageCount: Math.ceil(data.length / limit) || 1,
-      totalCount: data.length,
-      data: paginatedCallList,
-    };
-  } else {
-    return data;
-  }
-}
+  return {
+    ...schedule,
+    contact,
+    contactGroup: contactGroup?.groupName || null,
+    bot: bot?.name || null,
+    campaignName: campaign?.campaignName || null,
+    link:
+      schedule.callSid && callLogDetail
+        ? `${config.newFrontendUrl}/dashboard/customer-logs/calls/${callLogDetail.id}`
+        : null,
+    createdAt: momentTz(schedule.createdAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+    updatedAt: momentTz(schedule.updatedAt).tz(timeZone).format("DD MMM YYYY hh:mm A"),
+  };
+});
+
+
+  return {
+    totalContacts,       // full campaign counts
+    deliveredContacts,   // full campaign counts
+    failedContacts,      // full campaign counts
+    scheduledContacts: {
+      page,
+      limit,
+      totalPageCount: Math.ceil(totalCount / limit) || 1,
+      totalCount,        // filtered count (with search)
+      data: rows,
+    },
+  };
+};
+
 
 export const updateVoiceScheduledCall = async(id: string, body: any) => {
   return (await db.update(voicebotCallScheduleSchema)
