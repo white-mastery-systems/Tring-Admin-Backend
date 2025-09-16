@@ -227,7 +227,7 @@ export const getAnalyticsGraph = async ({ totalConversation, period, fromDate, t
 
 export const getChatSessionsByChannels = async (organizationId: string) => {
   try {
-    const result = await db
+    const result: any = await db
       .select({
         source: chatSchema.channel,
         engaged: sql<number>`COUNT(DISTINCT ${chatSchema.id})`.as("chats"),
@@ -238,6 +238,14 @@ export const getChatSessionsByChannels = async (organizationId: string) => {
       .where(eq(chatSchema.organizationId, organizationId))
       .groupBy(chatSchema.channel);
 
+    const whatsappSource = result.find((i: any) => i.source === "whatsapp")
+    if(!whatsappSource) {
+      result.push({
+        source: "whatsapp",
+        leads: 0,
+        chats: 0
+      })
+    }
     return result;
   } catch (error: any) {
     logger.error(`Error in getChatSessionsBySource: ${JSON.stringify(error.message)}`);
