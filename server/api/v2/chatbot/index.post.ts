@@ -48,13 +48,6 @@ export const zodCreateChatbot = z
           message: "textContent is required when knowledgeSource is 'text'",
         });
       }
-       if(!data.textTitle) {
-        ctx.addIssue({
-          path: ["textTitle"],
-          code: z.ZodIssueCode.custom,
-          message: "textTitle is required when knowledgeSource is 'text'",
-        });
-      }
     }
 });
 
