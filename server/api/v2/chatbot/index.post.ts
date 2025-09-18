@@ -115,6 +115,8 @@ export default defineEventHandler(async (event) => {
           leadFormTitle: "Thanks for your time with us!",
           leadFormDescription:  "Could you please share your contact info?",
           humanMode: true,
+          leadFormThrow: "based_on_intent",
+          leadFormThrowDescription: "based on the intent",
           leadFormAdditionalFields: []
         },
         prompt: {
