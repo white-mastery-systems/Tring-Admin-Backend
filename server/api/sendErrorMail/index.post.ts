@@ -9,7 +9,8 @@ export default defineEventHandler(async (event) => {
       "naveenkumar@whitemastery.com",
       "ramya@whitemastery.com",
       "prakash@whitemastery.com",
-      "akashdurai@whitemastery.com"
+      "akashdurai@whitemastery.com",
+      "akshaya@whitemastery.com"
     ];
     if(body?.envType === "production") {
       recipients.push("rianozal@gmail.com")
