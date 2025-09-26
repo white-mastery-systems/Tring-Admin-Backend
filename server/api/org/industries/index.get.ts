@@ -4,7 +4,13 @@ import { getAllIndustries } from "~/server/utils/db/industries"
 
 export default defineEventHandler(async (event) => {
   try {
-    const organizationId = (await isOrganizationAdminHandler(event)) as string
+    const query = await isValidQueryHandler(event, z.object({
+      organizationId: z.string().optional()
+    }))
+    const organizationId = event?.context?.user?.organizationId ?? query.organizationId
+    if(!organizationId) {
+      return errorResponse(event, 401, "UnAuthorized")
+    }
 
     let data = await getAllIndustries({ organizationId })
 

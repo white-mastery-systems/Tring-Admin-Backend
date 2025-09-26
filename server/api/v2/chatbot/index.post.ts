@@ -19,6 +19,7 @@ export const zodCreateChatbot = z
     documentId: z.string(),
     logo: z.record(z.any()),
     prompt: z.record(z.any()),
+    organizationId: z.string().optional()
   })
   .superRefine((data, ctx) => {
     const source = data.knowledgeSource;
@@ -53,10 +54,13 @@ export const zodCreateChatbot = z
 
 export default defineEventHandler(async (event) => { 
   try {
-    const organizationId = await isOrganizationAdminHandler(event) as string
-    
     const body: any = await isValidBodyHandler(event, zodCreateChatbot)
-
+    
+    const organizationId = event?.context?.user?.organizationId ?? body.organizationId
+    if(!organizationId) {
+      return errorResponse(event, 401, "UnAuthorized")
+    }
+    
     const doc_id = body?.documentId;
     let document;
 

@@ -42,8 +42,8 @@ export const zodCreateNewVoicebotSchema = z.object({
   industryId: z.string(),
   documentId: z.string().optional(),
   llmConfig: z.object({
-    model: z.string(),
-    provider: z.string(),
+    model: z.string().optional(),
+    provider: z.string().optional(),
     top_k: z.string(),
     top_p: z.string(),
     temperature: z.number(),

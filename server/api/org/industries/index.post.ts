@@ -4,11 +4,15 @@ import { createIndustry, getIndustryByName } from "~/server/utils/db/industries"
 
 export default defineEventHandler(async (event) => {
   try {
-    const organizationId = (await isOrganizationAdminHandler(event)) as string
-
     const body = await isValidBodyHandler(event, z.object({
-      industryName: z.string()
+      industryName: z.string(),
+      organizationId: z.string().optional()
     }))
+    
+    const organizationId = event?.context?.user?.organizationId ?? body?.organizationId
+    if(!organizationId) {
+      return errorResponse(event, 401, "UnAuthorized")
+    }
 
     if(body?.industryName.length > 20) {
       return errorResponse(event, 400, "Industry name cannot exceed 20 characters.")
