@@ -7,7 +7,7 @@ const db = useDrizzle();
 
 export default defineEventHandler(async (event) => {
   try {
-  const organizationId = (await isOrganizationAdminHandler(event)) as string;
+  // const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const { id: botId } = await isValidRouteParamHandler(
     event,
     checkPayloadId("id"),
