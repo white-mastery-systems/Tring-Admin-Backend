@@ -51,6 +51,7 @@ export const getChatbotIntentsByChatbot = async (organizationId: string, fromDat
   // Add type field: "auto" or "custom"
   const dataWithType = rawData.map((item: any) => ({
     ...item,
+    event: item.event.split('_').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' '), // Capitalize each word
     type: autoEvents.includes(item.event) ? "auto" : "custom"
   }));
 

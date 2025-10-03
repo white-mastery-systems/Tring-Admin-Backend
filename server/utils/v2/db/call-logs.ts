@@ -21,7 +21,8 @@ export const getVoiceCallLeadByCountry = async (organizationId: string, fromDate
         sql`call_logs.country_code IS NOT NULL AND call_logs.country_code <> ''`
       )
     )
-    .groupBy(callLogSchema.countryCode);
+    .groupBy(callLogSchema.countryCode)
+    .orderBy(sql`COUNT(DISTINCT ${callLogSchema.id}) DESC`);
 
   return result;
 };
