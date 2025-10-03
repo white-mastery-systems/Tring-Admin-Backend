@@ -122,7 +122,7 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
       for (const [status, count] of Object.entries(stats)) {
         recipientCount += count;
         if (status !== "Not Dialed") sendCount += count;
-        if (["Engaged", "Booked", "Follow Up", "New Lead", "Not Interested"].includes(status)) pickupCount += count;
+        if (["Engaged", "Booked", "Follow Up", "New Lead"].includes(status)) pickupCount += count;
         if (["Booked", "Follow Up"].includes(status)) successFullCount += count;
       }
     }
@@ -135,7 +135,7 @@ export const getNewCampaignList = async (organizationId: string, query: any, tim
       for (const [outcome, count] of Object.entries(stats)) {
         recipientCount += count;
         sendCount += count; // all scheduled are "sent"
-        if (["Engaged", "Booked", "Follow Up", "New Lead", "Not Interested"].includes(outcome)) pickupCount += count;
+        if (["Engaged", "Booked", "Follow Up", "New Lead"].includes(outcome)) pickupCount += count;
         if (["Booked", "Follow Up"].includes(outcome)) successFullCount += count;
       }
     }
