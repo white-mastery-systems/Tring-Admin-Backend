@@ -299,5 +299,5 @@ export const getOrgCampaignsWithMetrics = async (organizationId: string, fromDat
       conversionCount: stats.conversions,
       conversionRate
     };
-  });
+  }).sort((a, b) => b.interactionCount - a.interactionCount);
 };

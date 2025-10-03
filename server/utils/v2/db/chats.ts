@@ -97,7 +97,8 @@ export const getChatLeadCountByCountry = async (
         sql`chats.metadata->>'country' IS NOT NULL AND chats.metadata->>'country' <> ''`
       )
     )
-    .groupBy(sql`chats.metadata->>'country'`);
+    .groupBy(sql`chats.metadata->>'country'`)
+    .orderBy(sql`COUNT(DISTINCT ${chatSchema.id}) DESC`);
 
   return result;
 };

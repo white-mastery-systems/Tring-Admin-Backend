@@ -114,7 +114,7 @@ export async function createWhatsAppMessage(
     to: userPhone,
     type: "template",
     template: {
-      name: "utility_notification_template",
+      name: "utility_notification_template_3",
       language: { code: "en" },
       components: [
         {
