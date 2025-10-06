@@ -93,6 +93,8 @@ export default defineNuxtConfig({
     deepgramTtsApiKey: "",
     razorpayApiKey: "",
     razorpayApiSecret: "",
+    fbClientId: "",
+    fbClientSecret: "",
     public: {
       adminBaseUrl: "",
       chatBotBaseUrl: "",

@@ -24,6 +24,8 @@ enum CRMType {
 }
 const db = useDrizzle();
 
+const config = useRuntimeConfig();
+
 export default defineEventHandler(async (event) => {
   const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const zodInsertIntegration = z
@@ -74,8 +76,8 @@ export default defineEventHandler(async (event) => {
         {
           method: "POST",
           body: {
-            client_id: "3404499776522072",
-            client_secret: "696e6112fe8aafca3e3ccf9332273140",
+            client_id: config.fbClientId,
+            client_secret: config.fbClientSecret,
             code: body.metadata.code,
             grant_type: "authorization_code",
           },
