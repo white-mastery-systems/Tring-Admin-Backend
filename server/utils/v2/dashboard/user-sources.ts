@@ -8,7 +8,7 @@ export const getEnagementAndLeadMetricsBySource = async (organizationId: string)
     const voiceEnagement = await getVoiceCallAndLeads(organizationId)
 
     // Merge chatEnagement and voiceEnagement arrays into a single array
-    return [...chatEnagement, ...voiceEnagement]
+    return [...chatEnagement, ...voiceEnagement].sort((a, b) => b.engaged - a.engaged);
   } catch (error: any) {
     logger.error(`Error in getEnagementAndLeadMetricsBySource: ${JSON.stringify(error.message)}`)
     throw new Error("Unable to get engagement and lead metrics by source")

@@ -42,6 +42,7 @@ export const getVoiceCallAndLeads = async (organizationId: string) => {
     return voiceCallEngagement.map
       (item => ({
         source: "voice",
+        color:"#FC74A6",
         ...item
       }));
   } catch (error: any) {

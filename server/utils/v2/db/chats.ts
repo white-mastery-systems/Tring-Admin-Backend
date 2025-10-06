@@ -243,10 +243,22 @@ export const getChatSessionsByChannels = async (organizationId: string) => {
     if(!whatsappSource) {
       result.push({
         source: "whatsapp",
+        color: "#A491DE",
         leads: 0,
         engaged: 0
       })
     }
+    // add color coding for sources
+    result.forEach((item: any) => {
+      switch(item.source) {
+        case "website": 
+          item.color = "#fccc50"
+          break
+        case "whatsapp": 
+          item.color = "#A491DE"
+          break 
+      }})
+
     return result;
   } catch (error: any) {
     logger.error(`Error in getChatSessionsBySource: ${JSON.stringify(error.message)}`);
