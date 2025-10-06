@@ -20,11 +20,15 @@ export default defineEventHandler(async (event) => {
     }
 
     if(body?.botDetails) {
-      const version = body.botDetails.version
-      body.llmConfig = {
-        ...voicebotDetail?.llmConfig,
-        model: version === "V1" ? "gemini-2.5-flash" : "gemini-2.0-flash-live-001",
-        provider: "gemini"
+      const payloadBotDetailsVersion = body.botDetails.version
+      const existingBotDetailsVersion = voicebotDetail?.botDetails.version || {}
+
+      if (payloadBotDetailsVersion !== existingBotDetailsVersion) {
+        body.llmConfig = {
+          ...voicebotDetail?.llmConfig,
+          model: payloadBotDetailsVersion === "V1" ? "gemini-2.5-flash" : "gemini-2.0-flash-live-001",
+          provider: "gemini"
+        }
       }
     }
 
