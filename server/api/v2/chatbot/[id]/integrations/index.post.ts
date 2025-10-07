@@ -18,16 +18,16 @@ export const zodInsertBotIntegration = z.object({
   restaurantId: z.string().optional(),
   departments: z.array(z.any()).optional(),
   whatsappIntegrationIds: z.array(z.string()).optional(),
+  organizationId: z.string().optional()
 });
 
 export default defineEventHandler(async (event) => {
-  const organizationId = (await isOrganizationAdminHandler(event)) as string;
-
   const { id: botId } = await isValidRouteParamHandler(
     event,
     checkPayloadId("id")
   );
   const body = await isValidBodyHandler(event, zodInsertBotIntegration);
+  const organizationId = event?.context?.user?.organizationId || body.organizationId
 
   // Step 1: Normalize input integration IDs
   const allIntegrationIds = [
