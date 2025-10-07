@@ -27,12 +27,12 @@ const db = useDrizzle();
 const config = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
-  const organizationId = (await isOrganizationAdminHandler(event)) as string;
   const zodInsertIntegration = z
     .object({
       name: z.string().min(3, "Integration should have atleast 3 characters"),
       crm: z.nativeEnum(CRMType),
       type: z.string(),
+      organizationId: z.string(),
       metadata: z.object({
         apiKey: z.string().optional(),
         phoneNumber: z.string().optional(),
@@ -66,6 +66,7 @@ export default defineEventHandler(async (event) => {
     );
   const userId: { id: string } = event.context.user!;
   const body = await isValidBodyHandler(event, zodInsertIntegration);
+  const organizationId = event?.context?.user?.organizationId || body?.organizationId
 
   //TODO :add this
   let response: Record<string, any> = {};
