@@ -17,9 +17,14 @@ export const getDemographics = async (organizationId: string, type: string, from
             ? ((leads / interactions) * 100).toFixed(1)
             : "0.0";
 
+        // Remove trailing ".0" if present
+        const formattedRate = conversionRate.endsWith(".0")
+        ? conversionRate.slice(0, -2)
+        : conversionRate;
+
         return {
           ...item,
-          conversionRate: `${conversionRate}%`,
+          conversionRate: `${formattedRate}%`,
         };
       });
     };
