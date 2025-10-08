@@ -291,7 +291,12 @@ export const getOrgCampaignsWithMetrics = async (organizationId: string, fromDat
   return campaigns.map((item) => {
     const stats = contactMap.get(item.id) ?? { interactions: 0, conversions: 0 };
 
-    const conversionRate = stats.interactions > 0 ? `${Math.round((stats.conversions / stats.interactions) * 100)}%` : "0%";
+    let conversionRate = "0%";
+    if (stats.interactions > 0) {
+      const rate = ((stats.conversions / stats.interactions) * 100).toFixed(1);
+      const formattedRate = rate.endsWith(".0") ? rate.slice(0, -2) : rate;
+      conversionRate = `${formattedRate}%`;
+    }
 
     return {
       ...item,
