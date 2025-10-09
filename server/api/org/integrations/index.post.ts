@@ -55,7 +55,7 @@ export default defineEventHandler(async (event) => {
     })
    
   const body = await isValidBodyHandler(event, zodInsertIntegration);
-  const userId: { id: string } = event.context.user || body?.userId;
+  const userId = event.context.user! || body?.userId;
   const organizationId = event?.context?.user?.organizationId || body?.organizationId
 
   const existing = await checkIntegrationNameAlreadyExists(organizationId, body.name, body.crm, "insert")
