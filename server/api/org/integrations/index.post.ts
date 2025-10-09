@@ -55,8 +55,8 @@ export default defineEventHandler(async (event) => {
     })
    
   const body = await isValidBodyHandler(event, zodInsertIntegration);
-  const userId = event.context.user! || body?.userId;
-  const organizationId = event?.context?.user?.organizationId || body?.organizationId
+  const userId =  body?.userId || event?.context?.user.id!
+  const organizationId = body?.organizationId || event?.context?.user?.organizationId!
 
   const existing = await checkIntegrationNameAlreadyExists(organizationId, body.name, body.crm, "insert")
   if (existing) {
@@ -133,7 +133,7 @@ export default defineEventHandler(async (event) => {
       // ...subscribeResponse,
     },
     org_id: organizationId,
-    user_id: userId?.id,
+    user_id: userId!
   });
   return integration;
 });
