@@ -178,12 +178,13 @@ export const getIntegrationDetails = async (integrationId: string) => {
   return data;
 }
 
-export const checkIntegrationNameAlreadyExists = async (organizationId: string, integrationName: string, mode: string, id?: string) => {
+export const checkIntegrationNameAlreadyExists = async (organizationId: string, integrationName: string, crm: string, mode: string, id?: string) => {
   return await db.query.integrationSchema.findFirst({
     where: and(
       eq(integrationSchema.org_id, organizationId),
       ilike(integrationSchema.name, integrationName),
       eq(integrationSchema.isDeleted, false),
+      eq(integrationSchema.crm, crm),
       (mode === "update" ? ne(integrationSchema.id, id) : undefined),
     )
   })
