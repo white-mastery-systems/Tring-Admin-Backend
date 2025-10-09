@@ -1,6 +1,6 @@
-import { ilike } from "drizzle-orm";
 import { toast } from "vue-sonner";
 import { logger } from "~/server/logger";
+import { errorResponse } from "~/server/response/error.response";
 import { checkIntegrationNameAlreadyExists, createIntegration } from "~/server/utils/db/integrations";
 import {
   fetchPhoneNumbers,
@@ -32,7 +32,8 @@ export default defineEventHandler(async (event) => {
       name: z.string().min(3, "Integration should have atleast 3 characters"),
       crm: z.nativeEnum(CRMType),
       type: z.string(),
-      organizationId: z.string(),
+      organizationId: z.string().optional(),
+      userId: z.string().optional(),
       metadata: z.object({
         apiKey: z.string().optional(),
         phoneNumber: z.string().optional(),
@@ -52,21 +53,15 @@ export default defineEventHandler(async (event) => {
         channelId: z.string().optional(),
       }),
     })
-    .refine(
-      async (data) => {
-        const existing = await checkIntegrationNameAlreadyExists(organizationId, data.name, "insert")
-        if (existing) {
-          return false;
-        }
-        return true;
-      },
-      {
-        message: "Integration name already exists",
-      },
-    );
-  const userId: { id: string } = event.context.user!;
+   
   const body = await isValidBodyHandler(event, zodInsertIntegration);
+  const userId: { id: string } = event.context.user || body?.userId;
   const organizationId = event?.context?.user?.organizationId || body?.organizationId
+
+  const existing = await checkIntegrationNameAlreadyExists(organizationId, body.name, body.crm, "insert")
+  if (existing) {
+    return errorResponse(event, 400, "Integration name already exists")
+  }
 
   //TODO :add this
   let response: Record<string, any> = {};

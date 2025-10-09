@@ -17,8 +17,8 @@ export default defineEventHandler(async (event) => {
 
   const body = await isValidBodyHandler(event, zodupdateIntegration);
 
-  if(body?.name) {
-    const exists = await checkIntegrationNameAlreadyExists(organizationId, body?.name, "update", integrationId)
+  if(body?.name && body?.crm) {
+    const exists = await checkIntegrationNameAlreadyExists(organizationId, body?.name, body?.crm, "update", integrationId)
     if (exists) {
       return errorResponse(event, 400, "Integration name already exists",)
     } 
