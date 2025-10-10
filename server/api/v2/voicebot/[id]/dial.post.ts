@@ -11,10 +11,12 @@ const config = useRuntimeConfig()
 
 export default defineEventHandler(async (event) => {
   try {
+  
     const body = await isValidBodyHandler(event, zodVoiceDialBody)
     const { id: voicebotId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
     const voicebotDetail: any = await getVoicebotById(voicebotId)
+    logger.info(`Voicebot Dial API is Calling From API Request..., Voicebot_id - ${voicebotId}`)
 
     const [ voicePlan, voicePlanUsage ] = await Promise.all([
       getOrgZohoSubscription(voicebotDetail?.organizationId, "voice"),
