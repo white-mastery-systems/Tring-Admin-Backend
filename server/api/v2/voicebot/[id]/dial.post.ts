@@ -11,6 +11,7 @@ const config = useRuntimeConfig()
 
 export default defineEventHandler(async (event) => {
   try {
+    logger.info(`Voicebot Dial API is Calling From API Request...`)
     const body = await isValidBodyHandler(event, zodVoiceDialBody)
     const { id: voicebotId } = await isValidRouteParamHandler(event, checkPayloadId("id"))
 
