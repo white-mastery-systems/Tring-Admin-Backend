@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
   
   return { 
     status: true, 
-    data: user
-    // token: lucia.createSessionCookie(session.id).serialize() 
+    data: user,
+    token: lucia.createSessionCookie(session.id).serialize() 
   };
 });
