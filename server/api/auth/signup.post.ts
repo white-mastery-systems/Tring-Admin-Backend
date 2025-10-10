@@ -41,5 +41,9 @@ export default defineEventHandler(async (event) => {
   );
   setResponseStatus(event, 201);
   
-  return { status: true, data: user,  token: lucia.createSessionCookie(session.id).serialize() };
+  return { 
+    status: true, 
+    data: user
+    // token: lucia.createSessionCookie(session.id).serialize() 
+  };
 });
